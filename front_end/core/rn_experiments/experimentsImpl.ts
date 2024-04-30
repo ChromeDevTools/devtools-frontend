@@ -23,7 +23,7 @@
 // To add a new React Native-specific experiment:
 // - define it in the RNExperiments enum and Experiments enum (in Runtime.ts)
 // - register it in this file (rn_experiments.ts)
-//   - set `enabledByDefault` and `configurable` as appropriate
+//   - set `enabledByDefault` as appropriate
 // - optionally, configure it further in each RN-specific entry point
 //   (rn_inspector.ts, rn_fusebox.ts)
 //
@@ -66,7 +66,6 @@ type RNExperimentSpec = {
   docLink?: string,
   feedbackLink?: string,
   enabledByDefault?: boolean | RNExperimentPredicate,
-  configurable?: boolean | RNExperimentPredicate,
 };
 
 class RNExperiment {
@@ -76,7 +75,6 @@ class RNExperiment {
   readonly docLink?: string;
   readonly feedbackLink?: string;
   enabledByDefault: RNExperimentPredicate;
-  configurable: RNExperimentPredicate;
 
   constructor(spec: RNExperimentSpec) {
     this.name = spec.name;
@@ -85,7 +83,6 @@ class RNExperiment {
     this.docLink = spec.docLink;
     this.feedbackLink = spec.feedbackLink;
     this.enabledByDefault = normalizePredicate(spec.enabledByDefault, false);
-    this.configurable = normalizePredicate(spec.configurable, true);
   }
 }
 
@@ -105,7 +102,6 @@ function normalizePredicate(
 class RNExperimentsSupport {
   #experiments: Map<Root.Runtime.RNExperimentName, RNExperiment> = new Map();
   #defaultEnabledCoreExperiments = new Set<Root.Runtime.ExperimentName>();
-  #nonConfigurableCoreExperiments = new Set<Root.Runtime.ExperimentName>();
 
   register(spec: RNExperimentSpec): void {
     if (state.didInitializeExperiments) {
@@ -146,32 +142,6 @@ class RNExperimentsSupport {
     }
   }
 
-  /**
-   * Set the given (RN-specific or core) experiments to be non-configurable.
-   */
-  setNonConfigurableExperiments(names: Root.Runtime.ExperimentName[]): void {
-    if (state.didInitializeExperiments) {
-      throw new Error(
-        'Experiments must be configured before constructing MainImpl',
-      );
-    }
-    for (const name of names) {
-      if (Object.prototype.hasOwnProperty.call(RNExperimentName, name)) {
-        const experiment = this.#experiments.get(
-          name as unknown as RNExperimentName,
-        );
-        if (!experiment) {
-          throw new Error(`React Native Experiment ${name} is not registered`);
-        }
-        experiment.configurable = (): boolean => false;
-      } else {
-        this.#nonConfigurableCoreExperiments.add(
-          name as Root.Runtime.ExperimentName,
-        );
-      }
-    }
-  }
-
   copyInto(other: Root.Runtime.ExperimentsSupport, titlePrefix: string = ''): void {
     for (const [name, spec] of this.#experiments) {
       other.register(
@@ -188,19 +158,9 @@ class RNExperimentsSupport {
       ) {
         other.enableExperimentsByDefault([name]);
       }
-      if (
-        !spec.configurable({
-          isReactNativeEntryPoint: state.isReactNativeEntryPoint,
-        })
-      ) {
-        other.setNonConfigurableExperiments([name]);
-      }
     }
     for (const name of this.#defaultEnabledCoreExperiments) {
       other.enableExperimentsByDefault([name]);
-    }
-    for (const name of this.#nonConfigurableCoreExperiments) {
-      other.setNonConfigurableExperiments([name]);
     }
     state.didInitializeExperiments = true;
   }
@@ -216,7 +176,6 @@ Instance.register({
   title: 'Enable Heap Profiler',
   unstable: false,
   enabledByDefault: ({ isReactNativeEntryPoint }) => !isReactNativeEntryPoint,
-  configurable: ({ isReactNativeEntryPoint }) => isReactNativeEntryPoint,
 });
 
 Instance.register({
@@ -224,7 +183,6 @@ Instance.register({
   title: 'Enable React DevTools panel',
   unstable: true,
   enabledByDefault: false,
-  configurable: ({ isReactNativeEntryPoint }) => isReactNativeEntryPoint,
 });
 
 Instance.register({
@@ -232,7 +190,6 @@ Instance.register({
   title: 'Show React Native-specific UI',
   unstable: false,
   enabledByDefault: ({ isReactNativeEntryPoint }) => isReactNativeEntryPoint,
-  configurable: false,
 });
 
 Instance.register({
@@ -240,5 +197,4 @@ Instance.register({
   title: 'Enable Performance panel',
   unstable: true,
   enabledByDefault: ({ isReactNativeEntryPoint }) => !isReactNativeEntryPoint,
-  configurable: ({ isReactNativeEntryPoint }) => isReactNativeEntryPoint,
 });

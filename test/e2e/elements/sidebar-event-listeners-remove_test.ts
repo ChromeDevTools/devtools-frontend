@@ -13,7 +13,7 @@ import {
   openEventListenersPaneAndWaitForListeners,
 } from '../helpers/event-listeners-helpers.js';
 
-describe('Removing event listeners in the elements sidebar', async () => {
+describe('Removing event listeners in the elements sidebar', () => {
   beforeEach(async () => {
     await loadEventListenersAndSelectButtonNode();
   });

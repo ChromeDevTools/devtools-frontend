@@ -2,14 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as BreakpointManager from '../../models/breakpoints/breakpoints.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as BreakpointManager from '../../models/breakpoints/breakpoints.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import breakpointEditDialogStyles from './breakpointEditDialog.css.js';
 
@@ -104,12 +105,13 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     this.element.tabIndex = -1;
 
     this.element.classList.add('sources-edit-breakpoint-dialog');
+    this.element.setAttribute('jslog', `${VisualLogging.dialog('edit-breakpoint')}`);
     const header = this.contentElement.createChild('div', 'dialog-header');
     const toolbar = new UI.Toolbar.Toolbar('source-frame-breakpoint-toolbar', header);
     toolbar.appendText(`Line ${editorLineNumber + 1}:`);
 
-    this.typeSelector =
-        new UI.Toolbar.ToolbarComboBox(this.onTypeChanged.bind(this), i18nString(UIStrings.breakpointType));
+    this.typeSelector = new UI.Toolbar.ToolbarComboBox(
+        this.onTypeChanged.bind(this), i18nString(UIStrings.breakpointType), undefined, 'type');
     this.typeSelector.createOption(
         i18nString(UIStrings.breakpoint), SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT);
     const conditionalOption = this.typeSelector.createOption(
@@ -121,7 +123,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
 
     const content = oldCondition || '';
     const finishIfComplete = (view: CodeMirror.EditorView): boolean => {
-      void TextEditor.JavaScript.isExpressionComplete(view.state.doc.toString()).then((complete): void => {
+      void TextEditor.JavaScript.isExpressionComplete(view.state.doc.toString()).then(complete => {
         if (complete) {
           this.finishEditing(true, this.editor.state.doc.toString());
         } else {
@@ -131,10 +133,10 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       return true;
     };
     const keymap = [
-      {key: 'ArrowUp', run: (): boolean => this.#editorHistory.moveHistory(Direction.BACKWARD)},
-      {key: 'ArrowDown', run: (): boolean => this.#editorHistory.moveHistory(Direction.FORWARD)},
-      {mac: 'Ctrl-p', run: (): boolean => this.#editorHistory.moveHistory(Direction.BACKWARD, true)},
-      {mac: 'Ctrl-n', run: (): boolean => this.#editorHistory.moveHistory(Direction.FORWARD, true)},
+      {key: 'ArrowUp', run: () => this.#editorHistory.moveHistory(Direction.BACKWARD)},
+      {key: 'ArrowDown', run: () => this.#editorHistory.moveHistory(Direction.FORWARD)},
+      {mac: 'Ctrl-p', run: () => this.#editorHistory.moveHistory(Direction.BACKWARD, true)},
+      {mac: 'Ctrl-n', run: () => this.#editorHistory.moveHistory(Direction.FORWARD, true)},
       {
         key: 'Mod-Enter',
         run: finishIfComplete,
@@ -149,7 +151,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       },
       {
         key: 'Escape',
-        run: (): boolean => {
+        run: () => {
           this.finishEditing(false, '');
           return true;
         },
@@ -160,6 +162,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
 
     const editorWrapper = this.contentElement.appendChild(document.createElement('div'));
     editorWrapper.classList.add('condition-editor');
+    editorWrapper.setAttribute('jslog', `${VisualLogging.textField()}`);
 
     this.editor = new TextEditor.TextEditor.TextEditor(CodeMirror.EditorState.create({
       doc: content,
@@ -173,21 +176,23 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     editorWrapper.appendChild(this.editor);
 
     const closeIcon = new IconButton.Icon.Icon();
-    closeIcon.data = {iconName: 'cross', color: 'var(--icon-default)', width: '20px', height: '20px'};
+    closeIcon.name = 'cross';
     closeIcon.title = i18nString(UIStrings.closeDialog);
-    closeIcon.onclick = (): void => this.finishEditing(true, this.editor.state.doc.toString());
+    closeIcon.setAttribute('jslog', `${VisualLogging.close().track({click: true})}`);
+    closeIcon.onclick = () => this.finishEditing(true, this.editor.state.doc.toString());
     header.appendChild(closeIcon);
 
     this.#history = new TextEditor.AutocompleteHistory.AutocompleteHistory(
-        Common.Settings.Settings.instance().createLocalSetting('breakpointConditionHistory', []));
+        Common.Settings.Settings.instance().createLocalSetting('breakpoint-condition-history', []));
     this.#editorHistory = new TextEditor.TextEditorHistory.TextEditorHistory(this.editor, this.#history);
 
     const linkWrapper = this.contentElement.appendChild(document.createElement('div'));
     linkWrapper.classList.add('link-wrapper');
-    const link = UI.Fragment.html`<x-link class="link devtools-link" tabindex="0" href='https://goo.gle/devtools-loc'>${
+    const link = UI.Fragment.html`<x-link class="link devtools-link" tabindex="0" href="https://goo.gle/devtools-loc"
+                                          jslog="${VisualLogging.link('learn-more')}">${
                      i18nString(UIStrings.learnMoreOnBreakpointTypes)}</x-link>` as UI.XLink.XLink;
     const linkIcon = new IconButton.Icon.Icon();
-    linkIcon.data = {iconName: 'open-externally', color: 'var(--icon-link)', width: '16px', height: '16px'};
+    linkIcon.name = 'open-externally';
     linkIcon.classList.add('link-icon');
     link.prepend(linkIcon);
     linkWrapper.appendChild(link);
@@ -208,6 +213,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       this.finishEditing(true, '');
       return;
     }
+    this.focusEditor();
     this.editor.dispatch({effects: this.placeholderCompartment.reconfigure(this.getPlaceholder())});
     this.updateTooltip();
   }

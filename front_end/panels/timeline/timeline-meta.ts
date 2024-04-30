@@ -3,10 +3,10 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
-import * as UI from '../../ui/legacy/legacy.js';
-import type * as Profiler from '../profiler/profiler.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
+import type * as Profiler from '../../panels/profiler/profiler.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as Timeline from './timeline.js';
 
@@ -134,7 +134,7 @@ UI.ViewManager.registerViewExtension({
 
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
-  id: 'js_profiler',
+  id: 'js-profiler',
   title: i18nLazyString(UIStrings.javascriptProfiler),
   commandPrompt: i18nLazyString(UIStrings.showJavascriptProfiler),
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
@@ -158,7 +158,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   async loadActionDelegate() {
     const Timeline = await loadTimelineModule();
-    return Timeline.TimelinePanel.ActionDelegate.instance();
+    return new Timeline.TimelinePanel.ActionDelegate();
   },
   options: [
     {
@@ -192,7 +192,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.startProfilingAndReloadPage),
   async loadActionDelegate() {
     const Timeline = await loadTimelineModule();
-    return Timeline.TimelinePanel.ActionDelegate.instance();
+    return new Timeline.TimelinePanel.ActionDelegate();
   },
   bindings: [
     {
@@ -214,7 +214,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   async loadActionDelegate() {
     const Timeline = await loadTimelineModule();
-    return Timeline.TimelinePanel.ActionDelegate.instance();
+    return new Timeline.TimelinePanel.ActionDelegate();
   },
   title: i18nLazyString(UIStrings.saveProfile),
   bindings: [
@@ -237,7 +237,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   async loadActionDelegate() {
     const Timeline = await loadTimelineModule();
-    return Timeline.TimelinePanel.ActionDelegate.instance();
+    return new Timeline.TimelinePanel.ActionDelegate();
   },
   title: i18nLazyString(UIStrings.loadProfile),
   bindings: [
@@ -261,7 +261,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   async loadActionDelegate() {
     const Timeline = await loadTimelineModule();
-    return Timeline.TimelinePanel.ActionDelegate.instance();
+    return new Timeline.TimelinePanel.ActionDelegate();
   },
   bindings: [
     {
@@ -279,7 +279,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   async loadActionDelegate() {
     const Timeline = await loadTimelineModule();
-    return Timeline.TimelinePanel.ActionDelegate.instance();
+    return new Timeline.TimelinePanel.ActionDelegate();
   },
   bindings: [
     {
@@ -292,7 +292,7 @@ UI.ActionRegistration.registerActionExtension({
   actionId: 'timeline.show-history',
   async loadActionDelegate() {
     const Timeline = await loadTimelineModule();
-    return Timeline.TimelinePanel.ActionDelegate.instance();
+    return new Timeline.TimelinePanel.ActionDelegate();
   },
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
   title: i18nLazyString(UIStrings.showRecentTimelineSessions),
@@ -316,7 +316,7 @@ UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
   async loadActionDelegate() {
     const Timeline = await loadTimelineModule();
-    return Timeline.TimelinePanel.ActionDelegate.instance();
+    return new Timeline.TimelinePanel.ActionDelegate();
   },
   title: i18nLazyString(UIStrings.previousRecording),
   contextTypes() {
@@ -339,7 +339,7 @@ UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
   async loadActionDelegate() {
     const Timeline = await loadTimelineModule();
-    return Timeline.TimelinePanel.ActionDelegate.instance();
+    return new Timeline.TimelinePanel.ActionDelegate();
   },
   title: i18nLazyString(UIStrings.nextRecording),
   contextTypes() {
@@ -388,7 +388,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.PERFORMANCE,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.hideChromeFrameInLayersView),
-  settingName: 'frameViewerHideChromeWindow',
+  settingName: 'frame-viewer-hide-chrome-window',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 });

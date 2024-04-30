@@ -62,10 +62,20 @@ export class InterestGroupStorageModel extends SDK.SDKModel.SDKModel<EventTypes>
     this.dispatchEventToListeners(Events.InterestGroupAccess, event);
   }
 
+  attributionReportingTriggerRegistered(_event: Protocol.Storage.AttributionReportingTriggerRegisteredEvent): void {
+  }
+
   indexedDBListUpdated(_event: Protocol.Storage.IndexedDBListUpdatedEvent): void {
   }
 
   indexedDBContentUpdated(_event: Protocol.Storage.IndexedDBContentUpdatedEvent): void {
+  }
+
+  interestGroupAuctionEventOccurred(_event: Protocol.Storage.InterestGroupAuctionEventOccurredEvent): void {
+  }
+
+  interestGroupAuctionNetworkRequestCreated(_event: Protocol.Storage.InterestGroupAuctionNetworkRequestCreatedEvent):
+      void {
   }
 
   cacheStorageListUpdated(_event: Protocol.Storage.CacheStorageListUpdatedEvent): void {
@@ -82,13 +92,15 @@ export class InterestGroupStorageModel extends SDK.SDKModel.SDKModel<EventTypes>
 
   storageBucketDeleted(_event: Protocol.Storage.StorageBucketDeletedEvent): void {
   }
+
+  attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void {
+  }
 }
 
 SDK.SDKModel.SDKModel.register(
     InterestGroupStorageModel, {capabilities: SDK.Target.Capability.Storage, autostart: false});
 
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   InterestGroupAccess = 'InterestGroupAccess',
 }
 

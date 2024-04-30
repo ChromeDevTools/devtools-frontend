@@ -9,8 +9,8 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
 
-import type * as puppeteer from 'puppeteer';
-import {type CDPPage} from '../../../node_modules/puppeteer-core/lib/esm/puppeteer/common/Page.js';
+import type * as puppeteer from 'puppeteer-core';
+import {type CdpPage} from '../../../node_modules/puppeteer-core/lib/esm/puppeteer/cdp/Page.js';
 import {getBrowserAndPages, getDevToolsFrontendHostname, getResourcesPath, waitFor} from '../../shared/helper.js';
 
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
@@ -46,11 +46,10 @@ export async function loadExtension(name: string, startPage?: string) {
   return load;
 
   async function doLoad(frontend: puppeteer.Page, extensionInfo: {startPage: string, name: string}) {
-    const session = (frontend as unknown as CDPPage)._client();
+    const session = (frontend as unknown as CdpPage)._client();
     // TODO(chromium:1246836) remove once real extension tests are available
     const injectedAPI = await frontend.evaluate(
-        extensionInfo => globalThis.buildExtensionAPIInjectedScript(
-            extensionInfo, undefined, 'default', globalThis.UI.shortcutRegistry.globalShortcutKeys()),
+        extensionInfo => globalThis.buildExtensionAPIInjectedScript(extensionInfo, undefined, 'default', []),
         extensionInfo);
 
     function declareChrome() {

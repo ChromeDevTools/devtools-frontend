@@ -11,8 +11,8 @@
 > Chrome/Chromium over the
 > [DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
 > Puppeteer runs in
-> [headless](https://developers.google.com/web/updates/2017/04/headless-chrome)
-> mode by default, but can be configured to run in full (non-headless)
+> [headless](https://developer.chrome.com/articles/new-headless/)
+> mode by default, but can be configured to run in full ("headful")
 > Chrome/Chromium.
 
 #### What can I do?
@@ -29,7 +29,7 @@ Here are a few examples to get you started:
 - Capture a
   [timeline trace](https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/reference)
   of your site to help diagnose performance issues.
-- Test Chrome Extensions.
+- [Test Chrome Extensions](https://pptr.dev/guides/chrome-extensions).
 
 ## Getting Started
 
@@ -39,15 +39,27 @@ To use Puppeteer in your project, run:
 
 ```bash
 npm i puppeteer
-# or `yarn add puppeteer`
-# or `pnpm i puppeteer`
+# or using yarn
+yarn add puppeteer
+# or using pnpm
+pnpm i puppeteer
 ```
 
 When you install Puppeteer, it automatically downloads a recent version of
-Chromium (~170MB macOS, ~282MB Linux, ~280MB Windows) that is
-[guaranteed to work](https://pptr.dev/faq#q-why-doesnt-puppeteer-vxxx-work-with-chromium-vyyy)
-with Puppeteer. For a version of Puppeteer without installation, see
+[Chrome for Testing](https://developer.chrome.com/blog/chrome-for-testing/) (~170MB macOS, ~282MB Linux, ~280MB Windows) and a `chrome-headless-shell` binary (starting with Puppeteer v21.6.0) that is [guaranteed to
+work](https://pptr.dev/faq#q-why-doesnt-puppeteer-vxxx-work-with-chromium-vyyy)
+with Puppeteer. The browser is downloaded to the `$HOME/.cache/puppeteer` folder
+by default (starting with Puppeteer v19.0.0). See [configuration](https://pptr.dev/api/puppeteer.configuration) for configuration options and environmental variables to control the download behavor.
+
+If you deploy a project using Puppeteer to a hosting provider, such as Render or
+Heroku, you might need to reconfigure the location of the cache to be within
+your project folder (see an example below) because not all hosting providers
+include `$HOME/.cache` into the project's deployment.
+
+For a version of Puppeteer without the browser installation, see
 [`puppeteer-core`](#puppeteer-core).
+
+If used with TypeScript, the minimum supported TypeScript version is `4.7.4`.
 
 #### Configuration
 
@@ -78,29 +90,29 @@ information.
 
 #### `puppeteer-core`
 
-Every release since v1.7.0 we publish two packages:
+For every release since v1.7.0 we publish two packages:
 
 - [`puppeteer`](https://www.npmjs.com/package/puppeteer)
 - [`puppeteer-core`](https://www.npmjs.com/package/puppeteer-core)
 
 `puppeteer` is a _product_ for browser automation. When installed, it downloads
-a version of Chromium, which it then drives using `puppeteer-core`. Being an
+a version of Chrome, which it then drives using `puppeteer-core`. Being an
 end-user product, `puppeteer` automates several workflows using reasonable
 defaults [that can be customized](https://pptr.dev/guides/configuration).
 
 `puppeteer-core` is a _library_ to help drive anything that supports DevTools
 protocol. Being a library, `puppeteer-core` is fully driven through its
 programmatic interface implying no defaults are assumed and `puppeteer-core`
-will not download Chromium when installed.
+will not download Chrome when installed.
 
 You should use `puppeteer-core` if you are
 [connecting to a remote browser](https://pptr.dev/api/puppeteer.puppeteer.connect)
-or [managing browsers yourself](https://pptr.dev/api/puppeteer.browserfetcher).
+or [managing browsers yourself](https://pptr.dev/browsers-api/).
 If you are managing browsers yourself, you will need to call
 [`puppeteer.launch`](https://pptr.dev/api/puppeteer.puppeteernode.launch) with
-an an explicit
-[`executablePath`](https://pptr.dev/api/puppeteer.launchoptions.executablepath)
-(or [`channel`](https://pptr.dev/api/puppeteer.launchoptions.channel) if it's
+an explicit
+[`executablePath`](https://pptr.dev/api/puppeteer.launchoptions)
+(or [`channel`](https://pptr.dev/api/puppeteer.launchoptions) if it's
 installed in a standard location).
 
 When using `puppeteer-core`, remember to change the import:
@@ -133,19 +145,21 @@ The following example searches [developer.chrome.com](https://developer.chrome.c
 import puppeteer from 'puppeteer';
 
 (async () => {
+  // Launch the browser and open a new blank page
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
+  // Navigate the page to a URL
   await page.goto('https://developer.chrome.com/');
 
   // Set screen size
   await page.setViewport({width: 1080, height: 1024});
 
   // Type into search box
-  await page.type('.search-box__input', 'automate beyond recorder');
+  await page.type('.devsite-search-field', 'automate beyond recorder');
 
   // Wait and click on first result
-  const searchResultSelector = '.search-box__link';
+  const searchResultSelector = '.devsite-result-item-link';
   await page.waitForSelector(searchResultSelector);
   await page.click(searchResultSelector);
 
@@ -153,7 +167,7 @@ import puppeteer from 'puppeteer';
   const textSelector = await page.waitForSelector(
     'text/Customize and automate'
   );
-  const fullTitle = await textSelector.evaluate(el => el.textContent);
+  const fullTitle = await textSelector?.evaluate(el => el.textContent);
 
   // Print the full title
   console.log('The title of this blog post is "%s".', fullTitle);
@@ -166,19 +180,38 @@ import puppeteer from 'puppeteer';
 
 **1. Uses Headless mode**
 
-Puppeteer launches Chromium in
-[headless mode](https://developers.google.com/web/updates/2017/04/headless-chrome).
-To launch a full version of Chromium, set the
-[`headless`](https://pptr.dev/api/puppeteer.browserlaunchargumentoptions.headless)
+By default Puppeteer launches Chrome in
+[the Headless mode](https://developer.chrome.com/articles/new-headless/).
+
+```ts
+const browser = await puppeteer.launch();
+// Equivalent to
+const browser = await puppeteer.launch({headless: true});
+```
+
+Before v22, Puppeteer launched the [old Headless mode](https://developer.chrome.com/articles/new-headless/) by default.
+The old headless mode is now known as
+[`chrome-headless-shell`](https://developer.chrome.com/blog/chrome-headless-shell)
+and ships as a separate binary. `chrome-headless-shell` does not match the
+behavior of the regular Chrome completely but it is currently more performant
+for automation tasks where the complete Chrome feature set is not needed. If the performance
+is more important for your use case, switch to `chrome-headless-shell` as following:
+
+```ts
+const browser = await puppeteer.launch({headless: 'shell'});
+```
+
+To launch a "headful" version of Chrome, set the
+[`headless`](https://pptr.dev/api/puppeteer.browserlaunchargumentoptions) to `false`
 option when launching a browser:
 
 ```ts
-const browser = await puppeteer.launch({headless: false}); // default is true
+const browser = await puppeteer.launch({headless: false});
 ```
 
-**2. Runs a bundled version of Chromium**
+**2. Runs a bundled version of Chrome**
 
-By default, Puppeteer downloads and uses a specific version of Chromium so its
+By default, Puppeteer downloads and uses a specific version of Chrome so its
 API is guaranteed to work out of the box. To use Puppeteer with a different
 version of Chrome or Chromium, pass in the executable's path when creating a
 `Browser` instance:
@@ -187,8 +220,8 @@ version of Chrome or Chromium, pass in the executable's path when creating a
 const browser = await puppeteer.launch({executablePath: '/path/to/Chrome'});
 ```
 
-You can also use Puppeteer with Firefox Nightly (experimental support). See
-[`Puppeteer.launch`](https://pptr.dev/api/puppeteer.puppeteernode.launch) for
+You can also use Puppeteer with Firefox. See
+[status of cross-browser support](https://pptr.dev/faq/#q-what-is-the-status-of-cross-browser-support) for
 more information.
 
 See

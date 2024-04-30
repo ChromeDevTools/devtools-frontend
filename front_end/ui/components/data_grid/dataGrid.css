@@ -40,19 +40,35 @@ thead tr {
 }
 
 tbody tr {
-  background-color: var(--override-data-grid-row-background-color, --color-background);
+  background-color: var(--override-data-grid-row-background-color, --sys-color-surface);
+}
+
+tbody tr:nth-child(odd) {
+  background-color: var(--sys-color-surface1);
+}
+
+tbody tr:hover:not(.selected) {
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 tbody tr.selected {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-neutral-container);
+}
+
+tbody tr.selected:focus-within {
+  background-color: var(--sys-color-tonal-container);
+}
+
+.wrapping-container.striped tr:nth-child(odd):not(.selected):not(.padding-row):not(:hover) {
+  background-color: var(--sys-color-surface1);
 }
 
 td,
 th {
+  box-sizing: border-box;
   padding: 1px 4px;
-  border-left: 1px solid var(--color-details-hairline);
-  color: var(--color-text-primary);
-  line-height: var(--table-row-height);
+  border-left: 1px solid var(--sys-color-divider);
+  color: var(--sys-color-on-surface);
   height: var(--table-row-height);
   user-select: text;
   /* Ensure that text properly cuts off if horizontal space is too narrow */
@@ -64,20 +80,20 @@ th {
 th {
   font-weight: normal;
   text-align: left;
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
   position: sticky;
   top: 0;
   z-index: 2;
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-surface1);
 }
 
 td:focus,
 th:focus {
-  outline: var(--color-primary-old) auto 1px;
+  outline: var(--sys-color-primary) auto 1px;
 }
 
 th:hover.sortable {
-  background: var(--color-background-elevation-0);
+  background-color: var(--sys-color-surface2);
 }
 
 .cell-resize-handle {
@@ -92,7 +108,7 @@ th:hover.sortable {
 /* There is no divider before the first cell */
 td.firstVisibleColumn,
 th.firstVisibleColumn {
-  border-left: none;
+  border-left-width: 0;
 }
 
 .hidden {
@@ -119,12 +135,22 @@ th.firstVisibleColumn {
   padding: 1px;
 }
 
+tbody tr.selected:focus-within td {
+  border-left-color: var(--sys-color-divider-on-tonal-container);
+}
+
+/* Leave space for the sort indicator */
+[aria-sort="ascending"],
+[aria-sort="descending"] {
+  padding-right: 20px;
+}
+
 [aria-sort="descending"]::after {
   content: "";
   width: 0;
   border-left: 0.4em solid transparent;
   border-right: 0.4em solid transparent;
-  border-top: 0.4em solid var(--color-text-secondary);
+  border-top: 0.4em solid var(--sys-color-token-subtle);
   position: absolute;
   right: 0.5em;
   top: 0.85em;
@@ -133,7 +159,7 @@ th.firstVisibleColumn {
 [aria-sort="ascending"]::after {
   content: "";
   width: 0;
-  border-bottom: 0.4em solid var(--color-text-secondary);
+  border-bottom: 0.4em solid var(--sys-color-token-subtle);
   border-left: 0.4em solid transparent;
   border-right: 0.4em solid transparent;
   position: absolute;

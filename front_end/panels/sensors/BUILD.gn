@@ -39,8 +39,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
-    "../../../test/unittests/front_end/panels/sensors/*",
     "../../entrypoints/*",
   ]
 
@@ -50,10 +48,15 @@ devtools_entrypoint("bundle") {
 devtools_entrypoint("meta") {
   entrypoint = "sensors-meta.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../core/i18n:bundle",
+    "../../ui/legacy:bundle",
+  ]
 
   visibility = [
-    "../../../test/unittests/front_end/helpers/*",
     "../../entrypoints/*",
+    "../../testing/*",
   ]
 }

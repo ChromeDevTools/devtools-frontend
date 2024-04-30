@@ -4,10 +4,9 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
+import type * as Profiler from '../../panels/profiler/profiler.js';
+import type * as Timeline from '../../panels/timeline/timeline.js';
 import * as UI from '../../ui/legacy/legacy.js';
-
-import type * as Profiler from '../profiler/profiler.js';
-import type * as Timeline from '../timeline/timeline.js';
 
 const UIStrings = {
   /**
@@ -76,7 +75,7 @@ function maybeRetrieveTimelineContextTypes<T = unknown>(getClassCallBack: (timel
 
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
-  id: 'js_profiler',
+  id: 'js-profiler',
   title: i18nLazyString(UIStrings.profiler),
   commandPrompt: i18nLazyString(UIStrings.showProfiler),
   order: 65,
@@ -119,7 +118,7 @@ UI.ActionRegistration.registerActionExtension({
   actionId: 'timeline.show-history',
   async loadActionDelegate() {
     const Timeline = await loadTimelineModule();
-    return Timeline.TimelinePanel.ActionDelegate.instance();
+    return new Timeline.TimelinePanel.ActionDelegate();
   },
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
   title: i18nLazyString(UIStrings.showRecentTimelineSessions),
@@ -150,7 +149,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   async loadActionDelegate() {
     const Timeline = await loadTimelineModule();
-    return Timeline.TimelinePanel.ActionDelegate.instance();
+    return new Timeline.TimelinePanel.ActionDelegate();
   },
   options: [
     {
@@ -184,7 +183,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.startProfilingAndReloadPage),
   async loadActionDelegate() {
     const Timeline = await loadTimelineModule();
-    return Timeline.TimelinePanel.ActionDelegate.instance();
+    return new Timeline.TimelinePanel.ActionDelegate();
   },
   bindings: [
     {

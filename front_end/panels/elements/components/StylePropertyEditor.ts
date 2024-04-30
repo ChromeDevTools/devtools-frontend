@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import stylePropertyEditorStyles from './stylePropertyEditor.css.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {findFlexContainerIcon, findGridContainerIcon, type IconInfo} from './CSSPropertyIconResolver.js';
+import stylePropertyEditorStyles from './stylePropertyEditor.css.js';
 
 const UIStrings = {
   /**
@@ -135,12 +135,15 @@ export class StylePropertyEditor extends HTMLElement {
     });
     const values = {propertyName, propertyValue};
     const title = selected ? i18nString(UIStrings.deselectButton, values) : i18nString(UIStrings.selectButton, values);
-    return html`<button title=${title} class=${classes} @click=${
-        (): void => this.#onButtonClick(propertyName, propertyValue, selected)}>
-       <${IconButton.Icon.Icon.litTagName} style=${transform} .data=${
-        {iconName: iconInfo.iconName, color: 'var(--icon-color)', width: '20px', height: '20px'} as
-        IconButton.Icon.IconWithName}></${IconButton.Icon.Icon.litTagName}>
-    </button>`;
+    return html`
+      <button title=${title}
+              class=${classes}
+              jslog=${VisualLogging.item().track({click: true}).context(`${propertyName}-${propertyValue}`)}
+              @click=${() => this.#onButtonClick(propertyName, propertyValue, selected)}>
+        <${IconButton.Icon.Icon.litTagName} style=${transform} name=${iconInfo.iconName}>
+        </${IconButton.Icon.Icon.litTagName}>
+      </button>
+    `;
   }
 
   #onButtonClick(propertyName: string, propertyValue: string, selected: boolean): void {
@@ -157,6 +160,7 @@ export class StylePropertyEditor extends HTMLElement {
 }
 
 export class FlexboxEditor extends StylePropertyEditor {
+  readonly jslogContext = 'cssFlexboxEditor';
   protected override readonly editableProperties: EditableProperty[] = FlexboxEditableProperties;
 
   protected override findIcon(query: string, computedProperties: Map<string, string>): IconInfo|null {
@@ -164,16 +168,16 @@ export class FlexboxEditor extends StylePropertyEditor {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-flexbox-editor', FlexboxEditor);
+customElements.define('devtools-flexbox-editor', FlexboxEditor);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-flexbox-editor': FlexboxEditor;
   }
 }
 
 export class GridEditor extends StylePropertyEditor {
+  readonly jslogContext = 'cssGridEditor';
   protected override readonly editableProperties: EditableProperty[] = GridEditableProperties;
 
   protected override findIcon(query: string, computedProperties: Map<string, string>): IconInfo|null {
@@ -181,10 +185,9 @@ export class GridEditor extends StylePropertyEditor {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-grid-editor', GridEditor);
+customElements.define('devtools-grid-editor', GridEditor);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-grid-editor': GridEditor;
   }

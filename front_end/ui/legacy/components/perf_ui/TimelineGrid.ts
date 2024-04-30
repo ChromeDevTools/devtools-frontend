@@ -60,7 +60,7 @@ export class TimelineGrid {
   }
 
   static calculateGridOffsets(calculator: Calculator, freeZoneAtLeft?: number): DividersData {
-    /** @const */ const minGridSlicePx = 64;  // minimal distance between grid lines.
+    const minGridSlicePx = 64;  // minimal distance between grid lines.
 
     const clientWidth = calculator.computePosition(calculator.maximumBoundary());
     let dividersCount: number|0 = clientWidth / minGridSlicePx;
@@ -96,11 +96,17 @@ export class TimelineGrid {
 
     const offsets = [];
     for (let i = 0; i < dividersCount; ++i) {
-      const time = firstDividerTime + gridSliceTime * i;
-      if (calculator.computePosition(time) < (freeZoneAtLeft || 0)) {
+      // The grid slice time could be small like 0.2. If we multiply this we
+      // open ourselves to floating point rounding errors. To avoid these, we
+      // multiply the number by 100, and i, and then divide it by 100 again.
+      const time = firstDividerTime + (gridSliceTime * 100 * i) / 100;
+
+      const positionFromTime = calculator.computePosition(time);
+
+      if (positionFromTime < (freeZoneAtLeft || 0)) {
         continue;
       }
-      offsets.push({position: Math.floor(calculator.computePosition(time)), time: time});
+      offsets.push({position: Math.floor(positionFromTime), time: time});
     }
 
     return {offsets: offsets, precision: Math.max(0, -Math.floor(Math.log(gridSliceTime * 1.01) / Math.LN10))};
@@ -110,7 +116,7 @@ export class TimelineGrid {
     context.save();
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     const height = Math.floor(context.canvas.height / window.devicePixelRatio);
-    context.strokeStyle = getComputedStyle(document.body).getPropertyValue('--divider-line');
+    context.strokeStyle = getComputedStyle(document.body).getPropertyValue('--app-color-strokestyle');
     context.lineWidth = 1;
 
     context.translate(0.5, 0.5);
@@ -134,7 +140,7 @@ export class TimelineGrid {
     context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background-opacity-50');
     context.fillRect(0, 0, width, headerHeight);
 
-    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
+    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface');
     context.textBaseline = 'hanging';
     context.font = `${DEFAULT_FONT_SIZE} ${getFontFamilyForCanvas()}`;
 

@@ -5,11 +5,10 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import audioContextSelectorStyles from './audioContextSelector.css.js';
-
-import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
   /**
@@ -39,7 +38,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper<Eve
 
     this.items = new UI.ListModel.ListModel();
 
-    this.dropDown = new UI.SoftDropDown.SoftDropDown(this.items, this);
+    this.dropDown = new UI.SoftDropDown.SoftDropDown(this.items, this, 'audio-context');
     this.dropDown.setPlaceholderText(this.placeholderText);
 
     this.toolbarItemInternal = new UI.Toolbar.ToolbarItem(this.dropDown.element);
@@ -70,7 +69,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper<Eve
 
   contextDestroyed({data: contextId}: Common.EventTarget.EventTargetEvent<string>): void {
     const contextIndex =
-        this.items.findIndex((context: Protocol.WebAudio.BaseAudioContext): boolean => context.contextId === contextId);
+        this.items.findIndex((context: Protocol.WebAudio.BaseAudioContext) => context.contextId === contextId);
     if (contextIndex > -1) {
       this.items.remove(contextIndex);
     }
@@ -79,7 +78,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper<Eve
   contextChanged({data: changedContext}: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.BaseAudioContext>):
       void {
     const contextIndex = this.items.findIndex(
-        (context: Protocol.WebAudio.BaseAudioContext): boolean => context.contextId === changedContext.contextId);
+        (context: Protocol.WebAudio.BaseAudioContext) => context.contextId === changedContext.contextId);
     if (contextIndex > -1) {
       this.items.replace(contextIndex, changedContext);
 

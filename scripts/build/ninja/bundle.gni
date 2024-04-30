@@ -11,9 +11,12 @@ declare_args() {
   # bundle JavaScript files.
   devtools_fast_bundle = devtools_skip_typecheck
 
-  # If this is enabled, rollup will also emit source maps for the bundles.
-  # As rollup is only used for release builds, this flag can only be set
-  # for release builds.
+  # If this is enabled, we will emit source maps for the entrypoint bundles.
+  # Since we only bundle release builds, this flag can't be used with
+  # is_debug = true.
+  # Note that this flag works regardless of the devtools_skip_typecheck or
+  # devtools_fast_bundle GN arg. Both rollup.js or ESBuild will emit source
+  # maps if this flag is set.
   devtools_release_sourcemaps = false
 }
 
@@ -56,6 +59,10 @@ template("bundle") {
         rebase_path(invoker.output_file_location, root_build_dir),
       ]
 
+      if (devtools_release_sourcemaps) {
+        args += [ "--configSourcemaps" ]
+      }
+
       outputs = [ invoker.output_file_location ]
     }
   } else {
@@ -90,10 +97,6 @@ template("bundle") {
         "--file",
         rebase_path(invoker.output_file_location, root_build_dir),
       ]
-
-      if (!devtools_dcheck_always_on) {
-        args += [ "--configDCHECK" ]
-      }
 
       if (devtools_release_sourcemaps) {
         args += [ "--configSourcemaps" ]

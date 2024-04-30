@@ -42,8 +42,8 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
   constructor() {
     super('snippet://' as Platform.DevToolsPath.UrlString, 'snippets');
     this.lastSnippetIdentifierSetting =
-        Common.Settings.Settings.instance().createSetting('scriptSnippets_lastIdentifier', 0);
-    this.snippetsSetting = Common.Settings.Settings.instance().createSetting('scriptSnippets', []);
+        Common.Settings.Settings.instance().createSetting('script-snippets-last-identifier', 0);
+    this.snippetsSetting = Common.Settings.Settings.instance().createSetting('script-snippets', []);
   }
 
   override initialFilePaths(): Platform.DevToolsPath.EncodedPathString[] {
@@ -143,7 +143,7 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
 }
 
 export async function evaluateScriptSnippet(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
-  if (!uiSourceCode.url().startsWith('snippet://')) {
+  if (!Common.ParsedURL.schemeIs(uiSourceCode.url(), 'snippet:')) {
     return;
   }
 
@@ -199,7 +199,7 @@ export async function evaluateScriptSnippet(uiSourceCode: Workspace.UISourceCode
 }
 
 export function isSnippetsUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
-  return uiSourceCode.url().startsWith('snippet://');
+  return Common.ParsedURL.schemeIs(uiSourceCode.url(), 'snippet:');
 }
 
 export function isSnippetsProject(project: Workspace.Workspace.Project): boolean {

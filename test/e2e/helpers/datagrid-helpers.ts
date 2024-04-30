@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {type ElementHandle} from 'puppeteer';
-import {$, $$, getBrowserAndPages, waitFor, waitForFunction} from '../../shared/helper.js';
 import {assert} from 'chai';
+import {type ElementHandle} from 'puppeteer-core';
+
+import {$, $$, getBrowserAndPages, waitFor, waitForFunction} from '../../shared/helper.js';
 
 export async function getDataGridRows(
     expectedNumberOfRows: number, root?: ElementHandle<Node>,
@@ -31,6 +32,11 @@ export async function getDataGrid(root?: ElementHandle) {
   if (!dataGrid) {
     assert.fail('Could not find data-grid');
   }
+  await waitForFunction(async () => {
+    const height = await dataGrid.evaluate(elem => elem.clientHeight);
+    // Give it a chance to fully render into the page.
+    return height > 20;
+  }, undefined, 'Ensuring the data grid has a minimum height of 20px');
   return dataGrid;
 }
 

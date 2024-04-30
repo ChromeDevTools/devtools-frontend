@@ -13,6 +13,6 @@ module.exports = {
     // enabled in this folder because it is an
     // expensive rule to run and we do not need it
     // for any code that doesn't use Canvas.
-    'rulesdir/canvas_context_tracking' : 2,
+    'rulesdir/canvas_context_tracking' : 'error',
   }
 };

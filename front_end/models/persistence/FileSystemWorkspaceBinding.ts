@@ -302,9 +302,10 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
   }
 
   async findFilesMatchingSearchRequest(
-      searchConfig: Workspace.Workspace.ProjectSearchConfig, filesMatchingFileQuery: Platform.DevToolsPath.UrlString[],
-      progress: Common.Progress.Progress): Promise<string[]> {
-    let result: string[] = filesMatchingFileQuery;
+      searchConfig: Workspace.SearchConfig.SearchConfig, filesMatchingFileQuery: Workspace.UISourceCode.UISourceCode[],
+      progress: Common.Progress.Progress):
+      Promise<Map<Workspace.UISourceCode.UISourceCode, TextUtils.ContentProvider.SearchMatch[]|null>> {
+    let workingFileSet: string[] = filesMatchingFileQuery.map(uiSoureCode => uiSoureCode.url());
     const queriesToRun = searchConfig.queries().slice();
     if (!queriesToRun.length) {
       queriesToRun.push('');
@@ -314,8 +315,17 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     for (const query of queriesToRun) {
       const files = await this.fileSystemInternal.searchInPath(searchConfig.isRegex() ? '' : query, progress);
       files.sort(Platform.StringUtilities.naturalOrderComparator);
-      result = Platform.ArrayUtilities.intersectOrdered(result, files, Platform.StringUtilities.naturalOrderComparator);
+      workingFileSet = Platform.ArrayUtilities.intersectOrdered(
+          workingFileSet, files, Platform.StringUtilities.naturalOrderComparator);
       progress.incrementWorked(1);
+    }
+
+    const result = new Map();
+    for (const file of workingFileSet) {
+      const uiSourceCode = this.uiSourceCodeForURL(file as Platform.DevToolsPath.UrlString);
+      if (uiSourceCode) {
+        result.set(uiSourceCode, null);
+      }
     }
 
     progress.done();
@@ -396,6 +406,10 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
         this.removeUISourceCode(uiSourceCode.url());
       }
     });
+  }
+
+  override deleteDirectoryRecursively(path: Platform.DevToolsPath.EncodedPathString): Promise<boolean> {
+    return this.fileSystemInternal.deleteDirectoryRecursively(path);
   }
 
   override remove(): void {

@@ -6,17 +6,24 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 node_ts_library("timeline") {
   sources = [
+    "animations_track_test.ts",
+    "auction_worklets_tracks_test.ts",
     "flamechart_test.ts",
     "gpu_track_test.ts",
     "interactions_track_test.ts",
     "layout_shifts_track_test.ts",
-    "main_thread_test.ts",
     "network_track_test.ts",
+    "overview_test.ts",
+    "rasterizer_tracks_test.ts",
+    "thread_tracks_test.ts",
+    "timeline_history_manager_test.ts",
+    "timeline_selection_test.ts",
     "timeline_test.ts",
     "timings_track_test.ts",
   ]
 
   deps = [
+    "../../../../../front_end/panels/timeline:bundle",
     "../../../../shared",
     "../../../helpers",
   ]

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../core/sdk/sdk.js';
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
@@ -81,7 +82,7 @@ ElementsTestRunner.setOuterHTMLUseUndo = function(newText, next) {
 
   async function bringBack() {
     TestRunner.addResult('\nBringing things back\n');
-    await self.SDK.domModelUndoStack.undo();
+    await SDK.DOMModel.DOMModelUndoStack.instance().undo();
     ElementsTestRunner._dumpOuterHTML(true, next);
   }
 };

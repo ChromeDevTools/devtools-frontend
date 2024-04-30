@@ -76,12 +76,12 @@ const _boundStreams: {
   [x: number]: Common.StringOutputStream.OutputStream,
 } = {};
 
-const _bindOutputStream = function(stream: Common.StringOutputStream.OutputStream): number {
+export const bindOutputStream = function(stream: Common.StringOutputStream.OutputStream): number {
   _boundStreams[++_lastStreamId] = stream;
   return _lastStreamId;
 };
 
-const _discardOutputStream = function(id: number): void {
+export const discardOutputStream = function(id: number): void {
   void _boundStreams[id].close();
   delete _boundStreams[id];
 };
@@ -254,7 +254,7 @@ export const loadAsStream = function(
          },
           arg2: LoadErrorDescription) => void),
     allowRemoteFilePaths?: boolean): void {
-  const streamId = _bindOutputStream(stream);
+  const streamId = bindOutputStream(stream);
   const parsedURL = new Common.ParsedURL.ParsedURL(url);
   if (parsedURL.isDataURL()) {
     loadXHR(url).then(dataURLDecodeSuccessful).catch(dataURLDecodeFailed);
@@ -287,7 +287,7 @@ export const loadAsStream = function(
       const {success, description} = createErrorMessageFromResponse(response);
       callback(success, response.headers || {}, description);
     }
-    _discardOutputStream(streamId);
+    discardOutputStream(streamId);
   }
 
   function dataURLDecodeSuccessful(text: string): void {

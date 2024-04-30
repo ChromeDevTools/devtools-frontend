@@ -6,19 +6,17 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 
 EXCLUDED_SOURCES = [
+  "package/lib/cjs/main.d.ts",
+  "package/lib/cli.js.map",
   "package/lib/cli.js",
-  "package/lib/main.cjs",
   "package/lib/extension-test.js",
+  "package/lib/extension-test.js.map",
+  "package/lib/main.js.map",
 ]
 
 SOURCES = [
-  "package/lib/cjs/main.d.ts",
-  "package/lib/cli.js.map",
-  "package/lib/extension-test.js",
-  "package/lib/extension-test.js.map",
   "package/lib/main.d.ts",
   "package/lib/main.js",
-  "package/lib/main.js.map",
   "puppeteer-replay-tsconfig.json",
 ]
 

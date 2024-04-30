@@ -2,35 +2,38 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Application from '../../panels/application/application.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.ApplicationTestRunner = self.ApplicationTestRunner || {};
 
 /**
  * Many application panel tests are flaky because storage state (e.g. IndexedDB)
  * doesn't get reset between tests.
  */
-ApplicationTestRunner.resetState = async function() {
-  const targets = self.SDK.targetManager.targets();
+export const resetState = async function() {
+  const targets = SDK.TargetManager.TargetManager.instance().targets();
   for (const target of targets) {
     if (target.type() === 'tab') {
       continue;
     }
-    const securityOrigin = new Common.ParsedURL(target.inspectedURL()).securityOrigin();
-    await target.storageAgent().clearDataForOrigin(securityOrigin, Resources.StorageView.AllStorageTypes.join(','));
+    const securityOrigin = new Common.ParsedURL.ParsedURL(target.inspectedURL()).securityOrigin();
+    await target.storageAgent().clearDataForOrigin(securityOrigin, Application.StorageView.AllStorageTypes.join(','));
   }
 };
 
-ApplicationTestRunner.createWebSQLDatabase = function(name) {
+export const createWebSQLDatabase = function(name) {
   return TestRunner.evaluateInPageAsync(`_openWebSQLDatabase("${name}")`);
 };
 
-ApplicationTestRunner.requestURLComparer = function(r1, r2) {
+export const requestURLComparer = function(r1, r2) {
   return r1.request.url.localeCompare(r2.request.url);
 };
 
-ApplicationTestRunner.runAfterCachedResourcesProcessed = function(callback) {
+export const runAfterCachedResourcesProcessed = function(callback) {
   if (!TestRunner.resourceTreeModel.cachedResourcesProcessed) {
     TestRunner.resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, callback);
   } else {
@@ -38,12 +41,12 @@ ApplicationTestRunner.runAfterCachedResourcesProcessed = function(callback) {
   }
 };
 
-ApplicationTestRunner.runAfterResourcesAreFinished = function(resourceURLs, callback) {
+export const runAfterResourcesAreFinished = function(resourceURLs, callback) {
   const resourceURLsMap = new Set(resourceURLs);
 
   function checkResources() {
     for (const url of resourceURLsMap) {
-      const resource = ApplicationTestRunner.resourceMatchingURL(url);
+      const resource = resourceMatchingURL(url);
 
       if (resource) {
         resourceURLsMap.delete(url);
@@ -63,7 +66,7 @@ ApplicationTestRunner.runAfterResourcesAreFinished = function(resourceURLs, call
   }
 };
 
-ApplicationTestRunner.showResource = function(resourceURL, callback) {
+export const showResource = function(resourceURL, callback) {
   let reported = false;
 
   function callbackWrapper(sourceFrame) {
@@ -76,14 +79,14 @@ ApplicationTestRunner.showResource = function(resourceURL, callback) {
   }
 
   function showResourceCallback() {
-    const resource = ApplicationTestRunner.resourceMatchingURL(resourceURL);
+    const resource = resourceMatchingURL(resourceURL);
 
     if (!resource) {
       return;
     }
 
-    UI.panels.resources.showResource(resource, 1);
-    const sourceFrame = UI.panels.resources.resourceViewForResource(resource);
+    Application.ResourcesPanel.ResourcesPanel.instance().showResource(resource, 1);
+    const sourceFrame = Application.ResourcesPanel.ResourcesPanel.instance().resourceViewForResource(resource);
 
     if (sourceFrame.loaded) {
       callbackWrapper(sourceFrame);
@@ -92,10 +95,10 @@ ApplicationTestRunner.showResource = function(resourceURL, callback) {
     }
   }
 
-  ApplicationTestRunner.runAfterResourcesAreFinished([resourceURL], showResourceCallback);
+  runAfterResourcesAreFinished([resourceURL], showResourceCallback);
 };
 
-ApplicationTestRunner.resourceMatchingURL = function(resourceURL) {
+export const resourceMatchingURL = function(resourceURL) {
   let result = null;
   TestRunner.resourceTreeModel.forAllResources(visit);
 
@@ -109,7 +112,7 @@ ApplicationTestRunner.resourceMatchingURL = function(resourceURL) {
   return result;
 };
 
-ApplicationTestRunner.findTreeElement = function(parent, path) {
+export const findTreeElement = function(parent, path) {
   if (path.length === 0) {
     return parent;
   }
@@ -118,31 +121,32 @@ ApplicationTestRunner.findTreeElement = function(parent, path) {
     return null;
   }
   child.expand();
-  return ApplicationTestRunner.findTreeElement(child, path.slice(1));
+  return findTreeElement(child, path.slice(1));
 };
 
-ApplicationTestRunner.waitForCookies = function() {
+export const waitForCookies = function() {
   return new Promise(resolve => {
     TestRunner.addSniffer(CookieTable.CookiesTable.prototype, 'rebuildTable', resolve);
   });
 };
 
-ApplicationTestRunner.dumpCookieDomains = function() {
-  const cookieListChildren = UI.panels.resources.sidebar.cookieListTreeElement.children();
+export const dumpCookieDomains = function() {
+  const cookieListChildren =
+      Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cookieListTreeElement.children();
   TestRunner.addResult('Available cookie domains:');
   for (const child of cookieListChildren) {
     TestRunner.addResult(child.cookieDomain);
   }
 };
 
-ApplicationTestRunner.dumpCookies = function() {
-  if (!UI.panels.resources.cookieView || !UI.panels.resources.cookieView.isShowing()) {
+export const dumpCookies = function() {
+  if (!Application.ResourcesPanel.ResourcesPanel.instance().cookieView || !UI.panels.resources.cookieView.isShowing()) {
     TestRunner.addResult('No cookies visible');
     return;
   }
 
   TestRunner.addResult('Visible cookies');
-  for (const item of UI.panels.resources.cookieView.cookiesTable.data) {
+  for (const item of Application.ResourcesPanel.ResourcesPanel.instance().cookieView.cookiesTable.data) {
     const cookies = item.cookies || [];
     for (const cookie of cookies) {
       TestRunner.addResult(`${cookie.name()}=${cookie.value()}`);
@@ -150,16 +154,16 @@ ApplicationTestRunner.dumpCookies = function() {
   }
 };
 
-ApplicationTestRunner.databaseModel = function() {
-  return TestRunner.mainTarget.model(Resources.DatabaseModel);
+export const databaseModel = function() {
+  return TestRunner.mainTarget.model(Application.DatabaseModel.DatabaseModel);
 };
 
-ApplicationTestRunner.domStorageModel = function() {
-  return TestRunner.mainTarget.model(Resources.DOMStorageModel);
+export const domStorageModel = function() {
+  return TestRunner.mainTarget.model(Application.DOMStorageModel.DOMStorageModel);
 };
 
-ApplicationTestRunner.indexedDBModel = function() {
-  return TestRunner.mainTarget.model(Resources.IndexedDBModel);
+export const indexedDBModel = function() {
+  return TestRunner.mainTarget.model(Application.IndexedDBModel.IndexedDBModel);
 };
 
 TestRunner.deprecatedInitAsync(`

@@ -1,6 +1,6 @@
 {
   "core/audits/accessibility/accesskeys.js | description": {
-    "message": "คีย์การเข้าถึงให้ผู้ใช้โฟกัสที่ส่วนหนึ่งของหน้าได้อย่างรวดเร็ว คีย์การเข้าถึงแต่ละรายการต้องไม่ซ้ำกันเพื่อให้ไปยังส่วนต่างๆ ได้อย่างถูกต้อง [ดูข้อมูลเพิ่มเติมเกี่ยวกับคีย์การเข้าถึง](https://dequeuniversity.com/rules/axe/4.7/accesskeys)"
+    "message": "คีย์การเข้าถึงให้ผู้ใช้โฟกัสที่ส่วนหนึ่งของหน้าได้อย่างรวดเร็ว คีย์การเข้าถึงแต่ละรายการต้องไม่ซ้ำกันเพื่อให้ไปยังส่วนต่างๆ ได้อย่างถูกต้อง [ดูข้อมูลเพิ่มเติมเกี่ยวกับคีย์การเข้าถึง](https://dequeuniversity.com/rules/axe/4.8/accesskeys)"
   },
   "core/audits/accessibility/accesskeys.js | failureTitle": {
     "message": "ค่า `[accesskey]` ซ้ำกัน"
@@ -9,7 +9,7 @@
     "message": "ค่า `[accesskey]` ไม่ซ้ำกัน"
   },
   "core/audits/accessibility/aria-allowed-attr.js | description": {
-    "message": "`role` ของ ARIA แต่ละรายการรองรับชุดย่อยของแอตทริบิวต์ `aria-*` ที่เจาะจง หากรายการเหล่านี้ไม่ตรงกันจะทำให้แอตทริบิวต์ `aria-*` ไม่ถูกต้อง [ดูวิธีจับคู่แอตทริบิวต์ ARIA กับบทบาท](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-attr)"
+    "message": "`role` ของ ARIA แต่ละรายการรองรับชุดย่อยของแอตทริบิวต์ `aria-*` ที่เจาะจง หากรายการเหล่านี้ไม่ตรงกันจะทำให้แอตทริบิวต์ `aria-*` ไม่ถูกต้อง [ดูวิธีจับคู่แอตทริบิวต์ ARIA กับบทบาท](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-attr)"
   },
   "core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
     "message": "แอตทริบิวต์ `[aria-*]` ไม่ตรงกับบทบาทของตน"
@@ -17,8 +17,17 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "แอตทริบิวต์ `[aria-*]` ตรงกับบทบาทของตน"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "`role` ARIA ช่วยให้เทคโนโลยีความช่วยเหลือพิเศษทราบถึงบทบาทของแต่ละองค์ประกอบในหน้าเว็บ หากค่า`role`สะกดผิด ไม่ใช่ค่า`role` ARIA ที่มีอยู่ หรือเป็นบทบาทนามธรรม ระบบก็จะไม่สื่อสารจุดประสงค์ขององค์ประกอบดังกล่าวไปยังผู้ใช้เทคโนโลยีความช่วยเหลือพิเศษ [ดูข้อมูลเพิ่มเติมเกี่ยวกับบทบาท ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)"
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "ค่าที่กำหนดให้กับ `role=\"\"` ไม่ใช่บทบาท ARIA ที่ถูกต้อง"
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "ค่าที่กําหนดให้กับ `role=\"\"` เป็นบทบาท ARIA ที่ถูกต้อง"
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
-    "message": "เมื่อองค์ประกอบไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูวิธีทําให้องค์ประกอบคําสั่งเข้าถึงได้ง่ายขึ้น](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)"
+    "message": "เมื่อองค์ประกอบไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูวิธีทําให้องค์ประกอบคําสั่งเข้าถึงได้ง่ายขึ้น](https://dequeuniversity.com/rules/axe/4.8/aria-command-name)"
   },
   "core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "องค์ประกอบ `button`, `link` และ `menuitem` ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
@@ -26,8 +35,17 @@
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "องค์ประกอบ `button`, `link` และ `menuitem` มีชื่อสำหรับการช่วยเหลือพิเศษ"
   },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "องค์ประกอบกล่องโต้ตอบ ARIA ที่ไม่มีชื่อที่เข้าถึงได้อาจทำให้ผู้ใช้โปรแกรมอ่านหน้าจอแยกแยะจุดประสงค์ขององค์ประกอบเหล่านี้ไม่ได้ [ดูวิธีทำให้องค์ประกอบกล่องโต้ตอบ ARIA เข้าถึงได้ง่ายขึ้น](https://dequeuniversity.com/rules/axe/4.8/aria-dialog-name)"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "องค์ประกอบที่มี `role=\"dialog\"` หรือ `role=\"alertdialog\"` ไม่มีชื่อที่เข้าถึงได้"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "องค์ประกอบที่มี `role=\"dialog\"` หรือ `role=\"alertdialog\"` มีชื่อที่เข้าถึงได้"
+  },
   "core/audits/accessibility/aria-hidden-body.js | description": {
-    "message": "เทคโนโลยีความช่วยเหลือพิเศษ (เช่น โปรแกรมอ่านหน้าจอ) ทำงานไม่สอดคล้องกันเมื่อตั้งค่า `aria-hidden=\"true\"` ในเอกสาร `<body>` [ดูว่า `aria-hidden` ส่งผลอย่างไรต่อส่วนเนื้อหาของเอกสาร](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)"
+    "message": "เทคโนโลยีความช่วยเหลือพิเศษ (เช่น โปรแกรมอ่านหน้าจอ) ทำงานไม่สอดคล้องกันเมื่อตั้งค่า `aria-hidden=\"true\"` ในเอกสาร `<body>` [ดูว่า `aria-hidden` ส่งผลอย่างไรต่อส่วนเนื้อหาของเอกสาร](https://dequeuniversity.com/rules/axe/4.8/aria-hidden-body)"
   },
   "core/audits/accessibility/aria-hidden-body.js | failureTitle": {
     "message": "มี `[aria-hidden=\"true\"]` ปรากฏในเอกสาร `<body>`"
@@ -36,7 +54,7 @@
     "message": "ไม่มี `[aria-hidden=\"true\"]` ปรากฏในเอกสาร `<body>`"
   },
   "core/audits/accessibility/aria-hidden-focus.js | description": {
-    "message": "เอลิเมนต์ที่โฟกัสได้ลำดับต่อลงมาในเอลิเมนต์ `[aria-hidden=\"true\"]` ป้องกันไม่ให้ผู้ใช้เทคโนโลยีความช่วยเหลือพิเศษ (เช่น โปรแกรมอ่านหน้าจอ) ใช้เอลิเมนต์การโต้ตอบเหล่านั้นได้ [ดูว่า `aria-hidden` ส่งผลอย่างไรต่อองค์ประกอบที่โฟกัสได้](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-focus)"
+    "message": "เอลิเมนต์ที่โฟกัสได้ลำดับต่อลงมาในเอลิเมนต์ `[aria-hidden=\"true\"]` ป้องกันไม่ให้ผู้ใช้เทคโนโลยีความช่วยเหลือพิเศษ (เช่น โปรแกรมอ่านหน้าจอ) ใช้เอลิเมนต์การโต้ตอบเหล่านั้นได้ [ดูว่า `aria-hidden` ส่งผลอย่างไรต่อองค์ประกอบที่โฟกัสได้](https://dequeuniversity.com/rules/axe/4.8/aria-hidden-focus)"
   },
   "core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
     "message": "เอลิเมนต์ `[aria-hidden=\"true\"]` มีเอลิเมนต์ที่โฟกัสได้ลำดับต่อลงมา"
@@ -45,7 +63,7 @@
     "message": "เอลิเมนต์ `[aria-hidden=\"true\"]` ไม่มีเอลิเมนต์ที่โฟกัสได้ลำดับต่อลงมา"
   },
   "core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "เมื่อช่องป้อนข้อมูลไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านปุ่มนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้ช่องป้อนข้อมูลดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับป้ายกำกับช่องป้อนข้อมูล](https://dequeuniversity.com/rules/axe/4.7/aria-input-field-name)"
+    "message": "เมื่อช่องป้อนข้อมูลไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านปุ่มนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้ช่องป้อนข้อมูลดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับป้ายกำกับช่องป้อนข้อมูล](https://dequeuniversity.com/rules/axe/4.8/aria-input-field-name)"
   },
   "core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ช่องป้อนข้อมูล ARIA ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
@@ -54,7 +72,7 @@
     "message": "ช่องป้อนข้อมูล ARIA มีชื่อสำหรับการช่วยเหลือพิเศษ"
   },
   "core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "เมื่อองค์ประกอบเครื่องวัดไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูวิธีตั้งชื่อองค์ประกอบ`meter`](https://dequeuniversity.com/rules/axe/4.7/aria-meter-name)"
+    "message": "เมื่อองค์ประกอบเครื่องวัดไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูวิธีตั้งชื่อองค์ประกอบ`meter`](https://dequeuniversity.com/rules/axe/4.8/aria-meter-name)"
   },
   "core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "องค์ประกอบ ARIA `meter` ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
@@ -63,7 +81,7 @@
     "message": "องค์ประกอบ ARIA `meter` มีชื่อสำหรับการช่วยเหลือพิเศษ"
   },
   "core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "เมื่อองค์ประกอบ `progressbar` ไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูวิธีติดป้ายกํากับองค์ประกอบ `progressbar`](https://dequeuniversity.com/rules/axe/4.7/aria-progressbar-name)"
+    "message": "เมื่อองค์ประกอบ `progressbar` ไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูวิธีติดป้ายกํากับองค์ประกอบ `progressbar`](https://dequeuniversity.com/rules/axe/4.8/aria-progressbar-name)"
   },
   "core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "องค์ประกอบ ARIA `progressbar` ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
@@ -72,7 +90,7 @@
     "message": "องค์ประกอบ ARIA `progressbar` มีชื่อสำหรับการช่วยเหลือพิเศษ"
   },
   "core/audits/accessibility/aria-required-attr.js | description": {
-    "message": "บทบาท ARIA บางบทบาทกำหนดให้มีแอตทริบิวต์ที่อธิบายสถานะขององค์ประกอบให้โปรแกรมอ่านหน้าจอทราบ [ดูข้อมูลเพิ่มเติมเกี่ยวกับบทบาทและแอตทริบิวต์ที่จำเป็น](https://dequeuniversity.com/rules/axe/4.7/aria-required-attr)"
+    "message": "บทบาท ARIA บางบทบาทกำหนดให้มีแอตทริบิวต์ที่อธิบายสถานะขององค์ประกอบให้โปรแกรมอ่านหน้าจอทราบ [ดูข้อมูลเพิ่มเติมเกี่ยวกับบทบาทและแอตทริบิวต์ที่จำเป็น](https://dequeuniversity.com/rules/axe/4.8/aria-required-attr)"
   },
   "core/audits/accessibility/aria-required-attr.js | failureTitle": {
     "message": "`[role]` ไม่มีแอตทริบิวต์ `[aria-*]` ทั้งหมดที่จำเป็น"
@@ -81,7 +99,7 @@
     "message": "`[role]` มีแอตทริบิวต์ `[aria-*]` ที่จำเป็นทั้งหมด"
   },
   "core/audits/accessibility/aria-required-children.js | description": {
-    "message": "บทบาท ARIA ระดับบนสุดบางบทบาทต้องมีบทบาทย่อยที่เจาะจงเพื่อใช้ฟังก์ชันการช่วยเหลือพิเศษตามวัตถุประสงค์ [ดูข้อมูลเพิ่มเติมเกี่ยวกับบทบาทและองค์ประกอบย่อยที่จำเป็น](https://dequeuniversity.com/rules/axe/4.7/aria-required-children)"
+    "message": "บทบาท ARIA ระดับบนสุดบางบทบาทต้องมีบทบาทย่อยที่เจาะจงเพื่อใช้ฟังก์ชันการช่วยเหลือพิเศษตามวัตถุประสงค์ [ดูข้อมูลเพิ่มเติมเกี่ยวกับบทบาทและองค์ประกอบย่อยที่จำเป็น](https://dequeuniversity.com/rules/axe/4.8/aria-required-children)"
   },
   "core/audits/accessibility/aria-required-children.js | failureTitle": {
     "message": "องค์ประกอบที่มี ARIA `[role]` ที่กำหนดให้องค์ประกอบย่อยต้องมี `[role]` ที่เฉพาะเจาะจงขาดองค์ประกอบย่อยที่จำเป็นดังกล่าวบางส่วนหรือทั้งหมด"
@@ -90,7 +108,7 @@
     "message": "องค์ประกอบที่มี ARIA `[role]` ที่กำหนดให้องค์ประกอบย่อยต้องมี `[role]` ที่เฉพาะเจาะจงนั้นมีองค์ประกอบย่อยที่จำเป็นทั้งหมด"
   },
   "core/audits/accessibility/aria-required-parent.js | description": {
-    "message": "บทบาท ARIA ย่อยบางบทบาทต้องอยู่ในบทบาทระดับบนสุดที่เจาะจงเพื่อให้ใช้ฟังก์ชันการช่วยเหลือพิเศษตามวัตถุประสงค์ได้อย่างถูกต้อง [ดูข้อมูลเพิ่มเติมเกี่ยวกับบทบาท ARIA และองค์ประกอบระดับบนสุดที่จำเป็น](https://dequeuniversity.com/rules/axe/4.7/aria-required-parent)"
+    "message": "บทบาท ARIA ย่อยบางบทบาทต้องอยู่ในบทบาทระดับบนสุดที่เจาะจงเพื่อให้ใช้ฟังก์ชันการช่วยเหลือพิเศษตามวัตถุประสงค์ได้อย่างถูกต้อง [ดูข้อมูลเพิ่มเติมเกี่ยวกับบทบาท ARIA และองค์ประกอบระดับบนสุดที่จำเป็น](https://dequeuniversity.com/rules/axe/4.8/aria-required-parent)"
   },
   "core/audits/accessibility/aria-required-parent.js | failureTitle": {
     "message": "`[role]` ไม่ได้อยู่ในองค์ประกอบระดับบนสุดที่กำหนด"
@@ -99,7 +117,7 @@
     "message": "`[role]` อยู่ในองค์ประกอบระดับบนสุดที่กำหนด"
   },
   "core/audits/accessibility/aria-roles.js | description": {
-    "message": "บทบาท ARIA ต้องมีค่าที่ถูกต้องเพื่อใช้ฟังก์ชันการช่วยเหลือพิเศษตามวัตถุประสงค์ [ดูข้อมูลเพิ่มเติมเกี่ยวกับบทบาท ARIA ที่ถูกต้อง](https://dequeuniversity.com/rules/axe/4.7/aria-roles)"
+    "message": "บทบาท ARIA ต้องมีค่าที่ถูกต้องเพื่อใช้ฟังก์ชันการช่วยเหลือพิเศษตามวัตถุประสงค์ [ดูข้อมูลเพิ่มเติมเกี่ยวกับบทบาท ARIA ที่ถูกต้อง](https://dequeuniversity.com/rules/axe/4.8/aria-roles)"
   },
   "core/audits/accessibility/aria-roles.js | failureTitle": {
     "message": "ค่า `[role]` ไม่ถูกต้อง"
@@ -107,8 +125,17 @@
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "ค่า `[role]` ถูกต้อง"
   },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "การเพิ่ม `role=text` รอบโหนดข้อความที่แบ่งตามมาร์กอัปจะทำให้ VoiceOver ถือว่าโหนดเป็น 1 วลี แต่ระบบจะไม่ประกาศองค์ประกอบสืบทอดที่โฟกัสได้ขององค์ประกอบ [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `role=text`](https://dequeuniversity.com/rules/axe/4.8/aria-text)"
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "องค์ประกอบที่มีแอตทริบิวต์ `role=text` มีองค์ประกอบสืบทอดที่โฟกัสได้"
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "องค์ประกอบที่มีแอตทริบิวต์ `role=text` ไม่มีองค์ประกอบสืบทอดที่โฟกัสได้"
+  },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "เมื่อช่องสลับไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านปุ่มนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้ช่องสลับดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับช่องสลับ](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)"
+    "message": "เมื่อช่องสลับไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านปุ่มนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้ช่องสลับดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับช่องสลับ](https://dequeuniversity.com/rules/axe/4.8/aria-toggle-field-name)"
   },
   "core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ช่องสลับ ARIA ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
@@ -117,7 +144,7 @@
     "message": "ช่องสลับ ARIA มีชื่อสำหรับการช่วยเหลือพิเศษ"
   },
   "core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "เมื่อองค์ประกอบเคล็ดลับเครื่องมือไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูวิธีตั้งชื่อองค์ประกอบ`tooltip`](https://dequeuniversity.com/rules/axe/4.7/aria-tooltip-name)"
+    "message": "เมื่อองค์ประกอบเคล็ดลับเครื่องมือไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูวิธีตั้งชื่อองค์ประกอบ`tooltip`](https://dequeuniversity.com/rules/axe/4.8/aria-tooltip-name)"
   },
   "core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "องค์ประกอบ ARIA `tooltip` ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
@@ -126,7 +153,7 @@
     "message": "องค์ประกอบ ARIA `tooltip` มีชื่อสำหรับการช่วยเหลือพิเศษ"
   },
   "core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "เมื่อองค์ประกอบ `treeitem` ไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับการติดป้ายกำกับองค์ประกอบ `treeitem`](https://dequeuniversity.com/rules/axe/4.7/aria-treeitem-name)"
+    "message": "เมื่อองค์ประกอบ `treeitem` ไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับการติดป้ายกำกับองค์ประกอบ `treeitem`](https://dequeuniversity.com/rules/axe/4.8/aria-treeitem-name)"
   },
   "core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "องค์ประกอบ ARIA `treeitem` ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
@@ -135,7 +162,7 @@
     "message": "องค์ประกอบ ARIA `treeitem` มีชื่อสำหรับการช่วยเหลือพิเศษ"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | description": {
-    "message": "เทคโนโลยีความช่วยเหลือพิเศษ เช่น โปรแกรมอ่านหน้าจอ จะตีความแอตทริบิวต์ ARIA ที่มีค่าไม่ถูกต้องไม่ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับค่าที่ถูกต้องสําหรับแอตทริบิวต์ ARIA](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr-value)"
+    "message": "เทคโนโลยีความช่วยเหลือพิเศษ เช่น โปรแกรมอ่านหน้าจอ จะตีความแอตทริบิวต์ ARIA ที่มีค่าไม่ถูกต้องไม่ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับค่าที่ถูกต้องสําหรับแอตทริบิวต์ ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-valid-attr-value)"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
     "message": "แอตทริบิวต์ `[aria-*]` ไม่มีค่าที่ถูกต้อง"
@@ -144,7 +171,7 @@
     "message": "แอตทริบิวต์ `[aria-*]` มีค่าที่ถูกต้อง"
   },
   "core/audits/accessibility/aria-valid-attr.js | description": {
-    "message": "เทคโนโลยีความช่วยเหลือพิเศษ เช่น โปรแกรมอ่านหน้าจอ จะตีความแอตทริบิวต์ ARIA ที่มีชื่อไม่ถูกต้องไม่ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ ARIA ที่ถูกต้อง](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr)"
+    "message": "เทคโนโลยีความช่วยเหลือพิเศษ เช่น โปรแกรมอ่านหน้าจอ จะตีความแอตทริบิวต์ ARIA ที่มีชื่อไม่ถูกต้องไม่ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ ARIA ที่ถูกต้อง](https://dequeuniversity.com/rules/axe/4.8/aria-valid-attr)"
   },
   "core/audits/accessibility/aria-valid-attr.js | failureTitle": {
     "message": "แอตทริบิวต์ `[aria-*]` ไม่ถูกต้องหรือสะกดผิด"
@@ -156,7 +183,7 @@
     "message": "องค์ประกอบที่ไม่ผ่านการตรวจสอบ"
   },
   "core/audits/accessibility/button-name.js | description": {
-    "message": "เมื่อปุ่มไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านปุ่มนั้นว่า \"ปุ่ม\" ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้ปุ่มดังกล่าวไม่ได้ [ดูวิธีทําให้ปุ่มเข้าถึงได้ง่ายขึ้น](https://dequeuniversity.com/rules/axe/4.7/button-name)"
+    "message": "เมื่อปุ่มไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านปุ่มนั้นว่า \"ปุ่ม\" ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้ปุ่มดังกล่าวไม่ได้ [ดูวิธีทําให้ปุ่มเข้าถึงได้ง่ายขึ้น](https://dequeuniversity.com/rules/axe/4.8/button-name)"
   },
   "core/audits/accessibility/button-name.js | failureTitle": {
     "message": "ปุ่มต่างๆ ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
@@ -165,7 +192,7 @@
     "message": "ปุ่มต่างๆ มีชื่อสำหรับการช่วยเหลือพิเศษ"
   },
   "core/audits/accessibility/bypass.js | description": {
-    "message": "การเพิ่มวิธีข้ามผ่านเนื้อหาที่ซ้ำกันช่วยให้ผู้ใช้แป้นพิมพ์ไปยังส่วนต่างๆ ของหน้าได้อย่างมีประสิทธิภาพมากขึ้น [ดูข้อมูลเพิ่มเติมเกี่ยวกับการบล็อกการข้าม](https://dequeuniversity.com/rules/axe/4.7/bypass)"
+    "message": "การเพิ่มวิธีข้ามผ่านเนื้อหาที่ซ้ำกันช่วยให้ผู้ใช้แป้นพิมพ์ไปยังส่วนต่างๆ ของหน้าได้อย่างมีประสิทธิภาพมากขึ้น [ดูข้อมูลเพิ่มเติมเกี่ยวกับการบล็อกการข้าม](https://dequeuniversity.com/rules/axe/4.8/bypass)"
   },
   "core/audits/accessibility/bypass.js | failureTitle": {
     "message": "หน้าเว็บไม่มีส่วนหัว ลิงก์การข้าม หรือภูมิภาคของจุดสังเกต"
@@ -174,7 +201,7 @@
     "message": "หน้าเว็บมีส่วนหัว ลิงก์การข้าม หรือภูมิภาคของจุดสังเกต"
   },
   "core/audits/accessibility/color-contrast.js | description": {
-    "message": "ข้อความคอนทราสต์ต่ำมักทำให้ผู้ใช้จำนวนมากอ่านได้ยากหรืออ่านไม่ได้เลย [ดูวิธีทำให้สีมีคอนทราสต์เพียงพอ](https://dequeuniversity.com/rules/axe/4.7/color-contrast)"
+    "message": "ข้อความคอนทราสต์ต่ำมักทำให้ผู้ใช้จำนวนมากอ่านได้ยากหรืออ่านไม่ได้เลย [ดูวิธีทำให้สีมีคอนทราสต์เพียงพอ](https://dequeuniversity.com/rules/axe/4.8/color-contrast)"
   },
   "core/audits/accessibility/color-contrast.js | failureTitle": {
     "message": "สีพื้นหลังและสีพื้นหน้ามีอัตราส่วนคอนทราสต์ไม่เพียงพอ"
@@ -183,7 +210,7 @@
     "message": "สีพื้นหลังและสีพื้นหน้ามีอัตราส่วนคอนทราสต์ที่เพียงพอ"
   },
   "core/audits/accessibility/definition-list.js | description": {
-    "message": "เมื่อมีการทำเครื่องหมายรายการคำจำกัดความอย่างไม่ถูกต้อง โปรแกรมอ่านหน้าจออาจสร้างเอาต์พุตที่ทำให้สับสนหรือไม่แม่นยำ [ดูวิธีจัดโครงสร้างรายการคําจำกัดความอย่างถูกต้อง](https://dequeuniversity.com/rules/axe/4.7/definition-list)"
+    "message": "เมื่อมีการทำเครื่องหมายรายการคำจำกัดความอย่างไม่ถูกต้อง โปรแกรมอ่านหน้าจออาจสร้างเอาต์พุตที่ทำให้สับสนหรือไม่แม่นยำ [ดูวิธีจัดโครงสร้างรายการคําจำกัดความอย่างถูกต้อง](https://dequeuniversity.com/rules/axe/4.8/definition-list)"
   },
   "core/audits/accessibility/definition-list.js | failureTitle": {
     "message": "`<dl>` ไม่ได้มีเพียงกลุ่ม `<dt>` และ `<dd>` หรือองค์ประกอบ `<script>` `<template>` หรือ `<div>` ที่เรียงลำดับอย่างถูกต้อง"
@@ -192,7 +219,7 @@
     "message": "`<dl>` มีเพียงกลุ่ม `<dt>` และ `<dd>` หรือองค์ประกอบ `<script>` `<template>` หรือ `<div>` ที่เรียงลำดับอย่างถูกต้อง"
   },
   "core/audits/accessibility/dlitem.js | description": {
-    "message": "รายการย่อยของคำจำกัดความ (`<dt>` และ `<dd>`) ต้องรวมอยู่ในองค์ประกอบ `<dl>` ระดับบนสุดเพื่อดูแลให้โปรแกรมอ่านหน้าจออ่านได้อย่างถูกต้อง [ดูวิธีจัดโครงสร้างรายการคําจำกัดความอย่างถูกต้อง](https://dequeuniversity.com/rules/axe/4.7/dlitem)"
+    "message": "รายการย่อยของคำจำกัดความ (`<dt>` และ `<dd>`) ต้องรวมอยู่ในองค์ประกอบ `<dl>` ระดับบนสุดเพื่อดูแลให้โปรแกรมอ่านหน้าจออ่านได้อย่างถูกต้อง [ดูวิธีจัดโครงสร้างรายการคําจำกัดความอย่างถูกต้อง](https://dequeuniversity.com/rules/axe/4.8/dlitem)"
   },
   "core/audits/accessibility/dlitem.js | failureTitle": {
     "message": "รายการย่อยของคำจำกัดความไม่ได้รวมอยู่ในองค์ประกอบ `<dl>`"
@@ -201,7 +228,7 @@
     "message": "รายการย่อยของคำจำกัดความรวมอยู่ในองค์ประกอบ `<dl>`"
   },
   "core/audits/accessibility/document-title.js | description": {
-    "message": "ชื่อช่วยให้ผู้ใช้โปรแกรมอ่านหน้าจอทราบถึงภาพรวมของหน้า และผู้ใช้เครื่องมือค้นหาจะดูความเกี่ยวข้องของหน้ากับการค้นหาของตนจากชื่อเป็นหลัก [ดูข้อมูลเพิ่มเติมเกี่ยวกับชื่อเอกสาร](https://dequeuniversity.com/rules/axe/4.7/document-title)"
+    "message": "ชื่อช่วยให้ผู้ใช้โปรแกรมอ่านหน้าจอทราบถึงภาพรวมของหน้า และผู้ใช้เครื่องมือค้นหาจะดูความเกี่ยวข้องของหน้ากับการค้นหาของตนจากชื่อเป็นหลัก [ดูข้อมูลเพิ่มเติมเกี่ยวกับชื่อเอกสาร](https://dequeuniversity.com/rules/axe/4.8/document-title)"
   },
   "core/audits/accessibility/document-title.js | failureTitle": {
     "message": "เอกสารไม่มีองค์ประกอบ `<title>`"
@@ -210,7 +237,7 @@
     "message": "เอกสารมีองค์ประกอบ `<title>`"
   },
   "core/audits/accessibility/duplicate-id-active.js | description": {
-    "message": "เอลิเมนต์ที่โฟกัสได้ทั้งหมดต้องมี `id` ที่ไม่ซ้ำกันเพื่อให้เทคโนโลยีความช่วยเหลือพิเศษมองเห็นได้ [ดูวิธีแก้ไข `id` ที่ซ้ำกัน](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-active)"
+    "message": "เอลิเมนต์ที่โฟกัสได้ทั้งหมดต้องมี `id` ที่ไม่ซ้ำกันเพื่อให้เทคโนโลยีความช่วยเหลือพิเศษมองเห็นได้ [ดูวิธีแก้ไข `id` ที่ซ้ำกัน](https://dequeuniversity.com/rules/axe/4.8/duplicate-id-active)"
   },
   "core/audits/accessibility/duplicate-id-active.js | failureTitle": {
     "message": "แอตทริบิวต์ `[id]` ของเอลิเมนต์ที่โฟกัสได้และทำงานอยู่มีรหัสที่ซ้ำกัน"
@@ -219,7 +246,7 @@
     "message": "แอตทริบิวต์ `[id]` ของเอลิเมนต์ที่โฟกัสได้และทำงานอยู่ไม่มีรหัสที่ซ้ำกัน"
   },
   "core/audits/accessibility/duplicate-id-aria.js | description": {
-    "message": "ค่าของรหัส ARIA ต้องไม่ซ้ำกันเพื่อป้องกันไม่ให้เทคโนโลยีความช่วยเหลือพิเศษมองข้ามอินสแตนซ์อื่นๆ [ดูวิธีแก้ไขรหัส ARIA ที่ซ้ำกัน](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-aria)"
+    "message": "ค่าของรหัส ARIA ต้องไม่ซ้ำกันเพื่อป้องกันไม่ให้เทคโนโลยีความช่วยเหลือพิเศษมองข้ามอินสแตนซ์อื่นๆ [ดูวิธีแก้ไขรหัส ARIA ที่ซ้ำกัน](https://dequeuniversity.com/rules/axe/4.8/duplicate-id-aria)"
   },
   "core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
     "message": "มีรหัส ARIA ซ้ำกัน"
@@ -227,8 +254,17 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "ไม่มีรหัส ARIA ที่ซ้ำกัน"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "ส่วนหัวที่ไม่มีเนื้อหาหรือมีข้อความที่ไม่สามารถเข้าถึงได้จะทำให้ผู้ใช้โปรแกรมอ่านหน้าจอไม่สามารถเข้าถึงข้อมูลบนโครงสร้างของหน้าเว็บ [ดูข้อมูลเพิ่มเติมเกี่ยวกับส่วนหัว](https://dequeuniversity.com/rules/axe/4.8/empty-heading)"
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "องค์ประกอบส่วนหัวไม่มีเนื้อหา"
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "องค์ประกอบส่วนหัวทั้งหมดมีเนื้อหา"
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
-    "message": "ช่องในฟอร์มที่มีป้ายกำกับหลายรายการอาจทำให้เทคโนโลยีความช่วยเหลือพิเศษ (เช่น โปรแกรมอ่านหน้าจอ) สร้างความสับสนให้กับผู้ใช้ได้ โดยอาจอ่านป้ายกำกับแรก ป้ายกำกับสุดท้าย หรืออ่านทุกป้ายกำกับ [ดูวิธีใช้ป้ายกำกับในแบบฟอร์ม](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)"
+    "message": "ช่องในฟอร์มที่มีป้ายกำกับหลายรายการอาจทำให้เทคโนโลยีความช่วยเหลือพิเศษ (เช่น โปรแกรมอ่านหน้าจอ) สร้างความสับสนให้กับผู้ใช้ได้ โดยอาจอ่านป้ายกำกับแรก ป้ายกำกับสุดท้าย หรืออ่านทุกป้ายกำกับ [ดูวิธีใช้ป้ายกำกับในแบบฟอร์ม](https://dequeuniversity.com/rules/axe/4.8/form-field-multiple-labels)"
   },
   "core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
     "message": "ช่องในฟอร์มมีป้ายกำกับหลายรายการ"
@@ -237,7 +273,7 @@
     "message": "ไม่มีช่องในฟอร์มช่องใดมีป้ายกำกับหลายรายการ"
   },
   "core/audits/accessibility/frame-title.js | description": {
-    "message": "ผู้ใช้โปรแกรมอ่านหน้าจอต้องใช้ชื่อเฟรมเพื่ออธิบายเนื้อหาของเฟรม [ดูข้อมูลเพิ่มเติมเกี่ยวกับชื่อเฟรม](https://dequeuniversity.com/rules/axe/4.7/frame-title)"
+    "message": "ผู้ใช้โปรแกรมอ่านหน้าจอต้องใช้ชื่อเฟรมเพื่ออธิบายเนื้อหาของเฟรม [ดูข้อมูลเพิ่มเติมเกี่ยวกับชื่อเฟรม](https://dequeuniversity.com/rules/axe/4.8/frame-title)"
   },
   "core/audits/accessibility/frame-title.js | failureTitle": {
     "message": "องค์ประกอบ `<frame>` หรือ `<iframe>` ไม่มีชื่อ"
@@ -246,7 +282,7 @@
     "message": "องค์ประกอบ `<frame>` หรือ `<iframe>` มีชื่อ"
   },
   "core/audits/accessibility/heading-order.js | description": {
-    "message": "ส่วนหัวที่เรียงลำดับอย่างถูกต้องโดยไม่มีการข้ามระดับจะถ่ายทอดโครงสร้างทางอรรถศาสตร์ของหน้าที่ทำให้การไปยังส่วนต่างๆ และการทำความเข้าใจง่ายมากขึ้นเมื่อใช้เทคโนโลยีความช่วยเหลือพิเศษ [ดูข้อมูลเพิ่มเติมเกี่ยวกับลำดับส่วนหัว](https://dequeuniversity.com/rules/axe/4.7/heading-order)"
+    "message": "ส่วนหัวที่เรียงลำดับอย่างถูกต้องโดยไม่มีการข้ามระดับจะถ่ายทอดโครงสร้างทางอรรถศาสตร์ของหน้าที่ทำให้การไปยังส่วนต่างๆ และการทำความเข้าใจง่ายมากขึ้นเมื่อใช้เทคโนโลยีความช่วยเหลือพิเศษ [ดูข้อมูลเพิ่มเติมเกี่ยวกับลำดับส่วนหัว](https://dequeuniversity.com/rules/axe/4.8/heading-order)"
   },
   "core/audits/accessibility/heading-order.js | failureTitle": {
     "message": "เอลิเมนต์ส่วนหัวไม่ปรากฏตามลำดับในเอลิเมนต์ลำดับต่อๆ ลงมา"
@@ -255,7 +291,7 @@
     "message": "เอลิเมนต์ส่วนหัวปรากฏตามลำดับในเอลิเมนต์ลำดับต่อๆ ลงมา"
   },
   "core/audits/accessibility/html-has-lang.js | description": {
-    "message": "หากหน้าเว็บไม่ได้ระบุแอตทริบิวต์ `lang` โปรแกรมอ่านหน้าจอจะถือว่าหน้าดังกล่าวใช้ภาษาเริ่มต้นที่ผู้ใช้เลือกเมื่อตั้งค่าโปรแกรมอ่านหน้าจอ หากที่จริงแล้วหน้าดังกล่าวไม่ได้ใช้ภาษาเริ่มต้น โปรแกรมอ่านหน้าจออาจอ่านข้อความในหน้าได้ไม่ถูกต้อง [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `lang`](https://dequeuniversity.com/rules/axe/4.7/html-has-lang)"
+    "message": "หากหน้าเว็บไม่ได้ระบุแอตทริบิวต์ `lang` โปรแกรมอ่านหน้าจอจะถือว่าหน้าดังกล่าวใช้ภาษาเริ่มต้นที่ผู้ใช้เลือกเมื่อตั้งค่าโปรแกรมอ่านหน้าจอ หากที่จริงแล้วหน้าดังกล่าวไม่ได้ใช้ภาษาเริ่มต้น โปรแกรมอ่านหน้าจออาจอ่านข้อความในหน้าได้ไม่ถูกต้อง [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `lang`](https://dequeuniversity.com/rules/axe/4.8/html-has-lang)"
   },
   "core/audits/accessibility/html-has-lang.js | failureTitle": {
     "message": "องค์ประกอบ `<html>` ไม่มีแอตทริบิวต์ `[lang]`"
@@ -264,7 +300,7 @@
     "message": "องค์ประกอบ `<html>` มีแอตทริบิวต์ `[lang]`"
   },
   "core/audits/accessibility/html-lang-valid.js | description": {
-    "message": "การระบุ[ภาษา BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) ที่ถูกต้องช่วยให้โปรแกรมอ่านหน้าจออ่านข้อความได้อย่างถูกต้อง [ดูวิธีใช้แอตทริบิวต์ `lang`](https://dequeuniversity.com/rules/axe/4.7/html-lang-valid)"
+    "message": "การระบุ[ภาษา BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) ที่ถูกต้องช่วยให้โปรแกรมอ่านหน้าจออ่านข้อความได้อย่างถูกต้อง [ดูวิธีใช้แอตทริบิวต์ `lang`](https://dequeuniversity.com/rules/axe/4.8/html-lang-valid)"
   },
   "core/audits/accessibility/html-lang-valid.js | failureTitle": {
     "message": "องค์ประกอบ `<html>` ไม่มีค่าที่ถูกต้องสำหรับแอตทริบิวต์ `[lang]`"
@@ -272,8 +308,26 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "องค์ประกอบ `<html>` มีค่าที่ถูกต้องสำหรับแอตทริบิวต์ `[lang]`"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "หากหน้าเว็บไม่ได้ระบุภาษาที่สอดคล้องกัน โปรแกรมอ่านหน้าจออาจอ่านข้อความของหน้าเว็บไม่ถูกต้อง [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `lang`](https://dequeuniversity.com/rules/axe/4.8/html-xml-lang-mismatch)"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "องค์ประกอบ `<html>` ไม่มีแอตทริบิวต์ `[xml:lang]` ที่มีภาษาฐานเดียวกันกับแอตทริบิวต์ `[lang]`"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "องค์ประกอบ `<html>` มีแอตทริบิวต์ `[xml:lang]` ที่มีภาษาฐานเดียวกันกับแอตทริบิวต์ `[lang]`"
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "ลิงก์ที่มีปลายทางเดียวกันควรจะมีคำอธิบายเดียวกัน เพื่อช่วยให้ผู้ใช้เข้าใจวัตถุประสงค์ของลิงก์และตัดสินใจว่าจะคลิกเพื่อไปตามลิงก์หรือไม่ [ดูข้อมูลเพิ่มเติมเกี่ยวกับลิงก์ที่เหมือนกัน](https://dequeuniversity.com/rules/axe/4.8/identical-links-same-purpose)"
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "ลิงก์ที่เหมือนกันมีวัตถุประสงค์ต่างกัน"
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "ลิงก์ที่เหมือนกันมีวัตถุประสงค์เดียวกัน"
+  },
   "core/audits/accessibility/image-alt.js | description": {
-    "message": "องค์ประกอบเพื่อการให้ข้อมูลควรมีข้อความสำรองที่สั้นกระชับและสื่อความหมาย การใช้แอตทริบิวต์ Alt ที่ว่างเปล่าจะเป็นการเพิกเฉยต่อองค์ประกอบเพื่อการตกแต่ง [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
+    "message": "องค์ประกอบเพื่อการให้ข้อมูลควรมีข้อความสำรองที่สั้นกระชับและสื่อความหมาย การใช้แอตทริบิวต์ Alt ที่ว่างเปล่าจะเป็นการเพิกเฉยต่อองค์ประกอบเพื่อการตกแต่ง [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `alt`](https://dequeuniversity.com/rules/axe/4.8/image-alt)"
   },
   "core/audits/accessibility/image-alt.js | failureTitle": {
     "message": "องค์ประกอบรูปภาพไม่มีแอตทริบิวต์ `[alt]`"
@@ -281,8 +335,26 @@
   "core/audits/accessibility/image-alt.js | title": {
     "message": "องค์ประกอบรูปภาพมีแอตทริบิวต์ `[alt]`"
   },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "องค์ประกอบเพื่อการให้ข้อมูลควรมีข้อความสำรองที่สั้นกระชับและสื่อความหมาย ข้อความสำรองที่เหมือนกันทุกประการกับข้อความที่อยู่ติดกับลิงก์หรือรูปภาพอาจทำให้ผู้ใช้โปรแกรมอ่านหน้าจอสับสนได้เนื่องจากระบบจะอ่านข้อความ 2 ครั้ง [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `alt`](https://dequeuniversity.com/rules/axe/4.8/image-redundant-alt)"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "องค์ประกอบรูปภาพมีแอตทริบิวต์ `[alt]` ที่เป็นข้อความซ้ำซ้อน"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "องค์ประกอบรูปภาพไม่มีแอตทริบิวต์ `[alt]` ที่เป็นข้อความซ้ำซ้อน"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "การเพิ่มข้อความช่วยการเข้าถึงซึ่งมองเห็นได้ลงในปุ่มอินพุตอาจช่วยให้ผู้ใช้โปรแกรมอ่านหน้าจอเข้าใจวัตถุประสงค์ของปุ่มอินพุต [ดูข้อมูลเพิ่มเติมเกี่ยวกับปุ่มอินพุต](https://dequeuniversity.com/rules/axe/4.8/input-button-name)"
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "ปุ่มอินพุตไม่มีข้อความที่มองเห็นได้ชัดเจน"
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "ปุ่มอินพุตมีข้อความที่มองเห็นได้ชัดเจน"
+  },
   "core/audits/accessibility/input-image-alt.js | description": {
-    "message": "เมื่อมีการใช้รูปภาพเป็นปุ่ม `<input>` การระบุข้อความสำรองจะช่วยให้ผู้ใช้โปรแกรมอ่านหน้าจอเข้าใจวัตถุประสงค์ของปุ่มได้ [ดูข้อมูลเกี่ยวกับข้อความแสดงแทนของรูปภาพที่ป้อน](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)"
+    "message": "เมื่อมีการใช้รูปภาพเป็นปุ่ม `<input>` การระบุข้อความสำรองจะช่วยให้ผู้ใช้โปรแกรมอ่านหน้าจอเข้าใจวัตถุประสงค์ของปุ่มได้ [ดูข้อมูลเกี่ยวกับข้อความแสดงแทนของรูปภาพที่ป้อน](https://dequeuniversity.com/rules/axe/4.8/input-image-alt)"
   },
   "core/audits/accessibility/input-image-alt.js | failureTitle": {
     "message": "องค์ประกอบ `<input type=\"image\">` ไม่มีข้อความ `[alt]`"
@@ -290,8 +362,17 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "องค์ประกอบ `<input type=\"image\">` มีข้อความ `[alt]`"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "ป้ายกำกับข้อความที่มองเห็นได้ซึ่งไม่ตรงกับชื่อที่เข้าถึงได้อาจทำให้ผู้ใช้โปรแกรมอ่านหน้าจอสับสน [ดูข้อมูลเพิ่มเติมเกี่ยวกับชื่อที่เข้าถึงได้](https://dequeuniversity.com/rules/axe/4.8/label-content-name-mismatch)"
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "องค์ประกอบที่มีป้ายกำกับข้อความที่มองเห็นได้ไม่มีชื่อที่เข้าถึงได้ที่ตรงกัน"
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "องค์ประกอบที่มีป้ายกำกับข้อความที่มองเห็นได้มีชื่อที่เข้าถึงได้ที่ตรงกัน"
+  },
   "core/audits/accessibility/label.js | description": {
-    "message": "ป้ายกำกับช่วยดูแลให้เทคโนโลยีความช่วยเหลือพิเศษอย่างเช่น โปรแกรมอ่านหน้าจอ อ่านส่วนควบคุมฟอร์มได้อย่างถูกต้อง [ดูข้อมูลเพิ่มเติมเกี่ยวกับป้ายกํากับองค์ประกอบแบบฟอร์ม](https://dequeuniversity.com/rules/axe/4.7/label)"
+    "message": "ป้ายกำกับช่วยดูแลให้เทคโนโลยีความช่วยเหลือพิเศษอย่างเช่น โปรแกรมอ่านหน้าจอ อ่านส่วนควบคุมฟอร์มได้อย่างถูกต้อง [ดูข้อมูลเพิ่มเติมเกี่ยวกับป้ายกํากับองค์ประกอบแบบฟอร์ม](https://dequeuniversity.com/rules/axe/4.8/label)"
   },
   "core/audits/accessibility/label.js | failureTitle": {
     "message": "องค์ประกอบฟอร์มไม่มีป้ายกำกับที่เชื่อมโยง"
@@ -299,8 +380,26 @@
   "core/audits/accessibility/label.js | title": {
     "message": "องค์ประกอบฟอร์มมีป้ายกำกับที่เชื่อมโยงอยู่"
   },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "จุดสังเกตหลัก 1 จุดช่วยให้ผู้ใช้โปรแกรมอ่านหน้าจอไปยังส่วนต่างๆ ของหน้าเว็บได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับจุดสังเกต](https://dequeuniversity.com/rules/axe/4.8/landmark-one-main)"
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "เอกสารไม่มีจุดสังเกตหลัก"
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "เอกสารมีจุดสังเกตหลัก"
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "ข้อความคอนทราสต์ต่ำมักทำให้ผู้ใช้จำนวนมากอ่านได้ยากหรืออ่านไม่ได้เลย ข้อความลิงก์ที่มองเห็นได้ชัดเจนจะช่วยปรับปรุงประสบการณ์การใช้งานให้ดียิ่งขึ้นสำหรับผู้ใช้ที่มีสายตาเลือนราง [ดูวิธีทำให้ลิงก์โดดเด่น](https://dequeuniversity.com/rules/axe/4.8/link-in-text-block)"
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "ต้องใช้สีจึงจะแยกความแตกต่างของลิงก์ได้"
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "แยกความแตกต่างของลิงก์ได้โดยไม่ต้องใช้สี"
+  },
   "core/audits/accessibility/link-name.js | description": {
-    "message": "ข้อความลิงก์ (และข้อความสำรองสำหรับรูปภาพเมื่อใช้เป็นลิงก์) ที่แยกแยะได้ ไม่ซ้ำกัน และโฟกัสได้ ช่วยปรับปรุงประสบการณ์การไปยังส่วนต่างๆ สำหรับผู้ใช้โปรแกรมอ่านหน้าจอ [ดูวิธีทำให้ลิงก์เข้าถึงได้](https://dequeuniversity.com/rules/axe/4.7/link-name)"
+    "message": "ข้อความลิงก์ (และข้อความสำรองสำหรับรูปภาพเมื่อใช้เป็นลิงก์) ที่แยกแยะได้ ไม่ซ้ำกัน และโฟกัสได้ ช่วยปรับปรุงประสบการณ์การไปยังส่วนต่างๆ สำหรับผู้ใช้โปรแกรมอ่านหน้าจอ [ดูวิธีทำให้ลิงก์เข้าถึงได้](https://dequeuniversity.com/rules/axe/4.8/link-name)"
   },
   "core/audits/accessibility/link-name.js | failureTitle": {
     "message": "ลิงก์ไม่มีชื่อที่แยกแยะได้"
@@ -309,7 +408,7 @@
     "message": "ลิงก์มีชื่อที่แยกแยะได้"
   },
   "core/audits/accessibility/list.js | description": {
-    "message": "โปรแกรมอ่านหน้าจอมีวิธีเฉพาะในการอ่านรายการ การดูแลให้รายการมีโครงสร้างที่ถูกต้องช่วยโปรแกรมอ่านหน้าจอในการอ่านเนื้อหา [ดูข้อมูลเพิ่มเติมเกี่ยวกับโครงสร้างรายการที่เหมาะสม](https://dequeuniversity.com/rules/axe/4.7/list)"
+    "message": "โปรแกรมอ่านหน้าจอมีวิธีเฉพาะในการอ่านรายการ การดูแลให้รายการมีโครงสร้างที่ถูกต้องช่วยโปรแกรมอ่านหน้าจอในการอ่านเนื้อหา [ดูข้อมูลเพิ่มเติมเกี่ยวกับโครงสร้างรายการที่เหมาะสม](https://dequeuniversity.com/rules/axe/4.8/list)"
   },
   "core/audits/accessibility/list.js | failureTitle": {
     "message": "รายการไม่ได้มีแต่องค์ประกอบ `<li>` และองค์ประกอบที่รองรับสคริปต์ (`<script>` และ`<template>`)"
@@ -318,7 +417,7 @@
     "message": "รายการมีเพียงองค์ประกอบ `<li>` และองค์ประกอบที่รองรับสคริปต์ (`<script>` และ `<template>`)"
   },
   "core/audits/accessibility/listitem.js | description": {
-    "message": "โปรแกรมอ่านหน้าจอกำหนดให้รายการย่อย (`<li>`) อยู่ใน `<ul>` `<ol>` หรือ `<menu>` ระดับบนสุดเพื่อให้อ่านได้อย่างถูกต้อง [ดูข้อมูลเพิ่มเติมเกี่ยวกับโครงสร้างรายการที่เหมาะสม](https://dequeuniversity.com/rules/axe/4.7/listitem)"
+    "message": "โปรแกรมอ่านหน้าจอกำหนดให้รายการย่อย (`<li>`) อยู่ใน `<ul>` `<ol>` หรือ `<menu>` ระดับบนสุดเพื่อให้อ่านได้อย่างถูกต้อง [ดูข้อมูลเพิ่มเติมเกี่ยวกับโครงสร้างรายการที่เหมาะสม](https://dequeuniversity.com/rules/axe/4.8/listitem)"
   },
   "core/audits/accessibility/listitem.js | failureTitle": {
     "message": "รายการข้อมูล (`<li>`) ไม่ได้อยู่ภายในองค์ประกอบระดับบนสุด `<ul>`, `<ol>` หรือ `<menu>`"
@@ -327,7 +426,7 @@
     "message": "รายการข้อมูล (`<li>`) อยู่ในองค์ประกอบระดับบนสุด `<ul>` `<ol>` หรือ `<menu>`"
   },
   "core/audits/accessibility/meta-refresh.js | description": {
-    "message": "ผู้ใช้ไม่ได้คาดหวังให้หน้าเว็บรีเฟรชโดยอัตโนมัติ และการรีเฟรชหน้าเว็บจะย้ายโฟกัสกลับไปที่ด้านบนของหน้า ซึ่งอาจทำให้ผู้ใช้ได้รับประสบการณ์การใช้งานที่สับสนหรือน่าหงุดหงิด [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตาแท็กการรีเฟรช](https://dequeuniversity.com/rules/axe/4.7/meta-refresh)"
+    "message": "ผู้ใช้ไม่ได้คาดหวังให้หน้าเว็บรีเฟรชโดยอัตโนมัติ และการรีเฟรชหน้าเว็บจะย้ายโฟกัสกลับไปที่ด้านบนของหน้า ซึ่งอาจทำให้ผู้ใช้ได้รับประสบการณ์การใช้งานที่สับสนหรือน่าหงุดหงิด [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตาแท็กการรีเฟรช](https://dequeuniversity.com/rules/axe/4.8/meta-refresh)"
   },
   "core/audits/accessibility/meta-refresh.js | failureTitle": {
     "message": "เอกสารใช้ `<meta http-equiv=\"refresh\">`"
@@ -336,7 +435,7 @@
     "message": "เอกสารนี้ไม่ได้ใช้ `<meta http-equiv=\"refresh\">`"
   },
   "core/audits/accessibility/meta-viewport.js | description": {
-    "message": "การปิดใช้การซูมจะเป็นปัญหาสำหรับผู้ใช้ที่มีสายตาเลือนรางซึ่งต้องใช้การขยายหน้าจอเพื่อให้ดูเนื้อหาของหน้าเว็บได้อย่างชัดเจน [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตาแท็ก Viewport](https://dequeuniversity.com/rules/axe/4.7/meta-viewport)"
+    "message": "การปิดใช้การซูมจะเป็นปัญหาสำหรับผู้ใช้ที่มีสายตาเลือนรางซึ่งต้องใช้การขยายหน้าจอเพื่อให้ดูเนื้อหาของหน้าเว็บได้อย่างชัดเจน [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตาแท็ก Viewport](https://dequeuniversity.com/rules/axe/4.8/meta-viewport)"
   },
   "core/audits/accessibility/meta-viewport.js | failureTitle": {
     "message": "มีการใช้ `[user-scalable=\"no\"]` ในองค์ประกอบ `<meta name=\"viewport\">`หรือแอตทริบิวต์ `[maximum-scale]` น้อยกว่า 5"
@@ -345,7 +444,7 @@
     "message": "ไม่มีการใช้ `[user-scalable=\"no\"]` ในองค์ประกอบ `<meta name=\"viewport\">` และแอตทริบิวต์ `[maximum-scale]` ไม่น้อยกว่า 5"
   },
   "core/audits/accessibility/object-alt.js | description": {
-    "message": "โปรแกรมอ่านหน้าจอแปลเนื้อหาที่ไม่ใช่ข้อความไม่ได้ การเพิ่มข้อความแสดงแทนลงในองค์ประกอบ `<object>` ช่วยโปรแกรมอ่านหน้าจอถ่ายทอดความหมายให้แก่ผู้ใช้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับข้อความแสดงแทนสำหรับองค์ประกอบ `object`](https://dequeuniversity.com/rules/axe/4.7/object-alt)"
+    "message": "โปรแกรมอ่านหน้าจอแปลเนื้อหาที่ไม่ใช่ข้อความไม่ได้ การเพิ่มข้อความแสดงแทนลงในองค์ประกอบ `<object>` ช่วยโปรแกรมอ่านหน้าจอถ่ายทอดความหมายให้แก่ผู้ใช้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับข้อความแสดงแทนสำหรับองค์ประกอบ `object`](https://dequeuniversity.com/rules/axe/4.8/object-alt)"
   },
   "core/audits/accessibility/object-alt.js | failureTitle": {
     "message": "องค์ประกอบ `<object>` ไม่มีข้อความแสดงแทน"
@@ -353,8 +452,26 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "องค์ประกอบ `<object>` มีข้อความแสดงแทน"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "องค์ประกอบแบบฟอร์มที่ไม่มีป้ายกำกับที่มีประสิทธิภาพจะสร้างประสบการณ์การใช้งานที่น่าผิดหวังสำหรับผู้ใช้โปรแกรมอ่านหน้าจอ [ดูข้อมูลเพิ่มเติมเกี่ยวกับองค์ประกอบ `select`](https://dequeuniversity.com/rules/axe/4.8/select-name)"
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "องค์ประกอบ Select ไม่มีองค์ประกอบป้ายกำกับที่เชื่อมโยง"
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "องค์ประกอบ Select มีองค์ประกอบป้ายกำกับที่เกี่ยวข้อง"
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "การใส่ลิงก์ข้ามจะช่วยให้ผู้ใช้ข้ามไปยังเนื้อหาหลักเพื่อประหยัดเวลาได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับลิงก์ข้าม](https://dequeuniversity.com/rules/axe/4.8/skip-link)"
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "ไม่สามารถโฟกัสที่ลิงก์ข้ามได้"
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "โฟกัสลิงก์ข้ามได้"
+  },
   "core/audits/accessibility/tabindex.js | description": {
-    "message": "ค่าที่มากกว่า 0 หมายความว่ามีการจัดเรียงการนำทางที่ชัดเจน แม้ว่าการทำงานนี้จะไม่มีปัญหาในทางเทคนิค แต่มักก่อให้เกิดประสบการณ์การใช้งานที่น่าหงุดหงิดสำหรับผู้ใช้เทคโนโลยีความช่วยเหลือพิเศษ [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)"
+    "message": "ค่าที่มากกว่า 0 หมายความว่ามีการจัดเรียงการนำทางที่ชัดเจน แม้ว่าการทำงานนี้จะไม่มีปัญหาในทางเทคนิค แต่มักก่อให้เกิดประสบการณ์การใช้งานที่น่าหงุดหงิดสำหรับผู้ใช้เทคโนโลยีความช่วยเหลือพิเศษ [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `tabindex`](https://dequeuniversity.com/rules/axe/4.8/tabindex)"
   },
   "core/audits/accessibility/tabindex.js | failureTitle": {
     "message": "องค์ประกอบบางอย่างมีค่า `[tabindex]` มากกว่า 0"
@@ -362,8 +479,44 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "ไม่มีองค์ประกอบที่มีค่า `[tabindex]` มากกว่า 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "แอตทริบิวต์สรุปควรอธิบายโครงสร้างตาราง ส่วน`<caption>`ควรมีชื่อบนหน้าจอ มาร์กอัปตารางที่ถูกต้องจะช่วยอำนวยความสะดวกให้แก่ผู้ใช้โปรแกรมอ่านหน้าจอ [ดูข้อมูลเพิ่มเติมเกี่ยวกับสรุปและคำบรรยาย](https://dequeuniversity.com/rules/axe/4.8/table-duplicate-name)"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "ตารางมีเนื้อหาที่เหมือนกันในแอตทริบิวต์สรุปและ`<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "ตารางมีเนื้อหาที่แตกต่างกันในแอตทริบิวต์สรุปและ`<caption>`"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "โปรแกรมอ่านหน้าจอมีฟีเจอร์ที่ช่วยให้ไปยังส่วนต่างๆ ของตารางได้ง่ายขึ้น การตรวจสอบว่าตารางใช้องค์ประกอบคำบรรยายจริงแทนเซลล์ที่มีแอตทริบิวต์ `[colspan]` อาจช่วยปรับปรุงประสบการณ์การใช้งานของผู้ใช้โปรแกรมอ่านหน้าจอได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับคำบรรยาย](https://dequeuniversity.com/rules/axe/4.8/table-fake-caption)"
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "ตารางไม่ได้ใช้ `<caption>` แทนเซลล์ที่มีแอตทริบิวต์ `[colspan]` ในการระบุคำบรรยาย"
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "ตารางใช้ `<caption>` แทนเซลล์ที่มีแอตทริบิวต์ `[colspan]` ในการระบุคำบรรยาย"
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "เป้าหมายการสัมผัสที่มีขนาดและระยะห่างเพียงพอจะช่วยให้ผู้ใช้ที่อาจพบปัญหาในการกำหนดเป้าหมายการควบคุมขนาดเล็กเปิดใช้งานเป้าหมายได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับเป้าหมายการสัมผัส](https://dequeuniversity.com/rules/axe/4.8/target-size)"
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "เป้าหมายการสัมผัสไม่มีขนาดหรือระยะห่างที่เพียงพอ"
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "เป้าหมายการสัมผัสมีขนาดและระยะห่างที่เพียงพอ"
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "โปรแกรมอ่านหน้าจอมีฟีเจอร์ที่ช่วยให้ไปยังส่วนต่างๆ ของตารางได้ง่ายขึ้น การตรวจสอบว่าองค์ประกอบ `<td>` ในตารางขนาดใหญ่ (เซลล์อย่างน้อย 3 เซลล์มีขนาดกว้างและสูง) มีส่วนหัวตารางที่เชื่อมโยงอาจปรับปรุงประสบการณ์การใช้งานของผู้ใช้โปรแกรมอ่านหน้าจอได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับส่วนหัวของตาราง](https://dequeuniversity.com/rules/axe/4.8/td-has-header)"
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "องค์ประกอบ `<td>` ใน `<table>` ขนาดใหญ่ไม่มีส่วนหัวตาราง"
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "องค์ประกอบ `<td>` ใน `<table>` ขนาดใหญ่มีส่วนหัวตารางอย่างน้อย 1 รายการ"
+  },
   "core/audits/accessibility/td-headers-attr.js | description": {
-    "message": "โปรแกรมอ่านหน้าจอมีฟีเจอร์ที่ช่วยให้ไปยังส่วนต่างๆ ของตารางได้ง่ายขึ้น การดูแลให้เซลล์ `<td>` ที่ใช้แอตทริบิวต์ `[headers]` อ้างอิงถึงเซลล์อื่นๆ ในตารางเดียวกันเท่านั้นอาจช่วยปรับปรุงประสบการณ์สำหรับผู้ใช้โปรแกรมอ่านหน้าจอ [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)"
+    "message": "โปรแกรมอ่านหน้าจอมีฟีเจอร์ที่ช่วยให้ไปยังส่วนต่างๆ ของตารางได้ง่ายขึ้น การดูแลให้เซลล์ `<td>` ที่ใช้แอตทริบิวต์ `[headers]` อ้างอิงถึงเซลล์อื่นๆ ในตารางเดียวกันเท่านั้นอาจช่วยปรับปรุงประสบการณ์สำหรับผู้ใช้โปรแกรมอ่านหน้าจอ [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `headers`](https://dequeuniversity.com/rules/axe/4.8/td-headers-attr)"
   },
   "core/audits/accessibility/td-headers-attr.js | failureTitle": {
     "message": "เซลล์ในองค์ประกอบ `<table>` ที่ใช้แอตทริบิวต์ `[headers]` อ้างอิงถึง `id` ขององค์ประกอบที่ไม่พบในตารางเดียวกันนี้"
@@ -372,7 +525,7 @@
     "message": "เซลล์ในองค์ประกอบ `<table>` ที่ใช้แอตทริบิวต์ `[headers]` อ้างอิงถึงเซลล์ของตารางภายในตารางเดียวกัน"
   },
   "core/audits/accessibility/th-has-data-cells.js | description": {
-    "message": "โปรแกรมอ่านหน้าจอมีฟีเจอร์ที่ช่วยให้ไปยังส่วนต่างๆ ของตารางได้ง่ายขึ้น การดูแลให้ส่วนหัวของตารางอ้างอิงถึงชุดเซลล์บางชุดอยู่เสมออาจช่วยปรับปรุงประสบการณ์สำหรับผู้ใช้โปรแกรมอ่านหน้าจอ [ดูข้อมูลเพิ่มเติมเกี่ยวกับส่วนหัวของตาราง](https://dequeuniversity.com/rules/axe/4.7/th-has-data-cells)"
+    "message": "โปรแกรมอ่านหน้าจอมีฟีเจอร์ที่ช่วยให้ไปยังส่วนต่างๆ ของตารางได้ง่ายขึ้น การดูแลให้ส่วนหัวของตารางอ้างอิงถึงชุดเซลล์บางชุดอยู่เสมออาจช่วยปรับปรุงประสบการณ์สำหรับผู้ใช้โปรแกรมอ่านหน้าจอ [ดูข้อมูลเพิ่มเติมเกี่ยวกับส่วนหัวของตาราง](https://dequeuniversity.com/rules/axe/4.8/th-has-data-cells)"
   },
   "core/audits/accessibility/th-has-data-cells.js | failureTitle": {
     "message": "องค์ประกอบ `<th>` และองค์ประกอบที่มี `[role=\"columnheader\"/\"rowheader\"]` ไม่มีเซลล์ข้อมูลที่องค์ประกอบอธิบาย"
@@ -381,7 +534,7 @@
     "message": "องค์ประกอบ `<th>` และองค์ประกอบที่มี `[role=\"columnheader\"/\"rowheader\"]` มีเซลล์ข้อมูลที่องค์ประกอบอธิบาย"
   },
   "core/audits/accessibility/valid-lang.js | description": {
-    "message": "การระบุ[ภาษา BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) ที่ถูกต้องในองค์ประกอบต่างๆ ช่วยดูแลให้โปรแกรมอ่านหน้าจอออกเสียงข้อความได้อย่างถูกต้อง [ดูวิธีใช้แอตทริบิวต์ `lang`](https://dequeuniversity.com/rules/axe/4.7/valid-lang)"
+    "message": "การระบุ[ภาษา BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) ที่ถูกต้องในองค์ประกอบต่างๆ ช่วยดูแลให้โปรแกรมอ่านหน้าจอออกเสียงข้อความได้อย่างถูกต้อง [ดูวิธีใช้แอตทริบิวต์ `lang`](https://dequeuniversity.com/rules/axe/4.8/valid-lang)"
   },
   "core/audits/accessibility/valid-lang.js | failureTitle": {
     "message": "แอตทริบิวต์ `[lang]` ไม่มีค่าที่ถูกต้อง"
@@ -390,7 +543,7 @@
     "message": "แอตทริบิวต์ `[lang]` มีค่าที่ถูกต้อง"
   },
   "core/audits/accessibility/video-caption.js | description": {
-    "message": "เมื่อวิดีโอมีคำอธิบายแทนเสียง คนหูหนวกและผู้ใช้ที่มีความบกพร่องทางการได้ยินจะเข้าถึงข้อมูลของวิดีโอได้ง่ายขึ้น [ดูข้อมูลเพิ่มเติมเกี่ยวกับคำบรรยายแทนเสียงสำหรับวิดีโอ](https://dequeuniversity.com/rules/axe/4.7/video-caption)"
+    "message": "เมื่อวิดีโอมีคำอธิบายแทนเสียง คนหูหนวกและผู้ใช้ที่มีความบกพร่องทางการได้ยินจะเข้าถึงข้อมูลของวิดีโอได้ง่ายขึ้น [ดูข้อมูลเพิ่มเติมเกี่ยวกับคำบรรยายแทนเสียงสำหรับวิดีโอ](https://dequeuniversity.com/rules/axe/4.8/video-caption)"
   },
   "core/audits/accessibility/video-caption.js | failureTitle": {
     "message": "องค์ประกอบ `<video>` ไม่มีองค์ประกอบ `<track>` ที่มี `[kind=\"captions\"]`"
@@ -452,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "หน้าเว็บไม่ได้ป้องกันการกู้คืนฟีเจอร์ Back-Forward Cache"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "ไม่สามารถทดสอบ Back-Forward Cache ใน Chrome แบบ Headless เวอร์ชันเก่า (`--chrome-flags=\"--headless=old\"`) หากต้องการดูผลการตรวจสอบ ให้ใช้ Chrome แบบ Headless เวอร์ชันใหม่ (`--chrome-flags=\"--headless=new\"`) หรือ Chrome มาตรฐาน"
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "ส่วนขยาย Chrome ส่งผลเสียต่อประสิทธิภาพในการโหลดของหน้านี้ ลองตรวจสอบหน้าในโหมดไม่ระบุตัวตนหรือจากโปรไฟล์ Chrome ที่ไม่มีส่วนขยาย"
   },
@@ -486,7 +642,7 @@
     "message": "ใช้รูปแบบวิดีโอสำหรับเนื้อหาภาพเคลื่อนไหว"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "โพลีฟิลล์และการเปลี่ยนรูปแบบช่วยให้เบราว์เซอร์เดิมใช้ฟีเจอร์ JavaScript ใหม่ได้ แต่ส่วนมากจะไม่จำเป็นสำหรับเบราว์เซอร์ที่ทันสมัย สำหรับ JavaScript แบบแพ็กเกจ ให้ใช้กลยุทธ์การทำให้สคริปต์สมัยใหม่ใช้งานได้โดยใช้การตรวจหาฟีเจอร์โมดูล/ไม่มีโมดูลเพื่อลดจำนวนโค้ดที่ส่งไปยังเบราว์เซอร์ที่ทันสมัย ขณะที่ยังรองรับเบราว์เซอร์เดิมอยู่ [ดูวิธีใช้ JavaScript ที่ทันสมัย](https://web.dev/publish-modern-javascript/)"
+    "message": "โพลีฟิลล์และการเปลี่ยนรูปแบบช่วยให้เบราว์เซอร์เดิมใช้ฟีเจอร์ JavaScript ใหม่ได้ แต่ส่วนมากจะไม่จำเป็นสำหรับเบราว์เซอร์ที่ทันสมัย สำหรับ JavaScript แบบแพ็กเกจ ให้ใช้กลยุทธ์การทำให้สคริปต์สมัยใหม่ใช้งานได้โดยใช้การตรวจหาฟีเจอร์โมดูล/ไม่มีโมดูลเพื่อลดจำนวนโค้ดที่ส่งไปยังเบราว์เซอร์ที่ทันสมัย ขณะที่ยังรองรับเบราว์เซอร์เดิมอยู่ [ดูวิธีใช้ JavaScript ที่ทันสมัย](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "หลีกเลี่ยงการแสดง JavaScript ในเบราว์เซอร์สมัยใหม่"
@@ -621,7 +777,7 @@
     "message": "ไวยากรณ์"
   },
   "core/audits/csp-xss.js | metaTagMessage": {
-    "message": "หน้าเว็บมีการกำหนด CSP ในแท็ก <meta> ลองย้าย CSP ไปยังส่วนหัว HTTP หรือกำหนด CSP ที่เข้มงวดอื่นๆ ในส่วนหัว HTTP"
+    "message": "หน้าเว็บมีการกำหนด CSP ในแท็ก `<meta>` ลองย้าย CSP ไปยังส่วนหัว HTTP หรือกำหนด CSP ที่เข้มงวดอื่นๆ ในส่วนหัว HTTP"
   },
   "core/audits/csp-xss.js | noCsp": {
     "message": "ไม่พบ CSP ในโหมดบังคับใช้"
@@ -840,7 +996,7 @@
     "message": "ขนาดที่คาดไว้"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "ขนาดตามธรรมชาติของรูปภาพควรได้สัดส่วนกับขนาดการแสดงผลและอัตราส่วนพิกเซลเพื่อเพิ่มความชัดเจนของรูปภาพให้ได้มากที่สุด [ดูวิธีใส่รูปภาพที่ปรับเปลี่ยนตามอุปกรณ์](https://web.dev/serve-responsive-images/)"
+    "message": "ขนาดตามธรรมชาติของรูปภาพควรได้สัดส่วนกับขนาดการแสดงผลและอัตราส่วนพิกเซลเพื่อเพิ่มความชัดเจนของรูปภาพให้ได้มากที่สุด [ดูวิธีใส่รูปภาพที่ปรับเปลี่ยนตามอุปกรณ์](https://web.dev/articles/serve-responsive-images)"
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "แสดงรูปภาพที่มีความละเอียดต่ำ"
@@ -873,7 +1029,7 @@
     "message": "หน้าโหลดในหน้าต่างที่ไม่ระบุตัวตน"
   },
   "core/audits/installable-manifest.js | manifest-display-not-supported": {
-    "message": "พร็อพเพอร์ตี้ \"การแสดงผล\" ของไฟล์ Manifest ต้องเป็นอย่างใดอย่างหนึ่งระหว่าง \"standalone\", \"fullscreen\" หรือ \"minimal-ui\""
+    "message": "พร็อพเพอร์ตี้ `display` ของไฟล์ Manifest ต้องเป็นอย่างใดอย่างหนึ่งระหว่าง `standalone`, `fullscreen` หรือ `minimal-ui`"
   },
   "core/audits/installable-manifest.js | manifest-display-override-not-supported": {
     "message": "ไฟล์ Manifest มีช่อง \"display_override\" และโหมดการแสดงผลโหมดแรกที่รองรับต้องเป็นอย่างใดอย่างหนึ่งระหว่าง \"standalone\", \"fullscreen\" หรือ \"minimal-ui\""
@@ -885,7 +1041,7 @@
     "message": "URL ของไฟล์ Manifest เปลี่ยนไปขณะดึงข้อมูลไฟล์ Manifest"
   },
   "core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
-    "message": "ไฟล์ Manifest ไม่มีช่อง \"name\" หรือ \"short_name\""
+    "message": "ไฟล์ Manifest ไม่มีช่อง `name` หรือ `short_name`"
   },
   "core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
     "message": "ไฟล์ Manifest ไม่มีไอคอนที่เหมาะสม ซึ่งต้องอยู่ในรูปแบบ PNG, SVG หรือ WebP และมีขนาดอย่างน้อย {value0} พิกเซล ต้องตั้งค่าแอตทริบิวต์ขนาด และหากมีการตั้งค่าแอตทริบิวต์จุดประสงค์ แอตทริบิวต์นั้นต้องมี \"any\""
@@ -901,9 +1057,6 @@
   },
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "หน้านี้ไม่มี <link> URL ของไฟล์ Manifest"
-  },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "ไม่พบ Service Worker ที่ตรงกัน คุณอาจต้องโหลดหน้านี้ซ้ำหรือตรวจสอบว่าขอบเขตของ Service Worker สำหรับหน้าปัจจุบันครอบคลุมขอบเขตและ URL เริ่มต้นจากไฟล์ Manifest"
   },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "ตรวจสอบ Service Worker โดยไม่มีช่อง \"start_url\" ในไฟล์ Manifest ไม่ได้"
@@ -933,10 +1086,7 @@
     "message": "prefer_related_applications ใช้ได้เฉพาะใน Chrome เบต้า และเวอร์ชันเสถียรใน Android เท่านั้น"
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse ระบุไม่ได้ว่ามี Service Worker หรือไม่ โปรดลองใช้ Chrome เวอร์ชันใหม่กว่านี้"
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "รูปแบบ URL ของไฟล์ Manifest ({scheme}) ใช้ไม่ได้ใน Android"
+    "message": "Lighthouse ไม่สามารถระบุว่าติดตั้งหน้าเว็บได้หรือไม่ โปรดลองใช้ Chrome เวอร์ชันใหม่กว่านี้"
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "URL เริ่มต้นของไฟล์ Manifest ไม่ถูกต้อง"
@@ -1008,16 +1158,40 @@
     "message": "องค์ประกอบ Largest Contentful Paint"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "ปัจจัยที่ทำให้เกิด CLS"
+    "message": "ผลกระทบของการเปลี่ยนเลย์เอาต์"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "องค์ประกอบ DOM เหล่านี้มีส่วนอย่างมากที่สุดต่อ CLS ของหน้า [ดูวิธีเพิ่มประสิทธิภาพ CLS](https://web.dev/optimize-cls/)"
+    "message": "องค์ประกอบ DOM เหล่านี้ได้รับผลกระทบมากที่สุดจากการเปลี่ยนเลย์เอาต์ การเปลี่ยนเลย์เอาต์บางอย่างอาจไม่รวมอยู่ในค่าเมตริก CLS อันเนื่องมาจาก[การจัดกรอบเวลา](https://web.dev/articles/cls#what_is_cls) [ดูวิธีเพิ่มประสิทธิภาพ CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "หลีกเลี่ยงการเลื่อนเลย์เอาต์ขนาดใหญ่"
   },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "คะแนนการเปลี่ยนเลย์เอาต์"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "สิ่งเหล่านี้เป็นการเปลี่ยนเลย์เอาต์ที่ใหญ่ที่สุดที่พบบนหน้าเว็บ แต่ละรายการในตารางจะแสดงการเปลี่ยนเลย์เอาต์รายการเดียว พร้อมระบุองค์ประกอบที่มีการเปลี่ยนแปลงมากที่สุด ด้านล่างของแต่ละรายการคือสาเหตุที่เป็นไปได้ซึ่งนำไปสู่การเปลี่ยนเลย์เอาต์ การเปลี่ยนเลย์เอาต์เหล่านี้บางรายการอาจไม่รวมอยู่ในค่าเมตริก CLS อันเนื่องมาจาก[การจัดกรอบเวลา](https://web.dev/articles/cls#what_is_cls) [ดูวิธีเพิ่มประสิทธิภาพ CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{พบการเปลี่ยนเลย์เอาต์ 1 รายการ}other{พบการเปลี่ยนเลย์เอาต์ # รายการ}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "มีการโหลดแบบอักษรเว็บ"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "มีการแทรก iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "คำขอเครือข่ายที่ส่งล่าช้าได้ปรับเลย์เอาต์ของหน้า"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "องค์ประกอบสื่อมีขนาดที่ไม่เหมาะสม"
+  },
+  "core/audits/layout-shifts.js | title": {
+    "message": "หลีกเลี่ยงการเลื่อนเลย์เอาต์ขนาดใหญ่"
+  },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "รูปภาพครึ่งหน้าบนที่โหลดแบบ Lazy Loading จะแสดงผลภายหลังในวงจรของหน้า ซึ่งอาจทำให้ Largest Contentful Paint ล่าช้า [ดูข้อมูลเพิ่มเติมเกี่ยวกับการโหลดแบบ Lazy Loading ที่ดีที่สุด](https://web.dev/lcp-lazy-loading/)"
+    "message": "รูปภาพครึ่งหน้าบนที่โหลดแบบ Lazy Loading จะแสดงผลภายหลังในวงจรของหน้า ซึ่งอาจทำให้ Largest Contentful Paint ล่าช้า [ดูข้อมูลเพิ่มเติมเกี่ยวกับการโหลดแบบ Lazy Loading ที่ดีที่สุด](https://web.dev/articles/lcp-lazy-loading)"
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "โหลดรูปภาพ Largest Contentful Paint แบบ Lazy Loading แล้ว"
@@ -1026,7 +1200,7 @@
     "message": "ไม่ได้โหลดรูปภาพ Largest Contentful Paint แบบ Lazy Loading"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "ระบุงานที่ใช้เวลานานที่สุดในเทรดหลัก เหมาะสำหรับการระบุปัจจัยที่แย่ที่สุดที่ทำให้อินพุตล่าช้า [ดูวิธีหลีกเลี่ยงงานในเทรดหลักที่ใช้เวลานาน](https://web.dev/long-tasks-devtools/)"
+    "message": "ระบุงานที่ใช้เวลานานที่สุดในเทรดหลัก เหมาะสำหรับการระบุปัจจัยที่แย่ที่สุดที่ทำให้อินพุตล่าช้า [ดูวิธีหลีกเลี่ยงงานในเทรดหลักที่ใช้เวลานาน](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{พบ # งานที่ใช้เวลานาน}other{พบ # งานที่ใช้เวลานาน}}"
@@ -1074,16 +1248,16 @@
     "message": "ไฟล์ Manifest มีไอคอนที่มาสก์ได้"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "การเปลี่ยนเลย์เอาต์สะสมจะวัดการเคลื่อนไหวขององค์ประกอบที่มองเห็นได้ภายในวิวพอร์ต [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก Cumulative Layout Shift](https://web.dev/cls/)"
-  },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "การโต้ตอบกับ Next Paint จะวัดการตอบสนองของหน้าเว็บ ซึ่งเป็นระยะเวลาที่หน้าเว็บใช้ในการตอบสนองต่ออินพุตของผู้ใช้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก การโต้ตอบกับ Next Paint](https://web.dev/inp/)"
+    "message": "การเปลี่ยนเลย์เอาต์สะสมจะวัดการเคลื่อนไหวขององค์ประกอบที่มองเห็นได้ภายในวิวพอร์ต [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก Cumulative Layout Shift](https://web.dev/articles/cls)"
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "First Contentful Paint ระบุเวลาที่มีการแสดงผลข้อความหรือรูปภาพครั้งแรก [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก First Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)"
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "First Meaningful Paint วัดเมื่อเนื้อหาหลักของหน้าเว็บปรากฏ [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก First Meaningful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)"
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "การโต้ตอบกับ Next Paint จะวัดการตอบสนองของหน้าเว็บ ซึ่งเป็นระยะเวลาที่หน้าเว็บใช้ในการตอบสนองต่ออินพุตของผู้ใช้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก การโต้ตอบกับ Next Paint](https://web.dev/articles/inp)"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "เวลาในการตอบสนองคือระยะเวลาที่หน้าเว็บใช้ในการตอบสนองอย่างสมบูรณ์ [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริกเวลาในการตอบสนอง](https://developer.chrome.com/docs/lighthouse/performance/interactive/)"
@@ -1113,7 +1287,7 @@
     "message": "เวลาในการตอบสนองจากแบ็กเอนด์ของเซิร์ฟเวอร์"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "เหตุการณ์ `unload` เริ่มทำงานโดยไม่มีความเสถียร และการ Listen อาจทำให้การเพิ่มประสิทธิภาพเบราว์เซอร์อย่าง Back-Forward Cache ไม่ทำงาน ใช้เหตุการณ์ `pagehide` หรือ `visibilitychange` แทน [ดูข้อมูลเพิ่มเติมเกี่ยวกับการยกเลิกการโหลด Listener เหตุการณ์](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "เหตุการณ์ `unload` เริ่มทำงานโดยไม่มีความเสถียร และการ Listen อาจทำให้การเพิ่มประสิทธิภาพเบราว์เซอร์อย่าง Back-Forward Cache ไม่ทำงาน ใช้เหตุการณ์ `pagehide` หรือ `visibilitychange` แทน [ดูข้อมูลเพิ่มเติมเกี่ยวกับการยกเลิกการโหลด Listener เหตุการณ์](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "ลงทะเบียน Listener `unload`"
@@ -1158,7 +1332,7 @@
     "message": "งบประมาณประสิทธิภาพ"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "โหลดแบบอักษร `optional` ไว้ล่วงหน้าเพื่อให้ผู้เข้าชมครั้งแรกใช้ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับการโหลดแบบอักษรล่วงหน้า](https://web.dev/preload-optional-fonts/)"
+    "message": "โหลดแบบอักษร `optional` ไว้ล่วงหน้าเพื่อให้ผู้เข้าชมครั้งแรกใช้ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับการโหลดแบบอักษรล่วงหน้า](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "ไม่มีการโหลดแบบอักษรที่มีค่า `font-display: optional` ไว้ล่วงหน้า"
@@ -1167,7 +1341,7 @@
     "message": "มีการโหลดแบบอักษรที่มีค่า `font-display: optional` ไว้ล่วงหน้า"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "หากเพิ่มองค์ประกอบ LCP ในหน้าเว็บแบบไดนามิก คุณควรโหลดรูปภาพล่วงหน้าเพื่อปรับปรุง LCP [ดูข้อมูลเพิ่มเติมเกี่ยวกับการโหลดองค์ประกอบ LCP ล่วงหน้า](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)"
+    "message": "หากเพิ่มองค์ประกอบ LCP ในหน้าเว็บแบบไดนามิก คุณควรโหลดรูปภาพล่วงหน้าเพื่อปรับปรุง LCP [ดูข้อมูลเพิ่มเติมเกี่ยวกับการโหลดองค์ประกอบ LCP ล่วงหน้า](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)"
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "โหลดรูปภาพ Largest Contentful Paint ล่วงหน้า"
@@ -1177,15 +1351,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "หลีกเลี่ยงการเปลี่ยนเส้นทางหลายหน้า"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "หากต้องการตั้งงบประมาณสำหรับจำนวนและขนาดของทรัพยากรหน้า ให้เพิ่มไฟล์ budget.json [ดูข้อมูลเพิ่มเติมเกี่ยวกับงบประมาณด้านประสิทธิภาพ](https://web.dev/use-lighthouse-for-performance-budgets/)"
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 คำขอ • {byteCount, number, bytes} KiB}other{# คำขอ • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "ควบคุมให้จำนวนคำขอมีไม่มากและการโอนมีขนาดเล็ก"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "ลิงก์ Canonical จะบอกถึง URL ที่จะแสดงในผลการค้นหา [ดูข้อมูลเพิ่มเติมเกี่ยวกับลิงก์ Canonical](https://developer.chrome.com/docs/lighthouse/seo/canonical/)"
@@ -1376,27 +1541,6 @@
   "core/audits/server-response-time.js | title": {
     "message": "การตอบกลับของเซิร์ฟเวอร์ขณะเริ่มแรกใช้เวลาน้อย"
   },
-  "core/audits/service-worker.js | description": {
-    "message": "Service Worker เป็นเทคโนโลยีที่ช่วยให้แอปของคุณใช้ฟีเจอร์ของ Progressive Web App ได้หลายฟีเจอร์ เช่น ออฟไลน์ เพิ่มไปยังหน้าจอหลัก และข้อความ Push [ดูข้อมูลเพิ่มเติมเกี่ยวกับ Service Worker](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)"
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "หน้านี้ควบคุมโดย Service Worker แต่ไม่พบ `start_url` เนื่องจากไฟล์ Manifest แยกวิเคราะห์เป็น JSON ที่ถูกต้องไม่ได้"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "หน้านี้ควบคุมโดย Service Worker แต่ `start_url` ({startUrl}) ไม่ได้อยู่ในขอบเขตของ Service Worker นั้น ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "หน้านี้ควบคุมโดย Service Worker แต่ไม่พบ `start_url` เพราะไม่มีการดึงไฟล์ Manifest"
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "ต้นทางนี้มี Service Worker อย่างน้อย 1 ไฟล์ แต่หน้าเว็บ ({pageUrl}) ไม่อยู่ในขอบเขต"
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "ไม่ได้ลงทะเบียน Service Worker ที่ควบคุมหน้าเว็บและ `start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "ลงทะเบียน Service Worker ที่ควบคุมหน้าเว็บและ `start_url`"
-  },
   "core/audits/splash-screen.js | description": {
     "message": "หน้าจอแนะนำที่มีธีมช่วยให้ผู้ใช้ได้รับประสบการณ์ที่มีคุณภาพสูงเมื่อเปิดแอปของคุณจากหน้าจอหลัก [ดูข้อมูลเพิ่มเติมเกี่ยวกับหน้าจอแนะนำ](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)"
   },
@@ -1414,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "กำหนดสีธีมของแถบที่อยู่"
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "เราจะหยุดรองรับคุกกี้ของบุคคลที่สามใน Chrome เวอร์ชันถัดไป [ดูข้อมูลเพิ่มเติมเกี่ยวกับการเลิกใช้คุกกี้ของบุคคลที่สาม](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)"
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{พบคุกกี้ 1 รายการ}other{พบคุกกี้ # รายการ}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "ใช้คุกกี้ของบุคคลที่สาม"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "หลีกเลี่ยงการใช้คุกกี้ของบุคคลที่สาม"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (การสนับสนุนลูกค้า)"
@@ -1470,7 +1626,7 @@
     "message": "งบประมาณด้านเวลา"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "กำหนดความกว้างและความยาวขององค์ประกอบรูปภาพอย่างชัดเจนเพื่อลดการขยับของเลย์เอาต์และปรับปรุง CLS [ดูวิธีตั้งค่าขนาดรูปภาพ](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "กำหนดความกว้างและความยาวขององค์ประกอบรูปภาพอย่างชัดเจนเพื่อลดการขยับของเลย์เอาต์และปรับปรุง CLS [ดูวิธีตั้งค่าขนาดรูปภาพ](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "องค์ประกอบรูปภาพไม่มี `width` และ `height` ที่ชัดเจน"
@@ -1545,7 +1701,7 @@
     "message": "มีแท็ก `<meta name=\"viewport\">` ที่มี `width` หรือ `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "งานบล็อกเทรดนี้จะเกิดขึ้นในระหว่างการวัดการโต้ตอบกับ Next Paint [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก การโต้ตอบกับ Next Paint](https://web.dev/inp/)"
+    "message": "งานบล็อกเทรดนี้จะเกิดขึ้นในระหว่างการวัดการโต้ตอบกับ Next Paint [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก การโต้ตอบกับ Next Paint](https://web.dev/articles/inp)"
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "ใช้ไป {timeInMs, number, milliseconds} มิลลิวินาทีกับเหตุการณ์ \"{interactionType}\""
@@ -1587,10 +1743,10 @@
     "message": "แนวทางปฏิบัติที่ดีที่สุด"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "การตรวจสอบเหล่านี้ไฮไลต์โอกาสในการ[ปรับปรุงการช่วยเหลือพิเศษของเว็บแอป](https://developer.chrome.com/docs/lighthouse/accessibility/) โดยจะตรวจพบอัตโนมัติได้เฉพาะปัญหากลุ่มย่อยด้านการช่วยเหลือพิเศษ เราจึงขอแนะนำให้ตรวจสอบด้วยตนเองด้วย"
+    "message": "การตรวจสอบเหล่านี้ไฮไลต์โอกาสในการ[ปรับปรุงการช่วยเหลือพิเศษของเว็บแอป](https://developer.chrome.com/docs/lighthouse/accessibility/) การตรวจหาอัตโนมัติจะตรวจพบเพียงปัญหาชุดย่อยและไม่รับประกันการช่วยเหลือพิเศษของเว็บแอป เราจึงขอแนะนำให้[ตรวจสอบเอง](https://web.dev/articles/how-to-review)ด้วยเช่นกัน"
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "รายการเหล่านี้จัดการพื้นที่ที่เครื่องมือทดสอบอัตโนมัติไม่ครอบคลุม ดูข้อมูลเพิ่มเติมในคำแนะนำเกี่ยวกับ[การดำเนินการตรวจสอบการช่วยเหลือพิเศษ](https://web.dev/how-to-review/)"
+    "message": "รายการเหล่านี้จัดการพื้นที่ที่เครื่องมือทดสอบอัตโนมัติไม่ครอบคลุม ดูข้อมูลเพิ่มเติมในคำแนะนำเกี่ยวกับ[การดำเนินการตรวจสอบการช่วยเหลือพิเศษ](https://web.dev/articles/how-to-review)"
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "การช่วยเหลือพิเศษ"
@@ -1677,10 +1833,10 @@
     "message": "ประสิทธิภาพ"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "การตรวจสอบเหล่านี้จะตรวจสอบลักษณะต่างๆ ของ Progressive Web App [ดูสิ่งที่จะช่วยทำให้เป็น Progressive Web App ที่ดี](https://web.dev/pwa-checklist/)"
+    "message": "การตรวจสอบเหล่านี้จะตรวจสอบลักษณะต่างๆ ของ Progressive Web App [ดูสิ่งที่จะช่วยทำให้เป็น Progressive Web App ที่ดี](https://web.dev/articles/pwa-checklist)"
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "การตรวจสอบเหล่านี้เป็นสิ่งที่ต้องทำใน[รายการตรวจสอบ PWA](https://web.dev/pwa-checklist/) ซึ่งเป็นเกณฑ์พื้นฐาน แต่ Lighthouse ไม่ได้ทำการตรวจสอบดังกล่าวโดยอัตโนมัติ การตรวจสอบจะไม่ส่งผลต่อคะแนนของคุณ แต่คุณควรตรวจสอบด้วยตนเอง"
+    "message": "การตรวจสอบเหล่านี้เป็นสิ่งที่ต้องทำใน[รายการตรวจสอบ PWA](https://web.dev/articles/pwa-checklist) ซึ่งเป็นเกณฑ์พื้นฐาน แต่ Lighthouse ไม่ได้ทำการตรวจสอบดังกล่าวโดยอัตโนมัติ การตรวจสอบจะไม่ส่งผลต่อคะแนนของคุณ แต่คุณควรตรวจสอบด้วยตนเอง"
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1692,7 +1848,7 @@
     "message": "เพิ่มประสิทธิภาพ PWA แล้ว"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "การตรวจสอบเหล่านี้ช่วยให้มั่นใจว่าหน้าเว็บของคุณทำตามคำแนะนำพื้นฐานในการปรับแต่งเว็บไซต์ให้ติดอันดับบนเครื่องมือค้นหา มีปัจจัยอื่นๆ มากมายที่ Lighthouse ไม่ให้คะแนนไว้ที่นี่ซึ่งอาจส่งผลต่อการจัดอันดับการค้นหา รวมถึงประสิทธิภาพใน [Core Web Vitals](https://web.dev/learn-core-web-vitals/) [ดูข้อมูลเพิ่มเติมเกี่ยวกับ Google Search Essentials](https://support.google.com/webmasters/answer/35769)"
+    "message": "การตรวจสอบเหล่านี้ช่วยให้มั่นใจว่าหน้าเว็บของคุณทำตามคำแนะนำพื้นฐานในการปรับแต่งเว็บไซต์ให้ติดอันดับบนเครื่องมือค้นหา มีปัจจัยอื่นๆ มากมายที่ Lighthouse ไม่ให้คะแนนไว้ที่นี่ซึ่งอาจส่งผลต่อการจัดอันดับการค้นหา รวมถึงประสิทธิภาพใน [Core Web Vitals](https://web.dev/explore/vitals) [ดูข้อมูลเพิ่มเติมเกี่ยวกับ Google Search Essentials](https://support.google.com/webmasters/answer/35769)"
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "เรียกใช้ตัวตรวจสอบความถูกต้องเพิ่มเติมเหล่านี้ในเว็บไซต์ของคุณเพื่อดูแนวทางปฏิบัติที่ดีที่สุดเพิ่มเติมเกี่ยวกับ SEO"
@@ -1739,6 +1895,9 @@
   "core/gather/gatherers/link-elements.js | headerParseWarning": {
     "message": "เกิดข้อผิดพลาดขณะแยกวิเคราะห์ส่วนหัว `link` ({error}): `{header}`"
   },
+  "core/gather/timespan-runner.js | warningNavigationDetected": {
+    "message": "ตรวจพบการนำทางหน้าเว็บระหว่างการใช้งาน เราไม่แนะนำให้ใช้โหมดช่วงเวลาเพื่อตรวจสอบการนำทางหน้าเว็บ โปรดใช้โหมดการไปยังส่วนต่างๆ เพื่อตรวจสอบการนำทางหน้าเว็บสำหรับการระบุแหล่งที่มาของบุคคลที่สามที่แม่นยำยิ่งขึ้นและการตรวจหาเทรดหลัก"
+  },
   "core/lib/bf-cache-strings.js | HTTPMethodNotGET": {
     "message": "เฉพาะหน้าที่โหลดผ่านคำขอ GET เท่านั้นที่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache"
   },
@@ -1750,6 +1909,9 @@
   },
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "หน้าที่ขอ AppBanner ยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
+  },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Back-Forward Cache ถูกปิดใช้เนื่องจากคำขอ Keepalive"
   },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Back-Forward Cache ถูกปิดใช้เนื่องจากมีการแจ้งว่าไม่เหมาะสม ไปที่ chrome://flags/#back-forward-cache เพื่อเปิดใช้งานในอุปกรณ์นี้โดยตรง"
@@ -1816,6 +1978,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "หน้าที่ใช้ WebUSB API ไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache"
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Back-Forward Cache ถูกปิดใช้เนื่องจากมีการปิดใช้คุกกี้ในหน้าที่ใช้ `Cache-Control: no-store`"
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "หน้าที่ใช้ Dedicated Worker หรือ Worklet ยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
@@ -1892,14 +2057,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "หน้าที่มีการเชื่อมต่อ IndexedDB แบบเปิดยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Back-Forward Cache ถูกปิดใช้เนื่องจากเหตุการณ์ IndexedDB"
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "มีการใช้ API ที่ไม่มีสิทธิ์"
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "หน้าที่มีการแทรก JavaScript ลงในส่วนขยายยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
+    "message": "หน้าที่มีการแทรก `JavaScript` ลงในส่วนขยายยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "หน้าที่มีการแทรกสไตล์ชีตลงในส่วนขยายยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
+    "message": "หน้าที่มีการแทรก`StyleSheet`ลงในส่วนขยายยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "ข้อผิดพลาดภายใน"
@@ -2082,25 +2250,25 @@
     "message": "หน้าที่ใช้ WebXR ยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
   },
   "core/lib/csp-evaluator.js | allowlistFallback": {
-    "message": "ลองเพิ่ม URL ในรูปแบบ https: และ http: (ซึ่งเบราว์เซอร์ที่รองรับ \"strict-dynamic\" จะไม่สนใจ) เพื่อให้เข้ากันได้กับเบราว์เซอร์เวอร์ชันเก่ากว่า"
+    "message": "ลองเพิ่ม URL ในรูปแบบ https: และ http: (ซึ่งเบราว์เซอร์ที่รองรับ `'strict-dynamic'` จะไม่สนใจ) เพื่อให้เข้ากันได้กับเบราว์เซอร์เวอร์ชันเก่ากว่า"
   },
   "core/lib/csp-evaluator.js | deprecatedDisownOpener": {
-    "message": "disown-opener เลิกใช้งานไปตั้งแต่ CSP3 โปรดใช้ส่วนหัว Cross-Origin-Opener-Policy แทน"
+    "message": "`disown-opener` เลิกใช้งานแล้วตั้งแต่ CSP3 โปรดใช้ส่วนหัว Cross-Origin-Opener-Policy แทน"
   },
   "core/lib/csp-evaluator.js | deprecatedReferrer": {
-    "message": "referrer เลิกใช้งานไปตั้งแต่ CSP2 โปรดใช้ส่วนหัว Referrer-Policy แทน"
+    "message": "`referrer` เลิกใช้งานแล้วตั้งแต่ CSP2 โปรดใช้ส่วนหัว Referrer-Policy แทน"
   },
   "core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
-    "message": "reflected-xss เลิกใช้งานไปตั้งแต่ CSP2 โปรดใช้ส่วนหัว X-XSS-Protection แทน"
+    "message": "`reflected-xss` เลิกใช้งานแล้วตั้งแต่ CSP2 โปรดใช้ส่วนหัว X-XSS-Protection แทน"
   },
   "core/lib/csp-evaluator.js | missingBaseUri": {
-    "message": "เมื่อไม่มี base-uri จะอนุญาตแท็ก <base> ที่แทรก เพื่อตั้งค่า URL ฐานสำหรับ URL (เช่น สคริปต์) ทั้งหมดที่เกี่ยวข้องกับโดเมนที่ผู้โจมตีควบคุม ลองตั้งค่า base-uri เป็น \"none\" หรือ \"self\""
+    "message": "เมื่อไม่มี `base-uri` แท็ก `<base>` ที่แทรกจะตั้งค่า URL ฐานสำหรับ URL (เช่น สคริปต์) ทั้งหมดที่เกี่ยวข้องกับโดเมนที่ผู้โจมตีควบคุมได้ ลองตั้งค่า `base-uri` เป็น `'none'` หรือ `'self'`"
   },
   "core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "เมื่อไม่มี object-src จะทำให้มีการแทรกปลั๊กอินซึ่งรันสคริปต์ที่ไม่ปลอดภัย ลองตั้งค่า object-src เป็น \"none\" หากทำได้"
+    "message": "เมื่อไม่มี `object-src` จะทำให้มีการแทรกปลั๊กอินซึ่งรันสคริปต์ที่ไม่ปลอดภัย ลองตั้งค่า `object-src` เป็น `'none'` หากทำได้"
   },
   "core/lib/csp-evaluator.js | missingScriptSrc": {
-    "message": "ไม่มีคำสั่ง script-src ซึ่งอาจทำให้รันสคริปต์ที่ไม่ปลอดภัยได้"
+    "message": "ไม่มีคำสั่ง `script-src` ซึ่งอาจทำให้รันสคริปต์ที่ไม่ปลอดภัยได้"
   },
   "core/lib/csp-evaluator.js | missingSemicolon": {
     "message": "คุณลืมเครื่องหมายเซมิโคลอนหรือเปล่า ดูเหมือนว่า {keyword} จะเป็นคำสั่ง ไม่ใช่คีย์เวิร์ด"
@@ -2118,13 +2286,13 @@
     "message": "หลีกเลี่ยงการใช้ไวลด์การ์ดธรรมดา ({keyword}) ในคำสั่งนี้ ไวลด์การ์ดธรรมดาอนุญาตให้รันสคริปต์ที่มาจากโดเมนที่ไม่ปลอดภัยได้"
   },
   "core/lib/csp-evaluator.js | reportToOnly": {
-    "message": "มีการกำหนดค่าปลายทางการรายงานผ่านคำสั่ง report-to เท่านั้น คำสั่งนี้ใช้ได้เฉพาะในเบราว์เซอร์แบบ Chromium จึงขอแนะนำให้ใช้คำสั่ง report-uri ด้วย"
+    "message": "มีการกำหนดค่าปลายทางการรายงานผ่านคำสั่ง report-to เท่านั้น คำสั่งนี้ใช้ได้เฉพาะในเบราว์เซอร์แบบ Chromium จึงขอแนะนำให้ใช้คำสั่ง `report-uri` ด้วย"
   },
   "core/lib/csp-evaluator.js | reportingDestinationMissing": {
     "message": "ไม่มี CSP ที่กำหนดค่าปลายทางการรายงาน ซึ่งทำให้ดูแลรักษา CSP เมื่อเวลาผ่านไปและตรวจสอบการหยุดทำงานได้ยาก"
   },
   "core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "รายการโฮสต์ที่อนุญาตอาจถูกข้ามได้บ่อยๆ ลองใช้ nonces หรือ hashes ของ CSP แทน รวมถึง \"strict-dynamic\" หากจำเป็น"
+    "message": "รายการโฮสต์ที่อนุญาตอาจถูกข้ามได้บ่อยๆ ลองใช้ nonces หรือ hashes ของ CSP แทน รวมถึงใช้ `'strict-dynamic'` หากจำเป็น"
   },
   "core/lib/csp-evaluator.js | unknownDirective": {
     "message": "คำสั่ง CSP ที่ไม่รู้จัก"
@@ -2133,10 +2301,196 @@
     "message": "ดูเหมือนว่า {keyword} จะเป็นคีย์เวิร์ดที่ไม่ถูกต้อง"
   },
   "core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "\"unsafe-inline\" ทำให้รันสคริปต์ในหน้าเว็บและตัวจัดการเหตุการณ์ที่ไม่ปลอดภัยได้ ลองใช้ nonces หรือ hashes ของ CSP เพื่ออนุญาตสคริปต์แต่ละรายการ"
+    "message": "`'unsafe-inline'` ทำให้รันสคริปต์ในหน้าเว็บและตัวจัดการเหตุการณ์ที่ไม่ปลอดภัยได้ ลองใช้ nonces หรือ hashes ของ CSP เพื่ออนุญาตสคริปต์แต่ละรายการ"
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
-    "message": "ลองเพิ่ม \"unsafe-inline\" (ซึ่งเบราว์เซอร์ที่รองรับ nonces/hashes จะไม่สนใจ) เพื่อให้เข้ากันได้กับเบราว์เซอร์เวอร์ชันเก่ากว่า"
+    "message": "ลองเพิ่ม `'unsafe-inline'` (ซึ่งเบราว์เซอร์ที่รองรับ nonces/hashes จะไม่สนใจ) เพื่อให้เข้ากันได้กับเบราว์เซอร์เวอร์ชันเก่ากว่า"
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "ดูรายละเอียดเพิ่มเติมที่หน้าสถานะฟีเจอร์"
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "การเปลี่ยนแปลงนี้จะมีผลกับเป้าหมาย {milestone}"
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "ใช้ฟีเจอร์ที่เลิกใช้งานแล้ว"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "สัญลักษณ์ไวลด์การ์ด (*) จะไม่ครอบคลุมการให้สิทธิ์ในการใช้งาน `Access-Control-Allow-Headers` สำหรับ CORS"
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "ควรใช้แอตทริบิวต์ `disableRemotePlayback` เพื่อปิดใช้การผสานรวมการแคสต์เริ่มต้นแทนการใช้ตัวเลือก `-internal-media-controls-overlay-cast-button`"
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "คำขอทรัพยากรที่ URL มีทั้งอักขระ `(n|r|t)` แบบช่องว่างซึ่งนำออกไปแล้วและมีอักขระน้อยกว่า (`<`) ถูกบล็อก โปรดนำบรรทัดใหม่ออกและเข้ารหัสอักขระที่น้อยกว่าจากที่ต่างๆ อย่างเช่นค่าแอตทริบิวต์ขององค์ประกอบเพื่อโหลดทรัพยากรเหล่านี้"
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` เลิกใช้งานแล้ว โปรดใช้ Navigation Timing 2 ซึ่งเป็น API แบบมาตรฐานแทน"
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` เลิกใช้งานแล้ว โปรดใช้ Paint Timing ซึ่งเป็น API แบบมาตรฐานแทน"
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` เลิกใช้งานแล้ว โปรดใช้ `nextHopProtocol` ใน Navigation Timing 2 ซึ่งเป็น API แบบมาตรฐานแทน"
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "คุกกี้ที่มีอักขระ `(0|r|n)` จะถูกปฏิเสธแทนการตัดให้สั้นลง"
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "การผ่อนปรนนโยบายต้นทางเดียวกันโดยการตั้งค่า `document.domain` เลิกใช้งานแล้วและจะปิดใช้โดยค่าเริ่มต้น คำเตือนการเลิกใช้งานนี้มีไว้สำหรับการเข้าถึงแบบข้ามต้นทางที่เปิดใช้โดยการตั้งค่า `document.domain`"
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "การเรียกใช้ window.alert จาก iframe แบบข้ามต้นทางเลิกใช้งานแล้วและจะถูกนำออกในอนาคต"
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "การเรียกใช้ window.confirm จาก iframe แบบข้ามต้นทางเลิกใช้งานแล้วและจะถูกนำออกในอนาคต"
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "เหตุการณ์การเปลี่ยนแปลง DOM ซึ่งรวมถึง `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` และ `DOMCharacterDataModified` เลิกใช้งานแล้ว (https://w3c.github.io/uievents/#legacy-event-types) และจะถูกนำออก โปรดใช้ `MutationObserver` แทน"
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "การรองรับข้อมูล: URL ในองค์ประกอบ SVG <use> เลิกใช้งานแล้วและจะถูกนำออกในอนาคต"
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "การผ่อนปรนนโยบายต้นทางเดียวกันโดยการตั้งค่า `document.domain` เลิกใช้งานแล้วและจะปิดใช้โดยค่าเริ่มต้น หากต้องการใช้ฟีเจอร์นี้ต่อ โปรดเลือกไม่ใช้คลัสเตอร์ Agent ที่ผูกกับต้นทางโดยการส่งส่วนหัว `Origin-Agent-Cluster: ?0` พร้อมด้วยการตอบสนองของ HTTP สำหรับเอกสารและเฟรม ดูรายละเอียดเพิ่มเติมได้ที่ https://developer.chrome.com/blog/immutable-document-domain/"
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "ส่วนหัว `Expect-CT` เลิกใช้งานแล้วและจะถูกนำออก Chrome ต้องการ \"ความโปร่งใสของใบรับรอง\" สำหรับใบรับรองทั้งหมดที่ได้รับความเชื่อถือจากสาธารณะซึ่งออกหลังจากวันที่ 30 เมษายน 2018"
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` และ `watchPosition()` ไม่ทำงานในต้นทางที่ไม่ปลอดภัยอีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` และ `watchPosition()` เลิกใช้งานแล้วในต้นทางที่ไม่ปลอดภัย คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` ทำงานในต้นทางที่ไม่ปลอดภัยไม่ได้อีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` เลิกใช้งานแล้ว โปรดใช้ `RTCPeerConnectionIceErrorEvent.address` หรือ `RTCPeerConnectionIceErrorEvent.port` แทน"
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "ต้นทางของผู้ขายและข้อมูลที่กําหนดเองจากเหตุการณ์ Service Worker `canmakepayment` ซึ่งได้แก่ `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers` เลิกใช้งานแล้วและจะถูกนำออก"
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "เว็บไซต์ขอทรัพยากรย่อยจากเครือข่ายที่เข้าถึงได้เท่านั้นเนื่องจากมีตำแหน่งเครือข่ายที่เป็นสิทธิ์เฉพาะของผู้ใช้ คำขอเหล่านี้จะเปิดเผยอุปกรณ์และเซิร์ฟเวอร์ที่ไม่เผยแพร่ต่อสาธารณะไปยังอินเทอร์เน็ต ซึ่งเพิ่มความเสี่ยงในการโจมตีโดยการปลอมแปลงคำขอแบบข้ามเว็บไซต์ (CSRF) และ/หรือข้อมูลรั่วไหล Chrome จะเลิกใช้งานคำขอไปยังทรัพยากรย่อยที่ไม่เผยแพร่ต่อสาธารณะเมื่อเริ่มต้นมาจากบริบทที่ไม่ปลอดภัยและจะเริ่มบล็อกคำขอดังกล่าวเพื่อลดความเสี่ยงเหล่านี้"
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "ฟิลด์ `dailyUpdateUrl` ของ `InterestGroups` ที่ส่งไปยัง `joinAdInterestGroup()` ได้เปลี่ยนชื่อเป็น `updateUrl` เพื่อให้สะท้อนลักษณะการทำงานได้อย่างแม่นยำยิ่งขึ้น"
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "โหลด CSS จาก URL `file:` ไม่ได้ เว้นแต่จะลงท้ายด้วยนามสกุลไฟล์ `.css`"
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "การใช้ `SourceBuffer.abort()` เพื่อล้มเลิกการนำช่วงที่ไม่พร้อมกันออกของ `remove()` เลิกใช้งานแล้วเนื่องจากการเปลี่ยนแปลงข้อกำหนด ระบบจะนำการรองรับออกในอนาคต คุณควรให้ความสำคัญกับเหตุการณ์ `updateend` แทน `abort()` มีไว้เพื่อล้มเลิกการเพิ่มสื่อที่ไม่พร้อมกันหรือรีเซ็ตสถานะโปรแกรมแยกวิเคราะห์เท่านั้น"
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "การตั้งค่า `MediaSource.duration` ต่ำกว่าการประทับเวลาการนำเสนอสูงสุดของเฟรมที่ใส่โค้ดที่บัฟเฟอร์เลิกใช้งานแล้วเนื่องจากการเปลี่ยนแปลงข้อกำหนด การรองรับการนำสื่อที่บัฟเฟอร์ที่มีการตัดให้สั้นลงออกแบบไม่เจาะจงจะถูกนำออกในอนาคต คุณควรดำเนินการ `remove(newDuration, oldDuration)` แบบเจาะจงแทนใน `sourceBuffers` ทั้งหมดที่ `newDuration < oldDuration`"
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI จะขอสิทธิ์ในการใช้แม้ว่าจะไม่ได้ระบุ SysEx ใน `MIDIOptions` ก็ตาม"
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "แอตทริบิวต์ `shadowroot` เวอร์ชันเก่าที่ไม่เป็นไปตามมาตรฐานเลิกใช้งานแล้ว และจะ *ไม่ทำงานอีกต่อไป* ใน M119 โปรดใช้แอตทริบิวต์ `shadowrootmode` เวอร์ชันใหม่ที่เป็นมาตรฐานแทน"
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "ต้นทางที่ไม่ปลอดภัยอาจไม่ใช้ Notification API อีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "iframe แบบข้ามต้นทางอาจไม่ขอสิทธิ์สำหรับ Notification API อีกต่อไป คุณควรพิจารณาขอสิทธิ์จากเฟรมระดับบนสุดหรือเปิดหน้าต่างใหม่แทน"
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "ตัวเลือก `imageOrientation: 'none'` ใน createImageBitmap เลิกใช้งานแล้ว โปรดใช้ createImageBitmap กับตัวเลือก \\{imageOrientation: 'from-image'\\} แทน"
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "พาร์ทเนอร์ของคุณต่อรอง (D)TLS เวอร์ชันที่ล้าสมัย โปรดตรวจสอบกับพาร์ทเนอร์เพื่อดำเนินการแก้ไข"
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "การระบุ `overflow: visible` ในแท็ก img, video และ canvas อาจทำให้แท็กเหล่านี้สร้างเนื้อหาภาพนอกขอบเขตขององค์ประกอบ โปรดดู https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md"
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` เลิกใช้งานแล้ว โปรดใช้การติดตั้งแบบทันท่วงทีแทนสำหรับตัวแฮนเดิลการชำระเงิน"
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "การเรียกใช้ `PaymentRequest` ได้ข้ามคำสั่งของนโยบายรักษาความปลอดภัยเนื้อหา (CSP) `connect-src` การข้ามนี้เลิกใช้งานแล้ว โปรดเพิ่มตัวระบุวิธีการชำระเงินจาก `PaymentRequest` API (ในช่อง `supportedMethods`) ลงในคำสั่งของ CSP `connect-src`"
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` เลิกใช้งานแล้ว โปรดใช้ `navigator.storage` มาตรฐานแทน"
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "`<source src>` ที่มีองค์ประกอบหลัก `<picture>` ไม่ถูกต้องและด้วยเหตุนี้ระบบจึงจะไม่สนใจ โปรดใช้ `<source srcset>` แทน"
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame เจาะจงผู้ให้บริการ โปรดใช้ cancelAnimationFrame แบบมาตรฐานแทน"
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame เจาะจงผู้ให้บริการ โปรดใช้ requestAnimationFrame แบบมาตรฐานแทน"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen เลิกใช้งานแล้ว โปรดใช้ Document.fullscreenElement แทน"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() เลิกใช้งานแล้ว โปรดใช้ Element.requestFullscreen() แทน"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() เลิกใช้งานแล้ว โปรดใช้ Element.requestFullscreen() แทน"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() เลิกใช้งานแล้ว โปรดใช้ Document.exitFullscreen() แทน"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() เลิกใช้งานแล้ว โปรดใช้ Document.exitFullscreen() แทน"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen เลิกใช้งานแล้ว โปรดใช้ Document.fullscreenEnabled แทน"
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "เรากำลังจะเลิกใช้งาน API `chrome.privacy.websites.privacySandboxEnabled` แม้ว่า API นี้จะยังคงมีการใช้งานต่อไปเพื่อความเข้ากันได้แบบย้อนหลังจนกว่าจะเปิดตัวเวอร์ชัน M113 โปรดใช้ `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` และ `chrome.privacy.websites.adMeasurementEnabled` แทน ดู https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled"
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "ข้อจำกัด `DtlsSrtpKeyAgreement` ถูกนำออกแล้ว คุณได้ระบุค่า `false` สำหรับข้อจำกัดนี้ ซึ่งระบบตีความว่าเป็นการพยายามใช้เมธอด `SDES key negotiation` ที่นำออกไปแล้ว ฟังก์ชันการทำงานนี้ถูกนำออกแล้ว โปรดใช้บริการที่รองรับ `DTLS key negotiation` แทน"
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "ข้อจำกัด `DtlsSrtpKeyAgreement` ถูกนำออกแล้ว คุณได้ระบุค่า `true` สำหรับข้อจำกัดนี้ซึ่งไม่มีผลกระทบ แต่สามารถนำข้อจำกัดนี้ออกได้เพื่อความเรียบร้อย"
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "getStats() ที่อิงตาม Callback เลิกใช้งานแล้วและจะถูกนำออก โปรดใช้ getStats() ที่สอดคล้องกับข้อกำหนดแทน"
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() เลิกใช้งานแล้ว โปรดใช้ Selection.modify() แทน"
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "คำขอทรัพยากรย่อยที่ URL มีข้อมูลเข้าสู่ระบบที่ฝังไว้ (เช่น `https://user:pass@host/`) ถูกบล็อก"
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "ตัวเลือก `rtcpMuxPolicy` เลิกใช้งานแล้วและจะถูกนำออก"
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` จะต้องใช้การแยกแบบข้ามต้นทาง ดูรายละเอียดเพิ่มเติมได้ที่ https://developer.chrome.com/blog/enabling-shared-array-buffer/"
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "`speechSynthesis.speak()` แบบไม่ต้องมีการเปิดใช้งานของผู้ใช้เลิกใช้งานแล้วและจะถูกนำออก"
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "ส่วนขยายควรเลือกใช้การแยกแบบข้ามต้นทางเพื่อใช้ `SharedArrayBuffer` ต่อ ดู https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/"
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "SQL ในเว็บเลิกใช้งานแล้ว โปรดใช้ SQLite WebAssembly หรือฐานข้อมูลที่จัดทำดัชนีแล้ว"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "ข้อบ่งชี้สิทธิ์ `window-placement` เลิกใช้งานแล้ว โปรดใช้ `window-management` แทน ดูความช่วยเหลือเพิ่มเติมได้ที่ https://bit.ly/window-placement-rename"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "นโยบายสิทธิ์ `window-placement` เลิกใช้งานแล้ว โปรดใช้ `window-management` แทน ดูความช่วยเหลือเพิ่มเติมได้ที่ https://bit.ly/window-placement-rename"
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "JSON ของการตอบกลับไม่รองรับ UTF-16 ใน `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "`XMLHttpRequest` แบบพร้อมกันในชุดข้อความหลักเลิกใช้งานแล้วเนื่องจากมีผลกระทบที่เป็นอันตรายต่อประสบการณ์ของผู้ใช้ปลายทาง ดูความช่วยเหลือเพิ่มเติมได้ที่ https://xhr.spec.whatwg.org/"
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` เลิกใช้งานแล้ว โปรดใช้ `isSessionSupported()` และตรวจสอบค่าบูลีนที่แก้ไขแล้วแทน"
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "เวลาในการบล็อกเทรดหลัก"
@@ -2342,6 +2696,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "ดูเหมือนว่า URL ที่ระบุจะไม่ถูกต้อง"
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Lighthouse โหลดหน้าเว็บที่คุณขออย่างน่าเชื่อถือไม่ได้ ตรวจสอบว่าคุณกำลังทดสอบ URL ที่ถูกต้องและเซิร์ฟเวอร์ตอบสนองคำขอทั้งหมดอย่างถูกต้อง (รหัสสถานะ: {errorCode})"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "ประเภท MIME ของหน้าเว็บคือ XHTML: Lighthouse ไม่รองรับเอกสารประเภทนี้อย่างชัดเจน"
   },
@@ -2538,7 +2895,7 @@
     "message": "ติดตั้ง[โมดูล Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) ที่โหลดรูปภาพแบบ Lazy Loading ได้ โมดูลนี้จะช่วยเลื่อนเวลาโหลดรูปภาพนอกจอภาพเพื่อปรับปรุงประสิทธิภาพ"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "ลองใช้โมดูลเพื่อแทรก CSS และ JavaScript ที่สำคัญในหน้าหรือโมดูลที่อาจโหลดเนื้อหาแบบไม่พร้อมกันผ่าน JavaScript เช่น โมดูล[การรวม CSS/JS ขั้นสูง](https://www.drupal.org/project/advagg) โปรดระวังว่าการเพิ่มประสิทธิภาพโดยโมดูลนี้อาจทำให้เว็บไซต์เสียหาย ซึ่งน่าจะทำให้คุณต้องแก้ไขโค้ด"
+    "message": "ลองใช้โมดูลเพื่อแทรก CSS และ JavaScript ที่สำคัญในหน้า และใช้แอตทริบิวต์ที่เลื่อนเวลาออกไปสำหรับ CSS หรือ JavaScript ที่ไม่สำคัญ"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "ข้อกำหนดของธีม โมดูล และเซิร์ฟเวอร์ล้วนส่งผลต่อเวลาในการตอบสนองของเซิร์ฟเวอร์ ลองหาธีมที่เพิ่มประสิทธิภาพมากขึ้น พยายามเลือกโมดูลการเพิ่มประสิทธิภาพด้วยความระมัดระวัง และ/หรืออัปเกรดเซิร์ฟเวอร์ เซิร์ฟเวอร์โฮสติ้งควรใช้ประโยชน์จากการแคช PHP Opcode, การแคชหน่วยความจำเพื่อลดเวลาในการค้นหาฐานข้อมูล เช่น Redis หรือ Memcached รวมถึงตรรกะของแอปพลิเคชันที่เพิ่มประสิทธิภาพเพื่อให้เตรียมความพร้อมของหน้าได้เร็วขึ้น"
@@ -2547,10 +2904,10 @@
     "message": "ลองใช้[สไตล์รูปภาพที่ปรับเปลี่ยนตามพื้นที่โฆษณา](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)เพื่อลดขนาดของรูปภาพที่โหลดในหน้า หากคุณใช้มุมมองเพื่อดูรายการเนื้อหาหลายรายการในหน้า ให้ลองใช้การใส่เลขหน้าเพื่อจำกัดจำนวนของรายการเนื้อหาที่แสดงในหน้าหนึ่งๆ"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "ตรวจสอบว่าคุณได้เปิดใช้ \"รวมไฟล์ CSS\" ในหน้า \"การดูแลระบบ » การกำหนดค่า » การพัฒนา\" คุณกำหนดค่าตัวเลือกการรวมขั้นสูงยิ่งขึ้นผ่าน[โมดูลเพิ่มเติม](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search)ได้ด้วยเพื่อช่วยให้เว็บไซต์เร็วขึ้นได้ด้วยการเชื่อมโยง การลดขนาด และการบีบอัดสไตล์ CSS"
+    "message": "ตรวจสอบว่าคุณได้เปิดใช้ \"รวมไฟล์ CSS\" ในหน้า \"การดูแลระบบ » การกำหนดค่า » การพัฒนา\"  ตรวจสอบว่าเว็บไซต์ Drupal ของคุณใช้ Drupal 10.1 เป็นอย่างน้อยเพื่อรองรับการรวมเนื้อหาได้ดียิ่งขึ้น"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "ตรวจสอบว่าคุณได้เปิดใช้ \"รวมไฟล์ JavaScript\" ในหน้า \"การดูแลระบบ » การกำหนดค่า » การพัฒนา\" คุณกำหนดค่าตัวเลือกการรวมขั้นสูงยิ่งขึ้นผ่าน[โมดูลเพิ่มเติม](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search)ได้ด้วยเพื่อช่วยให้เว็บไซต์เร็วขึ้นได้ด้วยการเชื่อมโยง การลดขนาด และการบีบเนื้อหา JavaScript"
+    "message": "ตรวจสอบว่าคุณได้เปิดใช้ \"รวมไฟล์ JavaScript\" ในหน้า \"การดูแลระบบ » การกำหนดค่า » การพัฒนา\"  ตรวจสอบว่าเว็บไซต์ Drupal ของคุณใช้ Drupal 10.1 เป็นอย่างน้อยเพื่อรองรับการรวมเนื้อหาได้ดียิ่งขึ้น"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "ลองนำกฎ CSS ที่ไม่ได้ใช้ออกและแนบเฉพาะไลบรารี Drupal ที่จำเป็นลงในหน้าที่เกี่ยวข้องหรือคอมโพเนนต์ในหน้า ดูรายละเอียดได้ที่[ลิงก์เอกสารประกอบของ Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) หากต้องการระบุไลบรารีที่แนบซึ่งเพิ่ม CSS โดยไม่จำเป็น ลองเรียกใช้ [Code Coverage](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) ใน DevTools ของ Chrome คุณระบุธีม/โมดูลที่รับผิดชอบได้จาก URL ของสไตล์ชีตเมื่อปิดใช้การรวม CSS ในเว็บไซต์ Drupal ของคุณ หาธีม/โมดูลที่มีสไตล์ชีตจำนวนมากอยู่ในรายการซึ่งมีสีแดงอยู่จำนวนมากใน Code Coverage ธีม/โมดูลควรเป็นเพียงตัวกำหนดลำดับของสไตล์ชีตเท่านั้นหากใช้ธีม/โมดูลในหน้าจริงๆ"
@@ -2750,23 +3107,65 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "เปิดใช้การบีบอัดในเซิร์ฟเวอร์ Next.js ของคุณ [ดูข้อมูลเพิ่มเติม](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "โปรดติดต่อผู้จัดการฝ่ายดูแลลูกค้าเพื่อเปิดใช้[`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337) การกำหนดค่าจะให้ความสำคัญและเพิ่มประสิทธิภาพการแสดงผลหน้าเว็บ"
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "ใช้ตัวเลือก[`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041)ใน NitroPack เพื่อตั้งค่าที่ต้องการสำหรับกฎการแสดงแบบอักษรของ CSS"
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "ใช้[`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513)เพื่อแปลงรูปภาพเป็น WebP โดยอัตโนมัติ"
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "เลื่อนเวลาโหลดรูปภาพนอกจอภาพโดยการเปิดใช้[`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "เปิดใช้[`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack)ใน NitroPack สำหรับการโหลดเริ่มต้นที่รวดเร็วขึ้น"
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "ปรับปรุงเวลาในการตอบกลับของเซิร์ฟเวอร์และเพิ่มประสิทธิภาพที่รับรู้ได้โดยการเปิดใช้งาน[`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "เปิดใช้[`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources)ในการตั้งค่าการแคชเพื่อลดขนาดไฟล์ CSS, HTML และ JavaScript สำหรับการโหลดที่รวดเร็วขึ้น"
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "เปิดใช้[`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources)ในการตั้งค่าการแคชเพื่อลดขนาดไฟล์ JS, HTML และ CSS สำหรับการโหลดที่รวดเร็วขึ้น"
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "เปิดใช้[`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS)เพื่อนำกฎ CSS ที่ไม่เกี่ยวข้องกับหน้านี้ออก"
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "กำหนดค่า[`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts)ใน NitroPack เพื่อหน่วงเวลาการโหลดสคริปต์จนกว่าจะจำเป็น"
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "ไปที่ฟีเจอร์[`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time)ในเมนู`Caching`และปรับเวลาหมดอายุของแคชหน้าเว็บเพื่อปรับปรุงเวลาที่ใช้ในการโหลดและประสบการณ์ของผู้ใช้"
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "บีบอัด เพิ่มประสิทธิภาพ และแปลงรูปภาพเป็น WebP โดยอัตโนมัติด้วยการเปิดใช้การตั้งค่า[`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "เปิดใช้[`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site)เพื่อเพิ่มประสิทธิภาพให้กับรูปภาพล่วงหน้าและทำให้มีขนาดตรงกับคอนเทนเนอร์ที่แสดงอยู่ในอุปกรณ์ทั้งหมด"
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "ใช้[`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) ใน NitroPack เพื่อลดขนาดของไฟล์ที่ส่งไปยังเบราว์เซอร์"
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "ใช้คอมโพเนนต์ `nuxt/image` และกำหนด `format=\"webp\"` [ดูข้อมูลเพิ่มเติม](https://image.nuxtjs.org/components/nuxt-img#format)"
+    "message": "ใช้คอมโพเนนต์ `nuxt/image` และกำหนด `format=\"webp\"` [ดูข้อมูลเพิ่มเติม](https://image.nuxt.com/usage/nuxt-img#format)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "ใช้คอมโพเนนต์ `nuxt/image` และกำหนด `loading=\"lazy\"` สำหรับรูปภาพนอกจอภาพ [ดูข้อมูลเพิ่มเติม](https://image.nuxtjs.org/components/nuxt-img#loading)"
+    "message": "ใช้คอมโพเนนต์ `nuxt/image` และกำหนด `loading=\"lazy\"` สำหรับรูปภาพนอกจอภาพ [ดูข้อมูลเพิ่มเติม](https://image.nuxt.com/usage/nuxt-img#loading)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "ใช้คอมโพเนนต์ `nuxt/image` และระบุ `preload` สำหรับรูปภาพ LCP [ดูข้อมูลเพิ่มเติม](https://image.nuxtjs.org/components/nuxt-img#preload)"
+    "message": "ใช้คอมโพเนนต์ `nuxt/image` และระบุ `preload` สำหรับรูปภาพ LCP [ดูข้อมูลเพิ่มเติม](https://image.nuxt.com/usage/nuxt-img#preload)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "ใช้คอมโพเนนต์ `nuxt/image` และระบุ `width` และ `height` ที่ชัดแจ้ง [ดูข้อมูลเพิ่มเติม](https://image.nuxtjs.org/components/nuxt-img#width--height)"
+    "message": "ใช้คอมโพเนนต์ `nuxt/image` และระบุ `width` และ `height` ที่ชัดแจ้ง [ดูข้อมูลเพิ่มเติม](https://image.nuxt.com/usage/nuxt-img#width-height)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "ใช้คอมโพเนนต์ `nuxt/image` และกำหนด `quality` ที่เหมาะสม [ดูข้อมูลเพิ่มเติม](https://image.nuxtjs.org/components/nuxt-img#quality)"
+    "message": "ใช้คอมโพเนนต์ `nuxt/image` และกำหนด `quality` ที่เหมาะสม [ดูข้อมูลเพิ่มเติม](https://image.nuxt.com/usage/nuxt-img#quality)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "ใช้คอมโพเนนต์ `nuxt/image` และกำหนด `sizes` ที่เหมาะสม [ดูข้อมูลเพิ่มเติม](https://image.nuxtjs.org/components/nuxt-img#sizes)"
+    "message": "ใช้คอมโพเนนต์ `nuxt/image` และกำหนด `sizes` ที่เหมาะสม [ดูข้อมูลเพิ่มเติม](https://image.nuxt.com/usage/nuxt-img#sizes)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[นำวิดีโอมาแทนที่ GIF แบบภาพเคลื่อนไหว](https://web.dev/replace-gifs-with-videos/)เพื่อให้หน้าเว็บโหลดเร็วขึ้น และลองใช้รูปแบบไฟล์สมัยใหม่ เช่น [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) หรือ [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) เพื่อปรับปรุงประสิทธิภาพในการบีบอัดมากกว่า 30% เมื่อเทียบกับ VP9 ซึ่งเป็นตัวแปลงรหัสวิดีโอที่ทันสมัยซึ่งใช้อยู่ในปัจจุบัน"
@@ -2830,6 +3229,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "ใช้ React DevTools Profiler ซึ่งใช้ประโยชน์จาก Profiler API ในการวัดประสิทธิภาพในการแสดงผลของคอมโพเนนต์ [ดูข้อมูลเพิ่มเติม](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "วางวิดีโอไว้ใน `VideoBoxes` ปรับแต่งโดยใช้ `Video Masks` หรือเพิ่ม `Transparent Videos` [ดูข้อมูลเพิ่มเติม](https://support.wix.com/en/article/wix-video-about-wix-video)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "อัปโหลดรูปภาพโดยใช้ `Wix Media Manager` เพื่อให้แสดงเป็นรูปแบบ WebP โดยอัตโนมัติ ดู[วิธีอื่นๆ ในการเพิ่มประสิทธิภาพ](https://support.wix.com/en/article/site-performance-optimizing-your-media)สื่อในเว็บไซต์ของคุณ"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "เมื่อ[เพิ่มโค้ดของบุคคลที่สาม](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site)ในแท็บ `Custom Code` ของแดชบอร์ดเว็บไซต์ ให้ใช้การหน่วงเวลาหรือโหลดโค้ดที่ส่วนท้ายของเนื้อหาโค้ด ใช้[การผสานรวม](https://support.wix.com/en/article/about-marketing-integrations)ของ Wix เพื่อฝังเครื่องมือการตลาดในเว็บไซต์ หากทำได้ "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Wix ใช้ CDN และการแคชเพื่อแสดงคำตอบโดยเร็วที่สุดสำหรับผู้เข้าชมส่วนใหญ่ พิจารณา[เปิดใช้การแคชด้วยตนเอง](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed)สำหรับเว็บไซต์ของคุณ โดยเฉพาะในกรณีที่ใช้ `Velo`"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "ตรวจสอบโค้ดของบุคคลที่สามที่คุณเพิ่มลงในเว็บไซต์ได้ในแท็บ `Custom Code` ของแดชบอร์ดเว็บไซต์ และเก็บเฉพาะบริการที่จำเป็นสำหรับเว็บไซต์เท่านั้น [ดูข้อมูลเพิ่มเติม](https://support.wix.com/en/article/site-performance-removing-unused-javascript)"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "ลองอัปโหลด GIF ไปยังบริการซึ่งจะทำให้ใช้ GIF เพื่อฝังเป็นวิดีโอ HTML5 ได้"
@@ -2936,6 +3350,9 @@
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "บันทึกเป็น JSON"
   },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "ดูการติดตามที่ไม่มีการควบคุม"
+  },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "เปิดในโปรแกรมดู"
   },
@@ -2981,8 +3398,17 @@
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "การตรวจสอบที่ผ่านแล้ว"
   },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Lighthouse จะเลิกใช้งานหมวดหมู่ PWA ในรุ่นถัดไปพร้อมกับ[เกณฑ์ความสามารถในการติดตั้งที่อัปเดตของ Chrome](https://developer.chrome.com/blog/update-install-criteria) โปรดดู[เอกสารประกอบของ PWA ฉบับปรับปรุง](https://developer.chrome.com/docs/devtools/progressive-web-apps/)สำหรับการทดสอบ PWA ในอนาคต"
+  },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "การโหลดหน้าเว็บเริ่มต้น"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "ภาพรวมของช่วงเวลา"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "ช่วงเวลาการโต้ตอบของผู้ใช้"
   },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "การควบคุมที่กำหนดเอง"
@@ -3018,10 +3444,10 @@
     "message": "User Agent (เครือข่าย)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "การโหลดหน้าเว็บ 1 ครั้ง"
+    "message": "เซสชันหน้าเว็บเดียว"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "ข้อมูลนี้มาจากการโหลดหน้าเว็บ 1 ครั้ง ซึ่งตรงกันข้ามกับข้อมูลภาคสนามที่สรุปหลายเซสชัน"
+    "message": "ข้อมูลนี้มาจากเซสชันหน้าเว็บเดียว ซึ่งตรงกันข้ามกับข้อมูลภาคสนามที่สรุปหลายเซสชัน"
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "การควบคุม 4G แบบช้า"
@@ -3055,9 +3481,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "ค่ามาจากการประมาณและอาจแตกต่างกันไป [คะแนนประสิทธิภาพคำนวณ](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/)จากเมตริกเหล่านี้โดยตรง"
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "ดูการติดตามดั้งเดิม"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "ดูการติดตาม"

@@ -3,7 +3,7 @@
   "description": "Package list used when building/upgrading lit",
   "private": true,
   "dependencies": {
-    "lit": "2.4.1"
+    "lit": "3.0.2"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "13.3.0",

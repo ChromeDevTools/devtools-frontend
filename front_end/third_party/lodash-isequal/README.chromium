@@ -3,7 +3,9 @@ Short Name: lodash.isequal
 URL: https://github.com/lodash/lodash
 Version: 4.5.0
 License: MIT
+License File: LICENSE
 Security Critical: no
+Shipped: yes
 
 Description:
 Performs a deep comparison between two values to determine if they are equivalent.

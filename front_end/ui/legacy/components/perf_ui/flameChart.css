@@ -27,21 +27,34 @@
 }
 
 .flame-chart-canvas:focus-visible {
-  border-top: 1px solid var(--legacy-accent-color);
-  border-bottom: 1px solid var(--legacy-accent-color);
+  border-top: 1px solid var(--sys-color-state-focus-ring);
+  border-bottom: 1px solid var(--sys-color-state-focus-ring);
 }
 
 .flame-chart-highlight-element {
   position: absolute;
   pointer-events: none;
-  background-color: var(--color-background-hover-overlay);
+  background-color: var(--sys-color-state-hover-on-subtle);
+}
+
+.reveal-descendants-arrow-highlight-element {
+  position: absolute;
+  pointer-events: none;
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .flame-chart-selected-element {
   position: absolute;
   pointer-events: none;
-  outline: 2px solid var(--color-accent-red);
-  background-color: var(--color-background-hover-overlay);
+  outline: 2px solid var(--sys-color-primary);
+  background-color: var(--sys-color-state-ripple-primary);
+}
+
+.flame-chart-search-element {
+  position: absolute;
+  pointer-events: none;
+  outline: 1px solid var(--sys-color-on-surface-subtle);
+  background-color: var(--sys-color-state-ripple-neutral-on-subtle);
 }
 
 .chart-cursor-element {
@@ -50,14 +63,14 @@
   bottom: 0;
   z-index: 100;
   width: 2px;
-  background-color: var(--color-selection-highlight-border);
+  background-color: var(--sys-color-primary);
   pointer-events: none;
 }
 
 .flame-chart-entry-info:not(:empty) {
   z-index: 2000;
   position: absolute;
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   pointer-events: none;
   padding: 4px 8px;
   white-space: nowrap;

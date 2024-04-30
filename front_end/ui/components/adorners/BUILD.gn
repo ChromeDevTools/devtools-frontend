@@ -5,6 +5,7 @@
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
@@ -17,6 +18,7 @@ devtools_module("adorners") {
   deps = [
     "../../../core/platform:bundle",
     "../../../ui/lit-html:bundle",
+    "../../../ui/visual_logging:bundle",
     "../helpers:bundle",
   ]
 }
@@ -29,5 +31,18 @@ devtools_entrypoint("bundle") {
     ":css_files",
   ]
 
-  visibility = default_components_visibility
+  visibility = default_components_visibility + [ "../../legacy/*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "Adorner.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../core/common:bundle",
+    "../../../core/platform:bundle",
+    "../../../testing",
+  ]
 }

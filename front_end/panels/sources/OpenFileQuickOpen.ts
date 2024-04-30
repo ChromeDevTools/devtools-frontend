@@ -5,13 +5,17 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
+import {PanelUtils} from '../../panels/utils/utils.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 
-import {iconDataForResourceType} from '../../panels/utils/utils.js';
 import {FilteredUISourceCodeListProvider} from './FilteredUISourceCodeListProvider.js';
 import {SourcesView} from './SourcesView.js';
 
 export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
+  constructor() {
+    super('source-file');
+  }
+
   override attach(): void {
     this.setDefaultScores(SourcesView.defaultUISourceCodeScores());
     super.attach();
@@ -39,7 +43,7 @@ export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
     super.renderItem(itemIndex, query, titleElement, subtitleElement);
 
     const iconElement = new IconButton.Icon.Icon();
-    const iconData = iconDataForResourceType(this.itemContentTypeAt(itemIndex));
+    const iconData = PanelUtils.iconDataForResourceType(this.itemContentTypeAt(itemIndex));
     iconElement.data = {
       ...iconData,
       width: '20px',

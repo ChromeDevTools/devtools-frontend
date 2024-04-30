@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {$$, assertNotNullOrUndefined, goToResource, waitFor} from '../../shared/helper.js';
+import {$$, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   CATEGORY,
@@ -14,7 +14,7 @@ import {
   toggleGroupByCategory,
 } from '../helpers/issues-helpers.js';
 
-describe('IssueView', async () => {
+describe('IssueView', () => {
   it('should be parented in issueTree when not groupedByCategory', async () => {
     await goToResource('elements/element-reveal-inline-issue.html');
     await navigateToIssuesTab();
@@ -24,7 +24,6 @@ describe('IssueView', async () => {
     }
 
     const issue = await waitFor(ISSUE);
-    assertNotNullOrUndefined(issue);
     const parent = await issue.evaluate(node => node.parentElement?.classList.contains('issue-category-body'));
     assert.isFalse(parent);
   });
@@ -38,7 +37,6 @@ describe('IssueView', async () => {
     }
 
     const issue = await waitFor(ISSUE);
-    assertNotNullOrUndefined(issue);
     const parent = await issue.evaluate(node => node.parentElement?.classList.contains('issue-category-body'));
     assert.isTrue(parent);
   });
@@ -53,14 +51,12 @@ describe('IssueView', async () => {
     let category = await $$(CATEGORY);
     assert.isEmpty(category);
     const issue = await waitFor(ISSUE);
-    assertNotNullOrUndefined(issue);
     const parent = await issue.evaluate(node => node.parentElement?.classList.contains('issue-category-body'));
     assert.isFalse(parent);
     await toggleGroupByCategory();
     category = await $$(CATEGORY);
     assert.isNotEmpty(category);
     const reparentedIssue = await waitFor(ISSUE);
-    assertNotNullOrUndefined(issue);
     const newParent =
         await reparentedIssue.evaluate(node => node.parentElement?.classList.contains('issue-category-body'));
     assert.isTrue(newParent);

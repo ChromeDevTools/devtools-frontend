@@ -18,5 +18,6 @@
   text-overflow: ellipsis;
   overflow: hidden;
   font-weight: bold;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
+  user-select: none;
 }

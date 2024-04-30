@@ -1,0 +1,69 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/generate_css.gni")
+import("../../../third_party/typescript/typescript.gni")
+import("../visibility.gni")
+
+devtools_module("linear_memory_inspector") {
+  sources = [
+    "LinearMemoryInspectorController.ts",
+    "LinearMemoryInspectorPane.ts",
+  ]
+
+  deps = [
+    "../../ui/legacy/components/object_ui:bundle",
+    "./components:bundle",
+  ]
+
+  visibility = [ "../../../component_docs/*" ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "linear_memory_inspector.ts"
+
+  deps = [
+    ":linear_memory_inspector",
+    "../../ui/legacy:css_files",
+  ]
+
+  visibility = [
+    ":*",
+    "../../entrypoints/*",
+  ]
+
+  visibility += devtools_panels_visibility
+}
+
+devtools_entrypoint("meta") {
+  entrypoint = "linear_memory_inspector-meta.ts"
+
+  deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../core/i18n:bundle",
+    "../../core/sdk:bundle",
+    "../../ui/legacy:bundle",
+    "../../ui/legacy/components/object_ui:bundle",
+  ]
+
+  visibility = [ "../../entrypoints/*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "LinearMemoryInspectorController.test.ts",
+    "LinearMemoryInspectorPane.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+    "./components:bundle",
+  ]
+}

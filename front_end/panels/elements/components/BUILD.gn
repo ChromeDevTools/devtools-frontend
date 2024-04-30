@@ -5,6 +5,7 @@
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../third_party/typescript/typescript.gni")
 
 generate_css("css_files") {
   sources = [
@@ -18,6 +19,7 @@ generate_css("css_files") {
     "cssVariableValueView.css",
     "elementsBreadcrumbs.css",
     "elementsTreeExpandButton.css",
+    "layoutPane.css",
     "queryContainer.css",
     "stylePropertyEditor.css",
   ]
@@ -51,6 +53,7 @@ devtools_module("components") {
     "../../../core/i18n:bundle",
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
+    "../../../ui/components/buttons:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/icon_button:bundle",
     "../../../ui/components/legacy_wrapper:bundle",
@@ -74,9 +77,41 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility = [
+    ":*",
     "..:*",
-    "../../../../test/unittests/front_end/panels/elements/components",
     "../../../ui/components/docs/*",
     "../../application/components/*",
+
+    # TODO : Remove after moving CSSHintDetailView to ui folder
+    "../../protocol_monitor/*",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+  sources = [
+    "AccessibilityTreeNode.test.ts",
+    "AdornerManager.test.ts",
+    "CSSHintDetailsView.test.ts",
+    "CSSPropertyDocsView.test.ts",
+    "CSSPropertyIconResolver.test.ts",
+    "CSSQuery.test.ts",
+    "CSSVariableValueView.test.ts",
+    "ComputedStyleProperty.test.ts",
+    "ComputedStyleTrace.test.ts",
+    "ElementsBreadcrumbs.test.ts",
+    "ElementsTreeExpandButton.test.ts",
+    "LayoutPane.test.ts",
+    "QueryContainer.test.ts",
+    "StylePropertyEditor.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../core/sdk:bundle",
+    "../../../testing",
+    "../../../ui/components/node_text:bundle",
+    "../../../ui/components/render_coordinator:bundle",
+    "../../../ui/legacy/components/inline_editor:bundle",
   ]
 }

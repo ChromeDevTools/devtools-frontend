@@ -22,8 +22,13 @@
   display: block;
   margin-left: 0;
   margin-right: 0;
-  outline: none !important; /* stylelint-disable-line declaration-no-important */
-  border: 1px solid var(--color-background-elevation-2);
+  border: 1px solid var(--sys-color-neutral-outline);
+  border-radius: 4px;
+
+  &:focus {
+    outline: 5px auto var(--sys-color-tonal-outline);
+    box-shadow: none;
+  }
 }
 
 .breakpoint-entry {
@@ -32,11 +37,11 @@
 }
 
 .breakpoint-list .breakpoint-entry:hover {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .breakpoint-list .breakpoint-entry:focus-visible {
-  background-color: var(--legacy-focus-bg-color);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .breakpoint-entry [is="dt-checkbox"] {
@@ -44,17 +49,9 @@
 }
 
 .breakpoint-hit {
-  --override-breakpoint-hit-background-color: rgb(255 255 194);
-  --override-breakpoint-hit-border-color: rgb(107 97 48);
-
-  background-color: var(--override-breakpoint-hit-background-color);
-  border-right: 3px solid var(--override-breakpoint-hit-border-color);
-}
-
-.-theme-with-dark-background .breakpoint-hit,
-:host-context(.-theme-with-dark-background) .breakpoint-hit {
-  --override-breakpoint-hit-background-color: hsl(46deg 98% 22%);
-  --override-breakpoint-hit-border-color: #ccc;
+  background-color: var(--sys-color-yellow-container);
+  border-right: 3px solid var(--sys-color-yellow-outline);
+  color: var(--sys-color-on-yellow-container);
 }
 
 @media (forced-colors: active) {

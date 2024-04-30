@@ -36,7 +36,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
   #textColorContrastIssues!: Map<string, ContrastIssue[]>;
 
   constructor(controller: OverviewController) {
-    super('css_overview');
+    super('css-overview');
 
     this.element.classList.add('css-overview-panel');
 

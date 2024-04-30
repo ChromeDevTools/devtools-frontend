@@ -30,11 +30,12 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
-import type * as Platform from '../../core/platform/platform.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {DOMStorage} from './DOMStorageModel.js';
 import {StorageItemsView} from './StorageItemsView.js';
@@ -114,14 +115,15 @@ export class DOMStorageItemsView extends StorageItemsView {
       void this.previewEntry(null);
     });
     this.dataGrid.setStriped(true);
-    this.dataGrid.setName('DOMStorageItemsView');
+    this.dataGrid.setName('dom-storage-items-view');
 
     this.splitWidget = new UI.SplitWidget.SplitWidget(
-        /* isVertical: */ false, /* secondIsSidebar: */ true, 'domStorageSplitViewState');
+        /* isVertical: */ false, /* secondIsSidebar: */ true, 'dom-storage-split-view-state');
     this.splitWidget.show(this.element);
 
     this.previewPanel = new UI.Widget.VBox();
     this.previewPanel.setMinimumSize(0, 50);
+    this.previewPanel.element.setAttribute('jslog', `${VisualLogging.pane('preview').track({resize: true})}`);
     const resizer = this.previewPanel.element.createChild('div', 'preview-panel-resizer');
     const dataGridWidget = this.dataGrid.asWidget();
     dataGridWidget.setMinimumSize(0, 50);
@@ -141,6 +143,8 @@ export class DOMStorageItemsView extends StorageItemsView {
   setStorage(domStorage: DOMStorage): void {
     Common.EventTarget.removeEventListeners(this.eventListeners);
     this.domStorage = domStorage;
+    const storageKind = domStorage.isLocalStorage ? 'local-storage-data' : 'session-storage-data';
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context(storageKind)}`);
     if (domStorage.storageKey) {
       this.setStorageKey(domStorage.storageKey);
     }

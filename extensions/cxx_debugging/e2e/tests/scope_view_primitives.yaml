@@ -1,0 +1,31 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+name: Scope view formats primitive types correctly
+# This test checks that the scope view displays
+# integers, chars, float and doubles correctly
+source_file: //extensions/cxx_debugging/e2e/resources/scope-view-primitives.c
+flags: [
+  [-g, -fdebug-compilation-dir=., -fno-limit-debug-info, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK],
+  [-g, -fdebug-compilation-dir=., -fno-limit-debug-info, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK, -gsplit-dwarf],
+  [-g, -fdebug-compilation-dir=., -gdwarf-5, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK],
+  [-g, -fdebug-compilation-dir=., -gdwarf-5, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK, -gsplit-dwarf, -gpubnames]]
+script:
+  - reason: setup
+    actions:
+    - file: scope-view-primitives.c
+      action: set_breakpoint
+      breakpoint: 14
+  - reason: breakpoint
+    file: scope-view-primitives.c
+    line: 14
+    variables:
+      - name: Local.i
+        value: 10
+      - name: Local.c
+        value: "\"'a'\""
+      - name: Local.f
+        value: 1.10000002
+      - name: Local.d
+        value: 1.2

@@ -45,7 +45,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
     "../../entrypoints/*",
     "../../panels/profiler/*",
   ]
@@ -53,19 +52,15 @@ devtools_entrypoint("bundle") {
   visibility += devtools_panels_visibility
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "settings-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [ "../..:legacy_entrypoints" ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "settings-meta.ts"
 
   deps = [
     ":bundle",
+    "../../core/common:bundle",
+    "../../core/i18n:bundle",
+    "../../core/root:bundle",
+    "../../ui/legacy:bundle",
     "./emulation:meta",
   ]
 

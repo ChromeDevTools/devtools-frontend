@@ -8,43 +8,17 @@ import urllib.request
 import tarfile
 import os
 import re
-import sys
 import subprocess
 import json
 import shutil
 from pkg_resources import parse_version
 import argparse
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-import devtools_paths
-
-THIRD_PARTY_NPM_PACKAGE_NAMES = [{
-    "package_name": "puppeteer-core",
-    "folder_name": "puppeteer",
-    "package_root": "lib/esm",
-}, {
-    "package_name": "@puppeteer/replay",
-    "folder_name": "puppeteer-replay",
-    "package_root": "lib",
-}]
-
-parser = argparse.ArgumentParser()
-parser.add_argument("-cb",
-                    "--create-branch",
-                    dest="create_branch",
-                    help="Creates a new branch for each dependency",
-                    action='store_true')
-parser.add_argument("-u",
-                    "--upload-cl",
-                    dest="upload_cl",
-                    help="Uploads a CL for each dependency",
-                    action='store_true')
-
-args = parser.parse_args()
+DEVTOOLS_PATH = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
-def getStartAndEndIndexForGNVariable(content, variable):
+def get_start_and_end_endex_for_gn_var(content, variable):
     startIndex = None
     endIndex = None
     startPattern = re.compile(r'\s*' + variable + '\s*=\s*\[\s*')
@@ -65,34 +39,79 @@ def getStartAndEndIndexForGNVariable(content, variable):
     return startIndex, endIndex
 
 
-def readGNVariable(filename, variable):
+def read_gn_var(filename, variable):
     with open(filename) as f:
         content = f.readlines()
-        startIndex, endIndex = getStartAndEndIndexForGNVariable(
+        startIndex, endIndex = get_start_and_end_endex_for_gn_var(
             content, variable)
         return [x.strip(' \t",\'\n') for x in content[startIndex:endIndex]]
 
 
-def updateGNVariable(file, variable, files):
+def update_gn_var(file, variable, files):
     content = None
     with open(file) as f:
         content = f.readlines()
 
     files.sort()
-    startIndex, endIndex = getStartAndEndIndexForGNVariable(content, variable)
-    newContent = content[:startIndex] + ['    "' + x + '",\n'
-                                         for x in files] + content[endIndex:]
+    startIndex, endIndex = get_start_and_end_endex_for_gn_var(
+        content, variable)
+    newContent = content[:startIndex] + [
+        '    "' + x + '",\n' if not x.startswith('#') else '    ' + x + '\n'
+        for x in files
+    ] + content[endIndex:]
 
     with open(file, 'w') as f:
         f.write(''.join(newContent))
 
 
-for package_info in THIRD_PARTY_NPM_PACKAGE_NAMES:
-    package_name = package_info["package_name"]
-    folder_name = package_info["folder_name"]
-    package_root = package_info["package_root"]
+def update_tsconfig(file, files):
+    files.sort()
+    with open(file, 'w') as f:
+        f.write("""{
+  "compilerOptions": {
+    "composite": true
+  },
+  "files": [\n""")
+        last = files.pop()
+        for file in files:
+            f.write(f"    \"{file}\",\n")
+        f.write(f"    \"{last}\"\n")
+        f.write("""  ]
+}
+""")
 
-    path = devtools_paths.root_path() + f'/front_end/third_party/{folder_name}'
+
+def update_readme_version(file, ver):
+    content = None
+    with open(file) as f:
+        content = f.readlines()
+
+    # Find the `Version` line.
+    for i, line in enumerate(content):
+        if line.startswith("Version:"):
+            lineIndex = i
+            break
+    if lineIndex is None:
+        return
+
+    with open(file, 'w') as f:
+        f.write(''.join(content[:lineIndex] + [f"Version: {ver}\n"] +
+                        content[lineIndex + 1:]))
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('package_name')
+    parser.add_argument('output_dir')
+    parser.add_argument('library_dir')
+
+    args = parser.parse_args()
+
+    package_name = args.package_name
+    output_dir = args.output_dir
+    library_dir = args.library_dir
+
+    path = DEVTOOLS_PATH + f'/front_end/third_party/{output_dir}'
     package_path = f'{path}/package'
 
     old_package_json = json.load(open(f'{package_path}/package.json'))
@@ -103,14 +122,7 @@ for package_info in THIRD_PARTY_NPM_PACKAGE_NAMES:
     # Version check
     version = parse_version(package_json['version'])
     if parse_version(old_package_json['version']) >= version:
-        continue
-
-    if args.create_branch:
-        subprocess.check_call(['git', 'checkout', 'main'],
-                              cwd=devtools_paths.root_path())
-        subprocess.check_call(
-            ['git', 'checkout', '-b', f'update-{folder_name}-{version}'],
-            cwd=devtools_paths.root_path())
+        return
 
     # Remove the old package
     shutil.rmtree(package_path)
@@ -125,44 +137,53 @@ for package_info in THIRD_PARTY_NPM_PACKAGE_NAMES:
     # Get the names of all files
     members = [m.name for m in members]
 
+    try:
+        excluded_sources = set(
+            read_gn_var(f'./front_end/third_party/{output_dir}/BUILD.gn',
+                        'EXCLUDED_SOURCES'))
+    except BaseException:
+        excluded_sources = set()
+
+    # Update {package-name}-tsconfig.json
+    update_tsconfig(
+        f'./front_end/third_party/{output_dir}/{output_dir}-tsconfig.json', [
+            name
+            for name in members if name.startswith(f'package/{library_dir}/')
+            and name not in excluded_sources and name.endswith('.js')
+        ])
+
     # Update BUILD.gn
-    updateGNVariable(
-        f'./front_end/third_party/{folder_name}/BUILD.gn', 'sources', [
-            f'{folder_name}-tsconfig.json',
+    update_gn_var(
+        f'./front_end/third_party/{output_dir}/BUILD.gn', 'SOURCES', [
+            f'{output_dir}-tsconfig.json',
         ] + [
-            name for name in members
-            if name.startswith(f'package/{package_root}') and
+            name
+            for name in members if name.startswith(f'package/{library_dir}/')
+            and name not in excluded_sources and
             (name.endswith('.js') or name.endswith('.js.map')
              or name.endswith('.d.ts') or name.endswith('.d.ts.map'))
         ])
 
     # Update devtools_grd_files.gni
-    updateGNVariable(
+    update_gn_var(
         './config/gni/devtools_grd_files.gni', 'grd_files_debug_sources', [
-            f'front_end/third_party/{folder_name}/' + name
-            for name in members if name.startswith(f'package/{package_root}')
-            and name.endswith('.js')
+            f'front_end/third_party/{output_dir}/' + name
+            for name in members if name.startswith(f'package/{library_dir}/')
+            and name not in excluded_sources and name.endswith('.js')
         ] + [
-            name
-            for name in readGNVariable('./config/gni/devtools_grd_files.gni',
-                                       'grd_files_debug_sources')
-            if not name.startswith(f'front_end/third_party/{folder_name}')
+            name for name in read_gn_var('./config/gni/devtools_grd_files.gni',
+                                         'grd_files_debug_sources')
+            if not name.startswith(f'front_end/third_party/{output_dir}/')
         ])
+
+    # Update README.chromium
+    update_readme_version(
+        f'./front_end/third_party/{output_dir}/README.chromium', version)
 
     tar.close()
 
-    if args.upload_cl:
-        subprocess.check_call(['git', 'cl', 'format'],
-                              cwd=devtools_paths.root_path())
-        subprocess.check_call(['git', 'add', '-A'],
-                              cwd=devtools_paths.root_path())
-        subprocess.check_call(
-            ['git', 'commit', '-m', f'Update {package_name} to {version}'],
-            cwd=devtools_paths.root_path())
-        subprocess.check_call(
-            ['git', 'cl', 'upload', '-b', 'none', '-f', '-d', '-s'],
-            cwd=devtools_paths.root_path())
+    subprocess.check_call(['git', 'cl', 'format'], cwd=DEVTOOLS_PATH)
 
-if args.create_branch:
-    subprocess.check_call(['git', 'checkout', 'main'],
-                          cwd=devtools_paths.root_path())
+
+if __name__ == '__main__':
+    main()

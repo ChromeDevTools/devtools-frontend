@@ -7,7 +7,6 @@ import {assert} from 'chai';
 import {
   $,
   click,
-  clickElement,
   getBrowserAndPages,
   getTestServerPort,
   goToResource,
@@ -19,8 +18,14 @@ import {getDataGrid, getDataGridRows, getInnerTextOfDataGridCells} from '../help
 
 const REPORTING_API_SELECTOR = '[aria-label="Reporting API"]';
 
-describe('The Reporting API Page', async () => {
-  it('shows reports', async () => {
+describe('The Reporting API Page', () => {
+  beforeEach(async () => {
+    const {target} = getBrowserAndPages();
+    await navigateToApplicationTab(target, 'empty');
+  });
+
+  // Flaky on mac
+  it.skipOnPlatforms(['mac'], '[crbug.com/1482688] shows reports', async () => {
     const {target} = getBrowserAndPages();
     await navigateToApplicationTab(target, 'reporting-api');
     await click(REPORTING_API_SELECTOR);
@@ -39,7 +44,7 @@ describe('The Reporting API Page', async () => {
     assert.strictEqual(innerText[0][5], reportBody);
 
     const rows = await getDataGridRows(1, dataGrid, false);
-    await clickElement(rows[rows.length - 1][0]);
+    await rows[rows.length - 1][0].click();
 
     const jsonView = await waitFor('.json-view');
     const jsonViewText = await jsonView.evaluate(el => (el as HTMLElement).innerText);

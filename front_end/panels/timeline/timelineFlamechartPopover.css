@@ -8,20 +8,24 @@
   overflow: hidden;
 }
 
+.timeline-flamechart-popover devtools-interaction-breakdown {
+  margin-top: 10px;
+}
+
 .timeline-flamechart-popover span {
   margin-right: 5px;
 }
 
 .timeline-flamechart-popover span.timeline-info-network-time {
-  color: var(--color-primary-old);
+  color: var(--sys-color-primary);
 }
 
 .timeline-flamechart-popover span.timeline-info-time {
-  color: var(--color-accent-green);
+  color: var(--sys-color-green);
 }
 
 .timeline-flamechart-popover span.timeline-info-warning {
-  color: var(--color-accent-red);
+  color: var(--sys-color-error);
 }
 
 .timeline-flamechart-popover span.timeline-info-warning * {

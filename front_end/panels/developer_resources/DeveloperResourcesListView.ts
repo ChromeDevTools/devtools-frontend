@@ -34,9 +34,9 @@ const UIStrings = {
    */
   error: 'Error',
   /**
-   *@description Title for the developer resources tab
+   *@description Title for the Developer resources tab
    */
-  developerResources: 'Developer Resources',
+  developerResources: 'Developer resources',
   /**
    *@description Text for a context menu entry
    */
@@ -90,7 +90,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
         align: DataGrid.DataGrid.Align.Right,
       },
       {
-        id: 'errorMessage',
+        id: 'error-message',
         title: i18nString(UIStrings.error),
         width: '200px',
         fixedWidth: false,
@@ -105,6 +105,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
       deleteCallback: undefined,
     });
     this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
+    this.dataGrid.setStriped(true);
     this.dataGrid.element.classList.add('flex-auto');
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortingChanged, this);
     this.dataGrid.setRowContextMenuCallback(this.populateContextMenu.bind(this));
@@ -122,11 +123,11 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     const item = (gridNode as GridNode).item;
     contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyUrl), () => {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(item.url);
-    });
+    }, {jslogContext: 'copy-url'});
     if (item.initiator.initiatorUrl) {
       contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyInitiatorUrl), () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(item.initiator.initiatorUrl);
-      });
+      }, {jslogContext: 'copy-initiator-url'});
     }
   }
 
@@ -246,14 +247,14 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> 
         cell.textContent = url;
         UI.Tooltip.Tooltip.install(cell, url);
         this.setCellAccessibleName(url, cell, columnId);
-        cell.onmouseenter = (): void => {
+        cell.onmouseenter = () => {
           const frameId = this.item.initiator.frameId;
           const frame = frameId ? SDK.FrameManager.FrameManager.instance().getFrame(frameId) : null;
           if (frame) {
             void frame.highlight();
           }
         };
-        cell.onmouseleave = (): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        cell.onmouseleave = () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
         break;
       }
       case 'status': {
@@ -274,7 +275,7 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> 
         }
         break;
       }
-      case 'errorMessage': {
+      case 'error-message': {
         cell.classList.add('error-message');
         if (this.item.errorMessage) {
           cell.textContent = this.item.errorMessage;
@@ -304,19 +305,18 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> 
     const nullToNegative = (x: boolean|number|null): number => x === null ? -1 : Number(x);
     switch (columnId) {
       case 'url':
-        return (a: GridNode, b: GridNode): number => a.item.url.localeCompare(b.item.url);
+        return (a: GridNode, b: GridNode) => a.item.url.localeCompare(b.item.url);
       case 'status':
-        return (a: GridNode, b: GridNode): number => {
+        return (a: GridNode, b: GridNode) => {
           return nullToNegative(a.item.success) - nullToNegative(b.item.success);
         };
       case 'size':
-        return (a: GridNode, b: GridNode): number => nullToNegative(a.item.size) - nullToNegative(b.item.size);
+        return (a: GridNode, b: GridNode) => nullToNegative(a.item.size) - nullToNegative(b.item.size);
       case 'initiator':
-        return (a: GridNode, b: GridNode): number =>
+        return (a: GridNode, b: GridNode) =>
                    (a.item.initiator.initiatorUrl || '').localeCompare(b.item.initiator.initiatorUrl || '');
-      case 'errorMessage':
-        return (a: GridNode, b: GridNode): number =>
-                   (a.item.errorMessage || '').localeCompare(b.item.errorMessage || '');
+      case 'error-message':
+        return (a: GridNode, b: GridNode) => (a.item.errorMessage || '').localeCompare(b.item.errorMessage || '');
       default:
         console.assert(false, 'Unknown sort field: ' + columnId);
         return null;

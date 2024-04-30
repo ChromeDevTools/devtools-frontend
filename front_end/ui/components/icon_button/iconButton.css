@@ -12,31 +12,25 @@
 .icon-button {
   border: none;
   margin-right: 2px;
+  margin-top: 4px;
   display: inline-flex;
   align-items: center;
   color: inherit;
   font-size: inherit;
   font-family: inherit;
-  background-color: var(--color-background-elevation-1);
+  background-color: inherit;
 }
 
 .icon-button.with-click-handler {
-  border: 1px solid var(--color-details-hairline);
-  border-radius: 2px;
   padding: 0 4px;
 }
 
 .icon-button.with-click-handler:hover {
-  background-color: var(--legacy-toolbar-hover-bg-color);
-}
-
-.icon-button.icon-button.with-click-handler:active {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .icon-button:focus-visible {
-  background-color: var(--legacy-toolbar-hover-bg-color);
-  border: 1px solid var(--color-details-hairline);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .icon-button-title {
@@ -65,7 +59,5 @@
   .icon-button.with-click-handler:hover {
     background-color: Highlight;
     color: HighlightText;
-
-    --icon-color: HighlightText;
   }
 }

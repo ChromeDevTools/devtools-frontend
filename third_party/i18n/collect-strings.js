@@ -27,6 +27,7 @@ const IGNORED_PATH_COMPONENTS = [
   '**/.git/**',
   '**/*_test_runner/**',
   '**/third_party/**',
+  '**/*.test.ts',
 ];
 
 /**

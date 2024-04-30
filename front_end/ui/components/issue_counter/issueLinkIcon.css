@@ -12,14 +12,45 @@
   font-family: inherit;
 }
 
+:host([hidden]) {
+  display: none;
+}
+
+button {
+  border: none;
+  background: transparent;
+  margin: 0;
+  padding: 0;
+
+  &.link {
+    cursor: pointer;
+
+    & > span {
+      color: var(--sys-color-primary);
+    }
+  }
+}
+
 devtools-icon {
+  width: 16px;
+  height: 16px;
   vertical-align: middle;
+
+  &[name="issue-cross-filled"] {
+    color: var(--icon-error);
+  }
+
+  &[name="issue-exclamation-filled"] {
+    color: var(--icon-warning);
+  }
+
+  &[name="issue-text-filled"] {
+    color: var(--icon-info);
+  }
 }
 
-.link {
-  cursor: pointer;
-}
-
-.link span {
-  color: var(--color-link);
+@media (forced-colors: active) {
+  devtools-icon {
+    color: ButtonText;
+  }
 }

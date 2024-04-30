@@ -4,15 +4,45 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../../scripts/build/ninja/generate_css.gni")
+import("../../../scripts/build/ninja/node.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
+
+node_action("generate_easter_egg_file") {
+  script = "front_end/panels/timeline/enable-easter-egg.js"
+
+  args = [ rebase_path(target_gen_dir, root_build_dir) ]
+
+  if (is_chrome_branded) {
+    args += [ "--should-enable" ]
+  }
+
+  outputs = [ "$target_gen_dir/EasterEgg.js" ]
+  data = outputs
+  if (is_debug) {
+    metadata = {
+      grd_files = outputs
+    }
+  }
+}
+
+devtools_pre_built("easter-egg") {
+  sources = [
+    "EasterEgg.d.ts",
+    "easter-egg-tsconfig.json",
+  ]
+
+  deps = [ ":generate_easter_egg_file" ]
+}
 
 generate_css("css_files") {
   sources = [
     "historyToolbarButton.css",
-    "invalidationsTree.css",
     "timelineFlamechartPopover.css",
     "timelineHistoryManager.css",
+    "timelineMiniMap.css",
     "timelinePaintProfiler.css",
     "timelinePanel.css",
     "timelineStatusDialog.css",
@@ -21,16 +51,25 @@ generate_css("css_files") {
 
 devtools_module("timeline") {
   sources = [
+    "ActiveFilters.ts",
+    "AnimationsTrackAppender.ts",
     "AppenderUtils.ts",
+    "BenchmarkEvents.ts",
     "CLSLinkifier.ts",
     "CompatibilityTracksAppender.ts",
     "CountersGraph.ts",
+    "EventUICategory.ts",
     "EventsTimelineTreeView.ts",
     "GPUTrackAppender.ts",
+    "Initiators.ts",
     "InteractionsTrackAppender.ts",
+    "IsolateSelector.ts",
     "LayoutShiftsTrackAppender.ts",
+    "NetworkTrackAppender.ts",
     "PerformanceModel.ts",
     "SaveFileFormatter.ts",
+    "SourceMapsResolver.ts",
+    "ThreadAppender.ts",
     "TimelineController.ts",
     "TimelineDetailsView.ts",
     "TimelineEventOverview.ts",
@@ -41,6 +80,7 @@ devtools_module("timeline") {
     "TimelineHistoryManager.ts",
     "TimelineLayersView.ts",
     "TimelineLoader.ts",
+    "TimelineMiniMap.ts",
     "TimelinePaintProfilerView.ts",
     "TimelinePanel.ts",
     "TimelineSelection.ts",
@@ -52,24 +92,32 @@ devtools_module("timeline") {
   ]
 
   deps = [
+    ":easter-egg",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../generated:protocol",
+    "../../models/cpu_profile:bundle",
     "../../models/extensions:bundle",
     "../../models/source_map_scopes:bundle",
     "../../models/timeline_model:bundle",
     "../../models/trace:bundle",
+    "../../models/workspace:bundle",
     "../../panels/coverage:bundle",
     "../../panels/layer_viewer:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../panels/profiler:bundle",
+    "../../services/trace_bounds:bundle",
+    "../../ui/components/menus:bundle",
     "../../ui/components/panel_feedback:bundle",
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/perf_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
     "../../ui/lit-html:bundle",
+    "./components:bundle",
   ]
+
+  visibility = [ "../../component_docs/*" ]
 }
 
 devtools_entrypoint("bundle") {
@@ -82,34 +130,72 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
-    "../../../test/unittests/front_end/helpers",
-    "../../../test/unittests/front_end/panels/timeline/*",
+    "../../../test/interactions/panels/performance/timeline/*",
+    "../../../test/perf/*",
     "../../entrypoints/*",
+    "../../models/trace/handlers:unittests",
+    "../../testing",
+    "../../testing/*",
     "../../ui/components/docs/performance_panel/*",
-    "../js_profiler/*",
-    "../recorder/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../input/*",
+    "../js_profiler/*",
     "../lighthouse/*",
+    "../recorder/*",
+    "./track_appenders:unittests",
   ]
 
   visibility += devtools_panels_visibility
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "timeline-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [ "../..:legacy_entrypoints" ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "timeline-meta.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../core/i18n:bundle",
+    "../../core/root:bundle",
+    "../../panels/profiler:bundle",
+    "../../ui/legacy:bundle",
+    "./components:bundle",
+  ]
 
   visibility = [ "../../entrypoints/*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "Breadcrumbs.test.ts",
+    "EventTypeHelpers.test.ts",
+    "Initiators.test.ts",
+    "SaveFileFormatter.test.ts",
+    "SourceMapsResolver.test.ts",
+    "TimelineController.test.ts",
+    "TimelineDetailsView.test.ts",
+    "TimelineFilters.test.ts",
+    "TimelineFlameChartDataProvider.test.ts",
+    "TimelineFlameChartNetworkDataProvider.test.ts",
+    "TimelineFlameChartView.test.ts",
+    "TimelineHistoryManager.test.ts",
+    "TimelineLoader.test.ts",
+    "TimelineMiniMap.test.ts",
+    "TimelineSelection.test.ts",
+    "TimelineTreeView.test.ts",
+    "TimelineUIUtils.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../core/platform:bundle",
+    "../../core/root:bundle",
+    "../../core/sdk:bundle",
+    "../../models/bindings:bundle",
+    "../../models/timeline_model:bundle",
+    "../../models/trace:bundle",
+    "../../models/workspace:bundle",
+    "../../testing",
+    "./components:bundle",
+  ]
 }

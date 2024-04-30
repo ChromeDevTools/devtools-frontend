@@ -1,6 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.pierceAll = exports.pierce = exports.checkVisibility = void 0;
+/**
+ * @license
+ * Copyright 2024 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 const HIDDEN_VISIBILITY_VALUES = ['hidden', 'collapse'];
 /**
  * @internal

@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 const UIStrings = {
   /**
@@ -59,21 +60,25 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
     this.maxScale = Infinity;
 
     this.controlPanelToolbar = new UI.Toolbar.Toolbar('transform-control-panel');
+    this.controlPanelToolbar.element.setAttribute('jslog', `${VisualLogging.toolbar()}`);
 
     this.modeButtons = {};
     if (!disableRotate) {
-      const panModeButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.panModeX), '3d-pan');
+      const panModeButton =
+          new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.panModeX), '3d-pan', undefined, 'layers.3d-pan');
       panModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.setMode.bind(this, Modes.Pan));
       this.modeButtons[Modes.Pan] = panModeButton;
       this.controlPanelToolbar.appendToolbarItem(panModeButton);
-      const rotateModeButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.rotateModeV), '3d-rotate');
+      const rotateModeButton =
+          new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.rotateModeV), '3d-rotate', undefined, 'layers.3d-rotate');
       rotateModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.setMode.bind(this, Modes.Rotate));
       this.modeButtons[Modes.Rotate] = rotateModeButton;
       this.controlPanelToolbar.appendToolbarItem(rotateModeButton);
     }
     this.setMode(Modes.Pan);
 
-    const resetButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.resetTransform), '3d-center');
+    const resetButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.resetTransform), '3d-center', undefined, 'layers.3d-center');
     resetButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.resetAndNotify.bind(this, undefined));
     this.controlPanelToolbar.appendToolbarItem(resetButton);
 
@@ -87,15 +92,15 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
   private registerShortcuts(): void {
     const zoomFactor = 1.1;
     UI.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(this.element, {
-      'layers.reset-view': async(): Promise<true> => {
+      'layers.reset-view': async () => {
         this.resetAndNotify();
         return true;
       },
-      'layers.pan-mode': async(): Promise<true> => {
+      'layers.pan-mode': async () => {
         this.setMode(Modes.Pan);
         return true;
       },
-      'layers.rotate-mode': async(): Promise<true> => {
+      'layers.rotate-mode': async () => {
         this.setMode(Modes.Rotate);
         return true;
       },
@@ -257,9 +262,7 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   TransformChanged = 'TransformChanged',
 }
 

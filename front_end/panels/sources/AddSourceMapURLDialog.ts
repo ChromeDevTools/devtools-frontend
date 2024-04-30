@@ -29,19 +29,22 @@ export class AddDebugInfoURLDialog extends UI.Widget.HBox {
   private readonly dialog: UI.Dialog.Dialog;
   private readonly callback: (arg0: Platform.DevToolsPath.UrlString) => void;
   private constructor(
-      label: Platform.UIString.LocalizedString, callback: (arg0: Platform.DevToolsPath.UrlString) => void) {
+      label: Platform.UIString.LocalizedString, jslogContext: string,
+      callback: (arg0: Platform.DevToolsPath.UrlString) => void) {
     super(/* isWebComponent */ true);
 
     this.contentElement.createChild('label').textContent = label;
 
-    this.input = UI.UIUtils.createInput('add-source-map', 'text');
+    this.input = UI.UIUtils.createInput('add-source-map', 'text', 'url');
     this.input.addEventListener('keydown', this.onKeyDown.bind(this), false);
     this.contentElement.appendChild(this.input);
 
-    const addButton = UI.UIUtils.createTextButton(i18nString(UIStrings.add), this.apply.bind(this));
+    const addButton = UI.UIUtils.createTextButton(i18nString(UIStrings.add), this.apply.bind(this), {
+      jslogContext: 'add',
+    });
     this.contentElement.appendChild(addButton);
 
-    this.dialog = new UI.Dialog.Dialog();
+    this.dialog = new UI.Dialog.Dialog(jslogContext);
     this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     this.dialog.setDefaultFocusedElement(this.input);
 
@@ -49,12 +52,12 @@ export class AddDebugInfoURLDialog extends UI.Widget.HBox {
   }
 
   static createAddSourceMapURLDialog(callback: (arg0: Platform.DevToolsPath.UrlString) => void): AddDebugInfoURLDialog {
-    return new AddDebugInfoURLDialog(i18nString(UIStrings.sourceMapUrl), callback);
+    return new AddDebugInfoURLDialog(i18nString(UIStrings.sourceMapUrl), 'add-source-map-url', callback);
   }
 
   static createAddDWARFSymbolsURLDialog(callback: (arg0: Platform.DevToolsPath.UrlString) => void):
       AddDebugInfoURLDialog {
-    return new AddDebugInfoURLDialog(i18nString(UIStrings.debugInfoUrl), callback);
+    return new AddDebugInfoURLDialog(i18nString(UIStrings.debugInfoUrl), 'add-debug-info-url', callback);
   }
 
   override show(): void {

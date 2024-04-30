@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -12,12 +13,11 @@ import type * as InspectorMain from '../inspector_main/inspector_main.js';
 
 import type * as Main from './main.js';
 
-import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
   /**
    *@description Text in Main
    */
-  focusDebuggee: 'Focus debuggee',
+  focusDebuggee: 'Focus page',
   /**
    *@description Text in the Shortcuts page in settings to explain a keyboard shortcut
    */
@@ -133,30 +133,6 @@ const UIStrings = {
   /**
    *@description Title of a setting under the Appearance category in Settings
    */
-  colorFormat: 'Color format:',
-  /**
-   *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
-   */
-  setColorFormatAsAuthored: 'Set color format as authored',
-  /**
-   *@description A drop-down menu option to set color format as authored
-   */
-  asAuthored: 'As authored',
-  /**
-   *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
-   */
-  setColorFormatToHex: 'Set color format to HEX',
-  /**
-   *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
-   */
-  setColorFormatToRgb: 'Set color format to RGB',
-  /**
-   *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
-   */
-  setColorFormatToHsl: 'Set color format to HSL',
-  /**
-   *@description Title of a setting under the Appearance category in Settings
-   */
   enableCtrlShortcutToSwitchPanels: 'Enable Ctrl + 1-9 shortcut to switch panels',
   /**
    *@description (Mac only) Title of a setting under the Appearance category in Settings
@@ -215,11 +191,6 @@ const UIStrings = {
    */
   enableSync: 'Enable settings sync',
   /**
-   *@description Tooltip for the colorFormat setting to inform of its deprecation
-   */
-  colorFormatSettingDisabled:
-      'This setting is deprecated because it is incompatible with modern color spaces. To re-enable it, disable the corresponding experiment.',
-  /**
    * @description A command available in the command menu to perform searches, for example in the
    * elements panel, as user types, rather than only when they press Enter.
    */
@@ -261,10 +232,10 @@ async function loadInspectorMainModule(): Promise<typeof InspectorMain> {
 
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.DRAWER,
-  actionId: 'inspector_main.focus-debuggee',
+  actionId: 'inspector-main.focus-debuggee',
   async loadActionDelegate() {
     const InspectorMain = await loadInspectorMainModule();
-    return InspectorMain.InspectorMain.FocusDebuggeeActionDelegate.instance();
+    return new InspectorMain.InspectorMain.FocusDebuggeeActionDelegate();
   },
   order: 100,
   title: i18nLazyString(UIStrings.focusDebuggee),
@@ -274,7 +245,7 @@ UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.DRAWER,
   actionId: 'main.toggle-drawer',
   async loadActionDelegate() {
-    return UI.InspectorView.ActionDelegate.instance();
+    return new UI.InspectorView.ActionDelegate();
   },
   order: 101,
   title: i18nLazyString(UIStrings.toggleDrawer),
@@ -290,7 +261,7 @@ UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
   title: i18nLazyString(UIStrings.nextPanel),
   async loadActionDelegate() {
-    return UI.InspectorView.ActionDelegate.instance();
+    return new UI.InspectorView.ActionDelegate();
   },
   bindings: [
     {
@@ -309,7 +280,7 @@ UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
   title: i18nLazyString(UIStrings.previousPanel),
   async loadActionDelegate() {
-    return UI.InspectorView.ActionDelegate.instance();
+    return new UI.InspectorView.ActionDelegate();
   },
   bindings: [
     {
@@ -329,7 +300,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.reloadDevtools),
   async loadActionDelegate() {
     const Main = await loadMainModule();
-    return Main.MainImpl.ReloadActionDelegate.instance();
+    return new Main.MainImpl.ReloadActionDelegate();
   },
   bindings: [
     {
@@ -343,7 +314,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.restoreLastDockPosition),
   actionId: 'main.toggle-dock',
   async loadActionDelegate() {
-    return UI.DockController.ToggleDockActionDelegate.instance();
+    return new UI.DockController.ToggleDockActionDelegate();
   },
   bindings: [
     {
@@ -363,7 +334,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.zoomIn),
   async loadActionDelegate() {
     const Main = await loadMainModule();
-    return Main.MainImpl.ZoomActionDelegate.instance();
+    return new Main.MainImpl.ZoomActionDelegate();
   },
   bindings: [
     {
@@ -415,7 +386,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.zoomOut),
   async loadActionDelegate() {
     const Main = await loadMainModule();
-    return Main.MainImpl.ZoomActionDelegate.instance();
+    return new Main.MainImpl.ZoomActionDelegate();
   },
   bindings: [
     {
@@ -467,7 +438,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.resetZoomLevel),
   async loadActionDelegate() {
     const Main = await loadMainModule();
-    return Main.MainImpl.ZoomActionDelegate.instance();
+    return new Main.MainImpl.ZoomActionDelegate();
   },
   bindings: [
     {
@@ -495,7 +466,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.searchInPanel),
   async loadActionDelegate() {
     const Main = await loadMainModule();
-    return Main.MainImpl.SearchActionDelegate.instance();
+    return new Main.MainImpl.SearchActionDelegate();
   },
   bindings: [
     {
@@ -527,7 +498,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.cancelSearch),
   async loadActionDelegate() {
     const Main = await loadMainModule();
-    return Main.MainImpl.SearchActionDelegate.instance();
+    return new Main.MainImpl.SearchActionDelegate();
   },
   order: 10,
   bindings: [
@@ -543,7 +514,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.findNextResult),
   async loadActionDelegate() {
     const Main = await loadMainModule();
-    return Main.MainImpl.SearchActionDelegate.instance();
+    return new Main.MainImpl.SearchActionDelegate();
   },
   bindings: [
     {
@@ -575,7 +546,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.findPreviousResult),
   async loadActionDelegate() {
     const Main = await loadMainModule();
-    return Main.MainImpl.SearchActionDelegate.instance();
+    return new Main.MainImpl.SearchActionDelegate();
   },
   bindings: [
     {
@@ -605,7 +576,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.theme),
-  settingName: 'uiTheme',
+  settingName: 'ui-theme',
   settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'systemPreferred',
   reloadRequired: false,
@@ -636,7 +607,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.panelLayout),
-  settingName: 'sidebarPosition',
+  settingName: 'sidebar-position',
   settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'auto',
   options: [
@@ -656,46 +627,6 @@ Common.Settings.registerSettingExtension({
       value: 'auto',
     },
   ],
-});
-
-// TODO(chromium:1392054) This setting is deprecated, to be removed after a grace period!
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.APPEARANCE,
-  storageType: Common.Settings.SettingStorageType.Synced,
-  title: i18nLazyString(UIStrings.colorFormat),
-  settingName: 'colorFormat',
-  settingType: Common.Settings.SettingType.ENUM,
-  defaultValue: 'original',
-  options: [
-    {
-      title: i18nLazyString(UIStrings.setColorFormatAsAuthored),
-      text: i18nLazyString(UIStrings.asAuthored),
-      value: 'original',
-    },
-    {
-      title: i18nLazyString(UIStrings.setColorFormatToHex),
-      text: 'HEX: #dac0de',
-      value: 'hex',
-      raw: true,
-    },
-    {
-      title: i18nLazyString(UIStrings.setColorFormatToRgb),
-      text: 'RGB: rgb(128 255 255)',
-      value: 'rgb',
-      raw: true,
-    },
-    {
-      title: i18nLazyString(UIStrings.setColorFormatToHsl),
-      text: 'HSL: hsl(300deg 80% 90%)',
-      value: 'hsl',
-      raw: true,
-    },
-  ],
-  deprecationNotice: {
-    disabled: true,
-    warning: i18nLazyString(UIStrings.colorFormatSettingDisabled),
-    experiment: Root.Runtime.ExperimentName.DISABLE_COLOR_FORMAT_SETTING,
-  },
 });
 
 Common.Settings.registerSettingExtension({
@@ -719,9 +650,9 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
   storageType: Common.Settings.SettingStorageType.Synced,
-  title: i18nLazyString(UIStrings.enableCtrlShortcutToSwitchPanels),
-  titleMac: i18nLazyString(UIStrings.enableShortcutToSwitchPanels),
-  settingName: 'shortcutPanelSwitch',
+  title: Host.Platform.platform() === 'mac' ? i18nLazyString(UIStrings.enableShortcutToSwitchPanels) :
+                                              i18nLazyString(UIStrings.enableCtrlShortcutToSwitchPanels),
+  settingName: 'shortcut-panel-switch',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 });
@@ -757,7 +688,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   storageType: Common.Settings.SettingStorageType.Synced,
-  settingName: 'activeKeybindSet',
+  settingName: 'active-keybind-set',
   settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'devToolsDefault',
   options: [
@@ -790,7 +721,7 @@ function createOptionForLocale(localeString: string): Common.Settings.SettingExt
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SYNC,
   // This name must be kept in sync with DevToolsSettings::kSyncDevToolsPreferencesFrontendName.
-  settingName: 'sync_preferences',
+  settingName: 'sync-preferences',
   settingType: Common.Settings.SettingType.BOOLEAN,
   title: i18nLazyString(UIStrings.enableSync),
   defaultValue: false,
@@ -799,7 +730,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   storageType: Common.Settings.SettingStorageType.Synced,
-  settingName: 'userShortcuts',
+  settingName: 'user-shortcuts',
   settingType: Common.Settings.SettingType.ARRAY,
   defaultValue: [],
 });
@@ -808,7 +739,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.GLOBAL,
   storageType: Common.Settings.SettingStorageType.Local,
   title: i18nLazyString(UIStrings.searchAsYouTypeSetting),
-  settingName: 'searchAsYouType',
+  settingName: 'search-as-you-type',
   settingType: Common.Settings.SettingType.BOOLEAN,
   order: 3,
   defaultValue: true,
@@ -857,7 +788,7 @@ UI.ContextMenu.registerProvider({
     ];
   },
   async loadProvider() {
-    return Components.Linkifier.ContentProviderContextMenuProvider.instance();
+    return new Components.Linkifier.ContentProviderContextMenuProvider();
   },
   experiment: undefined,
 });
@@ -869,7 +800,7 @@ UI.ContextMenu.registerProvider({
     ];
   },
   async loadProvider() {
-    return UI.XLink.ContextMenuProvider.instance();
+    return new UI.XLink.ContextMenuProvider();
   },
   experiment: undefined,
 });
@@ -881,7 +812,7 @@ UI.ContextMenu.registerProvider({
     ];
   },
   async loadProvider() {
-    return Components.Linkifier.LinkContextMenuProvider.instance();
+    return new Components.Linkifier.LinkContextMenuProvider();
   },
   experiment: undefined,
 });
@@ -890,20 +821,12 @@ UI.Toolbar.registerToolbarItem({
   separator: true,
   location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_LEFT,
   order: 100,
-  showLabel: undefined,
-  actionId: undefined,
-  condition: undefined,
-  loadItem: undefined,
 });
 
 UI.Toolbar.registerToolbarItem({
   separator: true,
   order: 97,
   location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
-  showLabel: undefined,
-  actionId: undefined,
-  condition: undefined,
-  loadItem: undefined,
 });
 
 UI.Toolbar.registerToolbarItem({
@@ -913,10 +836,6 @@ UI.Toolbar.registerToolbarItem({
   },
   order: 99,
   location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
-  showLabel: undefined,
-  condition: undefined,
-  separator: undefined,
-  actionId: undefined,
 });
 
 UI.Toolbar.registerToolbarItem({
@@ -926,10 +845,6 @@ UI.Toolbar.registerToolbarItem({
   },
   order: 100,
   location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
-  showLabel: undefined,
-  condition: undefined,
-  separator: undefined,
-  actionId: undefined,
 });
 
 UI.Toolbar.registerToolbarItem({
@@ -938,10 +853,6 @@ UI.Toolbar.registerToolbarItem({
   },
   order: 101,
   location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
-  showLabel: undefined,
-  condition: undefined,
-  separator: undefined,
-  actionId: undefined,
 });
 
 Common.AppProvider.registerAppProvider({
@@ -950,5 +861,4 @@ Common.AppProvider.registerAppProvider({
     return Main.SimpleApp.SimpleAppProvider.instance();
   },
   order: 10,
-  condition: undefined,
 });

@@ -2,24 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
-import cssAngleStyles from './cssAngle.css.js';
 
+import cssAngleStyles from './cssAngle.css.js';
+import {CSSAngleEditor, type CSSAngleEditorData} from './CSSAngleEditor.js';
+import {CSSAngleSwatch, type CSSAngleSwatchData} from './CSSAngleSwatch.js';
 import {
+  type Angle,
   AngleUnit,
   convertAngleUnit,
   getNewAngleFromEvent,
   getNextUnit,
   parseText,
   roundAngleByUnit,
-  type Angle,
 } from './CSSAngleUtils.js';
 import {ValueChangedEvent} from './InlineEditorUtils.js';
-
-import {CSSAngleEditor, type CSSAngleEditorData} from './CSSAngleEditor.js';
-
-import {CSSAngleSwatch, type CSSAngleSwatchData} from './CSSAngleSwatch.js';
 
 const {render, html} = LitHtml;
 const styleMap = LitHtml.Directives.styleMap;
@@ -44,6 +41,12 @@ export class UnitChangedEvent extends Event {
     super(UnitChangedEvent.eventName, {});
     this.data = {value};
   }
+}
+
+interface EventTypes {
+  [PopoverToggledEvent.eventName]: PopoverToggledEvent;
+  [UnitChangedEvent.eventName]: UnitChangedEvent;
+  [ValueChangedEvent.eventName]: ValueChangedEvent;
 }
 
 export interface CSSAngleData {
@@ -97,7 +100,7 @@ export class CSSAngle extends HTMLElement {
   // We bind and unbind mouse event listeners upon popping over and minifying,
   // because we anticipate most of the time this widget is minified even when
   // it's attached to the DOM tree.
-  popover(): void {
+  popOver(): void {
     if (!this.containingPane) {
       return;
     }
@@ -134,6 +137,18 @@ export class CSSAngle extends HTMLElement {
     this.angleElement.focus();
   }
 
+  override addEventListener<K extends keyof EventTypes>(
+      type: K, listener: (this: CSSAngle, ev: EventTypes[K]) => void,
+      options?: boolean|AddEventListenerOptions|undefined): void;
+  override addEventListener<K extends keyof HTMLElementEventMap>(
+      type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => void,
+      options?: boolean|AddEventListenerOptions|undefined): void;
+  override addEventListener(
+      type: string, listener: EventListenerOrEventListenerObject,
+      options?: boolean|AddEventListenerOptions|undefined): void {
+    super.addEventListener(type, listener, options);
+  }
+
   minify(): void {
     if (this.popoverOpen === false) {
       return;
@@ -151,7 +166,7 @@ export class CSSAngle extends HTMLElement {
     this.render();
   }
 
-  private updateAngle(angle: Angle): void {
+  updateAngle(angle: Angle): void {
     this.displayedAngle = roundAngleByUnit(convertAngleUnit(angle, this.displayedAngle.unit));
     this.angle = this.displayedAngle;
     this.dispatchEvent(new ValueChangedEvent(`${this.angle.value}${this.angle.unit}`));
@@ -183,7 +198,7 @@ export class CSSAngle extends HTMLElement {
       this.displayNextUnit();
       return;
     }
-    this.popoverOpen ? this.minify() : this.popover();
+    this.popoverOpen ? this.minify() : this.popOver();
   }
 
   // Fix that the previous text will be selected when double-clicking the angle icon
@@ -218,7 +233,7 @@ export class CSSAngle extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <div class="css-angle" @keydown=${this.onKeydown} tabindex="-1">
+      <div class="css-angle" @focusout=${this.minify} @keydown=${this.onKeydown} tabindex="-1">
         <div class="preview">
           <${CSSAngleSwatch.litTagName}
             @click=${this.onMiniIconClick}
@@ -263,10 +278,9 @@ export class CSSAngle extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-css-angle', CSSAngle);
+customElements.define('devtools-css-angle', CSSAngle);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-css-angle': CSSAngle;
   }

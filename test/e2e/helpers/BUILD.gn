@@ -38,5 +38,8 @@ node_ts_library("helpers") {
     "webaudio-helpers.ts",
   ]
 
-  deps = [ "../../shared" ]
+  deps = [
+    "../../../extension-api",
+    "../../shared",
+  ]
 }

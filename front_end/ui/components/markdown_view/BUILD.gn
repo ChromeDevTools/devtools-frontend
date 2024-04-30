@@ -5,10 +5,12 @@
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "codeBlock.css",
     "markdownImage.css",
     "markdownLink.css",
     "markdownView.css",
@@ -17,6 +19,7 @@ generate_css("css_files") {
 
 devtools_module("markdown_view") {
   sources = [
+    "CodeBlock.ts",
     "MarkdownImage.ts",
     "MarkdownImagesMap.ts",
     "MarkdownLink.ts",
@@ -28,15 +31,17 @@ devtools_module("markdown_view") {
     "../../../core/host:bundle",
     "../../../core/platform:bundle",
     "../../../models/text_utils:bundle",
+    "../../../third_party/codemirror.next:bundle",
     "../../../third_party/marked:bundle",
+    "../../../ui/components/buttons:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/icon_button:bundle",
     "../../../ui/components/render_coordinator:bundle",
+    "../../../ui/components/text_editor:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/lit-html:bundle",
+    "../../../ui/visual_logging:bundle",
   ]
-
-  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
 }
 
 devtools_entrypoint("bundle") {
@@ -48,4 +53,27 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility = default_components_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "CodeBlock.test.ts",
+    "MarkdownImage.test.ts",
+    "MarkdownLink.test.ts",
+    "MarkdownView.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../core/host:bundle",
+    "../../../core/platform:bundle",
+    "../../../testing",
+    "../../../third_party/marked:bundle",
+    "../../legacy:bundle",
+    "../../lit-html:bundle",
+    "../icon_button:bundle",
+    "../render_coordinator:bundle",
+  ]
 }

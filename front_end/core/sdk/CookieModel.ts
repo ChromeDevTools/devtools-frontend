@@ -6,12 +6,12 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';
 
-import {Cookie, type Attributes} from './Cookie.js';
+import {type Attribute, Cookie} from './Cookie.js';
 import {type Resource} from './Resource.js';
-import {ResourceTreeModel} from './ResourceTreeModel.js';
-
-import {Capability, type Target} from './Target.js';
+import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
 import {SDKModel} from './SDKModel.js';
+import {Capability, type Target} from './Target.js';
+import {TargetManager} from './TargetManager.js';
 
 export class CookieModel extends SDKModel<void> {
   readonly #blockedCookies: Map<string, Cookie>;
@@ -21,6 +21,8 @@ export class CookieModel extends SDKModel<void> {
 
     this.#blockedCookies = new Map();
     this.#cookieToBlockedReasons = new Map();
+    TargetManager.instance().addModelListener(
+        ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
   }
 
   addBlockedCookie(cookie: Cookie, blockedReasons: BlockedReason[]|null): void {
@@ -37,6 +39,15 @@ export class CookieModel extends SDKModel<void> {
     }
   }
 
+  removeBlockedCookie(cookie: Cookie): void {
+    this.#blockedCookies.delete(cookie.key());
+  }
+
+  #onPrimaryPageChanged(): void {
+    this.#blockedCookies.clear();
+    this.#cookieToBlockedReasons.clear();
+  }
+
   getCookieToBlockedReasonsMap(): ReadonlyMap<Cookie, BlockedReason[]> {
     return this.#cookieToBlockedReasons;
   }
@@ -47,7 +58,11 @@ export class CookieModel extends SDKModel<void> {
       return [];
     }
     const normalCookies = response.cookies.map(Cookie.fromProtocolCookie);
-    return normalCookies.concat(Array.from(this.#blockedCookies.values()));
+    const blockedCookieArray = Array.from(this.#blockedCookies.values());
+    const matchesBlockedCookie = (cookie: Cookie): boolean => {
+      return blockedCookieArray.some(blockedCookie => cookie.isEqual(blockedCookie));
+    };
+    return normalCookies.filter(cookie => !matchesBlockedCookie(cookie)).concat(blockedCookieArray);
   }
 
   async deleteCookie(cookie: Cookie): Promise<void> {
@@ -75,7 +90,7 @@ export class CookieModel extends SDKModel<void> {
     if (cookie.expires()) {
       expires = Math.floor(Date.parse(`${cookie.expires()}`) / 1000);
     }
-    const enabled = Root.Runtime.experiments.isEnabled('experimentalCookieFeatures');
+    const enabled = Root.Runtime.experiments.isEnabled('experimental-cookie-features');
     const preserveUnset = (scheme: Protocol.Network.CookieSourceScheme): Protocol.Network.CookieSourceScheme.Unset|
                           undefined => scheme === Protocol.Network.CookieSourceScheme.Unset ? scheme : undefined;
     const protocolCookie = {
@@ -130,14 +145,21 @@ export class CookieModel extends SDKModel<void> {
     const networkAgent = this.target().networkAgent();
     this.#blockedCookies.clear();
     this.#cookieToBlockedReasons.clear();
-    await Promise.all(cookies.map(
-        cookie => networkAgent.invoke_deleteCookies(
-            {name: cookie.name(), url: undefined, domain: cookie.domain(), path: cookie.path()})));
+    await Promise.all(cookies.map(cookie => networkAgent.invoke_deleteCookies({
+      name: cookie.name(),
+      url: undefined,
+      domain: cookie.domain(),
+      path: cookie.path(),
+      partitionKey: cookie.partitionKey(),
+    })));
   }
 }
 
 SDKModel.register(CookieModel, {capabilities: Capability.Network, autostart: false});
 export interface BlockedReason {
   uiString: string;
-  attribute: Attributes|null;
+  attribute: Attribute|null;
+}
+export interface ExemptionReason {
+  uiString: string;
 }

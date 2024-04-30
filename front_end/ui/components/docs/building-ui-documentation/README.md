@@ -9,6 +9,8 @@ Note that this documentation is a work in progress as it is migrated from the [o
 1. [Creating components](./CreatingComponents.md)
 1. [Styling components](./StylingComponents.md)
 1. [Component performance](./ComponentPerformance.md)
+1. [Testing components](./TestingComponents.md)
+1. [Components and events](./ComponentEvents.md)
 
 ## FAQs
 

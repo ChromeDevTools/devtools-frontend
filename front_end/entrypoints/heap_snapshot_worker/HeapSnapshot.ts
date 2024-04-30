@@ -35,7 +35,6 @@ import * as Platform from '../../core/platform/platform.js';
 import * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 
 import {AllocationProfile} from './AllocationProfile.js';
-
 import {type HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';
 
 export interface HeapSnapshotItem {
@@ -101,6 +100,10 @@ export class HeapSnapshotEdge implements HeapSnapshotItem {
     }
 
     return this.edges[this.edgeIndex + this.snapshot.edgeTypeOffset];
+  }
+
+  isInternal(): boolean {
+    throw new Error('Not implemented');
   }
 
   isInvisible(): boolean {
@@ -568,6 +571,10 @@ export interface Profile {
   trace_tree: Object;
 }
 
+export interface LiveObjects {
+  [x: number]: {count: number, size: number, ids: number[]};
+}
+
 /**
  * DOM node link state.
  */
@@ -750,6 +757,8 @@ export abstract class HeapSnapshot {
     // Actually it is array that maps node ordinal number to dominator node ordinal number.
     this.#progress.updateStatus('Building dominator tree…');
     this.dominatorsTree = this.buildDominatorTree(result.postOrderIndex2NodeOrdinal, result.nodeOrdinal2PostOrderIndex);
+    this.#progress.updateStatus('Calculating shallow sizes…');
+    this.calculateShallowSizes();
     this.#progress.updateStatus('Calculating retained sizes…');
     this.calculateRetainedSizes(result.postOrderIndex2NodeOrdinal);
     this.#progress.updateStatus('Building dominated nodes…');
@@ -768,7 +777,7 @@ export abstract class HeapSnapshot {
       const nodesLength = nodes.length;
       const nodeFieldCount = this.nodeFieldCount;
       const node = this.rootNode();
-      const liveObjects: {[x: number]: {count: number, size: number, ids: number[]}} = {};
+      const liveObjects: LiveObjects = {};
       for (let nodeIndex = 0; nodeIndex < nodesLength; nodeIndex += nodeFieldCount) {
         node.nodeIndex = nodeIndex;
         const traceNodeId = node.traceNodeId();
@@ -1059,6 +1068,9 @@ export abstract class HeapSnapshot {
     return true;
   }
 
+  calculateShallowSizes(): void {
+  }
+
   calculateDistances(filter?: ((arg0: HeapSnapshotNode, arg1: HeapSnapshotEdge) => boolean)): void {
     const nodeCount = this.nodeCount;
     const distances = this.nodeDistances;
@@ -1268,7 +1280,23 @@ export abstract class HeapSnapshot {
    * The function checks is the edge should be considered during building
    * postorder iterator and dominator tree.
    */
-  private isEssentialEdge(nodeIndex: number, edgeType: number): boolean {
+  private isEssentialEdge(nodeIndex: number, edgeIndex: number): boolean {
+    const edgeType = this.containmentEdges[edgeIndex + this.edgeTypeOffset];
+
+    // Values in WeakMaps are retained by the key and table together. Removing
+    // either the key or the table would be sufficient to remove the edge from
+    // the other one, so we needn't use both of those edges when computing
+    // dominators. We've found that the edge from the key generally produces
+    // more useful results, so here we skip the edge from the table.
+    if (edgeType === this.edgeInternalType) {
+      const match = this.strings[this.containmentEdges[edgeIndex + this.edgeNameOffset]].match(
+          /^\d+ \/ part of key \(.*? @\d+\) -> value \(.*? @\d+\) pair in WeakMap \(table @(?<tableId>\d+)\)$/);
+      if (match) {
+        const nodeId = this.nodes[nodeIndex + this.nodeIdOffset];
+        return nodeId !== parseInt((match.groups as {tableId: string}).tableId, 10);
+      }
+    }
+
     // Shortcuts at the root node have special meaning of marking user global objects.
     return edgeType !== this.edgeWeakType &&
         (edgeType !== this.edgeShortcutType || nodeIndex === this.rootNodeIndexInternal);
@@ -1280,7 +1308,6 @@ export abstract class HeapSnapshot {
     const rootNodeOrdinal = this.rootNodeIndexInternal / nodeFieldCount;
 
     const edgeFieldsCount = this.edgeFieldsCount;
-    const edgeTypeOffset = this.edgeTypeOffset;
     const edgeToNodeOffset = this.edgeToNodeOffset;
     const firstEdgeIndexes = this.firstEdgeIndexes;
     const containmentEdges = this.containmentEdges;
@@ -1311,8 +1338,7 @@ export abstract class HeapSnapshot {
 
         if (edgeIndex < edgesEnd) {
           stackCurrentEdge[stackTop] += edgeFieldsCount;
-          const edgeType = containmentEdges[edgeIndex + edgeTypeOffset];
-          if (!this.isEssentialEdge(nodeOrdinal * nodeFieldCount, edgeType)) {
+          if (!this.isEssentialEdge(nodeOrdinal * nodeFieldCount, edgeIndex)) {
             continue;
           }
           const childNodeIndex = containmentEdges[edgeIndex + edgeToNodeOffset];
@@ -1428,7 +1454,6 @@ export abstract class HeapSnapshot {
     const retainingNodes = this.retainingNodes;
     const retainingEdges = this.retainingEdges;
     const edgeFieldsCount = this.edgeFieldsCount;
-    const edgeTypeOffset = this.edgeTypeOffset;
     const edgeToNodeOffset = this.edgeToNodeOffset;
     const firstEdgeIndexes = this.firstEdgeIndexes;
     const containmentEdges = this.containmentEdges;
@@ -1448,7 +1473,7 @@ export abstract class HeapSnapshot {
     dominators[rootPostOrderedIndex] = rootPostOrderedIndex;
 
     // The affected array is used to mark entries which dominators
-    // have to be racalculated because of changes in their retainers.
+    // have to be recalculated because of changes in their retainers.
     const affected = new Uint8Array(nodesCount);
     let nodeOrdinal;
 
@@ -1456,8 +1481,7 @@ export abstract class HeapSnapshot {
       nodeOrdinal = this.rootNodeIndexInternal / nodeFieldCount;
       const endEdgeIndex = firstEdgeIndexes[nodeOrdinal + 1];
       for (let edgeIndex = firstEdgeIndexes[nodeOrdinal]; edgeIndex < endEdgeIndex; edgeIndex += edgeFieldsCount) {
-        const edgeType = containmentEdges[edgeIndex + edgeTypeOffset];
-        if (!this.isEssentialEdge(this.rootNodeIndexInternal, edgeType)) {
+        if (!this.isEssentialEdge(this.rootNodeIndexInternal, edgeIndex)) {
           continue;
         }
         const childNodeOrdinal = containmentEdges[edgeIndex + edgeToNodeOffset] / nodeFieldCount;
@@ -1486,9 +1510,8 @@ export abstract class HeapSnapshot {
         let orphanNode = true;
         for (let retainerIndex = beginRetainerIndex; retainerIndex < endRetainerIndex; ++retainerIndex) {
           const retainerEdgeIndex = retainingEdges[retainerIndex];
-          const retainerEdgeType = containmentEdges[retainerEdgeIndex + edgeTypeOffset];
           const retainerNodeIndex = retainingNodes[retainerIndex];
-          if (!this.isEssentialEdge(retainerNodeIndex, retainerEdgeType)) {
+          if (!this.isEssentialEdge(retainerNodeIndex, retainerEdgeIndex)) {
             continue;
           }
           orphanNode = false;
@@ -1499,21 +1522,21 @@ export abstract class HeapSnapshot {
           if (retainerNodeIndex !== rootNodeIndex && nodeFlag && !retainerNodeFlag) {
             continue;
           }
-          let retanerPostOrderIndex: number = nodeOrdinal2PostOrderIndex[retainerNodeOrdinal];
-          if (dominators[retanerPostOrderIndex] !== noEntry) {
+          let retainerPostOrderIndex: number = nodeOrdinal2PostOrderIndex[retainerNodeOrdinal];
+          if (dominators[retainerPostOrderIndex] !== noEntry) {
             if (newDominatorIndex === noEntry) {
-              newDominatorIndex = retanerPostOrderIndex;
+              newDominatorIndex = retainerPostOrderIndex;
             } else {
-              while (retanerPostOrderIndex !== newDominatorIndex) {
-                while (retanerPostOrderIndex < newDominatorIndex) {
-                  retanerPostOrderIndex = dominators[retanerPostOrderIndex];
+              while (retainerPostOrderIndex !== newDominatorIndex) {
+                while (retainerPostOrderIndex < newDominatorIndex) {
+                  retainerPostOrderIndex = dominators[retainerPostOrderIndex];
                 }
-                while (newDominatorIndex < retanerPostOrderIndex) {
+                while (newDominatorIndex < retainerPostOrderIndex) {
                   newDominatorIndex = dominators[newDominatorIndex];
                 }
               }
             }
-            // If idom has already reached the root, it doesn't make sense
+            // If item has already reached the root, it doesn't make sense
             // to check other retainers.
             if (newDominatorIndex === rootPostOrderedIndex) {
               break;
@@ -2324,7 +2347,10 @@ export class JSHeapSnapshot extends HeapSnapshot {
   override lazyStringCache: {};
   private flags!: Uint32Array;
   #statistics?: HeapSnapshotModel.HeapSnapshotModel.Statistics;
-  constructor(profile: Profile, progress: HeapSnapshotProgress) {
+  #options: HeapSnapshotModel.HeapSnapshotModel.HeapSnapshotOptions;
+  constructor(
+      profile: Profile, progress: HeapSnapshotProgress,
+      options?: HeapSnapshotModel.HeapSnapshotModel.HeapSnapshotOptions) {
     super(profile, progress);
     this.nodeFlags = {
       // bit flags
@@ -2334,6 +2360,7 @@ export class JSHeapSnapshot extends HeapSnapshot {
           4,  // The idea is to track separately the objects owned by the page and the objects owned by debugger.
     };
     this.lazyStringCache = {};
+    this.#options = options ?? {heapSnapshotTreatBackingStoreAsContainingObject: false};
     this.initialize();
   }
 
@@ -2368,12 +2395,111 @@ export class JSHeapSnapshot extends HeapSnapshot {
     this.markPageOwnedNodes();
   }
 
-  override calculateDistances(): void {
-    function filter(node: HeapSnapshotNode, edge: HeapSnapshotEdge): boolean {
-      if (node.isHidden()) {
-        return edge.name() !== 'sloppy_function_map' || node.rawName() !== 'system / NativeContext';
+  // Updates the shallow sizes for "owned" objects of types kArray or kHidden to
+  // zero, and add their sizes to the "owner" object instead.
+  override calculateShallowSizes(): void {
+    if (!this.#options.heapSnapshotTreatBackingStoreAsContainingObject) {
+      return;
+    }
+
+    const {nodeCount, nodes, nodeFieldCount, nodeSelfSizeOffset} = this;
+
+    const kUnvisited = 0xffffffff;
+    const kHasMultipleOwners = 0xfffffffe;
+    if (nodeCount >= kHasMultipleOwners) {
+      throw new Error('Too many nodes for calculateShallowSizes');
+    }
+    // For each node in order, `owners` will contain the index of the owning
+    // node or one of the two values kUnvisited or kHasMultipleOwners. The
+    // indexes in this array are NOT already multiplied by nodeFieldCount.
+    const owners = new Uint32Array(nodeCount);
+    // The worklist contains the indexes of nodes which should be visited during
+    // the second loop below. The order of visiting doesn't matter. The indexes
+    // in this array are NOT already multiplied by nodeFieldCount.
+    const worklist: number[] = [];
+
+    const node = this.createNode(0);
+    for (let i = 0; i < nodeCount; ++i) {
+      if (node.isHidden() || node.isArray()) {
+        owners[i] = kUnvisited;
+      } else {
+        // The node owns itself.
+        owners[i] = i;
+        worklist.push(i);
       }
-      if (node.isArray()) {
+      node.nodeIndex = node.nextNodeIndex();
+    }
+
+    while (worklist.length !== 0) {
+      const id = worklist.pop() as number;
+      const owner = owners[id];
+      node.nodeIndex = id * nodeFieldCount;
+      for (let iter = node.edges(); iter.hasNext(); iter.next()) {
+        const edge = iter.edge;
+        if (edge.isWeak()) {
+          continue;
+        }
+        const targetId = edge.nodeIndex() / nodeFieldCount;
+        switch (owners[targetId]) {
+          case kUnvisited:
+            owners[targetId] = owner;
+            worklist.push(targetId);
+            break;
+          case targetId:
+          case owner:
+          case kHasMultipleOwners:
+            // There is no change necessary if the target is already marked as:
+            // * owned by itself,
+            // * owned by the owner of the current source node, or
+            // * owned by multiple nodes.
+            break;
+          default:
+            owners[targetId] = kHasMultipleOwners;
+            // It is possible that this node is already in the worklist
+            // somewhere, but visiting it an extra time is not harmful. The
+            // iteration is guaranteed to complete because each node can only be
+            // added twice to the worklist: once when changing from kUnvisited
+            // to a specific owner, and a second time when changing from that
+            // owner to kHasMultipleOwners.
+            worklist.push(targetId);
+            break;
+        }
+      }
+    }
+
+    for (let i = 0; i < nodeCount; ++i) {
+      const ownerId = owners[i];
+      switch (ownerId) {
+        case kUnvisited:
+        case kHasMultipleOwners:
+        case i:
+          break;
+        default: {
+          const ownedNodeIndex = i * nodeFieldCount;
+          const ownerNodeIndex = ownerId * nodeFieldCount;
+          node.nodeIndex = ownerNodeIndex;
+          if (node.isSynthetic()) {
+            // Adding shallow size to synthetic nodes is not useful.
+            break;
+          }
+          const sizeToTransfer = nodes[ownedNodeIndex + nodeSelfSizeOffset];
+          nodes[ownedNodeIndex + nodeSelfSizeOffset] = 0;
+          nodes[ownerNodeIndex + nodeSelfSizeOffset] += sizeToTransfer;
+          break;
+        }
+      }
+    }
+  }
+
+  override calculateDistances(): void {
+    const pendingEphemeronEdges = new Set<string>();
+    const ephemeronNameRegex =
+        /^\d+ \/ part of key \(.*? @(?<keyId>\d+)\) -> value \(.*? @\d+\) pair in WeakMap \(table @(?<tableId>\d+)\)$/;
+    function filter(node: HeapSnapshotNode, edge: HeapSnapshotEdge): boolean {
+      if (node.isHidden() && edge.name() === 'sloppy_function_map' && node.rawName() === 'system / NativeContext') {
+        return false;
+      }
+      if (node.isArray() && node.rawName() === '(map descriptors)') {
         // DescriptorArrays are fixed arrays used to hold instance descriptors.
         // The format of the these objects is:
         //   [0]: Number of descriptors
@@ -2387,11 +2513,35 @@ export class JSHeapSnapshot extends HeapSnapshot {
         // links may not be valid for all the maps. We just skip
         // all the descriptor links when calculating distances.
         // For more details see http://crbug.com/413608
-        if (node.rawName() !== '(map descriptors)') {
-          return true;
-        }
         const index = parseInt(edge.name(), 10);
         return index < 2 || (index % 3) !== 1;
+      }
+      if (edge.isInternal()) {
+        // Snapshots represent WeakMap values as being referenced by two edges:
+        // one from the WeakMap, and a second from the corresponding key. To
+        // avoid the case described in crbug.com/1290800, we should set the
+        // distance of that value to the greater of (WeakMap+1, key+1). This
+        // part of the filter skips the first edge in the matched pair of edges,
+        // so that the distance gets set based on the second, which should be
+        // greater or equal due to traversal order.
+        const match = edge.name().match(ephemeronNameRegex);
+        if (match) {
+          const nodeId = node.id().toString(10);
+          const targetNodeId = edge.node().id().toString(10);
+          if (!pendingEphemeronEdges.has(nodeId + ' ' + targetNodeId)) {
+            const {keyId, tableId} = match.groups as {keyId: string, tableId: string};
+            let otherNodeId: string = '';
+            if (keyId === nodeId) {
+              otherNodeId = tableId;
+            } else if (tableId === nodeId) {
+              otherNodeId = keyId;
+            } else {
+              throw new Error('Invalid IDs in WeakMap edge');
+            }
+            pendingEphemeronEdges.add(otherNodeId + ' ' + targetNodeId);
+            return false;
+          }
+        }
       }
       return true;
     }
@@ -2433,7 +2583,7 @@ export class JSHeapSnapshot extends HeapSnapshot {
   private markQueriableHeapObjects(): void {
     // Allow runtime properties query for objects accessible from Window objects
     // via regular properties, and for DOM wrappers. Trying to access random objects
-    // can cause a crash due to insonsistent state of internal properties of wrappers.
+    // can cause a crash due to inconsistent state of internal properties of wrappers.
     const flag = this.nodeFlags.canBeQueried;
     const hiddenEdgeType = this.edgeHiddenType;
     const internalEdgeType = this.edgeInternalType;
@@ -2706,6 +2856,10 @@ export class JSHeapSnapshotNode extends HeapSnapshotNode {
         return this.name();
       case 'code':
         return '(compiled code)';
+      case 'closure':
+        return 'Function';
+      case 'regexp':
+        return 'RegExp';
       default:
         return '(' + type + ')';
     }
@@ -2790,7 +2944,7 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
     return this.rawType() === this.snapshot.edgeWeakType;
   }
 
-  isInternal(): boolean {
+  override isInternal(): boolean {
     return this.rawType() === this.snapshot.edgeInternalType;
   }
 

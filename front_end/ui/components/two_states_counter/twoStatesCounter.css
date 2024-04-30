@@ -27,11 +27,11 @@
 }
 
 .active {
-  color: var(--color-button-primary-text);
-  background-color: var(--color-primary-old);
+  color: var(--sys-color-on-primary);
+  background-color: var(--sys-color-primary);
 }
 
 .inactive {
-  color: var(--color-text-disabled);
-  background-color: var(--color-background-elevation-2);
+  color: var(--sys-color-state-disabled);
+  background-color: var(--sys-color-state-disabled-container);
 }

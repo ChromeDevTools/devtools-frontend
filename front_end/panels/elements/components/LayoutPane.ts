@@ -3,22 +3,23 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
-import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as UI from '../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-
-import {type LayoutElement, type BooleanSetting, type EnumSetting, type Setting} from './LayoutPaneUtils.js';
-import layoutPaneStyles from '../layoutPane.css.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
+import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as NodeText from '../../../ui/components/node_text/node_text.js';
+import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
+import * as UI from '../../../ui/legacy/legacy.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import * as i18n from '../../../core/i18n/i18n.js';
+import layoutPaneStyles from './layoutPane.css.js';
+import {type BooleanSetting, type EnumSetting, type LayoutElement, type Setting} from './LayoutPaneUtils.js';
+
 const UIStrings = {
   /**
    *@description Title of the input to select the overlay color for an element using the color picker
@@ -72,22 +73,22 @@ const nodeToLayoutElement = (node: SDK.DOMModel.DOMNode): LayoutElement => {
   const nodeId = node.id;
   return {
     id: nodeId,
-    color: '#000',
+    color: 'var(--sys-color-inverse-surface)',
     name: node.localName(),
     domId: node.getAttribute('id'),
     domClasses: className ? className.split(/\s+/).filter(s => Boolean(s)) : undefined,
     enabled: false,
-    reveal: (): void => {
+    reveal: () => {
       void Common.Revealer.reveal(node);
       void node.scrollIntoView();
     },
-    highlight: (): void => {
+    highlight: () => {
       node.highlight();
     },
-    hideHighlight: (): void => {
+    hideHighlight: () => {
       SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     },
-    toggle: (_value: boolean): never => {
+    toggle: (_value: boolean) => {
       throw new Error('Not implemented');
     },
     setColor(_value: string): never {
@@ -102,9 +103,10 @@ const gridNodesToElements = (nodes: SDK.DOMModel.DOMNode[]): LayoutElement[] => 
     const nodeId = node.id;
     return {
       ...layoutElement,
-      color: node.domModel().overlayModel().colorOfGridInPersistentOverlay(nodeId) || '#000',
+      color:
+          node.domModel().overlayModel().colorOfGridInPersistentOverlay(nodeId) || 'var(--sys-color-inverse-surface)',
       enabled: node.domModel().overlayModel().isHighlightedGridInPersistentOverlay(nodeId),
-      toggle: (value: boolean): void => {
+      toggle: (value: boolean) => {
         if (value) {
           node.domModel().overlayModel().highlightGridInPersistentOverlay(nodeId);
         } else {
@@ -125,9 +127,10 @@ const flexContainerNodesToElements = (nodes: SDK.DOMModel.DOMNode[]): LayoutElem
     const nodeId = node.id;
     return {
       ...layoutElement,
-      color: node.domModel().overlayModel().colorOfFlexInPersistentOverlay(nodeId) || '#000',
+      color:
+          node.domModel().overlayModel().colorOfFlexInPersistentOverlay(nodeId) || 'var(--sys-color-inverse-surface)',
       enabled: node.domModel().overlayModel().isHighlightedFlexContainerInPersistentOverlay(nodeId),
-      toggle: (value: boolean): void => {
+      toggle: (value: boolean) => {
         if (value) {
           node.domModel().overlayModel().highlightFlexContainerInPersistentOverlay(nodeId);
         } else {
@@ -173,7 +176,7 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   constructor() {
     super();
     this.#settings = this.#makeSettings();
-    this.#uaShadowDOMSetting = Common.Settings.Settings.instance().moduleSetting('showUAShadowDOM');
+    this.#uaShadowDOMSetting = Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom');
     this.#domModels = [];
     this.#shadow.adoptedStyleSheets = [
       Input.checkboxStyles,
@@ -186,7 +189,8 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
     if (!layoutPaneWrapperInstance) {
       layoutPaneWrapperInstance = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.Widget, new LayoutPane());
     }
-
+    layoutPaneWrapperInstance.element.style.minWidth = 'min-content';
+    layoutPaneWrapperInstance.element.setAttribute('jslog', `${VisualLogging.pane('layout').track({resize: true})}`);
     return layoutPaneWrapperInstance.getComponent();
   }
 
@@ -243,7 +247,8 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
 
   #makeSettings(): Setting[] {
     const settings = [];
-    for (const settingName of ['showGridLineLabels', 'showGridTrackSizes', 'showGridAreas', 'extendGridLines']) {
+    for (const settingName
+             of ['show-grid-line-labels', 'show-grid-track-sizes', 'show-grid-areas', 'extend-grid-lines']) {
       const setting = Common.Settings.Settings.instance().moduleSetting(settingName);
       const settingValue = setting.get();
       const settingType = setting.type();
@@ -335,10 +340,10 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
       // clang-format off
       render(html`
         <details open>
-          <summary class="header" @keydown=${this.#onSummaryKeyDown}>
+          <summary class="header" @keydown=${this.#onSummaryKeyDown} jslog=${VisualLogging.sectionHeader('grid-settings').track({click: true})}>
             ${i18nString(UIStrings.grid)}
           </summary>
-          <div class="content-section">
+          <div class="content-section" jslog=${VisualLogging.section('grid-settings')}>
             <h3 class="content-section-title">${i18nString(UIStrings.overlayDisplaySettings)}</h3>
             <div class="select-settings">
               ${this.#getEnumSettings().map(setting => this.#renderEnumSetting(setting))}
@@ -348,7 +353,7 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
             </div>
           </div>
           ${gridElements ?
-            html`<div class="content-section">
+            html`<div class="content-section" jslog=${VisualLogging.section('grid-overlays')}>
               <h3 class="content-section-title">
                 ${gridElements.length ? i18nString(UIStrings.gridOverlays) : i18nString(UIStrings.noGridLayoutsFoundOnThisPage)}
               </h3>
@@ -361,11 +366,11 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
         ${flexContainerElements !== undefined ?
           html`
           <details open>
-            <summary class="header" @keydown=${this.#onSummaryKeyDown}>
+            <summary class="header" @keydown=${this.#onSummaryKeyDown} jslog=${VisualLogging.sectionHeader('flexbox-overlays').track({click: true})}>
               ${i18nString(UIStrings.flexbox)}
             </summary>
             ${flexContainerElements ?
-              html`<div class="content-section">
+              html`<div class="content-section" jslog=${VisualLogging.section('flexbox-overlays')}>
                 <h3 class="content-section-title">
                   ${flexContainerElements.length ? i18nString(UIStrings.flexboxOverlays) : i18nString(UIStrings.noFlexboxLayoutsFoundOnThisPage)}
                 </h3>
@@ -453,9 +458,9 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
     };
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return html`<div class="element">
+    return html`<div class="element" jslog=${VisualLogging.item()}>
       <label data-element="true" class="checkbox-label">
-        <input data-input="true" type="checkbox" .checked=${element.enabled} @change=${onElementToggle} />
+        <input data-input="true" type="checkbox" .checked=${element.enabled} @change=${onElementToggle} jslog=${VisualLogging.toggle().track({click:true})} />
         <span class="node-text-container" data-label="true" @mouseenter=${onMouseEnter} @mouseleave=${onMouseLeave}>
           <${NodeText.NodeText.NodeText.litTagName} .data=${{
             nodeId: element.domId,
@@ -464,22 +469,24 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
           } as NodeText.NodeText.NodeTextData}></${NodeText.NodeText.NodeText.litTagName}>
         </span>
       </label>
-      <label @keyup=${onColorLabelKeyUp} @keydown=${onColorLabelKeyDown} class="color-picker-label" style="background: ${element.color};">
+      <label @keyup=${onColorLabelKeyUp} @keydown=${onColorLabelKeyDown} class="color-picker-label" style="background: ${element.color};" jslog=${VisualLogging.showStyleEditor('color').track({click: true})}>
         <input @change=${onColorChange} @input=${onColorChange} title=${i18nString(UIStrings.chooseElementOverlayColor)} tabindex="0" class="color-picker" type="color" value=${element.color} />
       </label>
-      <${IconButton.Icon.Icon.litTagName} .data=${{
-        iconName: 'select-element',
-        color: 'var(--icon-show-element)',
-        width: '16px',
-      } as IconButton.Icon.IconData} tabindex="0", @click=${onElementClick} title=${i18nString(UIStrings.showElementInTheElementsPanel)} class="show-element">
-      </${IconButton.Icon.Icon.litTagName}>
+      <${Buttons.Button.Button.litTagName} class="show-element"
+                                           title=${i18nString(UIStrings.showElementInTheElementsPanel)}
+                                           .iconName=${'select-element'}
+                                           .jslogContext=${'elements.select-element'}
+                                           .size=${Buttons.Button.Size.SMALL}
+                                           .variant=${Buttons.Button.Variant.ROUND}
+                                           @click=${onElementClick}></${Buttons.Button.Button.litTagName}>
     </div>`;
     // clang-format on
   }
 
   #renderBooleanSetting(setting: BooleanSetting): LitHtml.TemplateResult {
     const onBooleanSettingChange = this.#onBooleanSettingChange.bind(this, setting);
-    return html`<label data-boolean-setting="true" class="checkbox-label" title=${setting.title}>
+    return html`<label data-boolean-setting="true" class="checkbox-label" title=${setting.title} jslog=${
+        VisualLogging.toggle().track({click: true}).context(setting.name)}>
       <input data-input="true" type="checkbox" .checked=${setting.value} @change=${onBooleanSettingChange} />
       <span data-label="true">${setting.title}</span>
     </label>`;
@@ -488,19 +495,24 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   #renderEnumSetting(setting: EnumSetting): LitHtml.TemplateResult {
     const onEnumSettingChange = this.#onEnumSettingChange.bind(this, setting);
     return html`<label data-enum-setting="true" class="select-label" title=${setting.title}>
-      <select class="chrome-select" data-input="true" @change=${onEnumSettingChange}>
+      <select
+        class="chrome-select"
+        data-input="true"
+        jslog=${VisualLogging.dropDown().track({change: true}).context(setting.name)}
+        @change=${onEnumSettingChange}>
         ${
         setting.options.map(
-            opt => html`<option value=${opt.value} .selected=${setting.value === opt.value}>${opt.title}</option>`)}
+            opt => html`<option value=${opt.value} .selected=${setting.value === opt.value} jslog=${
+                VisualLogging.item(Platform.StringUtilities.toKebabCase(opt.value)).track({click: true})}>${
+                opt.title}</option>`)}
       </select>
     </label>`;
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-layout-pane', LayoutPane);
+customElements.define('devtools-layout-pane', LayoutPane);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-layout-pane': LayoutPane;
   }

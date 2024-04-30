@@ -5,6 +5,7 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/generate_css.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
@@ -47,11 +48,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
-    "../../../test/unittests/front_end/panels/coverage/*",
     "../../entrypoints/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../sources/*",
     "../timeline/*",
   ]
@@ -59,18 +56,35 @@ devtools_entrypoint("bundle") {
   visibility += devtools_panels_visibility
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "coverage-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [ "../..:legacy_entrypoints" ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "coverage-meta.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../core/i18n:bundle",
+    "../../ui/legacy:bundle",
+  ]
 
   visibility = [ "../../entrypoints/*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "CoverageDecorationManager.test.ts",
+    "CoverageModel.test.ts",
+    "CoverageView.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+    "../../models/bindings:bundle",
+    "../../models/text_utils:bundle",
+    "../../models/workspace:bundle",
+    "../../testing",
+  ]
 }

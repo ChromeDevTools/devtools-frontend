@@ -1,12 +1,11 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import type * as puppeteer from 'puppeteer';
+import type * as puppeteer from 'puppeteer-core';
 
 import {
   $,
   click,
-  enableExperiment,
   getBrowserAndPages,
   goToResource,
   reloadDevTools,
@@ -21,9 +20,11 @@ const MEDIA_QUERY_INSPECTOR_SELECTOR = '.media-inspector-view';
 const DEVICE_LIST_DROPDOWN_SELECTOR = '.toolbar-button';
 const ZOOM_LIST_DROPDOWN_SELECTOR = '[aria-label*="Zoom"]';
 const SURFACE_DUO_MENU_ITEM_SELECTOR = '[aria-label*="Surface Duo"]';
+const FOLDABLE_DEVICE_MENU_ITEM_SELECTOR = '[aria-label*="Asus Zenbook Fold"]';
 const EDIT_MENU_ITEM_SELECTOR = '[aria-label*="Edit"]';
 const TEST_DEVICE_MENU_ITEM_SELECTOR = '[aria-label*="Test device, unchecked"]';
 const DUAL_SCREEN_BUTTON_SELECTOR = '[aria-label="Toggle dual-screen mode"]';
+const DEVICE_POSTURE_DROPDOWN_SELECTOR = '[aria-label="Device posture"]';
 const SCREEN_DIM_INPUT_SELECTOR = '[title="Width"]';
 
 export const reloadDockableFrontEnd = async () => {
@@ -53,8 +54,8 @@ export const showMediaQueryInspector = async () => {
   await waitFor(MEDIA_QUERY_INSPECTOR_SELECTOR);
 };
 
-export const startEmulationWithDualScreenFlag = async () => {
-  await enableExperiment('dualScreenSupport', {canDock: true});
+export const startEmulationWithDualScreenPage = async () => {
+  await reloadDockableFrontEnd();
   await goToResource('emulation/dual-screen-inspector.html');
   await waitFor('.tabbed-pane-left-toolbar');
   await openDeviceToolbar();
@@ -67,10 +68,13 @@ export const getButtonDisabled = async (spanButton: puppeteer.ElementHandle<HTML
 };
 
 export const clickDevicesDropDown = async () => {
-  // TODO(crbug.com/1411196): the dropdown might be clickable but not handling the events properly.
-  await new Promise(resolve => setTimeout(resolve, 100));
   const toolbar = await waitFor(DEVICE_TOOLBAR_SELECTOR);
   await click(DEVICE_LIST_DROPDOWN_SELECTOR, {root: toolbar});
+};
+
+export const clickDevicePostureDropDown = async () => {
+  const toolbar = await waitFor(DEVICE_TOOLBAR_SELECTOR);
+  await click(DEVICE_POSTURE_DROPDOWN_SELECTOR, {root: toolbar});
 };
 
 export const clickZoomDropDown = async () => {
@@ -103,6 +107,22 @@ export const selectTestDevice = async () => {
 export const selectDualScreen = async () => {
   await clickDevicesDropDown();
   await click(SURFACE_DUO_MENU_ITEM_SELECTOR);
+};
+
+export const selectFoldableDevice = async () => {
+  await clickDevicesDropDown();
+  await click(FOLDABLE_DEVICE_MENU_ITEM_SELECTOR);
+};
+
+export const clickDevicePosture = async (name: string) => {
+  await clickDevicePostureDropDown();
+  await click(`[aria-label*="${name}, unchecked"]`);
+};
+
+export const getDevicePostureDropDown = async () => {
+  // dropdown menu for the posture selection.
+  const dropdown = await $(DEVICE_POSTURE_DROPDOWN_SELECTOR) as puppeteer.ElementHandle<HTMLButtonElement>;
+  return dropdown;
 };
 
 export const clickToggleButton = async () => {

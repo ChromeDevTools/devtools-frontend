@@ -21,7 +21,7 @@ h1 {
   font-size: 18px;
   line-height: 24px;
   letter-spacing: 0.02em;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   margin: 0;
   font-weight: normal;
 }
@@ -32,18 +32,20 @@ h1 {
   line-height: 16px;
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-secondary);
   margin-bottom: 8px;
-  display: inline-block;
   margin-top: 32px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
 }
 
 .footer {
   display: flex;
   justify-content: center;
-  border-top: 1px solid var(--color-details-hairline);
+  border-top: 1px solid var(--sys-color-divider);
   padding: 12px;
-  background: var(--color-background);
+  background: var(--sys-color-cdt-base-container);
 }
 
 .controls {
@@ -53,17 +55,12 @@ h1 {
 .error {
   margin: 16px 0 0;
   padding: 8px;
-  background: var(--color-error-background);
-  color: var(--color-error-text);
-}
-
-.row-label .link {
-  position: relative;
-  top: 0.25em;
+  background: var(--sys-color-error-container);
+  color: var(--sys-color-error);
 }
 
 .row-label .link:focus-visible {
-  outline: var(--color-input-outline-active) auto 1px;
+  outline: var(--sys-color-state-focus-ring) auto 1px;
 }
 
 .header-wrapper {
@@ -89,5 +86,10 @@ h1 {
 }
 
 input[type="checkbox"]:focus-visible {
-  outline: var(--color-input-outline-active) auto 1px;
+  outline: var(--sys-color-state-focus-ring) auto 1px;
+}
+
+devtools-icon[name="help"] {
+  width: 16px;
+  height: 16px;
 }

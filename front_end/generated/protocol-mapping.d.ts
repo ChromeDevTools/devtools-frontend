@@ -35,6 +35,10 @@ export namespace ProtocolMapping {
     'Animation.animationStarted': [Protocol.Animation.AnimationStartedEvent];
     'Audits.issueAdded': [Protocol.Audits.IssueAddedEvent];
     /**
+     * Emitted when an address form is filled.
+     */
+    'Autofill.addressFormFilled': [Protocol.Autofill.AddressFormFilledEvent];
+    /**
      * Called when the recording state for the service has been updated.
      */
     'BackgroundService.recordingStateChanged': [Protocol.BackgroundService.RecordingStateChangedEvent];
@@ -468,9 +472,22 @@ export namespace ProtocolMapping {
      */
     'Storage.indexedDBListUpdated': [Protocol.Storage.IndexedDBListUpdatedEvent];
     /**
-     * One of the interest groups was accessed by the associated page.
+     * One of the interest groups was accessed. Note that these events are global
+     * to all targets sharing an interest group store.
      */
     'Storage.interestGroupAccessed': [Protocol.Storage.InterestGroupAccessedEvent];
+    /**
+     * An auction involving interest groups is taking place. These events are
+     * target-specific.
+     */
+    'Storage.interestGroupAuctionEventOccurred': [Protocol.Storage.InterestGroupAuctionEventOccurredEvent];
+    /**
+     * Specifies which auctions a particular network fetch may be related to, and
+     * in what role. Note that it is not ordered with respect to
+     * Network.requestWillBeSent (but will happen before loadingFinished
+     * loadingFailed).
+     */
+    'Storage.interestGroupAuctionNetworkRequestCreated': [Protocol.Storage.InterestGroupAuctionNetworkRequestCreatedEvent];
     /**
      * Shared storage was accessed by the associated page.
      * The following parameters are included in all events.
@@ -478,6 +495,8 @@ export namespace ProtocolMapping {
     'Storage.sharedStorageAccessed': [Protocol.Storage.SharedStorageAccessedEvent];
     'Storage.storageBucketCreatedOrUpdated': [Protocol.Storage.StorageBucketCreatedOrUpdatedEvent];
     'Storage.storageBucketDeleted': [Protocol.Storage.StorageBucketDeletedEvent];
+    'Storage.attributionReportingSourceRegistered': [Protocol.Storage.AttributionReportingSourceRegisteredEvent];
+    'Storage.attributionReportingTriggerRegistered': [Protocol.Storage.AttributionReportingTriggerRegisteredEvent];
     /**
      * Issued when attached to target because of auto-attach or `attachToTarget` command.
      */
@@ -531,6 +550,11 @@ export namespace ProtocolMapping {
      * The stage of the request can be determined by presence of responseErrorReason
      * and responseStatusCode -- the request is at the response stage if either
      * of these fields is present and in the request stage otherwise.
+     * Redirect responses and subsequent requests are reported similarly to regular
+     * responses and requests. Redirect responses may be distinguished by the value
+     * of `responseStatusCode` (which is one of 301, 302, 303, 307, 308) along with
+     * presence of the `location` header. Requests resulting from a redirect will
+     * have `redirectedRequestId` field set.
      */
     'Fetch.requestPaused': [Protocol.Fetch.RequestPausedEvent];
     /**
@@ -633,10 +657,6 @@ export namespace ProtocolMapping {
     'Preload.ruleSetUpdated': [Protocol.Preload.RuleSetUpdatedEvent];
     'Preload.ruleSetRemoved': [Protocol.Preload.RuleSetRemovedEvent];
     /**
-     * Fired when a prerender attempt is completed.
-     */
-    'Preload.prerenderAttemptCompleted': [Protocol.Preload.PrerenderAttemptCompletedEvent];
-    /**
      * Fired when a preload enabled state is updated.
      */
     'Preload.preloadEnabledStateUpdated': [Protocol.Preload.PreloadEnabledStateUpdatedEvent];
@@ -653,6 +673,11 @@ export namespace ProtocolMapping {
      */
     'Preload.preloadingAttemptSourcesUpdated': [Protocol.Preload.PreloadingAttemptSourcesUpdatedEvent];
     'FedCm.dialogShown': [Protocol.FedCm.DialogShownEvent];
+    /**
+     * Triggered when a dialog is closed, either by user action, JS abort,
+     * or a command below.
+     */
+    'FedCm.dialogClosed': [Protocol.FedCm.DialogClosedEvent];
     /**
      * Fired when breakpoint is resolved to an actual script and location.
      */
@@ -791,7 +816,7 @@ export namespace ProtocolMapping {
     /**
      * Query a DOM node's accessibility subtree for accessible name and role.
      * This command computes the name and role for all nodes in the subtree, including those that are
-     * ignored for accessibility, and returns those that mactch the specified name and role. If no DOM
+     * ignored for accessibility, and returns those that match the specified name and role. If no DOM
      * node is specified, or the DOM node does not exist, the command returns an error. If neither
      * `accessibleName` or `role` is specified, it returns all the accessibility nodes in the subtree.
      */
@@ -921,6 +946,20 @@ export namespace ProtocolMapping {
      */
     'Autofill.setAddresses': {
       paramsType: [Protocol.Autofill.SetAddressesRequest];
+      returnType: void;
+    };
+    /**
+     * Disables autofill domain notifications.
+     */
+    'Autofill.disable': {
+      paramsType: [];
+      returnType: void;
+    };
+    /**
+     * Enables autofill domain notifications.
+     */
+    'Autofill.enable': {
+      paramsType: [];
       returnType: void;
     };
     /**
@@ -1208,6 +1247,13 @@ export namespace ProtocolMapping {
     'CSS.setEffectivePropertyValueForNode': {
       paramsType: [Protocol.CSS.SetEffectivePropertyValueForNodeRequest];
       returnType: void;
+    };
+    /**
+     * Modifies the property rule property name.
+     */
+    'CSS.setPropertyRulePropertyName': {
+      paramsType: [Protocol.CSS.SetPropertyRulePropertyNameRequest];
+      returnType: Protocol.CSS.SetPropertyRulePropertyNameResponse;
     };
     /**
      * Modifies the keyframe rule key text.
@@ -1830,6 +1876,13 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Removes all breakpoints
+     */
+    'EventBreakpoints.disable': {
+      paramsType: [];
+      returnType: void;
+    };
+    /**
      * Disables DOM snapshot agent for the given page.
      */
     'DOMSnapshot.disable': {
@@ -2029,6 +2082,29 @@ export namespace ProtocolMapping {
       paramsType: [Protocol.Emulation.SetGeolocationOverrideRequest?];
       returnType: void;
     };
+    'Emulation.getOverriddenSensorInformation': {
+      paramsType: [Protocol.Emulation.GetOverriddenSensorInformationRequest];
+      returnType: Protocol.Emulation.GetOverriddenSensorInformationResponse;
+    };
+    /**
+     * Overrides a platform sensor of a given type. If |enabled| is true, calls to
+     * Sensor.start() will use a virtual sensor as backend rather than fetching
+     * data from a real hardware sensor. Otherwise, existing virtual
+     * sensor-backend Sensor objects will fire an error event and new calls to
+     * Sensor.start() will attempt to use a real sensor instead.
+     */
+    'Emulation.setSensorOverrideEnabled': {
+      paramsType: [Protocol.Emulation.SetSensorOverrideEnabledRequest];
+      returnType: void;
+    };
+    /**
+     * Updates the sensor readings reported by a sensor type previously overridden
+     * by setSensorOverrideEnabled.
+     */
+    'Emulation.setSensorOverrideReadings': {
+      paramsType: [Protocol.Emulation.SetSensorOverrideReadingsRequest];
+      returnType: void;
+    };
     /**
      * Overrides the Idle state.
      */
@@ -2112,6 +2188,7 @@ export namespace ProtocolMapping {
     };
     /**
      * Allows overriding user agent with the given string.
+     * `userAgentMetadata` must be set for Client Hint headers to be sent.
      */
     'Emulation.setUserAgentOverride': {
       paramsType: [Protocol.Emulation.SetUserAgentOverrideRequest];
@@ -2255,7 +2332,7 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
-     * This method sets the current candidate text for ime.
+     * This method sets the current candidate text for IME.
      * Use imeCommitComposition to commit the final text.
      * Use imeSetComposition with empty string as text to cancel composition.
      */
@@ -2275,6 +2352,13 @@ export namespace ProtocolMapping {
      */
     'Input.dispatchTouchEvent': {
       paramsType: [Protocol.Input.DispatchTouchEventRequest];
+      returnType: void;
+    };
+    /**
+     * Cancels any active dragging in the page.
+     */
+    'Input.cancelDragging': {
+      paramsType: [];
       returnType: void;
     };
     /**
@@ -2558,7 +2642,7 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
-     * Deletes browser cookies with matching name and url or domain/path pair.
+     * Deletes browser cookies with matching name and url or domain/path/partitionKey pair.
      */
     'Network.deleteCookies': {
       paramsType: [Protocol.Network.DeleteCookiesRequest];
@@ -2721,6 +2805,14 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Enables streaming of the response for the given requestId.
+     * If enabled, the dataReceived event contains the data that was received during streaming.
+     */
+    'Network.streamResourceContent': {
+      paramsType: [Protocol.Network.StreamResourceContentRequest];
+      returnType: Protocol.Network.StreamResourceContentResponse;
+    };
+    /**
      * Returns information about the COEP/COOP isolation status.
      */
     'Network.getSecurityIsolationStatus': {
@@ -2786,8 +2878,8 @@ export namespace ProtocolMapping {
     };
     /**
      * Highlights owner element of the frame with given id.
-     * Deprecated: Doesn't work reliablity and cannot be fixed due to process
-     * separatation (the owner node might be in a different process). Determine
+     * Deprecated: Doesn't work reliably and cannot be fixed due to process
+     * separation (the owner node might be in a different process). Determine
      * the owner node in the client and use highlightNode.
      */
     'Overlay.highlightFrame': {
@@ -2933,6 +3025,13 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Show Window Controls Overlay for PWA
+     */
+    'Overlay.setShowWindowControlsOverlay': {
+      paramsType: [Protocol.Overlay.SetShowWindowControlsOverlayRequest?];
+      returnType: void;
+    };
+    /**
      * Deprecated, please use addScriptToEvaluateOnNewDocument instead.
      */
     'Page.addScriptToEvaluateOnLoad': {
@@ -3043,15 +3142,6 @@ export namespace ProtocolMapping {
     'Page.getAdScriptId': {
       paramsType: [Protocol.Page.GetAdScriptIdRequest];
       returnType: Protocol.Page.GetAdScriptIdResponse;
-    };
-    /**
-     * Returns all browser cookies for the page and all of its subframes. Depending
-     * on the backend support, will return detailed cookie information in the
-     * `cookies` field.
-     */
-    'Page.getCookies': {
-      paramsType: [];
-      returnType: Protocol.Page.GetCookiesResponse;
     };
     /**
      * Returns present frame tree structure.
@@ -3298,7 +3388,7 @@ export namespace ProtocolMapping {
     };
     /**
      * Requests backend to produce compilation cache for the specified scripts.
-     * `scripts` are appeneded to the list of scripts for which the cache
+     * `scripts` are appended to the list of scripts for which the cache
      * would be produced. The list may be reset during page navigation.
      * When script with a matching URL is encountered, the cache is optionally
      * produced upon backend discretion, based on internal heuristics.
@@ -3644,6 +3734,14 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Enables/Disables issuing of interestGroupAuctionEventOccurred and
+     * interestGroupAuctionNetworkRequestCreated.
+     */
+    'Storage.setInterestGroupAuctionTracking': {
+      paramsType: [Protocol.Storage.SetInterestGroupAuctionTrackingRequest];
+      returnType: void;
+    };
+    /**
      * Gets metadata for an origin's shared storage.
      */
     'Storage.getSharedStorageMetadata': {
@@ -3714,6 +3812,20 @@ export namespace ProtocolMapping {
       returnType: Protocol.Storage.RunBounceTrackingMitigationsResponse;
     };
     /**
+     * https://wicg.github.io/attribution-reporting-api/
+     */
+    'Storage.setAttributionReportingLocalTestingMode': {
+      paramsType: [Protocol.Storage.SetAttributionReportingLocalTestingModeRequest];
+      returnType: void;
+    };
+    /**
+     * Enables/disables issuing of Attribution Reporting events.
+     */
+    'Storage.setAttributionReportingTracking': {
+      paramsType: [Protocol.Storage.SetAttributionReportingTrackingRequest];
+      returnType: void;
+    };
+    /**
      * Returns information about the system.
      */
     'SystemInfo.getInfo': {
@@ -3768,7 +3880,7 @@ export namespace ProtocolMapping {
      *
      * Injected object will be available as `window[bindingName]`.
      *
-     * The object has the follwing API:
+     * The object has the following API:
      * - `binding.send(json)` - a method to send messages over the remote debugging protocol
      * - `binding.onmessage = json => handleMessage(json)` - a callback that will be called for the protocol notifications and command responses.
      */
@@ -3982,6 +4094,10 @@ export namespace ProtocolMapping {
      * takeResponseBodyForInterceptionAsStream. Calling other methods that
      * affect the request or disabling fetch domain before body is received
      * results in an undefined behavior.
+     * Note that the response body is not available for redirects. Requests
+     * paused in the _redirect received_ state may be differentiated by
+     * `responseCode` and presence of `location` response header, see
+     * comments to `requestPaused` for details.
      */
     'Fetch.getResponseBody': {
       paramsType: [Protocol.Fetch.GetResponseBodyRequest];
@@ -4113,6 +4229,14 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Allows setting credential properties.
+     * https://w3c.github.io/webauthn/#sctn-automation-set-credential-properties
+     */
+    'WebAuthn.setCredentialProperties': {
+      paramsType: [Protocol.WebAuthn.SetCredentialPropertiesRequest];
+      returnType: void;
+    };
+    /**
      * Enables the Media domain
      */
     'Media.enable': {
@@ -4172,6 +4296,14 @@ export namespace ProtocolMapping {
     };
     'FedCm.selectAccount': {
       paramsType: [Protocol.FedCm.SelectAccountRequest];
+      returnType: void;
+    };
+    'FedCm.clickDialogButton': {
+      paramsType: [Protocol.FedCm.ClickDialogButtonRequest];
+      returnType: void;
+    };
+    'FedCm.openUrl': {
+      paramsType: [Protocol.FedCm.OpenUrlRequest];
       returnType: void;
     };
     'FedCm.dismissDialog': {

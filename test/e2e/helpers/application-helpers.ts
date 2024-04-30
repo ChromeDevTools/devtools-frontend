@@ -2,19 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as puppeteer from 'puppeteer';
+import type * as puppeteer from 'puppeteer-core';
 
 import {$, $$, click, getBrowserAndPages, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
 
-export async function navigateToApplicationTab(target: puppeteer.Page, testName: string) {
+export async function navigateToApplicationTab(_target: puppeteer.Page, testName: string) {
+  const {target, frontend} = getBrowserAndPages();
+  await target.bringToFront();
   await goToResource(`application/${testName}.html`);
+  await frontend.bringToFront();
   await click('#tab-resources');
   // Make sure the application navigation list is shown
   await waitFor('.storage-group-list-item');
 }
 
 export async function navigateToServiceWorkers() {
-  const SERVICE_WORKER_ROW_SELECTOR = '[aria-label="Service Workers"]';
+  const SERVICE_WORKER_ROW_SELECTOR = '[aria-label="Service workers"]';
   await click(SERVICE_WORKER_ROW_SELECTOR);
 }
 
@@ -60,8 +63,15 @@ export async function getFrameTreeTitles() {
   return Promise.all(treeTitles.map(node => node.evaluate(e => e.textContent)));
 }
 
-export async function getStorageItemsData(columns: string[]) {
-  return getDataGridData('.storage-view table', columns);
+export async function getStorageItemsData(columns: string[], leastExpected: number = 1) {
+  const gridData = await waitForFunction(async () => {
+    const values = await getDataGridData('.storage-view table', columns);
+    if (values.length >= leastExpected) {
+      return values;
+    }
+    return undefined;
+  });
+  return gridData;
 }
 
 export async function filterStorageItems(filter: string) {
@@ -74,7 +84,6 @@ export async function clearStorageItemsFilter() {
 }
 
 export async function clearStorageItems() {
-  await waitFor('#storage-items-delete-all');
   await click('#storage-items-delete-all');
 }
 
@@ -94,7 +103,6 @@ export async function selectStorageItemAtIndex(index: number) {
 }
 
 export async function deleteSelectedStorageItem() {
-  await waitFor('[aria-label="Delete Selected"]');
   await click('[aria-label="Delete Selected"]');
 }
 
@@ -115,6 +123,8 @@ export async function selectCookieByName(name: string) {
 }
 
 export async function waitForQuotaUsage(p: (quota: number) => boolean) {
+  const {frontend} = getBrowserAndPages();
+  await frontend.bringToFront();
   await waitForFunction(async () => {
     const usedQuota = await getQuotaUsage();
     return p(usedQuota);

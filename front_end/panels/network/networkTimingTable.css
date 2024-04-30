@@ -30,7 +30,7 @@
 }
 
 .network-timing-table-header td {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .network-timing-table td {
@@ -65,9 +65,9 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 }
 
 .network-timing-table hr.break {
-  border: 0;
+  background-color: var(--sys-color-divider);
+  border: none;
   height: 1px;
-  background-image: linear-gradient(to right, var(--color-background-elevation-0), var(--color-text-secondary), var(--color-background-elevation-0));
 }
 
 .network-timing-row {
@@ -83,19 +83,19 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 }
 
 .network-timing-bar-title {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   white-space: nowrap;
   text-align: right;
 }
 
 .network-timing-bar.queueing,
 .network-timing-bar.total {
-  border: 1px solid var(--color-text-secondary);
+  border: 1px solid var(--sys-color-token-subtle);
 }
 
 .network-timing-bar.blocking,
 .-theme-preserve {
-  background-color: var(--override-network-overview-blocking);
+  background-color: var(--network-overview-blocking); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
 .network-timing-bar.proxy,
@@ -105,36 +105,35 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 
 .network-timing-bar.dns,
 .-theme-preserve {
-  background-color: var(--override-network-overview-dns);
+  background-color: var(--sys-color-cyan);
 }
 
 .network-timing-bar.connecting,
 .network-timing-bar.serviceworker,
 .network-timing-bar.serviceworker-preparation,
 .-theme-preserve {
-  background-color: var(--override-network-overview-service-worker);
+  background-color: var(--network-overview-service-worker); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
 .network-timing-bar.ssl,
 .-theme-preserve {
-  background-color: var(--override-network-overview-ssl);
+  background-color: var(--network-overview-ssl); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
 .network-timing-bar.serviceworker-respondwith,
 .-theme-preserve {
-  background-color: var(--override-network-overview-service-worker-respond-with);
+  background-color: var(--network-overview-service-worker-respond-with); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
 .network-fetch-timing-bar-clickable::before {
   user-select: none;
-  -webkit-mask-image: var(--image-file-triangle-right);
+  mask-image: var(--image-file-triangle-right);
   float: left;
   width: 14px;
   height: 14px;
   margin-right: 2px;
   content: "";
   position: relative;
-  top: 3px;
   background-color: var(--icon-default);
   transition: transform 200ms;
 }
@@ -145,7 +144,7 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 }
 
 .network-fetch-timing-bar-clickable:focus-visible {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-state-focus-highlight);
 }
 
 .network-fetch-timing-bar-clickable[aria-checked="true"]::before {
@@ -176,27 +175,27 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 
 .network-timing-bar.waiting,
 .-theme-preserve {
-  background-color: var(--override-network-overview-waiting);
+  background-color: var(--network-overview-waiting); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
 .network-timing-bar.receiving,
 .network-timing-bar.receiving-push,
 .-theme-preserve {
-  background-color: var(--override-network-overview-receiving);
+  background-color: var(--network-overview-receiving); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
 .network-timing-bar.push,
 .-theme-preserve {
-  background-color: var(--override-network-overview-push);
+  background-color: var(--network-overview-push); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
 .server-timing-row:nth-child(even) {
-  background: var(--color-background-elevation-0);
+  background: var(--sys-color-surface1);
 }
 
 .network-timing-bar.server-timing,
 .-theme-preserve {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-neutral-container);
 }
 
 .network-timing-table td.network-timing-metric {

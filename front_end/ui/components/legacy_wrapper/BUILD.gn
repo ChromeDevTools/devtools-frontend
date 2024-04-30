@@ -12,8 +12,6 @@ devtools_module("legacy_wrapper") {
     "../../../ui/legacy:bundle",
     "../../../ui/lit-html:bundle",
   ]
-
-  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
 }
 
 devtools_entrypoint("bundle") {

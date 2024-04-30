@@ -4,11 +4,11 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import playerMessagesViewStyles from './playerMessagesView.css.js';
-
-import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
   /**
@@ -257,6 +257,8 @@ export class PlayerMessagesView extends UI.Widget.VBox {
   constructor() {
     super();
 
+    this.element.setAttribute('jslog', `${VisualLogging.pane('messages')}`);
+
     this.headerPanel = this.contentElement.createChild('div', 'media-messages-header');
     this.bodyPanel = this.contentElement.createChild('div', 'media-messages-body');
 
@@ -274,7 +276,7 @@ export class PlayerMessagesView extends UI.Widget.VBox {
   private createDropdown(): UI.Toolbar.ToolbarItem {
     const items = new UI.ListModel.ListModel<SelectableLevel>();
     this.messageLevelSelector = new MessageLevelSelector(items, this);
-    const dropDown = new UI.SoftDropDown.SoftDropDown<SelectableLevel>(items, this.messageLevelSelector);
+    const dropDown = new UI.SoftDropDown.SoftDropDown<SelectableLevel>(items, this.messageLevelSelector, 'log-level');
     dropDown.setRowHeight(18);
 
     this.messageLevelSelector.populate();

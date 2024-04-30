@@ -4,13 +4,14 @@
 
 import {assert} from 'chai';
 
-import {$$, clickElement, enableExperiment, goToResource, step, waitFor} from '../../shared/helper.js';
+import {clickElement, enableExperiment, goToResource, step, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToElementsTab} from '../helpers/elements-helpers.js';
 import {
   getMenuItemAtPosition,
   getMenuItemTitleAtPosition,
   openFileQuickOpen,
+  readQuickOpenResults,
   typeIntoQuickOpen,
 } from '../helpers/quick_open-helpers.js';
 import {setIgnoreListPattern, togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
@@ -33,11 +34,6 @@ async function openAFileWithQuickMenu() {
           await waitFor('.navigator-file-tree-item');
         });
       });
-}
-
-async function readQuickOpenResults(): Promise<string[]> {
-  const items = await $$('.filtered-list-widget-title');
-  return await Promise.all(items.map(element => element.evaluate(el => el.textContent as string)));
 }
 
 describe('Quick Open menu', () => {
@@ -74,7 +70,7 @@ describe('Quick Open menu', () => {
   });
 
   it('Does not list ignore-listed files', async () => {
-    await enableExperiment('justMyCode');
+    await enableExperiment('just-my-code');
     await setIgnoreListPattern('workers.js');
     await goToResource('sources/multi-workers-sourcemap.html');
     await openSourcesPanel();
@@ -91,5 +87,19 @@ describe('Quick Open menu', () => {
     await typeIntoQuickOpen('sourcemap-origin.clash.js');
     const list = await readQuickOpenResults();
     assert.deepEqual(list, ['sourcemap-origin.clash.js', 'sourcemap-origin.clash.js']);
+  });
+
+  it('should not list network fetch requests (that are not overidden)', async () => {
+    await goToResource('network/fetch-json.html');
+    await typeIntoQuickOpen('json');
+    const list = await readQuickOpenResults();
+    assert.isFalse(list.includes('coffees.json'));
+  });
+
+  it('should not list network xhr requests (that are not overidden)', async () => {
+    await goToResource('network/xhr-json.html');
+    await typeIntoQuickOpen('json');
+    const list = await readQuickOpenResults();
+    assert.isFalse(list.includes('coffees.json'));
   });
 });

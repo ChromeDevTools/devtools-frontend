@@ -80,6 +80,9 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
       case IssuesManager.AttributionReportingIssue.IssueCode.WebAndOsHeaders:
         this.appendColumnTitle(header, i18nString(UIStrings.request));
         break;
+      case IssuesManager.AttributionReportingIssue.IssueCode.NavigationRegistrationWithoutTransientUserActivation:
+        this.appendColumnTitle(header, i18nString(UIStrings.element));
+        break;
     }
 
     this.affectedResources.appendChild(header);
@@ -102,6 +105,10 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     switch (issueCode) {
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidRegisterSourceHeader:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidRegisterTriggerHeader:
+      case IssuesManager.AttributionReportingIssue.IssueCode.InvalidRegisterOsSourceHeader:
+      case IssuesManager.AttributionReportingIssue.IssueCode.InvalidRegisterOsTriggerHeader:
+      case IssuesManager.AttributionReportingIssue.IssueCode.OsSourceIgnored:
+      case IssuesManager.AttributionReportingIssue.IssueCode.OsTriggerIgnored:
       case IssuesManager.AttributionReportingIssue.IssueCode.SourceIgnored:
       case IssuesManager.AttributionReportingIssue.IssueCode.TriggerIgnored:
         this.#appendRequestOrEmptyCell(element, details.request);
@@ -118,7 +125,11 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
         this.#appendRequestOrEmptyCell(element, details.request);
         break;
       case IssuesManager.AttributionReportingIssue.IssueCode.SourceAndTriggerHeaders:
+      case IssuesManager.AttributionReportingIssue.IssueCode.WebAndOsHeaders:
         this.#appendRequestOrEmptyCell(element, details.request);
+        break;
+      case IssuesManager.AttributionReportingIssue.IssueCode.NavigationRegistrationWithoutTransientUserActivation:
+        await this.#appendElementOrEmptyCell(element, issue);
         break;
     }
 

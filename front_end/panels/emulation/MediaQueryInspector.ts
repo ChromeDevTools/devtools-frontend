@@ -9,6 +9,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import mediaQueryInspectorStyles from './mediaQueryInspector.css.legacy.js';
 
@@ -38,6 +39,7 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
     super(true);
     this.registerRequiredCSS(mediaQueryInspectorStyles);
     this.contentElement.classList.add('media-inspector-view');
+    this.contentElement.setAttribute('jslog', `${VisualLogging.mediaInspectorView().track({click: true})}`);
     this.contentElement.addEventListener('click', this.onMediaQueryClicked.bind(this), false);
     this.contentElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
     this.mediaThrottler = mediaThrottler;
@@ -142,11 +144,13 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
 
     const contextMenuItems = [...uiLocations.keys()].sort();
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    const subMenuItem = contextMenu.defaultSection().appendSubMenuItem(i18nString(UIStrings.revealInSourceCode));
+    const subMenuItem = contextMenu.defaultSection().appendSubMenuItem(
+        i18nString(UIStrings.revealInSourceCode), undefined, 'reveal-in-source-list');
     for (let i = 0; i < contextMenuItems.length; ++i) {
       const title = contextMenuItems[i];
       subMenuItem.defaultSection().appendItem(
-          title, this.revealSourceLocation.bind(this, (uiLocations.get(title) as Workspace.UISourceCode.UILocation)));
+          title, this.revealSourceLocation.bind(this, (uiLocations.get(title) as Workspace.UISourceCode.UILocation)),
+          {jslogContext: 'reveal-in-source'});
     }
     void contextMenu.show();
   }

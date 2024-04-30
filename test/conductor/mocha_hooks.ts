@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Crypto from 'crypto';
 import * as fs from 'fs';
 import {createCoverageMap, createFileCoverage} from 'istanbul-lib-coverage';
 import * as report from 'istanbul-lib-report';
@@ -10,7 +11,14 @@ import * as reports from 'istanbul-reports';
 import * as path from 'path';
 import * as rimraf from 'rimraf';
 
-import {collectCoverageFromPage, postFileTeardown, preFileSetup, resetPages} from './hooks.js';
+import {
+  collectCoverageFromPage,
+  postFileTeardown,
+  preFileSetup,
+  resetPages,
+  unregisterAllServiceWorkers,
+  watchForHang,
+} from './hooks.js';
 import {getTestRunnerConfigSetting} from './test_runner_config.js';
 import {startServer, stopServer} from './test_server.js';
 
@@ -56,6 +64,18 @@ export function mochaGlobalTeardown() {
   stopServer();
 }
 
+function logScreenshotFileUrl() {
+  const screenshotFile = process.env.HTML_OUTPUT_FILE;
+  if (screenshotFile) {
+    const hash = Crypto.createHash('sha256');
+    const contents = fs.readFileSync(screenshotFile);
+    hash.update(contents);
+    console.error(
+        `If running on bots, screenshots can be downloaded from: https://cas-viewer.appspot.com/projects/chromium-swarm/instances/default_instance/blobs/${
+            hash.digest('hex')}/${contents.byteLength}?filename=screenshots.html`);
+  }
+}
+
 const testSuiteCoverageMap = createCoverageMap();
 
 const testsRunWithCoverageEnvSet = Boolean(process.env.COVERAGE || process.env.COVERAGE_FOLDERS);
@@ -82,6 +102,7 @@ export const mochaHooks = {
   // In parallel mode, run after all tests end, for each file.
   afterAll: async function(this: Mocha.Suite) {
     await postFileTeardown();
+    logScreenshotFileUrl();
 
     if (!SHOULD_GATHER_COVERAGE_INFORMATION) {
       return;
@@ -110,10 +131,12 @@ export const mochaHooks = {
     reports.create('json-summary').execute(context);
   },
   // In both modes, run before each test.
-  beforeEach: async function(this: Mocha.Suite) {
+  beforeEach: async function(this: Mocha.Context) {
     // Sets the timeout higher for this hook only.
-    this.timeout(10000);
-    await resetPages();
+    this.timeout(20000);
+    const currentTest = this.currentTest?.fullTitle();
+    await watchForHang(currentTest, resetPages);
+    await watchForHang(currentTest, unregisterAllServiceWorkers);
 
     // Pause when running interactively in debug mode. This is mututally
     // exclusive with parallel mode.

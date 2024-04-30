@@ -1,24 +1,13 @@
 /**
- * Copyright 2023 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2023 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
-import Protocol from 'devtools-protocol';
-import { CDPSession } from '../common/Connection.js';
-import { ExecutionContext } from '../common/ExecutionContext.js';
-import { EvaluateFuncWith, HandleFor, HandleOr } from '../common/types.js';
-import { ElementHandle } from './ElementHandle.js';
-declare const __JSHandleSymbol: unique symbol;
+import type Protocol from 'devtools-protocol';
+import type { EvaluateFuncWith, HandleFor, HandleOr } from '../common/types.js';
+import { disposeSymbol, asyncDisposeSymbol } from '../util/disposable.js';
+import type { ElementHandle } from './ElementHandle.js';
+import type { Realm } from './Realm.js';
 /**
  * Represents a reference to a JavaScript object. Instances can be created using
  * {@link Page.evaluateHandle}.
@@ -40,11 +29,12 @@ declare const __JSHandleSymbol: unique symbol;
  *
  * @public
  */
-export declare class JSHandle<T = unknown> {
+export declare abstract class JSHandle<T = unknown> {
+    move: () => this;
     /**
      * Used for nominally typing {@link JSHandle}.
      */
-    [__JSHandleSymbol]?: T;
+    _?: T;
     /**
      * @internal
      */
@@ -52,15 +42,11 @@ export declare class JSHandle<T = unknown> {
     /**
      * @internal
      */
-    get disposed(): boolean;
+    abstract get realm(): Realm;
     /**
      * @internal
      */
-    executionContext(): ExecutionContext;
-    /**
-     * @internal
-     */
-    get client(): CDPSession;
+    abstract get disposed(): boolean;
     /**
      * Evaluates the given function with the current handle as its first argument.
      */
@@ -75,7 +61,6 @@ export declare class JSHandle<T = unknown> {
      */
     getProperty<K extends keyof T>(propertyName: HandleOr<K>): Promise<HandleFor<T[K]>>;
     getProperty(propertyName: string): Promise<JSHandle<unknown>>;
-    getProperty<K extends keyof T>(propertyName: HandleOr<K>): Promise<HandleFor<T[K]>>;
     /**
      * Gets a map of handles representing the properties of the current handle.
      *
@@ -103,33 +88,36 @@ export declare class JSHandle<T = unknown> {
      * @remarks
      * If the object has a `toJSON` function, it **will not** be called.
      */
-    jsonValue(): Promise<T>;
+    abstract jsonValue(): Promise<T>;
     /**
      * Either `null` or the handle itself if the handle is an
      * instance of {@link ElementHandle}.
      */
-    asElement(): ElementHandle<Node> | null;
+    abstract asElement(): ElementHandle<Node> | null;
     /**
      * Releases the object referenced by the handle for garbage collection.
      */
-    dispose(): Promise<void>;
+    abstract dispose(): Promise<void>;
     /**
      * Returns a string representation of the JSHandle.
      *
      * @remarks
      * Useful during debugging.
      */
-    toString(): string;
+    abstract toString(): string;
     /**
      * @internal
      */
-    get id(): string | undefined;
+    abstract get id(): string | undefined;
     /**
      * Provides access to the
      * {@link https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObject | Protocol.Runtime.RemoteObject}
      * backing this handle.
      */
-    remoteObject(): Protocol.Runtime.RemoteObject;
+    abstract remoteObject(): Protocol.Runtime.RemoteObject;
+    /** @internal */
+    [disposeSymbol](): void;
+    /** @internal */
+    [asyncDisposeSymbol](): Promise<void>;
 }
-export {};
 //# sourceMappingURL=JSHandle.d.ts.map

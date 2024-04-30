@@ -57,23 +57,23 @@ describe('DevTools', function() {
     // the designated tests in network-request-blocking-panel_test.ts are skipped by default due to flakiness.
     beforeEach(async () => {
       const {frontend} = getBrowserAndPages();
-      await frontend.evaluate(() => {
-        // @ts-ignore layout test global
-        const networkManager = self.SDK.multitargetNetworkManager;
+      await frontend.evaluate(`(async () => {
+        const SDK = await import('./core/sdk/sdk.js');
+        const networkManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
         networkManager.setBlockingEnabled(true);
         networkManager.setBlockedPatterns([{enabled: true, url: '*.css'}]);
-      });
+      })()`);
     });
 
     // Reset request blocking state
     afterEach(async () => {
       const {frontend} = getBrowserAndPages();
-      await frontend.evaluate(() => {
-        // @ts-ignore layout test global
-        const networkManager = globalThis.SDK.multitargetNetworkManager;
+      await frontend.evaluate(`(async () => {
+        const SDK = await import('./core/sdk/sdk.js');
+        const networkManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
         networkManager.setBlockingEnabled(false);
         networkManager.setBlockedPatterns([]);
-      });
+      })()`);
     });
 
     it('is respected during a lighthouse run', async () => {

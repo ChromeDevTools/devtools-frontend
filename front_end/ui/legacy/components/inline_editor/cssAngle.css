@@ -17,7 +17,7 @@ devtools-css-angle-swatch {
 }
 
 devtools-css-angle-editor {
-  --override-dial-color: #a3a3a3;
+  --override-dial-color: var(--sys-color-neutral-outline);
 
   position: fixed;
   z-index: 2;

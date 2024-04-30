@@ -10,7 +10,7 @@ import {
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {getConsoleMessages, navigateToConsoleTab} from '../helpers/console-helpers.js';
 
-describe('The Console Tab', async () => {
+describe('The Console Tab', () => {
   it('Does not crash if it fails to convert alert() argument to string', async () => {
     await navigateToConsoleTab();
     const {target} = getBrowserAndPages();

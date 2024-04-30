@@ -6,7 +6,7 @@
 
 header {
   padding: 0 0 6px;
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
   flex: none;
   margin-bottom: 25px;
 }
@@ -18,22 +18,25 @@ h1 {
   margin: 0;
 }
 
-[role="list"],
-.widget.vbox {
-  min-width: 300px;
+[role="list"] {
+  overflow: auto;
+
+  > * {
+    min-width: 300px;
+  }
 }
 
 .keybinds-key {
   padding: 0.1em 0.6em;
-  border: 1px solid var(--color-details-hairline);
+  border: 1px solid var(--sys-color-neutral-outline);
   font-size: 11px;
-  background-color: var(--color-background-elevation-1);
-  color: var(--color-text-primary);
+  background-color: var(--sys-color-neutral-container);
+  color: var(--sys-color-on-surface);
   box-shadow: var(--box-shadow-outline-color);
   border-radius: 3px;
   display: inline-block;
   margin: 0 0.1em;
-  text-shadow: 0 1px 0 var(--color-background);
+  text-shadow: 0 1px 0 var(--sys-color-cdt-base-container);
   line-height: 1.5;
   white-space: nowrap;
 }
@@ -47,15 +50,20 @@ h1 {
 }
 
 .keybinds-list-item:focus-visible {
-  background-color: var(--legacy-focus-bg-color);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .keybinds-list-item:not(.keybinds-category-header) {
   padding: 4px 0 4px 20px;
+  border-radius: 7px;
+}
+
+.keybinds-list-item:not(.keybinds-category-header):last-child {
+  margin-bottom: 5px;
 }
 
 .keybinds-list-item.keybinds-editing {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-neutral-container);
 }
 
 .keybinds-list-text.keybinds-action-name {
@@ -79,7 +87,7 @@ h1 {
 }
 
 .keybinds-error {
-  color: var(--color-accent-red);
+  color: var(--sys-color-error);
 }
 
 .keybinds-list-item.keybinds-editing .keybinds-shortcut {
@@ -97,12 +105,12 @@ h1 {
   background: transparent;
 }
 
-.keybinds-list-item button:hover .icon-mask {
-  background-color: var(--color-text-primary);
+.keybinds-list-item button:hover devtools-icon {
+  color: var(--icon-default-hover);
 }
 
 .keybinds-list-item button:focus-visible {
-  background-color: var(--legacy-focus-bg-color);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .keybinds-list-item button[disabled] {
@@ -131,7 +139,7 @@ h1 {
 .keybinds-list-text {
   padding: 3px 0;
   user-select: none;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   text-align: start;
   position: relative;
   margin-right: 0;
@@ -144,12 +152,12 @@ h1 {
 }
 
 .keybinds-category-header:not(:nth-child(2)) {
-  border-top: 1px solid var(--color-details-hairline);
+  border-top: 1px solid var(--sys-color-divider);
 }
 
 .keybinds-list-item:not(.keybinds-category-header):hover,
 .keybinds-list-item:not(.keybinds-editing):focus-within {
-  background: var(--color-background-elevation-1);
+  background: var(--sys-color-state-hover-on-subtle);
 }
 
 .keybinds-set-select {
@@ -159,7 +167,7 @@ h1 {
 
 .keybinds-set-select label p {
   display: inline;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .keybinds-set-select select {
@@ -183,6 +191,7 @@ button.text-button {
   align-self: flex-start;
   min-height: 2em;
   line-height: 2em;
+  margin-bottom: 4px;
 }
 
 .keybinds-footer {

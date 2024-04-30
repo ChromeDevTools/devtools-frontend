@@ -95,7 +95,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
           this.binaryResourceViewFactory.createUtf8View.bind(this.binaryResourceViewFactory),
           this.binaryResourceViewFactory.utf8.bind(this.binaryResourceViewFactory)),
     ];
-    this.binaryViewTypeSetting = Common.Settings.Settings.instance().createSetting('binaryViewType', 'hex');
+    this.binaryViewTypeSetting = Common.Settings.Settings.instance().createSetting('binary-view-type', 'hex');
     this.binaryViewTypeCombobox =
         new UI.Toolbar.ToolbarComboBox(this.binaryViewTypeChanged.bind(this), i18nString(UIStrings.binaryViewType));
     for (const viewObject of this.binaryViewObjects) {
@@ -125,7 +125,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
     const binaryViewObject = this.binaryViewObjects.find(filter);
     console.assert(
         Boolean(binaryViewObject),
-        `No binary view found for binary view type found in setting 'binaryViewType': ${
+        `No binary view found for binary view type found in setting 'binary-view-type': ${
             this.binaryViewTypeSetting.get()}`);
     return binaryViewObject || null;
   }
@@ -187,21 +187,21 @@ export class BinaryResourceView extends UI.Widget.VBox {
   }
 
   addCopyToContextMenu(contextMenu: UI.ContextMenu.ContextMenu, submenuItemText: string): void {
-    const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(submenuItemText);
+    const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(submenuItemText, false, 'copy');
     const footerSection = copyMenu.footerSection();
 
     footerSection.appendItem(i18nString(UIStrings.copyAsBase), async () => {
       const content = await this.binaryResourceViewFactory.base64();
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(content.content);
-    });
+    }, {jslogContext: 'copy-as-base'});
     footerSection.appendItem(i18nString(UIStrings.copyAsHex), async () => {
       const content = await this.binaryResourceViewFactory.hex();
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(content.content);
-    });
+    }, {jslogContext: 'copy-as-hex'});
     footerSection.appendItem(i18nString(UIStrings.copyAsUtf), async () => {
       const content = await this.binaryResourceViewFactory.utf8();
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(content.content);
-    });
+    }, {jslogContext: 'copy-as-utf'});
   }
 }
 

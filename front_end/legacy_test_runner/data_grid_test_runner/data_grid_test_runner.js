@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../ui/legacy/components/data_grid/data_grid-legacy.js';
-
 import {TestRunner} from '../test_runner/test_runner.js';
 
 /**

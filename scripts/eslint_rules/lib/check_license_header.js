@@ -108,7 +108,7 @@ const OTHER_LICENSE_HEADERS = [
   'sdk/DOMModel.js',
   'sources/ScopeChainSidebarPane.js',
   'sources/SourcesPanel.js',
-  'theme_support/theme_support_impl.js',
+  'theme_support/ThemeSupport.js',
   'timeline/TimelinePanel.js',
   'timeline/TimelineUIUtils.js',
   'ui/KeyboardShortcut.js',

@@ -6,7 +6,7 @@
 
 .data-grid {
   position: relative;
-  border: 1px solid var(--color-details-hairline-light) !important; /* stylelint-disable-line declaration-no-important */
+  border: 1px solid var(--sys-color-divider) !important; /* stylelint-disable-line declaration-no-important */
   /* See: crbug.com/1152736 for color variable migration. */
   line-height: 120%;
 }
@@ -28,7 +28,7 @@
   overflow-x: hidden;
   overflow-y: overlay;
   transform: translateZ(0);
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 .data-grid thead {
@@ -94,7 +94,7 @@
 
 .striped-data-grid .revealed.data-grid-data-grid-node:nth-child(odd):not(.dirty):not(.selected),
 .striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node:nth-child(even):not(.dirty):not(.selected) {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-surface1);
 }
 
 .data-grid td,
@@ -104,7 +104,7 @@
   overflow: hidden;
   line-height: 18px;
   height: 18px;
-  border-left: 1px solid var(--color-details-hairline);
+  border-left: 1px solid var(--sys-color-divider);
   padding: 1px 4px;
 }
 
@@ -113,17 +113,25 @@
   user-select: text;
 }
 
+.data-grid tr:has(th) {
+  background-color: var(--sys-color-surface1);
+}
+
 .data-grid th {
+  border-bottom: 1px solid var(--sys-color-divider);
   text-align: left;
-  background-color: var(--color-background-elevation-1);
-  border-bottom: 1px solid var(--color-details-hairline);
   font-weight: normal;
   vertical-align: middle;
 }
 
 .data-grid th:first-child,
 .data-grid td:first-child {
-  border-left: none !important; /* stylelint-disable-line declaration-no-important */
+  border-left-width: 0;
+}
+
+.data-grid tr.selected td,
+.data-grid tr.selected th {
+  border-left-color: var(--sys-color-divider-on-tonal-container);
 }
 
 .data-grid td > div,
@@ -151,7 +159,6 @@
 }
 
 .data-grid th .sort-order-icon-container {
-  background-color: var(--color-background-elevation-1);
   min-width: 0;
   position: absolute;
   top: 1px;
@@ -161,19 +168,23 @@
   align-items: center;
 }
 
-.data-grid th:hover .sort-order-icon-container {
-  background-color: var(--color-background-highlight);
-}
-
 .data-grid th .sort-order-icon {
   margin-right: 4px;
   margin-bottom: -2px;
+  width: 14px;
+  height: 14px;
   display: none;
+  background-color: var(--icon-default);
 }
 
-.data-grid th.sort-ascending .sort-order-icon,
+.data-grid th.sort-ascending .sort-order-icon {
+  display: inline-block;
+  mask-image: var(--image-file-triangle-up);
+}
+
 .data-grid th.sort-descending .sort-order-icon {
-  display: block;
+  display: inline-block;
+  mask-image: var(--image-file-triangle-down);
 }
 
 .data-grid th.sort-ascending,
@@ -182,7 +193,7 @@
 }
 
 .data-grid th.sortable:hover {
-  background-color: var(--color-background-highlight);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .data-grid .top-filler-td {
@@ -197,7 +208,7 @@
 
 .data-grid td.disclosure::before {
   user-select: none;
-  -webkit-mask-image: var(--image-file-triangle-right);
+  mask-image: var(--image-file-triangle-right);
   float: left;
   width: 14px;
   height: 14px;
@@ -218,51 +229,63 @@
 }
 
 .data-grid tbody tr.revealed.selected {
-  background-color: var(--color-background-highlight);
+  background-color: var(--sys-color-neutral-container);
   color: inherit;
+
+  & ::selection {
+    background-color: var(--sys-color-state-focus-select);
+  }
+}
+
+.data-grid tbody tr.revealed:focus-within {
+  background-color: var(--sys-color-tonal-container);
+}
+
+.data-grid tbody tr.revealed:not(.data-grid-filler-row):not(.selected):hover {
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .data-grid tbody tr.revealed.selected.dirty {
-  color: var(--color-selected-option);
+  color: var(--sys-color-on-tonal-container);
 }
 
 .data-grid.no-selection:focus-visible {
-  border: 1px solid var(--color-primary-old) !important; /* stylelint-disable-line declaration-no-important */
+  border: 1px solid var(--sys-color-state-focus-ring) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .data-grid:focus tbody tr.selected {
-  background-color: var(--color-selected-option-background);
-  color: var(--color-selected-option);
+  background-color: var(--sys-color-tonal-container);
+  color: var(--sys-color-on-tonal-container);
 }
 
 .data-grid tbody tr.selected.dirty {
-  --override-data-grid-dirty-background-color: hsl(0deg 100% 30%);
+  --override-data-grid-dirty-background-color: var(--sys-color-error);
 
   background-color: var(--override-data-grid-dirty-background-color);
 }
 
 .data-grid:focus tr.selected.dirty {
-  --override-data-grid-dirty-background-color: hsl(0deg 100% 70%);
+  --override-data-grid-dirty-background-color: var(--sys-color-error-container);
 }
 
 .data-grid:focus tr.selected .devtools-link {
-  color: var(--color-selected-option);
+  color: var(--sys-color-on-tonal-container);
 }
 
 .data-grid:focus tr.parent.selected td.disclosure::before {
-  background-color: var(--icon-force-white);
+  background-color: var(--sys-color-on-tonal-container);
 }
 
 .data-grid tr.inactive {
-  color: var(--color-text-disabled);
+  color: var(--sys-color-state-disabled);
   font-style: italic;
 }
 
 .data-grid tr.dirty {
-  --override-data-grid-dirty-background-color: hsl(0deg 100% 92%);
+  --override-data-grid-dirty-background-color: var(--sys-color-surface-error);
 
   background-color: var(--override-data-grid-dirty-background-color);
-  color: var(--color-red);
+  color: var(--sys-color-error);
   font-style: normal;
 }
 
@@ -283,10 +306,14 @@
 }
 
 @media (forced-colors: active) {
-  .sort-order-icon-container [is="ui-icon"].icon-mask,
-  .data-grid td.disclosure::before {
+  .sort-order-icon-container .sort-order-icon {
     forced-color-adjust: none;
     background-color: ButtonText;
+  }
+
+  .data-grid td.disclosure::before {
+    forced-color-adjust: none;
+    color: ButtonText;
   }
 
   .data-grid.no-selection:focus-visible * {
@@ -294,10 +321,13 @@
   }
 
   .data-grid th.sortable:hover *,
-  .data-grid th.sortable:hover .sort-order-icon-container [is="ui-icon"].icon-mask,
   .data-grid tr.parent.selected td.disclosure::before,
   .data-grid:focus tr.parent.selected td.disclosure::before,
   .data-grid tbody tr.parent.revealed:hover td.disclosure::before {
+    color: HighlightText;
+  }
+
+  .data-grid th.sortable:hover .sort-order-icon-container .sort-order-icon {
     background-color: HighlightText;
   }
 

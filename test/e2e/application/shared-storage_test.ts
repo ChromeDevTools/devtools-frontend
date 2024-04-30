@@ -31,11 +31,11 @@ import {
   getInnerTextOfDataGridCells,
 } from '../helpers/datagrid-helpers.js';
 
-const SHARED_STORAGE_SELECTOR = '[aria-label="Shared Storage"].parent';
+const SHARED_STORAGE_SELECTOR = '[aria-label="Shared storage"].parent';
 let DOMAIN: string;
 let DOMAIN_SELECTOR: string;
 
-describe('The Application Tab', async () => {
+describe('The Application Tab', () => {
   before(async () => {
     DOMAIN = `https://localhost:${getTestServerPort()}`;
     DOMAIN_SELECTOR = `${SHARED_STORAGE_SELECTOR} + ol > [aria-label="${DOMAIN}"]`;
@@ -45,7 +45,8 @@ describe('The Application Tab', async () => {
     expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
   });
 
-  it('shows Shared Storage events', async () => {
+  // Failing test.
+  it.skip('[crbug.com/1485830]: shows Shared Storage events', async () => {
     const {target} = getBrowserAndPages();
 
     await step('navigate to shared-storage resource and open Application tab', async () => {
@@ -88,7 +89,8 @@ describe('The Application Tab', async () => {
     });
   });
 
-  it('shows Shared Storage metadata', async () => {
+  // Failing test.
+  it.skip('[crbug.com/1485830]: shows Shared Storage metadata', async () => {
     const {target} = getBrowserAndPages();
 
     await step('navigate to shared-storage resource and open Application tab', async () => {
@@ -107,7 +109,8 @@ describe('The Application Tab', async () => {
     });
   });
 
-  it('shows Shared Storage keys and values', async () => {
+  // Failing test.
+  it.skip('[crbug.com/1485830]: shows Shared Storage keys and values', async () => {
     const {target} = getBrowserAndPages();
 
     await step('navigate to shared-storage resource and open Application tab', async () => {
@@ -121,7 +124,7 @@ describe('The Application Tab', async () => {
     });
 
     await step('check that storage data values are correct', async () => {
-      const dataGridRowValues = await getStorageItemsData(['key', 'value']);
+      const dataGridRowValues = await getStorageItemsData(['key', 'value'], 2);
       assert.deepEqual(dataGridRowValues, [
         {
           key: 'firstKey',

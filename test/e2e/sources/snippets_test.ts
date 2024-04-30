@@ -7,23 +7,21 @@ import {assert} from 'chai';
 import {
   $$,
   click,
+  clickMoreTabsButton,
   goToResource,
   typeText,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {
-  clickOnContextMenu,
-  MORE_TABS_SELECTOR,
-  openSourcesPanel,
-} from '../helpers/sources-helpers.js';
+import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
+import {openSourcesPanel} from '../helpers/sources-helpers.js';
 
 const SNIPPETS_TAB_SELECTOR = '[aria-label="Snippets"]';
 
-describe('Snippets', async function() {
+describe('Snippets', function() {
   it('with special characters in their name can be deleted', async () => {
     await goToResource('empty.html');
     await openSourcesPanel();
-    await click(MORE_TABS_SELECTOR);
+    await clickMoreTabsButton();
     await click(SNIPPETS_TAB_SELECTOR);
 
     await click('[aria-label="New snippet"]');
@@ -33,7 +31,7 @@ describe('Snippets', async function() {
     const treeItemNames = await Promise.all(treeItems.map(x => x.evaluate(y => y.textContent)));
     assert.deepEqual(treeItemNames, ['file@name']);
 
-    await clickOnContextMenu('[aria-label="file@name, file"]', 'Remove');
+    await openSoftContextMenuAndClickOnItem('[aria-label="file@name, file"]', 'Remove');
 
     treeItems = await $$('.navigator-file-tree-item');
     assert.strictEqual(treeItems.length, 0);

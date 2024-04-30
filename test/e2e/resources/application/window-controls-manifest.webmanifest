@@ -1,0 +1,11 @@
+{
+    "name": "My App",
+    "short_name": "My App",
+    "start_url": ".",
+    "display": "fullscreen",
+    "display_override": [
+      "window-controls-overlay"
+    ],
+    "background_color": "#ffffff",
+    "theme_color": "#10826b"
+}

@@ -123,9 +123,7 @@ export function maybeRemoveSettingExtension(settingName: string): boolean {
   return true;
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum SettingCategory {
+export const enum SettingCategory {
   NONE = '',  // `NONE` must be a falsy value. Legacy code uses if-checks for the category.
   ELEMENTS = 'ELEMENTS',
   APPEARANCE = 'APPEARANCE',
@@ -187,9 +185,7 @@ export function getLocalizedSettingsCategory(category: SettingCategory): Platfor
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum SettingType {
+export const enum SettingType {
   ARRAY = 'array',
   REGEX = 'regex',
   ENUM = 'enum',
@@ -227,11 +223,6 @@ export interface SettingRegistration {
    * The title with which the setting is shown on screen.
    */
   title?: () => Platform.UIString.LocalizedString;
-  /**
-   * The title with which the setting is shown on screen, if the platform running DevTools is 'mac'.
-   * If not set, the 'title' field will be used instead.
-   */
-  titleMac?: () => Platform.UIString.LocalizedString;
   /**
    * The identifier of the setting.
    */
@@ -276,12 +267,18 @@ export interface SettingRegistration {
    */
   experiment?: Root.Runtime.ExperimentName;
   /**
-   * A condition represented as a string the setting's availability depends on. Conditions come
-   * from the queryParamsObject defined in Runtime and just as the experiment field, they determine the availability
-   * of the setting. A condition can be negated by prepending a ‘!’ to the value of the condition
-   * property and in that case the behaviour of the setting's availability will be inverted.
+   * A condition is a function that will make the setting available if it
+   * returns true, and not available, otherwise. Make sure that objects you
+   * access from inside the condition function are ready at the time when the
+   * setting conditions are checked.
    */
-  condition?: Root.Runtime.ConditionName;
+  condition?: Root.Runtime.Condition;
+
+  /**
+   * A function that returns true if the setting should be disabled, along with
+   * the reason why.
+   */
+  disabledCondition?: () => DisabledConditionResult;
 
   /**
    * If a setting is deprecated, define this notice to show an appropriate warning according to the `warning` propertiy.
@@ -307,3 +304,7 @@ interface RawSettingExtensionOption {
   raw: true;
 }
 export type SettingExtensionOption = LocalizedSettingExtensionOption|RawSettingExtensionOption;
+export type DisabledConditionResult = {
+  disabled: true,
+  reason: string,
+}|{disabled: false};

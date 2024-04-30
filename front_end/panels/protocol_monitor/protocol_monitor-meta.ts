@@ -42,7 +42,7 @@ UI.ViewManager.registerViewExtension({
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {
     const ProtocolMonitor = await loadProtocolMonitorModule();
-    return ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl.instance();
+    return new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl();
   },
   experiment: Root.Runtime.ExperimentName.PROTOCOL_MONITOR,
 });

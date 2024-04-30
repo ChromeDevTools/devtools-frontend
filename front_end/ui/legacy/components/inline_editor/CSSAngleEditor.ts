@@ -3,17 +3,17 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../core/common/common.js';
-import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
-import cssAngleEditorStyles from './cssAngleEditor.css.js';
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
+import cssAngleEditorStyles from './cssAngleEditor.css.js';
 import {
+  type Angle,
   AngleUnit,
   get2DTranslationsForAngle,
   getAngleFromRadians,
   getNewAngleFromEvent,
   getRadiansFromAngle,
-  type Angle,
 } from './CSSAngleUtils.js';
 
 const {render, html} = LitHtml;
@@ -43,7 +43,7 @@ export class CSSAngleEditor extends HTMLElement {
 
   connectedCallback(): void {
     this.shadow.adoptedStyleSheets = [cssAngleEditorStyles];
-    ComponentHelpers.SetCSSProperty.set(this, '--clock-dial-length', `${CLOCK_DIAL_LENGTH}px`);
+    this.style.setProperty('--clock-dial-length', `${CLOCK_DIAL_LENGTH}px`);
   }
   set data(data: CSSAngleEditorData) {
     this.angle = data.angle;
@@ -130,7 +130,7 @@ export class CSSAngleEditor extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <div class="editor">
+      <div class="editor" jslog=${VisualLogging.dialog('cssAngleEditor').track({click: true, drag: true, resize: true})}>
         <span class="pointer"></span>
         <div
           class="clock"
@@ -170,10 +170,9 @@ export class CSSAngleEditor extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-css-angle-editor', CSSAngleEditor);
+customElements.define('devtools-css-angle-editor', CSSAngleEditor);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-css-angle-editor': CSSAngleEditor;
   }

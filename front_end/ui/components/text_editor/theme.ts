@@ -6,7 +6,7 @@ import * as CM from '../../../third_party/codemirror.next/codemirror.next.js';
 
 export const editorTheme = CM.EditorView.theme({
   '&.cm-editor': {
-    color: 'color: var(--color-text-primary)',
+    color: 'color: var(--sys-color-on-subtle)',
     cursor: 'auto',
     '&.cm-focused': {
       outline: 'none',
@@ -14,21 +14,29 @@ export const editorTheme = CM.EditorView.theme({
   },
 
   '.cm-scroller': {
-    lineHeight: '1.2em',
+    lineHeight: '1.4em',
     fontFamily: 'var(--source-code-font-family)',
     fontSize: 'var(--source-code-font-size)',
   },
 
+  '.cm-content': {
+    lineHeight: '1.4em',
+  },
+
   '.cm-panels': {
-    backgroundColor: 'var(--color-background-elevation-1)',
+    backgroundColor: 'var(--sys-color-cdt-base-container)',
+  },
+
+  '.cm-panels-bottom': {
+    borderTop: '1px solid var(--sys-color-divider)',
   },
 
   '.cm-selectionMatch': {
-    backgroundColor: 'var(--color-selection-highlight)',
+    backgroundColor: 'var(--sys-color-yellow-container)',
   },
 
   '.cm-cursor': {
-    borderLeft: '1px solid var(--color-background-inverted)',
+    borderLeft: '1px solid var(--sys-color-inverse-surface)',
   },
 
   '&.cm-readonly .cm-cursor': {
@@ -36,21 +44,21 @@ export const editorTheme = CM.EditorView.theme({
   },
 
   '.cm-cursor-secondary': {
-    borderLeft: '1px solid var(--color-secondary-cursor)',
+    borderLeft: '1px solid var(--sys-color-neutral-outline)',
+  },
+
+  '&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground': {
+    background: 'var(--sys-color-tonal-container)',
   },
 
   '.cm-selectionBackground': {
-    background: 'var(--color-editor-selection)',
-  },
-
-  '&.cm-focused .cm-selectionBackground': {
-    background: 'var(--color-editor-selection)',
+    background: 'var(--sys-color-neutral-container)',
   },
 
   '.cm-gutters': {
-    borderRight: '1px solid var(--color-details-hairline)',
+    borderRight: 'none',
     whiteSpace: 'nowrap',
-    backgroundColor: 'var(--color-background)',
+    backgroundColor: 'var(--sys-color-cdt-base-container)',
   },
 
   '.cm-gutters .cm-foldGutterElement': {
@@ -68,14 +76,14 @@ export const editorTheme = CM.EditorView.theme({
     minWidth: '40px',
   },
   '.cm-lineNumbers .cm-gutterElement': {
-    color: 'var(--color-line-number)',
+    color: 'var(--sys-color-outline)',
     padding: '0 3px 0 9px',
   },
 
   '.cm-foldPlaceholder': {
     background: 'transparent',
     border: 'none',
-    color: 'var(--color-text-secondary)',
+    color: 'var(--sys-color-token-subtle)',
   },
 
   '.cm-matchingBracket, .cm-nonmatchingBracket': {
@@ -85,17 +93,17 @@ export const editorTheme = CM.EditorView.theme({
 
   '&:focus-within .cm-matchingBracket': {
     color: 'inherit',
-    backgroundColor: 'var(--color-matching-bracket-background)',
-    borderBottom: '1px solid var(--color-matching-bracket-underline)',
+    backgroundColor: 'var(--sys-color-surface-variant)',
+    borderBottom: '1px solid var(--sys-color-outline)',
   },
 
   '&:focus-within .cm-nonmatchingBracket': {
-    backgroundColor: 'var(--color-nonmatching-bracket-background)',
-    borderBottom: '1px solid var(--color-nonmatching-bracket-underline)',
+    backgroundColor: 'var(--sys-color-error-container)',
+    borderBottom: '1px solid var(--sys-color-error)',
   },
 
   '.cm-trailingWhitespace': {
-    backgroundColor: 'var(--color-trailing-whitespace)',
+    backgroundColor: 'var(--sys-color-error-container)',
   },
 
   '.cm-highlightedTab': {
@@ -103,7 +111,7 @@ export const editorTheme = CM.EditorView.theme({
     position: 'relative',
     '&:before': {
       content: '""',
-      borderBottom: '1px solid var(--color-text-secondary)',
+      borderBottom: '1px solid var(--sys-color-token-subtle)',
       position: 'absolute',
       left: '5%',
       bottom: '50%',
@@ -113,23 +121,23 @@ export const editorTheme = CM.EditorView.theme({
   },
 
   '.cm-highlightedSpaces:before': {
-    color: 'var(--color-text-secondary)',
+    color: 'var(--sys-color-token-subtle)',
     content: 'attr(data-display)',
     position: 'absolute',
     pointerEvents: 'none',
   },
 
   '.cm-placeholder': {
-    color: 'var(--color-text-secondary)',
+    color: 'var(--sys-color-token-subtle)',
   },
 
   '.cm-completionHint': {
-    color: 'var(--color-text-secondary)',
+    color: 'var(--sys-color-token-subtle)',
   },
 
   '.cm-tooltip': {
     boxShadow: 'var(--drop-shadow)',
-    backgroundColor: 'var(--color-background-elevation-1)',
+    backgroundColor: 'var(--sys-color-neutral-container)',
   },
 
   '.cm-argumentHints': {
@@ -142,39 +150,39 @@ export const editorTheme = CM.EditorView.theme({
   },
 
   '.cm-tooltip.cm-tooltip-autocomplete > ul': {
-    backgroundColor: 'var(--color-background)',
+    backgroundColor: 'var(--sys-color-cdt-base-container)',
     maxHeight: '25em',
     minWidth: '16em',
     '& > li': {
       display: 'flex',
       justifyContent: 'space-between',
-      border: '1px solid var(--color-background)',
+      border: '1px solid var(--sys-color-cdt-base-container)',
     },
     '& > li.cm-secondaryCompletion': {
       display: 'flex',
-      backgroundColor: 'var(--color-background-elevation-1)',
-      borderColor: 'var(--color-background-elevation-1)',
+      backgroundColor: 'var(--sys-color-neutral-container)',
+      borderColor: 'var(--sys-color-neutral-container)',
       justifyContent: 'space-between',
       '&::before': {
         content: '">"',
         fontWeight: 'bold',
-        color: 'var(--color-primary-variant)',
+        color: 'var(--sys-color-primary-bright)',
         marginRight: '5px',
       },
     },
     '& > li:hover': {
-      backgroundColor: 'var(--item-hover-color)',
+      backgroundColor: 'var(--sys-color-state-hover-on-subtle)',
     },
     '& > li[aria-selected]': {
-      backgroundColor: 'var(--color-selected-option-background)',
-      borderColor: 'var(--color-selected-option-background)',
+      backgroundColor: 'var(--sys-color-tonal-container)',
+      borderColor: 'var(--sys-color-tonal-container)',
       '&, &.cm-secondaryCompletion::before': {
-        color: 'var(--color-selected-option)',
+        color: 'var(--sys-color-on-tonal-container)',
       },
       '&::after': {
         content: '"tab"',
-        color: 'var(--color-button-primary-text)',
-        border: '1px solid var(--color-selected-option-outline)',
+        color: 'var(--sys-color-primary-bright)',
+        border: '1px solid var(--sys-color-primary-bright)',
         borderRadius: '2px',
         marginLeft: '5px',
         padding: '1px 3px',
@@ -185,14 +193,14 @@ export const editorTheme = CM.EditorView.theme({
   },
 
   '.cm-tooltip.cm-tooltip-autocomplete.cm-conservativeCompletion > ul > li[aria-selected]': {
-    backgroundColor: 'var(--color-background)',
-    border: '1px dotted var(--color-text-primary)',
+    backgroundColor: 'var(--sys-color-cdt-base-container)',
+    border: '1px dotted var(--sys-color-on-surface)',
     '&, &.cm-secondaryCompletion::before': {
-      color: 'var(--color-text-primary)',
+      color: 'var(--sys-color-on-surface)',
     },
     '&::after': {
-      border: '1px solid var(--color-button-secondary-border)',
-      color: 'var(--color-text-secondary)',
+      border: '1px solid var(--sys-color-neutral-outline)',
+      color: 'var(--sys-color-token-subtle)',
     },
   },
 
@@ -207,7 +215,7 @@ export const editorTheme = CM.EditorView.theme({
 
   '@keyframes cm-fading-highlight': {
     from: {
-      backgroundColor: 'var(--color-highlighted-line)',
+      backgroundColor: 'var(--sys-color-yellow-container)',
     },
     to: {
       backgroundColor: 'transparent',

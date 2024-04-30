@@ -1,0 +1,86 @@
+// Copyright 2023 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+// THIS IS GENERATED CODE, DO NOT MODIFY!
+// clang-format off
+
+#ifndef EXTENSIONS_CXX_DEBUGGING_API_H_
+#define EXTENSIONS_CXX_DEBUGGING_API_H_
+
+#include <string>
+#include <vector>
+#include <emscripten/val.h>
+
+#include "llvm/ADT/Optional.h"
+
+namespace symbols_backend {
+namespace api {
+
+{%- for spec in specs %}
+{%- for ty in list(spec.types.values()) + spec.return_types %}
+{%- if not ty.builtin %}
+{%- for docline in ty.doc %}
+// {{ docline }}
+{%- endfor %}
+class {{ ty.cxx_name }} {
+{%- if ty.enums: %}
+ public:
+ {%- for enum in ty.enums %}
+  enum class {{enum.cxx_name}} {
+  {%- for member in enum.members %}
+    {{ enum.get_member_cxx_name(member) }}{{ ',' if member != enum.members[-1] else ''}}
+  {%- endfor %}
+  };
+  {%- endfor %}
+{%- endif %}
+ private:
+{%- if ty.members %}
+{%- for member in ty.members %}
+  {{'llvm::Optional<' if member.optional else ''}}{{'std::vector<' if member.array else ''}}
+{{- member.type.cxx_name -}}
+{{'>' if member.array else ''}}{{'>' if member.optional else ''}} {{member.cxx_name}}_ = {};
+{{- ' // {}'.format(' '.join(member.doc)) if member.doc else ''}}
+{%- endfor %}
+
+ public:
+  {{ty.cxx_name}}() = default;
+  virtual ~{{ty.cxx_name}}() = default;
+{%- for member in ty.members %}
+  {{'llvm::Optional<' if member.optional else ''}}{{'std::vector<' if member.array else ''}}
+{{- member.type.cxx_name -}}
+{{'>' if member.array else ''}}{{'>' if member.optional else ''}} Get{{member.get_accessor_suffix()}}() const { return {{member.cxx_name}}_; }
+  {{ty.cxx_name}} &Set{{member.get_accessor_suffix()}}(
+  {{- 'llvm::Optional<' if member.optional else ''}}{{- 'std::vector<' if member.array else ''}}
+{{- member.type.cxx_name -}}
+{{'>' if member.array else ''}}{{'>' if member.optional else ''}} value) {
+    {{member.cxx_name}}_ = std::move(value);
+    return *this;
+  }
+{%- endfor %}
+{%- endif %}
+};
+{% endif %}
+{%- endfor %}
+
+class DWARFSymbolsApi {
+ public:
+{%- for command in spec.functions.values() %}
+{% for docline in command.doc %}
+  // {{docline}}
+{%- endfor %}
+  virtual {{command.return_type.cxx_name if command.return_type else 'void'}} {{command.cxx_name}}(
+    {%- for member in command.arguments %}
+    {{'llvm::Optional<' if member.optional else ''}}{{'std::vector<' if member.array else ''}}
+    {{- member.type.cxx_name -}}
+    {{'>' if member.array else ''}}{{'>' if member.optional else ''}} {{member.cxx_name}}{{ ',' if member != command.arguments[-1] else ''}}
+    {{- ' //{}'.format(' '.join(member.doc)) if member.doc else ''}}
+    {%- endfor %}
+  ) = 0;
+{%- endfor %}
+};
+{%- endfor %}
+}  // namespace api
+}  // namespace symbols_backend
+
+#endif // EXTENSIONS_CXX_DEBUGGING_API_H_

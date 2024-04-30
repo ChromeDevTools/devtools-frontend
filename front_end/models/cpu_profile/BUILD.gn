@@ -1,0 +1,48 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
+
+devtools_module("cpu_profile") {
+  sources = [
+    "CPUProfileDataModel.ts",
+    "ProfileTreeModel.ts",
+  ]
+
+  deps = [
+    "../../core/common:bundle",
+    "../../core/platform:bundle",
+    "../../generated",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "cpu_profile.ts"
+
+  deps = [ ":cpu_profile" ]
+
+  visibility = [
+    ":*",
+    "../../core/sdk/*",
+    "../../panels/profiler/*",
+    "../../panels/timeline/*",
+    "../../testing/*",
+    "../../ui/legacy/components/perf_ui/*",
+    "../timeline_model/*",
+    "../trace/*",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "CPUProfileDataModel.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+  ]
+}

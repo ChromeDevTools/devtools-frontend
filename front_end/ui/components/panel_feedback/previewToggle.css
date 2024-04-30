@@ -32,11 +32,11 @@
 }
 
 .x-link {
-  color: var(--color-primary-old);
+  color: var(--sys-color-primary);
   text-decoration-line: underline;
   margin: 0 4px;
 }
 
 .feedback .x-link {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }

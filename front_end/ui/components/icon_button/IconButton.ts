@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 
 import {Icon, type IconData} from './Icon.js';
@@ -94,10 +93,9 @@ export class IconButton extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('icon-button', IconButton);
+customElements.define('icon-button', IconButton);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'icon-button': IconButton;
   }

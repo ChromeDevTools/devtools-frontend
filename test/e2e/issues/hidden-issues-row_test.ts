@@ -16,38 +16,35 @@ import {
   navigateToIssuesTab,
 } from '../helpers/issues-helpers.js';
 
-describe('Hide issues row', async () => {
+describe('Hide issues row', () => {
   it('should be visible after hiding an issue', async () => {
-    await goToResource('issues/cross-origin-portal-post.html');
+    await goToResource('elements/quirks-mode.html');
     await navigateToIssuesTab();
 
-    const issueTitle = 'Cross-origin portal post messages are blocked on your site';
+    const issueTitle = 'Page layout may be unexpected due to Quirks Mode';
     const issueHeader = await getIssueHeaderByTitle(issueTitle);
-    assertNotNullOrUndefined(issueHeader);
-    await issueHeader.hover();
+    await issueHeader!.hover();
     const hideIssuesMenuBtn = await getHideIssuesMenu();
     await hideIssuesMenuBtn.click();
     const menuItem = await getHideIssuesMenuItem();
-    assertNotNullOrUndefined(menuItem);
-    await menuItem.click();
+    await menuItem!.click();
     await waitFor('.hidden-issue');
     const hiddenIssuesRow = await getHiddenIssuesRow();
     const isHidden = await hiddenIssuesRow?.evaluate(node => node.classList.contains('hidden'));
     assert.isFalse(isHidden);
   });
+
   it('should expand after clicking', async () => {
-    await goToResource('issues/cross-origin-portal-post.html');
+    await goToResource('elements/quirks-mode.html');
     await navigateToIssuesTab();
 
-    const issueTitle = 'Cross-origin portal post messages are blocked on your site';
+    const issueTitle = 'Page layout may be unexpected due to Quirks Mode';
     const issueHeader = await getIssueHeaderByTitle(issueTitle);
-    assertNotNullOrUndefined(issueHeader);
-    await issueHeader.hover();
+    await issueHeader!.hover();
     const hideIssuesMenuBtn = await getHideIssuesMenu();
     await hideIssuesMenuBtn.click();
     const menuItem = await getHideIssuesMenuItem();
-    assertNotNullOrUndefined(menuItem);
-    await menuItem.click();
+    await menuItem!.click();
     const hiddenIssuesRow = await getHiddenIssuesRow();
     let isHidden = await hiddenIssuesRow?.evaluate(node => node.classList.contains('hidden'));
     assert.isFalse(isHidden);
@@ -60,18 +57,16 @@ describe('Hide issues row', async () => {
   });
 
   it('should contain issue after clicking', async () => {
-    await goToResource('issues/cross-origin-portal-post.html');
+    await goToResource('elements/quirks-mode.html');
     await navigateToIssuesTab();
 
-    const issueTitle = 'Cross-origin portal post messages are blocked on your site';
+    const issueTitle = 'Page layout may be unexpected due to Quirks Mode';
     const issueHeader = await getIssueHeaderByTitle(issueTitle);
-    assertNotNullOrUndefined(issueHeader);
-    await issueHeader.hover();
+    await issueHeader!.hover();
     const hideIssuesMenuBtn = await getHideIssuesMenu();
     await hideIssuesMenuBtn.click();
     const menuItem = await getHideIssuesMenuItem();
-    assertNotNullOrUndefined(menuItem);
-    await menuItem.click();
+    await menuItem!.click();
     await waitFor('.hidden-issue');
     const hiddenIssuesRow = await getHiddenIssuesRow();
     let isHidden = await hiddenIssuesRow?.evaluate(node => node.classList.contains('hidden'));
@@ -86,18 +81,16 @@ describe('Hide issues row', async () => {
   });
 
   it('should contain Unhide all issues button', async () => {
-    await goToResource('issues/cross-origin-portal-post.html');
+    await goToResource('elements/quirks-mode.html');
     await navigateToIssuesTab();
 
-    const issueTitle = 'Cross-origin portal post messages are blocked on your site';
+    const issueTitle = 'Page layout may be unexpected due to Quirks Mode';
     const issueHeader = await getIssueHeaderByTitle(issueTitle);
-    assertNotNullOrUndefined(issueHeader);
-    await issueHeader.hover();
+    await issueHeader!.hover();
     const hideIssuesMenuBtn = await getHideIssuesMenu();
     await hideIssuesMenuBtn.click();
     const menuItem = await getHideIssuesMenuItem();
-    assertNotNullOrUndefined(menuItem);
-    await menuItem.click();
+    await menuItem!.click();
     const hiddenIssuesRow = await getHiddenIssuesRow();
     const isHidden = await hiddenIssuesRow?.evaluate(node => node.classList.contains('hidden'));
     assert.isFalse(isHidden);
@@ -107,18 +100,16 @@ describe('Hide issues row', async () => {
   });
 
   it('should get hidden and unhide all issues upon clicking unhide all issues button', async () => {
-    await goToResource('issues/cross-origin-portal-post.html');
+    await goToResource('elements/quirks-mode.html');
     await navigateToIssuesTab();
 
-    const issueTitle = 'Cross-origin portal post messages are blocked on your site';
+    const issueTitle = 'Page layout may be unexpected due to Quirks Mode';
     const issueHeader = await getIssueHeaderByTitle(issueTitle);
-    assertNotNullOrUndefined(issueHeader);
-    await issueHeader.hover();
+    await issueHeader!.hover();
     const hideIssuesMenuBtn = await getHideIssuesMenu();
     await hideIssuesMenuBtn.click();
     const menuItem = await getHideIssuesMenuItem();
-    assertNotNullOrUndefined(menuItem);
-    await menuItem.click();
+    await menuItem!.click();
     const unhideAllIssuesbtn = await waitFor('.unhide-all-issues-button');
     await unhideAllIssuesbtn.click();
     const hiddenIssuesRow = await getHiddenIssuesRow();

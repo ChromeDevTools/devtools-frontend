@@ -12,7 +12,7 @@ import {
 } from '../helpers/elements-helpers.js';
 import {togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
 
-describe('The Elements tab', async function() {
+describe('The Elements tab', function() {
   it('search is performed as the user types when the "searchAsYouType" setting is enabled', async () => {
     await togglePreferenceInSettingsTab('Search as you type', true);
     await summonAndWaitForSearchBox();

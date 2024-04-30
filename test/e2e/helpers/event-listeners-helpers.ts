@@ -2,7 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {$$, click, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
+import {
+  $,
+  $$,
+  click,
+  clickElement,
+  clickMoreTabsButton,
+  getBrowserAndPages,
+  goToResource,
+  waitFor,
+} from '../../shared/helper.js';
 
 import {
   waitForContentOfSelectedElementsNode,
@@ -33,7 +42,12 @@ const EVENT_LISTENERS_PANEL_LINK = '[aria-label="Event Listeners"]';
 const EVENT_LISTENERS_SELECTOR = '[aria-label$="event listener"]:not(.hidden)';
 
 export const openEventListenersPaneAndWaitForListeners = async () => {
-  await click(EVENT_LISTENERS_PANEL_LINK);
+  let eventListenersPanel = await $('Event Listeners', undefined, 'aria');
+  if (!eventListenersPanel) {
+    await clickMoreTabsButton();
+    eventListenersPanel = await waitFor(EVENT_LISTENERS_PANEL_LINK);
+  }
+  await clickElement(eventListenersPanel);
   await waitFor(EVENT_LISTENERS_SELECTOR);
 };
 

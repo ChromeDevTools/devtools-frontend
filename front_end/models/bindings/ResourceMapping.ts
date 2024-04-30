@@ -301,7 +301,9 @@ class ModelInfo {
     if (resourceType !== Common.ResourceType.resourceTypes.Image &&
         resourceType !== Common.ResourceType.resourceTypes.Font &&
         resourceType !== Common.ResourceType.resourceTypes.Document &&
-        resourceType !== Common.ResourceType.resourceTypes.Manifest) {
+        resourceType !== Common.ResourceType.resourceTypes.Manifest &&
+        resourceType !== Common.ResourceType.resourceTypes.Fetch &&
+        resourceType !== Common.ResourceType.resourceTypes.XHR) {
       return false;
     }
 
@@ -316,7 +318,7 @@ class ModelInfo {
     }
     if ((resourceType === Common.ResourceType.resourceTypes.Image ||
          resourceType === Common.ResourceType.resourceTypes.Font) &&
-        resource.contentURL().startsWith('data:')) {
+        Common.ParsedURL.schemeIs(resource.contentURL(), 'data:')) {
       return false;
     }
     return true;
@@ -389,7 +391,7 @@ class ModelInfo {
   }
 }
 
-class Binding implements TextUtils.ContentProvider.ContentProvider {
+class Binding implements TextUtils.ContentProvider.SafeContentProvider {
   readonly resources: Set<SDK.Resource.Resource>;
   readonly #project: ContentProviderBasedProject;
   readonly #uiSourceCode: Workspace.UISourceCode.UISourceCode;
@@ -532,6 +534,10 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
 
   requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
     return this.firstResource().requestContent();
+  }
+
+  requestContentData(): Promise<TextUtils.ContentData.ContentDataOrError> {
+    return this.firstResource().requestContentData();
   }
 
   searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):

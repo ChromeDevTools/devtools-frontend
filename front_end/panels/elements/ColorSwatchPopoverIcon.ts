@@ -162,11 +162,11 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<C
       if (!value) {
         continue;
       }
-      const color = Common.Color.parse(value);
+      const color = Common.Color.parse(value.value);
       if (!color) {
         continue;
       }
-      colors.push(value);
+      colors.push(value.value);
       colorNames.push(cssVariable);
     }
     return {title: 'CSS Variables', mutable: false, matchUserFormat: true, colors: colors, colorNames: colorNames};
@@ -502,8 +502,4 @@ export class FontEditorSectionManager {
     this.section.resetToolbars();
     this.section.onpopulate();
   }
-
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  private static readonly treeElementSymbol = Symbol('FontEditorSectionManager._treeElementSymbol');
 }

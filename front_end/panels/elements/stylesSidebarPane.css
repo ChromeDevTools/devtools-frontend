@@ -8,13 +8,10 @@
   min-height: 18px;
   white-space: nowrap;
   user-select: text;
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
   position: relative;
   overflow: hidden;
-
-  > div {
-    padding: 2px 2px 4px 4px;
-  }
+  padding: 2px 2px 4px 4px;
 
   &:last-child {
     border-bottom: none;
@@ -25,18 +22,18 @@
   }
 
   &.read-only {
-    background-color: var(--color-background-opacity-50);
+    background-color: var(--sys-color-cdt-base-container);
     font-style: italic;
   }
 
   &:focus-visible,
   &.read-only:focus-visible {
-    background-color: var(--color-background-elevation-2);
+    background-color: var(--sys-color-state-focus-highlight);
   }
 
   .simple-selector.filter-match {
-    background-color: var(--color-match-highlight);
-    color: var(--color-text-primary);
+    background-color: var(--sys-color-tonal-container);
+    color: var(--sys-color-on-surface);
   }
 
   .devtools-link {
@@ -48,19 +45,25 @@
   }
 
   .styles-section-subtitle .devtools-link {
-    color: var(--color-text-primary);
-    text-decoration-color: hsl(0deg 0% 60%);
+    color: var(--sys-color-on-surface);
+    text-decoration-color: var(--sys-color-neutral-bright);
     outline-offset: 0;
   }
 
   .selector,
-  .try-rule-selector-element {
-    color: var(--color-text-disabled);
+  .try-rule-selector-element,
+  .ancestor-rule-list,
+  .ancestor-closing-braces {
+    color: var(--sys-color-token-meta);
+  }
+
+  .ancestor-rule-list devtools-css-query {
+    display: block;
   }
 
   .simple-selector.selector-matches,
   &.keyframe-key {
-    color: var(--color-text-primary);
+    color: var(--sys-color-on-surface);
   }
 
   .style-properties {
@@ -96,14 +99,10 @@
   background-clip: padding;
   word-wrap: break-word;
   white-space: normal;
-
-  .query-list {
-    color: var(--color-text-disabled);
-  }
 }
 
 .styles-section-subtitle {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   float: right;
   padding-left: 15px;
   max-width: 100%;
@@ -116,15 +115,7 @@
 
 .sidebar-pane-open-brace,
 .sidebar-pane-closing-brace {
-  color: var(--color-text-primary);
-}
-
-.nesting-symbol.implicit {
-  color: var(--color-text-disabled);
-}
-
-.nesting-symbol:hover {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 @keyframes styles-element-state-pane-slidein {
@@ -163,58 +154,41 @@
   cursor: text;
 }
 
-.styles-sidebar-pane-toolbar-container {
-  --override-toolbar-background-color: var(--color-background-elevation-1);
+/* TODO(changhaohan): restructure this in relation to stylePropertiesTreeOutline.css. */
+.styles-clipboard-only {
+  display: inline-block;
+  width: 0;
+  opacity: 0%;
+  pointer-events: none;
+  white-space: pre;
+}
 
+.styles-sidebar-pane-toolbar-container {
   flex-shrink: 0;
   overflow: hidden;
   position: sticky;
   top: 0;
-  background-color: var(--override-toolbar-background-color);
+  background-color: var(--sys-color-cdt-base-container);
   z-index: 2;
 }
 
 .styles-sidebar-pane-toolbar {
-  border-bottom: 1px solid var(--color-details-hairline);
-  flex-shrink: 0;
+  border-bottom: 1px solid var(--sys-color-divider);
+}
+
+.styles-pane-toolbar {
+  width: 100%;
 }
 
 .font-toolbar-hidden {
   visibility: hidden;
 }
 
-.styles-sidebar-pane-filter-box {
-  flex: auto;
-  display: flex;
-
-  > input {
-    outline: none !important; /* stylelint-disable-line declaration-no-important */
-    border: none;
-    width: 100%;
-    background: var(--color-background);
-    padding-left: 4px;
-    margin: 3px;
-
-    &:hover {
-      box-shadow: var(--legacy-focus-ring-inactive-shadow);
-    }
-
-    &:focus,
-    &:not(:placeholder-shown) {
-      box-shadow: var(--legacy-focus-ring-active-shadow);
-    }
-
-    &::placeholder {
-      color: var(--color-text-secondary);
-    }
-  }
-}
-
 .sidebar-separator {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-surface2);
   padding: 0 5px;
-  border-bottom: 1px solid var(--color-details-hairline);
-  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--sys-color-divider);
+  color: var(--sys-color-token-subtle);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -231,6 +205,10 @@
 
   &.layer-separator {
     display: flex;
+  }
+
+  &.empty-section {
+    border-bottom: none;
   }
 }
 
@@ -264,11 +242,6 @@
 }
 
 @media (forced-colors: active) {
-  .styles-sidebar-pane-filter-box > input {
-    border: 1px solid ButtonText;
-    background: ButtonFace;
-  }
-
   .sidebar-pane-section-toolbar {
     forced-color-adjust: none;
     border-color: 1px solid ButtonText;
@@ -315,4 +288,8 @@
 
   margin-top: 2em;
   left: calc(50% - var(--dimension) / 2);
+}
+
+.section-block-expand-icon {
+  margin-bottom: -4px;
 }

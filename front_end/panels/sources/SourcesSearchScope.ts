@@ -36,12 +36,12 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import type * as Search from '../search/search.js';
 
-export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
+export class SourcesSearchScope implements Search.SearchScope.SearchScope {
   private searchId: number;
   private searchResultCandidates: Workspace.UISourceCode.UISourceCode[];
-  private searchResultCallback: ((arg0: Search.SearchConfig.SearchResult) => void)|null;
+  private searchResultCallback: ((arg0: Search.SearchScope.SearchResult) => void)|null;
   private searchFinishedCallback: ((arg0: boolean) => void)|null;
-  private searchConfig: Workspace.Workspace.ProjectSearchConfig|null;
+  private searchConfig: Workspace.SearchConfig.SearchConfig|null;
   constructor() {
     // FIXME: Add title once it is used by search controller.
     this.searchId = 0;
@@ -78,6 +78,11 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
         uiSourceCode1.fullDisplayName(), uiSourceCode2.fullDisplayName());
   }
 
+  private static urlComparator(
+      uiSourceCode1: Workspace.UISourceCode.UISourceCode, uiSourceCode2: Workspace.UISourceCode.UISourceCode): number {
+    return Platform.StringUtilities.naturalOrderComparator(uiSourceCode1.url(), uiSourceCode2.url());
+  }
+
   performIndexing(progress: Common.Progress.Progress): void {
     this.stopSearch();
 
@@ -92,7 +97,7 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
 
   private projects(): Workspace.Workspace.Project[] {
     const searchInAnonymousAndContentScripts =
-        Common.Settings.Settings.instance().moduleSetting('searchInAnonymousAndContentScripts').get();
+        Common.Settings.Settings.instance().moduleSetting('search-in-anonymous-and-content-scripts').get();
 
     return Workspace.Workspace.WorkspaceImpl.instance().projects().filter(project => {
       if (project.type() === Workspace.Workspace.projectTypes.Service) {
@@ -110,8 +115,8 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
   }
 
   performSearch(
-      searchConfig: Workspace.Workspace.ProjectSearchConfig, progress: Common.Progress.Progress,
-      searchResultCallback: (arg0: Search.SearchConfig.SearchResult) => void,
+      searchConfig: Workspace.SearchConfig.SearchConfig, progress: Common.Progress.Progress,
+      searchResultCallback: (arg0: Search.SearchScope.SearchResult) => void,
       searchFinishedCallback: (arg0: boolean) => void): void {
     this.stopSearch();
     this.searchResultCandidates = [];
@@ -140,11 +145,15 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
   }
 
   private projectFilesMatchingFileQuery(
-      project: Workspace.Workspace.Project, searchConfig: Workspace.Workspace.ProjectSearchConfig,
-      dirtyOnly?: boolean): Platform.DevToolsPath.UrlString[] {
+      project: Workspace.Workspace.Project, searchConfig: Workspace.SearchConfig.SearchConfig,
+      dirtyOnly?: boolean): Workspace.UISourceCode.UISourceCode[] {
     const result = [];
     for (const uiSourceCode of project.uiSourceCodes()) {
       if (!uiSourceCode.contentType().isTextType()) {
+        continue;
+      }
+      if (Bindings.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+              uiSourceCode)) {
         continue;
       }
       const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
@@ -157,33 +166,31 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
       if (searchConfig.filePathMatchesFileQuery(
               uiSourceCode.fullDisplayName() as Platform.DevToolsPath.UrlString |
               Platform.DevToolsPath.EncodedPathString)) {
-        result.push(uiSourceCode.url());
+        result.push(uiSourceCode);
       }
     }
-    result.sort(Platform.StringUtilities.naturalOrderComparator);
+    result.sort(SourcesSearchScope.urlComparator);
     return result;
   }
 
   private processMatchingFilesForProject(
-      searchId: number, project: Workspace.Workspace.Project, searchConfig: Workspace.Workspace.ProjectSearchConfig,
-      filesMatchingFileQuery: string[], files: string[]): void {
+      searchId: number, project: Workspace.Workspace.Project, searchConfig: Workspace.SearchConfig.SearchConfig,
+      filesMatchingFileQuery: Workspace.UISourceCode.UISourceCode[],
+      filesWithPreliminaryResult:
+          Map<Workspace.UISourceCode.UISourceCode, TextUtils.ContentProvider.SearchMatch[]|null>): void {
     if (searchId !== this.searchId && this.searchFinishedCallback) {
       this.searchFinishedCallback(false);
       return;
     }
 
-    files.sort(Platform.StringUtilities.naturalOrderComparator);
-    files = Platform.ArrayUtilities.intersectOrdered(
-        files, filesMatchingFileQuery, Platform.StringUtilities.naturalOrderComparator);
+    let files = [...filesWithPreliminaryResult.keys()];
+    files.sort(SourcesSearchScope.urlComparator);
+    files = Platform.ArrayUtilities.intersectOrdered(files, filesMatchingFileQuery, SourcesSearchScope.urlComparator);
     const dirtyFiles = this.projectFilesMatchingFileQuery(project, searchConfig, true);
-    files = Platform.ArrayUtilities.mergeOrdered(files, dirtyFiles, Platform.StringUtilities.naturalOrderComparator);
+    files = Platform.ArrayUtilities.mergeOrdered(files, dirtyFiles, SourcesSearchScope.urlComparator);
 
     const uiSourceCodes = [];
-    for (const file of files) {
-      const uiSourceCode = project.uiSourceCodeForURL(file as Platform.DevToolsPath.UrlString);
-      if (!uiSourceCode) {
-        continue;
-      }
+    for (const uiSourceCode of files) {
       const script = Bindings.DefaultScriptMapping.DefaultScriptMapping.scriptForUISourceCode(uiSourceCode);
       if (script && !script.isAnonymousScript()) {
         continue;
@@ -245,23 +252,19 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
 
     function contentLoaded(
         this: SourcesSearchScope, uiSourceCode: Workspace.UISourceCode.UISourceCode, content: string): void {
-      function matchesComparator(
-          a: TextUtils.ContentProvider.SearchMatch, b: TextUtils.ContentProvider.SearchMatch): number {
-        return a.lineNumber - b.lineNumber;
-      }
-
       progress.incrementWorked(1);
       let matches: TextUtils.ContentProvider.SearchMatch[] = [];
-      const searchConfig = (this.searchConfig as Workspace.Workspace.ProjectSearchConfig);
+      const searchConfig = (this.searchConfig as Workspace.SearchConfig.SearchConfig);
       const queries = searchConfig.queries();
       if (content !== null) {
         for (let i = 0; i < queries.length; ++i) {
           const nextMatches = TextUtils.TextUtils.performSearchInContent(
               content, queries[i], !searchConfig.ignoreCase(), searchConfig.isRegex());
-          matches = Platform.ArrayUtilities.mergeOrdered(matches, nextMatches, matchesComparator);
+          matches = Platform.ArrayUtilities.mergeOrdered(
+              matches, nextMatches, TextUtils.ContentProvider.SearchMatch.comparator);
         }
         if (!searchConfig.queries().length) {
-          matches = [new TextUtils.ContentProvider.SearchMatch(0, (new TextUtils.Text.Text(content)).lineAt(0))];
+          matches = [new TextUtils.ContentProvider.SearchMatch(0, (new TextUtils.Text.Text(content)).lineAt(0), 0, 0)];
         }
       }
       if (matches && this.searchResultCallback) {
@@ -279,7 +282,7 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
   }
 }
 
-export class FileBasedSearchResult implements Search.SearchConfig.SearchResult {
+export class FileBasedSearchResult implements Search.SearchScope.SearchResult {
   private readonly uiSourceCode: Workspace.UISourceCode.UISourceCode;
   private readonly searchMatches: TextUtils.ContentProvider.SearchMatch[];
   constructor(
@@ -305,13 +308,20 @@ export class FileBasedSearchResult implements Search.SearchConfig.SearchResult {
   }
 
   matchRevealable(index: number): Object {
-    const match = this.searchMatches[index];
-    return this.uiSourceCode.uiLocation(match.lineNumber, match.columnNumber);
+    const {lineNumber, columnNumber, matchLength} = this.searchMatches[index];
+    const range = new TextUtils.TextRange.TextRange(lineNumber, columnNumber, lineNumber, columnNumber + matchLength);
+    return new Workspace.UISourceCode.UILocationRange(this.uiSourceCode, range);
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  matchLabel(index: number): any {
-    return this.searchMatches[index].lineNumber + 1;
+  matchLabel(index: number): string {
+    return String(this.searchMatches[index].lineNumber + 1);
+  }
+
+  matchColumn(index: number): number {
+    return this.searchMatches[index].columnNumber;
+  }
+
+  matchLength(index: number): number {
+    return this.searchMatches[index].matchLength;
   }
 }

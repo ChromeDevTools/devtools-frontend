@@ -59,12 +59,14 @@ export class UserMetrics {
         BreakpointEditDialogRevealedFrom.MaxValue);
   }
 
-  panelShown(panelName: string): void {
+  panelShown(panelName: string, isLaunching?: boolean): void {
     const code = PanelCodes[panelName as keyof typeof PanelCodes] || 0;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.PanelShown, code, PanelCodes.MaxValue);
     InspectorFrontendHostInstance.recordUserMetricsAction('DevTools_PanelShown_' + panelName);
     // Store that the user has changed the panel so we know launch histograms should not be fired.
-    this.#panelChangedSinceLaunch = true;
+    if (!isLaunching) {
+      this.#panelChangedSinceLaunch = true;
+    }
   }
 
   /**
@@ -75,6 +77,16 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.PanelClosed, code, PanelCodes.MaxValue);
     // Store that the user has changed the panel so we know launch histograms should not be fired.
     this.#panelChangedSinceLaunch = true;
+  }
+
+  panelShownInLocation(panelName: string, location: 'main'|'drawer'): void {
+    const panelWithLocationName = `${panelName}-${location}`;
+    const panelWithLocation = PanelWithLocation[panelWithLocationName as keyof typeof PanelWithLocation] || 0;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.PanelShownInLocation,
+        panelWithLocation,
+        PanelWithLocation.MaxValue,
+    );
   }
 
   elementsSidebarTabShown(sidebarPaneName: string): void {
@@ -143,6 +155,10 @@ export class UserMetrics {
     this.#launchPanelName = (panelName as string);
   }
 
+  performanceTraceLoad(measure: PerformanceMeasure): void {
+    InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.TraceLoad', measure.duration);
+  }
+
   keybindSetSettingChanged(keybindSet: string): void {
     const value = KeybindSetSettings[keybindSet as keyof typeof KeybindSetSettings] || 0;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
@@ -206,6 +222,15 @@ export class UserMetrics {
         EnumeratedHistogram.ExperimentEnabledAtLaunch, experiment, DevtoolsExperiments.MaxValue);
   }
 
+  experimentDisabledAtLaunch(experimentId: string): void {
+    const experiment = DevtoolsExperiments[experimentId as keyof typeof DevtoolsExperiments];
+    if (experiment === undefined) {
+      return;
+    }
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.ExperimentDisabledAtLaunch, experiment, DevtoolsExperiments.MaxValue);
+  }
+
   experimentChanged(experimentId: string, isEnabled: boolean): void {
     const experiment = DevtoolsExperiments[experimentId as keyof typeof DevtoolsExperiments];
     if (experiment === undefined) {
@@ -245,24 +270,6 @@ export class UserMetrics {
     }
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.VMInlineScriptTypeShown, inlineScriptType, VMInlineScriptType.MaxValue);
-  }
-
-  linearMemoryInspectorRevealedFrom(linearMemoryInspectorRevealedFrom: LinearMemoryInspectorRevealedFrom): void {
-    if (linearMemoryInspectorRevealedFrom >= LinearMemoryInspectorRevealedFrom.MaxValue) {
-      return;
-    }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.LinearMemoryInspectorRevealedFrom, linearMemoryInspectorRevealedFrom,
-        LinearMemoryInspectorRevealedFrom.MaxValue);
-  }
-
-  linearMemoryInspectorTarget(linearMemoryInspectorTarget: LinearMemoryInspectorTarget): void {
-    if (linearMemoryInspectorTarget >= LinearMemoryInspectorTarget.MaxValue) {
-      return;
-    }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.LinearMemoryInspectorTarget, linearMemoryInspectorTarget,
-        LinearMemoryInspectorTarget.MaxValue);
   }
 
   language(language: Intl.UnicodeBCP47LocaleIdentifier): void {
@@ -356,6 +363,11 @@ export class UserMetrics {
         EnumeratedHistogram.LighthouseModeRun, type, LighthouseModeRun.MaxValue);
   }
 
+  lighthouseCategoryUsed(type: LighthouseCategoryUsed): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.LighthouseCategoryUsed, type, LighthouseCategoryUsed.MaxValue);
+  }
+
   colorConvertedFrom(type: ColorConvertedFrom): void {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.ColorConvertedFrom, type, ColorConvertedFrom.MaxValue);
@@ -386,6 +398,16 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.BreakpointsRestoredFromStorageCount, countBucket,
         BreakpointsRestoredFromStorageCount.MaxValue);
+  }
+
+  animationPlaybackRateChanged(playbackRate: AnimationsPlaybackRate): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.AnimationPlaybackRateChanged, playbackRate, AnimationsPlaybackRate.MaxValue);
+  }
+
+  animationPointDragged(dragType: AnimationPointDragType): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.AnimationPointDragged, dragType, AnimationPointDragType.MaxValue);
   }
 
   #breakpointCountToBucket(count: number): BreakpointsRestoredFromStorageCount {
@@ -424,11 +446,55 @@ export class UserMetrics {
         'DevTools.Workspaces.PopulateWallClocktime', wallClockTimeInMilliseconds);
   }
 
-  workspacesNumberOfFiles(numberOfFilesLoaded: number, numberOfDirectoriesTraversed: number): void {
-    InspectorFrontendHostInstance.recordCountHistogram(
-        'DevTools.Workspaces.NumberOfFilesLoaded', numberOfFilesLoaded, 0, 100_000, 100);
-    InspectorFrontendHostInstance.recordCountHistogram(
-        'DevTools.Workspaces.NumberOfDirectoriesTraversed', numberOfDirectoriesTraversed, 0, 10_000, 100);
+  visualLoggingProcessingDone(timeInMilliseconds: number): void {
+    InspectorFrontendHostInstance.recordPerformanceHistogram(
+        'DevTools.VisualLogging.ProcessingTime', timeInMilliseconds);
+  }
+
+  legacyResourceTypeFilterNumberOfSelectedChanged(itemCount: number): void {
+    const boundItemCount = Math.max(Math.min(itemCount, ResourceType.MaxValue - 1), 1);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.LegacyResourceTypeFilterNumberOfSelectedChanged, boundItemCount, ResourceType.MaxValue);
+  }
+
+  legacyResourceTypeFilterItemSelected(resourceTypeName: string): void {
+    const resourceType = ResourceType[resourceTypeName as keyof typeof ResourceType];
+    if (resourceType === undefined) {
+      return;
+    }
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.LegacyResourceTypeFilterItemSelected, resourceType, ResourceType.MaxValue);
+  }
+
+  resourceTypeFilterNumberOfSelectedChanged(itemCount: number): void {
+    const boundItemCount = Math.max(Math.min(itemCount, ResourceType.MaxValue - 1), 1);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.ResourceTypeFilterNumberOfSelectedChanged, boundItemCount, ResourceType.MaxValue);
+  }
+
+  resourceTypeFilterItemSelected(resourceTypeName: string): void {
+    const resourceType = ResourceType[resourceTypeName as keyof typeof ResourceType];
+    if (resourceType === undefined) {
+      return;
+    }
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.ResourceTypeFilterItemSelected, resourceType, ResourceType.MaxValue);
+  }
+
+  networkPanelMoreFiltersNumberOfSelectedChanged(itemCount: number): void {
+    const boundItemCount = Math.max(Math.min(itemCount, NetworkPanelMoreFilters.MaxValue), 0);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.NetworkPanelMoreFiltersNumberOfSelectedChanged, boundItemCount,
+        NetworkPanelMoreFilters.MaxValue);
+  }
+
+  networkPanelMoreFiltersItemSelected(filterName: string): void {
+    const filter = NetworkPanelMoreFilters[filterName as keyof typeof NetworkPanelMoreFilters];
+    if (filter === undefined) {
+      return;
+    }
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.NetworkPanelMoreFiltersItemSelected, filter, NetworkPanelMoreFilters.MaxValue);
   }
 }
 
@@ -447,8 +513,6 @@ export class UserMetrics {
 // Codes below are used to collect UMA histograms in the Chromium port.
 // Do not change the values below, additional actions are needed on the Chromium side
 // in order to add more codes.
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Action {
   WindowDocked = 1,
   WindowUndocked = 2,
@@ -522,26 +586,81 @@ export enum Action {
   BreakpointsInFileCheckboxToggled = 71,
   BreakpointsInFileEnabledDisabledFromContextMenu = 72,
   BreakpointConditionEditedFromSidebar = 73,
-  AddFileSystemToWorkspace = 74,
-  RemoveFileSystemFromWorkspace = 75,
-  AddFileSystemForOverrides = 76,
-  RemoveFileSystemForOverrides = 77,
-  FileSystemSourceSelected = 78,
+  WorkspaceTabAddFolder = 74,
+  WorkspaceTabRemoveFolder = 75,
+  OverrideTabAddFolder = 76,
+  OverrideTabRemoveFolder = 77,
+  WorkspaceSourceSelected = 78,
   OverridesSourceSelected = 79,
   StyleSheetInitiatorLinkClicked = 80,
-  MaxValue = 81,
+  BreakpointRemovedFromGutterContextMenu = 81,
+  BreakpointRemovedFromGutterToggle = 82,
+  StylePropertyInsideKeyframeEdited = 83,
+  OverrideContentFromSourcesContextMenu = 84,
+  OverrideContentFromNetworkContextMenu = 85,
+  OverrideScript = 86,
+  OverrideStyleSheet = 87,
+  OverrideDocument = 88,
+  OverrideFetchXHR = 89,
+  OverrideImage = 90,
+  OverrideFont = 91,
+  OverrideContentContextMenuSetup = 92,
+  OverrideContentContextMenuAbandonSetup = 93,
+  OverrideContentContextMenuActivateDisabled = 94,
+  OverrideContentContextMenuOpenExistingFile = 95,
+  OverrideContentContextMenuSaveNewFile = 96,
+  ShowAllOverridesFromSourcesContextMenu = 97,
+  ShowAllOverridesFromNetworkContextMenu = 98,
+  AnimationGroupsCleared = 99,
+  AnimationsPaused = 100,
+  AnimationsResumed = 101,
+  AnimatedNodeDescriptionClicked = 102,
+  AnimationGroupScrubbed = 103,
+  AnimationGroupReplayed = 104,
+  OverrideTabDeleteFolderContextMenu = 105,
+  WorkspaceDropFolder = 107,
+  WorkspaceSelectFolder = 108,
+  OverrideContentContextMenuSourceMappedWarning = 109,
+  OverrideContentContextMenuRedirectToDeployed = 110,
+  NewStyleRuleAdded = 111,
+  TraceExpanded = 112,
+  InsightConsoleMessageShown = 113,
+  InsightRequestedViaContextMenu = 114,
+  InsightRequestedViaHoverButton = 115,
+  InsightRatedPositive = 117,
+  InsightRatedNegative = 118,
+  InsightClosed = 119,
+  InsightErrored = 120,
+  InsightHoverButtonShown = 121,
+  SelfXssWarningConsoleMessageShown = 122,
+  SelfXssWarningDialogShown = 123,
+  SelfXssAllowPastingInConsole = 124,
+  SelfXssAllowPastingInDialog = 125,
+  ToggleEmulateFocusedPageFromStylesPaneOn = 126,
+  ToggleEmulateFocusedPageFromStylesPaneOff = 127,
+  ToggleEmulateFocusedPageFromRenderingTab = 128,
+  ToggleEmulateFocusedPageFromCommandMenu = 129,
+  InsightGenerated = 130,
+  InsightErroredApi = 131,
+  InsightErroredMarkdown = 132,
+  ToggleShowWebVitals = 133,
+  InsightErroredPermissionDenied = 134,
+  InsightErroredCannotSend = 135,
+  InsightErroredRequestFailed = 136,
+  InsightErroredCannotParseChunk = 137,
+  InsightErroredUnknownChunk = 138,
+  InsightErroredOther = 139,
+  MaxValue = 140,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum PanelCodes {
   elements = 1,
   resources = 2,
   network = 3,
   sources = 4,
   timeline = 5,
-  heap_profiler = 6,
+  'heap-profiler' = 6,
   console = 8,
   layers = 9,
   'console-view' = 10,
@@ -551,7 +670,7 @@ export enum PanelCodes {
   'sensors' = 14,
   'sources.search' = 15,
   security = 16,
-  js_profiler = 17,
+  'js-profiler' = 17,
   lighthouse = 18,
   'coverage' = 19,
   'protocol-monitor' = 20,
@@ -560,7 +679,7 @@ export enum PanelCodes {
   'changes.changes' = 23,
   'performance.monitor' = 24,
   'release-note' = 25,
-  'live_heap_profile' = 26,
+  'live-heap-profile' = 26,
   'sources.quick' = 27,
   'network.blocked-urls' = 28,
   'settings-preferences' = 29,
@@ -574,48 +693,185 @@ export enum PanelCodes {
   'issues-pane' = 37,
   'settings-keybinds' = 38,
   'cssoverview' = 39,
-  'chrome_recorder' = 40,
-  'trust_tokens' = 41,
-  'reporting_api' = 42,
-  'interest_groups' = 43,
-  'back_forward_cache' = 44,
-  'service_worker_cache' = 45,
-  'background_service_backgroundFetch' = 46,
-  'background_service_backgroundSync' = 47,
-  'background_service_pushMessaging' = 48,
-  'background_service_notifications' = 49,
-  'background_service_paymentHandler' = 50,
-  'background_service_periodicBackgroundSync' = 51,
-  'service_workers' = 52,
-  'app_manifest' = 53,
+  'chrome-recorder' = 40,
+  'trust-tokens' = 41,
+  'reporting-api' = 42,
+  'interest-groups' = 43,
+  'back-forward-cache' = 44,
+  'service-worker-cache' = 45,
+  'background-service-background-fetch' = 46,
+  'background-service-background-sync' = 47,
+  'background-service-push-messaging' = 48,
+  'background-service-notifications' = 49,
+  'background-service-payment-handler' = 50,
+  'background-service-periodic-background-sync' = 51,
+  'service-workers' = 52,
+  'app-manifest' = 53,
   'storage' = 54,
   'cookies' = 55,
-  'frame_details' = 56,
-  'frame_resource' = 57,
-  'frame_window' = 58,
-  'frame_worker' = 59,
-  'dom_storage' = 60,
-  'indexed_db' = 61,
-  'web_sql' = 62,
-  'performance_insights' = 63,
+  'frame-details' = 56,
+  'frame-resource' = 57,
+  'frame-window' = 58,
+  'frame-worker' = 59,
+  'dom-storage' = 60,
+  'indexed-db' = 61,
+  'web-sql' = 62,
+  'performance-insights' = 63,
   'preloading' = 64,
-  'bounce_tracking_mitigations' = 65,
-  MaxValue = 66,
+  'bounce-tracking-mitigations' = 65,
+  'developer-resources' = 66,
+  'autofill-view' = 67,
+  MaxValue = 68,
 }
-
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /* eslint-disable @typescript-eslint/naming-convention */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
+export enum PanelWithLocation {
+  'elements-main' = 1,
+  'elements-drawer' = 2,
+  'resources-main' = 3,
+  'resources-drawer' = 4,
+  'network-main' = 5,
+  'network-drawer' = 6,
+  'sources-main' = 7,
+  'sources-drawer' = 8,
+  'timeline-main' = 9,
+  'timeline-drawer' = 10,
+  'heap_profiler-main' = 11,
+  'heap_profiler-drawer' = 12,
+  'console-main' = 13,
+  'console-drawer' = 14,
+  'layers-main' = 15,
+  'layers-drawer' = 16,
+  'console-view-main' = 17,
+  'console-view-drawer' = 18,
+  'animations-main' = 19,
+  'animations-drawer' = 20,
+  'network.config-main' = 21,
+  'network.config-drawer' = 22,
+  'rendering-main' = 23,
+  'rendering-drawer' = 24,
+  'sensors-main' = 25,
+  'sensors-drawer' = 26,
+  'sources.search-main' = 27,
+  'sources.search-drawer' = 28,
+  'security-main' = 29,
+  'security-drawer' = 30,
+  'js_profiler-main' = 31,
+  'js_profiler-drawer' = 32,
+  'lighthouse-main' = 33,
+  'lighthouse-drawer' = 34,
+  'coverage-main' = 35,
+  'coverage-drawer' = 36,
+  'protocol-monitor-main' = 37,
+  'protocol-monitor-drawer' = 38,
+  'remote-devices-main' = 39,
+  'remote-devices-drawer' = 40,
+  'web-audio-main' = 41,
+  'web-audio-drawer' = 42,
+  'changes.changes-main' = 43,
+  'changes.changes-drawer' = 44,
+  'performance.monitor-main' = 45,
+  'performance.monitor-drawer' = 46,
+  'release-note-main' = 47,
+  'release-note-drawer' = 48,
+  'live_heap_profile-main' = 49,
+  'live_heap_profile-drawer' = 50,
+  'sources.quick-main' = 51,
+  'sources.quick-drawer' = 52,
+  'network.blocked-urls-main' = 53,
+  'network.blocked-urls-drawer' = 54,
+  'settings-preferences-main' = 55,
+  'settings-preferences-drawer' = 56,
+  'settings-workspace-main' = 57,
+  'settings-workspace-drawer' = 58,
+  'settings-experiments-main' = 59,
+  'settings-experiments-drawer' = 60,
+  'settings-blackbox-main' = 61,
+  'settings-blackbox-drawer' = 62,
+  'settings-devices-main' = 63,
+  'settings-devices-drawer' = 64,
+  'settings-throttling-conditions-main' = 65,
+  'settings-throttling-conditions-drawer' = 66,
+  'settings-emulation-locations-main' = 67,
+  'settings-emulation-locations-drawer' = 68,
+  'settings-shortcuts-main' = 69,
+  'settings-shortcuts-drawer' = 70,
+  'issues-pane-main' = 71,
+  'issues-pane-drawer' = 72,
+  'settings-keybinds-main' = 73,
+  'settings-keybinds-drawer' = 74,
+  'cssoverview-main' = 75,
+  'cssoverview-drawer' = 76,
+  'chrome_recorder-main' = 77,
+  'chrome_recorder-drawer' = 78,
+  'trust_tokens-main' = 79,
+  'trust_tokens-drawer' = 80,
+  'reporting_api-main' = 81,
+  'reporting_api-drawer' = 82,
+  'interest_groups-main' = 83,
+  'interest_groups-drawer' = 84,
+  'back_forward_cache-main' = 85,
+  'back_forward_cache-drawer' = 86,
+  'service_worker_cache-main' = 87,
+  'service_worker_cache-drawer' = 88,
+  'background_service_backgroundFetch-main' = 89,
+  'background_service_backgroundFetch-drawer' = 90,
+  'background_service_backgroundSync-main' = 91,
+  'background_service_backgroundSync-drawer' = 92,
+  'background_service_pushMessaging-main' = 93,
+  'background_service_pushMessaging-drawer' = 94,
+  'background_service_notifications-main' = 95,
+  'background_service_notifications-drawer' = 96,
+  'background_service_paymentHandler-main' = 97,
+  'background_service_paymentHandler-drawer' = 98,
+  'background_service_periodicBackgroundSync-main' = 99,
+  'background_service_periodicBackgroundSync-drawer' = 100,
+  'service_workers-main' = 101,
+  'service_workers-drawer' = 102,
+  'app_manifest-main' = 103,
+  'app_manifest-drawer' = 104,
+  'storage-main' = 105,
+  'storage-drawer' = 106,
+  'cookies-main' = 107,
+  'cookies-drawer' = 108,
+  'frame_details-main' = 109,
+  'frame_details-drawer' = 110,
+  'frame_resource-main' = 111,
+  'frame_resource-drawer' = 112,
+  'frame_window-main' = 113,
+  'frame_window-drawer' = 114,
+  'frame_worker-main' = 115,
+  'frame_worker-drawer' = 116,
+  'dom_storage-main' = 117,
+  'dom_storage-drawer' = 118,
+  'indexed_db-main' = 119,
+  'indexed_db-drawer' = 120,
+  'web_sql-main' = 121,
+  'web_sql-drawer' = 122,
+  'performance_insights-main' = 123,
+  'performance_insights-drawer' = 124,
+  'preloading-main' = 125,
+  'preloading-drawer' = 126,
+  'bounce_tracking_mitigations-main' = 127,
+  'bounce_tracking_mitigations-drawer' = 128,
+  'developer-resources-main' = 129,
+  'developer-resources-drawer' = 130,
+  'autofill-view-main' = 131,
+  'autofill-view-drawer' = 132,
+  MaxValue = 133,
+}
+/* eslint-enable @typescript-eslint/naming-convention */
+
+/* eslint-disable @typescript-eslint/naming-convention */
 export enum ElementsSidebarTabCodes {
   'OtherSidebarPane' = 0,
-  'Styles' = 1,
-  'Computed' = 2,
+  'styles' = 1,
+  'computed' = 2,
   'elements.layout' = 3,
-  'elements.eventListeners' = 4,
-  'elements.domBreakpoints' = 5,
-  'elements.domProperties' = 6,
+  'elements.event-listeners' = 4,
+  'elements.dom-breakpoints' = 5,
+  'elements.dom-properties' = 6,
   'accessibility.view' = 7,
   MaxValue = 8,
 }
@@ -623,22 +879,18 @@ export enum ElementsSidebarTabCodes {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /* eslint-disable @typescript-eslint/naming-convention */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum SourcesSidebarTabCodes {
   'OtherSidebarPane' = 0,
   'navigator-network' = 1,
   'navigator-files' = 2,
   'navigator-overrides' = 3,
-  'navigator-contentScripts' = 4,
+  'navigator-content-scripts' = 4,
   'navigator-snippets' = 5,
   MaxValue = 6,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /* eslint-disable @typescript-eslint/naming-convention */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum MediaTypes {
   Unknown = 0,
   'text/css' = 2,
@@ -680,8 +932,6 @@ export enum MediaTypes {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /* eslint-disable @typescript-eslint/naming-convention */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum KeybindSetSettings {
   'devToolsDefault' = 0,
   'vsCode' = 1,
@@ -690,13 +940,11 @@ export enum KeybindSetSettings {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /* eslint-disable @typescript-eslint/naming-convention */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum KeyboardShortcutAction {
   OtherShortcut = 0,
-  'commandMenu.show' = 1,
+  'quick-open.show-command-menu' = 1,
   'console.clear' = 2,
-  'console.show' = 3,
+  'console.toggle' = 3,
   'debugger.step' = 4,
   'debugger.step-into' = 5,
   'debugger.step-out' = 6,
@@ -714,7 +962,7 @@ export enum KeyboardShortcutAction {
   'network.hide-request-details' = 18,
   'network.search' = 19,
   'network.toggle-recording' = 20,
-  'quickOpen.show' = 21,
+  'quick-open.show' = 21,
   'settings.show' = 22,
   'sources.search' = 23,
   'background-service.toggle-recording' = 24,
@@ -740,9 +988,9 @@ export enum KeyboardShortcutAction {
   'input.start-replaying' = 44,
   'input.toggle-pause' = 45,
   'input.toggle-recording' = 46,
-  'inspector_main.focus-debuggee' = 47,
-  'inspector_main.hard-reload' = 48,
-  'inspector_main.reload' = 49,
+  'inspector-main.focus-debuggee' = 47,
+  'inspector-main.hard-reload' = 48,
+  'inspector-main.reload' = 49,
   'live-heap-profile.start-with-reload' = 50,
   'live-heap-profile.toggle-recording' = 51,
   'main.debug-reload' = 52,
@@ -801,17 +1049,21 @@ export enum KeyboardShortcutAction {
   'layers.right' = 105,
   'help.report-translation-issue' = 106,
   'rendering.toggle-prefers-color-scheme' = 107,
-  'chrome_recorder.start-recording' = 108,
-  'chrome_recorder.replay-recording' = 109,
-  'chrome_recorder.toggle-code-view' = 110,
-  'chrome_recorder.copy-recording-or-step' = 111,
-  MaxValue = 112,
+  'chrome-recorder.start-recording' = 108,
+  'chrome-recorder.replay-recording' = 109,
+  'chrome-recorder.toggle-code-view' = 110,
+  'chrome-recorder.copy-recording-or-step' = 111,
+  'changes.revert' = 112,
+  'changes.copy' = 113,
+  'elements.new-style-rule' = 114,
+  'elements.refresh-event-listeners' = 115,
+  'coverage.clear' = 116,
+  'coverage.export' = 117,
+  MaxValue = 118,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum IssueOpener {
+export const enum IssueOpener {
   ConsoleInfoBar = 0,
   LearnMoreLinkCOEP = 1,
   StatusBarIssuesCounter = 2,
@@ -826,54 +1078,46 @@ export enum IssueOpener {
  * gaps are expected.
  */
 /* eslint-disable @typescript-eslint/naming-convention */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum DevtoolsExperiments {
-  'applyCustomStylesheet' = 0,
-  'captureNodeCreationStacks' = 1,
-  'sourcesPrettyPrint' = 2,
-  'liveHeapProfile' = 11,
-  'protocolMonitor' = 13,
-  'developerResourcesView' = 15,
-  'samplingHeapProfilerTimeline' = 17,
-  'showOptionToExposeInternalsInHeapSnapshot' = 18,
-  'sourceOrderViewer' = 20,
-  'webauthnPane' = 22,
-  'timelineEventInitiators' = 24,
-  'timelineInvalidationTracking' = 26,
-  'timelineShowAllEvents' = 27,
-  'timelineV8RuntimeCallStats' = 28,
-  'wasmDWARFDebugging' = 31,
-  'dualScreenSupport' = 32,
-  'keyboardShortcutEditor' = 35,
-  'APCA' = 39,
-  'cspViolationsView' = 40,
-  'fontEditor' = 41,
-  'fullAccessibilityTree' = 42,
-  'ignoreListJSFramesOnTimeline' = 43,
-  'contrastIssues' = 44,
-  'experimentalCookieFeatures' = 45,
-  'cssTypeComponentLength' = 52,
-  'preciseChanges' = 53,
-  'bfcacheDisplayTree' = 54,
-  'stylesPaneCSSChanges' = 55,
-  'headerOverrides' = 56,
-  'evaluateExpressionsWithSourceMaps' = 58,
-  'eyedropperColorPicker' = 60,
-  'instrumentationBreakpoints' = 61,
-  'authoredDeployedGrouping' = 63,
-  'importantDOMProperties' = 64,
-  'justMyCode' = 65,
-  'timelineAsConsoleProfileResultPanel' = 67,
-  'preloadingStatusPanel' = 68,
-  'disableColorFormatSetting' = 69,
-  'outermostTargetSelector' = 71,
-  'jsProfilerTemporarilyEnable' = 72,
-  'highlightErrorsElementsPanel' = 73,
-  'setAllBreakpointsEagerly' = 74,
+  'apply-custom-stylesheet' = 0,
+  'capture-node-creation-stacks' = 1,
+  'live-heap-profile' = 11,
+  'protocol-monitor' = 13,
+  'sampling-heap-profiler-timeline' = 17,
+  'show-option-tp-expose-internals-in-heap-snapshot' = 18,
+  'timeline-invalidation-tracking' = 26,
+  'timeline-show-all-events' = 27,
+  'timeline-v8-runtime-call-stats' = 28,
+  'apca' = 39,
+  'font-editor' = 41,
+  'full-accessibility-tree' = 42,
+  'ignore-list-js-frames-on-timeline' = 43,
+  'contrast-issues' = 44,
+  'experimental-cookie-features' = 45,
+  'styles-pane-css-changes' = 55,
+  'evaluate-expressions-with-source-maps' = 58,
+  'instrumentation-breakpoints' = 61,
+  'authored-deployed-grouping' = 63,
+  'important-dom-properties' = 64,
+  'just-my-code' = 65,
+  'timeline-as-console-profile-result-panel' = 67,
+  'preloading-status-panel' = 68,
+  'outermost-target-selector' = 71,
+  'js-profiler-temporarily-enable' = 72,
+  'highlight-errors-elements-panel' = 73,
+  'set-all-breakpoints-eagerly' = 74,
+  'self-xss-warning' = 75,
+  'use-source-map-scopes' = 76,
+  'storage-buckets-tree' = 77,
+  'network-panel-filter-bar-redesign' = 79,
+  'track-context-menu' = 81,
+  'autofill-view' = 82,
+  'sources-frame-indentation-markers-temporarily-disable' = 83,
+  'heap-snapshot-treat-backing-store-as-containing-object' = 84,
+  'css-type-component-length-deprecate' = 85,
 
   // Increment this when new experiments are added.
-  'MaxValue' = 75,
+  'MaxValue' = 86,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -927,21 +1171,20 @@ export const enum BreakpointsRestoredFromStorageCount {
   MaxValue = 10,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
+// Update DevToolsIssuesPanelIssueExpanded from tools/metrics/histograms/enums.xml if new enum is added.
 export enum IssueExpanded {
   CrossOriginEmbedderPolicy = 0,
   MixedContent = 1,
-  Cookie = 2,
+  SameSiteCookie = 2,
   HeavyAd = 3,
   ContentSecurityPolicy = 4,
   Other = 5,
   Generic = 6,
-  MaxValue = 7,
+  ThirdPartyPhaseoutCookie = 7,
+  GenericCookie = 8,
+  MaxValue = 9,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum IssueResourceOpened {
   CrossOriginEmbedderPolicyRequest = 0,
   CrossOriginEmbedderPolicyElement = 1,
@@ -951,11 +1194,6 @@ export enum IssueResourceOpened {
   HeavyAdElement = 5,
   ContentSecurityPolicyDirective = 6,
   ContentSecurityPolicyElement = 7,
-  CrossOriginEmbedderPolicyLearnMore = 8,
-  MixedContentLearnMore = 9,
-  SameSiteCookieLearnMore = 10,
-  HeavyAdLearnMore = 11,
-  ContentSecurityPolicyLearnMore = 12,
   MaxValue = 13,
 }
 
@@ -963,8 +1201,6 @@ export enum IssueResourceOpened {
  * This list should contain the currently active issue types,
  * gaps are expected.
  */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum IssueCreated {
   MixedContentIssue = 0,
   'ContentSecurityPolicyIssue::kInlineViolation' = 1,
@@ -1039,12 +1275,18 @@ export enum IssueCreated {
   'GenericIssue::FormInputHasWrongButWellIntendedAutocompleteValueError' = 75,
   'StylesheetLoadingIssue::LateImportRule' = 76,
   'StylesheetLoadingIssue::RequestFailed' = 77,
-  MaxValue = 78,
+  'CorsIssue::PreflightMissingPrivateNetworkAccessId' = 78,
+  'CorsIssue::PreflightMissingPrivateNetworkAccessName' = 79,
+  'CorsIssue::PrivateNetworkAccessPermissionUnavailable' = 80,
+  'CorsIssue::PrivateNetworkAccessPermissionDenied' = 81,
+  'CookieIssue::WarnThirdPartyPhaseout::ReadCookie' = 82,
+  'CookieIssue::WarnThirdPartyPhaseout::SetCookie' = 83,
+  'CookieIssue::ExcludeThirdPartyPhaseout::ReadCookie' = 84,
+  'CookieIssue::ExcludeThirdPartyPhaseout::SetCookie' = 85,
+  MaxValue = 86,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum DeveloperResourceLoaded {
+export const enum DeveloperResourceLoaded {
   LoadThroughPageViaTarget = 0,
   LoadThroughPageViaFrame = 1,
   LoadThroughPageFailure = 2,
@@ -1056,9 +1298,7 @@ export enum DeveloperResourceLoaded {
   MaxValue = 8,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum DeveloperResourceScheme {
+export const enum DeveloperResourceScheme {
   SchemeOther = 0,
   SchemeUnknown = 1,
   SchemeHttp = 2,
@@ -1071,24 +1311,34 @@ export enum DeveloperResourceScheme {
   MaxValue = 9,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum LinearMemoryInspectorRevealedFrom {
-  ContextMenu = 0,
-  MemoryIcon = 1,
-  MaxValue = 2,
+export enum ResourceType {
+  /* eslint-disable @typescript-eslint/naming-convention */
+  all = 0,
+  /* eslint-enable @typescript-eslint/naming-convention */
+  Documents = 1,
+  Scripts = 2,
+  'Fetch and XHR' = 3,
+  Stylesheets = 4,
+  Fonts = 5,
+  Images = 6,
+  Media = 7,
+  Manifest = 8,
+  WebSockets = 9,
+  WebAssembly = 10,
+  Other = 11,
+  MaxValue = 12,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum LinearMemoryInspectorTarget {
-  DWARFInspectableAddress = 0,
-  ArrayBuffer = 1,
-  DataView = 2,
-  TypedArray = 3,
-  WebAssemblyMemory = 4,
+/* eslint-disable @typescript-eslint/naming-convention */
+export enum NetworkPanelMoreFilters {
+  'Hide data URLs' = 0,
+  'Hide extension URLs' = 1,
+  'Blocked response cookies' = 2,
+  'Blocked requests' = 3,
+  '3rd-party requests' = 4,
   MaxValue = 5,
 }
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export const enum VMInlineScriptType {
   MODULE_SCRIPT = 0,
@@ -1097,8 +1347,6 @@ export const enum VMInlineScriptType {
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */
-// TODO(crbug.com/1167717) = Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Language {
   'af' = 1,
   'am' = 2,
@@ -1186,9 +1434,7 @@ export enum Language {
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum SyncSetting {
+export const enum SyncSetting {
   ChromeSyncDisabled = 1,
   ChromeSyncSettingsDisabled = 2,
   DevToolsSyncSettingDisabled = 3,
@@ -1196,26 +1442,20 @@ export enum SyncSetting {
   MaxValue = 5,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum RecordingToggled {
+export const enum RecordingToggled {
   RecordingStarted = 1,
   RecordingFinished = 2,
   MaxValue = 3,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum RecordingAssertion {
+export const enum RecordingAssertion {
   AssertionAdded = 1,
   PropertyAssertionEdited = 2,
   AttributeAssertionEdited = 3,
   MaxValue = 4,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum RecordingReplayFinished {
+export const enum RecordingReplayFinished {
   Success = 1,
   TimeoutErrorSelectors = 2,
   TimeoutErrorTarget = 3,
@@ -1223,9 +1463,7 @@ export enum RecordingReplayFinished {
   MaxValue = 5,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum RecordingReplaySpeed {
+export const enum RecordingReplaySpeed {
   Normal = 1,
   Slow = 2,
   VerySlow = 3,
@@ -1233,18 +1471,14 @@ export enum RecordingReplaySpeed {
   MaxValue = 5,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum RecordingReplayStarted {
+export const enum RecordingReplayStarted {
   ReplayOnly = 1,
   ReplayWithPerformanceTracing = 2,
   ReplayViaExtension = 3,
   MaxValue = 4,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum RecordingEdited {
+export const enum RecordingEdited {
   SelectorPickerUsed = 1,
   StepAdded = 2,
   StepRemoved = 3,
@@ -1258,9 +1492,7 @@ export enum RecordingEdited {
   MaxValue = 11,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum RecordingExported {
+export const enum RecordingExported {
   ToPuppeteer = 1,
   ToJSON = 2,
   ToPuppeteerReplay = 3,
@@ -1269,17 +1501,13 @@ export enum RecordingExported {
   MaxValue = 6,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum RecordingCodeToggled {
+export const enum RecordingCodeToggled {
   CodeShown = 1,
   CodeHidden = 2,
   MaxValue = 3,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum RecordingCopiedToClipboard {
+export const enum RecordingCopiedToClipboard {
   CopiedRecordingWithPuppeteer = 1,
   CopiedRecordingWithJSON = 2,
   CopiedRecordingWithReplay = 3,
@@ -1291,18 +1519,7 @@ export enum RecordingCopiedToClipboard {
   MaxValue = 9,
 }
 
-/* eslint-disable @typescript-eslint/naming-convention */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum ConsoleShowsCorsErrors {
-  'false' = 0,
-  'true' = 1,
-  MaxValue = 2,
-}
-
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum StyleTextCopied {
+export const enum StyleTextCopied {
   DeclarationViaChangedLine = 1,
   AllChangesViaStylesPane = 2,
   DeclarationViaContextMenu = 3,
@@ -1316,8 +1533,6 @@ export enum StyleTextCopied {
   MaxValue = 11,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum ManifestSectionCodes {
   OtherSection = 0,
   'Identity' = 1,
@@ -1328,10 +1543,10 @@ export enum ManifestSectionCodes {
   MaxValue = 6,
 }
 
+/* eslint-enable @typescript-eslint/naming-convention */
+
 // The names here match the CSSRuleValidator names in CSSRuleValidator.ts.
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum CSSHintType {
+export const enum CSSHintType {
   Other = 0,
   AlignContent = 1,
   FlexItem = 2,
@@ -1349,9 +1564,7 @@ export enum CSSHintType {
   MaxValue = 14,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum LighthouseModeRun {
+export const enum LighthouseModeRun {
   Navigation = 0,
   Timespan = 1,
   Snapshot = 2,
@@ -1359,7 +1572,16 @@ export enum LighthouseModeRun {
   MaxValue = 4,
 }
 
-/* eslint-enable @typescript-eslint/naming-convention */
+export const enum LighthouseCategoryUsed {
+  Performance = 0,
+  Accessibility = 1,
+  BestPractices = 2,
+  SEO = 3,
+  PWA = 4,
+  PubAds = 5,
+  MaxValue = 6,
+}
+
 export const enum SwatchType {
   VarLink = 0,
   AnimationNameLink = 1,
@@ -1374,7 +1596,6 @@ export const enum SwatchType {
   MaxValue = 10,
 }
 
-/* eslint-enable @typescript-eslint/naming-convention */
 export const enum BadgeType {
   GRID = 0,
   SUBGRID = 1,
@@ -1386,4 +1607,25 @@ export const enum BadgeType {
   TOP_LAYER = 7,
   REVEAL = 8,
   MaxValue = 9,
+}
+
+export const enum AnimationsPlaybackRate {
+  Percent100 = 0,
+  Percent25 = 1,
+  Percent10 = 2,
+  Other = 3,
+  MaxValue = 4,
+}
+
+export const enum AnimationPointDragType {
+  // Animation is dragged as a whole in the Animations panel.
+  AnimationDrag = 0,
+  // A keyframe point inside animation timeline is dragged.
+  KeyframeMove = 1,
+  // Start point of the animation inside animation timeline is dragged.
+  StartEndpointMove = 2,
+  // Finish point of the animation inside animation timeline is dragged.
+  FinishEndpointMove = 3,
+  Other = 4,
+  MaxValue = 5,
 }

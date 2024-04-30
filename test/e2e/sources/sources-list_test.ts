@@ -21,7 +21,7 @@ declare global {
   }
 }
 
-describe('The Sources Tab', async () => {
+describe('The Sources Tab', () => {
   it('can show JavaScript files after dynamic loading', async () => {
     const {target} = getBrowserAndPages();
 

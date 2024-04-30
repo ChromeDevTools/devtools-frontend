@@ -4,6 +4,10 @@
  * found in the LICENSE file.
  */
 
+:host {
+  overflow-x: auto;
+}
+
 .tree-outline {
   padding: 0;
 }
@@ -25,11 +29,6 @@
   flex: none;
 }
 
-.tree-outline li.selected:focus .lock-icon,
-.tree-outline .security-sidebar-tree-item.selected:focus .icon {
-  background-color: var(--legacy-selection-fg-color);
-}
-
 @media (forced-colors: active) {
   .tree-outline .lock-icon,
   .tree-outline .security-property {
@@ -43,18 +42,21 @@
 }
 
 .tree-outline .security-main-view-sidebar-tree-item {
-  border-bottom: 1px solid var(--color-background-elevation-2);
+  border-bottom: 1px solid var(--sys-color-divider);
   padding: 16px 0;
+}
+
+.tree-outline .security-main-view-sidebar-tree-item .lock-icon-insecure {
+  background-color: var(--sys-color-orange-bright);
 }
 
 .tree-outline li.security-sidebar-origins {
   padding: 1px 8px 1px 13px;
   margin-top: 1em;
   margin-bottom: 0.5em;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   border-top: none;
   line-height: 16px;
-  text-shadow: var(--color-background-opacity-80) 0 1px 0;
 }
 
 .tree-outline ol {
@@ -81,6 +83,6 @@
 }
 
 .security-main-view-reload-message .tree-element-title {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   padding-left: 8px;
 }

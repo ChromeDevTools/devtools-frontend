@@ -41,7 +41,7 @@ import {
   TURNED_OFF_PAUSE_BUTTON_SELECTOR,
 } from '../helpers/sources-helpers.js';
 
-describe('Sources Tab', async function() {
+describe('Sources Tab', function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
   if (this.timeout() > 0) {
     this.timeout(10000);
@@ -273,7 +273,7 @@ describe('Sources Tab', async function() {
   });
 
   it('is able to step with state in multi-threaded code in main thread', async () => {
-    await enableExperiment('instrumentationBreakpoints');
+    await enableExperiment('instrumentation-breakpoints');
     const {target, frontend} = getBrowserAndPages();
     // enableExperiment() reloads the devtools page, so we need to reinstall the listener on the new window.
     await installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
@@ -394,7 +394,7 @@ describe('Sources Tab', async function() {
   });
 
   it('is able to step with state in multi-threaded code in worker thread', async () => {
-    await enableExperiment('instrumentationBreakpoints');
+    await enableExperiment('instrumentation-breakpoints');
     const {target, frontend} = getBrowserAndPages();
     // enableExperiment() reloads the devtools page, so we need to reinstall the listener on the new window.
     await installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
@@ -507,7 +507,7 @@ describe('Sources Tab', async function() {
   });
 });
 
-describe('Raw-Wasm', async () => {
+describe('Raw-Wasm', () => {
   it('displays correct location in Wasm source', async () => {
     const {target} = getBrowserAndPages();
 

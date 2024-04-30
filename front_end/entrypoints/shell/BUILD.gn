@@ -18,7 +18,6 @@ devtools_entrypoint("shell") {
   deps = [
     "../../Images:optimize_images",
     "../../core/dom_extension:bundle",
-    "../../core/root:legacy",
     "../../core/sdk:meta",
     "../../entrypoints/main:meta",
     "../../models/logs:meta",
@@ -28,11 +27,12 @@ devtools_entrypoint("shell") {
     "../../panels/console:meta",
     "../../panels/console_counters:meta",
     "../../panels/coverage:meta",
+    "../../panels/explain:meta",
+    "../../panels/linear_memory_inspector:meta",
     "../../panels/profiler:meta",
     "../../panels/protocol_monitor:meta",
     "../../panels/settings:meta",
     "../../panels/sources:meta",
-    "../../ui/components/linear_memory_inspector:meta",
     "../../ui/legacy/components/object_ui:meta",
     "../../ui/legacy/components/perf_ui:meta",
     "../../ui/legacy/components/quick_open:meta",
@@ -42,7 +42,7 @@ devtools_entrypoint("shell") {
 
   visibility = [
     "../..:*",
-    "../../../test/unittests/front_end/helpers/*",
+    "../../testing/*",
     "../devtools_app:*",
     "../js_app:*",
     "../ndb_app:*",

@@ -2,24 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import * as ComponentHelpers from '../helpers/helpers.js';
-import type * as TextUtils from '../../../models/text_utils/text_utils.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as TextUtils from '../../../models/text_utils/text_utils.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import {alert} from '../../legacy/ARIAUtils.js';
 
+import {DataGrid, type DataGridContextMenusConfiguration, type DataGridData} from './DataGrid.js';
+import dataGridControllerStyles from './dataGridController.css.js';
+import {type ColumnHeaderClickEvent, type ContextMenuColumnSortClickEvent} from './DataGridEvents.js';
 import {
-  SortDirection,
+  type Column,
   getRowEntryForColumnId,
   getStringifiedCellValues,
-  type SortState,
-  type Column,
   type Row,
+  SortDirection,
+  type SortState,
 } from './DataGridUtils.js';
-
-import {type ContextMenuColumnSortClickEvent, type ColumnHeaderClickEvent} from './DataGridEvents.js';
-import {DataGrid, type DataGridData, type DataGridContextMenusConfiguration} from './DataGrid.js';
-import dataGridControllerStyles from './dataGridController.css.js';
-import {alert} from '../../legacy/ARIAUtils.js';
 
 const UIStrings = {
   /**
@@ -55,6 +53,7 @@ export interface DataGridControllerData {
   label?: string;
   paddingRowsCount?: number;
   showScrollbar?: boolean;
+  striped?: boolean;
 }
 
 export class DataGridController extends HTMLElement {
@@ -67,6 +66,7 @@ export class DataGridController extends HTMLElement {
   #contextMenus?: DataGridContextMenusConfiguration = undefined;
   #label?: string = undefined;
   #showScrollbar?: boolean = false;
+  #striped?: boolean = false;
 
   /**
    * Because the controller will sort data in place (e.g. mutate it) when we get
@@ -95,6 +95,7 @@ export class DataGridController extends HTMLElement {
       label: this.#label,
       paddingRowsCount: this.#paddingRowsCount,
       showScrollbar: this.#showScrollbar,
+      striped: this.#striped,
     };
   }
 
@@ -106,6 +107,7 @@ export class DataGridController extends HTMLElement {
     this.#contextMenus = data.contextMenus;
     this.#label = data.label;
     this.#showScrollbar = data.showScrollbar;
+    this.#striped = data.striped;
 
     this.#columns = [...this.#originalColumns];
     this.#rows = this.#cloneAndFilterRows(data.rows, this.#filters);
@@ -263,6 +265,7 @@ export class DataGridController extends HTMLElement {
           label: this.#label,
           paddingRowsCount: this.#paddingRowsCount,
           showScrollbar: this.#showScrollbar,
+          striped: this.#striped,
         } as DataGridData}
         @columnheaderclick=${this.#onColumnHeaderClick}
         @contextmenucolumnsortclick=${this.#onContextMenuColumnSortClick}
@@ -276,10 +279,9 @@ export class DataGridController extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-data-grid-controller', DataGridController);
+customElements.define('devtools-data-grid-controller', DataGridController);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-data-grid-controller': DataGridController;
   }

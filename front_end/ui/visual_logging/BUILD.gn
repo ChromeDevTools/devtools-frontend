@@ -1,0 +1,68 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
+
+devtools_module("visual_logging") {
+  sources = [
+    "Debugging.ts",
+    "DomState.ts",
+    "Loggable.ts",
+    "LoggingConfig.ts",
+    "LoggingDriver.ts",
+    "LoggingEvents.ts",
+    "LoggingState.ts",
+    "NonDomState.ts",
+  ]
+  deps = [
+    "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../components/render_coordinator:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "visual_logging.ts"
+
+  deps = [ ":visual_logging" ]
+
+  visibility = [
+    ":*",
+    "../../entrypoints/device_mode_emulation_frame/*",
+    "../../entrypoints/main/*",
+    "../../panels/*",
+    "../components/*",
+    "../legacy/*",
+  ]
+}
+
+devtools_entrypoint("testing") {
+  entrypoint = "visual_logging-testing.ts"
+
+  deps = [ ":visual_logging" ]
+
+  visibility = [ ":unittests" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "Debugging.test.ts",
+    "DomState.test.ts",
+    "LoggingConfig.test.ts",
+    "LoggingDriver.test.ts",
+    "LoggingEvents.test.ts",
+    "LoggingState.test.ts",
+    "NonDomState.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    ":testing",
+    "../../testing",
+  ]
+}

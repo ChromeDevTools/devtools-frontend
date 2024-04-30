@@ -15,6 +15,16 @@ def get_mac_architecture():
         return "arm64" if is_translated else "x86_64"
     return platform.machine()
 
+def get_mac_architecture():
+    if platform.machine() == "x86_64":
+        is_translated = subprocess.run(
+            ["sysctl", "-n", "sysctl.proc_translated"],
+            capture_output=True,
+            text=True).stdout.strip() == "1"
+        return "arm64" if is_translated else "x86_64"
+    return platform.machine()
+
+
 def GetBinaryPath():
     return os_path.join(
         os_path.dirname(__file__), *{

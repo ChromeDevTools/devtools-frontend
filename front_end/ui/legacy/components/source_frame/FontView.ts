@@ -33,6 +33,7 @@
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
 import fontViewStyles from './fontView.css.legacy.js';
@@ -63,6 +64,7 @@ export class FontView extends UI.View.SimpleView {
     super(i18nString(UIStrings.font));
     this.registerRequiredCSS(fontViewStyles);
     this.element.classList.add('font-view');
+    this.element.setAttribute('jslog', `${VisualLogging.pane('font-view')}`);
     this.url = contentProvider.contentURL();
     UI.ARIAUtils.setLabel(this.element, i18nString(UIStrings.previewOfFontFromS, {PH1: this.url}));
     this.mimeType = mimeType;

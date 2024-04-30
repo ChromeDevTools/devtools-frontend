@@ -14,7 +14,7 @@ import {
   toggleGroupByCategory,
 } from '../helpers/issues-helpers.js';
 
-describe('The Issues tab categories checkbox', async () => {
+describe('The Issues tab categories checkbox', () => {
   it('should group issues by associated categories when checked', async () => {
     await goToResource('elements/element-reveal-inline-issue.html');
     await navigateToIssuesTab();

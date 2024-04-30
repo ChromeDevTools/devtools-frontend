@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../../core/platform/platform.js';
-import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 
 import textPromptStyles from './textPrompt.css.js';
@@ -134,7 +133,7 @@ export class TextPrompt extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-text-prompt', TextPrompt);
+customElements.define('devtools-text-prompt', TextPrompt);
 
 declare global {
   interface HTMLElementTagNameMap {

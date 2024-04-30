@@ -42,7 +42,6 @@ devtools_module("inline_editor") {
     "CSSLinearEasingModel.ts",
     "CSSShadowEditor.ts",
     "CSSShadowModel.ts",
-    "ColorMixModel.ts",
     "ColorMixSwatch.ts",
     "ColorSwatch.ts",
     "FontEditor.ts",
@@ -62,10 +61,12 @@ devtools_module("inline_editor") {
     "../../../../models/bindings:bundle",
     "../../../../models/text_utils:bundle",
     "../../../../panels/css_overview:bundle",
+    "../../../../third_party/codemirror.next:bundle",
     "../../../../ui/components/helpers:bundle",
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/utils:bundle",
     "../../../../ui/lit-html:bundle",
+    "../../../../ui/visual_logging:bundle",
   ]
 
   visibility = [ "../../../../component_docs/*" ]
@@ -82,14 +83,10 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../../../test/unittests/front_end/panels/elements/*",
-    "../../../../../test/unittests/front_end/ui/legacy/components/inline_editor/*",
     "../../../../panels/animation/*",
     "../../../../panels/application/*",
     "../../../../panels/elements/*",
     "../../../../panels/sources/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../../../components/docs/color_swatch/*",
     "../../../components/text_editor/*",
   ]
@@ -97,13 +94,27 @@ devtools_entrypoint("bundle") {
   visibility += devtools_ui_legacy_visibility
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "inline_editor-legacy.ts"
+ts_library("unittests") {
+  testonly = true
 
-  deps = [ ":bundle" ]
+  sources = [
+    "AnimationTimingModel.test.ts",
+    "AnimationTimingUI.test.ts",
+    "BezierUI.test.ts",
+    "CSSAngle.test.ts",
+    "CSSAnimationModel.test.ts",
+    "CSSLength.test.ts",
+    "CSSLinearEasingModel.test.ts",
+    "ColorMixSwatch.test.ts",
+    "ColorSwatch.test.ts",
+    "FontEditorUnitConverter.test.ts",
+    "FontEditorUtils.test.ts",
+    "LinkSwatch.test.ts",
+  ]
 
-  visibility = [
-    "../../../..:legacy_entrypoints",
-    "../../../../legacy_test_runner/*",
+  deps = [
+    ":bundle",
+    "../../../../testing",
+    "../../../legacy:bundle",
   ]
 }

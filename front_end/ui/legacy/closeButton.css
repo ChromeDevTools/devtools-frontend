@@ -12,13 +12,13 @@
   justify-content: center;
 }
 
-.close-button:hover .cross,
-.close-button:focus-visible .cross {
-  background-color: var(--icon-default-hover);
+.close-button:hover devtools-icon,
+.close-button:focus-visible devtools-icon {
+  color: var(--icon-default-hover);
 }
 
-.close-button:active .cross {
-  background-color: var(--icon-default);
+.close-button:focus {
+  outline: 2px solid var(--sys-color-state-focus-ring);
 }
 
 @media (forced-colors: active) and (prefers-color-scheme: dark) {

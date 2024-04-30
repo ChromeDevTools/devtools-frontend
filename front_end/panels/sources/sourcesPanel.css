@@ -27,12 +27,17 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+.paused-message {
+  align-self: center;
+  width: fit-content;
+}
+
 .scripts-debug-toolbar {
   position: absolute;
   top: 0;
   width: 100%;
-  background-color: var(--color-background-elevation-1);
-  border-bottom: 1px solid var(--color-details-hairline);
+  background-color: var(--sys-color-cdt-base);
+  border-bottom: 1px solid var(--sys-color-divider);
   overflow: hidden;
   z-index: 1;
 }
@@ -42,7 +47,7 @@
   transition: margin-top 0.1s ease-in-out;
   margin-top: -26px;
   padding-top: 25px;
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   overflow: hidden;
   white-space: nowrap;
 }
@@ -66,5 +71,5 @@
 }
 
 .navigator-tabbed-pane {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-cdt-base-container);
 }

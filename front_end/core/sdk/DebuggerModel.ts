@@ -32,23 +32,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
-import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
-import * as Protocol from '../../generated/protocol.js';
 
-import {ScopeRef, type GetPropertiesResult, type RemoteObject} from './RemoteObject.js';
+import {type GetPropertiesResult, type RemoteObject, ScopeRef} from './RemoteObject.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
-
-import {RuntimeModel, type EvaluationOptions, type EvaluationResult, type ExecutionContext} from './RuntimeModel.js';
+import {type EvaluationOptions, type EvaluationResult, type ExecutionContext, RuntimeModel} from './RuntimeModel.js';
 import {Script} from './Script.js';
-
-import {Capability, Type, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 import {SourceMapManager} from './SourceMapManager.js';
+import {Capability, type Target, Type} from './Target.js';
 
 const UIStrings = {
   /**
@@ -117,7 +115,7 @@ export function sortAndMergeRanges(locationRanges: Protocol.Debugger.LocationRan
   if (locationRanges.length === 0) {
     return [];
   }
-  locationRanges.sort((r1, r2): number => {
+  locationRanges.sort((r1, r2) => {
     if (r1.scriptId < r2.scriptId) {
       return -1;
     }
@@ -143,9 +141,7 @@ export function sortAndMergeRanges(locationRanges: Protocol.Debugger.LocationRan
   return merged;
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum StepMode {
+export const enum StepMode {
   StepInto = 'StepInto',
   StepOut = 'StepOut',
   StepOver = 'StepOver',
@@ -209,19 +205,19 @@ export class DebuggerModel extends SDKModel<EventTypes> {
 
     this.#isPausingInternal = false;
     Common.Settings.Settings.instance()
-        .moduleSetting('pauseOnExceptionEnabled')
+        .moduleSetting('pause-on-exception-enabled')
         .addChangeListener(this.pauseOnExceptionStateChanged, this);
     Common.Settings.Settings.instance()
-        .moduleSetting('pauseOnCaughtException')
+        .moduleSetting('pause-on-caught-exception')
         .addChangeListener(this.pauseOnExceptionStateChanged, this);
     Common.Settings.Settings.instance()
-        .moduleSetting('pauseOnUncaughtException')
+        .moduleSetting('pause-on-uncaught-exception')
         .addChangeListener(this.pauseOnExceptionStateChanged, this);
     Common.Settings.Settings.instance()
-        .moduleSetting('disableAsyncStackTraces')
+        .moduleSetting('disable-async-stack-traces')
         .addChangeListener(this.asyncStackTracesStateChanged, this);
     Common.Settings.Settings.instance()
-        .moduleSetting('breakpointsActive')
+        .moduleSetting('breakpoints-active')
         .addChangeListener(this.breakpointsActiveChanged, this);
 
     if (!target.suspended()) {
@@ -229,9 +225,9 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     }
 
     this.#sourceMapManagerInternal.setEnabled(
-        Common.Settings.Settings.instance().moduleSetting('jsSourceMapsEnabled').get());
+        Common.Settings.Settings.instance().moduleSetting('js-source-maps-enabled').get());
     Common.Settings.Settings.instance()
-        .moduleSetting('jsSourceMapsEnabled')
+        .moduleSetting('js-source-maps-enabled')
         .addChangeListener(event => this.#sourceMapManagerInternal.setEnabled((event.data as boolean)));
 
     const resourceTreeModel = (target.model(ResourceTreeModel) as ResourceTreeModel);
@@ -275,7 +271,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     }
     this.pauseOnExceptionStateChanged();
     void this.asyncStackTracesStateChanged();
-    if (!Common.Settings.Settings.instance().moduleSetting('breakpointsActive').get()) {
+    if (!Common.Settings.Settings.instance().moduleSetting('breakpoints-active').get()) {
       this.breakpointsActiveChanged();
     }
     this.dispatchEventToListeners(Events.DebuggerWasEnabled, this);
@@ -304,7 +300,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       return;
     }
     const {debuggerId} = response;
-    _debuggerIdToModel.set(debuggerId, this);
+    debuggerIdToModel.set(debuggerId, this);
     this.#debuggerId = debuggerId;
     this.dispatchEventToListeners(Events.DebuggerIsReadyToPause, this);
   }
@@ -318,11 +314,11 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       await DebuggerModel.resyncDebuggerIdForModels();
       DebuggerModel.shouldResyncDebuggerId = false;
     }
-    return _debuggerIdToModel.get(debuggerId) || null;
+    return debuggerIdToModel.get(debuggerId) || null;
   }
 
   static async resyncDebuggerIdForModels(): Promise<void> {
-    const dbgModels = _debuggerIdToModel.values();
+    const dbgModels = debuggerIdToModel.values();
     for (const dbgModel of dbgModels) {
       if (dbgModel.debuggerEnabled()) {
         await dbgModel.syncDebuggerId();
@@ -342,7 +338,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.globalObjectCleared();
     this.dispatchEventToListeners(Events.DebuggerWasDisabled, this);
     if (typeof this.#debuggerId === 'string') {
-      _debuggerIdToModel.delete(this.#debuggerId);
+      debuggerIdToModel.delete(this.#debuggerId);
     }
     this.#debuggerId = null;
   }
@@ -365,10 +361,11 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   private pauseOnExceptionStateChanged(): void {
-    const pauseOnCaughtEnabled = Common.Settings.Settings.instance().moduleSetting('pauseOnCaughtException').get();
+    const pauseOnCaughtEnabled = Common.Settings.Settings.instance().moduleSetting('pause-on-caught-exception').get();
     let state: Protocol.Debugger.SetPauseOnExceptionsRequestState;
 
-    const pauseOnUncaughtEnabled = Common.Settings.Settings.instance().moduleSetting('pauseOnUncaughtException').get();
+    const pauseOnUncaughtEnabled =
+        Common.Settings.Settings.instance().moduleSetting('pause-on-uncaught-exception').get();
     if (pauseOnCaughtEnabled && pauseOnUncaughtEnabled) {
       state = Protocol.Debugger.SetPauseOnExceptionsRequestState.All;
     } else if (pauseOnCaughtEnabled) {
@@ -383,7 +380,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
 
   private asyncStackTracesStateChanged(): Promise<Protocol.ProtocolResponseWithError> {
     const maxAsyncStackChainDepth = 32;
-    const enabled = !Common.Settings.Settings.instance().moduleSetting('disableAsyncStackTraces').get() &&
+    const enabled = !Common.Settings.Settings.instance().moduleSetting('disable-async-stack-traces').get() &&
         this.#debuggerEnabledInternal;
     const maxDepth = enabled ? maxAsyncStackChainDepth : 0;
     return this.agent.invoke_setAsyncCallStackDepth({maxDepth});
@@ -391,7 +388,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
 
   private breakpointsActiveChanged(): void {
     void this.agent.invoke_setBreakpointsActive(
-        {active: Common.Settings.Settings.instance().moduleSetting('breakpointsActive').get()});
+        {active: Common.Settings.Settings.instance().moduleSetting('breakpoints-active').get()});
   }
 
   setComputeAutoStepRangesCallback(callback: ((arg0: StepMode, arg1: CallFrame) => Promise<LocationRange[]>)|
@@ -456,7 +453,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       condition?: BackendCondition): Promise<SetBreakpointResult> {
     // Convert file url to node-js path.
     let urlRegex;
-    if (this.target().type() === Type.Node && url.startsWith('file://')) {
+    if (this.target().type() === Type.Node && Common.ParsedURL.schemeIs(url, 'file:')) {
       const platformPath = Common.ParsedURL.ParsedURL.urlToRawPathString(url, Host.Platform.isWin());
       urlRegex =
           `${Platform.StringUtilities.escapeForRegExp(platformPath)}|${Platform.StringUtilities.escapeForRegExp(url)}`;
@@ -897,16 +894,16 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   override dispose(): void {
     this.#sourceMapManagerInternal.dispose();
     if (this.#debuggerId) {
-      _debuggerIdToModel.delete(this.#debuggerId);
+      debuggerIdToModel.delete(this.#debuggerId);
     }
     Common.Settings.Settings.instance()
-        .moduleSetting('pauseOnExceptionEnabled')
+        .moduleSetting('pause-on-exception-enabled')
         .removeChangeListener(this.pauseOnExceptionStateChanged, this);
     Common.Settings.Settings.instance()
-        .moduleSetting('pauseOnCaughtException')
+        .moduleSetting('pause-on-caught-exception')
         .removeChangeListener(this.pauseOnExceptionStateChanged, this);
     Common.Settings.Settings.instance()
-        .moduleSetting('disableAsyncStackTraces')
+        .moduleSetting('disable-async-stack-traces')
         .removeChangeListener(this.asyncStackTracesStateChanged, this);
   }
 
@@ -930,15 +927,11 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _debuggerIdToModel = new Map<string, DebuggerModel>();
+const debuggerIdToModel = new Map<string, DebuggerModel>();
 
 /**
  * Keep these in sync with WebCore::V8Debugger
  */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum PauseOnExceptionsState {
   DontPauseOnExceptions = 'none',
   PauseOnAllExceptions = 'all',
@@ -946,8 +939,6 @@ export enum PauseOnExceptionsState {
   PauseOnUncaughtExceptions = 'uncaught',
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   DebuggerWasEnabled = 'DebuggerWasEnabled',
   DebuggerWasDisabled = 'DebuggerWasDisabled',
@@ -1153,16 +1144,16 @@ export interface MissingDebugInfoDetails {
 
 export class CallFrame {
   debuggerModel: DebuggerModel;
-  readonly #scriptInternal: Script;
+  readonly script: Script;
   payload: Protocol.Debugger.CallFrame;
   readonly #locationInternal: Location;
   readonly #scopeChainInternal: Scope[];
   readonly #localScopeInternal: Scope|null;
-  readonly #inlineFrameIndexInternal: number;
-  readonly #functionNameInternal: string;
+  readonly inlineFrameIndex: number;
+  readonly functionName: string;
   readonly #functionLocationInternal: Location|undefined;
   #returnValueInternal: RemoteObject|null;
-  #missingDebugInfoDetails: MissingDebugInfoDetails|null = null;
+  missingDebugInfoDetails: MissingDebugInfoDetails|null;
 
   readonly canBeRestarted: boolean;
 
@@ -1170,13 +1161,14 @@ export class CallFrame {
       debuggerModel: DebuggerModel, script: Script, payload: Protocol.Debugger.CallFrame, inlineFrameIndex?: number,
       functionName?: string) {
     this.debuggerModel = debuggerModel;
-    this.#scriptInternal = script;
+    this.script = script;
     this.payload = payload;
     this.#locationInternal = Location.fromPayload(debuggerModel, payload.location, inlineFrameIndex);
     this.#scopeChainInternal = [];
     this.#localScopeInternal = null;
-    this.#inlineFrameIndexInternal = inlineFrameIndex || 0;
-    this.#functionNameInternal = functionName || payload.functionName;
+    this.inlineFrameIndex = inlineFrameIndex || 0;
+    this.functionName = functionName || payload.functionName;
+    this.missingDebugInfoDetails = null;
     this.canBeRestarted = Boolean(payload.canBeRestarted);
     for (let i = 0; i < payload.scopeChain.length; ++i) {
       const scope = new Scope(this, i);
@@ -1205,27 +1197,11 @@ export class CallFrame {
   }
 
   createVirtualCallFrame(inlineFrameIndex: number, name: string): CallFrame {
-    return new CallFrame(this.debuggerModel, this.#scriptInternal, this.payload, inlineFrameIndex, name);
-  }
-
-  setMissingDebugInfoDetails(details: MissingDebugInfoDetails): void {
-    this.#missingDebugInfoDetails = details;
-  }
-
-  get missingDebugInfoDetails(): MissingDebugInfoDetails|null {
-    return this.#missingDebugInfoDetails;
-  }
-
-  get script(): Script {
-    return this.#scriptInternal;
+    return new CallFrame(this.debuggerModel, this.script, this.payload, inlineFrameIndex, name);
   }
 
   get id(): Protocol.Debugger.CallFrameId {
     return this.payload.callFrameId;
-  }
-
-  get inlineFrameIndex(): number {
-    return this.#inlineFrameIndexInternal;
   }
 
   scopeChain(): Scope[] {
@@ -1260,10 +1236,6 @@ export class CallFrame {
     }
     this.#returnValueInternal = this.debuggerModel.runtimeModel().createRemoteObject(evaluateResponse.result);
     return this.#returnValueInternal;
-  }
-
-  get functionName(): string {
-    return this.#functionNameInternal;
   }
 
   location(): Location {
@@ -1335,9 +1307,7 @@ export interface ScopeChainEntry {
 
   name(): string|undefined;
 
-  startLocation(): Location|null;
-
-  endLocation(): Location|null;
+  range(): LocationRange|null;
 
   object(): RemoteObject;
 
@@ -1352,8 +1322,7 @@ export class Scope implements ScopeChainEntry {
   readonly #typeInternal: Protocol.Debugger.ScopeType;
   readonly #nameInternal: string|undefined;
   #ordinal: number;
-  readonly #startLocationInternal: Location|null;
-  readonly #endLocationInternal: Location|null;
+  readonly #locationRange: LocationRange|null;
   #objectInternal: RemoteObject|null;
   constructor(callFrame: CallFrame, ordinal: number) {
     this.#callFrameInternal = callFrame;
@@ -1361,11 +1330,17 @@ export class Scope implements ScopeChainEntry {
     this.#typeInternal = this.#payload.type;
     this.#nameInternal = this.#payload.name;
     this.#ordinal = ordinal;
-    this.#startLocationInternal =
-        this.#payload.startLocation ? Location.fromPayload(callFrame.debuggerModel, this.#payload.startLocation) : null;
-    this.#endLocationInternal =
-        this.#payload.endLocation ? Location.fromPayload(callFrame.debuggerModel, this.#payload.endLocation) : null;
     this.#objectInternal = null;
+
+    const start =
+        this.#payload.startLocation ? Location.fromPayload(callFrame.debuggerModel, this.#payload.startLocation) : null;
+    const end =
+        this.#payload.endLocation ? Location.fromPayload(callFrame.debuggerModel, this.#payload.endLocation) : null;
+    if (start && end && start.scriptId === end.scriptId) {
+      this.#locationRange = {start, end};
+    } else {
+      this.#locationRange = null;
+    }
   }
 
   callFrame(): CallFrame {
@@ -1406,12 +1381,8 @@ export class Scope implements ScopeChainEntry {
     return this.#nameInternal;
   }
 
-  startLocation(): Location|null {
-    return this.#startLocationInternal;
-  }
-
-  endLocation(): Location|null {
-    return this.#endLocationInternal;
+  range(): LocationRange|null {
+    return this.#locationRange;
   }
 
   object(): RemoteObject {
@@ -1516,6 +1487,13 @@ export interface SetBreakpointResult {
 
 interface PausedOnInstrumentationData {
   scriptId: Protocol.Runtime.ScriptId;
+}
+
+export interface EventListenerPausedDetailsAuxData {
+  eventName: string;
+  targetName?: string;
+  webglErrorName?: string;
+  directiveText?: string;
 }
 
 export const enum BreakpointType {

@@ -1,0 +1,21 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+name: Successfully loads large dwo files
+source_file: //extensions/cxx_debugging/e2e/resources/huge-source-file.cc
+use_dwo:
+flags: [
+  [-g, -fdebug-compilation-dir=., -gdwarf-5, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK, -gsplit-dwarf, -gpubnames]]
+script:
+  - reason: setup
+    actions:
+    - file: huge-source-file.cc
+      action: set_breakpoint
+      breakpoint: 28
+  - reason: breakpoint
+    file: huge-source-file.cc
+    line: 28
+    variables:
+      - name: Local.value
+        value: -2147483648

@@ -1,11 +1,11 @@
 // Copyright 2021 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 import {assert} from 'chai';
+import type * as puppeteer from 'puppeteer-core';
 
-import type * as puppeteer from 'puppeteer';
-
-import {$, $$, $textContent, platform, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$, $$, $textContent, click, platform, waitFor, waitForFunction} from '../../shared/helper.js';
 
 export function platformSpecificTextForSubMenuEntryItem(text: string): string {
   /**
@@ -16,8 +16,8 @@ export function platformSpecificTextForSubMenuEntryItem(text: string): string {
   return platform === 'mac' ? `${text}▶` : text;
 }
 
-export function waitForSoftContextMenu(): Promise<puppeteer.ElementHandle<Element>> {
-  return waitFor('.soft-context-menu');
+export async function waitForSoftContextMenu(): Promise<puppeteer.ElementHandle<Element>> {
+  return await waitFor('.soft-context-menu');
 }
 
 export async function assertTopLevelContextMenuItemsText(expectedOptions: string[]): Promise<void> {
@@ -31,6 +31,7 @@ export async function assertTopLevelContextMenuItemsText(expectedOptions: string
 
   assert.deepEqual(allItemsText, expectedOptions);
 }
+
 export async function findSubMenuEntryItem(
     text: string, hasSubmenu: boolean): Promise<puppeteer.ElementHandle<Element>> {
   const textToSearchFor = hasSubmenu ? platformSpecificTextForSubMenuEntryItem(text) : text;
@@ -68,4 +69,13 @@ export async function assertSubMenuItemsText(subMenuText: string, expectedOption
   const subMenuItems = await $$('.soft-context-menu-item', subMenuElement);
   const subMenuItemsText = await Promise.all(subMenuItems.map(item => item.evaluate(div => div.textContent)));
   assert.deepEqual(subMenuItemsText, expectedOptions);
+}
+
+export async function openSoftContextMenuAndClickOnItem(selector: string, label: string) {
+  // Find the selected node, right click.
+  await click(selector, {clickOptions: {button: 'right'}});
+
+  // Wait for the context menu option, and click it.
+  const root = await waitForSoftContextMenu();
+  await click(`[aria-label="${label}"]`, {root});
 }

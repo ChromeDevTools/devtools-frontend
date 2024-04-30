@@ -190,7 +190,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
       return {content: bytecode, isEncoded: true};
     }
     let content: string = scriptSource || '';
-    if (this.hasSourceURL && this.sourceURL.startsWith('snippet://')) {
+    if (this.hasSourceURL && Common.ParsedURL.schemeIs(this.sourceURL, 'snippet:')) {
       // TODO(crbug.com/1330846): Find a better way to establish the snippet automapping binding then adding
       // a sourceURL comment before evaluation and removing it here.
       content = Script.trimSourceURLComment(content);
@@ -321,8 +321,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
 
     const matches = await this.debuggerModel.target().debuggerAgent().invoke_searchInContent(
         {scriptId: this.scriptId, query, caseSensitive, isRegex});
-    return (matches.result || [])
-        .map(match => new TextUtils.ContentProvider.SearchMatch(match.lineNumber, match.lineContent));
+    return TextUtils.TextUtils.performSearchInSearchMatches(matches.result || [], query, caseSensitive, isRegex);
   }
 
   private appendSourceURLCommentIfNeeded(source: string): string {

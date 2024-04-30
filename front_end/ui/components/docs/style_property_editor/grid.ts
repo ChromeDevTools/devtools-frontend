@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as Elements from '../../../../panels/elements/components/components.js';
+import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();

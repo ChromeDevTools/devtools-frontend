@@ -6,7 +6,7 @@
 
 .title-section {
   padding: 16px 0 24px;
-  border-bottom: 1px solid var(--color-background-elevation-2);
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 .title-section-header {
@@ -23,19 +23,19 @@
 }
 
 .security-origin-view .origin-view-section {
-  border-bottom: 1px solid var(--color-background-elevation-2);
+  border-bottom: 1px solid var(--sys-color-divider);
   padding: 12px 6px 12px  24px;
   font-size: 12px;
 }
 
 .origin-view-notes {
   margin-top: 2px;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .origin-view-section-notes {
   margin-top: 6px;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .security-origin-view .origin-display {
@@ -78,7 +78,7 @@
 }
 
 .security-origin-view .details-table-row > td:first-child {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   width: calc(120px + 1em);
   text-align: right;
   padding-right: 1em;
@@ -89,7 +89,7 @@
 }
 
 .security-origin-view .sct-details .details-table .details-table-row:last-child td:last-child {
-  border-bottom: 1px solid var(--color-background-elevation-2);
+  border-bottom: 1px solid var(--sys-color-divider);
   padding-bottom: 10px;
 }
 
@@ -108,7 +108,7 @@
 }
 
 .security-origin-view .details-table .empty-san {
-  color: var(--color-text-disabled);
+  color: var(--sys-color-state-disabled);
 }
 
 .security-origin-view .details-table .san-entry {

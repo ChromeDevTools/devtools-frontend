@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import type * as puppeteer from 'puppeteer';
+import type * as puppeteer from 'puppeteer-core';
 
 import {$, getBrowserAndPages, step} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
@@ -59,7 +59,7 @@ async function testMessageFilter(filter: string, expectedMessageFilter: MessageC
   });
 }
 
-describe('The Console Tab', async () => {
+describe('The Console Tab', () => {
   it('shows logged messages', async () => {
     let messages: string[];
     const withAnchor = true;

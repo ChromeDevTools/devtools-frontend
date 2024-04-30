@@ -4,31 +4,41 @@
 
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../third_party/typescript/typescript.gni")
 import("../../visibility.gni")
 
 devtools_module("handlers") {
   sources = [
     "AnimationHandler.ts",
+    "AuctionWorkletsHandler.ts",
+    "FramesHandler.ts",
     "GPUHandler.ts",
+    "InitiatorsHandler.ts",
+    "InvalidationsHandler.ts",
     "LargestImagePaintHandler.ts",
     "LargestTextPaintHandler.ts",
+    "LayerTreeHandler.ts",
     "LayoutShiftsHandler.ts",
+    "MemoryHandler.ts",
     "MetaHandler.ts",
-    "Migration.ts",
     "ModelHandlers.ts",
     "NetworkRequestsHandler.ts",
     "PageLoadMetricsHandler.ts",
     "RendererHandler.ts",
     "SamplesHandler.ts",
     "ScreenshotsHandler.ts",
+    "Threads.ts",
     "UserInteractionsHandler.ts",
     "UserTimingsHandler.ts",
+    "WarningsHandler.ts",
+    "WorkersHandler.ts",
     "types.ts",
   ]
 
   deps = [
     "../../../core/platform:bundle",
     "../../../generated",
+    "../../cpu_profile:bundle",
     "../helpers:bundle",
     "../types:bundle",
   ]
@@ -43,4 +53,41 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility += devtools_models_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "AnimationHandler.test.ts",
+    "AuctionWorkletsHandler.test.ts",
+    "FramesHandler.test.ts",
+    "GPUHandler.test.ts",
+    "InitiatorsHandler.test.ts",
+    "InvalidationsHandler.test.ts",
+    "LargestImagePaintHandler.test.ts",
+    "LargestTextPaintHandler.test.ts",
+    "LayerTreeHandler.test.ts",
+    "LayoutShiftsHandler.test.ts",
+    "MemoryHandler.test.ts",
+    "MetaHandler.test.ts",
+    "NetworkRequestsHandler.test.ts",
+    "PageLoadMetricsHandler.test.ts",
+    "RendererHandler.test.ts",
+    "SamplesHandler.test.ts",
+    "ScreenshotsHandler.test.ts",
+    "Threads.test.ts",
+    "UserInteractionsHandler.test.ts",
+    "UserTimingsHandler.test.ts",
+    "WarningsHandler.test.ts",
+    "WorkersHandler.test.ts",
+  ]
+
+  deps = [
+    "../../../core/platform:bundle",
+    "../../../generated",
+    "../../../models/trace:bundle",
+    "../../../panels/timeline:bundle",
+    "../../../testing",
+  ]
 }

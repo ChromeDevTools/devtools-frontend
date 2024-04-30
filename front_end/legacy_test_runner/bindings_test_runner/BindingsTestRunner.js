@@ -2,12 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Workspace from '../../models/workspace/workspace.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.BindingsTestRunner = self.BindingsTestRunner || {};
 
-BindingsTestRunner.cleanupURL = function(url) {
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Diff from '../../third_party/diff/diff.js';
+
+export const cleanupURL = function(url) {
   if (!url.startsWith('debugger://')) {
     return url;
   }
@@ -15,18 +21,18 @@ BindingsTestRunner.cleanupURL = function(url) {
   return url.replace(/VM\d+/g, 'VM[XXX]');
 };
 
-BindingsTestRunner.dumpWorkspace = function(previousSnapshot) {
-  const uiSourceCodes = self.Workspace.workspace.uiSourceCodes().slice();
+export const dumpWorkspace = function(previousSnapshot) {
+  const uiSourceCodes = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodes().slice();
   let urls = uiSourceCodes.map(code => code.url());
 
-  urls = urls.map(BindingsTestRunner.cleanupURL);
+  urls = urls.map(cleanupURL);
 
-  urls.sort(String.caseInsensetiveComparator);
+  urls.sort(Platform.StringUtilities.caseInsensetiveComparator);
   const isAdded = new Array(urls.length).fill(false);
   let removedLines = [];
 
   if (previousSnapshot) {
-    const diff = Diff.Diff.lineDiff(previousSnapshot, urls);
+    const diff = Diff.Diff.DiffWrapper.lineDiff(previousSnapshot, urls);
     const removedEntries = diff.filter(entry => entry[0] === Diff.Diff.Operation.Delete).map(entry => entry[1]);
     removedLines = [].concat.apply([], removedEntries);
     let index = 0;
@@ -65,7 +71,7 @@ BindingsTestRunner.dumpWorkspace = function(previousSnapshot) {
   return urls;
 };
 
-BindingsTestRunner.attachFrame = function(frameId, url, evalSourceURL) {
+export const attachFrame = function(frameId, url, evalSourceURL) {
   let evalSource = `(${attachFrame.toString()})('${frameId}', '${url}')`;
 
   if (evalSourceURL) {
@@ -85,7 +91,7 @@ BindingsTestRunner.attachFrame = function(frameId, url, evalSourceURL) {
   }
 };
 
-BindingsTestRunner.detachFrame = function(frameId, evalSourceURL) {
+export const detachFrame = function(frameId, evalSourceURL) {
   let evalSource = `(${detachFrame.toString()})('${frameId}')`;
 
   if (evalSourceURL) {
@@ -100,7 +106,7 @@ BindingsTestRunner.detachFrame = function(frameId, evalSourceURL) {
   }
 };
 
-BindingsTestRunner.navigateFrame = function(frameId, navigateURL, evalSourceURL) {
+export const navigateFrame = function(frameId, navigateURL, evalSourceURL) {
   let evalSource = `(${navigateFrame.toString()})('${frameId}', '${navigateURL}')`;
 
   if (evalSourceURL) {
@@ -118,7 +124,7 @@ BindingsTestRunner.navigateFrame = function(frameId, navigateURL, evalSourceURL)
   }
 };
 
-BindingsTestRunner.attachShadowDOM = function(id, templateSelector, evalSourceURL) {
+export const attachShadowDOM = function(id, templateSelector, evalSourceURL) {
   let evalSource = `(${createShadowDOM.toString()})('${id}', '${templateSelector}')`;
 
   if (evalSourceURL) {
@@ -140,7 +146,7 @@ BindingsTestRunner.attachShadowDOM = function(id, templateSelector, evalSourceUR
   }
 };
 
-BindingsTestRunner.detachShadowDOM = function(id, evalSourceURL) {
+export const detachShadowDOM = function(id, evalSourceURL) {
   let evalSource = `(${removeShadowDOM.toString()})('${id}')`;
 
   if (evalSourceURL) {
@@ -154,7 +160,7 @@ BindingsTestRunner.detachShadowDOM = function(id, evalSourceURL) {
   }
 };
 
-BindingsTestRunner.waitForStyleSheetRemoved = function(urlSuffix) {
+export const waitForStyleSheetRemoved = function(urlSuffix) {
   let fulfill;
   const promise = new Promise(x => {
     fulfill = x;
@@ -174,8 +180,10 @@ BindingsTestRunner.waitForStyleSheetRemoved = function(urlSuffix) {
   }
 };
 
-TestRunner.addSniffer(Bindings.CompilerScriptMapping.prototype, 'sourceMapAttachedForTest', onSourceMap, true);
-TestRunner.addSniffer(Bindings.SASSSourceMapping.prototype, 'sourceMapAttachedForTest', onSourceMap, true);
+TestRunner.addSniffer(
+    Bindings.CompilerScriptMapping.CompilerScriptMapping.prototype, 'sourceMapAttachedForTest', onSourceMap, true);
+TestRunner.addSniffer(
+    Bindings.SASSSourceMapping.SASSSourceMapping.prototype, 'sourceMapAttachedForTest', onSourceMap, true);
 const sourceMapCallbacks = new Map();
 
 function onSourceMap(sourceMap) {
@@ -188,7 +196,7 @@ function onSourceMap(sourceMap) {
   }
 }
 
-BindingsTestRunner.waitForSourceMap = function(sourceMapURLSuffix) {
+export const waitForSourceMap = function(sourceMapURLSuffix) {
   let fulfill;
   const promise = new Promise(x => {
     fulfill = x;
@@ -197,22 +205,21 @@ BindingsTestRunner.waitForSourceMap = function(sourceMapURLSuffix) {
   return promise;
 };
 
-const locationPool = new Bindings.LiveLocationPool();
+const locationPool = new Bindings.LiveLocation.LiveLocationPool();
 const nameSymbol = Symbol('LiveLocationNameForTest');
 const createdSymbol = Symbol('LiveLocationCreated');
 
-BindingsTestRunner.createDebuggerLiveLocation = function(
-    name, urlSuffix, lineNumber, columnNumber, dumpOnUpdate = true) {
+export const createDebuggerLiveLocation = function(name, urlSuffix, lineNumber, columnNumber, dumpOnUpdate = true) {
   const script = TestRunner.debuggerModel.scripts().find(script => script.sourceURL.endsWith(urlSuffix));
   const rawLocation = TestRunner.debuggerModel.createRawLocation(script, lineNumber || 0, columnNumber || 0);
-  return self.Bindings.debuggerWorkspaceBinding.createLiveLocation(
+  return Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createLiveLocation(
       rawLocation, updateDelegate.bind(null, name, dumpOnUpdate), locationPool);
 };
 
-BindingsTestRunner.createCSSLiveLocation = function(name, urlSuffix, lineNumber, columnNumber, dumpOnUpdate = true) {
+export const createCSSLiveLocation = function(name, urlSuffix, lineNumber, columnNumber, dumpOnUpdate = true) {
   const header = TestRunner.cssModel.styleSheetHeaders().find(header => header.resourceURL().endsWith(urlSuffix));
-  const rawLocation = new SDK.CSSLocation(header, lineNumber || 0, columnNumber || 0);
-  return self.Bindings.cssWorkspaceBinding.createLiveLocation(
+  const rawLocation = new SDK.CSSModel.CSSLocation(header, lineNumber || 0, columnNumber || 0);
+  return Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().createLiveLocation(
       rawLocation, updateDelegate.bind(null, name, dumpOnUpdate), locationPool);
 };
 
@@ -221,11 +228,11 @@ async function updateDelegate(name, dumpOnUpdate, liveLocation) {
   const hint = (liveLocation[createdSymbol] ? '[ UPDATE ]' : '[ CREATE ]');
   liveLocation[createdSymbol] = true;
   if (dumpOnUpdate) {
-    await BindingsTestRunner.dumpLocation(liveLocation, hint);
+    await dumpLocation(liveLocation, hint);
   }
 }
 
-BindingsTestRunner.dumpLocation = async function(liveLocation, hint) {
+export const dumpLocation = async function(liveLocation, hint) {
   hint = hint || '[  GET   ]';
   const prefix = `${hint}  LiveLocation-${liveLocation[nameSymbol]}: `;
   const uiLocation = await liveLocation.uiLocation();
@@ -236,11 +243,10 @@ BindingsTestRunner.dumpLocation = async function(liveLocation, hint) {
   }
 
   TestRunner.addResult(
-      prefix + BindingsTestRunner.cleanupURL(uiLocation.uiSourceCode.url()) + ':' + uiLocation.lineNumber + ':' +
-      uiLocation.columnNumber);
+      prefix + cleanupURL(uiLocation.uiSourceCode.url()) + ':' + uiLocation.lineNumber + ':' + uiLocation.columnNumber);
 };
 
-BindingsTestRunner.GC = async () => {
+export const GC = async () => {
   await TestRunner.evaluateInPageAsync(`new Promise(resolve =>
     GCController.asyncCollectAll(resolve))`);
 };

@@ -29,13 +29,16 @@
  */
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Settings from '../components/settings/settings.js';
+import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {InspectorView} from './InspectorView.js';
 import {Tooltip} from './Tooltip.js';
-import {CheckboxLabel} from './UIUtils.js';
+import {CheckboxLabel, createOption} from './UIUtils.js';
 
 const UIStrings = {
   /**
@@ -52,7 +55,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const createSettingCheckbox = function(
     name: string, setting: Common.Settings.Setting<boolean>, omitParagraphElement?: boolean,
     tooltip?: string): Element {
-  const label = CheckboxLabel.create(name);
+  const label = CheckboxLabel.create(name, undefined, undefined, setting.name);
   if (tooltip) {
     Tooltip.install(label, tooltip);
   }
@@ -83,11 +86,12 @@ const createSettingSelect = function(
     container.classList.add('chrome-select-label');
     label.createChild('p').textContent = subtitle;
   }
+  select.setAttribute('jslog', `${VisualLogging.dropDown().track({change: true}).context(setting.name)}`);
   ARIAUtils.bindLabelToControl(label, select);
 
   for (const option of options) {
     if (option.text && typeof option.value === 'string') {
-      select.add(new Option(option.text, option.value));
+      select.add(createOption(option.text, option.value, Platform.StringUtilities.toKebabCase(option.value)));
     }
   }
 
@@ -130,7 +134,8 @@ const createSettingSelect = function(
   }
 };
 
-export const bindCheckbox = function(inputElement: Element, setting: Common.Settings.Setting<boolean>): void {
+export const bindCheckbox = function(
+    inputElement: Element, setting: Common.Settings.Setting<boolean>, metric?: UserMetricOptions): void {
   const input = (inputElement as HTMLInputElement);
   function settingChanged(): void {
     if (input.checked !== setting.get()) {
@@ -144,7 +149,20 @@ export const bindCheckbox = function(inputElement: Element, setting: Common.Sett
     if (setting.get() !== input.checked) {
       setting.set(input.checked);
     }
+
+    if (setting.get() && metric?.enable) {
+      Host.userMetrics.actionTaken(metric.enable);
+    }
+
+    if (!setting.get() && metric?.disable) {
+      Host.userMetrics.actionTaken(metric.disable);
+    }
+
+    if (metric?.toggle) {
+      Host.userMetrics.actionTaken(metric.toggle);
+    }
   }
+
   input.addEventListener('change', inputChanged, false);
 };
 
@@ -164,7 +182,12 @@ export const createControlForSetting = function(
   switch (setting.type()) {
     case Common.Settings.SettingType.BOOLEAN: {
       const component = new Settings.SettingCheckbox.SettingCheckbox();
-      component.data = {setting: setting as Common.Settings.Setting<boolean>};
+      component.data = {
+        setting: setting as Common.Settings.Setting<boolean>,
+      };
+      component.onchange = () => {
+        InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
+      };
       return component;
     }
     case Common.Settings.SettingType.ENUM:
@@ -181,4 +204,14 @@ export const createControlForSetting = function(
 
 export interface SettingUI {
   settingElement(): Element|null;
+}
+
+/**
+ * Track toggle action as a whole or
+ * track on and off action separately.
+ */
+export interface UserMetricOptions {
+  toggle?: Host.UserMetrics.Action;
+  enable?: Host.UserMetrics.Action;
+  disable?: Host.UserMetrics.Action;
 }

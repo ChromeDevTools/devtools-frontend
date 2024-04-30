@@ -6,6 +6,8 @@ import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("performance") {
   sources = [
+    "fake-website.html",
+    "timeline/treeView-test-trace.json",
     "wasm/profiling.html",
     "wasm/profiling.wasm",
   ]

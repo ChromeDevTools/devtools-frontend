@@ -4,6 +4,47 @@
  * found in the LICENSE file.
  */
 
-.variable-value-popup-wrapper {
-  padding: 4px 8px;
+.registered-property-popup-wrapper {
+  max-width: 232px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.monospace {
+  font-family: var(--monospace-font-family);
+  font-size: var(--monospace-font-size);
+}
+
+:host {
+  padding: 11px 7px;
+}
+
+.divider {
+  margin: 8px -7px;
+  border: 1px solid var(--sys-color-divider);
+}
+
+.registered-property-links {
+  margin-top: 8px;
+}
+
+.clickable {
+  color: var(--sys-color-primary);
+  cursor: pointer;
+}
+
+.underlined {
+  text-decoration: underline;
+}
+
+.unbreakable-text {
+  white-space: nowrap;
+}
+
+.css-property {
+  color: var(--webkit-css-property-color, var(--sys-color-token-property-special)); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+}
+
+.title {
+  color: var(--sys-color-state-disabled);
 }

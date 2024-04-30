@@ -49,6 +49,15 @@ ruleTester.run('no_bound_component_methods', rule, {
 }`,
       filename: 'front_end/components/test.ts',
     },
+    {
+      // Incomplete listener, treat it as valid to not cause noise to developer in the middle of them typing!
+      code: `export class FeedbackButton extends HTMLElement {
+  constructor() {
+    window.addEventListener('click');
+  }
+}`,
+      filename: 'front_end/components/test.ts',
+    },
   ],
   invalid: [
     {

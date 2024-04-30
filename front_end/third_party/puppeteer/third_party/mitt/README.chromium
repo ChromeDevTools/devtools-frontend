@@ -1,0 +1,11 @@
+Name: mitt
+Short Name: mitt
+URL: https://github.com/developit/mitt
+License: MIT
+License File: LICENSE
+Security Critical: no
+Shipped: yes
+
+Description: mitt is a transitive dependency of Puppeteer, shipped as part of
+Puppeteer. The license is also included in the source files in
+front_end/third_party/puppeteer/package/lib/esm/third_party/mitt/mitt.js.

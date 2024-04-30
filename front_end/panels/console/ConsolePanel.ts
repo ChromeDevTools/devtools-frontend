@@ -32,6 +32,7 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ConsoleView} from './ConsoleView.js';
 
@@ -94,6 +95,7 @@ export class WrapperView extends UI.Widget.VBox {
   private constructor() {
     super();
     this.view = ConsoleView.instance();
+    this.element.setAttribute('jslog', `${VisualLogging.panel('console').track({resize: true})}`);
   }
 
   static instance(): WrapperView {
@@ -122,21 +124,8 @@ export class WrapperView extends UI.Widget.VBox {
   }
 }
 
-let consoleRevealerInstance: ConsoleRevealer;
-
-export class ConsoleRevealer implements Common.Revealer.Revealer {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ConsoleRevealer {
-    const {forceNew} = opts;
-    if (!consoleRevealerInstance || forceNew) {
-      consoleRevealerInstance = new ConsoleRevealer();
-    }
-
-    return consoleRevealerInstance;
-  }
-
-  async reveal(_object: Object): Promise<void> {
+export class ConsoleRevealer implements Common.Revealer.Revealer<Common.Console.Console> {
+  async reveal(_object: Common.Console.Console): Promise<void> {
     const consoleView = ConsoleView.instance();
     if (consoleView.isShowing()) {
       consoleView.focus();

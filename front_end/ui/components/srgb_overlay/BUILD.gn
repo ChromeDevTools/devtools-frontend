@@ -30,8 +30,5 @@ devtools_entrypoint("bundle") {
     ":srgb_overlay",
   ]
 
-  visibility = [
-    "../../../../test/unittests/front_end/ui/components/*",
-    "../../legacy/components/color_picker/*",
-  ]
+  visibility = [ "../../legacy/components/color_picker/*" ]
 }

@@ -32,8 +32,8 @@ export function buildGroupStyle(extra?: Object): PerfUI.FlameChart.GroupStyle {
     padding: 4,
     height: 17,
     collapsible: true,
-    color: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary'),
-    backgroundColor: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background'),
+    color: ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface'),
+    backgroundColor: ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container'),
     nestingLevel: 0,
     shareHeaderLine: true,
   };
@@ -52,8 +52,8 @@ export function buildGroupStyle(extra?: Object): PerfUI.FlameChart.GroupStyle {
  */
 export function buildTrackHeader(
     startLevel: number, name: string, style: PerfUI.FlameChart.GroupStyle, selectable: boolean, expanded?: boolean,
-    track?: TimelineModel.TimelineModel.Track|null): PerfUI.FlameChart.Group {
-  const group = ({startLevel, name, style, selectable, expanded} as PerfUI.FlameChart.Group);
+    track?: TimelineModel.TimelineModel.Track|null, showStackContextMenu?: boolean): PerfUI.FlameChart.Group {
+  const group = ({startLevel, name, style, selectable, expanded, showStackContextMenu} as PerfUI.FlameChart.Group);
   if (selectable && track) {
     group.track = track;
   }
@@ -107,4 +107,12 @@ export function getEventLevel(
   }
   lastUsedTimeByLevel[level] = endTime;
   return level;
+}
+
+export function addDecorationToEvent(
+    timelineData: PerfUI.FlameChart.FlameChartTimelineData, eventIndex: number,
+    decoration: PerfUI.FlameChart.FlameChartDecoration): void {
+  const decorationsForEvent = timelineData.entryDecorations[eventIndex] || [];
+  decorationsForEvent.push(decoration);
+  timelineData.entryDecorations[eventIndex] = decorationsForEvent;
 }

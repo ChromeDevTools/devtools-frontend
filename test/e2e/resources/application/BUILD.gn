@@ -9,7 +9,6 @@ copy_to_gen("application") {
     "app-manifest-id.html",
     "app-manifest-no-id.html",
     "cookies.html",
-    "cross-origin-cookies.html",
     "dedicated-worker.js",
     "frame-tree.html",
     "iframe.html",
@@ -23,9 +22,9 @@ copy_to_gen("application") {
     "service-worker-network.html",
     "service-worker.js",
     "session-storage.html",
-    "set-cookies.rawresponse",
     "shared-storage.html",
     "storage-quota.html",
-    "websql-database.html",
+    "window-controls-manifest.webmanifest",
+    "window-controls.html",
   ]
 }

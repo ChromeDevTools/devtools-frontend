@@ -5,19 +5,32 @@
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../third_party/typescript/typescript.gni")
 
 generate_css("css_files") {
-  sources = [ "JSONEditor.css" ]
+  sources = [
+    "JSONEditor.css",
+    "toolbar.css",
+  ]
 }
 
 devtools_module("components") {
-  sources = [ "JSONEditor.ts" ]
+  sources = [
+    "JSONEditor.ts",
+    "Toolbar.ts",
+  ]
 
   deps = [
+    "../../../core/host:bundle",
+    "../../../core/i18n:bundle",
+    "../../../core/sdk:bundle",
+    "../../../ui/components/buttons:bundle",
+    "../../../ui/components/icon_button:bundle",
+    "../../../ui/components/menus:bundle",
+    "../../../ui/components/suggestion_input:bundle",
+    "../../../ui/legacy:bundle",
     "../../../ui/lit-html:bundle",
-
-    # TODO(crbug.com/1454420): Remove this line after moving the RecorderInput component to the ui folder
-    "../../recorder/components:bundle",
+    "../../elements/components:bundle",
   ]
 }
 
@@ -32,7 +45,18 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../:*",
-    "../../../../test/unittests/front_end/panels/protocol_monitor/*",
     "../../../ui/components/docs/*",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "JSONEditor.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../testing",
+    "../../../ui/components/suggestion_input:bundle",
   ]
 }

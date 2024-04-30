@@ -5,29 +5,19 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import type * as Formatter from '../../models/formatter/formatter.js';
-import {formatCSSChangesFromDiff} from '../../panels/utils/utils.js';
+import type * as Workspace from '../../models/workspace/workspace.js';
+import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
+import {PanelUtils} from '../../panels/utils/utils.js';
 import * as Diff from '../../third_party/diff/diff.js';
 import * as DiffView from '../../ui/components/diff_view/diff_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
-
-import changesViewStyles from './changesView.css.js';
-
-import type * as Workspace from '../../models/workspace/workspace.js';
-import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ChangesSidebar, Events} from './ChangesSidebar.js';
+import changesViewStyles from './changesView.css.js';
 
 const UIStrings = {
-  /**
-   *@description Screen reader/tooltip label for a button in the Changes tool that reverts all changes to the currently open file.
-   */
-  revertAllChangesToCurrentFile: 'Revert all changes to current file',
-  /**
-   *@description Screen reader/tooltip label for a button in the Changes tool that copies all changes from the currently open file.
-   */
-  copyAllChangesFromCurrentFile: 'Copy all changes from current file',
   /**
    *@description Text in Changes View of the Changes tab
    */
@@ -66,8 +56,6 @@ function diffStats(diff: Diff.Diff.DiffArray): string {
   return `${insertionText}, ${deletionText}`;
 }
 
-let changesViewInstance: ChangesView;
-
 export class ChangesView extends UI.Widget.VBox {
   private emptyWidget: UI.EmptyWidget.EmptyWidget;
   private readonly workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
@@ -78,11 +66,11 @@ export class ChangesView extends UI.Widget.VBox {
   private readonly toolbar: UI.Toolbar.Toolbar;
   private readonly diffStats: UI.Toolbar.ToolbarText;
   private readonly diffView: DiffView.DiffView.DiffView;
-  private readonly copyButton: UI.Toolbar.ToolbarButton;
-  private readonly copyButtonSeparator: UI.Toolbar.ToolbarSeparator;
 
-  private constructor() {
+  constructor() {
     super(true);
+
+    this.element.setAttribute('jslog', `${VisualLogging.panel('changes').track({resize: true})}`);
 
     const splitWidget = new UI.SplitWidget.SplitWidget(true /* vertical */, false /* sidebar on left */);
     const mainWidget = new UI.Widget.Widget();
@@ -106,43 +94,31 @@ export class ChangesView extends UI.Widget.VBox {
     this.diffView = this.diffContainer.appendChild(new DiffView.DiffView.DiffView());
 
     this.toolbar = new UI.Toolbar.Toolbar('changes-toolbar', mainWidget.element);
-    const revertButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.revertAllChangesToCurrentFile), 'undo');
-    revertButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.revert.bind(this));
-    this.toolbar.appendToolbarItem(revertButton);
+    this.toolbar.element.setAttribute('jslog', `${VisualLogging.toolbar()}`);
+    this.toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('changes.revert'));
     this.diffStats = new UI.Toolbar.ToolbarText('');
     this.toolbar.appendToolbarItem(this.diffStats);
 
-    this.copyButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.copyAllChangesFromCurrentFile), 'copy', UIStrings.copy);
-    this.copyButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.copyChanges.bind(this));
-    this.copyButtonSeparator = new UI.Toolbar.ToolbarSeparator();
-    this.toolbar.setEnabled(false);
+    this.toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator());
+    this.toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('changes.copy', {
+      showLabel: true,
+      label() {
+        return i18nString(UIStrings.copy);
+      },
+    }));
 
     this.hideDiff(i18nString(UIStrings.noChanges));
     this.selectedUISourceCodeChanged();
   }
 
-  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ChangesView {
-    const {forceNew} = opts;
-    if (!changesViewInstance || forceNew) {
-      changesViewInstance = new ChangesView();
-    }
-
-    return changesViewInstance;
-  }
-
   private selectedUISourceCodeChanged(): void {
     this.revealUISourceCode(this.changesSidebar.selectedUISourceCode());
-    if (this.selectedUISourceCode?.contentType() === Common.ResourceType.resourceTypes.Stylesheet) {
-      this.toolbar.appendToolbarItem(this.copyButtonSeparator);
-      this.toolbar.appendToolbarItem(this.copyButton);
-    } else {
-      this.toolbar.removeToolbarItem(this.copyButtonSeparator);
-      this.toolbar.removeToolbarItem(this.copyButton);
-    }
+    UI.ActionRegistry.ActionRegistry.instance()
+        .getAction('changes.copy')
+        .setEnabled(this.selectedUISourceCode?.contentType() === Common.ResourceType.resourceTypes.Stylesheet);
   }
 
-  private revert(): void {
+  revert(): void {
     const uiSourceCode = this.selectedUISourceCode;
     if (!uiSourceCode) {
       return;
@@ -150,7 +126,7 @@ export class ChangesView extends UI.Widget.VBox {
     void this.workspaceDiff.revertToOriginal(uiSourceCode);
   }
 
-  private async copyChanges(): Promise<void> {
+  async copy(): Promise<void> {
     const uiSourceCode = this.selectedUISourceCode;
     if (!uiSourceCode) {
       return;
@@ -160,7 +136,7 @@ export class ChangesView extends UI.Widget.VBox {
     if (!diffResponse || diffResponse?.diff.length < 2) {
       return;
     }
-    const changes = await formatCSSChangesFromDiff(diffResponse.diff);
+    const changes = await PanelUtils.formatCSSChangesFromDiff(diffResponse.diff);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(changes);
   }
 
@@ -183,8 +159,7 @@ export class ChangesView extends UI.Widget.VBox {
         // Unfortunately, caretRangeFromPoint is broken in shadow
         // roots, which makes determining the character offset more
         // work than justified here.
-        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PRECISE_CHANGES) &&
-            this.#selectedSourceCodeFormattedMapping) {
+        if (this.#selectedSourceCodeFormattedMapping) {
           lineNumber = this.#selectedSourceCodeFormattedMapping.formattedToOriginal(lineNumber, 0)[0];
         }
         void Common.Revealer.reveal(this.selectedUISourceCode.uiLocation(lineNumber, 0), false);
@@ -213,8 +188,15 @@ export class ChangesView extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
-    void this.refreshDiff();
+    UI.Context.Context.instance().setFlavor(ChangesView, this);
     this.registerCSSFiles([changesViewStyles]);
+    super.wasShown();
+    void this.refreshDiff();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    UI.Context.Context.instance().setFlavor(ChangesView, null);
   }
 
   private async refreshDiff(): Promise<void> {
@@ -231,9 +213,7 @@ export class ChangesView extends UI.Widget.VBox {
       this.hideDiff(i18nString(UIStrings.binaryData));
       return;
     }
-    const diffResponse = await this.workspaceDiff.requestDiff(
-        uiSourceCode,
-        {shouldFormatDiff: Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PRECISE_CHANGES)});
+    const diffResponse = await this.workspaceDiff.requestDiff(uiSourceCode, {shouldFormatDiff: true});
     if (this.selectedUISourceCode !== uiSourceCode) {
       return;
     }
@@ -263,22 +243,20 @@ export class ChangesView extends UI.Widget.VBox {
   }
 }
 
-let diffUILocationRevealerInstance: DiffUILocationRevealer;
-export class DiffUILocationRevealer implements Common.Revealer.Revealer {
-  static instance(opts: {forceNew: boolean} = {forceNew: false}): DiffUILocationRevealer {
-    const {forceNew} = opts;
-    if (!diffUILocationRevealerInstance || forceNew) {
-      diffUILocationRevealerInstance = new DiffUILocationRevealer();
+export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  handleAction(context: UI.Context.Context, actionId: string): boolean {
+    const changesView = context.flavor(ChangesView);
+    if (changesView === null) {
+      return false;
     }
-
-    return diffUILocationRevealerInstance;
-  }
-
-  async reveal(diffUILocation: Object, omitFocus?: boolean|undefined): Promise<void> {
-    if (!(diffUILocation instanceof WorkspaceDiff.WorkspaceDiff.DiffUILocation)) {
-      throw new Error('Internal error: not a diff ui location');
+    switch (actionId) {
+      case 'changes.revert':
+        changesView.revert();
+        return true;
+      case 'changes.copy':
+        void changesView.copy();
+        return true;
     }
-    await UI.ViewManager.ViewManager.instance().showView('changes.changes');
-    ChangesView.instance().changesSidebar.selectUISourceCode(diffUILocation.uiSourceCode, omitFocus);
+    return false;
   }
 }

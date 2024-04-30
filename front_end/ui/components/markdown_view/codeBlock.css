@@ -1,0 +1,85 @@
+/*
+ * Copyright 2023 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+code {
+  color: var(--sys-color-on-surface);
+  font-size: 11px;
+  user-select: text;
+  cursor: text;
+  background: var(--sys-color-surface1);
+}
+
+.codeblock {
+  margin-bottom: 8px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  background-color: var(--sys-color-surface5);
+  color: var(--sys-color-on-surface);
+}
+
+.codeblock .toolbar {
+  box-sizing: border-box;
+  display: flex;
+  height: 28px;
+  flex-direction: row;
+  padding: 0 11px;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.codeblock .editor-wrapper {
+  color: var(--sys-color-on-surface);
+  background: var(--sys-color-surface1);
+  padding: 10px 5px;
+}
+
+.codeblock .lang {
+  padding: 6px 0;
+  flex: 1;
+}
+
+.codeblock .copy {
+  padding: 4px 0;
+  align-items: center;
+  display: flex;
+}
+
+.codeblock .copy-button {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  font-size: 11px;
+  line-height: 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.codeblock .copy-button.copied {
+  color: var(--sys-color-primary);
+
+  --copy-icon-color: var(--sys-color-primary);
+}
+
+.notice {
+  margin-top: 3px;
+  margin-left: 3px;
+
+  .link {
+    color: var(--sys-color-primary);
+    text-decoration-line: underline;
+  }
+}

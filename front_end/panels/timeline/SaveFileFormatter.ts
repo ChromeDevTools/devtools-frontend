@@ -43,7 +43,7 @@ export function*
 export function*
     traceJsonGenerator(
         traceEvents: readonly TraceEngine.Types.TraceEvents.TraceEventData[],
-        metadata: Readonly<TraceEngine.TraceModel.TraceFileMetaData>|null,
+        metadata: Readonly<TraceEngine.Types.File.MetaData>|null,
         ): IterableIterator<string> {
   yield '{"traceEvents": ';
   yield* arrayOfObjectsJsonGenerator(traceEvents);

@@ -127,7 +127,7 @@ UI.ViewManager.registerViewExtension({
   order: 50,
   async loadView() {
     const InspectorMain = await loadInspectorMainModule();
-    return InspectorMain.RenderingOptions.RenderingOptionsView.instance();
+    return new InspectorMain.RenderingOptions.RenderingOptionsView();
   },
   tags: [
     i18nLazyString(UIStrings.paint),
@@ -142,10 +142,10 @@ UI.ViewManager.registerViewExtension({
 
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.NAVIGATION,
-  actionId: 'inspector_main.reload',
+  actionId: 'inspector-main.reload',
   async loadActionDelegate() {
     const InspectorMain = await loadInspectorMainModule();
-    return InspectorMain.InspectorMain.ReloadActionDelegate.instance();
+    return new InspectorMain.InspectorMain.ReloadActionDelegate();
   },
   iconClass: UI.ActionRegistration.IconClass.REFRESH,
   title: i18nLazyString(UIStrings.reloadPage),
@@ -167,10 +167,10 @@ UI.ActionRegistration.registerActionExtension({
 
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.NAVIGATION,
-  actionId: 'inspector_main.hard-reload',
+  actionId: 'inspector-main.hard-reload',
   async loadActionDelegate() {
     const InspectorMain = await loadInspectorMainModule();
-    return InspectorMain.InspectorMain.ReloadActionDelegate.instance();
+    return new InspectorMain.InspectorMain.ReloadActionDelegate();
   },
   title: i18nLazyString(UIStrings.hardReloadPage),
   bindings: [
@@ -203,14 +203,14 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.toggleCssPrefersColorSchemeMedia),
   async loadActionDelegate() {
     const InspectorMain = await loadInspectorMainModule();
-    return InspectorMain.RenderingOptions.ReloadActionDelegate.instance();
+    return new InspectorMain.RenderingOptions.ReloadActionDelegate();
   },
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NETWORK,
   title: i18nLazyString(UIStrings.forceAdBlocking),
-  settingName: 'network.adBlockingEnabled',
+  settingName: 'network.ad-blocking-enabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
   defaultValue: false,
@@ -230,7 +230,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.GLOBAL,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.autoOpenDevTools),
-  settingName: 'autoAttachToCreatedPages',
+  settingName: 'auto-attach-to-created-pages',
   settingType: Common.Settings.SettingType.BOOLEAN,
   order: 2,
   defaultValue: false,
@@ -250,7 +250,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.disablePaused),
-  settingName: 'disablePausedStateOverlay',
+  settingName: 'disable-paused-state-overlay',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 });
@@ -262,10 +262,16 @@ UI.Toolbar.registerToolbarItem({
   },
   order: 2,
   location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_LEFT,
-  showLabel: undefined,
-  condition: undefined,
-  separator: undefined,
-  actionId: undefined,
+});
+
+UI.Toolbar.registerToolbarItem({
+  async loadItem() {
+    const InspectorMain = await loadInspectorMainModule();
+    return InspectorMain.OutermostTargetSelector.OutermostTargetSelector.instance();
+  },
+  order: 98,
+  location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
+  experiment: Root.Runtime.ExperimentName.OUTERMOST_TARGET_SELECTOR,
 });
 
 UI.Toolbar.registerToolbarItem({

@@ -13,7 +13,7 @@ import {
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
 
-describe('Heavy Ad issue', async () => {
+describe('Heavy Ad issue', () => {
   beforeEach(async () => {
     await goToResource('empty.html');
   });

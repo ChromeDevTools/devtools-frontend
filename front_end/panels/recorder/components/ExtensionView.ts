@@ -5,13 +5,12 @@
 import '../../../ui/legacy/legacy.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-
 import type * as PublicExtensions from '../../../models/extensions/extensions.js';
-import * as Extensions from '../extensions/extensions.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import * as Extensions from '../extensions/extensions.js';
 
 import extensionViewStyles from './extensionView.css.js';
 
@@ -47,16 +46,16 @@ export class ClosedEvent extends Event {
   }
 }
 
-const extensionIcon = new URL(
-                          '../images/extension_icon.svg',
-                          import.meta.url,
-                          )
-                          .toString();
-
 export class ExtensionView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-recorder-extension-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #descriptor?: PublicExtensions.RecorderPluginManager.ViewDescriptor;
+
+  constructor() {
+    super();
+
+    this.setAttribute('jslog', `${VisualLogging.section('extension-view')}`);
+  }
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [extensionViewStyles];
@@ -96,21 +95,17 @@ export class ExtensionView extends HTMLElement {
               <${IconButton.Icon.Icon.litTagName}
                 class="icon"
                 title=${i18nString(UIStrings.extension)}
-                .data=${
-                  {
-                    iconPath: extensionIcon,
-                    color: 'var(--color-text-secondary)',
-                  } as IconButton.Icon.IconData
-                }>
+                name="extension">
               </${IconButton.Icon.Icon.litTagName}>
               ${this.#descriptor.title}
             </div>
             <${Buttons.Button.Button.litTagName}
               title=${i18nString(UIStrings.closeView)}
+              jslog=${VisualLogging.close().track({click: true})}
               .data=${
                 {
                   variant: Buttons.Button.Variant.ROUND,
-                  size: Buttons.Button.Size.TINY,
+                  size: Buttons.Button.Size.SMALL,
                   iconName: 'cross',
                 } as Buttons.Button.ButtonData
               }
@@ -129,7 +124,7 @@ export class ExtensionView extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent(
+customElements.define(
     'devtools-recorder-extension-view',
     ExtensionView,
 );

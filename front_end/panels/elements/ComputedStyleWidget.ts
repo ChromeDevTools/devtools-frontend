@@ -35,22 +35,22 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
 import * as ElementsComponents from './components/components.js';
+import {type ComputedStyle, ComputedStyleModel, Events} from './ComputedStyleModel.js';
 import computedStyleSidebarPaneStyles from './computedStyleSidebarPane.css.js';
-
-import {ComputedStyleModel, Events, type ComputedStyle} from './ComputedStyleModel.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {PlatformFontsWidget} from './PlatformFontsWidget.js';
-
-import {categorizePropertyName, DefaultCategoryOrder, type Category} from './PropertyNameCategories.js';
+import {categorizePropertyName, type Category, DefaultCategoryOrder} from './PropertyNameCategories.js';
+import {ColorMatch, ColorMatcher, type RenderingContext} from './PropertyParser.js';
 import {StylePropertiesSection} from './StylePropertiesSection.js';
-import {StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
-import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import {StringRenderer, URLRenderer} from './StylePropertyTreeElement.js';
+import {StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
 
 const UIStrings = {
   /**
@@ -115,8 +115,9 @@ function renderPropertyContents(
   if (valueFromCache) {
     return valueFromCache;
   }
-  const renderer = new StylesSidebarPropertyRenderer(null, node, propertyName, propertyValue);
-  renderer.setColorHandler(processColor);
+  const renderer = new StylesSidebarPropertyRenderer(
+      null, node, propertyName, propertyValue,
+      [ColorRenderer.matcher(), URLRenderer.matcher(null, node), StringRenderer.matcher()]);
   const name = renderer.renderName();
   name.slot = 'name';
   const value = renderer.renderValue();
@@ -156,8 +157,9 @@ const createTraceElement =
      linkifier: Components.Linkifier.Linkifier): ElementsComponents.ComputedStyleTrace.ComputedStyleTrace => {
       const trace = new ElementsComponents.ComputedStyleTrace.ComputedStyleTrace();
 
-      const renderer = new StylesSidebarPropertyRenderer(null, node, property.name, (property.value as string));
-      renderer.setColorHandler(processColor);
+      const renderer = new StylesSidebarPropertyRenderer(
+          null, node, property.name, (property.value as string),
+          [ColorRenderer.matcher(), URLRenderer.matcher(null, node), StringRenderer.matcher()]);
       const valueElement = renderer.renderValue();
       valueElement.slot = 'trace-value';
       trace.appendChild(valueElement);
@@ -177,21 +179,29 @@ const createTraceElement =
       return trace;
     };
 
-const processColor = (text: string): Node => {
-  const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
-  swatch.renderColor(text, true);
-  const valueElement = document.createElement('span');
-  valueElement.textContent = swatch.getText();
-  swatch.append(valueElement);
+class ColorRenderer extends ColorMatch {
+  render(_node: unknown, context: RenderingContext): Node[] {
+    const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
+    swatch.setReadonly(true);
+    swatch.renderColor(this.text, true);
+    const valueElement = document.createElement('span');
+    valueElement.textContent = swatch.getText();
+    swatch.append(valueElement);
 
-  swatch.addEventListener(
-      InlineEditor.ColorSwatch.ColorChangedEvent.eventName, (event: InlineEditor.ColorSwatch.ColorChangedEvent) => {
-        const {data} = event;
-        valueElement.textContent = data.text;
-      });
+    swatch.addEventListener(
+        InlineEditor.ColorSwatch.ColorChangedEvent.eventName, (event: InlineEditor.ColorSwatch.ColorChangedEvent) => {
+          const {data} = event;
+          valueElement.textContent = data.text;
+        });
 
-  return swatch;
-};
+    context.addControl('color', swatch);
+    return [swatch];
+  }
+
+  static matcher(): ColorMatcher {
+    return new ColorMatcher(text => new ColorRenderer(text));
+  }
+}
 
 const navigateToSource = (cssProperty: SDK.CSSProperty.CSSProperty, event?: Event): void => {
   if (!event) {
@@ -231,7 +241,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
   private computedStyleModel: ComputedStyleModel;
   private readonly showInheritedComputedStylePropertiesSetting: Common.Settings.Setting<boolean>;
   private readonly groupComputedStylesSetting: Common.Settings.Setting<boolean>;
-  input: Element;
+  input: UI.Toolbar.ToolbarInput;
   private filterRegex: RegExp|null;
   private readonly noMatchesElement: HTMLElement;
   private readonly linkifier: Components.Linkifier.Linkifier;
@@ -249,24 +259,23 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     this.computedStyleModel.addEventListener(Events.ComputedStyleChanged, this.update, this);
 
     this.showInheritedComputedStylePropertiesSetting =
-        Common.Settings.Settings.instance().createSetting('showInheritedComputedStyleProperties', false);
+        Common.Settings.Settings.instance().createSetting('show-inherited-computed-style-properties', false);
     this.showInheritedComputedStylePropertiesSetting.addChangeListener(this.update.bind(this));
 
-    this.groupComputedStylesSetting = Common.Settings.Settings.instance().createSetting('groupComputedStyles', false);
+    this.groupComputedStylesSetting = Common.Settings.Settings.instance().createSetting('group-computed-styles', false);
     this.groupComputedStylesSetting.addChangeListener(() => {
       this.update();
     });
 
     const hbox = this.contentElement.createChild('div', 'hbox styles-sidebar-pane-toolbar');
-    const filterContainerElement = hbox.createChild('div', 'styles-sidebar-pane-filter-box');
-    const filterInput = StylesSidebarPane.createPropertyFilterElement(
-        i18nString(UIStrings.filter), hbox, this.filterComputedStyles.bind(this));
-    UI.ARIAUtils.setLabel(filterInput, i18nString(UIStrings.filterComputedStyles));
-    filterContainerElement.appendChild(filterInput);
+    const toolbar = new UI.Toolbar.Toolbar('styles-pane-toolbar', hbox);
+    const filterInput = new UI.Toolbar.ToolbarInput(
+        i18nString(UIStrings.filter), i18nString(UIStrings.filterComputedStyles), 1, 1, undefined, undefined, false);
+    filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.onFilterChanged, this);
+    toolbar.appendToolbarItem(filterInput);
     this.input = filterInput;
     this.filterRegex = null;
 
-    const toolbar = new UI.Toolbar.Toolbar('styles-pane-toolbar', hbox);
     toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
         this.showInheritedComputedStylePropertiesSetting, undefined, i18nString(UIStrings.showAll)));
     toolbar.appendToolbarItem(
@@ -277,7 +286,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
 
     this.contentElement.appendChild(this.#computedStylesTree);
 
-    this.linkifier = new Components.Linkifier.Linkifier(_maxLinkLength);
+    this.linkifier = new Components.Linkifier.Linkifier(maxLinkLength);
 
     this.imagePreviewPopover = new ImagePreviewPopover(this.contentElement, event => {
       const link = event.composedPath()[0];
@@ -289,8 +298,6 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
 
     const fontsWidget = new PlatformFontsWidget(this.computedStyleModel);
     fontsWidget.show(this.contentElement);
-
-    Common.Settings.Settings.instance().moduleSetting('colorFormat').addChangeListener(this.update.bind(this));
   }
 
   override onResize(): void {
@@ -358,7 +365,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       const propertyValue = nodeStyle.computedStyle.get(propertyName) || '';
       const canonicalName = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
       const isInherited = !nonInheritedProperties.has(canonicalName);
-      if (!showInherited && isInherited && !_alwaysShownComputedProperties.has(propertyName)) {
+      if (!showInherited && isInherited && !alwaysShownComputedProperties.has(propertyName)) {
         continue;
       }
       if (!showInherited && propertyName.startsWith('--')) {
@@ -400,7 +407,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     for (const [propertyName, propertyValue] of nodeStyle.computedStyle) {
       const canonicalName = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
       const isInherited = !nonInheritedProperties.has(canonicalName);
-      if (!showInherited && isInherited && !_alwaysShownComputedProperties.has(propertyName)) {
+      if (!showInherited && isInherited && !alwaysShownComputedProperties.has(propertyName)) {
         continue;
       }
       if (!showInherited && propertyName.startsWith('--')) {
@@ -486,7 +493,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
             'contextmenu', this.handleContextMenuEvent.bind(this, matchedStyles, data.property));
         return LitHtml.html`${traceElement}`;
       }
-      return LitHtml.html`<span style="cursor: text; color: var(--color-text-secondary);">${data.name}</span>`;
+      return LitHtml.html`<span style="cursor: text; color: var(--sys-color-token-subtle);">${data.name}</span>`;
     };
   }
 
@@ -523,12 +530,13 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       if (header && !header.isAnonymousInlineStyleSheet()) {
         contextMenu.defaultSection().appendItem(i18nString(UIStrings.navigateToSelectorSource), () => {
           StylePropertiesSection.tryNavigateToRuleLocation(matchedStyles, rule);
-        });
+        }, {jslogContext: 'navigate-to-selector-source'});
       }
     }
 
     contextMenu.defaultSection().appendItem(
-        i18nString(UIStrings.navigateToStyle), () => Common.Revealer.reveal(property));
+        i18nString(UIStrings.navigateToStyle), () => Common.Revealer.reveal(property),
+        {jslogContext: 'navigate-to-style'});
     void contextMenu.show();
   }
 
@@ -565,7 +573,12 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     return result;
   }
 
-  async filterComputedStyles(this: ComputedStyleWidget, regex: RegExp|null): Promise<void> {
+  private onFilterChanged(event: Common.EventTarget.EventTargetEvent<string>): void {
+    void this.filterComputedStyles(
+        event.data ? new RegExp(Platform.StringUtilities.escapeForRegExp(event.data), 'i') : null);
+  }
+
+  async filterComputedStyles(regex: RegExp|null): Promise<void> {
     this.filterRegex = regex;
     if (this.groupComputedStylesSetting.get()) {
       return this.filterGroupLists();
@@ -624,9 +637,5 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _maxLinkLength = 30;
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _alwaysShownComputedProperties = new Set<string>(['display', 'height', 'width']);
+const maxLinkLength = 30;
+const alwaysShownComputedProperties = new Set<string>(['display', 'height', 'width']);

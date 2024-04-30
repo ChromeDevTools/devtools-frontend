@@ -14,6 +14,9 @@
 /.dev_profile
 /.test_cache
 /front_end/protocol_externs.js
+/front_end/panels/timeline/fixtures/traces/*.json
+/front_end/panels/timeline/fixtures/traces/*.cpuprofile
+
 /release
 /scripts/visualize_deps/out
 config.gypi
@@ -39,7 +42,6 @@ npm-debug.log
 
 test/screenshots/.generated
 test/perf/.generated
-test/unittests/fixtures/traces/*.json
 
 /.vscode/settings.json
 /.vscode/tasks.json

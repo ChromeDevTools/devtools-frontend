@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 
 import * as I18n from '../../third_party/i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
+import type * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import {DevToolsLocale} from './DevToolsLocale.js';
+import type * as i18nTypes from './i18nTypes.js';
 import {
   BUNDLED_LOCALES as BUNDLED_LOCALES_GENERATED,
   DEFAULT_LOCALE,
@@ -14,8 +15,6 @@ import {
   LOCALES,
   REMOTE_FETCH_PATTERN,
 } from './locales.js';
-
-import type * as i18nTypes from './i18nTypes.js';
 
 const i18nInstance = new I18n.I18n.I18n(LOCALES, DEFAULT_LOCALE);
 
@@ -168,14 +167,11 @@ export function getLocalizedLanguageRegion(
     localeString: Intl.UnicodeBCP47LocaleIdentifier,
     devtoolsLocale: DevToolsLocale): Platform.UIString.LocalizedString {
   const locale = new Intl.Locale(localeString);
-  Platform.DCHECK(() => locale.language !== undefined);
-  Platform.DCHECK(() => locale.baseName !== undefined);
-  const localLanguage = locale.language || 'en';
-  const localBaseName = locale.baseName || 'en-US';
+  const {language, baseName} = locale;
   const devtoolsLoc = new Intl.Locale(devtoolsLocale.locale);
-  const targetLanguage = localLanguage === devtoolsLoc.language ? 'en' : localBaseName;
-  const languageInCurrentLocale = new Intl.DisplayNames([devtoolsLocale.locale], {type: 'language'}).of(localLanguage);
-  const languageInTargetLocale = new Intl.DisplayNames([targetLanguage], {type: 'language'}).of(localLanguage);
+  const targetLanguage = language === devtoolsLoc.language ? 'en' : baseName;
+  const languageInCurrentLocale = new Intl.DisplayNames([devtoolsLocale.locale], {type: 'language'}).of(language);
+  const languageInTargetLocale = new Intl.DisplayNames([targetLanguage], {type: 'language'}).of(language);
 
   let wrappedRegionInCurrentLocale = '';
   let wrappedRegionInTargetLocale = '';

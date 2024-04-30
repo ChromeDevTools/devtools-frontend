@@ -5,10 +5,10 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import hideIssuesMenuStyles from './hideIssuesMenu.css.js';
 
@@ -45,13 +45,17 @@ export class HideIssuesMenu extends HTMLElement {
 
   onMenuOpen(event: Event): void {
     event.stopPropagation();
+    const buttonElement = this.#shadow.querySelector('button');
     const contextMenu = new UI.ContextMenu.ContextMenu(event, {
       useSoftMenu: true,
-      onSoftMenuClosed: (): void => {
+      onSoftMenuClosed: () => {
         this.classList.toggle('has-context-menu-opened', false);
       },
+      x: buttonElement?.getBoundingClientRect().left,
+      y: buttonElement?.getBoundingClientRect().bottom,
     });
-    contextMenu.headerSection().appendItem(this.#menuItemLabel, () => this.#menuItemAction());
+    contextMenu.headerSection().appendItem(
+        this.#menuItemLabel, () => this.#menuItemAction(), {jslogContext: 'toggle-similar-issues'});
     void contextMenu.show();
     this.classList.toggle('has-context-menu-opened', true);
   }
@@ -61,23 +65,16 @@ export class HideIssuesMenu extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <button class="hide-issues-menu-btn" @click=${this.onMenuOpen.bind(this)} title=${i18nString(UIStrings.tooltipTitle)}>
-        <${IconButton.Icon.Icon.litTagName}
-          .data=${{
-            color: 'var(--icon-color)',
-            iconName: 'dots-vertical',
-            height: '20px',
-            width: '20px',
-          } as IconButton.Icon.IconData}
-        ></${IconButton.Icon.Icon.litTagName}>
+        <${IconButton.Icon.Icon.litTagName} name="dots-vertical" jslog=${VisualLogging.dropDown('hide-issues').track({click: true})}></${IconButton.Icon.Icon.litTagName}>
       </button>
     `, this.#shadow, {host: this});
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-hide-issues-menu', HideIssuesMenu);
+customElements.define('devtools-hide-issues-menu', HideIssuesMenu);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   interface HTMLElementTagNameMap {
     'devtools-hide-issues-menu': HideIssuesMenu;
   }

@@ -1,6 +1,6 @@
 {
   "core/audits/accessibility/accesskeys.js | description": {
-    "message": "ऐक्सेस कुंजी की मदद से लोग, पेज के किसी हिस्से पर तुरंत फ़ोकस कर सकते हैं. सही नेविगेशन के लिए, हर ऐक्सेस कुंजी यूनीक होनी चाहिए. [ऐक्सेस कुंजियों के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/accesskeys)."
+    "message": "ऐक्सेस कुंजी की मदद से लोग, पेज के किसी हिस्से पर तुरंत फ़ोकस कर सकते हैं. सही नेविगेशन के लिए, हर ऐक्सेस कुंजी यूनीक होनी चाहिए. [ऐक्सेस कुंजियों के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/accesskeys)."
   },
   "core/audits/accessibility/accesskeys.js | failureTitle": {
     "message": "`[accesskey]` मान सबसे अलग नहीं हैं"
@@ -9,7 +9,7 @@
     "message": "`[accesskey]` के मान सबसे अलग हैं"
   },
   "core/audits/accessibility/aria-allowed-attr.js | description": {
-    "message": "`aria-*` एट्रिब्यूट के खास सबसेट पर, हर ARIA `role` काम करता है. इनमें मिलान न होने पर `aria-*` एट्रिब्यूट गलत हो जाते हैं. [ARIA एट्रिब्यूट का उनकी भूमिकाओं से मिलान करने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-attr)."
+    "message": "`aria-*` एट्रिब्यूट के खास सबसेट पर, हर ARIA `role` काम करता है. इनमें मिलान न होने पर `aria-*` एट्रिब्यूट गलत हो जाते हैं. [ARIA एट्रिब्यूट का उनकी भूमिकाओं से मिलान करने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-attr)."
   },
   "core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
     "message": "`[aria-*]` विशेषताएं और उनकी भूमिकाएं आपस में मेल नहीं खातीं"
@@ -17,8 +17,17 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]` विशेषताएं और उनकी भूमिकाएं एक-दूसरे से मेल खाती हैं"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`, वेब पेज पर हर एलिमेंट का रोल जानने के लिए सहायक टेक्नोलॉजी चालू करता है. अगर `role` वैल्यू की स्पेलिंग गलत है, लेकिन मौजूदा ARIA `role` वैल्यू या ऐब्सट्रैक्ट रोल वैल्यू की स्पेलिंग सही है, तब भी सहायक टेक्नोलॉजी इस्तेमाल करने वालों को एलिमेंट के मकसद के बारे में जानकारी नहीं मिल पाएगी. [ARIA रोल के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "`role=\"\"` को असाइन की गई वैल्यू, ARIA के मान्य रोल नहीं हैं."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "`role=\"\"` को असाइन की गई वैल्यू, ARIA के मान्य रोल हैं."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
-    "message": "अगर किसी एलिमेंट का ऐक्सेस किया जा सकने वाला नाम नहीं है, तो स्क्रीन रीडर उस एलिमेंट को किसी सामान्य नाम से बुलाते हैं. इस वजह से, वह एलिमेंट उन उपयोगकर्ताओं के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर की मदद से ही टेक्स्ट पढ़ या समझ सकते हैं. [कमांड एलिमेंट को ज़्यादा से ज़्यादा लोगों तक पहुंचाने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
+    "message": "अगर किसी एलिमेंट का ऐक्सेस किया जा सकने वाला नाम नहीं है, तो स्क्रीन रीडर उस एलिमेंट को किसी सामान्य नाम से बुलाते हैं. इस वजह से, वह एलिमेंट उन उपयोगकर्ताओं के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर की मदद से ही टेक्स्ट पढ़ या समझ सकते हैं. [कमांड एलिमेंट को ज़्यादा से ज़्यादा लोगों तक पहुंचाने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.8/aria-command-name)."
   },
   "core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "`button`, `link`, और `menuitem` एलिमेंट के नाम ऐक्सेस नहीं किए जा सकते."
@@ -26,8 +35,17 @@
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "`button`, `link`, और `menuitem` एलिमेंट के नाम ऐक्सेस किए जा सकते हैं"
   },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "स्क्रीन रीडर का इस्तेमाल करने वाले लोगों को ऐसे ARIA डायलॉग एलिमेंट से परेशानी होती है जिन पर ऐक्सेस किए जा सकने वाले नाम नहीं होते हैं. इससे वे एलिमेंट के इस्तेमाल का मकसद नहीं समझ पाते. [ARIA डायलॉग एलिमेंट को ज़्यादा से ज़्यादा ऐक्सेस करने लायक बनाने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.8/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "`role=\"dialog\"` या `role=\"alertdialog\"` वाले एलिमेंट के नाम ऐक्सेस नहीं किए जा सकते."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "`role=\"dialog\"` या `role=\"alertdialog\"` वाले एलिमेंट के नाम ऐक्सेस किए जा सकते हैं."
+  },
   "core/audits/accessibility/aria-hidden-body.js | description": {
-    "message": "जब `aria-hidden=\"true\"`, दस्तावेज़ `<body>` पर सेट होता है, तो स्क्रीन रीडर जैसी सहायक टेक्नोलॉजी हर समय एक जैसा काम नहीं करती. [जानें कि `aria-hidden` का दस्तावेज़ के मुख्य हिस्से पर क्या असर पड़ता है](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
+    "message": "जब `aria-hidden=\"true\"`, दस्तावेज़ `<body>` पर सेट होता है, तो स्क्रीन रीडर जैसी सहायक टेक्नोलॉजी हर समय एक जैसा काम नहीं करती. [जानें कि `aria-hidden` का दस्तावेज़ के मुख्य हिस्से पर क्या असर पड़ता है](https://dequeuniversity.com/rules/axe/4.8/aria-hidden-body)."
   },
   "core/audits/accessibility/aria-hidden-body.js | failureTitle": {
     "message": "`<body>` दस्तावेज़ में `[aria-hidden=\"true\"]` मौजूद है"
@@ -36,7 +54,7 @@
     "message": "`<body>` दस्तावेज़ में `[aria-hidden=\"true\"]` मौजूद नहीं है"
   },
   "core/audits/accessibility/aria-hidden-focus.js | description": {
-    "message": "किसी `[aria-hidden=\"true\"]` एलिमेंट में फ़ोकस करने लायक डिसेंडेंट, स्क्रीन रीडर जैसी सहायक टेक्नोलॉजी का इस्तेमाल करने वालों को उन इंटरैक्टिव एलिमेंट का इस्तेमाल करने से रोकते हैं. [जानें कि फ़ोकस करने लायक एलिमेंट पर, `aria-hidden` कैसे असर डालता है](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-focus)."
+    "message": "किसी `[aria-hidden=\"true\"]` एलिमेंट में फ़ोकस करने लायक डिसेंडेंट, स्क्रीन रीडर जैसी सहायक टेक्नोलॉजी का इस्तेमाल करने वालों को उन इंटरैक्टिव एलिमेंट का इस्तेमाल करने से रोकते हैं. [जानें कि फ़ोकस करने लायक एलिमेंट पर, `aria-hidden` कैसे असर डालता है](https://dequeuniversity.com/rules/axe/4.8/aria-hidden-focus)."
   },
   "core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
     "message": "`[aria-hidden=\"true\"]` एलिमेंट में फ़ोकस करने लायक डिसेंडेंट हैं"
@@ -45,7 +63,7 @@
     "message": "`[aria-hidden=\"true\"]` एलिमेंट में फ़ोकस करने लायक डिसेंडेंट नहीं हैं"
   },
   "core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "अगर किसी इनपुट फ़ील्ड का ऐक्सेस किया जा सकने वाला नाम नहीं है, तो स्क्रीन रीडर उसे किसी सामान्य नाम से बुलाते हैं. इस वजह से, यह ऐसे लोगों के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर से ही टेक्स्ट पढ़ या समझ सकते हैं. [इनपुट फ़ील्ड लेबल के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/aria-input-field-name)."
+    "message": "अगर किसी इनपुट फ़ील्ड का ऐक्सेस किया जा सकने वाला नाम नहीं है, तो स्क्रीन रीडर उसे किसी सामान्य नाम से बुलाते हैं. इस वजह से, यह ऐसे लोगों के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर से ही टेक्स्ट पढ़ या समझ सकते हैं. [इनपुट फ़ील्ड लेबल के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/aria-input-field-name)."
   },
   "core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ARIA इनपुट फ़ील्ड का कोई ऐसा नाम नहीं है जिसे ऐक्सेस किया जा सकता हो"
@@ -54,7 +72,7 @@
     "message": "ARIA इनपुट फ़ील्ड के ऐसे नाम हैं जिन्हें ऐक्सेस किया जा सकता है"
   },
   "core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "अगर किसी मीटर एलिमेंट का नाम ऐसा है जिसे ऐक्सेस नहीं किया जा सकता, तो स्क्रीन रीडर उसे किसी सामान्य नाम से बुलाते हैं. इस वजह से, यह उन लोगों के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर की मदद से ही टेक्स्ट पढ़ या समझ सकते हैं. [`meter` एलिमेंट को नाम देने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.7/aria-meter-name)."
+    "message": "अगर किसी मीटर एलिमेंट का नाम ऐसा है जिसे ऐक्सेस नहीं किया जा सकता, तो स्क्रीन रीडर उसे किसी सामान्य नाम से बुलाते हैं. इस वजह से, यह उन लोगों के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर की मदद से ही टेक्स्ट पढ़ या समझ सकते हैं. [`meter` एलिमेंट को नाम देने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.8/aria-meter-name)."
   },
   "core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "ARIA `meter` एलिमेंट के नाम ऐक्सेस नहीं किए जा सकते."
@@ -63,7 +81,7 @@
     "message": "ARIA `meter` एलिमेंट के नाम ऐक्सेस किए जा सकते हैं"
   },
   "core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "अगर किसी `progressbar` एलिमेंट का ऐक्सेस किया जा सकने वाला नाम न हो, तो स्क्रीन रीडर उसे किसी सामान्य नाम से बुलाते हैं. इस वजह से, यह उन लोगों के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर की मदद से ही, टेक्स्ट पढ़ या समझ सकते हैं. [`progressbar` एलिमेंट को लेबल करने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.7/aria-progressbar-name)."
+    "message": "अगर किसी `progressbar` एलिमेंट का ऐक्सेस किया जा सकने वाला नाम न हो, तो स्क्रीन रीडर उसे किसी सामान्य नाम से बुलाते हैं. इस वजह से, यह उन लोगों के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर की मदद से ही, टेक्स्ट पढ़ या समझ सकते हैं. [`progressbar` एलिमेंट को लेबल करने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.8/aria-progressbar-name)."
   },
   "core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "ARIA `progressbar` एलिमेंट के नाम ऐक्सेस नहीं किए जा सकते."
@@ -72,7 +90,7 @@
     "message": "ARIA `progressbar` एलिमेंट के नाम ऐक्सेस किए जा सकते हैं"
   },
   "core/audits/accessibility/aria-required-attr.js | description": {
-    "message": "ARIA की कुछ भूमिकाओं में ऐसे एट्रिब्यूट की ज़रूरत होती है जो स्क्रीन रीडर को एलिमेंट की स्थिति के बारे में बताते हैं. [ज़रूरी एट्रिब्यूट और भूमिकाओं के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/aria-required-attr)."
+    "message": "ARIA की कुछ भूमिकाओं में ऐसे एट्रिब्यूट की ज़रूरत होती है जो स्क्रीन रीडर को एलिमेंट की स्थिति के बारे में बताते हैं. [ज़रूरी एट्रिब्यूट और भूमिकाओं के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/aria-required-attr)."
   },
   "core/audits/accessibility/aria-required-attr.js | failureTitle": {
     "message": "`[role]`s में सभी ज़रूरी `[aria-*]` विशेषताएं नहीं हैं"
@@ -81,7 +99,7 @@
     "message": "`[role]` के पास सभी ज़रूरी `[aria-*]` विशेषताएं हैं"
   },
   "core/audits/accessibility/aria-required-children.js | description": {
-    "message": "ARIA की कुछ पैरंट भूमिकाओं में खास चाइल्ड भूमिकाएं होनी चाहिए, ताकि वे तय किए गए सुलभता फ़ंक्शन कर सकें. [भूमिकाओं और ज़रूरी चाइल्ड एलिमेंट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/aria-required-children)."
+    "message": "ARIA की कुछ पैरंट भूमिकाओं में खास चाइल्ड भूमिकाएं होनी चाहिए, ताकि वे तय किए गए सुलभता फ़ंक्शन कर सकें. [भूमिकाओं और ज़रूरी चाइल्ड एलिमेंट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/aria-required-children)."
   },
   "core/audits/accessibility/aria-required-children.js | failureTitle": {
     "message": "ARIA `[role]` वाले एलिमेंट में बच्चों के लिए खास `[role]` शामिल करने की ज़रूरत होती है. इन एलिमेंट में बच्चों के लिए कुछ या पूरी जानकारी नहीं है."
@@ -90,7 +108,7 @@
     "message": "ARIA `[role]` वाले एलिमेंट में बच्चों के लिए खास `[role]` शामिल करने की ज़रूरत होती है. इन एलिमेंट में बच्चों के लिए पूरी जानकारी है."
   },
   "core/audits/accessibility/aria-required-parent.js | description": {
-    "message": "ARIA की कुछ चाइल्ड भूमिकाओं को खास पैरंट भूमिकाओं में होना चाहिए, ताकि वे तय किए गए सुलभता फ़ंक्शन को ठीक से पूरा कर सकें. [ARIA भूमिकाओं और ज़रूरी पैरंट एलिमेंट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/aria-required-parent)."
+    "message": "ARIA की कुछ चाइल्ड भूमिकाओं को खास पैरंट भूमिकाओं में होना चाहिए, ताकि वे तय किए गए सुलभता फ़ंक्शन को ठीक से पूरा कर सकें. [ARIA भूमिकाओं और ज़रूरी पैरंट एलिमेंट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/aria-required-parent)."
   },
   "core/audits/accessibility/aria-required-parent.js | failureTitle": {
     "message": "`[role]` अपने ज़रूरी पैरंट एलिमेंट में शामिल नहीं हैं"
@@ -99,7 +117,7 @@
     "message": "`[role]`अपने लिए ज़रूरी पैरंट एलिमेंट में शामिल हैं."
   },
   "core/audits/accessibility/aria-roles.js | description": {
-    "message": "ARIA भूमिकाओं की वैल्यू सही होनी चाहिए, ताकि वे तय किए गए सुलभता फ़ंक्शन कर सकें. [ARIA से जुड़ी सही भूमिकाओं के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/aria-roles)."
+    "message": "ARIA भूमिकाओं की वैल्यू सही होनी चाहिए, ताकि वे तय किए गए सुलभता फ़ंक्शन कर सकें. [ARIA से जुड़ी सही भूमिकाओं के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/aria-roles)."
   },
   "core/audits/accessibility/aria-roles.js | failureTitle": {
     "message": "`[role]` मान सही नहीं हैं"
@@ -107,8 +125,17 @@
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "`[role]` मान सही हैं"
   },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "मार्कअप की मदद से बांटे गए टेक्स्ट नोड के आस-पास `role=text` जोड़ने से, VoiceOver उस टेक्स्ट को एक वाक्यांश मानेगा. हालांकि, एलिमेंट के फ़ोकस करने लायक डिसेंडेंट का एलान नहीं किया जाएगा. [`role=text` एट्रिब्यूट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/aria-text)."
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "`role=text` एट्रिब्यूट वाले एलिमेंट में फ़ोकस करने लायक डिसेंडेंट हैं."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "`role=text` एट्रिब्यूट वाले एलिमेंट में फ़ोकस करने लायक डिसेंडेंट नहीं हैं."
+  },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "अगर किसी टॉगल फ़ील्ड के पास ऐक्सेस किया जा सकने वाला नाम नहीं है, तो स्क्रीन रीडर उसे किसी सामान्य नाम से बुलाते हैं. इस वजह से, यह स्क्रीन रीडर की मदद से टेक्स्ट पढ़ने या समझने वालों के लिए किसी काम का नहीं रहता. [टॉगल फ़ील्ड के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
+    "message": "अगर किसी टॉगल फ़ील्ड के पास ऐक्सेस किया जा सकने वाला नाम नहीं है, तो स्क्रीन रीडर उसे किसी सामान्य नाम से बुलाते हैं. इस वजह से, यह स्क्रीन रीडर की मदद से टेक्स्ट पढ़ने या समझने वालों के लिए किसी काम का नहीं रहता. [टॉगल फ़ील्ड के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/aria-toggle-field-name)."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ARIA टॉगल फ़ील्ड का कोई ऐसा नाम नहीं है जिसे ऐक्सेस किया जा सकता हो"
@@ -117,7 +144,7 @@
     "message": "ARIA टॉगल फ़ील्ड के ऐसे नाम हैं जिन्हें ऐक्सेस किया जा सकता है"
   },
   "core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "अगर किसी टूलटिप एलिमेंट का नाम ऐसा है जिसे ऐक्सेस नहीं किया जा सकता, तो स्क्रीन रीडर उसे किसी सामान्य नाम से बुलाते हैं. इस वजह से, यह उन लोगों के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर की मदद से ही टेक्स्ट पढ़ या समझ सकते हैं. [`tooltip` एलिमेंट को नाम देने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.7/aria-tooltip-name)."
+    "message": "अगर किसी टूलटिप एलिमेंट का नाम ऐसा है जिसे ऐक्सेस नहीं किया जा सकता, तो स्क्रीन रीडर उसे किसी सामान्य नाम से बुलाते हैं. इस वजह से, यह उन लोगों के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर की मदद से ही टेक्स्ट पढ़ या समझ सकते हैं. [`tooltip` एलिमेंट को नाम देने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.8/aria-tooltip-name)."
   },
   "core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "ARIA `tooltip` एलिमेंट के नाम ऐक्सेस नहीं किए जा सकते."
@@ -126,7 +153,7 @@
     "message": "ARIA `tooltip` एलिमेंट के नाम ऐक्सेस किए जा सकते हैं"
   },
   "core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "अगर किसी `treeitem` एलिमेंट का ऐक्सेस किया जा सकने वाला नाम न हो, तो स्क्रीन रीडर उसे किसी सामान्य नाम से बुलाते हैं. इस वजह से, यह उन लोगों के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर की मदद से ही, टेक्स्ट पढ़ या समझ सकते हैं. [`treeitem` एलिमेंट को लेबल करने के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/aria-treeitem-name)."
+    "message": "अगर किसी `treeitem` एलिमेंट का ऐक्सेस किया जा सकने वाला नाम न हो, तो स्क्रीन रीडर उसे किसी सामान्य नाम से बुलाते हैं. इस वजह से, यह उन लोगों के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर की मदद से ही, टेक्स्ट पढ़ या समझ सकते हैं. [`treeitem` एलिमेंट को लेबल करने के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/aria-treeitem-name)."
   },
   "core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "ARIA `treeitem` एलिमेंट के नाम ऐक्सेस नहीं किए जा सकते."
@@ -135,7 +162,7 @@
     "message": "ARIA `treeitem` एलिमेंट के नाम ऐक्सेस किए जा सकते हैं"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | description": {
-    "message": "स्क्रीन रीडर जैसी सहायक टेक्नोलॉजी, गलत वैल्यू वाली ARIA एट्रिब्यूट को समझ नहीं सकतीं. [ARIA एट्रिब्यूट के लिए सही वैल्यू के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr-value)."
+    "message": "स्क्रीन रीडर जैसी सहायक टेक्नोलॉजी, गलत वैल्यू वाली ARIA एट्रिब्यूट को समझ नहीं सकतीं. [ARIA एट्रिब्यूट के लिए सही वैल्यू के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/aria-valid-attr-value)."
   },
   "core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
     "message": "`[aria-*]` विशेषताओं में सही मान नहीं हैं"
@@ -144,7 +171,7 @@
     "message": "`[aria-*]` विशेषताओं के मान सही हैं"
   },
   "core/audits/accessibility/aria-valid-attr.js | description": {
-    "message": "स्क्रीन रीडर जैसी सहायक टेक्नोलॉजी, गलत नामों वाले ARIA एट्रिब्यूट को समझ नहीं सकतीं. [सही ARIA एट्रिब्यूट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr)."
+    "message": "स्क्रीन रीडर जैसी सहायक टेक्नोलॉजी, गलत नामों वाले ARIA एट्रिब्यूट को समझ नहीं सकतीं. [सही ARIA एट्रिब्यूट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/aria-valid-attr)."
   },
   "core/audits/accessibility/aria-valid-attr.js | failureTitle": {
     "message": "`[aria-*]` विशेषताएं गलत हैं या उनकी स्पेलिंग गलत है"
@@ -156,7 +183,7 @@
     "message": "फ़ेल होने वाले एलिमेंट"
   },
   "core/audits/accessibility/button-name.js | description": {
-    "message": "जब किसी बटन का ऐक्सेस किया जा सकने वाला नाम नहीं होता, तो स्क्रीन रीडर सिर्फ़ \"बटन\" कहता है. इस वजह से, स्क्रीन रीडर का इस्तेमाल करने वाले लोगों के लिए यह किसी काम का नहीं रहता. [बटन के इस्तेमाल को आसान बनाने के बारे में जानें](https://dequeuniversity.com/rules/axe/4.7/button-name)."
+    "message": "जब किसी बटन का ऐक्सेस किया जा सकने वाला नाम नहीं होता, तो स्क्रीन रीडर सिर्फ़ \"बटन\" कहता है. इस वजह से, स्क्रीन रीडर का इस्तेमाल करने वाले लोगों के लिए यह किसी काम का नहीं रहता. [बटन के इस्तेमाल को आसान बनाने के बारे में जानें](https://dequeuniversity.com/rules/axe/4.8/button-name)."
   },
   "core/audits/accessibility/button-name.js | failureTitle": {
     "message": "बटन के नाम ऐक्सेस करने लायक नहीं हैं"
@@ -165,7 +192,7 @@
     "message": "बटनों का एक सुलभता नाम है"
   },
   "core/audits/accessibility/bypass.js | description": {
-    "message": "दोहराव वाले कॉन्टेंट को बायपास करने के तरीके जोड़ने से, कीबोर्ड का इस्तेमाल करने वालों को, पेज को बेहतर तरीके से नेविगेट करने में मदद मिलती है. [कॉन्टेंट के ब्लॉक को बायपास करने के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/bypass)."
+    "message": "दोहराव वाले कॉन्टेंट को बायपास करने के तरीके जोड़ने से, कीबोर्ड का इस्तेमाल करने वालों को, पेज को बेहतर तरीके से नेविगेट करने में मदद मिलती है. [कॉन्टेंट के ब्लॉक को बायपास करने के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/bypass)."
   },
   "core/audits/accessibility/bypass.js | failureTitle": {
     "message": "पेज में 'हेडिंग', 'स्किप लिंक' या 'लैंडमार्क' क्षेत्र नहीं है"
@@ -174,7 +201,7 @@
     "message": "पेज में 'हेडिंग', 'स्किप लिंक' या 'लैंडमार्क' क्षेत्र हैं"
   },
   "core/audits/accessibility/color-contrast.js | description": {
-    "message": "कई लोगों के लिए, कम कंट्रास्ट वाला टेक्स्ट पढ़ना मुश्किल या नामुमकिन होता है. [रंगों का सही कंट्रास्ट देने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.7/color-contrast)."
+    "message": "कई लोगों के लिए, कम कंट्रास्ट वाला टेक्स्ट पढ़ना मुश्किल या नामुमकिन होता है. [रंगों का सही कंट्रास्ट देने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.8/color-contrast)."
   },
   "core/audits/accessibility/color-contrast.js | failureTitle": {
     "message": "बैकग्राउंड और फ़ोरग्राउंड रंगों में काफ़ी कंट्रास्ट अनुपात नहीं है."
@@ -183,7 +210,7 @@
     "message": "बैकग्राउंड और फ़ोरग्राउंड के रंगों का कंट्रास्ट अनुपात काफ़ी है"
   },
   "core/audits/accessibility/definition-list.js | description": {
-    "message": "जब परिभाषा सूचियां ठीक से मार्क अप नहीं की जातीं, तो स्क्रीन रीडर उलझन भरे या गलत आउटपुट दे सकते हैं. [जानें कि परिभाषा की सूचियां सही तरीके से कैसे बनाई जाती हैं](https://dequeuniversity.com/rules/axe/4.7/definition-list)."
+    "message": "जब परिभाषा सूचियां ठीक से मार्क अप नहीं की जातीं, तो स्क्रीन रीडर उलझन भरे या गलत आउटपुट दे सकते हैं. [जानें कि परिभाषा की सूचियां सही तरीके से कैसे बनाई जाती हैं](https://dequeuniversity.com/rules/axe/4.8/definition-list)."
   },
   "core/audits/accessibility/definition-list.js | failureTitle": {
     "message": "`<dl>` में सिर्फ़ ठीक तरह से क्रम में लगे `<dt>` और `<dd>` ग्रुप, `<script>`, `<template>` या `<div>` एलिमेंट नहीं हैं."
@@ -192,7 +219,7 @@
     "message": "`<dl>` में सिर्फ़ ठीक तरह से क्रम से लगे `<dt>` और `<dd>` ग्रुप, `<script>`, `<template>` या `<div>` एलिमेंट हैं."
   },
   "core/audits/accessibility/dlitem.js | description": {
-    "message": "परिभाषा सूची के आइटम (`<dt>` और `<dd>`) को पैरंट `<dl>` एलिमेंट में रैप किया जाना चाहिए. इससे यह पक्का किया जा सकेगा कि स्क्रीन रीडर उन्हें सही तरीके से बोल सकें. [जानें कि परिभाषा की सूचियां सही तरीके से कैसे बनाई जाती हैं](https://dequeuniversity.com/rules/axe/4.7/dlitem)."
+    "message": "परिभाषा सूची के आइटम (`<dt>` और `<dd>`) को पैरंट `<dl>` एलिमेंट में रैप किया जाना चाहिए. इससे यह पक्का किया जा सकेगा कि स्क्रीन रीडर उन्हें सही तरीके से बोल सकें. [जानें कि परिभाषा की सूचियां सही तरीके से कैसे बनाई जाती हैं](https://dequeuniversity.com/rules/axe/4.8/dlitem)."
   },
   "core/audits/accessibility/dlitem.js | failureTitle": {
     "message": "परिभाषा सूची के आइटम `<dl>` एलिमेंट में रैप नहीं किए जाते"
@@ -201,7 +228,7 @@
     "message": "परिभाषा सूची के आइटम `<dl>` एलिमेंट में रैप किए जाते हैं"
   },
   "core/audits/accessibility/document-title.js | description": {
-    "message": "टाइटल, स्क्रीन रीडर का इस्तेमाल करने वालों को पेज की खास जानकारी देता है. सर्च इंजन का इस्तेमाल करने वाले इस पर काफ़ी भरोसा करते हैं. टाइटल की मदद से, वे यह पता करते हैं कि कोई पेज उनकी खोज के हिसाब से काम का है या नहीं. [दस्तावेज़ के टाइटल के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/document-title)."
+    "message": "टाइटल, स्क्रीन रीडर का इस्तेमाल करने वालों को पेज की खास जानकारी देता है. सर्च इंजन का इस्तेमाल करने वाले इस पर काफ़ी भरोसा करते हैं. टाइटल की मदद से, वे यह पता करते हैं कि कोई पेज उनकी खोज के हिसाब से काम का है या नहीं. [दस्तावेज़ के टाइटल के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/document-title)."
   },
   "core/audits/accessibility/document-title.js | failureTitle": {
     "message": "दस्तावेज़ में कोई `<title>` एलिमेंट नहीं है"
@@ -210,7 +237,7 @@
     "message": "दस्तावेज़ में `<title>` एलिमेंट है"
   },
   "core/audits/accessibility/duplicate-id-active.js | description": {
-    "message": "फ़ोकस करने लायक सभी एलिमेंट में यूनीक `id` होना चाहिए, ताकि यह पक्का किया जा सके कि वे सहायक टेक्नोलॉजी को दिख रहे हों. [डुप्लीकेट `id` को ठीक करने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-active)."
+    "message": "फ़ोकस करने लायक सभी एलिमेंट में यूनीक `id` होना चाहिए, ताकि यह पक्का किया जा सके कि वे सहायक टेक्नोलॉजी को दिख रहे हों. [डुप्लीकेट `id` को ठीक करने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.8/duplicate-id-active)."
   },
   "core/audits/accessibility/duplicate-id-active.js | failureTitle": {
     "message": "फ़ोकस करने लायक चालू एलिमेंट में `[id]` विशेषताएं खास नहीं हैं"
@@ -219,7 +246,7 @@
     "message": "फ़ोकस करने लायक चालू एलिमेंट में `[id]` विशेषताएं खास हैं"
   },
   "core/audits/accessibility/duplicate-id-aria.js | description": {
-    "message": "ARIA आईडी की वैल्यू सबसे यूनीक होनी चाहिए, ताकि सहायक टेक्नोलॉजी दूसरे इंस्टेंस को नज़रअंदाज़ न कर दें. [डुप्लीकेट ARIA आईडी ठीक करने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-aria)."
+    "message": "ARIA आईडी की वैल्यू सबसे यूनीक होनी चाहिए, ताकि सहायक टेक्नोलॉजी दूसरे इंस्टेंस को नज़रअंदाज़ न कर दें. [डुप्लीकेट ARIA आईडी ठीक करने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.8/duplicate-id-aria)."
   },
   "core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
     "message": "ARIA आईडी खास नहीं हैं"
@@ -227,8 +254,17 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "ARIA आईडी खास हैं"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "स्क्रीन रीडर का इस्तेमाल करने वाले लोगों को ऐसी हेडिंग से परेशानी होती है जिसमें कोई कॉन्टेंट नहीं है या ऐसा टेक्स्ट है जिसे ऐक्सेस नहीं किया जा सकता. इससे वे पेज के स्ट्रक्चर की जानकारी ऐक्सेस नहीं कर पाते हैं. [हेडिंग के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "हेडिंग एलिमेंट में कॉन्टेंट नहीं है."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "हेडिंग के सभी एलिमेंट में कॉन्टेंट मौजूद है."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
-    "message": "स्क्रीन रीडर जैसी सहायक टेक्नोलॉजी, एक से ज़्यादा लेबल वाले फ़ॉर्म फ़ील्ड का नाम गलत तरीके से बोल सकती हैं. ये टेक्नोलॉजी सिर्फ़ पहला, आखिरी या सभी लेबल इस्तेमाल करती हैं. [फ़ॉर्म लेबल इस्तेमाल करने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
+    "message": "स्क्रीन रीडर जैसी सहायक टेक्नोलॉजी, एक से ज़्यादा लेबल वाले फ़ॉर्म फ़ील्ड का नाम गलत तरीके से बोल सकती हैं. ये टेक्नोलॉजी सिर्फ़ पहला, आखिरी या सभी लेबल इस्तेमाल करती हैं. [फ़ॉर्म लेबल इस्तेमाल करने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.8/form-field-multiple-labels)."
   },
   "core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
     "message": "फ़ॉर्म फ़ील्ड के कई लेबल हैं"
@@ -237,7 +273,7 @@
     "message": "किसी भी फ़ॉर्म फ़ील्ड में एक से ज़्यादा लेबल नहीं हैं"
   },
   "core/audits/accessibility/frame-title.js | description": {
-    "message": "फ़्रेम के कॉन्टेंट के बारे में जानने के लिए, स्क्रीन रीडर का इस्तेमाल करने वाले लोग फ़्रेम के टाइटल पर भरोसा करते हैं. [फ़्रेम के टाइटल के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/frame-title)."
+    "message": "फ़्रेम के कॉन्टेंट के बारे में जानने के लिए, स्क्रीन रीडर का इस्तेमाल करने वाले लोग फ़्रेम के टाइटल पर भरोसा करते हैं. [फ़्रेम के टाइटल के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/frame-title)."
   },
   "core/audits/accessibility/frame-title.js | failureTitle": {
     "message": "`<frame>` या `<iframe>` एलिमेंट का कोई टाइटल नहीं है"
@@ -246,7 +282,7 @@
     "message": "`<frame>` या `<iframe>` एलिमेंट का एक टाइटल है"
   },
   "core/audits/accessibility/heading-order.js | description": {
-    "message": "सही क्रम में लगाई गई ऐसी हेडिंग जो लेवल को नहीं छोड़तीं वे पेज का सिमेंटिक स्ट्रक्चर दिखाती हैं. इससे सहायक टेक्नोलॉजी इस्तेमाल करते समय, पेज पर नेविगेट करना और उसे समझना आसान हो जाता है. [हेडिंग के क्रम के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/heading-order)."
+    "message": "सही क्रम में लगाई गई ऐसी हेडिंग जो लेवल को नहीं छोड़तीं वे पेज का सिमेंटिक स्ट्रक्चर दिखाती हैं. इससे सहायक टेक्नोलॉजी इस्तेमाल करते समय, पेज पर नेविगेट करना और उसे समझना आसान हो जाता है. [हेडिंग के क्रम के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/heading-order)."
   },
   "core/audits/accessibility/heading-order.js | failureTitle": {
     "message": "हेडिंग एलिमेंट, कम होने वाले क्रम में नहीं हैं"
@@ -255,7 +291,7 @@
     "message": "हेडिंग एलिमेंट, कम होने वाले क्रम में दिखते हैं"
   },
   "core/audits/accessibility/html-has-lang.js | description": {
-    "message": "अगर कोई पेज, `lang` एट्रिब्यूट को तय नहीं करता, तो स्क्रीन रीडर को लगता है कि पेज उस डिफ़ॉल्ट भाषा में है जिसे इस्तेमाल करने वाले ने स्क्रीन रीडर सेट अप करते समय चुना था. अगर पेज डिफ़ॉल्ट भाषा में नहीं है, तो हो सकता है कि स्क्रीन रीडर, पेज के टेक्स्ट को ठीक से न बोल पाए. [`lang` एट्रिब्यूट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/html-has-lang)."
+    "message": "अगर कोई पेज, `lang` एट्रिब्यूट को तय नहीं करता, तो स्क्रीन रीडर को लगता है कि पेज उस डिफ़ॉल्ट भाषा में है जिसे इस्तेमाल करने वाले ने स्क्रीन रीडर सेट अप करते समय चुना था. अगर पेज डिफ़ॉल्ट भाषा में नहीं है, तो हो सकता है कि स्क्रीन रीडर, पेज के टेक्स्ट को ठीक से न बोल पाए. [`lang` एट्रिब्यूट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/html-has-lang)."
   },
   "core/audits/accessibility/html-has-lang.js | failureTitle": {
     "message": "`<html>` एलिमेंट में `[lang]` विशेषता नहीं है"
@@ -264,7 +300,7 @@
     "message": "`<html>` एलिमेंट में `[lang]` विशेषता है"
   },
   "core/audits/accessibility/html-lang-valid.js | description": {
-    "message": "सही [BCP 47 भाषा ](https://www.w3.org/International/questions/qa-choosing-language-tags#question) तय करने से, स्क्रीन रीडर को टेक्स्ट ठीक से बोलने में मदद मिलती है. [`lang` एट्रिब्यूट को इस्तेमाल करने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.7/html-lang-valid)."
+    "message": "सही [BCP 47 भाषा ](https://www.w3.org/International/questions/qa-choosing-language-tags#question) तय करने से, स्क्रीन रीडर को टेक्स्ट ठीक से बोलने में मदद मिलती है. [`lang` एट्रिब्यूट को इस्तेमाल करने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.8/html-lang-valid)."
   },
   "core/audits/accessibility/html-lang-valid.js | failureTitle": {
     "message": "`<html>` एलिमेंट के पास अपनी `[lang]`विशेषता के लिए कोई सही मान नहीं है."
@@ -272,8 +308,26 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "`<html>` एलिमेंट के पास अपनी `[lang]` विशेषता के लिए एक सही मान है"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "अगर वेबपेज एक ही भाषा के बारे में नहीं बताता है, तो हो सकता है कि स्क्रीन रीडर, पेज के टेक्स्ट को ठीक से न बोल पाए. [`lang` एट्रिब्यूट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "`<html>` एलिमेंट में ऐसा `[xml:lang]` एट्रिब्यूट मौजूद नहीं है जिसकी मुख्य भाषा `[lang]` एट्रिब्यूट है."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "`<html>` एलिमेंट में `[xml:lang]` एट्रिब्यूट है, जिसकी मुख्य भाषा `[lang]` एट्रिब्यूट है."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "एक ही वेब पेज पर ले जाने वाले लिंक की जानकारी एक ही होनी चाहिए. इससे लोगों को लिंक का इस्तेमाल करने के मकसद को समझने और यह तय करने में मदद मिलती है कि उन्हें लिंक पर जाना है या नहीं. [एक जैसे लिंक के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "एक जैसे लिंक अलग-अलग पेजों पर ले जाते हैं."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "एक जैसे लिंक एक ही पेज पर ले जाते हैं."
+  },
   "core/audits/accessibility/image-alt.js | description": {
-    "message": "जानकारी वाले एलिमेंट में, छोटा और ब्यौरे वाला वैकल्पिक टेक्स्ट होना चाहिए. सजावटी एलिमेंट में एक खाली ऑल्ट एट्रिब्यूट का इस्तेमाल किया जा सकता है. [`alt` एट्रिब्यूट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
+    "message": "जानकारी वाले एलिमेंट में, छोटा और ब्यौरे वाला वैकल्पिक टेक्स्ट होना चाहिए. सजावटी एलिमेंट में एक खाली ऑल्ट एट्रिब्यूट का इस्तेमाल किया जा सकता है. [`alt` एट्रिब्यूट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/image-alt)."
   },
   "core/audits/accessibility/image-alt.js | failureTitle": {
     "message": "इमेज एलिमेंट में `[alt]` विशेषताएं नहीं हैं"
@@ -281,8 +335,26 @@
   "core/audits/accessibility/image-alt.js | title": {
     "message": "इमेज एलिमेंट में `[alt]` विशेषताएं शामिल हैं"
   },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "जानकारी वाले एलिमेंट में, छोटा और ब्यौरे वाला वैकल्पिक टेक्स्ट होना चाहिए. अगर वैकल्पिक टेक्स्ट, इमेज या लिंक के बगल में मौजूद टेक्स्ट जैसा है, तो स्क्रीन रीडर इस्तेमाल करने वालों के लिए यह भ्रम की स्थिति पैदा कर सकता है. ऐसा इसलिए, क्योंकि वह टेक्स्ट दो बार पढ़ा जाएगा. [`alt` एट्रिब्यूट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "इमेज एलिमेंट में ग़ैर-ज़रूरी टेक्स्ट वाले `[alt]` एट्रिब्यूट हैं."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "इमेज एलिमेंट में ग़ैर-ज़रूरी टेक्स्ट वाले `[alt]` एट्रिब्यूट नहीं हैं."
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "इनपुट बटन में आसानी से समझ में आने वाला और ऐक्सेस किया जा सकने वाला टेक्स्ट जोड़ने से, स्क्रीन रीडर इस्तेमाल करने वालों को इनपुट बटन के मकसद को समझने में मदद मिल सकती है. [इनपुट बटन के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "इनपुट बटन में समझने लायक टेक्स्ट नहीं होता."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "इनपुट बटन में समझने लायक टेक्स्ट होता है."
+  },
   "core/audits/accessibility/input-image-alt.js | description": {
-    "message": "जब किसी इमेज को `<input>` बटन के रूप में इस्तेमाल किया जाता है, तब वैकल्पिक टेक्स्ट देने से, स्क्रीन रीडर इस्तेमाल करने वालों को उस बटन के मकसद को समझने में मदद मिलती है. [इनपुट इमेज के वैकल्पिक टेक्स्ट के बारे में जानें](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
+    "message": "जब किसी इमेज को `<input>` बटन के रूप में इस्तेमाल किया जाता है, तब वैकल्पिक टेक्स्ट देने से, स्क्रीन रीडर इस्तेमाल करने वालों को उस बटन के मकसद को समझने में मदद मिलती है. [इनपुट इमेज के वैकल्पिक टेक्स्ट के बारे में जानें](https://dequeuniversity.com/rules/axe/4.8/input-image-alt)."
   },
   "core/audits/accessibility/input-image-alt.js | failureTitle": {
     "message": "`<input type=\"image\">` एलिमेंट में `[alt]` टेक्स्ट नहीं है"
@@ -290,8 +362,17 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "`<input type=\"image\">` एलिमेंट में`[alt]` टेक्स्ट है"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "दिखने वाले ऐसे टेक्स्ट लेबल जो ऐक्सेस किए जा सकने वाले नाम से मेल नहीं खाते हैं, उनकी वजह से स्क्रीन रीडर इस्तेमाल करने वालों के लिए भ्रम की स्थिति पैदा हो सकती है. [ऐक्सेस किए जा सकने वाले नामों के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "जिन एलिमेंट में टेक्स्ट के लेबल दिखते हैं उनके ऐक्सेस किए जा सकने वाले नाम मेल नहीं खाते."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "जिन एलिमेंट में टेक्स्ट के लेबल दिखते हैं उनके ऐक्सेस किए जा सकने वाले नाम मेल खाते हैं."
+  },
   "core/audits/accessibility/label.js | description": {
-    "message": "लेबल यह पक्का करते हैं कि स्क्रीन रीडर जैसी सहायक टेक्नोलॉजी की मदद से, फ़ॉर्म कंट्रोल का नाम सही तरीके से बोला जाए. [फ़ॉर्म एलिमेंट के लेबल के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/label)."
+    "message": "लेबल यह पक्का करते हैं कि स्क्रीन रीडर जैसी सहायक टेक्नोलॉजी की मदद से, फ़ॉर्म कंट्रोल का नाम सही तरीके से बोला जाए. [फ़ॉर्म एलिमेंट के लेबल के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/label)."
   },
   "core/audits/accessibility/label.js | failureTitle": {
     "message": "फ़ॉर्म एलिमेंट में जुड़े हुए लेबल नहीं हैं"
@@ -299,8 +380,26 @@
   "core/audits/accessibility/label.js | title": {
     "message": "फ़ॉर्म एलिमेंट में सहभागी लेबल हैं"
   },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "एक मुख्य लैंडमार्क होने से, स्क्रीन रीडर इस्तेमाल करने वाले लोगों को वेब पेज पर नेविगेट करने में मदद मिलती है. [लैंडमार्क के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "दस्तावेज़ में कोई मुख्य लैंडमार्क नहीं है."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "दस्तावेज़ में एक मुख्य लैंडमार्क है."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "कई लोगों के लिए, कम कंट्रास्ट वाला टेक्स्ट पढ़ना मुश्किल या नामुमकिन होता है. समझ में आने वाले लिंक टेक्स्ट से, कम दृष्टि वाले लोगों को बेहतर अनुभव मिलता है. [लिंक को खास बनाने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.8/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "रंग का इस्तेमाल करके, दिखाए गए लिंक अलग नज़र आने चाहिए."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "किसी भी रंग का इस्तेमाल किए बिना, लिंक अलग से पहचाने जा सकते हैं."
+  },
   "core/audits/accessibility/link-name.js | description": {
-    "message": "समझने लायक, यूनीक, और फ़ोकस करने लायक लिंक टेक्स्ट (और इमेज के लिए इस्तेमाल किया जाने वाला वैकल्पिक टेक्स्ट, जब लिंक के तौर पर इस्तेमाल किया जाए) की मदद से, स्क्रीन रीडर इस्तेमाल करने वालों का नेविगेशन अनुभव बेहतर होता है. [लिंक को ऐक्सेस करने लायक बनाने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.7/link-name)."
+    "message": "समझने लायक, यूनीक, और फ़ोकस करने लायक लिंक टेक्स्ट (और इमेज के लिए इस्तेमाल किया जाने वाला वैकल्पिक टेक्स्ट, जब लिंक के तौर पर इस्तेमाल किया जाए) की मदद से, स्क्रीन रीडर इस्तेमाल करने वालों का नेविगेशन अनुभव बेहतर होता है. [लिंक को ऐक्सेस करने लायक बनाने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.8/link-name)."
   },
   "core/audits/accessibility/link-name.js | failureTitle": {
     "message": "लिंक का समझने लायक नहीं है"
@@ -309,7 +408,7 @@
     "message": "लिंक का समझने लायक नाम है"
   },
   "core/audits/accessibility/list.js | description": {
-    "message": "स्क्रीन रीडर, सूचियों को एक खास तरीके से बोलते हैं. सूची की बनावट सही होने से स्क्रीन रीडर को आउटपुट देने में मदद मिलती है. [सूची की सही बनावट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/list)."
+    "message": "स्क्रीन रीडर, सूचियों को एक खास तरीके से बोलते हैं. सूची की बनावट सही होने से स्क्रीन रीडर को आउटपुट देने में मदद मिलती है. [सूची की सही बनावट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/list)."
   },
   "core/audits/accessibility/list.js | failureTitle": {
     "message": "सूचियों में सिर्फ़ `<li>` एलिमेंट और स्क्रिप्ट के साथ काम करने वाले एलिमेंट (`<script>`और `<template>`) ही शामिल नहीं हैं."
@@ -318,7 +417,7 @@
     "message": "सूची में सिर्फ़ `<li>` एलिमेंट और स्क्रिप्ट के साथ काम करने वाले एलिमेंट शामिल हैं (`<script>` और `<template>`)."
   },
   "core/audits/accessibility/listitem.js | description": {
-    "message": "स्क्रीन रीडर के लिए ज़रूरी है कि उनमें `<ul>`, `<ol>` या `<menu>` पैरंट में सूची आइटम (`<li>`) शामिल हों, ताकि उन्हें ठीक तरह से बोला जा सके. [सूची की सही बनावट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/listitem)."
+    "message": "स्क्रीन रीडर के लिए ज़रूरी है कि उनमें `<ul>`, `<ol>` या `<menu>` पैरंट में सूची आइटम (`<li>`) शामिल हों, ताकि उन्हें ठीक तरह से बोला जा सके. [सूची की सही बनावट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/listitem)."
   },
   "core/audits/accessibility/listitem.js | failureTitle": {
     "message": "सूची आइटम (`<li>`), `<ul>`, `<ol>` या `<menu>` पैरंट एलिमेंट में शामिल नहीं हैं."
@@ -327,7 +426,7 @@
     "message": "सूची वाले आइटम (`<li>`), `<ul>`, `<ol>` या `<menu>` पैरंट एलिमेंट में हैं"
   },
   "core/audits/accessibility/meta-refresh.js | description": {
-    "message": "लोगों को यह उम्मीद नहीं होती कि कोई पेज अपने-आप रीफ़्रेश हो जाएगा. हालांकि, जब ऐसा होता है, तो लोगों का फ़ोकस वापस पेज के सबसे ऊपर के हिस्से पर चला जाता है. इससे निराशा या भ्रम की स्थिति का अनुभव हो सकता है. [रीफ़्रेश मेटा टैग के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/meta-refresh)."
+    "message": "लोगों को यह उम्मीद नहीं होती कि कोई पेज अपने-आप रीफ़्रेश हो जाएगा. हालांकि, जब ऐसा होता है, तो लोगों का फ़ोकस वापस पेज के सबसे ऊपर के हिस्से पर चला जाता है. इससे निराशा या भ्रम की स्थिति का अनुभव हो सकता है. [रीफ़्रेश मेटा टैग के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/meta-refresh)."
   },
   "core/audits/accessibility/meta-refresh.js | failureTitle": {
     "message": "यह दस्तावेज़ `<meta http-equiv=\"refresh\">` का इस्तेमाल करता है"
@@ -336,7 +435,7 @@
     "message": "दस्तावेज़ `<meta http-equiv=\"refresh\">` का इस्तेमाल नहीं करते"
   },
   "core/audits/accessibility/meta-viewport.js | description": {
-    "message": "ज़ूम की सुविधा बंद करने से, उन लोगों को परेशानी होती है जिन्हें कम दिखता है. ऐसे लोग वेब पेज के कॉन्टेंट को ठीक तरह से देखने के लिए, स्क्रीन को ज़ूम करने की सुविधा पर निर्भर रहते हैं. [व्यूपोर्ट मेटा टैग के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/meta-viewport)."
+    "message": "ज़ूम की सुविधा बंद करने से, उन लोगों को परेशानी होती है जिन्हें कम दिखता है. ऐसे लोग वेब पेज के कॉन्टेंट को ठीक तरह से देखने के लिए, स्क्रीन को ज़ूम करने की सुविधा पर निर्भर रहते हैं. [व्यूपोर्ट मेटा टैग के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/meta-viewport)."
   },
   "core/audits/accessibility/meta-viewport.js | failureTitle": {
     "message": "`[user-scalable=\"no\"]` का इस्तेमाल `<meta name=\"viewport\">` एलिमेंट में किया जाता है या `[maximum-scale]`विशेषता पांच से कम है."
@@ -345,7 +444,7 @@
     "message": "`[user-scalable=\"no\"]` का इस्तेमाल `<meta name=\"viewport\">` एलिमेंट में नहीं किया जाता और `[maximum-scale]`विशेषता पाँच से कम नहीं है."
   },
   "core/audits/accessibility/object-alt.js | description": {
-    "message": "स्क्रीन रीडर बिना टेक्स्ट वाले कॉन्टेंट का अनुवाद नहीं कर सकता. `<object>` एलिमेंट में वैकल्पिक टेक्स्ट जोड़ने पर, स्क्रीन रीडर की मदद से उपयोगकर्ताओं को कॉन्टेंट का मतलब आसानी से समझ आ जाता है. [`object` एलिमेंट के लिए वैकल्पिक टेक्स्ट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/object-alt)."
+    "message": "स्क्रीन रीडर बिना टेक्स्ट वाले कॉन्टेंट का अनुवाद नहीं कर सकता. `<object>` एलिमेंट में वैकल्पिक टेक्स्ट जोड़ने पर, स्क्रीन रीडर की मदद से उपयोगकर्ताओं को कॉन्टेंट का मतलब आसानी से समझ आ जाता है. [`object` एलिमेंट के लिए वैकल्पिक टेक्स्ट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/object-alt)."
   },
   "core/audits/accessibility/object-alt.js | failureTitle": {
     "message": "`<object>` एलिमेंट में वैकल्पिक टेक्स्ट नहीं है"
@@ -353,8 +452,26 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "`<object>` एलिमेंट में वैकल्पिक टेक्स्ट है"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "सही और असरदार लेबल के बिना फ़ॉर्म के एलिमेंट, स्क्रीन रीडर इस्तेमाल करने वालों के अनुभव को खराब कर सकते हैं. [`select` एलिमेंट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/select-name)."
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "चुनने की सुविधा देने वाले एलिमेंट में उनसे जुड़े लेबल एलिमेंट नहीं हैं."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "चुनने की सुविधा देने वाले एलिमेंट में उनसे जुड़े लेबल एलिमेंट हैं."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "स्किप लिंक शामिल करने से लोगों का समय बचता है और वे सीधे मुख्य कॉन्टेंट पर जा सकते हैं. [स्किप लिंक के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "स्किप लिंक पर फ़ोकस नहीं किया जा सकता."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "स्किप लिंक पर फ़ोकस किया जा सकता है."
+  },
   "core/audits/accessibility/tabindex.js | description": {
-    "message": "शून्य से ज़्यादा की वैल्यू साफ़ तौर पर, नेविगेशन के क्रम को दिखाती है. हालांकि, यह वैल्यू तकनीकी रूप से मान्य है. इसके बावजूद, सहायक टेक्नोलॉजी पर भरोसा करने वाले लोगों को यह वैल्यू अक्सर परेशान करती है. [`tabindex` एट्रिब्यूट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
+    "message": "शून्य से ज़्यादा की वैल्यू साफ़ तौर पर, नेविगेशन के क्रम को दिखाती है. हालांकि, यह वैल्यू तकनीकी रूप से मान्य है. इसके बावजूद, सहायक टेक्नोलॉजी पर भरोसा करने वाले लोगों को यह वैल्यू अक्सर परेशान करती है. [`tabindex` एट्रिब्यूट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/tabindex)."
   },
   "core/audits/accessibility/tabindex.js | failureTitle": {
     "message": "कुछ एलिमेंट का `[tabindex]` मान 0 से ज़्यादा होता है"
@@ -362,8 +479,44 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "किसी भी एलिमेंट का `[tabindex]` मान 0 से ज़्यादा नहीं हो सकता"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "समरी एट्रिब्यूट में टेबल के स्ट्रक्चर के बारे में बताया जाना चाहिए, जबकि `<caption>` में ऑनस्क्रीन टाइटल होना चाहिए. सटीक टेबल मार्क-अप की मदद से, स्क्रीन रीडर इस्तेमाल करने वालों को मदद मिलती है. [खास जानकारी और कैप्शन के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "समरी एट्रिब्यूट और `<caption>.` में टेबल का कॉन्टेंट एक जैसा होता है"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "समरी एट्रिब्यूट और `<caption>` में टेबल का कॉन्टेंट अलग-अलग होता है."
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "स्क्रीन रीडर में ऐसी सुविधाएं होती हैं जिनकी मदद से, टेबल पर नेविगेट करना आसान हो जाता है. यह पक्का करें कि टेबल में `[colspan]` एट्रिब्यूट वाले सेल के बजाय, असल कैप्शन एलिमेंट का इस्तेमाल किया जाता है. इससे स्क्रीन रीडर का इस्तेमाल करने वालों को बेहतर अनुभव मिल सकता है. [कैप्शन के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "टेबल में कैप्शन दिखाने के लिए, `[colspan]` एट्रिब्यूट वाली सेल के बजाय, `<caption>` का इस्तेमाल नहीं किया जाता."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "टेबल में कैप्शन दिखाने के लिए, `[colspan]` एट्रिब्यूट वाली सेल के बजाय, `<caption>` का इस्तेमाल किया जाता है."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "ज़रूरत के मुताबिक साइज़ और स्पेस वाले टच टारगेट (स्क्रीन के वे हिस्से जहां छूने पर कोई कार्रवाई होती है) से, उन लोगों को टारगेट चालू करने में मदद मिलती है जिन्हें छोटे कंट्रोल को टारगेट करने में परेशानी होती है. [टच टारगेट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "टच टारगेट (स्क्रीन के वे हिस्से जहां छूने पर कोई कार्रवाई होती है) में ज़रूरत के मुताबिक साइज़ या स्पेस नहीं है."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "टच टारगेट (स्क्रीन के वे हिस्से जहां छूने पर कोई कार्रवाई होती है) में ज़रूरत के मुताबिक साइज़ और स्पेस है."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "स्क्रीन रीडर में ऐसी सुविधाएं होती हैं जिनकी मदद से, टेबल पर नेविगेट करना आसान हो जाता है. यह पक्का करें कि बड़ी टेबल (चौड़ाई और ऊंचाई में तीन या उससे ज़्यादा सेल) के `<td>` एलिमेंट में संबंधित टेबल हेडर का इस्तेमाल किया जाता है. इससे स्क्रीन रीडर का इस्तेमाल करने वालों के अनुभव को बेहतर बनाया जा सकता है. [टेबल हेडर के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "बड़े `<table>` में `<td>` एलिमेंट के टेबल हेडर नहीं होते."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "बड़े `<table>` में `<td>` एलिमेंट के एक या उससे ज़्यादा टेबल हेडर होते हैं."
+  },
   "core/audits/accessibility/td-headers-attr.js | description": {
-    "message": "स्क्रीन रीडर में ऐसी सुविधाएं होती हैं जिनकी मदद से, टेबल पर नेविगेट करना आसान हो जाता है. `[headers]` एट्रिब्यूट का इस्तेमाल करके, `<td>` सेल की मौजूदगी पक्की करने के लिए, उसी टेबल में मौजूद दूसरे सेल का हवाला दिया जाता है. इससे स्क्रीन रीडर का इस्तेमाल करने वालों के अनुभव को बेहतर बनाया जा सकता है. [`headers` एट्रिब्यूट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
+    "message": "स्क्रीन रीडर में ऐसी सुविधाएं होती हैं जिनकी मदद से, टेबल पर नेविगेट करना आसान हो जाता है. `[headers]` एट्रिब्यूट का इस्तेमाल करके, `<td>` सेल की मौजूदगी पक्की करने के लिए, उसी टेबल में मौजूद दूसरे सेल का हवाला दिया जाता है. इससे स्क्रीन रीडर का इस्तेमाल करने वालों के अनुभव को बेहतर बनाया जा सकता है. [`headers` एट्रिब्यूट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/td-headers-attr)."
   },
   "core/audits/accessibility/td-headers-attr.js | failureTitle": {
     "message": "`<table>` एलिमेंट में शामिल सेल जिस `[headers]` विशेषता का इस्तेमाल करते हैं वे उस एलिमेंट `id` का हवाला देते हैं जाे उसी टेबल में शामिल नहीं हाेता."
@@ -372,7 +525,7 @@
     "message": "`<table>` एलिमेंट में शामिल सेल जो `[headers]` विशेषता का इस्तेमाल करते हैं वे सिर्फ़ उसी टेबल में शामिल सेल का हवाला देते हैं."
   },
   "core/audits/accessibility/th-has-data-cells.js | description": {
-    "message": "स्क्रीन रीडर में ऐसी सुविधाएं होती हैं जिनकी मदद से, टेबल पर नेविगेट करना आसान हो जाता है. यह पक्का करें कि टेबल हेडर हमेशा सेल के कुछ सेट के बारे में बताते हों. इससे स्क्रीन रीडर का इस्तेमाल करने वालों को बेहतर अनुभव मिल सकता है. [टेबल हेडर के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/th-has-data-cells)."
+    "message": "स्क्रीन रीडर में ऐसी सुविधाएं होती हैं जिनकी मदद से, टेबल पर नेविगेट करना आसान हो जाता है. यह पक्का करें कि टेबल हेडर हमेशा सेल के कुछ सेट के बारे में बताते हों. इससे स्क्रीन रीडर का इस्तेमाल करने वालों को बेहतर अनुभव मिल सकता है. [टेबल हेडर के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/th-has-data-cells)."
   },
   "core/audits/accessibility/th-has-data-cells.js | failureTitle": {
     "message": "`<th>` एलिमेंट और `[role=\"columnheader\"/\"rowheader\"]` वाले एलिमेंट में वे डेटा सेल मौजूद नहीं हैं जो उनके ब्यौरे में शामिल हैं."
@@ -381,7 +534,7 @@
     "message": "`<th>` एलिमेंट और `[role=\"columnheader\"/\"rowheader\"]` वाले एलिमेंट में वे डेटा सेल शामिल हैं जिनकी वे जानकारी देते हैं."
   },
   "core/audits/accessibility/valid-lang.js | description": {
-    "message": "एलिमेंट पर एक सही [BCP 47 भाषा ](https://www.w3.org/International/questions/qa-choosing-language-tags#question) तय करने से, यह पक्का किया जा सकता है कि स्क्रीन रीडर, टेक्स्ट को सही से बोले. [`lang` एट्रिब्यूट को इस्तेमाल करने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.7/valid-lang)."
+    "message": "एलिमेंट पर एक सही [BCP 47 भाषा ](https://www.w3.org/International/questions/qa-choosing-language-tags#question) तय करने से, यह पक्का किया जा सकता है कि स्क्रीन रीडर, टेक्स्ट को सही से बोले. [`lang` एट्रिब्यूट को इस्तेमाल करने का तरीका जानें](https://dequeuniversity.com/rules/axe/4.8/valid-lang)."
   },
   "core/audits/accessibility/valid-lang.js | failureTitle": {
     "message": "`[lang]` विशेषताओं का कोई सही मान नहीं है"
@@ -390,7 +543,7 @@
     "message": "`[lang]` विशेषताओं का मान सही है"
   },
   "core/audits/accessibility/video-caption.js | description": {
-    "message": "जब किसी वीडियो में कैप्शन की सुविधा उपलब्ध होती है, तो ऐसे लोग जो सुन नहीं सकते और जिन्हें सुनने में परेशानी है उनके लिए वीडियो को समझना आसान हो जाता है. [वीडियो कैप्शन के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/video-caption)."
+    "message": "जब किसी वीडियो में कैप्शन की सुविधा उपलब्ध होती है, तो ऐसे लोग जो सुन नहीं सकते और जिन्हें सुनने में परेशानी है उनके लिए वीडियो को समझना आसान हो जाता है. [वीडियो कैप्शन के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/video-caption)."
   },
   "core/audits/accessibility/video-caption.js | failureTitle": {
     "message": "`<video>` एलिमेंट में `[kind=\"captions\"]` वाला कोई `<track>` एलिमेंट नहीं है."
@@ -452,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "पेज ने, बैक-फ़ॉरवर्ड कैश मेमोरी सुविधा को पहले जैसा करने से नहीं रोका"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "बिना ग्राफ़िक यूज़र इंटरफ़ेस वाले पुराने Chrome (`--chrome-flags=\"--headless=old\"`) में, बैक/फ़ॉरवर्ड कैश मेमोरी की जांच नहीं की जा सकती. ऑडिट के नतीजे देखने के लिए, बिना ग्राफ़िक यूज़र इंटरफ़ेस वाले नए Chrome (`--chrome-flags=\"--headless=new\"`) या स्टैंडर्ड Chrome का इस्तेमाल करें."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Chrome एक्सटेंशन ने इस पेज के लोड परफ़ॉर्मेंस पर नकारात्मक रूप से असर डाला है. 'गुप्त मोड' में या बिना किसी एक्सटेंशन के Chrome प्रोफ़ाइल से पेज ऑडिट करके देखें."
   },
@@ -486,7 +642,7 @@
     "message": "ऐनिमेट की गई सामग्री के लिए वीडियो फ़ॉर्मेट का इस्तेमाल करें"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "पॉलीफ़िल और ट्रांसफ़ॉर्म की मदद से, लेगसी ब्राउज़र पर JavaScript की नई सुविधाएं इस्तेमाल की जा सकती हैं. हालांकि, मॉडर्न ब्राउज़र के लिए इनमें से कई सुविधाओं की ज़रूरत नहीं होती. बंडल किए गए JavaScript के लिए, मॉडर्न स्क्रिप्ट डिप्लॉयमेंट रणनीति अपनाएं. इसके लिए, मॉड्यूल/नोमॉड्यूल सुविधा वाले पहचान टूल का इस्तेमाल करें. इससे मॉडर्न ब्राउज़र पर भेजे जाने वाले कोड की संख्या कम करने और लेगसी ब्राउज़र को चालू रखने में मदद मिलती है. [नया JavaScript इस्तेमाल करने का तरीका जानें](https://web.dev/publish-modern-javascript/)"
+    "message": "पॉलीफ़िल और ट्रांसफ़ॉर्म की मदद से, लेगसी ब्राउज़र पर JavaScript की नई सुविधाएं इस्तेमाल की जा सकती हैं. हालांकि, मॉडर्न ब्राउज़र के लिए इनमें से कई सुविधाओं की ज़रूरत नहीं होती. बंडल किए गए JavaScript के लिए, मॉडर्न स्क्रिप्ट डिप्लॉयमेंट रणनीति अपनाएं. इसके लिए, मॉड्यूल/नोमॉड्यूल सुविधा वाले पहचान टूल का इस्तेमाल करें. इससे मॉडर्न ब्राउज़र पर भेजे जाने वाले कोड की संख्या कम करने और लेगसी ब्राउज़र को चालू रखने में मदद मिलती है. [नया JavaScript इस्तेमाल करने का तरीका जानें](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "पुरानी JavaScript को नए ब्राउज़र में खोलने से बचें"
@@ -621,7 +777,7 @@
     "message": "सिंटैक्स"
   },
   "core/audits/csp-xss.js | metaTagMessage": {
-    "message": "इस पेज पर एक <meta> टैग में सीएसपी की जानकारी दी गई है. सीएसपी को एचटीटीपी हेडर पर ले जाएं या एचटीटीपी हेडर में एक अन्य सख्त सीएसपी की जानकारी दें."
+    "message": "इस पेज पर, `<meta>` टैग में सीएसपी की जानकारी दी गई है. सीएसपी को एचटीटीपी हेडर पर ले जाएं या एचटीटीपी हेडर में एक अन्य सख्त सीएसपी की जानकारी दें."
   },
   "core/audits/csp-xss.js | noCsp": {
     "message": "एनफ़ोर्समेंट मोड में कोई CSP नहीं मिला"
@@ -840,7 +996,7 @@
     "message": "इमेज का अनुमानित साइज़"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "इमेज का नैचुरल डाइमेंशन उसके डिसप्ले साइज़ और पिक्सल के अनुपात में होना चाहिए, ताकि इमेज ज़्यादा से ज़्यादा साफ़ दिख सके. [रिस्पॉन्सिव इमेज देने का तरीका जानें](https://web.dev/serve-responsive-images/)."
+    "message": "इमेज का नैचुरल डाइमेंशन उसके डिसप्ले साइज़ और पिक्सल के अनुपात में होना चाहिए, ताकि इमेज ज़्यादा से ज़्यादा साफ़ दिख सके. [रिस्पॉन्सिव इमेज देने का तरीका जानें](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "पेज पर दिख रही इमेज का रिज़ॉल्यूशन कम है"
@@ -873,7 +1029,7 @@
     "message": "पेज को गुप्त विंडो में लोड किया गया है"
   },
   "core/audits/installable-manifest.js | manifest-display-not-supported": {
-    "message": "'standalone', 'fullscreen' या 'minimal-ui' में से किसी एक मेनिफ़ेस्ट 'display' प्रॉपर्टी का होना ज़रूरी है"
+    "message": "मेनिफ़ेस्ट `display` प्रॉपर्टी, `standalone`, `fullscreen` या `minimal-ui` में से एक होनी चाहिए"
   },
   "core/audits/installable-manifest.js | manifest-display-override-not-supported": {
     "message": "मेनिफ़ेस्ट में 'display_override' फ़ील्ड है, जबकि इसमें 'standalone', 'fullscreen' या 'minimal-ui' में से कोई एक डिसप्ले मोड होना ज़रूरी है. यह पहले डिसप्ले मोड के तौर पर काम करता है"
@@ -885,7 +1041,7 @@
     "message": "मेनिफ़ेस्ट को फ़ेच करते समय उसका यूआरएल बदल गया."
   },
   "core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
-    "message": "मेनिफ़ेस्ट में 'name' या 'short_name' फ़ील्ड नहीं है"
+    "message": "मेनिफ़ेस्ट में `name` या `short_name` फ़ील्ड शामिल नहीं है"
   },
   "core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
     "message": "मेनिफ़ेस्ट में सही आइकॉन नहीं है. इसमें PNG, SVG या WebP फ़ॉर्मैट में ऐसा आइकॉन होना ज़रूरी है जो कम से कम {value0} पिक्सल का हो. साथ ही, sizes एट्रिब्यूट को सेट करना ज़रूरी है. अगर purpose एट्रिब्यूट को भी सेट किया जाता है, तो यह ज़रूरी है कि उसमें \"any\" शामिल हो."
@@ -901,9 +1057,6 @@
   },
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "पेज में कोई भी मेनिफ़ेस्ट <link> यूआरएल नहीं है"
-  },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "कोई भी मिलता-जुलता सर्विस वर्कर नहीं मिला. हो सकता है कि आपको पेज फिर से लोड करना पड़े या यह जांच करनी पड़े कि मौजूदा पेज के लिए सर्विस वर्कर का दायरा, मेनिफ़ेस्ट के दायरे और स्टार्ट यूआरएल जितना हो."
   },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "मेनिफ़ेस्ट में 'start_url' फ़ील्ड न होने की वजह से सर्विस वर्कर की जांच नहीं की जा सकती"
@@ -933,10 +1086,7 @@
     "message": "prefer_related_applications सिर्फ़ Chrome बीटा और Android पर स्थिर चैनलों पर काम करता है."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse यह पता नहीं कर सका कि कोई सर्विस वर्कर था या नहीं. Chrome के नए वर्शन के साथ इस्तेमाल करें."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "मेनिफ़ेस्ट का यूआरएल जिस स्कीम ({scheme}) का इस्तेमाल करता है वह Android पर काम नहीं करती."
+    "message": "लाइटहाउस यह पता नहीं कर सका कि पेज को इंस्टॉल किया जा सकता है या नहीं. कृपया Chrome के नए वर्शन के साथ इस्तेमाल करें."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "दिया गया मेनिफ़ेस्ट स्टार्ट यूआरएल मान्य नहीं है"
@@ -1008,16 +1158,40 @@
     "message": "सबसे बड़ा कॉन्टेंटफ़ुल पेंट वाला एलिमेंट"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "सीएलएस में योगदान"
+    "message": "लेआउट शिफ़्ट का असर"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "पेज के सीएलएस में सबसे ज़्यादा योगदान ये DOM एलिमेंट देते हैं. [सीएलएस को बेहतर बनाने का तरीका जानें](https://web.dev/optimize-cls/)"
+    "message": "इन डीओएम एलिमेंट पर, लेआउट शिफ़्ट का सबसे ज़्यादा असर हुआ है. [विंडोविंग](https://web.dev/articles/cls#what_is_cls) की वजह से, हो सकता है कि कुछ लेआउट शिफ़्ट, सीएलएस मेट्रिक की वैल्यू में शामिल न किए जाएं. [सीएलएस को बेहतर बनाने का तरीका जानें](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "बड़े लेआउट शिफ़्ट से बचें"
   },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "लेआउट शिफ़्ट स्कोर"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "इस पेज पर बड़े पैमाने पर लेआउट शिफ़्ट हुआ है. टेबल का हर आइटम एक लेआउट शिफ़्ट की जानकारी देता है. साथ ही, उस एलिमेंट की जानकारी दिखाता है जो सबसे ज़्यादा शिफ़्ट हुआ है. नीचे दिया गया हर आइटम लेआउट के शिफ़्ट होने की संभावित वजह हो सकता है. [विंडोविंग](https://web.dev/articles/cls#what_is_cls) की वजह से, हो सकता है कि इनमें से कुछ लेआउट शिफ़्ट, सीएलएस मेट्रिक की वैल्यू में शामिल न किए जाएं. [सीएलएस को बेहतर बनाने का तरीका जानें](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 लेआउट शिफ़्ट मिला}one{# लेआउट शिफ़्ट मिला}other{# लेआउट शिफ़्ट मिले}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "वेब फ़ॉन्ट लोड किया गया"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "इंजेक्ट किया गया iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "नेटवर्क के देर से अनुरोध करने की वजह से, पेज के लेआउट में बदलाव हुआ है"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "मीडिया एलिमेंट के साइज़ की जानकारी साफ़ तौर पर नहीं दी गई है"
+  },
+  "core/audits/layout-shifts.js | title": {
+    "message": "बड़े लेआउट शिफ़्ट से बचें"
+  },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "पेज के ऊपरी हिस्से पर मौजूद जिन इमेज को पेज के लाइफ़साइकल में लेज़ी लोडिंग की मदद से, लोड और रेंडर किया गया है उनसे सबसे बड़े कॉन्टेंटफ़ुल पेंट में ऑडिट करने में देरी हो सकती है. [लेज़ी लोडिंग के बारे में ज़्यादा जानें](https://web.dev/lcp-lazy-loading/)."
+    "message": "पेज के ऊपरी हिस्से पर मौजूद जिन इमेज को पेज के लाइफ़साइकल में लेज़ी लोडिंग की मदद से, लोड और रेंडर किया गया है उनसे सबसे बड़े कॉन्टेंटफ़ुल पेंट में ऑडिट करने में देरी हो सकती है. [लेज़ी लोडिंग के बारे में ज़्यादा जानें](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "सबसे बड़े कॉन्टेंटफ़ुल पेंट वाली इमेज को लेज़ी तरीके से लोड किया गया है"
@@ -1026,7 +1200,7 @@
     "message": "सबसे बड़े कॉन्टेंटफ़ुल पेंट वाली इमेज को लेज़ी तरीके से नहीं लोड किया गया है"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "यह मुख्य थ्रेड पर सबसे लंबे टास्क की सूची बनाता है. इससे इनपुट डिले में, सबसे खराब योगदान देने वालों की पहचान करने में मदद मिलती है. [मुख्य थ्रेड के लंबे टास्क से बचने का तरीका जानें](https://web.dev/long-tasks-devtools/)"
+    "message": "यह मुख्य थ्रेड पर सबसे लंबे टास्क की सूची बनाता है. इससे इनपुट डिले में, सबसे खराब योगदान देने वालों की पहचान करने में मदद मिलती है. [मुख्य थ्रेड के लंबे टास्क से बचने का तरीका जानें](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{# लंबा टास्क मिला}one{# लंबा टास्क मिला}other{# लंबे टास्क मिले}}"
@@ -1074,16 +1248,16 @@
     "message": "मेनिफ़ेस्ट में ऐसा आइकॉन है जिसके लिए मास्क का इस्तेमाल किया जा सकता है"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "कुल लेआउट शिफ़्ट, व्यूपोर्ट में दिखने वाले एलिमेंट की हलचल बताता है. [कुल लेआउट शिफ़्ट से जुड़ी मेट्रिक के बारे में ज़्यादा जानें](https://web.dev/cls/)."
-  },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "इंटरैक्शन टू नेक्स्ट पेंट मेट्रिक, पेज पर रिस्पॉन्स मिलने में लगने वाले समय को मापती है. इससे पता चलता है कि उपयोगकर्ता के इनपुट का जवाब देने में पेज को कितना समय लगता है. [इंटरैक्शन टू नेक्स्ट पेंट मेट्रिक के बारे में ज़्यादा जानें](https://web.dev/inp/)."
+    "message": "कुल लेआउट शिफ़्ट, व्यूपोर्ट में दिखने वाले एलिमेंट की हलचल बताता है. [कुल लेआउट शिफ़्ट से जुड़ी मेट्रिक के बारे में ज़्यादा जानें](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "फ़र्स्ट कॉन्टेंटफ़ुल पेंट से, यह पता चलता है कि आपकी वेबसाइट का जो टेक्स्ट या इमेज किसी उपयोगकर्ता को सबसे पहले दिखा उसे दिखने में कितना समय लगा. [फ़र्स्ट कॉन्टेंटफ़ुल पेंट से जुड़ी मेट्रिक के बारे में ज़्यादा जानें](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "फ़र्स्ट मीनिंगफ़ुल पेंट मेट्रिक इस बात की जानकारी देती है कि किसी पेज का मुख्य कॉन्टेंट कब दिखा. [फ़र्स्ट मीनिंगफ़ुल पेंट से जुड़ी मेट्रिक के बारे में ज़्यादा जानें](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "इंटरैक्शन टू नेक्स्ट पेंट मेट्रिक, पेज पर रिस्पॉन्स मिलने में लगने वाले समय को मापती है. इससे पता चलता है कि उपयोगकर्ता के इनपुट का जवाब देने में पेज को कितना समय लगता है. [इंटरैक्शन टू नेक्स्ट पेंट मेट्रिक के बारे में ज़्यादा जानें](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "इंटरैक्टिव में लगने वाला समय, वह समय है जितनी देर में पेज पूरी तरह से इंटरैक्टिव हो जाता है. [इंटरैक्टिव में लगने वाले समय से जुड़ी मेट्रिक के बारे में ज़्यादा जानें](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1113,7 +1287,7 @@
     "message": "सर्वर बैकएंड के इंतज़ार का समय"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "`unload` इवेंट भरोसेमंद नहीं होता और इसे इस्तेमाल करने की वजह से, ब्राउज़र को ऑप्टिमाइज़ करने की कुछ सुविधाएं रुक सकती हैं. जैसे, बैक-फ़ॉरवर्ड कैश मेमोरी. इसके बजाय, `pagehide` या `visibilitychange` इवेंट का इस्तेमाल करें. [अनलोड इवेंट लिसनर के बारे में ज़्यादा जानें](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "`unload` इवेंट भरोसेमंद नहीं होता और इसे इस्तेमाल करने की वजह से, ब्राउज़र को ऑप्टिमाइज़ करने की कुछ सुविधाएं रुक सकती हैं. जैसे, बैक-फ़ॉरवर्ड कैश मेमोरी. इसके बजाय, `pagehide` या `visibilitychange` इवेंट का इस्तेमाल करें. [अनलोड इवेंट लिसनर के बारे में ज़्यादा जानें](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "एक `unload` लिसनर रजिस्टर करता है"
@@ -1158,7 +1332,7 @@
     "message": "परफ़ॉर्मेंस बजट"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "`optional` फ़ॉन्ट पहले से लोड करें, ताकि वेबसाइट पर पहली बार आने वाले उनका इस्तेमाल कर सकें. [पहले से फ़ॉन्ट लोड करने के बारे में ज़्यादा जानें](https://web.dev/preload-optional-fonts/)"
+    "message": "`optional` फ़ॉन्ट पहले से लोड करें, ताकि वेबसाइट पर पहली बार आने वाले उनका इस्तेमाल कर सकें. [पहले से फ़ॉन्ट लोड करने के बारे में ज़्यादा जानें](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "`font-display: optional` वाले फ़ॉन्ट पहले से लोड नहीं किए गए हैं"
@@ -1167,7 +1341,7 @@
     "message": "`font-display: optional` वाले फ़ॉन्ट पहले से लोड किए गए हैं"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "अगर पेज में एलसीपी एलिमेंट को डाइनैमिक तरीके से जोड़ा गया है, तो एलसीपी को बेहतर बनाने के लिए इमेज को पहले से लोड कर लेना चाहिए. [एलसीपी एलिमेंट को पहले से लोड करने के बारे में ज़्यादा जानें](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "अगर पेज में एलसीपी एलिमेंट को डाइनैमिक तरीके से जोड़ा गया है, तो एलसीपी को बेहतर बनाने के लिए इमेज को पहले से लोड कर लेना चाहिए. [एलसीपी एलिमेंट को पहले से लोड करने के बारे में ज़्यादा जानें](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "सबसे बड़े कॉन्टेंटफ़ुल पेंट वाली इमेज को पहले से लोड करें"
@@ -1177,15 +1351,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "एक से ज़्यादा पेज रीडायरेक्ट करने से बचें"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "पेज रिसॉर्स की संख्या और साइज़ का बजट सेट करने के लिए, budget.json फ़ाइल जोड़ें. [परफ़ॉर्मेंस बजट के बारे में ज़्यादा जानें](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 अनुरोध • {byteCount, number, bytes} किबीबाइट}one{# अनुरोध • {byteCount, number, bytes} किबीबाइट}other{# अनुरोध • {byteCount, number, bytes} किबीबाइट}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "अनुरोधों की संख्या कम और ट्रांसफ़र का आकार छोटा रखें"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "कैननिकल लिंक, इस बारे में जानकारी देते हैं कि खोज के नतीजों में कौनसे यूआरएल दिखाए जाएं. [कैननिकल लिंक के बारे में ज़्यादा जानें](https://developer.chrome.com/docs/lighthouse/seo/canonical/)."
@@ -1376,27 +1541,6 @@
   "core/audits/server-response-time.js | title": {
     "message": "जवाब देने में सर्वर को लगने वाला शुरुआती समय कम था"
   },
-  "core/audits/service-worker.js | description": {
-    "message": "सर्विस वर्कर एक ऐसी टेक्नोलॉजी है जो आपके ऐप्लिकेशन को, प्रोग्रेसिव वेब ऐप्लिकेशन के कई फ़ीचर इस्तेमाल करने की अनुमति देती है. इनमें ऑफ़लाइन, होमस्क्रीन पर जोड़ें, और पुश नोटिफ़िकेशन जैसे फ़ीचर शामिल हैं. [सर्विस वर्कर के बारे में ज़्यादा जानें](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)."
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "इस पेज का नियंत्रण सर्विस वर्कर के पास है. हालांकि, कोई `start_url` नहीं मिला, क्योंकि मेनिफ़ेस्ट को मान्य JSON के रूप में पार्स नहीं किया जा सका"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "इस पेज का नियंत्रण सर्विस वर्कर के पास है. हालांकि, `start_url` ({startUrl}) सर्विस वर्कर के दायरे में नहीं है ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "इस पेज का नियंत्रण सर्विस वर्कर के पास है. हालांकि, कोई `start_url` नहीं मिला, क्योंकि किसी पेज पर कोई मेनिफ़ेस्ट ही नहीं था."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "यहां पर एक या ज़्यादा सर्विस वर्कर हैं. हालांकि, पेज ({pageUrl}) दायरे में नहीं है."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "किसी ऐसे सर्विस वर्कर को रजिस्टर नहीं करता जो पेज और `start_url` को नियंत्रित करता है"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "किसी ऐसे सर्विस वर्कर को रजिस्टर करता है जो पेज और `start_url` को नियंत्रित करता है"
-  },
   "core/audits/splash-screen.js | description": {
     "message": "जब लोग अपने डिवाइस की होमस्क्रीन से आपका ऐप्लिकेशन लॉन्च करते हैं, तो थीम वाली स्प्लैश स्क्रीन की वजह से उन्हें अच्छा अनुभव मिलता है. [स्प्लैश स्क्रीन के बारे में ज़्यादा जानें](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
   },
@@ -1414,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "'पता बार' के लिए थीम का रंग सेट करता है."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Chrome के आने वाले वर्शन में, तीसरे पक्ष की कुकी के साथ काम करने की सुविधा हटा दी जाएगी. [तीसरे पक्ष की कुकी का इस्तेमाल बंद करने के बारे में ज़्यादा जानें](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 कुकी मिली}one{# कुकी मिली}other{# कुकी मिलीं}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "तीसरे पक्ष की कुकी का इस्तेमाल किया जाता है"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "तीसरे पक्ष की कुकी का इस्तेमाल नहीं किया जाता"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (ग्राहक सहायता)"
@@ -1470,7 +1626,7 @@
     "message": "टाइमिंग बजट"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "इमेज एलिमेंट पर, चौड़ाई और ऊंचाई की जानकारी साफ़ तौर पर सेट करें, ताकि लेआउट शिफ़्ट को कम किया जा सके और सीएलएस को बेहतर बनाया जा सके. [इमेज का डाइमेंशन सेट करने का तरीका जानें](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "इमेज एलिमेंट पर, चौड़ाई और ऊंचाई की जानकारी साफ़ तौर पर सेट करें, ताकि लेआउट शिफ़्ट को कम किया जा सके और सीएलएस को बेहतर बनाया जा सके. [इमेज का डाइमेंशन सेट करने का तरीका जानें](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "इमेज एलिमेंट पर, `width` और `height` के बारे में साफ़-साफ़ नहीं बताया गया है"
@@ -1545,7 +1701,7 @@
     "message": "वेब पेज पर `width` या `initial-scale` वाला `<meta name=\"viewport\">` टैग है"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "यह थ्रेड ब्लॉक करने का काम है, जो इंटरैक्शन टू नेक्स्ट पेंट मेट्रिक के लिए मेज़रमेंट के दौरान होता है. [इंटरैक्शन टू नेक्स्ट पेंट मेट्रिक के बारे में ज़्यादा जानें](https://web.dev/inp/)."
+    "message": "यह थ्रेड ब्लॉक करने का काम है, जो इंटरैक्शन टू नेक्स्ट पेंट मेट्रिक के लिए मेज़रमेंट के दौरान होता है. [इंटरैक्शन टू नेक्स्ट पेंट मेट्रिक के बारे में ज़्यादा जानें](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "'{interactionType}' इवेंट में {timeInMs, number, milliseconds} मिलीसेकंड का समय लगा"
@@ -1587,10 +1743,10 @@
     "message": "सबसे अच्छे तरीके"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "ये सभी जांच आपको [आपके वेब ऐप्लिकेशन की सुलभता बेहतर करने](https://developer.chrome.com/docs/lighthouse/accessibility/) के अवसर देती हैं. सुलभता गड़बड़ियों के सिर्फ़ एक उपसेट के बारे में अपने आप पता लगाया जा सकता है, इसलिए हम मैन्युअल टेस्टिंग का सुझाव देते हैं."
+    "message": "इन जांचों की मदद से, [आपके वेब ऐप्लिकेशन की सुलभता को बेहतर बनाने](https://developer.chrome.com/docs/lighthouse/accessibility/) में मदद मिलती है. अपने-आप पहचान करने की सुविधा, सिर्फ़ कुछ समस्याओं का पता लगाती है और आपके वेब ऐप्लिकेशन की सुलभता की गारंटी नहीं देती. इसलिए, हमारी सलाह है कि आप [मैन्युअल जांच](https://web.dev/articles/how-to-review) भी करें."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "ये आइटम ऐसे मामलों में भी काम करते हैं जहां अपने आप काम करने वाला टेस्टिंग टूल नाकाम रहता है. हमारी गाइड में जाकर [सुलभता समीक्षा करने](https://web.dev/how-to-review/) के बारे में ज़्यादा जानें."
+    "message": "ये आइटम ऐसे मामलों में भी काम करते हैं जहां अपने आप काम करने वाला टेस्टिंग टूल नाकाम रहता है. हमारी गाइड में जाकर [सुलभता समीक्षा करने](https://web.dev/articles/how-to-review) के बारे में ज़्यादा जानें."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "सुलभता"
@@ -1677,10 +1833,10 @@
     "message": "परफ़ॉर्मेंस"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "इन जांचों से, किसी प्रोग्रेसिव वेब ऐप्लिकेशन के पहलुओं की पुष्टि की जाती है. [जानें कि एक अच्छे प्रोग्रेसिव वेब ऐप्लिकेशन के लिए क्या-क्या ज़रूरी है.](https://web.dev/pwa-checklist/)."
+    "message": "इन जांचों से, किसी प्रोग्रेसिव वेब ऐप्लिकेशन के पहलुओं की पुष्टि की जाती है. [जानें कि एक अच्छे प्रोग्रेसिव वेब ऐप्लिकेशन के लिए क्या-क्या ज़रूरी है.](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "इस तरह की जांच, बेसलाइन [PWA चेकलिस्ट](https://web.dev/pwa-checklist/) के लिए ज़रूरी हैं, लेकिन Lighthouse इनकी जांच अपने आप नहीं करता है. वे आपके स्कोर पर असर नहीं डालते हैं, लेकिन इनकी मैन्युअल तरीके से पुष्टि करना ज़रूरी है."
+    "message": "इस तरह की जांच, बेसलाइन [PWA चेकलिस्ट](https://web.dev/articles/pwa-checklist) के लिए ज़रूरी हैं, लेकिन Lighthouse इनकी जांच अपने आप नहीं करता है. वे आपके स्कोर पर असर नहीं डालते हैं, लेकिन इनकी मैन्युअल तरीके से पुष्टि करना ज़रूरी है."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1692,7 +1848,7 @@
     "message": "PWA ऑप्टिमाइज़ किया गया"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "इन जांचों से यह पक्का होता है कि आपका पेज, सर्च इंजन ऑप्टिमाइज़ेशन से जुड़ी बुनियादी सलाह का पालन कर रहा है. ऐसी कई चीज़ें हैं जिनकी वजह से लाइटहाउस आपके पेज की जांच नहीं करता. इससे, खोज नतीजों में आपके पेज की रैंकिंग और [वेबसाइट की परफ़ॉर्मेंस से जुड़ी जानकारी](https://web.dev/learn-core-web-vitals/) की रिपोर्ट पर असर पड़ सकता है. [Google Search Essentials के बारे में ज़्यादा जानें](https://support.google.com/webmasters/answer/35769)."
+    "message": "इन जांचों से यह पक्का होता है कि आपका पेज, सर्च इंजन ऑप्टिमाइज़ेशन से जुड़ी बुनियादी सलाह का पालन कर रहा है. ऐसी कई चीज़ें हैं जिनकी वजह से लाइटहाउस आपके पेज की जांच नहीं करता. इससे, खोज नतीजों में आपके पेज की रैंकिंग और [वेबसाइट की परफ़ॉर्मेंस से जुड़ी जानकारी](https://web.dev/explore/vitals) की रिपोर्ट पर असर पड़ सकता है. [Google Search Essentials के बारे में ज़्यादा जानें](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "SEO के दूसरे सबसे अच्छे तरीके देखने के लिए अपनी साइट पर पुष्टि करने वाले ये और भी टूल चलाएं."
@@ -1739,6 +1895,9 @@
   "core/gather/gatherers/link-elements.js | headerParseWarning": {
     "message": "`link` हेडर को पार्स करने में गड़बड़ी हुई ({error}): `{header}`"
   },
+  "core/gather/timespan-runner.js | warningNavigationDetected": {
+    "message": "इस्तेमाल किए जाने के दौरान, पेज नेविगेशन का पता चला. पेज नेविगेशन को ऑडिट करने के लिए टाइमस्पैन मोड का इस्तेमाल करने का सुझाव नहीं दिया जाता. तीसरे पक्ष के बेहतर एट्रिब्यूशन और मुख्य थ्रेड की पहचान करने के लिए, पेज नेविगेशन के ऑडिट के लिए नेविगेशन मोड का इस्तेमाल करें."
+  },
   "core/lib/bf-cache-strings.js | HTTPMethodNotGET": {
     "message": "जीईटी अनुरोध की मदद से लोड किए गए पेज ही बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल कर सकते हैं."
   },
@@ -1750,6 +1909,9 @@
   },
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "जिन पेजों के लिए AppBanner का अनुरोध किया गया है वे फ़िलहाल बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
+  },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "कीपअलाइव (चालू रखें) के अनुरोध की वजह से, बैक/फ़ॉरवर्ड कैश मेमोरी की सुविधा को बंद किया गया."
   },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "फ़्लैग की मदद से, बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा बंद की गई. इस डिवाइस पर यह सुविधा चालू करने के लिए, chrome://flags/#back-forward-cache पर जाएं."
@@ -1816,6 +1978,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "WebUSB API का इस्तेमाल करने वाले पेज, फ़िलहाल बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "बैक/फ़ॉरवर्ड कैश मेमोरी की सुविधा बंद है, क्योंकि `Cache-Control: no-store` का इस्तेमाल करने वाले पेज पर कुकी बंद होती हैं."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "किसी काम को करने के लिए खास तौर पर तय किए गए वर्कर या वर्कलेट का इस्तेमाल करने वाले पेज, फ़िलहाल बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
@@ -1892,20 +2057,23 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "जिन पेजों के लिए कोई ओपेन IndexedDB कनेक्शन मौजूद है वे फ़िलहाल बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "IndexedDB इवेंट की वजह से, बैक/फ़ॉरवर्ड कैश मेमोरी की सुविधा को बंद किया गया."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "गलत एपीआई इस्तेमाल किए गए थे."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "जिन पेजों के लिए, एक्सटेंशन की मदद से JavaScript को इंजेक्ट किया जाता है वे फ़िलहाल बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
+    "message": "जिन पेजों की `JavaScript`, एक्सटेंशन की मदद से इंजेक्ट की जाती है वे फ़िलहाल बैक/फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "जिन पेजों की StyleSheet, एक्सटेंशन की मदद से इंजेक्ट की जाती है वे फ़िलहाल बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
+    "message": "जिन पेजों की `StyleSheet`, एक्सटेंशन की मदद से इंजेक्ट की जाती है वे फ़िलहाल बैक/फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "कोई अंदरूनी गड़बड़ी हुई."
   },
   "core/lib/bf-cache-strings.js | keepaliveRequest": {
-    "message": "कीपअलाइव (चालू रखें) के अनुरोध की वजह से, बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा को बंद किया गया."
+    "message": "कीपअलाइव (चालू रखें) के अनुरोध की वजह से, बैक/फ़ॉरवर्ड कैश मेमोरी की सुविधा को बंद किया गया."
   },
   "core/lib/bf-cache-strings.js | keyboardLock": {
     "message": "कीबोर्ड लॉक का इस्तेमाल करने वाले पेज, फ़िलहाल बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
@@ -2082,25 +2250,25 @@
     "message": "WebXR का इस्तेमाल करने वाले पेज, फ़िलहाल बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
   },
   "core/lib/csp-evaluator.js | allowlistFallback": {
-    "message": "https: और http: यूआरएल स्कीम जोड़ें, ताकि CSP पुराने ब्राउज़र के साथ काम कर सके. 'strict-dynamic' के साथ काम करने वाले ब्राउज़र पर इन स्कीम को अनदेखा किया जा सकता है."
+    "message": "https: और http: यूआरएल स्कीम जोड़ें, ताकि सीएसपी पुराने ब्राउज़र के साथ काम कर सके. इसके लिए, `'strict-dynamic'` के साथ काम करने वाले ब्राउज़र पर इन स्कीम को अनदेखा किया जाता है."
   },
   "core/lib/csp-evaluator.js | deprecatedDisownOpener": {
-    "message": "CSP3 के बाद से disown-opener काम नहीं करता. इसके बजाय, कृपया Cross-Origin-Opener-Policy हेडर का इस्तेमाल करें."
+    "message": "CSP3 के बाद से, `disown-opener` अब काम नहीं करता. इसके बजाय, कृपया Cross-Origin-Opener-Policy हेडर का इस्तेमाल करें."
   },
   "core/lib/csp-evaluator.js | deprecatedReferrer": {
-    "message": "CSP2 के बाद से referrer काम नहीं करता. इसके बजाय, कृपया Referrer-Policy हेडर का इस्तेमाल करें."
+    "message": "CSP2 के बाद से, `referrer` अब काम नहीं करता. इसके बजाय, कृपया Referrer-Policy हेडर का इस्तेमाल करें."
   },
   "core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
-    "message": "CSP2 के बाद से reflected-xss काम नहीं करता. इसके बजाय, कृपया X-XSS-Protection हेडर का इस्तेमाल करें."
+    "message": "CSP2 के बाद से, `reflected-xss` अब काम नहीं करता. इसके बजाय, कृपया X-XSS-Protection हेडर का इस्तेमाल करें."
   },
   "core/lib/csp-evaluator.js | missingBaseUri": {
-    "message": "base-uri डायरेक्टिव शामिल न करने पर, इंजेक्ट किए गए <base> टैग की मदद से सभी मिलते-जुलते यूआरएल (जैसे, स्क्रिप्ट) के लिए बेस यूआरएल सेट हो जाता है. ऐसा उस डोमेन में होता है जिसे कोई हमलावर कंट्रोल करता है. base-uri को 'none' या 'self' पर सेट करें."
+    "message": "`base-uri` को शामिल न करने पर, इंजेक्ट किए गए `<base>` टैग की मदद से सभी मिलते-जुलते यूआरएल (जैसे कि स्क्रिप्ट) के लिए बेस यूआरएल सेट हो जाता है. ऐसा उस डोमेन में होता है जिसे कोई हमलावर कंट्रोल करता है. `base-uri` को `'none'` या `'self'` पर सेट करें."
   },
   "core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "जो object-src उपलब्ध नहीं है, वह ऐसे प्लग इन के इंजेक्शन की अनुमति देता है जो असुरक्षित स्क्रिप्ट को लागू करते हैं. अगर आप कर सकते हैं, तो object-src को 'none' पर सेट करें."
+    "message": "`object-src` डायरेक्टिव उपलब्ध न होने पर, ऐसे प्लगिन डाले जा सकते हैं जो असुरक्षित स्क्रिप्ट चलाते हैं. अगर हो सके, तो `object-src` को `'none'` पर सेट करें."
   },
   "core/lib/csp-evaluator.js | missingScriptSrc": {
-    "message": "script-src डायरेक्टिव मौजूद नहीं है. इस वजह से, असुरक्षित स्क्रिप्ट चल सकती हैं."
+    "message": "`script-src` डायरेक्टिव उपलब्ध नहीं है. इस वजह से, असुरक्षित स्क्रिप्ट चल सकती हैं."
   },
   "core/lib/csp-evaluator.js | missingSemicolon": {
     "message": "क्या आप सेमीकोलन डालना भूल गए? {keyword} एक कीवर्ड नहीं, डायरेक्टिव लग रहा है."
@@ -2118,13 +2286,13 @@
     "message": "इस डायरेक्टिव में, प्लेन वाइल्डकार्ड ({keyword}) का इस्तेमाल करने से बचें. प्लेन वाइल्डकार्ड, स्क्रिप्ट को असुरक्षित डोमेन से पाने की अनुमति देते हैं."
   },
   "core/lib/csp-evaluator.js | reportToOnly": {
-    "message": "रिपोर्टिंग डेस्टिनेशन को सिर्फ़ report-to डायरेक्टिव की मदद से कॉन्फ़िगर किया जाता है. यह डायरेक्टिव सिर्फ़ Chromium कोड वाले ब्राउज़र में काम करता है, इसलिए report-uri डायरेक्टिव भी इस्तेमाल करने का सुझाव दिया जाता है."
+    "message": "रिपोर्टिंग डेस्टिनेशन को सिर्फ़ report-to डायरेक्टिव की मदद से कॉन्फ़िगर किया जाता है. यह डायरेक्टिव सिर्फ़ Chromium कोड वाले ब्राउज़र में काम करता है, इसलिए `report-uri` डायरेक्टिव भी इस्तेमाल करने का सुझाव दिया जाता है."
   },
   "core/lib/csp-evaluator.js | reportingDestinationMissing": {
     "message": "कोई भी CSP, रिपोर्टिंग डेस्टिनेशन को कॉन्फ़िगर नहीं करता. समय के साथ, इसकी वजह से CSP को मेंटेन करने और किसी भी तरह के ब्रेकेज को मॉनिटर करने में दिक्कत होती है."
   },
   "core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "होस्ट की 'व्हाइटलिस्ट' को अक्सर बायपास किया जा सकता है. अगर ज़रूरी हो, तो इसके बजाय 'strict-dynamic' के साथ-साथ CSP nonces या hashes का इस्तेमाल करें."
+    "message": "होस्ट की 'जिन लोगों या संगठनों को अनुमति मिली है उनकी सूची' को अक्सर बायपास किया जा सकता है. अगर ज़रूरी हो, तो `'strict-dynamic'` के साथ-साथ सीएसपी नॉन्स या हैश का इस्तेमाल करें."
   },
   "core/lib/csp-evaluator.js | unknownDirective": {
     "message": "इस CSP डायरेक्टिव की जानकारी नहीं है."
@@ -2133,10 +2301,196 @@
     "message": "{keyword} एक गलत/अमान्य कीवर्ड लग रहा है."
   },
   "core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "'unsafe-inline', असुरक्षित इन-पेज स्क्रिप्ट और इवेंट हैंडलर चलाने की अनुमति देता है. एक-एक करके स्क्रिप्ट को अनुमति देने के लिए, CSP nonces या hashes इस्तेमाल करें."
+    "message": "`'unsafe-inline'` से असुरक्षित इन-पेज स्क्रिप्ट और इवेंट हैंडलर चलाने की अनुमति मिलती है. एक-एक करके स्क्रिप्ट को अनुमति देने के लिए, सीएसपी नॉन्स या हैश का इस्तेमाल करें."
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
-    "message": "'unsafe-inline' जोड़ें, ताकि CSP पुराने ब्राउज़र के साथ काम कर सके. nonces/hashes के साथ काम करने वाले ब्राउज़र पर 'unsafe-inline' को अनदेखा किया जा सकता है."
+    "message": "`'unsafe-inline'` जोड़ें, ताकि सीएसपी पुराने ब्राउज़र के साथ काम कर सके. नॉन्स/हैश के साथ काम करने वाले ब्राउज़र पर इसे अनदेखा किया जाता है."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "ज़्यादा जानकारी के लिए, सुविधा की स्थिति वाला पेज देखें."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "माइलस्टोन {milestone} इस्तेमाल करने पर, यह बदलाव लागू हो जाएगा."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "पाबंदी वाली सुविधा का इस्तेमाल किया गया"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "सीओआरएस `Access-Control-Allow-Headers` हैंडलिंग में, वाइल्डकार्ड सिंबल (*) की ओर से अनुमति देने की सुविधा कवर नहीं की जाएगी."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "`-internal-media-controls-overlay-cast-button` सिलेक्टर के बजाय, `disableRemotePlayback` एट्रिब्यूट का इस्तेमाल किया जाना चाहिए, ताकि डिफ़ॉल्ट कास्ट इंटिग्रेशन को बंद किया जा सके."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "जिन रिसॉर्स के यूआरएल में खाली सफ़ेद जगह के हटाए गए वर्ण `(n|r|t)` और लेस-दैन वर्ण (`<`), दोनों शामिल हों उनका अनुरोध नहीं किया जा सकता है. उन रिसॉर्स को ब्लॉक किया गया है. एलिमेंट एट्रिब्यूट की वैल्यू जैसी जगहों से, कृपया नई लाइनों को हटाएं और कम वर्णों को एन्कोड करें, ताकि इन रिसॉर्स को लोड किया जा सके."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` is deprecated, instead use standardized API: Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` is deprecated, instead use standardized API: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` is deprecated, instead use standardized API: `nextHopProtocol` in Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Cookies containing a `(0|r|n)` character will be rejected instead of truncated."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "`document.domain` को सेट करके, एक ही ऑरिजिन से जुड़ी नीति में पाबंदियों को हटाने की सुविधा पर रोक लगा दी गई है. इसे डिफ़ॉल्ट रूप से बंद कर दिया जाएगा. इस्तेमाल पर पाबंदी लागने की यह चेतावनी, उस क्रॉस-ऑरिजिन ऐक्सेस के लिए है जिसे `document.domain` सेटिंग की मदद से चालू किया गया था."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "क्रॉस ओरिजिन iframe से window.alert को ट्रिगर करने की सुविधा अब काम नहीं करती. इसे आने वाले समय में हटा दिया जाएगा."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "क्रॉस ऑरिजिन iframe से window.confirm को ट्रिगर करने की सुविधा अब काम नहीं करती. इसे आने वाले समय में हटा दिया जाएगा."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "`DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument`, और `DOMCharacterDataModified` जैसे DOM म्यूटेशन इवेंट बंद कर दिए गए हैं (https://w3c.github.io/uievents/#legacy-event-types) और इन्हें हटा दिया जाएगा. इसके बजाय, कृपया `MutationObserver` का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "डेटा के लिए सहायता: SVG <use> एलिमेंट में मौजूद यूआरएल अब काम नहीं करते. इन्हें बाद में हटा दिया जाएगा."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "`document.domain` को सेट करके, एक ही ऑरिजिन से जुड़ी नीति में पाबंदियों को हटाने की सुविधा पर रोक लगा दी गई है. इसे डिफ़ॉल्ट रूप से बंद कर दिया जाएगा. इस सुविधा का इस्तेमाल जारी रखने के लिए, कृपया ऑरिजिन के हिसाब से बने एजेंट क्लस्टर से ऑप्ट आउट करें. इसके लिए, `Origin-Agent-Cluster: ?0` हेडर के साथ-साथ, दस्तावेज़ और फ़्रेम के लिए एचटीटीपी रिस्पॉन्स भेजें. ज़्यादा जानकारी के लिए, https://developer.chrome.com/blog/immutable-document-domain/ पर जाएं."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "`Expect-CT` हेडर के इस्तेमाल पर पाबंदी लगा दी गई है और इसे हटा दिया जाएगा. Chrome को 30 अप्रैल, 2018 के बाद जारी किए गए सभी सर्टिफ़िकेट के लिए, पारदर्शिता सर्टिफ़िकेट फ़्रेमवर्क की ज़रूरत होगी. ऐसा सार्वजनिक रूप से भरोसेमंद सर्टिफ़िकेट के तौर पर पुष्टि किए गए सर्टिफ़िकेट के लिए ज़रूरी है."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` और `watchPosition()` असुरक्षित ऑरिजिन पर, अब काम नहीं करते. इस सुविधा का इस्तेमाल करने के लिए, आपको अपने ऐप्लिकेशन को एचटीटीपीएस जैसे किसी सुरक्षित ऑरिजिन पर स्विच करना होगा. ज़्यादा जानकारी के लिए, https://goo.gle/chrome-insecure-origins पर जाएं."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "असुरक्षित ऑरिजिन पर, `getCurrentPosition()` और `watchPosition()` के इस्तेमाल पर पाबंदी लगा दी गई है. इस सुविधा का इस्तेमाल करने के लिए, आपको अपने ऐप्लिकेशन को एचटीटीपीएस जैसे किसी सुरक्षित ऑरिजिन पर स्विच करना होगा. ज़्यादा जानकारी के लिए, https://goo.gle/chrome-insecure-origins पर जाएं."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` के इस्तेमाल पर पाबंदी लगा दी गई है. इसके बजाय `RTCPeerConnectionIceErrorEvent.address` या `RTCPeerConnectionIceErrorEvent.port` इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "`canmakepayment` सर्विस वर्कर इवेंट से लिए गए, व्यापारी या कंपनी के ऑरिजिन और उनके आर्बिट्रेरी डेटा के इस्तेमाल पर पाबंदी लगा दी गई है और उन्हें हटा दिया जाएगा: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "`InterestGroups` के `dailyUpdateUrl` फ़ील्ड को `joinAdInterestGroup()` के पास भेजा गया है. इसके काम करने के तरीके को ज़्यादा सटीक रूप से दिखाने के लिए, नाम को बदल कर `updateUrl` कर दिया गया है."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "CSS cannot be loaded from `file:` URLs unless they end in a `.css` file extension."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Using `SourceBuffer.abort()` to abort `remove()`'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should listen to the `updateend` event instead. `abort()` is intended to only abort an asynchronous media append or reset parser state."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Setting `MediaSource.duration` below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit `remove(newDuration, oldDuration)` on all `sourceBuffers`, where `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "पुराना, नॉन-स्टैंडर्ड `shadowroot` एट्रिब्यूट अब काम नहीं करता है और M119 में *अब काम नहीं करेगा*. इसके बजाय, कृपया नए और स्टैंडर्ड `shadowrootmode` एट्रिब्यूट का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "अब असुरक्षित ऑरिजिन से, Notification API का इस्तेमाल नहीं किया जा सकेगा. कृपया अपने ऐप्लिकेशन को एचटीटीपीएस जैसे सुरक्षित ऑरिजिन पर ले जाएं. ज़्यादा जानकारी के लिए, https://goo.gle/chrome-insecure-origins पर जाएं."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Notification API को इस्तेमाल करने की अनुमति से जुड़ा अनुरोध, क्रॉस-ऑरिजिन iframe से नहीं किया जा सकता. इसके बजाय, आप किसी टॉप लेवल फ़्रेम से अनुरोध करें या नई विंडो का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "createImageBitmap में `imageOrientation: 'none'` विकल्प अब काम नहीं करता. इसके बजाय, कृपया \\{imageOrientation: 'from-image'\\} विकल्प के साथ, createImageBitmap का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "img, video, और canvas टैग पर `overflow: visible` लागू होने से, विज़ुअल कॉन्टेंट एलिमेंट की सीमाओं के बाहर दिखते हैं. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md देखें."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` के इस्तेमाल पर रोक लगा दी गई है. इसके बजाय, पेमेंट हैंडलर के लिए just-in-time इंस्टॉल करने की सुविधा इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "आपके `PaymentRequest` कॉल ने Content-Security-Policy (सीएसपी) `connect-src` डायरेक्टिव को बायपास किया है. हालांकि, यह बायपास अब काम नहीं करता. कृपया `PaymentRequest` API (`supportedMethods` फ़ील्ड में) से अपने सीएसपी `connect-src` डायरेक्टिव में, पैसे चुकाने के तरीके के आइडेंटिफ़ायर को जोड़ें."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` के इस्तेमाल पर रोक लगा दी गई है. इसके बजाय, कृपया स्टैंडर्ड `navigator.storage` का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "`<picture>` पैरंट वाला `<source src>` गलत है. इसलिए, इसे अनदेखा किया गया है. इसके बजाय, कृपया `<source srcset>` का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "हर वेंडर का webkitCancelAnimationFrame अलग होता है. इसके बजाय, कृपया स्टैंडर्ड cancelAnimationFrame का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "हर वेंडर का webkitRequestAnimationFrame अलग होता है. इसके बजाय, कृपया स्टैंडर्ड requestAnimationFrame का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen अब काम नहीं करता. इसके बजाय, कृपया Document.fullscreenElement का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() अब काम नहीं करता. इसके बजाय, कृपया Element.requestFullscreen() का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() अब काम नहीं करता. इसके बजाय, कृपया Element.requestFullscreen() का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() अब काम नहीं करता. इसके बजाय, कृपया Document.exitFullscreen() का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() अब काम नहीं करता. इसके बजाय, कृपया Document.exitFullscreen() का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen अब काम नहीं करता. इसके बजाय, कृपया Document.fullscreenEnabled का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "हम `chrome.privacy.websites.privacySandboxEnabled` API का इस्तेमाल रोक रहे हैं. हालांकि, वर्शन M113 के रिलीज़ होने तक, यह पुराने सिस्टम के साथ काम करता रहेगा. इसके बजाय, `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled`, और `chrome.privacy.websites.adMeasurementEnabled` का इस्तेमाल करें. https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled पर जाएं."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "कंस्ट्रेंट `DtlsSrtpKeyAgreement` को हटा दिया गया है. आपने इस कंस्ट्रेंट के लिए, `false` वैल्यू दी है. इससे ऐसा लगता है कि आपने हटाए गए `SDES key negotiation` तरीके को इस्तेमाल करने की कोशिश की है. इस सुविधा को हटा दिया गया है. इसके बजाय, ऐसी सेवा का इस्तेमाल करें जो `DTLS key negotiation` के साथ काम करती हो."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "कंस्ट्रेंट `DtlsSrtpKeyAgreement` को हटा दिया गया है. आपने इस कंस्ट्रेंट के लिए `true` वैल्यू दी है, जिससे कोई फ़र्क़ नहीं पड़ेगा. हालांकि, व्यवस्थित रखने के लिए, इस कंस्ट्रेंट को हटाया जा सकता है."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "कॉलबैक-आधारित getStats() अब काम नहीं करता है. इसे हटा दिया जाएगा. इसके बजाय, निर्देशों का पालन करने वाले getStats() का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() अब काम नहीं करता. इसके बजाय, कृपया Selection.modify() का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Subresource requests whose URLs contain embedded credentials (e.g. `https://user:pass@host/`) are blocked."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "`rtcpMuxPolicy` विकल्प के इस्तेमाल पर रोक लगा दी गई है और इसे हटा दिया जाएगा."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` के लिए क्रॉस-ऑरिजिन आइसोलेशन ज़रूरी है. ज़्यादा जानकारी के लिए, https://developer.chrome.com/blog/enabling-shared-array-buffer/ देखें."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "उपयोगकर्ता की गतिविधि के बिना, `speechSynthesis.speak()` का इस्तेमाल नहीं किया जा सकता और इस सुविधा को हटा दिया जाएगा."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "`SharedArrayBuffer` का इस्तेमाल जारी रखने के लिए, एक्सटेंशन को क्रॉस-ऑरिजिन आइसोलेशन के लिए ऑप्ट करना चाहिए. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ देखें."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "वेब एसक्यूएल की सुविधा अब काम नहीं करती. कृपया SQLite WebAssembly या इंडेक्स किए गए डेटाबेस का इस्तेमाल करें"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "अनुमति डिस्क्रिप्टर `window-placement` अब काम नहीं करता. इसके बजाय, `window-management` का इस्तेमाल करें. इस बारे में किसी भी तरह की मदद के लिए, https://bit.ly/window-placement-rename पर जाएं."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "अनुमति की नीति `window-placement` अब काम नहीं करती. इसके बजाय, `window-management` का इस्तेमाल करें. इस बारे में किसी भी तरह की मदद के लिए, https://bit.ly/window-placement-rename पर जाएं."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "UTF-16, `XMLHttpRequest` में response.json के साथ काम नहीं करता"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "मुख्य थ्रेड पर सिंक किया गया `XMLHttpRequest` अब काम नहीं करता. इसकी वजह यह है कि असली उपयोगकर्ता के अनुभव पर इसका बुरा असर पड़ रहा था. इस बारे में किसी भी तरह की मदद के लिए, https://xhr.spec.whatwg.org/ पर जाएं."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` के इस्तेमाल पर पाबंदी लगा दी गई है. इसके बजाय, कृपया `isSessionSupported()` का इस्तेमाल करें और रिज़ॉल्व की गई बूलियन वैल्यू देखें."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "मुख्य थ्रेड ब्लॉक होने का समय"
@@ -2328,7 +2682,7 @@
     "message": "Lighthouse आपका अनुरोध किया गया पेज ठीक से लोड नहीं कर सका. पक्का करें कि आप सही यूआरएल को टेस्ट कर रहे हैं और सर्वर सभी अनुरोधों के लिए ठीक से काम कर रहा है. (जानकारी: {errorDetails})"
   },
   "core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
-    "message": "Lighthouse आपका अनुरोध किया गया पेज ठीक से लोड नहीं कर सका. पक्का करें कि आप सही यूआरएल को टेस्ट कर रहे हैं और सर्वर सभी अनुरोधों के लिए ठीक से काम कर रहा है. (स्थिति कोड: {statusCode})"
+    "message": "लाइटहाउस आपके अनुरोध किए गए पेज को ठीक से लोड नहीं कर सका. पक्का करें कि आपने सही यूआरएल का इस्तेमाल किया है और सर्वर सभी अनुरोधों के लिए ठीक से काम कर रहा है. (स्टेटस कोड: {statusCode})"
   },
   "core/lib/lh-error.js | pageLoadTookTooLong": {
     "message": "आपके पेज को लोड होने में बहुत ज़्यादा समय लगा. अपने पेज के लोड होने का समय कम करने के लिए, कृपया रिपोर्ट में दिए गए अवसरों का फ़ायदा लें. इसके बाद, Lighthouse को फिर से चलाकर देखें. ({errorCode})"
@@ -2341,6 +2695,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "आपका दिया हुआ यूआरएल गलत लगता है."
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "लाइटहाउस आपके अनुरोध किए गए पेज को ठीक से लोड नहीं कर सका. पक्का करें कि आपने सही यूआरएल का इस्तेमाल किया है और सर्वर सभी अनुरोधों के लिए ठीक से काम कर रहा है. (स्टेटस कोड: {errorCode})"
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "पेज MIME टाइप, XHTML है: Lighthouse साफ़ तौर पर, इस तरह के दस्तावेज़ के साथ काम नहीं करता"
@@ -2538,7 +2895,7 @@
     "message": "ऐसा [Drupal मॉड्यूल](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) इंस्टॉल करें जो इमेज को धीमे लोड कर पाए. परफ़ॉर्मेंस को बेहतर बनाने के लिए, इस तरह के मॉड्यूल किसी भी ऑफ़स्क्रीन इमेज को अलग करने की सुविधा देते हैं."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "ज़रूरी सीएसएस और JavaScipt को इनलाइन करने के लिए या एसिंक्रोनस तौर पर JavaScript से लोड हो सकने वाली एसेट के लिए किसी मॉड्यूल का इस्तेमाल करें, जैसे कि [सीएसएस/जेएस का, बेहतर तरीके से एक साथ दिखने वाला](https://www.drupal.org/project/advagg) मॉड्यूल. ध्यान रखें कि इस मॉड्यूल से मिलने वाली ऑप्टिमाइज़ेशन आपकी साइट को नुकसान पहुंचा सकती हैं. इसलिए, शायद आपको कोड में बदलाव करना पड़े."
+    "message": "ज़रूरी सीएसएस और JavaScript को इनलाइन करने के लिए, मॉड्यूल का इस्तेमाल करें. साथ ही, गैर-ज़रूरी सीएसएस या JavaScript के लिए, डेफ़र एट्रिब्यूट का इस्तेमाल करें."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "थीम, मॉड्यूल, और सर्वर की खास बातें, सर्वर से जवाब मिलने का समय तय करने में मदद करती हैं. ज़्यादा ऑप्टिमाइज़ की हुई थीम ढूंढें, ऑप्टिमाइज़ेशन मॉड्यूल को सावधानी से चुनें, और/या अपना सर्वर अपग्रेड करें. आपके होस्टिंग सर्वर को डेटाबेस क्वेरी में लगने वाले समय को कम करने के लिए, Redis या Memcached जैसे PHP opcode कैशिंग, मेमोरी-कैशिंग का इस्तेमाल करना चाहिए. साथ ही, पेजों को तेज़ी से तैयार करने के लिए, ऑप्टिमाइज़ किए हुए ऐप्लिकेशन का लॉजिक भी होना चाहिए."
@@ -2547,10 +2904,10 @@
     "message": "आपके पेज पर लोड की गई इमेज के साइज़ को कम करने के लिए, [जवाब देने वाली इमेज की शैली](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) का इस्तेमाल करें. अगर आप किसी पेज पर कई कॉन्टेंट आइटम को दिखाने के लिए, व्यू की सुविधा का इस्तेमाल कर रहे हैं, तो उस पेज पर दिखने वाले कॉन्टेंट आइटम को कम करने के लिए, आप पेज पर नंबर डालने की सुविधा को लागू कर सकते हैं."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "पक्का करें कि आपने \"Administration » Configuration » Development\" पेज में \"सीएसएस फ़ाइलों को एक साथ दिखाने\" की सुविधा को चालू किया है. आप फ़ाइलों को एक साथ दिखाने के ज़्यादा बेहतर विकल्पों को [अतिरिक्त मॉड्यूल](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) की मदद से भी कॉन्फ़िगर करके, अपनी साइट की रफ़्तार को तेज़ कर सकते हैं. ऐसा करने के लिए, आपको सीएसएस शैली को जोड़ना, छोटा करना, और कंप्रेस करना होगा."
+    "message": "पक्का करें कि आपने \"Administration » Configuration » Development\" पेज में \"Aggregate CSS files\" को चालू किया है.  बेहतर ऐसेट एग्रीगेशन सपोर्ट के लिए, पक्का करें कि आपकी साइट कम से कम Drupal 10.1 पर चल रही हो."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "पक्का करें कि आपने \"Administration » Configuration » Development\" पेज में, \"JavaScript फ़ाइलों को एक साथ दिखाने\" की सुविधा को चालू किया है. आप फ़ाइलों को एक साथ दिखाने के ज़्यादा बेहतर विकल्पों को [अतिरिक्त मॉड्यूल](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) की मदद से भी कॉन्फ़िगर करके, अपनी साइट की रफ़्तार को तेज़ कर सकते हैं. ऐसा करने के लिए, आपको अपनी JavaScript एसेट को जोड़ना, छोटा करना, और कंप्रेस करना होगा."
+    "message": "पक्का करें कि आपने \"Administration » Configuration » Development\" पेज में, \"Aggregate JavaScript files\" को चालू किया है.  बेहतर ऐसेट एग्रीगेशन सपोर्ट के लिए, पक्का करें कि आपकी साइट कम से कम Drupal 10.1 पर चल रही हो."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "ऐसे सीएसएस नियमों को हटाएं जिनका इस्तेमाल नहीं हुआ है. साथ ही, सही पेज या पेज के कॉम्पोनेंट में सिर्फ़ ज़रूरी Drupal लाइब्रेरी अटैच करें. ज़्यादा जानकारी के लिए, [Drupal के दस्तावेज़ का लिंक](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) देखें. Chrome DevTools में [कोड कवरेज](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) चलाकर, उन अटैच की गई लाइब्रेरी की पहचान करें जो आपके पेज में बाहरी सीएसएस को जोड़ रही हैं. जब आपकी Drupal साइट में सीएसएस के एक साथ दिखने की सुविधा बंद हो जाती है, तो आप स्टाइलशीट के यूआरएल से पहचान सकते हैं कि ऐसा किस थीम/मॉड्यूल की वजह से हुआ है. ऐसे थीम/मॉड्यूल खोजें जिनके पास उस सूची में कई ऐसी स्टाइलशीट हैं जिनके कोड कवरेज में बहुत से लाल निशान हैं. थीम/मॉड्यूल को स्टाइलशीट तभी क्यू में लगानी चाहिए, जब पेज पर उसका वाकई इस्तेमाल किया गया हो."
@@ -2750,23 +3107,65 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "अपने Next.js सर्वर पर कंप्रेस करने की सुविधा चालू करें. [ज़्यादा जानें](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "[`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337) को चालू करने के लिए, अपने खाता मैनेजर से संपर्क करें. इसे कॉन्फ़िगर करने से, आपके पेज की रेंडरिंग परफ़ॉर्मेंस को प्राथमिकता मिलेगी और उसे ऑप्टिमाइज़ किया जाएगा."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "सीएसएस फ़ॉन्ट-डिसप्ले नियम के लिए मनचाही वैल्यू सेट करने के लिए, NitroPack में [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) विकल्प इस्तेमाल करें."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "इमेज को अपने-आप WebP में बदलने के लिए, [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) का इस्तेमाल करें."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "[`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images) को चालू करके, ऑफ़स्क्रीन इमेज को कुछ समय के लिए रोकें."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "शुरुआत में कॉन्टेंट को तेज़ी से लोड करने के लिए, NitroPack में [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) को चालू करें."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "[`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361) को चालू करके, सर्वर के रिस्पॉन्स टाइम में सुधार करें और अनुमानित परफ़ॉर्मेंस को ऑप्टिमाइज़ करें."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "कैश मेमोरी में सेव होने की सेटिंग में [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) चालू करें. इससे सीएसएस, एचटीएमएल, और JavaScript फ़ाइलों का साइज़ कम हो जाता है और वे तेज़ी से लोड की जा सकती हैं."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "कैश मेमोरी की सेटिंग में [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) चालू करें. इससे आपकी JS, एचटीएमएल, और सीएसएस फ़ाइलों का साइज़ कम हो जाता है और वे तेज़ी से लोड की जा सकती हैं."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "[`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) को चालू करें, ताकि ऐसे सीएसएस नियमों को हटाया जा सके जो इस पेज पर लागू नहीं होते."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "जब तक स्क्रिप्ट की ज़रूरत न हो, तब तक उनके लोड होने में देरी के लिए, NitroPack में [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) को कॉन्फ़िगर करें."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "पेज लोड होने में लगने वाले समय को कम करने और उपयोगकर्ता अनुभव को बेहतर बनाने के लिए, `Caching` मेन्यू में [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) सुविधा पर जाएं और पेज की कैश मेमोरी के खत्म होने की तारीख को अडजस्ट करें."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "[`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) सेटिंग चालू करें, ताकी इमेज अपने-आप कंप्रेस हों, ऑप्टिमाइज़ हों, और WebP में बदल जाएं."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "अपनी इमेज को पहले से ऑप्टिमाइज़ करने और उन्हें सभी डिवाइसों पर दिखाए गए कंटेनर के डाइमेंशन से मैच कराने के लिए, [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) को चालू करें."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "ब्राउज़र को भेजी जाने वाली फ़ाइलों का साइज़ कम करने के लिए, NitroPack में [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) का इस्तेमाल करें."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "`nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और `format=\"webp\"` सेट करें. [ज़्यादा जानें](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "`nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और `format=\"webp\"` सेट करें. [ज़्यादा जानें](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "ऑफ़स्क्रीन इमेज के लिए, `nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और `loading=\"lazy\"` सेट करें. [ज़्यादा जानें](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "ऑफ़स्क्रीन इमेज के लिए, `nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और `loading=\"lazy\"` सेट करें. [ज़्यादा जानें](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "एलसीपी इमेज के लिए, `nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और `preload` सेट करें. [ज़्यादा जानें](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "एलसीपी इमेज के लिए, `nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और `preload` सेट करें. [ज़्यादा जानें](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "`nuxt/image` कॉम्पोनेंट का इस्तेमाल करें. साथ ही, `width` और `height` को साफ़ तौर पर सेट करें. [ज़्यादा जानें](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "`nuxt/image` कॉम्पोनेंट का इस्तेमाल करें. साथ ही, `width` और `height` को साफ़ तौर पर सेट करें. [ज़्यादा जानें](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "`nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और सही `quality` सेट करें. [ज़्यादा जानें](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "`nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और सही `quality` सेट करें. [ज़्यादा जानें](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "`nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और सही `sizes` सेट करें. [ज़्यादा जानें](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "`nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और सही `sizes` सेट करें. [ज़्यादा जानें](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "वेब पेजों को तेज़ी से लोड करने के लिए, [ऐनिमेट किए गए GIF की जगह वीडियो का इस्तेमाल करें](https://web.dev/replace-gifs-with-videos/). साथ ही, [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) या [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) जैसे मॉडर्न फ़ाइल फ़ॉर्मैट इस्तेमाल करें, ताकि कंप्रेस करने पर क्वालिटी, मौजूदा state-of-the-art वीडियो कोडेक VP9 के मुकाबले 30% से ज़्यादा हो."
@@ -2831,6 +3230,21 @@
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "React DevTools प्रोफ़ाइलर इस्तेमाल करें. यह आपके कॉम्पोनेंट की रेंडरिंग परफ़ॉर्मेंस मापने के लिए प्रोफ़ाइलर एपीआई का इस्तेमाल करता है. [ज़्यादा जानें](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)."
   },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "वीडियो को `VideoBoxes` में रखें, `Video Masks` का इस्तेमाल करके उन्हें पसंद के मुताबिक बनाएं या `Transparent Videos` जोड़ें. [ज़्यादा जानें](https://support.wix.com/en/article/wix-video-about-wix-video)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "`Wix Media Manager` का इस्तेमाल करके इमेज अपलोड करें, ताकि यह पक्का किया जा सके कि उन्हें WebP के तौर पर अपने-आप दिखाया जाएगा. अपनी साइट की मीडिया फ़ाइलों को [ऑप्टिमाइज़ करने के और तरीके](https://support.wix.com/en/article/site-performance-optimizing-your-media) जानें."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "अपनी साइट के डैशबोर्ड के `Custom Code` टैब में [तीसरे पक्ष का कोड जोड़ते समय](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site), पक्का करें कि वह कोड बॉडी के आखिर में रखा या लोड हो. जहां भी हो सके, Wix के [इंटिग्रेशन](https://support.wix.com/en/article/about-marketing-integrations) का इस्तेमाल करके, अपनी साइट पर मार्केटिंग टूल जोड़ें. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Wix, ज़्यादातर लोगों को जल्द से जल्द जवाब देने के लिए, सीडीएन और कैश मेमोरी का इस्तेमाल करता है. अगर `Velo` का इस्तेमाल किया जा रहा है, तो अपनी साइट के लिए [मैन्युअल तरीके से कैश मेमोरी चालू करने](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) पर विचार करें."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "अपनी साइट के डैशबोर्ड के `Custom Code` टैब में, अपनी साइट में जोड़े गए किसी भी तीसरे पक्ष के कोड की समीक्षा करें. इसके बाद, सिर्फ़ वही सेवाएं रखें जो आपकी साइट के लिए ज़रूरी हैं. [ज़्यादा जानें](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
+  },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "किसी ऐसी सेवा में अपनी GIF अपलोड करें जो उसे HTML5 वीडियो में जोड़ने के लिए तैयार रख सके."
   },
@@ -2874,7 +3288,7 @@
     "message": "आप अपने वेब सर्वर कॉन्फ़िगरेशन में टेक्स्ट कंप्रेस करने की सुविधा चालू कर सकते हैं."
   },
   "node_modules/lighthouse-stack-packs/packs/wp-rocket.js | modern-image-formats": {
-    "message": "अपनी इमेज को WebP में बदलने के लिए, 'WP Rocket' में 'इमेज ऑप्टिमाइज़ेशन' टैब से 'Imagify' सुविधा को चालू करें."
+    "message": "अपनी इमेज को WebP में बदलने के लिए, WP Rocket में 'इमेज ऑप्टिमाइज़ेशन' टैब से Imagify सुविधा को चालू करें."
   },
   "node_modules/lighthouse-stack-packs/packs/wp-rocket.js | offscreen-images": {
     "message": "इस सुझाव को ठीक करने के लिए, WP Rocket में [LazyLoad](https://docs.wp-rocket.me/article/1141-lazyload-for-images) सुविधा को चालू करें. इस सुविधा के ज़रिए, इमेज लोड होने में तब तक देरी होती है, जब तक वेबसाइट पर आने वाला व्यक्ति पेज पर नीचे स्क्रोल नहीं करता और असल में उसे इमेज देखने की ज़रूरत नहीं होती."
@@ -2895,7 +3309,7 @@
     "message": "इस समस्या को हल करने के लिए, 'WP Rocket' में [Delay JavaScript execution](https://docs.wp-rocket.me/article/1349-delay-javascript-execution) की सुविधा चालू करें. यह सुविधा स्क्रिप्ट को तब तक लोड नहीं होने देती, जब तक उपयोगकर्ता कोई इंटरैक्शन न करे. इस वजह से, आपके पेज की लोडिंग परफ़ॉर्मेंस बेहतर हो जाती है. अगर आपकी साइट पर iframe हैं, तो WP Rocket की [LazyLoad for iframes and videos](https://docs.wp-rocket.me/article/1674-lazyload-for-iframes-and-videos) और [Replace YouTube iframe with preview image](https://docs.wp-rocket.me/article/1488-replace-youtube-iframe-with-preview-image) सुविधा का इस्तेमाल करें."
   },
   "node_modules/lighthouse-stack-packs/packs/wp-rocket.js | uses-optimized-images": {
-    "message": "'WP Rocket' में इमेज ऑप्टिमाइज़ेशन टैब से 'Imagify' सुविधा चालू करें और अपनी इमेज कंप्रेस करने के लिए Bulk Optimization चलाएं."
+    "message": "WP Rocket में इमेज ऑप्टिमाइज़ेशन टैब से Imagify सुविधा चालू करें और अपनी इमेज कंप्रेस करने के लिए Bulk Optimization चलाएं."
   },
   "node_modules/lighthouse-stack-packs/packs/wp-rocket.js | uses-rel-preconnect": {
     "message": "\"dns-prefetch\" जोड़ने और बाहरी डोमेन के साथ कनेक्शन की रफ़्तार बढ़ाने के लिए, 'WP Rocket' में [Prefetch DNS Requests](https://docs.wp-rocket.me/article/1302-prefetch-dns-requests) सुविधा का इस्तेमाल करें. साथ ही, 'WP Rocket', [Google Fonts डोमेन](https://docs.wp-rocket.me/article/1312-optimize-google-fonts) में \"preconnect\" की सुविधा को अपने-आप जोड़ देता है. इसके अलावा, यह [Enable CDN](https://docs.wp-rocket.me/article/42-using-wp-rocket-with-a-cdn) सुविधा के ज़रिए जोड़े गए सभी CNAME से भी \"preconnect\"  को जोड़ देता है."
@@ -2935,6 +3349,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "JSON के रूप में सेव करें"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "थ्रॉटल नहीं किया गया ट्रेस देखें"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "व्यूअर में खोलें"
@@ -2981,8 +3398,17 @@
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "पास हुए ऑडिट"
   },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "[Chrome पर, इंस्टॉल करने की अपडेट की गई ज़रूरी शर्तों](https://developer.chrome.com/blog/update-install-criteria) के साथ-साथ, आने वाले समय में लाइटहाउस, पीडब्ल्यूए कैटगरी को बंद कर दिया जाएगा. आने वाले समय में पीडब्ल्यूए की टेस्टिंग के लिए, कृपया [पीडब्ल्यूए का अपडेट किया गया दस्तावेज़](https://developer.chrome.com/docs/devtools/progressive-web-apps/) देखें."
+  },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "शुरुआती पेज लोड"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "पॉइंट-इन-टाइम स्नैपशॉट"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "उपयोगकर्ता के साथ हुए इंटरैक्शन का टाइमस्पैन"
   },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "कस्टम थ्रॉटलिंग"
@@ -3018,10 +3444,10 @@
     "message": "उपयोगकर्ता एजेंट (नेटवर्क)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "एक पेज लोड"
+    "message": "सिंगल-पेज सेशन"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "यह डेटा, कई सेशन के बारे में जानकारी देने वाले फ़ील्ड डेटा के बजाय, लोड हुए एक पेज से लिया गया है."
+    "message": "यह डेटा, कई सेशन के बारे में जानकारी देने वाले फ़ील्ड डेटा के बजाय, सिंगल-पेज सेशन से लिया गया है."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "धीमी 4G थ्रॉटलिंग"
@@ -3055,9 +3481,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "मान अनुमानित हैं और इनमें बदलाव हो सकता है. सीधे तौर पर इन मेट्रिक से [परफ़ॉर्मेंस स्कोर तय किए ](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) जाते हैं."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "मूल ट्रेस देखें"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "ट्रेस देखें"

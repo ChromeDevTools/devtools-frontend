@@ -5,6 +5,7 @@
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
@@ -23,6 +24,7 @@ devtools_module("request_link_icon") {
     "../../../models/logs:bundle",
     "../../../panels/network/forward:bundle",
     "../../../ui/lit-html:bundle",
+    "../../../ui/visual_logging:bundle",
     "../helpers:bundle",
     "../icon_button:bundle",
   ]
@@ -37,4 +39,21 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility = default_components_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "RequestLinkIcon.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../core/common:bundle",
+    "../../../core/platform:bundle",
+    "../../../core/sdk:bundle",
+    "../../../models/logs:bundle",
+    "../../../testing",
+    "../../legacy:bundle",
+    "../icon_button:bundle",
+  ]
 }

@@ -8,13 +8,16 @@ node_ts_library("shared") {
   sources = [
     "async-scope.ts",
     "config.ts",
+    "debug-check.ts",
     "helper.ts",
     "mocha-extensions.ts",
     "mocha-resultsdb-reporter.ts",
     "resultsdb.ts",
+    "screenshot-error.ts",
     "screenshots.ts",
     "snapshots.ts",
     "text-color.ts",
   ]
+
   deps = [ "../conductor:implementation" ]
 }

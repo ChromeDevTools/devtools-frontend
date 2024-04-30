@@ -18,12 +18,11 @@ generate_css("css_files") {
     "elementsPanel.css",
     "elementsTreeOutline.css",
     "layersWidget.css",
-    "layoutPane.css",
     "metricsSidebarPane.css",
     "nodeStackTraceWidget.css",
     "platformFontsWidget.css",
     "propertiesWidget.css",
-    "stylesSectionTree.css",
+    "stylePropertiesTreeOutline.css",
     "stylesSidebarPane.css",
   ]
 }
@@ -56,6 +55,7 @@ devtools_module("elements") {
     "PlatformFontsWidget.ts",
     "PropertiesWidget.ts",
     "PropertyNameCategories.ts",
+    "PropertyParser.ts",
     "StyleEditorWidget.ts",
     "StylePropertiesSection.ts",
     "StylePropertyHighlighter.ts",
@@ -87,6 +87,7 @@ devtools_module("elements") {
     "../../panels/utils:bundle",
     "../../ui/components/adorners:bundle",
     "../../ui/components/code_highlighter:bundle",
+    "../../ui/components/highlighting:bundle",
     "../../ui/components/text_editor:bundle",
     "../../ui/components/tree_outline:bundle",
     "../../ui/legacy:bundle",
@@ -98,10 +99,7 @@ devtools_module("elements") {
     "./components:bundle",
   ]
 
-  visibility = [
-    "../../../test/unittests/front_end/elements",
-    "../../component_docs/*",
-  ]
+  visibility = [ "../../component_docs/*" ]
 }
 
 devtools_entrypoint("bundle") {
@@ -114,8 +112,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
-    "../../../test/unittests/front_end/panels/elements/*",
     "../../entrypoints/*",
     "../../panels/recorder/*",
     "../../ui/components/docs/computed_style_property/*",
@@ -123,23 +119,10 @@ devtools_entrypoint("bundle") {
     "../../ui/components/docs/elements_breadcrumbs/*",
     "../../ui/components/docs/flexbox_editor/*",
     "../../ui/components/docs/layout_pane/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../network/*",
   ]
 
   visibility += devtools_panels_visibility
-}
-
-devtools_entrypoint("legacy") {
-  entrypoint = "elements-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../legacy_test_runner/*",
-  ]
 }
 
 devtools_entrypoint("meta") {
@@ -147,13 +130,46 @@ devtools_entrypoint("meta") {
 
   deps = [
     ":bundle",
+    "../../core/common:bundle",
+    "../../core/i18n:bundle",
     "../../core/root:bundle",
+    "../../core/sdk:bundle",
     "../../ui/legacy:bundle",
+    "./components:bundle",
   ]
 
   visibility = [
-    "../../../test/unittests/front_end/helpers/*",
-    "../../../test/unittests/front_end/panels/elements/*",
     "../../entrypoints/*",
+    "../../testing/*",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "AccessibilityTreeView.test.ts",
+    "CSSRuleValidator.test.ts",
+    "ClassesPaneWidget.test.ts",
+    "DOMLinkifier.test.ts",
+    "ElementsPanel.test.ts",
+    "ElementsTreeElementHighlighter.test.ts",
+    "InspectElementModeController.test.ts",
+    "PlatformFontsWidget.test.ts",
+    "PropertiesWidget.test.ts",
+    "PropertyParser.test.ts",
+    "StylePropertiesSection.test.ts",
+    "StylePropertyHighlighter.test.ts",
+    "StylePropertyTreeElement.test.ts",
+    "StylePropertyUtils.test.ts",
+    "StylesSidebarPane.test.ts",
+    "TopLayerContainer.test.ts",
+    "WebCustomData.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+    "./components:unittests",
   ]
 }

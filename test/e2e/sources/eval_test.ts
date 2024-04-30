@@ -6,7 +6,7 @@ import {waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {openSourceCodeEditorForFile} from '../helpers/sources-helpers.js';
 
-describe('The Sources Tab', async () => {
+describe('The Sources Tab', () => {
   it('links to the correct origins for eval\'ed resources', async () => {
     await openSourceCodeEditorForFile('call-to-foo.js', 'eval-origin.html');
     await waitFor('.devtools-link[title$="foo.js:3"]');

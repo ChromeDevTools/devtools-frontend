@@ -1,0 +1,42 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+name: Test Pointer Chains
+source_file: //extensions/cxx_debugging/e2e/resources/pointers.cc
+flags: [
+  [-g, -fdebug-compilation-dir=., -fno-limit-debug-info -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK],
+  [-g, -fdebug-compilation-dir=., -fno-limit-debug-info,  -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK, -gsplit-dwarf],
+  [-g, -fdebug-compilation-dir=., -gdwarf-5, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK],
+  [-g, -fdebug-compilation-dir=., -gdwarf-5, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK, -gsplit-dwarf, -gpubnames]]
+script:
+  - reason: setup
+    actions:
+    - file: pointers.cc
+      action: set_breakpoint
+      breakpoint: 32
+    - file: pointers.cc
+      action: set_breakpoint
+      breakpoint: 38
+
+  - reason: breakpoint
+    file: pointers.cc
+    line: 32
+    variables:
+      - name: Local.a1.value
+        value: 1
+      - name: Local.a1.b
+        type: B *
+      - name: Local.a1.b.$0
+        type: B
+      - name: Local.a1.b.$0.value
+        value: 4
+      - name: Local.a1.b.$0.a.$0.b.$0.a.$0.b.$0.a.$0
+        value: null
+
+  - reason: breakpoint
+    file: pointers.cc
+    line: 38
+    variables:
+      - name: Local.cycle_a.b.$0.a.$0.b.$0.a.$0.b.$0.a.$0.b.$0.value
+        value: 98

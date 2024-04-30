@@ -294,9 +294,7 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper<UISourc
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum UISourceCodeDiffEvents {
+export const enum UISourceCodeDiffEvents {
   DiffChanged = 'DiffChanged',
 }
 
@@ -304,22 +302,13 @@ export type UISourceCodeDiffEventTypes = {
   [UISourceCodeDiffEvents.DiffChanged]: void,
 };
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let _instance: WorkspaceDiffImpl|null = null;
+let workspaceDiffImplInstance: WorkspaceDiffImpl|null = null;
 
 export function workspaceDiff(): WorkspaceDiffImpl {
-  if (!_instance) {
-    _instance = new WorkspaceDiffImpl(Workspace.Workspace.WorkspaceImpl.instance());
+  if (!workspaceDiffImplInstance) {
+    workspaceDiffImplInstance = new WorkspaceDiffImpl(Workspace.Workspace.WorkspaceImpl.instance());
   }
-  return _instance;
-}
-
-export class DiffUILocation {
-  uiSourceCode: Workspace.UISourceCode.UISourceCode;
-  constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode) {
-    this.uiSourceCode = uiSourceCode;
-  }
+  return workspaceDiffImplInstance;
 }
 
 export const UpdateTimeout = 200;

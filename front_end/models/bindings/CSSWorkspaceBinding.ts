@@ -247,6 +247,10 @@ export class ModelInfo {
     this.#locations.deleteAll(header);
   }
 
+  addSourceMap(sourceUrl: Platform.DevToolsPath.UrlString, sourceMapUrl: Platform.DevToolsPath.UrlString): void {
+    this.#stylesSourceMapping.addSourceMap(sourceUrl, sourceMapUrl);
+  }
+
   rawLocationToUILocation(rawLocation: SDK.CSSModel.CSSLocation): Workspace.UISourceCode.UILocation|null {
     let uiLocation: (Workspace.UISourceCode.UILocation|null)|null = null;
     uiLocation = uiLocation || this.#sassSourceMapping.rawLocationToUILocation(rawLocation);

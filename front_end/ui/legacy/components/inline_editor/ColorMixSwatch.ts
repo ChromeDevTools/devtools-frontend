@@ -2,24 +2,43 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
 import colorMixSwatchStyles from './colorMixSwatch.css.js';
 
-export class ColorMixSwatch extends HTMLElement {
+export const enum Events {
+  ColorChanged = 'colorChanged',
+}
+
+export interface EventTypes {
+  [Events.ColorChanged]: {text: string};
+}
+
+export class ColorMixSwatch extends Common.ObjectWrapper.eventMixin<EventTypes, typeof HTMLElement>(HTMLElement) {
   static readonly litTagName = LitHtml.literal`devtools-color-mix-swatch`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private colorMixText: string = '';     // color-mix(in srgb, hotpink, white)
   private firstColorText: string = '';   // hotpink
   private secondColorText: string = '';  // white
+  #registerPopoverCallback: undefined|((swatch: ColorMixSwatch) => void);
 
   constructor() {
     super();
     this.shadow.adoptedStyleSheets = [
       colorMixSwatchStyles,
     ];
+  }
+
+  get icon(): Element|null {
+    return this.shadow.firstElementChild;
+  }
+
+  mixedColor(): Common.Color.Color|null {
+    const colorText = this.icon?.computedStyleMap().get('color')?.toString() ?? null;
+    return colorText ? Common.Color.parse(colorText) : null;
   }
 
   setFirstColor(text: string): void {
@@ -31,6 +50,7 @@ export class ColorMixSwatch extends HTMLElement {
       this.colorMixText = this.colorMixText.replace(this.firstColorText, text);
     }
     this.firstColorText = text;
+    this.dispatchEventToListeners(Events.ColorChanged, {text: this.colorMixText});
     this.#render();
   }
 
@@ -42,12 +62,23 @@ export class ColorMixSwatch extends HTMLElement {
       this.colorMixText = Platform.StringUtilities.replaceLast(this.colorMixText, this.secondColorText, text);
     }
     this.secondColorText = text;
+    this.dispatchEventToListeners(Events.ColorChanged, {text: this.colorMixText});
     this.#render();
   }
 
   setColorMixText(text: string): void {
     this.colorMixText = text;
+    this.dispatchEventToListeners(Events.ColorChanged, {text: this.colorMixText});
     this.#render();
+  }
+
+  setRegisterPopoverCallback(callback: (swatch: ColorMixSwatch) => void): void {
+    this.#registerPopoverCallback = callback;
+    callback(this);
+  }
+
+  getText(): string {
+    return this.colorMixText;
   }
 
   #render(): void {
@@ -64,17 +95,19 @@ export class ColorMixSwatch extends HTMLElement {
     // Note also that whitespace between nodes is removed on purpose to avoid pushing these elements apart. Do not
     // re-format the HTML code.
     LitHtml.render(
-      LitHtml.html`<div class="swatch-icon">
+      LitHtml.html`<div class="swatch-icon" jslog=${VisualLogging.cssColorMix()} style="--color: ${this.colorMixText}">
         <span class="swatch swatch-left" id="swatch-1" style="--color: ${this.firstColorText}"></span>
         <span class="swatch swatch-right" id="swatch-2" style="--color: ${this.secondColorText}"></span>
         <span class="swatch swatch-mix" id="mix-result" style="--color: ${this.colorMixText}"></span>
       </div><slot>${this.colorMixText}</slot>`,
       this.shadow, {host: this});
     // clang-format on
+
+    this.#registerPopoverCallback && this.#registerPopoverCallback(this);
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-color-mix-swatch', ColorMixSwatch);
+customElements.define('devtools-color-mix-swatch', ColorMixSwatch);
 
 declare global {
   interface HTMLElementTagNameMap {

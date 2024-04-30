@@ -6,15 +6,16 @@
 
 .adorner-settings-pane {
   display: flex;
-  height: 2.67em;
-  padding: 0 12px;
-  color: var(--color-text-primary);
+  height: auto;
+  padding: 6px 12px;
+  color: var(--sys-color-on-surface);
   font-size: 12px;
   align-items: center;
 }
 
 .settings-title {
   font-weight: 500;
+  margin-right: 6px;
 }
 
 .setting {
@@ -28,44 +29,4 @@
 .adorner-status,
 .adorner-name {
   vertical-align: middle;
-}
-
-.close {
-  position: relative;
-  margin-left: auto;
-  font-size: 1em;
-  width: 1.5em;
-  height: 1.5em;
-  border: none;
-  border-radius: 50%;
-  background-color: var(--color-background-elevation-1);
-}
-
-.close::before,
-.close::after {
-  content: "";
-  display: inline-block;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  width: 1em;
-  height: 0.2em;
-  background-color: var(--color-text-secondary);
-  border-radius: 2px;
-}
-
-.close:hover,
-.close:focus {
-  background-color: var(--color-background-elevation-2);
-}
-
-.close::before {
-  transform: rotate(45deg);
-}
-
-.close::after {
-  transform: rotate(-45deg);
 }

@@ -12,7 +12,7 @@ ts_library("ts") {
     "basic-without-legend.ts",
   ]
   deps = [
-    "../../../../../test/unittests/front_end/helpers",
+    "../../../../testing",
     "../../../../ui/legacy/components/perf_ui:bundle",
   ]
 }

@@ -1,20 +1,10 @@
 /**
- * Copyright 2020 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2020 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
-import { Protocol } from 'devtools-protocol';
-import { ElementHandle } from '../api/ElementHandle.js';
+import type { Protocol } from 'devtools-protocol';
+import type { ElementHandle } from '../api/ElementHandle.js';
 /**
  * File choosers let you react to the page requesting for a file.
  *
@@ -50,16 +40,18 @@ export declare class FileChooser {
      */
     isMultiple(): boolean;
     /**
-     * Accept the file chooser request with given paths.
+     * Accept the file chooser request with the given file paths.
      *
-     * @param filePaths - If some of the `filePaths` are relative paths, then
-     * they are resolved relative to the
+     * @remarks This will not validate whether the file paths exists. Also, if a
+     * path is relative, then it is resolved against the
      * {@link https://nodejs.org/api/process.html#process_process_cwd | current working directory}.
+     * For locals script connecting to remote chrome environments, paths must be
+     * absolute.
      */
-    accept(filePaths: string[]): Promise<void>;
+    accept(paths: string[]): Promise<void>;
     /**
      * Closes the file chooser without selecting any files.
      */
-    cancel(): void;
+    cancel(): Promise<void>;
 }
 //# sourceMappingURL=FileChooser.d.ts.map

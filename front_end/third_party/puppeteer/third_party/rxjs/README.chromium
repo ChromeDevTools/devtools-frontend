@@ -1,0 +1,11 @@
+Name: rxjs
+Short Name: rxjs
+URL: https://github.com/ReactiveX/rxjs
+License: Apache-2.0
+License File: LICENSE
+Security Critical: no
+Shipped: yes
+
+Description: rxjs is a transitive dependency of Puppeteer, shipped as part of
+Puppeteer. The license is also included in the source files in
+front_end/third_party/puppeteer/package/lib/esm/third_party/rxjs/rxjs.js.

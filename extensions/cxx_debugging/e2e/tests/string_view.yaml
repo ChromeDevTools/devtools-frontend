@@ -1,0 +1,32 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+name: Test String View
+source_file: //extensions/cxx_debugging/tests/inputs/string_view.cc
+flags: [
+  [-g, -fdebug-compilation-dir=., -fno-limit-debug-info -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK],
+  [-g, -fdebug-compilation-dir=., -fno-limit-debug-info, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK, -gsplit-dwarf],
+  [-g, -fdebug-compilation-dir=., -gdwarf-5, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK],
+  [-g, -fdebug-compilation-dir=., -gdwarf-5, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK, -gsplit-dwarf, -gpubnames]]
+script:
+  - reason: setup
+    actions:
+    - file: string_view.cc
+      action: set_breakpoint
+      breakpoint: 37
+  - reason: breakpoint
+    file: string_view.cc
+    line: 37
+    variables:
+      - name: Local.my_string
+      - name: Local.my_string.size
+        value: 12
+      - name: Local.my_string.string
+        value: '"Hello World!"'
+      - name: Local.hello
+        type: 'MyStringView'
+      - name: Local.hello.end_
+        value: 0
+      - name: Local.hello.begin_
+        value: 0

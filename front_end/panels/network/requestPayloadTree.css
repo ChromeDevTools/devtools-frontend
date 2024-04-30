@@ -6,29 +6,17 @@
 
 .tree-outline {
   padding-left: 0;
-
-  --override-error-background-color: #d93025;
-  --override-error-text-color: #fff;
-  --override-call-to-action-border-color: #f29900;
-  --override-header-highlight-background-color: #ffff78;
-}
-
-.-theme-with-dark-background .tree-outline,
-:host-context(.-theme-with-dark-background) .tree-outline {
-  --override-error-text-color: #000;
-  --override-call-to-action-border-color: rgb(255 166 13);
-  --override-header-highlight-background-color: rgb(135 135 0);
 }
 
 .tree-outline > ol {
   padding-bottom: 5px;
-  border-bottom: solid 1px var(--color-details-hairline);
+  border-bottom: solid 1px var(--sys-color-divider);
 }
 
 .tree-outline > .parent {
   user-select: none;
   font-weight: bold;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   margin-top: -1px;
   display: flex;
   align-items: center;
@@ -61,20 +49,22 @@
   display: inline;
   margin-left: 30px;
   font-weight: normal;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
+  background: none;
+  border: none;
 }
 
 .tree-outline li.expanded .payload-toggle:focus-visible {
-  border: 2px solid var(--color-button-outline-focus);
+  border: 2px solid var(--sys-color-state-focus-ring);
   border-radius: 5px;
 }
 
 .tree-outline li .header-toggle:hover {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .tree-outline .payload-name {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   display: inline-flex;
   margin-right: 0.25em;
   font-weight: bold;
@@ -95,7 +85,7 @@
 }
 
 .tree-outline .empty-request-payload {
-  color: var(--color-text-disabled);
+  color: var(--sys-color-state-disabled);
 }
 
 .request-payload-show-more-button {
@@ -129,5 +119,5 @@
 }
 
 .payload-decode-error {
-  color: var(--color-accent-red);
+  color: var(--sys-color-error);
 }

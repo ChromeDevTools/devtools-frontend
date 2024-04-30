@@ -2,15 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LayerViewer from '../layer_viewer/layer_viewer.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as LayerViewer from '../layer_viewer/layer_viewer.js';
 
 export class LayerPaintProfilerView extends UI.SplitWidget.SplitWidget {
   private readonly logTreeView: LayerViewer.PaintProfilerView.PaintProfilerCommandLogView;
   private readonly paintProfilerView: LayerViewer.PaintProfilerView.PaintProfilerView;
   constructor(showImageCallback: (arg0?: string|undefined) => void) {
     super(true, false);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('layers.paint-profiler').track({resize: true})}`);
 
     this.logTreeView = new LayerViewer.PaintProfilerView.PaintProfilerCommandLogView();
     this.setSidebarWidget(this.logTreeView);

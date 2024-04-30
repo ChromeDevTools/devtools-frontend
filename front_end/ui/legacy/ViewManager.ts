@@ -5,32 +5,32 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
+import type * as Root from '../../core/root/root.js';
+import * as IconButton from '../components/icon_button/icon_button.js';
+import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {type ContextMenu} from './ContextMenu.js';
-import {Icon} from './Icon.js';
-
-import {Events as TabbedPaneEvents, TabbedPane, type EventData} from './TabbedPane.js';
-
-import {Toolbar, ToolbarMenuButton, type ToolbarItem, type ItemsProvider} from './Toolbar.js';
+import {type EventData, Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
+import {type ItemsProvider, Toolbar, type ToolbarItem, ToolbarMenuButton} from './Toolbar.js';
 import {createTextChild} from './UIUtils.js';
 import {type TabbedViewLocation, type View, type ViewLocation, type ViewLocationResolver} from './View.js';
+import viewContainersStyles from './viewContainers.css.legacy.js';
 import {
+  getLocalizedViewLocationCategory,
   getRegisteredLocationResolvers,
   getRegisteredViewExtensions,
-  getLocalizedViewLocationCategory,
   maybeRemoveViewExtension,
   registerLocationResolver,
   registerViewExtension,
+  resetViewRegistration,
   ViewLocationCategory,
   ViewLocationValues,
   ViewPersistence,
   type ViewRegistration,
-  resetViewRegistration,
 } from './ViewRegistration.js';
-
 import {VBox, type Widget, type WidgetElement} from './Widget.js';
-import viewContainersStyles from './viewContainers.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -48,11 +48,11 @@ export const defaultOptionsForTabs = {
 
 export class PreRegisteredView implements View {
   private readonly viewRegistration: ViewRegistration;
-  private widgetRequested: boolean;
+  private widgetPromise: Promise<Widget>|null;
 
   constructor(viewRegistration: ViewRegistration) {
     this.viewRegistration = viewRegistration;
-    this.widgetRequested = false;
+    this.widgetPromise = null;
   }
 
   title(): Common.UIString.LocalizedString {
@@ -103,23 +103,26 @@ export class PreRegisteredView implements View {
   }
 
   async toolbarItems(): Promise<ToolbarItem[]> {
-    if (this.viewRegistration.hasToolbar) {
-      return this.widget().then(widget => (widget as unknown as ItemsProvider).toolbarItems());
+    if (!this.viewRegistration.hasToolbar) {
+      return [];
     }
-    return [];
+    const provider = await this.widget() as unknown as ItemsProvider;
+    return provider.toolbarItems();
   }
 
-  async widget(): Promise<Widget> {
-    this.widgetRequested = true;
-    return this.viewRegistration.loadView();
+  widget(): Promise<Widget> {
+    if (this.widgetPromise === null) {
+      this.widgetPromise = this.viewRegistration.loadView();
+    }
+    return this.widgetPromise;
   }
 
   async disposeView(): Promise<void> {
-    if (!this.widgetRequested) {
+    if (this.widgetPromise === null) {
       return;
     }
 
-    const widget = await this.widget();
+    const widget = await this.widgetPromise;
     await widget.ownerViewDisposed();
   }
 
@@ -127,7 +130,7 @@ export class PreRegisteredView implements View {
     return this.viewRegistration.experiment;
   }
 
-  condition(): string|undefined {
+  condition(): Root.Runtime.Condition|undefined {
     return this.viewRegistration.condition;
   }
 }
@@ -144,7 +147,7 @@ export class ViewManager {
     this.locationNameByViewId = new Map();
 
     // Read override setting for location
-    this.locationOverrideSetting = Common.Settings.Settings.instance().createSetting('viewsLocationOverride', {});
+    this.locationOverrideSetting = Common.Settings.Settings.instance().createSetting('views-location-override', {});
     const preferredExtensionLocations = this.locationOverrideSetting.get();
 
     // Views may define their initial ordering within a location. When the user has not reordered, we use the
@@ -176,6 +179,9 @@ export class ViewManager {
       const location = view.location();
       if (this.views.has(viewId)) {
         throw new Error(`Duplicate view id '${viewId}'`);
+      }
+      if (!Platform.StringUtilities.isExtendedKebabCase(viewId)) {
+        throw new Error(`Invalid view ID '${viewId}'`);
       }
       this.views.set(viewId, view);
       // Use the preferred user location if available
@@ -291,28 +297,19 @@ export class ViewManager {
     return widgetForView.get(view) || null;
   }
 
-  showView(viewId: string, userGesture?: boolean, omitFocus?: boolean): Promise<void> {
+  async showView(viewId: string, userGesture?: boolean, omitFocus?: boolean): Promise<void> {
     const view = this.views.get(viewId);
     if (!view) {
       console.error('Could not find view for id: \'' + viewId + '\' ' + new Error().stack);
-      return Promise.resolve();
+      return;
     }
 
-    const locationName = this.locationNameByViewId.get(viewId);
-
-    const location = locationForView.get(view);
-    if (location) {
-      location.reveal();
-      return location.showView(view, undefined, userGesture, omitFocus);
+    const location = locationForView.get(view) ?? await this.resolveLocation(this.locationNameByViewId.get(viewId));
+    if (!location) {
+      throw new Error('Could not resolve location for view: ' + viewId);
     }
-
-    return this.resolveLocation(locationName).then(location => {
-      if (!location) {
-        throw new Error('Could not resolve location for view: ' + viewId);
-      }
-      location.reveal();
-      return location.showView(view, undefined, userGesture, omitFocus);
-    });
+    location.reveal();
+    await location.showView(view, undefined, userGesture, omitFocus);
   }
 
   async resolveLocation(location?: string): Promise<Location|null> {
@@ -337,8 +334,8 @@ export class ViewManager {
     return new TabbedLocation(this, revealCallback, location, restoreSelection, allowReorder, defaultTab);
   }
 
-  createStackLocation(revealCallback?: (() => void), location?: string): ViewLocation {
-    return new StackLocation(this, revealCallback, location);
+  createStackLocation(revealCallback?: (() => void), location?: string, jslogContext?: string): ViewLocation {
+    return new StackLocation(this, revealCallback, location, jslogContext);
   }
 
   hasViewsForLocation(location: string): boolean {
@@ -415,7 +412,7 @@ export class ContainerWidget extends VBox {
 
 class ExpandableContainerWidget extends VBox {
   private titleElement: HTMLDivElement;
-  private readonly titleExpandIcon: Icon;
+  private readonly titleExpandIcon: IconButton.Icon.Icon;
   private readonly view: View;
   private widget?: Widget;
   private materializePromise?: Promise<void>;
@@ -427,8 +424,10 @@ class ExpandableContainerWidget extends VBox {
 
     this.titleElement = document.createElement('div');
     this.titleElement.classList.add('expandable-view-title');
+    this.titleElement.setAttribute(
+        'jslog', `${VisualLogging.sectionHeader().context(view.viewId()).track({click: true})}`);
     ARIAUtils.markAsTreeitem(this.titleElement);
-    this.titleExpandIcon = Icon.create('triangle-right', 'title-expand-icon');
+    this.titleExpandIcon = IconButton.Icon.create('triangle-right', 'title-expand-icon');
     this.titleElement.appendChild(this.titleExpandIcon);
     const titleText = view.title();
     createTextChild(this.titleElement, titleText);
@@ -481,7 +480,7 @@ class ExpandableContainerWidget extends VBox {
     }
     this.titleElement.classList.add('expanded');
     ARIAUtils.setExpanded(this.titleElement, true);
-    this.titleExpandIcon.setIconType('triangle-down');
+    this.titleExpandIcon.name = 'triangle-down';
     return this.materialize().then(() => {
       if (this.widget) {
         this.widget.show(this.element);
@@ -495,7 +494,7 @@ class ExpandableContainerWidget extends VBox {
     }
     this.titleElement.classList.remove('expanded');
     ARIAUtils.setExpanded(this.titleElement, false);
-    this.titleExpandIcon.setIconType('triangle-right');
+    this.titleExpandIcon.name = 'triangle-right';
     void this.materialize().then(() => {
       if (this.widget) {
         this.widget.detach();
@@ -599,15 +598,15 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     this.tabbedPaneInternal.addEventListener(TabbedPaneEvents.TabSelected, this.tabSelected, this);
     this.tabbedPaneInternal.addEventListener(TabbedPaneEvents.TabClosed, this.tabClosed, this);
 
-    this.closeableTabSetting = Common.Settings.Settings.instance().createSetting('closeableTabs', {});
+    this.closeableTabSetting = Common.Settings.Settings.instance().createSetting('closeable-tabs', {});
     // As we give tabs the capability to be closed we also need to add them to the setting so they are still open
     // until the user decide to close them
     this.setOrUpdateCloseableTabsSetting();
 
-    this.tabOrderSetting = Common.Settings.Settings.instance().createSetting(location + '-tabOrder', {});
+    this.tabOrderSetting = Common.Settings.Settings.instance().createSetting(location + '-tab-order', {});
     this.tabbedPaneInternal.addEventListener(TabbedPaneEvents.TabOrderChanged, this.persistTabOrder, this);
     if (restoreSelection) {
-      this.lastSelectedTabSetting = Common.Settings.Settings.instance().createSetting(location + '-selectedTab', '');
+      this.lastSelectedTabSetting = Common.Settings.Settings.instance().createSetting(location + '-selected-tab', '');
     }
     this.defaultTab = defaultTab;
 
@@ -637,7 +636,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
   }
 
   enableMoreTabsButton(): ToolbarMenuButton {
-    const moreTabsButton = new ToolbarMenuButton(this.appendTabsToMenu.bind(this));
+    const moreTabsButton = new ToolbarMenuButton(this.appendTabsToMenu.bind(this), undefined, 'more-tabs');
     this.tabbedPaneInternal.leftToolbar().appendToolbarItem(moreTabsButton);
     this.tabbedPaneInternal.disableOverflowMenu();
     return moreTabsButton;
@@ -699,11 +698,12 @@ class TabbedLocation extends Location implements TabbedViewLocation {
         contextMenu.defaultSection().appendItem(title, () => {
           Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.HamburgerMenu);
           void this.showView(view, undefined, true);
-        });
+        }, {jslogContext: 'issues-pane'});
         continue;
       }
 
-      contextMenu.defaultSection().appendItem(title, this.showView.bind(this, view, undefined, true));
+      contextMenu.defaultSection().appendItem(
+          title, this.showView.bind(this, view, undefined, true), {jslogContext: view.viewId()});
     }
   }
 
@@ -835,8 +835,9 @@ class StackLocation extends Location implements ViewLocation {
   private readonly vbox: VBox;
   private readonly expandableContainers: Map<string, ExpandableContainerWidget>;
 
-  constructor(manager: ViewManager, revealCallback?: (() => void), location?: string) {
+  constructor(manager: ViewManager, revealCallback?: (() => void), location?: string, jslogContext?: string) {
     const vbox = new VBox();
+    vbox.element.setAttribute('jslog', `${VisualLogging.pane(jslogContext || 'sidebar').track({resize: true})}`);
     super(manager, vbox, revealCallback);
     this.vbox = vbox;
     ARIAUtils.markAsTree(vbox.element);

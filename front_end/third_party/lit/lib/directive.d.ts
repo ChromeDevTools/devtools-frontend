@@ -16,11 +16,15 @@
  * @return The value to write to the DOM. Usually the same as the input value,
  *     unless sanitization is needed.
  */
-declare type ValueSanitizer = (value: unknown) => unknown;
+type ValueSanitizer = (value: unknown) => unknown;
 /** TemplateResult types */
 declare const HTML_RESULT = 1;
 declare const SVG_RESULT = 2;
-declare type ResultType = typeof HTML_RESULT | typeof SVG_RESULT;
+type ResultType = typeof HTML_RESULT | typeof SVG_RESULT;
+declare const ATTRIBUTE_PART = 1;
+declare const CHILD_PART = 2;
+declare const ELEMENT_PART = 6;
+declare const COMMENT_PART = 7;
 /**
  * The return type of the template tag functions, {@linkcode html} and
  * {@linkcode svg}.
@@ -34,7 +38,7 @@ declare type ResultType = typeof HTML_RESULT | typeof SVG_RESULT;
  * [Rendering](https://lit.dev/docs/components/rendering) for more information.
  *
  */
-declare type TemplateResult<T extends ResultType = ResultType> = {
+type TemplateResult<T extends ResultType = ResultType> = {
     ['_$litType$']: T;
     strings: TemplateStringsArray;
     values: unknown[];
@@ -82,6 +86,7 @@ interface DirectiveParent {
     __directives?: Array<Directive | undefined>;
 }
 declare class Template {
+    parts: Array<TemplatePart>;
     constructor({ strings, ['_$litType$']: type }: TemplateResult, options?: RenderOptions);
     /** @nocollapse */
     static createElement(html: TrustedHTML, _options?: RenderOptions): HTMLTemplateElement;
@@ -96,13 +101,40 @@ interface Disconnectable {
  * update the template instance.
  */
 declare class TemplateInstance implements Disconnectable {
+    _$template: Template;
+    _$parts: Array<Part | undefined>;
     constructor(template: Template, parent: ChildPart);
     get parentNode(): Node;
     get _$isConnected(): boolean;
     _clone(options: RenderOptions | undefined): Node;
     _update(values: Array<unknown>): void;
 }
-declare type Part = ChildPart | AttributePart | PropertyPart | BooleanAttributePart | ElementPart | EventPart;
+type AttributeTemplatePart = {
+    readonly type: typeof ATTRIBUTE_PART;
+    readonly index: number;
+    readonly name: string;
+    readonly ctor: typeof AttributePart;
+    readonly strings: ReadonlyArray<string>;
+};
+type ChildTemplatePart = {
+    readonly type: typeof CHILD_PART;
+    readonly index: number;
+};
+type ElementTemplatePart = {
+    readonly type: typeof ELEMENT_PART;
+    readonly index: number;
+};
+type CommentTemplatePart = {
+    readonly type: typeof COMMENT_PART;
+    readonly index: number;
+};
+/**
+ * A TemplatePart represents a dynamic part in a template, before the template
+ * is instantiated. When a template is instantiated Parts are created from
+ * TemplateParts.
+ */
+type TemplatePart = ChildTemplatePart | AttributeTemplatePart | ElementTemplatePart | CommentTemplatePart;
+type Part = ChildPart | AttributePart | PropertyPart | BooleanAttributePart | ElementPart | EventPart;
 
 declare class ChildPart implements Disconnectable {
     readonly type = 2;
@@ -201,7 +233,7 @@ interface DirectiveClass {
  * This utility type extracts the signature of a directive class's render()
  * method so we can use it for the type of the generated directive function.
  */
-declare type DirectiveParameters<C extends Directive> = Parameters<C['render']>;
+type DirectiveParameters<C extends Directive> = Parameters<C['render']>;
 /**
  * A generated directive function doesn't evaluate the directive, but just
  * returns a DirectiveResult object that captures the arguments.
@@ -216,7 +248,7 @@ declare const PartType: {
     readonly EVENT: 5;
     readonly ELEMENT: 6;
 };
-declare type PartType = typeof PartType[keyof typeof PartType];
+type PartType = (typeof PartType)[keyof typeof PartType];
 interface ChildPartInfo {
     readonly type: typeof PartType.CHILD;
 }
@@ -235,7 +267,7 @@ interface ElementPartInfo {
  * This is useful for checking that a directive is attached to a valid part,
  * such as with directive that can only be used on attribute bindings.
  */
-declare type PartInfo = ChildPartInfo | AttributePartInfo | ElementPartInfo;
+type PartInfo = ChildPartInfo | AttributePartInfo | ElementPartInfo;
 /**
  * Creates a user-facing directive function from a Directive class. This
  * function has the same parameters as the directive's render() method.

@@ -7,14 +7,22 @@
 .styles-element-state-pane {
   overflow: hidden;
   padding-left: 2px;
-  background-color: var(--color-background-elevation-1);
-  border-bottom: 1px solid var(--color-details-hairline);
+  background-color: var(--sys-color-cdt-base-container);
+  border-bottom: 1px solid var(--sys-color-divider);
   margin-top: 0;
   padding-bottom: 2px;
 }
 
-.styles-element-state-pane > div {
+.styles-element-state-pane > .page-state-checkbox {
+  margin-block: 6px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.styles-element-state-pane > .section-header {
   margin: 8px 4px 6px;
+  color: var(--color-text-secondary);
 }
 
 .styles-element-state-pane > table {

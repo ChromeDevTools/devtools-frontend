@@ -94,8 +94,6 @@ const getOrCreateSecurityStateOrdinalMap = (): Map<Protocol.Security.SecuritySta
 
 SDK.SDKModel.SDKModel.register(SecurityModel, {capabilities: SDK.Target.Capability.Security, autostart: false});
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   VisibleSecurityStateChanged = 'VisibleSecurityStateChanged',
 }

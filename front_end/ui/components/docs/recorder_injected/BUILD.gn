@@ -9,8 +9,8 @@ ts_library("ts") {
   testonly = true
   sources = [ "basic.ts" ]
   deps = [
-    "../../../../../test/unittests/front_end/helpers",
     "../../../../panels/recorder/injected:bundle",
+    "../../../../testing",
   ]
 }
 

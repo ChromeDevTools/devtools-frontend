@@ -2,13 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {waitFor, waitForFunction} from '../../../../shared/helper.js';
-import {describe} from '../../../../shared/mocha-extensions.js';
-import {assertElementScreenshotUnchanged, itScreenshot} from '../../../../shared/screenshots.js';
-import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
-import type * as puppeteer from 'puppeteer';
+import type * as puppeteer from 'puppeteer-core';
 
-describe('FlameChart', () => {
+import {waitFor, waitForFunction} from '../../../../shared/helper.js';
+import {describe, itScreenshot} from '../../../../shared/mocha-extensions.js';
+import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.js';
+import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
+
+describe('FlameChart', function() {
+
   preloadForCodeCoverage('performance_panel/flamechart.html');
 
   async function getFlameChartContainerWhenReady(selector: string): Promise<puppeteer.ElementHandle<HTMLDivElement>> {
@@ -29,9 +31,15 @@ describe('FlameChart', () => {
     await assertElementScreenshotUnchanged(flameChart, 'performance/flame_chart_1.png', 1);
   });
 
-  itScreenshot('can add candy striping to events', async () => {
+  itScreenshot('can add decorations to events', async () => {
     await loadComponentDocExample('performance_panel/flamechart.html');
     const flameChart = await getFlameChartContainerWhenReady('#container2');
     await assertElementScreenshotUnchanged(flameChart, 'performance/flame_chart_candystripe.png', 0.5);
+  });
+
+  itScreenshot('can add initiators to events', async () => {
+    await loadComponentDocExample('performance_panel/flamechart.html');
+    const flameChart = await getFlameChartContainerWhenReady('#container5');
+    await assertElementScreenshotUnchanged(flameChart, 'performance/multiple_initiators.png', 0.5);
   });
 });

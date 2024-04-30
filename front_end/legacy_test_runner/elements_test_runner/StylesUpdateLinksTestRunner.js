@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../core/platform/platform.js';
+import * as Elements from '../../panels/elements/elements.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
@@ -99,7 +102,7 @@ ElementsTestRunner.validateRuleRanges = function(selector, rules, callback) {
     const fetchedRules = ElementsTestRunner.getMatchedRules();
 
     if (fetchedRules.length !== rules.length) {
-      TestRunner.addResult(String.sprintf(
+      TestRunner.addResult(Platform.StringUtilities.sprintf(
           'Error: rules sizes are not equal! Expected: %d, actual: %d', fetchedRules.length, rules.length));
       TestRunner.completeTest();
       return;
@@ -119,7 +122,7 @@ ElementsTestRunner.validateRuleRanges = function(selector, rules, callback) {
 ElementsTestRunner.getMatchedRules = function() {
   const rules = [];
 
-  for (const block of UI.panels.elements.stylesWidget.sectionBlocks) {
+  for (const block of Elements.ElementsPanel.ElementsPanel.instance().stylesWidget.sectionBlocks) {
     for (const section of block.sections) {
       const rule = section.style().parentRule;
 

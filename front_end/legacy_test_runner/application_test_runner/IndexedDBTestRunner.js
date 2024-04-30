@@ -2,16 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Application from '../../panels/application/application.js';
 import {ConsoleTestRunner} from '../console_test_runner/console_test_runner.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.ApplicationTestRunner = self.ApplicationTestRunner || {};
 
-ApplicationTestRunner.dumpIndexedDBTree = async function() {
+export const dumpIndexedDBTree = async function() {
   TestRunner.addResult('Dumping IndexedDB tree:');
-  const indexedDBTreeElement = UI.panels.resources.sidebar.indexedDBListTreeElement;
+  const indexedDBTreeElement = Application.ResourcesPanel.ResourcesPanel.instance().sidebar.indexedDBListTreeElement;
 
   if (!indexedDBTreeElement.childCount()) {
     TestRunner.addResult('    (empty)');
@@ -44,9 +45,10 @@ ApplicationTestRunner.dumpIndexedDBTree = async function() {
   }
 };
 
-ApplicationTestRunner.dumpObjectStores = async function() {
+export const dumpObjectStores = async function() {
   TestRunner.addResult('Dumping ObjectStore data:');
-  const idbDatabaseTreeElement = UI.panels.resources.sidebar.indexedDBListTreeElement.idbDatabaseTreeElements[0];
+  const idbDatabaseTreeElement =
+      Application.ResourcesPanel.ResourcesPanel.instance().sidebar.indexedDBListTreeElement.idbDatabaseTreeElements[0];
   for (let i = 0; i < idbDatabaseTreeElement.childCount(); ++i) {
     const objectStoreTreeElement = idbDatabaseTreeElement.childAt(i);
     objectStoreTreeElement.onselect(false);
@@ -74,8 +76,8 @@ let lastCallbackId = 0;
 const callbacks = {};
 const callbackIdPrefix = 'InspectorTest.IndexedDB_callback';
 
-ApplicationTestRunner.evaluateWithCallback = function(frameId, methodName, parameters, callback) {
-  ApplicationTestRunner.installIndexedDBSniffer();
+export const evaluateWithCallback = function(frameId, methodName, parameters, callback) {
+  installIndexedDBSniffer();
   const callbackId = ++lastCallbackId;
   callbacks[callbackId] = callback;
   let parametersString = 'dispatchCallback.bind(this, "' + callbackIdPrefix + callbackId + '")';
@@ -88,7 +90,7 @@ ApplicationTestRunner.evaluateWithCallback = function(frameId, methodName, param
   TestRunner.evaluateInPageAnonymously(requestString);
 };
 
-ApplicationTestRunner.installIndexedDBSniffer = function() {
+export const installIndexedDBSniffer = function() {
   ConsoleTestRunner.addConsoleSniffer(consoleMessageOverride, false);
 
   function consoleMessageOverride(msg) {
@@ -105,89 +107,85 @@ ApplicationTestRunner.installIndexedDBSniffer = function() {
   }
 };
 
-ApplicationTestRunner.createDatabase = function(frameId, databaseName, callback) {
-  ApplicationTestRunner.evaluateWithCallback(frameId, 'createDatabase', [databaseName], callback);
+export const createDatabase = function(frameId, databaseName, callback) {
+  evaluateWithCallback(frameId, 'createDatabase', [databaseName], callback);
 };
 
-ApplicationTestRunner.createDatabaseWithVersion = function(frameId, databaseName, version, callback) {
-  ApplicationTestRunner.evaluateWithCallback(frameId, 'createDatabaseWithVersion', [databaseName, version], callback);
+export const createDatabaseWithVersion = function(frameId, databaseName, version, callback) {
+  evaluateWithCallback(frameId, 'createDatabaseWithVersion', [databaseName, version], callback);
 };
 
-ApplicationTestRunner.deleteDatabase = function(frameId, databaseName, callback) {
-  ApplicationTestRunner.evaluateWithCallback(frameId, 'deleteDatabase', [databaseName], callback);
+export const deleteDatabase = function(frameId, databaseName, callback) {
+  evaluateWithCallback(frameId, 'deleteDatabase', [databaseName], callback);
 };
 
-ApplicationTestRunner.createObjectStore = function(
-    frameId, databaseName, objectStoreName, keyPath, autoIncrement, callback) {
-  ApplicationTestRunner.evaluateWithCallback(
-      frameId, 'createObjectStore', [databaseName, objectStoreName, keyPath, autoIncrement], callback);
+export const createObjectStore = function(frameId, databaseName, objectStoreName, keyPath, autoIncrement, callback) {
+  evaluateWithCallback(frameId, 'createObjectStore', [databaseName, objectStoreName, keyPath, autoIncrement], callback);
 };
 
-ApplicationTestRunner.deleteObjectStore = function(frameId, databaseName, objectStoreName, callback) {
-  ApplicationTestRunner.evaluateWithCallback(frameId, 'deleteObjectStore', [databaseName, objectStoreName], callback);
+export const deleteObjectStore = function(frameId, databaseName, objectStoreName, callback) {
+  evaluateWithCallback(frameId, 'deleteObjectStore', [databaseName, objectStoreName], callback);
 };
 
-ApplicationTestRunner.createObjectStoreIndex = function(
+export const createObjectStoreIndex = function(
     frameId, databaseName, objectStoreName, objectStoreIndexName, keyPath, unique, multiEntry, callback) {
-  ApplicationTestRunner.evaluateWithCallback(
+  evaluateWithCallback(
       frameId, 'createObjectStoreIndex',
       [databaseName, objectStoreName, objectStoreIndexName, keyPath, unique, multiEntry], callback);
 };
 
-ApplicationTestRunner.deleteObjectStoreIndex = function(
-    frameId, databaseName, objectStoreName, objectStoreIndexName, callback) {
-  ApplicationTestRunner.evaluateWithCallback(
+export const deleteObjectStoreIndex = function(frameId, databaseName, objectStoreName, objectStoreIndexName, callback) {
+  evaluateWithCallback(
       frameId, 'deleteObjectStoreIndex', [databaseName, objectStoreName, objectStoreIndexName], callback);
 };
 
-ApplicationTestRunner.addIDBValue = function(frameId, databaseName, objectStoreName, value, key, callback) {
-  ApplicationTestRunner.evaluateWithCallback(
-      frameId, 'addIDBValue', [databaseName, objectStoreName, value, key], callback);
+export const addIDBValue = function(frameId, databaseName, objectStoreName, value, key, callback) {
+  evaluateWithCallback(frameId, 'addIDBValue', [databaseName, objectStoreName, value, key], callback);
 };
 
-ApplicationTestRunner.createIndexedDBModel = function() {
-  const target = self.SDK.targetManager.primaryPageTarget();
-  const storageBucketModel = target.model(SDK.StorageBucketsModel);
+export const createIndexedDBModel = function() {
+  const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+  const storageBucketModel = target.model(SDK.StorageBucketsModel.StorageBucketsModel);
   storageBucketModel.enable();
-  const indexedDBModel = target.model(Resources.IndexedDBModel);
+  const indexedDBModel = target.model(Application.IndexedDBModel.IndexedDBModel);
   indexedDBModel.enable();
   return indexedDBModel;
 };
 
-ApplicationTestRunner.createDatabaseAsync = function(databaseName) {
+export const createDatabaseAsync = function(databaseName) {
   return TestRunner.evaluateInPageAsync('createDatabaseAsync(\'' + databaseName + '\')');
 };
 
-ApplicationTestRunner.deleteDatabaseAsync = function(databaseName) {
+export const deleteDatabaseAsync = function(databaseName) {
   return TestRunner.evaluateInPageAsync('deleteDatabaseAsync(\'' + databaseName + '\')');
 };
 
-ApplicationTestRunner.createObjectStoreAsync = function(databaseName, objectStoreName, indexName) {
+export const createObjectStoreAsync = function(databaseName, objectStoreName, indexName) {
   return TestRunner.evaluateInPageAsync(
       'createObjectStoreAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + indexName + '\')');
 };
 
-ApplicationTestRunner.deleteObjectStoreAsync = function(databaseName, objectStoreName) {
+export const deleteObjectStoreAsync = function(databaseName, objectStoreName) {
   return TestRunner.evaluateInPageAsync(
       'deleteObjectStoreAsync(\'' + databaseName + '\', \'' + objectStoreName + '\')');
 };
 
-ApplicationTestRunner.createObjectStoreIndexAsync = function(databaseName, objectStoreName, indexName) {
+export const createObjectStoreIndexAsync = function(databaseName, objectStoreName, indexName) {
   return TestRunner.evaluateInPageAsync(
       'createObjectStoreIndexAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + indexName + '\')');
 };
 
-ApplicationTestRunner.deleteObjectStoreIndexAsync = function(databaseName, objectStoreName, indexName) {
+export const deleteObjectStoreIndexAsync = function(databaseName, objectStoreName, indexName) {
   return TestRunner.evaluateInPageAsync(
       'deleteObjectStoreIndexAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + indexName + '\')');
 };
 
-ApplicationTestRunner.addIDBValueAsync = function(databaseName, objectStoreName, key, value) {
+export const addIDBValueAsync = function(databaseName, objectStoreName, key, value) {
   return TestRunner.evaluateInPageAsync(
       'addIDBValueAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + key + '\', \'' + value + '\')');
 };
 
-ApplicationTestRunner.deleteIDBValueAsync = function(databaseName, objectStoreName, key) {
+export const deleteIDBValueAsync = function(databaseName, objectStoreName, key) {
   return TestRunner.evaluateInPageAsync(
       'deleteIDBValueAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + key + '\')');
 };
@@ -473,7 +471,7 @@ const __indexedDBHelpers = `
   }
 `;
 
-ApplicationTestRunner.setupIndexedDBHelpers = function() {
+export const setupIndexedDBHelpers = function() {
   return TestRunner.evaluateInPagePromise(__indexedDBHelpers);
 };
 

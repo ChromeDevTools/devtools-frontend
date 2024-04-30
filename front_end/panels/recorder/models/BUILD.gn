@@ -2,9 +2,9 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import(
-    "../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../third_party/typescript/typescript.gni")
 
 devtools_module("recorder") {
   sources = [
@@ -32,8 +32,8 @@ devtools_module("recorder") {
     "../../../panels/elements:bundle",
     "../../../services/puppeteer:bundle",
     "../../../third_party/puppeteer:bundle",
-    "../../../ui/legacy:bundle",
     "../../../third_party/puppeteer-replay:bundle",
+    "../../../ui/legacy:bundle",
     "../injected:bundle",
     "../util:bundle",
   ]
@@ -51,8 +51,6 @@ devtools_entrypoint("bundle") {
     "../*",
     "../../../../test/e2e/recorder/*",
     "../../../../test/interactions/panels/recorder/*",
-    "../../../../test/unittests/front_end/helpers",
-    "../../../../test/unittests/front_end/panels/recorder/*",
     "../../../ui/components/docs/*",
     "../../../ui/components/docs/recorder_injected/*",
     "../../entrypoints/main/*",
@@ -62,5 +60,27 @@ devtools_entrypoint("bundle") {
     "../../recorder/controllers/*",
     "../../recorder/converters/*",
     "../components/*",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "RecorderSettings.test.ts",
+    "RecorderShorcutHelper.test.ts",
+    "RecordingPlayer.test.ts",
+    "SchemaUtils.test.ts",
+    "ScreenshotUtils.test.ts",
+    "Section.test.ts",
+    "recording-storage.test.ts",
+    "screenshot-storage.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../generated:protocol",
+    "../../../testing",
+    "../testing",
   ]
 }

@@ -2,20 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../core/platform/platform.js';
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
-import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
-import * as Protocol from '../../generated/protocol.js';
 
+import {type CSSModel} from './CSSModel.js';
 import {DebuggerModel, Events as DebuggerModelEvents} from './DebuggerModel.js';
-
-import {DeferredDOMNode, DOMModel, Events as DOMModelEvents, type DOMNode} from './DOMModel.js';
+import {DeferredDOMNode, DOMModel, type DOMNode, Events as DOMModelEvents} from './DOMModel.js';
 import {OverlayPersistentHighlighter} from './OverlayPersistentHighlighter.js';
 import {type RemoteObject} from './RemoteObject.js';
-
-import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
+import {Capability, type Target} from './Target.js';
 import {TargetManager} from './TargetManager.js';
 
 const UIStrings = {
@@ -51,6 +51,24 @@ export interface Hinge {
   outlineColor: HighlightColor;
 }
 
+export const enum EmulatedOSType {
+  WindowsOS = 'Windows',
+  MacOS = 'Mac',
+  LinuxOS = 'Linux',
+}
+
+interface PlatformOverlayDimensions {
+  mac: {x: number, y: number, width: number, height: number};
+  linux: {x: number, y: number, width: number, height: number};
+  windows: {x: number, y: number, width: number, height: number};
+}
+
+const platformOverlayDimensions: Readonly<PlatformOverlayDimensions> = {
+  mac: {x: 85, y: 0, width: 185, height: 40},
+  linux: {x: 0, y: 0, width: 196, height: 34},
+  windows: {x: 0, y: 0, width: 238, height: 33},
+};
+
 export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyApi.OverlayDispatcher {
   readonly #domModel: DOMModel;
   overlayAgent: ProtocolProxyApi.OverlayApi;
@@ -71,6 +89,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
   #persistentHighlighter: OverlayPersistentHighlighter|null;
   readonly #sourceOrderHighlighter: SourceOrderHighlighter;
   #sourceOrderModeActiveInternal: boolean;
+  #windowControls: WindowControls;
 
   constructor(target: Target) {
     super(target);
@@ -82,7 +101,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.#debuggerModel = target.model(DebuggerModel);
     if (this.#debuggerModel) {
       Common.Settings.Settings.instance()
-          .moduleSetting('disablePausedStateOverlay')
+          .moduleSetting('disable-paused-state-overlay')
           .addChangeListener(this.updatePausedInDebuggerMessage, this);
       this.#debuggerModel.addEventListener(
           DebuggerModelEvents.DebuggerPaused, this.updatePausedInDebuggerMessage, this);
@@ -99,15 +118,15 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.#defaultHighlighter = new DefaultHighlighter(this);
     this.#highlighter = this.#defaultHighlighter;
 
-    this.#showPaintRectsSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('showPaintRects');
+    this.#showPaintRectsSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('show-paint-rects');
     this.#showLayoutShiftRegionsSetting =
-        Common.Settings.Settings.instance().moduleSetting<boolean>('showLayoutShiftRegions');
-    this.#showAdHighlightsSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('showAdHighlights');
-    this.#showDebugBordersSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('showDebugBorders');
-    this.#showFPSCounterSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('showFPSCounter');
+        Common.Settings.Settings.instance().moduleSetting<boolean>('show-layout-shift-regions');
+    this.#showAdHighlightsSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('show-ad-highlights');
+    this.#showDebugBordersSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('show-debug-borders');
+    this.#showFPSCounterSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('show-fps-counter');
     this.#showScrollBottleneckRectsSetting =
-        Common.Settings.Settings.instance().moduleSetting<boolean>('showScrollBottleneckRects');
-    this.#showWebVitalsSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('showWebVitals');
+        Common.Settings.Settings.instance().moduleSetting<boolean>('show-scroll-bottleneck-rects');
+    this.#showWebVitalsSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('show-web-vitals');
 
     this.#registeredListeners = [];
     this.#showViewportSizeOnResize = true;
@@ -116,16 +135,40 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       void this.wireAgentToSettings();
     }
 
-    this.#persistentHighlighter = new OverlayPersistentHighlighter(this);
-    this.#domModel.addEventListener(DOMModelEvents.NodeRemoved, () => {
-      this.#persistentHighlighter && this.#persistentHighlighter.refreshHighlights();
+    this.#persistentHighlighter = new OverlayPersistentHighlighter(this, {
+      onGridOverlayStateChanged: ({nodeId, enabled}) =>
+          this.dispatchEventToListeners(Events.PersistentGridOverlayStateChanged, {nodeId, enabled}),
+      onFlexOverlayStateChanged: ({nodeId, enabled}) =>
+          this.dispatchEventToListeners(Events.PersistentFlexContainerOverlayStateChanged, {nodeId, enabled}),
+      onContainerQueryOverlayStateChanged: ({nodeId, enabled}) =>
+          this.dispatchEventToListeners(Events.PersistentContainerQueryOverlayStateChanged, {nodeId, enabled}),
+      onScrollSnapOverlayStateChanged: ({nodeId, enabled}) =>
+          this.dispatchEventToListeners(Events.PersistentScrollSnapOverlayStateChanged, {nodeId, enabled}),
     });
+    this.#domModel.addEventListener(DOMModelEvents.NodeRemoved, () => {
+      if (!this.#persistentHighlighter) {
+        return;
+      }
+
+      this.#persistentHighlighter.refreshHighlights();
+    });
+
     this.#domModel.addEventListener(DOMModelEvents.DocumentUpdated, () => {
-      this.#persistentHighlighter && this.#persistentHighlighter.hideAllInOverlay();
+      if (!this.#persistentHighlighter) {
+        return;
+      }
+
+      // Hide all the overlays initially after document update
+      this.#persistentHighlighter.hideAllInOverlayWithoutSave();
+
+      if (!target.suspended()) {
+        void this.#persistentHighlighter.restoreHighlightsForDocument();
+      }
     });
 
     this.#sourceOrderHighlighter = new SourceOrderHighlighter(this);
     this.#sourceOrderModeActiveInternal = false;
+    this.#windowControls = new WindowControls(this.#domModel.cssModel());
   }
 
   static highlightObjectAsDOMNode(object: RemoteObject): void {
@@ -222,6 +265,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       this.updatePausedInDebuggerMessage();
     }
     await this.overlayAgent.invoke_setShowViewportSizeOnResize({show: this.#showViewportSizeOnResize});
+    this.#persistentHighlighter?.resetOverlay();
   }
 
   override async suspendModel(): Promise<void> {
@@ -250,7 +294,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       return;
     }
     const message = this.#debuggerModel && this.#debuggerModel.isPaused() &&
-            !Common.Settings.Settings.instance().moduleSetting('disablePausedStateOverlay').get() ?
+            !Common.Settings.Settings.instance().moduleSetting('disable-paused-state-overlay').get() ?
         i18nString(UIStrings.pausedInDebugger) :
         undefined;
     void this.overlayAgent.invoke_setPausedInDebuggerMessage({message});
@@ -299,7 +343,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       return;
     }
     this.#persistentHighlighter.highlightGridInOverlay(nodeId);
-    this.dispatchEventToListeners(Events.PersistentGridOverlayStateChanged, {nodeId, enabled: true});
   }
 
   isHighlightedGridInPersistentOverlay(nodeId: Protocol.DOM.NodeId): boolean {
@@ -314,7 +357,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       return;
     }
     this.#persistentHighlighter.hideGridInOverlay(nodeId);
-    this.dispatchEventToListeners(Events.PersistentGridOverlayStateChanged, {nodeId, enabled: false});
   }
 
   highlightScrollSnapInPersistentOverlay(nodeId: Protocol.DOM.NodeId): void {
@@ -322,7 +364,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       return;
     }
     this.#persistentHighlighter.highlightScrollSnapInOverlay(nodeId);
-    this.dispatchEventToListeners(Events.PersistentScrollSnapOverlayStateChanged, {nodeId, enabled: true});
   }
 
   isHighlightedScrollSnapInPersistentOverlay(nodeId: Protocol.DOM.NodeId): boolean {
@@ -337,7 +378,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       return;
     }
     this.#persistentHighlighter.hideScrollSnapInOverlay(nodeId);
-    this.dispatchEventToListeners(Events.PersistentScrollSnapOverlayStateChanged, {nodeId, enabled: false});
   }
 
   highlightFlexContainerInPersistentOverlay(nodeId: Protocol.DOM.NodeId): void {
@@ -345,7 +385,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       return;
     }
     this.#persistentHighlighter.highlightFlexInOverlay(nodeId);
-    this.dispatchEventToListeners(Events.PersistentFlexContainerOverlayStateChanged, {nodeId, enabled: true});
   }
 
   isHighlightedFlexContainerInPersistentOverlay(nodeId: Protocol.DOM.NodeId): boolean {
@@ -360,7 +399,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       return;
     }
     this.#persistentHighlighter.hideFlexInOverlay(nodeId);
-    this.dispatchEventToListeners(Events.PersistentFlexContainerOverlayStateChanged, {nodeId, enabled: false});
   }
 
   highlightContainerQueryInPersistentOverlay(nodeId: Protocol.DOM.NodeId): void {
@@ -368,7 +406,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       return;
     }
     this.#persistentHighlighter.highlightContainerQueryInOverlay(nodeId);
-    this.dispatchEventToListeners(Events.PersistentContainerQueryOverlayStateChanged, {nodeId, enabled: true});
   }
 
   isHighlightedContainerQueryInPersistentOverlay(nodeId: Protocol.DOM.NodeId): boolean {
@@ -383,7 +420,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       return;
     }
     this.#persistentHighlighter.hideContainerQueryInOverlay(nodeId);
-    this.dispatchEventToListeners(Events.PersistentContainerQueryOverlayStateChanged, {nodeId, enabled: false});
   }
 
   highlightSourceOrderInOverlay(node: DOMNode): void {
@@ -491,11 +527,32 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     }
   }
 
+  setWindowControlsPlatform(selectedPlatform: EmulatedOSType): void {
+    this.#windowControls.selectedPlatform = selectedPlatform;
+  }
+
+  setWindowControlsThemeColor(themeColor: string): void {
+    this.#windowControls.themeColor = themeColor;
+  }
+
+  getWindowControlsConfig(): Protocol.Overlay.WindowControlsOverlayConfig {
+    return this.#windowControls.config;
+  }
+
+  async toggleWindowControlsToolbar(show: boolean): Promise<void> {
+    const wcoConfigObj = show ? {windowControlsOverlayConfig: this.#windowControls.config} : {};
+
+    const setWindowControlsOverlayOperation = this.overlayAgent.invoke_setShowWindowControlsOverlay(wcoConfigObj);
+    const toggleStylesheetOperation = this.#windowControls.toggleEmulatedOverlay(show);
+
+    await Promise.all([setWindowControlsOverlayOperation, toggleStylesheetOperation]);
+
+    this.setShowViewportSizeOnResize(!show);
+  }
+
   private buildHighlightConfig(mode: string|undefined = 'all', showDetailedToolip: boolean|undefined = false):
       Protocol.Overlay.HighlightConfig {
-    const showRulers = Common.Settings.Settings.instance().moduleSetting('showMetricsRulers').get();
-    const colorFormat = Common.Settings.Settings.instance().moduleSetting('colorFormat').get();
-
+    const showRulers = Common.Settings.Settings.instance().moduleSetting('show-metrics-rulers').get();
     const highlightConfig: Protocol.Overlay.HighlightConfig = {
       showInfo: mode === 'all' || mode === 'container-outline',
       showRulers: showRulers,
@@ -505,7 +562,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       gridHighlightConfig: {},
       flexContainerHighlightConfig: {},
       flexItemHighlightConfig: {},
-      contrastAlgorithm: Root.Runtime.experiments.isEnabled('APCA') ? Protocol.Overlay.ContrastAlgorithm.Apca :
+      contrastAlgorithm: Root.Runtime.experiments.isEnabled('apca') ? Protocol.Overlay.ContrastAlgorithm.Apca :
                                                                       Protocol.Overlay.ContrastAlgorithm.Aa,
     };
 
@@ -715,13 +772,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       };
     }
 
-    // the backend does not support the 'original' format because
-    // it currently cannot retrieve the original format using computed styles
-    const supportedColorFormats = new Set(['rgb', 'hsl', 'hex']);
-    if (supportedColorFormats.has(colorFormat)) {
-      highlightConfig.colorFormat = colorFormat;
-    }
-
     return highlightConfig;
   }
 
@@ -764,11 +814,136 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
   getOverlayAgent(): ProtocolProxyApi.OverlayApi {
     return this.overlayAgent;
   }
+
+  async hasStyleSheetText(url: Platform.DevToolsPath.UrlString): Promise<boolean> {
+    return this.#windowControls.initializeStyleSheetText(url);
+  }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export class WindowControls {
+  readonly #cssModel: CSSModel;
+  #originalStylesheetText: string|undefined;
+  #stylesheetId?: Protocol.CSS.StyleSheetId;
+  #currentUrl: Platform.DevToolsPath.UrlString|undefined;
+
+  #config: Protocol.Overlay.WindowControlsOverlayConfig = {
+    showCSS: false,
+    selectedPlatform: EmulatedOSType.WindowsOS,
+    themeColor: '#ffffff',
+  };
+
+  constructor(cssModel: CSSModel) {
+    this.#cssModel = cssModel;
+  }
+
+  get selectedPlatform(): string {
+    return this.#config.selectedPlatform;
+  }
+
+  set selectedPlatform(osType: EmulatedOSType) {
+    this.#config.selectedPlatform = osType;
+  }
+
+  get themeColor(): string {
+    return this.#config.themeColor;
+  }
+
+  set themeColor(color: string) {
+    this.#config.themeColor = color;
+  }
+
+  get config(): Protocol.Overlay.WindowControlsOverlayConfig {
+    return this.#config;
+  }
+
+  async initializeStyleSheetText(url: Platform.DevToolsPath.UrlString): Promise<boolean> {
+    if (this.#originalStylesheetText && url === this.#currentUrl) {
+      return true;
+    }
+
+    const cssSourceUrl = this.#fetchCssSourceUrl(url);
+    if (!cssSourceUrl) {
+      return false;
+    }
+
+    this.#stylesheetId = this.#fetchCurrentStyleSheet(cssSourceUrl);
+    if (!this.#stylesheetId) {
+      return false;
+    }
+
+    const stylesheetText = await this.#cssModel.getStyleSheetText(this.#stylesheetId);
+
+    if (!stylesheetText) {
+      return false;
+    }
+
+    this.#originalStylesheetText = stylesheetText;
+    this.#currentUrl = url;
+
+    return true;
+  }
+
+  async toggleEmulatedOverlay(showOverlay: boolean): Promise<void> {
+    if (!this.#stylesheetId || !this.#originalStylesheetText) {
+      return;
+    }
+    if (showOverlay) {
+      const styleSheetText = WindowControls.#getStyleSheetForPlatform(
+          this.#config.selectedPlatform.toLowerCase(), this.#originalStylesheetText);
+      if (styleSheetText) {
+        await this.#cssModel.setStyleSheetText(this.#stylesheetId, styleSheetText, false);
+      }
+    } else {
+      // Restore the original stylesheet
+      await this.#cssModel.setStyleSheetText(this.#stylesheetId, this.#originalStylesheetText, false);
+    }
+  }
+
+  static #getStyleSheetForPlatform(platform: string, originalStyleSheet: string|undefined): string|undefined {
+    const overlayDimensions = platformOverlayDimensions[platform as keyof PlatformOverlayDimensions];
+    return WindowControls.#transformStyleSheet(
+        overlayDimensions.x, overlayDimensions.y, overlayDimensions.width, overlayDimensions.height,
+        originalStyleSheet);
+  }
+
+  #fetchCssSourceUrl(url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString|undefined {
+    const parentURL = Common.ParsedURL.ParsedURL.extractOrigin(url);
+    const cssHeaders = this.#cssModel.styleSheetHeaders();
+    const header = cssHeaders.find(header => header.sourceURL && header.sourceURL.includes(parentURL));
+    return header?.sourceURL;
+  }
+
+  #fetchCurrentStyleSheet(cssSourceUrl: Platform.DevToolsPath.UrlString): Protocol.CSS.StyleSheetId|undefined {
+    const stylesheetIds = this.#cssModel.getStyleSheetIdsForURL(cssSourceUrl);
+    return stylesheetIds.length > 0 ? stylesheetIds[0] : undefined;
+  }
+
+  // The primary objective of this function is to adjust certain CSS environment variables within the existing stylesheet
+  // and provide it as the style sheet for the emulated overlay.
+  static #transformStyleSheet(
+      x: number, y: number, width: number, height: number, originalStyleSheet: string|undefined): string|undefined {
+    if (!originalStyleSheet) {
+      return undefined;
+    }
+    const stylesheetText = originalStyleSheet;
+
+    const updatedStylesheet =
+        stylesheetText.replace(/: env\(titlebar-area-x(?:,[^)]*)?\);/g, `: env(titlebar-area-x, ${x}px);`)
+            .replace(/: env\(titlebar-area-y(?:,[^)]*)?\);/g, `: env(titlebar-area-y, ${y}px);`)
+            .replace(
+                /: env\(titlebar-area-width(?:,[^)]*)?\);/g, `: env(titlebar-area-width, calc(100% - ${width}px));`)
+            .replace(/: env\(titlebar-area-height(?:,[^)]*)?\);/g, `: env(titlebar-area-height, ${height}px);`);
+
+    return updatedStylesheet;
+  }
+
+  transformStyleSheetforTesting(
+      x: number, y: number, width: number, height: number, originalStyleSheet: string|undefined): string|undefined {
+    return WindowControls.#transformStyleSheet(x, y, width, height, originalStyleSheet);
+  }
+}
+
+export const enum Events {
   InspectModeWillBeToggled = 'InspectModeWillBeToggled',
   ExitedInspectMode = 'InspectModeExited',
   HighlightNodeRequested = 'HighlightNodeRequested',

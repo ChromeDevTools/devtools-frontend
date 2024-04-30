@@ -62,6 +62,10 @@ export class StylesSourceMapping implements SourceMapping {
     ];
   }
 
+  addSourceMap(sourceUrl: Platform.DevToolsPath.UrlString, sourceMapUrl: Platform.DevToolsPath.UrlString): void {
+    this.#styleFiles.get(sourceUrl)?.addSourceMap(sourceUrl, sourceMapUrl);
+  }
+
   rawLocationToUILocation(rawLocation: SDK.CSSModel.CSSLocation): Workspace.UISourceCode.UILocation|null {
     const header = rawLocation.header();
     if (!header || !this.acceptsHeader(header)) {
@@ -173,7 +177,7 @@ export class StylesSourceMapping implements SourceMapping {
   }
 }
 
-export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
+export class StyleFile implements TextUtils.ContentProvider.SafeContentProvider {
   readonly #cssModel: SDK.CSSModel.CSSModel;
   readonly #project: ContentProviderBasedProject;
   headers: Set<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>;
@@ -313,13 +317,17 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
     return this.headers.values().next().value.originalContentProvider().requestContent();
   }
 
+  requestContentData(): Promise<TextUtils.ContentData.ContentDataOrError> {
+    console.assert(this.headers.size > 0);
+    return this.headers.values().next().value.originalContentProvider().requestContentData();
+  }
+
   searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):
       Promise<TextUtils.ContentProvider.SearchMatch[]> {
     console.assert(this.headers.size > 0);
     return this.headers.values().next().value.originalContentProvider().searchInContent(query, caseSensitive, isRegex);
   }
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+
   static readonly updateTimeout = 200;
 
   getHeaders(): Set<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader> {
@@ -328,5 +336,13 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
 
   getUiSourceCode(): Workspace.UISourceCode.UISourceCode {
     return this.uiSourceCode;
+  }
+
+  addSourceMap(sourceUrl: Platform.DevToolsPath.UrlString, sourceMapUrl: Platform.DevToolsPath.UrlString): void {
+    const sourceMapManager = this.#cssModel.sourceMapManager();
+    this.headers.forEach(header => {
+      sourceMapManager.detachSourceMap(header);
+      sourceMapManager.attachSourceMap(header, sourceUrl, sourceMapUrl);
+    });
   }
 }

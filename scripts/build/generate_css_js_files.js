@@ -14,11 +14,37 @@ async function runCSSMinification(input, fileName) {
   return result.css;
 }
 
-async function codeForFile({fileName, input, isDebug, isLegacy = false, buildTimestamp}) {
+async function codeForFile({srcDir, fileName, input, isDebug, hotReloadEnabled, isLegacy = false, buildTimestamp}) {
   input = input.replace(/\`/g, '\\\'');
   input = input.replace(/\\/g, '\\\\');
 
   const stylesheetContents = isDebug ? input : await runCSSMinification(input, fileName);
+
+  // clang-format off
+  const hotReloadListener = (isDebug && hotReloadEnabled) ? `
+// CSS hot reloading code for 'watch' script
+window.HOT_STYLE_SHEETS = window.HOT_STYLE_SHEETS || {};
+window.HOT_STYLE_SHEETS["${path.resolve(srcDir, fileName)}"] = styles;
+if (!window.HOT_STYLE_SHEETS_WEB_SOCKET) {
+  const ws = new WebSocket("ws://localhost:8080");
+  ws.addEventListener('close', () => {
+    console.warn("Connection to watch script is closed, CSS changes won't be applied");
+  });
+  ws.addEventListener('message', (message) => {
+    const parsedData = JSON.parse(message.data);
+    if (parsedData.event === 'css-change') {
+      const styleSheet = window.HOT_STYLE_SHEETS[parsedData.file];
+      if (styleSheet) {
+        styleSheet.replace(parsedData.content);
+      }
+    } else if (parsedData.event === 'log-warn') {
+      console.warn(parsedData.message);
+    }
+  });
+  window.HOT_STYLE_SHEETS_WEB_SOCKET = ws;
+}
+` : '';
+  // clang-format on
 
   let exportStatement;
   if (isLegacy) {
@@ -31,6 +57,7 @@ styles.replaceSync(
 \`${stylesheetContents}
 /*# sourceURL=${fileName} */
 \`);
+${hotReloadListener}
 export default styles;`;
   }
 
@@ -49,16 +76,19 @@ ${exportStatement}
 exports.codeForFile = codeForFile;
 
 async function runMain() {
-  const [, , buildTimestamp, isDebugString, legacyString, targetName, srcDir, targetGenDir, files] = process.argv;
+  const [, , buildTimestamp, isDebugString, legacyString, targetName, srcDir, targetGenDir, files, hotReloadEnabledString] =
+      process.argv;
 
   const filenames = files.split(',');
   const configFiles = [];
   const isDebug = isDebugString === 'true';
   const isLegacy = legacyString === 'true';
+  const hotReloadEnabled = hotReloadEnabledString === 'true';
 
   for (const fileName of filenames) {
     const contents = fs.readFileSync(path.join(srcDir, fileName), {encoding: 'utf8', flag: 'r'});
-    const newContents = await codeForFile({fileName, isDebug, input: contents, isLegacy, buildTimestamp});
+    const newContents =
+        await codeForFile({srcDir, fileName, isDebug, hotReloadEnabled, input: contents, isLegacy, buildTimestamp});
     const generatedFileName = `${fileName}${isLegacy ? '.legacy' : ''}.js`;
     const generatedFileLocation = path.join(targetGenDir, generatedFileName);
 

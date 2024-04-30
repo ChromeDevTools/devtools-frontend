@@ -8,9 +8,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Util from '../util/util.js';
 
-// eslint-disable-next-line rulesdir/es_modules_import
 import type * as ProtocolProxyApi from '../../../generated/protocol-proxy-api.js';
-// eslint-disable-next-line rulesdir/es_modules_import
 import type * as Protocol from '../../../generated/protocol.js';
 import type * as Injected from '../injected/injected.js';
 
@@ -182,10 +180,6 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper<EventTy
     }
     this.#started = true;
 
-    await this.#pageAgent.invoke_setPrerenderingAllowed({
-      isAllowed: false,
-    });
-
     this.#networkManager.addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this.#appendCurrentNetworkStep, this);
 
@@ -198,10 +192,6 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper<EventTy
   }
 
   async stop(): Promise<void> {
-    await this.#pageAgent.invoke_setPrerenderingAllowed({
-      isAllowed: true,
-    });
-
     // Wait for any remaining updates.
     await this.#dispatchRecordingUpdate();
 
@@ -509,7 +499,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper<EventTy
 
   #getStopShortcuts(): Shortcut[] {
     const descriptors = UI.ShortcutRegistry.ShortcutRegistry.instance()
-                            .shortcutsForAction('chrome_recorder.start-recording')
+                            .shortcutsForAction('chrome-recorder.start-recording')
                             .map(key => key.descriptors.map(press => press.key));
 
     return createShortcuts(descriptors);
@@ -519,7 +509,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper<EventTy
     try {
       // This setting is set during the test to work around the fact that Puppeteer cannot
       // send trusted change and input events.
-      Common.Settings.Settings.instance().settingForTest('untrustedRecorderEvents');
+      Common.Settings.Settings.instance().settingForTest('untrusted-recorder-events');
       return true;
     } catch {
     }

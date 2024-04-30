@@ -1,4 +1,7 @@
-declare class ScriptInjector {
+/**
+ * @internal
+ */
+export declare class ScriptInjector {
     #private;
     append(statement: string): void;
     pop(statement: string): void;
@@ -8,5 +11,4 @@ declare class ScriptInjector {
  * @internal
  */
 export declare const scriptInjector: ScriptInjector;
-export {};
 //# sourceMappingURL=ScriptInjector.d.ts.map

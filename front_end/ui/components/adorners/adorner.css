@@ -18,21 +18,21 @@ slot {
   height: 14px;
   line-height: 13px;
   padding: 0 6px;
-  font-size: 8.5px;
-  color: var(--override-adorner-text-color, var(--color-text-primary));
-  background-color: var(--override-adorner-background-color, var(--color-background-elevation-1));
-  border: 1px solid var(--override-adorner-border-color, var(--color-details-hairline));
+  font-size: var(--override-adorner-font-size, 8.5px);
+  color: var(--override-adorner-text-color, var(--sys-color-on-surface));
+  background-color: var(--override-adorner-background-color, var(--sys-color-neutral-container));
+  border: 1px solid var(--override-adorner-border-color, var(--sys-color-neutral-outline));
   border-radius: 10px;
 }
 
 :host(:focus) slot {
-  border-color: var(--override-adorner-focus-border-color, var(--color-primary-old));
+  border-color: var(--override-adorner-focus-border-color, var(--sys-color-primary));
 }
 
 :host([aria-pressed="true"]) slot {
-  color: var(--override-adorner-active-text-color, var(--color-background));
-  background-color: var(--override-adorner-active-background-color, var(--color-primary-old));
-  border: 1px solid var(--override-adorner-active-background-color, var(--color-primary-old));
+  color: var(--override-adorner-active-text-color, var(--sys-color-cdt-base-container));
+  background-color: var(--override-adorner-active-background-color, var(--sys-color-primary));
+  border: 1px solid var(--override-adorner-active-background-color, var(--sys-color-primary));
 }
 
 ::slotted(*) {

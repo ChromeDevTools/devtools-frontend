@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 
 devtools_module("protocol_client") {
   sources = [
@@ -30,13 +31,13 @@ devtools_entrypoint("bundle") {
   visibility = [ "*" ]
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "protocol_client-legacy.ts"
+ts_library("unittests") {
+  testonly = true
 
-  deps = [ ":bundle" ]
+  sources = [ "NodeURL.test.ts" ]
 
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../legacy_test_runner/*",
+  deps = [
+    ":bundle",
+    "../host:bundle",
   ]
 }

@@ -64,10 +64,13 @@ WARNING_BUILDERS_STILL_RUNNING = 'Patchset %s has builders that are still ' \
 WARNING_BUILDERS_FAILED = 'Patchset %s has builders that failed:\n  %s\n'
 WARNING_BUILDERS_MISSING = 'Patchset %s does not have screenshot tests for ' \
     'all platform.\nOnly these builders found:\n  %s'
-WARNING_GSUTIL_CONNECTIVITY = 'Ups! gsutil seems to not work for you right ' \
-    'now.\nThis is either a connectivity problem or a configuration issue.\n' \
-    'Try running "./third_party/depot_tools/gsutil.py config" command.\n' \
-    'When prompted for a project id, please use "v8-infra".'
+WARNING_GSUTIL_CONNECTIVITY = (
+    'Ups! gsutil seems to not work for you right '
+    'now.\nThis is either a connectivity problem or a configuration issue.\n'
+    'Make sure you are logged in with your Google account and you are included '
+    'in the devtools-dev@google.com group.\n'
+    'Try running "./third_party/depot_tools/gsutil.py config" command.\n'
+    'When prompted for a project id, please use "v8-infra".\n')
 WARNING_GIT_DIRTY = 'Before attempting to apply screenshot patches, please' \
     'make sure your local repo is clean.\nFolder %s seems to contain ' \
     'un-committed changes.' % GOLDENS_DIR
@@ -253,7 +256,12 @@ def read_try_results(patchset):
         results_command.extend(['-p', patchset])
     stdout = subprocess.check_output(results_command)
     if stdout:
-        return json.loads(stdout)
+        try:
+            return json.loads(stdout)
+        except Exception as e:
+            print(f'Unable to parse try-results output. \n{str(e)}\n')
+            print('Usually this goes away if you set SKIP_GCE_AUTH_FOR_GIT=1.')
+            sys.exit(1)
     return {}
 
 

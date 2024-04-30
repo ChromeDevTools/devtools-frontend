@@ -21,18 +21,17 @@ export async function navigateToCoverageTestSite() {
 }
 
 export async function startInstrumentingCoverage() {
-  await waitFor(START_INSTRUMENTING_BUTTON);
   await click(START_INSTRUMENTING_BUTTON);
   await waitForNone('.coverage-results .landing-page');
 }
 
 export async function stopInstrumentingCoverage() {
   await click(STOP_INSTRUMENTING_BUTTON);
-  await waitForNone('button[aria-label="Clear all"][disabled]');
+  await waitForNone('button[aria-label="Clear coverage"][disabled]');
 }
 
 export async function clearCoverageContent() {
-  await click('button[aria-label="Clear all"]');
+  await click('button[aria-label="Clear coverage"]');
   await waitFor('.coverage-results .landing-page');
 }
 
@@ -46,6 +45,6 @@ export async function getCoverageData(expectedCount: number) {
   return Promise.all(rows.map(r => r.evaluate((r: Element) => ({
                                                 url: r.querySelector('.url-column')?.textContent,
                                                 total: r.querySelector('.size-column')?.textContent,
-                                                unused: r.querySelector('.unusedSize-column span')?.textContent,
+                                                unused: r.querySelector('.unused-size-column span')?.textContent,
                                               }))));
 }

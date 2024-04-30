@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Bindings from '../../models/bindings/bindings.js';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
+import type * as Bindings from '../../models/bindings/bindings.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 
 export const enum CoverageType {
   CSS = (1 << 0),
@@ -21,19 +22,20 @@ export const enum SuspensionState {
   Suspended = 'Suspended',
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   CoverageUpdated = 'CoverageUpdated',
   CoverageReset = 'CoverageReset',
+  SourceMapResolved = 'SourceMapResolved',
 }
 
 export type EventTypes = {
   [Events.CoverageUpdated]: CoverageInfo[],
   [Events.CoverageReset]: void,
+  [Events.SourceMapResolved]: void,
 };
 
 const COVERAGE_POLLING_PERIOD_MS: number = 200;
+const RESOLVE_SOURCEMAP_TIMEOUT = 500;
 
 interface BacklogItem<T> {
   rawCoverageData: Array<T>;
@@ -54,12 +56,18 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   private jsBacklog: BacklogItem<Protocol.Profiler.ScriptCoverage>[];
   private cssBacklog: BacklogItem<Protocol.CSS.RuleUsage>[];
   private performanceTraceRecording: boolean|null;
+  private sourceMapManager: SDK.SourceMapManager.SourceMapManager<SDK.Script.Script>|null;
+  private willResolveSourceMaps: boolean;
+  private processSourceMapBacklog: SourceMapObject[];
 
   constructor(target: SDK.Target.Target) {
     super(target);
     this.cpuProfilerModel = target.model(SDK.CPUProfilerModel.CPUProfilerModel);
     this.cssModel = target.model(SDK.CSSModel.CSSModel);
     this.debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    this.sourceMapManager = this.debuggerModel?.sourceMapManager() || null;
+    this.sourceMapManager?.addEventListener(
+        SDK.SourceMapManager.Events.SourceMapAttached, this.sourceMapAttached, this);
 
     this.coverageByURL = new Map();
     this.coverageByContentProvider = new Map();
@@ -76,6 +84,8 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     this.jsBacklog = [];
     this.cssBacklog = [];
     this.performanceTraceRecording = false;
+    this.willResolveSourceMaps = false;
+    this.processSourceMapBacklog = [];
   }
 
   async start(jsCoveragePerBlock: boolean): Promise<boolean> {
@@ -100,10 +110,57 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     return Boolean(this.cssModel || this.cpuProfilerModel);
   }
 
-  preciseCoverageDeltaUpdate(timestamp: number, occasion: string, coverageData: Protocol.Profiler.ScriptCoverage[]):
-      void {
+  private async sourceMapAttached(
+      event: Common.EventTarget.EventTargetEvent<{client: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap}>):
+      Promise<void> {
+    const script = event.data.client;
+    const sourceMap = event.data.sourceMap;
+
+    this.processSourceMapBacklog.push({script, sourceMap});
+    if (!this.willResolveSourceMaps) {
+      this.willResolveSourceMaps = true;
+      setTimeout(this.resolveSourceMapsAndUpdate.bind(this), RESOLVE_SOURCEMAP_TIMEOUT);
+    }
+  }
+
+  private async resolveSourceMapsAndUpdate(): Promise<void> {
+    this.willResolveSourceMaps = false;
+    // reset the backlog once we start processing it
+    const currentBacklog = this.processSourceMapBacklog;
+    this.processSourceMapBacklog = [];
+    await Promise.all(currentBacklog.map(({script, sourceMap}) => this.resolveSourceMap(script, sourceMap)));
+    this.dispatchEventToListeners(Events.SourceMapResolved);
+  }
+
+  private async resolveSourceMap(script: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap): Promise<void> {
+    const url = script.sourceURL;
+    const urlCoverage = this.coverageByURL.get(url);
+    if (!urlCoverage) {
+      // The urlCoverage has not been created yet, so no need to update it.
+      return;
+    }
+    // If the urlCoverage is there, but no sourceURLCoverageInfo have been added,
+    // it means the source map is attached after the URLCoverage is created.
+    // So now we need to create the sourceURLCoverageInfo and add it to the urlCoverage.
+    if (urlCoverage.sourcesURLCoverageInfo.size === 0) {
+      const generatedContent = (await script.requestContent()).content || null;
+      const generatedText = new TextUtils.Text.Text(generatedContent || '');
+      const [sourceSizeMap, sourceSegments] =
+          this.calculateSizeForSources(sourceMap, generatedText, script.contentLength);
+      urlCoverage.setSourceSegments(sourceSegments);
+      for (const sourceURL of sourceMap.sourceURLs()) {
+        this.addCoverageForSource(sourceURL, sourceSizeMap.get(sourceURL) || 0, urlCoverage.type(), urlCoverage);
+      }
+    }
+  }
+
+  async preciseCoverageDeltaUpdate(
+      timestamp: number, occasion: string, coverageData: Protocol.Profiler.ScriptCoverage[]): Promise<void> {
     this.coverageUpdateTimes.add(timestamp);
-    void this.backlogOrProcessJSCoverage(coverageData, timestamp);
+    const result = await this.backlogOrProcessJSCoverage(coverageData, timestamp);
+    if (result.length) {
+      this.dispatchEventToListeners(Events.CoverageUpdated, result);
+    }
   }
 
   async stop(): Promise<void> {
@@ -280,7 +337,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     const ascendingByTimestamp = (x: {stamp: number}, y: {stamp: number}): number => x.stamp - y.stamp;
     const results = [];
     for (const {rawCoverageData, stamp} of this.jsBacklog.sort(ascendingByTimestamp)) {
-      results.push(this.processJSCoverage(rawCoverageData, stamp));
+      results.push(await this.processJSCoverage(rawCoverageData, stamp));
     }
     this.jsBacklog = [];
     return results.flat();
@@ -290,7 +347,8 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     void this.backlogOrProcessJSCoverage([], 0);
   }
 
-  private processJSCoverage(scriptsCoverage: Protocol.Profiler.ScriptCoverage[], stamp: number): CoverageInfo[] {
+  private async processJSCoverage(scriptsCoverage: Protocol.Profiler.ScriptCoverage[], stamp: number):
+      Promise<CoverageInfo[]> {
     if (!this.debuggerModel) {
       return [];
     }
@@ -315,10 +373,10 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
           ranges.push(range);
         }
       }
-      const subentry = this.addCoverage(
+      const subentry = await this.addCoverage(
           script, script.contentLength, script.lineOffset, script.columnOffset, ranges, type as CoverageType, stamp);
       if (subentry) {
-        updatedEntries.push(subentry);
+        updatedEntries.push(...subentry);
       }
     }
     return updatedEntries;
@@ -350,13 +408,13 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     const ascendingByTimestamp = (x: {stamp: number}, y: {stamp: number}): number => x.stamp - y.stamp;
     const results = [];
     for (const {rawCoverageData, stamp} of this.cssBacklog.sort(ascendingByTimestamp)) {
-      results.push(this.processCSSCoverage(rawCoverageData, stamp));
+      results.push(await this.processCSSCoverage(rawCoverageData, stamp));
     }
     this.cssBacklog = [];
     return results.flat();
   }
 
-  private processCSSCoverage(ruleUsageList: Protocol.CSS.RuleUsage[], stamp: number): CoverageInfo[] {
+  private async processCSSCoverage(ruleUsageList: Protocol.CSS.RuleUsage[], stamp: number): Promise<CoverageInfo[]> {
     if (!this.cssModel) {
       return [];
     }
@@ -377,11 +435,11 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     for (const entry of rulesByStyleSheet) {
       const styleSheetHeader = entry[0] as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader;
       const ranges = entry[1] as RangeUseCount[];
-      const subentry = this.addCoverage(
+      const subentry = await this.addCoverage(
           styleSheetHeader, styleSheetHeader.contentLength, styleSheetHeader.startLine, styleSheetHeader.startColumn,
           ranges, CoverageType.CSS, stamp);
       if (subentry) {
-        updatedEntries.push(subentry);
+        updatedEntries.push(...subentry);
       }
     }
     return updatedEntries;
@@ -425,14 +483,101 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   }
 
   private addStyleSheetToCSSCoverage(styleSheetHeader: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): void {
-    this.addCoverage(
+    void this.addCoverage(
         styleSheetHeader, styleSheetHeader.contentLength, styleSheetHeader.startLine, styleSheetHeader.startColumn, [],
         CoverageType.CSS, Date.now());
   }
 
-  private addCoverage(
+  private calculateSizeForSources(sourceMap: SDK.SourceMap.SourceMap, text: TextUtils.Text.Text, contentLength: number):
+      [
+        Map<Platform.DevToolsPath.UrlString, number>,
+        SourceSegment[],
+      ] {
+    // Map shows the size of source files contributed to the size in the generated file. For example:
+    // Map(3) {url1 => 593, url2 => 232, url3 => 52}
+    // This means in there are 593 bytes in the generated file are contributed by url1, and so on.
+    const sourceSizeMap = new Map<Platform.DevToolsPath.UrlString, number>();
+    // Continuous segments shows that which source file contribute to the generated file segment. For example:
+    // [{end: 84, sourceUrl: ''}, {end: 593, sourceUrl: url1}, {end: 781, sourceUrl: url2}, {end: 833, sourceUrl: url3}, {end: 881, sourceUrl: url1}]
+    // This means that the first 84 bytes in the generated file are not contributed by any source file, the next 593 bytes are contributed by url1, and so on.
+    const sourceSegments: SourceSegment[] = [];
+
+    const calculateSize = function(startLine: number, startCol: number, endLine: number, endCol: number): number {
+      if (startLine === endLine) {
+        return endCol - startCol;
+      }
+      if (text) {
+        // If we hit the line break, we need to use offset to calculate size
+        const startOffset = text.offsetFromPosition(startLine, startCol);
+        const endOffset = text.offsetFromPosition(endLine, endCol);
+        return endOffset - startOffset;
+      }
+      // If for some reason we don't have the text, we can only use col number to calculate size
+      return endCol;
+    };
+
+    const mappings = sourceMap.mappings();
+    if (mappings.length === 0) {
+      return [sourceSizeMap, sourceSegments];
+    }
+
+    // calculate the segment before the first entry
+    let lastEntry = mappings[0];
+    let totalSegmentSize = 0;
+    if (text) {
+      totalSegmentSize += text.offsetFromPosition(lastEntry.lineNumber, lastEntry.columnNumber);
+    } else {
+      totalSegmentSize += calculateSize(0, 0, lastEntry.lineNumber, lastEntry.columnNumber);
+    }
+    sourceSegments.push({end: totalSegmentSize, sourceUrl: '' as Platform.DevToolsPath.UrlString});
+
+    for (let i = 0; i < mappings.length; i++) {
+      const curEntry = mappings[i];
+      const entryRange = sourceMap.findEntryRanges(curEntry.lineNumber, curEntry.columnNumber);
+      if (entryRange) {
+        // calculate the size
+        const range = entryRange.range;
+        const sourceURL = entryRange.sourceURL;
+        const oldSize = sourceSizeMap.get(sourceURL) || 0;
+        let size = 0;
+        if (i === mappings.length - 1) {
+          const startOffset = text.offsetFromPosition(range.startLine, range.startColumn);
+          size = contentLength - startOffset;
+        } else {
+          size = calculateSize(range.startLine, range.startColumn, range.endLine, range.endColumn);
+        }
+        sourceSizeMap.set(sourceURL, oldSize + size);
+      }
+
+      // calculate the segment
+      const segmentSize =
+          calculateSize(lastEntry.lineNumber, lastEntry.columnNumber, curEntry.lineNumber, curEntry.columnNumber);
+      totalSegmentSize += segmentSize;
+      if (curEntry.sourceURL !== lastEntry.sourceURL) {
+        if (text) {
+          const endOffsetForLastEntry = text.offsetFromPosition(curEntry.lineNumber, curEntry.columnNumber);
+          sourceSegments.push(
+              {end: endOffsetForLastEntry, sourceUrl: lastEntry.sourceURL || '' as Platform.DevToolsPath.UrlString});
+        } else {
+          sourceSegments.push(
+              {end: totalSegmentSize, sourceUrl: lastEntry.sourceURL || '' as Platform.DevToolsPath.UrlString});
+        }
+      }
+      lastEntry = curEntry;
+      // add the last segment if we are at the last entry
+      if (i === mappings.length - 1) {
+        sourceSegments.push(
+            {end: contentLength, sourceUrl: curEntry.sourceURL || '' as Platform.DevToolsPath.UrlString});
+      }
+    }
+
+    return [sourceSizeMap, sourceSegments];
+  }
+
+  private async addCoverage(
       contentProvider: TextUtils.ContentProvider.ContentProvider, contentLength: number, startLine: number,
-      startColumn: number, ranges: RangeUseCount[], type: CoverageType, stamp: number): CoverageInfo|null {
+      startColumn: number, ranges: RangeUseCount[], type: CoverageType, stamp: number): Promise<CoverageInfo[]|null> {
+    const coverageInfoArray: CoverageInfo[] = [];
     const url = contentProvider.contentURL();
     if (!url) {
       return null;
@@ -443,6 +588,20 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
       isNewUrlCoverage = true;
       urlCoverage = new URLCoverageInfo(url);
       this.coverageByURL.set(url, urlCoverage);
+      // If the script has source map, we need to create the sourceURLCoverageInfo for each source file.
+      const sourceMap = await this.sourceMapManager?.sourceMapForClientPromise(contentProvider as SDK.Script.Script);
+      if (sourceMap) {
+        const generatedContent = (await contentProvider.requestContent()).content || null;
+        const generatedText = new TextUtils.Text.Text(generatedContent || '');
+        const [sourceSizeMap, sourceSegments] = this.calculateSizeForSources(sourceMap, generatedText, contentLength);
+        urlCoverage.setSourceSegments(sourceSegments);
+        for (const sourceURL of sourceMap.sourceURLs()) {
+          const subentry = this.addCoverageForSource(sourceURL, sourceSizeMap.get(sourceURL) || 0, type, urlCoverage);
+          if (subentry) {
+            coverageInfoArray.push(subentry);
+          }
+        }
+      }
     }
 
     const coverageInfo = urlCoverage.ensureEntry(contentProvider, contentLength, startLine, startColumn, type);
@@ -457,6 +616,30 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
       return null;
     }
     urlCoverage.addToSizes(usedSizeDelta, 0);
+    // go through the sources that have size changes.
+    for (const [sourceUrl, sizeDelta] of coverageInfo.sourceDeltaMap) {
+      const sourceURLCoverageInfo = urlCoverage.sourcesURLCoverageInfo.get(sourceUrl);
+      if (sourceURLCoverageInfo) {
+        sourceURLCoverageInfo.addToSizes(sizeDelta, 0);
+        sourceURLCoverageInfo.lastSourceUsedRange = coverageInfo.sourceUsedRangeMap.get(sourceUrl) || [];
+      }
+    }
+
+    coverageInfoArray.push(coverageInfo);
+    return coverageInfoArray;
+  }
+
+  private addCoverageForSource(
+      url: Platform.DevToolsPath.UrlString, size: number, type: CoverageType,
+      generatedUrlCoverage: URLCoverageInfo): CoverageInfo|null {
+    const uiSourceCode =
+        Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url as Platform.DevToolsPath.UrlString);
+    const contentProvider = uiSourceCode as TextUtils.ContentProvider.ContentProvider;
+    const urlCoverage = new SourceURLCoverageInfo(url, generatedUrlCoverage);
+    const coverageInfo = urlCoverage.ensureEntry(contentProvider, size, 0, 0, type);
+
+    generatedUrlCoverage.sourcesURLCoverageInfo.set(url, urlCoverage);
+
     return coverageInfo;
   }
 
@@ -469,7 +652,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
         continue;
       }
       const url = urlInfo.url();
-      if (url.startsWith('extensions::') || url.startsWith('chrome-extension://')) {
+      if (url.startsWith('extensions::') || Common.ParsedURL.schemeIs(url, 'chrome-extension:')) {
         continue;
       }
       result.push(...await urlInfo.entriesForExport());
@@ -501,6 +684,8 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
   private usedSizeInternal: number;
   private typeInternal!: CoverageType;
   private isContentScriptInternal: boolean;
+  sourcesURLCoverageInfo: Map<Platform.DevToolsPath.UrlString, SourceURLCoverageInfo> = new Map();
+  sourceSegments: SourceSegment[]|undefined;
 
   constructor(url: Platform.DevToolsPath.UrlString) {
     super();
@@ -535,6 +720,9 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
   usedPercentage(): number {
     // Per convention, empty files are reported as 100 % uncovered
     if (this.sizeInternal === 0) {
+      return 0;
+    }
+    if (!this.unusedSize() || !this.size()) {
       return 0;
     }
     return this.usedSize() / this.size();
@@ -576,13 +764,18 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
     }
   }
 
+  setSourceSegments(segments: SourceSegment[]): void {
+    this.sourceSegments = segments;
+  }
+
   ensureEntry(
       contentProvider: TextUtils.ContentProvider.ContentProvider, contentLength: number, lineOffset: number,
       columnOffset: number, type: CoverageType): CoverageInfo {
     const key = `${lineOffset}:${columnOffset}`;
     let entry = this.coverageInfoByLocation.get(key);
 
-    if ((type & CoverageType.JavaScript) && !this.coverageInfoByLocation.size) {
+    if ((type & CoverageType.JavaScript) && !this.coverageInfoByLocation.size &&
+        contentProvider instanceof SDK.Script.Script) {
       this.isContentScriptInternal = (contentProvider as SDK.Script.Script).isContentScript();
     }
     this.typeInternal |= type;
@@ -592,11 +785,12 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
       return entry;
     }
 
-    if ((type & CoverageType.JavaScript) && !this.coverageInfoByLocation.size) {
+    if ((type & CoverageType.JavaScript) && !this.coverageInfoByLocation.size &&
+        contentProvider instanceof SDK.Script.Script) {
       this.isContentScriptInternal = (contentProvider as SDK.Script.Script).isContentScript();
     }
 
-    entry = new CoverageInfo(contentProvider, contentLength, lineOffset, columnOffset, type);
+    entry = new CoverageInfo(contentProvider, contentLength, lineOffset, columnOffset, type, this);
     this.coverageInfoByLocation.set(key, entry);
     this.addToSizes(0, contentLength);
 
@@ -672,9 +866,16 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
   }
 }
 
+export class SourceURLCoverageInfo extends URLCoverageInfo {
+  generatedURLCoverageInfo: URLCoverageInfo;
+  lastSourceUsedRange: RangeOffset[] = [];
+  constructor(sourceUrl: Platform.DevToolsPath.UrlString, generatedUrlCoverage: URLCoverageInfo) {
+    super(sourceUrl);
+    this.generatedURLCoverageInfo = generatedUrlCoverage;
+  }
+}
+
 export namespace URLCoverageInfo {
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
   export enum Events {
     SizesChanged = 'SizesChanged',
   }
@@ -727,10 +928,14 @@ export class CoverageInfo {
   private columnOffset: number;
   private coverageType: CoverageType;
   private segments: CoverageSegment[];
+  private generatedUrlCoverageInfo: URLCoverageInfo;
+  sourceUsedSizeMap: Map<Platform.DevToolsPath.UrlString, number> = new Map();
+  sourceDeltaMap: Map<Platform.DevToolsPath.UrlString, number> = new Map();
+  sourceUsedRangeMap = new Map<Platform.DevToolsPath.UrlString, RangeOffset[]>();
 
   constructor(
       contentProvider: TextUtils.ContentProvider.ContentProvider, size: number, lineOffset: number,
-      columnOffset: number, type: CoverageType) {
+      columnOffset: number, type: CoverageType, generatedUrlCoverageInfo: URLCoverageInfo) {
     this.contentProvider = contentProvider;
     this.size = size;
     this.usedSize = 0;
@@ -738,6 +943,7 @@ export class CoverageInfo {
     this.lineOffset = lineOffset;
     this.columnOffset = columnOffset;
     this.coverageType = type;
+    this.generatedUrlCoverageInfo = generatedUrlCoverageInfo;
 
     this.segments = [];
   }
@@ -769,6 +975,9 @@ export class CoverageInfo {
     const oldUsedSize = this.usedSize;
     this.segments = mergeSegments(this.segments, segments);
     this.updateStats();
+    if (this.generatedUrlCoverageInfo.sourceSegments && this.generatedUrlCoverageInfo.sourceSegments.length > 0) {
+      this.updateSourceCoverage();
+    }
     return this.usedSize - oldUsedSize;
   }
 
@@ -814,6 +1023,61 @@ export class CoverageInfo {
     }
   }
 
+  private updateSourceCoverage(): void {
+    const sourceCoverage = new Map();
+    this.sourceDeltaMap = new Map();
+    this.sourceUsedRangeMap = new Map();
+    const ranges = this.generatedUrlCoverageInfo.sourceSegments || [];
+    let segmentStart = 0;
+    let lastFoundRange = 0;
+    for (const segment of this.segments) {
+      const segmentEnd = segment.end;
+      if (segment.count) {
+        for (let i = lastFoundRange; i < ranges.length; i++) {
+          // Calculate the start point of the current range.
+          // If it's the first range, the start point is 0,
+          // otherwise, it's one more than the end point of the previous range.
+          const rangeStart = i === 0 ? 0 : ranges[i - 1].end + 1;
+          const rangeEnd = ranges[i].end;
+          // Calculate the start and end points of the overlap between the current segment and range
+          const overlapStart = Math.max(segmentStart, rangeStart);
+          const overlapEnd = Math.min(segmentEnd, rangeEnd);
+
+          // If there's an overlap (start point is less than or equal to end point)
+          if (overlapStart <= overlapEnd) {
+            const overlapSize = overlapEnd - overlapStart + 1;
+            const overlapRange = {start: overlapStart, end: overlapEnd};
+            if (!sourceCoverage.has(ranges[i].sourceUrl)) {
+              sourceCoverage.set(ranges[i].sourceUrl, overlapSize);
+            } else {
+              sourceCoverage.set(ranges[i].sourceUrl, sourceCoverage.get(ranges[i].sourceUrl) + overlapSize);
+            }
+            if (!this.sourceUsedRangeMap.has(ranges[i].sourceUrl)) {
+              this.sourceUsedRangeMap.set(ranges[i].sourceUrl, [overlapRange]);
+            } else {
+              this.sourceUsedRangeMap.get(ranges[i].sourceUrl)?.push(overlapRange);
+            }
+            // The next overlap will start at or after the end of the current range
+            lastFoundRange = i;
+          }
+          // The segment end is before the end of the current range, so we can stop looking for overlaps
+          if (segmentEnd < rangeEnd) {
+            break;
+          }
+        }
+      }
+      segmentStart = segmentEnd + 1;
+    }
+
+    for (const [url, size] of sourceCoverage) {
+      const oldSize = this.sourceUsedSizeMap.get(url) || 0;
+      if (oldSize !== size) {
+        this.sourceUsedSizeMap.set(url, size);         // update the map tracking the old used size
+        this.sourceDeltaMap.set(url, size - oldSize);  // update the map tracking the delta
+      }
+    }
+  }
+
   rangesForExport(offset: number = 0): {start: number, end: number}[] {
     const ranges = [];
     let start = 0;
@@ -842,4 +1106,25 @@ export interface CoverageSegment {
   end: number;
   count: number;
   stamp: number;
+}
+
+export interface SourceSegment {
+  end: number;
+  sourceUrl: Platform.DevToolsPath.UrlString;
+}
+
+export interface EntryRange {
+  range: TextUtils.TextRange.TextRange;
+  sourceRange: TextUtils.TextRange.TextRange;
+  sourceURL: Platform.DevToolsPath.UrlString;
+}
+
+export interface RangeOffset {
+  start: number;
+  end: number;
+}
+
+export interface SourceMapObject {
+  script: SDK.Script.Script;
+  sourceMap: SDK.SourceMap.SourceMap;
 }

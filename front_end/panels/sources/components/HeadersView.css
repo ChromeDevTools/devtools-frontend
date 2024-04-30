@@ -12,7 +12,7 @@
 .row {
   display: flex;
   flex-direction: row;
-  color: var(--color-syntax-1);
+  color: var(--sys-color-token-property-special);
   font-family: var(--monospace-font-family);
   font-size: var(--monospace-font-size);
   align-items: center;
@@ -34,12 +34,12 @@
 
 .separator {
   margin-right: 0.5em;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .editable {
   cursor: text;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   overflow-wrap: break-word;
   min-height: 18px;
   line-height: 18px;
@@ -51,12 +51,12 @@
 }
 
 .editable.red {
-  color: var(--color-syntax-1);
+  color: var(--sys-color-token-property-special);
 }
 
 .editable:hover,
 .editable:focus {
-  box-shadow: 0 0 0 1px var(--color-details-hairline);
+  border: 1px solid var(--sys-color-neutral-outline);
   border-radius: 2px;
 }
 
@@ -66,8 +66,8 @@
   transition: opacity 200ms;
 }
 
-.row:focus-within .inline-button,
-.row:hover .inline-button {
+.row:focus-within .inline-button:not([hidden]),
+.row:hover .inline-button:not([hidden]) {
   opacity: 100%;
   visibility: visible;
 }
@@ -92,7 +92,7 @@
 
 .error-body {
   line-height: 1.5em;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .add-block {
@@ -105,7 +105,7 @@
 }
 
 .link {
-  color: var(--color-link);
+  color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
   outline-offset: 2px;

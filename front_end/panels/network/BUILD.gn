@@ -5,6 +5,7 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/generate_css.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
@@ -21,7 +22,6 @@ generate_css("css_files") {
     "requestCookiesView.css",
     "requestHTMLView.css",
     "requestHeadersTree.css",
-    "requestHeadersView.css",
     "requestInitiatorView.css",
     "requestInitiatorViewTree.css",
     "requestPayloadTree.css",
@@ -51,7 +51,6 @@ devtools_module("network") {
     "NetworkWaterfallColumn.ts",
     "RequestCookiesView.ts",
     "RequestHTMLView.ts",
-    "RequestHeadersView.ts",
     "RequestInitiatorView.ts",
     "RequestPayloadView.ts",
     "RequestPreviewView.ts",
@@ -73,6 +72,7 @@ devtools_module("network") {
     "../../models/issues_manager:bundle",
     "../../models/logs:bundle",
     "../../models/text_utils:bundle",
+    "../../models/trace:bundle",
     "../../models/workspace:bundle",
     "../../panels/elements:bundle",
     "../../panels/mobile_throttling:bundle",
@@ -108,24 +108,12 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
-    "../../../test/unittests/front_end/panels/network/*",
     "../../entrypoints/*",
     "../../ui/components/request_link_icon/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../application/*",
   ]
 
   visibility += devtools_panels_visibility
-}
-
-devtools_entrypoint("legacy") {
-  entrypoint = "network-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [ "../..:legacy_entrypoints" ]
 }
 
 devtools_entrypoint("meta") {
@@ -133,13 +121,47 @@ devtools_entrypoint("meta") {
 
   deps = [
     ":bundle",
-    "../../core/root:bundle",
+    "../../core/common:bundle",
+    "../../core/i18n:bundle",
+    "../../core/sdk:bundle",
+    "../../models/workspace:bundle",
     "../../ui/legacy:bundle",
     "./forward:bundle",
   ]
 
   visibility = [
-    "../../../test/unittests/front_end/panels/network/*",
+    ":unittests",
     "../../entrypoints/*",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "BlockedURLsPane.test.ts",
+    "NetworkDataGridNode.test.ts",
+    "NetworkItemView.test.ts",
+    "NetworkLogView.test.ts",
+    "NetworkOverview.test.ts",
+    "NetworkPanel.test.ts",
+    "NetworkSearchScope.test.ts",
+    "RequestCookiesView.test.ts",
+    "RequestPayloadView.test.ts",
+    "RequestPreviewView.test.ts",
+    "RequestResponseView.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    ":meta",
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+    "../../generated:protocol",
+    "../../models/text_utils:bundle",
+    "../../testing",
+    "../../ui/legacy:bundle",
+    "../../ui/legacy/components/source_frame:bundle",
+    "./components:bundle",
   ]
 }

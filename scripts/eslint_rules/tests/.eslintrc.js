@@ -8,11 +8,11 @@ const rulesDirPlugin = require('eslint-plugin-rulesdir');
 rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', 'lib');
 
 module.exports = {
-  'rules': {
-    'rulesdir/no_only_eslint_tests': 2,
+  'rules' : {
+    'rulesdir/no_only_eslint_tests' : 'error',
     // errors on it('test') with no body
-    'mocha/no-pending-tests': 2,
+    'mocha/no-pending-tests' : 'error',
     // errors on {describe, it}.only
-    'mocha/no-exclusive-tests': 2,
+    'mocha/no-exclusive-tests' : 'error',
   }
 };

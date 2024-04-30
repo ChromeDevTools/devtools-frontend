@@ -11,8 +11,9 @@
 }
 
 .show {
+  display: block;
   font-size: 12px;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   height: 100%;
   width: 100%;
   border: none;
@@ -21,7 +22,8 @@
 }
 
 .show:focus-visible {
-  outline: 1px auto var(--override-select-menu-show-button-outline, -webkit-focus-ring-color);
+  outline: 2px solid var(--sys-color-state-focus-ring);
+  outline-offset: 2px;
 }
 
 #button-label-wrapper {
@@ -53,24 +55,22 @@
 
 #arrow {
   mask-image: var(--deploy-menu-arrow);
-  -webkit-mask-image: var(--deploy-menu-arrow);
   -webkit-mask-position-y: center;
   margin-left: 5px;
   width: 14px;
   flex-shrink: 0;
   height: 14px;
   display: inline-block;
-  -webkit-mask-repeat: no-repeat;
-  background-color: var(--override-throttling-icon-and-text-color, var(--override-select-menu-arrow-color, var(--color-text-primary)));
+  mask-repeat: no-repeat;
+  background-color: var(--override-throttling-icon-and-text-color, var(--override-select-menu-arrow-color, var(--sys-color-on-surface)));
   transform: rotate(var(--arrow-angle));
   transform-origin: center;
-  mask-repeat: no-repeat;
   transition: 200ms;
 }
 
 .single-arrow {
   border-radius: 0 3px 3px 0;
-  border: 1px solid var(--override-select-menu-border, var(--color-background-elevation-2));
+  border: 1px solid var(--override-select-menu-border, var(--sys-color-neutral-outline));
   height: 100%;
   aspect-ratio: 1 / 1;
   padding: 0;
@@ -88,5 +88,5 @@ button {
 }
 
 button[disabled] {
-  color: var(--color-input-outline-disabled);
+  color: var(--sys-color-state-disabled);
 }

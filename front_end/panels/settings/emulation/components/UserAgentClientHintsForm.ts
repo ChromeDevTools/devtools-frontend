@@ -3,17 +3,17 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import type * as Protocol from '../../../../generated/protocol.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
+import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
+import * as Input from '../../../../ui/components/input/input.js';
+import type * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
+import * as EmulationUtils from '../utils/utils.js';
 
 import userAgentClientHintsFormStyles from './userAgentClientHintsForm.css.js';
-
-import type * as Protocol from '../../../../generated/protocol.js';
-import * as Input from '../../../../ui/components/input/input.js';
-import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
-import type * as UI from '../../../../ui/legacy/legacy.js';
-import * as EmulationUtils from '../utils/utils.js';
 
 const UIStrings = {
   /**
@@ -456,7 +456,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
           @input=${handleInputChange}
           .value=${value}
           placeholder=${placeholder}
-        />
+          jslog=${
+        VisualLogging.textField().track({keydown: true}).context(Platform.StringUtilities.toKebabCase(stateKey))}
+          />
       </label>
     `;
   }
@@ -481,6 +483,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
           .value=${platform}
           placeholder=${i18nString(UIStrings.platformPlaceholder)}
           aria-label=${i18nString(UIStrings.platformLabel)}
+          jslog=${VisualLogging.textField('platform').track({
+      keydown: true,
+    })}
         />
         <input
           class="input-field half-row"
@@ -489,6 +494,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
           .value=${platformVersion}
           placeholder=${i18nString(UIStrings.platformVersion)}
           aria-label=${i18nString(UIStrings.platformVersion)}
+          jslog=${VisualLogging.textField('platform-version').track({
+      keydown: true,
+    })}
         />
       </div>
     `;
@@ -506,7 +514,11 @@ export class UserAgentClientHintsForm extends HTMLElement {
     };
     const mobileCheckboxInput = this.#showMobileCheckbox ? LitHtml.html`
       <label class="mobile-checkbox-container">
-        <input type="checkbox" @input=${handleMobileChange} .checked=${mobile} />
+        <input type="checkbox" @input=${handleMobileChange} .checked=${mobile}
+          jslog=${VisualLogging.toggle('mobile').track({
+      click: true,
+    })}
+        />
         ${i18nString(UIStrings.mobileCheckboxLabel)}
       </label>
     ` :
@@ -520,6 +532,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
           @input=${handleDeviceModelChange}
           .value=${model}
           placeholder=${i18nString(UIStrings.deviceModel)}
+          jslog=${VisualLogging.textField('model').track({
+      keydown: true,
+    })}
         />
         ${mobileCheckboxInput}
       </div>
@@ -567,6 +582,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
             aria-label=${i18nString(UIStrings.brandNameAriaLabel, {
         PH1: index + 1,
       })}
+            jslog=${VisualLogging.textField('brand-name').track({
+        keydown: true,
+      })}
           />
           <input
             class="input-field"
@@ -576,6 +594,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
             placeholder=${i18nString(UIStrings.significantBrandVersionPlaceholder)}
             aria-label=${i18nString(UIStrings.brandVersionAriaLabel, {
         PH1: index + 1,
+      })}
+            jslog=${VisualLogging.textField('brand-version').track({
+        keydown: true,
       })}
           />
           <${IconButton.Icon.Icon.litTagName}
@@ -645,7 +666,11 @@ export class UserAgentClientHintsForm extends HTMLElement {
         this.#handleFullVersionListInputChange(value, index, 'brandVersion');
       };
       return LitHtml.html`
-        <div class="full-row brand-row" aria-label=${i18nString(UIStrings.brandProperties)} role="group">
+        <div
+          class="full-row brand-row"
+          aria-label=${i18nString(UIStrings.brandProperties)}
+          jslog=${VisualLogging.section('full-version')}
+          role="group">
           <input
             class="input-field fvl-brand-name-input"
             type="text"
@@ -656,6 +681,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
             aria-label=${i18nString(UIStrings.brandNameAriaLabel, {
         PH1: index + 1,
       })}
+            jslog=${VisualLogging.textField('brand-name').track({
+        keydown: true,
+      })}
           />
           <input
             class="input-field"
@@ -665,6 +693,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
             placeholder=${i18nString(UIStrings.brandVersionPlaceholder)}
             aria-label=${i18nString(UIStrings.brandVersionAriaLabel, {
         PH1: index + 1,
+      })}
+            jslog=${VisualLogging.textField('brand-version').track({
+        keydown: true,
       })}
           />
           <${IconButton.Icon.Icon.litTagName}
@@ -741,6 +772,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
           @disabled=${this.#isFormDisabled}
           aria-disabled=${this.#isFormDisabled}
           aria-label=${i18nString(UIStrings.title)}
+          jslog=${VisualLogging.toggleSubpane().track({click: true})}
         >
           <${IconButton.Icon.Icon.litTagName}
             class=${this.#isFormOpened ? 'rotate-icon' : ''}
@@ -767,6 +799,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
            class="link"
            @keypress=${this.#handleLinkPress}
            aria-label=${i18nString(UIStrings.userAgentClientHintsInfo)}
+           jslog=${VisualLogging.link('learn-more').track({click: true})}
           >
             ${i18nString(UIStrings.learnMore)}
           </x-link>
@@ -818,10 +851,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
   };
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-user-agent-client-hints-form', UserAgentClientHintsForm);
+customElements.define('devtools-user-agent-client-hints-form', UserAgentClientHintsForm);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-user-agent-client-hints-form': UserAgentClientHintsForm;
   }

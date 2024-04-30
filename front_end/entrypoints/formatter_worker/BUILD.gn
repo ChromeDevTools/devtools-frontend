@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("formatter_worker") {
@@ -27,8 +28,10 @@ devtools_module("formatter_worker") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../models/text_utils:bundle",
+    "../../third_party/acorn:acorn",
     "../../third_party/acorn:bundle",
     "../../third_party/codemirror",
+    "../../third_party/codemirror:codemirror-legacy-types",
   ]
 }
 
@@ -37,10 +40,7 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":formatter_worker" ]
 
-  visibility = [
-    ":*",
-    "../../../test/unittests/front_end/entrypoints/formatter_worker/*",
-  ]
+  visibility = [ ":*" ]
 
   visibility += devtools_entrypoints_visibility
 }
@@ -75,4 +75,21 @@ devtools_entrypoint("worker_entrypoint") {
   ]
 
   visibility += devtools_entrypoints_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "CSSFormatter.test.ts",
+    "FormattedContentBuilder.test.ts",
+    "FormatterWorker.test.ts",
+    "HTMLFormatter.test.ts",
+    "JSONFormatter.test.ts",
+    "JavaScriptFormatter.test.ts",
+    "ScopeParser.test.ts",
+    "Substitute.test.ts",
+  ]
+
+  deps = [ ":bundle" ]
 }

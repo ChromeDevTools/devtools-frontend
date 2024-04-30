@@ -4,10 +4,13 @@
 
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../third_party/typescript/typescript.gni")
 import("../../visibility.gni")
 
 devtools_module("types") {
   sources = [
+    "Configuration.ts",
+    "File.ts",
     "Timing.ts",
     "TraceEvents.ts",
   ]
@@ -24,4 +27,16 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility += devtools_models_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "TraceEvents.test.ts" ]
+
+  deps = [
+    "../../../core/platform:bundle",
+    "../../../models/trace:bundle",
+    "../../../testing",
+  ]
 }

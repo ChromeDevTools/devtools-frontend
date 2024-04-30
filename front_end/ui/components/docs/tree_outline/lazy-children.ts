@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 import * as TreeOutline from '../../tree_outline/tree_outline.js';
 
@@ -82,7 +82,7 @@ const data: TreeOutline.TreeOutline.TreeOutlineData<string> = {
 
 };
 const component = new TreeOutline.TreeOutline.TreeOutline<string>();
-component.setAttribute('toplevelbordercolor', 'var(--color-syntax-1)');
+component.setAttribute('toplevelbordercolor', 'var(--sys-color-token-property-special)');
 component.data = data;
 
 document.getElementById('container')?.appendChild(component);

@@ -4,13 +4,16 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("text_utils") {
   sources = [
     "CodeMirrorUtils.ts",
+    "ContentData.ts",
     "ContentProvider.ts",
     "StaticContentProvider.ts",
+    "StreamingContentData.ts",
     "Text.ts",
     "TextCursor.ts",
     "TextRange.ts",
@@ -22,10 +25,8 @@ devtools_module("text_utils") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../third_party/codemirror",
+    "../../third_party/codemirror.next:bundle",
   ]
-
-  visibility =
-      [ "../../../test/unittests/front_end/models/text_utils:text_utils" ]
 }
 
 devtools_entrypoint("bundle") {
@@ -36,18 +37,14 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../*",
-    "../../../test/unittests/front_end/helpers/*",
-    "../../../test/unittests/front_end/helpers/*",
-    "../../../test/unittests/front_end/models/text_utils/*",
-    "../../../test/unittests/front_end/panels/coverage/*",
+    "../../core/sdk/*",
     "../../entrypoints/*",
     "../../legacy_test_runner/test_runner/*",
     "../../panels/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
-    "../../core/sdk/*",
+    "../../testing/*",
     "../../ui/components/data_grid/*",
     "../../ui/components/docs/data_grid_controller/*",
+    "../../ui/components/highlighting/*",
     "../../ui/components/markdown_view/*",
     "../../ui/legacy/*",
   ]
@@ -55,13 +52,21 @@ devtools_entrypoint("bundle") {
   visibility += devtools_models_visibility
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "text_utils-legacy.ts"
+ts_library("unittests") {
+  testonly = true
 
-  deps = [ ":bundle" ]
+  sources = [
+    "ContentData.test.ts",
+    "StaticContentProvider.test.ts",
+    "StreamingContentData.test.ts",
+    "Text.test.ts",
+    "TextCursor.test.ts",
+    "TextRange.test.ts",
+    "TextUtils.test.ts",
+  ]
 
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../legacy_test_runner/*",
+  deps = [
+    ":bundle",
+    "../../core/platform:bundle",
   ]
 }

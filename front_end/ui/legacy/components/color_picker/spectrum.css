@@ -14,8 +14,8 @@
 }
 
 :selection {
-  background-color: var(--color-primary-old);
-  color: var(--color-background);
+  background-color: var(--sys-color-tonal-container);
+  color: var(--sys-color-on-tonal-container);
 }
 
 .spectrum-color {
@@ -37,13 +37,13 @@
   border-radius: 12px;
   height: 12px;
   width: 12px;
-  border: 1px solid var(--color-background);
+  border: 1px solid var(--sys-color-surface);
   cursor: move;
   z-index: 1;
   position: absolute;
   top: 0;
   left: 0;
-  background: var(--color-background-inverted);
+  background: var(--sys-color-inverse-surface);
   box-shadow: var(--drop-shadow);
 }
 
@@ -54,12 +54,12 @@
   width: 13px;
   height: 13px;
   border-radius: 13px;
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-neutral-container);
   box-shadow: var(--drop-shadow);
 }
 
 .spectrum-color:focus .spectrum-dragger {
-  border: 1px solid var(--legacy-accent-color-hover);
+  border: 1px solid var(--sys-color-state-focus-ring);
 }
 
 .spectrum-tools {
@@ -101,7 +101,7 @@
 
 .spectrum-hue:focus-visible .spectrum-slider,
 .spectrum-alpha:focus-visible .spectrum-slider {
-  border: 1px solid var(--legacy-accent-color-hover);
+  border: 1px solid var(--sys-color-state-focus-ring);
   width: 14px;
   height: 14px;
   border-radius: 14px;
@@ -119,13 +119,13 @@
 
 .spectrum-contrast-details {
   position: relative;
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   width: 100%;
   height: 83px;
   top: 0;
   font-size: 13px;
-  color: var(--color-text-primary);
-  border-top: var(--legacy-divider-border);
+  color: var(--sys-color-on-surface);
+  border-top: 1px solid var(--sys-color-divider);
   line-height: initial;
   overflow: hidden;
   flex: none;
@@ -188,8 +188,7 @@
   background: 0;
   width: 12px;
   height: 12px;
-  border: 1px solid rgb(0 0 0 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px solid var(--sys-color-neutral-outline);
   display: inline-block;
   position: relative;
 }
@@ -203,13 +202,13 @@
   position: absolute;
   left: 5.5px;
   top: 3.5px;
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   border-radius: 50%;
 }
 
 .contrast-fix-button:hover,
 .contrast-fix-button:focus {
-  border: 1px solid var(--legacy-accent-color-hover);
+  border: 1px solid var(--sys-color-state-focus-ring);
   transform: scale(1.2);
 }
 
@@ -244,7 +243,7 @@
 }
 
 .contrast-details-value {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   margin: 1px 5px;
   user-select: text;
 }
@@ -253,33 +252,29 @@
   margin-left: 5px;
 }
 
-.contrast-details-value [is="ui-icon"] {
+.contrast-details-value devtools-icon {
   display: none;
   margin-left: 5px;
-  background-color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
-.spectrum-contrast-details .toolbar-state-on [is="ui-icon"] {
-  background-color: var(--color-text-secondary);
+.spectrum-contrast-details .toolbar-state-on devtools-icon {
+  color: var(--sys-color-token-subtle);
 }
 
-[is="ui-icon"].clear {
+devtools-icon.clear {
   transform: scale(0.7);
-  background-color: var(--icon-error);
+  color: var(--icon-error);
 }
 
-.contrast-pass-fail span[is="ui-icon"] {
-  margin-left: 5px;
-}
-
-[is="ui-icon"].checkmark,
-[is="ui-icon"].check-double {
-  background-color: var(--icon-checkmark-green);
+devtools-icon.checkmark,
+devtools-icon.check-double {
+  color: var(--icon-checkmark-green);
 }
 
 .spectrum-contrast-details .contrast-details-value.contrast-unknown {
-  background-color: var(--color-background);
-  color: var(--color-text-primary);
+  background-color: var(--sys-color-cdt-base-container);
+  color: var(--sys-color-on-surface);
   width: 3em;
   text-align: center;
 }
@@ -318,7 +313,7 @@
 }
 
 .swatch-inner-white {
-  border: 1px solid var(--color-background-elevation-2);
+  border: 1px solid var(--sys-color-neutral-outline);
 }
 
 .swatch-overlay {
@@ -337,8 +332,8 @@
   background-color: var(--color-background-inverted-opacity-50);
 }
 
-[is="ui-icon"].icon-mask.copy-color-icon {
-  background-color: var(--color-background);
+devtools-icon.copy-color-icon {
+  color: var(--sys-color-cdt-base-container);
   margin-top: 2px;
   margin-left: 2px;
 }
@@ -357,16 +352,16 @@
   margin-right: 6px;
   line-height: 20px;
   padding: 0;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
+  border: 1px solid var(--sys-color-neutral-outline);
   white-space: nowrap;
-  box-shadow: var(--legacy-focus-ring-inactive-shadow);
 }
 
 .spectrum-text-label {
   letter-spacing: 39.5px;
   margin-top: 8px;
   display: block;
-  color: var(--color-text-disabled);
+  color: var(--sys-color-state-disabled);
   margin-left: 16px;
   width: 174px;
 }
@@ -398,15 +393,15 @@
 }
 
 .spectrum-switcher:hover {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .spectrum-switcher:focus-visible {
-  background-color: var(--legacy-focus-bg-color);
+  background-color: var(--sys-color-state-focus-highlight);
 }
 
 .spectrum-palette-container {
-  border-top: var(--legacy-divider-border);
+  border-top: 1px solid var(--sys-color-divider);
   position: relative;
   width: 100%;
   padding: 6px 24px 6px 6px;
@@ -428,7 +423,7 @@
   margin: 6px;
   cursor: pointer;
   position: relative;
-  border: 1px solid var(--color-details-hairline);
+  border: 1px solid var(--sys-color-divider);
   background-position: -1px !important; /* stylelint-disable-line declaration-no-important */
   z-index: 14;
 }
@@ -459,7 +454,7 @@
 
 .palette-color-shades {
   position: absolute;
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   height: 228px;
   width: 28px;
   box-shadow: var(--drop-shadow);
@@ -495,7 +490,7 @@
 }
 
 .spectrum-palette-color:not(.has-material-shades):focus {
-  border: 1px solid var(--legacy-accent-color-hover);
+  border: 1px solid var(--sys-color-state-focus-ring);
   transform: scale(1.4);
 }
 
@@ -522,10 +517,10 @@
   top: 100%;
   display: flex;
   flex-direction: column;
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   z-index: 14;
   transition: transform 200ms cubic-bezier(0, 0, 0.2, 1), visibility 0s 200ms;
-  border-top: var(--legacy-divider-border);
+  border-top: 1px solid var(--sys-color-divider);
   visibility: hidden;
 }
 
@@ -543,16 +538,16 @@
 
 .palette-panel > div:not(.toolbar) {
   flex: 0 0 38px;
-  border-bottom: var(--legacy-divider-border);
+  border-bottom: 1px solid var(--sys-color-divider);
   padding: 12px;
   line-height: 14px;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .palette-panel > div.palette-title {
   font-size: 14px;
   line-height: 16px;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   flex-basis: 40px;
 }
 
@@ -567,7 +562,7 @@ div.palette-preview {
 
 .palette-preview:focus-visible,
 .palette-preview:hover {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .spectrum-overlay {
@@ -602,7 +597,7 @@ div.palette-preview {
   position: absolute;
   right: 0;
   top: 0;
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-cdt-base-container);
   visibility: hidden;
   z-index: 3;
   width: 36px;
@@ -629,8 +624,8 @@ div.palette-preview {
 }
 
 .delete-color-toolbar-active {
-  background-color: var(--color-background-elevation-2);
-  color: var(--color-background);
+  background-color: var(--sys-color-state-hover-on-subtle);
+  color: var(--sys-color-cdt-base-container);
 }
 
 .swatch.contrast {
@@ -652,18 +647,18 @@ div.palette-preview {
 }
 
 .background-color .text-preview {
-  color: var(--color-background-inverted);
+  color: var(--sys-color-inverse-surface);
   font-size: 16px;
   position: relative;
   padding-bottom: 2px;
 }
 
-.swatch.contrast [is="ui-icon"] {
+.swatch.contrast devtools-icon {
   margin: -2px;
 }
 
 .no-contrast-info-available {
-  border-top: var(--legacy-divider-border);
+  border-top: 1px solid var(--sys-color-divider);
   position: relative;
   width: 100%;
   padding: 10px;

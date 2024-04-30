@@ -11,7 +11,7 @@
 }
 
 .value {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   margin-inline-start: 0;
   padding: 0 6px;
   overflow-wrap: break-word;

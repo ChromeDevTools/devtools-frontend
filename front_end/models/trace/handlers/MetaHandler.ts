@@ -3,19 +3,20 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../../core/platform/platform.js';
+import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {HandlerState} from './types.js';
 
 // We track the renderer processes we see in each frame on the way through the trace.
-const rendererProcessesByFrameId = new Map<
-    string,
-    Map<Types.TraceEvents.ProcessID, {window: Types.Timing.TraceWindow, frame: Types.TraceEvents.TraceFrame}>>();
+const rendererProcessesByFrameId: FrameProcessData = new Map();
 
 // We will often want to key data by Frame IDs, and commonly we'll care most
 // about the main frame's ID, so we store and expose that.
 let mainFrameId: string = '';
 let mainFrameURL: string = '';
+
+const framesByProcessId = new Map<Types.TraceEvents.ProcessID, Map<string, Types.TraceEvents.TraceFrame>>();
 
 // We will often want to key data by the browser process, GPU process and top
 // level renderer IDs, so keep a track on those.
@@ -25,8 +26,10 @@ let gpuProcessId: Types.TraceEvents.ProcessID = Types.TraceEvents.ProcessID(-1);
 let gpuThreadId: Types.TraceEvents.ThreadID = Types.TraceEvents.ThreadID(-1);
 let viewportRect: DOMRect|null = null;
 
+const processNames: Map<Types.TraceEvents.ProcessID, Types.TraceEvents.TraceEventProcessName> = new Map();
+
 const topLevelRendererIds = new Set<Types.TraceEvents.ProcessID>();
-const traceBounds: Types.Timing.TraceWindow = {
+const traceBounds: Types.Timing.TraceWindowMicroSeconds = {
   min: Types.Timing.MicroSeconds(Number.POSITIVE_INFINITY),
   max: Types.Timing.MicroSeconds(Number.NEGATIVE_INFINITY),
   range: Types.Timing.MicroSeconds(Number.POSITIVE_INFINITY),
@@ -41,16 +44,22 @@ const traceBounds: Types.Timing.TraceWindow = {
  *
  * Note that these Maps will have the same values in them; these are just keyed
  * differently to make look-ups easier.
+ *
+ * We also additionally maintain an array of only navigations that occured on
+ * the main frame. In many places in the UI we only care about highlighting
+ * main frame navigations, so calculating this list here is better than
+ * filtering either of the below maps over and over again at the UI layer.
  */
 const navigationsByFrameId = new Map<string, Types.TraceEvents.TraceEventNavigationStart[]>();
 const navigationsByNavigationId = new Map<string, Types.TraceEvents.TraceEventNavigationStart>();
+const mainFrameNavigations: Types.TraceEvents.TraceEventNavigationStart[] = [];
 
 // Represents all the threads in the trace, organized by process. This is mostly for internal
 // bookkeeping so that during the finalize pass we can obtain the main and browser thread IDs.
 const threadsInProcess =
     new Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ThreadID, Types.TraceEvents.TraceEventThreadName>>();
 
-let traceStartedTime = Types.Timing.MicroSeconds(-1);
+let traceStartedTimeFromTracingStartedEvent = Types.Timing.MicroSeconds(-1);
 const eventPhasesOfInterestForTraceBounds = new Set([
   Types.TraceEvents.Phase.BEGIN,
   Types.TraceEvents.Phase.END,
@@ -59,9 +68,25 @@ const eventPhasesOfInterestForTraceBounds = new Set([
 ]);
 
 let handlerState = HandlerState.UNINITIALIZED;
+// Tracks if the trace is a generic trace, which here means that it did not come from athe DevTools Performance Panel recording.
+// We assume a trace is generic, and mark it as not generic if we see any of:
+// - TracingStartedInPage
+// - TracingStartedInBrowser
+// - TracingSessionIdForWorker
+// These are all events which indicate this is a Chrome browser trace.
+let traceIsGeneric = true;
+const CHROME_WEB_TRACE_EVENTS = new Set([
+  Types.TraceEvents.KnownEventName.TracingStartedInPage,
+  Types.TraceEvents.KnownEventName.TracingSessionIdForWorker,
+  Types.TraceEvents.KnownEventName.TracingStartedInBrowser,
+
+]);
+
 export function reset(): void {
   navigationsByFrameId.clear();
   navigationsByNavigationId.clear();
+  processNames.clear();
+  mainFrameNavigations.length = 0;
 
   browserProcessId = Types.TraceEvents.ProcessID(-1);
   browserThreadId = Types.TraceEvents.ThreadID(-1);
@@ -71,11 +96,14 @@ export function reset(): void {
   topLevelRendererIds.clear();
   threadsInProcess.clear();
   rendererProcessesByFrameId.clear();
+  framesByProcessId.clear();
 
   traceBounds.min = Types.Timing.MicroSeconds(Number.POSITIVE_INFINITY);
   traceBounds.max = Types.Timing.MicroSeconds(Number.NEGATIVE_INFINITY);
   traceBounds.range = Types.Timing.MicroSeconds(Number.POSITIVE_INFINITY);
-  traceStartedTime = Types.Timing.MicroSeconds(-1);
+  traceStartedTimeFromTracingStartedEvent = Types.Timing.MicroSeconds(-1);
+
+  traceIsGeneric = true;
 
   handlerState = HandlerState.UNINITIALIZED;
 }
@@ -90,34 +118,47 @@ export function initialize(): void {
 
 function updateRendererProcessByFrame(
     event: Types.TraceEvents.TraceEventData, frame: Types.TraceEvents.TraceFrame): void {
+  const framesInProcessById = Platform.MapUtilities.getWithDefault(framesByProcessId, frame.processId, () => new Map());
+  framesInProcessById.set(frame.frame, frame);
+
   const rendererProcessInFrame = Platform.MapUtilities.getWithDefault(
       rendererProcessesByFrameId, frame.frame,
       () => new Map<
-          Types.TraceEvents.ProcessID, {frame: Types.TraceEvents.TraceFrame, window: Types.Timing.TraceWindow}>());
+          Types.TraceEvents.ProcessID,
+          {frame: Types.TraceEvents.TraceFrame, window: Types.Timing.TraceWindowMicroSeconds}[]>());
   const rendererProcessInfo = Platform.MapUtilities.getWithDefault(rendererProcessInFrame, frame.processId, () => {
-    return {
-      frame,
-      window: {
-        min: Types.Timing.MicroSeconds(0),
-        max: Types.Timing.MicroSeconds(0),
-        range: Types.Timing.MicroSeconds(0),
-      },
-    };
+    return [];
   });
+  const lastProcessData = rendererProcessInfo.at(-1);
 
-  // If this window was already created, do nothing.
-  if (rendererProcessInfo.window.min !== Types.Timing.MicroSeconds(0)) {
+  // Only store a new entry if the URL changed, otherwise it's just
+  // redundant information.
+  if (lastProcessData && lastProcessData.frame.url === frame.url) {
     return;
   }
-
   // For now we store the time of the event as the min. In the finalize we step
   // through each of these windows and update their max and range values.
-  rendererProcessInfo.window.min = event.ts;
+  rendererProcessInfo.push({
+    frame,
+    window: {
+      min: event.ts,
+      max: Types.Timing.MicroSeconds(0),
+      range: Types.Timing.MicroSeconds(0),
+    },
+  });
 }
 
 export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   if (handlerState !== HandlerState.INITIALIZED) {
     throw new Error('Meta Handler is not initialized');
+  }
+
+  if (traceIsGeneric && CHROME_WEB_TRACE_EVENTS.has(event.name as Types.TraceEvents.KnownEventName)) {
+    traceIsGeneric = false;
+  }
+
+  if (Types.TraceEvents.isProcessName(event)) {
+    processNames.set(event.pid, event);
   }
 
   // If there is a timestamp (which meta events do not have), and the event does
@@ -164,7 +205,7 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   // in scope at the start of the trace. We use this to identify the frame with
   // no parent, i.e. the top level frame.
   if (Types.TraceEvents.isTraceEventTracingStartedInBrowser(event)) {
-    traceStartedTime = event.ts;
+    traceStartedTimeFromTracingStartedEvent = event.ts;
 
     if (!event.args.data) {
       throw new Error('No frames found in trace data');
@@ -225,10 +266,16 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   // Track all navigation events. Note that there can be navigation start events
   // but where the documentLoaderURL is empty. As far as the trace rendering is
   // concerned, these events are noise so we filter them out here.
+  // (The filtering of empty URLs is done in the
+  // isTraceEventNavigationStartWithURL check)
   if (Types.TraceEvents.isTraceEventNavigationStartWithURL(event) && event.args.data) {
     const navigationId = event.args.data.navigationId;
     if (navigationsByNavigationId.has(navigationId)) {
-      throw new Error('Found multiple navigation start events with the same navigation ID.');
+      // We have only ever seen this situation once, in crbug.com/1503982, where the user ran:
+      // window.location.href = 'javascript:console.log("foo")'
+      // In this situation two identical navigationStart events are emitted with the same data, URL and ID.
+      // So, in this situation we drop/ignore any subsequent navigations if we have already seen that ID.
+      return;
     }
     navigationsByNavigationId.set(navigationId, event);
 
@@ -236,6 +283,9 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     const existingFrameNavigations = navigationsByFrameId.get(frameId) || [];
     existingFrameNavigations.push(event);
     navigationsByFrameId.set(frameId, existingFrameNavigations);
+    if (frameId === mainFrameId) {
+      mainFrameNavigations.push(event);
+    }
     return;
   }
 }
@@ -245,7 +295,14 @@ export async function finalize(): Promise<void> {
     throw new Error('Handler is not initialized');
   }
 
-  traceBounds.min = traceStartedTime;
+  // We try to set the minimum time by finding the event with the smallest
+  // timestamp. However, if we also got a timestamp from the
+  // TracingStartedInBrowser event, we should always use that.
+  // But in some traces (for example, CPU profiles) we do not get that event,
+  // hence why we need to check we got a timestamp from it before setting it.
+  if (traceStartedTimeFromTracingStartedEvent >= 0) {
+    traceBounds.min = traceStartedTimeFromTracingStartedEvent;
+  }
   traceBounds.range = Types.Timing.MicroSeconds(traceBounds.max - traceBounds.min);
 
   // If we go from foo.com to example.com we will get a new renderer, and
@@ -255,7 +312,7 @@ export async function finalize(): Promise<void> {
   // each particular renderer started and stopped being the main renderer
   // process.
   for (const [, processWindows] of rendererProcessesByFrameId) {
-    const processWindowValues = [...processWindows.values()];
+    const processWindowValues = [...processWindows.values()].flat();
     for (let i = 0; i < processWindowValues.length; i++) {
       const currentWindow = processWindowValues[i];
       const nextWindow = processWindowValues[i + 1];
@@ -291,12 +348,34 @@ export async function finalize(): Promise<void> {
     }
   }
 
+  // Sometimes in traces the TracingStartedInBrowser event can give us an
+  // incorrect initial URL for the main frame's URL - about:blank or the URL of
+  // the previous page. This doesn't matter too much except we often use this
+  // URL as the visual name of the trace shown to the user (e.g. in the history
+  // dropdown). We can be more accurate by finding the first main frame
+  // navigaton, and using its URL, if we have it.
+  // However, to avoid doing this in a case where the first navigation is far
+  // into the trace's lifecycle, we only do this in situations where the first
+  // navigation happened very soon (0.5 seconds) after the trace started
+  // recording.
+  const firstMainFrameNav = mainFrameNavigations.at(0);
+  const firstNavTimeThreshold = Helpers.Timing.secondsToMicroseconds(Types.Timing.Seconds(0.5));
+  if (firstMainFrameNav) {
+    const navigationIsWithinThreshold = firstMainFrameNav.ts - traceBounds.min < firstNavTimeThreshold;
+    if (firstMainFrameNav.args.data?.isOutermostMainFrame && firstMainFrameNav.args.data?.documentLoaderURL &&
+        navigationIsWithinThreshold) {
+      mainFrameURL = firstMainFrameNav.args.data.documentLoaderURL;
+    }
+  }
+
   handlerState = HandlerState.FINALIZED;
 }
 
-type MetaHandlerData = {
-  traceBounds: Types.Timing.TraceWindow,
+export type MetaHandlerData = {
+  traceIsGeneric: boolean,
+  traceBounds: Types.Timing.TraceWindowMicroSeconds,
   browserProcessId: Types.TraceEvents.ProcessID,
+  processNames: Map<Types.TraceEvents.ProcessID, Types.TraceEvents.TraceEventProcessName>,
   browserThreadId: Types.TraceEvents.ThreadID,
   gpuProcessId: Types.TraceEvents.ProcessID,
   gpuThreadId?: Types.TraceEvents.ThreadID,
@@ -308,12 +387,38 @@ type MetaHandlerData = {
                       Map<Types.TraceEvents.ThreadID, Types.TraceEvents.TraceEventThreadName>>,
               mainFrameId: string,
               mainFrameURL: string,
-              rendererProcessesByFrame:
-                  Map<string,
-                      Map<Types.TraceEvents.ProcessID,
-                          {frame: Types.TraceEvents.TraceFrame, window: Types.Timing.TraceWindow}>>,
+              /**
+               * A frame can have multiple renderer processes, at the same time,
+               * a renderer process can have multiple URLs. This map tracks the
+               * processes active on a given frame, with the time window in which
+               * they were active. Because a renderer process might have multiple
+               * URLs, each process in each frame has an array of windows, with an
+               * entry for each URL it had.
+               */
+              rendererProcessesByFrame: FrameProcessData,
               topLevelRendererIds: Set<Types.TraceEvents.ProcessID>,
+              frameByProcessId: Map<Types.TraceEvents.ProcessID, Map<string, Types.TraceEvents.TraceFrame>>,
+              mainFrameNavigations: Types.TraceEvents.TraceEventNavigationStart[],
 };
+
+// Each frame has a single render process at a given time but it can have
+// multiple render processes  during a trace, for example if a navigation
+// occurred in the frame. This map tracks the process that was active for
+// each frame at each point in time. Also, because a process can be
+// assigned to multiple URLs, there is a window for each URL a process
+// was assigned.
+//
+// Note that different sites always end up in different render
+// processes, however two different URLs can point to the same site.
+// For example: https://google.com and https://maps.google.com point to
+// the same site.
+// Read more about this in
+// https://developer.chrome.com/articles/renderingng-architecture/#threads
+// and https://web.dev/same-site-same-origin/
+export type FrameProcessData =
+    Map<string,
+        Map<Types.TraceEvents.ProcessID,
+            {frame: Types.TraceEvents.TraceFrame, window: Types.Timing.TraceWindowMicroSeconds}[]>>;
 
 export function data(): MetaHandlerData {
   if (handlerState !== HandlerState.FINALIZED) {
@@ -324,6 +429,7 @@ export function data(): MetaHandlerData {
     traceBounds: {...traceBounds},
     browserProcessId,
     browserThreadId,
+    processNames: new Map(processNames),
     gpuProcessId,
     gpuThreadId: gpuThreadId === Types.TraceEvents.ThreadID(-1) ? undefined : gpuThreadId,
     viewportRect: viewportRect || undefined,
@@ -334,5 +440,8 @@ export function data(): MetaHandlerData {
     threadsInProcess: new Map(threadsInProcess),
     rendererProcessesByFrame: new Map(rendererProcessesByFrameId),
     topLevelRendererIds: new Set(topLevelRendererIds),
+    frameByProcessId: new Map(framesByProcessId),
+    mainFrameNavigations: [...mainFrameNavigations],
+    traceIsGeneric,
   };
 }

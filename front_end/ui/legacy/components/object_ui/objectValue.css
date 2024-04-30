@@ -5,12 +5,12 @@
  */
 
 .value.object-value-node:hover {
-  background-color: var(--item-hover-color);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .object-value-function-prefix,
 .object-value-boolean {
-  color: var(--color-syntax-3);
+  color: var(--sys-color-token-attribute-value);
 }
 
 .object-value-function {
@@ -30,11 +30,11 @@
 }
 
 .object-value-number {
-  color: var(--color-syntax-3);
+  color: var(--sys-color-token-attribute-value);
 }
 
 .object-value-bigint {
-  color: var(--color-syntax-6);
+  color: var(--sys-color-token-comment);
 }
 
 .object-value-string,
@@ -42,23 +42,23 @@
 .object-value-symbol {
   white-space: pre;
   unicode-bidi: -webkit-isolate;
-  color: var(--color-syntax-1);
+  color: var(--sys-color-token-property-special);
 }
 
 .object-value-node {
   position: relative;
   vertical-align: baseline;
-  color: var(--color-syntax-7);
+  color: var(--sys-color-token-variable);
   white-space: nowrap;
 }
 
 .object-value-null,
 .object-value-undefined {
-  color: var(--color-text-disabled);
+  color: var(--sys-color-state-disabled);
 }
 
 .object-value-unavailable {
-  color: var(--color-syntax-2);
+  color: var(--sys-color-token-tag);
 }
 
 .object-value-calculate-value-button:hover {
@@ -80,7 +80,7 @@
 }
 
 .object-properties-section .object-description {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .value .object-properties-preview {
@@ -88,12 +88,12 @@
 }
 
 .name {
-  color: var(--color-syntax-2);
+  color: var(--sys-color-token-tag);
   flex-shrink: 0;
 }
 
 .object-properties-preview .name {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 @media (forced-colors: active) {

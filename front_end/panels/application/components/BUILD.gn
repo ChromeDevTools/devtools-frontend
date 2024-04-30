@@ -5,6 +5,7 @@
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../third_party/typescript/typescript.gni")
 import("../../visibility.gni")
 
 generate_css("css_files") {
@@ -15,16 +16,16 @@ generate_css("css_files") {
     "frameDetailsReportView.css",
     "interestGroupAccessGrid.css",
     "originTrialTokenRows.css",
+    "originTrialTreeView.css",
     "permissionsPolicySection.css",
     "protocolHandlersView.css",
     "reportingApiGrid.css",
+    "serviceWorkerRouterView.css",
     "sharedStorageAccessGrid.css",
     "sharedStorageMetadataView.css",
-    "sharedStorageMetadataViewResetBudgetButton.css",
     "stackTraceLinkButton.css",
     "stackTraceRow.css",
     "trustTokensView.css",
-    "trustTokensViewDeleteButton.css",
   ]
 }
 
@@ -38,9 +39,9 @@ devtools_module("components") {
     "InterestGroupAccessGrid.ts",
     "OriginTrialTreeView.ts",
     "PermissionsPolicySection.ts",
-    "Prerender2.ts",
     "ProtocolHandlersView.ts",
     "ReportsGrid.ts",
+    "ServiceWorkerRouterView.ts",
     "SharedStorageAccessGrid.ts",
     "SharedStorageMetadataView.ts",
     "StackTrace.ts",
@@ -57,6 +58,7 @@ devtools_module("components") {
     "../../../core/sdk:bundle",
     "../../../models/bindings:bundle",
     "../../../panels/network/forward:bundle",
+    "../../../third_party/csp_evaluator:bundle",
     "../../../ui/components/adorners:bundle",
     "../../../ui/components/buttons:bundle",
     "../../../ui/components/chrome_link:bundle",
@@ -84,9 +86,36 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../:*",
-    "../../../../test/unittests/front_end/panels/application/components/*",
     "../../../ui/components/docs/*",
   ]
 
   visibility += devtools_panels_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "BackForwardCacheView.test.ts",
+    "BounceTrackingMitigationsView.test.ts",
+    "EndpointsGrid.test.ts",
+    "FrameDetailsView.test.ts",
+    "InterestGroupAccessGrid.test.ts",
+    "OriginTrialTreeView.test.ts",
+    "ProtocolHandlersView.test.ts",
+    "ReportsGrid.test.ts",
+    "ServiceWorkerRouterView.test.ts",
+    "SharedStorageAccessGrid.test.ts",
+    "SharedStorageMetadataView.test.ts",
+    "StackTrace.test.ts",
+    "StorageMetadataView.test.ts",
+    "TrustTokensView.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../testing",
+    "../../../ui/components/data_grid:bundle",
+    "../../../ui/components/render_coordinator:bundle",
+  ]
 }

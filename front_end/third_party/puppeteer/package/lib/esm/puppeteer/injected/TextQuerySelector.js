@@ -1,75 +1,39 @@
 /**
- * Copyright 2022 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2022 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 import { createTextContent, isSuitableNodeForTextMatching, } from './TextContent.js';
-/**
- * Queries the given node for a node matching the given text selector.
- *
- * @internal
- */
-export const textQuerySelector = (root, selector) => {
-    for (const node of root.childNodes) {
-        if (node instanceof Element && isSuitableNodeForTextMatching(node)) {
-            let matchedNode;
-            if (node.shadowRoot) {
-                matchedNode = textQuerySelector(node.shadowRoot, selector);
-            }
-            else {
-                matchedNode = textQuerySelector(node, selector);
-            }
-            if (matchedNode) {
-                return matchedNode;
-            }
-        }
-    }
-    if (root instanceof Element) {
-        const textContent = createTextContent(root);
-        if (textContent.full.includes(selector)) {
-            return root;
-        }
-    }
-    return null;
-};
 /**
  * Queries the given node for all nodes matching the given text selector.
  *
  * @internal
  */
-export const textQuerySelectorAll = (root, selector) => {
-    let results = [];
+export const textQuerySelectorAll = function* (root, selector) {
+    let yielded = false;
     for (const node of root.childNodes) {
-        if (node instanceof Element) {
-            let matchedNodes;
-            if (node.shadowRoot) {
-                matchedNodes = textQuerySelectorAll(node.shadowRoot, selector);
+        if (node instanceof Element && isSuitableNodeForTextMatching(node)) {
+            let matches;
+            if (!node.shadowRoot) {
+                matches = textQuerySelectorAll(node, selector);
             }
             else {
-                matchedNodes = textQuerySelectorAll(node, selector);
+                matches = textQuerySelectorAll(node.shadowRoot, selector);
             }
-            results = results.concat(matchedNodes);
+            for (const match of matches) {
+                yield match;
+                yielded = true;
+            }
         }
     }
-    if (results.length > 0) {
-        return results;
+    if (yielded) {
+        return;
     }
-    if (root instanceof Element) {
+    if (root instanceof Element && isSuitableNodeForTextMatching(root)) {
         const textContent = createTextContent(root);
         if (textContent.full.includes(selector)) {
-            return [root];
+            yield root;
         }
     }
-    return [];
 };
 //# sourceMappingURL=TextQuerySelector.js.map

@@ -30,7 +30,7 @@ export class ScreenshotStorage {
 
   constructor(maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
     this.#screenshotSettings = Common.Settings.Settings.instance().createSetting(
-        'recorder_screenshots',
+        'recorder-screenshots',
         [],
     );
     this.#screenshots = this.#loadFromSettings();

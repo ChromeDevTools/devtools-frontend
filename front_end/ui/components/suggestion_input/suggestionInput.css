@@ -1,0 +1,88 @@
+/*
+ * Copyright 2023 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+* {
+  box-sizing: border-box;
+  font-size: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+:host {
+  position: relative;
+}
+
+devtools-editable-content {
+  background: transparent;
+  border: none;
+  color: var(--override-color-recorder-input, var(--sys-color-on-surface));
+  cursor: text;
+  display: inline-block;
+  line-height: 18px;
+  min-height: 18px;
+  min-width: 0.5em;
+  outline: none;
+  overflow-wrap: anywhere;
+}
+
+devtools-editable-content:hover,
+devtools-editable-content:focus {
+  box-shadow: 0 0 0 1px var(--sys-color-divider);
+  border-radius: 2px;
+}
+
+devtools-editable-content[placeholder]:empty::before {
+  content: attr(placeholder);
+  color: var(--sys-color-on-surface);
+  opacity: 50%;
+}
+
+devtools-editable-content[placeholder]:empty:focus::before {
+  content: "";
+}
+
+devtools-suggestion-box {
+  position: absolute;
+  display: none;
+}
+
+devtools-editable-content:focus ~ devtools-suggestion-box {
+  display: block;
+}
+
+.suggestions {
+  background-color: var(--sys-color-cdt-base-container);
+  box-shadow: var(--drop-shadow);
+  min-height: 1em;
+  min-width: 150px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+  z-index: 100;
+  max-height: 350px;
+}
+
+.suggestions > li {
+  padding: 1px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  font-family: var(--source-code-font-family);
+  font-size: var(--source-code-font-size);
+  color: var(--sys-color-on-surface);
+}
+
+.suggestions > li:hover {
+  background-color: var(--sys-color-state-hover-on-subtle);
+}
+
+.suggestions > li.selected {
+  background-color: var(--sys-color-primary);
+  color: var(--sys-color-cdt-base-container);
+}
+
+.strikethrough {
+  text-decoration: line-through;
+}

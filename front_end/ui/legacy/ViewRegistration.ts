@@ -3,12 +3,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 
 import {type ViewLocationResolver} from './View.js';
 import {PreRegisteredView} from './ViewManager.js';
-
 import {type Widget} from './Widget.js';
 
 const UIStrings = {
@@ -72,12 +71,12 @@ export interface ViewRegistration {
    */
   experiment?: Root.Runtime.ExperimentName;
   /**
-   * A condition represented as a string the view's availability depends on. Conditions come
-   * from the queryParamsObject defined in Runtime and just as the experiment field, they determine the availability
-   * of the view. A condition can be negated by prepending a ‘!’ to the value of the condition
-   * property and in that case the behaviour of the view's availability will be inverted.
+   * A condition is a function that will make the view available if it
+   * returns true, and not available, otherwise. Make sure that objects you
+   * access from inside the condition function are ready at the time when the
+   * setting conditions are checked.
    */
-  condition?: Root.Runtime.ConditionName;
+  condition?: Root.Runtime.Condition;
   /**
    * The command added to the command menu used to show the view. It usually follows the shape Show <title> as it must
    * not be localized at declaration since it is localized internally when appending the commands to the command menu.
@@ -103,7 +102,7 @@ export interface ViewRegistration {
   /**
    * Unique identifier of the view.
    */
-  id: string;
+  id: Lowercase<string>;
   /**
    * An identifier for the location of the view. The location is resolved by
    * an extension of type '@UI.ViewLocationResolver'.
@@ -156,7 +155,9 @@ export interface ViewRegistration {
 const viewIdSet = new Set<string>();
 export function registerViewExtension(registration: ViewRegistration): void {
   const viewId = registration.id;
-  Platform.DCHECK(() => !viewIdSet.has(viewId), `Duplicate view id '${viewId}'`);
+  if (viewIdSet.has(viewId)) {
+    throw new Error(`Duplicate view id '${viewId}'`);
+  }
   viewIdSet.add(viewId);
   registeredViewExtensions.push(new PreRegisteredView(registration));
 }
@@ -199,8 +200,7 @@ export function resetViewRegistration(): void {
   viewIdSet.clear();
 }
 
-// eslint-disable-next-line rulesdir/const_enum
-export enum ViewLocationCategory {
+export const enum ViewLocationCategory {
   NONE = '',  // `NONE` must be a falsy value. Legacy code uses if-checks for the category.
   ELEMENTS = 'ELEMENTS',
   DRAWER = 'DRAWER',

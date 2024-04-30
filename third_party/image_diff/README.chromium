@@ -4,6 +4,7 @@ URL: https://source.chromium.org/chromium/chromium/src/+/main:tools/imagediff/
 Version: 0
 License: Chromium
 Security Critical: No
+Shipped: no
 
 Description:
 The image_diff binaries as built by Chromium in `tools/imagediff`.

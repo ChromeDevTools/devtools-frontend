@@ -19,7 +19,6 @@ import * as Fragment from './Fragment.js';
 import * as Geometry from './Geometry.js';
 import * as GlassPane from './GlassPane.js';
 import * as HistoryInput from './HistoryInput.js';
-import * as Icon from './Icon.js';
 import * as Infobar from './Infobar.js';
 import * as InplaceEditor from './InplaceEditor.js';
 import * as InspectorView from './InspectorView.js';
@@ -76,7 +75,6 @@ export {
   Geometry,
   GlassPane,
   HistoryInput,
-  Icon,
   Infobar,
   InplaceEditor,
   InspectorView,

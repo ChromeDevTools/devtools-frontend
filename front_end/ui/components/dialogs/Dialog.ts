@@ -214,13 +214,11 @@ export class Dialog extends HTMLElement {
     document.body.addEventListener('keydown', this.#onKeyDownBound);
     this.#devtoolsMutationObserver.observe(this.#devToolsBoundingElement, {childList: true, subtree: true});
     this.#devToolsBoundingElement.addEventListener('wheel', this.#handleScrollAttemptBound);
-    ComponentHelpers.SetCSSProperty.set(this, '--dialog-padding', '0');
-    ComponentHelpers.SetCSSProperty.set(this, '--override-content-box-shadow', 'none');
-    ComponentHelpers.SetCSSProperty.set(this, '--dialog-display', IS_DIALOG_SUPPORTED ? 'block' : 'none');
-    ComponentHelpers.SetCSSProperty.set(
-        this, '--override-dialog-content-border', `${CONNECTOR_HEIGHT}px solid transparent`);
-    ComponentHelpers.SetCSSProperty.set(
-        this, '--dialog-padding', `${DIALOG_VERTICAL_PADDING}px ${DIALOG_SIDE_PADDING}px`);
+    this.style.setProperty('--dialog-padding', '0');
+    this.style.setProperty('--override-content-box-shadow', 'none');
+    this.style.setProperty('--dialog-display', IS_DIALOG_SUPPORTED ? 'block' : 'none');
+    this.style.setProperty('--override-dialog-content-border', `${CONNECTOR_HEIGHT}px solid transparent`);
+    this.style.setProperty('--dialog-padding', `${DIALOG_VERTICAL_PADDING}px ${DIALOG_SIDE_PADDING}px`);
   }
 
   disconnectedCallback(): void {
@@ -355,16 +353,14 @@ export class Dialog extends HTMLElement {
       const devToolsRight = devtoolsBounds.right;
       if (this.#props.origin === MODAL) {
         void coordinator.write(() => {
-          ComponentHelpers.SetCSSProperty.set(this, '--dialog-top', `${devToolsTop}px`);
-          ComponentHelpers.SetCSSProperty.set(this, '--dialog-left', `${devToolsLeft}px`);
-          ComponentHelpers.SetCSSProperty.set(this, '--dialog-margin', 'auto');
-          ComponentHelpers.SetCSSProperty.set(this, '--dialog-margin-left', 'auto');
-          ComponentHelpers.SetCSSProperty.set(this, '--dialog-margin-bottom', 'auto');
-          ComponentHelpers.SetCSSProperty.set(
-              this, '--dialog-max-height', `${devToolsHeight - DIALOG_PADDING_FROM_WINDOW}px`);
-          ComponentHelpers.SetCSSProperty.set(
-              this, '--dialog-max-width', `${devToolsWidth - DIALOG_PADDING_FROM_WINDOW}px`);
-          ComponentHelpers.SetCSSProperty.set(this, '--dialog-right', `${document.body.clientWidth - devToolsRight}px`);
+          this.style.setProperty('--dialog-top', `${devToolsTop}px`);
+          this.style.setProperty('--dialog-left', `${devToolsLeft}px`);
+          this.style.setProperty('--dialog-margin', 'auto');
+          this.style.setProperty('--dialog-margin-left', 'auto');
+          this.style.setProperty('--dialog-margin-bottom', 'auto');
+          this.style.setProperty('--dialog-max-height', `${devToolsHeight - DIALOG_PADDING_FROM_WINDOW}px`);
+          this.style.setProperty('--dialog-max-width', `${devToolsWidth - DIALOG_PADDING_FROM_WINDOW}px`);
+          this.style.setProperty('--dialog-right', `${document.body.clientWidth - devToolsRight}px`);
         });
         return;
       }
@@ -377,7 +373,7 @@ export class Dialog extends HTMLElement {
       const connectorFixedXValue =
           this.#props.getConnectorCustomXPosition ? this.#props.getConnectorCustomXPosition() : originCenterX;
       void coordinator.write(() => {
-        ComponentHelpers.SetCSSProperty.set(this, '--dialog-top', '0');
+        this.style.setProperty('--dialog-top', '0');
 
         // Start by showing the dialog hidden to allow measuring its width.
         const dialog = this.#getDialog();
@@ -404,12 +400,12 @@ export class Dialog extends HTMLElement {
         let connectorRelativeXValue = 0;
         // If the connector is to be shown, the dialog needs a minimum width such that it covers
         // the connector's width.
-        ComponentHelpers.SetCSSProperty.set(
-            this, '--content-min-width',
+        this.style.setProperty(
+            '--content-min-width',
             `${connectorFixedXValue - anchorLeft + CONNECTOR_WIDTH + DIALOG_SIDE_PADDING * 2}px`);
-        ComponentHelpers.SetCSSProperty.set(this, '--dialog-left', 'auto');
-        ComponentHelpers.SetCSSProperty.set(this, '--dialog-right', 'auto');
-        ComponentHelpers.SetCSSProperty.set(this, '--dialog-margin', '0');
+        this.style.setProperty('--dialog-left', 'auto');
+        this.style.setProperty('--dialog-right', 'auto');
+        this.style.setProperty('--dialog-margin', '0');
         const offsetToCoverConnector = this.showConnector ? CONNECTOR_WIDTH * 3 / 4 : 0;
         switch (this.#bestHorizontalAlignment) {
           case DialogHorizontalAlignment.LEFT: {
@@ -420,9 +416,9 @@ export class Dialog extends HTMLElement {
             const devtoolsRightBorderToDialogLeft = devToolsRight - dialogLeft;
             const dialogMaxWidth = devtoolsRightBorderToDialogLeft - DIALOG_PADDING_FROM_WINDOW;
             connectorRelativeXValue = connectorFixedXValue - dialogLeft - DIALOG_SIDE_PADDING;
-            ComponentHelpers.SetCSSProperty.set(this, '--dialog-left', `${dialogLeft}px`);
+            this.style.setProperty('--dialog-left', `${dialogLeft}px`);
             this.#hitArea.x = anchorLeft;
-            ComponentHelpers.SetCSSProperty.set(this, '--dialog-max-width', `${dialogMaxWidth}px`);
+            this.style.setProperty('--dialog-max-width', `${dialogMaxWidth}px`);
             break;
           }
           case DialogHorizontalAlignment.RIGHT: {
@@ -443,8 +439,8 @@ export class Dialog extends HTMLElement {
             connectorRelativeXValue = connectorFixedXValue - dialogLeft;
 
             this.#hitArea.x = windowWidth - windowRightBorderToDialogRight - hitAreaWidth;
-            ComponentHelpers.SetCSSProperty.set(this, '--dialog-right', `${windowRightBorderToDialogRight}px`);
-            ComponentHelpers.SetCSSProperty.set(this, '--dialog-max-width', `${dialogMaxWidth}px`);
+            this.style.setProperty('--dialog-right', `${windowRightBorderToDialogRight}px`);
+            this.style.setProperty('--dialog-max-width', `${dialogMaxWidth}px`);
             break;
           }
           case DialogHorizontalAlignment.CENTER: {
@@ -456,10 +452,9 @@ export class Dialog extends HTMLElement {
             let dialogLeft = Math.max(originCenterX - dialogCappedWidth * 0.5, devToolsLeft);
             dialogLeft = Math.min(dialogLeft, devToolsRight - dialogCappedWidth);
             connectorRelativeXValue = connectorFixedXValue - dialogLeft - DIALOG_SIDE_PADDING;
-            ComponentHelpers.SetCSSProperty.set(this, '--dialog-left', `${dialogLeft}px`);
+            this.style.setProperty('--dialog-left', `${dialogLeft}px`);
             this.#hitArea.x = originCenterX - hitAreaWidth * 0.5;
-            ComponentHelpers.SetCSSProperty.set(
-                this, '--dialog-max-width', `${devToolsWidth - DIALOG_PADDING_FROM_WINDOW}px`);
+            this.style.setProperty('--dialog-max-width', `${devToolsWidth - DIALOG_PADDING_FROM_WINDOW}px`);
             break;
           }
           default:
@@ -496,17 +491,17 @@ export class Dialog extends HTMLElement {
               p9 = `0 calc(${clipPathBottom} - ${PSEUDO_BORDER_RADIUS}px)`;
             }
 
-            ComponentHelpers.SetCSSProperty.set(
-                this, '--content-padding-bottom',
+            this.style.setProperty(
+                '--content-padding-bottom',
                 `${CONNECTOR_HEIGHT + (this.#props.showConnector ? CONNECTOR_HEIGHT : 0)}px`);
-            ComponentHelpers.SetCSSProperty.set(this, '--content-padding-top', `${CONNECTOR_HEIGHT}px`);
-            ComponentHelpers.SetCSSProperty.set(this, '--dialog-top', '0');
-            ComponentHelpers.SetCSSProperty.set(this, '--dialog-margin', 'auto');
-            ComponentHelpers.SetCSSProperty.set(this, '--dialog-margin-bottom', `${innerHeight - anchorTop}px`);
+            this.style.setProperty('--content-padding-top', `${CONNECTOR_HEIGHT}px`);
+            this.style.setProperty('--dialog-top', '0');
+            this.style.setProperty('--dialog-margin', 'auto');
+            this.style.setProperty('--dialog-margin-bottom', `${innerHeight - anchorTop}px`);
             this.#hitArea.y = anchorTop - 2 * CONNECTOR_HEIGHT;
-            ComponentHelpers.SetCSSProperty.set(this, '--dialog-offset-y', `${DIALOG_ANIMATION_OFFSET}px`);
-            ComponentHelpers.SetCSSProperty.set(
-                this, '--dialog-max-height',
+            this.style.setProperty('--dialog-offset-y', `${DIALOG_ANIMATION_OFFSET}px`);
+            this.style.setProperty(
+                '--dialog-max-height',
                 `${
                     devToolsHeight - (innerHeight - anchorTop) - DIALOG_PADDING_FROM_WINDOW -
                     visibleConnectorHeight}px`);
@@ -531,15 +526,14 @@ export class Dialog extends HTMLElement {
               p8 = '100% 100%';
               p9 = '0 100%';
             }
-            ComponentHelpers.SetCSSProperty.set(
-                this, '--content-padding-top',
-                `${CONNECTOR_HEIGHT + (this.#props.showConnector ? CONNECTOR_HEIGHT : 0)}px`);
-            ComponentHelpers.SetCSSProperty.set(this, '--content-padding-bottom', `${CONNECTOR_HEIGHT}px`);
-            ComponentHelpers.SetCSSProperty.set(this, '--dialog-top', `${anchorBottom}px`);
+            this.style.setProperty(
+                '--content-padding-top', `${CONNECTOR_HEIGHT + (this.#props.showConnector ? CONNECTOR_HEIGHT : 0)}px`);
+            this.style.setProperty('--content-padding-bottom', `${CONNECTOR_HEIGHT}px`);
+            this.style.setProperty('--dialog-top', `${anchorBottom}px`);
             this.#hitArea.y = anchorTop;
-            ComponentHelpers.SetCSSProperty.set(this, '--dialog-offset-y', `-${DIALOG_ANIMATION_OFFSET}px`);
-            ComponentHelpers.SetCSSProperty.set(
-                this, '--dialog-max-height',
+            this.style.setProperty('--dialog-offset-y', `-${DIALOG_ANIMATION_OFFSET}px`);
+            this.style.setProperty(
+                '--dialog-max-height',
                 `${
                     devToolsHeight - (anchorBottom - devToolsTop) - DIALOG_PADDING_FROM_WINDOW -
                     visibleConnectorHeight}px`);
@@ -552,7 +546,7 @@ export class Dialog extends HTMLElement {
 
         const clipPath = [p1, p2, p3, p4, p5, p6, p7, p8, p9].join();
 
-        ComponentHelpers.SetCSSProperty.set(this, '--content-clip-path', clipPath);
+        this.style.setProperty('--content-clip-path', clipPath);
         dialog.close();
         dialog.style.visibility = '';
       });
@@ -675,7 +669,7 @@ export class Dialog extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-dialog', Dialog);
+customElements.define('devtools-dialog', Dialog);
 
 declare global {
   interface HTMLElementTagNameMap {

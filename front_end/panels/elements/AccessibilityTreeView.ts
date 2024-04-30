@@ -6,6 +6,8 @@ import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+
 import * as AccessibilityTreeUtils from './AccessibilityTreeUtils.js';
 import accessibilityTreeViewStyles from './accessibilityTreeView.css.js';
 import {ElementsPanel} from './ElementsPanel.js';
@@ -29,6 +31,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
     const container = this.contentElement.createChild('div');
 
     container.classList.add('accessibility-tree-view-container');
+    container.setAttribute('jslog', `${VisualLogging.tree('full-accessibility')}`);
     container.appendChild(this.toggleButton);
     container.appendChild(this.accessibilityTreeComponent);
 
@@ -96,7 +99,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
     this.accessibilityTreeComponent.data = {
       defaultRenderer: AccessibilityTreeUtils.accessibilityNodeRenderer,
       tree: treeData,
-      filter: (node): TreeOutline.TreeOutline.FilterOption => {
+      filter: node => {
         return node.ignored() || (node.role()?.value === 'generic' && !node.name()?.value) ?
             TreeOutline.TreeOutline.FilterOption.FLATTEN :
             TreeOutline.TreeOutline.FilterOption.SHOW;

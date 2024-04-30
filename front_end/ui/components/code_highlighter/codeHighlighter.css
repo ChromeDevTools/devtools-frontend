@@ -4,37 +4,37 @@
  * found in the LICENSE file.
  */
 
-.token-variable { color: var(--color-token-variable); }
-.token-property { color: var(--color-token-property); }
-.token-type { color: var(--color-token-type); }
-.token-variable-special { color: var(--color-token-variable-special); }
-.token-definition { color: var(--color-token-definition); }
-.token-builtin { color: var(--color-token-builtin); }
+.token-variable { color: var(--sys-color-token-variable); }
+.token-property { color: var(--sys-color-token-property); }
+.token-type { color: var(--sys-color-token-type); }
+.token-variable-special { color: var(--sys-color-token-variable-special); }
+.token-definition { color: var(--sys-color-token-definition); }
+.token-builtin { color: var(--sys-color-token-builtin); }
 
-.token-number { color: var(--color-token-number); }
-.token-string { color: var(--color-token-string); }
-.token-string-special { color: var(--color-token-string-special); }
-.token-atom { color: var(--color-token-atom); }
+.token-number { color: var(--sys-color-token-number); }
+.token-string { color: var(--sys-color-token-string); }
+.token-string-special { color: var(--sys-color-token-string-special); }
+.token-atom { color: var(--sys-color-token-atom); }
 
-.token-keyword { color: var(--color-token-keyword); }
-.token-comment { color: var(--color-token-comment); }
-.token-meta { color: var(--color-token-meta); }
-.token-invalid { color: var(--color-error-text); }
+.token-keyword { color: var(--sys-color-token-keyword); }
+.token-comment { color: var(--sys-color-token-comment); }
+.token-meta { color: var(--sys-color-token-meta); }
+.token-invalid { color: var(--sys-color-error); }
 
-.token-tag { color: var(--color-token-tag); }
-.token-attribute { color: var(--color-token-attribute); }
-.token-attribute-value { color: var(--color-token-attribute-value); }
+.token-tag { color: var(--sys-color-token-tag); }
+.token-attribute { color: var(--sys-color-token-attribute); }
+.token-attribute-value { color: var(--sys-color-token-attribute-value); }
 
-.token-inserted { color: var(--color-token-inserted); }
-.token-deleted { color: var(--color-token-deleted); }
+.token-inserted { color: var(--sys-color-token-inserted); }
+.token-deleted { color: var(--sys-color-token-deleted); }
 
 .token-heading {
-  color: var(--color-token-variable-special);
+  color: var(--sys-color-token-variable-special);
   font-weight: bold;
 }
 
 .token-link {
-  color: var(--color-token-variable-special);
+  color: var(--sys-color-token-variable-special);
   text-decoration: underline;
 }
 

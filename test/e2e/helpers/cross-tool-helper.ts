@@ -2,16 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, closeAllCloseableTabs, goToResource, waitFor} from '../../shared/helper.js';
-
-export async function prepareForCrossToolScenario() {
-  await navigateToCrossToolIntegrationSite();
-  await closeAllCloseableTabs();
-}
-
-export async function navigateToCrossToolIntegrationSite() {
-  await goToResource('cross_tool/default.html');
-}
+import {click, waitFor} from '../../shared/helper.js';
 
 export async function clickOnContextMenuItemFromTab(tabId: string, menuItemSelector: string) {
   // Find the selected node, right click.
@@ -40,6 +31,6 @@ export async function tabExistsInDrawer(tabId: string) {
 export const checkIfTabExistsInDrawer = async (tabId: string) => {
   const drawer = await waitFor(DRAWER_PANEL_SELECTOR);
   const header = await waitFor(TAB_HEADER_SELECTOR, drawer);
-  const tab = await header.$(tabId);
+  const tab = await waitFor(tabId, header);
   return Boolean(tab);
 };

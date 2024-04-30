@@ -1,6 +1,6 @@
 {
   "core/audits/accessibility/accesskeys.js | description": {
-    "message": "Les tecles d'accés permeten als usuaris posar el focus ràpidament en una part de la pàgina. Perquè puguin navegar correctament, cada tecla d'accés ha de ser única. [Obtén més informació sobre les tecles d'accés](https://dequeuniversity.com/rules/axe/4.7/accesskeys)."
+    "message": "Les tecles d'accés permeten als usuaris posar el focus ràpidament en una part de la pàgina. Perquè puguin navegar correctament, cada tecla d'accés ha de ser única. [Obtén més informació sobre les tecles d'accés](https://dequeuniversity.com/rules/axe/4.8/accesskeys)."
   },
   "core/audits/accessibility/accesskeys.js | failureTitle": {
     "message": "Els valors de l'atribut `[accesskey]` no són únics"
@@ -9,7 +9,7 @@
     "message": "Els valors de l'atribut `[accesskey]` són únics"
   },
   "core/audits/accessibility/aria-allowed-attr.js | description": {
-    "message": "Cada element `role` d'ARIA admet un subconjunt específic d'atributs `aria-*`. Si no coincideixen, els atributs `aria-*` queden invalidats. [Obtén informació sobre com pots relacionar els atributs ARIA amb les seves funcions](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-attr)."
+    "message": "Cada element `role` d'ARIA admet un subconjunt específic d'atributs `aria-*`. Si no coincideixen, els atributs `aria-*` queden invalidats. [Obtén informació sobre com pots relacionar els atributs ARIA amb les seves funcions](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-attr)."
   },
   "core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
     "message": "Els atributs `[aria-*]` no coincideixen amb les seves funcions"
@@ -17,8 +17,17 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Els atributs `[aria-*]` coincideixen amb les seves funcions"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "Les funcions d'ARIA (`role`s) permeten que les tecnologies assistencials coneguin la funció de cada element a la pàgina web. Si els valors de `role` estan mal escrits, són valors de `role` d'ARIA inexistents o funcions abstractes, la finalitat de l'element no es comunicarà als usuaris de tecnologies assistencials. [Obtén més informació sobre les funcions d'ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Els valors assignats a `role=\"\"` no són funcions d'ARIA vàlides."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Els valors assignats a `role=\"\"` són funcions d'ARIA vàlides."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
-    "message": "Si un element no té un nom accessible, els lectors de pantalla l'enuncien amb un nom genèric, de manera que queda inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén informació sobre com pots fer que els elements de les ordres siguin més accessibles](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
+    "message": "Si un element no té un nom accessible, els lectors de pantalla l'enuncien amb un nom genèric, de manera que queda inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén informació sobre com pots fer que els elements de les ordres siguin més accessibles](https://dequeuniversity.com/rules/axe/4.8/aria-command-name)."
   },
   "core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "Els elements `button`, `link` i `menuitem` no tenen noms accessibles"
@@ -26,8 +35,17 @@
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "Els elements `button`, `link` i `menuitem` tenen noms accessibles"
   },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "Els elements del quadre de diàleg d'ARIA que no tenen noms accessibles poden impedir que els usuaris de lectors de pantalla puguin discernir la finalitat d'aquests elements. [Obtén informació sobre com pots fer que els elements del quadre de diàleg d'ARIA siguin més accessibles](https://dequeuniversity.com/rules/axe/4.8/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "Els elements amb `role=\"dialog\"` o `role=\"alertdialog\"` no tenen noms accessibles."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "Els elements amb `role=\"dialog\"` o `role=\"alertdialog\"` tenen noms accessibles."
+  },
   "core/audits/accessibility/aria-hidden-body.js | description": {
-    "message": "Les tecnologies assistencials, com ara els lectors de pantalla, funcionen de manera incongruent quan s'estableix `aria-hidden=\"true\"` en el document `<body>`. [Obtén informació sobre com `aria-hidden` afecta el cos del document](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
+    "message": "Les tecnologies assistencials, com ara els lectors de pantalla, funcionen de manera incongruent quan s'estableix `aria-hidden=\"true\"` en el document `<body>`. [Obtén informació sobre com `aria-hidden` afecta el cos del document](https://dequeuniversity.com/rules/axe/4.8/aria-hidden-body)."
   },
   "core/audits/accessibility/aria-hidden-body.js | failureTitle": {
     "message": "`[aria-hidden=\"true\"]` es troba al document `<body>`"
@@ -36,7 +54,7 @@
     "message": "`[aria-hidden=\"true\"]` no es troba al document `<body>`"
   },
   "core/audits/accessibility/aria-hidden-focus.js | description": {
-    "message": "Els descendents enfocables en un element `[aria-hidden=\"true\"]` impedeixen que els elements interactius estiguin a l'abast dels usuaris de tecnologies assistencials, com ara els lectors de pantalla. [Obtén informació sobre com `aria-hidden` afecta els elements enfocables](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-focus)."
+    "message": "Els descendents enfocables en un element `[aria-hidden=\"true\"]` impedeixen que els elements interactius estiguin a l'abast dels usuaris de tecnologies assistencials, com ara els lectors de pantalla. [Obtén informació sobre com `aria-hidden` afecta els elements enfocables](https://dequeuniversity.com/rules/axe/4.8/aria-hidden-focus)."
   },
   "core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
     "message": "Els elements `[aria-hidden=\"true\"]` contenen descendents en què es pot posar el focus"
@@ -45,7 +63,7 @@
     "message": "Els elements `[aria-hidden=\"true\"]` no contenen cap descendent en què es pugui posar el focus"
   },
   "core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Si un camp d'entrada no té un nom accessible, els lectors de pantalla l'enuncien amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén més informació sobre les etiquetes dels camps d'entrada](https://dequeuniversity.com/rules/axe/4.7/aria-input-field-name)."
+    "message": "Si un camp d'entrada no té un nom accessible, els lectors de pantalla l'enuncien amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén més informació sobre les etiquetes dels camps d'entrada](https://dequeuniversity.com/rules/axe/4.8/aria-input-field-name)."
   },
   "core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "Els camps d'entrada ARIA no tenen noms accessibles"
@@ -54,7 +72,7 @@
     "message": "Els camps d'entrada ARIA tenen noms accessibles"
   },
   "core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "Si un element mesurador no té un nom accessible, els lectors de pantalla l'enuncien amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén informació sobre com pots posar nom als elements `meter`](https://dequeuniversity.com/rules/axe/4.7/aria-meter-name)."
+    "message": "Si un element mesurador no té un nom accessible, els lectors de pantalla l'enuncien amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén informació sobre com pots posar nom als elements `meter`](https://dequeuniversity.com/rules/axe/4.8/aria-meter-name)."
   },
   "core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "Els elements `meter` d'ARIA no tenen noms accessibles"
@@ -63,7 +81,7 @@
     "message": "Els elements `meter` d'ARIA tenen noms accessibles"
   },
   "core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Si un element del tipus `progressbar` no té un nom accessible, els lectors de pantalla l'enuncien amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén informació sobre com pots etiquetar elements `progressbar`](https://dequeuniversity.com/rules/axe/4.7/aria-progressbar-name)."
+    "message": "Si un element del tipus `progressbar` no té un nom accessible, els lectors de pantalla l'enuncien amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén informació sobre com pots etiquetar elements `progressbar`](https://dequeuniversity.com/rules/axe/4.8/aria-progressbar-name)."
   },
   "core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "Els elements `progressbar` d'ARIA no tenen noms accessibles"
@@ -72,7 +90,7 @@
     "message": "Els elements `progressbar` d'ARIA tenen noms accessibles"
   },
   "core/audits/accessibility/aria-required-attr.js | description": {
-    "message": "Algunes funcions d'ARIA tenen atributs obligatoris que descriuen l'estat de l'element als lectors de pantalla. [Obtén més informació sobre les funcions i els atributs obligatoris](https://dequeuniversity.com/rules/axe/4.7/aria-required-attr)."
+    "message": "Algunes funcions d'ARIA tenen atributs obligatoris que descriuen l'estat de l'element als lectors de pantalla. [Obtén més informació sobre les funcions i els atributs obligatoris](https://dequeuniversity.com/rules/axe/4.8/aria-required-attr)."
   },
   "core/audits/accessibility/aria-required-attr.js | failureTitle": {
     "message": "Els atributs `[role]` no tenen tots els atributs `[aria-*]` obligatoris"
@@ -81,7 +99,7 @@
     "message": "Els elements amb l'atribut `[role]` tenen tots els atributs `[aria-*]` obligatoris"
   },
   "core/audits/accessibility/aria-required-children.js | description": {
-    "message": "Algunes funcions dels elements ARIA superiors han d'incloure funcions concretes dels elements secundaris perquè puguin dur a terme les funcions d'accessibilitat per a les quals s'han dissenyat. [Obtén més informació sobre les funcions i els elements secundaris obligatoris](https://dequeuniversity.com/rules/axe/4.7/aria-required-children)."
+    "message": "Algunes funcions dels elements ARIA superiors han d'incloure funcions concretes dels elements secundaris perquè puguin dur a terme les funcions d'accessibilitat per a les quals s'han dissenyat. [Obtén més informació sobre les funcions i els elements secundaris obligatoris](https://dequeuniversity.com/rules/axe/4.8/aria-required-children)."
   },
   "core/audits/accessibility/aria-required-children.js | failureTitle": {
     "message": "Els elements amb un `[role]` ARIA que requereixen que els elements secundaris continguin un atribut `[role]` específic no tenen alguns o tots els elements secundaris requerits."
@@ -90,7 +108,7 @@
     "message": "Els elements amb un ARIA `[role]` que requereixen que els elements secundaris continguin un atribut `[role]` específic tenen tots els elements secundaris requerits."
   },
   "core/audits/accessibility/aria-required-parent.js | description": {
-    "message": "Les funcions de determinats elements superiors han d'incloure algunes funcions dels elements ARIA secundaris perquè puguin dur a terme les funcions d'accessibilitat per a les quals s'han dissenyat. [Obtén més informació sobre les funcions d'ARIA i l'element superior obligatori](https://dequeuniversity.com/rules/axe/4.7/aria-required-parent)."
+    "message": "Les funcions de determinats elements superiors han d'incloure algunes funcions dels elements ARIA secundaris perquè puguin dur a terme les funcions d'accessibilitat per a les quals s'han dissenyat. [Obtén més informació sobre les funcions d'ARIA i l'element superior obligatori](https://dequeuniversity.com/rules/axe/4.8/aria-required-parent)."
   },
   "core/audits/accessibility/aria-required-parent.js | failureTitle": {
     "message": "Els atributs `[role]` no s'inclouen a l'element superior obligatori"
@@ -99,7 +117,7 @@
     "message": "Els atributs `[role]` s'inclouen a l'element superior obligatori"
   },
   "core/audits/accessibility/aria-roles.js | description": {
-    "message": "Les funcions dels elements ARIA han de tenir valors vàlids perquè puguin dur a terme les funcions d'accessibilitat per a les quals s'han dissenyat. [Obtén més informació sobre les funcions d'ARIA vàlides](https://dequeuniversity.com/rules/axe/4.7/aria-roles)."
+    "message": "Les funcions dels elements ARIA han de tenir valors vàlids perquè puguin dur a terme les funcions d'accessibilitat per a les quals s'han dissenyat. [Obtén més informació sobre les funcions d'ARIA vàlides](https://dequeuniversity.com/rules/axe/4.8/aria-roles)."
   },
   "core/audits/accessibility/aria-roles.js | failureTitle": {
     "message": "Els valors de l'atribut `[role]` no són vàlids"
@@ -107,8 +125,17 @@
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "Els valors de l'atribut `[role]` són vàlids"
   },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "Si s'afegeix `role=text` al voltant d'un node de text dividit per etiquetatge, VoiceOver pot tractar l'element com una frase, però els seus descendents enfocables no s'enunciaran. [Obtén més informació sobre l'atribut `role=text`](https://dequeuniversity.com/rules/axe/4.8/aria-text)."
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "Els elements amb l'atribut `role=text` sí que tenen descendents enfocables."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "Els elements amb l'atribut `role=text` no tenen descendents enfocables."
+  },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Si un camp de commutació no té un nom accessible, els lectors de pantalla l'enuncien amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén més informació sobre els camps de commutació](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
+    "message": "Si un camp de commutació no té un nom accessible, els lectors de pantalla l'enuncien amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén més informació sobre els camps de commutació](https://dequeuniversity.com/rules/axe/4.8/aria-toggle-field-name)."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "Els camps de commutació ARIA no tenen noms accessibles"
@@ -117,7 +144,7 @@
     "message": "Els camps de commutació ARIA tenen noms accessibles"
   },
   "core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "Si un element de descripció emergent no té un nom accessible, els lectors de pantalla l'enuncien amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén informació sobre com pots posar nom als elements `tooltip`](https://dequeuniversity.com/rules/axe/4.7/aria-tooltip-name)."
+    "message": "Si un element de descripció emergent no té un nom accessible, els lectors de pantalla l'enuncien amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén informació sobre com pots posar nom als elements `tooltip`](https://dequeuniversity.com/rules/axe/4.8/aria-tooltip-name)."
   },
   "core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "Els elements `tooltip` d'ARIA no tenen noms accessibles"
@@ -126,7 +153,7 @@
     "message": "Els elements `tooltip` d'ARIA tenen noms accessibles"
   },
   "core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "Si un element del tipus `treeitem` no té un nom accessible, els lectors de pantalla l'enuncien amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén més informació sobre com pots etiquetar els elements `treeitem`](https://dequeuniversity.com/rules/axe/4.7/aria-treeitem-name)."
+    "message": "Si un element del tipus `treeitem` no té un nom accessible, els lectors de pantalla l'enuncien amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén més informació sobre com pots etiquetar els elements `treeitem`](https://dequeuniversity.com/rules/axe/4.8/aria-treeitem-name)."
   },
   "core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "Els elements `treeitem` d'ARIA no tenen noms accessibles"
@@ -135,7 +162,7 @@
     "message": "Els elements `treeitem` d'ARIA tenen noms accessibles"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | description": {
-    "message": "Les tecnologies assistencials, com ara els lectors de pantalla, no poden interpretar els atributs ARIA que tenen valors no vàlids. [Obtén més informació sobre els valors dels atributs ARIA vàlids](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr-value)."
+    "message": "Les tecnologies assistencials, com ara els lectors de pantalla, no poden interpretar els atributs ARIA que tenen valors no vàlids. [Obtén més informació sobre els valors dels atributs ARIA vàlids](https://dequeuniversity.com/rules/axe/4.8/aria-valid-attr-value)."
   },
   "core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
     "message": "Els atributs `[aria-*]` no tenen valors vàlids"
@@ -144,7 +171,7 @@
     "message": "Els atributs `[aria-*]` tenen valors vàlids"
   },
   "core/audits/accessibility/aria-valid-attr.js | description": {
-    "message": "Les tecnologies assistencials, com ara els lectors de pantalla, no poden interpretar els atributs ARIA que tenen noms no vàlids. [Obtén més informació sobre els atributs d'ARIA vàlids](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr)."
+    "message": "Les tecnologies assistencials, com ara els lectors de pantalla, no poden interpretar els atributs ARIA que tenen noms no vàlids. [Obtén més informació sobre els atributs d'ARIA vàlids](https://dequeuniversity.com/rules/axe/4.8/aria-valid-attr)."
   },
   "core/audits/accessibility/aria-valid-attr.js | failureTitle": {
     "message": "Els atributs `[aria-*]` no són vàlids o estan mal escrits"
@@ -156,7 +183,7 @@
     "message": "Elements amb errors"
   },
   "core/audits/accessibility/button-name.js | description": {
-    "message": "Si un botó no té un nom accessible, els lectors de pantalla l'enuncien com a \"botó\", de manera que queda inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén informació sobre com pots fer que els botons siguin més accessibles](https://dequeuniversity.com/rules/axe/4.7/button-name)."
+    "message": "Si un botó no té un nom accessible, els lectors de pantalla l'enuncien com a \"botó\", de manera que queda inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén informació sobre com pots fer que els botons siguin més accessibles](https://dequeuniversity.com/rules/axe/4.8/button-name)."
   },
   "core/audits/accessibility/button-name.js | failureTitle": {
     "message": "Els botons no tenen un nom accessible"
@@ -165,7 +192,7 @@
     "message": "Els botons tenen noms accessibles"
   },
   "core/audits/accessibility/bypass.js | description": {
-    "message": "Si s'afegeixen maneres d'ometre el contingut repetitiu, els usuaris de teclat poden navegar per la pàgina de manera més eficient. [Obtén més informació sobre com pots ometre el contingut repetitiu](https://dequeuniversity.com/rules/axe/4.7/bypass)."
+    "message": "Si s'afegeixen maneres d'ometre el contingut repetitiu, els usuaris de teclat poden navegar per la pàgina de manera més eficient. [Obtén més informació sobre com pots ometre el contingut repetitiu](https://dequeuniversity.com/rules/axe/4.8/bypass)."
   },
   "core/audits/accessibility/bypass.js | failureTitle": {
     "message": "La pàgina no conté un encapçalament, un enllaç d'omissió o una regió de referència"
@@ -174,7 +201,7 @@
     "message": "La pàgina conté un encapçalament, un enllaç d'omissió o una regió de referència"
   },
   "core/audits/accessibility/color-contrast.js | description": {
-    "message": "El text amb contrast baix resulta difícil o impossible de llegir per a molts usuaris. [Obtén informació sobre com pots proporcionar un contrast de color suficient](https://dequeuniversity.com/rules/axe/4.7/color-contrast)."
+    "message": "El text amb contrast baix resulta difícil o impossible de llegir per a molts usuaris. [Obtén informació sobre com pots proporcionar un contrast de color suficient](https://dequeuniversity.com/rules/axe/4.8/color-contrast)."
   },
   "core/audits/accessibility/color-contrast.js | failureTitle": {
     "message": "La relació de contrast dels colors de primer i de segon pla no és suficient."
@@ -183,7 +210,7 @@
     "message": "La relació de contrast dels colors de primer i de segon pla és suficient"
   },
   "core/audits/accessibility/definition-list.js | description": {
-    "message": "Si el marcatge de les llistes de definició no és correcte, és possible que els lectors de pantalla sonin de manera confusa o inexacta. [Obtén informació sobre com pots estructurar correctament les llistes de definicions](https://dequeuniversity.com/rules/axe/4.7/definition-list)."
+    "message": "Si el marcatge de les llistes de definició no és correcte, és possible que els lectors de pantalla sonin de manera confusa o inexacta. [Obtén informació sobre com pots estructurar correctament les llistes de definicions](https://dequeuniversity.com/rules/axe/4.8/definition-list)."
   },
   "core/audits/accessibility/definition-list.js | failureTitle": {
     "message": "Els `<dl>` no contenen només grups de `<dt>` i `<dd>` ordenats correctament, o bé elements `<script>`, `<template>` o `<div>`."
@@ -192,7 +219,7 @@
     "message": "Els `<dl>` contenen només grups de `<dt>` i `<dd>` ordenats correctament, o bé elements `<script>`, `<template>` o `<div>`."
   },
   "core/audits/accessibility/dlitem.js | description": {
-    "message": "Els elements de la llista de definicions (`<dt>` i `<dd>`) han d'estar tancats dins d'un element `<dl>` superior per garantir que els lectors de pantalla els puguin enunciar correctament. [Obtén informació sobre com pots estructurar correctament les llistes de definicions](https://dequeuniversity.com/rules/axe/4.7/dlitem)."
+    "message": "Els elements de la llista de definicions (`<dt>` i `<dd>`) han d'estar tancats dins d'un element `<dl>` superior per garantir que els lectors de pantalla els puguin enunciar correctament. [Obtén informació sobre com pots estructurar correctament les llistes de definicions](https://dequeuniversity.com/rules/axe/4.8/dlitem)."
   },
   "core/audits/accessibility/dlitem.js | failureTitle": {
     "message": "Els elements de la llista de definicions estan tancats entre elements `<dl>`"
@@ -201,7 +228,7 @@
     "message": "Els elements de la llista de definicions estan tancats entre elements `<dl>`"
   },
   "core/audits/accessibility/document-title.js | description": {
-    "message": "El títol proporciona un resum de la pàgina als usuaris de lectors de pantalla. A més, els usuaris de motors de cerca depenen en gran mesura d'aquest títol per determinar si una pàgina és rellevant per a la seva cerca. [Obtén més informació sobre els títols dels documents](https://dequeuniversity.com/rules/axe/4.7/document-title)."
+    "message": "El títol proporciona un resum de la pàgina als usuaris de lectors de pantalla. A més, els usuaris de motors de cerca depenen en gran mesura d'aquest títol per determinar si una pàgina és rellevant per a la seva cerca. [Obtén més informació sobre els títols dels documents](https://dequeuniversity.com/rules/axe/4.8/document-title)."
   },
   "core/audits/accessibility/document-title.js | failureTitle": {
     "message": "El document no té cap element `<title>`"
@@ -210,7 +237,7 @@
     "message": "El document té un element `<title>`"
   },
   "core/audits/accessibility/duplicate-id-active.js | description": {
-    "message": "Tots els elements enfocables han de tenir un `id` únic per garantir que les tecnologies assistencials els puguin veure. [Obtén informació sobre com pots corregir els `id` duplicats](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-active)."
+    "message": "Tots els elements enfocables han de tenir un `id` únic per garantir que les tecnologies assistencials els puguin veure. [Obtén informació sobre com pots corregir els `id` duplicats](https://dequeuniversity.com/rules/axe/4.8/duplicate-id-active)."
   },
   "core/audits/accessibility/duplicate-id-active.js | failureTitle": {
     "message": "Els atributs `[id]` en elements actius en què es pot posar el focus no són únics"
@@ -219,7 +246,7 @@
     "message": "Els atributs `[id]` en elements actius en què es pot posar el focus són únics"
   },
   "core/audits/accessibility/duplicate-id-aria.js | description": {
-    "message": "El valor d'un identificador ARIA ha de ser únic per impedir que les tecnologies assistencials passin per alt altres instàncies. [Obtén informació sobre com pots corregir els identificadors ARIA duplicats](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-aria)."
+    "message": "El valor d'un identificador ARIA ha de ser únic per impedir que les tecnologies assistencials passin per alt altres instàncies. [Obtén informació sobre com pots corregir els identificadors ARIA duplicats](https://dequeuniversity.com/rules/axe/4.8/duplicate-id-aria)."
   },
   "core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
     "message": "Els identificadors ARIA no són únics"
@@ -227,8 +254,17 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "Els identificadors ARIA són únics"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "Un encapçalament sense contingut o amb text inaccessible impedeix que els usuaris de lectors de pantalla accedeixin a la informació de l'estructura de la pàgina. [Obtén més informació sobre els encapçalaments](https://dequeuniversity.com/rules/axe/4.8/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "Els elements dels encapçalaments no inclouen contingut."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "Tots els elements dels encapçalaments inclouen contingut."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
-    "message": "Els camps de formulari amb diverses etiquetes poden fer que les tecnologies assistencials, com ara els lectors de pantalla, els enunciïn de manera confusa, ja que poden utilitzar la primera etiqueta, la darrera o totes. [Obtén informació sobre com pots utilitzar etiquetes de formulari](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
+    "message": "Els camps de formulari amb diverses etiquetes poden fer que les tecnologies assistencials, com ara els lectors de pantalla, els enunciïn de manera confusa, ja que poden utilitzar la primera etiqueta, la darrera o totes. [Obtén informació sobre com pots utilitzar etiquetes de formulari](https://dequeuniversity.com/rules/axe/4.8/form-field-multiple-labels)."
   },
   "core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
     "message": "Els camps de formulari tenen diverses etiquetes"
@@ -237,7 +273,7 @@
     "message": "Cap camp de formulari té diverses etiquetes"
   },
   "core/audits/accessibility/frame-title.js | description": {
-    "message": "Els usuaris de lectors de pantalla depenen dels títols dels marcs perquè en descriguin el contingut. [Obtén més informació sobre els títols dels marcs](https://dequeuniversity.com/rules/axe/4.7/frame-title)."
+    "message": "Els usuaris de lectors de pantalla depenen dels títols dels marcs perquè en descriguin el contingut. [Obtén més informació sobre els títols dels marcs](https://dequeuniversity.com/rules/axe/4.8/frame-title)."
   },
   "core/audits/accessibility/frame-title.js | failureTitle": {
     "message": "Els elements `<frame>` o `<iframe>` no tenen títol"
@@ -246,16 +282,16 @@
     "message": "Els elements `<frame>` o `<iframe>` tenen un títol"
   },
   "core/audits/accessibility/heading-order.js | description": {
-    "message": "Els títols ordenats adequadament sense ometre nivells transmeten l'estructura semàntica de la pàgina, la qual cosa facilita la navegació i la comprensió quan s'utilitzen tecnologies assistencials. [Obtén més informació sobre l'ordre dels títols](https://dequeuniversity.com/rules/axe/4.7/heading-order)."
+    "message": "Els encapçalaments ordenats adequadament sense ometre nivells transmeten l'estructura semàntica de la pàgina, la qual cosa facilita la navegació i la comprensió quan s'utilitzen tecnologies assistencials. [Obtén més informació sobre l'ordre dels encapçalaments](https://dequeuniversity.com/rules/axe/4.8/heading-order)."
   },
   "core/audits/accessibility/heading-order.js | failureTitle": {
-    "message": "Els elements del títol no estan en un ordre seqüencial descendent"
+    "message": "Els elements de l'encapçalament no estan en un ordre seqüencial descendent"
   },
   "core/audits/accessibility/heading-order.js | title": {
-    "message": "Els elements del títol es mostren en un ordre seqüencial descendent"
+    "message": "Els elements de l'encapçalament es mostren en un ordre seqüencial descendent"
   },
   "core/audits/accessibility/html-has-lang.js | description": {
-    "message": "Si en una pàgina no s'especifica un atribut `lang`, els lectors de pantalla suposen que la pàgina està escrita en l'idioma predeterminat que l'usuari ha triat en configurar el lector de pantalla. Si està escrita en un altre idioma, és possible que el lector de pantalla no n'enunciï el text correctament. [Obtén més informació sobre l'atribut `lang`](https://dequeuniversity.com/rules/axe/4.7/html-has-lang)."
+    "message": "Si en una pàgina no s'especifica un atribut `lang`, els lectors de pantalla suposen que la pàgina està escrita en l'idioma predeterminat que l'usuari ha triat en configurar el lector de pantalla. Si està escrita en un altre idioma, és possible que el lector de pantalla no n'enunciï el text correctament. [Obtén més informació sobre l'atribut `lang`](https://dequeuniversity.com/rules/axe/4.8/html-has-lang)."
   },
   "core/audits/accessibility/html-has-lang.js | failureTitle": {
     "message": "L'element `<html>` no té un atribut `[lang]`"
@@ -264,7 +300,7 @@
     "message": "L'element `<html>` té un atribut `[lang]`"
   },
   "core/audits/accessibility/html-lang-valid.js | description": {
-    "message": "Si especifiques un [idioma vàlid d'acord amb l'estàndard BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question), facilites que els lectors de pantalla enunciïn el text correctament. [Obtén informació sobre com pots utilitzar l'atribut `lang`](https://dequeuniversity.com/rules/axe/4.7/html-lang-valid)."
+    "message": "Si especifiques un [idioma vàlid d'acord amb l'estàndard BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question), facilites que els lectors de pantalla enunciïn el text correctament. [Obtén informació sobre com pots utilitzar l'atribut `lang`](https://dequeuniversity.com/rules/axe/4.8/html-lang-valid)."
   },
   "core/audits/accessibility/html-lang-valid.js | failureTitle": {
     "message": "L'element `<html>` no té un valor vàlid per a l'atribut `[lang]` corresponent."
@@ -272,8 +308,26 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "L'element `<html>` té un valor vàlid per a l'atribut `[lang]` corresponent"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Si la pàgina web no especifica un idioma de manera coherent, és possible que el lector de pantalla no n'enunciï el text correctament. [Obtén més informació sobre l'atribut `lang`](https://dequeuniversity.com/rules/axe/4.8/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "L'element `<html>` no té un atribut `[xml:lang]` amb el mateix idioma base que l'atribut `[lang]`."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "L'element `<html>` té un atribut `[xml:lang]` amb el mateix idioma base que l'atribut `[lang]`."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "Els enllaços amb la mateixa destinació han de tenir la mateixa descripció per ajudar els usuaris a entendre la finalitat de l'enllaç i decidir si el volen seguir. [Obtén més informació sobre els enllaços idèntics](https://dequeuniversity.com/rules/axe/4.8/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "Els enllaços idèntics no tenen la mateixa finalitat."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "Els enllaços idèntics tenen la mateixa finalitat."
+  },
   "core/audits/accessibility/image-alt.js | description": {
-    "message": "Els elements informatius han d'utilitzar text alternatiu que sigui breu i descriptiu. Els elements decoratius es poden ignorar amb un atribut alt buit. [Obtén més informació sobre l'atribut `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
+    "message": "Els elements informatius han d'utilitzar text alternatiu que sigui breu i descriptiu. Els elements decoratius es poden ignorar amb un atribut alt buit. [Obtén més informació sobre l'atribut `alt`](https://dequeuniversity.com/rules/axe/4.8/image-alt)."
   },
   "core/audits/accessibility/image-alt.js | failureTitle": {
     "message": "Els elements d'imatge no tenen atributs `[alt]`"
@@ -281,8 +335,26 @@
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Els elements d'imatge tenen atributs `[alt]`"
   },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Els elements informatius han d'utilitzar text alternatiu que sigui breu i descriptiu. El text alternatiu que sigui exactament igual que el text que hi ha al costat de l'enllaç o de la imatge pot ser confús per als usuaris de lectors de pantalla, ja que el text es llegirà dues vegades. [Obtén més informació sobre l'atribut `alt`](https://dequeuniversity.com/rules/axe/4.8/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Els elements d'imatge tenen atributs `[alt]` que són text redundant."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Els elements d'imatge no tenen atributs `[alt]` que siguin text redundant."
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Afegir text discernible i accessible als botons d'entrada pot ajudar els usuaris de lectors de pantalla a entendre la finalitat del botó d'entrada. [Obtén més informació sobre els botons d'entrada](https://dequeuniversity.com/rules/axe/4.8/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Els botons d'entrada no tenen text discernible."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Els botons d'entrada tenen text discernible."
+  },
   "core/audits/accessibility/input-image-alt.js | description": {
-    "message": "Si s'utilitza una imatge per al botó `<input>`, el text alternatiu pot ajudar els usuaris dels lectors de pantalla a entendre la funció del botó. [Obtén informació sobre el text alternatiu de la imatge d'entrada](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
+    "message": "Si s'utilitza una imatge per al botó `<input>`, el text alternatiu pot ajudar els usuaris dels lectors de pantalla a entendre la funció del botó. [Obtén informació sobre el text alternatiu de la imatge d'entrada](https://dequeuniversity.com/rules/axe/4.8/input-image-alt)."
   },
   "core/audits/accessibility/input-image-alt.js | failureTitle": {
     "message": "Els elements `<input type=\"image\">` no tenen text `[alt]`"
@@ -290,8 +362,17 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "Els elements `<input type=\"image\">` tenen text `[alt]`"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Les etiquetes de text visibles que no coincideixen amb el nom accessible poden crear una experiència confusa per als usuaris de lectors de pantalla. [Obtén més informació sobre els noms accessibles](https://dequeuniversity.com/rules/axe/4.8/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Els elements amb etiquetes de text visibles no tenen noms accessibles coincidents."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Els elements amb etiquetes de text visibles tenen noms accessibles coincidents."
+  },
   "core/audits/accessibility/label.js | description": {
-    "message": "Les etiquetes garanteixen que les tecnologies assistencials, com ara els lectors de pantalla, puguin enunciar correctament els controls dels formularis. [Obtén més informació sobre les etiquetes d'elements de formulari](https://dequeuniversity.com/rules/axe/4.7/label)."
+    "message": "Les etiquetes garanteixen que les tecnologies assistencials, com ara els lectors de pantalla, puguin enunciar correctament els controls dels formularis. [Obtén més informació sobre les etiquetes d'elements de formulari](https://dequeuniversity.com/rules/axe/4.8/label)."
   },
   "core/audits/accessibility/label.js | failureTitle": {
     "message": "Els elements de formulari no tenen etiquetes associades"
@@ -299,8 +380,26 @@
   "core/audits/accessibility/label.js | title": {
     "message": "Els elements de formulari tenen etiquetes associades"
   },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "Tenir un sol punt de referència principal ajuda els usuaris de lectors de pantalla a navegar per una pàgina web. [Obtén més informació sobre els punts de referència](https://dequeuniversity.com/rules/axe/4.8/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "El document no té cap punt de referència principal."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "El document té un punt de referència principal."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "El text amb contrast baix resulta difícil o impossible de llegir per a molts usuaris. Si el text dels enllaços és discernible, millora l'experiència dels usuaris amb poca visió. [Obtén informació sobre com pots fer que els enllaços es puguin distingir](https://dequeuniversity.com/rules/axe/4.8/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "Els enllaços depenen del color per poder-se distingir."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "Els enllaços es poden distingir sense dependre del color."
+  },
   "core/audits/accessibility/link-name.js | description": {
-    "message": "Si el text dels enllaços (així com el text alternatiu per a les imatges, quan s'utilitzen com a enllaços) és discernible, únic i enfocable, millora l'experiència de navegació per als usuaris de lectors de pantalla. [Obtén informació sobre com pots fer que els enllaços siguin accessibles](https://dequeuniversity.com/rules/axe/4.7/link-name)."
+    "message": "Si el text dels enllaços (així com el text alternatiu per a les imatges, quan s'utilitzen com a enllaços) és discernible, únic i enfocable, millora l'experiència de navegació per als usuaris de lectors de pantalla. [Obtén informació sobre com pots fer que els enllaços siguin accessibles](https://dequeuniversity.com/rules/axe/4.8/link-name)."
   },
   "core/audits/accessibility/link-name.js | failureTitle": {
     "message": "Els enllaços no tenen noms que es puguin distingir"
@@ -309,7 +408,7 @@
     "message": "Els enllaços tenen noms que es poden distingir"
   },
   "core/audits/accessibility/list.js | description": {
-    "message": "Els lectors de pantalla tenen una manera específica d'enunciar les llistes. Estructurar-les correctament millora la manera com sonen els lectors de pantalla. [Obtén més informació sobre l'estructura adequada de les llistes](https://dequeuniversity.com/rules/axe/4.7/list)."
+    "message": "Els lectors de pantalla tenen una manera específica d'enunciar les llistes. Estructurar-les correctament millora la manera com sonen els lectors de pantalla. [Obtén més informació sobre l'estructura adequada de les llistes](https://dequeuniversity.com/rules/axe/4.8/list)."
   },
   "core/audits/accessibility/list.js | failureTitle": {
     "message": "Les llistes no contenen només elements`<li>` i elements que admeten scripts (`<script>` i `<template>`)."
@@ -318,7 +417,7 @@
     "message": "Les llistes contenen només elements `<li>` i elements que admeten scripts (`<script>` i `<template>`)."
   },
   "core/audits/accessibility/listitem.js | description": {
-    "message": "Els lectors de pantalla requereixen que els elements de llista (`<li>`) estiguin inclosos dins d'un element `<ul>`, `<ol>` o `<menu>` superior per poder enunciar-los correctament. [Obtén més informació sobre l'estructura adequada de les llistes](https://dequeuniversity.com/rules/axe/4.7/listitem)."
+    "message": "Els lectors de pantalla requereixen que els elements de llista (`<li>`) estiguin inclosos dins d'un element `<ul>`, `<ol>` o `<menu>` superior per poder enunciar-los correctament. [Obtén més informació sobre l'estructura adequada de les llistes](https://dequeuniversity.com/rules/axe/4.8/listitem)."
   },
   "core/audits/accessibility/listitem.js | failureTitle": {
     "message": "Alguns elements de la llista (`<li>`) no estan inclosos entre elements superiors `<ul>`, `<ol>` o `<menu>`."
@@ -327,7 +426,7 @@
     "message": "Alguns elements de llista (`<li>`) estan inclosos entre elements superiors `<ul>`, `<ol>` o `<menu>`"
   },
   "core/audits/accessibility/meta-refresh.js | description": {
-    "message": "Els usuaris no esperen que una pàgina s'actualitzi automàticament. En fer-ho, el focus torna a la part superior de la pàgina i els usuaris es poden sentir frustrats i confosos. [Obtén més informació sobre la metaetiqueta d'actualització](https://dequeuniversity.com/rules/axe/4.7/meta-refresh)."
+    "message": "Els usuaris no esperen que una pàgina s'actualitzi automàticament. En fer-ho, el focus torna a la part superior de la pàgina i els usuaris es poden sentir frustrats i confosos. [Obtén més informació sobre la metaetiqueta d'actualització](https://dequeuniversity.com/rules/axe/4.8/meta-refresh)."
   },
   "core/audits/accessibility/meta-refresh.js | failureTitle": {
     "message": "El document utilitza la metaetiqueta `<meta http-equiv=\"refresh\">`"
@@ -336,7 +435,7 @@
     "message": "El document no utilitza `<meta http-equiv=\"refresh\">`"
   },
   "core/audits/accessibility/meta-viewport.js | description": {
-    "message": "Desactivar el zoom pot ser un problema per als usuaris amb visió reduïda que necessiten ampliar la pantalla per veure correctament el contingut d'una pàgina web. [Obtén més informació sobre la metaetiqueta de finestra gràfica](https://dequeuniversity.com/rules/axe/4.7/meta-viewport)."
+    "message": "Desactivar el zoom pot ser un problema per als usuaris amb visió reduïda que necessiten ampliar la pantalla per veure correctament el contingut d'una pàgina web. [Obtén més informació sobre la metaetiqueta de finestra gràfica](https://dequeuniversity.com/rules/axe/4.8/meta-viewport)."
   },
   "core/audits/accessibility/meta-viewport.js | failureTitle": {
     "message": "L'atribut `[user-scalable=\"no\"]` s'utilitza a l'element `<meta name=\"viewport\">` o l'atribut `[maximum-scale]` és inferior a 5."
@@ -345,7 +444,7 @@
     "message": "L'atribut `[user-scalable=\"no\"]` no s'utilitza a l'element `<meta name=\"viewport\">` i l'atribut `[maximum-scale]` no és inferior a 5."
   },
   "core/audits/accessibility/object-alt.js | description": {
-    "message": "Els lectors de pantalla no poden traduir contingut que no sigui text. Si afegeixes text alternatiu als elements `<object>`, ajudes els lectors de pantalla a transmetre el significat als usuaris. [Obtén més informació sobre el text alternatiu per a elements `object`](https://dequeuniversity.com/rules/axe/4.7/object-alt)."
+    "message": "Els lectors de pantalla no poden traduir contingut que no sigui text. Si afegeixes text alternatiu als elements `<object>`, ajudes els lectors de pantalla a transmetre el significat als usuaris. [Obtén més informació sobre el text alternatiu per a elements `object`](https://dequeuniversity.com/rules/axe/4.8/object-alt)."
   },
   "core/audits/accessibility/object-alt.js | failureTitle": {
     "message": "Els elements `<object>` no tenen text alternatiu"
@@ -353,8 +452,26 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "Els elements `<object>` tenen text alternatiu"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "Els elements de formulari sense etiquetes eficaces poden crear experiències frustrants per als usuaris de lectors de pantalla. [Obtén més informació sobre l'element `select`](https://dequeuniversity.com/rules/axe/4.8/select-name)."
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "Els elements select no tenen elements d'etiqueta associats."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "Els elements select tenen elements d'etiqueta associats."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Incloure un enllaç d'omissió pot ajudar els usuaris a passar al contingut principal per estalviar temps. [Obtén més informació sobre els enllaços d'omissió](https://dequeuniversity.com/rules/axe/4.8/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Els enllaços d'omissió no són enfocables."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Els enllaços d'omissió són enfocables."
+  },
   "core/audits/accessibility/tabindex.js | description": {
-    "message": "Un valor superior a 0 implica una ordenació explícita de navegació. Tècnicament és vàlid, però sol causar experiències frustrants per als usuaris que depenen de les tecnologies assistencials. [Obtén més informació sobre l'atribut `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
+    "message": "Un valor superior a 0 implica una ordenació explícita de navegació. Tècnicament és vàlid, però sol causar experiències frustrants per als usuaris que depenen de les tecnologies assistencials. [Obtén més informació sobre l'atribut `tabindex`](https://dequeuniversity.com/rules/axe/4.8/tabindex)."
   },
   "core/audits/accessibility/tabindex.js | failureTitle": {
     "message": "Alguns elements tenen un valor `[tabindex]` superior a 0"
@@ -362,8 +479,44 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Cap element no té un valor `[tabindex]` superior a 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "L'atribut de resum ha de descriure l'estructura de la taula, mentre que `<caption>` ha de tenir el títol en pantalla. Un etiquetatge de taules precís ajuda els usuaris de lectors de pantalla. [Obtén més informació sobre el resum i el títol](https://dequeuniversity.com/rules/axe/4.8/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Les taules tenen el mateix contingut a l'atribut de resum i a `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Les taules tenen contingut diferent a l'atribut de resum i a `<caption>`."
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Els lectors de pantalla inclouen funcions perquè sigui més fàcil navegar per les taules. Assegura't que les taules utilitzin l'element de subtítol real en lloc de les cel·les amb l'atribut `[colspan]`. Això pot millorar l'experiència dels usuaris de lectors de pantalla. [Obtén més informació sobre els subtítols](https://dequeuniversity.com/rules/axe/4.8/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Les taules no utilitzen `<caption>` en lloc de les cel·les amb l'atribut `[colspan]` per indicar un subtítol."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Les taules utilitzen `<caption>` en lloc de les cel·les amb l'atribut `[colspan]` per indicar un subtítol."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Els objectius tàctils amb una mida i un espaiat suficients ajuden els usuaris que potser tenen dificultats per tocar els controls de mida petita a fi d'activar els objectius. [Obtén més informació sobre els objectius tàctils](https://dequeuniversity.com/rules/axe/4.8/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "Els objectius tàctils no tenen una mida o un espaiat suficients."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "Els objectius tàctils tenen una mida i un espaiat suficients."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Els lectors de pantalla inclouen funcions perquè sigui més fàcil navegar per les taules. Assegura't que els elements `<td>` d'una taula gran (3 o més cel·les d'amplada i d'alçada) tinguin una capçalera de taula associada. Això pot millorar l'experiència dels usuaris de lectors de pantalla. [Obtén més informació sobre les capçaleres de taules](https://dequeuniversity.com/rules/axe/4.8/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "Els elements `<td>` en una `<table>` gran no tenen capçaleres de taula."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "Els elements `<td>` en una `<table>` gran tenen una o més capçaleres de taula."
+  },
   "core/audits/accessibility/td-headers-attr.js | description": {
-    "message": "Els lectors de pantalla inclouen funcions perquè sigui més fàcil navegar per les taules. Assegura't que les cel·les `<td>` que fan servir l'atribut `[headers]` només facin referència a altres cel·les de la mateixa taula. Això pot millorar l'experiència dels usuaris de lectors de pantalla. [Obtén més informació sobre l'atribut `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
+    "message": "Els lectors de pantalla inclouen funcions perquè sigui més fàcil navegar per les taules. Assegura't que les cel·les `<td>` que fan servir l'atribut `[headers]` només facin referència a altres cel·les de la mateixa taula. Això pot millorar l'experiència dels usuaris de lectors de pantalla. [Obtén més informació sobre l'atribut `headers`](https://dequeuniversity.com/rules/axe/4.8/td-headers-attr)."
   },
   "core/audits/accessibility/td-headers-attr.js | failureTitle": {
     "message": "Les cel·les d'un element `<table>` que fan servir l'atribut `[headers]` fan referència a un element `id` que no és a la mateixa taula."
@@ -372,7 +525,7 @@
     "message": "Les cel·les d'un element `<table>` que fan servir l'atribut `[headers]` fan referència a cel·les de taula incloses a la mateixa taula."
   },
   "core/audits/accessibility/th-has-data-cells.js | description": {
-    "message": "Els lectors de pantalla inclouen funcions perquè sigui més fàcil navegar per les taules. Assegura't que les capçaleres de les taules sempre facin referència a un conjunt de cel·les. Això pot millorar l'experiència dels usuaris de lectors de pantalla. [Obtén més informació sobre les capçaleres de taules](https://dequeuniversity.com/rules/axe/4.7/th-has-data-cells)."
+    "message": "Els lectors de pantalla inclouen funcions perquè sigui més fàcil navegar per les taules. Assegura't que les capçaleres de les taules sempre facin referència a un conjunt de cel·les. Això pot millorar l'experiència dels usuaris de lectors de pantalla. [Obtén més informació sobre les capçaleres de taules](https://dequeuniversity.com/rules/axe/4.8/th-has-data-cells)."
   },
   "core/audits/accessibility/th-has-data-cells.js | failureTitle": {
     "message": "Els elements `<th>` i els que inclouen l'atribut `[role=\"columnheader\"/\"rowheader\"]` no tenen les cel·les de dades que descriuen."
@@ -381,7 +534,7 @@
     "message": "Els elements `<th>` i els que inclouen l'atribut `[role=\"columnheader\"/\"rowheader\"]` tenen les cel·les de dades que descriuen."
   },
   "core/audits/accessibility/valid-lang.js | description": {
-    "message": "Si especifiques un [idioma vàlid d'acord amb l'estàndard BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) als elements, permets que els lectors de pantalla enunciïn el text correctament. [Obtén informació sobre com pots utilitzar l'atribut `lang`](https://dequeuniversity.com/rules/axe/4.7/valid-lang)."
+    "message": "Si especifiques un [idioma vàlid d'acord amb l'estàndard BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) als elements, permets que els lectors de pantalla enunciïn el text correctament. [Obtén informació sobre com pots utilitzar l'atribut `lang`](https://dequeuniversity.com/rules/axe/4.8/valid-lang)."
   },
   "core/audits/accessibility/valid-lang.js | failureTitle": {
     "message": "Els atributs `[lang]` no tenen un valor vàlid"
@@ -390,7 +543,7 @@
     "message": "Els atributs `[lang]` tenen un valor vàlid"
   },
   "core/audits/accessibility/video-caption.js | description": {
-    "message": "Si un vídeo ofereix subtítols, permet que els usuaris sords o amb discapacitat auditiva accedeixin a la informació més fàcilment. [Obtén més informació sobre els subtítols dels vídeos](https://dequeuniversity.com/rules/axe/4.7/video-caption)."
+    "message": "Si un vídeo ofereix subtítols, permet que els usuaris sords o amb discapacitat auditiva accedeixin a la informació més fàcilment. [Obtén més informació sobre els subtítols dels vídeos](https://dequeuniversity.com/rules/axe/4.8/video-caption)."
   },
   "core/audits/accessibility/video-caption.js | failureTitle": {
     "message": "Els elements `<video>` no contenen cap element `<track>` amb `[kind=\"captions\"]`"
@@ -426,7 +579,7 @@
     "message": "Revisa l'ordre dels testimonis: \"{tokens}\" a {snippet}"
   },
   "core/audits/bf-cache.js | actionableFailureType": {
-    "message": "Hi ha accions possibles"
+    "message": "Hi ha accions aplicables"
   },
   "core/audits/bf-cache.js | description": {
     "message": "Moltes navegacions es duen a terme tornant a una pàgina anterior o tornant a la pàgina següent. La memòria cau endavant/enrere (bfcache) pot accelerar aquestes navegacions de retorn. [Més informació sobre bfcache](https://developer.chrome.com/docs/lighthouse/performance/bf-cache/)"
@@ -444,13 +597,16 @@
     "message": "Tipus d'error"
   },
   "core/audits/bf-cache.js | notActionableFailureType": {
-    "message": "No hi ha cap acció possible"
+    "message": "Cap acció aplicable"
   },
   "core/audits/bf-cache.js | supportPendingFailureType": {
     "message": "Compatibilitat del navegador pendent"
   },
   "core/audits/bf-cache.js | title": {
     "message": "La pàgina no ha impedit la restauració de la memòria cau endavant/enrere"
+  },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "La memòria cau endavant/enrere no es pot provar a la versió antiga de Chrome sense interfície gràfica (`--chrome-flags=\"--headless=old\"`). Per veure els resultats de l'auditoria, utilitza la nova versió de Chrome sense interfície gràfica (`--chrome-flags=\"--headless=new\"`) o la versió estàndard de Chrome."
   },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Les extensions de Chrome han afectat negativament el rendiment de càrrega de la pàgina. Audita la pàgina en mode d'incògnit o des d'un perfil de Chrome sense extensions."
@@ -486,7 +642,7 @@
     "message": "Utilitza formats de vídeo per al contingut animat"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Els polyfills i les transformacions permeten als navegadors heretats fer servir funcions de JavaScript noves. No obstant això, molts no són necessaris per als navegadors moderns. Per al teu JavaScript empaquetat, adopta una estratègia de desenvolupament de scripts moderna utilitzant la detecció de la funció mòdul / no mòdul per reduir la quantitat de codi enviat als navegadors moderns, mantenint al mateix temps la compatibilitat amb els navegadors heretats. [Informació sobre com pots utilitzar el JavaScript modern](https://web.dev/publish-modern-javascript/)"
+    "message": "Els polyfills i les transformacions permeten als navegadors heretats fer servir funcions de JavaScript noves. No obstant això, molts no són necessaris per als navegadors moderns. Per al teu JavaScript empaquetat, adopta una estratègia de desenvolupament de scripts moderna utilitzant la detecció de la funció mòdul / no mòdul per reduir la quantitat de codi enviat als navegadors moderns, mantenint al mateix temps la compatibilitat amb els navegadors heretats. [Informació sobre com pots utilitzar el JavaScript modern](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Evita utilitzar JavaScript heretat als navegadors moderns"
@@ -621,7 +777,7 @@
     "message": "Sintaxi"
   },
   "core/audits/csp-xss.js | metaTagMessage": {
-    "message": "La pàgina conté una CSP definida en una etiqueta <meta>. Pots moure la CSP a una capçalera HTTP o definir-ne una altra d'estricta en una capçalera HTTP."
+    "message": "La pàgina conté una CSP definida en una etiqueta `<meta>`. Pots optar per moure la CSP a una capçalera HTTP o definir-ne una altra d'estricta en una capçalera HTTP."
   },
   "core/audits/csp-xss.js | noCsp": {
     "message": "No s'ha trobat cap CSP en mode de compliment"
@@ -840,7 +996,7 @@
     "message": "Mida prevista"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Les dimensions naturals de les imatges han de ser proporcionals a la mida de visualització i la relació de píxels per maximitzar la claredat de les imatges. [Obtén informació sobre com pots proporcionar imatges responsives](https://web.dev/serve-responsive-images/)."
+    "message": "Les dimensions naturals de les imatges han de ser proporcionals a la mida de visualització i la relació de píxels per maximitzar la claredat de les imatges. [Obtén informació sobre com pots proporcionar imatges responsives](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Utilitza imatges amb una resolució baixa"
@@ -873,7 +1029,7 @@
     "message": "La pàgina es carrega en una finestra d'incògnit"
   },
   "core/audits/installable-manifest.js | manifest-display-not-supported": {
-    "message": "La propietat \"display\" del fitxer de manifest ha de ser \"standalone\", \"fullscreen\" o \"minimal-ui\""
+    "message": "La propietat `display` del fitxer de manifest ha de ser `standalone`, `fullscreen` o `minimal-ui`"
   },
   "core/audits/installable-manifest.js | manifest-display-override-not-supported": {
     "message": "El fitxer de manifest conté el camp \"display_override\" i el primer mode de visualització admès ha de ser \"standalone\", \"fullscreen\" o \"minimal-ui\""
@@ -885,7 +1041,7 @@
     "message": "L'URL del fitxer de manifest ha canviat mentre s'estava recollint el fitxer de manifest."
   },
   "core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
-    "message": "El fitxer de manifest no conté cap camp \"name\" o \"short_name\""
+    "message": "El fitxer de manifest no conté cap camp `name` o `short_name`"
   },
   "core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
     "message": "El manifest no conté cap icona adequada. Es requereix un format PNG, SVG o WebP de com a mínim {value0} píxels, l'atribut \"sizes\" ha d'estar establert i l'atribut \"purpose\", si s'estableix, ha d'incloure \"any\"."
@@ -901,9 +1057,6 @@
   },
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "La pàgina no té cap URL <link> del fitxer de manifest"
-  },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "No s'ha detectat cap Service Worker coincident. Pot ser que hagis de tornar a carregar la pàgina o comprovar que l'abast del Service Worker per a la pàgina actual englobi l'abast i l'URL d'inici del fitxer de manifest."
   },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "No s'ha pogut comprovar el Service Worker perquè el fitxer de manifest no té cap camp \"start_url\""
@@ -933,10 +1086,7 @@
     "message": "prefer_related_applications només s'admet a Chrome beta i als canals estables a Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse no ha pogut determinar si hi havia un Service Worker. Prova-ho amb una versió més recent de Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "L'esquema d'URL del manifest ({scheme}) no s'admet a Android."
+    "message": "Lighthouse no ha pogut determinar si la pàgina es pot instal·lar. Prova-ho amb una versió més recent de Chrome."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "L'URL d'inici del manifest no és vàlid"
@@ -1008,16 +1158,40 @@
     "message": "Element de renderització de l'element més gran amb contingut"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Contribució al CLS"
+    "message": "Impacte del canvi de disseny"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Aquests són els elements de DOM que més contribueixen al CLS de la pàgina. [Informació sobre com es pot millorar el CLS](https://web.dev/optimize-cls/)"
+    "message": "Aquests són els elements de DOM que més s'han vist afectats pels canvis de disseny. És possible que alguns d'aquests canvis no s'incloguin al valor de la mètrica CLS a causa de la [normalització](https://web.dev/articles/cls#what_is_cls). [Informació sobre com pots millorar el CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Evita els canvis de disseny importants"
   },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Puntuació del canvi de disseny"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Aquests són els canvis de disseny més importants que s'han observat a la pàgina. Cada element de la taula representa un sol canvi de disseny i mostra l'element que ha canviat més. A sota de cada element hi ha les causes arrel que poden haver provocat el canvi. És possible que alguns d'aquests canvis de disseny no s'incloguin al valor de la mètrica CLS a causa d'un [enfinestrament](https://web.dev/articles/cls#what_is_cls). [Informació sobre com pots millorar el CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{S'ha trobat 1 canvi de disseny}other{S'han trobat # canvis de disseny}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "S'ha carregat una font web"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "S'ha injectat un iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Una sol·licitud de xarxa amb retard ha ajustat el disseny de la pàgina"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "L'element multimèdia no té una mida explícita"
+  },
+  "core/audits/layout-shifts.js | title": {
+    "message": "Evita els canvis de disseny importants"
+  },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Les imatges de la meitat superior de la pàgina que es carreguen lentament es renderitzen més tard al cicle de vida de la pàgina, cosa que pot retardar la renderització de l'element més gran amb contingut. [Obtén més informació sobre la càrrega lenta òptima](https://web.dev/lcp-lazy-loading/)."
+    "message": "Les imatges de la meitat superior de la pàgina que es carreguen lentament es renderitzen més tard al cicle de vida de la pàgina, cosa que pot retardar la renderització de l'element més gran amb contingut. [Obtén més informació sobre la càrrega lenta òptima](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "La imatge de renderització de l'element més gran amb contingut s'ha carregat lentament"
@@ -1026,7 +1200,7 @@
     "message": "La imatge de renderització de l'element més gran amb contingut no s'ha carregat lentament"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Enumera les tasques més llargues del fil principal, cosa que resulta útil per identificar què contribueix més al retard de les interaccions. [Informació sobre com pots evitar les tasques llargues al fil principal](https://web.dev/long-tasks-devtools/)"
+    "message": "Enumera les tasques més llargues del fil principal, cosa que resulta útil per identificar què contribueix més al retard de les interaccions. [Informació sobre com pots evitar les tasques llargues al fil principal](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{# tasca llarga trobada}other{# tasques llargues trobades}}"
@@ -1074,16 +1248,16 @@
     "message": "El manifest té una icona adaptativa"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "El canvi de disseny acumulatiu mesura el moviment d'elements visibles a la finestra gràfica. [Obtén més informació sobre la mètrica Canvi de disseny acumulatiu](https://web.dev/cls/)."
-  },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "La mètrica Interacció amb la renderització següent mesura la capacitat de resposta de la pàgina; és a dir, el temps que tarda la pàgina a respondre visiblement a l'entrada de l'usuari. [Obtén més informació sobre la mètrica Interacció amb la renderització següent](https://web.dev/inp/)."
+    "message": "El canvi de disseny acumulatiu mesura el moviment d'elements visibles a la finestra gràfica. [Obtén més informació sobre la mètrica Canvi de disseny acumulatiu](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "La mètrica Primera renderització de contingut marca el moment en què es renderitza el primer text o la primera imatge. [Obtén més informació sobre la mètrica Primera renderització de contingut](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "La mètrica Primera renderització significativa mesura el moment en què el contingut principal d'una pàgina és visible. [Obtén més informació sobre la mètrica Primera renderització significativa](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "La mètrica Interacció amb la renderització següent mesura la capacitat de resposta de la pàgina; és a dir, el temps que tarda la pàgina a respondre visiblement a l'entrada de l'usuari. [Obtén més informació sobre la mètrica Interacció amb la renderització següent](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "La mètrica Temps fins que és interactiva és el que tarda la pàgina a fer-se completament interactiva. [Obtén més informació sobre la mètrica Temps fins que és interactiva](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1113,7 +1287,7 @@
     "message": "Latències dorsals del servidor"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "L'esdeveniment `unload` no es pot activar amb fiabilitat i detectar-lo pot impedir optimitzacions del navegador, com ara la memòria cau endavant/enrere. Substitueix-lo pels esdeveniments `pagehide` o `visibilitychange`. [Més informació sobre com es poden baixar els detectors d'esdeveniments](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "L'esdeveniment `unload` no es pot activar amb fiabilitat i detectar-lo pot impedir optimitzacions del navegador, com ara la memòria cau endavant/enrere. Substitueix-lo pels esdeveniments `pagehide` o `visibilitychange`. [Més informació sobre com es poden baixar els detectors d'esdeveniments](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registra un detector de `unload`"
@@ -1158,7 +1332,7 @@
     "message": "Pressupost de rendiment"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Precarrega les fonts `optional` perquè els visitants nous puguin utilitzar-les. [Més informació sobre la precàrrega de fonts](https://web.dev/preload-optional-fonts/)"
+    "message": "Precarrega les fonts `optional` perquè els visitants nous puguin utilitzar-les. [Més informació sobre la precàrrega de fonts](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Les fonts amb `font-display: optional` no estan precarregades"
@@ -1167,7 +1341,7 @@
     "message": "Les fonts amnb `font-display: optional` estan precarregades"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Si l'element LCP s'afegeix dinàmicament a la pàgina, has de precarregar la imatge per poder millorar l'LCP. [Obtén més informació sobre com es poden precarregar els elements LCP](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Si l'element LCP s'afegeix dinàmicament a la pàgina, has de precarregar la imatge per poder millorar l'LCP. [Obtén més informació sobre com es poden precarregar els elements LCP](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Precarrega la imatge de renderització de l'element més gran amb contingut"
@@ -1177,15 +1351,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Evita les redireccions múltiples a pàgines"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "Per definir els pressupostos de la quantitat i la mida dels recursos de la pàgina, afegeix un fitxer budget.json. [Obtén més informació sobre els pressupostos de rendiment](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 sol·licitud • {byteCount, number, bytes} KiB}other{# sol·licituds • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "Mantén els recomptes de les sol·licituds baixos i les mides de les transferències petites"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "Els enllaços canònics suggereixen quins URL s'han de mostrar als resultats de la cerca. [Obtén més informació sobre els enllaços canònics](https://developer.chrome.com/docs/lighthouse/seo/canonical/)."
@@ -1376,27 +1541,6 @@
   "core/audits/server-response-time.js | title": {
     "message": "El temps inicial de resposta del servidor ha estat breu"
   },
-  "core/audits/service-worker.js | description": {
-    "message": "El Service Worker és la tecnologia que fa possible que la teva aplicació utilitzi moltes funcions d'aplicació web progressiva, com ara funcionar sense connexió, poder afegir-se a la pantalla d'inici i mostrar notificacions automàtiques. [Obtén més informació sobre els Service Workers](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)."
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "Tot i que un Service Worker controla aquesta pàgina, no s'ha trobat cap atribut `start_url` perquè el fitxer de manifest no s'ha pogut analitzar com a format JSON vàlid"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Tot i que un Service Worker controla aquesta pàgina, l'atribut `start_url` ({startUrl}) no és a l'abast del Service Worker ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "Tot i que un Service Worker controla aquesta pàgina, no s'ha trobat cap `start_url` perquè no s'ha obtingut cap fitxer de manifest."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Aquest origen té un Service Worker o més, però la pàgina ({pageUrl}) està fora de l'abast."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "No registra cap Service Worker que controli la pàgina i l'atribut `start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "Registra un Service Worker que controla la pàgina i l'atribut `start_url`"
-  },
   "core/audits/splash-screen.js | description": {
     "message": "Utilitzar una pantalla inicial temàtica garanteix una experiència d'alta qualitat quan els usuaris inicien l'aplicació des de la pantalla d'inici. [Obtén més informació sobre les pantalles inicials](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
   },
@@ -1414,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Estableix un color temàtic per a la barra d'adreces."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "La compatibilitat amb les galetes de tercers se suprimirà en una versió futura de Chrome. [Obtén més informació sobre com pots retirar les galetes de tercers](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{S'ha trobat 1 galeta}other{S'han trobat # galetes}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Utilitza galetes de tercers"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Evita les galetes de tercers"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (èxit del client)"
@@ -1470,7 +1626,7 @@
     "message": "Pressupost de temps"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Als elements d'imatge, defineix una amplada i una alçada explícites per reduir els canvis de disseny i millorar el CLS. [Informació sobre com pots definir les dimensions d'imatge](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Als elements d'imatge, defineix una amplada i una alçada explícites per reduir els canvis de disseny i millorar el CLS. [Informació sobre com pots definir les dimensions d'imatge](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Els elements d'imatge no tenen una `width` ni una `height` explícites."
@@ -1545,7 +1701,7 @@
     "message": "Té una etiqueta `<meta name=\"viewport\">` amb l'atribut `width` o `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Aquest és el treball de bloqueig de fils que es produeix durant el mesurament de la interacció amb la renderització següent. [Obtén més informació sobre la mètrica Interacció amb la renderització següent](https://web.dev/inp/)."
+    "message": "Aquest és el treball de bloqueig de fils que es produeix durant el mesurament de la interacció amb la renderització següent. [Obtén més informació sobre la mètrica Interacció amb la renderització següent](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "S'han dedicat {timeInMs, number, milliseconds} ms a l'esdeveniment \"{interactionType}\""
@@ -1587,10 +1743,10 @@
     "message": "Pràctiques recomanades"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Aquestes comprovacions destaquen les oportunitats per [millorar l'accessibilitat de l'aplicació web](https://developer.chrome.com/docs/lighthouse/accessibility/). Només poden detectar un subconjunt de problemes d'accessibilitat automàticament, de manera que et recomanem que també hi facis proves manuals."
+    "message": "Aquestes comprovacions destaquen les oportunitats per [millorar l'accessibilitat de l'aplicació web](https://developer.chrome.com/docs/lighthouse/accessibility/). La detecció automàtica només pot detectar un subconjunt de problemes i no garanteix l'accessibilitat de l'aplicació web, de manera que et recomanem que també hi facis [proves manuals](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Aquests elements tracten àrees que les eines de proves automatitzades no poden cobrir. Obtén més informació a la nostra guia sobre [com es duen a terme ressenyes d'accessibilitat](https://web.dev/how-to-review/)."
+    "message": "Aquests elements tracten àrees que les eines de proves automatitzades no poden cobrir. Obtén més informació a la nostra guia sobre [com es duen a terme ressenyes d'accessibilitat](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Accessibilitat"
@@ -1677,10 +1833,10 @@
     "message": "Rendiment"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Aquestes validacions verifiquen els aspectes d'una aplicació web progressiva. [Obtén informació sobre les característiques d'una bona aplicació web progressiva](https://web.dev/pwa-checklist/)."
+    "message": "Aquestes validacions verifiquen els aspectes d'una aplicació web progressiva. [Obtén informació sobre les característiques d'una bona aplicació web progressiva](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "La [llista de comprovació de referència per a aplicacions web progressives](https://web.dev/pwa-checklist/) requereix aquestes validacions, però Lighthouse no les verifica automàticament. Tot i que no afecten la teva puntuació, és important que les verifiquis manualment."
+    "message": "La [llista de comprovació de referència per a aplicacions web progressives](https://web.dev/articles/pwa-checklist) requereix aquestes validacions, però Lighthouse no les verifica automàticament. Tot i que no afecten la teva puntuació, és important que les verifiquis manualment."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1692,7 +1848,7 @@
     "message": "Optimitzat per a PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Aquestes comprovacions garanteixen que la pàgina segueixi les recomanacions d'optimització bàsica en cercadors. Hi ha molts factors addicionals que Lighthouse no puntua aquí i que poden afectar la classificació a les cerques, inclòs el rendiment a [Dades vitals web principals](https://web.dev/learn-core-web-vitals/). [Obtén més informació sobre Google Search Essentials](https://support.google.com/webmasters/answer/35769)."
+    "message": "Aquestes comprovacions garanteixen que la pàgina segueixi les recomanacions d'optimització bàsica en cercadors. Hi ha molts factors addicionals que Lighthouse no puntua aquí i que poden afectar la classificació a les cerques, inclòs el rendiment a [Dades vitals web principals](https://web.dev/explore/vitals). [Obtén més informació sobre Google Search Essentials](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Executa aquestes validacions addicionals al lloc web per comprovar les pràctiques addicionals recomanades per a SEO."
@@ -1739,6 +1895,9 @@
   "core/gather/gatherers/link-elements.js | headerParseWarning": {
     "message": "S'ha produït un error en analitzar la capçalera `link` ({error}): `{header}`"
   },
+  "core/gather/timespan-runner.js | warningNavigationDetected": {
+    "message": "S'ha detectat una navegació de la pàgina durant l'execució. No es recomana fer servir el mode de període de temps per auditar les navegacions de les pàgines. Utilitza el mode de navegació per auditar les navegacions de les pàgines a fi de millorar l'atribució de tercers i la detecció dels fils principals."
+  },
   "core/lib/bf-cache-strings.js | HTTPMethodNotGET": {
     "message": "Només les pàgines carregades mitjançant una sol·licitud GET són aptes per a la memòria cau endavant/enrere."
   },
@@ -1750,6 +1909,9 @@
   },
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Actualment, les pàgines que han sol·licitat un AppBanner no són aptes per a la memòria cau endavant/enrere."
+  },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "La memòria cau endavant/enrere està desactivada a causa d'una sol·licitud de keepalive."
   },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Les marques han desactivat la memòria cau endavant/enrere. Visita chrome://flags/#back-forward-cache per activar-la de manera local en aquest dispositiu."
@@ -1816,6 +1978,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Les pàgines que utilitzen l'API WebUSB no són aptes per a la memòria cau endavant/enrere."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "La memòria cau endavant/enrere està desactivada perquè les galetes estan desactivades en una pàgina que utilitza `Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Actualment, les pàgines que utilitzen un worker o un worklet especial no són aptes per a la memòria cau endavant/enrere."
@@ -1892,14 +2057,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Actualment, les pàgines que tenen una connexió IndexedDB oberta no són aptes per a la memòria cau endavant/enrere."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "La memòria cau endavant/enrere està desactivada a causa d'un esdeveniment IndexedDB."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "S'han utilitzat API no aptes."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Actualment, les pàgines que s'estan injectant a JavaScript mitjançant extensions no són aptes per a la memòria cau endavant/enrere."
+    "message": "Actualment, les pàgines en què s'injecta `JavaScript` mitjançant extensions no són aptes per a la memòria cau endavant/enrere."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Actualment, les pàgines en què s'injecta JavaScript mitjançant extensions no són aptes per a la memòria cau endavant/enrere."
+    "message": "Actualment, les pàgines en què s'injecta `StyleSheet` mitjançant extensions no són aptes per a la memòria cau endavant/enrere."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Error intern."
@@ -2082,25 +2250,25 @@
     "message": "Actualment, les pàgines que utilitzen WebXR no són aptes per a la memòria cau endavant/enrere."
   },
   "core/lib/csp-evaluator.js | allowlistFallback": {
-    "message": "Pots optar per afegir esquemes d'URL https: o http: (els navegadors que admeten \"strict-dynamic\" els ignoren) perquè sigui retrocompatible amb navegadors més antics."
+    "message": "Pots optar per afegir esquemes d'URL https: o http: (els navegadors que admeten `'strict-dynamic'` els ignoren) perquè sigui retrocompatible amb navegadors més antics."
   },
   "core/lib/csp-evaluator.js | deprecatedDisownOpener": {
-    "message": "La directiva \"disown-opener\" està obsoleta des de la CSP3. Com a alternativa, utilitza la capçalera Cross-Origin-Opener-Policy."
+    "message": "La directiva `disown-opener` està obsoleta des de la CSP3. Com a alternativa, utilitza la capçalera Cross-Origin-Opener-Policy."
   },
   "core/lib/csp-evaluator.js | deprecatedReferrer": {
-    "message": "La directiva \"referrer\" està obsoleta des de la CSP2. Com a alternativa, utilitza la capçalera Referrer-Policy."
+    "message": "La directiva `referrer` està obsoleta des de la CSP2. Com a alternativa, utilitza la capçalera Referrer-Policy."
   },
   "core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
-    "message": "La directiva \"reflected-xss\" està obsoleta des de la CSP2. Com a alternativa, utilitza la capçalera X-XSS-Protection."
+    "message": "La directiva `reflected-xss` està obsoleta des de la CSP2. Com a alternativa, utilitza la capçalera X-XSS-Protection."
   },
   "core/lib/csp-evaluator.js | missingBaseUri": {
-    "message": "Si no hi ha una directiva \"base-uri\", es poden injectar etiquetes <base> per establir l'URL de base de tots els URL relatius (per exemple, scripts) en un domini controlat per un atacant. Pots optar per establir \"base-uri\" en \"none\" o \"self\"."
+    "message": "Si no hi ha una directiva `base-uri`, es poden injectar etiquetes `<base>` per establir l'URL de base de tots els URL relatius (per exemple, scripts) en un domini controlat per un atacant. Pots optar per establir `base-uri` en `'none'` o `'self'`."
   },
   "core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Si falta \"object-src\", es podran injectar connectors que executin scripts no segurs. Mira si pots establir \"object-src\" en \"none\"."
+    "message": "Si no hi ha una directiva `object-src`, es poden injectar connectors que executin scripts no segurs. Si pots, et recomanem que estableixis `object-src` en `'none'`."
   },
   "core/lib/csp-evaluator.js | missingScriptSrc": {
-    "message": "Falta la directiva \"script-src\". Això pot permetre l'execució de scripts no segurs."
+    "message": "Falta la directiva `script-src`. Això pot permetre l'execució de scripts no segurs."
   },
   "core/lib/csp-evaluator.js | missingSemicolon": {
     "message": "Se t'ha oblidat el punt i coma? Sembla que \"{keyword}\" és una directiva i no una paraula clau."
@@ -2118,13 +2286,13 @@
     "message": "Evita utilitzar comodins senzills ({keyword}) en aquesta directiva. Els comodins senzills permeten obtenir scripts d'un domini no seguir."
   },
   "core/lib/csp-evaluator.js | reportToOnly": {
-    "message": "La destinació d'informes només es pot configurar mitjançant la directiva \"report-to\". Aquesta directiva només s'admet en navegadors basats en Chromium i, per tant, també es recomana utilitzar una directiva \"report-uri\"."
+    "message": "La destinació d'informes només es pot configurar mitjançant la directiva report-to. Aquesta directiva només s'admet en navegadors basats en Chromium i, per tant, també es recomana utilitzar una directiva `report-uri`."
   },
   "core/lib/csp-evaluator.js | reportingDestinationMissing": {
     "message": "No hi ha cap CSP que ofereixi una destinació d'informes. Això fa que sigui més difícil mantenir la CSP al llarg del temps i monitorar les vulnerabilitats."
   },
   "core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Les llistes d'amfitrions permesos sovint es poden ometre. Pots utilitzar nonces o valors resum de la CSP en el seu lloc, a més de \"strict-dynamic\", si cal."
+    "message": "Les llistes d'amfitrions permesos sovint es poden ometre. Com a alternativa, pots optar per utilitzar nonces o valors resum de la CSP, a més de `'strict-dynamic'`, si cal."
   },
   "core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Directiva CSP desconeguda."
@@ -2133,10 +2301,196 @@
     "message": "\"{keyword}\" sembla una paraula clau no vàlida."
   },
   "core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "La directiva \"unsafe-inline\" permet l'execució de scripts in-page i gestors d'esdeveniments no segurs. Pots utilitzar nonces o valors resum de la CSP per permetre els scripts individualment."
+    "message": "`'unsafe-inline'` permet l'execució de scripts in-page i gestors d'esdeveniments no segurs. Pots optar per utilitzar nonces o valors resum de la CSP per permetre els scripts individualment."
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
-    "message": "Pots optar per afegir \"unsafe-inline\" (els navegadors que admeten nonces o valors resum l'ignoren) perquè sigui retrocompatible amb navegadors més antics."
+    "message": "Pots optar per afegir `'unsafe-inline'` (els navegadors que admeten nonces o valors resum l'ignoren) perquè sigui retrocompatible amb navegadors més antics."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Consulta la pàgina d'estat de la funció per obtenir informació més detallada."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Aquest canvi es farà efectiu quan s'arribi a {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "S'ha utilitzat una funció obsoleta"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "El símbol del comodí (*) no cobrirà l'autorització a la gestió de la capçalera `Access-Control-Allow-Headers` a CORS."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "S'ha d'utilitzar l'atribut `disableRemotePlayback` per desactivar la integració de Cast predeterminada en lloc de fer servir el selector `-internal-media-controls-overlay-cast-button`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Les sol·licituds de recursos amb URL que contenien tant caràcters d'espai en blanc (`(n|r|t)`) com caràcters d'\"inferior a\" (`<`) suprimits estan bloquejades. Suprimeix les línies noves i codifica els caràcters d'\"inferior a\" de llocs com els valors d'atribut d'element per carregar aquests recursos."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` està obsoleta. Substitueix-la per l'API estandarditzada Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "La funció `chrome.loadTimes()` està obsoleta. Substitueix-la per l'API estandarditzada: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` està obsoleta. Substitueix-la per l'API estandarditzada: `nextHopProtocol` a Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Les galetes que continguin un caràcter `(0|r|n)` es rebutjaran en lloc de truncar-se."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "El relaxament de la política del mateix origen establint `document.domain` està obsolet i es desactivarà de manera predeterminada. Aquest advertiment de discontinuació és per a un accés d'altres orígens activat establint `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "L'opció d'activar window.alert des d'iframes d'altres orígens està obsoleta i se suprimirà en el futur."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "L'opció d'activar window.confirm des d'iframes d'altres orígens està obsoleta i se suprimirà en el futur."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "Els esdeveniments de modificació de DOM, inclosos `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` i `DOMCharacterDataModified`, estan obsolets (https://w3c.github.io/uievents/#legacy-event-types) i se suprimiran. Substitueix-los per `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "La compatibilitat amb data: URL a l'element <use> d'SVG està obsoleta i se suprimirà en el futur."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "El relaxament de la política del mateix origen establint `document.domain` està obsolet i es desactivarà de manera predeterminada. Per continuar utilitzant aquesta funció, cancel·la els clústers d'agent amb clau d'origen enviant una capçalera `Origin-Agent-Cluster: ?0` juntament amb la resposta HTTP per al document i els marcs. Consulta https://developer.chrome.com/blog/immutable-document-domain/ per obtenir més informació."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "La capçalera `Expect-CT` està obsoleta i se suprimirà. Chrome requereix Transparència de certificats per a tots els certificats considerats de confiança públicament que s'hagin emès després del 30 d'abril de 2018."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` i `watchPosition()` ja no funcionen en orígens no segurs. Per utilitzar aquesta funció, t'has de plantejar canviar l'aplicació a un origen segur, com ara HTTPS. Consulta https://goo.gle/chrome-insecure-origins per obtenir més informació."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` i `watchPosition()` estan obsoletes en orígens no segurs. Per utilitzar aquesta funció, t'has de plantejar canviar l'aplicació a un origen segur, com ara HTTPS. Consulta https://goo.gle/chrome-insecure-origins per obtenir més informació."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` ja no funciona en orígens no segurs. Per utilitzar aquesta funció, t'has de plantejar canviar l'aplicació a un origen segur, com ara HTTPS. Consulta https://goo.gle/chrome-insecure-origins per obtenir més informació."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "La funció `RTCPeerConnectionIceErrorEvent.hostCandidate` està obsoleta. Substitueix-la per `RTCPeerConnectionIceErrorEvent.address` o per `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "L'origen del comerciant i les dades arbitràries de l'esdeveniment `canmakepayment` del Service Worker estan obsolets i se suprimiran: `topOrigin`, `paymentRequestOrigin`, `methodData` i `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "El lloc web ha sol·licitat un subrecurs des d'una xarxa a la qual només ha pogut accedir gràcies a la posició privilegiada a la xarxa dels seus usuaris. Aquestes sol·licituds exposen els dispositius i els servidors que no són públics a Internet, amb la qual cosa augmenta el risc de patir una fuita d'informació o un atac de falsificació de sol·licituds entre llocs web (CSRF). Per reduir aquests riscos, Chrome discontinua les sol·licituds a subrecursos que no són públics quan s'inicien des de contexts no segurs i comença a bloquejar-los."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Al camp `dailyUpdateUrl` de `InterestGroups` que s'ha transferit a `joinAdInterestGroup()` se li ha canviat el nom per `updateUrl` a fi de reflectir-ne el comportament amb més precisió."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "El CSS no es pot carregar des dels URL `file:`, tret que acabin amb l'extensió de fitxer `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "L'opció d'utilitzar `SourceBuffer.abort()` per anul·lar la supressió de l'interval asíncron duta a terme per `remove()` s'ha discontinuat a causa del canvi d'especificació. Es deixarà d'admetre en el futur. Hauràs d'escoltar l'esdeveniment `updateend`. `abort()` s'ha dissenyat només per anul·lar l'addició d'un mitjà asíncron o per restablir l'estat de l'analitzador."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "En configurar `MediaSource.duration` per sota de la marca de temps de presentació més alta de qualsevol marc amb codi emmagatzemat a la memòria intermèdia, està obsoleta a causa del canvi d'especificació. La supressió implícita de mitjans truncats emmagatzemats a la memòria intermèdia es deixarà d'admetre en el futur. En lloc seu, hauràs d'executar el codi `remove(newDuration, oldDuration)` explícit en totes les instàncies de `sourceBuffers` en què `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI demanarà permís d'ús fins i tot si el missatge exclusiu del sistema no s'especifica a `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "L'atribut `shadowroot` anterior no estandarditzat està obsolet i *ja no funcionarà* a la versió M119. Substitueix-lo pel nou atribut `shadowrootmode` estandarditzat."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "Pot ser que l'API Notification ja no es pugui utilitzar des d'orígens no segurs. Planteja't canviar l'aplicació a un origen segur, com ara HTTPS. Consulta https://goo.gle/chrome-insecure-origins per obtenir més informació."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Pot ser que el permís per a l'API Notification ja no se sol·liciti des d'un iframe d'altres orígens. T'hauries de plantejar sol·licitar permís des d'un marc de nivell superior o bé obrir una finestra nova."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "L'opció `imageOrientation: 'none'` de createImageBitmap està obsoleta. Substitueix-la per createImageBitmap amb l'opció \\{imageOrientation: 'from-image'\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "El teu partner està negociant una versió de (D)TLS obsoleta. Demana al teu partner que ho corregeixi."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Si s'especifica `overflow: visible` a les etiquetes img, video i canvas, pot ser que produeixin contingut visual fora dels límits de l'element. Consulta https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "L'API `paymentManager.instruments` està obsoleta. Utilitza la instal·lació Just-In-Time per als gestors de pagaments."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "La crida a `PaymentRequest` ha omès la directiva `connect-src` de la política de seguretat del contingut (CSP). Aquesta omissió està obsoleta. Afegeix l'identificador de la forma de pagament de l'API `PaymentRequest` (al camp `supportedMethods`) a la directiva `connect-src` de la CSP."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "L'API `StorageType.persistent` està obsoleta. Substitueix-la per l'API `navigator.storage` estandarditzada."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "L'element `<source src>` amb un atribut superior `<picture>` no és vàlid i s'ignorarà. Substitueix-lo per `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "El mètode webkitCancelAnimationFrame és específic de cada proveïdor. Substitueix-lo per l'estàndard cancelAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "El mètode webkitRequestAnimationFrame és específic de cada proveïdor. Substitueix-lo per l'estàndard requestAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "L'API HTMLVideoElement.webkitDisplayingFullscreen està obsoleta. Substitueix-la per Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "L'API HTMLVideoElement.webkitEnterFullScreen() està obsoleta. Substitueix-la per Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "L'API HTMLVideoElement.webkitEnterFullscreen() està obsoleta. Substitueix-la per Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "L'API HTMLVideoElement.webkitExitFullScreen() està obsoleta. Substitueix-la per Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "L'API HTMLVideoElement.webkitExitFullscreen() està obsoleta. Substitueix-la per Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "L'API HTMLVideoElement.webkitSupportsFullscreen està obsoleta. Substitueix-la per Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "L'API `chrome.privacy.websites.privacySandboxEnabled` deixarà d'estar disponible, tot i que continuarà activa per a la retrocompatibilitat fins que es publiqui la versió M113. Substitueix-la per `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` i `chrome.privacy.websites.adMeasurementEnabled`. Consulta https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "La restricció `DtlsSrtpKeyAgreement` s'ha suprimit. Has especificat un valor `false` per a aquesta restricció, la qual cosa s'interpreta com un intent d'utilitzar el mètode `SDES key negotiation` suprimit. Aquesta funcionalitat s'ha suprimit; substitueix-la per un servei que admeti `DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "La restricció `DtlsSrtpKeyAgreement` s'ha suprimit. Has especificat un valor `true` per a aquesta restricció, la qual cosa no ha tingut cap efecte, però pots suprimir aquesta restricció per organitzar-te millor."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "El mètode getStats() basat en crida de retorn està obsolet i se suprimirà. Utilitza un getStats() que compleixi les especificacions."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "L'API Range.expand() està obsoleta. Substitueix-la per Selection.modify()."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Les sol·licituds de subrecursos amb URL que contenen credencials inserides (per exemple, `https://user:pass@host/`) estan bloquejades."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "L'opció `rtcpMuxPolicy` està obsoleta i se suprimirà."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` requerirà l'aïllament d'altres orígens. Consulta https://developer.chrome.com/blog/enabling-shared-array-buffer/ per obtenir més informació."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "`speechSynthesis.speak()` sense l'activació de l'usuari està obsoleta i se suprimirà."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Les extensions han d'activar l'aïllament d'altres orígens per continuar utilitzant `SharedArrayBuffer`. Consulta https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Web SQL està obsolet. Utilitza SQLite WebAssembly o la base de dades indexada."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "El descriptor del permís `window-placement` està obsolet. Substitueix-lo per `window-management`. Per obtenir més ajuda, consulta https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "La política de permisos `window-placement` està obsoleta. Substitueix-la per `window-management`. Per obtenir més ajuda, consulta https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "La resposta JSON no admet UTF-16 a `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "L'API `XMLHttpRequest` síncrona al fil principal està obsoleta a causa dels seus efectes perjudicials en l'experiència de l'usuari final. Per obtenir més ajuda, consulta https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "La funció `supportsSession()` està obsoleta. Substitueix-la per `isSessionSupported()` i comprova el valor booleà resolt."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Temps de bloqueig del fil principal"
@@ -2328,7 +2682,7 @@
     "message": "Lighthouse no ha pogut carregar de manera fiable la pàgina que has sol·licitat. Assegura't que estiguis fent la prova de l'URL correcte i que el servidor estigui responent correctament a totes les sol·licituds. (Detalls: {errorDetails})"
   },
   "core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
-    "message": "Lighthouse no ha pogut carregar de manera fiable la pàgina que has sol·licitat. Assegura't que estiguis fent la prova de l'URL correcte i que el servidor estigui responent correctament a totes les sol·licituds. (Codi d'estat: {statusCode})"
+    "message": "Lighthouse no ha pogut carregar de manera fiable la pàgina que has sol·licitat. Assegura't que estiguis provant l'URL correcte i que el servidor estigui responent correctament a totes les sol·licituds. (Codi d'estat: {statusCode})"
   },
   "core/lib/lh-error.js | pageLoadTookTooLong": {
     "message": "La pàgina ha tardat massa temps a carregar-se. Segueix les opcions indicades a l'informe per reduir el temps de càrrega de la pàgina i, a continuació, prova d'executar Lighthouse de nou. ({errorCode})"
@@ -2341,6 +2695,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Sembla que l'URL que has proporcionat no és vàlid."
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Lighthouse no ha pogut carregar de manera fiable la pàgina que has sol·licitat. Assegura't que estiguis provant l'URL correcte i que el servidor estigui responent correctament a totes les sol·licituds. (Codi d'estat: {errorCode})"
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "El tipus MIME de la pàgina és XHTML: Lighthouse no admet explícitament aquest tipus de document"
@@ -2538,7 +2895,7 @@
     "message": "Instal·la [un mòdul de Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) que pugui carregar les imatges de forma lenta. Aquests mòduls ofereixen la possibilitat d'ajornar les imatges fora de la pantalla per millorar el rendiment."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Pots utilitzar un mòdul per inserir fitxers JavaScript i CSS essencials o per carregar recursos de manera asíncrona mitjançant JavaScript, com el mòdul [Advanced CSS/JS Aggregation](https://www.drupal.org/project/advagg). Tingues en compte que les optimitzacions que proporciona aquest mòdul poden afectar el teu lloc web, de manera que és probable que hagis de fer canvis al codi."
+    "message": "Pots utilitzar un mòdul per inserir fitxers JavaScript i CSS essencials. Fes servir l'atribut d'ajornament per a fitxers JavaScript o CSS que no siguin essencials."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Els temes, els mòduls i les especificacions del servidor repercuteixen en el temps de resposta del servidor. Pots buscar un tema més optimitzat, seleccionar amb cura un mòdul d'optimització o actualitzar el servidor. Els servidors d'allotjament haurien d'utilitzar l'opció de desar a la memòria cau del codi d'operacions PHP, l'opció de desar a la memòria cau per reduir els temps de consulta de la base de dades, com ara Redis o Memcached, així com la lògica de l'aplicació optimitzada per preparar les pàgines més ràpidament."
@@ -2547,10 +2904,10 @@
     "message": "Pots utilitzar [estils d'imatges responsives](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) per reduir la mida de les imatges que carregues a la pàgina. Si utilitzes Views per mostrar diversos elements de contingut en una pàgina, pots implementar paginació per limitar el nombre d'elements de contingut que es mostren en una pàgina determinada."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Comprova que hagis activat Aggregate CSS files (Fitxers CSS agregats) a la pàgina Administration > Configuration > Development (Administració > Configuració > Desenvolupament). També pots configurar opcions d'agregació més avançades mitjançant [mòduls addicionals](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) per accelerar el teu lloc web. Per fer-ho, concatenen, redueixen i comprimeixen els estils de CSS."
+    "message": "Comprova que hagis activat Aggregate CSS files (Fitxers CSS agregats) a la pàgina Administration » Configuration » Development (Administració » Configuració » Desenvolupament).  Assegura't que el teu lloc web de Drupal fa servir com a mínim Drupal 10.1 per millorar l'assistència d'agregació dels recursos."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Comprova que hagis activat Aggregate JavaScript files (Fitxers JavaScript agregats) a la pàgina Administration > Configuration > Development (Administració > Configuració > Desenvolupament). També pots configurar opcions d'agregació més avançades mitjançant [mòduls addicionals](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) per accelerar el teu lloc web. Per fer-ho, concatenen, redueixen i comprimeixen els recursos de JavaScript."
+    "message": "Comprova que hagis activat Aggregate JavaScript files (Fitxers JavaScript agregats) a la pàgina Administration » Configuration » Development (Administració » Configuració » Desenvolupament).  Assegura't que el teu lloc web de Drupal fa servir com a mínim Drupal 10.1 per millorar l'assistència d'agregació dels recursos."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Pots suprimir les regles de CSS no utilitzades i adjuntar només les biblioteques de Drupal necessàries a la pàgina o al component rellevants d'una pàgina. Per obtenir-ne informació, segueix l'[enllaç a la documentació de Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Per identificar les biblioteques adjuntes que afegeixen fitxers CSS externs, prova d'executar la [cobertura de codi](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) a Chrome DevTools. Pots identificar el tema o el mòdul responsable a partir de l'URL del full d'estil quan l'agregació de CSS estigui desactivada al teu lloc web de Drupal. Posa atenció als temes o els mòduls que tinguin molts fulls d'estil a la llista amb molt de vermell a la cobertura de codi. Un tema o mòdul només hauria de tenir un full d'estil a la cua si es fa servir a la pàgina."
@@ -2750,23 +3107,65 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Activa la compressió al teu servidor de Next.js. [Obtén més informació](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contacta amb el gestor del compte per activar [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). En configurar aquesta funció, es prioritzarà i s'optimitzarà el rendiment de la renderització de les pàgines."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Utilitza l'opció [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) a NitroPack per definir un valor desitjat per a la regla que permet mostrar el tipus de lletra CSS."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Utilitza [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) per convertir automàticament les teves imatges a WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Activa [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images) per ajornar les imatges fora de pantalla."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Activa [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) a NitroPack per agilitzar els temps de càrrega inicial."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Activa [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361) per millorar el temps de resposta del servidor i optimitzar el rendiment percebut."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Activa [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) a la configuració de la memòria cau per reduir la mida dels fitxers CSS, HTML i JavaScript a fi d'agilitzar els temps de càrrega."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Activa [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) a la configuració de la memòria cau per reduir la mida dels fitxers JS, HTML i CSS a fi d'agilitzar els temps de càrrega."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Activa [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) per suprimir les regles CSS que no siguin aplicables a aquesta pàgina."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configura [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) a NitroPack perquè els scripts es carreguin només quan siguin necessaris."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Ves a la funció [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) del menú `Caching` i ajusta el temps de caducitat de la memòria cau de la pàgina per millorar els temps de càrrega i l'experiència d'usuari."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Activa l'opció de configuració [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) per comprimir, optimitzar i convertir automàticament les imatges a WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Activa [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) per optimitzar les imatges de manera preventiva i fer que coincideixin amb les dimensions dels contenidors en què es mostren en tots els dispositius."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Utilitza [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) a NitroPack per reduir la mida dels fitxers que s'envien al navegador."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Utilitza el component `nuxt/image` i estableix `format=\"webp\"`. [Obtén més informació](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Utilitza el component `nuxt/image` i estableix `format=\"webp\"`. [Obtén més informació](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Utilitza el component `nuxt/image` i estableix `loading=\"lazy\"` per a imatges fora de la pantalla. [Obtén més informació](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Utilitza el component `nuxt/image` i estableix `loading=\"lazy\"` per a imatges fora de la pantalla. [Obtén més informació](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Utilitza el component `nuxt/image` i especifica `preload` per a la imatge LCP. [Obtén més informació](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Utilitza el component `nuxt/image` i especifica `preload` per a la imatge LCP. [Obtén més informació](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Utilitza el component `nuxt/image` i especifica `width` i `height` de manera explícita. [Obtén més informació](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Utilitza el component `nuxt/image` i especifica `width` i `height` de manera explícita. [Obtén més informació](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Utilitza el component `nuxt/image` i estableix la `quality` adequada. [Obtén més informació](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Utilitza el component `nuxt/image` i estableix la `quality` adequada. [Obtén més informació](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Utilitza el component `nuxt/image` i estableix les `sizes` adequades. [Obtén més informació](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Utilitza el component `nuxt/image` i estableix les `sizes` adequades. [Obtén més informació](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Suprimeix els GIF animats amb vídeo](https://web.dev/replace-gifs-with-videos/) per carregar les pàgines web més ràpidament i planteja't l'opció d'utilitzar formats de fitxer moderns, com ara [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) o [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), per millorar l'eficàcia de compressió en més d'un 30% respecte al còdec de vídeo actual més avançat, VP9."
@@ -2830,6 +3229,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Fes servir l'analitzador de rendiment de DevTools per a React, que utilitza l'API de l'analitzador de rendiment per mesurar el resultat de la renderització dels components. [Obtén més informació](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "Col·loca els vídeos a `VideoBoxes`, personalitza'ls amb `Video Masks` o afegeix-hi `Transparent Videos`. [Obtén més informació](https://support.wix.com/en/article/wix-video-about-wix-video)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Penja imatges mitjançant `Wix Media Manager` per assegurar-te que es difonen automàticament com a WebP. Troba [més maneres d'optimitzar](https://support.wix.com/en/article/site-performance-optimizing-your-media) els elements multimèdia del teu lloc web."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "Quan [afegeixis codi de tercers](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) a la pestanya `Custom Code` del tauler del teu lloc web, assegura't que es difereixi o carregui a la part final del cos del codi. Sempre que sigui possible, utilitza les [integracions](https://support.wix.com/en/article/about-marketing-integrations) de Wix per inserir eines de màrqueting al teu lloc web. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Wix utilitza CDN i la memòria cau per difondre respostes tan ràpid com sigui possible per a la majoria de visitants. Et recomanem que [activis manualment la memòria cau](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) per al teu lloc web, sobretot si fas servir `Velo`."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "Revisa tot el codi de tercers que hagis afegit a la pestanya `Custom Code` del tauler del teu lloc web i conserva només els serveis que siguin necessaris per al lloc web. [Obtén més informació](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Pots penjar el GIF en un servei que permeti inserir-lo com un vídeo HTML5."
@@ -2936,6 +3350,9 @@
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "Desa com a JSON"
   },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "Mostra la traça sense limitacions"
+  },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Obre al visualitzador"
   },
@@ -2981,8 +3398,17 @@
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Auditories aprovades"
   },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Juntament amb els [criteris d'instal·labilitat actualitzats de Chrome](https://developer.chrome.com/blog/update-install-criteria), Lighthouse discontinuarà la categoria PWA en una propera versió. Consulta la [documentació actualitzada sobre la PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) per consultar les futures proves de la PWA."
+  },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Càrrega de la pàgina inicial"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Instantània puntual"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Període de temps de les interaccions dels usuaris"
   },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Limitació personalitzada"
@@ -3018,10 +3444,10 @@
     "message": "Agent d'usuari (xarxa)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Càrrega de la pàgina única"
+    "message": "Sessió d'una sola pàgina"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Aquestes dades s'han extret d'una única càrrega de la pàgina, a diferència de les dades de camps que resumeixen moltes sessions."
+    "message": "Aquestes dades s'han extret de la sessió d'una sola pàgina, a diferència de les dades de camps que resumeixen moltes sessions."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Limitació 4G lenta"
@@ -3055,9 +3481,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Els valors són estimacions i poden variar. El [resultat del rendiment es calcula](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) directament a partir d'aquestes mètriques."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "Mostra la traça original"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "Mostra la traça"

@@ -1,18 +1,8 @@
 "use strict";
 /**
- * Copyright 2022 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2022 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -38,22 +28,30 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const DeferredPromise_js_1 = require("../util/DeferredPromise.js");
+const Deferred_js_1 = require("../util/Deferred.js");
+const Function_js_1 = require("../util/Function.js");
+const ARIAQuerySelector = __importStar(require("./ARIAQuerySelector.js"));
+const CustomQuerySelectors = __importStar(require("./CustomQuerySelector.js"));
+const PierceQuerySelector = __importStar(require("./PierceQuerySelector.js"));
 const Poller_js_1 = require("./Poller.js");
+const PQuerySelector = __importStar(require("./PQuerySelector.js"));
 const TextContent_js_1 = require("./TextContent.js");
 const TextQuerySelector = __importStar(require("./TextQuerySelector.js"));
-const XPathQuerySelector = __importStar(require("./XPathQuerySelector.js"));
-const PierceQuerySelector = __importStar(require("./PierceQuerySelector.js"));
 const util = __importStar(require("./util.js"));
+const XPathQuerySelector = __importStar(require("./XPathQuerySelector.js"));
 /**
  * @internal
  */
 const PuppeteerUtil = Object.freeze({
-    ...util,
-    ...TextQuerySelector,
-    ...XPathQuerySelector,
+    ...ARIAQuerySelector,
+    ...CustomQuerySelectors,
     ...PierceQuerySelector,
-    createDeferredPromise: DeferredPromise_js_1.createDeferredPromise,
+    ...PQuerySelector,
+    ...TextQuerySelector,
+    ...util,
+    ...XPathQuerySelector,
+    Deferred: Deferred_js_1.Deferred,
+    createFunction: Function_js_1.createFunction,
     createTextContent: TextContent_js_1.createTextContent,
     IntervalPoller: Poller_js_1.IntervalPoller,
     isSuitableNodeForTextMatching: TextContent_js_1.isSuitableNodeForTextMatching,

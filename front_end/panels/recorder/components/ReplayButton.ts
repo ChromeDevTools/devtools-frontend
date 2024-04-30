@@ -6,17 +6,17 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import type * as Extensions from '../extensions/extensions.js';
 import type * as Models from '../models/models.js';
 import {PlayRecordingSpeed} from '../models/RecordingPlayer.js';
-import * as Actions from '../recorder-actions.js';  // eslint-disable-line rulesdir/es_modules_import
-import type * as Extensions from '../extensions/extensions.js';
+import * as Actions from '../recorder-actions/recorder-actions.js';
 
 import {
   SelectButton,
-  Variant as SelectButtonVariant,
-  type SelectButtonItem,
   type SelectButtonClickEvent,
+  type SelectButtonItem,
+  Variant as SelectButtonVariant,
 } from './SelectButton.js';
 
 const UIStrings = {
@@ -66,26 +66,26 @@ const items: SelectButtonItem[] = [
   {
     value: PlayRecordingSpeed.Normal,
     buttonIconName: 'play',
-    buttonLabel: (): string => i18nString(UIStrings.ReplayNormalButtonLabel),
-    label: (): string => i18nString(UIStrings.ReplayNormalItemLabel),
+    buttonLabel: () => i18nString(UIStrings.ReplayNormalButtonLabel),
+    label: () => i18nString(UIStrings.ReplayNormalItemLabel),
   },
   {
     value: PlayRecordingSpeed.Slow,
     buttonIconName: 'play',
-    buttonLabel: (): string => i18nString(UIStrings.ReplaySlowButtonLabel),
-    label: (): string => i18nString(UIStrings.ReplaySlowItemLabel),
+    buttonLabel: () => i18nString(UIStrings.ReplaySlowButtonLabel),
+    label: () => i18nString(UIStrings.ReplaySlowItemLabel),
   },
   {
     value: PlayRecordingSpeed.VerySlow,
     buttonIconName: 'play',
-    buttonLabel: (): string => i18nString(UIStrings.ReplayVerySlowButtonLabel),
-    label: (): string => i18nString(UIStrings.ReplayVerySlowItemLabel),
+    buttonLabel: () => i18nString(UIStrings.ReplayVerySlowButtonLabel),
+    label: () => i18nString(UIStrings.ReplayVerySlowItemLabel),
   },
   {
     value: PlayRecordingSpeed.ExtremelySlow,
     buttonIconName: 'play',
-    buttonLabel: (): string => i18nString(UIStrings.ReplayExtremelySlowButtonLabel),
-    label: (): string => i18nString(UIStrings.ReplayExtremelySlowItemLabel),
+    buttonLabel: () => i18nString(UIStrings.ReplayExtremelySlowButtonLabel),
+    label: () => i18nString(UIStrings.ReplayExtremelySlowItemLabel),
   },
 ];
 
@@ -203,8 +203,8 @@ export class ReplayButton extends HTMLElement {
           return {
             value: REPLAY_EXTENSION_PREFIX + idx,
             buttonIconName: 'play',
-            buttonLabel: (): string => extension.getName(),
-            label: (): string => extension.getName(),
+            buttonLabel: () => extension.getName(),
+            label: () => extension.getName(),
           };
         }),
       });
@@ -220,7 +220,8 @@ export class ReplayButton extends HTMLElement {
       .disabled=${this.#props.disabled}
       .action=${Actions.RecorderActions.ReplayRecording}
       .value=${this.#settings?.replayExtension || this.#settings?.speed}
-      .groups=${groups}>
+      .groups=${groups}
+      jslog=${VisualLogging.action(Actions.RecorderActions.ReplayRecording).track({click: true})}>
     </${SelectButton.litTagName}>`,
       this.#shadow,
       { host: this },
@@ -229,7 +230,7 @@ export class ReplayButton extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent(
+customElements.define(
     'devtools-replay-button',
     ReplayButton,
 );

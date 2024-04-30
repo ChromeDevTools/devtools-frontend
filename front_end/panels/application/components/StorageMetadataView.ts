@@ -6,10 +6,11 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../ui/components/report_view/report_view.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 const UIStrings = {
@@ -67,6 +68,11 @@ const UIStrings = {
    */
   bucketName: 'Bucket name',
   /**
+   *@description The name of the default bucket (https://wicg.github.io/storage-buckets/explainer#the-default-bucket)
+   *(This should not be a valid bucket name (https://wicg.github.io/storage-buckets/explainer#bucket-names))
+   */
+  defaultBucket: 'Default bucket',
+  /**
    *@description Text indicating that the storage is persistent (https://wicg.github.io/storage-buckets/explainer#storage-policy-persistence)
    */
   persistent: 'Is persistent',
@@ -86,6 +92,15 @@ const UIStrings = {
    *@description Text indicating that no value is set
    */
   none: 'None',
+  /**
+   * @description Label of the button that triggers the Storage Bucket to be deleted.
+   */
+  deleteBucket: 'Delete bucket',
+  /**
+   *@description Text shown in the confirmation dialogue that displays before deleting the bucket.
+   *@example {bucket} PH1
+   */
+  confirmBucketDeletion: 'Delete the "{PH1}" bucket?',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/StorageMetadataView.ts', UIStrings);
@@ -95,6 +110,7 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   static readonly litTagName = LitHtml.literal`devtools-storage-metadata-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
+  #storageBucketsModel?: SDK.StorageBucketsModel.StorageBucketsModel;
   #storageKey: SDK.StorageKeyManager.StorageKey|null = null;
   #storageBucket: Protocol.Storage.StorageBucketInfo|null = null;
 
@@ -112,6 +128,13 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
     this.setStorageKey(storageBucket.bucket.storageKey);
   }
 
+  enableStorageBucketControls(model: SDK.StorageBucketsModel.StorageBucketsModel): void {
+    this.#storageBucketsModel = model;
+    if (this.#storageKey) {
+      void this.render();
+    }
+  }
+
   override render(): Promise<void> {
     return coordinator.write('StorageMetadataView render', async () => {
       // Disabled until https://crbug.com/1079231 is fixed.
@@ -125,7 +148,12 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
   }
 
   getTitle(): string|undefined {
-    return this.#storageKey?.origin;
+    if (!this.#storageKey) {
+      return;
+    }
+    const origin = this.#storageKey.origin;
+    const bucketName = this.#storageBucket?.bucket.name || i18nString(UIStrings.defaultBucket);
+    return this.#storageBucketsModel ? `${bucketName} - ${origin}` : origin;
   }
 
   key(content: string|LitHtml.TemplateResult): LitHtml.TemplateResult {
@@ -159,16 +187,17 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
     return LitHtml.html`
         ${this.key(i18nString(UIStrings.origin))}
         ${this.value(LitHtml.html`<div class="text-ellipsis" title=${origin}>${origin}</div>`)}
-        ${(topLevelSite || topLevelSiteIsOpaque) ?  this.key(i18nString(UIStrings.topLevelSite)) : LitHtml.nothing}
+        ${(topLevelSite || topLevelSiteIsOpaque) ? this.key(i18nString(UIStrings.topLevelSite)) : LitHtml.nothing}
         ${topLevelSite ? this.value(topLevelSite) : LitHtml.nothing}
         ${topLevelSiteIsOpaque ? this.value(i18nString(UIStrings.opaque)) : LitHtml.nothing}
         ${thirdPartyReason ? LitHtml.html`${this.key(i18nString(UIStrings.isThirdParty))}${this.value(thirdPartyReason)}` : LitHtml.nothing}
         ${hasNonce || topLevelSiteIsOpaque ?
-          this.key(i18nString(UIStrings.isOpaque)) : LitHtml.nothing}
+        this.key(i18nString(UIStrings.isOpaque)) : LitHtml.nothing}
         ${hasNonce ? this.value(i18nString(UIStrings.yes)) : LitHtml.nothing}
         ${topLevelSiteIsOpaque ?
-          this.value(i18nString(UIStrings.yesBecauseTopLevelIsOpaque)) : LitHtml.nothing}
-        ${this.#storageBucket ? this.#renderStorageBucketInfo() : LitHtml.nothing}`;
+        this.value(i18nString(UIStrings.yesBecauseTopLevelIsOpaque)) : LitHtml.nothing}
+        ${this.#storageBucket ? this.#renderStorageBucketInfo() : LitHtml.nothing}
+        ${this.#storageBucketsModel ? this.#renderBucketControls() : LitHtml.nothing}`;
     // clang-format on
   }
 
@@ -206,12 +235,36 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
     return (new Date(expiration * 1000)).toLocaleString();
   }
 
+  #renderBucketControls(): LitHtml.TemplateResult {
+    // clang-format off
+    return LitHtml.html`
+      <${ReportView.ReportView.ReportSection.litTagName}>
+        <${Buttons.Button.Button.litTagName}
+          aria-label=${i18nString(UIStrings.deleteBucket)}
+          .variant=${Buttons.Button.Variant.PRIMARY}
+          @click=${this.#deleteBucket}>
+          ${i18nString(UIStrings.deleteBucket)}
+        </${Buttons.Button.Button.litTagName}>
+      </${ReportView.ReportView.ReportSection.litTagName}>`;
+    // clang-format on
+  }
+
+  async #deleteBucket(): Promise<void> {
+    if (!this.#storageBucketsModel || !this.#storageBucket) {
+      throw new Error('Should not call #deleteBucket if #storageBucketsModel or #storageBucket is null.');
+    }
+    const ok = await UI.UIUtils.ConfirmDialog.show(
+        i18nString(UIStrings.confirmBucketDeletion, {PH1: this.#storageBucket.bucket.name || ''}), this,
+        {jslogContext: 'delete-bucket-confirmation'});
+    if (ok) {
+      this.#storageBucketsModel.deleteBucket(this.#storageBucket.bucket);
+    }
+  }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-storage-metadata-view', StorageMetadataView);
+customElements.define('devtools-storage-metadata-view', StorageMetadataView);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-storage-metadata-view': StorageMetadataView;
   }

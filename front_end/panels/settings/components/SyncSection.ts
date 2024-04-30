@@ -66,7 +66,10 @@ export class SyncSection extends HTMLElement {
       throw new Error('SyncSection not properly initialized');
     }
 
+    // TODO: this should not probably happen in render, instead, the setting
+    // should be disabled.
     const checkboxDisabled = !this.#syncInfo.isSyncActive || !this.#syncInfo.arePreferencesSynced;
+    this.#syncSetting?.setDisabled(checkboxDisabled);
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
@@ -74,7 +77,7 @@ export class SyncSection extends HTMLElement {
         <legend>${Common.Settings.getLocalizedSettingsCategory(Common.Settings.SettingCategory.SYNC)}</legend>
         ${renderAccountInfoOrWarning(this.#syncInfo)}
         <${Settings.SettingCheckbox.SettingCheckbox.litTagName} .data=${
-            {setting: this.#syncSetting, disabled: checkboxDisabled} as Settings.SettingCheckbox.SettingCheckboxData}>
+            {setting: this.#syncSetting} as Settings.SettingCheckbox.SettingCheckboxData}>
         </${Settings.SettingCheckbox.SettingCheckbox.litTagName}>
       </fieldset>
     `, this.#shadow, {host: this});
@@ -118,7 +121,7 @@ function renderAccountInfoOrWarning(syncInfo: Host.InspectorFrontendHostAPI.Sync
     </div>`;
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-sync-section', SyncSection);
+customElements.define('devtools-sync-section', SyncSection);
 
 declare global {
   interface HTMLElementTagNameMap {

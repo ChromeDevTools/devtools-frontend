@@ -16,7 +16,7 @@ import {
 } from '../helpers/elements-helpers.js';
 import {clickPropertyButton, clickStylePropertyEditorButton} from '../helpers/style-property-editor-helpers.js';
 
-describe('Flexbox Editor', async function() {
+describe('Flexbox Editor', function() {
   beforeEach(async function() {
     await goToResource('elements/flexbox-editor.html');
     await waitForContentOfSelectedElementsNode('<body>\u200B');

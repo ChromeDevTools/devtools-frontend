@@ -1,16 +1,16 @@
 import { Browser, Page } from 'puppeteer';
 import * as lighthouse from 'lighthouse';
 
-declare type ExcludeType<T, U> = {
+type ExcludeType<T, U> = {
     [K in keyof T]-?: T[K] extends U ? K : never;
 }[keyof T];
-declare type PickType<T, U> = Pick<T, ExcludeType<T, U>>;
-declare type JSONValue = null | string | number | boolean | JSONObject | JSONArray;
+type PickType<T, U> = Pick<T, ExcludeType<T, U>>;
+type JSONValue = null | string | number | boolean | JSONObject | JSONArray;
 interface JSONObject {
     [key: string]: JSONValue;
 }
-declare type JSONArray = JSONValue[];
-declare type JSONSerializable<Object extends object> = PickType<Object, JSONValue>;
+type JSONArray = JSONValue[];
+type JSONSerializable<Object extends object> = PickType<Object, JSONValue>;
 
 /**
     Copyright 2022 Google LLC
@@ -28,10 +28,10 @@ declare type JSONSerializable<Object extends object> = PickType<Object, JSONValu
     limitations under the License.
  */
 
-declare type Target = string;
-declare type Pattern = string;
-declare type Selector = string | string[];
-declare type FrameSelector = number[];
+type Target = string;
+type Pattern = string;
+type Selector = string | string[];
+type FrameSelector = number[];
 declare enum SelectorType {
     CSS = "css",
     ARIA = "aria",
@@ -63,7 +63,7 @@ interface NavigationEvent {
     url?: Pattern;
     title?: Pattern;
 }
-declare type AssertedEvent = NavigationEvent;
+type AssertedEvent = NavigationEvent;
 interface BaseStep {
     type: StepType;
     timeout?: number;
@@ -102,8 +102,8 @@ interface StepWithSelectors extends StepWithFrame {
      */
     selectors: Selector[];
 }
-declare type PointerDeviceType = 'mouse' | 'pen' | 'touch';
-declare type PointerButtonType = 'primary' | 'auxiliary' | 'secondary' | 'back' | 'forward';
+type PointerDeviceType = 'mouse' | 'pen' | 'touch';
+type PointerButtonType = 'primary' | 'auxiliary' | 'secondary' | 'back' | 'forward';
 interface ClickAttributes {
     /**
      * Pointer type for the event. Defaults to 'mouse'.
@@ -180,8 +180,8 @@ interface ScrollPageStep extends StepWithFrame {
      */
     y?: number;
 }
-declare type ScrollElementStep = ScrollPageStep & StepWithSelectors;
-declare type ScrollStep = ScrollPageStep | ScrollElementStep;
+type ScrollElementStep = ScrollPageStep & StepWithSelectors;
+type ScrollStep = ScrollPageStep | ScrollElementStep;
 interface NavigateStep extends StepWithTarget {
     type: StepType.Navigate;
     url: string;
@@ -191,8 +191,8 @@ interface CustomStepParams {
     name: string;
     parameters: unknown;
 }
-declare type CustomStep = (CustomStepParams & StepWithTarget) | (CustomStepParams & StepWithFrame);
-declare type UserStep = ChangeStep | ClickStep | HoverStep | CloseStep | CustomStep | DoubleClickStep | EmulateNetworkConditionsStep | KeyDownStep | KeyUpStep | NavigateStep | ScrollStep | SetViewportStep;
+type CustomStep = (CustomStepParams & StepWithTarget) | (CustomStepParams & StepWithFrame);
+type UserStep = ChangeStep | ClickStep | HoverStep | CloseStep | CustomStep | DoubleClickStep | EmulateNetworkConditionsStep | KeyDownStep | KeyUpStep | NavigateStep | ScrollStep | SetViewportStep;
 /**
  * `waitForElement` allows waiting for the presence (or absence) of the number
  * of elements identified by the selector.
@@ -258,8 +258,8 @@ interface WaitForExpressionStep extends StepWithFrame {
     type: StepType.WaitForExpression;
     expression: string;
 }
-declare type AssertionStep = WaitForElementStep | WaitForExpressionStep;
-declare type Step = UserStep | AssertionStep;
+type AssertionStep = WaitForElementStep | WaitForExpressionStep;
+type Step = UserStep | AssertionStep;
 interface UserFlow {
     /**
      * Human-readble title describing the recorder user flow.
@@ -277,90 +277,51 @@ interface UserFlow {
     selectorAttribute?: string;
     steps: Step[];
 }
-declare type Key = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | 'Power' | 'Eject' | 'Abort' | 'Help' | 'Backspace' | 'Tab' | 'Numpad5' | 'NumpadEnter' | 'Enter' | '\r' | '\n' | 'ShiftLeft' | 'ShiftRight' | 'ControlLeft' | 'ControlRight' | 'AltLeft' | 'AltRight' | 'Pause' | 'CapsLock' | 'Escape' | 'Convert' | 'NonConvert' | 'Space' | 'Numpad9' | 'PageUp' | 'Numpad3' | 'PageDown' | 'End' | 'Numpad1' | 'Home' | 'Numpad7' | 'ArrowLeft' | 'Numpad4' | 'Numpad8' | 'ArrowUp' | 'ArrowRight' | 'Numpad6' | 'Numpad2' | 'ArrowDown' | 'Select' | 'Open' | 'PrintScreen' | 'Insert' | 'Numpad0' | 'Delete' | 'NumpadDecimal' | 'Digit0' | 'Digit1' | 'Digit2' | 'Digit3' | 'Digit4' | 'Digit5' | 'Digit6' | 'Digit7' | 'Digit8' | 'Digit9' | 'KeyA' | 'KeyB' | 'KeyC' | 'KeyD' | 'KeyE' | 'KeyF' | 'KeyG' | 'KeyH' | 'KeyI' | 'KeyJ' | 'KeyK' | 'KeyL' | 'KeyM' | 'KeyN' | 'KeyO' | 'KeyP' | 'KeyQ' | 'KeyR' | 'KeyS' | 'KeyT' | 'KeyU' | 'KeyV' | 'KeyW' | 'KeyX' | 'KeyY' | 'KeyZ' | 'MetaLeft' | 'MetaRight' | 'ContextMenu' | 'NumpadMultiply' | 'NumpadAdd' | 'NumpadSubtract' | 'NumpadDivide' | 'F1' | 'F2' | 'F3' | 'F4' | 'F5' | 'F6' | 'F7' | 'F8' | 'F9' | 'F10' | 'F11' | 'F12' | 'F13' | 'F14' | 'F15' | 'F16' | 'F17' | 'F18' | 'F19' | 'F20' | 'F21' | 'F22' | 'F23' | 'F24' | 'NumLock' | 'ScrollLock' | 'AudioVolumeMute' | 'AudioVolumeDown' | 'AudioVolumeUp' | 'MediaTrackNext' | 'MediaTrackPrevious' | 'MediaStop' | 'MediaPlayPause' | 'Semicolon' | 'Equal' | 'NumpadEqual' | 'Comma' | 'Minus' | 'Period' | 'Slash' | 'Backquote' | 'BracketLeft' | 'Backslash' | 'BracketRight' | 'Quote' | 'AltGraph' | 'Props' | 'Cancel' | 'Clear' | 'Shift' | 'Control' | 'Alt' | 'Accept' | 'ModeChange' | ' ' | 'Print' | 'Execute' | '\u0000' | 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z' | 'Meta' | '*' | '+' | '-' | '/' | ';' | '=' | ',' | '.' | '`' | '[' | '\\' | ']' | "'" | 'Attn' | 'CrSel' | 'ExSel' | 'EraseEof' | 'Play' | 'ZoomOut' | ')' | '!' | '@' | '#' | '$' | '%' | '^' | '&' | '(' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z' | ':' | '<' | '_' | '>' | '?' | '~' | '{' | '|' | '}' | '"' | 'SoftLeft' | 'SoftRight' | 'Camera' | 'Call' | 'EndCall' | 'VolumeDown' | 'VolumeUp';
+type Key = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | 'Power' | 'Eject' | 'Abort' | 'Help' | 'Backspace' | 'Tab' | 'Numpad5' | 'NumpadEnter' | 'Enter' | '\r' | '\n' | 'ShiftLeft' | 'ShiftRight' | 'ControlLeft' | 'ControlRight' | 'AltLeft' | 'AltRight' | 'Pause' | 'CapsLock' | 'Escape' | 'Convert' | 'NonConvert' | 'Space' | 'Numpad9' | 'PageUp' | 'Numpad3' | 'PageDown' | 'End' | 'Numpad1' | 'Home' | 'Numpad7' | 'ArrowLeft' | 'Numpad4' | 'Numpad8' | 'ArrowUp' | 'ArrowRight' | 'Numpad6' | 'Numpad2' | 'ArrowDown' | 'Select' | 'Open' | 'PrintScreen' | 'Insert' | 'Numpad0' | 'Delete' | 'NumpadDecimal' | 'Digit0' | 'Digit1' | 'Digit2' | 'Digit3' | 'Digit4' | 'Digit5' | 'Digit6' | 'Digit7' | 'Digit8' | 'Digit9' | 'KeyA' | 'KeyB' | 'KeyC' | 'KeyD' | 'KeyE' | 'KeyF' | 'KeyG' | 'KeyH' | 'KeyI' | 'KeyJ' | 'KeyK' | 'KeyL' | 'KeyM' | 'KeyN' | 'KeyO' | 'KeyP' | 'KeyQ' | 'KeyR' | 'KeyS' | 'KeyT' | 'KeyU' | 'KeyV' | 'KeyW' | 'KeyX' | 'KeyY' | 'KeyZ' | 'MetaLeft' | 'MetaRight' | 'ContextMenu' | 'NumpadMultiply' | 'NumpadAdd' | 'NumpadSubtract' | 'NumpadDivide' | 'F1' | 'F2' | 'F3' | 'F4' | 'F5' | 'F6' | 'F7' | 'F8' | 'F9' | 'F10' | 'F11' | 'F12' | 'F13' | 'F14' | 'F15' | 'F16' | 'F17' | 'F18' | 'F19' | 'F20' | 'F21' | 'F22' | 'F23' | 'F24' | 'NumLock' | 'ScrollLock' | 'AudioVolumeMute' | 'AudioVolumeDown' | 'AudioVolumeUp' | 'MediaTrackNext' | 'MediaTrackPrevious' | 'MediaStop' | 'MediaPlayPause' | 'Semicolon' | 'Equal' | 'NumpadEqual' | 'Comma' | 'Minus' | 'Period' | 'Slash' | 'Backquote' | 'BracketLeft' | 'Backslash' | 'BracketRight' | 'Quote' | 'AltGraph' | 'Props' | 'Cancel' | 'Clear' | 'Shift' | 'Control' | 'Alt' | 'Accept' | 'ModeChange' | ' ' | 'Print' | 'Execute' | '\u0000' | 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z' | 'Meta' | '*' | '+' | '-' | '/' | ';' | '=' | ',' | '.' | '`' | '[' | '\\' | ']' | "'" | 'Attn' | 'CrSel' | 'ExSel' | 'EraseEof' | 'Play' | 'ZoomOut' | ')' | '!' | '@' | '#' | '$' | '%' | '^' | '&' | '(' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z' | ':' | '<' | '_' | '>' | '?' | '~' | '{' | '|' | '}' | '"' | 'SoftLeft' | 'SoftRight' | 'Camera' | 'Call' | 'EndCall' | 'VolumeDown' | 'VolumeUp';
 
-type Schema_Target = Target;
-type Schema_Pattern = Pattern;
-type Schema_Selector = Selector;
-type Schema_FrameSelector = FrameSelector;
-type Schema_SelectorType = SelectorType;
-declare const Schema_SelectorType: typeof SelectorType;
-type Schema_StepType = StepType;
-declare const Schema_StepType: typeof StepType;
+type Schema_AssertedEvent = AssertedEvent;
 type Schema_AssertedEventType = AssertedEventType;
 declare const Schema_AssertedEventType: typeof AssertedEventType;
-type Schema_NavigationEvent = NavigationEvent;
-type Schema_AssertedEvent = AssertedEvent;
+type Schema_AssertionStep = AssertionStep;
 type Schema_BaseStep = BaseStep;
-type Schema_StepWithTarget = StepWithTarget;
-type Schema_StepWithFrame = StepWithFrame;
-type Schema_StepWithSelectors = StepWithSelectors;
-type Schema_PointerDeviceType = PointerDeviceType;
-type Schema_PointerButtonType = PointerButtonType;
-type Schema_ClickAttributes = ClickAttributes;
-type Schema_DoubleClickStep = DoubleClickStep;
-type Schema_ClickStep = ClickStep;
-type Schema_HoverStep = HoverStep;
 type Schema_ChangeStep = ChangeStep;
+type Schema_ClickAttributes = ClickAttributes;
+type Schema_ClickStep = ClickStep;
+type Schema_CloseStep = CloseStep;
+type Schema_CustomStep = CustomStep;
+type Schema_CustomStepParams = CustomStepParams;
+type Schema_DoubleClickStep = DoubleClickStep;
 type Schema_EmulateNetworkConditionsStep = EmulateNetworkConditionsStep;
+type Schema_FrameSelector = FrameSelector;
+type Schema_HoverStep = HoverStep;
+type Schema_Key = Key;
 type Schema_KeyDownStep = KeyDownStep;
 type Schema_KeyUpStep = KeyUpStep;
-type Schema_CloseStep = CloseStep;
-type Schema_SetViewportStep = SetViewportStep;
-type Schema_ScrollPageStep = ScrollPageStep;
-type Schema_ScrollElementStep = ScrollElementStep;
-type Schema_ScrollStep = ScrollStep;
 type Schema_NavigateStep = NavigateStep;
-type Schema_CustomStepParams = CustomStepParams;
-type Schema_CustomStep = CustomStep;
+type Schema_NavigationEvent = NavigationEvent;
+type Schema_Pattern = Pattern;
+type Schema_PointerButtonType = PointerButtonType;
+type Schema_PointerDeviceType = PointerDeviceType;
+type Schema_ScrollElementStep = ScrollElementStep;
+type Schema_ScrollPageStep = ScrollPageStep;
+type Schema_ScrollStep = ScrollStep;
+type Schema_Selector = Selector;
+type Schema_SelectorType = SelectorType;
+declare const Schema_SelectorType: typeof SelectorType;
+type Schema_SetViewportStep = SetViewportStep;
+type Schema_Step = Step;
+type Schema_StepType = StepType;
+declare const Schema_StepType: typeof StepType;
+type Schema_StepWithFrame = StepWithFrame;
+type Schema_StepWithSelectors = StepWithSelectors;
+type Schema_StepWithTarget = StepWithTarget;
+type Schema_Target = Target;
+type Schema_UserFlow = UserFlow;
 type Schema_UserStep = UserStep;
 type Schema_WaitForElementStep = WaitForElementStep;
 type Schema_WaitForExpressionStep = WaitForExpressionStep;
-type Schema_AssertionStep = AssertionStep;
-type Schema_Step = Step;
-type Schema_UserFlow = UserFlow;
-type Schema_Key = Key;
 declare namespace Schema {
-  export {
-    Schema_Target as Target,
-    Schema_Pattern as Pattern,
-    Schema_Selector as Selector,
-    Schema_FrameSelector as FrameSelector,
-    Schema_SelectorType as SelectorType,
-    Schema_StepType as StepType,
-    Schema_AssertedEventType as AssertedEventType,
-    Schema_NavigationEvent as NavigationEvent,
-    Schema_AssertedEvent as AssertedEvent,
-    Schema_BaseStep as BaseStep,
-    Schema_StepWithTarget as StepWithTarget,
-    Schema_StepWithFrame as StepWithFrame,
-    Schema_StepWithSelectors as StepWithSelectors,
-    Schema_PointerDeviceType as PointerDeviceType,
-    Schema_PointerButtonType as PointerButtonType,
-    Schema_ClickAttributes as ClickAttributes,
-    Schema_DoubleClickStep as DoubleClickStep,
-    Schema_ClickStep as ClickStep,
-    Schema_HoverStep as HoverStep,
-    Schema_ChangeStep as ChangeStep,
-    Schema_EmulateNetworkConditionsStep as EmulateNetworkConditionsStep,
-    Schema_KeyDownStep as KeyDownStep,
-    Schema_KeyUpStep as KeyUpStep,
-    Schema_CloseStep as CloseStep,
-    Schema_SetViewportStep as SetViewportStep,
-    Schema_ScrollPageStep as ScrollPageStep,
-    Schema_ScrollElementStep as ScrollElementStep,
-    Schema_ScrollStep as ScrollStep,
-    Schema_NavigateStep as NavigateStep,
-    Schema_CustomStepParams as CustomStepParams,
-    Schema_CustomStep as CustomStep,
-    Schema_UserStep as UserStep,
-    Schema_WaitForElementStep as WaitForElementStep,
-    Schema_WaitForExpressionStep as WaitForExpressionStep,
-    Schema_AssertionStep as AssertionStep,
-    Schema_Step as Step,
-    Schema_UserFlow as UserFlow,
-    Schema_Key as Key,
-  };
+  export { type Schema_AssertedEvent as AssertedEvent, Schema_AssertedEventType as AssertedEventType, type Schema_AssertionStep as AssertionStep, type Schema_BaseStep as BaseStep, type Schema_ChangeStep as ChangeStep, type Schema_ClickAttributes as ClickAttributes, type Schema_ClickStep as ClickStep, type Schema_CloseStep as CloseStep, type Schema_CustomStep as CustomStep, type Schema_CustomStepParams as CustomStepParams, type Schema_DoubleClickStep as DoubleClickStep, type Schema_EmulateNetworkConditionsStep as EmulateNetworkConditionsStep, type Schema_FrameSelector as FrameSelector, type Schema_HoverStep as HoverStep, type Schema_Key as Key, type Schema_KeyDownStep as KeyDownStep, type Schema_KeyUpStep as KeyUpStep, type Schema_NavigateStep as NavigateStep, type Schema_NavigationEvent as NavigationEvent, type Schema_Pattern as Pattern, type Schema_PointerButtonType as PointerButtonType, type Schema_PointerDeviceType as PointerDeviceType, type Schema_ScrollElementStep as ScrollElementStep, type Schema_ScrollPageStep as ScrollPageStep, type Schema_ScrollStep as ScrollStep, type Schema_Selector as Selector, Schema_SelectorType as SelectorType, type Schema_SetViewportStep as SetViewportStep, type Schema_Step as Step, Schema_StepType as StepType, type Schema_StepWithFrame as StepWithFrame, type Schema_StepWithSelectors as StepWithSelectors, type Schema_StepWithTarget as StepWithTarget, type Schema_Target as Target, type Schema_UserFlow as UserFlow, type Schema_UserStep as UserStep, type Schema_WaitForElementStep as WaitForElementStep, type Schema_WaitForExpressionStep as WaitForExpressionStep };
 }
 
 /**
@@ -396,6 +357,12 @@ declare function parse(data: unknown): UserFlow;
  * therefore, SelectorType.CSS is the default type if other types didn't match.
  */
 declare function getSelectorType(selector: string): SelectorType;
+/**
+ * Converts a selector or an array of selector parts into a Puppeteer selector.
+ *
+ * @see https://pptr.dev/guides/query-selectors#p-elements
+ */
+declare function selectorToPElementSelector(selector: string[] | string): string;
 
 /**
     Copyright 2022 Google LLC
@@ -496,7 +463,7 @@ interface StringifyOptions {
 /**
  * The format is [version, [lineNo, length], [lineNo, length] ... [lineNo, length]].
  */
-declare type SourceMap = Array<number>;
+type SourceMap = Array<number>;
 /**
  * Stringifes an entire recording. The following hooks are invoked with the `flow` parameter containing the entire flow:
  * - `beforeAllSteps` (once)
@@ -714,4 +681,4 @@ declare class LighthouseRunnerExtension extends PuppeteerRunnerExtension {
 declare function formatJSONAsJS(json: unknown, indent: string): string;
 declare const formatAsJSLiteral: (content: string) => string;
 
-export { AssertedEvent, AssertedEventType, AssertionStep, BaseStep, ChangeStep, ClickAttributes, ClickStep, CloseStep, CustomStep, CustomStepParams, DoubleClickStep, EmulateNetworkConditionsStep, FrameSelector, HoverStep, JSONStringifyExtension, Key, KeyDownStep, KeyUpStep, LighthouseRunnerExtension, LighthouseStringifyExtension, LineWriter, NavigateStep, NavigationEvent, Pattern, PointerButtonType, PointerDeviceType, PuppeteerReplayStringifyExtension, PuppeteerRunnerExtension, PuppeteerRunnerOwningBrowserExtension, PuppeteerStringifyExtension, Runner, RunnerExtension, Schema, ScrollElementStep, ScrollPageStep, ScrollStep, Selector, SelectorType, SetViewportStep, SourceMap, Step, StepType, StepWithFrame, StepWithSelectors, StepWithTarget, StringifyExtension, StringifyOptions, Target, UserFlow, UserStep, WaitForElementStep, WaitForExpressionStep, assertAllStepTypesAreHandled, createRunner, formatAsJSLiteral, formatJSONAsJS, getSelectorType, maxTimeout, minTimeout, mouseButtonMap, parse, parseSourceMap, parseStep, pointerDeviceTypes, stringify, stringifyStep, stripSourceMap, typeableInputTypes, validTimeout };
+export { type AssertedEvent, AssertedEventType, type AssertionStep, type BaseStep, type ChangeStep, type ClickAttributes, type ClickStep, type CloseStep, type CustomStep, type CustomStepParams, type DoubleClickStep, type EmulateNetworkConditionsStep, type FrameSelector, type HoverStep, JSONStringifyExtension, type Key, type KeyDownStep, type KeyUpStep, LighthouseRunnerExtension, LighthouseStringifyExtension, type LineWriter, type NavigateStep, type NavigationEvent, type Pattern, type PointerButtonType, type PointerDeviceType, PuppeteerReplayStringifyExtension, PuppeteerRunnerExtension, PuppeteerRunnerOwningBrowserExtension, PuppeteerStringifyExtension, Runner, RunnerExtension, Schema, type ScrollElementStep, type ScrollPageStep, type ScrollStep, type Selector, SelectorType, type SetViewportStep, type SourceMap, type Step, StepType, type StepWithFrame, type StepWithSelectors, type StepWithTarget, StringifyExtension, type StringifyOptions, type Target, type UserFlow, type UserStep, type WaitForElementStep, type WaitForExpressionStep, assertAllStepTypesAreHandled, createRunner, formatAsJSLiteral, formatJSONAsJS, getSelectorType, maxTimeout, minTimeout, mouseButtonMap, parse, parseSourceMap, parseStep, pointerDeviceTypes, selectorToPElementSelector, stringify, stringifyStep, stripSourceMap, typeableInputTypes, validTimeout };

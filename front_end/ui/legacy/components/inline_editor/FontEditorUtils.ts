@@ -16,7 +16,7 @@ export const FontPropertiesRegex: RegExp = /^[^- ][a-zA-Z-]+|-?\+?(?:[0-9]+\.[0-
 // ('[\w \,-]+',? ?) matches single quoted values and the trailing comma/space (e.g. 'Segoe UI', )
 // ([\w \,-]+,? ?) matches non quoted values and the trailing comma/space (e.g. Helvetica)
 // (?: ...)+ will match 1 or more of the groups above such that it would match a value with fallbacks (e.g. "Tahoma", 'Segoe UI', Helvetica)
-export const FontFamilyRegex: RegExp = /(?:"[\w \,-]+",? ?|'[\w \,-]+',? ?|[\w \,-]+,? ?)+/;
+export const FontFamilyRegex: RegExp = /^"[\w \,-]+"|'[\w \,-]+'|[\w \-]+$/;
 
 // The following regexes are used within the Font Editor and will only parse valid property values.
 // Example Input/Outputs:

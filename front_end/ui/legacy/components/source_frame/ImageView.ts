@@ -36,6 +36,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
 import imageViewStyles from './imageView.css.legacy.js';
@@ -101,6 +102,7 @@ export class ImageView extends UI.View.SimpleView {
     this.registerRequiredCSS(imageViewStyles);
     this.element.tabIndex = -1;
     this.element.classList.add('image-view');
+    this.element.setAttribute('jslog', `${VisualLogging.pane('image-view')}`);
     this.url = contentProvider.contentURL();
     this.parsedURL = new Common.ParsedURL.ParsedURL(this.url);
     this.mimeType = mimeType;
@@ -180,16 +182,22 @@ export class ImageView extends UI.View.SimpleView {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const parsedSrc = new Common.ParsedURL.ParsedURL(this.imagePreviewElement.src);
     if (!this.parsedURL.isDataURL()) {
-      contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyImageUrl), this.copyImageURL.bind(this));
+      contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyImageUrl), this.copyImageURL.bind(this), {
+        jslogContext: 'image-view.copy-image-url',
+      });
     }
     if (parsedSrc.isDataURL()) {
       contextMenu.clipboardSection().appendItem(
-          i18nString(UIStrings.copyImageAsDataUri), this.copyImageAsDataURL.bind(this));
+          i18nString(UIStrings.copyImageAsDataUri), this.copyImageAsDataURL.bind(this), {
+            jslogContext: 'image-view.copy-image-as-data-url',
+          });
     }
 
-    contextMenu.clipboardSection().appendItem(i18nString(UIStrings.openImageInNewTab), this.openInNewTab.bind(this));
-    contextMenu.clipboardSection().appendItem(i18nString(UIStrings.saveImageAs), async () => {
-      await this.saveImage();
+    contextMenu.clipboardSection().appendItem(i18nString(UIStrings.openImageInNewTab), this.openInNewTab.bind(this), {
+      jslogContext: 'image-view.open-in-new-tab',
+    });
+    contextMenu.clipboardSection().appendItem(i18nString(UIStrings.saveImageAs), this.saveImage.bind(this), {
+      jslogContext: 'image-view.save-image',
     });
 
     void contextMenu.show();
@@ -244,7 +252,7 @@ export class ImageView extends UI.View.SimpleView {
     const encoded = !file.name.endsWith('.svg');
     const fileCallback = (file: Blob): void => {
       const reader = new FileReader();
-      reader.onloadend = (): void => {
+      reader.onloadend = () => {
         let result;
         try {
           result = (reader.result as string | null);

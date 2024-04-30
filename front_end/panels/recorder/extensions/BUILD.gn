@@ -2,8 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import(
-    "../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("extensions") {
@@ -25,9 +24,8 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../:*",
+    "../../../ui/components/docs/*",
     "../components:*",
     "../converters:*",
-    "../../../../test/unittests/front_end/panels/recorder/*",
-    "../../../ui/components/docs/*",
   ]
 }

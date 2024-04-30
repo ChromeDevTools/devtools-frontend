@@ -2,31 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable no-unused-private-class-members */
+/* eslint-disable no-unused-private-class-members, @typescript-eslint/naming-convention */
 
-class MicroSecondsTag {
-  readonly #microSecondsTag: (symbol|undefined);
-}
-export type MicroSeconds = number&MicroSecondsTag;
-// eslint-disable-next-line @typescript-eslint/naming-convention
+export type MicroSeconds = number&{_tag: 'MicroSeconds'};
 export function MicroSeconds(value: number): MicroSeconds {
   return value as MicroSeconds;
 }
 
-class MilliSecondsTag {
-  readonly #milliSecondsTag: (symbol|undefined);
-}
-export type MilliSeconds = number&MilliSecondsTag;
-// eslint-disable-next-line @typescript-eslint/naming-convention
+export type MilliSeconds = number&{_tag: 'MilliSeconds'};
 export function MilliSeconds(value: number): MilliSeconds {
   return value as MilliSeconds;
 }
-
-class SecondsTag {
-  readonly #secondsTag: (symbol|undefined);
-}
-export type Seconds = number&SecondsTag;
-// eslint-disable-next-line @typescript-eslint/naming-convention
+export type Seconds = number&{_tag: 'Seconds'};
 export function Seconds(value: number): Seconds {
   return value as Seconds;
 }
@@ -40,8 +27,11 @@ export const enum TimeUnit {
 
 // Other types.
 
-export interface TraceWindow {
-  min: MicroSeconds;
-  max: MicroSeconds;
-  range: MicroSeconds;
+export interface TraceWindow<TimeFormat extends MicroSeconds|MilliSeconds> {
+  min: TimeFormat;
+  max: TimeFormat;
+  range: TimeFormat;
 }
+
+export type TraceWindowMicroSeconds = TraceWindow<MicroSeconds>;
+export type TraceWindowMilliSeconds = TraceWindow<MilliSeconds>;

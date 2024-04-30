@@ -14,6 +14,7 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ConsolePanel} from './ConsolePanel.js';
 import consolePromptStyles from './consolePrompt.css.js';
@@ -25,6 +26,16 @@ const UIStrings = {
    *@description Text in Console Prompt of the Console panel
    */
   consolePrompt: 'Console prompt',
+  /**
+   *@description Warning shown to users when pasting text into the DevTools console.
+   *@example {allow pasting} PH1
+   */
+  selfXssWarning:
+      'Warning: Don’t paste code into the DevTools Console that you don’t understand or haven’t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Please type ‘{PH1}’ below and hit Enter to allow pasting.',
+  /**
+   *@description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
+   */
+  allowPasting: 'allow pasting',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePrompt.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -51,12 +62,34 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   #argumentHintsState: CodeMirror.StateField<CodeMirror.Tooltip|null>;
 
   #editorHistory: TextEditor.TextEditorHistory.TextEditorHistory;
+  #selfXssWarningShown = false;
+  #javaScriptCompletionCompartment: CodeMirror.Compartment = new CodeMirror.Compartment();
+
+  #getJavaScriptCompletionExtensions(): CodeMirror.Extension {
+    if (this.#selfXssWarningShown) {
+      // No (JavaScript) completions at all while showing the self-XSS warning.
+      return [];
+    }
+    if (Root.Runtime.Runtime.queryParam('noJavaScriptCompletion') !== 'true') {
+      return [
+        CodeMirror.javascript.javascript(),
+        TextEditor.JavaScript.completion(),
+      ];
+    }
+    return [CodeMirror.javascript.javascriptLanguage];
+  }
+
+  #updateJavaScriptCompletionCompartment(): void {
+    const extensions = this.#getJavaScriptCompletionExtensions();
+    const effects = this.#javaScriptCompletionCompartment.reconfigure(extensions);
+    this.editor.dispatch({effects});
+  }
 
   constructor() {
     super();
     this.addCompletionsFromHistory = true;
     this.historyInternal = new TextEditor.AutocompleteHistory.AutocompleteHistory(
-        Common.Settings.Settings.instance().createLocalSetting('consoleHistory', []));
+        Common.Settings.Settings.instance().createLocalSetting('console-history', []));
 
     this.initialText = '';
     this.eagerPreviewElement = document.createElement('div');
@@ -79,7 +112,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.element.appendChild(this.promptIcon);
     this.iconThrottler = new Common.Throttler.Throttler(0);
 
-    this.eagerEvalSetting = Common.Settings.Settings.instance().moduleSetting('consoleEagerEval');
+    this.eagerEvalSetting = Common.Settings.Settings.instance().moduleSetting('console-eager-eval');
     this.eagerEvalSetting.addChangeListener(this.eagerSettingChanged.bind(this));
     this.eagerPreviewElement.classList.toggle('hidden', !this.eagerEvalSetting.get());
 
@@ -90,7 +123,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.#argumentHintsState = argumentHints[0];
 
     const autocompleteOnEnter = TextEditor.Config.DynamicSetting.bool(
-        'consoleAutocompleteOnEnter', [], TextEditor.Config.conservativeCompletion);
+        'console-autocomplete-on-enter', [], TextEditor.Config.conservativeCompletion);
 
     const extensions = [
       CodeMirror.keymap.of(this.editorKeymap()),
@@ -101,26 +134,19 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       TextEditor.Config.baseConfiguration(this.initialText),
       TextEditor.Config.autocompletion.instance(),
       CodeMirror.javascript.javascriptLanguage.data.of({
-        autocomplete: (context: CodeMirror.CompletionContext): CodeMirror.CompletionResult | null =>
+        autocomplete: (context: CodeMirror.CompletionContext) =>
             this.addCompletionsFromHistory ? this.#editorHistory.historyCompletions(context) : null,
       }),
       CodeMirror.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.consolePrompt)}),
       CodeMirror.EditorView.lineWrapping,
       CodeMirror.autocompletion({aboveCursor: true}),
+      this.#javaScriptCompletionCompartment.of(this.#getJavaScriptCompletionExtensions()),
     ];
-    if (Root.Runtime.Runtime.queryParam('noJavaScriptCompletion') !== 'true') {
-      extensions.push(
-          CodeMirror.javascript.javascript(),
-          TextEditor.JavaScript.completion(),
-      );
-    } else {
-      extensions.push(CodeMirror.javascript.javascriptLanguage);
-    }
     const doc = this.initialText;
     const editorState = CodeMirror.EditorState.create({doc, extensions});
 
     this.editor = new TextEditor.TextEditor.TextEditor(editorState);
-    this.editor.addEventListener('keydown', (event): void => {
+    this.editor.addEventListener('keydown', event => {
       if (event.defaultPrevented) {
         event.stopPropagation();
       }
@@ -137,6 +163,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     // Record the console tool load time after the console prompt constructor is complete.
     Host.userMetrics.panelLoaded('console', 'DevTools.Launch.Console');
+
+    this.element.setAttribute('jslog', `${VisualLogging.textField('console-prompt').track({keydown: 'Enter'})}`);
   }
 
   private eagerSettingChanged(): void {
@@ -233,26 +261,26 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   private editorKeymap(): readonly CodeMirror.KeyBinding[] {
     return [
-      {key: 'ArrowUp', run: (): boolean => this.#editorHistory.moveHistory(Direction.BACKWARD)},
-      {key: 'ArrowDown', run: (): boolean => this.#editorHistory.moveHistory(Direction.FORWARD)},
-      {mac: 'Ctrl-p', run: (): boolean => this.#editorHistory.moveHistory(Direction.BACKWARD, true)},
-      {mac: 'Ctrl-n', run: (): boolean => this.#editorHistory.moveHistory(Direction.FORWARD, true)},
+      {key: 'ArrowUp', run: () => this.#editorHistory.moveHistory(Direction.BACKWARD)},
+      {key: 'ArrowDown', run: () => this.#editorHistory.moveHistory(Direction.FORWARD)},
+      {mac: 'Ctrl-p', run: () => this.#editorHistory.moveHistory(Direction.BACKWARD, true)},
+      {mac: 'Ctrl-n', run: () => this.#editorHistory.moveHistory(Direction.FORWARD, true)},
       {
         key: 'Escape',
-        run: (): boolean => {
+        run: () => {
           return TextEditor.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState);
         },
       },
       {
         key: 'Ctrl-Enter',
-        run: (): boolean => {
+        run: () => {
           void this.handleEnter(/* forceEvaluate */ true);
           return true;
         },
       },
       {
         key: 'Enter',
-        run: (): boolean => {
+        run: () => {
           void this.handleEnter();
           return true;
         },
@@ -269,10 +297,39 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (forceEvaluate || selection.main.head < doc.length) {
       return true;
     }
-    return await TextEditor.JavaScript.isExpressionComplete(doc.toString());
+    const currentExecutionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
+    const isExpressionComplete = await TextEditor.JavaScript.isExpressionComplete(doc.toString());
+    if (currentExecutionContext !== UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext)) {
+      // We should not evaluate if the current context has changed since user action
+      return false;
+    }
+    return isExpressionComplete;
+  }
+
+  showSelfXssWarning(): void {
+    Common.Console.Console.instance().warn(
+        i18nString(UIStrings.selfXssWarning, {PH1: i18nString(UIStrings.allowPasting)}));
+    this.#selfXssWarningShown = true;
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelfXssWarningConsoleMessageShown);
+    this.#updateJavaScriptCompletionCompartment();
   }
 
   private async handleEnter(forceEvaluate?: boolean): Promise<void> {
+    if (this.#selfXssWarningShown && this.text() === i18nString(UIStrings.allowPasting)) {
+      Common.Console.Console.instance().log(this.text());
+      this.editor.dispatch({
+        changes: {from: 0, to: this.editor.state.doc.length},
+        scrollIntoView: true,
+      });
+      Common.Settings.Settings.instance()
+          .createSetting('disable-self-xss-warning', false, Common.Settings.SettingStorageType.Synced)
+          .set(true);
+      this.#selfXssWarningShown = false;
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelfXssAllowPastingInConsole);
+      this.#updateJavaScriptCompletionCompartment();
+      return;
+    }
+
     if (await this.enterWillEvaluate(forceEvaluate)) {
       this.appendCommand(this.text(), true);
       TextEditor.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState);
@@ -312,7 +369,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private async evaluateCommandInConsole(
       executionContext: SDK.RuntimeModel.ExecutionContext, message: SDK.ConsoleModel.ConsoleMessage, expression: string,
       useCommandLineAPI: boolean): Promise<void> {
-    if (Root.Runtime.experiments.isEnabled('evaluateExpressionsWithSourceMaps')) {
+    if (Root.Runtime.experiments.isEnabled('evaluate-expressions-with-source-maps')) {
       const callFrame = executionContext.debuggerModel.selectedCallFrame();
       if (callFrame) {
         const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame);
@@ -325,7 +382,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
         ?.evaluateCommandInConsole(executionContext, message, expression, useCommandLineAPI);
   }
 
-  private async substituteNames(expression: string, mapping: Map<string, string>): Promise<string> {
+  private async substituteNames(expression: string, mapping: Map<string, string|null>): Promise<string> {
     try {
       return await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(expression, mapping);
     } catch {

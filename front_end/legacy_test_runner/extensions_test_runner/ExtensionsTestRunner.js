@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as UI from '../../ui/legacy/legacy.js';
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
@@ -37,9 +38,11 @@ function onEvaluate(message, port) {
 
 ExtensionsTestRunner.showPanel = function(panelId) {
   if (panelId === 'extension') {
-    panelId = self.UI.inspectorView.tabbedPane.tabs[self.UI.inspectorView.tabbedPane.tabs.length - 1].id;
+    panelId = UI.InspectorView.InspectorView.instance()
+                  .tabbedPane.tabs[UI.InspectorView.InspectorView.instance().tabbedPane.tabs.length - 1]
+                  .id;
   }
-  return self.UI.inspectorView.showPanel(panelId);
+  return UI.InspectorView.InspectorView.instance().showPanel(panelId);
 };
 
 ExtensionsTestRunner.evaluateInExtension = function(code) {

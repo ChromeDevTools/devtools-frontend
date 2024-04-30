@@ -29,9 +29,13 @@ const UIStrings = {
    */
   startInstrumentingCoverageAnd: 'Start instrumenting coverage and reload page',
   /**
-   *@description Label for a button to reload the current page
+   *@description Title of an action in the Coverage tool to clear all data.
    */
-  reloadPage: 'Reload page',
+  clearCoverage: 'Clear coverage',
+  /**
+   *@description Title of an action in the Coverage tool to export the data.
+   */
+  exportCoverage: 'Export coverage',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/coverage/coverage-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -43,6 +47,13 @@ async function loadCoverageModule(): Promise<typeof Coverage> {
     loadedCoverageModule = await import('./coverage.js');
   }
   return loadedCoverageModule;
+}
+
+function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (coverageModule: typeof Coverage) => T[]): T[] {
+  if (loadedCoverageModule === undefined) {
+    return [];
+  }
+  return getClassCallBack(loadedCoverageModule);
 }
 
 UI.ViewManager.registerViewExtension({
@@ -66,7 +77,7 @@ UI.ActionRegistration.registerActionExtension({
   toggleWithRedColor: true,
   async loadActionDelegate() {
     const Coverage = await loadCoverageModule();
-    return Coverage.CoverageView.ActionDelegate.instance();
+    return new Coverage.CoverageView.ActionDelegate();
   },
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
   options: [
@@ -86,19 +97,36 @@ UI.ActionRegistration.registerActionExtension({
   iconClass: UI.ActionRegistration.IconClass.REFRESH,
   async loadActionDelegate() {
     const Coverage = await loadCoverageModule();
-    return Coverage.CoverageView.ActionDelegate.instance();
+    return new Coverage.CoverageView.ActionDelegate();
   },
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
   title: i18nLazyString(UIStrings.startInstrumentingCoverageAnd),
 });
 
 UI.ActionRegistration.registerActionExtension({
-  actionId: 'coverage.reload',
-  iconClass: UI.ActionRegistration.IconClass.REFRESH,
+  actionId: 'coverage.clear',
+  iconClass: UI.ActionRegistration.IconClass.CLEAR,
+  category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
+  title: i18nLazyString(UIStrings.clearCoverage),
   async loadActionDelegate() {
     const Coverage = await loadCoverageModule();
-    return Coverage.CoverageView.ActionDelegate.instance();
+    return new Coverage.CoverageView.ActionDelegate();
   },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Coverage => [Coverage.CoverageView.CoverageView]);
+  },
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'coverage.export',
+  iconClass: UI.ActionRegistration.IconClass.DOWNLOAD,
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
-  title: i18nLazyString(UIStrings.reloadPage),
+  title: i18nLazyString(UIStrings.exportCoverage),
+  async loadActionDelegate() {
+    const Coverage = await loadCoverageModule();
+    return new Coverage.CoverageView.ActionDelegate();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Coverage => [Coverage.CoverageView.CoverageView]);
+  },
 });

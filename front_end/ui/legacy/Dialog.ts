@@ -29,17 +29,16 @@
  */
 
 import * as Common from '../../core/common/common.js';
+import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
+import dialogStyles from './dialog.css.legacy.js';
 import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
 import {InspectorView} from './InspectorView.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
 import {type SplitWidget} from './SplitWidget.js';
 import {type DevToolsCloseButton} from './UIUtils.js';
-
-import {WidgetFocusRestorer, type WidgetElement} from './Widget.js';
-
-import dialogStyles from './dialog.css.legacy.js';
+import {type WidgetElement, WidgetFocusRestorer} from './Widget.js';
 
 export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof GlassPane>(GlassPane) {
   private tabIndexBehavior: OutsideTabIndexBehavior;
@@ -50,11 +49,14 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
   private readonly targetDocumentKeyDownHandler: (event: Event) => void;
   private escapeKeyCallback: ((arg0: Event) => void)|null;
 
-  constructor() {
+  constructor(jslogContext?: string) {
     super();
     this.registerRequiredCSS(dialogStyles);
     this.contentElement.tabIndex = 0;
     this.contentElement.addEventListener('focus', () => this.widget().focus(), false);
+    if (jslogContext) {
+      this.contentElement.setAttribute('jslog', `${VisualLogging.dialog(jslogContext).track({resize: true})}`);
+    }
     this.widget().setDefaultFocusedElement(this.contentElement);
     this.setPointerEventsBehavior(PointerEventsBehavior.BlockedByGlassPane);
     this.setOutsideClickCallback(event => {
@@ -214,9 +216,7 @@ export type EventTypes = {
   [Events.Hidden]: void,
 };
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum OutsideTabIndexBehavior {
+export const enum OutsideTabIndexBehavior {
   DisableAllOutsideTabIndex = 'DisableAllTabIndex',
   PreserveMainViewTabIndex = 'PreserveMainViewTabIndex',
   PreserveTabIndex = 'PreserveTabIndex',

@@ -2,16 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../test_runner/test_runner.js';
-import '../../panels/application/application-legacy.js';
-import '../../panels/sources/sources-legacy.js';
-import '../sources_test_runner/sources_test_runner.js';
-import './CacheStorageTestRunner.js';
-import './IndexedDBTestRunner.js';
-import './ResourceTreeTestRunner.js';
-import './ResourcesTestRunner.js';
-import './ServiceWorkersTestRunner.js';
-import './StorageTestRunner.js';
+import * as CacheStorageTestRunner from './CacheStorageTestRunner.js';
+import * as IndexedDBTestRunner from './IndexedDBTestRunner.js';
+import * as ResourcesTestRunner from './ResourcesTestRunner.js';
+import * as ResourceTreeTestRunner from './ResourceTreeTestRunner.js';
+import * as ServiceWorkersTestRunner from './ServiceWorkersTestRunner.js';
+import * as StorageTestRunner from './StorageTestRunner.js';
 
-const {ApplicationTestRunner} = self;
-export {ApplicationTestRunner};
+export const ApplicationTestRunner = {
+  ...CacheStorageTestRunner,
+  ...IndexedDBTestRunner,
+  ...ResourcesTestRunner,
+  ...ResourceTreeTestRunner,
+  ...ServiceWorkersTestRunner,
+  ...StorageTestRunner,
+};

@@ -6,9 +6,10 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
-import * as UI from '../../ui/legacy/legacy.js';
-import * as NetworkForward from '../../panels/network/forward/forward.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as NetworkForward from '../../panels/network/forward/forward.js';
+import * as UI from '../../ui/legacy/legacy.js';
+
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
 
 const UIStrings = {
@@ -67,7 +68,7 @@ export class AffectedCookiesView extends AffectedResourcesView {
     element.classList.add('affected-resource-cookie');
     const name = document.createElement('td');
     if (hasAssociatedRequest) {
-      name.appendChild(UI.UIUtils.createTextButton(cookie.name, () => {
+      const button = UI.UIUtils.createTextButton(cookie.name, () => {
         Host.userMetrics.issuesPanelResourceOpened(this.issue.getCategory(), AffectedItem.Cookie);
         void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
           {
@@ -83,7 +84,11 @@ export class AffectedCookiesView extends AffectedResourcesView {
             filterValue: cookie.path,
           },
         ]));
-      }, 'link-style devtools-link'));
+      }, {
+        className: 'link-style devtools-link',
+        jslogContext: 'issues.filter-network-requests-by-cookie',
+      });
+      name.appendChild(button);
     } else {
       name.textContent = cookie.name;
     }
@@ -121,7 +126,10 @@ export class AffectedRawCookieLinesView extends AffectedResourcesView {
               filterValue: cookie.rawCookieLine,
             },
           ]));
-        }, 'link-style devtools-link');
+        }, {
+          className: 'link-style devtools-link',
+          jslogContext: 'issues.filter-network-requests-by-raw-cookie',
+        });
         textButton.title = i18nString(UIStrings.filterSetCookieTitle);
         cookieLine.appendChild(textButton);
         row.appendChild(cookieLine);

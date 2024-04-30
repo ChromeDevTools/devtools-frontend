@@ -4,6 +4,7 @@
 
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_pre_built.gni")
+import("../../../../third_party/typescript/typescript.gni")
 import("../../visibility.gni")
 
 devtools_pre_built("client-variations") {
@@ -22,9 +23,17 @@ devtools_entrypoint("bundle") {
   deps = [ ":client-variations" ]
 
   visibility = [
-    "../../../../test/unittests/front_end/client_variations/*",
+    ":*",
     "../../../panels/network/*",
   ]
 
   visibility += devtools_third_party_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "ClientVariations.test.ts" ]
+
+  deps = [ ":bundle" ]
 }

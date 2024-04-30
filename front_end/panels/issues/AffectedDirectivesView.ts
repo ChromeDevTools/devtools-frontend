@@ -36,13 +36,13 @@ const UIStrings = {
    */
   directiveC: 'Directive',
   /**
-   *@description Label for the column in the element list in the CSS Overview report
+   *@description Label for the column in the element list in the CSS overview report
    */
   element: 'Element',
   /**
    *@description Header for the source location column
    */
-  sourceLocation: 'Source Location',
+  sourceLocation: 'Source location',
   /**
    *@description Text for the status of something
    */
@@ -93,7 +93,7 @@ export class AffectedDirectivesView extends AffectedResourcesView {
       const violatingNodeId = nodeId;
       elementsPanelLinkComponent.title = i18nString(UIStrings.clickToRevealTheViolatingDomNode);
 
-      const onElementRevealIconClick: (arg0?: Event|undefined) => void = (): void => {
+      const onElementRevealIconClick: (arg0?: Event|undefined) => void = () => {
         const target = model.getTargetIfNotDisposed();
         if (target) {
           Host.userMetrics.issuesPanelResourceOpened(this.issue.getCategory(), AffectedItem.Element);
@@ -102,7 +102,7 @@ export class AffectedDirectivesView extends AffectedResourcesView {
         }
       };
 
-      const onElementRevealIconMouseEnter: (arg0?: Event|undefined) => void = (): void => {
+      const onElementRevealIconMouseEnter: (arg0?: Event|undefined) => void = () => {
         const target = model.getTargetIfNotDisposed();
         if (target) {
           const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, violatingNodeId);
@@ -112,7 +112,7 @@ export class AffectedDirectivesView extends AffectedResourcesView {
         }
       };
 
-      const onElementRevealIconMouseLeave: (arg0?: Event|undefined) => void = (): void => {
+      const onElementRevealIconMouseLeave: (arg0?: Event|undefined) => void = () => {
         SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
       };
 

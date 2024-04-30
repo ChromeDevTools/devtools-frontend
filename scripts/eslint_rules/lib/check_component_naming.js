@@ -16,8 +16,8 @@ module.exports = {
     messages: {
       noStaticTagName: 'Found a component class that does not define a static litTagName property.',
       noTSInterface: 'Could not find the TS interface declaration for the component {{ tagName }}.',
-      noDefineCall: 'Could not find a defineComponent() call for the component {{ tagName }}.',
-      defineCallNonLiteral: 'defineComponent() first argument must be a string literal.',
+      noDefineCall: 'Could not find a customElements.define() call for the component {{ tagName }}.',
+      defineCallNonLiteral: 'customElements.define() first argument must be a string literal.',
       staticLiteralInvalid: 'static readonly litTagName must use a literal string, with no interpolation.',
       duplicateStaticLitTagName: 'found a duplicated litTagName: {{ tagName }}',
       litTagNameNotLiteral:
@@ -49,7 +49,7 @@ module.exports = {
       });
     }
 
-    function findCustomElementsDefineComponentCalls(programNode) {
+    function findCustomElementsDefineCalls(programNode) {
       return programNode.body.filter(node => {
         if (node.type !== 'ExpressionStatement') {
           return false;
@@ -59,13 +59,12 @@ module.exports = {
           return false;
         }
 
-        if (node.expression.callee.property) {
-          // matches ComponentHelpers.CustomElements.defineComponent()
-          return node.expression.callee.property.name === 'defineComponent';
+        if (node.expression.callee.type !== 'MemberExpression') {
+          return false;
         }
 
-        // matches defineComponent() which may have been destructured
-        return node.expression.callee.name === 'defineComponent';
+        return node.expression.callee.object.name === 'customElements' &&
+            node.expression.callee.property.name === 'define';
       });
     }
 
@@ -96,7 +95,7 @@ module.exports = {
     const componentClassDefinitionLitTagNameNodes = new Map();
 
     /** @type {Set<string>} */
-    const defineComponentCallsFound = new Set();
+    const customElementsDefineCallsFound = new Set();
 
     /** @type {Set<string>} */
     const tsInterfaceExtendedEntriesFound = new Set();
@@ -108,7 +107,7 @@ module.exports = {
          * definition and then checks that for each class found that extends
          * HTMLElement, we have:
          * 1) the class with a static readonly litTagName
-         * 2) The call to defineComponent
+         * 2) The call to customElements.define()
          * 3) The global interface extension
          * And that for each of those, the component name string (e.g. 'devtools-foo') is the same.
          */
@@ -160,10 +159,10 @@ module.exports = {
           componentClassDefinitionLitTagNameNodes.set(componentTagName, componentClassDefinition);
         }
 
-        // Find all defineComponent() calls and store the arguments to them.
+        // Find all customElements.define() calls and store the arguments to them.
 
-        // Now find the CustomElements.defineComponent() line
-        const customElementsDefineCalls = findCustomElementsDefineComponentCalls(node);
+        // Now find the customElements.define() line
+        const customElementsDefineCalls = findCustomElementsDefineCalls(node);
         for (const customElementsDefineCall of customElementsDefineCalls) {
           const firstArgumentToDefineCall = customElementsDefineCall.expression.arguments[0];
           if (!firstArgumentToDefineCall || firstArgumentToDefineCall.type !== 'Literal') {
@@ -174,7 +173,7 @@ module.exports = {
             return;
           }
           const tagNamePassedToDefineCall = firstArgumentToDefineCall.value;
-          defineComponentCallsFound.add(tagNamePassedToDefineCall);
+          customElementsDefineCallsFound.add(tagNamePassedToDefineCall);
         }
         const allTSDeclareGlobalInterfaceCalls = findTypeScriptDeclareGlobalHTMLInterfaceCalls(node);
 
@@ -188,7 +187,7 @@ module.exports = {
 
         for (const [tagName, classNode] of componentClassDefinitionLitTagNameNodes) {
           // Check that each tagName has a matching entry in both other places we expect it.
-          if (!defineComponentCallsFound.has(tagName)) {
+          if (!customElementsDefineCallsFound.has(tagName)) {
             context.report({node: classNode, messageId: 'noDefineCall', data: {tagName}});
           }
           if (!tsInterfaceExtendedEntriesFound.has(tagName)) {

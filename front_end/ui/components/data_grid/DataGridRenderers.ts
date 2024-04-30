@@ -15,3 +15,10 @@ export const codeBlockRenderer = (value: CellValue): LitHtml.TemplateResult|type
   const stringValue = String(value);
   return LitHtml.html`<code>${stringValue}</code>`;
 };
+
+export const iconRenderer = (icon: CellValue): LitHtml.TemplateResult|typeof LitHtml.nothing => {
+  if (!icon) {
+    return LitHtml.nothing;
+  }
+  return LitHtml.html`<div style="display: flex; justify-content: center;">${icon}</div>`;
+};

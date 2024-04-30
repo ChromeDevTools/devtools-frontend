@@ -1,6 +1,7 @@
 file://config/owner/ENG_REVIEW_OWNERS
 
 alexrudenko@chromium.org
+alinavarkki@chromium.org
 andoli@chromium.org
 bmeurer@chromium.org
 changhaohan@chromium.org
@@ -8,6 +9,7 @@ dsv@chromium.org
 ergunsh@chromium.org
 jacktfranklin@chromium.org
 jarin@chromium.org
+jrandolf@chromium.org
 kimanh@chromium.org
 kprokopenko@chromium.org
 leese@chromium.org
@@ -23,3 +25,4 @@ szuend@chromium.org
 victorporof@chromium.org
 wolfi@chromium.org
 yangguo@chromium.org
+devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com

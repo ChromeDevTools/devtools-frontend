@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 
 import("//build/toolchain/rbe.gni")
+import("//build/toolchain/siso.gni")
 import("../../scripts/build/ninja/vars.gni")
 
 declare_args() {
@@ -57,6 +58,10 @@ template("ts_library") {
                            ])
 
     inputs += [
+      "//third_party/node/node.py",
+      "//third_party/node/node_modules.py",
+      "//third_party/node/node_modules.tar.gz.sha1",
+      devtools_location_prepend + "scripts/devtools_paths.py",
       devtools_location_prepend + "config/typescript/tsconfig.base.json",
       devtools_location_prepend + "node_modules/typescript/lib/tsc.js",
       devtools_location_prepend + "front_end/legacy/legacy-defs.d.ts",
@@ -65,6 +70,15 @@ template("ts_library") {
           "front_end/global_typings/request_idle_callback.d.ts",
       devtools_location_prepend + "node_modules/@types/filesystem/index.d.ts",
     ]
+
+    # When use_remoteexec=true or use_siso=true, node actions run on remote
+    # Linux worker. So it should include linux node binary in inputs.
+    if (use_remoteexec || use_siso) {
+      inputs += [
+        "//third_party/node/linux/node-linux-x64.tar.gz.sha1",
+        "//third_party/node/linux/node-linux-x64/bin/node",
+      ]
+    }
 
     _typescript_config_name = target_name
 
@@ -79,11 +93,12 @@ template("ts_library") {
     ]
 
     assert(
-        defined(sources) || defined(deps),
-        "You must either specify an array of 'sources' or 'deps' for $target_name")
+        defined(sources) || defined(deps) || defined(invoker.sourceslist),
+        "You must either specify an array of 'sources' or 'deps' or a 'sourceslist' for $target_name")
 
     _test_only = defined(invoker.testonly) && invoker.testonly
     _no_emit = defined(invoker.no_emit) && invoker.no_emit
+    _tsconfig_only = defined(invoker.tsconfigonly) && invoker.tsconfigonly
     _verify_lib_check =
         defined(invoker.verify_lib_check) && invoker.verify_lib_check
     _rootdir = "."
@@ -125,6 +140,17 @@ template("ts_library") {
         devtools_location_prepend + "node_modules/@types/sinon/index.d.ts",
         devtools_location_prepend +
             "node_modules/@types/karma-chai-sinon/index.d.ts",
+      ]
+    }
+
+    if (_tsconfig_only) {
+      args += [ "--tsconfig-only" ]
+    }
+
+    if (defined(invoker.sourceslist)) {
+      args += [
+        "--sources-list",
+        rebase_path(invoker.sourceslist, root_build_dir),
       ]
     }
 
@@ -209,6 +235,28 @@ template("ts_library") {
     }
 
     outputs = output_files
+
+    _data = outputs
+    if (defined(invoker.data)) {
+      _data += invoker.data
+    }
+    _javascript_implementation_files = filter_include(_data, [ "*.js" ])
+    _javascript_map_files = filter_include(_data, [ "*.map" ])
+
+    data = _javascript_implementation_files + _javascript_map_files
+
+    ts_files = []
+    if (defined(sources)) {
+      ts_files = rebase_path(sources, root_build_dir)
+    }
+
+    metadata = {
+      typescript_files = ts_files
+    }
+
+    if (is_debug) {
+      metadata.grd_files = _javascript_implementation_files
+    }
   }
 }
 

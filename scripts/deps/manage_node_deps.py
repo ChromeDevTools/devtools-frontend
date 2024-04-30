@@ -3,7 +3,6 @@
 # Copyright 2019 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
-
 """
 Helper to manage DEPS. Use this script to update node_modules instead of
 running npm install manually. To upgrade a dependency, change the version
@@ -41,10 +40,10 @@ LICENSES = [
 # List all DEPS here.
 DEPS = {
     "@istanbuljs/schema": "0.1.3",
-    "@puppeteer/replay": "2.9.0",
     "@types/chai": "4.3.0",
     "@types/codemirror": "5.60.7",
     "@types/estree": "0.0.50",
+    "@types/emscripten": "1.39.4",
     "@types/filesystem": "0.0.32",
     "@types/istanbul-lib-coverage": "2.0.4",
     "@types/istanbul-lib-instrument": "1.7.4",
@@ -90,20 +89,20 @@ DEPS = {
     "postcss": "8.4.5",
     "cssnano": "5.1.14",
     "cssnano-preset-lite": "2.1.3",
-    "puppeteer": "20.1.2",
+    "puppeteer-core": "22.3.0",
     "recast": "0.20.5",
     "rimraf": "3.0.2",
     "rollup": "2.63.0",
-    "rollup-plugin-minify-html-template-literals": "1.2.0",
     "rollup-plugin-sourcemaps": "0.6.2",
     "rollup-plugin-terser": "7.0.2",
+    "@rollup/plugin-node-resolve": "10.0.0",
     "sinon": "12.0.1",
     "source-map-support": "0.5.21",
     "stylelint": "14.2.0",
     "stylelint-config-standard": "24.0.0",
     "svgo": "2.8.0",
-    "terser": "5.10.0",
-    "typescript": "5.1.3",
+    "terser": "5.19.1",
+    "typescript": "5.2.2",
     "ws": "8.4.0",
     "yargs": "17.3.1",
     "glob": "7.1.7",
@@ -113,8 +112,11 @@ DEPS = {
 
 ADDITIONAL_NPM_ARGS = [
     # This is to avoid downloading esbuild-* package.
-    '--omit', 'optional', '--ignore-scripts'
+    '--omit',
+    'optional',
+    '--ignore-scripts'
 ]
+
 
 def load_json_file(location):
     # By default, json load uses a standard Python dictionary, which is not ordered.
@@ -127,11 +129,10 @@ def load_json_file(location):
     # that package.
     return json.load(location, object_pairs_hook=OrderedDict)
 
+
 def exec_command(cmd):
     try:
         new_env = os.environ.copy()
-        # Prevent large files from being checked in to git.
-        new_env["PUPPETEER_SKIP_CHROMIUM_DOWNLOAD"] = "true"
         cmd_proc_result = subprocess.check_call(cmd,
                                                 cwd=devtools_paths.root_path(),
                                                 env=new_env)
@@ -145,8 +146,7 @@ def exec_command(cmd):
 def ensure_licenses():
     cmd = [
         devtools_paths.node_path(),
-        devtools_paths.license_checker_path(),
-        '--onlyAllow',
+        devtools_paths.license_checker_path(), '--onlyAllow',
         ('%s' % (';'.join(LICENSES)))
     ]
 
@@ -174,7 +174,10 @@ def strip_private_fields():
 
                 pkg_file.truncate(0)
                 pkg_file.seek(0)
-                json.dump(updated_pkg_data, pkg_file, indent=2, separators=(',', ': '))
+                json.dump(updated_pkg_data,
+                          pkg_file,
+                          indent=2,
+                          separators=(',', ': '))
                 pkg_file.write('\n')
             except:
                 print('Unable to fix: %s, %s' % (pkg, sys.exc_info()))
@@ -193,7 +196,8 @@ def install_missing_deps():
 
             # Find any new DEPS and add them in.
             for dep, version in DEPS.items():
-                if not dep in existing_deps or not existing_deps[dep]['version'] == version:
+                if not dep in existing_deps or not existing_deps[dep][
+                        'version'] == version:
                     new_deps.append("%s@%s" % (dep, version))
 
             # Now install.
@@ -255,7 +259,8 @@ def remove_package_json_entries():
 
 
 def addClangFormat():
-    with open(path.join(devtools_paths.node_modules_path(), '.clang-format'), 'w+') as clang_format_file:
+    with open(path.join(devtools_paths.node_modules_path(), '.clang-format'),
+              'w+') as clang_format_file:
         try:
             clang_format_file.write('DisableFormat: true\n')
         except:
@@ -274,12 +279,17 @@ def addOwnersFile():
             return True
     return False
 
+
 def addChromiumReadme():
     with open(path.join(devtools_paths.node_modules_path(), 'README.chromium'),
               'w+') as readme_file:
         try:
-            readme_file.write('This directory hosts all packages downloaded from NPM that are used in either the build system or infrastructure scripts.\n')
-            readme_file.write('If you want to make any changes to this directory, please see "scripts/deps/manage_node_deps.py".\n')
+            readme_file.write(
+                'This directory hosts all packages downloaded from NPM that are used in either the build system or infrastructure scripts.\n'
+            )
+            readme_file.write(
+                'If you want to make any changes to this directory, please see "scripts/deps/manage_node_deps.py".\n'
+            )
         except:
             print('Unable to write README.chromium file')
             return True
@@ -289,7 +299,9 @@ def addChromiumReadme():
 def run_npm_command(npm_command_args=None):
     for (name, version) in DEPS.items():
         if (version.find('^') == 0):
-            print('Versions must be locked to a specific version; remove ^ from the start of the version.')
+            print(
+                'Versions must be locked to a specific version; remove ^ from the start of the version.'
+            )
             return True
 
     run_custom_command = npm_command_args is not None

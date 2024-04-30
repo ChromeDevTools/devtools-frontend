@@ -22,7 +22,7 @@
 }
 
 .subtitle {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   margin-right: 3px;
   overflow: hidden;
   padding-left: 8px;

@@ -30,6 +30,7 @@
 
 import * as Platform from '../../core/platform/platform.js';
 
+import {ContentData, type ContentDataOrError} from './ContentData.js';
 import {SearchMatch} from './ContentProvider.js';
 import {Text} from './Text.js';
 
@@ -42,7 +43,7 @@ export const Utils = {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/naming-convention
   get _regexFilterRegex(): RegExp {
-    return /(?:^|\s)(\-)?\/([^\s]+)\//;
+    return /(?:^|\s)(\-)?\/([^\/\\]+(\\.[^\/]*)*)\//;
   },
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -263,6 +264,77 @@ export class BalancedJSONTokenizer {
 }
 
 /**
+ * Detects the indentation used by a given text document, based on the _Comparing
+ * lines_ approach suggested by Heather Arthur (and also found in Firefox DevTools).
+ *
+ * This implementation differs from the original proposal in that tab indentation
+ * isn't detected by checking if at least 50% of the lines start with a tab, but
+ * instead by comparing the number of lines that start with a tab to the frequency
+ * of the other indentation patterns. This way we also detect small snippets with
+ * long leading comments correctly, when tab indentation is used for the snippets
+ * of code.
+ *
+ * @param lines The input document lines.
+ * @return The indentation detected for the lines as string or `null` if it's inconclusive.
+ *
+ * @see https://heathermoor.medium.com/detecting-code-indentation-eff3ed0fb56b
+ */
+export const detectIndentation = function(lines: Iterable<string>): string|null {
+  const frequencies: Array<number> = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+  let tabs = 0, previous = 0;
+
+  for (const line of lines) {
+    let current = 0;
+    if (line.length !== 0) {
+      let char = line.charAt(0);
+      if (char === '\t') {
+        tabs++;
+        continue;
+      }
+      while (char === ' ') {
+        char = line.charAt(++current);
+      }
+    }
+
+    if (current === line.length) {
+      // Don't consider empty lines.
+      previous = 0;
+      continue;
+    }
+
+    const delta = Math.abs(current - previous);
+    if (delta < frequencies.length) {
+      // Don't consider deltas above 8 characters.
+      frequencies[delta] = frequencies[delta] + 1;
+    }
+    previous = current;
+  }
+
+  // Find most frequent non-zero width difference between adjacent lines.
+  let mostFrequentDelta = 0, highestFrequency = 0;
+  for (let delta = 1; delta < frequencies.length; ++delta) {
+    const frequency = frequencies[delta];
+    if (frequency > highestFrequency) {
+      highestFrequency = frequency;
+      mostFrequentDelta = delta;
+    }
+  }
+
+  if (tabs > mostFrequentDelta) {
+    // If more lines start with tabs than any other indentation,
+    // we assume that the document was written with tab indentation
+    // in mind. This differs from the original algorithm.
+    return '\t';
+  }
+
+  if (!mostFrequentDelta) {
+    return null;
+  }
+
+  return ' '.repeat(mostFrequentDelta);
+};
+
+/**
  * Heuristic to check whether a given text was likely minified. Intended to
  * be used for HTML, CSS, and JavaScript inputs.
  *
@@ -284,6 +356,24 @@ export const isMinified = function(text: string): boolean {
   return (text.length - lineCount) / lineCount >= 80;
 };
 
+/**
+ * Small wrapper around {@link performSearchInContent} to reduce boilerplate when searching
+ * in {@link ContentDataOrError}.
+ *
+ * @returns empty search matches if `contentData` is an error or not text content.
+ */
+export const performSearchInContentData = function(
+    contentData: ContentDataOrError, query: string, caseSensitive: boolean, isRegex: boolean): SearchMatch[] {
+  if (ContentData.isError(contentData) || !contentData.isTextContent) {
+    return [];
+  }
+  return performSearchInContent(contentData.text, query, caseSensitive, isRegex);
+};
+
+/**
+ * @returns One {@link SearchMatch} per match. Multiple matches on the same line each
+ * result in their own `SearchMatchExact` instance.
+ */
 export const performSearchInContent = function(
     content: string, query: string, caseSensitive: boolean, isRegex: boolean): SearchMatch[] {
   const regex = Platform.StringUtilities.createSearchRegex(query, caseSensitive, isRegex);
@@ -292,14 +382,35 @@ export const performSearchInContent = function(
   const result = [];
   for (let i = 0; i < text.lineCount(); ++i) {
     const lineContent = text.lineAt(i);
-    regex.lastIndex = 0;
-    const match = regex.exec(lineContent);
-    if (match) {
-      result.push(new SearchMatch(i, lineContent, match.index));
+    const matches = lineContent.matchAll(regex);
+    for (const match of matches) {
+      result.push(new SearchMatch(i, lineContent, match.index as number, match[0].length));
     }
   }
   return result;
 };
+
+/**
+ * Similar to {@link performSearchInContent} but doesn't search in a whole text but rather
+ * finds the exact matches on a prelminiary search result (i.e. lines with known matches).
+ * @param matches is deliberatedly typed as an object literal so we can pass the
+ *                CDP search result type.
+ */
+export const performSearchInSearchMatches = function(
+    matches: {lineNumber: number, lineContent: string}[], query: string, caseSensitive: boolean,
+    isRegex: boolean): SearchMatch[] {
+  const regex = Platform.StringUtilities.createSearchRegex(query, caseSensitive, isRegex);
+  const result = [];
+
+  for (const {lineNumber, lineContent} of matches) {
+    const matches = lineContent.matchAll(regex);
+    for (const match of matches) {
+      result.push(new SearchMatch(lineNumber, lineContent, match.index as number, match[0].length));
+    }
+  }
+  return result;
+};
+
 export interface ParsedFilter {
   key?: string;
   text?: string|null;

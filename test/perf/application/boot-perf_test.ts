@@ -5,41 +5,53 @@
 import {performance} from 'perf_hooks';
 
 import {reloadDevTools} from '../../shared/helper.js';
-import {mean, percentile, storeGeneratedResults} from '../helpers/perf-helper.js';
-
-interface PerfTimings {
-  bootperf: number[];
-  mean: number;
-  percentile50: number;
-  percentile90: number;
-  percentile99: number;
-}
-
-const RUNS = 37;
+import {mean, percentile} from '../helpers/perf-helper.js';
+import {addBenchmarkResult, type Benchmark} from '../report/report.js';
 
 describe('Boot performance', () => {
-  const times: PerfTimings = {
-    bootperf: [],
-    mean: 0,
-    percentile50: 0,
-    percentile90: 0,
-    percentile99: 0,
+  const RUNS = 10;
+  const testValues = {
+    name: 'BootPerf',
+    values: [] as number[],
   };
 
-  after(async () => {
+  after(() => {
+    const values = testValues.values;
+    const meanMeasure = Number(mean(values).toFixed(2));
+    const percentile50 = Number(percentile(values, 0.5).toFixed(2));
+    const percentile90 = Number(percentile(values, 0.9).toFixed(2));
+    const percentile99 = Number(percentile(values, 0.99).toFixed(2));
+
+    const benchmark: Benchmark = {
+      key: {test: testValues.name, units: 'ms'},
+      measurements: {
+        stats: [
+          {
+            value: 'mean',
+            measurement: meanMeasure,
+          },
+          {
+            value: 'percentile50',
+            measurement: percentile50,
+          },
+          {
+            value: 'percentile90',
+            measurement: percentile90,
+          },
+          {
+            value: 'percentile99',
+            measurement: percentile99,
+          },
+        ],
+      },
+    };
+    addBenchmarkResult(benchmark);
     /* eslint-disable no-console */
-    const values = times.bootperf;
-    times.mean = Number(mean(values).toFixed(2));
-    times.percentile50 = Number(percentile(values, 0.5).toFixed(2));
-    times.percentile90 = Number(percentile(values, 0.9).toFixed(2));
-    times.percentile99 = Number(percentile(values, 0.99).toFixed(2));
-
-    await storeGeneratedResults('devtools-perf.json', JSON.stringify(times));
-
-    console.log(`Mean boot time: ${times.mean}ms`);
-    console.log(`50th percentile boot time: ${times.percentile50}ms`);
-    console.log(`90th percentile boot time: ${times.percentile90}ms`);
-    console.log(`99th percentile boot time: ${times.percentile99}ms`);
+    console.log(`Benchmark name: ${testValues.name}`);
+    console.log(`Mean boot time: ${meanMeasure}ms`);
+    console.log(`50th percentile boot time: ${percentile50}ms`);
+    console.log(`90th percentile boot time: ${percentile90}ms`);
+    console.log(`99th percentile boot time: ${percentile99}ms`);
     /* eslint-enable no-console */
   });
 
@@ -50,7 +62,7 @@ describe('Boot performance', () => {
 
       // Ensure only 2 decimal places.
       const timeTaken = (performance.now() - start).toFixed(2);
-      times.bootperf.push(Number(timeTaken));
+      testValues.values.push(Number(timeTaken));
     });
   }
 });

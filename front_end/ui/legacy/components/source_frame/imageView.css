@@ -17,7 +17,7 @@
   max-width: 100%;
   max-height: 1000px;
   background-image: var(--image-file-checker);
-  box-shadow: 0 5px 10px var(--box-shadow-outline-color);
+  box-shadow: 0 5px 10px var(--sys-color-outline);
   user-select: text;
   -webkit-user-drag: auto;
 }

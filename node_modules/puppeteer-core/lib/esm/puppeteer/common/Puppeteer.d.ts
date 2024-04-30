@@ -1,22 +1,11 @@
 /**
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2017 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
-import { Browser } from '../api/Browser.js';
-import { BrowserConnectOptions } from './BrowserConnector.js';
-import { ConnectionTransport } from './ConnectionTransport.js';
-import { CustomQueryHandler } from './CustomQueryHandler.js';
+import type { Browser } from '../api/Browser.js';
+import type { ConnectOptions } from './ConnectOptions.js';
+import { type CustomQueryHandler } from './CustomQueryHandler.js';
 /**
  * Settings that are common to the Puppeteer class, regardless of environment.
  *
@@ -24,20 +13,6 @@ import { CustomQueryHandler } from './CustomQueryHandler.js';
  */
 export interface CommonPuppeteerSettings {
     isPuppeteerCore: boolean;
-}
-/**
- * @public
- */
-export interface ConnectOptions extends BrowserConnectOptions {
-    browserWSEndpoint?: string;
-    browserURL?: string;
-    transport?: ConnectionTransport;
-    /**
-     * Headers to use for the web socket connection.
-     * @remarks
-     * Only works in the Node.js environment.
-     */
-    headers?: Record<string, string>;
 }
 /**
  * The main Puppeteer class.

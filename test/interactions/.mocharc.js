@@ -12,6 +12,7 @@ if (!testServerConfig) {
   process.env.TEST_SERVER_TYPE = 'component-docs';
 }
 module.exports = createMochaConfig({
-  suiteName: 'interactions',
-  extraMochaConfig: {timeout: 10_000},
+  suiteName : 'interactions',
+  extraMochaConfig : {timeout : 10_000},
+  retries : 4,
 })

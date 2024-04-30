@@ -10,11 +10,11 @@
 }
 
 .error-input {
-  box-shadow: 0 0 0 1px var(--color-accent-red);
+  box-shadow: 0 0 0 1px var(--sys-color-error);
 }
 
 .error-text {
-  color: var(--color-accent-red);
+  color: var(--sys-color-error);
   padding: 6px 0;
 }
 
@@ -61,7 +61,7 @@
 }
 
 .font-section {
-  border-top: 1px solid var(--color-details-hairline);
+  border-top: 1px solid var(--sys-color-divider);
 }
 
 .chrome-select.font-editor-select {
@@ -135,8 +135,8 @@ input::-webkit-inner-spin-button {
   padding: 3px 7px;
   line-height: 16px;
   border: 1px solid var(--divider-line);
-  color: var(--color-text-primary);
-  background-color: var(--color-background);
+  color: var(--sys-color-on-surface);
+  background-color: var(--sys-color-cdt-base-container);
   text-align: center;
   font-weight: 500;
 }
@@ -157,7 +157,7 @@ input::-webkit-inner-spin-button {
 
 .shadow-editor-button-left:focus,
 .shadow-editor-button-right:focus {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-state-focus-highlight);
 }
 
 .shadow-editor-text-input {
@@ -176,9 +176,9 @@ input::-webkit-inner-spin-button {
 }
 
 .spectrum-switcher:hover {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .spectrum-switcher:focus-visible {
-  background-color: var(--legacy-focus-bg-color);
+  background-color: var(--sys-color-state-focus-highlight);
 }

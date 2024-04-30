@@ -1,6 +1,6 @@
 {
   "core/audits/accessibility/accesskeys.js | description": {
-    "message": "Âćĉéŝś k̂éŷś l̂ét̂ úŝér̂ś q̂úîćk̂ĺŷ f́ôćûś â ṕâŕt̂ óf̂ t́ĥé p̂áĝé. F̂ór̂ ṕr̂óp̂ér̂ ńâv́îǵât́îón̂, éâćĥ áĉćêśŝ ḱêý m̂úŝt́ b̂é ûńîq́ûé. [L̂éâŕn̂ ḿôŕê áb̂óût́ âćĉéŝś k̂éŷś](https://dequeuniversity.com/rules/axe/4.7/accesskeys)."
+    "message": "Âćĉéŝś k̂éŷś l̂ét̂ úŝér̂ś q̂úîćk̂ĺŷ f́ôćûś â ṕâŕt̂ óf̂ t́ĥé p̂áĝé. F̂ór̂ ṕr̂óp̂ér̂ ńâv́îǵât́îón̂, éâćĥ áĉćêśŝ ḱêý m̂úŝt́ b̂é ûńîq́ûé. [L̂éâŕn̂ ḿôŕê áb̂óût́ âćĉéŝś k̂éŷś](https://dequeuniversity.com/rules/axe/4.8/accesskeys)."
   },
   "core/audits/accessibility/accesskeys.js | failureTitle": {
     "message": "`[accesskey]` v̂ál̂úêś âŕê ńôt́ ûńîq́ûé"
@@ -9,7 +9,7 @@
     "message": "`[accesskey]` v̂ál̂úêś âŕê ún̂íq̂úê"
   },
   "core/audits/accessibility/aria-allowed-attr.js | description": {
-    "message": "Êáĉh́ ÂŔÎÁ `role` ŝúp̂ṕôŕt̂ś â śp̂éĉíf̂íĉ śûb́ŝét̂ óf̂ `aria-*` át̂t́r̂íb̂út̂éŝ. Ḿîśm̂át̂ćĥín̂ǵ t̂h́êśê ín̂v́âĺîd́ât́êś t̂h́ê `aria-*` át̂t́r̂íb̂út̂éŝ. [Ĺêár̂ń ĥóŵ t́ô ḿât́ĉh́ ÂŔÎÁ ât́t̂ŕîb́ût́êś t̂ó t̂h́êír̂ ŕôĺêś](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-attr)."
+    "message": "Êáĉh́ ÂŔÎÁ `role` ŝúp̂ṕôŕt̂ś â śp̂éĉíf̂íĉ śûb́ŝét̂ óf̂ `aria-*` át̂t́r̂íb̂út̂éŝ. Ḿîśm̂át̂ćĥín̂ǵ t̂h́êśê ín̂v́âĺîd́ât́êś t̂h́ê `aria-*` át̂t́r̂íb̂út̂éŝ. [Ĺêár̂ń ĥóŵ t́ô ḿât́ĉh́ ÂŔÎÁ ât́t̂ŕîb́ût́êś t̂ó t̂h́êír̂ ŕôĺêś](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-attr)."
   },
   "core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
     "message": "`[aria-*]` ât́t̂ŕîb́ût́êś d̂ó n̂ót̂ ḿât́ĉh́ t̂h́êír̂ ŕôĺêś"
@@ -17,8 +17,17 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]` ât́t̂ŕîb́ût́êś m̂át̂ćĥ t́ĥéîŕ r̂ól̂éŝ"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ÂŔÎÁ `role`ŝ én̂áb̂ĺê áŝśîśt̂ív̂é t̂éĉh́n̂ól̂óĝíêś t̂ó k̂ńôẃ t̂h́ê ŕôĺê óf̂ éâćĥ él̂ém̂én̂t́ ôń t̂h́ê ẃêb́ p̂áĝé. Îf́ t̂h́ê `role` v́âĺûéŝ ár̂é m̂íŝśp̂él̂ĺêd́, n̂ót̂ éx̂íŝt́îńĝ ÁR̂ÍÂ `role` v́âĺûéŝ, ór̂ áb̂śt̂ŕâćt̂ ŕôĺêś, t̂h́êń t̂h́ê ṕûŕp̂óŝé ôf́ t̂h́ê él̂ém̂én̂t́ ŵíl̂ĺ n̂ót̂ b́ê ćôḿm̂ún̂íĉát̂éd̂ t́ô úŝér̂ś ôf́ âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ÁR̂ÍÂ ŕôĺêś](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "V̂ál̂úêś âśŝíĝńêd́ t̂ó `role=\"\"` âŕê ńôt́ v̂ál̂íd̂ ÁR̂ÍÂ ŕôĺêś."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "V̂ál̂úêś âśŝíĝńêd́ t̂ó `role=\"\"` âŕê v́âĺîd́ ÂŔÎÁ r̂ól̂éŝ."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
-    "message": "Ŵh́êń âń êĺêḿêńt̂ d́ôéŝń't̂ h́âv́ê án̂ áĉćêśŝíb̂ĺê ńâḿê, śĉŕêén̂ ŕêád̂ér̂ś âńn̂óûńĉé ît́ ŵít̂h́ â ǵêńêŕîć n̂ám̂é, m̂ák̂ín̂ǵ ît́ ûńûśâb́l̂é f̂ór̂ úŝér̂ś ŵh́ô ŕêĺŷ ón̂ śĉŕêén̂ ŕêád̂ér̂ś. [L̂éâŕn̂ h́ôẃ t̂ó m̂ák̂é ĉóm̂ḿâńd̂ él̂ém̂én̂t́ŝ ḿôŕê áĉćêśŝíb̂ĺê](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
+    "message": "Ŵh́êń âń êĺêḿêńt̂ d́ôéŝń't̂ h́âv́ê án̂ áĉćêśŝíb̂ĺê ńâḿê, śĉŕêén̂ ŕêád̂ér̂ś âńn̂óûńĉé ît́ ŵít̂h́ â ǵêńêŕîć n̂ám̂é, m̂ák̂ín̂ǵ ît́ ûńûśâb́l̂é f̂ór̂ úŝér̂ś ŵh́ô ŕêĺŷ ón̂ śĉŕêén̂ ŕêád̂ér̂ś. [L̂éâŕn̂ h́ôẃ t̂ó m̂ák̂é ĉóm̂ḿâńd̂ él̂ém̂én̂t́ŝ ḿôŕê áĉćêśŝíb̂ĺê](https://dequeuniversity.com/rules/axe/4.8/aria-command-name)."
   },
   "core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "`button`, `link`, âńd̂ `menuitem` él̂ém̂én̂t́ŝ d́ô ńôt́ ĥáv̂é âćĉéŝśîb́l̂é n̂ám̂éŝ."
@@ -26,8 +35,17 @@
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "`button`, `link`, âńd̂ `menuitem` él̂ém̂én̂t́ŝ h́âv́ê áĉćêśŝíb̂ĺê ńâḿêś"
   },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "ÂŔÎÁ d̂íâĺôǵ êĺêḿêńt̂ś ŵít̂h́ôút̂ áĉćêśŝíb̂ĺê ńâḿêś m̂áŷ ṕr̂év̂én̂t́ ŝćr̂éêń r̂éâd́êŕŝ úŝér̂ś f̂ŕôḿ d̂íŝćêŕn̂ín̂ǵ t̂h́ê ṕûŕp̂óŝé ôf́ t̂h́êśê él̂ém̂én̂t́ŝ. [Ĺêár̂ń ĥóŵ t́ô ḿâḱê ÁR̂ÍÂ d́îál̂óĝ él̂ém̂én̂t́ŝ ḿôŕê áĉćêśŝíb̂ĺê](https://dequeuniversity.com/rules/axe/4.8/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "Êĺêḿêńt̂ś ŵít̂h́ `role=\"dialog\"` ôŕ `role=\"alertdialog\"` d̂ó n̂ót̂ h́âv́ê áĉćêśŝíb̂ĺê ńâḿêś."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "Êĺêḿêńt̂ś ŵít̂h́ `role=\"dialog\"` ôŕ `role=\"alertdialog\"` ĥáv̂é âćĉéŝśîb́l̂é n̂ám̂éŝ."
+  },
   "core/audits/accessibility/aria-hidden-body.js | description": {
-    "message": "Âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ, ĺîḱê śĉŕêén̂ ŕêád̂ér̂ś, ŵór̂ḱ îńĉón̂śîśt̂én̂t́l̂ý ŵh́êń `aria-hidden=\"true\"` îś ŝét̂ ón̂ t́ĥé d̂óĉúm̂én̂t́ `<body>`. [L̂éâŕn̂ h́ôẃ `aria-hidden` âf́f̂éĉt́ŝ t́ĥé d̂óĉúm̂én̂t́ b̂ód̂ý](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
+    "message": "Âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ, ĺîḱê śĉŕêén̂ ŕêád̂ér̂ś, ŵór̂ḱ îńĉón̂śîśt̂én̂t́l̂ý ŵh́êń `aria-hidden=\"true\"` îś ŝét̂ ón̂ t́ĥé d̂óĉúm̂én̂t́ `<body>`. [L̂éâŕn̂ h́ôẃ `aria-hidden` âf́f̂éĉt́ŝ t́ĥé d̂óĉúm̂én̂t́ b̂ód̂ý](https://dequeuniversity.com/rules/axe/4.8/aria-hidden-body)."
   },
   "core/audits/accessibility/aria-hidden-body.js | failureTitle": {
     "message": "`[aria-hidden=\"true\"]` îś p̂ŕêśêńt̂ ón̂ t́ĥé d̂óĉúm̂én̂t́ `<body>`"
@@ -36,7 +54,7 @@
     "message": "`[aria-hidden=\"true\"]` îś n̂ót̂ ṕr̂éŝén̂t́ ôń t̂h́ê d́ôćûḿêńt̂ `<body>`"
   },
   "core/audits/accessibility/aria-hidden-focus.js | description": {
-    "message": "F̂óĉúŝáb̂ĺê d́êśĉén̂d́êńt̂ś ŵít̂h́îń âń `[aria-hidden=\"true\"]` êĺêḿêńt̂ ṕr̂év̂én̂t́ t̂h́ôśê ín̂t́êŕâćt̂ív̂é êĺêḿêńt̂ś f̂ŕôḿ b̂éîńĝ áv̂áîĺâb́l̂é t̂ó ûśêŕŝ óf̂ áŝśîśt̂ív̂é t̂éĉh́n̂ól̂óĝíêś l̂ík̂é ŝćr̂éêń r̂éâd́êŕŝ. [Ĺêár̂ń ĥóŵ `aria-hidden` áf̂f́êćt̂ś f̂óĉúŝáb̂ĺê él̂ém̂én̂t́ŝ](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-focus)."
+    "message": "F̂óĉúŝáb̂ĺê d́êśĉén̂d́êńt̂ś ŵít̂h́îń âń `[aria-hidden=\"true\"]` êĺêḿêńt̂ ṕr̂év̂én̂t́ t̂h́ôśê ín̂t́êŕâćt̂ív̂é êĺêḿêńt̂ś f̂ŕôḿ b̂éîńĝ áv̂áîĺâb́l̂é t̂ó ûśêŕŝ óf̂ áŝśîśt̂ív̂é t̂éĉh́n̂ól̂óĝíêś l̂ík̂é ŝćr̂éêń r̂éâd́êŕŝ. [Ĺêár̂ń ĥóŵ `aria-hidden` áf̂f́êćt̂ś f̂óĉúŝáb̂ĺê él̂ém̂én̂t́ŝ](https://dequeuniversity.com/rules/axe/4.8/aria-hidden-focus)."
   },
   "core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
     "message": "`[aria-hidden=\"true\"]` êĺêḿêńt̂ś ĉón̂t́âín̂ f́ôćûśâb́l̂é d̂éŝćêńd̂én̂t́ŝ"
@@ -45,7 +63,7 @@
     "message": "`[aria-hidden=\"true\"]` êĺêḿêńt̂ś d̂ó n̂ót̂ ćôńt̂áîń f̂óĉúŝáb̂ĺê d́êśĉén̂d́êńt̂ś"
   },
   "core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Ŵh́êń âń îńp̂út̂ f́îél̂d́ d̂óêśn̂'t́ ĥáv̂é âń âćĉéŝśîb́l̂é n̂ám̂é, ŝćr̂éêń r̂éâd́êŕŝ án̂ńôún̂ćê ít̂ ẃît́ĥ á ĝén̂ér̂íĉ ńâḿê, ḿâḱîńĝ ít̂ ún̂úŝáb̂ĺê f́ôŕ ûśêŕŝ ẃĥó r̂él̂ý ôń ŝćr̂éêń r̂éâd́êŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ín̂ṕût́ f̂íêĺd̂ ĺâb́êĺŝ](https://dequeuniversity.com/rules/axe/4.7/aria-input-field-name)."
+    "message": "Ŵh́êń âń îńp̂út̂ f́îél̂d́ d̂óêśn̂'t́ ĥáv̂é âń âćĉéŝśîb́l̂é n̂ám̂é, ŝćr̂éêń r̂éâd́êŕŝ án̂ńôún̂ćê ít̂ ẃît́ĥ á ĝén̂ér̂íĉ ńâḿê, ḿâḱîńĝ ít̂ ún̂úŝáb̂ĺê f́ôŕ ûśêŕŝ ẃĥó r̂él̂ý ôń ŝćr̂éêń r̂éâd́êŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ín̂ṕût́ f̂íêĺd̂ ĺâb́êĺŝ](https://dequeuniversity.com/rules/axe/4.8/aria-input-field-name)."
   },
   "core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ÂŔÎÁ îńp̂út̂ f́îél̂d́ŝ d́ô ńôt́ ĥáv̂é âćĉéŝśîb́l̂é n̂ám̂éŝ"
@@ -54,7 +72,7 @@
     "message": "ÂŔÎÁ îńp̂út̂ f́îél̂d́ŝ h́âv́ê áĉćêśŝíb̂ĺê ńâḿêś"
   },
   "core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "Ŵh́êń â ḿêt́êŕ êĺêḿêńt̂ d́ôéŝń't̂ h́âv́ê án̂ áĉćêśŝíb̂ĺê ńâḿê, śĉŕêén̂ ŕêád̂ér̂ś âńn̂óûńĉé ît́ ŵít̂h́ â ǵêńêŕîć n̂ám̂é, m̂ák̂ín̂ǵ ît́ ûńûśâb́l̂é f̂ór̂ úŝér̂ś ŵh́ô ŕêĺŷ ón̂ śĉŕêén̂ ŕêád̂ér̂ś. [L̂éâŕn̂ h́ôẃ t̂ó n̂ám̂é `meter` êĺêḿêńt̂ś](https://dequeuniversity.com/rules/axe/4.7/aria-meter-name)."
+    "message": "Ŵh́êń â ḿêt́êŕ êĺêḿêńt̂ d́ôéŝń't̂ h́âv́ê án̂ áĉćêśŝíb̂ĺê ńâḿê, śĉŕêén̂ ŕêád̂ér̂ś âńn̂óûńĉé ît́ ŵít̂h́ â ǵêńêŕîć n̂ám̂é, m̂ák̂ín̂ǵ ît́ ûńûśâb́l̂é f̂ór̂ úŝér̂ś ŵh́ô ŕêĺŷ ón̂ śĉŕêén̂ ŕêád̂ér̂ś. [L̂éâŕn̂ h́ôẃ t̂ó n̂ám̂é `meter` êĺêḿêńt̂ś](https://dequeuniversity.com/rules/axe/4.8/aria-meter-name)."
   },
   "core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "ÂŔÎÁ `meter` êĺêḿêńt̂ś d̂ó n̂ót̂ h́âv́ê áĉćêśŝíb̂ĺê ńâḿêś."
@@ -63,7 +81,7 @@
     "message": "ÂŔÎÁ `meter` êĺêḿêńt̂ś ĥáv̂é âćĉéŝśîb́l̂é n̂ám̂éŝ"
   },
   "core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Ŵh́êń â `progressbar` él̂ém̂én̂t́ d̂óêśn̂'t́ ĥáv̂é âń âćĉéŝśîb́l̂é n̂ám̂é, ŝćr̂éêń r̂éâd́êŕŝ án̂ńôún̂ćê ít̂ ẃît́ĥ á ĝén̂ér̂íĉ ńâḿê, ḿâḱîńĝ ít̂ ún̂úŝáb̂ĺê f́ôŕ ûśêŕŝ ẃĥó r̂él̂ý ôń ŝćr̂éêń r̂éâd́êŕŝ. [Ĺêár̂ń ĥóŵ t́ô ĺâb́êĺ `progressbar` êĺêḿêńt̂ś](https://dequeuniversity.com/rules/axe/4.7/aria-progressbar-name)."
+    "message": "Ŵh́êń â `progressbar` él̂ém̂én̂t́ d̂óêśn̂'t́ ĥáv̂é âń âćĉéŝśîb́l̂é n̂ám̂é, ŝćr̂éêń r̂éâd́êŕŝ án̂ńôún̂ćê ít̂ ẃît́ĥ á ĝén̂ér̂íĉ ńâḿê, ḿâḱîńĝ ít̂ ún̂úŝáb̂ĺê f́ôŕ ûśêŕŝ ẃĥó r̂él̂ý ôń ŝćr̂éêń r̂éâd́êŕŝ. [Ĺêár̂ń ĥóŵ t́ô ĺâb́êĺ `progressbar` êĺêḿêńt̂ś](https://dequeuniversity.com/rules/axe/4.8/aria-progressbar-name)."
   },
   "core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "ÂŔÎÁ `progressbar` êĺêḿêńt̂ś d̂ó n̂ót̂ h́âv́ê áĉćêśŝíb̂ĺê ńâḿêś."
@@ -72,7 +90,7 @@
     "message": "ÂŔÎÁ `progressbar` êĺêḿêńt̂ś ĥáv̂é âćĉéŝśîb́l̂é n̂ám̂éŝ"
   },
   "core/audits/accessibility/aria-required-attr.js | description": {
-    "message": "Ŝóm̂é ÂŔÎÁ r̂ól̂éŝ h́âv́ê ŕêq́ûír̂éd̂ át̂t́r̂íb̂út̂éŝ t́ĥát̂ d́êśĉŕîb́ê t́ĥé ŝt́ât́ê óf̂ t́ĥé êĺêḿêńt̂ t́ô śĉŕêén̂ ŕêád̂ér̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ r̂ól̂éŝ án̂d́ r̂éq̂úîŕêd́ ât́t̂ŕîb́ût́êś](https://dequeuniversity.com/rules/axe/4.7/aria-required-attr)."
+    "message": "Ŝóm̂é ÂŔÎÁ r̂ól̂éŝ h́âv́ê ŕêq́ûír̂éd̂ át̂t́r̂íb̂út̂éŝ t́ĥát̂ d́êśĉŕîb́ê t́ĥé ŝt́ât́ê óf̂ t́ĥé êĺêḿêńt̂ t́ô śĉŕêén̂ ŕêád̂ér̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ r̂ól̂éŝ án̂d́ r̂éq̂úîŕêd́ ât́t̂ŕîb́ût́êś](https://dequeuniversity.com/rules/axe/4.8/aria-required-attr)."
   },
   "core/audits/accessibility/aria-required-attr.js | failureTitle": {
     "message": "`[role]`ŝ d́ô ńôt́ ĥáv̂é âĺl̂ ŕêq́ûír̂éd̂ `[aria-*]` át̂t́r̂íb̂út̂éŝ"
@@ -81,7 +99,7 @@
     "message": "`[role]`ŝ h́âv́ê ál̂ĺ r̂éq̂úîŕêd́ `[aria-*]` ât́t̂ŕîb́ût́êś"
   },
   "core/audits/accessibility/aria-required-children.js | description": {
-    "message": "Ŝóm̂é ÂŔÎÁ p̂ár̂én̂t́ r̂ól̂éŝ ḿûśt̂ ćôńt̂áîń ŝṕêćîf́îć ĉh́îĺd̂ ŕôĺêś t̂ó p̂ér̂f́ôŕm̂ t́ĥéîŕ îńt̂én̂d́êd́ âćĉéŝśîb́îĺît́ŷ f́ûńĉt́îón̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ r̂ól̂éŝ án̂d́ r̂éq̂úîŕêd́ ĉh́îĺd̂ŕêń êĺêḿêńt̂ś](https://dequeuniversity.com/rules/axe/4.7/aria-required-children)."
+    "message": "Ŝóm̂é ÂŔÎÁ p̂ár̂én̂t́ r̂ól̂éŝ ḿûśt̂ ćôńt̂áîń ŝṕêćîf́îć ĉh́îĺd̂ ŕôĺêś t̂ó p̂ér̂f́ôŕm̂ t́ĥéîŕ îńt̂én̂d́êd́ âćĉéŝśîb́îĺît́ŷ f́ûńĉt́îón̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ r̂ól̂éŝ án̂d́ r̂éq̂úîŕêd́ ĉh́îĺd̂ŕêń êĺêḿêńt̂ś](https://dequeuniversity.com/rules/axe/4.8/aria-required-children)."
   },
   "core/audits/accessibility/aria-required-children.js | failureTitle": {
     "message": "Êĺêḿêńt̂ś ŵít̂h́ âń ÂŔÎÁ `[role]` t̂h́ât́ r̂éq̂úîŕê ćĥíl̂d́r̂én̂ t́ô ćôńt̂áîń â śp̂éĉíf̂íĉ `[role]` ár̂é m̂íŝśîńĝ śôḿê ór̂ ál̂ĺ ôf́ t̂h́ôśê ŕêq́ûír̂éd̂ ćĥíl̂d́r̂én̂."
@@ -90,7 +108,7 @@
     "message": "Êĺêḿêńt̂ś ŵít̂h́ âń ÂŔÎÁ `[role]` t̂h́ât́ r̂éq̂úîŕê ćĥíl̂d́r̂én̂ t́ô ćôńt̂áîń â śp̂éĉíf̂íĉ `[role]` h́âv́ê ál̂ĺ r̂éq̂úîŕêd́ ĉh́îĺd̂ŕêń."
   },
   "core/audits/accessibility/aria-required-parent.js | description": {
-    "message": "Ŝóm̂é ÂŔÎÁ ĉh́îĺd̂ ŕôĺêś m̂úŝt́ b̂é ĉón̂t́âín̂éd̂ b́ŷ śp̂éĉíf̂íĉ ṕâŕêńt̂ ŕôĺêś t̂ó p̂ŕôṕêŕl̂ý p̂ér̂f́ôŕm̂ t́ĥéîŕ îńt̂én̂d́êd́ âćĉéŝśîb́îĺît́ŷ f́ûńĉt́îón̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ ÂŔÎÁ r̂ól̂éŝ án̂d́ r̂éq̂úîŕêd́ p̂ár̂én̂t́ êĺêḿêńt̂](https://dequeuniversity.com/rules/axe/4.7/aria-required-parent)."
+    "message": "Ŝóm̂é ÂŔÎÁ ĉh́îĺd̂ ŕôĺêś m̂úŝt́ b̂é ĉón̂t́âín̂éd̂ b́ŷ śp̂éĉíf̂íĉ ṕâŕêńt̂ ŕôĺêś t̂ó p̂ŕôṕêŕl̂ý p̂ér̂f́ôŕm̂ t́ĥéîŕ îńt̂én̂d́êd́ âćĉéŝśîb́îĺît́ŷ f́ûńĉt́îón̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ ÂŔÎÁ r̂ól̂éŝ án̂d́ r̂éq̂úîŕêd́ p̂ár̂én̂t́ êĺêḿêńt̂](https://dequeuniversity.com/rules/axe/4.8/aria-required-parent)."
   },
   "core/audits/accessibility/aria-required-parent.js | failureTitle": {
     "message": "`[role]`ŝ ár̂é n̂ót̂ ćôńt̂áîńêd́ b̂ý t̂h́êír̂ ŕêq́ûír̂éd̂ ṕâŕêńt̂ él̂ém̂én̂t́"
@@ -99,7 +117,7 @@
     "message": "`[role]`ŝ ár̂é ĉón̂t́âín̂éd̂ b́ŷ t́ĥéîŕ r̂éq̂úîŕêd́ p̂ár̂én̂t́ êĺêḿêńt̂"
   },
   "core/audits/accessibility/aria-roles.js | description": {
-    "message": "ÂŔÎÁ r̂ól̂éŝ ḿûśt̂ h́âv́ê v́âĺîd́ v̂ál̂úêś îń ôŕd̂ér̂ t́ô ṕêŕf̂ór̂ḿ t̂h́êír̂ ín̂t́êńd̂éd̂ áĉćêśŝíb̂íl̂ít̂ý f̂ún̂ćt̂íôńŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ v́âĺîd́ ÂŔÎÁ r̂ól̂éŝ](https://dequeuniversity.com/rules/axe/4.7/aria-roles)."
+    "message": "ÂŔÎÁ r̂ól̂éŝ ḿûśt̂ h́âv́ê v́âĺîd́ v̂ál̂úêś îń ôŕd̂ér̂ t́ô ṕêŕf̂ór̂ḿ t̂h́êír̂ ín̂t́êńd̂éd̂ áĉćêśŝíb̂íl̂ít̂ý f̂ún̂ćt̂íôńŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ v́âĺîd́ ÂŔÎÁ r̂ól̂éŝ](https://dequeuniversity.com/rules/axe/4.8/aria-roles)."
   },
   "core/audits/accessibility/aria-roles.js | failureTitle": {
     "message": "`[role]` v̂ál̂úêś âŕê ńôt́ v̂ál̂íd̂"
@@ -107,8 +125,17 @@
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "`[role]` v̂ál̂úêś âŕê v́âĺîd́"
   },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "Âd́d̂ín̂ǵ `role=text` âŕôún̂d́ â t́êx́t̂ ńôd́ê śp̂ĺît́ b̂ý m̂ár̂ḱûṕ êńâb́l̂éŝ V́ôíĉéÔv́êŕ t̂ó t̂ŕêát̂ ít̂ áŝ ón̂é p̂h́r̂áŝé, b̂út̂ t́ĥé êĺêḿêńt̂'ś f̂óĉúŝáb̂ĺê d́êśĉén̂d́êńt̂ś ŵíl̂ĺ n̂ót̂ b́ê án̂ńôún̂ćêd́. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́ê `role=text` át̂t́r̂íb̂út̂é](https://dequeuniversity.com/rules/axe/4.8/aria-text)."
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "Êĺêḿêńt̂ś ŵít̂h́ t̂h́ê `role=text` át̂t́r̂íb̂út̂é d̂ó ĥáv̂é f̂óĉúŝáb̂ĺê d́êśĉén̂d́êńt̂ś."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "Êĺêḿêńt̂ś ŵít̂h́ t̂h́ê `role=text` át̂t́r̂íb̂út̂é d̂ó n̂ót̂ h́âv́ê f́ôćûśâb́l̂é d̂éŝćêńd̂én̂t́ŝ."
+  },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Ŵh́êń â t́ôǵĝĺê f́îél̂d́ d̂óêśn̂'t́ ĥáv̂é âń âćĉéŝśîb́l̂é n̂ám̂é, ŝćr̂éêń r̂éâd́êŕŝ án̂ńôún̂ćê ít̂ ẃît́ĥ á ĝén̂ér̂íĉ ńâḿê, ḿâḱîńĝ ít̂ ún̂úŝáb̂ĺê f́ôŕ ûśêŕŝ ẃĥó r̂él̂ý ôń ŝćr̂éêń r̂éâd́êŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ôǵĝĺê f́îél̂d́ŝ](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
+    "message": "Ŵh́êń â t́ôǵĝĺê f́îél̂d́ d̂óêśn̂'t́ ĥáv̂é âń âćĉéŝśîb́l̂é n̂ám̂é, ŝćr̂éêń r̂éâd́êŕŝ án̂ńôún̂ćê ít̂ ẃît́ĥ á ĝén̂ér̂íĉ ńâḿê, ḿâḱîńĝ ít̂ ún̂úŝáb̂ĺê f́ôŕ ûśêŕŝ ẃĥó r̂él̂ý ôń ŝćr̂éêń r̂éâd́êŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ôǵĝĺê f́îél̂d́ŝ](https://dequeuniversity.com/rules/axe/4.8/aria-toggle-field-name)."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ÂŔÎÁ t̂óĝǵl̂é f̂íêĺd̂ś d̂ó n̂ót̂ h́âv́ê áĉćêśŝíb̂ĺê ńâḿêś"
@@ -117,7 +144,7 @@
     "message": "ÂŔÎÁ t̂óĝǵl̂é f̂íêĺd̂ś ĥáv̂é âćĉéŝśîb́l̂é n̂ám̂éŝ"
   },
   "core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "Ŵh́êń â t́ôól̂t́îṕ êĺêḿêńt̂ d́ôéŝń't̂ h́âv́ê án̂ áĉćêśŝíb̂ĺê ńâḿê, śĉŕêén̂ ŕêád̂ér̂ś âńn̂óûńĉé ît́ ŵít̂h́ â ǵêńêŕîć n̂ám̂é, m̂ák̂ín̂ǵ ît́ ûńûśâb́l̂é f̂ór̂ úŝér̂ś ŵh́ô ŕêĺŷ ón̂ śĉŕêén̂ ŕêád̂ér̂ś. [L̂éâŕn̂ h́ôẃ t̂ó n̂ám̂é `tooltip` êĺêḿêńt̂ś](https://dequeuniversity.com/rules/axe/4.7/aria-tooltip-name)."
+    "message": "Ŵh́êń â t́ôól̂t́îṕ êĺêḿêńt̂ d́ôéŝń't̂ h́âv́ê án̂ áĉćêśŝíb̂ĺê ńâḿê, śĉŕêén̂ ŕêád̂ér̂ś âńn̂óûńĉé ît́ ŵít̂h́ â ǵêńêŕîć n̂ám̂é, m̂ák̂ín̂ǵ ît́ ûńûśâb́l̂é f̂ór̂ úŝér̂ś ŵh́ô ŕêĺŷ ón̂ śĉŕêén̂ ŕêád̂ér̂ś. [L̂éâŕn̂ h́ôẃ t̂ó n̂ám̂é `tooltip` êĺêḿêńt̂ś](https://dequeuniversity.com/rules/axe/4.8/aria-tooltip-name)."
   },
   "core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "ÂŔÎÁ `tooltip` êĺêḿêńt̂ś d̂ó n̂ót̂ h́âv́ê áĉćêśŝíb̂ĺê ńâḿêś."
@@ -126,7 +153,7 @@
     "message": "ÂŔÎÁ `tooltip` êĺêḿêńt̂ś ĥáv̂é âćĉéŝśîb́l̂é n̂ám̂éŝ"
   },
   "core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "Ŵh́êń â `treeitem` él̂ém̂én̂t́ d̂óêśn̂'t́ ĥáv̂é âń âćĉéŝśîb́l̂é n̂ám̂é, ŝćr̂éêń r̂éâd́êŕŝ án̂ńôún̂ćê ít̂ ẃît́ĥ á ĝén̂ér̂íĉ ńâḿê, ḿâḱîńĝ ít̂ ún̂úŝáb̂ĺê f́ôŕ ûśêŕŝ ẃĥó r̂él̂ý ôń ŝćr̂éêń r̂éâd́êŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ĺâb́êĺîńĝ `treeitem` él̂ém̂én̂t́ŝ](https://dequeuniversity.com/rules/axe/4.7/aria-treeitem-name)."
+    "message": "Ŵh́êń â `treeitem` él̂ém̂én̂t́ d̂óêśn̂'t́ ĥáv̂é âń âćĉéŝśîb́l̂é n̂ám̂é, ŝćr̂éêń r̂éâd́êŕŝ án̂ńôún̂ćê ít̂ ẃît́ĥ á ĝén̂ér̂íĉ ńâḿê, ḿâḱîńĝ ít̂ ún̂úŝáb̂ĺê f́ôŕ ûśêŕŝ ẃĥó r̂él̂ý ôń ŝćr̂éêń r̂éâd́êŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ĺâb́êĺîńĝ `treeitem` él̂ém̂én̂t́ŝ](https://dequeuniversity.com/rules/axe/4.8/aria-treeitem-name)."
   },
   "core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "ÂŔÎÁ `treeitem` êĺêḿêńt̂ś d̂ó n̂ót̂ h́âv́ê áĉćêśŝíb̂ĺê ńâḿêś."
@@ -135,7 +162,7 @@
     "message": "ÂŔÎÁ `treeitem` êĺêḿêńt̂ś ĥáv̂é âćĉéŝśîb́l̂é n̂ám̂éŝ"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | description": {
-    "message": "Âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ, ĺîḱê śĉŕêén̂ ŕêád̂ér̂ś, ĉán̂'t́ îńt̂ér̂ṕr̂ét̂ ÁR̂ÍÂ át̂t́r̂íb̂út̂éŝ ẃît́ĥ ín̂v́âĺîd́ v̂ál̂úêś. [L̂éâŕn̂ ḿôŕê áb̂óût́ v̂ál̂íd̂ v́âĺûéŝ f́ôŕ ÂŔÎÁ ât́t̂ŕîb́ût́êś](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr-value)."
+    "message": "Âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ, ĺîḱê śĉŕêén̂ ŕêád̂ér̂ś, ĉán̂'t́ îńt̂ér̂ṕr̂ét̂ ÁR̂ÍÂ át̂t́r̂íb̂út̂éŝ ẃît́ĥ ín̂v́âĺîd́ v̂ál̂úêś. [L̂éâŕn̂ ḿôŕê áb̂óût́ v̂ál̂íd̂ v́âĺûéŝ f́ôŕ ÂŔÎÁ ât́t̂ŕîb́ût́êś](https://dequeuniversity.com/rules/axe/4.8/aria-valid-attr-value)."
   },
   "core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
     "message": "`[aria-*]` ât́t̂ŕîb́ût́êś d̂ó n̂ót̂ h́âv́ê v́âĺîd́ v̂ál̂úêś"
@@ -144,7 +171,7 @@
     "message": "`[aria-*]` ât́t̂ŕîb́ût́êś ĥáv̂é v̂ál̂íd̂ v́âĺûéŝ"
   },
   "core/audits/accessibility/aria-valid-attr.js | description": {
-    "message": "Âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ, ĺîḱê śĉŕêén̂ ŕêád̂ér̂ś, ĉán̂'t́ îńt̂ér̂ṕr̂ét̂ ÁR̂ÍÂ át̂t́r̂íb̂út̂éŝ ẃît́ĥ ín̂v́âĺîd́ n̂ám̂éŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ v́âĺîd́ ÂŔÎÁ ât́t̂ŕîb́ût́êś](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr)."
+    "message": "Âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ, ĺîḱê śĉŕêén̂ ŕêád̂ér̂ś, ĉán̂'t́ îńt̂ér̂ṕr̂ét̂ ÁR̂ÍÂ át̂t́r̂íb̂út̂éŝ ẃît́ĥ ín̂v́âĺîd́ n̂ám̂éŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ v́âĺîd́ ÂŔÎÁ ât́t̂ŕîb́ût́êś](https://dequeuniversity.com/rules/axe/4.8/aria-valid-attr)."
   },
   "core/audits/accessibility/aria-valid-attr.js | failureTitle": {
     "message": "`[aria-*]` ât́t̂ŕîb́ût́êś âŕê ńôt́ v̂ál̂íd̂ ór̂ ḿîśŝṕêĺl̂éd̂"
@@ -156,7 +183,7 @@
     "message": "F̂áîĺîńĝ Él̂ém̂én̂t́ŝ"
   },
   "core/audits/accessibility/button-name.js | description": {
-    "message": "Ŵh́êń â b́ût́t̂ón̂ d́ôéŝń't̂ h́âv́ê án̂ áĉćêśŝíb̂ĺê ńâḿê, śĉŕêén̂ ŕêád̂ér̂ś âńn̂óûńĉé ît́ âś \"b̂út̂t́ôń\", m̂ák̂ín̂ǵ ît́ ûńûśâb́l̂é f̂ór̂ úŝér̂ś ŵh́ô ŕêĺŷ ón̂ śĉŕêén̂ ŕêád̂ér̂ś. [L̂éâŕn̂ h́ôẃ t̂ó m̂ák̂é b̂út̂t́ôńŝ ḿôŕê áĉćêśŝíb̂ĺê](https://dequeuniversity.com/rules/axe/4.7/button-name)."
+    "message": "Ŵh́êń â b́ût́t̂ón̂ d́ôéŝń't̂ h́âv́ê án̂ áĉćêśŝíb̂ĺê ńâḿê, śĉŕêén̂ ŕêád̂ér̂ś âńn̂óûńĉé ît́ âś \"b̂út̂t́ôń\", m̂ák̂ín̂ǵ ît́ ûńûśâb́l̂é f̂ór̂ úŝér̂ś ŵh́ô ŕêĺŷ ón̂ śĉŕêén̂ ŕêád̂ér̂ś. [L̂éâŕn̂ h́ôẃ t̂ó m̂ák̂é b̂út̂t́ôńŝ ḿôŕê áĉćêśŝíb̂ĺê](https://dequeuniversity.com/rules/axe/4.8/button-name)."
   },
   "core/audits/accessibility/button-name.js | failureTitle": {
     "message": "B̂út̂t́ôńŝ d́ô ńôt́ ĥáv̂é âń âćĉéŝśîb́l̂é n̂ám̂é"
@@ -165,7 +192,7 @@
     "message": "B̂út̂t́ôńŝ h́âv́ê án̂ áĉćêśŝíb̂ĺê ńâḿê"
   },
   "core/audits/accessibility/bypass.js | description": {
-    "message": "Âd́d̂ín̂ǵ ŵáŷś t̂ó b̂ýp̂áŝś r̂ép̂ét̂ít̂ív̂é ĉón̂t́êńt̂ ĺêt́ŝ ḱêýb̂óâŕd̂ úŝér̂ś n̂áv̂íĝát̂é t̂h́ê ṕâǵê ḿôŕê éf̂f́îćîén̂t́l̂ý. [L̂éâŕn̂ ḿôŕê áb̂óût́ b̂ýp̂áŝś b̂ĺôćk̂ś](https://dequeuniversity.com/rules/axe/4.7/bypass)."
+    "message": "Âd́d̂ín̂ǵ ŵáŷś t̂ó b̂ýp̂áŝś r̂ép̂ét̂ít̂ív̂é ĉón̂t́êńt̂ ĺêt́ŝ ḱêýb̂óâŕd̂ úŝér̂ś n̂áv̂íĝát̂é t̂h́ê ṕâǵê ḿôŕê éf̂f́îćîén̂t́l̂ý. [L̂éâŕn̂ ḿôŕê áb̂óût́ b̂ýp̂áŝś b̂ĺôćk̂ś](https://dequeuniversity.com/rules/axe/4.8/bypass)."
   },
   "core/audits/accessibility/bypass.js | failureTitle": {
     "message": "T̂h́ê ṕâǵê d́ôéŝ ńôt́ ĉón̂t́âín̂ á ĥéâd́îńĝ, śk̂íp̂ ĺîńk̂, ór̂ ĺâńd̂ḿâŕk̂ ŕêǵîón̂"
@@ -174,7 +201,7 @@
     "message": "T̂h́ê ṕâǵê ćôńt̂áîńŝ á ĥéâd́îńĝ, śk̂íp̂ ĺîńk̂, ór̂ ĺâńd̂ḿâŕk̂ ŕêǵîón̂"
   },
   "core/audits/accessibility/color-contrast.js | description": {
-    "message": "L̂óŵ-ćôńt̂ŕâśt̂ t́êx́t̂ íŝ d́îf́f̂íĉúl̂t́ ôŕ îḿp̂óŝśîb́l̂é f̂ór̂ ḿâńŷ úŝér̂ś t̂ó r̂éâd́. [L̂éâŕn̂ h́ôẃ t̂ó p̂ŕôv́îd́ê śûf́f̂íĉíêńt̂ ćôĺôŕ ĉón̂t́r̂áŝt́](https://dequeuniversity.com/rules/axe/4.7/color-contrast)."
+    "message": "L̂óŵ-ćôńt̂ŕâśt̂ t́êx́t̂ íŝ d́îf́f̂íĉúl̂t́ ôŕ îḿp̂óŝśîb́l̂é f̂ór̂ ḿâńŷ úŝér̂ś t̂ó r̂éâd́. [L̂éâŕn̂ h́ôẃ t̂ó p̂ŕôv́îd́ê śûf́f̂íĉíêńt̂ ćôĺôŕ ĉón̂t́r̂áŝt́](https://dequeuniversity.com/rules/axe/4.8/color-contrast)."
   },
   "core/audits/accessibility/color-contrast.js | failureTitle": {
     "message": "B̂áĉḱĝŕôún̂d́ âńd̂ f́ôŕêǵr̂óûńd̂ ćôĺôŕŝ d́ô ńôt́ ĥáv̂é â śûf́f̂íĉíêńt̂ ćôńt̂ŕâśt̂ ŕât́îó."
@@ -183,7 +210,7 @@
     "message": "B̂áĉḱĝŕôún̂d́ âńd̂ f́ôŕêǵr̂óûńd̂ ćôĺôŕŝ h́âv́ê á ŝúf̂f́îćîén̂t́ ĉón̂t́r̂áŝt́ r̂át̂íô"
   },
   "core/audits/accessibility/definition-list.js | description": {
-    "message": "Ŵh́êń d̂éf̂ín̂ít̂íôń l̂íŝt́ŝ ár̂é n̂ót̂ ṕr̂óp̂ér̂ĺŷ ḿâŕk̂éd̂ úp̂, śĉŕêén̂ ŕêád̂ér̂ś m̂áŷ ṕr̂ód̂úĉé ĉón̂f́ûśîńĝ ór̂ ín̂áĉćûŕât́ê óût́p̂út̂. [Ĺêár̂ń ĥóŵ t́ô śt̂ŕûćt̂úr̂é d̂éf̂ín̂ít̂íôń l̂íŝt́ŝ ćôŕr̂éĉt́l̂ý](https://dequeuniversity.com/rules/axe/4.7/definition-list)."
+    "message": "Ŵh́êń d̂éf̂ín̂ít̂íôń l̂íŝt́ŝ ár̂é n̂ót̂ ṕr̂óp̂ér̂ĺŷ ḿâŕk̂éd̂ úp̂, śĉŕêén̂ ŕêád̂ér̂ś m̂áŷ ṕr̂ód̂úĉé ĉón̂f́ûśîńĝ ór̂ ín̂áĉćûŕât́ê óût́p̂út̂. [Ĺêár̂ń ĥóŵ t́ô śt̂ŕûćt̂úr̂é d̂éf̂ín̂ít̂íôń l̂íŝt́ŝ ćôŕr̂éĉt́l̂ý](https://dequeuniversity.com/rules/axe/4.8/definition-list)."
   },
   "core/audits/accessibility/definition-list.js | failureTitle": {
     "message": "`<dl>`'ŝ d́ô ńôt́ ĉón̂t́âín̂ ón̂ĺŷ ṕr̂óp̂ér̂ĺŷ-ór̂d́êŕêd́ `<dt>` âńd̂ `<dd>` ǵr̂óûṕŝ, `<script>`, `<template>` ór̂ `<div>` él̂ém̂én̂t́ŝ."
@@ -192,7 +219,7 @@
     "message": "`<dl>`'ŝ ćôńt̂áîń ôńl̂ý p̂ŕôṕêŕl̂ý-ôŕd̂ér̂éd̂ `<dt>` án̂d́ `<dd>` ĝŕôúp̂ś, `<script>`, `<template>` ôŕ `<div>` êĺêḿêńt̂ś."
   },
   "core/audits/accessibility/dlitem.js | description": {
-    "message": "D̂éf̂ín̂ít̂íôń l̂íŝt́ ît́êḿŝ (`<dt>` án̂d́ `<dd>`) m̂úŝt́ b̂é ŵŕâṕp̂éd̂ ín̂ á p̂ár̂én̂t́ `<dl>` êĺêḿêńt̂ t́ô én̂śûŕê t́ĥát̂ śĉŕêén̂ ŕêád̂ér̂ś ĉán̂ ṕr̂óp̂ér̂ĺŷ án̂ńôún̂ćê t́ĥém̂. [Ĺêár̂ń ĥóŵ t́ô śt̂ŕûćt̂úr̂é d̂éf̂ín̂ít̂íôń l̂íŝt́ŝ ćôŕr̂éĉt́l̂ý](https://dequeuniversity.com/rules/axe/4.7/dlitem)."
+    "message": "D̂éf̂ín̂ít̂íôń l̂íŝt́ ît́êḿŝ (`<dt>` án̂d́ `<dd>`) m̂úŝt́ b̂é ŵŕâṕp̂éd̂ ín̂ á p̂ár̂én̂t́ `<dl>` êĺêḿêńt̂ t́ô én̂śûŕê t́ĥát̂ śĉŕêén̂ ŕêád̂ér̂ś ĉán̂ ṕr̂óp̂ér̂ĺŷ án̂ńôún̂ćê t́ĥém̂. [Ĺêár̂ń ĥóŵ t́ô śt̂ŕûćt̂úr̂é d̂éf̂ín̂ít̂íôń l̂íŝt́ŝ ćôŕr̂éĉt́l̂ý](https://dequeuniversity.com/rules/axe/4.8/dlitem)."
   },
   "core/audits/accessibility/dlitem.js | failureTitle": {
     "message": "D̂éf̂ín̂ít̂íôń l̂íŝt́ ît́êḿŝ ár̂é n̂ót̂ ẃr̂áp̂ṕêd́ îń `<dl>` êĺêḿêńt̂ś"
@@ -201,7 +228,7 @@
     "message": "D̂éf̂ín̂ít̂íôń l̂íŝt́ ît́êḿŝ ár̂é ŵŕâṕp̂éd̂ ín̂ `<dl>` él̂ém̂én̂t́ŝ"
   },
   "core/audits/accessibility/document-title.js | description": {
-    "message": "T̂h́ê t́ît́l̂é ĝív̂éŝ śĉŕêén̂ ŕêád̂ér̂ úŝér̂ś âń ôv́êŕv̂íêẃ ôf́ t̂h́ê ṕâǵê, án̂d́ ŝéâŕĉh́ êńĝín̂é ûśêŕŝ ŕêĺŷ ón̂ ít̂ h́êáv̂íl̂ý t̂ó d̂ét̂ér̂ḿîńê íf̂ á p̂áĝé îś r̂él̂év̂án̂t́ t̂ó t̂h́êír̂ śêár̂ćĥ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ d́ôćûḿêńt̂ t́ît́l̂éŝ](https://dequeuniversity.com/rules/axe/4.7/document-title)."
+    "message": "T̂h́ê t́ît́l̂é ĝív̂éŝ śĉŕêén̂ ŕêád̂ér̂ úŝér̂ś âń ôv́êŕv̂íêẃ ôf́ t̂h́ê ṕâǵê, án̂d́ ŝéâŕĉh́ êńĝín̂é ûśêŕŝ ŕêĺŷ ón̂ ít̂ h́êáv̂íl̂ý t̂ó d̂ét̂ér̂ḿîńê íf̂ á p̂áĝé îś r̂él̂év̂án̂t́ t̂ó t̂h́êír̂ śêár̂ćĥ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ d́ôćûḿêńt̂ t́ît́l̂éŝ](https://dequeuniversity.com/rules/axe/4.8/document-title)."
   },
   "core/audits/accessibility/document-title.js | failureTitle": {
     "message": "D̂óĉúm̂én̂t́ d̂óêśn̂'t́ ĥáv̂é â `<title>` él̂ém̂én̂t́"
@@ -210,7 +237,7 @@
     "message": "D̂óĉúm̂én̂t́ ĥáŝ á `<title>` êĺêḿêńt̂"
   },
   "core/audits/accessibility/duplicate-id-active.js | description": {
-    "message": "Âĺl̂ f́ôćûśâb́l̂é êĺêḿêńt̂ś m̂úŝt́ ĥáv̂é â ún̂íq̂úê `id` t́ô én̂śûŕê t́ĥát̂ t́ĥéŷ'ŕê v́îśîb́l̂é t̂ó âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ. [Ĺêár̂ń ĥóŵ t́ô f́îx́ d̂úp̂ĺîćât́ê `id`ś](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-active)."
+    "message": "Âĺl̂ f́ôćûśâb́l̂é êĺêḿêńt̂ś m̂úŝt́ ĥáv̂é â ún̂íq̂úê `id` t́ô én̂śûŕê t́ĥát̂ t́ĥéŷ'ŕê v́îśîb́l̂é t̂ó âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ. [Ĺêár̂ń ĥóŵ t́ô f́îx́ d̂úp̂ĺîćât́ê `id`ś](https://dequeuniversity.com/rules/axe/4.8/duplicate-id-active)."
   },
   "core/audits/accessibility/duplicate-id-active.js | failureTitle": {
     "message": "`[id]` ât́t̂ŕîb́ût́êś ôń âćt̂ív̂é, f̂óĉúŝáb̂ĺê él̂ém̂én̂t́ŝ ár̂é n̂ót̂ ún̂íq̂úê"
@@ -219,7 +246,7 @@
     "message": "`[id]` ât́t̂ŕîb́ût́êś ôń âćt̂ív̂é, f̂óĉúŝáb̂ĺê él̂ém̂én̂t́ŝ ár̂é ûńîq́ûé"
   },
   "core/audits/accessibility/duplicate-id-aria.js | description": {
-    "message": "T̂h́ê v́âĺûé ôf́ âń ÂŔÎÁ ÎD́ m̂úŝt́ b̂é ûńîq́ûé t̂ó p̂ŕêv́êńt̂ ót̂h́êŕ îńŝt́âńĉéŝ f́r̂óm̂ b́êín̂ǵ ôv́êŕl̂óôḱêd́ b̂ý âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ. [Ĺêár̂ń ĥóŵ t́ô f́îx́ d̂úp̂ĺîćât́ê ÁR̂ÍÂ ÍD̂ś](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-aria)."
+    "message": "T̂h́ê v́âĺûé ôf́ âń ÂŔÎÁ ÎD́ m̂úŝt́ b̂é ûńîq́ûé t̂ó p̂ŕêv́êńt̂ ót̂h́êŕ îńŝt́âńĉéŝ f́r̂óm̂ b́êín̂ǵ ôv́êŕl̂óôḱêd́ b̂ý âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ. [Ĺêár̂ń ĥóŵ t́ô f́îx́ d̂úp̂ĺîćât́ê ÁR̂ÍÂ ÍD̂ś](https://dequeuniversity.com/rules/axe/4.8/duplicate-id-aria)."
   },
   "core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
     "message": "ÂŔÎÁ ÎD́ŝ ár̂é n̂ót̂ ún̂íq̂úê"
@@ -227,8 +254,17 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "ÂŔÎÁ ÎD́ŝ ár̂é ûńîq́ûé"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "Â h́êád̂ín̂ǵ ŵít̂h́ n̂ó ĉón̂t́êńt̂ ór̂ ín̂áĉćêśŝíb̂ĺê t́êx́t̂ ṕr̂év̂én̂t́ ŝćr̂éêń r̂éâd́êŕ ûśêŕŝ f́r̂óm̂ áĉćêśŝín̂ǵ îńf̂ór̂ḿât́îón̂ ón̂ t́ĥé p̂áĝé'ŝ śt̂ŕûćt̂úr̂é. [L̂éâŕn̂ ḿôŕê áb̂óût́ ĥéâd́îńĝś](https://dequeuniversity.com/rules/axe/4.8/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "Ĥéâd́îńĝ él̂ém̂én̂t́ŝ d́ô ńôt́ ĉón̂t́âín̂ ćôńt̂én̂t́."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "Âĺl̂ h́êád̂ín̂ǵ êĺêḿêńt̂ś ĉón̂t́âín̂ ćôńt̂én̂t́."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
-    "message": "F̂ór̂ḿ f̂íêĺd̂ś ŵít̂h́ m̂úl̂t́îṕl̂é l̂áb̂él̂ś ĉán̂ b́ê ćôńf̂úŝín̂ǵl̂ý âńn̂óûńĉéd̂ b́ŷ áŝśîśt̂ív̂é t̂éĉh́n̂ól̂óĝíêś l̂ík̂é ŝćr̂éêń r̂éâd́êŕŝ ẃĥíĉh́ ûśê éît́ĥér̂ t́ĥé f̂ír̂śt̂, t́ĥé l̂áŝt́, ôŕ âĺl̂ óf̂ t́ĥé l̂áb̂él̂ś. [L̂éâŕn̂ h́ôẃ t̂ó ûśê f́ôŕm̂ ĺâb́êĺŝ](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
+    "message": "F̂ór̂ḿ f̂íêĺd̂ś ŵít̂h́ m̂úl̂t́îṕl̂é l̂áb̂él̂ś ĉán̂ b́ê ćôńf̂úŝín̂ǵl̂ý âńn̂óûńĉéd̂ b́ŷ áŝśîśt̂ív̂é t̂éĉh́n̂ól̂óĝíêś l̂ík̂é ŝćr̂éêń r̂éâd́êŕŝ ẃĥíĉh́ ûśê éît́ĥér̂ t́ĥé f̂ír̂śt̂, t́ĥé l̂áŝt́, ôŕ âĺl̂ óf̂ t́ĥé l̂áb̂él̂ś. [L̂éâŕn̂ h́ôẃ t̂ó ûśê f́ôŕm̂ ĺâb́êĺŝ](https://dequeuniversity.com/rules/axe/4.8/form-field-multiple-labels)."
   },
   "core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
     "message": "F̂ór̂ḿ f̂íêĺd̂ś ĥáv̂é m̂úl̂t́îṕl̂é l̂áb̂él̂ś"
@@ -237,7 +273,7 @@
     "message": "N̂ó f̂ór̂ḿ f̂íêĺd̂ś ĥáv̂é m̂úl̂t́îṕl̂é l̂áb̂él̂ś"
   },
   "core/audits/accessibility/frame-title.js | description": {
-    "message": "Ŝćr̂éêń r̂éâd́êŕ ûśêŕŝ ŕêĺŷ ón̂ f́r̂ám̂é t̂ít̂ĺêś t̂ó d̂éŝćr̂íb̂é t̂h́ê ćôńt̂én̂t́ŝ óf̂ f́r̂ám̂éŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ f́r̂ám̂é t̂ít̂ĺêś](https://dequeuniversity.com/rules/axe/4.7/frame-title)."
+    "message": "Ŝćr̂éêń r̂éâd́êŕ ûśêŕŝ ŕêĺŷ ón̂ f́r̂ám̂é t̂ít̂ĺêś t̂ó d̂éŝćr̂íb̂é t̂h́ê ćôńt̂én̂t́ŝ óf̂ f́r̂ám̂éŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ f́r̂ám̂é t̂ít̂ĺêś](https://dequeuniversity.com/rules/axe/4.8/frame-title)."
   },
   "core/audits/accessibility/frame-title.js | failureTitle": {
     "message": "`<frame>` ôŕ `<iframe>` êĺêḿêńt̂ś d̂ó n̂ót̂ h́âv́ê á t̂ít̂ĺê"
@@ -246,7 +282,7 @@
     "message": "`<frame>` ôŕ `<iframe>` êĺêḿêńt̂ś ĥáv̂é â t́ît́l̂é"
   },
   "core/audits/accessibility/heading-order.js | description": {
-    "message": "P̂ŕôṕêŕl̂ý ôŕd̂ér̂éd̂ h́êád̂ín̂ǵŝ t́ĥát̂ d́ô ńôt́ ŝḱîṕ l̂év̂él̂ś ĉón̂v́êý t̂h́ê śêḿâńt̂íĉ śt̂ŕûćt̂úr̂é ôf́ t̂h́ê ṕâǵê, ḿâḱîńĝ ít̂ éâśîér̂ t́ô ńâv́îǵât́ê án̂d́ ûńd̂ér̂śt̂án̂d́ ŵh́êń ûśîńĝ áŝśîśt̂ív̂é t̂éĉh́n̂ól̂óĝíêś. [L̂éâŕn̂ ḿôŕê áb̂óût́ ĥéâd́îńĝ ór̂d́êŕ](https://dequeuniversity.com/rules/axe/4.7/heading-order)."
+    "message": "P̂ŕôṕêŕl̂ý ôŕd̂ér̂éd̂ h́êád̂ín̂ǵŝ t́ĥát̂ d́ô ńôt́ ŝḱîṕ l̂év̂él̂ś ĉón̂v́êý t̂h́ê śêḿâńt̂íĉ śt̂ŕûćt̂úr̂é ôf́ t̂h́ê ṕâǵê, ḿâḱîńĝ ít̂ éâśîér̂ t́ô ńâv́îǵât́ê án̂d́ ûńd̂ér̂śt̂án̂d́ ŵh́êń ûśîńĝ áŝśîśt̂ív̂é t̂éĉh́n̂ól̂óĝíêś. [L̂éâŕn̂ ḿôŕê áb̂óût́ ĥéâd́îńĝ ór̂d́êŕ](https://dequeuniversity.com/rules/axe/4.8/heading-order)."
   },
   "core/audits/accessibility/heading-order.js | failureTitle": {
     "message": "Ĥéâd́îńĝ él̂ém̂én̂t́ŝ ár̂é n̂ót̂ ín̂ á ŝéq̂úêńt̂íâĺl̂ý-d̂éŝćêńd̂ín̂ǵ ôŕd̂ér̂"
@@ -255,7 +291,7 @@
     "message": "Ĥéâd́îńĝ él̂ém̂én̂t́ŝ áp̂ṕêár̂ ín̂ á ŝéq̂úêńt̂íâĺl̂ý-d̂éŝćêńd̂ín̂ǵ ôŕd̂ér̂"
   },
   "core/audits/accessibility/html-has-lang.js | description": {
-    "message": "Îf́ â ṕâǵê d́ôéŝń't̂ śp̂éĉíf̂ý â `lang` át̂t́r̂íb̂út̂é, â śĉŕêén̂ ŕêád̂ér̂ áŝśûḿêś t̂h́ât́ t̂h́ê ṕâǵê íŝ ín̂ t́ĥé d̂éf̂áûĺt̂ ĺâńĝúâǵê t́ĥát̂ t́ĥé ûśêŕ ĉh́ôśê ẃĥén̂ śêt́t̂ín̂ǵ ûṕ t̂h́ê śĉŕêén̂ ŕêád̂ér̂. Íf̂ t́ĥé p̂áĝé îśn̂'t́ âćt̂úâĺl̂ý îń t̂h́ê d́êf́âúl̂t́ l̂án̂ǵûáĝé, t̂h́êń t̂h́ê śĉŕêén̂ ŕêád̂ér̂ ḿîǵĥt́ n̂ót̂ án̂ńôún̂ćê t́ĥé p̂áĝé'ŝ t́êx́t̂ ćôŕr̂éĉt́l̂ý. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́ê `lang` át̂t́r̂íb̂út̂é](https://dequeuniversity.com/rules/axe/4.7/html-has-lang)."
+    "message": "Îf́ â ṕâǵê d́ôéŝń't̂ śp̂éĉíf̂ý â `lang` át̂t́r̂íb̂út̂é, â śĉŕêén̂ ŕêád̂ér̂ áŝśûḿêś t̂h́ât́ t̂h́ê ṕâǵê íŝ ín̂ t́ĥé d̂éf̂áûĺt̂ ĺâńĝúâǵê t́ĥát̂ t́ĥé ûśêŕ ĉh́ôśê ẃĥén̂ śêt́t̂ín̂ǵ ûṕ t̂h́ê śĉŕêén̂ ŕêád̂ér̂. Íf̂ t́ĥé p̂áĝé îśn̂'t́ âćt̂úâĺl̂ý îń t̂h́ê d́êf́âúl̂t́ l̂án̂ǵûáĝé, t̂h́êń t̂h́ê śĉŕêén̂ ŕêád̂ér̂ ḿîǵĥt́ n̂ót̂ án̂ńôún̂ćê t́ĥé p̂áĝé'ŝ t́êx́t̂ ćôŕr̂éĉt́l̂ý. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́ê `lang` át̂t́r̂íb̂út̂é](https://dequeuniversity.com/rules/axe/4.8/html-has-lang)."
   },
   "core/audits/accessibility/html-has-lang.js | failureTitle": {
     "message": "`<html>` êĺêḿêńt̂ d́ôéŝ ńôt́ ĥáv̂é â `[lang]` át̂t́r̂íb̂út̂é"
@@ -264,7 +300,7 @@
     "message": "`<html>` êĺêḿêńt̂ h́âś â `[lang]` át̂t́r̂íb̂út̂é"
   },
   "core/audits/accessibility/html-lang-valid.js | description": {
-    "message": "Ŝṕêćîf́ŷín̂ǵ â v́âĺîd́ [B̂ĆP̂ 47 ĺâńĝúâǵê](https://www.w3.org/International/questions/qa-choosing-language-tags#question) h́êĺp̂ś ŝćr̂éêń r̂éâd́êŕŝ án̂ńôún̂ćê t́êx́t̂ ṕr̂óp̂ér̂ĺŷ. [Ĺêár̂ń ĥóŵ t́ô úŝé t̂h́ê `lang` át̂t́r̂íb̂út̂é](https://dequeuniversity.com/rules/axe/4.7/html-lang-valid)."
+    "message": "Ŝṕêćîf́ŷín̂ǵ â v́âĺîd́ [B̂ĆP̂ 47 ĺâńĝúâǵê](https://www.w3.org/International/questions/qa-choosing-language-tags#question) h́êĺp̂ś ŝćr̂éêń r̂éâd́êŕŝ án̂ńôún̂ćê t́êx́t̂ ṕr̂óp̂ér̂ĺŷ. [Ĺêár̂ń ĥóŵ t́ô úŝé t̂h́ê `lang` át̂t́r̂íb̂út̂é](https://dequeuniversity.com/rules/axe/4.8/html-lang-valid)."
   },
   "core/audits/accessibility/html-lang-valid.js | failureTitle": {
     "message": "`<html>` êĺêḿêńt̂ d́ôéŝ ńôt́ ĥáv̂é â v́âĺîd́ v̂ál̂úê f́ôŕ ît́ŝ `[lang]` át̂t́r̂íb̂út̂é."
@@ -273,7 +309,7 @@
     "message": "`<html>` êĺêḿêńt̂ h́âś â v́âĺîd́ v̂ál̂úê f́ôŕ ît́ŝ `[lang]` át̂t́r̂íb̂út̂é"
   },
   "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
-    "message": "Îf́ t̂h́ê ẃêb́p̂áĝé d̂óêś n̂ót̂ śp̂éĉíf̂ý â ćôńŝíŝt́êńt̂ ĺâńĝúâǵê, t́ĥén̂ t́ĥé ŝćr̂éêń r̂éâd́êŕ m̂íĝh́t̂ ńôt́ âńn̂óûńĉé t̂h́ê ṕâǵê'ś t̂éx̂t́ ĉór̂ŕêćt̂ĺŷ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ĥé `lang` ât́t̂ŕîb́ût́ê](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)."
+    "message": "Îf́ t̂h́ê ẃêb́p̂áĝé d̂óêś n̂ót̂ śp̂éĉíf̂ý â ćôńŝíŝt́êńt̂ ĺâńĝúâǵê, t́ĥén̂ t́ĥé ŝćr̂éêń r̂éâd́êŕ m̂íĝh́t̂ ńôt́ âńn̂óûńĉé t̂h́ê ṕâǵê'ś t̂éx̂t́ ĉór̂ŕêćt̂ĺŷ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ĥé `lang` ât́t̂ŕîb́ût́ê](https://dequeuniversity.com/rules/axe/4.8/html-xml-lang-mismatch)."
   },
   "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
     "message": "`<html>` êĺêḿêńt̂ d́ôéŝ ńôt́ ĥáv̂é âń `[xml:lang]` ât́t̂ŕîb́ût́ê ẃît́ĥ t́ĥé ŝám̂é b̂áŝé l̂án̂ǵûáĝé âś t̂h́ê `[lang]` át̂t́r̂íb̂út̂é."
@@ -281,8 +317,17 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "`<html>` êĺêḿêńt̂ h́âś âń `[xml:lang]` ât́t̂ŕîb́ût́ê ẃît́ĥ t́ĥé ŝám̂é b̂áŝé l̂án̂ǵûáĝé âś t̂h́ê `[lang]` át̂t́r̂íb̂út̂é."
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "L̂ín̂ḱŝ ẃît́ĥ t́ĥé ŝám̂é d̂éŝt́îńât́îón̂ śĥóûĺd̂ h́âv́ê t́ĥé ŝám̂é d̂éŝćr̂íp̂t́îón̂, t́ô h́êĺp̂ úŝér̂ś ûńd̂ér̂śt̂án̂d́ t̂h́ê ĺîńk̂'ś p̂úr̂ṕôśê án̂d́ d̂éĉíd̂é ŵh́êt́ĥér̂ t́ô f́ôĺl̂óŵ ít̂. [Ĺêár̂ń m̂ór̂é âb́ôút̂ íd̂én̂t́îćâĺ l̂ín̂ḱŝ](https://dequeuniversity.com/rules/axe/4.8/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "Îd́êńt̂íĉál̂ ĺîńk̂ś d̂ó n̂ót̂ h́âv́ê t́ĥé ŝám̂é p̂úr̂ṕôśê."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "Îd́êńt̂íĉál̂ ĺîńk̂ś ĥáv̂é t̂h́ê śâḿê ṕûŕp̂óŝé."
+  },
   "core/audits/accessibility/image-alt.js | description": {
-    "message": "Îńf̂ór̂ḿât́îv́ê él̂ém̂én̂t́ŝ śĥóûĺd̂ áîḿ f̂ór̂ śĥór̂t́, d̂éŝćr̂íp̂t́îv́ê ál̂t́êŕn̂át̂é t̂éx̂t́. D̂éĉór̂át̂ív̂é êĺêḿêńt̂ś ĉán̂ b́ê íĝńôŕêd́ ŵít̂h́ âń êḿp̂t́ŷ ál̂t́ ât́t̂ŕîb́ût́ê. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ĥé `alt` ât́t̂ŕîb́ût́ê](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
+    "message": "Îńf̂ór̂ḿât́îv́ê él̂ém̂én̂t́ŝ śĥóûĺd̂ áîḿ f̂ór̂ śĥór̂t́, d̂éŝćr̂íp̂t́îv́ê ál̂t́êŕn̂át̂é t̂éx̂t́. D̂éĉór̂át̂ív̂é êĺêḿêńt̂ś ĉán̂ b́ê íĝńôŕêd́ ŵít̂h́ âń êḿp̂t́ŷ ál̂t́ ât́t̂ŕîb́ût́ê. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ĥé `alt` ât́t̂ŕîb́ût́ê](https://dequeuniversity.com/rules/axe/4.8/image-alt)."
   },
   "core/audits/accessibility/image-alt.js | failureTitle": {
     "message": "Îḿâǵê él̂ém̂én̂t́ŝ d́ô ńôt́ ĥáv̂é `[alt]` ât́t̂ŕîb́ût́êś"
@@ -290,8 +335,17 @@
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Îḿâǵê él̂ém̂én̂t́ŝ h́âv́ê `[alt]` át̂t́r̂íb̂út̂éŝ"
   },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Îńf̂ór̂ḿât́îv́ê él̂ém̂én̂t́ŝ śĥóûĺd̂ áîḿ f̂ór̂ śĥór̂t́, d̂éŝćr̂íp̂t́îv́ê ál̂t́êŕn̂át̂ív̂é t̂éx̂t́. Âĺt̂ér̂ńât́îv́ê t́êx́t̂ t́ĥát̂ íŝ éx̂áĉt́l̂ý t̂h́ê śâḿê áŝ t́ĥé t̂éx̂t́ âd́ĵáĉén̂t́ t̂ó t̂h́ê ĺîńk̂ ór̂ ím̂áĝé îś p̂ót̂én̂t́îál̂ĺŷ ćôńf̂úŝín̂ǵ f̂ór̂ śĉŕêén̂ ŕêád̂ér̂ úŝér̂ś, b̂éĉáûśê t́ĥé t̂éx̂t́ ŵíl̂ĺ b̂é r̂éâd́ t̂ẃîćê. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ĥé `alt` ât́t̂ŕîb́ût́ê](https://dequeuniversity.com/rules/axe/4.8/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Îḿâǵê él̂ém̂én̂t́ŝ h́âv́ê `[alt]` át̂t́r̂íb̂út̂éŝ t́ĥát̂ ár̂é r̂éd̂ún̂d́âńt̂ t́êx́t̂."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Îḿâǵê él̂ém̂én̂t́ŝ d́ô ńôt́ ĥáv̂é `[alt]` ât́t̂ŕîb́ût́êś t̂h́ât́ âŕê ŕêd́ûńd̂án̂t́ t̂éx̂t́."
+  },
   "core/audits/accessibility/input-button-name.js | description": {
-    "message": "Âd́d̂ín̂ǵ d̂íŝćêŕn̂áb̂ĺê án̂d́ âćĉéŝśîb́l̂é t̂éx̂t́ t̂ó îńp̂út̂ b́ût́t̂ón̂ś m̂áŷ h́êĺp̂ śĉŕêén̂ ŕêád̂ér̂ úŝér̂ś ûńd̂ér̂śt̂án̂d́ t̂h́ê ṕûŕp̂óŝé ôf́ t̂h́ê ín̂ṕût́ b̂út̂t́ôń. [L̂éâŕn̂ ḿôŕê áb̂óût́ îńp̂út̂ b́ût́t̂ón̂ś](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
+    "message": "Âd́d̂ín̂ǵ d̂íŝćêŕn̂áb̂ĺê án̂d́ âćĉéŝśîb́l̂é t̂éx̂t́ t̂ó îńp̂út̂ b́ût́t̂ón̂ś m̂áŷ h́êĺp̂ śĉŕêén̂ ŕêád̂ér̂ úŝér̂ś ûńd̂ér̂śt̂án̂d́ t̂h́ê ṕûŕp̂óŝé ôf́ t̂h́ê ín̂ṕût́ b̂út̂t́ôń. [L̂éâŕn̂ ḿôŕê áb̂óût́ îńp̂út̂ b́ût́t̂ón̂ś](https://dequeuniversity.com/rules/axe/4.8/input-button-name)."
   },
   "core/audits/accessibility/input-button-name.js | failureTitle": {
     "message": "Îńp̂út̂ b́ût́t̂ón̂ś d̂ó n̂ót̂ h́âv́ê d́îśĉér̂ńîb́l̂é t̂éx̂t́."
@@ -300,7 +354,7 @@
     "message": "Îńp̂út̂ b́ût́t̂ón̂ś ĥáv̂é d̂íŝćêŕn̂íb̂ĺê t́êx́t̂."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
-    "message": "Ŵh́êń âń îḿâǵê íŝ b́êín̂ǵ ûśêd́ âś âń `<input>` b̂út̂t́ôń, p̂ŕôv́îd́îńĝ ál̂t́êŕn̂át̂ív̂é t̂éx̂t́ ĉán̂ h́êĺp̂ śĉŕêén̂ ŕêád̂ér̂ úŝér̂ś ûńd̂ér̂śt̂án̂d́ t̂h́ê ṕûŕp̂óŝé ôf́ t̂h́ê b́ût́t̂ón̂. [Ĺêár̂ń âb́ôút̂ ín̂ṕût́ îḿâǵê ál̂t́ t̂éx̂t́](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
+    "message": "Ŵh́êń âń îḿâǵê íŝ b́êín̂ǵ ûśêd́ âś âń `<input>` b̂út̂t́ôń, p̂ŕôv́îd́îńĝ ál̂t́êŕn̂át̂ív̂é t̂éx̂t́ ĉán̂ h́êĺp̂ śĉŕêén̂ ŕêád̂ér̂ úŝér̂ś ûńd̂ér̂śt̂án̂d́ t̂h́ê ṕûŕp̂óŝé ôf́ t̂h́ê b́ût́t̂ón̂. [Ĺêár̂ń âb́ôút̂ ín̂ṕût́ îḿâǵê ál̂t́ t̂éx̂t́](https://dequeuniversity.com/rules/axe/4.8/input-image-alt)."
   },
   "core/audits/accessibility/input-image-alt.js | failureTitle": {
     "message": "`<input type=\"image\">` êĺêḿêńt̂ś d̂ó n̂ót̂ h́âv́ê `[alt]` t́êx́t̂"
@@ -308,8 +362,17 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "`<input type=\"image\">` êĺêḿêńt̂ś ĥáv̂é `[alt]` t̂éx̂t́"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "V̂íŝíb̂ĺê t́êx́t̂ ĺâb́êĺŝ t́ĥát̂ d́ô ńôt́ m̂át̂ćĥ t́ĥé âćĉéŝśîb́l̂é n̂ám̂é ĉán̂ ŕêśûĺt̂ ín̂ á ĉón̂f́ûśîńĝ éx̂ṕêŕîén̂ćê f́ôŕ ŝćr̂éêń r̂éâd́êŕ ûśêŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ áĉćêśŝíb̂ĺê ńâḿêś](https://dequeuniversity.com/rules/axe/4.8/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Êĺêḿêńt̂ś ŵít̂h́ v̂íŝíb̂ĺê t́êx́t̂ ĺâb́êĺŝ d́ô ńôt́ ĥáv̂é m̂át̂ćĥín̂ǵ âćĉéŝśîb́l̂é n̂ám̂éŝ."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Êĺêḿêńt̂ś ŵít̂h́ v̂íŝíb̂ĺê t́êx́t̂ ĺâb́êĺŝ h́âv́ê ḿât́ĉh́îńĝ áĉćêśŝíb̂ĺê ńâḿêś."
+  },
   "core/audits/accessibility/label.js | description": {
-    "message": "L̂áb̂él̂ś êńŝúr̂é t̂h́ât́ f̂ór̂ḿ ĉón̂t́r̂ól̂ś âŕê án̂ńôún̂ćêd́ p̂ŕôṕêŕl̂ý b̂ý âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ, ĺîḱê śĉŕêén̂ ŕêád̂ér̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ f̂ór̂ḿ êĺêḿêńt̂ ĺâb́êĺŝ](https://dequeuniversity.com/rules/axe/4.7/label)."
+    "message": "L̂áb̂él̂ś êńŝúr̂é t̂h́ât́ f̂ór̂ḿ ĉón̂t́r̂ól̂ś âŕê án̂ńôún̂ćêd́ p̂ŕôṕêŕl̂ý b̂ý âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ, ĺîḱê śĉŕêén̂ ŕêád̂ér̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ f̂ór̂ḿ êĺêḿêńt̂ ĺâb́êĺŝ](https://dequeuniversity.com/rules/axe/4.8/label)."
   },
   "core/audits/accessibility/label.js | failureTitle": {
     "message": "F̂ór̂ḿ êĺêḿêńt̂ś d̂ó n̂ót̂ h́âv́ê áŝśôćîát̂éd̂ ĺâb́êĺŝ"
@@ -317,8 +380,26 @@
   "core/audits/accessibility/label.js | title": {
     "message": "F̂ór̂ḿ êĺêḿêńt̂ś ĥáv̂é âśŝóĉíât́êd́ l̂áb̂él̂ś"
   },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "Ôńê ḿâín̂ ĺâńd̂ḿâŕk̂ h́êĺp̂ś ŝćr̂éêń r̂éâd́êŕ ûśêŕŝ ńâv́îǵât́ê á ŵéb̂ ṕâǵê. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ĺâńd̂ḿâŕk̂ś](https://dequeuniversity.com/rules/axe/4.8/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "D̂óĉúm̂én̂t́ d̂óêś n̂ót̂ h́âv́ê á m̂áîń l̂án̂d́m̂ár̂ḱ."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "D̂óĉúm̂én̂t́ ĥáŝ á m̂áîń l̂án̂d́m̂ár̂ḱ."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "L̂óŵ-ćôńt̂ŕâśt̂ t́êx́t̂ íŝ d́îf́f̂íĉúl̂t́ ôŕ îḿp̂óŝśîb́l̂é f̂ór̂ ḿâńŷ úŝér̂ś t̂ó r̂éâd́. L̂ín̂ḱ t̂éx̂t́ t̂h́ât́ îś d̂íŝćêŕn̂íb̂ĺê ím̂ṕr̂óv̂éŝ t́ĥé êx́p̂ér̂íêńĉé f̂ór̂ úŝér̂ś ŵít̂h́ l̂óŵ v́îśîón̂. [Ĺêár̂ń ĥóŵ t́ô ḿâḱê ĺîńk̂ś d̂íŝt́îńĝúîśĥáb̂ĺê](https://dequeuniversity.com/rules/axe/4.8/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "L̂ín̂ḱŝ ŕêĺŷ ón̂ ćôĺôŕ t̂ó b̂é d̂íŝt́îńĝúîśĥáb̂ĺê."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "L̂ín̂ḱŝ ár̂é d̂íŝt́îńĝúîśĥáb̂ĺê ẃît́ĥóût́ r̂él̂ýîńĝ ón̂ ćôĺôŕ."
+  },
   "core/audits/accessibility/link-name.js | description": {
-    "message": "L̂ín̂ḱ t̂éx̂t́ (âńd̂ ál̂t́êŕn̂át̂é t̂éx̂t́ f̂ór̂ ím̂áĝéŝ, ẃĥén̂ úŝéd̂ áŝ ĺîńk̂ś) t̂h́ât́ îś d̂íŝćêŕn̂íb̂ĺê, ún̂íq̂úê, án̂d́ f̂óĉúŝáb̂ĺê ím̂ṕr̂óv̂éŝ t́ĥé n̂áv̂íĝát̂íôń êx́p̂ér̂íêńĉé f̂ór̂ śĉŕêén̂ ŕêád̂ér̂ úŝér̂ś. [L̂éâŕn̂ h́ôẃ t̂ó m̂ák̂é l̂ín̂ḱŝ áĉćêśŝíb̂ĺê](https://dequeuniversity.com/rules/axe/4.7/link-name)."
+    "message": "L̂ín̂ḱ t̂éx̂t́ (âńd̂ ál̂t́êŕn̂át̂é t̂éx̂t́ f̂ór̂ ím̂áĝéŝ, ẃĥén̂ úŝéd̂ áŝ ĺîńk̂ś) t̂h́ât́ îś d̂íŝćêŕn̂íb̂ĺê, ún̂íq̂úê, án̂d́ f̂óĉúŝáb̂ĺê ím̂ṕr̂óv̂éŝ t́ĥé n̂áv̂íĝát̂íôń êx́p̂ér̂íêńĉé f̂ór̂ śĉŕêén̂ ŕêád̂ér̂ úŝér̂ś. [L̂éâŕn̂ h́ôẃ t̂ó m̂ák̂é l̂ín̂ḱŝ áĉćêśŝíb̂ĺê](https://dequeuniversity.com/rules/axe/4.8/link-name)."
   },
   "core/audits/accessibility/link-name.js | failureTitle": {
     "message": "L̂ín̂ḱŝ d́ô ńôt́ ĥáv̂é â d́îśĉér̂ńîb́l̂é n̂ám̂é"
@@ -327,7 +408,7 @@
     "message": "L̂ín̂ḱŝ h́âv́ê á d̂íŝćêŕn̂íb̂ĺê ńâḿê"
   },
   "core/audits/accessibility/list.js | description": {
-    "message": "Ŝćr̂éêń r̂éâd́êŕŝ h́âv́ê á ŝṕêćîf́îć ŵáŷ óf̂ án̂ńôún̂ćîńĝ ĺîśt̂ś. Êńŝúr̂ín̂ǵ p̂ŕôṕêŕ l̂íŝt́ ŝt́r̂úĉt́ûŕê áîd́ŝ śĉŕêén̂ ŕêád̂ér̂ óût́p̂út̂. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ṕr̂óp̂ér̂ ĺîśt̂ śt̂ŕûćt̂úr̂é](https://dequeuniversity.com/rules/axe/4.7/list)."
+    "message": "Ŝćr̂éêń r̂éâd́êŕŝ h́âv́ê á ŝṕêćîf́îć ŵáŷ óf̂ án̂ńôún̂ćîńĝ ĺîśt̂ś. Êńŝúr̂ín̂ǵ p̂ŕôṕêŕ l̂íŝt́ ŝt́r̂úĉt́ûŕê áîd́ŝ śĉŕêén̂ ŕêád̂ér̂ óût́p̂út̂. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ṕr̂óp̂ér̂ ĺîśt̂ śt̂ŕûćt̂úr̂é](https://dequeuniversity.com/rules/axe/4.8/list)."
   },
   "core/audits/accessibility/list.js | failureTitle": {
     "message": "L̂íŝt́ŝ d́ô ńôt́ ĉón̂t́âín̂ ón̂ĺŷ `<li>` él̂ém̂én̂t́ŝ án̂d́ ŝćr̂íp̂t́ ŝúp̂ṕôŕt̂ín̂ǵ êĺêḿêńt̂ś (`<script>` âńd̂ `<template>`)."
@@ -336,7 +417,7 @@
     "message": "L̂íŝt́ŝ ćôńt̂áîń ôńl̂ý `<li>` êĺêḿêńt̂ś âńd̂ śĉŕîṕt̂ śûṕp̂ór̂t́îńĝ él̂ém̂én̂t́ŝ (`<script>` án̂d́ `<template>`)."
   },
   "core/audits/accessibility/listitem.js | description": {
-    "message": "Ŝćr̂éêń r̂éâd́êŕŝ ŕêq́ûír̂é l̂íŝt́ ît́êḿŝ (`<li>`) t́ô b́ê ćôńt̂áîńêd́ ŵít̂h́îń â ṕâŕêńt̂ `<ul>`, `<ol>` ór̂ `<menu>` t́ô b́ê án̂ńôún̂ćêd́ p̂ŕôṕêŕl̂ý. [L̂éâŕn̂ ḿôŕê áb̂óût́ p̂ŕôṕêŕ l̂íŝt́ ŝt́r̂úĉt́ûŕê](https://dequeuniversity.com/rules/axe/4.7/listitem)."
+    "message": "Ŝćr̂éêń r̂éâd́êŕŝ ŕêq́ûír̂é l̂íŝt́ ît́êḿŝ (`<li>`) t́ô b́ê ćôńt̂áîńêd́ ŵít̂h́îń â ṕâŕêńt̂ `<ul>`, `<ol>` ór̂ `<menu>` t́ô b́ê án̂ńôún̂ćêd́ p̂ŕôṕêŕl̂ý. [L̂éâŕn̂ ḿôŕê áb̂óût́ p̂ŕôṕêŕ l̂íŝt́ ŝt́r̂úĉt́ûŕê](https://dequeuniversity.com/rules/axe/4.8/listitem)."
   },
   "core/audits/accessibility/listitem.js | failureTitle": {
     "message": "L̂íŝt́ ît́êḿŝ (`<li>`) ár̂é n̂ót̂ ćôńt̂áîńêd́ ŵít̂h́îń `<ul>`, `<ol>` ôŕ `<menu>` p̂ár̂én̂t́ êĺêḿêńt̂ś."
@@ -345,7 +426,7 @@
     "message": "L̂íŝt́ ît́êḿŝ (`<li>`) ár̂é ĉón̂t́âín̂éd̂ ẃît́ĥín̂ `<ul>`, `<ol>` ór̂ `<menu>` ṕâŕêńt̂ él̂ém̂én̂t́ŝ"
   },
   "core/audits/accessibility/meta-refresh.js | description": {
-    "message": "Ûśêŕŝ d́ô ńôt́ êx́p̂éĉt́ â ṕâǵê t́ô ŕêf́r̂éŝh́ âút̂óm̂át̂íĉál̂ĺŷ, án̂d́ d̂óîńĝ śô ẃîĺl̂ ḿôv́ê f́ôćûś b̂áĉḱ t̂ó t̂h́ê t́ôṕ ôf́ t̂h́ê ṕâǵê. T́ĥíŝ ḿâý ĉŕêát̂é â f́r̂úŝt́r̂át̂ín̂ǵ ôŕ ĉón̂f́ûśîńĝ éx̂ṕêŕîén̂ćê. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ĥé r̂éf̂ŕêśĥ ḿêt́â t́âǵ](https://dequeuniversity.com/rules/axe/4.7/meta-refresh)."
+    "message": "Ûśêŕŝ d́ô ńôt́ êx́p̂éĉt́ â ṕâǵê t́ô ŕêf́r̂éŝh́ âút̂óm̂át̂íĉál̂ĺŷ, án̂d́ d̂óîńĝ śô ẃîĺl̂ ḿôv́ê f́ôćûś b̂áĉḱ t̂ó t̂h́ê t́ôṕ ôf́ t̂h́ê ṕâǵê. T́ĥíŝ ḿâý ĉŕêát̂é â f́r̂úŝt́r̂át̂ín̂ǵ ôŕ ĉón̂f́ûśîńĝ éx̂ṕêŕîén̂ćê. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ĥé r̂éf̂ŕêśĥ ḿêt́â t́âǵ](https://dequeuniversity.com/rules/axe/4.8/meta-refresh)."
   },
   "core/audits/accessibility/meta-refresh.js | failureTitle": {
     "message": "T̂h́ê d́ôćûḿêńt̂ úŝéŝ `<meta http-equiv=\"refresh\">`"
@@ -354,7 +435,7 @@
     "message": "T̂h́ê d́ôćûḿêńt̂ d́ôéŝ ńôt́ ûśê `<meta http-equiv=\"refresh\">`"
   },
   "core/audits/accessibility/meta-viewport.js | description": {
-    "message": "D̂íŝáb̂ĺîńĝ źôóm̂ín̂ǵ îś p̂ŕôb́l̂ém̂át̂íĉ f́ôŕ ûśêŕŝ ẃît́ĥ ĺôẃ v̂íŝíôń ŵh́ô ŕêĺŷ ón̂ śĉŕêén̂ ḿâǵn̂íf̂íĉát̂íôń t̂ó p̂ŕôṕêŕl̂ý ŝéê t́ĥé ĉón̂t́êńt̂ś ôf́ â ẃêb́ p̂áĝé. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́ê v́îéŵṕôŕt̂ ḿêt́â t́âǵ](https://dequeuniversity.com/rules/axe/4.7/meta-viewport)."
+    "message": "D̂íŝáb̂ĺîńĝ źôóm̂ín̂ǵ îś p̂ŕôb́l̂ém̂át̂íĉ f́ôŕ ûśêŕŝ ẃît́ĥ ĺôẃ v̂íŝíôń ŵh́ô ŕêĺŷ ón̂ śĉŕêén̂ ḿâǵn̂íf̂íĉát̂íôń t̂ó p̂ŕôṕêŕl̂ý ŝéê t́ĥé ĉón̂t́êńt̂ś ôf́ â ẃêb́ p̂áĝé. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́ê v́îéŵṕôŕt̂ ḿêt́â t́âǵ](https://dequeuniversity.com/rules/axe/4.8/meta-viewport)."
   },
   "core/audits/accessibility/meta-viewport.js | failureTitle": {
     "message": "`[user-scalable=\"no\"]` îś ûśêd́ îń t̂h́ê `<meta name=\"viewport\">` él̂ém̂én̂t́ ôŕ t̂h́ê `[maximum-scale]` át̂t́r̂íb̂út̂é îś l̂éŝś t̂h́âń 5."
@@ -363,7 +444,7 @@
     "message": "`[user-scalable=\"no\"]` îś n̂ót̂ úŝéd̂ ín̂ t́ĥé `<meta name=\"viewport\">` êĺêḿêńt̂ án̂d́ t̂h́ê `[maximum-scale]` át̂t́r̂íb̂út̂é îś n̂ót̂ ĺêśŝ t́ĥán̂ 5."
   },
   "core/audits/accessibility/object-alt.js | description": {
-    "message": "Ŝćr̂éêń r̂éâd́êŕŝ ćâńn̂ót̂ t́r̂án̂śl̂át̂é n̂ón̂-t́êx́t̂ ćôńt̂én̂t́. Âd́d̂ín̂ǵ âĺt̂ér̂ńât́ê t́êx́t̂ t́ô `<object>` él̂ém̂én̂t́ŝ h́êĺp̂ś ŝćr̂éêń r̂éâd́êŕŝ ćôńv̂éŷ ḿêán̂ín̂ǵ t̂ó ûśêŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ál̂t́ t̂éx̂t́ f̂ór̂ `object` él̂ém̂én̂t́ŝ](https://dequeuniversity.com/rules/axe/4.7/object-alt)."
+    "message": "Ŝćr̂éêń r̂éâd́êŕŝ ćâńn̂ót̂ t́r̂án̂śl̂át̂é n̂ón̂-t́êx́t̂ ćôńt̂én̂t́. Âd́d̂ín̂ǵ âĺt̂ér̂ńât́ê t́êx́t̂ t́ô `<object>` él̂ém̂én̂t́ŝ h́êĺp̂ś ŝćr̂éêń r̂éâd́êŕŝ ćôńv̂éŷ ḿêán̂ín̂ǵ t̂ó ûśêŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ál̂t́ t̂éx̂t́ f̂ór̂ `object` él̂ém̂én̂t́ŝ](https://dequeuniversity.com/rules/axe/4.8/object-alt)."
   },
   "core/audits/accessibility/object-alt.js | failureTitle": {
     "message": "`<object>` êĺêḿêńt̂ś d̂ó n̂ót̂ h́âv́ê ál̂t́êŕn̂át̂é t̂éx̂t́"
@@ -371,8 +452,26 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "`<object>` êĺêḿêńt̂ś ĥáv̂é âĺt̂ér̂ńât́ê t́êx́t̂"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "F̂ór̂ḿ êĺêḿêńt̂ś ŵít̂h́ôút̂ éf̂f́êćt̂ív̂é l̂áb̂él̂ś ĉán̂ ćr̂éât́ê f́r̂úŝt́r̂át̂ín̂ǵ êx́p̂ér̂íêńĉéŝ f́ôŕ ŝćr̂éêń r̂éâd́êŕ ûśêŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ĥé `select` êĺêḿêńt̂](https://dequeuniversity.com/rules/axe/4.8/select-name)."
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "Ŝél̂éĉt́ êĺêḿêńt̂ś d̂ó n̂ót̂ h́âv́ê áŝśôćîát̂éd̂ ĺâb́êĺ êĺêḿêńt̂ś."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "Ŝél̂éĉt́ êĺêḿêńt̂ś ĥáv̂é âśŝóĉíât́êd́ l̂áb̂él̂ él̂ém̂én̂t́ŝ."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Îńĉĺûd́îńĝ á ŝḱîṕ l̂ín̂ḱ ĉán̂ h́êĺp̂ úŝér̂ś ŝḱîṕ t̂ó t̂h́ê ḿâín̂ ćôńt̂én̂t́ t̂ó ŝáv̂é t̂ím̂é. [L̂éâŕn̂ ḿôŕê áb̂óût́ ŝḱîṕ l̂ín̂ḱŝ](https://dequeuniversity.com/rules/axe/4.8/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Ŝḱîṕ l̂ín̂ḱŝ ár̂é n̂ót̂ f́ôćûśâb́l̂é."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Ŝḱîṕ l̂ín̂ḱŝ ár̂é f̂óĉúŝáb̂ĺê."
+  },
   "core/audits/accessibility/tabindex.js | description": {
-    "message": "Â v́âĺûé ĝŕêát̂ér̂ t́ĥán̂ 0 ím̂ṕl̂íêś âń êx́p̂ĺîćît́ n̂áv̂íĝát̂íôń ôŕd̂ér̂ín̂ǵ. Âĺt̂h́ôúĝh́ t̂éĉh́n̂íĉál̂ĺŷ v́âĺîd́, t̂h́îś ôf́t̂én̂ ćr̂éât́êś f̂ŕûśt̂ŕât́îńĝ éx̂ṕêŕîén̂ćêś f̂ór̂ úŝér̂ś ŵh́ô ŕêĺŷ ón̂ áŝśîśt̂ív̂é t̂éĉh́n̂ól̂óĝíêś. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́ê `tabindex` át̂t́r̂íb̂út̂é](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
+    "message": "Â v́âĺûé ĝŕêát̂ér̂ t́ĥán̂ 0 ím̂ṕl̂íêś âń êx́p̂ĺîćît́ n̂áv̂íĝát̂íôń ôŕd̂ér̂ín̂ǵ. Âĺt̂h́ôúĝh́ t̂éĉh́n̂íĉál̂ĺŷ v́âĺîd́, t̂h́îś ôf́t̂én̂ ćr̂éât́êś f̂ŕûśt̂ŕât́îńĝ éx̂ṕêŕîén̂ćêś f̂ór̂ úŝér̂ś ŵh́ô ŕêĺŷ ón̂ áŝśîśt̂ív̂é t̂éĉh́n̂ól̂óĝíêś. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́ê `tabindex` át̂t́r̂íb̂út̂é](https://dequeuniversity.com/rules/axe/4.8/tabindex)."
   },
   "core/audits/accessibility/tabindex.js | failureTitle": {
     "message": "Ŝóm̂é êĺêḿêńt̂ś ĥáv̂é â `[tabindex]` v́âĺûé ĝŕêát̂ér̂ t́ĥán̂ 0"
@@ -380,8 +479,17 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "N̂ó êĺêḿêńt̂ h́âś â `[tabindex]` v́âĺûé ĝŕêát̂ér̂ t́ĥán̂ 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "T̂h́ê śûḿm̂ár̂ý ât́t̂ŕîb́ût́ê śĥóûĺd̂ d́êśĉŕîb́ê t́ĥé t̂áb̂ĺê śt̂ŕûćt̂úr̂é, ŵh́îĺê `<caption>` śĥóûĺd̂ h́âv́ê t́ĥé ôńŝćr̂éêń t̂ít̂ĺê. Áĉćûŕât́ê t́âb́l̂é m̂ár̂ḱ-ûṕ ĥél̂ṕŝ úŝér̂ś ôf́ ŝćr̂éêń r̂éâd́êŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ śûḿm̂ár̂ý âńd̂ ćâṕt̂íôń](https://dequeuniversity.com/rules/axe/4.8/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "T̂áb̂ĺêś ĥáv̂é t̂h́ê śâḿê ćôńt̂én̂t́ îń t̂h́ê śûḿm̂ár̂ý ât́t̂ŕîb́ût́ê án̂d́ `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "T̂áb̂ĺêś ĥáv̂é d̂íf̂f́êŕêńt̂ ćôńt̂én̂t́ îń t̂h́ê śûḿm̂ár̂ý ât́t̂ŕîb́ût́ê án̂d́ `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
-    "message": "Ŝćr̂éêń r̂éâd́êŕŝ h́âv́ê f́êát̂úr̂éŝ t́ô ḿâḱê ńâv́îǵât́îńĝ t́âb́l̂éŝ éâśîér̂. Én̂śûŕîńĝ t́ĥát̂ t́âb́l̂éŝ úŝé t̂h́ê áĉt́ûál̂ ćâṕt̂íôń êĺêḿêńt̂ ín̂śt̂éâd́ ôf́ ĉél̂ĺŝ ẃît́ĥ t́ĥé `[colspan]` ât́t̂ŕîb́ût́ê ḿâý îḿp̂ŕôv́ê t́ĥé êx́p̂ér̂íêńĉé f̂ór̂ śĉŕêén̂ ŕêád̂ér̂ úŝér̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ ĉáp̂t́îón̂ś](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+    "message": "Ŝćr̂éêń r̂éâd́êŕŝ h́âv́ê f́êát̂úr̂éŝ t́ô ḿâḱê ńâv́îǵât́îńĝ t́âb́l̂éŝ éâśîér̂. Én̂śûŕîńĝ t́ĥát̂ t́âb́l̂éŝ úŝé t̂h́ê áĉt́ûál̂ ćâṕt̂íôń êĺêḿêńt̂ ín̂śt̂éâd́ ôf́ ĉél̂ĺŝ ẃît́ĥ t́ĥé `[colspan]` ât́t̂ŕîb́ût́ê ḿâý îḿp̂ŕôv́ê t́ĥé êx́p̂ér̂íêńĉé f̂ór̂ śĉŕêén̂ ŕêád̂ér̂ úŝér̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ ĉáp̂t́îón̂ś](https://dequeuniversity.com/rules/axe/4.8/table-fake-caption)."
   },
   "core/audits/accessibility/table-fake-caption.js | failureTitle": {
     "message": "T̂áb̂ĺêś d̂ó n̂ót̂ úŝé `<caption>` îńŝt́êád̂ óf̂ ćêĺl̂ś ŵít̂h́ t̂h́ê `[colspan]` át̂t́r̂íb̂út̂é t̂ó îńd̂íĉát̂é â ćâṕt̂íôń."
@@ -389,8 +497,17 @@
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "T̂áb̂ĺêś ûśê `<caption>` ín̂śt̂éâd́ ôf́ ĉél̂ĺŝ ẃît́ĥ t́ĥé `[colspan]` ât́t̂ŕîb́ût́ê t́ô ín̂d́îćât́ê á ĉáp̂t́îón̂."
   },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "T̂óûćĥ t́âŕĝét̂ś ŵít̂h́ ŝúf̂f́îćîén̂t́ ŝíẑé âńd̂ śp̂áĉín̂ǵ ĥél̂ṕ ûśêŕŝ ẃĥó m̂áŷ h́âv́ê d́îf́f̂íĉúl̂t́ŷ t́âŕĝét̂ín̂ǵ ŝḿâĺl̂ ćôńt̂ŕôĺŝ t́ô áĉt́îv́ât́ê t́ĥé t̂ár̂ǵêt́ŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ôúĉh́ t̂ár̂ǵêt́ŝ](https://dequeuniversity.com/rules/axe/4.8/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "T̂óûćĥ t́âŕĝét̂ś d̂ó n̂ót̂ h́âv́ê śûf́f̂íĉíêńt̂ śîźê ór̂ śp̂áĉín̂ǵ."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "T̂óûćĥ t́âŕĝét̂ś ĥáv̂é ŝúf̂f́îćîén̂t́ ŝíẑé âńd̂ śp̂áĉín̂ǵ."
+  },
   "core/audits/accessibility/td-has-header.js | description": {
-    "message": "Ŝćr̂éêń r̂éâd́êŕŝ h́âv́ê f́êát̂úr̂éŝ t́ô ḿâḱê ńâv́îǵât́îńĝ t́âb́l̂éŝ éâśîér̂. Én̂śûŕîńĝ t́ĥát̂ `<td>` él̂ém̂én̂t́ŝ ín̂ á l̂ár̂ǵê t́âb́l̂é (3 ôŕ m̂ór̂é ĉél̂ĺŝ ín̂ ẃîd́t̂h́ âńd̂ h́êíĝh́t̂) h́âv́ê án̂ áŝśôćîát̂éd̂ t́âb́l̂é ĥéâd́êŕ m̂áŷ ím̂ṕr̂óv̂é t̂h́ê éx̂ṕêŕîén̂ćê f́ôŕ ŝćr̂éêń r̂éâd́êŕ ûśêŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́âb́l̂é ĥéâd́êŕŝ](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
+    "message": "Ŝćr̂éêń r̂éâd́êŕŝ h́âv́ê f́êát̂úr̂éŝ t́ô ḿâḱê ńâv́îǵât́îńĝ t́âb́l̂éŝ éâśîér̂. Én̂śûŕîńĝ t́ĥát̂ `<td>` él̂ém̂én̂t́ŝ ín̂ á l̂ár̂ǵê t́âb́l̂é (3 ôŕ m̂ór̂é ĉél̂ĺŝ ín̂ ẃîd́t̂h́ âńd̂ h́êíĝh́t̂) h́âv́ê án̂ áŝśôćîát̂éd̂ t́âb́l̂é ĥéâd́êŕ m̂áŷ ím̂ṕr̂óv̂é t̂h́ê éx̂ṕêŕîén̂ćê f́ôŕ ŝćr̂éêń r̂éâd́êŕ ûśêŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́âb́l̂é ĥéâd́êŕŝ](https://dequeuniversity.com/rules/axe/4.8/td-has-header)."
   },
   "core/audits/accessibility/td-has-header.js | failureTitle": {
     "message": "`<td>` êĺêḿêńt̂ś îń â ĺâŕĝé `<table>` d̂ó n̂ót̂ h́âv́ê t́âb́l̂é ĥéâd́êŕŝ."
@@ -399,7 +516,7 @@
     "message": "`<td>` êĺêḿêńt̂ś îń â ĺâŕĝé `<table>` ĥáv̂é ôńê ór̂ ḿôŕê t́âb́l̂é ĥéâd́êŕŝ."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
-    "message": "Ŝćr̂éêń r̂éâd́êŕŝ h́âv́ê f́êát̂úr̂éŝ t́ô ḿâḱê ńâv́îǵât́îńĝ t́âb́l̂éŝ éâśîér̂. Én̂śûŕîńĝ `<td>` ćêĺl̂ś ûśîńĝ t́ĥé `[headers]` ât́t̂ŕîb́ût́ê ón̂ĺŷ ŕêf́êŕ t̂ó ôt́ĥér̂ ćêĺl̂ś îń t̂h́ê śâḿê t́âb́l̂é m̂áŷ ím̂ṕr̂óv̂é t̂h́ê éx̂ṕêŕîén̂ćê f́ôŕ ŝćr̂éêń r̂éâd́êŕ ûśêŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ĥé `headers` ât́t̂ŕîb́ût́ê](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
+    "message": "Ŝćr̂éêń r̂éâd́êŕŝ h́âv́ê f́êát̂úr̂éŝ t́ô ḿâḱê ńâv́îǵât́îńĝ t́âb́l̂éŝ éâśîér̂. Én̂śûŕîńĝ `<td>` ćêĺl̂ś ûśîńĝ t́ĥé `[headers]` ât́t̂ŕîb́ût́ê ón̂ĺŷ ŕêf́êŕ t̂ó ôt́ĥér̂ ćêĺl̂ś îń t̂h́ê śâḿê t́âb́l̂é m̂áŷ ím̂ṕr̂óv̂é t̂h́ê éx̂ṕêŕîén̂ćê f́ôŕ ŝćr̂éêń r̂éâd́êŕ ûśêŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ĥé `headers` ât́t̂ŕîb́ût́ê](https://dequeuniversity.com/rules/axe/4.8/td-headers-attr)."
   },
   "core/audits/accessibility/td-headers-attr.js | failureTitle": {
     "message": "Ĉél̂ĺŝ ín̂ á `<table>` êĺêḿêńt̂ t́ĥát̂ úŝé t̂h́ê `[headers]` át̂t́r̂íb̂út̂é r̂éf̂ér̂ t́ô án̂ él̂ém̂én̂t́ `id` n̂ót̂ f́ôún̂d́ ŵít̂h́îń t̂h́ê śâḿê t́âb́l̂é."
@@ -408,7 +525,7 @@
     "message": "Ĉél̂ĺŝ ín̂ á `<table>` êĺêḿêńt̂ t́ĥát̂ úŝé t̂h́ê `[headers]` át̂t́r̂íb̂út̂é r̂éf̂ér̂ t́ô t́âb́l̂é ĉél̂ĺŝ ẃît́ĥín̂ t́ĥé ŝám̂é t̂áb̂ĺê."
   },
   "core/audits/accessibility/th-has-data-cells.js | description": {
-    "message": "Ŝćr̂éêń r̂éâd́êŕŝ h́âv́ê f́êát̂úr̂éŝ t́ô ḿâḱê ńâv́îǵât́îńĝ t́âb́l̂éŝ éâśîér̂. Én̂śûŕîńĝ t́âb́l̂é ĥéâd́êŕŝ ál̂ẃâýŝ ŕêf́êŕ t̂ó ŝóm̂é ŝét̂ óf̂ ćêĺl̂ś m̂áŷ ím̂ṕr̂óv̂é t̂h́ê éx̂ṕêŕîén̂ćê f́ôŕ ŝćr̂éêń r̂éâd́êŕ ûśêŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́âb́l̂é ĥéâd́êŕŝ](https://dequeuniversity.com/rules/axe/4.7/th-has-data-cells)."
+    "message": "Ŝćr̂éêń r̂éâd́êŕŝ h́âv́ê f́êát̂úr̂éŝ t́ô ḿâḱê ńâv́îǵât́îńĝ t́âb́l̂éŝ éâśîér̂. Én̂śûŕîńĝ t́âb́l̂é ĥéâd́êŕŝ ál̂ẃâýŝ ŕêf́êŕ t̂ó ŝóm̂é ŝét̂ óf̂ ćêĺl̂ś m̂áŷ ím̂ṕr̂óv̂é t̂h́ê éx̂ṕêŕîén̂ćê f́ôŕ ŝćr̂éêń r̂éâd́êŕ ûśêŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́âb́l̂é ĥéâd́êŕŝ](https://dequeuniversity.com/rules/axe/4.8/th-has-data-cells)."
   },
   "core/audits/accessibility/th-has-data-cells.js | failureTitle": {
     "message": "`<th>` êĺêḿêńt̂ś âńd̂ él̂ém̂én̂t́ŝ ẃît́ĥ `[role=\"columnheader\"/\"rowheader\"]` d́ô ńôt́ ĥáv̂é d̂át̂á ĉél̂ĺŝ t́ĥéŷ d́êśĉŕîb́ê."
@@ -417,7 +534,7 @@
     "message": "`<th>` êĺêḿêńt̂ś âńd̂ él̂ém̂én̂t́ŝ ẃît́ĥ `[role=\"columnheader\"/\"rowheader\"]` h́âv́ê d́ât́â ćêĺl̂ś t̂h́êý d̂éŝćr̂íb̂é."
   },
   "core/audits/accessibility/valid-lang.js | description": {
-    "message": "Ŝṕêćîf́ŷín̂ǵ â v́âĺîd́ [B̂ĆP̂ 47 ĺâńĝúâǵê](https://www.w3.org/International/questions/qa-choosing-language-tags#question) ón̂ él̂ém̂én̂t́ŝ h́êĺp̂ś êńŝúr̂é t̂h́ât́ t̂éx̂t́ îś p̂ŕôńôún̂ćêd́ ĉór̂ŕêćt̂ĺŷ b́ŷ á ŝćr̂éêń r̂éâd́êŕ. [L̂éâŕn̂ h́ôẃ t̂ó ûśê t́ĥé `lang` ât́t̂ŕîb́ût́ê](https://dequeuniversity.com/rules/axe/4.7/valid-lang)."
+    "message": "Ŝṕêćîf́ŷín̂ǵ â v́âĺîd́ [B̂ĆP̂ 47 ĺâńĝúâǵê](https://www.w3.org/International/questions/qa-choosing-language-tags#question) ón̂ él̂ém̂én̂t́ŝ h́êĺp̂ś êńŝúr̂é t̂h́ât́ t̂éx̂t́ îś p̂ŕôńôún̂ćêd́ ĉór̂ŕêćt̂ĺŷ b́ŷ á ŝćr̂éêń r̂éâd́êŕ. [L̂éâŕn̂ h́ôẃ t̂ó ûśê t́ĥé `lang` ât́t̂ŕîb́ût́ê](https://dequeuniversity.com/rules/axe/4.8/valid-lang)."
   },
   "core/audits/accessibility/valid-lang.js | failureTitle": {
     "message": "`[lang]` ât́t̂ŕîb́ût́êś d̂ó n̂ót̂ h́âv́ê á v̂ál̂íd̂ v́âĺûé"
@@ -426,7 +543,7 @@
     "message": "`[lang]` ât́t̂ŕîb́ût́êś ĥáv̂é â v́âĺîd́ v̂ál̂úê"
   },
   "core/audits/accessibility/video-caption.js | description": {
-    "message": "Ŵh́êń â v́îd́êó p̂ŕôv́îd́êś â ćâṕt̂íôń ît́ îś êáŝíêŕ f̂ór̂ d́êáf̂ án̂d́ ĥéâŕîńĝ ím̂ṕâír̂éd̂ úŝér̂ś t̂ó âćĉéŝś ît́ŝ ín̂f́ôŕm̂át̂íôń. [L̂éâŕn̂ ḿôŕê áb̂óût́ v̂íd̂éô ćâṕt̂íôńŝ](https://dequeuniversity.com/rules/axe/4.7/video-caption)."
+    "message": "Ŵh́êń â v́îd́êó p̂ŕôv́îd́êś â ćâṕt̂íôń ît́ îś êáŝíêŕ f̂ór̂ d́êáf̂ án̂d́ ĥéâŕîńĝ ím̂ṕâír̂éd̂ úŝér̂ś t̂ó âćĉéŝś ît́ŝ ín̂f́ôŕm̂át̂íôń. [L̂éâŕn̂ ḿôŕê áb̂óût́ v̂íd̂éô ćâṕt̂íôńŝ](https://dequeuniversity.com/rules/axe/4.8/video-caption)."
   },
   "core/audits/accessibility/video-caption.js | failureTitle": {
     "message": "`<video>` êĺêḿêńt̂ś d̂ó n̂ót̂ ćôńt̂áîń â `<track>` él̂ém̂én̂t́ ŵít̂h́ `[kind=\"captions\"]`."
@@ -488,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "P̂áĝé d̂íd̂ń't̂ ṕr̂év̂én̂t́ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé r̂éŝt́ôŕât́îón̂"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "B̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé ĉán̂ńôt́ b̂é t̂éŝt́êd́ îń ôĺd̂ H́êád̂ĺêśŝ Ćĥŕôḿê (`--chrome-flags=\"--headless=old\"`). T́ô śêé âúd̂ít̂ ŕêśûĺt̂ś, ûśê t́ĥé n̂éŵ H́êád̂ĺêśŝ Ćĥŕôḿê (`--chrome-flags=\"--headless=new\"`) ór̂ śt̂án̂d́âŕd̂ Ćĥŕôḿê."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Ĉh́r̂óm̂é êx́t̂én̂śîón̂ś n̂éĝát̂ív̂él̂ý âf́f̂éĉt́êd́ t̂h́îś p̂áĝé'ŝ ĺôád̂ ṕêŕf̂ór̂ḿâńĉé. T̂ŕŷ áûd́ît́îńĝ t́ĥé p̂áĝé îń îńĉóĝńît́ô ḿôd́ê ór̂ f́r̂óm̂ á Ĉh́r̂óm̂é p̂ŕôf́îĺê ẃît́ĥóût́ êx́t̂én̂śîón̂ś."
   },
@@ -522,7 +642,7 @@
     "message": "Ûśê v́îd́êó f̂ór̂ḿât́ŝ f́ôŕ âńîḿât́êd́ ĉón̂t́êńt̂"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "P̂ól̂ýf̂íl̂ĺŝ án̂d́ t̂ŕâńŝf́ôŕm̂ś êńâb́l̂é l̂éĝáĉý b̂ŕôẃŝér̂ś t̂ó ûśê ńêẃ Ĵáv̂áŜćr̂íp̂t́ f̂éât́ûŕêś. Ĥóŵév̂ér̂, ḿâńŷ ár̂én̂'t́ n̂éĉéŝśâŕŷ f́ôŕ m̂ód̂ér̂ń b̂ŕôẃŝér̂ś. F̂ór̂ ýôúr̂ b́ûńd̂ĺêd́ Ĵáv̂áŜćr̂íp̂t́, âd́ôṕt̂ á m̂ód̂ér̂ń ŝćr̂íp̂t́ d̂ép̂ĺôým̂én̂t́ ŝt́r̂át̂éĝý ûśîńĝ ḿôd́ûĺê/ńôḿôd́ûĺê f́êát̂úr̂é d̂ét̂éĉt́îón̂ t́ô ŕêd́ûćê t́ĥé âḿôún̂t́ ôf́ ĉód̂é ŝh́îṕp̂éd̂ t́ô ḿôd́êŕn̂ b́r̂óŵśêŕŝ, ẃĥíl̂é r̂ét̂áîńîńĝ śûṕp̂ór̂t́ f̂ór̂ ĺêǵâćŷ b́r̂óŵśêŕŝ. [Ĺêár̂ń ĥóŵ t́ô úŝé m̂ód̂ér̂ń Ĵáv̂áŜćr̂íp̂t́](https://web.dev/publish-modern-javascript/)"
+    "message": "P̂ól̂ýf̂íl̂ĺŝ án̂d́ t̂ŕâńŝf́ôŕm̂ś êńâb́l̂é l̂éĝáĉý b̂ŕôẃŝér̂ś t̂ó ûśê ńêẃ Ĵáv̂áŜćr̂íp̂t́ f̂éât́ûŕêś. Ĥóŵév̂ér̂, ḿâńŷ ár̂én̂'t́ n̂éĉéŝśâŕŷ f́ôŕ m̂ód̂ér̂ń b̂ŕôẃŝér̂ś. F̂ór̂ ýôúr̂ b́ûńd̂ĺêd́ Ĵáv̂áŜćr̂íp̂t́, âd́ôṕt̂ á m̂ód̂ér̂ń ŝćr̂íp̂t́ d̂ép̂ĺôým̂én̂t́ ŝt́r̂át̂éĝý ûśîńĝ ḿôd́ûĺê/ńôḿôd́ûĺê f́êát̂úr̂é d̂ét̂éĉt́îón̂ t́ô ŕêd́ûćê t́ĥé âḿôún̂t́ ôf́ ĉód̂é ŝh́îṕp̂éd̂ t́ô ḿôd́êŕn̂ b́r̂óŵśêŕŝ, ẃĥíl̂é r̂ét̂áîńîńĝ śûṕp̂ór̂t́ f̂ór̂ ĺêǵâćŷ b́r̂óŵśêŕŝ. [Ĺêár̂ń ĥóŵ t́ô úŝé m̂ód̂ér̂ń Ĵáv̂áŜćr̂íp̂t́](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Âv́ôíd̂ śêŕv̂ín̂ǵ l̂éĝáĉý Ĵáv̂áŜćr̂íp̂t́ t̂ó m̂ód̂ér̂ń b̂ŕôẃŝér̂ś"
@@ -657,7 +777,7 @@
     "message": "Ŝýn̂t́âx́"
   },
   "core/audits/csp-xss.js | metaTagMessage": {
-    "message": "T̂h́ê ṕâǵê ćôńt̂áîńŝ á ĈŚP̂ d́êf́îńêd́ îń â <ḿêt́â> t́âǵ. Ĉón̂śîd́êŕ m̂óv̂ín̂ǵ t̂h́ê ĆŜṔ t̂ó âń ĤT́T̂Ṕ ĥéâd́êŕ ôŕ d̂éf̂ín̂ín̂ǵ âńôt́ĥér̂ śt̂ŕîćt̂ ĆŜṔ îń âń ĤT́T̂Ṕ ĥéâd́êŕ."
+    "message": "T̂h́ê ṕâǵê ćôńt̂áîńŝ á ĈŚP̂ d́êf́îńêd́ îń â `<meta>` t́âǵ. Ĉón̂śîd́êŕ m̂óv̂ín̂ǵ t̂h́ê ĆŜṔ t̂ó âń ĤT́T̂Ṕ ĥéâd́êŕ ôŕ d̂éf̂ín̂ín̂ǵ âńôt́ĥér̂ śt̂ŕîćt̂ ĆŜṔ îń âń ĤT́T̂Ṕ ĥéâd́êŕ."
   },
   "core/audits/csp-xss.js | noCsp": {
     "message": "N̂ó ĈŚP̂ f́ôún̂d́ îń êńf̂ór̂ćêḿêńt̂ ḿôd́ê"
@@ -876,7 +996,7 @@
     "message": "Êx́p̂éĉt́êd́ ŝíẑé"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Îḿâǵê ńât́ûŕâĺ d̂ím̂én̂śîón̂ś ŝh́ôúl̂d́ b̂é p̂ŕôṕôŕt̂íôńâĺ t̂ó t̂h́ê d́îśp̂ĺâý ŝíẑé âńd̂ t́ĥé p̂íx̂él̂ ŕât́îó t̂ó m̂áx̂ím̂íẑé îḿâǵê ćl̂ár̂ít̂ý. [L̂éâŕn̂ h́ôẃ t̂ó p̂ŕôv́îd́ê ŕêśp̂ón̂śîv́ê ím̂áĝéŝ](https://web.dev/serve-responsive-images/)."
+    "message": "Îḿâǵê ńât́ûŕâĺ d̂ím̂én̂śîón̂ś ŝh́ôúl̂d́ b̂é p̂ŕôṕôŕt̂íôńâĺ t̂ó t̂h́ê d́îśp̂ĺâý ŝíẑé âńd̂ t́ĥé p̂íx̂él̂ ŕât́îó t̂ó m̂áx̂ím̂íẑé îḿâǵê ćl̂ár̂ít̂ý. [L̂éâŕn̂ h́ôẃ t̂ó p̂ŕôv́îd́ê ŕêśp̂ón̂śîv́ê ím̂áĝéŝ](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Ŝér̂v́êś îḿâǵêś ŵít̂h́ l̂óŵ ŕêśôĺût́îón̂"
@@ -909,7 +1029,7 @@
     "message": "P̂áĝé îś l̂óâd́êd́ îń âń îńĉóĝńît́ô ẃîńd̂óŵ"
   },
   "core/audits/installable-manifest.js | manifest-display-not-supported": {
-    "message": "M̂án̂íf̂éŝt́ 'd̂íŝṕl̂áŷ' ṕr̂óp̂ér̂t́ŷ ḿûśt̂ b́ê ón̂é ôf́ 'ŝt́âńd̂ál̂ón̂é', 'f̂úl̂ĺŝćr̂éêń', ôŕ 'm̂ín̂ím̂ál̂-úî'"
+    "message": "M̂án̂íf̂éŝt́ `display` p̂ŕôṕêŕt̂ý m̂úŝt́ b̂é ôńê óf̂ `standalone`, `fullscreen`, ór̂ `minimal-ui`"
   },
   "core/audits/installable-manifest.js | manifest-display-override-not-supported": {
     "message": "M̂án̂íf̂éŝt́ ĉón̂t́âín̂ś 'd̂íŝṕl̂áŷ_óv̂ér̂ŕîd́ê' f́îél̂d́, âńd̂ t́ĥé f̂ír̂śt̂ śûṕp̂ór̂t́êd́ d̂íŝṕl̂áŷ ḿôd́ê ḿûśt̂ b́ê ón̂é ôf́ 'ŝt́âńd̂ál̂ón̂é', 'f̂úl̂ĺŝćr̂éêń', ôŕ 'm̂ín̂ím̂ál̂-úî'"
@@ -921,7 +1041,7 @@
     "message": "M̂án̂íf̂éŝt́ ÛŔL̂ ćĥán̂ǵêd́ ŵh́îĺê t́ĥé m̂án̂íf̂éŝt́ ŵáŝ b́êín̂ǵ f̂ét̂ćĥéd̂."
   },
   "core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
-    "message": "M̂án̂íf̂éŝt́ d̂óêś n̂ót̂ ćôńt̂áîń â 'ńâḿê' ór̂ 'śĥór̂t́_n̂ám̂é' f̂íêĺd̂"
+    "message": "M̂án̂íf̂éŝt́ d̂óêś n̂ót̂ ćôńt̂áîń â `name` ór̂ `short_name` f́îél̂d́"
   },
   "core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
     "message": "M̂án̂íf̂éŝt́ d̂óêś n̂ót̂ ćôńt̂áîń â śûít̂áb̂ĺê íĉón̂ - ṔN̂Ǵ, ŜV́Ĝ ór̂ Ẃêb́P̂ f́ôŕm̂át̂ óf̂ át̂ ĺêáŝt́ {value0} p̂x́ îś r̂éq̂úîŕêd́, t̂h́ê śîźêś ât́t̂ŕîb́ût́ê ḿûśt̂ b́ê śêt́, âńd̂ t́ĥé p̂úr̂ṕôśê át̂t́r̂íb̂út̂é, îf́ ŝét̂, ḿûśt̂ ín̂ćl̂úd̂é \"âńŷ\"."
@@ -937,9 +1057,6 @@
   },
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "P̂áĝé ĥáŝ ńô ḿâńîf́êśt̂ <ĺîńk̂> ÚR̂Ĺ"
-  },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "N̂ó m̂át̂ćĥín̂ǵ ŝér̂v́îćê ẃôŕk̂ér̂ d́êt́êćt̂éd̂. Ýôú m̂áŷ ńêéd̂ t́ô ŕêĺôád̂ t́ĥé p̂áĝé, ôŕ ĉh́êćk̂ t́ĥát̂ t́ĥé ŝćôṕê óf̂ t́ĥé ŝér̂v́îćê ẃôŕk̂ér̂ f́ôŕ t̂h́ê ćûŕr̂én̂t́ p̂áĝé êńĉĺôśêś t̂h́ê śĉóp̂é âńd̂ śt̂ár̂t́ ÛŔL̂ f́r̂óm̂ t́ĥé m̂án̂íf̂éŝt́."
   },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "Ĉóûĺd̂ ńôt́ ĉh́êćk̂ śêŕv̂íĉé ŵór̂ḱêŕ ŵít̂h́ôút̂ á 'ŝt́âŕt̂_úr̂ĺ' f̂íêĺd̂ ín̂ t́ĥé m̂án̂íf̂éŝt́"
@@ -969,10 +1086,7 @@
     "message": "p̂ŕêf́êŕ_r̂él̂át̂éd̂_áp̂ṕl̂íĉát̂íôńŝ íŝ ón̂ĺŷ śûṕp̂ór̂t́êd́ ôń Ĉh́r̂óm̂é B̂ét̂á âńd̂ Śt̂áb̂ĺê ćĥán̂ńêĺŝ ón̂ Án̂d́r̂óîd́."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "L̂íĝh́t̂h́ôúŝé ĉóûĺd̂ ńôt́ d̂ét̂ér̂ḿîńê íf̂ t́ĥér̂é ŵáŝ á ŝér̂v́îćê ẃôŕk̂ér̂. Ṕl̂éâśê t́r̂ý ŵít̂h́ â ńêẃêŕ v̂ér̂śîón̂ óf̂ Ćĥŕôḿê."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "T̂h́ê ḿâńîf́êśt̂ ÚR̂Ĺ ŝćĥém̂é ({scheme}) îś n̂ót̂ śûṕp̂ór̂t́êd́ ôń Âńd̂ŕôíd̂."
+    "message": "L̂íĝh́t̂h́ôúŝé ĉóûĺd̂ ńôt́ d̂ét̂ér̂ḿîńê íf̂ t́ĥé p̂áĝé îś îńŝt́âĺl̂áb̂ĺê. Ṕl̂éâśê t́r̂ý ŵít̂h́ â ńêẃêŕ v̂ér̂śîón̂ óf̂ Ćĥŕôḿê."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "M̂án̂íf̂éŝt́ ŝt́âŕt̂ ÚR̂Ĺ îś n̂ót̂ v́âĺîd́"
@@ -1044,16 +1158,40 @@
     "message": "L̂ár̂ǵêśt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́ êĺêḿêńt̂"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "ĈĹŜ Ćôńt̂ŕîb́ût́îón̂"
+    "message": "L̂áŷóût́ ŝh́îf́t̂ ím̂ṕâćt̂"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "T̂h́êśê D́ÔḾ êĺêḿêńt̂ś ĉón̂t́r̂íb̂út̂é m̂óŝt́ t̂ó t̂h́ê ĆL̂Ś ôf́ t̂h́ê ṕâǵê. [Ĺêár̂ń ĥóŵ t́ô ím̂ṕr̂óv̂é ĈĹŜ](https://web.dev/optimize-cls/)"
+    "message": "T̂h́êśê D́ÔḾ êĺêḿêńt̂ś ŵér̂é m̂óŝt́ âf́f̂éĉt́êd́ b̂ý l̂áŷóût́ ŝh́îf́t̂ś. Ŝóm̂é l̂áŷóût́ ŝh́îf́t̂ś m̂áŷ ńôt́ b̂é îńĉĺûd́êd́ îń t̂h́ê ĆL̂Ś m̂ét̂ŕîć v̂ál̂úê d́ûé t̂ó [ŵín̂d́ôẃîńĝ](https://web.dev/articles/cls#what_is_cls). [Ĺêár̂ń ĥóŵ t́ô ím̂ṕr̂óv̂é ĈĹŜ](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Âv́ôíd̂ ĺâŕĝé l̂áŷóût́ ŝh́îf́t̂ś"
   },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "L̂áŷóût́ ŝh́îf́t̂ śĉór̂é"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "T̂h́êśê ár̂é t̂h́ê ĺâŕĝéŝt́ l̂áŷóût́ ŝh́îf́t̂ś ôb́ŝér̂v́êd́ ôń t̂h́ê ṕâǵê. Éâćĥ t́âb́l̂é ît́êḿ r̂ép̂ŕêśêńt̂ś â śîńĝĺê ĺâýôút̂ śĥíf̂t́, âńd̂ śĥóŵś t̂h́ê él̂ém̂én̂t́ t̂h́ât́ ŝh́îf́t̂éd̂ t́ĥé m̂óŝt́. B̂él̂óŵ éâćĥ ít̂ém̂ ár̂é p̂óŝśîb́l̂é r̂óôt́ ĉáûśêś t̂h́ât́ l̂éd̂ t́ô t́ĥé l̂áŷóût́ ŝh́îf́t̂. Śôḿê óf̂ t́ĥéŝé l̂áŷóût́ ŝh́îf́t̂ś m̂áŷ ńôt́ b̂é îńĉĺûd́êd́ îń t̂h́ê ĆL̂Ś m̂ét̂ŕîć v̂ál̂úê d́ûé t̂ó [ŵín̂d́ôẃîńĝ](https://web.dev/articles/cls#what_is_cls). [Ĺêár̂ń ĥóŵ t́ô ím̂ṕr̂óv̂é ĈĹŜ](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount, plural, =1 {1 l̂áŷóût́ ŝh́îf́t̂ f́ôún̂d́} other {# l̂áŷóût́ ŝh́îf́t̂ś f̂óûńd̂}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Ŵéb̂ f́ôńt̂ ĺôád̂éd̂"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Îńĵéĉt́êd́ îf́r̂ám̂é"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Â ĺât́ê ńêt́ŵór̂ḱ r̂éq̂úêśt̂ ád̂j́ûśt̂éd̂ t́ĥé p̂áĝé l̂áŷóût́"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "M̂éd̂íâ él̂ém̂én̂t́ l̂áĉḱîńĝ án̂ éx̂ṕl̂íĉít̂ śîźê"
+  },
+  "core/audits/layout-shifts.js | title": {
+    "message": "Âv́ôíd̂ ĺâŕĝé l̂áŷóût́ ŝh́îf́t̂ś"
+  },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Âb́ôv́ê-t́ĥé-f̂ól̂d́ îḿâǵêś t̂h́ât́ âŕê ĺâźîĺŷ ĺôád̂éd̂ ŕêńd̂ér̂ ĺât́êŕ îń t̂h́ê ṕâǵê ĺîf́êćŷćl̂é, ŵh́îćĥ ćâń d̂él̂áŷ t́ĥé l̂ár̂ǵêśt̂ ćôńt̂én̂t́f̂úl̂ ṕâín̂t́. [L̂éâŕn̂ ḿôŕê áb̂óût́ ôṕt̂ím̂ál̂ ĺâźŷ ĺôád̂ín̂ǵ](https://web.dev/lcp-lazy-loading/)."
+    "message": "Âb́ôv́ê-t́ĥé-f̂ól̂d́ îḿâǵêś t̂h́ât́ âŕê ĺâźîĺŷ ĺôád̂éd̂ ŕêńd̂ér̂ ĺât́êŕ îń t̂h́ê ṕâǵê ĺîf́êćŷćl̂é, ŵh́îćĥ ćâń d̂él̂áŷ t́ĥé l̂ár̂ǵêśt̂ ćôńt̂én̂t́f̂úl̂ ṕâín̂t́. [L̂éâŕn̂ ḿôŕê áb̂óût́ ôṕt̂ím̂ál̂ ĺâźŷ ĺôád̂ín̂ǵ](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "L̂ár̂ǵêśt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́ îḿâǵê ẃâś l̂áẑíl̂ý l̂óâd́êd́"
@@ -1062,7 +1200,7 @@
     "message": "L̂ár̂ǵêśt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́ îḿâǵê ẃâś n̂ót̂ ĺâźîĺŷ ĺôád̂éd̂"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "L̂íŝt́ŝ t́ĥé l̂ón̂ǵêśt̂ t́âśk̂ś ôń t̂h́ê ḿâín̂ t́ĥŕêád̂, úŝéf̂úl̂ f́ôŕ îd́êńt̂íf̂ýîńĝ ẃôŕŝt́ ĉón̂t́r̂íb̂út̂ór̂ś t̂ó îńp̂út̂ d́êĺâý. [L̂éâŕn̂ h́ôẃ t̂ó âv́ôíd̂ ĺôńĝ ḿâín̂-t́ĥŕêád̂ t́âśk̂ś](https://web.dev/long-tasks-devtools/)"
+    "message": "L̂íŝt́ŝ t́ĥé l̂ón̂ǵêśt̂ t́âśk̂ś ôń t̂h́ê ḿâín̂ t́ĥŕêád̂, úŝéf̂úl̂ f́ôŕ îd́êńt̂íf̂ýîńĝ ẃôŕŝt́ ĉón̂t́r̂íb̂út̂ór̂ś t̂ó îńp̂út̂ d́êĺâý. [L̂éâŕn̂ h́ôẃ t̂ó âv́ôíd̂ ĺôńĝ ḿâín̂-t́ĥŕêád̂ t́âśk̂ś](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount, plural,\n  =1 {# l̂ón̂ǵ t̂áŝḱ f̂óûńd̂}\n  other {# ĺôńĝ t́âśk̂ś f̂óûńd̂}\n  }"
@@ -1110,16 +1248,16 @@
     "message": "M̂án̂íf̂éŝt́ ĥáŝ á m̂áŝḱâb́l̂é îćôń"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Ĉúm̂úl̂át̂ív̂é L̂áŷóût́ Ŝh́îf́t̂ ḿêáŝúr̂éŝ t́ĥé m̂óv̂ém̂én̂t́ ôf́ v̂íŝíb̂ĺê él̂ém̂én̂t́ŝ ẃît́ĥín̂ t́ĥé v̂íêẃp̂ór̂t́. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́ê Ćûḿûĺât́îv́ê Ĺâýôút̂ Śĥíf̂t́ m̂ét̂ŕîć](https://web.dev/cls/)."
-  },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Îńt̂ér̂áĉt́îón̂ t́ô Ńêx́t̂ Ṕâín̂t́ m̂éâśûŕêś p̂áĝé r̂éŝṕôńŝív̂én̂éŝś, ĥóŵ ĺôńĝ ít̂ t́âḱêś t̂h́ê ṕâǵê t́ô v́îśîb́l̂ý r̂éŝṕôńd̂ t́ô úŝér̂ ín̂ṕût́. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́ê Ín̂t́êŕâćt̂íôń t̂ó N̂éx̂t́ P̂áîńt̂ ḿêt́r̂íĉ](https://web.dev/inp/)."
+    "message": "Ĉúm̂úl̂át̂ív̂é L̂áŷóût́ Ŝh́îf́t̂ ḿêáŝúr̂éŝ t́ĥé m̂óv̂ém̂én̂t́ ôf́ v̂íŝíb̂ĺê él̂ém̂én̂t́ŝ ẃît́ĥín̂ t́ĥé v̂íêẃp̂ór̂t́. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́ê Ćûḿûĺât́îv́ê Ĺâýôút̂ Śĥíf̂t́ m̂ét̂ŕîć](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "F̂ír̂śt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́ m̂ár̂ḱŝ t́ĥé t̂ím̂é ât́ ŵh́îćĥ t́ĥé f̂ír̂śt̂ t́êx́t̂ ór̂ ím̂áĝé îś p̂áîńt̂éd̂. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ĥé F̂ír̂śt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́ m̂ét̂ŕîć](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "F̂ír̂śt̂ Ḿêán̂ín̂ǵf̂úl̂ Ṕâín̂t́ m̂éâśûŕêś ŵh́êń t̂h́ê ṕr̂ím̂ár̂ý ĉón̂t́êńt̂ óf̂ á p̂áĝé îś v̂íŝíb̂ĺê. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ĥé F̂ír̂śt̂ Ḿêán̂ín̂ǵf̂úl̂ Ṕâín̂t́ m̂ét̂ŕîć](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Îńt̂ér̂áĉt́îón̂ t́ô Ńêx́t̂ Ṕâín̂t́ m̂éâśûŕêś p̂áĝé r̂éŝṕôńŝív̂én̂éŝś, ĥóŵ ĺôńĝ ít̂ t́âḱêś t̂h́ê ṕâǵê t́ô v́îśîb́l̂ý r̂éŝṕôńd̂ t́ô úŝér̂ ín̂ṕût́. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́ê Ín̂t́êŕâćt̂íôń t̂ó N̂éx̂t́ P̂áîńt̂ ḿêt́r̂íĉ](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "T̂ím̂é t̂ó Îńt̂ér̂áĉt́îv́ê íŝ t́ĥé âḿôún̂t́ ôf́ t̂ím̂é ît́ t̂ák̂éŝ f́ôŕ t̂h́ê ṕâǵê t́ô b́êćôḿê f́ûĺl̂ý îńt̂ér̂áĉt́îv́ê. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ĥé T̂ím̂é t̂ó Îńt̂ér̂áĉt́îv́ê ḿêt́r̂íĉ](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1149,7 +1287,7 @@
     "message": "Ŝér̂v́êŕ B̂áĉḱêńd̂ Ĺât́êńĉíêś"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "T̂h́ê `unload` év̂én̂t́ d̂óêś n̂ót̂ f́îŕê ŕêĺîáb̂ĺŷ án̂d́ l̂íŝt́êńîńĝ f́ôŕ ît́ ĉán̂ ṕr̂év̂én̂t́ b̂ŕôẃŝér̂ óp̂t́îḿîźât́îón̂ś l̂ík̂é t̂h́ê B́âćk̂-F́ôŕŵár̂d́ Ĉáĉh́ê. Úŝé `pagehide` ôŕ `visibilitychange` êv́êńt̂ś îńŝt́êád̂. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ún̂ĺôád̂ év̂én̂t́ l̂íŝt́êńêŕŝ](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "T̂h́ê `unload` év̂én̂t́ d̂óêś n̂ót̂ f́îŕê ŕêĺîáb̂ĺŷ án̂d́ l̂íŝt́êńîńĝ f́ôŕ ît́ ĉán̂ ṕr̂év̂én̂t́ b̂ŕôẃŝér̂ óp̂t́îḿîźât́îón̂ś l̂ík̂é t̂h́ê B́âćk̂-F́ôŕŵár̂d́ Ĉáĉh́ê. Úŝé `pagehide` ôŕ `visibilitychange` êv́êńt̂ś îńŝt́êád̂. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ún̂ĺôád̂ év̂én̂t́ l̂íŝt́êńêŕŝ](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "R̂éĝíŝt́êŕŝ án̂ `unload` ĺîśt̂én̂ér̂"
@@ -1194,7 +1332,7 @@
     "message": "P̂ér̂f́ôŕm̂án̂ćê b́ûd́ĝét̂"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "P̂ŕêĺôád̂ `optional` f́ôńt̂ś ŝó f̂ír̂śt̂-t́îḿê v́îśît́ôŕŝ ḿâý ûśê t́ĥém̂. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ṕr̂él̂óâd́îńĝ f́ôńt̂ś](https://web.dev/preload-optional-fonts/)"
+    "message": "P̂ŕêĺôád̂ `optional` f́ôńt̂ś ŝó f̂ír̂śt̂-t́îḿê v́îśît́ôŕŝ ḿâý ûśê t́ĥém̂. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ṕr̂él̂óâd́îńĝ f́ôńt̂ś](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "F̂ón̂t́ŝ ẃît́ĥ `font-display: optional` ár̂é n̂ót̂ ṕr̂él̂óâd́êd́"
@@ -1203,7 +1341,7 @@
     "message": "F̂ón̂t́ŝ ẃît́ĥ `font-display: optional` ár̂é p̂ŕêĺôád̂éd̂"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Îf́ t̂h́ê ĹĈṔ êĺêḿêńt̂ íŝ d́ŷńâḿîćâĺl̂ý âd́d̂éd̂ t́ô t́ĥé p̂áĝé, ŷóû śĥóûĺd̂ ṕr̂él̂óâd́ t̂h́ê ím̂áĝé îń ôŕd̂ér̂ t́ô ím̂ṕr̂óv̂é L̂ĆP̂. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ṕr̂él̂óâd́îńĝ ĹĈṔ êĺêḿêńt̂ś](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Îf́ t̂h́ê ĹĈṔ êĺêḿêńt̂ íŝ d́ŷńâḿîćâĺl̂ý âd́d̂éd̂ t́ô t́ĥé p̂áĝé, ŷóû śĥóûĺd̂ ṕr̂él̂óâd́ t̂h́ê ím̂áĝé îń ôŕd̂ér̂ t́ô ím̂ṕr̂óv̂é L̂ĆP̂. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ṕr̂él̂óâd́îńĝ ĹĈṔ êĺêḿêńt̂ś](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "P̂ŕêĺôád̂ Ĺâŕĝéŝt́ Ĉón̂t́êńt̂f́ûĺ P̂áîńt̂ ím̂áĝé"
@@ -1213,15 +1351,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Âv́ôíd̂ ḿûĺt̂íp̂ĺê ṕâǵê ŕêd́îŕêćt̂ś"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "T̂ó ŝét̂ b́ûd́ĝét̂ś f̂ór̂ t́ĥé q̂úâńt̂ít̂ý âńd̂ śîźê óf̂ ṕâǵê ŕêśôúr̂ćêś, âd́d̂ á b̂úd̂ǵêt́.ĵśôń f̂íl̂é. [L̂éâŕn̂ ḿôŕê áb̂óût́ p̂ér̂f́ôŕm̂án̂ćê b́ûd́ĝét̂ś](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount, plural, =1 {1 r̂éq̂úêśt̂ • {byteCount, number, bytes} ḰîB́} other {# r̂éq̂úêśt̂ś • {byteCount, number, bytes} K̂íB̂}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "K̂éêṕ r̂éq̂úêśt̂ ćôún̂t́ŝ ĺôẃ âńd̂ t́r̂án̂śf̂ér̂ śîźêś ŝḿâĺl̂"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "Ĉán̂ón̂íĉál̂ ĺîńk̂ś ŝúĝǵêśt̂ ẃĥíĉh́ ÛŔL̂ t́ô śĥóŵ ín̂ śêár̂ćĥ ŕêśûĺt̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ ĉán̂ón̂íĉál̂ ĺîńk̂ś](https://developer.chrome.com/docs/lighthouse/seo/canonical/)."
@@ -1412,27 +1541,6 @@
   "core/audits/server-response-time.js | title": {
     "message": "Îńît́îál̂ śêŕv̂ér̂ ŕêśp̂ón̂śê t́îḿê ẃâś ŝh́ôŕt̂"
   },
-  "core/audits/service-worker.js | description": {
-    "message": "T̂h́ê śêŕv̂íĉé ŵór̂ḱêŕ îś t̂h́ê t́êćĥńôĺôǵŷ t́ĥát̂ én̂áb̂ĺêś ŷóûŕ âṕp̂ t́ô úŝé m̂án̂ý P̂ŕôǵr̂éŝśîv́ê Ẃêb́ Âṕp̂ f́êát̂úr̂éŝ, śûćĥ áŝ óf̂f́l̂ín̂é, âd́d̂ t́ô h́ôḿêśĉŕêén̂, án̂d́ p̂úŝh́ n̂ót̂íf̂íĉát̂íôńŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ Śêŕv̂íĉé Ŵór̂ḱêŕŝ](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)."
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "T̂h́îś p̂áĝé îś ĉón̂t́r̂ól̂ĺêd́ b̂ý â śêŕv̂íĉé ŵór̂ḱêŕ, ĥóŵév̂ér̂ ńô `start_url` ẃâś f̂óûńd̂ b́êćâúŝé m̂án̂íf̂éŝt́ f̂áîĺêd́ t̂ó p̂ár̂śê áŝ v́âĺîd́ ĴŚÔŃ"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "T̂h́îś p̂áĝé îś ĉón̂t́r̂ól̂ĺêd́ b̂ý â śêŕv̂íĉé ŵór̂ḱêŕ, ĥóŵév̂ér̂ t́ĥé `start_url` ({startUrl}) îś n̂ót̂ ín̂ t́ĥé ŝér̂v́îćê ẃôŕk̂ér̂'ś ŝćôṕê ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "T̂h́îś p̂áĝé îś ĉón̂t́r̂ól̂ĺêd́ b̂ý â śêŕv̂íĉé ŵór̂ḱêŕ, ĥóŵév̂ér̂ ńô `start_url` ẃâś f̂óûńd̂ b́êćâúŝé n̂ó m̂án̂íf̂éŝt́ ŵáŝ f́êt́ĉh́êd́."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "T̂h́îś ôŕîǵîń ĥáŝ ón̂é ôŕ m̂ór̂é ŝér̂v́îćê ẃôŕk̂ér̂ś, ĥóŵév̂ér̂ t́ĥé p̂áĝé ({pageUrl}) îś n̂ót̂ ín̂ śĉóp̂é."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "D̂óêś n̂ót̂ ŕêǵîśt̂ér̂ á ŝér̂v́îćê ẃôŕk̂ér̂ t́ĥát̂ ćôńt̂ŕôĺŝ ṕâǵê án̂d́ `start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "R̂éĝíŝt́êŕŝ á ŝér̂v́îćê ẃôŕk̂ér̂ t́ĥát̂ ćôńt̂ŕôĺŝ ṕâǵê án̂d́ `start_url`"
-  },
   "core/audits/splash-screen.js | description": {
     "message": "Â t́ĥém̂éd̂ śp̂ĺâśĥ śĉŕêén̂ én̂śûŕêś â h́îǵĥ-q́ûál̂ít̂ý êx́p̂ér̂íêńĉé ŵh́êń ûśêŕŝ ĺâún̂ćĥ ýôúr̂ áp̂ṕ f̂ŕôḿ t̂h́êír̂ h́ôḿêśĉŕêén̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ ŝṕl̂áŝh́ ŝćr̂éêńŝ](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
   },
@@ -1450,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Ŝét̂ś â t́ĥém̂é ĉól̂ór̂ f́ôŕ t̂h́ê ád̂d́r̂éŝś b̂ár̂."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Ŝúp̂ṕôŕt̂ f́ôŕ t̂h́îŕd̂-ṕâŕt̂ý ĉóôḱîéŝ ẃîĺl̂ b́ê ŕêḿôv́êd́ îń â f́ût́ûŕê v́êŕŝíôń ôf́ Ĉh́r̂óm̂é. [L̂éâŕn̂ ḿôŕê áb̂óût́ p̂h́âśîńĝ óût́ t̂h́îŕd̂-ṕâŕt̂ý ĉóôḱîéŝ](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount, plural,\n    =1 {1 ĉóôḱîé f̂óûńd̂}\n    other {# ćôók̂íêś f̂óûńd̂}\n    }"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Ûśêś t̂h́îŕd̂-ṕâŕt̂ý ĉóôḱîéŝ"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Âv́ôíd̂ś t̂h́îŕd̂-ṕâŕt̂ý ĉóôḱîéŝ"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (Ĉúŝt́ôḿêŕ Ŝúĉćêśŝ)"
@@ -1506,7 +1626,7 @@
     "message": "T̂ím̂ín̂ǵ b̂úd̂ǵêt́"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Ŝét̂ án̂ éx̂ṕl̂íĉít̂ ẃîd́t̂h́ âńd̂ h́êíĝh́t̂ ón̂ ím̂áĝé êĺêḿêńt̂ś t̂ó r̂éd̂úĉé l̂áŷóût́ ŝh́îf́t̂ś âńd̂ ím̂ṕr̂óv̂é ĈĹŜ. [Ĺêár̂ń ĥóŵ t́ô śêt́ îḿâǵê d́îḿêńŝíôńŝ](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Ŝét̂ án̂ éx̂ṕl̂íĉít̂ ẃîd́t̂h́ âńd̂ h́êíĝh́t̂ ón̂ ím̂áĝé êĺêḿêńt̂ś t̂ó r̂éd̂úĉé l̂áŷóût́ ŝh́îf́t̂ś âńd̂ ím̂ṕr̂óv̂é ĈĹŜ. [Ĺêár̂ń ĥóŵ t́ô śêt́ îḿâǵê d́îḿêńŝíôńŝ](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Îḿâǵê él̂ém̂én̂t́ŝ d́ô ńôt́ ĥáv̂é êx́p̂ĺîćît́ `width` âńd̂ `height`"
@@ -1581,7 +1701,7 @@
     "message": "Ĥáŝ á `<meta name=\"viewport\">` t̂áĝ ẃît́ĥ `width` ór̂ `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "T̂h́îś îś t̂h́ê t́ĥŕêád̂-b́l̂óĉḱîńĝ ẃôŕk̂ óĉćûŕr̂ín̂ǵ d̂úr̂ín̂ǵ t̂h́ê Ín̂t́êŕâćt̂íôń t̂ó N̂éx̂t́ P̂áîńt̂ ḿêáŝúr̂ém̂én̂t́. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́ê Ín̂t́êŕâćt̂íôń t̂ó N̂éx̂t́ P̂áîńt̂ ḿêt́r̂íĉ](https://web.dev/inp/)."
+    "message": "T̂h́îś îś t̂h́ê t́ĥŕêád̂-b́l̂óĉḱîńĝ ẃôŕk̂ óĉćûŕr̂ín̂ǵ d̂úr̂ín̂ǵ t̂h́ê Ín̂t́êŕâćt̂íôń t̂ó N̂éx̂t́ P̂áîńt̂ ḿêáŝúr̂ém̂én̂t́. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́ê Ín̂t́êŕâćt̂íôń t̂ó N̂éx̂t́ P̂áîńt̂ ḿêt́r̂íĉ](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "{timeInMs, number, milliseconds} m̂ś ŝṕêńt̂ ón̂ év̂én̂t́ '{interactionType}'"
@@ -1623,10 +1743,10 @@
     "message": "B̂éŝt́ p̂ŕâćt̂íĉéŝ"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "T̂h́êśê ćĥéĉḱŝ h́îǵĥĺîǵĥt́ ôṕp̂ór̂t́ûńît́îéŝ t́ô [ím̂ṕr̂óv̂é t̂h́ê áĉćêśŝíb̂íl̂ít̂ý ôf́ ŷóûŕ ŵéb̂ áp̂ṕ](https://developer.chrome.com/docs/lighthouse/accessibility/). Ôńl̂ý â śûb́ŝét̂ óf̂ áĉćêśŝíb̂íl̂ít̂ý îśŝúêś ĉán̂ b́ê áût́ôḿât́îćâĺl̂ý d̂ét̂éĉt́êd́ ŝó m̂án̂úâĺ t̂éŝt́îńĝ íŝ ál̂śô én̂ćôúr̂áĝéd̂."
+    "message": "T̂h́êśê ćĥéĉḱŝ h́îǵĥĺîǵĥt́ ôṕp̂ór̂t́ûńît́îéŝ t́ô [ím̂ṕr̂óv̂é t̂h́ê áĉćêśŝíb̂íl̂ít̂ý ôf́ ŷóûŕ ŵéb̂ áp̂ṕ](https://developer.chrome.com/docs/lighthouse/accessibility/). Âút̂óm̂át̂íĉ d́êt́êćt̂íôń ĉán̂ ón̂ĺŷ d́êt́êćt̂ á ŝúb̂śêt́ ôf́ îśŝúêś âńd̂ d́ôéŝ ńôt́ ĝúâŕâńt̂éê t́ĥé âćĉéŝśîb́îĺît́ŷ óf̂ ýôúr̂ ẃêb́ âṕp̂, śô [ḿâńûál̂ t́êśt̂ín̂ǵ](https://web.dev/articles/how-to-review) îś âĺŝó êńĉóûŕâǵêd́."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "T̂h́êśê ít̂ém̂ś âd́d̂ŕêśŝ ár̂éâś ŵh́îćĥ án̂ áût́ôḿât́êd́ t̂éŝt́îńĝ t́ôól̂ ćâńn̂ót̂ ćôv́êŕ. L̂éâŕn̂ ḿôŕê ín̂ óûŕ ĝúîd́ê ón̂ [ćôńd̂úĉt́îńĝ án̂ áĉćêśŝíb̂íl̂ít̂ý r̂év̂íêẃ](https://web.dev/how-to-review/)."
+    "message": "T̂h́êśê ít̂ém̂ś âd́d̂ŕêśŝ ár̂éâś ŵh́îćĥ án̂ áût́ôḿât́êd́ t̂éŝt́îńĝ t́ôól̂ ćâńn̂ót̂ ćôv́êŕ. L̂éâŕn̂ ḿôŕê ín̂ óûŕ ĝúîd́ê ón̂ [ćôńd̂úĉt́îńĝ án̂ áĉćêśŝíb̂íl̂ít̂ý r̂év̂íêẃ](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Âćĉéŝśîb́îĺît́ŷ"
@@ -1713,10 +1833,10 @@
     "message": "P̂ér̂f́ôŕm̂án̂ćê"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "T̂h́êśê ćĥéĉḱŝ v́âĺîd́ât́ê t́ĥé âśp̂éĉt́ŝ óf̂ á P̂ŕôǵr̂éŝśîv́ê Ẃêb́ Âṕp̂. [Ĺêár̂ń ŵh́ât́ m̂ák̂éŝ á ĝóôd́ P̂ŕôǵr̂éŝśîv́ê Ẃêb́ Âṕp̂](https://web.dev/pwa-checklist/)."
+    "message": "T̂h́êśê ćĥéĉḱŝ v́âĺîd́ât́ê t́ĥé âśp̂éĉt́ŝ óf̂ á P̂ŕôǵr̂éŝśîv́ê Ẃêb́ Âṕp̂. [Ĺêár̂ń ŵh́ât́ m̂ák̂éŝ á ĝóôd́ P̂ŕôǵr̂éŝśîv́ê Ẃêb́ Âṕp̂](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "T̂h́êśê ćĥéĉḱŝ ár̂é r̂éq̂úîŕêd́ b̂ý t̂h́ê b́âśêĺîńê [ṔŴÁ Ĉh́êćk̂ĺîśt̂](https://web.dev/pwa-checklist/) b́ût́ âŕê ńôt́ âút̂óm̂át̂íĉál̂ĺŷ ćĥéĉḱêd́ b̂ý L̂íĝh́t̂h́ôúŝé. T̂h́êý d̂ó n̂ót̂ áf̂f́êćt̂ ýôúr̂ śĉór̂é b̂út̂ ít̂'ś îḿp̂ór̂t́âńt̂ t́ĥát̂ ýôú v̂ér̂íf̂ý t̂h́êḿ m̂án̂úâĺl̂ý."
+    "message": "T̂h́êśê ćĥéĉḱŝ ár̂é r̂éq̂úîŕêd́ b̂ý t̂h́ê b́âśêĺîńê [ṔŴÁ Ĉh́êćk̂ĺîśt̂](https://web.dev/articles/pwa-checklist) b́ût́ âŕê ńôt́ âút̂óm̂át̂íĉál̂ĺŷ ćĥéĉḱêd́ b̂ý L̂íĝh́t̂h́ôúŝé. T̂h́êý d̂ó n̂ót̂ áf̂f́êćt̂ ýôúr̂ śĉór̂é b̂út̂ ít̂'ś îḿp̂ór̂t́âńt̂ t́ĥát̂ ýôú v̂ér̂íf̂ý t̂h́êḿ m̂án̂úâĺl̂ý."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "P̂ẂÂ"
@@ -1728,7 +1848,7 @@
     "message": "P̂ẂÂ Óp̂t́îḿîźêd́"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "T̂h́êśê ćĥéĉḱŝ én̂śûŕê t́ĥát̂ ýôúr̂ ṕâǵê íŝ f́ôĺl̂óŵín̂ǵ b̂áŝíĉ śêár̂ćĥ én̂ǵîńê óp̂t́îḿîźât́îón̂ ád̂v́îćê. T́ĥér̂é âŕê ḿâńŷ ád̂d́ît́îón̂ál̂ f́âćt̂ór̂ś L̂íĝh́t̂h́ôúŝé d̂óêś n̂ót̂ śĉór̂é ĥér̂é t̂h́ât́ m̂áŷ áf̂f́êćt̂ ýôúr̂ śêár̂ćĥ ŕâńk̂ín̂ǵ, îńĉĺûd́îńĝ ṕêŕf̂ór̂ḿâńĉé ôń [Ĉór̂é Ŵéb̂ V́ît́âĺŝ](https://web.dev/learn-core-web-vitals/). [Ĺêár̂ń m̂ór̂é âb́ôút̂ Ǵôóĝĺê Śêár̂ćĥ Éŝśêńt̂íâĺŝ](https://support.google.com/webmasters/answer/35769)."
+    "message": "T̂h́êśê ćĥéĉḱŝ én̂śûŕê t́ĥát̂ ýôúr̂ ṕâǵê íŝ f́ôĺl̂óŵín̂ǵ b̂áŝíĉ śêár̂ćĥ én̂ǵîńê óp̂t́îḿîźât́îón̂ ád̂v́îćê. T́ĥér̂é âŕê ḿâńŷ ád̂d́ît́îón̂ál̂ f́âćt̂ór̂ś L̂íĝh́t̂h́ôúŝé d̂óêś n̂ót̂ śĉór̂é ĥér̂é t̂h́ât́ m̂áŷ áf̂f́êćt̂ ýôúr̂ śêár̂ćĥ ŕâńk̂ín̂ǵ, îńĉĺûd́îńĝ ṕêŕf̂ór̂ḿâńĉé ôń [Ĉór̂é Ŵéb̂ V́ît́âĺŝ](https://web.dev/explore/vitals). [Ĺêár̂ń m̂ór̂é âb́ôút̂ Ǵôóĝĺê Śêár̂ćĥ Éŝśêńt̂íâĺŝ](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "R̂ún̂ t́ĥéŝé âd́d̂ít̂íôńâĺ v̂ál̂íd̂át̂ór̂ś ôń ŷóûŕ ŝít̂é t̂ó ĉh́êćk̂ ád̂d́ît́îón̂ál̂ ŚÊÓ b̂éŝt́ p̂ŕâćt̂íĉéŝ."
@@ -1774,6 +1894,9 @@
   },
   "core/gather/gatherers/link-elements.js | headerParseWarning": {
     "message": "Êŕr̂ór̂ ṕâŕŝín̂ǵ `link` ĥéâd́êŕ ({error}): `{header}`"
+  },
+  "core/gather/timespan-runner.js | warningNavigationDetected": {
+    "message": "Â ṕâǵê ńâv́îǵât́îón̂ ẃâś d̂ét̂éĉt́êd́ d̂úr̂ín̂ǵ t̂h́ê ŕûń. Ûśîńĝ t́îḿêśp̂án̂ ḿôd́ê t́ô áûd́ît́ p̂áĝé n̂áv̂íĝát̂íôńŝ íŝ ńôt́ r̂éĉóm̂ḿêńd̂éd̂. Úŝé n̂áv̂íĝát̂íôń m̂ód̂é t̂ó âúd̂ít̂ ṕâǵê ńâv́îǵât́îón̂ś f̂ór̂ b́êt́t̂ér̂ t́ĥír̂d́-p̂ár̂t́ŷ át̂t́r̂íb̂út̂íôń âńd̂ ḿâín̂ t́ĥŕêád̂ d́êt́êćt̂íôń."
   },
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "P̂áĝéŝ t́ĥát̂ ŕêq́ûéŝt́êd́ âń Âṕp̂B́âńn̂ér̂ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
@@ -2127,25 +2250,25 @@
     "message": "P̂áĝéŝ t́ĥát̂ úŝé Ŵéb̂X́R̂ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
   },
   "core/lib/csp-evaluator.js | allowlistFallback": {
-    "message": "Ĉón̂śîd́êŕ âd́d̂ín̂ǵ ĥt́t̂ṕŝ: án̂d́ ĥt́t̂ṕ: ÛŔL̂ śĉh́êḿêś (îǵn̂ór̂éd̂ b́ŷ b́r̂óŵśêŕŝ śûṕp̂ór̂t́îńĝ 'śt̂ŕîćt̂-d́ŷńâḿîć') t̂ó b̂é b̂áĉḱŵár̂d́ ĉóm̂ṕât́îb́l̂é ŵít̂h́ ôĺd̂ér̂ b́r̂óŵśêŕŝ."
+    "message": "Ĉón̂śîd́êŕ âd́d̂ín̂ǵ ĥt́t̂ṕŝ: án̂d́ ĥt́t̂ṕ: ÛŔL̂ śĉh́êḿêś (îǵn̂ór̂éd̂ b́ŷ b́r̂óŵśêŕŝ śûṕp̂ór̂t́îńĝ `'strict-dynamic'`) t́ô b́ê b́âćk̂ẃâŕd̂ ćôḿp̂át̂íb̂ĺê ẃît́ĥ ól̂d́êŕ b̂ŕôẃŝér̂ś."
   },
   "core/lib/csp-evaluator.js | deprecatedDisownOpener": {
-    "message": "d̂íŝóŵń-ôṕêńêŕ îś d̂ép̂ŕêćât́êd́ ŝín̂ćê ĆŜṔ3. P̂ĺêáŝé, ûśê t́ĥé Ĉŕôśŝ-Ór̂íĝín̂-Óp̂én̂ér̂-Ṕôĺîćŷ h́êád̂ér̂ ín̂śt̂éâd́."
+    "message": "`disown-opener` îś d̂ép̂ŕêćât́êd́ ŝín̂ćê ĆŜṔ3. P̂ĺêáŝé, ûśê t́ĥé Ĉŕôśŝ-Ór̂íĝín̂-Óp̂én̂ér̂-Ṕôĺîćŷ h́êád̂ér̂ ín̂śt̂éâd́."
   },
   "core/lib/csp-evaluator.js | deprecatedReferrer": {
-    "message": "r̂éf̂ér̂ŕêŕ îś d̂ép̂ŕêćât́êd́ ŝín̂ćê ĆŜṔ2. P̂ĺêáŝé, ûśê t́ĥé R̂éf̂ér̂ŕêŕ-P̂ól̂íĉý ĥéâd́êŕ îńŝt́êád̂."
+    "message": "`referrer` îś d̂ép̂ŕêćât́êd́ ŝín̂ćê ĆŜṔ2. P̂ĺêáŝé, ûśê t́ĥé R̂éf̂ér̂ŕêŕ-P̂ól̂íĉý ĥéâd́êŕ îńŝt́êád̂."
   },
   "core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
-    "message": "r̂éf̂ĺêćt̂éd̂-x́ŝś îś d̂ép̂ŕêćât́êd́ ŝín̂ćê ĆŜṔ2. P̂ĺêáŝé, ûśê t́ĥé X̂-X́ŜŚ-P̂ŕôt́êćt̂íôń ĥéâd́êŕ îńŝt́êád̂."
+    "message": "`reflected-xss` îś d̂ép̂ŕêćât́êd́ ŝín̂ćê ĆŜṔ2. P̂ĺêáŝé, ûśê t́ĥé X̂-X́ŜŚ-P̂ŕôt́êćt̂íôń ĥéâd́êŕ îńŝt́êád̂."
   },
   "core/lib/csp-evaluator.js | missingBaseUri": {
-    "message": "M̂íŝśîńĝ b́âśê-úr̂í âĺl̂óŵś îńĵéĉt́êd́ <b̂áŝé> t̂áĝś t̂ó ŝét̂ t́ĥé b̂áŝé ÛŔL̂ f́ôŕ âĺl̂ ŕêĺât́îv́ê ÚR̂Ĺŝ (é.ĝ. śĉŕîṕt̂ś) t̂ó âń ât́t̂áĉḱêŕ ĉón̂t́r̂ól̂ĺêd́ d̂óm̂áîń. Ĉón̂śîd́êŕ ŝét̂t́îńĝ b́âśê-úr̂í t̂ó 'n̂ón̂é' ôŕ 'ŝél̂f́'."
+    "message": "M̂íŝśîńĝ `base-uri` ál̂ĺôẃŝ ín̂j́êćt̂éd̂ `<base>` t́âǵŝ t́ô śêt́ t̂h́ê b́âśê ÚR̂Ĺ f̂ór̂ ál̂ĺ r̂él̂át̂ív̂é ÛŔL̂ś (ê.ǵ. ŝćr̂íp̂t́ŝ) t́ô án̂ át̂t́âćk̂ér̂ ćôńt̂ŕôĺl̂éd̂ d́ôḿâín̂. Ćôńŝíd̂ér̂ śêt́t̂ín̂ǵ `base-uri` t̂ó `'none'` ôŕ `'self'`."
   },
   "core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "M̂íŝśîńĝ ób̂j́êćt̂-śr̂ć âĺl̂óŵś t̂h́ê ín̂j́êćt̂íôń ôf́ p̂ĺûǵîńŝ t́ĥát̂ éx̂éĉút̂é ûńŝáf̂é ŝćr̂íp̂t́ŝ. Ćôńŝíd̂ér̂ śêt́t̂ín̂ǵ ôb́ĵéĉt́-ŝŕĉ t́ô 'ńôńê' íf̂ ýôú ĉán̂."
+    "message": "M̂íŝśîńĝ `object-src` ál̂ĺôẃŝ t́ĥé îńĵéĉt́îón̂ óf̂ ṕl̂úĝín̂ś t̂h́ât́ êx́êćût́ê ún̂śâf́ê śĉŕîṕt̂ś. Ĉón̂śîd́êŕ ŝét̂t́îńĝ `object-src` t́ô `'none'` íf̂ ýôú ĉán̂."
   },
   "core/lib/csp-evaluator.js | missingScriptSrc": {
-    "message": "ŝćr̂íp̂t́-ŝŕĉ d́îŕêćt̂ív̂é îś m̂íŝśîńĝ. T́ĥíŝ ćâń âĺl̂óŵ t́ĥé êx́êćût́îón̂ óf̂ ún̂śâf́ê śĉŕîṕt̂ś."
+    "message": "`script-src` d̂ír̂éĉt́îv́ê íŝ ḿîśŝín̂ǵ. T̂h́îś ĉán̂ ál̂ĺôẃ t̂h́ê éx̂éĉút̂íôń ôf́ ûńŝáf̂é ŝćr̂íp̂t́ŝ."
   },
   "core/lib/csp-evaluator.js | missingSemicolon": {
     "message": "D̂íd̂ ýôú f̂ór̂ǵêt́ t̂h́ê śêḿîćôĺôń? {keyword} ŝéêḿŝ t́ô b́ê á d̂ír̂éĉt́îv́ê, ńôt́ â ḱêýŵór̂d́."
@@ -2166,10 +2289,10 @@
     "message": "N̂ó ĈŚP̂ ćôńf̂íĝúr̂éŝ á r̂ép̂ór̂t́îńĝ d́êśt̂ín̂át̂íôń. T̂h́îś m̂ák̂éŝ ít̂ d́îf́f̂íĉúl̂t́ t̂ó m̂áîńt̂áîń t̂h́ê ĆŜṔ ôv́êŕ t̂ím̂é âńd̂ ḿôńît́ôŕ f̂ór̂ án̂ý b̂ŕêák̂áĝéŝ."
   },
   "core/lib/csp-evaluator.js | reportToOnly": {
-    "message": "T̂h́ê ŕêṕôŕt̂ín̂ǵ d̂éŝt́îńât́îón̂ íŝ ón̂ĺŷ ćôńf̂íĝúr̂éd̂ v́îá t̂h́ê ŕêṕôŕt̂-t́ô d́îŕêćt̂ív̂é. T̂h́îś d̂ír̂éĉt́îv́ê íŝ ón̂ĺŷ śûṕp̂ór̂t́êd́ îń Ĉh́r̂óm̂íûḿ-b̂áŝéd̂ b́r̂óŵśêŕŝ śô ít̂ íŝ ŕêćôḿm̂én̂d́êd́ t̂ó âĺŝó ûśê á r̂ép̂ór̂t́-ûŕî d́îŕêćt̂ív̂é."
+    "message": "T̂h́ê ŕêṕôŕt̂ín̂ǵ d̂éŝt́îńât́îón̂ íŝ ón̂ĺŷ ćôńf̂íĝúr̂éd̂ v́îá t̂h́ê ŕêṕôŕt̂-t́ô d́îŕêćt̂ív̂é. T̂h́îś d̂ír̂éĉt́îv́ê íŝ ón̂ĺŷ śûṕp̂ór̂t́êd́ îń Ĉh́r̂óm̂íûḿ-b̂áŝéd̂ b́r̂óŵśêŕŝ śô ít̂ íŝ ŕêćôḿm̂én̂d́êd́ t̂ó âĺŝó ûśê á `report-uri` d̂ír̂éĉt́îv́ê."
   },
   "core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Ĥóŝt́ âĺl̂óŵĺîśt̂ś ĉán̂ f́r̂éq̂úêńt̂ĺŷ b́ê b́ŷṕâśŝéd̂. Ćôńŝíd̂ér̂ úŝín̂ǵ ĈŚP̂ ńôńĉéŝ ór̂ h́âśĥéŝ ín̂śt̂éâd́, âĺôńĝ ẃît́ĥ 'śt̂ŕîćt̂-d́ŷńâḿîć' îf́ n̂éĉéŝśâŕŷ."
+    "message": "Ĥóŝt́ âĺl̂óŵĺîśt̂ś ĉán̂ f́r̂éq̂úêńt̂ĺŷ b́ê b́ŷṕâśŝéd̂. Ćôńŝíd̂ér̂ úŝín̂ǵ ĈŚP̂ ńôńĉéŝ ór̂ h́âśĥéŝ ín̂śt̂éâd́, âĺôńĝ ẃît́ĥ `'strict-dynamic'` íf̂ ńêćêśŝár̂ý."
   },
   "core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Ûńk̂ńôẃn̂ ĆŜṔ d̂ír̂éĉt́îv́ê."
@@ -2178,10 +2301,10 @@
     "message": "{keyword} ŝéêḿŝ t́ô b́ê án̂ ín̂v́âĺîd́ k̂éŷẃôŕd̂."
   },
   "core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "'ûńŝáf̂é-îńl̂ín̂é' âĺl̂óŵś t̂h́ê éx̂éĉút̂íôń ôf́ ûńŝáf̂é îń-p̂áĝé ŝćr̂íp̂t́ŝ án̂d́ êv́êńt̂ h́âńd̂ĺêŕŝ. Ćôńŝíd̂ér̂ úŝín̂ǵ ĈŚP̂ ńôńĉéŝ ór̂ h́âśĥéŝ t́ô ál̂ĺôẃ ŝćr̂íp̂t́ŝ ín̂d́îv́îd́ûál̂ĺŷ."
+    "message": "`'unsafe-inline'` âĺl̂óŵś t̂h́ê éx̂éĉút̂íôń ôf́ ûńŝáf̂é îń-p̂áĝé ŝćr̂íp̂t́ŝ án̂d́ êv́êńt̂ h́âńd̂ĺêŕŝ. Ćôńŝíd̂ér̂ úŝín̂ǵ ĈŚP̂ ńôńĉéŝ ór̂ h́âśĥéŝ t́ô ál̂ĺôẃ ŝćr̂íp̂t́ŝ ín̂d́îv́îd́ûál̂ĺŷ."
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
-    "message": "Ĉón̂śîd́êŕ âd́d̂ín̂ǵ 'ûńŝáf̂é-îńl̂ín̂é' (îǵn̂ór̂éd̂ b́ŷ b́r̂óŵśêŕŝ śûṕp̂ór̂t́îńĝ ńôńĉéŝ/h́âśĥéŝ) t́ô b́ê b́âćk̂ẃâŕd̂ ćôḿp̂át̂íb̂ĺê ẃît́ĥ ól̂d́êŕ b̂ŕôẃŝér̂ś."
+    "message": "Ĉón̂śîd́êŕ âd́d̂ín̂ǵ `'unsafe-inline'` (îǵn̂ór̂éd̂ b́ŷ b́r̂óŵśêŕŝ śûṕp̂ór̂t́îńĝ ńôńĉéŝ/h́âśĥéŝ) t́ô b́ê b́âćk̂ẃâŕd̂ ćôḿp̂át̂íb̂ĺê ẃît́ĥ ól̂d́êŕ b̂ŕôẃŝér̂ś."
   },
   "core/lib/deprecation-description.js | feature": {
     "message": "Ĉh́êćk̂ t́ĥé f̂éât́ûŕê śt̂át̂úŝ ṕâǵê f́ôŕ m̂ór̂é d̂ét̂áîĺŝ."
@@ -2573,6 +2696,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "T̂h́ê ÚR̂Ĺ ŷóû h́âv́ê ṕr̂óv̂íd̂éd̂ áp̂ṕêár̂ś t̂ó b̂é îńv̂ál̂íd̂."
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "L̂íĝh́t̂h́ôúŝé ŵáŝ ún̂áb̂ĺê t́ô ŕêĺîáb̂ĺŷ ĺôád̂ t́ĥé p̂áĝé ŷóû ŕêq́ûéŝt́êd́. M̂ák̂é ŝúr̂é ŷóû ár̂é t̂éŝt́îńĝ t́ĥé ĉór̂ŕêćt̂ ÚR̂Ĺ âńd̂ t́ĥát̂ t́ĥé ŝér̂v́êŕ îś p̂ŕôṕêŕl̂ý r̂éŝṕôńd̂ín̂ǵ t̂ó âĺl̂ ŕêq́ûéŝt́ŝ. (Śt̂át̂úŝ ćôd́ê: {errorCode})"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "T̂h́ê ṕâǵê ḾÎḾÊ t́ŷṕê íŝ X́ĤT́M̂Ĺ: L̂íĝh́t̂h́ôúŝé d̂óêś n̂ót̂ éx̂ṕl̂íĉít̂ĺŷ śûṕp̂ór̂t́ t̂h́îś d̂óĉúm̂én̂t́ t̂ýp̂é"
   },
@@ -2769,7 +2895,7 @@
     "message": "Îńŝt́âĺl̂ [á D̂ŕûṕâĺ m̂ód̂úl̂é](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) t̂h́ât́ ĉán̂ ĺâźŷ ĺôád̂ ím̂áĝéŝ. Śûćĥ ḿôd́ûĺêś p̂ŕôv́îd́ê t́ĥé âb́îĺît́ŷ t́ô d́êf́êŕ âńŷ óf̂f́ŝćr̂éêń îḿâǵêś t̂ó îḿp̂ŕôv́ê ṕêŕf̂ór̂ḿâńĉé."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Ĉón̂śîd́êŕ ûśîńĝ á m̂ód̂úl̂é t̂ó îńl̂ín̂é ĉŕît́îćâĺ ĈŚŜ án̂d́ Ĵáv̂áŜćr̂íp̂t́, ôŕ p̂ót̂én̂t́îál̂ĺŷ ĺôád̂ áŝśêt́ŝ áŝýn̂ćĥŕôńôúŝĺŷ v́îá Ĵáv̂áŜćr̂íp̂t́ ŝúĉh́ âś t̂h́ê [Ád̂v́âńĉéd̂ ĆŜŚ/ĴŚ Âǵĝŕêǵât́îón̂](https://www.drupal.org/project/advagg) ḿôd́ûĺê. B́êẃâŕê t́ĥát̂ óp̂t́îḿîźât́îón̂ś p̂ŕôv́îd́êd́ b̂ý t̂h́îś m̂ód̂úl̂é m̂áŷ b́r̂éâḱ ŷóûŕ ŝít̂é, ŝó ŷóû ẃîĺl̂ ĺîḱêĺŷ ńêéd̂ t́ô ḿâḱê ćôd́ê ćĥán̂ǵêś."
+    "message": "Ĉón̂śîd́êŕ ûśîńĝ á m̂ód̂úl̂é t̂ó îńl̂ín̂é ĉŕît́îćâĺ ĈŚŜ án̂d́ Ĵáv̂áŜćr̂íp̂t́, âńd̂ úŝé t̂h́ê d́êf́êŕ ât́t̂ŕîb́ût́ê f́ôŕ n̂ón̂-ćr̂ít̂íĉál̂ ĆŜŚ ôŕ Ĵáv̂áŜćr̂íp̂t́."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "T̂h́êḿêś, m̂ód̂úl̂éŝ, án̂d́ ŝér̂v́êŕ ŝṕêćîf́îćât́îón̂ś âĺl̂ ćôńt̂ŕîb́ût́ê t́ô śêŕv̂ér̂ ŕêśp̂ón̂śê t́îḿê. Ćôńŝíd̂ér̂ f́îńd̂ín̂ǵ â ḿôŕê óp̂t́îḿîźêd́ t̂h́êḿê, ćâŕêf́ûĺl̂ý ŝél̂éĉt́îńĝ án̂ óp̂t́îḿîźât́îón̂ ḿôd́ûĺê, án̂d́/ôŕ ûṕĝŕâd́îńĝ ýôúr̂ śêŕv̂ér̂. Ýôúr̂ h́ôśt̂ín̂ǵ ŝér̂v́êŕŝ śĥóûĺd̂ ḿâḱê úŝé ôf́ P̂H́P̂ óp̂ćôd́ê ćâćĥín̂ǵ, m̂ém̂ór̂ý-ĉáĉh́îńĝ t́ô ŕêd́ûćê d́ât́âb́âśê q́ûér̂ý t̂ím̂éŝ śûćĥ áŝ Ŕêd́îś ôŕ M̂ém̂ćâćĥéd̂, áŝ ẃêĺl̂ áŝ óp̂t́îḿîźêd́ âṕp̂ĺîćât́îón̂ ĺôǵîć t̂ó p̂ŕêṕâŕê ṕâǵêś f̂áŝt́êŕ."
@@ -2778,10 +2904,10 @@
     "message": "Ĉón̂śîd́êŕ ûśîńĝ [Ŕêśp̂ón̂śîv́ê Ím̂áĝé Ŝt́ŷĺêś](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) t̂ó r̂éd̂úĉé t̂h́ê śîźê óf̂ ím̂áĝéŝ ĺôád̂éd̂ ón̂ ýôúr̂ ṕâǵê. Íf̂ ýôú âŕê úŝín̂ǵ V̂íêẃŝ t́ô śĥóŵ ḿûĺt̂íp̂ĺê ćôńt̂én̂t́ ît́êḿŝ ón̂ á p̂áĝé, ĉón̂śîd́êŕ îḿp̂ĺêḿêńt̂ín̂ǵ p̂áĝín̂át̂íôń t̂ó l̂ím̂ít̂ t́ĥé n̂úm̂b́êŕ ôf́ ĉón̂t́êńt̂ ít̂ém̂ś ŝh́ôẃn̂ ón̂ á ĝív̂én̂ ṕâǵê."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Êńŝúr̂é ŷóû h́âv́ê én̂áb̂ĺêd́ \"Âǵĝŕêǵât́ê ĆŜŚ f̂íl̂éŝ\" ín̂ t́ĥé \"Âd́m̂ín̂íŝt́r̂át̂íôń » Ĉón̂f́îǵûŕât́îón̂ » D́êv́êĺôṕm̂én̂t́\" p̂áĝé. Ŷóû ćâń âĺŝó ĉón̂f́îǵûŕê ḿôŕê ád̂v́âńĉéd̂ áĝǵr̂éĝát̂íôń ôṕt̂íôńŝ t́ĥŕôúĝh́ [âd́d̂ít̂íôńâĺ m̂ód̂úl̂éŝ](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) t́ô śp̂éêd́ ûṕ ŷóûŕ ŝít̂é b̂ý ĉón̂ćât́êńât́îńĝ, ḿîńîf́ŷín̂ǵ, âńd̂ ćôḿp̂ŕêśŝín̂ǵ ŷóûŕ ĈŚŜ śt̂ýl̂éŝ."
+    "message": "Êńŝúr̂é ŷóû h́âv́ê én̂áb̂ĺêd́ \"Âǵĝŕêǵât́ê ĆŜŚ f̂íl̂éŝ\" ín̂ t́ĥé \"Âd́m̂ín̂íŝt́r̂át̂íôń » Ĉón̂f́îǵûŕât́îón̂ » D́êv́êĺôṕm̂én̂t́\" p̂áĝé.  Êńŝúr̂é ŷóûŕ D̂ŕûṕâĺ ŝít̂é îś r̂ún̂ńîńĝ át̂ ĺêáŝt́ D̂ŕûṕâĺ 10.1 f̂ór̂ ím̂ṕr̂óv̂éd̂ áŝśêt́ âǵĝŕêǵât́îón̂ śûṕp̂ór̂t́."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Êńŝúr̂é ŷóû h́âv́ê én̂áb̂ĺêd́ \"Âǵĝŕêǵât́ê J́âv́âŚĉŕîṕt̂ f́îĺêś\" îń t̂h́ê \"Ád̂ḿîńîśt̂ŕât́îón̂ » Ćôńf̂íĝúr̂át̂íôń » D̂év̂él̂óp̂ḿêńt̂\" ṕâǵê. Ýôú ĉán̂ ál̂śô ćôńf̂íĝúr̂é m̂ór̂é âd́v̂án̂ćêd́ âǵĝŕêǵât́îón̂ óp̂t́îón̂ś t̂h́r̂óûǵĥ [ád̂d́ît́îón̂ál̂ ḿôd́ûĺêś](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) t̂ó ŝṕêéd̂ úp̂ ýôúr̂ śît́ê b́ŷ ćôńĉát̂én̂át̂ín̂ǵ, m̂ín̂íf̂ýîńĝ, án̂d́ ĉóm̂ṕr̂éŝśîńĝ ýôúr̂ J́âv́âŚĉŕîṕt̂ áŝśêt́ŝ."
+    "message": "Êńŝúr̂é ŷóû h́âv́ê én̂áb̂ĺêd́ \"Âǵĝŕêǵât́ê J́âv́âŚĉŕîṕt̂ f́îĺêś\" îń t̂h́ê \"Ád̂ḿîńîśt̂ŕât́îón̂ » Ćôńf̂íĝúr̂át̂íôń » D̂év̂él̂óp̂ḿêńt̂\" ṕâǵê.  Én̂śûŕê ýôúr̂ D́r̂úp̂ál̂ śît́ê íŝ ŕûńn̂ín̂ǵ ât́ l̂éâśt̂ D́r̂úp̂ál̂ 10.1 f́ôŕ îḿp̂ŕôv́êd́ âśŝét̂ áĝǵr̂éĝát̂íôń ŝúp̂ṕôŕt̂."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Ĉón̂śîd́êŕ r̂ém̂óv̂ín̂ǵ ûńûśêd́ ĈŚŜ ŕûĺêś âńd̂ ón̂ĺŷ át̂t́âćĥ t́ĥé n̂éêd́êd́ D̂ŕûṕâĺ l̂íb̂ŕâŕîéŝ t́ô t́ĥé r̂él̂év̂án̂t́ p̂áĝé ôŕ ĉóm̂ṕôńêńt̂ ín̂ á p̂áĝé. Ŝéê t́ĥé [D̂ŕûṕâĺ d̂óĉúm̂én̂t́ât́îón̂ ĺîńk̂](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) f́ôŕ d̂ét̂áîĺŝ. T́ô íd̂én̂t́îf́ŷ át̂t́âćĥéd̂ ĺîb́r̂ár̂íêś t̂h́ât́ âŕê ád̂d́îńĝ éx̂t́r̂án̂éôúŝ ĆŜŚ, t̂ŕŷ ŕûńn̂ín̂ǵ [ĉód̂é ĉóv̂ér̂áĝé](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) îń Ĉh́r̂óm̂é D̂év̂T́ôól̂ś. Ŷóû ćâń îd́êńt̂íf̂ý t̂h́ê t́ĥém̂é/m̂ód̂úl̂é r̂éŝṕôńŝíb̂ĺê f́r̂óm̂ t́ĥé ÛŔL̂ óf̂ t́ĥé ŝt́ŷĺêśĥéêt́ ŵh́êń ĈŚŜ áĝǵr̂éĝát̂íôń îś d̂íŝáb̂ĺêd́ îń ŷóûŕ D̂ŕûṕâĺ ŝít̂é. L̂óôḱ ôút̂ f́ôŕ t̂h́êḿêś/m̂ód̂úl̂éŝ t́ĥát̂ h́âv́ê ḿâńŷ śt̂ýl̂éŝh́êét̂ś îń t̂h́ê ĺîśt̂ ẃĥíĉh́ ĥáv̂é â ĺôt́ ôf́ r̂éd̂ ín̂ ćôd́ê ćôv́êŕâǵê. Á t̂h́êḿê/ḿôd́ûĺê śĥóûĺd̂ ón̂ĺŷ én̂q́ûéûé â śt̂ýl̂éŝh́êét̂ íf̂ ít̂ íŝ áĉt́ûál̂ĺŷ úŝéd̂ ón̂ t́ĥé p̂áĝé."
@@ -2981,23 +3107,65 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Êńâb́l̂é ĉóm̂ṕr̂éŝśîón̂ ón̂ ýôúr̂ Ńêx́t̂.j́ŝ śêŕv̂ér̂. [Ĺêár̂ń m̂ór̂é](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Ĉón̂t́âćt̂ ýôúr̂ áĉćôún̂t́ m̂án̂áĝér̂ t́ô én̂áb̂ĺê [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Ćôńf̂íĝúr̂ín̂ǵ ît́ ŵíl̂ĺ p̂ŕîór̂ít̂íẑé âńd̂ óp̂t́îḿîźê ýôúr̂ ṕâǵê ŕêńd̂ér̂ín̂ǵ p̂ér̂f́ôŕm̂án̂ćê."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Ûśê t́ĥé [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) ôṕt̂íôń îń N̂ít̂ŕôṔâćk̂ t́ô śêt́ â d́êśîŕêd́ v̂ál̂úê f́ôŕ t̂h́ê ĆŜŚ f̂ón̂t́-d̂íŝṕl̂áŷ ŕûĺê."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Ûśê [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) t́ô áût́ôḿât́îćâĺl̂ý ĉón̂v́êŕt̂ ýôúr̂ ím̂áĝéŝ t́ô Ẃêb́P̂."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "D̂éf̂ér̂ óf̂f́ŝćr̂éêń îḿâǵêś b̂ý êńâb́l̂ín̂ǵ [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Êńâb́l̂é [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) îń N̂ít̂ŕôṔâćk̂ f́ôŕ f̂áŝt́êŕ îńît́îál̂ ĺôád̂ t́îḿêś."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Îḿp̂ŕôv́ê śêŕv̂ér̂ ŕêśp̂ón̂śê t́îḿê án̂d́ ôṕt̂ím̂íẑé p̂ér̂ćêív̂éd̂ ṕêŕf̂ór̂ḿâńĉé b̂ý âćt̂ív̂át̂ín̂ǵ [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Êńâb́l̂é [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) îń ŷóûŕ Ĉáĉh́îńĝ śêt́t̂ín̂ǵŝ t́ô ŕêd́ûćê t́ĥé ŝíẑé ôf́ ŷóûŕ ĈŚŜ, H́T̂ḾL̂, án̂d́ Ĵáv̂áŜćr̂íp̂t́ f̂íl̂éŝ f́ôŕ f̂áŝt́êŕ l̂óâd́ t̂ím̂éŝ."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Êńâb́l̂é [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) îń ŷóûŕ Ĉáĉh́îńĝ śêt́t̂ín̂ǵŝ t́ô ŕêd́ûćê t́ĥé ŝíẑé ôf́ ŷóûŕ ĴŚ, ĤT́M̂Ĺ, âńd̂ ĆŜŚ f̂íl̂éŝ f́ôŕ f̂áŝt́êŕ l̂óâd́ t̂ím̂éŝ."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Êńâb́l̂é [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) t̂ó r̂ém̂óv̂é ĈŚŜ ŕûĺêś t̂h́ât́ âŕê ńôt́ âṕp̂ĺîćâb́l̂é t̂ó t̂h́îś p̂áĝé."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Ĉón̂f́îǵûŕê [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) ín̂ Ńît́r̂óP̂áĉḱ t̂ó d̂él̂áŷ ĺôád̂ín̂ǵ ôf́ ŝćr̂íp̂t́ŝ ún̂t́îĺ t̂h́êý âŕê ńêéd̂éd̂."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Ĝó t̂ó t̂h́ê [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) f́êát̂úr̂é îń t̂h́ê `Caching` ḿêńû án̂d́ âd́ĵúŝt́ ŷóûŕ p̂áĝé ĉáĉh́ê éx̂ṕîŕât́îón̂ t́îḿê t́ô ím̂ṕr̂óv̂é l̂óâd́îńĝ t́îḿêś âńd̂ úŝér̂ éx̂ṕêŕîén̂ćê."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Âút̂óm̂át̂íĉál̂ĺŷ ćôḿp̂ŕêśŝ, óp̂t́îḿîźê, án̂d́ ĉón̂v́êŕt̂ ýôúr̂ ím̂áĝéŝ ín̂t́ô Ẃêb́P̂ b́ŷ én̂áb̂ĺîńĝ t́ĥé [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) ŝét̂t́îńĝ."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Êńâb́l̂é [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) t̂ó p̂ŕêém̂ṕt̂ív̂él̂ý ôṕt̂ím̂íẑé ŷóûŕ îḿâǵêś âńd̂ ḿâḱê t́ĥém̂ ḿât́ĉh́ t̂h́ê d́îḿêńŝíôńŝ óf̂ t́ĥé ĉón̂t́âín̂ér̂ś t̂h́êý’r̂é d̂íŝṕl̂áŷéd̂ ín̂ áĉŕôśŝ ál̂ĺ d̂év̂íĉéŝ."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Ûśê [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) ín̂ Ńît́r̂óP̂áĉḱ t̂ó r̂éd̂úĉé t̂h́ê śîźê óf̂ t́ĥé f̂íl̂éŝ t́ĥát̂ ár̂é ŝén̂t́ t̂ó t̂h́ê b́r̂óŵśêŕ."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝét̂ `format=\"webp\"`. [Ĺêár̂ń m̂ór̂é](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝét̂ `format=\"webp\"`. [Ĺêár̂ń m̂ór̂é](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝét̂ `loading=\"lazy\"` f́ôŕ ôf́f̂śĉŕêén̂ ím̂áĝéŝ. [Ĺêár̂ń m̂ór̂é](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝét̂ `loading=\"lazy\"` f́ôŕ ôf́f̂śĉŕêén̂ ím̂áĝéŝ. [Ĺêár̂ń m̂ór̂é](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝṕêćîf́ŷ `preload` f́ôŕ L̂ĆP̂ ím̂áĝé. [L̂éâŕn̂ ḿôŕê](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝṕêćîf́ŷ `preload` f́ôŕ L̂ĆP̂ ím̂áĝé. [L̂éâŕn̂ ḿôŕê](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝṕêćîf́ŷ éx̂ṕl̂íĉít̂ `width` án̂d́ `height`. [L̂éâŕn̂ ḿôŕê](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝṕêćîf́ŷ éx̂ṕl̂íĉít̂ `width` án̂d́ `height`. [L̂éâŕn̂ ḿôŕê](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝét̂ t́ĥé âṕp̂ŕôṕr̂íât́ê `quality`. [Ĺêár̂ń m̂ór̂é](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝét̂ t́ĥé âṕp̂ŕôṕr̂íât́ê `quality`. [Ĺêár̂ń m̂ór̂é](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝét̂ t́ĥé âṕp̂ŕôṕr̂íât́ê `sizes`. [Ĺêár̂ń m̂ór̂é](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝét̂ t́ĥé âṕp̂ŕôṕr̂íât́ê `sizes`. [Ĺêár̂ń m̂ór̂é](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[R̂ép̂ĺâćê án̂ím̂át̂éd̂ ǴÎF́ŝ ẃît́ĥ v́îd́êó](https://web.dev/replace-gifs-with-videos/) f̂ór̂ f́âśt̂ér̂ ẃêb́ p̂áĝé l̂óâd́ŝ án̂d́ ĉón̂śîd́êŕ ûśîńĝ ḿôd́êŕn̂ f́îĺê f́ôŕm̂át̂ś ŝúĉh́ âś [Ŵéb̂Ḿ](https://web.dev/replace-gifs-with-videos/#create-webm-videos) ôŕ [ÂV́1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) t̂ó îḿp̂ŕôv́ê ćôḿp̂ŕêśŝíôń êf́f̂íĉíêńĉý b̂ý ĝŕêát̂ér̂ t́ĥán̂ 30% óv̂ér̂ t́ĥé ĉúr̂ŕêńt̂ śt̂át̂é-ôf́-t̂h́ê-ár̂t́ v̂íd̂éô ćôd́êć, V̂Ṕ9."
@@ -3061,6 +3229,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Ûśê t́ĥé R̂éâćt̂ D́êv́T̂óôĺŝ Ṕr̂óf̂íl̂ér̂, ẃĥíĉh́ m̂ák̂éŝ úŝé ôf́ t̂h́ê Ṕr̂óf̂íl̂ér̂ ÁP̂Í, t̂ó m̂éâśûŕê t́ĥé r̂én̂d́êŕîńĝ ṕêŕf̂ór̂ḿâńĉé ôf́ ŷóûŕ ĉóm̂ṕôńêńt̂ś. [L̂éâŕn̂ ḿôŕê.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "P̂ĺâćê v́îd́êóŝ ín̂śîd́ê `VideoBoxes`, ćûśt̂óm̂íẑé t̂h́êḿ ûśîńĝ `Video Masks` ór̂ ád̂d́ `Transparent Videos`. [L̂éâŕn̂ ḿôŕê](https://support.wix.com/en/article/wix-video-about-wix-video)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Ûṕl̂óâd́ îḿâǵêś ûśîńĝ `Wix Media Manager` t́ô én̂śûŕê t́ĥéŷ ár̂é âút̂óm̂át̂íĉál̂ĺŷ śêŕv̂éd̂ áŝ Ẃêb́P̂. F́îńd̂ [ḿôŕê ẃâýŝ t́ô óp̂t́îḿîźê](https://support.wix.com/en/article/site-performance-optimizing-your-media) ýôúr̂ śît́ê'ś m̂éd̂íâ."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "Ŵh́êń [âd́d̂ín̂ǵ t̂h́îŕd̂-ṕâŕt̂ý ĉód̂é](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) îń t̂h́ê `Custom Code` t́âb́ ôf́ ŷóûŕ ŝít̂é'ŝ d́âśĥb́ôár̂d́, m̂ák̂é ŝúr̂é ît́'ŝ d́êf́êŕr̂éd̂ ór̂ ĺôád̂éd̂ át̂ t́ĥé êńd̂ óf̂ t́ĥé ĉód̂é b̂ód̂ý. Ŵh́êŕê ṕôśŝíb̂ĺê, úŝé Ŵíx̂’ś [îńt̂éĝŕât́îón̂ś](https://support.wix.com/en/article/about-marketing-integrations) t̂ó êḿb̂éd̂ ḿâŕk̂ét̂ín̂ǵ t̂óôĺŝ ón̂ ýôúr̂ śît́ê. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Ŵíx̂ út̂íl̂íẑéŝ ĆD̂Ńŝ án̂d́ ĉáĉh́îńĝ t́ô śêŕv̂é r̂éŝṕôńŝéŝ áŝ f́âśt̂ áŝ ṕôśŝíb̂ĺê f́ôŕ m̂óŝt́ v̂íŝít̂ór̂ś. Ĉón̂śîd́êŕ [m̂án̂úâĺl̂ý êńâb́l̂ín̂ǵ ĉáĉh́îńĝ](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) f́ôŕ ŷóûŕ ŝít̂é, êśp̂éĉíâĺl̂ý îf́ ûśîńĝ `Velo`."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "R̂év̂íêẃ âńŷ t́ĥír̂d́-p̂ár̂t́ŷ ćôd́ê ýôú'v̂é âd́d̂éd̂ t́ô ýôúr̂ śît́ê ín̂ t́ĥé `Custom Code` t̂áb̂ óf̂ ýôúr̂ śît́ê'ś d̂áŝh́b̂óâŕd̂ án̂d́ ôńl̂ý k̂éêṕ t̂h́ê śêŕv̂íĉéŝ t́ĥát̂ ár̂é n̂éĉéŝśâŕŷ t́ô ýôúr̂ śît́ê. [F́îńd̂ óût́ m̂ór̂é](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Ĉón̂śîd́êŕ ûṕl̂óâd́îńĝ ýôúr̂ ǴÎF́ t̂ó â śêŕv̂íĉé ŵh́îćĥ ẃîĺl̂ ḿâḱê ít̂ áv̂áîĺâb́l̂é t̂ó êḿb̂éd̂ áŝ án̂ H́T̂ḾL̂5 v́îd́êó."
@@ -3170,6 +3353,9 @@
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Ôṕêń îń V̂íêẃêŕ"
   },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "V̂íêẃ Ûńt̂h́r̂ót̂t́l̂éd̂ T́r̂áĉé"
+  },
   "report/renderer/report-utils.js | errorLabel": {
     "message": "Êŕr̂ór̂!"
   },
@@ -3212,8 +3398,17 @@
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "P̂áŝśêd́ âúd̂ít̂ś"
   },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Âś p̂ér̂ [Ćĥŕôḿê’ś ûṕd̂át̂éd̂ Ín̂śt̂ál̂ĺâb́îĺît́ŷ Ćr̂ít̂ér̂íâ](https://developer.chrome.com/blog/update-install-criteria), Ĺîǵĥt́ĥóûśê ẃîĺl̂ b́ê d́êṕr̂éĉát̂ín̂ǵ t̂h́ê ṔŴÁ ĉát̂éĝór̂ý îń â f́ût́ûŕê ŕêĺêáŝé. P̂ĺêáŝé r̂éf̂ér̂ t́ô t́ĥé [ûṕd̂át̂éd̂ ṔŴÁ d̂óĉúm̂én̂t́ât́îón̂](https://developer.chrome.com/docs/devtools/progressive-web-apps/) f́ôŕ f̂út̂úr̂é P̂ẂÂ t́êśt̂ín̂ǵ."
+  },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Îńît́îál̂ ṕâǵê ĺôád̂"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "P̂óîńt̂-ín̂-t́îḿê śn̂áp̂śĥót̂"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Ûśêŕ îńt̂ér̂áĉt́îón̂ś t̂ím̂éŝṕâń"
   },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Ĉúŝt́ôḿ t̂h́r̂ót̂t́l̂ín̂ǵ"
@@ -3249,10 +3444,10 @@
     "message": "Ûśêŕ âǵêńt̂ (ńêt́ŵór̂ḱ)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Ŝín̂ǵl̂é p̂áĝé l̂óâd́"
+    "message": "Ŝín̂ǵl̂é p̂áĝé ŝéŝśîón̂"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "T̂h́îś d̂át̂á îś t̂ák̂én̂ f́r̂óm̂ á ŝín̂ǵl̂é p̂áĝé l̂óâd́, âś ôṕp̂óŝéd̂ t́ô f́îél̂d́ d̂át̂á ŝúm̂ḿâŕîźîńĝ ḿâńŷ śêśŝíôńŝ."
+    "message": "T̂h́îś d̂át̂á îś t̂ák̂én̂ f́r̂óm̂ á ŝín̂ǵl̂é p̂áĝé ŝéŝśîón̂, áŝ óp̂ṕôśêd́ t̂ó f̂íêĺd̂ d́ât́â śûḿm̂ár̂íẑín̂ǵ m̂án̂ý ŝéŝśîón̂ś."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Ŝĺôẃ 4Ĝ t́ĥŕôt́t̂ĺîńĝ"
@@ -3286,9 +3481,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "V̂ál̂úêś âŕê éŝt́îḿât́êd́ âńd̂ ḿâý v̂ár̂ý. T̂h́ê [ṕêŕf̂ór̂ḿâńĉé ŝćôŕê íŝ ćâĺĉúl̂át̂éd̂](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) d́îŕêćt̂ĺŷ f́r̂óm̂ t́ĥéŝé m̂ét̂ŕîćŝ."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "V̂íêẃ Ôŕîǵîńâĺ T̂ŕâćê"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "V̂íêẃ T̂ŕâćê"

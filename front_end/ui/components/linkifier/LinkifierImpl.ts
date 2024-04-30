@@ -4,7 +4,6 @@
 
 import * as Platform from '../../../core/platform/platform.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
-import * as ComponentHelpers from '../helpers/helpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
 import linkifierImplStyles from './linkifierImpl.css.js';
@@ -74,10 +73,9 @@ export class Linkifier extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-linkifier', Linkifier);
+customElements.define('devtools-linkifier', Linkifier);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-linkifier': Linkifier;
   }

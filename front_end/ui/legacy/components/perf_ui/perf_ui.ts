@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as BrickBreaker from './BrickBreaker.js';
 import * as ChartViewport from './ChartViewport.js';
 import * as FilmStripView from './FilmStripView.js';
 import * as FlameChart from './FlameChart.js';
@@ -13,9 +14,11 @@ import * as NetworkPriorities from './NetworkPriorities.js';
 import * as OverviewGrid from './OverviewGrid.js';
 import * as PieChart from './PieChart.js';
 import * as TimelineGrid from './TimelineGrid.js';
+import * as TimelineOverviewCalculator from './TimelineOverviewCalculator.js';
 import * as TimelineOverviewPane from './TimelineOverviewPane.js';
 
 export {
+  BrickBreaker,
   ChartViewport,
   FilmStripView,
   FlameChart,
@@ -27,5 +30,6 @@ export {
   OverviewGrid,
   PieChart,
   TimelineGrid,
+  TimelineOverviewCalculator,
   TimelineOverviewPane,
 };

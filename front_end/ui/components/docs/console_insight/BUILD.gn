@@ -1,0 +1,35 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../scripts/build/ninja/copy.gni")
+import("../../../../../third_party/typescript/typescript.gni")
+
+ts_library("ts") {
+  testonly = true
+  sources = [
+    "basic.ts",
+    "error.ts",
+    "loading.ts",
+    "static.ts",
+  ]
+
+  deps = [
+    "../../../../panels/explain:bundle",
+    "../../../../testing",
+    "../../../../third_party/marked:bundle",
+    "../../../../ui/components/helpers:bundle",
+  ]
+}
+
+copy_to_gen("console_insight") {
+  testonly = true
+  sources = [
+    "basic.html",
+    "error.html",
+    "loading.html",
+    "static.html",
+  ]
+
+  deps = [ ":ts" ]
+}

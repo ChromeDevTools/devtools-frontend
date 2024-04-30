@@ -10,5 +10,6 @@ node_ts_library("application") {
   deps = [
     "../../shared",
     "../helpers",
+    "../report",
   ]
 }

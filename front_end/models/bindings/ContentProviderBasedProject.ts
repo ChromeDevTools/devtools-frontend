@@ -30,8 +30,8 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
-import type * as TextUtils from '../text_utils/text_utils.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 const UIStrings = {
@@ -139,7 +139,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
           (arg0: boolean, arg1?: string|undefined, arg2?: Platform.DevToolsPath.UrlString|undefined,
            arg3?: Common.ResourceType.ResourceType|undefined) => void): void {
     const path = uiSourceCode.url();
-    this.performRename(path, newName, (success: boolean, newName?: string): void => {
+    this.performRename(path, newName, (success: boolean, newName?: string) => {
       if (success && newName) {
         this.renameUISourceCode(uiSourceCode, newName);
       }
@@ -184,30 +184,32 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
   }
 
   async findFilesMatchingSearchRequest(
-      searchConfig: Workspace.Workspace.ProjectSearchConfig, filesMatchingFileQuery: Platform.DevToolsPath.UrlString[],
-      progress: Common.Progress.Progress): Promise<string[]> {
-    const result: string[] = [];
+      searchConfig: Workspace.SearchConfig.SearchConfig, filesMatchingFileQuery: Workspace.UISourceCode.UISourceCode[],
+      progress: Common.Progress.Progress):
+      Promise<Map<Workspace.UISourceCode.UISourceCode, TextUtils.ContentProvider.SearchMatch[]|null>> {
+    const result = new Map();
     progress.setTotalWork(filesMatchingFileQuery.length);
     await Promise.all(filesMatchingFileQuery.map(searchInContent.bind(this)));
     progress.done();
     return result;
 
     async function searchInContent(
-        this: ContentProviderBasedProject, path: Platform.DevToolsPath.UrlString): Promise<void> {
-      const uiSourceCode = this.uiSourceCodeForURL(path);
-      if (uiSourceCode) {
-        let allMatchesFound = true;
-        for (const query of searchConfig.queries().slice()) {
-          const searchMatches =
-              await this.searchInFileContent(uiSourceCode, query, !searchConfig.ignoreCase(), searchConfig.isRegex());
-          if (!searchMatches.length) {
-            allMatchesFound = false;
-            break;
-          }
+        this: ContentProviderBasedProject, uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
+      let allMatchesFound = true;
+      let matches: TextUtils.ContentProvider.SearchMatch[] = [];
+      for (const query of searchConfig.queries().slice()) {
+        const searchMatches =
+            await this.searchInFileContent(uiSourceCode, query, !searchConfig.ignoreCase(), searchConfig.isRegex());
+        if (!searchMatches.length) {
+          allMatchesFound = false;
+          break;
         }
-        if (allMatchesFound) {
-          result.push(path);
-        }
+        matches = Platform.ArrayUtilities.mergeOrdered(
+            matches, searchMatches as TextUtils.ContentProvider.SearchMatch[],
+            TextUtils.ContentProvider.SearchMatch.comparator);
+      }
+      if (allMatchesFound) {
+        result.set(uiSourceCode, matches);
       }
       progress.incrementWorked(1);
     }

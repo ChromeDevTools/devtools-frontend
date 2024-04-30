@@ -6,29 +6,27 @@
 
 :host {
   overflow: hidden;
+
+  --timeline-controls-width: 150px;
 }
 
 .animation-node-row {
   width: 100%;
   display: flex;
-  border-bottom: 1px dashed var(--color-details-hairline);
+  border-bottom: 1px dashed var(--sys-color-divider);
 }
 
 .animation-node-description {
-  width: 150px;
   padding-left: 8px;
   overflow: hidden;
   position: relative;
-  transform-style: preserve-3d;
-  border-bottom: 1px solid var(--color-details-hairline);
-  margin-bottom: -1px;
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-cdt-base-container);
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: flex-start;
   white-space: nowrap;
-  flex: 0 0 150px;
+  flex: 0 0 var(--timeline-controls-width);
 }
 
 .animation-node-description > * {
@@ -65,7 +63,7 @@ line.animation-delay-line.animation-fill {
 }
 
 circle.animation-keyframe-point {
-  fill: var(--color-background);
+  fill: var(--sys-color-cdt-base-container);
 }
 
 circle.animation-endpoint,
@@ -90,7 +88,7 @@ circle.animation-keyframe-point:active {
 .animation-name {
   position: absolute;
   top: 8px;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   text-align: center;
   margin-left: -8px;
   white-space: nowrap;
@@ -98,8 +96,8 @@ circle.animation-keyframe-point:active {
 
 .animation-timeline-toolbar-container {
   display: flex;
-  background-color: var(--color-background-elevation-1);
-  border-bottom: var(--legacy-divider-border);
+  background-color: var(--sys-color-cdt-base-container);
+  border-bottom: 1px solid var(--sys-color-divider);
   flex: 0 0 auto;
 }
 
@@ -109,7 +107,7 @@ circle.animation-keyframe-point:active {
 
 .animation-timeline-header {
   height: 28px;
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
   flex-shrink: 0;
   display: flex;
 }
@@ -118,16 +116,16 @@ circle.animation-keyframe-point:active {
   content: "";
   height: calc(100% - 48px - 28px);
   position: absolute;
-  width: 150px;
+  width: var(--timeline-controls-width);
   left: 0;
   margin-top: 28px;
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-cdt-base-container);
   z-index: 0;
-  border-right: 1px solid var(--color-details-hairline);
+  border-right: 1px solid var(--sys-color-divider);
 }
 
 .animation-controls {
-  flex: 0 0 150px;
+  flex: 0 0 var(--timeline-controls-width);
   position: relative;
   display: flex;
   justify-content: flex-end;
@@ -142,14 +140,18 @@ circle.animation-keyframe-point:active {
 
 .animation-grid-header {
   flex: 1 0 auto;
-  cursor: text;
+  z-index: 2;
+}
+
+.animation-grid-header.scrubber-enabled {
+  cursor: pointer;
 }
 
 .animation-timeline-buffer,
 .animation-timeline-buffer-hint {
   height: 48px;
   flex: 0 0 auto;
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
   display: flex;
   padding: 0 2px;
 }
@@ -168,7 +170,7 @@ circle.animation-keyframe-point:active {
 }
 
 .animation-time-overlay {
-  background-color: var(--color-text-primary);
+  background-color: var(--sys-color-on-surface);
   opacity: 5%;
   position: absolute;
   height: 100%;
@@ -187,14 +189,13 @@ circle.animation-keyframe-point:active {
   height: 100%;
   width: 100%;
   top: 28px;
-  border-left: 1px solid var(--color-red);
+  border-left: 1px solid var(--sys-color-error);
   z-index: 2;
-  cursor: col-resize;
 }
 
 .animation-scrubber-line {
   width: 11px;
-  background: linear-gradient(to right, transparent 5px, var(--color-red) 5px, var(--color-red) 6px, transparent 6px);
+  background: linear-gradient(to right, transparent 5px, var(--sys-color-error) 5px, var(--sys-color-error) 6px, transparent 6px);
   position: absolute;
   top: -28px;
   height: 28px;
@@ -207,7 +208,7 @@ circle.animation-keyframe-point:active {
   width: 7px;
   height: 7px;
   transform: rotate(45deg);
-  background: var(--color-red);
+  background: var(--sys-color-error);
   position: absolute;
   left: 2px;
   top: 1px;
@@ -216,10 +217,12 @@ circle.animation-keyframe-point:active {
 
 .grid-overflow-wrapper {
   position: absolute;
-  left: 140px;
+  left: calc(var(--timeline-controls-width) - 10px);
   top: 76px;
   z-index: 1;
   overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
 
 svg.animation-timeline-grid {
@@ -228,10 +231,12 @@ svg.animation-timeline-grid {
   top: 0;
   right: 0;
   bottom: 0;
+  width: 100%;
+  height: 100%;
 }
 
 rect.animation-timeline-grid-line {
-  fill: var(--color-background-elevation-2);
+  fill: var(--sys-color-divider);
 }
 
 .animation-timeline-row > svg.animation-ui {
@@ -251,6 +256,13 @@ rect.animation-timeline-grid-line {
 
 .animation-node-removed {
   filter: saturate(0);
+  cursor: not-allowed;
+}
+
+.animation-node-removed-overlay {
+  width: 100%;
+  height: 100%;
+  z-index: 100;
   cursor: not-allowed;
 }
 
@@ -274,8 +286,74 @@ svg.animation-ui path:focus-visible {
 
 text.animation-timeline-grid-label {
   font-size: 10px;
-  fill: var(--color-text-secondary);
+  fill: var(--sys-color-token-subtle);
   text-anchor: middle;
+}
+
+@keyframes --full-opacity-for-screenshots-container {
+  from {
+    opacity: 100%;
+  }
+
+  to {
+    opacity: 100%;
+  }
+}
+
+.preview-ui-container {
+  position: relative;
+
+  & .screenshot-arrow {
+    background-image: var(--image-file-popoverArrows);
+    background-position: 0 76px;
+    width: 19px;
+    height: 19px;
+    position: absolute;
+    left: 6px;
+    top: -19px;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  & .screenshots-container {
+    position: absolute;
+    display: none;
+    opacity: 0%;
+    left: 6px;
+    top: 100%;
+    z-index: 100;
+    border: 1px solid transparent;
+    box-shadow: var(--drop-shadow);
+    border-radius: 2px;
+    max-width: 220px;
+    max-height: 220px;
+  }
+
+  & .screenshots-container.to-the-left {
+    left: unset;
+    right: 6px;
+  }
+
+  & .screenshots-container.to-the-left .screenshot-arrow {
+    left: unset;
+    right: 6px;
+  }
+
+  &:hover .screenshots-container:not(.no-screenshots) {
+    display: block;
+    animation-name: --full-opacity-for-screenshots-container;
+    animation-duration: 0s;
+    animation-delay: 0.2s; /* Show the screenshots after 0.2s delay */
+    animation-fill-mode: forwards;
+  }
+
+  &:hover .screenshots-container:not(.no-screenshots):hover {
+    display: none;
+  }
+
+  &:has(.selected):hover .screenshots-container:not(.no-screenshots) {
+    display: none;
+  }
 }
 
 .animation-timeline-rows,
@@ -299,7 +377,7 @@ text.animation-timeline-grid-label {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 150px;
+  margin-left: var(--timeline-controls-width);
   padding: 10px;
 }
 
@@ -308,17 +386,17 @@ text.animation-timeline-grid-label {
 }
 
 .animation-node-row.animation-node-selected {
-  background-color: var(--color-background-hover-overlay);
+  background-color: var(--sys-color-state-ripple-primary);
 }
 
 .animation-node-selected > .animation-node-description {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .animation-buffer-preview {
   height: 40px;
   margin: 4px 2px;
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-neutral-container);
   border: 1px solid transparent;
   border-radius: 2px;
   flex: 1 1;
@@ -328,6 +406,19 @@ text.animation-timeline-grid-label {
   position: relative;
 }
 
+.animation-buffer-preview.no-animation {
+  animation: none;
+}
+
+.animation-buffer-preview .mouse-icon {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  right: 1px;
+  bottom: 2px;
+  opacity: 60%;
+}
+
 .animation-buffer-preview-animation {
   width: 100%;
   height: 100%;
@@ -335,41 +426,47 @@ text.animation-timeline-grid-label {
   position: absolute;
   top: 0;
   left: 0;
-  background: var(--color-background-elevation-2);
+  background: var(--sys-color-tonal-container);
   opacity: 0%;
-  border-right: 1px solid var(--color-details-hairline);
+  border-right: 1px solid var(--sys-color-divider);
 }
 
 .animation-buffer-preview:focus-visible {
   outline: -webkit-focus-ring-color auto 5px;
 }
 
+.animation-buffer-preview.selected .mouse-icon {
+  opacity: 100%;
+}
+
 .animation-buffer-preview:not(.selected):focus-visible,
 .animation-buffer-preview:not(.selected):hover {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-surface-variant);
+
+  & .mouse-icon {
+    opacity: 80%;
+  }
 }
 
 .animation-buffer-preview.selected {
-  background-color: var(--legacy-selection-bg-color);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .animation-paused {
   align-items: center;
   justify-content: center;
-  background-color: hsl(0deg 0% 70% / 50%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
   display: none;
 }
 
 .animation-paused::before,
 .animation-paused::after {
   content: "";
-  background: var(--color-background);
+  background: var(--sys-color-cdt-base-container);
   width: 7px;
   height: 20px;
   border-radius: 2px;
   margin: 2px;
-  border: 1px solid var(--color-details-hairline);
+  border: 1px solid var(--sys-color-divider);
 }
 
 .animation-buffer-preview.paused .animation-paused {
@@ -381,12 +478,12 @@ text.animation-timeline-grid-label {
 }
 
 .animation-buffer-preview.selected > svg > line {
-  stroke: var(--color-background) !important; /* stylelint-disable-line declaration-no-important */
+  stroke: var(--sys-color-on-tonal-container) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 @keyframes newGroupAnim {
   from {
-    clip-path: polygon(0% 0%, 0% 100%, 0% 100%, 0% 0%);
+    clip-path: polygon(0% 0%, 0% 100%, 50% 100%, 50% 0%);
   }
 
   to {
@@ -401,8 +498,11 @@ text.animation-timeline-grid-label {
 }
 
 .animation-playback-rate-button {
-  border: 1px solid var(--color-button-secondary-border);
-  color: var(--color-text-primary);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--sys-color-tonal-outline);
+  border-right-width: 0;
+  color: var(--sys-color-on-surface);
   display: inline-block;
   margin-right: -1px;
   padding: 1px 4px;
@@ -417,51 +517,73 @@ text.animation-timeline-grid-label {
 
 .animation-playback-rate-button:last-child {
   border-radius: 0 4px 4px 0;
+  border-right-width: 1px;
 }
 
 .animation-playback-rate-button.selected {
-  color: var(--color-button-primary-text);
-  background-color: var(--color-primary-old);
-  border-color: var(--color-primary-old);
+  color: var(--sys-color-on-tonal-container);
+  background-color: var(--sys-color-tonal-container);
+  border-color: var(--sys-color-tonal-container);
   z-index: 1;
 }
 
 .animation-playback-rate-button.selected:focus-visible {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .animation-playback-rate-button:focus-visible {
-  background-color: var(--legacy-focus-bg-color);
+  outline: 2px solid var(--sys-color-primary);
+  outline-offset: 2px;
 }
 
-.animation-playback-rate-button:not(.selected):hover {
-  background: var(--color-background-elevation-2);
+.animation-playback-rate-button:not(.selected):not([disabled]):hover {
+  background: var(--sys-color-state-hover-on-subtle);
+}
+
+.animation-playback-rate-button[disabled] {
+  background: unset;
+  border-color: var(--sys-color-state-disabled);
+  color: var(--sys-color-state-disabled);
 }
 
 .animation-remove-button {
   position: absolute;
   top: -3px;
   right: -3px;
-  background: var(--color-text-secondary);
+  background: var(--sys-color-token-subtle);
   border-radius: 12px;
+  border: 0;
   height: 16px;
   width: 16px;
-  align-items: center;
-  font-size: 10px;
-  justify-content: center;
-  box-shadow: 0 1px 4px 0 var(--color-background-highlight);
   z-index: 100;
   display: none;
-  font-weight: 700;
-  color: var(--color-background);
-}
+  padding: 0;
 
-.animation-remove-button:hover {
-  background: var(--color-text-primary);
+  & > devtools-icon {
+    height: 16px;
+    width: 16px;
+    color: var(--sys-color-cdt-base-container);
+  }
+
+  &:hover {
+    background-color: var(--sys-color-on-surface);
+  }
 }
 
 .animation-buffer-preview:hover .animation-remove-button {
   display: flex;
+}
+
+.timeline-controls-resizer {
+  position: absolute;
+  width: 6px;
+  height: 100%;
+  left: var(--timeline-controls-width);
+  top: 104px;
+  z-index: 3;
+  /* We put this a bit to the left of the line to allow dragging
+  the delay point of the keyframes */
+  margin-left: -4px;
 }
 
 @media (forced-colors: active) {
@@ -475,7 +597,7 @@ text.animation-timeline-grid-label {
   }
 
   .animation-node-description:focus-visible {
-    background-color: var(--color-background);
+    background-color: var(--sys-color-cdt-base-container);
     forced-color-adjust: none;
   }
 

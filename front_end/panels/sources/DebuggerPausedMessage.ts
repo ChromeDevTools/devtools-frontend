@@ -6,14 +6,14 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
-
-import debuggerPausedMessageStyles from './debuggerPausedMessage.css.js';
-
 import * as Protocol from '../../generated/protocol.js';
 import type * as Bindings from '../../models/bindings/bindings.js';
 import type * as BreakpointManager from '../../models/breakpoints/breakpoints.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
+import {getLocalizedBreakpointName} from './CategorizedBreakpointL10n.js';
+import debuggerPausedMessageStyles from './debuggerPausedMessage.css.js';
 
 const UIStrings = {
   /**
@@ -99,6 +99,16 @@ const UIStrings = {
    *@description Text in Debugger Paused Message of the Sources panel
    */
   nodeRemoval: 'node removal',
+  /**
+   *@description Error message text
+   *@example {Snag Error} PH1
+   */
+  webglErrorFiredS: 'WebGL Error Fired ({PH1})',
+  /**
+   *@description Text in DOMDebugger Model
+   *@example {"script-src 'self'"} PH1
+   */
+  scriptBlockedDueToContent: 'Script blocked due to Content Security Policy directive: {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/DebuggerPausedMessage.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -147,10 +157,10 @@ export class DebuggerPausedMessage {
     const mainElement = messageWrapper.createChild('div', 'status-main');
     const mainIcon = new IconButton.Icon.Icon();
     mainIcon.data = {
-      iconName: 'info-filled',
-      color: 'var(--icon-default)',
-      width: '14px',
-      height: '14px',
+      iconName: 'info',
+      color: 'var(--sys-color-on-yellow-container)',
+      width: '16px',
+      height: '16px',
     };
     mainElement.appendChild(mainIcon);
     const breakpointType = BreakpointTypeNouns.get(data.type);
@@ -179,6 +189,36 @@ export class DebuggerPausedMessage {
     return messageWrapper;
   }
 
+  static #findEventNameForUi(detailsAuxData?: SDK.DebuggerModel.EventListenerPausedDetailsAuxData): string {
+    if (!detailsAuxData) {
+      return '';
+    }
+    const {eventName, webglErrorName, directiveText, targetName} = detailsAuxData;
+
+    if (eventName === 'instrumentation:webglErrorFired' && webglErrorName) {
+      // If there is a hex code of the error, display only this.
+      const errorName = webglErrorName.replace(/^.*(0x[0-9a-f]+).*$/i, '$1');
+      return i18nString(UIStrings.webglErrorFiredS, {PH1: errorName});
+    }
+    if (eventName === 'instrumentation:scriptBlockedByCSP' && directiveText) {
+      return i18nString(UIStrings.scriptBlockedDueToContent, {PH1: directiveText});
+    }
+
+    let breakpoint: SDK.CategorizedBreakpoint.CategorizedBreakpoint|null =
+        SDK.EventBreakpointsModel.EventBreakpointsManager.instance().resolveEventListenerBreakpoint(detailsAuxData);
+    if (breakpoint) {
+      // EventBreakpointsManager breakpoints are the only ones with localized names.
+      return getLocalizedBreakpointName(breakpoint.name);
+    }
+
+    breakpoint = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpoint(detailsAuxData);
+    if (breakpoint && targetName) {
+      // For standard DOM event listeners we prepend the target of the event.
+      return targetName + '.' + breakpoint.name;
+    }
+    return breakpoint?.name ?? '';
+  }
+
   async render(
       details: SDK.DebuggerModel.DebuggerPausedDetails|null,
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
@@ -199,23 +239,8 @@ export class DebuggerPausedMessage {
     if (details.reason === Protocol.Debugger.PausedEventReason.DOM) {
       messageWrapper = await DebuggerPausedMessage.createDOMBreakpointHitMessage(details);
     } else if (details.reason === Protocol.Debugger.PausedEventReason.EventListener) {
-      let eventNameForUI = '';
-      if (details.auxData) {
-        const maybeNonDomEventNameForUI =
-            SDK.EventBreakpointsModel.EventBreakpointsManager.instance().resolveEventListenerBreakpointTitle(
-                (details.auxData as {eventName: string}));
-        if (maybeNonDomEventNameForUI) {
-          eventNameForUI = maybeNonDomEventNameForUI;
-        } else {
-          eventNameForUI = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpointTitle(
-              (details.auxData as {
-                directiveText: string,
-                eventName: string,
-                targetName: string,
-                webglErrorName: string,
-              }));
-        }
-      }
+      const eventNameForUI = DebuggerPausedMessage.#findEventNameForUi(
+          details.auxData as SDK.DebuggerModel.EventListenerPausedDetailsAuxData);
       messageWrapper = buildWrapper(i18nString(UIStrings.pausedOnEventListener), eventNameForUI);
     } else if (details.reason === Protocol.Debugger.PausedEventReason.XHR) {
       const auxData = (details.auxData as PausedDetailsAuxData);
@@ -268,10 +293,10 @@ export class DebuggerPausedMessage {
       const mainElement = messageWrapper.createChild('div', 'status-main');
       const mainIcon = new IconButton.Icon.Icon();
       mainIcon.data = {
-        iconName: errorLike ? 'cross-circle-filled' : 'info-filled',
-        color: errorLike ? 'var(--icon-error)' : 'var(--icon-default)',
-        width: '14px',
-        height: '14px',
+        iconName: errorLike ? 'cross-circle-filled' : 'info',
+        color: errorLike ? 'var(--icon-error)' : 'var(--sys-color-on-yellow-container)',
+        width: '16px',
+        height: '16px',
       };
       mainElement.appendChild(mainIcon);
       mainElement.appendChild(document.createTextNode(mainText));

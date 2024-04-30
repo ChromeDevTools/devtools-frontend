@@ -4,13 +4,21 @@
 
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../third_party/typescript/typescript.gni")
 import("../../visibility.gni")
 
 devtools_module("extras") {
-  sources = [ "FilmStrip.ts" ]
+  sources = [
+    "FetchNodes.ts",
+    "FilmStrip.ts",
+    "MainThreadActivity.ts",
+    "Metadata.ts",
+  ]
 
   deps = [
     "../../../core/platform:bundle",
+    "../../../core/sdk:bundle",
+    "../../../generated:protocol",
     "../handlers:bundle",
     "../types:bundle",
   ]
@@ -25,4 +33,21 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility += devtools_models_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "FetchNodes.test.ts",
+    "FilmStrip.test.ts",
+    "MainThreadActivity.test.ts",
+    "Metadata.test.ts",
+  ]
+
+  deps = [
+    "../../../core/platform:bundle",
+    "../../../models/trace:bundle",
+    "../../../testing",
+  ]
 }

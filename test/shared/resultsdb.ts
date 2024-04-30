@@ -14,6 +14,11 @@ export interface TestResult {
   summaryHtml?: string;
   duration?: string;
   tags?: {key: string, value: string}[];
+  artifacts?: {
+    [key: string]: {
+      filePath: string,
+    },
+  };
 }
 
 class SanitizedTestIdTag {
@@ -30,17 +35,19 @@ export function sanitizedTestId(rawTestId: string): SanitizedTestId {
   return rawTestId.replace(/[^\x20-\x7E]/g, '').substr(0, 512) as SanitizedTestId;
 }
 
-let collectedTestResults: TestResult[] = [];
+type SinkData = {
+  url: string|undefined,
+  authToken?: string,
+};
+let resolvedSinkData: SinkData|undefined = undefined;
 
-export function recordTestResult(testResult: TestResult): void {
-  collectedTestResults.push(testResult);
-}
-
-// Call at the end of a test suite. Will send all `TestResult`s collected via
-// `recordTestResult` to the ResultSink endpoint (only if available).
-export function sendCollectedTestResultsIfSinkIsAvailable() {
+function getSinkData(): SinkData {
+  if (resolvedSinkData !== undefined) {
+    return resolvedSinkData;
+  }
+  resolvedSinkData = {url: undefined};
   if (!process.env.LUCI_CONTEXT || !fs.existsSync(process.env.LUCI_CONTEXT)) {
-    return;
+    return resolvedSinkData;
   }
 
   const luciConfig = fs.readFileSync(process.env.LUCI_CONTEXT, 'utf8');
@@ -48,27 +55,37 @@ export function sendCollectedTestResultsIfSinkIsAvailable() {
   // LUCI_CONTEXT will not have a result_sink configuration when
   // ResultSink is unavailable.
   if (!sink) {
+    return resolvedSinkData;
+  }
+  resolvedSinkData = {
+    url: `http://${sink.address}/prpc/luci.resultsink.v1.Sink/ReportTestResults`,
+    authToken: sink.auth_token,
+  };
+  return resolvedSinkData;
+}
+
+// Call at the end of a test suite. Will send all `TestResult`s collected via
+// `recordTestResult` to the ResultSink endpoint (only if available).
+export function sendTestResult(results: TestResult): void {
+  const sinkData = getSinkData();
+  if (sinkData.url === undefined) {
     return;
   }
-
-  const url = `http://${sink.address}/prpc/luci.resultsink.v1.Sink/ReportTestResults`;
 
   const postOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': `ResultSink ${sink.auth_token}`,
+      'Authorization': `ResultSink ${sinkData.authToken}`,
     },
   };
 
   // As per ResultSink documentation, this will always be a localhost connection
   // and can be treated as reliable as a local file write.
-  const request = http.request(url, postOptions, () => {});
+  const request = http.request(sinkData.url, postOptions);
 
-  const data = JSON.stringify({testResults: collectedTestResults});
+  const data = JSON.stringify({testResults: [results]});
   request.write(data);
   request.end();
-
-  collectedTestResults = [];
 }

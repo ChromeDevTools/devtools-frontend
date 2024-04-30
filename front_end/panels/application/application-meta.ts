@@ -3,12 +3,13 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as Resources from './application.js';
+import * as PreloadingHelper from './preloading/helper/helper.js';
 
-import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
   /**
    *@description Text in Application Panel Sidebar of the Application panel
@@ -76,7 +77,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.clearSiteData),
   async loadActionDelegate() {
     const Resources = await loadResourcesModule();
-    return Resources.StorageView.ActionDelegate.instance();
+    return new Resources.StorageView.ActionDelegate();
   },
 });
 
@@ -86,7 +87,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.clearSiteDataIncludingThirdparty),
   async loadActionDelegate() {
     const Resources = await loadResourcesModule();
-    return Resources.StorageView.ActionDelegate.instance();
+    return new Resources.StorageView.ActionDelegate();
   },
 });
 
@@ -101,7 +102,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   async loadActionDelegate() {
     const Resources = await loadResourcesModule();
-    return Resources.BackgroundServiceView.ActionDelegate.instance();
+    return new Resources.BackgroundServiceView.ActionDelegate();
   },
   category: UI.ActionRegistration.ActionCategory.BACKGROUND_SERVICES,
   options: [
@@ -135,7 +136,7 @@ Common.Revealer.registerRevealer({
   destination: Common.Revealer.RevealerDestination.APPLICATION_PANEL,
   async loadRevealer() {
     const Resources = await loadResourcesModule();
-    return Resources.ResourcesPanel.ResourceRevealer.instance();
+    return new Resources.ResourcesPanel.ResourceRevealer();
   },
 });
 
@@ -148,6 +149,28 @@ Common.Revealer.registerRevealer({
   destination: Common.Revealer.RevealerDestination.APPLICATION_PANEL,
   async loadRevealer() {
     const Resources = await loadResourcesModule();
-    return Resources.ResourcesPanel.FrameDetailsRevealer.instance();
+    return new Resources.ResourcesPanel.FrameDetailsRevealer();
+  },
+});
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [PreloadingHelper.PreloadingForward.RuleSetView];
+  },
+  destination: Common.Revealer.RevealerDestination.APPLICATION_PANEL,
+  async loadRevealer() {
+    const Resources = await loadResourcesModule();
+    return new Resources.ResourcesPanel.RuleSetViewRevealer();
+  },
+});
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [PreloadingHelper.PreloadingForward.AttemptViewWithFilter];
+  },
+  destination: Common.Revealer.RevealerDestination.APPLICATION_PANEL,
+  async loadRevealer() {
+    const Resources = await loadResourcesModule();
+    return new Resources.ResourcesPanel.AttemptViewWithFilterRevealer();
   },
 });

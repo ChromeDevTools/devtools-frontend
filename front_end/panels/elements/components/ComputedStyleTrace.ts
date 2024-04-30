@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import computedStyleTraceStyles from './computedStyleTrace.css.js';
 
@@ -53,10 +52,9 @@ export class ComputedStyleTrace extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-computed-style-trace', ComputedStyleTrace);
+customElements.define('devtools-computed-style-trace', ComputedStyleTrace);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-computed-style-trace': ComputedStyleTrace;
   }

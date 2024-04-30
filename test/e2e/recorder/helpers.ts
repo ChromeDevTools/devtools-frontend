@@ -4,8 +4,10 @@
 
 /* eslint-disable rulesdir/es_modules_import */
 
-import {type ElementHandle} from 'puppeteer';
+import {type ElementHandle, type Page} from 'puppeteer-core';
 
+import {type UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
+import type * as Recorder from '../../../front_end/panels/recorder/recorder.js';
 import {openPanelViaMoreTools} from '../../../test/e2e/helpers/settings-helpers.js';
 import {
   $,
@@ -14,15 +16,12 @@ import {
   getBrowserAndPages,
   getTestServerPort,
   goToResource,
+  platform,
   timeout,
   waitFor,
   waitForAria,
 } from '../../../test/shared/helper.js';
-
 import {assertMatchesJSONSnapshot} from '../../../test/shared/snapshots.js';
-import {platform} from '../../../test/shared/helper.js';
-import {type UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
-import type * as Recorder from '../../../front_end/panels/recorder/recorder.js';
 
 const RECORDER_CONTROLLER_TAG_NAME = 'devtools-recorder-controller';
 const TEST_RECORDING_NAME = 'New Recording';
@@ -71,12 +70,12 @@ export async function onReplayFinished(): Promise<unknown> {
 
 export async function enableUntrustedEventMode() {
   const {frontend} = getBrowserAndPages();
-  await frontend.evaluate(() => {
+  await frontend.evaluate(`(async () => {
     // TODO: have an explicit UI setting or perhaps a special event to configure this
     // instead of having a global setting.
-    // @ts-ignore
-    globalThis.Common.settings.createSetting('untrustedRecorderEvents', true);
-  });
+    const Common = await import('./core/common/common.js');
+    Common.Settings.Settings.instance().createSetting('untrusted-recorder-events', true);
+  })()`);
 }
 
 export async function enableAndOpenRecorderPanel(path: string) {
@@ -92,7 +91,7 @@ async function createRecording(name: string, selectorAttribute?: string) {
   await input.type(name);
   if (selectorAttribute) {
     const input = await waitForAria(
-        'SELECTOR ATTRIBUTE https://g.co/devtools/recorder#selector',
+        'SELECTOR ATTRIBUTE Learn more',
     );
     await input.type(selectorAttribute);
   }
@@ -135,6 +134,8 @@ export async function startRecording(
       untrustedEvents: false,
     },
 ) {
+  const {frontend} = getBrowserAndPages();
+  await frontend.bringToFront();
   if (options.networkCondition) {
     await changeNetworkConditions(options.networkCondition);
   }
@@ -148,6 +149,7 @@ export async function startRecording(
 export async function stopRecording(): Promise<unknown> {
   const {frontend} = getBrowserAndPages();
   await frontend.bringToFront();
+  await raf(frontend);
   const onRecordingStopped = onRecordingStateChanged();
   await click('aria/End recording');
   return await onRecordingStopped;
@@ -165,7 +167,7 @@ interface RecordingSnapshotOptions {
 const preprocessRecording = (
     recording: unknown,
     options: RecordingSnapshotOptions = {},
-    ): unknown => {
+    ) => {
   let value = JSON.stringify(recording).replaceAll(
       `:${getTestServerPort()}`,
       ':<test-port>',
@@ -258,6 +260,8 @@ export async function setupRecorderWithScriptAndReplay(
 }
 
 export async function getCurrentRecording(): Promise<unknown> {
+  const {frontend} = getBrowserAndPages();
+  await frontend.bringToFront();
   const controller = await $(RECORDER_CONTROLLER_TAG_NAME);
   const recording = (await controller?.evaluate(
                         el => JSON.stringify((el as unknown as {getUserFlow(): unknown}).getUserFlow()),
@@ -307,4 +311,10 @@ export async function toggleCodeView() {
   await frontend.keyboard.down('b');
   await frontend.keyboard.up(ControlOrMeta);
   await frontend.keyboard.up('b');
+}
+
+export async function raf(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    return new Promise(resolve => window.requestAnimationFrame(resolve));
+  });
 }

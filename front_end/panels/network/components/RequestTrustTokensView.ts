@@ -5,11 +5,11 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import requestTrustTokensViewStyles from './RequestTrustTokensView.css.js';
 
@@ -138,8 +138,9 @@ export class RequestTrustTokensView extends LegacyWrapper.LegacyWrapper.Wrappabl
     }
 
     return LitHtml.html`
-      <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.parameters)}</${
-        ReportView.ReportView.ReportSectionHeader.litTagName}>
+      <${ReportView.ReportView.ReportSectionHeader.litTagName} jslog=${VisualLogging.pane('trust-tokens').track({
+      resize: true,
+    })}>${i18nString(UIStrings.parameters)}</${ReportView.ReportView.ReportSectionHeader.litTagName}>
       ${renderRowWithCodeValue(i18nString(UIStrings.type), trustTokenParams.operation.toString())}
       ${this.#renderRefreshPolicy(trustTokenParams)}
       ${this.#renderIssuers(trustTokenParams)}
@@ -292,10 +293,9 @@ function renderRowWithCodeValue(key: string, value: string): LitHtml.TemplateRes
   `;
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-trust-token-report', RequestTrustTokensView);
+customElements.define('devtools-trust-token-report', RequestTrustTokensView);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-trust-token-report': RequestTrustTokensView;
   }

@@ -28,14 +28,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Platfrom from '../../core/platform/platform.js';
+import type * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import {HeapSnapshotProgress, JSHeapSnapshot, type HeapSnapshotHeader, type Profile} from './HeapSnapshot.js';
 
+import {type HeapSnapshotHeader, HeapSnapshotProgress, JSHeapSnapshot, type Profile} from './HeapSnapshot.js';
 import {type HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';
 
 export class HeapSnapshotLoader {
   readonly #progress: HeapSnapshotProgress;
-  #buffer: string;
+  #buffer: string[];
   #dataCallback: ((value: string|PromiseLike<string>) => void)|null;
   #done: boolean;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
@@ -52,7 +54,7 @@ export class HeapSnapshotLoader {
   constructor(dispatcher: HeapSnapshotWorkerDispatcher) {
     this.#reset();
     this.#progress = new HeapSnapshotProgress(dispatcher);
-    this.#buffer = '';
+    this.#buffer = [];
     this.#dataCallback = null;
     this.#done = false;
     void this.#parseInput();
@@ -74,11 +76,11 @@ export class HeapSnapshotLoader {
     }
   }
 
-  buildSnapshot(): JSHeapSnapshot {
+  buildSnapshot(options: HeapSnapshotModel.HeapSnapshotModel.HeapSnapshotOptions): JSHeapSnapshot {
     this.#snapshot = this.#snapshot || {};
 
     this.#progress.updateStatus('Processing snapshot…');
-    const result = new JSHeapSnapshot((this.#snapshot as Profile), this.#progress);
+    const result = new JSHeapSnapshot((this.#snapshot as Profile), this.#progress, options);
     this.#reset();
     return result;
   }
@@ -141,19 +143,25 @@ export class HeapSnapshotLoader {
   }
 
   write(chunk: string): void {
-    this.#buffer += chunk;
+    this.#buffer.push(chunk);
     if (!this.#dataCallback) {
       return;
     }
-    this.#dataCallback(this.#buffer);
+    this.#dataCallback(this.#buffer.shift() as string);
     this.#dataCallback = null;
-    this.#buffer = '';
   }
 
   #fetchChunk(): Promise<string> {
-    return this.#done ? Promise.resolve(this.#buffer) : new Promise(r => {
-      this.#dataCallback = r;
-    });
+    // This method shoudln't be entered more than once since parsing happens
+    // sequentially. This means it's fine to stash away a single #dataCallback
+    // instead of an array of them.
+    if (this.#buffer.length > 0) {
+      return Promise.resolve(this.#buffer.shift() as string);
+    }
+
+    const {promise, resolve} = Platfrom.PromiseUtilities.promiseWithResolvers<string>();
+    this.#dataCallback = resolve;
+    return promise;
   }
 
   async #findToken(token: string, startIndex?: number): Promise<number> {

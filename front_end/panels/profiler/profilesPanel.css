@@ -34,15 +34,15 @@
 }
 
 .profile-view .data-grid table.data {
-  background: var(--color-background);
+  background: var(--sys-color-cdt-base-container);
 }
 
 .profile-view .data-grid tr:not(.selected) .highlight {
-  background-color: var(--color-selection-highlight);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .profile-view .data-grid tr:hover td:not(.bottom-filler-td) {
-  background-color: var(--color-background-hover-overlay);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .profile-view .data-grid td.numeric-column {
@@ -54,7 +54,7 @@
 }
 
 .profile-view .data-grid span.percent-column {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   width: 9ex;
   display: inline-block;
 }
@@ -64,8 +64,8 @@
 }
 
 .profiles-toolbar {
-  background-color: var(--color-background-elevation-1);
-  border-bottom: 1px solid var(--color-details-hairline);
+  background-color: var(--sys-color-cdt-base-container);
+  border-bottom: 1px solid var(--sys-color-divider);
   flex-shrink: 0;
 }
 
@@ -95,7 +95,7 @@
 
 .profile-node-file {
   float: right;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .profile-warn-marker {
@@ -112,7 +112,7 @@
 }
 
 #cpu-profile-flame-chart-overview-container {
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
   overflow: hidden;
 }
 
@@ -142,12 +142,12 @@
 
 .empty-landing-page {
   position: absolute;
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   justify-content: center;
   align-items: center;
   overflow: auto;
   font-size: 16px;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   padding: 50px;
 }
 

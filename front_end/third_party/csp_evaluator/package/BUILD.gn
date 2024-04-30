@@ -1,0 +1,25 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../visibility.gni")
+
+devtools_module("csp_evaluator") {
+  sources = [
+    "allowlist_bypasses/angular.ts",
+    "allowlist_bypasses/flash.ts",
+    "allowlist_bypasses/jsonp.ts",
+    "checks/checker.ts",
+    "checks/parser_checks.ts",
+    "checks/security_checks.ts",
+    "checks/strictcsp_checks.ts",
+    "csp.ts",
+    "evaluator.ts",
+    "finding.ts",
+    "parser.ts",
+    "utils.ts",
+  ]
+
+  visibility = [ "../*" ]
+}

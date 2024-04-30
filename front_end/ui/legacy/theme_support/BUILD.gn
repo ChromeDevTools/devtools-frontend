@@ -4,13 +4,14 @@
 
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../third_party/typescript/typescript.gni")
 
 devtools_module("theme_support") {
-  sources = [ "theme_support_impl.ts" ]
+  sources = [ "ThemeSupport.ts" ]
 
   deps = [
     "../../../core/common:bundle",
-    "../../../core/root:bundle",
+    "../../../core/host:bundle",
   ]
 }
 
@@ -24,13 +25,24 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     "../*",
-    "../../../../test/unittests/front_end/test_setup/*",
-    "../../../../test/unittests/front_end/ui/components/helpers/*",
-    "../../../../test/unittests/front_end/ui/legacy/theme_support/*",
     "../../../entrypoints/main/*",
     "../../../models/extensions/*",
     "../../../panels/*",
+    "../../../testing/*",
     "../../components/docs/*",
     "../../components/helpers/*",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "ThemeSupport.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../core/common:bundle",
+    "../../../core/host:bundle",
+    "../../../testing",
   ]
 }

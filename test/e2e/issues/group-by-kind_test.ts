@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {assertNotNullOrUndefined, goToResource, waitFor} from '../../shared/helper.js';
+import {goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   expandKind,
@@ -14,7 +14,7 @@ import {
   toggleGroupByKind,
 } from '../helpers/issues-helpers.js';
 
-describe('The Issues tab group by kind checkbox', async () => {
+describe('The Issues tab group by kind checkbox', () => {
   it('should group issues by associated kinds when checked', async () => {
     await goToResource('elements/element-reveal-inline-issue.html');
     await navigateToIssuesTab();
@@ -26,7 +26,6 @@ describe('The Issues tab group by kind checkbox', async () => {
     await expandKind('.page-errors');
     const issue = await waitFor(ISSUE);
     const isParentedByKind = await issue.evaluate(node => node.parentElement?.classList.contains('issue-kind-body'));
-    assertNotNullOrUndefined(isParentedByKind);
     assert.isTrue(isParentedByKind);
   });
 
@@ -40,7 +39,6 @@ describe('The Issues tab group by kind checkbox', async () => {
 
     const issue = await waitFor(ISSUE);
     const isParentedByKind = await issue.evaluate(node => node.parentElement?.classList.contains('issue-kind-body'));
-    assertNotNullOrUndefined(isParentedByKind);
     assert.isFalse(isParentedByKind);
   });
 });

@@ -4,7 +4,7 @@
 
 // use require here due to
 // https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
-import puppeteer = require('puppeteer');
+import puppeteer = require('puppeteer-core');
 import fetch from 'cross-fetch';
 
 import {loadEmptyPageAndWaitForContent} from './frontend_tab.js';
@@ -30,6 +30,10 @@ export class TargetTab {
 
   async reset(): Promise<void> {
     await loadEmptyPageAndWaitForContent(this.page);
+    const client = await this.page.target().createCDPSession();
+    await client.send('ServiceWorker.enable');
+    await client.send('ServiceWorker.stopAllWorkers');
+    await client.detach();
   }
 
   targetId(): string {

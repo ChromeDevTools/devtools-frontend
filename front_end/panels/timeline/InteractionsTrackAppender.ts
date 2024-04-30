@@ -1,18 +1,18 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import type * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as TraceEngine from '../../models/trace/trace.js';
-import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
+import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 import {
   type CompatibilityTracksAppender,
-  type TrackAppender,
   type HighlightedEntryInfo,
+  type TrackAppender,
   type TrackAppenderName,
 } from './CompatibilityTracksAppender.js';
-import * as i18n from '../../core/i18n/i18n.js';
-import type * as Common from '../../core/common/common.js';
-import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 
 const UIStrings = {
   /**
@@ -24,23 +24,18 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/InteractionsTrackAppender.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const LONG_INTERACTION_THRESHOLD =
-    TraceEngine.Helpers.Timing.millisecondsToMicroseconds(TraceEngine.Types.Timing.MilliSeconds(200));
-
 export class InteractionsTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'Interactions';
 
   #colorGenerator: Common.Color.Generator;
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
-  #traceParsedData: Readonly<TraceEngine.Handlers.Migration.PartialTraceData>;
+  #traceParsedData: Readonly<TraceEngine.Handlers.Types.TraceParseData>;
 
   constructor(
-      compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
-      traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData, colorGenerator: Common.Color.Generator) {
+      compatibilityBuilder: CompatibilityTracksAppender, traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
+      colorGenerator: Common.Color.Generator) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#colorGenerator = colorGenerator;
-    this.#flameChartData = flameChartData;
     this.#traceParsedData = traceParsedData;
   }
 
@@ -88,28 +83,45 @@ export class InteractionsTrackAppender implements TrackAppender {
    * interactions (the first available level to append more data).
    */
   #appendInteractionsAtLevel(trackStartLevel: number): number {
-    const interactions = this.#traceParsedData.UserInteractions.interactionEventsWithNoNesting;
-    const newLevel = this.#compatibilityBuilder.appendEventsAtLevel(interactions, trackStartLevel, this);
-    for (let i = 0; i < interactions.length; ++i) {
-      const eventDurationMicroSeconds = interactions[i].dur || TraceEngine.Types.Timing.MicroSeconds(0);
-      if (eventDurationMicroSeconds <= LONG_INTERACTION_THRESHOLD) {
-        continue;
-      }
-      const index = this.#compatibilityBuilder.indexForEvent(interactions[i]);
-      if (index !== undefined) {
-        this.#addCandyStripingForLongInteraction(index);
-      }
-    }
+    const {interactionEventsWithNoNesting, interactionsOverThreshold} = this.#traceParsedData.UserInteractions;
+
+    const addCandyStripeToLongInteraction =
+        (event: TraceEngine.Types.TraceEvents.SyntheticInteractionPair, index: number): void => {
+          // Each interaction that we drew that is over the INP threshold needs to be
+          // candy-striped.
+          const overThreshold = interactionsOverThreshold.has(event);
+          if (!overThreshold) {
+            return;
+          }
+          if (index !== undefined) {
+            this.#addCandyStripeAndWarningForLongInteraction(event, index);
+          }
+        };
+    // Render all top level interactions (see UserInteractionsHandler for an explanation on the nesting) onto the track.
+    const newLevel = this.#compatibilityBuilder.appendEventsAtLevel(
+        interactionEventsWithNoNesting, trackStartLevel, this, addCandyStripeToLongInteraction);
+
     return newLevel;
   }
 
-  #addCandyStripingForLongInteraction(eventIndex: number): void {
-    const decorationsForEvent = this.#flameChartData.entryDecorations[eventIndex] || [];
-    decorationsForEvent.push({
-      type: 'CANDY',
-      startAtTime: LONG_INTERACTION_THRESHOLD,
-    });
-    this.#flameChartData.entryDecorations[eventIndex] = decorationsForEvent;
+  #addCandyStripeAndWarningForLongInteraction(
+      entry: TraceEngine.Types.TraceEvents.SyntheticInteractionPair, eventIndex: number): void {
+    const decorationsForEvent =
+        this.#compatibilityBuilder.getFlameChartTimelineData().entryDecorations[eventIndex] || [];
+    decorationsForEvent.push(
+        {
+          type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
+          startAtTime: TraceEngine.Handlers.ModelHandlers.UserInteractions.LONG_INTERACTION_THRESHOLD,
+          // Interaction events have whiskers, so we do not want to candy stripe
+          // the entire duration. The box represents processing time, so we only
+          // candystripe up to the end of processing.
+          endAtTime: entry.processingEnd,
+        },
+        {
+          type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE,
+          customEndTime: entry.processingEnd,
+        });
+    this.#compatibilityBuilder.getFlameChartTimelineData().entryDecorations[eventIndex] = decorationsForEvent;
   }
 
   /*
@@ -156,7 +168,7 @@ export class InteractionsTrackAppender implements TrackAppender {
  * Return the title to use for a given interaction event.
  * Exported so the title in the DetailsView can re-use the same logic
  **/
-export function titleForInteractionEvent(event: TraceEngine.Types.TraceEvents.SyntheticInteractionEvent): string {
+export function titleForInteractionEvent(event: TraceEngine.Types.TraceEvents.SyntheticInteractionPair): string {
   const category = TraceEngine.Handlers.ModelHandlers.UserInteractions.categoryOfInteraction(event);
   // Because we hide nested interactions, we do not want to show the
   // specific type of the interaction that was not hidden, so instead we

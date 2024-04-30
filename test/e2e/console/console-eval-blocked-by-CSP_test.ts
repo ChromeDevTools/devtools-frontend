@@ -8,7 +8,7 @@ import {$$, click, getBrowserAndPages, goToResource, pasteText, step, waitForFun
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 
-describe('The Console Tab', async function() {
+describe('The Console Tab', function() {
   it('eval in console succeeds for pages with no CSP', async () => {
     const {frontend} = getBrowserAndPages();
     await step('open the console tab and focus the prompt', async () => {

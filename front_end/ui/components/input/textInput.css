@@ -10,20 +10,19 @@
   padding: 8px 11px;
   line-height: 1.16;
   letter-spacing: 0.015em;
-  border: 1px solid var(--color-input-outline);
-  color: var(--color-text-primary);
+  border: 1px solid var(--sys-color-neutral-outline);
+  color: var(--sys-color-on-surface);
   border-radius: 3px;
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   font-family: inherit;
   font-size: inherit;
 }
 
 .devtools-text-input:focus-visible {
-  border: 1px solid transparent;
   outline: none;
-  box-shadow: 0 0 0 2px var(--color-input-outline-active);
+  border-color: var(--sys-color-state-focus-ring);
 }
 
 .devtools-text-input::placeholder {
-  color: var(--color-input-text-disabled);
+  color: var(--sys-color-state-disabled);
 }

@@ -2,22 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import type * as Platform from '../platform/platform.js';
-import type * as Protocol from '../../generated/protocol.js';
 
 import {FrameManager} from './FrameManager.js';
 import {IOModel} from './IOModel.js';
-import {MultitargetNetworkManager} from './NetworkManager.js';
-import {NetworkManager} from './NetworkManager.js';
-
+import {MultitargetNetworkManager, NetworkManager} from './NetworkManager.js';
 import {
   Events as ResourceTreeModelEvents,
-  ResourceTreeModel,
+  PrimaryPageChangeType,
   type ResourceTreeFrame,
-  type PrimaryPageChangeType,
+  ResourceTreeModel,
 } from './ResourceTreeModel.js';
 import {type Target} from './Target.js';
 import {TargetManager} from './TargetManager.js';
@@ -31,6 +29,13 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('core/sdk/PageResourceLoader.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+export interface ExtensionInitiator {
+  target: null;
+  frameId: null;
+  initiatorUrl: Platform.DevToolsPath.UrlString;
+  extensionId: string;
+}
+
 export type PageResourceLoadInitiator = {
   target: null,
   frameId: Protocol.Page.FrameId,
@@ -39,7 +44,11 @@ export type PageResourceLoadInitiator = {
   target: Target,
   frameId: Protocol.Page.FrameId | null,
   initiatorUrl: Platform.DevToolsPath.UrlString | null,
-};
+}|ExtensionInitiator;
+
+function isExtensionInitiator(initiator: PageResourceLoadInitiator): initiator is ExtensionInitiator {
+  return 'extensionId' in initiator;
+}
 
 export interface PageResource {
   success: boolean|null;
@@ -63,8 +72,9 @@ interface LoadQueueEntry {
  */
 export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   #currentlyLoading: number;
+  #currentlyLoadingPerTarget: Map<Protocol.Target.TargetID|'main', number>;
   readonly #maxConcurrentLoads: number;
-  readonly #pageResources: Map<string, PageResource>;
+  #pageResources: Map<string, PageResource>;
   #queuedLoads: LoadQueueEntry[];
   readonly #loadOverride: ((arg0: string) => Promise<{
                              success: boolean,
@@ -80,6 +90,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       maxConcurrentLoads: number) {
     super();
     this.#currentlyLoading = 0;
+    this.#currentlyLoadingPerTarget = new Map();
     this.#maxConcurrentLoads = maxConcurrentLoads;
     this.#pageResources = new Map();
     this.#queuedLoads = [];
@@ -114,7 +125,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
 
   onPrimaryPageChanged(
       event: Common.EventTarget.EventTargetEvent<{frame: ResourceTreeFrame, type: PrimaryPageChangeType}>): void {
-    const mainFrame = event.data.frame;
+    const {frame: mainFrame, type} = event.data;
     if (!mainFrame.isOutermostFrame()) {
       return;
     }
@@ -122,12 +133,28 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       reject(new Error(i18nString(UIStrings.loadCanceledDueToReloadOf)));
     }
     this.#queuedLoads = [];
-    this.#pageResources.clear();
+    const mainFrameTarget = mainFrame.resourceTreeModel().target();
+    const keptResources = new Map<string, PageResource>();
+    // If the navigation is a prerender-activation, the pageResources for the destination page have
+    // already been preloaded. In such cases, we therefore don't just discard all pageResources, but
+    // instead make sure to keep the pageResources for the prerendered target.
+    for (const [key, pageResource] of this.#pageResources.entries()) {
+      if ((type === PrimaryPageChangeType.Activation) && mainFrameTarget === pageResource.initiator.target) {
+        keptResources.set(key, pageResource);
+      }
+    }
+    this.#pageResources = keptResources;
     this.dispatchEventToListeners(Events.Update);
   }
 
   getResourcesLoaded(): Map<string, PageResource> {
     return this.#pageResources;
+  }
+
+  getScopedResourcesLoaded(): Map<string, PageResource> {
+    return new Map([...this.#pageResources].filter(
+        ([_, pageResource]) => TargetManager.instance().isInScope(pageResource.initiator.target) ||
+            isExtensionInitiator(pageResource.initiator)));
   }
 
   /**
@@ -143,10 +170,29 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     return {loading: this.#currentlyLoading, queued: this.#queuedLoads.length, resources: this.#pageResources.size};
   }
 
-  private async acquireLoadSlot(): Promise<void> {
+  getScopedNumberOfResources(): {
+    loading: number,
+    resources: number,
+  } {
+    const targetManager = TargetManager.instance();
+    let loadingCount = 0;
+    for (const [targetId, count] of this.#currentlyLoadingPerTarget) {
+      const target = targetManager.targetById(targetId);
+      if (targetManager.isInScope(target)) {
+        loadingCount += count;
+      }
+    }
+    return {loading: loadingCount, resources: this.getScopedResourcesLoaded().size};
+  }
+
+  private async acquireLoadSlot(target: Target|null): Promise<void> {
     this.#currentlyLoading++;
+    if (target) {
+      const currentCount = this.#currentlyLoadingPerTarget.get(target.id()) || 0;
+      this.#currentlyLoadingPerTarget.set(target.id(), currentCount + 1);
+    }
     if (this.#currentlyLoading > this.#maxConcurrentLoads) {
-      const entry: LoadQueueEntry = {resolve: (): void => {}, reject: (): void => {}};
+      const entry: LoadQueueEntry = {resolve: () => {}, reject: (): void => {}};
       const waitForCapacity = new Promise<void>((resolve, reject) => {
         entry.resolve = resolve;
         entry.reject = reject;
@@ -156,12 +202,25 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     }
   }
 
-  private releaseLoadSlot(): void {
+  private releaseLoadSlot(target: Target|null): void {
     this.#currentlyLoading--;
+    if (target) {
+      const currentCount = this.#currentlyLoadingPerTarget.get(target.id());
+      if (currentCount) {
+        this.#currentlyLoadingPerTarget.set(target.id(), currentCount - 1);
+      }
+    }
     const entry = this.#queuedLoads.shift();
     if (entry) {
       entry.resolve();
     }
+  }
+
+  static makeExtensionKey(url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator): string {
+    if (isExtensionInitiator(initiator) && initiator.extensionId) {
+      return `${url}-${initiator.extensionId}`;
+    }
+    throw new Error('Invalid initiator');
   }
 
   static makeKey(url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator): string {
@@ -174,15 +233,24 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     throw new Error('Invalid initiator');
   }
 
+  resourceLoadedThroughExtension(pageResource: PageResource): void {
+    const key = PageResourceLoader.makeExtensionKey(pageResource.url, pageResource.initiator);
+    this.#pageResources.set(key, pageResource);
+    this.dispatchEventToListeners(Events.Update);
+  }
+
   async loadResource(url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator): Promise<{
     content: string,
   }> {
+    if (isExtensionInitiator(initiator)) {
+      throw new Error('Invalid initiator');
+    }
     const key = PageResourceLoader.makeKey(url, initiator);
     const pageResource: PageResource = {success: null, size: null, errorMessage: undefined, url, initiator};
     this.#pageResources.set(key, pageResource);
     this.dispatchEventToListeners(Events.Update);
     try {
-      await this.acquireLoadSlot();
+      await this.acquireLoadSlot(initiator.target);
       const resultPromise = this.dispatchLoad(url, initiator);
       const result = await resultPromise;
       pageResource.errorMessage = result.errorDescription.message;
@@ -201,7 +269,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       }
       throw e;
     } finally {
-      this.releaseLoadSlot();
+      this.releaseLoadSlot(initiator.target);
       this.dispatchEventToListeners(Events.Update);
     }
   }
@@ -211,6 +279,10 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     content: string,
     errorDescription: Host.ResourceLoader.LoadErrorDescription,
   }> {
+    if (isExtensionInitiator(initiator)) {
+      throw new Error('Invalid initiator');
+    }
+
     let failureReason: string|null = null;
     if (this.#loadOverride) {
       return this.#loadOverride(url);
@@ -239,7 +311,6 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
         }
       }
       Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageFallback);
-      console.warn('Fallback triggered', url, initiator);
     } else {
       const code = getLoadThroughTargetSetting().get() ? Host.UserMetrics.DeveloperResourceLoaded.FallbackPerProtocol :
                                                          Host.UserMetrics.DeveloperResourceLoaded.FallbackPerOverride;
@@ -295,7 +366,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
   }> {
     const networkManager = (target.model(NetworkManager) as NetworkManager);
     const ioModel = (target.model(IOModel) as IOModel);
-    const disableCache = Common.Settings.Settings.instance().moduleSetting('cacheDisabled').get();
+    const disableCache = Common.Settings.Settings.instance().moduleSetting('cache-disabled').get();
     const resource = await networkManager.loadNetworkResource(frameId, url, {disableCache, includeCredentials: true});
     try {
       const content = resource.stream ? await ioModel.readToString(resource.stream) : '';
@@ -321,12 +392,10 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
 }
 
 export function getLoadThroughTargetSetting(): Common.Settings.Setting<boolean> {
-  return Common.Settings.Settings.instance().createSetting('loadThroughTarget', true);
+  return Common.Settings.Settings.instance().createSetting('load-through-target', true);
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   Update = 'Update',
 }
 

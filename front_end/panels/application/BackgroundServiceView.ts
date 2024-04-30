@@ -12,24 +12,24 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import emptyWidgetStyles from '../../ui/legacy/emptyWidget.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import {type BackgroundServiceModel, Events} from './BackgroundServiceModel.js';
 import backgroundServiceViewStyles from './backgroundServiceView.css.js';
-
-import {Events, type BackgroundServiceModel} from './BackgroundServiceModel.js';
 
 const UIStrings = {
   /**
    *@description Text in Background Service View of the Application panel
    */
-  backgroundFetch: 'Background Fetch',
+  backgroundFetch: 'Background fetch',
   /**
    *@description Text in Background Service View of the Application panel
    */
-  backgroundSync: 'Background Sync',
+  backgroundSync: 'Background sync',
   /**
    *@description Text in Background Service View of the Application panel
    */
-  pushMessaging: 'Push Messaging',
+  pushMessaging: 'Push messaging',
   /**
    *@description Text in Background Service View of the Application panel
    */
@@ -37,11 +37,11 @@ const UIStrings = {
   /**
    *@description Text in Background Service View of the Application panel
    */
-  paymentHandler: 'Payment Handler',
+  paymentHandler: 'Payment handler',
   /**
    *@description Text in the Periodic Background Service View of the Application panel
    */
-  periodicBackgroundSync: 'Periodic Background Sync',
+  periodicBackgroundSync: 'Periodic background sync',
   /**
    *@description Text to clear content
    */
@@ -93,7 +93,7 @@ const UIStrings = {
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
-  backgroundServices: 'Background Services',
+  backgroundServices: 'Background services',
   /**
    *@description Text that is usually a hyperlink to more documentation
    */
@@ -170,6 +170,8 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     super(true);
 
     this.serviceName = serviceName;
+    const kebabName = Platform.StringUtilities.toKebabCase(serviceName);
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context(kebabName)}`);
 
     this.model = model;
     this.model.addEventListener(Events.RecordingStateChanged, this.onRecordingStateChanged, this);
@@ -194,11 +196,10 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     this.storageKeyManager.addEventListener(
         SDK.StorageKeyManager.Events.MainStorageKeyChanged, () => this.onStorageKeyChanged());
 
-    this.recordAction =
-        (UI.ActionRegistry.ActionRegistry.instance().action('background-service.toggle-recording') as
-         UI.ActionRegistration.Action);
+    this.recordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('background-service.toggle-recording');
 
     this.toolbar = new UI.Toolbar.Toolbar('background-service-toolbar', this.contentElement);
+    this.toolbar.element.setAttribute('jslog', `${VisualLogging.toolbar()}`);
     void this.setupToolbar();
 
     /**
@@ -211,6 +212,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     this.dataGrid = this.createDataGrid();
 
     this.previewPanel = new UI.Widget.VBox();
+    this.previewPanel.element.setAttribute('jslog', `${VisualLogging.pane('preview').track({resize: true})}`);
 
     this.selectedEventNode = null;
 
@@ -230,16 +232,19 @@ export class BackgroundServiceView extends UI.Widget.VBox {
    * Creates the toolbar UI element.
    */
   private async setupToolbar(): Promise<void> {
+    this.toolbar.makeWrappable(true);
     this.recordButton = (UI.Toolbar.Toolbar.createActionButton(this.recordAction) as UI.Toolbar.ToolbarToggle);
     this.toolbar.appendToolbarItem(this.recordButton);
 
-    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'clear');
+    const clearButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'clear', undefined, 'background-service.clear');
     clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this.clearEvents());
     this.toolbar.appendToolbarItem(clearButton);
 
     this.toolbar.appendSeparator();
 
-    this.saveButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.saveEvents), 'download');
+    this.saveButton = new UI.Toolbar.ToolbarButton(
+        i18nString(UIStrings.saveEvents), 'download', undefined, 'background-service.save-events');
     this.saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
       void this.saveToFile();
     });
@@ -250,12 +255,12 @@ export class BackgroundServiceView extends UI.Widget.VBox {
 
     this.originCheckbox = new UI.Toolbar.ToolbarCheckbox(
         i18nString(UIStrings.showEventsFromOtherDomains), i18nString(UIStrings.showEventsFromOtherDomains),
-        () => this.refreshView());
+        () => this.refreshView(), 'show-events-from-other-domains');
     this.toolbar.appendToolbarItem(this.originCheckbox);
 
     this.storageKeyCheckbox = new UI.Toolbar.ToolbarCheckbox(
         i18nString(UIStrings.showEventsForOtherStorageKeys), i18nString(UIStrings.showEventsForOtherStorageKeys),
-        () => this.refreshView());
+        () => this.refreshView(), 'show-events-from-other-partitions');
     this.toolbar.appendToolbarItem(this.storageKeyCheckbox);
   }
 
@@ -354,11 +359,11 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     const columns = ([
       {id: 'id', title: '#', weight: 1},
       {id: 'timestamp', title: i18nString(UIStrings.timestamp), weight: 7},
-      {id: 'eventName', title: i18nString(UIStrings.event), weight: 8},
+      {id: 'event-name', title: i18nString(UIStrings.event), weight: 8},
       {id: 'origin', title: i18nString(UIStrings.origin), weight: 8},
-      {id: 'storageKey', title: i18nString(UIStrings.storageKey), weight: 8},
-      {id: 'swScope', title: i18nString(UIStrings.swScope), weight: 4},
-      {id: 'instanceId', title: i18nString(UIStrings.instanceId), weight: 8},
+      {id: 'storage-key', title: i18nString(UIStrings.storageKey), weight: 8},
+      {id: 'sw-scope', title: i18nString(UIStrings.swScope), weight: 4},
+      {id: 'instance-id', title: i18nString(UIStrings.instanceId), weight: 8},
     ] as DataGrid.DataGrid.ColumnDescriptor[]);
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString(UIStrings.backgroundServices),
@@ -393,10 +398,10 @@ export class BackgroundServiceView extends UI.Widget.VBox {
       id: this.dataGrid.rootNode().children.length + 1,
       timestamp: UI.UIUtils.formatTimestamp(serviceEvent.timestamp * 1000, /* full= */ true),
       origin: serviceEvent.origin,
-      storageKey: serviceEvent.storageKey,
-      swScope,
-      eventName: serviceEvent.eventName,
-      instanceId: serviceEvent.instanceId,
+      'storage-key': serviceEvent.storageKey,
+      'sw-scope': swScope,
+      'event-name': serviceEvent.eventName,
+      'instance-id': serviceEvent.instanceId,
     };
   }
 
@@ -440,7 +445,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
         break;
     }
 
-    return UI.XLink.XLink.create(url, i18nString(UIStrings.learnMore));
+    return UI.XLink.XLink.create(url, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more');
   }
 
   private showPreview(dataNode: EventDataNode|null): void {
@@ -469,7 +474,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
       centered.createChild('p').textContent = i18nString(UIStrings.selectAnEntryToViewMetadata);
     } else if (this.recordButton.toggled()) {
       // Inform users that we are recording/waiting for events.
-      const featureName = BackgroundServiceView.getUIString(this.serviceName);
+      const featureName = BackgroundServiceView.getUIString(this.serviceName).toLowerCase();
       centered.createChild('p').textContent = i18nString(UIStrings.recordingSActivity, {PH1: featureName});
       centered.createChild('p').textContent = i18nString(UIStrings.devtoolsWillRecordAllSActivity, {PH1: featureName});
     } else {
@@ -527,6 +532,7 @@ export class EventDataNode extends DataGrid.DataGrid.DataGridNode<EventData> {
   createPreview(): UI.Widget.VBox {
     const preview = new UI.Widget.VBox();
     preview.element.classList.add('background-service-metadata');
+    preview.element.setAttribute('jslog', `${VisualLogging.section('metadata')}`);
 
     for (const entry of this.eventMetadata) {
       const div = document.createElement('div');
@@ -553,20 +559,7 @@ export class EventDataNode extends DataGrid.DataGrid.DataGridNode<EventData> {
   }
 }
 
-let actionDelegateInstance: ActionDelegate;
-
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ActionDelegate {
-    const {forceNew} = opts;
-    if (!actionDelegateInstance || forceNew) {
-      actionDelegateInstance = new ActionDelegate();
-    }
-
-    return actionDelegateInstance;
-  }
-
   handleAction(context: UI.Context.Context, actionId: string): boolean {
     const view = context.flavor(BackgroundServiceView);
     switch (actionId) {
@@ -589,8 +582,8 @@ export interface EventData {
   id: number;
   timestamp: string;
   origin: string;
-  storageKey: string;
-  swScope: string;
-  eventName: string;
-  instanceId: string;
+  'storage-key': string;
+  'sw-scope': string;
+  'event-name': string;
+  'instance-id': string;
 }

@@ -32,7 +32,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -40,7 +42,6 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
-import * as Host from '../../core/host/host.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
@@ -49,15 +50,14 @@ import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.j
 import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
-import * as Components from '../../ui/legacy/components/utils/utils.js';
-import * as UI from '../../ui/legacy/legacy.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
-import {type Chrome} from '../../../extension-api/ExtensionAPI.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as Components from '../../ui/legacy/components/utils/utils.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {format, updateStyle} from './ConsoleFormat.js';
-import {type ConsoleViewportElement} from './ConsoleViewport.js';
 import consoleViewStyles from './consoleView.css.js';
+import {type ConsoleViewportElement} from './ConsoleViewport.js';
 import {augmentErrorStackWithScriptIds, parseSourcePositionsFromErrorStack} from './ErrorStackParser.js';
 
 const UIStrings = {
@@ -187,6 +187,18 @@ const UIStrings = {
    *@description Message to indicate a console message with a stack table is collapsed
    */
   stackMessageCollapsed: 'Stack table collapsed',
+  /**
+   *@description Message to offer insights for a console error message
+   */
+  explainThisError: 'Understand this error',
+  /**
+   *@description Message to offer insights for a console warning message
+   */
+  explainThisWarning: 'Understand this warning',
+  /**
+   *@description Message to offer insights for a console message
+   */
+  explainThisMessage: 'Understand this message',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleViewMessage.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -200,20 +212,33 @@ export const getMessageForElement = (element: Element): ConsoleViewMessage|undef
 // 1px border of .console-message-wrapper. Keep in sync with consoleView.css.
 const defaultConsoleRowHeight = 19;
 
-const parameterToRemoteObject = (runtimeModel: SDK.RuntimeModel.RuntimeModel|null): (
-    parameter?: SDK.RemoteObject.RemoteObject|Protocol.Runtime.RemoteObject|string) => SDK.RemoteObject.RemoteObject =>
-    (parameter?: string|SDK.RemoteObject.RemoteObject|Protocol.Runtime.RemoteObject): SDK.RemoteObject.RemoteObject => {
-      if (parameter instanceof SDK.RemoteObject.RemoteObject) {
-        return parameter;
-      }
-      if (!runtimeModel) {
-        return SDK.RemoteObject.RemoteObject.fromLocalObject(parameter);
-      }
-      if (typeof parameter === 'object') {
-        return runtimeModel.createRemoteObject(parameter);
-      }
-      return runtimeModel.createRemoteObjectFromPrimitiveValue(parameter);
-    };
+const parameterToRemoteObject = (runtimeModel: SDK.RuntimeModel.RuntimeModel|null):
+    (parameter?: SDK.RemoteObject.RemoteObject|Protocol.Runtime.RemoteObject|string) => SDK.RemoteObject.RemoteObject =>
+        (parameter?: string|SDK.RemoteObject.RemoteObject|Protocol.Runtime.RemoteObject) => {
+          if (parameter instanceof SDK.RemoteObject.RemoteObject) {
+            return parameter;
+          }
+          if (!runtimeModel) {
+            return SDK.RemoteObject.RemoteObject.fromLocalObject(parameter);
+          }
+          if (typeof parameter === 'object') {
+            return runtimeModel.createRemoteObject(parameter);
+          }
+          return runtimeModel.createRemoteObjectFromPrimitiveValue(parameter);
+        };
+
+const EXPLAIN_HOVER_ACTION_ID = 'explain.console-message.hover';
+const EXPLAIN_CONTEXT_ERROR_ACTION_ID = 'explain.console-message.context.error';
+const EXPLAIN_CONTEXT_WARNING_ACTION_ID = 'explain.console-message.context.warning';
+const EXPLAIN_CONTEXT_OTHER_ACTION_ID = 'explain.console-message.context.other';
+
+const hoverButtonObserver = new IntersectionObserver(results => {
+  for (const result of results) {
+    if (result.intersectionRatio > 0) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightHoverButtonShown);
+    }
+  }
+});
 
 export class ConsoleViewMessage implements ConsoleViewportElement {
   protected message: SDK.ConsoleModel.ConsoleMessage;
@@ -226,7 +251,10 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     forceSelect: () => void,
   }[];
   private readonly messageResized: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void;
+  // The wrapper that contains consoleRowWrapper and other elements in a column.
   protected elementInternal: HTMLElement|null;
+  // The element that wraps console message elements in a row.
+  protected consoleRowWrapper: HTMLElement|null = null;
   private readonly previewFormatter: ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter;
   private searchRegexInternal: RegExp|null;
   protected messageIcon: IconButton.Icon.Icon|null;
@@ -289,6 +317,21 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     this.consoleGroupInternal = null;
   }
 
+  setInsight(insight: HTMLElement): void {
+    this.elementInternal?.querySelector('devtools-console-insight')?.remove();
+    this.elementInternal?.append(insight);
+    this.elementInternal?.classList.toggle('has-insight', true);
+    insight.addEventListener('close', () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightClosed);
+      this.elementInternal?.classList.toggle('has-insight', false);
+      insight.addEventListener('animationend', () => {
+        this.elementInternal?.removeChild(insight);
+      }, {
+        once: true,
+      });
+    }, {once: true});
+  }
+
   element(): HTMLElement {
     return this.toMessageElement();
   }
@@ -339,7 +382,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         case Protocol.Runtime.ConsoleAPICalledEventType.Clear:
           messageElement = document.createElement('span');
           messageElement.classList.add('console-info');
-          if (Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').get()) {
+          if (Common.Settings.Settings.instance().moduleSetting('preserve-console-log').get()) {
             messageElement.textContent = i18nString(UIStrings.consoleclearWasPreventedDueTo);
           } else {
             messageElement.textContent = i18nString(UIStrings.consoleWasCleared);
@@ -416,7 +459,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const linkElement = Components.Linkifier.Linkifier.linkifyRevealable(request, request.url(), request.url());
       // Focus is handled by the viewport.
       linkElement.tabIndex = -1;
-      this.selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});
+      this.selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
       messageElement.appendChild(linkElement);
       if (request.failed) {
         UI.UIUtils.createTextChildren(messageElement, ' ', request.localizedFailDescription || '');
@@ -424,8 +467,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       if (request.statusCode !== 0) {
         UI.UIUtils.createTextChildren(messageElement, ' ', String(request.statusCode));
       }
-      if (request.statusText) {
-        UI.UIUtils.createTextChildren(messageElement, ' (', request.statusText, ')');
+      const statusText = request.getInferredStatusText();
+      if (statusText) {
+        UI.UIUtils.createTextChildren(messageElement, ' (', statusText, ')');
       }
     } else {
       const messageText = this.message.messageText;
@@ -436,7 +480,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
             Components.Linkifier.Linkifier.linkifyURL(
                 url, ({text, lineNumber, columnNumber} as Components.Linkifier.LinkifyURLOptions));
         linkElement.tabIndex = -1;
-        this.selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});
+        this.selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
         return linkElement;
       });
       messageElement.appendChild(fragment);
@@ -512,7 +556,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       anchorElement.tabIndex = -1;
       this.selectableChildren.push({
         element: anchorElement,
-        forceSelect: (): void => anchorElement.focus(),
+        forceSelect: () => anchorElement.focus(),
       });
       const anchorWrapperElement = document.createElement('span');
       anchorWrapperElement.classList.add('console-message-anchor');
@@ -535,7 +579,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     const contentElement = toggleElement.createChild('div', 'console-message-stack-trace-wrapper');
 
     const messageElement = this.buildMessage();
-    const icon = UI.Icon.Icon.create('triangle-right', 'console-message-expand-icon');
+    const icon = IconButton.Icon.create('triangle-right', 'console-message-expand-icon');
     const clickableElement = contentElement.createChild('div');
     UI.ARIAUtils.setExpanded(clickableElement, false);
     clickableElement.appendChild(icon);
@@ -547,14 +591,25 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         runtimeModel.target(), this.linkifier, {stackTrace: this.message.stackTrace, tabStops: undefined});
     stackTraceElement.appendChild(stackTracePreview.element);
     for (const linkElement of stackTracePreview.links) {
-      this.selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});
+      this.selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
     }
     stackTraceElement.classList.add('hidden');
     UI.ARIAUtils.setLabel(
         contentElement, `${messageElement.textContent} ${i18nString(UIStrings.stackMessageCollapsed)}`);
     UI.ARIAUtils.markAsGroup(stackTraceElement);
-    this.expandTrace = (expand: boolean): void => {
-      icon.setIconType(expand ? 'triangle-down' : 'triangle-right');
+
+    // We debounce the trace expansion metric in case this was accidental.
+    const DEBOUNCE_MS = 300;
+    let debounce: number|undefined;
+    this.expandTrace = (expand: boolean) => {
+      if (expand) {
+        debounce = window.setTimeout(() => {
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.TraceExpanded);
+        }, DEBOUNCE_MS);
+      } else {
+        clearTimeout(debounce);
+      }
+      icon.name = expand ? 'triangle-down' : 'triangle-right';
       stackTraceElement.classList.toggle('hidden', !expand);
       const stackTableState =
           expand ? i18nString(UIStrings.stackMessageExpanded) : i18nString(UIStrings.stackMessageCollapsed);
@@ -574,7 +629,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     clickableElement.addEventListener('click', toggleStackTrace, false);
     if (this.message.type === Protocol.Runtime.ConsoleAPICalledEventType.Trace &&
-        Common.Settings.Settings.instance().moduleSetting('consoleTraceExpand').get()) {
+        Common.Settings.Settings.instance().moduleSetting('console-trace-expand').get()) {
       this.expandTrace(true);
     }
 
@@ -970,7 +1025,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       return;
     }
 
-    if (Common.Settings.Settings.instance().moduleSetting('consoleTimestampsEnabled').get()) {
+    if (Common.Settings.Settings.instance().moduleSetting('console-timestamps-enabled').get()) {
       if (!this.timestampElement) {
         this.timestampElement = document.createElement('span');
         this.timestampElement.classList.add('console-timestamp');
@@ -993,7 +1048,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   setConsoleGroup(group: ConsoleGroupViewMessage): void {
-    console.assert(this.consoleGroupInternal === null);
+    // TODO(crbug.com/1477675): Figure out why `this.consoleGroupInternal` is
+    //     not null here and add an assertion.
     this.consoleGroupInternal = group;
   }
 
@@ -1014,7 +1070,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     } else if (this.elementInternal && !this.similarGroupMarker && inSimilarGroup) {
       this.similarGroupMarker = document.createElement('div');
       this.similarGroupMarker.classList.add('nesting-level-marker');
-      this.elementInternal.insertBefore(this.similarGroupMarker, this.elementInternal.firstChild);
+      this.consoleRowWrapper?.insertBefore(this.similarGroupMarker, this.consoleRowWrapper.firstChild);
       this.similarGroupMarker.classList.toggle('group-closed', this.lastInSimilarGroup);
     }
   }
@@ -1202,6 +1258,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     this.elementInternal.className = 'console-message-wrapper';
     this.elementInternal.removeChildren();
+    this.consoleRowWrapper = this.elementInternal.createChild('div');
+    this.consoleRowWrapper.classList.add('console-row-wrapper');
     if (this.message.isGroupStartMessage()) {
       this.elementInternal.classList.add('console-group-title');
     }
@@ -1209,13 +1267,13 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       this.elementInternal.classList.add('console-from-api');
     }
     if (this.inSimilarGroup) {
-      this.similarGroupMarker = (this.elementInternal.createChild('div', 'nesting-level-marker') as HTMLElement);
+      this.similarGroupMarker = (this.consoleRowWrapper.createChild('div', 'nesting-level-marker') as HTMLElement);
       this.similarGroupMarker.classList.toggle('group-closed', this.lastInSimilarGroup);
     }
 
     this.nestingLevelMarkers = [];
     for (let i = 0; i < this.nestingLevel(); ++i) {
-      this.nestingLevelMarkers.push(this.elementInternal.createChild('div', 'nesting-level-marker'));
+      this.nestingLevelMarkers.push(this.consoleRowWrapper.createChild('div', 'nesting-level-marker'));
     }
     this.updateCloseGroupDecorations();
     elementToMessage.set(this.elementInternal, this);
@@ -1232,9 +1290,11 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         break;
       case Protocol.Log.LogEntryLevel.Warning:
         this.elementInternal.classList.add('console-warning-level');
+        this.elementInternal.role = 'log';
         break;
       case Protocol.Log.LogEntryLevel.Error:
         this.elementInternal.classList.add('console-error-level');
+        this.elementInternal.role = 'log';
         break;
     }
     this.updateMessageIcon();
@@ -1242,10 +1302,67 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       this.elementInternal.classList.add('console-warning-level');
     }
 
-    this.elementInternal.appendChild(this.contentElement());
+    this.consoleRowWrapper.appendChild(this.contentElement());
+
+    if (UI.ActionRegistry.ActionRegistry.instance().hasAction(EXPLAIN_HOVER_ACTION_ID) && this.shouldShowInsights()) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsoleMessageShown);
+      this.consoleRowWrapper.append(this.#createHoverButton());
+    }
+
     if (this.repeatCountInternal > 1) {
       this.showRepeatCountElement();
     }
+  }
+
+  shouldShowInsights(): boolean {
+    return this.message.level === Protocol.Log.LogEntryLevel.Error ||
+        this.message.level === Protocol.Log.LogEntryLevel.Warning;
+  }
+
+  getExplainLabel(): string {
+    if (this.message.level === Protocol.Log.LogEntryLevel.Error) {
+      return i18nString(UIStrings.explainThisError);
+    }
+    if (this.message.level === Protocol.Log.LogEntryLevel.Warning) {
+      return i18nString(UIStrings.explainThisWarning);
+    }
+    return i18nString(UIStrings.explainThisMessage);
+  }
+
+  getExplainActionId(): string {
+    if (this.message.level === Protocol.Log.LogEntryLevel.Error) {
+      return EXPLAIN_CONTEXT_ERROR_ACTION_ID;
+    }
+    if (this.message.level === Protocol.Log.LogEntryLevel.Warning) {
+      return EXPLAIN_CONTEXT_WARNING_ACTION_ID;
+    }
+    return EXPLAIN_CONTEXT_OTHER_ACTION_ID;
+  }
+
+  #createHoverButton(): HTMLButtonElement {
+    const icon = new IconButton.Icon.Icon();
+    icon.data = {
+      iconName: 'lightbulb-spark',
+      color: 'var(--sys-color-primary)',
+      width: '16px',
+      height: '16px',
+    };
+    const button = document.createElement('button');
+    button.append(icon);
+    button.onclick = (event: Event) => {
+      event.stopPropagation();
+      UI.Context.Context.instance().setFlavor(ConsoleViewMessage, this);
+      const action = UI.ActionRegistry.ActionRegistry.instance().getAction(EXPLAIN_HOVER_ACTION_ID);
+      void action.execute();
+    };
+    const text = document.createElement('span');
+    text.innerText = this.getExplainLabel();
+    button.append(text);
+    button.classList.add('hover-button');
+    button.ariaLabel = this.getExplainLabel();
+    button.tabIndex = 0;
+    hoverButtonObserver.observe(button);
+    return button;
   }
 
   private shouldRenderAsWarning(): boolean {
@@ -1359,7 +1476,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         this.repeatCountElement.type = 'warning';
       }
 
-      this.elementInternal.insertBefore(this.repeatCountElement, this.contentElementInternal);
+      this.consoleRowWrapper?.insertBefore(this.repeatCountElement, this.contentElementInternal);
       this.contentElement().classList.add('repeated-message');
     }
     this.repeatCountElement.textContent = `${this.repeatCountInternal}`;
@@ -1387,6 +1504,16 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       lines.push(messageContent);
     }
     return lines.join('\n');
+  }
+
+  toMessageTextString(): string {
+    const root = this.contentElement();
+    const consoleText = root.querySelector('.console-message-text');
+    if (consoleText) {
+      return consoleText.deepTextContent().trim();
+    }
+    // Fallback to SDK's message text.
+    return this.consoleMessage().messageText;
   }
 
   setSearchRegex(regex: RegExp|null): void {
@@ -1430,18 +1557,16 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       debuggerModel: SDK.DebuggerModel.DebuggerModel, url: Platform.DevToolsPath.UrlString,
       lineNumber: number|undefined, columnNumber: number|undefined): Promise<{frames: Chrome.DevTools.FunctionInfo[]}> {
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-    if (debuggerWorkspaceBinding.pluginManager) {
-      const projects = Workspace.Workspace.WorkspaceImpl.instance().projects();
-      const uiSourceCodes = projects.map(project => project.uiSourceCodeForURL(url)).flat().filter(f => Boolean(f)) as
-          Workspace.UISourceCode.UISourceCode[];
-      const scripts =
-          uiSourceCodes.map(uiSourceCode => debuggerWorkspaceBinding.scriptsForUISourceCode(uiSourceCode)).flat();
-      if (scripts.length) {
-        const location =
-            new SDK.DebuggerModel.Location(debuggerModel, scripts[0].scriptId, lineNumber || 0, columnNumber);
-        const functionInfo = await debuggerWorkspaceBinding.pluginManager.getFunctionInfo(scripts[0], location);
-        return functionInfo && 'frames' in functionInfo ? functionInfo : {frames: []};
-      }
+    const projects = Workspace.Workspace.WorkspaceImpl.instance().projects();
+    const uiSourceCodes = projects.map(project => project.uiSourceCodeForURL(url)).flat().filter(f => Boolean(f)) as
+        Workspace.UISourceCode.UISourceCode[];
+    const scripts =
+        uiSourceCodes.map(uiSourceCode => debuggerWorkspaceBinding.scriptsForUISourceCode(uiSourceCode)).flat();
+    if (scripts.length) {
+      const location =
+          new SDK.DebuggerModel.Location(debuggerModel, scripts[0].scriptId, lineNumber || 0, columnNumber);
+      const functionInfo = await debuggerWorkspaceBinding.pluginManager.getFunctionInfo(scripts[0], location);
+      return functionInfo && 'frames' in functionInfo ? functionInfo : {frames: []};
     }
 
     return {frames: []};
@@ -1465,7 +1590,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const scriptLocationLink = this.linkifier.linkifyScriptLocation(
           debuggerModel.target(), null, url, lineNumber, {columnNumber, inlineFrameIndex: f});
       scriptLocationLink.tabIndex = -1;
-      this.selectableChildren.push({element: scriptLocationLink, forceSelect: (): void => scriptLocationLink.focus()});
+      this.selectableChildren.push({element: scriptLocationLink, forceSelect: () => scriptLocationLink.focus()});
       formattedLine.appendChild(scriptLocationLink);
       formattedLine.appendChild(this.linkifyStringAsFragment(suffix));
       stackTrace.insertBefore(formattedLine, insertBefore);
@@ -1545,7 +1670,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
             showColumnNumber: true,
           });
       scriptLocationLink.tabIndex = -1;
-      this.selectableChildren.push({element: scriptLocationLink, forceSelect: (): void => scriptLocationLink.focus()});
+      this.selectableChildren.push({element: scriptLocationLink, forceSelect: () => scriptLocationLink.focus()});
       formattedLine.appendChild(scriptLocationLink);
       formattedLine.appendChild(this.linkifyStringAsFragment(suffix));
       formattedResult.appendChild(formattedLine);
@@ -1628,7 +1753,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const linkElement =
           Components.Linkifier.Linkifier.linkifyURL(url, (options as Components.Linkifier.LinkifyURLOptions));
       linkElement.tabIndex = -1;
-      this.selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});
+      this.selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
       return linkElement;
     });
   }
@@ -1706,7 +1831,7 @@ function getOrCreateTokenizers(): {
 
 export class ConsoleGroupViewMessage extends ConsoleViewMessage {
   private collapsedInternal: boolean;
-  private expandGroupIcon: UI.Icon.Icon|null;
+  private expandGroupIcon: IconButton.Icon.Icon|null;
   private readonly onToggle: () => void;
   private groupEndMessageInternal: ConsoleViewMessage|null;
 
@@ -1725,7 +1850,7 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
   private setCollapsed(collapsed: boolean): void {
     this.collapsedInternal = collapsed;
     if (this.expandGroupIcon) {
-      this.expandGroupIcon.setIconType(this.collapsedInternal ? 'triangle-right' : 'triangle-down');
+      this.expandGroupIcon.name = this.collapsedInternal ? 'triangle-right' : 'triangle-down';
     }
     this.onToggle.call(null);
   }
@@ -1751,13 +1876,13 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
     if (!element) {
       element = super.toMessageElement();
       const iconType = this.collapsedInternal ? 'triangle-right' : 'triangle-down';
-      this.expandGroupIcon = UI.Icon.Icon.create(iconType, 'expand-group-icon');
+      this.expandGroupIcon = IconButton.Icon.create(iconType, 'expand-group-icon');
       // Intercept focus to avoid highlight on click.
       this.contentElement().tabIndex = -1;
       if (this.repeatCountElement) {
         this.repeatCountElement.insertBefore(this.expandGroupIcon, this.repeatCountElement.firstChild);
       } else {
-        element.insertBefore(this.expandGroupIcon, this.contentElementInternal);
+        this.consoleRowWrapper?.insertBefore(this.expandGroupIcon, this.contentElementInternal);
       }
       element.addEventListener('click', () => this.setCollapsed(!this.collapsedInternal));
     }

@@ -18,13 +18,11 @@
 .drop-target-message {
   flex: auto;
   font-size: 30px;
-  color: var(--color-text-secondary); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--sys-color-token-subtle);
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 20px;
-  border: 4px dashed var(--color-details-hairline); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 4px dashed var(--sys-color-neutral-outline);
   pointer-events: none;
 }

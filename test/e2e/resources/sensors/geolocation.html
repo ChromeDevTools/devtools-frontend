@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<script>
+  window.testGeolocationAPI = async function() {
+    let resolve;
+    const promise = new Promise(res => resolve = res);
+    navigator.geolocation.getCurrentPosition(() => resolve('success'), () => resolve('fail'))
+    return await promise;
+  }
+</script>

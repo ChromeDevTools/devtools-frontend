@@ -5,6 +5,7 @@ Version: 5.61.0
 License: MIT
 License File: package/LICENSE
 Security Critical: no
+Shipped: yes
 
 Description:
 CodeMirror is a versatile text editor implemented in JavaScript for the browser.

@@ -4,6 +4,8 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+
+import {CookieIssue, CookieIssueSubCategory} from './CookieIssue.js';
 import {type Issue, type IssueCategory} from './Issue.js';
 import {IssuesManager} from './IssuesManager.js';
 
@@ -52,6 +54,19 @@ export function hasIssues(obj: IssuesAssociatable): boolean {
 export function hasIssueOfCategory(obj: IssuesAssociatable, category: IssueCategory): boolean {
   const issues = Array.from(IssuesManager.instance().issues());
   return issuesAssociatedWith(issues, obj).some(issue => issue.getCategory() === category);
+}
+
+export function hasThirdPartyPhaseoutCookieIssue(obj: IssuesAssociatable): boolean {
+  const issues = Array.from(IssuesManager.instance().issues());
+  return issuesAssociatedWith(issues, obj)
+      .some(issue => CookieIssue.getSubCategory(issue.code()) === CookieIssueSubCategory.ThirdPartyPhaseoutCookie);
+}
+
+export function hasThirdPartyPhaseoutCookieIssueForDomain(domain: string): boolean {
+  const issues = Array.from(IssuesManager.instance().issues());
+  const issuesForDomain = issues.filter(issue => Array.from(issue.cookies()).some(cookie => cookie.domain === domain));
+  return issuesForDomain.some(
+      issue => CookieIssue.getSubCategory(issue.code()) === CookieIssueSubCategory.ThirdPartyPhaseoutCookie);
 }
 
 export async function reveal(obj: IssuesAssociatable, category?: IssueCategory): Promise<void|undefined> {

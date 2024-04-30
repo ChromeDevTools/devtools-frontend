@@ -10,9 +10,9 @@ ts_library("ts") {
   sources = [ "basic.ts" ]
 
   deps = [
-    "../../../../../test/unittests/front_end/helpers",
     "../../../../core/common:bundle",
     "../../../../core/platform:bundle",
+    "../../../../testing",
     "../../helpers:bundle",
   ]
 }

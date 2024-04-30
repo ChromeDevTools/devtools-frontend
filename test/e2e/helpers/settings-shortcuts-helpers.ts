@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import {assert} from 'chai';
-import {type ElementHandle} from 'puppeteer';
+import {type ElementHandle} from 'puppeteer-core';
 import {
   $$,
   $$textContent,
@@ -29,7 +29,7 @@ export const SHORTCUT_CHORD_TIMEOUT = 1000;
 
 export let VS_CODE_SHORTCUTS_SHORTCUTS = ['CtrlKCtrlS'];
 export let VS_CODE_SETTINGS_SHORTCUTS = ['Shift?', 'Ctrl,'];
-export let VS_CODE_SHORTCUTS_QUICK_OPEN_TEXT = 'ShortcutsCtrl + K Ctrl + SSettings';
+export let VS_CODE_SHORTCUTS_QUICK_OPEN_TEXT = 'Show ShortcutsCtrl + K Ctrl + SSettings';
 export let VS_CODE_PAUSE_SHORTCUTS = ['Ctrl\\', 'F5', 'ShiftF5'];
 export let CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT = ['Ctrl + 1', 'Ctrl + 2'];
 export let CONTROL_1_CONTROL_2_CHORD_INPUT_TEXT = ['Ctrl + 1 Ctrl + 2'];
@@ -43,7 +43,7 @@ export let CONTROL_ALT_C_SHORTCUT_INPUT_TEXT = ['Ctrl + Alt + C'];
 if (platform === 'mac') {
   VS_CODE_SHORTCUTS_SHORTCUTS = ['⌘ K⌘ S'];
   VS_CODE_SETTINGS_SHORTCUTS = ['⇧ ?', '⌘ ,'];
-  VS_CODE_SHORTCUTS_QUICK_OPEN_TEXT = 'Shortcuts⌘ K ⌘ SSettings';
+  VS_CODE_SHORTCUTS_QUICK_OPEN_TEXT = 'Show Shortcuts⌘ K ⌘ SSettings';
   VS_CODE_PAUSE_SHORTCUTS = ['F5', '⇧ F5', '⌘ \\'];
   CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT = ['Ctrl 1', 'Ctrl 2'];
   CONTROL_1_CONTROL_2_CHORD_INPUT_TEXT = ['Ctrl 1 Ctrl 2'];
@@ -82,7 +82,6 @@ export const editShortcutListItem = async (shortcutText: string) => {
   const listItemElement = await getShortcutListItemElement(shortcutText) as ElementHandle;
 
   await clickElement(listItemElement);
-  await waitFor(EDIT_BUTTON_SELECTOR, listItemElement);
   await click(EDIT_BUTTON_SELECTOR, {root: listItemElement});
 
   await waitFor(RESET_BUTTON_SELECTOR);

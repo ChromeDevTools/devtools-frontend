@@ -19,35 +19,35 @@ div {
   /*
    * We need an "inverted" color here - because the text is on a darker background the regular foreground text colors don't work. It's been logged to the dark mode tracking spreadsheet
    */
-  color: var(--color-background);
+  color: var(--sys-color-inverse-on-surface);
   border-radius: 7px;
 }
 
 div.verbose {
-  background-color: var(--color-syntax-3);
+  background-color: var(--sys-color-token-attribute-value);
 }
 
 :host-context(.-theme-with-dark-background) div.verbose {
-  /* color-syntax-3 isn't blue in dark mode, but the text that gets logged is,
+  /* --sys-color-token-attribute-value isn't blue in dark mode, but the text that gets logged is,
   so we use a different syntax in dark mode that matches the text. Once the text
   colors have been updated we can remove this. */
-  background-color: var(--color-syntax-2);
+  background-color: var(--sys-color-token-tag);
 }
 
 div.info {
-  background-color: var(--color-syntax-8);
+  background-color: var(--sys-color-token-meta);
 }
 
 div.warning {
-  background-color: var(--color-syntax-4);
+  background-color: var(--sys-color-token-attribute);
 }
 
 :host-context(.-theme-with-dark-background) div.warning {
   /* Pick a color that's closer to the color shown on the background of the
   entire message */
-  background-color: var(--color-syntax-3);
+  background-color: var(--sys-color-token-attribute-value);
 }
 
 div.error {
-  background-color: var(--color-accent-red);
+  background-color: var(--sys-color-error-bright);
 }

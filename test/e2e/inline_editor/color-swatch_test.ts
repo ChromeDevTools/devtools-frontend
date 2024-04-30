@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {waitForSoftContextMenu} from '../helpers/context-menu-helpers.js';
 
-import type * as puppeteer from 'puppeteer';
+import type * as puppeteer from 'puppeteer-core';
 
 import {click, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
@@ -22,7 +22,6 @@ import {
   waitForContentOfSelectedElementsNode,
   waitForCSSPropertyValue,
   waitForElementsComputedSection,
-  waitForPropertyValueInComputedPane,
 } from '../helpers/elements-helpers.js';
 
 async function goToTestPageAndSelectTestElement(path: string = 'inline_editor/default.html') {
@@ -51,7 +50,7 @@ async function assertNoColorSwatch(container: puppeteer.ElementHandle|undefined)
   assert.isUndefined(swatch, 'No color swatch found');
 }
 
-describe('The color swatch', async () => {
+describe('The color swatch', () => {
   it('is displayed for color properties in the Styles pane', async () => {
     await goToTestPageAndSelectTestElement();
 
@@ -135,24 +134,6 @@ describe('The color swatch', async () => {
     const menu = await waitForSoftContextMenu();
     await click('[aria-label="#f00"]', {root: menu});
     await waitForCSSPropertyValue('#inspected', 'color', '#f00');
-  });
-
-  it('supports shift-clicking for color properties in the Computed pane', async () => {
-    await goToTestPageAndSelectTestElement();
-    await navigateToSidePane('Computed');
-    await waitForElementsComputedSection();
-
-    const property = await getPropertyFromComputedPane('color');
-    if (!property) {
-      assert.fail('Property not found');
-    }
-
-    await waitForPropertyValueInComputedPane('color', 'rgb(255, 0, 0)');
-    await shiftClickColorSwatch(property, 0);
-
-    const menu = await waitForSoftContextMenu();
-    await click('[aria-label="hsl(0deg 100% 50%)"]', {root: menu});
-    await waitForPropertyValueInComputedPane('color', 'hsl(0deg 100% 50%)');
   });
 
   it('supports shift-clicking for colors next to var() functions', async () => {

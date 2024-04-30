@@ -5,5 +5,8 @@
 import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("sensors") {
-  sources = [ "idle-detector.html" ]
+  sources = [
+    "geolocation.html",
+    "idle-detector.html",
+  ]
 }

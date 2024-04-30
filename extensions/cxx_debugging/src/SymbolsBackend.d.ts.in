@@ -1,0 +1,108 @@
+// Copyright 2023 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+export interface EmbindObject {
+  new(): this;
+  delete(): void;
+}
+
+export interface Vector<T> extends EmbindObject {
+  size(): number;
+  get(index: number): T;
+  push_back(value: T): void;
+}
+
+
+{%- for spec in specs %}
+{%- for enum in spec.enums %}
+export interface {{enum.cxx_name}} extends EmbindObject {}
+{%- endfor %}
+
+{%- for ty in list(spec.types.values()) + spec.return_types %}
+{%- if not ty.builtin %}
+
+{%- for enum in ty.enums %}
+
+export interface {{ty.cxx_name}}{{enum.cxx_name}} extends EmbindObject {}
+{%- endfor %}
+
+export interface {{ty.cxx_name}} extends EmbindObject {
+{%- for member in ty.members %}
+  {{member.protocol_name}}: {% if member.array -%}
+  Vector<
+  {%- endif %}
+  {%- if member.type.builtin -%}
+   {{{'std::string':'string', 'int32_t': 'number', 'bool': 'boolean', 'int64_t': 'bigint', 'emscripten::val': 'unknown'}.get(member.type.cxx_name,member.type.cxx_name)}}
+  {%- elif member.enum and member.type.context -%}
+  {{member.type.context.cxx_name}}{{member.type.cxx_name}}
+  {%- else -%}
+  {{member.type.cxx_name}}
+  {%- endif -%}
+  {%- if member.array -%}
+    >
+  {%- endif %}
+  {%- if member.optional %} | undefined
+  {%- endif -%}
+  ;
+{%- endfor %}
+}
+
+{%- endif %}
+{%- endfor %}
+
+export interface DWARFSymbolsPlugin extends EmbindObject {
+  {%- for command in spec.functions.values() %}
+  {{command.cxx_name}}(
+    {%- for argument in command.arguments -%}
+        {{- argument.protocol_name}}: {% if argument.array -%}
+        Vector<
+        {%- endif -%}
+        {%- if argument.type.builtin -%}
+        {{{'std::string':'string', 'int32_t': 'number', 'bool': 'boolean', 'int64_t': 'bigint', 'emscripten::val': 'unknown'}.get(argument.type.cxx_name,argument.type.cxx_name)}}
+        {%- elif argument.enum and argument.type.context -%}
+         {{argument.type.context.cxx_name}}{{argument.type.cxx_name}}
+        {%- else -%}
+         {{argument.type.cxx_name}}
+        {%- endif %}
+        {%- if argument.array -%}
+          >
+        {%- endif %}
+        {%- if argument.optional %} | undefined
+        {% endif -%}
+        {%- if argument != command.arguments[-1] %},{%- endif %}
+    {%- endfor -%}
+  ): {{command.return_type.protocol_name or 'void'}};
+  {%- endfor %}
+}
+
+export interface Module extends EmscriptenModule {
+  FS: typeof FS;
+  DWARFSymbolsPlugin: DWARFSymbolsPlugin;
+
+
+  {%- for type in spec.array_types().values() %}
+  {%- if type.builtin %}
+  {{type.cxx_name.split(':')[-1].title()}}Array: Vector<{{{'std::string':'string', 'int32_t': 'number', 'bool': 'boolean', 'int64_t': 'bigint', 'emscripten::val': 'unknown'}.get(type.cxx_name,type.cxx_name)}}>;
+  {%- else %}
+  {{type.protocol_name.split(':')[-1]}}Array: Vector<{{type.protocol_name.split(':')[-1]}}>;
+  {%- endif %}
+  {%- endfor %}
+  {%- for ty in list(spec.types.values()) + spec.return_types %}
+  {%- if not ty.builtin %}
+  {%- for enum in ty.enums %}
+  {{enum.context and enum.context.cxx_name}}{{enum.cxx_name}}: {
+    {%- for case in enum.members %}
+    {{case.upper()}}: {{enum.context and enum.context.cxx_name}}{{enum.cxx_name}};
+    {%- endfor %}
+  };
+  {%- endfor %}
+  {{ty.cxx_name}}: {{ty.cxx_name}};
+  {%- endif %}
+  {%- endfor %}
+}
+
+{%- endfor %}
+
+declare var createSymbolsBackend: EmscriptenModuleFactory<Module>;
+export default createSymbolsBackend;

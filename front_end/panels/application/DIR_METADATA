@@ -1,0 +1,6 @@
+monorail: {
+  component: "Platform>DevTools>Application"
+}
+buganizer_public: {
+  component_id: 1457155
+}

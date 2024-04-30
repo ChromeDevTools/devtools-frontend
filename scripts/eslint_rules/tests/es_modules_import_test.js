@@ -5,7 +5,7 @@
 
 const rule = require('../lib/es_modules_import.js');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
+  parser: require.resolve('@typescript-eslint/parser'),
 });
 
 ruleTester.run('es_modules_import', rule, {
@@ -25,10 +25,6 @@ ruleTester.run('es_modules_import', rule, {
     {
       code: 'import * as EventTarget from \'./EventTarget.js\';',
       filename: 'front_end/common/common.js',
-    },
-    {
-      code: 'import * as CommonModule from \'./common.js\';',
-      filename: 'front_end/common/common-legacy.js',
     },
     {
       code: 'import * as ARIAProperties from \'../generated/ARIAProperties.js\';',
@@ -62,13 +58,13 @@ ruleTester.run('es_modules_import', rule, {
     },
     // Importing test helpers directly is allowed in the test setup
     {
-      code: 'import {resetTestDOM} from \'../helpers/DOMHelpers.js\';',
-      filename: 'test/unittests/front_end/test_setup/test_setup.ts',
+      code: 'import {resetTestDOM} from \'../testing/DOMHelpers.js\';',
+      filename: 'front_end/testing/test_setup.ts',
     },
     // Importing test helpers directly is allowed in test files
     {
-      code: 'import {resetTestDOM} from \'../helpers/DOMHelpers.js\';',
-      filename: 'test/unittests/front_end/elements/ElementsBreadcrumbs_test.ts',
+      code: 'import {resetTestDOM} from \'../testing/DOMHelpers.js\';',
+      filename: 'front_end/elements/ElementsBreadcrumbs.test.ts',
     },
     {
       code: 'import * as LitHtml from \'../third_party/lit-html/lit-html.js\';',
@@ -76,7 +72,7 @@ ruleTester.run('es_modules_import', rule, {
     },
     {
       code: 'import * as fs from \'fs\';',
-      filename: 'test/unittests/front_end/Unit_test.ts',
+      filename: 'front_end/Unit.test.ts',
     },
     {
       code: 'import {terser} from \'rollup-plugin-terser\';',
@@ -114,14 +110,27 @@ ruleTester.run('es_modules_import', rule, {
       code: 'import * as Elements from \'./elements.js\';',
       filename: 'front_end/panels/elements/elements-entrypoint.ts',
     },
+    {
+      code: 'import * as Elements from \'./elements.js\';',
+      filename: 'front_end/panels/elements/StylesSidebarPane.test.ts',
+    },
     // Tests are allowed to import from front_end
     {
       code: 'import * as UI from \'../../../front_end/ui/ui.js\';',
       filename: 'test/unittests/front_end/foo.js',
     },
+    // Tests are allowed to import helpers
+    {
+      code: 'import {createContentProviderUISourceCode} from \'../../testing/UISourceCodeHelpers.js\';',
+      filename: 'front_end/models/bindings/IgnoreListManager.test.ts',
+    },
+    {
+      code: 'import {renderElementIntoDOM} from \'./DOMHelpers.js\';',
+      filename: 'front_end/testing/MutationHelpers.test.ts',
+    },
     // Component doc files can reach into the test directory to use the helpers
     {
-      code: 'import * as FrontendHelpers from \'../../../test/unittests/front_end/helpers/EnvironmentHelpers.js\'',
+      code: 'import * as FrontendHelpers from \'../../testing/EnvironmentHelpers.js\'',
       filename: 'front_end/ui/components/docs/data_grid/basic.ts',
     },
     {
@@ -132,7 +141,16 @@ ruleTester.run('es_modules_import', rule, {
       // Valid even though it breaks the rules, because it's in front_end/third_party.
       code: 'import { Browser } from "./package/lib/esm/puppeteer/common/Browser.js";',
       filename: 'front_end/third_party/puppeteer/puppeteer.ts',
-    }
+    },
+    // Type imports are unrestricted
+    {
+      code: 'import type { Exporting } from \'../namespace/Exporting.js\';',
+      filename: 'front_end/common/Importing.js',
+    },
+    {
+      code: 'import { type Exporting } from \'../namespace/Exporting.js\';',
+      filename: 'front_end/common/Importing.js',
+    },
   ],
 
   invalid: [
@@ -225,11 +243,21 @@ ruleTester.run('es_modules_import', rule, {
     // Unittests need to import module entrypoints.
     {
       code: 'import { LiveLocationPool } from \'../../../../front_end/bindings/LiveLocation.js\';',
-      filename: 'test/unittests/front_end/bindings/LiveLocation_test.ts',
+      filename: 'test/unittests/front_end/bindings/LiveLocation.test.ts',
       errors: [
         {
           message:
               'Incorrect cross-namespace import: "../../../../front_end/bindings/LiveLocation.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.'
+        },
+      ],
+    },
+    {
+      code: 'import { LiveLocationPool } from \'./LiveLocation.js\';',
+      filename: 'front_end/bindings/LiveLocation.test.ts',
+      errors: [
+        {
+          message:
+              'Incorrect same-namespace import: "./LiveLocation.js". Use "import * as Bindings from \'./bindings.js\';" instead.'
         },
       ],
     },
@@ -264,6 +292,6 @@ ruleTester.run('es_modules_import', rule, {
         message:
             'Incorrect cross-namespace import: "../../../input/checkbox.css.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.'
       }],
-    }
+    },
   ]
 });

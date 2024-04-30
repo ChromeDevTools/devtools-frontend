@@ -37,9 +37,7 @@ export interface Layer {
 }
 
 export namespace Layer {
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum ScrollRectType {
+  export const enum ScrollRectType {
     NonFastScrollable = 'NonFastScrollable',
     TouchEventHandler = 'TouchEventHandler',
     WheelEventHandler = 'WheelEventHandler',

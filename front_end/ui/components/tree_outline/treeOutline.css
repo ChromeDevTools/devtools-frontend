@@ -19,6 +19,10 @@ li {
   border: 0;
 }
 
+.tree-item:hover {
+  background-color: var(--sys-color-state-hover-on-subtle);
+}
+
 .tree-node-key {
   white-space: var(--override-key-whitespace-wrapping);
   /* Override the default |min-width: auto| to avoid overflows of flex items */
@@ -29,7 +33,7 @@ li {
 .arrow-icon {
   display: block;
   user-select: none;
-  -webkit-mask-image: var(--image-file-triangle-right);
+  mask-image: var(--image-file-triangle-right);
   background-color: var(--icon-default);
   content: "";
   text-shadow: none;
@@ -50,7 +54,7 @@ ul[role="group"] {
 }
 
 li:not(.parent) > .arrow-and-key-wrapper > .arrow-icon {
-  -webkit-mask-size: 0;
+  mask-size: 0;
 }
 
 li.parent.expanded > .arrow-and-key-wrapper > .arrow-icon {
@@ -88,6 +92,10 @@ li.is-top-level:last-child {
   display: flex;
   align-content: center;
   align-items: center;
+
+  & ::selection {
+    background-color: var(--sys-color-state-focus-select);
+  }
 }
 
 [role="treeitem"]:focus {
@@ -96,7 +104,7 @@ li.is-top-level:last-child {
 
 ul[role="tree"]:focus-within [role="treeitem"].selected > .arrow-and-key-wrapper {
   /* stylelint-disable-next-line color-named */
-  background-color: var(--legacy-item-selection-bg-color);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .text-ellipsis {

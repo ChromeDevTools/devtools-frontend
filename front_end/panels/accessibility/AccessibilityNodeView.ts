@@ -7,6 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import accessibilityNodeStyles from './accessibilityNode.css.js';
 import {AXAttributes, AXNativeSourceTypes, AXSourceTypes} from './AccessibilityStrings.js';
@@ -41,6 +42,10 @@ const UIStrings = {
    *@description Text which appears in the Accessibility Node View of the Accessibility panel when an element is covered by a modal/popup window
    */
   elementIsHiddenBy: 'Element is hidden by active modal dialog:\xA0',
+  /**
+   *@description Text which appears in the Accessibility Node View of the Accessibility panel when an element is hidden by another accessibility tree.
+   */
+  elementIsHiddenByChildTree: 'Element is hidden by child tree:\xA0',
   /**
    *@description Reason element in Accessibility Node View of the Accessibility panel
    */
@@ -124,6 +129,7 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     this.axNode = null;
 
     this.contentElement.classList.add('ax-subpane');
+    this.contentElement.setAttribute('jslog', `${VisualLogging.section('computed-properties')}`);
 
     this.noNodeInfo = this.createInfo(i18nString(UIStrings.noAccessibilityNode));
     this.ignoredInfo = this.createInfo(i18nString(UIStrings.accessibilityNodeNotExposed), 'ax-ignored-info hidden');
@@ -627,6 +633,9 @@ export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
     switch (reason) {
       case 'activeModalDialog':
         reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.elementIsHiddenBy, {});
+        break;
+      case 'hiddenByChildTree':
+        reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.elementIsHiddenByChildTree, {});
         break;
       case 'ancestorIsLeafNode':
         reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.ancestorChildrenAreAll, {});

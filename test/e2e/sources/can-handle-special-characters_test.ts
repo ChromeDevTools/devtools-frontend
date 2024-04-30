@@ -18,7 +18,7 @@ import {
   RESUME_BUTTON,
 } from '../helpers/sources-helpers.js';
 
-describe('Sources Tab', async () => {
+describe('Sources Tab', () => {
   async function runTest(filename: string, functionName: string) {
     const {frontend, target} = getBrowserAndPages();
 

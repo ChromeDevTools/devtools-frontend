@@ -16,7 +16,7 @@ button ~ .text-ellipsis {
 
 .link,
 .devtools-link {
-  color: var(--color-link);
+  color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
   outline-offset: 2px;
@@ -58,18 +58,15 @@ button.text-link {
 }
 
 .inline-name {
-  color: var(--color-text-secondary);
-  padding-left: 2ex;
+  color: var(--sys-color-token-subtle);
+  padding-right: 4px;
   user-select: none;
   white-space: pre-line;
 }
 
-.inline-name::after {
-  content: ":\u00a0";
-}
-
 .inline-items {
   display: flex;
+  gap: 3px;
 }
 
 .span-cols {
@@ -80,4 +77,28 @@ button.text-link {
 
 .without-min-width {
   min-width: auto;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.link:not(button):has(devtools-icon) {
+  vertical-align: baseline;
+  margin-inline-start: 3px;
+}
+
+.inline-icon {
+  margin-bottom: -5px;
+  width: 18px;
+  height: 18px;
+  vertical-align: baseline;
+}
+
+@media (forced-colors: active) {
+  .link,
+  .devtools-link {
+    color: linktext;
+    text-decoration-color: linktext;
+  }
 }

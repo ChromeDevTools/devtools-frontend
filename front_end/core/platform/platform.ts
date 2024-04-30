@@ -28,27 +28,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as ArrayUtilities from './array-utilities.js';
-import * as Brand from './brand.js';
-import * as DateUtilities from './date-utilities.js';
+import * as ArrayUtilities from './ArrayUtilities.js';
+import * as Brand from './Brand.js';
+import * as DateUtilities from './DateUtilities.js';
 import * as DevToolsPath from './DevToolsPath.js';
-import * as DOMUtilities from './dom-utilities.js';
-import * as KeyboardUtilities from './keyboard-utilities.js';
-import * as MapUtilities from './map-utilities.js';
-import * as NumberUtilities from './number-utilities.js';
-import * as SetUtilities from './set-utilities.js';
-import * as StringUtilities from './string-utilities.js';
-import * as TypeScriptUtilities from './typescript-utilities.js';
+import * as DOMUtilities from './DOMUtilities.js';
+import * as KeyboardUtilities from './KeyboardUtilities.js';
+import * as MapUtilities from './MapUtilities.js';
+import * as MimeType from './MimeType.js';
+import * as NumberUtilities from './NumberUtilities.js';
+import * as PromiseUtilities from './PromiseUtilities.js';
+import * as SetUtilities from './SetUtilities.js';
+import * as StringUtilities from './StringUtilities.js';
+import * as Timing from './Timing.js';
+import * as TypeScriptUtilities from './TypescriptUtilities.js';
 import * as UIString from './UIString.js';
 import * as UserVisibleError from './UserVisibleError.js';
 
-export {DCHECK} from './dcheck.js';
-/* `assertNotNull` also need to be exposed, as TypeScript does not
- * allow `asserts` functions to be used with qualified access
- * (e.g. `Platform.TypeScriptUtilities.assertNotNull` causes a
- * compiler error)
+/* `assertNotNullOrUndefined` also need to be exposed, as TypeScript does
+ * not allow `asserts` functions to be used with qualified access (e.g.
+ * `Platform.TypeScriptUtilities.assertNotNullOrUndefined` causes a compile
+ * error).
  */
-export {assertNever, assertNotNullOrUndefined, assertUnhandled} from './typescript-utilities.js';
+export {assertNever, assertNotNullOrUndefined, assertUnhandled} from './TypescriptUtilities.js';
 export {
   ArrayUtilities,
   Brand,
@@ -57,9 +59,12 @@ export {
   DOMUtilities,
   KeyboardUtilities,
   MapUtilities,
+  MimeType,
   NumberUtilities,
+  PromiseUtilities,
   SetUtilities,
   StringUtilities,
+  Timing,
   TypeScriptUtilities,
   UIString,
   UserVisibleError,

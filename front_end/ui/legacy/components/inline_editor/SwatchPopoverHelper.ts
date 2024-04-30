@@ -4,6 +4,7 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
 import {ColorSwatch} from './ColorSwatch.js';
@@ -60,6 +61,7 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper<Even
       this.hide(true);
     }
 
+    VisualLogging.setMappedParent(view.contentElement, anchorElement);
     this.popover.registerCSSFiles([swatchPopoverStyles]);
     this.dispatchEventToListeners(Events.WillShowPopover);
 
@@ -147,9 +149,7 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper<Even
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   WillShowPopover = 'WillShowPopover',
 }
 

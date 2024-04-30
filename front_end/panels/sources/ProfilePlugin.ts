@@ -124,7 +124,7 @@ const makeLineLevelProfilePlugin = (type: SourceFrame.SourceFrame.DecoratorType)
     });
 
     this.gutter = CodeMirror.gutter({
-      markers: (view): CodeMirror.RangeSet<CodeMirror.GutterMarker> => view.state.field(this.field),
+      markers: view => view.state.field(this.field),
       class: `cm-${type}Gutter`,
     });
   }
@@ -164,12 +164,12 @@ const makeLineLevelProfilePlugin = (type: SourceFrame.SourceFrame.DecoratorType)
 const theme = CodeMirror.EditorView.baseTheme({
   '.cm-performanceGutter': {
     width: '60px',
-    backgroundColor: 'var(--color-background)',
+    backgroundColor: 'var(--sys-color-cdt-base-container)',
     marginLeft: '3px',
   },
   '.cm-memoryGutter': {
     width: '48px',
-    backgroundColor: 'var(--color-background)',
+    backgroundColor: 'var(--sys-color-cdt-base-container)',
     marginLeft: '3px',
   },
   '.cm-profileMarker': {
@@ -177,7 +177,7 @@ const theme = CodeMirror.EditorView.baseTheme({
     paddingRight: '3px',
   },
   '.cm-profileMarker .cm-units': {
-    color: 'var(--color-text-secondary)',
+    color: 'var(--sys-color-token-subtle)',
     fontSize: '75%',
     marginLeft: '3px',
   },

@@ -12,9 +12,9 @@ import {
   toggleRecordingWithKeyboad,
 } from '../helpers/profiler-helpers.js';
 
-describe('The JavaScript Profiler Panel', async () => {
+describe('The JavaScript Profiler Panel', () => {
   beforeEach(async () => {
-    await enableExperiment('jsProfilerTemporarilyEnable');
+    await enableExperiment('js-profiler-temporarily-enable');
   });
 
   it('Loads content', async () => {

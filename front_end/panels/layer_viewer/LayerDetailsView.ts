@@ -32,19 +32,18 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import layerDetailsViewStyles from './layerDetailsView.css.js';
-
-import type * as Protocol from '../../generated/protocol.js';
-
 import {
-  ScrollRectSelection,
-  Type,
   type LayerView,
   type LayerViewHost,
+  ScrollRectSelection,
   type Selection,
   type SnapshotSelection,
+  Type,
 } from './LayerViewHost.js';
 
 const UIStrings = {
@@ -180,6 +179,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
 
   constructor(layerViewHost: LayerViewHost) {
     super(true);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('layers-details')}`);
 
     this.layerViewHost = layerViewHost;
     this.layerViewHost.registerView(this);
@@ -246,6 +246,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
       PH5: scrollRect.rect.y,
     });
     element.addEventListener('click', this.onScrollRectClicked.bind(this, index), false);
+    element.setAttribute('jslog', `${VisualLogging.action('layers.select-object').track({click: true})}`);
   }
 
   private formatStickyAncestorLayer(title: string, layer: SDK.LayerTreeBase.Layer|null): string {
@@ -336,7 +337,8 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
     this.paintCountCell = this.createRow(i18nString(UIStrings.paintCount));
     this.scrollRectsCell = this.createRow(i18nString(UIStrings.slowScrollRegions));
     this.stickyPositionConstraintCell = this.createRow(i18nString(UIStrings.stickyPositionConstraint));
-    this.paintProfilerLink = this.contentElement.createChild('span', 'hidden devtools-link link-margin') as HTMLElement;
+    this.paintProfilerLink = this.contentElement.createChild(
+                                 'button', 'hidden devtools-link link-margin text-button link-style') as HTMLElement;
     UI.ARIAUtils.markAsLink(this.paintProfilerLink);
     this.paintProfilerLink.textContent = i18nString(UIStrings.paintProfiler);
     this.paintProfilerLink.tabIndex = 0;
@@ -344,12 +346,8 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
       e.consume(true);
       this.invokeProfilerLink();
     });
-    this.paintProfilerLink.addEventListener('keydown', event => {
-      if (event.key === 'Enter') {
-        event.consume();
-        this.invokeProfilerLink();
-      }
-    });
+    this.paintProfilerLink.setAttribute(
+        'jslog', `${VisualLogging.action('layers.paint-profiler').track({click: true, keydown: 'Enter'})}`);
   }
 
   private createRow(title: string): HTMLElement {
@@ -372,9 +370,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   PaintProfilerRequested = 'PaintProfilerRequested',
 }
 

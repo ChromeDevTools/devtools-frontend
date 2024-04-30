@@ -2,72 +2,44 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
-import {CategorizedBreakpoint} from './CategorizedBreakpoint.js';
-
-import {Capability, type Target} from './Target.js';
+import {CategorizedBreakpoint, Category} from './CategorizedBreakpoint.js';
+import {type EventListenerPausedDetailsAuxData} from './DebuggerModel.js';
 import {SDKModel} from './SDKModel.js';
+import {Capability, type Target} from './Target.js';
+import {type SDKModelObserver, TargetManager} from './TargetManager.js';
 
-import {TargetManager, type SDKModelObserver} from './TargetManager.js';
-
-const UIStrings = {
-  /**
-   * @description Category of breakpoints
-   */
-  auctionWorklet: 'Ad Auction Worklet',
-
-  /**
-   * @description Name of a breakpoint type.
-   * https://github.com/WICG/turtledove/blob/main/FLEDGE.md#32-on-device-bidding
-   */
-  beforeBidderWorkletBiddingStart: 'Bidder Bidding Phase Start',
-
-  /**
-   * @description Name of a breakpoint type.
-   * https://github.com/WICG/turtledove/blob/main/FLEDGE.md#52-buyer-reporting-on-render-and-ad-events
-   */
-  beforeBidderWorkletReportingStart: 'Bidder Reporting Phase Start',
-
-  /**
-   * @description Name of a breakpoint type.
-   * https://github.com/WICG/turtledove/blob/main/FLEDGE.md#23-scoring-bids
-   */
-  beforeSellerWorkletScoringStart: 'Seller Scoring Phase Start',
-
-  /**
-   * @description Name of a breakpoint type.
-   * https://github.com/WICG/turtledove/blob/main/FLEDGE.md#51-seller-reporting-on-render
-   */
-  beforeSellerWorkletReportingStart: 'Seller Reporting Phase Start',
-};
-
-const str_ = i18n.i18n.registerUIStrings('core/sdk/EventBreakpointsModel.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-const enum InstrumentationNames {
+export const enum InstrumentationNames {
   BeforeBidderWorkletBiddingStart = 'beforeBidderWorkletBiddingStart',
   BeforeBidderWorkletReportingStart = 'beforeBidderWorkletReportingStart',
   BeforeSellerWorkletScoringStart = 'beforeSellerWorkletScoringStart',
   BeforeSellerWorkletReportingStart = 'beforeSellerWorkletReportingStart',
-}
-
-function getTitleForInstrumentationName(instrumentationName: InstrumentationNames): Common.UIString.LocalizedString {
-  switch (instrumentationName) {
-    case InstrumentationNames.BeforeBidderWorkletBiddingStart:
-      return i18nString(UIStrings.beforeBidderWorkletBiddingStart);
-
-    case InstrumentationNames.BeforeBidderWorkletReportingStart:
-      return i18nString(UIStrings.beforeBidderWorkletReportingStart);
-
-    case InstrumentationNames.BeforeSellerWorkletScoringStart:
-      return i18nString(UIStrings.beforeSellerWorkletScoringStart);
-
-    case InstrumentationNames.BeforeSellerWorkletReportingStart:
-      return i18nString(UIStrings.beforeSellerWorkletReportingStart);
-  }
+  SetTimeout = 'setTimeout',
+  ClearTimeout = 'clearTimeout',
+  SetInterval = 'setInterval',
+  ClearInterval = 'clearInterval',
+  SetTimeoutCallback = 'setTimeout.callback',
+  SetIntervalCallback = 'setInterval.callback',
+  ScriptFirstStatement = 'scriptFirstStatement',
+  ScriptBlockedByCSP = 'scriptBlockedByCSP',
+  SharedStorageWorkletScriptFirstStatement = 'sharedStorageWorkletScriptFirstStatement',
+  RequestAnimationFrame = 'requestAnimationFrame',
+  CancelAnimationFrame = 'cancelAnimationFrame',
+  RequestAnimationFrameCallback = 'requestAnimationFrame.callback',
+  WebGLErrorFired = 'webglErrorFired',
+  WebGLWarningFired = 'webglWarningFired',
+  ElementSetInnerHTML = 'Element.setInnerHTML',
+  CanvasContextCreated = 'canvasContextCreated',
+  GeolocationGetCurrentPosition = 'Geolocation.getCurrentPosition',
+  GeolocationWatchPosition = 'Geolocation.watchPosition',
+  NotificationRequestPermission = 'Notification.requestPermission',
+  DOMWindowClose = 'DOMWindow.close',
+  DocumentWrite = 'Document.write',
+  AudioContextCreated = 'audioContextCreated',
+  AudioContextClosed = 'audioContextClosed',
+  AudioContextResumed = 'audioContextResumed',
+  AudioContextSuspended = 'audioContextSuspended',
 }
 
 export class EventBreakpointsModel extends SDKModel<void> {
@@ -82,11 +54,6 @@ export class EventBreakpointsModel extends SDKModel<void> {
 // This implementation (as opposed to similar class in DOMDebuggerModel) is for
 // instrumentation breakpoints in targets that run JS but do not have a DOM.
 class EventListenerBreakpoint extends CategorizedBreakpoint {
-  readonly instrumentationName: string;
-  constructor(instrumentationName: InstrumentationNames, category: string) {
-    super(category, getTitleForInstrumentationName(instrumentationName));
-    this.instrumentationName = instrumentationName;
-  }
 
   override setEnabled(enabled: boolean): void {
     if (this.enabled() === enabled) {
@@ -100,9 +67,9 @@ class EventListenerBreakpoint extends CategorizedBreakpoint {
 
   updateOnModel(model: EventBreakpointsModel): void {
     if (this.enabled()) {
-      void model.agent.invoke_setInstrumentationBreakpoint({eventName: this.instrumentationName});
+      void model.agent.invoke_setInstrumentationBreakpoint({eventName: this.name});
     } else {
-      void model.agent.invoke_removeInstrumentationBreakpoint({eventName: this.instrumentationName});
+      void model.agent.invoke_removeInstrumentationBreakpoint({eventName: this.name});
     }
   }
 
@@ -115,11 +82,56 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
   readonly #eventListenerBreakpointsInternal: EventListenerBreakpoint[] = [];
 
   constructor() {
-    this.createInstrumentationBreakpoints(i18nString(UIStrings.auctionWorklet), [
+    this.createInstrumentationBreakpoints(Category.AuctionWorklet, [
       InstrumentationNames.BeforeBidderWorkletBiddingStart,
       InstrumentationNames.BeforeBidderWorkletReportingStart,
       InstrumentationNames.BeforeSellerWorkletScoringStart,
       InstrumentationNames.BeforeSellerWorkletReportingStart,
+    ]);
+    this.createInstrumentationBreakpoints(Category.Animation, [
+      InstrumentationNames.RequestAnimationFrame,
+      InstrumentationNames.CancelAnimationFrame,
+      InstrumentationNames.RequestAnimationFrameCallback,
+    ]);
+    this.createInstrumentationBreakpoints(Category.Canvas, [
+      InstrumentationNames.CanvasContextCreated,
+      InstrumentationNames.WebGLErrorFired,
+      InstrumentationNames.WebGLWarningFired,
+    ]);
+    this.createInstrumentationBreakpoints(Category.Geolocation, [
+      InstrumentationNames.GeolocationGetCurrentPosition,
+      InstrumentationNames.GeolocationWatchPosition,
+    ]);
+    this.createInstrumentationBreakpoints(Category.Notification, [
+      InstrumentationNames.NotificationRequestPermission,
+    ]);
+    this.createInstrumentationBreakpoints(Category.Parse, [
+      InstrumentationNames.ElementSetInnerHTML,
+      InstrumentationNames.DocumentWrite,
+    ]);
+    this.createInstrumentationBreakpoints(Category.Script, [
+      InstrumentationNames.ScriptFirstStatement,
+      InstrumentationNames.ScriptBlockedByCSP,
+    ]);
+    this.createInstrumentationBreakpoints(Category.SharedStorageWorklet, [
+      InstrumentationNames.SharedStorageWorkletScriptFirstStatement,
+    ]);
+    this.createInstrumentationBreakpoints(Category.Timer, [
+      InstrumentationNames.SetTimeout,
+      InstrumentationNames.ClearTimeout,
+      InstrumentationNames.SetInterval,
+      InstrumentationNames.ClearInterval,
+      InstrumentationNames.SetTimeoutCallback,
+      InstrumentationNames.SetIntervalCallback,
+    ]);
+    this.createInstrumentationBreakpoints(Category.Window, [
+      InstrumentationNames.DOMWindowClose,
+    ]);
+    this.createInstrumentationBreakpoints(Category.WebAudio, [
+      InstrumentationNames.AudioContextCreated,
+      InstrumentationNames.AudioContextClosed,
+      InstrumentationNames.AudioContextResumed,
+      InstrumentationNames.AudioContextSuspended,
     ]);
 
     TargetManager.instance().observeModels(EventBreakpointsModel, this);
@@ -136,9 +148,9 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
     return eventBreakpointManagerInstance;
   }
 
-  private createInstrumentationBreakpoints(category: string, instrumentationNames: InstrumentationNames[]): void {
+  private createInstrumentationBreakpoints(category: Category, instrumentationNames: InstrumentationNames[]): void {
     for (const instrumentationName of instrumentationNames) {
-      this.#eventListenerBreakpointsInternal.push(new EventListenerBreakpoint(instrumentationName, category));
+      this.#eventListenerBreakpointsInternal.push(new EventListenerBreakpoint(category, instrumentationName));
     }
   }
 
@@ -146,21 +158,13 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
     return this.#eventListenerBreakpointsInternal.slice();
   }
 
-  resolveEventListenerBreakpointTitle(auxData: {
-    eventName: string,
-  }): string|null {
-    const breakpoint = this.resolveEventListenerBreakpoint(auxData);
-    return breakpoint ? breakpoint.title() : null;
-  }
-
-  resolveEventListenerBreakpoint(auxData: {eventName: string}): EventListenerBreakpoint|null {
-    const eventName = auxData.eventName;
+  resolveEventListenerBreakpoint({eventName}: EventListenerPausedDetailsAuxData): EventListenerBreakpoint|null {
     if (!eventName.startsWith(EventListenerBreakpoint.instrumentationPrefix)) {
       return null;
     }
 
     const instrumentationName = eventName.substring(EventListenerBreakpoint.instrumentationPrefix.length);
-    return this.#eventListenerBreakpointsInternal.find(b => b.instrumentationName === instrumentationName) || null;
+    return this.#eventListenerBreakpointsInternal.find(b => b.name === instrumentationName) || null;
   }
 
   modelAdded(eventBreakpointModel: EventBreakpointsModel): void {

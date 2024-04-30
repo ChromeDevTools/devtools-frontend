@@ -5,6 +5,7 @@
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../third_party/typescript/typescript.gni")
 import("../../visibility.gni")
 
 generate_css("css_files") {
@@ -67,8 +68,24 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../:*",
-    "../../../../test/unittests/front_end/panels/network/components/*",
   ]
 
   visibility += devtools_panels_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+  sources = [
+    "HeaderSectionRow.test.ts",
+    "RequestHeaderSection.test.ts",
+    "RequestHeadersView.test.ts",
+    "RequestTrustTokensView.test.ts",
+    "ResponseHeaderSection.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../core/platform:bundle",
+    "../../../testing",
+  ]
 }

@@ -24,7 +24,7 @@
 }
 
 .profile-launcher-view-content p {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   margin-top: 1px;
   margin-left: 22px;
 }
@@ -33,8 +33,9 @@
   display: flex;
 }
 
-.profile-launcher-view-content button.running {
-  color: var(--color-accent-red);
+.profile-launcher-view-content button.text-button.running,
+.profile-launcher-view-content button.text-button.running:focus {
+  color: var(--sys-color-error);
 }
 
 .profile-launcher-view-content > div {
@@ -52,7 +53,7 @@
 
 .profile-launcher-target-list {
   margin-bottom: 6px;
-  border: 1px solid var(--color-details-hairline);
+  border: 1px solid var(--sys-color-divider);
   flex: 150px 1 0;
 }
 
@@ -65,7 +66,6 @@
   width: max-content;
   padding: 4px;
   line-height: 16px;
-  border-left: 3px solid transparent;
 }
 
 .profile-isolate-selector-block > .profile-memory-usage-item {
@@ -74,12 +74,16 @@
   font-weight: bolder;
 }
 
-.profile-launcher-target-list .profile-memory-usage-item:hover:not(.selected) {
-  background-color: var(--item-hover-color);
+.profile-memory-usage-item.selected {
+  background-color: var(--sys-color-neutral-container);
 }
 
-.profile-memory-usage-item.selected {
-  background-color: var(--legacy-item-selection-inactive-bg-color);
+.profile-memory-usage-item:focus {
+  background-color: var(--sys-color-tonal-container);
+}
+
+.profile-launcher-target-list .profile-memory-usage-item:hover:not(.selected) {
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .javascript-vm-instances-list {
@@ -88,8 +92,7 @@
 }
 
 .javascript-vm-instances-list:focus .profile-memory-usage-item.selected {
-  border-color: var(--legacy-selection-bg-color);
-  background-color: var(--legacy-item-selection-bg-color);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .profile-memory-usage-item > div {
@@ -104,21 +107,15 @@
 
 .profile-memory-usage-item-trend {
   min-width: 5em;
-  color: var(--color-accent-green);
+  color: var(--sys-color-tertiary);
 }
 
 .profile-memory-usage-item-trend.increasing {
-  color: var(--color-accent-red);
+  color: var(--sys-color-error);
 }
 
 .profile-launcher-buttons {
   flex-wrap: wrap;
-}
-
-.profile-launcher-buttons button {
-  min-width: 120px;
-  height: 28px;
-  margin: 4px 16px 4px 0;
 }
 
 @media (forced-colors: active) {

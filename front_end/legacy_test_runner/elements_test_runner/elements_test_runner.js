@@ -3,8 +3,6 @@
 // found in the LICENSE file.
 
 import '../test_runner/test_runner.js';
-import '../../panels/elements/elements-legacy.js';
-import '../../panels/animation/animation-legacy.js';
 
 import './ElementsTestRunner.js';
 import './EditDOMTestRunner.js';

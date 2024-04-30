@@ -15,6 +15,7 @@ import {
   waitForDomNodeToBeHidden,
   waitForDomNodeToBeVisible,
   waitForElementsStyleSection,
+  waitForPartialContentOfSelectedElementsNode,
 } from '../helpers/elements-helpers.js';
 
 const TARGET_SHOWN_ON_HOVER_SELECTOR = '.show-on-hover';
@@ -22,7 +23,7 @@ const TARGET_SHOWN_ON_FOCUS_SELECTOR = '.show-on-focus';
 const TARGET_SHOWN_ON_TARGET_SELECTOR = '#show-on-target';
 
 // Flaky test group.
-describe.skip('[crbug.com/1280763]: The Elements tab', async () => {
+describe.skip('[crbug.com/1280763]: The Elements tab', () => {
   it('can force :hover state for selected DOM node', async () => {
     const {frontend} = getBrowserAndPages();
 
@@ -132,5 +133,38 @@ describe.skip('[crbug.com/1280763]: The Elements tab', async () => {
 
     const hiddenDisplayStyle = await getComputedStylesForDomNode(TARGET_SHOWN_ON_FOCUS_SELECTOR, 'display');
     assert.strictEqual(hiddenDisplayStyle, 'none');
+  });
+
+  it('can toggle emulate a focused page', async () => {
+    const {frontend, target} = getBrowserAndPages();
+
+    await goToResource('elements/dissapearing-popup.html');
+    await waitForElementsStyleSection();
+
+    await step('Ensure the correct node is selected after opening a file', async () => {
+      await waitForContentOfSelectedElementsNode('<body>\u200B');
+    });
+
+    await step('Navigate to #query input', async () => {
+      await frontend.keyboard.press('ArrowRight');
+      await waitForContentOfSelectedElementsNode('<input id=\u200B"query" type=\u200B"text">\u200B');
+    });
+
+    await step('Verify #result is hidden', async () => {
+      await frontend.keyboard.press('ArrowDown');
+      await waitForPartialContentOfSelectedElementsNode('<p id=\u200B"result" class=\u200B"hide">\u200B');
+    });
+
+    await step('Verify #result is visible', async () => {
+      await forcePseudoState('Emulate a focused page');
+      await target.keyboard.press('Tab');
+      await waitForPartialContentOfSelectedElementsNode('<p id=\u200B"result" class>\u200B');
+    });
+
+    await step('Verify #result is hidden', async () => {
+      await removePseudoState('Emulate a focused page');
+      await target.keyboard.press('Tab');
+      await waitForPartialContentOfSelectedElementsNode('<p id=\u200B"result" class=\u200B"hide">\u200B');
+    });
   });
 });

@@ -2,8 +2,10 @@ Name: Marked
 Short Name: marked
 URL: https://github.com/markedjs/marked
 Version: 4.0.4
-License: LICENSE
+License: MIT
+License File: LICENSE
 Security Critical: no
+Shipped: yes
 
 Description:
 Light-weight markdown parser and renderer.

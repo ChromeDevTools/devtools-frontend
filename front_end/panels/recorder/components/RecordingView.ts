@@ -6,42 +6,38 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import type * as PublicExtensions from '../../../models/extensions/extensions.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
+import type * as PuppeteerReplay from '../../../third_party/puppeteer-replay/puppeteer-replay.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as CodeHighlighter from '../../../ui/components/code_highlighter/code_highlighter.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../ui/components/input/input.js';
+import * as Menus from '../../../ui/components/menus/menus.js';
+import * as SplitView from '../../../ui/components/split_view/split_view.js';
 import * as TextEditor from '../../../ui/components/text_editor/text_editor.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
-import * as Menus from '../../../ui/components/menus/menus.js';
-
-import type * as PuppeteerReplay from '../../../third_party/puppeteer-replay/puppeteer-replay.js';
-import type * as PublicExtensions from '../../../models/extensions/extensions.js';
-
-import type * as Extensions from '../extensions/extensions.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import type * as Converters from '../converters/converters.js';
+import type * as Extensions from '../extensions/extensions.js';
 import * as Models from '../models/models.js';
-import * as Actions from '../recorder-actions.js';  // eslint-disable-line rulesdir/es_modules_import
-
-import recordingViewStyles from './recordingView.css.js';
-
-import {
-  State,
-  StepView,
-  type StepViewData,
-  type CopyStepEvent,
-} from './StepView.js';
-
 import {PlayRecordingSpeed} from '../models/RecordingPlayer.js';
+import * as Actions from '../recorder-actions/recorder-actions.js';
+
+import {ExtensionView} from './ExtensionView.js';
+import recordingViewStyles from './recordingView.css.js';
 import {
   ReplayButton,
   type ReplayButtonData,
   type StartReplayEvent,
 } from './ReplayButton.js';
-import {SplitView} from './SplitView.js';
-import {ExtensionView} from './ExtensionView.js';
+import {
+  type CopyStepEvent,
+  State,
+  StepView,
+  type StepViewData,
+} from './StepView.js';
 
 const UIStrings = {
   /**
@@ -192,7 +188,7 @@ export class RecordingFinishedEvent extends Event {
 
 export const enum TargetPanel {
   PerformancePanel = 'timeline',
-  Default = 'chrome_recorder',
+  Default = 'chrome-recorder',
 }
 
 interface PlayRecordingEventData {
@@ -338,6 +334,10 @@ export class RecordingView extends HTMLElement {
   #extensionDescriptor?: PublicExtensions.RecorderPluginManager.ViewDescriptor;
 
   #onCopyBound = this.#onCopy.bind(this);
+
+  constructor() {
+    super();
+  }
 
   set data(data: RecordingViewData) {
     this.#isRecording = data.isRecording;
@@ -496,6 +496,7 @@ export class RecordingView extends HTMLElement {
           recorderSettings: this.#recorderSettings,
         } as StepViewData
       }
+      jslog=${VisualLogging.section('step').track({click: true})}
       ></${StepView.litTagName}>
     `;
     // clang-format on
@@ -645,9 +646,7 @@ export class RecordingView extends HTMLElement {
 
     event.preventDefault();
     await this.#copyCurrentSelection(this.#selectedStep);
-    Host.userMetrics.keyboardShortcutFired(
-        'chrome_recorder.copy-recording-or-step',
-    );
+    Host.userMetrics.keyboardShortcutFired(Actions.RecorderActions.CopyRecordingOrStep);
   }
 
   #renderSettings(): LitHtml.TemplateResult {
@@ -748,6 +747,7 @@ export class RecordingView extends HTMLElement {
             .sideButton=${false}
             .showSelectedItem=${true}
             .showConnector=${false}
+            .jslogContext=${'network-conditions'}
             .position=${Dialogs.Dialog.DialogVerticalPosition.BOTTOM}
             .buttonTitle=${menuButtonTitle}
           >
@@ -755,6 +755,7 @@ export class RecordingView extends HTMLElement {
               return LitHtml.html`<${Menus.Menu.MenuItem.litTagName}
                 .value=${condition.i18nTitleKey}
                 .selected=${selectedOption === condition.i18nTitleKey}
+                jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(condition.i18nTitleKey || ''))}
               >
                 ${
                   condition.title instanceof Function
@@ -779,6 +780,7 @@ export class RecordingView extends HTMLElement {
             value=${
               this.#settings.timeout || Models.RecordingPlayer.defaultTimeout
             }
+            jslog=${VisualLogging.textField('timeout').track({keydown: true})}
             class="devtools-text-input"
             type="number">
         </label>
@@ -804,18 +806,14 @@ export class RecordingView extends HTMLElement {
             @click=${isEditable && this.#onToggleReplaySettings}
             tabindex="0"
             role="button"
+            jslog=${VisualLogging.action('replay-settings').track({click: true})}
             aria-label=${i18nString(UIStrings.editReplaySettings)}>
             <span>${i18nString(UIStrings.replaySettings)}</span>
             ${
               isEditable
                 ? LitHtml.html`<${IconButton.Icon.Icon.litTagName}
                     class="chevron"
-                    .data=${
-                      {
-                        iconName: 'triangle-down',
-                        color: 'var(--color-text-primary)',
-                      } as IconButton.Icon.IconData
-                    }>
+                    name="triangle-down">
                   </${IconButton.Icon.Icon.litTagName}>`
                 : ''
             }
@@ -869,12 +867,12 @@ export class RecordingView extends HTMLElement {
     return !this.#showCodeView
       ? this.#renderSections()
       : LitHtml.html`
-        <${SplitView.litTagName}>
+        <${SplitView.SplitView.SplitView.litTagName}>
           <div slot="main">
             ${this.#renderSections()}
           </div>
-          <div slot="sidebar">
-            <div class="section-toolbar">
+          <div slot="sidebar" jslog=${VisualLogging.pane('source-code').track({resize: true})}>
+            <div class="section-toolbar" jslog=${VisualLogging.toolbar()}>
               <${Menus.SelectMenu.SelectMenu.litTagName}
                 @selectmenuselected=${this.#onCodeFormatChange}
                 .showDivider=${true}
@@ -884,11 +882,13 @@ export class RecordingView extends HTMLElement {
                 .showConnector=${false}
                 .position=${Dialogs.Dialog.DialogVerticalPosition.BOTTOM}
                 .buttonTitle=${converterFormatName}
+                .jslogContext=${'code-format'}
               >
                 ${this.#builtInConverters.map(converter => {
                   return LitHtml.html`<${Menus.Menu.MenuItem.litTagName}
                     .value=${converter.getId()}
                     .selected=${this.#converterId === converter.getId()}
+                    jslog=${VisualLogging.action().track({click: true}).context(`converter-${Platform.StringUtilities.toKebabCase(converter.getId())}`)}
                   >
                     ${converter.getFormatName()}
                   </${Menus.Menu.MenuItem.litTagName}>`;
@@ -897,6 +897,7 @@ export class RecordingView extends HTMLElement {
                   return LitHtml.html`<${Menus.Menu.MenuItem.litTagName}
                     .value=${converter.getId()}
                     .selected=${this.#converterId === converter.getId()}
+                    jslog=${VisualLogging.action().track({click: true}).context(`converter-${Platform.StringUtilities.toKebabCase(converter.getId())}`)}
                   >
                     ${converter.getFormatName()}
                   </${Menus.Menu.MenuItem.litTagName}>`;
@@ -915,15 +916,16 @@ export class RecordingView extends HTMLElement {
                   } as Buttons.Button.ButtonData
                 }
                 @click=${this.showCodeToggle}
+                jslog=${VisualLogging.close().track({click: true})}
               ></${Buttons.Button.Button.litTagName}>
             </div>
-            <div class="text-editor">
+            <div class="text-editor" jslog=${VisualLogging.textField().track({keydown: true})}>
               <${TextEditor.TextEditor.TextEditor.litTagName} .state=${
           this.#editorState
         }></${TextEditor.TextEditor.TextEditor.litTagName}>
             </div>
           </div>
-        </${SplitView.litTagName}>
+        </${SplitView.SplitView.SplitView.litTagName}>
       `;
     // clang-format on
   }
@@ -947,8 +949,8 @@ export class RecordingView extends HTMLElement {
   #renderReplayOrAbortButton(): LitHtml.TemplateResult {
     if (this.#replayState.isPlaying) {
       return LitHtml.html`
-        <${Buttons.Button.Button.litTagName} @click=${this.#handleAbortReplay} .iconName=${'pause'} .variant=${
-          Buttons.Button.Variant.SECONDARY}>
+        <${Buttons.Button.Button.litTagName} .jslogContext=${'abort-replay'} @click=${
+          this.#handleAbortReplay} .iconName=${'pause'} .variant=${Buttons.Button.Variant.SECONDARY}>
           ${i18nString(UIStrings.cancelReplay)}
         </${Buttons.Button.Button.litTagName}>`;
     }
@@ -1089,6 +1091,7 @@ export class RecordingView extends HTMLElement {
               ),
             } as Buttons.Button.ButtonData
           }
+          jslog=${VisualLogging.toggleSubpane(Actions.RecorderActions.ToggleCodeView).track({click: true})}
         >
           ${i18nString(UIStrings.showCode)}
         </${Buttons.Button.Button.litTagName}>
@@ -1144,6 +1147,7 @@ export class RecordingView extends HTMLElement {
                       {
                         variant: Buttons.Button.Variant.SECONDARY,
                         title: i18nString(UIStrings.addAssertion),
+                        jslogContext: 'add-assertion',
                       } as Buttons.Button.ButtonData
                     }
                     @click=${this.#dispatchAddAssertionEvent}
@@ -1180,6 +1184,7 @@ export class RecordingView extends HTMLElement {
                   @keydown=${this.#onTitleInputKeyDown}
                   id="title-input"
                   .contentEditable=${isTitleEditable ? 'true' : 'false'}
+                  jslog=${VisualLogging.value('title').track({change: true})}
                   class=${LitHtml.Directives.classMap({
                     'has-error': this.#isTitleInvalid,
                     'disabled': !isTitleEditable,
@@ -1194,6 +1199,7 @@ export class RecordingView extends HTMLElement {
                     variant: Buttons.Button.Variant.TOOLBAR,
                     iconName: 'edit',
                     title: i18nString(UIStrings.editTitle),
+                    jslogContext: 'edit-title',
                   } as Buttons.Button.ButtonData
                 }
               ></${Buttons.Button.Button.litTagName}>
@@ -1220,6 +1226,7 @@ export class RecordingView extends HTMLElement {
                       variant: Buttons.Button.Variant.SECONDARY,
                       iconName: 'performance',
                       title: i18nString(UIStrings.performancePanel),
+                      jslogContext: 'measure-performance',
                     } as Buttons.Button.ButtonData
                   }
                 >
@@ -1244,6 +1251,7 @@ export class RecordingView extends HTMLElement {
       <div class="footer">
         <div class="controls">
           <devtools-control-button
+            jslog=${VisualLogging.toggle('toggle-recording').track({click: true})}
             @click=${this.#dispatchRecordingFinished}
             .disabled=${this.#recordingTogglingInProgress}
             .shape=${'square'}
@@ -1301,7 +1309,7 @@ export class RecordingView extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent(
+customElements.define(
     'devtools-recording-view',
     RecordingView,
 );

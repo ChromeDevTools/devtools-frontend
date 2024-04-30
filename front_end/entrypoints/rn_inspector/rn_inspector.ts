@@ -34,12 +34,6 @@ RNExperiments.RNExperimentsImpl.Instance.enableExperimentsByDefault([
   Root.Runtime.ExperimentName.JS_PROFILER_TEMP_ENABLE,
   Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,
 ]);
-RNExperiments.RNExperimentsImpl.Instance.setNonConfigurableExperiments(
-  [
-    // RDT support is Fusebox-only
-    Root.Runtime.ExperimentName.ENABLE_REACT_DEVTOOLS_PANEL,
-  ],
-);
 
 const UIStrings = {
   /**

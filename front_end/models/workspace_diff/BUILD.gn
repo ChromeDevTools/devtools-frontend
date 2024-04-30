@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("workspace_diff") {
@@ -26,7 +27,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/models/workspace_diff/*",
     "../../panels/changes/*",
     "../../panels/elements/*",
     "../../panels/sources/*",
@@ -35,10 +35,16 @@ devtools_entrypoint("bundle") {
   visibility += devtools_models_visibility
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "workspace_diff-legacy.ts"
+ts_library("unittests") {
+  testonly = true
 
-  deps = [ ":bundle" ]
+  sources = [ "WorkspaceDiff.test.ts" ]
 
-  visibility = [ "../..:legacy_entrypoints" ]
+  deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../testing",
+    "../persistence:bundle",
+    "../workspace:bundle",
+  ]
 }

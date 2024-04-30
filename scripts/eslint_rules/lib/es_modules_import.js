@@ -33,8 +33,7 @@ function isSideEffectImportSpecifier(specifiers) {
 function isModuleEntrypoint(fileName) {
   const fileNameWithoutExtension = path.basename(fileName).replace(path.extname(fileName), '');
   const directoryName = path.basename(path.dirname(fileName));
-  // TODO(crbug.com/1011811): remove -legacy fallback
-  return directoryName === fileNameWithoutExtension || `${directoryName}-legacy` === fileNameWithoutExtension;
+  return directoryName === fileNameWithoutExtension || `${directoryName}-testing` === fileNameWithoutExtension;
 }
 
 function computeTopLevelFolder(fileName) {
@@ -73,7 +72,7 @@ function checkStarImport(context, node, importPath, importPathForErrorMessage, i
   }
 
   if (importingFileName.startsWith(COMPONENT_DOCS_DIRECTORY) &&
-      importPath.includes(path.join('front_end', 'helpers'))) {
+      importPath.includes([path.sep, 'testing', path.sep].join(''))) {
     return;
   }
 
@@ -91,12 +90,14 @@ function checkStarImport(context, node, importPath, importPathForErrorMessage, i
 
   if (invalidSameFolderUsage) {
     // Meta files import their entrypoints and are considered separate entrypoints.
-    // Additionally, any file ending with `-entrypoint.ts` is considered an entrypoint as well.
-    // Therefore, they are allowed to import using a same-namespace star-import.
-    const importingFileIsEntrypoint =
-        importingFileName.endsWith('-entrypoint.ts') || importingFileName.endsWith('-meta.ts');
+    // Additionally, any file ending with `-entrypoint.ts` is considered an entrypoint
+    // as well. Therefore, they are allowed to import using a same-namespace star-import.
+    // For `.test.ts` files we also need to use the namespace import syntax, to access
+    // the module itself, so we need to allow this as well.
+    const importingFileIsEntrypointOrTest = importingFileName.endsWith('-entrypoint.ts') ||
+        importingFileName.endsWith('-meta.ts') || importingFileName.endsWith('.test.ts');
 
-    if (!importingFileIsEntrypoint) {
+    if (!importingFileIsEntrypointOrTest) {
       context.report({
         node,
         message:
@@ -150,6 +151,18 @@ module.exports = {
 
         checkImportExtension(node.source.value, importPathForErrorMessage, context, node);
 
+        // Type imports are unrestricted
+        if (node.importKind === 'type') {
+          // `import type ... from ...` syntax
+          return;
+        }
+        if (node.importKind === 'value') {
+          // `import {type ...} from ...` syntax
+          if (node.specifiers.every(spec => spec.importKind === 'type')) {
+            return;
+          }
+        }
+
         // Accidental relative URL:
         // e.g.: import * as Root from 'front_end/root/root.js';
         //
@@ -187,6 +200,13 @@ module.exports = {
           checkStarImport(context, node, importPath, importPathForErrorMessage, importingFileName, exportingFileName);
         } else {
           if (computeTopLevelFolder(importingFileName) !== computeTopLevelFolder(exportingFileName)) {
+            if (importingFileName.endsWith('.test.ts') &&
+                importPath.includes([path.sep, 'testing', path.sep].join(''))) {
+              /** Within test files we allow the direct import of test helpers.
+               */
+              return;
+            }
+
             let message = CROSS_NAMESPACE_MESSAGE;
 
             if (importPath.endsWith(path.join('common', 'ls.js'))) {
@@ -206,8 +226,8 @@ module.exports = {
               },
             });
           } else if (isModuleEntrypoint(importingFileName)) {
-            if (importingFileName.includes(['test_setup', 'test_setup.ts'].join(path.sep)) &&
-                importPath.includes([path.sep, 'helpers', path.sep].join(''))) {
+            if (importingFileName.includes(['testing', 'test_setup.ts'].join(path.sep)) &&
+                importPath.includes([path.sep, 'testing', path.sep].join(''))) {
               /** Within test files we allow the direct import of test helpers.
                * The entry point detection detects test_setup.ts as an
                * entrypoint, but we don't treat it as such, it's just a file
@@ -228,6 +248,34 @@ module.exports = {
                 importPathForErrorMessage,
               }
             });
+          } else if (path.dirname(importingFileName) === path.dirname(exportingFileName)) {
+            if (!importingFileName.endsWith('.test.ts') || !importingFileName.startsWith(FRONT_END_DIRECTORY)) {
+              return;
+            }
+
+            const importingDirectoryName = path.basename(path.dirname(importingFileName));
+            if (importingDirectoryName === 'testing') {
+              // Special case of Foo.test.ts for a helper Foo.ts.
+              return;
+            }
+
+            // Unit tests must import from the entry points even for same-namespace
+            // imports, as we otherwise break the module system (in Release builds).
+            if (!isModuleEntrypoint(exportingFileName)) {
+              const namespaceNameForErrorMessage =
+                  importingDirectoryName.substring(0, 1).toUpperCase() + importingDirectoryName.substring(1);
+              const namespaceFilenameForErrorMessage = importingDirectoryName;
+              context.report({
+                node,
+                message:
+                    'Incorrect same-namespace import: "{{importPathForErrorMessage}}". Use "import * as {{namespaceNameForErrorMessage}} from \'./{{namespaceFilenameForErrorMessage}}.js\';" instead.',
+                data: {
+                  importPathForErrorMessage,
+                  namespaceNameForErrorMessage,
+                  namespaceFilenameForErrorMessage,
+                },
+              });
+            }
           }
         }
       }

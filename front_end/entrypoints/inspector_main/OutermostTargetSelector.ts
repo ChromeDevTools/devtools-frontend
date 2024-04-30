@@ -2,14 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
+import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as UI from '../../ui/legacy/legacy.js';
-
-import type * as Protocol from '../../generated/protocol.js';
 
 import outermostTargetSelectorStyles from './outermostTargetSelector.css.js';
 
@@ -49,6 +48,7 @@ export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.S
     targetManager.addModelListener(
         SDK.ChildTargetManager.ChildTargetManager, SDK.ChildTargetManager.Events.TargetInfoChanged,
         this.#onTargetInfoChanged, this);
+    targetManager.addEventListener(SDK.TargetManager.Events.NameChanged, this.#onInspectedURLChanged, this);
     targetManager.observeTargets(this);
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, this.#targetChanged, this);
@@ -81,18 +81,7 @@ export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.S
   }
 
   titleFor(target: SDK.Target.Target): string {
-    if (target === SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
-      return 'Main';
-    }
-    const url = target.targetInfo()?.url;
-    if (!url) {
-      return '<unknown>';
-    }
-    const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
-    if (!parsedURL) {
-      return '<unknown>';
-    }
-    return parsedURL.lastPathComponentWithFragment();
+    return target.name();
   }
 
   targetAdded(target: SDK.Target.Target): void {
@@ -117,7 +106,7 @@ export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.S
   }
 
   #targetComparator() {
-    return (a: SDK.Target.Target, b: SDK.Target.Target): number => {
+    return (a: SDK.Target.Target, b: SDK.Target.Target) => {
       const aTargetInfo = a.targetInfo();
       const bTargetInfo = b.targetInfo();
       if (!aTargetInfo || !bTargetInfo) {
@@ -137,6 +126,15 @@ export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.S
   #onTargetInfoChanged(event: Common.EventTarget.EventTargetEvent<Protocol.Target.TargetInfo>): void {
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const target = targetManager.targetById(event.data.targetId);
+    if (!target || target.outermostTarget() !== target) {
+      return;
+    }
+    this.targetRemoved(target);
+    this.targetAdded(target);
+  }
+
+  #onInspectedURLChanged(event: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
+    const target = event.data;
     if (!target || target.outermostTarget() !== target) {
       return;
     }
@@ -164,18 +162,10 @@ export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.S
 
   #subtitleFor(target: SDK.Target.Target): string {
     const targetInfo = target.targetInfo();
-    if (!targetInfo) {
-      return '';
+    if (target === SDK.TargetManager.TargetManager.instance().primaryPageTarget() && targetInfo) {
+      return Bindings.ResourceUtils.displayNameForURL(targetInfo.url as Platform.DevToolsPath.UrlString);
     }
-    const components = [];
-    const url = Bindings.ResourceUtils.displayNameForURL(targetInfo.url as Platform.DevToolsPath.UrlString);
-    if (url) {
-      components.push(url);
-    }
-    if (targetInfo.subtype) {
-      components.push(targetInfo.subtype);
-    }
-    return components.join(' ');
+    return target.targetInfo()?.subtype || '';
   }
 
   isItemSelectable(_item: SDK.Target.Target): boolean {

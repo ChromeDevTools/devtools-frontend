@@ -29,10 +29,6 @@ module.exports = {
    * ESLint rules
    *
    * All available rules: http://eslint.org/docs/rules/
-   *
-   * Rules take the following form:
-   *   'rule-name', [severity, { opts }]
-   * Severity: 2 == error, 1 == warning, 0 == off.
    */
   'rules': {
     /**
@@ -40,100 +36,112 @@ module.exports = {
      */
 
     // syntax preferences
-    'quotes': [2, 'single', {'avoidEscape': true, 'allowTemplateLiterals': false}],
-    'semi': 2,
-    'no-extra-semi': 2,
-    'comma-style': [2, 'last'],
-    'wrap-iife': [2, 'inside'],
-    'spaced-comment': [2, 'always', {'markers': ['*']}],
-    'eqeqeq': [2],
-    'accessor-pairs': [2, {'getWithoutSet': false, 'setWithoutGet': false}],
-    'curly': 2,
-    'new-parens': 2,
-    'func-call-spacing': 2,
-    'arrow-parens': [2, 'as-needed'],
-    'eol-last': 2,
+    'quotes': ['error', 'single', {'avoidEscape': true, 'allowTemplateLiterals': false}],
+    'semi': 'error',
+    'no-extra-semi': 'error',
+    'comma-style': ['error', 'last'],
+    'wrap-iife': ['error', 'inside'],
+    'spaced-comment': ['error', 'always', {'markers': ['*']}],
+    'eqeqeq': 'error',
+    'accessor-pairs': ['error', {'getWithoutSet': false, 'setWithoutGet': false}],
+    'curly': 'error',
+    'new-parens': 'error',
+    'func-call-spacing': 'error',
+    'arrow-parens': ['error', 'as-needed'],
+    'eol-last': 'error',
 
     // anti-patterns
-    'no-caller': 2,
-    'no-case-declarations': 2,
-    'no-cond-assign': 2,
-    'no-console': [2, {'allow': ['assert', 'context', 'error', 'timeStamp', 'time', 'timeEnd', 'warn']}],
-    'no-debugger': 2,
-    'no-dupe-keys': 2,
-    'no-duplicate-case': 2,
-    'no-else-return': [2, {'allowElseIf': false}],
-    'no-empty-character-class': 2,
-    'no-global-assign': 2,
-    'no-implied-eval': 2,
-    'no-labels': 2,
-    'no-multi-str': 2,
-    'no-new-object': 2,
-    'no-octal-escape': 2,
-    'no-self-compare': 2,
-    'no-shadow-restricted-names': 2,
-    'no-unreachable': 2,
-    'no-unsafe-negation': 2,
-    'no-unused-vars': [2, {'args': 'none', 'vars': 'local'}],
-    'no-var': 2,
-    'no-with': 2,
-    'prefer-const': 2,
-    'radix': 2,
-    'valid-typeof': 2,
-    'no-return-assign': [2, 'always'],
-    'no-implicit-coercion': 2,
+    'no-caller': 'error',
+    'no-case-declarations': 'error',
+    'no-cond-assign': 'error',
+    'no-console': ['error', {'allow': ['assert', 'context', 'error', 'timeStamp', 'time', 'timeEnd', 'warn']}],
+    'no-debugger': 'error',
+    'no-dupe-keys': 'error',
+    'no-duplicate-case': 'error',
+    'no-else-return': ['error', {'allowElseIf': false}],
+    'no-empty-character-class': 'error',
+    'no-global-assign': 'error',
+    'no-implied-eval': 'error',
+    'no-labels': 'error',
+    'no-multi-str': 'error',
+    'no-new-object': 'error',
+    'no-octal-escape': 'error',
+    'no-self-compare': 'error',
+    'no-shadow-restricted-names': 'error',
+    'no-unreachable': 'error',
+    'no-unsafe-negation': 'error',
+    'no-unused-vars': ['error', {'args': 'none', 'vars': 'local'}],
+    'no-var': 'error',
+    'no-with': 'error',
+    'prefer-const': 'error',
+    'radix': 'error',
+    'valid-typeof': 'error',
+    'no-return-assign': ['error', 'always'],
+    'no-implicit-coercion': 'error',
 
     // es2015 features
-    'require-yield': 2,
-    'template-curly-spacing': [2, 'never'],
+    'require-yield': 'error',
+    'template-curly-spacing': ['error', 'never'],
 
     // file whitespace
-    'no-multiple-empty-lines': [2, {'max': 1}],
-    'no-mixed-spaces-and-tabs': 2,
-    'no-trailing-spaces': 2,
-    'linebreak-style': [2, 'unix'],
+    'no-multiple-empty-lines': ['error', {'max': 1}],
+    'no-mixed-spaces-and-tabs': 'error',
+    'no-trailing-spaces': 'error',
+    'linebreak-style': ['error', 'unix'],
 
     /**
      * Disabled, aspirational rules
      */
 
-    'indent': [0, 2, {'SwitchCase': 1, 'CallExpression': {'arguments': 2}, 'MemberExpression': 2}],
+    'indent': ['off', 2, {'SwitchCase': 1, 'CallExpression': {'arguments': 2}, 'MemberExpression': 2}],
 
     // brace-style is disabled, as eslint cannot enforce 1tbs as default, but allman for functions
-    'brace-style': [0, 'allman', {'allowSingleLine': true}],
+    'brace-style': ['off', 'allman', {'allowSingleLine': true}],
 
     // key-spacing is disabled, as some objects use value-aligned spacing, some not.
-    'key-spacing': [0, {'beforeColon': false, 'afterColon': true, 'align': 'value'}],
+    'key-spacing': ['off', {'beforeColon': false, 'afterColon': true, 'align': 'value'}],
     // quote-props is diabled, as property quoting styles are too varied to enforce.
-    'quote-props': [0, 'as-needed'],
+    'quote-props': ['off', 'as-needed'],
 
     // no-implicit-globals will prevent accidental globals
-    'no-implicit-globals': [0],
-    'no-unused-private-class-members': 2,
+    'no-implicit-globals': 'off',
+    'no-unused-private-class-members': 'error',
 
     // forbids interfaces starting with an I prefix.
     '@typescript-eslint/naming-convention':
-        [2, {'selector': 'interface', 'format': ['PascalCase'], 'custom': {'regex': '^I[A-Z]', 'match': false}}],
-    '@typescript-eslint/explicit-member-accessibility': [0],
-    '@typescript-eslint/no-explicit-any': 2,
+        ['error', {'selector': 'interface', 'format': ['PascalCase'], 'custom': {'regex': '^I[A-Z]', 'match': false}}],
+    '@typescript-eslint/explicit-member-accessibility': 'off',
+    '@typescript-eslint/no-explicit-any': [
+      "error",
+      {
+        "ignoreRestArgs": true
+      }
+    ],
 
     // Closure does not properly typecheck default exports
-    'import/no-default-export': 2,
+    'import/no-default-export': 'error',
+
+    /**
+     * Catch duplicate import paths. For example this would catch the following example:
+     * import {Foo} from './foo.js'
+     * import * as FooModule from './foo.js'
+     **/
+    'import/no-duplicates': 'error',
 
     // Try to spot '// console.log()' left over from debugging
-    'rulesdir/commented_out_console': 2,
+    'rulesdir/commented_out_console': 'error',
 
     // Prevent imports being commented out rather than deleted.
-    'rulesdir/commented_out_import': 2,
+    'rulesdir/commented_out_import': 'error',
 
     // DevTools specific rules
-    'rulesdir/es_modules_import': 2,
-    'rulesdir/check_license_header': 2,
+    'rulesdir/es_modules_import': 'error',
+    'rulesdir/check_license_header': 'error',
     /**
      * Ensures that JS Doc comments are properly aligned - all the starting
      * `*` are in the right place.
      */
-    'jsdoc/check-alignment': 2,
+    'jsdoc/check-alignment': 'error',
   },
   'overrides': [{
     'files': ['*.ts'],
@@ -142,16 +150,16 @@ module.exports = {
       'project': path.join(__dirname, 'config', 'typescript', 'tsconfig.eslint.json'),
     },
     'rules': {
-      '@typescript-eslint/explicit-member-accessibility': [2, {'accessibility': 'no-public'}],
+      '@typescript-eslint/explicit-member-accessibility': ['error', {'accessibility': 'no-public'}],
       'comma-dangle': 'off',
-      '@typescript-eslint/comma-dangle': [2, 'always-multiline'],
+      '@typescript-eslint/comma-dangle': ['error', 'always-multiline'],
 
       // run just the TypeScript unused-vars rule, else we get duplicate errors
-      'no-unused-vars': 0,
-      '@typescript-eslint/no-unused-vars': [2, {'argsIgnorePattern': '^_'}],
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': ['error', {'argsIgnorePattern': '^_'}],
       // run just the TypeScript semi rule, else we get duplicate errors
-      'semi': 0,
-      '@typescript-eslint/semi': ['error'],
+      'semi': 'off',
+      '@typescript-eslint/semi': 'error',
       '@typescript-eslint/member-delimiter-style': [
         'error', {
           'multiline': {'delimiter': 'semi', 'requireLast': true},
@@ -168,28 +176,100 @@ module.exports = {
           }
         }
       ],
-      '@typescript-eslint/no-floating-promises': [2, {ignoreVoid: true}],
+      '@typescript-eslint/no-floating-promises': ['error', {ignoreVoid: true}],
       // func-call-spacing doesn't work well with .ts
-      'func-call-spacing': 0,
-      '@typescript-eslint/func-call-spacing': 2,
+      'func-call-spacing': 'off',
+      '@typescript-eslint/func-call-spacing': 'error',
 
       /**
        * Enforce that enum members are explicitly defined:
        * const enum Foo { A = 'a' } rather than const enum Foo { A }
        */
-      '@typescript-eslint/prefer-enum-initializers': 2,
+      '@typescript-eslint/prefer-enum-initializers': 'error',
       /**
        * Ban non-null assertion operator, e.g.:
        * this.foo!.toLowerCase()
        */
-      '@typescript-eslint/no-non-null-assertion': 2,
-      '@typescript-eslint/consistent-type-imports': 2,
-      'rulesdir/const_enum': 2,
-      'rulesdir/no_underscored_properties': 2,
-      'rulesdir/prefer_readonly_keyword': 2,
-      'rulesdir/inline_type_imports': 2,
+      '@typescript-eslint/no-non-null-assertion': 'error',
+      '@typescript-eslint/consistent-type-imports': 'error',
+      'rulesdir/no_underscored_properties': 'error',
+      'rulesdir/prefer_readonly_keyword': 'error',
+      'rulesdir/inline_type_imports': 'error',
     }
-  }]
+  }, {
+    'files': ['*.test.ts', 'test/**/*.ts', '**/testing/*.ts'],
+    'rules': {
+      // errors on it('test') with no body
+      'mocha/no-pending-tests' : 'error',
+
+      // errors on {describe, it}.only
+      'mocha/no-exclusive-tests' : 'error',
+
+      'mocha/no-async-describe': 'error',
+      'mocha/no-global-tests': 'error',
+      'mocha/no-nested-tests': 'error',
+
+      'rulesdir/check_test_definitions' : 'error',
+      'rulesdir/avoid_assert_equal' : 'error',
+      'rulesdir/no_repeated_tests' : 'error',
+      'rulesdir/compare_arrays_with_assert_deepequal' : 'error',
+      'rulesdir/ban_screenshot_test_outside_perf_panel' : 'error',
+      'rulesdir/trace_engine_test_timeouts' : 'error',
+      '@typescript-eslint/naming-convention' :
+                                              [
+                                                'error',
+                                                {
+                                                  'selector' :
+                                                            [
+                                                              'function', 'accessor', 'method', 'property',
+                                                              'parameterProperty'
+                                                            ],
+                                                  'format' : ['camelCase'],
+                                                },
+                                                {
+                                                  // Allow PascalCase as well as it is used for dynamic module imports.
+                                                  'selector' : 'variable',
+                                                  'format' : ['camelCase', 'PascalCase', 'UPPER_CASE'],
+                                                },
+                                                {
+                                                  'selector' : 'classProperty',
+                                                  'modifiers' : ['static', 'readonly'],
+                                                  'format' : ['UPPER_CASE'],
+                                                },
+                                                {
+                                                  'selector' : 'enumMember',
+                                                  'format' : ['PascalCase', 'UPPER_CASE'],
+                                                },
+                                                {
+                                                  'selector' : ['typeLike'],
+                                                  'format' : ['PascalCase'],
+                                                },
+                                                {
+                                                  // Also allow UPPER_CASE so argument function to evaluate can take constants as arguments without renaming.
+                                                  'selector' : 'parameter',
+                                                  'format' : ['camelCase', 'UPPER_CASE'],
+                                                  'leadingUnderscore' : 'allow',
+                                                },
+                                                {
+                                                  // Object literals may be constructed as arguments to external libraries which follow different styles.
+                                                  'selector' : ['objectLiteralMethod', 'objectLiteralProperty'],
+                                                  'modifiers' : ['public'],
+                                                  'format' : null,
+                                                },
+                                              ],
+      '@typescript-eslint/no-non-null-assertion' : 'off',
+    },
+    'settings': {
+      'mocha/additionalCustomNames': [
+        { 'name': 'describeWithDevtoolsExtension', 'type': 'suite', 'interfaces': [ 'BDD', 'TDD' ] },
+        { 'name': 'describeWithEnvironment', 'type': 'suite', 'interfaces': [ 'BDD', 'TDD' ] },
+        { 'name': 'describeWithLocale', 'type': 'suite', 'interfaces': [ 'BDD', 'TDD' ] },
+        { 'name': 'describeWithMockConnection', 'type': 'suite', 'interfaces': [ 'BDD', 'TDD' ] },
+        { 'name': 'describeWithRealConnection', 'type': 'suite', 'interfaces': [ 'BDD', 'TDD' ] },
+        { 'name': 'itScreenshot', 'type': 'testCase', 'interfaces': [ 'BDD', 'TDD' ] },
+      ]
+    }
+  }],
 };
 
 // clang-format on

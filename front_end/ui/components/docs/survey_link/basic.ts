@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as Common from '../../../../core/common/common.js';
+import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 import * as SurveyLink from '../../survey_link/survey_link.js';
 
@@ -19,10 +19,10 @@ document.getElementById('container')?.appendChild(link);
 link.data = {
   trigger: 'test trigger',
   promptText: Common.UIString.LocalizedEmptyString,
-  canShowSurvey: (trigger, callback): void => {
+  canShowSurvey: (trigger, callback) => {
     setTimeout(callback.bind(undefined, {canShowSurvey: true}), 500);
   },
-  showSurvey: (trigger, callback): void => {
+  showSurvey: (trigger, callback) => {
     setTimeout(callback.bind(undefined, {surveyShown: true}), 1500);
   },
 };

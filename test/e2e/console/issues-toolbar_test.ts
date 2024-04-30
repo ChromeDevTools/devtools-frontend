@@ -6,7 +6,7 @@ import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToConsoleTab, waitForIssueButtonLabel} from '../helpers/console-helpers.js';
 
-describe('The Console Tab', async () => {
+describe('The Console Tab', () => {
   it('shows the toolbar button for no issue correctly', async () => {
     // Navigate to page which causes no issues.
     await goToResource('empty.html');
@@ -17,7 +17,7 @@ describe('The Console Tab', async () => {
 
   it('shows the toolbar button for one issue correctly', async () => {
     // Navigate to page which causes a single issue.
-    await goToResource('issues/cross-origin-portal-post.html');
+    await goToResource('elements/quirks-mode.html');
     await navigateToConsoleTab();
 
     await waitForIssueButtonLabel('1 Issue:');

@@ -14,17 +14,17 @@ export class TimelineLayersView extends UI.SplitWidget.SplitWidget {
   private readonly rightSplitWidget: UI.SplitWidget.SplitWidget;
   private readonly layerViewHost: LayerViewer.LayerViewHost.LayerViewHost;
   private readonly layers3DView: LayerViewer.Layers3DView.Layers3DView;
-  private frameLayerTree?: TimelineModel.TimelineFrameModel.TracingFrameLayerTree;
+  private frameLayerTree?: TimelineModel.TracingLayerTree.TracingFrameLayerTree;
   private updateWhenVisible?: boolean;
   constructor(
       model: TimelineModel.TimelineModel.TimelineModelImpl,
       showPaintProfilerCallback: (arg0: SDK.PaintProfiler.PaintProfilerSnapshot) => void) {
-    super(true, false, 'timelineLayersView');
+    super(true, false, 'timeline-layers-view');
     this.model = model;
     this.showPaintProfilerCallback = showPaintProfilerCallback;
 
     this.element.classList.add('timeline-layers-view');
-    this.rightSplitWidget = new UI.SplitWidget.SplitWidget(true, true, 'timelineLayersViewDetails');
+    this.rightSplitWidget = new UI.SplitWidget.SplitWidget(true, true, 'timeline-layers-view-details');
     this.rightSplitWidget.element.classList.add('timeline-layers-view-properties');
     this.setMainWidget(this.rightSplitWidget);
 
@@ -47,7 +47,7 @@ export class TimelineLayersView extends UI.SplitWidget.SplitWidget {
         LayerViewer.LayerDetailsView.Events.PaintProfilerRequested, this.onPaintProfilerRequested, this);
   }
 
-  showLayerTree(frameLayerTree: TimelineModel.TimelineFrameModel.TracingFrameLayerTree): void {
+  showLayerTree(frameLayerTree: TimelineModel.TracingLayerTree.TracingFrameLayerTree): void {
     this.frameLayerTree = frameLayerTree;
     if (this.isShowing()) {
       this.update();

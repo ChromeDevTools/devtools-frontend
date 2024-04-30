@@ -5,6 +5,7 @@
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
@@ -29,6 +30,16 @@ devtools_entrypoint("bundle") {
     ":node_text",
   ]
 
-  visibility = default_components_visibility +
-               [ "../../../../test/unittests/front_end/*" ]
+  visibility = default_components_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "NodeText.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../testing",
+  ]
 }

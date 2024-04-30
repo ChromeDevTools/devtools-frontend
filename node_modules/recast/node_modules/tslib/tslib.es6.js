@@ -12,7 +12,7 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
-/* global Reflect, Promise */
+/* global Reflect, Promise, SuppressedError, Symbol */
 
 var extendStatics = function(d, b) {
     extendStatics = Object.setPrototypeOf ||
@@ -292,30 +292,79 @@ export function __classPrivateFieldIn(state, receiver) {
     return typeof state === "function" ? receiver === state : state.has(receiver);
 }
 
+export function __addDisposableResource(env, value, async) {
+    if (value !== null && value !== void 0) {
+        if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+        var dispose;
+        if (async) {
+            if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+            dispose = value[Symbol.asyncDispose];
+        }
+        if (dispose === void 0) {
+            if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+            dispose = value[Symbol.dispose];
+        }
+        if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        env.stack.push({ value: value, dispose: dispose, async: async });
+    }
+    else if (async) {
+        env.stack.push({ async: true });
+    }
+    return value;
+}
+
+var _SuppressedError = typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
+
+export function __disposeResources(env) {
+    function fail(e) {
+        env.error = env.hasError ? new _SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+        env.hasError = true;
+    }
+    function next() {
+        while (env.stack.length) {
+            var rec = env.stack.pop();
+            try {
+                var result = rec.dispose && rec.dispose.call(rec.value);
+                if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+            }
+            catch (e) {
+                fail(e);
+            }
+        }
+        if (env.hasError) throw env.error;
+    }
+    return next();
+}
+
 export default {
-    __extends,
-    __assign,
-    __rest,
-    __decorate,
-    __param,
-    __metadata,
-    __awaiter,
-    __generator,
-    __createBinding,
-    __exportStar,
-    __values,
-    __read,
-    __spread,
-    __spreadArrays,
-    __spreadArray,
-    __await,
-    __asyncGenerator,
-    __asyncDelegator,
-    __asyncValues,
-    __makeTemplateObject,
-    __importStar,
-    __importDefault,
-    __classPrivateFieldGet,
-    __classPrivateFieldSet,
-    __classPrivateFieldIn,
+    __extends: __extends,
+    __assign: __assign,
+    __rest: __rest,
+    __decorate: __decorate,
+    __param: __param,
+    __metadata: __metadata,
+    __awaiter: __awaiter,
+    __generator: __generator,
+    __createBinding: __createBinding,
+    __exportStar: __exportStar,
+    __values: __values,
+    __read: __read,
+    __spread: __spread,
+    __spreadArrays: __spreadArrays,
+    __spreadArray: __spreadArray,
+    __await: __await,
+    __asyncGenerator: __asyncGenerator,
+    __asyncDelegator: __asyncDelegator,
+    __asyncValues: __asyncValues,
+    __makeTemplateObject: __makeTemplateObject,
+    __importStar: __importStar,
+    __importDefault: __importDefault,
+    __classPrivateFieldGet: __classPrivateFieldGet,
+    __classPrivateFieldSet: __classPrivateFieldSet,
+    __classPrivateFieldIn: __classPrivateFieldIn,
+    __addDisposableResource: __addDisposableResource,
+    __disposeResources: __disposeResources,
 };

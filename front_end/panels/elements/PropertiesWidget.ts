@@ -34,12 +34,13 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import propertiesWidgetStyles from './propertiesWidget.css.js';
-import {StylesSidebarPane} from './StylesSidebarPane.js';
 
 const OBJECT_GROUP_NAME = 'properties-sidebar-pane';
 
@@ -75,8 +76,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/PropertiesWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-let propertiesWidgetInstance: PropertiesWidget;
-
 export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
   private node: SDK.DOMModel.DOMNode|null;
   private readonly showAllPropertiesSetting: Common.Settings.Setting<boolean>;
@@ -88,7 +87,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
   constructor(throttlingTimeout?: number) {
     super(true /* isWebComponent */, throttlingTimeout);
 
-    this.showAllPropertiesSetting = Common.Settings.Settings.instance().createSetting('showAllProperties', false);
+    this.showAllPropertiesSetting = Common.Settings.Settings.instance().createSetting('show-all-properties', false);
     this.showAllPropertiesSetting.addChangeListener(this.filterList.bind(this));
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
@@ -103,16 +102,15 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     this.node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
 
     const hbox = this.contentElement.createChild('div', 'hbox properties-widget-toolbar');
-    const filterContainerElement = hbox.createChild('div', 'properties-widget-filter-box');
-    const filterInput = StylesSidebarPane.createPropertyFilterElement(
-        i18nString(UIStrings.filter), hbox, this.filterProperties.bind(this));
-    UI.ARIAUtils.setLabel(filterInput, i18nString(UIStrings.filterProperties));
-    filterContainerElement.appendChild(filterInput);
-
     const toolbar = new UI.Toolbar.Toolbar('styles-pane-toolbar', hbox);
+    const filterInput = new UI.Toolbar.ToolbarInput(
+        i18nString(UIStrings.filter), i18nString(UIStrings.filterProperties), 1, 1, undefined, undefined, false);
+    filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.onFilterChanged, this);
+    toolbar.appendToolbarItem(filterInput);
     toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
         this.showAllPropertiesSetting, i18nString(UIStrings.showAllTooltip), i18nString(UIStrings.showAll)));
 
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('element-properties').track({resize: true})}`);
     this.noMatchesElement = this.contentElement.createChild('div', 'gray-info-message hidden');
     this.noMatchesElement.textContent = i18nString(UIStrings.noMatchingProperty);
 
@@ -129,19 +127,8 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     this.update();
   }
 
-  static instance(opts?: {
-    forceNew: boolean,
-    throttlingTimeout: number,
-  }): PropertiesWidget {
-    if (!propertiesWidgetInstance || opts?.forceNew) {
-      propertiesWidgetInstance = new PropertiesWidget(opts?.throttlingTimeout);
-    }
-
-    return propertiesWidgetInstance;
-  }
-
-  private filterProperties(this: PropertiesWidget, regex: RegExp|null): void {
-    this.filterRegex = regex;
+  private onFilterChanged(event: Common.EventTarget.EventTargetEvent<string>): void {
+    this.filterRegex = event.data ? new RegExp(Platform.StringUtilities.escapeForRegExp(event.data), 'i') : null;
     this.filterList();
   }
 

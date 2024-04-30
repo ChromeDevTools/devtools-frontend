@@ -11,13 +11,12 @@
 
 .webauthn-toolbar-container {
   display: flex;
-  background-color: var(--color-background-elevation-1);
-  border-bottom: var(--legacy-divider-border);
+  background-color: var(--sys-color-cdt-base-container);
+  border-bottom: 1px solid var(--sys-color-divider);
   flex: 0 0 auto;
 }
 
 .webauthn-toolbar {
-  border-bottom: var(--legacy-divider-border);
   display: inline-block;
 }
 
@@ -60,7 +59,7 @@
 .authenticator-section {
   display: block;
   padding: 16px 0;
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 .authenticator-fields {
@@ -95,7 +94,7 @@
 }
 
 .authenticator-section-title.editing-name .authenticator-name-field {
-  border-bottom: 1px solid var(--input-outline);
+  border-bottom: 1px solid var(--sys-color-neutral-outline);
   font-weight: normal;
   animation: none;
 }
@@ -114,6 +113,7 @@
 .authenticator-option {
   display: flex;
   padding-bottom: 10px;
+  align-items: center;
   margin: auto;
 }
 
@@ -121,7 +121,7 @@
   text-align: right;
   width: 200px;
   display: inline-block;
-  padding: 5px 10px 0 0;
+  padding: 0 10px 0 0;
 }
 
 td .text-button {

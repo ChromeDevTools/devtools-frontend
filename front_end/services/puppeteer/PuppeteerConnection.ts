@@ -8,15 +8,12 @@ import type * as SDK from '../../core/sdk/sdk.js';
 
 class Transport implements puppeteer.ConnectionTransport {
   #connection: SDK.Connections.ParallelConnectionInterface;
-  #knownIds = new Set<number>();
 
   constructor(connection: SDK.Connections.ParallelConnectionInterface) {
     this.#connection = connection;
   }
 
   send(data: string): void {
-    const message = JSON.parse(data);
-    this.#knownIds.add(message.id);
     this.#connection.sendRawMessage(data);
   }
 
@@ -27,13 +24,10 @@ class Transport implements puppeteer.ConnectionTransport {
   set onmessage(cb: (message: string) => void) {
     this.#connection.setOnMessage((message: Object) => {
       const data = (message) as {id: number, method: string, params: unknown, sessionId?: string};
-      if (data.id && !this.#knownIds.has(data.id)) {
-        return;
-      }
-      this.#knownIds.delete(data.id);
       if (!data.sessionId) {
         return;
       }
+
       return cb(JSON.stringify({
         ...data,
         // Puppeteer is expecting to use the default session, but we give it a non-default session in #connection.
@@ -67,25 +61,22 @@ class PuppeteerConnection extends puppeteer.Connection {
 }
 
 export class PuppeteerConnectionHelper {
-  static async connectPuppeteerToConnection(options: {
+  static async connectPuppeteerToConnectionViaTab(options: {
     connection: SDK.Connections.ParallelConnectionInterface,
-    mainFrameId: string,
-    targetInfos: Protocol.Target.TargetInfo[],
-    targetFilterCallback: (targetInfo: Protocol.Target.TargetInfo) => boolean,
+    rootTargetId: string,
     isPageTargetCallback: (targetInfo: Protocol.Target.TargetInfo) => boolean,
   }): Promise<{
     page: puppeteer.Page | null,
     browser: puppeteer.Browser,
     puppeteerConnection: puppeteer.Connection,
   }> {
-    const {connection, mainFrameId, targetInfos, targetFilterCallback, isPageTargetCallback} = options;
+    const {connection, rootTargetId, isPageTargetCallback} = options;
     // Pass an empty message handler because it will be overwritten by puppeteer anyways.
     const transport = new Transport(connection);
 
     // url is an empty string in this case parallel to:
     // https://github.com/puppeteer/puppeteer/blob/f63a123ecef86693e6457b07437a96f108f3e3c5/src/common/BrowserConnector.ts#L72
     const puppeteerConnection = new PuppeteerConnection('', transport);
-    const targetIdsForAutoAttachEmulation = targetInfos.filter(targetFilterCallback).map(t => t.targetId);
 
     const browserPromise = puppeteer.Browser._create(
         'chrome',
@@ -95,20 +86,20 @@ export class PuppeteerConnectionHelper {
         undefined /* defaultViewport */,
         undefined /* process */,
         undefined /* closeCallback */,
-        targetFilterCallback,
-        isPageTargetCallback,
+        undefined,
+        target => isPageTargetCallback((target as puppeteer.Target)._getTargetInfo()),
+        false /* waitForInitiallyDiscoveredTargets */,
     );
 
     const [, browser] = await Promise.all([
-      Promise.all(targetIdsForAutoAttachEmulation.map(
-          targetId => puppeteerConnection._createSession({targetId}, /* emulateAutoAttach= */ true))),
+      puppeteerConnection._createSession({targetId: rootTargetId}, /* emulateAutoAttach= */ true),
       browserPromise,
     ]);
 
-    const pages = await browser.pages();
-    const page =
-        pages.filter((p): p is puppeteer.Page => p !== null).find(p => p.mainFrame()._id === mainFrameId) || null;
+    await browser.waitForTarget(t => t.type() === 'page');
 
-    return {page, browser, puppeteerConnection};
+    const pages = await browser.pages();
+
+    return {page: pages[0] as puppeteer.Page, browser, puppeteerConnection};
   }
 }

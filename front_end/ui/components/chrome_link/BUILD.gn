@@ -5,6 +5,7 @@
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
@@ -18,6 +19,7 @@ devtools_module("chrome_link") {
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
     "../../../ui/lit-html:bundle",
+    "../../../ui/visual_logging:bundle",
     "../helpers:bundle",
   ]
 }
@@ -31,4 +33,18 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility = default_components_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "ChromeLink.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../core/platform:bundle",
+    "../../../testing",
+    "../../lit-html:bundle",
+    "../render_coordinator:bundle",
+  ]
 }

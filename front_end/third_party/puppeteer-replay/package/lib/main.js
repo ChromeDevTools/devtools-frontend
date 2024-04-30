@@ -20,7 +20,7 @@ var SelectorType;
     SelectorType["Text"] = "text";
     SelectorType["XPath"] = "xpath";
     SelectorType["Pierce"] = "pierce";
-})(SelectorType = SelectorType || (SelectorType = {}));
+})(SelectorType || (SelectorType = {}));
 var StepType;
 (function (StepType) {
     StepType["Change"] = "change";
@@ -37,17 +37,17 @@ var StepType;
     StepType["SetViewport"] = "setViewport";
     StepType["WaitForElement"] = "waitForElement";
     StepType["WaitForExpression"] = "waitForExpression";
-})(StepType = StepType || (StepType = {}));
+})(StepType || (StepType = {}));
 var AssertedEventType;
 (function (AssertedEventType) {
     AssertedEventType["Navigation"] = "navigation";
-})(AssertedEventType = AssertedEventType || (AssertedEventType = {}));
+})(AssertedEventType || (AssertedEventType = {}));
 
 var Schema = /*#__PURE__*/Object.freeze({
     __proto__: null,
+    get AssertedEventType () { return AssertedEventType; },
     get SelectorType () { return SelectorType; },
-    get StepType () { return StepType; },
-    get AssertedEventType () { return AssertedEventType; }
+    get StepType () { return StepType; }
 });
 
 /**
@@ -547,6 +547,34 @@ function getSelectorType(selector) {
     }
     return SelectorType.CSS;
 }
+/**
+ * Converts a selector or an array of selector parts into a Puppeteer selector.
+ *
+ * @see https://pptr.dev/guides/query-selectors#p-elements
+ */
+function selectorToPElementSelector(selector) {
+    if (!Array.isArray(selector)) {
+        selector = [selector];
+    }
+    function escape(input) {
+        return input.replace(/['"()]/g, `\\$&`);
+    }
+    const result = selector.map((s) => {
+        switch (getSelectorType(s)) {
+            case SelectorType.ARIA:
+                return `::-p-aria(${escape(s.substring(SelectorType.ARIA.length + 1))})`;
+            case SelectorType.CSS:
+                return s;
+            case SelectorType.XPath:
+                return `::-p-xpath(${escape(s.substring(SelectorType.XPath.length + 1))})`;
+            case SelectorType.Pierce:
+                return `:scope >>> ${s.substring(SelectorType.Pierce.length + 1)}`;
+            case SelectorType.Text:
+                return `::-p-text(${escape(s.substring(SelectorType.Text.length + 1))})`;
+        }
+    });
+    return result.join(' >>>> ');
+}
 
 /**
     Copyright 2022 Google LLC
@@ -624,34 +652,6 @@ class JSONStringifyExtension extends StringifyExtension {
     }
 }
 
-/******************************************************************************
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-
-function __classPrivateFieldGet(receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-}
-
-function __classPrivateFieldSet(receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-}
-
 /**
     Copyright 2022 Google LLC
 
@@ -667,46 +667,45 @@ function __classPrivateFieldSet(receiver, state, value, kind, f) {
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-var _InMemoryLineWriter_indentation, _InMemoryLineWriter_currentIndentation, _InMemoryLineWriter_lines;
 class InMemoryLineWriter {
+    #indentation;
+    #currentIndentation = 0;
+    #lines = [];
     constructor(indentation) {
-        _InMemoryLineWriter_indentation.set(this, void 0);
-        _InMemoryLineWriter_currentIndentation.set(this, 0);
-        _InMemoryLineWriter_lines.set(this, []);
-        __classPrivateFieldSet(this, _InMemoryLineWriter_indentation, indentation, "f");
+        this.#indentation = indentation;
     }
     appendLine(line) {
         const lines = line.split('\n').map((line) => {
             const indentedLine = line
-                ? __classPrivateFieldGet(this, _InMemoryLineWriter_indentation, "f").repeat(__classPrivateFieldGet(this, _InMemoryLineWriter_currentIndentation, "f")) + line.trimEnd()
+                ? this.#indentation.repeat(this.#currentIndentation) + line.trimEnd()
                 : '';
             return indentedLine;
         });
-        __classPrivateFieldGet(this, _InMemoryLineWriter_lines, "f").push(...lines);
+        this.#lines.push(...lines);
         return this;
     }
     startBlock() {
-        var _a;
-        __classPrivateFieldSet(this, _InMemoryLineWriter_currentIndentation, (_a = __classPrivateFieldGet(this, _InMemoryLineWriter_currentIndentation, "f"), _a++, _a), "f");
+        this.#currentIndentation++;
         return this;
     }
     endBlock() {
-        var _a;
-        __classPrivateFieldSet(this, _InMemoryLineWriter_currentIndentation, (_a = __classPrivateFieldGet(this, _InMemoryLineWriter_currentIndentation, "f"), _a--, _a), "f");
+        this.#currentIndentation--;
+        if (this.#currentIndentation < 0) {
+            throw new Error('Extra endBlock');
+        }
         return this;
     }
     toString() {
         // Scripts should end with a final blank line.
-        return __classPrivateFieldGet(this, _InMemoryLineWriter_lines, "f").join('\n') + '\n';
+        return this.#lines.join('\n') + '\n';
     }
     getIndent() {
-        return __classPrivateFieldGet(this, _InMemoryLineWriter_indentation, "f");
+        return this.#indentation;
     }
     getSize() {
-        return __classPrivateFieldGet(this, _InMemoryLineWriter_lines, "f").length;
+        return this.#lines.length;
     }
 }
-_InMemoryLineWriter_indentation = new WeakMap(), _InMemoryLineWriter_currentIndentation = new WeakMap(), _InMemoryLineWriter_lines = new WeakMap();
 
 /**
     Copyright 2022 Google LLC
@@ -866,14 +865,10 @@ const formatAsJSLiteral = (content) => {
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-var _PuppeteerStringifyExtension_instances, _PuppeteerStringifyExtension_appendTarget, _PuppeteerStringifyExtension_appendFrame, _PuppeteerStringifyExtension_appendContext, _PuppeteerStringifyExtension_appendWaitForSelector, _PuppeteerStringifyExtension_appendClickStep, _PuppeteerStringifyExtension_appendDoubleClickStep, _PuppeteerStringifyExtension_appendHoverStep, _PuppeteerStringifyExtension_appendChangeStep, _PuppeteerStringifyExtension_appendEmulateNetworkConditionsStep, _PuppeteerStringifyExtension_appendKeyDownStep, _PuppeteerStringifyExtension_appendKeyUpStep, _PuppeteerStringifyExtension_appendCloseStep, _PuppeteerStringifyExtension_appendViewportStep, _PuppeteerStringifyExtension_appendScrollStep, _PuppeteerStringifyExtension_appendStepType, _PuppeteerStringifyExtension_appendNavigationStep, _PuppeteerStringifyExtension_appendWaitExpressionStep, _PuppeteerStringifyExtension_appendWaitForElementStep;
 class PuppeteerStringifyExtension extends StringifyExtension {
-    constructor() {
-        super(...arguments);
-        _PuppeteerStringifyExtension_instances.add(this);
-    }
+    #shouldAppendWaitForElementHelper = false;
     async beforeAllSteps(out, flow) {
-        out.appendLine("const puppeteer = require('puppeteer'); // v13.0.0 or later");
+        out.appendLine("const puppeteer = require('puppeteer'); // v22.0.0 or later");
         out.appendLine('');
         out.appendLine('(async () => {').startBlock();
         out.appendLine('const browser = await puppeteer.launch();');
@@ -881,13 +876,16 @@ class PuppeteerStringifyExtension extends StringifyExtension {
         out.appendLine(`const timeout = ${flow.timeout || defaultTimeout};`);
         out.appendLine('page.setDefaultTimeout(timeout);');
         out.appendLine('');
+        this.#shouldAppendWaitForElementHelper = false;
     }
     async afterAllSteps(out, flow) {
         out.appendLine('');
         out.appendLine('await browser.close();');
         out.appendLine('');
-        for (const line of helpers.split('\n')) {
-            out.appendLine(line);
+        if (this.#shouldAppendWaitForElementHelper) {
+            for (const line of waitForElementHelper.split('\n')) {
+                out.appendLine(line);
+            }
         }
         out.endBlock().appendLine('})().catch(err => {').startBlock();
         out.appendLine('console.error(err);');
@@ -899,9 +897,10 @@ class PuppeteerStringifyExtension extends StringifyExtension {
         if (step.timeout !== undefined) {
             out.appendLine(`const timeout = ${step.timeout};`);
         }
-        __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendContext).call(this, out, step);
+        this.#appendContext(out, step);
         if (step.assertedEvents) {
             out.appendLine('const promises = [];');
+            out.appendLine('const startWaitingForEvents = () => {').startBlock();
             for (const event of step.assertedEvents) {
                 switch (event.type) {
                     case AssertedEventType.Navigation: {
@@ -912,230 +911,179 @@ class PuppeteerStringifyExtension extends StringifyExtension {
                         throw new Error(`Event type ${event.type} is not supported`);
                 }
             }
+            out.endBlock().appendLine('}');
         }
-        __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendStepType).call(this, out, step);
+        this.#appendStepType(out, step);
         if (step.assertedEvents) {
             out.appendLine('await Promise.all(promises);');
         }
         out.endBlock().appendLine('}');
     }
+    #appendTarget(out, target) {
+        if (target === 'main') {
+            out.appendLine('const targetPage = page;');
+        }
+        else {
+            out.appendLine(`const target = await browser.waitForTarget(t => t.url() === ${formatJSONAsJS(target, out.getIndent())}, { timeout });`);
+            out.appendLine('const targetPage = await target.page();');
+            out.appendLine('targetPage.setDefaultTimeout(timeout);');
+        }
+    }
+    #appendFrame(out, path) {
+        out.appendLine('let frame = targetPage.mainFrame();');
+        for (const index of path) {
+            out.appendLine(`frame = frame.childFrames()[${index}];`);
+        }
+    }
+    #appendContext(out, step) {
+        // TODO fix optional target: should it be main?
+        this.#appendTarget(out, step.target || 'main');
+        // TODO fix optional frame: should it be required?
+        if (step.frame) {
+            this.#appendFrame(out, step.frame);
+        }
+    }
+    #appendLocators(out, step, action) {
+        out.appendLine('await puppeteer.Locator.race([').startBlock();
+        out.appendLine(step.selectors
+            .map((s) => {
+            return `${step.frame ? 'frame' : 'targetPage'}.locator(${formatJSONAsJS(selectorToPElementSelector(s), out.getIndent())})`;
+        })
+            .join(',\n'));
+        out.endBlock().appendLine('])');
+        out.startBlock().appendLine('.setTimeout(timeout)');
+        if (step.assertedEvents?.length) {
+            out.appendLine(`.on('action', () => startWaitingForEvents())`);
+        }
+        action();
+        out.endBlock();
+    }
+    #appendClickStep(out, step) {
+        this.#appendLocators(out, step, () => {
+            out.appendLine('.click({');
+            if (step.duration) {
+                out.appendLine(`  delay: ${step.duration},`);
+            }
+            if (step.button) {
+                out.appendLine(`  button: '${mouseButtonMap.get(step.button)}',`);
+            }
+            out.appendLine('  offset: {');
+            out.appendLine(`    x: ${step.offsetX},`);
+            out.appendLine(`    y: ${step.offsetY},`);
+            out.appendLine('  },');
+            out.appendLine('});');
+        });
+    }
+    #appendDoubleClickStep(out, step) {
+        this.#appendLocators(out, step, () => {
+            out.appendLine('.click({');
+            out.appendLine(`  count: 2,`);
+            if (step.duration) {
+                out.appendLine(`  delay: ${step.duration},`);
+            }
+            if (step.button) {
+                out.appendLine(`  button: '${mouseButtonMap.get(step.button)}',`);
+            }
+            out.appendLine('  offset: {');
+            out.appendLine(`    x: ${step.offsetX},`);
+            out.appendLine(`    y: ${step.offsetY},`);
+            out.appendLine('  },');
+            out.appendLine('});');
+        });
+    }
+    #appendHoverStep(out, step) {
+        this.#appendLocators(out, step, () => {
+            out.appendLine('.hover();');
+        });
+    }
+    #appendChangeStep(out, step) {
+        this.#appendLocators(out, step, () => {
+            out.appendLine(`.fill(${formatJSONAsJS(step.value, out.getIndent())});`);
+        });
+    }
+    #appendEmulateNetworkConditionsStep(out, step) {
+        out.appendLine('await targetPage.emulateNetworkConditions({');
+        out.appendLine(`  offline: ${!step.download && !step.upload},`);
+        out.appendLine(`  downloadThroughput: ${step.download},`);
+        out.appendLine(`  uploadThroughput: ${step.upload},`);
+        out.appendLine(`  latency: ${step.latency},`);
+        out.appendLine('});');
+    }
+    #appendKeyDownStep(out, step) {
+        out.appendLine(`await targetPage.keyboard.down(${formatJSONAsJS(step.key, out.getIndent())});`);
+    }
+    #appendKeyUpStep(out, step) {
+        out.appendLine(`await targetPage.keyboard.up(${formatJSONAsJS(step.key, out.getIndent())});`);
+    }
+    #appendCloseStep(out, step) {
+        out.appendLine('await targetPage.close()');
+    }
+    #appendViewportStep(out, step) {
+        out.appendLine(`await targetPage.setViewport(${formatJSONAsJS({
+            width: step.width,
+            height: step.height,
+        }, out.getIndent())})`);
+    }
+    #appendScrollStep(out, step) {
+        if ('selectors' in step) {
+            this.#appendLocators(out, step, () => {
+                out.appendLine(`.scroll({ scrollTop: ${step.y}, scrollLeft: ${step.x}});`);
+            });
+        }
+        else {
+            out.appendLine(`await targetPage.evaluate((x, y) => { window.scroll(x, y); }, ${step.x}, ${step.y})`);
+        }
+    }
+    #appendStepType(out, step) {
+        switch (step.type) {
+            case StepType.Click:
+                return this.#appendClickStep(out, step);
+            case StepType.DoubleClick:
+                return this.#appendDoubleClickStep(out, step);
+            case StepType.Hover:
+                return this.#appendHoverStep(out, step);
+            case StepType.Change:
+                return this.#appendChangeStep(out, step);
+            case StepType.EmulateNetworkConditions:
+                return this.#appendEmulateNetworkConditionsStep(out, step);
+            case StepType.KeyDown:
+                return this.#appendKeyDownStep(out, step);
+            case StepType.KeyUp:
+                return this.#appendKeyUpStep(out, step);
+            case StepType.Close:
+                return this.#appendCloseStep(out, step);
+            case StepType.SetViewport:
+                return this.#appendViewportStep(out, step);
+            case StepType.Scroll:
+                return this.#appendScrollStep(out, step);
+            case StepType.Navigate:
+                return this.#appendNavigationStep(out, step);
+            case StepType.WaitForElement:
+                return this.#appendWaitForElementStep(out, step);
+            case StepType.WaitForExpression:
+                return this.#appendWaitExpressionStep(out, step);
+            case StepType.CustomStep:
+                return; // TODO: implement these
+            default:
+                return assertAllStepTypesAreHandled(step);
+        }
+    }
+    #appendNavigationStep(out, step) {
+        if (step.assertedEvents?.length) {
+            out.appendLine(`startWaitingForEvents();`);
+        }
+        out.appendLine(`await targetPage.goto(${formatJSONAsJS(step.url, out.getIndent())});`);
+    }
+    #appendWaitExpressionStep(out, step) {
+        out.appendLine(`await ${step.frame ? 'frame' : 'targetPage'}.waitForFunction(${formatJSONAsJS(step.expression, out.getIndent())}, { timeout });`);
+    }
+    #appendWaitForElementStep(out, step) {
+        this.#shouldAppendWaitForElementHelper = true;
+        out.appendLine(`await waitForElement(${formatJSONAsJS(step, out.getIndent())}, ${step.frame ? 'frame' : 'targetPage'}, timeout);`);
+    }
 }
-_PuppeteerStringifyExtension_instances = new WeakSet(), _PuppeteerStringifyExtension_appendTarget = function _PuppeteerStringifyExtension_appendTarget(out, target) {
-    if (target === 'main') {
-        out.appendLine('const targetPage = page;');
-    }
-    else {
-        out.appendLine(`const target = await browser.waitForTarget(t => t.url() === ${formatJSONAsJS(target, out.getIndent())}, { timeout });`);
-        out.appendLine('const targetPage = await target.page();');
-        out.appendLine('targetPage.setDefaultTimeout(timeout);');
-    }
-}, _PuppeteerStringifyExtension_appendFrame = function _PuppeteerStringifyExtension_appendFrame(out, path) {
-    out.appendLine('let frame = targetPage.mainFrame();');
-    for (const index of path) {
-        out.appendLine(`frame = frame.childFrames()[${index}];`);
-    }
-}, _PuppeteerStringifyExtension_appendContext = function _PuppeteerStringifyExtension_appendContext(out, step) {
-    // TODO fix optional target: should it be main?
-    __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendTarget).call(this, out, step.target || 'main');
-    // TODO fix optional frame: should it be required?
-    if (step.frame) {
-        __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendFrame).call(this, out, step.frame);
-    }
-}, _PuppeteerStringifyExtension_appendWaitForSelector = function _PuppeteerStringifyExtension_appendWaitForSelector(out, step) {
-    out.appendLine(`await scrollIntoViewIfNeeded(${formatJSONAsJS(step.selectors, out.getIndent())}, ${step.frame ? 'frame' : 'targetPage'}, timeout);`);
-    out.appendLine(`const element = await waitForSelectors(${formatJSONAsJS(step.selectors, out.getIndent())}, ${step.frame ? 'frame' : 'targetPage'}, { timeout, visible: true });`);
-}, _PuppeteerStringifyExtension_appendClickStep = function _PuppeteerStringifyExtension_appendClickStep(out, step) {
-    __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendWaitForSelector).call(this, out, step);
-    out.appendLine('await element.click({');
-    if (step.duration) {
-        out.appendLine(`  delay: ${step.duration},`);
-    }
-    if (step.button) {
-        out.appendLine(`  button: '${mouseButtonMap.get(step.button)}',`);
-    }
-    out.appendLine('  offset: {');
-    out.appendLine(`    x: ${step.offsetX},`);
-    out.appendLine(`    y: ${step.offsetY},`);
-    out.appendLine('  },');
-    out.appendLine('});');
-}, _PuppeteerStringifyExtension_appendDoubleClickStep = function _PuppeteerStringifyExtension_appendDoubleClickStep(out, step) {
-    __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendWaitForSelector).call(this, out, step);
-    out.appendLine('await element.click({');
-    if (step.button) {
-        out.appendLine(`  button: '${mouseButtonMap.get(step.button)}',`);
-    }
-    out.appendLine('  offset: {');
-    out.appendLine(`    x: ${step.offsetX},`);
-    out.appendLine(`    y: ${step.offsetY},`);
-    out.appendLine('  },');
-    out.appendLine('});');
-    out.appendLine('await element.click({');
-    out.appendLine(`  clickCount: 2,`);
-    if (step.duration) {
-        out.appendLine(`  delay: ${step.duration},`);
-    }
-    if (step.button) {
-        out.appendLine(`  button: '${mouseButtonMap.get(step.button)}',`);
-    }
-    out.appendLine('  offset: {');
-    out.appendLine(`    x: ${step.offsetX},`);
-    out.appendLine(`    y: ${step.offsetY},`);
-    out.appendLine('  },');
-    out.appendLine('});');
-}, _PuppeteerStringifyExtension_appendHoverStep = function _PuppeteerStringifyExtension_appendHoverStep(out, step) {
-    __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendWaitForSelector).call(this, out, step);
-    out.appendLine('await element.hover();');
-}, _PuppeteerStringifyExtension_appendChangeStep = function _PuppeteerStringifyExtension_appendChangeStep(out, step) {
-    __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendWaitForSelector).call(this, out, step);
-    out.appendLine('const inputType = await element.evaluate(el => el.type);');
-    out.appendLine(`if (inputType === 'select-one') {`);
-    out.appendLine(`  await changeSelectElement(element, ${formatJSONAsJS(step.value, out.getIndent())})`);
-    out.appendLine(`} else if (${formatJSONAsJS(Array.from(typeableInputTypes), out.getIndent())}.includes(inputType)) {`);
-    out.appendLine(`  await typeIntoElement(element, ${formatJSONAsJS(step.value, out.getIndent())});`);
-    out.appendLine('} else {');
-    out.appendLine(`  await changeElementValue(element, ${formatJSONAsJS(step.value, out.getIndent())});`);
-    out.appendLine('}');
-}, _PuppeteerStringifyExtension_appendEmulateNetworkConditionsStep = function _PuppeteerStringifyExtension_appendEmulateNetworkConditionsStep(out, step) {
-    out.appendLine('await targetPage.emulateNetworkConditions({');
-    out.appendLine(`  offline: ${!step.download && !step.upload},`);
-    out.appendLine(`  downloadThroughput: ${step.download},`);
-    out.appendLine(`  uploadThroughput: ${step.upload},`);
-    out.appendLine(`  latency: ${step.latency},`);
-    out.appendLine('});');
-}, _PuppeteerStringifyExtension_appendKeyDownStep = function _PuppeteerStringifyExtension_appendKeyDownStep(out, step) {
-    out.appendLine(`await targetPage.keyboard.down(${formatJSONAsJS(step.key, out.getIndent())});`);
-}, _PuppeteerStringifyExtension_appendKeyUpStep = function _PuppeteerStringifyExtension_appendKeyUpStep(out, step) {
-    out.appendLine(`await targetPage.keyboard.up(${formatJSONAsJS(step.key, out.getIndent())});`);
-}, _PuppeteerStringifyExtension_appendCloseStep = function _PuppeteerStringifyExtension_appendCloseStep(out, step) {
-    out.appendLine('await targetPage.close()');
-}, _PuppeteerStringifyExtension_appendViewportStep = function _PuppeteerStringifyExtension_appendViewportStep(out, step) {
-    out.appendLine(`await targetPage.setViewport(${formatJSONAsJS({
-        width: step.width,
-        height: step.height,
-    }, out.getIndent())})`);
-}, _PuppeteerStringifyExtension_appendScrollStep = function _PuppeteerStringifyExtension_appendScrollStep(out, step) {
-    if ('selectors' in step) {
-        __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendWaitForSelector).call(this, out, step);
-        out.appendLine(`await element.evaluate((el, x, y) => { el.scrollTop = y; el.scrollLeft = x; }, ${step.x}, ${step.y});`);
-    }
-    else {
-        out.appendLine(`await targetPage.evaluate((x, y) => { window.scroll(x, y); }, ${step.x}, ${step.y})`);
-    }
-}, _PuppeteerStringifyExtension_appendStepType = function _PuppeteerStringifyExtension_appendStepType(out, step) {
-    switch (step.type) {
-        case StepType.Click:
-            return __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendClickStep).call(this, out, step);
-        case StepType.DoubleClick:
-            return __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendDoubleClickStep).call(this, out, step);
-        case StepType.Hover:
-            return __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendHoverStep).call(this, out, step);
-        case StepType.Change:
-            return __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendChangeStep).call(this, out, step);
-        case StepType.EmulateNetworkConditions:
-            return __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendEmulateNetworkConditionsStep).call(this, out, step);
-        case StepType.KeyDown:
-            return __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendKeyDownStep).call(this, out, step);
-        case StepType.KeyUp:
-            return __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendKeyUpStep).call(this, out, step);
-        case StepType.Close:
-            return __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendCloseStep).call(this, out, step);
-        case StepType.SetViewport:
-            return __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendViewportStep).call(this, out, step);
-        case StepType.Scroll:
-            return __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendScrollStep).call(this, out, step);
-        case StepType.Navigate:
-            return __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendNavigationStep).call(this, out, step);
-        case StepType.WaitForElement:
-            return __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendWaitForElementStep).call(this, out, step);
-        case StepType.WaitForExpression:
-            return __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendWaitExpressionStep).call(this, out, step);
-        case StepType.CustomStep:
-            return; // TODO: implement these
-        default:
-            return assertAllStepTypesAreHandled(step);
-    }
-}, _PuppeteerStringifyExtension_appendNavigationStep = function _PuppeteerStringifyExtension_appendNavigationStep(out, step) {
-    out.appendLine(`await targetPage.goto(${formatJSONAsJS(step.url, out.getIndent())});`);
-}, _PuppeteerStringifyExtension_appendWaitExpressionStep = function _PuppeteerStringifyExtension_appendWaitExpressionStep(out, step) {
-    out.appendLine(`await ${step.frame ? 'frame' : 'targetPage'}.waitForFunction(${formatJSONAsJS(step.expression, out.getIndent())}, { timeout });`);
-}, _PuppeteerStringifyExtension_appendWaitForElementStep = function _PuppeteerStringifyExtension_appendWaitForElementStep(out, step) {
-    out.appendLine(`await waitForElement(${formatJSONAsJS(step, out.getIndent())}, ${step.frame ? 'frame' : 'targetPage'}, timeout);`);
-};
 const defaultTimeout = 5000;
-const helpers = `async function waitForSelectors(selectors, frame, options) {
-  for (const selector of selectors) {
-    try {
-      return await waitForSelector(selector, frame, options);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-  throw new Error('Could not find element for selectors: ' + JSON.stringify(selectors));
-}
-
-async function scrollIntoViewIfNeeded(selectors, frame, timeout) {
-  const element = await waitForSelectors(selectors, frame, { visible: false, timeout });
-  if (!element) {
-    throw new Error(
-      'The element could not be found.'
-    );
-  }
-  await waitForConnected(element, timeout);
-  const isInViewport = await element.isIntersectingViewport({threshold: 0});
-  if (isInViewport) {
-    return;
-  }
-  await element.evaluate(element => {
-    element.scrollIntoView({
-      block: 'center',
-      inline: 'center',
-      behavior: 'auto',
-    });
-  });
-  await waitForInViewport(element, timeout);
-}
-
-async function waitForConnected(element, timeout) {
-  await waitForFunction(async () => {
-    return await element.getProperty('isConnected');
-  }, timeout);
-}
-
-async function waitForInViewport(element, timeout) {
-  await waitForFunction(async () => {
-    return await element.isIntersectingViewport({threshold: 0});
-  }, timeout);
-}
-
-async function waitForSelector(selector, frame, options) {
-  if (!Array.isArray(selector)) {
-    selector = [selector];
-  }
-  if (!selector.length) {
-    throw new Error('Empty selector provided to waitForSelector');
-  }
-  let element = null;
-  for (let i = 0; i < selector.length; i++) {
-    const part = selector[i];
-    if (element) {
-      element = await element.waitForSelector(part, options);
-    } else {
-      element = await frame.waitForSelector(part, options);
-    }
-    if (!element) {
-      throw new Error('Could not find element: ' + selector.join('>>'));
-    }
-    if (i < selector.length - 1) {
-      element = (await element.evaluateHandle(el => el.shadowRoot ? el.shadowRoot : el)).asElement();
-    }
-  }
-  if (!element) {
-    throw new Error('Could not find element: ' + selector.join('|'));
-  }
-  return element;
-}
-
-async function waitForElement(step, frame, timeout) {
+const waitForElementHelper = `async function waitForElement(step, frame, timeout) {
   const {
     count = 1,
     operator = '>=',
@@ -1261,40 +1209,6 @@ async function waitForFunction(fn, timeout) {
     await new Promise(resolve => setTimeout(resolve, 100));
   }
   throw new Error('Timed out');
-}
-
-async function changeSelectElement(element, value) {
-  await element.select(value);
-  await element.evaluateHandle((e) => {
-    e.blur();
-    e.focus();
-  });
-}
-
-async function changeElementValue(element, value) {
-  await element.focus();
-  await element.evaluate((input, value) => {
-    input.value = value;
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-  }, value);
-}
-
-async function typeIntoElement(element, value) {
-  const textToType = await element.evaluate((input, newValue) => {
-    if (
-      newValue.length <= input.value.length ||
-      !newValue.startsWith(input.value)
-    ) {
-      input.value = '';
-      return newValue;
-    }
-    const originalValue = input.value;
-    input.value = '';
-    input.value = originalValue;
-    return newValue.substring(originalValue.length);
-  }, value);
-  await element.type(textToType);
 }`;
 
 /**
@@ -1395,23 +1309,22 @@ const SOURCE_MAP_PREFIX = '//# recorderSourceMap=';
  * - `afterAllSteps` (once)
  */
 async function stringify(flow, opts) {
-    var _a, _b, _c, _d, _e, _f, _g;
     if (!opts) {
         opts = {};
     }
-    const ext = (_a = opts.extension) !== null && _a !== void 0 ? _a : new PuppeteerStringifyExtension();
-    const out = (_b = opts.writer) !== null && _b !== void 0 ? _b : new InMemoryLineWriter((_c = opts.indentation) !== null && _c !== void 0 ? _c : '  ');
-    await ((_d = ext.beforeAllSteps) === null || _d === void 0 ? void 0 : _d.call(ext, out, flow));
+    const ext = opts.extension ?? new PuppeteerStringifyExtension();
+    const out = opts.writer ?? new InMemoryLineWriter(opts.indentation ?? '  ');
+    await ext.beforeAllSteps?.(out, flow);
     const sourceMap = [1]; // The first int indicates the version.
     for (const step of flow.steps) {
         const firstLine = out.getSize();
-        await ((_e = ext.beforeEachStep) === null || _e === void 0 ? void 0 : _e.call(ext, out, step, flow));
+        await ext.beforeEachStep?.(out, step, flow);
         await ext.stringifyStep(out, step, flow);
-        await ((_f = ext.afterEachStep) === null || _f === void 0 ? void 0 : _f.call(ext, out, step, flow));
+        await ext.afterEachStep?.(out, step, flow);
         const lastLine = out.getSize();
         sourceMap.push(...[firstLine, lastLine - firstLine]);
     }
-    await ((_g = ext.afterAllSteps) === null || _g === void 0 ? void 0 : _g.call(ext, out, flow));
+    await ext.afterAllSteps?.(out, flow);
     out.appendLine(SOURCE_MAP_PREFIX + encode(sourceMap));
     return out.toString();
 }
@@ -1422,7 +1335,6 @@ async function stringify(flow, opts) {
  * - `afterEachStep`
  */
 async function stringifyStep(step, opts) {
-    var _a, _b, _c, _d;
     if (!opts) {
         opts = {};
     }
@@ -1433,10 +1345,10 @@ async function stringifyStep(step, opts) {
     if (!opts.indentation) {
         opts.indentation = '  ';
     }
-    const out = (_a = opts.writer) !== null && _a !== void 0 ? _a : new InMemoryLineWriter((_b = opts.indentation) !== null && _b !== void 0 ? _b : '  ');
-    await ((_c = ext.beforeEachStep) === null || _c === void 0 ? void 0 : _c.call(ext, out, step));
+    const out = opts.writer ?? new InMemoryLineWriter(opts.indentation ?? '  ');
+    await ext.beforeEachStep?.(out, step);
     await ext.stringifyStep(out, step);
-    await ((_d = ext.afterEachStep) === null || _d === void 0 ? void 0 : _d.call(ext, out, step));
+    await ext.afterEachStep?.(out, step);
     return out.toString();
 }
 function isSourceMapLine(line) {
@@ -1483,37 +1395,41 @@ class RunnerExtension {
     async afterEachStep(step, flow) { }
 }
 
-/**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
- */
-var _PuppeteerRunnerExtension_instances, _PuppeteerRunnerExtension_ensureAutomationEmulatation, _PuppeteerRunnerExtension_getTimeoutForStep;
 const comparators = {
     '==': (a, b) => a === b,
     '>=': (a, b) => a >= b,
     '<=': (a, b) => a <= b,
 };
+function waitForTimeout(timeout) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, timeout);
+    });
+}
 class PuppeteerRunnerExtension extends RunnerExtension {
+    browser;
+    page;
+    timeout;
     constructor(browser, page, opts) {
         super();
-        _PuppeteerRunnerExtension_instances.add(this);
         this.browser = browser;
         this.page = page;
-        this.timeout = (opts === null || opts === void 0 ? void 0 : opts.timeout) || 5000;
+        this.timeout = opts?.timeout || 5000;
+    }
+    async #ensureAutomationEmulatation(pageOrFrame) {
+        try {
+            await pageOrFrame
+                ._client()
+                .send('Emulation.setAutomationOverride', { enabled: true });
+        }
+        catch {
+            // ignore errors as not all versions support this command.
+        }
+    }
+    #getTimeoutForStep(step, flow) {
+        return step.timeout || flow?.timeout || this.timeout;
     }
     async runStep(step, flow) {
-        const timeout = __classPrivateFieldGet(this, _PuppeteerRunnerExtension_instances, "m", _PuppeteerRunnerExtension_getTimeoutForStep).call(this, step, flow);
+        const timeout = this.#getTimeoutForStep(step, flow);
         const page = this.page;
         const browser = this.browser;
         const targetPage = await getTargetPageForStep(browser, page, step, timeout);
@@ -1534,7 +1450,7 @@ class PuppeteerRunnerExtension extends RunnerExtension {
         if (!targetPageOrFrame) {
             throw new Error('Target is not found for step: ' + JSON.stringify(step));
         }
-        await __classPrivateFieldGet(this, _PuppeteerRunnerExtension_instances, "m", _PuppeteerRunnerExtension_ensureAutomationEmulatation).call(this, targetPageOrFrame);
+        await this.#ensureAutomationEmulatation(targetPageOrFrame);
         const localFrame = await getFrame(targetPageOrFrame, step);
         await this.runStepInFrame(step, page, targetPageOrFrame, localFrame, timeout);
     }
@@ -1542,78 +1458,50 @@ class PuppeteerRunnerExtension extends RunnerExtension {
      * @internal
      */
     async runStepInFrame(step, mainPage, targetPageOrFrame, localFrame, timeout) {
-        const waitForVisible = true;
         let assertedEventsPromise = null;
         const startWaitingForEvents = () => {
             assertedEventsPromise = waitForEvents(localFrame, step, timeout);
         };
+        const locatorRace = this.page.locatorRace;
         switch (step.type) {
             case StepType.DoubleClick:
-                {
-                    await scrollIntoViewIfNeeded(step.selectors, localFrame, timeout);
-                    const element = await waitForSelectors(step.selectors, localFrame, {
-                        timeout,
-                        visible: waitForVisible,
-                    });
-                    if (!element) {
-                        throw new Error('Could not find element: ' + step.selectors[0]);
-                    }
-                    startWaitingForEvents();
-                    await element.click({
-                        button: step.button && mouseButtonMap.get(step.button),
-                        offset: {
-                            x: step.offsetX,
-                            y: step.offsetY,
-                        },
-                    });
-                    await element.click({
-                        clickCount: 2,
-                        button: step.button && mouseButtonMap.get(step.button),
-                        delay: step.duration,
-                        offset: {
-                            x: step.offsetX,
-                            y: step.offsetY,
-                        },
-                    });
-                    await element.dispose();
-                }
+                await locatorRace(step.selectors.map((selector) => {
+                    return localFrame.locator(selectorToPElementSelector(selector));
+                }))
+                    .setTimeout(timeout)
+                    .on('action', () => startWaitingForEvents())
+                    .click({
+                    count: 2,
+                    button: step.button && mouseButtonMap.get(step.button),
+                    delay: step.duration,
+                    offset: {
+                        x: step.offsetX,
+                        y: step.offsetY,
+                    },
+                });
                 break;
             case StepType.Click:
-                {
-                    await scrollIntoViewIfNeeded(step.selectors, localFrame, timeout);
-                    const element = await waitForSelectors(step.selectors, localFrame, {
-                        timeout,
-                        visible: waitForVisible,
-                    });
-                    if (!element) {
-                        throw new Error('Could not find element: ' + step.selectors[0]);
-                    }
-                    startWaitingForEvents();
-                    await element.click({
-                        delay: step.duration,
-                        button: step.button && mouseButtonMap.get(step.button),
-                        offset: {
-                            x: step.offsetX,
-                            y: step.offsetY,
-                        },
-                    });
-                    await element.dispose();
-                }
+                await locatorRace(step.selectors.map((selector) => {
+                    return localFrame.locator(selectorToPElementSelector(selector));
+                }))
+                    .setTimeout(timeout)
+                    .on('action', () => startWaitingForEvents())
+                    .click({
+                    delay: step.duration,
+                    button: step.button && mouseButtonMap.get(step.button),
+                    offset: {
+                        x: step.offsetX,
+                        y: step.offsetY,
+                    },
+                });
                 break;
             case StepType.Hover:
-                {
-                    await scrollIntoViewIfNeeded(step.selectors, localFrame, timeout);
-                    const element = await waitForSelectors(step.selectors, localFrame, {
-                        timeout,
-                        visible: waitForVisible,
-                    });
-                    if (!element) {
-                        throw new Error('Could not find element: ' + step.selectors[0]);
-                    }
-                    startWaitingForEvents();
-                    await element.hover();
-                    await element.dispose();
-                }
+                await locatorRace(step.selectors.map((selector) => {
+                    return localFrame.locator(selectorToPElementSelector(selector));
+                }))
+                    .setTimeout(timeout)
+                    .on('action', () => startWaitingForEvents())
+                    .hover();
                 break;
             case StepType.EmulateNetworkConditions:
                 {
@@ -1625,14 +1513,14 @@ class PuppeteerRunnerExtension extends RunnerExtension {
                 {
                     startWaitingForEvents();
                     await mainPage.keyboard.down(step.key);
-                    await mainPage.waitForTimeout(100);
+                    await waitForTimeout(100);
                 }
                 break;
             case StepType.KeyUp:
                 {
                     startWaitingForEvents();
                     await mainPage.keyboard.up(step.key);
-                    await mainPage.waitForTimeout(100);
+                    await waitForTimeout(100);
                 }
                 break;
             case StepType.Close:
@@ -1644,32 +1532,12 @@ class PuppeteerRunnerExtension extends RunnerExtension {
                 }
                 break;
             case StepType.Change:
-                {
-                    await scrollIntoViewIfNeeded(step.selectors, localFrame, timeout);
-                    const element = (await waitForSelectors(step.selectors, localFrame, {
-                        timeout,
-                        visible: waitForVisible,
-                    }));
-                    if (!element) {
-                        throw new Error('Could not find element: ' + step.selectors[0]);
-                    }
-                    const inputType = await element.evaluate(
-                    /* c8 ignore start */
-                    (el) => el.type
-                    /* c8 ignore stop */
-                    );
-                    startWaitingForEvents();
-                    if (inputType === 'select-one') {
-                        await this.changeSelectElement(step, element);
-                    }
-                    else if (typeableInputTypes.has(inputType)) {
-                        await this.typeIntoElement(step, element);
-                    }
-                    else {
-                        await this.changeElementValue(step, element);
-                    }
-                    await element.dispose();
-                }
+                await locatorRace(step.selectors.map((selector) => {
+                    return localFrame.locator(selectorToPElementSelector(selector));
+                }))
+                    .on('action', () => startWaitingForEvents())
+                    .setTimeout(timeout)
+                    .fill(step.value);
                 break;
             case StepType.SetViewport: {
                 if ('setViewport' in targetPageOrFrame) {
@@ -1680,19 +1548,15 @@ class PuppeteerRunnerExtension extends RunnerExtension {
             }
             case StepType.Scroll: {
                 if ('selectors' in step) {
-                    await scrollIntoViewIfNeeded(step.selectors, localFrame, timeout);
-                    const element = await waitForSelectors(step.selectors, localFrame, {
-                        timeout,
-                        visible: waitForVisible,
+                    await locatorRace(step.selectors.map((selector) => {
+                        return localFrame.locator(selectorToPElementSelector(selector));
+                    }))
+                        .on('action', () => startWaitingForEvents())
+                        .setTimeout(timeout)
+                        .scroll({
+                        scrollLeft: step.x || 0,
+                        scrollTop: step.y || 0,
                     });
-                    startWaitingForEvents();
-                    await element.evaluate((e, x, y) => {
-                        /* c8 ignore start */
-                        e.scrollTop = y;
-                        e.scrollLeft = x;
-                        /* c8 ignore stop */
-                    }, step.x || 0, step.y || 0);
-                    await element.dispose();
                 }
                 else {
                     startWaitingForEvents();
@@ -1740,64 +1604,7 @@ class PuppeteerRunnerExtension extends RunnerExtension {
         }
         await assertedEventsPromise;
     }
-    /**
-     * @internal
-     */
-    async typeIntoElement(step, element) {
-        const textToType = await element.evaluate((input, newValue) => {
-            /* c8 ignore start */
-            if (newValue.length <= input.value.length ||
-                !newValue.startsWith(input.value)) {
-                input.value = '';
-                return newValue;
-            }
-            const originalValue = input.value;
-            // Move cursor to the end of the common prefix.
-            input.value = '';
-            input.value = originalValue;
-            return newValue.substring(originalValue.length);
-            /* c8 ignore stop */
-        }, step.value);
-        await element.type(textToType);
-    }
-    /**
-     * @internal
-     */
-    async changeElementValue(step, element) {
-        await element.focus();
-        await element.evaluate((input, value) => {
-            /* c8 ignore start */
-            input.value = value;
-            input.dispatchEvent(new Event('input', { bubbles: true }));
-            input.dispatchEvent(new Event('change', { bubbles: true }));
-            /* c8 ignore stop */
-        }, step.value);
-    }
-    /**
-     * @internal
-     */
-    async changeSelectElement(step, element) {
-        await element.select(step.value);
-        await element.evaluateHandle((e) => {
-            /* c8 ignore start */
-            e.blur();
-            e.focus();
-            /* c8 ignore stop */
-        });
-    }
 }
-_PuppeteerRunnerExtension_instances = new WeakSet(), _PuppeteerRunnerExtension_ensureAutomationEmulatation = async function _PuppeteerRunnerExtension_ensureAutomationEmulatation(pageOrFrame) {
-    try {
-        await pageOrFrame
-            ._client()
-            .send('Emulation.setAutomationOverride', { enabled: true });
-    }
-    catch {
-        // ignore errors as not all versions support this command.
-    }
-}, _PuppeteerRunnerExtension_getTimeoutForStep = function _PuppeteerRunnerExtension_getTimeoutForStep(step, flow) {
-    return step.timeout || (flow === null || flow === void 0 ? void 0 : flow.timeout) || this.timeout;
-};
 class PuppeteerRunnerOwningBrowserExtension extends PuppeteerRunnerExtension {
     async afterAllSteps() {
         await this.browser.close();
@@ -1896,121 +1703,6 @@ async function waitForElement(step, frame, timeout) {
         return result === visible;
     }, timeout);
 }
-const asSVGElementHandle = async (handle) => {
-    if (await handle.evaluate((element) => {
-        /* c8 ignore start */
-        return element instanceof SVGElement;
-        /* c8 ignore stop */
-    })) {
-        return handle;
-    }
-    else {
-        return null;
-    }
-};
-async function scrollIntoViewIfNeeded(selectors, frame, timeout) {
-    const element = await waitForSelectors(selectors, frame, {
-        visible: false,
-        timeout,
-    });
-    if (!element) {
-        throw new Error('The element could not be found.');
-    }
-    await waitForConnected(element, timeout);
-    const svgHandle = await asSVGElementHandle(element);
-    const intersectionTarget = svgHandle
-        ? await getOwnerSVGElement(svgHandle)
-        : element;
-    const isInViewport = intersectionTarget
-        ? await intersectionTarget.isIntersectingViewport({ threshold: 0 })
-        : false;
-    if (isInViewport) {
-        return;
-    }
-    await scrollIntoView(element);
-    if (intersectionTarget) {
-        await waitForInViewport(intersectionTarget, timeout);
-    }
-    await intersectionTarget.dispose();
-    if (intersectionTarget !== element) {
-        await element.dispose();
-    }
-}
-async function getOwnerSVGElement(handle) {
-    // If there is no ownerSVGElement, the element must be the top-level SVG
-    // element itself.
-    return await handle.evaluateHandle((element) => {
-        var _a;
-        /* c8 ignore start */
-        return (_a = element.ownerSVGElement) !== null && _a !== void 0 ? _a : element;
-        /* c8 ignore stop */
-    });
-}
-async function scrollIntoView(element) {
-    await element.evaluate((element) => {
-        /* c8 ignore start */
-        element.scrollIntoView({
-            block: 'center',
-            inline: 'center',
-            behavior: 'auto',
-        });
-        /* c8 ignore stop */
-    });
-}
-async function waitForConnected(element, timeout) {
-    await waitForFunction(async () => {
-        /* c8 ignore start */
-        return await element.evaluate((el) => el.isConnected);
-        /* c8 ignore stop */
-    }, timeout);
-}
-async function waitForInViewport(element, timeout) {
-    await waitForFunction(async () => {
-        return await element.isIntersectingViewport({ threshold: 0 });
-    }, timeout);
-}
-async function waitForSelectors(selectors, frame, options) {
-    for (const selector of selectors) {
-        try {
-            return await waitForSelector(selector, frame, options);
-        }
-        catch (err) {
-            console.error('error in waitForSelectors', err);
-            // TODO: report the error somehow
-        }
-    }
-    throw new Error('Could not find element for selectors: ' + JSON.stringify(selectors));
-}
-async function waitForSelector(selector, frame, options) {
-    if (!Array.isArray(selector)) {
-        selector = [selector];
-    }
-    if (!selector.length) {
-        throw new Error('Empty selector provided to `waitForSelector`');
-    }
-    let isLastPart = selector.length === 1;
-    let handle = await frame.waitForSelector(selector[0], {
-        ...options,
-        visible: isLastPart && options.visible,
-    });
-    for (const part of selector.slice(1, selector.length)) {
-        if (!handle) {
-            throw new Error('Could not find element: ' + selector.join('>>'));
-        }
-        const innerHandle = await handle.evaluateHandle((el) => el.shadowRoot ? el.shadowRoot : el);
-        handle.dispose();
-        isLastPart = selector[selector.length - 1] === part;
-        handle = await innerHandle.waitForSelector(part, {
-            ...options,
-            visible: isLastPart && options.visible,
-        });
-        innerHandle.dispose();
-    }
-    if (!handle) {
-        throw new Error('Could not find element: ' + selector.join('>>'));
-    }
-    return handle;
-}
 async function querySelectorsAll(selectors, frame) {
     for (const selector of selectors) {
         const result = await querySelectorAll(selector, frame);
@@ -2076,71 +1768,65 @@ async function waitForFunction(fn, timeout) {
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-var _Runner_flow, _Runner_extension, _Runner_aborted;
 async function _runStepWithHooks(extension, step, flow) {
-    var _a, _b;
-    await ((_a = extension.beforeEachStep) === null || _a === void 0 ? void 0 : _a.call(extension, step, flow));
+    await extension.beforeEachStep?.(step, flow);
     await extension.runStep(step, flow);
-    await ((_b = extension.afterEachStep) === null || _b === void 0 ? void 0 : _b.call(extension, step, flow));
+    await extension.afterEachStep?.(step, flow);
 }
 class Runner {
+    #flow;
+    #extension;
+    #aborted = false;
     /**
      * @internal
      */
     constructor(extension) {
-        _Runner_flow.set(this, void 0);
-        _Runner_extension.set(this, void 0);
-        _Runner_aborted.set(this, false);
-        __classPrivateFieldSet(this, _Runner_extension, extension, "f");
+        this.#extension = extension;
     }
     abort() {
-        __classPrivateFieldSet(this, _Runner_aborted, true, "f");
+        this.#aborted = true;
     }
     set flow(flow) {
-        __classPrivateFieldSet(this, _Runner_flow, flow, "f");
+        this.#flow = flow;
     }
     async runBeforeAllSteps(flow) {
-        var _a, _b;
-        await ((_b = (_a = __classPrivateFieldGet(this, _Runner_extension, "f")).beforeAllSteps) === null || _b === void 0 ? void 0 : _b.call(_a, flow));
+        await this.#extension.beforeAllSteps?.(flow);
     }
     async runAfterAllSteps(flow) {
-        var _a, _b;
-        await ((_b = (_a = __classPrivateFieldGet(this, _Runner_extension, "f")).afterAllSteps) === null || _b === void 0 ? void 0 : _b.call(_a, flow));
+        await this.#extension.afterAllSteps?.(flow);
     }
     /**
      * Runs the provided `step` with `beforeEachStep` and `afterEachStep` hooks.
      * Parameters from the `flow` apply if the `flow` is set.
      */
     async runStep(step) {
-        await _runStepWithHooks(__classPrivateFieldGet(this, _Runner_extension, "f"), step);
+        await _runStepWithHooks(this.#extension, step);
     }
     /**
      * Run all the steps in the flow
      * @returns whether all the steps are run or the execution is aborted
      */
     async run() {
-        var _a, _b, _c, _d, _e, _f;
-        if (!__classPrivateFieldGet(this, _Runner_flow, "f")) {
+        if (!this.#flow) {
             throw new Error('Set the flow on the runner instance before calling `run`.');
         }
-        const flow = __classPrivateFieldGet(this, _Runner_flow, "f");
-        __classPrivateFieldSet(this, _Runner_aborted, false, "f");
-        await ((_b = (_a = __classPrivateFieldGet(this, _Runner_extension, "f")).beforeAllSteps) === null || _b === void 0 ? void 0 : _b.call(_a, flow));
-        if (__classPrivateFieldGet(this, _Runner_aborted, "f")) {
+        const flow = this.#flow;
+        this.#aborted = false;
+        await this.#extension.beforeAllSteps?.(flow);
+        if (this.#aborted) {
             return false;
         }
         for (const step of flow.steps) {
-            if (__classPrivateFieldGet(this, _Runner_aborted, "f")) {
-                await ((_d = (_c = __classPrivateFieldGet(this, _Runner_extension, "f")).afterAllSteps) === null || _d === void 0 ? void 0 : _d.call(_c, flow));
+            if (this.#aborted) {
+                await this.#extension.afterAllSteps?.(flow);
                 return false;
             }
-            await _runStepWithHooks(__classPrivateFieldGet(this, _Runner_extension, "f"), step, flow);
+            await _runStepWithHooks(this.#extension, step, flow);
         }
-        await ((_f = (_e = __classPrivateFieldGet(this, _Runner_extension, "f")).afterAllSteps) === null || _f === void 0 ? void 0 : _f.call(_e, flow));
+        await this.#extension.afterAllSteps?.(flow);
         return true;
     }
 }
-_Runner_flow = new WeakMap(), _Runner_extension = new WeakMap(), _Runner_aborted = new WeakMap();
 async function createRunner(flowOrExtension, maybeExtension) {
     const extension = flowOrExtension instanceof RunnerExtension
         ? flowOrExtension
@@ -2148,7 +1834,7 @@ async function createRunner(flowOrExtension, maybeExtension) {
     const flow = !(flowOrExtension instanceof RunnerExtension)
         ? flowOrExtension
         : undefined;
-    const runner = new Runner(extension !== null && extension !== void 0 ? extension : (await createPuppeteerRunnerOwningBrowserExtension()));
+    const runner = new Runner(extension ?? (await createPuppeteerRunnerOwningBrowserExtension()));
     if (flow) {
         runner.flow = flow;
     }
@@ -2156,9 +1842,7 @@ async function createRunner(flowOrExtension, maybeExtension) {
 }
 async function createPuppeteerRunnerOwningBrowserExtension() {
     const { default: puppeteer } = await import('puppeteer');
-    const browser = await puppeteer.launch({
-        headless: true,
-    });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
     return new PuppeteerRunnerOwningBrowserExtension(browser, page);
 }
@@ -2227,9 +1911,8 @@ class PuppeteerReplayStringifyExtension extends StringifyExtension {
     limitations under the License.
  */
 function isNavigationStep(step) {
-    var _a;
     return Boolean(step.type === StepType.Navigate ||
-        ((_a = step.assertedEvents) === null || _a === void 0 ? void 0 : _a.some((event) => event.type === AssertedEventType.Navigation)));
+        step.assertedEvents?.some((event) => event.type === AssertedEventType.Navigation));
 }
 function isMobileFlow(flow) {
     for (const step of flow.steps) {
@@ -2255,12 +1938,8 @@ function isMobileFlow(flow) {
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-var _LighthouseStringifyExtension_isProcessingTimespan;
 class LighthouseStringifyExtension extends PuppeteerStringifyExtension {
-    constructor() {
-        super(...arguments);
-        _LighthouseStringifyExtension_isProcessingTimespan.set(this, false);
-    }
+    #isProcessingTimespan = false;
     async beforeAllSteps(out, flow) {
         out.appendLine(`const fs = require('fs');`);
         await super.beforeAllSteps(out, flow);
@@ -2286,15 +1965,15 @@ class LighthouseStringifyExtension extends PuppeteerStringifyExtension {
         }
         const isNavigation = isNavigationStep(step);
         if (isNavigation) {
-            if (__classPrivateFieldGet(this, _LighthouseStringifyExtension_isProcessingTimespan, "f")) {
+            if (this.#isProcessingTimespan) {
                 out.appendLine(`await lhFlow.endTimespan();`);
-                __classPrivateFieldSet(this, _LighthouseStringifyExtension_isProcessingTimespan, false, "f");
+                this.#isProcessingTimespan = false;
             }
             out.appendLine(`await lhFlow.startNavigation();`);
         }
-        else if (!__classPrivateFieldGet(this, _LighthouseStringifyExtension_isProcessingTimespan, "f")) {
+        else if (!this.#isProcessingTimespan) {
             out.appendLine(`await lhFlow.startTimespan();`);
-            __classPrivateFieldSet(this, _LighthouseStringifyExtension_isProcessingTimespan, true, "f");
+            this.#isProcessingTimespan = true;
         }
         await super.stringifyStep(out, step, flow);
         if (isNavigation) {
@@ -2302,7 +1981,7 @@ class LighthouseStringifyExtension extends PuppeteerStringifyExtension {
         }
     }
     async afterAllSteps(out, flow) {
-        if (__classPrivateFieldGet(this, _LighthouseStringifyExtension_isProcessingTimespan, "f")) {
+        if (this.#isProcessingTimespan) {
             out.appendLine(`await lhFlow.endTimespan();`);
         }
         out.appendLine(`const lhFlowReport = await lhFlow.generateReport();`);
@@ -2310,7 +1989,6 @@ class LighthouseStringifyExtension extends PuppeteerStringifyExtension {
         await super.afterAllSteps(out, flow);
     }
 }
-_LighthouseStringifyExtension_isProcessingTimespan = new WeakMap();
 
 /**
     Copyright 2022 Google LLC
@@ -2327,69 +2005,60 @@ _LighthouseStringifyExtension_isProcessingTimespan = new WeakMap();
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-var _LighthouseRunnerExtension_isTimespanRunning, _LighthouseRunnerExtension_isNavigationRunning, _LighthouseRunnerExtension_lhFlow;
 class LighthouseRunnerExtension extends PuppeteerRunnerExtension {
-    constructor() {
-        super(...arguments);
-        _LighthouseRunnerExtension_isTimespanRunning.set(this, false);
-        _LighthouseRunnerExtension_isNavigationRunning.set(this, false);
-        _LighthouseRunnerExtension_lhFlow.set(this, void 0);
-    }
+    #isTimespanRunning = false;
+    #isNavigationRunning = false;
+    #lhFlow;
     async createFlowResult() {
-        if (!__classPrivateFieldGet(this, _LighthouseRunnerExtension_lhFlow, "f")) {
+        if (!this.#lhFlow) {
             throw new Error('Cannot get flow result before running the flow');
         }
-        return __classPrivateFieldGet(this, _LighthouseRunnerExtension_lhFlow, "f").createFlowResult();
+        return this.#lhFlow.createFlowResult();
     }
     async beforeAllSteps(flow) {
-        var _a;
-        await ((_a = super.beforeAllSteps) === null || _a === void 0 ? void 0 : _a.call(this, flow));
+        await super.beforeAllSteps?.(flow);
         const { startFlow, desktopConfig } = await import('lighthouse');
         let config = undefined;
         if (!isMobileFlow(flow)) {
             config = desktopConfig;
         }
-        __classPrivateFieldSet(this, _LighthouseRunnerExtension_lhFlow, await startFlow(this.page, {
+        this.#lhFlow = await startFlow(this.page, {
             config,
             flags: { screenEmulation: { disabled: true } },
             name: flow.title,
-        }), "f");
+        });
     }
     async beforeEachStep(step, flow) {
-        var _a;
-        await ((_a = super.beforeEachStep) === null || _a === void 0 ? void 0 : _a.call(this, step, flow));
+        await super.beforeEachStep?.(step, flow);
         if (step.type === StepType.SetViewport)
             return;
         if (isNavigationStep(step)) {
-            if (__classPrivateFieldGet(this, _LighthouseRunnerExtension_isTimespanRunning, "f")) {
-                await __classPrivateFieldGet(this, _LighthouseRunnerExtension_lhFlow, "f").endTimespan();
-                __classPrivateFieldSet(this, _LighthouseRunnerExtension_isTimespanRunning, false, "f");
+            if (this.#isTimespanRunning) {
+                await this.#lhFlow.endTimespan();
+                this.#isTimespanRunning = false;
             }
-            await __classPrivateFieldGet(this, _LighthouseRunnerExtension_lhFlow, "f").startNavigation();
-            __classPrivateFieldSet(this, _LighthouseRunnerExtension_isNavigationRunning, true, "f");
+            await this.#lhFlow.startNavigation();
+            this.#isNavigationRunning = true;
         }
-        else if (!__classPrivateFieldGet(this, _LighthouseRunnerExtension_isTimespanRunning, "f")) {
-            await __classPrivateFieldGet(this, _LighthouseRunnerExtension_lhFlow, "f").startTimespan();
-            __classPrivateFieldSet(this, _LighthouseRunnerExtension_isTimespanRunning, true, "f");
+        else if (!this.#isTimespanRunning) {
+            await this.#lhFlow.startTimespan();
+            this.#isTimespanRunning = true;
         }
     }
     async afterEachStep(step, flow) {
-        var _a;
-        if (__classPrivateFieldGet(this, _LighthouseRunnerExtension_isNavigationRunning, "f")) {
-            await __classPrivateFieldGet(this, _LighthouseRunnerExtension_lhFlow, "f").endNavigation();
-            __classPrivateFieldSet(this, _LighthouseRunnerExtension_isNavigationRunning, false, "f");
+        if (this.#isNavigationRunning) {
+            await this.#lhFlow.endNavigation();
+            this.#isNavigationRunning = false;
         }
-        await ((_a = super.afterEachStep) === null || _a === void 0 ? void 0 : _a.call(this, step, flow));
+        await super.afterEachStep?.(step, flow);
     }
     async afterAllSteps(flow) {
-        var _a;
-        if (__classPrivateFieldGet(this, _LighthouseRunnerExtension_isTimespanRunning, "f")) {
-            await __classPrivateFieldGet(this, _LighthouseRunnerExtension_lhFlow, "f").endTimespan();
+        if (this.#isTimespanRunning) {
+            await this.#lhFlow.endTimespan();
         }
-        await ((_a = super.afterAllSteps) === null || _a === void 0 ? void 0 : _a.call(this, flow));
+        await super.afterAllSteps?.(flow);
     }
 }
-_LighthouseRunnerExtension_isTimespanRunning = new WeakMap(), _LighthouseRunnerExtension_isNavigationRunning = new WeakMap(), _LighthouseRunnerExtension_lhFlow = new WeakMap();
 
-export { AssertedEventType, JSONStringifyExtension, LighthouseRunnerExtension, LighthouseStringifyExtension, PuppeteerReplayStringifyExtension, PuppeteerRunnerExtension, PuppeteerRunnerOwningBrowserExtension, PuppeteerStringifyExtension, Runner, RunnerExtension, Schema, SelectorType, StepType, StringifyExtension, assertAllStepTypesAreHandled, createRunner, formatAsJSLiteral, formatJSONAsJS, getSelectorType, maxTimeout, minTimeout, mouseButtonMap, parse, parseSourceMap, parseStep, pointerDeviceTypes, stringify, stringifyStep, stripSourceMap, typeableInputTypes, validTimeout };
+export { AssertedEventType, JSONStringifyExtension, LighthouseRunnerExtension, LighthouseStringifyExtension, PuppeteerReplayStringifyExtension, PuppeteerRunnerExtension, PuppeteerRunnerOwningBrowserExtension, PuppeteerStringifyExtension, Runner, RunnerExtension, Schema, SelectorType, StepType, StringifyExtension, assertAllStepTypesAreHandled, createRunner, formatAsJSLiteral, formatJSONAsJS, getSelectorType, maxTimeout, minTimeout, mouseButtonMap, parse, parseSourceMap, parseStep, pointerDeviceTypes, selectorToPElementSelector, stringify, stringifyStep, stripSourceMap, typeableInputTypes, validTimeout };
 //# sourceMappingURL=main.js.map

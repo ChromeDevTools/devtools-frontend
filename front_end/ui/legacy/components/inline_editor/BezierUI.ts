@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
 interface Params {
@@ -65,6 +66,7 @@ export class BezierUI {
       void {
     this.drawLine(parentElement, 'bezier-control-line', startX, startY, controlX, controlY);
     const circle = UI.UIUtils.createSVGChild(parentElement, 'circle', 'bezier-control-circle');
+    circle.setAttribute('jslog', `${VisualLogging.controlPoint('bezier.control-circle').track({drag: true})}`);
     circle.setAttribute('cx', String(controlX + this.radius));
     circle.setAttribute('cy', String(controlY + this.radius + this.marginTop));
     circle.setAttribute('r', String(this.radius));

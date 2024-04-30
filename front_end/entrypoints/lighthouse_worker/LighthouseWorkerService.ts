@@ -11,35 +11,6 @@ function disableLoggingForTest(): void {
 }
 
 /**
- * LegacyPort is provided to Lighthouse as the CDP connection in legacyNavigation mode.
- * Its complement is https://github.com/GoogleChrome/lighthouse/blob/v9.3.1/lighthouse-core/gather/connections/raw.js
- * It speaks pure CDP via notifyFrontendViaWorkerMessage
- *
- * Any message that comes back from Lighthouse has to go via a so-called "port".
- * This class holds the relevant callbacks that Lighthouse provides and that
- * can be called in the onmessage callback of the worker, so that the frontend
- * can communicate to Lighthouse. Lighthouse itself communicates to the frontend
- * via status updates defined below.
- */
-class LegacyPort {
-  onMessage?: (message: string) => void;
-  onClose?: () => void;
-  on(eventName: string, callback: (arg?: string) => void): void {
-    if (eventName === 'message') {
-      this.onMessage = callback;
-    } else if (eventName === 'close') {
-      this.onClose = callback;
-    }
-  }
-
-  send(message: string): void {
-    notifyFrontendViaWorkerMessage('sendProtocolMessage', {message});
-  }
-  close(): void {
-  }
-}
-
-/**
  * ConnectionProxy is a SDK interface, but the implementation has no knowledge it's a parallelConnection.
  * The CDP traffic is smuggled back and forth by the system described in LighthouseProtocolService
  */
@@ -81,7 +52,6 @@ class ConnectionProxy implements SDK.Connections.ParallelConnectionInterface {
   }
 }
 
-const legacyPort = new LegacyPort();
 let cdpConnection: ConnectionProxy|undefined;
 let endTimespan: (() => unknown)|undefined;
 
@@ -98,7 +68,8 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
   });
 
   let puppeteerHandle: Awaited<ReturnType<
-      typeof PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper['connectPuppeteerToConnection']>>|undefined;
+      typeof PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper['connectPuppeteerToConnectionViaTab']>>|
+      undefined;
 
   try {
     // For timespan we only need to perform setup on startTimespan.
@@ -128,57 +99,35 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
     const config = args.config || self.createConfig(args.categoryIDs, flags.formFactor);
     const url = args.url;
 
-    // Handle legacy Lighthouse runner path.
-    if (action === 'navigation' && flags.legacyNavigation) {
-      // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-      const connection = self.setUpWorkerConnection(legacyPort);
-      // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-      return await self.runLighthouse(url, flags, config, connection);
+    const {rootTargetId, mainSessionId} = args;
+    cdpConnection = new ConnectionProxy(mainSessionId);
+    puppeteerHandle =
+        await PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper.connectPuppeteerToConnectionViaTab({
+          connection: cdpConnection,
+          rootTargetId,
+          // Lighthouse can only audit normal pages.
+          isPageTargetCallback: targetInfo => targetInfo.type === 'page',
+        });
+
+    const {page} = puppeteerHandle;
+    if (!page) {
+      throw new Error('Could not create page handle for the target page');
     }
 
-    const {mainFrameId, mainTargetId, mainSessionId, targetInfos} = args;
-    cdpConnection = new ConnectionProxy(mainSessionId);
-    puppeteerHandle = await PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper.connectPuppeteerToConnection({
-      connection: cdpConnection,
-      mainFrameId,
-      targetInfos,
-      // For the most part, defer to Lighthouse for which targets are important.
-      // Excluding devtools targets is required for e2e tests to work, and LH doesn't support auditing DT targets anyway.
-      targetFilterCallback: targetInfo => {
-        if (targetInfo.url.startsWith('https://i0.devtools-frontend') || targetInfo.url.startsWith('devtools://')) {
-          return false;
-        }
-        // TODO only connect to iframes that are related to the main target. This requires refactoring in Puppeteer: https://github.com/puppeteer/puppeteer/issues/3667.
-        return (
-            targetInfo.targetId === mainTargetId || targetInfo.openerId === mainTargetId ||
-            targetInfo.type === 'iframe');
-      },
-      // Lighthouse can only audit normal pages.
-      isPageTargetCallback: targetInfo => targetInfo.type === 'page',
-    });
-    const {page} = puppeteerHandle;
-    const configContext = {
-      logLevel: flags.logLevel,
-      settingsOverrides: flags,
-    };
-
     if (action === 'snapshot') {
-      // TODO: Remove `configContext` once Lighthouse roll removes it
       // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-      return await self.runLighthouseSnapshot({config, page, configContext, flags});
+      return await self.snapshot(page, {config, flags});
     }
 
     if (action === 'startTimespan') {
-      // TODO: Remove `configContext` once Lighthouse roll removes it
       // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-      const timespan = await self.startLighthouseTimespan({config, page, configContext, flags});
+      const timespan = await self.startTimespan(page, {config, flags});
       endTimespan = timespan.endTimespan;
       return;
     }
 
-    // TODO: Remove `configContext` once Lighthouse roll removes it
     // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-    return await self.runLighthouseNavigation(url, {config, page, configContext, flags});
+    return await self.navigation(page, url, {config, flags});
   } catch (err) {
     return ({
       fatal: true,
@@ -188,7 +137,7 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
   } finally {
     // endTimespan will need to use the same connection as startTimespan.
     if (action !== 'startTimespan') {
-      puppeteerHandle?.browser.disconnect();
+      await puppeteerHandle?.browser.disconnect();
     }
   }
 }
@@ -266,7 +215,6 @@ async function onFrontendMessage(event: MessageEvent): Promise<void> {
     }
     case 'dispatchProtocolMessage': {
       cdpConnection?.onMessage?.(messageFromFrontend.args.message);
-      legacyPort.onMessage?.(JSON.stringify(messageFromFrontend.args.message));
       break;
     }
     default: {

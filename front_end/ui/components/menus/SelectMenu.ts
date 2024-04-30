@@ -6,15 +6,15 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Dialogs from '../dialogs/dialogs.js';
 
 import {
   Menu,
-  type MenuItemValue,
-  type MenuItemSelectedEvent,
   MenuGroup,
+  type MenuItemSelectedEvent,
+  type MenuItemValue,
 } from './Menu.js';
-
 import selectMenuStyles from './selectMenu.css.js';
 import selectMenuButtonStyles from './selectMenuButton.css.js';
 
@@ -76,6 +76,10 @@ export interface SelectMenuData {
    * Defaults to true.
    */
   showSelectedItem: boolean;
+  /**
+   * Specifies a context for the visual element.
+   */
+  jslogContext: string;
 }
 type TitleCallback = () => LitHtml.TemplateResult;
 
@@ -97,6 +101,7 @@ export class SelectMenu extends HTMLElement {
     showDivider: false,
     disabled: false,
     showSelectedItem: true,
+    jslogContext: '',
   };
 
   get buttonTitle(): string|TitleCallback {
@@ -183,6 +188,15 @@ export class SelectMenu extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
+  get jslogContext(): string {
+    return this.#props.jslogContext;
+  }
+
+  set jslogContext(jslogContext: string) {
+    this.#props.jslogContext = jslogContext;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+  }
+
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [selectMenuStyles];
   }
@@ -233,7 +247,8 @@ export class SelectMenu extends HTMLElement {
             @selectmenubuttontrigger=${this.#showMenu}
             .open=${this.#open} .showArrow=${this.showArrow}
             .arrowDirection=${this.position}
-            .disabled=${this.disabled}>
+            .disabled=${this.disabled}
+            .jslogContext=${this.jslogContext}>
               ${buttonLabel}
             </${SelectMenuButton.litTagName}>
         `;
@@ -305,6 +320,7 @@ export interface SelectMenuButtonData {
   arrowDirection: Dialogs.Dialog.DialogVerticalPosition;
   disabled: boolean;
   singleArrow: boolean;
+  jslogContext: string;
 }
 export class SelectMenuButton extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-select-menu-button`;
@@ -314,16 +330,16 @@ export class SelectMenuButton extends HTMLElement {
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [selectMenuButtonStyles];
-    ComponentHelpers.SetCSSProperty.set(this, '--deploy-menu-arrow', `url(${deployMenuArrow})`);
+    this.style.setProperty('--deploy-menu-arrow', `url(${deployMenuArrow})`);
     void coordinator.write(() => {
       switch (this.arrowDirection) {
         case Dialogs.Dialog.DialogVerticalPosition.AUTO:
         case Dialogs.Dialog.DialogVerticalPosition.TOP: {
-          ComponentHelpers.SetCSSProperty.set(this, '--arrow-angle', '180deg');
+          this.style.setProperty('--arrow-angle', '180deg');
           break;
         }
         case Dialogs.Dialog.DialogVerticalPosition.BOTTOM: {
-          ComponentHelpers.SetCSSProperty.set(this, '--arrow-angle', '0deg');
+          this.style.setProperty('--arrow-angle', '0deg');
           break;
         }
         default:
@@ -336,6 +352,7 @@ export class SelectMenuButton extends HTMLElement {
     arrowDirection: Dialogs.Dialog.DialogVerticalPosition.BOTTOM,
     disabled: false,
     singleArrow: false,
+    jslogContext: '',
   };
 
   get showArrow(): boolean {
@@ -373,6 +390,15 @@ export class SelectMenuButton extends HTMLElement {
 
   set singleArrow(singleArrow: boolean) {
     this.#props.singleArrow = singleArrow;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+  }
+
+  get jslogContext(): string {
+    return this.#props.jslogContext;
+  }
+
+  set jslogContext(jslogContext: string) {
+    this.#props.jslogContext = jslogContext;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
@@ -421,14 +447,14 @@ export class SelectMenuButton extends HTMLElement {
 
     // clang-format off
     LitHtml.render(LitHtml.html`
-      <button aria-haspopup="true" aria-expanded="false" class="show" @keydown=${this.#handleButtonKeyDown} @click=${this.#handleClick} ?disabled=${this.disabled}>${buttonTitle}</button>
+      <button aria-haspopup="true" aria-expanded="false" class="show" @keydown=${this.#handleButtonKeyDown} @click=${this.#handleClick} ?disabled=${this.disabled} jslog=${VisualLogging.dropDown(this.jslogContext)}>${buttonTitle}</button>
     `, this.#shadow, { host: this });
     // clang-format on
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-select-menu', SelectMenu);
-ComponentHelpers.CustomElements.defineComponent('devtools-select-menu-button', SelectMenuButton);
+customElements.define('devtools-select-menu', SelectMenu);
+customElements.define('devtools-select-menu-button', SelectMenuButton);
 
 declare global {
   interface HTMLElementTagNameMap {

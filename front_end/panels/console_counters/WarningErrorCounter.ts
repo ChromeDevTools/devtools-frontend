@@ -10,6 +10,7 @@ import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 const UIStrings = {
   /**
@@ -51,6 +52,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
         UI.Toolbar.ToolbarItemWithCompactLayoutEvents.CompactLayoutUpdated, this.onSetCompactLayout, this);
 
     this.consoleCounter = new IconButton.IconButton.IconButton();
+    this.consoleCounter.setAttribute('jslog', `${VisualLogging.counter('console').track({click: true})}`);
     countersWrapper.appendChild(this.consoleCounter);
     this.consoleCounter.data = {
       clickHandler: Common.Console.Console.instance().show.bind(Common.Console.Console.instance()),
@@ -62,9 +64,11 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
 
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     this.issueCounter = new IssueCounter.IssueCounter.IssueCounter();
+    this.issueCounter.classList.add('main-toolbar');
+    this.issueCounter.setAttribute('jslog', `${VisualLogging.counter('issue').track({click: true})}`);
     countersWrapper.appendChild(this.issueCounter);
     this.issueCounter.data = {
-      clickHandler: (): void => {
+      clickHandler: () => {
         Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.StatusBarIssuesCounter);
         void UI.ViewManager.ViewManager.instance().showView('issues-pane');
       },

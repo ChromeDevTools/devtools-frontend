@@ -8,46 +8,41 @@
   min-height: 20px;
 }
 
+devtools-icon {
+  color: var(--icon-file-default);
+}
+
+.navigator-sm-script-tree-item devtools-icon,
+.navigator-script-tree-item devtools-icon,
+.navigator-snippet-tree-item devtools-icon {
+  color: var(--icon-file-script);
+}
+
+.navigator-sm-stylesheet-tree-item devtools-icon,
+.navigator-stylesheet-tree-item devtools-icon {
+  color: var(--icon-file-styles);
+}
+
+.navigator-image-tree-item devtools-icon {
+  color: var(--icon-file-image);
+}
+
+.navigator-font-tree-item devtools-icon {
+  color: var(--icon-file-font);
+}
+
 .tree-outline li:hover:not(.selected) .selection {
   display: block;
 
-  --icon-color: var(--icon-default-hover);
-}
-
-.navigator-sm-script-tree-item,
-.navigator-script-tree-item,
-.navigator-snippet-tree-item {
-  --icon-color: var(--icon-file-script);
-}
-
-.navigator-sm-stylesheet-tree-item,
-.navigator-stylesheet-tree-item {
-  --icon-color: var(--icon-file-styles);
-}
-
-.navigator-image-tree-item {
-  --icon-color: var(--icon-file-image);
-}
-
-.navigator-font-tree-item {
-  --icon-color: var(--icon-file-font);
-}
-
-.force-white-icons {
-  --icon-color: var(--icon-force-white);
+  & devtools-icon {
+    color: var(--icon-default-hover);
+  }
 }
 
 @media (forced-colors: active) {
   li,
-  .navigator-sm-script-tree-item,
-  .navigator-script-tree-item,
-  .navigator-snippet-tree-item,
-  .navigator-sm-stylesheet-tree-item,
-  .navigator-stylesheet-tree-item,
-  .navigator-image-tree-item,
-  .navigator-font-tree-item {
+  devtools-icon {
     forced-color-adjust: none;
-
-    --icon-color: ButtonText;
+    color: ButtonText !important; /* stylelint-disable-line declaration-no-important */
   }
 }

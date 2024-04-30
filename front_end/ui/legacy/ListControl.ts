@@ -4,9 +4,9 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-
 import {Events as ListModelEvents, type ItemsReplacedEvent, type ListModel} from './ListModel.js';
 import {measurePreferredSize} from './UIUtils.js';
 
@@ -23,8 +23,6 @@ export interface ListDelegate<T> {
   updateSelectedItemARIA(fromElement: Element|null, toElement: Element|null): boolean;
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum ListMode {
   NonViewport = 'UI.ListMode.NonViewport',
   EqualHeightItems = 'UI.ListMode.EqualHeightItems',
@@ -100,7 +98,7 @@ export class ListControl<T> {
     const keepSelectedIndex = data.keepSelectedIndex;
 
     const oldSelectedItem = this.selectedItemInternal;
-    const oldSelectedElement = oldSelectedItem ? (this.itemToElement.get(oldSelectedItem) || null) : null;
+    const oldSelectedElement = oldSelectedItem !== null ? (this.itemToElement.get(oldSelectedItem) || null) : null;
     for (let i = 0; i < data.removed.length; i++) {
       this.itemToElement.delete(data.removed[i]);
     }
@@ -307,7 +305,7 @@ export class ListControl<T> {
 
   private onClick(event: Event): void {
     const item = this.itemForNode((event.target as Node | null));
-    if (item && this.delegate.isItemSelectable(item)) {
+    if (item !== null && this.delegate.isItemSelectable(item)) {
       this.selectItem(item);
     }
   }
@@ -357,11 +355,14 @@ export class ListControl<T> {
     return Math.min(this.model.length - 1, Math.floor(offset / this.fixedHeight));
   }
 
-  private elementAtIndex(index: number): Element {
+  elementAtIndex(index: number): Element {
     const item = this.model.at(index);
     let element = this.itemToElement.get(item);
     if (!element) {
       element = this.delegate.createElementForItem(item);
+      if (!element.hasAttribute('jslog')) {
+        element.setAttribute('jslog', `${VisualLogging.item().track({click: true})}`);
+      }
       this.itemToElement.set(item, element);
       this.updateElementARIA(element, index);
     }
@@ -428,10 +429,6 @@ export class ListControl<T> {
       }
       if (newElement) {
         ARIAUtils.setSelected(newElement, true);
-        const text = newElement.textContent;
-        if (text) {
-          ARIAUtils.alert(text);
-        }
       }
       ARIAUtils.setActiveDescendant(this.element, newElement);
     }

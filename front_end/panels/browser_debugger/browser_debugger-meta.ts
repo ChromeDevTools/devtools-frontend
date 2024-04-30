@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Sources from '../../panels/sources/sources.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type * as Sources from '../sources/sources.js';
 
 import type * as BrowserDebugger from './browser_debugger.js';
 
-import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
   /**
    *@description Command for showing the 'Event Listener Breakpoints' tool
@@ -74,6 +74,10 @@ const UIStrings = {
    *@description Command for showing the 'Content scripts' tool in the sources panel
    */
   showContentScripts: 'Show Content scripts',
+  /**
+   *@description Label for a button in the sources panel that refreshes the list of global event listeners.
+   */
+  refreshGlobalListeners: 'Refresh global listeners',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/browser_debugger/browser_debugger-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -84,6 +88,14 @@ async function loadBrowserDebuggerModule(): Promise<typeof BrowserDebugger> {
     loadedBrowserDebuggerModule = await import('./browser_debugger.js');
   }
   return loadedBrowserDebuggerModule;
+}
+
+function maybeRetrieveContextTypes<T = unknown>(
+    getClassCallBack: (loadedBrowserDebuggerModule: typeof BrowserDebugger) => T[]): T[] {
+  if (loadedBrowserDebuggerModule === undefined) {
+    return [];
+  }
+  return getClassCallBack(loadedBrowserDebuggerModule);
 }
 
 let loadedSourcesModule: (typeof Sources|undefined);
@@ -105,7 +117,7 @@ UI.ViewManager.registerViewExtension({
     const BrowserDebugger = await loadBrowserDebuggerModule();
     return BrowserDebugger.EventListenerBreakpointsSidebarPane.EventListenerBreakpointsSidebarPane.instance();
   },
-  id: 'sources.eventListenerBreakpoints',
+  id: 'sources.event-listener-breakpoints',
   location: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_BOTTOM,
   commandPrompt: i18nLazyString(UIStrings.showEventListenerBreakpoints),
   title: i18nLazyString(UIStrings.eventListenerBreakpoints),
@@ -116,9 +128,9 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   async loadView() {
     const BrowserDebugger = await loadBrowserDebuggerModule();
-    return BrowserDebugger.CSPViolationBreakpointsSidebarPane.CSPViolationBreakpointsSidebarPane.instance();
+    return new BrowserDebugger.CSPViolationBreakpointsSidebarPane.CSPViolationBreakpointsSidebarPane();
   },
-  id: 'sources.cspViolationBreakpoints',
+  id: 'sources.csp-violation-breakpoints',
   location: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_BOTTOM,
   commandPrompt: i18nLazyString(UIStrings.showCspViolationBreakpoints),
   title: i18nLazyString(UIStrings.cspViolationBreakpoints),
@@ -131,7 +143,7 @@ UI.ViewManager.registerViewExtension({
     const BrowserDebugger = await loadBrowserDebuggerModule();
     return BrowserDebugger.XHRBreakpointsSidebarPane.XHRBreakpointsSidebarPane.instance();
   },
-  id: 'sources.xhrBreakpoints',
+  id: 'sources.xhr-breakpoints',
   location: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_BOTTOM,
   commandPrompt: i18nLazyString(UIStrings.showXhrfetchBreakpoints),
   title: i18nLazyString(UIStrings.xhrfetchBreakpoints),
@@ -145,7 +157,7 @@ UI.ViewManager.registerViewExtension({
     const BrowserDebugger = await loadBrowserDebuggerModule();
     return BrowserDebugger.DOMBreakpointsSidebarPane.DOMBreakpointsSidebarPane.instance();
   },
-  id: 'sources.domBreakpoints',
+  id: 'sources.dom-breakpoints',
   location: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_BOTTOM,
   commandPrompt: i18nLazyString(UIStrings.showDomBreakpoints),
   title: i18nLazyString(UIStrings.domBreakpoints),
@@ -156,9 +168,9 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   async loadView() {
     const BrowserDebugger = await loadBrowserDebuggerModule();
-    return BrowserDebugger.ObjectEventListenersSidebarPane.ObjectEventListenersSidebarPane.instance();
+    return new BrowserDebugger.ObjectEventListenersSidebarPane.ObjectEventListenersSidebarPane();
   },
-  id: 'sources.globalListeners',
+  id: 'sources.global-listeners',
   location: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_BOTTOM,
   commandPrompt: i18nLazyString(UIStrings.showGlobalListeners),
   title: i18nLazyString(UIStrings.globalListeners),
@@ -172,7 +184,7 @@ UI.ViewManager.registerViewExtension({
     const BrowserDebugger = await loadBrowserDebuggerModule();
     return BrowserDebugger.DOMBreakpointsSidebarPane.DOMBreakpointsSidebarPane.instance();
   },
-  id: 'elements.domBreakpoints',
+  id: 'elements.dom-breakpoints',
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
   commandPrompt: i18nLazyString(UIStrings.showDomBreakpoints),
   title: i18nLazyString(UIStrings.domBreakpoints),
@@ -208,14 +220,31 @@ UI.ViewManager.registerViewExtension({
 
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
-  id: 'navigator-contentScripts',
+  id: 'navigator-content-scripts',
   title: i18nLazyString(UIStrings.contentScripts),
   commandPrompt: i18nLazyString(UIStrings.showContentScripts),
   order: 5,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesNavigator.ContentScriptsNavigatorView.instance();
+    return new Sources.SourcesNavigator.ContentScriptsNavigatorView();
+  },
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+  actionId: 'browser-debugger.refresh-global-event-listeners',
+  async loadActionDelegate() {
+    const BrowserDebugger = await loadBrowserDebuggerModule();
+    return new BrowserDebugger.ObjectEventListenersSidebarPane.ActionDelegate();
+  },
+  title: i18nLazyString(UIStrings.refreshGlobalListeners),
+  iconClass: UI.ActionRegistration.IconClass.REFRESH,
+  contextTypes() {
+    return maybeRetrieveContextTypes(
+        BrowserDebugger =>
+            [BrowserDebugger.ObjectEventListenersSidebarPane.ObjectEventListenersSidebarPane,
+    ]);
   },
 });
 
@@ -227,7 +256,7 @@ UI.ContextMenu.registerProvider({
   },
   async loadProvider() {
     const BrowserDebugger = await loadBrowserDebuggerModule();
-    return BrowserDebugger.DOMBreakpointsSidebarPane.ContextMenuProvider.instance();
+    return new BrowserDebugger.DOMBreakpointsSidebarPane.ContextMenuProvider();
   },
   experiment: undefined,
 });

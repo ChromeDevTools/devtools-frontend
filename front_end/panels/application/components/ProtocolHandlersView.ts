@@ -6,7 +6,6 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../ui/components/input/input.js';
 // inspectorCommonStyles is imported for the chrome-select class that is used for the dropdown
@@ -14,6 +13,7 @@ import * as Input from '../../../ui/components/input/input.js';
 import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import protocolHandlersViewStyles from './protocolHandlersView.css.js';
 
@@ -107,28 +107,32 @@ export class ProtocolHandlersView extends HTMLElement {
   }
 
   #renderStatusMessage(): LitHtml.TemplateResult {
-    const manifestInTextLink = UI.XLink.XLink.create(this.#manifestLink, i18nString(UIStrings.manifest));
+    const manifestInTextLink =
+        UI.XLink.XLink.create(this.#manifestLink, i18nString(UIStrings.manifest), undefined, undefined, 'manifest');
     const statusString = this.#protocolHandlers.length > 0 ? UIStrings.protocolDetected : UIStrings.protocolNotDetected;
-    const iconData: IconButton.Icon.IconData = this.#protocolHandlers.length > 0 ?
-        {iconName: 'check-circle', color: 'var(--icon-checkmark-green)', width: '16px', height: '16px'} :
-        {iconName: 'info', color: 'var(--icon-default)', width: '16px', height: '16px'};
+    // clang-format off
     return LitHtml.html`
     <div class="protocol-handlers-row status">
-            <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${iconData as IconButton.Icon.IconData}>
+            <${IconButton.Icon.Icon.litTagName} class="inline-icon"
+                                                name=${this.#protocolHandlers.length > 0 ? 'check-circle' : 'info'}>
             </${IconButton.Icon.Icon.litTagName}>
             ${i18n.i18n.getFormatLocalizedString(str_, statusString, {
       PH1: manifestInTextLink,
     })}
     </div>
     `;
+    // clang-format on
   }
 
   #renderProtocolTest(): LitHtml.LitTemplate {
     if (this.#protocolHandlers.length === 0) {
       return LitHtml.nothing;
     }
-    const protocolOptions = this.#protocolHandlers.filter(p => p.protocol)
-                                .map(p => LitHtml.html`<option value=${p.protocol}>${p.protocol}://</option>`);
+    const protocolOptions =
+        this.#protocolHandlers.filter(p => p.protocol)
+            .map(p => LitHtml.html`<option value=${p.protocol} jslog=${VisualLogging.item(p.protocol).track({
+              click: true,
+            })}>${p.protocol}://</option>`);
     return LitHtml.html`
        <div class="protocol-handlers-row">
         <select class="chrome-select protocol-select" @change=${this.#handleProtocolSelect} aria-label=${
@@ -170,8 +174,8 @@ export class ProtocolHandlersView extends HTMLElement {
   }
 
   #render(): void {
-    const protocolDocLink =
-        UI.XLink.XLink.create(PROTOCOL_DOCUMENT_URL, i18nString(UIStrings.protocolHandlerRegistrations));
+    const protocolDocLink = UI.XLink.XLink.create(
+        PROTOCOL_DOCUMENT_URL, i18nString(UIStrings.protocolHandlerRegistrations), undefined, undefined, 'learn-more');
     // clang-format off
     LitHtml.render(LitHtml.html`
       ${this.#renderStatusMessage()}
@@ -184,10 +188,9 @@ export class ProtocolHandlersView extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-protocol-handlers-view', ProtocolHandlersView);
+customElements.define('devtools-protocol-handlers-view', ProtocolHandlersView);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-protocol-handlers-view': ProtocolHandlersView;
   }

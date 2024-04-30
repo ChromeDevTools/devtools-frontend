@@ -5,6 +5,7 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/generate_css.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
@@ -28,6 +29,7 @@ devtools_module("mobile_throttling") {
     "../../core/sdk:bundle",
     "../../ui/components/icon_button:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/visual_logging:bundle",
   ]
 }
 
@@ -41,10 +43,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/panels/mobile_throttling/*",
     "../../entrypoints/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../application/*",
     "../elements/*",
     "../emulation/*",
@@ -55,18 +54,27 @@ devtools_entrypoint("bundle") {
   visibility += devtools_panels_visibility
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "mobile_throttling-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [ "../..:legacy_entrypoints" ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "mobile_throttling-meta.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../core/i18n:bundle",
+    "../../ui/legacy:bundle",
+  ]
 
   visibility = [ "../../entrypoints/*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "ThrottlingManager.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../core/sdk:bundle",
+    "../../testing",
+  ]
 }

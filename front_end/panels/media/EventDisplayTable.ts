@@ -6,9 +6,9 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import eventDisplayTableStyles from './eventDisplayTable.css.js';
-
 import {type PlayerEvent} from './MediaModel.js';
 
 const UIStrings = {
@@ -40,7 +40,7 @@ export interface EventDisplayColumnConfig {
 }
 
 export const enum MediaEventColumnKeys {
-  Timestamp = 'displayTimestamp',
+  Timestamp = 'display-timestamp',
   Event = 'event',
   Value = 'value',
 }
@@ -76,6 +76,8 @@ export class PlayerEventsView extends UI.Widget.VBox {
 
   constructor() {
     super();
+
+    this.element.setAttribute('jslog', `${VisualLogging.pane('events')}`);
 
     // Set up element styles.
 

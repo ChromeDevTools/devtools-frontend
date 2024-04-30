@@ -1858,13 +1858,11 @@ export class TimelineUIUtils {
     }
 
     if (event.args.data.initialPriority) {
-      const initialPriority = PerfUI.NetworkPriorities.uiLabelForNetworkPriority(
-          event.args.data.initialPriority as Protocol.Network.ResourcePriority);
+      const initialPriority = PerfUI.NetworkPriorities.uiLabelForNetworkPriority(event.args.data.initialPriority);
       contentHelper.appendTextRow(i18nString(UIStrings.initialPriority), initialPriority);
     }
 
-    const priority = PerfUI.NetworkPriorities.uiLabelForNetworkPriority(
-        event.args.data.priority as Protocol.Network.ResourcePriority);
+    const priority = PerfUI.NetworkPriorities.uiLabelForNetworkPriority(event.args.data.priority);
 
     contentHelper.appendTextRow(i18nString(UIStrings.priority), priority);
 

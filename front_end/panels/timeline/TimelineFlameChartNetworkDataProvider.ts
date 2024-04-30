@@ -5,7 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Protocol from '../../generated/protocol.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -25,7 +25,6 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
 
   #timelineDataInternal?: PerfUI.FlameChart.FlameChartTimelineData|null;
   #lastSelection?: Selection;
-  #priorityToValue?: Map<string, number>;
   #traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null;
   constructor() {
     this.#minimumBoundaryInternal = 0;
@@ -281,24 +280,14 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
           i18n.TimeUtilities.millisToString(duration, true);
     }
     const div = (contents.createChild('span') as HTMLElement);
-    div.textContent = PerfUI.NetworkPriorities.uiLabelForNetworkPriority(
-        (event.args.data.priority as Protocol.Network.ResourcePriority));
+    div.textContent = PerfUI.NetworkPriorities.uiLabelForNetworkPriority((event.args.data.priority));
     div.style.color = this.#colorForPriority(event.args.data.priority) || 'black';
     contents.createChild('span').textContent = Platform.StringUtilities.trimMiddle(event.args.data.url, maxURLChars);
     return element;
   }
 
-  #colorForPriority(priority: string): string|null {
-    if (!this.#priorityToValue) {
-      this.#priorityToValue = new Map([
-        [Protocol.Network.ResourcePriority.VeryLow, 1],
-        [Protocol.Network.ResourcePriority.Low, 2],
-        [Protocol.Network.ResourcePriority.Medium, 3],
-        [Protocol.Network.ResourcePriority.High, 4],
-        [Protocol.Network.ResourcePriority.VeryHigh, 5],
-      ]);
-    }
-    const value = this.#priorityToValue.get(priority);
+  #colorForPriority(priority: Protocol.Network.ResourcePriority): string|null {
+    const value = PerfUI.NetworkPriorities.networkPriorityWeight(priority);
     return value ? `hsla(214, 80%, 50%, ${value / 5})` : null;
   }
 

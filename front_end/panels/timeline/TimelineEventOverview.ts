@@ -30,6 +30,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -84,10 +85,10 @@ export abstract class TimelineEventOverview extends PerfUI.TimelineOverviewPane.
   }
 }
 
-const HIGH_NETWORK_PRIORITIES = new Set<TraceEngine.Types.TraceEvents.Priority>([
-  'VeryHigh',
-  'High',
-  'Medium',
+const HIGH_NETWORK_PRIORITIES = new Set<Protocol.Network.ResourcePriority>([
+  Protocol.Network.ResourcePriority.VeryHigh,
+  Protocol.Network.ResourcePriority.High,
+  Protocol.Network.ResourcePriority.Medium,
 ]);
 
 export class TimelineEventOverviewNetwork extends TimelineEventOverview {

@@ -35,11 +35,15 @@ export function uiLabelForNetworkPriority(priority: Protocol.Network.ResourcePri
 
 const uiLabelToPriorityMapInstance = new Map<string, Protocol.Network.ResourcePriority>();
 
-export function uiLabelToNetworkPriority(priorityLabel: string): string {
+export function uiLabelToNetworkPriority(priorityLabel: string): Protocol.Network.ResourcePriority {
   if (uiLabelToPriorityMapInstance.size === 0) {
     priorityUILabelMap().forEach((value, key) => uiLabelToPriorityMapInstance.set(value, key));
   }
-  return uiLabelToPriorityMapInstance.get(priorityLabel) || '';
+  const priority = uiLabelToPriorityMapInstance.get(priorityLabel);
+  if (priority) {
+    return priority;
+  }
+  throw new Error('Priority not found');
 }
 
 const priorityUILabelMapInstance: Map<Protocol.Network.ResourcePriority, string> = new Map();

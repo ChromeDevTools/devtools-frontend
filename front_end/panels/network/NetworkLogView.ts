@@ -676,8 +676,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private static sortSearchValues(key: string, values: string[]): void {
     if (key === NetworkForward.UIFilter.FilterType.Priority) {
       values.sort((a, b) => {
-        const aPriority = (PerfUI.NetworkPriorities.uiLabelToNetworkPriority(a) as Protocol.Network.ResourcePriority);
-        const bPriority = (PerfUI.NetworkPriorities.uiLabelToNetworkPriority(b) as Protocol.Network.ResourcePriority);
+        const aPriority = PerfUI.NetworkPriorities.uiLabelToNetworkPriority(a);
+        const bPriority = PerfUI.NetworkPriorities.uiLabelToNetworkPriority(b);
         return PerfUI.NetworkPriorities.networkPriorityWeight(aPriority) -
             PerfUI.NetworkPriorities.networkPriorityWeight(bPriority);
       });

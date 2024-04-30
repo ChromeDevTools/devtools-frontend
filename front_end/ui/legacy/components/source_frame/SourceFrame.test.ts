@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../core/common/common.js';
+import * as Root from '../../../../core/root/root.js';
 import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import {
   dispatchInputEvent,
@@ -14,11 +15,32 @@ import * as UI from '../../legacy.js';
 import * as SourceFrame from './source_frame.js';
 
 describeWithEnvironment('SourceFrame', () => {
+  let setting: Common.Settings.Setting<boolean>;
+
+  beforeEach(() => {
+    setting = Common.Settings.Settings.instance().createSetting(
+        'disable-self-xss-warning', false, Common.Settings.SettingStorageType.Synced);
+    setting.set(false);
+  });
+
   async function createSourceFrame(content: string): Promise<SourceFrame.SourceFrame.SourceFrameImpl> {
     const deferredContentStub = {content: '', isEncoded: true} as TextUtils.ContentProvider.DeferredContent;
     const sourceFrame = new SourceFrame.SourceFrame.SourceFrameImpl(async () => deferredContentStub);
     await sourceFrame.setContent(content);
     return sourceFrame;
+  }
+
+  async function pasteIntoSourceFrame(): Promise<{codeMirror: HTMLDivElement, dataTransfer: DataTransfer}> {
+    const sourceFrame = await createSourceFrame('Example');
+    const codeMirror =
+        sourceFrame.element.querySelector('devtools-text-editor')?.shadowRoot?.querySelector('.cm-content') || null;
+    assert.instanceOf(codeMirror, HTMLDivElement);
+
+    const dataTransfer = new DataTransfer();
+    dataTransfer.setData('text/plain', 'foo');
+    dispatchPasteEvent(codeMirror, {clipboardData: dataTransfer, bubbles: true});
+    await new Promise(resolve => setTimeout(resolve, 0));
+    return {codeMirror, dataTransfer};
   }
 
   it('finds string by simple regex', async () => {
@@ -64,20 +86,7 @@ describeWithEnvironment('SourceFrame', () => {
   });
 
   it('shows self-XSS warning which the user can disable', async () => {
-    const setting = Common.Settings.Settings.instance().createSetting(
-        'disable-self-xss-warning', false, Common.Settings.SettingStorageType.Synced);
-    assert.isFalse(setting.get());
-
-    const sourceFrame = await createSourceFrame('Example');
-    const codeMirror =
-        sourceFrame.element.querySelector('devtools-text-editor')?.shadowRoot?.querySelector('.cm-content') || null;
-    assert.instanceOf(codeMirror, HTMLDivElement);
-
-    const dt = new DataTransfer();
-    dt.setData('text/plain', 'foo');
-    dispatchPasteEvent(codeMirror, {clipboardData: dt, bubbles: true});
-    await new Promise(resolve => setTimeout(resolve, 0));
-
+    const {codeMirror, dataTransfer} = await pasteIntoSourceFrame();
     const dialogShadowRoot = document.body.querySelector<HTMLDivElement>('[data-devtools-glass-pane]')
                                  ?.shadowRoot?.querySelector('.widget')
                                  ?.shadowRoot ||
@@ -100,9 +109,18 @@ describeWithEnvironment('SourceFrame', () => {
 
     assert.isTrue(setting.get());
 
-    dispatchPasteEvent(codeMirror, {clipboardData: dt, bubbles: true});
+    dispatchPasteEvent(codeMirror, {clipboardData: dataTransfer, bubbles: true});
     await new Promise(resolve => setTimeout(resolve, 0));
     const dialogContainer = document.body.querySelector<HTMLDivElement>('[data-devtools-glass-pane]');
     assert.isNull(dialogContainer);
+  });
+
+  it('does not show self-XSS warning when disabled via command line', async () => {
+    const stub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
+    stub.withArgs('disableSelfXssWarnings').returns('true');
+    await pasteIntoSourceFrame();
+    const dialogContainer = document.body.querySelector<HTMLDivElement>('[data-devtools-glass-pane]');
+    assert.isNull(dialogContainer);
+    stub.restore();
   });
 });

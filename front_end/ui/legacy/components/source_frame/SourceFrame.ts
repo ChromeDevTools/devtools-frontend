@@ -327,7 +327,8 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   }
 
   protected onPaste(): boolean {
-    if (Root.Runtime.Runtime.queryParam('isChromeForTesting') || this.selfXssWarningDisabledSetting.get()) {
+    if (Root.Runtime.Runtime.queryParam('isChromeForTesting') ||
+        Root.Runtime.Runtime.queryParam('disableSelfXssWarnings') || this.selfXssWarningDisabledSetting.get()) {
       return false;
     }
     void this.showSelfXssWarning();

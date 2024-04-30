@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {dispatchPasteEvent} from '../../testing/DOMHelpers.js';
@@ -204,6 +205,21 @@ describeWithMockConnection('ConsoleView', () => {
             createConsoleMessage(target, String(i), SDK.ConsoleModel.FrontendMessageType.Command));
       }
       assert.isTrue(selfXssWarningDisabledSetting.get());
+    });
+
+    it('is not shown when disabled via command line', () => {
+      const stub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
+      stub.withArgs('disableSelfXssWarnings').returns('true');
+
+      const dt = new DataTransfer();
+      dt.setData('text/plain', 'foo');
+
+      const messagesElement = consoleView.element.querySelector('#console-messages');
+      assert.instanceOf(messagesElement, HTMLElement);
+      dispatchPasteEvent(messagesElement, {clipboardData: dt, bubbles: true});
+
+      assert.strictEqual(Common.Console.Console.instance().messages().length, 0);
+      stub.restore();
     });
   });
 

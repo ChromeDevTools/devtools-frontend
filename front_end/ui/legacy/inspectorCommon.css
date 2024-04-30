@@ -150,6 +150,12 @@ body {
   white-space: pre-wrap;
 }
 
+.source-code .devtools-link.text-button {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 img {
   -webkit-user-drag: none;
 }

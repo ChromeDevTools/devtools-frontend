@@ -275,10 +275,13 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       const networkDetails = await TimelineUIUtils.buildSyntheticNetworkRequestDetails(
           this.#traceEngineData, event, this.detailsLinkifier);
       this.setContent(networkDetails);
-    } else if (TimelineSelection.isTraceEventSelection(selectionObject)) {
+    } else if (
+        TimelineSelection.isTraceEventSelection(selectionObject) && this.#traceEngineData &&
+        TraceEngine.Legacy.eventIsFromNewEngine(selectionObject)) {
+      // TODO: the eventIsFromNewEngine check can be removed once crrev.com/c/5505573 lands.
       const event = selectionObject;
       const traceEventDetails =
-          await TimelineUIUtils.buildTraceEventDetails(event, this.detailsLinkifier, true, this.#traceEngineData);
+          await TimelineUIUtils.buildTraceEventDetails(this.#traceEngineData, event, this.detailsLinkifier, true);
       this.appendDetailsTabsForTraceEventAndShowDetails(event, traceEventDetails);
     } else if (TimelineSelection.isFrameObject(selectionObject)) {
       const frame = selectionObject;

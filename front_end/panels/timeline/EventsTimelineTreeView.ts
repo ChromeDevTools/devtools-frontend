@@ -132,11 +132,15 @@ export class EventsTimelineTreeView extends TimelineTreeView {
   }
 
   override showDetailsForNode(node: TimelineModel.TimelineProfileTree.Node): boolean {
+    const traceParseData = this.traceParseData();
+    if (!traceParseData) {
+      return false;
+    }
     const traceEvent = node.event;
     if (!traceEvent) {
       return false;
     }
-    void TimelineUIUtils.buildTraceEventDetails(traceEvent, this.linkifier, false, this.traceParseData())
+    void TimelineUIUtils.buildTraceEventDetails(traceParseData, traceEvent, this.linkifier, false)
         .then(fragment => this.detailsView.element.appendChild(fragment));
     return true;
   }

@@ -4,8 +4,8 @@
 
 import * as TraceEngine from '../../models/trace/trace.js';
 
-type PermittedObjectTypes = TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame|TraceEngine.Legacy.Event|
-                            TraceEngine.Types.TraceEvents.TraceEventData|SelectionRange;
+type PermittedObjectTypes =
+    TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame|TraceEngine.Types.TraceEvents.TraceEventData|SelectionRange;
 
 const SelectionRangeSymbol = Symbol('SelectionRange');
 export type SelectionRange = typeof SelectionRangeSymbol;
@@ -49,8 +49,7 @@ export class TimelineSelection {
     return false;
   }
 
-  static isTraceEventSelection(object: PermittedObjectTypes): object is TraceEngine.Legacy.Event
-      |TraceEngine.Types.TraceEvents.TraceEventData {
+  static isTraceEventSelection(object: PermittedObjectTypes): object is TraceEngine.Types.TraceEvents.TraceEventData {
     if (object instanceof TraceEngine.Legacy.Event) {
       return true;
     }
@@ -65,7 +64,7 @@ export class TimelineSelection {
     return TraceEngine.Legacy.eventIsFromNewEngine(object);
   }
 
-  static fromTraceEvent(event: TraceEngine.Legacy.CompatibleTraceEvent): TimelineSelection {
+  static fromTraceEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): TimelineSelection {
     const {startTime, endTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
     return new TimelineSelection(startTime, TraceEngine.Types.Timing.MilliSeconds(endTime || (startTime + 1)), event);
   }

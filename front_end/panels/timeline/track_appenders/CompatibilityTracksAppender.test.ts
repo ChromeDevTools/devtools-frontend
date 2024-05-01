@@ -20,10 +20,9 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
     entryData = [];
     flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
     entryTypeByLevel = [];
-    const data = await TraceLoader.allModels(context, fixture);
-    traceParsedData = data.traceParsedData;
+    traceParsedData = await TraceLoader.traceEngine(context, fixture);
     tracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
-        flameChartData, traceParsedData, entryData, entryTypeByLevel, data.timelineModel);
+        flameChartData, traceParsedData, entryData, entryTypeByLevel);
     const timingsTrack = tracksAppender.timingsTrackAppender();
     const gpuTrack = tracksAppender.gpuTrackAppender();
     const threadAppenders = tracksAppender.threadAppenders();
@@ -106,7 +105,6 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
         const timingsGroupEvents = tracksAppender.groupEventsForTreeView(flameChartData.groups[0]);
         if (!timingsGroupEvents) {
           assert.fail('Could not find events for group');
-          return;
         }
         const allTimingEvents = [
           ...traceParsedData.UserTimings.consoleTimings,
@@ -122,7 +120,6 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
             readonly TraceModel.Types.TraceEvents.TraceEventData[];
         if (!gpuGroupEvents) {
           assert.fail('Could not find events for group');
-          return;
         }
         assert.deepEqual(gpuGroupEvents, traceParsedData.GPU.mainGPUThreadTasks);
       });

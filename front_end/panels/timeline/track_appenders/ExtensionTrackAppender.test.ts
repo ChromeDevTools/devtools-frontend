@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Root from '../../../core/root/root.js';
-import type * as TimelineModel from '../../../models/timeline_model/timeline_model.js';
 import type * as TraceModel from '../../../models/trace/trace.js';
 import * as TraceEngine from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
@@ -15,12 +14,11 @@ import * as Timeline from '../timeline.js';
 function initTrackAppender(
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData, traceParsedData: TraceModel.Handlers.Types.TraceParseData,
     entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[],
-    entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
-    timelineModel: TimelineModel.TimelineModel.TimelineModelImpl):
+    entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[]):
     Timeline.ExtensionTrackAppender.ExtensionTrackAppender[] {
   Timeline.ExtensionDataGatherer.ExtensionDataGatherer.instance().modelChanged(traceParsedData);
   const compatibilityTracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
-      flameChartData, traceParsedData, entryData, entryTypeByLevel, timelineModel);
+      flameChartData, traceParsedData, entryData, entryTypeByLevel);
 
   return compatibilityTracksAppender.allVisibleTrackAppenders().filter(track => track.appenderName === 'Extension') as
       Timeline.ExtensionTrackAppender.ExtensionTrackAppender[];
@@ -35,10 +33,8 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
 
   beforeEach(async function() {
     Root.Runtime.experiments.enableForTest('timeline-extensions');
-    const data = await TraceLoader.allModels(this, 'extension-tracks-and-marks.json.gz');
-    traceParsedData = data.traceParsedData;
-    extensionTrackAppenders =
-        initTrackAppender(flameChartData, traceParsedData, entryData, entryTypeByLevel, data.timelineModel);
+    traceParsedData = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
+    extensionTrackAppenders = initTrackAppender(flameChartData, traceParsedData, entryData, entryTypeByLevel);
     let level = 0;
     extensionTrackAppenders.forEach(appender => {
       level = appender.appendTrackAtLevel(level);

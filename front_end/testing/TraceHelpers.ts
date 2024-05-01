@@ -45,12 +45,12 @@ export async function getMainFlameChartWithTracks(
   await initializeGlobalVars();
 
   // This function is used to load a component example.
-  const {traceParsedData, performanceModel} = await TraceLoader.allModels(/* context= */ null, traceFileName);
+  const traceParsedData = await TraceLoader.traceEngine(/* context= */ null, traceFileName);
 
   const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
   // The data provider still needs a reference to the legacy model to
   // work properly.
-  dataProvider.setModel(performanceModel, traceParsedData);
+  dataProvider.setModel(traceParsedData);
   const tracksAppender = dataProvider.compatibilityTracksAppenderInstance();
   tracksAppender.setVisibleTracks(trackAppenderNames);
   dataProvider.buildFromTrackAppenders(

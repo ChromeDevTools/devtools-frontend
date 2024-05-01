@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as TimelineModel from '../../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
@@ -14,10 +13,9 @@ function initTrackAppender(
     traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
     entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[],
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
-    timelineModel: TimelineModel.TimelineModel.TimelineModelImpl):
-    Timeline.InteractionsTrackAppender.InteractionsTrackAppender {
+    ): Timeline.InteractionsTrackAppender.InteractionsTrackAppender {
   const compatibilityTracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
-      flameChartData, traceParsedData, entryData, entryTypeByLevel, timelineModel);
+      flameChartData, traceParsedData, entryData, entryTypeByLevel);
   return compatibilityTracksAppender.interactionsTrackAppender();
 }
 
@@ -32,14 +30,13 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
     const entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
     const entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
     const flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
-    const allModels = await TraceLoader.allModels(context, trace);
-    const interactionsTrackAppender = initTrackAppender(
-        flameChartData, allModels.traceParsedData, entryData, entryTypeByLevel, allModels.timelineModel);
+    const traceParsedData = await TraceLoader.traceEngine(context, trace);
+    const interactionsTrackAppender = initTrackAppender(flameChartData, traceParsedData, entryData, entryTypeByLevel);
     interactionsTrackAppender.appendTrackAtLevel(0);
 
     return {
       entryTypeByLevel,
-      traceParsedData: allModels.traceParsedData,
+      traceParsedData,
       flameChartData,
       interactionsTrackAppender,
       entryData,

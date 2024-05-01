@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
-import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
@@ -101,12 +100,6 @@ export class CompatibilityTracksAppender {
   #allTrackAppenders: TrackAppender[] = [];
   #visibleTrackNames: Set<TrackAppenderName> = new Set([...TrackNames]);
 
-  // TODO(crbug.com/1416533)
-  // These are used only for compatibility with the legacy flame chart
-  // architecture of the panel. Once all tracks have been migrated to
-  // use the new engine and flame chart architecture, the reference can
-  // be removed.
-  #legacyTimelineModel: TimelineModel.TimelineModel.TimelineModelImpl;
   #legacyEntryTypeByLevel: EntryType[];
   #timingsTrackAppender: TimingsTrackAppender;
   #animationsTrackAppender: AnimationsTrackAppender;
@@ -131,7 +124,7 @@ export class CompatibilityTracksAppender {
   constructor(
       flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
       traceParsedData: TraceEngine.Handlers.Types.TraceParseData, entryData: TimelineFlameChartEntry[],
-      legacyEntryTypeByLevel: EntryType[], legacyTimelineModel: TimelineModel.TimelineModel.TimelineModelImpl) {
+      legacyEntryTypeByLevel: EntryType[]) {
     this.#flameChartData = flameChartData;
     this.#traceParsedData = traceParsedData;
     this.#entryData = entryData;
@@ -141,7 +134,6 @@ export class CompatibilityTracksAppender {
         /* lightnessSpace= */ 50,
         /* alphaSpace= */ 0.7);
     this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;
-    this.#legacyTimelineModel = legacyTimelineModel;
     this.#timingsTrackAppender = new TimingsTrackAppender(this, this.#traceParsedData, this.#colorGenerator);
     this.#allTrackAppenders.push(this.#timingsTrackAppender);
 
@@ -267,19 +259,6 @@ export class CompatibilityTracksAppender {
 
     this.#threadAppenders.sort((a, b) => weight(a) - weight(b));
     this.#allTrackAppenders.push(...this.#threadAppenders);
-  }
-  /**
-   * Given a trace event returns instantiates a legacy SDK.Event. This should
-   * be used for compatibility purposes only.
-   */
-  getLegacyEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): TraceEngine.Legacy.Event|null {
-    const process = this.#legacyTimelineModel.tracingModel()?.getProcessById(event.pid);
-    const thread = process?.threadById(event.tid);
-    if (!thread) {
-      return null;
-    }
-    return TraceEngine.Legacy.PayloadEvent.fromPayload(
-        event as unknown as TraceEngine.TracingManager.EventPayload, thread);
   }
 
   timingsTrackAppender(): TimingsTrackAppender {

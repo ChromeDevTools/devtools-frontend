@@ -43,7 +43,6 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import {CompatibilityTracksAppender, type TrackAppenderName} from './CompatibilityTracksAppender.js';
 import * as Components from './components/components.js';
 import {initiatorsDataToDraw} from './Initiators.js';
-import {type PerformanceModel} from './PerformanceModel.js';
 import {ThreadAppender} from './ThreadAppender.js';
 import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
@@ -74,14 +73,10 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartDataProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-// at the moment there are two types defined for trace events: traceeventdata and
-// SDK.TracingModel.Event. This is only for compatibility between the legacy system
-// and the new system proposed in go/rpp-flamechart-arch. In the future, once all
-// tracks have been migrated to the new system, all entries will be of the
-// TraceEventData type.
+// Frames are special cased because we don't render them as a normal track, hence the distinction here.
 export type TimelineFlameChartEntry =
-    (TraceEngine.Legacy.Event|TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame|
-     TraceEngine.Types.TraceEvents.TraceEventData);
+    TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame|TraceEngine.Types.TraceEvents.TraceEventData;
+
 export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     PerfUI.FlameChart.FlameChartDataProvider {
   private droppedFramePatternCanvas: HTMLCanvasElement;
@@ -93,9 +88,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   // deprecated in favor of using traceEngineData (new RPP engine) only
   // as part of the work in crbug.com/1386091. For this reason they
   // have the "legacy" prefix on their name.
-  private legacyPerformanceModel: PerformanceModel|null;
   private compatibilityTracksAppender: CompatibilityTracksAppender|null;
-  private legacyTimelineModel: TimelineModel.TimelineModel.TimelineModelImpl|null;
   private traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null;
   private isCpuProfile = false;
 
@@ -124,8 +117,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.preparePatternCanvas();
     this.timelineDataInternal = null;
     this.currentLevel = 0;
-    this.legacyPerformanceModel = null;
-    this.legacyTimelineModel = null;
     this.compatibilityTracksAppender = null;
     this.traceEngineData = null;
     this.minimumBoundaryInternal = 0;
@@ -185,17 +176,13 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return Object.assign(defaultGroupStyle, extra);
   }
 
-  setModel(
-      performanceModel: PerformanceModel|null, newTraceEngineData: TraceEngine.Handlers.Types.TraceParseData|null,
-      isCpuProfile = false): void {
+  setModel(traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null, isCpuProfile = false): void {
     this.reset();
-    this.legacyPerformanceModel = performanceModel;
-    this.legacyTimelineModel = performanceModel && performanceModel.timelineModel();
-    this.traceEngineData = newTraceEngineData;
+    this.traceEngineData = traceEngineData;
 
     this.isCpuProfile = isCpuProfile;
-    if (newTraceEngineData) {
-      const {traceBounds} = newTraceEngineData.Meta;
+    if (traceEngineData) {
+      const {traceBounds} = traceEngineData.Meta;
       const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceBounds.min);
       const maxTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceBounds.max);
       this.minimumBoundaryInternal = minTime;
@@ -212,14 +199,13 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    */
   compatibilityTracksAppenderInstance(forceNew = false): CompatibilityTracksAppender {
     if (!this.compatibilityTracksAppender || forceNew) {
-      if (!this.traceEngineData || !this.legacyTimelineModel) {
+      if (!this.traceEngineData) {
         throw new Error(
             'Attempted to instantiate a CompatibilityTracksAppender without having set the trace parse data first.');
       }
       this.timelineDataInternal = this.#instantiateTimelineData();
       this.compatibilityTracksAppender = new CompatibilityTracksAppender(
-          this.timelineDataInternal, this.traceEngineData, this.entryData, this.entryTypeByLevel,
-          this.legacyTimelineModel);
+          this.timelineDataInternal, this.traceEngineData, this.entryData, this.entryTypeByLevel);
     }
     return this.compatibilityTracksAppender;
   }
@@ -287,7 +273,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   textColor(index: number): string {
     const event = this.entryData[index];
-    if (!TimelineFlameChartDataProvider.isEntryRegularEvent(event)) {
+    if (!TimelineFlameChartDataProvider.timelineEntryIsTraceEvent(event)) {
       return FlameChartStyle.textColor;
     }
     return this.isIgnoreListedEvent(event) ? '#888' : FlameChartStyle.textColor;
@@ -333,9 +319,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
 
     this.timelineDataInternal = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
-    if (!this.legacyTimelineModel) {
-      return this.timelineDataInternal;
-    }
 
     if (rebuild) {
       this.reset(/* resetCompatibilityTracksAppender= */ false);
@@ -402,9 +385,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       }
     };
 
-    if (!this.legacyTimelineModel) {
-      return;
-    }
     const allTrackAppenders =
         this.compatibilityTracksAppender ? this.compatibilityTracksAppender.allVisibleTrackAppenders() : [];
 
@@ -445,36 +425,29 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return this.timeSpan;
   }
 
-  /**
-   * Narrows an entry of type TimelineFlameChartEntry to the 2 types of
-   * simple trace events (legacy and new engine definitions).
-   */
-  static isEntryRegularEvent(entry: TimelineFlameChartEntry):
-      entry is(TraceEngine.Types.TraceEvents.TraceEventData|TraceEngine.Legacy.Event) {
-    return 'name' in entry;
+  static timelineEntryIsTraceEvent(entry: TimelineFlameChartEntry):
+      entry is TraceEngine.Types.TraceEvents.TraceEventData {
+    return entry instanceof TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame === false;
   }
 
-  search(startTime: number, endTime: number, filter: TimelineModel.TimelineModelFilter.TimelineModelFilter): number[] {
+  search(
+      startTime: TraceEngine.Types.Timing.MilliSeconds, endTime: TraceEngine.Types.Timing.MilliSeconds,
+      filter: TimelineModel.TimelineModelFilter.TimelineModelFilter): number[] {
     const result = [];
     this.timelineData();
     for (let i = 0; i < this.entryData.length; ++i) {
       const entry = this.entryData[i];
-      if (!TimelineFlameChartDataProvider.isEntryRegularEvent(entry)) {
-        continue;
-      }
       if (!entry) {
         continue;
       }
 
-      // Until all the tracks are powered by the new engine, we need to
-      // consider that these entries could be either new engine or legacy
-      // engine.
-      const entryStartTime = TraceEngine.Legacy.eventIsFromNewEngine(entry) ?
-          TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(entry).startTime :
-          entry.startTime;
-      const entryEndTime = TraceEngine.Legacy.eventIsFromNewEngine(entry) ?
-          TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(entry).endTime :
-          entry.endTime;
+      if (!TimelineFlameChartDataProvider.timelineEntryIsTraceEvent(entry)) {
+        // We only search for events, not for frames, hence this early exit.
+        continue;
+      }
+
+      const entryStartTime = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(entry).startTime;
+      const entryEndTime = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(entry).endTime;
 
       if (entryStartTime > endTime) {
         continue;
@@ -487,28 +460,27 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       }
     }
     result.sort((a, b) => {
-      let firstEvent: TimelineFlameChartEntry|null = this.entryData[a];
-      let secondEvent: TimelineFlameChartEntry|null = this.entryData[b];
-      if (!TimelineFlameChartDataProvider.isEntryRegularEvent(firstEvent) ||
-          !TimelineFlameChartDataProvider.isEntryRegularEvent(secondEvent)) {
+      const firstEvent = this.entryData.at(a);
+      if (!firstEvent) {
         return 0;
       }
-      firstEvent = firstEvent instanceof TraceEngine.Legacy.Event ?
-          firstEvent :
-          (this.compatibilityTracksAppender?.getLegacyEvent(firstEvent) || null);
-      secondEvent = secondEvent instanceof TraceEngine.Legacy.Event ?
-          secondEvent :
-          (this.compatibilityTracksAppender?.getLegacyEvent(secondEvent) || null);
-      if (!firstEvent || !secondEvent) {
+      const secondEvent = this.entryData.at(b);
+      if (!secondEvent) {
         return 0;
       }
-      return TraceEngine.Legacy.Event.compareStartTime(firstEvent, secondEvent);
+
+      if (!TimelineFlameChartDataProvider.timelineEntryIsTraceEvent(firstEvent) ||
+          !TimelineFlameChartDataProvider.timelineEntryIsTraceEvent(secondEvent)) {
+        return 0;
+      }
+
+      return TraceEngine.Helpers.Trace.eventTimeComparator(firstEvent, secondEvent);
     });
     return result;
   }
 
-  isIgnoreListedEvent(event: TraceEngine.Legacy.CompatibleTraceEvent): boolean {
-    if (TraceEngine.Legacy.eventIsFromNewEngine(event) && TraceEngine.Types.TraceEvents.isProfileCall(event)) {
+  isIgnoreListedEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): boolean {
+    if (TraceEngine.Types.TraceEvents.isProfileCall(event)) {
       return this.isIgnoreListedURL(event.callFrame.url as Platform.DevToolsPath.UrlString);
     }
     return false;
@@ -554,7 +526,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   #appendScreenshots(filmStrip: TraceEngine.Extras.FilmStrip.Data): void {
-    if (!this.timelineDataInternal || !this.legacyTimelineModel || !this.traceEngineData) {
+    if (!this.timelineDataInternal || !this.traceEngineData) {
       return;
     }
     this.appendHeader('', this.screenshotsHeader, false /* selectable */);
@@ -971,7 +943,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const entryType = this.entryType(entryIndex);
     let timelineSelection: TimelineSelection|null = null;
     const entry = this.entryData[entryIndex];
-    if (entry && TimelineFlameChartDataProvider.isEntryRegularEvent(entry)) {
+    if (entry && TimelineFlameChartDataProvider.timelineEntryIsTraceEvent(entry)) {
       timelineSelection = TimelineSelection.fromTraceEvent(entry);
     } else if (entryType === EntryType.Frame) {
       timelineSelection = TimelineSelection.fromFrame(
@@ -1076,12 +1048,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       return false;
     }
     const event = this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData;
-    if (!TraceEngine.Legacy.eventIsFromNewEngine(event)) {
-      // TODO: as part of the old engine removal, we need to redefine the Event
-      // type to teach the code that only new engine events can be selected by
-      // the user.
-      return false;
-    }
     // Reset to clear any previous arrows from the last event.
     this.timelineDataInternal.resetFlowData();
     this.lastInitiatorEntry = entryIndex;
@@ -1132,12 +1098,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       return this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData;
     }
     return null;
-  }
-
-  // Included only for layout tests.
-  // TODO(crbug.com/1386091): Fix/port layout tests and remove.
-  get performanceModel(): PerformanceModel|null {
-    return this.legacyPerformanceModel;
   }
 }
 

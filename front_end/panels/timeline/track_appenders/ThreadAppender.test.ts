@@ -6,7 +6,6 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
-import * as TimelineModel from '../../../models/timeline_model/timeline_model.js';
 import * as TraceModel from '../../../models/trace/trace.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
@@ -19,12 +18,13 @@ import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Timeline from '../timeline.js';
 
 function initTrackAppender(
-    flameChartData: PerfUI.FlameChart.FlameChartTimelineData, traceParsedData: TraceModel.Handlers.Types.TraceParseData,
+    flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
+    traceParsedData: TraceModel.Handlers.Types.TraceParseData,
     entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[],
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
-    timelineModel: TimelineModel.TimelineModel.TimelineModelImpl): Timeline.ThreadAppender.ThreadAppender[] {
+    ): Timeline.ThreadAppender.ThreadAppender[] {
   const compatibilityTracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
-      flameChartData, traceParsedData, entryData, entryTypeByLevel, timelineModel);
+      flameChartData, traceParsedData, entryData, entryTypeByLevel);
   return compatibilityTracksAppender.threadAppenders();
 }
 async function renderThreadAppendersFromTrace(context: Mocha.Context|Mocha.Suite, trace: string): Promise<{
@@ -37,9 +37,8 @@ async function renderThreadAppendersFromTrace(context: Mocha.Context|Mocha.Suite
   const entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
   const entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
   const flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
-  const {traceParsedData, timelineModel} = await TraceLoader.allModels(context, trace);
-  const threadAppenders =
-      initTrackAppender(flameChartData, traceParsedData, entryData, entryTypeByLevel, timelineModel);
+  const traceParsedData = await TraceLoader.traceEngine(context, trace);
+  const threadAppenders = initTrackAppender(flameChartData, traceParsedData, entryData, entryTypeByLevel);
   let level = 0;
   for (const appender of threadAppenders) {
     level = appender.appendTrackAtLevel(level);
@@ -62,9 +61,8 @@ function renderThreadAppendersFromParsedData(traceParseData: TraceModel.Handlers
   const entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
   const entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
   const flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
-  const timelineModel = new TimelineModel.TimelineModel.TimelineModelImpl();
 
-  const threadAppenders = initTrackAppender(flameChartData, traceParseData, entryData, entryTypeByLevel, timelineModel);
+  const threadAppenders = initTrackAppender(flameChartData, traceParseData, entryData, entryTypeByLevel);
   let level = 0;
   for (const appender of threadAppenders) {
     level = appender.appendTrackAtLevel(level);
@@ -472,7 +470,7 @@ describeWithEnvironment('ThreadAppender', function() {
       const {entryData, flameChartData, threadAppenders} = renderThreadAppendersFromParsedData(mockTraceParseData);
       const entryDataNames = entryData.map(entry => {
         const regularEvent =
-            Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider.isEntryRegularEvent(entry);
+            Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider.timelineEntryIsTraceEvent(entry);
         if (!regularEvent) {
           return 'Unknown type';
         }

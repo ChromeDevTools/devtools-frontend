@@ -63,7 +63,7 @@ type TimeSpan = {
   ts: Types.Timing.MicroSeconds,
   dur?: Types.Timing.MicroSeconds,
 };
-function eventTimeComparator(a: TimeSpan, b: TimeSpan): -1|0|1 {
+export function eventTimeComparator(a: TimeSpan, b: TimeSpan): -1|0|1 {
   const aBeginTime = a.ts;
   const bBeginTime = b.ts;
   if (aBeginTime < bBeginTime) {

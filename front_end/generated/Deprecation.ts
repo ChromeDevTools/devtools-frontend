@@ -231,14 +231,6 @@ export const UIStrings = {
    */
   WebSQL: "Web SQL is deprecated. Please use SQLite WebAssembly or Indexed Database",
   /**
-   * @description A deprecation warning shown in the DevTools Issues tab. 'window-placement' and 'window-management' are the name of the javascript descriptors (do not translate). The warning is shown when web pages attempt to use 'window-placement' in permission APIs (e.g. navigator.permissions.query(...))
-   */
-  WindowPlacementPermissionDescriptorUsed: "The permission descriptor `window-placement` is deprecated. Use `window-management` instead. For more help, check https://bit.ly/window-placement-rename.",
-  /**
-   * @description A deprecation warning shown in the DevTools Issues tab. 'window-placement' and 'window-management' are the name of the policy descriptors (do not translate). The warning is shown when web pages attempt to use 'window-placement' as a permission policy (parsed in iframe or header).
-   */
-  WindowPlacementPermissionPolicyParsed: "The permission policy `window-placement` is deprecated. Use `window-management` instead. For more help, check https://bit.ly/window-placement-rename.",
-  /**
    * @description Warning displayed to developers that they are using `XMLHttpRequest` API in a way that they expect an unsupported character encoding `UTF-16` could be used in the server reply.
    */
   XHRJSONEncodingDetection: "UTF-16 is not supported by response json in `XMLHttpRequest`",
@@ -379,14 +371,6 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
   "WebSQL": {
     "chromeStatusFeature": 5134293578285056,
     "milestone": 115
-  },
-  "WindowPlacementPermissionDescriptorUsed": {
-    "chromeStatusFeature": 5137018030391296,
-    "milestone": 112
-  },
-  "WindowPlacementPermissionPolicyParsed": {
-    "chromeStatusFeature": 5137018030391296,
-    "milestone": 112
   },
   "XHRJSONEncodingDetection": {
     "milestone": 93

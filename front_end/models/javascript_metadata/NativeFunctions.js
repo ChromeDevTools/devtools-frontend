@@ -651,6 +651,11 @@ export const NativeFunctions = [
     receivers: ["CSSStyleValue"]
   },
   {
+    name: "parse",
+    signatures: [["url","?base"]],
+    receivers: ["URL"]
+  },
+  {
     name: "UTC",
     signatures: [["year","?monthIndex","?date","?hours","?minutes","?seconds","?ms"]]
   },
@@ -688,11 +693,23 @@ export const NativeFunctions = [
   },
   {
     name: "every",
-    signatures: [["predicate","?thisArg"]]
+    signatures: [["predicate","?thisArg"]],
+    receivers: ["ReadonlyArray","Array","Int8Array","Uint8Array","Uint8ClampedArray","Int16Array","Uint16Array","Int32Array","Uint32Array","Float32Array","Float64Array","BigInt64Array","BigUint64Array"]
+  },
+  {
+    name: "every",
+    signatures: [["predicate","?options"]],
+    receivers: ["Observable"]
   },
   {
     name: "some",
-    signatures: [["predicate","?thisArg"]]
+    signatures: [["predicate","?thisArg"]],
+    receivers: ["ReadonlyArray","Array","Int8Array","Uint8Array","Uint8ClampedArray","Int16Array","Uint16Array","Int32Array","Uint32Array","Float32Array","Float64Array","BigInt64Array","BigUint64Array"]
+  },
+  {
+    name: "some",
+    signatures: [["predicate","?options"]],
+    receivers: ["Observable"]
   },
   {
     name: "forEach",
@@ -852,6 +869,11 @@ export const NativeFunctions = [
     name: "find",
     signatures: [["predicate","?thisArg"]],
     receivers: ["Int8Array","Uint8Array","Uint8ClampedArray","Int16Array","Uint16Array","Int32Array","Uint32Array","Float32Array","Float64Array","Array","ReadonlyArray","BigInt64Array","BigUint64Array"]
+  },
+  {
+    name: "find",
+    signatures: [["predicate","?options"]],
+    receivers: ["Observable"]
   },
   {
     name: "find",
@@ -3399,11 +3421,6 @@ export const NativeFunctions = [
     name: "complete",
     signatures: [["?result"],["?paymentResult"]],
     receivers: ["PaymentResponse"]
-  },
-  {
-    name: "complete",
-    signatures: [["merchantSessionPromise"]],
-    receivers: ["MerchantValidationEvent"]
   },
   {
     name: "retry",
@@ -7965,10 +7982,6 @@ export const NativeFunctions = [
   {
     name: "getDigitalGoodsService",
     signatures: [["paymentMethod"]]
-  },
-  {
-    name: "MerchantValidationEvent",
-    signatures: [["type","?eventInitDict"]]
   },
   {
     name: "enableDelegations",

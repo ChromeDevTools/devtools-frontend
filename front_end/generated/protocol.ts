@@ -8386,8 +8386,16 @@ export namespace Network {
   }
 
   export interface ServiceWorkerRouterInfo {
-    ruleIdMatched: integer;
-    matchedSourceType: ServiceWorkerRouterSource;
+    /**
+     * ID of the rule matched. If there is a matched rule, this field will
+     * be set, otherwiser no value will be set.
+     */
+    ruleIdMatched?: integer;
+    /**
+     * The router source of the matched rule. If there is a matched rule, this
+     * field will be set, otherwise no value will be set.
+     */
+    matchedSourceType?: ServiceWorkerRouterSource;
   }
 
   /**
@@ -8463,7 +8471,10 @@ export namespace Network {
      */
     fromEarlyHints?: boolean;
     /**
-     * Information about how Service Worker Static Router was used.
+     * Information about how ServiceWorker Static Router API was used. If this
+     * field is set with `matchedSourceType` field, a matching rule is found.
+     * If this field is set without `matchedSource`, no matching rule is found.
+     * Otherwise, the API is not used.
      */
     serviceWorkerRouterInfo?: ServiceWorkerRouterInfo;
     /**
@@ -11356,7 +11367,6 @@ export namespace Page {
     WebPrinting = 'web-printing',
     WebShare = 'web-share',
     WindowManagement = 'window-management',
-    WindowPlacement = 'window-placement',
     XrSpatialTracking = 'xr-spatial-tracking',
   }
 
@@ -17225,6 +17235,19 @@ export namespace PWA {
   export interface GetOsAppStateResponse extends ProtocolResponseWithError {
     badgeCount: integer;
     fileHandlers: FileHandler[];
+  }
+
+  export interface InstallRequest {
+    manifestId: string;
+    /**
+     * The location of the app or bundle overriding the one derived from the
+     * manifestId.
+     */
+    installUrlOrBundleUrl?: string;
+  }
+
+  export interface UninstallRequest {
+    manifestId: string;
   }
 }
 

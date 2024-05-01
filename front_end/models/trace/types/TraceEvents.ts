@@ -348,6 +348,8 @@ export interface SyntheticNetworkRequest extends TraceEventComplete {
       failed: boolean,
       /** True only if got a 'resourceFinish' event. */
       finished: boolean,
+      connectionId: number,
+      connectionReused: boolean,
       // Optional fields
       initiator?: Initiator,
       requestMethod?: string,
@@ -931,7 +933,7 @@ export interface TraceEventResourceReceiveResponse extends TraceEventInstant {
       responseTime: MilliSeconds,
       statusCode: number,
       timing: TraceEventResourceReceiveResponseTimingData,
-      isLinkPreload?: boolean,
+      isLinkPreload?: boolean, connectionId: number, connectionReused: boolean,
       headers?: Array<{name: string, value: string}>,
     },
   };

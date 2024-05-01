@@ -1532,7 +1532,8 @@ export class NetworkRequestNode extends NetworkNode {
       cell.classList.add('network-dim-cell');
     } else if (this.requestInternal.serviceWorkerRouterInfo) {
       const {serviceWorkerRouterInfo} = this.requestInternal;
-      const ruleIdMatched = serviceWorkerRouterInfo.ruleIdMatched;
+      // If `serviceWorkerRouterInfo.ruleIdMatched` is undefined,store 0 to indicate invalid ID.
+      const ruleIdMatched = serviceWorkerRouterInfo.ruleIdMatched ?? 0;
       UI.UIUtils.createTextChild(cell, i18n.i18n.lockedString('(ServiceWorker router)'));
       let tooltipText;
       if (serviceWorkerRouterInfo.matchedSourceType === Protocol.Network.ServiceWorkerRouterSource.Network) {

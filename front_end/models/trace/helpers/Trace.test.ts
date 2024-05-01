@@ -418,6 +418,59 @@ describeWithEnvironment('TraceModel helpers', function() {
       ]);
       assert.strictEqual(synthEvents.length, 237);
     });
+    describe('createSortedSyntheticEvents()', () => {
+      it('correctly creates synthetic events when instant animation events are present', async function() {
+        const events = await TraceLoader.rawEvents(this, 'instant-animation-events.json.gz');
+        const animationEvents = events.filter(event => TraceModel.Types.TraceEvents.isTraceEventAnimation(event)) as
+            TraceModel.Types.TraceEvents.TraceEventAnimation[];
+        const animationSynthEvents = TraceModel.Helpers.Trace.createMatchedSortedSyntheticEvents(animationEvents);
+        const wantPairs = new Map<string, {compositeFailed: number, unsupportedProperties?: Array<string>}>([
+          [
+            'blink.animations,devtools.timeline,benchmark,rail:0x11d00230380:Animation',
+            {compositeFailed: 8224, unsupportedProperties: ['width']},
+          ],
+          ['blink.animations,devtools.timeline,benchmark,rail:0x11d00234738:Animation', {compositeFailed: 0}],
+          [
+            'blink.animations,devtools.timeline,benchmark,rail:0x11d00234b08:Animation',
+            {compositeFailed: 8224, unsupportedProperties: ['height']},
+          ],
+          [
+            'blink.animations,devtools.timeline,benchmark,rail:0x11d00234ed8:Animation',
+            {compositeFailed: 8224, unsupportedProperties: ['font-size']},
+          ],
+        ]);
+        // Ensure we have the correct numner of synthetic events created.
+        assert.deepEqual(wantPairs.size, animationSynthEvents.length);
+
+        animationSynthEvents.forEach(event => {
+          const id = event.id;
+          assert.exists(id);
+          assert.exists(wantPairs.get(id));
+
+          const beginEvent = event.args.data.beginEvent;
+          const endEvent = event.args.data.endEvent;
+          const instantEvents = event.args.data.instantEvents;
+
+          assert.exists(beginEvent);
+
+          // Check that the individual event ids match the synthetic id.
+          assert.isTrue(beginEvent.id2?.local && id.includes(beginEvent.id2?.local));
+          if (endEvent) {
+            assert.isTrue(endEvent.id2?.local && id?.includes(endEvent.id2?.local));
+          }
+          assert.isTrue(instantEvents?.every(event => event.id2?.local && id.includes(event.id2?.local)));
+
+          assert.strictEqual(instantEvents.length, 2);
+
+          // Check that the non-composited data matches the expected.
+          const nonCompositedEvents = instantEvents.filter(event => event.args.data.compositeFailed);
+          nonCompositedEvents.forEach(event => {
+            assert.strictEqual(event.args.data.compositeFailed, wantPairs.get(id)?.compositeFailed);
+            assert.deepEqual(event.args.data.unsupportedProperties, wantPairs.get(id)?.unsupportedProperties);
+          });
+        });
+      });
+    });
   });
 
   describe('getZeroIndexedLineAndColumnNumbersForEvent', () => {

@@ -6369,10 +6369,6 @@ export const NativeFunctions = [
     signatures: [["x","y"]]
   },
   {
-    name: "requestStorageAccessFor",
-    signatures: [["requestedOrigin"]]
-  },
-  {
     name: "hasPrivateToken",
     signatures: [["issuer"]]
   },
@@ -8314,6 +8310,10 @@ export const NativeFunctions = [
   {
     name: "SpeechSynthesisUtterance",
     signatures: [["?text"]]
+  },
+  {
+    name: "requestStorageAccessFor",
+    signatures: [["requestedOrigin"]]
   },
   {
     name: "StorageEvent",

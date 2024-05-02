@@ -328,12 +328,16 @@ export interface SyntheticNetworkRequest extends TraceEventComplete {
       frame: string,
       fromServiceWorker: boolean,
       isLinkPreload: boolean,
-      host: string,
       mimeType: string,
-      pathname: string,
-      search: string,
       priority: Protocol.Network.ResourcePriority,
       initialPriority: Protocol.Network.ResourcePriority,
+      /**
+       * This is the protocol used to resolve the request.
+       *
+       * Note, this is not the same as URL.protocol.
+       *
+       * Example values (not exhaustive): http/0.9, http/1.0, http/1.1, http, h2, h3-Q050, data, blob
+       */
       protocol: string,
       redirects: SyntheticNetworkRedirect[],
       renderBlocking: RenderBlocking,
@@ -927,6 +931,14 @@ export interface TraceEventResourceReceiveResponse extends TraceEventInstant {
   name: 'ResourceReceiveResponse';
   args: TraceEventArgs&{
     data: TraceEventArgsData & {
+      /**
+       * This is the protocol used to resolve the request.
+       *
+       * Note, this is not the same as URL.protocol.
+       *
+       * Example values (not exhaustive): http/0.9, http/1.0, http/1.1, http, h2, h3-Q050, data, blob
+       */
+      protocol: string,
       encodedDataLength: number,
       frame: string,
       fromCache: boolean,

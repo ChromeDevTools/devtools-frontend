@@ -342,8 +342,8 @@ export async function finalize(): Promise<void> {
     const {frame, url, renderBlocking} = finalSendRequest.args.data;
     const {encodedDataLength, decodedBodyLength} =
         request.resourceFinish ? request.resourceFinish.args.data : {encodedDataLength: 0, decodedBodyLength: 0};
-    const {host, protocol, pathname, search} = new URL(url);
-    const isHttps = protocol === 'https:';
+    const parsedUrl = new URL(url);
+    const isHttps = parsedUrl.protocol === 'https:';
     const requestingFrameUrl =
         Helpers.Trace.activeURLForFrameAtTime(frame, finalSendRequest.ts, rendererProcessesByFrame) || '';
 
@@ -380,12 +380,10 @@ export async function finalize(): Promise<void> {
           frame,
           fromServiceWorker: request.receiveResponse.args.data.fromServiceWorker,
           isLinkPreload: request.receiveResponse.args.data.isLinkPreload || false,
-          host,
           mimeType: request.receiveResponse.args.data.mimeType,
-          pathname,
           priority: finalPriority,
           initialPriority,
-          protocol,
+          protocol: request.receiveResponse.args.data.protocol ?? 'unknown',
           redirects,
           // In the event the property isn't set, assume non-blocking.
           renderBlocking: renderBlocking ? renderBlocking : 'non_blocking',
@@ -393,7 +391,6 @@ export async function finalize(): Promise<void> {
           requestingFrameUrl,
           requestMethod: finalSendRequest.args.data.requestMethod,
           resourceType: finalSendRequest.args.data.resourceType,
-          search,
           statusCode: request.receiveResponse.args.data.statusCode,
           responseHeaders: request.receiveResponse.args.data.headers || [],
           fetchPriorityHint: finalSendRequest.args.data.fetchPriorityHint,
@@ -418,7 +415,7 @@ export async function finalize(): Promise<void> {
       tid: finalSendRequest.tid,
     };
 
-    const requests = Platform.MapUtilities.getWithDefault(requestsByOrigin, host, () => {
+    const requests = Platform.MapUtilities.getWithDefault(requestsByOrigin, parsedUrl.host, () => {
       return {
         renderBlocking: [],
         nonRenderBlocking: [],

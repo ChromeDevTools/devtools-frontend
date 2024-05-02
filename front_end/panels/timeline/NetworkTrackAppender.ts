@@ -86,7 +86,6 @@ export class NetworkTrackAppender implements TrackAppender {
    */
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
     const style = buildGroupStyle({
-      font: this.#flameChartData,
       shareHeaderLine: false,
       useFirstLineForOverview: false,
       useDecoratorsForOverview: true,

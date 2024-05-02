@@ -3757,22 +3757,23 @@ export interface Group {
   hidden?: boolean;
   selectable?: boolean;
   style: GroupStyle;
-  // Should be turned on if the track supports user editable stacks.
+  /** Should be turned on if the track supports user editable stacks. */
   showStackContextMenu?: boolean;
 }
 
 export interface GroupStyle {
   height: number;
   padding: number;
+  /* Can it be collapsed? True by default! */
   collapsible: boolean;
-  // The color of the group title text.
+  /** The color of the group title text. */
   color: string;
-  // The background color of the group title when the track is collapsed,
-  // and this is usually around same length as the title text.
+  /** The background color of the group title when the track is collapsed,
+   * and this is usually around same length as the title text. */
   backgroundColor: string;
   nestingLevel: number;
   itemsHeight?: number;
-  /** Allow entries to be placed on the same horizontal level as the text heading */
+  /** Allow entries to be placed on the same horizontal level as the text heading. True by default for Timeline */
   // TODO(paulirish): Attempt to remove with this behavior always true
   shareHeaderLine?: boolean;
   useFirstLineForOverview?: boolean;

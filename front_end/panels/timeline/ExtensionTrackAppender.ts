@@ -33,7 +33,7 @@ export class ExtensionTrackAppender implements TrackAppender {
   }
 
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
-    const style = buildGroupStyle({shareHeaderLine: false, collapsible: true});
+    const style = buildGroupStyle({collapsible: true});
     const group = buildTrackHeader(
         currentLevel, this.#trackData.name, style,
         /* selectable= */ true, expanded);

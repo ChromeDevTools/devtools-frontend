@@ -79,7 +79,12 @@ function renderThreadAppendersFromParsedData(traceParseData: TraceModel.Handlers
 describeWithEnvironment('ThreadAppender', function() {
   it('creates a thread appender for each thread in a trace', async function() {
     const {threadAppenders} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
-    assert.strictEqual(threadAppenders.length, 5);
+    const expectedAppenderNames = [
+      'Thread',
+      'Thread',
+      'Thread',
+    ];
+    assert.deepStrictEqual(threadAppenders.map(g => g.appenderName), expectedAppenderNames);
   });
 
   it('renders tracks for threads in correct order', async function() {
@@ -98,9 +103,19 @@ describeWithEnvironment('ThreadAppender', function() {
   it('marks all levels used by the track with the TrackAppender type', async function() {
     const {entryTypeByLevel} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
     // This includes all tracks rendered by the ThreadAppender.
-    assert.strictEqual(entryTypeByLevel.length, 12);
-    assert.isTrue(
-        entryTypeByLevel.every(type => type === Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender));
+    const execptedLevelTypes = [
+      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
+    ];
+    assert.deepStrictEqual(entryTypeByLevel, execptedLevelTypes);
   });
 
   it('creates a flamechart groups for track headers and titles', async function() {
@@ -112,8 +127,6 @@ describeWithEnvironment('ThreadAppender', function() {
       'Rasterizer Thread 2',
       'Thread Pool',
       'Thread Pool Worker 1',
-      'Chrome_ChildIOThread',
-      'Compositor',
     ];
     assert.deepStrictEqual(flameChartData.groups.map(g => g.name), expectedTrackNames);
   });
@@ -145,8 +158,6 @@ describeWithEnvironment('ThreadAppender', function() {
       'Thread Pool',
       'Thread Pool Worker 1',
       'Thread Pool Worker 2',
-      'Compositor',
-      'Chrome_ChildIOThread',
     ];
     assert.deepStrictEqual(flameChartData.groups.map(g => g.name), expectedTrackNames);
   });
@@ -179,8 +190,6 @@ describeWithEnvironment('ThreadAppender', function() {
       'Thread Pool',
       'Thread Pool Worker 1',
       'Thread Pool Worker 2',
-      'Compositor',
-      'Chrome_ChildIOThread',
     ];
     assert.deepStrictEqual(flameChartData.groups.map(g => g.name), expectedTrackNames);
   });
@@ -364,8 +373,6 @@ describeWithEnvironment('ThreadAppender', function() {
       'Thread Pool Worker 1',
       // This second "worker" is the ThreadPoolServiceThread. TODO: perhaps hide ThreadPoolServiceThread completely?
       'Thread Pool Worker 2',
-      'Compositor',
-      'Chrome_ChildIOThread',
     ];
     assert.deepStrictEqual(flameChartData.groups.map(g => g.name), expectedTrackNames);
   });

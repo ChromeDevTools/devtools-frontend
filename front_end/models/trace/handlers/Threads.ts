@@ -31,8 +31,8 @@ export const enum ThreadType {
 }
 
 function getThreadTypeForRendererThread(
-    auctionWorkletsData: AuctionWorkletsData, pid: Types.TraceEvents.ProcessID,
-    thread: Renderer.RendererThread): ThreadType {
+    pid: Types.TraceEvents.ProcessID, thread: Renderer.RendererThread,
+    auctionWorkletsData: AuctionWorkletsData): ThreadType {
   let threadType = ThreadType.OTHER;
   if (thread.name === 'CrRendererMain') {
     threadType = ThreadType.MAIN_THREAD;
@@ -65,7 +65,7 @@ export function threadsInRenderer(
           // filtering we need.
           continue;
         }
-        const threadType = getThreadTypeForRendererThread(auctionWorkletsData, pid, thread);
+        const threadType = getThreadTypeForRendererThread(pid, thread, auctionWorkletsData);
         foundThreads.push({
           name: thread.name,
           pid,

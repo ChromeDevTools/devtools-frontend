@@ -29,13 +29,9 @@ describe('AnimationHandler', function() {
     await TraceModel.Handlers.ModelHandlers.Animations.finalize();
 
     const animations = TraceModel.Handlers.ModelHandlers.Animations.data().animations;
-    // This trace contains some animation events with bad data. If we do not filter these out, we get 57 events. But if we filter, we get 47. so that is why we expect 47 events here.
-    assert.lengthOf(animations, 47);
-    // We also ensure all of the events have a positive duration which confirms
-    // we filtered out bad data.
-    for (const event of animations) {
-      assert.isTrue(event.dur > 0);
-    }
+    // This trace contains 57 'Animation' events but all are from `cat: 'power'`
+    // These events are only possible if the trace is captured with 'Show All Events' on.
+    assert.lengthOf(animations, 0);
   });
 
   it('calculates the duration of an animation event correctly', async function() {
@@ -46,8 +42,13 @@ describe('AnimationHandler', function() {
     }
 
     await TraceModel.Handlers.ModelHandlers.Animations.finalize();
-
-    const eventDuration = TraceModel.Handlers.ModelHandlers.Animations.data().animations[0].dur;
+    const animations = TraceModel.Handlers.ModelHandlers.Animations.data().animations;
+    const eventDuration = animations[0].dur;
     assert.strictEqual(eventDuration, 2006450);
+
+    // We also ensure all of the events have a positive duration.
+    for (const event of animations) {
+      assert.isTrue(event.dur > 0);
+    }
   });
 });

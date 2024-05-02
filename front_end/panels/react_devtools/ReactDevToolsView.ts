@@ -9,9 +9,13 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as ReactDevTools from '../../third_party/react-devtools/react-devtools.js';
 
 import type * as ReactDevToolsTypes from '../../third_party/react-devtools/react-devtools.js';
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 
 import {Events as ReactDevToolsModelEvents, ReactDevToolsModel, type EventTypes as ReactDevToolsModelEventTypes} from './ReactDevToolsModel.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Logs from '../../models/logs/logs.js';
+import type * as Platform from '../../core/platform/platform.js';
 
 const UIStrings = {
   /**
@@ -30,6 +34,45 @@ type ContextCreatedEvent = Common.EventTarget.EventTargetEvent<SDK.RuntimeModel.
 // This will be used for an extra-check to future-proof this logic
 // See https://github.com/facebook/react-native/blob/40b54ee671e593d125630391119b880aebc8393d/packages/react-native/ReactCommon/jsinspector-modern/InstanceTarget.cpp#L61
 const MAIN_EXECUTION_CONTEXT_NAME = 'main';
+
+// Based on ExtensionServer.onOpenResource
+async function openResource(
+  url: Platform.DevToolsPath.UrlString,
+  lineNumber: number, // 0-based
+  columnNumber: number, // 0-based
+): Promise<void> {
+  const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
+  if (uiSourceCode) {
+    // Unlike the Extension API's version of openResource, we want to normalize the location
+    // so that source maps (if any) are applied.
+    const normalizedUiLocation = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().normalizeUILocation(uiSourceCode.uiLocation(lineNumber, columnNumber));
+    void Common.Revealer.reveal(normalizedUiLocation);
+    return;
+  }
+
+  const resource = Bindings.ResourceUtils.resourceForURL(url);
+  if (resource) {
+    void Common.Revealer.reveal(resource);
+    return;
+  }
+
+  const request = Logs.NetworkLog.NetworkLog.instance().requestForURL(url);
+  if (request) {
+    void Common.Revealer.reveal(request);
+    return;
+  }
+
+  throw new Error('Could not find resource for ' + url);
+}
+
+function viewElementSourceFunction(source: ReactDevToolsTypes.Source, symbolicatedSource: ReactDevToolsTypes.Source | null): void {
+  const {sourceURL, line, column} = symbolicatedSource
+    ? symbolicatedSource
+    : source;
+
+  // We use 1-based line and column, Chrome expects them 0-based.
+  void openResource(sourceURL as Platform.DevToolsPath.UrlString, line - 1, column - 1);
+}
 
 export class ReactDevToolsViewImpl extends UI.View.SimpleView {
   private readonly wall: ReactDevToolsTypes.Wall;
@@ -109,6 +152,8 @@ export class ReactDevToolsViewImpl extends UI.View.SimpleView {
       bridge: this.bridge,
       store: this.store,
       theme: usingDarkTheme ? 'dark' : 'light',
+      canViewElementSourceFunction: () => true,
+      viewElementSourceFunction,
     });
   }
 

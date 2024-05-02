@@ -3,5 +3,7 @@
 # found in the LICENSE file.
 
 declare_args() {
-  devtools_visibility = []
+  devtools_visibility = [
+    "//front_end/panels/react_devtools/*",
+  ]
 }

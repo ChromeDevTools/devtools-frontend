@@ -98,6 +98,7 @@ export function buildStackTraceRows(
     linkifier: Linkifier,
     tabStops: boolean|undefined,
     updateCallback?: (arg0: (StackTraceRegularRow|StackTraceAsyncRow)[]) => void,
+    showColumnNumber?: boolean,
     ): (StackTraceRegularRow|StackTraceAsyncRow)[] {
   const stackTraceRows: (StackTraceRegularRow|StackTraceAsyncRow)[] = [];
 
@@ -125,6 +126,7 @@ export function buildStackTraceRows(
       let ignoreListHide = false;
       const functionName = UI.UIUtils.beautifyFunctionName(stackFrame.functionName);
       const link = linkifier.maybeLinkifyConsoleCallFrame(target, stackFrame, {
+        showColumnNumber: showColumnNumber,
         tabStop: Boolean(tabStops),
         inlineFrameIndex: 0,
         revealBreakpoint: previousStackFrameWasBreakpointCondition,
@@ -233,7 +235,8 @@ export function buildStackTracePreviewContents(
   }
 
   const updateCallback = renderStackTraceTable.bind(null, contentElement);
-  const stackTraceRows = buildStackTraceRows(stackTrace, target, linkifier, tabStops, updateCallback);
+  const stackTraceRows =
+      buildStackTraceRows(stackTrace, target, linkifier, tabStops, updateCallback, options.showColumnNumber);
   const links = renderStackTraceTable(contentElement, stackTraceRows);
   return {element, links};
 }
@@ -303,6 +306,7 @@ export interface Options {
   // is constrained to its container or whether
   // it can grow the container.
   widthConstrained?: boolean;
+  showColumnNumber?: boolean;
 }
 
 export interface StackTraceRegularRow {

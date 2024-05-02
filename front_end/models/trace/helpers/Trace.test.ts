@@ -440,7 +440,7 @@ describeWithEnvironment('TraceModel helpers', function() {
           },
         },
       };
-      assert.deepEqual(TraceModel.Helpers.Trace.getZeroIndexedLineAndColumnNumbersForEvent(fakeFunctionCall), {
+      assert.deepEqual(TraceModel.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(fakeFunctionCall), {
         lineNumber: 0,
         columnNumber: 0,
       });

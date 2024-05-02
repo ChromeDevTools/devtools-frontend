@@ -322,6 +322,22 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
   }
 
+  function getStackTraceForDetailsElement(details: DocumentFragment): string[]|null {
+    const stackTraceContainer =
+        details
+            .querySelector<HTMLDivElement>(
+                '.timeline-details-view-row.timeline-details-stack-values .stack-preview-container')
+            ?.shadowRoot;
+    if (!stackTraceContainer) {
+      return null;
+    }
+    return Array.from(stackTraceContainer.querySelectorAll<HTMLTableRowElement>('tr')).map(row => {
+      const functionName = row.querySelector<HTMLElement>('.function-name')?.innerText;
+      const url = row.querySelector<HTMLElement>('.link')?.innerText;
+      return `${functionName || ''} @ ${url || ''}`;
+    });
+  }
+
   function getPieChartDataForDetailsElement(details: DocumentFragment) {
     const pieChartComp = details.querySelector<HTMLDivElement>('devtools-perf-piechart');
     if (!pieChartComp?.shadowRoot) {
@@ -797,6 +813,73 @@ describeWithMockConnection('TimelineUIUtils', function() {
               value: '(anonymous) @ www.google.com:21:17',
             },
           ],
+      );
+    });
+    it('renders the stack trace of a ScheduleStyleRecalculation properly', async function() {
+      Common.Linkifier.registerLinkifier({
+        contextTypes() {
+          return [Timeline.CLSLinkifier.CLSRect];
+        },
+        async loadLinkifier() {
+          return Timeline.CLSLinkifier.Linkifier.instance();
+        },
+      });
+
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      TraceLoader.initTraceBoundsManager(traceParsedData);
+      const [process] = traceParsedData.Renderer.processes.values();
+      const [thread] = process.threads.values();
+      const scheduleStyleRecalcs =
+          thread.entries.filter(entry => TraceEngine.Types.TraceEvents.isTraceEventScheduleStyleRecalculation(entry));
+
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          scheduleStyleRecalcs[1],
+          new Components.Linkifier.Linkifier(),
+          false,
+          traceParsedData,
+      );
+      const rowData = getRowDataForDetailsElement(details)[0];
+      assert.deepEqual(
+          rowData,
+          {
+            title: 'Details',
+            value: 'web.dev/js/app.js?v=1423cda3:1:183',
+          },
+      );
+      const stackTraceData = getStackTraceForDetailsElement(details);
+      assert.deepEqual(
+          stackTraceData,
+          ['(anonymous) @ web.dev/js/app.js?v=1423cda3:1:183'],
+      );
+    });
+
+    it('renders the stack trace of a RecalculateStyles properly', async function() {
+      Common.Linkifier.registerLinkifier({
+        contextTypes() {
+          return [Timeline.CLSLinkifier.CLSRect];
+        },
+        async loadLinkifier() {
+          return Timeline.CLSLinkifier.Linkifier.instance();
+        },
+      });
+
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      TraceLoader.initTraceBoundsManager(traceParsedData);
+      const [process] = traceParsedData.Renderer.processes.values();
+      const [thread] = process.threads.values();
+      const stylesRecalc =
+          thread.entries.filter(entry => entry.name === TraceEngine.Types.TraceEvents.KnownEventName.UpdateLayoutTree);
+
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          stylesRecalc[3],
+          new Components.Linkifier.Linkifier(),
+          false,
+          traceParsedData,
+      );
+      const stackTraceData = getStackTraceForDetailsElement(details);
+      assert.deepEqual(
+          stackTraceData,
+          ['(anonymous) @ web.dev/js/app.js?v=1423cda3:1:183'],
       );
     });
 

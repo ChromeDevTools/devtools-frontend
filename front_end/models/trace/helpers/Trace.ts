@@ -9,8 +9,14 @@ import * as Types from '../types/types.js';
 
 type MatchedPairType<T extends Types.TraceEvents.TraceEventPairableAsync> = Types.TraceEvents.SyntheticEventPair<T>;
 
-export function stackTraceForEvent(event: Types.TraceEvents.TraceEventData): Types.TraceEvents.TraceEventCallFrame[]|
-    null {
+/**
+ * Extracts the raw stack trace of known trace events. Most likely than
+ * not you want to use `getZeroIndexedStackTraceForEvent`, which returns
+ * the stack with zero based numbering. Since some trace events are
+ * one based this function can yield unexpected results when used
+ * indiscriminately.
+ */
+function stackTraceForEvent(event: Types.TraceEvents.TraceEventData): Types.TraceEvents.TraceEventCallFrame[]|null {
   if (Types.TraceEvents.isSyntheticInvalidation(event)) {
     return event.stackTrace || null;
   }
@@ -318,7 +324,7 @@ export function createMatchedSortedSyntheticEvents<T extends Types.TraceEvents.T
  * This function knows which events return 1 indexed numbers and normalizes
  * them. The UI expects 0 indexed line numbers, so that is what we return.
  */
-export function getZeroIndexedLineAndColumnNumbersForEvent(event: Types.TraceEvents.TraceEventData): {
+export function getZeroIndexedLineAndColumnForEvent(event: Types.TraceEvents.TraceEventData): {
   lineNumber?: number,
   columnNumber?: number,
 } {
@@ -349,13 +355,40 @@ export function getZeroIndexedLineAndColumnNumbersForEvent(event: Types.TraceEve
 }
 
 /**
+ * Different trace events contain stack traces with line/column numbers
+ * that are 1 or 0 indexed.
+ * This function knows which events return 1 indexed numbers and normalizes
+ * them. The UI expects 0 indexed line numbers, so that is what we return.
+ */
+export function getZeroIndexedStackTraceForEvent(event: Types.TraceEvents.TraceEventData):
+    Types.TraceEvents.TraceEventCallFrame[]|null {
+  const stack = stackTraceForEvent(event);
+  if (!stack) {
+    return null;
+  }
+  return stack.map(callFrame => {
+    const normalizedCallFrame = {...callFrame};
+    switch (event.name) {
+      case Types.TraceEvents.KnownEventName.RecalculateStyles:
+      case Types.TraceEvents.KnownEventName.ScheduleStyleRecalculation:
+      case Types.TraceEvents.KnownEventName.InvalidateLayout:
+      case Types.TraceEvents.KnownEventName.UpdateLayoutTree: {
+        normalizedCallFrame.lineNumber = callFrame.lineNumber && callFrame.lineNumber - 1;
+        normalizedCallFrame.columnNumber = callFrame.columnNumber && callFrame.columnNumber - 1;
+      }
+    }
+    return normalizedCallFrame;
+  });
+}
+
+/**
  * NOTE: you probably do not want this function! (Which is why it is not exported).
  *
  * Some trace events have 0 indexed line/column numbers, and others have 1
  * indexed. This function does NOT normalize them, but
  * `getZeroIndexedLineAndColumnNumbersForEvent` does. It is best to use that!
  *
- * @see {@link getZeroIndexedLineAndColumnNumbersForEvent}
+ * @see {@link getZeroIndexedLineAndColumnForEvent}
  **/
 function getRawLineAndColumnNumbersForEvent(event: Types.TraceEvents.TraceEventData): {
   lineNumber?: number,

@@ -904,16 +904,16 @@ export class TimelineUIUtils {
                 event, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console)) {
           detailsText = null;
         } else {
-          detailsText = await linkifyTopCallFrameAsText();
+          detailsText = linkifyTopCallFrameAsText();
         }
         break;
     }
 
     return detailsText;
 
-    async function linkifyTopCallFrameAsText(): Promise<string|null> {
+    function linkifyTopCallFrameAsText(): string|null {
       const frame = TraceEngine.Legacy.eventIsFromNewEngine(event) ?
-          TraceEngine.Helpers.Trace.stackTraceForEvent(event)?.at(0) :
+          TraceEngine.Helpers.Trace.getZeroIndexedStackTraceForEvent(event)?.at(0) :
           null;
       if (!frame) {
         return null;
@@ -1105,7 +1105,10 @@ export class TimelineUIUtils {
   static linkifyTopCallFrame(
       event: TraceEngine.Types.TraceEvents.TraceEventData, target: SDK.Target.Target|null,
       linkifier: LegacyComponents.Linkifier.Linkifier, isFreshRecording = false): Element|null {
-    const frame = TimelineModel.TimelineProfileTree.eventStackFrame(event);
+    let frame = TraceEngine.Helpers.Trace.getZeroIndexedStackTraceForEvent(event)?.[0];
+    if (TraceEngine.Types.TraceEvents.isProfileCall(event)) {
+      frame = event.callFrame;
+    }
     if (!frame) {
       return null;
     }
@@ -1657,7 +1660,7 @@ export class TimelineUIUtils {
     }
 
     if (TraceEngine.Legacy.eventIsFromNewEngine(event) && traceParseData) {
-      const stackTrace = TraceEngine.Helpers.Trace.stackTraceForEvent(event);
+      const stackTrace = TraceEngine.Helpers.Trace.getZeroIndexedStackTraceForEvent(event);
       if (initiator || initiatorFor || stackTrace || traceParseData?.Invalidations.invalidationsForEvent.get(event)) {
         await TimelineUIUtils.generateCauses(event, contentHelper, traceParseData);
       }
@@ -1891,7 +1894,7 @@ export class TimelineUIUtils {
     const title = i18nString(UIStrings.initiatedBy);
 
     const topFrame = TraceEngine.Legacy.eventIsFromNewEngine(event) ?
-        TraceEngine.Helpers.Trace.stackTraceForEvent(event)?.at(0) :
+        TraceEngine.Helpers.Trace.getZeroIndexedStackTraceForEvent(event)?.at(0) :
         null;
     if (topFrame) {
       const link = linkifier.maybeLinkifyConsoleCallFrame(
@@ -1953,7 +1956,7 @@ export class TimelineUIUtils {
         break;
     }
 
-    const stackTrace = TraceEngine.Helpers.Trace.stackTraceForEvent(event);
+    const stackTrace = TraceEngine.Helpers.Trace.getZeroIndexedStackTraceForEvent(event);
     if (stackTrace && stackTrace.length) {
       contentHelper.addSection(stackLabel);
       contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
@@ -1966,7 +1969,7 @@ export class TimelineUIUtils {
     if (initiator) {
       // If we have an initiator for the event, we can show its stack trace, a link to reveal the initiator,
       // and the time since the initiator (Pending For).
-      const stackTrace = TraceEngine.Helpers.Trace.stackTraceForEvent(initiator);
+      const stackTrace = TraceEngine.Helpers.Trace.getZeroIndexedStackTraceForEvent(initiator);
       if (stackTrace) {
         contentHelper.addSection(initiatorStackLabel);
         contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace.map(frame => {
@@ -2092,7 +2095,7 @@ export class TimelineUIUtils {
     const generatedItems = new Set<string>();
 
     for (const invalidation of invalidations) {
-      const stackTrace = TraceEngine.Helpers.Trace.stackTraceForEvent(invalidation);
+      const stackTrace = TraceEngine.Helpers.Trace.getZeroIndexedStackTraceForEvent(invalidation);
       let scriptLink: HTMLElement|null = null;
       const callFrame = stackTrace?.at(0);
       if (callFrame) {
@@ -2634,7 +2637,7 @@ export class TimelineDetailsContentHelper {
     const stackTraceElement =
         this.tableElement.createChild('div', 'timeline-details-view-row timeline-details-stack-values');
     const callFrameContents = LegacyComponents.JSPresentationUtils.buildStackTracePreviewContents(
-        this.target, this.linkifierInternal, {stackTrace, tabStops: true});
+        this.target, this.linkifierInternal, {stackTrace, tabStops: true, showColumnNumber: true});
     stackTraceElement.appendChild(callFrameContents.element);
   }
 }
@@ -2743,7 +2746,7 @@ function getZeroIndexedLineAndColumnNumbersForEvent(event: TraceEngine.Legacy.Co
   columnNumber?: number,
 } {
   if (TraceEngine.Legacy.eventIsFromNewEngine(event)) {
-    return TraceEngine.Helpers.Trace.getZeroIndexedLineAndColumnNumbersForEvent(event);
+    return TraceEngine.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
   }
   return {
     lineNumber: undefined,

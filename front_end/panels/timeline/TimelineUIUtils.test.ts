@@ -832,10 +832,10 @@ describeWithMockConnection('TimelineUIUtils', function() {
           thread.entries.filter(entry => TraceEngine.Types.TraceEvents.isTraceEventScheduleStyleRecalculation(entry));
 
       const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          traceParsedData,
           scheduleStyleRecalcs[1],
           new Components.Linkifier.Linkifier(),
           false,
-          traceParsedData,
       );
       const rowData = getRowDataForDetailsElement(details)[0];
       assert.deepEqual(
@@ -870,10 +870,10 @@ describeWithMockConnection('TimelineUIUtils', function() {
           thread.entries.filter(entry => entry.name === TraceEngine.Types.TraceEvents.KnownEventName.UpdateLayoutTree);
 
       const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          traceParsedData,
           stylesRecalc[3],
           new Components.Linkifier.Linkifier(),
           false,
-          traceParsedData,
       );
       const stackTraceData = getStackTraceForDetailsElement(details);
       assert.deepEqual(
@@ -1069,8 +1069,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
   describe('eventTitle', function() {
     it('renders the correct title for an EventTiming interaction event', async function() {
-      const data = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
-      const interactionEvent = data.traceParsedData.UserInteractions.interactionEventsWithNoNesting[0];
+      const traceParsedData = await TraceLoader.traceEngine(this, 'slow-interaction-button-click.json.gz');
+      const interactionEvent = traceParsedData.UserInteractions.interactionEventsWithNoNesting[0];
       const details = Timeline.TimelineUIUtils.TimelineUIUtils.eventTitle(interactionEvent);
       assert.deepEqual(details, 'Pointer');
     });

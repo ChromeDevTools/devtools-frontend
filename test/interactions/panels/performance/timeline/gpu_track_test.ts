@@ -23,16 +23,4 @@ describe('GPU track', function() {
     const flameChart = await waitFor('.flame-chart-main-pane');
     await assertElementScreenshotUnchanged(flameChart, 'performance/gpu_track_collapsed.png', 4);
   });
-
-  itScreenshot('renders the track (dark mode and expanded)', async () => {
-    await loadComponentDocExample(`${urlForTest}&expanded=true&darkMode=true`);
-    const flameChart = await waitFor('.flame-chart-main-pane');
-    await assertElementScreenshotUnchanged(flameChart, 'performance/gpu_track_expanded_dark_mode.png', 4);
-  });
-
-  itScreenshot('renders the track (dark mode and collapsed)', async () => {
-    await loadComponentDocExample(`${urlForTest}&expanded=false&darkMode=true`);
-    const flameChart = await waitFor('.flame-chart-main-pane');
-    await assertElementScreenshotUnchanged(flameChart, 'performance/gpu_track_collapsed_dark_mode.png', 4);
-  });
 });

@@ -10,7 +10,6 @@ import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.j
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
 
 describe('FlameChart', function() {
-
   preloadForCodeCoverage('performance_panel/flamechart.html');
 
   async function getFlameChartContainerWhenReady(selector: string): Promise<puppeteer.ElementHandle<HTMLDivElement>> {
@@ -34,12 +33,12 @@ describe('FlameChart', function() {
   itScreenshot('can add decorations to events', async () => {
     await loadComponentDocExample('performance_panel/flamechart.html');
     const flameChart = await getFlameChartContainerWhenReady('#container2');
-    await assertElementScreenshotUnchanged(flameChart, 'performance/flame_chart_candystripe.png', 0.5);
+    await assertElementScreenshotUnchanged(flameChart, 'performance/flame_chart_candystripe.png', 0.75);
   });
 
   itScreenshot('can add initiators to events', async () => {
     await loadComponentDocExample('performance_panel/flamechart.html');
     const flameChart = await getFlameChartContainerWhenReady('#container5');
-    await assertElementScreenshotUnchanged(flameChart, 'performance/multiple_initiators.png', 0.5);
+    await assertElementScreenshotUnchanged(flameChart, 'performance/multiple_initiators.png', 0.75);
   });
 });

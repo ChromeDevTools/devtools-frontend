@@ -33,7 +33,7 @@ const templateContent = fs.readFileSync(template, 'utf-8');
 
 const REACT_NATIVE_ENTRYPOINT_TO_TITLE = new Map([
   ['rn_inspector', 'DevTools (React Native)'],
-  ['rn_fusebox', 'React Native DevTools (Fusebox ⚡)']
+  ['rn_fusebox', 'React Native DevTools']
 ]);
 
 for (const entrypoint of entrypoints) {

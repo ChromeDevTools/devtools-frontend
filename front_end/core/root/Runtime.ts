@@ -283,6 +283,7 @@ export enum ConditionName {
   CAN_DOCK = 'can_dock',
   NOT_SOURCES_HIDE_ADD_FOLDER = '!sources.hide_add_folder',
   REACT_NATIVE_UNSTABLE_NETWORK_PANEL = 'unstable_enableNetworkPanel',
+  REACT_NATIVE_USE_INTERNAL_BRANDING = 'unstable_useInternalBranding',
 }
 export const enum ExperimentName {
   CAPTURE_NODE_CREATION_STACKS = 'capture-node-creation-stacks',

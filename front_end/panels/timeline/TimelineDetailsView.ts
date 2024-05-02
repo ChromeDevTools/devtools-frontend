@@ -154,7 +154,14 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     if (this.model !== model) {
       this.model = (model as PerformanceModel);
     }
-    this.#traceEngineData = traceEngineData;
+    if (this.#traceEngineData !== traceEngineData) {
+      // Clear the selector stats view, so the next time the user views it we
+      // reconstruct it with the new trace data.
+      this.lazySelectorStatsView = null;
+
+      this.#traceEngineData = traceEngineData;
+    }
+
     if (traceEngineData) {
       this.#filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(traceEngineData);
     }

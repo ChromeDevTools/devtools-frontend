@@ -1,0 +1,224 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+domain symbols_backend
+  # Error details
+  type Error extends object
+    properties
+      # An error code
+      enum code
+        internal_error
+        protocol_error
+        module_not_found_error
+        eval_error
+      # The error message
+      string message
+
+  # Notify the plugin about a new script
+  command addRawModule
+    parameters
+      # A raw module identifier
+      string rawModuleId
+      # The path to the file with the wasm bytes
+      string path
+    returns
+      # The original source files the raw module was compiled from.
+      # Filenames are in URL format
+      array of string sources
+      # DWO filenames that might be lazily loaded. Used internally
+      # by the extension to set up emscripten filesystem.
+      array of string dwos
+      # Error details if the raw module couldn't be handled
+      optional Error error
+
+  # Notify the plugin about a new script
+  command removeRawModule
+    parameters
+      # The raw module identifier
+      string rawModuleId
+
+  # Offsets in raw modules
+  type RawLocationRange extends object
+    properties
+      # Module identifier
+      string rawModuleId
+      # Start offset of the code range in the raw module
+      integer startOffset
+      # Exclusive end offset of the code range in the raw module
+      integer endOffset
+
+  # Offsets in raw modules
+  type RawLocation extends object
+    properties
+      # Module identifier
+      string rawModuleId
+      # Offset of the location in the raw module
+      integer codeOffset
+      # Index of inline call frame, 0 is top.
+      integer inlineFrameIndex
+
+  # Locations in source files
+  type SourceLocation extends object
+    properties
+      # Module identifier
+      string rawModuleId
+      # Url of the source file
+      string sourceFile
+      # Line number of the location in the source file
+      integer lineNumber
+      # Column number of the location in the source file
+      integer columnNumber
+
+  # Find locations in raw modules from a location in a source file
+  command sourceLocationToRawLocation
+    parameters
+      # Module identifier
+      string rawModuleId
+      # URL of the source file
+      string sourceFileURL
+      # Line number of the location in the source file
+      integer lineNumber
+      # Column number of the location in the source file
+      integer columnNumber
+    returns
+      # The raw locations matching the source locations
+      array of RawLocationRange rawLocationRanges
+      # Error details if the command failed
+      optional Error error
+
+  # Find locations in source files from a location in a raw module
+  command rawLocationToSourceLocation
+    parameters
+      # Module identifier
+      string rawModuleId
+      # Offset of the location in the raw module
+      integer codeOffset
+      # Index of inline frame
+      integer inlineFrameIndex
+    returns
+      # The source locations matching the raw locations
+      array of SourceLocation sourceLocation
+      # Error details if the command failed
+      optional Error error
+
+  # A source language variable
+  type Variable extends object
+    properties
+      # Scope of the variable
+      enum scope
+        local
+        parameter
+        global
+      # Name of the variable
+      string name
+      # Type of the variable
+      string type
+      array of string typedefs
+
+  # List all variables in lexical scope at a location in a raw module
+  command listVariablesInScope
+    parameters
+      # Module identifier
+      string rawModuleId
+      # Offset of the location in the raw module
+      integer codeOffset
+      # Index of inline frame
+      integer inlineFrameIndex
+    returns
+      # The variables present in the scope
+      array of Variable variable
+      # Error details if the command failed
+      optional Error error
+
+  # Get function at location including inline frames.
+  command getFunctionInfo
+    parameters
+      # Module identifier
+      string rawModuleId
+      # Offset of the location in the raw module
+      integer codeOffset
+    returns
+      # A list of functions (multiple if inlined) starting with innermost.
+      array of string functionNames
+      # A string representing a missing .dwo file.
+      array of string missingSymbolFiles
+      # error details if the command failed
+      optional Error error
+
+  type FieldInfo extends object
+    properties
+      optional string name
+      integer offset
+      string typeId
+
+  type Enumerator extends object
+    properties
+      string name
+      bigint value
+      string typeId
+
+  type TypeInfo extends object
+    properties
+      array of string typeNames
+      string typeId
+      integer alignment
+      integer size
+      boolean canExpand
+      boolean hasValue
+      optional integer arraySize
+      boolean isPointer
+      array of FieldInfo members
+      array of Enumerator enumerators
+
+  # Get ranges for inlined function containing codeOffset.
+  command getInlinedFunctionRanges
+    parameters
+      # Module identifier
+      string rawModuleId
+      # Offset of the location in the raw module
+      integer codeOffset
+    returns
+      # The raw locations of the inlined function or empty
+      array of RawLocationRange rawLocationRanges
+      # Error details if the command failed
+      optional Error error
+
+  # Get ranges for inlined functions called by function containing codeOffset.
+  command getInlinedCalleesRanges
+    parameters
+      # Module identifier
+      string rawModuleId
+      # Offset of the location in the raw module
+      integer codeOffset
+    returns
+      # The raw locations of any child inlined functions
+      array of RawLocationRange rawLocationRanges
+      # Error details if the command failed
+      optional Error error
+
+  command getMappedLines
+    parameters
+      # Module identifier
+      string rawModuleId
+      # Source file URL
+      string sourceFileURL
+    returns
+      # Mapped lines
+      array of integer MappedLines
+      # Error details if the command failed
+      optional Error error
+
+  command evaluateExpression
+    parameters
+      RawLocation location
+      string expression
+      object debugProxy
+    returns
+      array of TypeInfo typeInfos
+      TypeInfo root
+      optional string displayValue
+      optional integer location
+      optional integer memoryAddress
+      optional array of integer data
+      optional Error error

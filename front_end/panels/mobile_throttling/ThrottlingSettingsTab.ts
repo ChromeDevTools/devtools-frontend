@@ -4,11 +4,11 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-
-import throttlingSettingsTabStyles from './throttlingSettingsTab.css.js';
-
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+
+import throttlingSettingsTabStyles from './throttlingSettingsTab.css.js';
 
 const UIStrings = {
   /**
@@ -80,22 +80,26 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/ThrottlingSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-let throttlingSettingsTabInstance: ThrottlingSettingsTab;
-
 export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     UI.ListWidget.Delegate<SDK.NetworkManager.Conditions> {
   private readonly list: UI.ListWidget.ListWidget<SDK.NetworkManager.Conditions>;
   private readonly customSetting: Common.Settings.Setting<SDK.NetworkManager.Conditions[]>;
   private editor?: UI.ListWidget.Editor<SDK.NetworkManager.Conditions>;
+
   constructor() {
     super(true);
+
+    this.element.setAttribute('jslog', `${VisualLogging.pane('throttling-conditions')}`);
 
     const header = this.contentElement.createChild('div', 'header');
     header.textContent = i18nString(UIStrings.networkThrottlingProfiles);
     UI.ARIAUtils.markAsHeading(header, 1);
 
-    const addButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.addCustomProfile), this.addButtonClicked.bind(this), 'add-conditions-button');
+    const addButton =
+        UI.UIUtils.createTextButton(i18nString(UIStrings.addCustomProfile), this.addButtonClicked.bind(this), {
+          className: 'add-conditions-button',
+          jslogContext: 'network.add-conditions',
+        });
     this.contentElement.appendChild(addButton);
 
     this.list = new UI.ListWidget.ListWidget(this);
@@ -103,19 +107,10 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
 
     this.list.show(this.contentElement);
 
-    this.customSetting = Common.Settings.Settings.instance().moduleSetting('customNetworkConditions');
+    this.customSetting = Common.Settings.Settings.instance().moduleSetting('custom-network-conditions');
     this.customSetting.addChangeListener(this.conditionsUpdated, this);
 
     this.setDefaultFocusedElement(addButton);
-  }
-
-  static instance(opts = {forceNew: null}): ThrottlingSettingsTab {
-    const {forceNew} = opts;
-    if (!throttlingSettingsTabInstance || forceNew) {
-      throttlingSettingsTabInstance = new ThrottlingSettingsTab();
-    }
-
-    return throttlingSettingsTabInstance;
   }
 
   override wasShown(): void {

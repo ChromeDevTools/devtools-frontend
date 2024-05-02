@@ -22,7 +22,7 @@ async function openNestedWorkerFile(selectors: NestedFileSelector) {
   return workerFile.evaluate(node => node.textContent);
 }
 
-describe('The Sources Tab', async function() {
+describe('The Sources Tab', function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
   this.timeout(10000);
 

@@ -4,10 +4,12 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 
 devtools_module("sdk") {
   sources = [
     "AccessibilityModel.ts",
+    "AutofillModel.ts",
     "CPUProfileDataModel.ts",
     "CPUProfilerModel.ts",
     "CPUThrottlingManager.ts",
@@ -40,10 +42,10 @@ devtools_module("sdk") {
     "DebuggerModel.ts",
     "EmulationModel.ts",
     "EventBreakpointsModel.ts",
-    "FilmStripModel.ts",
     "FrameAssociated.ts",
     "FrameManager.ts",
     "HeapProfilerModel.ts",
+    "HttpReasonPhraseStrings.ts",
     "IOModel.ts",
     "IsolateManager.ts",
     "IssuesModel.ts",
@@ -68,18 +70,18 @@ devtools_module("sdk") {
     "ScreenCaptureModel.ts",
     "Script.ts",
     "SecurityOriginManager.ts",
+    "ServerSentEvents.ts",
+    "ServerSentEventsProtocol.ts",
     "ServerTiming.ts",
     "ServiceWorkerCacheModel.ts",
     "ServiceWorkerManager.ts",
     "SourceMap.ts",
     "SourceMapManager.ts",
+    "SourceMapScopes.ts",
     "StorageBucketsModel.ts",
     "StorageKeyManager.ts",
     "Target.ts",
     "TargetManager.ts",
-    "TraceSDKServices.ts",
-    "TracingManager.ts",
-    "TracingModel.ts",
     "WebAuthnModel.ts",
   ]
 
@@ -92,8 +94,8 @@ devtools_module("sdk") {
     "../../core/root:bundle",
     "../../generated",
     "../../generated:protocol",
+    "../../models/cpu_profile:bundle",
     "../../models/text_utils:bundle",
-    "../../models/trace:bundle",
   ]
 }
 
@@ -108,22 +110,75 @@ devtools_entrypoint("bundle") {
   visibility = [ "*" ]
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "sdk-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../entrypoints/shell/*",
-    "../../legacy_test_runner/*",
-  ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "sdk-meta.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../core/i18n:bundle",
+  ]
 
   visibility = [ "../../entrypoints/*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "AccessibilityModel.test.ts",
+    "AutofillModel.test.ts",
+    "CPUThrottlingManager.test.ts",
+    "CSSContainerQuery.test.ts",
+    "CSSMatchedStyles.test.ts",
+    "CSSModel.test.ts",
+    "CSSProperty.test.ts",
+    "CSSPropertyParser.test.ts",
+    "CSSStyleDeclaration.test.ts",
+    "CSSStyleSheetHeader.test.ts",
+    "ChildTargetManager.test.ts",
+    "ConsoleModel.test.ts",
+    "Cookie.test.ts",
+    "CookieModel.test.ts",
+    "CookieParser.test.ts",
+    "DOMModel.test.ts",
+    "DebuggerModel.test.ts",
+    "EmulationModel.test.ts",
+    "FrameManager.test.ts",
+    "NetworkManager.test.ts",
+    "NetworkRequest.test.ts",
+    "OverlayColorGenerator.test.ts",
+    "OverlayModel.test.ts",
+    "OverlayPersistentHighlighter.test.ts",
+    "PageResourceLoader.test.ts",
+    "PreloadingModel.test.ts",
+    "RemoteObject.test.ts",
+    "ResourceTreeModel.test.ts",
+    "RuntimeModel.test.ts",
+    "Script.test.ts",
+    "ServerSentEventsProtocol.test.ts",
+    "ServerTiming.test.ts",
+    "ServiceWorkerCacheModel.test.ts",
+    "ServiceWorkerManager.test.ts",
+    "SourceMap.test.ts",
+    "SourceMapManager.test.ts",
+    "SourceMapScopes.test.ts",
+    "StorageBucketsModel.test.ts",
+    "StorageKeyManager.test.ts",
+    "Target.test.ts",
+    "TargetManager.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../generated:protocol",
+    "../../models/bindings:bundle",
+    "../../models/persistence:bundle",
+    "../../models/text_utils:bundle",
+    "../../models/trace:bundle",
+    "../../models/workspace:bundle",
+    "../../testing",
+    "../common:bundle",
+    "../protocol_client:bundle",
+  ]
 }

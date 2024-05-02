@@ -1,0 +1,84 @@
+<!--
+  Copyright 2023 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css">
+      #node {
+        transition: background-color 150ms cubic-bezier(0, 0.5, 0.5, 1);
+      }
+
+      #node.css-anim {
+        animation: anim 300ms ease-in-out;
+      }
+
+      @keyframes anim {
+        from {
+          width: 100px;
+        }
+        to {
+          width: 200px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="node" style="background-color: red; height: 100px"></div>
+    <script>
+      var animation;
+
+      function startAnimationWithDelay() {
+        animation = node.animate([{ width: "100px" }, { width: "200px" }], {
+          duration: 200,
+          delay: 100,
+          id: "testId",
+        });
+      }
+
+      function startAnimationWithEndDelay() {
+        animation = node.animate([{ width: "100px" }, { width: "200px" }], {
+          duration: 20000,
+          delay: 100,
+          endDelay: 200,
+          id: "testId2",
+        });
+      }
+
+      function startAnimationWithNegativeStartTime() {
+        animation = node.animate([{ width: "100px" }, { width: "200px" }], {
+          duration: 20000,
+          delay: 100,
+          endDelay: 200
+        });
+        animation.startTime = -10000;
+      }
+
+      function startAnimationWithStepTiming() {
+        animation = node.animate(
+          [
+            { width: "100px", easing: "steps(5, end)" },
+            { width: "200px", easing: "step-start" },
+          ],
+          { duration: 200, id: "testId3" }
+        );
+      }
+
+      function startAnimationWithKeyframeEffect() {
+        var effect = new KeyframeEffect(node, { opacity : [ 0, 0.9 ] }, 1000);
+        var anim = node.animate(null);
+        anim.effect = effect;
+      }
+
+      function startCSSAnimation() {
+        node.classList.add("css-anim");
+      }
+
+      function startCSSTransition() {
+        node.style.backgroundColor = "blue";
+      }
+    </script>
+  </body>
+</html>

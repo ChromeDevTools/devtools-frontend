@@ -4,20 +4,8 @@
  * found in the LICENSE file.
  */
 
-.cookies-table {
-  --override-flagged-row-background-color-odd: rgb(247 234 161);
-  --override-flagged-row-background-color-even: rgb(255 240 155);
-}
-
-.-theme-with-dark-background .cookies-table,
-:host-context(.-theme-with-dark-background) .cookies-table {
-  --override-flagged-row-background-color-odd: rgb(94 81 8);
-  --override-flagged-row-background-color-even: rgb(121 103 0);
-}
-
 .cookies-table devtools-icon {
   margin-right: 4px;
-  margin-bottom: -2px;
 }
 
 .cookies-table td.flagged-cookie-attribute-cell devtools-icon {
@@ -29,9 +17,9 @@
 }
 
 .cookies-table tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(odd) {
-  background-color: var(--override-flagged-row-background-color-odd);
+  background-color: var(--sys-color-surface-yellow-high);
 }
 
 .cookies-table tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(even) {
-  background-color: var(--override-flagged-row-background-color-even);
+  background-color: var(--sys-color-surface-yellow);
 }

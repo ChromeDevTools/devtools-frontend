@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../panels/profiler/profiler-legacy.js';
-
+import * as Profiler from '../../panels/profiler/profiler.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
@@ -13,8 +12,11 @@ export const CPUProfilerTestRunner = {};
 
 CPUProfilerTestRunner.startProfilerTest = function(callback) {
   TestRunner.addResult('Profiler was enabled.');
-  TestRunner.addSniffer(UI.panels.js_profiler, 'addProfileHeader', CPUProfilerTestRunner.profileHeaderAdded, true);
-  TestRunner.addSniffer(Profiler.ProfileView.prototype, 'refresh', CPUProfilerTestRunner.profileViewRefresh, true);
+  TestRunner.addSniffer(
+      Profiler.ProfilesPanel.JSProfilerPanel.instance(), 'addProfileHeader', CPUProfilerTestRunner.profileHeaderAdded,
+      true);
+  TestRunner.addSniffer(
+      Profiler.ProfileView.ProfileView.prototype, 'refresh', CPUProfilerTestRunner.profileViewRefresh, true);
   TestRunner.safeWrap(callback)();
 };
 
@@ -50,13 +52,13 @@ CPUProfilerTestRunner.showProfileWhenAdded = function(title) {
 
 CPUProfilerTestRunner.profileHeaderAdded = function(profile) {
   if (CPUProfilerTestRunner.showProfileWhenAdded === profile.title) {
-    UI.panels.js_profiler.showProfile(profile);
+    Profiler.ProfilesPanel.JSProfilerPanel.instance().showProfile(profile);
   }
 };
 
 CPUProfilerTestRunner.waitUntilProfileViewIsShown = function(title, callback) {
   callback = TestRunner.safeWrap(callback);
-  const profilesPanel = UI.panels.js_profiler;
+  const profilesPanel = Profiler.ProfilesPanel.JSProfilerPanel.instance();
 
   if (profilesPanel.visibleView && profilesPanel.visibleView.profile &&
       profilesPanel.visibleView.profileHeader.title === title) {

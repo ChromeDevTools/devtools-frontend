@@ -10,8 +10,9 @@
 }
 
 .key {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-on-surface-subtle);
   padding: 0 6px;
   text-align: right;
   white-space: pre;
+  user-select: none;
 }

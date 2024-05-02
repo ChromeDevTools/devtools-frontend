@@ -22,17 +22,16 @@
 }
 
 .breakpoint-entry:focus-visible {
-  background-color: var(--legacy-focus-bg-color);
+  background-color: var(--sys-color-tonal-container);
 }
 
-.breakpoint-list .breakpoint-entry:hover {
-  background-color: var(--color-background-elevation-2);
+.breakpoint-list .breakpoint-entry:not(:focus-visible):hover {
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .breakpoint-hit {
-  background-color: var(--color-background-elevation-2);
-  border-right: 3px solid var(--color-details-hairline);
-  color: var(--color-text-primary);
+  background-color: var(--sys-color-neutral-container);
+  color: var(--sys-color-on-surface);
 }
 
 @media (forced-colors: active) {

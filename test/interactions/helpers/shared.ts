@@ -17,6 +17,8 @@ export const loadComponentDocExample = async (urlComponent: string) => {
   await frontend.goto(url.toString(), {
     waitUntil: 'networkidle0',
   });
+  // Hide the outer UI to prevent interaction tests from accidentally clicking on it.
+  await frontend.evaluate(() => window.dispatchEvent(new Event('hidecomponentdocsui')));
 };
 
 const SHOULD_GATHER_COVERAGE_INFORMATION = process.env.COVERAGE === '1';

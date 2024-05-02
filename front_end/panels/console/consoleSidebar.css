@@ -6,7 +6,7 @@
 
 :host {
   overflow: auto;
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 .tree-outline-disclosure {
@@ -19,8 +19,20 @@
   margin: 0 8px;
 }
 
-[is="ui-icon"] {
+devtools-icon {
   margin: 0 5px;
+
+  &[name="cross-circle"] {
+    color: var(--sys-color-error-bright);
+  }
+
+  &[name="warning"] {
+    color: var(--icon-warning);
+  }
+
+  &[name="info"] {
+    color: var(--icon-info);
+  }
 }
 
 li {
@@ -36,24 +48,12 @@ li {
 
 .tree-outline li:hover:not(.selected) .selection {
   display: block;
-  background-color: var(--item-hover-color);
-}
-
-[is="ui-icon"].cross-circle {
-  background-color: var(--icon-error);
-}
-
-[is="ui-icon"].warning {
-  background-color: var(--icon-warning);
-}
-
-[is="ui-icon"].info {
-  background-color: var(--icon-info);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 @media (forced-colors: active) {
-  [is="ui-icon"].icon-mask {
-    background-color: ButtonText;
+  devtools-icon {
+    color: ButtonText;
   }
 
   .tree-outline li:hover:not(.selected) .selection {
@@ -69,9 +69,8 @@ li {
     color: HighlightText;
   }
 
-  .tree-outline li:hover [is="ui-icon"].icon-mask,
-  .tree-outline li.selected [is="ui-icon"].icon-mask,
-  .tree-outline li.selected:focus .spritesheet-mediumicons:not(.icon-mask) {
-    background-color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
+  .tree-outline li:hover devtools-icon,
+  .tree-outline li.selected devtools-icon {
+    color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
   }
 }

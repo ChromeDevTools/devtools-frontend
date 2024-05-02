@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("console_counters") {
@@ -30,12 +31,9 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
     "../../entrypoints/*",
     "../../legacy_test_runner/*",
     "../../ui/components/docs/issue_counter/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../console/*",
     "../issues/*",
     "../sources/*",
@@ -47,7 +45,21 @@ devtools_entrypoint("bundle") {
 devtools_entrypoint("meta") {
   entrypoint = "console_counters-meta.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../ui/legacy:bundle",
+  ]
 
   visibility = [ "../../entrypoints/*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "console_counters.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+  ]
 }

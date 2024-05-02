@@ -5,11 +5,9 @@
  */
 
 .html-preview-frame {
-  /* We always want a white background, even in dark mode */
-  --override-preview-frame-background: #fff;
-
   box-shadow: var(--drop-shadow);
-  background: var(--override-preview-frame-background);
+  /* We always want a white background, even in dark mode */
+  background: var(--ref-palette-neutral100);
   flex-grow: 1;
   margin: 20px;
 }

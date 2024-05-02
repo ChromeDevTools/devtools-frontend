@@ -1,0 +1,28 @@
+[submodule "third_party/clang-format/script"]
+	path = third_party/clang-format/script
+	url = https://chromium.googlesource.com/external/github.com/llvm/llvm-project/clang/tools/clang-format
+	gclient-condition = build_with_chromium == False
+[submodule "extensions/cxx_debugging/third_party/llvm/src"]
+	path = extensions/cxx_debugging/third_party/llvm/src
+	url = https://chromium.googlesource.com/external/github.com/llvm/llvm-project
+	gclient-condition = checkout_cxx_debugging_extension_deps == True
+[submodule "extensions/cxx_debugging/third_party/lldb-eval/src"]
+	path = extensions/cxx_debugging/third_party/lldb-eval/src
+	url = https://chromium.googlesource.com/external/github.com/google/lldb-eval
+	gclient-condition = checkout_cxx_debugging_extension_deps == True
+[submodule "buildtools"]
+	path = buildtools
+	url = https://chromium.googlesource.com/chromium/src/buildtools
+	gclient-condition = build_with_chromium == False
+[submodule "build"]
+	path = build
+	url = https://chromium.googlesource.com/chromium/src/build
+	gclient-condition = build_with_chromium == False
+[submodule "third_party/depot_tools"]
+	path = third_party/depot_tools
+	url = https://chromium.googlesource.com/chromium/tools/depot_tools
+	gclient-condition = build_with_chromium == False
+[submodule "third_party/inspector_protocol"]
+	path = third_party/inspector_protocol
+	url = https://chromium.googlesource.com/deps/inspector_protocol
+	gclient-condition = build_with_chromium == False

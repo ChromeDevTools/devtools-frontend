@@ -27,7 +27,7 @@ row1.appendChild(icon1);
 
 iconTable?.appendChild(row1);
 
-icon.onclick = (): void => {
+icon.onclick = () => {
   // Change of colour through a data-setter, which rerenders the component. Getting the data first in order not to specify the data fields all over again
   icon.data = {...icon.data, color: 'blue'};
 };
@@ -38,7 +38,7 @@ iconName2.textContent = 'issue-exclamation-filled';
 row2.appendChild(iconName2);
 
 const otherIcon = new IconButton.Icon.Icon();
-const otherPath = '../../../../Images/src/issue-exclamation-filled.svg';
+const otherPath = 'issue-exclamation-filled';
 otherIcon.data = {
   iconPath: otherPath,
   width: '20px',
@@ -58,19 +58,14 @@ row3.appendChild(iconName3);
 
 const otherIcon2 = new IconButton.Icon.Icon();
 otherIcon2.classList.add('custom-color');
-otherIcon2.data = {
-  iconName: 'select-element',
-  width: '20px',
-  height: '20px',
-  color: 'var(--icon-default)',
-};
+otherIcon2.name = 'select-element';
 const icon3 = document.createElement('td');
 icon3.appendChild(otherIcon2);
 row3.appendChild(icon3);
 
 iconTable?.appendChild(row3);
 
-((): void => {
+(() => {
   const div = document.createElement('div');
   const span1 = document.createElement('span');
   span1.textContent = 'Some text';
@@ -90,7 +85,7 @@ iconTable?.appendChild(row3);
   document.body.append(div);
 })();
 
-((): void => {
+(() => {
   const div = document.createElement('div');
   const span1 = document.createElement('span');
   span1.textContent = 'Some text';

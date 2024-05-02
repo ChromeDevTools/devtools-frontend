@@ -6,7 +6,7 @@ import {goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {assertStatus, expandIssue, navigateToIssuesTab} from '../helpers/issues-helpers.js';
 
-describe('The Issues tab report-only issues', async () => {
+describe('The Issues tab report-only issues', () => {
   it('should report the violation as blocked', async () => {
     await goToResource('elements/element-reveal-inline-issue.html');
     await navigateToIssuesTab();

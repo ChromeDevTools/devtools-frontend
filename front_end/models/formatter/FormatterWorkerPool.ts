@@ -6,7 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as FormatterActions from '../../entrypoints/formatter_worker/FormatterActions.js';  // eslint-disable-line rulesdir/es_modules_import
 export {DefinitionKind, type ScopeTreeNode} from '../../entrypoints/formatter_worker/FormatterActions.js';
 
-const MAX_WORKERS = Math.min(2, navigator.hardwareConcurrency - 1);
+const MAX_WORKERS = Math.max(2, navigator.hardwareConcurrency - 1);
 
 let formatterWorkerPoolInstance: FormatterWorkerPool;
 
@@ -55,9 +55,7 @@ export class FormatterWorkerPool {
     }
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private onWorkerMessage(worker: Common.Worker.WorkerWrapper, event: MessageEvent<any>): void {
+  private onWorkerMessage(worker: Common.Worker.WorkerWrapper, event: MessageEvent): void {
     const task = this.workerTasks.get(worker);
     if (!task) {
       return;
@@ -109,7 +107,7 @@ export class FormatterWorkerPool {
   }
 
   private runTask(methodName: FormatterActions.FormatterActions, params: {
-    [x: string]: string|string[][],
+    [x: string]: unknown,
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }): Promise<any> {
@@ -125,16 +123,14 @@ export class FormatterWorkerPool {
     return this.runTask(FormatterActions.FormatterActions.FORMAT, parameters) as Promise<FormatterActions.FormatResult>;
   }
 
-  javaScriptSubstitute(expression: string, mapping: Map<string, string>): Promise<string> {
-    return this
-        .runTask(
-            FormatterActions.FormatterActions.JAVASCRIPT_SUBSTITUTE,
-            {content: expression, mapping: Array.from(mapping.entries())})
+  javaScriptSubstitute(expression: string, mapping: Map<string, string|null>): Promise<string> {
+    return this.runTask(FormatterActions.FormatterActions.JAVASCRIPT_SUBSTITUTE, {content: expression, mapping})
         .then(result => result || '');
   }
 
-  javaScriptScopeTree(expression: string): Promise<FormatterActions.ScopeTreeNode|null> {
-    return this.runTask(FormatterActions.FormatterActions.JAVASCRIPT_SCOPE_TREE, {content: expression})
+  javaScriptScopeTree(expression: string, sourceType: 'module'|'script' = 'script'):
+      Promise<FormatterActions.ScopeTreeNode|null> {
+    return this.runTask(FormatterActions.FormatterActions.JAVASCRIPT_SCOPE_TREE, {content: expression, sourceType})
         .then(result => result || null);
   }
 
@@ -157,16 +153,10 @@ export class FormatterWorkerPool {
 
 class Task {
   method: string;
-  params: {
-    [x: string]: string|string[][],
-  };
+  params: unknown;
   callback: (arg0: MessageEvent|null) => void;
   isChunked: boolean|undefined;
-  constructor(
-      method: string, params: {
-        [x: string]: string|string[][],
-      },
-      callback: (arg0: MessageEvent|null) => void, isChunked?: boolean) {
+  constructor(method: string, params: unknown, callback: (arg0: MessageEvent|null) => void, isChunked?: boolean) {
     this.method = method;
     this.params = params;
     this.callback = callback;

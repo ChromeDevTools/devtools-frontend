@@ -30,21 +30,20 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
-
-import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {
   AllocationGridNode,
   HeapSnapshotConstructorNode,
-  HeapSnapshotGenericObjectNode,
-  HeapSnapshotRetainingObjectNode,
-  HeapSnapshotObjectNode,
   HeapSnapshotDiffNode,
+  HeapSnapshotGenericObjectNode,
   type HeapSnapshotGridNode,
+  HeapSnapshotObjectNode,
+  HeapSnapshotRetainingObjectNode,
 } from './HeapSnapshotGridNodes.js';
 import {type HeapSnapshotProxy} from './HeapSnapshotProxy.js';
 import {type HeapProfileHeader} from './HeapSnapshotView.js';
@@ -265,8 +264,7 @@ export class HeapSnapshotSortableDataGrid extends
     const node = (gridNode as HeapSnapshotGridNode);
     node.populateContextMenu(contextMenu, this.dataDisplayDelegateInternal, this.heapProfilerModel());
 
-    if (node instanceof HeapSnapshotGenericObjectNode && node.linkElement &&
-        !contextMenu.containsTarget(node.linkElement)) {
+    if (node instanceof HeapSnapshotGenericObjectNode && node.linkElement) {
       contextMenu.appendApplicableItems(node.linkElement);
     }
   }
@@ -409,8 +407,6 @@ export class HeapSnapshotSortableDataGrid extends
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum HeapSnapshotSortableDataGridEvents {
   ContentShown = 'ContentShown',
   SortingComplete = 'SortingComplete',
@@ -677,10 +673,10 @@ export class HeapSnapshotContainmentDataGrid extends HeapSnapshotSortableDataGri
     super(heapProfilerModel, dataDisplayDelegate, dataGridParameters);
   }
 
-  override async setDataSource(snapshot: HeapSnapshotProxy, nodeIndex: number): Promise<void> {
+  override async setDataSource(snapshot: HeapSnapshotProxy, nodeIndex: number, nodeId?: number): Promise<void> {
     this.snapshot = snapshot;
-    const node =
-        new HeapSnapshotModel.HeapSnapshotModel.Node(-1, 'root', 0, nodeIndex || snapshot.rootNodeIndex, 0, 0, '');
+    const node = new HeapSnapshotModel.HeapSnapshotModel.Node(
+        nodeId ?? -1, 'root', 0, nodeIndex || snapshot.rootNodeIndex, 0, 0, '');
     this.setRootNode(this.createRootNode(snapshot, node));
     void (this.rootNode() as HeapSnapshotGridNode).sort();
   }
@@ -723,7 +719,8 @@ export class HeapSnapshotRetainmentDataGrid extends HeapSnapshotContainmentDataG
     return new HeapSnapshotRetainingObjectNode(this, snapshot, fakeEdge, null);
   }
 
-  override sortFields(sortColumn: string, sortAscending: boolean): HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig {
+  override sortFields(sortColumn: string, sortAscending: boolean):
+      HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig {
     switch (sortColumn) {
       case 'object':
         return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('name', sortAscending, 'count', false);
@@ -745,15 +742,13 @@ export class HeapSnapshotRetainmentDataGrid extends HeapSnapshotContainmentDataG
     this.resetSortingCache();
   }
 
-  override async setDataSource(snapshot: HeapSnapshotProxy, nodeIndex: number): Promise<void> {
-    await super.setDataSource(snapshot, nodeIndex);
+  override async setDataSource(snapshot: HeapSnapshotProxy, nodeIndex: number, nodeId?: number): Promise<void> {
+    await super.setDataSource(snapshot, nodeIndex, nodeId);
     this.rootNode().expand();
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
 // TODO(crbug.com/1228674): Remove this enum, it is only used in web tests.
-// eslint-disable-next-line rulesdir/const_enum
 export enum HeapSnapshotRetainmentDataGridEvents {
   ExpandRetainersComplete = 'ExpandRetainersComplete',
 }
@@ -791,7 +786,8 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
     this.nextRequestedFilter = null;
   }
 
-  override sortFields(sortColumn: string, sortAscending: boolean): HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig {
+  override sortFields(sortColumn: string, sortAscending: boolean):
+      HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig {
     switch (sortColumn) {
       case 'object':
         return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('name', sortAscending, 'retainedSize', false);
@@ -938,7 +934,8 @@ export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
     return 50;
   }
 
-  override sortFields(sortColumn: string, sortAscending: boolean): HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig {
+  override sortFields(sortColumn: string, sortAscending: boolean):
+      HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig {
     switch (sortColumn) {
       case 'object':
         return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('name', sortAscending, 'count', false);

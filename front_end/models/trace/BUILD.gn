@@ -4,19 +4,27 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("trace") {
   sources = [
+    "EntriesFilter.ts",
+    "LegacyTracingModel.ts",
     "ModelImpl.ts",
     "Processor.ts",
+    "TracingManager.ts",
   ]
 
   deps = [
+    "../../core/common:bundle",
     "../../core/platform:bundle",
+    "../../core/sdk:bundle",
     "extras:bundle",
     "handlers:bundle",
     "helpers:bundle",
+    "insights:bundle",
+    "root-causes:bundle",
     "types:bundle",
   ]
 }
@@ -28,10 +36,37 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/*",
-    "../../core/sdk/*",
+    "../../core/sdk:unittests",
+    "../../legacy_test_runner/*",
+    "../../panels/lighthouse/*",
+    "../../panels/network/*",
+    "../../panels/recorder/*",
     "../../panels/timeline/*",
+    "../../services/trace_bounds/*",
+    "../../services/tracing/*",
+    "../../testing/*",
+    "../../testing/*",
+    "../../ui/components/docs/*",
+    "../timeline_model/*",
+    "./*",
   ]
 
   visibility += devtools_models_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "EntriesFilter.test.ts",
+    "LegacyTracingModel.test.ts",
+    "ModelImpl.test.ts",
+    "Processor.test.ts",
+    "TracingManager.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+  ]
 }

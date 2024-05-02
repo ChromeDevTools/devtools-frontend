@@ -25,14 +25,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class TopLayerContainer extends UI.TreeOutline.TreeElement {
   tree: ElementsTreeOutline.ElementsTreeOutline;
-  domModel: SDK.DOMModel.DOMModel;
+  document: SDK.DOMModel.DOMDocument;
   currentTopLayerDOMNodes: Set<SDK.DOMModel.DOMNode> = new Set();
   topLayerUpdateThrottler: Common.Throttler.Throttler;
 
-  constructor(tree: ElementsTreeOutline.ElementsTreeOutline, domModel: SDK.DOMModel.DOMModel) {
+  constructor(tree: ElementsTreeOutline.ElementsTreeOutline, document: SDK.DOMModel.DOMDocument) {
     super('#top-layer');
     this.tree = tree;
-    this.domModel = domModel;
+    this.document = document;
     this.topLayerUpdateThrottler = new Common.Throttler.Throttler(1);
   }
 
@@ -44,28 +44,31 @@ export class TopLayerContainer extends UI.TreeOutline.TreeElement {
     this.removeChildren();
     this.removeCurrentTopLayerElementsAdorners();
     this.currentTopLayerDOMNodes = new Set();
-
-    const newTopLayerElementsIDs = await this.domModel.getTopLayerElements();
+    const domModel = this.document.domModel();
+    const newTopLayerElementsIDs = await domModel.getTopLayerElements();
     if (!newTopLayerElementsIDs || newTopLayerElementsIDs.length === 0) {
       return;
     }
 
     let topLayerElementIndex = 0;
     for (let i = 0; i < newTopLayerElementsIDs.length; i++) {
-      const topLayerDOMNode = this.domModel.idToDOMNode.get(newTopLayerElementsIDs[i]);
-      if (topLayerDOMNode && topLayerDOMNode.nodeName() !== '::backdrop') {
+      const topLayerDOMNode = domModel.idToDOMNode.get(newTopLayerElementsIDs[i]);
+      if (!topLayerDOMNode || topLayerDOMNode.ownerDocument !== this.document) {
+        continue;
+      }
+
+      if (topLayerDOMNode.nodeName() !== '::backdrop') {
         const topLayerElementShortcut = new SDK.DOMModel.DOMNodeShortcut(
-            this.domModel.target(), topLayerDOMNode.backendNodeId(), 0, topLayerDOMNode.nodeName());
+            domModel.target(), topLayerDOMNode.backendNodeId(), 0, topLayerDOMNode.nodeName());
         const topLayerElementRepresentation = new ElementsTreeOutline.ShortcutTreeElement(topLayerElementShortcut);
         this.appendChild(topLayerElementRepresentation);
         this.currentTopLayerDOMNodes.add(topLayerDOMNode);
 
         // Add the element's backdrop if previous top layer element is a backdrop.
-        const previousTopLayerDOMNode =
-            (i > 0) ? this.domModel.idToDOMNode.get(newTopLayerElementsIDs[i - 1]) : undefined;
+        const previousTopLayerDOMNode = (i > 0) ? domModel.idToDOMNode.get(newTopLayerElementsIDs[i - 1]) : undefined;
         if (previousTopLayerDOMNode && previousTopLayerDOMNode.nodeName() === '::backdrop') {
           const backdropElementShortcut = new SDK.DOMModel.DOMNodeShortcut(
-              this.domModel.target(), previousTopLayerDOMNode.backendNodeId(), 0, previousTopLayerDOMNode.nodeName());
+              domModel.target(), previousTopLayerDOMNode.backendNodeId(), 0, previousTopLayerDOMNode.nodeName());
           const backdropElementRepresentation = new ElementsTreeOutline.ShortcutTreeElement(backdropElementShortcut);
           topLayerElementRepresentation.appendChild(backdropElementRepresentation);
         }
@@ -102,7 +105,7 @@ export class TopLayerContainer extends UI.TreeOutline.TreeElement {
     adornerContent.append(adornerText);
     const adorner = element?.adorn(config, adornerContent);
     if (adorner) {
-      const onClick = (((): void => {
+      const onClick = ((() => {
                          Host.userMetrics.badgeActivated(Host.UserMetrics.BadgeType.TOP_LAYER);
                          topLayerElementRepresentation.revealAndSelect();
                        }) as EventListener);

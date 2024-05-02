@@ -1,103 +1,48 @@
 /**
- * Copyright 2020 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2023 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
-import PuppeteerUtil from '../injected/injected.js';
-import { ElementHandle } from '../api/ElementHandle.js';
-import { Frame } from './Frame.js';
-import { WaitForSelectorOptions } from './IsolatedWorld.js';
-/**
- * @public
- */
-export interface CustomQueryHandler {
-    /**
-     * @returns A {@link Node} matching the given `selector` from {@link node}.
-     */
-    queryOne?: (node: Node, selector: string) => Node | null;
-    /**
-     * @returns Some {@link Node}s matching the given `selector` from {@link node}.
-     */
-    queryAll?: (node: Node, selector: string) => Node[];
-}
+import type { ElementHandle } from '../api/ElementHandle.js';
+import type { Frame } from '../api/Frame.js';
+import type { WaitForSelectorOptions } from '../api/Page.js';
+import type PuppeteerUtil from '../injected/injected.js';
+import type { Awaitable, AwaitableIterable } from './types.js';
 /**
  * @internal
  */
-export interface InternalQueryHandler {
-    /**
-     * @returns A {@link Node} matching the given `selector` from {@link node}.
-     */
-    queryOne?: (node: Node, selector: string, PuppeteerUtil: PuppeteerUtil) => Node | null;
-    /**
-     * @returns Some {@link Node}s matching the given `selector` from {@link node}.
-     */
-    queryAll?: (node: Node, selector: string, PuppeteerUtil: PuppeteerUtil) => Node[];
-}
+export type QuerySelectorAll = (node: Node, selector: string, PuppeteerUtil: PuppeteerUtil) => AwaitableIterable<Node>;
 /**
  * @internal
  */
-export interface PuppeteerQueryHandler {
-    /**
-     * Queries for a single node given a selector and {@link ElementHandle}.
-     *
-     * Akin to {@link Window.prototype.querySelector}.
-     */
-    queryOne?: (element: ElementHandle<Node>, selector: string) => Promise<ElementHandle<Node> | null>;
+export type QuerySelector = (node: Node, selector: string, PuppeteerUtil: PuppeteerUtil) => Awaitable<Node | null>;
+/**
+ * @internal
+ */
+export declare class QueryHandler {
+    static querySelectorAll?: QuerySelectorAll;
+    static querySelector?: QuerySelector;
+    static get _querySelector(): QuerySelector;
+    static get _querySelectorAll(): QuerySelectorAll;
     /**
      * Queries for multiple nodes given a selector and {@link ElementHandle}.
      *
-     * Akin to {@link Window.prototype.querySelectorAll}.
+     * Akin to {@link https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll | Document.querySelectorAll()}.
      */
-    queryAll?: (element: ElementHandle<Node>, selector: string) => Promise<Array<ElementHandle<Node>>>;
+    static queryAll(element: ElementHandle<Node>, selector: string): AwaitableIterable<ElementHandle<Node>>;
+    /**
+     * Queries for a single node given a selector and {@link ElementHandle}.
+     *
+     * Akin to {@link https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector}.
+     */
+    static queryOne(element: ElementHandle<Node>, selector: string): Promise<ElementHandle<Node> | null>;
     /**
      * Waits until a single node appears for a given selector and
      * {@link ElementHandle}.
+     *
+     * This will always query the handle in the Puppeteer world and migrate the
+     * result to the main world.
      */
-    waitFor?: (elementOrFrame: ElementHandle<Node> | Frame, selector: string, options: WaitForSelectorOptions) => Promise<ElementHandle<Node> | null>;
+    static waitFor(elementOrFrame: ElementHandle<Node> | Frame, selector: string, options: WaitForSelectorOptions): Promise<ElementHandle<Node> | null>;
 }
-/**
- * @deprecated Import {@link Puppeteer} and use the static method
- * {@link Puppeteer.registerCustomQueryHandler}
- *
- * @public
- */
-export declare function registerCustomQueryHandler(name: string, handler: CustomQueryHandler): void;
-/**
- * @deprecated Import {@link Puppeteer} and use the static method
- * {@link Puppeteer.unregisterCustomQueryHandler}
- *
- * @public
- */
-export declare function unregisterCustomQueryHandler(name: string): void;
-/**
- * @deprecated Import {@link Puppeteer} and use the static method
- * {@link Puppeteer.customQueryHandlerNames}
- *
- * @public
- */
-export declare function customQueryHandlerNames(): string[];
-/**
- * @deprecated Import {@link Puppeteer} and use the static method
- * {@link Puppeteer.clearCustomQueryHandlers}
- *
- * @public
- */
-export declare function clearCustomQueryHandlers(): void;
-/**
- * @internal
- */
-export declare function getQueryHandlerAndSelector(selector: string): {
-    updatedSelector: string;
-    queryHandler: PuppeteerQueryHandler;
-};
 //# sourceMappingURL=QueryHandler.d.ts.map

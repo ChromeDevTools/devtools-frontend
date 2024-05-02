@@ -5,18 +5,17 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {
+  type AuditProgressChangedEvent,
   Events,
   LighthouseController,
-  type AuditProgressChangedEvent,
   type PageAuditabilityChangedEvent,
   type PageWarningsChangedEvent,
 } from './LighthouseController.js';
 import lighthousePanelStyles from './lighthousePanel.css.js';
-
 import {ProtocolService} from './LighthouseProtocolService.js';
-
 import {type ReportJSON, type RunnerResultArtifacts} from './LighthouseReporterTypes.js';
 import {LighthouseReportRenderer} from './LighthouseReportRenderer.js';
 import {Item, ReportSelector} from './LighthouseReportSelector.js';
@@ -206,6 +205,7 @@ export class LighthousePanel extends UI.Panel.Panel {
 
   private renderToolbar(): void {
     const lighthouseToolbarContainer = this.element.createChild('div', 'lighthouse-toolbar-container');
+    lighthouseToolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
 
     const toolbar = new UI.Toolbar.Toolbar('', lighthouseToolbarContainer);
 
@@ -227,7 +227,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.settingsPane.element.classList.add('lighthouse-settings-pane');
     this.settingsPane.element.appendChild(this.startView.settingsToolbar().element);
     this.showSettingsPaneSetting = Common.Settings.Settings.instance().createSetting(
-        'lighthouseShowSettingsToolbar', false, Common.Settings.SettingStorageType.Synced);
+        'lighthouse-show-settings-toolbar', false, Common.Settings.SettingStorageType.Synced);
 
     this.rightToolbar = new UI.Toolbar.Toolbar('', lighthouseToolbarContainer);
     this.rightToolbar.appendSeparator();
@@ -337,7 +337,7 @@ export class LighthousePanel extends UI.Panel.Panel {
       }
 
       const reader = new FileReader();
-      reader.onload = (): void => this.loadedFromFile(reader.result as string);
+      reader.onload = () => this.loadedFromFile(reader.result as string);
       reader.readAsText(file);
     }
   }

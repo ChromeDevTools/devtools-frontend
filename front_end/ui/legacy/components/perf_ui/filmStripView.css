@@ -16,17 +16,15 @@
   margin-top: 2px;
 }
 
-.film-strip-view.time-based .frame .time {
-  display: none;
-}
-
 .film-strip-view .label {
   margin: auto;
   font-size: 18px;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .film-strip-view .frame {
+  background: none;
+  border: none;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -47,7 +45,7 @@
 
 .film-strip-view .frame:hover .thumbnail,
 .film-strip-view .frame:focus .thumbnail {
-  border-color: var(--color-selection-highlight-border);
+  border-color: var(--sys-color-primary);
 }
 
 .film-strip-view .frame .thumbnail img {

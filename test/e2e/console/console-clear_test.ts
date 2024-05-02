@@ -13,7 +13,7 @@ import {
   typeIntoConsoleAndWaitForResult,
 } from '../helpers/console-helpers.js';
 
-describe('The Console Tab', async function() {
+describe('The Console Tab', function() {
   it('is cleared via the console.clear() method', async () => {
     const {frontend, target} = getBrowserAndPages();
     await click(CONSOLE_TAB_SELECTOR);

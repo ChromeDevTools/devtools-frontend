@@ -90,7 +90,7 @@
 .block-title {
   padding-top: 4px;
   font-size: 12px;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   letter-spacing: 0;
   text-transform: uppercase;
 }
@@ -107,7 +107,7 @@
 
 .results-section {
   flex-shrink: 0;
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
   padding: var(--overview-default-padding) 0 var(--overview-default-padding) 0;
 }
 
@@ -196,27 +196,13 @@
   align-items: center;
 }
 
-.overview-completed-view .font-info button,
-.overview-completed-view .media-queries button,
-.overview-completed-view .unused-declarations button {
-  border: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  border-radius: 2px;
-  cursor: pointer;
-  height: 28px;
-  background: none;
-}
-
 .overview-completed-view .font-info button .details,
 .overview-completed-view .media-queries button .details,
 .overview-completed-view .unused-declarations button .details {
   min-width: 100px;
   text-align: right;
   margin-right: 8px;
-  color: var(--color-primary-old);
+  color: var(--sys-color-primary);
   pointer-events: none;
 }
 
@@ -231,29 +217,44 @@
 .overview-completed-view .media-queries button .bar,
 .overview-completed-view .unused-declarations button .bar {
   height: 8px;
-  background: var(--color-primary-old);
+  background: var(--sys-color-primary-bright);
   border-radius: 2px;
   min-width: 2px;
 }
 
-.overview-completed-view .font-info button:hover .details,
-.overview-completed-view .font-info button:focus .details,
-.overview-completed-view .media-queries button:hover .details,
-.overview-completed-view .media-queries button:focus .details,
-.overview-completed-view .unused-declarations button:hover .details,
-.overview-completed-view .unused-declarations button:focus .details {
-  color: var(--color-primary-variant);
-}
+.overview-completed-view .font-info button,
+.overview-completed-view .media-queries button,
+.overview-completed-view .unused-declarations button {
+  border: none;
+  padding: 0;
+  padding-right: 10px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  border-radius: 2px;
+  cursor: pointer;
+  height: 28px;
+  background: none;
 
-.overview-completed-view .font-info button:hover .bar,
-.overview-completed-view .font-info button:focus .bar,
-.overview-completed-view .media-queries button:hover .bar,
-.overview-completed-view .media-queries button:focus .bar,
-.overview-completed-view .unused-declarations button:hover .bar,
-.overview-completed-view .unused-declarations button:focus .bar {
-  background-color: var(--color-primary-variant);
-  box-shadow: 0 1px 2px var(--divider-line), 0 0 0 2px var(--color-primary-variant);
-  color: var(--color-background);
+  &:focus-visible {
+    outline: 2px solid var(--sys-color-state-focus-ring);
+  }
+
+  &:hover {
+    border-radius: 12px;
+    background: var(--sys-color-state-hover-on-subtle);
+  }
+
+  &:hover .details,
+  &:focus .details {
+    color: color-mix(in sRGB, var(--sys-color-primary), var(--sys-color-state-hover-on-prominent) 6%);
+  }
+
+  &:hover .bar,
+  &:focus .bar {
+    background-color: color-mix(in sRGB, var(--sys-color-primary-bright), var(--sys-color-state-hover-on-prominent) 6%);
+    color: var(--sys-color-on-primary);
+  }
 }
 
 .overview-completed-view .font-info .font-metric {
@@ -292,7 +293,7 @@
 }
 
 .overview-completed-view .font-family:nth-child(2n+1) {
-  background: var(--color-background);
+  background: var(--sys-color-cdt-base-container);
 }
 
 .overview-completed-view .font-family:first-of-type {

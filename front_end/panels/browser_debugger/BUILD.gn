@@ -5,6 +5,7 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/generate_css.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
@@ -32,6 +33,7 @@ devtools_module("browser_debugger") {
     "../../panels/event_listeners:bundle",
     "../../panels/sources:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/visual_logging:bundle",
   ]
 }
 
@@ -45,19 +47,10 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
     "../../entrypoints/*",
   ]
 
   visibility += devtools_panels_visibility
-}
-
-devtools_entrypoint("legacy") {
-  entrypoint = "browser_debugger-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [ "../..:legacy_entrypoints" ]
 }
 
 devtools_entrypoint("meta") {
@@ -65,10 +58,22 @@ devtools_entrypoint("meta") {
 
   deps = [
     ":bundle",
-    "../../core/platform:bundle",
-    "../../core/root:bundle",
+    "../../core/i18n:bundle",
+    "../../core/sdk:bundle",
+    "../../panels/sources:bundle",
     "../../ui/legacy:bundle",
   ]
 
   visibility = [ "../../entrypoints/*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "browser_debugger.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+  ]
 }

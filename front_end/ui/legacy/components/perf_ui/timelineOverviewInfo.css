@@ -6,7 +6,7 @@
 
 .overview-info:not(:empty) {
   display: flex;
-  background: var(--color-background);
+  background: var(--sys-color-cdt-base-container);
   box-shadow: var(--drop-shadow);
   padding: 3px;
 }

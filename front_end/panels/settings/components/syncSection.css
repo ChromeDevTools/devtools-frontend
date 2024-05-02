@@ -18,7 +18,7 @@ fieldset {
 }
 
 legend {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   font-size: 120%;
   margin-left: -20px;
   padding: 0;
@@ -26,7 +26,7 @@ legend {
 }
 
 .link {
-  color: var(--color-link);
+  color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
   outline-offset: 2px;

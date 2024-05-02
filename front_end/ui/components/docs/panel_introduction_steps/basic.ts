@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
 import * as PanelIntroductionSteps from '../../../components/panel_introduction_steps/panel_introduction_steps.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';

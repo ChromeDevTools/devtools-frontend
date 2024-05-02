@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as VisualLogging from '../visual_logging/visual_logging.js';
+
 import * as ARIAUtils from './ARIAUtils.js';
 import reportViewStyles from './reportView.css.legacy.js';
 import {Toolbar} from './Toolbar.js';
@@ -66,6 +68,7 @@ export class ReportView extends VBox {
     if (link) {
       this.urlElement.appendChild(link);
     }
+    this.urlElement.setAttribute('jslog', `${VisualLogging.link('source-location').track({click: true})}`);
   }
 
   createToolbar(): Toolbar {

@@ -29,7 +29,7 @@ import {
 const COOKIES_SELECTOR = '[aria-label="Cookies"].parent';
 let DOMAIN_SELECTOR: string;
 
-describe('The Application Tab', async () => {
+describe('The Application Tab', () => {
   before(async () => {
     DOMAIN_SELECTOR = `${COOKIES_SELECTOR} + ol > [aria-label="https://localhost:${getTestServerPort()}"]`;
   });
@@ -83,19 +83,19 @@ describe('The Application Tab', async () => {
     await doubleClickSourceTreeItem(COOKIES_SELECTOR);
     await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
 
-    const dataGridRowValues1 = await getStorageItemsData(['partitionKey']);
+    const dataGridRowValues1 = await getStorageItemsData(['partition-key'], 4);
     assert.deepEqual(dataGridRowValues1, [
       {
-        partitionKey: '',
+        'partition-key': 'https://localhost',
       },
       {
-        partitionKey: 'https://localhost',
+        'partition-key': '',
       },
       {
-        partitionKey: '',
+        'partition-key': '',
       },
       {
-        partitionKey: '',
+        'partition-key': '',
       },
     ]);
   });
@@ -108,7 +108,6 @@ describe('The Application Tab', async () => {
     await doubleClickSourceTreeItem(COOKIES_SELECTOR);
     await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
 
-    await waitFor('.cookies-table .data-grid-data-grid-node');
     await click('.cookies-table .data-grid-data-grid-node');
 
     await selectCookieByName('urlencoded');
@@ -165,19 +164,19 @@ describe('The Application Tab', async () => {
     await doubleClickSourceTreeItem(COOKIES_SELECTOR);
     await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
 
-    const dataGridRowValues1 = await getStorageItemsData(['name']);
+    const dataGridRowValues1 = await getStorageItemsData(['name'], 4);
     assert.deepEqual(dataGridRowValues1, [
       {
-        name: 'urlencoded',
+        name: '__Host-foo3',
       },
       {
-        name: '__Host-foo3',
+        name: 'foo',
       },
       {
         name: 'foo2',
       },
       {
-        name: 'foo',
+        name: 'urlencoded',
       },
     ]);
 
@@ -185,16 +184,16 @@ describe('The Application Tab', async () => {
     await clearStorageItems();
     await clearStorageItemsFilter();
 
-    const dataGridRowValues2 = await getStorageItemsData(['name']);
+    const dataGridRowValues2 = await getStorageItemsData(['name'], 3);
     assert.deepEqual(dataGridRowValues2, [
       {
         name: '__Host-foo3',
       },
       {
-        name: 'urlencoded',
+        name: 'foo',
       },
       {
-        name: 'foo',
+        name: 'urlencoded',
       },
     ]);
   });

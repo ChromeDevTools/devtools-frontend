@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 
 devtools_module("har") {
   sources = [
@@ -19,6 +20,7 @@ devtools_module("har") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
+    "../text_utils:bundle",
   ]
 }
 
@@ -28,8 +30,26 @@ devtools_entrypoint("bundle") {
   deps = [ ":har" ]
 
   visibility = [
-    "../../../test/unittests/front_end/models/har/*",
+    ":*",
     "../../panels/network/*",
     "../extensions/*",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "Importer.test.ts",
+    "Log.test.ts",
+    "Writer.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../core/sdk:bundle",
+    "../../testing",
+    "../../ui/legacy:bundle",
   ]
 }

@@ -18,15 +18,23 @@
 }
 
 .inline-icon {
-  margin-left: 4px;
-  margin-right: 4px;
-  vertical-align: middle;
+  margin-inline: 4px;
+  width: 16px;
+  height: 16px;
+
+  &[name="check-circle"] {
+    color: var(--icon-checkmark-green);
+  }
 }
 
 .multiline-value {
   white-space: normal;
 }
 
-.inline-icon:focus-visible {
-  outline-width: unset;
+.chrome-select {
+  margin: 4px;
+}
+
+.inline-button {
+  vertical-align: sub;
 }

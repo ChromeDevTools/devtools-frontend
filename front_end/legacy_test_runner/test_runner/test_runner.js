@@ -3,14 +3,14 @@
 // found in the LICENSE file.
 
 // @ts-nocheck This file is not checked by TypeScript as it has a lot of legacy code.
-import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Trace from '../../models/trace/trace.js';
+
 import * as TestRunner from './TestRunner.js';
 
-self.Platform = self.Platform || {};
-self.Platform.StringUtilities = Platform.StringUtilities;
-
 /**
- * @param {!SDK.Target} target
+ * @param {!SDK.Target.Target} target
  */
 function _setupTestHelpers(target) {
   self.TestRunner.BrowserAgent = target.browserAgent();
@@ -30,24 +30,24 @@ function _setupTestHelpers(target) {
   self.TestRunner.RuntimeAgent = target.runtimeAgent();
   self.TestRunner.TargetAgent = target.targetAgent();
 
-  self.TestRunner.networkManager = target.model(SDK.NetworkManager);
-  self.TestRunner.securityOriginManager = target.model(SDK.SecurityOriginManager);
-  self.TestRunner.storageKeyManager = target.model(SDK.StorageKeyManager);
-  self.TestRunner.resourceTreeModel = target.model(SDK.ResourceTreeModel);
-  self.TestRunner.debuggerModel = target.model(SDK.DebuggerModel);
-  self.TestRunner.runtimeModel = target.model(SDK.RuntimeModel);
-  self.TestRunner.domModel = target.model(SDK.DOMModel);
-  self.TestRunner.domDebuggerModel = target.model(SDK.DOMDebuggerModel);
-  self.TestRunner.cssModel = target.model(SDK.CSSModel);
-  self.TestRunner.cpuProfilerModel = target.model(SDK.CPUProfilerModel);
-  self.TestRunner.overlayModel = target.model(SDK.OverlayModel);
-  self.TestRunner.serviceWorkerManager = target.model(SDK.ServiceWorkerManager);
-  self.TestRunner.tracingManager = target.model(SDK.TracingManager);
+  self.TestRunner.networkManager = target.model(SDK.NetworkManager.NetworkManager);
+  self.TestRunner.securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
+  self.TestRunner.storageKeyManager = target.model(SDK.StorageKeyManager.StorageKeyManager);
+  self.TestRunner.resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+  self.TestRunner.debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+  self.TestRunner.runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+  self.TestRunner.domModel = target.model(SDK.DOMModel.DOMModel);
+  self.TestRunner.domDebuggerModel = target.model(SDK.DOMDebuggerModel.DOMDebuggerModel);
+  self.TestRunner.cssModel = target.model(SDK.CSSModel.CSSModel);
+  self.TestRunner.cpuProfilerModel = target.model(SDK.CPUProfilerModel.CPUProfilerModel);
+  self.TestRunner.overlayModel = target.model(SDK.OverlayModel.OverlayModel);
+  self.TestRunner.serviceWorkerManager = target.model(SDK.ServiceWorkerManager.ServiceWorkerManager);
+  self.TestRunner.tracingManager = target.model(Trace.TracingManager.TracingManager);
   self.TestRunner.mainTarget = target;
 }
 
 export async function _executeTestScript() {
-  const testScriptURL = /** @type {string} */ (Root.Runtime.queryParam('test'));
+  const testScriptURL = /** @type {string} */ (Root.Runtime.Runtime.queryParam('test'));
   if (TestRunner.isDebugTest()) {
     /* eslint-disable no-console */
     TestRunner.setInnerResult(console.log);
@@ -79,7 +79,7 @@ let _startedTest = false;
  */
 export class _TestObserver {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.Target.Target} target
    * @override
    */
   targetAdded(target) {
@@ -102,14 +102,14 @@ export class _TestObserver {
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.Target.Target} target
    * @override
    */
   targetRemoved(target) {
   }
 }
 
-SDK.targetManager.observeTargets(new _TestObserver());
+SDK.TargetManager.TargetManager.instance().observeTargets(new _TestObserver());
 
 const globalTestRunner = self.TestRunner;
 export {globalTestRunner as TestRunner};

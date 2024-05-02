@@ -32,16 +32,16 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import callStackSidebarPaneStyles from './callStackSidebarPane.css.js';
-
-import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
   /**
@@ -108,8 +108,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
   private lastDebuggerModel: SDK.DebuggerModel.DebuggerModel|null = null;
 
   private constructor() {
-    super(i18nString(UIStrings.callStack), true);
+    super(i18nString(UIStrings.callStack), true, 'sources.callstack');
 
+    this.contentElement.setAttribute('jslog', `${VisualLogging.section('sources.callstack')}`);
     ({element: this.ignoreListMessageElement, checkbox: this.ignoreListCheckboxElement} =
          this.createIgnoreListMessageElementAndCheckbox());
     this.contentElement.appendChild(this.ignoreListMessageElement);
@@ -444,9 +445,10 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       contextMenu.defaultSection().appendItem(i18nString(UIStrings.restartFrame), () => {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.StackFrameRestarted);
         void debuggerCallFrame.restart();
-      }, !debuggerCallFrame.canBeRestarted);
+      }, {disabled: !debuggerCallFrame.canBeRestarted, jslogContext: 'restart-frame'});
     }
-    contextMenu.defaultSection().appendItem(i18nString(UIStrings.copyStackTrace), this.copyStackTrace.bind(this));
+    contextMenu.defaultSection().appendItem(
+        i18nString(UIStrings.copyStackTrace), this.copyStackTrace.bind(this), {jslogContext: 'copy-stack-trace'});
     if (item.uiLocation) {
       this.appendIgnoreListURLContextMenuItems(contextMenu, item.uiLocation.uiSourceCode);
     }
@@ -501,9 +503,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       return;
     }
 
-    for (const {text, callback} of Bindings.IgnoreListManager.IgnoreListManager.instance()
+    for (const {text, callback, jslogContext} of Bindings.IgnoreListManager.IgnoreListManager.instance()
              .getIgnoreListURLContextMenuItems(uiSourceCode)) {
-      menuSection.appendItem(text, callback);
+      menuSection.appendItem(text, callback, {jslogContext});
     }
   }
 
@@ -553,19 +555,7 @@ const itemToCallFrame = new WeakMap<Item, SDK.DebuggerModel.CallFrame>();
 export const elementSymbol = Symbol('element');
 export const defaultMaxAsyncStackChainDepth = 32;
 
-let actionDelegateInstance: ActionDelegate;
-
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ActionDelegate {
-    const {forceNew} = opts;
-    if (!actionDelegateInstance || forceNew) {
-      actionDelegateInstance = new ActionDelegate();
-    }
-
-    return actionDelegateInstance;
-  }
   handleAction(context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
       case 'debugger.next-call-frame':

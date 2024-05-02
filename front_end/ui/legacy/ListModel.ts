@@ -12,9 +12,7 @@ export class ListModel<T> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<
     this.items = items || [];
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [Symbol.iterator](): Iterator<T, any, undefined> {
+  [Symbol.iterator](): Iterator<T> {
     return this.items[Symbol.iterator]();
   }
 
@@ -108,9 +106,7 @@ export class ListModel<T> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   ItemsReplaced = 'ItemsReplaced',
 }
 

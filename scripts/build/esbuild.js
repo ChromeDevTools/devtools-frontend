@@ -14,6 +14,7 @@ process.env.ESBUILD_BINARY_PATH = path.join(devtools_paths.devtoolsRootPath(), '
 
 const entryPoints = [process.argv[2]];
 const outfile = process.argv[3];
+const useSourceMaps = process.argv.slice(4).includes('--configSourcemaps');
 
 const outdir = path.dirname(outfile);
 
@@ -33,6 +34,7 @@ require('esbuild')
       format: 'esm',
       platform: 'browser',
       plugins: [plugin],
+      sourcemap: useSourceMaps,
     })
     .catch(err => {
       console.error('failed to run esbuild:', err);

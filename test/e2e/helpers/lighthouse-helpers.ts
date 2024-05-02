@@ -2,36 +2,39 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+import {type ElementHandle} from 'puppeteer-core';
+
 import {
   $,
   click,
+  clickMoreTabsButton,
   getBrowserAndPages,
   goToResource,
   waitFor,
-  waitForAria,
   waitForElementWithTextContent,
   waitForFunction,
 } from '../../shared/helper.js';
 
 import {getQuotaUsage, waitForQuotaUsage} from './application-helpers.js';
 
-import {type ElementHandle} from 'puppeteer';
-import {assert} from 'chai';
-
 export async function navigateToLighthouseTab(path?: string): Promise<ElementHandle<Element>> {
   let lighthouseTabButton = await $('#tab-lighthouse');
 
   // Lighthouse tab can be hidden if the frontend is in a dockable state.
   if (!lighthouseTabButton) {
-    const moreTabsButton = await waitForAria('More tabs');
-    await moreTabsButton.click();
+    await clickMoreTabsButton();
     lighthouseTabButton = await waitForElementWithTextContent('Lighthouse');
   }
 
   await lighthouseTabButton.click();
   await waitFor('.view-container > .lighthouse');
+
+  const {target, frontend} = getBrowserAndPages();
   if (path) {
+    await target.bringToFront();
     await goToResource(path);
+    await frontend.bringToFront();
   }
 
   return waitFor('.lighthouse-start-view');
@@ -40,22 +43,35 @@ export async function navigateToLighthouseTab(path?: string): Promise<ElementHan
 // Instead of watching the worker or controller/panel internals, we wait for the Lighthouse renderer
 // to create the new report DOM. And we pull the LHR and artifacts off the lh-root node.
 export async function waitForResult() {
-  return await waitForFunction(async () => {
-    const reportEl = await waitFor('.lh-root');
-    const result = await reportEl.evaluate(elem => {
-      // @ts-expect-error we installed this obj on a DOM element
-      const lhr = elem._lighthouseResultForTesting;
-      // @ts-expect-error we installed this obj on a DOM element
-      const artifacts = elem._lighthouseArtifactsForTesting;
-      // Delete so any subsequent runs don't accidentally reuse this.
-      // @ts-expect-error
-      delete elem._lighthouseResultForTesting;
-      // @ts-expect-error
-      delete elem._lighthouseArtifactsForTesting;
-      return {lhr, artifacts};
-    });
-    return {...result, reportEl};
+  const {target, frontend} = await getBrowserAndPages();
+
+  // Ensure the target page is in front so the Lighthouse run can finish.
+  await target.bringToFront();
+
+  await waitForFunction(() => {
+    return frontend.evaluate(`(async () => {
+      const Lighthouse = await import('./panels/lighthouse/lighthouse.js');
+      return Lighthouse.LighthousePanel.LighthousePanel.instance().reportSelector.hasItems();
+    })()`);
   });
+
+  // Bring the DT frontend back in front to render the Lighthouse report.
+  await frontend.bringToFront();
+
+  const reportEl = await waitFor('.lh-root');
+  const result = await reportEl.evaluate(elem => {
+    // @ts-expect-error we installed this obj on a DOM element
+    const lhr = elem._lighthouseResultForTesting;
+    // @ts-expect-error we installed this obj on a DOM element
+    const artifacts = elem._lighthouseArtifactsForTesting;
+    // Delete so any subsequent runs don't accidentally reuse this.
+    // @ts-expect-error
+    delete elem._lighthouseResultForTesting;
+    // @ts-expect-error
+    delete elem._lighthouseArtifactsForTesting;
+    return {lhr, artifacts};
+  });
+  return {...result, reportEl};
 }
 
 // Can't reference ToolbarSettingCheckbox inside e2e
@@ -92,7 +108,7 @@ export async function selectMode(mode: 'navigation'|'timespan'|'snapshot') {
 }
 
 export async function selectDevice(device: 'mobile'|'desktop') {
-  await selectRadioOption(device, 'lighthouse.device_type');
+  await selectRadioOption(device, 'lighthouse.device-type');
 }
 
 export async function setToolbarCheckboxWithText(enabled: boolean, textContext: string) {
@@ -107,10 +123,6 @@ export async function setToolbarCheckboxWithText(enabled: boolean, textContext: 
   }, enabled);
 }
 
-export async function setLegacyNavigation(enabled: boolean) {
-  return setToolbarCheckboxWithText(enabled, 'Legacy navigation');
-}
-
 export async function setThrottlingMethod(throttlingMethod: 'simulate'|'devtools') {
   const toolbarHandle = await waitFor('.lighthouse-settings-pane .toolbar');
   await toolbarHandle.evaluate((toolbar, throttlingMethod) => {
@@ -122,9 +134,7 @@ export async function setThrottlingMethod(throttlingMethod: 'simulate'|'devtools
 }
 
 export async function clickStartButton() {
-  const panel = await waitFor('.lighthouse-start-view');
-  const button = await waitFor('button', panel);
-  await button.click();
+  await click('.lighthouse-start-view button');
 }
 
 export async function isGenerateReportButtonDisabled() {
@@ -139,10 +149,8 @@ export async function getHelpText() {
 
 export async function openStorageView() {
   await click('#tab-resources');
-  const STORAGE_SELECTOR = '[aria-label="Storage"]';
   await waitFor('.storage-group-list-item');
-  await waitFor(STORAGE_SELECTOR);
-  await click(STORAGE_SELECTOR);
+  await click('[aria-label="Storage"]');
 }
 
 export async function clearSiteData() {
@@ -214,23 +222,12 @@ export async function getServiceWorkerCount() {
 }
 
 export async function registerServiceWorker() {
-  const {target} = await getBrowserAndPages();
+  const {target} = getBrowserAndPages();
   await target.evaluate(async () => {
     // @ts-expect-error Custom function added to global scope.
     await window.registerServiceWorker();
   });
   assert.strictEqual(await getServiceWorkerCount(), 1);
-}
-
-export async function unregisterAllServiceWorkers() {
-  const {target} = await getBrowserAndPages();
-  await target.evaluate(async () => {
-    if (!navigator.serviceWorker) {
-      return;
-    }
-    const registrations = await navigator.serviceWorker.getRegistrations();
-    await Promise.all(registrations.map(r => r.unregister()));
-  });
 }
 
 export async function interceptNextFileSave(): Promise<() => Promise<string>> {

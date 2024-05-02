@@ -182,24 +182,25 @@ interface SplitColorFunctionParametersOptions {
 }
 
 export function parse(text: string): Color|null {
-  // Simple - #hex, nickname
-  const value = text.toLowerCase().replace(/\s+/g, '');
-  const simple = /^(?:#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})|(\w+))$/i;
-  let match = value.match(simple);
-  if (match) {
-    if (match[1]) {
-      return Legacy.fromHex(match[1], text);
-    }
+  // #hex, nickname
+  if (!text.match(/\s/)) {
+    const match = text.toLowerCase().match(/^(?:#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})|(\w+))$/i);
+    if (match) {
+      if (match[1]) {
+        return Legacy.fromHex(match[1], text);
+      }
 
-    if (match[2]) {
-      return Legacy.fromName(match[2], text);
-    }
+      if (match[2]) {
+        return Legacy.fromName(match[2], text);
+      }
 
-    return null;
+      return null;
+    }
   }
 
   // rgb/rgba(), hsl/hsla(), hwb/hwba(), lch(), oklch(), lab(), oklab() and color()
-  match = text.toLowerCase().match(/^\s*(?:(rgba?)|(hsla?)|(hwba?)|(lch)|(oklch)|(lab)|(oklab)|(color))\((.*)\)\s*$/);
+  const match =
+      text.toLowerCase().match(/^\s*(?:(rgba?)|(hsla?)|(hwba?)|(lch)|(oklch)|(lab)|(oklab)|(color))\((.*)\)\s*$/);
   if (match) {
     const isRgbaMatch = Boolean(match[1]);   // rgb/rgba()
     const isHslaMatch = Boolean(match[2]);   // hsl/hsla()
@@ -370,7 +371,7 @@ function parseRgbNumeric(value: string): number|null {
   return parsed / 255;
 }
 
-function parseHueNumeric(value: string): number|null {
+export function parseHueNumeric(value: string): number|null {
   const angle = value.replace(/(deg|g?rad|turn)$/, '');
   // @ts-ignore: isNaN can accept strings
   if (isNaN(angle) || value.match(/\s+(deg|g?rad|turn)/)) {
@@ -403,9 +404,7 @@ function parseAlphaNumeric(value: string): number|null {
   return parsePercentOrNumber(value);
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function hsva2hsla(hsva: Color4D, out_hsla: Color4D): void {
+function hsva2hsla(hsva: Color4D): Color4D {
   const h = hsva[0];
   let s: 0|number = hsva[1];
   const v = hsva[2];
@@ -417,14 +416,10 @@ function hsva2hsla(hsva: Color4D, out_hsla: Color4D): void {
     s *= v / (t < 1 ? t : 2 - t);
   }
 
-  out_hsla[0] = h;
-  out_hsla[1] = s;
-  out_hsla[2] = t / 2;
-  out_hsla[3] = hsva[3];
+  return [h, s, t / 2, hsva[3]];
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export function hsl2rgb(hsl: Color4D, out_rgb: Color4D): void {
+export function hsl2rgb(hsl: Color4D): Color4D {
   const h = hsl[0];
   let s: 0|number = hsl[1];
   const l = hsl[2];
@@ -465,34 +460,29 @@ export function hsl2rgb(hsl: Color4D, out_rgb: Color4D): void {
   const tg = h;
   const tb = h - (1 / 3);
 
-  out_rgb[0] = hue2rgb(p, q, tr);
-  out_rgb[1] = hue2rgb(p, q, tg);
-  out_rgb[2] = hue2rgb(p, q, tb);
-  out_rgb[3] = hsl[3];
+  return [hue2rgb(p, q, tr), hue2rgb(p, q, tg), hue2rgb(p, q, tb), hsl[3]];
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function hwb2rgb(hwb: Color4D, out_rgb: Color4D): void {
+function hwb2rgb(hwb: Color4D): Color4D {
   const h = hwb[0];
   const w = hwb[1];
   const b = hwb[2];
 
-  if (w + b >= 1) {
-    out_rgb[0] = out_rgb[1] = out_rgb[2] = w / (w + b);
-    out_rgb[3] = hwb[3];
-  } else {
-    hsl2rgb([h, 1, 0.5, hwb[3]], out_rgb);
+  const whiteRatio = w / (w + b);
+  let result: Color4D = [whiteRatio, whiteRatio, whiteRatio, hwb[3]];
+
+  if (w + b < 1) {
+    result = hsl2rgb([h, 1, 0.5, hwb[3]]);
     for (let i = 0; i < 3; ++i) {
-      out_rgb[i] += w - (w + b) * out_rgb[i];
+      result[i] += w - (w + b) * result[i];
     }
   }
+
+  return result;
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export function hsva2rgba(hsva: Color4D, out_rgba: Color4D): void {
-  const tmpHSLA: Color4D = [0, 0, 0, 0];
-  hsva2hsla(hsva, tmpHSLA);
-  hsl2rgb(tmpHSLA, out_rgba);
+export function hsva2rgba(hsva: Color4D): Color4D {
+  return hsl2rgb(hsva2hsla(hsva));
 }
 
 export function rgb2hsv(rgba: Color3D): Color3D {
@@ -668,6 +658,7 @@ export interface Color {
   setAlpha(alpha: number): Color;
   format(): Format;
   as<T extends Format>(format: T): ReturnType<ColorConversions[T]>;
+  is<T extends Format>(format: T): this is ReturnType<ColorConversions[T]>;
   asLegacyColor(): Legacy;
   getAuthoredText(): string|null;
 
@@ -800,6 +791,9 @@ export class Lab implements Color {
     this.b = b;
     this.alpha = clamp(alpha, {min: 0, max: 1});
     this.#authoredText = authoredText;
+  }
+  is<T extends Format>(format: T): this is ReturnType<ColorConversions[T]> {
+    return format === this.format();
   }
   as<T extends Format>(format: T): ReturnType<ColorConversions[T]> {
     return Lab.#conversions[format](this) as ReturnType<ColorConversions[T]>;
@@ -939,6 +933,9 @@ export class LCH implements Color {
   }
   asLegacyColor(): Legacy {
     return this.as(Format.RGBA);
+  }
+  is<T extends Format>(format: T): this is ReturnType<ColorConversions[T]> {
+    return format === this.format();
   }
   as<T extends Format>(format: T): ReturnType<ColorConversions[T]> {
     return LCH.#conversions[format](this) as ReturnType<ColorConversions[T]>;
@@ -1081,6 +1078,9 @@ export class Oklab implements Color {
   asLegacyColor(): Legacy {
     return this.as(Format.RGBA);
   }
+  is<T extends Format>(format: T): this is ReturnType<ColorConversions[T]> {
+    return format === this.format();
+  }
   as<T extends Format>(format: T): ReturnType<ColorConversions[T]> {
     return Oklab.#conversions[format](this) as ReturnType<ColorConversions[T]>;
   }
@@ -1216,6 +1216,9 @@ export class Oklch implements Color {
   }
   asLegacyColor(): Legacy {
     return this.as(Format.RGBA);
+  }
+  is<T extends Format>(format: T): this is ReturnType<ColorConversions[T]> {
+    return format === this.format();
   }
   as<T extends Format>(format: T): ReturnType<ColorConversions[T]> {
     return Oklch.#conversions[format](this) as ReturnType<ColorConversions[T]>;
@@ -1386,6 +1389,9 @@ export class ColorFunction implements Color {
   asLegacyColor(): Legacy {
     return this.as(Format.RGBA);
   }
+  is<T extends Format>(format: T): this is ReturnType<ColorConversions[T]> {
+    return format === this.format();
+  }
   as<T extends Format>(format: T): ReturnType<ColorConversions[T]> {
     if (this.colorSpace === format) {
       return this as ReturnType<ColorConversions[T]>;
@@ -1552,8 +1558,7 @@ export class HSL implements Color {
   #getRGBArray(withAlpha: true): Color4DOr3D;
   #getRGBArray(withAlpha: false): Color3D;
   #getRGBArray(withAlpha: boolean = true): Color4DOr3D|Color3D {
-    const rgb: Color4D = [0, 0, 0, 0];
-    hsl2rgb([this.h, this.s, this.l, 0], rgb);
+    const rgb = hsl2rgb([this.h, this.s, this.l, 0]);
     if (withAlpha) {
       return [rgb[0], rgb[1], rgb[2], this.alpha ?? undefined];
     }
@@ -1603,6 +1608,9 @@ export class HSL implements Color {
   }
   format(): Format {
     return this.alpha === null || this.alpha === 1 ? Format.HSL : Format.HSLA;
+  }
+  is<T extends Format>(format: T): this is ReturnType<ColorConversions[T]> {
+    return format === this.format();
   }
   as<T extends Format>(format: T): ReturnType<ColorConversions[T]> {
     if (format === this.format()) {
@@ -1704,8 +1712,7 @@ export class HWB implements Color {
   #getRGBArray(withAlpha: true): Color4DOr3D;
   #getRGBArray(withAlpha: false): Color3D;
   #getRGBArray(withAlpha: boolean = true): Color4DOr3D|Color3D {
-    const rgb: Color4D = [0, 0, 0, 0];
-    hwb2rgb([this.h, this.w, this.b, 0], rgb);
+    const rgb = hwb2rgb([this.h, this.w, this.b, 0]);
     if (withAlpha) {
       return [rgb[0], rgb[1], rgb[2], this.alpha ?? undefined];
     }
@@ -1758,6 +1765,9 @@ export class HWB implements Color {
   }
   format(): Format {
     return this.alpha !== null && !equals(this.alpha, 1) ? Format.HWBA : Format.HWB;
+  }
+  is<T extends Format>(format: T): this is ReturnType<ColorConversions[T]> {
+    return format === this.format();
   }
   as<T extends Format>(format: T): ReturnType<ColorConversions[T]> {
     if (format === this.format()) {
@@ -1953,11 +1963,13 @@ export class Legacy implements Color {
   }
 
   static fromHSVA(hsva: Color4D): Legacy {
-    const rgba: Color4D = [0, 0, 0, 0];
-    hsva2rgba(hsva, rgba);
+    const rgba = hsva2rgba(hsva);
     return new Legacy(rgba, Format.RGBA);
   }
 
+  is<T extends Format>(format: T): this is ReturnType<ColorConversions[T]> {
+    return format === this.format();
+  }
   as<T extends Format>(format: T): ReturnType<ColorConversions[T]> {
     if (format === this.format()) {
       return this as ReturnType<ColorConversions[T]>;
@@ -2310,9 +2322,9 @@ const COLOR_TO_RGBA_ENTRIES: Array<readonly[string, number[]]> = [
   ['transparent', [0, 0, 0, 0]],
 ];
 
-Platform.DCHECK(() => {
-  return COLOR_TO_RGBA_ENTRIES.every(([nickname]) => nickname.toLowerCase() === nickname);
-}, 'All color nicknames must be lowercase.');
+console.assert(
+    COLOR_TO_RGBA_ENTRIES.every(([nickname]) => nickname.toLowerCase() === nickname),
+    'All color nicknames must be lowercase.');
 
 export const Nicknames = new Map(COLOR_TO_RGBA_ENTRIES);
 

@@ -5,7 +5,7 @@
  */
 
 button.link {
-  color: var(--color-link);
+  color: var(--sys-color-primary);
   text-decoration: underline;
   padding: 0;
   border: none;
@@ -17,4 +17,10 @@ button.link {
 
 button.link devtools-icon {
   vertical-align: sub;
+}
+
+.link {
+  color: var(--sys-color-primary);
+  text-decoration: underline;
+  cursor: pointer;
 }

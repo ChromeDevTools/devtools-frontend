@@ -40,6 +40,8 @@ fs.writeFileSync(outPath, `
 // found in the LICENSE file.
 // Generated from ${thisPath}
 
+// clang-format off
+
 /**
  * All the specs used when generating the DOM pinned properties dataset.
  */
@@ -86,5 +88,4 @@ export interface DOMPinnedPropertiesDataset {
  * and inheritance/include chains as values.
  */
 export const DOMPinnedProperties: DOMPinnedPropertiesDataset = ${stringify(minimize(output))};
-
 `);

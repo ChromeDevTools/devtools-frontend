@@ -1,17 +1,7 @@
 /**
- * Copyright 2023 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2023 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 import fs from 'fs';
 import { rename, unlink, mkdtemp } from 'fs/promises';
@@ -28,6 +18,25 @@ import { rm } from './util/fs.js';
 export class FirefoxLauncher extends ProductLauncher {
     constructor(puppeteer) {
         super(puppeteer, 'firefox');
+    }
+    static getPreferences(extraPrefsFirefox, protocol) {
+        return {
+            ...extraPrefsFirefox,
+            ...(protocol === 'webDriverBiDi'
+                ? {}
+                : {
+                    // Do not close the window when the last tab gets closed
+                    'browser.tabs.closeWindowWithLastTab': false,
+                    // Temporarily force disable BFCache in parent (https://bit.ly/bug-1732263)
+                    'fission.bfcacheInParent': false,
+                }),
+            // Force all web content to use a single content process. TODO: remove
+            // this once Firefox supports mouse event dispatch from the main frame
+            // context. Once this happens, webContentIsolationStrategy should only
+            // be set for CDP. See
+            // https://bugzilla.mozilla.org/show_bug.cgi?id=1773393
+            'fission.webContentIsolationStrategy': 0,
+        };
     }
     /**
      * @internal
@@ -77,7 +86,7 @@ export class FirefoxLauncher extends ProductLauncher {
         }
         await createProfile(SupportedBrowsers.FIREFOX, {
             path: userDataDir,
-            preferences: extraPrefsFirefox,
+            preferences: FirefoxLauncher.getPreferences(extraPrefsFirefox, options.protocol),
         });
         let firefoxExecutable;
         if (this.puppeteer._isPuppeteerCore || executablePath) {

@@ -1,10 +1,11 @@
 Name: Puppeteer Core
 Short Name: Puppeteer Core
 URL: https://github.com/puppeteer/puppeteer/tree/main/packages/puppeteer-core
-Version: 19.2.0
+Version: 22.4.0
 License: Apache-2.0
 License File: LICENSE
 Security Critical: no
+Shipped: yes
 
 Description:
 Puppeteer is a Node library which provides a high-level API to control Chrome or Chromium over the DevTools Protocol.
@@ -12,13 +13,5 @@ Puppeteer is a Node library which provides a high-level API to control Chrome or
 To update this package, run:
 
 ```bash
-scripts/deps/roll_front_end_third_party.py -u -cb
+python3 scripts/deps/roll_front_end_third_party.py puppeteer-core puppeteer lib/esm
 ```
-
-This will:
-- check out a new branch (-cb),
-- download the package,
-- make the necessary commits (-cb), and
-- upload a CL (-u).
-
-Use the `-h` flag for more information on the flags.

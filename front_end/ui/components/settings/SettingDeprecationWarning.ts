@@ -1,8 +1,8 @@
 // Copyright 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 import * as Common from '../../../core/common/common.js';
-import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as IconButton from '../icon_button/icon_button.js';
 
@@ -27,7 +27,7 @@ export class SettingDeprecationWarning extends HTMLElement {
     let onclick: (() => void)|undefined;
     if (disabled && experiment) {
       classes.clickable = true;
-      onclick = (): void => {
+      onclick = () => {
         void Common.Revealer.reveal(experiment);
       };
     }
@@ -40,7 +40,7 @@ export class SettingDeprecationWarning extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-setting-deprecation-warning', SettingDeprecationWarning);
+customElements.define('devtools-setting-deprecation-warning', SettingDeprecationWarning);
 
 declare global {
   interface HTMLElementTagNameMap {

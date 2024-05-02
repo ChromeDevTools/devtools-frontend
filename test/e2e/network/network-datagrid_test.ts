@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {type BrowserAndPages} from '../../conductor/puppeteer-state.js';
 
+import {unregisterAllServiceWorkers} from '../../conductor/hooks.js';
+import {type BrowserAndPages} from '../../conductor/puppeteer-state.js';
 import {
   click,
-  disableExperiment,
   getBrowserAndPages,
   pressKey,
   step,
@@ -43,7 +43,7 @@ async function getRequestRowInfo(frontend: BrowserAndPages['frontend'], name: st
   return {status: statusColumn[index], time: timeColumn[index], type: typeColumn[index]};
 }
 
-describe('The Network Tab', async function() {
+describe('The Network Tab', function() {
   if (this.timeout() !== 0.0) {
     // These tests take some time on slow windows machines.
     this.timeout(10000);
@@ -53,12 +53,13 @@ describe('The Network Tab', async function() {
   };
 
   beforeEach(async () => {
-    // Automatic pretty printing doesn't play well with the assertions.
-    await disableExperiment('sourcesPrettyPrint');
-
     await navigateToNetworkTab('empty.html');
     await setCacheDisabled(true);
     await setPersistLog(false);
+  });
+
+  afterEach(async () => {
+    await unregisterAllServiceWorkers();
   });
 
   it('can click on checkbox label to toggle checkbox', async () => {
@@ -157,10 +158,14 @@ describe('The Network Tab', async function() {
 
     // Open the HTML file that was loaded
     await click('td.name-column');
-    // Wait for the detailed network information pane to show up
-    await waitFor('[aria-label="Response"]');
     // Open the raw response HTML
     await click('[aria-label="Response"]');
+    // Disable pretty printing
+    await waitFor('[aria-label="Pretty print"]');
+    await Promise.all([
+      click('[aria-label="Pretty print"]'),
+      waitFor('[aria-label="Pretty print"][aria-pressed="true"]'),
+    ]);
     // Wait for the raw response editor to show up
     const codeMirrorEditor = await waitFor('[aria-label="Code editor"]');
 
@@ -168,7 +173,7 @@ describe('The Network Tab', async function() {
 
     assert.strictEqual(
         htmlRawResponse,
-        '<html><body>The following word is written using cyrillic letters and should look like "SUCCESS": SU\u0421\u0421\u0415SS.</body></html>');
+        '<html>    <body>The following word is written using cyrillic letters and should look like "SUCCESS": SU\u0421\u0421\u0415SS.</body></html>');
   });
 
   it('the correct MIME type when resources came from HTTP cache', async () => {
@@ -269,7 +274,7 @@ describe('The Network Tab', async function() {
       const expectedValues = JSON.stringify(['Remote Address Space', 'Local', 'Local']);
       await waitForFunction(async () => {
         const remoteAddressSpaceValues = await frontend.$$eval(
-            'pierce/.remoteaddress-space-column',
+            'pierce/.remote-address-space-column',
             cells => cells.map(element => element.textContent),
         );
         return JSON.stringify(remoteAddressSpaceValues) === expectedValues;
@@ -376,8 +381,10 @@ describe('The Network Tab', async function() {
     await navigateToNetworkTab('send_beacon_on_unload.html');
 
     await setCacheDisabled(true);
+    await target.bringToFront();
     await target.reload({waitUntil: 'networkidle0'});
 
+    await frontend.bringToFront();
     await waitForSomeRequestsToAppear(1);
 
     await setPersistLog(true);
@@ -387,9 +394,9 @@ describe('The Network Tab', async function() {
 
     // We need to wait for the network log to update.
     await waitForFunction(async () => {
-      const {status, time} = await getRequestRowInfo(frontend, 'sendBeacon');
+      const {status} = await getRequestRowInfo(frontend, 'sendBeacon');
       // Depending on timing of the reporting, the status infomation (404) might reach DevTools in time.
-      return (status === '(unknown)' || status === '404Not Found') && time === '(unknown)';
+      return (status === '(unknown)' || status === '404Not Found');
     });
   });
 
@@ -407,6 +414,22 @@ describe('The Network Tab', async function() {
 
     const updatedRequestNames = await getAllRequestNames();
     assert.deepStrictEqual(updatedRequestNames, ['xhr.html', 'image.svg', 'image.svg']);
+  });
+
+  it('displays focused background color when request is selected via keyboard navigation', async () => {
+    const {target, frontend} = getBrowserAndPages();
+
+    await navigateToNetworkTab('xhr.html');
+    await target.reload({waitUntil: 'networkidle0'});
+    await waitForSomeRequestsToAppear(2);
+    await selectRequestByName('xhr.html');
+    await pressKey('ArrowDown');
+
+    const getSelectedRequestBgColor = () => frontend.evaluate(() => {
+      return document.querySelector('.network-log-grid tbody tr.selected')?.getAttribute('style');
+    });
+
+    assert.deepStrictEqual(await getSelectedRequestBgColor(), 'background-color: var(--color-grid-focus-selected);');
   });
 
   it('shows the request panel when clicked during a websocket message (https://crbug.com/1222382)', async () => {
@@ -435,7 +458,7 @@ describe('The Network Tab', async function() {
       }),
     ];
     await navigateToNetworkTab('service-worker.html');
-    await target.waitForXPath('//div[@id="content" and text()="pong"]');
+    await target.waitForSelector('xpath///div[@id="content" and text()="pong"]');
     await Promise.all(promises);
   });
 });

@@ -32,12 +32,12 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {type ActionDelegate} from './ActionRegistration.js';
-import {type Context} from './Context.js';
-
-import {ToolbarButton, type Provider, type ToolbarItem} from './Toolbar.js';
 import {alert} from './ARIAUtils.js';
+import {type Context} from './Context.js';
+import {type Provider, ToolbarButton, type ToolbarItem} from './Toolbar.js';
 
 const UIStrings = {
   /**
@@ -88,6 +88,7 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.canDockInternal = canDock;
 
     this.closeButton = new ToolbarButton(i18nString(UIStrings.close), 'cross');
+    this.closeButton.element.setAttribute('jslog', `${VisualLogging.close().track({click: true})}`);
     this.closeButton.element.classList.add('close-devtools');
     this.closeButton.addEventListener(
         ToolbarButton.Events.Click,
@@ -95,7 +96,7 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper<EventType
             Host.InspectorFrontendHost.InspectorFrontendHostInstance));
 
     this.currentDockStateSetting = Common.Settings.Settings.instance().moduleSetting('currentDockState');
-    this.lastDockStateSetting = Common.Settings.Settings.instance().createSetting('lastDockState', DockState.BOTTOM);
+    this.lastDockStateSetting = Common.Settings.Settings.instance().createSetting('last-dock-state', DockState.BOTTOM);
 
     if (!canDock) {
       this.dockSideInternal = DockState.UNDOCKED;
@@ -241,20 +242,7 @@ export type EventTypes = {
   [Events.AfterDockSideChanged]: ChangeEvent,
 };
 
-let toggleDockActionDelegateInstance: ToggleDockActionDelegate;
-
 export class ToggleDockActionDelegate implements ActionDelegate {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ToggleDockActionDelegate {
-    const {forceNew} = opts;
-    if (!toggleDockActionDelegateInstance || forceNew) {
-      toggleDockActionDelegateInstance = new ToggleDockActionDelegate();
-    }
-
-    return toggleDockActionDelegateInstance;
-  }
-
   handleAction(_context: Context, _actionId: string): boolean {
     DockController.instance().toggleDockSide();
     return true;

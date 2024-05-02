@@ -4,21 +4,27 @@
  * found in the LICENSE file.
  */
 
-.tabbed-pane-header-tab,
-.tabbed-pane-header-tab.selected {
+.tabbed-pane-header-tab {
   height: 26px;
   margin: 0;
   border: none;
   border-left: 2px solid transparent;
   border-right: 2px solid transparent;
-}
 
-.tabbed-pane-header-tab.selected {
-  border-width: 0 2px;
+  &.selected {
+    border-width: 0 2px;
+  }
+
+  & > .tabbed-pane-header-tab-icon > devtools-icon {
+    width: 14px;
+    height: 14px;
+    color: var(--icon-warning);
+  }
 }
 
 .tabbed-pane-header-contents {
   margin-left: 0;
+  min-width: min-content;
 }
 
 .tabbed-pane-left-toolbar {

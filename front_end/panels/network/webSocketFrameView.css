@@ -5,18 +5,7 @@
  */
 
 .websocket-frame-view {
-  --override-icon-color-when-row-selected: #fff;
-  --override-send-row-background-color: rgb(226 247 218);
-  --override-error-row-background-color: rgb(255 237 237);
-
   user-select: text;
-}
-
-.-theme-with-dark-background .websocket-frame-view,
-:host-context(.-theme-with-dark-background) .websocket-frame-view {
-  --override-icon-color-when-row-selected: #000;
-  --override-send-row-background-color: rgb(16 37 8);
-  --override-error-row-background-color: rgb(18 0 0);
 }
 
 .websocket-frame-view .data-grid {
@@ -29,40 +18,35 @@
 }
 
 .websocket-frame-view-td {
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 .websocket-frame-view .data-grid td,
 .websocket-frame-view .data-grid th {
-  border-left-color: var(--color-details-hairline);
+  border-left-color: 1px solid var(--sys-color-divider);
 }
 
 .websocket-frame-view-row-send td:first-child::before {
   content: "\2B06";
-  color: var(--color-green);
+  color: var(--sys-color-tertiary);
   padding-right: 4px;
 }
 
 .websocket-frame-view-row-receive td:first-child::before {
   content: "\2B07";
-  color: var(--color-red);
+  color: var(--sys-color-error);
   padding-right: 4px;
 }
 
-.data-grid:focus .websocket-frame-view-row-send.selected td:first-child::before,
-.data-grid:focus .websocket-frame-view-row-receive.selected td:first-child::before {
-  color: var(--override-icon-color-when-row-selected);
-}
-
 .websocket-frame-view-row-send {
-  background-color: var(--override-send-row-background-color);
+  background-color: color-mix(in sRGB, var(--sys-color-tertiary-container), transparent 50%);
 }
 
 .websocket-frame-view-row-error {
-  background-color: var(--override-error-row-background-color);
-  color: var(--color-accent-red);
+  background-color: var(--sys-color-surface-error);
+  color: var(--sys-color-on-surface-error);
 }
 
 .websocket-frame-view .toolbar {
-  border-bottom: var(--legacy-divider-border);
+  border-bottom: 1px solid var(--sys-color-divider);
 }

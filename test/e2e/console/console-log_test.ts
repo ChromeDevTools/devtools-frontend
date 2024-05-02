@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import type * as puppeteer from 'puppeteer';
+import type * as puppeteer from 'puppeteer-core';
 
 import {
   $,
@@ -14,6 +14,7 @@ import {
   assertNotNullOrUndefined,
   click,
   getBrowserAndPages,
+  replacePuppeteerUrl,
   tabBackward,
   tabForward,
   waitFor,
@@ -40,7 +41,7 @@ import {
 
 /* eslint-disable no-console */
 
-describe('The Console Tab', async () => {
+describe('The Console Tab', () => {
   const tests = [
     {
       description: 'produces console messages when a page logs using console.log',
@@ -265,6 +266,14 @@ describe('The Console Tab', async () => {
         const messages = await getStructuredConsoleMessages();
         return messages.length === test.expectedMessages.length ? messages : undefined;
       });
+      for (const message of actualMessages) {
+        if (message.source && message.source.includes('pptr:')) {
+          message.source = replacePuppeteerUrl(message.source);
+        }
+        if (message.stackPreview && message.stackPreview.includes('pptr:')) {
+          message.stackPreview = replacePuppeteerUrl(message.stackPreview);
+        }
+      }
       assert.deepEqual(actualMessages, test.expectedMessages, 'Console message does not match the expected message');
     });
   }
@@ -430,7 +439,7 @@ describe('The Console Tab', async () => {
   });
 
   describe('for memory objects', () => {
-    const MEMORY_ICON_SELECTOR = '[aria-label="Reveal in Memory Inspector panel"]';
+    const MEMORY_ICON_SELECTOR = '[aria-label="Reveal in Memory inspector panel"]';
 
     it('shows one memory icon to open memory inspector for ArrayBuffers (description)', async () => {
       const {frontend} = getBrowserAndPages();

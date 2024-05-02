@@ -7,6 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("host") {
   sources = [
+    "AidaClient.ts",
     "InspectorFrontendHost.ts",
     "InspectorFrontendHostAPI.ts",
     "Platform.ts",
@@ -31,14 +32,13 @@ devtools_entrypoint("bundle") {
   visibility = [ "*" ]
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "host-legacy.ts"
+ts_library("unittests") {
+  testonly = true
 
-  deps = [ ":bundle" ]
+  sources = [ "AidaClient.test.ts" ]
 
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../entrypoints/shell/*",
-    "../../legacy_test_runner/*",
+  deps = [
+    ":bundle",
+    "../../testing",
   ]
 }

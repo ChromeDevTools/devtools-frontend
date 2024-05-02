@@ -4,6 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CategorizedBreakpointsSidebarPane} from './CategorizedBreakpointsSidebarPane.js';
 
@@ -16,10 +17,8 @@ export class EventListenerBreakpointsSidebarPane extends CategorizedBreakpointsS
     const nonDomBreakpoints = SDK.EventBreakpointsModel.EventBreakpointsManager.instance().eventListenerBreakpoints();
     breakpoints = breakpoints.concat(nonDomBreakpoints);
 
-    const categories = breakpoints.map(breakpoint => breakpoint.category());
-    categories.sort();
-    super(
-        categories, breakpoints, 'sources.eventListenerBreakpoints', Protocol.Debugger.PausedEventReason.EventListener);
+    super(breakpoints, 'sources.event-listener-breakpoints', Protocol.Debugger.PausedEventReason.EventListener);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.section('sources.event-listener-breakpoints')}`);
   }
 
   static instance(): EventListenerBreakpointsSidebarPane {
@@ -31,10 +30,7 @@ export class EventListenerBreakpointsSidebarPane extends CategorizedBreakpointsS
 
   override getBreakpointFromPausedDetails(details: SDK.DebuggerModel.DebuggerPausedDetails):
       SDK.CategorizedBreakpoint.CategorizedBreakpoint|null {
-    const auxData = details.auxData as {
-      eventName: string,
-      targetName: string,
-    };
+    const auxData = details.auxData as SDK.DebuggerModel.EventListenerPausedDetailsAuxData;
     const domBreakpoint = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpoint(auxData);
     if (domBreakpoint) {
       return domBreakpoint;

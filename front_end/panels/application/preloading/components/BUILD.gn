@@ -5,22 +5,29 @@
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../../third_party/typescript/typescript.gni")
 import("../../../visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "RuleSetDetailsView.css",
     "preloadingDetailsReportView.css",
+    "preloadingDisabledInfobar.css",
     "preloadingGrid.css",
     "ruleSetGrid.css",
+    "usedPreloadingView.css",
   ]
 }
 
 devtools_module("components") {
   sources = [
+    "MismatchedPreloadingGrid.ts",
     "PreloadingDetailsReportView.ts",
+    "PreloadingDisabledInfobar.ts",
     "PreloadingGrid.ts",
+    "PreloadingMismatchedHeadersGrid.ts",
     "PreloadingString.ts",
-    "RuleSetDetailsReportView.ts",
+    "RuleSetDetailsView.ts",
     "RuleSetGrid.ts",
     "UsedPreloadingView.ts",
   ]
@@ -38,15 +45,19 @@ devtools_module("components") {
     "../../../../ui/components/buttons:bundle",
     "../../../../ui/components/chrome_link:bundle",
     "../../../../ui/components/data_grid:bundle",
+    "../../../../ui/components/dialogs:bundle",
     "../../../../ui/components/expandable_list:bundle",
     "../../../../ui/components/icon_button:bundle",
     "../../../../ui/components/legacy_wrapper:bundle",
     "../../../../ui/components/report_view:bundle",
+    "../../../../ui/components/request_link_icon:bundle",
+    "../../../../ui/components/text_editor:bundle",
     "../../../../ui/components/text_prompt:bundle",
     "../../../../ui/components/tree_outline:bundle",
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/source_frame:bundle",
     "../../../../ui/legacy/components/utils:bundle",
+    "../helper:bundle",
   ]
 }
 
@@ -62,9 +73,29 @@ devtools_entrypoint("bundle") {
     ":*",
     "../:*",
     "../../:*",
-    "../../../../../test/unittests/front_end/panels/application/preloading/components/*",
     "../../../../ui/components/docs/*",
   ]
 
   visibility += devtools_panels_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "MismatchedPreloadingGrid.test.ts",
+    "PreloadingDetailsReportView.test.ts",
+    "PreloadingGrid.test.ts",
+    "PreloadingMismatchedHeadersGrid.test.ts",
+    "RuleSetDetailsView.test.ts",
+    "RuleSetGrid.test.ts",
+    "UsedPreloadingView.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../../testing",
+    "../../../../ui/components/data_grid:bundle",
+    "../../../../ui/components/render_coordinator:bundle",
+  ]
 }

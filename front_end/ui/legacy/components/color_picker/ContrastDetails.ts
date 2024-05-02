@@ -10,7 +10,7 @@ import * as Root from '../../../../core/root/root.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
 
-import {Events as ContrastInfoEvents, type ContrastInfo} from './ContrastInfo.js';
+import {type ContrastInfo, Events as ContrastInfoEvents} from './ContrastInfo.js';
 
 const UIStrings = {
   /**
@@ -130,9 +130,9 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.contrastValueBubble = contrastValueRowContents.createChild('span', 'contrast-details-value');
     this.contrastValue = this.contrastValueBubble.createChild('span');
     this.contrastValueBubbleIcons = [];
-    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(UI.Icon.Icon.create('checkmark')));
-    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(UI.Icon.Icon.create('check-double')));
-    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(UI.Icon.Icon.create('clear')));
+    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(IconButton.Icon.create('checkmark')));
+    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(IconButton.Icon.create('check-double')));
+    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(IconButton.Icon.create('clear')));
     this.contrastValueBubbleIcons.forEach(button => button.addEventListener('click', (event: Event) => {
       ContrastDetails.showHelp();
       event.consume(false);
@@ -242,7 +242,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.setVisible(true);
     this.hideNoContrastInfoAvailableMessage();
 
-    const isAPCAEnabled = Root.Runtime.experiments.isEnabled('APCA');
+    const isAPCAEnabled = Root.Runtime.experiments.isEnabled('apca');
 
     const fgColor = this.contrastInfo.color();
     const bgColor = this.contrastInfo.bgColor();

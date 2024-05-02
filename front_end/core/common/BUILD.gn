@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 
 ts_library("ColorUtils") {
   sources = [ "ColorUtils.ts" ]
@@ -70,14 +71,41 @@ devtools_entrypoint("bundle") {
   visibility = [ "*" ]
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "common-legacy.ts"
+ts_library("unittests") {
+  testonly = true
 
-  deps = [ ":bundle" ]
+  sources = [
+    "Base64.test.ts",
+    "CharacterIdMap.test.ts",
+    "Color.test.ts",
+    "ColorConverter.test.ts",
+    "ColorUtils.test.ts",
+    "Console.test.ts",
+    "Debouncer.test.ts",
+    "EventTarget.test.ts",
+    "Lazy.test.ts",
+    "Mutex.test.ts",
+    "Object.test.ts",
+    "ParsedURL.test.ts",
+    "Progress.test.ts",
+    "ResolverBase.test.ts",
+    "ResourceType.test.ts",
+    "Revealer.test.ts",
+    "SegmentedRange.test.ts",
+    "SettingRegistration.test.ts",
+    "Settings.test.ts",
+    "SimpleHistoryManager.test.ts",
+    "StringOutputStream.test.ts",
+    "TextDictionary.test.ts",
+    "Throttler.test.ts",
+    "Trie.test.ts",
+    "WasmDisassembly.test.ts",
+  ]
 
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../entrypoints/shell/*",
-    "../../legacy_test_runner/*",
+  deps = [
+    ":bundle",
+    "../../testing",
+    "../../ui/legacy/components/quick_open:bundle",
+    "../i18n:bundle",
   ]
 }

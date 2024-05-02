@@ -142,8 +142,6 @@ export class LayerTreeModel extends SDK.SDKModel.SDKModel<EventTypes> {
 
 SDK.SDKModel.SDKModel.register(LayerTreeModel, {capabilities: SDK.Target.Capability.DOM, autostart: false});
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   LayerTreeChanged = 'LayerTreeChanged',
   LayerPainted = 'LayerPainted',

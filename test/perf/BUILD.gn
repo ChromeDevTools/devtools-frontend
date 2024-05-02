@@ -18,6 +18,9 @@ ts_library("tests") {
   deps = [
     "application",
     "helpers",
+    "panels/performance",
+    "report",
+    "setup",
   ]
 }
 

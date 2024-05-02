@@ -4,7 +4,7 @@
 
 export class AsyncScope {
   static scopes: Set<AsyncScope> = new Set();
-  private asyncStack: string[][] = [];
+  private asyncStack: Array<{description?: string, frames: string[]}> = [];
   private canceled: boolean = false;
 
   setCanceled(): void {
@@ -15,14 +15,17 @@ export class AsyncScope {
     return this.canceled;
   }
 
-  get stack() {
+  get descriptions(): string[] {
+    return this.asyncStack.map(({description}) => description).filter(d => d) as string[];
+  }
+  get stack(): null|string[] {
     if (this.asyncStack.length === 0) {
       return null;
     }
-    return this.asyncStack[this.asyncStack.length - 1];
+    return this.asyncStack[this.asyncStack.length - 1].frames;
   }
 
-  push() {
+  push(description?: string) {
     const stack = new Error().stack;
     if (!stack) {
       throw new Error('Could not get stack trace');
@@ -31,11 +34,11 @@ export class AsyncScope {
     if (this.asyncStack.length === 0) {
       AsyncScope.scopes.add(this);
     }
-    const filteredStack = stack.split('\n').filter(
+    const frames = stack.split('\n').filter(
         value =>
             !(value === 'Error' || value.includes('AsyncScope') || value.includes('runMicrotasks') ||
               value.includes('processTicksAndRejections')));
-    this.asyncStack.push(filteredStack);
+    this.asyncStack.push({description, frames});
   }
 
   pop() {
@@ -45,8 +48,8 @@ export class AsyncScope {
     }
   }
 
-  async exec<T>(callable: () => Promise<T>) {
-    this.push();
+  async exec<T>(callable: () => Promise<T>, description?: string) {
+    this.push(description);
     try {
       const result = await callable();
       return result;
@@ -55,8 +58,8 @@ export class AsyncScope {
     }
   }
 
-  execSync<T>(callable: () => T) {
-    this.push();
+  execSync<T>(callable: () => T, description?: string) {
+    this.push(description);
     try {
       const result = callable();
       return result;

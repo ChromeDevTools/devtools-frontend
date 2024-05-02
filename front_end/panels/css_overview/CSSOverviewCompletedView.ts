@@ -7,15 +7,15 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import cssOverviewCompletedViewStyles from './cssOverviewCompletedView.css.js';
-
 import {
   Events as CSSOverViewControllerEvents,
   type OverviewController,
@@ -23,20 +23,20 @@ import {
   type PopulateNodesEventNodes,
   type PopulateNodesEventNodeTypes,
 } from './CSSOverviewController.js';
-import {CSSOverviewSidebarPanel, SidebarEvents, type ItemSelectedEvent} from './CSSOverviewSidebarPanel.js';
+import {CSSOverviewSidebarPanel, type ItemSelectedEvent, SidebarEvents} from './CSSOverviewSidebarPanel.js';
 import {type UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
 const UIStrings = {
   /**
-   *@description Label for the summary in the CSS Overview report
+   *@description Label for the summary in the CSS overview report
    */
   overviewSummary: 'Overview summary',
   /**
-   *@description Title of colors subsection in the CSS Overview Panel
+   *@description Title of colors subsection in the CSS overview panel
    */
   colors: 'Colors',
   /**
-   *@description Title of font info subsection in the CSS Overview Panel
+   *@description Title of font info subsection in the CSS overview panel
    */
   fontInfo: 'Font info',
   /**
@@ -44,7 +44,7 @@ const UIStrings = {
    */
   unusedDeclarations: 'Unused declarations',
   /**
-   *@description Label for the number of media queries in the CSS Overview report
+   *@description Label for the number of media queries in the CSS overview report
    */
   mediaQueries: 'Media queries',
   /**
@@ -52,58 +52,58 @@ const UIStrings = {
    */
   elements: 'Elements',
   /**
-   *@description Label for the number of External stylesheets in the CSS Overview report
+   *@description Label for the number of External stylesheets in the CSS overview report
    */
   externalStylesheets: 'External stylesheets',
   /**
-   *@description Label for the number of inline style elements in the CSS Overview report
+   *@description Label for the number of inline style elements in the CSS overview report
    */
   inlineStyleElements: 'Inline style elements',
   /**
-   *@description Label for the number of style rules in CSS Overview report
+   *@description Label for the number of style rules in CSS overview report
    */
   styleRules: 'Style rules',
   /**
-   *@description Label for the number of type selectors in the CSS Overview report
+   *@description Label for the number of type selectors in the CSS overview report
    */
   typeSelectors: 'Type selectors',
   /**
-   *@description Label for the number of ID selectors in the CSS Overview report
+   *@description Label for the number of ID selectors in the CSS overview report
    */
   idSelectors: 'ID selectors',
   /**
-   *@description Label for the number of class selectors in the CSS Overview report
+   *@description Label for the number of class selectors in the CSS overview report
    */
   classSelectors: 'Class selectors',
   /**
-   *@description Label for the number of universal selectors in the CSS Overview report
+   *@description Label for the number of universal selectors in the CSS overview report
    */
   universalSelectors: 'Universal selectors',
   /**
-   *@description Label for the number of Attribute selectors in the CSS Overview report
+   *@description Label for the number of Attribute selectors in the CSS overview report
    */
   attributeSelectors: 'Attribute selectors',
   /**
-   *@description Label for the number of non-simple selectors in the CSS Overview report
+   *@description Label for the number of non-simple selectors in the CSS overview report
    */
   nonsimpleSelectors: 'Non-simple selectors',
   /**
-   *@description Label for unique background colors in the CSS Overview Panel
+   *@description Label for unique background colors in the CSS overview panel
    *@example {32} PH1
    */
   backgroundColorsS: 'Background colors: {PH1}',
   /**
-   *@description Label for unique text colors in the CSS Overview Panel
+   *@description Label for unique text colors in the CSS overview panel
    *@example {32} PH1
    */
   textColorsS: 'Text colors: {PH1}',
   /**
-   *@description Label for unique fill colors in the CSS Overview Panel
+   *@description Label for unique fill colors in the CSS overview panel
    *@example {32} PH1
    */
   fillColorsS: 'Fill colors: {PH1}',
   /**
-   *@description Label for unique border colors in the CSS Overview Panel
+   *@description Label for unique border colors in the CSS overview panel
    *@example {32} PH1
    */
   borderColorsS: 'Border colors: {PH1}',
@@ -120,7 +120,7 @@ const UIStrings = {
    */
   thereAreNoMediaQueries: 'There are no media queries.',
   /**
-   *@description Title of the Drawer for contrast issues in the CSS Overview Panel
+   *@description Title of the Drawer for contrast issues in the CSS overview panel
    */
   contrastIssues: 'Contrast issues',
   /**
@@ -128,12 +128,12 @@ const UIStrings = {
    */
   nOccurrences: '{n, plural, =1 {# occurrence} other {# occurrences}}',
   /**
-   *@description Section header for contrast issues in the CSS Overview Panel
+   *@description Section header for contrast issues in the CSS overview panel
    *@example {1} PH1
    */
   contrastIssuesS: 'Contrast issues: {PH1}',
   /**
-   *@description Title of the button for a contrast issue in the CSS Overview Panel
+   *@description Title of the button for a contrast issue in the CSS overview panel
    *@example {#333333} PH1
    *@example {#333333} PH2
    *@example {2} PH3
@@ -152,7 +152,7 @@ const UIStrings = {
    */
   apca: 'APCA',
   /**
-   *@description Label for the column in the element list in the CSS Overview report
+   *@description Label for the column in the element list in the CSS overview report
    */
   element: 'Element',
   /**
@@ -168,11 +168,11 @@ const UIStrings = {
    */
   contrastRatio: 'Contrast ratio',
   /**
-   *@description Accessible title of a table in the CSS Overview Elements.
+   *@description Accessible title of a table in the CSS overview elements.
    */
-  cssOverviewElements: 'CSS Overview Elements',
+  cssOverviewElements: 'CSS overview elements',
   /**
-   *@description Title of the button to show the element in the CSS Overview panel
+   *@description Title of the button to show the element in the CSS overview panel
    */
   showElement: 'Show element',
 };
@@ -224,7 +224,8 @@ function getBorderString(color: Common.Color.Legacy): string {
   return `1px solid hsl(${h}deg ${s}% ${l}%)`;
 }
 
-export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
+export class CSSOverviewCompletedView extends UI.Widget.VBox {
+  readonly #splitWidget: UI.SplitWidget.SplitWidget;
   #controller: OverviewController;
   #formatter: Intl.NumberFormat;
   readonly #mainContainer: UI.SplitWidget.SplitWidget;
@@ -239,10 +240,13 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
   #fragment?: UI.Fragment.Fragment;
 
   constructor(controller: OverviewController) {
-    super('css_overview_completed_view');
+    super();
 
     this.#controller = controller;
     this.#formatter = new Intl.NumberFormat('en-US');
+
+    this.#splitWidget = new UI.SplitWidget.SplitWidget(true, false, undefined, 200);
+    this.#splitWidget.show(this.element);
 
     this.#mainContainer = new UI.SplitWidget.SplitWidget(true, true);
     this.#resultsContainer = new UI.Widget.VBox();
@@ -265,8 +269,8 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
 
     this.#sideBar = new CSSOverviewSidebarPanel();
     this.#sideBar.setMinimumSize(100, 25);
-    this.splitWidget().setSidebarWidget(this.#sideBar);
-    this.splitWidget().setMainWidget(this.#mainContainer);
+    this.#splitWidget.setSidebarWidget(this.#sideBar);
+    this.#splitWidget.setMainWidget(this.#mainContainer);
 
     this.#linkifier = new Components.Linkifier.Linkifier(/* maxLinkLength */ 20, /* useLinkDecorator */ true);
 
@@ -277,7 +281,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this.#sideBar.addItem(i18nString(UIStrings.fontInfo), 'font-info');
     this.#sideBar.addItem(i18nString(UIStrings.unusedDeclarations), 'unused-declarations');
     this.#sideBar.addItem(i18nString(UIStrings.mediaQueries), 'media-queries');
-    this.#sideBar.select('summary');
+    this.#sideBar.select('summary', false);
 
     this.#sideBar.addEventListener(SidebarEvents.ItemSelected, this.#sideBarItemSelected, this);
     this.#sideBar.addEventListener(SidebarEvents.Reset, this.#sideBarReset, this);
@@ -315,7 +319,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
 
     section.scrollIntoView();
     // Set focus for keyboard invoked event
-    if (!data.isMouseEvent) {
+    if (!data.isMouseEvent && data.key === 'Enter') {
       const focusableElement: HTMLElement|null = section.querySelector('button, [tabindex="0"]');
       focusableElement?.focus();
     }
@@ -331,7 +335,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this.#elementContainer.closeTabs();
     this.#viewMap = new Map();
     CSSOverviewCompletedView.pushedNodes.clear();
-    this.#sideBar.select('summary');
+    this.#sideBar.select('summary', false);
   }
 
   #onClick(evt: Event): void {
@@ -650,7 +654,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     let view = this.#viewMap.get(id);
     if (!view) {
       if (!this.#domModel || !this.#cssModel) {
-        throw new Error('Unable to initialize CSS Overview, missing models');
+        throw new Error('Unable to initialize CSS overview, missing models');
       }
       view = new ElementDetailsView(this.#controller, this.#domModel, this.#cssModel, this.#linkifier);
       void view.populateNodes(payload.nodes);
@@ -705,7 +709,8 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
 
       return UI.Fragment.Fragment.build`<li>
         <div class="title">${title}</div>
-        <button data-type="${type}" data-path="${path}" data-${dataLabel}="${title}">
+        <button data-type="${type}" data-path="${path}" data-${dataLabel}="${title}"
+        jslog="${VisualLogging.action().track({click: true}).context(`css-overview.${type}`)}">
           <div class="details">${itemLabel}</div>
           <div class="bar-container">
             <div class="bar" style="width: ${width}%;"></div>
@@ -743,7 +748,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     const color = (minContrastIssue.textColor.asString(Common.Color.Format.HEXA) as string);
     const backgroundColor = (minContrastIssue.backgroundColor.asString(Common.Color.Format.HEXA) as string);
 
-    const showAPCA = Root.Runtime.experiments.isEnabled('APCA');
+    const showAPCA = Root.Runtime.experiments.isEnabled('apca');
 
     const title = i18nString(UIStrings.textColorSOverSBackgroundResults, {
       PH1: color,
@@ -754,7 +759,10 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     const blockFragment = UI.Fragment.Fragment.build`<li>
       <button
         title="${title}" aria-label="${title}"
-        data-type="contrast" data-key="${key}" data-section="contrast" class="block" $="color">
+        data-type="contrast" data-key="${key}" data-section="contrast" class="block" $="color"
+        jslog="${VisualLogging.action('css-overview.contrast').track({
+      click: true,
+    })}">
         Text
       </button>
       <div class="block-title">
@@ -803,7 +811,10 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
   #colorsToFragment(section: string, color: string): UI.Fragment.Fragment|undefined {
     const blockFragment = UI.Fragment.Fragment.build`<li>
       <button title=${color} data-type="color" data-color="${color}"
-        data-section="${section}" class="block" $="color"></button>
+        data-section="${section}" class="block" $="color"
+        jslog="${VisualLogging.action('css-overview.color').track({
+      click: true,
+    })}"></button>
       <div class="block-title color-text">${color}</div>
     </li>`;
 
@@ -834,7 +845,6 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     void this.#render(data);
   }
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   static readonly pushedNodes = new Set<Protocol.DOM.BackendNodeId>();
 }
 export class DetailsView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
@@ -890,7 +900,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
 
     this.#elementGridColumns = [
       {
-        id: 'nodeId',
+        id: 'node-id',
         title: i18nString(UIStrings.element),
         sortable: true,
         weight: 50,
@@ -926,7 +936,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
         defaultWeight: undefined,
       },
       {
-        id: 'sourceURL',
+        id: 'source-url',
         title: i18nString(UIStrings.source),
         sortable: false,
         weight: 100,
@@ -944,7 +954,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
         defaultWeight: undefined,
       },
       {
-        id: 'contrastRatio',
+        id: 'contrast-ratio',
         title: i18nString(UIStrings.contrastRatio),
         sortable: true,
         weight: 25,
@@ -1010,13 +1020,13 @@ export class ElementDetailsView extends UI.Widget.Widget {
 
     const [firstItem] = data;
     const visibility = new Set<string>();
-    'nodeId' in firstItem && firstItem.nodeId && visibility.add('nodeId');
+    'nodeId' in firstItem && firstItem.nodeId && visibility.add('node-id');
     'declaration' in firstItem && firstItem.declaration && visibility.add('declaration');
-    'sourceURL' in firstItem && firstItem.sourceURL && visibility.add('sourceURL');
-    'contrastRatio' in firstItem && firstItem.contrastRatio && visibility.add('contrastRatio');
+    'sourceURL' in firstItem && firstItem.sourceURL && visibility.add('source-url');
+    'contrastRatio' in firstItem && firstItem.contrastRatio && visibility.add('contrast-ratio');
 
     let relatedNodesMap: Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>|null|undefined;
-    if ('nodeId' in firstItem && visibility.has('nodeId')) {
+    if ('nodeId' in firstItem && visibility.has('node-id')) {
       // Grab the nodes from the frontend, but only those that have not been
       // retrieved already.
       const nodeIds = (data as {nodeId: Protocol.DOM.BackendNodeId}[]).reduce((prev, curr) => {
@@ -1032,7 +1042,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
 
     for (const item of data) {
       let frontendNode;
-      if ('nodeId' in item && visibility.has('nodeId')) {
+      if ('nodeId' in item && visibility.has('node-id')) {
         if (!relatedNodesMap) {
           continue;
         }
@@ -1071,7 +1081,7 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
   override createCell(columnId: string): HTMLElement {
     // Nodes.
     const frontendNode = this.#frontendNode;
-    if (columnId === 'nodeId') {
+    if (columnId === 'node-id') {
       const cell = this.createTD(columnId);
       cell.textContent = '...';
 
@@ -1088,14 +1098,14 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
         showNodeIcon.classList.add('show-element');
         UI.Tooltip.Tooltip.install(showNodeIcon, i18nString(UIStrings.showElement));
         showNodeIcon.tabIndex = 0;
-        showNodeIcon.onclick = (): Promise<void> => frontendNode.scrollIntoView();
+        showNodeIcon.onclick = () => frontendNode.scrollIntoView();
         cell.appendChild(showNodeIcon);
       });
       return cell;
     }
 
     // Links to CSS.
-    if (columnId === 'sourceURL') {
+    if (columnId === 'source-url') {
       const cell = this.createTD(columnId);
 
       if (this.data.range) {
@@ -1114,9 +1124,9 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
       return cell;
     }
 
-    if (columnId === 'contrastRatio') {
+    if (columnId === 'contrast-ratio') {
       const cell = this.createTD(columnId);
-      const showAPCA = Root.Runtime.experiments.isEnabled('APCA');
+      const showAPCA = Root.Runtime.experiments.isEnabled('apca');
       const contrastRatio = Platform.NumberUtilities.floor(this.data.contrastRatio, 2);
       const contrastRatioString = showAPCA ? contrastRatio + '%' : contrastRatio;
       const border = getBorderString(this.data.backgroundColor);

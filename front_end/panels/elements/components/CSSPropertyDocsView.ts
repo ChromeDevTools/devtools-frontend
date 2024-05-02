@@ -4,7 +4,6 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
@@ -48,7 +47,9 @@ export class CSSPropertyDocsView extends HTMLElement {
 
   #dontShowChanged(e: Event): void {
     const showDocumentation = !(e.target as HTMLInputElement).checked;
-    Common.Settings.Settings.instance().moduleSetting('showCSSPropertyDocumentationOnHover').set(showDocumentation);
+    Common.Settings.Settings.instance()
+        .moduleSetting('show-css-property-documentation-on-hover')
+        .set(showDocumentation);
   }
 
   #render(): void {
@@ -87,10 +88,9 @@ export class CSSPropertyDocsView extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-css-property-docs-view', CSSPropertyDocsView);
+customElements.define('devtools-css-property-docs-view', CSSPropertyDocsView);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-css-property-docs-view': CSSPropertyDocsView;
   }

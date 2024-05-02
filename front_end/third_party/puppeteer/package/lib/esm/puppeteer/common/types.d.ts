@@ -1,21 +1,51 @@
 /**
- * Copyright 2020 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2020 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
-import { JSHandle } from '../api/JSHandle.js';
-import { ElementHandle } from '../api/ElementHandle.js';
-import { LazyArg } from './LazyArg.js';
+import type { ElementHandle } from '../api/ElementHandle.js';
+import type { JSHandle } from '../api/JSHandle.js';
+import type { LazyArg } from './LazyArg.js';
+/**
+ * @public
+ */
+export type AwaitablePredicate<T> = (value: T) => Awaitable<boolean>;
+/**
+ * @public
+ */
+export interface Moveable {
+    /**
+     * Moves the resource when 'using'.
+     */
+    move(): this;
+}
+/**
+ * @internal
+ */
+export interface Disposed {
+    get disposed(): boolean;
+}
+/**
+ * @internal
+ */
+export interface BindingPayload {
+    type: string;
+    name: string;
+    seq: number;
+    args: unknown[];
+    /**
+     * Determines whether the arguments of the payload are trivial.
+     */
+    isTrivial: boolean;
+}
+/**
+ * @internal
+ */
+export type AwaitableIterator<T> = Iterator<T> | AsyncIterator<T>;
+/**
+ * @public
+ */
+export type AwaitableIterable<T> = Iterable<T> | AsyncIterable<T>;
 /**
  * @public
  */
@@ -56,6 +86,10 @@ export type ElementFor<TagName extends keyof HTMLElementTagNameMap | keyof SVGEl
  * @public
  */
 export type EvaluateFunc<T extends unknown[]> = (...params: InnerParams<T>) => Awaitable<unknown>;
+/**
+ * @public
+ */
+export type EvaluateFuncWith<V, T extends unknown[]> = (...params: [V, ...InnerParams<T>]) => Awaitable<unknown>;
 /**
  * @public
  */

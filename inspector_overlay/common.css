@@ -12,16 +12,16 @@ body {
 }
 
 body.platform-linux {
-  font-family: Roboto, Ubuntu, Arial, sans-serif;
+  font-family: "Google Sans Text", "Google Sans", system-ui, sans-serif;
 }
 
 body.platform-mac {
   color: rgb(48 57 66);
-  font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
+  font-family: system-ui, sans-serif;
 }
 
 body.platform-windows {
-  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-family: system-ui, sans-serif;
 }
 
 .fill {

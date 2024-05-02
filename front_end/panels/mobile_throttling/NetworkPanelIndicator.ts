@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
@@ -15,19 +15,20 @@ const UIStrings = {
   /**
    *@description Icon title in Network Panel Indicator of the Network panel
    */
-  requestsMayBeRewrittenByLocal: 'Requests may be rewritten by local overrides',
+  requestsMayBeOverridden: 'Requests may be overridden locally, see the Sources panel',
   /**
    *@description Icon title in Network Panel Indicator of the Network panel
    */
-  requestsMayBeBlocked: 'Requests may be blocked',
+  requestsMayBeBlocked: 'Requests may be blocked, see the Network request blocking panel',
   /**
    * @description Title of an icon in the Network panel that indicates that accepted content encodings have been overriden.
    */
   acceptedEncodingOverrideSet:
-      'The set of accepted `Content-Encoding` headers has been modified by DevTools. See the Network Conditions panel.',
+      'The set of accepted `Content-Encoding` headers has been modified by DevTools, see the Network conditions panel',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/NetworkPanelIndicator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 export class NetworkPanelIndicator {
   constructor() {
     // TODO: we should not access network from other modules.
@@ -41,24 +42,25 @@ export class NetworkPanelIndicator {
     manager.addEventListener(SDK.NetworkManager.MultitargetNetworkManager.Events.InterceptorsChanged, updateVisibility);
     manager.addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.AcceptedEncodingsChanged, updateVisibility);
+    Common.Settings.Settings.instance().moduleSetting('cache-disabled').addChangeListener(updateVisibility, this);
+
     updateVisibility();
 
     function updateVisibility(): void {
-      let icon: IconButton.Icon.Icon|null = new IconButton.Icon.Icon();
-      icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
+      const warnings = [];
       if (manager.isThrottling()) {
-        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.networkThrottlingIsEnabled));
-      } else if (SDK.NetworkManager.MultitargetNetworkManager.instance().isIntercepting()) {
-        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.requestsMayBeRewrittenByLocal));
-      } else if (manager.isBlocking()) {
-        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.requestsMayBeBlocked));
-      } else if (manager.isAcceptedEncodingOverrideSet()) {
-        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.acceptedEncodingOverrideSet));
-      } else {
-        // Remove icon in case it was already set by passing a null icon.
-        icon = null;
+        warnings.push(i18nString(UIStrings.networkThrottlingIsEnabled));
       }
-      UI.InspectorView.InspectorView.instance().setPanelIcon('network', icon);
+      if (SDK.NetworkManager.MultitargetNetworkManager.instance().isIntercepting()) {
+        warnings.push(i18nString(UIStrings.requestsMayBeOverridden));
+      }
+      if (manager.isBlocking()) {
+        warnings.push(i18nString(UIStrings.requestsMayBeBlocked));
+      }
+      if (manager.isAcceptedEncodingOverrideSet()) {
+        warnings.push(i18nString(UIStrings.acceptedEncodingOverrideSet));
+      }
+      UI.InspectorView.InspectorView.instance().setPanelWarnings('network', warnings);
     }
   }
 }

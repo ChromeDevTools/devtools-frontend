@@ -1,5 +1,10 @@
-import { _connectToCDPBrowser, } from './BrowserConnector.js';
-import { clearCustomQueryHandlers, customQueryHandlerNames, registerCustomQueryHandler, unregisterCustomQueryHandler, } from './QueryHandler.js';
+/**
+ * @license
+ * Copyright 2017 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+import { _connectToBrowser } from './BrowserConnector.js';
+import { customQueryHandlers, } from './CustomQueryHandler.js';
 /**
  * The main Puppeteer class.
  *
@@ -7,9 +12,17 @@ import { clearCustomQueryHandlers, customQueryHandlerNames, registerCustomQueryH
  * instance of {@link PuppeteerNode} when you import or require `puppeteer`.
  * That class extends `Puppeteer`, so has all the methods documented below as
  * well as all that are defined on {@link PuppeteerNode}.
+ *
  * @public
  */
 export class Puppeteer {
+    /**
+     * Operations for {@link CustomQueryHandler | custom query handlers}. See
+     * {@link CustomQueryHandlerRegistry}.
+     *
+     * @internal
+     */
+    static customQueryHandlers = customQueryHandlers;
     /**
      * Registers a {@link CustomQueryHandler | custom query handler}.
      *
@@ -33,34 +46,38 @@ export class Puppeteer {
      * @public
      */
     static registerCustomQueryHandler(name, queryHandler) {
-        return registerCustomQueryHandler(name, queryHandler);
+        return this.customQueryHandlers.register(name, queryHandler);
     }
     /**
      * Unregisters a custom query handler for a given name.
      */
     static unregisterCustomQueryHandler(name) {
-        return unregisterCustomQueryHandler(name);
+        return this.customQueryHandlers.unregister(name);
     }
     /**
      * Gets the names of all custom query handlers.
      */
     static customQueryHandlerNames() {
-        return customQueryHandlerNames();
+        return this.customQueryHandlers.names();
     }
     /**
      * Unregisters all custom query handlers.
      */
     static clearCustomQueryHandlers() {
-        return clearCustomQueryHandlers();
+        return this.customQueryHandlers.clear();
     }
     /**
      * @internal
      */
+    _isPuppeteerCore;
+    /**
+     * @internal
+     */
+    _changedProduct = false;
+    /**
+     * @internal
+     */
     constructor(settings) {
-        /**
-         * @internal
-         */
-        this._changedProduct = false;
         this._isPuppeteerCore = settings.isPuppeteerCore;
         this.connect = this.connect.bind(this);
     }
@@ -73,7 +90,7 @@ export class Puppeteer {
      * @returns Promise which resolves to browser instance.
      */
     connect(options) {
-        return _connectToCDPBrowser(options);
+        return _connectToBrowser(options);
     }
 }
 //# sourceMappingURL=Puppeteer.js.map

@@ -5,12 +5,10 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as UI from '../../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import * as EmulationComponents from './components/components.js';
-
 import devicesSettingsTabStyles from './devicesSettingsTab.css.js';
-
-let devicesSettingsTabInstance: DevicesSettingsTab;
 
 const UIStrings = {
   /**
@@ -78,8 +76,11 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
   private emulatedDevicesList: EmulationModel.EmulatedDevices.EmulatedDevicesList;
   private editor?: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>;
 
-  private constructor() {
+  constructor() {
     super();
+
+    this.element.setAttribute('jslog', `${VisualLogging.pane('devices')}`);
+
     this.element.classList.add('settings-tab-container');
     this.element.classList.add('devices-settings-tab');
 
@@ -89,8 +90,8 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
                                 .createChild('div', 'settings-tab settings-content settings-container');
 
     const buttonsRow = this.containerElement.createChild('div', 'devices-button-row');
-    this.addCustomButton =
-        UI.UIUtils.createTextButton(i18nString(UIStrings.addCustomDevice), this.addCustomDevice.bind(this));
+    this.addCustomButton = UI.UIUtils.createTextButton(
+        i18nString(UIStrings.addCustomDevice), this.addCustomDevice.bind(this), {jslogContext: 'add-custom-device'});
     this.addCustomButton.id = 'custom-device-add-button';
     buttonsRow.appendChild(this.addCustomButton);
     this.ariaSuccessMessageElement = this.containerElement.createChild('div', 'device-success-message');
@@ -108,13 +109,6 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
         EmulationModel.EmulatedDevices.Events.StandardDevicesUpdated, this.devicesUpdated, this);
 
     this.setDefaultFocusedElement(this.addCustomButton);
-  }
-
-  static instance(): DevicesSettingsTab {
-    if (!devicesSettingsTabInstance) {
-      devicesSettingsTabInstance = new DevicesSettingsTab();
-    }
-    return devicesSettingsTabInstance;
   }
 
   override wasShown(): void {
@@ -176,6 +170,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     checkbox.type = 'checkbox';
     checkbox.checked = device.show();
     checkbox.addEventListener('click', onItemClicked.bind(this), false);
+    checkbox.setAttribute('jslog', `${VisualLogging.toggle().track({click: true})}`);
     const span = document.createElement('span');
     span.classList.add('device-name');
     span.appendChild(document.createTextNode(device.title));

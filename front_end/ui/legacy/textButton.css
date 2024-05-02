@@ -8,12 +8,12 @@
   margin: 2px;
   height: 24px;
   font-size: 12px;
-  border: 1px solid var(--color-background-elevation-2);
-  border-radius: 4px;
+  border: 1px solid var(--sys-color-tonal-outline);
+  border-radius: 12px;
   padding: 0 12px;
   font-weight: 500;
-  color: var(--legacy-accent-fg-color);
-  background-color: var(--color-background);
+  color: var(--sys-color-primary);
+  background-color: var(--sys-color-cdt-base-container);
   flex: none;
   white-space: nowrap;
 }
@@ -25,68 +25,56 @@
 .text-button:not(:disabled):focus,
 .text-button:not(:disabled):hover,
 .text-button:not(:disabled):active {
-  background-color: var(--color-background-elevation-1);
-  box-shadow: 0 1px 2px var(--divider-line);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
-.text-button:not(:disabled):active {
-  background-color: var(--color-background-elevation-2);
-}
-
-.text-button:not(:disabled):focus {
-  box-shadow: 0 1px 2px var(--divider-line), 0 0 0 2px var(--color-primary-variant);
+.text-button:not(:disabled):not(.primary-button):focus-visible {
+  outline: 2px solid var(--sys-color-state-focus-ring);
+  color: var(--sys-color-on-primary);
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 .text-button:not(:disabled):not(.running):focus,
 .text-button:not(:disabled):not(.running):hover,
 .text-button:not(:disabled):not(.running):active {
-  color: var(--legacy-accent-fg-color-hover);
+  color: var(--sys-color-primary);
 }
 
-.text-button.primary-button {
-  --override-text-button-color: #fff;
-
-  background-color: var(--legacy-accent-color);
-  border: none;
-  color: var(--override-text-button-color);
-}
-
-.text-button.link-style {
+.text-button.link-style,
+.text-button.link-style:hover,
+.text-button.link-style:active {
   background: none;
   border: none;
+  outline: none;
+  border-radius: 2px;
+  margin: 0;
   padding: 0 !important; /* stylelint-disable-line declaration-no-important */
   font: inherit;
   cursor: pointer;
-  height: 18px;
+  height: unset;
 }
 
-.text-button.primary-button:not(:disabled):focus,
-.text-button.primary-button:not(:disabled):hover,
+.text-button.primary-button {
+  background-color: var(--sys-color-primary);
+  border: none;
+  color: var(--sys-color-on-primary);
+}
+
 .text-button.primary-button:not(:disabled):active {
-  --override-text-button-color: #fff;
-
-  background-color: var(--legacy-accent-color-hover);
-  color: var(--override-text-button-color);
+  background-color: color-mix(in sRGB, var(--sys-color-primary), var(--sys-color-state-ripple-primary) 32%);
+  color: var(--sys-color-on-primary);
 }
 
-.-theme-with-dark-background .text-button:not(.primary-button):not(:disabled):focus,
-.-theme-with-dark-background .text-button:not(.primary-button):not(:disabled):hover,
-.-theme-with-dark-background .text-button:not(.primary-button):not(:disabled):active {
-  --override-dark-background-color: #313131;
-  --override-dark-box-shadow-color: rgb(0 0 0 / 10%);
-
-  background-color: var(--override-dark-background-color);
-  box-shadow: 0 1px 2px var(--override-dark-box-shadow-color);
+.text-button.primary-button:not(:disabled):hover {
+  background-color: color-mix(in sRGB, var(--sys-color-primary), var(--sys-color-state-hover-on-prominent) 6%);
+  color: var(--sys-color-on-primary);
 }
 
-.-theme-with-dark-background .text-button:not(.primary-button):not(:disabled):focus {
-  box-shadow: 0 1px 2px var(--override-dark-box-shadow-color), 0 0 0 2px var(--color-primary-variant);
-}
-
-.-theme-with-dark-background .text-button:not(.primary-button):not(:disabled):active {
-  --override-dark-mode-active-background-color: #3e3e3e;
-
-  background-color: var(--override-dark-mode-active-background-color);
+.text-button.primary-button:not(:disabled):focus-visible {
+  background-color: var(--sys-color-primary);
+  outline-offset: 2px;
+  outline: 2px solid var(--sys-color-state-focus-ring);
+  color: var(--sys-color-on-primary);
 }
 
 @media (forced-colors: active) {
@@ -104,7 +92,7 @@
     color: GrayText;
   }
 
-  .text-button:not(:disabled):focus {
+  .text-button:not(:disabled):focus-visible {
     forced-color-adjust: none;
     background-color: ButtonFace;
     color: Highlight !important; /* stylelint-disable-line declaration-no-important */
@@ -118,7 +106,7 @@
     forced-color-adjust: none;
     background-color: Highlight;
     color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
-    box-shadow: var(--legacy-accent-color);
+    box-shadow: var(--sys-color-primary);
   }
 
   .text-button.primary-button {
@@ -128,7 +116,7 @@
     border: 1px solid Highlight;
   }
 
-  .text-button.primary-button:not(:disabled):focus {
+  .text-button.primary-button:not(:disabled):focus-visible {
     background-color: Highlight;
     color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
     border-color: ButtonText;

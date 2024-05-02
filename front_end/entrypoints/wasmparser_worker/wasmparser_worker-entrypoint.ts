@@ -4,7 +4,7 @@
 
 import * as WasmParserWorker from './wasmparser_worker.js';
 
-self.onmessage = (event: {data: {method: string, params: {content: string}}}): void => {
+self.onmessage = (event: {data: {method: string, params: {content: string}}}) => {
   const method = event.data.method;
 
   if (method !== 'disassemble') {

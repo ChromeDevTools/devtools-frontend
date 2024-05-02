@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("wasmparser_worker") {
@@ -20,10 +21,7 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":wasmparser_worker" ]
 
-  visibility = [
-    ":*",
-    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
-  ]
+  visibility = [ ":*" ]
 
   visibility += devtools_entrypoints_visibility
 }
@@ -38,4 +36,15 @@ devtools_entrypoint("worker_entrypoint") {
   visibility = [ "../../../front_end" ]
 
   visibility += devtools_entrypoints_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "wasmparser_worker.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+  ]
 }

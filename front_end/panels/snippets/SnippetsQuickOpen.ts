@@ -31,7 +31,7 @@ let snippetsQuickOpenInstance: SnippetsQuickOpen;
 export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   private snippets: Workspace.UISourceCode.UISourceCode[];
   private constructor() {
-    super();
+    super('snippet');
     this.snippets = [];
   }
 

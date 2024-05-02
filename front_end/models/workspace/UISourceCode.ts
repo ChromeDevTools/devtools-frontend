@@ -428,6 +428,11 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return this.isUnconditionallyIgnoreListedInternal;
   }
 
+  isFetchXHR(): boolean {
+    return [Common.ResourceType.resourceTypes.XHR, Common.ResourceType.resourceTypes.Fetch].includes(
+        this.contentType());
+  }
+
   /**
    * Unconditionally ignore list this UISourcecode, ignoring any user
    * setting. We use this to mark breakpoint/logpoint condition scripts for now.
@@ -522,8 +527,6 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   WorkingCopyChanged = 'WorkingCopyChanged',
   WorkingCopyCommitted = 'WorkingCopyCommitted',
@@ -624,6 +627,21 @@ export class UILocation {
 }
 
 /**
+ * A text range inside a specific {@link UISourceCode}.
+ *
+ * We use a class instead of an interface so we can implement a revealer for it.
+ */
+export class UILocationRange {
+  readonly uiSourceCode: UISourceCode;
+  readonly range: TextUtils.TextRange.TextRange;
+
+  constructor(uiSourceCode: UISourceCode, range: TextUtils.TextRange.TextRange) {
+    this.uiSourceCode = uiSourceCode;
+    this.range = range;
+  }
+}
+
+/**
  * A message associated with a range in a `UISourceCode`. The range will be
  * underlined starting at the range's start and ending at the line end (the
  * end of the range is currently disregarded).
@@ -670,9 +688,7 @@ export class Message {
 }
 
 export namespace Message {
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum Level {
+  export const enum Level {
     Error = 'Error',
     Issue = 'Issue',
     Warning = 'Warning',

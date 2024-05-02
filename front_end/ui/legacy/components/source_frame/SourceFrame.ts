@@ -29,14 +29,18 @@
  */
 
 import * as Common from '../../../../core/common/common.js';
+import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import * as Root from '../../../../core/root/root.js';
 import * as Formatter from '../../../../models/formatter/formatter.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as CodeMirror from '../../../../third_party/codemirror.next/codemirror.next.js';
 import * as CodeHighlighter from '../../../components/code_highlighter/code_highlighter.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
 import * as UI from '../../legacy.js';
+
+import selfXssDialogStyles from './selfXssDialog.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -80,6 +84,33 @@ const UIStrings = {
    *@example {2} PH2
    */
   dLinesDCharactersSelected: '{PH1} lines, {PH2} characters selected',
+  /**
+   *@description Headline of warning shown to users when pasting text/code into DevTools.
+   */
+  doYouTrustThisCode: 'Do you trust this code?',
+  /**
+   *@description Warning shown to users when pasting text/code into DevTools.
+   *@example {allow pasting} PH1
+   */
+  doNotPaste:
+      'Don\'t paste code you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type \'\'{PH1}\'\' below to allow pasting.',
+  /**
+   *@description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
+   */
+  allowPasting: 'allow pasting',
+  /**
+   *@description Button text for canceling an action
+   */
+  cancel: 'Cancel',
+  /**
+   *@description Button text for allowing an action
+   */
+  allow: 'Allow',
+  /**
+   *@description Input box placeholder which instructs the user to type 'allow pasing' into the input box.
+   *@example {allow pasting} PH1
+   */
+  typeAllowPasting: 'Type \'\'{PH1}\'\'',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/SourceFrame.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -100,6 +131,16 @@ export type EventTypes = {
   [Events.EditorUpdate]: CodeMirror.ViewUpdate,
   [Events.EditorScroll]: void,
 };
+
+type FormatFn = (lineNo: number, state: CodeMirror.EditorState) => string;
+export const LINE_NUMBER_FORMATTER = CodeMirror.Facet.define<FormatFn, FormatFn>({
+  combine(value): FormatFn {
+    if (value.length === 0) {
+      return (lineNo: number) => lineNo.toString();
+    }
+    return value[0];
+  },
+});
 
 export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.View.SimpleView>(
     UI.View.SimpleView) implements UI.SearchableView.Searchable, UI.SearchableView.Replaceable, Transformer {
@@ -126,9 +167,8 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   private searchableView: UI.SearchableView.SearchableView|null;
   private editable: boolean;
   private positionToReveal: {
-    line: number,
-    column: (number|undefined),
-    shouldHighlight: (boolean|undefined),
+    from?: {lineNumber: number, columnNumber: number}, to: {lineNumber: number, columnNumber: number},
+    shouldHighlight?: boolean,
   }|null;
   private lineToScrollTo: number|null;
   private selectionToSet: TextUtils.TextRange.TextRange|null;
@@ -136,6 +176,8 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   private contentRequested: boolean;
   private wasmDisassemblyInternal: Common.WasmDisassembly.WasmDisassembly|null;
   contentSet: boolean;
+  private selfXssWarningDisabledSetting: Common.Settings.Setting<boolean>;
+
   constructor(
       lazyContent: () => Promise<TextUtils.ContentProvider.DeferredContent>,
       private readonly options: SourceFrameOptions = {}) {
@@ -146,7 +188,8 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.prettyInternal = false;
     this.rawContent = null;
     this.formattedMap = null;
-    this.prettyToggle = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.prettyPrint), 'brackets');
+    this.prettyToggle =
+        new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.prettyPrint), 'brackets', undefined, 'pretty-print');
     this.prettyToggle.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       void this.setPretty(!this.prettyToggle.toggled());
     });
@@ -158,7 +201,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.textEditorInternal = new TextEditor.TextEditor.TextEditor(this.placeholderEditorState(''));
     this.textEditorInternal.style.flexGrow = '1';
     this.element.appendChild(this.textEditorInternal);
-    this.element.addEventListener('keydown', (event: KeyboardEvent): void => {
+    this.element.addEventListener('keydown', (event: KeyboardEvent) => {
       if (event.defaultPrevented) {
         event.stopPropagation();
       }
@@ -189,14 +232,16 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.wasmDisassemblyInternal = null;
     this.contentSet = false;
 
+    this.selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting(
+        'disable-self-xss-warning', false, Common.Settings.SettingStorageType.Synced);
     Common.Settings.Settings.instance()
-        .moduleSetting('textEditorIndent')
+        .moduleSetting('text-editor-indent')
         .addChangeListener(this.#textEditorIndentChanged, this);
   }
 
   override disposeView(): void {
     Common.Settings.Settings.instance()
-        .moduleSetting('textEditorIndent')
+        .moduleSetting('text-editor-indent')
         .removeChangeListener(this.#textEditorIndentChanged, this);
   }
 
@@ -235,6 +280,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       CodeMirror.EditorView.domEventHandlers({
         focus: () => this.onFocus(),
         blur: () => this.onBlur(),
+        paste: () => this.onPaste(),
         scroll: () => this.dispatchEventToListeners(Events.EditorScroll),
         contextmenu: event => this.onContextMenu(event),
       }),
@@ -258,6 +304,16 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       this.wasmDisassemblyInternal ? markNonBreakableLines(this.wasmDisassemblyInternal) : nonBreakableLines,
       this.options.lineWrapping ? CodeMirror.EditorView.lineWrapping : [],
       this.options.lineNumbers !== false ? CodeMirror.lineNumbers() : [],
+      Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.INDENTATION_MARKERS_TEMP_DISABLE) ?
+          [] :
+          CodeMirror.indentationMarkers({
+            colors: {
+              light: 'var(--sys-color-divider)',
+              activeLight: 'var(--sys-color-divider-prominent)',
+              dark: 'var(--sys-color-divider)',
+              activeDark: 'var(--sys-color-divider-prominent)',
+            },
+          }),
     ];
   }
 
@@ -266,6 +322,27 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
 
   protected onFocus(): void {
     this.resetCurrentSearchResultIndex();
+  }
+
+  protected onPaste(): boolean {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.SELF_XSS_WARNING) &&
+        !Root.Runtime.Runtime.queryParam('isChromeForTesting') && !this.selfXssWarningDisabledSetting.get()) {
+      void this.showSelfXssWarning();
+      return true;
+    }
+    return false;
+  }
+
+  async showSelfXssWarning(): Promise<void> {
+    // Hack to circumvent Chrome issue which would show a tooltip for the newly opened
+    // dialog if pasting via keyboard.
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    const allowPasting = await SelfXssWarningDialog.show();
+    if (allowPasting) {
+      this.selfXssWarningDisabledSetting.set(true);
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelfXssAllowPastingInDialog);
+    }
   }
 
   get wasmDisassembly(): Common.WasmDisassembly.WasmDisassembly|null {
@@ -360,29 +437,32 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     if (this.options.lineNumbers === false) {
       return [];
     }
-    let formatNumber = null;
+    let formatNumber = undefined;
     if (this.wasmDisassemblyInternal) {
       const disassembly = this.wasmDisassemblyInternal;
       const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
       const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length + 1;
-      formatNumber = (lineNumber: number): string => {
+      formatNumber = (lineNumber: number) => {
         const bytecodeOffset =
             disassembly.lineNumberToBytecodeOffset(Math.min(disassembly.lineNumbers, lineNumber) - 1);
         return `0x${bytecodeOffset.toString(16).padStart(bytecodeOffsetDigits, '0')}`;
       };
     } else if (this.prettyInternal) {
-      formatNumber = (lineNumber: number): string => {
-        const line = this.prettyToRawLocation(lineNumber - 1, 0)[0] + 1;
-        if (lineNumber === 1) {
-          return String(line);
+      formatNumber = (lineNumber: number, state: CodeMirror.EditorState) => {
+        // @codemirror/view passes a high number here to estimate the
+        // maximum width to allocate for the line number gutter.
+        if (lineNumber < 2 || lineNumber > state.doc.lines) {
+          return String(lineNumber);
         }
-        if (line !== this.prettyToRawLocation(lineNumber - 2, 0)[0] + 1) {
-          return String(line);
+        const [currLine] = this.prettyToRawLocation(lineNumber - 1);
+        const [prevLine] = this.prettyToRawLocation(lineNumber - 2);
+        if (currLine !== prevLine) {
+          return String(currLine + 1);
         }
         return '-';
       };
     }
-    return formatNumber ? CodeMirror.lineNumbers({formatNumber}) : [];
+    return formatNumber ? [CodeMirror.lineNumbers({formatNumber}), LINE_NUMBER_FORMATTER.of(formatNumber)] : [];
   }
 
   private updateLineNumberFormatter(): void {
@@ -502,7 +582,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
         worker.onmessage =
             // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            ({data}: MessageEvent<any>): void => {
+            ({data}: MessageEvent<any>) => {
               if ('event' in data) {
                 switch (data.event) {
                   case 'progress':
@@ -554,11 +634,11 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     }
   }
 
-  revealPosition(position: {lineNumber: number, columnNumber?: number}|number, shouldHighlight?: boolean): void {
+  revealPosition(position: RevealPosition, shouldHighlight?: boolean): void {
     this.lineToScrollTo = null;
     this.selectionToSet = null;
-    let line = 0, column = 0;
     if (typeof position === 'number') {
+      let line = 0, column = 0;
       const {doc} = this.textEditor.state;
       if (position > doc.length) {
         line = doc.lines - 1;
@@ -567,11 +647,13 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
         line = lineObj.number - 1;
         column = position - lineObj.from;
       }
+      this.positionToReveal = {to: {lineNumber: line, columnNumber: column}, shouldHighlight};
+    } else if ('lineNumber' in position) {
+      const {lineNumber, columnNumber} = position;
+      this.positionToReveal = {to: {lineNumber, columnNumber: columnNumber ?? 0}, shouldHighlight};
     } else {
-      line = position.lineNumber;
-      column = position.columnNumber ?? 0;
+      this.positionToReveal = {...position, shouldHighlight};
     }
-    this.positionToReveal = {line, column, shouldHighlight: shouldHighlight};
     this.innerRevealPositionIfNeeded();
   }
 
@@ -584,10 +666,12 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       return;
     }
 
-    const location = this.uiLocationToEditorLocation(this.positionToReveal.line, this.positionToReveal.column);
+    const {from, to, shouldHighlight} = this.positionToReveal;
+    const toLocation = this.uiLocationToEditorLocation(to.lineNumber, to.columnNumber);
+    const fromLocation = from ? this.uiLocationToEditorLocation(from.lineNumber, from.columnNumber) : undefined;
 
     const {textEditor} = this;
-    textEditor.revealPosition(textEditor.createSelection(location), this.positionToReveal.shouldHighlight);
+    textEditor.revealPosition(textEditor.createSelection(toLocation, fromLocation), shouldHighlight);
     this.positionToReveal = null;
   }
 
@@ -812,7 +896,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
 
   private searchResultIndexForCurrentSelection(): number {
     return Platform.ArrayUtilities.lowerBound(
-        this.searchResults, this.textEditor.state.selection.main, (a, b): number => a.to - b.to);
+        this.searchResults, this.textEditor.state.selection.main, (a, b) => a.to - b.to);
   }
 
   jumpToNextSearchResult(): void {
@@ -983,7 +1067,7 @@ class SearchMatch {
   }
 
   insertPlaceholders(replacement: string): string {
-    return replacement.replace(/\$(\$|&|\d+|<[^>]+>)/g, (_, selector): string => {
+    return replacement.replace(/\$(\$|&|\d+|<[^>]+>)/g, (_, selector) => {
       if (selector === '$') {
         return '$';
       }
@@ -995,6 +1079,62 @@ class SearchMatch {
       }
       return this.match[Number.parseInt(selector, 10)] || '';
     });
+  }
+}
+
+export class SelfXssWarningDialog {
+  static async show(): Promise<boolean> {
+    const dialog = new UI.Dialog.Dialog('self-xss-warning');
+    dialog.setMaxContentSize(new UI.Geometry.Size(504, 340));
+    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);
+    dialog.setDimmed(true);
+    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
+        dialog.contentElement, {cssFile: selfXssDialogStyles, delegatesFocus: undefined});
+    const content = shadowRoot.createChild('div', 'widget');
+
+    const result = await new Promise<boolean>(resolve => {
+      const closeButton =
+          content.createChild('div', 'dialog-close-button', 'dt-close-button') as UI.UIUtils.DevToolsCloseButton;
+      closeButton.setTabbable(true);
+      self.onInvokeElement(closeButton, event => {
+        dialog.hide();
+        event.consume(true);
+        resolve(false);
+      });
+
+      content.createChild('div', 'title').textContent = i18nString(UIStrings.doYouTrustThisCode);
+      content.createChild('div', 'message').textContent =
+          i18nString(UIStrings.doNotPaste, {PH1: i18nString(UIStrings.allowPasting)});
+
+      const input = UI.UIUtils.createInput('text-input', 'text', 'allow-pasting');
+      input.placeholder = i18nString(UIStrings.typeAllowPasting, {PH1: i18nString(UIStrings.allowPasting)});
+      content.appendChild(input);
+
+      const buttonsBar = content.createChild('div', 'button');
+      const cancelButton =
+          UI.UIUtils.createTextButton(i18nString(UIStrings.cancel), () => resolve(false), {jslogContext: 'cancel'});
+      buttonsBar.appendChild(cancelButton);
+      const allowButton = UI.UIUtils.createTextButton(i18nString(UIStrings.allow), () => {
+        resolve(input.value === i18nString(UIStrings.allowPasting));
+      }, {jslogContext: 'confirm', primary: true});
+      allowButton.disabled = true;
+      buttonsBar.appendChild(allowButton);
+
+      input.addEventListener('input', () => {
+        allowButton.disabled = !Boolean(input.value);
+      }, false);
+      input.addEventListener('paste', e => e.preventDefault());
+      input.addEventListener('drop', e => e.preventDefault());
+
+      dialog.setOutsideClickCallback(event => {
+        event.consume();
+        resolve(false);
+      });
+      dialog.show();
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelfXssWarningDialogShown);
+    });
+    dialog.hide();
+    return result;
   }
 }
 
@@ -1014,9 +1154,7 @@ export interface Transformer {
   };
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum DecoratorType {
+export const enum DecoratorType {
   PERFORMANCE = 'performance',
   MEMORY = 'memory',
   COVERAGE = 'coverage',
@@ -1048,8 +1186,8 @@ class ActiveSearch {
   }
 }
 
-const setActiveSearch = CodeMirror.StateEffect.define<ActiveSearch|null>(
-    {map: (value, mapping): ActiveSearch | null => value && value.map(mapping)});
+const setActiveSearch =
+    CodeMirror.StateEffect.define<ActiveSearch|null>({map: (value, mapping) => value && value.map(mapping)});
 
 const activeSearchState = CodeMirror.StateField.define<ActiveSearch|null>({
   create(): null {
@@ -1066,7 +1204,8 @@ const searchMatchDeco = CodeMirror.Decoration.mark({class: 'cm-searchMatch'});
 const currentSearchMatchDeco = CodeMirror.Decoration.mark({class: 'cm-searchMatch cm-searchMatch-selected'});
 
 const searchHighlighter = CodeMirror.ViewPlugin.fromClass(class {
-  decorations: CodeMirror.DecorationSet;
+decorations:
+  CodeMirror.DecorationSet;
 
   constructor(view: CodeMirror.EditorView) {
     this.decorations = this.computeDecorations(view);
@@ -1113,7 +1252,7 @@ const searchHighlighter = CodeMirror.ViewPlugin.fromClass(class {
     }
     return builder.finish();
   }
-}, {decorations: (value): CodeMirror.DecorationSet => value.decorations});
+}, {decorations: value => value.decorations});
 
 const nonBreakableLineMark = new (class extends CodeMirror.GutterMarker {
   override elementClass = 'cm-nonBreakableLine';
@@ -1165,21 +1304,30 @@ function markNonBreakableLines(disassembly: Common.WasmDisassembly.WasmDisassemb
 const sourceFrameTheme = CodeMirror.EditorView.theme({
   '&.cm-editor': {height: '100%'},
   '.cm-scroller': {overflow: 'auto'},
-  '.cm-lineNumbers .cm-gutterElement.cm-nonBreakableLine': {color: 'var(--color-non-breakable-line) !important'},
+  '.cm-lineNumbers .cm-gutterElement.cm-nonBreakableLine': {color: 'var(--sys-color-state-disabled) !important'},
   '.cm-searchMatch': {
-    border: '1px solid var(--color-search-match-border)',
+    border: '1px solid var(--sys-color-outline)',
     borderRadius: '3px',
     margin: '0 -1px',
     '&.cm-searchMatch-selected': {
       borderRadius: '1px',
-      backgroundColor: 'var(--color-selected-search-match-background)',
-      borderColor: 'var(--color-selected-search-match-background)',
+      backgroundColor: 'var(--sys-color-yellow-container)',
+      borderColor: 'var(--sys-color-yellow-outline)',
       '&, & *': {
-        color: 'var(--color-selected-search-match) !important',
+        color: 'var(--sys-color-on-surface) !important',
       },
     },
   },
   ':host-context(.pretty-printed) & .cm-lineNumbers .cm-gutterElement': {
-    color: 'var(--color-primary-old)',
+    color: 'var(--sys-color-primary)',
   },
 });
+
+/**
+ * Reveal position can either be a single point or a range.
+ *
+ * A single point can either be specified as a line/column combo or as an absolute
+ * editor offset.
+ */
+export type RevealPosition = number|{lineNumber: number, columnNumber?: number}|
+    {from: {lineNumber: number, columnNumber: number}, to: {lineNumber: number, columnNumber: number}};

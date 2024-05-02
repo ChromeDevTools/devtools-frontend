@@ -114,7 +114,8 @@ export class ServiceWorkerManager extends SDKModel<EventTypes> {
     this.#registrationsInternal = new Map();
     this.#enabled = false;
     void this.enable();
-    this.#forceUpdateSetting = Common.Settings.Settings.instance().createSetting('serviceWorkerUpdateOnReload', false);
+    this.#forceUpdateSetting =
+        Common.Settings.Settings.instance().createSetting('service-worker-update-on-reload', false);
     if (this.#forceUpdateSetting.get()) {
       this.forceUpdateSettingChanged();
     }
@@ -300,9 +301,7 @@ export class ServiceWorkerManager extends SDKModel<EventTypes> {
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   RegistrationUpdated = 'RegistrationUpdated',
   RegistrationErrorAdded = 'RegistrationErrorAdded',
   RegistrationDeleted = 'RegistrationDeleted',
@@ -347,9 +346,7 @@ class ServiceWorkerDispatcher implements ProtocolProxyApi.ServiceWorkerDispatche
 export class ServiceWorkerVersionState {
   runningStatus: Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus;
   status: Protocol.ServiceWorker.ServiceWorkerVersionStatus;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  last_updated_timestamp: number;
+  lastUpdatedTimestamp: number;
   previousState: ServiceWorkerVersionState|null;
   constructor(
       runningStatus: Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus,
@@ -357,8 +354,19 @@ export class ServiceWorkerVersionState {
       timestamp: number) {
     this.runningStatus = runningStatus;
     this.status = status;
-    this.last_updated_timestamp = timestamp;
+    this.lastUpdatedTimestamp = timestamp;
     this.previousState = previousState;
+  }
+}
+
+export class ServiceWorkerRouterRule {
+  condition: string;
+  source: string;
+  id: number;
+  constructor(condition: string, source: string, id: number) {
+    this.condition = condition;
+    this.source = source;
+    this.id = id;
   }
 }
 
@@ -371,6 +379,7 @@ export class ServiceWorkerVersion {
   scriptResponseTime!: number|undefined;
   controlledClients!: Protocol.Target.TargetID[];
   targetId!: string|null;
+  routerRules!: ServiceWorkerRouterRule[]|null;
   currentState!: ServiceWorkerVersionState;
   registration: ServiceWorkerRegistration;
   constructor(registration: ServiceWorkerRegistration, payload: Protocol.ServiceWorker.ServiceWorkerVersion) {
@@ -393,6 +402,10 @@ export class ServiceWorkerVersion {
       this.controlledClients = [];
     }
     this.targetId = payload.targetId || null;
+    this.routerRules = null;
+    if (payload.routerRules) {
+      this.routerRules = this.parseJSONRules(payload.routerRules);
+    }
   }
 
   isStartable(): boolean {
@@ -464,6 +477,29 @@ export class ServiceWorkerVersion {
     }
     return ServiceWorkerVersion.Modes.Redundant;
   }
+
+  private parseJSONRules(input: string): ServiceWorkerRouterRule[]|null {
+    try {
+      const parsedObject = JSON.parse(input);
+      if (!Array.isArray(parsedObject)) {
+        console.error('Parse error: `routerRules` in ServiceWorkerVersion should be an array');
+        return null;
+      }
+      const routerRules: ServiceWorkerRouterRule[] = [];
+      for (const parsedRule of parsedObject) {
+        const {condition, source, id} = parsedRule;
+        if (condition === undefined || source === undefined || id === undefined) {
+          console.error('Parse error: Missing some fields of `routerRules` in ServiceWorkerVersion');
+          return null;
+        }
+        routerRules.push(new ServiceWorkerRouterRule(JSON.stringify(condition), JSON.stringify(source), id));
+      }
+      return routerRules;
+    } catch (e) {
+      console.error('Parse error: Invalid `routerRules` in ServiceWorkerVersion');
+      return null;
+    }
+  }
 }
 
 export namespace ServiceWorkerVersion {
@@ -483,9 +519,7 @@ export namespace ServiceWorkerVersion {
     [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Redundant]: i18nLazyString(UIStrings.redundant),
   };
 
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum Modes {
+  export const enum Modes {
     Installing = 'installing',
     Waiting = 'waiting',
     Active = 'active',

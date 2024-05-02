@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as TextUtils from '../../models/text_utils/text_utils.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.SourcesTestRunner = self.SourcesTestRunner || {};
 
-SourcesTestRunner.replaceInSource = function(sourceFrame, string, replacement) {
+export const replaceInSource = function(sourceFrame, string, replacement) {
   sourceFrame.textEditor.setReadOnly(false);
 
   for (let i = 0; i < sourceFrame.textEditor.linesCount; ++i) {
@@ -18,16 +19,16 @@ SourcesTestRunner.replaceInSource = function(sourceFrame, string, replacement) {
       continue;
     }
 
-    const range = new TextUtils.TextRange(i, column, i, column + string.length);
+    const range = new TextUtils.TextRange.TextRange(i, column, i, column + string.length);
     sourceFrame.textEditor.editRange(range, replacement);
     break;
   }
 };
 
-SourcesTestRunner.commitSource = function(sourceFrame) {
+export const commitSource = function(sourceFrame) {
   sourceFrame.commitEditing();
 };
 
-SourcesTestRunner.undoSourceEditing = function(sourceFrame) {
+export const undoSourceEditing = function(sourceFrame) {
   sourceFrame.textEditor.undo();
 };

@@ -94,6 +94,11 @@ module.exports = {
       'CallExpression[callee.type=\'MemberExpression\'][callee.property.name=\'addEventListener\']'(
           callExpressionNode) {
         const methodArg = callExpressionNode.arguments[1];
+        if (!methodArg) {
+          // User is in the middle of typing, so just early exit.
+          return;
+        }
+
         // Confirm that the argument is this.X, otherwise skip it
         if (methodArg?.type !== 'MemberExpression') {
           return;

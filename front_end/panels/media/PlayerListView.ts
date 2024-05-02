@@ -3,14 +3,14 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as UI from '../../ui/legacy/legacy.js';
-
-import playerListViewStyles from './playerListView.css.js';
-
 import type * as Protocol from '../../generated/protocol.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {type MainView, type TriggerDispatcher} from './MainView.js';
 import {type PlayerEvent} from './MediaModel.js';
+import playerListViewStyles from './playerListView.css.js';
 import {PlayerPropertyKeys} from './PlayerPropertiesView.js';
 
 const UIStrings = {
@@ -75,11 +75,11 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
     </div>
     `;
     const element = entry.element();
-
+    element.setAttribute('jslog', `${VisualLogging.item('player').track({click: true})}`);
     element.addEventListener('click', this.selectPlayer.bind(this, playerID, element));
     element.addEventListener('contextmenu', this.rightClickPlayer.bind(this, playerID));
 
-    entry.$('icon').appendChild(UI.Icon.Icon.create('pause', 'media-player'));
+    entry.$('icon').appendChild(IconButton.Icon.create('pause', 'media-player'));
     return entry;
   }
 
@@ -97,12 +97,15 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
   private rightClickPlayer(playerID: string, event: Event): boolean {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.headerSection().appendItem(
-        i18nString(UIStrings.hidePlayer), this.mainContainer.markPlayerForDeletion.bind(this.mainContainer, playerID));
+        i18nString(UIStrings.hidePlayer), this.mainContainer.markPlayerForDeletion.bind(this.mainContainer, playerID),
+        {jslogContext: 'hide-player'});
     contextMenu.headerSection().appendItem(
         i18nString(UIStrings.hideAllOthers),
-        this.mainContainer.markOtherPlayersForDeletion.bind(this.mainContainer, playerID));
+        this.mainContainer.markOtherPlayersForDeletion.bind(this.mainContainer, playerID),
+        {jslogContext: 'hide-all-others'});
     contextMenu.headerSection().appendItem(
-        i18nString(UIStrings.savePlayerInfo), this.mainContainer.exportPlayerData.bind(this.mainContainer, playerID));
+        i18nString(UIStrings.savePlayerInfo), this.mainContainer.exportPlayerData.bind(this.mainContainer, playerID),
+        {jslogContext: 'save-player-info'});
     void contextMenu.show();
     return true;
   }
@@ -153,7 +156,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
       return;
     }
     icon.textContent = '';
-    icon.appendChild(UI.Icon.Icon.create(iconName, 'media-player'));
+    icon.appendChild(IconButton.Icon.create(iconName, 'media-player'));
   }
 
   private formatAndEvaluate(playerID: string, func: Function, candidate: string, min: number, max: number): void {

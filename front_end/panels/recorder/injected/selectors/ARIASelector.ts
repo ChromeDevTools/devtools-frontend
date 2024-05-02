@@ -62,7 +62,8 @@ class ARIASelectorComputer {
     if (!name) {
       return null;
     }
-    const result = this.#queryA11yTree(parent, name);
+    const maxResults = 2;
+    const result = this.#queryA11yTree(parent, name, undefined, maxResults);
     if (result.length !== 1) {
       return null;
     }
@@ -76,7 +77,8 @@ class ARIASelectorComputer {
     if (!role) {
       return null;
     }
-    const result = this.#queryA11yTree(parent, undefined, role);
+    const maxResults = 2;
+    const result = this.#queryA11yTree(parent, undefined, role, maxResults);
     if (result.length !== 1) {
       return null;
     }
@@ -91,7 +93,8 @@ class ARIASelectorComputer {
     if (!role || !name) {
       return null;
     }
-    const result = this.#queryA11yTree(parent, name, role);
+    const maxResults = 2;
+    const result = this.#queryA11yTree(parent, name, role, maxResults);
     if (result.length !== 1) {
       return null;
     }
@@ -104,6 +107,7 @@ class ARIASelectorComputer {
       parent: Element|Document,
       name?: string,
       role?: string,
+      maxResults = 0,
       ): Element[] => {
     const result: Element[] = [];
     if (!name && !role) {
@@ -128,6 +132,9 @@ class ARIASelectorComputer {
           continue;
         }
         result.push(currentNode);
+        if (maxResults && result.length >= maxResults) {
+          return;
+        }
       } while (iter.nextNode());
     };
     collect(parent instanceof Document ? document.documentElement : parent);

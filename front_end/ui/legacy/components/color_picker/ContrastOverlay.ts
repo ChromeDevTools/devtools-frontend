@@ -25,7 +25,7 @@ export class ContrastOverlay {
 
     this.contrastRatioSVG = UI.UIUtils.createSVGChild(colorElement, 'svg', 'spectrum-contrast-container fill');
     this.contrastRatioLines = new Map();
-    if (Root.Runtime.experiments.isEnabled('APCA')) {
+    if (Root.Runtime.experiments.isEnabled('apca')) {
       this.contrastRatioLines.set(
           'APCA', UI.UIUtils.createSVGChild(this.contrastRatioSVG, 'path', 'spectrum-contrast-line'));
     } else {
@@ -50,7 +50,7 @@ export class ContrastOverlay {
     if (!this.visible || this.contrastInfo.isNull()) {
       return;
     }
-    if (Root.Runtime.experiments.isEnabled('APCA') && this.contrastInfo.contrastRatioAPCA() === null) {
+    if (Root.Runtime.experiments.isEnabled('apca') && this.contrastInfo.contrastRatioAPCA() === null) {
       return;
     }
     if (!this.contrastInfo.contrastRatio()) {
@@ -90,7 +90,7 @@ export class ContrastRatioLineBuilder {
   }
 
   drawContrastRatioLine(width: number, height: number, level: string): string|null {
-    const isAPCA = Root.Runtime.experiments.isEnabled('APCA');
+    const isAPCA = Root.Runtime.experiments.isEnabled('apca');
     const requiredContrast =
         isAPCA ? this.contrastInfo.contrastRatioAPCAThreshold() : this.contrastInfo.contrastRatioThreshold(level);
     if (!width || !height || requiredContrast === null) {
@@ -130,18 +130,17 @@ export class ContrastRatioLineBuilder {
     let currentSlope = 0;
     const candidateHSVA: Common.ColorUtils.Color4D = [fgHSVA[H], 0, 0, fgHSVA[A]];
     let pathBuilder: string[] = [];
-    const candidateRGBA: Common.ColorUtils.Color4D = [0, 0, 0, 0];
-    Common.Color.hsva2rgba(candidateHSVA, candidateRGBA);
+    const candidateRGBA = Common.Color.hsva2rgba(candidateHSVA);
     blendedRGBA = Common.ColorUtils.blendColors(candidateRGBA, bgRGBA);
 
     let candidateLuminance: ((candidateHSVA: Common.ColorUtils.Color4D) => number)|
-        ((candidateHSVA: Common.ColorUtils.Color4D) => number) = (candidateHSVA: Common.ColorUtils.Color4D): number => {
+        ((candidateHSVA: Common.ColorUtils.Color4D) => number) = (candidateHSVA: Common.ColorUtils.Color4D) => {
           return Common.ColorUtils.luminance(
               Common.ColorUtils.blendColors(Common.Color.Legacy.fromHSVA(candidateHSVA).rgba(), bgRGBA));
         };
 
-    if (Root.Runtime.experiments.isEnabled('APCA')) {
-      candidateLuminance = (candidateHSVA: Common.ColorUtils.Color4D): number => {
+    if (Root.Runtime.experiments.isEnabled('apca')) {
+      candidateLuminance = (candidateHSVA: Common.ColorUtils.Color4D) => {
         return Common.ColorUtils.luminanceAPCA(
             Common.ColorUtils.blendColors(Common.Color.Legacy.fromHSVA(candidateHSVA).rgba(), bgRGBA));
       };

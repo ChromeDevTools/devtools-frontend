@@ -13,7 +13,7 @@ import {
   typeInClassesPaneInput,
 } from '../helpers/elements-helpers.js';
 
-describe('The Classes pane', async () => {
+describe('The Classes pane', () => {
   beforeEach(async function() {
     await goToResource('elements/simple-styled-page.html');
     await toggleClassesPane();

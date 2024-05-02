@@ -8,7 +8,7 @@ import * as ReportView from '../../report_view/report_view.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 
-const exampleRenderHelper = (key: string, value: string): LitHtml.TemplateResult => LitHtml.html`
+const exampleRenderHelper = (key: string, value: string) => LitHtml.html`
           <${ReportView.ReportView.ReportKey.litTagName}>${key}</${ReportView.ReportView.ReportKey.litTagName}>
           <${ReportView.ReportView.ReportValue.litTagName}>${value}</${ReportView.ReportView.ReportValue.litTagName}>
         `;

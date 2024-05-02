@@ -54,8 +54,8 @@
 .chart-viewport-selection-overlay {
   position: absolute;
   z-index: 100;
-  background-color: var(--color-selection-highlight);
-  border-color: var(--color-selection-highlight-border);
+  background-color: var(--sys-color-state-ripple-primary);
+  border-color: var(--sys-color-primary);
   border-width: 0 1px;
   border-style: solid;
   pointer-events: none;

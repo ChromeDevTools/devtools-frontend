@@ -1,0 +1,42 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+name: test_wasm_simd
+source_file: //extensions/cxx_debugging/e2e/resources/test_wasm_simd.c
+flags: [
+  [-g, -msimd128, -fdebug-compilation-dir=., -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK],
+  [-g, -msimd128, -fdebug-compilation-dir=., -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK, -gsplit-dwarf],
+  [-g, -msimd128, -fdebug-compilation-dir=., -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK, -gdwarf-5],
+  [-g, -msimd128, -fdebug-compilation-dir=., -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK, -gdwarf-5, -gsplit-dwarf, -gpubnames]]
+script:
+  - reason: setup
+    actions:
+    - file: test_wasm_simd.c
+      action: set_breakpoint
+      breakpoint: 10
+    - file: test_wasm_simd.c
+      action: set_breakpoint
+      breakpoint: 12
+  - reason: breakpoint
+    file: test_wasm_simd.c
+    line: 10
+    variables:
+      - name: Local.a
+        value: 'v128_t'
+      - name: Local.a.0
+        value: '1'
+      - name: Local.b
+        value: 'v128_t'
+      - name: Local.b.0
+        value: '2'
+  - reason: breakpoint
+    file: test_wasm_simd.c
+    line: 12
+    variables:
+      - name: Local.c
+        value: 'v128_t'
+      - name: Local.c.0
+        value: '3'
+      - name: Local.r
+        value: '3'

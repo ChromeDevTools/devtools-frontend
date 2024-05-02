@@ -27,36 +27,36 @@
  */
 
 .webkit-css-property {
-  color: var(--webkit-css-property-color, var(--color-syntax-1)); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--webkit-css-property-color, var(--sys-color-token-property-special)); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .webkit-html-comment {
-  color: var(--color-token-comment);
+  color: var(--sys-color-token-comment);
 }
 
 .webkit-html-tag {
-  color: var(--color-token-tag);
+  color: var(--sys-color-token-tag);
 }
 
 .webkit-html-tag-name,
 .webkit-html-close-tag-name {
   /* Keep this in sync with view-source.css (.webkit-html-tag) */
-  color: var(--color-token-tag);
+  color: var(--sys-color-token-tag);
 }
 
 .webkit-html-pseudo-element {
   /* This one is non-standard. */
-  color: var(--color-token-pseudo-element);
+  color: var(--sys-color-token-pseudo-element);
 }
 
 .webkit-html-js-node,
 .webkit-html-css-node {
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   white-space: pre-wrap;
 }
 
 .webkit-html-text-node {
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   unicode-bidi: -webkit-isolate;
 }
 
@@ -69,61 +69,63 @@
 
 .webkit-html-doctype {
   /* Keep this in sync with view-source.css (.webkit-html-doctype) */
-  color: rgb(192 192 192); /* stylelint-disable-line plugin/use_theme_colors */
+  color: var(--text-secondary);
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .webkit-html-attribute-name {
   /* Keep this in sync with view-source.css (.webkit-html-attribute-name) */
-  color: var(--color-token-attribute);
+  color: var(--sys-color-token-attribute);
   unicode-bidi: -webkit-isolate;
 }
 
 .webkit-html-attribute-value {
   /* Keep this in sync with view-source.css (.webkit-html-attribute-value) */
-  color: var(--color-token-attribute-value);
+  color: var(--sys-color-token-attribute-value);
   unicode-bidi: -webkit-isolate;
   word-break: break-all;
 }
 
 .devtools-link {
-  color: var(--color-link);
+  color: var(--text-link);
   text-decoration: underline;
   outline-offset: 2px;
-}
 
-.elements-disclosure .devtools-link {
-  color: var(--color-link);
-}
-
-.devtools-link [is="ui-icon"] {
-  vertical-align: middle;
-}
-
-.devtools-link [is="ui-icon"].icon-mask {
-  background-color: var(--color-link);
-}
-
-:focus .selected .devtools-link [is="ui-icon"].icon-mask {
-  background-color: var(--legacy-item-selection-bg-color);
-}
-
-.devtools-link:focus-visible {
-  outline-width: unset;
-}
-
-.devtools-link:not(.devtools-link-prevent-click) {
-  cursor: pointer;
-}
-
-@media (forced-colors: active) {
-  .devtools-link:not(.devtools-link-prevent-click) {
-    forced-color-adjust: none;
-    color: linktext;
+  .elements-disclosure & {
+    color: var(--text-link);
   }
 
-  .devtools-link:focus-visible {
-    background: Highlight;
-    color: HighlightText;
+  devtools-icon {
+    vertical-align: baseline;
+    color: var(--sys-color-primary);
+  }
+
+  :focus .selected & devtools-icon {
+    color: var(--sys-color-tonal-container);
+  }
+
+  &:focus-visible {
+    outline-width: unset;
+  }
+
+  &.invalid-link {
+    color: var(--text-disabled);
+    text-decoration: none;
+  }
+
+  &:not(.devtools-link-prevent-click, .invalid-link) {
+    cursor: pointer;
+  }
+
+  @media (forced-colors: active) {
+    &:not(.devtools-link-prevent-click) {
+      forced-color-adjust: none;
+      color: linktext;
+    }
+
+    &:focus-visible {
+      background: Highlight;
+      color: HighlightText;
+    }
   }
 }

@@ -225,6 +225,8 @@ export function postProcess(dryRun = false) {
 // Generated from ${
           path.relative(path.join(fileURLToPath(import.meta.url), '..', '..'), fileURLToPath(import.meta.url))}
 
+// clang-format off
+
 ${output}
 `);
 }

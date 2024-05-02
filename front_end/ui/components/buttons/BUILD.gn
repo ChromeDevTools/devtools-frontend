@@ -5,6 +5,7 @@
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
@@ -16,6 +17,7 @@ devtools_module("button") {
 
   deps = [
     "../../../ui/lit-html:bundle",
+    "../../../ui/visual_logging:bundle",
     "../helpers:bundle",
     "../icon_button:bundle",
   ]
@@ -30,4 +32,16 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility = default_components_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "Button.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../testing",
+    "../render_coordinator:bundle",
+  ]
 }

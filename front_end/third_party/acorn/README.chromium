@@ -1,14 +1,15 @@
 Name: Acorn, a tiny, fast JavaScript parser written in JavaScript.
 Short Name: acorn
 URL: https://github.com/acornjs/acorn
-Version: 8.6.0
+Version: 8.10.0
 License: MIT
 License File: package/LICENSE
 Security Critical: no
+Shipped: yes
 
 Description:
 A tiny, fast JavaScript parser written in JavaScript.
 
 ```bash
-wget -qO- https://registry.npmjs.org/acorn/-/acorn-8.6.0.tgz | tar xzf -
+wget -qO- https://registry.npmjs.org/acorn/-/acorn-8.10.0.tgz | tar xzf -
 ```

@@ -6,6 +6,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+
 import {AffectedResourcesView} from './AffectedResourcesView.js';
 
 const UIStrings = {
@@ -44,6 +46,7 @@ export class AffectedSourcesView extends AffectedResourcesView {
     // TODO(crbug.com/1108503): Add some mechanism to be able to add telemetry to this element.
     const anchorElement =
         Components.Linkifier.Linkifier.linkifyURL(url as Platform.DevToolsPath.UrlString, linkifierURLOptions);
+    anchorElement.setAttribute('jslog', `${VisualLogging.link('source-location').track({click: true})}`);
     cellElement.appendChild(anchorElement);
     const rowElement = document.createElement('tr');
     rowElement.classList.add('affected-resource-source');

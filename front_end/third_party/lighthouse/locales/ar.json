@@ -1,6 +1,6 @@
 {
   "core/audits/accessibility/accesskeys.js | description": {
-    "message": "تتيح مفاتيح الوصول للمستخدمين التركيز بسرعة على جزء من الصفحة. للانتقال إلى الموضع الصحيح من الصفحة، يجب أن يكون كل مفتاح وصول فريدًا. [مزيد من المعلومات حول مفاتيح الوصول](https://dequeuniversity.com/rules/axe/4.7/accesskeys)"
+    "message": "تتيح مفاتيح الوصول للمستخدمين التركيز بسرعة على جزء من الصفحة. للانتقال إلى الموضع الصحيح من الصفحة، يجب أن يكون كل مفتاح وصول فريدًا. [مزيد من المعلومات حول مفاتيح الوصول](https://dequeuniversity.com/rules/axe/4.8/accesskeys)"
   },
   "core/audits/accessibility/accesskeys.js | failureTitle": {
     "message": "قيم `[accesskey]` هي غير فريدة"
@@ -9,7 +9,7 @@
     "message": "قيم `[accesskey]` فريدة"
   },
   "core/audits/accessibility/aria-allowed-attr.js | description": {
-    "message": "يوفّر كل `role` في ARIA مجموعة فرعية محدَّدة من سمات `aria-*`. يؤدي عدم تطابق هذه الأدوار إلى إلغاء سمات `aria-*`. تعرَّف على [كيفية مطابقة سمات ARIA مع أدوارها](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-attr)."
+    "message": "يوفّر كل `role` في ARIA مجموعة فرعية محدَّدة من سمات `aria-*`. يؤدي عدم تطابق هذه الأدوار إلى إلغاء سمات `aria-*`. تعرَّف على [كيفية مطابقة سمات ARIA مع أدوارها](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-attr)."
   },
   "core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
     "message": "سمات `[aria-*]` لا تتطابق مع أدوارها"
@@ -17,8 +17,17 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "سمات `[aria-*]` هي مطابقة لأدوارها"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "يتيح `role` ARIA للتكنولوجيا المساعِدة معرفة دور كل عنصر على صفحة الويب. إذا كانت قيَم `role` مكتوبة بشكل خاطئ أو كانت قيَم `role` ARIA غير موجودة أو كانت الأدوار مجرّدة، لن يعرف مستخدمو التكنولوجيا المساعِدة الغرض من العنصر. [مزيد من المعلومات حول أدوار ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)"
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "القيَم التي تم تخصيصها للدور `role=\"\"` ليست أدوار ARIA صالحة"
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "تمثِّل القيَم التي تم تخصيصها للدور `role=\"\"` أدوار ARIA صالحة"
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
-    "message": "عند عدم ظهور اسم أحد العناصر على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر باستخدام اسم عام، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. تعرَّف على [كيفية تسهيل استخدام عناصر الأوامر](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
+    "message": "عند عدم ظهور اسم أحد العناصر على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر باستخدام اسم عام، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. تعرَّف على [كيفية تسهيل استخدام عناصر الأوامر](https://dequeuniversity.com/rules/axe/4.8/aria-command-name)."
   },
   "core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "لا تتوفّر لعناصر `button` و`link` و`menuitem` أسماء يمكن الوصول إليها"
@@ -26,8 +35,17 @@
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "تتوفّر لعناصر `button` و`link` و`menuitem` أسماء يمكن الوصول إليها"
   },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "عند استخدام عناصر مربّع الحوار ARIA (dialog‏ ARIA) بدون أسماء ظاهرة على واجهة المستخدم، لن يتمكّن مستخدمو برامج قراءة الشاشة من التعرّف على الغرض من هذه العناصر. [التعرّف على كيفية إظهار عناصر مربّع الحوار ARIA (dialog‏ ARIA) على واجهة المستخدم بشكل أوضح](https://dequeuniversity.com/rules/axe/4.8/aria-dialog-name)"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "العناصر التي تتضمّن `role=\"dialog\"` أو `role=\"alertdialog\"` لا تحمل أسماء ظاهرة على واجهة المستخدم"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "العناصر التي تتضمّن `role=\"dialog\"` أو `role=\"alertdialog\"` تحمل أسماء ظاهرة على واجهة المستخدم"
+  },
   "core/audits/accessibility/aria-hidden-body.js | description": {
-    "message": "لا تعمل التكنولوجيا المساعِدة، مثل برامج قراءة الشاشة، بشكل متسق عند ضبط `aria-hidden=\"true\"` في المستند `<body>`. تعرّف على [مدى تأثير السمة `aria-hidden` في نص المستند](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
+    "message": "لا تعمل التكنولوجيا المساعِدة، مثل برامج قراءة الشاشة، بشكل متسق عند ضبط `aria-hidden=\"true\"` في المستند `<body>`. تعرّف على [مدى تأثير السمة `aria-hidden` في نص المستند](https://dequeuniversity.com/rules/axe/4.8/aria-hidden-body)."
   },
   "core/audits/accessibility/aria-hidden-body.js | failureTitle": {
     "message": "`[aria-hidden=\"true\"]` وارد في المستند `<body>`"
@@ -36,7 +54,7 @@
     "message": "`[aria-hidden=\"true\"]` غير وارد في المستند `<body>`"
   },
   "core/audits/accessibility/aria-hidden-focus.js | description": {
-    "message": "العناصر التابعة التي يمكن التركيز عليها ضِمن عنصر `[aria-hidden=\"true\"]` تمنع إتاحة العناصر التفاعلية لمستخدمي التكنولوجيا المساعِدة، مثل برامج قراءة الشاشة. تعرَّف على [مدى تأثير `aria-hidden` في العناصر التي يمكن التركيز عليها](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-focus)."
+    "message": "العناصر التابعة التي يمكن التركيز عليها ضِمن عنصر `[aria-hidden=\"true\"]` تمنع إتاحة العناصر التفاعلية لمستخدمي التكنولوجيا المساعِدة، مثل برامج قراءة الشاشة. تعرَّف على [مدى تأثير `aria-hidden` في العناصر التي يمكن التركيز عليها](https://dequeuniversity.com/rules/axe/4.8/aria-hidden-focus)."
   },
   "core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
     "message": "تحتوي عناصر `[aria-hidden=\"true\"]` على عناصر منحدرة قابلة للتركيز"
@@ -45,7 +63,7 @@
     "message": "لا تحتوي عناصر `[aria-hidden=\"true\"]` على عناصر منحدرة قابلة للتركيز"
   },
   "core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "عند عدم ظهور اسم أحد حقول الإدخال على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر باستخدام اسم عام، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات حول تصنيفات حقول الإدخال](https://dequeuniversity.com/rules/axe/4.7/aria-input-field-name)"
+    "message": "عند عدم ظهور اسم أحد حقول الإدخال على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر باستخدام اسم عام، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات حول تصنيفات حقول الإدخال](https://dequeuniversity.com/rules/axe/4.8/aria-input-field-name)"
   },
   "core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "لا تحتوي حقول إدخال ARIA على أسماء يمكن الوصول إليها"
@@ -54,7 +72,7 @@
     "message": "تحتوي حقول إدخال ARIA على أسماء يمكن الوصول إليها"
   },
   "core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "عند عدم ظهور اسم أحد عناصر \"مقياس\" (meter) على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر بصفة عامة، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [تعرَّف على كيفية تسمية عناصر `meter`](https://dequeuniversity.com/rules/axe/4.7/aria-meter-name)."
+    "message": "عند عدم ظهور اسم أحد عناصر \"مقياس\" (meter) على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر بصفة عامة، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [تعرَّف على كيفية تسمية عناصر `meter`](https://dequeuniversity.com/rules/axe/4.8/aria-meter-name)."
   },
   "core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "لا تتوفّر لعناصر ARIA `meter` أسماء يمكن الوصول إليها"
@@ -63,7 +81,7 @@
     "message": "تتوفّر لعناصر ARIA `meter` أسماء يمكن الوصول إليها"
   },
   "core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "عندما لا يكون اسم أحد عناصر `progressbar` ظاهرًا على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر باستخدام اسم عام، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. تعرَّف على [كيفية تصنيف عناصر `progressbar`](https://dequeuniversity.com/rules/axe/4.7/aria-progressbar-name)."
+    "message": "عندما لا يكون اسم أحد عناصر `progressbar` ظاهرًا على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر باستخدام اسم عام، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. تعرَّف على [كيفية تصنيف عناصر `progressbar`](https://dequeuniversity.com/rules/axe/4.8/aria-progressbar-name)."
   },
   "core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "لا تتوفّر لعناصر ARIA `progressbar` أسماء يمكن الوصول إليها"
@@ -72,7 +90,7 @@
     "message": "تتوفّر لعناصر ARIA `progressbar` أسماء يمكن الوصول إليها"
   },
   "core/audits/accessibility/aria-required-attr.js | description": {
-    "message": "تتطلّب بعض أدوار ARIA تزويد برامج قراءة الشاشة بسمات تصف حالة العنصر. [مزيد من المعلومات حول الأدوار والسمات المطلوبة](https://dequeuniversity.com/rules/axe/4.7/aria-required-attr)"
+    "message": "تتطلّب بعض أدوار ARIA تزويد برامج قراءة الشاشة بسمات تصف حالة العنصر. [مزيد من المعلومات حول الأدوار والسمات المطلوبة](https://dequeuniversity.com/rules/axe/4.8/aria-required-attr)"
   },
   "core/audits/accessibility/aria-required-attr.js | failureTitle": {
     "message": "`[role]` لا تحتوي على جميع سمات`[aria-*]` المطلوبة"
@@ -81,7 +99,7 @@
     "message": "`[role]` تحتوي على جميع سمات `[aria-*]` المطلوبة"
   },
   "core/audits/accessibility/aria-required-children.js | description": {
-    "message": "يجب أن تحتوي بعض أدوار ARIA الرئيسية على أدوار ثانوية محدَّدة لأداء وظائف إمكانية الوصول المقصودة. [مزيد من المعلومات حول الأدوار والعناصر الثانوية المطلوبة](https://dequeuniversity.com/rules/axe/4.7/aria-required-children)"
+    "message": "يجب أن تحتوي بعض أدوار ARIA الرئيسية على أدوار ثانوية محدَّدة لأداء وظائف إمكانية الوصول المقصودة. [مزيد من المعلومات حول الأدوار والعناصر الثانوية المطلوبة](https://dequeuniversity.com/rules/axe/4.8/aria-required-children)"
   },
   "core/audits/accessibility/aria-required-children.js | failureTitle": {
     "message": "إنّ العناصر التي تتضمّن ARIA `[role]` والتي تتطلب عناصر ثانوية للاحتواء على عنصر `[role]` محدّد لا تتضمّن بعض هذه العناصر الثانوية المطلوبة أو جميعها."
@@ -90,7 +108,7 @@
     "message": "إنّ العناصر التي تتضمن ARIA `[role]` والتي تتطلب عناصر ثانوية للاحتواء على عنصر `[role]` محدّد تشتمل على جميع العناصر الثانوية المطلوبة."
   },
   "core/audits/accessibility/aria-required-parent.js | description": {
-    "message": "يجب إدراج بعض أدوار ARIA الثانوية ضِمن أدوار رئيسية محدَّدة لتنفيذ وظائف إمكانية الوصول المقصودة بشكل صحيح. [مزيد من المعلومات حول أدوار ARIA والعنصر الرئيسي المطلوب](https://dequeuniversity.com/rules/axe/4.7/aria-required-parent)"
+    "message": "يجب إدراج بعض أدوار ARIA الثانوية ضِمن أدوار رئيسية محدَّدة لتنفيذ وظائف إمكانية الوصول المقصودة بشكل صحيح. [مزيد من المعلومات حول أدوار ARIA والعنصر الرئيسي المطلوب](https://dequeuniversity.com/rules/axe/4.8/aria-required-parent)"
   },
   "core/audits/accessibility/aria-required-parent.js | failureTitle": {
     "message": "`[role]` غير مضمّنة في العنصر الرئيسي المطلوب"
@@ -99,7 +117,7 @@
     "message": "`[role]` مضمّنة في العنصر الرئيسي المطلوب"
   },
   "core/audits/accessibility/aria-roles.js | description": {
-    "message": "يجب أن تحتوي أدوار ARIA على قيم صالحة لتنفيذ وظائف إمكانية الوصول المقصودة. [مزيد من المعلومات حول أدوار ARIA الصالحة](https://dequeuniversity.com/rules/axe/4.7/aria-roles)"
+    "message": "يجب أن تحتوي أدوار ARIA على قيم صالحة لتنفيذ وظائف إمكانية الوصول المقصودة. [مزيد من المعلومات حول أدوار ARIA الصالحة](https://dequeuniversity.com/rules/axe/4.8/aria-roles)"
   },
   "core/audits/accessibility/aria-roles.js | failureTitle": {
     "message": "قيم `[role]` هي غير صالحة"
@@ -107,8 +125,17 @@
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "قيم `[role]` هي صالحة"
   },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "عند إضافة `role=text` حول عُقدة نصيّة مقسَّمة بالترميز، سيتعامل برنامج VoiceOver معها كعبارة واحدة، ولكن لن تتم الإشارة إلى العناصر التابعة التي يمكن التركيز عليها في العنصر. [مزيد من المعلومات حول السمة `role=text`](https://dequeuniversity.com/rules/axe/4.8/aria-text)"
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "العناصر التي تتضمّن السمة `role=text` تحتوي على عناصر تابعة يمكن التركيز عليها"
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "العناصر التي تتضمّن السمة `role=text` لا تحتوي على عناصر تابعة يمكن التركيز عليها"
+  },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "عند عدم ظهور اسم أحد حقول التبديل على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر باستخدام اسم عام، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات حول حقول التبديل](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)"
+    "message": "عند عدم ظهور اسم أحد حقول التبديل على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر باستخدام اسم عام، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات حول حقول التبديل](https://dequeuniversity.com/rules/axe/4.8/aria-toggle-field-name)"
   },
   "core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "لا تحتوي حقول تبديل ARIA على أسماء يمكن الوصول إليها"
@@ -117,7 +144,7 @@
     "message": "تحتوي جميع حقول تبديل ARIA على أسماء يمكن الوصول إليها"
   },
   "core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "عند عدم ظهور اسم أحد عناصر \"تلميح\" (tooltip) على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر بصفة عامة، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [تعرَّف على كيفية تسمية عناصر `tooltip`](https://dequeuniversity.com/rules/axe/4.7/aria-tooltip-name)."
+    "message": "عند عدم ظهور اسم أحد عناصر \"تلميح\" (tooltip) على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر بصفة عامة، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [تعرَّف على كيفية تسمية عناصر `tooltip`](https://dequeuniversity.com/rules/axe/4.8/aria-tooltip-name)."
   },
   "core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "لا تتوفّر لعناصر ARIA `tooltip` أسماء يمكن الوصول إليها"
@@ -126,7 +153,7 @@
     "message": "تتوفّر لعناصر ARIA `tooltip` أسماء يمكن الوصول إليها"
   },
   "core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "عندما لا يكون اسم أحد عناصر `treeitem` ظاهرًا على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر باستخدام اسم عام، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات حول تصنيف عناصر `treeitem`](https://dequeuniversity.com/rules/axe/4.7/aria-treeitem-name)"
+    "message": "عندما لا يكون اسم أحد عناصر `treeitem` ظاهرًا على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر باستخدام اسم عام، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات حول تصنيف عناصر `treeitem`](https://dequeuniversity.com/rules/axe/4.8/aria-treeitem-name)"
   },
   "core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "لا تتوفّر لعناصر ARIA `treeitem` أسماء يمكن الوصول إليها"
@@ -135,7 +162,7 @@
     "message": "تتوفّر لعناصر ARIA `treeitem` أسماء يمكن الوصول إليها"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | description": {
-    "message": "لا يمكن للتكنولوجيا المساعِدة، مثل برامج قراءة الشاشة، تفسير سمات ARIA باستخدام قيم غير صالحة. [مزيد من المعلومات حول القيم الصالحة لسمات ARIA](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr-value)"
+    "message": "لا يمكن للتكنولوجيا المساعِدة، مثل برامج قراءة الشاشة، تفسير سمات ARIA باستخدام قيم غير صالحة. [مزيد من المعلومات حول القيم الصالحة لسمات ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-valid-attr-value)"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
     "message": "سمات `[aria-*]` لا تحتوي على قيم صحيحة"
@@ -144,7 +171,7 @@
     "message": "سمات `[aria-*]` تحتوي على قيم صالحة"
   },
   "core/audits/accessibility/aria-valid-attr.js | description": {
-    "message": "لا يمكن للتكنولوجيا المساعِدة، مثل برامج قراءة الشاشة، تفسير سمات ARIA بأسماء غير صالحة. [مزيد من المعلومات حول سمات ARIA الصالحة](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr)"
+    "message": "لا يمكن للتكنولوجيا المساعِدة، مثل برامج قراءة الشاشة، تفسير سمات ARIA بأسماء غير صالحة. [مزيد من المعلومات حول سمات ARIA الصالحة](https://dequeuniversity.com/rules/axe/4.8/aria-valid-attr)"
   },
   "core/audits/accessibility/aria-valid-attr.js | failureTitle": {
     "message": "سمات `[aria-*]` هي غير صالحة أو بها أخطاء إملائية"
@@ -156,7 +183,7 @@
     "message": "العناصر التي رسبت في عملية التدقيق"
   },
   "core/audits/accessibility/button-name.js | description": {
-    "message": "عند عدم ظهور اسم أحد الأزرار على واجهة المستخدم، تشير برامج قراءة الشاشة إليه باسم \"زر\"، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. تعرَّف على [كيفية تسهيل استخدام الأزرار](https://dequeuniversity.com/rules/axe/4.7/button-name)."
+    "message": "عند عدم ظهور اسم أحد الأزرار على واجهة المستخدم، تشير برامج قراءة الشاشة إليه باسم \"زر\"، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. تعرَّف على [كيفية تسهيل استخدام الأزرار](https://dequeuniversity.com/rules/axe/4.8/button-name)."
   },
   "core/audits/accessibility/button-name.js | failureTitle": {
     "message": "عدم احتواء الأزرار على اسم يمكن الوصول إليه"
@@ -165,7 +192,7 @@
     "message": "احتواء الأزرار على اسم الوصول"
   },
   "core/audits/accessibility/bypass.js | description": {
-    "message": "تؤدي إضافة طرق لاستبعاد المحتوى المكرَّر إلى السماح لمستخدمي لوحة المفاتيح بالتنقّل في الصفحة بكفاءة أكبر. [مزيد من المعلومات حول روابط استبعاد المحتوى المكرَّر](https://dequeuniversity.com/rules/axe/4.7/bypass)"
+    "message": "تؤدي إضافة طرق لاستبعاد المحتوى المكرَّر إلى السماح لمستخدمي لوحة المفاتيح بالتنقّل في الصفحة بكفاءة أكبر. [مزيد من المعلومات حول روابط استبعاد المحتوى المكرَّر](https://dequeuniversity.com/rules/axe/4.8/bypass)"
   },
   "core/audits/accessibility/bypass.js | failureTitle": {
     "message": "عدم احتواء الصفحة على عنوان أو رابط تخطٍ أو منطقة معالم"
@@ -174,7 +201,7 @@
     "message": "احتواء الصفحة على عنوان أو رابط تخطٍ أو منطقة معالم"
   },
   "core/audits/accessibility/color-contrast.js | description": {
-    "message": "إنّ عملية قراءة النص المنخفض التباين تُعد صعبة أو مستحيلة بالنسبة إلى العديد من المستخدمين. تعرَّف على [كيفية توفير نص بألوان متباينة بشكلٍ كافٍ](https://dequeuniversity.com/rules/axe/4.7/color-contrast)."
+    "message": "إنّ عملية قراءة النص المنخفض التباين تُعد صعبة أو مستحيلة بالنسبة إلى العديد من المستخدمين. تعرَّف على [كيفية توفير نص بألوان متباينة بشكلٍ كافٍ](https://dequeuniversity.com/rules/axe/4.8/color-contrast)."
   },
   "core/audits/accessibility/color-contrast.js | failureTitle": {
     "message": "عدم احتواء الخلفية وألوان الخلفية على نسبة تباين كافية"
@@ -183,7 +210,7 @@
     "message": "تمييز الخلفية والألوان الخلفية بنسبة تباين كافية"
   },
   "core/audits/accessibility/definition-list.js | description": {
-    "message": "عندما لا يتم ترميز قوائم التعريفات بشكل صحيح، قد تقدِّم برامج قراءة الشاشة نتائج غير واضحة أو غير دقيقة. تعرَّف على [كيفية تنظيم قوائم التعريفات بشكل صحيح](https://dequeuniversity.com/rules/axe/4.7/definition-list)."
+    "message": "عندما لا يتم ترميز قوائم التعريفات بشكل صحيح، قد تقدِّم برامج قراءة الشاشة نتائج غير واضحة أو غير دقيقة. تعرَّف على [كيفية تنظيم قوائم التعريفات بشكل صحيح](https://dequeuniversity.com/rules/axe/4.8/definition-list)."
   },
   "core/audits/accessibility/definition-list.js | failureTitle": {
     "message": "`<dl>` لا تحتوي على مجموعات `<dt>` و`<dd>` المرتبة بشكلٍ صحيح فقط، أو العناصر `<script>` أو`<template>` أو`<div>`."
@@ -192,7 +219,7 @@
     "message": "`<dl>` تحتوي على مجموعات `<dt>` و`<dd>` المرتبة بشكلٍ صحيح فقط، أو العناصر `<script>` أو`<template>` أو `<div>`."
   },
   "core/audits/accessibility/dlitem.js | description": {
-    "message": "يجب إدراج عناصر قائمة التعريفات (`<dt>` و`<dd>`) في عنصر `<dl>` رئيسي، وذلك لضمان إمكانية قراءة تلك العناصر بشكل صحيح من خلال برامج قراءة الشاشة. تعرَّف على [كيفية تنظيم قوائم التعريفات بشكل صحيح](https://dequeuniversity.com/rules/axe/4.7/dlitem)."
+    "message": "يجب إدراج عناصر قائمة التعريفات (`<dt>` و`<dd>`) في عنصر `<dl>` رئيسي، وذلك لضمان إمكانية قراءة تلك العناصر بشكل صحيح من خلال برامج قراءة الشاشة. تعرَّف على [كيفية تنظيم قوائم التعريفات بشكل صحيح](https://dequeuniversity.com/rules/axe/4.8/dlitem)."
   },
   "core/audits/accessibility/dlitem.js | failureTitle": {
     "message": "عناصر قائمة التعريفات غير مضّمنة في عناصر `<dl>`"
@@ -201,7 +228,7 @@
     "message": "عناصر قائمة التعريفات مضمّنة في عناصر `<dl>`"
   },
   "core/audits/accessibility/document-title.js | description": {
-    "message": "يوفّر العنوان لمستخدمي قارئ الشاشة نظرة عامة حول الصفحة، ويعتمد مستخدمو محرك البحث على هذا بشكل كبير لتحديد ما إذا كانت الصفحة ذات صلة ببحثهم أو لا. [مزيد من المعلومات حول عناوين المستندات](https://dequeuniversity.com/rules/axe/4.7/document-title)"
+    "message": "يوفّر العنوان لمستخدمي قارئ الشاشة نظرة عامة حول الصفحة، ويعتمد مستخدمو محرك البحث على هذا بشكل كبير لتحديد ما إذا كانت الصفحة ذات صلة ببحثهم أو لا. [مزيد من المعلومات حول عناوين المستندات](https://dequeuniversity.com/rules/axe/4.8/document-title)"
   },
   "core/audits/accessibility/document-title.js | failureTitle": {
     "message": "المستند لا يحتوي على عنصر `<title>`"
@@ -210,7 +237,7 @@
     "message": "المستند يحتوي على عنصر `<title>`"
   },
   "core/audits/accessibility/duplicate-id-active.js | description": {
-    "message": "يجب أن يتوفر لكل العناصر التي يمكن التركيز عليها `id` فريدًا لضمان إمكانية وصول التكنولوجيا المساعِدة إليها. تعرَّف على [كيفية حلّ مشاكل `id` المكرّرة](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-active)."
+    "message": "يجب أن يتوفر لكل العناصر التي يمكن التركيز عليها `id` فريدًا لضمان إمكانية وصول التكنولوجيا المساعِدة إليها. تعرَّف على [كيفية حلّ مشاكل `id` المكرّرة](https://dequeuniversity.com/rules/axe/4.8/duplicate-id-active)."
   },
   "core/audits/accessibility/duplicate-id-active.js | failureTitle": {
     "message": "سمات `[id]` المتوفّرة في العناصر النشطة والقابلة للتركيز غير فريدة"
@@ -219,7 +246,7 @@
     "message": "سمات `[id]` المتوفّرة في العناصر النشطة والقابلة للتركيز فريدة"
   },
   "core/audits/accessibility/duplicate-id-aria.js | description": {
-    "message": "يجب أن تكون قيمة رقم تعريف ARIA فريدة حتى لا تتجاهل التكنولوجيا المساعِدة الأمثلة الأخرى. تعرَّف على [كيفية حلّ مشكلة أرقام تعريف ARIA المكرَّرة](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-aria)."
+    "message": "يجب أن تكون قيمة رقم تعريف ARIA فريدة حتى لا تتجاهل التكنولوجيا المساعِدة الأمثلة الأخرى. تعرَّف على [كيفية حلّ مشكلة أرقام تعريف ARIA المكرَّرة](https://dequeuniversity.com/rules/axe/4.8/duplicate-id-aria)."
   },
   "core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
     "message": "أرقام تعريف ARIA غير فريدة"
@@ -227,8 +254,17 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "أرقام تعريف ARIA فريدة"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "في حال عدم اشتمال العنوان على محتوى أو نص ظاهر على واجهة المستخدم، لن يتمكّن مستخدمو برامج قراءة الشاشة من الوصول إلى المعلومات في بنية الصفحة. [مزيد من المعلومات حول العناوين](https://dequeuniversity.com/rules/axe/4.8/empty-heading)"
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "عناصر العنوان (heading) لا تتضمّن محتوى"
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "جميع عناصر العنوان (heading) تتضمّن محتوى"
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
-    "message": "إنّ التكنولوجيا المساعِدة، مثل برامج قراءة الشاشة التي تستخدم إمّا التصنيف الأول أو الأخير أو كل التصنيفات، قد تشير عن طريق الخطأ إلى الحقول النموذجية المتعددة التصنيف. تعرَّف على [كيفية استخدام تصنيفات النماذج](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
+    "message": "إنّ التكنولوجيا المساعِدة، مثل برامج قراءة الشاشة التي تستخدم إمّا التصنيف الأول أو الأخير أو كل التصنيفات، قد تشير عن طريق الخطأ إلى الحقول النموذجية المتعددة التصنيف. تعرَّف على [كيفية استخدام تصنيفات النماذج](https://dequeuniversity.com/rules/axe/4.8/form-field-multiple-labels)."
   },
   "core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
     "message": "تحتوي الحقول النموذجية على تصنيفات متعددة"
@@ -237,7 +273,7 @@
     "message": "لا تحتوي الحقول النموذجية على تصنيفات متعددة"
   },
   "core/audits/accessibility/frame-title.js | description": {
-    "message": "يعتمد مستخدمو برامج قراءة الشاشة على عناوين الإطارات لوصف محتوى الإطارات. [مزيد من المعلومات حول عناوين الإطارات](https://dequeuniversity.com/rules/axe/4.7/frame-title)"
+    "message": "يعتمد مستخدمو برامج قراءة الشاشة على عناوين الإطارات لوصف محتوى الإطارات. [مزيد من المعلومات حول عناوين الإطارات](https://dequeuniversity.com/rules/axe/4.8/frame-title)"
   },
   "core/audits/accessibility/frame-title.js | failureTitle": {
     "message": "عناصر `<frame>` أو `<iframe>` لا تحتوي على عنوان"
@@ -246,7 +282,7 @@
     "message": "عناصر `<frame>` أو `<iframe>` تحتوي على عنوان"
   },
   "core/audits/accessibility/heading-order.js | description": {
-    "message": "إنّ العناوين المرتّبة بطريقة مناسبة ولا تتخطّى المستويات تنقل البنية الدلالية للصفحة، ما يسهِّل تصفُّحها والتعرّف عليها عند استخدام التكنولوجيا المساعِدة. [مزيد من المعلومات حول ترتيب العناوين](https://dequeuniversity.com/rules/axe/4.7/heading-order)"
+    "message": "إنّ العناوين المرتّبة بطريقة مناسبة ولا تتخطّى المستويات تنقل البنية الدلالية للصفحة، ما يسهِّل تصفُّحها والتعرّف عليها عند استخدام التكنولوجيا المساعِدة. [مزيد من المعلومات حول ترتيب العناوين](https://dequeuniversity.com/rules/axe/4.8/heading-order)"
   },
   "core/audits/accessibility/heading-order.js | failureTitle": {
     "message": "العناصر المُعنوَنة غير مرتبة بشكل تنازلي متسلسل"
@@ -255,7 +291,7 @@
     "message": "تظهر العناصر المُعنوَنة بترتيب تنازلي متسلسل"
   },
   "core/audits/accessibility/html-has-lang.js | description": {
-    "message": "في حال لم تحدِّد الصفحة سمة `lang`، يفترض قارئ الشاشة أن تكون الصفحة باللغة التلقائية التي اختارها المستخدم عند إعداد قارئ الشاشة. في حال لم تكن الصفحة باللغة التلقائية، قد لا يشير قارئ الشاشة إلى نص الصفحة بشكل صحيح. [مزيد من المعلومات حول السمة `lang`](https://dequeuniversity.com/rules/axe/4.7/html-has-lang)"
+    "message": "في حال لم تحدِّد الصفحة سمة `lang`، يفترض قارئ الشاشة أن تكون الصفحة باللغة التلقائية التي اختارها المستخدم عند إعداد قارئ الشاشة. في حال لم تكن الصفحة باللغة التلقائية، قد لا يشير قارئ الشاشة إلى نص الصفحة بشكل صحيح. [مزيد من المعلومات حول السمة `lang`](https://dequeuniversity.com/rules/axe/4.8/html-has-lang)"
   },
   "core/audits/accessibility/html-has-lang.js | failureTitle": {
     "message": "العنصر `<html>` لا يحتوي على سمة `[lang]`"
@@ -264,7 +300,7 @@
     "message": "عنصر `<html>` يحتوي على سمة `[lang]`"
   },
   "core/audits/accessibility/html-lang-valid.js | description": {
-    "message": "يؤدي تحديد [لغة BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) صحيحة إلى مساعدة برامج قراءة الشاشة على الإشارة إلى النص بشكلٍ صحيح. تعرَّف على [كيفية استخدام السمة `lang`](https://dequeuniversity.com/rules/axe/4.7/html-lang-valid)."
+    "message": "يؤدي تحديد [لغة BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) صحيحة إلى مساعدة برامج قراءة الشاشة على الإشارة إلى النص بشكلٍ صحيح. تعرَّف على [كيفية استخدام السمة `lang`](https://dequeuniversity.com/rules/axe/4.8/html-lang-valid)."
   },
   "core/audits/accessibility/html-lang-valid.js | failureTitle": {
     "message": "العنصر `<html>` لا يحتوي على قيمة صالحة للسمة `[lang]`"
@@ -272,8 +308,26 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "عنصر `<html>` يحتوي على قيمة صحيحة لسمة `[lang]`"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "إذا لم تحدِّد صفحة الويب لغة متسقة، قد لا تتم قراءة نص الصفحة بشكل صحيح من خلال قارئ الشاشة. [مزيد من المعلومات حول السمة `lang`](https://dequeuniversity.com/rules/axe/4.8/html-xml-lang-mismatch)"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "لا يتضمّن العنصر `<html>` السمة `[xml:lang]` باللغة الأساسية نفسها المستخدَمة في السمة `[lang]`"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "يحتوي العنصر `<html>` على السمة `[xml:lang]` التي تستخدم اللغة الأساسية نفسها للسمة `[lang]`"
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "يجب أن تتضمّن الروابط ذات الوجهة نفسها الوصف نفسه لمساعدة المستخدمين في معرفة الغرض من الرابط وتحديد ما إذا كانوا سينتقلون إليه. [مزيد من المعلومات حول الروابط المتطابقة](https://dequeuniversity.com/rules/axe/4.8/identical-links-same-purpose)"
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "الروابط المتطابقة ليست لها الغرض نفسه"
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "الروابط المتطابقة لها الغرض نفسه"
+  },
   "core/audits/accessibility/image-alt.js | description": {
-    "message": "يجب أن تتضمن العناصر الإعلامية نصًا بديلاً وصفيًا وقصيرًا. يمكن تجاهل العناصر غير الضرورية من خلال استخدام سمة نص بديل فارغة. [مزيد من المعلومات حول السمة `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
+    "message": "يجب أن تتضمن العناصر الإعلامية نصًا بديلاً وصفيًا وقصيرًا. يمكن تجاهل العناصر غير الضرورية من خلال استخدام سمة نص بديل فارغة. [مزيد من المعلومات حول السمة `alt`](https://dequeuniversity.com/rules/axe/4.8/image-alt)"
   },
   "core/audits/accessibility/image-alt.js | failureTitle": {
     "message": "عناصر الصور لا تحتوي على سمات `[alt]`"
@@ -281,8 +335,26 @@
   "core/audits/accessibility/image-alt.js | title": {
     "message": "عناصر الصور تحتوي على سمات `[alt]`"
   },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "يجب أن تتضمن العناصر الإعلامية نصًا بديلاً وصفيًا وقصيرًا. إذا كان النص البديل مماثلاً تمامًا للنص المجاور للرابط أو الصورة، قد يؤدي ذلك إلى إرباك مستخدمي برامج قراءة الشاشة لأنّه في هذه الحالة ستتم قراءة النص مرّتين. [مزيد من المعلومات حول السمة `alt`](https://dequeuniversity.com/rules/axe/4.8/image-redundant-alt)"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "تتضمَّن عناصر الصور سمات `[alt]` التي تُعَد نصوصًا مكررة"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "لا تتضمَّن عناصر الصور سمات `[alt]` التي تُعَد نصوصًا مكررة"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "إنّ إضافة نص واضح يمكن الوصول إليه إلى أزرار الإدخال قد تساعد مستخدمي قارئ الشاشة على فهم الغرض من زر الإدخال. [مزيد من المعلومات حول أزرار الإدخال](https://dequeuniversity.com/rules/axe/4.8/input-button-name)"
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "لا تتضمَّن أزرار الإدخال نصًا واضحًا"
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "تحتوي أزرار الإدخال على نص واضح"
+  },
   "core/audits/accessibility/input-image-alt.js | description": {
-    "message": "عند استخدام صورة كزر `<input>`، يمكن أن يساعد توفير نص بديل مستخدمي قارئ الشاشة على فهم الغرض من الزر. [مزيد من المعلومات حول إدخال نص بديل للصورة](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)"
+    "message": "عند استخدام صورة كزر `<input>`، يمكن أن يساعد توفير نص بديل مستخدمي قارئ الشاشة على فهم الغرض من الزر. [مزيد من المعلومات حول إدخال نص بديل للصورة](https://dequeuniversity.com/rules/axe/4.8/input-image-alt)"
   },
   "core/audits/accessibility/input-image-alt.js | failureTitle": {
     "message": "عناصر `<input type=\"image\">` لا تحتوي على نص `[alt]`"
@@ -290,8 +362,17 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "عناصر `<input type=\"image\">` تحتوي على نص `[alt]`"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "قد تؤدي التصنيفات النصية المرئية التي لا تطابق أسماء العناصر الظاهرة على واجهة المستخدم إلى إرباك مستخدمي برامج قراءة الشاشة. [مزيد من المعلومات حول أسماء العناصر الظاهرة على واجهة المستخدم](https://dequeuniversity.com/rules/axe/4.8/label-content-name-mismatch)"
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "العناصر التي تحمل تصنيفات نصية مرئية لا تتضمّن أسماء عناصر مطابقة ظاهرة على واجهة المستخدم"
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "العناصر التي تحمل تصنيفات نصية مرئية تتضمَّن أسماء عناصر مطابقة ظاهرة على واجهة المستخدم"
+  },
   "core/audits/accessibility/label.js | description": {
-    "message": "تضمن التصنيفات الإشارة إلى عناصر التحكّم في النموذج بشكلٍ صحيح من خلال التكنولوجيا المساعِدة، مثل برامج قراءة الشاشة. [مزيد من المعلومات حول تصنيفات عناصر النموذج](https://dequeuniversity.com/rules/axe/4.7/label)"
+    "message": "تضمن التصنيفات الإشارة إلى عناصر التحكّم في النموذج بشكلٍ صحيح من خلال التكنولوجيا المساعِدة، مثل برامج قراءة الشاشة. [مزيد من المعلومات حول تصنيفات عناصر النموذج](https://dequeuniversity.com/rules/axe/4.8/label)"
   },
   "core/audits/accessibility/label.js | failureTitle": {
     "message": "عدم احتواء عناصر النموذج على تصنيفات مرتبطة"
@@ -299,8 +380,26 @@
   "core/audits/accessibility/label.js | title": {
     "message": "احتواء عناصر النموذج على التصنيفات المرتبطة"
   },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "عند إضافة مَعلم رئيسي واحد، يمكن لمستخدمي برامج قراءة الشاشة التنقّل في صفحة الويب بسهولة. [مزيد من المعلومات حول المعالم](https://dequeuniversity.com/rules/axe/4.8/landmark-one-main)"
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "المستند لا يتضمّن مَعلمًا رئيسيًا"
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "المستند يتضمّن مَعلمًا رئيسيًا"
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "تستحيل أو تصعب على كثير من المستخدمين قراءة النص المنخفض التباين. يمكنك استخدام نص رابط واضح لتحسين تجربة المستخدمين الذين يعانون من ضعف في النظر. [التعرّف على كيفية تمييز الروابط](https://dequeuniversity.com/rules/axe/4.8/link-in-text-block)"
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "الروابط يمكن تمييزها بالاعتماد على الألوان"
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "الروابط يمكن تمييزها بدون الاعتماد على الألوان"
+  },
   "core/audits/accessibility/link-name.js | description": {
-    "message": "إنّ نص الرابط، (والنص البديل للصور، عند استخدامه كرابط) الذي يكون مميّزًا وفريدًا وقابلاً للتركيز عليه، يحسِّن تجربة التنقّل لمستخدمي برامج قراءة الشاشة. تعرَّف على [كيفية إتاحة الوصول إلى الروابط](https://dequeuniversity.com/rules/axe/4.7/link-name)."
+    "message": "إنّ نص الرابط، (والنص البديل للصور، عند استخدامه كرابط) الذي يكون مميّزًا وفريدًا وقابلاً للتركيز عليه، يحسِّن تجربة التنقّل لمستخدمي برامج قراءة الشاشة. تعرَّف على [كيفية إتاحة الوصول إلى الروابط](https://dequeuniversity.com/rules/axe/4.8/link-name)."
   },
   "core/audits/accessibility/link-name.js | failureTitle": {
     "message": "عدم احتواء الروابط على اسم مميّز"
@@ -309,7 +408,7 @@
     "message": "احتواء الروابط على اسم مميز"
   },
   "core/audits/accessibility/list.js | description": {
-    "message": "تعتمد برامج قراءة الشاشة على طريقة محدَّدة للإشارة إلى القوائم. يؤدّي ضمان بنية القائمة المناسبة إلى المساعدة على الاستماع إلى قارئ الشاشة. [مزيد من المعلومات حول بنية القائمة المناسبة](https://dequeuniversity.com/rules/axe/4.7/list)"
+    "message": "تعتمد برامج قراءة الشاشة على طريقة محدَّدة للإشارة إلى القوائم. يؤدّي ضمان بنية القائمة المناسبة إلى المساعدة على الاستماع إلى قارئ الشاشة. [مزيد من المعلومات حول بنية القائمة المناسبة](https://dequeuniversity.com/rules/axe/4.8/list)"
   },
   "core/audits/accessibility/list.js | failureTitle": {
     "message": "القوائم لا تحتوي على عناصر `<li>` وعناصر دعم النص البرمجي (`<script>` و`<template>`) فقط."
@@ -318,7 +417,7 @@
     "message": "القوائم تحتوي على عناصر `<li>` وعناصر دعم النص البرمجي (`<script>` و`<template>`) فقط."
   },
   "core/audits/accessibility/listitem.js | description": {
-    "message": "تتطلّب برامج قراءة الشاشة عناصر قائمة (`<li>`) يجب إدراجها ضِمن العنصر الرئيسي `<ul>` أو `<ol>` أو `<menu>` لتتم الإشارة إليها بشكلٍ صحيح. [مزيد من المعلومات حول بنية القائمة المناسبة](https://dequeuniversity.com/rules/axe/4.7/listitem)"
+    "message": "تتطلّب برامج قراءة الشاشة عناصر قائمة (`<li>`) يجب إدراجها ضِمن العنصر الرئيسي `<ul>` أو `<ol>` أو `<menu>` لتتم الإشارة إليها بشكلٍ صحيح. [مزيد من المعلومات حول بنية القائمة المناسبة](https://dequeuniversity.com/rules/axe/4.8/listitem)"
   },
   "core/audits/accessibility/listitem.js | failureTitle": {
     "message": "عناصر القائمة (`<li>`) غير مدرَجة ضِمن العناصر الرئيسية `<ul>` أو `<ol>` أو `<menu>`."
@@ -327,7 +426,7 @@
     "message": "عناصر القائمة (`<li>`) مُدرَجة ضِمن العناصر الرئيسية `<ul>` أو `<ol>` أو `<menu>`"
   },
   "core/audits/accessibility/meta-refresh.js | description": {
-    "message": "لا يتوقع المستخدمون إعادة تحميل الصفحة تلقائيًا. وإذا تمت إعادة التحميل تلقائيًا، سيتحوّل تركيز المستخدمين إلى أعلى الصفحة. وقد ينشأ عن ذلك تجربة استخدام محبطة ومربكة. [مزيد من المعلومات حول العلامة الوصفية لإعادة التحميل](https://dequeuniversity.com/rules/axe/4.7/meta-refresh)"
+    "message": "لا يتوقع المستخدمون إعادة تحميل الصفحة تلقائيًا. وإذا تمت إعادة التحميل تلقائيًا، سيتحوّل تركيز المستخدمين إلى أعلى الصفحة. وقد ينشأ عن ذلك تجربة استخدام محبطة ومربكة. [مزيد من المعلومات حول العلامة الوصفية لإعادة التحميل](https://dequeuniversity.com/rules/axe/4.8/meta-refresh)"
   },
   "core/audits/accessibility/meta-refresh.js | failureTitle": {
     "message": "المستند يستخدم `<meta http-equiv=\"refresh\">`"
@@ -336,7 +435,7 @@
     "message": "المستند لا يستخدم `<meta http-equiv=\"refresh\">`"
   },
   "core/audits/accessibility/meta-viewport.js | description": {
-    "message": "يسبّب إيقاف ميزة التكبير أو التصغير مشكلة للمستخدمين الذين يعانون من ضعف في النظر ويعتمدون على ميزة تكبير الشاشة لرؤية محتوى صفحة الويب على نحوٍ أفضل. [مزيد من المعلومات حول العلامة الوصفية لإطار العرض](https://dequeuniversity.com/rules/axe/4.7/meta-viewport)"
+    "message": "يسبّب إيقاف ميزة التكبير أو التصغير مشكلة للمستخدمين الذين يعانون من ضعف في النظر ويعتمدون على ميزة تكبير الشاشة لرؤية محتوى صفحة الويب على نحوٍ أفضل. [مزيد من المعلومات حول العلامة الوصفية لإطار العرض](https://dequeuniversity.com/rules/axe/4.8/meta-viewport)"
   },
   "core/audits/accessibility/meta-viewport.js | failureTitle": {
     "message": "يتم استخدام `[user-scalable=\"no\"]` في العنصر `<meta name=\"viewport\">` أو السمة `[maximum-scale]` هي أقل من 5."
@@ -345,7 +444,7 @@
     "message": "`[user-scalable=\"no\"]` غير مستخدم في العنصر `<meta name=\"viewport\">` والسمة `[maximum-scale]` لا تقلّ عن 5."
   },
   "core/audits/accessibility/object-alt.js | description": {
-    "message": "لا يمكن لبرامج قراءة الشاشة ترجمة المحتوى غير النصي. وتؤدي إضافة نص بديل إلى عناصر `<object>` إلى مساعدة برامج قراءة الشاشة على إيضاح المعنى للمستخدمين. [مزيد من المعلومات حول النص البديل لعناصر `object`](https://dequeuniversity.com/rules/axe/4.7/object-alt)"
+    "message": "لا يمكن لبرامج قراءة الشاشة ترجمة المحتوى غير النصي. وتؤدي إضافة نص بديل إلى عناصر `<object>` إلى مساعدة برامج قراءة الشاشة على إيضاح المعنى للمستخدمين. [مزيد من المعلومات حول النص البديل لعناصر `object`](https://dequeuniversity.com/rules/axe/4.8/object-alt)"
   },
   "core/audits/accessibility/object-alt.js | failureTitle": {
     "message": "عناصر `<object>` لا تحتوي على نص بديل"
@@ -353,8 +452,26 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "عناصر `<object>` تحتوي على نص بديل"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "إذا لم تتم إضافة تصنيفات فعّالة إلى عناصر النموذج (form)، يمكن أن يؤدي ذلك إلى تقديم تجارب محبطة لمستخدمي برامج قراءة الشاشة. [مزيد من المعلومات حول عنصر `select`](https://dequeuniversity.com/rules/axe/4.8/select-name)"
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "عناصر الاختيار (select) لا تتضمّن عناصر تصنيف (label) مرتبطة"
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "عناصر الاختيار (select) تتضمّن عناصر تصنيف (label) مرتبطة"
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "يمكن أن يساعد تضمين رابط التخطّي المستخدمين في الانتقال إلى المحتوى الرئيسي لتوفير الوقت. [مزيد من المعلومات حول روابط التخطّي](https://dequeuniversity.com/rules/axe/4.8/skip-link)"
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "لا يمكن التركيز على روابط التخطّي"
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "يمكن التركيز على روابط التخطّي"
+  },
   "core/audits/accessibility/tabindex.js | description": {
-    "message": "تشير القيمة الأكبر من 0 إلى تقديم طلب صريح للتنقّل. على الرغم من صحة ذلك تقنيًّا، غالبًا ما يؤدي إلى إنشاء تجارب محبطة للمستخدمين الذين يعتمدون على التكنولوجيا المساعدة. [مزيد من المعلومات حول السمة `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)"
+    "message": "تشير القيمة الأكبر من 0 إلى تقديم طلب صريح للتنقّل. على الرغم من صحة ذلك تقنيًّا، غالبًا ما يؤدي إلى إنشاء تجارب محبطة للمستخدمين الذين يعتمدون على التكنولوجيا المساعدة. [مزيد من المعلومات حول السمة `tabindex`](https://dequeuniversity.com/rules/axe/4.8/tabindex)"
   },
   "core/audits/accessibility/tabindex.js | failureTitle": {
     "message": "بعض العناصر تحتوي على قيمة `[tabindex]` أكبر من 0"
@@ -362,8 +479,44 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "لا يتوفّر عنصر له قيمة `[tabindex]` أكبر من 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "يجب أن تصف سمة الملخّص بنية الجدول، بينما يجب أن يتضمّن `<caption>` العنوان الذي يظهر على الشاشة. يساعد الترميز الدقيق للجداول مستخدمي برامج قراءة الشاشة. [مزيد من المعلومات حول الملخّص والشرح](https://dequeuniversity.com/rules/axe/4.8/table-duplicate-name)"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "تتضمَّن الجداول المحتوى نفسه في سمة الملخّص و`<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "تتضمّن الجداول محتوى مختلفًا في سمة الملخّص و`<caption>`"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "تحتوي برامج قراءة الشاشة على ميزات لتسهيل التنقّل بين الجداول. يمكن تحسين تجربة استخدام برامج قراءة الشاشة من خلال ضمان استخدام الجداول لعنصر الشرح الفعلي بدلاً من الخلايا التي تستخدم السمة `[colspan]`. [مزيد من المعلومات حول الشرح](https://dequeuniversity.com/rules/axe/4.8/table-fake-caption)"
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "لا تستخدم الجداول `<caption>` بدلاً من الخلايا التي تستخدم السمة `[colspan]` للإشارة إلى الشرح"
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "تستخدم الجداول `<caption>` بدلاً من الخلايا التي تستخدم السمة `[colspan]` للإشارة إلى الشرح"
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "استخدِم مساحات لمس ذات حجم ومسافة كافيَين لمساعدة المستخدمين الذين قد يواجهون صعوبة في توجيه عناصر التحكّم الصغيرة الحجم لتفعيل المساحات. [مزيد من المعلومات عن مساحات اللمس](https://dequeuniversity.com/rules/axe/4.8/target-size)"
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "مساحات اللمس لا تتضمّن حجمًا ومسافة كافيَين"
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "مساحات اللمس تتضمّن حجمًا ومسافة كافيَين"
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "تحتوي برامج قراءة الشاشة على ميزات لتسهيل التنقّل بين الجداول. يمكن تحسين تجربة استخدام برامج قراءة الشاشة من خلال ضمان توفُّر عناوين جداول لعناصر `<td>` في الجداول الكبيرة (التي تتكوَّن من 3 خلايا أو أكثر في العرض والارتفاع). [مزيد من المعلومات حول عناوين الجداول](https://dequeuniversity.com/rules/axe/4.8/td-has-header)"
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "عناصر `<td>` في جدول `<table>` كبير لا تحتوي على عناوين جدول"
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "عناصر `<td>` في جدول `<table>` كبير تحتوي على عنوان جدول واحد أو أكثر"
+  },
   "core/audits/accessibility/td-headers-attr.js | description": {
-    "message": "تحتوي برامج قراءة الشاشة على ميزات لتسهيل التنقّل بين الجداول. يمكن تحسين تجربة استخدام برامج قراءة الشاشة من خلال ضمان إشارة الخلايا `<td>` التي تستخدم السمة `[headers]` إلى خلايا أخرى في الجدول نفسه فقط. [مزيد من المعلومات حول السمة `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)"
+    "message": "تحتوي برامج قراءة الشاشة على ميزات لتسهيل التنقّل بين الجداول. يمكن تحسين تجربة استخدام برامج قراءة الشاشة من خلال ضمان إشارة الخلايا `<td>` التي تستخدم السمة `[headers]` إلى خلايا أخرى في الجدول نفسه فقط. [مزيد من المعلومات حول السمة `headers`](https://dequeuniversity.com/rules/axe/4.8/td-headers-attr)"
   },
   "core/audits/accessibility/td-headers-attr.js | failureTitle": {
     "message": "إنّ الخلايا الواردة في `<table>` والتي تستخدم السمة `[headers]` تشير إلى عنصر `id` غير موجود في الجدول نفسه."
@@ -372,7 +525,7 @@
     "message": "إنّ الخلايا الواردة في `<table>` والتي تستخدم السمة `[headers]` تشير إلى الخلايا في الجدول نفسه."
   },
   "core/audits/accessibility/th-has-data-cells.js | description": {
-    "message": "تحتوي برامج قراءة الشاشة على ميزات لتسهيل التنقّل بين الجداول. ويمكن تحسين تجربة استخدام برامج قراءة الشاشة من خلال الحرص على أن تشير عناوين الجداول دائمًا إلى بعض مجموعات الخلايا. [مزيد من المعلومات حول عناوين الجداول](https://dequeuniversity.com/rules/axe/4.7/th-has-data-cells)"
+    "message": "تحتوي برامج قراءة الشاشة على ميزات لتسهيل التنقّل بين الجداول. ويمكن تحسين تجربة استخدام برامج قراءة الشاشة من خلال الحرص على أن تشير عناوين الجداول دائمًا إلى بعض مجموعات الخلايا. [مزيد من المعلومات حول عناوين الجداول](https://dequeuniversity.com/rules/axe/4.8/th-has-data-cells)"
   },
   "core/audits/accessibility/th-has-data-cells.js | failureTitle": {
     "message": "عناصر `<th>` وعناصر `[role=\"columnheader\"/\"rowheader\"]` لا تحتوي على خلايا البيانات التي يتم وصفها."
@@ -381,7 +534,7 @@
     "message": "عناصر `<th>` وعناصر `[role=\"columnheader\"/\"rowheader\"]` تحتوي على خلايا البيانات التي يتم وصفها"
   },
   "core/audits/accessibility/valid-lang.js | description": {
-    "message": "يؤدي تحديد [لغة BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) صحيحة في العناصر إلى مساعدة قارئ الشاشة على قراءة النص بشكلٍ صحيح. تعرَّف على [كيفية استخدام السمة `lang`](https://dequeuniversity.com/rules/axe/4.7/valid-lang)."
+    "message": "يؤدي تحديد [لغة BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) صحيحة في العناصر إلى مساعدة قارئ الشاشة على قراءة النص بشكلٍ صحيح. تعرَّف على [كيفية استخدام السمة `lang`](https://dequeuniversity.com/rules/axe/4.8/valid-lang)."
   },
   "core/audits/accessibility/valid-lang.js | failureTitle": {
     "message": "سمات `[lang]` لا تحتوي على قيمة صالحة"
@@ -390,7 +543,7 @@
     "message": "سمات `[lang]` تحتوي على قيمة صالحة"
   },
   "core/audits/accessibility/video-caption.js | description": {
-    "message": "عندما يقدِّم الفيديو ترجمة وشرحًا، يَسهُل على المستخدمين الصُم والذين يعانون من مشاكل في السمع فهم مضمونه. [مزيد من المعلومات حول تقديم الترجمة والشرح على الفيديو](https://dequeuniversity.com/rules/axe/4.7/video-caption)"
+    "message": "عندما يقدِّم الفيديو ترجمة وشرحًا، يَسهُل على المستخدمين الصُم والذين يعانون من مشاكل في السمع فهم مضمونه. [مزيد من المعلومات حول تقديم الترجمة والشرح على الفيديو](https://dequeuniversity.com/rules/axe/4.8/video-caption)"
   },
   "core/audits/accessibility/video-caption.js | failureTitle": {
     "message": "عناصر `<video>` لا تحتوي على عنصر `<track>` مع `[kind=\"captions\"]`"
@@ -452,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "لم يتم منع استعادة الصفحة من عملية التخزين المؤقت باستخدام ميزة \"التخزين المؤقت للصفحات\""
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "لا يمكن اختبار ميزة \"التخزين المؤقت للصفحات\" في الإصدار القديم من \"Chrome بلا واجهة مستخدم رسومية\" (`--chrome-flags=\"--headless=old\"`). للاطّلاع على نتائج التدقيق، استخدِم الإصدار الجديد من \"Chrome بلا واجهة مستخدم رسومية\" (`--chrome-flags=\"--headless=new\"`) أو متصفّح Chrome العادي."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "أثّرت \"إضافات Chrome\" بشكلٍ سلبي في أداء التحميل لهذه الصفحة. ويمكنك تجربة تدقيق الصفحة في وضع التصفُّح المُتخفّي أو من ملف شخصي على Chrome بدون الإضافات."
   },
@@ -486,7 +642,7 @@
     "message": "استخدام تنسيقات الفيديو لمحتوى الصور المتحركة"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "تساعد الرموز البرمجية polyfills وtransforms المتصفّحات القديمة في استخدام ميزات JavaScript الجديدة. ومع ذلك، يكون العديد منها غير ضروري للمتصفّحات الحديثة. وبالنسبة إلى حِزم JavaScript، يمكنك استخدام استراتيجية حديثة لنشر النصوص البرمجية باستخدام ميزة الكشف عن الميزات \"module/nomodule\" لتقليل عدد الرموز البرمجية التي يتم نقلها إلى المتصفّحات الحديثة مع استمرار التوافق مع المتصفّحات القديمة. تعرَّف على [كيفية استخدام لغة JavaScript الحديثة](https://web.dev/publish-modern-javascript/)."
+    "message": "تساعد الرموز البرمجية polyfills وtransforms المتصفّحات القديمة في استخدام ميزات JavaScript الجديدة. ومع ذلك، يكون العديد منها غير ضروري للمتصفّحات الحديثة. وبالنسبة إلى حِزم JavaScript، يمكنك استخدام استراتيجية حديثة لنشر النصوص البرمجية باستخدام ميزة الكشف عن الميزات \"module/nomodule\" لتقليل عدد الرموز البرمجية التي يتم نقلها إلى المتصفّحات الحديثة مع استمرار التوافق مع المتصفّحات القديمة. تعرَّف على [كيفية استخدام لغة JavaScript الحديثة](https://web.dev/articles/publish-modern-javascript)."
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "تجنُّب عرض ميزات JavaScript القديمة في المتصفحات الحديثة"
@@ -621,7 +777,7 @@
     "message": "البنية"
   },
   "core/audits/csp-xss.js | metaTagMessage": {
-    "message": "تحتوي الصفحة على سياسة أمان محتوى (CSP) تم تحديدها في علامة <meta>. يمكنك نقل سياسة CSP إلى عنوان HTTP أو تحديد سياسة CSP صارمة أخرى في عنوان HTTP."
+    "message": "تحتوي الصفحة على سياسة CSP تم تحديدها في علامة `<meta>`. يمكنك نقل سياسة CSP إلى عنوان HTTP أو تحديد سياسة CSP صارمة أخرى في عنوان HTTP."
   },
   "core/audits/csp-xss.js | noCsp": {
     "message": "لم يتم العثور على سياسة CSP في وضع \"التنفيذ\"."
@@ -840,7 +996,7 @@
     "message": "الحجم المتوقع"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "يجب أن تكون الأبعاد الطبيعية للصورة متناسبة مع حجم العرض ونسبة وحدة البكسل لزيادة وضوح الصورة إلى أقصى حد. تعرَّف على [كيفية تقديم صور سريعة الاستجابة](https://web.dev/serve-responsive-images/)."
+    "message": "يجب أن تكون الأبعاد الطبيعية للصورة متناسبة مع حجم العرض ونسبة وحدة البكسل لزيادة وضوح الصورة إلى أقصى حد. تعرَّف على [كيفية تقديم صور سريعة الاستجابة](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "يتم عرض الصور بدقة منخفضة"
@@ -873,7 +1029,7 @@
     "message": "تم تحميل الصفحة في نافذة تصفُّح متخفٍ."
   },
   "core/audits/installable-manifest.js | manifest-display-not-supported": {
-    "message": "يجب أن تكون خاصية \"display\" في ملف البيان بالقيمة \"standalone\" أو \"fullscreen\" أو \"minimal-ui\"."
+    "message": "يجب أن تكون الخاصية \"`display`\" في ملف البيان بوضع عرض متاح بالقيمة \"`standalone`\" أو \"`fullscreen`\" أو \"`minimal-ui`\"."
   },
   "core/audits/installable-manifest.js | manifest-display-override-not-supported": {
     "message": "يتضمن ملف البيان حقل \"display_override\"، لذا يجب أن يكون وضع العرض الأول المتاح بالقيمة \"standalone\" أو \"fullscreen\" أو \"minimal-ui\"."
@@ -885,7 +1041,7 @@
     "message": "تم تغيير عنوان URL لملف البيان أثناء استرجاع الملف."
   },
   "core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
-    "message": "لا يتضمّن ملف البيان حقل \"name\" أو \"short_name\"."
+    "message": "لا يتضمّن ملف البيان حقل \"`name`\" أو \"`short_name`\"."
   },
   "core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
     "message": "لا يتضمّن ملف البيان رمزًا مناسبًا. يجب استخدام رمز بتنسيق PNG أو SVG أو WebP بحجم {value0} بكسل على الأقل، ويجب ضبط السمة \"sizes\"، وأن تتضمّن السمة \"purpose\" القيمة \"any\"."
@@ -901,9 +1057,6 @@
   },
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "لا تتضمّن الصفحة عنوان URL <link> لملف البيان."
-  },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "لم يتم رصد مشغّل خدمات مطابق. قد تحتاج إلى إعادة تحميل الصفحة، أو التأكّد أن نطاق مشغّل الخدمات للصفحة الحالية يشتمل على النطاق وعنوان URL البداية من ملف البيان."
   },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "تعذّر التحقّق من مشغّل الخدمات بدون توفّر حقل \"start_url\" في ملف البيان."
@@ -933,10 +1086,7 @@
     "message": "لا يتوافق حقل الإدخال prefer_related_applications إلا مع الإصدار التجريبي من متصفِّح Chrome والقنوات الثابتة على Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "تعذَّر على أداة Lighthouse تحديد ما إذا كان يتوفّر مشغّل خدمات. يُرجى إعادة المحاولة باستخدام إصدار أحدث من متصفّح Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "مخطّط عنوان URL الخاص بملف البيان ({scheme}) غير متاح لنظام التشغيل Android."
+    "message": "تعذَّر على أداة Lighthouse تحديد ما إذا كانت الصفحة قابلة للتثبيت. يُرجى إعادة المحاولة باستخدام إصدار أحدث من متصفّح Chrome."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "عنوان URL البداية لملف البيان غير صالح."
@@ -1008,16 +1158,40 @@
     "message": "عنصر \"سرعة عرض أكبر جزء من المحتوى على الصفحة\""
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "المساهمة في متغيّرات التصميم التراكمية (CLS)"
+    "message": "تأثير متغيّرات التصميم"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "تساهم عناصر DOM هذه أكثر في متغيّرات التصميم التراكمية (CLS) الخاصة بالصفحة. تعرَّف على [كيفية تحسين CLS](https://web.dev/optimize-cls/)."
+    "message": "عناصر DOM هذه كانت الأكثر تأثّرًا بمتغيّرات التصميم. قد لا يتم تضمين بعض متغيّرات التصميم في قيمة مقياس متغيّرات التصميم التراكمية (CLS) بسبب [عملية الاستقطاع](https://web.dev/articles/cls#what_is_cls). [التعرُّف على كيفية تحسين متغيّرات التصميم التراكمية](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "تجنُّب متغيّرات التصميم الكبيرة"
   },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "نتيجة متغيّرات التصميم"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "هذه هي أكبر متغيّرات التصميم التي تم رصدها في الصفحة. يُمثّل كل عنصر في الجدول متغيّر تصميم واحدًا مع توضيح العنصر الأكثر تغيُّرًا. وتتوفّر أسفل كل عنصر الأسباب الأساسية المحتمَلة التي أدّت إلى حدوث متغيّرات التصميم. قد لا يتم تضمين بعض متغيّرات التصميم هذه في قيمة مقياس متغيّرات التصميم التراكمية (CLS) بسبب [المدة الزمنية المخصّصة لعرض الأحداث](https://web.dev/articles/cls#what_is_cls). [التعرُّف على كيفية تحسين متغيّرات التصميم التراكمية](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{تم العثور على متغيّر تصميم واحد.}zero{تم العثور على # متغيّر تصميم.}two{تم العثور على متغيّرَي تصميم.}few{تم العثور على # متغيّرات تصميم.}many{تم العثور على # متغيّر تصميم.}other{تم العثور على # متغيّر تصميم.}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "خط صفحة الويب الذي تم تحميله"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "إطار iframe الذي تم إدخاله"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "أدَّى طلب الشبكة المتأخّر إلى تعديل تصميم الصفحة."
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "لم يتم تحديد حجم واضح لعنصر الوسائط."
+  },
+  "core/audits/layout-shifts.js | title": {
+    "message": "تجنُّب متغيّرات التصميم الكبيرة"
+  },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "تُعرَض لاحقًا الصور التي تم تحميلها في الجزء المرئي من الصفحة باستخدام طريقة التحميل الكسول، ما يتسبب في تأخير عرض أكبر جزء من المحتوى على الصفحة. [مزيد من المعلومات حول طريقة التحميل الكسول المحسَّنة](https://web.dev/lcp-lazy-loading/)"
+    "message": "تُعرَض لاحقًا الصور التي تم تحميلها في الجزء المرئي من الصفحة باستخدام طريقة التحميل الكسول، ما يتسبب في تأخير عرض أكبر جزء من المحتوى على الصفحة. [مزيد من المعلومات حول طريقة التحميل الكسول المحسَّنة](https://web.dev/articles/lcp-lazy-loading)"
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "تم عرض أكبر صورة ظاهرة في الصفحة بسرعة غير مناسبة"
@@ -1026,7 +1200,7 @@
     "message": "تم عرض أكبر صورة ظاهرة في الصفحة بسرعة مناسبة"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "يتم إدراج المهام التي تستغرق وقتًا أطول في سلسلة التعليمات الرئيسية، ما يساعد في تحديد أكثر العوامل التي تسبِّب تأخيرًا في عملية الإدخال. تعرَّف على [كيفية تجنُّب المهام التي تستغرق وقتًا طويلاً والمُدرَجة في سلسلة التعليمات الرئيسية](https://web.dev/long-tasks-devtools/)."
+    "message": "يتم إدراج المهام التي تستغرق وقتًا أطول في سلسلة التعليمات الرئيسية، ما يساعد في تحديد أكثر العوامل التي تسبِّب تأخيرًا في عملية الإدخال. تعرَّف على [كيفية تجنُّب المهام التي تستغرق وقتًا طويلاً والمُدرَجة في سلسلة التعليمات الرئيسية](https://web.dev/articles/long-tasks-devtools)."
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{تم العثور على مهمّة طويلة واحدة}zero{تم العثور على # مهمّة طويلة}two{تم العثور على مهمّتَين طويلتَين}few{تم العثور على # مهمّات طويلة}many{تم العثور على # مهمّة طويلة}other{تم العثور على # مهمّة طويلة}}"
@@ -1074,16 +1248,16 @@
     "message": "البيان يحتوي على رمز قابل للإخفاء"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "يحدِّد مقياس \"متغيّرات التصميم التراكمية\" مقدار حركة العناصر المرئية في إطار العرض. [مزيد من المعلومات حول مقياس \"متغيّرات التصميم التراكمية\"](https://web.dev/cls/)"
-  },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "يحدِّد مقياس \"مدة عرض الاستجابة لتفاعل المستخدم\" سرعة استجابة الصفحة والمدّة التي تستغرِقها الصفحة للاستجابة بشكل واضح للبيانات التي أدخلها المستخدم. [مزيد من المعلومات حول مقياس \"مدة عرض الاستجابة لتفاعل المستخدم\"](https://web.dev/inp/)"
+    "message": "يحدِّد مقياس \"متغيّرات التصميم التراكمية\" مقدار حركة العناصر المرئية في إطار العرض. [مزيد من المعلومات حول مقياس \"متغيّرات التصميم التراكمية\"](https://web.dev/articles/cls)"
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "يحدِّد مقياس \"سرعة عرض المحتوى على الصفحة\" الوقت الذي يُعرَض فيه أول نص أو صورة من محتوى الصفحة. [مزيد من المعلومات حول مقياس \"سرعة عرض المحتوى على الصفحة\"](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)"
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "يوضِّح مقياس \"سرعة عرض أوّل محتوى مفيد على الصفحة\" الوقت الذي تم فيه عرض المحتوى الأساسي لإحدى الصفحات. [مزيد من المعلومات حول مقياس \"سرعة عرض أوّل محتوى مفيد على الصفحة\"](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)"
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "يحدِّد مقياس \"مدة عرض الاستجابة لتفاعل المستخدم\" سرعة استجابة الصفحة والمدّة التي تستغرِقها الصفحة للاستجابة بشكل واضح للبيانات التي أدخلها المستخدم. [مزيد من المعلومات حول مقياس \"مدة عرض الاستجابة لتفاعل المستخدم\"](https://web.dev/articles/inp)"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "\"وقت التفاعل\" هو مقدار الوقت المستغرَق حتى تصبح الصفحة تفاعلية بالكامل. [مزيد من المعلومات حول مقياس \"وقت التفاعل\"](https://developer.chrome.com/docs/lighthouse/performance/interactive/)"
@@ -1113,7 +1287,7 @@
     "message": "أوقات الاستجابة لواجهة الخادم الخلفية"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "لا يعمل حدث `unload` بفاعلية ويمكن أن تؤدي معالجته إلى عدم تنفيذ عمليات تحسين المتصفّح، مثل عملية \"التخزين المؤقت للصفحات\". وبدلاً من هذا الحدث، يمكنك استخدام `pagehide` أو `visibilitychange`. [مزيد من المعلومات حول إلغاء تحميل أدوات معالجة الأحداث](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "لا يعمل حدث `unload` بفاعلية ويمكن أن تؤدي معالجته إلى عدم تنفيذ عمليات تحسين المتصفّح، مثل عملية \"التخزين المؤقت للصفحات\". وبدلاً من هذا الحدث، يمكنك استخدام `pagehide` أو `visibilitychange`. [مزيد من المعلومات حول إلغاء تحميل أدوات معالجة الأحداث](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "يتم استخدام أدوات معالجة حدث `unload`"
@@ -1158,7 +1332,7 @@
     "message": "ميزانية الأداء"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "يجب تحميل الخطوط `optional` بشكل مسبق حتى يتسنى للزوار الجدد استخدامها. [مزيد من المعلومات عن التحميل المسبَق للخطوط](https://web.dev/preload-optional-fonts/)"
+    "message": "يجب تحميل الخطوط `optional` بشكل مسبق حتى يتسنى للزوار الجدد استخدامها. [مزيد من المعلومات عن التحميل المسبَق للخطوط](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "الخطوط التي استخدمت `font-display: optional` لم يتم تحميلها مُسبَقًا"
@@ -1167,7 +1341,7 @@
     "message": "تم تحميل الخطوط التي استخدمت `font-display: optional` مُسبَقًا"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "في حال إضافة المقياس \"سرعة عرض أكبر جزء من المحتوى على الصفحة\" (LCP) إلى الصفحة بشكل ديناميكي، يجب تحميل الصورة مسبقًا لتحسين مقياس LCP. [مزيد من المعلومات حول التحميل المسبق لعناصر LCP](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)"
+    "message": "في حال إضافة المقياس \"سرعة عرض أكبر جزء من المحتوى على الصفحة\" (LCP) إلى الصفحة بشكل ديناميكي، يجب تحميل الصورة مسبقًا لتحسين مقياس LCP. [مزيد من المعلومات حول التحميل المسبق لعناصر LCP](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)"
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "التحميل المُسبَق لصورة المقياس \"سرعة عرض أكبر جزء من المحتوى على الصفحة\""
@@ -1177,15 +1351,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "تجنُب عمليات إعادة توجيه الصفحات المتعددة"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "لتحديد ميزانيات لكمية موارد الصفحة وحجمها، يمكنك إضافة ملف budget.json. [مزيد من المعلومات حول الميزانيات القائمة على الأداء](https://web.dev/use-lighthouse-for-performance-budgets/)"
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{طلب واحد • {byteCount, number, bytes} كيبيبايت}zero{# طلب • {byteCount, number, bytes} كيبيبايت}two{طلبان • {byteCount, number, bytes} كيبيبايت}few{# طلبات • {byteCount, number, bytes} كيبيبايت}many{# طلبًا • {byteCount, number, bytes} كيبيبايت}other{# طلب • {byteCount, number, bytes} كيبيبايت}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "الحفاظ على انخفاض عدد الطلبات ونقل الأحجام الصغيرة"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "تقترح الروابط الأساسية عنوان URL للعرض في نتائج البحث. [مزيد من المعلومات حول الروابط الأساسية](https://developer.chrome.com/docs/lighthouse/seo/canonical/)"
@@ -1376,27 +1541,6 @@
   "core/audits/server-response-time.js | title": {
     "message": "وقت استجابة الخادم الأوّلي قصير"
   },
-  "core/audits/service-worker.js | description": {
-    "message": "مشغّل الخدمات هو التكنولوجيا التي تمكّن تطبيقك من استخدام ميزات عديدة في \"تطبيق الويب التقدّمي\"، مثل الاستجابة عند عدم الاتصال بالإنترنت والإضافة إلى الشاشة الرئيسية والإشعارات الفورية. [مزيد من المعلومات حول مشغِّلات الخدمات](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)"
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "يتحكم مشغّل الخدمات في هذه الصفحة، ومع ذلك لم يتم العثور على `start_url` بسبب تعذّر تحليل البيان كملف JSON صالح"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "يتحكم مشغّل الخدمات في هذه الصفحة، ومع ذلك لا يتوفر `start_url` ({startUrl}) في نطاق مشغّل الخدمات ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "يتحكم مشغّل الخدمات في هذه الصفحة، ومع ذلك لم يتم العثور على `start_url` لأنه لم يتم جلب أي بيان."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "تحتوي نقطة الانطلاق هذه على مشغّل خدمات واحد أو أكثر، ولكن لا يوجد مشغّل يتحكم في الصفحة ({pageUrl})."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "عدم تسجيل مشغّل الخدمات الذي يتحكّم في صفحة و`start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "تسجيل مشغّل الخدمات الذي يتحكّم في صفحة و`start_url`"
-  },
   "core/audits/splash-screen.js | description": {
     "message": "تضمن شاشة البداية المميَّزة توفير تجربة عالية الجودة عند تشغيل المستخدمين لتطبيقك من الشاشات الرئيسية. [مزيد من المعلومات حول شاشات البداية](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)"
   },
@@ -1414,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "ضبط لون تصميم لشريط العناوين"
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "ستتم إزالة إمكانية استخدام ملفات تعريف الارتباط التابعة لجهات خارجية في إصدار مستقبلي من Chrome. [معلومات أكثر حول الإيقاف التدريجي لملفات تعريف الارتباط التابعة لجهات خارجية](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)"
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{تم العثور على ملف تعريف ارتباط واحد}zero{تم العثور على # ملف تعريف ارتباط}two{تم العثور على ملفَي تعريف ارتباط}few{تم العثور على # ملفات تعريف ارتباط}many{تم العثور على # ملف تعريف ارتباط}other{تم العثور على # ملف تعريف ارتباط}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "هذه الصفحة تستخدم ملفات تعريف ارتباط تابعة لجهات خارجية"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "هذه الصفحة لا تستخدم ملفات تعريف ارتباط تابعة لجهات خارجية"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (منتج متعلق بخدمة العملاء)"
@@ -1470,7 +1626,7 @@
     "message": "ميزانية قائمة على الوقت"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "يجب ضبط قيَم واضحة للعرض والارتفاع في عناصر الصور للحدّ من متغيّرات التصميم وتحسين متغيّرات التصميم التراكمية (CLS). تعرَّف على [كيفية ضبط أبعاد الصور](https://web.dev/optimize-cls/#images-without-dimensions)."
+    "message": "يجب ضبط قيَم واضحة للعرض والارتفاع في عناصر الصور للحدّ من متغيّرات التصميم وتحسين متغيّرات التصميم التراكمية (CLS). تعرَّف على [كيفية ضبط أبعاد الصور](https://web.dev/articles/optimize-cls#images_without_dimensions)."
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "عناصر الصور لا تحتوي على قيَم `width` و`height` محدَّدة"
@@ -1545,7 +1701,7 @@
     "message": "تضمين علامة `<meta name=\"viewport\">` مع `width` أو `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "يشير هذا إلى إجراء حظر سلسلة التعليمات الذي يحدث أثناء قياس \"مدة عرض الاستجابة لتفاعل المستخدم\". [مزيد من المعلومات حول مقياس \"مدة عرض الاستجابة لتفاعل المستخدم\"](https://web.dev/inp/)"
+    "message": "يشير هذا إلى إجراء حظر سلسلة التعليمات الذي يحدث أثناء قياس \"مدة عرض الاستجابة لتفاعل المستخدم\". [مزيد من المعلومات حول مقياس \"مدة عرض الاستجابة لتفاعل المستخدم\"](https://web.dev/articles/inp)"
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "تم استغراق {timeInMs, number, milliseconds} ملي ثانية لإكمال الحدث \"{interactionType}\"."
@@ -1587,10 +1743,10 @@
     "message": "أفضل الممارسات"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "تحدّد عمليات التحقق هذه الفرص التي تتيح [تحسين إمكانية الوصول إلى تطبيق الويب](https://developer.chrome.com/docs/lighthouse/accessibility/). ولا يمكن إجراء رصد تلقائي إلّا لمجموعة فرعية من مشاكل إمكانية الوصول، لذلك يُنصح أيضًا باستخدام الاختبار اليدوي."
+    "message": "تحدّد عمليات التحقّق هذه الفرص المتاحة [لتحسين إمكانية استخدام تطبيق الويب](https://developer.chrome.com/docs/lighthouse/accessibility/). يمكن لميزة الرصد التلقائي رصد مجموعة فرعية من المشاكل فقط ولا تضمن تسهيل استخدام تطبيق الويب، لذلك ننصح أيضًا بإجراء [الاختبار اليدوي](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "تعالج هذه العناصر المناطق التي يتعذر على أداة الاختبار المبرمجة تغطيتها. تعرّف على مزيد من المعلومات في دليلنا حول [مراجعة إمكانية الوصول](https://web.dev/how-to-review/)."
+    "message": "تعالج هذه العناصر المناطق التي يتعذر على أداة الاختبار المبرمجة تغطيتها. تعرّف على مزيد من المعلومات في دليلنا حول [مراجعة إمكانية الوصول](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "إمكانية الوصول"
@@ -1677,10 +1833,10 @@
     "message": "الأداء"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "تتحقَّق عمليات التحقُّق هذه من جوانب تطبيق الويب التقدّمي. [تعرَّف على العوامل التي تساهم في إنشاء تطبيق ويب تقدّمي جيد](https://web.dev/pwa-checklist/)."
+    "message": "تتحقَّق عمليات التحقُّق هذه من جوانب تطبيق الويب التقدّمي. [تعرَّف على العوامل التي تساهم في إنشاء تطبيق ويب تقدّمي جيد](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "يُطلب إجراء عمليات التحقّق هذه من خلال المرجع [قائمة التحقق PWA](https://web.dev/pwa-checklist/)، ولكن لم يتم التحقُّق منها تلقائيًا من خلال Lighthouse. لا تؤثر عمليات التحقق هذه في نتيجتك، ولكن من المهم أنك تتحقق منها يدويًا."
+    "message": "يُطلب إجراء عمليات التحقّق هذه من خلال المرجع [قائمة التحقق PWA](https://web.dev/articles/pwa-checklist)، ولكن لم يتم التحقُّق منها تلقائيًا من خلال Lighthouse. لا تؤثر عمليات التحقق هذه في نتيجتك، ولكن من المهم أنك تتحقق منها يدويًا."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1692,7 +1848,7 @@
     "message": "تحسين PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "تضمن عمليات التحقّق هذه اتّباع صفحتك للنصائح الأساسية الخاصة بتحسين محركات البحث. هناك العديد من العوامل الإضافية التي تتسبب في عدم تحقيق أداة Lighthouse لأي نقاط هنا والتي قد تؤثّر في ترتيب نتائج البحث، بما في ذلك الأداء في ما يخص [مؤشرات أداء الويب الأساسية](https://web.dev/learn-core-web-vitals/). [مزيد من المعلومات حول \"أساسيات بحث Google\"](https://support.google.com/webmasters/answer/35769)"
+    "message": "تضمن عمليات التحقّق هذه اتّباع صفحتك للنصائح الأساسية الخاصة بتحسين محركات البحث. هناك العديد من العوامل الإضافية التي تتسبب في عدم تحقيق أداة Lighthouse لأي نقاط هنا والتي قد تؤثّر في ترتيب نتائج البحث، بما في ذلك الأداء في ما يخص [مؤشرات أداء الويب الأساسية](https://web.dev/explore/vitals). [مزيد من المعلومات حول \"أساسيات بحث Google\"](https://support.google.com/webmasters/answer/35769)"
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "تشغيل أدوات التحقُّق الإضافية هذه على موقعك الإلكتروني للتحقُّق من أفضل ممارسات تحسين محركات البحث الإضافية."
@@ -1739,6 +1895,9 @@
   "core/gather/gatherers/link-elements.js | headerParseWarning": {
     "message": "حدث خطأ أثناء تحليل عنوان `link`‏ ({error}): `{header}`"
   },
+  "core/gather/timespan-runner.js | warningNavigationDetected": {
+    "message": "تم رصد عملية تنقّل في الصفحة أثناء التشغيل. لا يُنصَح باستخدام وضع الفترة الزمنية للتدقيق في عمليات التنقّل في الصفحة. يرجى استخدام وضع التنقّل للتدقيق في عمليات التنقّل في الصفحة من أجل تحديد المصادر الخارجية بشكل أفضل ورصد السلاسل الرئيسية."
+  },
   "core/lib/bf-cache-strings.js | HTTPMethodNotGET": {
     "message": "يمكن استخدام ميزة \"التخزين المؤقت للصفحات\" لتخزين الصفحات فقط التي تم تحميلها من خلال طلب استرداد بيانات باستخدام GET."
   },
@@ -1750,6 +1909,9 @@
   },
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "لا يمكن استخدام ميزة \"التخزين المؤقت للصفحات\" حاليًا لتخزين الصفحات التي طلبت AppBanner."
+  },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" بسبب طلب التحقّق من الاتصال."
   },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" في chrome://flags. يمكنك الانتقال إلى الرابط chrome://flags/#back-forward-cache لتفعيلها على هذا الجهاز."
@@ -1816,6 +1978,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "لا يمكن استخدام ميزة \"التخزين المؤقت للصفحات\" لتخزين الصفحات التي تستخدم WebUSB API."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" بسبب إيقاف ملفات تعريف الارتباط على صفحة تستخدم السمة `Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "لا يمكن استخدام ميزة \"التخزين المؤقت للصفحات\" حاليًا لتخزين الصفحات التي تستخدم مشغّل خدمات مخصَّصًا أو وظيفة مصغَّرة."
@@ -1892,14 +2057,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "لا يمكن استخدام ميزة \"التخزين المؤقت للصفحات\" حاليًا لتخزين الصفحات التي تحتوي على اتصال IndexedDB مفتوح."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" بسبب حدث في IndexedDB."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "تم استخدام واجهات غير مؤهَّلة لبرمجة التطبيقات."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "لا يمكن استخدام ميزة \"التخزين المؤقت للصفحات\" حاليًا لتخزين الصفحات التي يتم إدخال رموز JavaScript فيها من خلال الإضافات."
+    "message": "لا يمكن استخدام ميزة \"التخزين المؤقت للصفحات\" حاليًا لتخزين الصفحات التي تم إدخال `JavaScript` فيها من خلال الإضافات."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "لا يمكن استخدام ميزة \"التخزين المؤقت للصفحات\" حاليًا لتخزين الصفحات التي تم إدخال ورقة أنماط فيها من خلال الإضافات."
+    "message": "لا يمكن استخدام ميزة \"التخزين المؤقت للصفحات\" حاليًا لتخزين الصفحات التي تم إدخال `StyleSheet` فيها من خلال الإضافات."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "حدث خطأ داخلي."
@@ -2082,25 +2250,25 @@
     "message": "لا يمكن استخدام ميزة \"التخزين المؤقت للصفحات\" حاليًا لتخزين الصفحات التي تستخدم WebXR."
   },
   "core/lib/csp-evaluator.js | allowlistFallback": {
-    "message": "ننصحك بإضافة مخطّطات عناوين URL تستخدم https:‎ وhttp:‎ (التي تتجاهلها المتصفِّحات المتوافقة مع 'strict-dynamic') لجعل سياسة CSP متوافقة مع أنظمة المتصفِّحات القديمة."
+    "message": "ننصحك بإضافة مخطّطات عناوين تستخدم https: وhttp: (التي تتجاهلها المتصفّحات الداعمة لـ `'strict-dynamic'`) للتوافق مع الأنظمة القديمة مع المتصفّحات القديمة."
   },
   "core/lib/csp-evaluator.js | deprecatedDisownOpener": {
-    "message": "تم إيقاف disown-opener منذ بدء استخدام CSP3. يُرجى استخدام عنوان السياسة Cross-Origin-Opener-Policy بدلاً من ذلك."
+    "message": "تم ايقاف `disown-opener` نهائيًا منذ بدء استخدام سياسة CSP3. يُرجى استخدام عنوان السياسة Cross-Origin-Opener-Policy كبديل."
   },
   "core/lib/csp-evaluator.js | deprecatedReferrer": {
-    "message": "تم إيقاف referrer منذ بدء استخدام سياسة CSP2. يُرجى استخدام العنوان Referrer-Policy بدلاً من ذلك."
+    "message": "تم ايقاف `referrer` نهائيًا منذ بدء استخدام سياسة CSP2. يُرجى استخدام العنوان Referrer-Policy كبديل."
   },
   "core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
-    "message": "تم إيقاف reflected-xss منذ بدء استخدام سياسة CSP2. يُرجى استخدام العنوان X-XSS-Protection بدلاً من ذلك."
+    "message": "تم ايقاف `reflected-xss` نهائيًا منذ بدء استخدام سياسة CSP2. يُرجى استخدام العنوان X-XSS-Protection كبديل."
   },
   "core/lib/csp-evaluator.js | missingBaseUri": {
-    "message": "يسمح عدم توفُّر base-uri بأن تضبط علامات <base> التي تم إدراجها عنوان URL الأساسي لجميع عناوين URL النسبية (على سبيل المثال، النصوص البرمجية) على نطاق يتحكّم فيه مهاجم. ننصحك بضبط base-uri على \"none\" أو \"self\"."
+    "message": "يؤدي عدم توفّر `base-uri` إلى السماح لعلامات `<base>` التي تم إدخالها بضبط عنوان URL الأساسي لجميع عناوين URL النسبية (مثل النصوص البرمجية) على نطاق يتحكّم فيه مهاجم. ننصحك بضبط السمة `base-uri` على `'none'` أو `'self'`."
   },
   "core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "إنّ عدم توفّر الأمر object-src يسمح بإدخال المكوّنات الإضافية التي تنفِّذ نصوصًا برمجية غير آمنة، ولذلك ننصحك بضبط object-src على 'none' إذا أمكن."
+    "message": "إنّ عدم توفّر `object-src` يسمح بإدخال مكونات إضافية تنفّذ نصوصًا برمجية غير آمنة. ننصحك بضبط `object-src` على `'none'` إن أمكن."
   },
   "core/lib/csp-evaluator.js | missingScriptSrc": {
-    "message": "الأمر التوجيهي script-src غير متوفّر. يمكن أن يسمح ذلك بتنفيذ نصوص برمجية غير آمنة."
+    "message": "التوجيه `script-src` غير متوفّر. يمكن أن يسمح ذلك بتنفيذ نصوص برمجية غير آمنة."
   },
   "core/lib/csp-evaluator.js | missingSemicolon": {
     "message": "هل نسيت إضافة الفاصلة المنقوطة؟ {keyword} هو أمر توجيهي، وليس كلمة رئيسية."
@@ -2118,13 +2286,13 @@
     "message": "تجنَّب استخدام أحرف البدل العادية ({keyword}) في هذا الأمر لأنّها تسمح بجلب النصوص البرمجية من نطاق غير آمن."
   },
   "core/lib/csp-evaluator.js | reportToOnly": {
-    "message": "يتم ضبط وجهة إعداد التقارير من خلال الأمر التوجيهي report-to فقط. يتوافق هذا الأمر التوجيهي مع المتصفِّحات المستنِدة إلى Chromium فقط، ولذلك نقترح استخدام الأمر التوجيهي report-uri أيضًا."
+    "message": "يتم ضبط وجهة إعداد التقارير من خلال التوجيه report-to فقط. تدعم هذا التوجيه المتصفِّحات المستنِدة إلى Chromium فقط، ولذلك نقترح استخدام التوجيه `report-uri` أيضًا."
   },
   "core/lib/csp-evaluator.js | reportingDestinationMissing": {
     "message": "لا توفّر سياسة CSP أي وجهة إعداد تقارير، ما يجعل من الصعب الحفاظ على هذه السياسة بمرور الوقت ورصد أي خلل فيها."
   },
   "core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "قد يتم تجاوز قائمة المضيفين المسموح بها بشكل متكرّر. ننصحك باستخدام الأرقام الخاصة لسياسة أمان المحتوى (CSP) أو أجزائها بدلاً من ذلك، بالإضافة إلى 'strict-dynamic' إذا لزم الأمر."
+    "message": "قد يتم تجاوز قائمة المضيفين المسموح بها بشكل متكرّر. يمكنك استخدام nonces أو hashes في سياسة CSP بدلاً من ذلك، إلى جانب `'strict-dynamic'` إذا لزم الأمر."
   },
   "core/lib/csp-evaluator.js | unknownDirective": {
     "message": "أمر CSP توجيهي غير معروف."
@@ -2133,10 +2301,196 @@
     "message": "الكلمة الرئيسية {keyword} غير صالحة."
   },
   "core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "يسمح 'unsafe-inline' بتنفيذ نصوص برمجية ومعالجات أحداث غير آمنة في الصفحة. ننصحك باستخدام أرقام CSP الخاصة أو أجزائها للسماح بالنصوص البرمجية كل على حدة."
+    "message": "تسمح `'unsafe-inline'` بتنفيذ نصوص برمجية ومعالجات أحداث غير آمنة في الصفحة. ننصحك باستخدام nonces أو hashes في سياسة CSP للسماح بالنصوص البرمجية كل على حدة."
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
-    "message": "ننصحك بإضافة الأمر التوجيهي 'unsafe-inline' (الذي تتجاهله المتصفِّحات المتوافقة مع nonces/hashes) لجعل CSP متوافقة مع أنظمة المتصفِّحات القديمة."
+    "message": "ننصحك بإضافة `'unsafe-inline'` (التي تتجاهلها المتصفِّحات الداعمة للـ nonces/hashes) لتكون متوافقة مع الأنظمة القديمة في المتصفّحات القديمة."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "لمزيد من التفاصيل، يُرجى الاطّلاع على صفحة حالة الميزة."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "سيسري هذا التغيير عند تحديد المرحلة {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "تم استخدام ميزة متوقّفة نهائيًا"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "لن يشمل رمز حرف البدل (*) الإذن في معالجة العنوان `Access-Control-Allow-Headers` في سياسة Cross-Origin Resource Sharing ‏(CORS)."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "يجب استخدام السمة `disableRemotePlayback` لإيقاف الدمج التلقائي للبث بدلاً من استخدام أداة الاختيار `-internal-media-controls-overlay-cast-button`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "يتم حظر طلبات الموارد التي تتضمّن عناوين URL الخاصة بها كلاً من أحرف `(n|r|t)` للمسافة البيضاء وأحرف \"أقل من\" (`<`) التي تمت إزالتها. لتحميل هذه الموارد، يُرجى إزالة السطور الجديدة وترميز أحرف \"أقل من\" من خلال مواضع مثل قيم سمات العناصر."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "تم إيقاف `chrome.loadTimes()` نهائيًا، ويمكنك بدلاً منها استخدام واجهة برمجة التطبيقات Navigation Timing 2 الموحَّدة."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "تم إيقاف واجهة برمجة التطبيقات `chrome.loadTimes()` نهائيًا. وبدلاً منها، يمكنك استخدام واجهة برمجة التطبيقات الموحَّدة Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "تم إيقاف واجهة برمجة التطبيقات `chrome.loadTimes()` نهائيًا. وبدلاً منها، يمكنك استخدام واجهة برمجة التطبيقات الموحَّدة Navigation Timing 2 التي تتضمّن `nextHopProtocol`."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "سيتم رفض ملفات تعريف الارتباط التي تتضمّن الحرف `(0|r|n)` بدلاً من اقتطاعها."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "إنّ ميزة تخفيف قيود السياسة المشتركة المصدر من خلال ضبط `document.domain` تم إيقافها نهائيًا، وستصبح غير مفعَّلة تلقائيًا. ويتعلّق تحذير الإيقاف النهائي هذا بإذن الوصول من مصادر متعددة والذي تم تفعيله من خلال ضبط `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "إنَّ ميزة تنفيذ الوظيفة window.alert المستنِدة إلى إطارات iframe من مصادر متعددة تم إيقافها نهائيًا وستتم إزالتها في المستقبل."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "إنّ ميزة تنفيذ الوظيفة window.confirm المستنِدة إلى إطارات iframe من مصادر متعددة تم إيقافها نهائيًا وستتم إزالتها في المستقبل."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "تم إيقاف أحداث تغيُّر نموذج العناصر في المستند (DOM)، بما في ذلك `DOMSubtreeModified` و`DOMNodeInserted` و`DOMNodeRemoved` و`DOMNodeRemovedFromDocument` و`DOMNodeInsertedIntoDocument` و`DOMCharacterDataModified` (https://w3c.github.io/uievents/#legacy-event-types) وستتم إزالتها. يُرجى استخدام `MutationObserver` بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "تم إيقاف المخطّطات data: URL نهائيًا في عنصر <use> للرسومات الموجّهة التي يمكن تغيير حجمها (SVG) وستتم إزالتها في المستقبل."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "إنّ ميزة تخفيف قيود السياسة المشتركة المصدر من خلال ضبط `document.domain` تم إيقافها نهائيًا، وستصبح غير مفعَّلة تلقائيًا. لمواصلة استخدام هذه الميزة، يُرجى إيقاف مجموعات الوكلاء المرتبطة حسب المصدر من خلال إرسال العنوان `Origin-Agent-Cluster: ?0` مع استجابة HTTP للمستند والإطارات. لمعرفة مزيد من التفاصيل، يمكنك الاطّلاع على https://developer.chrome.com/blog/immutable-document-domain/‎."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "تم إيقاف عنوان `Expect-CT` نهائيًا وستتم إزالته. يتطلَّب Chrome توفُّر شهادة الشفافية لجميع الشهادات الموثوق بها التي تم إصدارها بشكل علني بعد 30 نيسان (أبريل) 2018."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "لم تعُد الميزتان `getCurrentPosition()` و`watchPosition()` متوافقتين مع المصادر غير الآمنة. لاستخدام هذه الميزة، يجب مراعاة نقل تطبيقك إلى مصدر آمن مثل HTTPS. لمعرفة مزيد من التفاصيل، يُرجى الاطّلاع على https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "تم إيقاف الإجراءين `getCurrentPosition()` و`watchPosition()` نهائيًا على المصادر غير الآمنة. لاستخدام هذه الميزة، يجب مراعاة نقل تطبيقك إلى مصدر آمن مثل HTTPS. لمعرفة مزيد من التفاصيل، يُرجى الاطّلاع على https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "لم تعُد ميزة `getUserMedia()` متوافقة مع المصادر غير الآمنة. لاستخدام هذه الميزة، يجب مراعاة نقل تطبيقك إلى مصدر آمن مثل HTTPS. لمعرفة مزيد من التفاصيل، يُرجى الاطّلاع على https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "تم إيقاف `RTCPeerConnectionIceErrorEvent.hostCandidate` نهائيًا. يُرجى استخدام `RTCPeerConnectionIceErrorEvent.address` أو `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "إنّ مصدر تطبيق التاجر والبيانات العشوائية من حدث مشغّل الخدمات في `canmakepayment` تم إيقافهما نهائيًا وستتم إزالتهما: `topOrigin` و`paymentRequestOrigin` و`methodData` و`modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "طلب الموقع الإلكتروني موردًا فرعيًا من شبكة يمكن الوصول إليه من خلال الموقع الإلكتروني فقط بسبب موضع مستخدميه المميّز على الشبكة. تكشف هذه الطلبات عن الأجهزة والخوادم الخاصة على الإنترنت، ما يزيد من خطر التعرض لهجمات تقليد الطلبات من موقع إلكتروني مختلف (CSRF) و/أو تسرُّب المعلومات. وللحدِّ من هذه المخاطر، أوقف Chrome نهائيًا طلبات الوصول إلى موارد فرعية خاصة، وذلك عند تقديمها من خلال سياقات غير آمنة، وسيبدأ في حظرها."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "إنّ الحقل `dailyUpdateUrl` في `InterestGroups` المضبوط على `joinAdInterestGroup()` تمت إعادة تسميته إلى `updateUrl` للإشارة إلى سلوكه بدقة أكبر."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "لا يمكن تحميل صفحات الأنماط المتتالية (CSS) من عناوين URL للملفات `file:` ما لم تنتهِ الملفات بالامتداد `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "نظرًا لتغيّر المواصفات، تم بشكل نهائي إيقاف إمكانية استخدام `SourceBuffer.abort()` الهادفة إلى إلغاء عملية إزالة النطاق غير المتزامن الذي يخصّ `remove()`. ستتم إزالة الميزة في المستقبل. وعليك معالجة الحدث `updateend` بدلاً من ذلك. ‫`abort()` مخصَّص فقط لإلغاء إمكانية إلحاق الوسائط غير المتزامنة أو إعادة ضبط حالة المحلِّل."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "نظرًا لتغيّر المواصفات، تم بشكل نهائي إيقاف إمكانية ضبط `MediaSource.duration` على قيمة أقل من الحد الأقصى للطابع الزمني المخصَّص لعرض أي إطارات تم ترميزها وتخزينها مؤقتًا. إنّ الإزالة الضمنية للوسائط المُقتطَعة التي تم تخزينها مؤقتًا لن تكون متاحة في المستقبل. وبدلاً من ذلك، يجب تطبيق `remove(newDuration, oldDuration)` بشكل واضح على جميع `sourceBuffers` التي تتوفّر بها `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "ستطلب واجهة برمجة التطبيقات Web MIDI إذنًا للاستخدام حتى في حال عدم تحديد رسائل النظام الحصرية (Sysex) في `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "إنّ سمة `shadowroot` القديمة غير الموحّدة تم إيقافها نهائيًا، و*لن تعمل* بعد الآن في الإصدار M119. يُرجى استخدام سمة `shadowrootmode` الجديدة الموحّدة بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "قد يتوقف استخدام واجهة برمجة التطبيقات Notification API من مصادر غير آمنة. يجب مراعاة نقل تطبيقك إلى مصدر آمن، مثل HTTPS. لمعرفة مزيد من التفاصيل، يُرجى الاطّلاع على https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "قد تتوقّف إمكانية طلب إذن لواجهة برمجة التطبيقات Notification API من أحد إطارات iframe من مصادر متعددة. يجب مراعاة طلب إذن من إطار عالي المستوى أو فتح نافذة جديدة بدلاً من ذلك."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "تم إيقاف الخيار `imageOrientation: 'none'`‎ في createImageBitmap نهائيًا. يُرجى استخدام createImageBitmap مع الخيار ‎\\{imageOrientation: 'from-image'\\} بدلاً منه."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "يتفاوض شريكك لاستخدام إصدار (D) القديم من بروتوكول أمان طبقة النقل (TLS). يُرجى التحقّق من الأمر مع شريكك لحلّ هذه المشكلة."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "في حال تحديد القيمة `overflow: visible` ضمن علامات img وvideo وcanvas، قد يُعرَض محتوى مرئي خارج حدود العنصر. يُرجى الاطّلاع على الرابط https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "تم إيقاف `paymentManager.instruments` نهائيًا. يُرجى استخدام ميزة التثبيت الفوري (JIT) مع تطبيقات معالجة عمليات الدفع."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "تجاوز طلب البيانات من واجهة برمجة التطبيقات `PaymentRequest` التوجيه `connect-src` في Content-Security-Policy (سياسة أمان المحتوى). تم إيقاف هذا التجاوز نهائيًا. يُرجى إضافة معرِّف طريقة الدفع من واجهة برمجة التطبيقات `PaymentRequest` (في حقل `supportedMethods`) إلى توجيه `connect-src` في سياسة أمان المحتوى."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "تم إيقاف `StorageType.persistent` نهائيًا. يُرجى استخدام `navigator.storage` الموحّدة بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "إنّ استخدام `<source src>` مع العنصر الرئيسي `<picture>` غير صالح، وبالتالي سيتم تجاهله. يُرجى استخدام `<source srcset>` بدلاً من ذلك."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "إنّ طريقة webkitCancelAnimationFrame مخصّصة للمورّدين. يُرجى استخدام طريقة cancelAnimationFrame العادية بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "إنّ طريقة webkitRequestAnimationFrame مخصّصة للمورّدين. يُرجى استخدام طريقة requestAnimationFrame العادية بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "تم إيقاف واجهة برمجة التطبيقات HTMLVideoElement.webkitDisplayingFullscreen نهائيًا. يُرجى استخدام واجهة برمجة التطبيقات Document.fullscreenElement بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "تم إيقاف واجهة برمجة التطبيقات HTMLVideoElement.webkitEnterFullscreen()‎ نهائيًا. يُرجى استخدام واجهة برمجة التطبيقات Element.requestFullscreen()‎ بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "تم إيقاف واجهة برمجة التطبيقات HTMLVideoElement.webkitEnterFullscreen()‎ نهائيًا. يُرجى استخدام واجهة برمجة التطبيقات Element.requestFullscreen()‎ بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "تم إيقاف واجهة برمجة التطبيقات HTMLVideoElement.webkitExitFullscreen()‎ نهائيًا. يُرجى استخدام واجهة برمجة التطبيقات Document.exitFullscreen()‎ بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "تم إيقاف واجهة برمجة التطبيقات HTMLVideoElement.webkitExitFullscreen()‎ نهائيًا. يُرجى استخدام واجهة برمجة التطبيقات Document.exitFullscreen()‎ بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "تم إيقاف واجهة برمجة التطبيقات HTMLVideoElement.webkitSupportsFullscreen نهائيًا. يُرجى استخدام واجهة برمجة التطبيقات Document.fullscreenEnabled بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "سيتم إيقاف واجهة برمجة التطبيقات `chrome.privacy.websites.privacySandboxEnabled` نهائيًا، علمًا بأنّها ستظل نشطة للتوافق مع الأنظمة القديمة إلى أن يتم طرح الإصدار الرئيسي M113. بدلاً من هذه الواجهة، يُرجى استخدام واجهات برمجة التطبيقات `chrome.privacy.websites.topicsEnabled` و`chrome.privacy.websites.fledgeEnabled` و`chrome.privacy.websites.adMeasurementEnabled`. لمعرفة مزيد من المعلومات، يمكنك الانتقال إلى https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "تمت إزالة القيد `DtlsSrtpKeyAgreement`. لقد حدَّدت القيمة `false` لهذا القيد، وهو ما يتم تفسيره كمحاولة لاستخدام إجراء `SDES key negotiation` الذي تمت إزالته. لقد تمت إزالة هذه الوظيفة. وبدلاً منها، يمكنك استخدام إحدى الخدمات المتوافقة مع `DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "تمت إزالة القيد `DtlsSrtpKeyAgreement`. لقد حدَّدت القيمة `true` لهذا القيد، وهو إجراء ليس له أي تأثير، غير أنّه يمكنك إزالة هذا القيد بغرض التنظيم."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "تم إيقاف الطريقة getStats()‎ المستنِدة إلى معاودة الاتصال نهائيًا وستتم إزالتها. يُرجى استخدام الطريقة getStats()‎ المتوافقة مع المواصفات بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "تم إيقاف واجهة برمجة التطبيقات Range.expand()‎ نهائيًا. يُرجى استخدام واجهة برمجة التطبيقات Selection.modify()‎ بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "يتم حظر طلبات الموارد الفرعية إذا كانت عناوين URL الخاصة بها تحتوي على بيانات اعتماد مُضمَّنة (مثل `https://user:pass@host/`)."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "تم إيقاف الخيار `rtcpMuxPolicy` نهائيًا وستتم إزالته."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "ستتطلّب `SharedArrayBuffer` حظر الوصول من نطاقات أخرى. لمعرفة مزيد من التفاصيل، يُرجى الاطّلاع على https://developer.chrome.com/blog/enabling-shared-array-buffer/‎."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "إنّ ميزة تنفيذ `speechSynthesis.speak()` بدون تفعيل المستخدِم له متوقفة نهائيًا وستتم إزالتها."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "يجب أن تستخدم الإضافات ميزة حظر الوصول من نطاقات أخرى لمواصلة استخدام `SharedArrayBuffer`. يُرجى الاطّلاع على https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/‎."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "تم إيقاف لغة الاستعلامات البنيوية (SQL) على الويب نهائيًا. يُرجى استخدام SQLite WebAssembly أو Indexed Database."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "تم إيقاف واصف الأذونات `window-placement` نهائيًا. يمكنك استخدام `window-management` كبديل. للحصول على مزيد من المساعدة، يُرجى الاطّلاع على الرابط https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "تم إيقاف سياسة الأذونات `window-placement` نهائيًا. يمكنك استخدام `window-management` كبديل. للحصول على مزيد من المساعدة، يُرجى الاطّلاع على الرابط https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "لا يتوفّر الترميز UTF-16 من خلال استجابة تنسيق json في واجهة برمجة التطبيقات `XMLHttpRequest`."
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "واجهة برمجة التطبيقات `XMLHttpRequest` المتزامنة في سلسلة أنظمة التشغيل الرئيسية متوقفة نهائيًا بسبب تأثيراتها الضارة في تجربة المستخدِم النهائي. للحصول على مزيد من المساعدة، يُرجى الاطّلاع على الرابط https://xhr.spec.whatwg.org/‎."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "تم إيقاف `supportsSession()` نهائيًا. يُرجى استخدام `isSessionSupported()` والتحقّق من القيمة المنطقية النهائية."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "وقت حظر سلسلة المحادثات الأساسية"
@@ -2328,7 +2682,7 @@
     "message": "لم يتمكّن Lighthouse من تحميل الصفحة المطلوبة بشكل موثوق. عليك التأكّد من اختبار عنوان URL الصحيح وأن الخادم يستجيب بشكل صحيح لجميع الطلبات. (التفاصيل: {errorDetails})"
   },
   "core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
-    "message": "لم يتمكّن Lighthouse من تحميل الصفحة المطلوبة بشكل موثوق. عليك التأكّد من اختبار عنوان URL الصحيح وأن الخادم يستجيب بشكل صحيح لجميع الطلبات. (رمز الحالة: {statusCode})"
+    "message": "لم تتمكّن أداة Lighthouse من تحميل الصفحة المطلوبة بشكل موثوق. عليك التأكّد من اختبار عنوان URL الصحيح وأنّ الخادم يستجيب بشكل صحيح لجميع الطلبات. (رمز الحالة: {statusCode})"
   },
   "core/lib/lh-error.js | pageLoadTookTooLong": {
     "message": "استغرق تحميل الصفحة وقتًا طويلاً. يُرجى اتّباع الفرص الواردة في التقرير لتقليل وقت تحميل الصفحة، ثم محاولة إعادة تشغيل Lighthouse. ({errorCode})"
@@ -2341,6 +2695,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "يبدو أن عنوان URL الذي قدمته غير صحيح."
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "لم تتمكّن أداة Lighthouse من تحميل الصفحة المطلوبة بشكل موثوق. عليك التأكّد من اختبار عنوان URL الصحيح وأنّ الخادم يستجيب بشكل صحيح لجميع الطلبات. (رمز الحالة: {errorCode})"
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "نوع MIME للصفحة هو XHTML: لا يتوافق وضع Lighthouse مع هذا النوع من المستندات بشكلٍ صريح."
@@ -2538,7 +2895,7 @@
     "message": "يمكنك تثبيت [وحدة Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) تتيح تحميل الصور ببطء. وتتيح هذه الوحدات إمكانية تأجيل أي صور خارج الشاشة لتحسين الأداء."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "يمكنك استخدام وحدة لتضمين لغتَيّ CSS وJavaScript المهمّتَين أو تحميل الأصول بشكلٍ غير متزامن من خلال JavaScript مثل وحدة [تجميع CSS/JS المتقدّم](https://www.drupal.org/project/advagg). يجب الانتباه إلى أنّ التحسينات التي توفّرها هذه الوحدة قد توقف موقعك الإلكتروني، لذلك من المحتمل أن تحتاج إلى إجراء تغييرات في الرمز البرمجي."
+    "message": "يمكنك استخدام وحدة لتضمين محتوى CSS أو JavaScript المهم واستخدام سمة التأجيل لمحتوى CSS أو JavaScript غير المهم."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "تساهم التصاميم والوحدات ومواصفات الخادم في تحسين وقت استجابة الخادم. يمكنك البحث عن تصميم مُحسّن بدرجة أكبر و/أو اختيار وحدة تحسين بعناية و/أو ترقية الخادم. ويجب أن تستفيد خوادم الاستضافة من التخزين المؤقت لأجزاء عمليات لغة PHP والتخزين المؤقت للذاكرة لتقليل الأوقات التي تستغرقها طلبات قواعد البيانات مثل Redis أو Memcached، بالإضافة إلى منطق التطبيق المحسّن لتحضير الصفحات بشكلٍ أسرع."
@@ -2547,10 +2904,10 @@
     "message": "يمكنك استخدام [أنماط الصور السريعة الاستجابة](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) لتقليل حجم الصور المحمّلة على صفحتك. وإذا كنت تستخدم \"Views\" لعرض عناصر محتوى متعددة على صفحة، يمكنك التقسيم على صفحات بدلاً من ذلك للحدّ من عدد عناصر المحتوى المعروضة في صفحة معيّنة."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "يُرجى التأكّد من تفعيل \"تجميع ملفات CSS\" في صفحة \"الإدارة » الإعداد » التطوير\". ويمكنك إعداد خيارات تجميع أكثر تقدّمًا من خلال [وحدات إضافية](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) لزيادة سرعة موقعك الإلكتروني عن طريق ربط أنماط لغة CSS وتصغيرها وضغطها."
+    "message": "يُرجى التأكّد من تفعيل خيار \"تجميع ملفات CSS\" ‏(Aggregate CSS files) في صفحة \"الإدارة\" (Administration) » \"الإعداد\" (Configuration) » \"التطوير\" (Development).  يُرجى التأكَّد أيضًا من أنّ موقعك الإلكتروني على Drupal يستخدم الإصدار 10.1 على الأقل من Drupal للاستفادة من الدعم المحسَّن لعملية تجميع أصول البيانات."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "يُرجى التأكّد من تفعيل \"تجميع ملفات JavaScript\" في صفحة \"الإدارة » الإعداد » التطوير\". ويمكنك إعداد خيارات تجميع أكثر تقدّمًا من خلال [وحدات إضافية](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) لزيادة سرعة موقعك الإلكتروني عن طريق ربط أصول JavaScript وتصغيرها وضغطها."
+    "message": "يُرجى التأكّد من تفعيل خيار \"تجميع ملفات JavaScript\" ‏(Aggregate JavaScript files) في صفحة \"الإدارة\" (Administration) » \"الإعداد\" (Configuration) » \"التطوير\" (Development).  يُرجى التأكَّد أيضًا من أنّ موقعك الإلكتروني على Drupal يستخدم الإصدار 10.1 على الأقل من Drupal للاستفادة من الدعم المحسَّن لعملية تجميع أصول البيانات."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "يمكنك إزالة قواعد CSS غير المستخدمة وإرفاق مكتبات Drupal المطلوبة فقط بالصفحة ذات الصلة أو بالمكوّن ذي الصلة في الصفحة. للحصول على التفاصيل، يُرجى الاطّلاع على [رابط مستندات Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). لتحديد المكتبات المرفَقة التي تضيف لغة CSS دخيلة، يمكنك محاولة تشغيل [تغطية الرمز البرمجي](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) في Chrome DevTools. ويمكنك تحديد التصميم/الوحدة المسؤولة من عنوان URL لورقة الأنماط عندما يكون تجميع لغة CSS قيد الإيقاف في موقعك الإلكتروني على Drupal. يمكنك البحث عن التصاميم/الوحدات التي تحتوي على العديد من أوراق الأنماط في القائمة والتي تتضمن الكثير من اللون الأحمر في تغطية الرمز البرمجي. ومن المفترض أن يدرِج التصميم/الوحدة ورقة أنماط فقط في حال كانت مُستخدَمة في الصفحة."
@@ -2750,23 +3107,65 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "يمكنك تفعيل ميزة ضغط البيانات في خادم Next.js الخاص بك. [مزيد من المعلومات](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "يمكنك التواصل مع مدير الحساب لتفعيل ميزة [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). وسيؤدي ضبط هذه الميزة إلى منح الأولوية لأداء عرض الصفحة وتحسينه."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "استخدِم الخيار [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) في NitroPack لضبط القيمة المطلوبة لقاعدة CSS الخاصة بعرض الخطوط."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "يمكنك استخدام ميزة [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) لتحويل صورك تلقائيًا إلى تنسيق WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "يمكنك تأجيل تحميل الصور خارج الشاشة من خلال تفعيل ميزة [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "يمكنك تفعيل ميزة [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) في NitroPack لتقليص مُدد التحميل المبدئي."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "يمكنك تحسين وقت استجابة الخادم وتحسين الأداء الملحوظ من خلال تفعيل ميزة [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "يمكنك تفعيل ميزة [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) في إعدادات \"التخزين المؤقت\" لتقليل حجم ملفات CSS وHTML وJavaScript لتقليص مُدد التحميل."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "يمكنك تفعيل ميزة [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) في إعدادات \"التخزين المؤقت\" لتقليل حجم ملفات JS وHTML وCSS لتقليص مُدد التحميل."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "يمكنك تفعيل ميزة [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) لإزالة قواعد CSS التي لا تنطبق على هذه الصفحة."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "يمكنك ضبط [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) في NitroPack ليتم تأجيل تحميل النصوص البرمجية إلى أن تكون هناك حاجة إليها."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "يمكنك الانتقال إلى ميزة [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) في قائمة \"`Caching`\" وتعديل وقت انتهاء صلاحية ذاكرة التخزين المؤقت للصفحة لتحسين كلّ من مُدد التحميل وتجربة المستخدم."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "يمكنك ضغط صورك وتحسينها وتحويلها تلقائيًا إلى تنسيق WebP من خلال تفعيل الإعداد [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "يمكنك تفعيل ميزة [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) لتحسين صورك بشكل استباقي وجعلها متوافقة مع أبعاد الحاويات التي يتم عرضها فيها على جميع الأجهزة."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "يمكنك استخدام [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) في NitroPack لتقليص حجم الملفات التي يتم إرسالها إلى المتصفّح."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "يمكنك استخدام المكوّن `nuxt/image` وضبط `format=\"webp\"`. [مزيد من المعلومات](https://image.nuxtjs.org/components/nuxt-img#format)"
+    "message": "يمكنك استخدام المكوّن `nuxt/image` وضبط `format=\"webp\"`. [مزيد من المعلومات](https://image.nuxt.com/usage/nuxt-img#format)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "يمكنك استخدام المكوّن `nuxt/image` وضبط `loading=\"lazy\"` لتأجيل تحميل الصور خارج الشاشة. [مزيد من المعلومات](https://image.nuxtjs.org/components/nuxt-img#loading)"
+    "message": "يمكنك استخدام المكوّن `nuxt/image` وضبط `loading=\"lazy\"` لتأجيل تحميل الصور خارج الشاشة. [مزيد من المعلومات](https://image.nuxt.com/usage/nuxt-img#loading)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "يمكنك استخدام المكوِّن `nuxt/image` وتحديد `preload` لصورة المقياس LCP. [مزيد من المعلومات](https://image.nuxtjs.org/components/nuxt-img#preload)"
+    "message": "يمكنك استخدام المكوِّن `nuxt/image` وتحديد `preload` لصورة المقياس LCP. [مزيد من المعلومات](https://image.nuxt.com/usage/nuxt-img#preload)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "يمكنك استخدام المكوّن `nuxt/image` واختيار `width` و`height` مُحدّدين. [مزيد من المعلومات](https://image.nuxtjs.org/components/nuxt-img#width--height)"
+    "message": "يمكنك استخدام المكوّن `nuxt/image` واختيار `width` و`height` مُحدّدين. [مزيد من المعلومات](https://image.nuxt.com/usage/nuxt-img#width-height)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "يمكنك استخدام المكوِّن `nuxt/image` وضبط `quality` المناسبة. [مزيد من المعلومات](https://image.nuxtjs.org/components/nuxt-img#quality)"
+    "message": "يمكنك استخدام المكوِّن `nuxt/image` وضبط `quality` المناسبة. [مزيد من المعلومات](https://image.nuxt.com/usage/nuxt-img#quality)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "يمكنك استخدام المكوِّن `nuxt/image` وضبط `sizes` المناسبة. [مزيد من المعلومات](https://image.nuxtjs.org/components/nuxt-img#sizes)"
+    "message": "يمكنك استخدام المكوِّن `nuxt/image` وضبط `sizes` المناسبة. [مزيد من المعلومات](https://image.nuxt.com/usage/nuxt-img#sizes)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[يمكنك استخدام الفيديو بدلاً من صور GIF المتحركة](https://web.dev/replace-gifs-with-videos/) لتحميل صفحات الويب بشكل أسرع، بالإضافة إلى استخدام تنسيقات ملفات حديثة، مثل [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) أو [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) لتحسين كفاءة الضغط بنسبة تزيد عن 30% على برنامج ترميز الفيديو المتطوّر الحالي، VP9."
@@ -2830,6 +3229,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "استخدِم محلِّل React DevTools الذي يتيح الاستفادة من واجهة برمجة تطبيقات المحلّل لقياس مستوى أداء العرض للمكوّنات. [مزيد من المعلومات](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "يمكنك وضع الفيديوهات في `VideoBoxes` وتخصيصها باستخدام `Video Masks` أو إضافة `Transparent Videos`. [مزيد من المعلومات](https://support.wix.com/en/article/wix-video-about-wix-video)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "يمكنك تحميل الصور باستخدام الأداة `Wix Media Manager` لضمان عرض الصور تلقائيًا بتنسيق WebP. اطّلِع على [طرق إضافية لتحسين](https://support.wix.com/en/article/site-performance-optimizing-your-media) وسائط موقعك الإلكتروني."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "عند [إضافة رمز برمجي تابع لجهة خارجية](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) في علامة التبويب `Custom Code` ضمن لوحة بيانات موقعك الإلكتروني، تأكَّد من تأجيله أو تحميله في نهاية نص الرمز البرمجي. استخدِم [عمليات الدمج](https://support.wix.com/en/article/about-marketing-integrations) على Wix، إن أمكن، لتضمين أدوات التسويق على موقعك الإلكتروني. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "يستخدم Wix شبكات توصيل المحتوى (CDN) وميزة التخزين المؤقت للاستجابة بأسرع وقت ممكن لمعظم الزوّار. يمكنك [يدويًا تفعيل ميزة التخزين المؤقت](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) لموقعك الإلكتروني، خاصةً إذا كنت تستخدم `Velo`."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "يُرجى مراجعة أي رمز برمجي تابع لجهة خارجية سبق لك إضافته إلى موقعك الإلكتروني في علامة التبويب `Custom Code` ضِمن لوحة البيانات الخاصة بموقعك الإلكتروني وإبقاء الخدمات اللازمة فقط لموقعك الإلكتروني. [المزيد من المعلومات](https://support.wix.com/en/article/site-performance-removing-unused-javascript)"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "يمكنك تحميل ملف GIF إلى خدمة ستتيح تضمينه في شكل فيديو HTML5."
@@ -2936,6 +3350,9 @@
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "حفظ بتنسيق JSON"
   },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "عرض سجلّ التتبُّع الأصلي"
+  },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "فتح في العارِض"
   },
@@ -2981,8 +3398,17 @@
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "اجتياز عمليات التدقيق بنجاح"
   },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "إلى جانب [معايير قابلية التثبيت المُعدَّلة في Chrome](https://developer.chrome.com/blog/update-install-criteria)، ستوقف أداة Lighthouse فئة تطبيقات الويب التقدّمية (PWA) نهائيًا في إصدار مستقبلي. يُرجى الرجوع إلى [مستندات تطبيقات الويب التقدّمية (PWA) المعدَّلة](https://developer.chrome.com/docs/devtools/progressive-web-apps/) لاختبار هذه التطبيقات في المستقبل."
+  },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "التحميل الأولي للصفحة"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "نبذة عن نقطة زمنية"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "الفترة الزمنية التي تتضمّن تفاعلات المستخدم"
   },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "تقييد مخصَّص لتحميل الصفحة"
@@ -3018,10 +3444,10 @@
     "message": "وكيل المستخدم (شبكة)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "تحميل صفحة واحدة"
+    "message": "جلسة تتضمّن صفحة واحدة"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "هذه البيانات مأخوذة من صفحة واحدة تم تحميلها، على عكس بيانات الحقول التي تلخِّص العديد من الجلسات."
+    "message": "هذه البيانات مأخوذة من جلسة تتضمّن صفحة واحدة، على عكس بيانات الحقول التي تلخِّص العديد من الجلسات."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "التقييد البطيء لتحميل الصفحة في شبكة الجيل الرابع"
@@ -3055,9 +3481,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "القيم تقديرية وقابلة للتغيير. ويتم [حساب نتيجة الأداء](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) مباشرة من خلال هذه المقاييس."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "عرض سجلّ التتبّع الأصلي"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "عرض سجلّ التتبُّع"

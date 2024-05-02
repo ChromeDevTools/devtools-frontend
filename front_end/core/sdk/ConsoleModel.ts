@@ -35,34 +35,35 @@ import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
 import {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
-
-export {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
-
-import {CPUProfilerModel, Events as CPUProfilerModelEvents, type EventData} from './CPUProfilerModel.js';
-
-import {Events as DebuggerModelEvents, type Location, BreakpointType} from './DebuggerModel.js';
+import {CPUProfilerModel, type EventData, Events as CPUProfilerModelEvents} from './CPUProfilerModel.js';
+import {
+  BreakpointType,
+  COND_BREAKPOINT_SOURCE_URL,
+  Events as DebuggerModelEvents,
+  type Location,
+  LOGPOINT_SOURCE_URL,
+} from './DebuggerModel.js';
 import {LogModel} from './LogModel.js';
 import {RemoteObject} from './RemoteObject.js';
 import {
   Events as ResourceTreeModelEvents,
-  ResourceTreeModel,
-  type ResourceTreeFrame,
   type PrimaryPageChangeType,
+  type ResourceTreeFrame,
+  ResourceTreeModel,
 } from './ResourceTreeModel.js';
-
 import {
-  Events as RuntimeModelEvents,
-  RuntimeModel,
   type ConsoleAPICall,
+  Events as RuntimeModelEvents,
   type ExceptionWithTimestamp,
   type ExecutionContext,
   type QueryObjectRequestedEvent,
+  RuntimeModel,
 } from './RuntimeModel.js';
+import {SDKModel} from './SDKModel.js';
 import {Capability, type Target, Type} from './Target.js';
 import {TargetManager} from './TargetManager.js';
-import {SDKModel} from './SDKModel.js';
 
-import {COND_BREAKPOINT_SOURCE_URL, LOGPOINT_SOURCE_URL} from './DebuggerModel.js';
+export {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
 
 const UIStrings = {
   /**
@@ -187,7 +188,8 @@ export class ConsoleModel extends SDKModel<EventTypes> {
           replMode: true,
           allowUnsafeEvalBlockedByCSP: false,
         },
-        Common.Settings.Settings.instance().moduleSetting('consoleUserActivationEval').get(), /* awaitPromise */ false);
+        Common.Settings.Settings.instance().moduleSetting('console-user-activation-eval').get(),
+        /* awaitPromise */ false);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);
     if ('error' in result) {
       return;
@@ -273,7 +275,10 @@ export class ConsoleModel extends SDKModel<EventTypes> {
     let message = '';
     if (call.args.length && call.args[0].unserializableValue) {
       message = call.args[0].unserializableValue;
-    } else if (call.args.length && (typeof call.args[0].value !== 'object' || call.args[0].value === null)) {
+    } else if (
+        call.args.length &&
+        ((typeof call.args[0].value !== 'object' && typeof call.args[0].value !== 'undefined') ||
+         call.args[0].value === null)) {
       message = String(call.args[0].value);
     } else if (call.args.length && call.args[0].description) {
       message = call.args[0].description;
@@ -314,7 +319,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
   }
 
   private clearIfNecessary(): void {
-    if (!Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').get()) {
+    if (!Common.Settings.Settings.instance().moduleSetting('preserve-console-log').get()) {
       this.clear();
     }
     ++this.#pageLoadSequenceNumber;
@@ -322,7 +327,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
 
   private primaryPageChanged(
       event: Common.EventTarget.EventTargetEvent<{frame: ResourceTreeFrame, type: PrimaryPageChangeType}>): void {
-    if (Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').get()) {
+    if (Common.Settings.Settings.instance().moduleSetting('preserve-console-log').get()) {
       const {frame} = event.data;
       if (frame.backForwardCacheDetails.restoredFromCache) {
         Common.Console.Console.instance().log(i18nString(UIStrings.bfcacheNavigation, {PH1: frame.url}));
@@ -466,8 +471,6 @@ export class ConsoleModel extends SDKModel<EventTypes> {
 
     const globalObject = result.object;
     const callFunctionResult =
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // @ts-expect-error
         await globalObject.callFunction(saveVariable, [RemoteObject.toCallArgument(remoteObject)]);
     globalObject.release();
     if (callFunctionResult.wasThrown || !callFunctionResult.object || callFunctionResult.object.type !== 'string') {
@@ -503,8 +506,6 @@ export class ConsoleModel extends SDKModel<EventTypes> {
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   ConsoleCleared = 'ConsoleCleared',
   MessageAdded = 'MessageAdded',
@@ -530,8 +531,10 @@ export interface AffectedResources {
   issueId?: Protocol.Audits.IssueId;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function extractExceptionMetaData(metaData: any|undefined): AffectedResources|undefined {
+function extractExceptionMetaData(metaData?: {
+  requestId?: Protocol.Network.RequestId,
+  issueId?: Protocol.Audits.IssueId,
+}): AffectedResources|undefined {
   if (!metaData) {
     return undefined;
   }

@@ -11,45 +11,50 @@ module.exports = {
   'rules': {
     // L10n rules are only relevant in 'front_end'.
     'rulesdir/l10n_filename_matches': [
-      2, {
+      'error', {
         rootFrontendDirectory: __dirname,
       }
     ],
-    'rulesdir/l10n_i18nString_call_only_with_uistrings': 2,
-    'rulesdir/l10n_no_i18nString_calls_module_instantiation': 2,
-    'rulesdir/l10n_no_locked_or_placeholder_only_phrase': 2,
-    'rulesdir/l10n_no_uistrings_export': 2,
-    'rulesdir/l10n_no_unused_message': 2,
-    'rulesdir/custom_element_definitions_location': [2, {
+    'rulesdir/l10n_i18nString_call_only_with_uistrings': 'error',
+    'rulesdir/l10n_no_i18nString_calls_module_instantiation': 'error',
+    'rulesdir/l10n_no_locked_or_placeholder_only_phrase': 'error',
+    'rulesdir/l10n_no_uistrings_export': 'error',
+    'rulesdir/l10n_no_unused_message': 'error',
+    'rulesdir/custom_element_definitions_location': ['error', {
       rootFrontendDirectory: __dirname,
     }],
-    'rulesdir/custom_element_component_definition': 2,
   },
   'overrides': [
     {
       'files': ['*.ts'],
       'rules': {
-        '@typescript-eslint/explicit-function-return-type': 2,
-        'rulesdir/no_importing_images_from_src': 2,
-        'rulesdir/enforce_bound_render_for_schedule_render': 2,
-        'rulesdir/enforce_custom_event_names': 2,
-        'rulesdir/set_data_type_reference': 2,
-        'rulesdir/no_bound_component_methods': 2,
-        'rulesdir/lit_html_data_as_type': 2,
-        'rulesdir/lit_no_style_interpolation': 2,
-        'rulesdir/ban_literal_devtools_component_tag_names': 2,
-        'rulesdir/ban_self_closing_custom_element_tagnames': 2,
-        'rulesdir/ban_style_tags_in_lit_html': 2,
-        'rulesdir/ban_a_tags_in_lit_html': 2,
-        'rulesdir/check_component_naming': 2,
-        'rulesdir/check_css_import': 2,
-        'rulesdir/check_enumerated_histograms': 2,
-        'rulesdir/check_was_shown_methods': 2,
-        'rulesdir/static_custom_event_names': 2,
-        'rulesdir/lit_html_host_this': 2,
-        'rulesdir/lit_html_no_attribute_quotes': 2,
-        'rulesdir/lit_template_result_or_nothing': 2,
-        'rulesdir/inject_checkbox_styles': 2,
+        '@typescript-eslint/explicit-function-return-type': [
+            'error', {
+              'allowExpressions': true,
+              'allowConciseArrowFunctionExpressionsStartingWithVoid': true,
+              'allowIIFEs':true,
+            },
+        ],
+        'rulesdir/no_importing_images_from_src': 'error',
+        'rulesdir/enforce_bound_render_for_schedule_render': 'error',
+        'rulesdir/enforce_custom_event_names': 'error',
+        'rulesdir/set_data_type_reference': 'error',
+        'rulesdir/no_bound_component_methods': 'error',
+        'rulesdir/lit_html_data_as_type': 'error',
+        'rulesdir/lit_no_style_interpolation': 'error',
+        'rulesdir/ban_literal_devtools_component_tag_names': 'error',
+        'rulesdir/ban_self_closing_custom_element_tagnames': 'error',
+        'rulesdir/ban_style_tags_in_lit_html': 'error',
+        'rulesdir/ban_a_tags_in_lit_html': 'error',
+        'rulesdir/check_component_naming': 'error',
+        'rulesdir/check_css_import': 'error',
+        'rulesdir/check_enumerated_histograms': 'error',
+        'rulesdir/check_was_shown_methods': 'error',
+        'rulesdir/static_custom_event_names': 'error',
+        'rulesdir/lit_html_host_this': 'error',
+        'rulesdir/lit_html_no_attribute_quotes': 'error',
+        'rulesdir/lit_template_result_or_nothing': 'error',
+        'rulesdir/inject_checkbox_styles': 'error',
         '@typescript-eslint/naming-convention': [
           'error', {
             'selector': ['property', 'parameterProperty'],
@@ -146,19 +151,27 @@ module.exports = {
       }
     },
     {
+      'files': ['*.test.ts', '**/testing/*.ts'],
+      'rules': {
+        'rulesdir/check_component_naming': 'off',
+        'rulesdir/custom_element_definitions_location': 'off',
+        '@typescript-eslint/explicit-function-return-type': 'off',
+      },
+    },
+    {
       'files': ['panels/**/components/*.ts', 'ui/components/**/*.ts', 'entrypoints/**/*.ts'],
       'rules': {
-        'rulesdir/use_private_class_members': 2,
+        'rulesdir/use_private_class_members': 'error',
       }
     },
     // TODO(crbug/1402569): Remove once LitElement is fully adopted.
     {
-      'files': ['panels/recorder/**/*.ts', 'panels/protocol_monitor/**/*.ts'],
+      'files': ['panels/recorder/**/*.ts', 'panels/protocol_monitor/**/*.ts', 'ui/components/suggestion_input/*.ts'],
       'rules': {
-        'rulesdir/check_component_naming': 0,
-        'rulesdir/ban_literal_devtools_component_tag_names': 0,
+        'rulesdir/check_component_naming': 'off',
+        'rulesdir/ban_literal_devtools_component_tag_names': 'off',
         // TODO(crbug/1402569): Reenable once https://github.com/microsoft/TypeScript/issues/48885 is closed.
-        'rulesdir/use_private_class_members': 0,
+        'rulesdir/use_private_class_members': 'off',
       }
     }
   ]

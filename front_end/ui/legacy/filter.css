@@ -29,11 +29,12 @@
  */
 
 .filter-bar {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-cdt-base-container);
   flex: none;
   flex-wrap: wrap;
   align-items: center;
-  border-bottom: var(--legacy-divider-border);
+  border-bottom: 1px solid var(--sys-color-divider);
+  color: var(--sys-color-on-surface-subtle);
 }
 
 .filter-text-filter {
@@ -56,42 +57,49 @@
 }
 
 .filter-bitset-filter span {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
+  outline: 1px solid var(--sys-color-neutral-outline);
+  outline-offset: -1px;
+  box-sizing: border-box;
   display: inline-block;
   flex: none;
   margin: auto 2px;
-  padding: 3px;
+  padding: 3px 6px;
   background: transparent;
   border-radius: 6px;
   overflow: hidden;
   cursor: pointer;
-  line-height: 1.2;
+  font-weight: 500;
+  font-size: 11px;
 }
 
 .filter-bitset-filter span:focus-visible {
   outline: -webkit-focus-ring-color auto 5px;
 }
 
+.filter-bitset-filter span:hover {
+  outline: none;
+  background: var(--sys-color-state-hover-on-subtle);
+}
+
+.filter-bitset-filter span.selected,
+.filter-bitset-filter span:active {
+  color: var(--sys-color-on-tonal-container);
+  outline: none;
+  background-color: var(--sys-color-tonal-container);
+}
+
 .filter-bitset-filter-divider {
-  background-color: var(--color-details-hairline);
+  background-color: var(--sys-color-divider);
   height: 16px;
   width: 1px;
   margin: auto 2px;
   display: inline-block;
 }
 
-.filter-bitset-filter span:hover {
-  background: var(--color-background-elevation-2);
-}
-
-.filter-bitset-filter span.selected,
-.filter-bitset-filter span:active {
-  background: var(--color-background-highlight);
-}
-
 .filter-checkbox-filter {
   padding-left: 4px;
-  padding-right: 2px;
+  padding-right: 7px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -104,6 +112,54 @@
 .filter-checkbox-filter > [is="dt-checkbox"] {
   display: flex;
   margin: auto 0;
+}
+
+.toolbar-has-dropdown-shrinkable {
+  flex-shrink: 1;
+}
+
+.filter-divider {
+  background-color: var(--sys-color-on-base-divider);
+  width: 1px;
+  margin: 5px 4px;
+  height: 16px;
+}
+
+.toolbar-button {
+  white-space: nowrap;
+  overflow: hidden;
+  min-width: 28px;
+  background: transparent;
+  border-radius: 0;
+}
+
+.toolbar-button .active-filters-count {
+  margin-right: 5px;
+
+  --override-adorner-background-color: var(--sys-color-tonal-container);
+  --override-adorner-border-color: var(--sys-color-tonal-container);
+  --override-adorner-text-color: var(--sys-color-primary);
+  --override-adorner-font-size: 10px;
+
+  font-weight: 700;
+}
+
+.toolbar-text {
+  margin: 0 4px 0 0;
+  text-overflow: ellipsis;
+  flex: auto;
+  overflow: hidden;
+  text-align: right;
+}
+
+.dropdown-filterbar {
+  justify-content: space-between;
+  padding: 0 3px 0 5px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  display: flex;
+  background-color: transparent;
+  color: var(--sys-color-on-surface-subtle);
 }
 
 .filter-input-field {
@@ -120,36 +176,49 @@
 .filter-input-container {
   margin: 0 3px;
   display: flex;
-  background: var(--color-background);
+  background: var(--sys-color-cdt-base-container);
+  border: 1px solid var(--sys-color-neutral-outline);
+  border-radius: 4px;
   width: 163px;
+
+  &:focus-within {
+    border-color: var(--sys-color-state-focus-ring);
+  }
+
+  &:hover:not(:focus-within) {
+    background: var(--sys-color-state-hover-on-subtle);
+  }
 }
 
-.filter-input-container:hover {
-  box-shadow: var(--legacy-focus-ring-inactive-shadow);
-}
-
-.filter-input-container:focus-within,
 .filter-text-filter:not(.filter-text-empty) .filter-input-container {
-  box-shadow: var(--legacy-focus-ring-active-shadow);
+  border-color: var(--sys-color-state-focus-ring);
 }
 
 .filter-input-clear-button {
   opacity: 70%;
   height: 16px;
-  margin-top: 1px;
+  margin: 0;
   cursor: pointer;
-}
+  border: none;
+  background: none;
+  padding: 1px 2px;
 
-.filter-cancel-button {
-  display: block;
+  devtools-icon {
+    display: block;
+  }
+
+  &:hover {
+    opacity: 99%;
+  }
 }
 
 .filter-text-empty .filter-input-clear-button {
   display: none;
 }
 
-.filter-input-clear-button:hover {
-  opacity: 99%;
+button.toolbar-item:focus-visible {
+  background: var(--sys-color-state-hover-on-subtle);
+  border-radius: 2px;
 }
 
 @media (forced-colors: active) {

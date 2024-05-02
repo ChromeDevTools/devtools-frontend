@@ -71,8 +71,15 @@ if (!fs.existsSync(devtoolsRootFolder)) {
   process.exit(1);
 }
 
-const server = http.createServer(requestHandler);
-server.listen(serverPort);
+process.on('uncaughtException', error => {
+  console.error('uncaughtException', error);
+});
+process.on('unhandledRejection', error => {
+  console.error('unhandledRejection', error);
+});
+
+const server = http.createServer((req, res) => requestHandler(req, res).catch(err => send500(res, err)));
+server.listen(serverPort, 'localhost');
 server.once('listening', () => {
   if (process.send) {
     process.send(serverPort);
@@ -88,6 +95,18 @@ server.once('error', error => {
   }
   throw error;
 });
+
+// All paths that are injected globally into real DevTools, so we do the same
+// to avoid styles being broken in the component server.
+const styleSheetPaths = [
+  'front_end/ui/legacy/themeColors.css',
+  'front_end/ui/legacy/tokens.css',
+  'front_end/ui/legacy/applicationColorTokens.css',
+  'front_end/ui/legacy/inspectorCommon.css',
+  'front_end/ui/legacy/inspectorSyntaxHighlight.css',
+  'front_end/ui/legacy/textButton.css',
+  'front_end/ui/components/docs/component_docs_styles.css',
+];
 
 function createComponentIndexFile(componentPath, componentExamples) {
   const componentName = componentPath.replace('/front_end/ui/components/docs/', '').replace(/_/g, ' ').replace('/', '');
@@ -146,6 +165,11 @@ function createComponentIndexFile(componentPath, componentExamples) {
 }
 
 function createServerIndexFile(componentNames) {
+  const linksToStyleSheets =
+      styleSheetPaths
+          .map(link => `<link rel="stylesheet" href="${sharedResourcesBase}${path.join(...link.split('/'))}" />`)
+          .join('\n');
+
   // clang-format off
   return `<!DOCTYPE html>
   <html>
@@ -153,9 +177,7 @@ function createServerIndexFile(componentNames) {
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width" />
       <title>DevTools components</title>
-      <link rel="stylesheet" href="${sharedResourcesBase}front_end/ui/legacy/themeColors.css" />
-      <link rel="stylesheet" href="${sharedResourcesBase}front_end/ui/legacy/applicationColorTokens.css" />
-      <link rel="stylesheet" href="${sharedResourcesBase}front_end/ui/components/docs/component_docs_styles.css" />
+      ${linksToStyleSheets}
     </head>
     <body id="index-page">
       <h1>DevTools components</h1>
@@ -172,6 +194,9 @@ function createServerIndexFile(componentNames) {
 
 async function getExamplesForPath(filePath) {
   const componentDirectory = path.join(componentDocsBaseFolder, filePath);
+  if (!await checkFileExists(componentDirectory)) {
+    return null;
+  }
   const allFiles = await fs.promises.readdir(componentDirectory);
   const htmlExampleFiles = allFiles.filter(file => {
     return path.extname(file) === '.html';
@@ -190,6 +215,12 @@ function respondWithHtml(response, html) {
 function send404(response, message) {
   response.writeHead(404);
   response.write(message, 'utf8');
+  response.end();
+}
+
+function send500(response, error) {
+  response.writeHead(500);
+  response.write(error.toString(), 'utf8');
   response.end();
 }
 
@@ -258,7 +289,11 @@ async function requestHandler(request, response) {
   } else if (filePath.startsWith('/front_end/ui/components/docs') && path.extname(filePath) === '') {
     // This means it's a component path like /breadcrumbs.
     const componentHtml = await getExamplesForPath(filePath);
-    respondWithHtml(response, componentHtml);
+    if (componentHtml !== null) {
+      respondWithHtml(response, componentHtml);
+    } else {
+      send404(response, '404, not a valid component');
+    }
     return;
   } else if (tracesMode) {
     return handleTracesModeRequest(request, response, filePath);
@@ -281,20 +316,24 @@ async function requestHandler(request, response) {
      */
     const baseUrlForSharedResource =
         componentDocsBaseArg && componentDocsBaseArg.endsWith(sharedResourcesBase) ? '/' : `/${sharedResourcesBase}`;
-    const fileContents = await fs.promises.readFile(path.join(componentDocsBaseFolder, filePath), {encoding: 'utf8'});
-    const themeColoursLink = `<link rel="stylesheet" href="${
-        path.join(baseUrlForSharedResource, 'front_end', 'ui', 'legacy', 'themeColors.css')}" type="text/css" />`;
-    const applicationColorTokensLink = `<link rel="stylesheet" href="${
-        path.join(
-            baseUrlForSharedResource, 'front_end', 'ui', 'legacy', 'applicationColorTokens.css')}" type="text/css" />`;
-    const inspectorCommonLink = `<link rel="stylesheet" href="${
-        path.join(baseUrlForSharedResource, 'front_end', 'ui', 'legacy', 'inspectorCommon.css')}" type="text/css" />`;
+    const fullPath = path.join(componentDocsBaseFolder, filePath);
+    if (!(await checkFileExists(fullPath))) {
+      send404(response, '404, File not found');
+      return;
+    }
+    const fileContents = await fs.promises.readFile(fullPath, {encoding: 'utf8'});
+
+    const linksToStyleSheets =
+        styleSheetPaths
+            .map(
+                link => `<link rel="stylesheet" href="${
+                    path.join(baseUrlForSharedResource, ...link.split('/'))}" type="text/css" />`)
+            .join('\n');
+
     const toggleDarkModeScript = `<script type="module" src="${
         path.join(baseUrlForSharedResource, 'front_end', 'ui', 'components', 'docs', 'component_docs.js')}"></script>`;
-    const newFileContents =
-        fileContents
-            .replace('</head>', `${themeColoursLink}\n${applicationColorTokensLink}\n${inspectorCommonLink}\n</head>`)
-            .replace('</body>', toggleDarkModeScript + '\n</body>');
+    const newFileContents = fileContents.replace('</head>', `${linksToStyleSheets}</head>`)
+                                .replace('</body>', toggleDarkModeScript + '\n</body>');
     respondWithHtml(response, newFileContents);
 
   } else {
@@ -491,7 +530,7 @@ function createTracesIndexFile(traceFilenames) {
  * @param {string|null} filePath
  */
 async function handleTracesModeRequest(request, response, filePath) {
-  const traceFolder = path.resolve(path.join(process.cwd(), 'test/unittests/fixtures/traces/'));
+  const traceFolder = path.resolve(path.join(process.cwd(), 'front_end/panels/timeline/fixtures/traces/'));
   if (filePath === '/') {
     const traceFilenames = fs.readdirSync(traceFolder).filter(f => f.includes('json'));
     const html = createTracesIndexFile(traceFilenames);

@@ -18,7 +18,7 @@ import {$, $$, click, getBrowserAndPages, waitFor, waitForFunction} from '../../
 import {it} from '../../shared/mocha-extensions.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../helpers/shared.js';
 
-import {type ElementHandle} from 'puppeteer';
+import {type ElementHandle} from 'puppeteer-core';
 
 function assertNumberBetween(number: number, min: number, max: number) {
   assert.isAbove(number, min);
@@ -56,7 +56,9 @@ async function getColumnPercentageWidthsRounded(dataGrid: ElementHandle<Element>
   }));
 }
 
-describe('data grid', async () => {
+// Constantly failing in autoroll not because of the tests itself but
+// because of the code coverage in afterEach.
+describe.skip('[crbug.com/1463394]: data grid', () => {
   preloadForCodeCoverage('data_grid/basic.html');
 
   it('lists the data grid contents', async () => {

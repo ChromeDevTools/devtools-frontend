@@ -30,15 +30,15 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
-import type * as Protocol from '../../generated/protocol.js';
 
-import {Events, type NetworkRequest} from './NetworkRequest.js';
+import {type NetworkRequest} from './NetworkRequest.js';
 import {type ResourceTreeFrame, type ResourceTreeModel} from './ResourceTreeModel.js';
 
-export class Resource implements TextUtils.ContentProvider.ContentProvider {
+export class Resource implements TextUtils.ContentProvider.SafeContentProvider {
   readonly #resourceTreeModel: ResourceTreeModel;
   #requestInternal: NetworkRequest|null;
   #urlInternal!: Platform.DevToolsPath.UrlString;
@@ -50,11 +50,13 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
   #isGeneratedInternal: boolean;
   #lastModifiedInternal: Date|null;
   readonly #contentSizeInternal: number|null;
-  #contentInternal!: string|null;
-  #contentEncodedInternal!: boolean;
-  readonly #pendingContentCallbacks: ((arg0: Object|null) => void)[];
   #parsedURLInternal?: Common.ParsedURL.ParsedURL;
-  #contentRequested?: boolean;
+  #contentData: TextUtils.ContentData.ContentData|null = null;
+  /**
+   * There is always at most one CDP "getResourceContent" call in-flight. But once it's done
+   * we'll hit the backend again in case we failed.
+   */
+  #pendingContentData: Promise<TextUtils.ContentData.ContentDataOrError>|null = null;
 
   constructor(
       resourceTreeModel: ResourceTreeModel, request: NetworkRequest|null, url: Platform.DevToolsPath.UrlString,
@@ -74,10 +76,6 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
 
     this.#lastModifiedInternal = lastModified && Platform.DateUtilities.isValid(lastModified) ? lastModified : null;
     this.#contentSizeInternal = contentSize;
-    this.#pendingContentCallbacks = [];
-    if (this.#requestInternal && !this.#requestInternal.finished) {
-      this.#requestInternal.addEventListener(Events.FinishedLoading, this.requestFinished, this);
-    }
   }
 
   lastModified(): Date|null {
@@ -139,7 +137,10 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
   }
 
   get content(): string|null {
-    return this.#contentInternal;
+    if (this.#contentData?.isTextContent) {
+      return this.#contentData.text;
+    }
+    return this.#contentData?.base64 ?? null;
   }
 
   get isGenerated(): boolean {
@@ -163,19 +164,27 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
   }
 
   async requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    if (typeof this.#contentInternal !== 'undefined') {
-      return {
-        content: (this.#contentInternal as string),
-        isEncoded: this.#contentEncodedInternal,
-      };
-    }
+    const contentData = await this.requestContentData();
+    return TextUtils.ContentData.ContentData.asDeferredContent(contentData);
+  }
 
-    return new Promise(resolve => {
-      this.#pendingContentCallbacks.push((resolve as (arg0: Object|null) => void));
-      if (!this.#requestInternal || this.#requestInternal.finished) {
-        void this.innerRequestContent();
+  async requestContentData(): Promise<TextUtils.ContentData.ContentDataOrError> {
+    if (this.#contentData) {
+      return this.#contentData;
+    }
+    if (this.#pendingContentData) {
+      return this.#pendingContentData;
+    }
+    this.#pendingContentData = this.innerRequestContent().then(contentData => {
+      // If an error happended we don't set `this.#contentData` so future `requestContentData` will
+      // attempt again to hit the backend for this Resource.
+      if (!TextUtils.ContentData.ContentData.isError(contentData)) {
+        this.#contentData = contentData;
       }
+      this.#pendingContentData = null;
+      return contentData;
     });
+    return this.#pendingContentData;
   }
 
   canonicalMimeType(): string {
@@ -192,83 +201,37 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     }
     const result = await this.#resourceTreeModel.target().pageAgent().invoke_searchInResource(
         {frameId: this.frameId, url: this.url, query, caseSensitive, isRegex});
-    return result.result || [];
+    return TextUtils.TextUtils.performSearchInSearchMatches(result.result || [], query, caseSensitive, isRegex);
   }
 
   async populateImageSource(image: HTMLImageElement): Promise<void> {
-    const {content} = await this.requestContent();
-    const encoded = this.#contentEncodedInternal;
-    image.src =
-        TextUtils.ContentProvider.contentAsDataURL(content, this.#mimeTypeInternal, encoded) || this.#urlInternal;
-  }
-
-  private requestFinished(): void {
-    if (this.#requestInternal) {
-      this.#requestInternal.removeEventListener(Events.FinishedLoading, this.requestFinished, this);
-    }
-    if (this.#pendingContentCallbacks.length) {
-      void this.innerRequestContent();
-    }
-  }
-
-  private async innerRequestContent(): Promise<void> {
-    if (this.#contentRequested) {
+    const contentData = await this.requestContentData();
+    if (TextUtils.ContentData.ContentData.isError(contentData)) {
       return;
     }
-    this.#contentRequested = true;
+    image.src = contentData.asDataUrl() ?? this.#urlInternal;
+  }
 
-    let loadResult: {
-      content: string,
-      isEncoded: boolean,
-    }|{
-      content: null,
-      error: string,
-      isEncoded: false,
-    }|{
-      content: string,
-      isEncoded: boolean,
-    }|null = null;
+  private async innerRequestContent(): Promise<TextUtils.ContentData.ContentDataOrError> {
     if (this.request) {
-      const contentData = await this.request.contentData();
-      if (!contentData.error) {
-        this.#contentInternal = contentData.content;
-        this.#contentEncodedInternal = contentData.encoded;
-        loadResult = {content: (contentData.content as string), isEncoded: contentData.encoded};
-      }
-    }
-    if (!loadResult) {
-      const response = await this.#resourceTreeModel.target().pageAgent().invoke_getResourceContent(
-          {frameId: this.frameId as Protocol.Page.FrameId, url: this.url});
-      const protocolError = response.getError();
-      if (protocolError) {
-        this.#contentInternal = null;
-        loadResult = {content: null, error: protocolError, isEncoded: false};
-      } else {
-        this.#contentInternal = response.content;
-        loadResult = {content: response.content, isEncoded: response.base64Encoded};
-      }
-      this.#contentEncodedInternal = response.base64Encoded;
+      // The `contentData` promise only resolves once the request is done.
+      return this.request.contentData();
     }
 
-    if (this.#contentInternal === null) {
-      this.#contentEncodedInternal = false;
+    const response = await this.#resourceTreeModel.target().pageAgent().invoke_getResourceContent(
+        {frameId: this.frameId as Protocol.Page.FrameId, url: this.url});
+    const error = response.getError();
+    if (error) {
+      return {error};
     }
-
-    for (const callback of this.#pendingContentCallbacks.splice(0)) {
-      callback(loadResult);
-    }
-
-    this.#contentRequested = undefined;
+    return new TextUtils.ContentData.ContentData(response.content, response.base64Encoded, this.mimeType);
   }
 
   hasTextContent(): boolean {
-    if (this.#type.isTextType()) {
+    if (this.#contentData?.isTextContent) {
       return true;
     }
-    if (this.#type === Common.ResourceType.resourceTypes.Other) {
-      return Boolean(this.#contentInternal) && !this.#contentEncodedInternal;
-    }
-    return false;
+    return this.#type.isTextType() || Platform.MimeType.isTextType(this.mimeType);
   }
 
   frame(): ResourceTreeFrame|null {

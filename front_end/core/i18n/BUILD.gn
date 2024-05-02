@@ -6,6 +6,7 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../../scripts/build/ninja/node.gni")
+import("../../../third_party/typescript/typescript.gni")
 
 import("//$devtools_root_location/config/gni/i18n.gni")
 
@@ -78,4 +79,19 @@ devtools_pre_built("locales_js") {
   ]
 
   deps = [ ":generate_locales_js" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "DevToolsLocale.test.ts",
+    "i18n.test.ts",
+    "time-utilities.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+  ]
 }

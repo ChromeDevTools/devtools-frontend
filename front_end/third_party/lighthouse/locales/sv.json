@@ -1,6 +1,6 @@
 {
   "core/audits/accessibility/accesskeys.js | description": {
-    "message": "Med åtkomsttangenter kan användaren snabbt flytta fokus till en viss del av sidan. Ingen åtkomsttangent får användas flera gånger om navigeringen ska fungera ordentligt. [Läs mer om åtkomsttangenter](https://dequeuniversity.com/rules/axe/4.7/accesskeys)."
+    "message": "Med åtkomsttangenter kan användaren snabbt flytta fokus till en viss del av sidan. Ingen åtkomsttangent får användas flera gånger om navigeringen ska fungera ordentligt. [Läs mer om åtkomsttangenter](https://dequeuniversity.com/rules/axe/4.8/accesskeys)."
   },
   "core/audits/accessibility/accesskeys.js | failureTitle": {
     "message": "Alla värden på `[accesskey]` är inte unika"
@@ -9,7 +9,7 @@
     "message": "`[accesskey]` värden är unika"
   },
   "core/audits/accessibility/aria-allowed-attr.js | description": {
-    "message": "Varje ARIA-`role` har stöd för ett visst antal attribut av typen `aria-*`. Om dessa inte överensstämmer blir attributen av typen `aria-*` ogiltiga. [Läs mer om hur du matchar ARIA-attribut med deras roller](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-attr)."
+    "message": "Varje ARIA-`role` har stöd för ett visst antal attribut av typen `aria-*`. Om dessa inte överensstämmer blir attributen av typen `aria-*` ogiltiga. [Läs mer om hur du matchar ARIA-attribut med deras roller](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-attr)."
   },
   "core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
     "message": "Alla attribut av typen `[aria-*]` stämmer inte med elementets roll"
@@ -17,8 +17,17 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Attributen av typen `[aria-*]` stämmer med elementets roll"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "Med hjälp av ARIA-`role` kan hjälpmedelstekniken veta rollen för varje element på webbsidan. Om `role`-värdena är felstavade, inte befintliga ARIA-`role`-värden eller abstrakta roller kommer syftet med elementet inte att kommuniceras med användarna av hjälpmedelsteknik. [Läs mer om ARIA-roller](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Värden som tilldelats till `role=\"\"` är inte giltiga ARIA-roller."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Värden som tilldelats till `role=\"\"` är giltiga ARIA-roller."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
-    "message": "Utan en maskinläsbar etikett läses element upp med en generell etikett av skärmläsarna. Det gör dem oanvändbara för personer som behöver använda en skärmläsare. [Läs mer om hur du gör kommandoelement mer tillgängliga](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
+    "message": "Utan en maskinläsbar etikett läses element upp med en generell etikett av skärmläsarna. Det gör dem oanvändbara för personer som behöver använda en skärmläsare. [Läs mer om hur du gör kommandoelement mer tillgängliga](https://dequeuniversity.com/rules/axe/4.8/aria-command-name)."
   },
   "core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "Namnen för `button`-, `link`- och `menuitem`-elementen är inte igenkännliga."
@@ -26,8 +35,17 @@
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "Namnen för `button`-, `link`- och `menuitem`-elementen är igenkännliga"
   },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "ARIA-dialogelement utan maskinläsbara etiketter kan hindra skärmläsaranvändare från att bedöma syftet med dessa element. [Läs om hur du gör ARIA-dialogelement mer tillgängliga](https://dequeuniversity.com/rules/axe/4.8/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "Element med `role=\"dialog\"` eller `role=\"alertdialog\"` har inte maskinläsbara etiketter."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "Element med `role=\"dialog\"` eller `role=\"alertdialog\"` har maskinläsbara etiketter."
+  },
   "core/audits/accessibility/aria-hidden-body.js | description": {
-    "message": "Hjälpmedelstekniker som skärmläsare fungerar inte ordentligt när `aria-hidden=\"true\"` har angetts för dokumentet `<body>`. [Läs om hur `aria-hidden` påverkar dokumenttexten](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
+    "message": "Hjälpmedelstekniker som skärmläsare fungerar inte ordentligt när `aria-hidden=\"true\"` har angetts för dokumentet `<body>`. [Läs om hur `aria-hidden` påverkar dokumenttexten](https://dequeuniversity.com/rules/axe/4.8/aria-hidden-body)."
   },
   "core/audits/accessibility/aria-hidden-body.js | failureTitle": {
     "message": "Alla `[aria-hidden=\"true\"]` finns i dokumentet `<body>`"
@@ -36,7 +54,7 @@
     "message": "Alla `[aria-hidden=\"true\"]` finns inte i dokumentet `<body>`"
   },
   "core/audits/accessibility/aria-hidden-focus.js | description": {
-    "message": "Fokuserbara underordnade element i `[aria-hidden=\"true\"]`-element förhindrar att de interaktiva elementen blir tillgängliga för användare av hjälpmedelstekniker som skärmläsare. [Läs mer om hur `aria-hidden` påverkar fokuserbara element](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-focus)."
+    "message": "Fokuserbara underordnade element i `[aria-hidden=\"true\"]`-element förhindrar att de interaktiva elementen blir tillgängliga för användare av hjälpmedelstekniker som skärmläsare. [Läs mer om hur `aria-hidden` påverkar fokuserbara element](https://dequeuniversity.com/rules/axe/4.8/aria-hidden-focus)."
   },
   "core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
     "message": "Alla `[aria-hidden=\"true\"]`-element innehåller fokuserbara underordnade element"
@@ -45,7 +63,7 @@
     "message": "Alla `[aria-hidden=\"true\"]`-element har inte fokuserbara underordnade element"
   },
   "core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Utan en maskinläsbar etikett läses inmatningsfält upp med en generell etikett av skärmläsarna. Det gör dem oanvändbara för personer som behöver använda en skärmläsare. [Läs mer om etiketter för inmatningsfält](https://dequeuniversity.com/rules/axe/4.7/aria-input-field-name)."
+    "message": "Utan en maskinläsbar etikett läses inmatningsfält upp med en generell etikett av skärmläsarna. Det gör dem oanvändbara för personer som behöver använda en skärmläsare. [Läs mer om etiketter för inmatningsfält](https://dequeuniversity.com/rules/axe/4.8/aria-input-field-name)."
   },
   "core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "Namnen för inmatningsfälten för ARIA är inte tillgängliga"
@@ -54,7 +72,7 @@
     "message": "Namnen för inmatningsfälten för ARIA är tillgängliga"
   },
   "core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "Utan en maskinläsbar etikett läses mätarelement upp med en generell etikett av skärmläsare. Detta gör elementet oanvändbart för personer som behöver använda en skärmläsare. [Läs mer om hur du sätter etikett på `meter` element](https://dequeuniversity.com/rules/axe/4.7/aria-meter-name)."
+    "message": "Utan en maskinläsbar etikett läses mätarelement upp med en generell etikett av skärmläsare. Detta gör elementet oanvändbart för personer som behöver använda en skärmläsare. [Läs mer om hur du sätter etikett på `meter` element](https://dequeuniversity.com/rules/axe/4.8/aria-meter-name)."
   },
   "core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "Namnen för `meter`-elementen för ARIA är inte igenkännliga."
@@ -63,7 +81,7 @@
     "message": "Namnen för `meter`-elementen för ARIA är igenkännliga"
   },
   "core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Utan en maskinläsbar etikett läses `progressbar`-element upp med en generell etikett av skärmläsarna. Det gör dem oanvändbara för personer som behöver använda en skärmläsare. [Läs mer om hur du sätter etikett på `progressbar`-element](https://dequeuniversity.com/rules/axe/4.7/aria-progressbar-name)."
+    "message": "Utan en maskinläsbar etikett läses `progressbar`-element upp med en generell etikett av skärmläsarna. Det gör dem oanvändbara för personer som behöver använda en skärmläsare. [Läs mer om hur du sätter etikett på `progressbar`-element](https://dequeuniversity.com/rules/axe/4.8/aria-progressbar-name)."
   },
   "core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "Namnen för `progressbar`-elementen för ARIA är inte igenkännliga."
@@ -72,7 +90,7 @@
     "message": "Namnen för `progressbar`-elementen för ARIA är igenkännliga"
   },
   "core/audits/accessibility/aria-required-attr.js | description": {
-    "message": "Vissa ARIA-roller har obligatoriska attribut som beskriver elementets tillstånd för skärmläsare. [Läs mer om roller och obligatoriska attribut](https://dequeuniversity.com/rules/axe/4.7/aria-required-attr)."
+    "message": "Vissa ARIA-roller har obligatoriska attribut som beskriver elementets tillstånd för skärmläsare. [Läs mer om roller och obligatoriska attribut](https://dequeuniversity.com/rules/axe/4.8/aria-required-attr)."
   },
   "core/audits/accessibility/aria-required-attr.js | failureTitle": {
     "message": "Vissa element med attributet `[role]` har inte alla obligatoriska attribut av typen `[aria-*]`"
@@ -81,7 +99,7 @@
     "message": "Alla element med `[role]`-attribut har alla obligatoriska attribut av typen `[aria-*]`"
   },
   "core/audits/accessibility/aria-required-children.js | description": {
-    "message": "Vissa överordnade element med ARIA-attributet role måste ha ett bestämt underordnat element med role för att hjälpmedlen ska fungera som avsett. [Läs mer om attributet role och obligatoriska underordnade element](https://dequeuniversity.com/rules/axe/4.7/aria-required-children)."
+    "message": "Vissa överordnade element med ARIA-attributet role måste ha ett bestämt underordnat element med role för att hjälpmedlen ska fungera som avsett. [Läs mer om attributet role och obligatoriska underordnade element](https://dequeuniversity.com/rules/axe/4.8/aria-required-children)."
   },
   "core/audits/accessibility/aria-required-children.js | failureTitle": {
     "message": "Några eller alla obligatoriska underordnade element med `[role]` saknas för element med ARIA-rollen `[role]`."
@@ -90,7 +108,7 @@
     "message": "Alla obligatoriska underordnade element med `[role]` används för element med ARIA-rollen `[role]`."
   },
   "core/audits/accessibility/aria-required-parent.js | description": {
-    "message": "Vissa underordnade element med ARIA-attributet role måste ha ett bestämt överordnat element med role för att hjälpmedlen ska fungera som avsett. [Läs mer om ARIA-attributet role och obligatoriskt överordnat element](https://dequeuniversity.com/rules/axe/4.7/aria-required-parent)."
+    "message": "Vissa underordnade element med ARIA-attributet role måste ha ett bestämt överordnat element med role för att hjälpmedlen ska fungera som avsett. [Läs mer om ARIA-attributet role och obligatoriskt överordnat element](https://dequeuniversity.com/rules/axe/4.8/aria-required-parent)."
   },
   "core/audits/accessibility/aria-required-parent.js | failureTitle": {
     "message": "Det finns element med `[role]`-attribut utan ett obligatoriskt överordnat element"
@@ -99,7 +117,7 @@
     "message": "Rätt överordnat element används för alla element med `[role]`-attribut"
   },
   "core/audits/accessibility/aria-roles.js | description": {
-    "message": "Alla ARIA-roller måste ha giltiga värden om de ska fungera som avsett med hjälpmedlen. [Läs mer om giltiga ARIA-roller](https://dequeuniversity.com/rules/axe/4.7/aria-roles)."
+    "message": "Alla ARIA-roller måste ha giltiga värden om de ska fungera som avsett med hjälpmedlen. [Läs mer om giltiga ARIA-roller](https://dequeuniversity.com/rules/axe/4.8/aria-roles)."
   },
   "core/audits/accessibility/aria-roles.js | failureTitle": {
     "message": "Vissa `[role]`-värden är inte giltiga"
@@ -107,8 +125,17 @@
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "Alla `[role]`-värden är giltiga"
   },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "Om du lägger till `role=text` runt en textnod som delats upp efter uppmärkning kan VoiceOver behandla den som en fras, men elementets fokuserbara underordnade element tillkännages inte. [Läs mer om attributet `role=text`](https://dequeuniversity.com/rules/axe/4.8/aria-text)."
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "Element med attributet `role=text` har fokuserbara underordnade element."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "Element med attributet `role=text` har inte fokuserbara underordnade element."
+  },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Utan en maskinläsbar etikett läses av/på-fält upp med en generell etikett av skärmläsarna. Det gör dem oanvändbara för personer som behöver använda en skärmläsare. [Läs mer om att aktivera och inaktivera fält](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
+    "message": "Utan en maskinläsbar etikett läses av/på-fält upp med en generell etikett av skärmläsarna. Det gör dem oanvändbara för personer som behöver använda en skärmläsare. [Läs mer om att aktivera och inaktivera fält](https://dequeuniversity.com/rules/axe/4.8/aria-toggle-field-name)."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "Namnen för på/av-fälten för ARIA är inte tillgängliga"
@@ -117,7 +144,7 @@
     "message": "Namnen för på/av-fälten för ARIA är tillgängliga"
   },
   "core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "Utan en maskinläsbar etikett läses beskrivningselement upp med en generell etikett av skärmläsare. Detta gör elementet oanvändbart för personer som behöver använda en skärmläsare. [Läs mer om hur du sätter etikett på `tooltip` element](https://dequeuniversity.com/rules/axe/4.7/aria-tooltip-name)."
+    "message": "Utan en maskinläsbar etikett läses beskrivningselement upp med en generell etikett av skärmläsare. Detta gör elementet oanvändbart för personer som behöver använda en skärmläsare. [Läs mer om hur du sätter etikett på `tooltip` element](https://dequeuniversity.com/rules/axe/4.8/aria-tooltip-name)."
   },
   "core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "Namnen för `tooltip`-elementen för ARIA är inte igenkännliga."
@@ -126,7 +153,7 @@
     "message": "Namnen för `tooltip`-elementen för ARIA är igenkännliga"
   },
   "core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "Utan en maskinläsbar etikett läses `treeitem`-element upp med en generell etikett av skärmläsarna. Det gör dem oanvändbara för personer som behöver använda en skärmläsare. [Läs mer om att sätta etiketter på `treeitem`-element](https://dequeuniversity.com/rules/axe/4.7/aria-treeitem-name)."
+    "message": "Utan en maskinläsbar etikett läses `treeitem`-element upp med en generell etikett av skärmläsarna. Det gör dem oanvändbara för personer som behöver använda en skärmläsare. [Läs mer om att sätta etiketter på `treeitem`-element](https://dequeuniversity.com/rules/axe/4.8/aria-treeitem-name)."
   },
   "core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "Namnen för `treeitem`-elementen för ARIA är inte igenkännliga."
@@ -135,7 +162,7 @@
     "message": "Namnen för `treeitem`-elementen för ARIA är igenkännliga"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | description": {
-    "message": "Skärmläsare och andra hjälpmedel kan inte tolka ARIA-attribut med ogiltiga värden. [Läs mer om giltiga värden för ARIA-attribut](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr-value)."
+    "message": "Skärmläsare och andra hjälpmedel kan inte tolka ARIA-attribut med ogiltiga värden. [Läs mer om giltiga värden för ARIA-attribut](https://dequeuniversity.com/rules/axe/4.8/aria-valid-attr-value)."
   },
   "core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
     "message": "Alla attribut av typen `[aria-*]` har inte ett giltigt värde"
@@ -144,7 +171,7 @@
     "message": "Alla attribut av typen `[aria-*]` har giltiga värden"
   },
   "core/audits/accessibility/aria-valid-attr.js | description": {
-    "message": "Skärmläsare och annan hjälpmedelsteknik kan inte tolka ARIA-attribut med ogiltiga namn. [Läs mer om giltiga ARIA-attribut](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr)."
+    "message": "Skärmläsare och annan hjälpmedelsteknik kan inte tolka ARIA-attribut med ogiltiga namn. [Läs mer om giltiga ARIA-attribut](https://dequeuniversity.com/rules/axe/4.8/aria-valid-attr)."
   },
   "core/audits/accessibility/aria-valid-attr.js | failureTitle": {
     "message": "Vissa attribut av typen `[aria-*]` är ogiltiga eller felstavade"
@@ -156,7 +183,7 @@
     "message": "Element med fel"
   },
   "core/audits/accessibility/button-name.js | description": {
-    "message": "Utan en maskinläsbar etikett läses knappen upp som ”knapp” av skärmläsarna. Det gör knappen oanvändbar för den som behöver använda en skärmläsare. [Läs om hur du gör knappar mer tillgängliga](https://dequeuniversity.com/rules/axe/4.7/button-name)."
+    "message": "Utan en maskinläsbar etikett läses knappen upp som ”knapp” av skärmläsarna. Det gör knappen oanvändbar för den som behöver använda en skärmläsare. [Läs om hur du gör knappar mer tillgängliga](https://dequeuniversity.com/rules/axe/4.8/button-name)."
   },
   "core/audits/accessibility/button-name.js | failureTitle": {
     "message": "Vissa knappar har inte namn som hjälpmedlen kan använda"
@@ -165,7 +192,7 @@
     "message": "Alla knappar har namn som hjälpmedlen kan använda"
   },
   "core/audits/accessibility/bypass.js | description": {
-    "message": "Om du lägger till ett sätt att hoppa över innehåll som upprepas går det att navigera effektivare på sidan för den som använder tangentbordet. [Läs mer om att hoppa över innehållsblock](https://dequeuniversity.com/rules/axe/4.7/bypass)."
+    "message": "Om du lägger till ett sätt att hoppa över innehåll som upprepas går det att navigera effektivare på sidan för den som använder tangentbordet. [Läs mer om att hoppa över innehållsblock](https://dequeuniversity.com/rules/axe/4.8/bypass)."
   },
   "core/audits/accessibility/bypass.js | failureTitle": {
     "message": "Sidan saknar rubrik, överhoppningslänk eller landmärkesområde"
@@ -174,7 +201,7 @@
     "message": "Sidan har en rubrik, en överhoppningslänk eller ett landmärkesområde"
   },
   "core/audits/accessibility/color-contrast.js | description": {
-    "message": "Text med låg kontrast blir svårläst eller oläslig för många användare. [Läs mer om hur du tillhandahåller tillräcklig färgkontrast](https://dequeuniversity.com/rules/axe/4.7/color-contrast)."
+    "message": "Text med låg kontrast blir svårläst eller oläslig för många användare. [Läs mer om hur du tillhandahåller tillräcklig färgkontrast](https://dequeuniversity.com/rules/axe/4.8/color-contrast)."
   },
   "core/audits/accessibility/color-contrast.js | failureTitle": {
     "message": "Kontrasten mellan bakgrundsfärg och förgrundsfärg är inte tillräckligt stor."
@@ -183,7 +210,7 @@
     "message": "Kontrasten mellan bakgrundsfärg och förgrundsfärg är tillräckligt stor"
   },
   "core/audits/accessibility/definition-list.js | description": {
-    "message": "Om en definitionslista inte har märkts upp korrekt kan den läsas upp på ett missvisande eller felaktigt sätt av skärmläsare. [Läs mer om hur du strukturerar definitionslistor på rätt sätt](https://dequeuniversity.com/rules/axe/4.7/definition-list)."
+    "message": "Om en definitionslista inte har märkts upp korrekt kan den läsas upp på ett missvisande eller felaktigt sätt av skärmläsare. [Läs mer om hur du strukturerar definitionslistor på rätt sätt](https://dequeuniversity.com/rules/axe/4.8/definition-list)."
   },
   "core/audits/accessibility/definition-list.js | failureTitle": {
     "message": "Det finns `<dl>`-element som inte enbart består av `<dt>`- och `<dd>`-grupper, `<script>`-, `<template>`- eller `<div>`-element."
@@ -192,7 +219,7 @@
     "message": "Alla `<dl>`-element består enbart av `<dt>`- och `<dd>`-grupper i rätt ordning, `<script>`-,`<template>`- eller `<div>`-element."
   },
   "core/audits/accessibility/dlitem.js | description": {
-    "message": "Alla poster i definitionslistor (`<dt>` och `<dd>`) måste ha överordnade `<dl>`-element så att de kan presenteras korrekt av skärmläsare. [Läs mer om hur du strukturerar definitionslistor på rätt sätt](https://dequeuniversity.com/rules/axe/4.7/dlitem)."
+    "message": "Alla poster i definitionslistor (`<dt>` och `<dd>`) måste ha överordnade `<dl>`-element så att de kan presenteras korrekt av skärmläsare. [Läs mer om hur du strukturerar definitionslistor på rätt sätt](https://dequeuniversity.com/rules/axe/4.8/dlitem)."
   },
   "core/audits/accessibility/dlitem.js | failureTitle": {
     "message": "Vissa poster i definitionslistor har inte bäddats in i `<dl>`-element"
@@ -201,7 +228,7 @@
     "message": "Alla poster i definitionslistor har bäddats in i `<dl>`-element"
   },
   "core/audits/accessibility/document-title.js | description": {
-    "message": "Titeln ger den som använder skärmläsare en uppfattning om vad sidan handlar om. Dessutom fyller sidtiteln en viktig funktion i sökmotorer när användarna väljer ut sidor som verkar vara relevanta för sökningen. [Läs mer om dokumenttitlar](https://dequeuniversity.com/rules/axe/4.7/document-title)."
+    "message": "Titeln ger den som använder skärmläsare en uppfattning om vad sidan handlar om. Dessutom fyller sidtiteln en viktig funktion i sökmotorer när användarna väljer ut sidor som verkar vara relevanta för sökningen. [Läs mer om dokumenttitlar](https://dequeuniversity.com/rules/axe/4.8/document-title)."
   },
   "core/audits/accessibility/document-title.js | failureTitle": {
     "message": "Dokumentet har inget `<title>`-element"
@@ -210,7 +237,7 @@
     "message": "Dokumentet har ett `<title>`-element"
   },
   "core/audits/accessibility/duplicate-id-active.js | description": {
-    "message": "Alla fokuserbara element måste ha unika `id` så att de kan identifieras av hjälpmedelsteknik. [Läs om hur du åtgärdar dubbletter av `id`](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-active)."
+    "message": "Alla fokuserbara element måste ha unika `id` så att de kan identifieras av hjälpmedelsteknik. [Läs om hur du åtgärdar dubbletter av `id`](https://dequeuniversity.com/rules/axe/4.8/duplicate-id-active)."
   },
   "core/audits/accessibility/duplicate-id-active.js | failureTitle": {
     "message": "Alla `[id]`-attribut för aktiva fokuserbara element är inte unika"
@@ -219,7 +246,7 @@
     "message": "Alla `[id]`-attribut för aktiva, fokuserbara element är unika"
   },
   "core/audits/accessibility/duplicate-id-aria.js | description": {
-    "message": "Alla ARIA-id:n måste ha unika värden. Hjälpmedelstekniken skulle annars hoppa över dubblettförekomsterna av ett värde. [Läs mer om hur du åtgärdar dubbletter av ARIA-id:n](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-aria)."
+    "message": "Alla ARIA-id:n måste ha unika värden. Hjälpmedelstekniken skulle annars hoppa över dubblettförekomsterna av ett värde. [Läs mer om hur du åtgärdar dubbletter av ARIA-id:n](https://dequeuniversity.com/rules/axe/4.8/duplicate-id-aria)."
   },
   "core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
     "message": "Alla ARIA-id:n är inte unika"
@@ -227,8 +254,17 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "Alla ARIA-id:n är unika"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "En rubrik som saknar innehåll eller innehåller otillgänglig text hindrar användare med skärmläsare från att få tillgång till information i sidans struktur. [Läs mer om rubriker](https://dequeuniversity.com/rules/axe/4.8/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "Rubrikelementen har inget innehåll."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "Alla rubrikelement har innehåll."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
-    "message": "Formulärfält med flera etiketter kan läsas upp på ett förvirrande sätt av hjälpmedelstekniker, till exempel skärmläsare som använder antingen den första, sista eller alla etiketterna. [Läs om hur du använder formuläretiketter](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
+    "message": "Formulärfält med flera etiketter kan läsas upp på ett förvirrande sätt av hjälpmedelstekniker, till exempel skärmläsare som använder antingen den första, sista eller alla etiketterna. [Läs om hur du använder formuläretiketter](https://dequeuniversity.com/rules/axe/4.8/form-field-multiple-labels)."
   },
   "core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
     "message": "Det finns formulärfält med flera etiketter"
@@ -237,7 +273,7 @@
     "message": "Det finns inga formulärfält med flera etiketter"
   },
   "core/audits/accessibility/frame-title.js | description": {
-    "message": "Med en skärmläsare behövs namn på ramarna som beskriver vad ramen innehåller. [Läs mer om ramnamn](https://dequeuniversity.com/rules/axe/4.7/frame-title)."
+    "message": "Med en skärmläsare behövs namn på ramarna som beskriver vad ramen innehåller. [Läs mer om ramnamn](https://dequeuniversity.com/rules/axe/4.8/frame-title)."
   },
   "core/audits/accessibility/frame-title.js | failureTitle": {
     "message": "Vissa `<frame>`- eller `<iframe>`-element saknar titel"
@@ -246,7 +282,7 @@
     "message": "Alla `<frame>`- eller `<iframe>`-element har en titel"
   },
   "core/audits/accessibility/heading-order.js | description": {
-    "message": "Med hjälp av ordentligt ordnade rubriker som inte hoppar över nivåer förmedlas den semantiska strukturen på sidan. Det gör det lättare för användare av hjälpmedelstekniker att navigera och hänga med. [Läs mer om rubrikordning](https://dequeuniversity.com/rules/axe/4.7/heading-order)."
+    "message": "Med hjälp av ordentligt ordnade rubriker som inte hoppar över nivåer förmedlas den semantiska strukturen på sidan. Det gör det lättare för användare av hjälpmedelstekniker att navigera och hänga med. [Läs mer om rubrikordning](https://dequeuniversity.com/rules/axe/4.8/heading-order)."
   },
   "core/audits/accessibility/heading-order.js | failureTitle": {
     "message": "Rubrikelementen har inte ordnats i följd i fallande ordning"
@@ -255,7 +291,7 @@
     "message": "Rubrikelementen visas i följd i fallande ordning"
   },
   "core/audits/accessibility/html-has-lang.js | description": {
-    "message": "Om inget `lang`-attribut har angetts för en sida används skärmläsarens standardspråk, det vill säga det språk som användaren valde när skärmläsaren konfigurerades. Om sidan inte är på det språket kanske texten inte läses upp korrekt. [Läs mer om attributet `lang`](https://dequeuniversity.com/rules/axe/4.7/html-has-lang)."
+    "message": "Om inget `lang`-attribut har angetts för en sida används skärmläsarens standardspråk, det vill säga det språk som användaren valde när skärmläsaren konfigurerades. Om sidan inte är på det språket kanske texten inte läses upp korrekt. [Läs mer om attributet `lang`](https://dequeuniversity.com/rules/axe/4.8/html-has-lang)."
   },
   "core/audits/accessibility/html-has-lang.js | failureTitle": {
     "message": "`<html>`-elementet har inget `[lang]`-attribut"
@@ -264,7 +300,7 @@
     "message": "`<html>`-elementet har ett `[lang]`-attribut"
   },
   "core/audits/accessibility/html-lang-valid.js | description": {
-    "message": "Om du anger ett giltigt [språk enligt BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) uttalas texten korrekt av en skärmläsare. [Läs om hur du använder attributet `lang`](https://dequeuniversity.com/rules/axe/4.7/html-lang-valid)."
+    "message": "Om du anger ett giltigt [språk enligt BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) uttalas texten korrekt av en skärmläsare. [Läs om hur du använder attributet `lang`](https://dequeuniversity.com/rules/axe/4.8/html-lang-valid)."
   },
   "core/audits/accessibility/html-lang-valid.js | failureTitle": {
     "message": "`<html>`-elementets `[lang]`-attribut har inte ett giltigt värde."
@@ -272,8 +308,26 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "`<html>`-elementets `[lang]`-attribut har ett giltigt värde"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Om inget enhetligt språk har angetts för webbsidan kanske skärmläsaren inte läser upp sidans text korrekt. [Läs mer om `lang`-attributet](https://dequeuniversity.com/rules/axe/4.8/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "`<html>`-elementet har inte ett `[xml:lang]`-attribut med samma basspråk som `[lang]`-attributet."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "`<html>`-elementet har ett `[xml:lang]`-attribut med samma basspråk som `[lang]`-attributet."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "Länkar med samma destination bör ha samma beskrivning för att hjälpa användarna att förstå syftet med länken och avgöra om de ska följa den. [Läs mer om identiska länkar](https://dequeuniversity.com/rules/axe/4.8/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "Identiska länkar har inte samma syfte."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "Identiska länkar har samma syfte."
+  },
   "core/audits/accessibility/image-alt.js | description": {
-    "message": "Element med informativ funktion bör ha en kort, beskrivande alternativ text. Element som bara har estetisk funktion kan ignoreras genom att alt-attributet lämnas tomt. [Läs mer om attributet `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
+    "message": "Element med informativ funktion bör ha en kort, beskrivande alternativ text. Element som bara har estetisk funktion kan ignoreras genom att alt-attributet lämnas tomt. [Läs mer om attributet `alt`](https://dequeuniversity.com/rules/axe/4.8/image-alt)."
   },
   "core/audits/accessibility/image-alt.js | failureTitle": {
     "message": "Alla bildelement har inte `[alt]`-attribut"
@@ -281,8 +335,26 @@
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Alla bildelement har `[alt]`-attribut"
   },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Element med informativ funktion bör ha en kort, beskrivande alternativ text. Alternativ text som är exakt samma som texten intill länken eller bilden kan förvirra användare av skärmläsare eftersom texten läses upp två gånger. [Läs mer om `alt`-attributet](https://dequeuniversity.com/rules/axe/4.8/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Bildelement har `[alt]`-attribut som är överflödig text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Bildelement har inte `[alt]`-attribut som är överflödig text."
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Att lägga till urskiljbar och tillgänglig text på inmatningsknappar kan hjälpa användare med skärmläsare att förstå syftet med inmatningsknappen. [Läs mer om inmatningsknappar](https://dequeuniversity.com/rules/axe/4.8/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Inmatningsknapparna har inte urskiljbar text."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Inmatningsknapparna har urskiljbar text."
+  },
   "core/audits/accessibility/input-image-alt.js | description": {
-    "message": "Om du anger en alternativ text när en bild används som `<input>`-knapp blir det lättare för användare med skärmläsare att förstå hur knappen används. [Läs om alternativ text för indata](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
+    "message": "Om du anger en alternativ text när en bild används som `<input>`-knapp blir det lättare för användare med skärmläsare att förstå hur knappen används. [Läs om alternativ text för indata](https://dequeuniversity.com/rules/axe/4.8/input-image-alt)."
   },
   "core/audits/accessibility/input-image-alt.js | failureTitle": {
     "message": "Vissa `<input type=\"image\">`-element saknar `[alt]`-text"
@@ -290,8 +362,17 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "Alla `<input type=\"image\">`-element har `[alt]`-text"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Synliga textetiketter som inte matchar den maskinläsbara etiketten kan förvirra de som använder skärmläsare. [Läs mer om maskinläsbara etiketter](https://dequeuniversity.com/rules/axe/4.8/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Element med synliga textetiketter har inte matchande maskinläsbara etiketter."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Element med synliga textetiketter har matchande maskinläsbara etiketter."
+  },
   "core/audits/accessibility/label.js | description": {
-    "message": "Etiketterna gör att de olika delarna av ett formulär kan presenteras korrekt för användare med skärmläsare eller annan hjälpmedelsteknik. [Läs mer om etiketter för olika formulärdelar](https://dequeuniversity.com/rules/axe/4.7/label)."
+    "message": "Etiketterna gör att de olika delarna av ett formulär kan presenteras korrekt för användare med skärmläsare eller annan hjälpmedelsteknik. [Läs mer om etiketter för olika formulärdelar](https://dequeuniversity.com/rules/axe/4.8/label)."
   },
   "core/audits/accessibility/label.js | failureTitle": {
     "message": "Vissa formulärelement har inte etiketter"
@@ -299,8 +380,26 @@
   "core/audits/accessibility/label.js | title": {
     "message": "Alla formulärelement har etiketter"
   },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "Ett huvudlandmärke hjälper användare med skärmläsare att navigera på en webbsida. [Läs mer om landmärken](https://dequeuniversity.com/rules/axe/4.8/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "Dokumentet har inget huvudlandmärke."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "Dokumentet har ett huvudlandmärke."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "Text med låg kontrast blir svårläst eller oläslig för många användare. Länktext som är urskiljbar förbättrar upplevelsen för användare med nedsatt syn. [Läs mer om hur du gör länkar särskiljbara](https://dequeuniversity.com/rules/axe/4.8/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "Länkarna har olika färg för att kunna särskiljas."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "Det går att särskilja länkar utan att förlita sig på färg."
+  },
   "core/audits/accessibility/link-name.js | description": {
-    "message": "Det blir enklare att navigera för den som använder en skärmläsare om alla länktexter (och alternativtexter för alla bilder som används som länkar) är igenkännliga, unika och fokuserbara. [Läs mer om hur du gör länkar tillgängliga](https://dequeuniversity.com/rules/axe/4.7/link-name)."
+    "message": "Det blir enklare att navigera för den som använder en skärmläsare om alla länktexter (och alternativtexter för alla bilder som används som länkar) är igenkännliga, unika och fokuserbara. [Läs mer om hur du gör länkar tillgängliga](https://dequeuniversity.com/rules/axe/4.8/link-name)."
   },
   "core/audits/accessibility/link-name.js | failureTitle": {
     "message": "Vissa länkar har inte ett igenkännligt namn"
@@ -309,7 +408,7 @@
     "message": "Alla länkar har igenkännliga namn"
   },
   "core/audits/accessibility/list.js | description": {
-    "message": "Listor presenteras på ett särskilt sätt av skärmläsare. Med rätt liststruktur kan skärmläsarna ge rätt information. [Läs mer om en korrekt liststruktur](https://dequeuniversity.com/rules/axe/4.7/list)."
+    "message": "Listor presenteras på ett särskilt sätt av skärmläsare. Med rätt liststruktur kan skärmläsarna ge rätt information. [Läs mer om en korrekt liststruktur](https://dequeuniversity.com/rules/axe/4.8/list)."
   },
   "core/audits/accessibility/list.js | failureTitle": {
     "message": "Listor innehåller inte enbart `<li>`-element och stödelement för skript (`<script>` och `<template>`)."
@@ -318,7 +417,7 @@
     "message": "Alla listor innehåller enbart `<li>`-element eller stödelement för skript (`<script>` och `<template>`)."
   },
   "core/audits/accessibility/listitem.js | description": {
-    "message": "Alla listposter (`<li>`) måste ha ett överordnat `<ul>`-, `<ol>`- eller `<menu>`-element för att kunna presenteras korrekt av skärmläsare. [Läs mer om en korrekt liststruktur](https://dequeuniversity.com/rules/axe/4.7/listitem)."
+    "message": "Alla listposter (`<li>`) måste ha ett överordnat `<ul>`-, `<ol>`- eller `<menu>`-element för att kunna presenteras korrekt av skärmläsare. [Läs mer om en korrekt liststruktur](https://dequeuniversity.com/rules/axe/4.8/listitem)."
   },
   "core/audits/accessibility/listitem.js | failureTitle": {
     "message": "Vissa listposter (`<li>`) saknar ett överordnat `<ul>`-, `<ol>`- eller `<menu>`-element."
@@ -327,7 +426,7 @@
     "message": "Alla listposter (`<li>`) har ett överordnat `<ul>`-, `<ol>`, eller `<menu>`-element"
   },
   "core/audits/accessibility/meta-refresh.js | description": {
-    "message": "Användarna förväntar sig inte att en sida ska uppdateras automatiskt, och när det händer flyttas fokus tillbaka till sidans början. Det kan vara både frustrerande och förvirrande. [Läs mer om metataggen för uppdatering](https://dequeuniversity.com/rules/axe/4.7/meta-refresh)."
+    "message": "Användarna förväntar sig inte att en sida ska uppdateras automatiskt, och när det händer flyttas fokus tillbaka till sidans början. Det kan vara både frustrerande och förvirrande. [Läs mer om metataggen för uppdatering](https://dequeuniversity.com/rules/axe/4.8/meta-refresh)."
   },
   "core/audits/accessibility/meta-refresh.js | failureTitle": {
     "message": "`<meta http-equiv=\"refresh\">` används i dokumentet"
@@ -336,7 +435,7 @@
     "message": "`<meta http-equiv=\"refresh\">` används inte i dokumentet"
   },
   "core/audits/accessibility/meta-viewport.js | description": {
-    "message": "Att inaktivera förstoring leder till problem för användare med nedsatt syn, som behöver skärmförstoring för att kunna se webbsidan ordentligt. [Läs mer om metataggen för visningsområdet](https://dequeuniversity.com/rules/axe/4.7/meta-viewport)."
+    "message": "Att inaktivera förstoring leder till problem för användare med nedsatt syn, som behöver skärmförstoring för att kunna se webbsidan ordentligt. [Läs mer om metataggen för visningsområdet](https://dequeuniversity.com/rules/axe/4.8/meta-viewport)."
   },
   "core/audits/accessibility/meta-viewport.js | failureTitle": {
     "message": "`[user-scalable=\"no\"]` används i elementet `<meta name=\"viewport\">`, eller också är värdet på attributet `[maximum-scale]` mindre än 5."
@@ -345,7 +444,7 @@
     "message": "`[user-scalable=\"no\"]` används inte i elementet `<meta name=\"viewport\">` och attributet `[maximum-scale]` är inte mindre än 5."
   },
   "core/audits/accessibility/object-alt.js | description": {
-    "message": "En skärmläsare kan inte tolka innehåll som inte är text. Om du lägger till alternativ text i `<object>`-elementen kan skärmläsarna förmedla ett meningsfullt innehåll till användaren. [Läs mer om alternativ text för `object`-element](https://dequeuniversity.com/rules/axe/4.7/object-alt)."
+    "message": "En skärmläsare kan inte tolka innehåll som inte är text. Om du lägger till alternativ text i `<object>`-elementen kan skärmläsarna förmedla ett meningsfullt innehåll till användaren. [Läs mer om alternativ text för `object`-element](https://dequeuniversity.com/rules/axe/4.8/object-alt)."
   },
   "core/audits/accessibility/object-alt.js | failureTitle": {
     "message": "`<object>` element saknar alt-text"
@@ -353,8 +452,26 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "`<object>` element har alt-text"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "Formulärelement utan effektiva etiketter kan upplevas som frustrerande för användare som använder en skärmläsare. [Läs mer om elementet `select`](https://dequeuniversity.com/rules/axe/4.8/select-name)."
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "Vissa element saknar kopplade etikettelement."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "Vissa element har kopplade etikettelement."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Om du lägger till en länk för att hoppa över kan användarna hoppa över huvudinnehållet och spara tid. [Läs mer om länkar för att hoppa över](https://dequeuniversity.com/rules/axe/4.8/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Länkar för att hoppa över är inte fokuserbara."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Länkar för att hoppa över är fokuserbara."
+  },
   "core/audits/accessibility/tabindex.js | description": {
-    "message": "Med värden större än noll anges en explicit ordningsföljd för navigeringen. Även om detta inte är fel rent tekniskt leder det ofta till en frustrerande upplevelse för den som är beroende av tekniska hjälpmedel. [Läs mer om attributet `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
+    "message": "Med värden större än noll anges en explicit ordningsföljd för navigeringen. Även om detta inte är fel rent tekniskt leder det ofta till en frustrerande upplevelse för den som är beroende av tekniska hjälpmedel. [Läs mer om attributet `tabindex`](https://dequeuniversity.com/rules/axe/4.8/tabindex)."
   },
   "core/audits/accessibility/tabindex.js | failureTitle": {
     "message": "Det finns element med ett `[tabindex]`-värde som är större än 0"
@@ -362,8 +479,44 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Det finns inga element med ett `[tabindex]`-värde som är större än 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "Attributet summary bör beskriva tabellstrukturen medan `<caption>` ska ha titeln på skärmen. Korrekta tabelluppmärkningar gör det enklare för användare av skärmläsare. [Läs mer om sammanfattning och textning](https://dequeuniversity.com/rules/axe/4.8/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tabeller har samma innehåll i attributet summary och `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tabeller har olika innehåll i attributet summary och `<caption>`"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Skärmläsare har funktioner som gör det enklare att navigera i tabeller. Om du ser till att tabeller använder själva textningselementet i stället för celler med `[colspan]`-attributet kan det förbättra upplevelsen för användare med skärmläsare. [Läs mer om textning](https://dequeuniversity.com/rules/axe/4.8/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Tabellerna använder inte `<caption>` i stället för celler med `[colspan]`-attributet för att ange textning."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Tabeller använder `<caption>` i stället för celler med `[colspan]`-attributet för att ange textning."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Tryckområden som är tillräckligt stora och har tillräckliga avstånd hjälper användare som har svårt att använda små kontroller för att aktivera målen. [Läs mer om tryckområden](https://dequeuniversity.com/rules/axe/4.8/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "Tryckområdena är för små och har inte tillräckliga avstånd."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "Tryckområdena är tillräckligt stora och har tillräckliga avstånd."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Skärmläsare har funktioner som gör det enklare att navigera i tabeller. Om du ser till att `<td>`-element i en stor tabell (tre eller fler celler i bredd och höjd) har en tillhörande tabellrubrik kan det förbättra upplevelsen för användare med skärmläsare. [Läs mer om tabellrubriker](https://dequeuniversity.com/rules/axe/4.8/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "`<td>`-element i en stor `<table>` saknar tabellrubriker."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "`<td>`-element i en stor `<table>` har en eller flera tabellrubriker."
+  },
   "core/audits/accessibility/td-headers-attr.js | description": {
-    "message": "Skärmläsare har funktioner som gör det enklare att navigera i tabeller. Sidan fungerar bättre för den som använder skärmläsare om attributet `[headers]` i `<td>`-celler bara refererar till andra celler i samma tabell. [Läs mer om attributet `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
+    "message": "Skärmläsare har funktioner som gör det enklare att navigera i tabeller. Sidan fungerar bättre för den som använder skärmläsare om attributet `[headers]` i `<td>`-celler bara refererar till andra celler i samma tabell. [Läs mer om attributet `headers`](https://dequeuniversity.com/rules/axe/4.8/td-headers-attr)."
   },
   "core/audits/accessibility/td-headers-attr.js | failureTitle": {
     "message": "Det finns celler i ett `<table>`-element där attributet `[headers]` hänvisar till ett `id`-element som inte finns i samma tabell."
@@ -372,7 +525,7 @@
     "message": "Det finns celler i ett `<table>`-element där attributet `[headers]` hänvisar till celler i samma tabell."
   },
   "core/audits/accessibility/th-has-data-cells.js | description": {
-    "message": "Skärmläsare har funktioner som gör det enklare att navigera i tabeller. Det fungerar bättre för den som använder skärmläsare om det inte finns några tabellrubriker som hänger i luften utan att referera till några dataceller. [Läs mer om tabellrubriker](https://dequeuniversity.com/rules/axe/4.7/th-has-data-cells)."
+    "message": "Skärmläsare har funktioner som gör det enklare att navigera i tabeller. Det fungerar bättre för den som använder skärmläsare om det inte finns några tabellrubriker som hänger i luften utan att referera till några dataceller. [Läs mer om tabellrubriker](https://dequeuniversity.com/rules/axe/4.8/th-has-data-cells)."
   },
   "core/audits/accessibility/th-has-data-cells.js | failureTitle": {
     "message": "Vissa `<th>`-element och element med `[role=\"columnheader\"/\"rowheader\"]` står inte som rubrik för några dataceller."
@@ -381,7 +534,7 @@
     "message": "Alla `<th>`-element och element med `[role=\"columnheader\"/\"rowheader\"]` står som rubriker för andra dataceller."
   },
   "core/audits/accessibility/valid-lang.js | description": {
-    "message": "Om du anger ett giltigt [språk enligt BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) för elementen uttalas texten korrekt av en skärmläsare. [Läs om hur du använder attributet `lang`](https://dequeuniversity.com/rules/axe/4.7/valid-lang)."
+    "message": "Om du anger ett giltigt [språk enligt BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) för elementen uttalas texten korrekt av en skärmläsare. [Läs om hur du använder attributet `lang`](https://dequeuniversity.com/rules/axe/4.8/valid-lang)."
   },
   "core/audits/accessibility/valid-lang.js | failureTitle": {
     "message": "Vissa `[lang]`-attribut har inte ett giltigt värde"
@@ -390,7 +543,7 @@
     "message": "Alla `[lang]`-attribut har ett giltigt värde"
   },
   "core/audits/accessibility/video-caption.js | description": {
-    "message": "Det blir lättare för döva och hörselskadade att ta del av en video som är textad. [Läs mer om videotextning](https://dequeuniversity.com/rules/axe/4.7/video-caption)."
+    "message": "Det blir lättare för döva och hörselskadade att ta del av en video som är textad. [Läs mer om videotextning](https://dequeuniversity.com/rules/axe/4.8/video-caption)."
   },
   "core/audits/accessibility/video-caption.js | failureTitle": {
     "message": "Alla `<video>`-element har inte ett underordnat `<track>`-element med `[kind=\"captions\"]`."
@@ -452,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Sidan förhindrade inte återställning av vilocacheminnet"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Vilocacheminnet kan inte testas i den äldre fönsterlösa versionen av Chrome (`--chrome-flags=\"--headless=old\"`). Använd den nya fönsterlösa versionen av Chrome (`--chrome-flags=\"--headless=new\"`) eller standardversionen av Chrome om du vill se granskningsresultat."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Inläsningen av den här sidan påverkas negativt av tillägg i Chrome. Testa att granska sidan i inkognitoläge eller med en Chrome-profil utan tillägg."
   },
@@ -486,7 +642,7 @@
     "message": "Använd videoformat för animationer"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Med polyfill-koder och transformeringar går det att använda nya JavaScript-funktioner i äldre webbläsare. Många av dem behövs dock inte för moderna webbläsare. Om du har JavaScript-paket kan du använda en modern strategi för skriptimplementering där registrering av funktioner med eller utan moduler används för att minska mängden kod som skickas till moderna webbläsare, samtidigt som stöd för äldre webbläsare finns kvar. [Läs mer om hur du använder modern JavaScript](https://web.dev/publish-modern-javascript/)"
+    "message": "Med polyfill-koder och transformeringar går det att använda nya JavaScript-funktioner i äldre webbläsare. Många av dem behövs dock inte för moderna webbläsare. Om du har JavaScript-paket kan du använda en modern strategi för skriptimplementering där registrering av funktioner med eller utan moduler används för att minska mängden kod som skickas till moderna webbläsare, samtidigt som stöd för äldre webbläsare finns kvar. [Läs mer om hur du använder modern JavaScript](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Undvik att skicka äldre JavaScript till moderna webbläsare"
@@ -621,7 +777,7 @@
     "message": "Syntax"
   },
   "core/audits/csp-xss.js | metaTagMessage": {
-    "message": "Sidan har en CSP som definieras i en <meta>-tagg. Du kan flytta CSP:n till ett HTTP-huvud eller definiera en annan strikt CSP i en HTTP-rubrik."
+    "message": "Sidan har en CSP som definieras i en `<meta>`-tagg. Du kan flytta CSP:n till ett HTTP-huvud eller definiera en annan strikt CSP i en HTTP-rubrik."
   },
   "core/audits/csp-xss.js | noCsp": {
     "message": "CPS hittades inte i åtgärdsläget"
@@ -840,7 +996,7 @@
     "message": "Förväntad storlek"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Bildens faktiska mått ska vara proportionella mot skärmstorleken och pixelmåtten för tydligast möjliga bildvisning. [Läs mer om hur du tillhandahåller responsiva bilder](https://web.dev/serve-responsive-images/)."
+    "message": "Bildens faktiska mått ska vara proportionella mot skärmstorleken och pixelmåtten för tydligast möjliga bildvisning. [Läs mer om hur du tillhandahåller responsiva bilder](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Bilder visas med låg upplösning"
@@ -873,7 +1029,7 @@
     "message": "Sidan läses in i ett inkognitofönster"
   },
   "core/audits/installable-manifest.js | manifest-display-not-supported": {
-    "message": "Egenskapen display i manifestet måste ha värdet standalone, fullscreen eller minimal-ui"
+    "message": "Egenskapen `display` i manifestet måste använda `standalone`, `fullscreen` eller `minimal-ui`"
   },
   "core/audits/installable-manifest.js | manifest-display-override-not-supported": {
     "message": "Manifestet innehåller fältet display_override och det första visningsläget som stöds måste vara antingen standalone, fullscreen eller minimal-ui."
@@ -885,7 +1041,7 @@
     "message": "Manifestets webbadress ändrades under tiden som manifestet hämtades."
   },
   "core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
-    "message": "Manifestet innehåller inte fältet name eller short_name"
+    "message": "Manifestet innehåller inte fälten `name` eller `short_name`"
   },
   "core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
     "message": "Manifestet innehåller ingen lämplig ikon – PNG-, SVG- eller WebP-format på minst {value0} px krävs, sizes-attributet måste anges och purpose-attributet, om det anges, måste innehålla any."
@@ -901,9 +1057,6 @@
   },
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "Sidan har ingen webbadress för <link> i manifestet"
-  },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "Ingen matchande tjänstefunktion hittades. Du kanske måste läsa in sidan igen eller kontrollera att tjänstefunktionens omfattning för den aktuella sidan inbegriper omfattningen och startwebbadressen i manifestet."
   },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "Det går inte att kontrollera tjänstefunktionen utan fältet start_url i manifestet."
@@ -933,10 +1086,7 @@
     "message": "prefer_related_applications stöds bara i Chrome Beta och Chrome Stable på Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse kunde inte avgöra om en tjänstefunktion används. Testa med en senare version av Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "Manifestets webbadresschema ({scheme}) stöds inte på Android."
+    "message": "Lighthouse kunde inte avgöra om sidan kan installeras. Testa med en senare version av Chrome."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Startwebbadressen i manifestet är ogiltig"
@@ -1008,16 +1158,40 @@
     "message": "Element som största uppritningen av innehåll gjordes för"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Bidrag till CLS"
+    "message": "Effekt av layoutförskjutning"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Dessa DOM-element bidrog mest till sidans CLS. [Läs mer om hur du kan förbättra CLS](https://web.dev/optimize-cls/)"
+    "message": "Dessa DOM-element påverkades mest av layoutförskjutningar. Vissa layoutförskjutningar kanske inte tas med i CLS-mätvärdet på grund av [windowing](https://web.dev/articles/cls#what_is_cls). [Läs mer om hur du kan förbättra CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Undvik större layoutförskjutningar"
   },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Resultat för layoutförskjutning"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Det här är de största layoutförskjutningarna som observerats på sidan. Varje tabellobjekt representerar en enskild layoutförskjutning och visar elementet som försköts mest. Under varje objekt visas möjliga grundorsaker till layoutförskjutningen. Vissa av dessa layoutförskjutningar kanske inte tas med i CLS-mätvärdet på grund av [windowing](https://web.dev/articles/cls#what_is_cls). [Läs mer om hur du kan förbättra CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 layoutförskjutning hittades}other{# layoutförskjutningar hittades}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Webbteckensnittet har lästs in"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Injicerad iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "En sen nätverksbegäran justerade sidlayouten"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Medieelementet har ingen angiven storlek"
+  },
+  "core/audits/layout-shifts.js | title": {
+    "message": "Undvik större layoutförskjutningar"
+  },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Bilder ovanför mitten med uppskjuten inläsning renderas senare än sidans livscykel, vilket kan fördröja den största uppritningen av innehåll. [Läs mer om optimal uppskjuten inläsning](https://web.dev/lcp-lazy-loading/)."
+    "message": "Bilder ovanför mitten med uppskjuten inläsning renderas senare än sidans livscykel, vilket kan fördröja den största uppritningen av innehåll. [Läs mer om optimal uppskjuten inläsning](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Bildinläsningen var uppskjuten vid största uppritningen av innehåll"
@@ -1026,7 +1200,7 @@
     "message": "Bildinläsningen var inte uppskjuten vid största uppritningen av innehåll"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Visar de uppgifter i huvudtråden som har körts under längst tid, vilket kan identifiera de viktigaste flaskhalsarna som fördröjer inmatningen. [Läs om hur du undviker uppgifter i huvudtrådar som har körts under lång tid](https://web.dev/long-tasks-devtools/)"
+    "message": "Visar de uppgifter i huvudtråden som har körts under längst tid, vilket kan identifiera de viktigaste flaskhalsarna som fördröjer inmatningen. [Läs om hur du undviker uppgifter i huvudtrådar som har körts under lång tid](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{# uppgift som körts under lång tid hittades}other{# uppgifter som körts under lång tid hittades}}"
@@ -1074,16 +1248,16 @@
     "message": "Manifest har en maskerbar ikon"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Kumulativ layoutförskjutning mäter rörelsen hos synliga element inom visningsområdet. [Läs mer om mätvärdet Kumulativ layoutförskjutning](https://web.dev/cls/)."
-  },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Interaktion till nästa uppritning mäter sidans responsivitet, hur lång tid det tar innan det syns att en sida svarar på indata från användare. [Läs mer om mätvärdet Interakation till nästa uppritning](https://web.dev/inp/)."
+    "message": "Kumulativ layoutförskjutning mäter rörelsen hos synliga element inom visningsområdet. [Läs mer om mätvärdet Kumulativ layoutförskjutning](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Första innehållsrenderingen anger när den första texten eller bilden ritades upp. [Läs mer om mätvärdet Första innehållsrenderingen](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "Första användbara renderingen anger när sidans primära innehåll blev synligt. [Läs mer om mätvärdet Första användbara renderingen](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Interaktion till nästa uppritning mäter sidans responsivitet, hur lång tid det tar innan det syns att en sida svarar på indata från användare. [Läs mer om mätvärdet Interakation till nästa uppritning](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Tid till interaktivt tillstånd är den tid det tar innan sidan är fullständigt interaktiv. [Läs mer om mätvärdet Tid till interaktivt tillstånd](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1113,7 +1287,7 @@
     "message": "Serverlatens"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "Händelsen `unload` aktiveras inte på ett tillförlitligt sätt och att lyssna efter den kan förhindra webbläsaroptimeringar, t.ex. vilocacheminne. Använd händelserna `pagehide` eller `visibilitychange` i stället. [Läs mer om att ta bort händelselyssnare](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "Händelsen `unload` aktiveras inte på ett tillförlitligt sätt och att lyssna efter den kan förhindra webbläsaroptimeringar, t.ex. vilocacheminne. Använd händelserna `pagehide` eller `visibilitychange` i stället. [Läs mer om att ta bort händelselyssnare](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registrerar en lyssnare för `unload`"
@@ -1158,7 +1332,7 @@
     "message": "Prestandabudget"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Läs in teckensnitt i förväg med `optional` så att förstagångsbesökare kan använda dem. [Läs mer om att läsa in teckensnitt i förväg](https://web.dev/preload-optional-fonts/)"
+    "message": "Läs in teckensnitt i förväg med `optional` så att förstagångsbesökare kan använda dem. [Läs mer om att läsa in teckensnitt i förväg](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Teckensnitt med `font-display: optional` läses inte in i förväg"
@@ -1167,7 +1341,7 @@
     "message": "Teckensnitt med `font-display: optional` läses in i förväg"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Om LCP-elementet läggs till på sidan dynamiskt bör du läsa in bilden i förväg för att förbättra LCP. [Läs mer om att läsa in LCP-element i förväg](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Om LCP-elementet läggs till på sidan dynamiskt bör du läsa in bilden i förväg för att förbättra LCP. [Läs mer om att läsa in LCP-element i förväg](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Läs in bilden i förväg för största uppritningen av innehåll"
@@ -1177,15 +1351,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Undvik upprepade omdirigeringar"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "Lägg till en budget.json-fil för att ange budgetar för kvantitet och storlek på sidresurser. [Läs mer om prestandabudgetar](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 begäran • {byteCount, number, bytes} Kibit}other{# förfrågningar • {byteCount, number, bytes} Kibit}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "Begränsa antalet begäranden och storleken på överföringar"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "Kanoniska länkar föreslår vilka webbadresser som ska visas i sökresultat. [Läs mer om kanoniska länkar](https://developer.chrome.com/docs/lighthouse/seo/canonical/)."
@@ -1376,27 +1541,6 @@
   "core/audits/server-response-time.js | title": {
     "message": "Serverns första svarstid var kort"
   },
-  "core/audits/service-worker.js | description": {
-    "message": "Tjänstefunktioner är en teknik som gör det möjligt att använda flera funktioner för progressiva webbappar i appen, till exempel offlineanvändning, pushmeddelanden och att lägga till den på startskärmen. [Läs mer om tjänstefunktioner](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)."
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "Sidan styrs av en tjänstefunktion, men `start_url` hittades inte eftersom det inte gick att analysera manifestet som giltigt JSON-format."
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Den här sidan styrs av en tjänstefunktion, men `start_url` ({startUrl}) är inte inom tjänstefunktionens omfattning ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "Sidan styrs av en tjänstefunktion, men `start_url` hittades inte eftersom inget manifest hämtades."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Ursprunget har en eller flera tjänstefunktioner, men sidan ({pageUrl}) är inte inom omfattningen."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "Registrerar inte en tjänstefunktion som styr sidan och `start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "Registrerar en tjänstefunktion som styr sidan och `start_url`"
-  },
   "core/audits/splash-screen.js | description": {
     "message": "Med hjälp av en välkomstskärm med ett tema som visas när användarna startar appen på startskärmen kan du se till att de får en bra upplevelse. [Läs mer om välkomstskärmar](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
   },
@@ -1414,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Anger ett färgtema för adressfältet."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Stödet för tredjepartscookies tas bort i en framtida version av Chrome. [Läs mer om utfasning av tredjepartscookies](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 cookie hittades}other{# cookies hittades}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Använder tredjepartscookies"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Undviker tredjepartscookies"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (framgångshistorier)"
@@ -1470,7 +1626,7 @@
     "message": "Tidsbudget"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Reducera layoutförskjutningarna och förbättra CLS genom att ange explicit bredd och höjd för bildelement. [Läs mer om hur du ställer in bildmått](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Reducera layoutförskjutningarna och förbättra CLS genom att ange explicit bredd och höjd för bildelement. [Läs mer om hur du ställer in bildmått](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Alla bildelement har inte `width` och `height`"
@@ -1545,7 +1701,7 @@
     "message": "Har en `<meta name=\"viewport\">`-tagg med `width` eller `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Det här är det trådblockerande arbetet som sker under mätningen av interaktion till nästa uppritning. [Läs mer om mätvärdet Interakation till nästa uppritning](https://web.dev/inp/)."
+    "message": "Det här är det trådblockerande arbetet som sker under mätningen av interaktion till nästa uppritning. [Läs mer om mätvärdet Interakation till nästa uppritning](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "Händelsen {interactionType} behandlades i {timeInMs, number, milliseconds} ms"
@@ -1587,10 +1743,10 @@
     "message": "Bästa metoder"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Dessa kontroller visar möjligheter att [förbättra tillgängligheten för din webbapp](https://developer.chrome.com/docs/lighthouse/accessibility/). Alla tillgänglighetsproblem kan inte identifieras automatiskt. Du bör därför även testa manuellt."
+    "message": "Dessa kontroller visar möjligheter att [förbättra tillgängligheten för webbappen](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatisk identifiering kan bara identifiera en del av problemen och garanterar inte att webbappen är tillgänglig, så [manuell testning](https://web.dev/articles/how-to-review) rekommenderas också."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Dessa punkter beskriver områden som inte kan testas automatiskt. Läs mer i vår guide om att [granska tillgängligheten](https://web.dev/how-to-review/)."
+    "message": "Dessa punkter beskriver områden som inte kan testas automatiskt. Läs mer i vår guide om att [granska tillgängligheten](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Tillgänglighet"
@@ -1677,10 +1833,10 @@
     "message": "Prestanda"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Med dessa kontroller verifieras att webbplatsen är en progressiv webbapp. [Läs mer om vad som gör en progressiv webbapp bra](https://web.dev/pwa-checklist/)."
+    "message": "Med dessa kontroller verifieras att webbplatsen är en progressiv webbapp. [Läs mer om vad som gör en progressiv webbapp bra](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Dessa kontroller krävs enligt [checklistan för progressiva webbappar](https://web.dev/pwa-checklist/) som används som baslinje, men de kontrolleras inte automatiskt av Lighthouse. De påverkar inte resultatet, men det är viktigt att du verifierar dem manuellt."
+    "message": "Dessa kontroller krävs enligt [checklistan för progressiva webbappar](https://web.dev/articles/pwa-checklist) som används som baslinje, men de kontrolleras inte automatiskt av Lighthouse. De påverkar inte resultatet, men det är viktigt att du verifierar dem manuellt."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1692,7 +1848,7 @@
     "message": "Optimerad för progressiv webbapp"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Dessa kontroller ser till att din sida följer de grundläggande råden för sökmotoroptimering. Det finns fler faktorer som Lighthouse inte bedömer här som kan påverka rankningen i sökresultat, däribland prestandan för [Viktiga webbvärden](https://web.dev/learn-core-web-vitals/). [Läs mer om Google Search Essentials](https://support.google.com/webmasters/answer/35769)."
+    "message": "Dessa kontroller ser till att din sida följer de grundläggande råden för sökmotoroptimering. Det finns fler faktorer som Lighthouse inte bedömer här som kan påverka rankningen i sökresultat, däribland prestandan för [Viktiga webbvärden](https://web.dev/explore/vitals). [Läs mer om Google Search Essentials](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Kontrollera att fler av de bästa metoderna för sökmotoroptimering följs på din webbplats genom att köra dessa extra valideringar."
@@ -1739,6 +1895,9 @@
   "core/gather/gatherers/link-elements.js | headerParseWarning": {
     "message": "Det gick inte att analysera `link`-rubriken ({error}): `{header}`"
   },
+  "core/gather/timespan-runner.js | warningNavigationDetected": {
+    "message": "En sidnavigering upptäcktes under körningen. Vi rekommenderar inte att du använder tidsintervallsläget för att granska sidnavigeringar. Använd navigeringsläget för att granska sidnavigeringar för bättre attribution till tredje part och identifiering av huvudtråd."
+  },
   "core/lib/bf-cache-strings.js | HTTPMethodNotGET": {
     "message": "Bara sidor som lästs in via en GET-begäran kan placeras i vilocacheminnet."
   },
@@ -1750,6 +1909,9 @@
   },
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Sidor som har begärt en AppBanner kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Vilocacheminnet har inaktiverats på grund av en keepalive-begäran."
   },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Vilocacheminnet har inaktiverats med hjälp av en flagga. Öppna chrome://flags/#back-forward-cache om du vill aktivera det lokalt på enheten."
@@ -1816,6 +1978,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Sidor som använder WebUSB API kan inte placeras i vilocacheminnet."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Vilocacheminnet har inaktiverats eftersom cookies har inaktiverats på en sida där `Cache-Control: no-store` används."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Sidor som använder en dedikerad tjänstefunktion eller worklet kan för närvarande inte placeras i vilocacheminnet."
@@ -1892,14 +2057,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Sidor med en öppen IndexedDB-anslutning kan för närvarande inte placeras i vilocacheminnet."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Vilocacheminnet har inaktiverats på grund av en IndexedDB-händelse."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Otillåtna API:er användes."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Sidor med ett JavaScript som injicerats av ett tillägg kan för närvarande inte placeras i vilocacheminnet."
+    "message": "Sidor med `JavaScript` som injicerats av tillägg kan för närvarande inte placeras i vilocacheminnet."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Sidor med ett StyleSheet som injicerats av ett tillägg kan för närvarande inte placeras i vilocacheminnet."
+    "message": "Sidor med ett `StyleSheet` som injicerats av tillägg kan för närvarande inte placeras i vilocacheminnet."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Internt fel."
@@ -2082,25 +2250,25 @@
     "message": "Sidor som använder WebXR kan för närvarande inte placeras i vilocacheminnet."
   },
   "core/lib/csp-evaluator.js | allowlistFallback": {
-    "message": "Du kan lägga till webbadressscheman https: och http: (ignoreras av webbläsare med stöd för strict-dynamic) för bakåtkompatibilitet med äldre webbläsare."
+    "message": "Du kan lägga till webbadresschemana https: och http: (ignoreras av webbläsare med stöd för `'strict-dynamic'`) för bakåtkompatibilitet med äldre webbläsare."
   },
   "core/lib/csp-evaluator.js | deprecatedDisownOpener": {
-    "message": "disown-opener har utfasats sedan CSP3. Använd huvudet Cross-Origin-Opener-Policy i stället."
+    "message": "`disown-opener` är utfasat sedan CSP3. Använd huvudet Cross-Origin-Opener-Policy i stället."
   },
   "core/lib/csp-evaluator.js | deprecatedReferrer": {
-    "message": "referrer har utfasats sedan CSP2. Använd huvudet Referrer-Policy i stället."
+    "message": "`referrer` är utfasat sedan CSP2. Använd huvudet Referrer-Policy i stället."
   },
   "core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
-    "message": "reflected-xss har utfasats sedan CSP2. Använd huvudet X-XSS-Protection i stället."
+    "message": "`reflected-xss` är utfasat sedan CSP2. Använd huvudet X-XSS-Protection i stället."
   },
   "core/lib/csp-evaluator.js | missingBaseUri": {
-    "message": "Om base-uri saknas går det att använda <base>-taggar för att ställa in baswebbadressen för alla relativa webbadresser (t.ex. skript) till en domän som styrs av en angripare. Du kan ställa in base-uri på none eller self."
+    "message": "Om `base-uri` saknas går det att använda injicerade `<base>`-taggar för att ställa in baswebbadressen för alla relativa webbadresser (t.ex. skript) till en domän som styrs av en angripare. Du kan ställa in `base-uri` på `'none'` eller `'self'`."
   },
   "core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Om object-src saknas går det att använda plugins som kör osäkra skript. Du kan ställa in object-src på none."
+    "message": "Om `object-src` saknas går det att använda plugins som kör osäkra skript. Ställ in `object-src` på `'none'` om du kan."
   },
   "core/lib/csp-evaluator.js | missingScriptSrc": {
-    "message": "Direktivet script-src saknas. Detta kan möjliggöra att osäkra skript körs."
+    "message": "Direktivet `script-src` saknas. Detta kan möjliggöra att osäkra skript körs."
   },
   "core/lib/csp-evaluator.js | missingSemicolon": {
     "message": "Glömde du semikolon? {keyword} verkar vara ett direktiv, inte ett sökord."
@@ -2118,13 +2286,13 @@
     "message": "Undvik att använda vanliga jokertecken ({keyword}) i det här direktivet. Vanliga jokertecken gör det möjligt att hämta skript från en osäker domän."
   },
   "core/lib/csp-evaluator.js | reportToOnly": {
-    "message": "Rapporteringsdestinationen konfigureras enbart via direktivet report-to. Direktivet stöds endast i Chromium-baserade webbläsare och vi rekommenderar därför att du även använder direktivet report-uri."
+    "message": "Rapporteringsdestinationen konfigureras enbart via direktivet report-to. Direktivet stöds endast i Chromium-baserade webbläsare och vi rekommenderar därför att du även använder direktivet `report-uri`."
   },
   "core/lib/csp-evaluator.js | reportingDestinationMissing": {
     "message": "Det finns ingen CPS som konfigurerar en rapporteringsdestination. Detta gör det svårt att bevara CSP med tiden och övervaka eventuella intrång."
   },
   "core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Värdens godkännandelistor kan ofta passeras. Du kan i stället använda CSP-noncevärden eller hashvärden i kombination med strict-dynamic vid behov."
+    "message": "Värdens godkännandelistor kan ofta kringgås. Du kan i stället använda CSP-noncevärden eller hashvärden i kombination med `'strict-dynamic'` vid behov."
   },
   "core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Okänt CSP-direktiv."
@@ -2133,10 +2301,196 @@
     "message": "{keyword} verkar vara ett ogiltigt sökord."
   },
   "core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "unsafe-inline möjliggör att osäkra skript och händelsehanterare körs på sidan. Du kan använda CSP-noncevärden eller -hashvärden om du vill godkänna skript separat."
+    "message": "`'unsafe-inline'` möjliggör att osäkra skript och händelsehanterare körs på sidan. Du kan använda CSP-noncevärden eller -hashvärden om du vill godkänna skript separat."
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
-    "message": "Du kan lägga till unsafe-inline (ignoreras av webbläsare med stöd för noncevärden/hashvärden) för bakåtkompatibilitet med äldre webbläsare."
+    "message": "Du kan lägga till `'unsafe-inline'` (ignoreras av webbläsare med stöd för noncevärden/hashvärden) för bakåtkompatibilitet med äldre webbläsare."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Du hittar mer information på sidan för funktionsstatus."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Ändringen träder i kraft vid milstolpen {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "En utfasad funktion användes"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Auktorisering omfattas inte av jokertecknet (*) i CORS `Access-Control-Allow-Headers`-hantering."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Attributet `disableRemotePlayback` ska användas för att inaktivera standardintegreringen av Cast i stället för väljaren `-internal-media-controls-overlay-cast-button`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Resursförfrågningar vars webbadresser innehöll både de borttagna blankstegstecknen `(n|r|t)` och mindre än-tecknen (`<`) blockeras. Ta bort radbrytningstecken och koda mindre än-tecken från t.ex. värden för elementattribut om du vill läsa in dessa resurser."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` är utfasat. Använd det standardiserade API:et Navigation Timing 2 i stället."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` är utfasat. Använd i stället det standardiserade API:et Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` är utfasat. Använd det standardiserade API:et `nextHopProtocol` i Navigation Timing 2 i stället."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Cookies som innehåller ett `(0|r|n)`-tecken avvisas i stället för att trunkeras."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Funktionen för att lätta på principen gällande samma ursprung genom att ange `document.domain` är utfasad och inaktiveras som standard. Denna varning om utfasning gäller åtkomst via korsursprung som aktiverades genom inställning av `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Aktivering av window.alert från iframes för korsursprung har fasats ut och kommer att tas bort."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Aktivering av window.confirm från iframes för korsursprung har fasats ut och kommer att tas bort."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "DOM-mutationshändelser, inklusive `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` och `DOMCharacterDataModified`, har fasats ut (https://w3c.github.io/uievents/#legacy-event-types) och kommer att tas bort. Använd `MutationObserver` i stället."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Stöd för data: webbadresser i SVG-elementet <use> har fasats ut och tas bort i framtiden."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Funktionen för att lätta på principen gällande samma ursprung genom att ange `document.domain` är utfasad och inaktiveras som standard. Om du vill fortsätta använda den här funktionen ska du välja bort ursprungsbundna agentkluster genom att skicka en `Origin-Agent-Cluster: ?0`-rubrik tillsammans med HTTP-svaret för dokumentet och ramarna. Läs mer på https://developer.chrome.com/blog/immutable-document-domain/."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "Huvudet `Expect-CT` är utfasat och kommer att tas bort. Chrome kräver certifikattransparens för alla offentligt betrodda certifikat som utfärdats efter den 30 april 2018."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` och `watchPosition()` fungerar inte längre i osäkra ursprung. Om du vill använda den här funktionen rekommenderar vi att du flyttar appen till ett säkert ursprung, till exempel HTTPS. Läs mer på https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` och `watchPosition()` är utfasade i osäkra ursprung. Om du vill använda den här funktionen rekommenderar vi att du flyttar appen till ett säkert ursprung, till exempel HTTPS. Läs mer på https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` fungerar inte längre i osäkra ursprung. Om du vill använda den här funktionen rekommenderar vi att du flyttar appen till ett säkert ursprung, till exempel HTTPS. Läs mer på https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` är utfasat. Använd `RTCPeerConnectionIceErrorEvent.address` eller `RTCPeerConnectionIceErrorEvent.port` i stället."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "Säljarursprunget och arbiträr data från tjänstefunktionens `canmakepayment`-händelse har fasats ut och tas bort: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Webbplatsen begärde en underresurs från ett nätverk som den enbart hade åtkomst till på grund av att användaren hade särskild nätverksbehörighet. Med dessa förfrågningar får enheter och servrar som inte är offentliga åtkomst till internet, vilket ökar risken för bedrägerier med begäran mellan webbplatser och/eller läckage av uppgifter. I syfte att minska dessa risker fasar Chrome ut förfrågningar till icke-offentliga underresurser som har startats i osäkra kontexter och kommer att blockera dem."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Fältet `dailyUpdateUrl` i `InterestGroups` som har vidarebefordrats till `joinAdInterestGroup()` har döpts om till `updateUrl` för att bättre motsvara dess beteende."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "CSS går inte att läsas in från `file:`-webbadresser om de inte slutar med ett `.css`-filnamnstillägg."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Användning av `SourceBuffer.abort()` i syfte att avbryta borttagning av asynkrona intervall med `remove()` har fasats ut på grund av en ändring av specifikationen. Stödet tas bort i framtiden. Lyssna efter händelsen `updateend` i stället. `abort()` ska endast användas till att avbryta en asynkron mediebilaga eller återställa tolkningsläget."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Funktionen för att ställa in `MediaSource.duration` under den högsta visningstidsstämpeln för buffrade kodade ramar har fasats ut på grund av en ändring av specifikationen. Stödet för implicit borttagning av trunkerad buffrad media kommer att tas bort. Du ska i stället genomföra explicit `remove(newDuration, oldDuration)` för alla `sourceBuffers`, om `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Webb-MIDI ber om behörighet om användning även om SysEx inte har angetts i `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Det äldre, icke-standardiserade attributet `shadowroot` har fasats ut och fungerar inte längre i M119. Använd det nya, standardiserade attributet `shadowrootmode` i stället."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "Notification API får inte längre användas från osäkra ursprung. Vi rekommenderar att du flyttar appen till ett säkert ursprung, till exempel HTTPS. Läs mer på https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Behörighet för aviserings-API:et kan inte längre begäras via en iframe för korsursprung. Vi rekommenderar att du begär behörighet från en ram på toppnivå eller öppnar ett nytt fönster i stället."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Alternativet `imageOrientation: 'none'` i createImageBitmap har fasats ut. Använd createImageBitmap med alternativet \\{imageOrientation: 'from-image'\\} i stället."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Partnern förhandlar med en föråldrad version av (D)TLS. Kontakta partnern om att åtgärda detta."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Om du anger `overflow: visible` för img-, video- och canvas-taggar kan det leda till att visuellt innehåll visas utanför elementets gränser. Läs mer på https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` har fasats ut. Använd just-in-time-installation för betalningshanterare i stället."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "`PaymentRequest`-anropet åsidosatte CSP-direktivet `connect-src`. Denna åsidosättning är utfasad. Lägg till betalningsmetodens identifierare från `PaymentRequest` API (i fältet `supportedMethods`) i CSP-direktivet `connect-src`."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` har fasats ut. Använd `navigator.storage` i stället."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "`<source src>` med `<picture>` som överordnat element är ogiltigt och ignoreras därför. Använd `<source srcset>` i stället."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame är leverantörsspecifik. Använd standardmetoden cancelAnimationFrame i stället."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame är leverantörsspecifik. Använd standardmetoden requestAnimationFrame i stället"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen har fasats ut. Använd Docs.fullscreenElement i stället."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() har fasats ut. Använd Element.requestFullscreen() i stället."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() har fasats ut. Använd Element.requestFullscreen() i stället."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() har fasats ut. Använd Document.exitFullscreen() i stället."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() har fasats ut. Använd Document.exitFullscreen() i stället."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen har fasats ut. Använd Document.fullscreenEnabled i stället."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Vi fasar ut API:et `chrome.privacy.websites.privacySandboxEnabled`, men det förblir aktivt för bakåtkompatibilitet tills version M113 lanseras. Använd i stället `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` och `chrome.privacy.websites.adMeasurementEnabled`. Läs mer på https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Begränsningen `DtlsSrtpKeyAgreement` har tagits bort. Du har angett ett `false`-värde för denna begränsning, vilket tolkas som ett försök att använda den borttagna `SDES key negotiation`-metoden. Denna funktion har tagits bort. Använd i stället en tjänst med stöd för `DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Begränsningen `DtlsSrtpKeyAgreement` har tagits bort. Du har angett ett `true`-värde för denna begränsning, vilket inte hade någon inverkan, men du kan ta bort begränsningen för att göra det tydligare."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Återanropsbaserade getStats() har fasats ut och kommer att tas bort. Använd getStats() som uppfyller specifikationerna i stället."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() har fasats ut. Använd Selection.modify() i stället."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Förfrågningar från underresurser vars webbadresser innehåller inbäddade användaruppgifter (t.ex. `https://user:pass@host/`) blockeras."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "Alternativet `rtcpMuxPolicy` är utfasat och kommer att tas bort."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` kräver isolering för korsursprung. Läs mer på https://developer.chrome.com/blog/enabling-shared-array-buffer/."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "`speechSynthesis.speak()` utan användaraktivering har fasats ut och kommer att tas bort."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Tillägg måste isoleras för korsursprung om du vill fortsätta använda `SharedArrayBuffer`. Läs mer på https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Webb-SQL har fasats ut. Använd SQLite WebAssembly eller indexerade databaser"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Behörighetsbeskrivningen `window-placement` är utfasad. Använd `window-management` i stället. Besök https://bit.ly/window-placement-rename om du behöver hjälp."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Behörighetspolicyn `window-placement` är utfasad. Använd `window-management` i stället. Besök https://bit.ly/window-placement-rename om du behöver hjälp."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "UTF-16 stöds inte av json-svar i `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Synkron `XMLHttpRequest` i huvudtråden har fasats ut på grund av dess negativa effekt på slutanvändarens upplevelse. Besök https://xhr.spec.whatwg.org/ om du behöver hjälp."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` är utfasat. Använd `isSessionSupported()` och kontrollera det matchade booleska värdet i stället."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Tidsåtgång för blockering av huvudtråd"
@@ -2328,7 +2682,7 @@
     "message": "Det gick inte att läsa in den begärda sidan i Lighthouse. Kontrollera att du testar rätt webbadress och att servern svarar korrekt. (Mer information: {errorDetails})"
   },
   "core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
-    "message": "Det gick inte att läsa in den begärda sidan i Lighthouse. Kontrollera att du testar rätt webbadress och att servern svarar korrekt. (Statuskod: {statusCode})"
+    "message": "Det gick inte att läsa in den begärda sidan i Lighthouse. Kontrollera att du testar rätt webbadress och att servern svarar korrekt på alla begäranden. (Statuskod: {statusCode})"
   },
   "core/lib/lh-error.js | pageLoadTookTooLong": {
     "message": "Det tog för lång tid att läsa in sidan. Minska sidans inläsningstid genom att följa förslagen i rapporten och kör sedan Lighthouse igen. ({errorCode})"
@@ -2341,6 +2695,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Den angivna webbadressen verkar vara ogiltig."
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Det gick inte att läsa in den begärda sidan i Lighthouse. Kontrollera att du testar rätt webbadress och att servern svarar korrekt på alla begäranden. (Statuskod: {errorCode})"
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "Sidans MIME-typ är XHTML: Lighthouse har inte direkt stöd för den här dokumenttypen"
@@ -2538,7 +2895,7 @@
     "message": "Installera [en Drupal-modul](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) som kan utnyttja uppskjuten inläsning av bilder. Med sådana moduler går det att skjuta upp inläsningen av bilder som inte visas på skärmen i syfte att förbättra prestandan."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Du kan använda en modul för att lägga till kritiska CSS- och JavaScript-tillgångar eller läsa in tillgångar asynkront via JavaScript, t.ex. modulen [Advanced CSS/JS Aggregation](https://www.drupal.org/project/advagg). Tänk på att optimeringarna som denna modul gör kan leda till att webbplatsen slutar att fungera, så du kan behöva ändra i koden."
+    "message": "Du kan använda en modul för att lägga till kritiska CSS- och JavaScript-tillgångar och använda attributet defer för icke-kritiska CSS- eller JavaScript-tillgångar."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Serverns svarstider påverkas av teman, moduler och serverns prestanda. Du kan använda ett mer optimerat tema, välja en optimeringsmodul och/eller uppgradera servern. Värdservrarna ska använda cachelagring av OP-kod för PHP och minnescachelagring för att minska sökfrågetiderna för databasen, t.ex. Redis eller Memcached, samt en optimerad applogik för att förbereda sidor snabbare."
@@ -2547,10 +2904,10 @@
     "message": "Du kan använda [responsiva bildformat](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) för att minska storleken på bilderna som läses in på sidan. Om du använder Views för att visa flera innehållsobjekt på en sida kan du implementera sidnumrering om du vill begränsa antalet innehållsobjekt som visas på en viss sida."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Kontrollera att du har aktiverat Aggregate CSS files under Administration » Configuration » Development. Du kan även konfigurera mer avancerade sammanställningsalternativ via [ytterligare moduler](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) och göra webbplatsen snabbare genom att sammanfoga, minifiera och komprimera CSS-format."
+    "message": "Kontrollera att du har aktiverat Aggregate CSS files under Administration » Configuration » Development.  Se till att Drupal-webbplatsen kör minst Drupal 10.1 för förbättrat stöd för tillgångssammanställning."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Kontrollera att du har aktiverat Aggregate JavaScript files under Administration » Configuration » Development. Du kan även konfigurera mer avancerade sammanställningsalternativ via [ytterligare moduler](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) och göra webbplatsen snabbare genom att sammanfoga, minifiera och komprimera JavaScript-tillgångar."
+    "message": "Kontrollera att du har aktiverat Aggregate JavaScript files under Administration » Configuration » Development.  Se till att Drupal-webbplatsen kör minst Drupal 10.1 för förbättrat stöd för tillgångssammanställning."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Vi rekommenderar att du tar bort CSS-regler som inte används och endast bifogar nödvändiga Drupal-bibliotek till den relevanta sidan eller komponenten på en sida. Du hittar mer information i [dokumentationen om Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Testa fliken för [kodtäckning](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) i Chromes utvecklarverktyg om du vill se vilka bibliotek som lägger till överflödig CSS. Du ser på formatmallens webbadress vilket tema eller vilken modul som koden kommer från när CSS-sammanställning är inaktiverat för Drupal-webbplatsen. Titta efter teman eller moduler med många CSS-formatmallar på listan där en stor del av stapeln är röd. Ett tema eller en modul ska bara ställa en formatmall i kö för inläsning om det faktiskt används på sidan."
@@ -2750,23 +3107,65 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Aktivera komprimering på Next.js-servern. [Läs mer](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Kontakta den kontoansvariga om du vill aktivera [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Om du konfigurerar den prioriteras och optimeras renderingen av sidan."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Använd alternativet [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) i NitroPack för att ställa in ett önskat värde för visningsregeln för CSS-teckensnitt."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Konvertera dina bilder automatiskt till WebP med [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Skjut upp inläsningen av bilder som inte visas på skärmen genom att aktivera [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Aktivera [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) i NitroPack för snabbare initiala hämtningstider."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Förbättra serverns svarstid och optimera den märkbara prestandan genom att aktivera [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Aktivera [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) i cachelagringsinställningarna för att minska storleken på CSS-, HTML- och JavaScript-filer för snabbare hämtningstider."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Aktivera [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) i cachelagringsinställningarna för att minska storleken på JS-, HTML- och CSS-filer för snabbare hämtningstider."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Aktivera [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) om du vill ta bort CSS-regler som inte är tillämpliga på den här sidan."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Konfigurera [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) i NitroPack för att fördröja inläsningen av skript tills de behövs."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Navigera till funktionen [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) i menyn `Caching` och justera utgångstiden för cacheminnet för att förbättra hämtningstiderna och användarupplevelsen."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Komprimera, optimera och konvertera dina bilder automatiskt till WebP genom att aktivera inställningen [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Aktivera [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) för att optimera bilder i förebyggande syfte och få dem att matcha måtten på behållarna där de visas på alla enheter."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Använd [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) i NitroPack för att minska storleken på filerna som skickas till webbläsaren."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Använd komponenten `nuxt/image` och ange `format=\"webp\"`. [Läs mer](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Använd komponenten `nuxt/image` och ange `format=\"webp\"`. [Läs mer](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Använd komponenten `nuxt/image` och ange `loading=\"lazy\"` för bilder som inte visas på skärmen. [Läs mer](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Använd komponenten `nuxt/image` och ange `loading=\"lazy\"` för bilder som inte visas på skärmen. [Läs mer](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Använd komponenten `nuxt/image` och ange `preload` för LCP-bilder. [Läs mer](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Använd komponenten `nuxt/image` och ange `preload` för LCP-bilder. [Läs mer](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Använd komponenten `nuxt/image` och ange en specifik `width` och `height`. [Läs mer](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Använd komponenten `nuxt/image` och ange en specifik `width` och `height`. [Läs mer](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Använd komponenten `nuxt/image` och ange önskad `quality`. [Läs mer](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Använd komponenten `nuxt/image` och ange önskad `quality`. [Läs mer](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Använd komponenten `nuxt/image` och ange önskad `sizes`. [Läs mer](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Använd komponenten `nuxt/image` och ange önskad `sizes`. [Läs mer](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Ersätt animerade GIF-bilder med videor](https://web.dev/replace-gifs-with-videos/) så att webbsidan läses in snabbare. Du kan även använda moderna filformat som [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) eller [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) för att förbättra komprimeringens effektivitet med mer än 30 % jämfört med den nuvarande toppmoderna videokodeken VP9."
@@ -2830,6 +3229,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Mät renderingens resultat för dina komponenter med hjälp av React DevTools Profiler, som drar nytta av Profiler API. [Läs mer.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "Placera videor i `VideoBoxes`, anpassa dem med `Video Masks` eller lägg till `Transparent Videos`. [Läs mer](https://support.wix.com/en/article/wix-video-about-wix-video)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Ladda upp bilder med `Wix Media Manager` för att se till att de visas automatiskt som WebP. Upptäck [fler sätt att optimera](https://support.wix.com/en/article/site-performance-optimizing-your-media) webbplatsens media."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "När du [lägger till kod från tredje part](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) på fliken `Custom Code` på webbplatsöversikten kontrollerar du att den skjuts upp eller läses in i slutet av kodtexten. Använd om möjligt Wix [integrationer](https://support.wix.com/en/article/about-marketing-integrations) om du vill bädda in marknadsföringsverktyg på din webbplats. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Wix använder NFI och cachelagring för att visa svaren så snabbt som möjligt för de flesta besökarna. Vi rekommenderar att du [aktiverar cachelagring manuellt](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) för webbplatsen, särskilt om du använder `Velo`."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "Granska eventuella koder från tredje part som du har lagt till på webbplatsen på fliken `Custom Code` i webbplatsens översikt och behåll endast de tjänster som behövs för webbplatsen. [Läs mer](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Ladda upp GIF-filen till en tjänst som kan göra den tillgänglig för inbäddning som HTML5-video."
@@ -2936,6 +3350,9 @@
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "Spara som JSON"
   },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "Visa spårning utan begränsning"
+  },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Öppna i visningsprogram"
   },
@@ -2981,8 +3398,17 @@
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Godkända granskningar"
   },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Utöver att [Chromes installationskriterier uppdateras](https://developer.chrome.com/blog/update-install-criteria) fasar Lighthouse ut PWA-kategorin i en framtida version. Läs den [uppdaterade dokumentationen om PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) för framtida PWA-testning."
+  },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Första sidhämtningen"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Översiktsbild vid tidpunkt"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Tidsintervall för användarinteraktioner"
   },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Anpassad begränsning"
@@ -3018,10 +3444,10 @@
     "message": "Användaragent (nätverk)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Enskild sidhämtning"
+    "message": "Enskild sidsession"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Denna data kommer från en enskild sidhämtning, till skillnad från fältdata som sammanfattar flera sessioner."
+    "message": "Denna data kommer från en enskild sidsession, till skillnad från fältdata som sammanfattar många sessioner."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Långsam 4G-begränsning"
@@ -3055,9 +3481,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Värdena är uppskattningar och kan variera. [Prestandapoängen beräknas](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) direkt utifrån dessa mätvärden."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "Visa ursprungligt spår"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "Visa spår"

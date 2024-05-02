@@ -4,6 +4,7 @@
 
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../../third_party/typescript/typescript.gni")
 import("../../../visibility.gni")
 
 devtools_module("ui_utils") {
@@ -26,9 +27,22 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../:*",
-    "../../../../test/unittests/front_end/panels/settings/emulation/*",
     "../components:*",
   ]
 
   visibility += devtools_panels_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "StructuredHeaders.test.ts",
+    "UserAgentMetadata.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../../testing",
+  ]
 }

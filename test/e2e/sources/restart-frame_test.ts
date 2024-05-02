@@ -12,8 +12,8 @@ import {
   waitForFunction,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
+import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {
-  clickOnContextMenu,
   getCallFrameNames,
   PAUSE_INDICATOR_SELECTOR,
 } from '../helpers/sources-helpers.js';
@@ -34,7 +34,8 @@ describe('Sources Tab', () => {
     });
 
     await step('restart frame "bar"', async () => {
-      await clickOnContextMenu('.call-frame-item[aria-posinset="2"]', 'Restart frame');  // Aria indices are 1-based.
+      await openSoftContextMenuAndClickOnItem(
+          '.call-frame-item[aria-posinset="2"]', 'Restart frame');  // Aria indices are 1-based.
     });
 
     await step('wait for the page to stop in "bar"', async () => {

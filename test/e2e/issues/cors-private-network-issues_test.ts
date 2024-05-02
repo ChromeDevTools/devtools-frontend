@@ -13,7 +13,7 @@ import {
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
 
-describe('Cors Private Network issue', async () => {
+describe('Cors Private Network issue', () => {
   beforeEach(async () => {
     await goToResource('empty.html');
   });

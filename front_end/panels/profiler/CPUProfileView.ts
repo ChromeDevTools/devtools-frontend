@@ -35,6 +35,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
 
 import {ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
 
@@ -125,7 +126,8 @@ export class CPUProfileView extends ProfileView implements UI.SearchableView.Sea
   override wasShown(): void {
     super.wasShown();
     PerfUI.LineLevelProfile.Performance.instance().reset();
-    PerfUI.LineLevelProfile.Performance.instance().appendCPUProfile(this.profileHeader.profileModel());
+    PerfUI.LineLevelProfile.Performance.instance().appendCPUProfile(
+        this.profileHeader.profileModel(), this.profileHeader.target);
   }
 
   override columnHeader(columnId: string): Common.UIString.LocalizedString {
@@ -252,11 +254,13 @@ export class CPUProfileType extends ProfileType {
 
 export class CPUProfileHeader extends WritableProfileHeader {
   cpuProfilerModel: SDK.CPUProfilerModel.CPUProfilerModel|null;
-  profileModelInternal?: SDK.CPUProfileDataModel.CPUProfileDataModel;
+  profileModelInternal?: CPUProfile.CPUProfileDataModel.CPUProfileDataModel;
+  target: SDK.Target.Target|null;
 
   constructor(cpuProfilerModel: SDK.CPUProfilerModel.CPUProfilerModel|null, type: CPUProfileType, title?: string) {
     super(cpuProfilerModel && cpuProfilerModel.debuggerModel(), type, title);
     this.cpuProfilerModel = cpuProfilerModel;
+    this.target = this.cpuProfilerModel && this.cpuProfilerModel.target() || null;
   }
 
   override createView(): ProfileView {
@@ -270,7 +274,7 @@ export class CPUProfileHeader extends WritableProfileHeader {
     return this.protocolProfile();
   }
 
-  profileModel(): SDK.CPUProfileDataModel.CPUProfileDataModel {
+  profileModel(): CPUProfile.CPUProfileDataModel.CPUProfileDataModel {
     if (!this.profileModelInternal) {
       throw new Error('Expected _profileModel to be available');
     }
@@ -278,8 +282,7 @@ export class CPUProfileHeader extends WritableProfileHeader {
   }
 
   override setProfile(profile: Protocol.Profiler.Profile): void {
-    const target = this.cpuProfilerModel && this.cpuProfilerModel.target() || null;
-    this.profileModelInternal = new SDK.CPUProfileDataModel.CPUProfileDataModel(profile, target);
+    this.profileModelInternal = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(profile);
   }
 }
 
@@ -300,7 +303,7 @@ export class NodeFormatter implements Formatter {
   formatPercent(value: number, node: ProfileDataGridNode): string {
     if (this.profileView) {
       const profile = this.profileView.profile();
-      if (profile && node.profileNode !== (profile as SDK.CPUProfileDataModel.CPUProfileDataModel).idleNode) {
+      if (profile && node.profileNode !== (profile as CPUProfile.CPUProfileDataModel.CPUProfileDataModel).idleNode) {
         return i18nString(UIStrings.formatPercent, {PH1: value.toFixed(2)});
       }
     }
@@ -316,12 +319,12 @@ export class NodeFormatter implements Formatter {
 }
 
 export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
-  readonly cpuProfile: SDK.CPUProfileDataModel.CPUProfileDataModel;
+  readonly cpuProfile: CPUProfile.CPUProfileDataModel.CPUProfileDataModel;
   readonly cpuProfilerModel: SDK.CPUProfilerModel.CPUProfilerModel|null;
   entrySelfTimes?: Float32Array;
 
   constructor(
-      cpuProfile: SDK.CPUProfileDataModel.CPUProfileDataModel,
+      cpuProfile: CPUProfile.CPUProfileDataModel.CPUProfileDataModel,
       cpuProfilerModel: SDK.CPUProfilerModel.CPUProfilerModel|null) {
     super();
     this.cpuProfile = cpuProfile;
@@ -337,7 +340,7 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
   }
 
   override entryHasDeoptReason(entryIndex: number): boolean {
-    const node = (this.entryNodes[entryIndex] as SDK.CPUProfileDataModel.CPUProfileNode);
+    const node = (this.entryNodes[entryIndex] as CPUProfile.CPUProfileDataModel.CPUProfileNode);
     return Boolean(node.deoptReason);
   }
 
@@ -353,7 +356,7 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
       entries.push(null);
     }
     function onCloseFrame(
-        depth: number, node: SDK.CPUProfileDataModel.CPUProfileNode, startTime: number, totalTime: number,
+        depth: number, node: CPUProfile.ProfileTreeModel.ProfileNode, startTime: number, totalTime: number,
         selfTime: number): void {
       const index = (stack.pop() as number);
       entries[index] = new CPUFlameChartDataProvider.ChartEntry(depth, totalTime, startTime, selfTime, node);
@@ -361,7 +364,7 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
     }
     this.cpuProfile.forEachFrame(onOpenFrame, onCloseFrame);
 
-    const entryNodes: SDK.CPUProfileDataModel.CPUProfileNode[] = new Array(entries.length);
+    const entryNodes: CPUProfile.ProfileTreeModel.ProfileNode[] = new Array(entries.length);
     const entryLevels = new Uint16Array(entries.length);
     const entryTotalTimes = new Float32Array(entries.length);
     const entrySelfTimes = new Float32Array(entries.length);
@@ -430,7 +433,7 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
         i18nString(UIStrings.aggregatedSelfTime), i18n.TimeUtilities.secondsToString(node.self / 1000, true));
     pushEntryInfoRow(
         i18nString(UIStrings.aggregatedTotalTime), i18n.TimeUtilities.secondsToString(node.total / 1000, true));
-    const deoptReason = (node as SDK.CPUProfileDataModel.CPUProfileNode).deoptReason;
+    const deoptReason = (node as CPUProfile.CPUProfileDataModel.CPUProfileNode).deoptReason;
     if (deoptReason) {
       pushEntryInfoRow(i18nString(UIStrings.notOptimized), deoptReason);
     }
@@ -445,11 +448,11 @@ export namespace CPUFlameChartDataProvider {
     duration: number;
     startTime: number;
     selfTime: number;
-    node: SDK.CPUProfileDataModel.CPUProfileNode;
+    node: CPUProfile.ProfileTreeModel.ProfileNode;
 
     constructor(
         depth: number, duration: number, startTime: number, selfTime: number,
-        node: SDK.CPUProfileDataModel.CPUProfileNode) {
+        node: CPUProfile.ProfileTreeModel.ProfileNode) {
       this.depth = depth;
       this.duration = duration;
       this.startTime = startTime;

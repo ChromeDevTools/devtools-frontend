@@ -3,6 +3,7 @@
   Use of this source code is governed by a BSD-style license that can be
   found in the LICENSE file.
 -->
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8" />
@@ -78,7 +79,7 @@
     </div>
 
     <host-element id="slotted-host-element">
-      <template shadowroot="open">
+      <template shadowrootmode="open">
         <slot></slot>
       </template>
       text in slot
@@ -88,7 +89,7 @@
     <button class="custom-selector-attribute" data-testid="123456789">Custom selector (invalid CSS id)</button>
 
     <host-element id="shadow-root-with-custom-selectors" data-qa="custom-id">
-      <template shadowroot="open">
+      <template shadowrootmode="open">
         <button data-testid="shadow button">Shadow button with testid</button>>
       </template>
     </host-element>

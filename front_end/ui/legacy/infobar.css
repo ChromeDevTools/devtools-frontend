@@ -5,36 +5,31 @@
  */
 
 .infobar {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   display: flex;
   flex: auto;
-  border-bottom: 1px solid var(--color-details-hairline);
   flex-direction: column;
   position: relative;
-  padding: 1px 6px;
+  padding: 6px;
+  min-width: fit-content;
 }
 
 .infobar:focus {
-  box-shadow: 0 0 0 2px var(--color-background-elevation-2) inset;
+  outline: 2px solid var(--sys-color-state-focus-ring);
+  outline-offset: -2px;
 }
 
 .infobar-warning {
-  --override-infobar-warning-background: rgb(253 242 192);
-
-  background-color: var(--override-infobar-warning-background);
+  background-color: var(--sys-color-surface-yellow);
+  color: var(--sys-color-on-surface-yellow);
 }
 
 .infobar-error {
-  --override-infobar-error-background: var(--color-error-background);
-  --override-infobar-error-text: var(--color-error-text);
+  --override-infobar-error-background: var(--sys-color-surface-error);
+  --override-infobar-error-text: var(--sys-color-on-surface-error);
 
   background-color: var(--override-infobar-error-background);
   color: var(--override-infobar-error-text);
-}
-
-.-theme-with-dark-background .infobar-warning,
-:host-context(.-theme-with-dark-background) .infobar-warning {
-  --override-infobar-warning-background: rgb(63 52 2);
 }
 
 .infobar-main-row {
@@ -88,33 +83,32 @@
 }
 
 .infobar-button {
-  color: var(--color-text-secondary);
-  cursor: pointer;
+  color: var(--sys-color-token-subtle);
   padding: 0 4px;
 }
 
 .info-icon {
-  -webkit-mask-image: var(--image-file-info);
+  mask-image: var(--image-file-info);
   background-color: var(--icon-info);
 }
 
 .warning-icon {
-  -webkit-mask-image: var(--image-file-warning);
+  mask-image: var(--image-file-warning);
   background-color: var(--icon-warning);
 }
 
 .error-icon {
-  -webkit-mask-image: var(--image-file-cross-circle);
+  mask-image: var(--image-file-cross-circle);
   background-color: var(--icon-error);
 }
 
 .issue-icon {
-  -webkit-mask-image: var(--image-file-issue-text-filled);
+  mask-image: var(--image-file-issue-text-filled);
   background-color: var(--icon-info);
 }
 
 .icon {
-  -webkit-mask-size: 20px 20px;
+  mask-size: 20px 20px;
   width: 20px;
   height: 20px;
   flex-shrink: 0;

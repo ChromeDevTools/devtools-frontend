@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const noop = (): void => void 0;
+const noop = () => void 0;
 
 export class Logger {
   #log: (...args: unknown[]) => void;

@@ -7,9 +7,9 @@
 :host {
   z-index: 30;
   padding: 4px;
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-surface3);
   border-radius: 7px;
-  border: 2px solid var(--color-details-hairline);
+  border: 2px solid var(--sys-color-divider);
   width: 90%;
   pointer-events: auto;
 }
@@ -17,16 +17,16 @@
 :host(.sources-edit-breakpoint-dialog) {
   border-radius: 0;
   z-index: 30;
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-surface3);
   width: 555px;
   pointer-events: auto;
   margin-left: -1px;
   padding: 0 10px 10px 5px;
-  border: 1px solid var(--color-details-hairline);
+  border: 1px solid var(--sys-color-divider);
 }
 
 :host-context(.sources-edit-breakpoint-dialog) .condition-editor {
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   margin: 0 6px 20px 3px;
 }
 
@@ -45,6 +45,9 @@
 :host-context(.sources-edit-breakpoint-dialog) devtools-icon.link-icon {
   vertical-align: sub;
   margin-right: 0.5ch;
+  color: var(--icon-link);
+  width: 16px;
+  height: 16px;
 }
 
 :host-context(.sources-edit-breakpoint-dialog) .link-wrapper {
@@ -58,5 +61,5 @@
 }
 
 :host-context(.sources-edit-breakpoint-dialog) .dialog-header > devtools-icon:hover {
-  --icon-color: var(--icon-default-hover);
+  color: var(--icon-default-hover);
 }

@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 
 import reportStyles from './report.css.js';
@@ -165,15 +164,14 @@ export class ReportValue extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-report', Report);
-ComponentHelpers.CustomElements.defineComponent('devtools-report-section', ReportSection);
-ComponentHelpers.CustomElements.defineComponent('devtools-report-section-header', ReportSectionHeader);
-ComponentHelpers.CustomElements.defineComponent('devtools-report-key', ReportKey);
-ComponentHelpers.CustomElements.defineComponent('devtools-report-value', ReportValue);
-ComponentHelpers.CustomElements.defineComponent('devtools-report-divider', ReportSectionDivider);
+customElements.define('devtools-report', Report);
+customElements.define('devtools-report-section', ReportSection);
+customElements.define('devtools-report-section-header', ReportSectionHeader);
+customElements.define('devtools-report-key', ReportKey);
+customElements.define('devtools-report-value', ReportValue);
+customElements.define('devtools-report-divider', ReportSectionDivider);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-report': Report;
     'devtools-report-section': ReportSection;

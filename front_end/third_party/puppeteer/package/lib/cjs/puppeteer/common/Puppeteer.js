@@ -1,8 +1,13 @@
 "use strict";
+/**
+ * @license
+ * Copyright 2017 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Puppeteer = void 0;
 const BrowserConnector_js_1 = require("./BrowserConnector.js");
-const QueryHandler_js_1 = require("./QueryHandler.js");
+const CustomQueryHandler_js_1 = require("./CustomQueryHandler.js");
 /**
  * The main Puppeteer class.
  *
@@ -10,9 +15,17 @@ const QueryHandler_js_1 = require("./QueryHandler.js");
  * instance of {@link PuppeteerNode} when you import or require `puppeteer`.
  * That class extends `Puppeteer`, so has all the methods documented below as
  * well as all that are defined on {@link PuppeteerNode}.
+ *
  * @public
  */
 class Puppeteer {
+    /**
+     * Operations for {@link CustomQueryHandler | custom query handlers}. See
+     * {@link CustomQueryHandlerRegistry}.
+     *
+     * @internal
+     */
+    static customQueryHandlers = CustomQueryHandler_js_1.customQueryHandlers;
     /**
      * Registers a {@link CustomQueryHandler | custom query handler}.
      *
@@ -36,34 +49,38 @@ class Puppeteer {
      * @public
      */
     static registerCustomQueryHandler(name, queryHandler) {
-        return (0, QueryHandler_js_1.registerCustomQueryHandler)(name, queryHandler);
+        return this.customQueryHandlers.register(name, queryHandler);
     }
     /**
      * Unregisters a custom query handler for a given name.
      */
     static unregisterCustomQueryHandler(name) {
-        return (0, QueryHandler_js_1.unregisterCustomQueryHandler)(name);
+        return this.customQueryHandlers.unregister(name);
     }
     /**
      * Gets the names of all custom query handlers.
      */
     static customQueryHandlerNames() {
-        return (0, QueryHandler_js_1.customQueryHandlerNames)();
+        return this.customQueryHandlers.names();
     }
     /**
      * Unregisters all custom query handlers.
      */
     static clearCustomQueryHandlers() {
-        return (0, QueryHandler_js_1.clearCustomQueryHandlers)();
+        return this.customQueryHandlers.clear();
     }
     /**
      * @internal
      */
+    _isPuppeteerCore;
+    /**
+     * @internal
+     */
+    _changedProduct = false;
+    /**
+     * @internal
+     */
     constructor(settings) {
-        /**
-         * @internal
-         */
-        this._changedProduct = false;
         this._isPuppeteerCore = settings.isPuppeteerCore;
         this.connect = this.connect.bind(this);
     }
@@ -76,7 +93,7 @@ class Puppeteer {
      * @returns Promise which resolves to browser instance.
      */
     connect(options) {
-        return (0, BrowserConnector_js_1._connectToCDPBrowser)(options);
+        return (0, BrowserConnector_js_1._connectToBrowser)(options);
     }
 }
 exports.Puppeteer = Puppeteer;

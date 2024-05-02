@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "allowUnreachableCode": false,
+    "noEmitOnError": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "lit-html": ["./third_party/lit-html"],
+      "lit-html/*": ["./third_party/lit-html/*"]
+    }
+  },
+  "include": [
+    "src/*.ts",
+    "tests/*.ts"
+  ]
+}

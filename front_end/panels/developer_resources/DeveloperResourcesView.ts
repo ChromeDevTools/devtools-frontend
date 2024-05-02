@@ -6,6 +6,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {DeveloperResourcesListView} from './DeveloperResourcesListView.js';
 import developerResourcesViewStyles from './developerResourcesView.css.js';
@@ -55,7 +56,10 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true);
 
+    this.element.setAttribute('jslog', `${VisualLogging.panel('developer-resources').track({resize: true})}`);
+
     const toolbarContainer = this.contentElement.createChild('div', 'developer-resource-view-toolbar-container');
+    toolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
     const toolbar = new UI.Toolbar.Toolbar('developer-resource-view-toolbar', toolbarContainer);
 
     this.textFilterRegExp = null;
@@ -79,16 +83,17 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
 
     this.loader = SDK.PageResourceLoader.PageResourceLoader.instance();
     this.loader.addEventListener(SDK.PageResourceLoader.Events.Update, this.update, this);
+    this.update();
   }
 
   override async doUpdate(): Promise<void> {
     this.listView.reset();
-    this.listView.update(this.loader.getResourcesLoaded().values());
+    this.listView.update(this.loader.getScopedResourcesLoaded().values());
     this.updateStats();
   }
 
   private updateStats(): void {
-    const {loading, resources} = this.loader.getNumberOfResources();
+    const {loading, resources} = this.loader.getScopedNumberOfResources();
     if (loading > 0) {
       this.statusMessageElement.textContent =
           i18nString(UIStrings.resourcesCurrentlyLoading, {PH1: resources, PH2: loading});

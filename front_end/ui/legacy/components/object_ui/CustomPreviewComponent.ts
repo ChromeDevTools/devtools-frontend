@@ -5,11 +5,12 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as SDK from '../../../../core/sdk/sdk.js';
-import * as UI from '../../legacy.js';
 import type * as Protocol from '../../../../generated/protocol.js';
+import * as IconButton from '../../../components/icon_button/icon_button.js';
+import * as UI from '../../legacy.js';
 
-import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
 import customPreviewComponentStyles from './customPreviewComponent.css.js';
+import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
 
 const UIStrings = {
   /**
@@ -25,7 +26,7 @@ export class CustomPreviewSection {
   private expanded: boolean;
   private cachedContent: Node|null;
   private readonly header: Node|undefined;
-  private readonly expandIcon: UI.Icon.Icon|undefined;
+  private readonly expandIcon: IconButton.Icon.Icon|undefined;
   constructor(object: SDK.RemoteObject.RemoteObject) {
     this.sectionElement = document.createElement('span');
     this.sectionElement.classList.add('custom-expandable-section');
@@ -56,7 +57,7 @@ export class CustomPreviewSection {
         this.header.classList.add('custom-expandable-section-header');
       }
       this.header.addEventListener('click', this.onClick.bind(this), false);
-      this.expandIcon = UI.Icon.Icon.create('triangle-right', 'custom-expand-icon');
+      this.expandIcon = IconButton.Icon.create('triangle-right', 'custom-expand-icon');
       this.header.insertBefore(this.expandIcon, this.header.firstChild);
     }
 
@@ -147,9 +148,9 @@ export class CustomPreviewSection {
     }
     if (this.expandIcon) {
       if (this.expanded) {
-        this.expandIcon.setIconType('triangle-down');
+        this.expandIcon.name = 'triangle-down';
       } else {
-        this.expandIcon.setIconType('triangle-right');
+        this.expandIcon.name = 'triangle-right';
       }
     }
   }
@@ -206,7 +207,9 @@ export class CustomPreviewComponent {
   private contextMenuEventFired(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (this.customPreviewSection) {
-      contextMenu.revealSection().appendItem(i18nString(UIStrings.showAsJavascriptObject), this.disassemble.bind(this));
+      contextMenu.revealSection().appendItem(
+          i18nString(UIStrings.showAsJavascriptObject), this.disassemble.bind(this),
+          {jslogContext: 'show-as-javascript-object'});
     }
     contextMenu.appendApplicableItems(this.object);
     void contextMenu.show();

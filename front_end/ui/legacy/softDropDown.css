@@ -9,7 +9,7 @@
 }
 
 .item-list {
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   box-shadow: var(--drop-shadow);
   overflow-x: hidden;
   overflow-y: auto;
@@ -17,8 +17,7 @@
 }
 
 .item.highlighted {
-  color: var(--legacy-selection-fg-color);
-  background-color: var(--legacy-selection-bg-color);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 @media (forced-colors: active) {

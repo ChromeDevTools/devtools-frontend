@@ -10,7 +10,7 @@
   line-height: 16px;
   position: relative;
   display: block;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .menu-item:focus {
@@ -33,19 +33,16 @@
   transform: translateY(-50%);
   display: inline-block;
   mask-repeat: no-repeat;
-  -webkit-mask-repeat: no-repeat;
   mask-position: center;
-  -webkit-mask-position: center;
   width: calc(var(--menu-checkmark-width) - 10px);
   height: var(--menu-checkmark-height);
   mask-image: var(--selected-item-check);
-  -webkit-mask-image: var(--selected-item-check);
-  background: var(--color-text-secondary);
+  background: var(--sys-color-token-subtle);
 }
 
 :host(:hover:not(.prevents-close)) .menu-item,
 :host(:focus-visible:not(.prevents-close)) .menu-item {
-  background: var(--color-background-elevation-2);
+  background: var(--sys-color-state-hover-on-subtle);
 }
 
 :host(:focus) {

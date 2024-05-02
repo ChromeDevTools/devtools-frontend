@@ -86,8 +86,8 @@ git tag --merged <branch>
 ### Project documentation
 
 Check out the [project documentation](https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/README.md)
-for instructions to set up, use, and maintain a DevTools front-end checkout, as well as design guidelines, and architectural
-documentation.
+for instructions to [set up](https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/get_the_code.md), use, and
+maintain a DevTools front-end checkout, as well as design guidelines, and architectural documentation.
 
 ### Additional references
 

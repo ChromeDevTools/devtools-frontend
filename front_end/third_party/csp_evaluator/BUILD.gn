@@ -1,0 +1,16 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../visibility.gni")
+
+devtools_entrypoint("bundle") {
+  entrypoint = "csp_evaluator.ts"
+
+  deps = [ "./package:csp_evaluator" ]
+
+  visibility = [ "../../panels/application/components/*" ]
+
+  visibility += devtools_third_party_visibility
+}

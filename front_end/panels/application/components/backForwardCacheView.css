@@ -9,7 +9,7 @@
 }
 
 .gray-text {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   margin: 0 0 5px 56px;
   display: flex;
   flex-direction: row;
@@ -19,7 +19,7 @@
   overflow: hidden;
 }
 
-.explanation-frames {
+.details-list {
   margin-left: 56px;
   grid-column-start: span 2;
 }
@@ -47,7 +47,7 @@
 }
 
 .report-key {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   min-width: auto;
   overflow-wrap: break-word;
   align-self: start;
@@ -62,7 +62,7 @@
 
 .link,
 .devtools-link {
-  color: var(--color-link);
+  color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
   outline-offset: 2px;
@@ -70,4 +70,12 @@
 
 .tree-outline li .selection {
   margin-left: -5px;
+}
+
+@media (forced-colors: active) {
+  .link,
+  .devtools-link {
+    color: linktext;
+    text-decoration-color: linktext;
+  }
 }

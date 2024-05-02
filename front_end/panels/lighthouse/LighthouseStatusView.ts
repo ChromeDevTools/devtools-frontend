@@ -192,7 +192,9 @@ export class StatusView {
         this.dialog.contentElement, {cssFile: [lighthouseDialogStyles], delegatesFocus: undefined});
     const lighthouseViewElement = dialogRoot.createChild('div', 'lighthouse-view vbox');
 
-    const cancelButton = UI.UIUtils.createTextButton(i18nString(UIStrings.cancel), this.cancel.bind(this));
+    const cancelButton = UI.UIUtils.createTextButton(i18nString(UIStrings.cancel), this.cancel.bind(this), {
+      jslogContext: 'lighthouse.cancel',
+    });
     const fragment = UI.Fragment.Fragment.build`
   <div class="lighthouse-view vbox">
   <h2 $="status-header">Auditing your web page…</h2>
@@ -302,7 +304,7 @@ export class StatusView {
       return phase.message();
     }
 
-    const deviceTypeSetting = RuntimeSettings.find(item => item.setting.name === 'lighthouse.device_type');
+    const deviceTypeSetting = RuntimeSettings.find(item => item.setting.name === 'lighthouse.device-type');
     const throttleSetting = RuntimeSettings.find(item => item.setting.name === 'lighthouse.throttling');
     const deviceType = deviceTypeSetting ? deviceTypeSetting.setting.get() : '';
     const throttling = throttleSetting ? throttleSetting.setting.get() : '';

@@ -32,8 +32,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
-    "../../../../test/unittests/front_end/panels/settings/emulation/*",
     "../../../entrypoints/*",
   ]
 
@@ -43,7 +41,11 @@ devtools_entrypoint("bundle") {
 devtools_entrypoint("meta") {
   entrypoint = "emulation-meta.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../../core/i18n:bundle",
+    "../../../ui/legacy:bundle",
+  ]
 
   visibility = [
     "../*",

@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("extensions") {
@@ -46,25 +47,28 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/models/extensions:extensions",
     "../../entrypoints/main/*",
     "../../panels/elements/*",
     "../../panels/recorder/*",
     "../../panels/sources/*",
     "../../panels/timeline/*",
+    "../../testing",
   ]
 
   visibility += devtools_models_visibility
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "extensions-legacy.ts"
+ts_library("unittests") {
+  testonly = true
 
-  deps = [ ":bundle" ]
+  sources = [
+    "ExtensionServer.test.ts",
+    "HostUrlPattern.test.ts",
+    "RecorderPluginManager.test.ts",
+  ]
 
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../entrypoints/shell/*",
-    "../../legacy_test_runner/*",
+  deps = [
+    ":bundle",
+    "../../testing",
   ]
 }

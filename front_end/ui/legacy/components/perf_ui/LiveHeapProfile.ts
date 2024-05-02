@@ -19,8 +19,8 @@ export class LiveHeapProfile implements Common.Runnable.Runnable,
   private constructor() {
     this.running = false;
     this.sessionId = 0;
-    this.loadEventCallback = (): void => {};
-    this.setting = Common.Settings.Settings.instance().moduleSetting('memoryLiveHeapProfile');
+    this.loadEventCallback = () => {};
+    this.setting = Common.Settings.Settings.instance().moduleSetting('memory-live-heap-profile');
     this.setting.addChangeListener(event => event.data ? this.startProfiling() : this.stopProfiling());
     if (this.setting.get()) {
       void this.startProfiling();

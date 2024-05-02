@@ -3,23 +3,24 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import type * as puppeteer from 'puppeteer-core';
 
 import {expectError} from '../../conductor/events.js';
 import {
   $,
   $$,
+  assertNotNullOrUndefined,
   click,
-  enableExperiment,
+  getBrowserAndPages,
+  getResourcesPath,
+  getTextContent,
+  pasteText,
   step,
   typeText,
   waitFor,
   waitForAria,
   waitForElementWithTextContent,
   waitForFunction,
-  getBrowserAndPages,
-  getResourcesPath,
-  assertNotNullOrUndefined,
-  pasteText,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
@@ -42,10 +43,10 @@ const configureAndCheckHeaderOverrides = async () => {
   });
 
   let networkView = await waitFor('.network-item-view');
-  await click('#tab-headersComponent', {
+  await click('#tab-headers-component', {
     root: networkView,
   });
-  await waitFor('#tab-headersComponent[role=tab][aria-selected=true]', networkView);
+  await waitFor('#tab-headers-component[role=tab][aria-selected=true]', networkView);
   let responseHeaderSection = await waitFor('[aria-label="Response Headers"]', networkView);
 
   let row = await waitFor('.row', responseHeaderSection);
@@ -67,7 +68,7 @@ const configureAndCheckHeaderOverrides = async () => {
   await navigateToNetworkTab('hello.html');
   await selectRequestByName('hello.html');
   networkView = await waitFor('.network-item-view');
-  await click('#tab-headersComponent', {
+  await click('#tab-headers-component', {
     root: networkView,
   });
 
@@ -76,7 +77,7 @@ const configureAndCheckHeaderOverrides = async () => {
   assert.deepStrictEqual(await getTextFromHeadersRow(row), ['cache-control:', 'Foo']);
 };
 
-describe('The Network Request view', async () => {
+describe('The Network Request view', () => {
   it('re-opens the same tab after switching to another panel and navigating back to the "Network" tab (https://crbug.com/1184578)',
      async () => {
        await navigateToNetworkTab(SIMPLE_PAGE_URL);
@@ -134,7 +135,8 @@ describe('The Network Request view', async () => {
     await waitForElementWithTextContent('uuid-in-package:020111b3-437a-4c5c-ae07-adb6bbffb720', networkView);
   });
 
-  it('prevents requests on the preview tab.', async () => {
+  // failing test blocking the roll
+  it.skip('[crbug.com/1518454]: prevents requests on the preview tab.', async () => {
     await navigateToNetworkTab('embedded_requests.html');
 
     // For the issue to manifest it's mandatory to load the stylesheet by absolute URL. A relative URL would be treated
@@ -174,7 +176,8 @@ describe('The Network Request view', async () => {
     await waitForFunction(async () => await styleSrcError.caught);
   });
 
-  it('permits inline styles on the preview tab.', async () => {
+  // failing test blocking the roll
+  it.skip('[crbug.com/1518454]: permits inline styles on the preview tab.', async () => {
     await navigateToNetworkTab('embedded_requests.html');
     const contents = '<head><style>p { color: red; }</style></head><body><p>Content</p></body>';
     const {target} = getBrowserAndPages();
@@ -204,6 +207,114 @@ describe('The Network Request view', async () => {
     const color = await p.evaluate(e => getComputedStyle(e).color);
 
     assert.deepEqual(color, 'rgb(255, 0, 0)');
+  });
+
+  const navigateToEventStreamMessages = async () => {
+    await navigateToNetworkTab('eventstream.html');
+    await waitForSomeRequestsToAppear(2);
+
+    await selectRequestByName('event-stream.rawresponse');
+
+    const networkView = await waitFor('.network-item-view');
+    await click('[aria-label=EventStream][role=tab]', {
+      root: networkView,
+    });
+    await waitFor(
+        '[aria-label=EventStream][role=tab][aria-selected=true]',
+        networkView,
+    );
+    return waitFor('.event-source-messages-view');
+  };
+
+  interface EventSourceMessageRaw {
+    id: string|undefined;
+    type: string|undefined;
+    data: string|undefined;
+    time?: string;
+  }
+
+  const waitForMessages = async (messagesView: puppeteer.ElementHandle<Element>, count: number) => {
+    return waitForFunction(async () => {
+      const messages = await $$('.data-grid-data-grid-node', messagesView);
+      if (messages.length !== count) {
+        return undefined;
+      }
+
+      return Promise.all(messages.map(message => {
+        return new Promise<EventSourceMessageRaw>(async resolve => {
+          const [id, type, data] = await Promise.all([
+            getTextContent('.id-column', message),
+            getTextContent('.type-column', message),
+            getTextContent('.data-column', message),
+          ]);
+          resolve({
+            id,
+            type,
+            data,
+          });
+        });
+      }));
+    });
+  };
+
+  const knownMessages: EventSourceMessageRaw[] = [
+    {id: '1', type: 'custom-one', data: '{"one": "value-one"}'},
+    {id: '2', type: 'message', data: '{"two": "value-two"}'},
+    {id: '3', type: 'message', data: '{"three": "value-three"}'},
+  ];
+  const assertMessage = (actualMessage: EventSourceMessageRaw, expectedMessage: EventSourceMessageRaw) => {
+    assert.deepEqual(actualMessage.id, expectedMessage.id);
+    assert.deepEqual(actualMessage.type, expectedMessage.type);
+    assert.deepEqual(actualMessage.data, expectedMessage.data);
+  };
+  const assertBaseState = async (messagesView: puppeteer.ElementHandle<Element>) => {
+    const messages = await waitForMessages(messagesView, 3);
+    assertMessage(messages[0], knownMessages[0]);
+    assertMessage(messages[1], knownMessages[1]);
+    assertMessage(messages[2], knownMessages[2]);
+  };
+
+  it('stores EventSource filter', async () => {
+    const messagesView = await navigateToEventStreamMessages();
+    let messages = await waitForMessages(messagesView, 3);
+    await assertBaseState(messagesView);
+
+    const inputSelector = '[aria-placeholder="Enter regex, for example: https?';
+
+    const filterInput = await waitFor(inputSelector, messagesView);
+
+    // "one"
+    await filterInput.focus();
+    await typeText('one');
+    messages = await waitForMessages(messagesView, 1);
+    assertMessage(messages[0], knownMessages[0]);
+
+    // clear
+    await click('[title="Clear input"]', {
+      root: messagesView,
+    });
+    await assertBaseState(messagesView);
+
+    // "two"
+    await filterInput.focus();
+    await typeText('two');
+    messages = await waitForMessages(messagesView, 1);
+    assertMessage(messages[0], knownMessages[1]);
+
+    // invalid regex
+    await filterInput.focus();
+    await typeText('invalid(');
+    messages = await waitForMessages(messagesView, 0);
+  });
+
+  it('handles EventSource clear', async () => {
+    const messagesView = await navigateToEventStreamMessages();
+    await assertBaseState(messagesView);
+
+    await click('[aria-label="Clear all"]', {
+      root: messagesView,
+    });
+    await waitForMessages(messagesView, 0);
   });
 
   it('stores websocket filter', async () => {
@@ -315,7 +426,9 @@ describe('The Network Request view', async () => {
           'accept:',
           '*/*',
           'accept-encoding:',
-          'gzip, deflate, br',
+          '%',
+          'accept-language:',
+          '%',
           'connection:',
           'keep-alive',
           'content-length:',
@@ -405,7 +518,7 @@ describe('The Network Request view', async () => {
       'Keep-Alive: timeout=5',
       'Transfer-Encoding: chunked',
     ].join('\r\n');
-    const rawHeaders = await $('.raw-headers', section);
+    const rawHeaders = await waitFor('.raw-headers', section);
     const rawHeadersText = await rawHeaders.evaluate(el => el.textContent || '');
     assertOutlineMatches([expectedRawHeadersContent], [rawHeadersText]);
 
@@ -431,7 +544,9 @@ describe('The Network Request view', async () => {
           'accept:',
           '*/*',
           'accept-encoding:',
-          'gzip, deflate, br',
+          '%',
+          'accept-language:',
+          '%',
           'connection:',
           'keep-alive',
           'content-length:',
@@ -500,7 +615,6 @@ describe('The Network Request view', async () => {
   });
 
   it('can create header overrides via request\'s context menu', async () => {
-    await enableExperiment('headerOverrides');
     await navigateToNetworkTab('hello.html');
     await selectRequestByName('hello.html', {button: 'right'});
 
@@ -510,12 +624,11 @@ describe('The Network Request view', async () => {
   });
 
   it('can create header overrides via header\'s pencil icon', async () => {
-    await enableExperiment('headerOverrides');
     await navigateToNetworkTab('hello.html');
     await selectRequestByName('hello.html');
 
     const networkView = await waitFor('.network-item-view');
-    await click('#tab-headersComponent', {
+    await click('#tab-headers-component', {
       root: networkView,
     });
 

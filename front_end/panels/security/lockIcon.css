@@ -8,82 +8,80 @@
 .security-property {
   height: 16px;
   width: 16px;
-  -webkit-mask-image: var(--image-file-securityIcons);
-  -webkit-mask-size: 80px 32px;
-  background-color: var(--color-text-disabled);
+  mask-image: var(--image-file-securityIcons);
+  mask-size: 80px 32px;
+  background-color: var(--sys-color-state-disabled);
 }
 
 .lock-icon-secure {
-  -webkit-mask-position: 0 0;
-  background-color: var(--color-accent-green);
+  mask-position: 0 0;
+  background-color: var(--sys-color-green-bright);
 }
 
 .lock-icon-unknown,
 .lock-icon-neutral {
-  -webkit-mask-position: -16px 0;
-  background-color: var(--color-text-primary);
+  mask-position: -16px 0;
+  background-color: var(--sys-color-on-surface);
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.1) {
   .lock-icon-unknown,
   .lock-icon-neutral {
-    background-color: var(--color-text-secondary);
+    background-color: var(--sys-color-token-subtle);
   }
 }
 
 .lock-icon-insecure {
-  -webkit-mask-position: -32px 0;
-  background-color: var(--color-text-secondary);
+  mask-position: -32px 0;
+  background-color: var(--sys-color-token-subtle);
 }
 
 .lock-icon-insecure-broken {
-  -webkit-mask-position: -32px 0;
-  background-color: var(--color-accent-red);
+  mask-position: -32px 0;
+  background-color: var(--sys-color-error-bright);
 }
 
 .security-property-secure {
-  -webkit-mask-position: 0 -16px;
-  background-color: var(--color-accent-green;);
+  mask-position: 0 -16px;
+  background-color: var(--sys-color-green-bright);
 }
 
 .security-property-neutral {
-  -webkit-mask-position: -16px -16px;
-  background-color: var(--color-accent-red);
+  mask-position: -16px -16px;
+  background-color: var(--sys-color-error-bright);
 
   .security-property-insecure {
-    -webkit-mask-position: -32px -16px;
-    background-color: var(--color-accent-red);
+    mask-position: -32px -16px;
+    background-color: var(--sys-color-error-bright);
   }
 
   .security-property-insecure-broken {
-    -webkit-mask-position: -32px -16px;
-    background-color: var(--color-accent-red);
+    mask-position: -32px -16px;
+    background-color: var(--sys-color-error-bright);
   }
 
   .security-property-info {
-    -webkit-mask-position: -48px -16px;
-    background-color: rgb(0 0 0 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
-    /* See: crbug.com/1152736 for color variable migration. */
+    mask-position: -48px -16px;
+    background-color: var(--sys-color-on-surface-subtle);
   }
 
   .security-property-unknown {
-    -webkit-mask-position: -64px -16px;
-    background-color: rgb(0 0 0 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
-    /* See: crbug.com/1152736 for color variable migration. */
+    mask-position: -64px -16px;
+    background-color: var(--sys-color-on-surface-subtle);
   }
 
   .url-scheme-secure {
-    color: var(--color-accent-green);
+    color: var(--sys-color-tertiary);
   }
 
   .url-scheme-neutral,
   .url-scheme-insecure,
   .url-scheme-insecure-broken {
-    color: var(--color-accent-red);
+    color: var(--sys-color-error);
   }
 
   .url-scheme-separator {
-    color: var(--color-text-disabled);
+    color: var(--sys-color-state-disabled);
   }
 
   @media (forced-colors: active) {

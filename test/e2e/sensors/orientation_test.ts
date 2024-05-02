@@ -3,11 +3,30 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {type ElementHandle} from 'puppeteer-core';
 
-import {tabForward, waitForNone} from '../../shared/helper.js';
+import {tabForward, waitFor, waitForNone} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {getOrientationInputs, getOrientationValues, setCustomOrientation} from '../helpers/sensors-helpers.js';
+import {
+  getInputFieldValue,
+  getOrientationInputs,
+  getOrientationValues,
+  setCustomOrientation,
+} from '../helpers/sensors-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
+
+async function assertValidationFails(inputElement: ElementHandle<Element>, value: number) {
+  await inputElement.type(value.toString());
+  assert.strictEqual(await getInputFieldValue(inputElement), value.toString());
+  await tabForward();
+
+  assert.isTrue(await inputElement.evaluate(element => element.classList.contains('error-input')));
+
+  // Clean up so that this function can be called again.
+  const resetButton = await waitFor('.orientation-reset-button');
+  await resetButton.click();
+  await waitForNone('.error-input');
+}
 
 describe('Orientation emulation on Sensors panel', () => {
   beforeEach(async () => {
@@ -24,17 +43,21 @@ describe('Orientation emulation on Sensors panel', () => {
     assert.deepEqual(actualOrientations, expectedOrientations);
   });
 
-  it('allows negative alpha values', async () => {
+  it('highlights values outside the allowed ranges', async () => {
     await setCustomOrientation();
 
-    const alpha = (await getOrientationInputs())[0];
-    await alpha.type('-1');
+    const [alpha, beta, gamma] = await getOrientationInputs();
 
-    const actualValue = (await getOrientationValues())[0];
-    const expectedValue = -1;
-    assert.deepEqual(actualValue, expectedValue);
+    // Alpha must be in the range [0, 360).
+    await assertValidationFails(alpha, -0.1);
+    await assertValidationFails(alpha, 360);
 
-    await tabForward();
-    await waitForNone('.error-input');
+    // Beta must be in the range [-180, 180).
+    await assertValidationFails(beta, -180.1);
+    await assertValidationFails(beta, 180);
+
+    // Gamma must be in the range [-90, 90).
+    await assertValidationFails(gamma, -90.1);
+    await assertValidationFails(gamma, 90);
   });
 });

@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 
 devtools_module("i18n") {
   sources = [
@@ -19,4 +20,15 @@ devtools_entrypoint("bundle") {
   deps = [ ":i18n" ]
 
   visibility = [ "*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "i18n.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+  ]
 }

@@ -28,28 +28,11 @@
  */
 
 .console-view {
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   overflow: hidden;
 
-  --override-error-text-color: var(--color-error-text);
-  --override-console-error-background-color: var(--color-error-background);
-  --override-error-border-color: var(--color-error-border);
-  --override-message-border-color: rgb(240 240 240);
-  --override-warning-border-color: hsl(50deg 100% 88%);
-  --override-focused-message-border-color: hsl(214deg 67% 88%);
-  --override-focused-message-background-color: hsl(214deg 48% 95%);
-  --override-console-warning-background-color: hsl(50deg 100% 95%);
-  --override-console-warning-text-color: hsl(39deg 100% 18%);
-}
-
-.-theme-with-dark-background .console-view {
-  --override-message-border-color: rgb(58 58 58);
-  --override-warning-border-color: rgb(102 85 0);
-  --override-focused-message-border-color: hsl(214deg 47% 48%);
-  --override-focused-message-background-color: hsl(214deg 19% 20%);
-  --override-console-warning-background-color: hsl(50deg 100% 10%);
-  --override-console-warning-text-color: hsl(39deg 89% 55%);
-  --override-console-link-color: var(--color-background-inverted);
+  --override-error-text-color: var(--sys-color-on-error-container);
+  --message-corner-rounder-background: var(--sys-color-cdt-base-container);
 }
 
 .console-toolbar-container {
@@ -62,8 +45,8 @@
 }
 
 .console-toolbar-container > .toolbar {
-  background-color: var(--color-background-elevation-1);
-  border-bottom: var(--legacy-divider-border);
+  background-color: var(--sys-color-cdt-base-container);
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 .console-view-fix-select-all {
@@ -73,8 +56,8 @@
 
 .console-settings-pane {
   flex: none;
-  background-color: var(--color-background-elevation-1);
-  border-bottom: var(--legacy-divider-border);
+  background-color: var(--sys-color-cdt-base-container);
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 .console-settings-pane .toolbar {
@@ -88,7 +71,7 @@
   user-select: text;
   transform: translateZ(0);
   overflow-anchor: none;  /* Chrome-specific scroll-anchoring opt-out */
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 #console-prompt {
@@ -117,7 +100,7 @@
 }
 
 .console-timestamp {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   user-select: none;
   flex: none;
   margin-right: 5px;
@@ -132,7 +115,7 @@
 }
 
 .console-message-repeat-count {
-  margin: 2px 0 0 10px;
+  margin: 1.4px 0 0 10px;
   flex: none;
 }
 
@@ -148,6 +131,7 @@
   display: flex;
   flex-direction: row;
   align-items: flex-start;
+  margin-top: -1px;
 }
 
 .repeated-message .console-message-stack-trace-toggle,
@@ -163,7 +147,7 @@
 }
 
 .console-info {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   font-style: italic;
   padding-bottom: 2px;
 }
@@ -195,7 +179,7 @@
 
 .console-message-repeat-count .expand-group-icon {
   position: static;
-  background-color: var(--color-background);
+  color: var(--sys-color-cdt-base-container);
   margin-left: -1px;
 }
 
@@ -205,8 +189,9 @@
 
 .console-message-wrapper {
   display: flex;
-  border-top: 1px solid var(--override-message-border-color);
-  border-bottom: 1px solid transparent;
+  flex-direction: column;
+  margin: 4px;
+  border-radius: 5px;
 
   /* Console ANSI color */
   --console-color-black: #000;
@@ -225,6 +210,19 @@
   --console-color-ightmagenta: #f5f;
   --console-color-lightcyan: #5ff;
   --console-color-white: #fff;
+
+  &:focus {
+    background-color: var(--sys-color-tonal-container);
+
+    & ::selection {
+      background-color: var(--sys-color-state-focus-select);
+    }
+  }
+}
+
+.console-row-wrapper {
+  display: flex;
+  flex-direction: row;
 }
 
 .-theme-with-dark-background .console-message-wrapper {
@@ -245,44 +243,37 @@
   --console-color-lightcyan: rgb(132 240 255);
 }
 
-.console-message-wrapper:first-of-type {
-  border-top-color: transparent;
+.console-message-wrapper.console-warning-level + .console-message-wrapper,
+.console-message-wrapper.console-error-level + .console-message-wrapper {
+  & .console-message::before,
+  & .console-user-command::before {
+    display: none !important; /* stylelint-disable-line declaration-no-important */
+  }
+}
+
+.console-message-wrapper:not(.console-error-level):not(.console-warning-level) {
+  & .console-message::before,
+  & .console-user-command::before {
+    width: calc(100% - 25px);
+    content: "";
+    display: block;
+    position: absolute;
+    top: -2px;
+    border-top: 1px solid var(--sys-color-divider);
+  }
+
+  &:first-of-type .console-message::before,
+  &:first-of-type .console-user-command::before {
+    display: none;
+  }
 }
 
 .console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level) {
   border-top-width: 0;
 }
 
-.console-message-wrapper:last-of-type {
-  border-bottom-color: var(--override-message-border-color);
-}
-
-.console-message-wrapper:focus {
-  border-top-color: var(--override-focused-message-border-color);
-  border-bottom-color: var(--override-focused-message-border-color);
-  background-color: var(--override-focused-message-background-color);
-}
-
 .console-message-wrapper:focus + .console-message-wrapper {
   border-top-color: transparent;
-}
-
-.console-message-wrapper.console-error-level,
-.console-message-wrapper.console-error-level:not(:focus) + .console-message-wrapper:not(.console-warning-level):not(:focus) {
-  border-top-color: var(--override-error-border-color);
-}
-
-.console-message-wrapper.console-warning-level,
-.console-message-wrapper.console-warning-level:not(:focus) + .console-message-wrapper:not(.console-error-level):not(:focus) {
-  border-top-color: var(--override-warning-border-color);
-}
-
-.console-message-wrapper.console-error-level:last-of-type {
-  border-bottom-color: var(--override-error-border-color);
-}
-
-.console-message-wrapper.console-warning-level:last-of-type {
-  border-bottom-color: var(--override-warning-border-color);
 }
 
 .console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level):focus {
@@ -298,49 +289,42 @@
   top: 3px;
 }
 
-.console-message-wrapper.console-error-level:focus {
-  --override-error-text-color: rgb(200 0 0);
-}
-
-.-theme-with-dark-background .console-message-wrapper.console-error-level:focus {
-  --override-error-text-color: hsl(0deg 100% 75%);
-}
-
 .console-message-wrapper .nesting-level-marker {
   width: 14px;
   flex: 0 0 auto;
-  border-right: 1px solid var(--color-details-hairline);
   position: relative;
   margin-bottom: -1px;
   margin-top: -1px;
+  background-color: var(--sys-color-cdt-base-container);
 }
 
-.console-message-wrapper .nesting-level-marker::before {
-  border-bottom: 1px solid var(--color-details-hairline);
+.console-message-wrapper .nesting-level-marker + .console-message::after {
   position: absolute;
+  left: -30px;
   top: 0;
-  left: 0;
-  margin-left: 100%;
-  width: 3px;
+  width: 6px;
   height: 100%;
   box-sizing: border-box;
-}
-
-.console-message-wrapper:last-child .nesting-level-marker::before,
-.console-message-wrapper .nesting-level-marker.group-closed::before {
+  background-color: var(--sys-color-surface-yellow);
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
   content: "";
 }
 
 .console-error-level {
-  background-color: var(--override-console-error-background-color);
+  background-color: var(--sys-color-surface-error);
+
+  --message-corner-rounder-background: var(--sys-color-surface-error);
 }
 
 .console-warning-level {
-  background-color: var(--override-console-warning-background-color);
+  background-color: var(--sys-color-surface-yellow);
+
+  --message-corner-rounder-background: var(--sys-color-surface-yellow);
 }
 
 .console-warning-level .console-message-text {
-  color: var(--override-console-warning-text-color);
+  color: var(--sys-color-on-surface-yellow);
 }
 
 .console-view-object-properties-section {
@@ -354,7 +338,7 @@
 }
 
 .info-note {
-  background-color: var(--color-primary-variant);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .info-note::before {
@@ -371,13 +355,7 @@
 }
 
 .console-system-type.console-info-level {
-  color: #00f; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
-.-theme-with-dark-background .console-verbose-level:not(.console-warning-level) .console-message-text,
-.-theme-with-dark-background .console-system-type.console-info-level {
-  color: hsl(220deg 100% 65%) !important; /* stylelint-disable-line declaration-no-important */
+  color: var(--sys-color-primary);
 }
 
 #console-messages .link {
@@ -386,19 +364,14 @@
 }
 
 #console-messages .link,
-#console-messages .devtools-link {
-  color: var(--color-text-secondary);
+#console-messages .devtools-link:not(.invalid-link) {
+  color: var(--sys-color-primary);
   word-break: break-all;
 }
 
 #console-messages .resource-links {
   margin-top: -1px;
   margin-bottom: -2px;
-}
-
-#console-messages .link:hover,
-#console-messages .devtools-link:hover {
-  color: var(--color-text-primary);
 }
 
 .console-object-preview {
@@ -452,16 +425,12 @@
   display: inline-block;
   width: 11px;
   height: 11px;
-  color: var(--color-background);
+  color: var(--sys-color-on-tonal-container);
   text-align: center;
   border-radius: 3px;
   line-height: 13px;
   margin: 0 6px;
   font-size: 9px;
-}
-
-.-theme-with-dark-background .object-state-note {
-  background-color: hsl(230deg 100% 80%);
 }
 
 .console-object {
@@ -501,15 +470,94 @@
   height: 0;
 }
 
-.-theme-with-dark-background #console-messages .console-message-text .devtools-link {
-  color: var(--override-console-link-color);
+devtools-console-insight {
+  margin: 9px 22px 11px 24px;
 }
+
+.hover-button {
+  --width: 24px;
+
+  align-items: center;
+  background-color: var(--sys-color-cdt-base-container);
+  border-radius: 50%;
+  border: none;
+  /* todo: extract to global styles and make it work with dark mode. */
+  box-shadow: 0 1px 3px 1px rgb(0 0 0 / 15%), 0 1px 2px 0 rgb(0 0 0 / 30%); /* stylelint-disable-line plugin/use_theme_colors */
+  box-sizing: border-box;
+  color: var(--sys-color-primary);
+  font-family: var(--default-font-family);
+  height: var(--width);
+  justify-content: center;
+  margin: 0;
+  max-height: var(--width);
+  max-width: var(--width);
+  min-height: var(--width);
+  min-width: var(--width);
+  overflow: hidden;
+  padding: 4px 3px 4px 5px;
+  position: absolute;
+  right: 6px;
+  display: none;
+  width: var(--width);
+}
+
+.hover-button span {
+  display: none;
+  white-space: nowrap;
+  padding-right: 3px;
+}
+
+.hover-button:focus,
+.hover-button:hover {
+  border-radius: 100px;
+  max-width: 200px;
+  transition: max-width var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized);
+  width: fit-content;
+  gap: 3px;
+}
+
+.hover-button:focus-visible {
+  outline: 2px solid var(--sys-color-primary);
+  outline-offset: 2px;
+}
+
+.hover-button devtools-icon {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  height: 16px;
+  min-height: 16px;
+  min-width: 16px;
+  width: 16px;
+}
+
+.hover-button:focus span,
+.hover-button:hover span {
+  display: block;
+}
+
+/* It does not look like the linter works with CSS nesting correctly. */
+/* stylelint-disable no-descending-specificity */
+.console-message-wrapper:not(.has-insight) {
+  &:hover,
+  &:focus,
+  &.console-selected {
+    .hover-button {
+      display: block;
+
+      &:focus,
+      &:hover {
+        display: inline-flex;
+      }
+    }
+  }
+}
+/* stylelint-enable no-descending-specificity */
 
 @media (forced-colors: active) {
   .console-message-expand-icon,
-  .console-warning-level [is="ui-icon"].icon-mask.expand-group-icon {
+  .console-warning-level .expand-group-icon {
     forced-color-adjust: none;
-    background-color: ButtonText;
+    color: ButtonText;
   }
 
   .console-message-wrapper:focus,
@@ -538,16 +586,12 @@
     color: HighlightText;
   }
 
-  .console-message-wrapper:focus [is="ui-icon"].icon-mask {
-    background-color: HighlightText;
+  .console-message-wrapper:focus devtools-icon {
+    color: HighlightText;
   }
 
   .console-message-wrapper.console-error-level:focus,
   .console-message-wrapper.console-error-level:focus:last-of-type {
     --override-error-text-color: HighlightText;
-  }
-
-  .console-message-anchor .resource-links {
-    --icon-color: ButtonText;
   }
 }

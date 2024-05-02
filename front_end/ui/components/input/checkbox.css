@@ -7,5 +7,6 @@
 input[type="checkbox"] {
   width: 12px;
   height: 12px;
-  accent-color: var(--color-checkbox-accent-color);
+  accent-color: var(--sys-color-primary-bright);
+  color: var(--sys-color-on-primary);
 }

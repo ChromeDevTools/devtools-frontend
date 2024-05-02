@@ -3,6 +3,7 @@
   "codemirror",
   "codemirror.next",
   "chromium",
+  "csp_evaluator",
   "diff",
   "i18n",
   "intl-messageformat",
@@ -10,6 +11,8 @@
   "lit",
   "marked",
   "puppeteer",
+  "puppeteer/third_party/mitt",
+  "puppeteer/third_party/rxjs",
   "puppeteer-replay",
   "react-devtools",
   "wasmparser"

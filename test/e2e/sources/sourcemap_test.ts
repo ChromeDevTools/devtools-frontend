@@ -10,8 +10,10 @@ import {
   clickElement,
   enableExperiment,
   getBrowserAndPages,
+  getVisibleTextContents,
   goToResource,
   pasteText,
+  pressKey,
   step,
   typeText,
   waitFor,
@@ -21,6 +23,7 @@ import {
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
+import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {
   clickNthChildOfSelectedElementNode,
   focusElementsTree,
@@ -28,9 +31,9 @@ import {
   waitForCSSPropertyValue,
   waitForElementsStyleSection,
 } from '../helpers/elements-helpers.js';
+import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
 import {
   addBreakpointForLine,
-  clickOnContextMenu,
   getBreakpointDecorators,
   getCallFrameNames,
   getValuesForScope,
@@ -52,7 +55,15 @@ import {
   waitForStackTopMatch,
 } from '../helpers/sources-helpers.js';
 
-describe('The Sources Tab', async function() {
+async function waitForTextContent(selector: string) {
+  const element = await waitFor(selector);
+  return await element.evaluate(({textContent}) => textContent);
+}
+
+const DEVTOOLS_LINK = '.toolbar-item .devtools-link';
+const INFOBAR_TEXT = '.infobar-info-text';
+
+describe('The Sources Tab', function() {
   // Some of these tests that use instrumentation breakpoints
   // can be slower on mac and windows. Increase the timeout for them.
   if (this.timeout() !== 0) {
@@ -210,10 +221,9 @@ describe('The Sources Tab', async function() {
 
     await step('Check local variable is eventually un-minified', async () => {
       const unminifiedVariable = 'element: div';
-      await clickOnContextMenu('.cm-line', 'Add source map…');
+      await openSoftContextMenuAndClickOnItem('.cm-line', 'Add source map…');
 
       // Enter the source map URL into the appropriate input box.
-      await waitFor('.add-source-map');
       await click('.add-source-map');
       await typeText('sourcemap-minified.map');
       await frontend.keyboard.press('Enter');
@@ -226,10 +236,10 @@ describe('The Sources Tab', async function() {
     });
 
     await step('Check that expression evaluation understands unminified name', async () => {
-      await frontend.evaluate(() => {
-        // @ts-ignore
-        globalThis.Root.Runtime.experiments.setEnabled('evaluateExpressionsWithSourceMaps', true);
-      });
+      await frontend.evaluate(`(async () => {
+        const Root = await import('./core/root/root.js');
+        Root.Runtime.experiments.setEnabled('evaluate-expressions-with-source-maps', true);
+      })()`);
 
       await click(CONSOLE_TAB_SELECTOR);
       await focusConsolePrompt();
@@ -326,10 +336,9 @@ describe('The Sources Tab', async function() {
     });
 
     await step('Add source map', async () => {
-      await clickOnContextMenu('.cm-line', 'Add source map…');
+      await openSoftContextMenuAndClickOnItem('.cm-line', 'Add source map…');
 
       // Enter the source map URL into the appropriate input box.
-      await waitFor('.add-source-map');
       await click('.add-source-map');
       await typeText('sourcemap-minified-function-name-compiled.map');
       await frontend.keyboard.press('Enter');
@@ -337,8 +346,7 @@ describe('The Sources Tab', async function() {
 
     await step('Check function name is eventually un-minified', async () => {
       const functionName = await waitForFunction(async () => {
-        const locationHandle = await waitFor('.call-frame-title-text');
-        const functionName = await locationHandle.evaluate(location => location.textContent);
+        const functionName = await waitForTextContent('.call-frame-title-text');
         return functionName && functionName === 'unminified' ? functionName : undefined;
       });
       assert.strictEqual(functionName, 'unminified');
@@ -350,39 +358,40 @@ describe('The Sources Tab', async function() {
     });
   });
 
-  // TODO(crbug.com/1346228) Flaky - timeouts.
-  it.skip('[crbug.com/1346228] automatically ignore-lists third party code from source maps', async function() {
-    const {target} = getBrowserAndPages();
-    await openSourceCodeEditorForFile('webpack-main.js', 'webpack-index.html');
+  // Flaky test
+  it.skipOnPlatforms(
+      ['win32'], '[crbug.com/327580855] automatically ignore-lists third party code from source maps', async () => {
+        const {target} = getBrowserAndPages();
+        await openSourceCodeEditorForFile('webpack-main.js', 'webpack-index.html');
 
-    let scriptEvaluation: Promise<unknown>;
-    const breakLocationOuterRegExp = /index\.js:12$/;
+        let scriptEvaluation: Promise<unknown>;
+        const breakLocationOuterRegExp = /index\.js:12$/;
 
-    await step('Run to breakpoint', async () => {
-      scriptEvaluation = target.evaluate('window.foo()');
+        await step('Run to breakpoint', async () => {
+          scriptEvaluation = target.evaluate('window.foo()');
 
-      const scriptLocation = await waitForStackTopMatch(breakLocationOuterRegExp);
-      assert.match(scriptLocation, breakLocationOuterRegExp);
-      assert.deepEqual(await getCallFrameNames(), ['baz', 'bar', 'foo', '(anonymous)']);
-    });
+          const scriptLocation = await waitForStackTopMatch(breakLocationOuterRegExp);
+          assert.match(scriptLocation, breakLocationOuterRegExp);
+          assert.deepEqual(await getCallFrameNames(), ['baz', 'bar', 'foo', '(anonymous)']);
+        });
 
-    await step('Toggle to show ignore-listed frames', async () => {
-      await click('.ignore-listed-message-label');
-      await waitFor('.ignore-listed-call-frame:not(.hidden)');
-      assert.deepEqual(await getCallFrameNames(), ['baz', 'vendor', 'bar', 'foo', '(anonymous)']);
-    });
+        await step('Toggle to show ignore-listed frames', async () => {
+          await click('.ignore-listed-message-label');
+          await waitFor('.ignore-listed-call-frame:not(.hidden)');
+          assert.deepEqual(await getCallFrameNames(), ['baz', 'vendor', 'bar', 'foo', '(anonymous)']);
+        });
 
-    await step('Toggle back off', async () => {
-      await click('.ignore-listed-message-label');
-      await waitFor('.ignore-listed-call-frame.hidden');
-      assert.deepEqual(await getCallFrameNames(), ['baz', 'bar', 'foo', '(anonymous)']);
-    });
+        await step('Toggle back off', async () => {
+          await click('.ignore-listed-message-label');
+          await waitFor('.ignore-listed-call-frame.hidden');
+          assert.deepEqual(await getCallFrameNames(), ['baz', 'bar', 'foo', '(anonymous)']);
+        });
 
-    await step('Resume execution', async () => {
-      await click(RESUME_BUTTON);
-      await scriptEvaluation;
-    });
-  });
+        await step('Resume execution', async () => {
+          await click(RESUME_BUTTON);
+          await scriptEvaluation;
+        });
+      });
 
   it('updates decorators for removed breakpoints in case of code-splitting (crbug.com/1251675)', async () => {
     const {frontend} = getBrowserAndPages();
@@ -395,7 +404,7 @@ describe('The Sources Tab', async function() {
   });
 
   it('reliably hits breakpoints on worker with source map', async () => {
-    await enableExperiment('instrumentationBreakpoints');
+    await enableExperiment('instrumentation-breakpoints');
     const {target, frontend} = getBrowserAndPages();
     await openSourceCodeEditorForFile('sourcemap-stepping-source.js', 'sourcemap-breakpoint.html');
 
@@ -430,23 +439,83 @@ describe('The Sources Tab', async function() {
 
     await step('Check origin of source-mapped JavaScript', async () => {
       await openFileInEditor('sourcemap-origin.js');
-      const link = await waitFor('.toolbar-item .devtools-link');
-      const linkText = await link.evaluate(({textContent}) => textContent);
+      const linkText = await waitForTextContent(DEVTOOLS_LINK);
       assert.strictEqual(linkText, 'sourcemap-origin.min.js');
     });
 
     await step('Check origin of source-mapped SASS', async () => {
       await openFileInEditor('sourcemap-origin.scss');
-      const link = await waitFor('.toolbar-item .devtools-link');
-      const linkText = await link.evaluate(({textContent}) => textContent);
+      const linkText = await waitForTextContent(DEVTOOLS_LINK);
       assert.strictEqual(linkText, 'sourcemap-origin.css');
     });
 
     await step('Check origin of source-mapped JavaScript with URL clash', async () => {
       await openFileInEditor('sourcemap-origin.clash.js');
-      const link = await waitFor('.toolbar-item .devtools-link');
-      const linkText = await link.evaluate(({textContent}) => textContent);
+      const linkText = await waitForTextContent(DEVTOOLS_LINK);
       assert.strictEqual(linkText, 'sourcemap-origin.clash.js');
+    });
+  });
+
+  it('shows Source map loaded infobar', async () => {
+    await goToResource('sources/sourcemap-origin.html');
+    await openSourcesPanel();
+
+    await step('Get infobar text', async () => {
+      await openFileInEditor('sourcemap-origin.min.js');
+      const infobarText = await waitForTextContent(INFOBAR_TEXT);
+      assert.strictEqual(infobarText, 'Source map loaded.');
+    });
+  });
+
+  it('shows Source map loaded infobar after attaching', async () => {
+    const {frontend} = getBrowserAndPages();
+    await openSourceCodeEditorForFile('sourcemap-minified.js', 'sourcemap-minified.html');
+
+    await step('Attach source map', async () => {
+      await openSoftContextMenuAndClickOnItem('.cm-line', 'Add source map…');
+
+      // Enter the source map URL into the appropriate input box.
+      await click('.add-source-map');
+      await typeText('sourcemap-minified.map');
+      await frontend.keyboard.press('Enter');
+    });
+
+    await step('Get infobar text', async () => {
+      const infobarText = await waitForTextContent(INFOBAR_TEXT);
+      assert.strictEqual(infobarText, 'Source map loaded.');
+    });
+  });
+
+  it('shows Source map skipped infobar', async () => {
+    await setIgnoreListPattern('.min.js');
+    await openSourceCodeEditorForFile('sourcemap-origin.min.js', 'sourcemap-origin.html');
+
+    await step('Get infobar texts', async () => {
+      await openFileInEditor('sourcemap-origin.min.js');
+      await waitFor('.infobar-warning');
+      await waitFor('.infobar-info');
+      const infobarTexts = await getVisibleTextContents(INFOBAR_TEXT);
+      assert.deepEqual(
+          infobarTexts, ['This script is on the debugger\'s ignore list', 'Source map skipped for this file.']);
+    });
+  });
+
+  it('shows Source map error infobar after failing to attach', async () => {
+    const {frontend} = getBrowserAndPages();
+    await openSourceCodeEditorForFile('sourcemap-minified.js', 'sourcemap-minified.html');
+
+    await step('Attach source map', async () => {
+      await openSoftContextMenuAndClickOnItem('.cm-line', 'Add source map…');
+
+      // Enter the source map URL into the appropriate input box.
+      await click('.add-source-map');
+      await typeText('sourcemap-invalid.map');
+      await frontend.keyboard.press('Enter');
+    });
+
+    await step('Get infobar text', async () => {
+      const infobarText = await waitForTextContent(INFOBAR_TEXT);
+      assert.strictEqual(infobarText, 'Source map failed to load.');
     });
   });
 
@@ -476,7 +545,7 @@ describe('The Sources Tab', async function() {
 
       // ...wait for the new origin to be listed...
       const linkTexts = await waitForFunction(async () => {
-        const links = await $$('.toolbar-item .devtools-link');
+        const links = await $$(DEVTOOLS_LINK);
         const linkTexts = await Promise.all(links.map(node => node.evaluate(({textContent}) => textContent)));
         if (linkTexts.length === 1 && linkTexts[0] === 'codesplitting-first.js') {
           return undefined;
@@ -496,6 +565,26 @@ describe('The Sources Tab', async function() {
         ]);
       });
       await click(RESUME_BUTTON);
+    });
+
+    it('hits breakpoints reliably after reload in case of code-splitting (crbug.com/1490369)', async () => {
+      const {target, frontend} = getBrowserAndPages();
+
+      // Set the breakpoint inside `shared()` in `shared.js`.
+      await openSourceCodeEditorForFile('shared.js', 'codesplitting-race.html');
+      await addBreakpointForLine(frontend, 2);
+      await waitForFunction(async () => await isBreakpointSet(2));
+
+      // Reload the page.
+      const reloadPromise = target.reload();
+
+      // Now the debugger should pause twice reliably.
+      await waitFor(PAUSE_INDICATOR_SELECTOR);
+      await click(RESUME_BUTTON);
+      await waitFor(PAUSE_INDICATOR_SELECTOR);
+      await click(RESUME_BUTTON);
+
+      await reloadPromise;
     });
   });
 
@@ -593,9 +682,21 @@ describe('The Sources Tab', async function() {
       assert.isTrue(await isBreakpointSet(2));
     });
   });
+
+  it('can attach sourcemaps to CSS files from a context menu', async () => {
+    await openSourceCodeEditorForFile('sourcemap-css.css', 'sourcemap-css-noinline.html');
+
+    await click('aria/Code editor', {clickOptions: {button: 'right'}});
+    await click('aria/Add source map…');
+    await waitFor('.add-source-map');
+    await typeText('sourcemap-css-absolute.map');
+    await pressKey('Enter');
+
+    await waitFor('[aria-label="app.scss, file"]');
+  });
 });
 
-describe('The Elements Tab', async () => {
+describe('The Elements Tab', () => {
   async function clickStyleValueWithModifiers(selector: string, name: string, value: string, location: string) {
     const element = await waitForCSSPropertyValue(selector, name, value, location);
     // Click with offset to skip swatches.

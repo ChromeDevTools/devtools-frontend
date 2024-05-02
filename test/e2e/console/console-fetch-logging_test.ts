@@ -19,7 +19,7 @@ import {
   typeIntoConsoleAndWaitForResult,
 } from '../helpers/console-helpers.js';
 
-describe('The Console Tab', async () => {
+describe('The Console Tab', () => {
   it('is able to log fetching when XMLHttpRequest Logging is enabled', async () => {
     await goToResource('../resources/console/console-fetch-logging.html');
     await navigateToConsoleTab();
@@ -34,7 +34,7 @@ describe('The Console Tab', async () => {
       'Fetch failed loading: GET "http://localhost:8000/devtools/resources/xhr-exists.html".',
     ];
 
-    await typeIntoConsoleAndWaitForResult(getBrowserAndPages().frontend, 'await makeRequests();');
+    await typeIntoConsoleAndWaitForResult(getBrowserAndPages().frontend, 'await makeRequests();', 4, Level.Info);
 
     const result = await getCurrentConsoleMessages(false, Level.Info);
     assert.deepStrictEqual(result.slice(0, -1), expectedResults, 'Fetching was not logged correctly');
@@ -53,7 +53,7 @@ describe('The Console Tab', async () => {
       'Fetch failed loading: GET "http://localhost:8000/devtools/resources/xhr-exists.html".',
     ];
 
-    await typeIntoConsoleAndWaitForResult(getBrowserAndPages().frontend, 'await makeRequests();');
+    await typeIntoConsoleAndWaitForResult(getBrowserAndPages().frontend, 'await makeRequests();', 1, Level.Info);
 
     const result = await getCurrentConsoleMessages(false, Level.Info);
     // Check that fetching is not logged

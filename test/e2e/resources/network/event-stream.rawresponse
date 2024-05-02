@@ -1,0 +1,19 @@
+200
+Date: Wed, 19 Feb 2020 08:04:35 GMT
+Server: Apache/2.2.8 (Ubuntu) mod_ssl/2.2.8 OpenSSL/0.9.8g
+Access-Control-Allow-Origin: *
+Connection: keep-alive
+Cache-Control: no-cache
+Content-Type: text/event-stream
+
+event: custom-one
+id:1
+data: {"one": "value-one"}
+
+id:2
+data: {"two": "value-two"}
+
+
+id:3
+data: {"three": "value-three"}
+

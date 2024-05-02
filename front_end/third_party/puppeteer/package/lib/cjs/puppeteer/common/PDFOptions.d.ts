@@ -1,17 +1,7 @@
 /**
- * Copyright 2020 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2020 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 /**
  * @public
@@ -65,12 +55,12 @@ export type PaperFormat = Uppercase<LowerCasePaperFormat> | Capitalize<LowerCase
 export interface PDFOptions {
     /**
      * Scales the rendering of the web page. Amount must be between `0.1` and `2`.
-     * @defaultValue 1
+     * @defaultValue `1`
      */
     scale?: number;
     /**
      * Whether to show the header and footer.
-     * @defaultValue false
+     * @defaultValue `false`
      */
     displayHeaderFooter?: boolean;
     /**
@@ -90,17 +80,17 @@ export interface PDFOptions {
     headerTemplate?: string;
     /**
      * HTML template for the print footer. Has the same constraints and support
-     * for special classes as {@link PDFOptions.headerTemplate}.
+     * for special classes as {@link PDFOptions | PDFOptions.headerTemplate}.
      */
     footerTemplate?: string;
     /**
      * Set to `true` to print background graphics.
-     * @defaultValue false
+     * @defaultValue `false`
      */
     printBackground?: boolean;
     /**
      * Whether to print in landscape orientation.
-     * @defaultValue = false
+     * @defaultValue `false`
      */
     landscape?: boolean;
     /**
@@ -130,7 +120,7 @@ export interface PDFOptions {
     preferCSSPageSize?: boolean;
     /**
      * Set the PDF margins.
-     * @defaultValue no margins are set.
+     * @defaultValue `undefined` no margins are set.
      */
     margin?: PDFMargin;
     /**
@@ -140,17 +130,35 @@ export interface PDFOptions {
      *
      * If the path is relative, it's resolved relative to the current working directory.
      *
-     * @defaultValue the empty string, which means the PDF will not be written to disk.
+     * @defaultValue `undefined`, which means the PDF will not be written to disk.
      */
     path?: string;
     /**
      * Hides default white background and allows generating pdfs with transparency.
-     * @defaultValue false
+     * @defaultValue `false`
      */
     omitBackground?: boolean;
     /**
+     * Generate tagged (accessible) PDF.
+     * @defaultValue `true`
+     * @experimental
+     */
+    tagged?: boolean;
+    /**
+     * Generate document outline.
+     *
+     * @remarks
+     * If this is enabled the PDF will also be tagged (accessible)
+     * Currently only works in old Headless (headless = 'shell')
+     * crbug/840455#c47
+     *
+     * @defaultValue `false`
+     * @experimental
+     */
+    outline?: boolean;
+    /**
      * Timeout in milliseconds. Pass `0` to disable timeout.
-     * @defaultValue 30000
+     * @defaultValue `30_000`
      */
     timeout?: number;
 }
@@ -164,5 +172,22 @@ export interface PaperFormatDimensions {
 /**
  * @internal
  */
-export declare const _paperFormats: Record<LowerCasePaperFormat, PaperFormatDimensions>;
+export interface ParsedPDFOptionsInterface {
+    width: number;
+    height: number;
+    margin: {
+        top: number;
+        bottom: number;
+        left: number;
+        right: number;
+    };
+}
+/**
+ * @internal
+ */
+export type ParsedPDFOptions = Required<Omit<PDFOptions, 'path' | 'format' | 'timeout'> & ParsedPDFOptionsInterface>;
+/**
+ * @internal
+ */
+export declare const paperFormats: Record<LowerCasePaperFormat, PaperFormatDimensions>;
 //# sourceMappingURL=PDFOptions.d.ts.map

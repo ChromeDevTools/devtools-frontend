@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<body>
+  <script>
+    const url = 'event-stream.rawresponse'
+    const evtSource = new EventSource(url);
+    window.addEventListener('beforeunload', () => {
+      evtSource.close()
+    });
+  </script>
+</body>

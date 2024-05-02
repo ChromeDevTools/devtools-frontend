@@ -8,10 +8,54 @@ documentation in [Gitiles-flavored Markdown]. It is automatically
 [Gitiles-flavored Markdown]: https://gerrit.googlesource.com/gitiles/+/master/Documentation/markdown.md
 [rendered by Gitiles]: https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/
 
-**If you add new documents, please also add a link to them in the Document Index
+**If you add new documents, please also add a link to them in the [Document Index](#Document-Index)
 below.**
 
 [TOC]
+
+## Document Index
+
+### Design Documents
+*   See the shared [Design Documents](https://drive.google.com/drive/folders/1JbUthATfybvMQR3yAHC4J0P7n6oftYNq) folder in the Chromium drive.
+
+### General Development
+*   [Get the Code](get_the_code.md)
+*   [Contributing Changes](contributing_changes.md)
+*   [Chrome DevTools Design Review Guidelines](design_guidelines.md)
+*   [Release Management](release_management.md)
+*   [Dependencies](dependencies.md)
+*   [Localization](l10n.md)
+*   [Material 3 in DevTools](material3_guidelines.md)
+*   [V8 debugger support checklist for new language features](https://goo.gle/v8-checklist)
+*   [Chrome DevTools Protocol](devtools-protocol.md)
+*   [Visual logging in DevTools](visual_logging.md)
+*   [UMA metrics in DevTools](uma_metrics.md)
+    *   [How to add UMA metrics in DevTools frontend](add_uma_metrics.md)
+*   [How to add experiments in DevTools frontend](add_experiments.md)
+
+### Testing
+*   [Testing Chromium DevTools](testing.md)
+*   [E2E test guide](../test/e2e/README.md)
+*   [Unit test guide](unit_testing.md)
+
+### Architectural Documentation
+*   [Architecture of DevTools](architecture_of_devtools.md)
+*   [Resource management in DevTools](resource_management.md)
+
+### Chromium
+*   [Chromium Docs](https://chromium.googlesource.com/chromium/src/+/master/docs/README.md)
+*   [V8 Documention](https://v8.dev/docs)
+
+### Useful Commands
+
+`git cl format --js`
+
+Formats all code using clang-format.
+
+`npm run check`
+
+Runs all static analysis checks on DevTools code.
+
 
 ## Creating Documentation
 
@@ -31,10 +75,10 @@ Assuming that `/path/to/src` contains a chromium checkout, you can run:
 
 ```bash
 # in devtools-frontend checkout
-/path/to/src/tools/md_browser/md_browser.py --directory $PWD/docs
+/path/to/src/tools/md_browser/md_browser.py --directory $PWD
 ```
 
-This is only an estimate. The **gitiles** view may differ.
+and preview the result by opening http://localhost:8080/docs/README.md in your browser. This is only an estimate. The **gitiles** view may differ.
 
 #### Online with Gerrit's links to gitiles
 
@@ -54,32 +98,3 @@ This is only an estimate. The **gitiles** view may differ.
 
 This **gitiles** view is the authoritative view, exactly the same as will be
 used when committed.
-
-## Document Index
-
-### Design Documents
-*   See the shared [Design Documents](https://drive.google.com/drive/folders/1JbUthATfybvMQR3yAHC4J0P7n6oftYNq) folder in the Chromium drive.
-
-### General Development
-*   [Workflows](workflows.md)
-*   [Chrome DevTools Design Review Guidelines](design_guidelines.md)
-*   [Release Management](release_management.md)
-*   [Third-party Guidelines](third_party_guidelines.md)
-*   [Localization](l10n.md)
-*   [V8 debugger support checklist for new language features](https://goo.gle/v8-checklist)
-*   [Chrome DevTools Protocol](devtools-protocol.md)
-*   [UMA metrics in DevTools](uma_metrics.md)
-    *   [How to add UMA metrics in DevTools frontend](add_uma_metrics.md)
-
-### Testing
-*   [E2E test guide](../test/e2e/README.md)
-*   [Unit test guide](../test/unittests/README.md)
-*   [Web tests in the DevTools repo guide](../test/webtests/README)
-
-### Architectural Documentation
-*   [Architecture of DevTools](architecture_of_devtools.md)
-*   [Resource management in DevTools](resource_management.md)
-
-### Chromium
-*   [Chromium Docs](https://chromium.googlesource.com/chromium/src/+/master/docs/README.md)
-*   [V8 Documention](https://v8.dev/docs)

@@ -64,6 +64,14 @@ export function normalizePath(path: string): string {
   return normalizedPath;
 }
 
+export function schemeIs(url: Platform.DevToolsPath.UrlString, scheme: string): boolean {
+  try {
+    return (new URL(url)).protocol === scheme;
+  } catch (e) {
+    return false;
+  }
+}
+
 /**
  * File paths in DevTools that are represented either as unencoded absolute or relative paths, or encoded paths, or URLs.
  * @example
@@ -136,12 +144,15 @@ export class ParsedURL {
       this.path = this.url;
     }
 
+    const lastSlashExceptTrailingIndex = this.path.lastIndexOf('/', this.path.length - 2);
+    if (lastSlashExceptTrailingIndex !== -1) {
+      this.lastPathComponent = this.path.substring(lastSlashExceptTrailingIndex + 1);
+    } else {
+      this.lastPathComponent = this.path;
+    }
     const lastSlashIndex = this.path.lastIndexOf('/');
     if (lastSlashIndex !== -1) {
       this.folderPathComponents = this.path.substring(0, lastSlashIndex);
-      this.lastPathComponent = this.path.substring(lastSlashIndex + 1);
-    } else {
-      this.lastPathComponent = this.path;
     }
   }
 

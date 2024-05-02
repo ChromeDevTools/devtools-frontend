@@ -4,13 +4,13 @@
 
 import {assert} from 'chai';
 
-import {click, getBrowserAndPages, hover, waitFor} from '../../shared/helper.js';
+import {click, disableExperiment, getBrowserAndPages, hover, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {addBreakpointForLine, openSourceCodeEditorForFile, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
 const LAST_ELEMENT_SELECTOR = '.cm-executionLine > span:last-child';
 
-describe('Sources Tab', async function() {
+describe('Sources Tab', function() {
   it('shows correct preview for `object.foo` member expressions', async () => {
     const {target, frontend} = getBrowserAndPages();
 
@@ -81,6 +81,9 @@ describe('Sources Tab', async function() {
 
   it('shows correct preview for `this.#x` member expressions despite Terser minification', async () => {
     const {target, frontend} = getBrowserAndPages();
+
+    // This only works without consistent source map variable experiment.
+    await disableExperiment('evaluate-expressions-with-source-maps');
 
     await openSourceCodeEditorForFile('popover-terser.js', 'popover-terser.html');
     await addBreakpointForLine(frontend, 5);

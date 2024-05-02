@@ -1,0 +1,52 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+name: Test Wide-Character Strings
+source_file: //extensions/cxx_debugging/e2e/resources/wchar.cc
+flags: [
+  [-g, -fdebug-compilation-dir=., -fno-limit-debug-info -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK],
+  [-g, -fdebug-compilation-dir=., -fno-limit-debug-info, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK, -gsplit-dwarf],
+  [-g, -fdebug-compilation-dir=., -gdwarf-5, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK],
+  [-g, -fdebug-compilation-dir=., -gdwarf-5, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK, -gsplit-dwarf, -gpubnames]]
+script:
+  - reason: setup
+    actions:
+    - file: wchar.cc
+      action: set_breakpoint
+      breakpoint: 21
+  - reason: breakpoint
+    file: wchar.cc
+    line: 21
+    variables:
+      - name: Local.cxx_str
+      - name: Local.cxx_str.size
+        value: 5
+      - name: Local.cxx_str.string
+        value: '"abcde"'
+      - name: Local.short_cxx_str.size
+        value: 1
+      - name: Local.short_cxx_str.string
+        value: '"a"'
+      - name: Local.c_str
+        value: '"abcde"'
+      - name: Local.u16_cxx_str.size
+        value: 5
+      - name: Local.u16_cxx_str.string
+        value: '"abcde"'
+      - name: Local.u16_short_cxx_str.size
+        value: 1
+      - name: Local.u16_short_cxx_str.string
+        value: '"a"'
+      - name: Local.u16_c_str
+        value: '"abcde"'
+      - name: Local.u32_cxx_str.size
+        value: 5
+      - name: Local.u32_cxx_str.string
+        value: '"abcde"'
+      - name: Local.u32_short_cxx_str.size
+        value: 1
+      - name: Local.u32_short_cxx_str.string
+        value: '"a"'
+      - name: Local.u32_c_str
+        value: '"abcde"'

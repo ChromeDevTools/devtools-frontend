@@ -5,55 +5,28 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
-import("../../../scripts/build/ninja/node.gni")
 import("../../../scripts/build/ninja/vars.gni")
-
-node_action("generate_dcheck") {
-  script = "front_end/core/platform/generate-dcheck.js"
-
-  args = [ rebase_path(target_gen_dir, root_build_dir) ]
-
-  if (devtools_dcheck_always_on) {
-    args += [ "--should-dcheck" ]
-  }
-
-  outputs = [ "$target_gen_dir/dcheck.js" ]
-  data = outputs
-
-  if (is_debug) {
-    metadata = {
-      grd_files = outputs
-    }
-  }
-}
-
-devtools_pre_built("dcheck") {
-  sources = [
-    "dcheck-tsconfig.json",
-    "dcheck.d.ts",
-  ]
-
-  deps = [ ":generate_dcheck" ]
-}
+import("../../../third_party/typescript/typescript.gni")
 
 devtools_module("platform") {
   sources = [
+    "ArrayUtilities.ts",
+    "Brand.ts",
+    "DOMUtilities.ts",
+    "DateUtilities.ts",
     "DevToolsPath.ts",
+    "KeyboardUtilities.ts",
+    "MapUtilities.ts",
+    "MimeType.ts",
+    "NumberUtilities.ts",
+    "PromiseUtilities.ts",
+    "SetUtilities.ts",
+    "StringUtilities.ts",
+    "Timing.ts",
+    "TypescriptUtilities.ts",
     "UIString.ts",
     "UserVisibleError.ts",
-    "array-utilities.ts",
-    "brand.ts",
-    "date-utilities.ts",
-    "dom-utilities.ts",
-    "keyboard-utilities.ts",
-    "map-utilities.ts",
-    "number-utilities.ts",
-    "set-utilities.ts",
-    "string-utilities.ts",
-    "typescript-utilities.ts",
   ]
-
-  deps = [ ":dcheck" ]
 }
 
 devtools_entrypoint("bundle") {
@@ -62,4 +35,26 @@ devtools_entrypoint("bundle") {
   deps = [ ":platform" ]
 
   visibility = [ "*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "ArrayUtilities.test.ts",
+    "DOMUtilities.test.ts",
+    "DateUtilities.test.ts",
+    "DevToolsPath.test.ts",
+    "KeyboardUtilities.test.ts",
+    "MapUtilities.test.ts",
+    "MimeType.test.ts",
+    "NumberUtilities.test.ts",
+    "SetUtilities.test.ts",
+    "StringUtilities.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+  ]
 }

@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../../../core/platform/platform.js';
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import {BezierUI} from './BezierUI.js';
-
 import {type AnimationTimingModel} from './AnimationTimingModel.js';
-import {type Point, CSSLinearEasingModel} from './CSSLinearEasingModel.js';
+import {BezierUI} from './BezierUI.js';
+import {CSSLinearEasingModel, type Point} from './CSSLinearEasingModel.js';
 
 const DOUBLE_CLICK_DELAY = 500;
 
@@ -122,6 +122,8 @@ class LinearEasingPresentation {
 
   #drawControlPoint(parentElement: Element, controlX: number, controlY: number, index: number): void {
     const circle = UI.UIUtils.createSVGChild(parentElement, 'circle', 'bezier-control-circle');
+    circle.setAttribute(
+        'jslog', `${VisualLogging.controlPoint('bezier.linear-control-circle').track({drag: true, dblclick: true})}`);
     circle.setAttribute('data-point-index', String(index));
     circle.setAttribute('cx', String(controlX));
     circle.setAttribute('cy', String(controlY));

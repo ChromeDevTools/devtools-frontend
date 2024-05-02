@@ -1,20 +1,19 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import type * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as TraceEngine from '../../models/trace/trace.js';
-import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
+import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 import {
   type CompatibilityTracksAppender,
-  type TrackAppender,
   type HighlightedEntryInfo,
+  type TrackAppender,
   type TrackAppenderName,
 } from './CompatibilityTracksAppender.js';
-import * as i18n from '../../core/i18n/i18n.js';
 import {TimelineFlameChartMarker} from './TimelineFlameChartView.js';
 import {type TimelineMarkerStyle} from './TimelineUIUtils.js';
-import type * as Common from '../../core/common/common.js';
-import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 
 const UIStrings = {
   /**
@@ -31,15 +30,13 @@ export class TimingsTrackAppender implements TrackAppender {
 
   #colorGenerator: Common.Color.Generator;
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
-  #traceParsedData: Readonly<TraceEngine.Handlers.Migration.PartialTraceData>;
+  #traceParsedData: Readonly<TraceEngine.Handlers.Types.TraceParseData>;
 
   constructor(
-      compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
-      traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData, colorGenerator: Common.Color.Generator) {
+      compatibilityBuilder: CompatibilityTracksAppender, traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
+      colorGenerator: Common.Color.Generator) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#colorGenerator = colorGenerator;
-    this.#flameChartData = flameChartData;
     this.#traceParsedData = traceParsedData;
   }
 
@@ -102,7 +99,7 @@ export class TimingsTrackAppender implements TrackAppender {
     const markers = this.#traceParsedData.PageLoadMetrics.allMarkerEvents;
     markers.forEach(marker => {
       const index = this.#compatibilityBuilder.appendEventAtLevel(marker, currentLevel, this);
-      this.#flameChartData.entryTotalTimes[index] = Number.NaN;
+      this.#compatibilityBuilder.getFlameChartTimelineData().entryTotalTimes[index] = Number.NaN;
     });
 
     const minTimeMs = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(this.#traceParsedData.Meta.traceBounds.min);
@@ -110,7 +107,7 @@ export class TimingsTrackAppender implements TrackAppender {
       const startTimeMs = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(marker.ts);
       return new TimelineFlameChartMarker(startTimeMs, startTimeMs - minTimeMs, this.markerStyleForEvent(marker));
     });
-    this.#flameChartData.markers.push(...flameChartMarkers);
+    this.#compatibilityBuilder.getFlameChartTimelineData().markers.push(...flameChartMarkers);
     return ++currentLevel;
   }
 
@@ -147,6 +144,10 @@ export class TimingsTrackAppender implements TrackAppender {
     if (TraceEngine.Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate(markerEvent)) {
       color = '#1A3422';
       title = TraceEngine.Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP;
+    }
+    if (TraceEngine.Types.TraceEvents.isTraceEventNavigationStart(markerEvent)) {
+      color = '#FF9800';
+      title = '';
     }
     return {
       title: title,
@@ -186,6 +187,8 @@ export class TimingsTrackAppender implements TrackAppender {
           return metricsHandler.MetricName.FP;
         case 'largestContentfulPaint::Candidate':
           return metricsHandler.MetricName.LCP;
+        case 'navigationStart':
+          return '';
         default:
           return event.name;
       }

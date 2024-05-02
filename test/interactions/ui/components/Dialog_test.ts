@@ -2,15 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Dialogs from '../../../../front_end/ui/components/dialogs/dialogs.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../../test/interactions/helpers/shared.js';
 import {getBrowserAndPages, waitFor} from '../../../../test/shared/helper.js';
-import {describe} from '../../../../test/shared/mocha-extensions.js';
+import {describe, itScreenshot} from '../../../../test/shared/mocha-extensions.js';
 import {
   assertElementScreenshotUnchanged,
-  itScreenshot,
   waitForDialogAnimationEnd,
 } from '../../../shared/screenshots.js';
-import type * as Dialogs from '../../../../front_end/ui/components/dialogs/dialogs.js';
 
 async function openDialog(dialogNumber: number) {
   await loadComponentDocExample('dialog/basic.html');

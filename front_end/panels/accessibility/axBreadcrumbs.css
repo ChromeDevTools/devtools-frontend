@@ -40,8 +40,8 @@
 }
 
 .ax-breadcrumbs .ax-node::before {
-  -webkit-mask-image: var(--image-file-chevron-right);
-  -webkit-mask-repeat: no-repeat;
+  mask-image: var(--image-file-chevron-right);
+  mask-repeat: no-repeat;
   background-color: var(--icon-default);
   transform: scale(0.7);
   content: "";
@@ -59,7 +59,7 @@
 }
 
 .ax-breadcrumbs .ax-node.parent::before {
-  -webkit-mask-image: var(--image-file-chevron-down);
+  mask-image: var(--image-file-chevron-down);
 }
 
 .ax-breadcrumbs .ax-node.no-dom-node {
@@ -67,7 +67,7 @@
 }
 
 .ax-breadcrumbs .ax-node.children-unloaded::before {
-  -webkit-mask-position: 0 1px;
+  mask-position: 0 1px;
   width: 13px;
   opacity: 40%;
 }
@@ -79,28 +79,28 @@
 
 .ax-breadcrumbs .ax-node.inspected .selection {
   display: block;
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-neutral-container);
 }
 
 .ax-breadcrumbs .ax-node.inspected:focus .selection {
-  background-color: var(--legacy-selection-bg-color);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .ax-breadcrumbs .ax-node.parent.inspected:focus::before {
-  background-color: var(--color-background);
+  background-color: var(--sys-color-on-tonal-container);
 }
 
 .ax-breadcrumbs .ax-node.inspected:focus {
-  background-color: var(--color-primary-old);
-  color: var(--color-background);
+  background-color: var(--sys-color-tonal-container);
+  color: var(--sys-color-on-tonal-container);
 }
 
 .ax-breadcrumbs .ax-node:not(.inspected):hover {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .ax-breadcrumbs .ax-node:not(.inspected):focus {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-state-focus-highlight);
 }
 
 .ax-breadcrumbs .ax-node.inspected:focus * {
@@ -112,12 +112,12 @@
   display: block;
   left: 2px;
   right: 2px;
-  background-color: var(--item-hover-color);
+  background-color: var(--sys-color-state-hover-on-subtle);
   border-radius: 5px;
 }
 
 .ax-breadcrumbs .ax-node.preselected:not(.inspected):focus .selection {
-  border: 1px solid var(--color-primary-variant);
+  border: 1px solid var(--sys-color-primary);
 }
 
 @media (forced-colors: active) {

@@ -36,7 +36,7 @@ import type * as Protocol from '../../generated/protocol.js';
 export const DevToolsStubErrorCode = -32015;
 // TODO(dgozman): we are not reporting generic errors in tests, but we should
 // instead report them and just have some expected errors in test expectations.
-const GenericError = -32000;
+const GenericErrorCode = -32000;
 const ConnectionClosedErrorCode = -32001;
 
 type MessageParams = {
@@ -88,6 +88,7 @@ interface CommandParameter {
   name: string;
   type: string;
   optional: boolean;
+  description: string;
 }
 
 type Callback = (error: MessageError|null, arg1: Object|null) => void;
@@ -101,6 +102,8 @@ export class InspectorBackend {
   readonly agentPrototypes: Map<ProtocolDomainName, _AgentPrototype> = new Map();
   #initialized: boolean = false;
   #eventParameterNamesForDomain = new Map<ProtocolDomainName, EventParameterNames>();
+  readonly typeMap = new Map<QualifiedName, CommandParameter[]>();
+  readonly enumMap = new Map<QualifiedName, Record<string, string>>();
 
   private getOrCreateEventParameterNamesForDomain(domain: ProtocolDomainName): EventParameterNames {
     let map = this.#eventParameterNamesForDomain.get(domain);
@@ -140,13 +143,14 @@ export class InspectorBackend {
     return prototype;
   }
 
-  registerCommand(method: QualifiedName, parameters: CommandParameter[], replyArgs: string[]): void {
+  registerCommand(method: QualifiedName, parameters: CommandParameter[], replyArgs: string[], description: string):
+      void {
     const [domain, command] = splitQualifiedName(method);
-    this.agentPrototype(domain as ProtocolDomainName).registerCommand(command, parameters, replyArgs);
+    this.agentPrototype(domain as ProtocolDomainName).registerCommand(command, parameters, replyArgs, description);
     this.#initialized = true;
   }
 
-  registerEnum(type: QualifiedName, values: Object): void {
+  registerEnum(type: QualifiedName, values: Record<string, string>): void {
     const [domain, name] = splitQualifiedName(type);
     // @ts-ignore globalThis global namespace pollution
     if (!globalThis.Protocol[domain]) {
@@ -156,6 +160,12 @@ export class InspectorBackend {
 
     // @ts-ignore globalThis global namespace pollution
     globalThis.Protocol[domain][name] = values;
+    this.enumMap.set(type, values);
+    this.#initialized = true;
+  }
+
+  registerType(method: QualifiedName, parameters: CommandParameter[]): void {
+    this.typeMap.set(method, parameters);
     this.#initialized = true;
   }
 
@@ -356,7 +366,7 @@ export class SessionRouter {
   private sendRawMessageForTesting(method: QualifiedName, params: Object|null, callback: Callback|null, sessionId = ''):
       void {
     const domain = method.split('.')[0];
-    this.sendMessage(sessionId, domain, method, params, callback || ((): void => {}));
+    this.sendMessage(sessionId, domain, method, params, callback || (() => {}));
   }
 
   private onMessage(message: string|Object): void {
@@ -602,6 +612,10 @@ export class TargetBase {
     return this.getAgent('Audits');
   }
 
+  autofillAgent(): ProtocolProxyApi.AutofillApi {
+    return this.getAgent('Autofill');
+  }
+
   browserAgent(): ProtocolProxyApi.BrowserApi {
     return this.getAgent('Browser');
   }
@@ -786,6 +800,10 @@ export class TargetBase {
     this.registerDispatcher('Accessibility', dispatcher);
   }
 
+  registerAutofillDispatcher(dispatcher: ProtocolProxyApi.AutofillDispatcher): void {
+    this.registerDispatcher('Autofill', dispatcher);
+  }
+
   registerAnimationDispatcher(dispatcher: ProtocolProxyApi.AnimationDispatcher): void {
     this.registerDispatcher('Animation', dispatcher);
   }
@@ -918,28 +936,26 @@ class _AgentPrototype {
   replyArgs: {
     [x: string]: string[],
   };
-  commandParameters: {
-    [x: string]: CommandParameter[],
-  };
-
+  description = '';
+  metadata: {[commandName: string]: {parameters: CommandParameter[], description: string, replyArgs: string[]}};
   readonly domain: string;
   target!: TargetBase;
   constructor(domain: string) {
     this.replyArgs = {};
     this.domain = domain;
-    this.commandParameters = {};
+    this.metadata = {};
   }
 
-  registerCommand(methodName: UnqualifiedName, parameters: CommandParameter[], replyArgs: string[]): void {
+  registerCommand(
+      methodName: UnqualifiedName, parameters: CommandParameter[], replyArgs: string[], description: string): void {
     const domainAndMethod = qualifyName(this.domain, methodName);
-
     function sendMessagePromise(this: _AgentPrototype, ...args: unknown[]): Promise<unknown> {
       return _AgentPrototype.prototype.sendMessageToBackendPromise.call(this, domainAndMethod, parameters, args);
     }
-
     // @ts-ignore Method code generation
     this[methodName] = sendMessagePromise;
-    this.commandParameters[domainAndMethod] = parameters;
+    this.metadata[domainAndMethod] = {parameters, description, replyArgs};
+
     function invoke(
         this: _AgentPrototype, request: Object|undefined = {}): Promise<Protocol.ProtocolResponseWithError> {
       return this.invoke(domainAndMethod, request);
@@ -947,7 +963,6 @@ class _AgentPrototype {
 
     // @ts-ignore Method code generation
     this['invoke_' + methodName] = invoke;
-
     this.replyArgs[domainAndMethod] = replyArgs;
   }
 
@@ -973,8 +988,8 @@ class _AgentPrototype {
       if (optionalFlag && typeof value === 'undefined') {
         continue;
       }
-
-      if (typeof value !== typeName) {
+      const expectedJSType = typeName === 'array' ? 'object' : typeName;
+      if (typeof value !== expectedJSType) {
         errorCallback(
             `Protocol Error: Invalid type of argument '${paramName}' for method '${method}' call. ` +
             `It must be '${typeName}' but it is '${typeof value}'.`);
@@ -1010,7 +1025,7 @@ class _AgentPrototype {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const callback: Callback = (error: MessageError|null, result: any|null): void => {
         if (error) {
-          if (!test.suppressRequestErrors && error.code !== DevToolsStubErrorCode && error.code !== GenericError &&
+          if (!test.suppressRequestErrors && error.code !== DevToolsStubErrorCode && error.code !== GenericErrorCode &&
               error.code !== ConnectionClosedErrorCode) {
             console.error('Request ' + method + ' failed. ' + JSON.stringify(error));
           }
@@ -1036,12 +1051,12 @@ class _AgentPrototype {
     return new Promise(fulfill => {
       const callback: Callback = (error: MessageError|undefined|null, result: Object|null): void => {
         if (error && !test.suppressRequestErrors && error.code !== DevToolsStubErrorCode &&
-            error.code !== GenericError && error.code !== ConnectionClosedErrorCode) {
+            error.code !== GenericErrorCode && error.code !== ConnectionClosedErrorCode) {
           console.error('Request ' + method + ' failed. ' + JSON.stringify(error));
         }
 
         const errorMessage = error?.message;
-        fulfill({...result, getError: (): string | undefined => errorMessage});
+        fulfill({...result, getError: () => errorMessage});
       };
 
       const router = this.target.router();

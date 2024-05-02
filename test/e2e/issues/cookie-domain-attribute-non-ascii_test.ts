@@ -13,7 +13,7 @@ import {
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
 
-describe('Cookie domain attribute should not contain non-ASCII characters issue', async () => {
+describe('Cookie domain attribute should not contain non-ASCII characters issue', () => {
   afterEach(async () => {
     const {target} = getBrowserAndPages();
     const cookies = await target.cookies();

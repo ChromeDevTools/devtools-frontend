@@ -28,7 +28,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('core/sdk/CSSStyleSheetHeader.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentProvider, FrameAssociated {
+export class CSSStyleSheetHeader implements TextUtils.ContentProvider.SafeContentProvider, FrameAssociated {
   #cssModelInternal: CSSModel;
   id: Protocol.CSS.StyleSheetId;
   frameId: Protocol.Page.FrameId;
@@ -48,7 +48,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   ownerNode: DeferredDOMNode|undefined;
   sourceMapURL: Platform.DevToolsPath.UrlString|undefined;
   readonly loadingFailed: boolean;
-  #originalContentProviderInternal: TextUtils.StaticContentProvider.StaticContentProvider|null;
+  #originalContentProviderInternal: TextUtils.StaticContentProvider.SafeStaticContentProvider|null;
 
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSStyleSheetHeader) {
     this.#cssModelInternal = cssModel;
@@ -75,17 +75,17 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
     this.#originalContentProviderInternal = null;
   }
 
-  originalContentProvider(): TextUtils.ContentProvider.ContentProvider {
+  originalContentProvider(): TextUtils.ContentProvider.SafeContentProvider {
     if (!this.#originalContentProviderInternal) {
-      const lazyContent = (async(): Promise<TextUtils.ContentProvider.DeferredContent> => {
+      const lazyContent = (async(): Promise<TextUtils.ContentData.ContentDataOrError> => {
         const originalText = await this.#cssModelInternal.originalStyleSheetText(this);
         if (originalText === null) {
-          return {content: null, error: i18nString(UIStrings.couldNotFindTheOriginalStyle), isEncoded: false};
+          return {error: i18nString(UIStrings.couldNotFindTheOriginalStyle)};
         }
-        return {content: originalText, isEncoded: false};
+        return new TextUtils.ContentData.ContentData(originalText, /* isBase64=*/ false, 'text/css');
       });
-      this.#originalContentProviderInternal =
-          new TextUtils.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
+      this.#originalContentProviderInternal = new TextUtils.StaticContentProvider.SafeStaticContentProvider(
+          this.contentURL(), this.contentType(), lazyContent);
     }
     return this.#originalContentProviderInternal;
   }
@@ -168,26 +168,22 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
     return Common.ResourceType.resourceTypes.Stylesheet;
   }
 
-  async requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    try {
-      const cssText = await this.#cssModelInternal.getStyleSheetText(this.id);
-      return {content: (cssText as string), isEncoded: false};
-    } catch (err) {
-      return {
-        content: null,
-        error: i18nString(UIStrings.thereWasAnErrorRetrievingThe),
-        isEncoded: false,
-      };
+  requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
+    return this.requestContentData().then(TextUtils.ContentData.ContentData.asDeferredContent.bind(undefined));
+  }
+
+  async requestContentData(): Promise<TextUtils.ContentData.ContentDataOrError> {
+    const cssText = await this.#cssModelInternal.getStyleSheetText(this.id);
+    if (cssText === null) {
+      return {error: i18nString(UIStrings.thereWasAnErrorRetrievingThe)};
     }
+    return new TextUtils.ContentData.ContentData(cssText, /* isBase64=*/ false, 'text/css');
   }
 
   async searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):
       Promise<TextUtils.ContentProvider.SearchMatch[]> {
-    const requestedContent = await this.requestContent();
-    if (requestedContent.content === null) {
-      return [];
-    }
-    return TextUtils.TextUtils.performSearchInContent(requestedContent.content, query, caseSensitive, isRegex);
+    const contentData = await this.requestContentData();
+    return TextUtils.TextUtils.performSearchInContentData(contentData, query, caseSensitive, isRegex);
   }
 
   isViaInspector(): boolean {
@@ -196,7 +192,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
 
   createPageResourceLoadInitiator(): PageResourceLoadInitiator {
     return {
-      target: null,
+      target: this.#cssModelInternal.target(),
       frameId: this.frameId,
       initiatorUrl: this.hasSourceURL ? Platform.DevToolsPath.EmptyUrlString : this.sourceURL,
     };

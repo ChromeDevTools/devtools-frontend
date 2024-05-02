@@ -59,8 +59,8 @@ function getHeadlessEnvVar(headless) {
         case '1':
         case 'true':
             return true;
-        case 'new':
-            return 'new';
+        case 'shell':
+            return 'shell';
         case '0':
         case 'false':
             return false;
@@ -69,7 +69,6 @@ function getHeadlessEnvVar(headless) {
     }
 }
 function createStatusReport(results) {
-    var _a;
     const table = new Table({
         head: ['Title', 'Status', 'File', 'Duration'],
         chars: {
@@ -96,7 +95,7 @@ function createStatusReport(results) {
     const resultTextColor = white;
     for (const result of results) {
         const row = [];
-        const duration = ((_a = result.finishedAt) === null || _a === void 0 ? void 0 : _a.getTime()) - result.startedAt.getTime() || 0;
+        const duration = result.finishedAt?.getTime() - result.startedAt.getTime() || 0;
         const status = result.success
             ? resultTextColor(bgGreen(' Success '))
             : resultTextColor(bgRed(' Failure '));
@@ -153,7 +152,7 @@ async function runFiles(files, opts = {
         finally {
             result.finishedAt = new Date();
             results.push(result);
-            await (browser === null || browser === void 0 ? void 0 : browser.close());
+            await browser?.close();
         }
     }
     if (opts.log) {
@@ -193,7 +192,7 @@ yargs(hideBin(process.argv))
     .option('headless', {
     type: 'string',
     description: "Run using the browser's headless mode.",
-    choices: ['new', 'true', '1', '0', 'false'],
+    choices: ['shell', 'true', '1', '0', 'false'],
 })
     .option('extension', {
     alias: 'ext',

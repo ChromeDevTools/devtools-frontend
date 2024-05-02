@@ -4,5 +4,6 @@
   "main": "../dist/node-polyfill.js",
   "browser": "../dist/browser-polyfill.js",
   "react-native": "../dist/react-native-polyfill.js",
+  "types": "../index.d.ts",
   "license": "MIT"
 }

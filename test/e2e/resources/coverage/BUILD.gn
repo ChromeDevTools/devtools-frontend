@@ -14,5 +14,8 @@ copy_to_gen("coverage") {
     "unused-css-coverage.html",
     "unused.css",
     "used.css",
+    "with-source-map.html",
+    "with-source-map.js",
+    "with-source-map.js.map",
   ]
 }

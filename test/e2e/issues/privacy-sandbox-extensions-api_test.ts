@@ -13,7 +13,7 @@ import {
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
 
-describe('Privacy Sandbox Extensions API', async () => {
+describe('Privacy Sandbox Extensions API', () => {
   beforeEach(async () => {
     await goToResource('empty.html');
   });
@@ -40,7 +40,7 @@ describe('Privacy Sandbox Extensions API', async () => {
     });
 
     await expandIssue();
-    const issueElement = await getIssueByTitle('Deprecated Feature Used');
+    const issueElement = await getIssueByTitle('Deprecated feature used');
     assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('1 source', issueElement, '.affected-resource-label');
     await ensureResourceSectionIsExpanded(section);

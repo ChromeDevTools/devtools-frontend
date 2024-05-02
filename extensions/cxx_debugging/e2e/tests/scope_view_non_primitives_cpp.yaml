@@ -1,0 +1,44 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+name: Scope view formats non primitive types correctly for cpp
+# This test checks that the scope view displays
+# arrays, structs, references, pointers and
+# classes correctly for C++
+source_file: //extensions/cxx_debugging/e2e/resources/scope-view-non-primitives.cpp
+flags: [
+  [-g, -fdebug-compilation-dir=., -fno-limit-debug-info -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK],
+  [-g, -fdebug-compilation-dir=., -fno-limit-debug-info, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK, -gsplit-dwarf],
+  [-g, -fdebug-compilation-dir=., -gdwarf-5, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK],
+  [-g, -fdebug-compilation-dir=., -gdwarf-5, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK, -gsplit-dwarf, -gpubnames]]
+script:
+  - reason: setup
+    actions:
+    - file: scope-view-non-primitives.cpp
+      action: set_breakpoint
+      breakpoint: 43
+  - reason: breakpoint
+    file: scope-view-non-primitives.cpp
+    line: 43
+    variables:
+      - name: Local.a
+        value: int[5]
+      - name: Local.p
+        value: int *
+      - name: Local.p.$0
+        value: 10
+      - name: Local.r
+        value: 10
+      - name: Local.dob
+        value: Birthday
+      - name: Local.dob.year
+        value: 1912
+      - name: Local.rec
+        value: Rectangle
+      - name: Local.rec.height
+        value: 6
+      - name: Local.s
+        value: kScopedB
+      - name: Local.u
+        value: kUnscopedB

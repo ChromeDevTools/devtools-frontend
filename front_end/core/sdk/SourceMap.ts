@@ -35,6 +35,7 @@
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 
 /**
  * Type of the base source map JSON object, which contains the sources and the mappings at the very least, plus
@@ -52,10 +53,13 @@ export type SourceMapV3Object = {
   'sourcesContent'?: (string|null)[],
   'names'?: string[],
   'mappings': string,
+  'ignoreList'?: number[],
   // eslint-disable-next-line @typescript-eslint/naming-convention
   'x_google_linecount'?: number,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   'x_google_ignoreList'?: number[],
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  'x_com_bloomberg_sourcesFunctionMappings'?: string[],
   // clang-format on
 };
 
@@ -128,11 +132,40 @@ export class SourceMapEntry {
   }
 }
 
-const base64Digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-const base64Map = new Map<string, number>();
+interface Position {
+  lineNumber: number;
+  columnNumber: number;
+}
 
-for (let i = 0; i < base64Digits.length; ++i) {
-  base64Map.set(base64Digits.charAt(i), i);
+function comparePositions(a: Position, b: Position): number {
+  return a.lineNumber - b.lineNumber || a.columnNumber - b.columnNumber;
+}
+
+export interface ScopeEntry {
+  scopeName(): string;
+  start(): Position;
+  end(): Position;
+}
+
+class ScopeTreeEntry implements ScopeEntry {
+  children: ScopeTreeEntry[] = [];
+
+  constructor(
+      readonly startLineNumber: number, readonly startColumnNumber: number, readonly endLineNumber: number,
+      readonly endColumnNumber: number, readonly name: string) {
+  }
+
+  scopeName(): string {
+    return this.name;
+  }
+
+  start(): Position {
+    return {lineNumber: this.startLineNumber, columnNumber: this.startColumnNumber};
+  }
+
+  end(): Position {
+    return {lineNumber: this.endLineNumber, columnNumber: this.endColumnNumber};
+  }
 }
 
 const sourceMapToSourceList = new WeakMap<SourceMapV3, Platform.DevToolsPath.UrlString[]>();
@@ -141,6 +174,7 @@ interface SourceInfo {
   content: string|null;
   ignoreListHint: boolean;
   reverseMappings: number[]|null;
+  scopeTree: ScopeTreeEntry[]|null;
 }
 
 export class SourceMap {
@@ -161,7 +195,7 @@ export class SourceMap {
     this.#json = payload;
     this.#compiledURLInternal = compiledURL;
     this.#sourceMappingURL = sourceMappingURL;
-    this.#baseURL = (sourceMappingURL.startsWith('data:') ? compiledURL : sourceMappingURL);
+    this.#baseURL = (Common.ParsedURL.schemeIs(sourceMappingURL, 'data:')) ? compiledURL : sourceMappingURL;
 
     this.#mappingsInternal = null;
     this.#sourceInfos = new Map();
@@ -343,7 +377,12 @@ export class SourceMap {
   #ensureMappingsProcessed(): void {
     if (this.#mappingsInternal === null) {
       this.#mappingsInternal = [];
-      this.eachSection(this.parseMap.bind(this));
+      try {
+        this.eachSection(this.parseMap.bind(this));
+      } catch (e) {
+        console.error('Failed to parse source map', e);
+        this.#mappingsInternal = [];
+      }
 
       // As per spec, mappings are not necessarily sorted.
       this.mappings().sort(SourceMapEntry.compare);
@@ -403,7 +442,7 @@ export class SourceMap {
   private parseSources(sourceMap: SourceMapV3Object): void {
     const sourcesList = [];
     const sourceRoot = sourceMap.sourceRoot ?? '';
-    const ignoreList = new Set(sourceMap.x_google_ignoreList);
+    const ignoreList = new Set(sourceMap.ignoreList ?? sourceMap.x_google_ignoreList);
     for (let i = 0; i < sourceMap.sources.length; ++i) {
       let href = sourceMap.sources[i];
       // The source map v3 proposal says to prepend the sourceRoot to the source URL
@@ -425,7 +464,7 @@ export class SourceMap {
       if (!this.#sourceInfos.has(url)) {
         const content = source ?? null;
         const ignoreListHint = ignoreList.has(i);
-        this.#sourceInfos.set(url, {content, ignoreListHint, reverseMappings: null});
+        this.#sourceInfos.set(url, {content, ignoreListHint, reverseMappings: null, scopeTree: null});
       }
     }
     sourceMapToSourceList.set(sourceMap, sourcesList);
@@ -444,70 +483,156 @@ export class SourceMap {
     // we have the list available.
     const sources = sourceMapToSourceList.get(map);
     const names = map.names ?? [];
-    const stringCharIterator = new SourceMap.StringCharIterator(map.mappings);
+    const tokenIter = new TokenIterator(map.mappings);
     let sourceURL: Platform.DevToolsPath.UrlString|undefined = sources && sources[sourceIndex];
 
     while (true) {
-      if (stringCharIterator.peek() === ',') {
-        stringCharIterator.next();
+      if (tokenIter.peek() === ',') {
+        tokenIter.next();
       } else {
-        while (stringCharIterator.peek() === ';') {
+        while (tokenIter.peek() === ';') {
           lineNumber += 1;
           columnNumber = 0;
-          stringCharIterator.next();
+          tokenIter.next();
         }
-        if (!stringCharIterator.hasNext()) {
+        if (!tokenIter.hasNext()) {
           break;
         }
       }
 
-      columnNumber += this.decodeVLQ(stringCharIterator);
-      if (!stringCharIterator.hasNext() || this.isSeparator(stringCharIterator.peek())) {
+      columnNumber += tokenIter.nextVLQ();
+      if (!tokenIter.hasNext() || this.isSeparator(tokenIter.peek())) {
         this.mappings().push(new SourceMapEntry(lineNumber, columnNumber));
         continue;
       }
 
-      const sourceIndexDelta = this.decodeVLQ(stringCharIterator);
+      const sourceIndexDelta = tokenIter.nextVLQ();
       if (sourceIndexDelta) {
         sourceIndex += sourceIndexDelta;
         if (sources) {
           sourceURL = sources[sourceIndex];
         }
       }
-      sourceLineNumber += this.decodeVLQ(stringCharIterator);
-      sourceColumnNumber += this.decodeVLQ(stringCharIterator);
+      sourceLineNumber += tokenIter.nextVLQ();
+      sourceColumnNumber += tokenIter.nextVLQ();
 
-      if (!stringCharIterator.hasNext() || this.isSeparator(stringCharIterator.peek())) {
+      if (!tokenIter.hasNext() || this.isSeparator(tokenIter.peek())) {
         this.mappings().push(
             new SourceMapEntry(lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber));
         continue;
       }
 
-      nameIndex += this.decodeVLQ(stringCharIterator);
+      nameIndex += tokenIter.nextVLQ();
       this.mappings().push(new SourceMapEntry(
           lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
+    }
+
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES)) {
+      this.parseScopes(map);
+    }
+  }
+
+  private parseScopes(map: SourceMapV3Object): void {
+    if (!map.x_com_bloomberg_sourcesFunctionMappings) {
+      return;
+    }
+    const sources = sourceMapToSourceList.get(map);
+    if (!sources) {
+      return;
+    }
+    const names = map.names ?? [];
+    const scopeList = map.x_com_bloomberg_sourcesFunctionMappings;
+
+    for (let i = 0; i < sources?.length; i++) {
+      if (!scopeList[i] || !sources[i]) {
+        continue;
+      }
+      const sourceInfo = this.#sourceInfos.get(sources[i]);
+      if (!sourceInfo) {
+        continue;
+      }
+      const scopes = scopeList[i];
+
+      let nameIndex = 0;
+      let startLineNumber = 0;
+      let startColumnNumber = 0;
+      let endLineNumber = 0;
+      let endColumnNumber = 0;
+
+      const tokenIter = new TokenIterator(scopes);
+      const entries: ScopeTreeEntry[] = [];
+      let atStart = true;
+      while (tokenIter.hasNext()) {
+        if (atStart) {
+          atStart = false;
+        } else if (tokenIter.peek() === ',') {
+          tokenIter.next();
+        } else {
+          // Unexpected character.
+          return;
+        }
+        nameIndex += tokenIter.nextVLQ();
+        startLineNumber += tokenIter.nextVLQ();
+        startColumnNumber += tokenIter.nextVLQ();
+        endLineNumber += tokenIter.nextVLQ();
+        endColumnNumber += tokenIter.nextVLQ();
+        entries.push(new ScopeTreeEntry(
+            startLineNumber, startColumnNumber, endLineNumber, endColumnNumber, names[nameIndex] ?? '<invalid>'));
+      }
+      sourceInfo.scopeTree = this.buildScopeTree(entries);
+    }
+  }
+
+  private buildScopeTree(entries: ScopeTreeEntry[]): ScopeTreeEntry[] {
+    const toplevel: ScopeTreeEntry[] = [];
+    entries.sort((l, r) => comparePositions(l.start(), r.start()));
+
+    const stack: ScopeTreeEntry[] = [];
+
+    for (const entry of entries) {
+      const start = entry.start();
+      // Pop all the scopes that precede the current entry.
+      while (stack.length > 0) {
+        const top = stack[stack.length - 1];
+        if (comparePositions(top.end(), start) < 0) {
+          stack.pop();
+        } else {
+          break;
+        }
+      }
+
+      if (stack.length > 0) {
+        stack[stack.length - 1].children.push(entry);
+      } else {
+        toplevel.push(entry);
+      }
+      stack.push(entry);
+    }
+    return toplevel;
+  }
+
+  findScopeEntry(sourceURL: Platform.DevToolsPath.UrlString, sourceLineNumber: number, sourceColumnNumber: number):
+      ScopeEntry|null {
+    const sourceInfo = this.#sourceInfos.get(sourceURL);
+    if (!sourceInfo || !sourceInfo.scopeTree) {
+      return null;
+    }
+    const position: Position = {lineNumber: sourceLineNumber, columnNumber: sourceColumnNumber};
+
+    let current: ScopeTreeEntry|null = null;
+    while (true) {
+      const children: ScopeTreeEntry[] = current?.children ?? sourceInfo.scopeTree;
+      const match = children.find(
+          child => comparePositions(child.start(), position) <= 0 && comparePositions(position, child.end()) <= 0);
+      if (!match) {
+        return current;
+      }
+      current = match;
     }
   }
 
   private isSeparator(char: string): boolean {
     return char === ',' || char === ';';
-  }
-
-  private decodeVLQ(stringCharIterator: SourceMap.StringCharIterator): number {
-    // Read unsigned value.
-    let result = 0;
-    let shift = 0;
-    let digit: number = SourceMap._VLQ_CONTINUATION_MASK;
-    while (digit & SourceMap._VLQ_CONTINUATION_MASK) {
-      digit = base64Map.get(stringCharIterator.next()) || 0;
-      result += (digit & SourceMap._VLQ_BASE_MASK) << shift;
-      shift += SourceMap._VLQ_BASE_SHIFT;
-    }
-
-    // Fix the sign.
-    const negative = result & 1;
-    result >>= 1;
-    return negative ? -result : result;
   }
 
   /**
@@ -661,36 +786,72 @@ export class SourceMap {
   }
 }
 
-export namespace SourceMap {
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  export const _VLQ_BASE_SHIFT = 5;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  export const _VLQ_BASE_MASK = (1 << 5) - 1;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  export const _VLQ_CONTINUATION_MASK = 1 << 5;
+const VLQ_BASE_SHIFT = 5;
+const VLQ_BASE_MASK = (1 << 5) - 1;
+const VLQ_CONTINUATION_MASK = 1 << 5;
 
-  export class StringCharIterator {
-    private readonly string: string;
-    private position: number;
+export class TokenIterator {
+  readonly #string: string;
+  #position: number;
 
-    constructor(string: string) {
-      this.string = string;
-      this.position = 0;
+  constructor(string: string) {
+    this.#string = string;
+    this.#position = 0;
+  }
+
+  next(): string {
+    return this.#string.charAt(this.#position++);
+  }
+
+  /** Returns the unicode value of the next character and advances the iterator  */
+  nextCharCode(): number {
+    return this.#string.charCodeAt(this.#position++);
+  }
+
+  peek(): string {
+    return this.#string.charAt(this.#position);
+  }
+
+  hasNext(): boolean {
+    return this.#position < this.#string.length;
+  }
+
+  nextVLQ(): number {
+    // Read unsigned value.
+    let result = 0;
+    let shift = 0;
+    let digit: number = VLQ_CONTINUATION_MASK;
+    while (digit & VLQ_CONTINUATION_MASK) {
+      if (!this.hasNext()) {
+        throw new Error('Unexpected end of input while decodling VLQ number!');
+      }
+      const charCode = this.nextCharCode();
+      digit = Common.Base64.BASE64_CODES[charCode];
+      if (charCode !== 65 /* 'A' */ && digit === 0) {
+        throw new Error(`Unexpected char '${String.fromCharCode(charCode)}' encountered while decoding`);
+      }
+      result += (digit & VLQ_BASE_MASK) << shift;
+      shift += VLQ_BASE_SHIFT;
     }
 
-    next(): string {
-      return this.string.charAt(this.position++);
-    }
+    // Fix the sign.
+    const negative = result & 1;
+    result >>= 1;
+    return negative ? -result : result;
+  }
 
-    peek(): string {
-      return this.string.charAt(this.position);
-    }
-
-    hasNext(): boolean {
-      return this.position < this.string.length;
+  /**
+   * @returns the next VLQ number without iterating further. Or returns null if
+   * the iterator is at the end or it's not a valid number.
+   */
+  peekVLQ(): null|number {
+    const pos = this.#position;
+    try {
+      return this.nextVLQ();
+    } catch {
+      return null;
+    } finally {
+      this.#position = pos;  // Reset the iterator.
     }
   }
 }

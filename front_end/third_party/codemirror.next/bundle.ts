@@ -4,7 +4,8 @@
 // Note that this file is also used as a TypeScript source to bundle
 // the .d.ts files.
 
-import {StreamLanguage} from "@codemirror/language";
+import {LRLanguage, LanguageSupport, StreamLanguage} from "@codemirror/language";
+import {cssCompletionSource, cssLanguage as cssLanguageCM} from "@codemirror/lang-css";
 
 export {
   acceptCompletion, autocompletion, closeBrackets, closeBracketsKeymap,
@@ -13,17 +14,17 @@ export {
   moveCompletionSelection, selectedCompletion, selectedCompletionIndex, startCompletion
 } from '@codemirror/autocomplete';
 export {
-  cursorMatchingBracket, cursorSubwordBackward, cursorSubwordForward, cursorSyntaxLeft, cursorSyntaxRight,
+  cursorMatchingBracket, cursorGroupLeft, cursorGroupRight, cursorSyntaxLeft, cursorSyntaxRight,
   history, historyKeymap,
   indentLess, indentMore, insertNewlineAndIndent, redo, redoSelection, selectMatchingBracket,
-  selectSubwordBackward, selectSubwordForward, selectSyntaxLeft, selectSyntaxRight,
+  selectGroupLeft, selectGroupRight, selectSyntaxLeft, selectSyntaxRight,
   standardKeymap, toggleComment, undo, undoSelection
 } from '@codemirror/commands';
-export * as css from '@codemirror/lang-css';
 export * as html from '@codemirror/lang-html';
 export * as javascript from '@codemirror/lang-javascript';
 export { bracketMatching,
   codeFolding,
+  bidiIsolates,
   ensureSyntaxTree, foldGutter, foldKeymap, HighlightStyle, indentOnInput, indentUnit,Language, LanguageSupport,
   StreamLanguage, StreamParser, StringStream
 , syntaxHighlighting, syntaxTree, TagStyle} from '@codemirror/language';
@@ -48,6 +49,7 @@ export {
 export {highlightTree, Tag, tags} from '@lezer/highlight';
 export {LRParser} from '@lezer/lr';
 export {StyleModule} from 'style-mod';
+export {indentationMarkers} from '@replit/codemirror-indentation-markers';
 
 export function angular() {
   return import('@codemirror/lang-angular');
@@ -61,6 +63,25 @@ export async function coffeescript() {
 export function cpp() {
   return import('@codemirror/lang-cpp');
 }
+// We need to define our own "css" language here (which is basically a copy of lang-css/src/css.ts)
+// because we want to match VS code behavior regarding treating dashes as word chars.
+// See https://crbug.com/1471354 for background.
+const cssLanguage = LRLanguage.define({
+  name: cssLanguageCM.name,
+  parser: cssLanguageCM.parser,
+  languageData: {
+    commentTokens: {block: {open: '/*', close: '*/'}},
+    indentOnInput: /^\s*\}$/,
+    wordChars: '',
+  }
+});
+export const css = {
+  cssCompletionSource,
+  cssLanguage,
+  css() {
+    return new LanguageSupport(cssLanguage, cssLanguage.data.of({autocomplete: cssCompletionSource}));
+  },
+};
 export async function dart() {
   return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/clike')).dart);
 }
@@ -72,9 +93,6 @@ export async function go() {
 }
 export function java() {
   return import('@codemirror/lang-java');
-}
-export function json() {
-  return import('@codemirror/lang-json');
 }
 export async function kotlin() {
   return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/clike')).kotlin);

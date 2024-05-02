@@ -19,18 +19,11 @@
 }
 
 :focus.selected {
-  --override-selected-color: #fff;
-
-  background-color: var(--legacy-selection-bg-color);
-  color: var(--override-selected-color);
-}
-
-.-theme-with-dark-background :focus.selected,
-:host-context(.-theme-with-dark-background) :focus.selected {
-  --override-selected-color: rgb(0 0 0);
+  background-color: var(--sys-color-tonal-container);
+  color: var(--sys-color-on-tonal-container);
 }
 
 .changes-toolbar {
-  background-color: var(--color-background-elevation-1);
-  border-top: var(--legacy-divider-border);
+  background-color: var(--sys-color-cdt-base-container);
+  border-top: 1px solid var(--sys-color-divider);
 }

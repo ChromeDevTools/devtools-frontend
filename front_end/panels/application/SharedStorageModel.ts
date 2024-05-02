@@ -50,9 +50,7 @@ export class SharedStorageForOrigin extends Common.ObjectWrapper.ObjectWrapper<S
 }
 
 export namespace SharedStorageForOrigin {
-  // TODO(crbug.com/1167717): Make this a const enum.
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum Events {
+  export const enum Events {
     SharedStorageChanged = 'SharedStorageChanged',
   }
 
@@ -209,6 +207,9 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel<EventTypes> implem
     this.dispatchEventToListeners(Events.SharedStorageAccess, event);
   }
 
+  attributionReportingTriggerRegistered(_event: Protocol.Storage.AttributionReportingTriggerRegisteredEvent): void {
+  }
+
   indexedDBListUpdated(_event: Protocol.Storage.IndexedDBListUpdatedEvent): void {
   }
 
@@ -224,17 +225,26 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel<EventTypes> implem
   interestGroupAccessed(_event: Protocol.Storage.InterestGroupAccessedEvent): void {
   }
 
+  interestGroupAuctionEventOccurred(_event: Protocol.Storage.InterestGroupAuctionEventOccurredEvent): void {
+  }
+
+  interestGroupAuctionNetworkRequestCreated(_event: Protocol.Storage.InterestGroupAuctionNetworkRequestCreatedEvent):
+      void {
+  }
+
   storageBucketCreatedOrUpdated(_event: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void {
   }
 
   storageBucketDeleted(_event: Protocol.Storage.StorageBucketDeletedEvent): void {
   }
+
+  attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void {
+  }
 }
 
 SDK.SDKModel.SDKModel.register(SharedStorageModel, {capabilities: SDK.Target.Capability.Storage, autostart: false});
 
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   SharedStorageAccess = 'SharedStorageAccess',
   SharedStorageAdded = 'SharedStorageAdded',
   SharedStorageRemoved = 'SharedStorageRemoved',

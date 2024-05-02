@@ -27,6 +27,18 @@
   text-overflow: ellipsis;
   flex: 1 1;
   min-width: 35px;
+
+  &::after {
+    float: right;
+    user-select: none;
+    mask-image: var(--image-file-triangle-down);
+    width: 14px;
+    height: 14px;
+    content: "";
+    position: absolute;
+    background-color: var(--icon-default);
+    right: -3px;
+  }
 }
 
 .history-dropdown-button:focus-visible::before {
@@ -45,7 +57,11 @@
     opacity: 100%;
   }
 
-  .history-dropdown-button[disabled] [is="ui-icon"].icon-mask {
+  .history-dropdown-button > .content::after {
+    background-color: ButtonText;
+  }
+
+  .history-dropdown-button[disabled] > .content::after {
     background-color: GrayText;
   }
 }

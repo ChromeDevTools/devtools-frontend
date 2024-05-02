@@ -33,23 +33,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
-import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
-import * as Protocol from '../../generated/protocol.js';
 
 import {CSSModel} from './CSSModel.js';
 import {FrameManager} from './FrameManager.js';
 import {OverlayModel} from './OverlayModel.js';
-import {type RemoteObject} from './RemoteObject.js';
-import {RuntimeModel} from './RuntimeModel.js';
-
-import {Capability, type Target} from './Target.js';
-import {SDKModel} from './SDKModel.js';
-import {TargetManager} from './TargetManager.js';
+import {RemoteObject} from './RemoteObject.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
+import {RuntimeModel} from './RuntimeModel.js';
+import {SDKModel} from './SDKModel.js';
+import {Capability, type Target} from './Target.js';
+import {TargetManager} from './TargetManager.js';
 
 export class DOMNode {
   #domModelInternal: DOMModel;
@@ -75,9 +74,7 @@ export class DOMNode {
   assignedSlot: DOMNodeShortcut|null;
   readonly shadowRootsInternal: DOMNode[];
   #attributesInternal: Map<string, Attribute>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #markers: Map<string, any>;
+  #markers: Map<string, unknown>;
   #subtreeMarkerCount: number;
   childNodeCountInternal!: number;
   childrenInternal: DOMNode[]|null;
@@ -232,6 +229,24 @@ export class DOMNode {
 
   isSVGNode(): boolean {
     return this.#isSVGNodeInternal;
+  }
+
+  isMediaNode(): boolean {
+    return this.#nodeNameInternal === 'AUDIO' || this.#nodeNameInternal === 'VIDEO';
+  }
+
+  isViewTransitionPseudoNode(): boolean {
+    if (!this.#pseudoTypeInternal) {
+      return false;
+    }
+
+    return [
+      Protocol.DOM.PseudoType.ViewTransition,
+      Protocol.DOM.PseudoType.ViewTransitionGroup,
+      Protocol.DOM.PseudoType.ViewTransitionImagePair,
+      Protocol.DOM.PseudoType.ViewTransitionOld,
+      Protocol.DOM.PseudoType.ViewTransitionNew,
+    ].includes(this.#pseudoTypeInternal);
   }
 
   creationStackTrace(): Promise<Protocol.Runtime.StackTrace|null> {
@@ -789,9 +804,7 @@ export class DOMNode {
     return Boolean(this.#xmlVersion);
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setMarker(name: string, value: any): void {
+  setMarker(name: string, value: unknown): void {
     if (value === null) {
       if (!this.#markers.has(name)) {
         return;
@@ -819,7 +832,7 @@ export class DOMNode {
   }
 
   marker<T>(name: string): T|null {
-    return this.#markers.get(name) || null;
+    return this.#markers.get(name) as T || null;
   }
 
   getMarkerKeysForTest(): string[] {
@@ -865,8 +878,10 @@ export class DOMNode {
     this.#domModelInternal.overlayModel().highlightInOverlayForTwoSeconds({node: this, selectorList: undefined});
   }
 
-  async resolveToObject(objectGroup?: string): Promise<RemoteObject|null> {
-    const {object} = await this.#agent.invoke_resolveNode({nodeId: this.id, backendNodeId: undefined, objectGroup});
+  async resolveToObject(objectGroup?: string, executionContextId?: Protocol.Runtime.ExecutionContextId):
+      Promise<RemoteObject|null> {
+    const {object} = await this.#agent.invoke_resolveNode(
+        {nodeId: this.id, backendNodeId: undefined, executionContextId, objectGroup});
     return object && this.#domModelInternal.runtimeModelInternal.createRemoteObject(object) || null;
   }
 
@@ -910,22 +925,37 @@ export class DOMNode {
     return node;
   }
 
+  async callFunction<T, U extends string|number>(fn: (this: HTMLElement, ...args: U[]) => T, args: U[] = []):
+      Promise<{value: T}|null> {
+    const object = await this.resolveToObject();
+    if (!object) {
+      return null;
+    }
+
+    const result = await object.callFunction(fn, args.map(arg => RemoteObject.toCallArgument(arg)));
+    object.release();
+    if (result.wasThrown || !result.object) {
+      return null;
+    }
+    return {
+      value: result.object.value as T,
+    };
+  }
+
   async scrollIntoView(): Promise<void> {
     const node = this.enclosingElementOrSelf();
     if (!node) {
       return;
     }
-    const object = await node.resolveToObject();
-    if (!object) {
+
+    const result = await node.callFunction(scrollIntoViewInPage);
+    if (!result) {
       return;
     }
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // @ts-expect-error
-    void object.callFunction(scrollIntoView);
-    object.release();
+
     node.highlightForTwoSeconds();
 
-    function scrollIntoView(this: Element): void {
+    function scrollIntoViewInPage(this: Element): void {
       this.scrollIntoViewIfNeeded(true);
     }
   }
@@ -935,14 +965,11 @@ export class DOMNode {
     if (!node) {
       throw new Error('DOMNode.focus expects node to not be null.');
     }
-    const object = await node.resolveToObject();
-    if (!object) {
+    const result = await node.callFunction(focusInPage);
+    if (!result) {
       return;
     }
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // @ts-expect-error
-    await object.callFunction(focusInPage);
-    object.release();
+
     node.highlightForTwoSeconds();
     await this.#domModelInternal.target().pageAgent().invoke_bringToFront();
 
@@ -970,13 +997,14 @@ export class DOMNode {
       const classList = classes.trim().split(/\s+/g);
       return (lowerCaseName === 'div' ? '' : lowerCaseName) + '.' + classList.map(cls => CSS.escape(cls)).join('.');
     }
+    if (this.pseudoIdentifier()) {
+      return `${lowerCaseName}(${this.pseudoIdentifier()})`;
+    }
     return lowerCaseName;
   }
 }
 
 export namespace DOMNode {
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
   export enum ShadowRootTypes {
     UserAgent = 'user-agent',
     Open = 'open',
@@ -1069,7 +1097,7 @@ export class DOMModel extends SDKModel<EventTypes> {
       void this.agent.invoke_enable({});
     }
 
-    if (Root.Runtime.experiments.isEnabled('captureNodeCreationStacks')) {
+    if (Root.Runtime.experiments.isEnabled('capture-node-creation-stacks')) {
       void this.agent.invoke_setNodeStackTracesEnabled({enable: true});
     }
   }
@@ -1269,11 +1297,16 @@ export class DOMModel extends SDKModel<EventTypes> {
   }
 
   documentUpdated(): void {
+    // If this frame doesn't have a document now,
+    // it means that its document is not requested yet and
+    // it will be requested when needed. (ex: setChildNodes event is received for the frame owner node)
+    // So, we don't need to request the document if we don't
+    // already have a document.
+    const alreadyHasDocument = Boolean(this.#document);
+    this.setDocument(null);
     // If we have this.#pendingDocumentRequestPromise in flight,
     // it will contain most recent result.
-    const documentWasRequested = this.#pendingDocumentRequestPromise;
-    this.setDocument(null);
-    if (this.parentModel() && !documentWasRequested) {
+    if (this.parentModel() && alreadyHasDocument && !this.#pendingDocumentRequestPromise) {
       void this.requestDocument();
     }
   }
@@ -1290,6 +1323,10 @@ export class DOMModel extends SDKModel<EventTypes> {
     if (!this.parentModel()) {
       this.dispatchEventToListeners(Events.DocumentUpdated, this);
     }
+  }
+
+  setDocumentForTest(document: Protocol.DOM.Node|null): void {
+    this.setDocument(document);
   }
 
   private setDetachedRoot(payload: Protocol.DOM.Node): void {
@@ -1389,9 +1426,10 @@ export class DOMModel extends SDKModel<EventTypes> {
     }
     const currentPseudoElements = parent.pseudoElements().get(pseudoType);
     if (currentPseudoElements) {
-      Platform.DCHECK(
-          () => pseudoType.startsWith('view-transition'),
-          'DOMModel.pseudoElementAdded expects parent to not already have this pseudo type added; only view-transition* pseudo elements can coexist under the same parent.');
+      if (!pseudoType.startsWith('view-transition')) {
+        throw new Error(
+            'DOMModel.pseudoElementAdded expects parent to not already have this pseudo type added; only view-transition* pseudo elements can coexist under the same parent.');
+      }
       currentPseudoElements.push(node);
     } else {
       parent.pseudoElements().set(pseudoType, [node]);
@@ -1562,8 +1600,6 @@ export class DOMModel extends SDKModel<EventTypes> {
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   AttrModified = 'AttrModified',
   AttrRemoved = 'AttrRemoved',
@@ -1659,9 +1695,7 @@ class DOMDispatcher implements ProtocolProxyApi.DOMDispatcher {
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let DOMModelUndoStackInstance: DOMModelUndoStack|null;
+let domModelUndoStackInstance: DOMModelUndoStack|null = null;
 
 export class DOMModelUndoStack {
   #stack: DOMModel[];
@@ -1677,11 +1711,11 @@ export class DOMModelUndoStack {
     forceNew: boolean|null,
   } = {forceNew: null}): DOMModelUndoStack {
     const {forceNew} = opts;
-    if (!DOMModelUndoStackInstance || forceNew) {
-      DOMModelUndoStackInstance = new DOMModelUndoStack();
+    if (!domModelUndoStackInstance || forceNew) {
+      domModelUndoStackInstance = new DOMModelUndoStack();
     }
 
-    return DOMModelUndoStackInstance;
+    return domModelUndoStackInstance;
   }
 
   async markUndoableState(model: DOMModel, minorChange: boolean): Promise<void> {

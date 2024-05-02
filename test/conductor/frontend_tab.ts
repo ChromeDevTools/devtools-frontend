@@ -6,7 +6,7 @@
 
 // use require here due to
 // https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
-import puppeteer = require('puppeteer');
+import puppeteer = require('puppeteer-core');
 
 import {installPageErrorHandlers} from './events.js';
 import {getTestRunnerConfigSetting} from './test_runner_config.js';
@@ -27,6 +27,7 @@ export interface DevToolsFrontendReloadOptions {
   selectedPanel?: {name: string, selector?: string};
   canDock?: boolean;
   queryParams?: {panel?: string};
+  drawerShown?: boolean;
 }
 
 /**
@@ -82,12 +83,19 @@ export class DevToolsFrontendTab {
 
   async reload(options: DevToolsFrontendReloadOptions = {}): Promise<void> {
     // For the unspecified case wait for loading, then wait for the elements panel.
-    const {selectedPanel = DevToolsFrontendTab.DEFAULT_TAB, canDock = false, queryParams = {}} = options;
+    const {selectedPanel = DevToolsFrontendTab.DEFAULT_TAB, canDock = false, queryParams = {}, drawerShown = false} =
+        options;
 
     if (selectedPanel.name !== DevToolsFrontendTab.DEFAULT_TAB.name) {
       await this.page.evaluate(name => {
-        globalThis.localStorage.setItem('panel-selectedTab', `"${name}"`);
+        globalThis.localStorage.setItem('panel-selected-tab', `"${name}"`);
       }, selectedPanel.name);
+    }
+
+    if (drawerShown) {
+      await this.page.evaluate(() => {
+        globalThis.localStorage.setItem('inspector.drawer-split-view-state', '{"horizontal" : {"showMode": "Both"}}');
+      });
     }
 
     // Reload the DevTools frontend and await the elements panel.

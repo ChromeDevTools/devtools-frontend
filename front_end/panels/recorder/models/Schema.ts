@@ -2,34 +2,27 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/es_modules_import */
+import type * as PuppeteerReplay from '../../../third_party/puppeteer-replay/puppeteer-replay.js';
 
-import {
-  type Schema,
-  StepType,
-  AssertedEventType,
-  SelectorType,
-} from '../../../third_party/puppeteer-replay/puppeteer-replay.js';
-
-export type UserFlow = Schema.UserFlow;
-export type Step = Schema.Step;
-export type NavigationEvent = Schema.NavigationEvent;
-export type Target = Schema.Target;
-export type FrameSelector = Schema.FrameSelector;
-export type ChangeStep = Schema.ChangeStep;
-export type ClickStep = Schema.ClickStep;
-export type DoubleClickStep = Schema.DoubleClickStep;
-export type HoverStep = Schema.HoverStep;
-export type KeyDownStep = Schema.KeyDownStep;
-export type KeyUpStep = Schema.KeyUpStep;
-export type SetViewportStep = Schema.SetViewportStep;
-export type EmulateNetworkConditionsStep = Schema.EmulateNetworkConditionsStep;
-export type Selector = Schema.Selector;
-export type StepWithSelectors = Schema.StepWithSelectors;
-export type AssertedEvent = Schema.AssertedEvent;
-export type NavigateStep = Schema.NavigateStep;
-export type ScrollStep = Schema.ScrollStep;
-export type AssertionStep = Schema.AssertionStep;
-export type ClickAttributes = Schema.ClickAttributes;
-export type Key = Schema.Key;
-export {AssertedEventType, StepType, SelectorType};
+export type UserFlow = PuppeteerReplay.Schema.UserFlow;
+export type Step = PuppeteerReplay.Schema.Step;
+export type NavigationEvent = PuppeteerReplay.Schema.NavigationEvent;
+export type Target = PuppeteerReplay.Schema.Target;
+export type FrameSelector = PuppeteerReplay.Schema.FrameSelector;
+export type ChangeStep = PuppeteerReplay.Schema.ChangeStep;
+export type ClickStep = PuppeteerReplay.Schema.ClickStep;
+export type DoubleClickStep = PuppeteerReplay.Schema.DoubleClickStep;
+export type HoverStep = PuppeteerReplay.Schema.HoverStep;
+export type KeyDownStep = PuppeteerReplay.Schema.KeyDownStep;
+export type KeyUpStep = PuppeteerReplay.Schema.KeyUpStep;
+export type SetViewportStep = PuppeteerReplay.Schema.SetViewportStep;
+export type EmulateNetworkConditionsStep = PuppeteerReplay.Schema.EmulateNetworkConditionsStep;
+export type Selector = PuppeteerReplay.Schema.Selector;
+export type StepWithSelectors = PuppeteerReplay.Schema.StepWithSelectors;
+export type AssertedEvent = PuppeteerReplay.Schema.AssertedEvent;
+export type NavigateStep = PuppeteerReplay.Schema.NavigateStep;
+export type ScrollStep = PuppeteerReplay.Schema.ScrollStep;
+export type AssertionStep = PuppeteerReplay.Schema.AssertionStep;
+export type ClickAttributes = PuppeteerReplay.Schema.ClickAttributes;
+export type Key = PuppeteerReplay.Schema.Key;
+export {AssertedEventType, StepType, SelectorType} from '../../../third_party/puppeteer-replay/puppeteer-replay.js';

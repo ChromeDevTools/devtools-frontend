@@ -48,7 +48,7 @@ export class RNWelcomeImpl extends UI.Widget.VBox {
     super.wasShown();
     this.registerCSSFiles([rnWelcomeStyles]);
     this.render();
-    UI.InspectorView.InspectorView.instance().showDrawer(true);
+    UI.InspectorView.InspectorView.instance().showDrawer({focus: true, hasTargetDrawer: false});
   }
 
   render(): void {

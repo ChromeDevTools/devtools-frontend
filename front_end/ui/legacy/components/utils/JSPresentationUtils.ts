@@ -36,12 +36,13 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
-import * as Bindings from '../../../../models/bindings/bindings.js';
 import type * as Protocol from '../../../../generated/protocol.js';
+import * as Bindings from '../../../../models/bindings/bindings.js';
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import {Linkifier} from './Linkifier.js';
 import jsUtilsStyles from './jsUtils.css.js';
+import {Events as LinkifierEvents, Linkifier} from './Linkifier.js';
 
 const UIStrings = {
   /**
@@ -77,13 +78,14 @@ function populateContextMenu(link: Element, event: Event): void {
     if (Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(uiLocation.uiSourceCode.url())) {
       contextMenu.debugSection().appendItem(
           i18nString(UIStrings.removeFromIgnore),
-          () => Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListUISourceCode(
-              uiLocation.uiSourceCode));
+          () =>
+              Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListUISourceCode(uiLocation.uiSourceCode),
+          {jslogContext: 'remove-from-ignore-list'});
     } else {
       contextMenu.debugSection().appendItem(
           i18nString(UIStrings.addToIgnore),
-          () =>
-              Bindings.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(uiLocation.uiSourceCode));
+          () => Bindings.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(uiLocation.uiSourceCode),
+          {jslogContext: 'add-to-ignore-list'});
     }
   }
   contextMenu.appendApplicableItems(event);
@@ -101,8 +103,9 @@ export function buildStackTraceRows(
 
   if (updateCallback) {
     const throttler = new Common.Throttler.Throttler(100);
-    linkifier.setLiveLocationUpdateCallback(
-        () => throttler.schedule(async () => updateHiddenRows(updateCallback, stackTraceRows)));
+    linkifier.addEventListener(LinkifierEvents.LiveLocationUpdated, () => {
+      void throttler.schedule(async () => updateHiddenRows(updateCallback, stackTraceRows));
+    });
   }
 
   function buildStackTraceRowsHelper(
@@ -127,6 +130,7 @@ export function buildStackTraceRows(
         revealBreakpoint: previousStackFrameWasBreakpointCondition,
       });
       if (link) {
+        link.setAttribute('jslog', `${VisualLogging.link('stack-trace').track({click: true})}`);
         link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
         // TODO(crbug.com/1183325): fix race condition with uiLocation still being null here
         // Note: This has always checked whether the call frame location *in the generated
@@ -216,6 +220,7 @@ export function buildStackTracePreviewContents(
   const {stackTrace, tabStops} = options;
   const element = document.createElement('span');
   element.classList.add('monospace');
+  element.classList.add('stack-preview-container');
   element.style.display = 'inline-block';
   const shadowRoot =
       UI.Utils.createShadowRootWithCoreStyles(element, {cssFile: [jsUtilsStyles], delegatesFocus: undefined});
@@ -248,7 +253,7 @@ function renderStackTraceTable(
       row.createChild('td', 'function-name').textContent = item.functionName;
       row.createChild('td').textContent = ' @ ';
       if (item.link) {
-        row.createChild('td').appendChild(item.link);
+        row.createChild('td', 'link').appendChild(item.link);
         links.push(item.link);
       }
       if (item.ignoreListHide) {
@@ -270,6 +275,8 @@ function renderStackTraceTable(
     showAllLink.textContent = i18nString(UIStrings.showSMoreFrames, {n: hiddenCallFramesCount});
     showAllLink.addEventListener('click', () => {
       container.classList.add('show-hidden-rows');
+      // If we are in a popup, this will trigger a re-layout
+      UI.GlassPane.GlassPane.containerMoved(container);
     }, false);
     const showLessRow = container.createChild('tr', 'show-less-link');
     showLessRow.createChild('td').textContent = '\n';
@@ -279,6 +286,8 @@ function renderStackTraceTable(
     showLessLink.textContent = i18nString(UIStrings.showLess);
     showLessLink.addEventListener('click', () => {
       container.classList.remove('show-hidden-rows');
+      // If we are in a popup, this will trigger a re-layout
+      UI.GlassPane.GlassPane.containerMoved(container);
     }, false);
   }
   return links;

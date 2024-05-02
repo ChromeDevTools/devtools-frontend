@@ -3,8 +3,7 @@
 # found in the LICENSE file.
 
 import("../../../../scripts/build/ninja/copy.gni")
-import(
-    "../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/node.gni")
 
@@ -29,7 +28,6 @@ devtools_module("injected") {
     ":*",
     "../:*",
     "../../../../test/interactions/front_end/panels/recorder/*",
-    "../../../../test/unittests/front_end/panels/recorder/*",
     "../../../ui/components/docs/recorder_injected/*",
     "../controllers:*",
     "../models:*",
@@ -48,7 +46,6 @@ devtools_entrypoint("bundle") {
     ":*",
     "../:*",
     "../../../../test/interactions/panels/recorder/*",
-    "../../../../test/unittests/front_end/panels/recorder/*",
     "../../../ui/components/docs/recorder_injected/*",
     "../controllers:*",
     "../models:*",

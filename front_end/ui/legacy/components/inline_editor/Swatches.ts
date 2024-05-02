@@ -4,16 +4,17 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as IconButton from '../../../components/icon_button/icon_button.js';
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import {ColorChangedEvent, ColorSwatch} from './ColorSwatch.js';
-
-import {type CSSShadowModel} from './CSSShadowModel.js';
 import bezierSwatchStyles from './bezierSwatch.css.js';
+import {ColorChangedEvent, ColorSwatch} from './ColorSwatch.js';
+import {type CSSShadowModel} from './CSSShadowModel.js';
 import cssShadowSwatchStyles from './cssShadowSwatch.css.js';
 
 export class BezierSwatch extends HTMLSpanElement {
-  private readonly iconElementInternal: UI.Icon.Icon;
+  private readonly iconElementInternal: IconButton.Icon.Icon;
   private textElement: HTMLElement;
 
   constructor() {
@@ -22,7 +23,8 @@ export class BezierSwatch extends HTMLSpanElement {
       cssFile: [bezierSwatchStyles],
       delegatesFocus: undefined,
     });
-    this.iconElementInternal = UI.Icon.Icon.create('bezier-curve-filled', 'bezier-swatch-icon');
+    this.iconElementInternal = IconButton.Icon.create('bezier-curve-filled', 'bezier-swatch-icon');
+    this.iconElementInternal.setAttribute('jslog', `${VisualLogging.showStyleEditor('bezier')}`);
     root.appendChild(this.iconElementInternal);
     this.textElement = this.createChild('span');
     root.createChild('slot');
@@ -58,7 +60,7 @@ export class BezierSwatch extends HTMLSpanElement {
 }
 
 export class CSSShadowSwatch extends HTMLSpanElement {
-  private readonly iconElementInternal: UI.Icon.Icon;
+  private readonly iconElementInternal: IconButton.Icon.Icon;
   private contentElement: HTMLElement;
   private colorSwatchInternal!: ColorSwatch|null;
   private modelInternal?: CSSShadowModel;
@@ -69,7 +71,7 @@ export class CSSShadowSwatch extends HTMLSpanElement {
       cssFile: [cssShadowSwatchStyles],
       delegatesFocus: undefined,
     });
-    this.iconElementInternal = UI.Icon.Icon.create('shadow', 'shadow-swatch-icon');
+    this.iconElementInternal = IconButton.Icon.create('shadow', 'shadow-swatch-icon');
     root.appendChild(this.iconElementInternal);
     root.createChild('slot');
     this.contentElement = this.createChild('span');

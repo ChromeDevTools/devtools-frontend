@@ -20,6 +20,7 @@ interface Editor extends HTMLElement {
     computedProperties: Map<String, String>,
   };
   getEditableProperties(): Array<{propertyName: string}>;
+  jslogContext: string;
 }
 
 /**
@@ -120,7 +121,7 @@ export class StyleEditorWidget extends UI.Widget.VBox {
       triggerKey: string): HTMLElement {
     const triggerButton = createButton(buttonTitle);
 
-    triggerButton.onclick = async(event): Promise<void> => {
+    triggerButton.onclick = async event => {
       event.stopPropagation();
       const popoverHelper = pane.swatchPopoverHelper();
       const widget = StyleEditorWidget.instance();
@@ -152,12 +153,12 @@ function createButton(buttonTitle: string): HTMLButtonElement {
   button.classList.add('styles-pane-button');
   button.tabIndex = 0;
   button.title = buttonTitle;
-  button.onmouseup = (event): void => {
+  button.onmouseup = event => {
     // Stop propagation to prevent the property editor from being activated.
     event.stopPropagation();
   };
   const icon = new IconButton.Icon.Icon();
-  icon.data = {iconName: 'flex-wrap', color: 'var(--color-text-secondary)', width: '16px', height: '16px'};
+  icon.data = {iconName: 'flex-wrap', color: 'var(--sys-color-token-subtle)', width: '16px', height: '16px'};
   button.appendChild(icon);
   return button;
 }

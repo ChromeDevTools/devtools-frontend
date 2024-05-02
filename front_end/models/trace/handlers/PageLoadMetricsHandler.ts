@@ -16,7 +16,7 @@
 import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 
-import {type TraceEventHandlerName, type EnabledHandlerDataWithMeta, type Handlers} from './types.js';
+import {type TraceEventHandlerName} from './types.js';
 
 import * as Types from '../types/types.js';
 
@@ -65,6 +65,7 @@ const markerTypeGuards = [
   Types.TraceEvents.isTraceEventFirstPaint,
   Types.TraceEvents.isTraceEventFirstContentfulPaint,
   Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate,
+  Types.TraceEvents.isTraceEventNavigationStart,
 ];
 
 interface MakerEvent extends Types.TraceEvents.TraceEventData {
@@ -116,12 +117,7 @@ function storePageLoadMetricAgainstNavigationId(
     return;
   }
 
-  // We compare the timestamp of the event to determine if it happened during the
-  // time window in which its process was considered active.
-  const eventBelongsToProcess = event.ts >= processData.window.min && event.ts <= processData.window.max;
-
-  if (!eventBelongsToProcess) {
-    // If the event occurred outside its process' active time window we ignore it.
+  if (Types.TraceEvents.isTraceEventNavigationStart(event)) {
     return;
   }
 
@@ -279,7 +275,8 @@ export function getFrameIdForPageLoadEvent(event: Types.TraceEvents.PageLoadEven
   if (Types.TraceEvents.isTraceEventFirstContentfulPaint(event) ||
       Types.TraceEvents.isTraceEventInteractiveTime(event) ||
       Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate(event) ||
-      Types.TraceEvents.isTraceEventLayoutShift(event) || Types.TraceEvents.isTraceEventFirstPaint(event)) {
+      Types.TraceEvents.isTraceEventNavigationStart(event) || Types.TraceEvents.isTraceEventLayoutShift(event) ||
+      Types.TraceEvents.isTraceEventFirstPaint(event)) {
     return event.args.frame;
   }
   if (Types.TraceEvents.isTraceEventMarkDOMContent(event) || Types.TraceEvents.isTraceEventMarkLoad(event)) {
@@ -318,46 +315,18 @@ function getNavigationForPageLoadEvent(event: Types.TraceEvents.PageLoadEvent):
     return Helpers.Trace.getNavigationForTraceEvent(event, frameId, navigationsByFrameId);
   }
 
-  return Platform.assertNever(event, `Unexpected event type: ${event}`);
-}
-
-/*
- * When we first load a new trace, rather than position the playhead at time 0,
-* we want to position it such that the thumbnail likely shows something rather
-* than a blank white page, and so that it's positioned somewhere that's useful
-* for the user.  This function takes the model data, and returns either the
-* timestamp of the first FCP event, or null if it couldn't find one.
- */
-export function getFirstFCPTimestampFromModelData(model: EnabledHandlerDataWithMeta<Handlers>):
-    Types.Timing.MicroSeconds|null {
-  const mainFrameID = model.Meta.mainFrameId;
-  const metricsForMainFrameByNavigationID = model.PageLoadMetrics.metricScoresByFrameId.get(mainFrameID);
-  if (!metricsForMainFrameByNavigationID) {
+  if (Types.TraceEvents.isTraceEventNavigationStart(event)) {
+    // We don't want to compute metrics of the navigation relative to itself, so we'll avoid avoid all that.
     return null;
   }
 
-  // Now find the first FCP event by timestamp. Events may not have the raw
-  // data including timestamp, and if so we skip that event.
-  let firstFCPEventInTimeline: Types.Timing.MicroSeconds|null = null;
-  for (const metrics of metricsForMainFrameByNavigationID.values()) {
-    const fcpMetric = metrics.get(MetricName.FCP);
-    const fcpTimestamp = fcpMetric?.event?.ts;
-    if (fcpTimestamp) {
-      if (!firstFCPEventInTimeline) {
-        firstFCPEventInTimeline = fcpTimestamp;
-      } else if (fcpTimestamp < firstFCPEventInTimeline) {
-        firstFCPEventInTimeline = fcpTimestamp;
-      }
-    }
-  }
-  return firstFCPEventInTimeline;
+  return Platform.assertNever(event, `Unexpected event type: ${event}`);
 }
 
 /**
  * Classifications sourced from
  * https://web.dev/fcp/
  */
-
 export function scoreClassificationForFirstContentfulPaint(fcpScoreInMicroseconds: Types.Timing.MicroSeconds):
     ScoreClassification {
   const FCP_GOOD_TIMING = Helpers.Timing.secondsToMicroseconds(Types.Timing.Seconds(1.8));

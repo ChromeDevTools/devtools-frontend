@@ -378,8 +378,6 @@ export const NodePrefix = '(function (exports, require, module, __filename, __di
 export const NodeSuffix = '\n});';
 export const NodeShebang = '#!/usr/bin/env node';
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   BindingCreated = 'BindingCreated',
   BindingRemoved = 'BindingRemoved',

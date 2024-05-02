@@ -1,0 +1,29 @@
+# Copyright 2021 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../scripts/build/ninja/copy.gni")
+
+import("../../../../../third_party/typescript/typescript.gni")
+
+ts_library("ts") {
+  testonly = true
+  sources = [
+    "initial-breadcrumb-perf.ts",
+    "nested-breadcrumbs-perf.ts",
+  ]
+  deps = [
+    "../../../../models/trace:bundle",
+    "../../../../panels/timeline/components:bundle",
+  ]
+}
+
+copy_to_gen("breadcrumbs_perf") {
+  testonly = true
+  sources = [
+    "initial-breadcrumb-perf.html",
+    "nested-breadcrumbs-perf.html",
+  ]
+
+  deps = [ ":ts" ]
+}

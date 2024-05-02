@@ -16,6 +16,10 @@ async function captureScreenshot(): Promise<Screenshot> {
   }
 
   const {data} = await mainTarget.pageAgent().invoke_captureScreenshot({});
+  if (!data) {
+    // 1x1 px empty image.
+    return 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' as Screenshot;
+  }
   return ('data:image/png;base64,' + data) as Screenshot;
 }
 

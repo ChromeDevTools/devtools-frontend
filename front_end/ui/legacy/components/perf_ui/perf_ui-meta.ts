@@ -59,10 +59,10 @@ UI.ActionRegistration.registerActionExtension({
   actionId: 'components.collect-garbage',
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
   title: i18nLazyString(UIStrings.collectGarbage),
-  iconClass: UI.ActionRegistration.IconClass.BIN,
+  iconClass: UI.ActionRegistration.IconClass.MOP,
   async loadActionDelegate() {
     const PerfUI = await loadPerfUIModule();
-    return PerfUI.GCActionDelegate.GCActionDelegate.instance();
+    return new PerfUI.GCActionDelegate.GCActionDelegate();
   },
 });
 
@@ -70,7 +70,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.PERFORMANCE,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.flamechartMouseWheelAction),
-  settingName: 'flamechartMouseWheelAction',
+  settingName: 'flamechart-mouse-wheel-action',
   settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'zoom',
   options: [
@@ -91,7 +91,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.MEMORY,
   experiment: Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE,
   title: i18nLazyString(UIStrings.liveMemoryAllocationAnnotations),
-  settingName: 'memoryLiveHeapProfile',
+  settingName: 'memory-live-heap-profile',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   options: [

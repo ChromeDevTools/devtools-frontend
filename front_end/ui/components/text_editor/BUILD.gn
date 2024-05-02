@@ -4,6 +4,7 @@
 
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("text_editor") {
@@ -17,8 +18,6 @@ devtools_module("text_editor") {
     "position.ts",
     "theme.ts",
   ]
-
-  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
 
   deps = [
     "../../../core/common:bundle",
@@ -49,4 +48,23 @@ devtools_entrypoint("bundle") {
     "../../legacy/components/*",
   ]
   visibility += default_components_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "AutocompleteHistory.test.ts",
+    "TextEditor.test.ts",
+    "TextEditorHistory.test.ts",
+    "javascript.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../core/common:bundle",
+    "../../../core/platform:bundle",
+    "../../../testing",
+    "../../../third_party/codemirror.next:bundle",
+  ]
 }

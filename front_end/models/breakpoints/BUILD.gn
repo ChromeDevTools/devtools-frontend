@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("breakpoints") {
@@ -17,6 +18,8 @@ devtools_module("breakpoints") {
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../bindings:bundle",
+    "../formatter:bundle",
+    "../source_map_scopes:bundle",
     "../text_utils:bundle",
     "../workspace:bundle",
   ]
@@ -29,7 +32,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/models/breakpoints/*",
     "../../panels/sources/*",
     "../../ui/components/linkifier/*",
     "../../ui/legacy/components/utils/*",
@@ -39,14 +41,13 @@ devtools_entrypoint("bundle") {
   visibility += devtools_models_visibility
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "breakpoints-legacy.ts"
+ts_library("unittests") {
+  testonly = true
 
-  deps = [ ":bundle" ]
+  sources = [ "BreakpointManager.test.ts" ]
 
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../entrypoints/shell/*",
-    "../../legacy_test_runner/*",
+  deps = [
+    ":bundle",
+    "../../testing",
   ]
 }

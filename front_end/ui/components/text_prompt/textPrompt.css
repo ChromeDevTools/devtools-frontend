@@ -16,7 +16,7 @@ input {
 
 .prefix {
   flex: none;
-  color: var(--color-primary-old);
+  color: var(--sys-color-primary);
 }
 
 .text-prompt-input {
@@ -36,7 +36,7 @@ input {
 }
 
 .text-prompt-input .suggestion {
-  color: var(--color-background-highlight);
+  color: var(--sys-color-state-disabled);
   position: absolute;
   left: 0;
   z-index: 1;

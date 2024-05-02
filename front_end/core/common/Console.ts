@@ -12,7 +12,7 @@ export class Console extends ObjectWrapper<EventTypes> {
   /**
    * Instantiable via the instance() factory below.
    */
-  private constructor() {
+  constructor() {
     super();
     this.#messagesInternal = [];
   }
@@ -60,9 +60,7 @@ export class Console extends ObjectWrapper<EventTypes> {
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   MessageAdded = 'messageAdded',
 }
 
@@ -70,9 +68,7 @@ export type EventTypes = {
   [Events.MessageAdded]: Message,
 };
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum MessageLevel {
+export const enum MessageLevel {
   Info = 'info',
   Warning = 'warning',
   Error = 'error',

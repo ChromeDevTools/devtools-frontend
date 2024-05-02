@@ -24,7 +24,7 @@
 }
 
 .computed-style-property:hover {
-  background-color: var(--legacy-focus-bg-color);
+  background-color: var(--sys-color-state-hover-on-subtle);
   cursor: text;
 }
 
@@ -45,7 +45,7 @@
   margin-right: calc(var(--goto-size) / 2);
   display: inline-block;
   vertical-align: text-top;
-  color: var(--webkit-css-property-color, var(--color-syntax-1)); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--webkit-css-property-color, var(--sys-color-token-property-special)); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .property-value {
@@ -59,9 +59,8 @@
   width: var(--goto-size);
   height: var(--goto-size);
   margin: -1px 0 0 calc(-1 * var(--goto-size));
-  -webkit-mask-image: var(--image-file-mediumIcons);
-  -webkit-mask-position: -32px 48px;
-  background-color: var(--legacy-active-control-bg-color);
+  mask: var(--image-file-goto-filled) center / contain no-repeat;
+  background-color: var(--sys-color-primary-bright);
 }
 
 .computed-style-property:hover .goto {
@@ -74,6 +73,11 @@
 /* narrowed styles */
 :host-context(.computed-narrow) .computed-style-property {
   white-space: normal;
+
+  & .goto {
+    display: none;
+    margin-left: 0;
+  }
 }
 
 :host-context(.computed-narrow) .property-name,
@@ -85,8 +89,14 @@
   white-space: nowrap;
 }
 
-:host-context(.computed-narrow) .goto {
-  display: none;
+:host-context(.computed-narrow) .computed-style-property:not(.inherited):hover {
+  & .property-value {
+    margin-left: var(--goto-size);
+  }
+
+  & .goto {
+    display: inline-block;
+  }
 }
 /* high-contrast styles */
 @media (forced-colors: active) {

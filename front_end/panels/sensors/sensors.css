@@ -17,7 +17,7 @@
 }
 
 .sensors-view input[readonly] {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-neutral-container);
 }
 
 .sensors-view fieldset {
@@ -67,10 +67,12 @@
   width: 70px;
 }
 
-.timezone-error {
+.timezone-error,
+.locale-error {
   margin-left: 10px;
   color: var(--legacy-input-validation-error);
 }
+
 /* Device Orientation */
 
 .orientation-content {
@@ -83,15 +85,14 @@
 }
 
 .orientation-stage {
-  --override-gradient-color-1: #e1f5fe;
-  --override-gradient-color-2: #b0ebf3;
-  --override-gradient-color-3: #def6f9;
+  --override-gradient-color-1: var(--ref-palette-cyan95);
+  --override-gradient-color-2: var(--ref-palette-cyan90);
 
   perspective: 700px;
   perspective-origin: 50% 50%;
   width: 160px;
   height: 150px;
-  background: linear-gradient(var(--override-gradient-color-1) 0%, var(--override-gradient-color-1) 64%, var(--override-gradient-color-2) 64%, var(--override-gradient-color-3) 100%);
+  background: linear-gradient(var(--override-gradient-color-1) 0%, var(--override-gradient-color-1) 64%, var(--override-gradient-color-2) 64%, var(--override-gradient-color-1) 100%);
   transition: 0.2s ease opacity, 0.2s ease filter;
   overflow: hidden;
   margin-bottom: 10px;
@@ -99,9 +100,8 @@
 
 .-theme-with-dark-background .orientation-stage,
 :host-context(.-theme-with-dark-background) .orientation-stage {
-  --override-gradient-color-1: rgb(1 21 30);
-  --override-gradient-color-2: rgb(12 71 79);
-  --override-gradient-color-3: rgb(6 30 33);
+  --override-gradient-color-1: var(--ref-palette-cyan10);
+  --override-gradient-color-2: var(--ref-palette-cyan30);
 }
 
 .orientation-stage.disabled {
@@ -286,9 +286,11 @@ fieldset.device-orientation-override-section {
 }
 
 .panel-section-separator {
-  height: 2px;
-  margin-bottom: 8px;
-  background: var(--color-background-elevation-2);
+  height: 1px;
+  margin-bottom: 20px;
+  margin-left: -12px;
+  margin-right: -12px;
+  background: var(--sys-color-divider);
 }
 
 button.text-button {

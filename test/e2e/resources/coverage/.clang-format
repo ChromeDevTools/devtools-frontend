@@ -1,0 +1,6 @@
+---
+# Disable JavaScript formatting for this directory.
+# (crbug.com/1062308) clang format was un-minifying
+# a minified file, breaking its source map.
+Language: JavaScript
+DisableFormat: true

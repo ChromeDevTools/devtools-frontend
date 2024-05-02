@@ -1,0 +1,29 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../third_party/typescript/typescript.gni")
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "AnimationsTrackAppender.test.ts",
+    "AppenderUtils.test.ts",
+    "CompatibilityTracksAppender.test.ts",
+    "GPUTrackAppender.test.ts",
+    "InteractionsTrackAppender.test.ts",
+    "LayoutShiftsTrackAppender.test.ts",
+    "NetworkTrackAppender.test.ts",
+    "ThreadAppender.test.ts",
+    "TimingsTrackAppender.test.ts",
+  ]
+
+  deps = [
+    "../../../core/sdk:bundle",
+    "../../../models/timeline_model:bundle",
+    "../../../panels/timeline:bundle",
+    "../../../testing",
+    "../../../ui/legacy/components/perf_ui:bundle",
+  ]
+}

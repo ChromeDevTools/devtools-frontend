@@ -21,7 +21,14 @@
     - fileName: the name of the trace file to be loaded (without the
       .json.gz extension).
      Example: track_example.html?track=GPU&fileName=threejs-gpu
+
+    - optionally, you can also use trackFilter to filter the tracks by name.
+      This is useful if you are loading a track type that can contain multipole
+      tracks (e.g. TrackType.Other). Any tracks that contain the provided string will
+      be shown.
+      Example: track_example.html?track=Other&fileName=fenced-frame-fledge&trackFilter=Worklet
 -->
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8" />

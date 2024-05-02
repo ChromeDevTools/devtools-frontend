@@ -2,13 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import {assert} from 'chai';
-import type * as puppeteer from 'puppeteer';
-import {AsyncScope} from '../../shared/async-scope.js';
+import type * as puppeteer from 'puppeteer-core';
 
+import {AsyncScope} from '../../shared/async-scope.js';
 import {
   $,
   $$,
   click,
+  clickElement,
+  clickMoreTabsButton,
   getBrowserAndPages,
   getTextContent,
   goToResource,
@@ -19,7 +21,6 @@ import {
   typeText,
   waitFor,
   waitForAria,
-  clickElement,
   waitForFunction,
 } from '../../shared/helper.js';
 
@@ -34,10 +35,10 @@ const COMPUTED_PROPERTY_SELECTOR = 'devtools-computed-style-property';
 const COMPUTED_STYLES_PANEL_SELECTOR = '[aria-label="Computed panel"]';
 const COMPUTED_STYLES_SHOW_ALL_SELECTOR = '[title="Show all"]';
 const COMPUTED_STYLES_GROUP_SELECTOR = '[title="Group"]';
-const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';
+export const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';
 const FONT_EDITOR_SELECTOR = '[aria-label="Font Editor"]';
 const HIDDEN_FONT_EDITOR_SELECTOR = '.font-toolbar-hidden';
-const SECTION_SUBTITLE_SELECTOR = '.styles-section-subtitle';
+export const SECTION_SUBTITLE_SELECTOR = '.styles-section-subtitle';
 const CLS_PANE_SELECTOR = '.styles-sidebar-toolbar-pane';
 const CLS_BUTTON_SELECTOR = '[aria-label="Element Classes"]';
 const CLS_INPUT_SELECTOR = '[aria-placeholder="Add new class"]';
@@ -49,14 +50,13 @@ export const ACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Disable grid mode"]';
 const ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR = '.elements input[type=checkbox]';
 const ELEMENT_STYLE_SECTION_SELECTOR = '[aria-label="element.style, css selector"]';
 const STYLE_QUERY_RULE_TEXT_SELECTOR = '.query-text';
-const STYLE_PROPERTIES_SELECTOR = '.tree-outline-disclosure [role="treeitem"]';
+export const STYLE_PROPERTIES_SELECTOR = '.tree-outline-disclosure [role="treeitem"]';
 const CSS_AUTHORING_HINTS_ICON_SELECTOR = '.hint';
 export const SEARCH_BOX_SELECTOR = '.search-bar';
 const SEARCH_RESULTS_MATCHES = '.search-results-matches';
 
 export const openLayoutPane = async () => {
   await step('Open Layout pane', async () => {
-    await waitFor(LAYOUT_PANE_TAB_SELECTOR);
     await click(LAYOUT_PANE_TAB_SELECTOR);
 
     const panel = await waitFor(LAYOUT_PANE_TABPANEL_SELECTOR);
@@ -107,7 +107,6 @@ export const waitForAdornerOnSelectedNode = async (expectedAdornerText: string) 
 
 export const toggleElementCheckboxInLayoutPane = async () => {
   await step('Click element checkbox in Layout pane', async () => {
-    await waitFor(ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR);
     await click(ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR);
   });
 };
@@ -146,7 +145,7 @@ export const getContentOfSelectedNode = async () => {
   return await selectedNode.evaluate(node => node.textContent as string);
 };
 
-export const waitForSelectedNodeChange = async(initialValue: string, asyncScope = new AsyncScope()): Promise<void> => {
+export const waitForSelectedNodeChange = async (initialValue: string, asyncScope = new AsyncScope()) => {
   await waitForFunction(async () => {
     const currentContent = await getContentOfSelectedNode();
     return currentContent !== initialValue;
@@ -210,8 +209,7 @@ export const clickTreeElementWithPartialText = async (text: string) => {
 
 export const clickNthChildOfSelectedElementNode = async (childIndex: number) => {
   assert(childIndex > 0, 'CSS :nth-child() selector indices are 1-based.');
-  const element = await waitFor(`${SELECTED_TREE_ELEMENT_SELECTOR} + ol > li:nth-child(${childIndex})`);
-  await element.click();
+  await click(`${SELECTED_TREE_ELEMENT_SELECTOR} + ol > li:nth-child(${childIndex})`);
 };
 
 export const focusElementsTree = async () => {
@@ -278,18 +276,6 @@ export const getPropertyFromComputedPane = async (name: string) => {
   return undefined;
 };
 
-export const waitForPropertyValueInComputedPane = async (name: string, value: string) => {
-  await waitForFunction(async () => {
-    const properties = await getAllPropertiesFromComputedPane();
-    for (const property of properties) {
-      if (property && property.name === name && property.value === value) {
-        return true;
-      }
-    }
-    return false;
-  });
-};
-
 export const expandSelectedNodeRecursively = async () => {
   const EXPAND_RECURSIVELY = '[aria-label="Expand recursively"]';
 
@@ -297,21 +283,22 @@ export const expandSelectedNodeRecursively = async () => {
   await click(SELECTED_TREE_ELEMENT_SELECTOR, {clickOptions: {button: 'right'}});
 
   // Wait for the 'expand recursively' option, and click it.
-  await waitFor(EXPAND_RECURSIVELY);
   await click(EXPAND_RECURSIVELY);
 };
 
 export const forcePseudoState = async (pseudoState: string) => {
-  // Open element state pane and wait for it to be loaded asynchronously
-  await click('[aria-label="Toggle Element State"]');
-  await waitFor(`[aria-label="${pseudoState}"]`);
+  // Open element & page state pane and wait for it to be loaded asynchronously
+  await click('[aria-label="Toggle element & page state"]');
+
+  const stateEl = await waitForAria(pseudoState);
   // FIXME(crbug/1112692): Refactor test to remove the timeout.
   await timeout(100);
-  await click(`[aria-label="${pseudoState}"]`);
+  await stateEl.click();
 };
 
 export const removePseudoState = async (pseudoState: string) => {
-  await click(`[aria-label="${pseudoState}"]`);
+  const stateEl = await waitForAria(pseudoState);
+  await stateEl.click();
 };
 
 export const getComputedStylesForDomNode =
@@ -390,6 +377,13 @@ export const assertGutterDecorationForDomNodeExists = async () => {
 };
 
 export const getStyleRuleSelector = (selector: string) => `[aria-label="${selector}, css selector"]`;
+
+export const waitForExactStyleRule = async (expectedSelector: string) => {
+  await waitForFunction(async () => {
+    const rules = await getDisplayedStyleRules();
+    return rules.find(rule => rule.selectorText === expectedSelector);
+  });
+};
 
 export const waitForStyleRule = async (expectedSelector: string) => {
   await waitForFunction(async () => {
@@ -703,7 +697,7 @@ export const navigateToElementsTab = async () => {
 
 export const clickOnFirstLinkInStylesPanel = async () => {
   const stylesPane = await waitFor('div.styles-pane');
-  await click('div.styles-section-subtitle span.devtools-link', {root: stylesPane});
+  await click('div.styles-section-subtitle button.devtools-link', {root: stylesPane});
 };
 
 export const toggleClassesPane = async () => {
@@ -769,8 +763,7 @@ export const toggleAccessibilityPane = async () => {
   let a11yPane = await $('Accessibility', undefined, 'aria');
   if (!a11yPane) {
     const elementsPanel = await waitForAria('Elements panel');
-    const moreTabs = await waitForAria('More tabs', elementsPanel);
-    await clickElement(moreTabs);
+    await clickMoreTabsButton(elementsPanel);
     a11yPane = await waitForAria('Accessibility');
   }
   await clickElement(a11yPane);

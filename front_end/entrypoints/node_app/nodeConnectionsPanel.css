@@ -41,7 +41,7 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   user-select: none;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   overflow: hidden;
 }
 

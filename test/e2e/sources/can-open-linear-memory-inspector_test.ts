@@ -22,7 +22,7 @@ const LINEAR_MEMORY_INSPECTOR_TABBED_PANE_SELECTOR = DRAWER_PANEL_SELECTOR + ' .
 const LINEAR_MEMORY_INSPECTOR_TABBED_PANE_TAB_SELECTOR = '.tabbed-pane-header-tab';
 const LINEAR_MEMORY_INSPECTOR_TAB_TITLE_SELECTOR = '.tabbed-pane-header-tab-title';
 
-describe('Scope View', async () => {
+describe('Scope View', () => {
   it('opens linear memory inspector', async () => {
     const {frontend, target} = getBrowserAndPages();
     const breakpointLine = '0x039';
@@ -133,7 +133,7 @@ describe('Scope View', async () => {
       // Wait until we pause in the other worker.
       await waitFor(PAUSE_INDICATOR_SELECTOR);
       const scriptLocation = await retrieveTopCallFrameWithoutResuming();
-      assert.deepEqual(scriptLocation, 'memory-worker1.rawresponse:1');
+      assert.deepEqual(scriptLocation, 'memory-worker1.rawresponse:10');
     });
 
     await step('open other buffer in other worker', async () => {

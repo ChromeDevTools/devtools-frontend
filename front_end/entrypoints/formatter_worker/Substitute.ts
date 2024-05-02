@@ -8,7 +8,7 @@ import {ECMA_VERSION} from './AcornTokenizer.js';
 import {DefinitionKind} from './FormatterActions.js';
 import {ScopeVariableAnalysis} from './ScopeParser.js';
 
-export function substituteExpression(expression: string, nameMap: Map<string, string>): string {
+export function substituteExpression(expression: string, nameMap: Map<string, string|null>): string {
   const replacements = computeSubstitution(expression, nameMap);
   return applySubstitution(expression, replacements);
 }
@@ -24,10 +24,13 @@ interface Replacement {
 // function returns a list of replacements sorted by the offset. The function throws if
 // it cannot parse the expression or the substitution is impossible to perform (for example
 // if the substitution target is 'this' within a function, it would become bound there).
-function computeSubstitution(expression: string, nameMap: Map<string, string>): Replacement[] {
+function computeSubstitution(expression: string, nameMap: Map<string, string|null>): Replacement[] {
   // Parse the expression and find variables and scopes.
-  const root = Acorn.parse(expression, {ecmaVersion: ECMA_VERSION, allowAwaitOutsideFunction: true, ranges: false}) as
-      Acorn.ESTree.Node;
+  const root =
+      Acorn.parse(
+          expression,
+          {ecmaVersion: ECMA_VERSION, allowAwaitOutsideFunction: true, ranges: false, checkPrivateFields: false} as
+              acorn.Options) as Acorn.ESTree.Node;
   const scopeVariables = new ScopeVariableAnalysis(root);
   scopeVariables.run();
   const freeVariables = scopeVariables.getFreeVariables();
@@ -36,7 +39,9 @@ function computeSubstitution(expression: string, nameMap: Map<string, string>): 
   // Prepare the machinery for generating fresh names (to avoid variable captures).
   const allNames = scopeVariables.getAllNames();
   for (const rename of nameMap.values()) {
-    allNames.add(rename);
+    if (rename) {
+      allNames.add(rename);
+    }
   }
   function getNewName(base: string): string {
     let i = 1;
@@ -53,6 +58,10 @@ function computeSubstitution(expression: string, nameMap: Map<string, string>): 
     const defUse = freeVariables.get(name);
     if (!defUse) {
       continue;
+    }
+
+    if (rename === null) {
+      throw new Error(`Cannot substitute '${name}' as the underlying variable '${rename}' is unavailable`);
     }
 
     const binders = [];

@@ -4,11 +4,13 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("workspace") {
   sources = [
     "FileManager.ts",
+    "SearchConfig.ts",
     "UISourceCode.ts",
     "WorkspaceImpl.ts",
   ]
@@ -29,52 +31,53 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/helpers/*",
-    "../../../test/unittests/front_end/models/bindings/*",
-    "../../../test/unittests/front_end/models/formatter/*",
-    "../../../test/unittests/front_end/models/workspace/*",
-    "../../../test/unittests/front_end/models/workspace_diff/*",
-    "../../../test/unittests/front_end/panels/timeline/*",
+    "../../core/sdk:unittests",
     "../../entrypoints/main/*",
     "../../legacy_test_runner/*",
     "../../panels/application/*",
     "../../panels/changes/*",
     "../../panels/coverage/*",
+    "../../panels/elements/*",
     "../../panels/emulation/*",
+    "../../panels/explain/*",
     "../../panels/lighthouse/*",
     "../../panels/network/*",
     "../../panels/profiler/*",
     "../../panels/search/*",
     "../../panels/snippets/*",
     "../../panels/sources/*",
-    "../bindings/*",
-    "../breakpoints/*",
-    "../extensions/*",
-    "../persistence/*",
-    "../workspace_diff/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
-    "../../../test/unittests/front_end/ui/legacy/components/utils/*",
-    "../../panels/elements/*",
+    "../../panels/timeline/*",
+    "../../testing/*",
     "../../ui/components/docs/performance_panel/*",
     "../../ui/legacy/components/perf_ui/*",
     "../../ui/legacy/components/source_frame/*",
     "../../ui/legacy/components/utils/*",
+    "../bindings/*",
+    "../breakpoints/*",
+    "../extensions/*",
     "../formatter/*",
     "../issues_manager/*",
+    "../persistence/*",
     "../source_map_scopes/*",
+    "../workspace_diff/*",
   ]
 
   visibility += devtools_models_visibility
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "workspace-legacy.ts"
+ts_library("unittests") {
+  testonly = true
 
-  deps = [ ":bundle" ]
+  sources = [
+    "SearchConfig.test.ts",
+    "UISourceCode.test.ts",
+    "WorkspaceImpl.test.ts",
+  ]
 
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../legacy_test_runner/*",
+  deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../testing",
+    "../persistence:bundle",
   ]
 }

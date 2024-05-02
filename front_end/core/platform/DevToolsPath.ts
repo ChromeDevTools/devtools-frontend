@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {type Brand} from './brand.js';
+import {type Brand} from './Brand.js';
 
 /**
  * File paths in DevTools that are represented as URLs

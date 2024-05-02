@@ -14,7 +14,7 @@ export class FilterSuggestionBuilder {
 
   constructor(keys: string[], valueSorter?: ((arg0: string, arg1: Array<string>) => void)) {
     this.keys = keys;
-    this.valueSorter = valueSorter || ((key: string, result: string[]): string[] => result.sort());
+    this.valueSorter = valueSorter || ((key: string, result: string[]) => result.sort());
     this.valuesMap = new Map();
   }
 

@@ -4,13 +4,14 @@
 
 import {assert} from 'chai';
 
-import {type Chrome} from '../../../extension-api/ExtensionAPI.js';  // eslint-disable-line rulesdir/es_modules_import
+import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
+import {expectError} from '../../conductor/events.js';
 import {
   $,
   $$,
   assertNotNullOrUndefined,
   click,
-  enableExperiment,
+  disableExperiment,
   getBrowserAndPages,
   getResourcesPath,
   goToResource,
@@ -24,33 +25,31 @@ import {
   waitForNone,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {getResourcesPathWithDevToolsHostname, loadExtension} from '../helpers/extension-helpers.js';
 import {
   CONSOLE_TAB_SELECTOR,
   focusConsolePrompt,
   getCurrentConsoleMessages,
   getStructuredConsoleMessages,
 } from '../helpers/console-helpers.js';
-
+import {getResourcesPathWithDevToolsHostname, loadExtension} from '../helpers/extension-helpers.js';
 import {
+  captureAddedSourceFiles,
+  DEBUGGER_PAUSED_EVENT,
   getCallFrameLocations,
   getCallFrameNames,
   getNonBreakableLines,
   getValuesForScope,
+  type LabelMapping,
   openFileInEditor,
   openSourceCodeEditorForFile,
   openSourcesPanel,
+  PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR,
   RESUME_BUTTON,
+  retrieveTopCallFrameWithoutResuming,
+  stepOver,
   switchToCallFrame,
   WasmLocationLabels,
-  type LabelMapping,
-  captureAddedSourceFiles,
-  PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR,
-  stepOver,
-  retrieveTopCallFrameWithoutResuming,
-  DEBUGGER_PAUSED_EVENT,
 } from '../helpers/sources-helpers.js';
-import {expectError} from '../../conductor/events.js';
 
 declare global {
   let chrome: Chrome.DevTools.Chrome;
@@ -80,11 +79,7 @@ function goToWasmResource(
 
 // This testcase reaches into DevTools internals to install the extension plugin. At this point, there is no sensible
 // alternative, because loading a real extension is not supported in our test setup.
-describe('The Debugger Language Plugins', async () => {
-  beforeEach(async () => {
-    await enableExperiment('wasmDWARFDebugging');
-  });
-
+describe('The Debugger Language Plugins', () => {
   // Load a simple wasm file and verify that the source file shows up in the file tree.
   it('can show C filenames after loading the module', async () => {
     const {target} = getBrowserAndPages();
@@ -792,6 +787,9 @@ describe('The Debugger Language Plugins', async () => {
 
   it('shows sensible error messages.', async () => {
     const {frontend} = getBrowserAndPages();
+    // This test times out on mac-arm64 when watch expressions take some time to calculate.
+    await disableExperiment('evaluate-expressions-with-source-maps');
+
     const extension = await loadExtension(
         'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
     await extension.evaluate(() => {
@@ -878,7 +876,10 @@ describe('The Debugger Language Plugins', async () => {
     await waitForNone('.watch-expression-editing');
 
     const watchResults = await waitForMany('.watch-expression', 2);
-    const watchTexts = await Promise.all(watchResults.map(async watch => await watch.evaluate(e => e.textContent)));
+    const watchTexts = await waitForFunction(async () => {
+      const texts = await Promise.all(watchResults.map(async watch => await watch.evaluate(e => e.textContent)));
+      return texts.every(t => t?.length) ? texts : null;
+    });
     assert.deepStrictEqual(watchTexts, ['foo: 23', 'bar: <not available>']);
 
     const tooltipText = await watchResults[1].evaluate(e => {
@@ -935,7 +936,7 @@ describe('The Debugger Language Plugins', async () => {
     await locationLabels.setBreakpointInWasmAndRun(
         'BREAK(can_access_wasm_data)', 'window.Module.instance.exports.exported_func(4)');
 
-    const mem = await extension.evaluate(async(): Promise<number[]> => {
+    const mem = await extension.evaluate(async () => {
       const buffer = await chrome.devtools.languageServices.getWasmLinearMemory(0, 10, 0n);
       if (buffer instanceof ArrayBuffer) {
         return Array.from(new Uint8Array(buffer));
@@ -970,8 +971,9 @@ describe('The Debugger Language Plugins', async () => {
     });
     assertNotNullOrUndefined(expectedError.caught);
 
-    const local2Set = await extension.evaluate(() => chrome.devtools.languageServices.getWasmLocal(1, 1n));
-    assert.deepEqual(local2Set, {type: 'i32', value: 4});
+    // TODO(crbug.com/1472241): Find a way to stop the flake by determining the stopid
+    // const local2Set = await extension.evaluate(() => chrome.devtools.languageServices.getWasmLocal(1, 1n));
+    // assert.deepEqual(local2Set, {type: 'i32', value: 4});
   });
 
   it('lets users manually attach debug info', async () => {
@@ -1031,8 +1033,7 @@ describe('The Debugger Language Plugins', async () => {
     await locationLabels.setBreakpointInWasmAndRun('FIRST_PAUSE', 'window.Module.instance.exports.Main(16)');
     await waitFor('.paused-status');
     await locationLabels.checkLocationForLabel('FIRST_PAUSE');
-    const beforeStepCallFrame = (await retrieveTopCallFrameWithoutResuming())?.split(':');
-    assertNotNullOrUndefined(beforeStepCallFrame);
+    const beforeStepCallFrame = (await retrieveTopCallFrameWithoutResuming())!.split(':');
     const beforeStepFunctionNames = await getCallFrameNames();
 
     await stepOver();

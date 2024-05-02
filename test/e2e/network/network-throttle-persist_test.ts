@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {type ElementHandle} from 'puppeteer';
+import {type ElementHandle} from 'puppeteer-core';
 
 import {reloadDevTools, waitFor, waitForAria} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToNetworkTab} from '../helpers/network-helpers.js';
 
-describe('The Network Tab', async function() {
+describe('The Network Tab', function() {
   // These tests reload panels repeatedly, which can take a longer time.
   this.timeout(20_000);
 

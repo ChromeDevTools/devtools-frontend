@@ -1,0 +1,64 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+name: Stepping with state
+source_file: //extensions/cxx_debugging/e2e/resources/stepping-with-state.c
+flags: [
+  [-g, -fdebug-compilation-dir=., -fno-limit-debug-info, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK],
+  [-g, -fdebug-compilation-dir=., -fno-limit-debug-info,  -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK, -gsplit-dwarf],
+  [-g, -fdebug-compilation-dir=., -gdwarf-5, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK],
+  [-g, -fdebug-compilation-dir=., -gdwarf-5, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK, -gsplit-dwarf, -gpubnames]]
+script:
+  - reason: setup
+    actions:
+    - file: stepping-with-state.c
+      action: set_breakpoint
+      breakpoint: 16
+  - reason: breakpoint
+    file: stepping-with-state.c
+    line: 16
+    variables:
+      - name: Local.n
+        value: 10
+      - name: Local.x
+        value: 0
+    actions:
+      - action: step_over
+  - reason: step
+    file: stepping-with-state.c
+    line: 19
+    variables:
+      - name: Local.n
+        value: 10
+      - name: Local.x
+        value: 0
+    actions:
+      - action: remove_breakpoint
+        breakpoint: 16
+      - file: stepping-with-state.c
+        action: set_breakpoint
+        breakpoint: 24
+  - reason: breakpoint
+    file: stepping-with-state.c
+    line: 24
+    variables:
+      - name: Local.n
+        value: 10
+      - name: Local.x
+        value: 0
+    actions:
+      - action: step_over
+  - reason: step
+    file: stepping-with-state.c
+    line: 27
+    variables:
+      - name: Local.n
+        value: 10
+      - name: Local.x
+        value: 0
+      - name: Local.i
+        value: 0
+    actions:
+      - action: remove_breakpoint
+        breakpoint: 24

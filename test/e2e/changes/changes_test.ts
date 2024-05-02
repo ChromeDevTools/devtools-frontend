@@ -8,7 +8,7 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {getChangesList, openChangesPanelAndNavigateTo, waitForNewChanges} from '../helpers/changes-helpers.js';
 import {editCSSProperty} from '../helpers/elements-helpers.js';
 
-describe('The Changes Panel', async () => {
+describe('The Changes Panel', () => {
   it('Shows changes made in the Styles pane', async () => {
     const TEST_PAGE = 'styled-page';
 

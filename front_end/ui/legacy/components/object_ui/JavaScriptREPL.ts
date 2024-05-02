@@ -28,7 +28,7 @@ export class JavaScriptREPL {
       }
     }
 
-    const parse = (async(): Promise<number> => 0).constructor;
+    const parse = (async () => 0).constructor;
     try {
       // Check if the body can be interpreted as an expression.
       parse('return {' + body + '};');
@@ -56,7 +56,7 @@ export class JavaScriptREPL {
     }
 
     let expression = text;
-    if (Root.Runtime.experiments.isEnabled('evaluateExpressionsWithSourceMaps')) {
+    if (Root.Runtime.experiments.isEnabled('evaluate-expressions-with-source-maps')) {
       const callFrame = executionContext.debuggerModel.selectedCallFrame();
       if (callFrame) {
         const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame);

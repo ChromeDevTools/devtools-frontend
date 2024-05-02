@@ -1,0 +1,35 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+name: Scope view formats non primitive types correctly
+# This test checks that the scope view displays
+# arrays, structs and pointers correctly
+source_file: //extensions/cxx_debugging/e2e/resources/scope-view-non-primitives.c
+flags: [
+  [-g, -fdebug-compilation-dir=., -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK],
+  [-g, -fdebug-compilation-dir=., -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK, -gsplit-dwarf],
+  [-g, -fdebug-compilation-dir=., -gdwarf-5, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK],
+  [-g, -fdebug-compilation-dir=., -gdwarf-5, -sWASM_BIGINT, -sERROR_ON_WASM_CHANGES_AFTER_LINK, -gsplit-dwarf, -gpubnames]]
+script:
+  - reason: setup
+    actions:
+    - file: scope-view-non-primitives.c
+      action: set_breakpoint
+      breakpoint: 25
+  - reason: breakpoint
+    file: scope-view-non-primitives.c
+    line: 25
+    variables:
+      - name: Local.a
+        value: int[5]
+      - name: Local.a.0
+        value: 1
+      - name: Local.dob
+        value: Birthday
+      - name: Local.dob.year
+        value: 1912
+      - name: Local.p
+        value: int *
+      - name: Local.p.$0
+        value: 10

@@ -6,7 +6,7 @@
 
 .list {
   border: none !important; /* stylelint-disable-line declaration-no-important */
-  border-top: 1px solid var(--color-details-hairline) !important; /* stylelint-disable-line declaration-no-important */
+  border-top: 1px solid var(--sys-color-divider) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .blocking-disabled {

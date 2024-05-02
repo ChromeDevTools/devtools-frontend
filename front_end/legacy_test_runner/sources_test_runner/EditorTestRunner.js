@@ -2,18 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import {TestRunner} from '../test_runner/test_runner.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.SourcesTestRunner = self.SourcesTestRunner || {};
 
-SourcesTestRunner.createTestEditor = function(clientHeight, textEditorDelegate) {
+export const createTestEditor = function(clientHeight, textEditorDelegate) {
   const textEditor =
       new SourceFrame.SourcesTextEditor(textEditorDelegate || new SourceFrame.SourcesTextEditorDelegate());
   clientHeight = clientHeight || 100;
   textEditor.element.style.height = clientHeight + 'px';
   textEditor.element.style.flex = 'none';
-  textEditor.show(self.UI.inspectorView.element);
+  textEditor.show(UI.InspectorView.InspectorView.instance().element);
   return textEditor;
 };
 
@@ -27,7 +30,7 @@ function textWithSelection(text, selections) {
   }
 
   const lines = text.split('\n');
-  selections.sort(TextUtils.TextRange.comparator);
+  selections.sort(TextUtils.TextRange.TextRange.comparator);
 
   for (let i = selections.length - 1; i >= 0; --i) {
     let selection = selections[i];
@@ -43,7 +46,7 @@ function textWithSelection(text, selections) {
   return lines.join('\n');
 }
 
-SourcesTestRunner.dumpTextWithSelection = function(textEditor, dumpWhiteSpaces) {
+export const dumpTextWithSelection = function(textEditor, dumpWhiteSpaces) {
   let text = textWithSelection(textEditor.text(), textEditor.selections());
 
   if (dumpWhiteSpaces) {
@@ -53,7 +56,7 @@ SourcesTestRunner.dumpTextWithSelection = function(textEditor, dumpWhiteSpaces) 
   TestRunner.addResult(text);
 };
 
-SourcesTestRunner.setLineSelections = function(editor, selections) {
+export const setLineSelections = function(editor, selections) {
   const coords = [];
 
   for (let i = 0; i < selections.length; ++i) {
@@ -64,13 +67,13 @@ SourcesTestRunner.setLineSelections = function(editor, selections) {
       selection.to = selection.column;
     }
 
-    coords.push(new TextUtils.TextRange(selection.line, selection.from, selection.line, selection.to));
+    coords.push(new TextUtils.TextRange.TextRange(selection.line, selection.from, selection.line, selection.to));
   }
 
   editor.setSelections(coords);
 };
 
-SourcesTestRunner.typeIn = function(editor, typeText, callback) {
+export const typeIn = function(editor, typeText, callback) {
   callback = callback || new Function();
   const noop = new Function();
 
@@ -79,22 +82,22 @@ SourcesTestRunner.typeIn = function(editor, typeText, callback) {
 
     switch (typeText[charIndex]) {
       case '\n':
-        SourcesTestRunner.fakeKeyEvent(editor, 'Enter', null, iterationCallback);
+        fakeKeyEvent(editor, 'Enter', null, iterationCallback);
         break;
       case 'L':
-        SourcesTestRunner.fakeKeyEvent(editor, 'ArrowLeft', null, iterationCallback);
+        fakeKeyEvent(editor, 'ArrowLeft', null, iterationCallback);
         break;
       case 'R':
-        SourcesTestRunner.fakeKeyEvent(editor, 'ArrowRight', null, iterationCallback);
+        fakeKeyEvent(editor, 'ArrowRight', null, iterationCallback);
         break;
       case 'U':
-        SourcesTestRunner.fakeKeyEvent(editor, 'ArrowUp', null, iterationCallback);
+        fakeKeyEvent(editor, 'ArrowUp', null, iterationCallback);
         break;
       case 'D':
-        SourcesTestRunner.fakeKeyEvent(editor, 'ArrowDown', null, iterationCallback);
+        fakeKeyEvent(editor, 'ArrowDown', null, iterationCallback);
         break;
       default:
-        SourcesTestRunner.fakeKeyEvent(editor, typeText[charIndex], null, iterationCallback);
+        fakeKeyEvent(editor, typeText[charIndex], null, iterationCallback);
     }
   }
 };
@@ -166,7 +169,7 @@ function fakeCodeMirrorInputEvent(editor, character) {
   input.poll();
 }
 
-SourcesTestRunner.fakeKeyEvent = function(editor, originalCode, modifiers, callback) {
+export const fakeKeyEvent = function(editor, originalCode, modifiers, callback) {
   modifiers = modifiers || [];
   let code;
   let charCode;
@@ -206,7 +209,7 @@ SourcesTestRunner.fakeKeyEvent = function(editor, originalCode, modifiers, callb
   inputReadPromise.then(callback);
 };
 
-SourcesTestRunner.dumpSelectionStats = function(textEditor) {
+export const dumpSelectionStats = function(textEditor) {
   const listHashMap = {};
   const sortedKeys = [];
   const selections = textEditor.selections();

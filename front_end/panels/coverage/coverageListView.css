@@ -33,34 +33,18 @@
   border: 1px solid transparent;
 }
 
-.data-grid .selected td .bar {
-  border-top: 1px var(--color-background) solid;
-  border-bottom: 1px var(--color-background) solid;
-}
-
-.data-grid .selected td .bar:last-child {
-  border-right: 1px var(--color-background) solid;
-}
-
-.data-grid .selected td .bar:first-child {
-  border-left: 1px var(--color-background) solid;
-}
-
 .data-grid td .bar-unused-size {
-  background-color: var(--color-red);
+  background-color: var(--app-color-coverage-unused);
 }
 
 .data-grid td .bar-used-size {
-  background-color: var(--color-green);
+  background-color: var(--app-color-coverage-used);
 }
 
 .data-grid td .percent-value {
-  width: 6ex;
+  width: 7ex;
   display: inline-block;
-}
-
-.data-grid tr:not(.selected) td .percent-value {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-on-surface-subtle);
 }
 
 @media (forced-colors: active) {

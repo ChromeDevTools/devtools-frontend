@@ -5,17 +5,15 @@
  */
 
 :host {
-  --override-transparent: rgb(0 0 0 / 0%);
-
   border-radius: 3px;
   width: fit-content;
   display: flex;
   align-items: center;
-  background-color: var(--override-menu-background-color, var(--color-background));
+  background-color: var(--override-menu-background-color, var(--sys-color-cdt-base-container));
 }
 
 :host([has-open-dialog]) {
-  background-color: var(--override-menu-active-background-color, var(--color-background-elevation-2));
+  background-color: var(--override-menu-active-background-color, var(--sys-color-neutral-container));
 }
 
 #container {

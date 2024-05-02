@@ -3,8 +3,11 @@
 // found in the LICENSE file.
 
 import {
+  $,
   click,
   clickElement,
+  getBrowserAndPages,
+  hover,
   scrollElementIntoView,
   waitFor,
   waitForAria,
@@ -12,12 +15,18 @@ import {
 } from '../../shared/helper.js';
 
 export const openPanelViaMoreTools = async (panelTitle: string) => {
+  const {frontend} = getBrowserAndPages();
+
+  await frontend.bringToFront();
+
   // Head to the triple dot menu.
   await click('aria/Customize and control DevTools');
 
-  // Open the “More Tools” option.
-  const moreTools = await waitForAria('More tools[role="menuitem"]');
-  await moreTools.hover();
+  await waitForFunction(async () => {
+    // Open the “More Tools” option.
+    await hover('aria/More tools[role="menuitem"]');
+    return $(`${panelTitle}[role="menuitem"]`, undefined, 'aria');
+  });
 
   // Click the desired menu item
   await click(`aria/${panelTitle}[role="menuitem"]`);
@@ -35,7 +44,6 @@ export const openSettingsTab = async (tabTitle: string) => {
   await click(gearIconSelector);
 
   // Click on the Settings tab and wait for the panel to appear.
-  await waitFor(settingsMenuSelector);
   await click(settingsMenuSelector);
   await waitFor(panelSelector);
 };

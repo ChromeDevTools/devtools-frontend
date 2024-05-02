@@ -28,16 +28,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as VisualLogging from '../visual_logging/visual_logging.js';
+
 import {GlassPane, MarginBehavior, SizeBehavior} from './GlassPane.js';
 import popoverStyles from './popover.css.legacy.js';
 
 export class PopoverHelper {
+  static createPopover = (jslogContext?: string): GlassPane => {
+    const popover = new GlassPane(`${VisualLogging.popover(jslogContext).parent('mapped')}`);
+    popover.registerRequiredCSS(popoverStyles);
+    popover.setSizeBehavior(SizeBehavior.MeasureContent);
+    popover.setMarginBehavior(MarginBehavior.Arrow);
+    return popover;
+  };
   private disableOnClick: boolean;
   private hasPadding: boolean;
   private getRequest: (arg0: MouseEvent) => PopoverRequest | null;
   private scheduledRequest: PopoverRequest|null;
   private hidePopoverCallback: (() => void)|null;
-  private readonly container: Element;
+  readonly container: Element;
   private showTimeout: number;
   private hideTimeout: number;
   private hidePopoverTimer: number|null;
@@ -45,10 +54,12 @@ export class PopoverHelper {
   private readonly boundMouseDown: (event: Event) => void;
   private readonly boundMouseMove: (ev: Event) => void;
   private readonly boundMouseOut: (event: Event) => void;
-  constructor(container: Element, getRequest: (arg0: MouseEvent) => PopoverRequest | null) {
+  readonly #jslogContext: string;
+  constructor(container: Element, getRequest: (arg0: MouseEvent) => PopoverRequest | null, jslogContext: string) {
     this.disableOnClick = false;
     this.hasPadding = false;
     this.getRequest = getRequest;
+    this.#jslogContext = jslogContext;
     this.scheduledRequest = null;
     this.hidePopoverCallback = null;
     this.container = container;
@@ -110,7 +121,7 @@ export class PopoverHelper {
 
     this.startHidePopoverTimer(this.hideTimeout);
     this.stopShowPopoverTimer();
-    if (event.which && this.disableOnClick) {
+    if (event.buttons && this.disableOnClick) {
       return;
     }
     this.startShowPopoverTimer(event, this.isPopoverVisible() ? this.showTimeout * 0.6 : this.showTimeout);
@@ -193,10 +204,7 @@ export class PopoverHelper {
   }
 
   private showPopover(document: Document): void {
-    const popover = new GlassPane();
-    popover.registerRequiredCSS(popoverStyles);
-    popover.setSizeBehavior(SizeBehavior.MeasureContent);
-    popover.setMarginBehavior(MarginBehavior.Arrow);
+    const popover = PopoverHelper.createPopover(this.#jslogContext);
     const request = this.scheduledRequest;
     if (!request) {
       return;
@@ -215,18 +223,18 @@ export class PopoverHelper {
 
       // This should not happen, but we hide previous popover to be on the safe side.
       if (popoverHelperInstance) {
-        console.error('One popover is already visible');
         popoverHelperInstance.hidePopover();
       }
       popoverHelperInstance = this;
 
+      VisualLogging.setMappedParent(popover.contentElement, this.container);
       popover.contentElement.classList.toggle('has-padding', this.hasPadding);
       popover.contentElement.addEventListener('mousemove', this.popoverMouseMove.bind(this), true);
       popover.contentElement.addEventListener('mouseout', this.popoverMouseOut.bind(this, popover), true);
       popover.setContentAnchorBox(request.box);
       popover.show(document);
 
-      this.hidePopoverCallback = (): void => {
+      this.hidePopoverCallback = () => {
         if (request.hide) {
           request.hide.call(null);
         }

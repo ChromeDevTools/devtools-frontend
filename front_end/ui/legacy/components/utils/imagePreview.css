@@ -40,14 +40,14 @@
 .image-preview-container .title {
   padding-right: 0.5em;
   text-align: right;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   white-space: nowrap;
 }
 
 .image-preview-container .description {
   white-space: nowrap;
   text-align: left;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .image-preview-container .description-link {
@@ -57,6 +57,6 @@
 .image-preview-container .source-link {
   white-space: normal;
   word-break: break-all;
-  color: var(--color-link);
+  color: var(--sys-color-primary);
   cursor: pointer;
 }

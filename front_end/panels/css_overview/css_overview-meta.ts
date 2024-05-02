@@ -9,13 +9,13 @@ import type * as CSSOverview from './css_overview.js';
 
 const UIStrings = {
   /**
-   *@description Title of the CSS Overview Panel
+   *@description Title of the CSS overview panel
    */
-  cssOverview: 'CSS Overview',
+  cssOverview: 'CSS overview',
   /**
-   *@description Title of the CSS Overview Panel
+   *@description Title of the CSS overview panel
    */
-  showCssOverview: 'Show CSS Overview',
+  showCssOverview: 'Show CSS overview',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/css_overview-meta.ts', UIStrings);

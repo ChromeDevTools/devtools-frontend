@@ -4,6 +4,7 @@
 
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../third_party/typescript/typescript.gni")
 
 devtools_module("ui_utils") {
   sources = [
@@ -15,6 +16,7 @@ devtools_module("ui_utils") {
   ]
 
   deps = [
+    "../../../core/host:bundle",
     "../../../core/platform:bundle",
     "../../../core/root:bundle",
     "../../../ui/legacy/theme_support:bundle",
@@ -31,4 +33,16 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility = [ "../*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "measured-scrollbar-width.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../core/platform:bundle",
+    "../../../testing",
+  ]
 }

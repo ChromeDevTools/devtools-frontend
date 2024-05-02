@@ -13,7 +13,7 @@ import {
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
 
-describe('Expect-CT Issue', async () => {
+describe('Expect-CT Issue', () => {
   it('should display deprecation issue for Expect-CT header', async () => {
     await navigateToIssuesTab();
     const {frontend} = getBrowserAndPages();
@@ -36,7 +36,7 @@ describe('Expect-CT Issue', async () => {
     });
 
     await expandIssue();
-    const issueElement = await getIssueByTitle('Deprecated Feature Used');
+    const issueElement = await getIssueByTitle('Deprecated feature used');
     assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('1 source', issueElement, '.affected-resource-label');
     await ensureResourceSectionIsExpanded(section);

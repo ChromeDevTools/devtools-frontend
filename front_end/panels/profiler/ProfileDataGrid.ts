@@ -31,8 +31,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
+import type * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
 
-import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
@@ -57,7 +57,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
   searchMatchedSelfColumn: boolean;
   searchMatchedTotalColumn: boolean;
   searchMatchedFunctionColumn: boolean;
-  profileNode: SDK.ProfileTreeModel.ProfileNode;
+  profileNode: CPUProfile.ProfileTreeModel.ProfileNode;
   tree: ProfileDataGridTree;
   childrenByCallUID: Map<string, ProfileDataGridNode>;
   lastComparator: unknown;
@@ -73,7 +73,8 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
   savedTotal?: number;
   savedChildren?: DataGrid.DataGrid.DataGridNode<unknown>[];
 
-  constructor(profileNode: SDK.ProfileTreeModel.ProfileNode, owningTree: ProfileDataGridTree, hasChildren: boolean) {
+  constructor(
+      profileNode: CPUProfile.ProfileTreeModel.ProfileNode, owningTree: ProfileDataGridTree, hasChildren: boolean) {
     super(null, hasChildren);
 
     this.searchMatchedSelfColumn = false;
@@ -265,7 +266,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
     this.childrenByCallUID.clear();
   }
 
-  findChild(node: SDK.ProfileTreeModel.ProfileNode): ProfileDataGridNode|null {
+  findChild(node: CPUProfile.ProfileTreeModel.ProfileNode): ProfileDataGridNode|null {
     if (!node) {
       return null;
     }
@@ -461,7 +462,7 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
     // Not implemented.
   }
 
-  findChild(node: SDK.ProfileTreeModel.ProfileNode): ProfileDataGridNode|null {
+  findChild(node: CPUProfile.ProfileTreeModel.ProfileNode): ProfileDataGridNode|null {
     if (!node) {
       return null;
     }

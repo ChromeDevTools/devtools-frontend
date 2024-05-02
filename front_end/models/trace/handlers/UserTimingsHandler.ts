@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
@@ -13,9 +12,8 @@ import {HandlerState} from './types.js';
  * See UserTimings.md in this directory for some handy documentation on
  * UserTimings and the trace events we parse currently.
  **/
-const syntheticEvents: Types.TraceEvents.TraceEventSyntheticNestableAsyncEvent[] = [];
-const performanceMeasureEvents: (Types.TraceEvents.TraceEventPerformanceMeasureBegin|
-                                 Types.TraceEvents.TraceEventPerformanceMeasureEnd)[] = [];
+let syntheticEvents: Types.TraceEvents.SyntheticEventPair<Types.TraceEvents.TraceEventPairableAsync>[] = [];
+const performanceMeasureEvents: Types.TraceEvents.TraceEventPerformanceMeasure[] = [];
 const performanceMarkEvents: Types.TraceEvents.TraceEventPerformanceMark[] = [];
 
 const consoleTimings: (Types.TraceEvents.TraceEventConsoleTimeBegin|Types.TraceEvents.TraceEventConsoleTimeEnd)[] = [];
@@ -27,7 +25,7 @@ export interface UserTimingsData {
    * Events triggered with the performance.measure() API.
    * https://developer.mozilla.org/en-US/docs/Web/API/Performance/measure
    */
-  performanceMeasures: readonly Types.TraceEvents.TraceEventSyntheticNestableAsyncEvent[];
+  performanceMeasures: readonly Types.TraceEvents.SyntheticUserTimingPair[];
   /**
    * Events triggered with the performance.mark() API.
    * https://developer.mozilla.org/en-US/docs/Web/API/Performance/mark
@@ -38,7 +36,7 @@ export interface UserTimingsData {
    * console.timeLog() API.
    * https://developer.mozilla.org/en-US/docs/Web/API/console/time
    */
-  consoleTimings: readonly Types.TraceEvents.TraceEventSyntheticNestableAsyncEvent[];
+  consoleTimings: readonly Types.TraceEvents.SyntheticConsoleTimingPair[];
   /**
    * Events triggered with the console.timeStamp() API
    * https://developer.mozilla.org/en-US/docs/Web/API/console/timeStamp
@@ -129,70 +127,8 @@ export async function finalize(): Promise<void> {
     throw new Error('UserTimings handler is not initialized');
   }
 
-  const matchedEvents: Map<string, {
-    begin: Types.TraceEvents.TraceEventNestableAsyncBegin | null,
-    end: Types.TraceEvents.TraceEventNestableAsyncEnd | null,
-  }> = new Map();
-
-  for (const event of [...performanceMeasureEvents, ...consoleTimings]) {
-    const id = Helpers.Trace.extractId(event);
-    if (id === undefined) {
-      continue;
-    }
-    // Create a synthetic id to prevent collisions across categories.
-    // Console timings can be dispatched with the same id, so use the
-    // event name as well to generate unique ids.
-    const syntheticId = `${event.cat}:${id}:${event.name}`;
-    const otherEventsWithID = Platform.MapUtilities.getWithDefault(matchedEvents, syntheticId, () => {
-      return {begin: null, end: null};
-    });
-    const isStartEvent = event.ph === Types.TraceEvents.Phase.ASYNC_NESTABLE_START;
-    const isEndEvent = event.ph === Types.TraceEvents.Phase.ASYNC_NESTABLE_END;
-
-    if (isStartEvent) {
-      otherEventsWithID.begin = event;
-    } else if (isEndEvent) {
-      otherEventsWithID.end = event;
-    }
-  }
-
-  for (const [id, eventsPair] of matchedEvents.entries()) {
-    if (!eventsPair.begin || !eventsPair.end) {
-      // This should never happen, the backend only creates the events once it
-      // has them both, so we should never get into this state.
-      // If we do, something is very wrong, so let's just drop that problematic event.
-      continue;
-    }
-
-    const event: Types.TraceEvents.TraceEventSyntheticNestableAsyncEvent = {
-      cat: eventsPair.end.cat,
-      ph: eventsPair.end.ph,
-      pid: eventsPair.end.pid,
-      tid: eventsPair.end.tid,
-      id,
-      // Both events have the same name, so it doesn't matter which we pick to
-      // use as the description
-      name: eventsPair.begin.name,
-      dur: Types.Timing.MicroSeconds(eventsPair.end.ts - eventsPair.begin.ts),
-      ts: eventsPair.begin.ts,
-      args: {
-        data: {
-          beginEvent: eventsPair.begin,
-          endEvent: eventsPair.end,
-        },
-      },
-    };
-    syntheticEvents.push(event);
-  }
-  syntheticEvents.sort((event1, event2) => {
-    if (event1.ts > event2.ts) {
-      return 1;
-    }
-    if (event2.ts > event1.ts) {
-      return -1;
-    }
-    return 0;
-  });
+  const asyncEvents = [...performanceMeasureEvents, ...consoleTimings];
+  syntheticEvents = Helpers.Trace.createMatchedSortedSyntheticEvents(asyncEvents);
   handlerState = HandlerState.FINALIZED;
 }
 
@@ -202,8 +138,10 @@ export function data(): UserTimingsData {
   }
 
   return {
-    performanceMeasures: syntheticEvents.filter(Types.TraceEvents.isTraceEventPerformanceMeasure),
-    consoleTimings: syntheticEvents.filter(Types.TraceEvents.isTraceEventConsoleTime),
+    performanceMeasures: syntheticEvents.filter(e => e.cat === 'blink.user_timing') as
+        Types.TraceEvents.SyntheticUserTimingPair[],
+    consoleTimings: syntheticEvents.filter(e => e.cat === 'blink.console') as
+        Types.TraceEvents.SyntheticConsoleTimingPair[],
     performanceMarks: [...performanceMarkEvents],
     timestampEvents: [...timestampEvents],
   };

@@ -4,15 +4,16 @@
  * found in the LICENSE file.
  */
 
+/* stylelint-disable */
 .swatch-icon {
   display: inline-grid;
   inline-size: 15px;
   grid: [stack] 1fr / [stack] 1fr;
   margin-left: 1px;
   margin-right: 2px;
+  color: var(--color);
 }
 
-/* stylelint-disable */
 .swatch {
   aspect-ratio: 1 / 1;
   display: inline-block;
@@ -34,5 +35,4 @@
   box-shadow: none;
   justify-self: end;
   mask: radial-gradient(circle at 0% center, rgb(0 0 0) 50%, rgb(0 0 0 / 0%) calc(50% + 0.5px));
-  -webkit-mask: radial-gradient(circle at 0% center, rgb(0 0 0) 50%, rgb(0 0 0 / 0%) calc(50% + 0.5px));
 }

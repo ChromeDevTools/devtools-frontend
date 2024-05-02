@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as NodeText from '../../../ui/components/node_text/node_text.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -135,10 +134,9 @@ export class QueryContainer extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-query-container', QueryContainer);
+customElements.define('devtools-query-container', QueryContainer);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-query-container': QueryContainer;
   }

@@ -14,7 +14,7 @@
   width: 100%;
   font-family: var(--source-code-font-family);
   font-size: var(--source-code-font-size);
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -23,7 +23,7 @@
 }
 
 .code-snippet:hover {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   text-decoration: underline;
 }
 
@@ -35,16 +35,17 @@ input {
 }
 
 details {
-  border-top: 1px solid var(--color-details-hairline);
+  border-top: 1px solid var(--sys-color-divider);
+  padding: 2px 0;
 }
 
 details:not(.active) {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-state-disabled-container);
   opacity: 30%;
 }
 
 details > summary {
-  height: 18px;
+  min-height: 20px;
   list-style: none;
   display: flex;
   padding: 0 8px 0 6px;
@@ -52,13 +53,13 @@ details > summary {
 }
 
 details > summary:hover {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 details > summary::before {
   display: block;
   user-select: none;
-  -webkit-mask-image: var(--image-file-triangle-right);
+  mask-image: var(--image-file-triangle-right);
   background-color: var(--icon-default);
   content: "";
   height: 14px;
@@ -90,8 +91,6 @@ details[open] > summary::before {
 
 .group-header-title {
   margin-left: 4px;
-  font-weight: 500;
-  font-size: var(--source-code-font-size);
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -99,7 +98,7 @@ details[open] > summary::before {
 
 .group-header-differentiator {
   font-weight: normal;
-  color: var(--color-text-disabled);
+  color: var(--sys-color-state-disabled);
   margin-left: 8px;
 }
 
@@ -142,13 +141,18 @@ summary:hover button {
   display: flex;
 }
 
-button:hover devtools-icon {
-  --icon-color: var(--icon-default-hover);
+devtools-icon {
+  width: 16px;
+  height: 16px;
+
+  button:hover & {
+    color: var(--icon-default-hover);
+  }
 }
 
 .type-indicator {
-  --override-color-conditional-breakpoint: #f29900;
-  --override-color-logpoint: #f439a0;
+  --override-color-conditional-breakpoint: var(--ref-palette-orange70);
+  --override-color-logpoint: var(--ref-palette-pink60);
 
   border-right: 4px solid;
   border-radius: 0 2px 2px 0;
@@ -165,28 +169,22 @@ button:hover devtools-icon {
 }
 
 .breakpoint-item:hover {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .breakpoint-item.hit {
-  --override-breakpoint-hit-background: rgb(255 255 194);
-
-  background-color: var(--override-breakpoint-hit-background);
+  background-color: var(--sys-color-yellow-container);
+  color: var(--sys-color-on-yellow-container);
 }
 
 .breakpoint-item.hit:focus {
-  background-color: var(--legacy-focus-bg-color);
-}
-
-:host-context(.-theme-with-dark-background) .breakpoint-item.hit {
-  background-color: hsl(46deg 98% 22%);
-  color: var(--color-text-primary);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .-theme-with-dark-background .type-indicator,
 :host-context(.-theme-with-dark-background) .type-indicator {
-  --override-color-conditional-breakpoint: #e9a33a;
-  --override-color-logpoint: #e54d9b;
+  --override-color-conditional-breakpoint: var(--ref-palette-yellow60);
+  --override-color-logpoint: var(--ref-palette-pink70);
 }
 
 .breakpoint-item.logpoint > label > .type-indicator {
@@ -207,8 +205,14 @@ button:hover devtools-icon {
   margin-right: 6px;
 }
 
-summary:hover .file-icon {
-  display: none;
+devtools-icon[name="file-script"] {
+  color: var(--icon-file-script);
+  width: 18px;
+  height: 18px;
+
+  summary:hover & {
+    display: none;
+  }
 }
 
 .group-checkbox {
@@ -240,7 +244,7 @@ summary:hover .group-checkbox {
 
 /* TODO(crbug.com/1382762): Remove special casing with dependent toggles as soon as Node LTS caught up on independent pause of exception toggles. */
 input:disabled + span {
-  color: var(--color-text-disabled);
+  color: var(--sys-color-state-disabled);
 }
 
 .pause-on-caught-exceptions > .checkbox-label > input,
@@ -266,6 +270,6 @@ details > summary:focus,
 .breakpoint-item:focus,
 .pause-on-uncaught-exceptions:focus,
 .pause-on-caught-exceptions:focus {
-  background-color: var(--legacy-focus-bg-color);
+  background-color: var(--sys-color-tonal-container);
   outline-width: 0;
 }

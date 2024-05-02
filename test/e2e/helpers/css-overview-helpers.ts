@@ -6,9 +6,9 @@ import {$, click, waitFor, waitForNone} from '../../shared/helper.js';
 
 import {openPanelViaMoreTools} from './settings-helpers.js';
 
-const CSS_OVERVIEW_PANEL_CONTENT = '.view-container[aria-label="CSS Overview panel"]';
+const CSS_OVERVIEW_PANEL_CONTENT = '.view-container[aria-label="CSS overview panel"]';
 const CSS_OVERVIEW_TAB_SELECTOR = '#tab-cssoverview';
-const CSS_OVERVIEW_PANEL_TITLE = 'CSS Overview';
+const CSS_OVERVIEW_PANEL_TITLE = 'CSS overview';
 const CSS_OVERVIEW_CAPTURE_BUTTON_SELECTOR = '.start-capture';
 const CSS_OVERVIEW_COMPLETED_VIEW_SELECTOR = '.overview-completed-view';
 

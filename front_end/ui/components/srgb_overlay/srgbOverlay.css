@@ -14,7 +14,7 @@
 
 .gamut-line {
   /* We want to show 50% white color in all themes since this is drawn over a color rectangle */
-  stroke: rgb(255 255 255 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  stroke: color-mix(in sRGB, var(--ref-palette-neutral100) 50%, transparent); /* stylelint-disable-line plugin/use_theme_colors */
   fill: none;
 }
 
@@ -23,5 +23,5 @@
   bottom: 3px;
   margin-right: 5px;
   /* We want to show 50% white color in all themes since this is drawn over a color rectangle */
-  color: rgb(255 255 255 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  color: color-mix(in sRGB, var(--ref-palette-neutral100) 50%, transparent); /* stylelint-disable-line plugin/use_theme_colors */
 }

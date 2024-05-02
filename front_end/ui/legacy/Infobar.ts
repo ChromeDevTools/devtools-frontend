@@ -4,13 +4,14 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Utils from './utils/utils.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
+import infobarStyles from './infobar.css.legacy.js';
 import {Keys} from './KeyboardShortcut.js';
 import {createTextButton} from './UIUtils.js';
+import * as Utils from './utils/utils.js';
 import {type Widget} from './Widget.js';
-import infobarStyles from './infobar.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -18,9 +19,9 @@ const UIStrings = {
    */
   dontShowAgain: 'Don\'t show again',
   /**
-   *@description Text that is usually a hyperlink to more documentation
+   *@description Text that indicates that a short message can be expanded to a detailed message
    */
-  learnMore: 'Learn more',
+  showMore: 'Show more',
   /**
    *@description Text to close something
    */
@@ -51,10 +52,16 @@ export class Infobar {
   #firstFocusableElement: HTMLElement|null = null;
   private parentView?: Widget;
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<any>) {
+  constructor(
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<any>,
+      /* TODO(crbug.com/1354548) Remove with JS Profiler deprecation */ isCloseable: boolean = true,
+      jslogContext?: string) {
     this.element = document.createElement('div');
+    if (jslogContext) {
+      this.element.setAttribute('jslog', `${VisualLogging.dialog(jslogContext).track({resize: true})}`);
+    }
     this.element.classList.add('flex-none');
     this.shadowRoot =
         Utils.createShadowRootWithCoreStyles(this.element, {cssFile: infobarStyles, delegatesFocus: undefined});
@@ -88,7 +95,10 @@ export class Infobar {
           buttonClass += ' primary-button';
         }
 
-        const button = createTextButton(action.text, actionCallback, buttonClass);
+        const button = createTextButton(action.text, actionCallback, {
+          className: buttonClass,
+          jslogContext: action.jslogContext,
+        });
         if (action.highlight && !this.#firstFocusableElement) {
           this.#firstFocusableElement = button;
         }
@@ -98,17 +108,19 @@ export class Infobar {
 
     this.disableSetting = disableSetting || null;
     if (disableSetting) {
-      const disableButton =
-          createTextButton(i18nString(UIStrings.dontShowAgain), this.onDisable.bind(this), 'infobar-button');
+      const disableButton = createTextButton(
+          i18nString(UIStrings.dontShowAgain), this.onDisable.bind(this), {className: 'infobar-button'});
       this.actionContainer.appendChild(disableButton);
     }
 
     this.closeContainer = this.mainRow.createChild('div', 'infobar-close-container');
     this.toggleElement = createTextButton(
-        i18nString(UIStrings.learnMore), this.onToggleDetails.bind(this), 'link-style devtools-link hidden');
+        i18nString(UIStrings.showMore), this.onToggleDetails.bind(this),
+        {className: 'link-style devtools-link hidden', jslogContext: 'show-more'});
     this.toggleElement.setAttribute('role', 'link');
     this.closeContainer.appendChild(this.toggleElement);
     this.closeButton = this.closeContainer.createChild('div', 'close-button', 'dt-close-button');
+    this.closeButton.hidden = !isCloseable;
     // @ts-ignore This is a custom element defined in UIUitls.js that has a `setTabbable` that TS doesn't
     //            know about.
     this.closeButton.setTabbable(true);
@@ -140,14 +152,15 @@ export class Infobar {
     this.closeCallback = null;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static create(type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<any>):
-      Infobar|null {
+  static create(
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<any>,
+      jslogContext?: string): Infobar|null {
     if (disableSetting && disableSetting.get()) {
       return null;
     }
-    return new Infobar(type, text, actions, disableSetting);
+    return new Infobar(type, text, actions, disableSetting, undefined, jslogContext);
   }
 
   dispose(): void {
@@ -233,11 +246,10 @@ export interface InfobarAction {
   highlight: boolean;
   delegate: (() => void)|null;
   dismiss: boolean;
+  jslogContext?: string;
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Type {
+export const enum Type {
   Warning = 'warning',
   Info = 'info',
   Issue = 'issue',

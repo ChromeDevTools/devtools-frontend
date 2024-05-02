@@ -35,6 +35,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as CookieTable from '../../ui/legacy/components/cookie_table/cookie_table.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import requestCookiesViewStyles from './requestCookiesView.css.js';
 
@@ -113,6 +114,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
     super();
 
     this.element.classList.add('request-cookies-view');
+    this.element.setAttribute('jslog', `${VisualLogging.pane('cookies').track({resize: true})}`);
 
     this.request = request;
     this.showFilteredOutCookiesSetting = Common.Settings.Settings.instance().createSetting(
@@ -147,7 +149,8 @@ export class RequestCookiesView extends UI.Widget.Widget {
     this.siteHasCookieInOtherPartition.appendChild(
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.siteHasCookieInOtherPartition, {
           PH1: UI.XLink.XLink.create(
-              'https://developer.chrome.com/en/docs/privacy-sandbox/chips/', i18nString(UIStrings.learnMore)),
+              'https://developer.chrome.com/en/docs/privacy-sandbox/chips/', i18nString(UIStrings.learnMore), undefined,
+              undefined, 'learn-more'),
         }));
 
     this.responseCookiesTitle = this.element.createChild('div', 'request-cookies-title');
@@ -169,9 +172,12 @@ export class RequestCookiesView extends UI.Widget.Widget {
   private getRequestCookies(): {
     requestCookies: Array<SDK.Cookie.Cookie>,
     requestCookieToBlockedReasons: Map<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>,
+    requestCookieToExemptionReason: Map<SDK.Cookie.Cookie, SDK.CookieModel.ExemptionReason>,
   } {
     const requestCookieToBlockedReasons = new Map<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>();
-    const requestCookies = this.request.includedRequestCookies().slice();
+    const requestCookieToExemptionReason = new Map<SDK.Cookie.Cookie, SDK.CookieModel.ExemptionReason>();
+    const requestCookies =
+        this.request.includedRequestCookies().map(includedRequestCookie => includedRequestCookie.cookie);
 
     if (this.showFilteredOutCookiesSetting.get()) {
       for (const blockedCookie of this.request.blockedRequestCookies()) {
@@ -184,32 +190,29 @@ export class RequestCookiesView extends UI.Widget.Widget {
         requestCookies.push(blockedCookie.cookie);
       }
     }
-
-    return {requestCookies, requestCookieToBlockedReasons};
+    for (const includedCookie of this.request.includedRequestCookies()) {
+      if (includedCookie.exemptionReason) {
+        requestCookieToExemptionReason.set(includedCookie.cookie, {
+          uiString: SDK.NetworkRequest.cookieExemptionReasonToUiString(includedCookie.exemptionReason),
+        });
+      }
+    }
+    return {requestCookies, requestCookieToBlockedReasons, requestCookieToExemptionReason};
   }
 
   private getResponseCookies(): {
     responseCookies: Array<SDK.Cookie.Cookie>,
     responseCookieToBlockedReasons: Map<SDK.Cookie.Cookie, Array<SDK.CookieModel.BlockedReason>>,
+    responseCookieToExemptionReason: Map<SDK.Cookie.Cookie, SDK.CookieModel.ExemptionReason>,
     malformedResponseCookies: Array<SDK.NetworkRequest.BlockedSetCookieWithReason>,
   } {
     let responseCookies: SDK.Cookie.Cookie[] = [];
     const responseCookieToBlockedReasons = new Map<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>();
+    const responseCookieToExemptionReason = new Map<SDK.Cookie.Cookie, SDK.CookieModel.ExemptionReason>();
     const malformedResponseCookies: SDK.NetworkRequest.BlockedSetCookieWithReason[] = [];
 
     if (this.request.responseCookies.length) {
-      const blockedCookieLines: (string|null)[] =
-          this.request.blockedResponseCookies().map(blockedCookie => blockedCookie.cookieLine);
-      responseCookies = this.request.responseCookies.filter(cookie => {
-        // remove the regular cookies that would overlap with blocked cookies
-        const index = blockedCookieLines.indexOf(cookie.getCookieLine());
-        if (index !== -1) {
-          blockedCookieLines[index] = null;
-          return false;
-        }
-        return true;
-      });
-
+      responseCookies = this.request.nonBlockedResponseCookies();
       for (const blockedCookie of this.request.blockedResponseCookies()) {
         const parsedCookies = SDK.CookieParser.CookieParser.parseSetCookie(blockedCookie.cookieLine);
         if ((parsedCookies && !parsedCookies.length) ||
@@ -234,9 +237,24 @@ export class RequestCookiesView extends UI.Widget.Widget {
           responseCookies.push(cookie);
         }
       }
+      for (const exemptedCookie of this.request.exemptedResponseCookies()) {
+        // `responseCookies` are generated from `Set-Cookie` header, which should include the exempted cookies, whereas
+        // exempted cookies are received via CDP as objects of type cookie. Therefore they are different objects in
+        // DevTools and need to be matched here in order for the rendering logic to be able to lookup a potential
+        // exemption reason for a cookie.
+        // TODO(crbug.com/1518872): Consider comparing the cookieLine string instead since it will be more accurate.
+        const matchedResponseCookie = responseCookies.find(
+            responseCookie => exemptedCookie.cookie.key() === responseCookie.key() &&
+                exemptedCookie.cookie.value() === responseCookie.value());
+        if (matchedResponseCookie) {
+          responseCookieToExemptionReason.set(matchedResponseCookie, {
+            uiString: SDK.NetworkRequest.cookieExemptionReasonToUiString(exemptedCookie.exemptionReason),
+          });
+        }
+      }
     }
 
-    return {responseCookies, responseCookieToBlockedReasons, malformedResponseCookies};
+    return {responseCookies, responseCookieToBlockedReasons, responseCookieToExemptionReason, malformedResponseCookies};
   }
 
   private refreshRequestCookiesView(): void {
@@ -251,14 +269,16 @@ export class RequestCookiesView extends UI.Widget.Widget {
       this.emptyWidget.showWidget();
     }
 
-    const {requestCookies, requestCookieToBlockedReasons} = this.getRequestCookies();
-    const {responseCookies, responseCookieToBlockedReasons, malformedResponseCookies} = this.getResponseCookies();
+    const {requestCookies, requestCookieToBlockedReasons, requestCookieToExemptionReason} = this.getRequestCookies();
+    const {responseCookies, responseCookieToBlockedReasons, responseCookieToExemptionReason, malformedResponseCookies} =
+        this.getResponseCookies();
 
     if (requestCookies.length) {
       this.requestCookiesTitle.classList.remove('hidden');
       this.requestCookiesEmpty.classList.add('hidden');
       this.requestCookiesTable.showWidget();
-      this.requestCookiesTable.setCookies(requestCookies, requestCookieToBlockedReasons);
+      this.requestCookiesTable.setCookies(
+          requestCookies, requestCookieToBlockedReasons, requestCookieToExemptionReason);
 
     } else if (this.request.blockedRequestCookies().length) {
       this.requestCookiesTitle.classList.remove('hidden');
@@ -274,7 +294,8 @@ export class RequestCookiesView extends UI.Widget.Widget {
     if (responseCookies.length) {
       this.responseCookiesTitle.classList.remove('hidden');
       this.responseCookiesTable.showWidget();
-      this.responseCookiesTable.setCookies(responseCookies, responseCookieToBlockedReasons);
+      this.responseCookiesTable.setCookies(
+          responseCookies, responseCookieToBlockedReasons, responseCookieToExemptionReason);
     } else {
       this.responseCookiesTitle.classList.add('hidden');
       this.responseCookiesTable.hideWidget();

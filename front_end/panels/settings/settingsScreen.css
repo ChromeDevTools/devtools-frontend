@@ -5,8 +5,8 @@
  */
 
 .settings-window-main {
-  color: var(--color-text-primary);
-  background-color: var(--color-background);
+  color: var(--sys-color-on-surface);
+  background-color: var(--sys-color-cdt-base-container);
   padding: 11px 0 0;
 }
 
@@ -85,6 +85,10 @@ label {
   padding-bottom: 8px;
 }
 
+.experiments-filter label {
+  padding-bottom: 0;
+}
+
 .settings-tab p {
   margin: 12px 0;
 }
@@ -99,7 +103,7 @@ label {
 }
 
 .settings-experiments-warning-subsection-warning {
-  color: var(--color-accent-red);
+  color: var(--sys-color-error);
 }
 
 .settings-experiments-warning-subsection-message {
@@ -112,7 +116,7 @@ label {
 
 .settings-window-title {
   font-size: 18px;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   padding: 0 0 5px 13px;
 }
 
@@ -124,7 +128,7 @@ label {
   bottom: 0;
   overflow: auto;
   padding-top: 9px;
-  border-top: 1px solid var(--color-details-hairline);
+  border-top: 1px solid var(--sys-color-divider);
 }
 
 .settings-tab.settings-content {
@@ -161,15 +165,7 @@ label {
 
 .settings-tab .settings-section-title {
   margin-left: -20px;
-  color: var(--color-text-secondary);
-}
-
-.settings-tab .settings-block label:hover {
-  color: var(--color-text-secondary);
-}
-
-.settings-tab .settings-block fieldset:disabled label:hover {
-  color: inherit;
+  color: var(--sys-color-on-surface-subtle);
 }
 
 .settings-tab select {
@@ -179,7 +175,7 @@ label {
 
 .settings-experiment {
   display: grid;
-  grid-template-columns: auto min-content 1fr;
+  grid-template-columns: auto min-content auto 1fr;
 }
 
 .settings-experiment .devtools-link {
@@ -196,11 +192,11 @@ label {
 }
 
 .settings-experiment-unstable {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .settings-experiment .feedback-link {
-  color: var(--color-primary-old);
+  color: var(--sys-color-primary);
   text-decoration-line: underline;
   margin-left: 4px;
 }

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -40,12 +39,12 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
         this.#capabilitiesMask = Capability.Browser | Capability.Storage | Capability.DOM | Capability.JS |
             Capability.Log | Capability.Network | Capability.Target | Capability.Tracing | Capability.Emulation |
             Capability.Input | Capability.Inspector | Capability.Audits | Capability.WebAuthn | Capability.IO |
-            Capability.Media;
+            Capability.Media | Capability.EventBreakpoints;
         if (parentTarget?.type() !== Type.Frame) {
           // This matches backend exposing certain capabilities only for the main frame.
           this.#capabilitiesMask |=
               Capability.DeviceEmulation | Capability.ScreenCapture | Capability.Security | Capability.ServiceWorker;
-          if (targetInfo?.url.startsWith('chrome-extension://')) {
+          if (Common.ParsedURL.schemeIs(targetInfo?.url as Platform.DevToolsPath.UrlString, 'chrome-extension:')) {
             this.#capabilitiesMask &= ~Capability.Security;
           }
 
@@ -55,18 +54,24 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
         break;
       case Type.ServiceWorker:
         this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.Network | Capability.Target |
-            Capability.Inspector | Capability.IO;
+            Capability.Inspector | Capability.IO | Capability.EventBreakpoints;
         if (parentTarget?.type() !== Type.Frame) {
           this.#capabilitiesMask |= Capability.Browser;
         }
         break;
       case Type.SharedWorker:
         this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.Network | Capability.Target |
-            Capability.IO | Capability.Media | Capability.Inspector;
+            Capability.IO | Capability.Media | Capability.Inspector | Capability.EventBreakpoints;
+        break;
+      case Type.SharedStorageWorklet:
+        this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.Inspector | Capability.EventBreakpoints;
         break;
       case Type.Worker:
         this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.Network | Capability.Target |
-            Capability.IO | Capability.Media | Capability.Emulation;
+            Capability.IO | Capability.Media | Capability.Emulation | Capability.EventBreakpoints;
+        break;
+      case Type.Worklet:
+        this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.EventBreakpoints;
         break;
       case Type.Node:
         this.#capabilitiesMask = Capability.JS;
@@ -78,7 +83,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
         this.#capabilitiesMask = Capability.Target | Capability.IO;
         break;
       case Type.Tab:
-        this.#capabilitiesMask = Capability.Target;
+        this.#capabilitiesMask = Capability.Target | Capability.Tracing;
         break;
     }
     this.#typeInternal = type;
@@ -202,10 +207,6 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     this.#inspectedURLInternal = inspectedURL;
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(inspectedURL);
     this.#inspectedURLName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + this.#idInternal;
-    if (this.parentTarget()?.type() !== Type.Frame) {
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.inspectedURLChanged(
-          inspectedURL || Platform.DevToolsPath.EmptyUrlString);
-    }
     this.#targetManagerInternal.onInspectedURLChange(this);
     if (!this.#nameInternal) {
       this.#targetManagerInternal.onNameChange(this);
@@ -245,22 +246,20 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Type {
   Frame = 'frame',
   ServiceWorker = 'service-worker',
   Worker = 'worker',
   SharedWorker = 'shared-worker',
+  SharedStorageWorklet = 'shared-storage-worklet',
   Node = 'node',
   Browser = 'browser',
   AuctionWorklet = 'auction-worklet',
+  Worklet = 'worklet',
   Tab = 'tab',
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Capability {
+export const enum Capability {
   Browser = 1 << 0,
   DOM = 1 << 1,
   JS = 1 << 2,

@@ -18,7 +18,7 @@ import {
 } from '../helpers/elements-helpers.js';
 import {togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
 
-describe('Layout Pane in the Elements Tab', async function() {
+describe('Layout Pane in the Elements Tab', function() {
   it('displays Layout pane', async () => {
     await goToResource('elements/css-grid.html');
     await step('Prepare elements tab', async () => {

@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "version": "@CMAKE_PROJECT_VERSION@",
+  "name": "C/C++ DevTools Support (DWARF)",
+  "description": "DevTools Plugin for debugging C/C++ WebAssembly applications (using DWARF debug information). BETA version, use at your own risk.",
+  "host_permissions": [
+    "https://*/",
+    "http://*/"
+  ],
+  "permissions": [
+    "storage"
+  ],
+  "devtools_page": "DevToolsPlugin.html",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  },
+  "options_ui": {
+    "page": "ExtensionOptions.html",
+    "open_in_tab": true
+  },
+  "minimum_chrome_version": "105.0.5195.0"
+}

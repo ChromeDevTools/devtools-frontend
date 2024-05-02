@@ -33,6 +33,8 @@ action("build_inspector_overlay") {
     "$target_gen_dir/tool_source_order.js",
     "$target_gen_dir/tool_source_order.css",
     "$target_gen_dir/tool_viewport_size.js",
+    "$target_gen_dir/tool_window_controls.js",
+    "$target_gen_dir/tool_window_controls.css",
     "$target_gen_dir/main.js",
     devtools_location_prepend + "inspector_overlay/loadCSS.rollup.js",
     devtools_location_prepend + "node_modules/rollup/dist/bin/rollup",
@@ -42,7 +44,7 @@ action("build_inspector_overlay") {
 
   args = [
     "main.js",
-    "70000",  # max_size in bytes
+    "82000",  # max_size in bytes
     "--input_path",
     rebase_path(target_gen_dir, root_build_dir),
     "--output_path",
@@ -71,6 +73,7 @@ copy("copy_css_to_gen") {
     "tool_paused.css",
     "tool_screenshot.css",
     "tool_source_order.css",
+    "tool_window_controls.css",
   ]
   outputs = [ "$target_gen_dir/{{source_file_part}}" ]
 }
@@ -94,7 +97,27 @@ ts_library("inspector_overlay") {
     "tool_screenshot.ts",
     "tool_source_order.ts",
     "tool_viewport_size.ts",
+    "tool_window_controls.ts",
   ]
 
   deps = [ "../front_end/core/common:ColorUtils" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "common.test.ts",
+    "css_grid_label_helpers.test.ts",
+    "highlight_common.test.ts",
+    "highlight_flex_common.test.ts",
+    "tool_highlight.test.ts",
+    "tool_source_order.test.ts",
+    "tool_window_controls.test.ts",
+  ]
+
+  deps = [
+    ":inspector_overlay",
+    "./testing",
+  ]
 }

@@ -5,15 +5,15 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {EditFileSystemView} from './EditFileSystemView.js';
-import workspaceSettingsTabStyles from './workspaceSettingsTab.css.js';
-
 import {type FileSystem} from './FileSystemWorkspaceBinding.js';
 import {IsolatedFileSystem} from './IsolatedFileSystem.js';
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
 import {type PlatformFileSystem} from './PlatformFileSystem.js';
+import workspaceSettingsTabStyles from './workspaceSettingsTab.css.js';
 
 const UIStrings = {
   /**
@@ -40,15 +40,16 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/persistence/WorkspaceSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-let workspaceSettingsTabInstance: WorkspaceSettingsTab;
-
 export class WorkspaceSettingsTab extends UI.Widget.VBox {
   containerElement: HTMLElement;
   private readonly fileSystemsListContainer: HTMLElement;
   private readonly elementByPath: Map<Platform.DevToolsPath.UrlString, Element>;
   private readonly mappingViewByPath: Map<Platform.DevToolsPath.UrlString, EditFileSystemView>;
-  private constructor() {
+
+  constructor() {
     super();
+
+    this.element.setAttribute('jslog', `${VisualLogging.pane('workspace')}`);
 
     this.element.classList.add('workspace-settings-tab');
     const header = this.element.createChild('header');
@@ -71,8 +72,9 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
 
     this.fileSystemsListContainer = this.containerElement.createChild('div', '');
 
-    const addButton =
-        UI.UIUtils.createTextButton(i18nString(UIStrings.addFolder), this.addFileSystemClicked.bind(this));
+    const addButton = UI.UIUtils.createTextButton(
+        i18nString(UIStrings.addFolder), this.addFileSystemClicked.bind(this),
+        {jslogContext: 'sources.add-folder-to-workspace'});
     this.containerElement.appendChild(addButton);
     this.setDefaultFocusedElement(addButton);
 
@@ -86,15 +88,6 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     }
   }
 
-  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): WorkspaceSettingsTab {
-    const {forceNew} = opts;
-    if (!workspaceSettingsTabInstance || forceNew) {
-      workspaceSettingsTabInstance = new WorkspaceSettingsTab();
-    }
-
-    return workspaceSettingsTabInstance;
-  }
-
   override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([workspaceSettingsTabStyles]);
@@ -104,10 +97,10 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     const p = document.createElement('p');
     const labelElement = p.createChild('label');
     labelElement.textContent = i18nString(UIStrings.folderExcludePattern);
-    const inputElement = UI.UIUtils.createInput('', 'text');
+    const folderExcludeSetting = IsolatedFileSystemManager.instance().workspaceFolderExcludePatternSetting();
+    const inputElement = UI.UIUtils.createInput('', 'text', folderExcludeSetting.name);
     UI.ARIAUtils.bindLabelToControl(labelElement, inputElement);
     p.appendChild(inputElement);
-    const folderExcludeSetting = IsolatedFileSystemManager.instance().workspaceFolderExcludePatternSetting();
     const setValue =
         UI.UIUtils.bindInput(inputElement, folderExcludeSetting.set.bind(folderExcludeSetting), regexValidator, false);
     folderExcludeSetting.addChangeListener(() => setValue.call(null, folderExcludeSetting.get()));
@@ -164,7 +157,8 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     UI.Tooltip.Tooltip.install(path, fileSystemPath);
 
     const toolbar = new UI.Toolbar.Toolbar('');
-    const button = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.remove), 'cross');
+    const button =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.remove), 'cross', undefined, 'settings.remove-file-system');
     button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.removeFileSystemClicked.bind(this, fileSystem));
     toolbar.appendToolbarItem(button);
     header.appendChild(toolbar.element);

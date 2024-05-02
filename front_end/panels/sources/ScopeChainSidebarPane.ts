@@ -29,15 +29,14 @@
  */
 
 import type * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
-import * as LinearMemoryInspector from '../../ui/components/linear_memory_inspector/linear_memory_inspector.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import scopeChainSidebarPaneStyles from './scopeChainSidebarPane.css.js';
 
@@ -71,10 +70,6 @@ const UIStrings = {
    *@description Text in Scope Chain Sidebar Pane of the Sources panel
    */
   returnValue: 'Return value',
-  /**
-   *@description A context menu item in the Scope View of the Sources Panel
-   */
-  revealInMemoryInspectorPanel: 'Reveal in Memory Inspector panel',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ScopeChainSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -90,7 +85,9 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
   private constructor() {
     super(true);
 
+    this.contentElement.setAttribute('jslog', `${VisualLogging.section('sources.scope-chain')}`);
     this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
+    this.treeOutline.hideOverflow();
 
     this.treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
     this.expandController =
@@ -296,38 +293,5 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     super.wasShown();
     this.treeOutline.registerCSSFiles([scopeChainSidebarPaneStyles]);
     this.registerCSSFiles([scopeChainSidebarPaneStyles]);
-  }
-}
-
-let openLinearMemoryInspectorInstance: OpenLinearMemoryInspector;
-
-export class OpenLinearMemoryInspector extends UI.Widget.VBox implements UI.ContextMenu.Provider {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): OpenLinearMemoryInspector {
-    const {forceNew} = opts;
-    if (!openLinearMemoryInspectorInstance || forceNew) {
-      openLinearMemoryInspectorInstance = new OpenLinearMemoryInspector();
-    }
-
-    return openLinearMemoryInspectorInstance;
-  }
-
-  appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Object): void {
-    if (target instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement) {
-      if (target.property && target.property.value &&
-          LinearMemoryInspector.LinearMemoryInspectorController.isMemoryObjectProperty(target.property.value)) {
-        const expression = target.path();
-        contextMenu.debugSection().appendItem(
-            i18nString(UIStrings.revealInMemoryInspectorPanel),
-            this.openMemoryInspector.bind(this, expression, target.property.value));
-      }
-    }
-  }
-
-  private async openMemoryInspector(expression: string, obj: SDK.RemoteObject.RemoteObject): Promise<void> {
-    const controller = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
-    Host.userMetrics.linearMemoryInspectorRevealedFrom(Host.UserMetrics.LinearMemoryInspectorRevealedFrom.ContextMenu);
-    void controller.openInspectorView(obj, /* address */ undefined, expression);
   }
 }

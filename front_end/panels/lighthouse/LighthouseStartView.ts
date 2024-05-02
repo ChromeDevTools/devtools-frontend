@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../../core/i18n/i18n.js';
-import * as UI from '../../ui/legacy/legacy.js';
-import type * as Platform from '../../core/platform/platform.js';
 import type * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
-import {Presets, RuntimeSettings, type LighthouseController, type Preset} from './LighthouseController.js';
-import {RadioSetting} from './RadioSetting.js';
-import lighthouseStartViewStyles from './lighthouseStartView.css.js';
+import {type LighthouseController, type Preset, Presets, RuntimeSettings} from './LighthouseController.js';
 import {type LighthousePanel} from './LighthousePanel.js';
+import lighthouseStartViewStyles from './lighthouseStartView.css.js';
+import {RadioSetting} from './RadioSetting.js';
 
 const UIStrings = {
   /**
@@ -85,8 +85,8 @@ export class StartView extends UI.Widget.Widget {
     labelEl.textContent = label;
 
     if (runtimeSetting.learnMore) {
-      const link =
-          UI.XLink.XLink.create(runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more');
+      const link = UI.XLink.XLink.create(
+          runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more', undefined, 'learn-more');
       labelEl.append(link);
     }
     parentElement.appendChild(labelEl);
@@ -109,8 +109,8 @@ export class StartView extends UI.Widget.Widget {
         runtimeSetting.setting as Common.Settings.Setting<boolean>, runtimeSetting.description());
     toolbar.appendToolbarItem(control);
     if (runtimeSetting.learnMore) {
-      const link =
-          UI.XLink.XLink.create(runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more');
+      const link = UI.XLink.XLink.create(
+          runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more', undefined, 'learn-more');
       link.style.margin = '5px';
       control.element.appendChild(link);
     }
@@ -133,8 +133,8 @@ export class StartView extends UI.Widget.Widget {
     control.setTitle(runtimeSetting.description());
     toolbar.appendToolbarItem(control);
     if (runtimeSetting.learnMore) {
-      const link =
-          UI.XLink.XLink.create(runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more');
+      const link = UI.XLink.XLink.create(
+          runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more', undefined, 'learn-more');
       link.style.margin = '5px';
       control.element.appendChild(link);
     }
@@ -143,7 +143,7 @@ export class StartView extends UI.Widget.Widget {
   private populateFormControls(fragment: UI.Fragment.Fragment, mode?: string): void {
     // Populate the device type
     const deviceTypeFormElements = fragment.$('device-type-form-elements');
-    this.populateRuntimeSettingAsRadio('lighthouse.device_type', i18nString(UIStrings.device), deviceTypeFormElements);
+    this.populateRuntimeSettingAsRadio('lighthouse.device-type', i18nString(UIStrings.device), deviceTypeFormElements);
 
     // Populate the categories
     const categoryFormElements = fragment.$('categories-form-elements') as HTMLElement;
@@ -170,8 +170,8 @@ export class StartView extends UI.Widget.Widget {
   }
 
   private render(): void {
-    this.populateRuntimeSettingAsToolbarCheckbox('lighthouse.legacy_navigation', this.settingsToolbarInternal);
-    this.populateRuntimeSettingAsToolbarCheckbox('lighthouse.clear_storage', this.settingsToolbarInternal);
+    this.populateRuntimeSettingAsToolbarCheckbox('lighthouse.clear-storage', this.settingsToolbarInternal);
+    this.populateRuntimeSettingAsToolbarCheckbox('lighthouse.enable-sampling', this.settingsToolbarInternal);
     this.populateRuntimeSettingAsToolbarDropdown('lighthouse.throttling', this.settingsToolbarInternal);
 
     const {mode} = this.controller.getFlags();
@@ -229,17 +229,17 @@ export class StartView extends UI.Widget.Widget {
 
     if (mode === 'timespan') {
       buttonLabel = i18nString(UIStrings.startTimespan);
-      callback = (): void => {
+      callback = () => {
         void this.panel.handleTimespanStart();
       };
     } else if (mode === 'snapshot') {
       buttonLabel = i18nString(UIStrings.analyzeSnapshot);
-      callback = (): void => {
+      callback = () => {
         void this.panel.handleCompleteRun();
       };
     } else {
       buttonLabel = i18nString(UIStrings.analyzeNavigation);
-      callback = (): void => {
+      callback = () => {
         void this.panel.handleCompleteRun();
       };
     }
@@ -247,12 +247,8 @@ export class StartView extends UI.Widget.Widget {
     const startButtonContainer = this.contentElement.querySelector('.lighthouse-start-button-container');
     if (startButtonContainer) {
       startButtonContainer.textContent = '';
-      this.startButton = UI.UIUtils.createTextButton(
-          buttonLabel,
-          callback,
-          /* className */ '',
-          /* primary */ true,
-      );
+      this.startButton =
+          UI.UIUtils.createTextButton(buttonLabel, callback, {primary: true, jslogContext: 'lighthouse.start'});
       startButtonContainer.append(this.startButton);
     }
   }

@@ -5,9 +5,9 @@
 import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as ColorPicker from '../../../legacy/components/color_picker/color_picker.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
 import colorSwatchStyles from './colorSwatch.css.js';
 
@@ -46,6 +46,7 @@ export class ColorSwatch extends HTMLElement {
   private text: string|null = null;
   private color: Common.Color.Color|null = null;
   private format: Common.Color.Format|null = null;
+  private readonly: boolean = false;
 
   constructor() {
     super();
@@ -56,6 +57,19 @@ export class ColorSwatch extends HTMLElement {
 
   static isColorSwatch(element: Element): element is ColorSwatch {
     return element.localName === 'devtools-color-swatch';
+  }
+
+  getReadonly(): boolean {
+    return this.readonly;
+  }
+
+  setReadonly(readonly: boolean): void {
+    if (this.readonly === readonly) {
+      return;
+    }
+
+    this.readonly = readonly;
+    this.render();
   }
 
   getColor(): Common.Color.Color|null {
@@ -84,24 +98,21 @@ export class ColorSwatch extends HTMLElement {
   renderColor(color: Common.Color.Color|string, formatOrUseUserSetting?: string|boolean, tooltip?: string): void {
     if (typeof color === 'string') {
       this.color = Common.Color.parse(color);
-      this.text = color;
-      if (!this.color) {
-        this.renderTextOnly();
-        return;
-      }
     } else {
       this.color = color;
     }
 
-    if (typeof formatOrUseUserSetting === 'boolean' && formatOrUseUserSetting) {
-      this.format = Common.Settings.detectColorFormat(this.color);
-    } else if (typeof formatOrUseUserSetting === 'string') {
+    if (typeof formatOrUseUserSetting === 'string') {
       this.format = Common.Color.getFormat(formatOrUseUserSetting);
     } else {
-      this.format = this.color.format();
+      this.format = this.color?.format() ?? null;
     }
 
-    this.text = this.color.getAuthoredText() ?? this.color.asString(this.format ?? undefined);
+    if (this.color) {
+      this.text = this.color.getAuthoredText() ?? this.color.asString(this.format ?? undefined);
+    } else if (typeof color === 'string') {
+      this.text = color;
+    }
 
     if (tooltip) {
       this.tooltip = tooltip;
@@ -116,16 +127,26 @@ export class ColorSwatch extends HTMLElement {
   }
 
   private render(): void {
+    if (!this.color) {
+      this.renderTextOnly();
+      return;
+    }
+
+    const colorSwatchClasses = LitHtml.Directives.classMap({
+      'color-swatch': true,
+      'readonly': this.readonly,
+    });
+
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-
     // Note that we use a <slot> with a default value here to display the color text. Consumers of this component are
     // free to append any content to replace what is being shown here.
     // Note also that whitespace between nodes is removed on purpose to avoid pushing these elements apart. Do not
     // re-format the HTML code.
     LitHtml.render(
-      LitHtml.html`<span class="color-swatch" title=${this.tooltip}><span class="color-swatch-inner"
+      LitHtml.html`<span class=${colorSwatchClasses} title=${this.tooltip}><span class="color-swatch-inner"
         style="background-color: ${this.text};"
+        jslog=${VisualLogging.showStyleEditor('color').track({click: true})}
         @click=${this.onClick}
         @mousedown=${this.consume}
         @dblclick=${this.consume}></span></span><slot><span>${this.text}</span></slot>`,
@@ -134,6 +155,10 @@ export class ColorSwatch extends HTMLElement {
   }
 
   private onClick(e: KeyboardEvent): void {
+    if (this.readonly) {
+      return;
+    }
+
     if (e.shiftKey) {
       e.stopPropagation();
       this.showFormatPicker(e);
@@ -173,7 +198,7 @@ export class ColorSwatch extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-color-swatch', ColorSwatch);
+customElements.define('devtools-color-swatch', ColorSwatch);
 
 declare global {
   interface HTMLElementTagNameMap {

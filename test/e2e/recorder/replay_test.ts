@@ -2,20 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/es_modules_import */
-
 import {assert} from 'chai';
+import {type Target} from 'puppeteer-core';
 
 import {
-  type StepType,
   type AssertedEventType,
+  type StepType,
 } from '../../../front_end/panels/recorder/models/Schema.js';
 import {
+  click,
   getBrowserAndPages,
   getResourcesPath,
   getTestServerPort,
   waitFor,
-  click,
 } from '../../../test/shared/helper.js';
 import {
   describe,
@@ -282,7 +281,6 @@ describe('Recorder', function() {
     });
 
     it('should be able to replay viewport change', async () => {
-      const {target} = getBrowserAndPages();
       await setupRecorderWithScriptAndReplay({
         title: 'Test Recording',
         steps: [
@@ -299,17 +297,12 @@ describe('Recorder', function() {
             deviceScaleFactor: 1,
             hasTouch: false,
           },
+          {
+            type: 'waitForExpression' as StepType.WaitForExpression,
+            expression: 'window.visualViewport?.width === 800 && window.visualViewport?.height === 600',
+          },
         ],
       });
-
-      assert.strictEqual(
-          await target.evaluate(() => window.visualViewport?.width),
-          800,
-      );
-      assert.strictEqual(
-          await target.evaluate(() => window.visualViewport?.height),
-          600,
-      );
     });
 
     it('should be able to replay scroll events', async () => {
@@ -358,19 +351,9 @@ describe('Recorder', function() {
     });
 
     it('should be able to scroll into view when needed', async () => {
-      const {target} = getBrowserAndPages();
       await setupRecorderWithScriptAndReplay({
         title: 'Test Recording',
         steps: [
-          {
-            type: 'setViewport' as StepType.SetViewport,
-            width: 800,
-            height: 600,
-            isLandscape: false,
-            isMobile: false,
-            deviceScaleFactor: 1,
-            hasTouch: false,
-          },
           {
             type: 'navigate' as StepType.Navigate,
             url: `${getResourcesPath()}/recorder/scroll-into-view.html`,
@@ -383,6 +366,7 @@ describe('Recorder', function() {
           },
         ],
       });
+      const {target} = getBrowserAndPages();
       assert.strictEqual(
           await target.evaluate(
               () => document.querySelector('button')?.innerText,
@@ -518,17 +502,14 @@ describe('Recorder', function() {
       const events: Array<{type: string, url: string}> = [];
       // We can't import 'puppeteer' here because its not listed in the tsconfig.json of
       // the test target.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const targetLifecycleHandler = (target: any, type: string) => {
+      const targetLifecycleHandler = (target: Target, type: string) => {
         if (!target.url().endsWith('popup.html')) {
           return;
         }
         events.push({type, url: target.url()});
       };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const targetCreatedHandler = (target: any) => targetLifecycleHandler(target, 'targetCreated');
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const targetDestroyedHandler = (target: any) => targetLifecycleHandler(target, 'targetDestroyed');
+      const targetCreatedHandler = (target: Target) => targetLifecycleHandler(target, 'targetCreated');
+      const targetDestroyedHandler = (target: Target) => targetLifecycleHandler(target, 'targetDestroyed');
 
       browser.on('targetcreated', targetCreatedHandler);
       browser.on('targetdestroyed', targetDestroyedHandler);
@@ -675,5 +656,33 @@ describe('Recorder', function() {
         target.url(),
         `${getResourcesPath()}/recorder/recorder2.html`,
     );
+  });
+
+  it('should be able to  navigate to a prerendered page', async () => {
+    await setupRecorderWithScriptAndReplay({
+      title: 'Test Recording',
+      steps: [
+        {
+          type: 'navigate' as StepType.Navigate,
+          url: `${getResourcesPath()}/recorder/prerender.html`,
+        },
+        {
+          type: 'click' as StepType.Click,
+          selectors: ['a'],
+          offsetX: 1,
+          offsetY: 1,
+          assertedEvents: [
+            {
+              type: 'navigation' as AssertedEventType.Navigation,
+              url: `${getResourcesPath()}/recorder/prerendered.html`,
+            },
+          ],
+        },
+        {
+          type: 'waitForExpression' as StepType.WaitForExpression,
+          expression: 'document.querySelector("div").innerText === "true"',
+        },
+      ],
+    });
   });
 });

@@ -23,7 +23,7 @@ export namespace Chrome {
 
       eval(
           expression: string,
-          options?: {contextSecurityOrigin?: string, frameURL?: string, useContentScriptContext?: boolean},
+          options?: {scriptExecutionContext?: string, frameURL?: string, useContentScriptContext?: boolean},
           callback?: (result: unknown, exceptioninfo: {
             code: string,
             description: string,
@@ -271,6 +271,9 @@ export namespace Chrome {
       getWasmLocal(local: number, stopId: unknown): Promise<WasmValue>;
       getWasmGlobal(global: number, stopId: unknown): Promise<WasmValue>;
       getWasmOp(op: number, stopId: unknown): Promise<WasmValue>;
+
+      reportResourceLoad(resourceUrl: string, status: {success: boolean, errorMessage?: string, size?: number}):
+          Promise<void>;
     }
 
 

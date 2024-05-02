@@ -2,29 +2,31 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Application from '../../panels/application/application.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.ApplicationTestRunner = self.ApplicationTestRunner || {};
 
-ApplicationTestRunner.registerServiceWorker = function(script, scope) {
+export const registerServiceWorker = function(script, scope) {
   return TestRunner.callFunctionInPageAsync('registerServiceWorker', [script, scope]);
 };
 
-ApplicationTestRunner.waitForActivated = function(scope) {
+export const waitForActivated = function(scope) {
   return TestRunner.callFunctionInPageAsync('waitForActivated', [scope]);
 };
 
-ApplicationTestRunner.unregisterServiceWorker = function(scope) {
+export const unregisterServiceWorker = function(scope) {
   return TestRunner.callFunctionInPageAsync('unregisterServiceWorker', [scope]);
 };
 
-ApplicationTestRunner.postToServiceWorker = function(scope, message) {
+export const postToServiceWorker = function(scope, message) {
   return TestRunner.evaluateInPageAnonymously('postToServiceWorker("' + scope + '","' + message + '")');
 };
 
-ApplicationTestRunner.waitForServiceWorker = function(callback) {
-  self.SDK.targetManager.observeTargets({
+export const waitForServiceWorker = function(callback) {
+  SDK.TargetManager.TargetManager.instance().observeTargets({
     targetAdded: function(target) {
       if (target.type() === SDK.Target.Type.ServiceWorker && callback) {
         setTimeout(callback.bind(null, target), 0);
@@ -36,8 +38,8 @@ ApplicationTestRunner.waitForServiceWorker = function(callback) {
   });
 };
 
-ApplicationTestRunner.dumpServiceWorkersView = function() {
-  const swView = UI.panels.resources.visibleView;
+export const dumpServiceWorkersView = function() {
+  const swView = Application.ResourcesPanel.ResourcesPanel.instance().visibleView;
 
   return swView.currentWorkersView.sectionList.childTextNodes()
       .map(function(node) {
@@ -52,7 +54,7 @@ ApplicationTestRunner.dumpServiceWorkersView = function() {
       .join('\n');
 };
 
-ApplicationTestRunner.deleteServiceWorkerRegistration = function(scope) {
+export const deleteServiceWorkerRegistration = function(scope) {
   for (const registration of TestRunner.serviceWorkerManager.registrations().values()) {
     if (registration.scopeURL === scope) {
       TestRunner.serviceWorkerManager.deleteRegistration(registration.id);
@@ -60,7 +62,7 @@ ApplicationTestRunner.deleteServiceWorkerRegistration = function(scope) {
   }
 };
 
-ApplicationTestRunner.makeFetchInServiceWorker = function(scope, url, requestInitializer, callback) {
+export const makeFetchInServiceWorker = function(scope, url, requestInitializer, callback) {
   TestRunner.callFunctionInPageAsync('makeFetchInServiceWorker', [scope, url, requestInitializer]).then(callback);
 };
 

@@ -1,6 +1,6 @@
 {
   "core/audits/accessibility/accesskeys.js | description": {
-    "message": "Le chiavi di accesso consentono agli utenti di impostare rapidamente lo stato attivo su una parte della pagina. Per assicurare una navigazione corretta, ogni chiave di accesso deve essere univoca. [Scopri di più sulle chiavi di accesso](https://dequeuniversity.com/rules/axe/4.7/accesskeys)."
+    "message": "Le chiavi di accesso consentono agli utenti di impostare rapidamente lo stato attivo su una parte della pagina. Per assicurare una navigazione corretta, ogni chiave di accesso deve essere univoca. [Scopri di più sulle chiavi di accesso](https://dequeuniversity.com/rules/axe/4.8/accesskeys)."
   },
   "core/audits/accessibility/accesskeys.js | failureTitle": {
     "message": "I valori `[accesskey]` non sono univoci"
@@ -9,7 +9,7 @@
     "message": "I valori `[accesskey]` sono univoci"
   },
   "core/audits/accessibility/aria-allowed-attr.js | description": {
-    "message": "Ogni elemento `role` ARIA supporta un determinato sottoinsieme di attributi `aria-*`. Se non dovessero corrispondere, gli attributi `aria-*` non saranno considerati validi. [Scopri come far corrispondere gli attributi ARIA ai relativi ruoli](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-attr)."
+    "message": "Ogni elemento `role` ARIA supporta un determinato sottoinsieme di attributi `aria-*`. Se non dovessero corrispondere, gli attributi `aria-*` non saranno considerati validi. [Scopri come far corrispondere gli attributi ARIA ai relativi ruoli](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-attr)."
   },
   "core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
     "message": "Gli attributi `[aria-*]` non corrispondono ai rispettivi ruoli"
@@ -17,8 +17,17 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Gli attributi `[aria-*]` corrispondono ai rispettivi ruoli"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "Gli attributi `role` ARIA consentono alle tecnologie per la disabilità di conoscere il ruolo di ogni elemento della pagina web. Se i valori `role` non vengono digitati correttamente, non sono presenti valori `role` ARIA o ruoli astratti, lo scopo dell'elemento non verrà comunicato agli utenti delle tecnologie per la disabilità. [Scopri di più sui ruoli ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "I valori assegnati a `role=\"\"` non sono ruoli ARIA validi."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "I valori assegnati a `role=\"\"` sono ruoli ARIA validi."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
-    "message": "Quando un elemento non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come rendere più accessibili gli elementi di comando](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
+    "message": "Quando un elemento non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come rendere più accessibili gli elementi di comando](https://dequeuniversity.com/rules/axe/4.8/aria-command-name)."
   },
   "core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "Gli elementi `button`, `link` e `menuitem` non hanno nomi accessibili"
@@ -26,8 +35,17 @@
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "Gli elementi `button`, `link` e `menuitem` hanno nomi accessibili"
   },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "Gli elementi delle finestre di dialogo ARIA senza nomi accessibili potrebbero impedire agli utenti di screen reader di comprendere lo scopo di questi elementi. [Scopri come rendere più accessibili gli elementi delle finestre di dialogo ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "Gli elementi con `role=\"dialog\"` o `role=\"alertdialog\"` non hanno nomi accessibili."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "Gli elementi con `role=\"dialog\"` o `role=\"alertdialog\"` hanno nomi accessibili."
+  },
   "core/audits/accessibility/aria-hidden-body.js | description": {
-    "message": "Le tecnologie per la disabilità, come gli screen reader, funzionano in modo incoerente se viene impostato il valore `aria-hidden=\"true\"` nel documento `<body>`. [Scopri in che modo `aria-hidden` influisce sul corpo del documento](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
+    "message": "Le tecnologie per la disabilità, come gli screen reader, funzionano in modo incoerente se viene impostato il valore `aria-hidden=\"true\"` nel documento `<body>`. [Scopri in che modo `aria-hidden` influisce sul corpo del documento](https://dequeuniversity.com/rules/axe/4.8/aria-hidden-body)."
   },
   "core/audits/accessibility/aria-hidden-body.js | failureTitle": {
     "message": "L'attributo `[aria-hidden=\"true\"]` è presente nel documento `<body>`"
@@ -36,7 +54,7 @@
     "message": "L'attributo `[aria-hidden=\"true\"]` non è presente nel documento `<body>`"
   },
   "core/audits/accessibility/aria-hidden-focus.js | description": {
-    "message": "I discendenti attivabili all'interno di un elemento `[aria-hidden=\"true\"]` impediscono di mettere questi elementi interattivi a disposizione degli utenti che usano tecnologie per la disabilità come gli screen reader. [Scopri in che modo `aria-hidden` influisce sugli elementi attivabili](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-focus)."
+    "message": "I discendenti attivabili all'interno di un elemento `[aria-hidden=\"true\"]` impediscono di mettere questi elementi interattivi a disposizione degli utenti che usano tecnologie per la disabilità come gli screen reader. [Scopri in che modo `aria-hidden` influisce sugli elementi attivabili](https://dequeuniversity.com/rules/axe/4.8/aria-hidden-focus)."
   },
   "core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
     "message": "Gli elementi `[aria-hidden=\"true\"]` contengono discendenti per cui è possibile impostare lo stato attivo"
@@ -45,7 +63,7 @@
     "message": "Gli elementi `[aria-hidden=\"true\"]` non contengono discendenti per cui è possibile impostare lo stato attivo"
   },
   "core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Quando un campo di immissione non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri di più sulle etichette dei campi di immissione](https://dequeuniversity.com/rules/axe/4.7/aria-input-field-name)."
+    "message": "Quando un campo di immissione non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri di più sulle etichette dei campi di immissione](https://dequeuniversity.com/rules/axe/4.8/aria-input-field-name)."
   },
   "core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "I campi di immissione ARIA non hanno nomi accessibili"
@@ -54,7 +72,7 @@
     "message": "I campi di immissione ARIA hanno nomi accessibili"
   },
   "core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "Quando un elemento meter non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come assegnare un nome agli elementi `meter`](https://dequeuniversity.com/rules/axe/4.7/aria-meter-name)."
+    "message": "Quando un elemento meter non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come assegnare un nome agli elementi `meter`](https://dequeuniversity.com/rules/axe/4.8/aria-meter-name)."
   },
   "core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "Gli elementi ARIA `meter` non hanno nomi accessibili"
@@ -63,7 +81,7 @@
     "message": "Gli elementi ARIA `meter` hanno nomi accessibili"
   },
   "core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Quando un elemento `progressbar` non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come etichettare gli elementi `progressbar`](https://dequeuniversity.com/rules/axe/4.7/aria-progressbar-name)."
+    "message": "Quando un elemento `progressbar` non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come etichettare gli elementi `progressbar`](https://dequeuniversity.com/rules/axe/4.8/aria-progressbar-name)."
   },
   "core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "Gli elementi ARIA `progressbar` non hanno nomi accessibili"
@@ -72,7 +90,7 @@
     "message": "Gli elementi ARIA `progressbar` hanno nomi accessibili"
   },
   "core/audits/accessibility/aria-required-attr.js | description": {
-    "message": "Alcuni ruoli ARIA hanno attributi obbligatori che descrivono lo stato dell'elemento agli screen reader. [Scopri di più sui ruoli e sugli attributi richiesti](https://dequeuniversity.com/rules/axe/4.7/aria-required-attr)."
+    "message": "Alcuni ruoli ARIA hanno attributi obbligatori che descrivono lo stato dell'elemento agli screen reader. [Scopri di più sui ruoli e sugli attributi richiesti](https://dequeuniversity.com/rules/axe/4.8/aria-required-attr)."
   },
   "core/audits/accessibility/aria-required-attr.js | failureTitle": {
     "message": "Gli elementi `[role]` non hanno tutti gli attributi `[aria-*]` obbligatori"
@@ -81,7 +99,7 @@
     "message": "Gli elementi `[role]` hanno tutti gli attributi `[aria-*]` obbligatori"
   },
   "core/audits/accessibility/aria-required-children.js | description": {
-    "message": "Alcuni ruoli principali ARIA devono contenere specifici ruoli secondari per poter eseguire le funzionalità per l'accessibilità previste. [Scopri di più sui ruoli e sugli elementi secondari richiesti](https://dequeuniversity.com/rules/axe/4.7/aria-required-children)."
+    "message": "Alcuni ruoli principali ARIA devono contenere specifici ruoli secondari per poter eseguire le funzionalità per l'accessibilità previste. [Scopri di più sui ruoli e sugli elementi secondari richiesti](https://dequeuniversity.com/rules/axe/4.8/aria-required-children)."
   },
   "core/audits/accessibility/aria-required-children.js | failureTitle": {
     "message": "Negli elementi con un ruolo ARIA `[role]` che richiedono che gli elementi secondari contengano un ruolo `[role]` specifico mancano alcuni o tutti questi elementi secondari obbligatori."
@@ -90,7 +108,7 @@
     "message": "Gli elementi con un ruolo ARIA `[role]` che richiedono che gli elementi secondari contengano un ruolo `[role]` specifico hanno tutti gli elementi secondari obbligatori."
   },
   "core/audits/accessibility/aria-required-parent.js | description": {
-    "message": "Alcuni ruoli secondari ARIA devono essere contenuti in specifici ruoli principali per poter eseguire in modo corretto le funzionalità per l'accessibilità previste. [Scopri di più sui ruoli ARIA e sull'elemento principale richiesto](https://dequeuniversity.com/rules/axe/4.7/aria-required-parent)."
+    "message": "Alcuni ruoli secondari ARIA devono essere contenuti in specifici ruoli principali per poter eseguire in modo corretto le funzionalità per l'accessibilità previste. [Scopri di più sui ruoli ARIA e sull'elemento principale richiesto](https://dequeuniversity.com/rules/axe/4.8/aria-required-parent)."
   },
   "core/audits/accessibility/aria-required-parent.js | failureTitle": {
     "message": "Gli elementi `[role]` non sono contenuti nei rispettivi elementi principali obbligatori"
@@ -99,7 +117,7 @@
     "message": "Gli elementi `[role]` sono contenuti nei rispettivi elementi principali obbligatori"
   },
   "core/audits/accessibility/aria-roles.js | description": {
-    "message": "I ruoli ARIA devono contenere valori validi per poter eseguire le funzionalità per l'accessibilità previste. [Scopri di più sui ruoli ARIA validi](https://dequeuniversity.com/rules/axe/4.7/aria-roles)."
+    "message": "I ruoli ARIA devono contenere valori validi per poter eseguire le funzionalità per l'accessibilità previste. [Scopri di più sui ruoli ARIA validi](https://dequeuniversity.com/rules/axe/4.8/aria-roles)."
   },
   "core/audits/accessibility/aria-roles.js | failureTitle": {
     "message": "I valori `[role]` non sono validi"
@@ -107,8 +125,17 @@
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "I valori `[role]` sono validi"
   },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "L'aggiunta di `role=text` intorno a un nodo di testo diviso dal markup consente a VoiceOver di considerarlo come una singola frase, ma i discendenti attivabili dell'elemento non verranno annunciati. [Scopri di più sull'attributo `role=text`](https://dequeuniversity.com/rules/axe/4.8/aria-text)."
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "Gli elementi con l'attributo `role=text` hanno discendenti attivabili."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "Gli elementi con l'attributo `role=text` non hanno discendenti attivabili."
+  },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Quando un campo di attivazione/disattivazione non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri di più sui campi di attivazione/disattivazione](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
+    "message": "Quando un campo di attivazione/disattivazione non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri di più sui campi di attivazione/disattivazione](https://dequeuniversity.com/rules/axe/4.8/aria-toggle-field-name)."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "I campi di attivazione/disattivazione ARIA non hanno nomi accessibili"
@@ -117,7 +144,7 @@
     "message": "I campi di attivazione/disattivazione ARIA hanno nomi accessibili"
   },
   "core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "Quando un elemento tooltip non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come assegnare un nome agli elementi `tooltip`](https://dequeuniversity.com/rules/axe/4.7/aria-tooltip-name)."
+    "message": "Quando un elemento tooltip non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come assegnare un nome agli elementi `tooltip`](https://dequeuniversity.com/rules/axe/4.8/aria-tooltip-name)."
   },
   "core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "Gli elementi ARIA `tooltip` non hanno nomi accessibili"
@@ -126,7 +153,7 @@
     "message": "Gli elementi ARIA `tooltip` hanno nomi accessibili"
   },
   "core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "Quando un elemento `treeitem` non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri di più sull'etichettatura di elementi `treeitem`](https://dequeuniversity.com/rules/axe/4.7/aria-treeitem-name)."
+    "message": "Quando un elemento `treeitem` non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri di più sull'etichettatura di elementi `treeitem`](https://dequeuniversity.com/rules/axe/4.8/aria-treeitem-name)."
   },
   "core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "Gli elementi ARIA `treeitem` non hanno nomi accessibili"
@@ -135,7 +162,7 @@
     "message": "Gli elementi ARIA `treeitem` hanno nomi accessibili"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | description": {
-    "message": "Le tecnologie per la disabilità, come gli screen reader, non sono in grado di interpretare gli attributi ARIA con valori non validi. [Scopri di più sui valori validi per gli attributi ARIA](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr-value)."
+    "message": "Le tecnologie per la disabilità, come gli screen reader, non sono in grado di interpretare gli attributi ARIA con valori non validi. [Scopri di più sui valori validi per gli attributi ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-valid-attr-value)."
   },
   "core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
     "message": "Gli attributi `[aria-*]` non hanno valori validi"
@@ -144,7 +171,7 @@
     "message": "Gli attributi `[aria-*]` hanno valori validi"
   },
   "core/audits/accessibility/aria-valid-attr.js | description": {
-    "message": "Le tecnologie per la disabilità, come gli screen reader, non sono in grado di interpretare gli attributi ARIA con nomi non validi. [Scopri di più sugli attributi ARIA validi](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr)."
+    "message": "Le tecnologie per la disabilità, come gli screen reader, non sono in grado di interpretare gli attributi ARIA con nomi non validi. [Scopri di più sugli attributi ARIA validi](https://dequeuniversity.com/rules/axe/4.8/aria-valid-attr)."
   },
   "core/audits/accessibility/aria-valid-attr.js | failureTitle": {
     "message": "Gli attributi `[aria-*]` non sono validi o contengono errori ortografici"
@@ -156,7 +183,7 @@
     "message": "Elementi respinti"
   },
   "core/audits/accessibility/button-name.js | description": {
-    "message": "Quando un pulsante non ha un nome accessibile, gli screen reader lo descrivono semplicemente come \"pulsante\", rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come rendere più accessibili i pulsanti](https://dequeuniversity.com/rules/axe/4.7/button-name)."
+    "message": "Quando un pulsante non ha un nome accessibile, gli screen reader lo descrivono semplicemente come \"pulsante\", rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come rendere più accessibili i pulsanti](https://dequeuniversity.com/rules/axe/4.8/button-name)."
   },
   "core/audits/accessibility/button-name.js | failureTitle": {
     "message": "I pulsanti non hanno nomi accessibili"
@@ -165,7 +192,7 @@
     "message": "I pulsanti hanno un nome accessibile"
   },
   "core/audits/accessibility/bypass.js | description": {
-    "message": "Se aggiungi metodi per bypassare contenuti ripetitivi, la navigazione della pagina diventa più efficiente per chi usa la tastiera. [Scopri di più sui blocchi di bypass](https://dequeuniversity.com/rules/axe/4.7/bypass)."
+    "message": "Se aggiungi metodi per bypassare contenuti ripetitivi, la navigazione della pagina diventa più efficiente per chi usa la tastiera. [Scopri di più sui blocchi di bypass](https://dequeuniversity.com/rules/axe/4.8/bypass)."
   },
   "core/audits/accessibility/bypass.js | failureTitle": {
     "message": "La pagina non contiene alcun titolo, skip link o area di riferimento"
@@ -174,7 +201,7 @@
     "message": "La pagina contiene un titolo, uno skip link o un'area di riferimento"
   },
   "core/audits/accessibility/color-contrast.js | description": {
-    "message": "Il testo a basso contrasto è difficile, se non impossibile, da leggere per molti utenti. [Scopri come fornire un contrasto cromatico sufficiente](https://dequeuniversity.com/rules/axe/4.7/color-contrast)."
+    "message": "Il testo a basso contrasto è difficile, se non impossibile, da leggere per molti utenti. [Scopri come fornire un contrasto cromatico sufficiente](https://dequeuniversity.com/rules/axe/4.8/color-contrast)."
   },
   "core/audits/accessibility/color-contrast.js | failureTitle": {
     "message": "Il rapporto di contrasto tra i colori di sfondo e primo piano non è sufficiente."
@@ -183,7 +210,7 @@
     "message": "Il rapporto di contrasto tra i colori di sfondo e primo piano è sufficiente"
   },
   "core/audits/accessibility/definition-list.js | description": {
-    "message": "Se il markup degli elenchi di definizioni non è stato eseguito in modo corretto, gli screen reader possono generare output ambigui o imprecisi. [Scopri come strutturare correttamente gli elenchi di definizioni](https://dequeuniversity.com/rules/axe/4.7/definition-list)."
+    "message": "Se il markup degli elenchi di definizioni non è stato eseguito in modo corretto, gli screen reader possono generare output ambigui o imprecisi. [Scopri come strutturare correttamente gli elenchi di definizioni](https://dequeuniversity.com/rules/axe/4.8/definition-list)."
   },
   "core/audits/accessibility/definition-list.js | failureTitle": {
     "message": "Gli elementi `<dl>` non contengono solo gruppi `<dt>` e `<dd>` ed elementi `<script>`, `<template>` o `<div>` nell'ordine corretto."
@@ -192,7 +219,7 @@
     "message": "Gli elementi `<dl>` contengono solo gruppi `<dt>` e `<dd>` ed elementi `<script>`, `<template>` o `<div>` nell'ordine corretto."
   },
   "core/audits/accessibility/dlitem.js | description": {
-    "message": "Gli elementi dell'elenco di definizioni (`<dt>` e `<dd>`) devono essere aggregati in un elemento `<dl>` principale affinché gli screen reader possano descriverli correttamente. [Scopri come strutturare correttamente gli elenchi di definizioni](https://dequeuniversity.com/rules/axe/4.7/dlitem)."
+    "message": "Gli elementi dell'elenco di definizioni (`<dt>` e `<dd>`) devono essere aggregati in un elemento `<dl>` principale affinché gli screen reader possano descriverli correttamente. [Scopri come strutturare correttamente gli elenchi di definizioni](https://dequeuniversity.com/rules/axe/4.8/dlitem)."
   },
   "core/audits/accessibility/dlitem.js | failureTitle": {
     "message": "Gli elementi dell'elenco di definizioni non sono aggregati negli elementi `<dl>`"
@@ -201,7 +228,7 @@
     "message": "Gli elementi dell'elenco di definizioni sono aggregati negli elementi `<dl>`"
   },
   "core/audits/accessibility/document-title.js | description": {
-    "message": "Il titolo fornisce agli utenti di screen reader una panoramica della pagina, mentre per gli utenti di motori di ricerca è utile per stabilire se una pagina è pertinente alla loro ricerca. [Scopri di più sui titoli dei documenti](https://dequeuniversity.com/rules/axe/4.7/document-title)."
+    "message": "Il titolo fornisce agli utenti di screen reader una panoramica della pagina, mentre per gli utenti di motori di ricerca è utile per stabilire se una pagina è pertinente alla loro ricerca. [Scopri di più sui titoli dei documenti](https://dequeuniversity.com/rules/axe/4.8/document-title)."
   },
   "core/audits/accessibility/document-title.js | failureTitle": {
     "message": "Il documento non ha un elemento `<title>`"
@@ -210,7 +237,7 @@
     "message": "Il documento ha un elemento `<title>`"
   },
   "core/audits/accessibility/duplicate-id-active.js | description": {
-    "message": "Tutti gli elementi attivabili devono avere un valore `id` univoco per garantirne la visibilità alle tecnologie per la disabilità. [Scopri come correggere i valori `id` duplicati](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-active)."
+    "message": "Tutti gli elementi attivabili devono avere un valore `id` univoco per garantirne la visibilità alle tecnologie per la disabilità. [Scopri come correggere i valori `id` duplicati](https://dequeuniversity.com/rules/axe/4.8/duplicate-id-active)."
   },
   "core/audits/accessibility/duplicate-id-active.js | failureTitle": {
     "message": "Gli attributi `[id]` in elementi attivi per cui è possibile impostare lo stato attivo non sono univoci"
@@ -219,7 +246,7 @@
     "message": "Gli attributi `[id]` in elementi attivi per cui è possibile impostare lo stato attivo sono univoci"
   },
   "core/audits/accessibility/duplicate-id-aria.js | description": {
-    "message": "Il valore di un ID ARIA deve essere univoco per evitare che altre istanze vengano ignorate dalle tecnologie per la disabilità. [Scopri come correggere gli ID ARIA duplicati](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-aria)."
+    "message": "Il valore di un ID ARIA deve essere univoco per evitare che altre istanze vengano ignorate dalle tecnologie per la disabilità. [Scopri come correggere gli ID ARIA duplicati](https://dequeuniversity.com/rules/axe/4.8/duplicate-id-aria)."
   },
   "core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
     "message": "Gli ID ARIA non sono univoci"
@@ -227,8 +254,17 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "Gli ID ARIA sono univoci"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "Un'intestazione senza contenuti o con testo inaccessibile impedisce agli utenti di screen reader di accedere alle informazioni nella struttura della pagina. [Scopri di più sulle intestazioni](https://dequeuniversity.com/rules/axe/4.8/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "Gli elementi di intestazione non includono contenuti."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "Tutti gli elementi di intestazione includono contenuti."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
-    "message": "I campi dei moduli con più etichette potrebbero essere descritti in modo confuso dalle tecnologie per la disabilità come gli screen reader, che usano la prima etichetta, l'ultima o tutte le etichette. [Scopri come utilizzare le etichette dei moduli](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
+    "message": "I campi dei moduli con più etichette potrebbero essere descritti in modo confuso dalle tecnologie per la disabilità come gli screen reader, che usano la prima etichetta, l'ultima o tutte le etichette. [Scopri come utilizzare le etichette dei moduli](https://dequeuniversity.com/rules/axe/4.8/form-field-multiple-labels)."
   },
   "core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
     "message": "I campi del modulo hanno più etichette"
@@ -237,7 +273,7 @@
     "message": "Nessun campo del modulo ha più etichette"
   },
   "core/audits/accessibility/frame-title.js | description": {
-    "message": "Gli utenti di screen reader si affidano ai titoli dei frame per la descrizione dei relativi contenuti. [Scopri di più sui titoli dei frame](https://dequeuniversity.com/rules/axe/4.7/frame-title)."
+    "message": "Gli utenti di screen reader si affidano ai titoli dei frame per la descrizione dei relativi contenuti. [Scopri di più sui titoli dei frame](https://dequeuniversity.com/rules/axe/4.8/frame-title)."
   },
   "core/audits/accessibility/frame-title.js | failureTitle": {
     "message": "Gli elementi `<frame>` o `<iframe>` non hanno un titolo"
@@ -246,7 +282,7 @@
     "message": "Gli elementi `<frame>` o `<iframe>` hanno un titolo"
   },
   "core/audits/accessibility/heading-order.js | description": {
-    "message": "Le intestazioni nell'ordine corretto che non saltano livelli descrivono la struttura semantica della pagina, facilitando la navigazione e la comprensione quando vengono usate tecnologie per la disabilità. [Scopri di più sull'ordine delle intestazioni](https://dequeuniversity.com/rules/axe/4.7/heading-order)."
+    "message": "Le intestazioni nell'ordine corretto che non saltano livelli descrivono la struttura semantica della pagina, facilitando la navigazione e la comprensione quando vengono usate tecnologie per la disabilità. [Scopri di più sull'ordine delle intestazioni](https://dequeuniversity.com/rules/axe/4.8/heading-order)."
   },
   "core/audits/accessibility/heading-order.js | failureTitle": {
     "message": "Gli elementi di intestazione non sono in ordine decrescente sequenziale"
@@ -255,7 +291,7 @@
     "message": "Gli elementi di intestazione vengono visualizzati in ordine decrescente sequenziale"
   },
   "core/audits/accessibility/html-has-lang.js | description": {
-    "message": "Se per una pagina non viene specificato un attributo `lang`, lo screen reader presuppone che la lingua della pagina sia quella predefinita scelta dall'utente durante la configurazione dello screen reader. Se la lingua della pagina non è effettivamente quella predefinita, lo screen reader potrebbe non pronunciare correttamente il testo della pagina. [Scopri di più sull'attributo `lang`](https://dequeuniversity.com/rules/axe/4.7/html-has-lang)."
+    "message": "Se per una pagina non viene specificato un attributo `lang`, lo screen reader presuppone che la lingua della pagina sia quella predefinita scelta dall'utente durante la configurazione dello screen reader. Se la lingua della pagina non è effettivamente quella predefinita, lo screen reader potrebbe non pronunciare correttamente il testo della pagina. [Scopri di più sull'attributo `lang`](https://dequeuniversity.com/rules/axe/4.8/html-has-lang)."
   },
   "core/audits/accessibility/html-has-lang.js | failureTitle": {
     "message": "L'elemento `<html>` non ha un attributo `[lang]`"
@@ -264,7 +300,7 @@
     "message": "L'elemento `<html>` ha un attributo `[lang]`"
   },
   "core/audits/accessibility/html-lang-valid.js | description": {
-    "message": "La specifica di una [lingua BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) valida consente agli screen reader di pronunciare correttamente il testo. [Scopri come utilizzare l'attributo `lang`](https://dequeuniversity.com/rules/axe/4.7/html-lang-valid)."
+    "message": "La specifica di una [lingua BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) valida consente agli screen reader di pronunciare correttamente il testo. [Scopri come utilizzare l'attributo `lang`](https://dequeuniversity.com/rules/axe/4.8/html-lang-valid)."
   },
   "core/audits/accessibility/html-lang-valid.js | failureTitle": {
     "message": "L'attributo `[lang]` dell'elemento `<html>` non ha un valore valido."
@@ -272,8 +308,26 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "L'attributo `[lang]` dell'elemento `<html>` ha un valore valido"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Se la pagina web non specifica un linguaggio coerente, lo screen reader potrebbe non annunciare correttamente il testo della pagina. [Scopri di più sull'attributo `lang`](https://dequeuniversity.com/rules/axe/4.8/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "L'elemento `<html>` non ha un attributo `[xml:lang]` con la stessa lingua di base dell'attributo `[lang]`."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "L'elemento `<html>` ha un attributo `[xml:lang]` con la stessa lingua di base dell'attributo `[lang]`."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "I link con la stessa destinazione devono avere la stessa descrizione per aiutare gli utenti a comprendere lo scopo dei link e decidere se seguirli o meno. [Scopri di più sui link identici](https://dequeuniversity.com/rules/axe/4.8/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "I link identici non hanno lo stesso scopo."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "I link identici hanno lo stesso scopo."
+  },
   "core/audits/accessibility/image-alt.js | description": {
-    "message": "Gli elementi informativi dovrebbero mostrare testo alternativo breve e descrittivo. Gli elementi decorativi possono essere ignorati con un attributo ALT vuoto. [Scopri di più sull'attributo `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
+    "message": "Gli elementi informativi dovrebbero mostrare testo alternativo breve e descrittivo. Gli elementi decorativi possono essere ignorati con un attributo ALT vuoto. [Scopri di più sull'attributo `alt`](https://dequeuniversity.com/rules/axe/4.8/image-alt)."
   },
   "core/audits/accessibility/image-alt.js | failureTitle": {
     "message": "Gli elementi immagine non hanno attributi `[alt]`"
@@ -281,8 +335,26 @@
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Gli elementi immagine hanno attributi `[alt]`"
   },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Gli elementi informativi dovrebbero mostrare testo alternativo breve e descrittivo. Un testo alternativo identico a quello adiacente al link o all'immagine potrebbe creare confusione negli utenti di screen reader perché verrà letto due volte. [Scopri di più sull'attributo `alt`](https://dequeuniversity.com/rules/axe/4.8/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Gli elementi image hanno attributi `[alt]` che rappresentano testo ridondante."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Gli elementi image non hanno attributi `[alt]` che rappresentano testo ridondante."
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "L'aggiunta di testo distinguibile e accessibile ai pulsanti di immissione può aiutare gli utenti di screen reader a comprendere lo scopo dei pulsanti. [Scopri di più sui pulsanti di immissione](https://dequeuniversity.com/rules/axe/4.8/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "I pulsanti di immissione non hanno testo distinguibile."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "I pulsanti di immissione hanno testo distinguibile."
+  },
   "core/audits/accessibility/input-image-alt.js | description": {
-    "message": "Quando viene utilizzata un'immagine come pulsante `<input>`, fornire un testo alternativo può aiutare gli utenti di screen reader a comprendere lo scopo del pulsante. [Scopri di più sul testo alternativo dell'immagine di input](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
+    "message": "Quando viene utilizzata un'immagine come pulsante `<input>`, fornire un testo alternativo può aiutare gli utenti di screen reader a comprendere lo scopo del pulsante. [Scopri di più sul testo alternativo dell'immagine di input](https://dequeuniversity.com/rules/axe/4.8/input-image-alt)."
   },
   "core/audits/accessibility/input-image-alt.js | failureTitle": {
     "message": "Gli elementi `<input type=\"image\">` non hanno testo `[alt]`"
@@ -290,8 +362,17 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "Gli elementi `<input type=\"image\">` hanno testo `[alt]`"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Le etichette di testo visibili che non corrispondono al nome accessibile possono generare un'esperienza confusa per gli utenti di screen reader. [Scopri di più sui nomi accessibili](https://dequeuniversity.com/rules/axe/4.8/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Gli elementi con etichette di testo visibili non hanno nomi accessibili corrispondenti."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Gli elementi con etichette di testo visibili hanno nomi accessibili corrispondenti."
+  },
   "core/audits/accessibility/label.js | description": {
-    "message": "Le etichette consentono di assicurarsi che i controlli dei moduli vengano descritti in modo corretto dalle tecnologie per la disabilità, come gli screen reader. [Scopri di più sulle etichette degli elementi del modulo](https://dequeuniversity.com/rules/axe/4.7/label)."
+    "message": "Le etichette consentono di assicurarsi che i controlli dei moduli vengano descritti in modo corretto dalle tecnologie per la disabilità, come gli screen reader. [Scopri di più sulle etichette degli elementi del modulo](https://dequeuniversity.com/rules/axe/4.8/label)."
   },
   "core/audits/accessibility/label.js | failureTitle": {
     "message": "Gli elementi del modulo non hanno le corrispondenti etichette"
@@ -299,8 +380,26 @@
   "core/audits/accessibility/label.js | title": {
     "message": "Gli elementi del modulo sono associati a etichette"
   },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "Un punto di riferimento principale aiuta gli utenti di screen reader a navigare in una pagina web. [Scopri di più sui punti di riferimento](https://dequeuniversity.com/rules/axe/4.8/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "Il documento non ha un punto di riferimento principale."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "Il documento ha un punto di riferimento principale."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "Il testo a basso contrasto è difficile, se non impossibile, da leggere per molti utenti. Un testo dei link distinguibile migliora l'esperienza degli utenti ipovedenti. [Scopri come rendere distinguibili i link](https://dequeuniversity.com/rules/axe/4.8/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "I link sono distinguibili in base al colore."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "I link sono distinguibili senza doversi basare sul colore."
+  },
   "core/audits/accessibility/link-name.js | description": {
-    "message": "Un testo dei link (incluso il testo alternativo delle immagini, se come link) distinguibile, univoco e attivabile migliora l'esperienza di navigazione per gli utenti di screen reader. [Scopri come rendere accessibili i link](https://dequeuniversity.com/rules/axe/4.7/link-name)."
+    "message": "Un testo dei link (incluso il testo alternativo delle immagini, se come link) distinguibile, univoco e attivabile migliora l'esperienza di navigazione per gli utenti di screen reader. [Scopri come rendere accessibili i link](https://dequeuniversity.com/rules/axe/4.8/link-name)."
   },
   "core/audits/accessibility/link-name.js | failureTitle": {
     "message": "Il nome dei link non è distinguibile"
@@ -309,7 +408,7 @@
     "message": "I link hanno un nome distinguibile"
   },
   "core/audits/accessibility/list.js | description": {
-    "message": "Gli screen reader descrivono gli elenchi in un determinato modo. Una struttura dell'elenco corretta agevola l'output dello screen reader. [Scopri di più sulla struttura dell'elenco corretta](https://dequeuniversity.com/rules/axe/4.7/list)."
+    "message": "Gli screen reader descrivono gli elenchi in un determinato modo. Una struttura dell'elenco corretta agevola l'output dello screen reader. [Scopri di più sulla struttura dell'elenco corretta](https://dequeuniversity.com/rules/axe/4.8/list)."
   },
   "core/audits/accessibility/list.js | failureTitle": {
     "message": "Gli elenchi non contengono solo elementi `<li>` ed elementi che supportano script (`<script>` e `<template>`)."
@@ -318,7 +417,7 @@
     "message": "Gli elenchi contengono solo elementi `<li>` ed elementi che supportano gli script (`<script>` e `<template>`)."
   },
   "core/audits/accessibility/listitem.js | description": {
-    "message": "Gli screen reader richiedono che gli elementi dell'elenco (`<li>`) siano contenuti in un elemento `<ul>`, `<ol>` o `<menu>` principale per poterli descrivere in modo corretto. [Scopri di più sulla struttura dell'elenco corretta](https://dequeuniversity.com/rules/axe/4.7/listitem)."
+    "message": "Gli screen reader richiedono che gli elementi dell'elenco (`<li>`) siano contenuti in un elemento `<ul>`, `<ol>` o `<menu>` principale per poterli descrivere in modo corretto. [Scopri di più sulla struttura dell'elenco corretta](https://dequeuniversity.com/rules/axe/4.8/listitem)."
   },
   "core/audits/accessibility/listitem.js | failureTitle": {
     "message": "Gli elementi dell'elenco (`<li>`) non sono contenuti negli elementi principali `<ul>`, `<ol>` o `<menu>`."
@@ -327,7 +426,7 @@
     "message": "Gli elementi dell'elenco (`<li>`) sono contenuti negli elementi principali `<ul>`, `<ol>` o `<menu>`."
   },
   "core/audits/accessibility/meta-refresh.js | description": {
-    "message": "L'aggiornamento automatico della pagina è un evento imprevisto per l'utente e, una volta verificatosi, imposta di nuovo lo stato attivo sulla parte superiore della pagina. Ciò può costituire motivo di frustrazione o confusione per l'utente. [Scopri di più sul meta tag di aggiornamento](https://dequeuniversity.com/rules/axe/4.7/meta-refresh)."
+    "message": "L'aggiornamento automatico della pagina è un evento imprevisto per l'utente e, una volta verificatosi, imposta di nuovo lo stato attivo sulla parte superiore della pagina. Ciò può costituire motivo di frustrazione o confusione per l'utente. [Scopri di più sul meta tag di aggiornamento](https://dequeuniversity.com/rules/axe/4.8/meta-refresh)."
   },
   "core/audits/accessibility/meta-refresh.js | failureTitle": {
     "message": "Il documento usa `<meta http-equiv=\"refresh\">`"
@@ -336,7 +435,7 @@
     "message": "Il documento non usa `<meta http-equiv=\"refresh\">`"
   },
   "core/audits/accessibility/meta-viewport.js | description": {
-    "message": "Disattivare lo zoom è problematico per gli utenti ipovedenti che si affidano all'ingrandimento dello schermo per vedere in modo chiaro i contenuti di una pagina web. [Scopri di più sul meta tag viewport](https://dequeuniversity.com/rules/axe/4.7/meta-viewport)."
+    "message": "Disattivare lo zoom è problematico per gli utenti ipovedenti che si affidano all'ingrandimento dello schermo per vedere in modo chiaro i contenuti di una pagina web. [Scopri di più sul meta tag viewport](https://dequeuniversity.com/rules/axe/4.8/meta-viewport)."
   },
   "core/audits/accessibility/meta-viewport.js | failureTitle": {
     "message": "`[user-scalable=\"no\"]` viene usato nell'elemento `<meta name=\"viewport\">` o l'attributo `[maximum-scale]` è inferiore a 5."
@@ -345,7 +444,7 @@
     "message": "`[user-scalable=\"no\"]` non viene usato nell'elemento `<meta name=\"viewport\">` e l'attributo `[maximum-scale]` non è inferiore a 5."
   },
   "core/audits/accessibility/object-alt.js | description": {
-    "message": "Gli screen reader non possono tradurre contenuti non testuali. Aggiungere testo alternativo agli elementi `<object>` aiuta gli screen reader a comunicare il significato agli utenti. [Scopri di più sul testo alternativo per gli elementi `object`](https://dequeuniversity.com/rules/axe/4.7/object-alt)."
+    "message": "Gli screen reader non possono tradurre contenuti non testuali. Aggiungere testo alternativo agli elementi `<object>` aiuta gli screen reader a comunicare il significato agli utenti. [Scopri di più sul testo alternativo per gli elementi `object`](https://dequeuniversity.com/rules/axe/4.8/object-alt)."
   },
   "core/audits/accessibility/object-alt.js | failureTitle": {
     "message": "Gli elementi `<object>` non hanno testo alternativo"
@@ -353,8 +452,26 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "Gli elementi `<object>` hanno testo alternativo"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "Gli elementi del modulo senza etichette efficaci possono creare esperienze frustranti per gli utenti di screen reader. [Scopri di più sull'elemento `select`](https://dequeuniversity.com/rules/axe/4.8/select-name)."
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "Alcuni elementi non hanno elementi di etichette associati."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "Alcuni elementi hanno elementi di etichette associati."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "L'inclusione di uno skip link può aiutare gli utenti a passare ai contenuti principali per risparmiare tempo. [Scopri di più sugli skip link](https://dequeuniversity.com/rules/axe/4.8/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Gli skip link non sono attivabili."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Gli skip link sono attivabili."
+  },
   "core/audits/accessibility/tabindex.js | description": {
-    "message": "Un valore maggiore di 0 implica un ordine di navigazione esplicito. Sebbene sia tecnicamente valido, spesso genera un'esperienza frustrante per gli utenti che usano tecnologie per la disabilità. [Scopri di più sull'attributo `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
+    "message": "Un valore maggiore di 0 implica un ordine di navigazione esplicito. Sebbene sia tecnicamente valido, spesso genera un'esperienza frustrante per gli utenti che usano tecnologie per la disabilità. [Scopri di più sull'attributo `tabindex`](https://dequeuniversity.com/rules/axe/4.8/tabindex)."
   },
   "core/audits/accessibility/tabindex.js | failureTitle": {
     "message": "Alcuni elementi hanno un valore `[tabindex]` maggiore di 0"
@@ -362,8 +479,44 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Nessun elemento ha un valore `[tabindex]` maggiore di 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "L'attributo summary deve descrivere la struttura della tabella, mentre `<caption>` deve avere il titolo sullo schermo. Il markup accurato della tabella aiuta gli utenti di screen reader. [Scopri di più su summary e caption](https://dequeuniversity.com/rules/axe/4.8/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Le tabelle hanno gli stessi contenuti nell'attributo summary e in `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Le tabelle hanno contenuti diversi nell'attributo summary e in `<caption>`."
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Gli screen reader sono dotati di funzionalità che semplificano la navigazione nelle tabelle. Se nelle tabelle usi l'elemento effettivo dei sottotitoli codificati anziché le celle con l'attributo `[colspan]`, puoi migliorare l'esperienza degli utenti di screen reader. [Scopri di più sui sottotitoli codificati](https://dequeuniversity.com/rules/axe/4.8/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Le tabelle non utilizzano `<caption>` anziché celle con l'attributo `[colspan]` per indicare un sottotitolo codificato."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Le tabelle utilizzano `<caption>` anziché celle con l'attributo `[colspan]` per indicare un sottotitolo codificato."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "I touch target con dimensioni e spaziatura sufficienti aiutano gli utenti che potrebbero avere difficoltà a usare i piccoli controlli ad attivare i target. [Scopri di più sui touch target](https://dequeuniversity.com/rules/axe/4.8/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "I touch target non hanno dimensioni o spaziatura sufficienti."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "I touch target hanno dimensioni e spaziatura sufficienti."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Gli screen reader sono dotati di funzionalità che semplificano la navigazione nelle tabelle. Se gli elementi `<td>` in una tabella di grandi dimensioni (3 o più celle in larghezza e altezza) hanno un'intestazione di tabella associata, potrebbe migliorare l'esperienza degli utenti di screen reader. [Scopri di più sulle intestazioni delle tabelle](https://dequeuniversity.com/rules/axe/4.8/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "Gli elementi `<td>` in un elemento `<table>` di grandi dimensioni non hanno intestazioni di tabella."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "Gli elementi `<td>` in un elemento `<table>` di grandi dimensioni hanno una o più intestazioni di tabella."
+  },
   "core/audits/accessibility/td-headers-attr.js | description": {
-    "message": "Gli screen reader sono dotati di funzionalità che semplificano la navigazione nelle tabelle. Se ti assicuri che le celle `<td>` che usano l'attributo `[headers]` facciano riferimento esclusivamente ad altre celle nella stessa tabella, puoi migliorare l'esperienza degli utenti di screen reader. [Scopri di più sull'attributo `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
+    "message": "Gli screen reader sono dotati di funzionalità che semplificano la navigazione nelle tabelle. Se ti assicuri che le celle `<td>` che usano l'attributo `[headers]` facciano riferimento esclusivamente ad altre celle nella stessa tabella, puoi migliorare l'esperienza degli utenti di screen reader. [Scopri di più sull'attributo `headers`](https://dequeuniversity.com/rules/axe/4.8/td-headers-attr)."
   },
   "core/audits/accessibility/td-headers-attr.js | failureTitle": {
     "message": "Le celle in un elemento `<table>` che utilizzano l'attributo `[headers]` fanno riferimento a un elemento `id` non trovato all'interno della stessa tabella."
@@ -372,7 +525,7 @@
     "message": "Le celle in un elemento `<table>` che utilizzano l'attributo `[headers]` fanno riferimento a celle della stessa tabella."
   },
   "core/audits/accessibility/th-has-data-cells.js | description": {
-    "message": "Gli screen reader sono dotati di funzionalità che semplificano la navigazione nelle tabelle. Assicurare che le intestazioni delle tabelle facciano sempre riferimento a un insieme di celle può migliorare l'esperienza degli utenti di screen reader. [Scopri di più sulle intestazioni delle tabelle](https://dequeuniversity.com/rules/axe/4.7/th-has-data-cells)."
+    "message": "Gli screen reader sono dotati di funzionalità che semplificano la navigazione nelle tabelle. Assicurare che le intestazioni delle tabelle facciano sempre riferimento a un insieme di celle può migliorare l'esperienza degli utenti di screen reader. [Scopri di più sulle intestazioni delle tabelle](https://dequeuniversity.com/rules/axe/4.8/th-has-data-cells)."
   },
   "core/audits/accessibility/th-has-data-cells.js | failureTitle": {
     "message": "Gli elementi `<th>` e gli elementi con `[role=\"columnheader\"/\"rowheader\"]` non hanno le celle di dati da essi descritte."
@@ -381,7 +534,7 @@
     "message": "Gli elementi `<th>` e gli elementi con ruolo `[role=\"columnheader\"/\"rowheader\"]` hanno le celle di dati da essi descritte."
   },
   "core/audits/accessibility/valid-lang.js | description": {
-    "message": "La specifica di una [lingua BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) valida per gli elementi consente di assicurarsi che il testo sia pronunciato correttamente dallo screen reader. [Scopri come utilizzare l'attributo `lang`](https://dequeuniversity.com/rules/axe/4.7/valid-lang)."
+    "message": "La specifica di una [lingua BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) valida per gli elementi consente di assicurarsi che il testo sia pronunciato correttamente dallo screen reader. [Scopri come utilizzare l'attributo `lang`](https://dequeuniversity.com/rules/axe/4.8/valid-lang)."
   },
   "core/audits/accessibility/valid-lang.js | failureTitle": {
     "message": "Gli attributi `[lang]` non hanno un valore valido"
@@ -390,7 +543,7 @@
     "message": "Gli attributi `[lang]` hanno un valore valido"
   },
   "core/audits/accessibility/video-caption.js | description": {
-    "message": "Se un video ha i sottotitoli codificati, per le persone sorde o gli utenti con problemi di udito è più facile accedere alle relative informazioni. [Scopri di più sui sottotitoli codificati dei video](https://dequeuniversity.com/rules/axe/4.7/video-caption)."
+    "message": "Se un video ha i sottotitoli codificati, per le persone sorde o gli utenti con problemi di udito è più facile accedere alle relative informazioni. [Scopri di più sui sottotitoli codificati dei video](https://dequeuniversity.com/rules/axe/4.8/video-caption)."
   },
   "core/audits/accessibility/video-caption.js | failureTitle": {
     "message": "Gli elementi `<video>` non contengono un elemento `<track>` con `[kind=\"captions\"]`"
@@ -452,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "La pagina non ha impedito il ripristino della cache back-forward"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "La cache back-forward non può essere testata nella versione precedente di Chrome headless (`--chrome-flags=\"--headless=old\"`). Per visualizzare i risultati del controllo, utilizza il nuovo Chrome Headless (`--chrome-flags=\"--headless=new\"`) o Chrome standard."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Le estensioni di Chrome incidono negativamente sulle prestazioni di caricamento di questa pagina. Prova a controllare la pagina in modalità di navigazione in incognito o da un profilo Chrome senza estensioni."
   },
@@ -486,7 +642,7 @@
     "message": "Usa formati video per i contenuti animati"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Polyfill e trasformazioni consentono ai browser precedenti di usare nuove funzionalità JavaScript. Tanti non sono però necessari per i browser moderni. Per il tuo codice JavaScript in bundle, adotta una moderna strategia di implementazione degli script usando il rilevamento di funzionalità module/nomodule per ridurre la quantità di codice inviata ai browser moderni e mantenere il supporto dei browser precedenti. [Scopri come utilizzare il moderno codice JavaScript](https://web.dev/publish-modern-javascript/)"
+    "message": "Polyfill e trasformazioni consentono ai browser precedenti di usare nuove funzionalità JavaScript. Tanti non sono però necessari per i browser moderni. Per il tuo codice JavaScript in bundle, adotta una moderna strategia di implementazione degli script usando il rilevamento di funzionalità module/nomodule per ridurre la quantità di codice inviata ai browser moderni e mantenere il supporto dei browser precedenti. [Scopri come utilizzare il moderno codice JavaScript](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Evita di pubblicare codice JavaScript precedente in browser moderni"
@@ -621,7 +777,7 @@
     "message": "Sintassi"
   },
   "core/audits/csp-xss.js | metaTagMessage": {
-    "message": "La pagina contiene un criterio CSP definito in un tag <meta>. Potresti spostare il CSP in un'intestazione HTTP o definirne un altro in un'intestazione HTTP."
+    "message": "La pagina contiene un criterio CSP definito in un tag `<meta>`. Potresti spostare il CSP in un'intestazione HTTP o definirne un altro rigoroso in un'intestazione HTTP."
   },
   "core/audits/csp-xss.js | noCsp": {
     "message": "Nessun criterio CSP trovato in modalità di applicazione forzata"
@@ -840,7 +996,7 @@
     "message": "Dimensioni previste"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Le dimensioni naturali delle immagini dovrebbero essere proporzionali a quelle dello schermo e al rapporto pixel per ottimizzare la nitidezza delle immagini. [Scopri come fornire immagini adattabili](https://web.dev/serve-responsive-images/)."
+    "message": "Le dimensioni naturali delle immagini dovrebbero essere proporzionali a quelle dello schermo e al rapporto pixel per ottimizzare la nitidezza delle immagini. [Scopri come fornire immagini adattabili](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Vengono pubblicate immagini a bassa risoluzione"
@@ -873,7 +1029,7 @@
     "message": "La pagina è stata caricata in una finestra di navigazione in incognito"
   },
   "core/audits/installable-manifest.js | manifest-display-not-supported": {
-    "message": "La proprietà \"display\" del file manifest deve essere \"standalone\", \"fullscreen\" o \"minimal-ui\""
+    "message": "La proprietà `display` del manifest deve essere `standalone`, `fullscreen` o `minimal-ui`"
   },
   "core/audits/installable-manifest.js | manifest-display-override-not-supported": {
     "message": "Il file manifest contiene il campo \"display_override\" e la prima modalità di visualizzazione supportata deve essere \"standalone\", '\"fullscreen\" o \"minimal-ui\""
@@ -885,7 +1041,7 @@
     "message": "L'URL del file manifest è cambiato durante il recupero del file manifest."
   },
   "core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
-    "message": "Il file manifest non contiene un campo \"name\" o \"short_name\""
+    "message": "Il manifest non contiene un campo `name` o `short_name`"
   },
   "core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
     "message": "Il file manifest non contiene un'icona adatta, deve essere in formato PNG, SVG o WebP e avere una dimensione di almeno {value0} px. L'attributo sizes deve essere impostato e l'attributo purpose, se configurato, deve includere \"any\"."
@@ -901,9 +1057,6 @@
   },
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "La pagina non contiene URL del file manifest <link>"
-  },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "Nessun service worker corrispondente trovato. Potrebbe essere necessario ricaricare la pagina o verificare che l'ambito del service worker per la pagina corrente includa l'ambito e l'URL di avvio dal file manifest."
   },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "Impossibile verificare il service worker se il file manifest non contiene un campo \"start_url\""
@@ -933,10 +1086,7 @@
     "message": "prefer_related_applications è supportato solo sui canali beta e stabili di Chrome su Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse non ha potuto determinare se fosse presente un service worker. Prova con una versione più recente di Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "Lo schema dell'URL del file manifest ({scheme}) non è supportato su Android."
+    "message": "Lighthouse non ha potuto determinare se è possibile installare la pagina. Prova a usare una versione più recente di Chrome."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "L'URL di avvio del file manifest non è valido"
@@ -1008,16 +1158,40 @@
     "message": "Elemento Largest Contentful Paint"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Contributo a CLS"
+    "message": "Impatto della variazione del layout"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Questi elementi DOM contribuiscono maggiormente alla metrica CLS della pagina. [Scopri come migliorare il CLS](https://web.dev/optimize-cls/)"
+    "message": "Questi elementi DOM sono stati maggiormente interessati dalle variazioni del layout. Alcune variazioni del layout potrebbero non essere incluse nel valore della metrica CLS a causa del [windowing](https://web.dev/articles/cls#what_is_cls). [Scopri come migliorare la metrica CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Evita significative variazioni di layout"
   },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Punteggio della variazione del layout"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Queste sono le maggiori variazioni del layout osservate nella pagina. Ogni elemento della tabella rappresenta una singola variazione del layout e mostra l'elemento con la variazione maggiore. Sotto ogni elemento sono riportate le possibili cause principali che hanno portato alla variazione del layout. Alcune di queste variazioni del layout potrebbero non essere incluse nel valore della metrica CLS a causa dei [windowing](https://web.dev/articles/cls#what_is_cls). [Scopri come migliorare la metrica CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 variazione del layout trovata}other{# variazioni del layout trovate}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "È stato caricato un carattere web"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "È stato inserito un iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Una richiesta di rete in ritardo ha modificato il layout della pagina"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "L'elemento multimediale è privo di dimensioni esplicite"
+  },
+  "core/audits/layout-shifts.js | title": {
+    "message": "Evita significative variazioni di layout"
+  },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Le immagini above the fold che vengono caricate tramite caricamento lento vengono visualizzate più tardi nel ciclo di vita della pagina e questo può ritardare la visualizzazione dell'elemento più grande. [Scopri di più sul caricamento lento ottimale](https://web.dev/lcp-lazy-loading/)."
+    "message": "Le immagini above the fold che vengono caricate tramite caricamento lento vengono visualizzate più tardi nel ciclo di vita della pagina e questo può ritardare la visualizzazione dell'elemento più grande. [Scopri di più sul caricamento lento ottimale](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "L'immagine Largest Contentful Paint è stata caricata tramite caricamento lento"
@@ -1026,7 +1200,7 @@
     "message": "L'immagine Largest Contentful Paint non è stata caricata tramite caricamento lento"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Elenca le attività più lunghe nel thread principale; è utile per identificare gli elementi che contribuiscono maggiormente al ritardo dell'input. [Scopri come evitare attività lunghe nel thread principale](https://web.dev/long-tasks-devtools/)"
+    "message": "Elenca le attività più lunghe nel thread principale; è utile per identificare gli elementi che contribuiscono maggiormente al ritardo dell'input. [Scopri come evitare attività lunghe nel thread principale](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{# attività lunga trovata}other{# attività lunghe trovate}}"
@@ -1074,16 +1248,16 @@
     "message": "Il file manifest contiene un'icona mascherabile"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "La metrica Cumulative Layout Shift misura lo spostamento degli elementi visibili all'interno dell'area visibile. [Scopri di più sulla metrica Cumulative Layout Shift](https://web.dev/cls/)."
-  },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "L'interazione con Next Paint misura l'adattabilità della pagina, il tempo necessario alla pagina per rispondere in modo visibile all'input utente. [Scopri di più sulla metrica Interaction to Next Paint](https://web.dev/inp/)."
+    "message": "La metrica Cumulative Layout Shift misura lo spostamento degli elementi visibili all'interno dell'area visibile. [Scopri di più sulla metrica Cumulative Layout Shift](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "First Contentful Paint indica il momento in cui vengono visualizzati il primo testo o la prima immagine. [Scopri di più sulla metrica First Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "La metrica First Meaningful Paint indica quando diventano visibili i contenuti principali di una pagina. [Scopri di più sulla metrica First Meaningful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "L'interazione con Next Paint misura l'adattabilità della pagina, il tempo necessario alla pagina per rispondere in modo visibile all'input utente. [Scopri di più sulla metrica Interaction to Next Paint](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Tempo all'interattività indica il tempo necessario affinché la pagina diventi completamente interattiva. [Scopri di più sulla metrica Tempo all'interattività](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1113,7 +1287,7 @@
     "message": "Latenze server backend"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "L'evento `unload` non viene attivato in modo affidabile e il relativo ascolto potrebbe impedire ottimizzazioni del browser quali cache back-forward. Utilizza invece gli eventi `pagehide` o `visibilitychange`. [Scopri di più sull'unload dei listener di eventi](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "L'evento `unload` non viene attivato in modo affidabile e il relativo ascolto potrebbe impedire ottimizzazioni del browser quali cache back-forward. Utilizza invece gli eventi `pagehide` o `visibilitychange`. [Scopri di più sull'unload dei listener di eventi](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registra un listener `unload`"
@@ -1158,7 +1332,7 @@
     "message": "Budget per le prestazioni"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Precarica caratteri `optional` per consentirne l'utilizzo ai visitatori alla prima visita. [Scopri di più sul precaricamento dei caratteri](https://web.dev/preload-optional-fonts/)"
+    "message": "Precarica caratteri `optional` per consentirne l'utilizzo ai visitatori alla prima visita. [Scopri di più sul precaricamento dei caratteri](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "I caratteri con `font-display: optional` non vengono precaricati"
@@ -1167,7 +1341,7 @@
     "message": "I caratteri con `font-display: optional` vengono precaricati"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Se l'elemento LCP viene aggiunto alla pagina in modo dinamico, dovresti precaricare l'immagine per migliorarlo. [Scopri di più sul precaricamento degli elementi LCP](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Se l'elemento LCP viene aggiunto alla pagina in modo dinamico, dovresti precaricare l'immagine per migliorarlo. [Scopri di più sul precaricamento degli elementi LCP](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Precarica l'immagine Largest Contentful Paint"
@@ -1177,15 +1351,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Evita i reindirizzamenti tra più pagine"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "Per impostare budget relativi alla quantità e alle dimensioni delle risorse della pagina, aggiungi un file budget.json. [Scopri di più sui budget delle prestazioni](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 richiesta • {byteCount, number, bytes} KiB}other{# richieste • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "Mantieni un numero ridotto di richieste e dimensioni di trasferimento limitate"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "I link canonici suggeriscono quale URL mostrare nei risultati di ricerca. [Scopri di più sui link canonici](https://developer.chrome.com/docs/lighthouse/seo/canonical/)."
@@ -1376,27 +1541,6 @@
   "core/audits/server-response-time.js | title": {
     "message": "Il tempo di risposta iniziale del server è stato breve"
   },
-  "core/audits/service-worker.js | description": {
-    "message": "Il service worker è la tecnologia che consente alla tua app di usare tante funzionalità delle app web progressive, ad esempio il funzionamento offline, l'aggiunta alla schermata Home e le notifiche push. [Scopri di più sui service worker](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)."
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "Questa pagina è controllata tramite un service worker, ma non è stato trovato alcun elemento `start_url` perché non è stato possibile analizzare il file manifest come JSON valido"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Questa pagina è controllata tramite un service worker, ma `start_url` ({startUrl}) non rientra nell'ambito del service worker ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "Questa pagina è controllata tramite un service worker, ma non è stato trovato alcun elemento `start_url` perché non è stato recuperato alcun file manifest."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Questa origine contiene uno o più service worker, ma la pagina ({pageUrl}) non rientra nell'ambito."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "Non registra un service worker che controlla la pagina e `start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "Registra un service worker che controlla la pagina e `start_url`"
-  },
   "core/audits/splash-screen.js | description": {
     "message": "Una schermata iniziale a tema assicura un'esperienza di alta qualità quando gli utenti avviano la tua app dalla schermata Home. [Scopri di più sulle schermate iniziali](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
   },
@@ -1414,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Imposta un colore tema per la barra degli indirizzi."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Il supporto per i cookie di terze parti verrà rimosso in una versione futura di Chrome. [Scopri di più sull'eliminazione graduale dei cookie di terze parti](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 cookie trovato}other{# cookie trovati}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Utilizza cookie di terze parti"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Evita i cookie di terze parti"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (Supporto ai clienti)"
@@ -1470,7 +1626,7 @@
     "message": "Budget per le tempistiche"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Imposta larghezza e altezza esplicite negli elementi immagine per ridurre le variazioni di layout e migliorare la metrica CLS. [Scopri come impostare le dimensioni delle immagini](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Imposta larghezza e altezza esplicite negli elementi immagine per ridurre le variazioni di layout e migliorare la metrica CLS. [Scopri come impostare le dimensioni delle immagini](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Gli elementi immagine non hanno `width` e `height` esplicite"
@@ -1545,7 +1701,7 @@
     "message": "Ha un tag `<meta name=\"viewport\">` con `width` o `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Si tratta del lavoro di blocco dei thread che si verifica durante la misurazione di Interaction to Next Paint. [Scopri di più sulla metrica Interaction to Next Paint](https://web.dev/inp/)."
+    "message": "Si tratta del lavoro di blocco dei thread che si verifica durante la misurazione di Interaction to Next Paint. [Scopri di più sulla metrica Interaction to Next Paint](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "{timeInMs, number, milliseconds} ms utilizzati per l'evento \"{interactionType}\""
@@ -1587,10 +1743,10 @@
     "message": "Best practice"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Questi controlli mettono in evidenza le opportunità per [migliorare l'accessibilità della tua applicazione web](https://developer.chrome.com/docs/lighthouse/accessibility/). È possibile rilevare automaticamente soltanto un sottoinsieme di problemi di accessibilità, pertanto sono consigliati anche i test manuali."
+    "message": "Questi controlli mettono in evidenza le opportunità per [migliorare l'accessibilità della tua app web](https://developer.chrome.com/docs/lighthouse/accessibility/). Il rilevamento automatico è in grado di rilevare soltanto un sottoinsieme di problemi e non garantisce l'accessibilità della tua app web, pertanto sono consigliati anche i [test manuali](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Questi elementi riguardano aree che uno strumento di test automatizzato non può coprire. Leggi ulteriori informazioni nella nostra guida su come [effettuare un esame di accessibilità](https://web.dev/how-to-review/)."
+    "message": "Questi elementi riguardano aree che uno strumento di test automatizzato non può coprire. Leggi ulteriori informazioni nella nostra guida su come [effettuare un esame di accessibilità](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Accessibilità"
@@ -1677,10 +1833,10 @@
     "message": "Prestazioni"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Questi controlli consentono di convalidare gli aspetti di un'app web progressiva. [Scopri le caratteristiche di un'app web progressiva di qualità](https://web.dev/pwa-checklist/)."
+    "message": "Questi controlli consentono di convalidare gli aspetti di un'app web progressiva. [Scopri le caratteristiche di un'app web progressiva di qualità](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Questi controlli sono richiesti in base all'[Elenco di controllo PWA](https://web.dev/pwa-checklist/) di riferimento, ma non vengono eseguiti automaticamente da Lighthouse. Non incidono sul tuo punteggio, ma è importante verificarli manualmente."
+    "message": "Questi controlli sono richiesti in base all'[Elenco di controllo PWA](https://web.dev/articles/pwa-checklist) di riferimento, ma non vengono eseguiti automaticamente da Lighthouse. Non incidono sul tuo punteggio, ma è importante verificarli manualmente."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1692,7 +1848,7 @@
     "message": "Ottimizzato per PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Questi controlli assicurano che la pagina stia applicando il seguente consiglio relativo all'ottimizzazione per i motori di ricerca di base. Esistono molti altri fattori che Lighthouse non tratta qui che potrebbero influire sul tuo ranking di ricerca, incluse le prestazioni su [Segnali web essenziali](https://web.dev/learn-core-web-vitals/). [Scopri di più su Google Search Essentials](https://support.google.com/webmasters/answer/35769)."
+    "message": "Questi controlli assicurano che la pagina stia applicando il seguente consiglio relativo all'ottimizzazione per i motori di ricerca di base. Esistono molti altri fattori che Lighthouse non tratta qui che potrebbero influire sul tuo ranking di ricerca, incluse le prestazioni su [Core Web Vitals](https://web.dev/explore/vitals). [Scopri di più su Google Search Essentials](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Esegui questi altri strumenti di convalida sul tuo sito per controllare ulteriori best practice per SEO."
@@ -1739,6 +1895,9 @@
   "core/gather/gatherers/link-elements.js | headerParseWarning": {
     "message": "Errore di analisi dell'intestazione `link` ({error}): `{header}`"
   },
+  "core/gather/timespan-runner.js | warningNavigationDetected": {
+    "message": "Durante l'esecuzione è stata rilevata una navigazione nelle pagine. Non è consigliabile utilizzare la modalità periodo di tempo per controllare le navigazioni nelle pagine. Usa la modalità di navigazione per controllare le navigazioni nelle pagine al fine di migliorare l'attribuzione di terze parti e il rilevamento dei thread principali."
+  },
   "core/lib/bf-cache-strings.js | HTTPMethodNotGET": {
     "message": "Solo le pagine caricate tramite una richiesta GET possono essere memorizzate nella cache back-forward."
   },
@@ -1750,6 +1909,9 @@
   },
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Al momento le pagine che hanno richiesto un AppBanner non possono essere memorizzate nella cache back-forward."
+  },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "La cache back-forward è disattivata a causa di una richiesta keepalive."
   },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "La cache back-forward è stata disattivata in chrome://flags. Visita la pagina chrome://flags/#back-forward-cache per attivarla localmente su questo dispositivo."
@@ -1816,6 +1978,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Le pagine che utilizzano l'API WebUSB non possono essere memorizzate nella cache back-forward."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "La cache back-forward è disattivata perché i cookie sono disattivati in una pagina che usa `Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Al momento le pagine che utilizzano un worker o worklet dedicato non possono essere memorizzate nella cache back-forward."
@@ -1892,20 +2057,23 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Al momento le pagine che hanno una connessione IndexedDB aperta non possono essere memorizzate nella cache back-forward."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "La cache back-forward è disattivata a causa di un evento IndexedDB."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Sono state usate API non idonee."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Al momento le pagine in cui JavaScript viene inserito dalle estensioni non possono essere memorizzate nella cache back-forward."
+    "message": "Al momento le pagine in cui l'elemento `JavaScript` viene inserito dalle estensioni non possono essere memorizzate nella cache back-forward."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Al momento le pagine in cui StyleSheet viene inserito dalle estensioni non possono essere memorizzate nella cache back-forward."
+    "message": "Al momento le pagine in cui un elemento `StyleSheet` viene inserito dalle estensioni non possono essere memorizzate nella cache back-forward."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Errore interno."
   },
   "core/lib/bf-cache-strings.js | keepaliveRequest": {
-    "message": "La cache back-forward è stata disattivata a causa di una richiesta keepalive."
+    "message": "La cache back-forward è disattivata a causa di una richiesta keepalive."
   },
   "core/lib/bf-cache-strings.js | keyboardLock": {
     "message": "Al momento le pagine che utilizzano il blocco della tastiera non possono essere memorizzate nella cache back-forward."
@@ -2082,25 +2250,25 @@
     "message": "Al momento le pagine che utilizzano WebXR non possono essere memorizzate nella cache back-forward."
   },
   "core/lib/csp-evaluator.js | allowlistFallback": {
-    "message": "Potresti aggiungere schemi URL https: e http: (ignorati dai browser che supportano \"strict-dynamic\") per la compatibilità con le versioni precedenti dei browser."
+    "message": "Potresti aggiungere schemi URL https: e http: (ignorati dai browser che supportano `'strict-dynamic'`) per la compatibilità con le versioni precedenti dei browser."
   },
   "core/lib/csp-evaluator.js | deprecatedDisownOpener": {
-    "message": "L'istruzione disown-opener è deprecata da CSP3. Usa invece l'intestazione Cross-Origin-Opener-Policy."
+    "message": "L'istruzione `disown-opener` è deprecata da CSP3. Usa invece l'intestazione Cross-Origin-Opener-Policy."
   },
   "core/lib/csp-evaluator.js | deprecatedReferrer": {
-    "message": "L'istruzione referrer è deprecata da CSP2. Usa invece l'intestazione Referrer-Policy."
+    "message": "L'istruzione `referrer` è deprecata da CSP2. Usa invece l'intestazione Referrer-Policy."
   },
   "core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
-    "message": "L'istruzione reflected-xss è deprecata da CSP2. Usa invece l'intestazione X-XSS-Protection."
+    "message": "L'istruzione `reflected-xss` è deprecata da CSP2. Usa invece l'intestazione X-XSS-Protection."
   },
   "core/lib/csp-evaluator.js | missingBaseUri": {
-    "message": "A causa della mancanza di un'istruzione base-uri, i tag <base> inseriti possono impostare l'URL di base di tutti gli URL relativi (ad esempio gli script) per un dominio controllato da un utente malintenzionato. Potresti impostare base-uri su \"none\" o \"self\"."
+    "message": "A causa della mancanza di un'istruzione `base-uri`, i tag `<base>` inseriti possono impostare l'URL di base di tutti gli URL relativi (ad esempio gli script) per un dominio controllato da un malintenzionato. Potresti impostare `base-uri` su `'none'` o `'self'`."
   },
   "core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "L'assenza di un'istruzione object-src consente l'inserimento di plug-in che eseguono script non sicuri. Se puoi, imposta object-src su \"none\"."
+    "message": "L'assenza di un'istruzione `object-src` consente l'inserimento di plug-in che eseguono script non sicuri. Se puoi, valuta la possibilità di impostare `object-src` su `'none'`."
   },
   "core/lib/csp-evaluator.js | missingScriptSrc": {
-    "message": "Manca l'istruzione script-src. Potrebbe essere consentita l'esecuzione di script non sicuri."
+    "message": "Manca l'istruzione `script-src`. Potrebbe essere consentita l'esecuzione di script non sicuri."
   },
   "core/lib/csp-evaluator.js | missingSemicolon": {
     "message": "Hai dimenticato il punto e virgola? {keyword} sembra essere un'istruzione, non una parola chiave."
@@ -2118,13 +2286,13 @@
     "message": "Evita di usare caratteri jolly standard ({keyword}) in questa istruzione. Questi caratteri consentono di recuperare script da un dominio non sicuro."
   },
   "core/lib/csp-evaluator.js | reportToOnly": {
-    "message": "La destinazione di reporting è configurata soltanto tramite l'istruzione report-to. Questa istruzione è supportata soltanto nei browser basati su Chromium, pertanto è consigliato usare anche un'istruzione report-uri."
+    "message": "La destinazione di reporting è configurata soltanto tramite l'istruzione report-to. Questa istruzione è supportata soltanto nei browser basati su Chromium, pertanto è consigliato usare anche un'istruzione `report-uri`."
   },
   "core/lib/csp-evaluator.js | reportingDestinationMissing": {
     "message": "Nessun criterio CSP configura una destinazione di reporting. In questo modo è difficile mantenere il criterio CSP nel tempo e monitorare eventuali interruzioni."
   },
   "core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Spesso le liste consentite di host possono essere aggirate. Potresti usare hash o nonce CSP, insieme a \"strict-dynamic\" se necessario."
+    "message": "Spesso le liste consentite di host possono essere bypassate. Potresti usare hash o nonce CSP, insieme a `'strict-dynamic'` se necessario."
   },
   "core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Istruzione CSP sconosciuta."
@@ -2133,10 +2301,196 @@
     "message": "{keyword} sembra essere una parola chiave non valida."
   },
   "core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "L'istruzione \"unsafe-inline\" consente l'esecuzione di gestori di eventi e script in-page non sicuri. Potresti usare hash o nonce CSP per consentire singoli script."
+    "message": "L'istruzione `'unsafe-inline'` consente l'esecuzione di gestori di eventi e script in-page non sicuri. Potresti usare hash o nonce CSP per consentire singoli script."
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
-    "message": "Potresti aggiungere l'istruzione \"unsafe-inline\" (ignorata dai browser che supportano nonce/hash) per la compatibilità con le versioni precedenti dei browser."
+    "message": "Potresti aggiungere l'istruzione `'unsafe-inline'` (ignorata dai browser che supportano nonce/hash) per la compatibilità con le versioni precedenti dei browser."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Per maggiori dettagli, controlla la pagina dello stato della funzionalità."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Questa modifica entrerà in vigore per il traguardo {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "È stata usata una funzionalità deprecata"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "L'autorizzazione non verrà coperta dal carattere jolly (*) durante la gestione di `Access-Control-Allow-Headers` da parte del meccanismo CORS."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Per disattivare l'integrazione predefinita di Cast, utilizza l'attributo `disableRemotePlayback` invece del selettore `-internal-media-controls-overlay-cast-button`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Le richieste di risorse i cui URL contenevano sia spazi vuoti rimossi `(n|r|t)` sia simboli di minore (`<`) sono bloccati. Per caricare queste risorse, rimuovi i ritorni a capo e codifica i simboli di minore da posizioni come valori degli attributi di elementi."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "L'elemento `chrome.loadTimes()` è deprecato, utilizza invece l'API standardizzata: Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "L'elemento `chrome.loadTimes()` è deprecato, utilizza invece l'API standardizzata: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "L'elemento `chrome.loadTimes()` è deprecato, utilizza invece l'API standardizzata: `nextHopProtocol` in Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "I cookie che contengono un carattere `(0|r|n)` verranno rifiutati e non troncati."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Il rilascio del criterio della stessa origine impostando `document.domain` è deprecato e verrà disattivato per impostazione predefinita. Questo avviso di ritiro riguarda un accesso multiorigine che è stato attivato impostando `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "L'attivazione di window.alert da iframe multiorigine è stata ritirata e verrà rimossa in futuro."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "L'attivazione di window.confirm da iframe multiorigine è stata ritirata e verrà rimossa in futuro."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "Gli eventi Mutazione del DOM, inclusi `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` e `DOMCharacterDataModified`, sono deprecati (https://w3c.github.io/uievents/#legacy-event-types) e verranno rimossi. Usa invece `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Supporto per i dati: gli URL nell'elemento <use> SVG sono deprecati e verranno rimossi in futuro."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Il rilascio del criterio della stessa origine impostando `document.domain` è deprecato e verrà disattivato per impostazione predefinita. Per continuare a utilizzare questa funzionalità, disattiva i cluster di agenti in base all'origine inviando un'intestazione `Origin-Agent-Cluster: ?0` insieme alla risposta HTTP per documento e frame. Vedi https://developer.chrome.com/blog/immutable-document-domain/ per maggiori dettagli."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "L'intestazione `Expect-CT` è deprecata e verrà rimossa. Chrome richiede Certificate Transparency per tutti i certificati attendibili pubblicamente emessi dopo il 30 aprile 2018."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` e `watchPosition()` non funzionano più su origini non sicure. Per utilizzare questa funzionalità, considera di passare la tua applicazione a un'origine sicura, come HTTPS. Vedi https://goo.gle/chrome-insecure-origins per maggiori dettagli."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "Gli elementi `getCurrentPosition()` e `watchPosition()` su origini non sicure sono deprecati. Per utilizzare questa funzionalità, considera di passare la tua applicazione a un'origine sicura, come HTTPS. Vedi https://goo.gle/chrome-insecure-origins per maggiori dettagli."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` non funziona più su origini non sicure. Per utilizzare questa funzionalità, considera di passare la tua applicazione a un'origine sicura, come HTTPS. Vedi https://goo.gle/chrome-insecure-origins per maggiori dettagli."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "L'elemento `RTCPeerConnectionIceErrorEvent.hostCandidate` è deprecato. Utilizza invece `RTCPeerConnectionIceErrorEvent.address` o `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "L'origine del commerciante e i dati arbitrari dell'evento del service worker di `canmakepayment` sono deprecati e verranno rimossi: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Il sito web ha richiesto una sottorisorsa a una rete a cui può accedere solo a causa della posizione di rete privilegiata dei relativi utenti. Queste richieste espongono dispositivi e servizi non pubblici a Internet, aumentando il rischio di un attacco Cross-Site Request Forgery (CSRF) e/o una fuga di informazioni. Per limitare questi rischi, Chrome ritira le richieste a sottorisorse non pubbliche quando iniziate da contesti non sicuri e le blocca."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Il campo `dailyUpdateUrl` di `InterestGroups` passato a `joinAdInterestGroup()` è stato rinominato in `updateUrl` per rispecchiare in modo più preciso il suo comportamento."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "Non è possibile caricare il CSS dagli URL di `file:` a meno che questi non terminino in un'estensione del file `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "L'utilizzo dell'elemento `SourceBuffer.abort()` per interrompere la rimozione dell'intervallo asincrono di `remove()` è deprecato a causa di una modifica di specifica. Il relativo supporto verrà rimosso in futuro. Dovrai invece ascoltare l'evento `updateend`. L'elemento `abort()` è destinato solo a interrompere un allegato multimediale asincrono o a reimpostare lo stato del parser."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "L'impostazione di `MediaSource.duration` al di sotto del timestamp di presentazione più alto di qualsiasi frame codificato con buffer è deprecata a causa di una modifica di specifica. Il supporto della rimozione implicita di contenuti multimediali con buffer troncati verrà rimosso in futuro. Dovresti invece eseguire l'elemento esplicito `remove(newDuration, oldDuration)` su tutti gli elementi `sourceBuffers`, in cui si trova`newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI richiederà l'autorizzazione per l'utilizzo anche se il valore sysex non è specificato nell'elemento `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "L'attributo precedente `shadowroot` non standardizzato è deprecato e *non funzionerà più* nella versione M119. Usa invece il nuovo attributo `shadowrootmode` standardizzato."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "L'uso dell'API Notification da origini non sicure potrebbe non essere più supportato. Dovresti considerare di passare la tua applicazione a un’origine sicura, come HTTPS. Vedi https://goo.gle/chrome-insecure-origins per maggiori dettagli."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "L'autorizzazione per l'API Notification potrebbe non essere più richiesta da un iframe multiorigine. Considera di richiedere l'autorizzazione da un frame di primo livello o aprire invece una nuova finestra."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "L'opzione `imageOrientation: 'none'` in createImageBitmap è deprecata. Usa invece createImageBitmap con l'opzione \\{imageOrientation: 'from-image'\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Il tuo partner sta negoziando una versione (D)TLS obsoleta. Rivolgiti al tuo partner per correggere questo problema."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Se specifichi `overflow: visible` nei tag img, video e canvas, gli spettatori potrebbero produrre contenuti visivi al di fuori dei limiti dell'elemento. Vedi https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "L'API `paymentManager.instruments` è deprecata. Utilizza l'installazione just-in-time per i gestori dei pagamenti."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "La tua chiamata `PaymentRequest` ha ignorato l'istruzione `connect-src` dei Criteri di sicurezza del contenuto (CSP). L'esclusione è stata ritirata. Aggiungi all'istruzione CSP `connect-src` l'identificatore del metodo di pagamento dall'API `PaymentRequest` (nel campo `supportedMethods`)."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "L'elemento `StorageType.persistent` è deprecato. Utilizza invece l'elemento `navigator.storage` standardizzato."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "L'elemento `<source src>` con un elemento principale `<picture>` non è valido e pertanto viene ignorato. Utilizza invece `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "Il metodo webkitCancelAnimationFrame è specifico del fornitore. Usa invece il metodo cancelAnimationFrame standard."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "Il metodo webkitRequestAnimationFrame è specifico del fornitore. Usa invece il metodo requestAnimationFrame standard."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "L'API HTMLVideoElement.webkitDisplayingFullscreen è deprecata. Usa invece Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "L'API HTMLVideoElement.webkitEnterFullScreen() è deprecata. Usa invece Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "L'API HTMLVideoElement.webkitEnterFullscreen() è deprecata. Usa invece Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "L'API HTMLVideoElement.webkitExitFullScreen() è deprecata. Usa invece Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "L'API HTMLVideoElement.webkitExitFullscreen() è deprecata. Usa invece Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "L'API HTMLVideoElement.webkitSupportsFullscreen è deprecata. Usa invece Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Stiamo ritirando l'API `chrome.privacy.websites.privacySandboxEnabled`, ma rimarrà attiva per garantire la compatibilità con le versioni precedenti fino alla release M113. Usa invece i criteri `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` e `chrome.privacy.websites.adMeasurementEnabled`. Vedi https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Il vincolo `DtlsSrtpKeyAgreement` è stato rimosso. Hai specificato un valore `false` per questo vincolo, il che viene interpretato come un tentativo di utilizzo del metodo `SDES key negotiation` rimosso. Questa funzionalità è stata rimossa; utilizza invece un servizio che supporti `DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Il vincolo `DtlsSrtpKeyAgreement` è stato rimosso. Hai specificato un valore `true` per questo vincolo, il che non ha avuto alcun effetto, ma puoi rimuovere il vincolo per fare ordine."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Il metodo getStats() basato su callback è deprecato e verrà rimosso. Usa invece il metodo getStats() conforme alle specifiche."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "L'API Range.expand() è deprecata. Usa invece Selection.modify()."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Le richieste di sottorisorse i cui URL contengono credenziali incorporate (ad es. `https://user:pass@host/`) sono bloccate."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "L'opzione `rtcpMuxPolicy` è deprecata e verrà rimossa."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` richiederà l'isolamento multiorigine. Vedi https://developer.chrome.com/blog/enabling-shared-array-buffer/ per maggiori dettagli."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "L'API `speechSynthesis.speak()` senza attivazione utente è deprecata e verrà rimossa."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Le estensioni dovrebbero attivare l'isolamento multiorigine per continuare a utilizzare `SharedArrayBuffer`. Vedi https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "API SQL web deprecata. Utilizza SQLite WebAssembly o Indexed Database."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Il descrittore di autorizzazione `window-placement` è deprecato. Usa invece il descrittore `window-management`. Per ulteriore assistenza, visita la pagina https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Il criterio di autorizzazione `window-placement` è deprecato. Usa invece il criterio `window-management`. Per ulteriore assistenza, visita la pagina https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "L'elemento UTF-16 non è supportato dal file json di risposta in `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "L'elemento `XMLHttpRequest` sincrono nel thread principale è deprecato a causa dei suoi effetti negativi sull'esperienza dell'utente finale. Per ulteriore assistenza, visita la pagina https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "L'elemento `supportsSession()` è deprecato. Al suo posto utilizza `isSessionSupported()` e controlla il valore booleano risolto."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Durata blocco thread principale"
@@ -2342,6 +2696,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "L'URL fornito non è valido."
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Impossibile caricare la pagina richiesta in modo affidabile in Lighthouse. Assicurati che l'URL verificato sia quello corretto e che il server stia rispondendo opportunamente a tutte le richieste. (Codice di stato: {errorCode})"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "Il tipo MIME della pagina è XHTML: Lighthouse non supporta esplicitamente questo tipo di documento"
   },
@@ -2538,7 +2895,7 @@
     "message": "Installa [un modulo Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) che consenta il caricamento lento delle immagini. Questi moduli offrono la possibilità di rimandare qualsiasi immagine fuori schermo per migliorare le prestazioni."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Potresti usare un modulo per incorporare codice JavaScript e CSS fondamentale o potenzialmente caricare asset in modo asincrono tramite JavaScript, come il modulo [CSS avanzato/Aggregazione JS](https://www.drupal.org/project/advagg). Fai attenzione perché le ottimizzazioni offerte da questo modulo potrebbero interrompere la funzionalità del tuo sito, pertanto potresti dover apportare modifiche al codice."
+    "message": "Potresti usare un modulo per incorporare codice JavaScript e CSS fondamentale e usare l'attributo defer per codice JavaScript e CSS non fondamentale."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Le specifiche del server, i moduli e i temi contribuiscono al tempo di risposta del server. Potresti usare un tema più ottimizzato, selezionando con cura un modulo per l'ottimizzazione e/o eseguendo l'upgrade del server. I server hosting dovrebbero usare la memorizzazione nella cache opcode PHP, la memorizzazione nella cache per ridurre i tempi di query del database come Redis o memcache e una logica dell'applicazione ottimizzata per preparare più rapidamente le pagine."
@@ -2547,10 +2904,10 @@
     "message": "Potresti usare gli [stili di immagini adattabili](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) per ridurre le dimensioni delle immagini caricate nella tua pagina. Se usi Views per mostrare diversi contenuti su una pagina, potresti implementare l'impaginazione per limitare il numero di contenuti mostrati su una data pagina."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Assicurati di aver attivato l'opzione \"Aggregate CSS files\" (Aggrega file CSS) nella pagina \"Administration » Configuration » Development\" (Amministrazione » Configurazione » Sviluppo). Inoltre, puoi configurare altre opzioni di aggregazione avanzate tramite i [moduli aggiuntivi](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) per velocizzare il tuo sito concatenando, minimizzando e comprimendo i tuoi stili CSS."
+    "message": "Assicurati di aver attivato l'opzione \"Aggregate CSS files\" (Aggrega file CSS) nella pagina \"Administration (Amministrazione) » Configuration (Configurazione) » Development (Sviluppo)\".  Assicurati che il tuo sito Drupal utilizzi almeno la versione Drupal 10.1 per un migliore supporto dell'aggregazione degli asset."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Assicurati di aver attivato l'opzione \"Aggregate JavaScript files\" (Aggrega file JavaScript) nella pagina \"Administration » Configuration » Development\" (Amministrazione » Configurazione » Sviluppo). Inoltre, puoi configurare altre opzioni di aggregazione avanzate tramite i [moduli aggiuntivi](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) per velocizzare il tuo sito concatenando, minimizzando e comprimendo i tuoi asset JavaScript."
+    "message": "Assicurati di aver attivato l'opzione \"Aggregate JavaScript files\" (Aggrega file JavaScript) nella pagina \"Administration (Amministrazione) » Configuration (Configurazione) » Development (Sviluppo)\".  Assicurati che il tuo sito Drupal utilizzi almeno la versione Drupal 10.1 per un migliore supporto dell'aggregazione degli asset."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Potresti rimuovere le regole CSS inutilizzate e collegare solo le librerie Drupal necessarie alle pagine o ai componenti in una pagina pertinenti. Per i dettagli, apri il [link alla documentazione relativa a Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Per individuare le librerie collegate che aggiungono CSS estraneo, prova a eseguire la [copertura del codice](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) in Chrome DevTools. Puoi individuare il tema/modulo responsabile nell'URL del foglio di stile quando l'aggregazione CSS è disattivata sul tuo sito Drupal. Cerca i temi/moduli che nell'elenco hanno diversi fogli di stile con molto rosso nella copertura del codice. Un tema/modulo dovrebbe aggiungere in coda un foglio di stile solo se viene effettivamente utilizzato nella pagina."
@@ -2750,23 +3107,65 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Attiva la compressione sul tuo server Next.js. [Scopri di più](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contatta il tuo account manager per attivare [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Con la relativa configurazione verrà data la priorità alle prestazioni di rendering delle pagine e verranno ottimizzate queste prestazioni."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Utilizza l'opzione [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) in NitroPack per impostare un valore desiderato per la regola di visualizzazione dei caratteri CSS."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Usa [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) per convertire automaticamente le tue immagini in WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Attiva [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images) per rimandare le immagini fuori schermo."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Attiva [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack per velocizzare i tempi di caricamento iniziali."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Migliora il tempo di risposta del server e ottimizza le prestazioni percepite attivando [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Attiva [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) nelle impostazioni Caching (Memorizzazione nella cache) per ridurre le dimensioni dei file CSS, HTML e JavaScript e velocizzare i tempi di caricamento."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Attiva [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) nelle impostazioni Caching (Memorizzazione nella cache) per ridurre le dimensioni dei file JS, HTML e CSS e velocizzare i tempi di caricamento."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Attiva [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) per rimuovere le regole CSS non applicabili a questa pagina."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configura [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack per ritardare il caricamento degli script finché non sono necessari."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Vai alla funzionalità [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) nel menu `Caching` e modifica la scadenza della cache della pagina per migliorare i tempi di caricamento e l'esperienza utente."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Comprimi, ottimizza e converti automaticamente le tue immagini in WebP attivando l'impostazione [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Attiva [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) per ottimizzare preventivamente le tue immagini e farle corrispondere alle dimensioni dei contenitori in cui vengono visualizzate su tutti i dispositivi."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Utilizza [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack per ridurre le dimensioni dei file inviati al browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Usa il componente `nuxt/image` e imposta `format=\"webp\"`. [Scopri di più](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Usa il componente `nuxt/image` e imposta `format=\"webp\"`. [Scopri di più](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Usa il componente `nuxt/image` e imposta `loading=\"lazy\"` per le immagini non mostrate sullo schermo. [Scopri di più](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Usa il componente `nuxt/image` e imposta `loading=\"lazy\"` per le immagini non mostrate sullo schermo. [Scopri di più](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Usa il componente `nuxt/image` e specifica `preload` per l'immagine LCP. [Scopri di più](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Usa il componente `nuxt/image` e specifica `preload` per l'immagine LCP. [Scopri di più](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Usa il componente `nuxt/image` e specifica i valori espliciti `width` e `height`. [Scopri di più](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Usa il componente `nuxt/image` e specifica i valori espliciti `width` e `height`. [Scopri di più](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Usa il componente `nuxt/image` e imposta il valore `quality` appropriato. [Scopri di più](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Usa il componente `nuxt/image` e imposta il valore `quality` appropriato. [Scopri di più](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Usa il componente `nuxt/image` e imposta il valore `sizes` appropriato. [Scopri di più](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Usa il componente `nuxt/image` e imposta il valore `sizes` appropriato. [Scopri di più](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Sostituisci le GIF animate con i video](https://web.dev/replace-gifs-with-videos/) per caricamenti della pagina web più rapidi e valuta l'utilizzo di formati file moderni come [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) o [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) per migliorare l'efficienza della compressione di oltre il 30% rispetto al codec video attualmente più avanzato, VP9."
@@ -2830,6 +3229,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Usa lo strumento React DevTools Profiler, che usa l'API Profiler, per misurare le prestazioni di rendering dei tuoi componenti. [Ulteriori informazioni](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "Posiziona i video all'interno di `VideoBoxes`, personalizzali con `Video Masks` o aggiungi `Transparent Videos`. [Scopri di più](https://support.wix.com/en/article/wix-video-about-wix-video)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Carica le immagini utilizzando `Wix Media Manager` per assicurarti che vengano pubblicate automaticamente come WebP. Trova [altri modi per ottimizzare](https://support.wix.com/en/article/site-performance-optimizing-your-media) i contenuti multimediali del tuo sito."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "Quando [aggiungi codice di terze parti](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) nella scheda `Custom Code` della dashboard del tuo sito, assicurati che venga differito o caricato alla fine del corpo del codice. Se possibile, utilizza le [integrazioni](https://support.wix.com/en/article/about-marketing-integrations) di Wix per incorporare gli strumenti di marketing nel tuo sito. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Wix utilizza CDN e memorizzazione nella cache per fornire risposte il più rapidamente possibile per la maggior parte dei visitatori. Valuta la possibilità di [attivare manualmente la memorizzazione nella cache](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) per il tuo sito, soprattutto se utilizzi `Velo`."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "Controlla l'eventuale codice di terze parti che hai aggiunto al tuo sito nella scheda `Custom Code` della dashboard del sito e conserva soltanto i servizi necessari per il sito. [Scopri di più](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Potresti caricare la tua GIF su un servizio che la renda disponibile per l'incorporamento come video HTML5."
@@ -2936,6 +3350,9 @@
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "Salva come JSON"
   },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "Visualizza traccia originale"
+  },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Apri nell'app Viewer"
   },
@@ -2981,8 +3398,17 @@
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Controlli superati"
   },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Oltre ai [criteri di installazione aggiornati di Chrome](https://developer.chrome.com/blog/update-install-criteria), Lighthouse ritirerà la categoria PWA in una release futura. Fai riferimento alla [documentazione aggiornata relativa alle PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) per i futuri test delle PWA."
+  },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Caricamento pagina iniziale"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Istantanea di un momento specifico nel tempo"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Periodo di tempo delle interazioni degli utenti"
   },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Limitazione personalizzata"
@@ -3018,10 +3444,10 @@
     "message": "User-agent (rete)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Caricamento singola pagina"
+    "message": "Sessione di una sola pagina"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Questi dati riguardano il caricamento di una singola pagina, al contrario dei dati del campo che riepilogano tante sessioni."
+    "message": "Questi dati riguardano la sessione di una sola pagina, a differenza dei dati del campo che riepilogano tante sessioni."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Limitazione a 4G lenta"
@@ -3055,9 +3481,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "I valori sono delle stime e potrebbero variare. Il [punteggio relativo alle prestazioni viene calcolato](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) direttamente in base a queste metriche."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "Visualizza traccia originale"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "Visualizza traccia"

@@ -10,7 +10,7 @@
 
 .header {
   padding: 0 0 6px;
-  border-bottom: var(--legacy-divider-border);
+  border-bottom: 1px solid var(--sys-color-divider);
   font-size: 18px;
   font-weight: normal;
   flex: none;
@@ -30,7 +30,7 @@
   margin-bottom: -1px;
 }
 
-.ignore-list-option-group {
+.ignore-list-option-group-title {
   margin-top: 16px;
   margin-bottom: 3px;
   margin-left: 8px;
@@ -50,7 +50,7 @@
 
 .ignore-list-global-enable {
   padding: 3px 0;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   font-size: 120%;
   margin-top: 20px;
 }
@@ -69,11 +69,15 @@
   min-width: 100px;
 }
 
+.ignore-list-item > [is="dt-checkbox"] {
+  width: 100%;
+}
+
 .ignore-list-item .ignore-list-pattern {
   white-space: nowrap;
   text-overflow: ellipsis;
   user-select: none;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   overflow: hidden;
 }
 
@@ -108,7 +112,8 @@
 }
 
 .editor-container:has(.ignore-list-edit-row) {
-  background: var(--color-background-elevation-0);
+  background: var(--sys-color-surface1);
+  border-radius: 10px;
 }
 
 .ignore-list.list-editing ~ .add-button {

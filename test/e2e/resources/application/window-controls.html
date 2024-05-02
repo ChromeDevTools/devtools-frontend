@@ -1,0 +1,24 @@
+<!--
+  Copyright 2023 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="manifest" href="window-controls-manifest.webmanifest">
+    <style>
+        :root {
+            --fallback-title-bar-height: 40px;
+            --theme-color: #10826b;
+            --titlebar-area-x: env(titlebar-area-x);
+            --titlebar-area-width: env(titlebar-area-width);
+            --titlebar-area-y: env(titlebar-area-y);
+            --titlebar-area-height: env(titlebar-area-height);
+        }
+    </style>
+</head>
+<body>
+    <div id="titleBarContainer"></div>
+</body>
+</html>

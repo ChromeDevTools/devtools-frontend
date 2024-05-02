@@ -28,7 +28,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import type * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
+import * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
+
+// We mirror what heap_snapshot_worker.ts does, but we can't use it here as we'd have a
+// cyclic GN dependency otherwise.
+
+import * as AllocationProfile from './AllocationProfile.js';
+import * as HeapSnapshot from './HeapSnapshot.js';
+import * as HeapSnapshotLoader from './HeapSnapshotLoader.js';
+
 interface DispatcherResponse {
   callId?: number;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
@@ -42,23 +50,10 @@ export class HeapSnapshotWorkerDispatcher {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   #objects: any[];
-  readonly #global: Worker;
   readonly #postMessage: Function;
   constructor(globalObject: Worker, postMessage: Function) {
     this.#objects = [];
-    this.#global = globalObject;
     this.#postMessage = postMessage;
-  }
-
-  #findFunction(name: string): Function {
-    const path = name.split('.');
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let result = (this.#global as any);
-    for (let i = 0; i < path.length; ++i) {
-      result = result[path[i]];
-    }
-    return result as Function;
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
@@ -72,12 +67,9 @@ export class HeapSnapshotWorkerDispatcher {
         {callId: data.callId, result: null, error: undefined, errorCallStack: undefined, errorMethodName: undefined};
     try {
       switch (data.disposition) {
-        case 'create': {
-          const constructorFunction = this.#findFunction(data.methodName);
-          // @ts-ignore
-          this.#objects[data.objectId] = new constructorFunction(this);
+        case 'createLoader':
+          this.#objects[data.objectId] = new HeapSnapshotLoader.HeapSnapshotLoader(this);
           break;
-        }
         case 'dispose': {
           delete this.#objects[data.objectId];
           break;
@@ -104,6 +96,15 @@ export class HeapSnapshotWorkerDispatcher {
         }
         case 'evaluateForTest': {
           try {
+            // Make 'HeapSnapshotWorker' and 'HeapSnapshotModel' available to web tests. 'eval' can't use 'import'.
+            // @ts-ignore
+            globalThis.HeapSnapshotWorker = {
+              AllocationProfile,
+              HeapSnapshot,
+              HeapSnapshotLoader,
+            };
+            // @ts-ignore
+            globalThis.HeapSnapshotModel = HeapSnapshotModel;
             response.result = self.eval(data.source);
           } catch (error) {
             response.result = error.toString();

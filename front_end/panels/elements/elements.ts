@@ -27,7 +27,6 @@ import './ElementsPanel.js';
 import './ClassesPaneWidget.js';
 import './ElementStatePaneWidget.js';
 import './ElementsTreeElementHighlighter.js';
-import './TopLayerContainer.js';
 import './AccessibilityTreeUtils.js';
 import './AccessibilityTreeView.js';
 
@@ -54,6 +53,7 @@ import * as MetricsSidebarPane from './MetricsSidebarPane.js';
 import * as NodeStackTraceWidget from './NodeStackTraceWidget.js';
 import * as PlatformFontsWidget from './PlatformFontsWidget.js';
 import * as PropertiesWidget from './PropertiesWidget.js';
+import * as PropertyParser from './PropertyParser.js';
 import * as StyleEditorWidget from './StyleEditorWidget.js';
 import * as StylePropertiesSection from './StylePropertiesSection.js';
 import * as StylePropertyHighlighter from './StylePropertyHighlighter.js';
@@ -87,6 +87,7 @@ export {
   NodeStackTraceWidget,
   PlatformFontsWidget,
   PropertiesWidget,
+  PropertyParser,
   StyleEditorWidget,
   StylePropertiesSection,
   StylePropertyHighlighter,

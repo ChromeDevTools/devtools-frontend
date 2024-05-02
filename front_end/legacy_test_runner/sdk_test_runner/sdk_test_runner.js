@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../core/sdk/sdk-legacy.js';
-
 import * as Platform from '../../core/platform/platform.js';
+import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
@@ -47,21 +49,23 @@ SDKTestRunner.PageMock = class {
   }
 
   connectAsMainTarget(targetName) {
-    self.Bindings.debuggerWorkspaceBinding.resetForTest(TestRunner.mainTarget);
-    self.Bindings.resourceMapping.resetForTest(TestRunner.mainTarget);
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().resetForTest(TestRunner.mainTarget);
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().resourceMapping.resetForTest(
+        TestRunner.mainTarget);
     this.enabledDomains.clear();
-    self.SDK.targetManager.clearAllTargetsForTest();
+    SDK.TargetManager.TargetManager.instance().clearAllTargetsForTest();
 
-    const oldFactory = ProtocolClient.Connection.getFactory();
-    ProtocolClient.Connection.setFactory(() => {
+    const oldFactory = ProtocolClient.InspectorBackend.Connection.getFactory();
+    ProtocolClient.InspectorBackend.Connection.setFactory(() => {
       this.connection = new MockPageConnection(this);
       return this.connection;
     });
-    const target = self.SDK.targetManager.createTarget(nextId('mock-target-'), targetName, this.type, null);
-    ProtocolClient.Connection.setFactory(oldFactory);
+    const target =
+        SDK.TargetManager.TargetManager.instance().createTarget(nextId('mock-target-'), targetName, this.type, null);
+    ProtocolClient.InspectorBackend.Connection.setFactory(oldFactory);
 
     this.target = target;
-    self.SDK.targetManager.setScopeTarget(target);
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
     return target;
   }
 
@@ -70,8 +74,8 @@ SDKTestRunner.PageMock = class {
     this.sessionId = nextId('mock-target-');
     this.root = parentMock.root || parentMock;
     this.root.children.set(this.sessionId, this);
-    const target =
-        self.SDK.targetManager.createTarget(this.sessionId, targetName, this.type, parentMock.target, this.sessionId);
+    const target = SDK.TargetManager.TargetManager.instance().createTarget(
+        this.sessionId, targetName, this.type, parentMock.target, this.sessionId);
     this.target = target;
     return target;
   }
@@ -102,7 +106,7 @@ SDKTestRunner.PageMock = class {
       this.fireEvent('Runtime.executionContextCreated', {context: context});
     }
 
-    const text = new TextUtils.Text(content);
+    const text = new TextUtils.Text.Text(content);
 
     const script = {
       scriptId: id,
@@ -237,7 +241,8 @@ SDKTestRunner.PageMock = class {
     }
 
     this.sendResponse(
-        id, undefined, {message: 'Can\'t handle command ' + methodName, code: ProtocolClient.DevToolsStubErrorCode});
+        id, undefined,
+        {message: 'Can\'t handle command ' + methodName, code: ProtocolClient.InspectorBackend.DevToolsStubErrorCode});
   }
 
   sendResponse(id, result, error) {

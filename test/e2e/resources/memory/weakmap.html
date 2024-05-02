@@ -1,0 +1,48 @@
+<!--
+  Copyright 2024 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<h1>Memory Panel (Heap profiler) Test</h1>
+<script>
+  class WithData {
+    constructor() {
+      this.data = new Uint8Array(2 ** 15);
+    }
+  }
+  class CustomClass1 extends WithData {}
+  class CustomClass1Key {}
+  class CustomClass2 extends WithData {}
+  class CustomClass2Key {}
+  class CustomClass3 extends WithData {}
+  class CustomClass3Key {}
+  class CustomClass4 extends WithData {}
+  class CustomClass4Key {}
+  class CustomClass4Retainer {
+    constructor(f) {
+      this.f = f;
+    }
+  }
+
+  // The WeakMap is at distance 3, and its table is a distance 4.
+  var weakMap = {a: new WeakMap()};
+
+  // Scenario 1: the key is closer to the root than the WeakMap.
+  var key1 = new CustomClass1Key();  // Key object at distance 2
+  weakMap.a.set(key1, new CustomClass1());
+
+  // Scenario 2: the WeakMap is closer to the root than the key.
+  var key2 = {a: {b: {c: new CustomClass2Key()}}};  // Key object at distance 5
+  weakMap.a.set(key2.a.b.c, new CustomClass2());
+
+  // Scenario 3: the value is retained by a shorter path than the key or the WeakMap.
+  var key3 = {a: {b: new CustomClass3Key()}};  // Key object at distance 4
+  var value3 = new CustomClass3();  // Value object at distance 2
+  weakMap.a.set(key3.a.b, value3);
+
+  // Scenario 4: the value retains its own key.
+  // The value object is at distance 8 from the root.
+  var value4 = {a: {b: {c: {d: {e: new CustomClass4Retainer(new CustomClass4())}}}}};
+  value4.a.b.c.d.e.f.key = new CustomClass4Key();
+  weakMap.a.set(value4.a.b.c.d.e.f.key, value4.a.b.c.d.e.f);
+</script>

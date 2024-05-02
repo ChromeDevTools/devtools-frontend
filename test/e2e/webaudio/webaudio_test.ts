@@ -10,7 +10,7 @@ import {
   waitForWebAudioContent,
 } from '../helpers/webaudio-helpers.js';
 
-describe('The WebAudio Panel', async () => {
+describe('The WebAudio Panel', () => {
   afterEach(async () => {
     // @see console-autocomplete_test.ts
     // Make sure we don't close DevTools while there is an outstanding

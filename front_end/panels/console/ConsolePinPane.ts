@@ -12,6 +12,7 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import consolePinPaneStyles from './consolePinPane.css.js';
 
@@ -62,9 +63,10 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
     super(true, 250);
     this.contentElement.classList.add('console-pins', 'monospace');
     this.contentElement.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('console-pins')}`);
 
     this.pins = new Set();
-    this.pinsSetting = Common.Settings.Settings.instance().createLocalSetting('consolePins', []);
+    this.pinsSetting = Common.Settings.Settings.instance().createLocalSetting('console-pins', []);
     for (const expression of this.pinsSetting.get()) {
       this.addPin(expression);
     }
@@ -95,12 +97,15 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
         const targetPin = elementToConsolePin.get(targetPinElement);
         if (targetPin) {
           contextMenu.editSection().appendItem(
-              i18nString(UIStrings.removeExpression), this.removePin.bind(this, targetPin));
+              i18nString(UIStrings.removeExpression), this.removePin.bind(this, targetPin),
+              {jslogContext: 'remove-expression'});
           targetPin.appendToContextMenu(contextMenu);
         }
       }
     }
-    contextMenu.editSection().appendItem(i18nString(UIStrings.removeAllExpressions), this.removeAllPins.bind(this));
+    contextMenu.editSection().appendItem(
+        i18nString(UIStrings.removeAllExpressions), this.removeAllPins.bind(this),
+        {jslogContext: 'remove-all-expressions'});
     void contextMenu.show();
   }
 
@@ -193,7 +198,9 @@ export class ConsolePin {
     const fragment = UI.Fragment.Fragment.build`
   <div class='console-pin'>
   ${this.deletePinIcon}
-  <div class='console-pin-name' $='name'></div>
+  <div class='console-pin-name' $='name' jslog="${VisualLogging.textField().track({
+      keydown: true,
+    })}"></div>
   <div class='console-pin-preview' $='preview'></div>
   </div>`;
     this.pinElement = fragment.element();
@@ -236,7 +243,7 @@ export class ConsolePin {
       CodeMirror.keymap.of([
         {
           key: 'Escape',
-          run: (view: CodeMirror.EditorView): boolean => {
+          run: (view: CodeMirror.EditorView) => {
             view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.committedExpression}});
             this.focusOut();
             return true;
@@ -244,14 +251,14 @@ export class ConsolePin {
         },
         {
           key: 'Enter',
-          run: (): boolean => {
+          run: () => {
             this.focusOut();
             return true;
           },
         },
         {
           key: 'Mod-Enter',
-          run: (): boolean => {
+          run: () => {
             this.focusOut();
             return true;
           },

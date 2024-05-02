@@ -33,8 +33,8 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
   private uiSourceCodes: Workspace.UISourceCode.UISourceCode[];
   private readonly uiSourceCodeIds: Set<string>;
   private query!: string;
-  constructor() {
-    super();
+  constructor(jslogContext: string) {
+    super(jslogContext);
 
     this.queryLineNumberAndColumnNumber = '';
     this.defaultScores = null;
@@ -74,6 +74,11 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
             uiSourceCode)) {
       return false;
     }
+
+    if (uiSourceCode.isFetchXHR()) {
+      return false;
+    }
+
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     return !binding || binding.fileSystem === uiSourceCode;
   }

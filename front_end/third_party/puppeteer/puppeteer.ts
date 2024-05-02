@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { CDPBrowser } from './package/lib/esm/puppeteer/common/Browser.js';
-import { Connection } from './package/lib/esm/puppeteer/common/Connection.js';
+import { CdpBrowser } from './package/lib/esm/puppeteer/cdp/Browser.js';
+import { Connection } from './package/lib/esm/puppeteer/cdp/Connection.js';
 import { type ConnectionTransport } from './package/lib/esm/puppeteer/common/ConnectionTransport.js';
-import { Frame } from './package/lib/esm/puppeteer/common/Frame.js';
-import { CDPElementHandle } from './package/lib/esm/puppeteer/common/ElementHandle.js';
-import { CDPPage } from './package/lib/esm/puppeteer/common/Page.js';
+import { CdpFrame } from './package/lib/esm/puppeteer/cdp/Frame.js';
+import { CdpElementHandle } from './package/lib/esm/puppeteer/cdp/ElementHandle.js';
+import { CdpPage } from './package/lib/esm/puppeteer/cdp/Page.js';
+import { CdpTarget } from './package/lib/esm/puppeteer/cdp/Target.js';
 
-export { CDPBrowser as Browser, Connection, ConnectionTransport, CDPElementHandle as ElementHandle, Frame, CDPPage as Page };
+export { CdpBrowser as Browser, CdpTarget as Target, Connection, ConnectionTransport, CdpElementHandle as ElementHandle, CdpFrame as Frame, CdpPage as Page };

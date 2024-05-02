@@ -1,25 +1,14 @@
 /**
- * Copyright 2020 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2020 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
-import { Browser } from '../api/Browser.js';
-import { BrowserConnectOptions } from '../common/BrowserConnector.js';
-import { Product } from '../common/Product.js';
-import { CommonPuppeteerSettings, ConnectOptions, Puppeteer } from '../common/Puppeteer.js';
-import { Configuration } from '../common/Configuration.js';
-import { BrowserFetcher, BrowserFetcherOptions } from './BrowserFetcher.js';
-import { BrowserLaunchArgumentOptions, ChromeReleaseChannel, LaunchOptions } from './LaunchOptions.js';
+import type { Browser } from '../api/Browser.js';
+import type { Configuration } from '../common/Configuration.js';
+import type { ConnectOptions, BrowserConnectOptions } from '../common/ConnectOptions.js';
+import type { Product } from '../common/Product.js';
+import { type CommonPuppeteerSettings, Puppeteer } from '../common/Puppeteer.js';
+import type { BrowserLaunchArgumentOptions, ChromeReleaseChannel, LaunchOptions } from './LaunchOptions.js';
 /**
  * @public
  */
@@ -83,8 +72,6 @@ export declare class PuppeteerNode extends Puppeteer {
      *
      * @param options - Set of configurable options to set on the browser.
      * @returns Promise which resolves to browser instance.
-     *
-     * @public
      */
     connect(options: ConnectOptions): Promise<Browser>;
     /**
@@ -92,11 +79,11 @@ export declare class PuppeteerNode extends Puppeteer {
      * specified.
      *
      * When using with `puppeteer-core`,
-     * {@link LaunchOptions.executablePath | options.executablePath} or
-     * {@link LaunchOptions.channel | options.channel} must be provided.
+     * {@link LaunchOptions | options.executablePath} or
+     * {@link LaunchOptions | options.channel} must be provided.
      *
      * @example
-     * You can use {@link LaunchOptions.ignoreDefaultArgs | options.ignoreDefaultArgs}
+     * You can use {@link LaunchOptions | options.ignoreDefaultArgs}
      * to filter out `--mute-audio` from default arguments:
      *
      * ```ts
@@ -107,9 +94,9 @@ export declare class PuppeteerNode extends Puppeteer {
      *
      * @remarks
      * Puppeteer can also be used to control the Chrome browser, but it works best
-     * with the version of Chromium downloaded by default by Puppeteer. There is
-     * no guarantee it will work with any other version. If Google Chrome (rather
-     * than Chromium) is preferred, a
+     * with the version of Chrome for Testing downloaded by default.
+     * There is no guarantee it will work with any other version. If Google Chrome
+     * (rather than Chrome for Testing) is preferred, a
      * {@link https://www.google.com/chrome/browser/canary.html | Chrome Canary}
      * or
      * {@link https://www.chromium.org/getting-involved/dev-channel | Dev Channel}
@@ -117,17 +104,15 @@ export declare class PuppeteerNode extends Puppeteer {
      * {@link https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/ | this article}
      * for a description of the differences between Chromium and Chrome.
      * {@link https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md | This article}
-     * describes some differences for Linux users.
+     * describes some differences for Linux users. See
+     * {@link https://developer.chrome.com/blog/chrome-for-testing/ | this doc} for the description
+     * of Chrome for Testing.
      *
      * @param options - Options to configure launching behavior.
-     *
-     * @public
      */
     launch(options?: PuppeteerLaunchOptions): Promise<Browser>;
     /**
-     * @returns The default executable path.
-     *
-     * @public
+     * The default executable path.
      */
     executablePath(channel?: ChromeReleaseChannel): string;
     /**
@@ -135,24 +120,20 @@ export declare class PuppeteerNode extends Puppeteer {
      */
     get browserRevision(): string;
     /**
-     * @returns The default download path for puppeteer. For puppeteer-core, this
+     * The default download path for puppeteer. For puppeteer-core, this
      * code should never be called as it is never defined.
      *
      * @internal
      */
     get defaultDownloadPath(): string | undefined;
     /**
-     * @returns The name of the browser that was last launched.
-     *
-     * @public
+     * The name of the browser that was last launched.
      */
     get lastLaunchedProduct(): Product;
     /**
-     * @returns The name of the browser that will be launched by default. For
+     * The name of the browser that will be launched by default. For
      * `puppeteer`, this is influenced by your configuration. Otherwise, it's
      * `chrome`.
-     *
-     * @public
      */
     get defaultProduct(): Product;
     /**
@@ -162,28 +143,28 @@ export declare class PuppeteerNode extends Puppeteer {
      * {@link PuppeteerNode.lastLaunchedProduct | lastLaunchedProduct}.
      *
      * @returns The name of the browser that is under automation.
-     *
-     * @public
      */
     get product(): string;
     /**
      * @param options - Set of configurable options to set on the browser.
      *
      * @returns The default flags that Chromium will be launched with.
-     *
-     * @public
      */
     defaultArgs(options?: BrowserLaunchArgumentOptions): string[];
     /**
-     * @param options - Set of configurable options to specify the settings of the
-     * BrowserFetcher.
+     * Removes all non-current Firefox and Chrome binaries in the cache directory
+     * identified by the provided Puppeteer configuration. The current browser
+     * version is determined by resolving PUPPETEER_REVISIONS from Puppeteer
+     * unless `configuration.browserRevision` is provided.
      *
      * @remarks
-     * If you are using `puppeteer-core`, do not use this method. Just
-     * construct {@link BrowserFetcher} manually.
      *
-     * @returns A new BrowserFetcher instance.
+     * Note that the method does not check if any other Puppeteer versions
+     * installed on the host that use the same cache directory require the
+     * non-current binaries.
+     *
+     * @public
      */
-    createBrowserFetcher(options?: Partial<BrowserFetcherOptions>): BrowserFetcher;
+    trimCache(): Promise<void>;
 }
 //# sourceMappingURL=PuppeteerNode.d.ts.map

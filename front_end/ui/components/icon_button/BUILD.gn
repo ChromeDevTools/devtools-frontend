@@ -5,29 +5,29 @@
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
-  sources = [
-    "icon.css",
-    "iconButton.css",
-    "newIcon.css",
-  ]
+  sources = [ "iconButton.css" ]
+}
+
+generate_css("legacy_css_files") {
+  sources = [ "icon.css" ]
+
+  legacy = true
 }
 
 devtools_module("icon_button") {
   sources = [
     "Icon.ts",
     "IconButton.ts",
-    "NewIcon.ts",
   ]
   deps = [
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/lit-html:bundle",
   ]
-
-  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
 }
 
 devtools_entrypoint("bundle") {
@@ -36,10 +36,10 @@ devtools_entrypoint("bundle") {
   deps = [
     ":css_files",
     ":icon_button",
+    ":legacy_css_files",
   ]
 
   visibility = [
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../../../entrypoints/inspector_main/*",
     "../../../entrypoints/main/*",
     "../../legacy/*",
@@ -48,4 +48,19 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility += default_components_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "Icon.test.ts",
+    "IconButton.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../testing",
+    "../../lit-html:bundle",
+  ]
 }

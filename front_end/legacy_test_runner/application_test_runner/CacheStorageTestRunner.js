@@ -2,31 +2,35 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../core/sdk/sdk.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as Application from '../../panels/application/application.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.ApplicationTestRunner = self.ApplicationTestRunner || {};
 
-ApplicationTestRunner.dumpCacheTree = async function(pathFilter) {
-  UI.panels.resources.sidebar.cacheStorageListTreeElement.expand();
-  const promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
-  UI.panels.resources.sidebar.cacheStorageListTreeElement.refreshCaches();
+export const dumpCacheTree = async function(pathFilter) {
+  Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.expand();
+  const promise =
+      TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
+  Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.refreshCaches();
   await promise;
-  await ApplicationTestRunner.dumpCacheTreeNoRefresh(pathFilter);
+  await dumpCacheTreeNoRefresh(pathFilter);
 };
 
-ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
+export const dumpCacheTreeNoRefresh = async function(pathFilter) {
   function _dumpDataGrid(dataGrid) {
     for (const node of dataGrid.rootNode().children) {
       const children = Array.from(node.element().children).filter(function(element) {
-        return !element.classList.contains('responseTime-column');
+        return !element.classList.contains('response-time-column');
       });
 
       const entries = Array.from(children, td => td.textContent).filter(text => text);
       TestRunner.addResult(' '.repeat(8) + entries.join(', '));
     }
   }
-  UI.panels.resources.sidebar.cacheStorageListTreeElement.expand();
+  Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.expand();
 
   if (!pathFilter) {
     TestRunner.addResult('Dumping CacheStorage tree:');
@@ -34,7 +38,7 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
     TestRunner.addResult('Dumping CacheStorage tree with URL path filter string "' + pathFilter + '"');
   }
 
-  const cachesTreeElement = UI.panels.resources.sidebar.cacheStorageListTreeElement;
+  const cachesTreeElement = Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement;
 
   if (!cachesTreeElement.childCount()) {
     TestRunner.addResult('    (empty)');
@@ -74,20 +78,21 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
   }
 };
 
-ApplicationTestRunner.dumpCachedEntryContent = async function(cacheName, requestUrl, withHeader) {
-  UI.panels.resources.sidebar.cacheStorageListTreeElement.expand();
-  const promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
-  UI.panels.resources.sidebar.cacheStorageListTreeElement.refreshCaches();
+export const dumpCachedEntryContent = async function(cacheName, requestUrl, withHeader) {
+  Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.expand();
+  const promise =
+      TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
+  Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.refreshCaches();
   await promise;
-  await ApplicationTestRunner.dumpCachedEntryContentNoRefresh(cacheName, requestUrl, withHeader);
+  await dumpCachedEntryContentNoRefresh(cacheName, requestUrl, withHeader);
 };
 
-ApplicationTestRunner.dumpCachedEntryContentNoRefresh = async function(cacheName, requestUrl, withHeader) {
-  UI.panels.resources.sidebar.cacheStorageListTreeElement.expand();
+export const dumpCachedEntryContentNoRefresh = async function(cacheName, requestUrl, withHeader) {
+  Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.expand();
 
   TestRunner.addResult('Dumping ' + cacheName + '\'s entry with request URL: ' + requestUrl);
 
-  const cachesTreeElement = UI.panels.resources.sidebar.cacheStorageListTreeElement;
+  const cachesTreeElement = Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement;
 
   for (let i = 0; i < cachesTreeElement.childCount(); ++i) {
     const cacheTreeElement = cachesTreeElement.childAt(i);
@@ -117,7 +122,10 @@ ApplicationTestRunner.dumpCachedEntryContentNoRefresh = async function(cacheName
             }
           }
           const contentObject = await view.requestContent(request);
-          const content = contentObject.content;
+          let content = null;
+          if (!TextUtils.ContentData.ContentData.isError(contentObject)) {
+            content = contentObject.isTextContent ? contentObject.text : contentObject.base64;
+          }
           TestRunner.addResult(' '.repeat(8) + (content ? content : '(nothing to preview)'));
         }
         resolve();
@@ -127,8 +135,8 @@ ApplicationTestRunner.dumpCachedEntryContentNoRefresh = async function(cacheName
   }
 };
 
-ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optionalEntry) {
-  UI.panels.resources.sidebar.cacheStorageListTreeElement.expand();
+export const deleteCacheFromInspector = async function(cacheName, optionalEntry) {
+  Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.expand();
 
   if (optionalEntry) {
     TestRunner.addResult('Deleting CacheStorage entry ' + optionalEntry + ' in cache ' + cacheName);
@@ -136,9 +144,10 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
     TestRunner.addResult('Deleting CacheStorage cache ' + cacheName);
   }
 
-  const cachesTreeElement = UI.panels.resources.sidebar.cacheStorageListTreeElement;
-  let promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
-  UI.panels.resources.sidebar.cacheStorageListTreeElement.refreshCaches();
+  const cachesTreeElement = Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement;
+  let promise =
+      TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
+  Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.refreshCaches();
   await promise;
 
   if (!cachesTreeElement.childCount()) {
@@ -155,13 +164,15 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
     }
 
     if (!optionalEntry) {
-      promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, 'cacheRemoved');
+      promise =
+          TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel.prototype, 'cacheRemoved');
       cacheTreeElement.clearCache();
       await promise;
       return;
     }
 
-    promise = TestRunner.addSnifferPromise(Resources.ServiceWorkerCacheView.prototype, 'updateDataCallback');
+    promise = TestRunner.addSnifferPromise(
+        Application.ServiceWorkerCacheViews.ServiceWorkerCacheView.prototype, 'updateDataCallback');
     let view = cacheTreeElement.view;
 
     if (!view) {
@@ -185,39 +196,40 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
   throw 'Error: Could not find CacheStorage cache ' + cacheName;
 };
 
-ApplicationTestRunner.waitForCacheRefresh = function(callback) {
-  TestRunner.addSniffer(SDK.ServiceWorkerCacheModel.prototype, 'updateCacheNames', callback, false);
+export const waitForCacheRefresh = function(callback) {
+  TestRunner.addSniffer(
+      SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel.prototype, 'updateCacheNames', callback, false);
 };
 
-ApplicationTestRunner.createCache = function(cacheName) {
+export const createCache = function(cacheName) {
   return TestRunner.callFunctionInPageAsync('createCache', [cacheName]);
 };
 
-ApplicationTestRunner.addCacheEntry = function(cacheName, requestUrl, responseText) {
+export const addCacheEntry = function(cacheName, requestUrl, responseText) {
   return TestRunner.callFunctionInPageAsync('addCacheEntryImpl', [cacheName, requestUrl, responseText, 'text/plain']);
 };
 
-ApplicationTestRunner.addCacheEntryWithBlobType = function(cacheName, requestUrl, blobType) {
+export const addCacheEntryWithBlobType = function(cacheName, requestUrl, blobType) {
   return TestRunner.callFunctionInPageAsync('addCacheEntryImpl', [cacheName, requestUrl, 'OK', blobType]);
 };
 
-ApplicationTestRunner.addCacheEntryWithVarsResponse = function(cacheName, requestUrl) {
+export const addCacheEntryWithVarsResponse = function(cacheName, requestUrl) {
   return TestRunner.callFunctionInPageAsync('addCacheEntryWithVarsResponse', [cacheName, requestUrl]);
 };
 
-ApplicationTestRunner.addCacheEntryWithNoCorsRequest = function(cacheName, requestUrl) {
+export const addCacheEntryWithNoCorsRequest = function(cacheName, requestUrl) {
   return TestRunner.callFunctionInPageAsync('addCacheEntryWithNoCorsRequest', [cacheName, requestUrl]);
 };
 
-ApplicationTestRunner.deleteCache = function(cacheName) {
+export const deleteCache = function(cacheName) {
   return TestRunner.callFunctionInPageAsync('deleteCache', [cacheName]);
 };
 
-ApplicationTestRunner.deleteCacheEntry = function(cacheName, requestUrl) {
+export const deleteCacheEntry = function(cacheName, requestUrl) {
   return TestRunner.callFunctionInPageAsync('deleteCacheEntry', [cacheName, requestUrl]);
 };
 
-ApplicationTestRunner.clearAllCaches = function() {
+export const clearAllCaches = function() {
   return TestRunner.callFunctionInPageAsync('clearAllCaches');
 };
 

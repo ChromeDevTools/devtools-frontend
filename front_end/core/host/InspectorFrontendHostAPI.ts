@@ -4,11 +4,10 @@
 
 import type * as Platform from '../../core/platform/platform.js';
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   AppendedToURL = 'appendedToURL',
   CanceledSaveURL = 'canceledSaveURL',
+  ColorThemeChanged = 'colorThemeChanged',
   ContextMenuCleared = 'contextMenuCleared',
   ContextMenuItemSelected = 'contextMenuItemSelected',
   DeviceCountUpdated = 'deviceCountUpdated',
@@ -37,11 +36,10 @@ export enum Events {
   ShowPanel = 'showPanel',
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export const EventDescriptors = [
   [Events.AppendedToURL, 'appendedToURL', ['url']],
   [Events.CanceledSaveURL, 'canceledSaveURL', ['url']],
+  [Events.ColorThemeChanged, 'colorThemeChanged', []],
   [Events.ContextMenuCleared, 'contextMenuCleared', []],
   [Events.ContextMenuItemSelected, 'contextMenuItemSelected', ['id']],
   [Events.DeviceCountUpdated, 'deviceCountUpdated', ['count']],
@@ -136,6 +134,64 @@ export interface SearchCompletedEvent {
   files: Platform.DevToolsPath.RawPathString[];
 }
 
+export interface DoAidaConversationResult {
+  statusCode?: number;
+  headers?: {
+    [x: string]: string,
+  };
+  netError?: number;
+  netErrorName?: string;
+  error?: string;
+  detail?: string;
+}
+
+export interface VisualElementImpression {
+  id: number;
+  type: number;
+  parent?: number;
+  context?: number;
+  width?: number;
+  height?: number;
+}
+
+export interface ImpressionEvent {
+  impressions: VisualElementImpression[];
+}
+
+export interface ResizeEvent {
+  veid: number;
+  width?: number;
+  height?: number;
+}
+
+export interface ClickEvent {
+  veid: number;
+  mouseButton: number;
+  context?: number;
+  doubleClick: boolean;
+}
+
+export interface HoverEvent {
+  veid: number;
+  time?: number;
+  context?: number;
+}
+
+export interface DragEvent {
+  veid: number;
+  context?: number;
+}
+
+export interface ChangeEvent {
+  veid: number;
+  context?: number;
+}
+
+export interface KeyDownEvent {
+  veid?: number;
+  context?: number;
+}
+
 // While `EventDescriptors` are used to dynamically dispatch host binding events,
 // the `EventTypes` "type map" is used for type-checking said events by TypeScript.
 // `EventTypes` is not used at runtime.
@@ -144,6 +200,7 @@ export interface SearchCompletedEvent {
 export type EventTypes = {
   [Events.AppendedToURL]: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString,
   [Events.CanceledSaveURL]: Platform.DevToolsPath.UrlString,
+  [Events.ColorThemeChanged]: void,
   [Events.ContextMenuCleared]: void,
   [Events.ContextMenuItemSelected]: number,
   [Events.DeviceCountUpdated]: number,
@@ -198,6 +255,8 @@ export interface InspectorFrontendHostAPI {
   inspectElementCompleted(): void;
 
   openInNewTab(url: Platform.DevToolsPath.UrlString): void;
+
+  openSearchResultsInNewTab(query: string): void;
 
   showItemInFolder(fileSystemPath: Platform.DevToolsPath.RawPathString): void;
 
@@ -300,6 +359,16 @@ export interface InspectorFrontendHostAPI {
   setAddExtensionCallback(callback: (arg0: ExtensionDescriptor) => void): void;
 
   initialTargetId(): Promise<string|null>;
+
+  doAidaConversation: (request: string, streamId: number, cb: (result: DoAidaConversationResult) => void) => void;
+  registerAidaClientEvent: (request: string) => void;
+
+  recordImpression(event: ImpressionEvent): void;
+  recordClick(event: ClickEvent): void;
+  recordHover(event: HoverEvent): void;
+  recordDrag(event: DragEvent): void;
+  recordChange(event: ChangeEvent): void;
+  recordKeyDown(event: KeyDownEvent): void;
 }
 
 export interface ContextMenuDescriptor {
@@ -309,6 +378,7 @@ export interface ContextMenuDescriptor {
   enabled?: boolean;
   checked?: boolean;
   subItems?: ContextMenuDescriptor[];
+  jslogContext?: string;
 }
 export interface LoadNetworkResourceResult {
   statusCode: number;
@@ -355,14 +425,13 @@ export interface SyncInformation {
  * front_end/devtools_compatibility.js
  * @readonly
  */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum EnumeratedHistogram {
+export const enum EnumeratedHistogram {
   ActionTaken = 'DevTools.ActionTaken',
   BreakpointWithConditionAdded = 'DevTools.BreakpointWithConditionAdded',
   BreakpointEditDialogRevealedFrom = 'DevTools.BreakpointEditDialogRevealedFrom',
   PanelClosed = 'DevTools.PanelClosed',
   PanelShown = 'DevTools.PanelShown',
+  PanelShownInLocation = 'DevTools.PanelShownInLocation',
   SidebarPaneShown = 'DevTools.SidebarPaneShown',
   KeyboardShortcutFired = 'DevTools.KeyboardShortcutFired',
   IssueCreated = 'DevTools.IssueCreated',
@@ -372,12 +441,11 @@ export enum EnumeratedHistogram {
   KeybindSetSettingChanged = 'DevTools.KeybindSetSettingChanged',
   ElementsSidebarTabShown = 'DevTools.Elements.SidebarTabShown',
   ExperimentEnabledAtLaunch = 'DevTools.ExperimentEnabledAtLaunch',
+  ExperimentDisabledAtLaunch = 'DevTools.ExperimentDisabledAtLaunch',
   ExperimentEnabled = 'DevTools.ExperimentEnabled',
   ExperimentDisabled = 'DevTools.ExperimentDisabled',
   DeveloperResourceLoaded = 'DevTools.DeveloperResourceLoaded',
   DeveloperResourceScheme = 'DevTools.DeveloperResourceScheme',
-  LinearMemoryInspectorRevealedFrom = 'DevTools.LinearMemoryInspector.RevealedFrom',
-  LinearMemoryInspectorTarget = 'DevTools.LinearMemoryInspector.Target',
   Language = 'DevTools.Language',
   SyncSetting = 'DevTools.SyncSetting',
   RecordingAssertion = 'DevTools.RecordingAssertion',
@@ -397,6 +465,7 @@ export enum EnumeratedHistogram {
   ManifestSectionSelected = 'DevTools.ManifestSectionSelected',
   CSSHintShown = 'DevTools.CSSHintShown',
   LighthouseModeRun = 'DevTools.LighthouseModeRun',
+  LighthouseCategoryUsed = 'DevTools.LighthouseCategoryUsed',
   ColorConvertedFrom = 'DevTools.ColorConvertedFrom',
   ColorPickerOpenedFrom = 'DevTools.ColorPickerOpenedFrom',
   CSSPropertyDocumentation = 'DevTools.CSSPropertyDocumentation',
@@ -405,4 +474,12 @@ export enum EnumeratedHistogram {
   BreakpointsRestoredFromStorageCount = 'DevTools.BreakpointsRestoredFromStorageCount',
   SwatchActivated = 'DevTools.SwatchActivated',
   BadgeActivated = 'DevTools.BadgeActivated',
+  AnimationPlaybackRateChanged = 'DevTools.AnimationPlaybackRateChanged',
+  AnimationPointDragged = 'DevTools.AnimationPointDragged',
+  LegacyResourceTypeFilterNumberOfSelectedChanged = 'DevTools.LegacyResourceTypeFilterNumberOfSelectedChanged',
+  LegacyResourceTypeFilterItemSelected = 'DevTools.LegacyResourceTypeFilterItemSelected',
+  ResourceTypeFilterNumberOfSelectedChanged = 'DevTools.ResourceTypeFilterNumberOfSelectedChanged',
+  ResourceTypeFilterItemSelected = 'DevTools.ResourceTypeFilterItemSelected',
+  NetworkPanelMoreFiltersNumberOfSelectedChanged = 'DevTools.NetworkPanelMoreFiltersNumberOfSelectedChanged',
+  NetworkPanelMoreFiltersItemSelected = 'DevTools.NetworkPanelMoreFiltersItemSelected',
 }

@@ -18,7 +18,7 @@ import {
 
 const EXPECTED_TEXT_CONTENT = '<div class=\u200B"div2">\u200B last child \u200B</div>\u200B';
 
-describe('Element breadcrumbs', async () => {
+describe('Element breadcrumbs', () => {
   beforeEach(async function() {
     await goToResource('elements/element-breadcrumbs.html');
     await waitForElementsStyleSection();

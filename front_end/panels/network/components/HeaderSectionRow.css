@@ -6,8 +6,6 @@
 
 :host {
   display: block;
-
-  --override-error-background-color: #d93025;
 }
 
 .row {
@@ -24,12 +22,22 @@
 }
 
 .header-name {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   font-weight: 400;
-  width: 160px;
+  width: 30%;
+  min-width: 160px;
+  max-width: 240px;
   flex-shrink: 0;
   text-transform: capitalize;
   overflow-wrap: break-word;
+}
+
+.header-name,
+.header-value {
+  &::selection {
+    color: var(--sys-color-on-tonal-container);
+    background-color: var(--sys-color-tonal-container);
+  }
 }
 
 .header-name.pseudo-header {
@@ -37,16 +45,17 @@
 }
 
 .header-editable .header-name {
-  color: var(--color-syntax-1);
+  color: var(--sys-color-token-property-special);
 }
 
 .row.header-deleted .header-name {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .header-value {
   display: flex;
   overflow-wrap: anywhere;
+  margin-inline-end: 14px;
 }
 
 .header-badge-text {
@@ -59,17 +68,18 @@
 
 .header-badge {
   display: inline;
-  background-color: var(--color-accent-red);
-  color: var(--color-background);
+  background-color: var(--sys-color-error);
+  color: var(--sys-color-on-error);
   border-radius: 100vh;
   padding-left: 6px;
   padding-right: 6px;
 }
 
 .call-to-action {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-neutral-container);
   padding: 8px;
-  border-radius: 2px;
+  border-radius: 5px;
+  margin: 4px;
 }
 
 .call-to-action-body {
@@ -94,7 +104,7 @@
 
 .link,
 .devtools-link {
-  color: var(--color-link);
+  color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
   outline-offset: 2px;
@@ -116,7 +126,7 @@
   display: block;
   white-space: pre-wrap;
   font-size: 90%;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 x-link .inline-icon { /* stylelint-disable-line selector-type-no-unknown */
@@ -124,29 +134,29 @@ x-link .inline-icon { /* stylelint-disable-line selector-type-no-unknown */
 }
 
 .header-highlight {
-  background-color: var(--override-header-highlight-background-color);
+  background-color: var(--sys-color-yellow-container);
 }
 
 .header-warning {
-  color: var(--override-error-background-color);
+  color: var(--sys-color-error);
 }
 
 .header-overridden {
-  background-color: var(--color-accent-green-background);
-  border-left: 3px solid var(--color-accent-green);
+  background-color: var(--sys-color-tertiary-container);
+  border-left: 3px solid var(--sys-color-tertiary);
   padding-left: 5px;
 }
 
 .header-deleted {
-  background-color: var(--color-error-background);
-  border-left: 3px solid var(--color-accent-red);
-  color: var(--color-text-secondary);
+  background-color: var(--sys-color-surface-error);
+  border-left: 3px solid var(--sys-color-error-bright);
+  color: var(--sys-color-token-subtle);
   text-decoration: line-through;
 }
 
 .header-highlight.header-overridden {
-  background-color: var(--override-header-highlight-background-color);
-  border-left: 3px solid var(--color-accent-green);
+  background-color: var(--sys-color-yellow-container);
+  border-left: 3px solid var(--sys-color-tertiary);
   padding-left: 5px;
 }
 

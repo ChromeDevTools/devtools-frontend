@@ -4,16 +4,13 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as SDK from '../../core/sdk/sdk.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import * as TraceEngine from '../../models/trace/trace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as TraceEngine from '../../models/trace/trace.js';
 
 import {Category, IsLong} from './TimelineFilters.js';
-
 import {type TimelineModeViewDelegate} from './TimelinePanel.js';
-
 import {TimelineSelection} from './TimelineSelection.js';
 import {TimelineTreeView} from './TimelineTreeView.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
@@ -53,7 +50,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     this.filtersControl.addEventListener(Events.FilterChanged, this.onFilterChanged, this);
     this.init();
     this.delegate = delegate;
-    this.dataGrid.markColumnAsSortedBy('startTime', DataGrid.DataGrid.Order.Ascending);
+    this.dataGrid.markColumnAsSortedBy('start-time', DataGrid.DataGrid.Order.Ascending);
     this.splitWidget.showBoth();
   }
 
@@ -86,8 +83,9 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     }
   }
 
-  private findNodeWithEvent(event: SDK.TracingModel.CompatibleTraceEvent): TimelineModel.TimelineProfileTree.Node|null {
-    if (event.name === TraceEngine.Handlers.Types.KnownEventName.RunTask) {
+  private findNodeWithEvent(event: TraceEngine.Legacy.CompatibleTraceEvent): TimelineModel.TimelineProfileTree.Node
+      |null {
+    if (event.name === TraceEngine.Types.TraceEvents.KnownEventName.RunTask) {
       // No node is ever created for the top level RunTask event, so
       // bail out preemptively
       return null;
@@ -107,7 +105,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     return null;
   }
 
-  private selectEvent(event: SDK.TracingModel.CompatibleTraceEvent, expand?: boolean): void {
+  private selectEvent(event: TraceEngine.Legacy.CompatibleTraceEvent, expand?: boolean): void {
     const node = this.findNodeWithEvent(event);
     if (!node) {
       return;
@@ -123,7 +121,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
 
   override populateColumns(columns: DataGrid.DataGrid.ColumnDescriptor[]): void {
     columns.push(({
-      id: 'startTime',
+      id: 'start-time',
       title: i18nString(UIStrings.startTime),
       width: '80px',
       fixedWidth: true,
@@ -219,8 +217,6 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     this.dispatchEventToListeners(Events.FilterChanged);
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   private static readonly durationFilterPresetsMs = [0, 1, 15];
 }
 

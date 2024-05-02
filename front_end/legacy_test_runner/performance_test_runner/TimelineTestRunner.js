@@ -2,6 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import * as Trace from '../../models/trace/trace.js';
+import * as Timeline from '../../panels/timeline/timeline.js';
+import * as Components from '../../ui/legacy/components/utils/utils.js';
+import * as UI from '../../ui/legacy/legacy.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
@@ -73,25 +81,21 @@ TestRunner.formatters.formatAsInvalidationCause = function(cause) {
 };
 
 PerformanceTestRunner.createTracingModel = function(events) {
-  const model = new SDK.TracingModel();
+  const model = new Trace.Legacy.TracingModel();
   model.addEvents(events);
   model.tracingComplete();
   return model;
 };
 
-PerformanceTestRunner.tracingModel = function() {
-  return UI.panels.timeline.performanceModel.tracingModel();
-};
-
 PerformanceTestRunner.invokeWithTracing = function(functionName, callback, additionalCategories, enableJSSampling) {
   let categories = '-*,disabled-by-default-devtools.timeline*,devtools.timeline,blink.user_timing,' +
-      SDK.TracingModel.LegacyTopLevelEventCategory;
+      Trace.Legacy.LegacyTopLevelEventCategory;
 
   if (additionalCategories) {
     categories += ',' + additionalCategories;
   }
 
-  const timelinePanel = UI.panels.timeline;
+  const timelinePanel = Timeline.TimelinePanel.TimelinePanel.instance();
   const timelineController = PerformanceTestRunner.createTimelineController();
   timelinePanel.timelineController = timelineController;
   timelineController.startRecordingWithCategories(categories, enableJSSampling).then(tracingStarted);
@@ -107,48 +111,43 @@ PerformanceTestRunner.invokeWithTracing = function(functionName, callback, addit
 };
 
 PerformanceTestRunner.performanceModel = function() {
-  return UI.panels.timeline.performanceModel;
+  return Timeline.TimelinePanel.TimelinePanel.instance().performanceModel;
 };
 
 PerformanceTestRunner.timelineModel = function() {
   return PerformanceTestRunner.performanceModel().timelineModel();
 };
 
-PerformanceTestRunner.timelineFrameModel = function() {
-  return PerformanceTestRunner.performanceModel().frameModel();
-};
-
 PerformanceTestRunner.createPerformanceModelWithEvents = async function(events) {
-  const tracingModel = new SDK.TracingModel();
+  const tracingModel = new Trace.Legacy.TracingModel();
   tracingModel.addEvents(events);
   tracingModel.tracingComplete();
-  const filmStripModel = new SDK.FilmStripModel(tracingModel);
-  const performanceModel = new Timeline.PerformanceModel();
+  const performanceModel = new Timeline.PerformanceModel.PerformanceModel();
   await performanceModel.setTracingModel(tracingModel);
-  UI.panels.timeline.performanceModel = performanceModel;
-  UI.panels.timeline.filmStripModel = filmStripModel;
-  UI.panels.timeline.applyFilters(performanceModel);
+  Timeline.TimelinePanel.TimelinePanel.instance().performanceModel = performanceModel;
+  Timeline.TimelinePanel.TimelinePanel.instance().applyFilters(performanceModel);
   return performanceModel;
 };
 
 PerformanceTestRunner.createTimelineController = function() {
-  const controller = new Timeline.TimelineController(self.SDK.targetManager.primaryPageTarget(), UI.panels.timeline);
+  const controller = new Timeline.TimelineController.TimelineController(
+      SDK.TargetManager.TargetManager.instance().primaryPageTarget(), Timeline.TimelinePanel.TimelinePanel.instance());
   controller.tracingManager = TestRunner.tracingManager;
   return controller;
 };
 
 PerformanceTestRunner.runWhenTimelineIsReady = function(callback) {
-  TestRunner.addSniffer(UI.panels.timeline, 'loadingCompleteForTest', () => callback());
+  TestRunner.addSniffer(Timeline.TimelinePanel.TimelinePanel.instance(), 'loadingCompleteForTest', () => callback());
 };
 
 PerformanceTestRunner.startTimeline = function() {
-  const panel = UI.panels.timeline;
+  const panel = Timeline.TimelinePanel.TimelinePanel.instance();
   panel.toggleRecording();
   return TestRunner.addSnifferPromise(panel, 'recordingStarted');
 };
 
 PerformanceTestRunner.stopTimeline = async function() {
-  await UI.panels.timeline.toggleRecording();
+  await Timeline.TimelinePanel.TimelinePanel.instance().toggleRecording();
 };
 
 PerformanceTestRunner.runPerfTraceWithReload = async function() {
@@ -158,7 +157,7 @@ PerformanceTestRunner.runPerfTraceWithReload = async function() {
 };
 
 PerformanceTestRunner.getTimelineWidget = async function() {
-  return await self.UI.viewManager.view('timeline').widget();
+  return await UI.ViewManager.ViewManager.instance().view('timeline').widget();
 };
 
 PerformanceTestRunner.getNetworkFlameChartElement = async function() {
@@ -212,9 +211,10 @@ PerformanceTestRunner.printTimelineRecordsWithDetails = async function(...names)
 };
 
 PerformanceTestRunner.walkTimelineEventTree = async function(callback) {
-  const view = new Timeline.EventsTimelineTreeView(UI.panels.timeline.filters, null);
+  const view = new Timeline.EventsTimelineTreeView.EventsTimelineTreeView(
+      Timeline.TimelinePanel.TimelinePanel.instance().filters, null);
   view.setModel(PerformanceTestRunner.performanceModel(), PerformanceTestRunner.mainTrack());
-  const selection = Timeline.TimelineSelection.fromRange(
+  const selection = Timeline.TimelineSelection.TimelineSelection.fromRange(
       PerformanceTestRunner.timelineModel().minimumRecordTime(),
       PerformanceTestRunner.timelineModel().maximumRecordTime());
   view.updateContents(selection);
@@ -268,7 +268,7 @@ PerformanceTestRunner.printTraceEventProperties = function(traceEvent) {
     data: traceEvent.args['data'] || traceEvent.args,
     endTime: traceEvent.endTime || traceEvent.startTime,
     frameId: frameId,
-    stackTrace: TimelineModel.TimelineData.forEvent(traceEvent).stackTrace,
+    stackTrace: TimelineModel.TimelineModel.EventOnTimelineData.forEvent(traceEvent).stackTrace,
     startTime: traceEvent.startTime,
     type: traceEvent.name
   };
@@ -284,14 +284,10 @@ PerformanceTestRunner.printTraceEventProperties = function(traceEvent) {
 
 PerformanceTestRunner.printTraceEventPropertiesWithDetails = async function(event) {
   PerformanceTestRunner.printTraceEventProperties(event);
-  const details = await Timeline.TimelineUIUtils.buildDetailsTextForTraceEvent(
-      event, self.SDK.targetManager.primaryPageTarget(), new Components.Linkifier());
+  const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsTextForTraceEvent(
+      event, SDK.TargetManager.TargetManager.instance().primaryPageTarget(), new Components.Linkifier.Linkifier());
   TestRunner.waitForPendingLiveLocationUpdates();
   TestRunner.addResult(`Text details for ${event.name}: ${details}`);
-
-  if (TimelineModel.TimelineData.forEvent(event).warning) {
-    TestRunner.addResult(`${event.name} has a warning`);
-  }
 };
 
 PerformanceTestRunner.mainTrack = function() {
@@ -359,8 +355,8 @@ PerformanceTestRunner.dumpInvalidations = function(recordType, index, comment) {
   const event = PerformanceTestRunner.findTimelineEvent(recordType, index || 0);
 
   TestRunner.addArray(
-      TimelineModel.InvalidationTracker.invalidationEventsFor(event), PerformanceTestRunner.InvalidationFormatters, '',
-      comment);
+      TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event) || [],
+      PerformanceTestRunner.InvalidationFormatters, '', comment);
 };
 
 PerformanceTestRunner.dumpFlameChartProvider = function(provider, includeGroups) {
@@ -398,13 +394,13 @@ PerformanceTestRunner.dumpFlameChartProvider = function(provider, includeGroups)
 };
 
 PerformanceTestRunner.dumpTimelineFlameChart = function(includeGroups) {
-  const provider = UI.panels.timeline.flameChart.mainDataProvider;
+  const provider = Timeline.TimelinePanel.TimelinePanel.instance().flameChart.mainDataProvider;
   TestRunner.addResult('Timeline Flame Chart');
   PerformanceTestRunner.dumpFlameChartProvider(provider, includeGroups);
 };
 
 PerformanceTestRunner.loadTimeline = async function(timelineData) {
-  await UI.panels.timeline.loadFromFile(new Blob([timelineData], {type: 'text/plain'}));
+  await Timeline.TimelinePanel.TimelinePanel.instance().loadFromFile(new Blob([timelineData], {type: 'text/plain'}));
 };
 
 TestRunner.deprecatedInitAsync(`

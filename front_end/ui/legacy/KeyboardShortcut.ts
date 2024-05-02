@@ -350,9 +350,7 @@ export const Keys: {
   },
 };
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Type {
+export const enum Type {
   UserShortcut = 'UserShortcut',
   DefaultShortcut = 'DefaultShortcut',
   DisabledDefault = 'DisabledDefault',

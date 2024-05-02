@@ -45,14 +45,14 @@
   visibility: hidden;
   cursor: pointer;
   opacity: 0%;
-  fill: var(--color-primary);
+  fill: var(--sys-color-primary);
   stroke: #1a73e8; /* stylelint-disable-line plugin/use_theme_colors */
   transform: translate(-1.92px, -3px);
 }
 
 .circle-icon {
-  fill: var(--color-primary);
-  stroke: var(--color-background);
+  fill: var(--sys-color-primary);
+  stroke: var(--sys-color-cdt-base-container);
   stroke-width: 4px;
   r: 5px;
   cx: 8px;
@@ -61,29 +61,29 @@
 
 .is-start-of-group .circle-icon {
   r: 7px;
-  fill: var(--color-background);
-  stroke: var(--color-primary);
+  fill: var(--sys-color-cdt-base-container);
+  stroke: var(--sys-color-primary);
   stroke-width: 2px;
 }
 
 .step.is-success .circle-icon {
-  fill: var(--color-primary);
-  stroke: var(--color-primary);
+  fill: var(--sys-color-primary);
+  stroke: var(--sys-color-primary);
 }
 
 .step.is-current .circle-icon {
   stroke-dasharray: 24 10;
   animation: rotate 1s linear infinite;
-  fill: var(--color-background);
-  stroke: var(--color-primary);
+  fill: var(--sys-color-cdt-base-container);
+  stroke: var(--sys-color-primary);
   stroke-width: 2px;
 }
 
 .error {
   margin: 16px 0 0;
   padding: 8px;
-  background: var(--color-error-background);
-  color: var(--color-error-text);
+  background: var(--sys-color-error-container);
+  color: var(--sys-color-error);
   position: relative;
 }
 
@@ -98,8 +98,8 @@
 }
 
 .step.is-error .circle-icon {
-  fill: var(--color-error-text);
-  stroke: var(--color-error-text);
+  fill: var(--sys-color-error);
+  stroke: var(--sys-color-error);
 }
 
 .step.is-error .error-icon {
@@ -147,6 +147,7 @@
   top: 18px;
   left: 24px;
   transform: rotate(-90deg);
+  color: var(--sys-color-on-surface);
 }
 
 .expanded .chevron {
@@ -172,14 +173,19 @@
 }
 
 devtools-recorder-step-editor {
-  border: 1px solid var(--color-details-hairline);
+  border: 1px solid var(--sys-color-neutral-outline);
   padding: 3px 6px 6px;
   margin-left: -6px;
   border-radius: 3px;
 }
 
 devtools-recorder-step-editor:hover {
-  border: 1px solid var(--color-primary);
+  border: 1px solid var(--sys-color-neutral-outline);
+}
+
+devtools-recorder-step-editor.is-selected {
+  background-color: color-mix(in sRGB, var(--sys-color-tonal-container), var(--sys-color-cdt-base-container) 50%);
+  border: 1px solid var(--sys-color-tonal-outline);
 }
 
 .summary {
@@ -193,7 +199,7 @@ devtools-recorder-step-editor:hover {
 
 .subtitle {
   font-weight: normal;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-on-surface-subtle);
   word-break: break-all;
   white-space: nowrap;
   overflow: hidden;
@@ -210,6 +216,8 @@ devtools-recorder-step-editor:hover {
 .step-actions {
   border: none;
   border-radius: 0;
+  width: 24px;
+  height: 24px;
 
   --override-select-menu-show-button-border-radius: 0;
   --override-select-menu-show-button-outline: none;
@@ -218,11 +226,11 @@ devtools-recorder-step-editor:hover {
 
 .step-actions:hover,
 .step-actions:focus-within {
-  background-color: var(--color-button-secondary-background-hovering);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .step-actions:active {
-  background-color: var(--color-background-highlight);
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 .step.has-breakpoint .circle-icon {

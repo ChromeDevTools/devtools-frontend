@@ -3,20 +3,18 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../core/platform/platform.js';
-import * as Utils from './utils/utils.js';
 
 import {type Size} from './Geometry.js';
-import {Icon} from './Icon.js';
-import {deepElementFromEvent} from './UIUtils.js';
-
-import {Widget, type WidgetElement} from './Widget.js';
 import glassPaneStyles from './glassPane.css.legacy.js';
+import {deepElementFromEvent} from './UIUtils.js';
+import * as Utils from './utils/utils.js';
+import {Widget, type WidgetElement} from './Widget.js';
 
 export class GlassPane {
   private readonly widgetInternal: Widget;
   element: WidgetElement;
   contentElement: HTMLDivElement;
-  private readonly arrowElement: Icon;
+  private readonly arrowElement: HTMLSpanElement;
   private readonly onMouseDownBound: (event: Event) => void;
   private onClickOutsideCallback: ((arg0: Event) => void)|null;
   private maxSize: Size|null;
@@ -28,12 +26,16 @@ export class GlassPane {
   private marginBehavior: MarginBehavior;
   #ignoreLeftMargin: boolean = false;
 
-  constructor() {
+  constructor(jslog?: string) {
     this.widgetInternal = new Widget(true);
     this.widgetInternal.markAsRoot();
     this.element = this.widgetInternal.element;
     this.contentElement = this.widgetInternal.contentElement;
-    this.arrowElement = Icon.create('', 'arrow hidden');
+    if (jslog) {
+      this.contentElement.setAttribute('jslog', jslog);
+    }
+    this.arrowElement = document.createElement('span');
+    this.arrowElement.classList.add('arrow', 'hidden');
     if (this.element.shadowRoot) {
       this.element.shadowRoot.appendChild(this.arrowElement);
     }
@@ -50,6 +52,10 @@ export class GlassPane {
     this.anchorBehavior = AnchorBehavior.PreferTop;
     this.sizeBehavior = SizeBehavior.SetExactSize;
     this.marginBehavior = MarginBehavior.DefaultMargin;
+  }
+
+  setJsLog(jslog: string): void {
+    this.contentElement.setAttribute('jslog', jslog);
   }
 
   isShowing(): boolean {
@@ -123,11 +129,12 @@ export class GlassPane {
     }
     // TODO(crbug.com/1006759): Extract the magic number
     // Deliberately starts with 3000 to hide other z-indexed elements below.
-    this.element.style.zIndex = `${3000 + 1000 * _panes.size}`;
+    this.element.style.zIndex = `${3000 + 1000 * panes.size}`;
+    this.element.setAttribute('data-devtools-glass-pane', '');
     document.body.addEventListener('mousedown', this.onMouseDownBound, true);
     document.body.addEventListener('pointerdown', this.onMouseDownBound, true);
     this.widgetInternal.show(document.body);
-    _panes.add(this);
+    panes.add(this);
     this.positionContent();
   }
 
@@ -135,7 +142,7 @@ export class GlassPane {
     if (!this.isShowing()) {
       return;
     }
-    _panes.delete(this);
+    panes.delete(this);
     this.element.ownerDocument.body.removeEventListener('mousedown', this.onMouseDownBound, true);
     this.element.ownerDocument.body.removeEventListener('pointerdown', this.onMouseDownBound, true);
     this.widgetInternal.detach();
@@ -162,7 +169,7 @@ export class GlassPane {
     const scrollbarSize = Utils.measuredScrollbarWidth(this.element.ownerDocument);
     const arrowSize = 10;
 
-    const container = (_containers.get((this.element.ownerDocument as Document))) as HTMLElement;
+    const container = (containers.get((this.element.ownerDocument as Document))) as HTMLElement;
     if (this.sizeBehavior === SizeBehavior.MeasureContent) {
       this.contentElement.positionAt(0, 0);
       this.contentElement.style.width = '';
@@ -221,7 +228,6 @@ export class GlassPane {
           } else {
             height = Math.min(height, spaceTop);
           }
-          this.arrowElement.setIconType('mediumicon-arrow-bottom');
           this.arrowElement.classList.add('arrow-bottom');
           arrowY = anchorBox.y - gutterSize;
         } else {
@@ -236,7 +242,6 @@ export class GlassPane {
           } else {
             height = Math.min(height, spaceBottom);
           }
-          this.arrowElement.setIconType('mediumicon-arrow-top');
           this.arrowElement.classList.add('arrow-top');
           arrowY = anchorBox.y + anchorBox.height + gutterSize;
         }
@@ -283,7 +288,6 @@ export class GlassPane {
           } else {
             width = Math.min(width, spaceLeft);
           }
-          this.arrowElement.setIconType('mediumicon-arrow-right');
           this.arrowElement.classList.add('arrow-right');
           arrowX = anchorBox.x - gutterSize;
         } else {
@@ -298,7 +302,6 @@ export class GlassPane {
           } else {
             width = Math.min(width, spaceRight);
           }
-          this.arrowElement.setIconType('mediumicon-arrow-left');
           this.arrowElement.classList.add('arrow-left');
           arrowX = anchorBox.x + anchorBox.width + gutterSize;
         }
@@ -342,16 +345,16 @@ export class GlassPane {
   }
 
   static setContainer(element: Element): void {
-    _containers.set((element.ownerDocument as Document), element);
+    containers.set((element.ownerDocument as Document), element);
     GlassPane.containerMoved(element);
   }
 
   static container(document: Document): Element {
-    return _containers.get(document) as Element;
+    return containers.get(document) as Element;
   }
 
   static containerMoved(element: Element): void {
-    for (const pane of _panes) {
+    for (const pane of panes) {
       if (pane.isShowing() && pane.element.ownerDocument === element.ownerDocument) {
         pane.positionContent();
       }
@@ -384,12 +387,8 @@ export const enum MarginBehavior {
   NoMargin = 'NoMargin',
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _containers = new Map<Document, Element>();
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _panes = new Set<GlassPane>();
+const containers = new Map<Document, Element>();
+const panes = new Set<GlassPane>();
 
 // Exported for layout tests.
-export const GlassPanePanes = _panes;
+export const GlassPanePanes = panes;

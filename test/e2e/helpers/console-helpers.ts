@@ -3,13 +3,12 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import type * as puppeteer from 'puppeteer-core';
 
-import type * as puppeteer from 'puppeteer';
-
+import {AsyncScope} from '../../shared/async-scope.js';
 import {
   $,
   $$,
-  assertNotNullOrUndefined,
   click,
   getBrowserAndPages,
   goToResource,
@@ -19,7 +18,6 @@ import {
   waitForAria,
   waitForFunction,
 } from '../../shared/helper.js';
-import {AsyncScope} from '../../shared/async-scope.js';
 
 export const CONSOLE_TAB_SELECTOR = '#tab-console';
 export const CONSOLE_MESSAGES_SELECTOR = '.console-group-messages';
@@ -203,7 +201,6 @@ export async function getStructuredConsoleMessages() {
 }
 
 export async function focusConsolePrompt() {
-  await waitFor(CONSOLE_PROMPT_SELECTOR);
   await click(CONSOLE_PROMPT_SELECTOR);
   await waitFor('[aria-label="Console prompt"]');
   // FIXME(crbug/1112692): Refactor test to remove the timeout.
@@ -237,17 +234,19 @@ export async function typeIntoConsole(frontend: puppeteer.Page, message: string)
   await consoleElement.press('Enter');
 }
 
-export async function typeIntoConsoleAndWaitForResult(frontend: puppeteer.Page, message: string) {
+export async function typeIntoConsoleAndWaitForResult(
+    frontend: puppeteer.Page, message: string, leastExpectedMessages = 1, selector = Level.All) {
   // Get the current number of console results so we can check we increased it.
-  const originalLength = await frontend.evaluate(() => {
-    return document.querySelectorAll('.console-user-command-result').length;
-  });
+  const originalLength = await frontend.evaluate(selector => {
+    return document.querySelectorAll(selector).length;
+  }, selector);
 
   await typeIntoConsole(frontend, message);
 
-  await new AsyncScope().exec(() => frontend.waitForFunction((originalLength: number) => {
-    return document.querySelectorAll('.console-user-command-result').length === originalLength + 1;
-  }, {timeout: 0}, originalLength));
+  await new AsyncScope().exec(
+      () => frontend.waitForFunction((originalLength: number, leastExpectedMessages: number, selector: string) => {
+        return document.querySelectorAll(selector).length >= originalLength + leastExpectedMessages;
+      }, {timeout: 0}, originalLength, leastExpectedMessages, selector));
 }
 
 export async function unifyLogVM(actualLog: string, expectedLog: string) {
@@ -286,32 +285,20 @@ export async function navigateToConsoleTab() {
 
 export async function waitForConsoleInfoMessageAndClickOnLink() {
   const consoleMessage = await waitFor('div.console-group-messages .console-info-level span.source-code');
-  await click('span.devtools-link', {root: consoleMessage});
-}
-
-export async function navigateToIssuesPanelViaInfoBar() {
-  // Navigate to Issues panel
-  await waitFor('#console-issues-counter');
-  await click('#console-issues-counter');
-  await waitFor('.issues-pane');
+  await click('button.devtools-link', {root: consoleMessage});
 }
 
 export async function turnOffHistoryAutocomplete() {
   await click(CONSOLE_SETTINGS_SELECTOR);
-  await waitFor(AUTOCOMPLETE_FROM_HISTORY_SELECTOR);
   await click(AUTOCOMPLETE_FROM_HISTORY_SELECTOR);
 }
 
 export async function toggleShowCorsErrors() {
-  await click(CONSOLE_SETTINGS_SELECTOR);
-  await waitFor(SHOW_CORS_ERRORS_SELECTOR);
-  await click(SHOW_CORS_ERRORS_SELECTOR);
-  await click(CONSOLE_SETTINGS_SELECTOR);
+  await toggleConsoleSetting(SHOW_CORS_ERRORS_SELECTOR);
 }
 
 export async function toggleConsoleSetting(settingSelector: string) {
   await click(CONSOLE_SETTINGS_SELECTOR);
-  await waitFor(settingSelector);
   await click(settingSelector);
   await click(CONSOLE_SETTINGS_SELECTOR);
 }
@@ -320,7 +307,6 @@ async function getIssueButtonLabel(): Promise<string|null> {
   const infobarButton = await waitFor('#console-issues-counter');
   const iconButton = await waitFor('icon-button', infobarButton);
   const titleElement = await waitFor('.icon-button-title', iconButton);
-  assertNotNullOrUndefined(titleElement);
   const infobarButtonText = await titleElement.evaluate(node => (node as HTMLElement).textContent);
   return infobarButtonText;
 }
@@ -353,7 +339,8 @@ export async function getLastConsoleStacktrace(offset: number = 0) {
   return (await getStructuredConsoleMessages()).at(-1 - offset)?.stackPreview as string;
 }
 
-export async function checkCommandStacktrace(command: string, expected: string, offset: number = 0) {
-  await typeIntoConsoleAndWaitForResult(getBrowserAndPages().frontend, command);
+export async function checkCommandStacktrace(
+    command: string, expected: string, leastMessages: number = 1, offset: number = 0) {
+  await typeIntoConsoleAndWaitForResult(getBrowserAndPages().frontend, command, leastMessages);
   await unifyLogVM(await getLastConsoleStacktrace(offset), expected);
 }

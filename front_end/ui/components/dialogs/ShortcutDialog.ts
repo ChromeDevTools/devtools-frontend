@@ -7,12 +7,13 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {
-  Dialog as DialogElement,
-  DialogVerticalPosition,
-  DialogHorizontalAlignment,
   type ClickOutsideDialogEvent,
+  Dialog as DialogElement,
+  DialogHorizontalAlignment,
+  DialogVerticalPosition,
 } from './Dialog.js';
 import shortcutDialogStyles from './shortcutDialog.css.js';
 
@@ -36,7 +37,6 @@ const str_ = i18n.i18n.registerUIStrings('ui/components/dialogs/ShortcutDialog.t
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-shortcut-dialog': ShortcutDialog;
   }
@@ -119,13 +119,12 @@ export class ShortcutDialog extends HTMLElement {
           variant: Buttons.Button.Variant.TOOLBAR,
           iconName: 'help',
           title: i18nString(UIStrings.showShortcutTitle),
-          iconWidth: '16px',
         } as Buttons.Button.ButtonData}
       ></${Buttons.Button.Button.litTagName}>
       <${DialogElement.litTagName}
         @clickoutsidedialog=${this.#closeDialog}
         .showConnector=${true}
-        .origin=${(): Buttons.Button.Button => {
+        .origin=${() => {
           if (!this.#showButton) {
             throw new Error('Button not found');
           }
@@ -136,6 +135,7 @@ export class ShortcutDialog extends HTMLElement {
         on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
           this.#dialog = node as DialogElement;
         })}
+        jslog=${VisualLogging.dialog('shortcuts').track({resize: true})}
       >
         <div class="keybinds-category-header">
           <span class="keybinds-category-header-text">${i18nString(UIStrings.dialogTitle)}</span>
@@ -147,6 +147,7 @@ export class ShortcutDialog extends HTMLElement {
               iconName: 'cross',
               title: i18nString(UIStrings.close),
             } as Buttons.Button.ButtonData}
+            jslog=${VisualLogging.close().track({click: true})}
           ></${Buttons.Button.Button.litTagName}>
         </div>
         <ul class="keybinds-list">
@@ -179,4 +180,4 @@ export class ShortcutDialog extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-shortcut-dialog', ShortcutDialog);
+customElements.define('devtools-shortcut-dialog', ShortcutDialog);

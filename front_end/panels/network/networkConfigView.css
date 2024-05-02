@@ -11,7 +11,7 @@
 
 .network-config-group {
   display: flex;
-  margin-bottom: 10px;
+  padding-bottom: 10px;
   flex-wrap: wrap;
   flex: 0 0 auto;
   min-height: 30px;
@@ -29,7 +29,7 @@
 .panel-section-separator {
   height: 1px;
   margin-bottom: 10px;
-  background: var(--color-details-hairline);
+  background: var(--sys-color-divider);
 }
 /* Disable cache */
 
@@ -40,7 +40,7 @@
 }
 
 .network-config-input-validation-error {
-  color: var(--legacy-input-validation-error);
+  color: var(--sys-color-error);
   margin: 5px 0;
 }
 
@@ -102,5 +102,5 @@
 
 .status-text {
   padding: 10px;
-  color: var(--color-accent-green);
+  color: var(--sys-color-tertiary);
 }

@@ -1,0 +1,15 @@
+Name: C++ expression evaluator for debuggers (in particular, LLDB)
+Short Name: lldb-eval
+URL: https://github.com/google/lldb-eval
+Version: 0
+Date: 2023-06-21
+Revision: e87123a7e639bf1d86f24c37079570fb7fa00b72
+License: Apache 2.0
+License File: src/LICENSE
+Shipped: no
+Security Critical: yes
+Description: lldb-eval is an LLDB-based library for evaluating debug expressions in the context of the debugged process. All modern debuggers support evaluating expressions to inspect the target process state: print out variables, access member fields, etc. lldb-eval is basically a REPL-like library, that allows to inspect the process state using the familiar C++ syntax. The primary use-case is IDE integration (for example, Stadia for Visual Studio).
+
+In the DevTools C++ debugging extension, the package is used to parse C++ expressions for the Webassembly debugger (e.g., to evaluate watch window expressions or expressions in conditional breakpoints). The library is shipped with the extension, it is not shipped with chrome.
+
+The library is used in a Webassembly sandbox. Make sure to consult the latest security guidelines if you intend to use the library outside of the Webassembly sandbox.

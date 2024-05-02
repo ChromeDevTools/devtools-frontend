@@ -59,6 +59,10 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   #goToLineStrings: string[] = [];
 
+  constructor() {
+    super('source-line');
+  }
+
   override selectItem(_itemIndex: number|null, promptValue: string): void {
     const sourceFrame = this.currentSourceFrame();
     if (!sourceFrame) {

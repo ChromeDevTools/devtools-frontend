@@ -32,17 +32,16 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
+import filterStyles from './filter.css.legacy.js';
 import {KeyboardShortcut, Modifiers} from './KeyboardShortcut.js';
 import {bindCheckbox} from './SettingsUI.js';
-
 import {type Suggestions} from './SuggestBox.js';
 import {Events, TextPrompt} from './TextPrompt.js';
-
-import filterStyles from './filter.css.legacy.js';
-import {ToolbarSettingToggle, type ToolbarButton} from './Toolbar.js';
+import {type ToolbarButton, ToolbarSettingToggle} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, createTextChild} from './UIUtils.js';
 import {HBox} from './Widget.js';
@@ -85,11 +84,12 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTyp
     this.registerRequiredCSS(filterStyles);
     this.enabled = true;
     this.element.classList.add('filter-bar');
+    this.element.setAttribute('jslog', `${VisualLogging.toolbar('filter-bar')}`);
 
     this.stateSetting =
-        Common.Settings.Settings.instance().createSetting('filterBar-' + name + '-toggled', Boolean(visibleByDefault));
+        Common.Settings.Settings.instance().createSetting('filter-bar-' + name + '-toggled', Boolean(visibleByDefault));
     this.filterButtonInternal =
-        new ToolbarSettingToggle(this.stateSetting, 'filter', i18nString(UIStrings.filter), 'filter-filled');
+        new ToolbarSettingToggle(this.stateSetting, 'filter', i18nString(UIStrings.filter), 'filter-filled', 'filter');
 
     this.filters = [];
 
@@ -99,6 +99,12 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTyp
 
   filterButton(): ToolbarButton {
     return this.filterButtonInternal;
+  }
+
+  addDivider(): void {
+    const element = document.createElement('div');
+    element.classList.add('filter-divider');
+    this.element.appendChild(element);
   }
 
   addFilter(filter: FilterUI): void {
@@ -224,16 +230,16 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEve
 
     this.suggestionProvider = null;
 
-    const clearButton = container.createChild('div', 'filter-input-clear-button');
+    const clearButton = container.createChild('button', 'filter-input-clear-button');
     Tooltip.install(clearButton, i18nString(UIStrings.clearFilter));
     const clearIcon = new IconButton.Icon.Icon();
     clearIcon.data = {color: 'var(--icon-default)', width: '16px', height: '16px', iconName: 'cross-circle-filled'};
-    clearIcon.classList.add('filter-cancel-button');
     clearButton.appendChild(clearIcon);
     clearButton.addEventListener('click', () => {
       this.clear();
       this.focus();
     });
+    clearButton.setAttribute('jslog', `${VisualLogging.action('clear-filter').track({click: true})}`);
     this.updateEmptyStyles();
   }
 
@@ -252,7 +258,7 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEve
   }
 
   value(): string {
-    return this.prompt.textWithCurrentSuggestion();
+    return this.prompt.text();
   }
 
   setValue(value: string): void {
@@ -295,6 +301,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
     super();
     this.filtersElement = document.createElement('div');
     this.filtersElement.classList.add('filter-bitset-filter');
+    this.filtersElement.setAttribute('jslog', `${VisualLogging.section('filter-bitset')}`);
     ARIAUtils.markAsListBox(this.filtersElement);
     ARIAUtils.markAsMultiSelectable(this.filtersElement);
     Tooltip.install(this.filtersElement, i18nString(UIStrings.sclickToSelectMultipleTypes, {
@@ -374,6 +381,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
     }
     typeFilterElement.addEventListener('click', this.onTypeFilterClicked.bind(this), false);
     typeFilterElement.addEventListener('keydown', this.onTypeFilterKeydown.bind(this), false);
+    typeFilterElement.setAttribute('jslog', `${VisualLogging.item(name).track({click: true})}`);
     this.typeFilterElements.push(typeFilterElement);
   }
 
@@ -440,7 +448,13 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
       this.allowedTypes.delete(typeName);
     } else {
       this.allowedTypes.add(typeName);
+      Host.userMetrics.legacyResourceTypeFilterItemSelected(typeName);
     }
+
+    if (this.allowedTypes.size === 0) {
+      this.allowedTypes.add(NamedBitSetFilterUI.ALL_TYPES);
+    }
+    Host.userMetrics.legacyResourceTypeFilterNumberOfSelectedChanged(this.allowedTypes.size);
 
     if (this.setting) {
       // Settings do not support `Sets` so convert it back to the Map-like object.
@@ -463,7 +477,8 @@ export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterU
   private label: CheckboxLabel;
   private checkboxElement: HTMLInputElement;
   constructor(
-      className: string, title: string, activeWhenChecked?: boolean, setting?: Common.Settings.Setting<boolean>) {
+      className: string, title: string, activeWhenChecked?: boolean, setting?: Common.Settings.Setting<boolean>,
+      jslogContext?: string) {
     super();
     this.filterElement = document.createElement('div');
     this.filterElement.classList.add('filter-checkbox-filter');
@@ -477,6 +492,10 @@ export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterU
       this.checkboxElement.checked = true;
     }
     this.checkboxElement.addEventListener('change', this.fireUpdated.bind(this), false);
+    if (jslogContext) {
+      this.checkboxElement.setAttribute(
+          'jslog', `${VisualLogging.toggle().track({change: true}).context(jslogContext)}`);
+    }
   }
 
   isActive(): boolean {
@@ -508,4 +527,5 @@ export interface Item {
   name: string;
   label: () => string;
   title?: string;
+  jslogContext: string;
 }

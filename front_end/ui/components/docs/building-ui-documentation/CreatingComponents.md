@@ -39,7 +39,7 @@ export class ElementBreadcrumbs extends HTMLElement {
 We then use the `ComponentHelpers` module (`front_end/ui/components/helpers`) to define the component and register it with the browser:
 
 ```ts
-ComponentHelpers.CustomElements.defineComponent('devtools-elements-breadcrumbs', ElementsBreadcrumbs);
+customElements.define('devtools-elements-breadcrumbs', ElementsBreadcrumbs);
 ```
 
 And finally we tell TypeScript that this component exists:

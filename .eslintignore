@@ -1,12 +1,7 @@
-// this file is also used by PRESUBMIT.py to tell clang-format
-// to not check the format of files in here
-// it will ignore any that contain a glob, so if you add a
-// glob into this file it willl not mean that the
-// clang-format check also ignores that file
 front_end/.eslintrc.js
 front_end/diff/diff_match_patch.jD
-front_end/javascript_metadata/NativeFunctions.js
-front_end/javascript_metadata/DOMPinnedProperties.ts
+front_end/models/javascript_metadata/NativeFunctions.js
+front_end/models/javascript_metadata/DOMPinnedProperties.ts
 
 // All of the scripts in this folder are auto-generated so don't lint them.
 front_end/generated/
@@ -27,6 +22,8 @@ front_end/third_party/codemirror.next/bundle.ts
 front_end/third_party/lit/src/*.ts
 // @puppeteer/replay is auto-generated.
 front_end/third_party/puppeteer-replay/**/*.ts
+
+extensions/cxx_debugging/third_party/
 
 node_modules
 scripts/migration/**/*.js

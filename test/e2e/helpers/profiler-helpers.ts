@@ -19,7 +19,6 @@ export async function navigateToProfilerTab() {
 export async function createAProfile() {
   await click(START_PROFILING_BUTTON);
   // Once we start profiling the button should change to be stop
-  await waitFor(STOP_PROFILING_BUTTON);
   await click(STOP_PROFILING_BUTTON);
   // The launcher view should disappear
   await waitForNone('.profile-launcher-view');

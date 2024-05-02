@@ -26,21 +26,11 @@ devtools_entrypoint("bundle") {
     "../../models/workspace_diff/*",
     "../../panels/changes/*",
     "../../panels/sources/*",
+    "../../panels/utils:unittests",
     "../../ui/components/diff_view/*",
     "../../ui/legacy/components/quick_open/*",
     "../../ui/legacy/components/source_frame/*",
   ]
 
   visibility += devtools_third_party_visibility
-}
-
-devtools_entrypoint("legacy") {
-  entrypoint = "diff-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../legacy_test_runner/*",
-  ]
 }

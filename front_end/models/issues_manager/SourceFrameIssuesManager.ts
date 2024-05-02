@@ -11,12 +11,11 @@ import {
   trustedTypesPolicyViolationCode,
   trustedTypesSinkViolationCode,
 } from './ContentSecurityPolicyIssue.js';
-
-import {toZeroBasedLocation, type Issue, type IssueKind} from './Issue.js';
+import {type Issue, type IssueKind, toZeroBasedLocation} from './Issue.js';
 import {type IssueAddedEvent, type IssuesManager} from './IssuesManager.js';
 import {Events} from './IssuesManagerEvents.js';
 import {getIssueTitleFromMarkdownDescription} from './MarkdownIssueDescription.js';
-
+import {PropertyRuleIssue} from './PropertyRuleIssue.js';
 import {lateImportStylesheetLoadingCode, type StylesheetLoadingIssue} from './StylesheetLoadingIssue.js';
 
 export class SourceFrameIssuesManager {
@@ -32,7 +31,7 @@ export class SourceFrameIssuesManager {
   }
 
   async #addIssue(issue: Issue): Promise<void> {
-    if (!this.#isTrustedTypeIssue(issue) && !this.#isLateImportIssue(issue)) {
+    if (!this.#isTrustedTypeIssue(issue) && !this.#isLateImportIssue(issue) && !this.#isPropertyRuleIssue(issue)) {
       return;
     }
     const issuesModel = issue.model();
@@ -72,6 +71,10 @@ export class SourceFrameIssuesManager {
   #isTrustedTypeIssue(issue: Issue): issue is ContentSecurityPolicyIssue {
     return issue instanceof ContentSecurityPolicyIssue && issue.code() === trustedTypesSinkViolationCode ||
         issue.code() === trustedTypesPolicyViolationCode;
+  }
+
+  #isPropertyRuleIssue(issue: Issue): issue is PropertyRuleIssue {
+    return issue instanceof PropertyRuleIssue;
   }
 
   #isLateImportIssue(issue: Issue): issue is StylesheetLoadingIssue {

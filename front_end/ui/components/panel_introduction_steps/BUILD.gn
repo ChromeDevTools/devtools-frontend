@@ -23,8 +23,6 @@ devtools_module("panel_introduction_steps") {
     "../buttons:bundle",
     "../input:bundle",
   ]
-
-  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
 }
 
 devtools_entrypoint("bundle") {

@@ -110,7 +110,6 @@
   --color-error-text: #f00;
   --color-error-border: hsl(0deg 100% 92%);
   --color-error-background: hsl(0deg 100% 97%);
-  --color-checkbox-accent-color: var(--color-primary-old);
   --color-image-preview-background: rgb(255 255 255);
 
   /* Colors for styling inputs */
@@ -160,7 +159,6 @@
   --color-token-meta: rgb(85 85 85);
   --color-token-deleted: rgb(221 68 68);
   --color-token-inserted: rgb(34 153 34);
-  --color-token-pseudo-element: rgb(17 85 204);
 
   /* Colors used by the code editor */
   --color-secondary-cursor: #c0c0c0;
@@ -178,22 +176,18 @@
   --color-highlighted-line: rgb(255 255 0 / 50%);
   --color-completion-hover: rgb(56 121 217 / 10%);
   --color-search-match-border: rgb(128 128 128);
-  --color-selected-search-match: var(--color-text-primary);
+  --color-selected-search-match: var(--sys-color-on-surface);
   --color-selected-search-match-background: rgb(241 234 0);
-  --color-coverage-used: #63acbe;
-  --color-execution-line-background: rgb(0 59 255 / 10%);
-  --color-execution-line-outline: rgb(64 115 244);
-  --color-execution-token-background: rgb(15 72 252 / 35%);
-  --color-continue-to-location: rgb(5 65 255 / 10%);
-  --color-continue-to-location-hover: rgb(15 72 252 / 35%);
-  --color-continue-to-location-hover-border: rgb(121 141 254);
-  --color-continue-to-location-async: rgb(58 162 8 / 30%);
-  --color-continue-to-location-async-hover: rgb(75 179 6 / 55%);
-  --color-continue-to-location-async-hover-border: rgb(100 154 100);
-  --color-evaluated-expression: rgb(255 255 11 / 25%);
-  --color-evaluated-expression-border: rgb(163 41 34);
-  --color-variable-values: #ffe3c7;
-  --color-non-breakable-line: rgb(128 128 128 / 40%);
+  --color-continue-to-location: var(--ref-palette-blue90);
+  --color-continue-to-location-hover: var(--ref-palette-blue80);
+  --color-continue-to-location-hover-border: var(--ref-palette-blue70);
+  --color-continue-to-location-async: var(--ref-palette-green90);
+  --color-continue-to-location-async-hover: var(--ref-palette-green80);
+  --color-continue-to-location-async-hover-border: var(--ref-palette-green70);
+  --color-evaluated-expression: var(--ref-palette-yellow95);
+  --color-evaluated-expression-border: var(--ref-palette-yellow70);
+  --color-variable-values: var(--ref-palette-orange90);
+  --color-non-breakable-line: var(--ref-palette-neutral80);
 
   /* Color tokens for icons */
   --color-on-surface: rgb(32 33 36);
@@ -213,6 +207,218 @@
   --color-turqoise-bright: rgb(0 152 196);
   --color-yellow: rgb(121 89 0);
   --color-yellow-bright: rgb(186 130 14);
+
+  /* Chrome Desktop Design System */
+
+  /* Use on all surfaces */
+
+  --sys-color-on-surface: var(--ref-palette-neutral10);
+  --sys-color-on-surface-subtle: var(--ref-palette-neutral30);
+  --sys-color-on-surface-secondary: var(--ref-palette-neutral30);
+  --sys-color-on-surface-primary: var(--ref-palette-primary10);
+
+  /* Universal surfaces */
+
+  --sys-color-surface: var(--ref-palette-neutral100);
+  --sys-color-surface-variant: var(--ref-palette-neutral-variant90);
+
+  /* Containers */
+
+  --sys-color-tonal-container: var(--ref-palette-primary90);
+  --sys-color-on-tonal-container: var(--ref-palette-primary10);
+  --sys-color-tertiary-container: var(--ref-palette-tertiary90);
+  --sys-color-on-tertiary-container: var(--ref-palette-tertiary10);
+  --sys-color-error-container: var(--ref-palette-error90);
+  --sys-color-on-error-container: var(--ref-palette-error10);
+  --sys-color-neutral-container: var(--ref-palette-neutral95);
+  --sys-color-omnibox-container: var(--sys-color-surface4);
+
+  /* Prominent accent colors */
+
+  --sys-color-primary: var(--ref-palette-primary40);
+  --sys-color-on-primary: var(--ref-palette-primary100);
+  --sys-color-secondary: var(--ref-palette-secondary40);
+  --sys-color-on-secondary: var(--ref-palette-secondary100);
+  --sys-color-tertiary: var(--ref-palette-tertiary40);
+  --sys-color-on-tertiary: var(--ref-palette-tertiary100);
+  --sys-color-error: var(--ref-palette-error40);
+  --sys-color-on-error: var(--ref-palette-error100);
+
+  /* Chrome base surface */
+
+  --sys-color-base: var(--ref-palette-neutral100);
+  --sys-color-base-container: var(--sys-color-surface4);
+  --sys-color-base-container-elevated: var(--ref-palette-neutral100);
+
+  /* Corresponding base on colors */
+
+  --sys-color-on-base: var(--ref-palette-neutral10);
+  --sys-color-on-base-divider: var(--ref-palette-primary90);
+  /* Inverse */
+
+  --sys-color-inverse-surface: var(--ref-palette-neutral20);
+  --sys-color-inverse-primary: var(--ref-palette-primary80);
+  --sys-color-inverse-on-surface: var(--ref-palette-neutral95);
+
+  /* Outlines */
+
+  --sys-color-outline: var(--ref-palette-neutral-variant50);
+  --sys-color-tonal-outline: var(--ref-palette-primary80);
+  --sys-color-neutral-outline: var(--ref-palette-neutral80);
+  --sys-color-yellow-outline: var(--ref-palette-yellow70);
+  --sys-color-error-outline: var(--ref-palette-error80);
+  --sys-color-divider: var(--ref-palette-primary90);
+  --sys-color-divider-on-tonal-container: var(--ref-palette-primary80);
+  --sys-color-divider-prominent: var(--ref-palette-primary70);
+
+  /* States */
+
+  --sys-color-state-hover-on-prominent: rgb(253 252 251 / 10%);
+  --sys-color-state-hover-on-subtle: rgb(31 31 31 / 6%);
+  --sys-color-state-hover-dim-blend-protection: rgb(6 46 111 / 18%);
+  --sys-color-state-hover-bright-blend-protection: rgb(31 31 31 / 6%);
+  --sys-color-state-ripple-neutral-on-prominent: rgb(253 252 251 / 16%);
+  --sys-color-state-ripple-neutral-on-subtle: rgb(31 31 31 / 8%);
+  --sys-color-state-ripple-primary: rgb(124 172 248 / 32%);
+  --sys-color-state-focus-ring: var(--ref-palette-primary40);
+  --sys-color-state-focus-select: var(--ref-palette-primary80);
+  --sys-color-state-focus-highlight: rgb(31 31 31 / 6%);
+  --sys-color-state-disabled: rgb(31 31 31 / 38%);
+  --sys-color-state-disabled-container: rgb(31 31 31 / 12%);
+  --sys-color-state-header-hover: var(--ref-palette-primary80);
+  --sys-color-state-on-header-hover: var(--ref-palette-primary20);
+
+  /* Surfaces */
+
+  --sys-color-surface5: color-mix(in sRGB, var(--ref-palette-primary40) 14%, var(--ref-palette-neutral99));
+  --sys-color-surface4: color-mix(in sRGB, var(--ref-palette-primary40) 12%, var(--ref-palette-neutral99));
+  --sys-color-surface3: color-mix(in sRGB, var(--ref-palette-primary40) 11%, var(--ref-palette-neutral99));
+  --sys-color-surface2: color-mix(in sRGB, var(--ref-palette-primary40) 8%, var(--ref-palette-neutral99));
+  --sys-color-surface1: color-mix(in sRGB, var(--ref-palette-primary40) 5%, var(--ref-palette-neutral99));
+  /* Chrome DevTools Design System */
+
+  /* Prominent accent colors for icons */
+
+  --sys-color-primary-bright: var(--ref-palette-primary50);
+  --sys-color-blue-bright: var(--ref-palette-blue50);
+  --sys-color-green-bright: var(--ref-palette-green50);
+  --sys-color-error-bright: var(--ref-palette-error50);
+  --sys-color-orange-bright: var(--ref-palette-orange60);
+  --sys-color-yellow-bright: var(--ref-palette-yellow60);
+  --sys-color-cyan-bright: var(--ref-palette-cyan50);
+  --sys-color-purple-bright: var(--ref-palette-purple50);
+  --sys-color-neutral-bright: var(--ref-palette-neutral70);
+  --sys-color-pink-bright: var(--ref-palette-pink60);
+
+  /* Prominent accent colors for text */
+
+  --sys-color-blue: var(--ref-palette-blue40);
+  --sys-color-on-blue: var(--ref-palette-blue100);
+  --sys-color-green: var(--ref-palette-green40);
+  --sys-color-on-green: var(--ref-palette-green100);
+  --sys-color-orange: var(--ref-palette-orange40);
+  --sys-color-on-orange: var(--ref-palette-orange100);
+  --sys-color-yellow: var(--ref-palette-yellow40);
+  --sys-color-on-yellow: var(--ref-palette-yellow100);
+  --sys-color-cyan: var(--ref-palette-cyan40);
+  --sys-color-on-cyan: var(--ref-palette-cyan100);
+  --sys-color-purple: var(--ref-palette-purple40);
+  --sys-color-on-purple: var(--ref-palette-purple100);
+  --sys-color-pink: var(--ref-palette-pink40);
+  --sys-color-on-pink: var(--ref-palette-pink100);
+
+  /* Containers */
+
+  --sys-color-yellow-container: var(--ref-palette-yellow90);
+  --sys-color-on-yellow-container: var(--ref-palette-yellow10);
+
+  /* Universal surfaces */
+
+  --sys-color-cdt-base: var(--sys-color-base-container);
+  --sys-color-cdt-base-container: var(--sys-color-base);
+
+  /* Tinted surfaces */
+
+  --sys-color-surface-yellow: rgb(254 246 213 / 100%);
+  --sys-color-surface-yellow-high: rgb(253 240 185 / 100%);
+  --sys-color-surface-error: rgb(252 235 235 / 100%);
+  --sys-color-surface-green: rgb(219 243 226 / 100%);
+
+  /* Corresponding on colors */
+
+  --sys-color-on-surface-yellow: var(--ref-palette-yellow20);
+  --sys-color-on-surface-error: var(--ref-palette-error30);
+  --sys-color-on-surface-green: var(--ref-palette-green20);
+
+  /* Syntax highlighting */
+
+  --sys-color-token-variable: var(--sys-color-on-surface);
+  --sys-color-token-property: var(--sys-color-on-surface);
+  --sys-color-token-property-special: var(--ref-palette-error50);
+  --sys-color-token-type: var(--ref-palette-tertiary50);
+  --sys-color-token-definition: var(--ref-palette-primary30);
+  --sys-color-token-variable-special: var(--ref-palette-primary30);
+  --sys-color-token-builtin: var(--ref-palette-primary20);
+  --sys-color-token-keyword: var(--ref-palette-pink40);
+  --sys-color-token-number: var(--ref-palette-primary40);
+  --sys-color-token-string: var(--ref-palette-error40);
+  --sys-color-token-string-special: var(--ref-palette-error50);
+  --sys-color-token-atom: var(--ref-palette-primary20);
+  --sys-color-token-tag: var(--ref-palette-pink30);
+  --sys-color-token-attribute: var(--ref-palette-orange40);
+  --sys-color-token-attribute-value: var(--ref-palette-primary30);
+  --sys-color-token-comment: var(--ref-palette-tertiary40);
+  --sys-color-token-meta: var(--ref-palette-neutral60);
+  --sys-color-token-deleted: var(--ref-palette-error50);
+  --sys-color-token-inserted: var(--ref-palette-tertiary60);
+  --sys-color-token-pseudo-element: var(--ref-palette-primary40);
+  --sys-color-token-subtle: var(--ref-palette-neutral60);
+
+  /* Color for strokestyle of canvas in flame chart */
+  /* It is the same color as sys-color-primary but with a 10% opacity */
+  --app-color-strokestyle: rgb(11 87 208 / 10%);
+
+  /* Colors for data grid in Performance Panel */
+
+  --app-color-selected-progress-bar: var(--ref-palette-primary80);
+  --app-border-selected-progress-bar: var(--ref-palette-primary70);
+
+  /* Colors for timeline in Performance Panel */
+
+  --app-color-loading: var(--ref-palette-blue70);
+  --app-color-loading-children: var(--ref-palette-blue80);
+  --app-color-scripting: var(--ref-palette-yellow70);
+  --app-color-scripting-children: var(--ref-palette-yellow80);
+  --app-color-rendering: var(--ref-palette-purple70);
+  --app-color-rendering-children: var(--ref-palette-purple80);
+  --app-color-painting: var(--ref-palette-green70);
+  --app-color-painting-children: var(--ref-palette-green80);
+  --app-color-task: var(--ref-palette-neutral80);
+  --app-color-task-children: var(--ref-palette-neutral90);
+  --app-color-system: var(--ref-palette-neutral80);
+  --app-color-system-children: var(--ref-palette-neutral90);
+  --app-color-idle: var(--ref-palette-neutral90);
+  --app-color-idle-children: var(--ref-palette-neutral100);
+  --app-color-async: var(--ref-palette-error60);
+  --app-color-async-children: var(--ref-palette-error70);
+  --app-color-other: var(--ref-palette-neutral87);
+
+  /**
+   * Color for the active breadcrumb in the Performance Panel timeline.
+   */
+  --app-color-active-breadcrumb: var(--ref-palette-blue40);
+
+  /**
+  * Gradients
+  */
+  --sys-color-gradient-primary: var(--ref-palette-primary90);
+  --sys-color-gradient-tertiary: var(--ref-palette-tertiary95);
+
+  /**
+   * Colors for Coverage visualization.
+   */
+  --app-color-coverage-used: var(--ref-palette-neutral80);
+  --app-color-coverage-unused: var(--sys-color-error-bright);
 }
 
 .-theme-with-dark-background {
@@ -282,7 +488,6 @@
   --color-error-text: hsl(0deg 100% 75%);
   --color-error-border: rgb(92 0 0);
   --color-error-background: hsl(0deg 100% 8%);
-  --color-checkbox-accent-color: rgb(255 165 0);
   /* Colors for styling inputs */
   --color-input-outline: rgb(60 64 67);
   --color-input-outline-active: rgb(138 180 248);
@@ -327,7 +532,6 @@
   --color-token-attribute: rgb(155 187 220);
   --color-token-attribute-value: rgb(242 151 102);
   --color-token-meta: rgb(221 251 85);
-  --color-token-pseudo-element: rgb(237 119 229);
 
   /* Colors used by the code editor */
   --color-secondary-cursor: rgb(63 63 63);
@@ -347,20 +551,16 @@
   --color-search-match-border: rgb(128 128 128);
   --color-selected-search-match: #eee;
   --color-selected-search-match-background: hsl(133deg 100% 30%);
-  --color-coverage-used: rgb(65 138 156);
-  --color-execution-line-background: rgb(0 154 17 / 30%);
-  --color-execution-line-outline: #33cc6b;
-  --color-execution-token-background: rgb(132 237 78 / 20%);
-  --color-continue-to-location: rgb(0 173 56 / 35%);
-  --color-continue-to-location-hover: rgb(0 173 56 / 35%);
-  --color-continue-to-location-hover-border: #33cc6b;
-  --color-continue-to-location-async: rgb(87 238 0 / 20%);
-  --color-continue-to-location-async-hover: rgb(128 241 48 / 50%);
-  --color-continue-to-location-async-hover-border: rgb(101 155 101);
-  --color-evaluated-expression: rgb(71 70 0 / 75%);
-  --color-evaluated-expression-border: rgb(221 99 92);
-  --color-variable-values: rgb(56 28 0);
-  --color-non-breakable-line: rgb(127 127 127 / 40%);
+  --color-continue-to-location: var(--ref-palette-yellow30);
+  --color-continue-to-location-hover: var(--ref-palette-yellow40);
+  --color-continue-to-location-hover-border: var(--ref-palette-yellow50);
+  --color-continue-to-location-async: var(--ref-palette-green30);
+  --color-continue-to-location-async-hover: var(--ref-palette-green4);
+  --color-continue-to-location-async-hover-border: var(--ref-palette-green50);
+  --color-evaluated-expression: var(--ref-palette-yellow30);
+  --color-evaluated-expression-border: var(--ref-palette-yellow40);
+  --color-variable-values: var(--sys-color-surface-error);
+  --color-non-breakable-line: var(--ref-palette-neutral30);
 
   /* Color tokens for icons */
   --color-on-surface: rgb(232 234 237);
@@ -380,4 +580,218 @@
   --color-turqoise-bright: rgb(56 185 222);
   --color-yellow: rgb(251 188 5);
   --color-yellow-bright: rgb(217 162 0);
+
+  /* Chrome Desktop Design System */
+
+  /* Use on all surfaces */
+
+  --sys-color-on-surface: var(--ref-palette-neutral90);
+  --sys-color-on-surface-subtle: var(--ref-palette-neutral80);
+  --sys-color-on-surface-secondary: var(--ref-palette-neutral80);
+  --sys-color-on-surface-primary: var(--ref-palette-primary90);
+
+  /* Universal surfaces */
+
+  --sys-color-surface: var(--ref-palette-neutral10);
+  --sys-color-surface-variant: var(--ref-palette-neutral-variant30);
+
+  /* Containers */
+
+  --sys-color-tonal-container: var(--ref-palette-secondary30);
+  --sys-color-on-tonal-container: var(--ref-palette-secondary90);
+  --sys-color-tertiary-container: var(--ref-palette-tertiary30);
+  --sys-color-on-tertiary-container: var(--ref-palette-tertiary90);
+  --sys-color-error-container: var(--ref-palette-error30);
+  --sys-color-on-error-container: var(--ref-palette-error90);
+  --sys-color-neutral-container: var(--ref-palette-neutral25);
+  --sys-color-omnibox-container: var(--ref-palette-neutral15);
+
+  /* Prominent accent colors */
+
+  --sys-color-primary: var(--ref-palette-primary80);
+  --sys-color-on-primary: var(--ref-palette-primary20);
+  --sys-color-secondary: var(--ref-palette-secondary80);
+  --sys-color-on-secondary: var(--ref-palette-secondary20);
+  --sys-color-tertiary: var(--ref-palette-tertiary80);
+  --sys-color-on-tertiary: var(--ref-palette-tertiary20);
+  --sys-color-error: var(--ref-palette-error80);
+  --sys-color-on-error: var(--ref-palette-error20);
+
+  /* Chrome base surface */
+
+  --sys-color-base: var(--ref-palette-neutral25);
+  --sys-color-base-container: var(--ref-palette-neutral15);
+  --sys-color-base-container-elevated: var(--ref-palette-neutral25);
+
+  /* Corresponding base on colors */
+
+  --sys-color-on-base: var(--ref-palette-neutral90);
+  --sys-color-on-base-divider: var(--ref-palette-neutral40);
+
+  /* Inverse */
+
+  --sys-color-inverse-surface: var(--ref-palette-neutral90);
+  --sys-color-inverse-primary: var(--ref-palette-primary40);
+  --sys-color-inverse-on-surface: var(--ref-palette-neutral10);
+
+  /* Outlines */
+
+  --sys-color-outline: var(--ref-palette-neutral-variant60);
+  --sys-color-tonal-outline: var(--ref-palette-secondary50);
+  --sys-color-neutral-outline: var(--ref-palette-neutral50);
+  --sys-color-yellow-outline: var(--ref-palette-yellow40);
+  --sys-color-error-outline: var(--ref-palette-error80);
+  --sys-color-divider: var(--ref-palette-neutral30);
+  --sys-color-divider-on-tonal-container: var(--ref-palette-neutral40);
+  --sys-color-divider-prominent: var(--ref-palette-neutral50);
+
+  /* States */
+
+  --sys-color-state-hover-on-prominent: rgb(31 31 31 / 6%);
+  --sys-color-state-hover-on-subtle: rgb(253 252 251 / 10%);
+  --sys-color-state-hover-dim-blend-protection: rgb(31 31 31 / 10%);
+  --sys-color-state-hover-bright-blend-protection: rgb(31 31 31 / 16%);
+  --sys-color-state-ripple-neutral-on-prominent: rgb(31 31 31 / 12%);
+  --sys-color-state-ripple-neutral-on-subtle: rgb(253 252 251 / 16%);
+  --sys-color-state-ripple-primary: rgb(76 141 246 / 32%);
+  --sys-color-state-focus-ring: var(--ref-palette-primary80);
+  --sys-color-state-focus-select: var(--ref-palette-secondary50);
+  --sys-color-state-focus-highlight: rgb(253 252 251 / 10%);
+  --sys-color-state-disabled: rgb(227 227 227 / 38%);
+  --sys-color-state-disabled-container: rgb(227 227 227 / 12%);
+  --sys-color-state-header-hover: var(--ref-palette-secondary30);
+  --sys-color-state-on-header-hover: var(--ref-palette-secondary90);
+
+  /* Surfaces */
+
+  --sys-color-surface5: color-mix(in sRGB, var(--ref-palette-primary80) 14%, var(--ref-palette-neutral10));
+  --sys-color-surface4: color-mix(in sRGB, var(--ref-palette-primary80) 12%, var(--ref-palette-neutral10));
+  --sys-color-surface3: color-mix(in sRGB, var(--ref-palette-primary80) 11%, var(--ref-palette-neutral10));
+  --sys-color-surface2: color-mix(in sRGB, var(--ref-palette-primary80) 8%, var(--ref-palette-neutral10));
+  --sys-color-surface1: color-mix(in sRGB, var(--ref-palette-primary80) 5%, var(--ref-palette-neutral10));
+
+  /* Chrome DevTools Design System */
+
+  /* Prominent accent colors for icons */
+
+  --sys-color-primary-bright: var(--ref-palette-primary70);
+  --sys-color-blue-bright: var(--ref-palette-blue70);
+  --sys-color-green-bright: var(--ref-palette-green70);
+  --sys-color-error-bright: var(--ref-palette-error60);
+  --sys-color-orange-bright: var(--ref-palette-orange70);
+  --sys-color-yellow-bright: var(--ref-palette-yellow70);
+  --sys-color-cyan-bright: var(--ref-palette-cyan70);
+  --sys-color-purple-bright: var(--ref-palette-purple70);
+  --sys-color-neutral-bright: var(--ref-palette-neutral50);
+  --sys-color-pink-bright: var(--ref-palette-pink70);
+
+  /* Prominent accent colors for text */
+
+  --sys-color-blue: var(--ref-palette-blue80);
+  --sys-color-on-blue: var(--ref-palette-blue20);
+  --sys-color-green: var(--ref-palette-green80);
+  --sys-color-on-green: var(--ref-palette-green20);
+  --sys-color-orange: var(--ref-palette-orange80);
+  --sys-color-on-orange: var(--ref-palette-orange20);
+  --sys-color-yellow: var(--ref-palette-yellow80);
+  --sys-color-on-yellow: var(--ref-palette-yellow20);
+  --sys-color-cyan: var(--ref-palette-cyan80);
+  --sys-color-on-cyan: var(--ref-palette-cyan20);
+  --sys-color-purple: var(--ref-palette-purple80);
+  --sys-color-on-purple: var(--ref-palette-purple20);
+  --sys-color-pink: var(--ref-palette-pink80);
+  --sys-color-on-pink: var(--ref-palette-pink20);
+
+  /* Containers */
+
+  --sys-color-yellow-container: var(--ref-palette-yellow30);
+  --sys-color-on-yellow-container: var(--ref-palette-yellow90);
+
+  /* Universal surfaces */
+
+  --sys-color-cdt-base: var(--sys-color-base);
+  --sys-color-cdt-base-container: var(--sys-color-base-container);
+
+  /* Tinted surfaces */
+
+  --sys-color-surface-yellow: rgb(65 60 38 / 100%);
+  --sys-color-surface-yellow-high: rgb(76 68 37 / 100%);
+  --sys-color-surface-error: rgb(78 53 52 / 100%);
+  --sys-color-surface-green: rgb(43 70 51 / 100%);
+
+  /* Corresponding on colors */
+
+  --sys-color-on-surface-yellow: var(--ref-palette-yellow90);
+  --sys-color-on-surface-error: var(--ref-palette-error90);
+  --sys-color-on-surface-green: var(--ref-palette-green90);
+
+  /* Syntax highlighting */
+
+  --sys-color-token-variable: var(--ref-palette-neutral80);
+  --sys-color-token-property: var(--ref-palette-yellow70);
+  --sys-color-token-property-special: var(--ref-palette-cyan80);
+  --sys-color-token-type: var(--ref-palette-primary70);
+  --sys-color-token-definition: var(--ref-palette-primary70);
+  --sys-color-token-variable-special: var(--ref-palette-primary40);
+  --sys-color-token-builtin: var(--ref-palette-primary80);
+  --sys-color-token-keyword: var(--ref-palette-purple60);
+  --sys-color-token-number: var(--ref-palette-tertiary90);
+  --sys-color-token-string: var(--ref-palette-orange70);
+  --sys-color-token-string-special: var(--ref-palette-orange70);
+  --sys-color-token-atom: var(--ref-palette-tertiary90);
+  --sys-color-token-tag: var(--ref-palette-primary70);
+  --sys-color-token-attribute: var(--ref-palette-primary80);
+  --sys-color-token-attribute-value: var(--ref-palette-orange70);
+  --sys-color-token-comment: var(--ref-palette-neutral70);
+  --sys-color-token-meta: var(--ref-palette-neutral60);
+  --sys-color-token-deleted: var(--ref-palette-error50);
+  --sys-color-token-inserted: var(--ref-palette-tertiary60);
+  --sys-color-token-pseudo-element: var(--ref-palette-pink70);
+  --sys-color-token-subtle: var(--ref-palette-neutral60);
+
+  /* Color for strokestyle of canvas in flame chart */
+  /* It is the same color as sys-color-primary but with a 10% opacity */
+  --app-color-strokestyle: rgb(168 199 250 / 10%);
+
+  /* Colors for data grid in Performance Panel */
+
+  --app-color-selected-progress-bar: var(--ref-palette-secondary40);
+  --app-border-selected-progress-bar: var(--ref-palette-secondary50);
+
+  /* Colors for timeline in Performance Panel */
+
+  --app-color-loading: var(--ref-palette-blue60);
+  --app-color-loading-children: var(--ref-palette-blue50);
+  --app-color-scripting: var(--ref-palette-yellow70);
+  --app-color-scripting-children: var(--ref-palette-yellow60);
+  --app-color-rendering: var(--ref-palette-purple60);
+  --app-color-rendering-children: var(--ref-palette-purple50);
+  --app-color-painting: var(--ref-palette-green70);
+  --app-color-painting-children: var(--ref-palette-green60);
+  --app-color-task: var(--ref-palette-neutral80);
+  --app-color-task-children: var(--ref-palette-neutral70);
+  --app-color-system: var(--ref-palette-neutral50);
+  --app-color-system-children: var(--ref-palette-neutral40);
+  --app-color-idle: var(--ref-palette-neutral30);
+  --app-color-idle-children: var(--ref-palette-neutral20);
+  --app-color-async: var(--ref-palette-error60);
+  --app-color-async-children: var(--ref-palette-error50);
+  --app-color-other: var(--ref-palette-neutral60);
+
+  /**
+   * Color for the active breadcrumb in the Performance Panel timeline.
+   */
+  --app-color-active-breadcrumb: var(--ref-palette-blue40);
+
+  /**
+  * Gradients
+  */
+  --sys-color-gradient-primary: var(--ref-palette-primary30);
+  --sys-color-gradient-tertiary: var(--ref-palette-tertiary30);
+
+  /**
+   * Colors for Coverage visualization.
+   */
+  --app-color-coverage-used: var(--ref-palette-neutral40);
+  --app-color-coverage-unused: var(--sys-color-error-bright);
 }

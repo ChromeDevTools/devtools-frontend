@@ -32,11 +32,11 @@ li.search-result {
 }
 
 li.search-result:hover {
-  background-color: var(--item-hover-color);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 li.search-result .search-result-file-name {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   flex: 1 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -44,7 +44,7 @@ li.search-result .search-result-file-name {
 }
 
 li.search-result .search-result-matches-count {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   margin: 0 8px;
 }
 
@@ -53,7 +53,7 @@ li.search-result.expanded .search-result-matches-count {
 }
 
 li.show-more-matches {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   cursor: pointer;
   margin: 8px 0 0 -4px;
 }
@@ -68,21 +68,21 @@ li.search-match {
   white-space: pre;
 }
 
+li.search-match.selected:focus-visible {
+  background: var(--sys-color-tonal-container);
+}
+
 li.search-match::before {
   display: none;
 }
 
 li.search-match .search-match-line-number {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   text-align: right;
   vertical-align: top;
   word-break: normal;
   padding: 2px 4px 2px 6px;
   margin-right: 5px;
-}
-
-li.search-match:hover {
-  background-color: var(--item-hover-color);
 }
 
 .tree-outline .devtools-link {
@@ -92,7 +92,7 @@ li.search-match:hover {
 }
 
 li.search-match .search-match-content {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 ol.children.expanded {
@@ -106,10 +106,10 @@ ol.children.expanded {
 }
 
 .search-result-qualifier {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .search-result-dash {
-  color: var(--color-background-elevation-2);
+  color: var(--sys-color-surface-variant);
   margin: 0 4px;
 }

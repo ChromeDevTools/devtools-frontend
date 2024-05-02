@@ -55,8 +55,8 @@
   padding: 3px 7px;
   line-height: 16px;
   border: 1px solid var(--divider-line);
-  color: var(--color-text-primary);
-  background-color: var(--color-background);
+  color: var(--sys-color-on-surface);
+  background-color: var(--sys-color-cdt-base-container);
   text-align: center;
   font-weight: 500;
 }

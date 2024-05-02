@@ -10,6 +10,7 @@ import {
   buildPropertyDefinitionText,
   buildPropertyName,
   buildPropertyValue,
+  isBlockContainer,
   isFlexContainer,
   isGridContainer,
   isInlineElement,
@@ -31,6 +32,13 @@ const UIStrings = {
     @example {nowrap} PROPERTY_VALUE
    */
   ruleViolatedBySameElementRuleFix: 'Try setting {PROPERTY_NAME} to something other than {PROPERTY_VALUE}.',
+  /**
+   *@description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to not being a flex or grid container.
+   *@example {display: grid} DISPLAY_GRID_RULE
+   *@example {display: flex} DISPLAY_FLEX_RULE
+   */
+  ruleViolatedBySameElementRuleChangeFlexOrGrid:
+      'Try adding {DISPLAY_GRID_RULE} or {DISPLAY_FLEX_RULE} to make this element into a container.',
   /**
    *@description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to the current property value.
    *@example {display: block} EXISTING_PROPERTY_DECLARATION
@@ -63,6 +71,20 @@ const UIStrings = {
    */
   fontVariationSettingsWarning:
       'Value for setting “{PH1}” {PH2} is outside the supported range [{PH3}, {PH4}] for font-family “{PH5}”.',
+  /**
+   *@description The message shown in the Style pane when the user hovers over a property declaration that has no effect on flex or grid child items.
+   *@example {flex} CONTAINER_DISPLAY_NAME
+   *@example {align-contents} PROPERTY_NAME
+   */
+  flexGridContainerPropertyRuleReason:
+      'This element is a {CONTAINER_DISPLAY_NAME} item, i.e. a child of a {CONTAINER_DISPLAY_NAME} container, but {PROPERTY_NAME} only applies to containers.',
+  /**
+   *@description The message shown in the Style pane when the user hovers over a property declaration that has no effect on flex or grid child items.
+   *@example {align-contents} PROPERTY_NAME
+   *@example {align-self} ALTERNATIVE_PROPERTY_NAME
+   */
+  flexGridContainerPropertyRuleFix:
+      'Try setting the {PROPERTY_NAME} on the container element or use {ALTERNATIVE_PROPERTY_NAME} instead.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/CSSRuleValidator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -129,7 +151,24 @@ export class AlignContentValidator extends CSSRuleValidator {
     if (!computedStyles) {
       return;
     }
-    if (!isFlexContainer(computedStyles)) {
+    const isFlex = isFlexContainer(computedStyles);
+    if (!isFlex && !isBlockContainer(computedStyles) && !isGridContainer(computedStyles)) {
+      const reasonPropertyDeclaration = buildPropertyDefinitionText('display', computedStyles?.get('display'));
+      const affectedPropertyDeclarationCode = buildPropertyName('align-content');
+
+      return new Hint(
+          i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
+            'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
+            'AFFECTED_PROPERTY_DECLARATION_CODE': affectedPropertyDeclarationCode,
+          }),
+          i18nString(UIStrings.ruleViolatedBySameElementRuleFix, {
+            PROPERTY_NAME: buildPropertyName('display'),
+            PROPERTY_VALUE: buildPropertyValue(computedStyles?.get('display') as string),
+          }),
+      );
+    }
+
+    if (!isFlex) {
       return;
     }
     if (computedStyles.get('flex-wrap') !== 'nowrap') {
@@ -345,7 +384,6 @@ export class FlexGridValidator extends CSSRuleValidator {
   constructor() {
     super([
       'justify-content',
-      'align-content',
       'place-content',  // Shorthand	<'align-content'> <'justify-content'>?
       'align-items',
     ]);
@@ -355,7 +393,8 @@ export class FlexGridValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.FlexGrid;
   }
 
-  getHint(propertyName: string, computedStyles?: Map<string, string>): Hint|undefined {
+  getHint(propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): Hint
+      |undefined {
     if (!computedStyles) {
       return;
     }
@@ -364,7 +403,24 @@ export class FlexGridValidator extends CSSRuleValidator {
       return;
     }
 
-    const reasonPropertyDeclaration = buildPropertyDefinitionText('display', computedStyles?.get('display'));
+    if (parentComputedStyles && (isFlexContainer(parentComputedStyles) || isGridContainer(parentComputedStyles))) {
+      const reasonContainerDisplayName = buildPropertyValue(parentComputedStyles.get('display') as string);
+      const reasonPropertyName = buildPropertyName(propertyName);
+      const reasonAlternativePropertyName =
+          buildPropertyName(propertyName === 'justify-content' ? 'justify-self' : 'align-self');
+      return new Hint(
+          i18nString(UIStrings.flexGridContainerPropertyRuleReason, {
+            'CONTAINER_DISPLAY_NAME': reasonContainerDisplayName,
+            'PROPERTY_NAME': reasonPropertyName,
+          }),
+          i18nString(UIStrings.flexGridContainerPropertyRuleFix, {
+            'PROPERTY_NAME': reasonPropertyName,
+            'ALTERNATIVE_PROPERTY_NAME': reasonAlternativePropertyName,
+          }),
+      );
+    }
+
+    const reasonPropertyDeclaration = buildPropertyDefinitionText('display', computedStyles.get('display'));
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
 
     return new Hint(
@@ -372,9 +428,9 @@ export class FlexGridValidator extends CSSRuleValidator {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
           'AFFECTED_PROPERTY_DECLARATION_CODE': affectedPropertyDeclarationCode,
         }),
-        i18nString(UIStrings.ruleViolatedBySameElementRuleFix, {
-          PROPERTY_NAME: buildPropertyName('display'),
-          PROPERTY_VALUE: buildPropertyValue(computedStyles?.get('display') as string),
+        i18nString(UIStrings.ruleViolatedBySameElementRuleChangeFlexOrGrid, {
+          'DISPLAY_GRID_RULE': buildPropertyDefinitionText('display', 'grid'),
+          'DISPLAY_FLEX_RULE': buildPropertyDefinitionText('display', 'flex'),
         }),
     );
   }

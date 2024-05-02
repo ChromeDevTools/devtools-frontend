@@ -13,25 +13,20 @@
 }
 
 .bezier-preset-selected > svg {
-  background-color: var(--legacy-selection-bg-color);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .bezier-container {
-  --override-bezier-control-color: #9c27b0;
+  --override-bezier-control-color: var(--sys-color-purple-bright);
 
   display: flex;
   margin-top: 38px;
   flex-shrink: 0;
   /* overflown bezier visualization must be on top of the source text */
   z-index: 2;
-  background-image: radial-gradient(circle, var(--color-background-elevation-2) 1px, var(--color-background-inverted-opacity-0) 1px);
+  background-image: radial-gradient(circle, var(--sys-color-surface-variant) 1px, var(--color-background-inverted-opacity-0) 1px);
   background-size: 17px 17px;
   background-position: -5px -10px;
-}
-
-.-theme-with-dark-background .bezier-container,
-:host-context(.-theme-with-dark-background) .bezier-container {
-  --override-bezier-control-color: rgb(196 79 216);
 }
 
 .bezier-preset {
@@ -39,23 +34,23 @@
   height: 50px;
   padding: 5px;
   margin: auto;
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-surface1);
   border-radius: 3px;
 }
 
 .bezier-preset line.bezier-control-line {
-  stroke: var(--color-text-secondary);
+  stroke: var(--sys-color-token-subtle);
   stroke-width: 1;
   stroke-linecap: round;
   fill: none;
 }
 
 .bezier-preset circle.bezier-control-circle {
-  fill: var(--color-text-secondary);
+  fill: var(--sys-color-token-subtle);
 }
 
 .bezier-preset path.bezier-path {
-  stroke: var(--color-background-inverted);
+  stroke: var(--sys-color-inverse-surface);
   stroke-width: 2;
   stroke-linecap: round;
   fill: none;
@@ -63,15 +58,15 @@
 
 .bezier-preset-selected path.bezier-path,
 .bezier-preset-selected line.bezier-control-line {
-  stroke: var(--color-background);
+  stroke: var(--sys-color-on-tonal-container);
 }
 
 .bezier-preset-selected circle.bezier-control-circle {
-  fill: var(--color-background);
+  fill: var(--sys-color-on-tonal-container);
 }
 
 .bezier-curve line.linear-line {
-  stroke: var(--color-background-elevation-2);
+  stroke: var(--sys-color-neutral-outline);
   stroke-width: 2;
   stroke-linecap: round;
   fill: none;
@@ -91,7 +86,7 @@
 }
 
 .bezier-curve path.bezier-path {
-  stroke: var(--color-background-inverted);
+  stroke: var(--sys-color-inverse-surface);
   stroke-width: 3;
   stroke-linecap: round;
   fill: none;
@@ -103,7 +98,7 @@
 
 .bezier-preview-container {
   position: relative;
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   overflow: hidden;
   border-radius: 20px;
   width: 200%;
@@ -114,8 +109,7 @@
 }
 
 .bezier-preview-animation {
-  background-color: #9c27b0; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--sys-color-purple-bright);
   width: 20px;
   height: 20px;
   border-radius: 20px;
@@ -133,7 +127,7 @@
 }
 
 svg.bezier-preset-modify {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-cdt-base-container);
   border-radius: 35px;
   display: inline-block;
   visibility: hidden;
@@ -144,16 +138,16 @@ svg.bezier-preset-modify {
 
 svg.bezier-preset-modify:hover,
 .bezier-preset:hover {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .bezier-preset-selected .bezier-preset:hover {
-  background-color: var(--legacy-selection-bg-color);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .bezier-preset-modify path {
   stroke-width: 2;
-  stroke: var(--color-background-inverted);
+  stroke: var(--sys-color-on-surface-subtle);
   fill: none;
 }
 
@@ -204,7 +198,7 @@ svg.bezier-preset-modify.bezier-preset-plus {
 
 svg.bezier-preset-modify:active {
   transform: scale(1.1);
-  background-color: var(--legacy-selection-bg-color);
+  background-color: var(--sys-color-state-ripple-neutral-on-subtle);
 }
 
 .bezier-preset-category:active {
@@ -216,5 +210,5 @@ svg.bezier-preset-modify:active {
 }
 
 .bezier-preset-modify:active path {
-  stroke: var(--color-background);
+  stroke: var(--sys-color-on-surface-subtle);
 }

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 function getNodeData(node: Node): string {
   return (node as unknown as {
            data: string,
@@ -143,6 +141,7 @@ export class Fragment {
     return {template, binds};
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private static render(template: Template, values: any[]): Fragment {
     const content = template.template.ownerDocument.importNode(template.template.content, true);
     const resultElement = (content.firstChild === content.lastChild ? content.firstChild : content) as Element;
@@ -190,6 +189,7 @@ export class Fragment {
     return result;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private static nodeForValue(value: any): Node {
     if (value instanceof Node) {
       return value;

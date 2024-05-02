@@ -4,10 +4,14 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("source_map_scopes") {
-  sources = [ "NamesResolver.ts" ]
+  sources = [
+    "NamesResolver.ts",
+    "ScopeTreeCache.ts",
+  ]
 
   deps = [
     "../../core/common:bundle",
@@ -27,13 +31,29 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/models/source_map_scopes/*",
     "../../panels/console/*",
     "../../panels/sources/*",
     "../../panels/timeline/*",
     "../../ui/components/text_editor/*",
     "../../ui/legacy/components/object_ui/*",
+    "../breakpoints/*",
   ]
 
   visibility += devtools_models_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+  sources = [
+    "NamesResolver.test.ts",
+    "ScopeTreeCache.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+    "../../testing",
+    "../formatter:bundle",
+  ]
 }

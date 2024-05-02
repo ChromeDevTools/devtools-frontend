@@ -80,12 +80,17 @@ def esbuild_path():
 
 
 def downloaded_chrome_binary_path():
-    return path.abspath(path.join(
-    *{
-        'Linux': (devtools_root_path(), 'third_party', 'chrome', 'chrome-linux', 'chrome'),
-        'Darwin': (devtools_root_path(), 'third_party', 'chrome', 'chrome-mac', 'Chromium.app', 'Contents', 'MacOS', 'Chromium'),
-        'Windows': (devtools_root_path(), 'third_party', 'chrome', 'chrome-win', 'chrome.exe'),
-    }[platform.system()]))
+    return path.abspath(
+        path.join(
+            *{
+                'Linux': (devtools_root_path(), 'third_party', 'chrome',
+                          'chrome-linux', 'chrome'),
+                'Darwin': (devtools_root_path(), 'third_party', 'chrome',
+                           'chrome-mac', 'Google Chrome for Testing.app',
+                           'Contents', 'MacOS', 'Google Chrome for Testing'),
+                'Windows': (devtools_root_path(), 'third_party', 'chrome',
+                            'chrome-win', 'chrome.exe'),
+            }[platform.system()]))
 
 
 def license_checker_path():

@@ -1,0 +1,18 @@
+Name: CSP Evaluator Core Library, a tool that allows developers to check if a Content Security Policy (CSP) serves as mitigation against XSS attacks
+Short Name: csp_evaluator
+URL: https://www.npmjs.com/package/csp_evaluator
+Version: 1.1.1
+License: Apache
+License File: package/LICENSE
+Security Critical: no
+
+Description:
+CSP Evaluator allows developers and security experts to check if a Content Security Policy (CSP) serves as a strong mitigation against cross-site scripting attacks.
+It assists with the process of reviewing CSP policies, and helps identify subtle CSP bypasses which undermine the value of a policy.
+CSP Evaluator checks are based on a large-scale study and are aimed to help developers to harden their CSP and improve the security of their applications.
+
+Local Modifications:
+  1 Added .js extension to imports
+  2 New files:
+      README.chromium
+      OWNERS

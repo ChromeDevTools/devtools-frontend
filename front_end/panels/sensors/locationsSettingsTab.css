@@ -10,7 +10,7 @@
 
 .header {
   padding: 0 0 6px;
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
   font-size: 18px;
   font-weight: normal;
   flex: none;
@@ -43,7 +43,7 @@
   text-overflow: ellipsis;
   flex-basis: 170px;
   user-select: none;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   position: relative;
   overflow: hidden;
 }
@@ -61,7 +61,7 @@
 
 .locations-list-separator {
   flex: 0 0 1px;
-  background-color: var(--color-details-hairline);
+  background-color: var(--sys-color-divider);
   height: 30px;
   margin: 0 4px;
 }

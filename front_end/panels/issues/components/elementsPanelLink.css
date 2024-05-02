@@ -5,11 +5,9 @@
  */
 
 .element-reveal-icon {
-  --override-element-reveal-icon-background: rgb(110 110 110);
-
   display: inline-block;
   width: 20px;
   height: 20px;
-  -webkit-mask-image: var(--image-file-select-element);
+  mask-image: var(--image-file-select-element);
   background-color: var(--icon-default);
 }

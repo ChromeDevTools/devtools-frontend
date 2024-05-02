@@ -22,7 +22,7 @@ div {
 
 .arrow-icon {
   display: inline-block;
-  -webkit-mask-image: var(--image-file-triangle-right);
+  mask-image: var(--image-file-triangle-right);
   background-color: var(--icon-default);
   margin-top: 2px;
   height: 14px;
@@ -45,7 +45,7 @@ div {
 
 .link,
 .devtools-link {
-  color: var(--color-link);
+  color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
   outline-offset: 2px;

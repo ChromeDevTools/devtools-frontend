@@ -7,7 +7,6 @@ import {assert} from 'chai';
 import {
   $$,
   click,
-  enableExperiment,
   getBrowserAndPages,
   step,
   typeText,
@@ -15,10 +14,12 @@ import {
   waitForFunction,
   waitForNone,
 } from '../../shared/helper.js';
-import {beforeEach, describe, it} from '../../shared/mocha-extensions.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
+import {elementContainsTextWithSelector} from '../helpers/network-helpers.js';
 import {openGoToLineQuickOpen} from '../helpers/quick_open-helpers.js';
 import {
   addBreakpointForLine,
+  isPrettyPrinted,
   openSourceCodeEditorForFile,
   retrieveCodeMirrorEditorContent,
   retrieveTopCallFrameScriptLocation,
@@ -33,10 +34,6 @@ describe('The Sources Tab', function() {
   if (this.timeout() > 0) {
     this.timeout(10000);
   }
-
-  beforeEach(async () => {
-    await enableExperiment('sourcesPrettyPrint');
-  });
 
   it('can pretty-print a JavaScript file inline', async () => {
     await openSourceCodeEditorForFile('minified-sourcecode.js', 'minified-sourcecode.html');
@@ -85,6 +82,54 @@ describe('The Sources Tab', function() {
 
       const updatedTextContent = await retrieveCodeMirrorEditorContent();
       assert.strictEqual(updatedTextContent.join('\n'), expectedLines.join('\n'));
+    });
+  });
+
+  it('can pretty print an inline json subtype file', async () => {
+    await openSourceCodeEditorForFile('json-subtype-ld.rawresponse', '../network/json-subtype-ld.rawresponse');
+    const editor = await waitFor('[aria-label="Code editor"]');
+
+    await step('can pretty-print a json subtype', async () => {
+      const expectedPrettyLines = [
+        '{',
+        '    "Keys": [',
+        '        {',
+        '            "Key1": "Value1",',
+        '            "Key2": "Value2",',
+        '            "Key3": true',
+        '        },',
+        '        {',
+        '            "Key1": "Value1",',
+        '            "Key2": "Value2",',
+        '            "Key3": false',
+        '        }',
+        '    ]',
+        '}',
+      ];
+      const actualPrettyText = await retrieveCodeMirrorEditorContent();
+      assert.deepStrictEqual(expectedPrettyLines, actualPrettyText);
+    });
+
+    await step('can highlight the pretty-printed text', async () => {
+      assert.isTrue(await isPrettyPrinted());
+      assert.isTrue(await elementContainsTextWithSelector(editor, '"Value1"', '.token-string'));
+
+      assert.isTrue(await elementContainsTextWithSelector(editor, 'true', '.token-atom'));
+    });
+
+    await step('can un-pretty-print a json subtype file', async () => {
+      await click(PRETTY_PRINT_BUTTON);
+      const expectedNotPrettyLines =
+          '{"Keys": [{"Key1": "Value1","Key2": "Value2","Key3": true},{"Key1": "Value1","Key2": "Value2","Key3": false}]},';
+      const actualNotPrettyText = await retrieveCodeMirrorEditorContent();
+      assert.strictEqual(expectedNotPrettyLines, actualNotPrettyText.toString());
+    });
+
+    await step('can highlight the un-pretty-printed text', async () => {
+      assert.isFalse(await isPrettyPrinted());
+      assert.isTrue(await elementContainsTextWithSelector(editor, '"Value1"', '.token-string'));
+
+      assert.isTrue(await elementContainsTextWithSelector(editor, 'true', '.token-atom'));
     });
   });
 

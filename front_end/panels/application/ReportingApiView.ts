@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
-import * as UI from '../../ui/legacy/legacy.js';
-import type * as ApplicationComponents from './components/components.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import type * as ApplicationComponents from './components/components.js';
 import {ReportingApiReportsView} from './ReportingApiReportsView.js';
 
 export class ReportingApiView extends UI.SplitWidget.SplitWidget {
@@ -15,6 +16,7 @@ export class ReportingApiView extends UI.SplitWidget.SplitWidget {
 
   constructor(endpointsGrid: ApplicationComponents.EndpointsGrid.EndpointsGrid) {
     super(/* isVertical: */ false, /* secondIsSidebar: */ true);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('reporting-api')}`);
     this.endpointsGrid = endpointsGrid;
     this.endpoints = new Map();
     const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();

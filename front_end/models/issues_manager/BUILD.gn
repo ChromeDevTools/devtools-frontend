@@ -5,6 +5,7 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("issues_manager") {
@@ -15,6 +16,7 @@ devtools_module("issues_manager") {
     "ClientHintIssue.ts",
     "ContentSecurityPolicyIssue.ts",
     "ContrastCheckTrigger.ts",
+    "CookieDeprecationMetadataIssue.ts",
     "CookieIssue.ts",
     "CorsIssue.ts",
     "CrossOriginEmbedderPolicyIssue.ts",
@@ -30,6 +32,7 @@ devtools_module("issues_manager") {
     "LowTextContrastIssue.ts",
     "MarkdownIssueDescription.ts",
     "MixedContentIssue.ts",
+    "PropertyRuleIssue.ts",
     "QuirksModeIssue.ts",
     "RelatedIssue.ts",
     "SharedArrayBufferIssue.ts",
@@ -78,7 +81,7 @@ devtools_issue_description_files = [
   "CoepFrameResourceNeedsCoepHeader.md",
   "CompatibilityModeQuirks.md",
   "CookieAttributeValueExceedsMaxSize.md",
-  "cookieExcludeBlockedWithinFirstPartySet.md",
+  "cookieExcludeBlockedWithinRelatedWebsiteSet.md",
   "cookieExcludeDomainNonAscii.md",
   "cookieWarnDomainNonAscii.md",
   "corsAllowCredentialsRequired.md",
@@ -91,6 +94,7 @@ devtools_issue_description_files = [
   "corsNoCorsRedirectModeNotFollow.md",
   "corsOriginMismatch.md",
   "corsPreflightAllowPrivateNetworkError.md",
+  "corsPrivateNetworkPermissionDenied.md",
   "corsPreflightResponseInvalid.md",
   "corsRedirectContainsCredentials.md",
   "corsWildcardOriginNotAllowed.md",
@@ -111,6 +115,7 @@ devtools_issue_description_files = [
   "genericFormInputAssignedAutocompleteValueToIdOrNameAttributeError.md",
   "genericFormLabelHasNeitherForNorNestedInput.md",
   "genericFormLabelForMatchesNonExistingIdError.md",
+  "genericResponseWasBlockedByORB.md",
   "federatedAuthRequestApprovalDeclined.md",
   "federatedAuthRequestTooManyRequests.md",
   "federatedAuthRequestManifestHttpNotFound.md",
@@ -152,10 +157,17 @@ devtools_issue_description_files = [
   "SameSiteNoneInsecureWarnSet.md",
   "SameSiteUnspecifiedLaxAllowUnsafeRead.md",
   "SameSiteUnspecifiedLaxAllowUnsafeSet.md",
-  "SameSiteUnspecifiedTreatedAsLaxRead.md",
-  "SameSiteUnspecifiedTreatedAsLaxSet.md",
   "SameSiteWarnCrossDowngradeRead.md",
   "SameSiteWarnCrossDowngradeSet.md",
+  "cookieCrossSiteRedirectDowngrade.md",
+  "cookieWarnThirdPartyPhaseoutSet.md",
+  "cookieWarnThirdPartyPhaseoutRead.md",
+  "cookieExcludeThirdPartyPhaseoutSet.md",
+  "cookieExcludeThirdPartyPhaseoutRead.md",
+  "cookieWarnMetadataGrantRead.md",
+  "cookieWarnMetadataGrantSet.md",
+  "propertyRuleIssue.md",
+  "propertyRuleInvalidNameIssue.md",
   "SameSiteWarnStrictLaxDowngradeStrict.md",
   "sharedArrayBuffer.md",
   "stylesheetLateImport.md",
@@ -178,8 +190,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/models/issues_manager/*",
-    "../../../test/unittests/front_end/panels/console/*",
     "../../entrypoints/main/*",
     "../../panels/application/*",
     "../../panels/console/*",
@@ -188,14 +198,37 @@ devtools_entrypoint("bundle") {
     "../../panels/issues/*",
     "../../panels/network/*",
     "../../panels/sources/*",
+    "../../testing/*",
     "../../ui/components/docs/issue_counter/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
-    "../../../test/unittests/front_end/helpers/*",
-    "../../../test/unittests/front_end/ui/components/issue_counter/*",
     "../../ui/components/issue_counter/*",
     "../../ui/legacy/components/cookie_table/*",
   ]
 
   visibility += devtools_models_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "CheckFormsIssuesTrigger.test.ts",
+    "DeprecationIssue.test.ts",
+    "FederatedAuthUserInfoRequestIssue.test.ts",
+    "GenericIssue.test.ts",
+    "Issue.test.ts",
+    "IssueResolver.test.ts",
+    "IssuesManager.test.ts",
+    "LowTextContrastIssue.test.ts",
+    "MarkdownIssueDescription.test.ts",
+    "PropertyRuleIssue.test.ts",
+    "RelatedIssue.test.ts",
+    "StylesheetLoadingIssue.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../core/sdk:bundle",
+    "../../testing",
+  ]
 }

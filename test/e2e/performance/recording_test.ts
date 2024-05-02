@@ -2,25 +2,35 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-
+import {waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   getTotalTimeFromSummary,
   navigateToPerformanceTab,
+  reloadAndRecord,
   startRecording,
   stopRecording,
 } from '../helpers/performance-helpers.js';
 
 describe('The Performance panel', () => {
-  it('can start and stop a new recording', async () => {
+  it('supports the user manually starting and stopping a recording', async () => {
     await navigateToPerformanceTab('empty');
 
     await startRecording();
     await stopRecording();
+    await waitForFunction(async () => {
+      const totalTime = await getTotalTimeFromSummary();
+      return totalTime > 0;
+    });
+  });
 
-    // Check that the recording shows the pie chart with a non 0 total time.
-    const totalTime = await getTotalTimeFromSummary();
-    assert.isAbove(totalTime, 0, 'The recording was created successfully');
+  it('can reload and record a trace', async () => {
+    await navigateToPerformanceTab('fake-website');
+    await reloadAndRecord();
+
+    await waitForFunction(async () => {
+      const totalTime = await getTotalTimeFromSummary();
+      return totalTime > 0;
+    });
   });
 });

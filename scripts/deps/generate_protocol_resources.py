@@ -38,6 +38,7 @@
 # language server) would not see the types and start complaining,
 # even though the local build would succeed.
 
+import argparse
 import os.path as path
 import os
 import subprocess
@@ -69,6 +70,14 @@ NODE_LOCATION = devtools_paths.node_path()
 TSC_LOCATION = devtools_paths.typescript_compiler_path()
 
 
+def parse_options(cli_args):
+    parser = argparse.ArgumentParser(description='Generate protocol resources')
+    parser.add_argument(
+        '--node-path',
+        default=NODE_LOCATION,
+    )
+    return parser.parse_args(cli_args)
+
 def popen(arguments, cwd=ROOT_DIRECTORY, env=os.environ.copy()):
     process = subprocess.Popen([sys.executable] + arguments, cwd=cwd, env=env)
 
@@ -78,24 +87,30 @@ def popen(arguments, cwd=ROOT_DIRECTORY, env=os.environ.copy()):
         sys.exit(process.returncode)
 
 
-def runTsc(file_to_compile):
-    process = subprocess.Popen([NODE_LOCATION, TSC_LOCATION, file_to_compile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+def runTsc(file_to_compile, options):
+    process = subprocess.Popen(
+        [options.node_path, TSC_LOCATION, file_to_compile],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     # TypeScript does not correctly write to stderr because of https://github.com/microsoft/TypeScript/issues/33849
     return process.returncode, stdout + stderr
 
 
-def runNode(file_to_execute):
-    process = subprocess.Popen([NODE_LOCATION, file_to_execute], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+def runNode(file_to_execute, options):
+    process = subprocess.Popen([options.node_path, file_to_execute],
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     return process.returncode, stdout + stderr
 
 
-def generate_protocol_typescript_definitions():
+def generate_protocol_typescript_definitions(options):
     generator_script_to_compile = path.join(ROOT_DIRECTORY, 'scripts', 'protocol_typescript', 'protocol_dts_generator.ts')
 
     # first run TSC to convert the script from TS to JS
-    typescript_found_errors, typescript_stderr = runTsc(generator_script_to_compile)
+    typescript_found_errors, typescript_stderr = runTsc(
+        generator_script_to_compile, options)
 
     if typescript_found_errors:
         print('')
@@ -107,7 +122,7 @@ def generate_protocol_typescript_definitions():
 
     outputted_file_path = generator_script_to_compile.replace('.ts', '.js')
 
-    node_found_errors, node_stderr = runNode(outputted_file_path)
+    node_found_errors, node_stderr = runNode(outputted_file_path, options)
 
     if node_found_errors:
         print('')
@@ -120,6 +135,8 @@ def generate_protocol_typescript_definitions():
 
 # Generate the required `front_end/generated` files that are based on files living in Blink
 def main():
+    options = parse_options(sys.argv[1:])
+
     popen([GENERATE_ARIA_SCRIPT])
     popen([GENERATE_SUPPORTED_CSS_SCRIPT])
     popen([GENERATE_DEPRECATIONS_SCRIPT])
@@ -133,7 +150,7 @@ def main():
 
     popen([GENERATE_PROTOCOL_DEFINITIONS_SCRIPT])
 
-    generate_protocol_typescript_definitions()
+    generate_protocol_typescript_definitions(options)
 
 
 if __name__ == '__main__':

@@ -6,29 +6,17 @@
 
 .tree-outline {
   padding-left: 0;
-
-  --override-error-background-color: #d93025;
-  --override-error-text-color: #fff;
-  --override-call-to-action-border-color: #f29900;
-  --override-header-highlight-background-color: #ffff78;
-}
-
-.-theme-with-dark-background .tree-outline,
-:host-context(.-theme-with-dark-background) .tree-outline {
-  --override-error-text-color: #000;
-  --override-call-to-action-border-color: rgb(255 166 13);
-  --override-header-highlight-background-color: rgb(135 135 0);
 }
 
 .tree-outline > ol {
   padding-bottom: 5px;
-  border-bottom: solid 1px var(--color-details-hairline);
+  border-bottom: solid 1px var(--sys-color-divider);
 }
 
 .tree-outline > .parent {
   user-select: none;
   font-weight: bold;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   margin-top: -1px;
   display: flex;
   align-items: center;
@@ -70,23 +58,23 @@
 }
 
 .tree-outline li .status-from-cache {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .tree-outline li.expanded .header-toggle {
   display: inline;
   margin-left: 30px;
   font-weight: normal;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .tree-outline li .header-toggle:hover {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   cursor: pointer;
 }
 
 .tree-outline .header-name {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   display: inline-block;
   margin-right: 0.25em;
   font-weight: bold;
@@ -106,14 +94,14 @@
 }
 
 .tree-outline .header-warning {
-  color: var(--override-error-background-color);
+  color: var(--sys-color-error);
 }
 
 .tree-outline .header-badge {
   display: inline;
   margin-right: 0.75em;
-  background-color: var(--override-error-background-color);
-  color: var(--override-error-text-color);
+  background-color: var(--sys-color-error);
+  color: var(--sys-color-on-error);
   border-radius: 100vh;
   padding-left: 6px;
   padding-right: 6px;
@@ -128,21 +116,23 @@
 }
 
 .tree-outline .call-to-action {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-neutral-container);
   padding: 8px;
-  border-radius: 2px;
+  border-radius: 5px;
+  margin: 4px;
 }
 
 .tree-outline .selected .call-to-action {
   background-color: transparent;
   padding: 8px;
-  border-radius: 2px;
+  border-radius: 5px;
+  margin: 4px;
 }
 
 .tree-outline .call-to-action-body {
   padding: 6px 0;
   margin-left: 9.5px;
-  border-left: 2px solid var(--override-call-to-action-border-color);
+  border-left: 2px solid var(--sys-color-yellow-bright);
   padding-left: 18px;
 }
 
@@ -159,7 +149,7 @@
 }
 
 .tree-outline .empty-request-header {
-  color: var(--color-text-disabled);
+  color: var(--sys-color-state-disabled);
 }
 
 .request-headers-show-more-button {
@@ -176,14 +166,18 @@
 .request-headers-caution {
   display: flex;
   gap: 6px;
+  margin-right: 20px;
+  padding: 8px;
+  background-color: var(--sys-color-neutral-container);
+  border-radius: 5px;
 }
 
 .header-highlight {
-  background-color: var(--override-header-highlight-background-color);
+  background-color: var(--sys-color-state-focus-highlight);
 }
 
 .header-highlight:focus {
-  background-color: var(--legacy-selection-bg-color);
+  background-color: var(--sys-color-state-ripple-primary);
 }
 
 .x-client-data-details {
@@ -212,7 +206,7 @@
 }
 
 .header-decode-error {
-  color: var(--color-accent-red);
+  color: var(--sys-color-error);
 }
 
 .headers-title {
@@ -228,5 +222,5 @@
 
 .tree-outline li.expanded .headers-link {
   display: inline;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }

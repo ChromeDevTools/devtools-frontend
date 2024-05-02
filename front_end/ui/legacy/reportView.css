@@ -5,11 +5,11 @@
  */
 
 :host {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 .report-content-box {
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   overflow: auto;
 }
 
@@ -18,7 +18,7 @@
 }
 
 .report-header {
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
   padding: 12px 24px;
 }
 
@@ -33,7 +33,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  user-select: text;
+  user-select: none;
 }
 
 .report-url,
@@ -45,7 +45,7 @@
 .report-section {
   display: flex;
   padding: 12px;
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
   flex-direction: column;
 }
 
@@ -61,7 +61,7 @@
   text-overflow: ellipsis;
   overflow: hidden;
   font-weight: bold;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-on-surface);
 }
 
 .report-field {
@@ -75,7 +75,7 @@
 }
 
 .report-field-name {
-  color: var(--color-text-disabled);
+  color: var(--sys-color-on-surface-subtle);
   flex: 0 0 128px;
   text-align: right;
   padding: 0 6px;
@@ -95,7 +95,7 @@
 }
 
 .report-field-value-subtitle {
-  color: var(--color-text-disabled);
+  color: var(--sys-color-state-disabled);
   line-height: 14px;
 }
 
@@ -108,6 +108,7 @@
   max-width: 200px;
   max-height: 200px;
   display: block;
+  object-fit: contain;
 }
 
 .image-wrapper {
@@ -128,10 +129,10 @@
 
 @media (forced-colors: active) {
   .report-field-value .inline-icon {
-    --icon-color: ButtonText;
+    color: ButtonText;
   }
 
   .report-field-value .multiline-value {
-    --icon-color: ButtonText;
+    color: ButtonText;
   }
 }

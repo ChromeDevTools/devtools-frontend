@@ -13,7 +13,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
     "../../entrypoints/*",
   ]
 
@@ -26,8 +25,10 @@ devtools_entrypoint("meta") {
   deps = [
     ":bundle",
     "../../core/i18n:bundle",
+    "../../core/root:bundle",
     "../../panels/profiler:bundle",
     "../../panels/timeline:bundle",
+    "../../ui/legacy:bundle",
   ]
 
   visibility = [ "../../entrypoints/*" ]

@@ -28,11 +28,12 @@ import {
   readIgnoreListedSources,
   readSourcesTreeView,
   RESUME_BUTTON,
+  setEventListenerBreakpoint,
   stepIn,
   stepOut,
 } from '../helpers/sources-helpers.js';
 
-describe('Ignore list', async function() {
+describe('Ignore list', function() {
   it('can be toggled on and off in call stack', async function() {
     await setIgnoreListPattern('thirdparty');
     const {target, frontend} = getBrowserAndPages();
@@ -60,7 +61,7 @@ describe('Ignore list', async function() {
   });
 
   it('shows no toggle when everything is ignore-listed', async function() {
-    await setIgnoreListPattern('multi|puppeteer');
+    await setIgnoreListPattern('multi|pptr');
     const {target, frontend} = getBrowserAndPages();
 
     await openSourceCodeEditorForFile('multi-files-mycode.js', 'multi-files.html');
@@ -107,6 +108,34 @@ describe('Ignore list', async function() {
     await scriptEvaluation;
   });
 
+  it('skips instrumentation breakpoints', async function() {
+    await setIgnoreListPattern('thirdparty');
+    const {target, frontend} = getBrowserAndPages();
+    installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
+
+    await openSourceCodeEditorForFile('multi-files-mycode.js', 'multi-files.html');
+    await setEventListenerBreakpoint('Timer', 'setTimeout');
+
+    const scriptEvaluation = target.evaluate('debugger; timeoutTestCase();');
+
+    await waitFor(RESUME_BUTTON);
+    await waitFor(PAUSE_INDICATOR_SELECTOR);
+    await waitForFunction(async () => await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT));
+    assert.deepEqual(await getCallFrameNames(), ['(anonymous)']);
+
+    await click(RESUME_BUTTON);
+    await waitFor('.call-frame-title-text[title="userTimeout"]');
+
+    await waitFor(RESUME_BUTTON);
+    await waitFor(PAUSE_INDICATOR_SELECTOR);
+    await waitForFunction(async () => await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT));
+    assert.deepEqual(await getCallFrameNames(), ['userTimeout', 'Promise.then (async)', '(anonymous)']);
+
+    await click(RESUME_BUTTON);
+
+    await scriptEvaluation;
+  });
+
   it('indicates ignored sources in page source tree', async function() {
     await setIgnoreListPattern('/sources/');
     await goToResource('sources/multi-files.html');
@@ -129,7 +158,7 @@ describe('Ignore list', async function() {
   });
 
   it('removes ignored sources from page source tree', async function() {
-    await enableExperiment('justMyCode');
+    await enableExperiment('just-my-code');
     await setIgnoreListPattern('thirdparty');
     await goToResource('sources/multi-files.html');
     await openSourcesPanel();

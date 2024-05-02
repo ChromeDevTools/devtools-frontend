@@ -5,7 +5,6 @@
 import * as RecordingClient from './RecordingClient.js';
 import * as SelectorPicker from './SelectorPicker.js';
 import type * as Step from './Step.js';
-// eslint-disable-next-line rulesdir/es_modules_import
 import {type AccessibilityBindings} from './selectors/ARIASelector.js';
 
 declare global {

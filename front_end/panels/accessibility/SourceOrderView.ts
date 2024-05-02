@@ -6,6 +6,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
@@ -44,6 +45,7 @@ export class SourceOrderPane extends AccessibilitySubPane {
   constructor() {
     super(i18nString(UIStrings.sourceOrderViewer));
 
+    this.element.setAttribute('jslog', `${VisualLogging.section('source-order-viewer')}`);
     this.noNodeInfo = this.createInfo(i18nString(UIStrings.noSourceOrderInformation));
     this.warning = this.createInfo(i18nString(UIStrings.thereMayBeADelayInDisplaying));
     this.warning.id = 'source-order-warning';
@@ -53,6 +55,7 @@ export class SourceOrderPane extends AccessibilitySubPane {
     this.checkboxElement = this.checkboxLabel.checkboxElement;
 
     this.checkboxLabel.classList.add('source-order-checkbox');
+    this.checkboxLabel.setAttribute('jslog', `${VisualLogging.toggle().track({click: true})}`);
     this.checkboxElement.addEventListener('click', this.checkboxClicked.bind(this), false);
     this.element.appendChild(this.checkboxLabel);
 

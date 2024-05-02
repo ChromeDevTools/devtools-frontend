@@ -3,8 +3,13 @@
     "composite": true
   },
   "files": [
-    "lib/lit.js",
+    "lib/decorators.d.ts",
+    "lib/decorators.js",
+    "lib/directive.d.ts",
     "lib/directive.js",
-    "lib/directives.js"
+    "lib/directives.d.ts",
+    "lib/directives.js",
+    "lib/lit.d.ts",
+    "lib/lit.js"
   ]
 }

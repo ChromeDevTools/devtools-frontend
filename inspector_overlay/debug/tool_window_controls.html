@@ -1,0 +1,25 @@
+<!--
+  Copyright 2023 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Debug</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script type="module" src="/out/Default/resources/inspector_overlay/main.js"></script>
+</head>
+<body>
+  <script type="module">
+    function test() {
+      dispatch(["setPlatform", "Windows"]);
+      dispatch(["setOverlay", "windowControlsOverlay"]);
+      dispatch(["reset"]);
+      dispatch(["drawWindowControlsOverlay", {selectedPlatform: 'Linux', themeColor: 'green'}]);
+    }
+    test();
+</script>
+</body>
+</html>

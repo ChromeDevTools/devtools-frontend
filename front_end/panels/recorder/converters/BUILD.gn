@@ -2,9 +2,9 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import(
-    "../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../third_party/typescript/typescript.gni")
 
 devtools_module("converters") {
   sources = [
@@ -34,8 +34,23 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../:*",
-    "../../../../test/unittests/front_end/panels/recorder/*",
     "../../../ui/components/docs/*",
     "../components:*",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "LighthouseConverter.test.ts",
+    "PuppeteerConverter.test.ts",
+    "PuppeteerReplayConverter.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../testing",
+    "../models:bundle",
   ]
 }

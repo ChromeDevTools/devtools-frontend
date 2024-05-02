@@ -3,21 +3,10 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../core/common/common.js';
-import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Coordinator from '../../../components/render_coordinator/render_coordinator.js';
-import * as UI from '../../legacy.js';
 
 import {DataGridImpl, DataGridNode, type DataGridData, type Parameters} from './DataGrid.js';
-
-const UIStrings = {
-  /**
-   *@description accessible name for expandible nodes in datagrids
-   */
-  collapsed: 'collapsed',
-};
-const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/data_grid/ViewportDataGrid.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -83,7 +72,6 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
   }
 
   private onScroll(_event: Event|null): void {
-    this.stickToBottom = UI.UIUtils.isScrolledToBottom(this.scrollContainer);
     if (this.lastScrollTop !== this.scrollContainer.scrollTop) {
       this.scheduleUpdate(true);
     }
@@ -94,9 +82,6 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
   }
 
   scheduleUpdate(isFromUser?: boolean): void {
-    if (this.stickToBottom && isFromUser) {
-      this.stickToBottom = UI.UIUtils.isScrolledToBottom(this.scrollContainer);
-    }
     this.updateIsFromUser = this.updateIsFromUser || Boolean(isFromUser);
     void coordinator.write('ViewportDataGrid.render', this.update.bind(this));
   }
@@ -145,6 +130,9 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
     for (; i < size; ++i) {
       bottomPadding += nodes[i].nodeSelfHeight();
     }
+
+    // enable stick-to-bottom if the last item is visible
+    this.stickToBottom = end === nodes.length;
 
     return {
       topPadding: topPadding,
@@ -253,9 +241,7 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   ViewportCalculated = 'ViewportCalculated',
 }
 
@@ -415,7 +401,7 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
       existingElement.classList.remove('expanded');
     }
     if (this.selected) {
-      (this.dataGrid as ViewportDataGrid<T>).updateGridAccessibleName(i18nString(UIStrings.collapsed));
+      (this.dataGrid as ViewportDataGrid<T>).announceSelectedGridNode();
     }
     (this.dataGrid as ViewportDataGrid<T>).scheduleUpdateStructure();
   }

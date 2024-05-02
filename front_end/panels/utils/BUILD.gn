@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_entrypoint("bundle") {
@@ -14,10 +15,18 @@ devtools_entrypoint("bundle") {
     "../../ui/components/diff_view:bundle",
   ]
 
-  visibility = [
-    "../*",
-    "../../../test/unittests/front_end/panels/utils/*",
-  ]
+  visibility = [ "../*" ]
 
   visibility += devtools_panels_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "utils.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../third_party/diff:bundle",
+  ]
 }

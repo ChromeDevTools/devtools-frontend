@@ -1,0 +1,60 @@
+/*
+ * Copyright 2021 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.navigator {
+  min-height: 24px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  overflow: hidden;
+  align-items: center;
+  background-color: var(--sys-color-cdt-base-container);
+  color: var(--sys-color-on-surface);
+}
+
+.navigator-item {
+  display: flex;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.address-input {
+  text-align: center;
+  outline: none;
+  color: var(--sys-color-on-surface);
+  border: 1px solid var(--sys-color-neutral-outline);
+  background: transparent;
+}
+
+.address-input.invalid {
+  color: var(--sys-color-error);
+}
+
+.navigator-button {
+  display: flex;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  overflow: hidden;
+  border: none;
+  padding: 0;
+  outline: none;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.navigator-button:disabled devtools-icon {
+  opacity: 50%;
+}
+
+.navigator-button:enabled:hover devtools-icon {
+  color: var(--icon-default-hover);
+}
+
+.navigator-button:enabled:focus devtools-icon {
+  color: var(--icon-default-hover);
+}

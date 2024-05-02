@@ -103,6 +103,7 @@ export function outline(state: CodeMirror.EditorState): OutlineItem[] {
               prefix += '*';
               break;
             case 'PropertyDefinition':
+            case 'PrivatePropertyDefinition':
             case 'VariableDefinition': {
               const title = prefix + state.sliceDoc(cursor.from, cursor.to);
               const {lineNumber, columnNumber} = toLineColumn(cursor.from);
@@ -265,6 +266,10 @@ export function outline(state: CodeMirror.EditorState): OutlineItem[] {
 export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   private items: OutlineItem[] = [];
   private active: boolean = false;
+
+  constructor() {
+    super('source-symbol');
+  }
 
   override attach(): void {
     const sourceFrame = this.currentSourceFrame();

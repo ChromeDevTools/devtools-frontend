@@ -4,8 +4,8 @@
 
 import * as ComponentHelpers from '../../../../../front_end/ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../../../front_end/ui/lit-html/lit-html.js';
-import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';  // eslint-disable-line rulesdir/es_modules_import
 import * as RecorderComponents from '../../../../panels/recorder/components/components.js';
+import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';  // eslint-disable-line rulesdir/es_modules_import
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
@@ -17,12 +17,12 @@ const playIconUrl = new URL('../../../../images/play_icon.svg', import.meta.url)
 const items = [
   {
     value: 'performance',
-    label: (): string => 'Performance panel',
+    label: () => 'Performance panel',
     buttonIconUrl: throttlingIconUrl,
   },
   {
     value: 'performance_insights',
-    label: (): string => 'Performance insights panel',
+    label: () => 'Performance insights panel',
     buttonIconUrl: throttlingIconUrl,
   },
 ];
@@ -31,21 +31,21 @@ const replayItems = [
   {
     value: 'normal',
     buttonIconUrl: playIconUrl,
-    buttonLabel: (): string => 'Replay',
-    label: (): string => 'Normal (Default)',
+    buttonLabel: () => 'Replay',
+    label: () => 'Normal (Default)',
   },
-  {value: 'slow', buttonIconUrl: playIconUrl, buttonLabel: (): string => 'Slow replay', label: (): string => 'Slow'},
+  {value: 'slow', buttonIconUrl: playIconUrl, buttonLabel: () => 'Slow replay', label: (): string => 'Slow'},
   {
     value: 'very_slow',
     buttonIconUrl: playIconUrl,
-    buttonLabel: (): string => 'Very slow replay',
-    label: (): string => 'Very slow',
+    buttonLabel: () => 'Very slow replay',
+    label: () => 'Very slow',
   },
   {
     value: 'extremely_slow',
     buttonIconUrl: playIconUrl,
-    buttonLabel: (): string => 'Extremely slow replay',
-    label: (): string => 'Extremely slow',
+    buttonLabel: () => 'Extremely slow replay',
+    label: () => 'Extremely slow',
   },
 ];
 

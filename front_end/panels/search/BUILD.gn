@@ -5,6 +5,7 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/generate_css.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
@@ -16,8 +17,8 @@ generate_css("css_files") {
 
 devtools_module("search") {
   sources = [
-    "SearchConfig.ts",
     "SearchResultsPane.ts",
+    "SearchScope.ts",
     "SearchView.ts",
   ]
 
@@ -42,10 +43,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
     "../../entrypoints/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../network/*",
     "../sources/*",
   ]
@@ -53,10 +51,21 @@ devtools_entrypoint("bundle") {
   visibility += devtools_panels_visibility
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "search-legacy.ts"
+ts_library("unittests") {
+  testonly = true
 
-  deps = [ ":bundle" ]
+  sources = [
+    "SearchResultsPane.test.ts",
+    "SearchView.test.ts",
+  ]
 
-  visibility = [ "../..:legacy_entrypoints" ]
+  deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../core/platform:bundle",
+    "../../models/text_utils:bundle",
+    "../../models/workspace:bundle",
+    "../../testing",
+    "../../ui/legacy:bundle",
+  ]
 }

@@ -9,7 +9,7 @@
 }
 
 .editable .query-text {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .editable .query-text:hover {

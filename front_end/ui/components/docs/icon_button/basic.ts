@@ -11,20 +11,20 @@ function appendComponent(data: IconButton.IconButton.IconButtonData) {
 }
 
 appendComponent({
-  clickHandler: (): void => {},
+  clickHandler: () => {},
   groups: [{iconName: 'review', iconColor: 'var(--icon-default)', text: '1 item'}],
 });
 
 appendComponent({
-  clickHandler: (): void => {},
+  clickHandler: () => {},
   groups: [
     {iconName: 'review', iconColor: 'var(--icon-primary)', text: 'Test'},
-    {iconName: 'warning_icon', iconColor: '', text: '1'},
+    {iconName: 'warning-filled', iconColor: '', text: '1'},
   ],
 });
 
 appendComponent({
-  clickHandler: (): void => {},
+  clickHandler: () => {},
   groups: [
     {iconName: 'issue-exclamation-filled', iconColor: 'yellow', text: '23', iconHeight: '2ex', iconWidth: '2ex'},
     {iconName: 'issue-text-filled', iconColor: 'blue', text: '1'},
@@ -39,7 +39,7 @@ appendComponent({
 });
 
 appendComponent({
-  clickHandler: (): void => {},
+  clickHandler: () => {},
   groups: [
     {iconName: 'issue-exclamation-filled', iconColor: 'yellow', text: '23'},
     {iconName: 'issue-text-filled', iconColor: 'blue', text: '1'},
@@ -48,7 +48,7 @@ appendComponent({
 });
 
 appendComponent({
-  clickHandler: (): void => {},
+  clickHandler: () => {},
   groups: [
     {iconName: 'issue-exclamation-filled', iconColor: 'yellow', text: '23'},
     {iconName: 'issue-text-filled', iconColor: 'blue', text: '1'},
@@ -57,7 +57,7 @@ appendComponent({
 });
 
 appendComponent({
-  clickHandler: (): void => {},
+  clickHandler: () => {},
   groups: [
     {iconName: 'issue-exclamation-filled', iconColor: 'yellow', text: '23'},
     {iconName: 'issue-text-filled', iconColor: 'blue', text: '1'},

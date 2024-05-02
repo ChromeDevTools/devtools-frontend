@@ -3,18 +3,20 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import type * as puppeteer from 'puppeteer';
+import type * as puppeteer from 'puppeteer-core';
 
 import {
   $$,
+  $textContent,
   click,
+  clickElement,
   hasClass,
   matchStringTable,
   waitFor,
   waitForClass,
-  clickElement,
   waitForFunction,
 } from '../../shared/helper.js';
+
 import {openPanelViaMoreTools} from './settings-helpers.js';
 
 export const CATEGORY = '.issue-category:not(.hidden-issues)';
@@ -27,7 +29,7 @@ export const ISSUE_TITLE = '.issue .title';
 export const AFFECTED_ELEMENT_ICON = '.affected-resource-csp-info-node';
 export const ELEMENT_REVEAL_ICON = '.element-reveal-icon';
 export const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';
-export const SOURCES_LINK = '.affected-source-location > span';
+export const SOURCES_LINK = '.affected-source-location > button';
 export const BLOCKED_STATUS = '.affected-resource-blocked-status';
 export const REPORT_ONLY_STATUS = '.affected-resource-report-only-status';
 export const RESOURCES_LABEL = '.affected-resource-label';
@@ -36,9 +38,8 @@ export const HIDE_THIS_ISSUE = 'Hide issues like this';
 export const UNHIDE_THIS_ISSUE = 'Unhide issues like this';
 export const UNHIDE_ALL_ISSUES = '.unhide-all-issues-button';
 
-export async function getHideIssuesMenu() {
-  const menu = await waitFor(HIDE_ISSUES_MENU);
-  return menu;
+export async function getHideIssuesMenu(root?: puppeteer.JSHandle) {
+  return await waitFor(HIDE_ISSUES_MENU, root);
 }
 
 export async function navigateToIssuesTab() {
@@ -125,9 +126,7 @@ export async function getAndExpandSpecificIssueByTitle(issueMessage: string):
 
 export async function getIssueHeaderByTitle(issueMessage: string):
     Promise<puppeteer.ElementHandle<HTMLElement>|undefined> {
-  const issueMessageElement = await waitFor(ISSUE_TITLE);
-  const selectedIssueMessage = await issueMessageElement.evaluate(node => node.textContent);
-  assert.strictEqual(selectedIssueMessage, issueMessage);
+  const issueMessageElement = await waitForFunction(async () => await $textContent(issueMessage) ?? undefined);
   const header =
       await issueMessageElement.evaluateHandle(el => el.parentElement) as puppeteer.ElementHandle<HTMLElement>;
   if (header) {

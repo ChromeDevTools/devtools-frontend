@@ -1,6 +1,6 @@
 {
   "core/audits/accessibility/accesskeys.js | description": {
-    "message": "Přístupové klávesy uživatelům umožňují rychleji vybrat část stránky. Aby navigace fungovala správně, musí být každá přístupová klávesa jedinečná. [Další informace o přístupových klávesách](https://dequeuniversity.com/rules/axe/4.7/accesskeys)"
+    "message": "Přístupové klávesy uživatelům umožňují rychleji vybrat část stránky. Aby navigace fungovala správně, musí být každá přístupová klávesa jedinečná. [Další informace o přístupových klávesách](https://dequeuniversity.com/rules/axe/4.8/accesskeys)"
   },
   "core/audits/accessibility/accesskeys.js | failureTitle": {
     "message": "Hodnoty atributů `[accesskey]` nejsou jedinečné"
@@ -9,7 +9,7 @@
     "message": "Hodnoty `[accesskey]` jsou unikátní"
   },
   "core/audits/accessibility/aria-allowed-attr.js | description": {
-    "message": "Každá položka ARIA `role` podporuje konkrétní podmnožinu atributů `aria-*`. Nesprávné přiřazení atributy `aria-*` zneplatní. [Jak atributy ARIA přiřadit k rolím](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-attr)"
+    "message": "Každá položka ARIA `role` podporuje konkrétní podmnožinu atributů `aria-*`. Nesprávné přiřazení atributy `aria-*` zneplatní. [Jak atributy ARIA přiřadit k rolím](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-attr)"
   },
   "core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
     "message": "Atributy `[aria-*]` neodpovídají svým rolím"
@@ -17,8 +17,17 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Atributy `[aria-*]` odpovídají příslušným rolím"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "Atributy `role` odpovídající specifikaci ARIA poskytují asistenčním technologiím informace o roli jednotlivých prvků na webové stránce. Pokud jsou v hodnotách `role` překlepy, neodpovídají hodnotám `role` podle specifikace ARIA nebo se jedná o abstraktní role, uživatelé asistenčních technologií se nedozvědí účel prvku. [Další informace o rolích ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)"
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Hodnoty atributů `role=\"\"` nejsou platné role ARIA."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Hodnoty atributů `role=\"\"` jsou platné role ARIA."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
-    "message": "Když prvek nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je pak tento prvek v podstatě nepoužitelný. [Jak zajistit, aby příkazové prvky byly přístupnější](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
+    "message": "Když prvek nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je pak tento prvek v podstatě nepoužitelný. [Jak zajistit, aby příkazové prvky byly přístupnější](https://dequeuniversity.com/rules/axe/4.8/aria-command-name)."
   },
   "core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "Prvky `button`, `link` a `menuitem` nemají přístupné názvy."
@@ -26,8 +35,17 @@
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "Prvky `button`, `link` a `menuitem` mají přístupné názvy"
   },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "Dialogové prvky ARIA bez přístupových názvů mohou uživatelům čteček obrazovky znemožňovat rozeznat účel těchto prvků. [Přečtěte si, jak dialogové prvky ARIA zpřístupnit](https://dequeuniversity.com/rules/axe/4.8/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "Prvky s atributy `role=\"dialog\"` nebo `role=\"alertdialog\"` nemají přístupné názvy."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "Prvky s atributy `role=\"dialog\"` nebo `role=\"alertdialog\"` mají přístupné názvy."
+  },
   "core/audits/accessibility/aria-hidden-body.js | description": {
-    "message": "Když je u prvku `<body>` dokumentu nastaveno `aria-hidden=\"true\"`, asistenční technologie, jako jsou čtečky obrazovek, nefungují konzistentně. [Přečtěte si, jak `aria-hidden` ovlivňuje text dokumentu](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)"
+    "message": "Když je u prvku `<body>` dokumentu nastaveno `aria-hidden=\"true\"`, asistenční technologie, jako jsou čtečky obrazovek, nefungují konzistentně. [Přečtěte si, jak `aria-hidden` ovlivňuje text dokumentu](https://dequeuniversity.com/rules/axe/4.8/aria-hidden-body)"
   },
   "core/audits/accessibility/aria-hidden-body.js | failureTitle": {
     "message": "Hodnota `[aria-hidden=\"true\"]` je v prvku `<body>` dokumentu přítomná"
@@ -36,7 +54,7 @@
     "message": "Hodnota `[aria-hidden=\"true\"]` není v prvku `<body>` dokumentu přítomná"
   },
   "core/audits/accessibility/aria-hidden-focus.js | description": {
-    "message": "Vybratelné podřízené prvky v prvku `[aria-hidden=\"true\"]` znemožňují využití těchto interaktivních prvků ze strany uživatelů asistenčních technologií, jako jsou čtečky obrazovky. [Jak atribut `aria-hidden` ovlivňuje vybratelné prvky](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-focus)"
+    "message": "Vybratelné podřízené prvky v prvku `[aria-hidden=\"true\"]` znemožňují využití těchto interaktivních prvků ze strany uživatelů asistenčních technologií, jako jsou čtečky obrazovky. [Jak atribut `aria-hidden` ovlivňuje vybratelné prvky](https://dequeuniversity.com/rules/axe/4.8/aria-hidden-focus)"
   },
   "core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
     "message": "Prvky `[aria-hidden=\"true\"]` obsahují zaměřitelné podřízené prvky"
@@ -45,7 +63,7 @@
     "message": "Prvky `[aria-hidden=\"true\"]` neobsahují zaměřitelné podřízené prvky"
   },
   "core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Když zadávací pole nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je toto pole v podstatě nepoužitelné. [Další informace o štítcích vstupních polí](https://dequeuniversity.com/rules/axe/4.7/aria-input-field-name)"
+    "message": "Když zadávací pole nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je toto pole v podstatě nepoužitelné. [Další informace o štítcích vstupních polí](https://dequeuniversity.com/rules/axe/4.8/aria-input-field-name)"
   },
   "core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "Zadávací pole ARIA nemají přístupné názvy"
@@ -54,7 +72,7 @@
     "message": "Zadávací pole ARIA mají přístupné názvy"
   },
   "core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "Když prvek měřiče (meter) nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je pak tento prvek v podstatě nepoužitelný. [Jak pojmenovat prvky `meter`](https://dequeuniversity.com/rules/axe/4.7/aria-meter-name)"
+    "message": "Když prvek měřiče (meter) nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je pak tento prvek v podstatě nepoužitelný. [Jak pojmenovat prvky `meter`](https://dequeuniversity.com/rules/axe/4.8/aria-meter-name)"
   },
   "core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "Prvky ARIA `meter` nemají přístupné názvy."
@@ -63,7 +81,7 @@
     "message": "Prvky ARIA `meter` mají přístupné názvy"
   },
   "core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Když prvek `progressbar` nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je pak tento prvek v podstatě nepoužitelný. [Jak označit prvky `progressbar`](https://dequeuniversity.com/rules/axe/4.7/aria-progressbar-name)"
+    "message": "Když prvek `progressbar` nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je pak tento prvek v podstatě nepoužitelný. [Jak označit prvky `progressbar`](https://dequeuniversity.com/rules/axe/4.8/aria-progressbar-name)"
   },
   "core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "Prvky ARIA `progressbar` nemají přístupné názvy."
@@ -72,7 +90,7 @@
     "message": "Prvky ARIA `progressbar` mají přístupné názvy"
   },
   "core/audits/accessibility/aria-required-attr.js | description": {
-    "message": "Některé role ARIA mají povinné atributy, které čtečkám obrazovek popisují stav prvku. [Další informace o rolích a povinných atributech](https://dequeuniversity.com/rules/axe/4.7/aria-required-attr)"
+    "message": "Některé role ARIA mají povinné atributy, které čtečkám obrazovek popisují stav prvku. [Další informace o rolích a povinných atributech](https://dequeuniversity.com/rules/axe/4.8/aria-required-attr)"
   },
   "core/audits/accessibility/aria-required-attr.js | failureTitle": {
     "message": "Prvky s atributy `[role]` nemají všechny povinné atributy `[aria-*]`"
@@ -81,7 +99,7 @@
     "message": "Prvky s atributy `[role]` mají všechny povinné atributy `[aria-*]`"
   },
   "core/audits/accessibility/aria-required-children.js | description": {
-    "message": "Některé nadřazené role ARIA musejí kvůli poskytovaní správných funkcí přístupnosti obsahovat určité podřízené role. [Další informace o rolích a požadovaných podřízených prvcích](https://dequeuniversity.com/rules/axe/4.7/aria-required-children)"
+    "message": "Některé nadřazené role ARIA musejí kvůli poskytovaní správných funkcí přístupnosti obsahovat určité podřízené role. [Další informace o rolích a požadovaných podřízených prvcích](https://dequeuniversity.com/rules/axe/4.8/aria-required-children)"
   },
   "core/audits/accessibility/aria-required-children.js | failureTitle": {
     "message": "V prvcích s atributem ARIA `[role]`, jejichž podřízené prvky musí obsahovat konkrétní atribut `[role]`, některé z těchto povinných podřízených prvků chybí."
@@ -90,7 +108,7 @@
     "message": "Prvky s atributem ARIA `[role]`, jejichž podřízené prvky musí obsahovat konkrétní atribut `[role]`, obsahují všechny povinné podřízené prvky."
   },
   "core/audits/accessibility/aria-required-parent.js | description": {
-    "message": "Aby poskytovaly správné funkce přístupnosti, musejí být některé podřízené role ARIA umístěny v konkrétních nadřazených rolích. [Další informace o rolích ARIA a povinném nadřazeném prvku](https://dequeuniversity.com/rules/axe/4.7/aria-required-parent)"
+    "message": "Aby poskytovaly správné funkce přístupnosti, musejí být některé podřízené role ARIA umístěny v konkrétních nadřazených rolích. [Další informace o rolích ARIA a povinném nadřazeném prvku](https://dequeuniversity.com/rules/axe/4.8/aria-required-parent)"
   },
   "core/audits/accessibility/aria-required-parent.js | failureTitle": {
     "message": "Prvky s atributem `[role]` nejsou umístěny v požadovaném nadřazeném prvku"
@@ -99,7 +117,7 @@
     "message": "Prvky s atributy `[role]`jsou umístěny v požadovaném nadřazeném prvku"
   },
   "core/audits/accessibility/aria-roles.js | description": {
-    "message": "Aby role ARIA poskytovaly správné funkce přístupnosti, musejí mít platné hodnoty. [Další informace o platných rolích ARIA](https://dequeuniversity.com/rules/axe/4.7/aria-roles)"
+    "message": "Aby role ARIA poskytovaly správné funkce přístupnosti, musejí mít platné hodnoty. [Další informace o platných rolích ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-roles)"
   },
   "core/audits/accessibility/aria-roles.js | failureTitle": {
     "message": "Hodnoty atributů `[role]` nejsou platné"
@@ -107,8 +125,17 @@
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "Hodnoty atributů `[role]` jsou platné"
   },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "Přidáním atributu `role=text` k textovému uzlu rozdělenému značkami umožníte čtečce VoiceOver, aby ho považovala za jednu frázi. Nebudou však oznámeny vybratelné podřízené prvky. [Další informace o atributu `role=text`](https://dequeuniversity.com/rules/axe/4.8/aria-text)"
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "Prvky s atributem `role=text` mají vybratelné podřízené prvky."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "Prvky s atributem `role=text` nemají vypratelné podřízené prvky."
+  },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Když přepínací pole nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je toto pole v podstatě nepoužitelné. [Další informace o přepínacích polích](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)"
+    "message": "Když přepínací pole nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je toto pole v podstatě nepoužitelné. [Další informace o přepínacích polích](https://dequeuniversity.com/rules/axe/4.8/aria-toggle-field-name)"
   },
   "core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "Pole přepínačů ARIA nemají přístupné názvy"
@@ -117,7 +144,7 @@
     "message": "Pole přepínačů ARIA mají přístupné názvy"
   },
   "core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "Když prvek popisku (title) nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je pak tento prvek v podstatě nepoužitelný. [Jak pojmenovat prvky `tooltip`](https://dequeuniversity.com/rules/axe/4.7/aria-tooltip-name)"
+    "message": "Když prvek popisku (title) nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je pak tento prvek v podstatě nepoužitelný. [Jak pojmenovat prvky `tooltip`](https://dequeuniversity.com/rules/axe/4.8/aria-tooltip-name)"
   },
   "core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "Prvky ARIA `tooltip` nemají přístupné názvy."
@@ -126,7 +153,7 @@
     "message": "Prvky ARIA `tooltip` mají přístupné názvy"
   },
   "core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "Když prvek `treeitem` nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je pak tento prvek v podstatě nepoužitelný. [Další informace o označení prvků `treeitem`](https://dequeuniversity.com/rules/axe/4.7/aria-treeitem-name)"
+    "message": "Když prvek `treeitem` nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je pak tento prvek v podstatě nepoužitelný. [Další informace o označení prvků `treeitem`](https://dequeuniversity.com/rules/axe/4.8/aria-treeitem-name)"
   },
   "core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "Prvky ARIA `treeitem` nemají přístupné názvy."
@@ -135,7 +162,7 @@
     "message": "Prvky ARIA `treeitem` mají přístupné názvy"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | description": {
-    "message": "Asistenční technologie, jako jsou čtečky obrazovek, atributy ARIA s neplatnými hodnotami nedokážou interpretovat. [Další informace o platných hodnotách atributů ARIA](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr-value)"
+    "message": "Asistenční technologie, jako jsou čtečky obrazovek, atributy ARIA s neplatnými hodnotami nedokážou interpretovat. [Další informace o platných hodnotách atributů ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-valid-attr-value)"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
     "message": "Atributy `[aria-*]` nemají platné hodnoty"
@@ -144,7 +171,7 @@
     "message": "Atributy `[aria-*]` mají platné hodnoty"
   },
   "core/audits/accessibility/aria-valid-attr.js | description": {
-    "message": "Asistenční technologie, jako jsou čtečky obrazovek, atributy ARIA s neplatnými názvy nedokážou interpretovat. [Další informace o platných atributech ARIA](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr)"
+    "message": "Asistenční technologie, jako jsou čtečky obrazovek, atributy ARIA s neplatnými názvy nedokážou interpretovat. [Další informace o platných atributech ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-valid-attr)"
   },
   "core/audits/accessibility/aria-valid-attr.js | failureTitle": {
     "message": "Atributy `[aria-*]` nejsou platné nebo v nich jsou překlepy"
@@ -156,7 +183,7 @@
     "message": "Prvky, které neprošly"
   },
   "core/audits/accessibility/button-name.js | description": {
-    "message": "Když tlačítko nemá přístupný název, čtečky obrazovek ho oznamují jako „tlačítko“ a pro jejich uživatele je tak v podstatě nepoužitelné. [Jak zajistit, aby tlačítka byla přístupnější](https://dequeuniversity.com/rules/axe/4.7/button-name)"
+    "message": "Když tlačítko nemá přístupný název, čtečky obrazovek ho oznamují jako „tlačítko“ a pro jejich uživatele je tak v podstatě nepoužitelné. [Jak zajistit, aby tlačítka byla přístupnější](https://dequeuniversity.com/rules/axe/4.8/button-name)"
   },
   "core/audits/accessibility/button-name.js | failureTitle": {
     "message": "Tlačítka nemají přístupné názvy"
@@ -165,7 +192,7 @@
     "message": "Tlačítka mají přístupné názvy"
   },
   "core/audits/accessibility/bypass.js | description": {
-    "message": "Když přidáte možnosti obejití repetitivního obsahu, umožníte tím efektivnější procházení stránky pomocí klávesnice. [Další informace o blokování obcházení](https://dequeuniversity.com/rules/axe/4.7/bypass)"
+    "message": "Když přidáte možnosti obejití repetitivního obsahu, umožníte tím efektivnější procházení stránky pomocí klávesnice. [Další informace o blokování obcházení](https://dequeuniversity.com/rules/axe/4.8/bypass)"
   },
   "core/audits/accessibility/bypass.js | failureTitle": {
     "message": "Stránka neobsahuje nadpis, odkaz k přeskočení ani orientační bod regionu"
@@ -174,7 +201,7 @@
     "message": "Stránka obsahuje nadpis, odkaz k přeskočení nebo orientační bod regionu"
   },
   "core/audits/accessibility/color-contrast.js | description": {
-    "message": "Text s nízkým kontrastem je pro mnoho uživatelů obtížně čitelný nebo nečitelný. [Jak zajistit dostatečný kontrast barev](https://dequeuniversity.com/rules/axe/4.7/color-contrast)"
+    "message": "Text s nízkým kontrastem je pro mnoho uživatelů obtížně čitelný nebo nečitelný. [Jak zajistit dostatečný kontrast barev](https://dequeuniversity.com/rules/axe/4.8/color-contrast)"
   },
   "core/audits/accessibility/color-contrast.js | failureTitle": {
     "message": "Barvy pozadí a popředí nemají dostatečný kontrastní poměr."
@@ -183,7 +210,7 @@
     "message": "Barvy pozadí a popředí mají dostatečný kontrastní poměr"
   },
   "core/audits/accessibility/definition-list.js | description": {
-    "message": "Když seznamy definic nejsou správně označené, čtečky obrazovek mohou generovat matoucí nebo nepřesný výstup. [Jak správně strukturovat seznamy definic](https://dequeuniversity.com/rules/axe/4.7/definition-list)"
+    "message": "Když seznamy definic nejsou správně označené, čtečky obrazovek mohou generovat matoucí nebo nepřesný výstup. [Jak správně strukturovat seznamy definic](https://dequeuniversity.com/rules/axe/4.8/definition-list)"
   },
   "core/audits/accessibility/definition-list.js | failureTitle": {
     "message": "Prvky `<dl>` neobsahují jen správně seřazené skupiny prvků `<dt>` a `<dd>` nebo prvky `<script>`, `<template>` či `<div>`."
@@ -192,7 +219,7 @@
     "message": "Prvky `<dl>` obsahují jen správně seřazené skupiny prvků `<dt>` a `<dd>` nebo prvky `<script>`, `<template>` či `<div>`."
   },
   "core/audits/accessibility/dlitem.js | description": {
-    "message": "Aby mohly čtečky obrazovek správně oznamovat položky seznamů definic (`<dt>` a `<dd>`), musejí být tyto položky umístěny v nadřazeném prvku `<dl>`. [Jak správně strukturovat seznamy definic](https://dequeuniversity.com/rules/axe/4.7/dlitem)"
+    "message": "Aby mohly čtečky obrazovek správně oznamovat položky seznamů definic (`<dt>` a `<dd>`), musejí být tyto položky umístěny v nadřazeném prvku `<dl>`. [Jak správně strukturovat seznamy definic](https://dequeuniversity.com/rules/axe/4.8/dlitem)"
   },
   "core/audits/accessibility/dlitem.js | failureTitle": {
     "message": "Položky seznamu definic nejsou umístěny v prvcích `<dl>`"
@@ -201,7 +228,7 @@
     "message": "Položky seznamu definic jsou umístěny v prvcích `<dl>`"
   },
   "core/audits/accessibility/document-title.js | description": {
-    "message": "Název (title) uživatelům čteček obrazovek poskytuje souhrnné informace o stránce a uživatelé vyhledávačů se podle něj rozhodují, zda je stránka pro jejich vyhledávání relevantní. [Další informace o názvech dokumentů](https://dequeuniversity.com/rules/axe/4.7/document-title)"
+    "message": "Název (title) uživatelům čteček obrazovek poskytuje souhrnné informace o stránce a uživatelé vyhledávačů se podle něj rozhodují, zda je stránka pro jejich vyhledávání relevantní. [Další informace o názvech dokumentů](https://dequeuniversity.com/rules/axe/4.8/document-title)"
   },
   "core/audits/accessibility/document-title.js | failureTitle": {
     "message": "Dokument neobsahuje prvek `<title>`"
@@ -210,7 +237,7 @@
     "message": "Dokument obsahuje prvek `<title>`"
   },
   "core/audits/accessibility/duplicate-id-active.js | description": {
-    "message": "Všechny vybratelné prvky musí mít unikátní atribut `id`, aby bylo zaručeno, že budou viditelné pro asistenční technologie. [Jak opravit duplicitní položky `id`](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-active)."
+    "message": "Všechny vybratelné prvky musí mít unikátní atribut `id`, aby bylo zaručeno, že budou viditelné pro asistenční technologie. [Jak opravit duplicitní položky `id`](https://dequeuniversity.com/rules/axe/4.8/duplicate-id-active)."
   },
   "core/audits/accessibility/duplicate-id-active.js | failureTitle": {
     "message": "Atributy `[id]` u aktivních, zaměřitelných prvků nejsou unikátní"
@@ -219,7 +246,7 @@
     "message": "Atributy `[id]` u aktivních, zaměřitelných prvků jsou unikátní"
   },
   "core/audits/accessibility/duplicate-id-aria.js | description": {
-    "message": "Hodnota ID ARIA musí být unikátní, aby asistenční technologie nepřehlížely ostatní instance. [Jak opravit duplicitní ID ARIA](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-aria)"
+    "message": "Hodnota ID ARIA musí být unikátní, aby asistenční technologie nepřehlížely ostatní instance. [Jak opravit duplicitní ID ARIA](https://dequeuniversity.com/rules/axe/4.8/duplicate-id-aria)"
   },
   "core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
     "message": "ID ARIA nejsou unikátní"
@@ -227,8 +254,17 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "ID ARIA jsou unikátní"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "Nadpis bez obsahu nebo nepřístupný text brání uživatelům čteček obrazovky v přístupu k informacím o struktuře stránky. [Další informace o nadpisech](https://dequeuniversity.com/rules/axe/4.8/empty-heading)"
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "Prvky nadpisů nemají žádný obsah."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "Všechny prvky nadpisů mají obsah."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
-    "message": "Pole formuláře s několika štítky mohou asistenční technologie, jako jsou čtečky obrazovky, oznamovat matoucím způsobem, protože použijí buď první štítek, poslední štítek, nebo všechny. [Jak ve formulářích používat štítky](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)"
+    "message": "Pole formuláře s několika štítky mohou asistenční technologie, jako jsou čtečky obrazovky, oznamovat matoucím způsobem, protože použijí buď první štítek, poslední štítek, nebo všechny. [Jak ve formulářích používat štítky](https://dequeuniversity.com/rules/axe/4.8/form-field-multiple-labels)"
   },
   "core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
     "message": "Pole formulářů mají několik štítků"
@@ -237,7 +273,7 @@
     "message": "Žádná pole formuláře nemají několik štítků"
   },
   "core/audits/accessibility/frame-title.js | description": {
-    "message": "Čtečky obrazovek obvykle názvy rámců používají k popisu jejich obsahu. [Další informace o názvech rámců](https://dequeuniversity.com/rules/axe/4.7/frame-title)"
+    "message": "Čtečky obrazovek obvykle názvy rámců používají k popisu jejich obsahu. [Další informace o názvech rámců](https://dequeuniversity.com/rules/axe/4.8/frame-title)"
   },
   "core/audits/accessibility/frame-title.js | failureTitle": {
     "message": "Prvky `<frame>` nebo `<iframe>` nemají atribut title"
@@ -246,7 +282,7 @@
     "message": "Prvky `<frame>` a `<iframe>` mají atribut title"
   },
   "core/audits/accessibility/heading-order.js | description": {
-    "message": "Správně seřazené nadpisy, které nepřeskakují úrovně, předávají sémantickou strukturu stránky a usnadňují tak navigaci a srozumitelnost při použití asistenčních technologií. [Další informace o pořadí nadpisů](https://dequeuniversity.com/rules/axe/4.7/heading-order)"
+    "message": "Správně seřazené nadpisy, které nepřeskakují úrovně, předávají sémantickou strukturu stránky a usnadňují tak navigaci a srozumitelnost při použití asistenčních technologií. [Další informace o pořadí nadpisů](https://dequeuniversity.com/rules/axe/4.8/heading-order)"
   },
   "core/audits/accessibility/heading-order.js | failureTitle": {
     "message": "Prvky nadpisu se nezobrazují v sestupném pořadí"
@@ -255,7 +291,7 @@
     "message": "Prvky nadpisu se zobrazují v sestupném pořadí"
   },
   "core/audits/accessibility/html-has-lang.js | description": {
-    "message": "Pokud stránka neuvádí atribut `lang`, čtečky obrazovek předpokládají, že je ve výchozím jazyce, který uživatel zvolil při nastavování čtečky obrazovky. Pokud stránka ve skutečnosti ve výchozím jazyce není, čtečka obrazovky text nemusí přečíst správně. [Další informace o atributu `lang`](https://dequeuniversity.com/rules/axe/4.7/html-has-lang)"
+    "message": "Pokud stránka neuvádí atribut `lang`, čtečky obrazovek předpokládají, že je ve výchozím jazyce, který uživatel zvolil při nastavování čtečky obrazovky. Pokud stránka ve skutečnosti ve výchozím jazyce není, čtečka obrazovky text nemusí přečíst správně. [Další informace o atributu `lang`](https://dequeuniversity.com/rules/axe/4.8/html-has-lang)"
   },
   "core/audits/accessibility/html-has-lang.js | failureTitle": {
     "message": "Prvek `<html>` nemá atribut `[lang]`"
@@ -264,7 +300,7 @@
     "message": "Prvek `<html>` má atribut `[lang]`"
   },
   "core/audits/accessibility/html-lang-valid.js | description": {
-    "message": "Zadáním platného [jazyka BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) pomůžete čtečkám obrazovek správně oznamovat text. [Jak používat atribut `lang`](https://dequeuniversity.com/rules/axe/4.7/html-lang-valid)"
+    "message": "Zadáním platného [jazyka BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) pomůžete čtečkám obrazovek správně oznamovat text. [Jak používat atribut `lang`](https://dequeuniversity.com/rules/axe/4.8/html-lang-valid)"
   },
   "core/audits/accessibility/html-lang-valid.js | failureTitle": {
     "message": "Prvek `<html>` nemá platnou hodnotu atributu `[lang]`."
@@ -272,8 +308,26 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "Prvek `<html>` má atribut `[lang]` s platnou hodnotou"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Pokud webová stránka neuvádí konzistentně jazyk, nemusí čtečka obrazovky text stránky oznámit správně. [Další informace o atributu `lang`](https://dequeuniversity.com/rules/axe/4.8/html-xml-lang-mismatch)"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "Prvek `<html>` nemá atribut `[xml:lang]` se stejným základním jazykem, jaký je uveden v atributu `[lang]`."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "Prvek `<html>` má atribut `[xml:lang]` se stejným základním jazykem, jaký je uveden v atributu `[lang]`."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "Odkazy se stejným cílem by měly mít stejný popis, aby uživatelé věděli, k čemu slouží, a mohli se rozhodnout, zda na ně přejdou. [Další informace o identických odkazech](https://dequeuniversity.com/rules/axe/4.8/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "Identické odkazy nemají stejný účel."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "Stejné odkazy mají stejný účel."
+  },
   "core/audits/accessibility/image-alt.js | description": {
-    "message": "Informativní prvky by měly mít krátký, popisný alternativní text. Dekorativní prvky lze ignorovat pomocí prázdného atributu alt. [Další informace o atributu `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
+    "message": "Informativní prvky by měly mít krátký, popisný alternativní text. Dekorativní prvky lze ignorovat pomocí prázdného atributu alt. [Další informace o atributu `alt`](https://dequeuniversity.com/rules/axe/4.8/image-alt)"
   },
   "core/audits/accessibility/image-alt.js | failureTitle": {
     "message": "Prvky obrázků nemají atributy `[alt]`"
@@ -281,8 +335,26 @@
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Prvky obrázků mají atributy `[alt]`"
   },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informativní prvky by měly mít krátký, popisný alternativní text. Alternativní text přesně odpovídající textu vedle odkazu nebo obrázku může být pro uživatele čteček obrazovek matoucí, protože bude přečten dvakrát. [Další informace o atributu `alt`](https://dequeuniversity.com/rules/axe/4.8/image-redundant-alt)"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Prvky obrázků mají atributy `[alt]` s redundantním textem."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Prvky obrázků nemají atributy `[alt]` s redundantním textem."
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Přidání rozeznatelného a přístupného textu k tlačítkům vstupu může uživatelům čteček obrazovek pomoci pochopit účel tlačítka. [Další informace o tlačítkách vstupu](https://dequeuniversity.com/rules/axe/4.8/input-button-name)"
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Tlačítka vstupu nemají rozeznatelný text."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Vstupní tlačítka mají rozeznatelný text."
+  },
   "core/audits/accessibility/input-image-alt.js | description": {
-    "message": "Když je jako tlačítko `<input>` použit obrázek, uvedení alternativního textu pomůže uživatelům čteček obrazovek porozumět účelu tlačítka. [Další informace o alternativním textu obrázku použitého pro vstup](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)"
+    "message": "Když je jako tlačítko `<input>` použit obrázek, uvedení alternativního textu pomůže uživatelům čteček obrazovek porozumět účelu tlačítka. [Další informace o alternativním textu obrázku použitého pro vstup](https://dequeuniversity.com/rules/axe/4.8/input-image-alt)"
   },
   "core/audits/accessibility/input-image-alt.js | failureTitle": {
     "message": "Prvky `<input type=\"image\">` nemají text `[alt]`"
@@ -290,8 +362,17 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "Prvky `<input type=\"image\">` mají text `[alt]`"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Viditelné textové štítky, které se neshodují s přístupovými názvy, mohou být pro uživatele čteček obrazovek matoucí. [Další informace o přístupových názvech](https://dequeuniversity.com/rules/axe/4.8/label-content-name-mismatch)"
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Prvky s viditelnými textovými štítky nemají odpovídající přístupové názvy."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Prvky s viditelnými textovými štítky mají odpovídající přístupové názvy."
+  },
   "core/audits/accessibility/label.js | description": {
-    "message": "Štítky zajišťují, aby asistenční technologie (například čtečky obrazovek) správně oznamovaly ovládací prvky formulářů. [Další informace o štítcích prvků formulářů](https://dequeuniversity.com/rules/axe/4.7/label)"
+    "message": "Štítky zajišťují, aby asistenční technologie (například čtečky obrazovek) správně oznamovaly ovládací prvky formulářů. [Další informace o štítcích prvků formulářů](https://dequeuniversity.com/rules/axe/4.8/label)"
   },
   "core/audits/accessibility/label.js | failureTitle": {
     "message": "K prvkům formulářů nejsou přidružené štítky"
@@ -299,8 +380,26 @@
   "core/audits/accessibility/label.js | title": {
     "message": "K prvkům formulářů jsou přidružené štítky"
   },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "Jeden hlavní orientační bod pomáhá uživatelům čteček obrazovky procházet webovou stránkou. [Další informace o orientačních bodech](https://dequeuniversity.com/rules/axe/4.8/landmark-one-main)"
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "Dokument nemá hlavní orientační bod."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "Dokument má hlavní orientační bod."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "Text s nízkým kontrastem je pro mnoho uživatelů obtížně čitelný nebo nečitelný. Rozlišitelný text odkazů usnadňuje používání slabozrakým uživatelům. [Přečtěte si, jak odkazy odlišit](https://dequeuniversity.com/rules/axe/4.8/link-in-text-block)"
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "Odkazy lze rozlišit pouze podle barvy."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "Odkazy lze rozlišit i jinak než podle barvy."
+  },
   "core/audits/accessibility/link-name.js | description": {
-    "message": "Text odkazů (a náhradní text obrázků, když jsou použité jako odkazy), který je rozeznatelný a jedinečný a který lze vybrat, uživatelům čteček obrazovek usnadňuje procházení stránek. [Jak zajistit přístupnost odkazů](https://dequeuniversity.com/rules/axe/4.7/link-name)"
+    "message": "Text odkazů (a náhradní text obrázků, když jsou použité jako odkazy), který je rozeznatelný a jedinečný a který lze vybrat, uživatelům čteček obrazovek usnadňuje procházení stránek. [Jak zajistit přístupnost odkazů](https://dequeuniversity.com/rules/axe/4.8/link-name)"
   },
   "core/audits/accessibility/link-name.js | failureTitle": {
     "message": "Odkazy nemají rozeznatelné názvy"
@@ -309,7 +408,7 @@
     "message": "Odkazy mají rozeznatelné názvy"
   },
   "core/audits/accessibility/list.js | description": {
-    "message": "Čtečky obrazovek oznamují seznamy speciálním způsobem. Použitím správné struktury seznamu pomůžete čtečkám obrazovek s výstupem. [Další informace o správné struktuře seznamů](https://dequeuniversity.com/rules/axe/4.7/list)"
+    "message": "Čtečky obrazovek oznamují seznamy speciálním způsobem. Použitím správné struktury seznamu pomůžete čtečkám obrazovek s výstupem. [Další informace o správné struktuře seznamů](https://dequeuniversity.com/rules/axe/4.8/list)"
   },
   "core/audits/accessibility/list.js | failureTitle": {
     "message": "Seznamy neobsahují výhradně prvky `<li>` a prvky, které podporují skripty (`<script>` a `<template>`)."
@@ -318,7 +417,7 @@
     "message": "Seznamy obsahují výhradně prvky `<li>` a prvky, které podporují skripty (`<script>` a `<template>`)."
   },
   "core/audits/accessibility/listitem.js | description": {
-    "message": "Aby čtečky obrazovek oznamovaly položky seznamů (`<li>`) správně, musí být umístěny v nadřazeném prvku `<ul>`, `<ol>` nebo `<menu>`. [Další informace o správné struktuře seznamů](https://dequeuniversity.com/rules/axe/4.7/listitem)"
+    "message": "Aby čtečky obrazovek oznamovaly položky seznamů (`<li>`) správně, musí být umístěny v nadřazeném prvku `<ul>`, `<ol>` nebo `<menu>`. [Další informace o správné struktuře seznamů](https://dequeuniversity.com/rules/axe/4.8/listitem)"
   },
   "core/audits/accessibility/listitem.js | failureTitle": {
     "message": "Položky seznamů (`<li>`) nejsou umístěny v nadřazených prvcích `<ul>`, `<ol>` nebo ‎`<menu>`."
@@ -327,7 +426,7 @@
     "message": "Položky seznamu (`<li>`) jsou umístěny v nadřazených prvcích `<ul>`, `<ol>` nebo `<menu>`"
   },
   "core/audits/accessibility/meta-refresh.js | description": {
-    "message": "Uživatelé neočekávají, že se stránka bude automaticky obnovovat. Při automatickém obnovení se prohlížeč vrátí zpět na začátek stránky. Může to vést k nepříjemnému nebo matoucímu chování při procházení. [Další informace o metaznačce „refresh“](https://dequeuniversity.com/rules/axe/4.7/meta-refresh)"
+    "message": "Uživatelé neočekávají, že se stránka bude automaticky obnovovat. Při automatickém obnovení se prohlížeč vrátí zpět na začátek stránky. Může to vést k nepříjemnému nebo matoucímu chování při procházení. [Další informace o metaznačce „refresh“](https://dequeuniversity.com/rules/axe/4.8/meta-refresh)"
   },
   "core/audits/accessibility/meta-refresh.js | failureTitle": {
     "message": "V dokumentu je použita metaznačka `<meta http-equiv=\"refresh\">`"
@@ -336,7 +435,7 @@
     "message": "V dokumentu není použita metaznačka `<meta http-equiv=\"refresh\">`"
   },
   "core/audits/accessibility/meta-viewport.js | description": {
-    "message": "Deaktivace změny velikosti zobrazení je problematická pro slabozraké uživatele, kteří jsou při prohlížení obsahu webové stránky závislí na přiblížení obrazovky. [Další informace o metaznačce viewport](https://dequeuniversity.com/rules/axe/4.7/meta-viewport)"
+    "message": "Deaktivace změny velikosti zobrazení je problematická pro slabozraké uživatele, kteří jsou při prohlížení obsahu webové stránky závislí na přiblížení obrazovky. [Další informace o metaznačce viewport](https://dequeuniversity.com/rules/axe/4.8/meta-viewport)"
   },
   "core/audits/accessibility/meta-viewport.js | failureTitle": {
     "message": "V prvku `[user-scalable=\"no\"]` je použit atribut `<meta name=\"viewport\">` nebo je atribut `[maximum-scale]` menší než 5."
@@ -345,7 +444,7 @@
     "message": "V prvku `[user-scalable=\"no\"]` není použit atribut `<meta name=\"viewport\">` a atribut `[maximum-scale]` není menší než 5."
   },
   "core/audits/accessibility/object-alt.js | description": {
-    "message": "Čtečky obrazovek nedokážou přeložit obsah jiného typu, než je text. Když k prvkům `<object>` přidáte alternativní text, čtečky obrazovek budou moci předat uživatelům význam. [Další informace o alternativním textu pro prvky `object`](https://dequeuniversity.com/rules/axe/4.7/object-alt)"
+    "message": "Čtečky obrazovek nedokážou přeložit obsah jiného typu, než je text. Když k prvkům `<object>` přidáte alternativní text, čtečky obrazovek budou moci předat uživatelům význam. [Další informace o alternativním textu pro prvky `object`](https://dequeuniversity.com/rules/axe/4.8/object-alt)"
   },
   "core/audits/accessibility/object-alt.js | failureTitle": {
     "message": "Prvky `<object>` nemají alternativní text"
@@ -353,8 +452,26 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "Prvky `<object>` mají alternativní text"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "Prvky formulářů bez efektivních štítků mohou být pro uživatele čteček obrazovek frustrující. [Další informace o prvku `select`](https://dequeuniversity.com/rules/axe/4.8/select-name)"
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "Prvky select nemají přidružené prvky label."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "Prvky select mají přidružené prvky label."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Zahrnutím odkazu pro přeskočení uživatelům umožníte přeskočit na hlavní obsah a ušetřit tak čas. [Další informace o odkazech pro přeskočení](https://dequeuniversity.com/rules/axe/4.8/skip-link)"
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Odkazy pro přeskočení nelze vybrat."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Odkazy pro přeskočení lze vybrat."
+  },
   "core/audits/accessibility/tabindex.js | description": {
-    "message": "Hodnota větší než 0 naznačuje explicitní řazení navigace. Ačkoli je platná, často vede k chování, které je pro uživatele závislé na asistenčních technologiích nepříjemné. [Další informace o atributu `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)"
+    "message": "Hodnota větší než 0 naznačuje explicitní řazení navigace. Ačkoli je platná, často vede k chování, které je pro uživatele závislé na asistenčních technologiích nepříjemné. [Další informace o atributu `tabindex`](https://dequeuniversity.com/rules/axe/4.8/tabindex)"
   },
   "core/audits/accessibility/tabindex.js | failureTitle": {
     "message": "Některé prvky mají hodnotu `[tabindex]` větší než 0"
@@ -362,8 +479,44 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Žádný prvek nemá hodnotu `[tabindex]` větší než 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "Atribut summary by měl popisovat strukturu tabulky, zatímco prvek `<caption>` by měl obsahovat název zobrazený na obrazovce. Správné označení tabulek pomáhá uživatelům čteček obrazovek. [Další informace o atributu summary a prvku caption](https://dequeuniversity.com/rules/axe/4.8/table-duplicate-name)"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tabulky mají stejný obsah v atributu summary a v prvku `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tabulky mají různý obsah v atributu summary a v prvku `<caption>`."
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Čtečky obrazovek mají funkce, které usnadňují procházení tabulek. Pokud v tabulkách namísto buněk s atributem `[colspan]` použijete skutečné prvky popisků (caption), může to zlepšit uživatelský dojem uživatelů čteček obrazovky. [Další informace o popiscích](https://dequeuniversity.com/rules/axe/4.8/table-fake-caption)"
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "V tabulkách nejsou k označení popisků použity prvky `<caption>` (namísto buněk s atributem `[colspan]`)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "V tabulkách jsou k označení popisků použity prvky `<caption>` (namísto buněk s atributem `[colspan]`)."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Dostatečně velká místa dotyku s dostatečnými rozestupy usnadňují aktivaci uživatelům, kteří mohou mít potíže s výběrem malých ovládacích prvků. [Další informace o místech dotyku](https://dequeuniversity.com/rules/axe/4.8/target-size)"
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "Místa dotyku nejsou dostatečně velká nebo nemají dostatečné rozestupy."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "Místa dotyku jsou dostatečně velká a mají dostatečné rozestupy."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Čtečky obrazovek mají funkce, které usnadňují procházení tabulek. Pokud prvky `<td>` ve velké tabulce (tři nebo více buněk na šířku a výšku) budou mít přidružené záhlaví tabulky, uživatelům čteček obrazovky to usnadní orientaci. [Další informace o záhlavích tabulek](https://dequeuniversity.com/rules/axe/4.8/td-has-header)"
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "Prvky `<td>` ve velké tabulce `<table>` nemají záhlaví."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "Prvky `<td>` ve velké tabulce `<table>` mají alespoň jedno záhlaví."
+  },
   "core/audits/accessibility/td-headers-attr.js | description": {
-    "message": "Čtečky obrazovek mají funkce, které usnadňují procházení tabulek. Když zajistíte, aby buňky `<td>` s atributem `[headers]` odkazovaly pouze na jiné buňky ve stejné tabulce, můžete tím uživatelům čteček obrazovek usnadnit používání. [Další informace o atributu `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)"
+    "message": "Čtečky obrazovek mají funkce, které usnadňují procházení tabulek. Když zajistíte, aby buňky `<td>` s atributem `[headers]` odkazovaly pouze na jiné buňky ve stejné tabulce, můžete tím uživatelům čteček obrazovek usnadnit používání. [Další informace o atributu `headers`](https://dequeuniversity.com/rules/axe/4.8/td-headers-attr)"
   },
   "core/audits/accessibility/td-headers-attr.js | failureTitle": {
     "message": "Buňky v prvku `<table>`, které mají atribut `[headers]`, odkazují na prvek `id`, který se nenachází ve stejné tabulce."
@@ -372,7 +525,7 @@
     "message": "Buňky v prvku `<table>`, které mají atribut `[headers]`, odkazují na buňky ve stejné tabulce."
   },
   "core/audits/accessibility/th-has-data-cells.js | description": {
-    "message": "Čtečky obrazovek mají funkce, které usnadňují procházení tabulek. Když zajistíte, aby záhlaví tabulek vždy odkazovala na nějakou množinu buněk, bude pro uživatele čteček obrazovek procházení stránky snazší. [Další informace o záhlavích tabulek](https://dequeuniversity.com/rules/axe/4.7/th-has-data-cells)"
+    "message": "Čtečky obrazovek mají funkce, které usnadňují procházení tabulek. Když zajistíte, aby záhlaví tabulek vždy odkazovala na nějakou množinu buněk, bude pro uživatele čteček obrazovek procházení stránky snazší. [Další informace o záhlavích tabulek](https://dequeuniversity.com/rules/axe/4.8/th-has-data-cells)"
   },
   "core/audits/accessibility/th-has-data-cells.js | failureTitle": {
     "message": "Prvky `<th>` a prvky s atributem `[role=\"columnheader\"/\"rowheader\"]` nemají datové buňky, které popisují."
@@ -381,7 +534,7 @@
     "message": "Prvky `<th>` a prvky s atributem `[role=\"columnheader\"/\"rowheader\"]` mají datové buňky, které popisují."
   },
   "core/audits/accessibility/valid-lang.js | description": {
-    "message": "Pokud je u prvků uveden platný [jazyk BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) pomůže to zajistit, aby čtečky obrazovek text četly správně. [Jak používat atribut `lang`](https://dequeuniversity.com/rules/axe/4.7/valid-lang)"
+    "message": "Pokud je u prvků uveden platný [jazyk BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) pomůže to zajistit, aby čtečky obrazovek text četly správně. [Jak používat atribut `lang`](https://dequeuniversity.com/rules/axe/4.8/valid-lang)"
   },
   "core/audits/accessibility/valid-lang.js | failureTitle": {
     "message": "Atributy `[lang]` nemají platnou hodnotu"
@@ -390,7 +543,7 @@
     "message": "Atributy `[lang]` mají platnou hodnotu"
   },
   "core/audits/accessibility/video-caption.js | description": {
-    "message": "Když jsou u videa k dispozici titulky, je pro sluchově postižené uživatele snazší využít informace ve videu. [Další informace o titulcích videí](https://dequeuniversity.com/rules/axe/4.7/video-caption)"
+    "message": "Když jsou u videa k dispozici titulky, je pro sluchově postižené uživatele snazší využít informace ve videu. [Další informace o titulcích videí](https://dequeuniversity.com/rules/axe/4.8/video-caption)"
   },
   "core/audits/accessibility/video-caption.js | failureTitle": {
     "message": "Prvky `<video>` neobsahují prvek `<track>` s atributem `[kind=\"captions\"]`."
@@ -452,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Stránka nebránila obnovení z mezipaměti pro přechod zpět nebo vpřed"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Mezipaměť pro přechod zpět nebo vpřed nelze testovat ve starém Chromu bez grafické vrstvy (`--chrome-flags=\"--headless=old\"`). Pokud chcete zobrazit výsledky auditu, použijte nový Chrome bez grafické vrstvy (`--chrome-flags=\"--headless=new\"`) nebo standardní Chrome."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Rychlost načítání této stránky byla negativně ovlivněna rozšířeními pro Chrome. Zkuste stránku zkontrolovat v anonymním režimu nebo profilu Chromu bez rozšíření."
   },
@@ -486,7 +642,7 @@
     "message": "Pro animovaný obsah používejte formáty videa"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Doplňující kódy polyfill a transformace umožňují starším prohlížečům používat nové funkce JavaScriptu. Moderní prohlížeče ale řadu z nich nepotřebují. U svých balíčků JavaScriptu použijte moderní strategii nasazení skriptu pomocí detekce module/nomodule, abyste omezili množství kódu přenášeného do moderních prohlížečů, a přitom zachovali podporu pro starší prohlížeče. [Jak používat moderní JavaScript](https://web.dev/publish-modern-javascript/)"
+    "message": "Doplňující kódy polyfill a transformace umožňují starším prohlížečům používat nové funkce JavaScriptu. Moderní prohlížeče ale řadu z nich nepotřebují. U svých balíčků JavaScriptu použijte moderní strategii nasazení skriptu pomocí detekce module/nomodule, abyste omezili množství kódu přenášeného do moderních prohlížečů, a přitom zachovali podporu pro starší prohlížeče. [Jak používat moderní JavaScript](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Nepoužívejte v moderních prohlížečích zastaralý JavaScript"
@@ -621,7 +777,7 @@
     "message": "Syntaxe"
   },
   "core/audits/csp-xss.js | metaTagMessage": {
-    "message": "Stránka obsahuje zásadu CSP definovanou ve značce <meta>. Zvažte přesunutí zásad CSP do záhlaví HTTP nebo definování jiných striktních zásad CSP v záhlaví HTTP."
+    "message": "Stránka obsahuje zásady CSP definované ve značce `<meta>`. Zvažte přesunutí zásad CSP do záhlaví protokolu HTTP nebo definování dalších striktních zásad CSP v záhlaví protokolu HTTP."
   },
   "core/audits/csp-xss.js | noCsp": {
     "message": "V režimu vynucení nejsou žádné CSP"
@@ -840,7 +996,7 @@
     "message": "Očekávaná velikost"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Kvůli zajištění maximální ostrosti obrázků by jejich přirozené rozměry měly být úměrné velikosti displeje a poměru pixelů. [Jak poskytovat responzivní obrázky](https://web.dev/serve-responsive-images/)"
+    "message": "Kvůli zajištění maximální ostrosti obrázků by jejich přirozené rozměry měly být úměrné velikosti displeje a poměru pixelů. [Jak poskytovat responzivní obrázky](https://web.dev/articles/serve-responsive-images)"
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Zobrazuje obrázky s nízkým rozlišením"
@@ -858,13 +1014,13 @@
     "message": "Příčina selhání"
   },
   "core/audits/installable-manifest.js | description": {
-    "message": "Service worker je technologie, která aplikaci umožňuje využívat mnoho funkcí progresivních webových aplikací, jako jsou režim offline, přidání na plochu nebo oznámení push. Při správné implementaci skriptu service worker a manifestu mohou prohlížeče uživatele aktivně vyzývat, aby si aplikaci přidali na plochu, což může vést k vyšší míře interakce. [Další informace o požadavcích na instalovatelnost manifestu](https://developer.chrome.com/docs/lighthouse/pwa/installable-manifest/)"
+    "message": "Pracovní proces služby je technologie, která aplikaci umožňuje využívat mnoho funkcí progresivních webových aplikací, jako jsou režim offline, přidání na plochu nebo oznámení push. Při správné implementaci skriptu pracovní proces služby a manifestu mohou prohlížeče uživatele aktivně vyzývat, aby si aplikaci přidali na plochu, což může vést k vyšší míře interakce. [Další informace o požadavcích na instalovatelnost manifestu](https://developer.chrome.com/docs/lighthouse/pwa/installable-manifest/)"
   },
   "core/audits/installable-manifest.js | displayValue": {
     "message": "{itemCount,plural, =1{1 důvod}few{# důvody}many{# důvodu}other{# důvodů}}"
   },
   "core/audits/installable-manifest.js | failureTitle": {
-    "message": "Manifest webové aplikace nebo service worker nesplňují instalační požadavky"
+    "message": "Manifest webové aplikace nebo pracovní proces služby nesplňují instalační požadavky"
   },
   "core/audits/installable-manifest.js | ids-do-not-match": {
     "message": "Adresa URL aplikace v Obchodu Play a ID Obchodu Play si vzájemně neodpovídají"
@@ -873,7 +1029,7 @@
     "message": "Stránka je načtena v anonymním okně"
   },
   "core/audits/installable-manifest.js | manifest-display-not-supported": {
-    "message": "Vlastnost „display“ v manifestu musí být „standalone“, „fullscreen“ nebo „minimal-ui“"
+    "message": "Vlastnost `display` manifestu musí být jedna z těchto možností `standalone`, `fullscreen` nebo `minimal-ui`"
   },
   "core/audits/installable-manifest.js | manifest-display-override-not-supported": {
     "message": "Manifest obsahuje pole „display_override“ a první podporovaný režim zobrazení musí být „standalone“, „fullscreen“ nebo „minimal-ui“"
@@ -885,7 +1041,7 @@
     "message": "Adresa URL manifestu se během jeho načítání změnila."
   },
   "core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
-    "message": "Manifest neobsahuje pole „name“ nebo „short_name“"
+    "message": "Manifest neobsahuje pole `name` ani `short_name`"
   },
   "core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
     "message": "Manifest neobsahuje vhodnou ikonu – je vyžadován formát PNG, SVG nebo WebP o velikosti alespoň {value0} px, musí být nastaven atribut velikostí a atribut účelu, pokud je nastaven, musí zahrnovat hodnoty „any“."
@@ -902,11 +1058,8 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "Stránka neobsahuje prvek <link> s adresou URL manifestu"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "Nebyl nalezen žádný odpovídající service worker. Je možné, že stránku budete muset načíst znovu nebo zkontrolovat, zda rozsah (scope) skriptu service worker pro aktuální stránku zahrnuje rozsah a počáteční URL (start_url) z manifestu."
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
-    "message": "Skript service worker nelze zkontrolovat bez pole „start_url“ v manifestu"
+    "message": "Skript pracovní proces služby nelze zkontrolovat bez pole „start_url“ v manifestu"
   },
   "core/audits/installable-manifest.js | noErrorId": {
     "message": "ID chyby nestability {errorId} nelze rozpoznat"
@@ -933,16 +1086,13 @@
     "message": "Parametr prefer_related_applications je podporován pouze v beta verzi Chromu a ve stabilních verzích v systému Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Nástroj Lighthouse nedokázal zjistit, zda byl spuštěn skript service worker. Zkuste to s novější verzí Chromu."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "Schéma adresy URL manifestu ({scheme}) není v systému Android podporováno."
+    "message": "Nástroj Lighthouse nedokázal zjistit, zda je stránka instalovatelná. Zkuste to s novější verzí Chromu."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Počáteční URL (start_url) v manifestu není platná"
   },
   "core/audits/installable-manifest.js | title": {
-    "message": "Manifest webové aplikace a service worker splňují instalační požadavky"
+    "message": "Manifest webové aplikace a pracovní proces služby splňují instalační požadavky"
   },
   "core/audits/installable-manifest.js | url-not-supported-for-webapk": {
     "message": "Adresa URL v manifestu obsahuje uživatelské jméno, heslo nebo port"
@@ -1008,16 +1158,40 @@
     "message": "Prvek Largest Contentful Paint"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Podíl na CLS"
+    "message": "Dopad změny rozvržení"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Tyto prvky DOM nejvíce přispívají ke kumulativní změně rozvržení (CLS) stránky. [Jak zlepšit CLS](https://web.dev/optimize-cls/)"
+    "message": "Tyto prvky DOM byly změnami rozvržení ovlivněny nejvíce. Některé změny rozvržení do hodnoty metriky CLS vzhledem k [normalizaci ](https://web.dev/articles/cls#what_is_cls) nemusí zahrnuty. [Jak zlepšit CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Zajistěte, aby nedocházelo k velkým změnám rozvržení"
   },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Skóre změny rozvržení"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Toto jsou největší změny rozvržení pozorované na stránce. Každá položka v tabulce představuje jednu změnu rozvržení a je u ní uvedeno, který prvek se posunul nejvíce. Pod každou položkou jsou uvedeny možné prvotní příčiny změny rozvržení. Některé z těchto změn rozvržení do hodnoty metriky CLS vzhledem k [použití okenního systému](https://web.dev/articles/cls#what_is_cls) nemusí zahrnuty. [Jak zlepšit CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{Byla nalezena 1 změna rozvržení}few{Byly nalezeny # změny rozvržení}many{Bylo nalezeno # změny rozvržení}other{Bylo nalezeno # změn rozvržení}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Bylo načteno webové písmo"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Byl vložen prvek iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Rozvržení stránky bylo upraveno pozdním síťovým požadavkem"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "U prvku média není explicitně zadána velikost"
+  },
+  "core/audits/layout-shifts.js | title": {
+    "message": "Zajistěte, aby nedocházelo k velkým změnám rozvržení"
+  },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Líně načtené obrázky nad okrajem se vykreslí později v životním cyklu stránky, což může zpozdit vykreslení největšího obsahu. [Další informace o optimálním líném načítání](https://web.dev/lcp-lazy-loading/)"
+    "message": "Líně načtené obrázky nad okrajem se vykreslí později v životním cyklu stránky, což může zpozdit vykreslení největšího obsahu. [Další informace o optimálním líném načítání](https://web.dev/articles/lcp-lazy-loading)"
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Obrázek vykreslení největšího obsahu byl líně načten"
@@ -1026,7 +1200,7 @@
     "message": "Obrázek vykreslení největšího obsahu nebyl líně načten"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Vypíše nejdelší úlohy v hlavním podprocesu, což umožňuje zjistit, co nejvíce přispívá k prodlevě vstupu. [Jak se vyhnout dlouhým úlohám v hlavními vláknu](https://web.dev/long-tasks-devtools/)"
+    "message": "Vypíše nejdelší úlohy v hlavním podprocesu, což umožňuje zjistit, co nejvíce přispívá k prodlevě vstupu. [Jak se vyhnout dlouhým úlohám v hlavními vláknu](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{Byla nalezena # dlouhá úloha}few{Byly nalezeny # dlouhé úlohy}many{Bylo nalezeno # dlouhé úlohy}other{Bylo nalezeno # dlouhých úloh}}"
@@ -1074,16 +1248,16 @@
     "message": "Manifest má maskovatelnou ikonu"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Kumulativní změna rozvržení měří přesuny viditelných prvků v zobrazované oblasti. [Další informace o metrice Kumulativní změna rozvržení](https://web.dev/cls/)"
-  },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Doba od interakce k dalšímu vykreslení měří rychlost odezvy stránky, tj. za jak dlouho stránka viditelně zareaguje na uživatelský vstup. [Další informace o metrice Doba od interakce k dalšímu vykreslení](https://web.dev/inp/)"
+    "message": "Kumulativní změna rozvržení měří přesuny viditelných prvků v zobrazované oblasti. [Další informace o metrice Kumulativní změna rozvržení](https://web.dev/articles/cls)"
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "První vykreslení obsahu je okamžik vykreslení prvního textu nebo obrázku. [Další informace o metrice První vykreslení obsahu (FCP)](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)"
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "První smysluplné vykreslení udává, kdy začne být viditelný primární obsah stránky. [Další informace o metrice První smysluplné vykreslení](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)"
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Doba od interakce k dalšímu vykreslení měří rychlost odezvy stránky, tj. za jak dlouho stránka viditelně zareaguje na uživatelský vstup. [Další informace o metrice Doba od interakce k dalšímu vykreslení](https://web.dev/articles/inp)"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Doba do interaktivity udává, jak dlouho trvá, než stránka začne být plně interaktivní. [Další informace o metrice Doba do interaktivity](https://developer.chrome.com/docs/lighthouse/performance/interactive/)"
@@ -1113,7 +1287,7 @@
     "message": "Latence backendu na serveru"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "Událost `unload` se nespouští spolehlivě. Naslouchání této události může zabránit optimalizacím v prohlížečích, jako je mezipaměť pro přechod zpět nebo vpřed. Použijte místo ní událost `pagehide` nebo `visibilitychange`. [Další informace o posluchačích událostí unload](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "Událost `unload` se nespouští spolehlivě. Naslouchání této události může zabránit optimalizacím v prohlížečích, jako je mezipaměť pro přechod zpět nebo vpřed. Použijte místo ní událost `pagehide` nebo `visibilitychange`. [Další informace o posluchačích událostí unload](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registruje posluchač události `unload`"
@@ -1158,7 +1332,7 @@
     "message": "Rozpočet výkonu"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Načítejte písma `optional` předem, aby je mohli používat i návštěvníci, kteří přicházejí poprvé. [Další informace o předběžném načítání písem](https://web.dev/preload-optional-fonts/)"
+    "message": "Načítejte písma `optional` předem, aby je mohli používat i návštěvníci, kteří přicházejí poprvé. [Další informace o předběžném načítání písem](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Písma s atributem `font-display: optional` se nenačítají předem"
@@ -1167,7 +1341,7 @@
     "message": "Písma s atributem `font-display: optional` se načítají předem"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Pokud je na stránce dynamicky přidán prvek LCP, měli byste obrázek načítat předem, abyste dosáhli lepší hodnoty LCP. [Další informace o předběžném načítání prvků LCP](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)"
+    "message": "Pokud je na stránce dynamicky přidán prvek LCP, měli byste obrázek načítat předem, abyste dosáhli lepší hodnoty LCP. [Další informace o předběžném načítání prvků LCP](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)"
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Předběžné načtení obrázku s vykreslením největšího obsahu"
@@ -1177,15 +1351,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Nepoužívejte několik přesměrování stránky"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "Pokud chcete nastavit rozpočet pro množství a velikost zdrojů na stránce, přidejte soubor budget.json. [Další informace o rozpočtech výkonu](https://web.dev/use-lighthouse-for-performance-budgets/)"
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 požadavek • {byteCount, number, bytes} KiB}few{# požadavky • {byteCount, number, bytes} KiB}many{# požadavku • {byteCount, number, bytes} KiB}other{# požadavků • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "Používejte málo požadavků a malé velikosti přenosů"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "Odkazy na kanonické verze slouží jako návrhy, které adresy URL se mají zobrazovat ve výsledcích vyhledávání. [Další informace o kanonických odkazech](https://developer.chrome.com/docs/lighthouse/seo/canonical/)"
@@ -1376,27 +1541,6 @@
   "core/audits/server-response-time.js | title": {
     "message": "Počáteční odpověď serveru byla rychlá"
   },
-  "core/audits/service-worker.js | description": {
-    "message": "Service worker je technologie, která aplikaci umožňuje využívat mnoho funkcí progresivní webové aplikace, jako je režim offline, přidání na plochu nebo oznámení push. [Další informace o skriptech service službě worker](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)"
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "Tuto stránku ovládá soubor service worker, nebyl ale nalezen atribut `start_url`, protože se manifest nepodařilo analyzovat jako platný soubor JSON"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Tuto stránku ovládá soubor service worker, ale atribut `start_url` ({startUrl}) pod soubor service worker ({scopeUrl}) nespadá."
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "Tuto stránku ovládá soubor service worker, ale atribut `start_url` nebyl nalezen, protože nebyl načten žádný manifest."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Tento zdroj má jeden či více souborů service worker, ale stránka ({pageUrl}) pod něj nespadá."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "Neregistruje soubor service worker, který ovládá stránku a `start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "Registruje soubor service worker, který ovládá stránku a atribut `start_url`"
-  },
   "core/audits/splash-screen.js | description": {
     "message": "Stylová úvodní obrazovka zajišťuje kvalitní uživatelský dojem při spuštění aplikace z plochy. [Další informace o úvodních obrazovkách](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)"
   },
@@ -1414,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Nastavuje barvu motivu adresního řádku."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Podpora souborů cookie třetích stran bude v budoucí verzi Chromu odstraněna. [Další informace o postupném ukončení podpory souborů cookie třetích stran](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{Byl nalezen 1 soubor cookie}few{Byly nalezeny # soubory cookie}many{Bylo nalezeno # souboru cookie}other{Bylo nalezeno # souborů cookie}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Používá soubory cookie třetích stran"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Nepoužívá soubory cookie třetích stran"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (zákaznická podpora)"
@@ -1470,7 +1626,7 @@
     "message": "Časový rozpočet"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "U obrázkových prvků vždy explicitně určete šířku a výšku, aby se omezilo poskakování při vykreslování a zlepšila se hodnota CLS. [Jak nastavit rozměry obrázků](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "U obrázkových prvků vždy explicitně určete šířku a výšku, aby se omezilo poskakování při vykreslování a zlepšila se hodnota CLS. [Jak nastavit rozměry obrázků](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Obrázkové prvky nemají explicitní označení `width` a `height`"
@@ -1545,7 +1701,7 @@
     "message": "Obsahuje značku `<meta name=\"viewport\">` s atributem `width` nebo `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Toto je činnost blokující vlákno, k níž dochází během měření doby od interakce k dalšímu vykreslení. [Další informace o metrice Doba od interakce k dalšímu vykreslení](https://web.dev/inp/)"
+    "message": "Toto je činnost blokující vlákno, k níž dochází během měření doby od interakce k dalšímu vykreslení. [Další informace o metrice Doba od interakce k dalšímu vykreslení](https://web.dev/articles/inp)"
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "Na událost {interactionType} byla vynaložena doba {timeInMs, number, milliseconds} ms"
@@ -1587,10 +1743,10 @@
     "message": "Rady a tipy pro odpovídání na recenze"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Tyto kontroly odhalují příležitosti ke [zlepšení přístupnosti webové aplikace](https://developer.chrome.com/docs/lighthouse/accessibility/). Automaticky lze odhalit jen část problémů s přístupností, proto obsah doporučujeme otestovat i ručně."
+    "message": "Tyto kontroly odhalují příležitosti ke [zlepšení přístupnosti webové aplikace](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatická kontrola dokáže rozpoznat pouze část problémů a nezaručuje, že je ebová aplikace přístupná. Doporučujeme proto provést také [ruční testování](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Tyto položky se týkají oblastí, které v současné době automatické testování nedokáže pokrýt. Další informace najdete v průvodci [provedením kontroly přístupnosti](https://web.dev/how-to-review/)."
+    "message": "Tyto položky se týkají oblastí, které v současné době automatické testování nedokáže pokrýt. Další informace najdete v průvodci [provedením kontroly přístupnosti](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Přístupnost"
@@ -1677,10 +1833,10 @@
     "message": "Výkon"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Tyto kontroly prověřují různé aspekty progresivní webové aplikace. [Jak vytvořit dobrou progresivní webovou aplikaci](https://web.dev/pwa-checklist/)"
+    "message": "Tyto kontroly prověřují různé aspekty progresivní webové aplikace. [Jak vytvořit dobrou progresivní webovou aplikaci](https://web.dev/articles/pwa-checklist)"
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Tyto kontroly vyžaduje základní [kontrolní seznam aplikace PWA](https://web.dev/pwa-checklist/), ale nástroj Lighthouse je automaticky neprovádí. Na vaše skóre vliv nemají, ale je důležité, abyste je ověřili ručně."
+    "message": "Tyto kontroly vyžaduje základní [kontrolní seznam aplikace PWA](https://web.dev/articles/pwa-checklist), ale nástroj Lighthouse je automaticky neprovádí. Na vaše skóre vliv nemají, ale je důležité, abyste je ověřili ručně."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1692,7 +1848,7 @@
     "message": "Optimalizováno pro PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Tyto kontroly zajišťují, aby vaše stránka dodržovala základní radu ohledně optimalizace pro vyhledávače. Mnoho dalších faktorů, které ovlivňují umístění ve výsledcích vyhledávání, Lighthouse nehodnotí, např. výkon metrik [Core Web Vitals](https://web.dev/learn-core-web-vitals/). [Další informace o základních požadavcích Vyhledávání Google](https://support.google.com/webmasters/answer/35769)"
+    "message": "Tyto kontroly zajišťují, aby vaše stránka dodržovala základní radu ohledně optimalizace pro vyhledávače. Mnoho dalších faktorů, které ovlivňují umístění ve výsledcích vyhledávání, Lighthouse nehodnotí, např. výkon metrik [Core Web Vitals](https://web.dev/explore/vitals). [Další informace o základních požadavcích Vyhledávání Google](https://support.google.com/webmasters/answer/35769)"
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Chcete-li zkontrolovat dodržování dalších doporučených postupů pro SEO, spusťte pro svůj web tyto další validátory."
@@ -1739,6 +1895,9 @@
   "core/gather/gatherers/link-elements.js | headerParseWarning": {
     "message": "Chyba při analýze záhlaví `link` ({error}): `{header}`"
   },
+  "core/gather/timespan-runner.js | warningNavigationDetected": {
+    "message": "Během auditování byla zjištěna navigace stránkami. Použití režimu časového rozpětí k auditu navigací stránkami se nedoporučuje. K auditu navigací stránkami použijte navigační režim. Získáte lepší atribuci třetích stran a detekci hlavního vlákna."
+  },
   "core/lib/bf-cache-strings.js | HTTPMethodNotGET": {
     "message": "Mezipaměť pro přechod zpět nebo vpřed mohou využívat pouze stránky načtené pomocí požadavků GET."
   },
@@ -1750,6 +1909,9 @@
   },
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Stránky, které požádaly o AppBanner, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Mezipaměť pro přechod zpět nebo vpřed je kvůli požadavku keepalive zakázána."
   },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Mezipaměť pro přechod zpět nebo vpřed je deaktivována pomocí příznaků. Pokud ji na tomto zařízení chcete místně povolit, přejděte na adresu chrome://flags/#back-forward-cache."
@@ -1816,6 +1978,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Stránky, které používají rozhraní WebUSB API, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Mezipaměť pro přechod zpět nebo vpřed je zakázána, protože na stránce, která používá `Cache-Control: no-store`, jsou zakázány soubory cookie."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Stránky, které používají vyhrazený pracovní proces nebo worklet, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
@@ -1892,14 +2057,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Stránky, které mají otevřené připojení k databázi IndexedDB, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Mezipaměť pro přechod zpět nebo vpřed je zakázána kvůli události IndexedDB."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Byla použita nepodporovaná rozhraní API."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Stránky, na které rozšíření vkládají JavaScript, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+    "message": "Stránky, na které rozšíření vkládají položky `JavaScript`, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Stránky, na které rozšíření vkládají šablony stylů, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+    "message": "Stránky, na které rozšíření vkládají položky `StyleSheet`, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Interní chyba."
@@ -2082,25 +2250,25 @@
     "message": "Stránky, které používají WebXR, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
   },
   "core/lib/csp-evaluator.js | allowlistFallback": {
-    "message": "Zvažte, zda nepřidat schémata URL https: a http: (ta jsou ignorována prohlížeči, které podporují strict-dynamic) z důvodu zpětné kompatibility se staršími prohlížeči."
+    "message": "Zvažte přidání schémat URL https: a http: k zajištění zpětné kompatibility se staršími prohlížeči (prohlížeče podporující klíčové slovo `'strict-dynamic'` je ignorují)."
   },
   "core/lib/csp-evaluator.js | deprecatedDisownOpener": {
-    "message": "Direktiva disown-opener je od verze CSP3 zastaralá. Použijte místo ní hlavičku Cross-Origin-Opener-Policy."
+    "message": "Direktiva `disown-opener` již od verze CSP3 není podporována. Použijte místo ní záhlaví Cross-Origin-Opener-Policy."
   },
   "core/lib/csp-evaluator.js | deprecatedReferrer": {
-    "message": "Direktiva referrer je od verze CSP2 zastaralá. Použijte místo ní hlavičku Referrer-Policy."
+    "message": "Direktiva `referrer` již od verze CSP2 není podporována. Použijte místo ní záhlaví Referrer-Policy."
   },
   "core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
-    "message": "Direktiva reflected-xss je od verze CSP2 zastaralá. Použijte místo ní hlavičku X-XSS-Protection."
+    "message": "Direktiva `reflected-xss` již od verze CSP2 není podporována. Použijte místo ní záhlaví X-XSS-Protection."
   },
   "core/lib/csp-evaluator.js | missingBaseUri": {
-    "message": "Chybějící base-uri umožňuje vložení značek <base> za účelem nastavení základní adresy URL pro všechny relativní adresy URL (např. skripty) na doménu kontrolovanou útočníkem. Nastavte base-uri na hodnotu „none“ nebo „self“."
+    "message": "Pokud není zahrnuta direktiva `base-uri`, lze vložením značek `<base>` nastavit základní URL pro všechny relativní adresy URL (např. skripty) na doménu kontrolovanou útočníkem. Zvažte nastavení `base-uri` na `'none'` nebo `'self'`."
   },
   "core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Chybějící object-src umožňuje vložení pluginů spouštějících skripty, které nejsou bezpečné. Zvažte, zda nenastavit object-src na „none“."
+    "message": "Chybějící direktiva `object-src` umožňuje vložení pluginů, které mohou spouštět nebezpečné skripty. Zvažte nastavení `object-src` na `'none'`."
   },
   "core/lib/csp-evaluator.js | missingScriptSrc": {
-    "message": "Chybí direktiva script-src. To může umožnit spouštění skriptů, které nejsou bezpečné."
+    "message": "Chybí direktiva `script-src`. To může umožnit spouštění skriptů, které nejsou bezpečné."
   },
   "core/lib/csp-evaluator.js | missingSemicolon": {
     "message": "Nezapomněli jste středník? {keyword} vypadá jako direktiva, ne klíčové slovo."
@@ -2118,13 +2286,13 @@
     "message": "V této direktivě nepoužívejte prosté zástupné znaky ({keyword}). Prosté zástupné znaky povolují skripty pocházející z nebezpečných domén."
   },
   "core/lib/csp-evaluator.js | reportToOnly": {
-    "message": "Cíl pro přehledy je nakonfigurován jenom pomocí direktivy report-to. Tato direktiva je podporovaná pouze v prohlížečích založených na projektu Chromium, proto doporučujeme použít direktivu report-uri."
+    "message": "Cíl pro hlášení je nakonfigurován pouze pomocí direktivy report-to. Tato direktiva je podporovaná pouze v prohlížečích založených na projektu Chromium, proto doporučujeme použít direktivu `report-uri`."
   },
   "core/lib/csp-evaluator.js | reportingDestinationMissing": {
     "message": "Žádné zásady CSP neurčují cíl pro přehledy. To znesnadňuje dlouhodobou údržbu zásad CSP a monitorování případných prolomení."
   },
   "core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Seznam povolených položek na hostiteli může být často obcházen. Zvažte, zda nepoužít hodnoty nonce nebo hash CSP společně s parametrem strict-dynamic, pokud je potřeba."
+    "message": "Seznamy povolených hostitelských serverů lze často obejít. Použijte místo nich hodnoty CSP nonce nebo hash, případně v kombinaci s klíčovým slovem `'strict-dynamic'`."
   },
   "core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Neznámá direktiva CSP."
@@ -2133,10 +2301,196 @@
     "message": "{keyword} je zřejmě neplatné klíčové slovo."
   },
   "core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "unsafe-inline umožňuje spouštění skriptů na stránce a obslužných rutin událostí, které nejsou bezpečné. Zvažte, zda nepoužít hodnoty nonce nebo hash CSP, abyste skripty povolovali individuálně."
+    "message": "`'unsafe-inline'` umožňuje spouštění potenciálně nebezpečných skriptů a obslužných rutin událostí vložených v kódu stránky. Zvažte použití hodnot CSP nonce nebo hash k povolení jednotlivých skriptů."
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
-    "message": "Zvažte, zda nepřidat unsafe-inline (ignorováno prohlížeči, které podporují hodnoty nonce/hash) z důvodu zpětné kompatibility se staršími prohlížeči."
+    "message": "Zvažte přidání klíčového slova `'unsafe-inline'` (prohlížeče s podporou hodnot nonce/hash ho ignorují) k zajištění zpětné kompatibility se staršími prohlížeči."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Další podrobnosti najdete na stránce s informacemi o stavu funkcí."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Tato změna nabude účinnosti od milníku {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "Byla použita zastaralá funkce"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Zástupný symbol (*) se při zpracování záhlaví `Access-Control-Allow-Headers` pro CORS nevztahuje na záhlaví Authorization."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Namísto selektoru `-internal-media-controls-overlay-cast-button` byste k vypnutí výchozí integrace funkce Cast měli použít atribut `disableRemotePlayback`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Požadavky na zdroje, jejichž adresy URL obsahovaly jak odstraněné prázdné znaky `(n|r|t)`, tak znaky menší než (`<`), jsou blokovány. Aby se tyto zdroje načetly, je na místech, jako jsou hodnoty atributů, potřeba odstranit zalomení řádků a zakódovat znaky menší než."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "Metoda `chrome.loadTimes()` je zastaralá, použijte místo ní standardizované API: Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "API `chrome.loadTimes()` je zastaralé. Použijte místo něj standardizované API: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "Metoda `chrome.loadTimes()` je zastaralá. Použijte místo ní standardizované API: `nextHopProtocol` v Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Soubory cookie obsahující znak `(0|r|n)` budou namísto zkrácení odmítnuty."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Uvolnění zásad stejného původu nastavením atributu `document.domain` je zastaralé a bude ve výchozím nastavení zakázáno. Toto upozornění na ukončení podpory se týká přístupu mezi různými zdroji, který byl povolen nastavením `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Podpora volání funkce window.alert z prvků iframe jiných domén byla ukončena a v budoucnu bude odstraněno."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Podpora volání funkce window.confirm z prvků iframe jiných domén je zastaralá a v budoucnu bude odstraněna."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "Události změny DOM, včetně `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` a `DOMCharacterDataModified` jsou zastaralé (https://w3c.github.io/uievents/ #legacy-event-types) a budou odstraněny. Použijte místo nich rozhraní `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Podpora adres URL se schématem data: v prvku <use> v SVG je zastaralá a v budoucnu bude odstraněna."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Uvolnění zásad stejného původu nastavením atributu `document.domain` je zastaralé a bude ve výchozím nastavení zakázáno. Pokud tuto funkci chcete nadále používat, odesláním záhlaví `Origin-Agent-Cluster: ?0` spolu s odpovědí HTTP pro dokument a rámce se odhlaste z clusterů zástupců rozlišovaných podle zdrojů. Další podrobnosti najdete na stránce https://developer.chrome.com/blog/immutable-document-domain/."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "Záhlaví `Expect-CT` je zastaralé a bude odstraněno. Chrome u všech veřejně důvěryhodných certifikátů vydaných po 30. dubnu 2018 vyžaduje ochranu Certificate Transparency."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` a `watchPosition()` již nefungují u nezabezpečených zdrojů. Pokud tuto funkci chcete použít, měli byste zvážit převedení aplikace na zabezpečený zdroj, jako je HTTPS. Další podrobnosti najdete na stránce https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "Metody `getCurrentPosition()` a `watchPosition()` již v nezabezpečených zdrojích nejsou podporovány. Pokud tuto funkci chcete použít, měli byste zvážit převedení aplikace na zabezpečený zdroj, jako je HTTPS. Další podrobnosti najdete na stránce https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` již nefunguje u nezabezpečených zdrojů. Pokud tuto funkci chcete použít, měli byste zvážit převedení aplikace na zabezpečený zdroj, jako je HTTPS. Další podrobnosti najdete na stránce https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "Rozhraní `RTCPeerConnectionIceErrorEvent.hostCandidate` je zastaralé. Použijte místo něj rozhraní `RTCPeerConnectionIceErrorEvent.address` nebo `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "Zdroj obchodníka a libovolná data z události `canmakepayment` procesu pracovní proces služby jsou zastaralé a budou odstraněny: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Web si vyžádal dílčí zdroj ze sítě, ke které měl přístup pouze díky privilegované pozici svých uživatelů v síti. Tyto požadavky umožňují získat z internetu přístup k neveřejným zařízením a serverům, čímž se zvyšuje riziko útoku CSRF (cross-site request forgery) a/nebo úniku informací. Aby Chrome tato rizika zmírnil, přestává podporovat požadavky na neveřejné dílčí zdroje iniciované z nezabezpečených kontextů a začne je blokovat."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Pole `dailyUpdateUrl` struktury `InterestGroups` předávané do `joinAdInterestGroup()` bylo přejmenováno na `updateUrl`, aby jeho název přesněji odpovídal chování."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "Styly CSS lze z adres URL `file:` načíst pouze v případě, že končí příponou souboru `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Použití `SourceBuffer.abort()` ke zrušení asynchronního odstranění rozsahu pomocí metody `remove()` je vzhledem ke změně specifikace zastaralé. Podpora bude v budoucnu odstraněna. Doporučujeme místo toho naslouchat události `updateend`. Metoda `abort()` je určena pouze ke zrušení asynchronního připojení média nebo resetování stavu analyzátoru."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Nastavení hodnoty `MediaSource.duration` nižší, než je nejvyšší prezentační časové razítko kterýchkoliv kódovaných snímků ve vyrovnávací paměti, je z důvodu změny specifikace zastaralé. Podpora implicitního odstranění zkrácených médií ve vyrovnávací pamětí bude v budoucnu odstraněna. Místo toho byste u všech objektů `sourceBuffers`, u kterých je `newDuration < oldDuration`, měli explicitně provést `remove(newDuration, oldDuration)`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Rozhraní Web MIDI požádá o oprávnění k použití i v případě, že v `MIDIOptions` není zadán sysex."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Starší, nestandardizovaný atribut `shadowroot` je zastaralý a ve vydání M119 už *nebude fungovat*. Použijte místo něj nový, standardizovaný atribut `shadowrootmode`."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "Notification API již nelze používat z nezabezpečených zdrojů. Zvažte převedení aplikace na zabezpečený zdroj, jako je HTTPS. Další podrobnosti najdete na stránce https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Oprávnění pro rozhraní Notification API již nelze požadovat z prvku iframe z jiného zdroje. Měli byste zvážit vyžádání oprávnění z rámce nejvyšší úrovně nebo otevření nového okna."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Možnost `imageOrientation: 'none'` v metodě createImageBitmap je zastaralá. Použijte místo ní metodu createImageBitmap s možností \\{imageOrientation: 'from-image'\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Váš partner vyjednává zastaralou verzi (D)TLS. Požádejte ho o nápravu."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Pokud u značek img, video či canvas zadáte vlastnost `overflow: visible`, může se vizuální obsah zobrazit mimo hranice prvku. Viz https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "API `paymentManager.instruments` je zastaralé. Obslužné nástroje pro platby místo toho instalujte bezprostředně před použitím."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "Vaše volání rozhraní `PaymentRequest` obchází direktivu `connect-src` zásad zabezpečení obsahu (CSP). Toto obcházení již není podporováno. Přidejte do direktivy CSP `connect-src` identifikátor platební metody z rozhraní API `PaymentRequest` (v poli `supportedMethods`)."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "Rozhraní `StorageType.persistent` je zastaralé. Použijte místo něj standardizované rozhraní `navigator.storage`."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "Prvek `<source src>` s nadřazeným prvkem `<picture>` je neplatný, a proto je ignorován. Použijte místo něj prvek `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "Metoda webkitCancelAnimationFrame je specifická pro dodavatele. Použijte místo ní standardní metodu cancelAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "Metoda webkitRequestAnimationFrame je specifická pro dodavatele. Místo ní použijte standardní metodu requestAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "Vlastnost HTMLVideoElement.webkitDisplayingFullscreen je zastaralá. Použijte místo ní vlastnost Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "Metoda HTMLVideoElement.webkitEnterFullScreen() je zastaralá. Použijte místo ní metodu Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "Metoda HTMLVideoElement.webkitEnterFullscreen() je zastaralá. Použijte místo ní metodu Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "Metoda HTMLVideoElement.webkitExitFullScreen() je zastaralá. Použijte místo ní metodu Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "Metoda HTMLVideoElement.webkitExitFullscreen() je zastaralá. Použijte místo ní metodu Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "Vlastnost HTMLVideoElement.webkitSupportsFullscreen je zastaralá. Použijte místo ní vlastnost Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Ukončujeme podporu rozhraní API `chrome.privacy.websites.privacySandboxEnabled`. Z důvodu zpětné kompatibility však zůstane aktivní až do vydání M113. Namísto toho použijte vlastnosti `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` a `chrome.privacy.websites.adMeasurementEnabled`. Viz https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Omezení `DtlsSrtpKeyAgreement` je odstraněno. Pro toto omezení jste zadali hodnotu `false`, která je interpretována jako pokus o použití odstraněné metody `SDES key negotiation`. Tato funkce je odstraněna. Použijte místo toho službu, která podporuje metodu `DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Omezení `DtlsSrtpKeyAgreement` je odstraněno. Pro toto omezení jste zadali hodnotu `true`, což nemělo žádný účinek, ale pro pořádek můžete toto omezení odstranit."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Metoda getStats() založená na zpětném volání je zastaralá a bude odstraněna. Místo toho použijte metodu getStats() odpovídající specifikacím."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Metoda Range.expand() je zastaralá. Použijte místo ní metodu Selection.modify()."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Požadavky na dílčí zdroje, jejichž adresy URL obsahují vložené přihlašovací údaje (např. `https://user:pass@host/`), jsou blokovány."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "Možnost `rtcpMuxPolicy` je zastaralá a bude odstraněna."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` bude vyžadovat izolaci od jiných zdrojů. Další podrobnosti najdete na stránce https://developer.chrome.com/blog/enabling-shared-array-buffer/."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "Volání metody `speechSynthesis.speak()` bez aktivace ze strany uživatele je zastaralé a bude odstraněno."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Pokud v rozšířeních chcete používat technologii `SharedArrayBuffer`, je u nich potřeba aktivovat izolaci od jiných zdrojů. Viz https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Technologie Web SQL je zastaralá. Použijte SQLite WebAssembly nebo rozhraní Indexed Database"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Deskriptor oprávnění `window-placement` je zastaralý. Použijte místo něj deskriptor `window-management`. Další informace najdete na stránce https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Zásada oprávnění `window-placement` je zastaralá. Použijte místo ní zásadu `window-management`. Další informace najdete na stránce https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "Kódování UTF-16 není v objektech JSON odpovědí rozhraní `XMLHttpRequest` podporováno"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Synchronní požadavky `XMLHttpRequest` v hlavním vláknu jsou zastaralé, protože mají nepříznivý vliv na dojem koncového uživatele. Další informace najdete na stránce https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "Metoda `supportsSession()` je zastaralá. Použijte místo ní metodu `isSessionSupported()` a zkontrolujte vrácenou logickou hodnotu."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Doba blokování hlavního podprocesu"
@@ -2342,6 +2696,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Adresa URL, kterou jste poskytli, se zdá být neplatná."
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Nástroji Lighthouse se požadovanou stránku nepodařilo spolehlivě načíst. Zkontrolujte, zda testujete správnou adresu URL a zda server správně odpovídá na všechny požadavky. (Stavový kód: {errorCode})"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "Typ MIME stránky je XHTML: Lighthouse tento typ dokumentu explicitně nepodporuje"
   },
@@ -2538,7 +2895,7 @@
     "message": "Nainstalujte [modul Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search), který umožňuje líné načítání obrázků. Tyto moduly umožňují odložit načítání obrázků mimo obrazovku za účelem zvýšení výkonu."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Zvažte použití modulu k vložení kritických stylů CSS a JavaScriptu, případně načítejte zdroje asynchronně pomocí JavaScriptu, což nabízí např. modul [Advanced CSS/JS Aggregation](https://www.drupal.org/project/advagg). Upozorňujeme, že optimalizace pomocí těchto modulů může narušit funkčnost vašeho webu. V kódu proto pravděpodobně budete muset provést změny."
+    "message": "Zvažte použití modulu k vložení kritických stylů CSS a JavaScriptu přímo do kódu a pro nekritické styly CSS a JavaScript použijte atribut defer."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Na reakční dobu serveru mají vliv motivy, moduly a specifikace serverů. Zvažte vyhledání optimalizovaného motivu, pečlivý výběr optimalizačního modulu či upgradování serveru. Za účelem zrychlení odezvy databáze doporučujeme na hostujících serverech používat ukládání operačního kódu do mezipaměti pomocí PHP. Slouží k tomu nástroje jako Redis nebo Memcached, případně lze použít optimalizovanou logiku aplikace k rychlejší přípravě stránek."
@@ -2547,10 +2904,10 @@
     "message": "Zvažte použití [responzivních stylů obrázků](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) ke snížení velikosti obrázků načítaných stránkou. Pokud používáte Zobrazení k prezentování více obsahových položek na stránce, zvažte implementaci stránkování za účelem omezení počtu obsahových položek na jedné stránce."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Na stránce Administrace » Konfigurace » Vývoj aktivujte funkci Agregovat soubory CSS. Můžete také nakonfigurovat pokročilejší možnosti agregace prostřednictvím [dodatečných modulů](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search). Díky zřetězení, minifikaci a kompresi stylů CSS tak zrychlíte svůj web."
+    "message": "Na stránce Administrace » Konfigurace » Vývoj aktivujte funkci Agregovat soubory CSS.  Zajistěte, aby váš web Drupal používal alespoň Drupal 10.1, který lépe podporuje agregaci podkladů."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Na stránce Administrace » Konfigurace » Vývoj aktivujte funkci Agregovat javascriptové soubory. Můžete také nakonfigurovat pokročilejší možnosti agregace prostřednictvím [dodatečných modulů](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search). Díky zřetězení, minifikaci a kompresi javascriptových zdrojů tak zrychlíte svůj web."
+    "message": "Na stránce Administrace » Konfigurace » Vývoj aktivujte funkci Agregovat soubory JavaScriptu.  Zajistěte, aby váš web Drupal používal alespoň Drupal 10.1, který lépe podporuje agregaci podkladů."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Zvažte odstranění nepoužívaných pravidel CSS a k odpovídající stránce nebo komponentě stránky připojte pouze nezbytné knihovny Drupal. Podrobnosti naleznete v [dokumentaci Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Připojené knihovny, které přidávají nadbytečný kód CSS, můžete vyhledat pomocí funkce [„využití kódu“](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) v nástrojích pro vývojáře v Chromu. Odpovědný motiv či modul můžete identifikovat podle adresy URL šablony stylů, když je na vašem webu Drupal deaktivována agregace CSS. Hledejte motivy či moduly, které v seznamu mají mnoho šablon stylů, u nichž je při použití funkce „využití kódu“ velké množství kódu označeno červeně. Motiv či modul by měl šablonu stylů do fronty zařadit jen v případě, že se na stránce opravdu používá."
@@ -2750,23 +3107,65 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Zapněte na serveru Next.js kompresi. [Další informace](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Požádejte svého správce účtu, aby aktivoval [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Nakonfigurováním této funkce optimalizujete rychlost vykreslování stránky."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Pomocí možnosti [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) ve službě NitroPack nastavte požadovanou hodnotu pro pravidlo CSS font-display."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Použijte funkci [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513), aby se obrázky automaticky převáděly do formátu WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Zapnutím možnosti [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images) odložte načítání obrázků mimo obrazovku."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Pro rychlejší počáteční načítání zapněte ve službě NitroPack funkci [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Zkraťte dobu odezvy serveru a optimalizujte vnímaný výkon tím, že aktivujete možnost [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "V nastavení ukládání do mezipaměti zapněte možnost [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources), abyste snížili velikost souborů CSS, HTML a JavaScript a zkrátili dobu načítání."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "V nastavení ukládání do mezipaměti zapněte možnost [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources), abyste snížili velikost souborů JS, HTML a CSS a zkrátili dobu načítání."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Zapnutím možnosti [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) odstraňte pravidla CSS, která se na tuto stránku nevztahují."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Nakonfigurujte ve službě NitroPack funkci [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts), aby se načtení skripty načítaly až ve chvíli, kdy jsou potřeba."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "V nabídce `Caching` přejděte na funkci [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) a upravte dobu vypršení mezipaměti stránky, abyste zkrátili dobu načítání a zlepšili uživatelský dojem."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Zapněte nastavení [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack), aby se obrázky automaticky komprimovaly, optimalizovaly a převáděly do formátu WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Zapněte funkci [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site), aby vaše obrázky preventivně optimalizovala a přizpůsobovala je na všech zařízeních rozměrům kontejnerů, ve kterých se zobrazují."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Použitím možnosti [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) ve službě NitroPack zmenšete velikost souborů odesílaných do prohlížeče."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Použijte komponentu `nuxt/image` a nastavte `format=\"webp\"`. [Další informace](https://image.nuxtjs.org/components/nuxt-img#format)"
+    "message": "Použijte komponentu `nuxt/image` a nastavte `format=\"webp\"`. [Další informace](https://image.nuxt.com/usage/nuxt-img#format)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Použijte komponentu `nuxt/image` a pro obrázky mimo obrazovku nastavte `loading=\"lazy\"`. [Další informace](https://image.nuxtjs.org/components/nuxt-img#loading)"
+    "message": "Použijte komponentu `nuxt/image` a pro obrázky mimo obrazovku nastavte `loading=\"lazy\"`. [Další informace](https://image.nuxt.com/usage/nuxt-img#loading)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Pro obrázek LCP použijte komponentu `nuxt/image` a nastavte atribut `preload`. [Další informace](https://image.nuxtjs.org/components/nuxt-img#preload)"
+    "message": "Pro obrázek LCP použijte komponentu `nuxt/image` a nastavte atribut `preload`. [Další informace](https://image.nuxt.com/usage/nuxt-img#preload)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Použijte komponentu `nuxt/image` a zadejte explicitně atributy `width` a `height`. [Další informace](https://image.nuxtjs.org/components/nuxt-img#width--height)"
+    "message": "Použijte komponentu `nuxt/image` a zadejte explicitně atributy `width` a `height`. [Další informace](https://image.nuxt.com/usage/nuxt-img#width-height)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Použijte komponentu `nuxt/image` a nastavte vhodnou hodnotu atributu `quality`. [Další informace](https://image.nuxtjs.org/components/nuxt-img#quality)"
+    "message": "Použijte komponentu `nuxt/image` a nastavte vhodnou hodnotu atributu `quality`. [Další informace](https://image.nuxt.com/usage/nuxt-img#quality)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Použijte komponentu `nuxt/image` a nastavte vhodnou hodnotu atributu `sizes`. [Další informace](https://image.nuxtjs.org/components/nuxt-img#sizes)"
+    "message": "Použijte komponentu `nuxt/image` a nastavte vhodnou hodnotu atributu `sizes`. [Další informace](https://image.nuxt.com/usage/nuxt-img#sizes)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Když animované obrázky GIF nahradí video](https://web.dev/replace-gifs-with-videos/), budou se webové stránky načítat rychleji. Zvažte použití moderních formátů, jako je [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) nebo [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), které v porovnání se současným videokodekem VP9 zvýší efektivitu komprese o více než 30 %."
@@ -2830,6 +3229,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Změřte rychlost vykreslování komponent pomocí nástroje React DevTools Profiler, který využívá rozhraní Profiler API. [Další informace](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "Umístěte videa do `VideoBoxes`, přizpůsobte je pomocí `Video Masks` nebo přidejte `Transparent Videos`. [Další informace](https://support.wix.com/en/article/wix-video-about-wix-video)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Obrázky nahrajte pomocí nástroje `Wix Media Manager`, aby byly automaticky poskytovány ve formátu WebP. [Další způsoby optimalizace médií na webu](https://support.wix.com/en/article/site-performance-optimizing-your-media)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "Při [přidávání kódu třetí strany](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) na kartě `Custom Code` na hlavním panelu webu zajistěte, aby jeho načtení bylo odloženo nebo aby se načítal na konci hlavní části kódu. Pokud je to možné, použijte k vložení marketingových nástrojů na svůj web [integrace](https://support.wix.com/en/article/about-marketing-integrations) Wix. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "K co nejrychlejšímu poskytování odpovědí většině návštěvníků využívá Wix sítě CDN a ukládání do mezipaměti. Zvažte [ruční povolení ukládání do mezipaměti](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) pro svůj web, zejména pokud používáte `Velo`."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "Zkontrolujte veškerý kód třetích stran, který jste na svůj web přidali na kartě `Custom Code` na hlavním panelu webu a ponechte pouze služby, které jsou pro váš web nezbytné. [Další informace](https://support.wix.com/en/article/site-performance-removing-unused-javascript)"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Zvažte nahrání souboru GIF do služby, pomocí které ho bude možné vložit jako video HTML5."
@@ -2936,6 +3350,9 @@
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "Uložit jako JSON"
   },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "Zobrazit původní trasování"
+  },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Otevřít v prohlížeči"
   },
@@ -2981,8 +3398,17 @@
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Úspěšné audity"
   },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Spolu s [aktualizovanými kritérii prohlížeče Chrome pro instalaci](https://developer.chrome.com/blog/update-install-criteria) bude v budoucí verzi nástroje Lighthouse ukončena podpora kategorie aplikací PWA. Pokyny k budoucímu testování aplikací PWA najdete v [aktualizované dokumentaci aplikací PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
+  },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "První načtení stránky"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Přehled stavu v bodu v čase"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Časové rozpětí uživatelských interakcí"
   },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Vlastní omezení"
@@ -3018,10 +3444,10 @@
     "message": "User agent (síť)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Jedno načtení stránky"
+    "message": "Návštěva jedné stránky"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Tato data pocházejí z jednoho načtení stránky – v protikladu k datům z terénu, která sumarizují mnoho relací."
+    "message": "Tato data pocházejí z návštěvy jedné stránky – v protikladu k datům z terénu, která sumarizují mnoho relací."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Pomalé omezení 4G"
@@ -3055,9 +3481,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Hodnoty jsou odhady a mohou se lišit. [Skóre výkonu se počítá](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) přímo z těchto metrik."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "Zobrazit původní trasovací protokol"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "Zobrazit trasovací protokol"

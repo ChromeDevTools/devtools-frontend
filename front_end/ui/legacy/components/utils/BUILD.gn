@@ -5,6 +5,7 @@
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../../third_party/typescript/typescript.gni")
 import("../../visibility.gni")
 
 generate_css("css_files") {
@@ -48,30 +49,32 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../../../test/unittests/front_end/panels/console/*",
-    "../../../../../test/unittests/front_end/ui/legacy/components/utils/*",
     "../../../../entrypoints/*",
-    "../../../../panels/*",
-    "../../../../panels/search/*",
-    "../inline_editor/*",
-    "../object_ui/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../../../../models/extensions/*",
     "../../../../models/persistence/*",
+    "../../../../panels/*",
+    "../../../../panels/search/*",
     "../../../components/linear_memory_inspector/*",
+    "../inline_editor/*",
+    "../object_ui/*",
   ]
 
   visibility += devtools_ui_legacy_visibility
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "utils-legacy.ts"
+ts_library("unittests") {
+  testonly = true
 
-  deps = [ ":bundle" ]
+  sources = [
+    "JSPresentationUtils.test.ts",
+    "Linkifier.test.ts",
+  ]
 
-  visibility = [
-    "../../../..:legacy_entrypoints",
-    "../../../../legacy_test_runner/*",
+  deps = [
+    ":bundle",
+    "../../../../core/sdk:bundle",
+    "../../../../models/bindings:bundle",
+    "../../../../models/workspace:bundle",
+    "../../../../testing",
   ]
 }

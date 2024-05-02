@@ -5,6 +5,7 @@
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../third_party/typescript/typescript.gni")
 import("../../visibility.gni")
 
 generate_css("css_files") {
@@ -32,6 +33,7 @@ devtools_module("components") {
     "../../../ui/components/two_states_counter:bundle",
     "../../../ui/legacy/components/utils:bundle",
     "../../../ui/lit-html:bundle",
+    "../../../ui/visual_logging:bundle",
   ]
 }
 
@@ -49,4 +51,26 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility += devtools_panels_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "BreakpointsView.test.ts",
+    "BreakpointsViewUtils.test.ts",
+    "HeadersView.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../core/common:bundle",
+    "../../../core/sdk:bundle",
+    "../../../models/bindings:bundle",
+    "../../../models/breakpoints:bundle",
+    "../../../models/workspace:bundle",
+    "../../../testing",
+    "../../../ui/components/render_coordinator:bundle",
+    "../../../ui/legacy:bundle",
+  ]
 }

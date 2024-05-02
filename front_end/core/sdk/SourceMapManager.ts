@@ -19,12 +19,14 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
   #isEnabled: boolean;
   readonly #clientData: Map<T, ClientData>;
   readonly #sourceMaps: Map<SourceMap, T>;
+  #attachingClient: T|null;
 
   constructor(target: Target) {
     super();
 
     this.#target = target;
     this.#isEnabled = true;
+    this.#attachingClient = null;
     this.#clientData = new Map();
     this.#sourceMaps = new Map();
 
@@ -105,7 +107,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
       return;
     }
 
-    const clientData: ClientData = {
+    let clientData: ClientData|null = {
       relativeSourceURL,
       relativeSourceMapURL,
       sourceMap: undefined,
@@ -117,31 +119,61 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
       const sourceURL = SourceMapManager.resolveRelativeSourceURL(this.#target, relativeSourceURL);
       const sourceMapURL = Common.ParsedURL.ParsedURL.completeURL(sourceURL, relativeSourceMapURL);
       if (sourceMapURL) {
+        if (this.#attachingClient) {
+          // This should not happen
+          console.error('Attaching source map may cancel previously attaching source map');
+        }
+        this.#attachingClient = client;
         this.dispatchEventToListeners(Events.SourceMapWillAttach, {client});
 
-        const initiator = client.createPageResourceLoadInitiator();
-        clientData.sourceMapPromise =
-            loadSourceMap(sourceMapURL, initiator)
-                .then(
-                    payload => {
-                      const sourceMap = new SourceMap(sourceURL, sourceMapURL, payload);
-                      if (this.#clientData.get(client) === clientData) {
-                        clientData.sourceMap = sourceMap;
-                        this.#sourceMaps.set(sourceMap, client);
-                        this.dispatchEventToListeners(Events.SourceMapAttached, {client, sourceMap});
-                      }
-                      return sourceMap;
-                    },
-                    error => {
-                      Common.Console.Console.instance().warn(`DevTools failed to load source map: ${error.message}`);
-                      if (this.#clientData.get(client) === clientData) {
-                        this.dispatchEventToListeners(Events.SourceMapFailedToAttach, {client});
-                      }
-                      return undefined;
-                    });
+        if (this.#attachingClient === client) {
+          this.#attachingClient = null;
+          const initiator = client.createPageResourceLoadInitiator();
+          clientData.sourceMapPromise =
+              loadSourceMap(sourceMapURL, initiator)
+                  .then(
+                      payload => {
+                        const sourceMap = new SourceMap(sourceURL, sourceMapURL, payload);
+                        if (this.#clientData.get(client) === clientData) {
+                          clientData.sourceMap = sourceMap;
+                          this.#sourceMaps.set(sourceMap, client);
+                          this.dispatchEventToListeners(Events.SourceMapAttached, {client, sourceMap});
+                        }
+                        return sourceMap;
+                      },
+                      () => {
+                        if (this.#clientData.get(client) === clientData) {
+                          this.dispatchEventToListeners(Events.SourceMapFailedToAttach, {client});
+                        }
+                        return undefined;
+                      });
+        } else {
+          // Assume cancelAttachSourceMap was called.
+          if (this.#attachingClient) {
+            // This should not happen
+            console.error('Cancelling source map attach because another source map is attaching');
+          }
+          clientData = null;
+          this.dispatchEventToListeners(Events.SourceMapFailedToAttach, {client});
+        }
       }
     }
-    this.#clientData.set(client, clientData);
+    if (clientData) {
+      this.#clientData.set(client, clientData);
+    }
+  }
+
+  cancelAttachSourceMap(client: T): void {
+    if (client === this.#attachingClient) {
+      this.#attachingClient = null;
+    } else {
+      // This should not happen.
+      if (this.#attachingClient) {
+        console.error('cancel attach source map requested but a different source map was being attached');
+      } else {
+        console.error('cancel attach source map requested but no source map was being attached');
+      }
+    }
   }
 
   detachSourceMap(client: T): void {
@@ -187,8 +219,6 @@ type ClientData = {
   sourceMapPromise: Promise<SourceMap|undefined>,
 };
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   SourceMapWillAttach = 'SourceMapWillAttach',
   SourceMapFailedToAttach = 'SourceMapFailedToAttach',

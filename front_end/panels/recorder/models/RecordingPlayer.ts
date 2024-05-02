@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as puppeteer from '../../../third_party/puppeteer/puppeteer.js';
-import * as SDK from '../../../core/sdk/sdk.js';
 import * as Common from '../../../core/common/common.js';
+import type * as Platform from '../../../core/platform/platform.js';
+import * as SDK from '../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import * as PuppeteerService from '../../../services/puppeteer/puppeteer.js';
 import * as PuppeteerReplay from '../../../third_party/puppeteer-replay/puppeteer-replay.js';
-// eslint-disable-next-line rulesdir/es_modules_import
-import type * as Protocol from '../../../generated/protocol.js';
+import type * as puppeteer from '../../../third_party/puppeteer/puppeteer.js';
 
 import {type Step, type UserFlow} from './Schema.js';
 
@@ -33,30 +33,11 @@ export const enum ReplayResult {
 
 export const defaultTimeout = 5000;  // ms
 
-export function shouldAttachToTarget(
-    mainTargetId: string,
-    targetInfo: Protocol.Target.TargetInfo,
-    ): boolean {
-  // Ignore chrome extensions as we don't support them. This includes DevTools extensions.
-  if (targetInfo.url.startsWith('chrome-extension://')) {
-    return false;
-  }
-  // Allow DevTools-on-DevTools replay.
-  if (targetInfo.url.startsWith('devtools://') && targetInfo.targetId === mainTargetId) {
-    return true;
-  }
-  if (targetInfo.type !== 'page' && targetInfo.type !== 'iframe') {
-    return false;
-  }
-  // TODO only connect to iframes that are related to the main target. This requires refactoring in Puppeteer: https://github.com/puppeteer/puppeteer/issues/3667.
-  return (targetInfo.targetId === mainTargetId || targetInfo.openerId === mainTargetId || targetInfo.type === 'iframe');
-}
-
 function isPageTarget(target: Protocol.Target.TargetInfo): boolean {
   // Treat DevTools targets as page targets too.
   return (
-      target.url.startsWith('devtools://') || target.type === 'page' || target.type === 'background_page' ||
-      target.type === 'webview');
+      Common.ParsedURL.schemeIs(target.url as Platform.DevToolsPath.UrlString, 'devtools:') || target.type === 'page' ||
+      target.type === 'background_page' || target.type === 'webview');
 }
 
 export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
@@ -107,17 +88,22 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     page: puppeteer.Page,
     browser: puppeteer.Browser,
   }> {
-    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    if (!mainTarget) {
-      throw new Error('Could not find main target');
+    const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
+    if (!rootTarget) {
+      throw new Error('Could not find the root target');
     }
-    const childTargetManager = mainTarget.model(
+
+    const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!primaryPageTarget) {
+      throw new Error('Could not find the primary page target');
+    }
+    const childTargetManager = primaryPageTarget.model(
         SDK.ChildTargetManager.ChildTargetManager,
     );
     if (!childTargetManager) {
       throw new Error('Could not get childTargetManager');
     }
-    const resourceTreeModel = mainTarget.model(
+    const resourceTreeModel = primaryPageTarget.model(
         SDK.ResourceTreeModel.ResourceTreeModel,
     );
     if (!resourceTreeModel) {
@@ -128,18 +114,24 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       throw new Error('Could not find main frame');
     }
 
+    const rootChildTargetManager = rootTarget.model(SDK.ChildTargetManager.ChildTargetManager);
+
+    if (!rootChildTargetManager) {
+      throw new Error('Could not find the child target manager class for the root target');
+    }
+
     // Pass an empty message handler because it will be overwritten by puppeteer anyways.
-    const result = await childTargetManager.createParallelConnection(() => {});
+    const result = await rootChildTargetManager.createParallelConnection(() => {});
     const connection = result.connection as SDK.Connections.ParallelConnectionInterface;
 
     const mainTargetId = await childTargetManager.getParentTargetId();
+    const rootTargetId = await rootChildTargetManager.getParentTargetId();
+
     const {page, browser, puppeteerConnection} =
-        await PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper.connectPuppeteerToConnection(
+        await PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper.connectPuppeteerToConnectionViaTab(
             {
               connection,
-              mainFrameId: mainFrame.id,
-              targetInfos: childTargetManager.targetInfos(),
-              targetFilterCallback: shouldAttachToTarget.bind(null, mainTargetId),
+              rootTargetId: rootTargetId as string,
               isPageTargetCallback: isPageTarget,
             },
         );
@@ -183,7 +175,7 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         await client.send('Emulation.clearDeviceMetricsOverride');
         await client.send('Emulation.setAutomationOverride', {enabled: false});
         for (const frame of page.frames()) {
-          const client = frame._client();
+          const client = frame.client;
           await client.send('Network.disable');
           await client.send('Page.disable');
           await client.send('Log.disable');
@@ -192,7 +184,7 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
           await client.send('Emulation.setAutomationOverride', {enabled: false});
         }
       }
-      browser.disconnect();
+      await browser.disconnect();
     } catch (err) {
       console.error('Error disconnecting Puppeteer', err.message);
     }
@@ -228,12 +220,6 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   async play(): Promise<void> {
-    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    if (mainTarget) {
-      await mainTarget.pageAgent().invoke_setPrerenderingAllowed({
-        isAllowed: false,
-      });
-    }
     const {page, browser} = await RecordingPlayer.connectPuppeteer();
     this.aborted = false;
 
@@ -289,10 +275,13 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
           ): Promise<void> {
         // When replaying on a DevTools target we skip setViewport and navigate steps
         // because navigation and viewport changes are not supported there.
-        if (page?.url().startsWith('devtools://') && (step.type === 'setViewport' || step.type === 'navigate')) {
+        if (Common.ParsedURL.schemeIs(page?.url() as Platform.DevToolsPath.UrlString, 'devtools:') &&
+            (step.type === 'setViewport' || step.type === 'navigate')) {
           return;
         }
-        return await super.runStep(step, flow);
+        // Focus the target in case it's not focused.
+        await this.page.bringToFront();
+        await super.runStep(step, flow);
       }
     }
 
@@ -310,12 +299,6 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       error = err;
       console.error('Replay error', err.message);
     } finally {
-      const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-      if (mainTarget) {
-        await mainTarget.pageAgent().invoke_setPrerenderingAllowed({
-          isAllowed: true,
-        });
-      }
       await RecordingPlayer.disconnectPuppeteer(browser);
     }
     if (this.aborted) {

@@ -70,12 +70,13 @@
   align-items: center;
 }
 
-input[type="radio"]:focus {
-  outline-width: 2px;
-}
+input[type="radio"] {
+  accent-color: var(--sys-color-primary-bright);
+  color: var(--sys-color-on-primary);
 
-:host-context(.-theme-with-dark-background) input[type="radio"] {
-  accent-color: var(--color-checkbox-accent-color);
+  &:focus {
+    outline-width: 2px;
+  }
 }
 
 .lighthouse-radio-text {

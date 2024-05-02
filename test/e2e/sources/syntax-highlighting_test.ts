@@ -8,7 +8,7 @@ import {$$, step, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {openSourceCodeEditorForFile} from '../helpers/sources-helpers.js';
 
-describe('Sources Tab', async function() {
+describe('Sources Tab', function() {
   it('is highlighting the syntax correctly', async () => {
     const componentsFormats = new Set();
 

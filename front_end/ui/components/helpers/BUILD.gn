@@ -11,11 +11,9 @@ import("../visibility.gni")
 devtools_module("helpers") {
   sources = [
     "component-server-setup.ts",
-    "custom-elements.ts",
     "directives.ts",
     "get-root-node.ts",
     "scheduled-render.ts",
-    "set-css-property.ts",
   ]
 
   deps = [
@@ -34,12 +32,24 @@ devtools_entrypoint("bundle") {
   deps = [ ":helpers" ]
 
   visibility = [
-    "../../../../test/unittests/front_end/test_setup/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
+    "../../../testing/*",
     "../../legacy/*",
     "../../legacy/components/inline_editor/*",
   ]
 
   visibility += default_components_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "helpers.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../testing",
+    "../../legacy/theme_support:bundle",
+    "../../lit-html:bundle",
+    "../render_coordinator:bundle",
+  ]
 }

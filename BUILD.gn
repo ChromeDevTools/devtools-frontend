@@ -8,6 +8,7 @@ import("./front_end/emulated_devices/optimized/optimized_images.gni")
 import("./scripts/build/ninja/node.gni")
 import("./scripts/build/ninja/vars.gni")
 import("./third_party/blink/public/public_features.gni")
+import("./third_party/typescript/typescript.gni")
 
 #-------------------------------------------------------------------------------
 
@@ -32,6 +33,7 @@ group("devtools_frontend_resources") {
   deps = [
     ":assert_grd",
     ":assert_third_party_readmes",
+    ":frontend_indexer_tsconfig",
   ]
 }
 
@@ -180,4 +182,20 @@ action("generate_devtools_grd") {
     # non-debug builds.
     args += [ "--compress" ]
   }
+}
+
+generated_file("indexer_ts_files") {
+  outputs = [ "$root_build_dir/indexer_ts_files.txt" ]
+  data_keys = [ "typescript_files" ]
+
+  deps = [
+    "front_end",
+    "front_end:unittests",
+  ]
+}
+
+ts_library("frontend_indexer_tsconfig") {
+  tsconfigonly = true
+  sourceslist = "$root_build_dir/indexer_ts_files.txt"
+  public_deps = [ ":indexer_ts_files" ]
 }

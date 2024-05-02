@@ -28,7 +28,7 @@ export async function scheduleRender(component: HTMLElement, callback: () => voi
   // pending to active. When it has completed we remove it from the active renderers.
   let wrappedCallback = wrappedCallbacks.get(callback);
   if (!wrappedCallback) {
-    wrappedCallback = async(): Promise<void> => {
+    wrappedCallback = async () => {
       pendingRenders.delete(component);
       activeRenders.add(component);
       try {

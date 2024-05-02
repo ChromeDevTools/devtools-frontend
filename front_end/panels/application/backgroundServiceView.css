@@ -5,8 +5,8 @@
  */
 
 .background-service-toolbar {
-  background-color: var(--color-background-elevation-1);
-  border-bottom: var(--legacy-divider-border);
+  background-color: var(--sys-color-cdt-base-container);
+  border-bottom: var(--sys-color-divider);
 }
 
 .data-grid {
@@ -14,14 +14,18 @@
   border: none;
 }
 
+[slot="insertion-point-main"] {
+  overflow: auto;
+}
+
 .background-service-preview {
   position: absolute;
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   justify-content: center;
   align-items: center;
   overflow: auto;
   font-size: 13px;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-on-surface-subtle);
 }
 
 .background-service-preview > div {
@@ -36,7 +40,7 @@
 }
 
 .background-service-shortcut {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-on-surface-subtle);
 }
 
 .background-service-metadata {
@@ -50,7 +54,7 @@
 }
 
 .background-service-metadata-name {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-on-surface-subtle);
   display: inline-block;
   margin-right: 0.25em;
   font-weight: bold;
@@ -65,7 +69,7 @@
 }
 
 .background-service-empty-value {
-  color: var(--color-text-disabled);
+  color: var(--sys-color-state-disabled);
   font-style: italic;
 }
 

@@ -28,8 +28,8 @@ export const legacyNodeToElementsComponentsNode = (node: SDK.DOMModel.DOMNode): 
     nodeName: node.nodeName(),
     nodeNameNicelyCased: node.nodeNameInCorrectCase(),
     legacyDomNode: node,
-    highlightNode: (mode?: string): void => node.highlight(mode),
-    clearHighlight: (): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(),
+    highlightNode: (mode?: string) => node.highlight(mode),
+    clearHighlight: () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(),
     getAttribute: node.getAttribute.bind(node),
   };
 };

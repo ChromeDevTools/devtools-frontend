@@ -15,7 +15,7 @@ import {
   openEventListenersPaneAndWaitForListeners,
 } from '../helpers/event-listeners-helpers.js';
 
-describe('Event listeners in the elements sidebar', async () => {
+describe('Event listeners in the elements sidebar', () => {
   beforeEach(async () => {
     await loadEventListenersAndSelectButtonNode();
   });

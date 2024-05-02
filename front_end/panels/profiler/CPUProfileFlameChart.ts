@@ -29,11 +29,12 @@
  */
 
 import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
-import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as i18n from '../../core/i18n/i18n.js';
+
+import type * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
 
 let colorGeneratorInstance: Common.Color.Generator|null = null;
 
@@ -42,7 +43,7 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
   maxStackDepthInternal: number;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   timelineData_: PerfUI.FlameChart.FlameChartTimelineData|null;
-  entryNodes: SDK.ProfileTreeModel.ProfileNode[];
+  entryNodes: CPUProfile.ProfileTreeModel.ProfileNode[];
   #font: string;
   boldFont?: string;
 
@@ -132,10 +133,6 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
 
   textColor(_entryIndex: number): string {
     return '#333';
-  }
-
-  navStartTimes(): Map<string, SDK.TracingModel.Event> {
-    return new Map();
   }
 
   entryNodesLength(): number {
@@ -381,7 +378,7 @@ export class OverviewPane extends Common.ObjectWrapper.eventMixin<OverviewPaneEv
       return;
     }
     this.resetCanvas(
-        this.overviewContainer.clientWidth, this.overviewContainer.clientHeight - PerfUI.FlameChart.HeaderHeight);
+        this.overviewContainer.clientWidth, this.overviewContainer.clientHeight - PerfUI.FlameChart.RulerHeight);
     this.overviewCalculator.updateBoundaries(this);
     this.overviewGrid.updateDividers(this.overviewCalculator);
     this.drawOverviewCanvas();

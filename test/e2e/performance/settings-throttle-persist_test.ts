@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {type ElementHandle} from 'puppeteer';
+import {type ElementHandle} from 'puppeteer-core';
 
 import {reloadDevTools, waitFor, waitForAria} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToPerformanceTab, openCaptureSettings} from '../helpers/performance-helpers.js';
 
-describe('The Performance panel', async function() {
+describe('The Performance panel', function() {
   // These tests reload panels repeatedly, which can take a longer time.
   this.timeout(20_000);
 

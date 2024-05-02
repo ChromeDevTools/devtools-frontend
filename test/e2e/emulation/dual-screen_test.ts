@@ -10,15 +10,15 @@ import {
   selectDualScreen,
   selectNonDualScreenDevice,
   selectToggleButton,
-  startEmulationWithDualScreenFlag,
+  startEmulationWithDualScreenPage,
 } from '../helpers/emulation-helpers.js';
 
 const DUO_VERTICAL_SPANNED_WIDTH = '1114';
 const DUO_VERTICAL_WIDTH = '540';
 
-describe('Dual screen mode', async () => {
+describe('Dual screen mode', () => {
   beforeEach(async function() {
-    await startEmulationWithDualScreenFlag();
+    await startEmulationWithDualScreenPage();
   });
 
   it('User can toggle between single and dual screenmodes for a dual screen device', async () => {
@@ -37,7 +37,7 @@ describe('Dual screen mode', async () => {
     // toggle button should not be found
     const toggleButton = await selectToggleButton();
     const element = toggleButton.asElement();
-    const hidden = element ? element.evaluate(x => x.classList.contains('hidden')) : false;
+    const hidden = element ? element.evaluate(x => (x as Element).classList.contains('hidden')) : false;
     assert(hidden);
   });
 });

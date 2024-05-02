@@ -3,14 +3,15 @@
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
 import * as TraceEngine from '../../models/trace/trace.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
+import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 import {
-  type TrackAppender,
-  type TrackAppenderName,
   type CompatibilityTracksAppender,
   type HighlightedEntryInfo,
+  type TrackAppender,
+  type TrackAppenderName,
 } from './CompatibilityTracksAppender.js';
-import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 
 const UIStrings = {
   /**
@@ -26,11 +27,10 @@ export class GPUTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'GPU';
 
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #traceParsedData: Readonly<TraceEngine.Handlers.Migration.PartialTraceData>;
+  #traceParsedData: Readonly<TraceEngine.Handlers.Types.TraceParseData>;
 
   constructor(
-      compatibilityBuilder: CompatibilityTracksAppender,
-      traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData) {
+      compatibilityBuilder: CompatibilityTracksAppender, traceParsedData: TraceEngine.Handlers.Types.TraceParseData) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#traceParsedData = traceParsedData;
   }
@@ -83,7 +83,7 @@ export class GPUTrackAppender implements TrackAppender {
     if (!TraceEngine.Types.TraceEvents.isTraceEventGPUTask(event)) {
       throw new Error(`Unexpected GPU Task: The event's type is '${event.name}'`);
     }
-    return 'hsl(109, 33%, 55%)';
+    return ThemeSupport.ThemeSupport.instance().getComputedValue('--app-color-painting');
   }
 
   /**

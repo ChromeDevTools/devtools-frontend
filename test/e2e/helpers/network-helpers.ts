@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as puppeteer from 'puppeteer';
+import type * as puppeteer from 'puppeteer-core';
 
 import {
   $,
@@ -131,4 +131,12 @@ export async function getTextFromHeadersRow(row: puppeteer.ElementHandle<Element
   }
 
   return [headerNameText.trim(), headerValueText];
+}
+
+export async function elementContainsTextWithSelector(
+    element: puppeteer.ElementHandle<Element>, textContent: string, selector: string): Promise<boolean> {
+  const selectedElements = await element.evaluate((node, selector) => {
+    return [...node.querySelectorAll(selector)].map(node => node.textContent || '') || [];
+  }, selector);
+  return selectedElements.includes(textContent);
 }

@@ -3,18 +3,17 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as NodeText from '../../../ui/components/node_text/node_text.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import elementsBreadcrumbsStyles from './elementsBreadcrumbs.css.js';
-
 import {crumbsToRender, type UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
-import type * as SDK from '../../../core/sdk/sdk.js';
 import {type DOMNode} from './Helper.js';
-
-import * as NodeText from '../../../ui/components/node_text/node_text.js';
 
 const UIStrings = {
   /**
@@ -282,7 +281,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
         title=${tooltipString}>
         <${IconButton.Icon.Icon.litTagName} .data=${{
           iconName: 'triangle-' + direction,
-          color: 'var(--color-text-primary)',
+          color: 'var(--sys-color-on-surface)',
           width: '12px',
           height: '10px',
         } as IconButton.Icon.IconData}>
@@ -298,7 +297,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
-      <nav class="crumbs" aria-label=${i18nString(UIStrings.breadcrumbs)}>
+      <nav class="crumbs" aria-label=${i18nString(UIStrings.breadcrumbs)} jslog=${VisualLogging.elementsBreadcrumbs()}>
         ${this.#renderOverflowButton('left', this.#userScrollPosition === 'start')}
 
         <div class="crumbs-window" @scroll=${this.#onCrumbsWindowScroll}>
@@ -317,6 +316,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
                   <a href="#"
                     draggable=false
                     class="crumb-link"
+                    jslog=${VisualLogging.item().track({click:true})}
                     @click=${this.#onCrumbClick(crumb.node)}
                     @mousemove=${this.#onCrumbMouseMove(crumb.node)}
                     @mouseleave=${this.#onCrumbMouseLeave(crumb.node)}
@@ -374,7 +374,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-elements-breadcrumbs', ElementsBreadcrumbs);
+customElements.define('devtools-elements-breadcrumbs', ElementsBreadcrumbs);
 
 declare global {
   interface HTMLElementTagNameMap {

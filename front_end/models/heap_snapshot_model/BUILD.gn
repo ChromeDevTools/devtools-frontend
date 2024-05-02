@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("heap_snapshot_model") {
@@ -19,7 +20,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
     "../../entrypoints/heap_snapshot_worker/*",
     "../../panels/profiler/*",
   ]
@@ -27,13 +27,13 @@ devtools_entrypoint("bundle") {
   visibility += devtools_models_visibility
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "heap_snapshot_model-legacy.ts"
+ts_library("unittests") {
+  testonly = true
 
-  deps = [ ":bundle" ]
+  sources = [ "heap_snapshot_model.test.ts" ]
 
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../entrypoints/heap_snapshot_worker/*",
+  deps = [
+    ":bundle",
+    "../../testing",
   ]
 }

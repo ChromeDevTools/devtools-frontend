@@ -19,8 +19,16 @@ const UIStrings = {
    * @description Command for showing the Welcome panel
    */
   showRnWelcome: 'Show React Native Welcome panel',
-  /** @description The name of the debugging product */
-  debuggerBrandName: 'React Native DevTools (Fusebox ⚡)',
+
+  /**
+   * @description The name of the debugging product.
+   */
+  debuggerBrandName: 'React Native DevTools',
+
+  /**
+   * @description The name of the debugging product, with internal codename.
+   */
+  debuggerBrandNameInternal: 'React Native DevTools (Fusebox ⚡)',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/rn_welcome/rn_welcome-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -44,7 +52,10 @@ UI.ViewManager.registerViewExtension({
   async loadView() {
     const RNWelcome = await loadRNWelcomeModule();
     return RNWelcome.RNWelcome.RNWelcomeImpl.instance({
-      debuggerBrandName: i18nLazyString(UIStrings.debuggerBrandName),
+      debuggerBrandName: i18nLazyString(
+          Boolean(Root.Runtime.Runtime.queryParam(Root.Runtime.ConditionName.REACT_NATIVE_USE_INTERNAL_BRANDING)) ?
+              UIStrings.debuggerBrandNameInternal :
+              UIStrings.debuggerBrandName),
     });
   },
   experiment: Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,

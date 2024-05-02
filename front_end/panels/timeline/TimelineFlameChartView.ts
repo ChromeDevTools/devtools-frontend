@@ -236,6 +236,11 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     return this.mainFlameChart;
   }
 
+  // This function is public for test purpose.
+  getNetworkFlameChart(): PerfUI.FlameChart.FlameChart {
+    return this.networkFlameChart;
+  }
+
   updateSelectedGroup(flameChart: PerfUI.FlameChart.FlameChart, group: PerfUI.FlameChart.Group|null): void {
     if (flameChart !== this.mainFlameChart || this.#selectedGroupName === group?.name) {
       return;

@@ -584,11 +584,14 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
   private static createLink(text: string|HTMLElement, className: string, options: CreateLinkOptions = {}):
       {link: HTMLElement, linkInfo: LinkInfo} {
     const {maxLength, title, href, preventClick, tabStop, bypassURLTrimming, jslogContext} = options;
-    const link = document.createElement('button');
+    const link = document.createElement(options.preventClick ? 'span' : 'button');
     if (className) {
       link.className = className;
     }
-    link.classList.add('devtools-link', 'text-button', 'link-style');
+    link.classList.add('devtools-link');
+    if (!options.preventClick) {
+      link.classList.add('text-button', 'link-style');
+    }
     if (title) {
       UI.Tooltip.Tooltip.install(link, title);
     }

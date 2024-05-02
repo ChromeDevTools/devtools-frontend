@@ -1811,12 +1811,14 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.draw();
   }
 
-  #exitEditMode(): void {
+  #removeEditModeButton(): void {
     const confirmButton = this.viewportElement.querySelector('.flame-chart-edit-confirm');
     if (confirmButton) {
       this.viewportElement.removeChild(confirmButton);
     }
-
+  }
+  #exitEditMode(): void {
+    this.#removeEditModeButton();
     this.#inTrackConfigEditMode = false;
     this.updateLevelPositions();
     this.draw();
@@ -3529,6 +3531,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   // This will also clear all the selected entry, group, etc.
   // Remember to call |setWindowTimes| before draw the flame chart again.
   reset(): void {
+    if (this.#inTrackConfigEditMode) {
+      this.#removeEditModeButton();
+      this.#inTrackConfigEditMode = false;
+    }
+
     this.chartViewport.reset();
     this.rawTimelineData = null;
     this.rawTimelineDataLength = 0;
@@ -3537,7 +3544,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.highlightedEntryIndex = -1;
     this.selectedEntryIndex = -1;
     this.selectedGroupIndex = -1;
-    this.#inTrackConfigEditMode = false;
   }
 
   scheduleUpdate(): void {

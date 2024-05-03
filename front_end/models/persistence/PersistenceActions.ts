@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Bindings from '../bindings/bindings.js';
@@ -123,8 +124,11 @@ export class ContextMenuProvider implements
         }
       }
     }
-    contextMenu.overrideSection().appendItem(
-        i18nString(UIStrings.overrideContent), handler, {disabled, jslogContext: 'override-content'});
+    // [RN] Disable 'Override content' item in Sources context menus
+    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI)) {
+      contextMenu.overrideSection().appendItem(
+          i18nString(UIStrings.overrideContent), handler, {disabled, jslogContext: 'override-content'});
+    }
 
     if (contentProvider instanceof SDK.NetworkRequest.NetworkRequest) {
       contextMenu.overrideSection().appendItem(i18nString(UIStrings.showOverrides), async () => {

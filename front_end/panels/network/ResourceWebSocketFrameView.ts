@@ -311,7 +311,15 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
 
   private applyFilter(text: string): void {
     const type = (this.filterTypeCombobox.selectedOption() as HTMLOptionElement).value;
-    this.filterRegex = text ? new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i') : null;
+    if (text) {
+      try {
+        this.filterRegex = new RegExp(text, 'i');
+      } catch (e: unknown) {
+        this.filterRegex = new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i');
+      }
+    } else {
+      this.filterRegex = null;
+    }
     this.filterType = type === 'all' ? null : type;
     this.refresh();
   }

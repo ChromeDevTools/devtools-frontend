@@ -13,7 +13,7 @@ const UIStrings = {
   /**
    * @description Title of the Welcome panel, plus an emoji symbolizing React Native
    */
-  rnWelcome: '⚛️ Welcome',
+  rnWelcome: 'Welcome',
 
   /**
    * @description Command for showing the Welcome panel

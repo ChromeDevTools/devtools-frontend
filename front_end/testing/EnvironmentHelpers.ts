@@ -128,6 +128,7 @@ const REGISTERED_EXPERIMENTS = [
   Root.Runtime.ExperimentName.SAVE_AND_LOAD_TRACE_WITH_ANNOTATIONS,
   Root.Runtime.ExperimentName.TIMELINE_EXTENSIONS,
   Root.Runtime.ExperimentName.TIMELINE_EXECUTE_OLD_ENGINE,
+  Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE,
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {

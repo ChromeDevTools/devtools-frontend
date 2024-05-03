@@ -314,10 +314,30 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
   });
 
+  function getInnerTextAcrossShadowRoots(root: Node|null): string {
+    // Don't recurse into STYLE elements
+    if (!root || root.nodeName === 'STYLE') {
+      return '';
+    }
+    if (root.nodeType === Node.TEXT_NODE) {
+      return root.nodeValue || '';
+    }
+    if (root instanceof HTMLElement && root.shadowRoot) {
+      return getInnerTextAcrossShadowRoots(root.shadowRoot);
+    }
+    return Array.from(root.childNodes).map(getInnerTextAcrossShadowRoots).join('');
+  }
+
   function getRowDataForDetailsElement(details: DocumentFragment) {
     return Array.from(details.querySelectorAll<HTMLDivElement>('.timeline-details-view-row')).map(row => {
       const title = row.querySelector<HTMLDivElement>('.timeline-details-view-row-title')?.innerText;
-      const value = row.querySelector<HTMLDivElement>('.timeline-details-view-row-value')?.innerText;
+      const valueEl = row.querySelector<HTMLDivElement>('.timeline-details-view-row-value') ??
+          row.querySelector<HTMLElement>('div,span');
+      let value = valueEl?.innerText || '';
+      if (!value && valueEl) {
+        // Stack traces and renderEventJson have the contents within a shadowRoot.
+        value = getInnerTextAcrossShadowRoots(valueEl).trim();
+      }
       return {title, value};
     });
   }
@@ -528,16 +548,10 @@ describeWithMockConnection('TimelineUIUtils', function() {
       const rowData = getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
         {
-          title: 'chrome_task_annotator',
-          value: '{"delay_policy":"PRECISE","task_delay_us":7159}',
-        },
-        {
-          title: 'src_file',
-          value: '"cc/scheduler/scheduler.cc"',
-        },
-        {
-          title: 'src_func',
-          value: '"ScheduleBeginImplFrameDeadline"',
+          title: '',
+          // Generic traces get their events rendered as JSON
+          value:
+              '{   "args": {\n        "chrome_task_annotator": {\n            "delay_policy": "PRECISE",\n            "task_delay_us": 7159\n        },\n        "src_file": "cc/scheduler/scheduler.cc",\n        "src_func": "ScheduleBeginImplFrameDeadline"\n    },\n    "cat": "toplevel",\n    "dur": 222,\n    "name": "ThreadControllerImpl::RunTask",\n    "ph": "X",\n    "pid": 1214129,\n    "tdur": 163,\n    "tid": 7,\n    "ts": 1670373249790,\n    "tts": 5752392,\n    "selfTime": 202\n}',
         },
       ]);
     });
@@ -583,10 +597,10 @@ describeWithMockConnection('TimelineUIUtils', function() {
           value: 'Select "" to collect detailed CSS selector matching statistics.',
         },
         {
-          // The "Recalculation forced" Stack trace output would be here but the detailRow helper is
-          // unable to parse it, hence why this returns undefined.
+          // The "Recalculation forced" Stack trace
           title: undefined,
-          value: undefined,
+          value:
+              'testFuncs.changeAttributeAndDisplay @ chromedevtools.github.io/performance-stories/style-invalidations/app.js:47:40',
         },
         {
           title: 'Initiated by',
@@ -712,17 +726,9 @@ describeWithMockConnection('TimelineUIUtils', function() {
             {title: 'Had recent input', value: 'No'},
             {title: 'Moved from', value: 'Location: [120,670], Size: [900x900]'},
             {title: 'Moved to', value: 'Location: [120,1270], Size: [900x478]'},
-            // The related node link value is under shadow root so it
-            // can't be accessed at this point.
-            {title: 'Related Node', value: ''},
+            {title: 'Related Node', value: 'A test node name'},
           ],
       );
-      // Test the related node link.
-      const relatedNodeRow =
-          details.querySelector('.timeline-details-view-row:nth-of-type(9) .timeline-details-view-row-value span')
-              ?.shadowRoot;
-      relatedNodeRow?.querySelector<HTMLButtonElement>('button')?.innerText;
-      assert.strictEqual(relatedNodeRow?.querySelector<HTMLButtonElement>('button')?.innerText, 'A test node name');
     });
 
     it('renders the details for an extension entry properly', async function() {
@@ -929,12 +935,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
          const rowData = getRowDataForDetailsElement(details);
          const expectedRowData = [
            {title: 'URL', value: 'wss://socketsbay.com/wss/v2/1/demo/'},
-           {
-             // The 'First Invalidated' Stack trace output would be here but the detailRow helper is
-             // unable to parse it, hence why this returns undefined.
-             title: undefined,
-             value: undefined,
-           },
+           // The 'First Invalidated' Stack trace
+           {title: undefined, value: 'connect @ socketsbay.com/test-websockets:314:25'},
            {title: 'Initiated by', 'value': 'Create WebSocket'},
            {title: 'Pending for', value: '72.0 ms'},
          ];
@@ -964,9 +966,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
          const rowData = getRowDataForDetailsElement(details);
          const expectedRowData = [
            {title: 'URL', value: 'wss://socketsbay.com/wss/v2/1/demo/'},
-           // This value looks odd, but it is because the initiator stack trace cannot be
-           // easily represented as a string, so this is OK.
-           {title: undefined, value: undefined},
+           // The initiator stack trace
+           {title: undefined, value: 'connect @ socketsbay.com/test-websockets:314:25'},
            // The 2 entries under "Initiator for" are displayed as seperate links and in the UI it is obvious they are seperate
            {title: 'Initiator for', 'value': 'Send WebSocket Handshake Receive WebSocket Handshake'},
          ];

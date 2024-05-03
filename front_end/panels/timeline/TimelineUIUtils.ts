@@ -36,6 +36,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -43,10 +44,15 @@ import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as AnnotationsManager from '../../services/annotations_manager/annotations_manager.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
+import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
+// eslint-disable-next-line rulesdir/es_modules_import
+import codeHighlighterStyles from '../../ui/components/code_highlighter/codeHighlighter.css.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import imagePreviewStyles from '../../ui/legacy/components/utils/imagePreview.css.js';
 import * as LegacyComponents from '../../ui/legacy/components/utils/utils.js';
+// eslint-disable-next-line rulesdir/es_modules_import
+import inspectorCommonStyles from '../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
@@ -453,6 +459,10 @@ const UIStrings = {
    *@description Text for the event that is an initiator for another one
    */
   initiatorFor: 'Initiator for',
+  /**
+   *@description Text for the underlying data behing a specific flamechart selection. Trace events are the browser instrumentation that are emitted as JSON objects.
+   */
+  traceEvent: 'Trace Event',
   /**
    *@description Call site stack label in Timeline UIUtils of the Performance panel
    */
@@ -1250,14 +1260,7 @@ export class TimelineUIUtils {
     }
 
     if (traceParseData.Meta.traceIsGeneric) {
-      const args = event.args as Record<string, unknown>;
-      for (const key in event.args) {
-        try {
-          contentHelper.appendTextRow(key, JSON.stringify(args[key]));
-        } catch (e) {
-          contentHelper.appendTextRow(key, `<${typeof args[key]}>`);
-        }
-      }
+      TimelineUIUtils.renderEventJson(event, contentHelper);
       return contentHelper.fragment;
     }
 
@@ -1656,6 +1659,10 @@ export class TimelineUIUtils {
       }
     }
 
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE)) {
+      TimelineUIUtils.renderEventJson(event, contentHelper);
+    }
+
     const stats: {
       [x: string]: number,
     } = {};
@@ -1911,6 +1918,29 @@ export class TimelineUIUtils {
       contentHelper.appendElementRow(i18nString(UIStrings.preview), requestPreviewElement);
     }
     return contentHelper.fragment;
+  }
+
+  private static renderEventJson(
+      event: TraceEngine.Legacy.CompatibleTraceEvent, contentHelper: TimelineDetailsContentHelper): void {
+    contentHelper.addSection(i18nString(UIStrings.traceEvent));
+
+    const eventWithArgsFirst = {
+      ...{args: event.args},
+      ...event,
+    };
+    const indentLength = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get().length;
+    // Elide if the data is huge. Then remove the initial new-line for a denser UI
+    const eventStr = JSON.stringify(eventWithArgsFirst, null, indentLength).slice(0, 3000).replace(/{\n  /, '{ ');
+
+    // Use CodeHighlighter for syntax highlighting.
+    const highlightContainer = document.createElement('div');
+    const shadowRoot = highlightContainer.attachShadow({mode: 'open'});
+    shadowRoot.adoptedStyleSheets = [inspectorCommonStyles, codeHighlighterStyles];
+    const elem = shadowRoot.createChild('div');
+    elem.classList.add('monospace', 'source-code');
+    elem.textContent = eventStr;
+    void CodeHighlighter.CodeHighlighter.highlightNode(elem, 'text/javascript');
+    contentHelper.appendElementRow('', highlightContainer);
   }
 
   static stackTraceFromCallFrames(callFrames: Protocol.Runtime.CallFrame[]|

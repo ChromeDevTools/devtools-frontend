@@ -10,6 +10,7 @@ await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
 const testIcon = 'file-image';
+const toggledIconName = 'file-document';
 const plusIcon = 'plus';
 const minusIcon = 'minus';
 
@@ -209,6 +210,30 @@ secondaryIconOnlyButton.data = {
   iconName: testIcon,
 };
 appendButton(secondaryIconOnlyButton);
+
+// Primary Toggle
+const primaryToggleIconButton = new Buttons.Button.Button();
+primaryToggleIconButton.style.width = '24px';
+primaryToggleIconButton.data = {
+  variant: Buttons.Button.Variant.ICON_TOGGLE,
+  toggleType: Buttons.Button.ToggleType.PRIMARY,
+  iconName: testIcon,
+  toggledIconName: toggledIconName,
+  toggled: false,
+};
+appendButton(primaryToggleIconButton);
+
+// Red Toggle
+const redToggleIconButton = new Buttons.Button.Button();
+redToggleIconButton.style.width = '24px';
+redToggleIconButton.data = {
+  variant: Buttons.Button.Variant.ICON_TOGGLE,
+  toggleType: Buttons.Button.ToggleType.RED,
+  iconName: testIcon,
+  toggledIconName: toggledIconName,
+  toggled: true,
+};
+appendButton(redToggleIconButton);
 
 // Small Primary Icon
 const smallPrimaryIconButton = new Buttons.Button.Button();

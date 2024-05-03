@@ -24,12 +24,18 @@ export const enum Variant {
   // Just like toolbar but has a style similar to a primary button.
   PRIMARY_TOOLBAR = 'primary_toolbar',
   ICON = 'icon',
+  ICON_TOGGLE = 'icon_toggle',
 }
 
 export const enum Size {
   MICRO = 'MICRO',
   SMALL = 'SMALL',
   REGULAR = 'REGULAR',
+}
+
+export const enum ToggleType {
+  PRIMARY = 'primary-toggle',
+  RED = 'red-toggle',
 }
 
 type ButtonType = 'button'|'submit'|'reset';
@@ -39,12 +45,15 @@ interface ButtonState {
   variant?: Variant;
   size?: Size;
   disabled: boolean;
+  toggled?: boolean;
   active: boolean;
   spinner?: boolean;
   type: ButtonType;
   value?: string;
   title?: string;
   iconName?: string;
+  toggledIconName?: string;
+  toggleType?: ToggleType;
   jslogContext?: string;
 }
 
@@ -52,8 +61,11 @@ interface CommonButtonData {
   variant: Variant;
   iconUrl?: string;
   iconName?: string;
+  toggledIconName?: string;
+  toggleType?: ToggleType;
   size?: Size;
   disabled?: boolean;
+  toggled?: boolean;
   active?: boolean;
   spinner?: boolean;
   type?: ButtonType;
@@ -70,6 +82,12 @@ export type ButtonData = CommonButtonData&(|{
   iconName: string,
 }|{
   variant: Variant.PRIMARY | Variant.OUTLINED | Variant.TONAL | Variant.TEXT,
+}|{
+  variant: Variant.ICON_TOGGLE,
+  iconName: string,
+  toggledIconName: string,
+  toggleType: ToggleType,
+  toggled: boolean,
 });
 
 export class Button extends HTMLElement {
@@ -102,6 +120,7 @@ export class Button extends HTMLElement {
     this.#props.variant = data.variant;
     this.#props.iconUrl = data.iconUrl;
     this.#props.iconName = data.iconName;
+    this.#props.toggledIconName = data.toggledIconName;
     this.#props.size = Size.REGULAR;
 
     if ('size' in data && data.size) {
@@ -115,6 +134,8 @@ export class Button extends HTMLElement {
     if ('type' in data && data.type) {
       this.#props.type = data.type;
     }
+    this.#props.toggled = data.toggled;
+    this.#props.toggleType = data.toggleType;
     this.#setDisabledProperty(data.disabled || false);
     this.#props.title = data.title;
     this.#props.jslogContext = data.jslogContext;
@@ -129,6 +150,14 @@ export class Button extends HTMLElement {
   set iconName(iconName: string|undefined) {
     this.#props.iconName = iconName;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  set toggledIconName(toggledIconName: string) {
+    this.#props.toggledIconName = toggledIconName;
+  }
+
+  set toggleType(toggleType: ToggleType) {
+    this.#props.toggleType = toggleType;
   }
 
   set variant(variant: Variant) {
@@ -153,6 +182,11 @@ export class Button extends HTMLElement {
 
   set disabled(disabled: boolean) {
     this.#setDisabledProperty(disabled);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  set toggled(toggled: boolean) {
+    this.#props.toggled = toggled;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -209,6 +243,9 @@ export class Button extends HTMLElement {
       event.preventDefault();
       this.form.reset();
     }
+    if (this.#props.variant === Variant.ICON_TOGGLE && this.#props.iconName) {
+      this.toggled = !this.#props.toggled;
+    }
   }
 
   #onSlotChange(event: Event): void {
@@ -253,7 +290,10 @@ export class Button extends HTMLElement {
       text: this.#props.variant === Variant.TEXT,
       toolbar: this.#isToolbarVariant(),
       'primary-toolbar': this.#props.variant === Variant.PRIMARY_TOOLBAR,
-      icon: this.#props.variant === Variant.ICON,
+      icon: this.#props.variant === Variant.ICON || this.#props.variant === Variant.ICON_TOGGLE,
+      'primary-toggle': this.#props.toggleType === ToggleType.PRIMARY,
+      'red-toggle': this.#props.toggleType === ToggleType.RED,
+      toggled: Boolean(this.#props.toggled),
       'text-with-icon': hasIcon && !this.#isEmpty,
       'only-icon': hasIcon && this.#isEmpty,
       'only-text': !hasIcon && !this.#isEmpty,
@@ -275,7 +315,7 @@ export class Button extends HTMLElement {
         <button title=${LitHtml.Directives.ifDefined(this.#props.title)} .disabled=${this.#props.disabled} class=${LitHtml.Directives.classMap(classes)} jslog=${LitHtml.Directives.ifDefined(jslog)}>
           ${hasIcon
             ? LitHtml.html`
-                <${IconButton.Icon.Icon.litTagName} name=${this.#props.iconName || this.#props.iconUrl}>
+                <${IconButton.Icon.Icon.litTagName} name=${this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName || this.#props.iconUrl}>
                 </${IconButton.Icon.Icon.litTagName}>`
             : ''}
           ${this.#props.spinner ? LitHtml.html`<span class=${LitHtml.Directives.classMap(spinnerClasses)}></span>` : ''}

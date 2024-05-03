@@ -35,6 +35,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import type * as Buttons from '../components/buttons/buttons.js';
 import type * as IconButton from '../components/icon_button/icon_button.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
@@ -448,7 +449,7 @@ export class TreeElement {
   #expandRecursively: boolean = true;
   private collapsible: boolean;
   toggleOnClick: boolean;
-  button: HTMLButtonElement|null;
+  button: Buttons.Button.Button|null;
   root: boolean;
   private tooltipInternal: string;
   private leadingIconsElement: HTMLElement|null;

@@ -4,6 +4,7 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as EmulationModel from '../../../models/emulation/emulation.js';
+import type * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -69,7 +70,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class DevicesSettingsTab extends UI.Widget.VBox implements
     UI.ListWidget.Delegate<EmulationModel.EmulatedDevices.EmulatedDevice> {
   containerElement: HTMLElement;
-  private readonly addCustomButton: HTMLButtonElement;
+  private readonly addCustomButton: Buttons.Button.Button;
   private readonly ariaSuccessMessageElement: HTMLElement;
   private readonly list: UI.ListWidget.ListWidget<EmulationModel.EmulatedDevices.EmulatedDevice>;
   private muteUpdate: boolean;

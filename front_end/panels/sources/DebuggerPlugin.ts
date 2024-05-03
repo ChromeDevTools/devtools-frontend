@@ -41,6 +41,7 @@ import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scop
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
@@ -1489,7 +1490,7 @@ export class DebuggerPlugin extends Plugin {
         if (SDK.PageResourceLoader.PageResourceLoader.instance().getResourcesLoaded().get(pageResourceKey)) {
           const showRequest = UI.UIUtils.createTextButton(i18nString(UIStrings.showRequest), () => {
             void Common.Revealer.reveal(new SDK.PageResourceLoader.ResourceKey(pageResourceKey));
-          }, {className: 'link-style devtools-link', jslogContext: 'show-request'});
+          }, {jslogContext: 'show-request', variant: Buttons.Button.Variant.TEXT});
           showRequest.style.setProperty('margin-left', '10px');
           showRequest.title = i18nString(UIStrings.openDeveloperResources);
           detailsRow.appendChild(showRequest);

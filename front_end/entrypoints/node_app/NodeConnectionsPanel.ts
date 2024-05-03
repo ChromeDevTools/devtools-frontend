@@ -5,6 +5,7 @@
 import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import nodeConnectionsPanelStyles from './nodeConnectionsPanel.css.js';
@@ -107,7 +108,7 @@ export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget
 
     const addButton = UI.UIUtils.createTextButton(
         i18nString(UIStrings.addConnection), this.#addNetworkTargetButtonClicked.bind(this),
-        {className: 'add-network-target-button', primary: true});
+        {className: 'add-network-target-button', variant: Buttons.Button.Variant.PRIMARY});
     this.element.appendChild(addButton);
 
     this.#networkDiscoveryConfig = [];

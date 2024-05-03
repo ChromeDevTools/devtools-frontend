@@ -789,7 +789,7 @@ describe('LoggingDriver', () => {
     assert.isEmpty(VisualLoggingTesting.NonDomState.getNonDomState().loggables);
   });
 
-  it('postpones loging non-DOM impressions with detached parent', async () => {
+  it('postpones logging non-DOM impressions with detached parent', async () => {
     addLoggableElements();
     const loggable = {};
     const parent = document.createElement('div');

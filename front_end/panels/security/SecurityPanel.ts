@@ -547,7 +547,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
       if (names.length > 0) {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.showCertificateViewer(names);
       }
-    }, {className: 'origin-button', jslogContext: 'security.view-certificate-for-origin'});
+    }, {className: 'origin-button', jslogContext: 'security.view-certificate-for-origin', title: text});
     UI.ARIAUtils.markAsButton(certificateButton);
     return certificateButton;
   }

@@ -259,7 +259,7 @@ export class SensorsView extends UI.Widget.VBox {
     const customLocations = Common.Settings.Settings.instance().moduleSetting('emulation.locations');
     const manageButton = UI.UIUtils.createTextButton(
         i18nString(UIStrings.manage), () => Common.Revealer.reveal(customLocations),
-        {jslogContext: 'sensors.manage-locations'});
+        {className: 'manage-locations', jslogContext: 'sensors.manage-locations'});
     UI.ARIAUtils.setLabel(manageButton, i18nString(UIStrings.manageTheListOfLocations));
     fields.appendChild(manageButton);
     const fillCustomSettings = (): void => {

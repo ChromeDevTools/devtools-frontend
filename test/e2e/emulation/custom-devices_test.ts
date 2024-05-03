@@ -29,8 +29,7 @@ import {
 
 const ADD_DEVICE_BUTTON_SELECTOR = '#custom-device-add-button';
 const FOCUSED_DEVICE_NAME_FIELD_SELECTOR = '#custom-device-name-field:focus';
-const EDITOR_ADD_BUTTON_SELECTOR = '.editor-buttons > button:first-child';
-const FOCUSED_SELECTOR = '*:focus';
+const EDITOR_ADD_BUTTON_SELECTOR = '.editor-buttons > devtools-button:nth-of-type(2)';
 
 async function elementTextContent(element: puppeteer.ElementHandle): Promise<string> {
   return await element.evaluate(node => node.textContent || '');
@@ -112,12 +111,16 @@ describe('Custom devices', () => {
     await tabForward();  // Focus device model.
     await typeText('C-1-Gardener');
 
+    await tabForward();  // Focus cancel button.
     await tabForward();  // Focus add button.
 
-    const finishAdd = await waitFor(FOCUSED_SELECTOR);
-    const finishAddText = await elementTextContent(finishAdd);
+    const addDevToolsButton = await waitFor('.editor-buttons devtools-button:nth-of-type(2)');
+    const addButton = await addDevToolsButton.waitForSelector('>>> button:focus');
+    assert.isNotNull(addButton);  // Check that the devtools-buttons is focus
+
+    const finishAddText = await elementTextContent(addDevToolsButton);
     assert.strictEqual(finishAddText, 'Add');
-    await clickElement(finishAdd);
+    await clickElement(addDevToolsButton);
 
     // Select the device in the menu.
     await selectTestDevice();

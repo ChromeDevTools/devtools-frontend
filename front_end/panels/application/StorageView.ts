@@ -7,6 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import type * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -164,7 +165,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
   private quotaOverrideControlRow: HTMLElement;
   private quotaOverrideEditor: HTMLInputElement;
   private quotaOverrideErrorMessage: HTMLElement;
-  private clearButton: HTMLButtonElement;
+  private clearButton: Buttons.Button.Button;
 
   constructor() {
     super(true, 1000);

@@ -46,6 +46,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as AnnotationsManager from '../../services/annotations_manager/annotations_manager.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
+import type * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as PanelFeedback from '../../ui/components/panel_feedback/panel_feedback.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -1828,8 +1829,8 @@ export class StatusPane extends UI.Widget.VBox {
   private progressLabel!: Element;
   private progressBar!: Element;
   private readonly description: HTMLElement|undefined;
-  private button: HTMLButtonElement;
-  private downloadTraceButton: HTMLButtonElement;
+  private button: Buttons.Button.Button;
+  private downloadTraceButton: Buttons.Button.Button;
   private startTime!: number;
   private timeUpdateTimer?: number;
   #rawEvents?: TraceEngine.Types.TraceEvents.TraceEventData[];
@@ -1883,7 +1884,6 @@ export class StatusPane extends UI.Widget.VBox {
     const buttonText = options.buttonText || i18nString(UIStrings.stop);
     this.button = UI.UIUtils.createTextButton(buttonText, buttonCallback, {
       jslogContext: 'timeline.stop-recording',
-      primary: true,
     });
     // Profiling can't be stopped during initialization.
     this.button.disabled = !options.buttonDisabled === false;

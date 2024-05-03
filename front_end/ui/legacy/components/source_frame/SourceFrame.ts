@@ -36,6 +36,7 @@ import * as Root from '../../../../core/root/root.js';
 import * as Formatter from '../../../../models/formatter/formatter.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as CodeMirror from '../../../../third_party/codemirror.next/codemirror.next.js';
+import * as Buttons from '../../../components/buttons/buttons.js';
 import * as CodeHighlighter from '../../../components/code_highlighter/code_highlighter.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
@@ -1088,7 +1089,7 @@ export class SelfXssWarningDialog {
       buttonsBar.appendChild(cancelButton);
       const allowButton = UI.UIUtils.createTextButton(i18nString(UIStrings.allow), () => {
         resolve(input.value === i18nString(UIStrings.allowPasting));
-      }, {jslogContext: 'confirm', primary: true});
+      }, {jslogContext: 'confirm', variant: Buttons.Button.Variant.PRIMARY});
       allowButton.disabled = true;
       buttonsBar.appendChild(allowButton);
 

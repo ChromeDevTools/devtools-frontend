@@ -4,6 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -298,8 +299,8 @@ export type EditorControl<T = string> = (HTMLInputElement|HTMLSelectElement|Cust
 export class Editor<T> {
   element: HTMLDivElement;
   private readonly contentElementInternal: HTMLElement;
-  private commitButton: HTMLButtonElement;
-  private readonly cancelButton: HTMLButtonElement;
+  private commitButton: Buttons.Button.Button;
+  private readonly cancelButton: Buttons.Button.Button;
   private errorMessageContainer: HTMLElement;
   private readonly controls: EditorControl[];
   private readonly controlByName: Map<string, EditorControl>;
@@ -328,17 +329,17 @@ export class Editor<T> {
     }, this.commitClicked.bind(this)), false);
 
     const buttonsRow = this.element.createChild('div', 'editor-buttons');
-    this.commitButton = createTextButton('', this.commitClicked.bind(this), {
-      jslogContext: 'commit',
-      primary: true,
-    });
-    buttonsRow.appendChild(this.commitButton);
     this.cancelButton = createTextButton(i18nString(UIStrings.cancelString), this.cancelClicked.bind(this), {
       jslogContext: 'cancel',
-      primary: true,
+      variant: Buttons.Button.Variant.OUTLINED,
     });
     this.cancelButton.setAttribute('jslog', `${VisualLogging.action('cancel').track({click: true})}`);
     buttonsRow.appendChild(this.cancelButton);
+    this.commitButton = createTextButton('', this.commitClicked.bind(this), {
+      jslogContext: 'commit',
+      variant: Buttons.Button.Variant.PRIMARY,
+    });
+    buttonsRow.appendChild(this.commitButton);
 
     this.errorMessageContainer = this.element.createChild('div', 'list-widget-input-validation-error');
     ARIAUtils.markAsAlert(this.errorMessageContainer);

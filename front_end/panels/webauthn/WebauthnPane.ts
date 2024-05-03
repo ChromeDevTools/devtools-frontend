@@ -7,6 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import type * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -257,7 +258,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
   #userVerificationCheckbox: HTMLInputElement|undefined;
   #largeBlobCheckboxLabel: UI.UIUtils.CheckboxLabel|undefined;
   largeBlobCheckbox: HTMLInputElement|undefined;
-  addAuthenticatorButton: HTMLButtonElement|undefined;
+  addAuthenticatorButton: Buttons.Button.Button|undefined;
   #isEnabling?: Promise<void>;
 
   constructor() {

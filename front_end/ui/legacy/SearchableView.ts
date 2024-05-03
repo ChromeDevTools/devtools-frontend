@@ -37,6 +37,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import type * as Buttons from '../components/buttons/buttons.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {HistoryInput} from './HistoryInput.js';
@@ -117,8 +118,8 @@ export class SearchableView extends VBox {
   private caseSensitiveButton: ToolbarToggle|undefined;
   private regexButton: ToolbarToggle|undefined;
   private readonly secondRowButtons: HTMLElement;
-  private replaceButtonElement: HTMLButtonElement;
-  private replaceAllButtonElement: HTMLButtonElement;
+  private replaceButtonElement: Buttons.Button.Button;
+  private replaceAllButtonElement: Buttons.Button.Button;
   private minimalSearchQuerySize: number;
   private searchIsVisible?: boolean;
   private currentQuery?: string;

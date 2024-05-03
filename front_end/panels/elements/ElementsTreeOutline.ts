@@ -66,7 +66,7 @@ const UIStrings = {
    *@description Tree element expand all button element button text content in Elements Tree Outline of the Elements panel
    *@example {3} PH1
    */
-  showAllNodesDMore: 'Show All Nodes ({PH1} More)',
+  showAllNodesDMore: 'Show all nodes ({PH1} more)',
   /**
    *@description Link text content in Elements Tree Outline of the Elements panel
    */

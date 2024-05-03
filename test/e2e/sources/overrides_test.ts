@@ -378,7 +378,9 @@ describe('Overrides panel', function() {
     await click('aria/Override content');
     const p = await waitFor('.dimmed-pane');
     const dialog = await p.waitForSelector('>>>> [role="dialog"]');
-    const okButton = await dialog?.waitForSelector('>>> .primary-button');
+    const okButton = await dialog?.waitForSelector('>>> devtools-button');
+    const okButtonTextContent = await okButton?.evaluate(e => e.textContent);
+    assert.deepEqual(okButtonTextContent, 'OK');
     await okButton?.click();
     await waitFor('[aria-label="Close sourcemap-origin.min.js"]');
   });
@@ -404,7 +406,9 @@ describe('Overrides panel', function() {
     await click('aria/Override content');
     const p = await waitFor('.dimmed-pane');
     const dialog = await p.waitForSelector('>>>> [role="dialog"]');
-    const okButton = await dialog?.waitForSelector('>>> .primary-button');
+    const okButton = await dialog?.waitForSelector('>>> devtools-button');
+    const okButtonTextContent = await okButton?.evaluate(e => e.textContent);
+    assert.deepEqual(okButtonTextContent, 'OK');
     await okButton?.click();
     await waitFor('[aria-label="Close sourcemap-origin.css"]');
   });

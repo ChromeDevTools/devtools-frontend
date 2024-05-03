@@ -4,11 +4,11 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {RuntimeSettings} from './LighthouseController.js';
 import lighthouseDialogStyles from './lighthouseDialog.css.js';
-
 import {type LighthousePanel} from './LighthousePanel.js';
 
 const UIStrings = {
@@ -156,7 +156,7 @@ export class StatusView {
   private progressWrapper: Element|null;
   private progressBar: Element|null;
   private statusText: Element|null;
-  private cancelButton: HTMLButtonElement|null;
+  private cancelButton: Buttons.Button.Button|null;
   private inspectedURL: string;
   private textChangedAt: number;
   private fastFactsQueued: Common.UIString.LocalizedString[];

@@ -10,6 +10,7 @@ import {
   dispatchPasteEvent,
 } from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
+import * as Buttons from '../../../components/buttons/buttons.js';
 import * as UI from '../../legacy.js';
 
 import * as SourceFrame from './source_frame.js';
@@ -102,8 +103,9 @@ describeWithEnvironment('SourceFrame', () => {
     input.value = 'allow pasting';
     dispatchInputEvent(input, {inputType: 'insertText', data: 'allow pasting', bubbles: true, composed: true});
 
-    const allowButton = dialogShadowRoot.querySelector('.primary-button');
-    assert.instanceOf(allowButton, HTMLButtonElement);
+    const allowButton = dialogShadowRoot.querySelector('.button')?.children[1];
+    assert.deepEqual(allowButton?.textContent, 'Allow');
+    assert.instanceOf(allowButton, Buttons.Button.Button);
     allowButton.click();
     await new Promise(resolve => setTimeout(resolve, 0));
 

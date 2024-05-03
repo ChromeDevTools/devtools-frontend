@@ -30,6 +30,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {IsolateSelector} from './IsolateSelector.js';
@@ -72,8 +73,8 @@ export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTy
   readonly selectedProfileTypeSetting: Common.Settings.Setting<string>;
   profileTypeHeaderElement: HTMLElement;
   readonly profileTypeSelectorForm: HTMLElement;
-  controlButton: HTMLButtonElement;
-  readonly loadButton: HTMLButtonElement;
+  controlButton: Buttons.Button.Button;
+  readonly loadButton: Buttons.Button.Button;
   recordButtonEnabled: boolean;
   typeIdToOptionElementAndProfileType: Map<string, {
     optionElement: HTMLInputElement,
@@ -109,7 +110,7 @@ export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTy
     const buttonsDiv = this.contentElementInternal.createChild('div', 'hbox profile-launcher-buttons');
     this.controlButton = UI.UIUtils.createTextButton('', this.controlButtonClicked.bind(this), {
       jslogContext: 'profiler.heap-toggle-recording',
-      primary: true,
+      variant: Buttons.Button.Variant.PRIMARY,
     });
     this.loadButton = UI.UIUtils.createTextButton(i18nString(UIStrings.load), this.loadButtonClicked.bind(this), {
       jslogContext: 'profiler.load-from-file',

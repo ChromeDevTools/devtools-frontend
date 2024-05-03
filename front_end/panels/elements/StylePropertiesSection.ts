@@ -40,6 +40,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import type * as Buttons from '../../ui/components/buttons/buttons.js';
 import type * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -86,7 +87,7 @@ const UIStrings = {
    *@description Show all button text content in Styles Sidebar Pane of the Elements panel
    *@example {3} PH1
    */
-  showAllPropertiesSMore: 'Show All Properties ({PH1} more)',
+  showAllPropertiesSMore: 'Show all properties ({PH1} more)',
   /**
    *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
    */
@@ -130,7 +131,7 @@ export class StylePropertiesSection {
   readonly #styleRuleElement: HTMLElement;
   private readonly titleElement: HTMLElement;
   propertiesTreeOutline: UI.TreeOutline.TreeOutlineInShadow;
-  private showAllButton: HTMLButtonElement;
+  private showAllButton: Buttons.Button.Button;
   protected selectorElement: HTMLSpanElement;
   private readonly newStyleRuleToolbar: UI.Toolbar.Toolbar|undefined;
   private readonly fontEditorToolbar: UI.Toolbar.Toolbar|undefined;

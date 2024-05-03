@@ -156,7 +156,7 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       // Remove the credential.
       const removeCredential = sinon.stub(model, 'removeCredential').resolves();
-      dataGrid.element.querySelectorAll('button')[1].click();
+      dataGrid.element.querySelectorAll('devtools-button')[1].click();
       assert.strictEqual(dataGrid.rootNode().children.length, 1);
       emptyNode = dataGrid.rootNode().children[0];
       assert.isOk(emptyNode);

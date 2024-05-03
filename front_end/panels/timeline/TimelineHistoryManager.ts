@@ -8,7 +8,6 @@ import * as Platform from '../../core/platform/platform.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {type PerformanceModel} from './PerformanceModel.js';
 import {
   type TimelineEventOverview,
   TimelineEventOverviewCPUActivity,
@@ -65,9 +64,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineHistoryManager
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type RecordingData = {
-  // Store the legacy PerformanceModel. As part of the data migration we aim to
-  // remove this entirely.
-  legacyModel: PerformanceModel,
   // By storing only the index of this trace, the TimelinePanel can then look
   // up this trace's data (and metadata) via this index.
   traceParseDataIndex: number,
@@ -148,10 +144,10 @@ export class TimelineHistoryManager {
   }
 
   addRecording(newInput: NewHistoryRecordingData): void {
-    const {legacyModel, traceParseDataIndex} = newInput.data;
+    const {traceParseDataIndex} = newInput.data;
     const filmStrip = newInput.filmStripForPreview;
     this.lastActiveTraceIndex = traceParseDataIndex;
-    this.recordings.unshift({legacyModel: legacyModel, traceParseDataIndex});
+    this.recordings.unshift({traceParseDataIndex});
 
     // Order is important: this needs to happen first because lots of the
     // subsequent code depends on us storing the preview data into the map.

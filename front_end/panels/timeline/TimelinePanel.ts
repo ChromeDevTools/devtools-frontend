@@ -802,7 +802,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.#saveAnnotationsForActiveTrace();
     const recordingData = await this.#historyManager.showHistoryDropDown();
     if (recordingData && recordingData.traceParseDataIndex !== this.#traceEngineActiveTraceIndex) {
-      this.setModel(recordingData.legacyModel, /* exclusiveFilter= */ null, recordingData.traceParseDataIndex);
+      this.setModel(null, /* exclusiveFilter= */ null, recordingData.traceParseDataIndex);
     }
   }
 
@@ -810,7 +810,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.#saveAnnotationsForActiveTrace();
     const recordingData = this.#historyManager.navigate(direction);
     if (recordingData && recordingData.traceParseDataIndex !== this.#traceEngineActiveTraceIndex) {
-      this.setModel(recordingData.legacyModel, /* exclusiveFilter= */ null, recordingData.traceParseDataIndex);
+      this.setModel(null, /* exclusiveFilter= */ null, recordingData.traceParseDataIndex);
     }
     return true;
   }
@@ -1281,7 +1281,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
       this.#applyActiveFilters(traceParsedData.Meta.traceIsGeneric, exclusiveFilter);
     }
-    if (model) {
+    if (traceParsedData) {
       this.searchableViewInternal.showWidget();
     } else {
       this.searchableViewInternal.hideWidget();
@@ -1564,12 +1564,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.#sourceMapsResolver.addEventListener(NodeNamesUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
       await this.#sourceMapsResolver.install();
 
-      // We store the Performance Model and the index of the active trace.
+      // We store the index of the active trace so we can load it back easily
+      // if the user goes to a different trace then comes back.
       // However we also pass in the full trace data because we use it to build
       // the preview overview thumbnail of the trace that gets shown in the UI.
       this.#historyManager.addRecording({
         data: {
-          legacyModel: this.performanceModel,
           traceParseDataIndex: this.#traceEngineActiveTraceIndex,
         },
         filmStripForPreview: TraceEngine.Extras.FilmStrip.fromTraceData(traceData),

@@ -12,7 +12,6 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {EventsTimelineTreeView} from './EventsTimelineTreeView.js';
-import {type PerformanceModel} from './PerformanceModel.js';
 import {TimelineLayersView} from './TimelineLayersView.js';
 import {TimelinePaintProfilerView} from './TimelinePaintProfilerView.js';
 import {type TimelineModeViewDelegate} from './TimelinePanel.js';
@@ -65,7 +64,6 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   private readonly defaultDetailsWidget: UI.Widget.VBox;
   private readonly defaultDetailsContentElement: HTMLElement;
   private rangeDetailViews: Map<string, TimelineTreeView>;
-  private model!: PerformanceModel;
   #selectedEvents?: TraceEngine.Types.TraceEvents.TraceEventData[]|null;
   private lazyPaintProfilerView?: TimelinePaintProfilerView|null;
   private lazyLayersView?: TimelineLayersView|null;
@@ -149,11 +147,8 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   }
 
   async setModel(
-      model: PerformanceModel|null, traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null,
+      traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null,
       selectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[]|null): Promise<void> {
-    if (this.model !== model) {
-      this.model = (model as PerformanceModel);
-    }
     if (this.#traceEngineData !== traceEngineData) {
       // Clear the selector stats view, so the next time the user views it we
       // reconstruct it with the new trace data.
@@ -161,7 +156,6 @@ export class TimelineDetailsView extends UI.Widget.VBox {
 
       this.#traceEngineData = traceEngineData;
     }
-
     if (traceEngineData) {
       this.#filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(traceEngineData);
     }
@@ -223,7 +217,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
    * behaviour.
    */
   private scheduleUpdateContentsFromWindow(forceImmediateUpdate: boolean = false): void {
-    if (!this.model) {
+    if (!this.#traceEngineData) {
       this.setContent(UI.Fragment.html`<div/>`);
       return;
     }
@@ -408,7 +402,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
 
   private updateSelectedRangeStats(
       startTime: TraceEngine.Types.Timing.MilliSeconds, endTime: TraceEngine.Types.Timing.MilliSeconds): void {
-    if (!this.model || !this.#selectedEvents || !this.#traceEngineData) {
+    if (!this.#selectedEvents || !this.#traceEngineData) {
       return;
     }
 

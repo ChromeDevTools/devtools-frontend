@@ -40,7 +40,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
     }
     const selection = Timeline.TimelineSelection.TimelineSelection.fromTraceEvent(cssRequest);
 
-    await detailsView.setModel(data.performanceModel, data.traceParsedData, null);
+    await detailsView.setModel(data.traceParsedData, null);
     await detailsView.setSelection(selection);
 
     const detailsContentElement = detailsView.getDetailsContentElementForTest();

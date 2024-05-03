@@ -15,7 +15,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {CountersGraph} from './CountersGraph.js';
 import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
 import {ExtensionDataGatherer} from './ExtensionDataGatherer.js';
-import {type PerformanceModel} from './PerformanceModel.js';
 import {targetForEvent} from './TargetForEvent.js';
 import {TimelineDetailsView} from './TimelineDetailsView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
@@ -45,7 +44,6 @@ const MAX_HIGHLIGHTED_SEARCH_ELEMENTS: number = 200;
 export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.FlameChart.FlameChartDelegate,
                                                                       UI.SearchableView.Searchable {
   private readonly delegate: TimelineModeViewDelegate;
-  private model: PerformanceModel|null;
   private searchResults!: number[]|undefined;
   private eventListeners: Common.EventTarget.EventDescriptor[];
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -85,7 +83,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.element.classList.add('timeline-flamechart');
 
     this.delegate = delegate;
-    this.model = null;
     this.eventListeners = [];
     this.#traceEngineData = null;
 
@@ -210,9 +207,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   }
 
   refreshMainFlameChart(): void {
-    if (!this.model) {
-      return;
-    }
     this.mainFlameChart.update();
   }
 
@@ -250,16 +244,13 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.#updateDetailViews();
   }
 
-  setModel(
-      model: PerformanceModel|null, newTraceEngineData: TraceEngine.Handlers.Types.TraceParseData|null,
-      isCpuProfile = false): void {
-    if (model === this.model) {
+  setModel(newTraceEngineData: TraceEngine.Handlers.Types.TraceParseData|null, isCpuProfile = false): void {
+    if (newTraceEngineData === this.#traceEngineData) {
       return;
     }
     this.#selectedGroupName = null;
     this.#traceEngineData = newTraceEngineData;
     Common.EventTarget.removeEventListeners(this.eventListeners);
-    this.model = model;
     this.#selectedEvents = null;
     this.mainDataProvider.setModel(newTraceEngineData, isCpuProfile);
     this.networkDataProvider.setModel(newTraceEngineData);
@@ -302,8 +293,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   #updateDetailViews(): void {
     this.countersView.setModel(this.#traceEngineData, this.#selectedEvents);
-    // TODO(crbug.com/1459265):  Change to await after migration work.
-    void this.detailsView.setModel(this.model, this.#traceEngineData, this.#selectedEvents);
+    void this.detailsView.setModel(this.#traceEngineData, this.#selectedEvents);
   }
 
   #updateFlameCharts(): void {
@@ -450,7 +440,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     delete this.selectedSearchResult;
     this.searchResults = [];
     this.mainFlameChart.removeSearchResultHighlights();
-    if (!this.searchRegex || !this.model) {
+    if (!this.searchRegex) {
       return;
     }
     const regExpFilter = new TimelineRegExp(this.searchRegex);

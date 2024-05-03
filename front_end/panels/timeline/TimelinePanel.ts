@@ -1287,7 +1287,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.fixMeButtonAdded = false;
       this.panelToolbar.removeToolbarItem(this.fixMeButton);
     }
-    this.flameChart.setModel(model, traceParsedData, isCpuProfile);
+    this.flameChart.setModel(traceParsedData, isCpuProfile);
     this.flameChart.setSelection(null);
 
     // Set up line level profiling with CPU profiles, if we found any.
@@ -1680,9 +1680,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       return null;
     }
     if (TimelineSelection.isTraceEventSelection(selection.object)) {
-      if (!this.performanceModel) {
-        return null;
-      }
       const traceData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
       if (!traceData) {
         return null;

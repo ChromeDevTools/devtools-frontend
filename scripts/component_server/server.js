@@ -18,7 +18,21 @@ const match = require('minimatch');
 
 const tracesMode = argv.traces || false;
 const serverPort = parseInt(process.env.PORT, 10) || (tracesMode ? 11010 : 8090);
-const target = argv.target || process.env.TARGET || 'Default';
+
+/**
+ * When you run npm run components-server we run the script as is from scripts/,
+ * but when this server is run as part of a test suite it's run from
+ * out/Default/gen/scripts, so we have to do a bit of path mangling to figure
+ * out where we are.
+ */
+const [target, isRunningInGen] = (() => {
+  const regex = new RegExp(`out${path.sep}(.*)${path.sep}gen`);
+  const match = regex.exec(__dirname);
+  if (match) {
+    return [match[1], true];
+  }
+  return [argv.target || process.env.TARGET || 'Default', false];
+})();
 
 /**
  * This configures the base of the URLs that are injected into each component
@@ -36,14 +50,6 @@ const sharedResourcesBase =
  */
 const componentDocsBaseArg = argv.componentDocsBase || process.env.COMPONENT_DOCS_BASE ||
     getTestRunnerConfigSetting('component-server-base-path', '');
-
-/**
- * When you run npm run components-server we run the script as is from scripts/,
- * but when this server is run as part of a test suite it's run from
- * out/Default/gen/scripts, so we have to do a bit of path mangling to figure
- * out where we are.
- */
-const isRunningInGen = __dirname.includes(path.join('out', path.sep, target));
 
 let pathToOutTargetDir = __dirname;
 /**

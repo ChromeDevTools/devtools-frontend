@@ -1,0 +1,21 @@
+<!--
+  Copyright 2024 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<h1>Memory Panel (Heap profiler) Test</h1>
+<script>
+  class ObjectRetainedByDetachedDom {}
+  class ObjectRetainedByConsole {}
+  class ObjectRetainedByBothDetachedDomAndConsole {}
+  const detached = document.createElement('div');
+  detached.x = new ObjectRetainedByDetachedDom();
+  detached.y = new ObjectRetainedByBothDetachedDomAndConsole();
+  console.log(new ObjectRetainedByConsole());
+  console.log(detached.y);
+  const obj = { duplicatedKey: 'duplicatedValue' };
+  const duplicatedStringInstance1 = JSON.stringify(obj);
+  const duplicatedStringInstance2 = JSON.stringify(obj);
+  obj.nonDuplicatedKey = true;
+  const nonDuplicatedStringInstance = JSON.stringify(obj);
+</script>

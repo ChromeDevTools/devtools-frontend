@@ -314,8 +314,9 @@ export async function getSizesFromSelectedRow() {
   return await getSizesFromRow(row);
 }
 
-async function getCategoryRow(text: string) {
-  return await waitFor(`//td[text()="${text}"]/ancestor::tr`, undefined, undefined, 'xpath');
+export async function getCategoryRow(text: string, wait: boolean = true) {
+  const selector = `//td[text()="${text}"]/ancestor::tr`;
+  return await (wait ? waitFor(selector, undefined, undefined, 'xpath') : $(selector, undefined, 'xpath'));
 }
 
 export async function getSizesFromCategoryRow(text: string) {
@@ -340,4 +341,9 @@ export async function clickOnContextMenuForRetainer(retainerName: string, menuIt
 export async function restoreIgnoredRetainers() {
   const element = await waitFor('button[aria-label="Restore ignored retainers"]');
   await clickElement(element);
+}
+
+export async function setFilterDropdown(filter: string) {
+  const select = await waitFor('select.toolbar-item[aria-label="Filter"]');
+  await select.select(filter);
 }

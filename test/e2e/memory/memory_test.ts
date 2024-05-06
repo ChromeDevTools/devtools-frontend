@@ -29,6 +29,7 @@ import {
   expandFocusedRow,
   findSearchResult,
   focusTableRow,
+  getCategoryRow,
   getDataGridRows,
   getDistanceFromCategoryRow,
   getSizesFromCategoryRow,
@@ -36,6 +37,7 @@ import {
   navigateToMemoryTab,
   restoreIgnoredRetainers,
   setClassFilter,
+  setFilterDropdown,
   setSearchFilter,
   takeAllocationProfile,
   takeAllocationTimelineProfile,
@@ -497,5 +499,21 @@ describe('The Memory Panel', function() {
     await waitForRetainerChain(['(Internalized strings)', '(GC roots)']);
     await restoreIgnoredRetainers();
     await waitForRetainerChain(['Object', 'KeyType', 'Window']);
+  });
+
+  it('Can filter the summary view', async () => {
+    await goToResource('memory/filtering.html');
+    await navigateToMemoryTab();
+    await takeHeapSnapshot();
+    await waitForNonEmptyHeapSnapshotData();
+    await setFilterDropdown('Duplicated strings');
+    await setSearchFilter('"duplicatedKey":"duplicatedValue"');
+    await waitForSearchResultNumber(2);
+    await setFilterDropdown('Objects retained by detached DOM nodes');
+    await getCategoryRow('ObjectRetainedByDetachedDom');
+    assert.isTrue(!(await getCategoryRow('ObjectRetainedByBothDetachedDomAndConsole', false)));
+    await setFilterDropdown('Objects retained by the DevTools console');
+    await getCategoryRow('ObjectRetainedByConsole');
+    assert.isTrue(!(await getCategoryRow('ObjectRetainedByBothDetachedDomAndConsole', false)));
   });
 });

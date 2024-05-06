@@ -258,6 +258,7 @@ export class NodeFilter {
   minNodeId: number|undefined;
   maxNodeId: number|undefined;
   allocationNodeId!: number|undefined;
+  filterName: string|undefined;
   constructor(minNodeId?: number, maxNodeId?: number) {
     this.minNodeId = minNodeId;
     this.maxNodeId = maxNodeId;
@@ -265,7 +266,7 @@ export class NodeFilter {
 
   equals(o: NodeFilter): boolean {
     return this.minNodeId === o.minNodeId && this.maxNodeId === o.maxNodeId &&
-        this.allocationNodeId === o.allocationNodeId;
+        this.allocationNodeId === o.allocationNodeId && this.filterName === o.filterName;
   }
 }
 

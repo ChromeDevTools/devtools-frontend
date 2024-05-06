@@ -26,7 +26,7 @@ export declare class FrameManager extends EventEmitter<FrameManagerEvents> {
     get timeoutSettings(): TimeoutSettings;
     get networkManager(): NetworkManager;
     get client(): CDPSession;
-    constructor(client: CDPSession, page: CdpPage, ignoreHTTPSErrors: boolean, timeoutSettings: TimeoutSettings);
+    constructor(client: CDPSession, page: CdpPage, timeoutSettings: TimeoutSettings);
     /**
      * When the main frame is replaced by another main frame,
      * we maintain the main frame object identity while updating

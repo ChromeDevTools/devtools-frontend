@@ -990,6 +990,7 @@ export declare class Connection extends EventEmitter<CDPSessionEvents> {
     #private;
     constructor(url: string, transport: ConnectionTransport, delay?: number, timeout?: number);
     static fromSession(session: CDPSession): Connection | undefined;
+    /* Excluded from this release type: delay */
     get timeout(): number;
     /* Excluded from this release type: _closed */
     /* Excluded from this release type: _sessions */
@@ -1957,6 +1958,7 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * absolute.
      */
     abstract uploadFile(this: ElementHandle<HTMLInputElement>, ...paths: string[]): Promise<void>;
+    /* Excluded from this release type: queryAXTree */
     /**
      * This method scrolls element into view if needed, and then uses
      * {@link Touchscreen.tap} to tap in the center of the element.
@@ -2218,6 +2220,8 @@ executablePath: (channel?: ChromeReleaseChannel | undefined) => string;
  * @public
  */
 export declare type ExperimentsConfiguration = Record<string, never>;
+
+/* Excluded from this release type: ExtensionTransport */
 
 /* Excluded from this release type: FetchRequestId */
 
@@ -4498,7 +4502,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * continued, responded or aborted; or completed using the browser cache.
      *
      * See the
-     * {@link https://pptr.dev/next/guides/request-interception|Request interception guide}
+     * {@link https://pptr.dev/guides/network-interception|Request interception guide}
      * for more details.
      *
      * @example
@@ -6319,7 +6323,7 @@ export declare interface PDFOptions {
      * @remarks
      * If this is enabled the PDF will also be tagged (accessible)
      * Currently only works in old Headless (headless = 'shell')
-     * crbug/840455#c47
+     * {@link https://issues.chromium.org/issues/41387522#comment48 | Chromium feature request}
      *
      * @defaultValue `false`
      * @experimental
@@ -6450,8 +6454,6 @@ export declare class ProtocolError extends PuppeteerError {
  * @public
  */
 export declare type ProtocolLifeCycleEvent = 'load' | 'DOMContentLoaded' | 'networkIdle' | 'networkAlmostIdle';
-
-export { ProtocolMapping }
 
 /**
  * @public

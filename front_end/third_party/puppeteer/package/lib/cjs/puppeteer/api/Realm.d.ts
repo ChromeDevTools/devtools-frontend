@@ -32,6 +32,8 @@ export declare abstract class Realm implements Disposable {
     abstract adoptBackendNode(backendNodeId?: number): Promise<JSHandle<Node>>;
     get disposed(): boolean;
     /** @internal */
+    dispose(): void;
+    /** @internal */
     [disposeSymbol](): void;
 }
 //# sourceMappingURL=Realm.d.ts.map

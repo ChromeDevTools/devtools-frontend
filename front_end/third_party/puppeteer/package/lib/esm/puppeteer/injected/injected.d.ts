@@ -22,13 +22,13 @@ declare const PuppeteerUtil: Readonly<{
     pierceAll(root: Node): IterableIterator<Node | ShadowRoot>;
     checkVisibility: (node: Node | null, visible?: boolean | undefined) => boolean | Node;
     textQuerySelectorAll: (root: Node, selector: string) => Generator<Element, any, unknown>;
-    pQuerySelectorAll: (root: Node, selector: string) => import("../puppeteer-core.js").AwaitableIterable<Node>;
+    pQuerySelectorAll: (root: Node, selector: string) => import("../index.js").AwaitableIterable<Node>;
     pQuerySelector: (root: Node, selector: string) => Promise<Node | null>;
     pierceQuerySelector: (root: Node, selector: string) => Element | null;
     pierceQuerySelectorAll: (element: Node, selector: string) => Element[];
     customQuerySelectors: {
         "__#198@#selectors": Map<string, CustomQuerySelectors.CustomQuerySelector>;
-        register(name: string, handler: import("../puppeteer-core.js").CustomQueryHandler): void;
+        register(name: string, handler: import("../index.js").CustomQueryHandler): void;
         unregister(name: string): void;
         get(name: string): CustomQuerySelectors.CustomQuerySelector | undefined;
         clear(): void;

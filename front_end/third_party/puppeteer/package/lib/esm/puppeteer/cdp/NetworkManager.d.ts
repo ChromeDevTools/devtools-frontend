@@ -43,7 +43,7 @@ export interface FrameProvider {
  */
 export declare class NetworkManager extends EventEmitter<NetworkManagerEvents> {
     #private;
-    constructor(ignoreHTTPSErrors: boolean, frameManager: FrameProvider);
+    constructor(frameManager: FrameProvider);
     addClient(client: CDPSession): Promise<void>;
     authenticate(credentials?: Credentials): Promise<void>;
     setExtraHTTPHeaders(headers: Record<string, string>): Promise<void>;

@@ -3,6 +3,7 @@
  * Copyright 2023 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { ElementHandle } from '../api/ElementHandle.js';
 import { Frame, type GoToOptions, type WaitForOptions } from '../api/Frame.js';
@@ -46,5 +47,6 @@ export declare class BidiFrame extends Frame {
     waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<ElementHandle<NodeFor<Selector>> | null>;
     createCDPSession(): Promise<CDPSession>;
     setFiles(element: BidiElementHandle, files: string[]): Promise<void>;
+    locateNodes(element: BidiElementHandle, locator: Bidi.BrowsingContext.Locator): Promise<Bidi.Script.NodeRemoteValue[]>;
 }
 //# sourceMappingURL=Frame.d.ts.map

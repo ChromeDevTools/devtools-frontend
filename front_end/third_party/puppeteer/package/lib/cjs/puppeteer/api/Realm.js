@@ -35,9 +35,13 @@ class Realm {
     }
     #disposed = false;
     /** @internal */
-    [disposable_js_1.disposeSymbol]() {
+    dispose() {
         this.#disposed = true;
         this.taskManager.terminateAll(new Error('waitForFunction failed: frame got detached.'));
+    }
+    /** @internal */
+    [disposable_js_1.disposeSymbol]() {
+        this.dispose();
     }
 }
 exports.Realm = Realm;

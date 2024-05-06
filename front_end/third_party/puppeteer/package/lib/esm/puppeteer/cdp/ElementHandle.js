@@ -40,8 +40,10 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
 import { ElementHandle } from '../api/ElementHandle.js';
 import { debugError } from '../common/util.js';
 import { assert } from '../util/assert.js';
+import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
 import { throwIfDisposed } from '../util/decorators.js';
 import { CdpJSHandle } from './JSHandle.js';
+const NON_ELEMENT_NODE_ROLES = new Set(['StaticText', 'InlineTextBox']);
 /**
  * The CdpElementHandle extends ElementHandle now to keep compatibility
  * with `instanceof` because of that we need to have methods for
@@ -170,6 +172,28 @@ let CdpElementHandle = (() => {
                 fieldId,
                 frameId,
                 card: data.creditCard,
+            });
+        }
+        async *queryAXTree(name, role) {
+            const { nodes } = await this.client.send('Accessibility.queryAXTree', {
+                objectId: this.id,
+                accessibleName: name,
+                role,
+            });
+            const results = nodes.filter(node => {
+                if (node.ignored) {
+                    return false;
+                }
+                if (!node.role) {
+                    return false;
+                }
+                if (NON_ELEMENT_NODE_ROLES.has(node.role.value)) {
+                    return false;
+                }
+                return true;
+            });
+            return yield* AsyncIterableUtil.map(results, node => {
+                return this.realm.adoptBackendNode(node.backendDOMNodeId);
             });
         }
     };

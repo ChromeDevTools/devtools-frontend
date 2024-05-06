@@ -66,8 +66,10 @@ exports.CdpElementHandle = void 0;
 const ElementHandle_js_1 = require("../api/ElementHandle.js");
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
+const AsyncIterableUtil_js_1 = require("../util/AsyncIterableUtil.js");
 const decorators_js_1 = require("../util/decorators.js");
 const JSHandle_js_1 = require("./JSHandle.js");
+const NON_ELEMENT_NODE_ROLES = new Set(['StaticText', 'InlineTextBox']);
 /**
  * The CdpElementHandle extends ElementHandle now to keep compatibility
  * with `instanceof` because of that we need to have methods for
@@ -196,6 +198,28 @@ let CdpElementHandle = (() => {
                 fieldId,
                 frameId,
                 card: data.creditCard,
+            });
+        }
+        async *queryAXTree(name, role) {
+            const { nodes } = await this.client.send('Accessibility.queryAXTree', {
+                objectId: this.id,
+                accessibleName: name,
+                role,
+            });
+            const results = nodes.filter(node => {
+                if (node.ignored) {
+                    return false;
+                }
+                if (!node.role) {
+                    return false;
+                }
+                if (NON_ELEMENT_NODE_ROLES.has(node.role.value)) {
+                    return false;
+                }
+                return true;
+            });
+            return yield* AsyncIterableUtil_js_1.AsyncIterableUtil.map(results, node => {
+                return this.realm.adoptBackendNode(node.backendDOMNodeId);
             });
         }
     };

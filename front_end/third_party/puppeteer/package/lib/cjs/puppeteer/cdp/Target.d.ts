@@ -57,7 +57,7 @@ export declare class CdpTarget extends Target {
 export declare class PageTarget extends CdpTarget {
     #private;
     protected pagePromise?: Promise<Page>;
-    constructor(targetInfo: Protocol.Target.TargetInfo, session: CDPSession | undefined, browserContext: BrowserContext, targetManager: TargetManager, sessionFactory: (isAutoAttachEmulated: boolean) => Promise<CDPSession>, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null);
+    constructor(targetInfo: Protocol.Target.TargetInfo, session: CDPSession | undefined, browserContext: BrowserContext, targetManager: TargetManager, sessionFactory: (isAutoAttachEmulated: boolean) => Promise<CDPSession>, defaultViewport: Viewport | null);
     _initialize(): void;
     page(): Promise<Page | null>;
     _checkIfInitialized(): void;

@@ -84,6 +84,13 @@ class ManualPromise {
   }
 }
 
+const cancelAllPendingRaf = () => {
+  let rafId = window.requestAnimationFrame(() => {});
+  while (rafId--) {
+    window.cancelAnimationFrame(rafId);
+  }
+};
+
 const stubAnimationGroup = () => {
   sinon.stub(Animation.AnimationModel.AnimationGroup.prototype, 'scrollNode')
       .resolves(new Animation.AnimationDOMNode.AnimationDOMNode(null as unknown as SDK.DOMModel.DOMNode));
@@ -146,6 +153,7 @@ describeWithMockConnection('AnimationTimeline', () => {
   });
 
   afterEach(() => {
+    cancelAllPendingRaf();
     view.detach();
   });
 
@@ -186,7 +194,8 @@ describeWithMockConnection('AnimationTimeline', () => {
   it('updates UI on in scope animation group start', updatesUiOnEvent(true));
   it('does not update UI on out of scope animation group start', updatesUiOnEvent(false));
 
-  describe('resizing time controls', () => {
+  // Flaking on multiple bots on CQ.
+  describe.skip('[crbug.com/334003901] resizing time controls', () => {
     it('updates --timeline-controls-width and calls onResize', async () => {
       view = Animation.AnimationTimeline.AnimationTimeline.instance({forceNew: true});
       view.markAsRoot();
@@ -222,7 +231,8 @@ describeWithMockConnection('AnimationTimeline', () => {
     });
   });
 
-  describe('Animation group nodes are removed', () => {
+  // Flaking on multiple bots on CQ.
+  describe.skip('[crbug.com/334003901] Animation group nodes are removed', () => {
     const waitForPreviewsManualPromise = new ManualPromise();
     const waitForAnimationGroupSelectedPromise = new ManualPromise();
 
@@ -368,7 +378,8 @@ describeWithMockConnection('AnimationTimeline', () => {
     });
   });
 
-  describe('time animations', () => {
+  // Flaking on multiple bots on CQ.
+  describe.skip('[crbug.com/334003901] time animations', () => {
     const waitForPreviewsManualPromise = new ManualPromise();
     const waitForAnimationGroupSelectedPromise = new ManualPromise();
     const waitForScheduleRedrawAfterAnimationGroupUpdated = new ManualPromise();
@@ -457,7 +468,8 @@ describeWithMockConnection('AnimationTimeline', () => {
     });
   });
 
-  describe('scroll driven animations', () => {
+  // Flaking on multiple bots on CQ.
+  describe.skip('[crbug.com/334003901] scroll driven animations', () => {
     let stubbedAnimationDOMNode: AnimationDOMNodeStubs;
     const waitForPreviewsManualPromise = new ManualPromise();
     const waitForAnimationGroupSelectedPromise = new ManualPromise();

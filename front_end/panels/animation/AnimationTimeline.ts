@@ -136,8 +136,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
   #collectedGroups: AnimationGroup[];
   #createPreviewForCollectedGroupsThrottler: Common.Throttler.Throttler = new Common.Throttler.Throttler(10);
   #animationGroupUpdatedThrottler: Common.Throttler.Throttler = new Common.Throttler.Throttler(10);
-  #updateScrubberTimeTextRafId?: number;
-  #renderRafId?: number;
 
   // We're only adding event listeners to the animation model when the panel is first shown.
   #initialized: boolean = false;
@@ -237,16 +235,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     }
     this.registerCSSFiles([animationTimelineStyles]);
     this.#initialized = true;
-  }
-
-  override willHide(): void {
-    if (this.#updateScrubberTimeTextRafId) {
-      cancelAnimationFrame(this.#updateScrubberTimeTextRafId);
-    }
-
-    if (this.#renderRafId) {
-      cancelAnimationFrame(this.#renderRafId);
-    }
   }
 
   modelAdded(animationModel: AnimationModel): void {
@@ -967,7 +955,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
       return;
     }
     this.#redrawing = true;
-    this.render();
+    this.#animationsContainer.window().requestAnimationFrame(this.render.bind(this));
   }
 
   private render(timestamp?: number): void {
@@ -978,7 +966,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
       }
     }
     if (this.#renderQueue.length) {
-      this.#renderRafId = this.#animationsContainer.window().requestAnimationFrame(timestamp => this.render(timestamp));
+      this.#animationsContainer.window().requestAnimationFrame(this.render.bind(this));
     } else {
       this.#redrawing = undefined;
     }
@@ -1023,22 +1011,21 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this.#scrubberPlayer.playbackRate = this.effectivePlaybackRate();
     this.#scrubberPlayer.onfinish = this.updateControlButton.bind(this);
     this.#scrubberPlayer.currentTime = currentTime;
-    this.updateScrubberTimeText();
+    this.element.window().requestAnimationFrame(this.updateScrubber.bind(this));
   }
 
   pixelTimeRatio(): number {
     return this.width() / this.duration() || 0;
   }
 
-  private updateScrubberTimeText(): void {
+  private updateScrubber(_timestamp: number): void {
     if (!this.#scrubberPlayer) {
       return;
     }
 
     this.setCurrentTimeText(this.#scrubberCurrentTime());
     if (this.#scrubberPlayer.playState.toString() === 'pending' || this.#scrubberPlayer.playState === 'running') {
-      this.#updateScrubberTimeTextRafId =
-          this.element.window().requestAnimationFrame(() => this.updateScrubberTimeText());
+      this.element.window().requestAnimationFrame(this.updateScrubber.bind(this));
     } else if (this.#scrubberPlayer.playState === 'finished') {
       this.clearCurrentTimeText();
     }
@@ -1125,7 +1112,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     if (this.#selectedGroup?.isScrollDriven()) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.ScrollDrivenAnimationGroupScrubbed);
     }
-    this.updateScrubberTimeText();
+    this.#currentTime.window().requestAnimationFrame(this.updateScrubber.bind(this));
 
     if (!this.#animationGroupPausedBeforeScrub) {
       this.togglePause(false);

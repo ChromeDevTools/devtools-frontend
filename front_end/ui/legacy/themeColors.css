@@ -335,7 +335,7 @@
   /* Universal surfaces */
 
   --sys-color-cdt-base: var(--sys-color-base-container);
-  --sys-color-cdt-base-container: var(--sys-color-base);
+  --sys-color-cdt-base-container: var(--ref-palette-neutral99);
 
   /* Tinted surfaces */
 
@@ -355,23 +355,23 @@
   --sys-color-token-variable: var(--sys-color-on-surface);
   --sys-color-token-property: var(--sys-color-on-surface);
   --sys-color-token-property-special: var(--ref-palette-error50);
-  --sys-color-token-type: var(--ref-palette-tertiary50);
-  --sys-color-token-definition: var(--ref-palette-primary30);
-  --sys-color-token-variable-special: var(--ref-palette-primary30);
-  --sys-color-token-builtin: var(--ref-palette-primary20);
+  --sys-color-token-type: var(--ref-palette-green50);
+  --sys-color-token-definition: var(--ref-palette-blue30);
+  --sys-color-token-variable-special: var(--ref-palette-blue30);
+  --sys-color-token-builtin: var(--ref-palette-blue20);
   --sys-color-token-keyword: var(--ref-palette-pink40);
-  --sys-color-token-number: var(--ref-palette-primary40);
+  --sys-color-token-number: var(--ref-palette-blue40);
   --sys-color-token-string: var(--ref-palette-error40);
   --sys-color-token-string-special: var(--ref-palette-error50);
-  --sys-color-token-atom: var(--ref-palette-primary20);
+  --sys-color-token-atom: var(--ref-palette-blue20);
   --sys-color-token-tag: var(--ref-palette-pink30);
   --sys-color-token-attribute: var(--ref-palette-orange40);
-  --sys-color-token-attribute-value: var(--ref-palette-primary30);
-  --sys-color-token-comment: var(--ref-palette-tertiary40);
+  --sys-color-token-attribute-value: var(--ref-palette-blue30);
+  --sys-color-token-comment: var(--ref-palette-green40);
   --sys-color-token-meta: var(--ref-palette-neutral60);
   --sys-color-token-deleted: var(--ref-palette-error50);
-  --sys-color-token-inserted: var(--ref-palette-tertiary60);
-  --sys-color-token-pseudo-element: var(--ref-palette-primary40);
+  --sys-color-token-inserted: var(--ref-palette-green60);
+  --sys-color-token-pseudo-element: var(--ref-palette-blue40);
   --sys-color-token-subtle: var(--ref-palette-neutral60);
 
   /* Color for strokestyle of canvas in flame chart */
@@ -450,6 +450,7 @@
 :root.baseline-grayscale {
   --sys-color-base: var(--ref-palette-neutral100);
   --sys-color-surface: var(--ref-palette-neutral100);
+  --sys-color-cdt-base-container: var(--ref-palette-neutral100);
 
   &.-theme-with-dark-background {
     --sys-color-surface5: color-mix(in sRGB, #d1e1ff 14%, var(--ref-palette-neutral10));
@@ -460,6 +461,7 @@
     --sys-color-divider: var(--ref-palette-neutral40);
     --sys-color-base: var(--ref-palette-neutral25);
     --sys-color-surface: var(--ref-palette-neutral10);
+    --sys-color-cdt-base-container: var(--ref-palette-neutral15);
   }
 }
 
@@ -772,22 +774,22 @@
   --sys-color-token-variable: var(--ref-palette-neutral80);
   --sys-color-token-property: var(--ref-palette-yellow70);
   --sys-color-token-property-special: var(--ref-palette-cyan80);
-  --sys-color-token-type: var(--ref-palette-primary70);
-  --sys-color-token-definition: var(--ref-palette-primary70);
-  --sys-color-token-variable-special: var(--ref-palette-primary40);
-  --sys-color-token-builtin: var(--ref-palette-primary80);
+  --sys-color-token-type: var(--ref-palette-blue70);
+  --sys-color-token-definition: var(--ref-palette-blue70);
+  --sys-color-token-variable-special: var(--ref-palette-blue40);
+  --sys-color-token-builtin: var(--ref-palette-blue80);
   --sys-color-token-keyword: var(--ref-palette-purple60);
-  --sys-color-token-number: var(--ref-palette-tertiary90);
+  --sys-color-token-number: var(--ref-palette-green90);
   --sys-color-token-string: var(--ref-palette-orange70);
   --sys-color-token-string-special: var(--ref-palette-orange70);
-  --sys-color-token-atom: var(--ref-palette-tertiary90);
-  --sys-color-token-tag: var(--ref-palette-primary70);
-  --sys-color-token-attribute: var(--ref-palette-primary80);
+  --sys-color-token-atom: var(--ref-palette-green90);
+  --sys-color-token-tag: var(--ref-palette-blue70);
+  --sys-color-token-attribute: var(--ref-palette-blue80);
   --sys-color-token-attribute-value: var(--ref-palette-orange70);
   --sys-color-token-comment: var(--ref-palette-neutral70);
   --sys-color-token-meta: var(--ref-palette-neutral60);
   --sys-color-token-deleted: var(--ref-palette-error50);
-  --sys-color-token-inserted: var(--ref-palette-tertiary60);
+  --sys-color-token-inserted: var(--ref-palette-green60);
   --sys-color-token-pseudo-element: var(--ref-palette-pink70);
   --sys-color-token-subtle: var(--ref-palette-neutral60);
 

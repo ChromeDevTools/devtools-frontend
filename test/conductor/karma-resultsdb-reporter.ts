@@ -101,9 +101,7 @@ export const ResultsDBReporter = function(
     }
 
     const testResult: ResultsDb.TestResult = {testId, duration, status, expected, summaryHtml};
-    if (status !== 'SKIP') {
-      ResultsDb.sendTestResult(testResult);
-    }
+    ResultsDb.sendTestResult(testResult);
   };
   this.specSuccess = specComplete;
   this.specSkipped = specComplete;

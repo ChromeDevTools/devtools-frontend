@@ -96,19 +96,6 @@ export const config = {
    "type": "boolean"
   },
   {
-   "default": "none",
-   "enum": [
-    "copy",
-    "move",
-    "link",
-    "execute",
-    "popup",
-    "none"
-   ],
-   "name": "aria-dropeffect",
-   "type": "token_list"
-  },
-  {
    "name": "aria-errormessage",
    "type": "IDREF"
   },
@@ -125,16 +112,6 @@ export const config = {
   {
    "name": "aria-flowto",
    "type": "IDREF_list"
-  },
-  {
-   "default": "undefined",
-   "enum": [
-    "true",
-    "false",
-    "undefined"
-   ],
-   "name": "aria-grabbed",
-   "type": "token"
   },
   {
    "default": "false",

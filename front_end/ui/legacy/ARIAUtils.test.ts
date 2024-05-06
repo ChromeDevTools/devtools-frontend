@@ -8,6 +8,7 @@ import * as UI from './legacy.js';
 
 describeWithEnvironment('ARIAUtils', () => {
   beforeEach(() => {
+    UI.Dialog.Dialog.getInstance()?.hide();
     UI.ARIAUtils.alert('');
     UI.ARIAUtils.alert('');
   });

@@ -512,6 +512,7 @@ export class HeaderSectionRow extends HTMLElement {
       (valueEL as EditableSpan).value = headerValue;
       valueEL.dispatchEvent(new Event('input'));
     }
+    event.preventDefault();
   }
 }
 

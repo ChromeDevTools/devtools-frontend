@@ -36,16 +36,18 @@ describe('The Lighthouse start view', () => {
     assert.strictEqual(helpText, 'At least one category must be selected.');
   });
 
-  it('enables the start button if only one category is selected', async () => {
-    await navigateToLighthouseTab('empty.html');
+  // Flaky test.
+  it.skipOnPlatforms(
+      ['mac'], '[crbug.com/338885778] enables the start button if only one category is selected', async () => {
+        await navigateToLighthouseTab('empty.html');
 
-    await selectCategories(['performance']);
+        await selectCategories(['performance']);
 
-    const disabled = await isGenerateReportButtonDisabled();
-    const helpText = await getHelpText();
-    assert.isFalse(disabled, 'The Generate Report button should be enabled');
-    assert.strictEqual(helpText, '');
-  });
+        const disabled = await isGenerateReportButtonDisabled();
+        const helpText = await getHelpText();
+        assert.isFalse(disabled, 'The Generate Report button should be enabled');
+        assert.strictEqual(helpText, '');
+      });
 
   // Flaky test.
   it.skipOnPlatforms(['mac'], '[crbug.com/1484942]: disables the start button for internal pages', async () => {

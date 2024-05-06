@@ -290,7 +290,7 @@ export const enum ExperimentName {
   AUTOFILL_VIEW = 'autofill-view',
   INDENTATION_MARKERS_TEMP_DISABLE = 'sources-frame-indentation-markers-temporarily-disable',
   TIMELINE_SHOW_POST_MESSAGE_EVENTS = 'timeline-show-postmessage-events',
-  SAVE_AND_LOAD_TRACE_WITH_ANNOTATIONS = 'save-and-load-trace-with-annotations',
+  PERF_PANEL_ANNOTATIONS = 'perf-panel-annotations',
   TIMELINE_EXTENSIONS = 'timeline-extensions',
   TIMELINE_DEBUG_MODE = 'timeline-debug-mode',
   TIMELINE_EXECUTE_OLD_ENGINE = 'timeline-enable-old-timeline-model-engine',

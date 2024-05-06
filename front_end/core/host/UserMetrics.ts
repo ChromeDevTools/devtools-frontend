@@ -1039,15 +1039,15 @@ export enum DevtoolsExperiments {
   'heap-snapshot-treat-backing-store-as-containing-object' = 84,
   'css-type-component-length-deprecate' = 85,
   'timeline-show-postmessage-events' = 86,
-  'save-and-load-trace-with-annotations' = 87,
   'timeline-extensions' = 89,
   'timeline-enhanced-traces' = 90,
   'timeline-compiled-sources' = 91,
   'timeline-enable-old-timeline-model-engine' = 92,
   'timeline-debug-mode' = 93,
+  'perf-panel-annotations' = 94,
 
   // Increment this when new experiments are added.
-  'MaxValue' = 94,
+  'MaxValue' = 95,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

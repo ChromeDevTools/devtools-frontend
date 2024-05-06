@@ -392,7 +392,7 @@ export class MainImpl {
     );
 
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.SAVE_AND_LOAD_TRACE_WITH_ANNOTATIONS,
+        Root.Runtime.ExperimentName.PERF_PANEL_ANNOTATIONS,
         'Enable saving and loading traces with annotations in the Performance panel',
     );
 

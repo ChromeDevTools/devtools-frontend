@@ -5,6 +5,8 @@
 import * as fs from 'fs';
 import {join} from 'path';  // eslint-disable-line rulesdir/es_modules_import
 
+import * as ts from '../../conductor/test_config.js';
+
 const results: Benchmark[] = [];
 
 // Based on skia-perf format:
@@ -52,7 +54,7 @@ export function clearResults() {
 export function writeReport() {
   // This points to perf-data under devtools root directory
   // devtools-frontend/perf-data.
-  const directory = join(__dirname, '..', '..', '..', '..', '..', '..', 'perf-data');
+  const directory = join(ts.TestConfig.artifactsDir, 'perf-data');
   fs.mkdirSync(directory, {recursive: true});
 
   const filePath = join(directory, 'devtools-perf.json');

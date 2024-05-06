@@ -25,16 +25,18 @@ describe('The Lighthouse start view', () => {
     assert.strictEqual(helpText, '');
   });
 
-  it('disables the start button when no categories are selected', async () => {
-    await navigateToLighthouseTab('empty.html');
+  // Flaky test.
+  it.skipOnPlatforms(
+      ['mac'], '[crbug.com/338885778] disables the start button when no categories are selected', async () => {
+        await navigateToLighthouseTab('empty.html');
 
-    await selectCategories([]);
+        await selectCategories([]);
 
-    const disabled = await isGenerateReportButtonDisabled();
-    const helpText = await getHelpText();
-    assert.isTrue(disabled, 'The Generate Report button should be disabled');
-    assert.strictEqual(helpText, 'At least one category must be selected.');
-  });
+        const disabled = await isGenerateReportButtonDisabled();
+        const helpText = await getHelpText();
+        assert.isTrue(disabled, 'The Generate Report button should be disabled');
+        assert.strictEqual(helpText, 'At least one category must be selected.');
+      });
 
   // Flaky test.
   it.skipOnPlatforms(

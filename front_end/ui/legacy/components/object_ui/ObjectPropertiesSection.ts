@@ -442,6 +442,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       event.consume();
       void Common.Revealer.reveal(new SDK.RemoteObject.LinearMemoryInspectable(object, expression));
     });
+    memoryIcon.setAttribute('jslog', `${VisualLogging.action('open-memory-inspector').track({click: true})}`);
 
     const revealText = i18nString(UIStrings.revealInMemoryInpector);
     UI.Tooltip.Tooltip.install(memoryIcon, revealText);

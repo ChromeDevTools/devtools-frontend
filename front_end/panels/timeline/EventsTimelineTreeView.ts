@@ -193,7 +193,7 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     function durationFilterChanged(this: Filters): void {
       const duration = (durationFilterUI.selectedOption() as HTMLOptionElement).value;
       const minimumRecordDuration = parseInt(duration, 10);
-      this.durationFilter.setMinimumRecordDuration(minimumRecordDuration);
+      this.durationFilter.setMinimumRecordDuration(TraceEngine.Types.Timing.MilliSeconds(minimumRecordDuration));
       this.notifyFiltersChanged();
     }
 

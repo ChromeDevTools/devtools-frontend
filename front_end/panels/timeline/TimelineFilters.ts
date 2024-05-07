@@ -8,24 +8,18 @@ import * as TraceEngine from '../../models/trace/trace.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 export class IsLong extends TimelineModel.TimelineModelFilter.TimelineModelFilter {
-  private minimumRecordDuration: number;
+  #minimumRecordDurationMilli = TraceEngine.Types.Timing.MilliSeconds(0);
   constructor() {
     super();
-    this.minimumRecordDuration = 0;
   }
 
-  setMinimumRecordDuration(value: number): void {
-    this.minimumRecordDuration = value;
+  setMinimumRecordDuration(value: TraceEngine.Types.Timing.MilliSeconds): void {
+    this.#minimumRecordDurationMilli = value;
   }
 
-  accept(event: TraceEngine.Legacy.CompatibleTraceEvent): boolean {
-    if (TraceEngine.Legacy.eventIsFromNewEngine(event)) {
-      const {duration} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
-      return duration >= this.minimumRecordDuration;
-    }
-
-    const duration = event.endTime ? event.endTime - event.startTime : 0;
-    return duration >= this.minimumRecordDuration;
+  accept(event: TraceEngine.Types.TraceEvents.TraceEventData): boolean {
+    const {duration} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
+    return duration >= this.#minimumRecordDurationMilli;
   }
 }
 
@@ -34,7 +28,7 @@ export class Category extends TimelineModel.TimelineModelFilter.TimelineModelFil
     super();
   }
 
-  accept(event: TraceEngine.Legacy.CompatibleTraceEvent): boolean {
+  accept(event: TraceEngine.Types.TraceEvents.TraceEventData): boolean {
     return !TimelineUIUtils.eventStyle(event).category.hidden;
   }
 }
@@ -54,8 +48,9 @@ export class TimelineRegExp extends TimelineModel.TimelineModelFilter.TimelineMo
     return this.regExpInternal;
   }
 
-  accept(event: TraceEngine.Legacy.CompatibleTraceEvent, traceParsedData?: TraceEngine.Handlers.Types.TraceParseData):
-      boolean {
+  accept(
+      event: TraceEngine.Types.TraceEvents.TraceEventData,
+      traceParsedData?: TraceEngine.Handlers.Types.TraceParseData): boolean {
     return !this.regExpInternal || TimelineUIUtils.testContentMatching(event, this.regExpInternal, traceParsedData);
   }
 }

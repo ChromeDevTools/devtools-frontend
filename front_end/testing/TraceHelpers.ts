@@ -335,6 +335,8 @@ export function makeProfileCall(
     cat: '',
     name: 'ProfileCall',
     nodeId,
+    sampleIndex: 0,
+    profileId: TraceEngine.Types.TraceEvents.ProfileID('fake-profile-id'),
     ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
     pid,
     tid,
@@ -507,6 +509,7 @@ export function makeMockSamplesHandlerData(profileCalls: TraceEngine.Types.Trace
     parsedProfile: new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(profile),
     profileCalls,
     profileTree: tree,
+    profileId: TraceEngine.Types.TraceEvents.ProfileID('fake-profile-id'),
   };
   const profilesInThread = new Map([[1 as TraceEngine.Types.TraceEvents.ThreadID, profileData]]);
   return {

@@ -184,8 +184,19 @@ export function activeURLForFrameAtTime(
   return null;
 }
 
+/**
+ * @param node the node attached to the profile call. Here a node represents a function in the call tree.
+ * @param profileId the profile ID that the sample came from that backs this call.
+ * @param sampleIndex the index of the sample in the given profile that this call was created from
+ * @param ts the timestamp of the profile call
+ * @param pid the process ID of the profile call
+ * @param tid the thread ID of the profile call
+ *
+ * See `panels/timeline/docs/profile_calls.md` for more context on how these events are created.
+ */
 export function makeProfileCall(
-    node: CPUProfile.ProfileTreeModel.ProfileNode, ts: Types.Timing.MicroSeconds, pid: Types.TraceEvents.ProcessID,
+    node: CPUProfile.ProfileTreeModel.ProfileNode, profileId: Types.TraceEvents.ProfileID, sampleIndex: number,
+    ts: Types.Timing.MicroSeconds, pid: Types.TraceEvents.ProcessID,
     tid: Types.TraceEvents.ThreadID): Types.TraceEvents.SyntheticProfileCall {
   return {
     cat: '',
@@ -199,6 +210,8 @@ export function makeProfileCall(
     dur: Types.Timing.MicroSeconds(0),
     selfTime: Types.Timing.MicroSeconds(0),
     callFrame: node.callFrame,
+    sampleIndex,
+    profileId,
   };
 }
 

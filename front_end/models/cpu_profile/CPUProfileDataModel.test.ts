@@ -21,11 +21,13 @@ function getFrameTreeAsString(cpuProfileDataModel: CPUProfile.CPUProfileDataMode
   const trackingStack: Entry[] = [];
   const resultStack: Entry[] = [];
   let result = '\n';
-  const onFrameOpen = (depth: number, node: CPUProfile.ProfileTreeModel.ProfileNode, ts: number) => {
-    trackingStack.push({depth, id: node.id, name: node.callFrame.functionName, ts, selfTime: 0, dur: 0});
-  };
+  const onFrameOpen =
+      (depth: number, node: CPUProfile.ProfileTreeModel.ProfileNode, _sampleIndex: number, ts: number) => {
+        trackingStack.push({depth, id: node.id, name: node.callFrame.functionName, ts, selfTime: 0, dur: 0});
+      };
   const onFrameClose =
-      (_depth: number, node: CPUProfile.ProfileTreeModel.ProfileNode, _ts: number, dur: number, selfTime: number) => {
+      (_depth: number, node: CPUProfile.ProfileTreeModel.ProfileNode, _sampleIndex: number, _ts: number, dur: number,
+       selfTime: number) => {
         const entry = trackingStack.pop();
         if (!entry || entry.id !== node.id) {
           throw new Error('Frame open and Frame close callbacks are not balanced');

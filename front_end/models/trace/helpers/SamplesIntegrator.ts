@@ -94,14 +94,17 @@ export class SamplesIntegrator {
   #nodeForGC = new Map<Types.TraceEvents.SyntheticProfileCall, CPUProfile.ProfileTreeModel.ProfileNode>();
 
   #engineConfig: Types.Configuration.Configuration;
+  #profileId: Types.TraceEvents.ProfileID;
 
   constructor(
-      profileModel: CPUProfile.CPUProfileDataModel.CPUProfileDataModel, pid: Types.TraceEvents.ProcessID,
-      tid: Types.TraceEvents.ThreadID, configuration?: Types.Configuration.Configuration) {
+      profileModel: CPUProfile.CPUProfileDataModel.CPUProfileDataModel, profileId: Types.TraceEvents.ProfileID,
+      pid: Types.TraceEvents.ProcessID, tid: Types.TraceEvents.ThreadID,
+      configuration?: Types.Configuration.Configuration) {
     this.#profileModel = profileModel;
     this.#threadId = tid;
     this.#processId = pid;
     this.#engineConfig = configuration || Types.Configuration.DEFAULT;
+    this.#profileId = profileId;
   }
 
   buildProfileCalls(traceEvents: Types.TraceEvents.TraceEventData[]): Types.TraceEvents.SyntheticProfileCall[] {
@@ -235,7 +238,7 @@ export class SamplesIntegrator {
       if (!node) {
         continue;
       }
-      const call = makeProfileCall(node, timestamp, this.#processId, this.#threadId);
+      const call = makeProfileCall(node, this.#profileId, i, timestamp, this.#processId, this.#threadId);
       calls.push(call);
       if (node.id === this.#profileModel.gcNode?.id && prevNode) {
         // GC samples have no stack, so we just put GC node on top of the
@@ -271,9 +274,11 @@ export class SamplesIntegrator {
       callFrames[i--] = profileCall;
     }
 
-    // Many of these ProfileCalls will be GC'd later when we estimate the frame durations
+    // Many of these ProfileCalls will be GC'd later when we estimate the frame
+    // durations
     while (node) {
-      callFrames[i--] = makeProfileCall(node, profileCall.ts, this.#processId, this.#threadId);
+      callFrames[i--] = makeProfileCall(
+          node, profileCall.profileId, profileCall.sampleIndex, profileCall.ts, this.#processId, this.#threadId);
       node = node.parent;
     }
     return callFrames;

@@ -324,13 +324,17 @@ export function buildHierarchy(
       // Step 1. Massage the data.
       Helpers.Trace.sortTraceEventsInPlace(thread.entries);
       // Step 2. Inject profile calls from samples
-      const cpuProfile = samplesData.profilesInProcess.get(pid)?.get(tid)?.parsedProfile;
-      const samplesIntegrator =
-          cpuProfile && new Helpers.SamplesIntegrator.SamplesIntegrator(cpuProfile, pid, tid, config);
-      const profileCalls = samplesIntegrator?.buildProfileCalls(thread.entries);
-      if (profileCalls) {
-        allTraceEntries = [...allTraceEntries, ...profileCalls];
-        thread.entries = Helpers.Trace.mergeEventsInOrder(thread.entries, profileCalls);
+      const samplesDataForThread = samplesData.profilesInProcess.get(pid)?.get(tid);
+      if (samplesDataForThread) {
+        const cpuProfile = samplesDataForThread.parsedProfile;
+        const samplesIntegrator = cpuProfile &&
+            new Helpers.SamplesIntegrator.SamplesIntegrator(
+                cpuProfile, samplesDataForThread.profileId, pid, tid, config);
+        const profileCalls = samplesIntegrator?.buildProfileCalls(thread.entries);
+        if (profileCalls) {
+          allTraceEntries = [...allTraceEntries, ...profileCalls];
+          thread.entries = Helpers.Trace.mergeEventsInOrder(thread.entries, profileCalls);
+        }
       }
       // Step 3. Build the tree.
       const treeData = Helpers.TreeHelpers.treify(thread.entries, options);

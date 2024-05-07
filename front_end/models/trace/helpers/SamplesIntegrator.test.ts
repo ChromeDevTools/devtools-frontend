@@ -38,10 +38,12 @@ describeWithEnvironment('SamplesIntegrator', function() {
   };
 
   const parsedBasicProfile = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(basicCDPProfile);
+  const PROFILE_ID = TraceModel.Types.TraceEvents.ProfileID('fake-profile-id');
 
   describe('callsFromProfileSamples', () => {
     it('generates empty profile calls from a profile with samples', () => {
-      const integrator = new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedBasicProfile, pid, tid);
+      const integrator =
+          new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedBasicProfile, PROFILE_ID, pid, tid);
       const calls = integrator.callsFromProfileSamples();
       assert.strictEqual(calls.length, basicCDPProfile.samples?.length);
       let currentTimestamp = 0;
@@ -52,6 +54,12 @@ describeWithEnvironment('SamplesIntegrator', function() {
         assert.strictEqual(call.dur, 0);
         assert.strictEqual(call.dur, 0);
         assert.strictEqual(call.ts, currentTimestamp);
+
+        // Ensure each ProfileCall has been "linked" to the Profile and the
+        // sample.
+        assert.strictEqual(call.profileId, PROFILE_ID);
+        assert.strictEqual(call.sampleIndex, i);
+        assert.isDefined(call.nodeId);
       }
     });
   });
@@ -64,7 +72,8 @@ describeWithEnvironment('SamplesIntegrator', function() {
       const [[pid, profileByThread]] = samplesData.profilesInProcess.entries();
       const [[tid, cpuProfileData]] = profileByThread.entries();
       const parsedProfile = cpuProfileData.parsedProfile;
-      const samplesIntegrator = new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, pid, tid);
+      const samplesIntegrator =
+          new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, PROFILE_ID, pid, tid);
       const traceEvents = data.Renderer.allTraceEntries.filter(event => event.pid === pid && event.tid === tid);
       if (!traceEvents) {
         throw new Error('Trace events were unexpectedly not found.');
@@ -79,7 +88,8 @@ describeWithEnvironment('SamplesIntegrator', function() {
       // |----Trace Event----|
       //           |----a----|
       //                 |-b-|
-      const integrator = new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedBasicProfile, pid, tid);
+      const integrator =
+          new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedBasicProfile, PROFILE_ID, pid, tid);
       const callEvent = makeCompleteEvent(TraceModel.Types.TraceEvents.KnownEventName.FunctionCall, 0, 500);
       const traceEvents = [callEvent];
       const constructedCalls = integrator.buildProfileCalls(traceEvents);
@@ -93,7 +103,8 @@ describeWithEnvironment('SamplesIntegrator', function() {
     });
 
     it('creates JS frame events without a top-level V8 invocation', () => {
-      const integrator = new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedBasicProfile, pid, tid);
+      const integrator =
+          new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedBasicProfile, PROFILE_ID, pid, tid);
       const traceEvents: TraceModel.Types.TraceEvents.TraceEventComplete[] = [];
       const constructedCalls = integrator.buildProfileCalls(traceEvents);
       assert.strictEqual(constructedCalls.length, 2);
@@ -130,7 +141,8 @@ describeWithEnvironment('SamplesIntegrator', function() {
       //  |----a----| |--Trace Event--|
       //              |-------b-------|
       const parsedProfile = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(cdpProfile);
-      const integrator = new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, pid, tid);
+      const integrator =
+          new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, PROFILE_ID, pid, tid);
       const callEvent = makeCompleteEvent(TraceModel.Types.TraceEvents.KnownEventName.FunctionCall, 250, 250);
       const traceEvents = [callEvent];
       const constructedCalls = integrator.buildProfileCalls(traceEvents);
@@ -172,7 +184,8 @@ describeWithEnvironment('SamplesIntegrator', function() {
       //        |--V8.ParseFuntion--||---a---||-----b------|
 
       const parsedProfile = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(cdpProfile);
-      const integrator = new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, pid, tid);
+      const integrator =
+          new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, PROFILE_ID, pid, tid);
       const evaluateScript = makeCompleteEvent(TraceModel.Types.TraceEvents.KnownEventName.EvaluateScript, 0, 500);
       const v8Run = makeCompleteEvent('v8.run', 10, 490);
       const parseFunction = makeCompleteEvent('V8.ParseFunction', 12, 1);
@@ -220,7 +233,8 @@ describeWithEnvironment('SamplesIntegrator', function() {
       const runMicroTasks = makeCompleteEvent(TraceModel.Types.TraceEvents.KnownEventName.RunMicrotasks, 50, 100);
       const traceEvents = [runTask, evaluateScript, runMicroTasks];
       const parsedProfile = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(cdpProfile);
-      const integrator = new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, pid, tid);
+      const integrator =
+          new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, PROFILE_ID, pid, tid);
       const constructedCalls = integrator.buildProfileCalls(traceEvents);
 
       assert.strictEqual(constructedCalls.length, 3);
@@ -242,7 +256,8 @@ describeWithEnvironment('SamplesIntegrator', function() {
       const [[pid, profileByThread]] = samplesData.profilesInProcess.entries();
       const [[tid, cpuProfileData]] = profileByThread.entries();
       const parsedProfile = cpuProfileData.parsedProfile;
-      const samplesIntegrator = new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, pid, tid);
+      const samplesIntegrator =
+          new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, PROFILE_ID, pid, tid);
       const traceEvents = data.Renderer.allTraceEntries.filter(event => event.pid === pid && event.tid === tid);
       if (!traceEvents) {
         throw new Error('Trace events were unexpectedly not found.');

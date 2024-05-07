@@ -365,7 +365,7 @@ describe('User Metrics', () => {
     await assertHistogramEventsInclude([
       {
         actionName: 'DevTools.ExperimentEnabledAtLaunch',
-        actionCode: 74,  // Enabled by default: setAllBreakpointsEagerly
+        actionCode: 82,  // Enabled by default: Autofill View
       },
       {
         actionName: 'DevTools.ExperimentDisabledAtLaunch',

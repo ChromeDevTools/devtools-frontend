@@ -305,7 +305,6 @@ export class MainImpl {
 
     // Debugging
     Root.Runtime.experiments.register('instrumentation-breakpoints', 'Enable instrumentation breakpoints', true);
-    Root.Runtime.experiments.register('set-all-breakpoints-eagerly', 'Set all breakpoints eagerly at startup');
     Root.Runtime.experiments.register('use-source-map-scopes', 'Use scope information from source maps', true);
 
     // Advanced Perceptual Contrast Algorithm.
@@ -404,7 +403,6 @@ export class MainImpl {
 
     Root.Runtime.experiments.enableExperimentsByDefault([
       'css-type-component-length-deprecate',
-      'set-all-breakpoints-eagerly',
       Root.Runtime.ExperimentName.OUTERMOST_TARGET_SELECTOR,
       Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL,
       Root.Runtime.ExperimentName.AUTOFILL_VIEW,

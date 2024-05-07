@@ -284,7 +284,6 @@ export const enum ExperimentName {
   PRELOADING_STATUS_PANEL = 'preloading-status-panel',
   OUTERMOST_TARGET_SELECTOR = 'outermost-target-selector',
   HIGHLIGHT_ERRORS_ELEMENTS_PANEL = 'highlight-errors-elements-panel',
-  SET_ALL_BREAKPOINTS_EAGERLY = 'set-all-breakpoints-eagerly',
   USE_SOURCE_MAP_SCOPES = 'use-source-map-scopes',
   NETWORK_PANEL_FILTER_BAR_REDESIGN = 'network-panel-filter-bar-redesign',
   AUTOFILL_VIEW = 'autofill-view',

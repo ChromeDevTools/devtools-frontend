@@ -1031,7 +1031,6 @@ export enum DevtoolsExperiments {
   'preloading-status-panel' = 68,
   'outermost-target-selector' = 71,
   'highlight-errors-elements-panel' = 73,
-  'set-all-breakpoints-eagerly' = 74,
   'use-source-map-scopes' = 76,
   'network-panel-filter-bar-redesign' = 79,
   'autofill-view' = 82,

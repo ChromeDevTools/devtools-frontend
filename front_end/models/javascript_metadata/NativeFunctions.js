@@ -7648,6 +7648,10 @@ export const NativeFunctions = [
     receivers: ["GPUQueue"]
   },
   {
+    name: "dispatch",
+    signatures: [["graph","inputs","outputs"]]
+  },
+  {
     name: "MLModelLoader",
     signatures: [["context"]]
   },

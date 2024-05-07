@@ -13992,6 +13992,7 @@
                         {
                             "name": "partitionKey",
                             "description": "If specified, deletes only cookies with the the given name and partitionKey where domain\nmatches provided URL.",
+                            "experimental": true,
                             "optional": true,
                             "type": "string"
                         }

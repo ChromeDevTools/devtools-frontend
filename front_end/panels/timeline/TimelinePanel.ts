@@ -353,8 +353,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     config.experiments.timelineShowAllEvents = Root.Runtime.experiments.isEnabled('timeline-show-all-events');
     config.experiments.timelineV8RuntimeCallStats =
         Root.Runtime.experiments.isEnabled('timeline-v8-runtime-call-stats');
-    config.experiments.timelineDebugMode =
-        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE);
     this.#traceEngineModel = TraceEngine.TraceModel.Model.createWithAllHandlers(config);
 
     this.element.addEventListener('contextmenu', this.contextMenu.bind(this), false);

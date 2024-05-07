@@ -54,32 +54,6 @@ describeWithEnvironment('SamplesIntegrator', function() {
         assert.strictEqual(call.ts, currentTimestamp);
       }
     });
-    it('generates JSSamples from samples under debug mode', () => {
-      const config = {
-        ...TraceModel.Types.Configuration.DEFAULT,
-      };
-      config.experiments.timelineDebugMode = true;
-
-      const integrator =
-          new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedBasicProfile, pid, tid, config);
-      integrator.callsFromProfileSamples();
-      const jsSampleEvents = integrator.jsSampleEvents;
-
-      assert.strictEqual(jsSampleEvents[0].ts, 100);
-      assert.strictEqual(jsSampleEvents[1].ts, 200);
-      assert.strictEqual(jsSampleEvents[2].ts, 300);
-      assert.strictEqual(jsSampleEvents[3].ts, 400);
-
-      assert.strictEqual(jsSampleEvents[0].dur, 0);
-      assert.strictEqual(jsSampleEvents[1].dur, 0);
-      assert.strictEqual(jsSampleEvents[2].dur, 0);
-      assert.strictEqual(jsSampleEvents[3].dur, 0);
-
-      assert.deepStrictEqual(jsSampleEvents[0].args.data.stackTrace.map(f => f.functionName), ['a']);
-      assert.deepStrictEqual(jsSampleEvents[1].args.data.stackTrace.map(f => f.functionName), ['a']);
-      assert.deepStrictEqual(jsSampleEvents[2].args.data.stackTrace.map(f => f.functionName), ['a', 'b']);
-      assert.deepStrictEqual(jsSampleEvents[3].args.data.stackTrace.map(f => f.functionName), ['a', 'b']);
-    });
   });
 
   describe('buildProfileCalls', () => {

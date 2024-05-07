@@ -15,10 +15,6 @@ export type Configuration = Readonly<{
      * Show all events: disable the default filtering which hides and excludes some events.
      */
     timelineShowAllEvents: boolean,
-    /**
-     * Extra detail for RPP developers
-     */
-    timelineDebugMode: boolean,
   },
   processing: {
     /**
@@ -37,7 +33,6 @@ export const DEFAULT: Configuration = {
   experiments: {
     timelineV8RuntimeCallStats: false,
     timelineShowAllEvents: false,
-    timelineDebugMode: false,
   },
   processing: {
 
@@ -66,6 +61,5 @@ export function configToCacheKey(config: Configuration): string {
   return [
     `experiments.timelineShowAllEvents:${config.experiments.timelineShowAllEvents}`,
     `experiments.timelineV8RuntimeCallStats:${config.experiments.timelineV8RuntimeCallStats}`,
-    `experiments.timelineDebugMode:${config.experiments.timelineDebugMode}`,
   ].join('-');
 }

@@ -18,7 +18,6 @@ import {
   unregisterAllServiceWorkers,
   watchForHang,
 } from './hooks.js';
-import {SOURCE_ROOT} from './paths.js';
 import {TestConfig} from './test_config.js';
 import {getTestRunnerConfigSetting} from './test_runner_config.js';
 import {startServer, stopServer} from './test_server.js';
@@ -107,9 +106,16 @@ export const mochaHooks = {
       rimraf.sync(INTERACTIONS_COVERAGE_LOCATION);
     }
 
-    await writeCoverageReports();
-    copyGoldens();
-
+    const remappedCoverageMap = await createSourceMapStore().transformCoverage(testSuiteCoverageMap);
+    const context = report.createContext({
+      dir: INTERACTIONS_COVERAGE_LOCATION,
+      coverageMap: remappedCoverageMap,
+      defaultSummarizer: 'nested',
+    });
+    reports.create('html').execute(context);
+    reports.create('json').execute(context);
+    reports.create('text', {file: 'coverage.txt'}).execute(context);
+    reports.create('json-summary').execute(context);
   },
   // In both modes, run before each test.
   beforeEach: async function(this: Mocha.Context) {
@@ -159,27 +165,3 @@ export const mochaHooks = {
     testSuiteCoverageMap.merge(testCoverageMap);
   },
 };
-
-async function writeCoverageReports() {
-  const remappedCoverageMap = await createSourceMapStore().transformCoverage(testSuiteCoverageMap);
-  const context = report.createContext({
-    dir: INTERACTIONS_COVERAGE_LOCATION,
-    coverageMap: remappedCoverageMap,
-    defaultSummarizer: 'nested',
-  });
-  reports.create('html').execute(context);
-  reports.create('json').execute(context);
-  reports.create('text', {file: 'coverage.txt'}).execute(context);
-  reports.create('json-summary').execute(context);
-}
-
-function copyGoldens() {
-  if (TestConfig.artifactsDir === SOURCE_ROOT) {
-    return;
-  }
-  fs.cpSync(
-      'test/interactions/goldens',
-      `${path.join(TestConfig.artifactsDir, 'interactions-coverage/')}/goldens`,
-      {recursive: true},
-  );
-}

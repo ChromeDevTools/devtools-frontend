@@ -216,21 +216,11 @@ devtools-recorder-step-editor.is-selected {
 .step-actions {
   border: none;
   border-radius: 0;
-  width: 24px;
   height: 24px;
 
   --override-select-menu-show-button-border-radius: 0;
   --override-select-menu-show-button-outline: none;
   --override-select-menu-show-button-padding: 0;
-}
-
-.step-actions:hover,
-.step-actions:focus-within {
-  background-color: var(--sys-color-state-hover-on-subtle);
-}
-
-.step-actions:active {
-  background-color: var(--sys-color-cdt-base-container);
 }
 
 .step.has-breakpoint .circle-icon {

@@ -650,7 +650,7 @@ export class StepView extends HTMLElement {
         jslog=${VisualLogging.dropDown('step-actions').track({click: true})}
         .data=${
           {
-            variant: Buttons.Button.Variant.TOOLBAR,
+            variant: Buttons.Button.Variant.ICON,
             iconName: 'dots-vertical',
             title: i18nString(UIStrings.openStepActions),
           } as Buttons.Button.ButtonData

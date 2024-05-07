@@ -457,12 +457,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
             event.consume(true);
             void Common.Revealer.reveal(header.ownerNode || null);
           }, false);
-          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-          // This workaround is needed to make stylelint happy
-          Linkifier.setTrimmedText(
-              anchor,
-              '<' +
-                  'style>');
+          Linkifier.setTrimmedText(anchor, '<style>');
         }
       }
 

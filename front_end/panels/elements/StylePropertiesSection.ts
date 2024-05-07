@@ -224,9 +224,10 @@ export class StylePropertiesSection {
     this.selectorElement.addEventListener('mouseenter', this.onMouseEnterSelector.bind(this), false);
     this.selectorElement.addEventListener('mouseleave', this.onMouseOutSelector.bind(this), false);
 
-    if (headerText.length > 0) {
+    // We only add braces for style rules with selectors and non-style rules, which create their own sections.
+    if (headerText.length > 0 || !(rule instanceof SDK.CSSRule.CSSStyleRule)) {
       const openBrace = selectorContainer.createChild('span', 'sidebar-pane-open-brace');
-      openBrace.textContent = ' {';
+      openBrace.textContent = headerText.length > 0 ? ' {' : '{';  // We don't add spacing when there is no selector.
 
       const closeBrace = this.#styleRuleElement.createChild('div', 'sidebar-pane-closing-brace');
       closeBrace.createChild('span', 'styles-clipboard-only').textContent = indent.repeat(this.nestingLevel);

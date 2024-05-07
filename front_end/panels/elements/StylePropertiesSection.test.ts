@@ -269,4 +269,33 @@ describeWithMockConnection('StylesPropertySection', () => {
                 r.startColumn === range.startColumn && r.endLine === range.endLine && r.endColumn === range.endColumn),
         propertyName.text));
   });
+
+  it('renders braces correctly with a non-style-rule section', async () => {
+    Common.Settings.Settings.instance().moduleSetting('text-editor-indent').set('  ');
+    const cssModel = createTarget().model(SDK.CSSModel.CSSModel);
+    assert.exists(cssModel);
+    const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
+    const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+    const styleSheetId = '0' as Protocol.CSS.StyleSheetId;
+    const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 6};
+    const fontPaletteValuesRule = {
+      styleSheetId,
+      origin,
+      style: {
+        range,
+        cssProperties: [],
+        shorthandEntries: [],
+      },
+      fontPaletteName: {
+        range,
+        text: '--palette-name',
+      },
+    };
+    const matchedStyles = await setUpStyles(cssModel, origin, styleSheetId, {...range}, {fontPaletteValuesRule});
+    const declaration = matchedStyles.fontPaletteValuesRule()?.style;
+    assert.exists(declaration);
+    const section = new Elements.StylePropertiesSection.FontPaletteValuesRuleSection(
+        stylesSidebarPane, matchedStyles, declaration, 0);
+    assert.strictEqual(section.element.textContent, '{}');
+  });
 });

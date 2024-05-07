@@ -451,8 +451,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
       assert.strictEqual(titleSwatch?.style.backgroundColor, 'rgb(10, 10, 10)');
     });
     it('assigns the correct color to the swatch of a network request title', async function() {
-      const data = await TraceLoader.allModels(this, 'lcp-web-font.json.gz');
-      const networkRequests = data.traceParsedData.NetworkRequests.byTime;
+      const traceParsedData = await TraceLoader.traceEngine(this, 'lcp-web-font.json.gz');
+      const networkRequests = traceParsedData.NetworkRequests.byTime;
       const cssRequest = networkRequests.find(request => {
         return request.args.data.url === 'https://chromedevtools.github.io/performance-stories/lcp-web-font/app.css';
       });
@@ -461,7 +461,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       }
 
       const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildSyntheticNetworkRequestDetails(
-          data.traceParsedData,
+          traceParsedData,
           cssRequest,
           new Components.Linkifier.Linkifier(),
       );
@@ -472,11 +472,11 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
   describe('testContentMatching', () => {
     it('matches call frame events based on a regular expression and the contents of the event', async function() {
-      const data = await TraceLoader.allModels(this, 'react-hello-world.json.gz');
+      const traceParsedData = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
       // Find an event from the trace that represents some work that React did. This
       // event is not chosen for any particular reason other than it was the example
       // used in the bug report: crbug.com/1484504
-      const mainThread = getMainThread(data.traceParsedData.Renderer);
+      const mainThread = getMainThread(traceParsedData.Renderer);
       const performConcurrentWorkEvent = mainThread.entries.find(entry => {
         if (TraceEngine.Types.TraceEvents.isProfileCall(entry)) {
           return entry.callFrame.functionName === 'performConcurrentWorkOnRoot';
@@ -487,7 +487,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
         throw new Error('Could not find expected event');
       }
       assert.isTrue(Timeline.TimelineUIUtils.TimelineUIUtils.testContentMatching(
-          performConcurrentWorkEvent, /perfo/, data.traceParsedData));
+          performConcurrentWorkEvent, /perfo/, traceParsedData));
     });
   });
 
@@ -1099,8 +1099,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
   describe('eventStyle', function() {
     it('returns the correct style for profile calls', async function() {
-      const data = await TraceLoader.allModels(this, 'simple-js-program.json.gz');
-      const rendererHandler = data.traceParsedData.Renderer;
+      const traceParsedData = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');
+      const rendererHandler = traceParsedData.Renderer;
       if (!rendererHandler) {
         throw new Error('RendererHandler is undefined');
       }

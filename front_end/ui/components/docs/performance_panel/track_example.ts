@@ -75,7 +75,7 @@ async function renderContent(expanded: boolean) {
       flameChartData = await FrontendHelpers.getMainFlameChartWithTracks(
           file, new Set([trackAppenderName]), expanded, additionalTrackFilter);
     } else if (track === 'Network') {
-      flameChartData = await FrontendHelpers.getNetworkFlameChartWithLegacyTrack(file, expanded);
+      flameChartData = await FrontendHelpers.getNetworkFlameChart(file, expanded);
     } else {
       p.classList.remove('loading');
       p.innerText = `Invalid track name: ${track}`;

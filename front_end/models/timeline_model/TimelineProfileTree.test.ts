@@ -333,9 +333,9 @@ describeWithEnvironment('TimelineProfileTree', () => {
     });
 
     it('correctly keeps ProfileCall nodes and uses them to build up the tree', async function() {
-      const models = await TraceLoader.allModels(this, 'mainWasm_profile.json.gz');
-      const mainThread = getMainThread(models.traceParsedData.Renderer);
-      const bounds = TraceEngine.Helpers.Timing.traceWindowMilliSeconds(models.traceParsedData.Meta.traceBounds);
+      const traceParsedData = await TraceLoader.traceEngine(this, 'mainWasm_profile.json.gz');
+      const mainThread = getMainThread(traceParsedData.Renderer);
+      const bounds = TraceEngine.Helpers.Timing.traceWindowMilliSeconds(traceParsedData.Meta.traceBounds);
 
       // Replicate the filters as they would be when renderering in the actual panel.
       const textFilter = new Timeline.TimelineFilters.TimelineRegExp();
@@ -362,8 +362,8 @@ describeWithEnvironment('TimelineProfileTree', () => {
 
   describe('generateEventID', () => {
     it('generates the right ID for new engine profile call events', async function() {
-      const models = await TraceLoader.allModels(this, 'react-hello-world.json.gz');
-      const mainThread = getMainThread(models.traceParsedData.Renderer);
+      const traceParsedData = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
+      const mainThread = getMainThread(traceParsedData.Renderer);
       const profileCallEntry = mainThread.entries.find(entry => {
         return TraceEngine.Types.TraceEvents.isProfileCall(entry) &&
             entry.callFrame.functionName === 'performConcurrentWorkOnRoot';

@@ -73,14 +73,13 @@ export async function getMainFlameChartWithTracks(
  * @param expanded if the track is expanded
  * @returns a flame chart element and its corresponding data provider.
  */
-export async function getNetworkFlameChartWithLegacyTrack(traceFileName: string, expanded: boolean): Promise<{
+export async function getNetworkFlameChart(traceFileName: string, expanded: boolean): Promise<{
   flameChart: PerfUI.FlameChart.FlameChart,
   dataProvider: Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider,
 }> {
   await initializeGlobalVars();
 
-  // This function is used to load a component example.
-  const {traceParsedData} = await TraceLoader.allModels(/* context= */ null, traceFileName);
+  const traceParsedData = await TraceLoader.traceEngine(/* context= */ null, traceFileName, {initTraceBounds: true});
   const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
   const maxTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.max);
   const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();

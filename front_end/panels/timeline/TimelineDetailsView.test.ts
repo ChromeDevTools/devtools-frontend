@@ -28,10 +28,10 @@ function getRowDataForDetailsElement(details: HTMLElement) {
 describeWithEnvironment('TimelineDetailsView', function() {
   const mockViewDelegate = new MockViewDelegate();
   it('displays the details of a network request event correctly', async function() {
-    const data = await TraceLoader.allModels(this, 'lcp-web-font.json.gz');
+    const traceParsedData = await TraceLoader.traceEngine(this, 'lcp-web-font.json.gz');
     const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsView(mockViewDelegate);
 
-    const networkRequests = data.traceParsedData.NetworkRequests.byTime;
+    const networkRequests = traceParsedData.NetworkRequests.byTime;
     const cssRequest = networkRequests.find(request => {
       return request.args.data.url === 'https://chromedevtools.github.io/performance-stories/lcp-web-font/app.css';
     });
@@ -40,7 +40,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
     }
     const selection = Timeline.TimelineSelection.TimelineSelection.fromTraceEvent(cssRequest);
 
-    await detailsView.setModel(data.traceParsedData, null);
+    await detailsView.setModel(traceParsedData, null);
     await detailsView.setSelection(selection);
 
     const detailsContentElement = detailsView.getDetailsContentElementForTest();

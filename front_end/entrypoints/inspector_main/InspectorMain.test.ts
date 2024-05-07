@@ -20,15 +20,7 @@ import type * as UI from '../../ui/legacy/legacy.js';
 import * as InspectorMain from './inspector_main.js';
 
 describeWithMockConnection('FocusDebuggeeActionDelegate', () => {
-  it('uses main frame without tab tatget', async () => {
-    const target = createTarget();
-    const delegate = new InspectorMain.InspectorMain.FocusDebuggeeActionDelegate();
-    const bringToFront = sinon.spy(target.pageAgent(), 'invoke_bringToFront');
-    delegate.handleAction({} as UI.Context.Context, 'foo');
-    assert.isTrue(bringToFront.calledOnce);
-  });
-
-  it('uses main frame with tab tatget', async () => {
+  it('uses main frame', async () => {
     const tabTarget = createTarget({type: SDK.Target.Type.Tab});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     const frameTarget = createTarget({parentTarget: tabTarget});

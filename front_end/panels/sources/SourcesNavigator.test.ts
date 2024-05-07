@@ -47,12 +47,14 @@ describeWithMockConnection('NetworkNavigatorView', () => {
     Root.Runtime.experiments.register(Root.Runtime.ExperimentName.JUST_MY_CODE, '');
   });
 
-  const revealMainTarget = (targetFactory: () => SDK.Target.Target) => {
+  describe('reveals main target', () => {
     let target: SDK.Target.Target;
     let project: Bindings.ContentProviderBasedProject.ContentProviderBasedProject;
 
     beforeEach(async () => {
-      target = targetFactory();
+      const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+      createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+      target = createTarget({parentTarget: tabTarget});
       ({project} = createContentProviderUISourceCodes({
          items: [
            {url: 'http://example.com/' as Platform.DevToolsPath.UrlString, mimeType: 'text/html'},
@@ -142,14 +144,7 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       assert.isTrue(navigatorView.scriptsTree.firstChild()?.expanded);
       assert.isTrue(navigatorView.scriptsTree.firstChild()?.firstChild()?.selected);
     });
-  };
-
-  describe('without tab target', () => revealMainTarget(createTarget));
-  describe('with tab target', () => revealMainTarget(() => {
-                                const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-                                createTarget({parentTarget: tabTarget, subtype: 'prerender'});
-                                return createTarget({parentTarget: tabTarget});
-                              }));
+  });
 
   it('updates in scope change', () => {
     const target = createTarget();

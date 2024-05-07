@@ -12,51 +12,44 @@ import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as Emulation from './emulation.js';
 
 describeWithMockConnection('MediaQueryInspector', () => {
-  const tests = (targetFactory: () => SDK.Target.Target) => {
-    let target: SDK.Target.Target;
-    let throttler: Common.Throttler.Throttler;
-    let inspector: Emulation.MediaQueryInspector.MediaQueryInspector;
+  let target: SDK.Target.Target;
+  let throttler: Common.Throttler.Throttler;
+  let inspector: Emulation.MediaQueryInspector.MediaQueryInspector;
 
-    beforeEach(() => {
-      target = targetFactory();
-      throttler = new Common.Throttler.Throttler(0);
-    });
+  beforeEach(() => {
+    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+    target = createTarget({parentTarget: tabTarget});
+    throttler = new Common.Throttler.Throttler(0);
+  });
 
-    afterEach(() => {
-      inspector.detach();
-    });
+  afterEach(() => {
+    inspector.detach();
+  });
 
-    it('redners media queries', async () => {
-      inspector = new Emulation.MediaQueryInspector.MediaQueryInspector(
-          () => 42,
-          (_: number) => {},
-          throttler,
-      );
-      inspector.markAsRoot();
-      inspector.show(document.body);
-      assert.strictEqual(inspector.contentElement.querySelectorAll('.media-inspector-marker').length, 0);
+  it('redners media queries', async () => {
+    inspector = new Emulation.MediaQueryInspector.MediaQueryInspector(
+        () => 42,
+        (_: number) => {},
+        throttler,
+    );
+    inspector.markAsRoot();
+    inspector.show(document.body);
+    assert.strictEqual(inspector.contentElement.querySelectorAll('.media-inspector-marker').length, 0);
 
-      const cssModel = target.model(SDK.CSSModel.CSSModel);
-      assert.exists(cssModel);
-      const CSS_MEDIA = {
-        text: 'foo',
-        source: Protocol.CSS.CSSMediaSource.MediaRule,
-        mediaList: [{expressions: [{value: 42, computedLength: 42, unit: 'UNIT', feature: 'max-width'}], active: true}],
-      } as unknown as Protocol.CSS.CSSMedia;
-      sinon.stub(cssModel, 'getMediaQueries').resolves([new SDK.CSSMedia.CSSMedia(cssModel, CSS_MEDIA)]);
-      const workScheduled = expectCall(sinon.stub(throttler, 'schedule'));
-      cssModel.dispatchEventToListeners(
-          SDK.CSSModel.Events.StyleSheetAdded, {} as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
-      const [work] = await workScheduled;
-      await work();
-      assert.strictEqual(inspector.contentElement.querySelectorAll('.media-inspector-marker').length, 1);
-    });
-  };
-
-  describe('without tab target', () => tests(createTarget));
-  describe('with tab target', () => tests(() => {
-                                const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-                                createTarget({parentTarget: tabTarget, subtype: 'prerender'});
-                                return createTarget({parentTarget: tabTarget});
-                              }));
+    const cssModel = target.model(SDK.CSSModel.CSSModel);
+    assert.exists(cssModel);
+    const CSS_MEDIA = {
+      text: 'foo',
+      source: Protocol.CSS.CSSMediaSource.MediaRule,
+      mediaList: [{expressions: [{value: 42, computedLength: 42, unit: 'UNIT', feature: 'max-width'}], active: true}],
+    } as unknown as Protocol.CSS.CSSMedia;
+    sinon.stub(cssModel, 'getMediaQueries').resolves([new SDK.CSSMedia.CSSMedia(cssModel, CSS_MEDIA)]);
+    const workScheduled = expectCall(sinon.stub(throttler, 'schedule'));
+    cssModel.dispatchEventToListeners(
+        SDK.CSSModel.Events.StyleSheetAdded, {} as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
+    const [work] = await workScheduled;
+    await work();
+    assert.strictEqual(inspector.contentElement.querySelectorAll('.media-inspector-marker').length, 1);
+  });
 });

@@ -25,13 +25,6 @@ describeWithMockConnection('ExecutionContext', () => {
   it('can be compared based on target type', () => {
     const tabTarget = createTarget({type: SDK.Target.Type.Tab});
     const mainFrameTargetUnderTab = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
-    const mainFrameTargetWithoutTab = createTarget({type: SDK.Target.Type.Frame});
-    assert.strictEqual(
-        SDK.RuntimeModel.ExecutionContext.comparator(
-            createExecutionContext(mainFrameTargetWithoutTab),
-            createExecutionContext(
-                createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameTargetWithoutTab}))),
-        -1);
     assert.strictEqual(
         SDK.RuntimeModel.ExecutionContext.comparator(
             createExecutionContext(mainFrameTargetUnderTab),

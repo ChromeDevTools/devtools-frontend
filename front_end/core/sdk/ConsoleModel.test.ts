@@ -96,9 +96,8 @@ describeWithMockConnection('ConsoleMessage', () => {
     Common.Settings.Settings.instance().moduleSetting('preserve-console-log').set(true);
     const consoleLog = sinon.spy(Common.Console.Console.instance(), 'log');
     const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-    const mainFrameUnderTabTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
-    const mainFrameWithoutTabTarget = createTarget({type: SDK.Target.Type.Frame});
-    const subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameWithoutTabTarget});
+    const mainFrameTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
+    const subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameTarget});
     const navigateTarget = (target: SDK.Target.Target) => {
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       assert.exists(resourceTreeModel);
@@ -112,22 +111,17 @@ describeWithMockConnection('ConsoleMessage', () => {
     navigateTarget(subframeTarget);
     assert.isTrue(consoleLog.notCalled);
 
-    navigateTarget(mainFrameUnderTabTarget);
+    navigateTarget(mainFrameTarget);
     assert.isTrue(consoleLog.calledOnce);
     assert.isTrue(consoleLog.calledOnceWith('Navigated to http://example.com/'));
-
-    navigateTarget(mainFrameWithoutTabTarget);
-    assert.isTrue(consoleLog.calledTwice);
-    assert.isTrue(consoleLog.secondCall.calledWith('Navigated to http://example.com/'));
   });
 
   it('logs a message on main frame navigation via bfcache', async () => {
     Common.Settings.Settings.instance().moduleSetting('preserve-console-log').set(true);
     const consoleLog = sinon.spy(Common.Console.Console.instance(), 'log');
     const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-    const mainFrameUnderTabTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
-    const mainFrameWithoutTabTarget = createTarget({type: SDK.Target.Type.Frame});
-    const subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameWithoutTabTarget});
+    const mainFrameTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
+    const subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameTarget});
     const navigateTarget = (target: SDK.Target.Target) => {
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       assert.exists(resourceTreeModel);
@@ -141,14 +135,9 @@ describeWithMockConnection('ConsoleMessage', () => {
     navigateTarget(subframeTarget);
     assert.isTrue(consoleLog.notCalled);
 
-    navigateTarget(mainFrameUnderTabTarget);
+    navigateTarget(mainFrameTarget);
     assert.isTrue(consoleLog.calledOnce);
     assert.isTrue(consoleLog.calledOnceWith(
-        'Navigation to http://example.com/ was restored from back/forward cache (see https://web.dev/bfcache/)'));
-
-    navigateTarget(mainFrameWithoutTabTarget);
-    assert.isTrue(consoleLog.calledTwice);
-    assert.isTrue(consoleLog.secondCall.calledWith(
         'Navigation to http://example.com/ was restored from back/forward cache (see https://web.dev/bfcache/)'));
   });
 
@@ -186,9 +175,8 @@ describeWithMockConnection('ConsoleMessage', () => {
   it('clears when main frame global object cleared', async () => {
     Common.Settings.Settings.instance().moduleSetting('preserve-console-log').set(false);
     const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-    const mainFrameUnderTabTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
-    const mainFrameWithoutTabTarget = createTarget({type: SDK.Target.Type.Frame});
-    const subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameWithoutTabTarget});
+    const mainFrameTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
+    const subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameTarget});
     const clearGlobalObjectOnTarget = (target: SDK.Target.Target) => {
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       assert.exists(resourceTreeModel);
@@ -200,34 +188,23 @@ describeWithMockConnection('ConsoleMessage', () => {
     };
 
     let consoleClearEventsTabTarget = 0;
-    let consoleClearEventsMainFrameUnderTabTarget = 0;
-    let consoleClearEventsMainFrameWithoutTabTarget = 0;
+    let consoleClearEventsMainFrameTarget = 0;
     let consoleClearEventsSubframeTarget = 0;
     tabTarget.model(SDK.ConsoleModel.ConsoleModel)
         ?.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, () => ++consoleClearEventsTabTarget);
-    mainFrameUnderTabTarget.model(SDK.ConsoleModel.ConsoleModel)
-        ?.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, () => ++consoleClearEventsMainFrameUnderTabTarget);
-    mainFrameWithoutTabTarget.model(SDK.ConsoleModel.ConsoleModel)
-        ?.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, () => ++consoleClearEventsMainFrameWithoutTabTarget);
+    mainFrameTarget.model(SDK.ConsoleModel.ConsoleModel)
+        ?.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, () => ++consoleClearEventsMainFrameTarget);
     subframeTarget.model(SDK.ConsoleModel.ConsoleModel)
         ?.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, () => ++consoleClearEventsSubframeTarget);
 
     clearGlobalObjectOnTarget(subframeTarget);
     assert.strictEqual(consoleClearEventsTabTarget, 0);
-    assert.strictEqual(consoleClearEventsMainFrameUnderTabTarget, 0);
-    assert.strictEqual(consoleClearEventsMainFrameWithoutTabTarget, 0);
+    assert.strictEqual(consoleClearEventsMainFrameTarget, 0);
     assert.strictEqual(consoleClearEventsSubframeTarget, 0);
 
-    clearGlobalObjectOnTarget(mainFrameUnderTabTarget);
+    clearGlobalObjectOnTarget(mainFrameTarget);
     assert.strictEqual(consoleClearEventsTabTarget, 0);
-    assert.strictEqual(consoleClearEventsMainFrameUnderTabTarget, 1);
-    assert.strictEqual(consoleClearEventsMainFrameWithoutTabTarget, 0);
-    assert.strictEqual(consoleClearEventsSubframeTarget, 0);
-
-    clearGlobalObjectOnTarget(mainFrameWithoutTabTarget);
-    assert.strictEqual(consoleClearEventsTabTarget, 0);
-    assert.strictEqual(consoleClearEventsMainFrameUnderTabTarget, 1);
-    assert.strictEqual(consoleClearEventsMainFrameWithoutTabTarget, 1);
+    assert.strictEqual(consoleClearEventsMainFrameTarget, 1);
     assert.strictEqual(consoleClearEventsSubframeTarget, 0);
   });
 });

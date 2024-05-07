@@ -10,50 +10,42 @@ import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as Security from './security.js';
 
 describeWithMockConnection('SecurityPanel', () => {
-  const tests = (targetFactory: () => SDK.Target.Target) => {
-    let target: SDK.Target.Target;
+  let target: SDK.Target.Target;
+  let prerenderTarget: SDK.Target.Target;
 
-    beforeEach(() => {
-      target = targetFactory();
-    });
+  beforeEach(() => {
+    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+    target = createTarget({parentTarget: tabTarget});
+  });
 
-    it('updates when security state changes', async () => {
-      const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
-      const securityModel = target.model(Security.SecurityModel.SecurityModel);
-      assert.exists(securityModel);
-      const visibleSecurityState = {
-        securityState: Protocol.Security.SecurityState.Insecure,
-        securityStateIssueIds: [],
-        certificateSecurityState: null,
-      } as unknown as Security.SecurityModel.PageVisibleSecurityState;
-      securityModel.dispatchEventToListeners(
-          Security.SecurityModel.Events.VisibleSecurityStateChanged, visibleSecurityState);
+  it('updates when security state changes', async () => {
+    const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+    const securityModel = target.model(Security.SecurityModel.SecurityModel);
+    assert.exists(securityModel);
+    const visibleSecurityState = {
+      securityState: Protocol.Security.SecurityState.Insecure,
+      securityStateIssueIds: [],
+      certificateSecurityState: null,
+    } as unknown as Security.SecurityModel.PageVisibleSecurityState;
+    securityModel.dispatchEventToListeners(
+        Security.SecurityModel.Events.VisibleSecurityStateChanged, visibleSecurityState);
 
-      assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
-                        ?.classList.contains('security-summary-insecure'));
+    assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
+                      ?.classList.contains('security-summary-insecure'));
 
-      visibleSecurityState.securityState = Protocol.Security.SecurityState.Secure;
-      securityModel.dispatchEventToListeners(
-          Security.SecurityModel.Events.VisibleSecurityStateChanged, visibleSecurityState);
+    visibleSecurityState.securityState = Protocol.Security.SecurityState.Secure;
+    securityModel.dispatchEventToListeners(
+        Security.SecurityModel.Events.VisibleSecurityStateChanged, visibleSecurityState);
 
-      assert.isFalse(securityPanel.mainView.contentElement.querySelector('.security-summary')
-                         ?.classList.contains('security-summary-insecure'));
-      assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
-                        ?.classList.contains('security-summary-secure'));
-    });
-  };
-
-  describe('without tab target', () => tests(createTarget));
-  describe('with tab target', () => tests(() => {
-                                const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-                                createTarget({parentTarget: tabTarget, subtype: 'prerender'});
-                                return createTarget({parentTarget: tabTarget});
-                              }));
+    assert.isFalse(securityPanel.mainView.contentElement.querySelector('.security-summary')
+                       ?.classList.contains('security-summary-insecure'));
+    assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
+                      ?.classList.contains('security-summary-secure'));
+  });
 
   it('can switch to a different SecurityModel', async () => {
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-    const mainTarget = createTarget({parentTarget: tabTarget});
-    const mainSecurityModel = mainTarget.model(Security.SecurityModel.SecurityModel);
+    const mainSecurityModel = target.model(Security.SecurityModel.SecurityModel);
     assert.exists(mainSecurityModel);
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
 
@@ -70,7 +62,6 @@ describeWithMockConnection('SecurityPanel', () => {
                       ?.classList.contains('security-summary-insecure'));
 
     // Switch to the prerender target.
-    const prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     const prerenderSecurityModel = prerenderTarget.model(Security.SecurityModel.SecurityModel);
     assert.exists(prerenderSecurityModel);
     securityPanel.modelAdded(prerenderSecurityModel);
@@ -90,7 +81,7 @@ describeWithMockConnection('SecurityPanel', () => {
                       ?.classList.contains('security-summary-secure'));
 
     // Check that the SecurityPanel listens to any PrimaryPageChanged event
-    const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     assert.exists(resourceTreeModel);
     const sidebarTreeClearSpy = sinon.spy(securityPanel.sidebarTree, 'clearOrigins');
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, {
@@ -101,7 +92,6 @@ describeWithMockConnection('SecurityPanel', () => {
   });
 
   it('shows \'reload page\' message when no data is available', async () => {
-    const target = createTarget();
     const securityModel = target.model(Security.SecurityModel.SecurityModel);
     assert.exists(securityModel);
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});

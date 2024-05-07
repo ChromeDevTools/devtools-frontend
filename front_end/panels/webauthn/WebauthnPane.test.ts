@@ -55,12 +55,14 @@ describeWithMockConnection('WebAuthn pane', () => {
     assert.isFalse(largeBlob.checked);
   });
 
-  const tests = (targetFactory: () => SDK.Target.Target, inScope: boolean) => {
+  const tests = (inScope: boolean) => {
     let target: SDK.Target.Target;
     let model: SDK.WebAuthnModel.WebAuthnModel;
     let panel: WebauthnModule.WebauthnPane.WebauthnPaneImpl;
     beforeEach(() => {
-      target = targetFactory();
+      const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+      createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+      target = createTarget({parentTarget: tabTarget});
       SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
       model = target.model(SDK.WebAuthnModel.WebAuthnModel) as SDK.WebAuthnModel.WebAuthnModel;
       assert.exists(model);
@@ -243,16 +245,6 @@ describeWithMockConnection('WebAuthn pane', () => {
     });
   };
 
-  describe('without tab target in scope', () => tests(() => createTarget(), true));
-  describe('without tab target out of scope', () => tests(() => createTarget(), false));
-  describe('with tab target in scope', () => tests(() => {
-                                         const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-                                         createTarget({parentTarget: tabTarget, subtype: 'prerender'});
-                                         return createTarget({parentTarget: tabTarget});
-                                       }, true));
-  describe('with tab target out of scope', () => tests(() => {
-                                             const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-                                             createTarget({parentTarget: tabTarget, subtype: 'prerender'});
-                                             return createTarget({parentTarget: tabTarget});
-                                           }, false));
+  describe('in scope', () => tests(true));
+  describe('out of scope', () => tests(false));
 });

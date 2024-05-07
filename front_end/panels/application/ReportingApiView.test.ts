@@ -15,27 +15,7 @@ describeWithMockConnection('ReportingApiView', () => {
   const ORIGIN_2 = 'origin2';
   const ENDPOINTS_2 = [{url: 'url2', groupName: 'group1'}, {url: 'url3', groupName: 'group2'}];
 
-  it('updates endpoints grid when they change without tab target', () => {
-    const target = createTarget();
-    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
-    assert.exists(networkManager);
-
-    const endpointsGrid = new ApplicationComponents.EndpointsGrid.EndpointsGrid();
-    new Application.ReportingApiView.ReportingApiView(endpointsGrid);
-    const endpointsGridData = sinon.spy(endpointsGrid, 'data', ['set']);
-    networkManager.dispatchEventToListeners(
-        SDK.NetworkManager.Events.ReportingApiEndpointsChangedForOrigin, {origin: ORIGIN_1, endpoints: ENDPOINTS_1});
-    assert.isTrue(endpointsGridData.set.calledOnce);
-    sinon.assert.calledWith(endpointsGridData.set, {endpoints: new Map([[ORIGIN_1, ENDPOINTS_1]])});
-
-    networkManager.dispatchEventToListeners(
-        SDK.NetworkManager.Events.ReportingApiEndpointsChangedForOrigin, {origin: ORIGIN_2, endpoints: ENDPOINTS_2});
-    assert.isTrue(endpointsGridData.set.calledTwice);
-    sinon.assert.calledWith(
-        endpointsGridData.set, {endpoints: new Map([[ORIGIN_1, ENDPOINTS_1], [ORIGIN_2, ENDPOINTS_2]])});
-  });
-
-  it('updates endpoints grid when they change with tab target', () => {
+  it('updates endpoints grid when they change', () => {
     const tabTarget = createTarget({type: SDK.Target.Type.Tab});
     const frameTarget = createTarget({parentTarget: tabTarget});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});

@@ -298,9 +298,8 @@ describeWithMockConnection('NetworkLog', () => {
   it('clears on main frame navigation', () => {
     const networkLog = Logs.NetworkLog.NetworkLog.instance();
     const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-    const mainFrameUnderTabTarget = createTarget({parentTarget: tabTarget});
-    const mainFrameWithoutTabTarget = createTarget();
-    const subframeTarget = createTarget({parentTarget: mainFrameWithoutTabTarget});
+    const mainFrameTarget = createTarget({parentTarget: tabTarget});
+    const subframeTarget = createTarget({parentTarget: mainFrameTarget});
 
     const navigateTarget = (target: SDK.Target.Target) => {
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
@@ -322,11 +321,8 @@ describeWithMockConnection('NetworkLog', () => {
     navigateTarget(subframeTarget);
     assert.strictEqual(networkLogResetEvents, 0);
 
-    navigateTarget(mainFrameUnderTabTarget);
+    navigateTarget(mainFrameTarget);
     assert.strictEqual(networkLogResetEvents, 1);
-
-    navigateTarget(mainFrameWithoutTabTarget);
-    assert.strictEqual(networkLogResetEvents, 2);
   });
 
   describe('on primary page changed', () => {

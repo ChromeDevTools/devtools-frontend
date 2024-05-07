@@ -10,44 +10,31 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Layers from './layers.js';
 
 describeWithMockConnection('LayersPanel', () => {
+  let target: SDK.Target.Target;
+  let prerenderTarget: SDK.Target.Target;
+
   beforeEach(async () => {
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
     stubNoopSettings();
+    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+    target = createTarget({parentTarget: tabTarget});
   });
 
-  const tests = (targetFactory: () => SDK.Target.Target) => {
-    let target: SDK.Target.Target;
-
-    beforeEach(async () => {
-      target = targetFactory();
-    });
-
-    it('udpates 3d view when layer painted', async () => {
-      const panel = Layers.LayersPanel.LayersPanel.instance({forceNew: true});
-      const layerTreeModel = target.model(Layers.LayerTreeModel.LayerTreeModel);
-      assert.exists(layerTreeModel);
-      const updateLayerSnapshot = sinon.stub(panel.layers3DView, 'updateLayerSnapshot');
-      const LAYER = {id: () => 'TEST_LAYER'} as Layers.LayerTreeModel.AgentLayer;
-      layerTreeModel.dispatchEventToListeners(Layers.LayerTreeModel.Events.LayerPainted, LAYER);
-      assert.isTrue(updateLayerSnapshot.calledOnceWith(LAYER));
-    });
-  };
-
-  describe('without tab taget', () => tests(() => createTarget()));
-  describe('with tab taget', () => tests(() => {
-                               const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-                               createTarget({parentTarget: tabTarget, subtype: 'prerender'});
-                               return createTarget({parentTarget: tabTarget});
-                             }));
+  it('udpates 3d view when layer painted', async () => {
+    const panel = Layers.LayersPanel.LayersPanel.instance({forceNew: true});
+    const layerTreeModel = target.model(Layers.LayerTreeModel.LayerTreeModel);
+    assert.exists(layerTreeModel);
+    const updateLayerSnapshot = sinon.stub(panel.layers3DView, 'updateLayerSnapshot');
+    const LAYER = {id: () => 'TEST_LAYER'} as Layers.LayerTreeModel.AgentLayer;
+    layerTreeModel.dispatchEventToListeners(Layers.LayerTreeModel.Events.LayerPainted, LAYER);
+    assert.isTrue(updateLayerSnapshot.calledOnceWith(LAYER));
+  });
 
   it('can handle scope switches', async () => {
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-    const prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
-    const primaryTarget = createTarget({parentTarget: tabTarget});
-
     const panel = Layers.LayersPanel.LayersPanel.instance({forceNew: true});
-    const primaryLayerTreeModel = primaryTarget.model(Layers.LayerTreeModel.LayerTreeModel);
+    const primaryLayerTreeModel = target.model(Layers.LayerTreeModel.LayerTreeModel);
     assert.exists(primaryLayerTreeModel);
     const prerenderLayerTreeModel = prerenderTarget.model(Layers.LayerTreeModel.LayerTreeModel);
     assert.exists(prerenderLayerTreeModel);

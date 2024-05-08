@@ -1460,8 +1460,6 @@ grd_files_debug_sources = [
   "front_end/panels/protocol_monitor/components/toolbar.css.js",
   "front_end/panels/protocol_monitor/protocolMonitor.css.js",
   "front_end/panels/react_devtools/ReactDevToolsModel.js",
-  "front_end/panels/react_devtools/reactDevToolsPlaceholder.css.js",
-  "front_end/panels/react_devtools/ReactDevToolsPlaceholder.js",
   "front_end/panels/react_devtools/ReactDevToolsView.js",
   "front_end/panels/recorder/RecorderController.js",
   "front_end/panels/recorder/RecorderEvents.js",

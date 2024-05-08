@@ -272,7 +272,6 @@ export const experiments = new ExperimentsSupport();
 // eslint-disable-next-line rulesdir/const_enum
 export enum RNExperimentName {
   REACT_NATIVE_SPECIFIC_UI = 'react-native-specific-ui',
-  ENABLE_REACT_DEVTOOLS_PANEL = 'enable-react-dev-tools-panel',
   JS_HEAP_PROFILER_ENABLE = 'js-heap-profiler-enable',
   ENABLE_PERFORMANCE_PANEL = 'enable-performance-panel',
 }
@@ -315,7 +314,6 @@ export const enum ExperimentName {
   // React Native-specific experiments - must mirror RNExperimentName above
   JS_HEAP_PROFILER_ENABLE = RNExperimentName.JS_HEAP_PROFILER_ENABLE,
   REACT_NATIVE_SPECIFIC_UI = RNExperimentName.REACT_NATIVE_SPECIFIC_UI,
-  ENABLE_REACT_DEVTOOLS_PANEL = RNExperimentName.ENABLE_REACT_DEVTOOLS_PANEL,
   ENABLE_PERFORMANCE_PANEL = RNExperimentName.ENABLE_PERFORMANCE_PANEL,
 }
 

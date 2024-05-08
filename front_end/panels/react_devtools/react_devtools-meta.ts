@@ -4,7 +4,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as ReactDevToolsPanelModule from './react_devtools.js';
@@ -41,14 +40,7 @@ UI.ViewManager.registerViewExtension({
   order: 1000,
   async loadView() {
     const Module = await loadModule();
-
-    if (Root.Runtime.Runtime.isDescriptorEnabled({
-      experiment: Root.Runtime.ExperimentName.ENABLE_REACT_DEVTOOLS_PANEL,
-    })) {
-      return new Module.ReactDevToolsView.ReactDevToolsViewImpl();
-    }
-
-    return Module.ReactDevToolsPlaceholder.ReactDevToolsPlaceholderImpl.instance();
+    return new Module.ReactDevToolsView.ReactDevToolsViewImpl();
   },
 });
 

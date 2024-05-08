@@ -179,13 +179,6 @@ Instance.register({
 });
 
 Instance.register({
-  name: RNExperimentName.ENABLE_REACT_DEVTOOLS_PANEL,
-  title: 'Enable React DevTools panel',
-  unstable: true,
-  enabledByDefault: false,
-});
-
-Instance.register({
   name: RNExperimentName.REACT_NATIVE_SPECIFIC_UI,
   title: 'Show React Native-specific UI',
   unstable: false,

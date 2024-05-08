@@ -3,15 +3,12 @@
 // found in the LICENSE file.
 
 import type * as Protocol from '../generated/protocol.js';
-import * as TimelineModel from '../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../models/trace/trace.js';
-import * as Timeline from '../panels/timeline/timeline.js';
 import * as TraceBounds from '../services/trace_bounds/trace_bounds.js';
 
-// We maintain three caches:
+// We maintain two caches:
 // 1. The file contents JSON.parsed for a given trace file.
-// 2. The created set of models for a given file (used by the allModels function)
-// 3. The trace engine models for a given file (used by the traceEngine function)
+// 2. The trace engine models for a given file (used by the traceEngine function)
 // Both the file contents and the model data are not expected to change during
 // the lifetime of an instance of DevTools, so they are safe to cache and
 // re-use across tests to avoid extra time spent loading and parsing the same
@@ -31,14 +28,6 @@ const fileContentsCache = new Map<string, TraceEngine.Types.File.Contents>();
 // and will reparse. This is required as some of the settings and experiments
 // change if events are kept and dropped.
 const traceEngineCache = new Map<string, Map<string, TraceEngine.Handlers.Types.TraceParseData>>();
-
-export type AllModelsLoaded = Readonly<{
-  tracingModel: TraceEngine.Legacy.TracingModel,
-  timelineModel: TimelineModel.TimelineModel.TimelineModelImpl,
-  performanceModel: Timeline.PerformanceModel.PerformanceModel,
-  traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
-}>;
-const allModelsCache = new Map<string, AllModelsLoaded>();
 
 export interface TraceEngineLoaderOptions {
   initTraceBounds: boolean;
@@ -182,69 +171,6 @@ export class TraceLoader {
           forceNew: true,
         })
         .resetWithNewBounds(data.Meta.traceBounds);
-  }
-
-  /**
-   * Returns tracingModel, timelineModel, performanceModel, traceParsedData
-   * from the given trace file.
-   *
-   * @deprecated: we are almost done removing the old models from the
-   * codebase. All new features and tests should rely only on the new engine
-   * and soon this method will be removed. Talk to @jacktfranklin if you have
-   * to use this helper in any new tests.
-   *
-   * @param context The Mocha test context. |allModelsFromFile| function easily
-   * takes up more than our default Mocha timeout, which is 2s. So we have to
-   * increase this test's timeout. It might be null when we only render a
-   * component example.
-   * @param file The name of the trace file to be loaded. The trace file should
-   * be in ../panels/timeline/fixtures/traces folder.
-   * @returns tracingModel, timelineModel, performanceModel, traceParsedData
-   * from this trace file
-   */
-  static async allModels(context: Mocha.Context|Mocha.Suite|null, name: string): Promise<AllModelsLoaded> {
-    const fromCache = allModelsCache.get(name);
-    if (fromCache) {
-      return fromCache;
-    }
-    // Load the contents of the file and get the array of all the events.
-    let fileContents = await TraceLoader.fixtureContents(context, name);
-    if (name.endsWith('.cpuprofile.gz')) {
-      const rawEvents = await TraceLoader.rawCPUProfile(context, name);
-      fileContents = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
-                         rawEvents,
-                         1,
-                         true,
-                         ) as unknown as TraceEngine.Types.TraceEvents.TraceEventData[];
-    }
-
-    const events = 'traceEvents' in fileContents ? fileContents.traceEvents : fileContents;
-
-    // Execute the new trace engine
-    const traceEngineData = await TraceLoader.executeTraceEngineOnFileContents(fileContents);
-
-    // Execute and populate the legacy models
-    const tracingModel = new TraceEngine.Legacy.TracingModel();
-    const performanceModel = new Timeline.PerformanceModel.PerformanceModel();
-    tracingModel.addEvents(events as unknown as TraceEngine.TracingManager.EventPayload[]);
-    tracingModel.tracingComplete();
-    await performanceModel.setTracingModel(tracingModel);
-    const timelineModel = performanceModel.timelineModel();
-
-    TraceBounds.TraceBounds.BoundsManager
-        .instance({
-          forceNew: true,
-        })
-        .resetWithNewBounds(traceEngineData.traceParsedData.Meta.traceBounds);
-
-    const result: AllModelsLoaded = {
-      tracingModel,
-      timelineModel,
-      performanceModel,
-      traceParsedData: traceEngineData.traceParsedData,
-    };
-    allModelsCache.set(name, result);
-    return result;
   }
 
   static async executeTraceEngineOnFileContents(

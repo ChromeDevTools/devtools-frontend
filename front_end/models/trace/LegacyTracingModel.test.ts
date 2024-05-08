@@ -245,11 +245,4 @@ describeWithEnvironment('TracingModel', function() {
           'Unexpected id2 field at 1, one and only one of \'local\' and \'global\' should be present.'));
     });
   });
-
-  it('finds the browser main thread from the tracing model', async function() {
-    const {tracingModel} = await TraceLoader.allModels(this, 'web-dev.json.gz');
-    const mainThread = TraceEngine.Legacy.TracingModel.browserMainThread(tracingModel);
-    assert.strictEqual(mainThread?.id(), 775);
-    assert.strictEqual(mainThread?.name(), 'CrBrowserMain');
-  });
 });

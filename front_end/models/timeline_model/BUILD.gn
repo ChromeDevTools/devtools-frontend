@@ -48,7 +48,6 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
-    "TimelineModel.test.ts",
     "TimelineModelFilter.test.ts",
     "TimelineProfileTree.test.ts",
   ]

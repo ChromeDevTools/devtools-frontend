@@ -275,7 +275,7 @@ export class StylePropertiesSection {
 
     this.selectorElement.addEventListener('click', this.handleSelectorClick.bind(this), false);
     this.selectorElement.setAttribute(
-        'jslog', `${VisualLogging.cssQuery('selector').track({click: true, change: true})}`);
+        'jslog', `${VisualLogging.cssRuleHeader('selector').track({click: true, change: true})}`);
     this.element.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), false);
     this.element.addEventListener('mousedown', this.handleEmptySpaceMouseDown.bind(this), false);
     this.element.addEventListener('click', this.handleEmptySpaceClick.bind(this), false);

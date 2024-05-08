@@ -58,7 +58,7 @@ export class CSSQuery extends HTMLElement {
     `;
 
     render(html`
-      <div class=${queryClasses} jslog=${VisualLogging.cssQuery(this.#jslogContext).track({click:true, change: true})}>
+      <div class=${queryClasses} jslog=${VisualLogging.cssRuleHeader(this.#jslogContext).track({click:true, change: true})}>
         <slot name="indent"></slot>${this.#queryPrefix ? html`<span>${this.#queryPrefix + ' '}</span>` : LitHtml.nothing}${this.#queryName ? html`<span>${this.#queryName + ' '}</span>` : LitHtml.nothing}${queryText} {
       </div>
     `, this.#shadow, {

@@ -42,7 +42,7 @@ export enum VisualElements {
   Section = 10,
   SectionHeader = 11,
   Timeline = 12,
-  CssQuery = 13,
+  CSSRuleHeader = 13,
   Expand = 14,
   ToggleSubpane = 15,
   ControlPoint = 16,

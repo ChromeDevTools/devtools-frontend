@@ -179,7 +179,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
     const keys = [...classes.keys()];
     keys.sort(Platform.StringUtilities.caseInsensetiveComparator);
     for (const className of keys) {
-      const label = UI.UIUtils.CheckboxLabel.create(className, classes.get(className));
+      const label = UI.UIUtils.CheckboxLabel.create(className, classes.get(className), undefined, 'element-class');
       label.classList.add('monospace');
       label.checkboxElement.addEventListener('click', this.onClick.bind(this, className), false);
       this.classesContainer.appendChild(label);

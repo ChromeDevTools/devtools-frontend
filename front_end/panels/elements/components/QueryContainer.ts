@@ -86,7 +86,7 @@ export class QueryContainer extends HTMLElement {
       <a href="#"
         draggable=false
         class="container-link"
-        jslog=${VisualLogging.cssQuery('container-query').track({click: true})}
+        jslog=${VisualLogging.cssRuleHeader('container-query').track({click: true})}
         @click=${this.#onContainerLinkClick}
         @mouseenter=${this.#onContainerLinkMouseEnter}
         @mouseleave=${this.#onContainerLinkMouseLeave}

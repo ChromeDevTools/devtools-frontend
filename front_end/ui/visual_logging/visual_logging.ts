@@ -48,7 +48,7 @@ export const counter = LoggingConfig.makeConfigStringBuilder.bind(null, 'Counter
  */
 export const controlPoint = LoggingConfig.makeConfigStringBuilder.bind(null, 'ControlPoint');
 export const cssColorMix = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssColorMix');
-export const cssQuery = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssQuery');
+export const cssRuleHeader = LoggingConfig.makeConfigStringBuilder.bind(null, 'CSSRuleHeader');
 export const deviceModeRuler = LoggingConfig.makeConfigStringBuilder.bind(null, 'DeviceModeRuler');
 export const domBreakpoint = LoggingConfig.makeConfigStringBuilder.bind(null, 'DOMBreakpoint');
 export const drawer = LoggingConfig.makeConfigStringBuilder.bind(null, 'Drawer');

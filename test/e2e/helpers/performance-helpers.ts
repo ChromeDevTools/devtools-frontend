@@ -29,7 +29,7 @@ export const TOTAL_TIME_SELECTOR =
     'div:nth-child(1) > div.vbox.timeline-details-chip-body > div:nth-child(1) > div.timeline-details-view-row-value';
 const RECALCULATE_STYLE_TITLE = 'Recalculate Style';
 const SELECTOR_STATS_SELECTOR = '[aria-label="Selector Stats"]';
-const CSS_SELECTOR_STATS_TITLE = 'Enable CSS selector stats';
+const CSS_SELECTOR_STATS_TITLE = 'Enable CSS selector stats (slow)';
 const TIMELINE_SETTINGS_PANE = '.timeline-settings-pane';
 
 export async function navigateToPerformanceTab(testName?: string) {

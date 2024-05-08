@@ -90,7 +90,7 @@ const UIStrings = {
   /**
    *@description Title of CSS selector stats setting in timeline panel of the performance panel
    */
-  enableSelectorStats: 'Enable CSS selector stats',
+  enableSelectorStats: 'Enable CSS selector stats (slow)',
   /**
    *@description Title of show screenshots setting in timeline panel of the performance panel
    */
@@ -375,11 +375,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.disableCaptureJSProfileSetting =
         Common.Settings.Settings.instance().createSetting('timeline-disable-js-sampling', false);
     this.disableCaptureJSProfileSetting.setTitle(i18nString(UIStrings.disableJavascriptSamples));
-    this.captureLayersAndPicturesSetting =
-        Common.Settings.Settings.instance().createSetting('timeline-capture-layers-and-pictures', false);
+    this.captureLayersAndPicturesSetting = Common.Settings.Settings.instance().createSetting(
+        'timeline-capture-layers-and-pictures', false, Common.Settings.SettingStorageType.Session);
     this.captureLayersAndPicturesSetting.setTitle(i18nString(UIStrings.enableAdvancedPaint));
-    this.captureSelectorStatsSetting =
-        Common.Settings.Settings.instance().createSetting('timeline-capture-selector-stats', false);
+    this.captureSelectorStatsSetting = Common.Settings.Settings.instance().createSetting(
+        'timeline-capture-selector-stats', false, Common.Settings.SettingStorageType.Session);
     this.captureSelectorStatsSetting.setTitle(i18nString(UIStrings.enableSelectorStats));
 
     this.showScreenshotsSetting =

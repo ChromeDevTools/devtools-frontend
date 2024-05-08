@@ -3,32 +3,38 @@
 // found in the LICENSE file.
 
 import {
-  dispatchClickEvent,
   getEventPromise,
-  renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {
   describeWithEnvironment,
 } from '../../../testing/EnvironmentHelpers.js';
-import type * as Button from '../../../ui/components/buttons/buttons.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as Converters from '../converters/converters.js';
 import * as Models from '../models/models.js';
 
 import * as Components from './components.js';
 
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
-
 describeWithEnvironment('StepView', () => {
   const step = {type: Models.Schema.StepType.Scroll as const};
   const section = {title: 'test', steps: [step], url: 'https://example.com'};
 
+  function createViewFunctionSpy() {
+    const viewFunction = sinon.spy();
+
+    return {
+      viewFunction,
+      getViewInput(): Components.StepView.ViewInput {
+        return viewFunction.lastCall.args[0];
+      },
+    };
+  }
+
   async function createStepView(
+      viewFunction: () => void,
       opts: Partial<Components.StepView.StepViewData> = {},
       ): Promise<Components.StepView.StepView> {
-    const view = new Components.StepView.StepView();
-    view.data = {
+    const component = new Components.StepView.StepView(viewFunction);
+    component.data = {
       step: opts.step !== undefined ? step : undefined,
       section: opts.section !== undefined ? section : undefined,
       state: Components.StepView.State.Default,
@@ -50,65 +56,57 @@ describeWithEnvironment('StepView', () => {
       isSelected: opts.isSelected ?? false,
       recorderSettings: new Models.RecorderSettings.RecorderSettings(),
     };
-    renderElementIntoDOM(view);
-    await coordinator.done();
-    return view;
+    return component;
   }
 
   describe('Step and section actions menu', () => {
-    it('should open actions menu', async () => {
-      const view = await createStepView({step});
-      assert.notOk(
-          view.shadowRoot?.querySelector('devtools-menu[has-open-dialog]'),
-      );
+    it('should produce actions for a step', async () => {
+      const {viewFunction, getViewInput} = createViewFunctionSpy();
+      await createStepView(viewFunction, {step});
+      assert.deepStrictEqual(getViewInput().actions, [
+        {'id': 'add-step-before', 'label': 'Add step before', 'group': 'stepManagement', 'groupTitle': 'Manage steps'},
+        {'id': 'add-step-after', 'label': 'Add step after', 'group': 'stepManagement', 'groupTitle': 'Manage steps'},
+        {
+          'id': 'add-breakpoint',
+          'label': 'Add breakpoint',
+          'group': 'breakPointManagement',
+          'groupTitle': 'Breakpoints',
+        },
+        {'id': 'copy-step-as-json', 'label': 'JSON', 'group': 'copy', 'groupTitle': 'Copy as'},
+      ]);
+    });
 
-      const button = view.shadowRoot?.querySelector(
-                         '.step-actions',
-                         ) as Button.Button.Button;
-      assert.ok(button);
-
-      dispatchClickEvent(button);
-      await coordinator.done();
-
-      assert.ok(
-          view.shadowRoot?.querySelector('devtools-menu[has-open-dialog]'),
-      );
+    it('should produce actions for a section', async () => {
+      const {viewFunction, getViewInput} = createViewFunctionSpy();
+      await createStepView(viewFunction, {section});
+      assert.deepStrictEqual(getViewInput().actions, [
+        {'id': 'add-step-after', 'label': 'Add step after', 'group': 'stepManagement', 'groupTitle': 'Manage steps'},
+      ]);
     });
 
     it('should dispatch "AddStep before" events on steps', async () => {
-      const view = await createStepView({step});
-
-      const menu = view.shadowRoot?.querySelector(
-                       '.step-actions + devtools-menu',
-                       ) as Menus.Menu.Menu;
-      assert.ok(menu);
+      const {viewFunction, getViewInput} = createViewFunctionSpy();
+      const component = await createStepView(viewFunction, {step});
       const eventPromise = getEventPromise<Components.StepView.AddStep>(
-          view,
+          component,
           'addstep',
       );
-      menu.dispatchEvent(
-          new Menus.Menu.MenuItemSelectedEvent('add-step-before'),
-      );
+      getViewInput().handleStepAction(new Menus.Menu.MenuItemSelectedEvent('add-step-before'));
       const event = await eventPromise;
 
       assert.strictEqual(event.position, 'before');
       assert.deepStrictEqual(event.stepOrSection, step);
     });
 
-    it('should dispatch "AddStep before" events on steps', async () => {
-      const view = await createStepView({section});
+    it('should dispatch "AddStep before" events on sections', async () => {
+      const {viewFunction, getViewInput} = createViewFunctionSpy();
+      const component = await createStepView(viewFunction, {section});
 
-      const menu = view.shadowRoot?.querySelector(
-                       '.step-actions + devtools-menu',
-                       ) as Menus.Menu.Menu;
-      assert.ok(menu);
       const eventPromise = getEventPromise<Components.StepView.AddStep>(
-          view,
+          component,
           'addstep',
       );
-      menu.dispatchEvent(
-          new Menus.Menu.MenuItemSelectedEvent('add-step-before'),
-      );
+      getViewInput().handleStepAction(new Menus.Menu.MenuItemSelectedEvent('add-step-before'));
       const event = await eventPromise;
 
       assert.strictEqual(event.position, 'before');
@@ -116,19 +114,14 @@ describeWithEnvironment('StepView', () => {
     });
 
     it('should dispatch "AddStep after" events on steps', async () => {
-      const view = await createStepView({step});
+      const {viewFunction, getViewInput} = createViewFunctionSpy();
+      const component = await createStepView(viewFunction, {step});
 
-      const menu = view.shadowRoot?.querySelector(
-                       '.step-actions + devtools-menu',
-                       ) as Menus.Menu.Menu;
-      assert.ok(menu);
       const eventPromise = getEventPromise<Components.StepView.AddStep>(
-          view,
+          component,
           'addstep',
       );
-      menu.dispatchEvent(
-          new Menus.Menu.MenuItemSelectedEvent('add-step-after'),
-      );
+      getViewInput().handleStepAction(new Menus.Menu.MenuItemSelectedEvent('add-step-after'));
       const event = await eventPromise;
 
       assert.strictEqual(event.position, 'after');
@@ -136,75 +129,72 @@ describeWithEnvironment('StepView', () => {
     });
 
     it('should dispatch "Remove steps" events on steps', async () => {
-      const view = await createStepView({step});
+      const {viewFunction, getViewInput} = createViewFunctionSpy();
+      const component = await createStepView(viewFunction, {step});
 
-      const menu = view.shadowRoot?.querySelector(
-                       '.step-actions + devtools-menu',
-                       ) as Menus.Menu.Menu;
-      assert.ok(menu);
       const eventPromise = getEventPromise<Components.StepView.RemoveStep>(
-          view,
+          component,
           'removestep',
       );
-      menu.dispatchEvent(
-          new Menus.Menu.MenuItemSelectedEvent('remove-step'),
-      );
+      getViewInput().handleStepAction(new Menus.Menu.MenuItemSelectedEvent('remove-step'));
       const event = await eventPromise;
 
       assert.deepStrictEqual(event.step, step);
     });
 
     it('should dispatch "Add breakpoint" event on steps', async () => {
-      const view = await createStepView({step});
+      const {viewFunction, getViewInput} = createViewFunctionSpy();
+      const component = await createStepView(viewFunction, {step});
 
-      const menu = view.shadowRoot?.querySelector(
-                       '.step-actions + devtools-menu',
-                       ) as Menus.Menu.Menu;
-      assert.ok(menu);
       const eventPromise = getEventPromise<Components.StepView.AddBreakpointEvent>(
-          view,
+          component,
           'addbreakpoint',
       );
-      menu.dispatchEvent(
-          new Menus.Menu.MenuItemSelectedEvent('add-breakpoint'),
-      );
+      getViewInput().handleStepAction(new Menus.Menu.MenuItemSelectedEvent('add-breakpoint'));
       const event = await eventPromise;
 
       assert.deepStrictEqual(event.index, 0);
     });
 
     it('should dispatch "Remove breakpoint" event on steps', async () => {
-      const view = await createStepView({step});
+      const {viewFunction, getViewInput} = createViewFunctionSpy();
+      const component = await createStepView(viewFunction, {step});
 
-      const menu = view.shadowRoot?.querySelector(
-                       '.step-actions + devtools-menu',
-                       ) as Menus.Menu.Menu;
-      assert.ok(menu);
       const eventPromise = getEventPromise<Components.StepView.AddBreakpointEvent>(
-          view,
+          component,
           'removebreakpoint',
       );
-      menu.dispatchEvent(
-          new Menus.Menu.MenuItemSelectedEvent('remove-breakpoint'),
-      );
+      getViewInput().handleStepAction(new Menus.Menu.MenuItemSelectedEvent('remove-breakpoint'));
       const event = await eventPromise;
 
       assert.deepStrictEqual(event.index, 0);
+    });
+
+    it('should dispatch copy step as JSON events', async () => {
+      const {viewFunction, getViewInput} = createViewFunctionSpy();
+      const component = await createStepView(viewFunction, {step});
+
+      const eventPromise = getEventPromise<Components.StepView.CopyStepEvent>(
+          component,
+          'copystep',
+      );
+
+      getViewInput().handleStepAction(new Menus.Menu.MenuItemSelectedEvent('copy-step-as-json'));
+
+      await eventPromise;
     });
   });
 
   describe('Breakpoint events', () => {
     it('should dispatch "Add breakpoint" event on breakpoint icon click if there is not a breakpoint on the step',
        async () => {
-         const view = await createStepView({step});
-         const breakpointIcon = view.shadowRoot?.querySelector('.breakpoint-icon');
+         const {viewFunction, getViewInput} = createViewFunctionSpy();
+         const component = await createStepView(viewFunction, {step});
          const eventPromise = getEventPromise<Components.StepView.AddBreakpointEvent>(
-             view,
+             component,
              'addbreakpoint',
          );
-         assert.isOk(breakpointIcon);
-
-         breakpointIcon?.dispatchEvent(new Event('click'));
+         getViewInput().onBreakpointClick();
          const event = await eventPromise;
 
          assert.deepStrictEqual(event.index, 0);
@@ -212,52 +202,17 @@ describeWithEnvironment('StepView', () => {
 
     it('should dispatch "Remove breakpoint" event on breakpoint icon click if there already is a breakpoint on the step',
        async () => {
-         const view = await createStepView({hasBreakpoint: true, step});
-         const breakpointIcon = view.shadowRoot?.querySelector('.breakpoint-icon');
+         const {viewFunction, getViewInput} = createViewFunctionSpy();
+         const component = await createStepView(viewFunction, {hasBreakpoint: true, step});
          const eventPromise = getEventPromise<Components.StepView.RemoveBreakpointEvent>(
-             view,
+             component,
              'removebreakpoint',
          );
 
-         breakpointIcon?.dispatchEvent(new Event('click'));
+         getViewInput().onBreakpointClick();
          const event = await eventPromise;
 
          assert.deepStrictEqual(event.index, 0);
        });
-  });
-
-  describe('Copy steps', () => {
-    it('should copy a step to clipboard', async () => {
-      const view = await createStepView({step});
-      const menu = view.shadowRoot?.querySelector(
-                       '.step-actions + devtools-menu',
-                       ) as Menus.Menu.Menu;
-      assert.ok(menu);
-
-      const isCalled = sinon.promise();
-      view.addEventListener(Components.StepView.CopyStepEvent.eventName, () => {
-        void isCalled.resolve(true);
-      });
-      menu.dispatchEvent(
-          new Menus.Menu.MenuItemSelectedEvent('copy-step-as-json'),
-      );
-
-      const called = await isCalled;
-
-      assert.isTrue(called);
-    });
-  });
-
-  describe('Selection', () => {
-    it('should render timeline as selected if isSelected = true', async () => {
-      const view = await createStepView({step, isSelected: true});
-      assert.ok(view);
-      const section = view.shadowRoot?.querySelector(
-          'devtools-timeline-section',
-      );
-      assert.ok(section);
-      const div = section?.shadowRoot?.querySelector('div');
-      assert.isTrue(div?.classList.contains('is-selected'));
-    });
   });
 });

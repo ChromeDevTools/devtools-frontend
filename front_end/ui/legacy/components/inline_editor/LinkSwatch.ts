@@ -71,7 +71,8 @@ class BaseLinkSwatch extends HTMLElement {
     // We added var popover, so don't need the title attribute when no need for showing title and
     // only provide the data-title for the popover to get the data.
     const {startNode} = render(
-        html`<button class=${classes} title=${LitHtml.Directives.ifDefined(data.showTitle ? title : null)} data-title=${
+        html`<button .disabled=${!isDefined} class=${classes} title=${
+            LitHtml.Directives.ifDefined(data.showTitle ? title : null)} data-title=${
             LitHtml.Directives.ifDefined(
                 !data.showTitle ? title : null)} @click=${onActivate} role="link" tabindex="-1">${text}</button>`,
         this.shadow, {host: this});

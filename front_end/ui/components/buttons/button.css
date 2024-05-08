@@ -195,7 +195,7 @@ button {
     }
 
     devtools-icon {
-      color: var(--icon-disabled);
+      color: var(--icon-primary);
     }
   }
 

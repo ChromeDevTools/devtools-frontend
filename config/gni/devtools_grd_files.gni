@@ -1488,7 +1488,7 @@ grd_files_debug_sources = [
   "front_end/panels/recorder/components/ExtensionView.js",
   "front_end/panels/recorder/components/RecordingListView.js",
   "front_end/panels/recorder/components/RecordingView.js",
-  "front_end/panels/recorder/components/ReplayButton.js",
+  "front_end/panels/recorder/components/ReplaySection.js",
   "front_end/panels/recorder/components/SelectButton.js",
   "front_end/panels/recorder/components/StartView.js",
   "front_end/panels/recorder/components/StepEditor.js",

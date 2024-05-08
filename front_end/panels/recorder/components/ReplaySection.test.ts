@@ -14,13 +14,13 @@ import * as RecorderComponents from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-describeWithEnvironment('ReplayButton', () => {
+describeWithEnvironment('ReplaySection', () => {
   setupActionRegistry();
 
   let settings: Models.RecorderSettings.RecorderSettings;
-  async function createReplayButton() {
+  async function createReplaySection() {
     settings = new Models.RecorderSettings.RecorderSettings();
-    const component = new RecorderComponents.ReplayButton.ReplayButton();
+    const component = new RecorderComponents.ReplaySection.ReplaySection();
     component.data = {settings, replayExtensions: []};
     renderElementIntoDOM(component);
     await coordinator.done();
@@ -33,7 +33,7 @@ describeWithEnvironment('ReplayButton', () => {
   });
 
   it('should change the button value when another option is selected in select menu', async () => {
-    const component = await createReplayButton();
+    const component = await createReplaySection();
     const selectButton = component.shadowRoot?.querySelector(
         'devtools-select-button',
     );
@@ -43,7 +43,7 @@ describeWithEnvironment('ReplayButton', () => {
     );
 
     selectButton?.dispatchEvent(
-        new RecorderComponents.SelectButton.SelectButtonClickEvent(
+        new RecorderComponents.SelectButton.SelectMenuSelectedEvent(
             Models.RecordingPlayer.PlayRecordingSpeed.Slow,
             ),
     );
@@ -55,8 +55,8 @@ describeWithEnvironment('ReplayButton', () => {
   });
 
   it('should emit startreplayevent on selectbuttonclick event', async () => {
-    const component = await createReplayButton();
-    const onceClicked = new Promise<RecorderComponents.ReplayButton.StartReplayEvent>(
+    const component = await createReplaySection();
+    const onceClicked = new Promise<RecorderComponents.ReplaySection.StartReplayEvent>(
         resolve => {
           component.addEventListener('startreplay', resolve, {once: true});
         },
@@ -66,9 +66,12 @@ describeWithEnvironment('ReplayButton', () => {
         'devtools-select-button',
     );
     selectButton?.dispatchEvent(
-        new RecorderComponents.SelectButton.SelectButtonClickEvent(
+        new RecorderComponents.SelectButton.SelectMenuSelectedEvent(
             Models.RecordingPlayer.PlayRecordingSpeed.Slow,
             ),
+    );
+    selectButton?.dispatchEvent(
+        new RecorderComponents.SelectButton.SelectButtonClickEvent(),
     );
 
     const event = await onceClicked;
@@ -79,13 +82,13 @@ describeWithEnvironment('ReplayButton', () => {
   });
 
   it('should save the changed button when option is selected in select menu', async () => {
-    const component = await createReplayButton();
+    const component = await createReplaySection();
     const selectButton = component.shadowRoot?.querySelector(
         'devtools-select-button',
     );
 
     selectButton?.dispatchEvent(
-        new RecorderComponents.SelectButton.SelectButtonClickEvent(
+        new RecorderComponents.SelectButton.SelectMenuSelectedEvent(
             Models.RecordingPlayer.PlayRecordingSpeed.Slow,
             ),
     );
@@ -99,7 +102,7 @@ describeWithEnvironment('ReplayButton', () => {
   it('should load the saved button on initial render', async () => {
     settings.speed = Models.RecordingPlayer.PlayRecordingSpeed.Slow;
 
-    const component = await createReplayButton();
+    const component = await createReplaySection();
 
     const selectButton = component.shadowRoot?.querySelector(
         'devtools-select-button',

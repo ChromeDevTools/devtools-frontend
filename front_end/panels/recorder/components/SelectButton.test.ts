@@ -36,7 +36,7 @@ describe('SelectButton', () => {
     assert.strictEqual(event.value, 'item1');
   });
 
-  it('should emit selectbuttonclick event on item click in select menu', async () => {
+  it('should emit SelectMenuSelected event on item click in select menu', async () => {
     const component = new RecorderComponents.SelectButton.SelectButton();
     component.value = 'item1';
     component.items = [
@@ -45,23 +45,16 @@ describe('SelectButton', () => {
     ];
     component.connectedCallback();
     await coordinator.done();
-    const onceClicked = new Promise<RecorderComponents.SelectButton.SelectButtonClickEvent>(
-        resolve => {
-          component.addEventListener('selectbuttonclick', resolve, {
-            once: true,
-          });
-        },
-    );
-
+    const dispatcherSpy = sinon.spy(component, 'dispatchEvent');
     const selectMenu = component.shadowRoot?.querySelector(
         'devtools-select-menu',
     );
     assert.exists(selectMenu);
-    selectMenu?.dispatchEvent(
+    selectMenu.dispatchEvent(
         new Menus.SelectMenu.SelectMenuItemSelectedEvent('item1'),
     );
 
-    const event = await onceClicked;
-    assert.strictEqual(event.value, 'item1');
+    dispatcherSpy.calledOnceWithExactly(
+        RecorderComponents.SelectButton.SelectMenuSelectedEvent as unknown as sinon.SinonMatcher);
   });
 });

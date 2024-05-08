@@ -237,6 +237,8 @@ export async function clickSelectButtonItem(itemLabel: string, root: string) {
   }
 
   await clickElement(selectMenuItems[selectMenuItemIndex]);
+  const button = await waitFor('devtools-button', selectMenu);
+  await clickElement(button);
 }
 
 export async function setupRecorderWithScript(
@@ -255,7 +257,7 @@ export async function setupRecorderWithScriptAndReplay(
     ): Promise<void> {
   await setupRecorderWithScript(script, path);
   const onceFinished = onReplayFinished();
-  await clickSelectButtonItem('Normal (Default)', 'devtools-replay-button');
+  await clickSelectButtonItem('Normal (Default)', 'devtools-replay-section');
   await onceFinished;
 }
 

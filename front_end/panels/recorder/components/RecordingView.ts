@@ -28,10 +28,10 @@ import * as Actions from '../recorder-actions/recorder-actions.js';
 import {ExtensionView} from './ExtensionView.js';
 import recordingViewStyles from './recordingView.css.js';
 import {
-  ReplayButton,
-  type ReplayButtonData,
+  ReplaySection,
+  type ReplaySectionData,
   type StartReplayEvent,
-} from './ReplayButton.js';
+} from './ReplaySection.js';
 import {
   type CopyStepEvent,
   State,
@@ -956,17 +956,17 @@ export class RecordingView extends HTMLElement {
     }
 
     // clang-format off
-    return LitHtml.html`<${ReplayButton.litTagName}
+    return LitHtml.html`<${ReplaySection.litTagName}
         .data=${
           {
             settings: this.#recorderSettings,
             replayExtensions: this.#replayExtensions,
-          } as ReplayButtonData
+          } as ReplaySectionData
         }
         .disabled=${this.#replayState.isPlaying}
         @startreplay=${this.#handleTogglePlaying}
         >
-      </${ReplayButton.litTagName}>`;
+      </${ReplaySection.litTagName}>`;
     // clang-format on
   }
 
@@ -1232,6 +1232,7 @@ export class RecordingView extends HTMLElement {
                 >
                   ${i18nString(UIStrings.performancePanel)}
                 </${Buttons.Button.Button.litTagName}>
+                <div class="separator"></div>
                 ${this.#renderReplayOrAbortButton()}
               </div>`
             : ''

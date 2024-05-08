@@ -118,7 +118,7 @@ describe('Recorder', function() {
         });
         await clickSelectButtonItem(
             'Normal (Default)',
-            'devtools-replay-button',
+            'devtools-replay-section',
         );
         await target.bringToFront();
         await promise;

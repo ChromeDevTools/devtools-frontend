@@ -627,7 +627,7 @@ describe('Recorder', function() {
       });
 
       const onceFinished = onReplayFinished();
-      await clickSelectButtonItem('Slow', 'devtools-replay-button');
+      await clickSelectButtonItem('Slow', 'devtools-replay-section');
       await onceFinished;
 
       assert.strictEqual(

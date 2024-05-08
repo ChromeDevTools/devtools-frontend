@@ -7,6 +7,7 @@ import {assert} from 'chai';
 import {
   $$,
   click,
+  goTo,
   goToResource,
   hasClass,
   pressKey,
@@ -431,6 +432,22 @@ describe('Overrides panel', () => {
 
     assert.strictEqual(assertShowAllElements.length, 0);
     assert.strictEqual(assertOverridesContentElements.length, 1);
+  });
+});
+
+describe('Network panel', () => {
+  it('context menu "override" items are disabled for forbidden URLs', async () => {
+    await goTo('chrome://terms');
+    await openNetworkTab();
+    await selectRequestByName('terms', {button: 'right'});
+
+    const menuItem1 = await waitForAria('Override content');
+    const isDisabled1 = await menuItem1.evaluate(el => el.classList.contains('soft-context-menu-disabled'));
+    assert.isTrue(isDisabled1, '"Override content" menu item is enabled');
+
+    const menuItem2 = await waitForAria('Override headers');
+    const isDisabled2 = await menuItem2.evaluate(el => el.classList.contains('soft-context-menu-disabled'));
+    assert.isTrue(isDisabled2, '"Override headers" menu item is enabled');
   });
 });
 

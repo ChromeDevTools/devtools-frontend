@@ -1779,8 +1779,11 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         i18nString(UIStrings.saveAllAsHarWithContent), this.exportAll.bind(this),
         {jslogContext: 'save-all-as-har-with-content'});
     contextMenu.overrideSection().appendItem(
-        i18nString(UIStrings.overrideHeaders), this.#handleCreateResponseHeaderOverrideClick.bind(this, request),
-        {jslogContext: 'override-headers'});
+        i18nString(UIStrings.overrideHeaders), this.#handleCreateResponseHeaderOverrideClick.bind(this, request), {
+          disabled:
+              Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(request.url()),
+          jslogContext: 'override-headers',
+        });
 
     contextMenu.editSection().appendItem(
         i18nString(UIStrings.clearBrowserCache), this.clearBrowserCache.bind(this),

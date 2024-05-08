@@ -110,6 +110,17 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
     ];
     assert.deepStrictEqual(patterns, expected);
   });
+
+  it('recognizes forbidden network URLs', () => {
+    assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        'chrome://version' as Platform.DevToolsPath.UrlString));
+    assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        'https://chromewebstore.google.com/index.html' as Platform.DevToolsPath.UrlString));
+    assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        'https://chrome.google.com/script.js' as Platform.DevToolsPath.UrlString));
+    assert.isFalse(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        'https://www.example.com/script.js' as Platform.DevToolsPath.UrlString));
+  });
 });
 
 describeWithMockConnection('NetworkPersistenceManager', () => {

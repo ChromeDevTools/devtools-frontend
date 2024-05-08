@@ -18,6 +18,8 @@ import {PersistenceBinding, PersistenceImpl} from './PersistenceImpl.js';
 
 let networkPersistenceManagerInstance: NetworkPersistenceManager|null;
 
+const forbiddenUrls = ['chromewebstore.google.com', 'chrome.google.com'];
+
 export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDK.TargetManager.Observer {
   private bindings: WeakMap<Workspace.UISourceCode.UISourceCode, PersistenceBinding>;
@@ -392,7 +394,8 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   isUISourceCodeOverridable(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
-    return uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network;
+    return uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network &&
+        !NetworkPersistenceManager.isForbiddenNetworkUrl(uiSourceCode.url());
   }
 
   #isUISourceCodeAlreadyOverridden(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
@@ -488,12 +491,19 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   // 'chrome://'-URLs and the Chrome Web Store are privileged URLs. We don't want users
   // to be able to override those. Ideally we'd have a similar check in the backend,
   // because the fix here has no effect on non-DevTools CDP clients.
-  private isForbiddenUrl(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+  private isForbiddenFileUrl(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
     const relativePathParts = FileSystemWorkspaceBinding.relativePath(uiSourceCode);
     // Decode twice to handle paths generated on Windows OS.
     const host = this.decodeLocalPathToUrlPath(this.decodeLocalPathToUrlPath(relativePathParts[0] || ''));
-    const forbiddenUrls = ['chrome:', 'chromewebstore.google.com', 'chrome.google.com'];
-    return forbiddenUrls.includes(host);
+    return host === 'chrome:' || forbiddenUrls.includes(host);
+  }
+
+  static isForbiddenNetworkUrl(urlString: Platform.DevToolsPath.UrlString): boolean {
+    const url = Common.ParsedURL.ParsedURL.fromString(urlString);
+    if (!url) {
+      return false;
+    }
+    return url.scheme === 'chrome' || forbiddenUrls.includes(url.host);
   }
 
   private async onUISourceCodeAdded(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
@@ -695,7 +705,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     }
     let patterns = new Set<string>();
     for (const uiSourceCode of this.projectInternal.uiSourceCodes()) {
-      if (this.isForbiddenUrl(uiSourceCode)) {
+      if (this.isForbiddenFileUrl(uiSourceCode)) {
         continue;
       }
       const pattern = this.patternForFileSystemUISourceCode(uiSourceCode);

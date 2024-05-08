@@ -1020,7 +1020,6 @@ export enum DevtoolsExperiments {
   'apca' = 39,
   'font-editor' = 41,
   'full-accessibility-tree' = 42,
-  'ignore-list-js-frames-on-timeline' = 43,
   'contrast-issues' = 44,
   'experimental-cookie-features' = 45,
   'styles-pane-css-changes' = 55,

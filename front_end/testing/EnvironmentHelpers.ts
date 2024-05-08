@@ -113,7 +113,6 @@ const REGISTERED_EXPERIMENTS = [
   'timeline-show-all-events',
   'timeline-v8-runtime-call-stats',
   'timeline-invalidation-tracking',
-  'ignore-list-js-frames-on-timeline',
   Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
   'css-type-component-length-deprecate',
   Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES,

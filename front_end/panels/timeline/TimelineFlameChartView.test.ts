@@ -3,13 +3,12 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../core/platform/platform.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TraceEngine from '../../models/trace/trace.js';
-import * as Workspace from '../../models/workspace/workspace.js';
 import * as AnnotationsManager from '../../services/annotations_manager/annotations_manager.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupIgnoreListManagerEnvironment} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -38,6 +37,8 @@ describeWithEnvironment('TimelineFlameChartView', function() {
   beforeEach(() => {
     boundsManager =
         TraceBounds.TraceBounds.BoundsManager.instance({forceNew: true}).resetWithNewBounds(baseTraceWindow);
+
+    setupIgnoreListManagerEnvironment();
   });
 
   it('Can search for events by name in the timeline', async function() {
@@ -269,19 +270,9 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
   describe('Context Menu', function() {
     let flameChartView: Timeline.TimelineFlameChartView.TimelineFlameChartView;
-    let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
-    let workspace: Workspace.Workspace.WorkspaceImpl;
     let traceParsedData: TraceEngine.Handlers.Types.TraceParseData;
 
     this.beforeEach(async () => {
-      // This code block will create a new IgnoreListManager for test.
-      const targetManager = SDK.TargetManager.TargetManager.instance();
-      workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
-      const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-      debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
-          {forceNew: true, resourceMapping, targetManager});
-      Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true, debuggerWorkspaceBinding});
-
       traceParsedData = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz', {initTraceBounds: true});
       const mockViewDelegate = new MockViewDelegate();
 

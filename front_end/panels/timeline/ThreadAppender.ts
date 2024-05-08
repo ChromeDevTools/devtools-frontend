@@ -161,7 +161,6 @@ export class ThreadAppender implements TrackAppender {
   #headerAppended: boolean = false;
   readonly threadType: TraceEngine.Handlers.Threads.ThreadType = TraceEngine.Handlers.Threads.ThreadType.MAIN_THREAD;
   readonly isOnMainFrame: boolean;
-  #ignoreListingEnabled = Root.Runtime.experiments.isEnabled('ignore-list-js-frames-on-timeline');
   #showAllEventsEnabled = Root.Runtime.experiments.isEnabled('timeline-show-all-events');
   #url: string = '';
   #headerNestingLevel: number|null = null;
@@ -516,10 +515,6 @@ export class ThreadAppender implements TrackAppender {
   }
 
   isIgnoreListedEntry(entry: TraceEngine.Types.TraceEvents.TraceEventData): boolean {
-    if (!this.#ignoreListingEnabled) {
-      return false;
-    }
-
     if (!TraceEngine.Types.TraceEvents.isProfileCall(entry)) {
       return false;
     }

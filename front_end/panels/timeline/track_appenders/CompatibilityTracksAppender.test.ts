@@ -4,6 +4,7 @@
 
 import * as TraceModel from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {setupIgnoreListManagerEnvironment} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Timeline from '../timeline.js';
@@ -34,6 +35,7 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
   }
 
   beforeEach(async () => {
+    setupIgnoreListManagerEnvironment();
     await initTrackAppender(this);
   });
 

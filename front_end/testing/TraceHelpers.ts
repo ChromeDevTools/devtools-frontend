@@ -1,9 +1,12 @@
 // Copyright 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as SDK from '../core/sdk/sdk.js';
 import type * as Protocol from '../generated/protocol.js';
+import * as Bindings from '../models/bindings/bindings.js';
 import * as CPUProfile from '../models/cpu_profile/cpu_profile.js';
 import * as TraceEngine from '../models/trace/trace.js';
+import * as Workspace from '../models/workspace/workspace.js';
 import * as Timeline from '../panels/timeline/timeline.js';
 import * as PerfUI from '../ui/legacy/components/perf_ui/perf_ui.js';
 
@@ -679,4 +682,30 @@ export function getEventOfType<T extends TraceEngine.Types.TraceEvents.TraceEven
     throw new Error('Failed to find matching event of type.');
   }
   return match;
+}
+
+/**
+ * The Performance Panel is integrated with the IgnoreListManager so in tests
+ * that render a flame chart or a track appender, it needs to be setup to avoid
+ * errors.
+ */
+export function setupIgnoreListManagerEnvironment(): {
+  ignoreListManager: Bindings.IgnoreListManager.IgnoreListManager,
+} {
+  const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
+  const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+  const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+
+  const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+    forceNew: true,
+    resourceMapping,
+    targetManager,
+  });
+
+  const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({
+    forceNew: true,
+    debuggerWorkspaceBinding,
+  });
+
+  return {ignoreListManager};
 }

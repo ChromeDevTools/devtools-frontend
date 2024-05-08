@@ -268,8 +268,6 @@ export class MainImpl {
   #initializeExperiments(): void {
     Root.Runtime.experiments.register('apply-custom-stylesheet', 'Allow extensions to load custom stylesheets');
     Root.Runtime.experiments.register('capture-node-creation-stacks', 'Capture node creation stacks');
-    Root.Runtime.experiments.register(
-        'ignore-list-js-frames-on-timeline', 'Ignore list for JavaScript frames in Performance panel', true);
     Root.Runtime.experiments.register('live-heap-profile', 'Live heap profile', true);
     Root.Runtime.experiments.register(
         'protocol-monitor', 'Protocol Monitor', undefined,

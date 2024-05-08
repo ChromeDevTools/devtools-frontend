@@ -23,16 +23,19 @@ const str_ = i18n.i18n.registerUIStrings('panels/react_devtools/ReactDevToolsVie
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 type ReactDevToolsMessageReceivedEvent = Common.EventTarget.EventTargetEvent<ReactDevToolsModelEventTypes[ReactDevToolsModelEvents.MessageReceived]>;
-type PageReloadRequestedEvent = Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.EventTypes[SDK.ResourceTreeModel.Events.PageReloadRequested]>;
+type ContextDestroyedEvent = Common.EventTarget.EventTargetEvent<SDK.RuntimeModel.EventTypes[SDK.RuntimeModel.Events.ExecutionContextDestroyed]>;
+type ContextCreatedEvent = Common.EventTarget.EventTargetEvent<SDK.RuntimeModel.EventTypes[SDK.RuntimeModel.Events.ExecutionContextCreated]>;
+
+// Hermes doesn't support Workers API yet, so there is a single execution context at the moment
+// This will be used for an extra-check to future-proof this logic
+// See https://github.com/facebook/react-native/blob/40b54ee671e593d125630391119b880aebc8393d/packages/react-native/ReactCommon/jsinspector-modern/InstanceTarget.cpp#L61
+const MAIN_EXECUTION_CONTEXT_NAME = 'main';
 
 export class ReactDevToolsViewImpl extends UI.View.SimpleView {
   private readonly wall: ReactDevToolsTypes.Wall;
   private bridge: ReactDevToolsTypes.Bridge;
   private store: ReactDevToolsTypes.Store;
   private readonly listeners: Set<ReactDevToolsTypes.WallListener> = new Set();
-  private messageQueueSize: number = 0;
-  private pageWillBeReloaded = false;
-  private resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel | null = null;
 
   constructor() {
     super(i18nString(UIStrings.title));
@@ -69,14 +72,14 @@ export class ReactDevToolsViewImpl extends UI.View.SimpleView {
     );
     SDK.TargetManager.TargetManager.instance().addModelListener(
       SDK.RuntimeModel.RuntimeModel,
-      SDK.RuntimeModel.Events.ExecutionContextCreated,
-      this.onExecutionContextCreated,
+      SDK.RuntimeModel.Events.ExecutionContextDestroyed,
+      this.onExecutionContextDestroyed,
       this,
     );
     SDK.TargetManager.TargetManager.instance().addModelListener(
-      SDK.ResourceTreeModel.ResourceTreeModel,
-      SDK.ResourceTreeModel.Events.PageReloadRequested,
-      this.onPageReloadRequested,
+      SDK.RuntimeModel.RuntimeModel,
+      SDK.RuntimeModel.Events.ExecutionContextCreated,
+      this.onExecutionContextCreated,
       this,
     );
 
@@ -128,39 +131,17 @@ export class ReactDevToolsViewImpl extends UI.View.SimpleView {
 
   private sendMessage(event: string, payload?: ReactDevToolsTypes.MessagePayload): void {
     for (const model of SDK.TargetManager.TargetManager.instance().models(ReactDevToolsModel, {scoped: true})) {
-      ++this.messageQueueSize;
-
-      void model.sendMessage({event, payload}).finally(() => {
-        --this.messageQueueSize;
-        this.checkIfReloadShouldBeResumed();
-      });
+      void model.sendMessage({event, payload});
     }
   }
 
-  private checkIfReloadShouldBeResumed(): void {
-    if (this.messageQueueSize === 0 && this.pageWillBeReloaded) {
-      this.pageWillBeReloaded = false;
-
-      const resourceTreeModel = this.resourceTreeModel;
-      if (resourceTreeModel === null) {
-        throw new Error('Page.reload event should have been resumed, but ResourceTreeModel is null');
-      }
-
-      resourceTreeModel.resumeReload();
-      this.resourceTreeModel = null;
+  private onExecutionContextDestroyed(event: ContextDestroyedEvent): void {
+    if (event.data.name !== MAIN_EXECUTION_CONTEXT_NAME) {
+      return;
     }
-  }
 
-  private onPageReloadRequested(event: PageReloadRequestedEvent): void {
     // Unmount React DevTools view
     this.contentElement.removeChildren();
-
-    const resourceTreeModel = event.data;
-    this.resourceTreeModel = resourceTreeModel;
-
-    // We will resume reload once all messages are sent, it is important to notify RDT backend
-    this.pageWillBeReloaded = true;
-    resourceTreeModel.suspendReload();
 
     this.bridge.shutdown();
     this.listeners.clear();
@@ -168,7 +149,11 @@ export class ReactDevToolsViewImpl extends UI.View.SimpleView {
     this.renderLoader();
   }
 
-  private onExecutionContextCreated(): void {
+  private onExecutionContextCreated(event: ContextCreatedEvent): void {
+    if (event.data.name !== MAIN_EXECUTION_CONTEXT_NAME) {
+      return;
+    }
+
     // Recreate bridge, because previous one was shutdown
     this.bridge = ReactDevTools.createBridge(this.wall);
     this.store = ReactDevTools.createStore(this.bridge);

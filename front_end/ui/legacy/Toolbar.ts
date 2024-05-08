@@ -715,6 +715,7 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
     clearButton.iconName = 'cross-circle-filled';
     clearButton.title = clearButtonText;
     clearButton.ariaLabel = clearButtonText;
+    clearButton.tabIndex = -1;
 
     clearButton.addEventListener('click', () => {
       this.setValue('', true);

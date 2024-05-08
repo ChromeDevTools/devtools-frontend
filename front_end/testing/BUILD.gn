@@ -30,6 +30,7 @@ ts_library("testing") {
     "PersistenceHelpers.ts",
     "PropertyParser.ts",
     "RealConnection.ts",
+    "ResourceTreeHelpers.ts",
     "SourceMapEncoder.test.ts",
     "SourceMapEncoder.ts",
     "SourceMapHelpers.ts",

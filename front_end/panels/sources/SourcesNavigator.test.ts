@@ -20,6 +20,7 @@ import {
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
 import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
+import {setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {createContentProviderUISourceCodes} from '../../testing/UISourceCodeHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -28,6 +29,7 @@ import * as Sources from './sources.js';
 describeWithMockConnection('NetworkNavigatorView', () => {
   let workspace: Workspace.Workspace.WorkspaceImpl;
   beforeEach(async () => {
+    setMockResourceTree(false);
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = SDK.TargetManager.TargetManager.instance();

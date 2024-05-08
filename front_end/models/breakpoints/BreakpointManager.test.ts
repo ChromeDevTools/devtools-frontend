@@ -19,6 +19,7 @@ import {
 } from '../../testing/MockConnection.js';
 import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
 import {createFileSystemFileForPersistenceTests} from '../../testing/PersistenceHelpers.js';
+import {getInitializedResourceTreeModel} from '../../testing/ResourceTreeHelpers.js';
 import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import {setupPageResourceLoaderForSourceMap} from '../../testing/SourceMapHelpers.js';
 import {
@@ -101,19 +102,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
     // Wait for the resource tree model to load; otherwise, our uiSourceCodes could be asynchronously
     // invalidated during the test.
-    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    assert.exists(resourceTreeModel);
-    await new Promise<void>(resolver => {
-      if (resourceTreeModel.cachedResourcesLoaded()) {
-        resolver();
-      } else {
-        const eventListener =
-            resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, () => {
-              Common.EventTarget.removeEventListeners([eventListener]);
-              resolver();
-            });
-      }
-    });
+    await getInitializedResourceTreeModel(target);
 
     breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});

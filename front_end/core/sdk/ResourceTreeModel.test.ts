@@ -28,26 +28,6 @@ function navigateFrameWithMockConnection(
 }
 
 describeWithMockConnection('ResourceTreeModel', () => {
-  const beforeGetResourceTree = Promise.resolve();
-
-  beforeEach(async () => {
-    setMockConnectionResponseHandler('Page.getResourceTree', async () => {
-      await beforeGetResourceTree;
-      return {
-        frameTree: {
-          frame: {
-            id: 'main',
-            loaderId: 'test',
-            url: 'http://example.com',
-            securityOrigin: 'http://example.com',
-            mimeType: 'text/html',
-          },
-          resources: [],
-        },
-      };
-    });
-  });
-
   it('calls clearRequests on reloadPage', () => {
     const target = createTarget();
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);

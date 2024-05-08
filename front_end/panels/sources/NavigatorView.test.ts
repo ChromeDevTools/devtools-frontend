@@ -17,6 +17,7 @@ import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
+import {setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Sources from './sources.js';
@@ -29,6 +30,7 @@ describeWithMockConnection('NavigatorView', () => {
     Root.Runtime.experiments.register(Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING, '');
     Root.Runtime.experiments.register(Root.Runtime.ExperimentName.JUST_MY_CODE, '');
 
+    setMockResourceTree(false);
     setMockConnectionResponseHandler('Page.getResourceTree', async () => {
       return {
         frameTree: null,

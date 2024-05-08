@@ -12,6 +12,7 @@ import {
   describeWithDevtoolsExtension,
   getExtensionOrigin,
 } from '../../testing/ExtensionHelpers.js';
+import {FRAME_URL} from '../../testing/ResourceTreeHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Extensions from '../extensions/extensions.js';
@@ -246,7 +247,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
   });
 });
 
-const allowedUrl = 'http://example.com' as Platform.DevToolsPath.UrlString;
+const allowedUrl = FRAME_URL;
 const blockedUrl = 'http://web.dev' as Platform.DevToolsPath.UrlString;
 const hostsPolicy = {
   runtimeAllowedHosts: [allowedUrl],

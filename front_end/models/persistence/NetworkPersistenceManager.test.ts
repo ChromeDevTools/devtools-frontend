@@ -14,6 +14,7 @@ import {
 } from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createWorkspaceProject, setUpEnvironment} from '../../testing/OverridesHelpers.js';
+import {setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -128,6 +129,7 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
 
   beforeEach(async () => {
     SDK.NetworkManager.MultitargetNetworkManager.dispose();
+    setMockResourceTree(false);
     const target = createTarget();
     networkPersistenceManager =
         await createWorkspaceProject('file:///path/to/overrides' as Platform.DevToolsPath.UrlString, [

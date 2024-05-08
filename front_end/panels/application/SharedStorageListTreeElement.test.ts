@@ -10,6 +10,7 @@ import {
   stubNoopSettings,
 } from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
@@ -84,6 +85,7 @@ describeWithMockConnection('SharedStorageListTreeElement', function() {
   } as SDK.ResourceTreeModel.ResourceTreeFrame;
 
   beforeEach(async () => {
+    setMockResourceTree(false);
     stubNoopSettings();
     SDK.ChildTargetManager.ChildTargetManager.install();
     const tabTarget = createTarget({type: SDK.Target.Type.Tab});

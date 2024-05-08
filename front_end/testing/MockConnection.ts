@@ -9,6 +9,7 @@ import type * as ProtocolProxyApi from '../generated/protocol-proxy-api.js';
 
 import {resetTestDOM} from './DOMHelpers.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from './EnvironmentHelpers.js';
+import {setMockResourceTree} from './ResourceTreeHelpers.js';
 
 export type ProtocolCommand = keyof ProtocolMapping.Commands;
 export type ProtocolCommandParams<C extends ProtocolCommand> = ProtocolMapping.Commands[C]['paramsType'];
@@ -92,6 +93,7 @@ async function enable({reset = true} = {}) {
   // before it can run. This function will ensure those things are
   // minimally there.
   await initializeGlobalVars({reset});
+  setMockResourceTree(true);
 
   ProtocolClient.InspectorBackend.Connection.setFactory(() => new MockConnection());
 }

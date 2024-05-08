@@ -7,6 +7,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 
 import * as Resources from './application.js';
 
@@ -186,6 +187,7 @@ describeWithMockConnection('SharedStorageModel', () => {
   ];
 
   beforeEach(() => {
+    setMockResourceTree(false);
     target = createTarget();
     sharedStorageModel = target.model(Resources.SharedStorageModel.SharedStorageModel) as
         Resources.SharedStorageModel.SharedStorageModel;

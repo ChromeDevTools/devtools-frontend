@@ -7,6 +7,7 @@ import * as Protocol from '../../generated/protocol.js';
 import {dispatchFocusOutEvent} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {SECURITY_ORIGIN} from '../../testing/ResourceTreeHelpers.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Resources from './application.js';
@@ -15,7 +16,6 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithMockConnection('StorageView', () => {
   const testKey = 'test-storage-key';
-  const testOrigin = 'test-origin';
   let target: SDK.Target.Target;
   let domStorageModel: Resources.DOMStorageModel.DOMStorageModel|null;
   let storageKeyManager: SDK.StorageKeyManager.StorageKeyManager|null;
@@ -67,7 +67,7 @@ describeWithMockConnection('StorageView', () => {
     assert.exists(storageKeyManager);
     const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
     assert.exists(securityOriginManager);
-    sinon.stub(securityOriginManager, 'mainSecurityOrigin').returns(testOrigin);
+    sinon.stub(securityOriginManager, 'mainSecurityOrigin').returns(SECURITY_ORIGIN);
 
     const view = new Resources.StorageView.StorageView();
     const container = view.element.shadowRoot?.querySelector('.clear-storage-header') || null;
@@ -94,10 +94,11 @@ describeWithMockConnection('StorageView', () => {
     const clearByOriginSpy = sinon.spy(target.storageAgent(), 'invoke_clearDataForOrigin');
     const cookieClearSpy = sinon.spy(cookieModel, 'clear');
 
-    Resources.StorageView.StorageView.clear(target, testKey, testOrigin, [Protocol.Storage.StorageType.All], false);
+    Resources.StorageView.StorageView.clear(
+        target, testKey, SECURITY_ORIGIN, [Protocol.Storage.StorageType.All], false);
 
-    assert.isTrue(clearByOriginSpy.calledOnceWithExactly({origin: testOrigin, storageTypes: 'cookies'}));
-    assert.isTrue(cookieClearSpy.calledOnceWithExactly(undefined, testOrigin));
+    assert.isTrue(clearByOriginSpy.calledOnceWithExactly({origin: SECURITY_ORIGIN, storageTypes: 'cookies'}));
+    assert.isTrue(cookieClearSpy.calledOnceWithExactly(undefined, SECURITY_ORIGIN));
   });
 
   it('clears cache on clear', async () => {

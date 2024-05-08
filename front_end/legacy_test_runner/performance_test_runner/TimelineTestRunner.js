@@ -131,10 +131,6 @@ PerformanceTestRunner.createTraceEngineDataFromEvents = async function(events) {
   return model.traceParsedData(0);
 };
 
-PerformanceTestRunner.timelineModel = function() {
-  return PerformanceTestRunner.performanceModel().timelineModel();
-};
-
 PerformanceTestRunner.createPerformanceModelWithEvents = async function(events) {
   const tracingModel = new Trace.Legacy.TracingModel();
   tracingModel.addEvents(events);

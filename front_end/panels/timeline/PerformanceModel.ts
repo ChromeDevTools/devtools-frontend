@@ -15,8 +15,4 @@ export class PerformanceModel {
   async setTracingModel(model: TraceEngine.Legacy.TracingModel): Promise<void> {
     this.timelineModelInternal.setEvents(model);
   }
-
-  timelineModel(): TimelineModel.TimelineModel.TimelineModelImpl {
-    return this.timelineModelInternal;
-  }
 }

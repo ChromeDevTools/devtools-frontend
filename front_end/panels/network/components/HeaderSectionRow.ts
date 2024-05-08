@@ -148,7 +148,7 @@ export class HeaderSectionRow extends HTMLElement {
       row: true,
       'header-highlight': Boolean(this.#header.highlight),
       'header-overridden': Boolean(this.#header.isOverride) || this.#isHeaderValueEdited,
-      'header-editable': Boolean(this.#header.valueEditable),
+      'header-editable': this.#header.valueEditable === EditingAllowedStatus.Enabled,
       'header-deleted': Boolean(this.#header.isDeleted),
     });
 
@@ -166,7 +166,8 @@ export class HeaderSectionRow extends HTMLElement {
     // The header name is only editable when the header value is editable as well.
     // This ensures the header name's editability reacts correctly to enabling or
     // disabling local overrides.
-    const isHeaderNameEditable = this.#header.nameEditable && this.#header.valueEditable;
+    const isHeaderNameEditable =
+        this.#header.nameEditable && this.#header.valueEditable === EditingAllowedStatus.Enabled;
 
     // Case 1: Headers which were just now added via the 'Add header button'.
     //         'nameEditable' is true only for such headers.
@@ -236,12 +237,14 @@ export class HeaderSectionRow extends HTMLElement {
       return this.#renderXClientDataHeader(this.#header);
     }
 
-    if (this.#header.isDeleted || !this.#header.valueEditable) {
+    if (this.#header.isDeleted || this.#header.valueEditable !== EditingAllowedStatus.Enabled) {
+      const showEditHeaderButton = this.#header.isResponseHeader && !this.#header.isDeleted &&
+          this.#header.valueEditable !== EditingAllowedStatus.Forbidden;
       // clang-format off
       return html`
       ${this.#header.value || ''}
       ${this.#maybeRenderHeaderValueSuffix(this.#header)}
-      ${this.#header.isResponseHeader && !this.#header.isDeleted ? html`
+      ${showEditHeaderButton ? html`
         <${Buttons.Button.Button.litTagName}
           title=${i18nString(UIStrings.editHeader)}
           .size=${Buttons.Button.Size.SMALL}
@@ -541,6 +544,12 @@ interface BlockedDetailsDescriptor {
   reveal?: () => void;
 }
 
+export const enum EditingAllowedStatus {
+  Disabled = 0,   // Local overrides are currently disabled.
+  Enabled = 1,    // The header is free to be edited.
+  Forbidden = 2,  // Editing this header is forbidden even when local overrides are enabled.
+}
+
 export interface HeaderDetailsDescriptor {
   name: Platform.StringUtilities.LowerCaseString;
   value: string|null;
@@ -558,7 +567,7 @@ export interface HeaderEditorDescriptor {
   originalName?: string|null;
   originalValue?: string|null;
   isOverride?: boolean;
-  valueEditable?: boolean;
+  valueEditable: EditingAllowedStatus;
   nameEditable?: boolean;
   isDeleted?: boolean;
 }

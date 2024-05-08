@@ -10,7 +10,12 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as NetworkForward from '../forward/forward.js';
 
-import {type HeaderDescriptor, HeaderSectionRow, type HeaderSectionRowData} from './HeaderSectionRow.js';
+import {
+  EditingAllowedStatus,
+  type HeaderDescriptor,
+  HeaderSectionRow,
+  type HeaderSectionRowData,
+} from './HeaderSectionRow.js';
 import requestHeaderSectionStyles from './RequestHeaderSection.css.js';
 
 const {render, html} = LitHtml;
@@ -59,6 +64,7 @@ export class RequestHeaderSection extends HTMLElement {
     this.#headers = this.#request.requestHeaders().map(header => ({
                                                          name: Platform.StringUtilities.toLowerCaseString(header.name),
                                                          value: header.value,
+                                                         valueEditable: EditingAllowedStatus.Forbidden,
                                                        }));
     this.#headers.sort((a, b) => Platform.StringUtilities.compare(a.name, b.name));
 

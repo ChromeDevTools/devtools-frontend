@@ -85,14 +85,6 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     return loader;
   }
 
-  static getCpuProfileFilter(): TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter {
-    const visibleTypes = [];
-    visibleTypes.push(TimelineModel.TimelineModel.RecordType.JSFrame);
-    visibleTypes.push(TimelineModel.TimelineModel.RecordType.JSIdleFrame);
-    visibleTypes.push(TimelineModel.TimelineModel.RecordType.JSSystemFrame);
-    return new TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter(visibleTypes);
-  }
-
   static loadFromCpuProfile(profile: Protocol.Profiler.Profile|null, client: Client, title?: string): TimelineLoader {
     const loader = new TimelineLoader(client, title);
     loader.#traceIsCPUProfile = true;
@@ -100,8 +92,6 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     try {
       const events = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
           profile, /* tid */ 1, /* injectPageEvent */ true);
-
-      loader.filter = TimelineLoader.getCpuProfileFilter();
 
       window.setTimeout(async () => {
         void loader.addEvents(events);
@@ -260,7 +250,6 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   private parseCPUProfileFormat(parsedTrace: string): void {
     const traceEvents = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
         parsedTrace, /* tid */ 1, /* injectPageEvent */ true);
-    this.filter = TimelineLoader.getCpuProfileFilter();
     (this.tracingModel as TraceEngine.Legacy.TracingModel).addEvents(traceEvents);
     this.#collectEvents(traceEvents);
   }

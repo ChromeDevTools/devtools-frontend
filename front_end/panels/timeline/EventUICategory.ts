@@ -693,9 +693,6 @@ export function maybeInitSylesMap(): EventStylesMap {
         defaultCategoryStyles.rendering,
         ),
 
-    [TraceEngine.Types.TraceEvents.KnownEventName.RecalculateStyles]:
-        new TimelineRecordStyle(i18nString(UIStrings.recalculateStyle), defaultCategoryStyles.rendering),
-
     [TraceEngine.Types.TraceEvents.KnownEventName.UpdateLayoutTree]:
         new TimelineRecordStyle(i18nString(UIStrings.recalculateStyle), defaultCategoryStyles.rendering),
 

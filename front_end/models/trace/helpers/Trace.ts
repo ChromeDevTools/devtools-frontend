@@ -404,7 +404,6 @@ export function getZeroIndexedStackTraceForEvent(event: Types.TraceEvents.TraceE
   return stack.map(callFrame => {
     const normalizedCallFrame = {...callFrame};
     switch (event.name) {
-      case Types.TraceEvents.KnownEventName.RecalculateStyles:
       case Types.TraceEvents.KnownEventName.ScheduleStyleRecalculation:
       case Types.TraceEvents.KnownEventName.InvalidateLayout:
       case Types.TraceEvents.KnownEventName.UpdateLayoutTree: {

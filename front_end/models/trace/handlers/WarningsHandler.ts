@@ -92,7 +92,6 @@ function processForcedReflowWarning(event: Types.TraceEvents.TraceEventData): vo
   if (jsInvokeStack.length) {
     // Current event falls inside a JS call.
     if (event.name === Types.TraceEvents.KnownEventName.Layout ||
-        event.name === Types.TraceEvents.KnownEventName.RecalculateStyles ||
         event.name === Types.TraceEvents.KnownEventName.UpdateLayoutTree) {
       // A forced reflow happened. However we need to check if
       // the threshold is surpassed to add a warning. Accumulate the

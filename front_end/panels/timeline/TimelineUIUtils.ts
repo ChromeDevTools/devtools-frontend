@@ -1443,8 +1443,7 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordTypes.UpdateLayoutTree:  // We don't want to see default details.
-      case recordTypes.RecalculateStyles: {
+      case recordTypes.UpdateLayoutTree: {
         contentHelper.appendTextRow(i18nString(UIStrings.elementsAffected), unsafeEventArgs['elementCount']);
 
         const selectorStatsSetting =
@@ -1966,7 +1965,6 @@ export class TimelineUIUtils {
         initiatorStackLabel = i18nString(UIStrings.idleCallbackRequested);
         break;
       case TraceEngine.Types.TraceEvents.KnownEventName.UpdateLayoutTree:
-      case TraceEngine.Types.TraceEvents.KnownEventName.RecalculateStyles:
         initiatorStackLabel = i18nString(UIStrings.firstInvalidated);
         stackLabel = i18nString(UIStrings.recalculationForced);
         break;

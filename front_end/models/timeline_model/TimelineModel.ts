@@ -352,8 +352,7 @@ export class TimelineModelImpl {
         break;
       }
 
-      case RecordType.UpdateLayoutTree:
-      case RecordType.RecalculateStyles: {
+      case RecordType.UpdateLayoutTree: {
         if (this.currentScriptEvent) {
           this.currentTaskLayoutAndRecalcEvents.push(event);
         }
@@ -453,7 +452,6 @@ export enum RecordType {
   DroppedFrame = 'DroppedFrame',
   HitTest = 'HitTest',
   ScheduleStyleRecalculation = 'ScheduleStyleRecalculation',
-  RecalculateStyles = 'RecalculateStyles',
   UpdateLayoutTree = 'UpdateLayoutTree',
   InvalidateLayout = 'InvalidateLayout',
   Layerize = 'Layerize',

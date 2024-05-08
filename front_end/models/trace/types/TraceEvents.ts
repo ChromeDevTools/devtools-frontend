@@ -2370,7 +2370,6 @@ export const enum KnownEventName {
 
   /* Layout */
   ScheduleStyleRecalculation = 'ScheduleStyleRecalculation',
-  RecalculateStyles = 'RecalculateStyles',
   Layout = 'Layout',
   UpdateLayoutTree = 'UpdateLayoutTree',
   InvalidateLayout = 'InvalidateLayout',

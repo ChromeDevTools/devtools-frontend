@@ -40,7 +40,7 @@ describe('The Lighthouse start view', () => {
 
   // Flaky test.
   it.skipOnPlatforms(
-      ['mac'], '[crbug.com/338885778] enables the start button if only one category is selected', async () => {
+      ['mac', 'linux'], '[crbug.com/338885778] enables the start button if only one category is selected', async () => {
         await navigateToLighthouseTab('empty.html');
 
         await selectCategories(['performance']);

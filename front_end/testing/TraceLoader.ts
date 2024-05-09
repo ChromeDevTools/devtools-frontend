@@ -119,15 +119,16 @@ export class TraceLoader {
    * The trace file should be in ../panels/timeline/fixtures/traces folder.
    *
    * @param options Additional trace options.
-   * @param options.initTraceBounds after the trace is loaded, the TraceBounds
-   * manager will automatically be initialised using the bounds from the trace.
+   * @param options.initTraceBounds (defaults to `true`) after the trace is
+   * loaded, the TraceBounds manager will automatically be initialised using
+   * the bounds from the trace.
    *
    * @param config The config the new trace engine should run with. Optional,
    * will fall back to the Default config if not provided.
    */
   static async traceEngine(
       context: Mocha.Context|Mocha.Suite|null, name: string, options: TraceEngineLoaderOptions = {
-        initTraceBounds: false,
+        initTraceBounds: true,
       },
       config: TraceEngine.Types.Configuration.Configuration = TraceEngine.Types.Configuration.DEFAULT):
       Promise<TraceEngine.Handlers.Types.TraceParseData> {

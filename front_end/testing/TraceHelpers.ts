@@ -82,7 +82,7 @@ export async function getNetworkFlameChart(traceFileName: string, expanded: bool
 }> {
   await initializeGlobalVars();
 
-  const traceParsedData = await TraceLoader.traceEngine(/* context= */ null, traceFileName, {initTraceBounds: true});
+  const traceParsedData = await TraceLoader.traceEngine(/* context= */ null, traceFileName);
   const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
   const maxTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.max);
   const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();

@@ -3,7 +3,13 @@
 // found in the LICENSE file.
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {getMainThread} from '../../../testing/TraceHelpers.js';
+import {
+  getMainThread,
+  makeAsyncEndEvent,
+  makeAsyncStartEvent,
+  makeCompleteEvent,
+  makeInstantEvent,
+} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TraceModel from '../trace.js';
 
@@ -552,6 +558,168 @@ describeWithEnvironment('TraceModel helpers', function() {
           TraceModel.Types.Timing.MicroSeconds(lastEvent.ts - 1_000),
       );
       assert.lengthOf(filteredByEndTimeEvents, 10);
+    });
+  });
+
+  describe('forEachEvent', () => {
+    const pid = TraceModel.Types.TraceEvents.ProcessID(1);
+    const tid = TraceModel.Types.TraceEvents.ThreadID(1);
+
+    it('iterates through the events in the expected tree-like order', async () => {
+      // |------------- RunTask -------------||-- RunTask --|
+      //  |-- RunMicrotasks --||-- Layout --|
+      //   |- FunctionCall -|
+      const traceEvents = [
+        makeCompleteEvent('RunTask', 0, 10, '*', pid, tid),       // 0..10
+        makeCompleteEvent('RunMicrotasks', 1, 3, '*', pid, tid),  // 1..4
+        makeCompleteEvent('FunctionCall', 2, 1, '*', pid, tid),   // 2..3
+        makeCompleteEvent('Layout', 5, 3, '*', pid, tid),         // 5..8
+        makeCompleteEvent('RunTask', 11, 3, '*', pid, tid),       // 11..14
+      ];
+      const onStartEvent = sinon.spy<(e: TraceModel.Types.TraceEvents.TraceEventData) => void>(_event => {});
+      const onEndEvent = sinon.spy<(e: TraceModel.Types.TraceEvents.TraceEventData) => void>(_event => {});
+
+      TraceModel.Helpers.Trace.forEachEvent(traceEvents, {
+        onEndEvent,
+        onStartEvent,
+      });
+      const eventsFromStartEventCalls = onStartEvent.getCalls().map(a => a.args[0]);
+      const eventsFromEndEventCalls = onEndEvent.getCalls().map(a => a.args[0]);
+      assert.deepEqual(
+          eventsFromStartEventCalls.map(e => e.name),
+          ['RunTask', 'RunMicrotasks', 'FunctionCall', 'Layout', 'RunTask'],
+      );
+      assert.deepEqual(
+          eventsFromEndEventCalls.map(e => e.name),
+          ['FunctionCall', 'RunMicrotasks', 'Layout', 'RunTask', 'RunTask'],
+      );
+    });
+
+    it('allows for a custom start and end time', async () => {
+      // |------------- RunTask -------------||-- RunTask --|
+      //  |-- RunMicrotasks --||-- Layout --|
+      //   |- FunctionCall -|
+      const traceEvents = [
+        makeCompleteEvent('RunTask', 0, 10, '*', pid, tid),       // 0..10
+        makeCompleteEvent('RunMicrotasks', 1, 3, '*', pid, tid),  // 1..4
+        makeCompleteEvent('FunctionCall', 2, 1, '*', pid, tid),   // 2..3
+        makeCompleteEvent('Layout', 5, 3, '*', pid, tid),         // 5..8
+      ];
+      const onStartEvent = sinon.spy<(e: TraceModel.Types.TraceEvents.TraceEventData) => void>(_event => {});
+      const onEndEvent = sinon.spy<(e: TraceModel.Types.TraceEvents.TraceEventData) => void>(_event => {});
+
+      TraceModel.Helpers.Trace.forEachEvent(traceEvents, {
+        onEndEvent,
+        onStartEvent,
+        startTime: TraceModel.Types.Timing.MicroSeconds(5),
+        endTime: TraceModel.Types.Timing.MicroSeconds(9),
+      });
+      const eventsFromStartEventCalls = onStartEvent.getCalls().map(a => a.args[0]);
+      const eventsFromEndEventCalls = onEndEvent.getCalls().map(a => a.args[0]);
+      // We expect the RunTask event (0-10) and the Layout event (5-8) as
+      // those fit in the 5-9 custom time range.
+      assert.deepEqual(
+          eventsFromStartEventCalls.map(e => e.name),
+          ['RunTask', 'Layout'],
+      );
+      assert.deepEqual(
+          eventsFromEndEventCalls.map(e => e.name),
+          ['Layout', 'RunTask'],
+      );
+    });
+
+    it('lets the user filter out events with a custom filter', async () => {
+      // |------------- RunTask -------------||-- RunTask --|
+      //  |-- RunMicrotasks --||-- Layout --|
+      //   |- FunctionCall -|
+      const traceEvents = [
+        makeCompleteEvent('RunTask', 0, 10, '*', pid, tid),       // 0..10
+        makeCompleteEvent('RunMicrotasks', 1, 3, '*', pid, tid),  // 1..4
+        makeCompleteEvent('FunctionCall', 2, 1, '*', pid, tid),   // 2..3
+        makeCompleteEvent('Layout', 5, 3, '*', pid, tid),         // 5..8
+        makeCompleteEvent('RunTask', 11, 3, '*', pid, tid),       // 11..14
+      ];
+      const onStartEvent = sinon.spy<(e: TraceModel.Types.TraceEvents.TraceEventData) => void>(_event => {});
+      const onEndEvent = sinon.spy<(e: TraceModel.Types.TraceEvents.TraceEventData) => void>(_event => {});
+
+      TraceModel.Helpers.Trace.forEachEvent(traceEvents, {
+        onEndEvent,
+        onStartEvent,
+        eventFilter(event) {
+          return event.name !== 'RunTask';
+        },
+      });
+      const eventsFromStartEventCalls = onStartEvent.getCalls().map(a => a.args[0]);
+      const eventsFromEndEventCalls = onEndEvent.getCalls().map(a => a.args[0]);
+
+      assert.deepEqual(
+          eventsFromStartEventCalls.map(e => e.name),
+          ['RunMicrotasks', 'FunctionCall', 'Layout'],
+      );
+      assert.deepEqual(
+          eventsFromEndEventCalls.map(e => e.name),
+          ['FunctionCall', 'RunMicrotasks', 'Layout'],
+      );
+    });
+
+    it('calls the onInstantEvent callback when it finds an event with 0 duration', async () => {
+      const traceEvents = [
+        makeInstantEvent('FakeInstantEvent', 0, '*', pid, tid),
+      ];
+      const onStartEvent = sinon.spy<(e: TraceModel.Types.TraceEvents.TraceEventData) => void>(_event => {});
+      const onEndEvent = sinon.spy<(e: TraceModel.Types.TraceEvents.TraceEventData) => void>(_event => {});
+      const onInstantEvent = sinon.spy<(e: TraceModel.Types.TraceEvents.TraceEventData) => void>(_event => {});
+
+      TraceModel.Helpers.Trace.forEachEvent(traceEvents, {
+        onEndEvent,
+        onStartEvent,
+        onInstantEvent,
+      });
+
+      assert.strictEqual(onStartEvent.callCount, 0);
+      assert.strictEqual(onEndEvent.callCount, 0);
+      assert.strictEqual(onInstantEvent.callCount, 1);
+    });
+
+    it('skips async events by default', async () => {
+      const traceEvents = [
+        makeAsyncStartEvent('FakeAsync', 0, pid, tid),
+        makeAsyncEndEvent('FakeAsync', 0, pid, tid),
+      ];
+      const onStartEvent = sinon.spy<(e: TraceModel.Types.TraceEvents.TraceEventData) => void>(_event => {});
+      const onEndEvent = sinon.spy<(e: TraceModel.Types.TraceEvents.TraceEventData) => void>(_event => {});
+      const onInstantEvent = sinon.spy<(e: TraceModel.Types.TraceEvents.TraceEventData) => void>(_event => {});
+
+      TraceModel.Helpers.Trace.forEachEvent(traceEvents, {
+        onEndEvent,
+        onStartEvent,
+        onInstantEvent,
+      });
+
+      assert.strictEqual(onStartEvent.callCount, 0);
+      assert.strictEqual(onEndEvent.callCount, 0);
+      assert.strictEqual(onInstantEvent.callCount, 0);
+    });
+
+    it('can be configured to include async events', async () => {
+      const traceEvents = [
+        makeAsyncStartEvent('FakeAsync', 0, pid, tid),
+        makeAsyncEndEvent('FakeAsync', 0, pid, tid),
+      ];
+      const onStartEvent = sinon.spy<(e: TraceModel.Types.TraceEvents.TraceEventData) => void>(_event => {});
+      const onEndEvent = sinon.spy<(e: TraceModel.Types.TraceEvents.TraceEventData) => void>(_event => {});
+      const onInstantEvent = sinon.spy<(e: TraceModel.Types.TraceEvents.TraceEventData) => void>(_event => {});
+
+      TraceModel.Helpers.Trace.forEachEvent(traceEvents, {
+        onEndEvent,
+        onStartEvent,
+        onInstantEvent,
+        ignoreAsyncEvents: false,
+      });
+
+      assert.strictEqual(onStartEvent.callCount, 0);
+      assert.strictEqual(onEndEvent.callCount, 0);
+      assert.strictEqual(onInstantEvent.callCount, 2);
     });
   });
 });

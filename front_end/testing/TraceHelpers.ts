@@ -268,6 +268,39 @@ export function makeCompleteEvent(
   };
 }
 
+export function makeAsyncStartEvent(
+    name: string,
+    ts: number,
+    pid: number = 0,
+    tid: number = 0,
+    ): TraceEngine.Types.TraceEvents.TraceEventAsync {
+  return {
+    args: {},
+    cat: '*',
+    name,
+    ph: TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_START,
+    pid: TraceEngine.Types.TraceEvents.ProcessID(pid),
+    tid: TraceEngine.Types.TraceEvents.ThreadID(tid),
+    ts: TraceEngine.Types.Timing.MicroSeconds(ts),
+  };
+}
+export function makeAsyncEndEvent(
+    name: string,
+    ts: number,
+    pid: number = 0,
+    tid: number = 0,
+    ): TraceEngine.Types.TraceEvents.TraceEventAsync {
+  return {
+    args: {},
+    cat: '*',
+    name,
+    ph: TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_END,
+    pid: TraceEngine.Types.TraceEvents.ProcessID(pid),
+    tid: TraceEngine.Types.TraceEvents.ThreadID(tid),
+    ts: TraceEngine.Types.Timing.MicroSeconds(ts),
+  };
+}
+
 export function makeCompleteEventInMilliseconds(
     name: string, tsMillis: number, durMillis: number, cat: string = '*', pid: number = 0,
     tid: number = 0): TraceEngine.Types.TraceEvents.TraceEventComplete {

@@ -28,38 +28,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as TraceEngine from '../trace/trace.js';
 
 export class TimelineModelImpl {
-  private inspectedTargetEventsInternal!: TraceEngine.Legacy.Event[];
   private sessionId!: string|null;
-  private mainFrameNodeId!: number|null;
-  private requestsFromBrowser!: Map<string, TraceEngine.Legacy.Event>;
-  private lastScheduleStyleRecalculation!: {
-    [x: string]: TraceEngine.Types.TraceEvents.TraceEventData,
-  };
   private lastPaintForLayer!: {
     [x: string]: TraceEngine.Legacy.Event,
   };
   private currentScriptEvent!: TraceEngine.Legacy.Event|null;
   private eventStack!: TraceEngine.Legacy.Event[];
   private browserFrameTracking!: boolean;
-  private currentTaskLayoutAndRecalcEvents: TraceEngine.Legacy.Event[];
-  private tracingModelInternal: TraceEngine.Legacy.TracingModel|null;
-  private lastRecalculateStylesEvent: TraceEngine.Legacy.Event|null;
 
   constructor() {
     this.reset();
     this.resetProcessingState();
-
-    this.currentTaskLayoutAndRecalcEvents = [];
-    this.tracingModelInternal = null;
-    this.lastRecalculateStylesEvent = null;
   }
 
   /**
@@ -156,7 +140,6 @@ export class TimelineModelImpl {
   setEvents(tracingModel: TraceEngine.Legacy.TracingModel): void {
     this.reset();
     this.resetProcessingState();
-    this.tracingModelInternal = tracingModel;
 
     this.processSyncBrowserEvents(tracingModel);
     if (this.browserFrameTracking) {
@@ -171,7 +154,6 @@ export class TimelineModelImpl {
         this.processGenericTrace(tracingModel);
       }
     }
-    this.inspectedTargetEventsInternal.sort(TraceEngine.Legacy.Event.compareStartTime);
     this.resetProcessingState();
   }
 
@@ -242,9 +224,6 @@ export class TimelineModelImpl {
         pageDevToolsMetadataEvents.push(event);
       } else if (event.name === TimelineModelImpl.DevToolsMetadataEvent.TracingSessionIdForWorker) {
         workersDevToolsMetadataEvents.push(event);
-      } else if (event.name === TimelineModelImpl.DevToolsMetadataEvent.TracingStartedInBrowser) {
-        console.assert(!this.mainFrameNodeId, 'Multiple sessions in trace');
-        this.mainFrameNodeId = event.args['frameTreeNodeId'];
       }
     }
     if (!pageDevToolsMetadataEvents.length) {
@@ -255,7 +234,7 @@ export class TimelineModelImpl {
         pageDevToolsMetadataEvents[0].args['sessionId'] || pageDevToolsMetadataEvents[0].args['data']['sessionId'];
     this.sessionId = sessionId;
 
-    const mismatchingIds = new Set<any>();
+    const mismatchingIds = new Set<unknown>();
     function checkSessionId(event: TraceEngine.Legacy.Event): boolean {
       let args = event.args;
       // FIXME: put sessionId into args["data"] for TracingStartedInPage event.
@@ -289,7 +268,6 @@ export class TimelineModelImpl {
   }
 
   private resetProcessingState(): void {
-    this.lastScheduleStyleRecalculation = {};
     this.lastPaintForLayer = {};
     this.currentScriptEvent = null;
     this.eventStack = [];
@@ -325,18 +303,10 @@ export class TimelineModelImpl {
         event.selfTime = event.duration;
         eventStack.push(event);
       }
-
-      this.inspectedTargetEventsInternal.push(event);
     }
   }
 
   private processEvent(event: TraceEngine.Legacy.Event): boolean {
-    const eventStack = this.eventStack;
-
-    if (!eventStack.length) {
-      this.currentTaskLayoutAndRecalcEvents = [];
-    }
-
     if (this.currentScriptEvent) {
       if (this.currentScriptEvent.endTime !== undefined && event.startTime > this.currentScriptEvent.endTime) {
         this.currentScriptEvent = null;
@@ -345,28 +315,10 @@ export class TimelineModelImpl {
 
     const eventData = event.args['data'] || event.args['beginData'] || {};
     switch (event.name) {
-      case RecordType.ScheduleStyleRecalculation: {
-        if (!(event instanceof TraceEngine.Legacy.PayloadEvent)) {
-          break;
-        }
-        this.lastScheduleStyleRecalculation[eventData['frame']] = event.rawPayload();
-        break;
-      }
-
-      case RecordType.UpdateLayoutTree: {
-        if (this.currentScriptEvent) {
-          this.currentTaskLayoutAndRecalcEvents.push(event);
-        }
-        break;
-      }
-
       case RecordType.Layout: {
         const frameId = event.args?.beginData?.frame;
         if (!frameId) {
           break;
-        }
-        if (this.currentScriptEvent) {
-          this.currentTaskLayoutAndRecalcEvents.push(event);
         }
         break;
       }
@@ -389,11 +341,6 @@ export class TimelineModelImpl {
         this.lastPaintForLayer[layerId] = event;
         break;
       }
-
-      case RecordType.SelectorStats: {
-        this.lastRecalculateStylesEvent?.addArgs(event.args);
-        break;
-      }
     }
     return true;
   }
@@ -402,7 +349,6 @@ export class TimelineModelImpl {
     if (event.name === RecordType.ResourceWillSendRequest) {
       const requestId = event.args?.data?.requestId;
       if (typeof requestId === 'string') {
-        this.requestsFromBrowser.set(requestId, event);
       }
       return;
     }
@@ -414,25 +360,13 @@ export class TimelineModelImpl {
           return;
         }
         this.browserFrameTracking = true;
-        this.mainFrameNodeId = data['frameTreeNodeId'];
         return;
       }
     }
   }
 
   private reset(): void {
-    this.inspectedTargetEventsInternal = [];
     this.sessionId = null;
-    this.mainFrameNodeId = null;
-    this.requestsFromBrowser = new Map();
-  }
-
-  tracingModel(): TraceEngine.Legacy.TracingModel|null {
-    return this.tracingModelInternal;
-  }
-
-  inspectedTargetEvents(): TraceEngine.Legacy.Event[] {
-    return this.inspectedTargetEventsInternal;
   }
 }
 
@@ -615,10 +549,6 @@ export namespace TimelineModelImpl {
   export const WorkerThreadName = 'DedicatedWorker thread';
   export const WorkerThreadNameLegacy = 'DedicatedWorker Thread';
   export const RendererMainThreadName = 'CrRendererMain';
-  export const BrowserMainThreadName = 'CrBrowserMain';
-  // The names of threads before M111 were exactly this, but afterwards have
-  // it a suffix after the exact role.
-  export const UtilityMainThreadNameSuffix = 'CrUtilityMain';
 
   export const DevToolsMetadataEvent = {
     TracingStartedInBrowser: 'TracingStartedInBrowser',
@@ -627,14 +557,6 @@ export namespace TimelineModelImpl {
     FrameCommittedInBrowser: 'FrameCommittedInBrowser',
     ProcessReadyInBrowser: 'ProcessReadyInBrowser',
     FrameDeletedInBrowser: 'FrameDeletedInBrowser',
-  };
-
-  export const Thresholds = {
-    LongTask: 50,
-    Handler: 150,
-    RecurringHandler: 50,
-    ForcedLayout: 30,
-    IdleCallbackAddon: 5,
   };
 }
 

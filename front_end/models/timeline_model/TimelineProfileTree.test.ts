@@ -341,7 +341,9 @@ describeWithEnvironment('TimelineProfileTree', () => {
       const textFilter = new Timeline.TimelineFilters.TimelineRegExp();
       const modelFilters = [
         Timeline.TimelineUIUtils.TimelineUIUtils.visibleEventsFilter(),
-        new TimelineModel.TimelineModelFilter.ExclusiveNameFilter(['RunTask']),
+        new TimelineModel.TimelineModelFilter.ExclusiveNameFilter([
+          TraceEngine.Types.TraceEvents.KnownEventName.RunTask,
+        ]),
       ];
       const root = new TimelineModel.TimelineProfileTree.BottomUpRootNode(
           mainThread.entries, textFilter, modelFilters, bounds.min, bounds.max, null);
@@ -350,8 +352,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
       // Find the list of profile calls that have been calculated as the top level rows in the Bottom Up table.
       const profileCalls = values
                                .filter(
-                                   node => TraceEngine.Legacy.eventIsFromNewEngine(node.event) &&
-                                       TraceEngine.Types.TraceEvents.isProfileCall(node.event) &&
+                                   node => node.event && TraceEngine.Types.TraceEvents.isProfileCall(node.event) &&
                                        node.event.callFrame.functionName.length > 0)
                                .map(n => n.event as TraceEngine.Types.TraceEvents.SyntheticProfileCall);
       const functionNames = profileCalls.map(entry => entry.callFrame.functionName);

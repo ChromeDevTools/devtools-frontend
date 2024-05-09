@@ -234,7 +234,7 @@ export class TopDownNode extends Node {
 }
 
 export class TopDownRootNode extends TopDownNode {
-  readonly filter: (e: TraceEngine.Legacy.CompatibleTraceEvent) => boolean;
+  readonly filter: (e: TraceEngine.Types.TraceEvents.TraceEventData) => boolean;
   readonly events: TraceEngine.Types.TraceEvents.TraceEventData[];
   readonly startTime: number;
   readonly endTime: number;
@@ -250,7 +250,7 @@ export class TopDownRootNode extends TopDownNode {
     super('', null, null);
     this.root = this;
     this.events = events;
-    this.filter = (e: TraceEngine.Legacy.CompatibleTraceEvent): boolean => filters.every(f => f.accept(e));
+    this.filter = (e: TraceEngine.Types.TraceEvents.TraceEventData): boolean => filters.every(f => f.accept(e));
     this.startTime = startTime;
     this.endTime = endTime;
     this.eventGroupIdCallback = eventGroupIdCallback;
@@ -297,7 +297,7 @@ export class BottomUpRootNode extends Node {
   private childrenInternal: ChildrenCache|null;
   readonly events: TraceEngine.Legacy.CompatibleTraceEvent[];
   private textFilter: TimelineModelFilter;
-  readonly filter: (e: TraceEngine.Legacy.CompatibleTraceEvent) => boolean;
+  readonly filter: (e: TraceEngine.Types.TraceEvents.TraceEventData) => boolean;
   readonly startTime: number;
   readonly endTime: number;
   private eventGroupIdCallback: ((arg0: TraceEngine.Types.TraceEvents.TraceEventData) => string)|null;
@@ -311,7 +311,7 @@ export class BottomUpRootNode extends Node {
     this.childrenInternal = null;
     this.events = events;
     this.textFilter = textFilter;
-    this.filter = (e: TraceEngine.Legacy.CompatibleTraceEvent): boolean => filters.every(f => f.accept(e));
+    this.filter = (e: TraceEngine.Types.TraceEvents.TraceEventData): boolean => filters.every(f => f.accept(e));
     this.startTime = startTime;
     this.endTime = endTime;
     this.eventGroupIdCallback = eventGroupIdCallback;

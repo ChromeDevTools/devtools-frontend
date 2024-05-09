@@ -2,99 +2,102 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {
-  DevToolsTimelineCategory,
-  makeFakeSDKEventFromPayload,
-} from '../../testing/TraceHelpers.js';
+import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as TraceEngine from '../trace/trace.js';
 
-const consoleEvent = makeFakeSDKEventFromPayload({
-  categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console],
-  name: TimelineModel.TimelineModel.RecordType.ConsoleTime,
-  ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-  ts: 1,
-});
-
-const userTimingEvent = makeFakeSDKEventFromPayload({
-  categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming],
-  name: TimelineModel.TimelineModel.RecordType.UserTiming,
-  ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-  ts: 1,
-});
-
 describe('TimelineModelFilter', () => {
   describe('TimelineVisibleEventsFilter', () => {
-    it('accepts events that are set in the constructor and rejects other events', () => {
+    it('accepts events that are set in the constructor and rejects other events', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
+      const userTimingEvent = (traceParsedData.UserTimings.performanceMeasures).at(0);
+      assert.isOk(userTimingEvent);
+
       const visibleFilter = new TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter([
         // Set an random record type to be visible - the exact type is not important for the test.
-        TimelineModel.TimelineModel.RecordType.ConsoleTime,
+        TraceEngine.Types.TraceEvents.KnownEventName.UserTiming,
       ]);
 
-      assert.isTrue(visibleFilter.accept(consoleEvent));
+      assert.isTrue(visibleFilter.accept(userTimingEvent));
     });
 
     describe('eventType', () => {
-      it('returns ConsoleTime if the event has the Console category', () => {
+      it('returns ConsoleTime if the event has the blink.console category', async function() {
+        const traceParsedData = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
+        const consoleTimingEvent = (traceParsedData.UserTimings.consoleTimings).at(0);
+        assert.isOk(consoleTimingEvent);
         assert.strictEqual(
-            TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(consoleEvent),
-            TimelineModel.TimelineModel.RecordType.ConsoleTime);
+            TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(consoleTimingEvent),
+            TraceEngine.Types.TraceEvents.KnownEventName.ConsoleTime);
       });
 
-      it('returns UserTiming if the event has the UserTiming category', () => {
+      it('returns UserTiming if the event has the blink.user_timing category', async function() {
+        const traceParsedData = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
+        const userTimingEvent = (traceParsedData.UserTimings.performanceMeasures).at(0);
+        assert.isOk(userTimingEvent);
         assert.strictEqual(
             TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(userTimingEvent),
-            TimelineModel.TimelineModel.RecordType.UserTiming);
+            TraceEngine.Types.TraceEvents.KnownEventName.UserTiming);
       });
 
-      it('returns the event name if the event is any other category', () => {
-        const otherEvent = makeFakeSDKEventFromPayload({
-          categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.Loading],
-          name: 'other',
-          ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-          ts: 1,
-        });
+      it('returns the event name if the event is any other category', async function() {
+        const traceParsedData = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
+        const layoutShiftEvent = traceParsedData.LayoutShifts.clusters.at(0)?.events.at(0);
+        assert.isOk(layoutShiftEvent);
         assert.strictEqual(
-            TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(otherEvent), 'other');
+            TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(layoutShiftEvent),
+            TraceEngine.Types.TraceEvents.KnownEventName.LayoutShift);
       });
     });
   });
 
   describe('TimelineInvisibleEventsFilter', () => {
-    it('does not accept events that have been set as invisible', () => {
+    it('does not accept events that have been set as invisible', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
+      const userTimingEvent = (traceParsedData.UserTimings.performanceMeasures).at(0);
+      assert.isOk(userTimingEvent);
+
       const invisibleFilter = new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([
-        // Set an random record type to be invisible - the exact type is not important for the test.
-        TimelineModel.TimelineModel.RecordType.ConsoleTime,
+        TraceEngine.Types.TraceEvents.KnownEventName.UserTiming,
+
       ]);
-      assert.isFalse(invisibleFilter.accept(consoleEvent));
+      assert.isFalse(invisibleFilter.accept(userTimingEvent));
     });
-    it('accepts events that have not been set as invisible', () => {
+
+    it('accepts events that have not been set as invisible', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
+      const layoutShiftEvent = traceParsedData.LayoutShifts.clusters.at(0)?.events.at(0);
+      assert.isOk(layoutShiftEvent);
+
       const invisibleFilter = new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([
-        // Set an random record type to be invisible - the exact type is not important for the test.
-        TimelineModel.TimelineModel.RecordType.ConsoleTime,
+        TraceEngine.Types.TraceEvents.KnownEventName.UserTiming,
+
       ]);
-      assert.isTrue(invisibleFilter.accept(userTimingEvent));
+      assert.isTrue(invisibleFilter.accept(layoutShiftEvent));
     });
   });
 
   describe('ExclusiveNameFilter', () => {
-    function makeEventWithName(name: string): TraceEngine.Legacy.Event {
-      return makeFakeSDKEventFromPayload({
-        categories: [DevToolsTimelineCategory],
-        name,
-        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-        ts: 1,
-      });
-    }
-    it('accepts events that do not match the provided set of names to exclude', () => {
-      const filter = new TimelineModel.TimelineModelFilter.ExclusiveNameFilter(['exclude-name']);
-      const event = makeEventWithName('some-event');
-      assert.isTrue(filter.accept(event));
+    it('accepts events that do not match the provided set of names to exclude', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
+      const userTimingEvent = (traceParsedData.UserTimings.performanceMeasures).at(0);
+      assert.isOk(userTimingEvent);
+
+      const filter = new TimelineModel.TimelineModelFilter.ExclusiveNameFilter([
+        TraceEngine.Types.TraceEvents.KnownEventName.LayoutShift,
+      ]);
+      assert.isTrue(filter.accept(userTimingEvent));
     });
-    it('rejects events that match the provided set of names to exclude', () => {
-      const filter = new TimelineModel.TimelineModelFilter.ExclusiveNameFilter(['exclude-name']);
-      const event = makeEventWithName('exclude-name');
-      assert.isFalse(filter.accept(event));
+
+    it('rejects events that match the provided set of names to exclude', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
+      const layoutShiftEvent = traceParsedData.LayoutShifts.clusters.at(0)?.events.at(0);
+      assert.isOk(layoutShiftEvent);
+
+      const filter = new TimelineModel.TimelineModelFilter.ExclusiveNameFilter([
+        TraceEngine.Types.TraceEvents.KnownEventName.LayoutShift,
+      ]);
+      assert.isFalse(filter.accept(layoutShiftEvent));
     });
   });
 });

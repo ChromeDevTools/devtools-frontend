@@ -93,7 +93,7 @@ export class TimelineModelImpl {
       onEndEvent: (arg0: TraceEngine.Legacy.CompatibleTraceEvent) => void,
       onInstantEvent?:
           ((arg0: TraceEngine.Legacy.CompatibleTraceEvent, arg1: TraceEngine.Legacy.CompatibleTraceEvent|null) => void),
-      startTime?: number, endTime?: number, filter?: ((arg0: TraceEngine.Legacy.CompatibleTraceEvent) => boolean),
+      startTime?: number, endTime?: number, filter?: ((arg0: TraceEngine.Types.TraceEvents.TraceEventData) => boolean),
       ignoreAsyncEvents = true): void {
     startTime = startTime || 0;
     endTime = endTime || Infinity;
@@ -123,7 +123,8 @@ export class TimelineModelImpl {
         lastEventEndTime = last && TraceEngine.Legacy.timesForEventInMilliseconds(last).endTime;
       }
 
-      if (filter && !filter(e)) {
+      if (filter && TraceEngine.Legacy.eventIsFromNewEngine(e) && !filter(e)) {
+        // TODO: once this method is migrated and only supports new events, remove the eventIsFromNewEngine check.
         continue;
       }
       if (eventDuration) {

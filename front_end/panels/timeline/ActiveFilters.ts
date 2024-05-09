@@ -33,7 +33,7 @@ export class ActiveFilters {
     this.#activeFilters = newFilters;
   }
 
-  isVisible(event: TraceEngine.Legacy.CompatibleTraceEvent): boolean {
+  isVisible(event: TraceEngine.Types.TraceEvents.TraceEventData): boolean {
     return this.#activeFilters.every(f => f.accept(event));
   }
 }

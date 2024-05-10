@@ -109,7 +109,7 @@ export class SamplesIntegrator {
     this.#profileModel = profileModel;
     this.#threadId = tid;
     this.#processId = pid;
-    this.#engineConfig = configuration || Types.Configuration.DEFAULT;
+    this.#engineConfig = configuration || Types.Configuration.defaults();
     this.#profileId = profileId;
   }
 
@@ -233,7 +233,7 @@ export class SamplesIntegrator {
   callsFromProfileSamples(): Types.TraceEvents.SyntheticProfileCall[] {
     const samples = this.#profileModel.samples;
     const timestamps = this.#profileModel.timestamps;
-    const debugModeEnabled = this.#engineConfig.experiments.timelineDebugMode;
+    const debugModeEnabled = this.#engineConfig.debugMode;
     if (!samples) {
       return [];
     }
@@ -437,7 +437,7 @@ export class SamplesIntegrator {
 
   static filterStackFrames(
       stack: Types.TraceEvents.SyntheticProfileCall[], engineConfig: Types.Configuration.Configuration): void {
-    const showAllEvents = engineConfig.experiments.timelineShowAllEvents;
+    const showAllEvents = engineConfig.showAllEvents;
     if (showAllEvents) {
       return;
     }
@@ -447,7 +447,7 @@ export class SamplesIntegrator {
       const frame = stack[i].callFrame;
       const nativeRuntimeFrame = SamplesIntegrator.isNativeRuntimeFrame(frame);
       if (nativeRuntimeFrame &&
-          !SamplesIntegrator.showNativeName(frame.functionName, engineConfig.experiments.timelineV8RuntimeCallStats)) {
+          !SamplesIntegrator.showNativeName(frame.functionName, engineConfig.includeRuntimeCallStats)) {
         continue;
       }
       const nativeFrameName = nativeRuntimeFrame ? SamplesIntegrator.nativeGroup(frame.functionName) : null;

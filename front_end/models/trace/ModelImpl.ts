@@ -40,7 +40,7 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
   readonly #recordingsAvailable: string[] = [];
   #lastRecordingIndex = 0;
   #processor: TraceProcessor<Handlers.Types.HandlersWithMeta<EnabledModelHandlers>>;
-  #config: Types.Configuration.Configuration = Types.Configuration.DEFAULT;
+  #config: Types.Configuration.Configuration = Types.Configuration.defaults();
 
   static createWithAllHandlers(config?: Types.Configuration.Configuration): Model<typeof Handlers.ModelHandlers> {
     return new Model(Handlers.ModelHandlers, config);
@@ -52,16 +52,6 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
       this.#config = config;
     }
     this.#processor = new TraceProcessor(handlers, this.#config);
-  }
-
-  /**
-   * Updates the configuration. Useful if a user changes a setting - this lets
-   * us update the model without having to destroy it and recreate it with the
-   * new settings.
-   */
-  updateConfiguration(config: Types.Configuration.Configuration): void {
-    this.#config = config;
-    this.#processor.updateConfiguration(config);
   }
 
   /**

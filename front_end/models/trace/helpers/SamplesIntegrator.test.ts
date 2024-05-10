@@ -64,12 +64,11 @@ describeWithEnvironment('SamplesIntegrator', function() {
     });
     it('generates JSSamples from samples under debug mode', () => {
       const config = {
-        ...TraceModel.Types.Configuration.DEFAULT,
-        experiments: {
-          ...TraceModel.Types.Configuration.DEFAULT.experiments,
-          timelineDebugMode: true,
-        },
+        ...TraceModel.Types.Configuration.defaults(),
       };
+      config.debugMode = true;
+      assert.strictEqual(
+          TraceModel.Types.Configuration.defaults().debugMode, false, 'Default config should not be mutable');
 
       const integrator =
           new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedBasicProfile, PROFILE_ID, pid, tid, config);

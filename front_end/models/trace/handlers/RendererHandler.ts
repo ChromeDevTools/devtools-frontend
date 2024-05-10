@@ -38,7 +38,7 @@ let allTraceEntries: Types.TraceEvents.SyntheticTraceEntry[] = [];
 const completeEventStack: (Types.TraceEvents.SyntheticCompleteEvent)[] = [];
 
 let handlerState = HandlerState.UNINITIALIZED;
-let config: Types.Configuration.Configuration = Types.Configuration.DEFAULT;
+let config: Types.Configuration.Configuration = Types.Configuration.defaults();
 
 const makeRendererProcess = (): RendererProcess => ({
   url: null,

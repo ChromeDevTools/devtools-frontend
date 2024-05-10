@@ -390,11 +390,8 @@ describeWithEnvironment('TimelineProfileTree', () => {
             initTraceBounds: false,
           },
           {
-            ...TraceEngine.Types.Configuration.DEFAULT,
-            experiments: {
-              ...TraceEngine.Types.Configuration.DEFAULT.experiments,
-              timelineV8RuntimeCallStats: true,
-            },
+            ...TraceEngine.Types.Configuration.defaults(),
+            includeRuntimeCallStats: true,
           });
 
       const mainThread = getMainThread(traceParsedData.Renderer);

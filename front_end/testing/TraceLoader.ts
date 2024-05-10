@@ -130,7 +130,7 @@ export class TraceLoader {
       context: Mocha.Context|Mocha.Suite|null, name: string, options: TraceEngineLoaderOptions = {
         initTraceBounds: true,
       },
-      config: TraceEngine.Types.Configuration.Configuration = TraceEngine.Types.Configuration.DEFAULT):
+      config: TraceEngine.Types.Configuration.Configuration = TraceEngine.Types.Configuration.defaults()):
       Promise<TraceEngine.Handlers.Types.TraceParseData> {
     // Force the TraceBounds to be reset to empty. This ensures that in
     // tests where we are using the new engine data we don't accidentally

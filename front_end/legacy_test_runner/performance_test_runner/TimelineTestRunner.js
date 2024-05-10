@@ -124,7 +124,7 @@ PerformanceTestRunner.traceEngineRawEvents = function() {
 // you can instead add a unit test to the DevTools repository. That is
 // preferred to layout tests, if possible.
 PerformanceTestRunner.createTraceEngineDataFromEvents = async function(events) {
-  const model = Trace.TraceModel.Model.createWithAllHandlers(Trace.Types.Configuration.DEFAULT);
+  const model = Trace.TraceModel.Model.createWithAllHandlers(Trace.Types.Configuration.defaults());
   await model.parse(events);
   // Model only has one trace, so we can hardcode 0 here to get the latest
   // result.

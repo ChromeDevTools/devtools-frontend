@@ -11,9 +11,9 @@ import {
   setMockConnectionResponseHandler,
 } from './MockConnection.js';
 
-const LOADER_ID = 'LOADER_ID' as Protocol.Network.LoaderId;
+export const LOADER_ID = 'LOADER_ID' as Protocol.Network.LoaderId;
 export const MAIN_FRAME_ID = 'main' as Protocol.Page.FrameId;
-const DOMAIN = 'example.com';
+export const DOMAIN = 'example.com';
 export const SECURITY_ORIGIN = `https://${DOMAIN}`;
 export const FRAME_URL = `${SECURITY_ORIGIN}/` as Platform.DevToolsPath.UrlString;
 
@@ -52,4 +52,38 @@ export async function getInitializedResourceTreeModel(target: SDK.Target.Target)
   return resourceTreeModel.cachedResourcesLoaded() ?
       resourceTreeModel :
       resourceTreeModel.once(SDK.ResourceTreeModel.Events.CachedResourcesLoaded);
+}
+
+function getEffectivePayload(
+    id: Protocol.Page.FrameId, base: Omit<Protocol.Page.Frame, 'id'>,
+    framePayload?: Partial<Protocol.Page.Frame>): Protocol.Page.Frame {
+  const effectivePayload: Protocol.Page.Frame = {...base, id};
+  if (framePayload) {
+    if (framePayload.url) {
+      const url = new URL(framePayload.url);
+      framePayload.domainAndRegistry ??= url.hostname;
+      framePayload.securityOrigin ??= url.origin;
+    }
+    Object.assign(effectivePayload, framePayload);
+  }
+  return effectivePayload;
+}
+
+export function getMainFrame(
+    target: SDK.Target.Target, framePayload?: Partial<Protocol.Page.Frame>): SDK.ResourceTreeModel.ResourceTreeFrame {
+  const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel)!;
+  if (resourceTreeModel.mainFrame) {
+    return resourceTreeModel.mainFrame;
+  }
+  resourceTreeModel.frameAttached(MAIN_FRAME_ID, null);
+  const mainFrame = resourceTreeModel.mainFrame as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
+  mainFrame.navigate(getEffectivePayload(MAIN_FRAME_ID, FRAME, framePayload));
+  return mainFrame;
+}
+
+export function navigate(
+    frame: SDK.ResourceTreeModel.ResourceTreeFrame, framePayload?: Partial<Protocol.Page.Frame>,
+    type: Protocol.Page.NavigationType = Protocol.Page.NavigationType.Navigation) {
+  const effectivePayload = getEffectivePayload(frame.id, FRAME, framePayload);
+  frame.resourceTreeModel().frameNavigated(effectivePayload, type);
 }

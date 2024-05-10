@@ -9,6 +9,12 @@ import {
 import {
   describeWithMockConnection,
 } from '../../testing/MockConnection.js';
+import {
+  FRAME_URL,
+  getInitializedResourceTreeModel,
+  getMainFrame,
+  navigate,
+} from '../../testing/ResourceTreeHelpers.js';
 import * as Common from '../common/common.js';
 import type * as Platform from '../platform/platform.js';
 
@@ -98,22 +104,14 @@ describeWithMockConnection('ConsoleMessage', () => {
     const tabTarget = createTarget({type: SDK.Target.Type.Tab});
     const mainFrameTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
     const subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameTarget});
-    const navigateTarget = (target: SDK.Target.Target) => {
-      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assert.exists(resourceTreeModel);
-      resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, resourceTreeModel);
-      const frame = {url: 'http://example.com/', backForwardCacheDetails: {}} as
-          SDK.ResourceTreeModel.ResourceTreeFrame;
-      resourceTreeModel.dispatchEventToListeners(
-          SDK.ResourceTreeModel.Events.PrimaryPageChanged,
-          {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation});
-    };
-    navigateTarget(subframeTarget);
+    await getInitializedResourceTreeModel(subframeTarget);
+    navigate(getMainFrame(subframeTarget));
     assert.isTrue(consoleLog.notCalled);
 
-    navigateTarget(mainFrameTarget);
+    await getInitializedResourceTreeModel(mainFrameTarget);
+    navigate(getMainFrame(mainFrameTarget));
     assert.isTrue(consoleLog.calledOnce);
-    assert.isTrue(consoleLog.calledOnceWith('Navigated to http://example.com/'));
+    assert.isTrue(consoleLog.calledOnceWith(`Navigated to ${FRAME_URL}`));
   });
 
   it('logs a message on main frame navigation via bfcache', async () => {
@@ -122,23 +120,15 @@ describeWithMockConnection('ConsoleMessage', () => {
     const tabTarget = createTarget({type: SDK.Target.Type.Tab});
     const mainFrameTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
     const subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameTarget});
-    const navigateTarget = (target: SDK.Target.Target) => {
-      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assert.exists(resourceTreeModel);
-      resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, resourceTreeModel);
-      const frame = {url: 'http://example.com/', backForwardCacheDetails: {restoredFromCache: true}} as
-          SDK.ResourceTreeModel.ResourceTreeFrame;
-      resourceTreeModel.dispatchEventToListeners(
-          SDK.ResourceTreeModel.Events.PrimaryPageChanged,
-          {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation});
-    };
-    navigateTarget(subframeTarget);
+    await getInitializedResourceTreeModel(subframeTarget);
+    navigate(getMainFrame(subframeTarget), {}, Protocol.Page.NavigationType.BackForwardCacheRestore);
     assert.isTrue(consoleLog.notCalled);
 
-    navigateTarget(mainFrameTarget);
+    await getInitializedResourceTreeModel(mainFrameTarget);
+    navigate(getMainFrame(mainFrameTarget), {}, Protocol.Page.NavigationType.BackForwardCacheRestore);
     assert.isTrue(consoleLog.calledOnce);
     assert.isTrue(consoleLog.calledOnceWith(
-        'Navigation to http://example.com/ was restored from back/forward cache (see https://web.dev/bfcache/)'));
+        `Navigation to ${FRAME_URL} was restored from back/forward cache (see https://web.dev/bfcache/)`));
   });
 
   it('discards duplicate console messages with identical timestamps', async () => {

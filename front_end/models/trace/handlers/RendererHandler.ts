@@ -331,9 +331,15 @@ export function buildHierarchy(
             new Helpers.SamplesIntegrator.SamplesIntegrator(
                 cpuProfile, samplesDataForThread.profileId, pid, tid, config);
         const profileCalls = samplesIntegrator?.buildProfileCalls(thread.entries);
-        if (profileCalls) {
+        if (samplesIntegrator && profileCalls) {
           allTraceEntries = [...allTraceEntries, ...profileCalls];
           thread.entries = Helpers.Trace.mergeEventsInOrder(thread.entries, profileCalls);
+          // We'll also inject the instant JSSample events (in debug mode only)
+          const jsSamples = samplesIntegrator.jsSampleEvents;
+          if (jsSamples) {
+            allTraceEntries = [...allTraceEntries, ...jsSamples];
+            thread.entries = Helpers.Trace.mergeEventsInOrder(thread.entries, jsSamples);
+          }
         }
       }
       // Step 3. Build the tree.

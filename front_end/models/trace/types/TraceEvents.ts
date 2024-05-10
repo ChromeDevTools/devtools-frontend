@@ -1327,6 +1327,19 @@ export interface SyntheticProfileCall extends SyntheticTraceEntry {
 }
 
 /**
+ * A JS Sample reflects a single sample from the V8 CPU Profile
+ */
+export interface SyntheticJSSample extends SyntheticTraceEntry {
+  name: KnownEventName.JSSample;
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      stackTrace: Protocol.Runtime.CallFrame[],
+    },
+  };
+  ph: Phase.INSTANT;
+}
+
+/**
  * A trace event augmented synthetically in the frontend to contain
  * its self time.
  */
@@ -2462,6 +2475,8 @@ export const enum KnownEventName {
   StartProfiling = 'CpuProfiler::StartProfiling',
   ProfileChunk = 'ProfileChunk',
   UpdateCounters = 'UpdateCounters',
+
+  JSSample = 'JSSample',
 
   /* Other */
   Animation = 'Animation',

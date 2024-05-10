@@ -1677,7 +1677,7 @@ export class TimelineUIUtils {
   }
 
   static statsForTimeRange(
-      events: TraceEngine.Legacy.CompatibleTraceEvent[], startTime: TraceEngine.Types.Timing.MilliSeconds,
+      events: TraceEngine.Types.TraceEvents.TraceEventData[], startTime: TraceEngine.Types.Timing.MilliSeconds,
       endTime: TraceEngine.Types.Timing.MilliSeconds): {
     [x: string]: number,
   } {
@@ -1736,7 +1736,7 @@ export class TimelineUIUtils {
       return result;
     }
 
-    function buildRangeStatsCacheIfNeeded(events: TraceEngine.Legacy.CompatibleTraceEvent[]): void {
+    function buildRangeStatsCacheIfNeeded(events: TraceEngine.Types.TraceEvents.TraceEventData[]): void {
       // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
       if (events[categoryBreakdownCacheSymbol]) {
         return;
@@ -1752,7 +1752,10 @@ export class TimelineUIUtils {
       } = {};
       const categoryStack: string[] = [];
       let lastTime = 0;
-      TimelineModel.TimelineModel.TimelineModelImpl.forEachEvent(events, onStartEvent, onEndEvent);
+      TraceEngine.Helpers.Trace.forEachEvent(events, {
+        onStartEvent,
+        onEndEvent,
+      });
 
       function updateCategory(category: string, time: number): void {
         let statsArrays: {
@@ -1781,8 +1784,8 @@ export class TimelineUIUtils {
         }
       }
 
-      function onStartEvent(e: TraceEngine.Legacy.CompatibleTraceEvent): void {
-        const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(e);
+      function onStartEvent(e: TraceEngine.Types.TraceEvents.TraceEventData): void {
+        const {startTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(e);
         const category = getEventStyle(e.name as TraceEngine.Types.TraceEvents.KnownEventName)?.category.name ||
             getCategoryStyles().other.name;
         const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
@@ -1792,8 +1795,8 @@ export class TimelineUIUtils {
         categoryStack.push(category);
       }
 
-      function onEndEvent(e: TraceEngine.Legacy.CompatibleTraceEvent): void {
-        const {endTime} = TraceEngine.Legacy.timesForEventInMilliseconds(e);
+      function onEndEvent(e: TraceEngine.Types.TraceEvents.TraceEventData): void {
+        const {endTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(e);
         const category = categoryStack.pop();
         const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
         if (category !== parentCategory) {

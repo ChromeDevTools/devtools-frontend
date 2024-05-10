@@ -28,7 +28,8 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventB,
         eventC,
       ];
-      const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(events, [], 0, 200_000);
+      const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(
+          events, [], TraceEngine.Types.Timing.MilliSeconds(0), TraceEngine.Types.Timing.MilliSeconds(200_000));
 
       const children = root.children();
       assert.strictEqual(children.size, 3);
@@ -55,7 +56,8 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventD,
         eventB,
       ];
-      const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(events, [], 0, 200_000);
+      const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(
+          events, [], TraceEngine.Types.Timing.MilliSeconds(0), TraceEngine.Types.Timing.MilliSeconds(200_000));
 
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 2);
@@ -89,7 +91,8 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventC,
         eventD,
       ];
-      const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(events, [], 0, 200_000);
+      const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(
+          events, [], TraceEngine.Types.Timing.MilliSeconds(0), TraceEngine.Types.Timing.MilliSeconds(200_000));
 
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 2);
@@ -126,7 +129,8 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventD,
         eventE,
       ];
-      const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(events, [], 0, 200_000);
+      const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(
+          events, [], TraceEngine.Types.Timing.MilliSeconds(0), TraceEngine.Types.Timing.MilliSeconds(200_000));
 
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 2);
@@ -172,7 +176,8 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventB,
         eventC,
       ];
-      const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(events, [], 0, 200_000);
+      const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(
+          events, [], TraceEngine.Types.Timing.MilliSeconds(0), TraceEngine.Types.Timing.MilliSeconds(200_000));
 
       const children = root.children();
       assert.strictEqual(children.size, 3);
@@ -200,7 +205,8 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventB,
       ];
       const root = new TimelineModel.TimelineProfileTree.BottomUpRootNode(
-          events, new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([]), [], 0, 200_000, null);
+          events, new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([]), [],
+          TraceEngine.Types.Timing.MilliSeconds(0), TraceEngine.Types.Timing.MilliSeconds(200_000), null);
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 4);
 
@@ -253,7 +259,8 @@ describeWithEnvironment('TimelineProfileTree', () => {
       ];
 
       const root = new TimelineModel.TimelineProfileTree.BottomUpRootNode(
-          events, new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([]), [], 0, 200_000, null);
+          events, new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([]), [],
+          TraceEngine.Types.Timing.MilliSeconds(0), TraceEngine.Types.Timing.MilliSeconds(200_000), null);
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 4);
 
@@ -308,7 +315,8 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventE,
       ];
       const root = new TimelineModel.TimelineProfileTree.BottomUpRootNode(
-          events, new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([]), [], 0, 200_000, null);
+          events, new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([]), [],
+          TraceEngine.Types.Timing.MilliSeconds(0), TraceEngine.Types.Timing.MilliSeconds(200_000), null);
 
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 5);

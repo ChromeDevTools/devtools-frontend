@@ -29,7 +29,7 @@
  */
 
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as TraceEngine from '../trace/trace.js';
 
 export class TimelineModelImpl {
@@ -44,97 +44,6 @@ export class TimelineModelImpl {
   constructor() {
     this.reset();
     this.resetProcessingState();
-  }
-
-  /**
-   * Iterates events in a tree hierarchically, from top to bottom,
-   * calling back on every event's start and end in the order
-   * dictated by the corresponding timestamp.
-   *
-   * Events are assumed to be in ascendent order by timestamp.
-   *
-   * For example, given this tree, the following callbacks
-   * are expected to be made in the following order
-   * |---------------A---------------|
-   *  |------B------||-------D------|
-   *    |---C---|
-   *
-   * 1. Start A
-   * 3. Start B
-   * 4. Start C
-   * 5. End C
-   * 6. End B
-   * 7. Start D
-   * 8. End D
-   * 9. End A
-   *
-   * By default, async events are filtered. This behaviour can be
-   * overriden making use of the filterAsyncEvents parameter.
-   */
-  static forEachEvent(
-      events: TraceEngine.Legacy.CompatibleTraceEvent[],
-      onStartEvent: (arg0: TraceEngine.Legacy.CompatibleTraceEvent) => void,
-      onEndEvent: (arg0: TraceEngine.Legacy.CompatibleTraceEvent) => void,
-      onInstantEvent?:
-          ((arg0: TraceEngine.Legacy.CompatibleTraceEvent, arg1: TraceEngine.Legacy.CompatibleTraceEvent|null) => void),
-      startTime?: number, endTime?: number, filter?: ((arg0: TraceEngine.Types.TraceEvents.TraceEventData) => boolean),
-      ignoreAsyncEvents = true): void {
-    startTime = startTime || 0;
-    endTime = endTime || Infinity;
-    const stack: TraceEngine.Legacy.CompatibleTraceEvent[] = [];
-    const startEvent = TimelineModelImpl.topLevelEventEndingAfter(events, startTime);
-    for (let i = startEvent; i < events.length; ++i) {
-      const e = events[i];
-      const {endTime: eventEndTime, startTime: eventStartTime, duration: eventDuration} =
-          TraceEngine.Legacy.timesForEventInMilliseconds(e);
-      const eventPhase = TraceEngine.Legacy.phaseForEvent(e);
-      if ((eventEndTime || eventStartTime) < startTime) {
-        continue;
-      }
-      if (eventStartTime >= endTime) {
-        break;
-      }
-      const canIgnoreAsyncEvent = ignoreAsyncEvents && TraceEngine.Types.TraceEvents.isAsyncPhase(eventPhase);
-      if (canIgnoreAsyncEvent || TraceEngine.Types.TraceEvents.isFlowPhase(eventPhase)) {
-        continue;
-      }
-      let last = stack[stack.length - 1];
-      let lastEventEndTime = last && TraceEngine.Legacy.timesForEventInMilliseconds(last).endTime;
-      while (last && lastEventEndTime !== undefined && lastEventEndTime <= eventStartTime) {
-        stack.pop();
-        onEndEvent(last);
-        last = stack[stack.length - 1];
-        lastEventEndTime = last && TraceEngine.Legacy.timesForEventInMilliseconds(last).endTime;
-      }
-
-      if (filter && TraceEngine.Legacy.eventIsFromNewEngine(e) && !filter(e)) {
-        // TODO: once this method is migrated and only supports new events, remove the eventIsFromNewEngine check.
-        continue;
-      }
-      if (eventDuration) {
-        onStartEvent(e);
-        stack.push(e);
-      } else {
-        onInstantEvent && onInstantEvent(e, stack[stack.length - 1] || null);
-      }
-    }
-    while (stack.length) {
-      const last = stack.pop();
-      if (last) {
-        onEndEvent(last);
-      }
-    }
-  }
-
-  private static topLevelEventEndingAfter(events: TraceEngine.Legacy.CompatibleTraceEvent[], time: number): number {
-    let index =
-        Platform.ArrayUtilities.upperBound(
-            events, time, (time, event) => time - TraceEngine.Legacy.timesForEventInMilliseconds(event).startTime) -
-        1;
-    while (index > 0 && !TraceEngine.Legacy.TracingModel.isTopLevelEvent(events[index])) {
-      index--;
-    }
-    return Math.max(index, 0);
   }
 
   setEvents(tracingModel: TraceEngine.Legacy.TracingModel): void {
@@ -158,10 +67,6 @@ export class TimelineModelImpl {
   }
 
   private processGenericTrace(tracingModel: TraceEngine.Legacy.TracingModel): void {
-    let browserMainThread = TraceEngine.Legacy.TracingModel.browserMainThread(tracingModel);
-    if (!browserMainThread && tracingModel.sortedProcesses().length) {
-      browserMainThread = tracingModel.sortedProcesses()[0].sortedThreads()[0];
-    }
     for (const process of tracingModel.sortedProcesses()) {
       for (const thread of process.sortedThreads()) {
         this.processThreadEvents(thread);

@@ -4424,6 +4424,16 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Launches the installed web app, or an url in the same web app instead of the
+     * default start url if it is provided. Returns a tab / web contents based
+     * Target.TargetID which can be used to attach to via Target.attachToTarget or
+     * similar APIs.
+     */
+    'PWA.launch': {
+      paramsType: [Protocol.PWA.LaunchRequest];
+      returnType: Protocol.PWA.LaunchResponse;
+    };
+    /**
      * Continues execution until specific location is reached.
      */
     'Debugger.continueToLocation': {

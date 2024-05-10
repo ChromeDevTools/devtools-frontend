@@ -25656,7 +25656,10 @@
                         "MaxNumOfRunningEmbedderPrerendersExceeded",
                         "PrerenderingUrlHasEffectiveUrl",
                         "RedirectedPrerenderingUrlHasEffectiveUrl",
-                        "ActivationUrlHasEffectiveUrl"
+                        "ActivationUrlHasEffectiveUrl",
+                        "JavaScriptInterfaceAdded",
+                        "JavaScriptInterfaceRemoved",
+                        "AllPrerenderingCanceled"
                     ]
                 },
                 {
@@ -26178,6 +26181,28 @@
                         {
                             "name": "manifestId",
                             "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "launch",
+                    "description": "Launches the installed web app, or an url in the same web app instead of the\ndefault start url if it is provided. Returns a tab / web contents based\nTarget.TargetID which can be used to attach to via Target.attachToTarget or\nsimilar APIs.",
+                    "parameters": [
+                        {
+                            "name": "manifestId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "url",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "targetId",
+                            "description": "ID of the tab target created as a result.",
+                            "$ref": "Target.TargetID"
                         }
                     ]
                 }

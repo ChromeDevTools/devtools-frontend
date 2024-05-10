@@ -3941,6 +3941,14 @@ declare namespace ProtocolProxyApi {
      */
     invoke_uninstall(params: Protocol.PWA.UninstallRequest): Promise<Protocol.ProtocolResponseWithError>;
 
+    /**
+     * Launches the installed web app, or an url in the same web app instead of the
+     * default start url if it is provided. Returns a tab / web contents based
+     * Target.TargetID which can be used to attach to via Target.attachToTarget or
+     * similar APIs.
+     */
+    invoke_launch(params: Protocol.PWA.LaunchRequest): Promise<Protocol.PWA.LaunchResponse>;
+
   }
   export interface PWADispatcher {
   }

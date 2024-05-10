@@ -161,7 +161,7 @@ def builder_descriptor(
         description_html = description_html,
     )
 
-def bucket(name, acls, led_service_accounts):
+def bucket(name, acls, led_service_accounts = None, self_shadow = True):
     luci.bucket(
         name = name,
         acls = acls,
@@ -171,11 +171,17 @@ def bucket(name, acls, led_service_accounts):
                 groups = ["mdb/v8-infra"],
             ),
         ],
-        shadows = name,
-        constraints = luci.bucket_constraints(
-            service_accounts = led_service_accounts,
-            pools = ["pool/%s" % name],
-        ),
+        shadows = name if self_shadow else None,
+        constraints = shadow_constraints(
+            name,
+            led_service_accounts,
+        ) if self_shadow and led_service_accounts else None,
+    )
+
+def shadow_constraints(pool_name, service_accounts):
+    return luci.bucket_constraints(
+        pools = ["pool/%s" % pool_name],
+        service_accounts = service_accounts,
     )
 
 def generate_ci_configs(configurations, builders):
@@ -197,7 +203,20 @@ def generate_ci_configs(configurations, builders):
                 ],
             ),
         ],
-        led_service_accounts = [CI_ACCOUNT],
+        self_shadow = False,
+    )
+
+    luci.bucket(
+        name = "ci.shadow",
+        shadows = "ci",
+        constraints = shadow_constraints("ci", [CI_ACCOUNT]),
+        bindings = [
+            luci.binding(
+                roles = "role/buildbucket.creator",
+                groups = ["mdb/v8-infra"],
+            ),
+        ],
+        dynamic = True,
     )
 
     all_builder_refs = []

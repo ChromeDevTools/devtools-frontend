@@ -117,6 +117,22 @@ export class AutofillModel extends SDKModel<EventTypes> implements ProtocolProxy
             {name: 'PHONE_HOME_WHOLE_NUMBER', value: '+525553428400'},
           ],
         },
+        {
+          fields: [
+            {name: 'ADDRESS_HOME_COUNTRY', value: 'DE'},
+            {name: 'NAME_FULL', value: 'Gottfried Wilhelm Leibniz'},
+            {name: 'NAME_FIRST', value: 'Gottfried'},
+            {name: 'NAME_MIDDLE', value: 'Wilhelm'},
+            {name: 'NAME_LAST', value: 'Leibniz'},
+            {name: 'COMPANY_NAME', value: 'Google'},
+            {name: 'ADDRESS_HOME_LINE1', value: 'Erika-Mann-Straße 33'},
+            {name: 'ADDRESS_HOME_LINE2', value: 'Wohnung 1'},
+            {name: 'ADDRESS_HOME_ZIP', value: '80636'},
+            {name: 'ADDRESS_HOME_CITY', value: 'München'},
+            {name: 'EMAIL_ADDRESS', value: 'test@beispiel.de'},
+            {name: 'PHONE_HOME_WHOLE_NUMBER', value: '+4930303986300'},
+          ],
+        },
       ],
     });
     this.#enabled = true;

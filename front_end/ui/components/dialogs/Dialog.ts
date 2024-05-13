@@ -7,6 +7,7 @@ import * as WindowBoundsService from '../../../services/window_bounds/window_bou
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import dialogStyles from './dialog.css.js';
 
@@ -76,6 +77,10 @@ interface DialogData {
    * content. Defaults to true.
    */
   closeOnScroll: boolean;
+  /**
+   * Specifies a context for the visual element.
+   */
+  jslogContext: string;
 }
 
 type DialogAnchor = HTMLElement|DOMRect|DOMPoint;
@@ -99,6 +104,7 @@ export class Dialog extends HTMLElement {
     windowBoundsService: WindowBoundsService.WindowBoundsService.WindowBoundsServiceImpl.instance(),
     closeOnESC: true,
     closeOnScroll: true,
+    jslogContext: '',
   };
 
   #dialog: HTMLDialogElement|null = null;
@@ -184,6 +190,10 @@ export class Dialog extends HTMLElement {
     return this.#props.dialogShownCallback;
   }
 
+  get jslogContext(): string {
+    return this.#props.jslogContext;
+  }
+
   set dialogShownCallback(dialogShownCallback: (() => unknown)|null) {
     this.#props.dialogShownCallback = dialogShownCallback;
     this.#onStateChange();
@@ -196,6 +206,11 @@ export class Dialog extends HTMLElement {
 
   set closeOnScroll(closeOnScroll: boolean) {
     this.#props.closeOnScroll = closeOnScroll;
+    this.#onStateChange();
+  }
+
+  set jslogContext(jslogContext: string) {
+    this.#props.jslogContext = jslogContext;
     this.#onStateChange();
   }
 
@@ -660,7 +675,8 @@ export class Dialog extends HTMLElement {
 
     // clang-format off
     LitHtml.render(LitHtml.html`
-      <dialog @click=${this.#handlePointerEvent} @pointermove=${this.#handlePointerEvent} @cancel=${this.#onCancel}>
+      <dialog @click=${this.#handlePointerEvent} @pointermove=${this.#handlePointerEvent} @cancel=${this.#onCancel}
+              jslog=${VisualLogging.dialog(this.#props.jslogContext).track({resize: true, keydown: 'Escape'}).parent('mapped')}>
         <div id="content-wrap">
           <div id="content">
             <slot></slot>
@@ -668,6 +684,7 @@ export class Dialog extends HTMLElement {
         </div>
       </dialog>
     `, this.#shadow, { host: this });
+    VisualLogging.setMappedParent(this.#getDialog(), this.parentElementOrShadowHost() as HTMLElement);
     // clang-format on
   }
 }

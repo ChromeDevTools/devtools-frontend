@@ -6,7 +6,6 @@ import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
@@ -17,7 +16,7 @@ import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
-import {setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
+import {addChildFrame, setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Sources from './sources.js';
@@ -78,15 +77,10 @@ describeWithMockConnection('NavigatorView', () => {
 
   it('can discard multiple childless frames', async () => {
     const url = 'http://example.com/index.html' as Platform.DevToolsPath.UrlString;
-    const mainFrameId = 'main' as Protocol.Page.FrameId;
-    const childFrameId = 'child' as Protocol.Page.FrameId;
 
     const resourceTreeModel =
         target.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel;
-    await resourceTreeModel.once(SDK.ResourceTreeModel.Events.CachedResourcesLoaded);
-    resourceTreeModel.frameAttached(mainFrameId, null);
-    const childFrame = resourceTreeModel.frameAttached(childFrameId, mainFrameId);
-    assert.exists(childFrame);
+    const childFrame = await addChildFrame(target);
     const {project} = addResourceAndUISourceCode(url, childFrame, '', 'text/html', resourceTreeModel);
 
     const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});

@@ -12,7 +12,7 @@ import {
   describeWithDevtoolsExtension,
   getExtensionOrigin,
 } from '../../testing/ExtensionHelpers.js';
-import {FRAME_URL} from '../../testing/ResourceTreeHelpers.js';
+import {addChildFrame, FRAME_URL, getMainFrame} from '../../testing/ResourceTreeHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Extensions from '../extensions/extensions.js';
@@ -341,34 +341,12 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     }
   });
 
-  function setUpFrame(
+  async function setUpFrame(
       name: string, url: Platform.DevToolsPath.UrlString, parentFrame?: SDK.ResourceTreeModel.ResourceTreeFrame,
       executionContextOrigin?: Platform.DevToolsPath.UrlString) {
-    const mimeType = 'text/html';
-    const secureContextType = Protocol.Page.SecureContextType.Secure;
-    const crossOriginIsolatedContextType = Protocol.Page.CrossOriginIsolatedContextType.Isolated;
-    const loaderId = 'loader' as Protocol.Network.LoaderId;
-
     const parentTarget = parentFrame?.resourceTreeModel()?.target();
     const target = createTarget({id: `${name}-target-id` as Protocol.Target.TargetID, parentTarget});
-    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    assert.exists(resourceTreeModel);
-
-    const id = `${name}-frame-id` as Protocol.Page.FrameId;
-    resourceTreeModel.frameNavigated(
-        {
-          id,
-          parentId: parentFrame?.id,
-          loaderId,
-          url,
-          domainAndRegistry: new URL(url).hostname,
-          securityOrigin: new URL(url).origin,
-          mimeType,
-          secureContextType,
-          crossOriginIsolatedContextType,
-          gatedAPIFeatures: [],
-        },
-        Protocol.Page.NavigationType.Navigation);
+    const frame = parentFrame ? await addChildFrame(target, {url}) : getMainFrame(target, {url});
 
     if (executionContextOrigin) {
       executionContextOrigin = new URL(executionContextOrigin).origin as Platform.DevToolsPath.UrlString;
@@ -379,12 +357,10 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
         origin: executionContextOrigin,
         name: executionContextOrigin,
         uniqueId: executionContextOrigin,
-        auxData: {frameId: id, isDefault: true},
+        auxData: {frameId: frame.id, isDefault: true},
       });
     }
 
-    const frame = resourceTreeModel.frameForId(id);
-    assert.exists(frame);
     return frame;
   }
 
@@ -392,8 +368,8 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     assert.isUndefined(context.chrome.devtools);
     const parentFrameUrl = allowedUrl;
     const childFrameUrl = blockedUrl;
-    const parentFrame = setUpFrame('parent', parentFrameUrl);
-    setUpFrame('child', childFrameUrl, parentFrame);
+    const parentFrame = await setUpFrame('parent', parentFrameUrl);
+    await setUpFrame('child', childFrameUrl, parentFrame);
 
     const result = await new Promise<{result: unknown, error?: {details: unknown[]}}>(
         r => context.chrome.devtools?.inspectedWindow.eval(
@@ -408,8 +384,8 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     const parentFrameUrl = allowedUrl;
     const childFrameUrl = `${allowedUrl}/2` as Platform.DevToolsPath.UrlString;
     const childExeContextOrigin = blockedUrl;
-    const parentFrame = setUpFrame('parent', parentFrameUrl, undefined, parentFrameUrl);
-    const childFrame = setUpFrame('child', childFrameUrl, parentFrame, childExeContextOrigin);
+    const parentFrame = await setUpFrame('parent', parentFrameUrl, undefined, parentFrameUrl);
+    const childFrame = await setUpFrame('child', childFrameUrl, parentFrame, childExeContextOrigin);
 
     // Create a fake content script execution context, i.e., a non-default context with the extension's (== window's)
     // origin.
@@ -440,8 +416,8 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
 
     const parentFrameUrl = allowedUrl;
     const childFrameUrl = `${allowedUrl}/2` as Platform.DevToolsPath.UrlString;
-    const parentFrame = setUpFrame('parent', parentFrameUrl, undefined, parentFrameUrl);
-    const childFrame = setUpFrame('child', childFrameUrl, parentFrame, parentFrameUrl);
+    const parentFrame = await setUpFrame('parent', parentFrameUrl, undefined, parentFrameUrl);
+    const childFrame = await setUpFrame('child', childFrameUrl, parentFrame, parentFrameUrl);
 
     // Create a non-default context with a blocked origin.
     const childExeContextOrigin = blockedUrl;
@@ -471,8 +447,8 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     const parentFrameUrl = allowedUrl;
     const childFrameUrl = `${allowedUrl}/2` as Platform.DevToolsPath.UrlString;
     const childExeContextOrigin = blockedUrl;
-    const parentFrame = setUpFrame('parent', parentFrameUrl, undefined, parentFrameUrl);
-    setUpFrame('child', childFrameUrl, parentFrame, childExeContextOrigin);
+    const parentFrame = await setUpFrame('parent', parentFrameUrl, undefined, parentFrameUrl);
+    await setUpFrame('child', childFrameUrl, parentFrame, childExeContextOrigin);
 
     const result = await new Promise<{result: unknown, error?: {details: unknown[]}}>(
         r => context.chrome.devtools?.inspectedWindow.eval(

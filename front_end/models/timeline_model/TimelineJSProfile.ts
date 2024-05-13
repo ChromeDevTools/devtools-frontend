@@ -34,35 +34,45 @@ export class TimelineJSProfileProcessor {
     return null;
   }
 
-  static createFakeTraceFromCpuProfile(profile: any, tid: number, injectPageEvent: boolean, name?: string|null):
-      TraceEngine.TracingManager.EventPayload[] {
-    const events: TraceEngine.TracingManager.EventPayload[] = [];
+  static createFakeTraceFromCpuProfile(profile: Protocol.Profiler.Profile, tid: TraceEngine.Types.TraceEvents.ThreadID):
+      TraceEngine.Types.TraceEvents.TraceEventData[] {
+    const events: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
 
-    if (injectPageEvent) {
-      appendEvent('TracingStartedInPage', {data: {'sessionId': '1'}}, 0, 0, 'M');
-    }
-    if (!name) {
-      name = i18nString(UIStrings.threadS, {PH1: tid});
-    }
-    appendEvent(TraceEngine.Types.TraceEvents.KnownEventName.ThreadName, {name}, 0, 0, 'M', '__metadata');
+    const threadName = i18nString(UIStrings.threadS, {PH1: tid});
+    appendEvent('TracingStartedInPage', {data: {'sessionId': '1'}}, 0, 0, TraceEngine.Types.TraceEvents.Phase.METADATA);
+    appendEvent(
+        TraceEngine.Types.TraceEvents.KnownEventName.ThreadName, {name: threadName}, 0, 0,
+        TraceEngine.Types.TraceEvents.Phase.METADATA, '__metadata');
     if (!profile) {
       return events;
     }
 
     // Append a root to show the start time of the profile (which is earlier than first sample), so the Performance
     // panel won't truncate this time period.
-    appendEvent(RecordType.JSRoot, {}, profile.startTime, profile.endTime - profile.startTime, 'X', 'toplevel');
+    appendEvent(
+        RecordType.JSRoot, {}, profile.startTime, profile.endTime - profile.startTime,
+        TraceEngine.Types.TraceEvents.Phase.COMPLETE, 'toplevel');
     // TODO: create a `Profile` event instead, as `cpuProfile` is legacy
-    appendEvent('CpuProfile', {data: {'cpuProfile': profile}}, profile.endTime, 0, 'I');
+    appendEvent(
+        'CpuProfile', {data: {'cpuProfile': profile}}, profile.endTime, 0,
+        TraceEngine.Types.TraceEvents.Phase.COMPLETE);
     return events;
 
-    function appendEvent(name: string, args: any, ts: number, dur?: number, ph?: string, cat?: string):
-        TraceEngine.TracingManager.EventPayload {
-      const event =
-          ({cat: cat || 'disabled-by-default-devtools.timeline', name, ph: ph || 'X', pid: 1, tid, ts, args} as
-           TraceEngine.TracingManager.EventPayload);
+    function appendEvent(
+        name: string, args: any, ts: number, dur?: number, ph?: TraceEngine.Types.TraceEvents.Phase,
+        cat?: string): TraceEngine.Types.TraceEvents.TraceEventData {
+      const event: TraceEngine.Types.TraceEvents.TraceEventData = {
+        cat: cat || 'disabled-by-default-devtools.timeline',
+        name,
+        ph: ph || TraceEngine.Types.TraceEvents.Phase.COMPLETE,
+        pid: TraceEngine.Types.TraceEvents.ProcessID(1),
+        tid,
+        ts: TraceEngine.Types.Timing.MicroSeconds(ts),
+        args,
+      };
+
       if (dur) {
-        event.dur = dur;
+        event.dur = TraceEngine.Types.Timing.MicroSeconds(dur);
       }
       events.push(event);
       return event;

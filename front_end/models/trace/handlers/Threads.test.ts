@@ -42,8 +42,7 @@ describeWithEnvironment('Handler Threads helper', function() {
     const rawEvents = await TraceLoader.rawCPUProfile(this, 'node-fibonacci-website.cpuprofile.gz');
     const events = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
         rawEvents,
-        1,
-        true,
+        TraceEngine.Types.TraceEvents.ThreadID(1),
     );
     const {traceParsedData} = await TraceLoader.executeTraceEngineOnFileContents(
         events as unknown as TraceEngine.Types.TraceEvents.TraceEventData[]);

@@ -557,7 +557,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   private loadFromCpuProfile(profile: Protocol.Profiler.Profile|null, title?: string): void {
-    if (this.state !== State.Idle) {
+    if (this.state !== State.Idle || profile === null) {
       return;
     }
     this.prepareToLoadTimeline();

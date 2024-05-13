@@ -85,16 +85,16 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     return loader;
   }
 
-  static loadFromCpuProfile(profile: Protocol.Profiler.Profile|null, client: Client, title?: string): TimelineLoader {
+  static loadFromCpuProfile(profile: Protocol.Profiler.Profile, client: Client, title?: string): TimelineLoader {
     const loader = new TimelineLoader(client, title);
     loader.#traceIsCPUProfile = true;
 
     try {
       const events = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
-          profile, /* tid */ 1, /* injectPageEvent */ true);
+          profile, TraceEngine.Types.TraceEvents.ThreadID(1));
 
       window.setTimeout(async () => {
-        void loader.addEvents(events);
+        void loader.addEvents(events as unknown as TraceEngine.TracingManager.EventPayload[]);
       });
     } catch (e) {
       console.error(e.stack);
@@ -119,17 +119,34 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
       }
       const txt = stream.data();
       const trace = JSON.parse(txt);
-      if (Array.isArray(trace.nodes)) {
-        loader.#traceIsCPUProfile = true;
-        loader.buffer = txt;
-        await loader.close();
-        return;
-      }
-      const events = Array.isArray(trace.traceEvents) ? trace.traceEvents : trace;
-      void loader.addEvents(events);
+      loader.#processParsedFile(trace);
+      await loader.close();
     }
 
     return loader;
+  }
+
+  #processParsedFile(trace: ParsedJSONFile): void {
+    if ('traceEvents' in trace || Array.isArray(trace)) {
+      // We know that this is NOT a raw CPU Profile because it has traceEvents
+      // (either at the top level, or nested under the traceEvents key)
+      const items = Array.isArray(trace) ? trace : trace.traceEvents;
+
+      (this.tracingModel as TraceEngine.Legacy.TracingModel)
+          .addEvents(items as unknown as TraceEngine.TracingManager.EventPayload[]);
+      this.#collectEvents(items);
+    } else if (trace.nodes) {
+      // We know it's a raw Protocol CPU Profile.
+      this.#parseCPUProfileFormatFromFile(trace);
+      this.#traceIsCPUProfile = true;
+    } else {
+      this.reportErrorAndCancelLoading(i18nString(UIStrings.malformedTimelineDataS));
+      return;
+    }
+
+    if ('metadata' in trace) {
+      this.#metadata = trace.metadata;
+    }
   }
 
   async addEvents(events: TraceEngine.TracingManager.EventPayload[]): Promise<void> {
@@ -143,7 +160,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     const eventsPerChunk = 150_000;
     for (let i = 0; i < events.length; i += eventsPerChunk) {
       const chunk = events.slice(i, i + eventsPerChunk);
-      this.#collectEvents(chunk);
+      this.#collectEvents(chunk as unknown as TraceEngine.Types.TraceEvents.TraceEventData[]);
       (this.tracingModel as TraceEngine.Legacy.TracingModel).addEvents(chunk);
       await this.client?.loadingProgress((i + chunk.length) / events.length);
       await new Promise(r => window.setTimeout(r, 0));  // Yield event loop to paint.
@@ -167,7 +184,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   /**
    * As TimelineLoader implements `Common.StringOutputStream.OutputStream`, `write()` is called when a
    * Common.StringOutputStream.StringOutputStream instance has decoded a chunk. This path is only used
-   * by `loadFromURL()`; it's NOT used by `loadFromEvents` or `loadFromFile`.
+   * by `loadFromFile()`; it's NOT used by `loadFromEvents` or `loadFromURL`.
    */
   async write(chunk: string, endOfFile: boolean): Promise<void> {
     if (!this.client) {
@@ -183,7 +200,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
       let progress = undefined;
       progress = this.buffer.length / this.totalSize;
       // For compressed traces, we can't provide a definite progress percentage. So, just keep it moving.
-      // For other traces, calculate a laoded part.
+      // For other traces, calculate a loaded part.
       progress = progress > 1 ? progress - Math.floor(progress) : progress;
       await this.client.loadingProgress(progress);
     }
@@ -191,27 +208,13 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     if (endOfFile) {
       let trace;
       try {
-        trace = JSON.parse(this.buffer);
+        trace = JSON.parse(this.buffer) as ParsedJSONFile;
+        this.#processParsedFile(trace);
+        return Promise.resolve();
       } catch (e) {
         this.reportErrorAndCancelLoading(i18nString(UIStrings.malformedTimelineDataS, {PH1: e.toString()}));
         return;
       }
-      if (trace.traceEvents || Array.isArray(trace)) {
-        const items = Array.isArray(trace) ? trace : (trace.traceEvents as TraceEngine.TracingManager.EventPayload[]);
-        (this.tracingModel as TraceEngine.Legacy.TracingModel).addEvents(items);
-        this.#collectEvents(items);
-      } else if (trace.nodes) {
-        this.parseCPUProfileFormat(trace);
-        this.#traceIsCPUProfile = true;
-      } else {
-        this.reportErrorAndCancelLoading(i18nString(UIStrings.malformedTimelineDataS));
-        return;
-      }
-
-      if (trace.metadata) {
-        this.#metadata = trace.metadata as TraceEngine.Types.File.MetaData;
-      }
-      return Promise.resolve();
     }
   }
 
@@ -247,16 +250,21 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     return this.#traceFinalizedPromiseForTest;
   }
 
-  private parseCPUProfileFormat(parsedTrace: string): void {
+  #parseCPUProfileFormatFromFile(parsedTrace: Protocol.Profiler.Profile): void {
     const traceEvents = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
-        parsedTrace, /* tid */ 1, /* injectPageEvent */ true);
-    (this.tracingModel as TraceEngine.Legacy.TracingModel).addEvents(traceEvents);
+        parsedTrace, TraceEngine.Types.TraceEvents.ThreadID(1));
+
+    (this.tracingModel as TraceEngine.Legacy.TracingModel)
+        .addEvents(traceEvents as unknown as TraceEngine.TracingManager.EventPayload[]);
     this.#collectEvents(traceEvents);
   }
 
-  #collectEvents(events: TraceEngine.TracingManager.EventPayload[]): void {
-    // Once the old engine is removed, this can be updated to use the types from the new engine and avoid the `as unknown`.
-    this.#collectedEvents =
-        this.#collectedEvents.concat(events as unknown as TraceEngine.Types.TraceEvents.TraceEventData);
+  #collectEvents(events: readonly TraceEngine.Types.TraceEvents.TraceEventData[]): void {
+    this.#collectedEvents = this.#collectedEvents.concat(events);
   }
 }
+
+/**
+ * Used when we parse the input, but do not yet know if it is a raw CPU Profile or a Trace
+ **/
+type ParsedJSONFile = TraceEngine.Types.File.Contents|Protocol.Profiler.Profile;

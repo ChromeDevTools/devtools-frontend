@@ -46,7 +46,7 @@ const UIStrings = {
   /**
    *@description Text to load something
    */
-  load: 'Load',
+  load: 'Load profile',
   /**
    *@description Control button text content in Profile Launcher View of a profiler tool
    */
@@ -112,11 +112,13 @@ export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTy
       jslogContext: 'profiler.heap-toggle-recording',
       variant: Buttons.Button.Variant.PRIMARY,
     });
-    this.loadButton = UI.UIUtils.createTextButton(i18nString(UIStrings.load), this.loadButtonClicked.bind(this), {
-      jslogContext: 'profiler.load-from-file',
-    });
-    buttonsDiv.appendChild(this.controlButton);
+    this.loadButton = new Buttons.Button.Button();
+    this.loadButton
+        .data = {iconName: 'import', variant: Buttons.Button.Variant.OUTLINED, jslogContext: 'profiler.load-from-file'};
+    this.loadButton.textContent = i18nString(UIStrings.load);
+    this.loadButton.addEventListener('click', this.loadButtonClicked.bind(this));
     buttonsDiv.appendChild(this.loadButton);
+    buttonsDiv.appendChild(this.controlButton);
     this.recordButtonEnabled = true;
 
     this.typeIdToOptionElementAndProfileType = new Map();
@@ -137,15 +139,12 @@ export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTy
         this.controlButton, this.recordButtonEnabled ? '' : UI.UIUtils.anotherProfilerActiveLabel());
     if (this.isInstantProfile) {
       this.controlButton.classList.remove('running');
-      this.controlButton.classList.add('primary-button');
       this.controlButton.textContent = i18nString(UIStrings.takeSnapshot);
     } else if (this.isProfiling) {
       this.controlButton.classList.add('running');
-      this.controlButton.classList.remove('primary-button');
       this.controlButton.textContent = i18nString(UIStrings.stop);
     } else {
       this.controlButton.classList.remove('running');
-      this.controlButton.classList.add('primary-button');
       this.controlButton.textContent = i18nString(UIStrings.start);
     }
     for (const {optionElement} of this.typeIdToOptionElementAndProfileType.values()) {

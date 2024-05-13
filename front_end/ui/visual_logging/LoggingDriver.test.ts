@@ -273,21 +273,33 @@ describe('LoggingDriver', () => {
         <option jslog="TreeItem; context: 2">2</option>
       </select>`;
     renderElementIntoDOM(parent);
+    const recordClick = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordClick',
+    );
 
-    await VisualLoggingTesting.LoggingDriver.startLogging({processingThrottler: throttler});
+    await VisualLoggingTesting.LoggingDriver.startLogging(
+        {processingThrottler: throttler, clickLogThrottler: throttler});
 
     assert.isTrue(recordImpression.calledOnce);
-    assert.sameDeepMembers(stabilizeImpressions(recordImpression.firstCall.firstArg.impressions), [
-      {id: 0, type: 1, width: 30, height: 20, context: 0},
+    const impressions = recordImpression.firstCall.firstArg.impressions;
+    const selectVeId = impressions[0].id;
+    assert.sameDeepMembers(impressions, [
+      {id: selectVeId, type: 1, width: 30, height: 20, context: 0},
     ]);
 
     recordImpression.resetHistory();
 
     const select = document.getElementById('select');
     assert.exists(select);
+    throttle.callsArg(0);
     select.dispatchEvent(event);
-    await expectCalled(throttle).then(([work]) => work());
 
+    await expectCalled(recordClick);
+    assert.isTrue(recordClick.calledOnce);
+    assert.strictEqual(recordClick.firstCall.firstArg.veid, selectVeId);
+
+    await expectCalled(recordImpression);
     assert.isTrue(recordImpression.calledOnce);
     assert.sameDeepMembers(stabilizeImpressions(recordImpression.firstCall.firstArg.impressions), [
       {id: 0, type: 1, parent: 1, context: 1, width: 0, height: 0},

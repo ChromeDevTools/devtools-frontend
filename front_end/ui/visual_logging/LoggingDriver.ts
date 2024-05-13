@@ -185,7 +185,8 @@ async function process(): Promise<void> {
         intersectionObserver.observe(element);
       }
       if (element.tagName === 'SELECT') {
-        const onSelectOpen = (): void => {
+        const onSelectOpen = (e: Event): void => {
+          void logClick(clickLogThrottler)(element, e);
           if (loggingState.selectOpen) {
             return;
           }
@@ -198,13 +199,13 @@ async function process(): Promise<void> {
           const e = event as KeyboardEvent;
           if ((Host.Platform.isMac() || e.altKey) && (e.code === 'ArrowDown' || e.code === 'ArrowUp') ||
               (!e.altKey && !e.ctrlKey && e.code === 'F4')) {
-            onSelectOpen();
+            onSelectOpen(event);
           }
         }, {capture: true});
         element.addEventListener('keypress', event => {
           const e = event as KeyboardEvent;
           if (e.key === ' ' || !Host.Platform.isMac() && e.key === '\r') {
-            onSelectOpen();
+            onSelectOpen(event);
           }
         }, {capture: true});
         element.addEventListener('change', e => {

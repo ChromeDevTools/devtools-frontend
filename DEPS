@@ -108,7 +108,7 @@ deps = {
   'buildtools/win': {
     'packages': [
       {
-        'package': 'gn/gn/windows-${{arch}}',
+        'package': 'gn/gn/windows-amd64',
         'version': Var('gn_version'),
       }
     ],

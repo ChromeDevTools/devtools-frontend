@@ -223,7 +223,8 @@ export class FileOutputStream implements Common.StringOutputStream.OutputStream 
     this.#closed = false;
     this.#writeCallbacks = [];
     this.#fileName = fileName;
-    const saveResponse = await Workspace.FileManager.FileManager.instance().save(this.#fileName, '', true);
+    const saveResponse =
+        await Workspace.FileManager.FileManager.instance().save(this.#fileName, '', true, false /* isBase64 */);
     if (saveResponse) {
       Workspace.FileManager.FileManager.instance().addEventListener(
           Workspace.FileManager.Events.AppendedToURL, this.onAppendDone, this);

@@ -5,7 +5,7 @@
 import type * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection, dispatchEvent} from '../../testing/MockConnection.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
 import type * as LighthouseModule from './lighthouse.js';
 
@@ -17,13 +17,6 @@ describeWithMockConnection('LighthouseProtocolService', () => {
   let suspendAllTargets: sinon.SinonStub;
   let resumeAllTargets: sinon.SinonStub;
   let createParallelConnection: sinon.SinonStub;
-  const FRAME = {
-    id: 'main',
-    loaderId: 'test',
-    url: 'http://example.com',
-    securityOrigin: 'http://example.com',
-    mimeType: 'text/html',
-  };
 
   beforeEach(async () => {
     Lighthouse = await import('./lighthouse.js');
@@ -54,7 +47,6 @@ describeWithMockConnection('LighthouseProtocolService', () => {
         sessionId: 'foo',
       });
     }
-    dispatchEvent(primaryTarget, 'Page.frameNavigated', {frame: FRAME});
   });
 
   it('suspends all targets', async () => {

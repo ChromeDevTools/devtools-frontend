@@ -10,6 +10,7 @@ import {assertGridContents, getBodyRowByAriaIndex, getDataGrid} from '../../test
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -142,12 +143,7 @@ describeWithMockConnection('AutofillView', () => {
     await coordinator.done({waitForWork: true});
     assertViewShowsEventData(view);
 
-    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    assert.exists(resourceTreeModel);
-    resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, {
-      type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation,
-      frame: {} as SDK.ResourceTreeModel.ResourceTreeFrame,
-    });
+    navigate(getMainFrame(target));
 
     await coordinator.done();
     placeholderText = view.shadowRoot!.querySelector('.placeholder div')!.textContent!.trim();

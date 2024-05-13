@@ -3,14 +3,15 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
 import {
   createTarget,
 } from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
-  dispatchEvent,
 } from '../../testing/MockConnection.js';
+import {
+  getMainFrame,
+} from '../../testing/ResourceTreeHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Main from './main.js';
@@ -28,21 +29,12 @@ describeWithMockConnection('ExecutionContextSelector', () => {
     const contextSetFlavor = sinon.spy(UI.Context.Context.instance(), 'setFlavor');
 
     const sentExecutionContextCreated = (target: SDK.Target.Target) => {
-      dispatchEvent(target, 'Page.frameNavigated', {
-        frame: {
-          id: 'testFrame',
-          loaderId: 'test',
-          url: 'http://example.com',
-          securityOrigin: 'http://example.com',
-          mimeType: 'text/html',
-        },
-      });
+      const frame = getMainFrame(target);
 
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
       runtimeModel!.dispatchEventToListeners(
           SDK.RuntimeModel.Events.ExecutionContextCreated,
-          {isDefault: true, frameId: 'testFrame' as Protocol.Page.FrameId, target: () => target} as
-              SDK.RuntimeModel.ExecutionContext);
+          {isDefault: true, frameId: frame.id, target: () => target} as SDK.RuntimeModel.ExecutionContext);
     };
 
     sentExecutionContextCreated(subframeTarget);

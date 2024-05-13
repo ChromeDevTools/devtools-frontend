@@ -6,6 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createFakeSetting, createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../../testing/MockConnection.js';
+import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
 import {
   mkInspectorCspIssue,
   StubIssue,
@@ -100,19 +101,7 @@ describeWithMockConnection('IssuesManager', () => {
         SDK.IssuesModel.Events.IssueAdded, {issuesModel: model, inspectorIssue: mkInspectorCspIssue('url1')});
     assert.strictEqual(issuesManager.numberOfIssues(), 1);
 
-    const FRAME = {
-      id: 'main',
-      loaderId: 'test',
-      url: 'http://example.com',
-      securityOrigin: 'http://example.com',
-      mimeType: 'text/html',
-    };
-    if (primary) {
-      dispatchEvent(target, 'Page.frameNavigated', {frame: FRAME});
-    } else {
-      const prerenderTarget = createTarget({subtype: 'prerender'});
-      dispatchEvent(prerenderTarget, 'Page.frameNavigated', {frame: FRAME});
-    }
+    navigate(getMainFrame(primary ? target : createTarget({subtype: 'prerender'})));
     assert.strictEqual(issuesManager.numberOfIssues(), primary ? 0 : 1);
   };
 
@@ -362,14 +351,8 @@ describeWithMockConnection('IssuesManager', () => {
       request: {url: 'http://example.com'},
       hasUserGesture: false,
     } as unknown as Protocol.Network.RequestWillBeSentEvent);
-    const frame1 = {
-      id: 'main',
-      loaderId: 'loaderId1',
-      url: 'http://example.com',
-      securityOrigin: 'http://example.com',
-      mimeType: 'text/html',
-    };
-    dispatchEvent(target, 'Page.frameNavigated', {frame: frame1});
+    const frame = getMainFrame(target);
+    navigate(frame, {loaderId: 'loaderId1' as Protocol.Network.LoaderId});
     assert.strictEqual(issuesManager.numberOfIssues(), 1);
 
     dispatchEvent(target, 'Network.requestWillBeSent', {
@@ -378,14 +361,7 @@ describeWithMockConnection('IssuesManager', () => {
       request: {url: 'http://example.com/page'},
       hasUserGesture: true,
     } as unknown as Protocol.Network.RequestWillBeSentEvent);
-    const frame2 = {
-      id: 'main',
-      loaderId: 'loaderId2',
-      url: 'http://example.com/page',
-      securityOrigin: 'http://example.com',
-      mimeType: 'text/html',
-    };
-    dispatchEvent(target, 'Page.frameNavigated', {frame: frame2});
+    navigate(frame, {loaderId: 'loaderId2' as Protocol.Network.LoaderId});
     assert.strictEqual(issuesManager.numberOfIssues(), 0);
   });
 });

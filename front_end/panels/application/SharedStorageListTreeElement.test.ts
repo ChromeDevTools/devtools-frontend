@@ -10,7 +10,7 @@ import {
   stubNoopSettings,
 } from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import {setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
+import {getMainFrame, MAIN_FRAME_ID, navigate} from '../../testing/ResourceTreeHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
@@ -18,74 +18,58 @@ import * as Application from './application.js';
 describeWithMockConnection('SharedStorageListTreeElement', function() {
   let target: SDK.Target.Target;
   let sharedStorageModel: Application.SharedStorageModel.SharedStorageModel|null;
-  let resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null;
   let treeElement: Application.SharedStorageListTreeElement.SharedStorageListTreeElement;
 
   const TEST_ORIGIN_A = 'http://a.test';
   const TEST_ORIGIN_B = 'http://b.test';
   const TEST_ORIGIN_C = 'http://c.test';
 
-  const ID = 'AA' as Protocol.Page.FrameId;
-
   const EVENTS = [
     {
       accessTime: 0,
       type: Protocol.Storage.SharedStorageAccessType.DocumentAppend,
-      mainFrameId: ID,
+      mainFrameId: MAIN_FRAME_ID,
       ownerOrigin: TEST_ORIGIN_A,
       params: {key: 'key0', value: 'value0'} as Protocol.Storage.SharedStorageAccessParams,
     },
     {
       accessTime: 10,
       type: Protocol.Storage.SharedStorageAccessType.WorkletGet,
-      mainFrameId: ID,
+      mainFrameId: MAIN_FRAME_ID,
       ownerOrigin: TEST_ORIGIN_A,
       params: {key: 'key0'} as Protocol.Storage.SharedStorageAccessParams,
     },
     {
       accessTime: 15,
       type: Protocol.Storage.SharedStorageAccessType.WorkletLength,
-      mainFrameId: ID,
+      mainFrameId: MAIN_FRAME_ID,
       ownerOrigin: TEST_ORIGIN_B,
       params: {} as Protocol.Storage.SharedStorageAccessParams,
     },
     {
       accessTime: 20,
       type: Protocol.Storage.SharedStorageAccessType.DocumentClear,
-      mainFrameId: ID,
+      mainFrameId: MAIN_FRAME_ID,
       ownerOrigin: TEST_ORIGIN_B,
       params: {} as Protocol.Storage.SharedStorageAccessParams,
     },
     {
       accessTime: 100,
       type: Protocol.Storage.SharedStorageAccessType.WorkletSet,
-      mainFrameId: ID,
+      mainFrameId: MAIN_FRAME_ID,
       ownerOrigin: TEST_ORIGIN_C,
       params: {key: 'key0', value: 'value1', ignoreIfPresent: true} as Protocol.Storage.SharedStorageAccessParams,
     },
     {
       accessTime: 150,
       type: Protocol.Storage.SharedStorageAccessType.WorkletRemainingBudget,
-      mainFrameId: ID,
+      mainFrameId: MAIN_FRAME_ID,
       ownerOrigin: TEST_ORIGIN_C,
       params: {} as Protocol.Storage.SharedStorageAccessParams,
     },
   ];
 
-  const MOCK_MAIN_FRAME = {
-    get id(): Protocol.Page.FrameId {
-      return ID;
-    },
-    isMainFrame(): boolean {
-      return true;
-    },
-    isOutermostFrame(): boolean {
-      return true;
-    },
-  } as SDK.ResourceTreeModel.ResourceTreeFrame;
-
   beforeEach(async () => {
-    setMockResourceTree(false);
     stubNoopSettings();
     SDK.ChildTargetManager.ChildTargetManager.install();
     const tabTarget = createTarget({type: SDK.Target.Type.Tab});
@@ -94,7 +78,6 @@ describeWithMockConnection('SharedStorageListTreeElement', function() {
     Root.Runtime.experiments.register(Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL, '', false);
 
     sharedStorageModel = target.model(Application.SharedStorageModel.SharedStorageModel);
-    resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
   });
 
   it('shows view on select', async () => {
@@ -128,7 +111,7 @@ describeWithMockConnection('SharedStorageListTreeElement', function() {
     treeElement = new Application.SharedStorageListTreeElement.SharedStorageListTreeElement(panel);
     const view = treeElement.view;
 
-    view.setDefaultIdForTesting(ID);
+    view.setDefaultIdForTesting(MAIN_FRAME_ID);
     for (const event of EVENTS) {
       treeElement.addEvent(event);
     }
@@ -146,7 +129,7 @@ describeWithMockConnection('SharedStorageListTreeElement', function() {
     treeElement = new Application.SharedStorageListTreeElement.SharedStorageListTreeElement(panel);
     const view = treeElement.view;
 
-    view.setDefaultIdForTesting(ID);
+    view.setDefaultIdForTesting(MAIN_FRAME_ID);
     for (const event of EVENTS) {
       treeElement.addEvent(event);
     }
@@ -154,10 +137,7 @@ describeWithMockConnection('SharedStorageListTreeElement', function() {
     assert.deepEqual(view.getEventsForTesting(), EVENTS);
 
     // Events are cleared on main frame navigation.
-    assert.exists(resourceTreeModel);
-    resourceTreeModel.dispatchEventToListeners(
-        SDK.ResourceTreeModel.Events.PrimaryPageChanged,
-        {frame: MOCK_MAIN_FRAME, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation});
+    navigate(getMainFrame(target));
     assert.deepEqual(view.getEventsForTesting(), []);
 
     panel.detach();

@@ -5,6 +5,7 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
 import * as EmulationModel from '../emulation/emulation.js';
 
 describe('Insets', () => {
@@ -96,10 +97,8 @@ describeWithMockConnection('DeviceModeModel', () => {
 
   it('shows hinge on main frame navigation', () => {
     EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
-    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     const setShowHinge = sinon.spy(target.overlayAgent(), 'invoke_setShowHinge');
-    resourceTreeModel!.dispatchEventToListeners(
-        SDK.ResourceTreeModel.Events.FrameNavigated, {} as SDK.ResourceTreeModel.ResourceTreeFrame);
+    navigate(getMainFrame(target));
     assert.isTrue(setShowHinge.calledOnce);
   });
 });

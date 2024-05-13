@@ -31,3 +31,17 @@ export function decode(input: string): ArrayBuffer {
   }
   return bytes.buffer;
 }
+
+export function encode(input: ArrayBuffer|Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('failed to convert to base64'));
+    reader.onload = () => {
+      const blobAsUrl = reader.result as string;
+      const [, base64] = blobAsUrl.split(',', 2);
+      resolve(base64);
+    };
+
+    reader.readAsDataURL(new Blob([input]));
+  });
+}

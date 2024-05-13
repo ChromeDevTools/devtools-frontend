@@ -1728,7 +1728,10 @@ export class InterceptedRequest {
       contentBlob: Blob, encoded: boolean, responseHeaders: Protocol.Fetch.HeaderEntry[],
       isBodyOverridden: boolean): Promise<void> {
     this.#hasRespondedInternal = true;
-    const body = encoded ? await contentBlob.text() : await blobToBase64(contentBlob);
+    const body = encoded ? await contentBlob.text() : await Common.Base64.encode(contentBlob).catch(err => {
+      console.error(err);
+      return '';
+    });
     const responseCode = isBodyOverridden ? 200 : (this.responseStatusCode || 200);
 
     if (this.networkRequest) {
@@ -1743,25 +1746,6 @@ export class InterceptedRequest {
     void this.#fetchAgent.invoke_fulfillRequest({requestId: this.requestId, responseCode, body, responseHeaders});
     MultitargetNetworkManager.instance().dispatchEventToListeners(
         MultitargetNetworkManager.Events.RequestFulfilled, this.request.url as Platform.DevToolsPath.UrlString);
-
-    async function blobToBase64(blob: Blob): Promise<string> {
-      const reader = new FileReader();
-      const fileContentsLoadedPromise = new Promise(resolve => {
-        reader.onloadend = resolve;
-      });
-      reader.readAsDataURL(blob);
-      await fileContentsLoadedPromise;
-      if (reader.error) {
-        console.error('Could not convert blob to base64.', reader.error);
-        return '';
-      }
-      const result = reader.result;
-      if (result === undefined || result === null || typeof result !== 'string') {
-        console.error('Could not convert blob to base64.');
-        return '';
-      }
-      return result.substring(result.indexOf(',') + 1);
-    }
   }
 
   continueRequestWithoutChange(): void {

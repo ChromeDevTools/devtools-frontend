@@ -8,7 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import {getMainFrame, LOADER_ID, navigate} from '../../testing/ResourceTreeHelpers.js';
+import {activate, getMainFrame, LOADER_ID, navigate} from '../../testing/ResourceTreeHelpers.js';
 import * as Logs from '../logs/logs.js';
 
 function url(input: string): Platform.DevToolsPath.UrlString {
@@ -316,7 +316,6 @@ describeWithMockConnection('NetworkLog', () => {
   describe('on primary page changed', () => {
     let networkLog: Logs.NetworkLog.NetworkLog;
     let target: SDK.Target.Target;
-    let frame: SDK.ResourceTreeModel.ResourceTreeFrame;
 
     beforeEach(() => {
       Common.Settings.Settings.instance().moduleSetting('network-log.preserve-log').set(false);
@@ -333,13 +332,6 @@ describeWithMockConnection('NetworkLog', () => {
           Protocol.Network.RequestWillBeSentEvent;
       networkDispatcher.requestWillBeSent(requestWillBeSentEvent2);
       assert.strictEqual(networkLog.requests().length, 2);
-
-      frame = {
-        url: 'http://example.com/',
-        backForwardCacheDetails: {},
-        unreachableUrl: () => Platform.DevToolsPath.EmptyUrlString,
-        resourceTreeModel: () => target.model(SDK.ResourceTreeModel.ResourceTreeModel)!,
-      } as SDK.ResourceTreeModel.ResourceTreeFrame;
     });
 
     it('discards requests with mismatched loaderId on navigation', () => {
@@ -348,9 +340,7 @@ describeWithMockConnection('NetworkLog', () => {
     });
 
     it('does not discard requests on prerender activation', () => {
-      target.model(SDK.ResourceTreeModel.ResourceTreeModel)!.dispatchEventToListeners(
-          SDK.ResourceTreeModel.Events.PrimaryPageChanged,
-          {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Activation});
+      activate(target);
       assert.deepEqual(networkLog.requests().map(request => request.requestId()), ['mockId1', 'mockId2']);
     });
   });

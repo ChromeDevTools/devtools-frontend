@@ -5,6 +5,7 @@
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {activate, getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
 import type * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
@@ -51,8 +52,8 @@ describeWithMockConnection('CSSModel', () => {
   });
 
   describe('on primary page change', () => {
+    let target: SDK.Target.Target;
     let cssModel: SDK.CSSModel.CSSModel|null;
-    let resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null;
     const header: Protocol.CSS.CSSStyleSheetHeader = {
       styleSheetId: 'stylesheet' as Protocol.CSS.StyleSheetId,
       frameId: 'frame' as Protocol.Page.FrameId,
@@ -70,30 +71,21 @@ describeWithMockConnection('CSSModel', () => {
       endLine: 0,
       endColumn: 0,
     };
-    const frame = {
-      url: 'http://example.com/',
-      resourceTreeModel: () => resourceTreeModel,
-      backForwardCacheDetails: {explanations: []},
-    } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
 
     beforeEach(() => {
-      const target = createTarget();
-      resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      target = createTarget();
       cssModel = target.model(SDK.CSSModel.CSSModel);
     });
 
     it('resets on navigation', () => {
       assert.exists(cssModel);
-      assert.exists(resourceTreeModel);
 
       cssModel.styleSheetAdded(header);
       let styleSheetIds =
           cssModel.getStyleSheetIdsForURL('http://example.com/styles.css' as Platform.DevToolsPath.UrlString);
       assert.deepEqual(styleSheetIds, ['stylesheet']);
 
-      resourceTreeModel.dispatchEventToListeners(
-          SDK.ResourceTreeModel.Events.PrimaryPageChanged,
-          {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation});
+      navigate(getMainFrame(target));
       styleSheetIds =
           cssModel.getStyleSheetIdsForURL('http://example.com/styles.css' as Platform.DevToolsPath.UrlString);
       assert.deepEqual(styleSheetIds, []);
@@ -101,16 +93,14 @@ describeWithMockConnection('CSSModel', () => {
 
     it('does not reset on prerender activation', () => {
       assert.exists(cssModel);
-      assert.exists(resourceTreeModel);
 
+      getMainFrame(target);
       cssModel.styleSheetAdded(header);
       let styleSheetIds =
           cssModel.getStyleSheetIdsForURL('http://example.com/styles.css' as Platform.DevToolsPath.UrlString);
       assert.deepEqual(styleSheetIds, ['stylesheet']);
 
-      resourceTreeModel.dispatchEventToListeners(
-          SDK.ResourceTreeModel.Events.PrimaryPageChanged,
-          {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Activation});
+      activate(target);
       styleSheetIds =
           cssModel.getStyleSheetIdsForURL('http://example.com/styles.css' as Platform.DevToolsPath.UrlString);
       assert.deepEqual(styleSheetIds, ['stylesheet']);

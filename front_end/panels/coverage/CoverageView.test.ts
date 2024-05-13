@@ -8,7 +8,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
+import {activate, getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Coverage from './coverage.js';
@@ -157,19 +157,7 @@ describeWithMockConnection('CoverageView', () => {
 
     // Create 2nd target for the prerendered frame.
     const {startSpy: startSpy2, stopSpy: stopSpy2, target: target2} = setupTargetAndModels();
-    let frame = {
-      url: 'http://www.example.com/',
-      displayName: () => 'frameName',
-      parentFrame: () => null,
-      resourceTreeModel: () => target2.model(SDK.ResourceTreeModel.ResourceTreeModel)!,
-      backForwardCacheDetails: {restoredFromCache: false},
-      id: 'myFrameId',
-      childFrames: [],
-    } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
-    const resourceTreeModel = target2.model(SDK.ResourceTreeModel.ResourceTreeModel)!;
-    resourceTreeModel.dispatchEventToListeners(
-        SDK.ResourceTreeModel.Events.PrimaryPageChanged,
-        {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Activation});
+    activate(target2);
     await coordinator.done({waitForWork: true});
     assert.isFalse(isShowingLandingPage(view));
     assert.isFalse(isShowingResults(view));
@@ -180,13 +168,7 @@ describeWithMockConnection('CoverageView', () => {
     assert.isTrue(startSpy2.calledOnce);
     assert.isTrue(stopSpy2.notCalled);
 
-    frame = {
-      ...frame,
-      url: 'http://www.example.com/page',
-    } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
-    resourceTreeModel.dispatchEventToListeners(
-        SDK.ResourceTreeModel.Events.PrimaryPageChanged,
-        {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation});
+    navigate(getMainFrame(target2), {url: 'http://www.example.com/page'});
     assert.isFalse(isShowingLandingPage(view));
     assert.isTrue(isShowingResults(view));
     assert.isFalse(isShowingPrerenderPage(view));

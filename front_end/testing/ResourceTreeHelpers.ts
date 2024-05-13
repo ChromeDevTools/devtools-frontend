@@ -87,3 +87,12 @@ export function navigate(
   const effectivePayload = getEffectivePayload(frame.id, FRAME, framePayload);
   frame.resourceTreeModel().frameNavigated(effectivePayload, type);
 }
+
+export function activate(target: SDK.Target.Target): void {
+  const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel)!;
+  const frame = getMainFrame(target);
+  sinon.stub(frame, 'isPrimaryFrame').returns(true);
+  resourceTreeModel.dispatchEventToListeners(
+      SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+      {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Activation});
+}

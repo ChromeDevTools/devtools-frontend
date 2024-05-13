@@ -6,7 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createFakeSetting, createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../../testing/MockConnection.js';
-import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
+import {activate, getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
 import {
   mkInspectorCspIssue,
   StubIssue,
@@ -82,15 +82,8 @@ describeWithMockConnection('IssuesManager', () => {
   it('keeps issues of prerendered page upon activation', () => {
     const {issuesManager, prerenderTarget} = assertOutOfScopeIssuesAreFiltered();
 
-    const resourceTreeModel = prerenderTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    assert.exists(resourceTreeModel);
-    const frame = {url: 'http://example.com/', resourceTreeModel: () => resourceTreeModel} as
-        SDK.ResourceTreeModel.ResourceTreeFrame;
-
     SDK.TargetManager.TargetManager.instance().setScopeTarget(prerenderTarget);
-    resourceTreeModel.dispatchEventToListeners(
-        SDK.ResourceTreeModel.Events.PrimaryPageChanged,
-        {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Activation});
+    activate(prerenderTarget);
     assert.deepStrictEqual(Array.from(issuesManager.issues()).map(getBlockedUrl), ['url2']);
   });
 

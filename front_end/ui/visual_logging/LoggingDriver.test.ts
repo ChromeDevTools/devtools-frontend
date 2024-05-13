@@ -209,6 +209,20 @@ describe('LoggingDriver', () => {
     await expectCalled(recordClick);
   });
 
+  it('logs middle clicks', async () => {
+    addLoggableElements();
+    await VisualLoggingTesting.LoggingDriver.startLogging();
+    const recordClick = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordClick',
+    );
+
+    const element = document.getElementById('element') as HTMLElement;
+    element.dispatchEvent(new MouseEvent('auxclick'));
+
+    await expectCalled(recordClick);
+  });
+
   it('does not log clicks if not configured', async () => {
     addLoggableElements();
     await VisualLoggingTesting.LoggingDriver.startLogging();

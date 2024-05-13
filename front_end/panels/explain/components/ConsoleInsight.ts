@@ -646,10 +646,11 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   #renderMain(): LitHtml.TemplateResult {
+    const jslog = `${VisualLogging.section(this.#state.type).track({resize: true})}`;
     // clang-format off
     switch (this.#state.type) {
       case State.LOADING:
-        return html`<main>
+        return html`<main jslog=${jslog}>
             <div role="presentation" class="loader" style="clip-path: url('#clipPath');">
               <svg width="100%" height="64">
                 <clipPath id="clipPath">
@@ -662,13 +663,13 @@ export class ConsoleInsight extends HTMLElement {
           </main>`;
       case State.INSIGHT:
         return html`
-        <main>
+        <main jslog=${jslog}>
           ${
             this.#state.validMarkdown ? html`<${MarkdownView.MarkdownView.MarkdownView.litTagName}
               .data=${{tokens: this.#state.tokens, renderer: this.#renderer} as MarkdownView.MarkdownView.MarkdownViewData}>
             </${MarkdownView.MarkdownView.MarkdownView.litTagName}>`: this.#state.explanation
           }
-          <details style="--list-height: ${(this.#state.sources.length + (this.#state.isPageReloadRecommended ? 1 : 0)) * 20}px;">
+          <details style="--list-height: ${(this.#state.sources.length + (this.#state.isPageReloadRecommended ? 1 : 0)) * 20}px;" jslog=${VisualLogging.expand('sources').track({click: true})}>
             <summary>${i18nString(UIStrings.inputData)}</summary>
             <${ConsoleInsightSourcesList.litTagName} .sources=${this.#state.sources} .isPageReloadRecommended=${this.#state.isPageReloadRecommended}>
             </${ConsoleInsightSourcesList.litTagName}>
@@ -679,12 +680,12 @@ export class ConsoleInsight extends HTMLElement {
         </main>`;
       case State.ERROR:
         return html`
-        <main>
+        <main jslog=${jslog}>
           <div class="error">${i18nString(UIStrings.errorBody)}</div>
         </main>`;
       case State.CONSENT_REMINDER:
         return html`
-          <main>
+          <main jslog=${jslog}>
             <p>The following data will be sent to Google to understand the context for the console message.
             Human reviewers may process this information for quality purposes.
             Don’t submit sensitive information. Read Google’s <x-link href=${TERMS_OF_SERVICE_URL} class="link" jslog=${VisualLogging.link('terms-of-service').track({click: true})}>Terms of Service</x-link> and
@@ -696,7 +697,7 @@ export class ConsoleInsight extends HTMLElement {
       case State.CONSENT_ONBOARDING:
         switch (this.#state.page) {
           case ConsentOnboardingPage.PAGE1:
-            return html`<main>
+            return html`<main jslog=${jslog}>
               <p>This notice and our <x-link href=${PRIVACY_POLICY_URL} class="link" jslog=${VisualLogging.link('privacy-notice').track({click: true})}>privacy notice</x-link> describe how Chrome DevTools handles your data. Please read them carefully.</p>
 
               <p>Chrome DevTools uses the console message, associated stack trace, related source code, and the associated network headers as input data. When you use "Understand this message", Google collects this input data, generated output, related feature usage information, and your feedback. Google uses this data to provide, improve, and develop Google products and services and machine learning technologies, including Google's enterprise products such as Google Cloud.</p>
@@ -704,7 +705,7 @@ export class ConsoleInsight extends HTMLElement {
               <p>To help with quality and improve our products, human reviewers may read, annotate, and process the above-mentioned input data, generated output, related feature usage information, and your feedback. <strong>Please do not include sensitive (e.g., confidential) or personal information that can be used to identify you or others in your prompts or feedback.</strong> Your data will be stored in a way where Google cannot tell who provided it and can no longer fulfill any deletion requests and will be retained for up to 18 months.</p>
             </main>`;
           case ConsentOnboardingPage.PAGE2:
-            return html`<main>
+            return html`<main jslog=${jslog}>
             <p>As you try "Understand this message", here are key things to know:
 
             <ul>
@@ -725,17 +726,17 @@ export class ConsoleInsight extends HTMLElement {
         }
       case State.NOT_LOGGED_IN:
         return html`
-          <main>
+          <main jslog=${jslog}>
             <div class="error">${i18nString(UIStrings.notLoggedIn)}</div>
           </main>`;
       case State.SYNC_IS_OFF:
         return html`
-          <main>
+          <main jslog=${jslog}>
             <div class="error">${i18nString(UIStrings.syncIsOff)}</div>
           </main>`;
       case State.OFFLINE:
         return html`
-          <main>
+          <main jslog=${jslog}>
             <div class="error">${i18nString(UIStrings.offline)}</div>
           </main>`;
     }
@@ -755,14 +756,14 @@ export class ConsoleInsight extends HTMLElement {
         return LitHtml.nothing;
       case State.ERROR:
       case State.OFFLINE:
-        return html`<footer>
+        return html`footer jslog=${VisualLogging.section('footer')}>
           <div class="disclaimer">
             ${disclaimer}
           </div>
         </footer>`;
       case State.NOT_LOGGED_IN:
       case State.SYNC_IS_OFF:
-        return html`<footer>
+        return html`<footer jslog=${VisualLogging.section('footer')}>
         <div class="filler"></div>
         <div>
           <${Buttons.Button.Button.litTagName}
@@ -779,7 +780,7 @@ export class ConsoleInsight extends HTMLElement {
         </div>
       </footer>`;
       case State.CONSENT_REMINDER:
-        return html`<footer>
+        return html`<footer jslog=${VisualLogging.section('footer')}>
           <div class="disclaimer">
             ${disclaimer}
           </div>
@@ -792,7 +793,7 @@ export class ConsoleInsight extends HTMLElement {
       case State.CONSENT_ONBOARDING:
         switch (this.#state.page) {
           case ConsentOnboardingPage.PAGE1:
-            return html`<footer>
+            return html`<footer jslog=${VisualLogging.section('footer')}>
                 <div class="disclaimer">
                   ${this.#renderLearnMoreAboutInsights()}
                 </div>
@@ -804,7 +805,7 @@ export class ConsoleInsight extends HTMLElement {
                   </div>
               </footer>`;
           case ConsentOnboardingPage.PAGE2:
-            return html`<footer>
+            return html`<footer jslog=${VisualLogging.section('footer')}>
             <div class="disclaimer">
               ${this.#renderLearnMoreAboutInsights()}
             </div>
@@ -817,7 +818,7 @@ export class ConsoleInsight extends HTMLElement {
           </footer>`;
         }
       case State.INSIGHT:
-        return html`<footer>
+        return html`<footer jslog=${VisualLogging.section('footer')}>
         <div class="disclaimer">
           ${disclaimer}
         </div>
@@ -1000,7 +1001,8 @@ export class MarkdownRenderer extends MarkdownView.MarkdownView.MarkdownLitRende
         return html`<strong>${this.renderText(token)}</strong>`;
       case 'link':
       case 'image':
-        return LitHtml.html`${UI.XLink.XLink.create(token.href, token.text, undefined, undefined, 'token')}`;
+        return LitHtml.html`${
+            UI.XLink.XLink.create(token.href, token.text, undefined, undefined, 'link-in-explanation')}`;
       case 'code':
         return LitHtml.html`<${MarkdownView.CodeBlock.CodeBlock.litTagName}
           .code=${this.unescape(token.text)}

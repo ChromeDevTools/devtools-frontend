@@ -116,7 +116,7 @@ export class ListWidget<T> extends VBox {
     }
     const content = this.delegate.renderItem(item, editable);
     if (!content.hasAttribute('jslog')) {
-      content.setAttribute('jslog', `${VisualLogging.item()}`);
+      element.setAttribute('jslog', `${VisualLogging.item()}`);
     }
     element.appendChild(content);
     if (editable) {

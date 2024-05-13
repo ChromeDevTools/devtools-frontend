@@ -14,7 +14,7 @@
   const constructedStyleSheet = new CSSStyleSheet();
   constructedStyleSheet.insertRule('#properties-to-inspect { color: grey; }');
 
-  import cssModuleStyleSheet from "./css-module.css" assert { type: "css" };
+  import cssModuleStyleSheet from "./css-module.css" with { type: "css" };
 
   document.adoptedStyleSheets = [constructedStyleSheet, cssModuleStyleSheet];
 </script>

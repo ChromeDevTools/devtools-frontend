@@ -190,6 +190,10 @@ export class Button extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
+  get toggled(): boolean {
+    return Boolean(this.#props.toggled);
+  }
+
   set active(active: boolean) {
     this.#props.active = active;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);

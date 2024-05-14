@@ -5,154 +5,155 @@
  */
 
 .search-bar {
-  flex: 0 0 31px;
-  background-color: var(--sys-color-cdt-base-container);
+  flex: 0 0 33px;
   border-top: 1px solid var(--sys-color-divider);
-  display: flex;
-  overflow: hidden;
-  z-index: 0;
-}
 
-.search-bar.replaceable {
-  flex: 0 0 57px;
-}
-
-.search-replace {
-  appearance: none;
-  border: 0;
-  /* prevents the input background from going over the border of toolbar-search-control */
-  border-radius: 4px;
-  padding: 0 3px;
-  margin: 0;
-  flex: 1;
-}
-
-.search-replace:focus {
-  outline: none;
-}
-
-.toolbar-search {
-  display: flex;
-  width: 100%;
-}
-
-.toolbar-search > div {
-  margin: 2px;
-  flex-shrink: 0;
-}
-
-.toolbar-search-control {
-  display: flex;
-  position: relative;
-  background-color: var(--sys-color-cdt-base-container);
-}
-
-.toolbar-search-control,
-.toolbar-replace-control {
-  border: 1px solid var(--sys-color-neutral-outline);
-  height: 22px;
-  border-radius: 4px;
-  width: 100%;
-  margin-top: 2px;
-  margin-bottom: 2px;
-
-  &:focus-within {
-    border-color: var(--sys-color-state-focus-ring);
-  }
-}
-
-.toolbar-search-inputs {
-  flex-grow: 1;
-  min-width: 150px;
-
-  & input {
-    line-height: 17px;
+  devtools-icon[name="search"] {
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
+    color: var(--sys-color-on-surface-subtle);
+    margin-right: var(--sys-size-3);
   }
 
-  &:hover:not(:focus-within) {
-    & .toolbar-search-control {
+  &.replaceable {
+    & devtools-icon[name="search"] {
+      display: none;
+    }
+  }
+
+  &:not(.replaceable) .replace-element {
+    display: none;
+  }
+
+  .search-replace {
+    appearance: none;
+    color: var(--sys-color-on-surface);
+    background-color: transparent;
+    border: 0;
+    z-index: 1;
+    flex: 1;
+
+    &::placeholder {
+      color: var(--sys-color-on-surface-subtle);
+    }
+
+    &:placeholder-shown + .clear-button {
+      display: none;
+    }
+
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+  }
+
+  .search-input-background {
+    grid-row: 1/2;
+  }
+
+  .icon-and-input {
+    margin-left: var(--sys-size-5);
+    grid-row: 1/2;
+    grid-column: 1/2;
+    display: inline-flex;
+
+    &:hover ~ .search-input-background {
       background-color: var(--sys-color-state-hover-on-subtle);
     }
 
-    & input {
-      background: none;
+    &:has(.search-replace:placeholder-shown) ~ .search-config-buttons > .clear-button {
+      display: none;
     }
   }
-}
 
-.toolbar-search-navigation-controls {
-  align-self: stretch;
-}
+  .toolbar-search {
+    display: flex;
+    margin: var(--sys-size-2);
+  }
 
-.toolbar-search-navigation {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  background-repeat: no-repeat;
-  border-left: 1px solid var(--sys-color-divider);
-  opacity: 30%;
-}
+  .second-row-buttons {
+    height: var(--sys-size-12);
+    display: inline-flex;
 
-.toolbar-search-navigation.enabled {
-  opacity: 100%;
-}
+    & > devtools-button {
+      margin-right: var(--sys-size-3);
+    }
+  }
 
-.toolbar-search button.search-action-button {
-  font-weight: 400;
-  height: 22px;
-  width: 87px;
-}
+  .input-line {
+    grid-column: 1/3;
+    display: inline-flex;
+    padding: 0 var(--sys-size-2) 0 var(--sys-size-5);
+    border-radius: 100px;
+    height: var(--sys-size-10);
+    position: relative;
 
-.toolbar-search-buttons {
-  display: flex;
-  flex-direction: column;
-}
+    &:not(:has(devtools-button:hover)):hover {
+      background-color: var(--sys-color-state-hover-on-subtle);
+    }
 
-.toolbar-search-navigation.enabled:active {
-  background-position: 4px 7px, 0 0;
-}
+    &::before {
+      content: "";
+      box-sizing: inherit;
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      left: 0;
+      background: var(--sys-color-cdt-base);
+      z-index: -10;
+      border-radius: 100px;
+      padding: var(--sys-size-2);
+    }
 
-.toolbar-search-navigation.toolbar-search-navigation-prev {
-  background-image: var(--image-file-chevron-up);
-  border-left: 1px solid var(--sys-color-neutral-outline);
-}
+    & > devtools-button {
+      width: var(--sys-size-11);
+      justify-content: center;
+    }
 
-:host-context(.-theme-with-dark-background) .toolbar-search-navigation {
-  filter: invert(90%);
-}
+    & devtools-button:last-child(devtools-button) {
+      margin-right: var(--sys-size-4);
+    }
+  }
 
-.toolbar-search-navigation.toolbar-search-navigation-prev.enabled:active {
-  background-image: var(--image-file-chevron-up), var(--sys-color-neutral-container);
-}
+  .search-inputs {
+    display: grid;
+    grid-template-columns: 1fr min-content;
+    grid-auto-rows: var(--sys-size-12);
+    flex-grow: 1;
+    align-items: center;
+    min-width: 150px;
+  }
 
-.toolbar-search-navigation.toolbar-search-navigation-next {
-  background-image: var(--image-file-chevron-down);
-  border-left: 1px solid var(--sys-color-neutral-outline);
-}
+  .first-row-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
 
-.toolbar-search-navigation.toolbar-search-navigation-next.enabled:active {
-  background-image: var(--image-file-chevron-down), var(--sys-color-neutral-container);
-}
+  .toolbar {
+    padding: 0;
+    height: var(--sys-size-12);
+    display: flex;
+    align-items: center;
+  }
 
-.search-results-matches {
-  display: inline-block;
-  text-align: right;
-  padding: 0 4px;
-  color: var(--sys-color-token-subtle);
-  align-self: center;
-}
+  .search-config-buttons {
+    margin: 0 var(--sys-size-3) 0 auto;
+    z-index: 1;
+    display: inline-flex;
+    grid-row: 1/2;
+    grid-column: 2/3;
+  }
 
-.first-row-buttons {
-  display: flex;
-  justify-content: space-between;
-}
+  .toolbar-search-buttons {
+    margin-left: var(--sys-size-3);
+  }
 
-.toolbar-search > .replace-toggle-toolbar {
-  margin: 2px -2px 0 0;
-}
+  .replace-element:has(input:focus) {
+    box-shadow: inset 0 0 0 2px var(--sys-color-state-focus-ring);
+  }
 
-.toolbar-search-options {
-  margin: 0 auto;
+  .search-inputs:has(input[type="search"]:focus) .search-input-background {
+    box-shadow: inset 0 0 0 2px var(--sys-color-state-focus-ring);
+  }
 }
 
 :host-context(#sources-panel-sources-view) .search-bar {

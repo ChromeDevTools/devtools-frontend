@@ -132,7 +132,7 @@ export async function setSearchFilter(text: string) {
 
 export async function waitForSearchResultNumber(results: number) {
   const findMatch = async () => {
-    const currentMatch = await waitFor('label[for=\'search-input-field\']');
+    const currentMatch = await waitFor('.search-results-matches');
     const currentTextContent = currentMatch && await currentMatch.evaluate(el => el.textContent);
     if (currentTextContent && currentTextContent.endsWith(` ${results}`)) {
       return currentMatch;
@@ -145,7 +145,7 @@ export async function waitForSearchResultNumber(results: number) {
 export async function findSearchResult(searchResult: string, pollIntrerval: number = 500) {
   const {frontend} = getBrowserAndPages();
   const match = await waitFor('#profile-views table.data');
-  const matches = await waitFor('label.search-results-matches');
+  const matches = await waitFor(' .search-results-matches');
   const matchesText = await matches.evaluate(async element => {
     return element.textContent;
   });
@@ -154,7 +154,7 @@ export async function findSearchResult(searchResult: string, pollIntrerval: numb
   } else {
     await waitForFunction(async () => {
       const selectedBefore = await waitFor(SELECTED_RESULT);
-      await click('[aria-label="Search next"]');
+      await click('[aria-label="Show next result"]');
       // Wait until the click has taken effect by checking that the selected
       // result has changed. This is done to prevent the assertion afterwards
       // from happening before the next result is fully loaded.

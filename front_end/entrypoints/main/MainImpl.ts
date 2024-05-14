@@ -444,24 +444,7 @@ export class MainImpl {
     if (!ThemeSupport.ThemeSupport.hasInstance()) {
       ThemeSupport.ThemeSupport.instance({forceNew: true, setting: themeSetting});
     }
-
     ThemeSupport.ThemeSupport.instance().applyTheme(document);
-
-    const onThemeChange = (): void => {
-      ThemeSupport.ThemeSupport.instance().applyTheme(document);
-    };
-
-    // When the theme changes we instantiate a new theme support and reapply.
-    // Equally if the user has set to match the system and the OS preference changes
-    // we perform the same change.
-    const darkThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const highContrastMediaQuery = window.matchMedia('(forced-colors: active)');
-    darkThemeMediaQuery.addEventListener('change', onThemeChange);
-    highContrastMediaQuery.addEventListener('change', onThemeChange);
-    themeSetting.addChangeListener(onThemeChange);
-
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.ColorThemeChanged, () => ThemeSupport.ThemeSupport.fetchColors(document));
 
     UI.UIUtils.installComponentRootStyles((document.body as Element));
 
@@ -568,7 +551,7 @@ export class MainImpl {
     const app = (appProvider as Common.AppProvider.AppProvider).createApp();
     // It is important to kick controller lifetime after apps are instantiated.
     UI.DockController.DockController.instance().initialize();
-    ThemeSupport.ThemeSupport.fetchColors(document);
+    ThemeSupport.ThemeSupport.instance().fetchColors(document);
     app.presentUI(document);
 
     if (UI.ActionRegistry.ActionRegistry.instance().hasAction('elements.toggle-element-search')) {

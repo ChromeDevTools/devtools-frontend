@@ -2,13 +2,27 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {createFakeSetting, describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 
 import * as ThemeSupport from './theme_support.js';
 
-describe('ThemeSupport', () => {
+describeWithEnvironment('ThemeSupport', () => {
+  let themeSupport: ThemeSupport.ThemeSupport;
+  beforeEach(() => {
+    const setting = createFakeSetting('theme', 'default');
+    themeSupport = ThemeSupport.ThemeSupport.instance({forceNew: true, setting});
+  });
+
+  it('calls fetchColors on host ColorThemeChanged', async () => {
+    const colorFetchSpy = sinon.spy(themeSupport, 'fetchColors');
+
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.dispatchEventToListeners(
+        Host.InspectorFrontendHostAPI.Events.ColorThemeChanged);
+
+    assert.isTrue(colorFetchSpy.called);
+  });
+
   describe('fetchColors', () => {
     it('fetchColors updates color node url', () => {
       sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'isHostedMode').returns(false);
@@ -21,14 +35,14 @@ describe('ThemeSupport', () => {
       colorsLink.rel = 'stylesheet';
       doc.head.appendChild(colorsLink);
 
-      ThemeSupport.ThemeSupport.fetchColors(doc);
+      themeSupport.fetchColors(doc);
 
       const updatedHref = doc.body.querySelector(COLORS_CSS_SELECTOR)!.getAttribute('href');
       assert.notEqual(updatedHref, originalColorHref);
     });
   });
 
-  describeWithEnvironment('getComputedValue', () => {
+  describe('getComputedValue', () => {
     class StyledComponent extends HTMLElement {
       #shadow = this.attachShadow({mode: 'open'});
 
@@ -43,14 +57,7 @@ describe('ThemeSupport', () => {
       }
     }
 
-    let themeSupport: ThemeSupport.ThemeSupport;
     before(() => {
-      const setting = {
-        get() {
-          return 'default';
-        },
-      } as Common.Settings.Setting<string>;
-      themeSupport = ThemeSupport.ThemeSupport.instance({forceNew: true, setting});
       customElements.define('test-styled-component', StyledComponent);
     });
 

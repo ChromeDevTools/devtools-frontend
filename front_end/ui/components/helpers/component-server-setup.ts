@@ -14,6 +14,7 @@ export async function setup(): Promise<void> {
     get() {
       return 'default';
     },
-  } as Common.Settings.Setting<string>;
+    addChangeListener: () => {},
+  } as unknown as Common.Settings.Setting<string>;
   ThemeSupport.ThemeSupport.instance({forceNew: true, setting});
 }

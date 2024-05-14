@@ -46,8 +46,32 @@ export class ThemeSupport extends EventTarget {
   private customSheets: Set<string> = new Set();
   private computedStyleOfHTML = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
 
+  readonly #darkThemeMediaQuery: MediaQueryList;
+  readonly #highContrastMediaQuery: MediaQueryList;
+  readonly #onThemeChangeListener = (): void => this.applyTheme(document);
+  readonly #onHostThemeChangeListener = (): void => this.fetchColors(document);
+
   private constructor(private setting: Common.Settings.Setting<string>) {
     super();
+
+    // When the theme changes we instantiate a new theme support and reapply.
+    // Equally if the user has set to match the system and the OS preference changes
+    // we perform the same change.
+    this.#darkThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    this.#highContrastMediaQuery = window.matchMedia('(forced-colors: active)');
+    this.#darkThemeMediaQuery.addEventListener('change', this.#onThemeChangeListener);
+    this.#highContrastMediaQuery.addEventListener('change', this.#onThemeChangeListener);
+    setting.addChangeListener(this.#onThemeChangeListener);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+        Host.InspectorFrontendHostAPI.Events.ColorThemeChanged, this.#onHostThemeChangeListener);
+  }
+
+  #dispose(): void {
+    this.#darkThemeMediaQuery.removeEventListener('change', this.#onThemeChangeListener);
+    this.#highContrastMediaQuery.removeEventListener('change', this.#onThemeChangeListener);
+    this.setting.removeChangeListener(this.#onThemeChangeListener);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
+        Host.InspectorFrontendHostAPI.Events.ColorThemeChanged, this.#onHostThemeChangeListener);
   }
 
   static hasInstance(): boolean {
@@ -64,6 +88,9 @@ export class ThemeSupport extends EventTarget {
         throw new Error(`Unable to create theme support: setting must be provided: ${new Error().stack}`);
       }
 
+      if (themeSupportInstance) {
+        themeSupportInstance.#dispose();
+      }
       themeSupportInstance = new ThemeSupport(setting);
     }
 
@@ -160,11 +187,12 @@ export class ThemeSupport extends EventTarget {
     document.documentElement.classList.toggle('baseline-default', selectedTheme === 'baseline-default');
     document.documentElement.classList.toggle('baseline-grayscale', selectedTheme === 'baseline-grayscale');
   }
+
   static clearThemeCache(): void {
     themeValueByTargetByName.clear();
   }
 
-  static fetchColors(document?: Document): void {
+  fetchColors(document?: Document): void {
     if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
       return;
     }
@@ -182,7 +210,7 @@ export class ThemeSupport extends EventTarget {
       if (oldColorsCssLink) {
         oldColorsCssLink.remove();
       }
-      ThemeSupport.instance().applyTheme(document);
+      this.applyTheme(document);
     };
     document.body.appendChild(newColorsCssLink);
   }

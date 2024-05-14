@@ -26,7 +26,7 @@ export class Throttler {
     });
   }
 
-  private processCompleted(): void {
+  #processCompleted(): void {
     this.#lastCompleteTime = this.getTime();
     this.#isRunningProcess = false;
     if (this.#process) {
@@ -43,6 +43,10 @@ export class Throttler {
     return this.#process;
   }
 
+  get processCompleted(): Promise<unknown>|null {
+    return this.#process ? this.#schedulePromise : null;
+  }
+
   private onTimeout(): void {
     this.#processTimeout = undefined;
     this.#asSoonAsPossible = false;
@@ -51,7 +55,7 @@ export class Throttler {
     void Promise.resolve()
         .then(this.#process)
         .catch(console.error.bind(console))
-        .then(this.processCompleted.bind(this))
+        .then(this.#processCompleted.bind(this))
         .then(this.#scheduleResolve);
     this.#schedulePromise = new Promise(fulfill => {
       this.#scheduleResolve = fulfill;

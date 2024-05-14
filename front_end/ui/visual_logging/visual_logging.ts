@@ -22,7 +22,7 @@ export function registerLoggable(loggable: Loggable, config: string, parent: Log
     return;
   }
   NonDomState.registerLoggable(loggable, LoggingConfig.parseJsLog(config), parent || undefined);
-  LoggingDriver.scheduleProcessing();
+  void LoggingDriver.scheduleProcessing();
 }
 
 /**

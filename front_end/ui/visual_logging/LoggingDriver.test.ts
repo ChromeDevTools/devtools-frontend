@@ -577,7 +577,7 @@ describe('LoggingDriver', () => {
     const element = document.getElementById('element') as HTMLElement;
 
     element.style.height = '400px';
-    const [logging] = await expectCall(throttle);
+    const [logging] = await expectCall(throttle, {callCount: 2});
     assert.isFalse(recordResize.called);
     await logging();
     assert.isTrue(recordResize.calledOnce);
@@ -607,20 +607,21 @@ describe('LoggingDriver', () => {
     const element = document.getElementById('element') as HTMLElement;
 
     element.style.display = 'none';
-    let [logging] = await expectCall(throttle);
+    const [logging] = await expectCall(throttle, {callCount: 2});
     assert.isFalse(recordResize.called);
 
-    await logging();
+    logging();
+    await expectCalled(recordResize);
     assert.isTrue(recordResize.calledOnce);
     assert.deepStrictEqual(stabilizeEvent(recordResize.firstCall.firstArg), {veid: 0, width: 0, height: 0});
 
     recordResize.resetHistory();
 
     element.style.display = 'block';
-    [logging] = await expectCall(throttle);
     assert.isFalse(recordResize.called);
+    throttle.callsArg(0);
 
-    await logging();
+    await expectCall(recordResize);
     assert.isTrue(recordResize.calledOnce);
     assert.deepStrictEqual(stabilizeEvent(recordResize.firstCall.firstArg), {veid: 0, width: 300, height: 300});
   });
@@ -637,13 +638,13 @@ describe('LoggingDriver', () => {
     );
 
     element1.style.height = '200px';
-    await expectCall(throttle);
+    await expectCall(throttle, {callCount: 2});
     element2.style.height = '200px';
-    await expectCall(throttle);
+    await expectCall(throttle, {callCount: 2});
     element1.style.height = '100px';
-    await expectCall(throttle);
+    await expectCall(throttle, {callCount: 2});
     element2.style.height = '100px';
-    const [work] = await expectCall(throttle);
+    const [work] = await expectCall(throttle, {callCount: 2});
 
     assert.isFalse(recordResize.called);
     await work();
@@ -724,7 +725,7 @@ describe('LoggingDriver', () => {
     // Now hide one and wait for logging to finish
     throttle.callsArg(0);
     element2.style.display = 'none';
-    await expectCalled(recordResize);
+    await expectCalled(recordResize, {callCount: 2});
     throttle.reset();
     recordResize.reset();
 
@@ -753,12 +754,50 @@ describe('LoggingDriver', () => {
     const parent = document.getElementById('parent') as HTMLElement;
 
     parent.removeChild(element);
-    const [logging] = await expectCall(throttle);
+    const [logging] = await expectCall(throttle, {callCount: 2});
     assert.isFalse(recordResize.called);
 
     await logging();
     assert.isTrue(recordResize.calledOnce);
     assert.deepStrictEqual(stabilizeEvent(recordResize.firstCall.firstArg), {veid: 0, width: 0, height: 0});
+  });
+
+  it('logs interactions before impressions and resize', async () => {
+    addLoggableElements();
+    await VisualLoggingTesting.LoggingDriver.startLogging({resizeLogThrottler: throttler});
+    const recordResize = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordResize',
+    );
+    const recordClick = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordClick',
+    );
+    const recordKeyDown = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordKeyDown',
+    );
+    recordImpression.resetHistory();
+
+    const element = document.getElementById('element') as HTMLElement;
+    const parent = document.getElementById('parent') as HTMLElement;
+
+    parent.removeChild(element);
+    parent.appendChild(element.cloneNode());
+    element.click();
+    element.dispatchEvent(new KeyboardEvent('keydown', {key: 'a'}));
+    throttle.callsArg(0);
+
+    await Promise.all([
+      expectCalled(recordImpression),
+      expectCalled(recordResize),
+      expectCalled(recordClick),
+      expectCalled(recordKeyDown),
+    ]);
+    assert.isTrue(recordClick.calledBefore(recordImpression));
+    assert.isTrue(recordClick.calledBefore(recordResize));
+    assert.isTrue(recordKeyDown.calledBefore(recordImpression));
+    assert.isTrue(recordKeyDown.calledBefore(recordResize));
   });
 
   it('logs non-DOM impressions', async () => {

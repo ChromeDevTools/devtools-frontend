@@ -20,7 +20,7 @@ const HOVER_LOG_INTERVAL = 1000;
 const DRAG_LOG_INTERVAL = 1250;
 const DRAG_REPORT_THRESHOLD = 50;
 const CLICK_LOG_INTERVAL = 500;
-const RESIZE_LOG_INTERVAL = 1000;
+const RESIZE_LOG_INTERVAL = 200;
 const RESIZE_REPORT_THRESHOLD = 50;
 
 const noOpThrottler = {
@@ -94,9 +94,19 @@ export function stopLogging(): void {
   documents.length = 0;
   viewportRects.clear();
   processingThrottler = noOpThrottler;
+  pendingResize.clear();
 }
 
-export function scheduleProcessing(): void {
+async function yieldToInteractions(): Promise<void> {
+  while (clickLogThrottler.process) {
+    await clickLogThrottler.processCompleted;
+  }
+  while (keyboardLogThrottler.process) {
+    await keyboardLogThrottler.processCompleted;
+  }
+}
+
+export async function scheduleProcessing(): Promise<void> {
   if (!processingThrottler) {
     return;
   }
@@ -191,7 +201,7 @@ async function process(): Promise<void> {
             return;
           }
           loggingState.selectOpen = true;
-          scheduleProcessing();
+          void scheduleProcessing();
         };
         element.addEventListener('click', onSelectOpen, {capture: true});
         // Based on MenuListSelectType::ShouldOpenPopupForKey{Down,Press}Event
@@ -233,7 +243,10 @@ async function process(): Promise<void> {
     // We can still log interaction events with a handle to a loggable
     unregisterLoggable(loggable);
   }
-  await logImpressions(visibleLoggables);
+  if (visibleLoggables.length) {
+    await yieldToInteractions();
+    await logImpressions(visibleLoggables);
+  }
   Host.userMetrics.visualLoggingProcessingDone(performance.now() - startTime);
 }
 
@@ -272,45 +285,51 @@ function isAncestorOf(state1: LoggingState|null, state2: LoggingState|null): boo
   return false;
 }
 
-function onResizeOrIntersection(entries: ResizeObserverEntry[]|IntersectionObserverEntry[]): void {
-  for (const entry of entries) {
-    const element = entry.target;
-    const loggingState = getLoggingState(element);
-    const overlap = visibleOverlap(element, viewportRectFor(element)) || new DOMRect(0, 0, 0, 0);
-    if (!loggingState?.size) {
-      continue;
-    }
-
-    let hasPendingParent = false;
-    for (const pendingElement of pendingResize.keys()) {
-      if (pendingElement === element) {
+async function onResizeOrIntersection(entries: ResizeObserverEntry[]|IntersectionObserverEntry[]): Promise<void> {
+  await Coordinator.RenderCoordinator.RenderCoordinator.instance().read('logResize', async () => {
+    for (const entry of entries) {
+      const element = entry.target;
+      const loggingState = getLoggingState(element);
+      const overlap = visibleOverlap(element, viewportRectFor(element)) || new DOMRect(0, 0, 0, 0);
+      if (!loggingState?.size) {
         continue;
       }
-      const pendingState = getLoggingState(pendingElement);
-      if (isAncestorOf(pendingState, loggingState)) {
-        hasPendingParent = true;
-        break;
-      }
-      if (isAncestorOf(loggingState, pendingState)) {
-        pendingResize.delete(pendingElement);
-      }
-    }
-    if (hasPendingParent) {
-      continue;
-    }
-    pendingResize.set(element, overlap);
-    void resizeLogThrottler.schedule(async () => {
-      for (const [element, overlap] of pendingResize.entries()) {
-        const loggingState = getLoggingState(element);
-        if (!loggingState) {
+
+      let hasPendingParent = false;
+      for (const pendingElement of pendingResize.keys()) {
+        if (pendingElement === element) {
           continue;
         }
-        if (Math.abs(overlap.width - loggingState.size.width) >= RESIZE_REPORT_THRESHOLD ||
-            Math.abs(overlap.height - loggingState.size.height) >= RESIZE_REPORT_THRESHOLD) {
-          logResize(element, overlap);
+        const pendingState = getLoggingState(pendingElement);
+        if (isAncestorOf(pendingState, loggingState)) {
+          hasPendingParent = true;
+          break;
+        }
+        if (isAncestorOf(loggingState, pendingState)) {
+          pendingResize.delete(pendingElement);
         }
       }
-      pendingResize.clear();
-    });
-  }
+      if (hasPendingParent) {
+        continue;
+      }
+      pendingResize.set(element, overlap);
+      await resizeLogThrottler.schedule(async () => {});
+      void resizeLogThrottler.schedule(async () => {
+        if (pendingResize.size) {
+          await yieldToInteractions();
+        }
+        for (const [element, overlap] of pendingResize.entries()) {
+          const loggingState = getLoggingState(element);
+          if (!loggingState) {
+            continue;
+          }
+          if (Math.abs(overlap.width - loggingState.size.width) >= RESIZE_REPORT_THRESHOLD ||
+              Math.abs(overlap.height - loggingState.size.height) >= RESIZE_REPORT_THRESHOLD) {
+            logResize(element, overlap);
+          }
+        }
+        pendingResize.clear();
+      });
+    }
+  });
 }

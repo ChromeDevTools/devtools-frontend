@@ -72,8 +72,8 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   #unresolvedFrameIds: Set<string>;
   protected requestResolver: Logs.RequestResolver.RequestResolver;
 
-  constructor(parent: IssueView, issue: AggregatedIssue) {
-    super();
+  constructor(parent: IssueView, issue: AggregatedIssue, jslogContext: string) {
+    super(/* title */ undefined, /* expandable */ undefined, jslogContext);
     this.#parentView = parent;
     this.issue = issue;
     this.toggleOnClick = true;

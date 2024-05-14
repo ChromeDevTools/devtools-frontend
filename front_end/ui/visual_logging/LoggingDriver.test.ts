@@ -669,8 +669,7 @@ describe('LoggingDriver', () => {
     );
 
     element.style.width = '400px';
-    await expectCall(throttle);
-    const [work] = await expectCall(throttle);
+    const [work] = await expectCall(throttle, {callCount: 2});
 
     assert.isFalse(recordResize.called);
     await work();
@@ -732,8 +731,8 @@ describe('LoggingDriver', () => {
     // Now the actual test: hiding one element and show the other one
     element1.style.display = 'none';
     element2.style.display = 'block';
-    await expectCalled(throttle);  // Throttler is called by both resize observe and intersectin observer
-    await expectCall(throttle).then(([work]) => work());
+    // Throttler is called by both resize and intersection observer for each element
+    await expectCalled(throttle, {callCount: 4}).then(([work]) => work());
 
     assert.isTrue(recordResize.calledTwice);
     assert.sameDeepMembers(recordResize.getCalls().map(c => c.firstArg), [

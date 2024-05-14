@@ -86,12 +86,11 @@ export const logDrag = (throttler: Common.Throttler.Throttler) => async (event: 
   });
 };
 
-export async function logChange(event: Event): Promise<void> {
-  const loggingState = getLoggingState(event.currentTarget as Element);
+export async function logChange(loggable: Loggable): Promise<void> {
+  const loggingState = getLoggingState(loggable);
   assertNotNullOrUndefined(loggingState);
   const changeEvent: Host.InspectorFrontendHostAPI.ChangeEvent = {veid: loggingState.veid};
   const context = loggingState.lastInputEventType;
-  delete loggingState.lastInputEventType;
   if (context) {
     changeEvent.context = await contextAsNumber(context);
   }

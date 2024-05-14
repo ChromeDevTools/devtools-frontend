@@ -39,6 +39,7 @@ const resizeObserver = new ResizeObserver(onResizeOrIntersection);
 const intersectionObserver = new IntersectionObserver(onResizeOrIntersection);
 const documents: Document[] = [];
 const pendingResize = new Map<Element, DOMRect>();
+const pendingChange = new Set<Element>();
 
 function observeMutations(roots: Node[]): void {
   for (const root of roots) {
@@ -95,6 +96,7 @@ export function stopLogging(): void {
   viewportRects.clear();
   processingThrottler = noOpThrottler;
   pendingResize.clear();
+  pendingChange.clear();
 }
 
 async function yieldToInteractions(): Promise<void> {
@@ -103,6 +105,12 @@ async function yieldToInteractions(): Promise<void> {
   }
   while (keyboardLogThrottler.process) {
     await keyboardLogThrottler.processCompleted;
+  }
+}
+
+function flushPendingChangeEvents(): void {
+  for (const element of pendingChange) {
+    logPendingChange(element);
   }
 }
 
@@ -175,14 +183,15 @@ async function process(): Promise<void> {
             return;
           }
           if (loggingState.lastInputEventType && loggingState.lastInputEventType !== event.inputType) {
-            void logChange(event);
+            void logPendingChange(element);
           }
           loggingState.lastInputEventType = event.inputType;
+          pendingChange.add(element);
         }, {capture: true});
-        element.addEventListener('change', logChange, {capture: true});
-        element.addEventListener('focusout', event => {
+        element.addEventListener('change', () => logPendingChange(element), {capture: true});
+        element.addEventListener('focusout', () => {
           if (loggingState.lastInputEventType) {
-            void logChange(event);
+            void logPendingChange(element);
           }
         }, {capture: true});
       }
@@ -245,9 +254,20 @@ async function process(): Promise<void> {
   }
   if (visibleLoggables.length) {
     await yieldToInteractions();
+    flushPendingChangeEvents();
     await logImpressions(visibleLoggables);
   }
   Host.userMetrics.visualLoggingProcessingDone(performance.now() - startTime);
+}
+
+function logPendingChange(element: Element): void {
+  const loggingState = getLoggingState(element);
+  if (!loggingState) {
+    return;
+  }
+  void logChange(element);
+  delete loggingState.lastInputEventType;
+  pendingChange.delete(element);
 }
 
 async function cancelLogging(): Promise<void> {
@@ -317,6 +337,7 @@ async function onResizeOrIntersection(entries: ResizeObserverEntry[]|Intersectio
       void resizeLogThrottler.schedule(async () => {
         if (pendingResize.size) {
           await yieldToInteractions();
+          flushPendingChangeEvents();
         }
         for (const [element, overlap] of pendingResize.entries()) {
           const loggingState = getLoggingState(element);

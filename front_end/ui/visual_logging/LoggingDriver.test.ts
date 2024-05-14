@@ -387,7 +387,7 @@ describe('LoggingDriver', () => {
 
   it('logs change', async () => {
     addLoggableElements();
-    await VisualLoggingTesting.LoggingDriver.startLogging({hoverLogThrottler: throttler});
+    await VisualLoggingTesting.LoggingDriver.startLogging();
     const recordChange = sinon.stub(
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordChange',
@@ -400,7 +400,7 @@ describe('LoggingDriver', () => {
 
   it('logs change for each input type', async () => {
     addLoggableElements();
-    await VisualLoggingTesting.LoggingDriver.startLogging({hoverLogThrottler: throttler});
+    await VisualLoggingTesting.LoggingDriver.startLogging();
     const recordChange = sinon.stub(
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordChange',
@@ -428,7 +428,7 @@ describe('LoggingDriver', () => {
 
   it('logs change on focus out after input', async () => {
     addLoggableElements();
-    await VisualLoggingTesting.LoggingDriver.startLogging({hoverLogThrottler: throttler});
+    await VisualLoggingTesting.LoggingDriver.startLogging();
     const recordChange = sinon.stub(
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordChange',
@@ -440,9 +440,40 @@ describe('LoggingDriver', () => {
     await expectCalled(recordChange);
   });
 
+  it('logs change on new impressions', async () => {
+    addLoggableElements();
+    await VisualLoggingTesting.LoggingDriver.startLogging({processingThrottler: throttler});
+    const recordChange = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordChange',
+    );
+
+    const element = document.getElementById('element') as HTMLElement;
+    const parent = document.getElementById('parent') as HTMLElement;
+    element.dispatchEvent(new InputEvent('input', {inputType: 'insertText'}));
+    throttle.callsArg(0);
+    parent.appendChild(element.cloneNode());
+    await expectCalled(recordChange);
+  });
+
+  it('logs change on resize', async () => {
+    addLoggableElements();
+    await VisualLoggingTesting.LoggingDriver.startLogging({resizeLogThrottler: throttler});
+    const recordChange = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordChange',
+    );
+
+    const element = document.getElementById('element') as HTMLElement;
+    element.dispatchEvent(new InputEvent('input', {inputType: 'insertText'}));
+    throttle.callsArg(0);
+    element.style.width = '400px';
+    await expectCalled(recordChange);
+  });
+
   it('does not log change on focus out without input', async () => {
     addLoggableElements();
-    await VisualLoggingTesting.LoggingDriver.startLogging({hoverLogThrottler: throttler});
+    await VisualLoggingTesting.LoggingDriver.startLogging();
     const recordChange = sinon.stub(
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordChange',

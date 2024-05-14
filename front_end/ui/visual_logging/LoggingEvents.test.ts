@@ -81,9 +81,7 @@ describe('LoggingEvents', () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordChange',
     );
-    const event = new Event('change');
-    sinon.stub(event, 'currentTarget').value(element);
-    await VisualLogging.LoggingEvents.logChange(event);
+    await VisualLogging.LoggingEvents.logChange(element);
     assert.isTrue(recordChange.calledOnce);
     assert.deepStrictEqual(stabilizeEvent(recordChange.firstCall.firstArg), {veid: 0});
   });
@@ -93,10 +91,8 @@ describe('LoggingEvents', () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordChange',
     );
-    const event = new Event('change');
-    sinon.stub(event, 'currentTarget').value(element);
     VisualLogging.LoggingState.getLoggingState(element)!.lastInputEventType = 'instertText';
-    await VisualLogging.LoggingEvents.logChange(event);
+    await VisualLogging.LoggingEvents.logChange(element);
     assert.isTrue(recordChange.calledOnce);
     assert.deepStrictEqual(stabilizeEvent(recordChange.firstCall.firstArg), {veid: 0, context: 296063892});
   });

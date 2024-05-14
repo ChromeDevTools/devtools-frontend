@@ -6,6 +6,7 @@ import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import CSSPropertyDocsViewStyles from './cssPropertyDocsView.css.js';
 
@@ -75,7 +76,7 @@ export class CSSPropertyDocsView extends HTMLElement {
               ${i18nString(UIStrings.learnMore)}
             </x-link>
             <label class="dont-show">
-              <input type="checkbox" @change=${this.#dontShowChanged} />
+              <input type="checkbox" @change=${this.#dontShowChanged} jslog=${VisualLogging.toggle('css-property-doc').track({ change: true })}/>
               ${i18nString(UIStrings.dontShow)}
             </label>
           </div>

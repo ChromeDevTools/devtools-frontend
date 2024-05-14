@@ -383,7 +383,7 @@ export class SnippetsNavigatorView extends NavigatorView {
     uiSourceCode.commitWorkingCopy();
     const {content} = await uiSourceCode.requestContent();
     await Workspace.FileManager.FileManager.instance().save(
-        this.addJSExtension(uiSourceCode.url()), content || '', true, false /* isBase64 */);
+        this.addJSExtension(uiSourceCode.url()), content || '', true);
     Workspace.FileManager.FileManager.instance().close(uiSourceCode.url());
   }
 

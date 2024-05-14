@@ -785,8 +785,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       if (!traceAsString) {
         throw new Error('Trace content empty');
       }
-      await Workspace.FileManager.FileManager.instance().save(
-          fileName, traceAsString, true /* forceSaveAs */, false /* isBase64 */);
+      await Workspace.FileManager.FileManager.instance().save(fileName, traceAsString, true /* forceSaveAs */);
       Workspace.FileManager.FileManager.instance().close(fileName);
     } catch (error) {
       console.error(error.stack);
@@ -1906,8 +1905,7 @@ export class StatusPane extends UI.Widget.VBox {
     const fileName = `Trace-Load-Error-${traceStart}.json` as Platform.DevToolsPath.RawPathString;
     const formattedTraceIter = traceJsonGenerator(this.#rawEvents, {});
     const traceAsString = Array.from(formattedTraceIter).join('');
-    await Workspace.FileManager.FileManager.instance().save(
-        fileName, traceAsString, true /* forceSaveAs */, false /* isBase64 */);
+    await Workspace.FileManager.FileManager.instance().save(fileName, traceAsString, true /* forceSaveAs */);
     Workspace.FileManager.FileManager.instance().close(fileName);
   }
 

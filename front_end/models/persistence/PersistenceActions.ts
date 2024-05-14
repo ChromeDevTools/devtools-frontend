@@ -56,14 +56,19 @@ export class ContextMenuProvider implements
         .Provider<Workspace.UISourceCode.UISourceCode|SDK.Resource.Resource|SDK.NetworkRequest.NetworkRequest> {
   appendApplicableItems(
       _event: Event, contextMenu: UI.ContextMenu.ContextMenu,
-      contentProvider: TextUtils.ContentProvider.ContentProvider): void {
+      contentProvider: Workspace.UISourceCode.UISourceCode|SDK.Resource.Resource|
+      SDK.NetworkRequest.NetworkRequest): void {
     async function saveAs(): Promise<void> {
       if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
         (contentProvider as Workspace.UISourceCode.UISourceCode).commitWorkingCopy();
       }
       const content = await contentProvider.requestContent();
+      let decodedContent = content.content || '';
+      if (content.isEncoded) {
+        decodedContent = window.atob(decodedContent);
+      }
       const url = contentProvider.contentURL();
-      await Workspace.FileManager.FileManager.instance().save(url, content.content ?? '', true, content.isEncoded);
+      await Workspace.FileManager.FileManager.instance().save(url, decodedContent, true);
       Workspace.FileManager.FileManager.instance().close(url);
     }
 

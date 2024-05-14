@@ -691,10 +691,9 @@ const InspectorFrontendHostImpl = class {
    * @param {string} url
    * @param {string} content
    * @param {boolean} forceSaveAs
-   * @param {boolean} isBase64
    */
-  save(url, content, forceSaveAs, isBase64) {
-    DevToolsAPI.sendMessageToEmbedder('save', [url, content, forceSaveAs, isBase64], null);
+  save(url, content, forceSaveAs) {
+    DevToolsAPI.sendMessageToEmbedder('save', [url, content, forceSaveAs], null);
   }
 
   /**

@@ -198,9 +198,8 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
         'Show item in folder is not enabled in hosted mode. Please inspect using chrome://inspect');
   }
 
-  save(
-      url: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString, content: string, forceSaveAs: boolean,
-      isBase64: boolean): void {
+  save(url: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString, content: string, forceSaveAs: boolean):
+      void {
     let buffer = this.#urlsBeingSaved.get(url);
     if (!buffer) {
       buffer = [];

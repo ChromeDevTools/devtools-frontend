@@ -34,6 +34,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Extensions from '../../models/extensions/extensions.js';
@@ -184,6 +185,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
   private readonly debugToolbar: UI.Toolbar.Toolbar;
   private readonly debugToolbarDrawer: HTMLDivElement;
   private readonly debuggerPausedMessage: DebuggerPausedMessage;
+  private overlayLoggables?: {debuggerPausedMessage: {}, resumeButton: {}, stepOverButton: {}};
   private splitWidget: UI.SplitWidget.SplitWidget;
   editorView: UI.SplitWidget.SplitWidget;
   private navigatorTabbedLocation: UI.View.TabbedViewLocation;
@@ -486,9 +488,50 @@ export class SourcesPanel extends UI.Panel.Panel implements
     this.revealDebuggerSidebar();
     window.focus();
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
+    if (!this.overlayLoggables &&
+        !Common.Settings.Settings.instance().moduleSetting('disable-paused-state-overlay').get()) {
+      this.overlayLoggables = {debuggerPausedMessage: {}, resumeButton: {}, stepOverButton: {}};
+      VisualLogging.registerLoggable(
+          this.overlayLoggables.debuggerPausedMessage, `${VisualLogging.dialog('debugger-paused')}`, null);
+      VisualLogging.registerLoggable(
+          this.overlayLoggables.resumeButton, `${VisualLogging.action('debugger.toggle-pause')}`,
+          this.overlayLoggables.debuggerPausedMessage);
+      VisualLogging.registerLoggable(
+          this.overlayLoggables.stepOverButton, `${VisualLogging.action('debugger.step-over')}`,
+          this.overlayLoggables.debuggerPausedMessage);
+    }
+  }
+
+  private maybeLogOverlayAction(): void {
+    if (!this.overlayLoggables) {
+      return;
+    }
+    const byOverlayButton = !document.hasFocus();
+    // In the overlary we show two buttons: resume and step over. Both trigger
+    // the Debugger.resumed event. The latter however will trigger
+    // Debugger.paused shortly after, while the former won't. Here we guess
+    // which one was clicked by checking if we are paused again after 0.5s.
+    window.setTimeout(() => {
+      if (!this.overlayLoggables) {
+        return;
+      }
+      if (byOverlayButton) {
+        const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
+        VisualLogging.logClick(
+            this.pausedInternal && details?.reason === Protocol.Debugger.PausedEventReason.Step ?
+                this.overlayLoggables.stepOverButton :
+                this.overlayLoggables.resumeButton,
+            new MouseEvent('click'));
+      }
+      if (!this.pausedInternal) {
+        VisualLogging.logResize(this.overlayLoggables.debuggerPausedMessage, new DOMRect(0, 0, 0, 0));
+        this.overlayLoggables = undefined;
+      }
+    }, 500);
   }
 
   private debuggerResumed(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
+    this.maybeLogOverlayAction();
     const target = debuggerModel.target();
     if (UI.Context.Context.instance().flavor(SDK.Target.Target) !== target) {
       return;

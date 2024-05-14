@@ -1403,7 +1403,6 @@ export class DebuggerPlugin extends Plugin {
             Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointMarkerContextMenu);
         this.editBreakpointCondition({line, breakpoint: null, location: uiLocation, isLogpoint: true});
       }, {jslogContext: 'add-logpoint'});
-
       contextMenu.debugSection().appendItem(
           i18nString(UIStrings.neverPauseHere),
           () => this.setBreakpoint(
@@ -1633,7 +1632,15 @@ export class DebuggerPlugin extends Plugin {
     }
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ScriptsBreakpointSet);
     this.#recordSourcesPanelDebuggedMetrics();
-    const origin = this.transformer.editorLocationToUILocation(line.number - 1);
+    // If the breakpoint is being set at the execution location, use the execution location exactly,
+    // otherwise calculate the location from the line number.
+    const origin =
+        (this.executionLocation &&
+         this.transformer
+                 .uiLocationToEditorLocation(this.executionLocation.lineNumber, this.executionLocation.columnNumber)
+                 .lineNumber === line.number - 1) ?
+        this.executionLocation :
+        this.transformer.editorLocationToUILocation(line.number - 1);
     await this.setBreakpoint(origin.lineNumber, origin.columnNumber, condition, enabled, isLogpoint);
   }
 

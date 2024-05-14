@@ -3,8 +3,10 @@
 // found in the LICENSE file.
 
 import {
+  click,
   getBrowserAndPages,
   step,
+  waitFor,
   waitForFunction,
 } from '../../shared/helper.js';
 import {beforeEach, describe, it} from '../../shared/mocha-extensions.js';
@@ -13,6 +15,8 @@ import {
   disableInlineBreakpointForLine,
   enableInlineBreakpointForLine,
   openSourceCodeEditorForFile,
+  PAUSE_INDICATOR_SELECTOR,
+  RESUME_BUTTON,
 } from '../helpers/sources-helpers.js';
 
 // These tests are ported from the web test:
@@ -88,5 +92,15 @@ describe('The Sources Tab', () => {
 
       await checkLineDecorationDescriptor(3, '    var p = %Promise.@resolve().%then(() => console.%log(42)%)');
     });
+  });
+
+  it('chooses inline pause location when setting a breakpoint on that line', async () => {
+    const {frontend, target} = await getBrowserAndPages();
+    const donePromise = target.evaluate('pauseInline();');
+    await waitFor(PAUSE_INDICATOR_SELECTOR);
+    await addBreakpointForLine(frontend, 10);
+    await checkLineDecorationDescriptor(10, '    %return Promise.%resolve().%then(()=>{ @debugger; %});');
+    await click(RESUME_BUTTON);
+    await donePromise;
   });
 });

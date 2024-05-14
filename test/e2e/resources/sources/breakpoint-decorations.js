@@ -4,3 +4,8 @@ function foo()
         .then(() => console.log(239));
     return p;
 }
+
+function pauseInline()
+{
+    return Promise.resolve().then(()=>{ debugger; });
+}

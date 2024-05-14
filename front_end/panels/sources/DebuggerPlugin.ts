@@ -154,14 +154,6 @@ const UIStrings = {
    */
   errorLoading: 'Error loading url {PH1}: {PH2}',
   /**
-   *@description Text in Debugger Plugin of the Sources panel
-   */
-  ignoreScript: 'Ignore this file',
-  /**
-   *@description Text in Debugger Plugin of the Sources panel
-   */
-  ignoreContentScripts: 'Ignore extension scripts',
-  /**
    *@description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing
    *@example {src/myapp.debug.wasm.dwp} PH1
    */
@@ -1575,22 +1567,8 @@ export class DebuggerPlugin extends Plugin {
         PH1: String(UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('quick-open.show')),
       }));
     } else {
-      let text: string;
-      let delegate: () => void;
-      const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance();
-      if (this.uiSourceCode.project().type() === Workspace.Workspace.projectTypes.ContentScripts) {
-        text = i18nString(UIStrings.ignoreContentScripts);
-        delegate = ignoreListManager.ignoreListContentScripts.bind(ignoreListManager);
-      } else {
-        text = i18nString(UIStrings.ignoreScript);
-        delegate = ignoreListManager.ignoreListUISourceCode.bind(ignoreListManager, this.uiSourceCode);
-      }
       this.sourceMapInfobar = UI.Infobar.Infobar.create(
-          UI.Infobar.Type.Warning, i18nString(UIStrings.sourceMapFailed),
-          [
-            {text, highlight: false, delegate, dismiss: true},
-          ],
-          undefined, 'source-map-failed');
+          UI.Infobar.Type.Warning, i18nString(UIStrings.sourceMapFailed), [], undefined, 'source-map-failed');
       if (!this.sourceMapInfobar) {
         return;
       }

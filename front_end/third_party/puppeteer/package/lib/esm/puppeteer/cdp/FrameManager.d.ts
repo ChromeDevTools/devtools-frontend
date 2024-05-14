@@ -8,7 +8,6 @@ import { EventEmitter } from '../common/EventEmitter.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 import { CdpCDPSession } from './CDPSession.js';
 import { DeviceRequestPromptManager } from './DeviceRequestPrompt.js';
-import { ExecutionContext } from './ExecutionContext.js';
 import { CdpFrame } from './Frame.js';
 import type { FrameManagerEvents } from './FrameManagerEvents.js';
 import { FrameTree } from './FrameTree.js';
@@ -36,8 +35,6 @@ export declare class FrameManager extends EventEmitter<FrameManagerEvents> {
     registerSpeculativeSession(client: CdpCDPSession): Promise<void>;
     private setupEventListeners;
     initialize(client: CDPSession): Promise<void>;
-    executionContextById(contextId: number, session?: CDPSession): ExecutionContext;
-    getExecutionContextById(contextId: number, session?: CDPSession): ExecutionContext | undefined;
     page(): CdpPage;
     mainFrame(): CdpFrame;
     frames(): CdpFrame[];

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { Protocol } from 'devtools-protocol';
-import type { CDPSession } from '../api/CDPSession.js';
+import { type CDPSession } from '../api/CDPSession.js';
 import type { Realm } from '../api/Realm.js';
 import { TargetType } from '../api/Target.js';
 import { WebWorker } from '../api/WebWorker.js';

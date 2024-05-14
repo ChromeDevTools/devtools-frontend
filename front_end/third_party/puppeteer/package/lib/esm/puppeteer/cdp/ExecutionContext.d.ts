@@ -4,22 +4,26 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { Protocol } from 'devtools-protocol';
-import type { CDPSession } from '../api/CDPSession.js';
-import type { ElementHandle } from '../api/ElementHandle.js';
+import { type CDPSession } from '../api/CDPSession.js';
 import type { JSHandle } from '../api/JSHandle.js';
+import { EventEmitter } from '../common/EventEmitter.js';
 import type { EvaluateFunc, HandleFor } from '../common/types.js';
 import type PuppeteerUtil from '../injected/injected.js';
+import { disposeSymbol } from '../util/disposable.js';
 import type { IsolatedWorld } from './IsolatedWorld.js';
 /**
  * @internal
  */
-export declare class ExecutionContext {
+export declare class ExecutionContext extends EventEmitter<{
+    /** Emitted when this execution context is disposed. */
+    disposed: undefined;
+    consoleapicalled: Protocol.Runtime.ConsoleAPICalledEvent;
+    /** Emitted when a binding that is not installed by the ExecutionContext is called. */
+    bindingcalled: Protocol.Runtime.BindingCalledEvent;
+}> implements Disposable {
     #private;
-    _client: CDPSession;
-    _world: IsolatedWorld;
-    _contextId: number;
-    _contextName?: string;
     constructor(client: CDPSession, contextPayload: Protocol.Runtime.ExecutionContextDescription, world: IsolatedWorld);
+    get id(): number;
     get puppeteerUtil(): Promise<JSHandle<PuppeteerUtil>>;
     /**
      * Evaluates the given function.
@@ -112,9 +116,6 @@ export declare class ExecutionContext {
      * {@link ElementHandle | element handle}.
      */
     evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
+    [disposeSymbol](): void;
 }
-/**
- * @internal
- */
-export declare function createCdpHandle(realm: IsolatedWorld, remoteObject: Protocol.Runtime.RemoteObject): JSHandle | ElementHandle<Node>;
 //# sourceMappingURL=ExecutionContext.d.ts.map

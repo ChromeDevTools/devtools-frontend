@@ -412,12 +412,6 @@ let BidiFrame = (() => {
             this.#exposedFunctions.delete(name);
             await exposedFunction[Symbol.asyncDispose]();
         }
-        waitForSelector(selector, options) {
-            if (selector.startsWith('aria') && !this.page().browser().cdpSupported) {
-                throw new UnsupportedOperation('ARIA selector is not supported for BiDi!');
-            }
-            return super.waitForSelector(selector, options);
-        }
         async createCDPSession() {
             const { sessionId } = await this.client.send('Target.attachToTarget', {
                 targetId: this._id,

@@ -1384,8 +1384,6 @@ export declare interface CoverageEntry {
     }>;
 }
 
-/* Excluded from this release type: createCdpHandle */
-
 /* Excluded from this release type: createClientError */
 
 /* Excluded from this release type: createEvaluationError */
@@ -3352,6 +3350,8 @@ export declare interface InternalNetworkConditions extends NetworkConditions {
 /* Excluded from this release type: IsolatedWorld */
 
 /* Excluded from this release type: IsolatedWorldChart */
+
+/* Excluded from this release type: IsolatedWorldEmitter */
 
 /* Excluded from this release type: IsPageTargetCallback */
 

@@ -4,8 +4,7 @@
 
 import * as Common from '../core/common/common.js';
 import type * as Platform from '../core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
+import type * as SDK from '../core/sdk/sdk.js';
 import * as Protocol from '../generated/protocol.js';
 import type * as Persistence from '../models/persistence/persistence.js';
 import * as Workspace from '../models/workspace/workspace.js';
@@ -13,6 +12,7 @@ import * as Workspace from '../models/workspace/workspace.js';
 import {
   dispatchEvent,
 } from './MockConnection.js';
+import {createResource, getMainFrame} from './ResourceTreeHelpers.js';
 import {createFileSystemUISourceCode} from './UISourceCodeHelpers.js';
 
 // This helper sets up a file system and a file system uiSourceCode that can be used for
@@ -31,7 +31,7 @@ export function createFileSystemFileForPersistenceTests(
   const origin = Common.ParsedURL.ParsedURL.extractOrigin(networkScriptUrl);
   dispatchDocumentOpened(target, origin);
   const mimeType = 'text/javascript';
-  const resource = createResourceInMainFrame(target, networkScriptUrl, mimeType, content);
+  const resource = createResource(getMainFrame(target), networkScriptUrl, mimeType, content);
 
   // Now create the file system uiSourceCode to match the same meta data and content as the
   // created network's resource file.
@@ -61,20 +61,4 @@ function dispatchDocumentOpened(target: SDK.Target.Target, origin: Platform.DevT
       gatedAPIFeatures: [],
     },
   });
-}
-
-function createResourceInMainFrame(
-    target: SDK.Target.Target, networkScriptUrl: Platform.DevToolsPath.UrlString, mimeType: string, content: string) {
-  const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-  assertNotNullOrUndefined(resourceTreeModel);
-
-  const mainFrameId = 'main' as Protocol.Page.FrameId;
-  const resource = new SDK.Resource.Resource(
-      resourceTreeModel, null, networkScriptUrl, networkScriptUrl, mainFrameId, null,
-      Common.ResourceType.ResourceType.fromMimeType('text/javascript'), mimeType, null, content.length);
-
-  const frame = resourceTreeModel.frameForId(mainFrameId);
-  assertNotNullOrUndefined(frame);
-  frame.addResource(resource);
-  return resource;
 }

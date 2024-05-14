@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../core/common/common.js';
 import type * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Protocol from '../generated/protocol.js';
@@ -93,6 +94,17 @@ export async function addChildFrame(target: SDK.Target.Target, framePayload?: Pa
     navigate(childFrame, {...FRAME, ...framePayload});
   }
   return childFrame;
+}
+
+export function createResource(
+    frame: SDK.ResourceTreeModel.ResourceTreeFrame, networkScriptUrl: Platform.DevToolsPath.UrlString, mimeType: string,
+    content: string) {
+  const resource = new SDK.Resource.Resource(
+      frame.resourceTreeModel(), null, networkScriptUrl, networkScriptUrl, MAIN_FRAME_ID, null,
+      Common.ResourceType.ResourceType.fromMimeType(mimeType), mimeType, null, content.length);
+
+  frame.addResource(resource);
+  return resource;
 }
 
 export function navigate(

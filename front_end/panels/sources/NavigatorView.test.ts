@@ -5,7 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
-import * as SDK from '../../core/sdk/sdk.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
@@ -16,7 +16,7 @@ import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
-import {addChildFrame, setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
+import {addChildFrame, createResource, setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Sources from './sources.js';
@@ -58,10 +58,8 @@ describeWithMockConnection('NavigatorView', () => {
 
   function addResourceAndUISourceCode(
       url: Platform.DevToolsPath.UrlString, frame: SDK.ResourceTreeModel.ResourceTreeFrame, content: string,
-      mimeType: string, resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel) {
-    frame.addResource(new SDK.Resource.Resource(
-        resourceTreeModel, null, url, url, frame.id, null, Common.ResourceType.resourceTypes.Document, 'text/html',
-        null, null));
+      mimeType: string) {
+    createResource(frame, url, 'text/html', content);
     const uiSourceCode = workspace.uiSourceCodeForURL(url) as Workspace.UISourceCode.UISourceCode;
 
     const projectType = Workspace.Workspace.projectTypes.Network;
@@ -78,10 +76,8 @@ describeWithMockConnection('NavigatorView', () => {
   it('can discard multiple childless frames', async () => {
     const url = 'http://example.com/index.html' as Platform.DevToolsPath.UrlString;
 
-    const resourceTreeModel =
-        target.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel;
     const childFrame = await addChildFrame(target);
-    const {project} = addResourceAndUISourceCode(url, childFrame, '', 'text/html', resourceTreeModel);
+    const {project} = addResourceAndUISourceCode(url, childFrame, '', 'text/html');
 
     const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
     const children = navigatorView.scriptsTree.rootElement().children();

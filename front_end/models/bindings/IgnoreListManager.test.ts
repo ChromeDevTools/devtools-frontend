@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createResource, getMainFrame} from '../../testing/ResourceTreeHelpers.js';
 import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -128,13 +128,7 @@ describeWithMockConnection('IgnoreListManager', () => {
     ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew, debuggerWorkspaceBinding});
 
     // Inject the HTML document resource.
-    const frameId = 'main' as Protocol.Page.FrameId;
-    const mimeType = 'text/html';
-    const resourceTreeModel = notNull(target.model(SDK.ResourceTreeModel.ResourceTreeModel));
-    const frame = resourceTreeModel.frameAttached(frameId, null);
-    frame?.addResource(new SDK.Resource.Resource(
-        resourceTreeModel, null, url, url, frameId, null, Common.ResourceType.ResourceType.fromMimeType(mimeType),
-        mimeType, null, null));
+    createResource(getMainFrame(target), url, 'text/html', '');
     uiSourceCode = notNull(workspace.uiSourceCodeForURL(url));
 
     // Register the inline <script>s.

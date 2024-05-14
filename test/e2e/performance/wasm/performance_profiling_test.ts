@@ -3,8 +3,10 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import * as path from 'path';
 import type * as puppeteer from 'puppeteer-core';
 
+import {GEN_DIR} from '../../../conductor/paths.js';
 import {
   $,
   getBrowserAndPages,
@@ -114,7 +116,8 @@ describe('The Performance panel', function() {
 
       const uploadProfileHandle = await waitFor<HTMLInputElement>('input[type=file]');
       assert.isNotNull(uploadProfileHandle, 'unable to upload the performance profile');
-      await uploadProfileHandle.uploadFile('test/e2e/resources/performance/wasm/mainWasm_profile.json');
+      await uploadProfileHandle.uploadFile(
+          path.join(GEN_DIR, 'test/e2e/resources/performance/wasm/mainWasm_profile.json'));
     });
 
     await step('search for "mainWasm"', async () => {

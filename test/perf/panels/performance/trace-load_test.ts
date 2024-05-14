@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as path from 'path';
+
 import type * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
+import {GEN_DIR} from '../../../conductor/paths.js';
 import {
   navigateToPerformanceTab,
 } from '../../../e2e/helpers/performance-helpers.js';
@@ -25,7 +28,7 @@ async function timeFixture(fixture: string): Promise<number> {
     });
   });
   const uploadProfileHandle = await waitFor<HTMLInputElement>('input[type=file]');
-  await uploadProfileHandle.uploadFile(`front_end/panels/timeline/fixtures/traces/${fixture}.gz`);
+  await uploadProfileHandle.uploadFile(path.join(GEN_DIR, `front_end/panels/timeline/fixtures/traces/${fixture}.gz`));
   return eventPromise;
 }
 

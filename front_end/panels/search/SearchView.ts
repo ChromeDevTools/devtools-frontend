@@ -6,6 +6,8 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -15,29 +17,37 @@ import searchViewStyles from './searchView.css.js';
 
 const UIStrings = {
   /**
-   *@description Title of a search bar or tool
+   *@description Placeholder text of a search bar
    */
-  search: 'Search',
+  find: 'Find',
   /**
-   *@description Accessibility label for search query text box
+   *@description Tooltip text on a toggle to enable search by matching case of the input
    */
-  searchQuery: 'Search Query',
+  enableCaseSensitive: 'Enable case sensitive search',
   /**
-   *@description Text to search by matching case of the input
+   *@description Tooltip text on a toggle to disable search by matching case of the input
    */
-  matchCase: 'Match Case',
+  disableCaseSensitive: 'Disable case sensitive search',
   /**
-   *@description Text for searching with regular expressinn
+   *@description Tooltip text on a toggle to enable searching with regular expression
    */
-  useRegularExpression: 'Use Regular Expression',
+  enableRegularExpression: 'Enable regular expressions',
+  /**
+   *@description Tooltip text on a toggle to disable searching with regular expression
+   */
+  disableRegularExpression: 'Disable regular expressions',
   /**
    *@description Text to refresh the page
    */
   refresh: 'Refresh',
   /**
+   *@description Tooltip text to clear the search input field
+   */
+  clearInput: 'Clear',
+  /**
    *@description Text to clear content
    */
-  clear: 'Clear',
+  clear: 'Clear search',
   /**
    *@description Search message element text content in Search View of the Search tab
    */
@@ -81,6 +91,19 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/search/SearchView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+function createSearchToggleButton(iconName: string, jslogContext: string): Buttons.Button.Button {
+  const button = new Buttons.Button.Button();
+  button.data = {
+    variant: Buttons.Button.Variant.ICON_TOGGLE,
+    size: Buttons.Button.Size.SMALL,
+    iconName,
+    toggledIconName: iconName,
+    toggleType: Buttons.Button.ToggleType.PRIMARY,
+    toggled: false,
+    jslogContext,
+  };
+  return button;
+}
 export class SearchView extends UI.Widget.VBox {
   private focusOnShow: boolean;
   private isIndexing: boolean;
@@ -98,8 +121,8 @@ export class SearchView extends UI.Widget.VBox {
   private readonly searchPanelElement: HTMLElement;
   private readonly searchResultsElement: HTMLElement;
   protected readonly search: UI.HistoryInput.HistoryInput;
-  protected readonly matchCaseButton: UI.Toolbar.ToolbarToggle;
-  protected readonly regexButton: UI.Toolbar.ToolbarToggle;
+  protected readonly matchCaseButton: Buttons.Button.Button;
+  protected readonly regexButton: Buttons.Button.Button;
   private searchMessageElement: HTMLElement;
   private readonly searchProgressPlaceholderElement: HTMLElement;
   private searchResultsMessageElement: HTMLElement;
@@ -146,7 +169,11 @@ export class SearchView extends UI.Widget.VBox {
     this.searchResultsElement.className = 'search-results';
 
     const searchContainer = document.createElement('div');
-    searchContainer.classList.add('toolbar-item-search');
+    searchContainer.classList.add('search-container');
+    const searchElements = searchContainer.createChild('div', 'toolbar-item-search');
+
+    const searchIcon = IconButton.Icon.create('search');
+    searchElements.appendChild(searchIcon);
 
     this.search = UI.HistoryInput.HistoryInput.create();
     this.search.addEventListener('keydown', event => {
@@ -154,21 +181,42 @@ export class SearchView extends UI.Widget.VBox {
     });
     this.search.setAttribute(
         'jslog', `${VisualLogging.textField().track({change: true, keydown: 'ArrowUp|ArrowDown|Enter'})}`);
-    searchContainer.appendChild(this.search);
-    this.search.placeholder = i18nString(UIStrings.search);
+    searchElements.appendChild(this.search);
+    this.search.placeholder = i18nString(UIStrings.find);
     this.search.setAttribute('type', 'search');
     this.search.setAttribute('results', '0');
     this.search.setAttribute('size', '100');
-    this.search.classList.add('custom-search-input');
-    UI.ARIAUtils.setLabel(this.search, i18nString(UIStrings.searchQuery));
-    const searchItem = new UI.Toolbar.ToolbarItem(searchContainer);
+    this.search.classList.add('search-toolbar-input');
+    UI.ARIAUtils.setLabel(this.search, this.search.placeholder);
 
+    const clearInputFieldButton = new Buttons.Button.Button();
+    clearInputFieldButton.data = {
+      variant: Buttons.Button.Variant.ICON,
+      size: Buttons.Button.Size.SMALL,
+      iconName: 'cross-circle-filled',
+      jslogContext: 'clear-input',
+      title: i18nString(UIStrings.clearInput),
+    };
+    clearInputFieldButton.classList.add('clear-button');
+    clearInputFieldButton.addEventListener('click', () => {
+      this.search.value = '';
+    });
+    clearInputFieldButton.tabIndex = -1;
+    searchElements.appendChild(clearInputFieldButton);
+
+    const regexIconName = 'regular-expression';
+    this.regexButton = createSearchToggleButton(regexIconName, regexIconName);
+    this.regexButton.addEventListener('click', () => this.regexButtonToggled());
+    searchElements.appendChild(this.regexButton);
+
+    const matchCaseIconName = 'match-case';
+    this.matchCaseButton = createSearchToggleButton(matchCaseIconName, matchCaseIconName);
+    this.matchCaseButton.addEventListener('click', () => this.matchCaseButtonToggled());
+    searchElements.appendChild(this.matchCaseButton);
+
+    this.searchPanelElement.appendChild(searchContainer);
     const toolbar = new UI.Toolbar.Toolbar('search-toolbar', this.searchPanelElement);
     toolbar.element.setAttribute('jslog', `${VisualLogging.toolbar()}`);
-    this.matchCaseButton = SearchView.appendToolbarToggle(toolbar, 'Aa', i18nString(UIStrings.matchCase), 'match-case');
-    this.regexButton =
-        SearchView.appendToolbarToggle(toolbar, '.*', i18nString(UIStrings.useRegularExpression), 'use-regex');
-    toolbar.appendToolbarItem(searchItem);
     const refreshButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'refresh', undefined, 'search.refresh');
     const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'clear', undefined, 'search.clear');
@@ -192,18 +240,19 @@ export class SearchView extends UI.Widget.VBox {
     this.searchScope = null;
   }
 
-  private static appendToolbarToggle(toolbar: UI.Toolbar.Toolbar, text: string, tooltip: string, jslogContext: string):
-      UI.Toolbar.ToolbarToggle {
-    const toggle = new UI.Toolbar.ToolbarToggle(tooltip, undefined, undefined, jslogContext);
-    toggle.setText(text);
-    toggle.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => toggle.setToggled(!toggle.toggled()));
-    toolbar.appendToolbarItem(toggle);
-    return toggle;
+  regexButtonToggled(): void {
+    this.regexButton.title = this.regexButton.toggled ? i18nString(UIStrings.disableRegularExpression) :
+                                                        i18nString(UIStrings.enableRegularExpression);
+  }
+
+  matchCaseButtonToggled(): void {
+    this.matchCaseButton.title = this.matchCaseButton.toggled ? i18nString(UIStrings.disableCaseSensitive) :
+                                                                i18nString(UIStrings.enableCaseSensitive);
   }
 
   private buildSearchConfig(): Workspace.SearchConfig.SearchConfig {
     return new Workspace.SearchConfig.SearchConfig(
-        this.search.value, !this.matchCaseButton.toggled(), this.regexButton.toggled());
+        this.search.value, !this.matchCaseButton.toggled, this.regexButton.toggled);
   }
 
   toggle(queryCandidate: string, searchImmediately?: boolean): void {
@@ -479,8 +528,12 @@ export class SearchView extends UI.Widget.VBox {
   private load(): void {
     const searchConfig = Workspace.SearchConfig.SearchConfig.fromPlainObject(this.advancedSearchConfig.get());
     this.search.value = searchConfig.query();
-    this.matchCaseButton.setToggled(!searchConfig.ignoreCase());
-    this.regexButton.setToggled(searchConfig.isRegex());
+
+    this.matchCaseButton.toggled = !searchConfig.ignoreCase();
+    this.matchCaseButtonToggled();
+
+    this.regexButton.toggled = searchConfig.isRegex();
+    this.regexButtonToggled();
   }
 
   private onAction(): void {

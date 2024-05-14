@@ -642,7 +642,7 @@ describe('The Network Request view', () => {
     await waitForSomeRequestsToAppear(2);
 
     await selectRequestByName('image.svg?id=42&param=a%20b');
-    const SEARCH_QUERY = '[aria-label="Search Query"]';
+    const SEARCH_QUERY = '[aria-label="Find"]';
     const SEARCH_RESULT = '.search-result';
     const {frontend} = getBrowserAndPages();
 

@@ -24,7 +24,7 @@ describe('The Sources panel', () => {
 
         await openSoftContextMenuAndClickOnItem('[aria-label="top, frame"]', 'Search in all files');
 
-        const element = await waitFor('[aria-label="Search Query"]');
+        const element = await waitFor('[aria-label="Find"]');
         const value = await element.evaluate(input => (input as HTMLInputElement).value);
         assert.strictEqual(value, '');
       });
@@ -35,7 +35,7 @@ describe('The Sources panel', () => {
         await openSoftContextMenuAndClickOnItem(
             '[aria-label="test/e2e/resources/sources/navigation, nw-folder"]', 'Search in folder');
 
-        const element = await waitFor('[aria-label="Search Query"]');
+        const element = await waitFor('[aria-label="Find"]');
         const value = await element.evaluate(input => (input as HTMLInputElement).value);
         assert.strictEqual(value, 'file:test/e2e/resources/sources/navigation');
       });

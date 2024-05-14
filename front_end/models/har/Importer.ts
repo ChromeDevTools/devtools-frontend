@@ -198,6 +198,14 @@ export class Importer {
     const proxy = timings.customAsNumber('blocked_proxy') || -1;
     const queueing = timings.customAsNumber('blocked_queueing') || -1;
 
+    // `blocked_queueing` should be excluded from `lastEntry`
+    // (`timings.blocked`) here because it should be taken into account
+    // by `timing.requestTime`, and other subsequent timings are
+    // calculated based on the accumulated `lastEntry`.
+    if (lastEntry > 0 && queueing > 0) {
+      lastEntry -= queueing;
+    }
+
     // SSL is part of connect for both HAR and Chrome's format so subtract it here.
     const ssl = timings.ssl && (timings.ssl >= 0) ? timings.ssl : 0;
     if (timings.connect && (timings.connect > 0)) {

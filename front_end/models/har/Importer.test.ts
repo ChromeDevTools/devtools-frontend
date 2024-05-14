@@ -246,4 +246,30 @@ describe('HAR Importer', () => {
     const pageLoadRequest = requests[1];
     assert.isTrue(pageLoadRequest.resourceType().isDocument());
   });
+
+  it('Parses the request timings', () => {
+    const parsedRequest = requests[0];
+    const timing = parsedRequest.timing;
+    assert.deepEqual(timing, {
+      connectEnd: -1,
+      connectStart: -1,
+      dnsEnd: -1,
+      dnsStart: -1,
+      proxyEnd: -1,
+      proxyStart: -1,
+      pushEnd: 0,
+      pushStart: 0,
+      receiveHeadersEnd: 511.11399999354035,
+      receiveHeadersStart: 0.627,
+      requestTime: 1607967353.241509,
+      sendEnd: 0.627,
+      sendStart: 0.249,
+      sslEnd: -1,
+      sslStart: -1,
+      workerFetchStart: -1,
+      workerReady: -1,
+      workerRespondWithSettled: -1,
+      workerStart: -1,
+    });
+  });
 });

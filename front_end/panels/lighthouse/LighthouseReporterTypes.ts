@@ -64,7 +64,7 @@ export interface DetailsJSON {
   displayUnit?: string;
 }
 export interface RunnerResultArtifacts {
-  traces: {defaultPass: {traceEvents: TraceEngine.TracingManager.EventPayload[]}};
+  traces: {defaultPass: {traceEvents: TraceEngine.Types.TraceEvents.TraceEventData[]}};
   settings: {throttlingMethod: string};
 }
 export interface RunnerResult {

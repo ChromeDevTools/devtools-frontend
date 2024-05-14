@@ -22,7 +22,7 @@ describeWithRealConnection('TimelineController', () => {
       loadingProgress: sinon.stub(),
       loadingComplete: sinon.stub().callsFake(function(
           _collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[],
-          _tracingModel: TraceEngine.Legacy.TracingModel|null) {}),
+      ) {}),
     };
     const client: Timeline.TimelineController.Client = {
       recordingProgress(usage) {
@@ -37,8 +37,8 @@ describeWithRealConnection('TimelineController', () => {
       loadingProgress() {
         stubs.loadingProgress();
       },
-      async loadingComplete(collectedEvents, tracingModel, _exclusiveFilter) {
-        stubs.loadingComplete(collectedEvents, tracingModel);
+      async loadingComplete(collectedEvents) {
+        stubs.loadingComplete(collectedEvents);
       },
       loadingCompleteForTest() {},
     };
@@ -77,13 +77,10 @@ describeWithRealConnection('TimelineController', () => {
     assert.strictEqual(stubs.loadingStarted.callCount, 1);
     assert.isAtLeast(stubs.loadingProgress.callCount, 1);
     assert.strictEqual(stubs.loadingComplete.callCount, 1);
-    const [collectedEvents, tracingModel] =
+    const [collectedEvents] =
         stubs.loadingComplete.getCall(0)
             .args as [TraceEngine.Types.TraceEvents.TraceEventData[], TraceEngine.Legacy.TracingModel];
-    assert.exists(tracingModel);
-    // Sanity check: ensure that we saw some events during the trace.
-    assert.isTrue(tracingModel.allRawEvents().length > 0);
+    // Ensure we collected events during tracing.
     assert.isTrue(collectedEvents.length > 0);
-    assert.strictEqual(collectedEvents.length, tracingModel.allRawEvents().length);
   });
 });

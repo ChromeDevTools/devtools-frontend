@@ -10,8 +10,6 @@ import * as Extensions from '../../models/extensions/extensions.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 
-import {PerformanceModel} from './PerformanceModel.js';
-
 const UIStrings = {
   /**
    *@description Text in Timeline Controller of the Performance panel indicating that the Performance Panel cannot
@@ -26,11 +24,9 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
   readonly primaryPageTarget: SDK.Target.Target;
   readonly rootTarget: SDK.Target.Target;
   private tracingManager: TraceEngine.TracingManager.TracingManager|null;
-  private performanceModel: PerformanceModel;
   #collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
   #recordingStartTime: number|null = null;
   private readonly client: Client;
-  private readonly tracingModel: TraceEngine.Legacy.TracingModel;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private tracingCompleteCallback?: ((value: any) => void)|null;
@@ -67,9 +63,7 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
     // Ensure the tracing manager is the one for the Root Target, NOT the
     // primaryPageTarget, as that is the one we have to invoke tracing against.
     this.tracingManager = rootTarget.model(TraceEngine.TracingManager.TracingManager);
-    this.performanceModel = new PerformanceModel();
     this.client = client;
-    this.tracingModel = new TraceEngine.Legacy.TracingModel();
   }
 
   async dispose(): Promise<void> {
@@ -145,7 +139,7 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
     return response;
   }
 
-  async stopRecording(): Promise<PerformanceModel> {
+  async stopRecording(): Promise<void> {
     if (this.tracingManager) {
       this.tracingManager.stop();
     }
@@ -153,11 +147,6 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
     this.client.loadingStarted();
     await this.waitForTracingToStop(true);
     await this.allSourcesFinished();
-    return this.performanceModel;
-  }
-
-  getPerformanceModel(): PerformanceModel {
-    return this.performanceModel;
   }
 
   private async waitForTracingToStop(awaitTracingCompleteCallback: boolean): Promise<void> {
@@ -198,10 +187,8 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
     await runtimeModel.checkSideEffectSupport();
   }
 
-  traceEventsCollected(events: TraceEngine.TracingManager.EventPayload[]): void {
-    this.#collectedEvents =
-        this.#collectedEvents.concat(events as unknown as TraceEngine.Types.TraceEvents.TraceEventData[]);
-    this.tracingModel.addEvents(events);
+  traceEventsCollected(events: TraceEngine.Types.TraceEvents.TraceEventData[]): void {
+    this.#collectedEvents.push(...events);
   }
 
   tracingComplete(): void {
@@ -219,11 +206,10 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
 
   private async finalizeTrace(): Promise<void> {
     await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
-    this.tracingModel.tracingComplete();
     Extensions.ExtensionServer.ExtensionServer.instance().profilingStopped();
     await this.client.loadingComplete(
-        this.#collectedEvents, this.tracingModel, /* exclusiveFilter= */ null, /* isCpuProfile= */ false,
-        this.#recordingStartTime, /* metadata= */ null);
+        this.#collectedEvents, /* exclusiveFilter= */ null, /* isCpuProfile= */ false, this.#recordingStartTime,
+        /* metadata= */ null);
     this.client.loadingCompleteForTest();
   }
 
@@ -243,7 +229,6 @@ export interface Client {
   loadingProgress(progress?: number): void;
   loadingComplete(
       collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[],
-      tracingModel: TraceEngine.Legacy.TracingModel|null,
       exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null, isCpuProfile: boolean,
       recordingStartTime: number|null, metadata: TraceEngine.Types.File.MetaData|null): Promise<void>;
   loadingCompleteForTest(): void;

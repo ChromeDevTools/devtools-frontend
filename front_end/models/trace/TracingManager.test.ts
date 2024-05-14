@@ -7,11 +7,11 @@ import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
-import {makeFakeEventPayload} from '../../testing/TraceHelpers.js';
+import {makeInstantEvent} from '../../testing/TraceHelpers.js';
 import * as TraceEngine from '../trace/trace.js';
 
 class FakeClient implements TraceEngine.TracingManager.TracingManagerClient {
-  traceEventsCollected(_events: TraceEngine.TracingManager.EventPayload[]): void {
+  traceEventsCollected(_events: TraceEngine.Types.TraceEvents.TraceEventData[]): void {
   }
   tracingComplete(): void {
   }
@@ -22,18 +22,8 @@ class FakeClient implements TraceEngine.TracingManager.TracingManagerClient {
 }
 
 const fakeEvents = [
-  makeFakeEventPayload({
-    name: 'test-event',
-    categories: ['devtools.timeline'],
-    ts: 1,
-    ph: TraceEngine.Types.TraceEvents.Phase.INSTANT,
-  }),
-  makeFakeEventPayload({
-    name: 'test-event',
-    categories: ['devtools.timeline'],
-    ts: 2,
-    ph: TraceEngine.Types.TraceEvents.Phase.INSTANT,
-  }),
+  makeInstantEvent('test-event-1', 1),
+  makeInstantEvent('test-event-2', 2),
 ];
 
 describeWithMockConnection('TracingManager', () => {

@@ -549,7 +549,7 @@ export class RecorderController extends LitElement {
       switch (event.data?.targetPanel) {
         case Components.RecordingView.TargetPanel.PerformancePanel:
           Timeline.TimelinePanel.TimelinePanel.instance().loadFromEvents(
-              events as TraceEngine.TracingManager.EventPayload[]);
+              events as TraceEngine.Types.TraceEvents.TraceEventData[]);
           break;
       }
     }

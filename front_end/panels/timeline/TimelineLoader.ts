@@ -32,7 +32,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  */
 export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   private client: Client|null;
-  private tracingModel: TraceEngine.Legacy.TracingModel|null;
   private canceledCallback: (() => void)|null;
   private buffer: string;
   private firstRawChunk: boolean;
@@ -45,9 +44,8 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   #traceFinalizedCallbackForTest?: () => void;
   #traceFinalizedPromiseForTest: Promise<void>;
 
-  constructor(client: Client, title?: string) {
+  constructor(client: Client) {
     this.client = client;
-    this.tracingModel = new TraceEngine.Legacy.TracingModel(title);
     this.canceledCallback = null;
     this.buffer = '';
     this.firstRawChunk = true;
@@ -77,7 +75,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     return loader;
   }
 
-  static loadFromEvents(events: TraceEngine.TracingManager.EventPayload[], client: Client): TimelineLoader {
+  static loadFromEvents(events: TraceEngine.Types.TraceEvents.TraceEventData[], client: Client): TimelineLoader {
     const loader = new TimelineLoader(client);
     window.setTimeout(async () => {
       void loader.addEvents(events);
@@ -85,8 +83,8 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     return loader;
   }
 
-  static loadFromCpuProfile(profile: Protocol.Profiler.Profile, client: Client, title?: string): TimelineLoader {
-    const loader = new TimelineLoader(client, title);
+  static loadFromCpuProfile(profile: Protocol.Profiler.Profile, client: Client): TimelineLoader {
+    const loader = new TimelineLoader(client);
     loader.#traceIsCPUProfile = true;
 
     try {
@@ -94,7 +92,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
           profile, TraceEngine.Types.TraceEvents.ThreadID(1));
 
       window.setTimeout(async () => {
-        void loader.addEvents(events as unknown as TraceEngine.TracingManager.EventPayload[]);
+        void loader.addEvents(events);
       });
     } catch (e) {
       console.error(e.stack);
@@ -132,8 +130,6 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
       // (either at the top level, or nested under the traceEvents key)
       const items = Array.isArray(trace) ? trace : trace.traceEvents;
 
-      (this.tracingModel as TraceEngine.Legacy.TracingModel)
-          .addEvents(items as unknown as TraceEngine.TracingManager.EventPayload[]);
       this.#collectEvents(items);
     } else if (trace.nodes) {
       // We know it's a raw Protocol CPU Profile.
@@ -149,7 +145,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     }
   }
 
-  async addEvents(events: TraceEngine.TracingManager.EventPayload[]): Promise<void> {
+  async addEvents(events: TraceEngine.Types.TraceEvents.TraceEventData[]): Promise<void> {
     await this.client?.loadingStarted();
     /**
      * See the `eventsPerChunk` comment in `models/trace/types/Configuration.ts`.
@@ -161,7 +157,6 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     for (let i = 0; i < events.length; i += eventsPerChunk) {
       const chunk = events.slice(i, i + eventsPerChunk);
       this.#collectEvents(chunk as unknown as TraceEngine.Types.TraceEvents.TraceEventData[]);
-      (this.tracingModel as TraceEngine.Legacy.TracingModel).addEvents(chunk);
       await this.client?.loadingProgress((i + chunk.length) / events.length);
       await new Promise(r => window.setTimeout(r, 0));  // Yield event loop to paint.
     }
@@ -169,10 +164,9 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   }
 
   async cancel(): Promise<void> {
-    this.tracingModel = null;
     if (this.client) {
       await this.client.loadingComplete(
-          /* collectedEvents */[], /* tracingModel= */ null, /* exclusiveFilter= */ null, /* isCpuProfile= */ false,
+          /* collectedEvents */[], /* exclusiveFilter= */ null, /* isCpuProfile= */ false,
           /* recordingStartTime= */ null, /* metadata= */ null);
       this.client = null;
     }
@@ -238,11 +232,9 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   }
 
   private async finalizeTrace(): Promise<void> {
-    (this.tracingModel as TraceEngine.Legacy.TracingModel).tracingComplete();
     await (this.client as Client)
         .loadingComplete(
-            this.#collectedEvents, this.tracingModel, this.filter, this.isCpuProfile(), /* recordingStartTime=*/ null,
-            this.#metadata);
+            this.#collectedEvents, this.filter, this.isCpuProfile(), /* recordingStartTime=*/ null, this.#metadata);
     this.#traceFinalizedCallbackForTest?.();
   }
 
@@ -254,8 +246,6 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     const traceEvents = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
         parsedTrace, TraceEngine.Types.TraceEvents.ThreadID(1));
 
-    (this.tracingModel as TraceEngine.Legacy.TracingModel)
-        .addEvents(traceEvents as unknown as TraceEngine.TracingManager.EventPayload[]);
     this.#collectEvents(traceEvents);
   }
 

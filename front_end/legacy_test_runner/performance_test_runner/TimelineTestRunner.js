@@ -131,17 +131,6 @@ PerformanceTestRunner.createTraceEngineDataFromEvents = async function(events) {
   return model.traceParsedData(0);
 };
 
-PerformanceTestRunner.createPerformanceModelWithEvents = async function(events) {
-  const tracingModel = new Trace.Legacy.TracingModel();
-  tracingModel.addEvents(events);
-  tracingModel.tracingComplete();
-  const performanceModel = new Timeline.PerformanceModel.PerformanceModel();
-  await performanceModel.setTracingModel(tracingModel);
-  Timeline.TimelinePanel.TimelinePanel.instance().performanceModel = performanceModel;
-  Timeline.TimelinePanel.TimelinePanel.instance().applyFilters(performanceModel);
-  return performanceModel;
-};
-
 PerformanceTestRunner.createTimelineController = function() {
   const controller = new Timeline.TimelineController.TimelineController(
       SDK.TargetManager.TargetManager.instance().primaryPageTarget(), Timeline.TimelinePanel.TimelinePanel.instance());

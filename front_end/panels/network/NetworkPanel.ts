@@ -835,10 +835,8 @@ export class FilmStripRecorder implements TraceEngine.TracingManager.TracingMana
     this.callback = null;
   }
 
-  traceEventsCollected(events: TraceEngine.TracingManager.EventPayload[]): void {
-    // TODO(crbug.com/339804979): once the old trace engine is removed, update
-    // the TS types here to avoid this typecast.
-    this.#collectedTraceEvents.push(...events as unknown as TraceEngine.Types.TraceEvents.TraceEventData[]);
+  traceEventsCollected(events: TraceEngine.Types.TraceEvents.TraceEventData[]): void {
+    this.#collectedTraceEvents.push(...events);
   }
 
   async tracingComplete(): Promise<void> {

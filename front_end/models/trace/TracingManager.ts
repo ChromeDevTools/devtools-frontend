@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
-import * as SDK from '../../core/sdk/sdk.js';
 import {type ObjectSnapshot} from './LegacyTracingModel.js';
 import type * as Types from './types/types.js';
 
@@ -32,7 +32,7 @@ export class TracingManager extends SDK.SDKModel.SDKModel<void> {
     }
   }
 
-  eventsCollected(events: EventPayload[]): void {
+  eventsCollected(events: Types.TraceEvents.TraceEventData[]): void {
     if (!this.#activeClient) {
       return;
     }
@@ -111,7 +111,7 @@ export class TracingManager extends SDK.SDKModel.SDKModel<void> {
 }
 
 export interface TracingManagerClient {
-  traceEventsCollected(events: EventPayload[]): void;
+  traceEventsCollected(events: Types.TraceEvents.TraceEventData[]): void;
 
   tracingComplete(): void;
   tracingBufferUsage(usage: number): void;

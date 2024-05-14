@@ -393,18 +393,11 @@ export class MainImpl {
         'Enable saving and loading traces with annotations in the Performance panel',
     );
 
-    Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.TIMELINE_EXECUTE_OLD_ENGINE,
-        'Enable the legacy tracing model when inspecting Chrome traces using the performance panel',
-        true,  // mark as unstable as we don't expect users to change this setting
-    );
-
     Root.Runtime.experiments.enableExperimentsByDefault([
       'css-type-component-length-deprecate',
       Root.Runtime.ExperimentName.OUTERMOST_TARGET_SELECTOR,
       Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL,
       Root.Runtime.ExperimentName.AUTOFILL_VIEW,
-      Root.Runtime.ExperimentName.TIMELINE_EXECUTE_OLD_ENGINE,
       ...(Root.Runtime.Runtime.queryParam('isChromeForTesting') ? ['protocol-monitor'] : []),
     ]);
 

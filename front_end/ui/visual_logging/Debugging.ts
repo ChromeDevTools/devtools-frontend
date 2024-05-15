@@ -327,6 +327,76 @@ function findVeDebugImpression(veid: number, includeAncestorChain?: boolean): In
   return findImpression({children: veDebugEventsLog as IntuitiveLogEntry[]});
 }
 
+function fieldValuesForSql<T>(
+    obj: T,
+    fields: {strings: readonly(keyof T)[], numerics: readonly(keyof T)[], booleans: readonly(keyof T)[]}): string {
+  return [
+    ...fields.strings.map(f => obj[f] ? `"${obj[f]}"` : '$NullString'),
+    ...fields.numerics.map(f => obj[f] ?? 'null'),
+    ...fields.booleans.map(f => obj[f] ?? '$NullBool'),
+  ].join(', ');
+}
+
+function exportAdHocAnalysisLogForSql(): void {
+  const VE_FIELDS = {
+    strings: ['ve', 'context'] as const,
+    numerics: ['veid', 'width', 'height'] as const,
+    booleans: [] as const,
+  };
+  const INTERACTION_FIELDS = {
+    strings: ['type', 'context'] as const,
+    numerics: ['width', 'height', 'mouseButton', 'time'] as const,
+    booleans: ['width', 'height', 'mouseButton', 'time'] as const,
+  };
+
+  const fieldsDefsForSql = (fields: string[]): string => fields.map((f, i) => `$${i + 1} as ${f}`).join(', ');
+
+  const veForSql = (e: AdHocAnalysisVisualElement): string =>
+      `$VeFields(${fieldValuesForSql(e, VE_FIELDS)}, ${e.parent ? `STRUCT(${veForSql(e.parent)})` : null})`;
+
+  const interactionForSql = (i: AdHocAnalysisInteraction): string =>
+      `$Interaction(${fieldValuesForSql(i, INTERACTION_FIELDS)})`;
+
+  const entryForSql = (e: AdHocAnalysisLogEntry): string =>
+      `$Entry(${veForSql(e)}, ([${e.interactions.map(interactionForSql).join(', ')}]), ${e.time})`;
+
+  const entries = veDebugEventsLog as AdHocAnalysisLogEntry[];
+
+  // eslint-disable-next-line no-console
+  console.log(`
+DEFINE MACRO NullString CAST(null AS STRING);
+DEFINE MACRO NullBool CAST(null AS BOOL);
+DEFINE MACRO VeFields ${fieldsDefsForSql([
+    ...VE_FIELDS.strings,
+    ...VE_FIELDS.numerics,
+    'parent',
+  ])};
+DEFINE MACRO Interaction STRUCT(${
+      fieldsDefsForSql([
+        ...INTERACTION_FIELDS.strings,
+        ...INTERACTION_FIELDS.numerics,
+        ...INTERACTION_FIELDS.booleans,
+      ])});
+DEFINE MACRO Entry STRUCT($1, $2 AS interactions, $3 AS time);
+
+// This fake entry put first fixes nested struct fiels names being lost
+DEFINE MACRO FakeVeFields $VeFields("", $NullString, 0, 0, 0, $1);
+DEFINE MACRO FakeVe STRUCT($FakeVeFields($1));
+DEFINE MACRO FakeEntry $Entry($FakeVeFields($FakeVe($FakeVe($FakeVe($FakeVe($FakeVe($FakeVe($FakeVe(null)))))))), ([]), 0);
+
+WITH
+  processed_logs AS (
+      SELECT * FROM UNNEST([
+        $FakeEntry,
+        ${entries.map(entryForSql).join(', \n')}
+      ])
+    )
+
+
+
+SELECT * FROM processed_logs;`);
+}
+
 let sessionStartTime: number = Date.now();
 
 export function processStartLoggingForDebugging(): void {
@@ -342,3 +412,5 @@ globalThis.setVeDebugLoggingEnabled = setVeDebugLoggingEnabled;
 globalThis.veDebugEventsLog = veDebugEventsLog;
 // @ts-ignore
 globalThis.findVeDebugImpression = findVeDebugImpression;
+// @ts-ignore
+globalThis.exportAdHocAnalysisLogForSql = exportAdHocAnalysisLogForSql;

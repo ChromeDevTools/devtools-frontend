@@ -40,11 +40,10 @@ describe('RenderBlockingRequests', function() {
 
     const insight = TraceModel.Insights.InsightRunners.RenderBlocking.generateInsight(data, context);
 
-    assert.strictEqual(insight.renderBlockingRequests.length, 3);
+    assert.strictEqual(insight.renderBlockingRequests.length, 2);
     assert.deepEqual(insight.renderBlockingRequests.map(r => r.args.data.url), [
       'https://fonts.googleapis.com/css2?family=Orelega+One&display=swap',
       'http://localhost:8080/styles.css',
-      'http://localhost:8080/blocking.js',
     ]);
   });
 
@@ -113,5 +112,21 @@ describe('RenderBlockingRequests', function() {
     const insight = TraceModel.Insights.InsightRunners.RenderBlocking.generateInsight(data, context);
 
     assert.strictEqual(insight.renderBlockingRequests.length, 0);
+  });
+
+  it('correctly handles body parser blocking requests', async () => {
+    const data = await parseAndFinalizeData(this, 'render-blocking-body.json.gz');
+
+    const context = {
+      frameId: data.Meta.mainFrameId,
+      navigationId: data.Meta.navigationsByNavigationId.keys().next().value,
+    };
+
+    const insight = TraceModel.Insights.InsightRunners.RenderBlocking.generateInsight(data, context);
+
+    assert.deepStrictEqual(insight.renderBlockingRequests.map(r => r.args.data.url), [
+      'http://localhost:8080/render-blocking/style.css',
+      'http://localhost:8080/render-blocking/script.js?beforeImage',
+    ]);
   });
 });

@@ -168,3 +168,13 @@ Contains a navigation to a page with a `in_body_parser_blocking` request `script
 ### postmessage-initiators
 
 Contains a `postMessage.Handler`, and associating `postMessage.Dispatch` call.
+
+### render-blocking-in-body
+
+Contains the following requests in the document body:
+
+- `frame.html`: an iframe document fetched before the image
+- `style.css`: a stylesheet fetched before the image
+- `script.js?beforeImage`: a script fetched before the image
+- `chrome.jpeg`: a normal image
+- `script.js?afterImage`: a script fetched after the image

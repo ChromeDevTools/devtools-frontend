@@ -307,7 +307,7 @@ describeWithEnvironment('TraceProcessor', function() {
         throw new Error('RenderBlocking threw an error');
       }
 
-      assert.strictEqual(insights[0].RenderBlocking.renderBlockingRequests.length, 3);
+      assert.strictEqual(insights[0].RenderBlocking.renderBlockingRequests.length, 2);
     });
 
     it('returns insights for multiple navigations', async function() {

@@ -107,7 +107,7 @@ export const logKeyDown =
       }
       const loggingState = loggable ? getLoggingState(loggable) : null;
       const codes = (typeof loggingState?.config.track?.keydown === 'string') ? loggingState.config.track.keydown : '';
-      if (codes.length && !codes.split('|').includes(event.code)) {
+      if (codes.length && !codes.split('|').includes(event.code) && !codes.split('|').includes(event.key)) {
         return;
       }
       const keyDownEvent: Host.InspectorFrontendHostAPI.KeyDownEvent = {veid: loggingState?.veid};
@@ -134,8 +134,10 @@ function contextFromKeyCodes(event: Event): string|undefined {
   if (!(event instanceof KeyboardEvent)) {
     return undefined;
   }
+  const key = event.key;
+  const lowerCaseKey = key.toLowerCase();
   const components = [];
-  if (event.shiftKey) {
+  if (event.shiftKey && key !== lowerCaseKey) {
     components.push('shift');
   }
   if (event.ctrlKey) {
@@ -147,7 +149,7 @@ function contextFromKeyCodes(event: Event): string|undefined {
   if (event.metaKey) {
     components.push('meta');
   }
-  components.push(event.key.toLowerCase());
+  components.push(lowerCaseKey);
   return components.join('-');
 }
 

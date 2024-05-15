@@ -122,6 +122,18 @@ describe('LoggingEvents', () => {
     assert.deepStrictEqual(recordKeyDown.firstCall.firstArg, {veid, context: 513111094});
   });
 
+  it('calls UI binding to log a keydown with a matching key', async () => {
+    const recordKeyDown = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordKeyDown',
+    );
+    const event = new KeyboardEvent('keydown', {code: 'Period', key: '>'});
+    VisualLogging.LoggingState.getLoggingState(element)!.config.track = {keydown: '>'};
+    void VisualLogging.LoggingEvents.logKeyDown(throttler)(element, event);
+    await assertThrottled(recordKeyDown);
+    assert.deepStrictEqual(recordKeyDown.firstCall.firstArg, {veid: getVeId(element), context: 3196392201});
+  });
+
   it('calls UI binding to log a keydown with an provided context', async () => {
     const recordKeyDown = sinon.stub(
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,

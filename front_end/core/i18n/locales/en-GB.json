@@ -2189,12 +2189,6 @@
   "panels/application/AppManifestView.ts | customizePwaTitleBar": {
     "message": "Customise the window controls overlay of your PWA's title bar"
   },
-  "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background colour"
-  },
-  "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme colour"
-  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Description"
   },

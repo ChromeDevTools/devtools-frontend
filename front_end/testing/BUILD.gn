@@ -80,5 +80,6 @@ ts_library("testing") {
     "../ui/legacy/components/perf_ui:bundle",
     "../ui/legacy/theme_support:bundle",
     "../ui/lit-html:bundle",
+    "../ui/visual_logging:testing",
   ]
 }

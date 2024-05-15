@@ -6,7 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {expectCall, expectCalled} from '../../testing/ExpectStubCall.js';
-import {stabilizeEvent, stabilizeImpressions} from '../../testing/VisualLoggingHelpers.js';
+import {getVeId} from '../../testing/VisualLoggingHelpers.js';
 
 import * as VisualLoggingTesting from './visual_logging-testing.js';
 
@@ -61,9 +61,9 @@ describe('LoggingDriver', () => {
     addLoggableElements();
     await VisualLoggingTesting.LoggingDriver.startLogging();
     assert.isTrue(recordImpression.calledOnce);
-    assert.sameDeepMembers(stabilizeImpressions(recordImpression.firstCall.firstArg.impressions), [
-      {id: 1, type: 1, context: 42, parent: 0, width: 300, height: 300},
-      {id: 0, type: 1, width: 300, height: 300},
+    assert.sameDeepMembers(recordImpression.firstCall.firstArg.impressions, [
+      {id: getVeId('#element'), type: 1, context: 42, parent: getVeId('#parent'), width: 300, height: 300},
+      {id: getVeId('#parent'), type: 1, width: 300, height: 300},
     ]);
   });
 
@@ -178,7 +178,7 @@ describe('LoggingDriver', () => {
 
     await VisualLoggingTesting.LoggingDriver.startLogging();
     assert.isTrue(recordImpression.calledOnce);
-    assert.strictEqual(stabilizeImpressions(recordImpression.firstCall.firstArg.impressions)[0]?.context, 4191634312);
+    assert.strictEqual(recordImpression.firstCall.firstArg.impressions[0]?.context, 4191634312);
   });
 
   it('logs clicks', async () => {
@@ -262,7 +262,7 @@ describe('LoggingDriver', () => {
 
     await logging();
     assert.isTrue(recordClick.calledOnce);
-    assert.deepStrictEqual(stabilizeEvent(recordClick.firstCall.firstArg).veid, 0);
+    assert.strictEqual(recordClick.firstCall.firstArg.veid, getVeId(element));
   });
 
   const logsSelectOptions = (event: Event) => async () => {
@@ -273,6 +273,7 @@ describe('LoggingDriver', () => {
         <option jslog="TreeItem; context: 2">2</option>
       </select>`;
     renderElementIntoDOM(parent);
+    const select = document.getElementById('select')!;
     const recordClick = sinon.stub(
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordClick',
@@ -283,27 +284,24 @@ describe('LoggingDriver', () => {
 
     assert.isTrue(recordImpression.calledOnce);
     const impressions = recordImpression.firstCall.firstArg.impressions;
-    const selectVeId = impressions[0].id;
     assert.sameDeepMembers(impressions, [
-      {id: selectVeId, type: 1, width: 30, height: 20, context: 0},
+      {id: getVeId(select), type: 1, width: 30, height: 20, context: 0},
     ]);
 
     recordImpression.resetHistory();
 
-    const select = document.getElementById('select');
-    assert.exists(select);
     throttle.callsArg(0);
     select.dispatchEvent(event);
 
     await expectCalled(recordClick);
     assert.isTrue(recordClick.calledOnce);
-    assert.strictEqual(recordClick.firstCall.firstArg.veid, selectVeId);
+    assert.strictEqual(recordClick.firstCall.firstArg.veid, getVeId(select));
 
     await expectCalled(recordImpression);
     assert.isTrue(recordImpression.calledOnce);
-    assert.sameDeepMembers(stabilizeImpressions(recordImpression.firstCall.firstArg.impressions), [
-      {id: 0, type: 1, parent: 1, context: 1, width: 0, height: 0},
-      {id: 2, type: 1, parent: 1, context: 2, width: 0, height: 0},
+    assert.sameDeepMembers(recordImpression.firstCall.firstArg.impressions, [
+      {id: getVeId('option:first-child'), type: 1, parent: getVeId(select), context: 1, width: 0, height: 0},
+      {id: getVeId('option:last-child'), type: 1, parent: getVeId(select), context: 2, width: 0, height: 0},
     ]);
   };
 
@@ -333,7 +331,8 @@ describe('LoggingDriver', () => {
     await expectCalled(throttle).then(([logging]) => logging());
 
     assert.isTrue(recordClick.calledOnce);
-    assert.deepStrictEqual(stabilizeEvent(recordClick.firstCall.firstArg), {veid: 0, doubleClick: false});
+    assert.deepStrictEqual(
+        recordClick.firstCall.firstArg, {veid: getVeId(select.selectedOptions[0]), doubleClick: false});
   });
 
   it('logs keydown', async () => {
@@ -534,7 +533,7 @@ describe('LoggingDriver', () => {
     element.dispatchEvent(new MouseEvent('mouseover'));
     await expectCall(throttle).then(([work]) => work());
     assert.isTrue(recordHover.called);
-    assert.deepStrictEqual(stabilizeEvent(recordHover.firstCall.firstArg), {veid: 0});
+    assert.deepStrictEqual(recordHover.firstCall.firstArg, {veid: getVeId(parent)});
   });
 
   it('logs drag', async () => {
@@ -644,7 +643,7 @@ describe('LoggingDriver', () => {
     logging();
     await expectCalled(recordResize);
     assert.isTrue(recordResize.calledOnce);
-    assert.deepStrictEqual(stabilizeEvent(recordResize.firstCall.firstArg), {veid: 0, width: 0, height: 0});
+    assert.deepStrictEqual(recordResize.firstCall.firstArg, {veid: getVeId(element), width: 0, height: 0});
 
     recordResize.resetHistory();
 
@@ -654,7 +653,7 @@ describe('LoggingDriver', () => {
 
     await expectCall(recordResize);
     assert.isTrue(recordResize.calledOnce);
-    assert.deepStrictEqual(stabilizeEvent(recordResize.firstCall.firstArg), {veid: 0, width: 300, height: 300});
+    assert.deepStrictEqual(recordResize.firstCall.firstArg, {veid: getVeId(element), width: 300, height: 300});
   });
 
   it('throttles resize per element', async () => {
@@ -706,7 +705,7 @@ describe('LoggingDriver', () => {
     assert.isFalse(recordResize.called);
     await work();
     assert.isTrue(recordResize.calledOnce);
-    assert.deepStrictEqual(stabilizeEvent(recordResize.firstCall.firstArg), {veid: 0, width: 400, height: 300});
+    assert.deepStrictEqual(recordResize.firstCall.firstArg, {veid: getVeId(element), width: 400, height: 300});
   });
 
   it('does not log resize intial impressions due to visibility change', async () => {
@@ -790,7 +789,7 @@ describe('LoggingDriver', () => {
 
     await logging();
     assert.isTrue(recordResize.calledOnce);
-    assert.deepStrictEqual(stabilizeEvent(recordResize.firstCall.firstArg), {veid: 0, width: 0, height: 0});
+    assert.deepStrictEqual(recordResize.firstCall.firstArg, {veid: getVeId(element), width: 0, height: 0});
   });
 
   it('logs interactions before impressions and resize', async () => {
@@ -834,15 +833,15 @@ describe('LoggingDriver', () => {
   it('logs non-DOM impressions', async () => {
     addLoggableElements();
     const loggable = {};
-    VisualLoggingTesting.NonDomState.registerLoggable(
-        loggable, {ve: 1, context: '123'}, document.getElementById('parent') || undefined);
+    const parent = document.getElementById('parent')!;
+    VisualLoggingTesting.NonDomState.registerLoggable(loggable, {ve: 1, context: '123'}, parent);
     await VisualLoggingTesting.LoggingDriver.startLogging();
     assert.isTrue(recordImpression.calledOnce);
 
-    assert.sameDeepMembers(stabilizeImpressions(recordImpression.firstCall.firstArg.impressions), [
-      {id: 2, type: 1, context: 123, parent: 0, width: 0, height: 0},
-      {id: 1, type: 1, context: 42, parent: 0, width: 300, height: 300},
-      {id: 0, type: 1, width: 300, height: 300},
+    assert.sameDeepMembers(recordImpression.firstCall.firstArg.impressions, [
+      {id: getVeId(loggable), type: 1, context: 123, parent: getVeId(parent), width: 0, height: 0},
+      {id: getVeId('#element'), type: 1, context: 42, parent: getVeId(parent), width: 300, height: 300},
+      {id: getVeId(parent), type: 1, width: 300, height: 300},
     ]);
     assert.isEmpty(VisualLoggingTesting.NonDomState.getNonDomState().loggables);
   });
@@ -854,10 +853,10 @@ describe('LoggingDriver', () => {
     await VisualLoggingTesting.LoggingDriver.startLogging();
     assert.isTrue(recordImpression.calledOnce);
 
-    assert.sameDeepMembers(stabilizeImpressions(recordImpression.firstCall.firstArg.impressions), [
-      {id: 2, type: 1, context: 123, width: 0, height: 0},
-      {id: 1, type: 1, context: 42, parent: 0, width: 300, height: 300},
-      {id: 0, type: 1, width: 300, height: 300},
+    assert.sameDeepMembers(recordImpression.firstCall.firstArg.impressions, [
+      {id: getVeId(loggable), type: 1, context: 123, width: 0, height: 0},
+      {id: getVeId('#element'), type: 1, context: 42, parent: getVeId('#parent'), width: 300, height: 300},
+      {id: getVeId('#parent'), type: 1, width: 300, height: 300},
     ]);
     assert.isEmpty(VisualLoggingTesting.NonDomState.getNonDomState().loggables);
   });
@@ -870,9 +869,9 @@ describe('LoggingDriver', () => {
     await VisualLoggingTesting.LoggingDriver.startLogging();
     assert.isTrue(recordImpression.calledOnce);
 
-    assert.sameDeepMembers(stabilizeImpressions(recordImpression.firstCall.firstArg.impressions), [
-      {id: 1, type: 1, context: 42, parent: 0, width: 300, height: 300},
-      {id: 0, type: 1, width: 300, height: 300},
+    assert.sameDeepMembers(recordImpression.firstCall.firstArg.impressions, [
+      {id: getVeId('#element'), type: 1, context: 42, parent: getVeId('#parent'), width: 300, height: 300},
+      {id: getVeId('#parent'), type: 1, width: 300, height: 300},
     ]);
     assert.deepInclude(
         VisualLoggingTesting.NonDomState.getNonDomState().loggables,

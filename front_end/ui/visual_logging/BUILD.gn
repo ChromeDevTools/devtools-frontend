@@ -44,7 +44,10 @@ devtools_entrypoint("testing") {
 
   deps = [ ":visual_logging" ]
 
-  visibility = [ ":unittests" ]
+  visibility = [
+    ":unittests",
+    "../../testing/*",
+  ]
 }
 
 ts_library("unittests") {

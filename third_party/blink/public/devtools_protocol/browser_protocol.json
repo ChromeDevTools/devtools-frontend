@@ -13069,7 +13069,8 @@
                         "EnterprisePolicy",
                         "StorageAccess",
                         "TopLevelStorageAccess",
-                        "CorsOptIn"
+                        "CorsOptIn",
+                        "Scheme"
                     ]
                 },
                 {

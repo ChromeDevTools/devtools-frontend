@@ -8774,6 +8774,7 @@ export namespace Network {
     StorageAccess = 'StorageAccess',
     TopLevelStorageAccess = 'TopLevelStorageAccess',
     CorsOptIn = 'CorsOptIn',
+    Scheme = 'Scheme',
   }
 
   /**

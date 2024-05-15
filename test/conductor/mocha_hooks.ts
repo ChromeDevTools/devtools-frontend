@@ -91,6 +91,7 @@ export const mochaHooks = {
   // In parallel mode, run after all tests end, for each file.
   afterAll: async function(this: Mocha.Suite) {
     await postFileTeardown();
+    copyGoldens();
 
     if (!SHOULD_GATHER_COVERAGE_INFORMATION) {
       return;
@@ -108,8 +109,6 @@ export const mochaHooks = {
     }
 
     await writeCoverageReports();
-    copyGoldens();
-
   },
   // In both modes, run before each test.
   beforeEach: async function(this: Mocha.Context) {

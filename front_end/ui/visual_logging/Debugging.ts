@@ -76,66 +76,78 @@ function processElementForDebugging(element: Element, loggingState: LoggingState
   }
 }
 
-export function processEventForDebugging(event: string, state: LoggingState|null, extraInfo?: Entry): void {
+export function processEventForDebugging(event: string, state: LoggingState|null, extraInfo?: EventAttributes): void {
   const veDebugLoggingEnabled = localStorage.getItem('veDebugLoggingEnabled');
-  if (!veDebuggingEnabled && !veDebugLoggingEnabled) {
+  if (!veDebugLoggingEnabled) {
     return;
   }
 
-  const entry: Entry =
-      {event, ve: state ? VisualElements[state?.config.ve] : undefined, context: state?.config.context, ...extraInfo};
+  const entry: IntuitiveLogEntry = {
+    event,
+    ve: state ? VisualElements[state?.config.ve] : undefined,
+    veid: state?.veid,
+    context: state?.config.context,
+    time: Date.now() - sessionStartTime,
+    ...extraInfo,
+  };
+  deleteUndefinedFields(entry);
+  maybeLogDebugEvent(entry);
+}
+
+function deleteUndefinedFields<T>(entry: T): void {
   for (const stringKey in entry) {
-    const key = stringKey as keyof Entry;
+    const key = stringKey as keyof T;
     if (typeof entry[key] === 'undefined') {
       delete entry[key];
     }
   }
-
-  if (veDebuggingEnabled) {
-    showDebugPopover(`${Object.entries(entry).map(([k, v]) => `${k}: ${v}`).join('; ')}`);
-  }
-  const time = Date.now() - sessionStartTime;
-  maybeLogDebugEvent({...entry, veid: state?.veid, time});
 }
 
-type Entry = {
-  event?: string,
-  ve?: string,
+export type EventAttributes = {
   context?: string,
-  veid?: number,
-  children?: Entry[],
-  parent?: number,
-  time?: number,
   width?: number,
   height?: number,
   mouseButton?: number,
   doubleClick?: boolean,
 };
 
+type VisualElementAttributes = {
+  ve: string,
+  veid: number,
+  context?: string,
+  width?: number,
+  height?: number,
+};
+
+type IntuitiveLogEntry = {
+  event?: string,
+  children?: IntuitiveLogEntry[],
+  parent?: number,
+  time?: number,
+}&Partial<VisualElementAttributes>;
+
 export function processImpressionsForDebugging(states: LoggingState[]): void {
-  if (!localStorage.getItem('veDebugLoggingEnabled')) {
+  const veDebugLoggingEnabled = localStorage.getItem('veDebugLoggingEnabled');
+  if (!veDebugLoggingEnabled) {
     return;
   }
-  const impressions = new Map<number, Entry>();
+  const impressions = new Map<number, IntuitiveLogEntry>();
   for (const state of states) {
-    const entry: Entry = {
+    const entry: IntuitiveLogEntry = {
       event: 'Impression',
       ve: VisualElements[state.config.ve],
+      context: state?.config.context,
+      width: state.size.width,
+      height: state.size.height,
+      veid: state.veid,
     };
-    if (state.config.context) {
-      entry.context = state.config.context;
-    }
-    if (state.size) {
-      entry.width = state.size.width;
-      entry.height = state.size.height;
-    }
-    entry.veid = state.veid,
+    deleteUndefinedFields(entry);
 
     impressions.set(state.veid, entry);
     if (!state.parent || !impressions.has(state.parent?.veid)) {
       entry.parent = state.parent?.veid;
     } else {
-      const parent = impressions.get(state.parent?.veid) as Entry;
+      const parent = impressions.get(state.parent?.veid) as IntuitiveLogEntry;
       parent.children = parent.children || [];
       parent.children.push(entry);
     }
@@ -196,10 +208,11 @@ export function debugString(config: LoggingConfig): string {
   return components.join('; ');
 }
 
-const veDebugEventsLog: Entry[] = [];
+const veDebugEventsLog: IntuitiveLogEntry[] = [];
 
-function maybeLogDebugEvent(entry: Entry): void {
-  if (!localStorage.getItem('veDebugLoggingEnabled')) {
+function maybeLogDebugEvent(entry: IntuitiveLogEntry): void {
+  const veDebugLoggingEnabled = localStorage.getItem('veDebugLoggingEnabled');
+  if (!veDebugLoggingEnabled) {
     return;
   }
   veDebugEventsLog.push(entry);
@@ -215,8 +228,8 @@ function setVeDebugLoggingEnabled(enabled: boolean): void {
   }
 }
 
-function findVeDebugImpression(veid: number, includeAncestorChain?: boolean): Entry|undefined {
-  const findImpression = (entry: Entry): Entry|undefined => {
+function findVeDebugImpression(veid: number, includeAncestorChain?: boolean): IntuitiveLogEntry|undefined {
+  const findImpression = (entry: IntuitiveLogEntry): IntuitiveLogEntry|undefined => {
     if (entry.event === 'Impression' && entry.veid === veid) {
       return entry;
     }

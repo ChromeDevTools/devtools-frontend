@@ -77,11 +77,23 @@ function processElementForDebugging(element: Element, loggingState: LoggingState
 }
 
 export function processEventForDebugging(event: string, state: LoggingState|null, extraInfo?: EventAttributes): void {
-  const veDebugLoggingEnabled = localStorage.getItem('veDebugLoggingEnabled');
-  if (!veDebugLoggingEnabled) {
+  const format = localStorage.getItem('veDebugLoggingEnabled');
+  if (!format) {
     return;
   }
 
+  switch (format) {
+    case DebugLoggingFormat.Intuitive:
+      processEventForIntuitiveDebugging(event, state, extraInfo);
+      break;
+    case DebugLoggingFormat.AdHocAnalysis:
+      processEventForAdHocAnalysisDebugging(event, state, extraInfo);
+      break;
+  }
+}
+
+export function processEventForIntuitiveDebugging(
+    event: string, state: LoggingState|null, extraInfo?: EventAttributes): void {
   const entry: IntuitiveLogEntry = {
     event,
     ve: state ? VisualElements[state?.config.ve] : undefined,
@@ -92,6 +104,16 @@ export function processEventForDebugging(event: string, state: LoggingState|null
   };
   deleteUndefinedFields(entry);
   maybeLogDebugEvent(entry);
+}
+
+export function processEventForAdHocAnalysisDebugging(
+    event: string, state: LoggingState|null, extraInfo?: EventAttributes): void {
+  const ve = state ? adHocAnalysisEntries.get(state.veid) : null;
+  if (ve) {
+    const interaction: AdHocAnalysisInteraction = {time: Date.now() - sessionStartTime, type: event, ...extraInfo};
+    deleteUndefinedFields(interaction);
+    ve.interactions.push(interaction);
+  }
 }
 
 function deleteUndefinedFields<T>(entry: T): void {
@@ -126,11 +148,34 @@ type IntuitiveLogEntry = {
   time?: number,
 }&Partial<VisualElementAttributes>;
 
+type AdHocAnalysisVisualElement = VisualElementAttributes&{
+  parent?: AdHocAnalysisVisualElement,
+};
+
+type AdHocAnalysisInteraction = {
+  type: string,
+  time: number,
+}&EventAttributes;
+
+type AdHocAnalysisLogEntry = AdHocAnalysisVisualElement&{
+  time: number,
+  interactions: AdHocAnalysisInteraction[],
+};
+
 export function processImpressionsForDebugging(states: LoggingState[]): void {
-  const veDebugLoggingEnabled = localStorage.getItem('veDebugLoggingEnabled');
-  if (!veDebugLoggingEnabled) {
-    return;
+  const format = localStorage.getItem('veDebugLoggingEnabled');
+  switch (format) {
+    case DebugLoggingFormat.Intuitive:
+      processImpressionsForIntuitiveDebugLog(states);
+      break;
+    case DebugLoggingFormat.AdHocAnalysis:
+      processImpressionsForAdHocAnalysisDebugLog(states);
+      break;
+    default:
   }
+}
+
+function processImpressionsForIntuitiveDebugLog(states: LoggingState[]): void {
   const impressions = new Map<number, IntuitiveLogEntry>();
   for (const state of states) {
     const entry: IntuitiveLogEntry = {
@@ -159,6 +204,30 @@ export function processImpressionsForDebugging(states: LoggingState[]): void {
     maybeLogDebugEvent(entries[0]);
   } else {
     maybeLogDebugEvent({event: 'Impression', children: entries, time: Date.now() - sessionStartTime});
+  }
+}
+
+const adHocAnalysisEntries = new Map<number, AdHocAnalysisLogEntry>();
+
+function processImpressionsForAdHocAnalysisDebugLog(states: LoggingState[]): void {
+  for (const state of states) {
+    const buildVe = (state: LoggingState): AdHocAnalysisVisualElement => {
+      const ve: AdHocAnalysisVisualElement = {
+        ve: VisualElements[state.config.ve],
+        veid: state.veid,
+        width: state.size?.width,
+        height: state.size?.height,
+        context: state.config.context,
+      };
+      deleteUndefinedFields(ve);
+      if (state.parent) {
+        ve.parent = buildVe(state.parent);
+      }
+      return ve;
+    };
+    const entry = {...buildVe(state), interactions: [], time: Date.now() - sessionStartTime};
+    adHocAnalysisEntries.set(state.veid, entry);
+    maybeLogDebugEvent(entry);
   }
 }
 
@@ -208,21 +277,28 @@ export function debugString(config: LoggingConfig): string {
   return components.join('; ');
 }
 
-const veDebugEventsLog: IntuitiveLogEntry[] = [];
+const veDebugEventsLog: (IntuitiveLogEntry|AdHocAnalysisLogEntry)[] = [];
 
-function maybeLogDebugEvent(entry: IntuitiveLogEntry): void {
-  const veDebugLoggingEnabled = localStorage.getItem('veDebugLoggingEnabled');
-  if (!veDebugLoggingEnabled) {
+function maybeLogDebugEvent(entry: IntuitiveLogEntry|AdHocAnalysisLogEntry): void {
+  const format = localStorage.getItem('veDebugLoggingEnabled');
+  if (!format) {
     return;
   }
   veDebugEventsLog.push(entry);
-  // eslint-disable-next-line no-console
-  console.info('VE Debug:', entry);
+  if (format === DebugLoggingFormat.Intuitive) {
+    // eslint-disable-next-line no-console
+    console.info('VE Debug:', entry);
+  }
 }
 
-function setVeDebugLoggingEnabled(enabled: boolean): void {
+enum DebugLoggingFormat {
+  Intuitive = 'Intuitive',
+  AdHocAnalysis = 'AdHocAnalysis',
+}
+
+function setVeDebugLoggingEnabled(enabled: boolean, format = DebugLoggingFormat.Intuitive): void {
   if (enabled) {
-    localStorage.setItem('veDebugLoggingEnabled', 'true');
+    localStorage.setItem('veDebugLoggingEnabled', format);
   } else {
     localStorage.removeItem('veDebugLoggingEnabled');
   }
@@ -248,14 +324,16 @@ function findVeDebugImpression(veid: number, includeAncestorChain?: boolean): In
     }
     return undefined;
   };
-  return findImpression({children: veDebugEventsLog});
+  return findImpression({children: veDebugEventsLog as IntuitiveLogEntry[]});
 }
 
 let sessionStartTime: number = Date.now();
 
 export function processStartLoggingForDebugging(): void {
   sessionStartTime = Date.now();
-  maybeLogDebugEvent({event: 'SessionStart'});
+  if (localStorage.getItem('veDebugLoggingEnabled') === DebugLoggingFormat.Intuitive) {
+    maybeLogDebugEvent({event: 'SessionStart'});
+  }
 }
 
 // @ts-ignore

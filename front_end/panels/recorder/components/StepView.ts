@@ -11,7 +11,6 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -293,8 +292,6 @@ export interface ViewInput extends StepViewData {
   isLastSection: boolean;
   isRecording: boolean;
   isPlaying: boolean;
-  actionsMenuButton?: Buttons.Button.Button;
-  actionsMenuExpanded: boolean;
   isVisible: boolean;
   hasBreakpoint: boolean;
   removable: boolean;
@@ -305,19 +302,14 @@ export interface ViewInput extends StepViewData {
   actions: Array<Action>;
 
   stepEdited: (event: StepEditedEvent) => void;
-  onToggleActionsMenu: (event: Event) => void;
-  onCloseActionsMenu: () => void;
   onBreakpointClick: () => void;
-  getActionsMenuButton: () => Buttons.Button.Button;
   handleStepAction: (event: Menus.Menu.MenuItemSelectedEvent) => void;
   toggleShowDetails: () => void;
   onToggleShowDetailsKeydown: (event: Event) => void;
   onStepContextMenu: (event: MouseEvent) => void;
 }
 
-export interface ViewOutput {
-  actionsMenuButton?: Buttons.Button.Button;
-}
+export type ViewOutput = unknown;
 
 function getStepTypeTitle(input: {
   step?: Models.Schema.Step,
@@ -398,38 +390,17 @@ function getSectionPreview(section?: Models.Section.Section): string {
   return section.url;
 }
 
-function renderStepActions(input: ViewInput, output: ViewOutput): LitHtml.TemplateResult|null {
-  const actions = input.actions;
-  const groupsById = new Map<string, Action[]>();
-  for (const action of actions) {
-    const group = groupsById.get(action.group);
-    if (!group) {
-      groupsById.set(action.group, [action]);
-    } else {
-      group.push(action);
-    }
-  }
-  const groups = [];
-  for (const [group, actions] of groupsById) {
-    groups.push({
-      group,
-      groupTitle: actions[0].groupTitle,
-      actions,
-    });
-  }
+function renderStepActions(input: ViewInput): LitHtml.TemplateResult|null {
   // clang-format off
   return LitHtml.html`
     <${Buttons.Button.Button.litTagName}
       class="step-actions"
       title=${i18nString(UIStrings.openStepActions)}
       aria-label=${i18nString(UIStrings.openStepActions)}
-      @click=${input.onToggleActionsMenu}
+      @click=${input.onStepContextMenu}
       @keydown=${(event: Event) => {
         event.stopPropagation();
       }}
-      on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
-        output.actionsMenuButton = node as Buttons.Button.Button;
-      })}
       jslog=${VisualLogging.dropDown('step-actions').track({click: true})}
       .data=${
         {
@@ -439,45 +410,11 @@ function renderStepActions(input: ViewInput, output: ViewOutput): LitHtml.Templa
         } as Buttons.Button.ButtonData
       }
     ></${Buttons.Button.Button.litTagName}>
-    <${Menus.Menu.Menu.litTagName}
-      @menucloserequest=${input.onCloseActionsMenu}
-      @menuitemselected=${input.handleStepAction}
-      .origin=${input.getActionsMenuButton}
-      .showSelectedItem=${false}
-      .showConnector=${false}
-      .open=${input.actionsMenuExpanded}
-    >
-      ${LitHtml.Directives.repeat(
-        groups,
-        item => item.group,
-        item => {
-          return LitHtml.html`
-          <${Menus.Menu.MenuGroup.litTagName}
-            .name=${item.groupTitle}
-          >
-            ${LitHtml.Directives.repeat(
-              item.actions,
-              item => item.id,
-              item => {
-                return LitHtml.html`<${Menus.Menu.MenuItem.litTagName}
-                    .value=${item.id}
-                    jslog=${VisualLogging.action().track({click: true}).context(`${item.jslogContext || item.id}`)}
-                  >
-                    ${item.label}
-                  </${Menus.Menu.MenuItem.litTagName}>
-                `;
-              },
-            )}
-          </${Menus.Menu.MenuGroup.litTagName}>
-        `;
-        },
-      )}
-    </${Menus.Menu.Menu.litTagName}>
   `;
   // clang-format on
 }
 
-function viewFunction(input: ViewInput, output: ViewOutput, target: HTMLElement|ShadowRoot): void {
+function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement|ShadowRoot): void {
   if (!input.step && !input.section) {
     return;
   }
@@ -551,7 +488,7 @@ function viewFunction(input: ViewInput, output: ViewOutput, target: HTMLElement|
           </div>
         </div>
         <div class="filler"></div>
-        ${renderStepActions(input, output)}
+        ${renderStepActions(input)}
       </div>
       <div class="details">
         ${
@@ -607,7 +544,6 @@ export class StepView extends HTMLElement {
     isLastSection: false,
     isRecording: false,
     isPlaying: false,
-    actionsMenuExpanded: false,
     isVisible: false,
     hasBreakpoint: false,
     removable: true,
@@ -617,11 +553,7 @@ export class StepView extends HTMLElement {
     recorderSettings: undefined,
     actions: [],
 
-    getActionsMenuButton: this.#getActionsMenuButton.bind(this),
-
     stepEdited: this.#stepEdited.bind(this),
-    onToggleActionsMenu: this.#onToggleActionsMenu.bind(this),
-    onCloseActionsMenu: this.#onCloseActionsMenu.bind(this),
     onBreakpointClick: this.#onBreakpointClick.bind(this),
     handleStepAction: this.#handleStepAction.bind(this),
     toggleShowDetails: this.#toggleShowDetails.bind(this),
@@ -770,18 +702,6 @@ export class StepView extends HTMLElement {
     }
   }
 
-  #onToggleActionsMenu(event: Event): void {
-    event.stopPropagation();
-    event.preventDefault();
-    this.#viewInput.actionsMenuExpanded = !this.#viewInput.actionsMenuExpanded;
-    this.#render();
-  }
-
-  #onCloseActionsMenu(): void {
-    this.#viewInput.actionsMenuExpanded = false;
-    this.#render();
-  }
-
   #onBreakpointClick(): void {
     if (this.#viewInput.hasBreakpoint) {
       this.dispatchEvent(new RemoveBreakpointEvent(this.#viewInput.stepIndex));
@@ -789,13 +709,6 @@ export class StepView extends HTMLElement {
       this.dispatchEvent(new AddBreakpointEvent(this.#viewInput.stepIndex));
     }
     this.#render();
-  }
-
-  #getActionsMenuButton(): Buttons.Button.Button {
-    if (!this.#viewInput.actionsMenuButton) {
-      throw new Error('Missing actionsMenuButton');
-    }
-    return this.#viewInput.actionsMenuButton;
   }
 
   #getActions = (): Array<Action> => {
@@ -870,12 +783,6 @@ export class StepView extends HTMLElement {
   };
 
   #onStepContextMenu(event: MouseEvent): void {
-    if (event.button !== 2) {
-      // 2 = secondary button = right click. We only show context menus if the
-      // user has right clicked.
-      return;
-    }
-
     const menu = new UI.ContextMenu.ContextMenu(event);
 
     const actions = this.#getActions();
@@ -926,7 +833,6 @@ export class StepView extends HTMLElement {
   #render(): void {
     const output: ViewOutput = {};
     this.#view(this.#viewInput, output, this.#shadow);
-    this.#viewInput.actionsMenuButton = output.actionsMenuButton;
   }
 }
 

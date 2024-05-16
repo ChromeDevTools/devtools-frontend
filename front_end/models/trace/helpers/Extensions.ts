@@ -6,6 +6,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import type * as Types from '../types/types.js';
 
 import {sortTraceEventsInPlace} from './Trace.js';
+import {canBuildTreesFromEvents, treify} from './TreeHelpers.js';
 
 export function buildTrackDataFromExtensionEntries(
     extensionEntries: Types.Extensions.SyntheticExtensionFlameChartEntry[],
@@ -23,6 +24,9 @@ export function buildTrackDataFromExtensionEntries(
   }
   for (const trackData of dataByTrack.values()) {
     sortTraceEventsInPlace(trackData.flameChartEntries);
+    if (canBuildTreesFromEvents(trackData.flameChartEntries)) {
+      treify(trackData.flameChartEntries);
+    }
     extensionTrackData.push(trackData);
   }
   return extensionTrackData;

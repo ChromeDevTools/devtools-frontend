@@ -284,3 +284,55 @@ function treeNodeIsInWindow(node: TraceEntryNode, traceWindow: Types.Timing.Trac
 
   return false;
 }
+
+/**
+ * Determines if the given events, which are assumed to be ordered can
+ * be organized into tree structures.
+ * This condition is met if there is *not* a pair of async events
+ * e1 and e2 where:
+ *
+ * e1.startTime < e2.startTime && e1.endTime > e2.startTime && e1.endTime < e2.endTime.
+ * or, graphically:
+ * |------- e1 ------|
+ *   |------- e2 --------|
+ *
+ * Because a parent-child relationship cannot be made from the example
+ * above, a tree cannot be made from the set of events.
+ *
+ * Sync events from the same thread are tree-able by definition.
+ *
+ * Note that this will also return true if multiple trees can be
+ * built, for example if none of the events overlap with each other.
+ */
+export function canBuildTreesFromEvents(events: readonly Types.TraceEvents.TraceEventData[]): boolean {
+  const stack: Types.TraceEvents.TraceEventData[] = [];
+  for (const event of events) {
+    const startTime = event.ts;
+    const endTime = event.ts + (event.dur || 0);
+    let parent = stack.at(-1);
+    if (parent === undefined) {
+      stack.push(event);
+      continue;
+    }
+    let parentEndTime = parent.ts + (parent.dur || 0);
+    // Discard events that are not parents for this event. The parent
+    // is one whose end time is after this event start time.
+    while (stack.length && startTime >= parentEndTime) {
+      stack.pop();
+      parent = stack.at(-1);
+
+      if (parent === undefined) {
+        break;
+      }
+      parentEndTime = parent.ts + (parent.dur || 0);
+    }
+    if (stack.length && endTime > parentEndTime) {
+      // If such an event exists but its end time is before this
+      // event's end time, then a tree cannot be made using this
+      // events.
+      return false;
+    }
+    stack.push(event);
+  }
+  return true;
+}

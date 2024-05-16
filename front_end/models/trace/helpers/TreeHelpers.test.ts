@@ -426,4 +426,33 @@ describe('TreeHelpers', () => {
       ]);
     });
   });
+  describe('canBuildTreesFromEvents', () => {
+    it('returns true if no pair of events (e1, e2) exists such that e1 overlaps with e2 without one fully containing the other',
+       () => {
+         const data = [
+           makeCompleteEvent('a', 0, 100),
+           makeCompleteEvent('b', 0, 50),
+           makeCompleteEvent('c', 0, 25),
+           makeCompleteEvent('d', 26, 24),
+           makeCompleteEvent('e', 51, 49),
+           makeCompleteEvent('f', 51, 24),
+           makeCompleteEvent('g', 76, 24),
+         ];
+         assert.isTrue(TraceModel.Helpers.TreeHelpers.canBuildTreesFromEvents(data));
+       });
+    it('returns false if a pair of events (e1, e2) exists such that e1 overlaps with e2 without one fully containing the other',
+       () => {
+         const data = [
+           makeCompleteEvent('a', 0, 100),
+           makeCompleteEvent('b', 0, 50),
+           makeCompleteEvent('c', 0, 25),
+           // d overlaps with b but isn't fully contained by it.
+           makeCompleteEvent('d', 26, 50),
+           makeCompleteEvent('e', 51, 49),
+           makeCompleteEvent('f', 51, 24),
+           makeCompleteEvent('g', 76, 24),
+         ];
+         assert.isFalse(TraceModel.Helpers.TreeHelpers.canBuildTreesFromEvents(data));
+       });
+  });
 });

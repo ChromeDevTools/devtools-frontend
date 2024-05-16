@@ -325,56 +325,6 @@ export class CompatibilityTracksAppender {
   }
 
   /**
-   * Determines if the given events, which are assumed to be ordered can
-   * be organized into tree structures.
-   * This condition is met if there is *not* a pair of async events
-   * e1 and e2 where:
-   *
-   * e1.startTime <= e2.startTime && e1.endTime > e2.startTime && e1.endTime > e2.endTime.
-   * or, graphically:
-   * |------- e1 ------|
-   *   |------- e2 --------|
-   *
-   * Because a parent-child relationship cannot be made from the example
-   * above, a tree cannot be made from the set of events.
-   *
-   * Note that this will also return true if multiple trees can be
-   * built, for example if none of the events overlap with each other.
-   */
-  canBuildTreesFromEvents(events: readonly TraceEngine.Types.TraceEvents.TraceEventData[]): boolean {
-    const stack: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
-    for (const event of events) {
-      const startTime = event.ts;
-      const endTime = event.ts + (event.dur || 0);
-      let parent = stack.at(-1);
-      if (parent === undefined) {
-        stack.push(event);
-        continue;
-      }
-      let parentEndTime = parent.ts + (parent.dur || 0);
-      // Discard events that are not parents for this event. The parent
-      // is one whose end time is after this event start time.
-      while (stack.length && startTime >= parentEndTime) {
-        stack.pop();
-        parent = stack.at(-1);
-
-        if (parent === undefined) {
-          break;
-        }
-        parentEndTime = parent.ts + (parent.dur || 0);
-      }
-      if (stack.length && endTime > parentEndTime) {
-        // If such an event exists but its end time is before this
-        // event's end time, then a tree cannot be made using this
-        // events.
-        return false;
-      }
-      stack.push(event);
-    }
-    return true;
-  }
-
-  /**
    * Gets the events to be shown in the tree views of the details pane
    * (Bottom-up, Call tree, etc.). These are the events from the track
    * that can be arranged in a tree shape.
@@ -386,7 +336,7 @@ export class CompatibilityTracksAppender {
     }
 
     let trackEvents = this.eventsInTrack(trackAppender);
-    if (!this.canBuildTreesFromEvents(trackEvents)) {
+    if (!TraceEngine.Helpers.TreeHelpers.canBuildTreesFromEvents(trackEvents)) {
       // Some tracks can include both async and sync events. When this
       // happens, we use all events for the tree views if a trees can be
       // built from both sync and async events. If this is not possible,

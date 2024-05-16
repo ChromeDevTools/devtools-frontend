@@ -76,7 +76,9 @@ function processElementForDebugging(element: Element, loggingState: LoggingState
   }
 }
 
-export function processEventForDebugging(event: string, state: LoggingState|null, extraInfo?: EventAttributes): void {
+type EventType = 'Click'|'Drag'|'Hover'|'Change'|'KeyDown'|'Resize';
+export function processEventForDebugging(
+    event: EventType, state: LoggingState|null, extraInfo?: EventAttributes): void {
   const format = localStorage.getItem('veDebugLoggingEnabled');
   if (!format) {
     return;
@@ -93,7 +95,7 @@ export function processEventForDebugging(event: string, state: LoggingState|null
 }
 
 export function processEventForIntuitiveDebugging(
-    event: string, state: LoggingState|null, extraInfo?: EventAttributes): void {
+    event: EventType, state: LoggingState|null, extraInfo?: EventAttributes): void {
   const entry: IntuitiveLogEntry = {
     event,
     ve: state ? VisualElements[state?.config.ve] : undefined,
@@ -107,7 +109,7 @@ export function processEventForIntuitiveDebugging(
 }
 
 export function processEventForAdHocAnalysisDebugging(
-    event: string, state: LoggingState|null, extraInfo?: EventAttributes): void {
+    event: EventType, state: LoggingState|null, extraInfo?: EventAttributes): void {
   const ve = state ? adHocAnalysisEntries.get(state.veid) : null;
   if (ve) {
     const interaction: AdHocAnalysisInteraction = {time: Date.now() - sessionStartTime, type: event, ...extraInfo};
@@ -142,7 +144,7 @@ type VisualElementAttributes = {
 };
 
 type IntuitiveLogEntry = {
-  event?: string,
+  event?: EventType|'Impression'|'SessionStart',
   children?: IntuitiveLogEntry[],
   parent?: number,
   time?: number,
@@ -153,7 +155,7 @@ type AdHocAnalysisVisualElement = VisualElementAttributes&{
 };
 
 type AdHocAnalysisInteraction = {
-  type: string,
+  type: EventType,
   time: number,
 }&EventAttributes;
 

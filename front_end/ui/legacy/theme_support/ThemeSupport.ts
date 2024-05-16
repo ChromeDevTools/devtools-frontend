@@ -46,12 +46,10 @@ export class ThemeSupport extends EventTarget {
   private customSheets: Set<string> = new Set();
   private computedStyleOfHTML = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
 
-  readonly #documentsToTheme: Set<Document> = new Set([document]);
-
   readonly #darkThemeMediaQuery: MediaQueryList;
   readonly #highContrastMediaQuery: MediaQueryList;
-  readonly #onThemeChangeListener = (): void => this.#applyTheme();
-  readonly #onHostThemeChangeListener = (): void => this.fetchColorsAndApplyHostTheme();
+  readonly #onThemeChangeListener = (): void => this.applyTheme(document);
+  readonly #onHostThemeChangeListener = (): void => this.fetchColors(document);
 
   private constructor(private setting: Common.Settings.Setting<string>) {
     super();
@@ -97,15 +95,6 @@ export class ThemeSupport extends EventTarget {
     }
 
     return themeSupportInstance;
-  }
-
-  /**
-   * Adds additional `Document` instances that should be themed besides the default
-   * `window.document` in which this ThemeSupport instance was created.
-   */
-  addDocumentToTheme(document: Document): void {
-    this.#documentsToTheme.add(document);
-    this.#fetchColorsAndApplyHostTheme(document);
   }
 
   getComputedValue(propertyName: string, target: Element|null = null): string {
@@ -171,19 +160,24 @@ export class ThemeSupport extends EventTarget {
     this.customSheets.add(sheetText);
   }
 
-  #applyTheme(): void {
-    for (const document of this.#documentsToTheme) {
-      this.#applyThemeToDocument(document);
-    }
-  }
-
-  #applyThemeToDocument(document: Document): void {
+  applyTheme(document: Document): void {
     const isForcedColorsMode = window.matchMedia('(forced-colors: active)').matches;
     const systemPreferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
 
     const useSystemPreferred = this.setting.get() === 'systemPreferred' || isForcedColorsMode;
     this.themeNameInternal = useSystemPreferred ? systemPreferredTheme : this.setting.get();
+
+    const wasDarkThemed = document.documentElement.classList.contains('-theme-with-dark-background');
     document.documentElement.classList.toggle('-theme-with-dark-background', this.themeNameInternal === 'dark');
+
+    const isDarkThemed = document.documentElement.classList.contains('-theme-with-dark-background');
+
+    // In the event the theme changes we need to clear caches and notify subscribers.
+    if (wasDarkThemed !== isDarkThemed) {
+      themeValueByTargetByName.clear();
+      this.customSheets.clear();
+      this.dispatchEvent(new ThemeChangeEvent());
+    }
 
     // Baseline is the name of Chrome's default color theme and there are two of these: default and grayscale.
     // The collective name for the rest of the color themes is dynamic.
@@ -192,25 +186,17 @@ export class ThemeSupport extends EventTarget {
     const selectedTheme = getComputedStyle(document.body).getPropertyValue('--user-color-source');
     document.documentElement.classList.toggle('baseline-default', selectedTheme === 'baseline-default');
     document.documentElement.classList.toggle('baseline-grayscale', selectedTheme === 'baseline-grayscale');
-
-    // In the event the theme changes we need to clear caches and notify subscribers.
-    themeValueByTargetByName.clear();
-    this.customSheets.clear();
-    this.dispatchEvent(new ThemeChangeEvent());
   }
 
   static clearThemeCache(): void {
     themeValueByTargetByName.clear();
   }
 
-  fetchColorsAndApplyHostTheme(): void {
-    for (const document of this.#documentsToTheme) {
-      this.#fetchColorsAndApplyHostTheme(document);
-    }
-  }
-
-  #fetchColorsAndApplyHostTheme(document: Document): void {
+  fetchColors(document?: Document): void {
     if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
+      return;
+    }
+    if (!document) {
       return;
     }
 
@@ -224,7 +210,7 @@ export class ThemeSupport extends EventTarget {
       if (oldColorsCssLink) {
         oldColorsCssLink.remove();
       }
-      this.#applyThemeToDocument(document);
+      this.applyTheme(document);
     };
     document.body.appendChild(newColorsCssLink);
   }

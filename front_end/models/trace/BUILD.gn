@@ -61,7 +61,6 @@ ts_library("unittests") {
 
   sources = [
     "EntriesFilter.test.ts",
-    "LegacyTracingModel.test.ts",
     "ModelImpl.test.ts",
     "Processor.test.ts",
     "TracingManager.test.ts",

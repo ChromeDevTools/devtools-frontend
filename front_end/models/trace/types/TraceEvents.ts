@@ -106,6 +106,14 @@ export interface TraceEventCallFrame {
   url: string;
 }
 
+export function objectIsTraceEventCallFrame(object: {}): object is TraceEventCallFrame {
+  return ('functionName' in object && typeof object.functionName === 'string') &&
+      ('scriptId' in object && (typeof object.scriptId === 'string' || typeof object.scriptId === 'number')) &&
+      ('columnNumber' in object && typeof object.columnNumber === 'number') &&
+      ('lineNumber' in object && typeof object.lineNumber === 'number') &&
+      ('url' in object && typeof object.url === 'string');
+}
+
 export interface TraceFrame {
   frame: string;
   name: string;
@@ -2497,3 +2505,11 @@ export const enum KnownEventName {
   SchedulePostMessage = 'SchedulePostMessage',
   HandlePostMessage = 'HandlePostMessage',
 }
+
+// NOT AN EXHAUSTIVE LIST: just some categories we use and refer
+// to in multiple places.
+export const Categories = {
+  Console: 'blink.console',
+  UserTiming: 'blink.user_timing',
+  Loading: 'loading',
+} as const;

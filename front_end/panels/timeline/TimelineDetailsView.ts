@@ -276,10 +276,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       const networkDetails = await TimelineUIUtils.buildSyntheticNetworkRequestDetails(
           this.#traceEngineData, event, this.detailsLinkifier);
       this.setContent(networkDetails);
-    } else if (
-        TimelineSelection.isTraceEventSelection(selectionObject) && this.#traceEngineData &&
-        TraceEngine.Legacy.eventIsFromNewEngine(selectionObject)) {
-      // TODO: the eventIsFromNewEngine check can be removed once crrev.com/c/5505573 lands.
+    } else if (TimelineSelection.isTraceEventSelection(selectionObject) && this.#traceEngineData) {
       const event = selectionObject;
       const traceEventDetails =
           await TimelineUIUtils.buildTraceEventDetails(this.#traceEngineData, event, this.detailsLinkifier, true);
@@ -363,20 +360,16 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     }
   }
 
-  private appendDetailsTabsForTraceEventAndShowDetails(event: TraceEngine.Legacy.CompatibleTraceEvent, content: Node):
-      void {
+  private appendDetailsTabsForTraceEventAndShowDetails(
+      event: TraceEngine.Types.TraceEvents.TraceEventData, content: Node): void {
     this.setContent(content);
-    // TODO: once the legacy engine types are fully removed, this conditional
-    // can be removed.
-    if (TraceEngine.Legacy.eventIsFromNewEngine(event)) {
-      if (TraceEngine.Types.TraceEvents.isTraceEventPaint(event) ||
-          TraceEngine.Types.TraceEvents.isTraceEventRasterTask(event)) {
-        this.showEventInPaintProfiler(event);
-      }
+    if (TraceEngine.Types.TraceEvents.isTraceEventPaint(event) ||
+        TraceEngine.Types.TraceEvents.isTraceEventRasterTask(event)) {
+      this.showEventInPaintProfiler(event);
+    }
 
-      if (TraceEngine.Types.TraceEvents.isTraceEventUpdateLayoutTree(event)) {
-        this.showSelectorStatsForIndividualEvent(event);
-      }
+    if (TraceEngine.Types.TraceEvents.isTraceEventUpdateLayoutTree(event)) {
+      this.showSelectorStatsForIndividualEvent(event);
     }
   }
 

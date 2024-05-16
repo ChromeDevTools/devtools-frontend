@@ -7,7 +7,6 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Elements from '../../panels/elements/elements.js';
@@ -36,9 +35,6 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as Timeline from './timeline.js';
 
 describeWithMockConnection('TimelineUIUtils', function() {
-  let tracingModel: TraceEngine.Legacy.TracingModel;
-  let process: TraceEngine.Legacy.Process;
-  let thread: TraceEngine.Legacy.Thread;
   let target: SDK.Target.Target;
   // Trace events contain script ids as strings. However, the linkifier
   // utilities assume it is a number because that's how it's defined at
@@ -49,9 +45,6 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
   beforeEach(() => {
     target = createTarget();
-    tracingModel = new TraceEngine.Legacy.TracingModel();
-    process = new TraceEngine.Legacy.Process(tracingModel, 1);
-    thread = new TraceEngine.Legacy.Thread(process, 1);
 
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = SDK.TargetManager.TargetManager.instance();
@@ -423,11 +416,12 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
 
     it('treats the v8.parseOnBackgroundWaiting as scripting even though it would usually be idle', function() {
-      const event = new TraceEngine.Legacy.ConstructedEvent(
+      const event = makeCompleteEvent(
+          TraceEngine.Types.TraceEvents.KnownEventName.StreamingCompileScriptWaiting,
+          1,
+          1,
           'v8,devtools.timeline,disabled-by-default-v8.compile',
-          TimelineModel.TimelineModel.RecordType.StreamingCompileScriptWaiting,
-          TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
-
+      );
       assert.strictEqual('rgb(2 2 2)', Timeline.TimelineUIUtils.TimelineUIUtils.eventColor(event));
     });
 

@@ -49,7 +49,7 @@ export class Node {
     throw 'Not implemented';
   }
 
-  searchTree(matchFunction: (arg0: TraceEngine.Legacy.CompatibleTraceEvent) => boolean, results?: Node[]): Node[] {
+  searchTree(matchFunction: (arg0: TraceEngine.Types.TraceEvents.TraceEventData) => boolean, results?: Node[]): Node[] {
     results = results || [];
     if (this.event && matchFunction(this.event)) {
       results.push(this);
@@ -564,27 +564,18 @@ export class BottomUpNode extends Node {
   }
 }
 
-export function eventURL(event: TraceEngine.Legacy.Event|
-                         TraceEngine.Types.TraceEvents.TraceEventData): Platform.DevToolsPath.UrlString|null {
-  const data = event.args['data'] || event.args['beginData'];
-  if (data && data['url']) {
-    return data['url'];
-  }
-  // Temporary break to aid migration: no events are from the old engine now,
-  // and we are incrementally removing these checks
-  if (!TraceEngine.Legacy.eventIsFromNewEngine(event)) {
-    return null;
+export function eventURL(event: TraceEngine.Types.TraceEvents.TraceEventData): Platform.DevToolsPath.UrlString|null {
+  // TODO(40287735): this overlaps a lot with the method in
+  // TimelineUIUtils; but this cannot call that because the Model cannot
+  // depend on the UIUtils module. Restructure this and that method so we
+  // can call the same method in both places.
+  if (event.args?.data?.url) {
+    return event.args.data.url as Platform.DevToolsPath.UrlString;
   }
 
-  let frame = eventStackFrame(event);
-  while (frame) {
-    const url = frame['url'] as Platform.DevToolsPath.UrlString;
-    if (url) {
-      return url;
-    }
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    frame = ((frame as any).parent);
+  const frame = eventStackFrame(event);
+  if (frame) {
+    return frame.url as Platform.DevToolsPath.UrlString;
   }
   return null;
 }

@@ -6,7 +6,6 @@ import * as TraceEngine from '../../models/trace/trace.js';
 import {
   defaultTraceEvent,
   type FakeEventPayload,
-  makeFakeEventPayload,
   makeFakeSDKEventFromPayload,
 } from '../../testing/TraceHelpers.js';
 
@@ -83,21 +82,6 @@ describe('EventTypeHelpers', () => {
     });
   });
   describe('eventHasCategory', () => {
-    it('supports SDK events', () => {
-      const payload: FakeEventPayload = {
-        name: 'test-event',
-        ph: TraceEngine.Types.TraceEvents.Phase.BEGIN,
-        categories: ['testing1', 'testing2'],
-        ts: 10_000,
-        dur: 5_000,
-      };
-      const event = makeFakeSDKEventFromPayload(payload);
-      const hasCategory = TraceEngine.Legacy.eventHasCategory(event, 'testing2');
-      const notHasCategory = TraceEngine.Legacy.eventHasCategory(event, 'not-testing');
-      assert.isTrue(hasCategory);
-      assert.isFalse(notHasCategory);
-    });
-
     it('supports TraceEventData events', () => {
       const event: TraceEngine.Types.TraceEvents.TraceEventData = {
         ...defaultTraceEvent,
@@ -108,57 +92,6 @@ describe('EventTypeHelpers', () => {
       const notHasCategory = TraceEngine.Legacy.eventHasCategory(event, 'timeline');
       assert.isTrue(hasCategory);
       assert.isFalse(notHasCategory);
-    });
-  });
-  describe('phaseForEvent', () => {
-    it('supports SDK events', () => {
-      const payload: FakeEventPayload = {
-        name: 'test-event',
-        ph: TraceEngine.Types.TraceEvents.Phase.BEGIN,
-        categories: ['testing1', 'testing2'],
-        ts: 10_000,
-        dur: 5_000,
-      };
-      const event = makeFakeSDKEventFromPayload(payload);
-      const phase = TraceEngine.Legacy.phaseForEvent(event);
-      assert.strictEqual(phase, TraceEngine.Types.TraceEvents.Phase.BEGIN);
-    });
-
-    it('supports TraceEventData events', () => {
-      const event: TraceEngine.Types.TraceEvents.TraceEventData = {
-        ...defaultTraceEvent,
-        ph: TraceEngine.Types.TraceEvents.Phase.BEGIN,
-      };
-      const phase = TraceEngine.Legacy.phaseForEvent(event);
-      assert.strictEqual(phase, TraceEngine.Types.TraceEvents.Phase.BEGIN);
-    });
-  });
-  describe('threadIDForEvent', () => {
-    it('supports SDK events', () => {
-      const fakePayload: FakeEventPayload = {
-        name: 'test-event',
-        ph: TraceEngine.Types.TraceEvents.Phase.BEGIN,
-        categories: ['testing1', 'testing2'],
-        ts: 10_000,
-        dur: 5_000,
-      };
-      const payload = makeFakeEventPayload(fakePayload);
-      const tracingModel = new TraceEngine.Legacy.TracingModel();
-      const process = new TraceEngine.Legacy.Process(tracingModel, 1);
-      const thread = new TraceEngine.Legacy.Thread(process, 1);
-      const event = TraceEngine.Legacy.PayloadEvent.fromPayload(payload, thread);
-      const threadID = TraceEngine.Legacy.threadIDForEvent(event);
-      assert.strictEqual(threadID, 1);
-    });
-
-    it('supports TraceEventData events', () => {
-      const event: TraceEngine.Types.TraceEvents.TraceEventData = {
-        ...defaultTraceEvent,
-        ph: TraceEngine.Types.TraceEvents.Phase.BEGIN,
-        tid: 2 as TraceEngine.Types.TraceEvents.ThreadID,
-      };
-      const phase = TraceEngine.Legacy.threadIDForEvent(event);
-      assert.strictEqual(phase, 2 as TraceEngine.Types.TraceEvents.ThreadID);
     });
   });
 });

@@ -42,8 +42,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
       }
       const groupTreeEvents = dataProvider.groupTreeEvents(timingsTrackGroup);
       assert.strictEqual(groupTreeEvents?.length, 12);
-      const allEventsAreSync = groupTreeEvents?.every(
-          event => !TraceEngine.Types.TraceEvents.isAsyncPhase(TraceEngine.Legacy.phaseForEvent(event)));
+      const allEventsAreSync = groupTreeEvents?.every(event => !TraceEngine.Types.TraceEvents.isAsyncPhase(event.ph));
       assert.isTrue(allEventsAreSync);
     });
   });

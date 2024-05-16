@@ -445,12 +445,6 @@ export enum RecordType {
 }
 
 export namespace TimelineModelImpl {
-  export const Category = {
-    Console: 'blink.console',
-    UserTiming: 'blink.user_timing',
-    Loading: 'loading',
-  };
-
   export const WorkerThreadName = 'DedicatedWorker thread';
   export const WorkerThreadNameLegacy = 'DedicatedWorker Thread';
   export const RendererMainThreadName = 'CrRendererMain';

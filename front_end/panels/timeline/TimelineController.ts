@@ -7,7 +7,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Extensions from '../../models/extensions/extensions.js';
-import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 
 const UIStrings = {
@@ -87,15 +87,15 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
     //   └ default: on, option: enableJSSampling
     const categoriesArray = [
       Root.Runtime.experiments.isEnabled('timeline-show-all-events') ? '*' : '-*',
-      TimelineModel.TimelineModel.TimelineModelImpl.Category.Console,
-      TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming,
+      TraceEngine.Types.TraceEvents.Categories.Console,
+      TraceEngine.Types.TraceEvents.Categories.Loading,
+      TraceEngine.Types.TraceEvents.Categories.UserTiming,
       'devtools.timeline',
       disabledByDefault('devtools.timeline'),
       disabledByDefault('devtools.timeline.frame'),
       disabledByDefault('devtools.timeline.stack'),
       disabledByDefault('v8.compile'),
       disabledByDefault('v8.cpu_profiler.hires'),
-      TimelineModel.TimelineModel.TimelineModelImpl.Category.Loading,
       disabledByDefault('lighthouse'),
       'v8.execute',
       'v8',

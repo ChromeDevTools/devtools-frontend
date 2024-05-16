@@ -76,7 +76,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     }
   }
 
-  private findNodeWithEvent(event: TraceEngine.Legacy.CompatibleTraceEvent): TimelineModel.TimelineProfileTree.Node
+  private findNodeWithEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): TimelineModel.TimelineProfileTree.Node
       |null {
     if (event.name === TraceEngine.Types.TraceEvents.KnownEventName.RunTask) {
       // No node is ever created for the top level RunTask event, so
@@ -98,7 +98,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     return null;
   }
 
-  private selectEvent(event: TraceEngine.Legacy.CompatibleTraceEvent, expand?: boolean): void {
+  private selectEvent(event: TraceEngine.Types.TraceEvents.TraceEventData, expand?: boolean): void {
     const node = this.findNodeWithEvent(event);
     if (!node) {
       return;

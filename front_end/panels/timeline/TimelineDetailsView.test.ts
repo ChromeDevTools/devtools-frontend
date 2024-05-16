@@ -13,7 +13,7 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
   }
   selectEntryAtTime(_events: TraceEngine.Types.TraceEvents.TraceEventData[]|null, _time: number): void {
   }
-  highlightEvent(_event: TraceEngine.Legacy.CompatibleTraceEvent|null): void {
+  highlightEvent(_event: TraceEngine.Types.TraceEvents.TraceEventData|null): void {
   }
 }
 

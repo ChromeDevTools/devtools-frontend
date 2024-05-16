@@ -44,7 +44,7 @@ export class TracingModel {
     this.#parsedCategories = new Map();
   }
 
-  static isTopLevelEvent(event: CompatibleTraceEvent): boolean {
+  static isTopLevelEvent(event: Types.TraceEvents.TraceEventData): boolean {
     return eventHasCategory(event, DevToolsTimelineEventCategory) && event.name === 'RunTask' ||
         eventHasCategory(event, LegacyTopLevelEventCategory) ||
         eventHasCategory(event, DevToolsMetadataEventCategory) &&
@@ -680,14 +680,12 @@ export class Thread extends NamedObject {
   readonly #processInternal: Process;
   #eventsInternal: Event[];
   readonly #asyncEventsInternal: AsyncEvent[];
-  #lastTopLevelEvent: Event|null;
   constructor(process: Process, id: number) {
     super(process.getModel(), id);
     this.#processInternal = process;
 
     this.#eventsInternal = [];
     this.#asyncEventsInternal = [];
-    this.#lastTopLevelEvent = null;
   }
 
   /**
@@ -745,19 +743,10 @@ export class Thread extends NamedObject {
     this.#eventsInternal = this.#eventsInternal.filter((_, idx) => !toDelete.has(idx));
   }
 
-  addEvent(payload: EventPayload): Event|null {
-    const event = payload.ph === Types.TraceEvents.Phase.OBJECT_SNAPSHOT ? ObjectSnapshot.fromPayload(payload, this) :
-                                                                           PayloadEvent.fromPayload(payload, this);
-    if (TracingModel.isTopLevelEvent(event)) {
-      // Discard nested "top-level" events.
-      const lastTopLevelEvent = this.#lastTopLevelEvent;
-      if (lastTopLevelEvent && (lastTopLevelEvent.endTime || 0) > event.startTime) {
-        return null;
-      }
-      this.#lastTopLevelEvent = event;
-    }
-    this.#eventsInternal.push(event);
-    return event;
+  addEvent(_payload: EventPayload): Event|null {
+    // TODO(40287735): remove this method entirely as we clear up
+    // the old engine code.
+    return null;
   }
 
   addAsyncEvent(asyncEvent: AsyncEvent): void {
@@ -818,36 +807,13 @@ export function timesForEventInMilliseconds(event: Event|Types.TraceEvents.Trace
   }
   return Helpers.Timing.eventTimingsMilliSeconds(event);
 }
-// Parsed categories are cached to prevent calling cat.split() multiple
-// times on the same categories string.
+// Parsed categories are cached to prevent calling cat.split()
+// multiple times on the same categories string.
 const parsedCategories = new Map<string, Set<string>>();
-export function eventHasCategory(event: CompatibleTraceEvent, category: string): boolean {
-  if (event instanceof Event) {
-    return event.hasCategory(category);
-  }
+export function eventHasCategory(event: Types.TraceEvents.TraceEventData, category: string): boolean {
   let parsedCategoriesForEvent = parsedCategories.get(event.cat);
   if (!parsedCategoriesForEvent) {
     parsedCategoriesForEvent = new Set(event.cat.split(',') || []);
   }
   return parsedCategoriesForEvent.has(category);
 }
-
-export function phaseForEvent(event: Event|Types.TraceEvents.TraceEventData): Types.TraceEvents.Phase {
-  if (event instanceof Event) {
-    return event.phase;
-  }
-  return event.ph;
-}
-
-export function threadIDForEvent(event: Event|Types.TraceEvents.TraceEventData): Types.TraceEvents.ThreadID {
-  if (event instanceof Event) {
-    return event.thread.idInternal as Types.TraceEvents.ThreadID;
-  }
-  return event.tid;
-}
-
-export function eventIsFromNewEngine(event: CompatibleTraceEvent|null): event is Types.TraceEvents.TraceEventData {
-  return event !== null && !(event instanceof Event);
-}
-
-export type CompatibleTraceEvent = Event|Types.TraceEvents.TraceEventData;

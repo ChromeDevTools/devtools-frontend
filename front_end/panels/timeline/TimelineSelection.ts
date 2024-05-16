@@ -36,9 +36,6 @@ export class TimelineSelection {
 
   static isSyntheticNetworkRequestDetailsEventSelection(object: PermittedObjectTypes):
       object is TraceEngine.Types.TraceEvents.SyntheticNetworkRequest {
-    if (object instanceof TraceEngine.Legacy.Event) {
-      return false;
-    }
     if (TimelineSelection.isFrameObject(object) || TimelineSelection.isRangeSelection(object)) {
       return false;
     }
@@ -48,9 +45,6 @@ export class TimelineSelection {
   }
 
   static isTraceEventSelection(object: PermittedObjectTypes): object is TraceEngine.Types.TraceEvents.TraceEventData {
-    if (object instanceof TraceEngine.Legacy.Event) {
-      return true;
-    }
     // Trace events are just raw objects, so now we have to confirm it is a trace event by ruling everything else out.
     if (TimelineSelection.isFrameObject(object) || TimelineSelection.isRangeSelection(object)) {
       return false;
@@ -65,7 +59,7 @@ export class TimelineSelection {
   }
 
   static fromTraceEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): TimelineSelection {
-    const {startTime, endTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
+    const {startTime, endTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
     return new TimelineSelection(startTime, TraceEngine.Types.Timing.MilliSeconds(endTime || (startTime + 1)), event);
   }
 

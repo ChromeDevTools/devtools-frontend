@@ -3,20 +3,13 @@
 // found in the LICENSE file.
 
 import {
-  type FakeEventPayload,
-  makeFakeEventPayload,
+  makeCompleteEvent,
 } from '../../../testing/TraceHelpers.js';
 import * as TraceEngine from '../trace.js';
 
 const DEVTOOLS_CATEGORY = 'disabled-by-default-devtools.timeline';
 function milliToMicro(x: number): TraceEngine.Types.Timing.MicroSeconds {
   return TraceEngine.Helpers.Timing.millisecondsToMicroseconds(TraceEngine.Types.Timing.MilliSeconds(x));
-}
-
-function makeFakeMainThreadTraceEntry(payload: FakeEventPayload): TraceEngine.Types.TraceEvents.SyntheticTraceEntry {
-  // It does not technically make a full TraceEntry, but for these tests that
-  // need some events to simulate main thread activity, they are good enough.
-  return makeFakeEventPayload(payload) as unknown as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
 }
 
 function makeFakeBounds(min: number, max: number): TraceEngine.Types.Timing.TraceWindowMicroSeconds {
@@ -30,34 +23,10 @@ function makeFakeBounds(min: number, max: number): TraceEngine.Types.Timing.Trac
 describe('MainThreadActivity', function() {
   it('will use the trace bounds if there is no period of low utilitisation', async () => {
     const events = [
-      makeFakeMainThreadTraceEntry({
-        name: 'Program',
-        categories: [DEVTOOLS_CATEGORY],
-        ts: milliToMicro(100),
-        dur: milliToMicro(50),
-        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-      }),
-      makeFakeMainThreadTraceEntry({
-        name: 'Program',
-        categories: [DEVTOOLS_CATEGORY],
-        ts: milliToMicro(200),
-        dur: milliToMicro(50),
-        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-      }),
-      makeFakeMainThreadTraceEntry({
-        name: 'Program',
-        categories: [DEVTOOLS_CATEGORY],
-        ts: milliToMicro(300),
-        dur: milliToMicro(50),
-        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-      }),
-      makeFakeMainThreadTraceEntry({
-        name: 'Program',
-        categories: [DEVTOOLS_CATEGORY],
-        ts: milliToMicro(400),
-        dur: milliToMicro(50),
-        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-      }),
+      makeCompleteEvent('Program', milliToMicro(100), milliToMicro(50), DEVTOOLS_CATEGORY),
+      makeCompleteEvent('Program', milliToMicro(200), milliToMicro(50), DEVTOOLS_CATEGORY),
+      makeCompleteEvent('Program', milliToMicro(300), milliToMicro(50), DEVTOOLS_CATEGORY),
+      makeCompleteEvent('Program', milliToMicro(400), milliToMicro(50), DEVTOOLS_CATEGORY),
     ];
     const bounds = makeFakeBounds(milliToMicro(100), milliToMicro(450));
     const win = TraceEngine.Extras.MainThreadActivity.calculateWindow(bounds, events);
@@ -67,48 +36,12 @@ describe('MainThreadActivity', function() {
 
   it('focuses the window to avoid periods of low utilisation', async () => {
     const events = [
-      makeFakeMainThreadTraceEntry({
-        name: 'Program',
-        categories: [DEVTOOLS_CATEGORY],
-        ts: milliToMicro(1),
-        dur: milliToMicro(50),
-        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-      }),
-      makeFakeMainThreadTraceEntry({
-        name: 'Program',
-        categories: [DEVTOOLS_CATEGORY],
-        ts: milliToMicro(200),
-        dur: milliToMicro(50),
-        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-      }),
-      makeFakeMainThreadTraceEntry({
-        name: 'Program',
-        categories: [DEVTOOLS_CATEGORY],
-        ts: milliToMicro(210),
-        dur: milliToMicro(50),
-        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-      }),
-      makeFakeMainThreadTraceEntry({
-        name: 'Program',
-        categories: [DEVTOOLS_CATEGORY],
-        ts: milliToMicro(240),
-        dur: milliToMicro(50),
-        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-      }),
-      makeFakeMainThreadTraceEntry({
-        name: 'Program',
-        categories: [DEVTOOLS_CATEGORY],
-        ts: milliToMicro(230),
-        dur: milliToMicro(50),
-        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-      }),
-      makeFakeMainThreadTraceEntry({
-        name: 'Program',
-        categories: [DEVTOOLS_CATEGORY],
-        ts: milliToMicro(1_000),
-        dur: milliToMicro(50),
-        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-      }),
+      makeCompleteEvent('Program', milliToMicro(1), milliToMicro(50), DEVTOOLS_CATEGORY),
+      makeCompleteEvent('Program', milliToMicro(200), milliToMicro(50), DEVTOOLS_CATEGORY),
+      makeCompleteEvent('Program', milliToMicro(210), milliToMicro(50), DEVTOOLS_CATEGORY),
+      makeCompleteEvent('Program', milliToMicro(240), milliToMicro(50), DEVTOOLS_CATEGORY),
+      makeCompleteEvent('Program', milliToMicro(230), milliToMicro(50), DEVTOOLS_CATEGORY),
+      makeCompleteEvent('Program', milliToMicro(1_000), milliToMicro(50), DEVTOOLS_CATEGORY),
     ];
     const bounds = makeFakeBounds(milliToMicro(1), milliToMicro(1_050));
     const win = TraceEngine.Extras.MainThreadActivity.calculateWindow(bounds, events);
@@ -126,41 +59,11 @@ describe('MainThreadActivity', function() {
 
   it('uses the entire trace window if the period of low utilisation makes up the majority of the trace', async () => {
     const events = [
-      makeFakeMainThreadTraceEntry({
-        name: 'Program',
-        categories: [DEVTOOLS_CATEGORY],
-        ts: milliToMicro(100),
-        dur: milliToMicro(50),
-        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-      }),
-      makeFakeMainThreadTraceEntry({
-        name: 'Program',
-        categories: [DEVTOOLS_CATEGORY],
-        ts: milliToMicro(200_000),
-        dur: milliToMicro(50_000),
-        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-      }),
-      makeFakeMainThreadTraceEntry({
-        name: 'Program',
-        categories: [DEVTOOLS_CATEGORY],
-        ts: milliToMicro(300_000),
-        dur: milliToMicro(50_000),
-        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-      }),
-      makeFakeMainThreadTraceEntry({
-        name: 'Program',
-        categories: [DEVTOOLS_CATEGORY],
-        ts: milliToMicro(400_000),
-        dur: milliToMicro(50_000),
-        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-      }),
-      makeFakeMainThreadTraceEntry({
-        name: 'Program',
-        categories: [DEVTOOLS_CATEGORY],
-        ts: milliToMicro(4_000_000),
-        dur: milliToMicro(50_000),
-        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-      }),
+      makeCompleteEvent('Program', milliToMicro(100), milliToMicro(50), DEVTOOLS_CATEGORY),
+      makeCompleteEvent('Program', milliToMicro(200_000), milliToMicro(50_000), DEVTOOLS_CATEGORY),
+      makeCompleteEvent('Program', milliToMicro(300_000), milliToMicro(50_000), DEVTOOLS_CATEGORY),
+      makeCompleteEvent('Program', milliToMicro(400_000), milliToMicro(50_000), DEVTOOLS_CATEGORY),
+      makeCompleteEvent('Program', milliToMicro(4_000_000), milliToMicro(50_000), DEVTOOLS_CATEGORY),
     ];
     // These events are very spaced out!
     // 1 at 100ms

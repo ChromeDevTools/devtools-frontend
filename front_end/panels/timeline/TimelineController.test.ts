@@ -77,9 +77,7 @@ describeWithRealConnection('TimelineController', () => {
     assert.strictEqual(stubs.loadingStarted.callCount, 1);
     assert.isAtLeast(stubs.loadingProgress.callCount, 1);
     assert.strictEqual(stubs.loadingComplete.callCount, 1);
-    const [collectedEvents] =
-        stubs.loadingComplete.getCall(0)
-            .args as [TraceEngine.Types.TraceEvents.TraceEventData[], TraceEngine.Legacy.TracingModel];
+    const [collectedEvents] = stubs.loadingComplete.getCall(0).args as [TraceEngine.Types.TraceEvents.TraceEventData[]];
     // Ensure we collected events during tracing.
     assert.isTrue(collectedEvents.length > 0);
   });

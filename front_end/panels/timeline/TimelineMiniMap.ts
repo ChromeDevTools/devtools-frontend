@@ -185,13 +185,13 @@ export class TimelineMiniMap extends
     const minTimeInMilliseconds = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(Meta.traceBounds.min);
 
     for (const event of navStartEvents) {
-      const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
+      const {startTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
       markers.set(startTime, TimelineUIUtils.createEventDivider(event, minTimeInMilliseconds));
     }
 
     // Now add markers for the page load events
     for (const event of PageLoadMetrics.allMarkerEvents) {
-      const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
+      const {startTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
       markers.set(startTime, TimelineUIUtils.createEventDivider(event, minTimeInMilliseconds));
     }
 

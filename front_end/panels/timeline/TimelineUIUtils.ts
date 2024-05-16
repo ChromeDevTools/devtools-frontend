@@ -648,8 +648,8 @@ export class TimelineUIUtils {
   }
 
   static eventStyle(event: TraceEngine.Types.TraceEvents.TraceEventData): TimelineRecordStyle {
-    if (TraceEngine.Legacy.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console) ||
-        TraceEngine.Legacy.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.UserTiming)) {
+    if (TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console) ||
+        TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.UserTiming)) {
       return new TimelineRecordStyle(event.name, getCategoryStyles()['scripting']);
     }
 
@@ -697,7 +697,7 @@ export class TimelineUIUtils {
       return titleForInteractionEvent(event);
     }
     const title = TimelineUIUtils.eventStyle(event).title;
-    if (TraceEngine.Legacy.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console)) {
+    if (TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console)) {
       return title;
     }
     if (TraceEngine.Types.TraceEvents.isTraceEventTimeStamp(event)) {
@@ -884,7 +884,7 @@ export class TimelineUIUtils {
         break;
 
       default:
-        if (TraceEngine.Legacy.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console)) {
+        if (TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console)) {
           detailsText = null;
         } else {
           detailsText = linkifyTopCallFrameAsText();
@@ -1058,7 +1058,7 @@ export class TimelineUIUtils {
       }
 
       default: {
-        if (TraceEngine.Legacy.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console)) {
+        if (TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console)) {
           detailsText = null;
         } else {
           details = this.linkifyTopCallFrame(event, target, linkifier, isFreshRecording) ?? null;
@@ -1911,7 +1911,7 @@ export class TimelineUIUtils {
   private static async generateCauses(
       event: TraceEngine.Types.TraceEvents.TraceEventData, contentHelper: TimelineDetailsContentHelper,
       traceParseData: TraceEngine.Handlers.Types.TraceParseData): Promise<void> {
-    const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
+    const {startTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
     let initiatorStackLabel = i18nString(UIStrings.initiatorStackTrace);
     let stackLabel = i18nString(UIStrings.stackTrace);
 
@@ -1962,7 +1962,7 @@ export class TimelineUIUtils {
       const link = this.createEntryLink(initiator);
       contentHelper.appendElementRow(i18nString(UIStrings.initiatedBy), link);
 
-      const {startTime: initiatorStartTime} = TraceEngine.Legacy.timesForEventInMilliseconds(initiator);
+      const {startTime: initiatorStartTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(initiator);
       const delay = startTime - initiatorStartTime;
       contentHelper.appendTextRow(i18nString(UIStrings.pendingFor), i18n.TimeUtilities.preciseMillisToString(delay, 1));
     }
@@ -2116,9 +2116,9 @@ export class TimelineUIUtils {
       traceParseData: TraceEngine.Handlers.Types.TraceParseData,
       event: TraceEngine.Types.TraceEvents.TraceEventData): boolean {
     const events = traceParseData.Renderer?.allTraceEntries || [];
-    const {startTime, endTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
+    const {startTime, endTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
     function eventComparator(startTime: number, e: TraceEngine.Types.TraceEvents.TraceEventData): number {
-      const {startTime: eventStartTime} = TraceEngine.Legacy.timesForEventInMilliseconds(e);
+      const {startTime: eventStartTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(e);
       return startTime - eventStartTime;
     }
 
@@ -2132,7 +2132,7 @@ export class TimelineUIUtils {
       for (let i = index; i < events.length; i++) {
         const nextEvent = events[i];
         const {startTime: nextEventStartTime, selfTime: nextEventSelfTime} =
-            TraceEngine.Legacy.timesForEventInMilliseconds(nextEvent);
+            TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(nextEvent);
         if (nextEventStartTime >= endTime) {
           break;
         }
@@ -2219,7 +2219,7 @@ export class TimelineUIUtils {
   static createEventDivider(event: TraceEngine.Types.TraceEvents.TraceEventData, zeroTime: number): Element {
     const eventDivider = document.createElement('div');
     eventDivider.classList.add('resources-event-divider');
-    const {startTime: eventStartTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
+    const {startTime: eventStartTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
 
     const startTime = i18n.TimeUtilities.millisToString(eventStartTime - zeroTime);
     UI.Tooltip.Tooltip.install(
@@ -2380,37 +2380,21 @@ export class TimelineUIUtils {
     return eventDispatchDesciptors;
   }
 
-  static markerShortTitle(event: TraceEngine.Legacy.Event): string|null {
-    const recordTypes = TimelineModel.TimelineModel.RecordType;
-    switch (event.name) {
-      case recordTypes.MarkDOMContent:
-        return i18n.i18n.lockedString('DCL');
-      case recordTypes.MarkLoad:
-        return i18n.i18n.lockedString('L');
-      case recordTypes.MarkFirstPaint:
-        return i18n.i18n.lockedString('FP');
-      case recordTypes.MarkFCP:
-        return i18n.i18n.lockedString('FCP');
-      case recordTypes.MarkLCPCandidate:
-        return i18n.i18n.lockedString('LCP');
-    }
-    return null;
-  }
-
   static markerStyleForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): TimelineMarkerStyle {
     const tallMarkerDashStyle = [6, 4];
     const title = TimelineUIUtils.eventTitle(event);
     const recordTypes = TimelineModel.TimelineModel.RecordType;
 
     if (event.name !== recordTypes.NavigationStart &&
-        (TraceEngine.Legacy.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console) ||
-         TraceEngine.Legacy.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console))) {
+        (TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console) ||
+         TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console))) {
       return {
         title: title,
         dashStyle: tallMarkerDashStyle,
         lineWidth: 0.5,
-        color: TraceEngine.Legacy.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console) ? 'purple' :
-                                                                                                              'orange',
+        color: TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console) ?
+            'purple' :
+            'orange',
         tall: false,
         lowPriority: false,
       };
@@ -2637,7 +2621,7 @@ export function timeStampForEventAdjustedForClosestNavigationIfPossible(
     event: TraceEngine.Types.TraceEvents.TraceEventData,
     traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null): TraceEngine.Types.Timing.MilliSeconds {
   if (!traceParsedData) {
-    const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
+    const {startTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
     return startTime;
   }
 

@@ -79,16 +79,8 @@ TestRunner.formatters.formatAsInvalidationCause = function(cause) {
   return '{reason: ' + cause.reason + ', stackTrace: ' + stackTrace + '}';
 };
 
-PerformanceTestRunner.createTracingModel = function(events) {
-  const model = new Trace.Legacy.TracingModel();
-  model.addEvents(events);
-  model.tracingComplete();
-  return model;
-};
-
 PerformanceTestRunner.invokeWithTracing = function(functionName, callback, additionalCategories, enableJSSampling) {
-  let categories = '-*,disabled-by-default-devtools.timeline*,devtools.timeline,blink.user_timing,' +
-      Trace.Legacy.LegacyTopLevelEventCategory;
+  let categories = '-*,disabled-by-default-devtools.timeline*,devtools.timeline,blink.user_timing,toplevel';
 
   if (additionalCategories) {
     categories += ',' + additionalCategories;

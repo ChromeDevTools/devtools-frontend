@@ -1687,7 +1687,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
          --index) {
       const event = events[index];
       const {endTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
-      if (TraceEngine.Legacy.TracingModel.isTopLevelEvent(event) && endTime < time) {
+      if (TraceEngine.Helpers.Trace.isTopLevelEvent(event) && endTime < time) {
         break;
       }
       if (ActiveFilters.instance().isVisible(event) && endTime >= time) {

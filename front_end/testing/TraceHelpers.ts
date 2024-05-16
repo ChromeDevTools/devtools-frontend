@@ -100,27 +100,6 @@ export async function getNetworkFlameChart(traceFileName: string, expanded: bool
   return {flameChart, dataProvider};
 }
 
-/**
- * Takes a TracingModel and returns a set of all events that have a payload, sorted by timestamp.
- * Useful in tests to locate a legacy SDK Event to use for tests.
- **/
-export function getAllTracingModelPayloadEvents(tracingModel: TraceEngine.Legacy.TracingModel):
-    TraceEngine.Legacy.PayloadEvent[] {
-  const allSDKEvents = tracingModel.sortedProcesses().flatMap(process => {
-    return process.sortedThreads().flatMap(thread => thread.events().filter(TraceEngine.Legacy.eventHasPayload));
-  });
-  allSDKEvents.sort((eventA, eventB) => {
-    if (eventA.startTime > eventB.startTime) {
-      return 1;
-    }
-    if (eventB.startTime > eventA.startTime) {
-      return -1;
-    }
-    return 0;
-  });
-  return allSDKEvents;
-}
-
 // We create here a cross-test base trace event. It is assumed that each
 // test will import this default event and copy-override properties at will.
 export const defaultTraceEvent: TraceEngine.Types.TraceEvents.TraceEventData = {
@@ -388,91 +367,7 @@ export function makeProfileCall(
     args: {},
   };
 }
-/**
- * Provides a stubbed TraceEngine.Legacy.Thread instance.
- * IMPORTANT: this is not designed to be a fully stubbed Thread, but one that is
- * stubbed enough to be able to use it to instantiate an TraceEngine.Legacy.Event.
- * If you pass this fake thread around into places that expect actual threads,
- * you will get errors. Use this only for simple cases where you need a one off
- * event to test something. For anything more, you should use the helpers in
- * TraceHelpers.ts to load and parse a real trace to get real data.
- **/
-export class StubbedThread {
-  static make(id: number): TraceEngine.Legacy.Thread {
-    const instance = new StubbedThread(id);
-    return instance as unknown as TraceEngine.Legacy.Thread;
-  }
-
-  constructor(public id: number) {
-  }
-
-  getModel(): TraceEngine.Legacy.TracingModel {
-    return {
-      parsedCategoriesForString(input: string): Set<string> {
-        return new Set(input.split(','));
-      },
-
-    } as unknown as TraceEngine.Legacy.TracingModel;
-  }
-}
-
 export const DevToolsTimelineCategory = 'disabled-by-default-devtools.timeline';
-
-export interface FakeEventPayload {
-  name: string;
-  categories: string[];
-  tid?: number;
-  ts: number;
-  pid?: number;
-  dur?: number;
-  ph: TraceEngine.Types.TraceEvents.Phase;
-  // The type def of args in EventPayload is inaccurate. We will fix this as
-  // part of the migration but for now let's just tell TS to let us pass
-  // anything in here.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  args?: any;
-  id?: string;
-  scope?: string[];
-  // Allow any additional keys.
-  [x: string]: unknown;
-}
-/**
- * Creates an object that represents an EventPayload - one that looks exactly
- * like an event from a real trace could.
- * You must provide some of the options, but the others will revert to sensible
- * defaults. The goal here is not to use this to emulate an entire trace (you
- * should use an actual trace file if you need that), but to allow the
- * construction of single events to make testing utility methods easier.
- **/
-export function makeFakeEventPayload(payload: FakeEventPayload): TraceEngine.TracingManager.EventPayload {
-  const event: TraceEngine.TracingManager.EventPayload = {
-    // Set defaults for these values, all of which can be overriden by passing
-    // them into the payload object.
-    args: {},
-    pid: 1,
-    tid: 1,
-    id: 'random-test-event-id',
-    dur: 0,
-    ...payload,
-    cat: payload.categories.join(','),
-    scope: payload.scope ? payload.scope.join(',') : 'devtools.timeline',
-  };
-
-  return event;
-}
-
-/**
- * Given an object representing a fake payload - see @FakeEventPayload - this
- * function will create a fake SDK Event with a stubbed thread that tries to
- * mimic the real thing. It is not designed to be used to emulate entire traces,
- * but more to create single events that can be used in unit tests.
- */
-export function makeFakeSDKEventFromPayload(payloadOptions: FakeEventPayload): TraceEngine.Legacy.PayloadEvent {
-  const payload = makeFakeEventPayload(payloadOptions);
-  const thread = StubbedThread.make(payload.tid);
-  const event = TraceEngine.Legacy.PayloadEvent.fromPayload(payload, thread);
-  return event;
-}
 
 /**
  * Mocks an object compatible with the return type of the

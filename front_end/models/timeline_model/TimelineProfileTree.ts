@@ -127,7 +127,8 @@ export class TopDownNode extends Node {
     );
 
     function onStartEvent(e: TraceEngine.Types.TraceEvents.TraceEventData): void {
-      const {startTime: currentStartTime, endTime: currentEndTime} = TraceEngine.Legacy.timesForEventInMilliseconds(e);
+      const {startTime: currentStartTime, endTime: currentEndTime} =
+          TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(e);
 
       ++depth;
       if (depth > path.length + 2) {
@@ -193,7 +194,7 @@ export class TopDownNode extends Node {
      * is cached on `matchedDepth`, for future checks.
      */
     function matchPath(e: TraceEngine.Types.TraceEvents.TraceEventData): boolean {
-      const {endTime} = TraceEngine.Legacy.timesForEventInMilliseconds(e);
+      const {endTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(e);
       if (matchedDepth === path.length) {
         return true;
       }

@@ -470,7 +470,7 @@ export function frameIDForEvent(event: Types.TraceEvents.TraceEventData): string
 }
 
 const DevToolsTimelineEventCategory = 'disabled-by-default-devtools.timeline';
-function isTopLevelEvent(event: Types.TraceEvents.TraceEventData): boolean {
+export function isTopLevelEvent(event: Types.TraceEvents.TraceEventData): boolean {
   return event.cat.includes(DevToolsTimelineEventCategory) && event.name === Types.TraceEvents.KnownEventName.RunTask;
 }
 
@@ -600,4 +600,15 @@ export function forEachEvent(
       config.onEndEvent(last);
     }
   }
+}
+
+// Parsed categories are cached to prevent calling cat.split()
+// multiple times on the same categories string.
+const parsedCategories = new Map<string, Set<string>>();
+export function eventHasCategory(event: Types.TraceEvents.TraceEventData, category: string): boolean {
+  let parsedCategoriesForEvent = parsedCategories.get(event.cat);
+  if (!parsedCategoriesForEvent) {
+    parsedCategoriesForEvent = new Set(event.cat.split(',') || []);
+  }
+  return parsedCategoriesForEvent.has(category);
 }

@@ -693,7 +693,7 @@ const InspectorFrontendHostImpl = class {
    * @param {boolean} forceSaveAs
    */
   save(url, content, forceSaveAs) {
-    DevToolsAPI.sendMessageToEmbedder('save', [url, content, forceSaveAs], null);
+    DevToolsAPI.sendMessageToEmbedder('save', [url, content, forceSaveAs, false], null);
   }
 
   /**

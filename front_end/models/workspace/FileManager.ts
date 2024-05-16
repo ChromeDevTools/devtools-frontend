@@ -62,11 +62,12 @@ export class FileManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   }
 
   // close() *must* be called, for the InspectorFrontendHostStub case, to complete the saving.
-  save(url: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString, content: string, forceSaveAs: boolean):
-      Promise<SaveCallbackParam|null> {
+  save(
+      url: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString, content: string, forceSaveAs: boolean,
+      isBase64: boolean): Promise<SaveCallbackParam|null> {
     // Remove this url from the saved URLs while it is being saved.
     const result = new Promise<SaveCallbackParam|null>(resolve => this.saveCallbacks.set(url, resolve));
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.save(url, content, forceSaveAs);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.save(url, content, forceSaveAs, isBase64);
     return result;
   }
 

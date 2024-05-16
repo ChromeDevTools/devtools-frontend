@@ -91,6 +91,7 @@ ts_library("unittests") {
 
   sources = [
     "NetworkPersistenceManager.test.ts",
+    "PersistenceAction.test.ts",
     "PersistenceImpl.test.ts",
     "PlatformFileSystem.test.ts",
   ]

@@ -81,7 +81,7 @@ describeWithMockConnection('ConsoleView', () => {
     const fileManager = stubFileManager();
     const fileManagerCloseCall = expectCall(fileManager.close);
     saveAsHandler.args[1]();
-    assert.isTrue(fileManager.save.calledOnceWith(FILENAME, '', true));
+    assert.isTrue(fileManager.save.calledOnceWith(FILENAME, '', true, false));
     await fileManagerCloseCall;
     assert.isTrue(fileManager.append.calledOnceWith(FILENAME, sinon.match('message 1\nmessage 2\n')));
   });

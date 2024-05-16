@@ -399,6 +399,125 @@ WITH
 SELECT * FROM processed_logs;`);
 }
 
+type StateFlowNode = {
+  type: 'Session',
+  children: StateFlowNode[],
+}|({type: 'Impression', children: StateFlowNode[], time: number}&AdHocAnalysisVisualElement)|AdHocAnalysisInteraction;
+
+type StateFlowMutation = (AdHocAnalysisLogEntry|(AdHocAnalysisInteraction&{veid: number}));
+
+function getStateFlowMutations(): StateFlowMutation[] {
+  const mutations: StateFlowMutation[] = [];
+  for (const entry of (veDebugEventsLog as AdHocAnalysisLogEntry[])) {
+    mutations.push(entry);
+    const veid = entry.veid;
+    for (const interaction of entry.interactions) {
+      mutations.push({...interaction, veid});
+    }
+  }
+  mutations.sort((e1, e2) => e1.time - e2.time);
+  return mutations;
+}
+
+class StateFlowElementsByArea {
+  #data = new Map<number, AdHocAnalysisVisualElement>();
+
+  add(e: AdHocAnalysisVisualElement): void {
+    this.#data.set(e.veid, e);
+  }
+
+  get(veid: number): AdHocAnalysisVisualElement|undefined {
+    return this.#data.get(veid);
+  }
+
+  getArea(e: AdHocAnalysisVisualElement): number {
+    let area = (e.width || 0) * (e.height || 0);
+    const parent = e.parent ? this.#data.get(e.parent?.veid) : null;
+    if (!parent) {
+      return area;
+    }
+    const parentArea = this.getArea(parent);
+    if (area > parentArea) {
+      area = parentArea;
+    }
+    return area;
+  }
+
+  get data(): readonly AdHocAnalysisVisualElement[] {
+    return [...this.#data.values()].filter(e => this.getArea(e)).sort((e1, e2) => this.getArea(e2) - this.getArea(e1));
+  }
+}
+
+function updateStateFlowTree(
+    rootNode: StateFlowNode, elements: StateFlowElementsByArea, time: number,
+    interactions: AdHocAnalysisInteraction[]): void {
+  let node = rootNode;
+  for (const element of elements.data) {
+    if (!('children' in node)) {
+      return;
+    }
+    let nextNode = node.children[node.children.length - 1];
+    const nextNodeId = nextNode?.type === 'Impression' ? nextNode.veid : null;
+    if (nextNodeId !== element.veid) {
+      node.children.push(...interactions);
+      interactions.length = 0;
+      nextNode = {type: 'Impression', ve: element.ve, veid: element.veid, context: element.context, time, children: []};
+      node.children.push(nextNode);
+    }
+    node = nextNode;
+  }
+}
+
+function normalizeNode(node: StateFlowNode): void {
+  if (node.type !== 'Impression') {
+    return;
+  }
+  while (node.children.length === 1) {
+    if (node.children[0].type === 'Impression') {
+      node.children = node.children[0].children;
+    }
+  }
+  for (const child of node.children) {
+    normalizeNode(child);
+  }
+}
+
+function buildStateFlow(): StateFlowNode {
+  const mutations = getStateFlowMutations();
+  const elements = new StateFlowElementsByArea();
+  const rootNode: StateFlowNode = {type: 'Session', children: []};
+
+  let time = mutations[0].time;
+  const interactions: AdHocAnalysisInteraction[] = [];
+  for (const mutation of mutations) {
+    if (mutation.time > time + 1000) {
+      updateStateFlowTree(rootNode, elements, time, interactions);
+      interactions.length = 0;
+    }
+    if (!('type' in mutation)) {
+      elements.add(mutation);
+    } else if (mutation.type === 'Resize') {
+      const element = elements.get(mutation.veid);
+      if (!element) {
+        continue;
+      }
+      const oldArea = elements.getArea(element);
+      element.width = mutation.width;
+      element.height = mutation.height;
+      if (elements.getArea(element) !== 0 && oldArea !== 0) {
+        interactions.push(mutation);
+      }
+    } else {
+      interactions.push(mutation);
+    }
+    time = mutation.time;
+  }
+  updateStateFlowTree(rootNode, elements, time, interactions);
+
+  normalizeNode(rootNode);
+  return rootNode;
+}
+
 let sessionStartTime: number = Date.now();
 
 export function processStartLoggingForDebugging(): void {
@@ -416,3 +535,5 @@ globalThis.veDebugEventsLog = veDebugEventsLog;
 globalThis.findVeDebugImpression = findVeDebugImpression;
 // @ts-ignore
 globalThis.exportAdHocAnalysisLogForSql = exportAdHocAnalysisLogForSql;
+// @ts-ignore
+globalThis.buildStateFlow = buildStateFlow;

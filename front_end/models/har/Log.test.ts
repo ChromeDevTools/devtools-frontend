@@ -29,4 +29,23 @@ describe('HAR.Log', () => {
 
     assert.strictEqual(entry._initiator?.requestId, requestId);
   });
+
+  it('Exports Service worker info', async () => {
+    const requestId = 'r0' as Protocol.Network.RequestId;
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        requestId, 'p0.com' as Platform.DevToolsPath.UrlString, Platform.DevToolsPath.EmptyUrlString, null, null,
+        {requestId, type: Protocol.Network.InitiatorType.Script});
+
+    const cacheName = 'v1';
+    request.fetchedViaServiceWorker = true;
+    request.setResponseCacheStorageCacheName(cacheName);
+    request.setServiceWorkerResponseSource(Protocol.Network.ServiceWorkerResponseSource.CacheStorage);
+
+    const entry = await HAR.Log.Entry.build(request);
+
+    assert.strictEqual(entry.response._fetchedViaServiceWorker, true);
+    assert.strictEqual(entry.response._responseCacheStorageCacheName, cacheName);
+    assert.strictEqual(
+        entry.response._serviceWorkerResponseSource, Protocol.Network.ServiceWorkerResponseSource.CacheStorage);
+  });
 });

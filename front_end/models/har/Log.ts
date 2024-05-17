@@ -231,6 +231,9 @@ export class Entry {
       bodySize: this.responseBodySize,
       _transferSize: this.request.transferSize,
       _error: this.request.localizedFailDescription,
+      _fetchedViaServiceWorker: this.request.fetchedViaServiceWorker,
+      _responseCacheStorageCacheName: this.request.getResponseCacheStorageCacheName(),
+      _serviceWorkerResponseSource: this.request.serviceWorkerResponseSource(),
     };
   }
 
@@ -471,6 +474,9 @@ export interface Response {
   bodySize: number;
   _transferSize: number;
   _error: string|null;
+  _fetchedViaServiceWorker: boolean;
+  _responseCacheStorageCacheName: string|undefined;
+  _serviceWorkerResponseSource: Protocol.Network.ServiceWorkerResponseSource|undefined;
 }
 
 export interface EntryDTO {

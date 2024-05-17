@@ -94,6 +94,9 @@ const exampleLog = new HAR.HARFormat.HARLog({
         bodySize: -1,
         _transferSize: 2903,
         _error: null,
+        _fetchedViaServiceWorker: true,
+        _responseCacheStorageCacheName: 'v1',
+        _serviceWorkerResponseSource: 'cache-storage',
       },
       serverIPAddress: '127.0.0.1',
       startedDateTime: '2020-12-14T17:35:53.241Z',
@@ -245,6 +248,13 @@ describe('HAR Importer', () => {
   it('Creates documents for entries with a pageref', () => {
     const pageLoadRequest = requests[1];
     assert.isTrue(pageLoadRequest.resourceType().isDocument());
+  });
+
+  it('Parses service worker info in entries', () => {
+    const parsedRequest = requests[0];
+    assert.strictEqual(parsedRequest.fetchedViaServiceWorker, true);
+    assert.strictEqual(parsedRequest.getResponseCacheStorageCacheName(), 'v1');
+    assert.strictEqual(parsedRequest.serviceWorkerResponseSource(), 'cache-storage');
   });
 
   it('Parses the request timings', () => {

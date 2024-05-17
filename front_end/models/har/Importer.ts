@@ -152,6 +152,27 @@ export class Importer {
       }
     }
 
+    // Restore Service Worker related response.
+    request.fetchedViaServiceWorker = Boolean(entry.response.custom.get('fetchedViaServiceWorker'));
+    const serviceWorkerResponseSource = entry.response.customAsString('serviceWorkerResponseSource');
+    if (serviceWorkerResponseSource) {
+      // Should consist with the `Protocol.Network.ServiceWorkerResponseSource` enum class.
+      const sources = new Set<Protocol.Network.ServiceWorkerResponseSource>([
+        Protocol.Network.ServiceWorkerResponseSource.CacheStorage,
+        Protocol.Network.ServiceWorkerResponseSource.FallbackCode,
+        Protocol.Network.ServiceWorkerResponseSource.HttpCache,
+        Protocol.Network.ServiceWorkerResponseSource.Network,
+      ]);
+      if (sources.has(serviceWorkerResponseSource as Protocol.Network.ServiceWorkerResponseSource)) {
+        request.setServiceWorkerResponseSource(
+            serviceWorkerResponseSource as Protocol.Network.ServiceWorkerResponseSource);
+      }
+    }
+    const responseCacheStorageCacheName = entry.response.customAsString('responseCacheStorageCacheName');
+    if (responseCacheStorageCacheName) {
+      request.setResponseCacheStorageCacheName(responseCacheStorageCacheName);
+    }
+
     request.finished = true;
   }
 

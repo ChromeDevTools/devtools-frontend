@@ -252,6 +252,9 @@ class HARResponse extends HARBase {
     // Chrome specific.
     this.custom.set('transferSize', HARBase.optionalNumber(data['_transferSize']));
     this.custom.set('error', HARBase.optionalString(data['_error']));
+    this.custom.set('fetchedViaServiceWorker', Boolean(data['_fetchedViaServiceWorker']));
+    this.custom.set('responseCacheStorageCacheName', HARBase.optionalString(data['_responseCacheStorageCacheName']));
+    this.custom.set('serviceWorkerResponseSource', HARBase.optionalString(data['_serviceWorkerResponseSource']));
   }
 }
 

@@ -286,7 +286,7 @@ describeWithMockConnection('NetworkRequest', () => {
           attribute: null,
           uiString: 'Setting this cookie was blocked due to third-party cookie phaseout. Learn more in the Issues tab.',
         }]));
-    assert.deepStrictEqual(await cookieModel.getCookies([url]), [cookie]);
+    assert.deepStrictEqual(await cookieModel.getCookiesForDomain(''), [cookie]);
 
     request.addExtraResponseInfo({
       responseHeaders: [{name: 'Set-Cookie', value: 'name=value; Path=/'}],
@@ -302,7 +302,7 @@ describeWithMockConnection('NetworkRequest', () => {
       }],
     });
     assert.isTrue(removeBlockedCookieSpy.calledOnceWith(cookie));
-    assert.isEmpty(await cookieModel.getCookies([url]));
+    assert.isEmpty(await cookieModel.getCookiesForDomain(''));
   });
 });
 

@@ -1209,7 +1209,11 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       if (networkManager && request.url() === networkManager.target().inspectedURL() &&
           request.resourceType() === Common.ResourceType.resourceTypes.Document &&
           networkManager.target().parentTarget()?.type() !== SDK.Target.Type.Frame) {
-        baseTime = request.startTime;
+        // If the primary main frame's document was fetched from the prefetch cache,
+        // we should use the issueTime (i.e. when the navigation request was about to start)
+        // instead of startTime, which is when the prefetch network request started
+        // (which is typically well before the navigation starts).
+        baseTime = request.fromPrefetchCache() ? request.issueTime() : request.startTime;
       }
       if (request.endTime > maxTime) {
         maxTime = request.endTime;

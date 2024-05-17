@@ -1142,6 +1142,8 @@ export namespace Audits {
    */
   export interface CookieDeprecationMetadataIssueDetails {
     allowedSites: string[];
+    optOutPercentage: number;
+    isOptOutTopLevel: boolean;
   }
 
   export const enum ClientHintIssueReason {
@@ -3699,13 +3701,14 @@ export namespace DOM {
     Marker = 'marker',
     Backdrop = 'backdrop',
     Selection = 'selection',
+    SearchText = 'search-text',
     TargetText = 'target-text',
     SpellingError = 'spelling-error',
     GrammarError = 'grammar-error',
     Highlight = 'highlight',
     FirstLineInherited = 'first-line-inherited',
     ScrollMarker = 'scroll-marker',
-    ScrollMarkers = 'scroll-markers',
+    ScrollMarkerGroup = 'scroll-marker-group',
     Scrollbar = 'scrollbar',
     ScrollbarThumb = 'scrollbar-thumb',
     ScrollbarButton = 'scrollbar-button',
@@ -12702,6 +12705,12 @@ export namespace Page {
      * Argument will be ignored if reloading dataURL origin.
      */
     scriptToEvaluateOnLoad?: string;
+    /**
+     * If set, an error will be thrown if the target page's main frame's
+     * loader id does not match the provided id. This prevents accidentally
+     * reloading an unintended target in case there's a racing navigation.
+     */
+    loaderId?: Network.LoaderId;
   }
 
   export interface RemoveScriptToEvaluateOnLoadRequest {

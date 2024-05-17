@@ -849,6 +849,8 @@ experimental domain Audits
   type CookieDeprecationMetadataIssueDetails extends object
     properties
       array of string allowedSites
+      number optOutPercentage
+      boolean isOptOutTopLevel
 
   type ClientHintIssueReason extends string
     enum
@@ -2626,13 +2628,14 @@ domain DOM
       marker
       backdrop
       selection
+      search-text
       target-text
       spelling-error
       grammar-error
       highlight
       first-line-inherited
       scroll-marker
-      scroll-markers
+      scroll-marker-group
       scrollbar
       scrollbar-thumb
       scrollbar-button
@@ -8705,6 +8708,10 @@ domain Page
       # If set, the script will be injected into all frames of the inspected page after reload.
       # Argument will be ignored if reloading dataURL origin.
       optional string scriptToEvaluateOnLoad
+      # If set, an error will be thrown if the target page's main frame's
+      # loader id does not match the provided id. This prevents accidentally
+      # reloading an unintended target in case there's a racing navigation.
+      experimental optional Network.LoaderId loaderId
 
   # Deprecated, please use removeScriptToEvaluateOnNewDocument instead.
   experimental deprecated command removeScriptToEvaluateOnLoad

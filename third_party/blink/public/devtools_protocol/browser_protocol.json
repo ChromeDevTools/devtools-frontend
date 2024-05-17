@@ -1696,6 +1696,14 @@
                             "items": {
                                 "type": "string"
                             }
+                        },
+                        {
+                            "name": "optOutPercentage",
+                            "type": "number"
+                        },
+                        {
+                            "name": "isOptOutTopLevel",
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -5546,13 +5554,14 @@
                         "marker",
                         "backdrop",
                         "selection",
+                        "search-text",
                         "target-text",
                         "spelling-error",
                         "grammar-error",
                         "highlight",
                         "first-line-inherited",
                         "scroll-marker",
-                        "scroll-markers",
+                        "scroll-marker-group",
                         "scrollbar",
                         "scrollbar-thumb",
                         "scrollbar-button",
@@ -18883,6 +18892,13 @@
                             "description": "If set, the script will be injected into all frames of the inspected page after reload.\nArgument will be ignored if reloading dataURL origin.",
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "loaderId",
+                            "description": "If set, an error will be thrown if the target page's main frame's\nloader id does not match the provided id. This prevents accidentally\nreloading an unintended target in case there's a racing navigation.",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "Network.LoaderId"
                         }
                     ]
                 },

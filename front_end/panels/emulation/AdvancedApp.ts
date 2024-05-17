@@ -24,10 +24,6 @@ export class AdvancedApp implements Common.App.App {
   constructor() {
     UI.DockController.DockController.instance().addEventListener(
         UI.DockController.Events.BeforeDockSideChanged, this.openToolboxWindow, this);
-
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.ColorThemeChanged,
-        () => ThemeSupport.ThemeSupport.instance().fetchColors(this.toolboxDocument));
   }
 
   /**
@@ -83,11 +79,7 @@ export class AdvancedApp implements Common.App.App {
   }
 
   deviceModeEmulationFrameLoaded(toolboxDocument: Document): void {
-    ThemeSupport.ThemeSupport.instance().applyTheme(toolboxDocument);
-    ThemeSupport.ThemeSupport.instance().fetchColors(toolboxDocument);
-    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
-      ThemeSupport.ThemeSupport.instance().applyTheme(toolboxDocument);
-    });
+    ThemeSupport.ThemeSupport.instance().addDocumentToTheme(toolboxDocument);
     UI.UIUtils.initializeUIUtils(toolboxDocument);
     UI.UIUtils.installComponentRootStyles((toolboxDocument.body as Element));
     UI.ContextMenu.ContextMenu.installHandler(toolboxDocument);

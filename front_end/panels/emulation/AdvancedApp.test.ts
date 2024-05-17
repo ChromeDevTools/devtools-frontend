@@ -60,7 +60,7 @@ describeWithMockConnection('AdvancedApp', () => {
     const advancedApp = Emulation.AdvancedApp.AdvancedApp.instance();
     assert.exists(advancedApp);
 
-    const fetchColorsSpy = sinon.spy(ThemeSupport.ThemeSupport.instance(), 'fetchColors');
+    const fetchColorsSpy = sinon.spy(ThemeSupport.ThemeSupport.instance(), 'fetchColorsAndApplyHostTheme');
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.ColorThemeChanged);

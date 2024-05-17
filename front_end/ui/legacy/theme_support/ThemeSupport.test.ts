@@ -15,7 +15,7 @@ describeWithEnvironment('ThemeSupport', () => {
   });
 
   it('calls fetchColors on host ColorThemeChanged', async () => {
-    const colorFetchSpy = sinon.spy(themeSupport, 'fetchColors');
+    const colorFetchSpy = sinon.spy(themeSupport, 'fetchColorsAndApplyHostTheme');
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.ColorThemeChanged);
@@ -35,7 +35,7 @@ describeWithEnvironment('ThemeSupport', () => {
       colorsLink.rel = 'stylesheet';
       doc.head.appendChild(colorsLink);
 
-      themeSupport.fetchColors(doc);
+      themeSupport.addDocumentToTheme(doc);
 
       const updatedHref = doc.body.querySelector(COLORS_CSS_SELECTOR)!.getAttribute('href');
       assert.notEqual(updatedHref, originalColorHref);

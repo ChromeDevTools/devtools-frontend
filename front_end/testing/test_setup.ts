@@ -28,13 +28,14 @@ beforeEach(() => {
   }
   Timeline.SourceMapsResolver.SourceMapsResolver.clearResolvedNodeNames();
 
+  // Don't retain host binding listeners across tests. Set this up before initializing ThemeSupport as
+  // ThemeSupport adds a host binding listener.
+  Host.InspectorFrontendHost.InspectorFrontendHostInstance.events = new Common.ObjectWrapper.ObjectWrapper();
+
   // Some unit tests exercise code that assumes a ThemeSupport instance is available.
   // Run this in a beforeEach in case an individual test overrides it.
   const setting = createFakeSetting('theme', 'default');
   ThemeSupport.ThemeSupport.instance({forceNew: true, setting});
-
-  // Don't retain host binding listeners across tests.
-  Host.InspectorFrontendHost.InspectorFrontendHostInstance.events = new Common.ObjectWrapper.ObjectWrapper();
 
   startTrackingAsyncActivity();
 });

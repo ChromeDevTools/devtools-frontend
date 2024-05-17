@@ -722,4 +722,14 @@ describeWithEnvironment('TraceModel helpers', function() {
       assert.strictEqual(onInstantEvent.callCount, 2);
     });
   });
+
+  describe('isTopLevelEvent', () => {
+    it('is true for a RunTask event', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const runTask = traceParsedData.Renderer.allTraceEntries.find(TraceModel.Types.TraceEvents.isTraceEventRunTask);
+      assert.isOk(runTask);
+
+      assert.isTrue(TraceModel.Helpers.Trace.isTopLevelEvent(runTask));
+    });
+  });
 });

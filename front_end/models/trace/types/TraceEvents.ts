@@ -185,6 +185,13 @@ export interface TraceEventComplete extends TraceEventData {
   dur: MicroSeconds;
 }
 
+export interface TraceEventRunTask extends TraceEventComplete {
+  name: KnownEventName.RunTask;
+}
+export function isTraceEventRunTask(event: TraceEventData): event is TraceEventRunTask {
+  return event.name === KnownEventName.RunTask;
+}
+
 export interface TraceEventFireIdleCallback extends TraceEventComplete {
   name: KnownEventName.FireIdleCallback;
   args: TraceEventArgs&{

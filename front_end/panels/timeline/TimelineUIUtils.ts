@@ -769,7 +769,6 @@ export class TimelineUIUtils {
   static async buildDetailsTextForTraceEvent(
       event: TraceEngine.Types.TraceEvents.TraceEventData,
       traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null): Promise<string|null> {
-    const recordType = TimelineModel.TimelineModel.RecordType;
     let detailsText;
 
     // TODO(40287735): update this code with type-safe data checks.
@@ -779,24 +778,24 @@ export class TimelineUIUtils {
     const unsafeEventData = event.args?.data as Record<string, any>;
 
     switch (event.name) {
-      case recordType.GCEvent:
-      case recordType.MajorGC:
-      case recordType.MinorGC: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.GC:
+      case TraceEngine.Types.TraceEvents.KnownEventName.MajorGC:
+      case TraceEngine.Types.TraceEvents.KnownEventName.MinorGC: {
         const delta = unsafeEventArgs['usedHeapSizeBefore'] - unsafeEventArgs['usedHeapSizeAfter'];
         detailsText = i18nString(UIStrings.sCollected, {PH1: Platform.NumberUtilities.bytesToString(delta)});
         break;
       }
-      case recordType.FunctionCall: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.FunctionCall: {
         const {lineNumber, columnNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
         if (lineNumber !== undefined && columnNumber !== undefined) {
           detailsText = unsafeEventData.url + ':' + (lineNumber + 1) + ':' + (columnNumber + 1);
         }
         break;
       }
-      case recordType.EventDispatch:
+      case TraceEngine.Types.TraceEvents.KnownEventName.EventDispatch:
         detailsText = unsafeEventData ? unsafeEventData['type'] : null;
         break;
-      case recordType.Paint: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.Paint: {
         const width = TimelineUIUtils.quadWidth(unsafeEventData.clip);
         const height = TimelineUIUtils.quadHeight(unsafeEventData.clip);
         if (width && height) {
@@ -804,7 +803,7 @@ export class TimelineUIUtils {
         }
         break;
       }
-      case recordType.ParseHTML: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.ParseHTML: {
         const startLine = unsafeEventArgs['beginData']['startLine'];
         const endLine = unsafeEventArgs['endData'] && unsafeEventArgs['endData']['endLine'];
         const url = Bindings.ResourceUtils.displayNameForURL(unsafeEventArgs['beginData']['url']);
@@ -815,13 +814,13 @@ export class TimelineUIUtils {
         }
         break;
       }
-      case recordType.CompileModule:
-      case recordType.CacheModule:
+      case TraceEngine.Types.TraceEvents.KnownEventName.CompileModule:
+      case TraceEngine.Types.TraceEvents.KnownEventName.CacheModule:
         detailsText = Bindings.ResourceUtils.displayNameForURL(unsafeEventArgs['fileName']);
         break;
-      case recordType.CompileScript:
-      case recordType.CacheScript:
-      case recordType.EvaluateScript: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.CompileScript:
+      case TraceEngine.Types.TraceEvents.KnownEventName.CacheScript:
+      case TraceEngine.Types.TraceEvents.KnownEventName.EvaluateScript: {
         const {lineNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
         const url = unsafeEventData && unsafeEventData['url'];
         if (url) {
@@ -829,8 +828,8 @@ export class TimelineUIUtils {
         }
         break;
       }
-      case recordType.WasmCompiledModule:
-      case recordType.WasmModuleCacheHit: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.WasmCompiledModule:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WasmModuleCacheHit: {
         const url = unsafeEventArgs['url'];
         if (url) {
           detailsText = Bindings.ResourceUtils.displayNameForURL(url);
@@ -838,32 +837,32 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordType.StreamingCompileScript:
-      case recordType.BackgroundDeserialize:
-      case recordType.XHRReadyStateChange:
-      case recordType.XHRLoad: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.StreamingCompileScript:
+      case TraceEngine.Types.TraceEvents.KnownEventName.BackgroundDeserialize:
+      case TraceEngine.Types.TraceEvents.KnownEventName.XHRReadyStateChange:
+      case TraceEngine.Types.TraceEvents.KnownEventName.XHRLoad: {
         const url = unsafeEventData['url'];
         if (url) {
           detailsText = Bindings.ResourceUtils.displayNameForURL(url);
         }
         break;
       }
-      case recordType.TimeStamp:
+      case TraceEngine.Types.TraceEvents.KnownEventName.TimeStamp:
         detailsText = unsafeEventData['message'];
         break;
 
-      case recordType.WebSocketCreate:
-      case recordType.WebSocketSendHandshakeRequest:
-      case recordType.WebSocketReceiveHandshakeResponse:
-      case recordType.WebSocketDestroy:
-      case recordType.ResourceWillSendRequest:
-      case recordType.ResourceSendRequest:
-      case recordType.ResourceReceivedData:
-      case recordType.ResourceReceiveResponse:
-      case recordType.ResourceFinish:
-      case recordType.PaintImage:
-      case recordType.DecodeImage:
-      case recordType.DecodeLazyPixelRef: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketCreate:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketSendHandshakeRequest:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketReceiveHandshakeResponse:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketDestroy:
+      case TraceEngine.Types.TraceEvents.KnownEventName.ResourceWillSendRequest:
+      case TraceEngine.Types.TraceEvents.KnownEventName.ResourceSendRequest:
+      case TraceEngine.Types.TraceEvents.KnownEventName.ResourceReceivedData:
+      case TraceEngine.Types.TraceEvents.KnownEventName.ResourceReceiveResponse:
+      case TraceEngine.Types.TraceEvents.KnownEventName.ResourceFinish:
+      case TraceEngine.Types.TraceEvents.KnownEventName.PaintImage:
+      case TraceEngine.Types.TraceEvents.KnownEventName.DecodeImage:
+      case TraceEngine.Types.TraceEvents.KnownEventName.DecodeLazyPixelRef: {
         const url = urlForEvent(traceParsedData, event);
         if (url) {
           detailsText = Bindings.ResourceUtils.displayNameForURL(url);
@@ -871,15 +870,15 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordType.EmbedderCallback:
+      case TraceEngine.Types.TraceEvents.KnownEventName.EmbedderCallback:
         detailsText = unsafeEventData['callbackName'];
         break;
 
-      case recordType.Animation:
+      case TraceEngine.Types.TraceEvents.KnownEventName.Animation:
         detailsText = unsafeEventData && unsafeEventData['name'];
         break;
 
-      case recordType.AsyncTask:
+      case TraceEngine.Types.TraceEvents.KnownEventName.AsyncTask:
         detailsText = unsafeEventData ? unsafeEventData['name'] : null;
         break;
 
@@ -908,7 +907,6 @@ export class TimelineUIUtils {
       event: TraceEngine.Types.TraceEvents.TraceEventData, target: SDK.Target.Target|null,
       linkifier: LegacyComponents.Linkifier.Linkifier, isFreshRecording = false,
       traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null): Promise<Node|null> {
-    const recordType = TimelineModel.TimelineModel.RecordType;
     let details: HTMLElement|HTMLSpanElement|(Element | null)|Text|null = null;
     let detailsText;
     // TODO(40287735): update this code with type-safe data checks.
@@ -919,37 +917,37 @@ export class TimelineUIUtils {
     const unsafeEventData = event.args?.data as Record<string, any>;
 
     switch (event.name) {
-      case recordType.GCEvent:
-      case recordType.MajorGC:
-      case recordType.MinorGC:
-      case recordType.EventDispatch:
-      case recordType.Paint:
-      case recordType.Animation:
-      case recordType.EmbedderCallback:
-      case recordType.ParseHTML:
-      case recordType.WasmStreamFromResponseCallback:
-      case recordType.WasmCompiledModule:
-      case recordType.WasmModuleCacheHit:
-      case recordType.WasmCachedModule:
-      case recordType.WasmModuleCacheInvalid:
-      case recordType.WebSocketCreate:
-      case recordType.WebSocketSendHandshakeRequest:
-      case recordType.WebSocketReceiveHandshakeResponse:
-      case recordType.WebSocketDestroy: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.GC:
+      case TraceEngine.Types.TraceEvents.KnownEventName.MajorGC:
+      case TraceEngine.Types.TraceEvents.KnownEventName.MinorGC:
+      case TraceEngine.Types.TraceEvents.KnownEventName.EventDispatch:
+      case TraceEngine.Types.TraceEvents.KnownEventName.Paint:
+      case TraceEngine.Types.TraceEvents.KnownEventName.Animation:
+      case TraceEngine.Types.TraceEvents.KnownEventName.EmbedderCallback:
+      case TraceEngine.Types.TraceEvents.KnownEventName.ParseHTML:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WasmStreamFromResponseCallback:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WasmCompiledModule:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WasmModuleCacheHit:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WasmCachedModule:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WasmModuleCacheInvalid:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketCreate:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketSendHandshakeRequest:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketReceiveHandshakeResponse:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketDestroy: {
         detailsText = await TimelineUIUtils.buildDetailsTextForTraceEvent(event, traceParsedData);
         break;
       }
 
-      case recordType.PaintImage:
-      case recordType.DecodeImage:
-      case recordType.DecodeLazyPixelRef:
-      case recordType.XHRReadyStateChange:
-      case recordType.XHRLoad:
-      case recordType.ResourceWillSendRequest:
-      case recordType.ResourceSendRequest:
-      case recordType.ResourceReceivedData:
-      case recordType.ResourceReceiveResponse:
-      case recordType.ResourceFinish: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.PaintImage:
+      case TraceEngine.Types.TraceEvents.KnownEventName.DecodeImage:
+      case TraceEngine.Types.TraceEvents.KnownEventName.DecodeLazyPixelRef:
+      case TraceEngine.Types.TraceEvents.KnownEventName.XHRReadyStateChange:
+      case TraceEngine.Types.TraceEvents.KnownEventName.XHRLoad:
+      case TraceEngine.Types.TraceEvents.KnownEventName.ResourceWillSendRequest:
+      case TraceEngine.Types.TraceEvents.KnownEventName.ResourceSendRequest:
+      case TraceEngine.Types.TraceEvents.KnownEventName.ResourceReceivedData:
+      case TraceEngine.Types.TraceEvents.KnownEventName.ResourceReceiveResponse:
+      case TraceEngine.Types.TraceEvents.KnownEventName.ResourceFinish: {
         const url = urlForEvent(traceParsedData, event);
         if (url) {
           const options = {
@@ -990,8 +988,8 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordType.CompileModule:
-      case recordType.CacheModule: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.CompileModule:
+      case TraceEngine.Types.TraceEvents.KnownEventName.CacheModule: {
         details = this.linkifyLocation({
           scriptId: null,
           url: unsafeEventArgs['fileName'],
@@ -1004,9 +1002,9 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordType.CompileScript:
-      case recordType.CacheScript:
-      case recordType.EvaluateScript: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.CompileScript:
+      case TraceEngine.Types.TraceEvents.KnownEventName.CacheScript:
+      case TraceEngine.Types.TraceEvents.KnownEventName.EvaluateScript: {
         const url = unsafeEventData['url'];
         if (url) {
           const {lineNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
@@ -1023,8 +1021,8 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordType.BackgroundDeserialize:
-      case recordType.StreamingCompileScript: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.BackgroundDeserialize:
+      case TraceEngine.Types.TraceEvents.KnownEventName.StreamingCompileScript: {
         const url = unsafeEventData['url'];
         if (url) {
           details = this.linkifyLocation(
@@ -1195,9 +1193,7 @@ export class TimelineUIUtils {
       }
     }
 
-    const recordTypes = TimelineModel.TimelineModel.RecordType;
-
-    if (event.name === recordTypes.LayoutShift) {
+    if (TraceEngine.Types.TraceEvents.isSyntheticLayoutShift(event)) {
       // Ensure that there are no pie charts or extended info for layout shifts.
       detailed = false;
     }
@@ -1270,16 +1266,16 @@ export class TimelineUIUtils {
     const isFreshRecording = Boolean(traceParseData && Tracker.instance().recordingIsFresh(traceParseData));
 
     switch (event.name) {
-      case recordTypes.GCEvent:
-      case recordTypes.MajorGC:
-      case recordTypes.MinorGC: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.GC:
+      case TraceEngine.Types.TraceEvents.KnownEventName.MajorGC:
+      case TraceEngine.Types.TraceEvents.KnownEventName.MinorGC: {
         const delta = unsafeEventArgs['usedHeapSizeBefore'] - unsafeEventArgs['usedHeapSizeAfter'];
         contentHelper.appendTextRow(i18nString(UIStrings.collected), Platform.NumberUtilities.bytesToString(delta));
         break;
       }
 
       case TraceEngine.Types.TraceEvents.KnownEventName.ProfileCall:
-      case recordTypes.FunctionCall: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.FunctionCall: {
         const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(
             event, maybeTargetForEvent(traceParseData, event), linkifier, isFreshRecording, traceParseData);
         if (detailsNode) {
@@ -1288,12 +1284,12 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordTypes.TimerFire:
-      case recordTypes.TimerInstall:
-      case recordTypes.TimerRemove: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.TimerFire:
+      case TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall:
+      case TraceEngine.Types.TraceEvents.KnownEventName.TimerRemove: {
         contentHelper.appendTextRow(i18nString(UIStrings.timerId), unsafeEventData.timerId);
 
-        if (event.name === recordTypes.TimerInstall) {
+        if (event.name === TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall) {
           contentHelper.appendTextRow(
               i18nString(UIStrings.timeout), i18n.TimeUtilities.millisToString(unsafeEventData['timeout']));
           contentHelper.appendTextRow(i18nString(UIStrings.repeats), !unsafeEventData['singleShot']);
@@ -1301,21 +1297,21 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordTypes.FireAnimationFrame: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.FireAnimationFrame: {
         contentHelper.appendTextRow(i18nString(UIStrings.callbackId), unsafeEventData['id']);
         break;
       }
 
-      case recordTypes.CompileModule: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.CompileModule: {
         contentHelper.appendLocationRow(i18nString(UIStrings.module), unsafeEventArgs['fileName'], 0);
         break;
       }
-      case recordTypes.CompileScript: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.CompileScript: {
         // This case is handled above
         break;
       }
 
-      case recordTypes.CacheModule: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.CacheModule: {
         url = unsafeEventData && unsafeEventData['url'] as Platform.DevToolsPath.UrlString;
         contentHelper.appendTextRow(
             i18nString(UIStrings.compilationCacheSize),
@@ -1323,7 +1319,7 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordTypes.CacheScript: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.CacheScript: {
         url = unsafeEventData && unsafeEventData['url'] as Platform.DevToolsPath.UrlString;
         if (url) {
           const {lineNumber, columnNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
@@ -1335,7 +1331,7 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordTypes.EvaluateScript: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.EvaluateScript: {
         url = unsafeEventData && unsafeEventData['url'] as Platform.DevToolsPath.UrlString;
         if (url) {
           const {lineNumber, columnNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
@@ -1344,11 +1340,11 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordTypes.WasmStreamFromResponseCallback:
-      case recordTypes.WasmCompiledModule:
-      case recordTypes.WasmCachedModule:
-      case recordTypes.WasmModuleCacheHit:
-      case recordTypes.WasmModuleCacheInvalid: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.WasmStreamFromResponseCallback:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WasmCompiledModule:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WasmCachedModule:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WasmModuleCacheHit:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WasmModuleCacheInvalid: {
         if (unsafeEventData) {
           url = unsafeEventArgs['url'] as Platform.DevToolsPath.UrlString;
           if (url) {
@@ -1367,7 +1363,7 @@ export class TimelineUIUtils {
       }
 
       // @ts-ignore Fall-through intended.
-      case recordTypes.Paint: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.Paint: {
         const clip = unsafeEventData['clip'];
         contentHelper.appendTextRow(
             i18nString(UIStrings.location), i18nString(UIStrings.sSCurlyBrackets, {PH1: clip[0], PH2: clip[1]}));
@@ -1377,17 +1373,17 @@ export class TimelineUIUtils {
             i18nString(UIStrings.dimensions), i18nString(UIStrings.sSDimensions, {PH1: clipWidth, PH2: clipHeight}));
       }
 
-      case recordTypes.PaintSetup:
-      case recordTypes.Rasterize:
-      case recordTypes.ScrollLayer: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.PaintSetup:
+      case TraceEngine.Types.TraceEvents.KnownEventName.Rasterize:
+      case TraceEngine.Types.TraceEvents.KnownEventName.ScrollLayer: {
         relatedNodeLabel = i18nString(UIStrings.layerRoot);
         break;
       }
 
-      case recordTypes.PaintImage:
-      case recordTypes.DecodeLazyPixelRef:
-      case recordTypes.DecodeImage:
-      case recordTypes.DrawLazyPixelRef: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.PaintImage:
+      case TraceEngine.Types.TraceEvents.KnownEventName.DecodeLazyPixelRef:
+      case TraceEngine.Types.TraceEvents.KnownEventName.DecodeImage:
+      case TraceEngine.Types.TraceEvents.KnownEventName.DrawLazyPixelRef: {
         relatedNodeLabel = i18nString(UIStrings.ownerElement);
         url = urlForEvent(traceParseData, event);
         if (url) {
@@ -1402,7 +1398,7 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordTypes.ParseAuthorStyleSheet: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.ParseAuthorStyleSheet: {
         url = unsafeEventData['styleSheetUrl'] as Platform.DevToolsPath.UrlString;
         if (url) {
           const options = {
@@ -1416,7 +1412,7 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordTypes.UpdateLayoutTree: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.UpdateLayoutTree: {
         contentHelper.appendTextRow(i18nString(UIStrings.elementsAffected), unsafeEventArgs['elementCount']);
 
         const selectorStatsSetting =
@@ -1430,7 +1426,7 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordTypes.Layout: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.Layout: {
         const beginData = unsafeEventArgs['beginData'];
         contentHelper.appendTextRow(
             i18nString(UIStrings.nodesThatNeedLayout),
@@ -1439,15 +1435,15 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordTypes.ConsoleTime: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.ConsoleTime: {
         contentHelper.appendTextRow(i18nString(UIStrings.message), event.name);
         break;
       }
 
-      case recordTypes.WebSocketCreate:
-      case recordTypes.WebSocketSendHandshakeRequest:
-      case recordTypes.WebSocketReceiveHandshakeResponse:
-      case recordTypes.WebSocketDestroy: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketCreate:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketSendHandshakeRequest:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketReceiveHandshakeResponse:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketDestroy: {
         if (TraceEngine.Types.TraceEvents.isWebSocketTraceEvent(event)) {
           const rows = TimelineComponents.DetailsView.buildRowsForWebSocketEvent(event, traceParseData);
           for (const {key, value} of rows) {
@@ -1457,19 +1453,19 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordTypes.EmbedderCallback: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.EmbedderCallback: {
         contentHelper.appendTextRow(i18nString(UIStrings.callbackFunction), unsafeEventData['callbackName']);
         break;
       }
 
-      case recordTypes.Animation: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.Animation: {
         if (event.ph === TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_INSTANT) {
           contentHelper.appendTextRow(i18nString(UIStrings.state), unsafeEventData['state']);
         }
         break;
       }
 
-      case recordTypes.ParseHTML: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.ParseHTML: {
         const beginData = unsafeEventArgs['beginData'];
         const startLine = beginData['startLine'] - 1;
         const endLine = unsafeEventArgs['endData'] ? unsafeEventArgs['endData']['endLine'] - 1 : undefined;
@@ -1481,34 +1477,34 @@ export class TimelineUIUtils {
       }
 
       // @ts-ignore Fall-through intended.
-      case recordTypes.FireIdleCallback: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.FireIdleCallback: {
         contentHelper.appendTextRow(
             i18nString(UIStrings.allottedTime),
             i18n.TimeUtilities.millisToString(unsafeEventData['allottedMilliseconds']));
         contentHelper.appendTextRow(i18nString(UIStrings.invokedByTimeout), unsafeEventData['timedOut']);
       }
 
-      case recordTypes.RequestIdleCallback:
-      case recordTypes.CancelIdleCallback: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.RequestIdleCallback:
+      case TraceEngine.Types.TraceEvents.KnownEventName.CancelIdleCallback: {
         contentHelper.appendTextRow(i18nString(UIStrings.callbackId), unsafeEventData['id']);
         break;
       }
 
-      case recordTypes.EventDispatch: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.EventDispatch: {
         contentHelper.appendTextRow(i18nString(UIStrings.type), unsafeEventData['type']);
         break;
       }
 
       // @ts-ignore Fall-through intended.
-      case recordTypes.MarkLCPCandidate: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.MarkLCPCandidate: {
         contentHelper.appendTextRow(i18nString(UIStrings.type), String(unsafeEventData['type']));
         contentHelper.appendTextRow(i18nString(UIStrings.size), String(unsafeEventData['size']));
       }
 
-      case recordTypes.MarkFirstPaint:
-      case recordTypes.MarkFCP:
-      case recordTypes.MarkLoad:
-      case recordTypes.MarkDOMContent: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.MarkFirstPaint:
+      case TraceEngine.Types.TraceEvents.KnownEventName.MarkFCP:
+      case TraceEngine.Types.TraceEvents.KnownEventName.MarkLoad:
+      case TraceEngine.Types.TraceEvents.KnownEventName.MarkDOMContent: {
         const adjustedEventTimeStamp = timeStampForEventAdjustedForClosestNavigationIfPossible(
             event,
             traceParseData,
@@ -1525,7 +1521,7 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordTypes.EventTiming: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.EventTiming: {
         const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(
             event, maybeTargetForEvent(traceParseData, event), linkifier, isFreshRecording, traceParseData);
         if (detailsNode) {
@@ -1543,7 +1539,7 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordTypes.LayoutShift: {
+      case TraceEngine.Types.TraceEvents.KnownEventName.LayoutShift: {
         if (!TraceEngine.Types.TraceEvents.isSyntheticLayoutShift(event)) {
           console.error('Unexpected type for LayoutShift event');
           break;
@@ -2383,11 +2379,10 @@ export class TimelineUIUtils {
   static markerStyleForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): TimelineMarkerStyle {
     const tallMarkerDashStyle = [6, 4];
     const title = TimelineUIUtils.eventTitle(event);
-    const recordTypes = TimelineModel.TimelineModel.RecordType;
 
-    if (event.name !== recordTypes.NavigationStart &&
-        (TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console) ||
-         TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console))) {
+    if (event.name !== TraceEngine.Types.TraceEvents.KnownEventName.NavigationStart &&
+            TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console) ||
+        TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.UserTiming)) {
       return {
         title: title,
         dashStyle: tallMarkerDashStyle,
@@ -2402,35 +2397,35 @@ export class TimelineUIUtils {
     let tall = false;
     let color = 'grey';
     switch (event.name) {
-      case recordTypes.NavigationStart:
+      case TraceEngine.Types.TraceEvents.KnownEventName.NavigationStart:
         color = '#FF9800';
         tall = true;
         break;
-      case recordTypes.FrameStartedLoading:
+      case TraceEngine.Types.TraceEvents.KnownEventName.FrameStartedLoading:
         color = 'green';
         tall = true;
         break;
-      case recordTypes.MarkDOMContent:
+      case TraceEngine.Types.TraceEvents.KnownEventName.MarkDOMContent:
         color = '#0867CB';
         tall = true;
         break;
-      case recordTypes.MarkLoad:
+      case TraceEngine.Types.TraceEvents.KnownEventName.MarkLoad:
         color = '#B31412';
         tall = true;
         break;
-      case recordTypes.MarkFirstPaint:
+      case TraceEngine.Types.TraceEvents.KnownEventName.MarkFirstPaint:
         color = '#228847';
         tall = true;
         break;
-      case recordTypes.MarkFCP:
+      case TraceEngine.Types.TraceEvents.KnownEventName.MarkFCP:
         color = '#1A6937';
         tall = true;
         break;
-      case recordTypes.MarkLCPCandidate:
+      case TraceEngine.Types.TraceEvents.KnownEventName.MarkLCPCandidate:
         color = '#1A3422';
         tall = true;
         break;
-      case recordTypes.TimeStamp:
+      case TraceEngine.Types.TraceEvents.KnownEventName.TimeStamp:
         color = 'orange';
         break;
     }

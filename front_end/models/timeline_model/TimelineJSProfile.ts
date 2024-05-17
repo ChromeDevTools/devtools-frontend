@@ -8,8 +8,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TraceEngine from '../trace/trace.js';
 
-import {RecordType} from './TimelineModel.js';
-
 const UIStrings = {
   /**
    *@description Text for the name of a thread of the page
@@ -49,9 +47,12 @@ export class TimelineJSProfileProcessor {
 
     // Append a root to show the start time of the profile (which is earlier than first sample), so the Performance
     // panel won't truncate this time period.
+    // 'JSRoot' doesn't exist in the new engine and is not the name of an actual trace event, but changing it might break other trace processing tools that rely on this, so we stick with this name.
+    // TODO(crbug.com/341234884): consider removing this or clarify why it's required.
     appendEvent(
-        RecordType.JSRoot, {}, profile.startTime, profile.endTime - profile.startTime,
+        'JSRoot', {}, profile.startTime, profile.endTime - profile.startTime,
         TraceEngine.Types.TraceEvents.Phase.COMPLETE, 'toplevel');
+
     // TODO: create a `Profile` event instead, as `cpuProfile` is legacy
     appendEvent(
         'CpuProfile', {data: {'cpuProfile': profile}}, profile.endTime, 0,

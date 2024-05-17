@@ -41,11 +41,39 @@ describe('HAR.Log', () => {
     request.setResponseCacheStorageCacheName(cacheName);
     request.setServiceWorkerResponseSource(Protocol.Network.ServiceWorkerResponseSource.CacheStorage);
 
+    const timingInfo: Protocol.Network.ResourceTiming = {
+      requestTime: 500,
+      proxyStart: 0,
+      proxyEnd: 0,
+      dnsStart: 0,
+      dnsEnd: 0,
+      connectStart: 0,
+      connectEnd: 0,
+      sslStart: 0,
+      sslEnd: 0,
+      workerStart: 500,
+      workerReady: 1000,
+      workerFetchStart: 1050,
+      workerRespondWithSettled: 3000,
+      sendStart: 0,
+      sendEnd: 0,
+      pushStart: 0,
+      pushEnd: 0,
+      receiveHeadersStart: 0,
+      receiveHeadersEnd: 0,
+    };
+    request.timing = timingInfo;
+
     const entry = await HAR.Log.Entry.build(request);
 
     assert.strictEqual(entry.response._fetchedViaServiceWorker, true);
     assert.strictEqual(entry.response._responseCacheStorageCacheName, cacheName);
     assert.strictEqual(
         entry.response._serviceWorkerResponseSource, Protocol.Network.ServiceWorkerResponseSource.CacheStorage);
+
+    assert.strictEqual(entry.timings._workerStart, timingInfo.workerStart);
+    assert.strictEqual(entry.timings._workerReady, timingInfo.workerReady);
+    assert.strictEqual(entry.timings._workerFetchStart, timingInfo.workerFetchStart);
+    assert.strictEqual(entry.timings._workerRespondWithSettled, timingInfo.workerRespondWithSettled);
   });
 });

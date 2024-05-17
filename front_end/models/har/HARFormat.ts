@@ -375,6 +375,12 @@ export class HARTimings extends HARBase {
     // Chrome specific.
     this.custom.set('blocked_queueing', HARBase.optionalNumber(data['_blocked_queueing']));
     this.custom.set('blocked_proxy', HARBase.optionalNumber(data['_blocked_proxy']));
+
+    // Service Worker timing info (Chrome specific).
+    this.custom.set('workerStart', HARBase.optionalNumber(data['_workerStart']));
+    this.custom.set('workerReady', HARBase.optionalNumber(data['_workerReady']));
+    this.custom.set('workerFetchStart', HARBase.optionalNumber(data['_workerFetchStart']));
+    this.custom.set('workerRespondWithSettled', HARBase.optionalNumber(data['_workerRespondWithSettled']));
   }
 }
 

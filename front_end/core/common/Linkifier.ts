@@ -20,6 +20,9 @@ export abstract class Linkifier {
 export interface Options {
   tooltip?: string;
   preventKeyboardFocus?: boolean;
+  textContent?: string;
+  // Dynamic links include hyperlinks and anchorlinks -- links that navigate the content.
+  isDynamicLink?: boolean;
 }
 
 const registeredLinkifiers: LinkifierRegistration[] = [];

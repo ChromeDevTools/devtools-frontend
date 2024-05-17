@@ -24,4 +24,16 @@ describe('DOMLinkifier', () => {
     const pseudoLabel = (el as HTMLElement).shadowRoot?.querySelector('.node-label-pseudo')?.textContent;
     assert.strictEqual(pseudoLabel, '::view-transition-group(root)');
   });
+
+  it('can linkify DOM node with text content correctly', () => {
+    const domLinkifier = Elements.DOMLinkifier.Linkifier.instance({forceNew: true});
+    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
+      nodeType: Node.ELEMENT_NODE,
+    });
+
+    const el = domLinkifier.linkify(node, {
+      textContent: 'sample content',
+    }) as Element;
+    assert.strictEqual(el.shadowRoot?.querySelector('button')?.textContent, 'sample content');
+  });
 });

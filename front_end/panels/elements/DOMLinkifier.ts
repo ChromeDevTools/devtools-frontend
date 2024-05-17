@@ -22,7 +22,14 @@ const str_ = i18n.i18n.registerUIStrings('panels/elements/DOMLinkifier.ts', UISt
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export const decorateNodeLabel = function(
-    node: SDK.DOMModel.DOMNode, parentElement: HTMLElement, tooltipContent?: string): void {
+    node: SDK.DOMModel.DOMNode, parentElement: HTMLElement, options: Common.Linkifier.Options): void {
+  const nameElement = parentElement.createChild('span', 'node-label-name');
+  if (options.textContent) {
+    nameElement.textContent = options.textContent;
+    UI.Tooltip.Tooltip.install(parentElement, options.tooltip || options.textContent);
+    return;
+  }
+
   const originalNode = node;
   const isPseudo = node.nodeType() === Node.ELEMENT_NODE && node.pseudoType();
   if (isPseudo && node.parentNode) {
@@ -30,8 +37,6 @@ export const decorateNodeLabel = function(
   }
 
   let title = node.nodeNameInCorrectCase();
-
-  const nameElement = parentElement.createChild('span', 'node-label-name');
   nameElement.textContent = title;
 
   const idAttribute = node.getAttribute('id');
@@ -74,13 +79,15 @@ export const decorateNodeLabel = function(
     UI.UIUtils.createTextChild(pseudoElement, pseudoText);
     title += pseudoText;
   }
-  UI.Tooltip.Tooltip.install(parentElement, tooltipContent || title);
+  UI.Tooltip.Tooltip.install(parentElement, options.tooltip || title);
 };
 
 export const linkifyNodeReference = function(
     node: SDK.DOMModel.DOMNode|null, options: Common.Linkifier.Options|undefined = {
       tooltip: undefined,
       preventKeyboardFocus: undefined,
+      textContent: undefined,
+      isDynamicLink: false,
     }): Node {
   if (!node) {
     return document.createTextNode(i18nString(UIStrings.node));
@@ -91,9 +98,10 @@ export const linkifyNodeReference = function(
   const shadowRoot =
       UI.UIUtils.createShadowRootWithCoreStyles(root, {cssFile: [domLinkifierStyles], delegatesFocus: undefined});
   const link = (shadowRoot.createChild('button', 'node-link text-button link-style') as HTMLButtonElement);
+  link.classList.toggle('dynamic-link', options.isDynamicLink);
   link.setAttribute('jslog', `${VisualLogging.link('node').track({click: true, keydown: 'Enter'})}`);
 
-  decorateNodeLabel(node, link, options.tooltip);
+  decorateNodeLabel(node, link, options);
 
   link.addEventListener('click', () => {
     void Common.Revealer.reveal(node, false);

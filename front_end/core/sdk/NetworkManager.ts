@@ -234,6 +234,8 @@ export class NetworkManager extends SDKModel<EventTypes> {
     if (error) {
       return {error};
     }
+    // Wait for at least the `responseReceived event so we have accurate mimetype and charset.
+    await request.waitForResponseReceived();
     return new TextUtils.ContentData.ContentData(
         response.bufferedData, /* isBase64=*/ true, request.mimeType, request.charset() ?? undefined);
   }
@@ -572,6 +574,13 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     const newResourceType = Common.ResourceType.ResourceType.fromMimeTypeOverride(networkRequest.mimeType);
     if (newResourceType) {
       networkRequest.setResourceType(newResourceType);
+    }
+    if (networkRequest.responseReceivedPromiseResolve) {
+      // Anyone interested in waiting for response headers being available?
+      networkRequest.responseReceivedPromiseResolve();
+    } else {
+      // If not, make sure no one will wait on it in the future.
+      networkRequest.responseReceivedPromise = Promise.resolve();
     }
   }
 

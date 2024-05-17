@@ -342,6 +342,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #hasOverriddenContent: boolean;
   #hasThirdPartyCookiePhaseoutIssue: boolean;
   #serverSentEvents?: ServerSentEvents;
+  responseReceivedPromise?: Promise<void>;
+  responseReceivedPromiseResolve?: () => void;
 
   constructor(
       requestId: string, backendRequestId: Protocol.Network.RequestId|undefined, url: Platform.DevToolsPath.UrlString,
@@ -1775,6 +1777,16 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
         }
       });
     }
+  }
+
+  waitForResponseReceived(): Promise<void> {
+    if (this.responseReceivedPromise) {
+      return this.responseReceivedPromise;
+    }
+    const {promise, resolve} = Platform.PromiseUtilities.promiseWithResolvers<void>();
+    this.responseReceivedPromise = promise;
+    this.responseReceivedPromiseResolve = resolve;
+    return this.responseReceivedPromise;
   }
 }
 

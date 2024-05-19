@@ -109,13 +109,6 @@ def sync_node(options):
     subprocess.check_call(action, cwd=gclient_context)
 
 
-def sync_clang_format(options):
-    """Executes the clang_format sync hook from Devtools DEPS file."""
-    action = get_hook_action(options, 'clang_format_linux',
-                             options.devtools_dir)
-    subprocess.check_call(action, cwd=options.devtools_dir)
-
-
 def copy_files(options):
     for from_path, to_path in FILE_MAPPINGS.items():
         from_path = os.path.normpath(from_path)
@@ -184,7 +177,6 @@ if __name__ == '__main__':
         update(OPTIONS)
     if OPTIONS.update_node:
         sync_node(OPTIONS)
-        sync_clang_format(OPTIONS)
     copy_files(OPTIONS)
     generate_signatures(OPTIONS)
     generate_dom_pinned_properties(OPTIONS)

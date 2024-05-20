@@ -84,6 +84,7 @@ describe('ExtensionTraceDataHandler', function() {
       assert.lengthOf(validTrackEntries, allTrackEntries.length);
     });
   });
+
   describe('Timeline markers from user timings that use the extension API', function() {
     it('parses marker data correctly', async () => {
       assert.lengthOf(extensionData.extensionMarkers, 3);
@@ -91,6 +92,26 @@ describe('ExtensionTraceDataHandler', function() {
       const {hintText, detailsPairs} = extensionData.extensionMarkers[0].args;
       assert.strictEqual(hintText, 'A mark');
       assert.strictEqual(JSON.stringify(detailsPairs), '[["Description","This marks the start of a task"]]');
+    });
+
+    it('discards markers whose details are not valid stringified JSON', async () => {
+      const performanceMarkEvent: TraceModel.Types.TraceEvents.TraceEventPerformanceMark = {
+        args: {
+          data: {
+            detail: 'this-is-not-json',
+          },
+        },
+        name: 'test-perf-mark',
+        cat: 'blink.user_timing',
+        ph: TraceModel.Types.TraceEvents.Phase.INSTANT,
+        pid: TraceModel.Types.TraceEvents.ProcessID(1),
+        tid: TraceModel.Types.TraceEvents.ThreadID(1),
+        ts: TraceModel.Types.Timing.MicroSeconds(100),
+      };
+
+      assert.isNull(
+          TraceModel.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInTiming(performanceMarkEvent),
+      );
     });
 
     it('discards markers without a valid dataType metadata field', async () => {

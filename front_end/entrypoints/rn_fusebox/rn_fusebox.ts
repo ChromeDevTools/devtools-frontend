@@ -22,7 +22,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Main from '../main/main.js';
 
-import type * as InspectorBackend from '../../core/protocol_client/InspectorBackend.js';
 import type * as Platform from '../../core/platform/platform.js';
 import type * as Sources from '../../panels/sources/sources.js';
 import * as RNExperiments from '../../core/rn_experiments/rn_experiments.js';

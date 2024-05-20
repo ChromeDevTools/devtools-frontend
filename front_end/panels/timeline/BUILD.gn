@@ -81,6 +81,7 @@ devtools_module("timeline") {
     "TimelineFlameChartNetworkDataProvider.ts",
     "TimelineFlameChartView.ts",
     "TimelineHistoryManager.ts",
+    "TimelineLandingPage.ts",
     "TimelineLayersView.ts",
     "TimelineLoader.ts",
     "TimelineMiniMap.ts",

@@ -99,6 +99,7 @@ function makeSyntheticEventBase(event: Types.TraceEvents.TraceEventAuctionWorkle
                                 Types.TraceEvents.TraceEventAuctionWorkletRunningInProcess):
     Omit<Types.TraceEvents.SyntheticAuctionWorkletEvent, 'args'> {
   return {
+    rawSourceEvent: event,
     name: 'SyntheticAuctionWorkletEvent',
     s: Types.TraceEvents.TraceEventScope.THREAD,
     cat: event.cat,

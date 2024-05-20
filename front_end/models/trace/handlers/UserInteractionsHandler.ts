@@ -302,6 +302,7 @@ export async function finalize(): Promise<void> {
 
     const interactionEvent: Types.TraceEvents.SyntheticInteractionPair = {
       // Use the start event to define the common fields.
+      rawSourceEvent: interactionStartEvent,
       cat: interactionStartEvent.cat,
       name: interactionStartEvent.name,
       pid: interactionStartEvent.pid,

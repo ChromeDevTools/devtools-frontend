@@ -3,12 +3,11 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../../core/platform/platform.js';
-import {type TraceEventHandlerName, HandlerState} from './types.js';
+import * as Helpers from '../helpers/helpers.js';
+import * as Types from '../types/types.js';
 
 import {data as metaHandlerData} from './MetaHandler.js';
-import * as Helpers from '../helpers/helpers.js';
-
-import * as Types from '../types/types.js';
+import {HandlerState, type TraceEventHandlerName} from './types.js';
 
 const MILLISECONDS_TO_MICROSECONDS = 1000;
 const SECONDS_TO_MICROSECONDS = 1000000;
@@ -349,6 +348,7 @@ export async function finalize(): Promise<void> {
 
     // Construct a synthetic trace event for this network request.
     const networkEvent: Types.TraceEvents.SyntheticNetworkRequest = {
+      rawSourceEvent: finalSendRequest,
       args: {
         data: {
           // All data we create from trace events should be added to |syntheticData|.

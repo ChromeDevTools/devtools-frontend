@@ -320,6 +320,7 @@ export function createSortedSyntheticEvents<T extends Types.TraceEvents.TraceEve
     }
     const targetEvent = endEvent || beginEvent;
     const event: MatchedPairType<T> = {
+      rawSourceEvent: beginEvent,
       cat: targetEvent.cat,
       ph: targetEvent.ph,
       pid: targetEvent.pid,

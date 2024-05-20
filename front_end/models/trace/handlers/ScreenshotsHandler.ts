@@ -42,6 +42,7 @@ export async function finalize(): Promise<void> {
   for (const snapshotEvent of snapshotEvents) {
     const {cat, name, ph, pid, tid} = snapshotEvent;
     const syntheticEvent: Types.TraceEvents.SyntheticScreenshot = {
+      rawSourceEvent: snapshotEvent,
       cat,
       name,
       ph,

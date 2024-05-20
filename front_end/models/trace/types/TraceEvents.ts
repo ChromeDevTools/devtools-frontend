@@ -135,7 +135,7 @@ export interface TraceEventSample extends TraceEventData {
  * A fake trace event created to support CDP.Profiler.Profiles in the
  * trace engine.
  */
-export interface SyntheticCpuProfile extends TraceEventInstant {
+export interface SyntheticCpuProfile extends TraceEventInstant, SyntheticEvent<Phase.INSTANT> {
   name: 'CpuProfile';
   args: TraceEventArgs&{
     data: TraceEventArgsData & {
@@ -332,7 +332,8 @@ interface SyntheticArgsData {
   waiting: MicroSeconds;
 }
 
-export interface SyntheticNetworkRequest extends TraceEventComplete {
+export interface SyntheticNetworkRequest extends TraceEventComplete, SyntheticEvent<Phase.COMPLETE> {
+  rawSourceEvent: TraceEventData;
   args: TraceEventArgs&{
     data: TraceEventArgsData & {
       syntheticData: SyntheticArgsData,
@@ -394,7 +395,8 @@ export const enum AuctionWorkletType {
   UNKNOWN = 'unknown',
 }
 
-export interface SyntheticAuctionWorkletEvent extends TraceEventInstant {
+export interface SyntheticAuctionWorkletEvent extends TraceEventInstant, SyntheticEvent<Phase.INSTANT> {
+  rawSourceEvent: TraceEventData;
   name: 'SyntheticAuctionWorkletEvent';
   // The PID that the AuctionWorklet is running in.
   pid: ProcessID;
@@ -492,7 +494,8 @@ export function isTraceEventScreenshot(event: TraceEventData): event is TraceEve
   return event.name === KnownEventName.Screenshot;
 }
 
-export interface SyntheticScreenshot extends TraceEventData {
+export interface SyntheticScreenshot extends TraceEventData, SyntheticEvent {
+  rawSourceEvent: TraceEventScreenshot;
   /** This is the correct presentation timestamp. */
   ts: MicroSeconds;
   args: TraceEventArgs&{
@@ -840,7 +843,9 @@ export interface LayoutShiftParsedData {
   cumulativeWeightedScoreInWindow: number;
   sessionWindowData: LayoutShiftSessionWindowData;
 }
-export interface SyntheticLayoutShift extends TraceEventLayoutShift {
+export interface SyntheticLayoutShift extends TraceEventLayoutShift, SyntheticEvent<Phase.INSTANT> {
+  name: 'LayoutShift';
+  rawSourceEvent: TraceEventLayoutShift;
   args: TraceEventArgs&{
     frame: string,
     data?: LayoutShiftData&{
@@ -1262,15 +1267,26 @@ export function isTraceEventPipelineReporter(event: TraceEventData): event is Tr
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
+interface SyntheticEvent<Ph extends Phase = Phase> extends TraceEventData {
+  ph: Ph;
+  rawSourceEvent: TraceEventData;
+}
+
+export function isSyntheticEvent(event: TraceEventData): event is SyntheticEvent {
+  return 'rawSourceEvent' in event;
+}
+
 // Nestable async events with a duration are made up of two distinct
 // events: the begin, and the end. We need both of them to be able to
 // display the right information, so we create these synthetic events.
 export interface SyntheticEventPair<T extends TraceEventPairableAsync = TraceEventPairableAsync> extends
-    TraceEventData {
+    SyntheticEvent {
+  rawSourceEvent: TraceEventData;
   name: T['name'];
   cat: T['cat'];
   id?: string;
   id2?: {local?: string, global?: string};
+
   dur: MicroSeconds;
   args: TraceEventArgs&{
     data: {

@@ -53,6 +53,17 @@ class RNPerfMetrics {
     }
   }
 
+  registerPerfMetricsGlobalPostMessageHandler(): void {
+    if (globalThis.enableReactNativePerfMetrics !== true ||
+        globalThis.enableReactNativePerfMetricsGlobalPostMessage !== true) {
+      return;
+    }
+
+    this.addEventListener(event => {
+      window.postMessage({event, tag: 'react-native-chrome-devtools-perf-metrics'}, window.location.origin);
+    });
+  }
+
   setLaunchId(launchId: string|null): void {
     this.#launchId = launchId;
   }
@@ -78,17 +89,6 @@ class RNPerfMetrics {
 
 function getPerfTimestamp(): DOMHighResTimeStamp {
   return performance.timeOrigin + performance.now();
-}
-
-export function registerPerfMetricsGlobalPostMessageHandler(): void {
-  if (globalThis.enableReactNativePerfMetrics !== true ||
-      globalThis.enableReactNativePerfMetricsGlobalPostMessage !== true) {
-    return;
-  }
-
-  getInstance().addEventListener(event => {
-    window.postMessage({event, tag: 'react-native-chrome-devtools-perf-metrics'}, window.location.origin);
-  });
 }
 
 type CommonEventFields = Readonly<{

@@ -26,6 +26,14 @@ import type * as Platform from '../../core/platform/platform.js';
 import type * as Sources from '../../panels/sources/sources.js';
 import * as RNExperiments from '../../core/rn_experiments/rn_experiments.js';
 
+/*
+ * To ensure accurate timing measurements,
+ * please make sure these perf metrics lines are called ahead of everything else
+ */
+Host.rnPerfMetrics.registerPerfMetricsGlobalPostMessageHandler();
+Host.rnPerfMetrics.setLaunchId(Root.Runtime.Runtime.queryParam('launchId'));
+Host.rnPerfMetrics.entryPointLoadingStarted('rn_fusebox');
+
 const UIStrings = {
   /**
    *@description Title of the 'React Native' tool in the Network Navigator View, which is part of the Sources tool
@@ -65,11 +73,6 @@ RNExperiments.RNExperimentsImpl.setIsReactNativeEntryPoint(true);
 RNExperiments.RNExperimentsImpl.Instance.enableExperimentsByDefault([
   Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,
 ]);
-
-Host.RNPerfMetrics.registerPerfMetricsGlobalPostMessageHandler();
-
-Host.rnPerfMetrics.setLaunchId(Root.Runtime.Runtime.queryParam('launchId'));
-Host.rnPerfMetrics.entryPointLoadingStarted('rn_fusebox');
 
 class FuseboxClientMetadataModel extends SDK.SDKModel.SDKModel<void> {
   constructor(target: SDK.Target.Target) {

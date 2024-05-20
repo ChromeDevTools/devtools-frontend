@@ -23,8 +23,11 @@ import type * as Sources from '../../panels/sources/sources.js';
 import * as RNExperiments from '../../core/rn_experiments/rn_experiments.js';
 import * as Host from '../../core/host/host.js';
 
-Host.RNPerfMetrics.registerPerfMetricsGlobalPostMessageHandler();
-
+/*
+ * To ensure accurate timing measurements,
+ * please make sure these perf metrics lines are called ahead of everything else
+ */
+Host.rnPerfMetrics.registerPerfMetricsGlobalPostMessageHandler();
 Host.rnPerfMetrics.setLaunchId(Root.Runtime.Runtime.queryParam('launchId'));
 Host.rnPerfMetrics.entryPointLoadingStarted('rn_inspector');
 

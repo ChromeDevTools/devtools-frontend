@@ -142,6 +142,7 @@ def main():
     popen([GENERATE_DEPRECATIONS_SCRIPT])
 
     popen([CONCATENATE_PROTOCOL_SCRIPT] + [
+        path.join(PROTOCOL_LOCATION, 'react_native_domains.pdl'),
         path.join(PROTOCOL_LOCATION, 'browser_protocol.pdl'),
         path.join(V8_DIRECTORY_PATH, 'include', 'js_protocol.pdl'),
         # output_file

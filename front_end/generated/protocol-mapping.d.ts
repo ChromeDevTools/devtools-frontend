@@ -761,6 +761,17 @@ export namespace ProtocolMapping {
 
   export interface Commands {
     /**
+     * Identifies the current client as being Fusebox.
+     *
+     * The Fusebox backend may use this knowledge to print an informational
+     * message to the console, etc. The client should send this before enabling
+     * the Runtime and Log domains.
+     */
+    'FuseboxClient.setClientMetadata': {
+      paramsType: [];
+      returnType: void;
+    };
+    /**
      * Disables the accessibility domain.
      */
     'Accessibility.disable': {

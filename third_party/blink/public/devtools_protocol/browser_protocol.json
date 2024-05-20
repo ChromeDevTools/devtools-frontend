@@ -5,6 +5,17 @@
     },
     "domains": [
         {
+            "domain": "FuseboxClient",
+            "description": "A React Native-specific domain pertaining to the Fusebox (React Native\nDevTools) client.",
+            "experimental": true,
+            "commands": [
+                {
+                    "name": "setClientMetadata",
+                    "description": "Identifies the current client as being Fusebox.\n\nThe Fusebox backend may use this knowledge to print an informational\nmessage to the console, etc. The client should send this before enabling\nthe Runtime and Log domains."
+                }
+            ]
+        },
+        {
             "domain": "Accessibility",
             "experimental": true,
             "dependencies": [

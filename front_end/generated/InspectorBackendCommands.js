@@ -40,6 +40,9 @@ export let InspectorBackendAPI;
 export function registerCommands(inspectorBackend) {
 
 
+// FuseboxClient.
+inspectorBackend.registerCommand("FuseboxClient.setClientMetadata", [], [], "Identifies the current client as being Fusebox.  The Fusebox backend may use this knowledge to print an informational message to the console, etc. The client should send this before enabling the Runtime and Log domains.");
+
 // Accessibility.
 inspectorBackend.registerEnum("Accessibility.AXValueType", {Boolean: "boolean", Tristate: "tristate", BooleanOrUndefined: "booleanOrUndefined", Idref: "idref", IdrefList: "idrefList", Integer: "integer", Node: "node", NodeList: "nodeList", Number: "number", String: "string", ComputedString: "computedString", Token: "token", TokenList: "tokenList", DomRelation: "domRelation", Role: "role", InternalRole: "internalRole", ValueUndefined: "valueUndefined"});
 inspectorBackend.registerEnum("Accessibility.AXValueSourceType", {Attribute: "attribute", Implicit: "implicit", Style: "style", Contents: "contents", Placeholder: "placeholder", RelatedElement: "relatedElement"});

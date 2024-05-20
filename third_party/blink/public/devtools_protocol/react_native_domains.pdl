@@ -1,0 +1,12 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+
+# A React Native-specific domain pertaining to the Fusebox (React Native
+# DevTools) client.
+experimental domain FuseboxClient
+
+  # Identifies the current client as being Fusebox.
+  #
+  # The Fusebox backend may use this knowledge to print an informational
+  # message to the console, etc. The client should send this before enabling
+  # the Runtime and Log domains.
+  command setClientMetadata

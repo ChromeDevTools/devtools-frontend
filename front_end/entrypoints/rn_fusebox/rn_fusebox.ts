@@ -75,13 +75,7 @@ Host.rnPerfMetrics.entryPointLoadingStarted('rn_fusebox');
 class FuseboxClientMetadataModel extends SDK.SDKModel.SDKModel<void> {
   constructor(target: SDK.Target.Target) {
     super(target);
-    target.router()?.sendMessage(
-      target.sessionId,
-      'FuseboxClient',
-      'FuseboxClient.setClientMetadata' as InspectorBackend.QualifiedName,
-      {},
-      () => {},
-    );
+    void target.fuseboxClientAgent().invoke_setClientMetadata();
   }
 }
 

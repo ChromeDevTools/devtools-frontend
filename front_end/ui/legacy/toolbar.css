@@ -101,6 +101,10 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
   min-width: 28px;
   background: transparent;
   border-radius: 0;
+
+  &[aria-haspopup="true"][aria-expanded="true"] {
+    pointer-events: none;
+  }
 }
 
 .toolbar-item-search {

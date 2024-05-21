@@ -184,7 +184,10 @@ describe('The Application Tab', () => {
     await clearStorageItems();
     await clearStorageItemsFilter();
 
-    const dataGridRowValues2 = await getStorageItemsData(['name'], 3);
+    const dataGridRowValues2 = await waitForFunction(async () => {
+      const data = await getStorageItemsData(['name'], 3);
+      return data.length === 3 ? data : undefined;
+    });
     assert.deepEqual(dataGridRowValues2, [
       {
         name: '__Host-foo3',

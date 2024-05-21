@@ -328,6 +328,13 @@ UI.ActionRegistration.registerActionExtension({
   ],
 });
 
+// In hosted mode, let the browser handle the zoom actions natively, since the
+// frontend host's zoom methods are noops. This comes at the cost of not
+// showing the (broken) zoom actions in the Command Menu.
+function shouldEnableZoomActions(): boolean {
+  return !Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode();
+}
+
 UI.ActionRegistration.registerActionExtension({
   actionId: 'main.zoom-in',
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
@@ -378,6 +385,7 @@ UI.ActionRegistration.registerActionExtension({
       shortcut: 'Meta+Shift+NumpadPlus',
     },
   ],
+  condition: shouldEnableZoomActions,
 });
 
 UI.ActionRegistration.registerActionExtension({
@@ -430,6 +438,7 @@ UI.ActionRegistration.registerActionExtension({
       shortcut: 'Meta+Shift+NumpadMinus',
     },
   ],
+  condition: shouldEnableZoomActions,
 });
 
 UI.ActionRegistration.registerActionExtension({
@@ -458,6 +467,7 @@ UI.ActionRegistration.registerActionExtension({
       shortcut: 'Meta+0',
     },
   ],
+  condition: shouldEnableZoomActions,
 });
 
 UI.ActionRegistration.registerActionExtension({

@@ -130,10 +130,10 @@ if (globalThis.FB_ONLY__reactNativeFeedbackLink) {
       if (incomingActionId !== actionId) {
         return false;
       }
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+      feedbackLink,
+    );
 
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-          feedbackLink,
-      );
       return true;
     },
   };

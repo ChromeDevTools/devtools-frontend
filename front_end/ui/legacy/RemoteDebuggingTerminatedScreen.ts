@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 
 import {Dialog} from './Dialog.js';
 import {SizeBehavior} from './GlassPane.js';
@@ -31,6 +33,10 @@ const UIStrings = {
    * (see https://developer.chrome.com/docs/devtools/remote-debugging/).
    */
   reconnectDevtools: 'Reconnect `DevTools`',
+  /**
+   * @description Label of the FB-only 'send feedback' button.
+   */
+  sendFeedback: '[FB-only] Send feedback',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/RemoteDebuggingTerminatedScreen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -46,7 +52,16 @@ export class RemoteDebuggingTerminatedScreen extends VBox {
     this.contentElement.createChild('div', 'message').textContent = i18nString(UIStrings.reconnectWhenReadyByReopening);
     const button = createTextButton(
         i18nString(UIStrings.reconnectDevtools), () => window.location.reload(), {jslogContext: 'reconnect'});
-    this.contentElement.createChild('div', 'button').appendChild(button);
+    const buttonRow = this.contentElement.createChild('div', 'button');
+    buttonRow.appendChild(button);
+
+    if (globalThis.FB_ONLY__reactNativeFeedbackLink) {
+      const feedbackLink = globalThis.FB_ONLY__reactNativeFeedbackLink as Platform.DevToolsPath.UrlString;
+      const feedbackButton = createTextButton(i18nString(UIStrings.sendFeedback), () => {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(feedbackLink);
+      }, {className: 'primary-button', jslogContext: 'sendFeedback'});
+      buttonRow.appendChild(feedbackButton);
+    }
   }
 
   static show(reason: string): void {

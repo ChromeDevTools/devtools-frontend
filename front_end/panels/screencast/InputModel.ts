@@ -21,11 +21,13 @@ const MOUSE_EVENT_TYPES: {[key: string]: Protocol.Input.DispatchMouseEventReques
 
 export class InputModel extends SDK.SDKModel.SDKModel<void> {
   private readonly inputAgent: ProtocolProxyApi.InputApi;
+  private readonly runtimeAgent: ProtocolProxyApi.RuntimeApi;
   private activeMouseOffsetTop: number|null;
 
   constructor(target: SDK.Target.Target) {
     super(target);
     this.inputAgent = target.inputAgent();
+    this.runtimeAgent = target.runtimeAgent();
     this.activeMouseOffsetTop = null;
   }
 
@@ -45,6 +47,13 @@ export class InputModel extends SDK.SDKModel.SDKModel<void> {
         return;
     }
     const text = event.type === 'keypress' ? String.fromCharCode(event.charCode) : undefined;
+
+    if (type === Protocol.Input.DispatchKeyEventRequestType.KeyDown &&
+      ((event.ctrlKey || event.metaKey) && event.key === 'v')) {
+      void this.handlePasteShortcut();
+      return;
+    }
+
     void this.inputAgent.invoke_dispatchKeyEvent({
       type: type,
       modifiers: this.modifiersForEvent(event),
@@ -60,6 +69,34 @@ export class InputModel extends SDK.SDKModel.SDKModel<void> {
       isSystemKey: false,
       location: event.location !== 3 ? event.location : undefined,
     });
+
+    if (type === Protocol.Input.DispatchKeyEventRequestType.KeyDown &&
+      ((event.ctrlKey || event.metaKey) && event.key === 'c')) {
+      void this.handleCopyShortcut();
+    }
+  }
+
+  async handleCopyShortcut(): Promise<void> {
+    try {
+      const result = await this.runtimeAgent.invoke_evaluate({ expression: 'navigator.clipboard.readText()' });
+      if (result.result.type === 'string') {
+        const clipboardText = result.result.value;
+        await navigator.clipboard.writeText(clipboardText);
+      }
+    } catch (error) {
+      console.error('Error reading clipboard text:', error);
+    }
+  }
+
+  async handlePasteShortcut(): Promise<void> {
+    try {
+      const clipboardText = await navigator.clipboard.readText();
+      void this.inputAgent.invoke_insertText({
+        text: clipboardText,
+      });
+    } catch (error) {
+      console.error('Error reading clipboard text:', error);
+    }
   }
 
   emitMouseEvent(event: MouseEvent, offsetTop: number, zoom: number): void {

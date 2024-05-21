@@ -32,7 +32,6 @@ import {
 } from '../helpers/elements-helpers.js';
 import {navigateToNetworkTab, openNetworkTab} from '../helpers/network-helpers.js';
 import {openCommandMenu} from '../helpers/quick_open-helpers.js';
-import {closeSecurityTab, navigateToSecurityTab} from '../helpers/security-helpers.js';
 import {openPanelViaMoreTools, openSettingsTab} from '../helpers/settings-helpers.js';
 import {waitForSourcesPanel} from '../helpers/sources-helpers.js';
 
@@ -308,27 +307,6 @@ describe('User Metrics', () => {
       {
         actionName: 'DevTools.KeybindSetSettingChanged',
         actionCode: 1,  // vsCode
-      },
-    ]);
-  });
-
-  it('dispatches closed panel events for views', async () => {
-    // Focus and close a tab
-    await navigateToSecurityTab();
-    await closeSecurityTab();
-
-    await assertHistogramEventsInclude([
-      {
-        actionName: 'DevTools.PanelShown',
-        actionCode: 16,  // Security
-      },
-      {
-        actionName: 'DevTools.PanelShown',
-        actionCode: 1,
-      },
-      {
-        actionName: 'DevTools.PanelClosed',
-        actionCode: 16,  // Security
       },
     ]);
   });

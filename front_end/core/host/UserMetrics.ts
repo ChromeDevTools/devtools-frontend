@@ -60,16 +60,6 @@ export class UserMetrics {
     }
   }
 
-  /**
-   * Fired when a panel is closed (regardless if it exists in the main panel or the drawer)
-   */
-  panelClosed(panelName: string): void {
-    const code = PanelCodes[panelName as keyof typeof PanelCodes] || 0;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.PanelClosed, code, PanelCodes.MaxValue);
-    // Store that the user has changed the panel so we know launch histograms should not be fired.
-    this.#panelChangedSinceLaunch = true;
-  }
-
   panelShownInLocation(panelName: string, location: 'main'|'drawer'): void {
     const panelWithLocationName = `${panelName}-${location}`;
     const panelWithLocation = PanelWithLocation[panelWithLocationName as keyof typeof PanelWithLocation] || 0;

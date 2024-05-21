@@ -10,7 +10,3 @@ that contains the key `trigger`, or if the header is absent. Otherwise, any
 
 Additionally, a single HTTP redirect chain may register only all sources or all
 triggers, not a combination of both.
-
-Additionally, a request may only include one
-`Attribution-Reporting-Register-Trigger` response header. If more than one is
-set, they will all be ignored.

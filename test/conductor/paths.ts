@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as os from 'os';
 import * as path from 'path';
 
 export const SOURCE_ROOT = path.join(__dirname, '..', require('../build.js').SOURCE_ROOT);
@@ -51,4 +52,14 @@ export class PathPair {
 
     return new PathPair(sourcePath, buildPath);
   }
+}
+
+export function defaultChromePath() {
+  const paths = {
+    'linux': path.join('chrome-linux', 'chrome'),
+    'darwin':
+        path.join('chrome-mac', 'Google Chrome for Testing.app', 'Contents', 'MacOS', 'Google Chrome for Testing'),
+    'win32': path.join('chrome-win', 'chrome.exe'),
+  };
+  return path.join(SOURCE_ROOT, 'third_party', 'chrome', paths[os.platform() as 'linux' | 'win32' | 'darwin']);
 }

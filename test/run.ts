@@ -8,7 +8,7 @@ import * as os from 'os';
 import * as path from 'path';
 
 import {commandLineArgs} from './conductor/commandline.js';
-import {GEN_DIR, isContainedInDirectory, PathPair, SOURCE_ROOT} from './conductor/paths.js';
+import {defaultChromePath, GEN_DIR, isContainedInDirectory, PathPair, SOURCE_ROOT} from './conductor/paths.js';
 
 const yargs = require('yargs');
 const unparse = require('yargs-unparser');
@@ -120,6 +120,18 @@ class MochaTests extends Tests {
 
 class KarmaTests extends Tests {
   override run(tests: PathPair[]) {
+    if (os.type() === 'WINDOWS_NT') {
+      const result = runProcess(
+          'python3',
+          [
+            path.join(SOURCE_ROOT, 'scripts', 'deps', 'set_lpac_acls.py'),
+            options['chrome-binary'] ?? defaultChromePath(),
+          ],
+          {encoding: 'utf-8', stdio: 'inherit'});
+      if (result.error || (result.status ?? 1) !== 0) {
+        return false;
+      }
+    }
     return super.run(tests, [
       path.join(SOURCE_ROOT, 'node_modules', 'karma', 'bin', 'karma'),
       'start',

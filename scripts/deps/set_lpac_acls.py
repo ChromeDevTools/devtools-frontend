@@ -9,6 +9,7 @@
 # We need to set the lpac ACLs on windows for the CfT binary.
 # See https://bit.ly/31yqMJR.
 
+import argparse
 import codecs
 import contextlib
 import logging
@@ -94,3 +95,14 @@ def temporary_file():
         yield path
     finally:
         os.remove(path)
+
+
+def script_main():
+    parser = argparse.ArgumentParser(
+        description='Sets App Container ACL on a directory')
+    parser.add_argument("dir", help='Set ACL on this directory')
+    set_lpac_acls(parser.parse_args().dir)
+
+
+if __name__ == '__main__':
+    script_main()

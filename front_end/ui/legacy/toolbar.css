@@ -563,3 +563,21 @@ devtools-icon.leading-issue-icon {
     color: ButtonText;
   }
 }
+
+/* [RN] Customise styling for internal "Send Feedback" button */
+
+[aria-label="[FB-only] Send feedback"] {
+  height: 20px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-green) 80%, transparent);
+}
+
+[aria-label="[FB-only] Send feedback"]:hover {
+  background: color-mix(in srgb, var(--color-green) 90%, transparent);
+}
+
+[aria-label="[FB-only] Send feedback"] .toolbar-text,
+[aria-label="[FB-only] Send feedback"] .toolbar-glyph {
+  color: white !important;
+}

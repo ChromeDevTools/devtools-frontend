@@ -756,7 +756,7 @@ export class ConsoleInsight extends HTMLElement {
         return LitHtml.nothing;
       case State.ERROR:
       case State.OFFLINE:
-        return html`footer jslog=${VisualLogging.section('footer')}>
+        return html`<footer jslog=${VisualLogging.section('footer')}>
           <div class="disclaimer">
             ${disclaimer}
           </div>

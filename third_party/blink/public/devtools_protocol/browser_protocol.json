@@ -1769,7 +1769,8 @@
                         "ThirdPartyCookiesBlocked",
                         "NotSignedInWithIdp",
                         "MissingTransientUserActivation",
-                        "ReplacedByButtonMode"
+                        "ReplacedByButtonMode",
+                        "RelyingPartyOriginIsOpaque"
                     ]
                 },
                 {

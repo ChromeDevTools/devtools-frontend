@@ -1202,6 +1202,7 @@ export namespace Audits {
     NotSignedInWithIdp = 'NotSignedInWithIdp',
     MissingTransientUserActivation = 'MissingTransientUserActivation',
     ReplacedByButtonMode = 'ReplacedByButtonMode',
+    RelyingPartyOriginIsOpaque = 'RelyingPartyOriginIsOpaque',
   }
 
   export interface FederatedAuthUserInfoRequestIssueDetails {

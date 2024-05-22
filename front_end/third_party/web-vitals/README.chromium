@@ -1,0 +1,14 @@
+Name: Web Vitals
+Short Name: Web Vitals
+URL: https://github.com/GoogleChrome/web-vitals
+Version: 4.0.1
+License: Apache
+License File: package/LICENSE
+Security Critical: no
+
+Description:
+Essential metrics for a healthy site.
+
+```bash
+python3 scripts/deps/roll_front_end_third_party.py web-vitals web-vitals dist/modules
+```

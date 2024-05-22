@@ -13,6 +13,7 @@ devtools_module("extras") {
     "FilmStrip.ts",
     "MainThreadActivity.ts",
     "Metadata.ts",
+    "URLForEntry.ts",
   ]
 
   deps = [
@@ -43,6 +44,7 @@ ts_library("unittests") {
     "FilmStrip.test.ts",
     "MainThreadActivity.test.ts",
     "Metadata.test.ts",
+    "URLForEntry.test.ts",
   ]
 
   deps = [

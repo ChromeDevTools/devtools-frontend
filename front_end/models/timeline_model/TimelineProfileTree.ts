@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 
@@ -563,22 +562,6 @@ export class BottomUpNode extends Node {
     }
     return results;
   }
-}
-
-export function eventURL(event: TraceEngine.Types.TraceEvents.TraceEventData): Platform.DevToolsPath.UrlString|null {
-  // TODO(40287735): this overlaps a lot with the method in
-  // TimelineUIUtils; but this cannot call that because the Model cannot
-  // depend on the UIUtils module. Restructure this and that method so we
-  // can call the same method in both places.
-  if (event.args?.data?.url) {
-    return event.args.data.url as Platform.DevToolsPath.UrlString;
-  }
-
-  const frame = eventStackFrame(event);
-  if (frame) {
-    return frame.url as Platform.DevToolsPath.UrlString;
-  }
-  return null;
 }
 
 export function eventStackFrame(event: TraceEngine.Types.TraceEvents.TraceEventData): Protocol.Runtime.CallFrame|null {

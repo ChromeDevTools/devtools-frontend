@@ -251,7 +251,7 @@ describeWithEnvironment('TimelineTreeView', function() {
       const topLevelGroupNodes = Array.from(tree.children().entries());
 
       assert.deepEqual(topLevelGroupNodes.map(node => node[0]), [
-        '',  // Represents "Unattributed" in the UI.
+        '',  // Represents "Unattributed" in the UI
         'https://web.dev/',
         'extensions::SafeBuiltins',
         'chrome-extension://noondiphcddnnabmjcihcjfbhfklnnep/content_script_compiled.js',
@@ -263,11 +263,11 @@ describeWithEnvironment('TimelineTreeView', function() {
         'https://web.dev/js/index-7e29abb6.js',
         'https://www.googletagmanager.com/gtm.js?id=GTM-MZWCJPP',
         'https://www.google-analytics.com/analytics.js',
-        'https://www.google-analytics.com/j/collect?v=1&_v=j101&a=68725886&t=event&ni=1&_s=1&dl=https%3A%2F%2Fweb.dev%2F&ul=en-gb&de=UTF-8&dt=web.dev&sd=24-bit&sr=3360x1890&vp=1665x846&je=0&ec=Web%20Vitals&ea=FCP&el=v3-1696581005645-6472407333688&ev=129&_u=QACAAEABAAAAACAAIg~&jid=&gjid=&cid=1874137241.1685438100&tid=UA-126406676-2&_gid=656288571.1696581004&_slc=1&gtm=45He3a40n81MZWCJPP&cd5=15&cd6=navigate&cd7=light&cd8=dom-content-loaded&cd9=8&z=54974500',
         'https://www.googletagmanager.com/gtag/js?id=G-18JR3Q8PJ8&l=dataLayer&cx=c',
+        'https://www.google-analytics.com/j/collect?v=1&_v=j101&a=68725886&t=event&ni=1&_s=1&dl=https%3A%2F%2Fweb.dev%2F&ul=en-gb&de=UTF-8&dt=web.dev&sd=24-bit&sr=3360x1890&vp=1665x846&je=0&ec=Web%20Vitals&ea=FCP&el=v3-1696581005645-6472407333688&ev=129&_u=QACAAEABAAAAACAAIg~&jid=&gjid=&cid=1874137241.1685438100&tid=UA-126406676-2&_gid=656288571.1696581004&_slc=1&gtm=45He3a40n81MZWCJPP&cd5=15&cd6=navigate&cd7=light&cd8=dom-content-loaded&cd9=8&z=54974500',
         'https://shared-storage-demo-content-producer.web.app/paa/scripts/private-aggregation-test.js',
         'https://shared-storage-demo-content-producer.web.app/paa/scripts/private-aggregation-test.html',
-
+        'https://web-dev.imgix.net/image/SZHNhsfjU9RbCestTGZU6N7JEWs1/VwL892KEz6bakZMlq10D.png?auto=format&w=740',
       ]);
     });
   });

@@ -178,9 +178,12 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     this.searchResults = [];
   }
 
-  static eventNameForSorting(event: TraceEngine.Types.TraceEvents.TraceEventData): string {
+  #eventNameForSorting(event: TraceEngine.Types.TraceEvents.TraceEventData): string {
     const name = TimelineUIUtils.eventTitle(event) || event.name;
-    return name + ':@' + TimelineModel.TimelineProfileTree.eventURL(event);
+    if (!this.#traceParseData) {
+      return name;
+    }
+    return name + ':@' + TraceEngine.Extras.URLForEntry.get(this.#traceParseData, event);
   }
 
   setSearchableView(searchableView: UI.SearchableView.SearchableView): void {
@@ -401,6 +404,26 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
       return;
     }
     let sortFunction;
+
+    const compareNameSortFn =
+        (a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
+         b: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>): number => {
+          const nodeA = (a as TreeGridNode);
+          const nodeB = (b as TreeGridNode);
+          const eventA = nodeA.profileNode.event;
+          const eventB = nodeB.profileNode.event;
+          // Should not happen, but guard against the nodes not having events.
+          if (!eventA || !eventB) {
+            return 0;
+          }
+          if (!this.#traceParseData) {
+            return 0;
+          }
+          const nameA = this.#eventNameForSorting(eventA);
+          const nameB = this.#eventNameForSorting(eventB);
+          return nameA.localeCompare(nameB);
+        };
+
     switch (columnId) {
       case 'start-time':
         sortFunction = compareStartTime;
@@ -412,7 +435,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
         sortFunction = compareTotalTime;
         break;
       case 'activity':
-        sortFunction = compareName;
+        sortFunction = compareNameSortFn;
         break;
       default:
         console.assert(false, 'Unknown sort field: ' + columnId);
@@ -448,22 +471,6 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
       const nodeA = a as TreeGridNode;
       const nodeB = b as TreeGridNode;
       return nodeA.profileNode.totalTime - nodeB.profileNode.totalTime;
-    }
-
-    function compareName(
-        a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
-        b: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>): number {
-      const nodeA = (a as TreeGridNode);
-      const nodeB = (b as TreeGridNode);
-      const eventA = nodeA.profileNode.event;
-      const eventB = nodeB.profileNode.event;
-      // Should not happen, but guard against the nodes not having events.
-      if (!eventA || !eventB) {
-        return 0;
-      }
-      const nameA = TimelineTreeView.eventNameForSorting(eventA);
-      const nameB = TimelineTreeView.eventNameForSorting(eventB);
-      return nameA.localeCompare(nameB);
     }
   }
 
@@ -903,8 +910,10 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
       case GroupBy.Domain:
         return this.domainByEvent.bind(this, true);
       case GroupBy.URL:
-        return (event: TraceEngine.Types.TraceEvents.TraceEventData) =>
-                   TimelineModel.TimelineProfileTree.eventURL(event) || '';
+        return (event: TraceEngine.Types.TraceEvents.TraceEventData) => {
+          const traceParsedData = this.traceParseData();
+          return traceParsedData ? TraceEngine.Extras.URLForEntry.get(traceParsedData, event) ?? '' : '';
+        };
       case GroupBy.Frame:
         return (event: TraceEngine.Types.TraceEvents.TraceEventData) => {
           const frameId = TraceEngine.Helpers.Trace.frameIDForEvent(event);
@@ -917,7 +926,11 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
   }
 
   private domainByEvent(groupSubdomains: boolean, event: TraceEngine.Types.TraceEvents.TraceEventData): string {
-    const url = TimelineModel.TimelineProfileTree.eventURL(event);
+    const traceParsedData = this.traceParseData();
+    if (!traceParsedData) {
+      return '';
+    }
+    const url = TraceEngine.Extras.URLForEntry.get(traceParsedData, event);
     if (!url) {
       return '';
     }

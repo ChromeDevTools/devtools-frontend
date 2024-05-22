@@ -11,6 +11,7 @@ generate_css("css_files") {
   sources = [
     "breadcrumbsUI.css",
     "interactionBreakdown.css",
+    "sidebar.css",
   ]
 }
 
@@ -20,6 +21,7 @@ devtools_module("components") {
     "BreadcrumbsUI.ts",
     "DetailsView.ts",
     "InteractionBreakdown.ts",
+    "Sidebar.ts",
   ]
 
   deps = [

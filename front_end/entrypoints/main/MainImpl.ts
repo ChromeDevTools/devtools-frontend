@@ -393,6 +393,12 @@ export class MainImpl {
         'Enable saving and loading traces with annotations in the Performance panel',
     );
 
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.TIMELINE_RPP_SIDEBAR,
+        'Enable the experimental, WIP sidebar for the Performance Panel.',
+        true,
+    );
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       'css-type-component-length-deprecate',
       Root.Runtime.ExperimentName.OUTERMOST_TARGET_SELECTOR,

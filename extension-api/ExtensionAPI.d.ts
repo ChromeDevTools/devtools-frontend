@@ -220,7 +220,8 @@ export namespace Chrome {
        * the location is inside of an inlined function with the innermost function at index 0.
        */
       getFunctionInfo(rawLocation: RawLocation):
-          Promise<{frames: Array<FunctionInfo>}|{missingSymbolFiles: Array<string>}>;
+          Promise<{frames: Array<FunctionInfo>, missingSymbolFiles: Array<string>}|{missingSymbolFiles: Array<string>}|
+                  {frames: Array<FunctionInfo>}>;
 
       /**
        * Find locations in raw modules corresponding to the inline function

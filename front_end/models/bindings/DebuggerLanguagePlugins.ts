@@ -903,7 +903,8 @@ export class DebuggerLanguagePluginManager implements
   }
 
   async getFunctionInfo(script: SDK.Script.Script, location: SDK.DebuggerModel.Location):
-      Promise<{frames: Array<Chrome.DevTools.FunctionInfo>}|{missingSymbolFiles: SDK.DebuggerModel.MissingDebugFiles[]}|
+      Promise<{frames: Array<Chrome.DevTools.FunctionInfo>, missingSymbolFiles: SDK.DebuggerModel.MissingDebugFiles[]}|
+              {frames: Array<Chrome.DevTools.FunctionInfo>}|{missingSymbolFiles: SDK.DebuggerModel.MissingDebugFiles[]}|
               null> {
     const {rawModuleId, plugin} = await this.rawModuleIdAndPluginForScript(script);
     if (!plugin) {
@@ -924,7 +925,7 @@ export class DebuggerLanguagePluginManager implements
           const resourceUrl = resource as Platform.DevToolsPath.UrlString;
           return {resourceUrl, initiator};
         });
-        return {missingSymbolFiles};
+        return {missingSymbolFiles, ...('frames' in functionInfo && {frames: functionInfo.frames})};
       }
       return functionInfo;
     } catch (error) {

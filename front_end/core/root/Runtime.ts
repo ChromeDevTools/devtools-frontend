@@ -292,7 +292,6 @@ export const enum ExperimentName {
   PERF_PANEL_ANNOTATIONS = 'perf-panel-annotations',
   TIMELINE_EXTENSIONS = 'timeline-extensions',
   TIMELINE_DEBUG_MODE = 'timeline-debug-mode',
-  TIMELINE_EXECUTE_OLD_ENGINE = 'timeline-enable-old-timeline-model-engine',
 }
 
 /**

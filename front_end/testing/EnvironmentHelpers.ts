@@ -125,7 +125,6 @@ const REGISTERED_EXPERIMENTS = [
   Root.Runtime.ExperimentName.AUTOFILL_VIEW,
   Root.Runtime.ExperimentName.PERF_PANEL_ANNOTATIONS,
   Root.Runtime.ExperimentName.TIMELINE_EXTENSIONS,
-  Root.Runtime.ExperimentName.TIMELINE_EXECUTE_OLD_ENGINE,
   Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE,
 ];
 
@@ -289,10 +288,6 @@ export async function initializeGlobalVars({reset = true} = {}) {
   for (const experimentName of REGISTERED_EXPERIMENTS) {
     Root.Runtime.experiments.register(experimentName, '');
   }
-
-  Root.Runtime.experiments.enableExperimentsByDefault([
-    Root.Runtime.ExperimentName.TIMELINE_EXECUTE_OLD_ENGINE,
-  ]);
 
   // Dynamically import UI after the rest of the environment is set up, otherwise it will fail.
   UI = await import('../ui/legacy/legacy.js');

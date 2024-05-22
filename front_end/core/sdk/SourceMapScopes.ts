@@ -154,8 +154,7 @@ function*
     }
 
     if (startItem.flags & 0x2) {
-      const count = iter.nextVLQ();
-      for (let i = 0; i < count; ++i) {
+      while (iter.hasNext() && iter.peek() !== ',') {
         startItem.variables.push(iter.nextVLQ());
       }
     }

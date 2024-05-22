@@ -148,7 +148,6 @@ export class OriginalScopeBuilder {
       this.#encodedScope += encodeVlq(name);
     }
     if (variables !== undefined) {
-      this.#encodedScope += encodeVlq(variables.length);
       this.#encodedScope += encodeVlqList(variables);
     }
 

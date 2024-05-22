@@ -210,7 +210,7 @@ function compareExperimentLists(mainImplList, userMetricsList) {
     console.log(
         'Please ensure that the DevtoolsExperiments enum in UserMetrics.ts is updated with the new experiment.');
     console.log(
-        'Please ensure that a corresponding CL is openend against chromium.src/tools/metrics/histograms/enums.xml to update the DevtoolsExperiments enum');
+        'Please ensure that a corresponding CL is opened against chromium.src/tools/metrics/histograms/metadata/dev/enums.xml to update the DevtoolsExperiments enum');
     errorFound = true;
   }
   if (staleTelemetry.length) {

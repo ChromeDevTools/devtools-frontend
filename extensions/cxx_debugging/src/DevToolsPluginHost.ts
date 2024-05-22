@@ -69,7 +69,8 @@ export class WorkerPlugin implements Chrome.DevTools.LanguageExtensionPlugin, As
   }
 
   getFunctionInfo(rawLocation: Chrome.DevTools.RawLocation):
-      Promise<{frames: Chrome.DevTools.FunctionInfo[]}|{missingSymbolFiles: string[]}> {
+      Promise<{frames: Chrome.DevTools.FunctionInfo[], missingSymbolFiles: string[]}|
+              {frames: Chrome.DevTools.FunctionInfo[]}|{missingSymbolFiles: string[]}> {
     return this.rpc.sendMessage('getFunctionInfo', rawLocation);
   }
 

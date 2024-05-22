@@ -68,8 +68,8 @@ export class TestPlugin implements Bindings.DebuggerLanguagePlugins.DebuggerLang
 
   async getFunctionInfo(_rawLocation: Chrome.DevTools.RawLocation): Promise<{
     frames: Array<Chrome.DevTools.FunctionInfo>,
-    missingSymbolFiles?: Array<string>,
-  }> {
+    missingSymbolFiles: Array<string>,
+  }|{frames: Array<Chrome.DevTools.FunctionInfo>}|{missingSymbolFiles: Array<string>}> {
     return {frames: []};
   }
 

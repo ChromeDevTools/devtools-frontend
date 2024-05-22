@@ -262,6 +262,10 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   }
 
   async setSelection(selection: TimelineSelection|null): Promise<void> {
+    if (!this.#traceEngineData) {
+      // You can't make a selection if we have no trace data.
+      return;
+    }
     this.detailsLinkifier.reset();
     this.selection = selection;
     if (!this.selection) {
@@ -276,7 +280,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       const networkDetails = await TimelineUIUtils.buildSyntheticNetworkRequestDetails(
           this.#traceEngineData, event, this.detailsLinkifier);
       this.setContent(networkDetails);
-    } else if (TimelineSelection.isTraceEventSelection(selectionObject) && this.#traceEngineData) {
+    } else if (TimelineSelection.isTraceEventSelection(selectionObject)) {
       const event = selectionObject;
       const traceEventDetails =
           await TimelineUIUtils.buildTraceEventDetails(this.#traceEngineData, event, this.detailsLinkifier, true);

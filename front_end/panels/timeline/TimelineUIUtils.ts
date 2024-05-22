@@ -786,7 +786,7 @@ export class TimelineUIUtils {
         break;
       }
       case TraceEngine.Types.TraceEvents.KnownEventName.FunctionCall: {
-        const {lineNumber, columnNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
+        const {lineNumber, columnNumber} = TraceEngine.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
         if (lineNumber !== undefined && columnNumber !== undefined) {
           detailsText = unsafeEventData.url + ':' + (lineNumber + 1) + ':' + (columnNumber + 1);
         }
@@ -821,7 +821,7 @@ export class TimelineUIUtils {
       case TraceEngine.Types.TraceEvents.KnownEventName.CompileScript:
       case TraceEngine.Types.TraceEvents.KnownEventName.CacheScript:
       case TraceEngine.Types.TraceEvents.KnownEventName.EvaluateScript: {
-        const {lineNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
+        const {lineNumber} = TraceEngine.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
         const url = unsafeEventData && unsafeEventData['url'];
         if (url) {
           detailsText = Bindings.ResourceUtils.displayNameForURL(url) + ':' + ((lineNumber || 0) + 1);
@@ -971,7 +971,7 @@ export class TimelineUIUtils {
               TimelineUIUtils.frameDisplayName(
                   {...event.args.data, scriptId: String(event.args.data.scriptId) as Protocol.Runtime.ScriptId}));
         }
-        const {lineNumber, columnNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
+        const {lineNumber, columnNumber} = TraceEngine.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
         const location = this.linkifyLocation({
           scriptId: unsafeEventData['scriptId'],
           url: unsafeEventData['url'],
@@ -1007,7 +1007,7 @@ export class TimelineUIUtils {
       case TraceEngine.Types.TraceEvents.KnownEventName.EvaluateScript: {
         const url = unsafeEventData['url'];
         if (url) {
-          const {lineNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
+          const {lineNumber} = TraceEngine.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
           details = this.linkifyLocation({
             scriptId: null,
             url,
@@ -1167,7 +1167,7 @@ export class TimelineUIUtils {
       linkifier: LegacyComponents.Linkifier.Linkifier,
       detailed: boolean,
       ): Promise<DocumentFragment> {
-    const maybeTarget = maybeTargetForEvent(traceParseData, event);
+    const maybeTarget = targetForEvent(traceParseData, event);
     const {duration, selfTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
 
     const relatedNodesMap = await TraceEngine.Extras.FetchNodes.extractRelatedDOMNodesFromEvent(
@@ -1201,7 +1201,7 @@ export class TimelineUIUtils {
     // This message may vary per event.name;
     let relatedNodeLabel;
 
-    const contentHelper = new TimelineDetailsContentHelper(maybeTargetForEvent(traceParseData, event), linkifier);
+    const contentHelper = new TimelineDetailsContentHelper(targetForEvent(traceParseData, event), linkifier);
 
     const defaultColorForEvent = this.eventColor(event);
     const isMarker = traceParseData && isMarkerEvent(traceParseData, event);
@@ -1240,7 +1240,7 @@ export class TimelineUIUtils {
     if (TraceEngine.Types.TraceEvents.isTraceEventV8Compile(event)) {
       url = event.args.data?.url as Platform.DevToolsPath.UrlString;
       if (url) {
-        const {lineNumber, columnNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
+        const {lineNumber, columnNumber} = TraceEngine.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
         contentHelper.appendLocationRow(i18nString(UIStrings.script), url, lineNumber || 0, columnNumber);
       }
       const isEager = Boolean(event.args.data?.eager);
@@ -1277,7 +1277,7 @@ export class TimelineUIUtils {
       case TraceEngine.Types.TraceEvents.KnownEventName.ProfileCall:
       case TraceEngine.Types.TraceEvents.KnownEventName.FunctionCall: {
         const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(
-            event, maybeTargetForEvent(traceParseData, event), linkifier, isFreshRecording, traceParseData);
+            event, targetForEvent(traceParseData, event), linkifier, isFreshRecording, traceParseData);
         if (detailsNode) {
           contentHelper.appendElementRow(i18nString(UIStrings.function), detailsNode);
         }
@@ -1322,7 +1322,7 @@ export class TimelineUIUtils {
       case TraceEngine.Types.TraceEvents.KnownEventName.CacheScript: {
         url = unsafeEventData && unsafeEventData['url'] as Platform.DevToolsPath.UrlString;
         if (url) {
-          const {lineNumber, columnNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
+          const {lineNumber, columnNumber} = TraceEngine.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
           contentHelper.appendLocationRow(i18nString(UIStrings.script), url, lineNumber || 0, columnNumber);
         }
         contentHelper.appendTextRow(
@@ -1334,7 +1334,7 @@ export class TimelineUIUtils {
       case TraceEngine.Types.TraceEvents.KnownEventName.EvaluateScript: {
         url = unsafeEventData && unsafeEventData['url'] as Platform.DevToolsPath.UrlString;
         if (url) {
-          const {lineNumber, columnNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
+          const {lineNumber, columnNumber} = TraceEngine.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
           contentHelper.appendLocationRow(i18nString(UIStrings.script), url, lineNumber || 0, columnNumber);
         }
         break;
@@ -1523,7 +1523,7 @@ export class TimelineUIUtils {
 
       case TraceEngine.Types.TraceEvents.KnownEventName.EventTiming: {
         const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(
-            event, maybeTargetForEvent(traceParseData, event), linkifier, isFreshRecording, traceParseData);
+            event, targetForEvent(traceParseData, event), linkifier, isFreshRecording, traceParseData);
         if (detailsNode) {
           contentHelper.appendElementRow(i18nString(UIStrings.details), detailsNode);
         }
@@ -1587,7 +1587,7 @@ export class TimelineUIUtils {
 
       default: {
         const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(
-            event, maybeTargetForEvent(traceParseData, event), linkifier, isFreshRecording, traceParseData);
+            event, targetForEvent(traceParseData, event), linkifier, isFreshRecording, traceParseData);
         if (detailsNode) {
           contentHelper.appendElementRow(i18nString(UIStrings.details), detailsNode);
         }
@@ -1767,10 +1767,10 @@ export class TimelineUIUtils {
   }
 
   static async buildSyntheticNetworkRequestDetails(
-      traceParseData: TraceEngine.Handlers.Types.TraceParseData|null,
+      traceParseData: TraceEngine.Handlers.Types.TraceParseData,
       event: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest,
       linkifier: LegacyComponents.Linkifier.Linkifier): Promise<DocumentFragment> {
-    const maybeTarget = maybeTargetForEvent(traceParseData, event);
+    const maybeTarget = targetForEvent(traceParseData, event);
     const contentHelper = new TimelineDetailsContentHelper(maybeTarget, linkifier);
 
     const category = TimelineUIUtils.syntheticNetworkRequestCategory(event);
@@ -2668,29 +2668,6 @@ export function isMarkerEvent(
   }
 
   return false;
-}
-
-// This function only exists to abstract dealing with two different event types
-// whilst we are in the middle of the migration. We are working on removing the
-// CompatibleTraceEvent type, at which point this method can be removed and we
-// can use the method in TargetForEvent.ts directly.
-function maybeTargetForEvent(
-    traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null,
-    event: TraceEngine.Types.TraceEvents.TraceEventData,
-    ): SDK.Target.Target|null {
-  if (!traceParsedData) {
-    return null;
-  }
-
-  return targetForEvent(traceParsedData, event);
-}
-
-// TODO(40287735): remove this functon and use the helper directly.
-function getZeroIndexedLineAndColumnNumbersForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): {
-  lineNumber?: number,
-  columnNumber?: number,
-} {
-  return TraceEngine.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
 }
 
 // TODO: once the CompatibleTraceEvent type is removed, this function can be

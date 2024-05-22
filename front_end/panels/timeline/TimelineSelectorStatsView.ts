@@ -24,7 +24,12 @@ const UIStrings = {
   /**
    *@description Column name and percentage of slow mach non-matches computing a style rule
    */
-  rejectPercentage: '% of slow-path non-matches',
+  rejectPercentage: '% of Slow-Path Non-Matches',
+  /**
+   *@description Tooltip description '% of slow-path non-matches'
+   */
+  rejectPercentageExplanation:
+      'The percentage of non-matching nodes (Match Attempts - Match Count) that couldn\'t be quickly ruled out by the bloom filter. Lower is better.',
   /**
    *@description Column name for count of elements that the engine attempted to match against a style rule
    */
@@ -58,6 +63,11 @@ const UIStrings = {
    *@description Text for announcing that the entire table was copied to clipboard
    */
   tableCopiedToClipboard: 'Table copied to clipboard',
+  /**
+   *@description Text shown as the "Selectelector" cell value for one row of the Selector Stats table, however this particular row is the totals. While normally the Selector cell is values like "div.container", the parenthesis can denote this description is not an actual selector, but a general row description.
+   */
+  totalForAllSelectors: '(Totals for all selectors)',
+
   /**
    *@description Text for showing the location of a selector in the style sheet
    *@example {256} PH1
@@ -145,6 +155,8 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
         {
           id: SelectorTimingsKey.RejectPercentage as Lowercase<string>,
           title: i18nString(UIStrings.rejectPercentage),
+          titleElement: LitHtml.html`<span title=${i18nString(UIStrings.rejectPercentageExplanation)}>${
+              i18nString(UIStrings.rejectPercentage)}</span>`,
           sortable: true,
           widthWeighting: 1,
           visible: true,
@@ -157,7 +169,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
           id: SelectorTimingsKey.Selector as Lowercase<string>,
           title: i18nString(UIStrings.selector),
           sortable: true,
-          widthWeighting: 4,
+          widthWeighting: 3,
           visible: true,
           hideable: true,
         },
@@ -165,7 +177,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
           id: SelectorTimingsKey.StyleSheetId as Lowercase<string>,
           title: i18nString(UIStrings.styleSheetId),
           sortable: true,
-          widthWeighting: 4,
+          widthWeighting: 1.5,
           visible: true,
           hideable: true,
         },
@@ -246,6 +258,13 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
       return;
     }
 
+    const sums = {
+      [SelectorTimingsKey.Elapsed]: 0,
+      [SelectorTimingsKey.MatchAttempts]: 0,
+      [SelectorTimingsKey.MatchCount]: 0,
+      [SelectorTimingsKey.FastRejectCount]: 0,
+    };
+
     // Now we want to check if the set of events we have been given matches the
     // set of events we last rendered. We can't just compare the arrays because
     // they will be different events, so instead for each event in the new
@@ -285,6 +304,11 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
           } else {
             selectorMap.set(key, structuredClone(timing));
           }
+          // Keep track of the total times for a sum row.
+          sums[SelectorTimingsKey.Elapsed] += timing[SelectorTimingsKey.Elapsed];
+          sums[SelectorTimingsKey.MatchAttempts] += timing[SelectorTimingsKey.MatchAttempts];
+          sums[SelectorTimingsKey.MatchCount] += timing[SelectorTimingsKey.MatchCount];
+          sums[SelectorTimingsKey.FastRejectCount] += timing[SelectorTimingsKey.FastRejectCount];
         }
       }
     }
@@ -297,6 +321,16 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
       this.#datagrid.data = {...this.#datagrid.data, rows: []};
       return;
     }
+
+    // Add the sum row.
+    timings.unshift({
+      [SelectorTimingsKey.Elapsed]: sums[SelectorTimingsKey.Elapsed],
+      [SelectorTimingsKey.FastRejectCount]: sums[SelectorTimingsKey.FastRejectCount],
+      [SelectorTimingsKey.MatchAttempts]: sums[SelectorTimingsKey.MatchAttempts],
+      [SelectorTimingsKey.MatchCount]: sums[SelectorTimingsKey.MatchCount],
+      [SelectorTimingsKey.Selector]: i18nString(UIStrings.totalForAllSelectors),
+      [SelectorTimingsKey.StyleSheetId]: 'n/a',
+    });
 
     void this.createRowsForTable(timings).then(rows => {
       this.#datagrid.data = {...this.#datagrid.data, rows};
@@ -352,7 +386,9 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
       const elapsedTimeInMs = x[SelectorTimingsKey.Elapsed] / 1000.0;
       const nonMatches = x[SelectorTimingsKey.MatchAttempts] - x[SelectorTimingsKey.MatchCount];
       const rejectPercentage = (nonMatches ? x[SelectorTimingsKey.FastRejectCount] / nonMatches : 1) * 100;
-      const locations = await toSourceFileLocation(cssModel, styleSheetId, selectorText, this.#selectorLocations);
+      const locations = styleSheetId === 'n/a' ?
+          null :
+          await toSourceFileLocation(cssModel, styleSheetId, selectorText, this.#selectorLocations);
 
       return {
         cells: [
@@ -367,7 +403,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
             columnId: SelectorTimingsKey.RejectPercentage,
             value: rejectPercentage,
             renderer(): LitHtml.TemplateResult {
-              return LitHtml.html`${rejectPercentage.toFixed(2)}`;
+              return LitHtml.html`${rejectPercentage.toFixed(1)}`;
             },
           },
           {columnId: SelectorTimingsKey.MatchAttempts, value: x[SelectorTimingsKey.MatchAttempts]},
@@ -381,7 +417,10 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
             columnId: SelectorTimingsKey.StyleSheetId,
             value: x[SelectorTimingsKey.StyleSheetId],
             renderer(): LitHtml.TemplateResult {
-              if (!locations) {
+              if (locations === null) {
+                return LitHtml.html`<span></span>`;
+              }
+              if (locations === undefined) {
                 return LitHtml.html`<span title=${i18nString(UIStrings.unableToLinkViaStyleSheetId, {
                   PH1: x[SelectorTimingsKey.StyleSheetId],
                 })} aria-label=${i18nString(UIStrings.unableToLinkViaStyleSheetId, {

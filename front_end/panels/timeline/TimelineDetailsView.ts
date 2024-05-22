@@ -345,13 +345,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   }
 
   private showSelectorStatsForIndividualEvent(event: TraceEngine.Types.TraceEvents.TraceEventUpdateLayoutTree): void {
-    const selectorStatsView = this.selectorStatsView();
-
-    selectorStatsView.setEvent(event);
-
-    if (!this.tabbedPane.hasTab(Tab.SelectorStats)) {
-      this.appendTab(Tab.SelectorStats, i18nString(UIStrings.selectorStats), selectorStatsView);
-    }
+    this.showAggregatedSelectorStats([event]);
   }
 
   private showAggregatedSelectorStats(events: TraceEngine.Types.TraceEvents.TraceEventUpdateLayoutTree[]): void {

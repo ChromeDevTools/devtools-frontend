@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {encodeVlq, OriginalScopeBuilder} from '../../testing/SourceMapEncoder.js';
+import {encodeVlq, GeneratedRangeBuilder, OriginalScopeBuilder} from '../../testing/SourceMapEncoder.js';
 
 import * as SDK from './sdk.js';
 
-const {decodeOriginalScopes} = SDK.SourceMapScopes;
+const {decodeOriginalScopes, decodeGeneratedRanges} = SDK.SourceMapScopes;
 
 describe('decodeOriginalScopes', () => {
   it('throws for empty input', () => {
@@ -130,5 +130,83 @@ describe('decodeOriginalScopes', () => {
 
     assert.lengthOf(originalScopes[0].children[0].children, 1);
     assert.deepEqual(originalScopes[0].children[0].children[0].variables, ['blockVarFoo', 'blockVarBar']);
+  });
+});
+
+describe('decodeGeneratedRanges', () => {
+  it('throws for empty input', () => {
+    assert.throws(() => decodeGeneratedRanges('', [], []));
+  });
+
+  it('throws for missing "end" item', () => {
+    const brokenRanges = new GeneratedRangeBuilder().start(0, 0).build();
+    assert.throws(() => decodeGeneratedRanges(brokenRanges, [], []), /Malformed/);
+  });
+
+  it('decodes a single range', () => {
+    const range = new GeneratedRangeBuilder().start(0, 0).end(5, 0).build();
+
+    const generatedRange = decodeGeneratedRanges(range, [], []);
+
+    assert.deepEqual(generatedRange.start, {line: 0, column: 0});
+    assert.deepEqual(generatedRange.end, {line: 5, column: 0});
+  });
+
+  it('decodes a nested range on a single line', () => {
+    const range = new GeneratedRangeBuilder().start(0, 0).start(0, 5).end(0, 10).end(0, 15).build();
+
+    const generatedRange = decodeGeneratedRanges(range, [], []);
+
+    assert.deepEqual(generatedRange.start, {line: 0, column: 0});
+    assert.deepEqual(generatedRange.end, {line: 0, column: 15});
+
+    assert.lengthOf(generatedRange.children, 1);
+    assert.deepEqual(generatedRange.children[0].start, {line: 0, column: 5});
+    assert.deepEqual(generatedRange.children[0].end, {line: 0, column: 10});
+  });
+
+  it('decodes sibling ranges on a single line', () => {
+    const range =
+        new GeneratedRangeBuilder().start(0, 0).start(0, 5).end(0, 10).start(0, 15).end(0, 20).end(0, 25).build();
+
+    const generatedRange = decodeGeneratedRanges(range, [], []);
+
+    assert.deepEqual(generatedRange.start, {line: 0, column: 0});
+    assert.deepEqual(generatedRange.end, {line: 0, column: 25});
+
+    assert.lengthOf(generatedRange.children, 2);
+    assert.deepEqual(generatedRange.children[0].start, {line: 0, column: 5});
+    assert.deepEqual(generatedRange.children[0].end, {line: 0, column: 10});
+    assert.deepEqual(generatedRange.children[1].start, {line: 0, column: 15});
+    assert.deepEqual(generatedRange.children[1].end, {line: 0, column: 20});
+  });
+
+  it('decodes nested and sibling ranges over multiple lines', () => {
+    const range = new GeneratedRangeBuilder()
+                      .start(0, 0)
+                      .start(5, 0)
+                      .start(10, 8)
+                      .end(15, 4)
+                      .end(20, 0)
+                      .start(25, 4)
+                      .end(30, 0)
+                      .end(35, 0)
+                      .build();
+
+    const generatedRange = decodeGeneratedRanges(range, [], []);
+
+    assert.deepEqual(generatedRange.start, {line: 0, column: 0});
+    assert.deepEqual(generatedRange.end, {line: 35, column: 0});
+
+    assert.lengthOf(generatedRange.children, 2);
+    assert.deepEqual(generatedRange.children[0].start, {line: 5, column: 0});
+    assert.deepEqual(generatedRange.children[0].end, {line: 20, column: 0});
+
+    assert.lengthOf(generatedRange.children[0].children, 1);
+    assert.deepEqual(generatedRange.children[0].children[0].start, {line: 10, column: 8});
+    assert.deepEqual(generatedRange.children[0].children[0].end, {line: 15, column: 4});
+
+    assert.deepEqual(generatedRange.children[1].start, {line: 25, column: 4});
+    assert.deepEqual(generatedRange.children[1].end, {line: 30, column: 0});
   });
 });

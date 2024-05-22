@@ -186,3 +186,62 @@ export class OriginalScopeBuilder {
     }
   }
 }
+
+export class GeneratedRangeBuilder {
+  #encodedRange = '';
+  #state = {
+    line: 0,
+    column: 0,
+  };
+
+  start(line: number, column: number): this {
+    this.#emitLineSeparator(line);
+    this.#emitItemSepratorIfRequired();
+
+    const emittedColumn = column - (this.#state.line === line ? this.#state.column : 0);
+    this.#encodedRange += encodeVlq(emittedColumn);
+
+    this.#state.line = line;
+    this.#state.column = column;
+
+    const flags = 0;
+    this.#encodedRange += encodeVlq(flags);
+
+    return this;
+  }
+
+  end(line: number, column: number): this {
+    this.#emitLineSeparator(line);
+    this.#emitItemSepratorIfRequired();
+
+    const emittedColumn = column - (this.#state.line === line ? this.#state.column : 0);
+    this.#encodedRange += encodeVlq(emittedColumn);
+
+    this.#state.line = line;
+    this.#state.column = column;
+
+    return this;
+  }
+
+  #emitLineSeparator(line: number): void {
+    for (let i = this.#state.line; i < line; ++i) {
+      this.#encodedRange += ';';
+    }
+  }
+
+  #emitItemSepratorIfRequired(): void {
+    if (this.#encodedRange !== '' && this.#encodedRange[this.#encodedRange.length - 1] !== ';') {
+      this.#encodedRange += ',';
+    }
+  }
+
+  build(): string {
+    const result = this.#encodedRange;
+    this.#state = {
+      line: 0,
+      column: 0,
+    };
+    this.#encodedRange = '';
+    return result;
+  }
+}

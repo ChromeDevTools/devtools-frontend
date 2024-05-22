@@ -47,8 +47,12 @@ export interface GeneratedRange {
    * For each variable this can either be a single expression (valid for the full `GeneratedRange`),
    * or an array of `BindingRange`s, e.g. if computing the value requires different expressions
    * throughout the range or if the variable is only available in parts of the `GeneratedRange`.
+   *
+   * `undefined` denotes that the value of a variable is unavailble in the whole range.
+   * This can happen e.g. if the variable was optimized out and can't be recomputed.
    */
-  values?: (string|BindingRange[])[];
+  values: (string|undefined|BindingRange[])[];
+  children: GeneratedRange[];
 }
 
 export type ScopeKind = 'global'|'class'|'function'|'block';
@@ -158,6 +162,97 @@ function*
         startItem.variables.push(iter.nextVLQ());
       }
     }
+
+    yield startItem;
+  }
+}
+
+export function decodeGeneratedRanges(
+    encodedGeneratedRange: string, _originalScopes: OriginalScope[], _names: string[]): GeneratedRange {
+  const rangeStack: GeneratedRange[] = [];
+  const rangeToStartItem = new Map<GeneratedRange, EncodedGeneratedRangeStart>();
+
+  for (const item of decodeGeneratedRangeItems(encodedGeneratedRange)) {
+    if (isRangeStart(item)) {
+      // TODO(crbug.com/40277685): Decode definition, callsite and bindings.
+
+      const range: GeneratedRange = {
+        start: {line: item.line, column: item.column},
+        end: {line: item.line, column: item.column},
+        values: [],
+        children: [],
+      };
+      rangeToStartItem.set(range, item);
+      rangeStack.push(range);
+    } else {
+      const range = rangeStack.pop();
+      if (!range) {
+        throw new Error('Range items not nested properly: encountered "end" item without "start" item');
+      }
+      range.end = {line: item.line, column: item.column};
+
+      if (rangeStack.length === 0) {
+        // We are done. There might be more top-level scopes but we only allow one.
+        return range;
+      }
+      rangeStack[rangeStack.length - 1].children.push(range);
+    }
+  }
+  throw new Error('Malformed generated range encoding');
+}
+
+interface EncodedGeneratedRangeStart {
+  line: number;
+  column: number;
+  flags: number;
+  // TODO(crbug.com/40277685): Add the rest.
+}
+
+interface EncodedGeneratedRangeEnd {
+  line: number;
+  column: number;
+}
+
+function isRangeStart(item: EncodedGeneratedRangeStart|EncodedGeneratedRangeEnd): item is EncodedGeneratedRangeStart {
+  return 'flags' in item;
+}
+
+function*
+    decodeGeneratedRangeItems(encodedGeneratedRange: string):
+        Generator<EncodedGeneratedRangeStart|EncodedGeneratedRangeEnd> {
+  const iter = new TokenIterator(encodedGeneratedRange);
+  let line = 0;
+
+  // The state is the line/column of the last produced item.
+  let state = {
+    line: 0,
+    column: 0,
+  };
+
+  while (iter.hasNext()) {
+    if (iter.peek() === ';') {
+      iter.next();  // Consume ';'.
+      ++line;
+      continue;
+    } else if (iter.peek() === ',') {
+      iter.next();  // Consume ','.
+      continue;
+    }
+
+    const column = iter.nextVLQ() + (line === state.line ? state.column : 0);
+    state = {line, column};
+    if (iter.peekVLQ() === null) {
+      yield {line, column};
+      continue;
+    }
+
+    const startItem: EncodedGeneratedRangeStart = {
+      line,
+      column,
+      flags: iter.nextVLQ(),
+    };
+
+    // TODO(crbug.com/40277685): Decode the rest.
 
     yield startItem;
   }

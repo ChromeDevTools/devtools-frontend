@@ -688,8 +688,7 @@ export class ConsoleInsight extends HTMLElement {
           <main jslog=${jslog}>
             <p>The following data will be sent to Google to understand the context for the console message.
             ${Root.Runtime.Runtime.queryParam('ci_disallowLogging') === 'true' ? '' : 'Human reviewers may process this information for quality purposes. Don’t submit sensitive information.'}
-            Read Google’s <x-link href=${TERMS_OF_SERVICE_URL} class="link" jslog=${VisualLogging.link('terms-of-service').track({click: true})}>Terms of Service</x-link> and
-            the <x-link href=${GEN_AI_TERMS_OF_SERVICE_URL} class="link" jslog=${VisualLogging.link('gener' + 'ative-ai-terms-of-service').track({click: true})}>${'Gener' + 'ative'} AI Additional Terms of Service</x-link>.</p>
+            Read Google’s <x-link href=${TERMS_OF_SERVICE_URL} class="link" jslog=${VisualLogging.link('terms-of-service').track({click: true})}>Terms of Service</x-link>.</p>
             <${ConsoleInsightSourcesList.litTagName} .sources=${this.#state.sources} .isPageReloadRecommended=${this.#state.isPageReloadRecommended}>
             </${ConsoleInsightSourcesList.litTagName}>
           </main>
@@ -719,7 +718,7 @@ export class ConsoleInsight extends HTMLElement {
             <p>
             <label>
               <input class="terms" @change=${this.#onTermsChange} type="checkbox" jslog=${VisualLogging.toggle('terms-of-service-accepted')}>
-              <span>I accept my use of "Understand this message" is subject to the <x-link href=${GEN_AI_TERMS_OF_SERVICE_URL} class="link" jslog=${VisualLogging.link('terms-of-service').track({click: true})}>Google Terms of Service</x-link> and the <x-link href=${GEN_AI_TERMS_OF_SERVICE_URL} class="link" jslog=${VisualLogging.link('gener' + 'ative-ai-terms-of-service').track({click: true})}>${'Gener' + 'ative'} AI Additional Terms of Service</x-link>.</span>
+              <span>I accept my use of "Understand this message" is subject to the <x-link href=${GEN_AI_TERMS_OF_SERVICE_URL} class="link" jslog=${VisualLogging.link('terms-of-service').track({click: true})}>Google Terms of Service</x-link>.</span>
             </label>
             </p>
             </main>`;

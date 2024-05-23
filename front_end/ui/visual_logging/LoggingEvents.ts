@@ -23,8 +23,8 @@ export async function logImpressions(loggables: Loggable[]): Promise<void> {
       impression.parent = loggingState.parent.veid;
     }
     if (loggingState.size) {
-      impression.width = loggingState.size.width;
-      impression.height = loggingState.size.height;
+      impression.width = Math.round(loggingState.size.width);
+      impression.height = Math.round(loggingState.size.height);
     }
     return impression;
   }));
@@ -43,7 +43,7 @@ export const logResize = (loggable: Loggable, size: DOMRect): void => {
   const resizeEvent: Host.InspectorFrontendHostAPI
       .ResizeEvent = {veid: loggingState.veid, width: loggingState.size.width, height: loggingState.size.height};
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordResize(resizeEvent);
-  processEventForDebugging('Resize', loggingState, {width: size.width, height: size.height});
+  processEventForDebugging('Resize', loggingState, {width: Math.round(size.width), height: Math.round(size.height)});
 };
 
 export const logClick = (throttler: Common.Throttler.Throttler) => (
@@ -167,5 +167,5 @@ async function contextAsNumber(context: string|undefined): Promise<number|undefi
   const encoder = new TextEncoder();
   const data = encoder.encode(context);
   const digest = await crypto.subtle.digest('SHA-1', data);
-  return new DataView(digest).getUint32(0, true);
+  return new DataView(digest).getInt32(0, true);
 }

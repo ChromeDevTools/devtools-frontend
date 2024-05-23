@@ -166,6 +166,8 @@ export class CookieItemsView extends StorageItemsView {
   private readonly previewWidget: CookiePreviewWidget;
   private readonly emptyWidget: UI.EmptyWidget.EmptyWidget;
   private onlyIssuesFilterUI: UI.Toolbar.ToolbarCheckbox;
+  private readonly refreshThrottler: Common.Throttler.Throttler;
+  private eventDescriptors: Common.EventTarget.EventDescriptor[];
   private allCookies: SDK.Cookie.Cookie[];
   private shownCookies: SDK.Cookie.Cookie[];
   private selectedCookie: SDK.Cookie.Cookie|null;
@@ -207,6 +209,9 @@ export class CookieItemsView extends StorageItemsView {
         }, 'only-show-cookies-with-issues');
     this.appendToolbarItem(this.onlyIssuesFilterUI);
 
+    this.refreshThrottler = new Common.Throttler.Throttler(300);
+    this.eventDescriptors = [];
+
     this.allCookies = [];
     this.shownCookies = [];
     this.selectedCookie = null;
@@ -215,11 +220,17 @@ export class CookieItemsView extends StorageItemsView {
   }
 
   setCookiesDomain(model: SDK.CookieModel.CookieModel, domain: string): void {
-    this.model.removeEventListener(SDK.CookieModel.Events.CookieListUpdated, this.refreshItems, this);
     this.model = model;
     this.cookieDomain = domain;
     this.refreshItems();
-    this.model.addEventListener(SDK.CookieModel.Events.CookieListUpdated, this.refreshItems, this);
+    Common.EventTarget.removeEventListeners(this.eventDescriptors);
+    const networkManager = model.target().model(SDK.NetworkManager.NetworkManager);
+    if (networkManager) {
+      this.eventDescriptors = [
+        networkManager.addEventListener(SDK.NetworkManager.Events.ResponseReceived, this.onResponseReceived, this),
+        networkManager.addEventListener(SDK.NetworkManager.Events.LoadingFinished, this.onLoadingFinished, this),
+      ];
+    }
   }
 
   private showPreview(cookie: SDK.Cookie.Cookie|null): void {
@@ -316,6 +327,17 @@ export class CookieItemsView extends StorageItemsView {
     void this.model.getCookiesForDomain(this.cookieDomain).then(this.updateWithCookies.bind(this));
   }
 
+  refreshItemsThrottled(): void {
+    void this.refreshThrottler.schedule(() => Promise.resolve(this.refreshItems()));
+  }
+
+  private onResponseReceived(): void {
+    this.refreshItemsThrottled();
+  }
+
+  private onLoadingFinished(): void {
+    this.refreshItemsThrottled();
+  }
   override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([cookieItemsViewStyles]);

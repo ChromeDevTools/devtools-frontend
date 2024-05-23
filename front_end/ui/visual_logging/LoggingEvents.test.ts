@@ -131,7 +131,7 @@ describe('LoggingEvents', () => {
     VisualLogging.LoggingState.getLoggingState(element)!.config.track = {keydown: '>'};
     void VisualLogging.LoggingEvents.logKeyDown(throttler)(element, event);
     await assertThrottled(recordKeyDown);
-    assert.deepStrictEqual(recordKeyDown.firstCall.firstArg, {veid: getVeId(element), context: 3196392201});
+    assert.deepStrictEqual(recordKeyDown.firstCall.firstArg, {veid: getVeId(element), context: -1098575095});
   });
 
   it('calls UI binding to log a keydown with an provided context', async () => {

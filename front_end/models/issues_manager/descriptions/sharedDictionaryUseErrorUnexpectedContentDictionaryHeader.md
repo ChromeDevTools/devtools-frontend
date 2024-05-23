@@ -1,1 +1,1 @@
-# Can't decode the response because the `Content-Dictionary` header was not set correctly
+# Can't decode the response because the header of dictionary compressed stream was not set correctly

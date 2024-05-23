@@ -8,10 +8,23 @@ import("../../../scripts/build/ninja/generate_css.gni")
 import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
-devtools_module("freestyler") {
-  sources = [ "FreestylerPanel.ts" ]
+generate_css("css_files") {
+  sources = [
+    "./components/freestylerChatUi.css",
+    "./freestylerPanel.css",
+  ]
+}
 
-  deps = [ "../../ui/legacy:bundle" ]
+devtools_module("freestyler") {
+  sources = [
+    "FreestylerPanel.ts",
+    "components/FreestylerChatUi.ts",
+  ]
+
+  deps = [
+    ":css_files",
+    "../../ui/legacy:bundle",
+  ]
 }
 
 devtools_entrypoint("bundle") {

@@ -1,0 +1,97 @@
+/*
+ * Copyright 2024 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  max-width: 550px;
+  width: 100%;
+  height: 100%;
+  user-select: text;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-ui {
+  width: 100%;
+  margin-top: var(--sys-size-6);
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.input-form {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--sys-size-8);
+  margin-bottom: var(--sys-size-4);
+}
+
+.chat-input-container {
+  margin-bottom: var(--sys-size-3);
+  height: var(--sys-size-11);
+  border-radius: 4px;
+  border: 1px solid var(--sys-color-neutral-outline);
+  padding-left: 2px;
+  width: 100%;
+  display: flex;
+}
+
+.chat-input {
+  border: 0;
+  height: var(--sys-size-11);
+  padding: 0 6px;
+  flex-grow: 1;
+}
+
+.chat-input:focus-visible {
+  outline: none;
+}
+
+.chat-input-container:has(.chat-input:focus-visible) {
+  outline: 1px solid var(--sys-color-primary);
+}
+
+.chat-input::placeholder {
+  color: var(--sys-color-state-disabled);
+}
+
+.chat-input-disclaimer {
+  text-align: center;
+  color: var(--sys-color-on-surface-subtle);
+}
+
+.chat-message {
+  max-width: 320px;
+  padding: 8px var(--sys-size-8);
+  font-size: 12px;
+  border-radius: var(--sys-size-6);
+  margin-left: auto;
+
+  &:not(:first-of-type) {
+    margin-top: var(--sys-size-6);
+  }
+
+  &.query {
+    /* TODO(ergunsh): Handle dark mode */
+    background: #f2f2f2; /* stylelint-disable-line plugin/use_theme_colors */
+  }
+
+  &.answer {
+    /* TODO(ergunsh): Handle dark mode */
+    background: #ecf3fe; /* stylelint-disable-line plugin/use_theme_colors */
+    max-width: unset;
+  }
+}
+
+.consent-buttons-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.consent-onboarding-heading {
+  font-size: 1.2em;
+}

@@ -1,0 +1,37 @@
+# Copyright 2024 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/generate_css.gni")
+import("../../../third_party/typescript/typescript.gni")
+import("../visibility.gni")
+
+devtools_module("freestyler") {
+  sources = [ "FreestylerPanel.ts" ]
+
+  deps = [ "../../ui/legacy:bundle" ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "freestyler.ts"
+
+  deps = [ ":freestyler" ]
+
+  visibility = [
+    ":*",
+    "../../../test/interactions/*",
+    "../../entrypoints/*",
+  ]
+
+  visibility += devtools_panels_visibility
+}
+
+devtools_entrypoint("meta") {
+  entrypoint = "freestyler-meta.ts"
+
+  deps = [ ":bundle" ]
+
+  visibility = [ "../../entrypoints/*" ]
+}

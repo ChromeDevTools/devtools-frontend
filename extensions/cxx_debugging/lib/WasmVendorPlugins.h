@@ -5,6 +5,7 @@
 #ifndef EXTENSIONS_CXX_DEBUGGING_WASMVENDORPLUGINS_H_
 #define EXTENSIONS_CXX_DEBUGGING_WASMVENDORPLUGINS_H_
 #include "ApiContext.h"
+#include "Plugins/SymbolFile/DWARF/DWARFDeclContext.h"
 #include "Plugins/SymbolFile/DWARF/SymbolFileDWARF.h"
 #include "Plugins/TypeSystem/Clang/TypeSystemClang.h"
 #include "lldb/Core/Debugger.h"
@@ -286,6 +287,37 @@ class SymbolFileWasmDWARF : public ::SymbolFileDWARF {
     }
 
     return false;
+  }
+
+  std::shared_ptr<lldb_private::Type> externref_type_sp;
+
+  lldb::TypeSP FindDefinitionTypeForDWARFDeclContext(
+      const DWARFDeclContext& dwarf_decl_ctx) override {
+    // We define type externref_t as a 32-bit integer, so as to be
+    // able to transfer some information through the interpreter
+    const uint32_t dwarf_decl_ctx_count = dwarf_decl_ctx.GetSize();
+    if (dwarf_decl_ctx_count > 0) {
+      const lldb_private::ConstString type_name(dwarf_decl_ctx[0].name);
+      if (type_name == "externref_t") {
+        if (!externref_type_sp) {
+          const lldb::LanguageType language = dwarf_decl_ctx.GetLanguage();
+          auto type_system = GetTypeSystemForLanguage(language);
+          bool ok = !type_system.takeError();
+          assert(ok);
+          auto ast = clang::dyn_cast<lldb_private::TypeSystemClang>(
+              type_system->get());
+          lldb_private::CompilerType clang_type =
+              ast->GetBasicType(lldb::eBasicTypeUnsignedLongLong);
+          externref_type_sp = std::make_shared<lldb_private::Type>(
+              lldb::user_id_t(0), this, type_name, 4, nullptr, LLDB_INVALID_UID,
+              lldb_private::Type::eEncodingIsUID, lldb_private::Declaration(),
+              clang_type, lldb_private::Type::ResolveState::Forward);
+        }
+        return externref_type_sp;
+      }
+    }
+    return SymbolFileDWARF::FindDefinitionTypeForDWARFDeclContext(
+        dwarf_decl_ctx);
   }
 
  private:

@@ -4,10 +4,9 @@
 
 import type {Chrome} from '../../../extension-api/ExtensionAPI';
 
-export type WasmValue = {
-  type: 'i32'|'f32'|'f64',
-  value: number
-}|{type: 'i64', value: bigint}|{type: 'v128', value: string};
+export type ForeignObject = Chrome.DevTools.ForeignObject;
+
+export type WasmValue = Chrome.DevTools.WasmValue;
 
 export type WasmSimdValue = string;
 
@@ -18,7 +17,8 @@ export const enum SerializedWasmType {
   i64,
   f32,
   f64,
-  v128
+  v128,
+  reftype
 }
 
 export function serializeWasmValue(value: WasmValue|ArrayBuffer, buffer: ArrayBufferLike): SerializedWasmType {
@@ -49,6 +49,10 @@ export function serializeWasmValue(value: WasmValue|ArrayBuffer, buffer: ArrayBu
       view.setInt32(8, Number(c), true);
       view.setInt32(12, Number(d), true);
       return SerializedWasmType.v128;
+    case 'reftype':
+      view.setUint8(0, ['local', 'global', 'operand'].indexOf(value.valueClass));
+      view.setUint32(1, value.index, true);
+      return SerializedWasmType.reftype;
     default:
       throw new Error('cannot serialize non-numerical wasm type');
   }
@@ -81,6 +85,11 @@ export function deserializeWasmValue(buffer: ArrayBufferLike, type: SerializedWa
         value: `i32x4 0x${a.toString(16).padStart(8, '0')} 0x${b.toString(16).padStart(8, '0')} 0x${
             c.toString(16).padStart(8, '0')} 0x${d.toString(16).padStart(8, '0')}`
       };
+    case SerializedWasmType.reftype:
+      const ValueClasses: ['local', 'global', 'operand'] = ['local', 'global', 'operand'];
+      const valueClass = ValueClasses[view.getUint8(0)];
+      const index = view.getUint32(1, true);
+      return {type: 'reftype', valueClass, index};
   }
   // @ts-expect-error
   throw new Error('Invalid primitive wasm type');

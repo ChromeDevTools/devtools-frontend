@@ -252,6 +252,17 @@ export class Debugger {
     return result;
   }
 
+  async getRemoteObject({callFrameId}: Protocol.Debugger.CallFrame, object: Chrome.DevTools.ForeignObject):
+      Promise<Protocol.Runtime.RemoteObject> {
+    const expression = `${object.valueClass}s[${object.index}]`;
+    const {result, exceptionDetails} =
+        await this.send('Debugger.evaluateOnCallFrame', {expression, silent: true, generatePreview: true, callFrameId});
+    if (exceptionDetails) {
+      throw new Error(exceptionDetails.exception?.description ?? exceptionDetails.text);
+    }
+    return result;
+  }
+
   async toObject(objectId: string, ...keys: string[]): Promise<Record<string, unknown>> {
     const {result, exceptionDetails} = await this.send('Runtime.getProperties', {objectId});
     if (exceptionDetails) {
@@ -271,17 +282,22 @@ export class Debugger {
     return obj;
   }
 
-  async evaluateOnCallFrame<T>(expression: string, {callFrameId}: Protocol.Debugger.CallFrame): Promise<T> {
-    return this.evaluateOnCallFrameId(expression, callFrameId);
+  async evaluateOnCallFrame<T>(
+      expectValue: boolean, convert: (result: Protocol.Runtime.RemoteObject) => T, expression: string,
+      {callFrameId}: Protocol.Debugger.CallFrame): Promise<T> {
+    return this.evaluateOnCallFrameId(expectValue, convert, expression, callFrameId);
   }
 
-  async evaluateOnCallFrameId<T>(expression: string, callFrameId: string): Promise<T> {
-    const {result, exceptionDetails} =
-        await this.send('Debugger.evaluateOnCallFrame', {expression, returnByValue: true, callFrameId});
+  async evaluateOnCallFrameId<T>(
+      expectValue: boolean, convert: (result: Protocol.Runtime.RemoteObject) => T, expression: string,
+      callFrameId: string): Promise<T> {
+    const {result, exceptionDetails} = await this.send(
+        'Debugger.evaluateOnCallFrame',
+        {expression, returnByValue: !expectValue, generatePreview: expectValue, callFrameId});
     if (exceptionDetails) {
       throw new Error(exceptionDetails.exception?.description ?? exceptionDetails.text);
     }
-    return result.value;
+    return convert(result);
   }
 
   async waitForFunction<T>(expression: string, timeout = 0): Promise<T> {
@@ -394,18 +410,41 @@ export class Debugger {
 
   async getWasmLinearMemory(offset: number, length: number, stopId: bigint): Promise<ArrayBuffer> {
     const data = await this.evaluateOnCallFrameId<number[]>(
+        false, result => result.value,
         `[].slice.call(new Uint8Array(memories[0].buffer, ${Number(offset)}, ${Number(length)}))`,
         this.getCallFrameId(stopId));
     return new Uint8Array(data).buffer;
   }
+  private convertWasmValue(valueClass: 'local'|'global'|'operand', index: number):
+      (obj: Protocol.Runtime.RemoteObject) => Chrome.DevTools.WasmValue {
+    return (obj): Chrome.DevTools.WasmValue => {
+      const type = obj?.description;
+      const value: string = obj.preview?.properties?.find(o => o.name === 'value')?.value ?? '';
+      switch (type) {
+        case 'i32':
+        case 'f32':
+        case 'f64':
+          return {type, value: Number(value)};
+        case 'i64':
+          return {type, value: BigInt(value)};
+        case 'v128':
+          return {type, value};
+        default:
+          return {type: 'reftype', valueClass, index};
+      }
+    }
+  }
   getWasmLocal(local: number, stopId: bigint): Promise<WasmValue> {
-    return this.evaluateOnCallFrameId<WasmValue>(`locals[${Number(local)}]`, this.getCallFrameId(stopId));
+    return this.evaluateOnCallFrameId<WasmValue>(
+        true, this.convertWasmValue('local', local), `locals[${Number(local)}]`, this.getCallFrameId(stopId));
   }
   getWasmGlobal(global: number, stopId: bigint): Promise<WasmValue> {
-    return this.evaluateOnCallFrameId<WasmValue>(`globals[${Number(global)}]`, this.getCallFrameId(stopId));
+    return this.evaluateOnCallFrameId<WasmValue>(
+        true, this.convertWasmValue('global', global), `globals[${Number(global)}]`, this.getCallFrameId(stopId));
   }
   getWasmOp(op: number, stopId: bigint): Promise<WasmValue> {
-    return this.evaluateOnCallFrameId<WasmValue>(`operands[${Number(op)}]`, this.getCallFrameId(stopId));
+    return this.evaluateOnCallFrameId<WasmValue>(
+        true, this.convertWasmValue('operand', op), `operands[${Number(op)}]`, this.getCallFrameId(stopId));
   }
 }
 

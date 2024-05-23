@@ -87,7 +87,7 @@ export class WorkerPlugin implements Chrome.DevTools.LanguageExtensionPlugin, As
   }
 
   evaluate(expression: string, context: Chrome.DevTools.RawLocation, stopId: unknown):
-      Promise<Chrome.DevTools.RemoteObject|null> {
+      Promise<Chrome.DevTools.RemoteObject|Chrome.DevTools.ForeignObject|null> {
     return this.rpc.sendMessage('evaluate', expression, context, stopId);
   }
 

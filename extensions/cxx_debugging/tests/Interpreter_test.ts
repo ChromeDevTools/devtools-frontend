@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {createEmbindPool} from '../src/DWARFSymbols.js';
 import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
+import {createEmbindPool} from '../src/DWARFSymbols.js';
+
 import type * as LLDBEvalTests from './LLDBEvalTests.js';
 import loadModule from './LLDBEvalTests.js';
-
 import {Debugger} from './RealBackend.js';
-import {createWorkerPlugin, makeURL, nonNull} from './TestUtils.js';
+import {createWorkerPlugin, makeURL, remoteObject} from './TestUtils.js';
 
 const WASM_URL = makeURL('/build/tests/inputs/lldb_eval_inputs.wasm');
 class LLDBEvalDebugger implements LLDBEvalTests.Debugger {
@@ -25,9 +25,12 @@ class LLDBEvalDebugger implements LLDBEvalTests.Debugger {
     return new LLDBEvalDebugger(dbg, plugin);
   }
 
-  private async stringify(result: Chrome.DevTools.RemoteObject): Promise<string> {
+  private async stringify(result: Chrome.DevTools.RemoteObject|Chrome.DevTools.ForeignObject): Promise<string> {
     if (!this.#plugin.getProperties) {
       throw new Error('getProperties not implemented');
+    }
+    if (result.type === 'reftype') {
+      return 'reftype';
     }
     if (result.objectId) {
       const properties = await this.#plugin.getProperties(result.objectId);
@@ -186,27 +189,27 @@ describe('Interpreter', () => {
     }
 
     {
-      const {value} = nonNull(await plugin.evaluate('n + sum', rawLocation, debug.stopIdForCallFrame(callFrame)));
+      const {value} = remoteObject(await plugin.evaluate('n + sum', rawLocation, debug.stopIdForCallFrame(callFrame)));
       expect(value).to.eql(55);
     }
     {
       const {value} =
-          nonNull(await plugin.evaluate('(wchar_t)0x41414141', rawLocation, debug.stopIdForCallFrame(callFrame)));
+          remoteObject(await plugin.evaluate('(wchar_t)0x41414141', rawLocation, debug.stopIdForCallFrame(callFrame)));
       expect(value).to.eql('U+41414141');
     }
     {
       const {value} =
-          nonNull(await plugin.evaluate('(char16_t)0x4141', rawLocation, debug.stopIdForCallFrame(callFrame)));
+          remoteObject(await plugin.evaluate('(char16_t)0x4141', rawLocation, debug.stopIdForCallFrame(callFrame)));
       expect(value).to.eql('䅁');
     }
     {
       const {value} =
-          nonNull(await plugin.evaluate('(char32_t)0x41414141', rawLocation, debug.stopIdForCallFrame(callFrame)));
+          remoteObject(await plugin.evaluate('(char32_t)0x41414141', rawLocation, debug.stopIdForCallFrame(callFrame)));
       expect(value).to.eql('U+41414141');
     }
     {
       const {value} =
-          nonNull(await plugin.evaluate('(char32_t)0x4141', rawLocation, debug.stopIdForCallFrame(callFrame)));
+          remoteObject(await plugin.evaluate('(char32_t)0x4141', rawLocation, debug.stopIdForCallFrame(callFrame)));
       expect(value).to.eql('䅁');
     }
 

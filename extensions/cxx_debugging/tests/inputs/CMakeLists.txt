@@ -108,6 +108,7 @@ add_test_inputs(
   namespaces.s
   shadowing.s
   inline.s
+  externref.s
 )
 
 add_dwo_test_inputs(DESTINATION hello-split.wasm helper.s hello-split.s)
@@ -124,6 +125,7 @@ add_test_program(lldb_eval_inputs
 set(TEST_BINARY_INPUTS
  page.html
  page.js
+ externref.js
  )
 
 set(binary_inputs)

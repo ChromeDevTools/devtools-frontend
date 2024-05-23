@@ -342,7 +342,7 @@ export class CXXValue implements Value, LazyObject {
     return properties;
   }
 
-  async asRemoteObject(): Promise<Chrome.DevTools.RemoteObject> {
+  async asRemoteObject(): Promise<Chrome.DevTools.RemoteObject|Chrome.DevTools.ForeignObject> {
     if (this.type.hasValue && this.type.arraySize === 0) {
       const formatter = CustomFormatters.get(this.type);
       if (!formatter) {
@@ -462,7 +462,7 @@ export class CXXValue implements Value, LazyObject {
 
 export interface LazyObject {
   getProperties(): Promise<{name: string, property: LazyObject}[]>;
-  asRemoteObject(): Promise<Chrome.DevTools.RemoteObject>;
+  asRemoteObject(): Promise<Chrome.DevTools.RemoteObject|Chrome.DevTools.ForeignObject>;
 }
 
 export function primitiveObject<T>(
@@ -600,6 +600,7 @@ export interface Formatter {
 export class HostWasmInterface {
   private readonly hostInterface: HostInterface;
   private readonly stopId: unknown;
+  private readonly cache: Chrome.DevTools.ForeignObject[] = [];
   readonly view: WasmMemoryView;
   constructor(hostInterface: HostInterface, stopId: unknown) {
     this.hostInterface = hostInterface;

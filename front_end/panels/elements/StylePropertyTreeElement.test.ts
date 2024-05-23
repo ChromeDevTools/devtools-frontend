@@ -1161,4 +1161,25 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
       assert.strictEqual(swatches[0].parentElement?.style.textDecoration, '');
     });
   });
+
+  describe('LinearGradientRenderer', () => {
+    it('correctly connects to an angle match', () => {
+      const stylePropertyTreeElement = getTreeElement('background', 'linear-gradient(45deg, red, var(--blue))');
+      stylePropertyTreeElement.updateTitle();
+      const swatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-angle');
+      assert.exists(swatch);
+      swatch.data = {
+        angleText: swatch.textContent ?? '',
+        containingPane: document.createElement('div'),
+      };
+
+      sinon.stub(swatch, 'dispatchEvent');
+      swatch.popOver();
+      const popover = swatch.shadowRoot?.querySelector('devtools-css-angle-editor');
+      assert.exists(popover);
+      const clock = popover.shadowRoot?.querySelector<HTMLElement>('.clock');
+      assert.exists(clock);
+      assert.strictEqual(clock.style.background, 'linear-gradient(45deg, red, blue)');
+    });
+  });
 });

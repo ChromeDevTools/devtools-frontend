@@ -224,6 +224,23 @@ describe('PropertyParser', () => {
     }
   });
 
+  it('parses linear gradients', () => {
+    for (const succeed
+             of ['linear-gradient(90deg, red, blue)', 'linear-gradient(to top left, red, blue)',
+                 'linear-gradient(in oklab, red, blue)']) {
+      const {match, text} =
+          matchSingleValue('background', succeed, new Elements.PropertyParser.LinearGradientMatcher());
+      assert.exists(match, text);
+      assert.strictEqual(match.text, succeed);
+    }
+    for (const fail
+             of ['linear-gradient(90deg, red, blue)', 'linear-gradient(to top left, red, blue)',
+                 'linear-gradient(in oklab, red, blue)']) {
+      const {match, text} = matchSingleValue('width', fail, new Elements.PropertyParser.ColorMatcher());
+      assert.isNull(match, text);
+    }
+  });
+
   it('parses colors in masks', () => {
     for (const succeed of ['mask', 'mask-image', 'mask-border', 'mask-border-source']) {
       const ast = Elements.PropertyParser.tokenizeDeclaration(succeed, 'linear-gradient(to top, red, var(--other))');

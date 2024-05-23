@@ -21,8 +21,6 @@ import {ValueChangedEvent} from './InlineEditorUtils.js';
 const {render, html} = LitHtml;
 const styleMap = LitHtml.Directives.styleMap;
 
-const ContextAwareProperties = new Set(['color', 'background', 'background-color']);
-
 export class PopoverToggledEvent extends Event {
   static readonly eventName = 'popovertoggled';
   data: {open: boolean};
@@ -50,8 +48,6 @@ interface EventTypes {
 }
 
 export interface CSSAngleData {
-  propertyName: string;
-  propertyValue: string;
   angleText: string;
   containingPane: HTMLElement;
 }
@@ -66,7 +62,6 @@ export class CSSAngle extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private angle: Angle = DefaultAngle;
   private displayedAngle: Angle = DefaultAngle;
-  private propertyName = '';
   private propertyValue = '';
   private containingPane?: HTMLElement;
   private angleElement: HTMLElement|null = null;
@@ -87,8 +82,6 @@ export class CSSAngle extends HTMLElement {
     }
     this.angle = parsedResult;
     this.displayedAngle = {...parsedResult};
-    this.propertyName = data.propertyName;
-    this.propertyValue = data.propertyValue;
     this.containingPane = data.containingPane;
     this.render();
   }
@@ -160,8 +153,7 @@ export class CSSAngle extends HTMLElement {
     this.render();
   }
 
-  updateProperty(name: string, value: string): void {
-    this.propertyName = name;
+  updateProperty(value: string): void {
     this.propertyValue = value;
     this.render();
   }
@@ -253,9 +245,7 @@ export class CSSAngle extends HTMLElement {
 
   private renderPopover(): LitHtml.TemplateResult {
     let contextualBackground = '';
-    // TODO(crbug.com/1143010): for now we ignore values with "url"; when we refactor
-    // CSS value parsing we should properly apply atomic contextual background.
-    if (ContextAwareProperties.has(this.propertyName) && !this.propertyValue.match(/url\(.*\)/i)) {
+    if (this.propertyValue && !this.propertyValue.match(/url\(.*\)/i)) {
       contextualBackground = this.propertyValue;
     }
 

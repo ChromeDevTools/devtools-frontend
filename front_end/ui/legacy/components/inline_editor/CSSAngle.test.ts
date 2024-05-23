@@ -43,8 +43,6 @@ const assertNewAngleFromEvent =
     };
 
 const initialData: InlineEditor.CSSAngle.CSSAngleData = {
-  propertyName: 'background',
-  propertyValue: 'linear-gradient(45deg, red, green)',
   angleText: '45deg',
   containingPane: document.createElement('div'),
 };

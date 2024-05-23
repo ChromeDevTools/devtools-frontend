@@ -187,12 +187,13 @@ export class BottomUpTreeMatching extends TreeWalker {
     return this.computedText.hasUnresolvedVars(from.from - this.ast.tree.from, to.to - this.ast.tree.from);
   }
 
-  getComputedText(node: CodeMirror.SyntaxNode): string {
-    return this.getComputedTextRange(node, node);
+  getComputedText(node: CodeMirror.SyntaxNode, substitutions?: Map<Match, string>): string {
+    return this.getComputedTextRange(node, node, substitutions);
   }
 
-  getComputedTextRange(from: CodeMirror.SyntaxNode, to: CodeMirror.SyntaxNode): string {
-    return this.computedText.get(from.from - this.ast.tree.from, to.to - this.ast.tree.from);
+  getComputedTextRange(from: CodeMirror.SyntaxNode, to: CodeMirror.SyntaxNode, substitutions?: Map<Match, string>):
+      string {
+    return this.computedText.get(from.from - this.ast.tree.from, to.to - this.ast.tree.from, substitutions);
   }
 }
 
@@ -305,34 +306,47 @@ export class ComputedText {
     return false;
   }
 
+  * #getPieces(begin: number, end: number): Generator<string|ComputedTextChunk> {
+    for (const chunk of this.#range(begin, end)) {
+      const piece = this.text.substring(begin, Math.min(chunk.offset, end));
+      yield piece;
+      if (end >= chunk.end) {
+        yield chunk;
+      }
+      begin = chunk.end;
+    }
+    if (begin < end) {
+      const piece = this.text.substring(begin, end);
+      yield piece;
+    }
+  }
+
   // Get a slice of the computed text corresponding to the property text in the range [begin, end). The slice may not
   // start within a substitution chunk, e.g., it's invalid to request the computed text for the property value text
   // slice "1px var(--".
-  get(begin: number, end: number): string {
+  get(begin: number, end: number, substitutions?: Map<Match, string>): string {
     const pieces: string[] = [];
-    const push = (text: string): void => {
+
+    const getText = (piece: string|ComputedTextChunk): string => {
+      if (typeof piece === 'string') {
+        return piece;
+      }
+      const substitution = substitutions?.get(piece.match);
+      if (substitution) {
+        return getText(substitution);
+      }
+      return piece.computedText ?? piece.match.text;
+    };
+
+    for (const piece of this.#getPieces(begin, end)) {
+      const text = getText(piece);
       if (text.length === 0) {
-        return;
+        continue;
       }
       if (pieces.length > 0 && requiresSpace(pieces[pieces.length - 1], text)) {
         pieces.push(' ');
       }
       pieces.push(text);
-    };
-
-    for (const chunk of this.#range(begin, end)) {
-      const piece = this.text.substring(begin, Math.min(chunk.offset, end));
-
-      push(piece);
-      if (end >= chunk.end) {
-        push(chunk.computedText ?? chunk.match.text);
-      }
-
-      begin = chunk.end;
-    }
-    if (begin < end) {
-      const piece = this.text.substring(begin, end);
-      push(piece);
     }
     return pieces.join('');
   }
@@ -418,6 +432,9 @@ export namespace ASTUtils {
 
 export class AngleMatch implements Match {
   constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode) {
+  }
+  computedText(): string {
+    return this.text;
   }
 }
 
@@ -608,6 +625,26 @@ export class URLMatcher extends matcherBase(URLMatch) {
     const url = (urlNode.name === 'StringLiteral' ? text.substr(1, text.length - 2) : text.trim()) as
         Platform.DevToolsPath.UrlString;
     return new URLMatch(url, matching.ast.text(node), node);
+  }
+}
+
+export class LinearGradientMatch implements Match {
+  constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode) {
+  }
+}
+
+// clang-format off
+export class LinearGradientMatcher extends matcherBase(LinearGradientMatch) {
+  // clang-format on
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+    const text = matching.ast.text(node);
+    if (node.name === 'CallExpression' && matching.ast.text(node.getChild('Callee')) === 'linear-gradient') {
+      return new LinearGradientMatch(text, node);
+    }
+    return null;
+  }
+  override accepts(propertyName: string): boolean {
+    return ['background', 'background-image', '-webkit-mask-image'].includes(propertyName);
   }
 }
 

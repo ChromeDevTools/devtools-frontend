@@ -56,6 +56,7 @@ UI.ViewManager.registerViewExtension({
           Boolean(Root.Runtime.Runtime.queryParam(Root.Runtime.ConditionName.REACT_NATIVE_USE_INTERNAL_BRANDING)) ?
               UIStrings.debuggerBrandNameInternal :
               UIStrings.debuggerBrandName),
+      showBetaLabel: true,
     });
   },
   experiment: Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,

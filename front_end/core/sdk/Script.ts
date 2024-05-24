@@ -60,11 +60,11 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/Script.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let scriptCacheInstance: {
-  cache: Map<string, WeakRef<Promise<TextUtils.ContentProvider.DeferredContent>>>,
+  cache: Map<string, WeakRef<Promise<TextUtils.ContentData.ContentDataOrError>>>,
   registry: FinalizationRegistry<string>,
 }|null = null;
 
-export class Script implements TextUtils.ContentProvider.ContentProvider, FrameAssociated {
+export class Script implements TextUtils.ContentProvider.SafeContentProvider, FrameAssociated {
   debuggerModel: DebuggerModel;
   scriptId: Protocol.Runtime.ScriptId;
   sourceURL: Platform.DevToolsPath.UrlString;
@@ -83,7 +83,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   originStackTrace: Protocol.Runtime.StackTrace|null;
   readonly #codeOffsetInternal: number|null;
   readonly #language: string|null;
-  #contentPromise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
+  #contentPromise: Promise<TextUtils.ContentData.ContentDataOrError>|null;
   readonly #embedderNameInternal: Platform.DevToolsPath.UrlString|null;
   readonly isModule: boolean|null;
   constructor(
@@ -180,14 +180,14 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     return Common.ResourceType.resourceTypes.Script;
   }
 
-  private async loadTextContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
+  private async loadTextContent(): Promise<TextUtils.ContentData.ContentData> {
     const result = await this.debuggerModel.target().debuggerAgent().invoke_getScriptSource({scriptId: this.scriptId});
     if (result.getError()) {
       throw new Error(result.getError());
     }
     const {scriptSource, bytecode} = result;
     if (bytecode) {
-      return {content: bytecode, isEncoded: true};
+      return new TextUtils.ContentData.ContentData(bytecode, /* isBase64 */ true, 'application/wasm');
     }
     let content: string = scriptSource || '';
     if (this.hasSourceURL && Common.ParsedURL.schemeIs(this.sourceURL, 'snippet:')) {
@@ -195,10 +195,10 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
       // a sourceURL comment before evaluation and removing it here.
       content = Script.trimSourceURLComment(content);
     }
-    return {content, isEncoded: false};
+    return new TextUtils.ContentData.ContentData(content, /* isBase64 */ false, 'text/javascript');
   }
 
-  private async loadWasmContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
+  private async loadWasmContent(): Promise<TextUtils.ContentData.ContentDataOrError> {
     if (!this.isWasm()) {
       throw new Error('Not a wasm script');
     }
@@ -208,12 +208,8 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     if (result.getError()) {
       // Fall through to text content loading if v8-based disassembly fails. This is to ensure backwards compatibility with
       // older v8 versions.
-      const {content} = await this.loadTextContent();
-      if (!content) {
-        throw new Error('Unexpected empty bytecode for WASM module');
-      }
-      const wasmDisassemblyInfo = await disassembleWasm(content);
-      return {content: '', isEncoded: false, wasmDisassemblyInfo};
+      const contentData = await this.loadTextContent();
+      return await disassembleWasm(contentData.base64);
     }
 
     const {streamId, functionBodyOffsets, chunk: {lines, bytecodeOffsets}} = result;
@@ -251,12 +247,11 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     for (let i = 0; i < functionBodyOffsets.length; i += 2) {
       functionBodyRanges.push({start: functionBodyOffsets[i], end: functionBodyOffsets[i + 1]});
     }
-    const wasmDisassemblyInfo = new TextUtils.WasmDisassembly.WasmDisassembly(
+    return new TextUtils.WasmDisassembly.WasmDisassembly(
         lines.concat(...lineChunks), bytecodeOffsets.concat(...bytecodeOffsetChunks), functionBodyRanges);
-    return {content: '', isEncoded: false, wasmDisassemblyInfo};
   }
 
-  requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
+  requestContentData(): Promise<TextUtils.ContentData.ContentDataOrError> {
     if (!this.#contentPromise) {
       const fileSizeToCache = 65535;  // We won't bother cacheing files under 64K
       if (this.hash && !this.#isLiveEditInternal && this.contentLength > fileSizeToCache) {
@@ -295,15 +290,20 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     return this.#contentPromise;
   }
 
-  private async requestContentInternal(): Promise<TextUtils.ContentProvider.DeferredContent> {
+  async requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
+    const contentData = await this.requestContentData();
+    return TextUtils.ContentData.ContentData.asDeferredContent(contentData);
+  }
+
+  private async requestContentInternal(): Promise<TextUtils.ContentData.ContentDataOrError> {
     if (!this.scriptId) {
-      return {content: null, error: i18nString(UIStrings.scriptRemovedOrDeleted), isEncoded: false};
+      return {error: i18nString(UIStrings.scriptRemovedOrDeleted)};
     }
     try {
       return this.isWasm() ? await this.loadWasmContent() : await this.loadTextContent();
     } catch (err) {
       // TODO(bmeurer): Propagate errors as exceptions / rejections.
-      return {content: null, error: i18nString(UIStrings.unableToFetchScriptSource), isEncoded: false};
+      return {error: i18nString(UIStrings.unableToFetchScriptSource)};
     }
   }
 
@@ -358,7 +358,8 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     }
 
     if (!response.getError() && response.status === Protocol.Debugger.SetScriptSourceResponseStatus.Ok) {
-      this.#contentPromise = Promise.resolve({content: newSource, isEncoded: false});
+      this.#contentPromise =
+          Promise.resolve(new TextUtils.ContentData.ContentData(newSource, /* isBase64 */ false, 'text/javascript'));
     }
 
     this.debuggerModel.dispatchEventToListeners(Events.ScriptSourceWasEdited, {script: this, status: response.status});

@@ -234,6 +234,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
   }
 
+  get isEnabledForTest(): boolean {
+    return this.extensionsEnabled;
+  }
+
   dispose(): void {
     ThemeSupport.ThemeSupport.instance().removeEventListener(
         ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
@@ -461,6 +465,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return;
     }
     this.requests = new Map();
+    this.enableExtensions();
     const url = event.data.inspectedURL();
     this.postNotification(PrivateAPI.Events.InspectedURLChanged, url);
     const extensions = this.#pendingExtensions.splice(0);
@@ -1413,6 +1418,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   private disableExtensions(): void {
     this.extensionsEnabled = false;
+  }
+
+  private enableExtensions(): void {
+    this.extensionsEnabled = true;
   }
 }
 

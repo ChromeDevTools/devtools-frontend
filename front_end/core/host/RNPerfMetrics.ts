@@ -3,7 +3,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export type RNReliabilityEventListener = (event: ReactNativeChromeDevToolsEvent) => void;
+export type RNReliabilityEventListener = (event: DecoratedReactNativeChromeDevToolsEvent) => void;
 
 let instance: RNPerfMetrics|null = null;
 
@@ -38,10 +38,11 @@ class RNPerfMetrics {
       return;
     }
 
+    const decoratedEvent = this.#decorateEvent(event);
     const errors = [];
     for (const listener of this.#listeners) {
       try {
-        listener(event);
+        listener(decoratedEvent);
       } catch (e) {
         errors.push(e);
       }
@@ -71,8 +72,6 @@ class RNPerfMetrics {
   entryPointLoadingStarted(entryPoint: EntryPoint): void {
     this.sendEvent({
       eventName: 'Entrypoint.LoadingStarted',
-      timestamp: getPerfTimestamp(),
-      launchId: this.#launchId,
       entryPoint,
     });
   }
@@ -80,10 +79,20 @@ class RNPerfMetrics {
   entryPointLoadingFinished(entryPoint: EntryPoint): void {
     this.sendEvent({
       eventName: 'Entrypoint.LoadingFinished',
-      timestamp: getPerfTimestamp(),
-      launchId: this.#launchId,
       entryPoint,
     });
+  }
+
+  #decorateEvent(event: ReactNativeChromeDevToolsEvent): Readonly<DecoratedReactNativeChromeDevToolsEvent> {
+    const commonFields: CommonEventFields = {
+      timestamp: getPerfTimestamp(),
+      launchId: this.#launchId,
+    };
+
+    return {
+      ...event,
+      ...commonFields,
+    };
   }
 }
 
@@ -98,19 +107,21 @@ type CommonEventFields = Readonly<{
 
 type EntryPoint = 'rn_fusebox'|'rn_inspector';
 
-export type EntrypointLoadingStartedEvent = Readonly<CommonEventFields&{
+export type EntrypointLoadingStartedEvent = Readonly<{
   eventName: 'Entrypoint.LoadingStarted',
   entryPoint: EntryPoint,
 }>;
 
-export type EntrypointLoadingFinishedEvent = Readonly<CommonEventFields&{
+export type EntrypointLoadingFinishedEvent = Readonly<{
   eventName: 'Entrypoint.LoadingFinished',
   entryPoint: EntryPoint,
 }>;
 
-export type DebuggerReadyEvent = Readonly<CommonEventFields&{
+export type DebuggerReadyEvent = Readonly<{
   eventName: 'Debugger.IsReadyToPause',
 }>;
 
 export type ReactNativeChromeDevToolsEvent =
     EntrypointLoadingStartedEvent|EntrypointLoadingFinishedEvent|DebuggerReadyEvent;
+
+export type DecoratedReactNativeChromeDevToolsEvent = CommonEventFields&ReactNativeChromeDevToolsEvent;

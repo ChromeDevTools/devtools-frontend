@@ -1144,6 +1144,7 @@ export namespace Audits {
     allowedSites: string[];
     optOutPercentage: number;
     isOptOutTopLevel: boolean;
+    operation: CookieOperation;
   }
 
   export const enum ClientHintIssueReason {
@@ -8031,6 +8032,14 @@ export namespace Network {
      */
     workerRespondWithSettled: number;
     /**
+     * Started ServiceWorker static routing source evaluation.
+     */
+    workerRouterEvaluationStart?: number;
+    /**
+     * Started cache lookup when the source was evaluated to `cache`.
+     */
+    workerCacheLookupStart?: number;
+    /**
      * Started sending request.
      */
     sendStart: number;
@@ -8400,6 +8409,10 @@ export namespace Network {
      * field will be set, otherwise no value will be set.
      */
     matchedSourceType?: ServiceWorkerRouterSource;
+    /**
+     * The actual router source used.
+     */
+    actualSourceType?: ServiceWorkerRouterSource;
   }
 
   /**
@@ -17274,6 +17287,18 @@ export namespace PWA {
      * ID of the tab target created as a result.
      */
     targetId: Target.TargetID;
+  }
+
+  export interface LaunchFilesInAppRequest {
+    manifestId: string;
+    files: string[];
+  }
+
+  export interface LaunchFilesInAppResponse extends ProtocolResponseWithError {
+    /**
+     * IDs of the tab targets created as the result.
+     */
+    targetIds: Target.TargetID[];
   }
 }
 

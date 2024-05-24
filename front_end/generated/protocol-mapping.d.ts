@@ -4434,6 +4434,26 @@ export namespace ProtocolMapping {
       returnType: Protocol.PWA.LaunchResponse;
     };
     /**
+     * Opens one or more local files from an installed web app identified by its
+     * manifestId. The web app needs to have file handlers registered to process
+     * the files. The API returns one or more tabs / web contents' based
+     * Target.TargetIDs which can be used to attach to via Target.attachToTarget or
+     * similar APIs.
+     * If some files in the parameters cannot be handled by the web app, they will
+     * be ignored. If none of the files can be handled, this API returns an error.
+     * If no files provided as the parameter, this API also returns an error.
+     *
+     * According to the definition of the file handlers in the manifest file, one
+     * Target.TargetID may represent a tab handling one or more files. The order of
+     * the returned Target.TargetIDs is also not guaranteed.
+     *
+     * TODO(crbug.com/339454034): Check the existences of the input files.
+     */
+    'PWA.launchFilesInApp': {
+      paramsType: [Protocol.PWA.LaunchFilesInAppRequest];
+      returnType: Protocol.PWA.LaunchFilesInAppResponse;
+    };
+    /**
      * Continues execution until specific location is reached.
      */
     'Debugger.continueToLocation': {

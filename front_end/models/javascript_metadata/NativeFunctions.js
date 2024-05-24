@@ -7248,6 +7248,14 @@ export const NativeFunctions = [
     signatures: [["expires"]]
   },
   {
+    name: "transferToWebGPU",
+    signatures: [["options"]]
+  },
+  {
+    name: "transferFromWebGPU",
+    signatures: [["tex"]]
+  },
+  {
     name: "CanvasFilter",
     signatures: [["init"]]
   },
@@ -7278,14 +7286,6 @@ export const NativeFunctions = [
   {
     name: "drawMesh",
     signatures: [["vertex_buffer","uv_buffer","index_buffer","image"]]
-  },
-  {
-    name: "beginWebGPUAccess",
-    signatures: [["options"]]
-  },
-  {
-    name: "endWebGPUAccess",
-    signatures: [["tex"]]
   },
   {
     name: "Path2D",

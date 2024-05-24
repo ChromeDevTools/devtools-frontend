@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {click} from '../../shared/helper.js';
+import {click, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   getDisplayedEventListenerNames,
@@ -18,19 +18,23 @@ describe('Removing event listeners in the elements sidebar', () => {
     await loadEventListenersAndSelectButtonNode();
   });
 
-  it('shows "Remove" by each node for a given event', async () => {
+  it('shows delete button by each node for a given event', async () => {
     await openEventListenersPaneAndWaitForListeners();
     const {
       firstListenerText,
       listenerSelector,
     } = await getFirstNodeForEventListener('[aria-label="click, event listener"]');
 
-    // check that we have the right event for the right element
-    // and that it has the "Remove" button within it
+    // Check that we have the right event for the right element
+    // and that it has the delete button within it.
     assert.include(firstListenerText, 'button#test-button');
-    assert.include(firstListenerText, 'Remove');
+    const removeButtonSelector = `${listenerSelector} devtools-button`;
+    const removeButton = await waitFor(removeButtonSelector);
+    removeButton.evaluate(n => {
+      const button = n.shadowRoot?.querySelector('button');
+      assert.strictEqual(button?.title, 'Delete event listener');
+    });
 
-    const removeButtonSelector = `${listenerSelector} .event-listener-button`;
     await click(removeButtonSelector);
 
     // now we can check that the 'click' event is gone

@@ -18,6 +18,7 @@ devtools_module("text_utils") {
     "TextCursor.ts",
     "TextRange.ts",
     "TextUtils.ts",
+    "WasmDisassembly.ts",
   ]
 
   deps = [
@@ -62,6 +63,7 @@ ts_library("unittests") {
     "TextCursor.test.ts",
     "TextRange.test.ts",
     "TextUtils.test.ts",
+    "WasmDisassembly.test.ts",
   ]
 
   deps = [

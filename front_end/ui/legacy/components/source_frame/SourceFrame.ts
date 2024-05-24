@@ -176,7 +176,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   private selectionToSet: TextUtils.TextRange.TextRange|null;
   private loadedInternal: boolean;
   private contentRequested: boolean;
-  private wasmDisassemblyInternal: Common.WasmDisassembly.WasmDisassembly|null;
+  private wasmDisassemblyInternal: TextUtils.WasmDisassembly.WasmDisassembly|null;
   contentSet: boolean;
   private selfXssWarningDisabledSetting: Common.Settings.Setting<boolean>;
 
@@ -348,7 +348,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     }
   }
 
-  get wasmDisassembly(): Common.WasmDisassembly.WasmDisassembly|null {
+  get wasmDisassembly(): TextUtils.WasmDisassembly.WasmDisassembly|null {
     return this.wasmDisassemblyInternal;
   }
 
@@ -1252,7 +1252,7 @@ export function isBreakableLine(state: CodeMirror.EditorState, line: CodeMirror.
   return !found;
 }
 
-function markNonBreakableLines(disassembly: Common.WasmDisassembly.WasmDisassembly): CodeMirror.Extension {
+function markNonBreakableLines(disassembly: TextUtils.WasmDisassembly.WasmDisassembly): CodeMirror.Extension {
   // Mark non-breakable lines in the Wasm disassembly after setting
   // up the content for the text editor (which creates the gutter).
   return nonBreakableLines.init(state => {

@@ -33,6 +33,7 @@ import type * as Platform from '../../core/platform/platform.js';
 
 import {type ContentDataOrError} from './ContentData.js';
 import {type StreamingContentDataOrError} from './StreamingContentData.js';
+import {type WasmDisassembly} from './WasmDisassembly.js';
 
 export interface ContentProvider {
   contentURL(): Platform.DevToolsPath.UrlString;
@@ -71,7 +72,7 @@ export type DeferredContent = {
 }|{
   content: '',
   isEncoded: false,
-  wasmDisassemblyInfo: Common.WasmDisassembly.WasmDisassembly,
+  wasmDisassemblyInfo: WasmDisassembly,
 }|{
   content: null,
   error: string,

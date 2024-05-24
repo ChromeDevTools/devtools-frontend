@@ -507,7 +507,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
   }
 
   #getContent(locations: Breakpoints.BreakpointManager.BreakpointLocation[][]):
-      Promise<Array<TextUtils.Text.Text|Common.WasmDisassembly.WasmDisassembly>> {
+      Promise<Array<TextUtils.Text.Text|TextUtils.WasmDisassembly.WasmDisassembly>> {
     // Use a cache to share the Text objects between all breakpoints. This way
     // we share the cached line ending information that Text calculates. This
     // was very slow to calculate with a lot of breakpoints in the same very

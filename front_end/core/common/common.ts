@@ -32,7 +32,6 @@ import * as StringOutputStream from './StringOutputStream.js';
 import * as TextDictionary from './TextDictionary.js';
 import * as Throttler from './Throttler.js';
 import * as Trie from './Trie.js';
-import * as WasmDisassembly from './WasmDisassembly.js';
 import * as Worker from './Worker.js';
 
 /*
@@ -74,5 +73,4 @@ export {
   Throttler,
   Trie,
   Worker,
-  WasmDisassembly,
 };

@@ -251,7 +251,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     for (let i = 0; i < functionBodyOffsets.length; i += 2) {
       functionBodyRanges.push({start: functionBodyOffsets[i], end: functionBodyOffsets[i + 1]});
     }
-    const wasmDisassemblyInfo = new Common.WasmDisassembly.WasmDisassembly(
+    const wasmDisassemblyInfo = new TextUtils.WasmDisassembly.WasmDisassembly(
         lines.concat(...lineChunks), bytecodeOffsets.concat(...bytecodeOffsetChunks), functionBodyRanges);
     return {content: '', isEncoded: false, wasmDisassemblyInfo};
   }
@@ -488,10 +488,10 @@ function frameIdForScript(script: Script): Protocol.Page.FrameId|null {
 
 export const sourceURLRegex = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;
 
-async function disassembleWasm(content: string): Promise<Common.WasmDisassembly.WasmDisassembly> {
+async function disassembleWasm(content: string): Promise<TextUtils.WasmDisassembly.WasmDisassembly> {
   const worker = Common.Worker.WorkerWrapper.fromURL(
       new URL('../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js', import.meta.url));
-  const promise = new Promise<Common.WasmDisassembly.WasmDisassembly>((resolve, reject) => {
+  const promise = new Promise<TextUtils.WasmDisassembly.WasmDisassembly>((resolve, reject) => {
     worker.onmessage = ({data}: MessageEvent) => {
       if ('method' in data) {
         switch (data.method) {
@@ -500,7 +500,7 @@ async function disassembleWasm(content: string): Promise<Common.WasmDisassembly.
               reject(data.error);
             } else if ('result' in data) {
               const {lines, offsets, functionBodyOffsets} = data.result;
-              resolve(new Common.WasmDisassembly.WasmDisassembly(lines, offsets, functionBodyOffsets));
+              resolve(new TextUtils.WasmDisassembly.WasmDisassembly(lines, offsets, functionBodyOffsets));
             }
             break;
         }

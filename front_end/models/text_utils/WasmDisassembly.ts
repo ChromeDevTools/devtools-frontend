@@ -1,30 +1,49 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 
-/**
- * Metadata to map between bytecode #offsets and line numbers in the
- * disassembly for WebAssembly modules.
- */
+import {ContentData} from './ContentData.js';
+import { type DeferredContent } from './ContentProvider.js';
 
 interface FunctionBodyOffset {
   start: number;
   end: number;
 }
-export class WasmDisassembly {
+
+/**
+ * Metadata to map between bytecode #offsets and line numbers in the
+ * disassembly for WebAssembly modules.
+ */
+export class WasmDisassembly extends ContentData {
   readonly lines: string[];
   readonly #offsets: number[];
   #functionBodyOffsets: FunctionBodyOffset[];
 
+  // Wasm can be potentially very large, so we calculate `text' lazily.
+  #cachedText?: string;
+
   constructor(lines: string[], offsets: number[], functionBodyOffsets: FunctionBodyOffset[]) {
+    super('', /* isBase64 */ false, 'text/x-wast', 'utf-8');
     if (lines.length !== offsets.length) {
       throw new Error('Lines and offsets don\'t match');
     }
     this.lines = lines;
     this.#offsets = offsets;
     this.#functionBodyOffsets = functionBodyOffsets;
+  }
+
+  override get text(): string {
+    if (typeof this.#cachedText === 'undefined') {
+      this.#cachedText = this.lines.join('\n');
+    }
+    return this.#cachedText;
+  }
+
+  override get isEmpty(): boolean {
+    // Don't trigger unnecessary concatenating. Only check whether we have no lines, or a single empty line.
+    return this.lines.length === 0 || (this.lines.length === 1 && this.lines[0].length === 0);
   }
 
   get lineNumbers(): number {
@@ -57,5 +76,12 @@ export class WasmDisassembly {
       }
       yield lineNumber++;
     }
+  }
+
+  /**
+   * @deprecated Used during migration from `DeferredContent` to `ContentData`.
+   */
+  override asDeferedContent(): DeferredContent {
+    return {content: '', isEncoded: false, wasmDisassemblyInfo: this};
   }
 }

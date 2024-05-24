@@ -226,8 +226,11 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     }
 
     if (cachedWasmOnly && this.mimeType() === 'application/wasm') {
-      return Promise.resolve(
-          {content: '', isEncoded: false, wasmDisassemblyInfo: new Common.WasmDisassembly.WasmDisassembly([], [], [])});
+      return Promise.resolve({
+        content: '',
+        isEncoded: false,
+        wasmDisassemblyInfo: new TextUtils.WasmDisassembly.WasmDisassembly([], [], []),
+      });
     }
 
     this.requestContentPromise = this.requestContentImpl();

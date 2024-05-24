@@ -41,7 +41,6 @@ devtools_module("common") {
     "TextDictionary.ts",
     "Throttler.ts",
     "Trie.ts",
-    "WasmDisassembly.ts",
     "Worker.ts",
   ]
 
@@ -99,7 +98,6 @@ ts_library("unittests") {
     "TextDictionary.test.ts",
     "Throttler.test.ts",
     "Trie.test.ts",
-    "WasmDisassembly.test.ts",
   ]
 
   deps = [

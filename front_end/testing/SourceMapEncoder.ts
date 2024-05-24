@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as SDK from '../core/sdk/sdk.js';
+import * as SDK from '../core/sdk/sdk.js';
 
 const base64Digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
@@ -192,9 +192,11 @@ export class GeneratedRangeBuilder {
   #state = {
     line: 0,
     column: 0,
+    defSourceIdx: 0,
+    defScopeIdx: 0,
   };
 
-  start(line: number, column: number): this {
+  start(line: number, column: number, options?: {definition?: {sourceIdx: number, scopeIdx: number}}): this {
     this.#emitLineSeparator(line);
     this.#emitItemSepratorIfRequired();
 
@@ -204,9 +206,22 @@ export class GeneratedRangeBuilder {
     this.#state.line = line;
     this.#state.column = column;
 
-    const flags = 0;
+    let flags = 0;
+    if (options?.definition) {
+      flags |= SDK.SourceMapScopes.EncodedGeneratedRangeFlag.HasDefinition;
+    }
     this.#encodedRange += encodeVlq(flags);
 
+    if (options?.definition) {
+      const {sourceIdx, scopeIdx} = options.definition;
+      this.#encodedRange += encodeVlq(sourceIdx - this.#state.defSourceIdx);
+
+      const emittedScopeIdx = scopeIdx - (this.#state.defSourceIdx === sourceIdx ? this.#state.defScopeIdx : 0);
+      this.#encodedRange += encodeVlq(emittedScopeIdx);
+
+      this.#state.defSourceIdx = sourceIdx;
+      this.#state.defScopeIdx = scopeIdx;
+    }
     return this;
   }
 
@@ -240,6 +255,8 @@ export class GeneratedRangeBuilder {
     this.#state = {
       line: 0,
       column: 0,
+      defSourceIdx: 0,
+      defScopeIdx: 0,
     };
     this.#encodedRange = '';
     return result;

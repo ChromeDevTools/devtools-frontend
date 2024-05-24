@@ -224,4 +224,60 @@ describe('decodeGeneratedRanges', () => {
     assert.deepEqual(generatedRange.children[1].start, {line: 25, column: 4});
     assert.deepEqual(generatedRange.children[1].end, {line: 30, column: 0});
   });
+
+  it('throws if the definition references has an invalid source index', () => {
+    const originEncodedScpoes = new OriginalScopeBuilder().start(2, 0, 'function').end(5, 0).build();
+    const originalScopes = decodeOriginalScopes([originEncodedScpoes], []);
+    const range = new GeneratedRangeBuilder().start(0, 0, {definition: {sourceIdx: 1, scopeIdx: 0}}).end(0, 20).build();
+
+    assert.throws(() => decodeGeneratedRanges(range, originalScopes, []), /Invalid source index/);
+  });
+
+  it('throws if the definition references has an invalid scope index', () => {
+    const originEncodedScpoes = new OriginalScopeBuilder().start(2, 0, 'function').end(5, 0).build();
+    const originalScopes = decodeOriginalScopes([originEncodedScpoes], []);
+    const range = new GeneratedRangeBuilder().start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 4}}).end(0, 20).build();
+
+    assert.throws(() => decodeGeneratedRanges(range, originalScopes, []), /Invalid original scope index/);
+  });
+
+  it('decodes original scope (definition) references', () => {
+    const originEncodedScpoes =
+        new OriginalScopeBuilder().start(0, 0, 'global').start(5, 0, 'function').end(10, 0).end(20, 0).build();
+    const originalScopes = decodeOriginalScopes([originEncodedScpoes], []);
+    const range = new GeneratedRangeBuilder()
+                      .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
+                      .start(0, 5, {definition: {sourceIdx: 0, scopeIdx: 1}})
+                      .end(0, 10)
+                      .end(0, 20)
+                      .build();
+
+    const generatedRange = decodeGeneratedRanges(range, originalScopes, []);
+
+    assert.strictEqual(generatedRange.originalScope, originalScopes[0].root, 'range does not reference global scope');
+    assert.strictEqual(
+        generatedRange.children[0].originalScope, originalScopes[0].root.children[0],
+        'range does not reference function scope');
+  });
+
+  it('decodes original scope (definition) references across multiple original sources', () => {
+    const originEncodedScopes1 =
+        new OriginalScopeBuilder().start(0, 0, 'global').start(5, 0, 'function').end(10, 0).end(20, 0).build();
+    const originEncodedScopes2 =
+        new OriginalScopeBuilder().start(0, 0, 'global').start(5, 0, 'function').end(10, 0).end(20, 0).build();
+    const originalScopes = decodeOriginalScopes([originEncodedScopes1, originEncodedScopes2], []);
+    const range = new GeneratedRangeBuilder()
+                      .start(0, 0)
+                      .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 1}})
+                      .end(0, 5)
+                      .start(0, 10, {definition: {sourceIdx: 1, scopeIdx: 1}})
+                      .end(0, 15)
+                      .end(0, 16)
+                      .build();
+
+    const generatedRange = decodeGeneratedRanges(range, originalScopes, []);
+
+    assert.strictEqual(generatedRange.children[0].originalScope, originalScopes[0].root.children[0]);
+    assert.strictEqual(generatedRange.children[1].originalScope, originalScopes[1].root.children[0]);
+  });
 });

@@ -474,6 +474,7 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
       </label>
       <${Buttons.Button.Button.litTagName} class="show-element"
                                            title=${i18nString(UIStrings.showElementInTheElementsPanel)}
+                                           aria-label=${i18nString(UIStrings.showElementInTheElementsPanel)}
                                            .iconName=${'select-element'}
                                            .jslogContext=${'elements.select-element'}
                                            .size=${Buttons.Button.Size.SMALL}

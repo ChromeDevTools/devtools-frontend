@@ -689,6 +689,24 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
       angleSwatch.updateAngle({value: 130, unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg});
       assert.strictEqual(colorSwatch.getColor()?.asString(Common.Color.Format.HSL), 'hsl(130deg 50% 25%)');
     });
+
+    it('renders relative colors', () => {
+      const stylePropertyTreeElement = getTreeElement('color', 'hsl(    from var(--blue) h calc(s/2) l / alpha)');
+      stylePropertyTreeElement.updateTitle();
+      const colorSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
+      assert.isOk(colorSwatch);
+      assert.isOk(colorSwatch.getColor());
+      assert.strictEqual(colorSwatch?.getColor()?.asString(Common.Color.Format.HSL), 'hsl(240deg 50% 50%)');
+    });
+
+    it('does not render relative colors if property text is invalid', () => {
+      const invalidColor = 'hsl(    from var(--zero) h calc(s/2) l / alpha)';
+      const stylePropertyTreeElement = getTreeElement('color', invalidColor);
+      stylePropertyTreeElement.updateTitle();
+      const colorSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
+      assert.isOk(colorSwatch);
+      assert.isNull(colorSwatch.getColor());
+    });
   });
 
   describe('BezierRenderer', () => {

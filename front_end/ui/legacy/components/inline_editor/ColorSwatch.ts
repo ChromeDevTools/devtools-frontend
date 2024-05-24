@@ -123,7 +123,7 @@ export class ColorSwatch extends HTMLElement {
 
   private renderTextOnly(): void {
     // Non-color values can be passed to the component (like 'none' from border style).
-    LitHtml.render(this.text, this.shadow, {host: this});
+    LitHtml.render(LitHtml.html`<slot><span>${this.text}</span></slot>`, this.shadow, {host: this});
   }
 
   private render(): void {

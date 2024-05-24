@@ -301,7 +301,15 @@ export class ColorRenderer implements MatchRenderer<ColorMatch> {
 
   render(match: ColorMatch, context: RenderingContext): Node[] {
     const {valueChild, cssControls} = this.#getValueChild(match, context);
-    const swatch = this.renderColorSwatch(context.matchedResult.getComputedText(match.node), valueChild);
+    let color = context.matchedResult.getComputedText(match.node);
+    if (match.node.name === 'CallExpression' && color.match(/^[^)]*\(\W*from\W+/) &&
+        !context.matchedResult.hasUnresolvedVars(match.node) && CSS.supports('color', color)) {
+      const fakeSpan = document.body.appendChild(document.createElement('span'));
+      fakeSpan.style.backgroundColor = color;
+      color = window.getComputedStyle(fakeSpan).backgroundColor?.toString() || color;
+      fakeSpan.remove();
+    }
+    const swatch = this.renderColorSwatch(color, valueChild);
     context.addControl('color', swatch);
 
     if (cssControls && match.node.name === 'CallExpression' &&

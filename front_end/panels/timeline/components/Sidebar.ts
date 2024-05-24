@@ -9,19 +9,17 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import sidebarStyles from './sidebar.css.js';
 
-const {html, render} = LitHtml;
-
 const COLLAPSED_WIDTH = 40;
 const DEFAULT_EXPANDED_WIDTH = 240;
 
-export class Sidebar extends UI.SplitWidget.SplitWidget {
+export class SidebarWidget extends UI.SplitWidget.SplitWidget {
   #sidebarExpanded: boolean = false;
   #sidebarUI = new SidebarUI();
 
   constructor() {
     super(true /* isVertical */, false /* secondIsSidebar */, undefined /* settingName */, COLLAPSED_WIDTH);
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_RPP_SIDEBAR)) {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SIDEBAR)) {
       this.sidebarElement().append(this.#sidebarUI);
     } else {
       this.hideSidebar();
@@ -47,7 +45,7 @@ export class Sidebar extends UI.SplitWidget.SplitWidget {
 }
 
 export class SidebarUI extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-rpp-sidebar-ui`;
+  static readonly litTagName = LitHtml.literal`devtools-performance-sidebar`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   connectedCallback(): void {
@@ -61,7 +59,7 @@ export class SidebarUI extends HTMLElement {
   render(expanded: boolean): void {
     const toggleIcon = expanded ? 'left-panel-close' : 'left-panel-open';
     // clang-format off
-    const output = html`<div class=${LitHtml.Directives.classMap({
+    const output = LitHtml.html`<div class=${LitHtml.Directives.classMap({
       sidebar: true,
       'is-expanded': expanded,
       'is-closed': !expanded,
@@ -72,14 +70,14 @@ export class SidebarUI extends HTMLElement {
       </div>
     </div>`;
     // clang-format on
-    render(output, this.#shadow, {host: this});
+    LitHtml.render(output, this.#shadow, {host: this});
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'devtools-rpp-sidebar-ui': Sidebar;
+    'devtools-performance-sidebar': SidebarWidget;
   }
 }
 
-customElements.define('devtools-rpp-sidebar-ui', SidebarUI);
+customElements.define('devtools-performance-sidebar', SidebarUI);

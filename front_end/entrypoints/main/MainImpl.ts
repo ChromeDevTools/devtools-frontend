@@ -394,7 +394,7 @@ export class MainImpl {
     );
 
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.TIMELINE_RPP_SIDEBAR,
+        Root.Runtime.ExperimentName.TIMELINE_SIDEBAR,
         'Enable the experimental, WIP sidebar for the Performance Panel.',
         true,
     );

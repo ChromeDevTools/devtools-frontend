@@ -114,7 +114,7 @@ export class EntriesFilter {
   }
 
   /**
-   * Sets invisible and modified entries. Called when a trace with annotations is loaded and some entries are set as hidden and modified.
+   * Sets invisible and modified entries. Called when a trace with modifications is loaded and some entries are set as hidden and modified.
    * Both arrays are set together because if there is one, the other must be present too.
    **/
   setInvisibleAndModifiedEntries(

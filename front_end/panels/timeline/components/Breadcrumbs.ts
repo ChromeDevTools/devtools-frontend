@@ -56,8 +56,8 @@ export class Breadcrumbs {
         !(child.min === parent.min && child.max === parent.max);
   }
 
-  // Used to set an initial breadcrumbs from annotations loaded from a file
-  setInitialBreadcrumbFromLoadedAnnotations(initialBreadcrumb: TraceEngine.Types.File.Breadcrumb): void {
+  // Used to set an initial breadcrumbs from modifications loaded from a file
+  setInitialBreadcrumbFromLoadedModifications(initialBreadcrumb: TraceEngine.Types.File.Breadcrumb): void {
     this.initialBreadcrumb = initialBreadcrumb;
     // Make last breadcrumb active
     let lastBreadcrumb = initialBreadcrumb;

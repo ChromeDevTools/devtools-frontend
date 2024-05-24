@@ -389,8 +389,8 @@ export class MainImpl {
     );
 
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.PERF_PANEL_ANNOTATIONS,
-        'Enable saving and loading traces with annotations in the Performance panel',
+        Root.Runtime.ExperimentName.TIMELINE_WRITE_MODIFICATIONS_TO_DISK,
+        'Enable saving and loading traces with modifications in the Performance panel',
     );
 
     Root.Runtime.experiments.register(

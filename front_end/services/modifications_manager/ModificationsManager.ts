@@ -12,7 +12,7 @@ type EntryToNodeMap =
 export class ModificationsManager {
   /**
    * An Array with all trace entries.
-   * We save annotations into the trace file by saving their id in the allEntries Array.
+   * We save modifications into the trace file by saving their id in the allEntries Array.
    **/
   #allEntries: TraceEngine.Types.TraceEvents.SyntheticTraceEntry[];
   #entriesFilter: TraceEngine.EntriesFilter.EntriesFilter;
@@ -20,8 +20,8 @@ export class ModificationsManager {
 
   /**
    * A new instance is create each time a trace is recorded or loaded from a file.
-   * Both entryToNodeMap and wholeTraceBounds are mandatory to support all annotations and if one of them
-   * is not present, something has gone wrong so let's load the trace without the annotations support.
+   * Both entryToNodeMap and wholeTraceBounds are mandatory to support all modifications and if one of them
+   * is not present, something has gone wrong so let's load the trace without the modifications support.
    **/
   static maybeInstance(opts: {
     entryToNodeMap: EntryToNodeMap|null,
@@ -57,9 +57,9 @@ export class ModificationsManager {
   }
 
   /**
-   * Builds all annotations and returns the object written into the 'annotations' trace file metada field.
+   * Builds all modifications and returns the object written into the 'modifications' trace file metada field.
    */
-  getAnnotations(): TraceEngine.Types.File.Annotations {
+  getModifications(): TraceEngine.Types.File.Modifications {
     const indexesOfSynteticEntries: number[] = [];
     const hiddenEntries = this.#entriesFilter.invisibleEntries();
     if (hiddenEntries) {
@@ -77,7 +77,7 @@ export class ModificationsManager {
     }
 
     return {
-      entriesFilterAnnotations: {
+      entriesFilterModifications: {
         hiddenEntriesIndexes: indexesOfSynteticEntries,
         modifiedEntriesIndexes: indexesOfModifiedEntries,
       },
@@ -85,14 +85,14 @@ export class ModificationsManager {
     };
   }
 
-  applyAnnotations(annotations: TraceEngine.Types.File.Annotations): void {
-    this.applyEntriesFilterAnnotations(
-        annotations.entriesFilterAnnotations.hiddenEntriesIndexes,
-        annotations.entriesFilterAnnotations.modifiedEntriesIndexes);
-    this.#timelineBreadcrumbs.setInitialBreadcrumbFromLoadedAnnotations(annotations.initialBreadcrumb);
+  applyModifications(modifications: TraceEngine.Types.File.Modifications): void {
+    this.applyEntriesFilterModifications(
+        modifications.entriesFilterModifications.hiddenEntriesIndexes,
+        modifications.entriesFilterModifications.modifiedEntriesIndexes);
+    this.#timelineBreadcrumbs.setInitialBreadcrumbFromLoadedModifications(modifications.initialBreadcrumb);
   }
 
-  applyEntriesFilterAnnotations(hiddenEntriesIndexes: number[], modifiedEntriesIndexes: number[]): void {
+  applyEntriesFilterModifications(hiddenEntriesIndexes: number[], modifiedEntriesIndexes: number[]): void {
     // Build the hidden events array by getting the entries by their index in the allEntries array.
     const hiddenEntries: TraceEngine.Types.TraceEvents.SyntheticTraceEntry[] = [];
     hiddenEntriesIndexes.map(hiddenEntryHash => {

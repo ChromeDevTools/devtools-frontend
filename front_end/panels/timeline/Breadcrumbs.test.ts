@@ -212,7 +212,7 @@ describe('Timeline breadcrumbs', () => {
       child: breadcrumb1,
     };
 
-    crumbs.setInitialBreadcrumbFromLoadedAnnotations(initialBreadcrumb);
+    crumbs.setInitialBreadcrumbFromLoadedModifications(initialBreadcrumb);
 
     assert.deepEqual(
         TimelineComponents.Breadcrumbs.flattenBreadcrumbs(initialBreadcrumb),

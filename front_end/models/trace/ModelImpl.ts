@@ -168,9 +168,9 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
     return this.#traces[index].metadata;
   }
 
-  overrideAnnotations(index: number, newAnnotations: Types.File.Annotations): void {
+  overrideModifications(index: number, newModifications: Types.File.Modifications): void {
     if (this.#traces[index]) {
-      this.#traces[index].metadata.annotations = newAnnotations;
+      this.#traces[index].metadata.modifications = newModifications;
     }
   }
 

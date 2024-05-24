@@ -37,4 +37,6 @@
   text-decoration: underline;
   cursor: pointer;
   outline-offset: 2px;
+  border: none;
+  background: none;
 }

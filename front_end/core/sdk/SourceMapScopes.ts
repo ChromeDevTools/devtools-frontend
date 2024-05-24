@@ -72,22 +72,30 @@ export interface OriginalPosition extends Position {
   sourceIndex: number;
 }
 
-export function decodeOriginalScopes(encodedOriginalScopes: string[], names: string[]): OriginalScope[] {
+interface OriginalScopeTree {
+  readonly root: OriginalScope;
+  readonly scopeForItemIndex: Map<number, OriginalScope>;
+}
+
+export function decodeOriginalScopes(encodedOriginalScopes: string[], names: string[]): OriginalScopeTree[] {
   return encodedOriginalScopes.map(scope => decodeOriginalScope(scope, names));
 }
 
-function decodeOriginalScope(encodedOriginalScope: string, names: string[]): OriginalScope {
+function decodeOriginalScope(encodedOriginalScope: string, names: string[]): OriginalScopeTree {
+  const scopeForItemIndex = new Map<number, OriginalScope>();
   const scopeStack: OriginalScope[] = [];
   let line = 0;
 
-  for (const item of decodeOriginalScopeItems(encodedOriginalScope)) {
+  for (const [index, item] of decodeOriginalScopeItems(encodedOriginalScope)) {
     line += item.line;
     const {column} = item;
     if (isStart(item)) {
       const kind = decodeKind(item.kind);
       const name = resolveName(item.name, names);
       const variables = item.variables.map(idx => names[idx]);
-      scopeStack.push({start: {line, column}, end: {line, column}, kind, name, variables, children: []});
+      const scope: OriginalScope = {start: {line, column}, end: {line, column}, kind, name, variables, children: []};
+      scopeStack.push(scope);
+      scopeForItemIndex.set(index, scope);
     } else {
       const scope = scopeStack.pop();
       if (!scope) {
@@ -97,7 +105,7 @@ function decodeOriginalScope(encodedOriginalScope: string, names: string[]): Ori
 
       if (scopeStack.length === 0) {
         // We are done. There might be more top-level scopes but we only allow one.
-        return scope;
+        return {root: scope, scopeForItemIndex};
       }
       scopeStack[scopeStack.length - 1].children.push(scope);
     }
@@ -125,9 +133,10 @@ function isStart(item: EncodedOriginalScopeStart|EncodedOriginalScopeEnd): item 
 
 function*
     decodeOriginalScopeItems(encodedOriginalScope: string):
-        Generator<EncodedOriginalScopeStart|EncodedOriginalScopeEnd> {
+        Generator<[number, EncodedOriginalScopeStart | EncodedOriginalScopeEnd]> {
   const iter = new TokenIterator(encodedOriginalScope);
   let prevColumn = 0;
+  let itemCount = 0;
 
   while (iter.hasNext()) {
     if (iter.peek() === ',') {
@@ -141,7 +150,7 @@ function*
     prevColumn = column;
 
     if (!iter.hasNext() || iter.peek() === ',') {
-      yield {line, column};
+      yield [itemCount++, {line, column}];
       continue;
     }
 
@@ -163,7 +172,7 @@ function*
       }
     }
 
-    yield startItem;
+    yield [itemCount++, startItem];
   }
 }
 

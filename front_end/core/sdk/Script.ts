@@ -207,8 +207,13 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
 
     if (result.getError()) {
       // Fall through to text content loading if v8-based disassembly fails. This is to ensure backwards compatibility with
-      // older v8 versions;
-      return this.loadTextContent();
+      // older v8 versions.
+      const {content} = await this.loadTextContent();
+      if (!content) {
+        throw new Error('Unexpected empty bytecode for WASM module');
+      }
+      const wasmDisassemblyInfo = await disassembleWasm(content);
+      return {content: '', isEncoded: false, wasmDisassemblyInfo};
     }
 
     const {streamId, functionBodyOffsets, chunk: {lines, bytecodeOffsets}} = result;
@@ -482,3 +487,33 @@ function frameIdForScript(script: Script): Protocol.Page.FrameId|null {
 }
 
 export const sourceURLRegex = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;
+
+async function disassembleWasm(content: string): Promise<Common.WasmDisassembly.WasmDisassembly> {
+  const worker = Common.Worker.WorkerWrapper.fromURL(
+      new URL('../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js', import.meta.url));
+  const promise = new Promise<Common.WasmDisassembly.WasmDisassembly>((resolve, reject) => {
+    worker.onmessage = ({data}: MessageEvent) => {
+      if ('method' in data) {
+        switch (data.method) {
+          case 'disassemble':
+            if ('error' in data) {
+              reject(data.error);
+            } else if ('result' in data) {
+              const {lines, offsets, functionBodyOffsets} = data.result;
+              resolve(new Common.WasmDisassembly.WasmDisassembly(lines, offsets, functionBodyOffsets));
+            }
+            break;
+        }
+      }
+    };
+    worker.onerror = reject;
+  });
+
+  worker.postMessage({method: 'disassemble', params: {content}});
+
+  try {
+    return await promise;  // The await is important here or we terminate the worker too early.
+  } finally {
+    worker.terminate();
+  }
+}

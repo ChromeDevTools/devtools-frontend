@@ -35,7 +35,7 @@ import * as Root from '../../core/root/root.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
-import * as AnnotationsManager from '../../services/annotations_manager/annotations_manager.js';
+import * as ModificationsManager from '../../services/modifications_manager/modifications_manager.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
@@ -152,13 +152,14 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   modifyTree(node: number, action: TraceEngine.EntriesFilter.FilterAction): void {
     const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
 
-    AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance()?.getEntriesFilter().applyFilterAction(
-        {type: action, entry});
+    ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()
+        ?.getEntriesFilter()
+        .applyFilterAction({type: action, entry});
   }
 
   findPossibleContextMenuActions(node: number): TraceEngine.EntriesFilter.PossibleFilterActions|void {
     const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
-    return AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance()
+    return ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()
         ?.getEntriesFilter()
         .findPossibleActions(entry);
   }
@@ -633,7 +634,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     });
 
     const entry = this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
-    const hiddenEntriesAmount = AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance()
+    const hiddenEntriesAmount = ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()
                                     ?.getEntriesFilter()
                                     .findHiddenDescendantsAmount(entry);
 
@@ -978,7 +979,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     // Try revealing the entry and getting the index again.
     if (this.entryData.indexOf(selection.object) === -1 && TimelineSelection.isTraceEventSelection(selection.object)) {
       if (this.timelineDataInternal?.selectedGroup) {
-        AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance()?.getEntriesFilter().revealEntry(
+        ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()?.getEntriesFilter().revealEntry(
             selection.object as TraceEngine.Types.TraceEvents.SyntheticTraceEntry);
         this.timelineData(true);
       }
@@ -1053,12 +1054,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.lastInitiatorEntry = entryIndex;
 
     const hiddenEvents: TraceEngine.Types.TraceEvents.TraceEventData[] =
-        AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance()
+        ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()
             ?.getEntriesFilter()
             .invisibleEntries() ??
         [];
     const modifiedEntries: TraceEngine.Types.TraceEvents.TraceEventData[] =
-        AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance()
+        ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()
             ?.getEntriesFilter()
             .modifiedEntries() ??
         [];

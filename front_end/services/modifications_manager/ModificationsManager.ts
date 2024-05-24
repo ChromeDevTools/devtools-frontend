@@ -5,11 +5,11 @@
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as TimelineComponents from '../../panels/timeline/components/components.js';
 
-let instance: AnnotationsManager|null = null;
+let instance: ModificationsManager|null = null;
 type EntryToNodeMap =
     Map<TraceEngine.Types.TraceEvents.SyntheticTraceEntry, TraceEngine.Helpers.TreeHelpers.TraceEntryNode>;
 
-export class AnnotationsManager {
+export class ModificationsManager {
   /**
    * An Array with all trace entries.
    * We save annotations into the trace file by saving their id in the allEntries Array.
@@ -26,9 +26,9 @@ export class AnnotationsManager {
   static maybeInstance(opts: {
     entryToNodeMap: EntryToNodeMap|null,
     wholeTraceBounds: TraceEngine.Types.Timing.TraceWindowMicroSeconds|null|undefined,
-  } = {entryToNodeMap: null, wholeTraceBounds: null}): AnnotationsManager|null {
+  } = {entryToNodeMap: null, wholeTraceBounds: null}): ModificationsManager|null {
     if (opts.entryToNodeMap && opts.wholeTraceBounds) {
-      instance = new AnnotationsManager(opts.entryToNodeMap, opts.wholeTraceBounds);
+      instance = new ModificationsManager(opts.entryToNodeMap, opts.wholeTraceBounds);
     }
     return instance;
   }

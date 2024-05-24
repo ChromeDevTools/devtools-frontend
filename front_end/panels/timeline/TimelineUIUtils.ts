@@ -42,7 +42,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
-import * as AnnotationsManager from '../../services/annotations_manager/annotations_manager.js';
+import * as ModificationsManager from '../../services/modifications_manager/modifications_manager.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 // eslint-disable-next-line rulesdir/es_modules_import
@@ -2000,9 +2000,9 @@ export class TimelineUIUtils {
         traceBoundsState.micro.minimapTraceBounds.max < entry.ts;
 
     // Check if it is in the hidden array
-    const isEntryHidden =
-        AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance()?.getEntriesFilter().inEntryInvisible(
-            entry);
+    const isEntryHidden = ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()
+                              ?.getEntriesFilter()
+                              .inEntryInvisible(entry);
 
     if (!isEntryOutsideBreadcrumb) {
       link.classList.add('devtools-link');

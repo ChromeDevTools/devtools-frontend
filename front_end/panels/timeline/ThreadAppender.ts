@@ -8,7 +8,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TraceEngine from '../../models/trace/trace.js';
-import * as AnnotationsManager from '../../services/annotations_manager/annotations_manager.js';
+import * as ModificationsManager from '../../services/modifications_manager/modifications_manager.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import {
@@ -444,7 +444,7 @@ export class ThreadAppender implements TrackAppender {
   #appendNodesAtLevel(
       nodes: Iterable<TraceEngine.Helpers.TreeHelpers.TraceEntryNode>, startingLevel: number,
       parentIsIgnoredListed: boolean = false): number {
-    const invisibleEntries = AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance()
+    const invisibleEntries = ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()
                                  ?.getEntriesFilter()
                                  .invisibleEntries() ??
         [];
@@ -495,8 +495,9 @@ export class ThreadAppender implements TrackAppender {
 
   #addDecorationsToEntry(entry: TraceEngine.Types.TraceEvents.TraceEventData, index: number): void {
     const flameChartData = this.#compatibilityBuilder.getFlameChartTimelineData();
-    if (AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance()?.getEntriesFilter().isEntryModified(
-            entry)) {
+    if (ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()
+            ?.getEntriesFilter()
+            .isEntryModified(entry)) {
       addDecorationToEvent(
           flameChartData, index, {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW});
     }

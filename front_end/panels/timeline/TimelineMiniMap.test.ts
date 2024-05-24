@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as AnnotationsManager from '../../services/annotations_manager/annotations_manager.js';
+import * as ModificationsManager from '../../services/modifications_manager/modifications_manager.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
@@ -71,7 +71,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
 
     const boundsManager =
         TraceBounds.TraceBounds.BoundsManager.instance().resetWithNewBounds(traceParsedData.Meta.traceBounds);
-    AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance(
+    ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance(
         {entryToNodeMap: new Map(), wholeTraceBounds: boundsManager.state()?.micro.entireTraceBounds});
 
     const container = document.createElement('div');

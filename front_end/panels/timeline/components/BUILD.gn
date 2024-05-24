@@ -48,7 +48,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "..:*",
-    "../../../services/annotations_manager/*",
+    "../../../services/modifications_manager/*",
     "../../../ui/components/docs/*",
     "../../application/components/*",
   ]

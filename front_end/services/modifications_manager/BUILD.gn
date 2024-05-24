@@ -6,8 +6,8 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../third_party/typescript/typescript.gni")
 
-devtools_module("annotations_manager") {
-  sources = [ "AnnotationsManager.ts" ]
+devtools_module("modifications_manager") {
+  sources = [ "ModificationsManager.ts" ]
 
   deps = [
     "../../models/trace:bundle",
@@ -16,9 +16,9 @@ devtools_module("annotations_manager") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "annotations_manager.ts"
+  entrypoint = "modifications_manager.ts"
 
-  deps = [ ":annotations_manager" ]
+  deps = [ ":modifications_manager" ]
 
   visibility = [ "*" ]
 }
@@ -26,7 +26,7 @@ devtools_entrypoint("bundle") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "AnnotationsManager.test.ts" ]
+  sources = [ "ModificationsManager.test.ts" ]
 
   deps = [
     ":bundle",

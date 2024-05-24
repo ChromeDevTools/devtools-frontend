@@ -1292,12 +1292,6 @@
   "generated/Deprecation.ts | WebSQL": {
     "message": "Web SQL is deprecated. Please use SQLite WebAssembly or Indexed Database"
   },
-  "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
-    "message": "The permission descriptor window-placement is deprecated. Use window-management instead. For more help, check https://bit.ly/window-placement-rename."
-  },
-  "generated/Deprecation.ts | WindowPlacementPermissionPolicyParsed": {
-    "message": "The permission policy window-placement is deprecated. Use window-management instead. For more help, check https://bit.ly/window-placement-rename."
-  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 is not supported by response JSON in XMLHttpRequest"
   },
@@ -1433,6 +1427,12 @@
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "an insecure"
   },
+  "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
+    "message": "Third-party cookie is blocked in Chrome as part of Privacy Sandbox."
+  },
+  "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
+    "message": "Third-party cookie will be blocked in future Chrome versions as part of Privacy Sandbox."
+  },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "File a bug"
   },
@@ -1525,6 +1525,9 @@
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Enabling SharedArrayBuffer"
+  },
+  "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
+    "message": "Compression dictionary transport"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonymous>"
@@ -2641,6 +2644,9 @@
   },
   "panels/application/IndexedDBViews.ts | expandRecursively": {
     "message": "Expand recursively"
+  },
+  "panels/application/IndexedDBViews.ts | filterByKey": {
+    "message": "Filter by key (show keys greater than or equal to)"
   },
   "panels/application/IndexedDBViews.ts | idb": {
     "message": "IDB"
@@ -4256,6 +4262,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationUrlHasEffectiveUrl": {
     "message": "The prerender was not used because during activation time navigation has an effective URL that is different from its normal URL. (For example, the New Tab Page or hosted apps.)"
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
+    "message": "Unknown"
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "The prerendered page requested audio output, which is not currently supported."
   },
@@ -4294,6 +4303,12 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
     "message": "The prerendering navigation failed because it redirected to a URL whose scheme was not http: or https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
+    "message": "Unknown"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
+    "message": "Unknown"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "The prerendering navigation required HTTP authentication, which is not currently supported."
@@ -5252,6 +5267,9 @@
   "panels/coverage/CoverageView.ts | css": {
     "message": "CSS"
   },
+  "panels/coverage/CoverageView.ts | filterByUrl": {
+    "message": "Filter by URL"
+  },
   "panels/coverage/CoverageView.ts | filterCoverageByType": {
     "message": "Filter coverage by type"
   },
@@ -5494,6 +5512,9 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
     "message": "Load through website"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | filterByText": {
+    "message": "Filter by URL and error"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Load HTTP(S) developer resources through the website you inspect, not through DevTools"
@@ -6818,6 +6839,24 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Show issues"
   },
+  "panels/js_timeline/js_timeline-meta.ts | performance": {
+    "message": "Performance"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | record": {
+    "message": "Record"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | showPerformance": {
+    "message": "Show performance"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | showRecentTimelineSessions": {
+    "message": "Show recent timeline sessions"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | startProfilingAndReloadPage": {
+    "message": "Start profiling and reload page"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | stop": {
+    "message": "Stop"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Compositing reasons"
   },
@@ -7418,6 +7457,9 @@
   "panels/media/PlayerMessagesView.ts | errorStackLabel": {
     "message": "Stack trace:"
   },
+  "panels/media/PlayerMessagesView.ts | filterByLogMessages": {
+    "message": "Filter by log messages"
+  },
   "panels/media/PlayerMessagesView.ts | info": {
     "message": "Info"
   },
@@ -7774,6 +7816,9 @@
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Event source"
+  },
+  "panels/network/EventSourceMessagesView.ts | filterByRegex": {
+    "message": "Filter using regex (example: https?)"
   },
   "panels/network/EventSourceMessagesView.ts | id": {
     "message": "ID"
@@ -8708,6 +8753,9 @@
   "panels/network/ResourceWebSocketFrameView.ts | filter": {
     "message": "Filter"
   },
+  "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
+    "message": "Filter using regex (example: (web)?socket)"
+  },
   "panels/network/ResourceWebSocketFrameView.ts | length": {
     "message": "Length"
   },
@@ -9356,11 +9404,17 @@
   "panels/profiler/HeapSnapshotView.ts | containment": {
     "message": "Containment"
   },
+  "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
+    "message": "Duplicated strings"
+  },
   "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
     "message": "Expose internals (includes additional implementation-specific details)"
   },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Filter"
+  },
+  "panels/profiler/HeapSnapshotView.ts | filterByClass": {
+    "message": "Filter by class"
   },
   "panels/profiler/HeapSnapshotView.ts | find": {
     "message": "Find"
@@ -9391,6 +9445,12 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsAllocatedBetweenSAndS": {
     "message": "Objects allocated between {PH1} and {PH2}"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByConsole": {
+    "message": "Objects retained by the DevTools console"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
+    "message": "Objects retained by detached DOM nodes"
   },
   "panels/profiler/HeapSnapshotView.ts | percentagePlaceholder": {
     "message": "{PH1}%"
@@ -9992,34 +10052,37 @@
   "panels/recorder/components/RecordingView.ts | upload": {
     "message": "Upload: {value}"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
-    "message": "Extremely slow replay"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
-    "message": "Extremely slow"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+  "panels/recorder/components/ReplaySection.ts | Replay": {
     "message": "Replay"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "Extremely slow speed"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayExtremelySlowItemLabel": {
+    "message": "Extremely slow"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayNormalButtonLabel": {
+    "message": "Normal speed"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayNormalItemLabel": {
     "message": "Normal (default)"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
-    "message": "Slow replay"
+  "panels/recorder/components/ReplaySection.ts | ReplaySlowButtonLabel": {
+    "message": "Slow speed"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplaySlowItemLabel": {
     "message": "Slow"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
-    "message": "Very slow replay"
+  "panels/recorder/components/ReplaySection.ts | ReplayVerySlowButtonLabel": {
+    "message": "Very slow speed"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplayVerySlowItemLabel": {
     "message": "Very slow"
   },
-  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+  "panels/recorder/components/ReplaySection.ts | extensionGroup": {
     "message": "Extensions"
   },
-  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+  "panels/recorder/components/ReplaySection.ts | speedGroup": {
     "message": "Speed"
   },
   "panels/recorder/components/StartView.ts | createRecording": {
@@ -10229,17 +10292,11 @@
   "panels/search/SearchView.ts | indexingInterrupted": {
     "message": "Indexing interrupted."
   },
-  "panels/search/SearchView.ts | matchCase": {
-    "message": "Match case"
-  },
   "panels/search/SearchView.ts | noMatchesFound": {
     "message": "No matches found."
   },
   "panels/search/SearchView.ts | refresh": {
     "message": "Refresh"
-  },
-  "panels/search/SearchView.ts | search": {
-    "message": "Search"
   },
   "panels/search/SearchView.ts | searchFinished": {
     "message": "Search finished."
@@ -10247,14 +10304,8 @@
   "panels/search/SearchView.ts | searchInterrupted": {
     "message": "Search interrupted."
   },
-  "panels/search/SearchView.ts | searchQuery": {
-    "message": "Search query"
-  },
   "panels/search/SearchView.ts | searching": {
     "message": "Searching…"
-  },
-  "panels/search/SearchView.ts | useRegularExpression": {
-    "message": "Use regular expression"
   },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} with {PH2}"
@@ -11384,12 +11435,6 @@
   "panels/sources/DebuggerPlugin.ts | errorLoading": {
     "message": "Error loading url {PH1}: {PH2}"
   },
-  "panels/sources/DebuggerPlugin.ts | ignoreContentScripts": {
-    "message": "Ignore extension scripts"
-  },
-  "panels/sources/DebuggerPlugin.ts | ignoreScript": {
-    "message": "Ignore this file"
-  },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Never pause here"
   },
@@ -12308,9 +12353,6 @@
   "panels/timeline/EventUICategory.ts | imageDecode": {
     "message": "Image decode"
   },
-  "panels/timeline/EventUICategory.ts | imageResize": {
-    "message": "Image resize"
-  },
   "panels/timeline/EventUICategory.ts | installTimer": {
     "message": "Install timer"
   },
@@ -12540,13 +12582,13 @@
     "message": "Event: {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | frameS": {
-    "message": "Frame — {PH1}"
+    "message": "Frame – {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | main": {
     "message": "Main"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
-    "message": "Main — {PH1}"
+    "message": "Main – {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | onIgnoreList": {
     "message": "On ignore list"
@@ -12692,9 +12734,6 @@
   "panels/timeline/TimelinePanel.ts | SignificantOverheadDueToPaint": {
     "message": "- Significant overhead due to paint instrumentation"
   },
-  "panels/timeline/TimelinePanel.ts | afterRecordingSelectAnAreaOf": {
-    "message": "After recording, select an area of interest in the overview by dragging. Then, zoom and pan the timeline with the mousewheel or {PH1} keys. {PH2}"
-  },
   "panels/timeline/TimelinePanel.ts | bufferUsage": {
     "message": "Buffer usage"
   },
@@ -12712,12 +12751,6 @@
   },
   "panels/timeline/TimelinePanel.ts | clear": {
     "message": "Clear"
-  },
-  "panels/timeline/TimelinePanel.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Click the record button {PH1} or hit {PH2} to start a new recording."
-  },
-  "panels/timeline/TimelinePanel.ts | clickTheReloadButtonSOrHitSTo": {
-    "message": "Click the reload button {PH1} or hit {PH2} to record the page load."
   },
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "Close"
@@ -12744,7 +12777,7 @@
     "message": "Enable advanced paint instrumentation (slow)"
   },
   "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
-    "message": "Enable CSS selector stats"
+    "message": "Enable CSS selector stats (slow)"
   },
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Failed to save timeline: {PH1} ({PH2})"
@@ -12754,9 +12787,6 @@
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Initialising profiler…"
-  },
-  "panels/timeline/TimelinePanel.ts | learnmore": {
-    "message": "Learn more"
   },
   "panels/timeline/TimelinePanel.ts | loadProfile": {
     "message": "Load profile…"
@@ -12808,9 +12838,6 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Time"
-  },
-  "panels/timeline/TimelinePanel.ts | wasd": {
-    "message": "WASD"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "Copy table"
@@ -12898,9 +12925,6 @@
   },
   "panels/timeline/TimelineTreeView.ts | noGrouping": {
     "message": "No grouping"
-  },
-  "panels/timeline/TimelineTreeView.ts | notOptimizedS": {
-    "message": "Not optimised: {PH1}"
   },
   "panels/timeline/TimelineTreeView.ts | page": {
     "message": "Page"
@@ -13194,7 +13218,7 @@
     "message": "({PH1}, {PH2})"
   },
   "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
+    "message": "{PH1} x {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
     "message": "{PH1} [{PH2}…]"
@@ -13216,6 +13240,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptLoadedFromCache": {
     "message": "script loaded from cache"
+  },
+  "panels/timeline/TimelineUIUtils.ts | scriptNotEligibleToBeLoadedFromCache": {
+    "message": "script not eligible"
   },
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Selector stats"
@@ -13255,6 +13282,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "Total time"
+  },
+  "panels/timeline/TimelineUIUtils.ts | traceEvent": {
+    "message": "Trace event"
   },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "Type"
@@ -13838,9 +13868,6 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "Reconnect when ready by reopening DevTools."
   },
-  "ui/legacy/SearchableView.ts | cancel": {
-    "message": "Cancel"
-  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} matches"
   },
@@ -13849,9 +13876,6 @@
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Find"
-  },
-  "ui/legacy/SearchableView.ts | matchCase": {
-    "message": "Match case"
   },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 match"
@@ -13867,9 +13891,6 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Search previous"
-  },
-  "ui/legacy/SearchableView.ts | useRegularExpression": {
-    "message": "Use regular expression"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "One or more settings have changed which requires a reload to take effect."
@@ -13926,7 +13947,10 @@
     "message": "Once page is reloaded, DevTools will automatically reconnect."
   },
   "ui/legacy/Toolbar.ts | clearInput": {
-    "message": "Clear input"
+    "message": "Clear"
+  },
+  "ui/legacy/Toolbar.ts | filter": {
+    "message": "Filter"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "not pressed"
@@ -14345,6 +14369,15 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Screenshot for {PH1} – select to view preceding requests."
   },
+  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
+    "message": "Add script to ignore list"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
+    "message": "Configure tracks…"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | exitTrackConfigurationMode": {
+    "message": "Finish configuring tracks"
+  },
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "Flame chart"
   },
@@ -14356,6 +14389,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "Hide repeating children"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
+    "message": "Remove script from ignore list"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
     "message": "Reset children"

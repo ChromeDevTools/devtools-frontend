@@ -1292,12 +1292,6 @@
   "generated/Deprecation.ts | WebSQL": {
     "message": "웹 SQL 지원이 중단됩니다. SQLite WebAssembly 또는 Indexed Database를 사용하세요"
   },
-  "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
-    "message": "window-placement 권한 설명자의 지원이 중단됩니다. 대신 window-management를 사용합니다. 자세한 내용은 https://bit.ly/window-placement-rename을 확인하세요."
-  },
-  "generated/Deprecation.ts | WindowPlacementPermissionPolicyParsed": {
-    "message": "window-placement 권한 정책의 지원이 중단됩니다. 대신 window-management를 사용합니다. 자세한 내용은 https://bit.ly/window-placement-rename을 확인하세요."
-  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16은 XMLHttpRequest의 response.json에서 지원되지 않습니다."
   },
@@ -1433,6 +1427,12 @@
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "안전하지 않음"
   },
+  "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
+    "message": "개인 정보 보호 샌드박스의 일환으로 Chrome에서 서드 파티 쿠키가 차단됩니다."
+  },
+  "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
+    "message": "개인 정보 보호 샌드박스의 일환으로 향후 Chrome 버전에서 서드 파티 쿠키가 차단됩니다."
+  },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "버그 신고"
   },
@@ -1525,6 +1525,9 @@
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer 사용 설정"
+  },
+  "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
+    "message": "압축 사전 전송"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonymous>"
@@ -2189,12 +2192,6 @@
   "panels/application/AppManifestView.ts | customizePwaTitleBar": {
     "message": "PWA 제목 표시줄의 창 컨트롤 오버레이를 맞춤설정합니다"
   },
-  "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "어두운 배경 색상"
-  },
-  "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "어두운 테마 색상"
-  },
   "panels/application/AppManifestView.ts | description": {
     "message": "설명"
   },
@@ -2647,6 +2644,9 @@
   },
   "panels/application/IndexedDBViews.ts | expandRecursively": {
     "message": "재귀적으로 확장"
+  },
+  "panels/application/IndexedDBViews.ts | filterByKey": {
+    "message": "키를 기준으로 필터링(이 값보다 크거나 같은 키 표시)"
   },
   "panels/application/IndexedDBViews.ts | idb": {
     "message": "IDB"
@@ -4262,6 +4262,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationUrlHasEffectiveUrl": {
     "message": "활성화 시간 동안 탐색에 일반 URL과 다른 유효한 URL이 있으므로 사전 렌더링이 사용되지 않았습니다. (예: 새 탭 페이지 또는 호스팅된 앱)"
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
+    "message": "알 수 없음"
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "사전 렌더링된 페이지에서 오디오 출력을 요청했으나 이는 현재 지원되지 않습니다."
   },
@@ -4300,6 +4303,12 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
     "message": "스키마가 http: 또는 https:가 아닌 URL로 리디렉션되었으므로 사전 렌더링 탐색이 실패했습니다."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
+    "message": "알 수 없음"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
+    "message": "알 수 없음"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "사전 렌더링 탐색에 HTTP 인증이 필요하지만 현재 이 인증은 지원되지 않습니다."
@@ -5258,6 +5267,9 @@
   "panels/coverage/CoverageView.ts | css": {
     "message": "CSS"
   },
+  "panels/coverage/CoverageView.ts | filterByUrl": {
+    "message": "URL로 필터링"
+  },
   "panels/coverage/CoverageView.ts | filterCoverageByType": {
     "message": "유형별 범위 필터링"
   },
@@ -5500,6 +5512,9 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
     "message": "웹사이트를 통해 로드"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | filterByText": {
+    "message": "URL 및 오류별로 필터링"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "DevTools가 아닌 검사한 웹사이트를 통해 HTTP(S) 개발자 리소스를 로드합니다."
@@ -6824,6 +6839,24 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "문제 표시"
   },
+  "panels/js_timeline/js_timeline-meta.ts | performance": {
+    "message": "성능"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | record": {
+    "message": "기록"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | showPerformance": {
+    "message": "성능 표시"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | showRecentTimelineSessions": {
+    "message": "최근 타임라인 세션 표시"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | startProfilingAndReloadPage": {
+    "message": "프로파일링 시작 및 페이지 새로고침"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | stop": {
+    "message": "중지"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "합성 이유"
   },
@@ -7424,6 +7457,9 @@
   "panels/media/PlayerMessagesView.ts | errorStackLabel": {
     "message": "스택 트레이스:"
   },
+  "panels/media/PlayerMessagesView.ts | filterByLogMessages": {
+    "message": "로그 메시지로 필터링"
+  },
   "panels/media/PlayerMessagesView.ts | info": {
     "message": "정보"
   },
@@ -7780,6 +7816,9 @@
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "이벤트 소스"
+  },
+  "panels/network/EventSourceMessagesView.ts | filterByRegex": {
+    "message": "정규식을 사용한 필터링(예: https?)"
   },
   "panels/network/EventSourceMessagesView.ts | id": {
     "message": "ID"
@@ -8714,6 +8753,9 @@
   "panels/network/ResourceWebSocketFrameView.ts | filter": {
     "message": "필터"
   },
+  "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
+    "message": "정규식을 사용하여 필터링(예: (web)?socket)"
+  },
   "panels/network/ResourceWebSocketFrameView.ts | length": {
     "message": "길이"
   },
@@ -9362,11 +9404,17 @@
   "panels/profiler/HeapSnapshotView.ts | containment": {
     "message": "방지"
   },
+  "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
+    "message": "중복 문자열"
+  },
   "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
     "message": "내부 데이터 표시(구현 관련 추가 세부정보 포함)"
   },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "필터"
+  },
+  "panels/profiler/HeapSnapshotView.ts | filterByClass": {
+    "message": "클래스별로 필터링"
   },
   "panels/profiler/HeapSnapshotView.ts | find": {
     "message": "찾기"
@@ -9397,6 +9445,12 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsAllocatedBetweenSAndS": {
     "message": "{PH1}에서 {PH2} 사이에 할당된 객체"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByConsole": {
+    "message": "DevTools 콘솔에 보관된 객체"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
+    "message": "분리된 DOM 노드에서 보관된 객체"
   },
   "panels/profiler/HeapSnapshotView.ts | percentagePlaceholder": {
     "message": "{PH1}%"
@@ -9998,34 +10052,37 @@
   "panels/recorder/components/RecordingView.ts | upload": {
     "message": "업로드: {value}"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
-    "message": "극히 느린 재생 속도"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
-    "message": "매우 느림"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+  "panels/recorder/components/ReplaySection.ts | Replay": {
     "message": "다시 재생"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
-    "message": "보통(기본)"
+  "panels/recorder/components/ReplaySection.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "극도로 느린 속도"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
-    "message": "느린 다시 재생"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
-    "message": "느리게"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
-    "message": "매우 느린 재생"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplayExtremelySlowItemLabel": {
     "message": "매우 느림"
   },
-  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+  "panels/recorder/components/ReplaySection.ts | ReplayNormalButtonLabel": {
+    "message": "보통 속도"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayNormalItemLabel": {
+    "message": "보통(기본)"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplaySlowButtonLabel": {
+    "message": "느린 속도"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplaySlowItemLabel": {
+    "message": "느리게"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayVerySlowButtonLabel": {
+    "message": "매우 느린 속도"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayVerySlowItemLabel": {
+    "message": "매우 느림"
+  },
+  "panels/recorder/components/ReplaySection.ts | extensionGroup": {
     "message": "확장 프로그램"
   },
-  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+  "panels/recorder/components/ReplaySection.ts | speedGroup": {
     "message": "속도"
   },
   "panels/recorder/components/StartView.ts | createRecording": {
@@ -10235,17 +10292,11 @@
   "panels/search/SearchView.ts | indexingInterrupted": {
     "message": "색인 생성이 중단되었습니다."
   },
-  "panels/search/SearchView.ts | matchCase": {
-    "message": "대소문자 일치"
-  },
   "panels/search/SearchView.ts | noMatchesFound": {
     "message": "일치하는 항목이 없습니다."
   },
   "panels/search/SearchView.ts | refresh": {
     "message": "새로고침"
-  },
-  "panels/search/SearchView.ts | search": {
-    "message": "검색"
   },
   "panels/search/SearchView.ts | searchFinished": {
     "message": "검색이 완료되었습니다."
@@ -10253,14 +10304,8 @@
   "panels/search/SearchView.ts | searchInterrupted": {
     "message": "검색이 중단되었습니다."
   },
-  "panels/search/SearchView.ts | searchQuery": {
-    "message": "검색어"
-  },
   "panels/search/SearchView.ts | searching": {
     "message": "검색 중…"
-  },
-  "panels/search/SearchView.ts | useRegularExpression": {
-    "message": "정규 표현식 사용"
   },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH2}이(가) 포함된 {PH1}"
@@ -11390,12 +11435,6 @@
   "panels/sources/DebuggerPlugin.ts | errorLoading": {
     "message": "{PH1} URL 로드 중 오류 발생: {PH2}"
   },
-  "panels/sources/DebuggerPlugin.ts | ignoreContentScripts": {
-    "message": "확장 프로그램 스크립트 무시"
-  },
-  "panels/sources/DebuggerPlugin.ts | ignoreScript": {
-    "message": "이 파일 무시"
-  },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "여기에서 일시중지 안함"
   },
@@ -12314,9 +12353,6 @@
   "panels/timeline/EventUICategory.ts | imageDecode": {
     "message": "이미지 디코딩"
   },
-  "panels/timeline/EventUICategory.ts | imageResize": {
-    "message": "이미지 크기 조절"
-  },
   "panels/timeline/EventUICategory.ts | installTimer": {
     "message": "타이머 설치"
   },
@@ -12546,13 +12582,13 @@
     "message": "이벤트: {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | frameS": {
-    "message": "프레임 - {PH1}"
+    "message": "프레임 — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | main": {
     "message": "기본"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
-    "message": "기본 - {PH1}"
+    "message": "기본 — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | onIgnoreList": {
     "message": "무시 목록에서"
@@ -12588,7 +12624,7 @@
     "message": "Worker - {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
-    "message": "Worker: {PH1} - {PH2}"
+    "message": "Worker: {PH1} — {PH2}"
   },
   "panels/timeline/ThreadAppender.ts | workletService": {
     "message": "입찰 Worklet 서비스"
@@ -12698,9 +12734,6 @@
   "panels/timeline/TimelinePanel.ts | SignificantOverheadDueToPaint": {
     "message": "- 페인트 계측으로 인한 심각한 오버헤드"
   },
-  "panels/timeline/TimelinePanel.ts | afterRecordingSelectAnAreaOf": {
-    "message": "기록 후 드래그하여 개요에서 관심 지역을 선택합니다. 그런 다음 마우스 휠 또는 {PH1} 키로 타임라인을 확대/축소하고 타임라인 화면을 이동합니다. {PH2}"
-  },
   "panels/timeline/TimelinePanel.ts | bufferUsage": {
     "message": "버퍼 사용"
   },
@@ -12718,12 +12751,6 @@
   },
   "panels/timeline/TimelinePanel.ts | clear": {
     "message": "삭제"
-  },
-  "panels/timeline/TimelinePanel.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "기록 버튼({PH1})을 클릭하거나 {PH2}을 눌러 새 기록을 시작합니다."
-  },
-  "panels/timeline/TimelinePanel.ts | clickTheReloadButtonSOrHitSTo": {
-    "message": "새로고침 버튼({PH1})을 클릭하거나 {PH2}을 눌러 페이지 로드를 기록합니다."
   },
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "닫기"
@@ -12750,7 +12777,7 @@
     "message": "고급 페인트 계측 사용 설정(느림)"
   },
   "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
-    "message": "CSS 선택자 통계 사용 설정"
+    "message": "CSS 선택자 통계 사용 설정(느림)"
   },
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "타임라인을 저장할 수 없음: {PH1}({PH2})"
@@ -12760,9 +12787,6 @@
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "프로파일러 초기화 중…"
-  },
-  "panels/timeline/TimelinePanel.ts | learnmore": {
-    "message": "자세히 알아보기"
   },
   "panels/timeline/TimelinePanel.ts | loadProfile": {
     "message": "프로필 로드…"
@@ -12814,9 +12838,6 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "시간"
-  },
-  "panels/timeline/TimelinePanel.ts | wasd": {
-    "message": "WASD"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "표 복사"
@@ -12904,9 +12925,6 @@
   },
   "panels/timeline/TimelineTreeView.ts | noGrouping": {
     "message": "그룹화 없음"
-  },
-  "panels/timeline/TimelineTreeView.ts | notOptimizedS": {
-    "message": "최적화되지 않음: {PH1}"
   },
   "panels/timeline/TimelineTreeView.ts | page": {
     "message": "페이지"
@@ -13077,7 +13095,7 @@
     "message": "ID"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidationWithCallFrame": {
-    "message": "{PH2}에서의 {PH1}"
+    "message": "{PH1} {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
     "message": "무효화"
@@ -13191,7 +13209,7 @@
     "message": "{PH1} 수집됨"
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
-    "message": "{PH1}/{PH2}"
+    "message": "{PH2}개 중 {PH1}번째"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
@@ -13222,6 +13240,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptLoadedFromCache": {
     "message": "캐시에서 로드된 스크립트"
+  },
+  "panels/timeline/TimelineUIUtils.ts | scriptNotEligibleToBeLoadedFromCache": {
+    "message": "스크립트를 사용할 수 없음"
   },
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "선택자 통계"
@@ -13261,6 +13282,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "총 시간"
+  },
+  "panels/timeline/TimelineUIUtils.ts | traceEvent": {
+    "message": "트레이스 이벤트"
   },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "유형"
@@ -13844,9 +13868,6 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "준비되면 DevTools를 다시 열어 다시 연결합니다."
   },
-  "ui/legacy/SearchableView.ts | cancel": {
-    "message": "취소"
-  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "일치하는 결과 {PH1}개"
   },
@@ -13855,9 +13876,6 @@
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "찾기"
-  },
-  "ui/legacy/SearchableView.ts | matchCase": {
-    "message": "대소문자 일치"
   },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "일치하는 항목 1개"
@@ -13873,9 +13891,6 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "이전 항목 검색"
-  },
-  "ui/legacy/SearchableView.ts | useRegularExpression": {
-    "message": "정규 표현식 사용"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "하나 이상의 설정이 변경되었으며 변경사항을 적용하려면 새로고침해야 합니다."
@@ -13932,7 +13947,10 @@
     "message": "페이지를 새로고침하면 DevTools에서 자동으로 다시 연결합니다."
   },
   "ui/legacy/Toolbar.ts | clearInput": {
-    "message": "입력 내용 지우기"
+    "message": "투명"
+  },
+  "ui/legacy/Toolbar.ts | filter": {
+    "message": "필터"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "설정되지 않음"
@@ -14351,6 +14369,15 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1} 스크린샷 - 이전 요청을 확인하려면 선택하세요."
   },
+  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
+    "message": "무시 목록에 스크립트 추가"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
+    "message": "트랙 구성…"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | exitTrackConfigurationMode": {
+    "message": "트랙 구성 완료"
+  },
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "Flame Chart"
   },
@@ -14362,6 +14389,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "반복되는 하위 항목 숨기기"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
+    "message": "무시 목록에서 스크립트 삭제"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
     "message": "자녀 재설정"

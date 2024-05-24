@@ -1292,12 +1292,6 @@
   "generated/Deprecation.ts | WebSQL": {
     "message": "Žiniatinklio SQL teikimas nutrauktas. Naudokite „SQLite WebAssembly“ arba indeksuotą duomenų bazę"
   },
-  "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
-    "message": "Leidimų deskriptoriaus „window-placement“ teikimas nutrauktas. Verčiau naudokite „window-management“. Daugiau pagalbos ieškokite https://bit.ly/window-placement-rename."
-  },
-  "generated/Deprecation.ts | WindowPlacementPermissionPolicyParsed": {
-    "message": "Leidimų politika „window-placement“ nebenaudojama. Verčiau naudokite „window-management“. Daugiau pagalbos ieškokite https://bit.ly/window-placement-rename."
-  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 nepalaikomas atsako JSON naudojant funkciją „XMLHttpRequest“"
   },
@@ -1433,6 +1427,12 @@
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "nesaugus"
   },
+  "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
+    "message": "Trečiosios šalies slapukas blokuojamas naršyklėje „Chrome“ kaip privatumo „sandbox“ (smėlio dėžės) dalis."
+  },
+  "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
+    "message": "Trečiosios šalies slapukas bus blokuojamas būsimų versijų „Chrome“ kaip privatumo „sandbox“ (smėlio dėžės) dalis."
+  },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "Pranešti apie riktą"
   },
@@ -1525,6 +1525,9 @@
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer įgalinimas"
+  },
+  "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
+    "message": "Glaudinimo žodyno perkėlimas"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anoniminis>"
@@ -2189,12 +2192,6 @@
   "panels/application/AppManifestView.ts | customizePwaTitleBar": {
     "message": "Tinkinkite LŽP pavadinimo juostos lango valdiklių perdangą."
   },
-  "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Tamsaus fono spalva"
-  },
-  "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Tamsiosios temos spalva"
-  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Aprašas"
   },
@@ -2647,6 +2644,9 @@
   },
   "panels/application/IndexedDBViews.ts | expandRecursively": {
     "message": "Išskleisti rekursiškai"
+  },
+  "panels/application/IndexedDBViews.ts | filterByKey": {
+    "message": "Filtruoti pagal raktą (rodyti raktus, kurie yra didesni arba lygūs)"
   },
   "panels/application/IndexedDBViews.ts | idb": {
     "message": "IDB"
@@ -4262,6 +4262,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationUrlHasEffectiveUrl": {
     "message": "Išankstinis pateikimas nebuvo naudojamas, nes suaktyvinimo laikotarpiu naršymo faktinis URL skiriasi nuo įprasto URL. (Pvz., naujo skirtuko puslapis arba priglobtos programos.)"
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
+    "message": "Nežinoma"
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "Iš anksto pateiktas puslapis pateikė garso išvesties užklausą, kuri šiuo metu nepalaikoma."
   },
@@ -4300,6 +4303,12 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
     "message": "Nepavyko atlikti išankstinio pateikimo naršymo, nes jis peradresavo į URL, kurio schema buvo ne „http:“ arba „https:“."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
+    "message": "Nežinoma"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
+    "message": "Nežinoma"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "Norint atlikti išankstinio pateikimo naršymą reikalingas HTTP autentifikavimas, kuris šiuo metu nepalaikomas."
@@ -5258,6 +5267,9 @@
   "panels/coverage/CoverageView.ts | css": {
     "message": "CSS kalba"
   },
+  "panels/coverage/CoverageView.ts | filterByUrl": {
+    "message": "Filtruoti pagal URL"
+  },
   "panels/coverage/CoverageView.ts | filterCoverageByType": {
     "message": "Filtruoti aprėptį pagal tipą"
   },
@@ -5500,6 +5512,9 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
     "message": "Įkelti per svetainę"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | filterByText": {
+    "message": "Filtruoti pagal URL ir klaidą"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Įkelkite HTTP(S) kūrėjo šaltinius per svetainę, kurią tikrinate, o ne naudodami kūrėjo įrankius"
@@ -6824,6 +6839,24 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Rodyti problemas"
   },
+  "panels/js_timeline/js_timeline-meta.ts | performance": {
+    "message": "Našumas"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | record": {
+    "message": "Įrašas"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | showPerformance": {
+    "message": "Rodyti našumą"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | showRecentTimelineSessions": {
+    "message": "Pastarųjų laiko juostos seansų rodymas"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | startProfilingAndReloadPage": {
+    "message": "Profiliavimo pradžia ir puslapio įkėlimas iš naujo"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | stop": {
+    "message": "Sustabdyti"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Komponavimo priežastys"
   },
@@ -7424,6 +7457,9 @@
   "panels/media/PlayerMessagesView.ts | errorStackLabel": {
     "message": "Bloko stebėjimas:"
   },
+  "panels/media/PlayerMessagesView.ts | filterByLogMessages": {
+    "message": "Filtruoti pagal žurnalo pranešimus"
+  },
   "panels/media/PlayerMessagesView.ts | info": {
     "message": "Informacija"
   },
@@ -7780,6 +7816,9 @@
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Įvykio šaltinis"
+  },
+  "panels/network/EventSourceMessagesView.ts | filterByRegex": {
+    "message": "Filtruoti naudojant reguliarųjį reiškinį (pvz., „https?“)"
   },
   "panels/network/EventSourceMessagesView.ts | id": {
     "message": "ID"
@@ -8714,6 +8753,9 @@
   "panels/network/ResourceWebSocketFrameView.ts | filter": {
     "message": "Filtruoti"
   },
+  "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
+    "message": "Filtruoti naudojant reguliarųjį reiškinį (pvz., „(web)?socket“)"
+  },
   "panels/network/ResourceWebSocketFrameView.ts | length": {
     "message": "Ilgis"
   },
@@ -9362,11 +9404,17 @@
   "panels/profiler/HeapSnapshotView.ts | containment": {
     "message": "Sulaikymas"
   },
+  "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
+    "message": "Pasikartojančios eilutės"
+  },
   "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
     "message": "Rodyti vidinius duomenis (apima papildomą konkretaus diegimo išsamią informaciją)"
   },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Filtruoti"
+  },
+  "panels/profiler/HeapSnapshotView.ts | filterByClass": {
+    "message": "Filtruoti pagal klasę"
   },
   "panels/profiler/HeapSnapshotView.ts | find": {
     "message": "Rasti"
@@ -9397,6 +9445,12 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsAllocatedBetweenSAndS": {
     "message": "Objektai paskirstyti tarp „{PH1}“ ir „{PH2}“"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByConsole": {
+    "message": "Objektai, saugomi kūrėjo įrankių pulte"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
+    "message": "Objektai, saugomi atskirtuose DOM mazguose"
   },
   "panels/profiler/HeapSnapshotView.ts | percentagePlaceholder": {
     "message": "{PH1} proc."
@@ -9998,34 +10052,37 @@
   "panels/recorder/components/RecordingView.ts | upload": {
     "message": "Įkėlimas: {value}"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
-    "message": "Nepaprastai lėtas pakartojimas"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
-    "message": "Nepaprastai lėtai"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+  "panels/recorder/components/ReplaySection.ts | Replay": {
     "message": "Pakartoti"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "Itin mažas greitis"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayExtremelySlowItemLabel": {
+    "message": "Nepaprastai lėtai"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayNormalButtonLabel": {
+    "message": "Normalus greitis"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayNormalItemLabel": {
     "message": "Įprastai (numatytasis)"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
-    "message": "Lėtas pakartojimas"
+  "panels/recorder/components/ReplaySection.ts | ReplaySlowButtonLabel": {
+    "message": "Mažas greitis"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplaySlowItemLabel": {
     "message": "Lėtai"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
-    "message": "Labai lėtas pakartojimas"
+  "panels/recorder/components/ReplaySection.ts | ReplayVerySlowButtonLabel": {
+    "message": "Labai mažas greitis"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplayVerySlowItemLabel": {
     "message": "Labai lėtai"
   },
-  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+  "panels/recorder/components/ReplaySection.ts | extensionGroup": {
     "message": "Plėtiniai"
   },
-  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+  "panels/recorder/components/ReplaySection.ts | speedGroup": {
     "message": "Sparta"
   },
   "panels/recorder/components/StartView.ts | createRecording": {
@@ -10235,17 +10292,11 @@
   "panels/search/SearchView.ts | indexingInterrupted": {
     "message": "Indeksavimas pertrauktas."
   },
-  "panels/search/SearchView.ts | matchCase": {
-    "message": "Skirti didžiąsias ir mažąsias raides"
-  },
   "panels/search/SearchView.ts | noMatchesFound": {
     "message": "Nerasta atitikčių."
   },
   "panels/search/SearchView.ts | refresh": {
     "message": "Atnaujinti"
-  },
-  "panels/search/SearchView.ts | search": {
-    "message": "Paieška"
   },
   "panels/search/SearchView.ts | searchFinished": {
     "message": "Paieška baigta."
@@ -10253,14 +10304,8 @@
   "panels/search/SearchView.ts | searchInterrupted": {
     "message": "Paieška pertraukta."
   },
-  "panels/search/SearchView.ts | searchQuery": {
-    "message": "Paieškos užklausa"
-  },
   "panels/search/SearchView.ts | searching": {
     "message": "Ieškoma…"
-  },
-  "panels/search/SearchView.ts | useRegularExpression": {
-    "message": "Naudoti reguliarųjį reiškinį"
   },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1}, {PH2}"
@@ -11390,12 +11435,6 @@
   "panels/sources/DebuggerPlugin.ts | errorLoading": {
     "message": "Klaida įkeliant URL {PH1}: {PH2}"
   },
-  "panels/sources/DebuggerPlugin.ts | ignoreContentScripts": {
-    "message": "Nepaisyti plėtinio scenarijų"
-  },
-  "panels/sources/DebuggerPlugin.ts | ignoreScript": {
-    "message": "Nepaisyti šio failo"
-  },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Niekada čia nepristabdyti"
   },
@@ -12314,9 +12353,6 @@
   "panels/timeline/EventUICategory.ts | imageDecode": {
     "message": "Vaizdo iššifravimas"
   },
-  "panels/timeline/EventUICategory.ts | imageResize": {
-    "message": "Vaizdo dydžio keitimas"
-  },
   "panels/timeline/EventUICategory.ts | installTimer": {
     "message": "Diegimo laikmatis"
   },
@@ -12585,7 +12621,7 @@
     "message": "Aukciono darbų blokas – {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
-    "message": "„Worker“ – {PH1}"
+    "message": "Worker – {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
@@ -12698,9 +12734,6 @@
   "panels/timeline/TimelinePanel.ts | SignificantOverheadDueToPaint": {
     "message": "– Žymus valdymas dėl žymėjimo stebimumo ir vertinamumo"
   },
-  "panels/timeline/TimelinePanel.ts | afterRecordingSelectAnAreaOf": {
-    "message": "Baigę įrašyti vilkdami pasirinkite dominančią sritį apžvalgoje. Tada keiskite mastelį ir stumdykite laiko juostą pelės ratuku arba klavišais {PH1}. {PH2}"
-  },
   "panels/timeline/TimelinePanel.ts | bufferUsage": {
     "message": "Buferio naudojimas"
   },
@@ -12718,12 +12751,6 @@
   },
   "panels/timeline/TimelinePanel.ts | clear": {
     "message": "Išvalyti"
-  },
-  "panels/timeline/TimelinePanel.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Pradėkite naują įrašą spustelėję įrašymo mygtuką {PH1} arba paspaudę {PH2}."
-  },
-  "panels/timeline/TimelinePanel.ts | clickTheReloadButtonSOrHitSTo": {
-    "message": "Kad įrašytumėte puslapio įkėlimą, spustelėkite įkėlimo iš naujo mygtuką {PH1} arba paspauskite {PH2}."
   },
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "Uždaryti"
@@ -12750,7 +12777,7 @@
     "message": "Pažangių žymėjimo priemonių įgalinimas (lėtas)"
   },
   "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
-    "message": "Įgalinti CSS kalbos parinkiklio statistiką"
+    "message": "CSS kalbos parinkiklio statistikos įgalinimas (lėtas)"
   },
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Nepavyko išsaugoti laiko juostos: {PH1} ({PH2})"
@@ -12760,9 +12787,6 @@
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Inicijuojamas analizės įrankis…"
-  },
-  "panels/timeline/TimelinePanel.ts | learnmore": {
-    "message": "Sužinoti daugiau"
   },
   "panels/timeline/TimelinePanel.ts | loadProfile": {
     "message": "Įkelti profilį…"
@@ -12814,9 +12838,6 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Laikas"
-  },
-  "panels/timeline/TimelinePanel.ts | wasd": {
-    "message": "WASD"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "Kopijuoti lentelę"
@@ -12904,9 +12925,6 @@
   },
   "panels/timeline/TimelineTreeView.ts | noGrouping": {
     "message": "Nėra grupių"
-  },
-  "panels/timeline/TimelineTreeView.ts | notOptimizedS": {
-    "message": "Neoptimizuota: {PH1}"
   },
   "panels/timeline/TimelineTreeView.ts | page": {
     "message": "Puslapis"
@@ -13223,6 +13241,9 @@
   "panels/timeline/TimelineUIUtils.ts | scriptLoadedFromCache": {
     "message": "scenarijus įkeltas iš talpyklos"
   },
+  "panels/timeline/TimelineUIUtils.ts | scriptNotEligibleToBeLoadedFromCache": {
+    "message": "scenarijus netinkamas"
+  },
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Parinkiklio statistika"
   },
@@ -13261,6 +13282,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "Bendras laikas"
+  },
+  "panels/timeline/TimelineUIUtils.ts | traceEvent": {
+    "message": "Pėdsako įvykis"
   },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "Tipas"
@@ -13844,9 +13868,6 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "Iš naujo prisijungti, kai bus pasiruošta, iš naujo atidarant kūrėjo įrankius."
   },
-  "ui/legacy/SearchableView.ts | cancel": {
-    "message": "Atšaukti"
-  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "Atitikčių: {PH1}"
   },
@@ -13855,9 +13876,6 @@
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Rasti"
-  },
-  "ui/legacy/SearchableView.ts | matchCase": {
-    "message": "Skirti didžiąsias ir mažąsias raides"
   },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 atitiktis"
@@ -13873,9 +13891,6 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Ieškoti ankstesnių"
-  },
-  "ui/legacy/SearchableView.ts | useRegularExpression": {
-    "message": "Naudoti reguliarųjį reiškinį"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Buvo pakeista vienas ar daugiau nustatymų. Kad jie įsigaliotų, būtina įkelti kūrėjo įrankius iš naujo."
@@ -13932,7 +13947,10 @@
     "message": "Kai puslapis bus įkeltas iš naujo, kūrėjo įrankiai bus automatiškai iš naujo prijungti."
   },
   "ui/legacy/Toolbar.ts | clearInput": {
-    "message": "Išvalyti įvestą tekstą"
+    "message": "Išvalyti"
+  },
+  "ui/legacy/Toolbar.ts | filter": {
+    "message": "Filtras"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "nepaspausta"
@@ -14351,6 +14369,15 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1} ekrano kopija – pasirinkite, kad peržiūrėtumėte ankstesnes užklausas."
   },
+  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
+    "message": "Pridėti scenarijų prie nepaisomų elementų sąrašo"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
+    "message": "Konfigūruoti takelius…"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | exitTrackConfigurationMode": {
+    "message": "Baikite konfigūruoti takelius"
+  },
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "Momentinė diagrama"
   },
@@ -14362,6 +14389,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "Slėpti pasikartojančius antrinius elementus"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
+    "message": "Pašalinti scenarijų iš nepaisomų elementų sąrašo"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
     "message": "Vaikų nustatymas iš naujo"

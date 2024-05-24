@@ -1292,12 +1292,6 @@
   "generated/Deprecation.ts | WebSQL": {
     "message": "SQL web este învechit. Folosește SQLite WebAssembly sau Indexed Database"
   },
-  "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
-    "message": "Descrierea permisiunii window-placement este învechită. Folosește window-management. Pentru mai mult ajutor, consultă https://bit.ly/window-placement-rename."
-  },
-  "generated/Deprecation.ts | WindowPlacementPermissionPolicyParsed": {
-    "message": "Politica privind permisiunile window-placement este învechită. Folosește window-management. Pentru mai mult ajutor, consultă https://bit.ly/window-placement-rename."
-  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "Fișierul JSON de răspuns din XMLHttpRequest nu acceptă UTF-16"
   },
@@ -1433,6 +1427,12 @@
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "nesecurizat"
   },
+  "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
+    "message": "Cookie-ul terță parte este blocat în Chrome de Privacy Sandbox."
+  },
+  "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
+    "message": "Cookie-ul terță parte va fi blocat în versiunile Chrome viitoare de Privacy Sandbox."
+  },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "Raportează o eroare"
   },
@@ -1525,6 +1525,9 @@
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Se activează SharedArrayBuffer"
+  },
+  "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
+    "message": "Transportul dicționarului de comprimare"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonim>"
@@ -2189,12 +2192,6 @@
   "panels/application/AppManifestView.ts | customizePwaTitleBar": {
     "message": "Personalizează API-ul Window Controls Overlay pentru bara de titlu din PWA"
   },
-  "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Culoare de fundal închisă"
-  },
-  "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Culoare temă întunecată"
-  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Descriere"
   },
@@ -2647,6 +2644,9 @@
   },
   "panels/application/IndexedDBViews.ts | expandRecursively": {
     "message": "Extinde recursiv"
+  },
+  "panels/application/IndexedDBViews.ts | filterByKey": {
+    "message": "Filtrează după cheie (afișează cheile mai mari decât sau egale cu)"
   },
   "panels/application/IndexedDBViews.ts | idb": {
     "message": "IDB"
@@ -4262,6 +4262,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationUrlHasEffectiveUrl": {
     "message": "Redarea anticipată nu s-a folosit, deoarece în timpul activării, navigarea are o adresă URL eficientă, diferită de adresa sa URL normală. (De exemplu, pagina Filă nouă sau aplicații găzduite.)"
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
+    "message": "Necunoscut"
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "Pagina redată anticipat a solicitat o ieșire audio, care nu este acceptată momentan."
   },
@@ -4300,6 +4303,12 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
     "message": "Navigarea la redarea anticipată nu a reușit, deoarece redirecționa spre o adresă URL a cărei schemă nu era http: sau https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
+    "message": "Necunoscut"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
+    "message": "Necunoscut"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "Navigarea cu redare anticipată a necesitat autentificarea HTTP, care nu este acceptată momentan."
@@ -5258,6 +5267,9 @@
   "panels/coverage/CoverageView.ts | css": {
     "message": "CSS"
   },
+  "panels/coverage/CoverageView.ts | filterByUrl": {
+    "message": "Filtrează după adresa URL"
+  },
   "panels/coverage/CoverageView.ts | filterCoverageByType": {
     "message": "Filtrează acoperirea în funcție de tip"
   },
@@ -5500,6 +5512,9 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
     "message": "Încarcă prin site"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | filterByText": {
+    "message": "Filtrează după adresa URL și eroare"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Încarcă resursele pentru dezvoltatori HTTP(S) prin intermediul site-ului pe care îl inspectezi, nu prin DevTools"
@@ -6824,6 +6839,24 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Afișează Problemele"
   },
+  "panels/js_timeline/js_timeline-meta.ts | performance": {
+    "message": "Performanță"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | record": {
+    "message": "Înregistrează"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | showPerformance": {
+    "message": "Afișează Performanța"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | showRecentTimelineSessions": {
+    "message": "Afișează sesiunile recente din cronologie"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | startProfilingAndReloadPage": {
+    "message": "Începe crearea profilului și reîncarcă pagina"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | stop": {
+    "message": "Oprește"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Motivele compunerii"
   },
@@ -7424,6 +7457,9 @@
   "panels/media/PlayerMessagesView.ts | errorStackLabel": {
     "message": "Urmărirea stivei:"
   },
+  "panels/media/PlayerMessagesView.ts | filterByLogMessages": {
+    "message": "Filtrează după mesajele de înregistrare în jurnal"
+  },
   "panels/media/PlayerMessagesView.ts | info": {
     "message": "Informații"
   },
@@ -7780,6 +7816,9 @@
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Sursa evenimentului"
+  },
+  "panels/network/EventSourceMessagesView.ts | filterByRegex": {
+    "message": "Filtrează folosind regex (de exemplu: https?)"
   },
   "panels/network/EventSourceMessagesView.ts | id": {
     "message": "ID"
@@ -8714,6 +8753,9 @@
   "panels/network/ResourceWebSocketFrameView.ts | filter": {
     "message": "Filtrează"
   },
+  "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
+    "message": "Filtrează folosind regex (de exemplu: (web)?socket)"
+  },
   "panels/network/ResourceWebSocketFrameView.ts | length": {
     "message": "Lungime"
   },
@@ -9362,11 +9404,17 @@
   "panels/profiler/HeapSnapshotView.ts | containment": {
     "message": "Conținere"
   },
+  "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
+    "message": "Șiruri dublură"
+  },
   "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
     "message": "Expune datele interne (include detalii suplimentare specifice implementării)"
   },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Filtrează"
+  },
+  "panels/profiler/HeapSnapshotView.ts | filterByClass": {
+    "message": "Filtrează după clasă"
   },
   "panels/profiler/HeapSnapshotView.ts | find": {
     "message": "Caută"
@@ -9397,6 +9445,12 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsAllocatedBetweenSAndS": {
     "message": "Obiecte alocate între {PH1} și {PH2}"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByConsole": {
+    "message": "Obiecte păstrate de consola DevTools"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
+    "message": "Obiecte păstrate de nodurile DOM detașate"
   },
   "panels/profiler/HeapSnapshotView.ts | percentagePlaceholder": {
     "message": "{PH1} %"
@@ -9998,34 +10052,37 @@
   "panels/recorder/components/RecordingView.ts | upload": {
     "message": "Încărcare: {value}"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
-    "message": "Redare repetată extrem de lentă"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
-    "message": "Extrem de lentă"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+  "panels/recorder/components/ReplaySection.ts | Replay": {
     "message": "Redă din nou"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "Viteză extrem de mică"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayExtremelySlowItemLabel": {
+    "message": "Extrem de lentă"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayNormalButtonLabel": {
+    "message": "Viteză normală"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayNormalItemLabel": {
     "message": "Normală (prestabilită)"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
-    "message": "Redare repetată lentă"
+  "panels/recorder/components/ReplaySection.ts | ReplaySlowButtonLabel": {
+    "message": "Viteză redusă"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplaySlowItemLabel": {
     "message": "Lentă"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
-    "message": "Redare repetată foarte lentă"
+  "panels/recorder/components/ReplaySection.ts | ReplayVerySlowButtonLabel": {
+    "message": "Viteză foarte mică"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplayVerySlowItemLabel": {
     "message": "Foarte lentă"
   },
-  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+  "panels/recorder/components/ReplaySection.ts | extensionGroup": {
     "message": "Extensii"
   },
-  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+  "panels/recorder/components/ReplaySection.ts | speedGroup": {
     "message": "Viteză"
   },
   "panels/recorder/components/StartView.ts | createRecording": {
@@ -10235,17 +10292,11 @@
   "panels/search/SearchView.ts | indexingInterrupted": {
     "message": "Indexare întreruptă."
   },
-  "panels/search/SearchView.ts | matchCase": {
-    "message": "Potrivirea majusculelor și a minusculelor"
-  },
   "panels/search/SearchView.ts | noMatchesFound": {
     "message": "Nu s-a găsit niciun rezultat."
   },
   "panels/search/SearchView.ts | refresh": {
     "message": "Actualizează"
-  },
-  "panels/search/SearchView.ts | search": {
-    "message": "Caută"
   },
   "panels/search/SearchView.ts | searchFinished": {
     "message": "Căutare finalizată."
@@ -10253,14 +10304,8 @@
   "panels/search/SearchView.ts | searchInterrupted": {
     "message": "Căutare întreruptă."
   },
-  "panels/search/SearchView.ts | searchQuery": {
-    "message": "Termen de căutare"
-  },
   "panels/search/SearchView.ts | searching": {
     "message": "Se caută…"
-  },
-  "panels/search/SearchView.ts | useRegularExpression": {
-    "message": "Folosește o expresie regulată"
   },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} cu {PH2}"
@@ -11390,12 +11435,6 @@
   "panels/sources/DebuggerPlugin.ts | errorLoading": {
     "message": "Eroare la încărcarea adresei URL {PH1}: {PH2}"
   },
-  "panels/sources/DebuggerPlugin.ts | ignoreContentScripts": {
-    "message": "Ignoră scripturile extensiei"
-  },
-  "panels/sources/DebuggerPlugin.ts | ignoreScript": {
-    "message": "Ignoră acest fișier"
-  },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Nu întrerupe niciodată aici"
   },
@@ -12314,9 +12353,6 @@
   "panels/timeline/EventUICategory.ts | imageDecode": {
     "message": "Decodarea imaginii"
   },
-  "panels/timeline/EventUICategory.ts | imageResize": {
-    "message": "Redimensionarea imaginii"
-  },
   "panels/timeline/EventUICategory.ts | installTimer": {
     "message": "Instalează temporizatorul"
   },
@@ -12555,7 +12591,7 @@
     "message": "Principal – {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | onIgnoreList": {
-    "message": "Pe lista de ignorări"
+    "message": "Pe lista de ignorat"
   },
   "panels/timeline/ThreadAppender.ts | raster": {
     "message": "Raster"
@@ -12698,9 +12734,6 @@
   "panels/timeline/TimelinePanel.ts | SignificantOverheadDueToPaint": {
     "message": "– Costuri semnificative care rezultă din codul de măsurare pentru redare"
   },
-  "panels/timeline/TimelinePanel.ts | afterRecordingSelectAnAreaOf": {
-    "message": "După înregistrare, selectează o zonă de interes din prezentarea generală prin tragere. Apoi fă zoom și deplasează cronologia folosind rotița mouse-ului sau tastele {PH1}. {PH2}"
-  },
   "panels/timeline/TimelinePanel.ts | bufferUsage": {
     "message": "Folosirea memoriei temporare"
   },
@@ -12718,12 +12751,6 @@
   },
   "panels/timeline/TimelinePanel.ts | clear": {
     "message": "Șterge"
-  },
-  "panels/timeline/TimelinePanel.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Dă clic pe butonul de înregistrare {PH1} sau apasă {PH2} pentru a începe o înregistrare nouă."
-  },
-  "panels/timeline/TimelinePanel.ts | clickTheReloadButtonSOrHitSTo": {
-    "message": "Dă clic pe butonul de reîncărcare {PH1} sau apasă {PH2} pentru a înregistra încărcarea paginii."
   },
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "Închide"
@@ -12750,7 +12777,7 @@
     "message": "Activează codul de măsurare pentru redare avansată (lent)"
   },
   "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
-    "message": "Activează statisticile selectorului CSS"
+    "message": "Activează statisticile selectorului CSS (lent)"
   },
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Cronologia nu a fost salvată: {PH1} ({PH2})"
@@ -12760,9 +12787,6 @@
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Se inițializează profilerul…"
-  },
-  "panels/timeline/TimelinePanel.ts | learnmore": {
-    "message": "Află mai multe"
   },
   "panels/timeline/TimelinePanel.ts | loadProfile": {
     "message": "Încarcă profilul…"
@@ -12814,9 +12838,6 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Oră"
-  },
-  "panels/timeline/TimelinePanel.ts | wasd": {
-    "message": "WASD"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "Copiază tabelul"
@@ -12904,9 +12925,6 @@
   },
   "panels/timeline/TimelineTreeView.ts | noGrouping": {
     "message": "Nu există grupări"
-  },
-  "panels/timeline/TimelineTreeView.ts | notOptimizedS": {
-    "message": "Neoptimizat: {PH1}"
   },
   "panels/timeline/TimelineTreeView.ts | page": {
     "message": "Pagină"
@@ -13077,7 +13095,7 @@
     "message": "ID"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidationWithCallFrame": {
-    "message": "{PH1} de pe {PH2}"
+    "message": "{PH1} din {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
     "message": "Invalidări"
@@ -13223,6 +13241,9 @@
   "panels/timeline/TimelineUIUtils.ts | scriptLoadedFromCache": {
     "message": "scriptul s-a încărcat din memoria cache"
   },
+  "panels/timeline/TimelineUIUtils.ts | scriptNotEligibleToBeLoadedFromCache": {
+    "message": "scriptul nu este eligibil"
+  },
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Statistici pentru selector"
   },
@@ -13261,6 +13282,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "Durată totală"
+  },
+  "panels/timeline/TimelineUIUtils.ts | traceEvent": {
+    "message": "Eveniment de urmărire"
   },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "Tip"
@@ -13844,9 +13868,6 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "Reconectează-te când ești gata prin redeschiderea DevTools."
   },
-  "ui/legacy/SearchableView.ts | cancel": {
-    "message": "Anulează"
-  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} potriviri"
   },
@@ -13855,9 +13876,6 @@
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Caută"
-  },
-  "ui/legacy/SearchableView.ts | matchCase": {
-    "message": "Potrivirea majusculelor și a minusculelor"
   },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "O potrivire"
@@ -13873,9 +13891,6 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Caută instanța anterioară"
-  },
-  "ui/legacy/SearchableView.ts | useRegularExpression": {
-    "message": "Folosește o expresie regulată"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Una sau mai multe setări au fost modificate și pentru aplicarea acestora este necesară reîncărcarea."
@@ -13932,7 +13947,10 @@
     "message": "După reîncărcarea paginii, DevTools se va reconecta automat."
   },
   "ui/legacy/Toolbar.ts | clearInput": {
-    "message": "Șterge textul introdus"
+    "message": "Șterge"
+  },
+  "ui/legacy/Toolbar.ts | filter": {
+    "message": "Filtrează"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "dezactivat"
@@ -14351,6 +14369,15 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Captură de ecran pentru {PH1}. Selecteaz-o pentru a vedea solicitările anterioare."
   },
+  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
+    "message": "Adaugă scriptul pe lista de ignorări"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
+    "message": "Configurează canale…"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | exitTrackConfigurationMode": {
+    "message": "Finalizează configurarea canalelor"
+  },
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "Diagramă flame"
   },
@@ -14362,6 +14389,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "Ascunde elementele subordonate care se repetă"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
+    "message": "Elimină scriptul din lista de ignorări"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
     "message": "Resetează elementele subordonate"

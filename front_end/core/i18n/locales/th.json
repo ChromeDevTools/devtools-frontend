@@ -1292,12 +1292,6 @@
   "generated/Deprecation.ts | WebSQL": {
     "message": "SQL ในเว็บเลิกใช้งานแล้ว โปรดใช้ SQLite WebAssembly หรือฐานข้อมูลที่จัดทำดัชนีแล้ว"
   },
-  "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
-    "message": "ข้อบ่งชี้สิทธิ์ window-placement เลิกใช้งานแล้ว โปรดใช้ window-management แทน ดูความช่วยเหลือเพิ่มเติมได้ที่ https://bit.ly/window-placement-rename"
-  },
-  "generated/Deprecation.ts | WindowPlacementPermissionPolicyParsed": {
-    "message": "นโยบายสิทธิ์ window-placement เลิกใช้งานแล้ว โปรดใช้ window-management แทน ดูความช่วยเหลือเพิ่มเติมได้ที่ https://bit.ly/window-placement-rename"
-  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "JSON ของการตอบกลับไม่รองรับ UTF-16 ใน XMLHttpRequest"
   },
@@ -1433,6 +1427,12 @@
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "an insecure"
   },
+  "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
+    "message": "คุกกี้ของบุคคลที่สามถูกบล็อกใน Chrome ในฐานะส่วนหนึ่งของ Privacy Sandbox"
+  },
+  "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
+    "message": "คุกกี้ของบุคคลที่สามจะถูกบล็อกใน Chrome เวอร์ชันต่อๆ ไปซึ่งเป็นส่วนหนึ่งของ Privacy Sandbox"
+  },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "รายงานข้อบกพร่อง"
   },
@@ -1525,6 +1525,9 @@
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "กำลังเปิดใช้ SharedArrayBuffer"
+  },
+  "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
+    "message": "การรับส่งข้อมูลพจนานุกรมการบีบอัด"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<ไม่ระบุชื่อ>"
@@ -2189,12 +2192,6 @@
   "panels/application/AppManifestView.ts | customizePwaTitleBar": {
     "message": "ปรับแต่งการวางซ้อนการควบคุมหน้าต่างสำหรับแถบชื่อของ PWA"
   },
-  "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "สีพื้นหลังเข้ม"
-  },
-  "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "สีธีมมืด"
-  },
   "panels/application/AppManifestView.ts | description": {
     "message": "คำอธิบาย"
   },
@@ -2647,6 +2644,9 @@
   },
   "panels/application/IndexedDBViews.ts | expandRecursively": {
     "message": "ขยายซ้ำ"
+  },
+  "panels/application/IndexedDBViews.ts | filterByKey": {
+    "message": "กรองตามคีย์ (แสดงคีย์ที่มากกว่าหรือเท่ากับ)"
   },
   "panels/application/IndexedDBViews.ts | idb": {
     "message": "IDB"
@@ -4262,6 +4262,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationUrlHasEffectiveUrl": {
     "message": "ไม่ได้ใช้การแสดงผลล่วงหน้าเนื่องจากในช่วงเวลาเปิดใช้งาน การนำทางมี URL ที่มีประสิทธิภาพซึ่งแตกต่างจาก URL ปกติ (เช่น หน้าแท็บใหม่หรือแอปที่โฮสต์)"
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
+    "message": "ไม่ทราบ"
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "หน้าที่แสดงผลล่วงหน้าขอเอาต์พุตเสียงซึ่งยังไม่รองรับในขณะนี้"
   },
@@ -4300,6 +4303,12 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
     "message": "การนำทางโดยมีการแสดงผลล่วงหน้าไม่สำเร็จเนื่องจากมีการเปลี่ยนเส้นทางไปยัง URL ซึ่งมีรูปแบบที่ไม่ใช่ http: หรือ https:"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
+    "message": "ไม่ทราบ"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
+    "message": "ไม่ทราบ"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "การนำทางโดยมีการแสดงผลล่วงหน้าจำเป็นต้องมีการตรวจสอบสิทธิ์ HTTP ซึ่งยังไม่รองรับในขณะนี้"
@@ -5258,6 +5267,9 @@
   "panels/coverage/CoverageView.ts | css": {
     "message": "CSS"
   },
+  "panels/coverage/CoverageView.ts | filterByUrl": {
+    "message": "กรองตาม URL"
+  },
   "panels/coverage/CoverageView.ts | filterCoverageByType": {
     "message": "กรองการครอบคลุมตามประเภท"
   },
@@ -5500,6 +5512,9 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
     "message": "โหลดผ่านเว็บไซต์"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | filterByText": {
+    "message": "กรองตาม URL และข้อผิดพลาด"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "โหลดทรัพยากร HTTP(S) สำหรับนักพัฒนาเว็บผ่านเว็บไซต์ที่คุณตรวจสอบ ไม่ใช่ผ่านเครื่องมือสำหรับนักพัฒนาเว็บ"
@@ -6824,6 +6839,24 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "แสดงปัญหา"
   },
+  "panels/js_timeline/js_timeline-meta.ts | performance": {
+    "message": "ประสิทธิภาพ"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | record": {
+    "message": "บันทึก"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | showPerformance": {
+    "message": "แสดงเครื่องมือประสิทธิภาพ"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | showRecentTimelineSessions": {
+    "message": "แสดงเซสชันไทม์ไลน์ล่าสุด"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | startProfilingAndReloadPage": {
+    "message": "เริ่มทำโปรไฟล์และโหลดหน้าเว็บซ้ำ"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | stop": {
+    "message": "หยุด"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "เหตุผลของการประกอบ"
   },
@@ -7424,6 +7457,9 @@
   "panels/media/PlayerMessagesView.ts | errorStackLabel": {
     "message": "สแต็กเทรซ:"
   },
+  "panels/media/PlayerMessagesView.ts | filterByLogMessages": {
+    "message": "กรองตามข้อความในบันทึก"
+  },
   "panels/media/PlayerMessagesView.ts | info": {
     "message": "ข้อมูล"
   },
@@ -7780,6 +7816,9 @@
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "แหล่งที่มาของเหตุการณ์"
+  },
+  "panels/network/EventSourceMessagesView.ts | filterByRegex": {
+    "message": "กรองโดยใช้นิพจน์ทั่วไป (เช่น https?)"
   },
   "panels/network/EventSourceMessagesView.ts | id": {
     "message": "รหัส"
@@ -8574,7 +8613,7 @@
     "message": "การดาวน์โหลดเนื้อหา"
   },
   "panels/network/RequestTimingView.ts | dnsLookup": {
-    "message": "การค้นหา DNS"
+    "message": "DNS Lookup"
   },
   "panels/network/RequestTimingView.ts | duration": {
     "message": "ระยะเวลา"
@@ -8713,6 +8752,9 @@
   },
   "panels/network/ResourceWebSocketFrameView.ts | filter": {
     "message": "กรอง"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
+    "message": "กรองโดยใช้นิพจน์ทั่วไป (เช่น (web)?socket)"
   },
   "panels/network/ResourceWebSocketFrameView.ts | length": {
     "message": "ความยาว"
@@ -9362,11 +9404,17 @@
   "panels/profiler/HeapSnapshotView.ts | containment": {
     "message": "การเก็บไว้"
   },
+  "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
+    "message": "สตริงที่ซ้ำกัน"
+  },
   "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
     "message": "เปิดเผยต่อภายใน (รวมถึงรายละเอียดเพิ่มเติมเฉพาะสำหรับการใช้งาน)"
   },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "กรอง"
+  },
+  "panels/profiler/HeapSnapshotView.ts | filterByClass": {
+    "message": "กรองตามคลาส"
   },
   "panels/profiler/HeapSnapshotView.ts | find": {
     "message": "ค้นหา"
@@ -9397,6 +9445,12 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsAllocatedBetweenSAndS": {
     "message": "จัดสรรออบเจ็กต์ระหว่าง {PH1} กับ {PH2} แล้ว"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByConsole": {
+    "message": "ออบเจ็กต์ที่เก็บไว้โดยคอนโซลเครื่องมือสำหรับนักพัฒนาเว็บ"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
+    "message": "ออบเจ็กต์ที่เก็บไว้โดยโหนด DOM ที่ถูกปลดออก"
   },
   "panels/profiler/HeapSnapshotView.ts | percentagePlaceholder": {
     "message": "{PH1}%"
@@ -9998,34 +10052,37 @@
   "panels/recorder/components/RecordingView.ts | upload": {
     "message": "อัปโหลด: {value}"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
-    "message": "เล่นซ้ำช้าที่สุด"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
-    "message": "ช้าที่สุด"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+  "panels/recorder/components/ReplaySection.ts | Replay": {
     "message": "เล่นซ้ำ"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "ช้าที่สุด"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayExtremelySlowItemLabel": {
+    "message": "ช้าที่สุด"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayNormalButtonLabel": {
+    "message": "เร็วปกติ"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayNormalItemLabel": {
     "message": "ปกติ (ค่าเริ่มต้น)"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
-    "message": "เล่นซ้ำช้า"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplaySlowButtonLabel": {
     "message": "ช้า"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
-    "message": "เล่นซ้ำช้ามาก"
+  "panels/recorder/components/ReplaySection.ts | ReplaySlowItemLabel": {
+    "message": "ช้า"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplayVerySlowButtonLabel": {
     "message": "ช้ามาก"
   },
-  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+  "panels/recorder/components/ReplaySection.ts | ReplayVerySlowItemLabel": {
+    "message": "ช้ามาก"
+  },
+  "panels/recorder/components/ReplaySection.ts | extensionGroup": {
     "message": "ส่วนขยาย"
   },
-  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+  "panels/recorder/components/ReplaySection.ts | speedGroup": {
     "message": "ความเร็ว"
   },
   "panels/recorder/components/StartView.ts | createRecording": {
@@ -10235,17 +10292,11 @@
   "panels/search/SearchView.ts | indexingInterrupted": {
     "message": "การจัดทำดัชนีถูกขัดจังหวะ"
   },
-  "panels/search/SearchView.ts | matchCase": {
-    "message": "ตัวพิมพ์เล็กหรือใหญ่ตรงกัน"
-  },
   "panels/search/SearchView.ts | noMatchesFound": {
     "message": "ไม่พบรายการที่ตรงกัน"
   },
   "panels/search/SearchView.ts | refresh": {
     "message": "รีเฟรช"
-  },
-  "panels/search/SearchView.ts | search": {
-    "message": "ค้นหา"
   },
   "panels/search/SearchView.ts | searchFinished": {
     "message": "ค้นหาเสร็จแล้ว"
@@ -10253,14 +10304,8 @@
   "panels/search/SearchView.ts | searchInterrupted": {
     "message": "การค้นหาถูกขัดจังหวะ"
   },
-  "panels/search/SearchView.ts | searchQuery": {
-    "message": "คำค้นหา"
-  },
   "panels/search/SearchView.ts | searching": {
     "message": "กำลังค้นหา…"
-  },
-  "panels/search/SearchView.ts | useRegularExpression": {
-    "message": "ใช้นิพจน์ทั่วไป"
   },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} ที่มี {PH2}"
@@ -11390,12 +11435,6 @@
   "panels/sources/DebuggerPlugin.ts | errorLoading": {
     "message": "เกิดข้อผิดพลาดในการโหลด URL {PH1}: {PH2}"
   },
-  "panels/sources/DebuggerPlugin.ts | ignoreContentScripts": {
-    "message": "ละเว้นสคริปต์ส่วนขยาย"
-  },
-  "panels/sources/DebuggerPlugin.ts | ignoreScript": {
-    "message": "ละเว้นไฟล์นี้"
-  },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "ไม่ต้องหยุดชั่วคราวที่นี่"
   },
@@ -12314,9 +12353,6 @@
   "panels/timeline/EventUICategory.ts | imageDecode": {
     "message": "ถอดรหัสรูปภาพ"
   },
-  "panels/timeline/EventUICategory.ts | imageResize": {
-    "message": "การปรับขนาดรูปภาพ"
-  },
   "panels/timeline/EventUICategory.ts | installTimer": {
     "message": "ติดตั้งตัวจับเวลา"
   },
@@ -12540,7 +12576,7 @@
     "message": "Worklet ผู้เสนอราคา — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
-    "message": "Workerเฉพาะ"
+    "message": "Worker เฉพาะ"
   },
   "panels/timeline/ThreadAppender.ts | eventDispatchS": {
     "message": "กิจกรรม: {PH1}"
@@ -12561,7 +12597,7 @@
     "message": "แรสเตอร์"
   },
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
-    "message": "ชุดข้อความของรูปแบบแรสเตอร์ {PH1}"
+    "message": "ชุดข้อความของโปรแกรมแรสเตอร์ {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | sellerWorklet": {
     "message": "Worklet ผู้ขาย"
@@ -12698,9 +12734,6 @@
   "panels/timeline/TimelinePanel.ts | SignificantOverheadDueToPaint": {
     "message": "- โอเวอร์เฮดที่จำเป็นเนื่องจากการวัดคุมการแสดงผล"
   },
-  "panels/timeline/TimelinePanel.ts | afterRecordingSelectAnAreaOf": {
-    "message": "หลังจากบันทึกแล้ว ให้เลือกพื้นที่ที่สนใจในภาพรวมโดยการลาก จากนั้นซูมและเลื่อนไทม์ไลน์ด้วยลูกกลิ้งเมาส์หรือแป้น {PH1} {PH2}"
-  },
   "panels/timeline/TimelinePanel.ts | bufferUsage": {
     "message": "การใช้งานบัฟเฟอร์"
   },
@@ -12718,12 +12751,6 @@
   },
   "panels/timeline/TimelinePanel.ts | clear": {
     "message": "ล้าง"
-  },
-  "panels/timeline/TimelinePanel.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "คลิกปุ่ม \"บันทึก\" {PH1} หรือกด {PH2} เพื่อเริ่มการบันทึกใหม่"
-  },
-  "panels/timeline/TimelinePanel.ts | clickTheReloadButtonSOrHitSTo": {
-    "message": "คลิกปุ่มโหลดซ้ำ {PH1} หรือกด {PH2} เพื่อบันทึกการโหลดหน้าเว็บ"
   },
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "ปิด"
@@ -12750,7 +12777,7 @@
     "message": "เปิดใช้การวัดคุมการแสดงผลขั้นสูง (ช้า)"
   },
   "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
-    "message": "เปิดใช้สถิติตัวเลือก CSS"
+    "message": "เปิดใช้สถิติตัวเลือก CSS (ช้า)"
   },
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "บันทึกไทม์ไลน์ไม่สำเร็จ: {PH1} ({PH2})"
@@ -12760,9 +12787,6 @@
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "กำลังเริ่มต้นเครื่องมือสร้างโปรไฟล์…"
-  },
-  "panels/timeline/TimelinePanel.ts | learnmore": {
-    "message": "ดูข้อมูลเพิ่มเติม"
   },
   "panels/timeline/TimelinePanel.ts | loadProfile": {
     "message": "โหลดโปรไฟล์…"
@@ -12814,9 +12838,6 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "เวลา"
-  },
-  "panels/timeline/TimelinePanel.ts | wasd": {
-    "message": "WASD"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "คัดลอกตาราง"
@@ -12904,9 +12925,6 @@
   },
   "panels/timeline/TimelineTreeView.ts | noGrouping": {
     "message": "ไม่มีการจัดกลุ่ม"
-  },
-  "panels/timeline/TimelineTreeView.ts | notOptimizedS": {
-    "message": "ไม่ได้เพิ่มประสิทธิภาพ: {PH1}"
   },
   "panels/timeline/TimelineTreeView.ts | page": {
     "message": "หน้าเว็บ"
@@ -13223,6 +13241,9 @@
   "panels/timeline/TimelineUIUtils.ts | scriptLoadedFromCache": {
     "message": "โหลดสคริปต์จากแคชแล้ว"
   },
+  "panels/timeline/TimelineUIUtils.ts | scriptNotEligibleToBeLoadedFromCache": {
+    "message": "สคริปต์ไม่มีสิทธิ์"
+  },
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "สถิติตัวเลือก"
   },
@@ -13261,6 +13282,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "เวลารวม"
+  },
+  "panels/timeline/TimelineUIUtils.ts | traceEvent": {
+    "message": "เหตุการณ์การติดตาม"
   },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "ประเภท"
@@ -13844,9 +13868,6 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "เชื่อมต่ออีกครั้งเมื่อพร้อมโดยการเปิดเครื่องมือสำหรับนักพัฒนาเว็บขึ้นมาใหม่"
   },
-  "ui/legacy/SearchableView.ts | cancel": {
-    "message": "ยกเลิก"
-  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "ตรงกัน {PH1} รายการ"
   },
@@ -13855,9 +13876,6 @@
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "ค้นหา"
-  },
-  "ui/legacy/SearchableView.ts | matchCase": {
-    "message": "ตัวพิมพ์เล็กหรือใหญ่ตรงกัน"
   },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "ตรงกัน 1 รายการ"
@@ -13873,9 +13891,6 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "ค้นหารายการก่อนหน้า"
-  },
-  "ui/legacy/SearchableView.ts | useRegularExpression": {
-    "message": "ใช้นิพจน์ทั่วไป"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "มีการเปลี่ยนการตั้งค่าอย่างน้อย 1 รายการซึ่งจะต้องโหลดซ้ำจึงจะมีผล"
@@ -13932,7 +13947,10 @@
     "message": "เมื่อโหลดหน้าซ้ำแล้ว เครื่องมือสำหรับนักพัฒนาเว็บจะเชื่อมต่ออีกครั้งโดยอัตโนมัติ"
   },
   "ui/legacy/Toolbar.ts | clearInput": {
-    "message": "ล้างข้อมูลที่ป้อน"
+    "message": "ล้าง"
+  },
+  "ui/legacy/Toolbar.ts | filter": {
+    "message": "กรอง"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "ไม่ได้กด"
@@ -14351,6 +14369,15 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "ภาพหน้าจอสำหรับ {PH1} - เลือกเพื่อดูคำขอก่อนหน้า"
   },
+  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
+    "message": "เพิ่มสคริปต์ลงในรายการละเว้น"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
+    "message": "กำหนดค่าการติดตาม…"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | exitTrackConfigurationMode": {
+    "message": "กำหนดค่าการติดตามให้เสร็จสิ้น"
+  },
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "แผนภูมิ Flame Chart"
   },
@@ -14362,6 +14389,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "ซ่อนรายการย่อยที่ซ้ำ"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
+    "message": "นำสคริปต์ออกจากรายการละเว้น"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
     "message": "รีเซ็ตรายการย่อย"

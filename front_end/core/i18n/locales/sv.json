@@ -1292,12 +1292,6 @@
   "generated/Deprecation.ts | WebSQL": {
     "message": "Webb-SQL har fasats ut. Använd SQLite WebAssembly eller indexerade databaser"
   },
-  "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
-    "message": "Behörighetsbeskrivningen window-placement är utfasad. Använd window-management i stället. Besök https://bit.ly/window-placement-rename om du behöver hjälp."
-  },
-  "generated/Deprecation.ts | WindowPlacementPermissionPolicyParsed": {
-    "message": "Behörighetspolicyn window-placement är utfasad. Använd window-management i stället. Besök https://bit.ly/window-placement-rename om du behöver hjälp."
-  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 stöds inte av json-svar i XMLHttpRequest"
   },
@@ -1433,6 +1427,12 @@
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "osäker"
   },
+  "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
+    "message": "Tredjepartscookies blockeras i Chrome som en del av Privacy Sandbox."
+  },
+  "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
+    "message": "Tredjepartscookien blockeras i framtida Chrome-versioner som en del av Privacy Sandbox."
+  },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "Skicka en felrapport"
   },
@@ -1525,6 +1525,9 @@
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Aktiverar SharedArrayBuffer"
+  },
+  "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
+    "message": "Transport av komprimeringsordböcker"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonym>"
@@ -2189,12 +2192,6 @@
   "panels/application/AppManifestView.ts | customizePwaTitleBar": {
     "message": "Anpassa Window Controls Overlay för fönsterstyrning i PWA:s namnlist"
   },
-  "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Mörk bakgrundsfärg"
-  },
-  "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Färg på mörkt tema"
-  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Beskrivning"
   },
@@ -2647,6 +2644,9 @@
   },
   "panels/application/IndexedDBViews.ts | expandRecursively": {
     "message": "Utöka rekursivt"
+  },
+  "panels/application/IndexedDBViews.ts | filterByKey": {
+    "message": "Filtrera efter nyckel (visa nycklar som är större eller lika med)"
   },
   "panels/application/IndexedDBViews.ts | idb": {
     "message": "IDB"
@@ -4262,6 +4262,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationUrlHasEffectiveUrl": {
     "message": "Förrenderingen användes inte eftersom navigeringen har en effektiv webbadress som skiljer sig från den vanliga webbadressen under aktiveringstiden. (Till exempel sidan Ny flik eller värdlagrade appar.)"
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
+    "message": "Okänd"
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "Den förrenderade sidan begärde ljudutgång, vilket för närvarande inte stöds."
   },
@@ -4300,6 +4303,12 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
     "message": "Navigeringen vid förrenderingen misslyckades eftersom den omdirigerade till en webbadress vars schema inte var http: eller https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
+    "message": "Okänd"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
+    "message": "Okänd"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "Navigeringen vid förrenderingen krävde HTTP-autentisering, vilket för närvarande inte stöds."
@@ -5258,6 +5267,9 @@
   "panels/coverage/CoverageView.ts | css": {
     "message": "CSS"
   },
+  "panels/coverage/CoverageView.ts | filterByUrl": {
+    "message": "Filtrera efter webbadress"
+  },
   "panels/coverage/CoverageView.ts | filterCoverageByType": {
     "message": "Filtrera täckning efter typ"
   },
@@ -5500,6 +5512,9 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
     "message": "Läs in via webbplatsen"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | filterByText": {
+    "message": "Filtrera efter webbadress och fel"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Läs in HTTP(S)-resurser för utvecklare via webbplatsen du inspekterar, inte via Verktyg för programmerare"
@@ -6387,7 +6402,7 @@
     "message": "Relaterad kod"
   },
   "panels/explain/components/ConsoleInsight.ts | reloadRecommendation": {
-    "message": "Reload the page to capture related network request data for this message in order to create a better insight."
+    "message": "Läs in sidan igen för att registrera relaterad data om nätverksförfrågningar för det här meddelandet och få bättre insikter."
   },
   "panels/explain/components/ConsoleInsight.ts | report": {
     "message": "Rapportera juridiskt problem"
@@ -6435,7 +6450,7 @@
     "message": "Din organisation har inaktiverat den här funktionen. Kontakta administratörerna om du vill veta mer."
   },
   "panels/explain/explain-meta.ts | rolloutRestricted": {
-    "message": "This feature is currently being rolled out. Stay tuned."
+    "message": "Den här funktionen lanseras för närvarande. Mer information kommer snart."
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "Om du vill använda den här funktionen uppdaterar du språkinställningen till engelska i inställningarna för Verktyg för programmerare."
@@ -6823,6 +6838,24 @@
   },
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Visa problem"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | performance": {
+    "message": "Prestanda"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | record": {
+    "message": "Spela in"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | showPerformance": {
+    "message": "Visa prestanda"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | showRecentTimelineSessions": {
+    "message": "Visa senaste tidslinjesessioner"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | startProfilingAndReloadPage": {
+    "message": "Starta profilering och läs in sidan igen"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | stop": {
+    "message": "Stoppa"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Orsaker till sammansättning"
@@ -7424,6 +7457,9 @@
   "panels/media/PlayerMessagesView.ts | errorStackLabel": {
     "message": "Stackspårning:"
   },
+  "panels/media/PlayerMessagesView.ts | filterByLogMessages": {
+    "message": "Filtrera efter loggmeddelanden"
+  },
   "panels/media/PlayerMessagesView.ts | info": {
     "message": "Information"
   },
@@ -7581,7 +7617,7 @@
     "message": "Maskinvarans parallellkörningsnivå"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
-    "message": "Åsidosättande av maskinvarans parallellkörningsnivå har aktiverats"
+    "message": "Åsidosättande av hårdvarans parallellkörningsnivå har aktiverats"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingTooltip": {
     "message": "Åsidosätt värdet som rapporterats av navigator.hardwareConcurrency på sidan"
@@ -7780,6 +7816,9 @@
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Händelsekälla"
+  },
+  "panels/network/EventSourceMessagesView.ts | filterByRegex": {
+    "message": "Filtrera med reguljärt uttryck (exempel: https?)"
   },
   "panels/network/EventSourceMessagesView.ts | id": {
     "message": "Id"
@@ -8714,6 +8753,9 @@
   "panels/network/ResourceWebSocketFrameView.ts | filter": {
     "message": "Filtrera"
   },
+  "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
+    "message": "Filtrera med reguljärt uttryck (exempel: (webb)?uttag)"
+  },
   "panels/network/ResourceWebSocketFrameView.ts | length": {
     "message": "Längd"
   },
@@ -9362,11 +9404,17 @@
   "panels/profiler/HeapSnapshotView.ts | containment": {
     "message": "Inneslutning"
   },
+  "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
+    "message": "Dubbletter av strängar"
+  },
   "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
     "message": "Visa intern data (inkluderar ytterligare implementeringsspecifika uppgifter)"
   },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Filtrera"
+  },
+  "panels/profiler/HeapSnapshotView.ts | filterByClass": {
+    "message": "Filtrera efter klass"
   },
   "panels/profiler/HeapSnapshotView.ts | find": {
     "message": "Sök"
@@ -9397,6 +9445,12 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsAllocatedBetweenSAndS": {
     "message": "Objekt som tilldelats mellan {PH1} och {PH2}"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByConsole": {
+    "message": "Objekt som lagras av konsolen för Verktyg för programmerare"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
+    "message": "Objekt som lagras av frånkopplade DOM-noder"
   },
   "panels/profiler/HeapSnapshotView.ts | percentagePlaceholder": {
     "message": "{PH1} %"
@@ -9998,34 +10052,37 @@
   "panels/recorder/components/RecordingView.ts | upload": {
     "message": "Ladda upp: {value}"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
-    "message": "Extremt långsam uppspelning"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
-    "message": "Extremt långsam"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+  "panels/recorder/components/ReplaySection.ts | Replay": {
     "message": "Spela upp igen"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "Extremt låg hastighet"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayExtremelySlowItemLabel": {
+    "message": "Extremt långsam"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayNormalButtonLabel": {
+    "message": "Normal hastighet"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayNormalItemLabel": {
     "message": "Normal (standard)"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
-    "message": "Långsam uppspelning"
+  "panels/recorder/components/ReplaySection.ts | ReplaySlowButtonLabel": {
+    "message": "Låg hastighet"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplaySlowItemLabel": {
     "message": "Långsam"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
-    "message": "Mycket långsam uppspelning"
+  "panels/recorder/components/ReplaySection.ts | ReplayVerySlowButtonLabel": {
+    "message": "Mycket låg hastighet"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplayVerySlowItemLabel": {
     "message": "Mycket långsam"
   },
-  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+  "panels/recorder/components/ReplaySection.ts | extensionGroup": {
     "message": "Tillägg"
   },
-  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+  "panels/recorder/components/ReplaySection.ts | speedGroup": {
     "message": "Hastighet"
   },
   "panels/recorder/components/StartView.ts | createRecording": {
@@ -10235,17 +10292,11 @@
   "panels/search/SearchView.ts | indexingInterrupted": {
     "message": "Indexeringen avbröts."
   },
-  "panels/search/SearchView.ts | matchCase": {
-    "message": "Matcha stor eller liten bokstav"
-  },
   "panels/search/SearchView.ts | noMatchesFound": {
     "message": "Inga träffar hittades."
   },
   "panels/search/SearchView.ts | refresh": {
     "message": "Uppdatera"
-  },
-  "panels/search/SearchView.ts | search": {
-    "message": "Sök"
   },
   "panels/search/SearchView.ts | searchFinished": {
     "message": "Sökning avslutad."
@@ -10253,14 +10304,8 @@
   "panels/search/SearchView.ts | searchInterrupted": {
     "message": "Sökningen avbröts."
   },
-  "panels/search/SearchView.ts | searchQuery": {
-    "message": "Sökfråga"
-  },
   "panels/search/SearchView.ts | searching": {
     "message": "Söker …"
-  },
-  "panels/search/SearchView.ts | useRegularExpression": {
-    "message": "Använd reguljärt uttryck"
   },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} med {PH2}"
@@ -11390,12 +11435,6 @@
   "panels/sources/DebuggerPlugin.ts | errorLoading": {
     "message": "Fel vid inläsning av webbadress {PH1}: {PH2}"
   },
-  "panels/sources/DebuggerPlugin.ts | ignoreContentScripts": {
-    "message": "Ignorera tilläggsskript"
-  },
-  "panels/sources/DebuggerPlugin.ts | ignoreScript": {
-    "message": "Ignorera den här filen"
-  },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Pausa aldrig här"
   },
@@ -12144,7 +12183,7 @@
     "message": "Animationer"
   },
   "panels/timeline/AppenderUtils.ts | sSelfS": {
-    "message": "{PH1} (tid i nod: {PH2})"
+    "message": "{PH1} (tid för själva aktiviteten: {PH2})"
   },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Dokument"
@@ -12313,9 +12352,6 @@
   },
   "panels/timeline/EventUICategory.ts | imageDecode": {
     "message": "Bildavkodning"
-  },
-  "panels/timeline/EventUICategory.ts | imageResize": {
-    "message": "Ändra storlek på bild"
   },
   "panels/timeline/EventUICategory.ts | installTimer": {
     "message": "Installationstimer"
@@ -12585,7 +12621,7 @@
     "message": "Auktions-worklet – {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
-    "message": "Worker — {PH1}"
+    "message": "Worker—{PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
@@ -12684,7 +12720,7 @@
     "message": "– CPU-begränsning har aktiverats"
   },
   "panels/timeline/TimelinePanel.ts | HardwareConcurrencyIsEnabled": {
-    "message": "– Åsidosättande av maskinvarans parallellkörningsnivå har aktiverats"
+    "message": "– Åsidosättande av hårdvarans parallellkörningsnivå har aktiverats"
   },
   "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
     "message": "– JavaScript-sampling har inaktiverats"
@@ -12697,9 +12733,6 @@
   },
   "panels/timeline/TimelinePanel.ts | SignificantOverheadDueToPaint": {
     "message": "– Betydande resursanvändning på grund av uppritningsinstrumentering"
-  },
-  "panels/timeline/TimelinePanel.ts | afterRecordingSelectAnAreaOf": {
-    "message": "Efter inspelningen väljer du ett intresseområde i översikten genom att dra. Zooma och panorera sedan i tidslinjen med mushjulet eller tangenterna {PH1}. {PH2}"
   },
   "panels/timeline/TimelinePanel.ts | bufferUsage": {
     "message": "Bufferanvändning"
@@ -12718,12 +12751,6 @@
   },
   "panels/timeline/TimelinePanel.ts | clear": {
     "message": "Ta bort"
-  },
-  "panels/timeline/TimelinePanel.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Klicka på inspelningsknappen {PH1} eller tryck på {PH2} om du vill starta en ny inspelning."
-  },
-  "panels/timeline/TimelinePanel.ts | clickTheReloadButtonSOrHitSTo": {
-    "message": "Klicka på knappen Läs in igen {PH1} eller tryck på {PH2} om du vill spela in sidhämtningen."
   },
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "Stäng"
@@ -12750,7 +12777,7 @@
     "message": "Aktivera avancerad uppritningsinstrumentering (långsam)"
   },
   "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
-    "message": "Aktivera statistik för CSS-väljare"
+    "message": "Aktivera statistik för CSS-väljare (långsamt)"
   },
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Det gick inte att spara tidslinjen: {PH1} ({PH2})"
@@ -12760,9 +12787,6 @@
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Initierar profilerare …"
-  },
-  "panels/timeline/TimelinePanel.ts | learnmore": {
-    "message": "Läs mer"
   },
   "panels/timeline/TimelinePanel.ts | loadProfile": {
     "message": "Läs in profil …"
@@ -12814,9 +12838,6 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Tid"
-  },
-  "panels/timeline/TimelinePanel.ts | wasd": {
-    "message": "WASD"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "Kopiera tabell"
@@ -12904,9 +12925,6 @@
   },
   "panels/timeline/TimelineTreeView.ts | noGrouping": {
     "message": "Ingen gruppering"
-  },
-  "panels/timeline/TimelineTreeView.ts | notOptimizedS": {
-    "message": "Inte optimerad: {PH1}"
   },
   "panels/timeline/TimelineTreeView.ts | page": {
     "message": "Sida"
@@ -13077,7 +13095,7 @@
     "message": "Id"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidationWithCallFrame": {
-    "message": "{PH1} i {PH2}"
+    "message": "{PH1} vid {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
     "message": "Ogiltighetsförklaringar"
@@ -13223,6 +13241,9 @@
   "panels/timeline/TimelineUIUtils.ts | scriptLoadedFromCache": {
     "message": "skript inläst från cacheminne"
   },
+  "panels/timeline/TimelineUIUtils.ts | scriptNotEligibleToBeLoadedFromCache": {
+    "message": "skriptet uppfyller inte kraven"
+  },
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Väljarstatistik"
   },
@@ -13261,6 +13282,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "Total tid"
+  },
+  "panels/timeline/TimelineUIUtils.ts | traceEvent": {
+    "message": "Spårningshändelse"
   },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "Typ"
@@ -13844,9 +13868,6 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "Återanslut när felsökningen har avslutats genom att öppna Verktyg för programmerare på nytt."
   },
-  "ui/legacy/SearchableView.ts | cancel": {
-    "message": "Avbryt"
-  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} träffar"
   },
@@ -13855,9 +13876,6 @@
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Sök"
-  },
-  "ui/legacy/SearchableView.ts | matchCase": {
-    "message": "Matcha stor eller liten bokstav"
   },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 träff"
@@ -13873,9 +13891,6 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Sök efter föregående"
-  },
-  "ui/legacy/SearchableView.ts | useRegularExpression": {
-    "message": "Använd reguljärt uttryck"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "En eller flera inställningar har ändrats. Läs in igen för att verkställa dem."
@@ -13932,7 +13947,10 @@
     "message": "När sidan har lästs in igen ansluter Verktyg för programmerare på nytt automatiskt."
   },
   "ui/legacy/Toolbar.ts | clearInput": {
-    "message": "Radera inmatning"
+    "message": "Rensa"
+  },
+  "ui/legacy/Toolbar.ts | filter": {
+    "message": "Filter"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "inaktiverat"
@@ -14351,6 +14369,15 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Skärmbild för {PH1} – välj för att visa föregående förfrågningar."
   },
+  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
+    "message": "Lägg till skript på ignoreringslistan"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
+    "message": "Konfigurera spår …"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | exitTrackConfigurationMode": {
+    "message": "Slutför kanalkonfigurationen"
+  },
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "Flame chart"
   },
@@ -14362,6 +14389,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "Dölj återkommande underordnade poster"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
+    "message": "Ta bort skript från ignoreringslistan"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
     "message": "Återställ underordnade"

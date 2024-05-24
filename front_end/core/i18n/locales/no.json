@@ -1292,12 +1292,6 @@
   "generated/Deprecation.ts | WebSQL": {
     "message": "Web SQL er avviklet. Bruk SQLite WebAssembly eller Indexed Database"
   },
-  "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
-    "message": "Tillatelsesbeskrivelsen window-placement er avviklet. Bruk window-management i stedet. Du finner mer hjelp på https://bit.ly/window-placement-rename."
-  },
-  "generated/Deprecation.ts | WindowPlacementPermissionPolicyParsed": {
-    "message": "Tillatelsesregelen window-placement er avviklet. Bruk window-management i stedet. Du finner mer hjelp på https://bit.ly/window-placement-rename."
-  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 støttes ikke av JSON-svaret i XMLHttpRequest"
   },
@@ -1433,6 +1427,12 @@
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "en usikker"
   },
+  "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
+    "message": "Informasjonskapsler fra tredjeparter er blokkert i Chrome som en del av Privacy Sandbox."
+  },
+  "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
+    "message": "Informasjonskapsler fra tredjeparter blir blokkert i fremtidige Chrome-versjoner som en del av Privacy Sandbox."
+  },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "Rapporter en feil"
   },
@@ -1525,6 +1525,9 @@
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Aktivering av SharedArrayBuffer"
+  },
+  "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
+    "message": "Transport av komprimeringsordliste"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonym>"
@@ -2189,12 +2192,6 @@
   "panels/application/AppManifestView.ts | customizePwaTitleBar": {
     "message": "Tilpass overlegget for vinduskontroller på tittellinjen til PWA-et"
   },
-  "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Mørk bakgrunnsfarge"
-  },
-  "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Farge for mørkt tema"
-  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Beskrivelse"
   },
@@ -2647,6 +2644,9 @@
   },
   "panels/application/IndexedDBViews.ts | expandRecursively": {
     "message": "Ekspander rekursivt"
+  },
+  "panels/application/IndexedDBViews.ts | filterByKey": {
+    "message": "Filtrer etter nøkkel (vis like eller større nøkler)"
   },
   "panels/application/IndexedDBViews.ts | idb": {
     "message": "IDB"
@@ -4262,6 +4262,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationUrlHasEffectiveUrl": {
     "message": "Forhåndsgjengivelsen ble ikke brukt fordi navigeringen har en annen effektiv nettadresse enn den vanlige nettadressen på aktiveringstidspunktet. (Eksempel: Ny fane-siden eller vertsbaserte apper.)"
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
+    "message": "Ukjent"
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "Den forhåndsgjengitte siden forespurte lydutdata, noe som ikke støttes for øyeblikket."
   },
@@ -4300,6 +4303,12 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
     "message": "Navigeringen for forhåndsgjengivelse mislyktes fordi den ble viderekoblet til en nettadresse med en annen protokoll enn http: og https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
+    "message": "Ukjent"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
+    "message": "Ukjent"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "Navigeringen for forhåndsgjengivelse krevde HTTP-autentisering, noe som ikke støttes for øyeblikket."
@@ -5258,6 +5267,9 @@
   "panels/coverage/CoverageView.ts | css": {
     "message": "CSS"
   },
+  "panels/coverage/CoverageView.ts | filterByUrl": {
+    "message": "Filtrer etter nettadresse"
+  },
   "panels/coverage/CoverageView.ts | filterCoverageByType": {
     "message": "Filtrer dekning etter type"
   },
@@ -5500,6 +5512,9 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
     "message": "Last inn gjennom nettstedet"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | filterByText": {
+    "message": "Filtrer etter nettadresse og feil"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Last inn HTTP(S)-utviklerressurser gjennom nettstedet du inspiserer, ikke via Utviklerverktøy"
@@ -5757,7 +5772,7 @@
     "message": "vis"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
-    "message": "Vis alle noder ({PH1} flere)"
+    "message": "Vis alle noder ({PH1} til)"
   },
   "panels/elements/ElementsTreeOutline.ts | storeAsGlobalVariable": {
     "message": "Lagre som global variabel"
@@ -5865,7 +5880,7 @@
     "message": "{PH1}[Attributtstil]"
   },
   "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
-    "message": "Vis alle egenskaper ({PH1} flere)"
+    "message": "Vis alle egenskaper ({PH1} til)"
   },
   "panels/elements/StylePropertiesSection.ts | styleAttribute": {
     "message": "Attributtet style"
@@ -6824,6 +6839,24 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Vis Problemer"
   },
+  "panels/js_timeline/js_timeline-meta.ts | performance": {
+    "message": "Resultater"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | record": {
+    "message": "Ta opp"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | showPerformance": {
+    "message": "VIs ytelse"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | showRecentTimelineSessions": {
+    "message": "Vis nylige tidslinjeøkter"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | startProfilingAndReloadPage": {
+    "message": "Start profilering, og last inn siden på nytt"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | stop": {
+    "message": "Stopp"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Sammensettingsgrunner"
   },
@@ -7424,6 +7457,9 @@
   "panels/media/PlayerMessagesView.ts | errorStackLabel": {
     "message": "Stabelspor:"
   },
+  "panels/media/PlayerMessagesView.ts | filterByLogMessages": {
+    "message": "Filtrer etter loggmeldinger"
+  },
   "panels/media/PlayerMessagesView.ts | info": {
     "message": "Informasjon"
   },
@@ -7780,6 +7816,9 @@
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Hendelseskilde"
+  },
+  "panels/network/EventSourceMessagesView.ts | filterByRegex": {
+    "message": "Filtrer med regulære uttrykk (eksempel: https?)"
   },
   "panels/network/EventSourceMessagesView.ts | id": {
     "message": "ID"
@@ -8714,6 +8753,9 @@
   "panels/network/ResourceWebSocketFrameView.ts | filter": {
     "message": "Filtrér"
   },
+  "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
+    "message": "Filtrer med regulære uttrykk (eksempel: (web)?socket)"
+  },
   "panels/network/ResourceWebSocketFrameView.ts | length": {
     "message": "Lengde"
   },
@@ -9362,11 +9404,17 @@
   "panels/profiler/HeapSnapshotView.ts | containment": {
     "message": "Inneslutning"
   },
+  "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
+    "message": "Dupliserte strenger"
+  },
   "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
     "message": "Eksponer interne data (inkluderer implementeringsspesifikke detaljer i tillegg)"
   },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Filtrér"
+  },
+  "panels/profiler/HeapSnapshotView.ts | filterByClass": {
+    "message": "Filtrer etter klasse"
   },
   "panels/profiler/HeapSnapshotView.ts | find": {
     "message": "Finn"
@@ -9397,6 +9445,12 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsAllocatedBetweenSAndS": {
     "message": "Objekter tildelt mellom {PH1} og {PH2}"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByConsole": {
+    "message": "Objekter som er bevart av Utviklerverktøy-konsollen"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
+    "message": "Objekter som er bevart av frakoblede DOM-noder"
   },
   "panels/profiler/HeapSnapshotView.ts | percentagePlaceholder": {
     "message": "{PH1} %"
@@ -9998,34 +10052,37 @@
   "panels/recorder/components/RecordingView.ts | upload": {
     "message": "Opplasting: {value}"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
-    "message": "Ekstremt langsom avspilling"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
-    "message": "Ekstremt langsomt"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+  "panels/recorder/components/ReplaySection.ts | Replay": {
     "message": "Spill av på nytt"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "Ekstremt lav hastighet"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayExtremelySlowItemLabel": {
+    "message": "Ekstremt langsomt"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayNormalButtonLabel": {
+    "message": "Normal hastighet"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayNormalItemLabel": {
     "message": "Normal (standard)"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
-    "message": "Langsom avspilling"
+  "panels/recorder/components/ReplaySection.ts | ReplaySlowButtonLabel": {
+    "message": "Lav hastighet"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplaySlowItemLabel": {
     "message": "Langsomt"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
-    "message": "Veldig langsom avspilling"
+  "panels/recorder/components/ReplaySection.ts | ReplayVerySlowButtonLabel": {
+    "message": "Veldig lav hastighet"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplayVerySlowItemLabel": {
     "message": "Veldig langsomt"
   },
-  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+  "panels/recorder/components/ReplaySection.ts | extensionGroup": {
     "message": "Utvidelser"
   },
-  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+  "panels/recorder/components/ReplaySection.ts | speedGroup": {
     "message": "Hastighet"
   },
   "panels/recorder/components/StartView.ts | createRecording": {
@@ -10235,17 +10292,11 @@
   "panels/search/SearchView.ts | indexingInterrupted": {
     "message": "Indekseringen ble avbrutt."
   },
-  "panels/search/SearchView.ts | matchCase": {
-    "message": "Skill mellom store/små bokstaver"
-  },
   "panels/search/SearchView.ts | noMatchesFound": {
     "message": "Fant ingen samsvar."
   },
   "panels/search/SearchView.ts | refresh": {
     "message": "Last inn på nytt"
-  },
-  "panels/search/SearchView.ts | search": {
-    "message": "Søk"
   },
   "panels/search/SearchView.ts | searchFinished": {
     "message": "Søket er fullført."
@@ -10253,14 +10304,8 @@
   "panels/search/SearchView.ts | searchInterrupted": {
     "message": "Søket ble avbrutt."
   },
-  "panels/search/SearchView.ts | searchQuery": {
-    "message": "Søkeord"
-  },
   "panels/search/SearchView.ts | searching": {
     "message": "Søker …"
-  },
-  "panels/search/SearchView.ts | useRegularExpression": {
-    "message": "Bruk regulært uttrykk"
   },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} med {PH2}"
@@ -11390,12 +11435,6 @@
   "panels/sources/DebuggerPlugin.ts | errorLoading": {
     "message": "Feil ved innlasting av nettadressen {PH1}: {PH2}"
   },
-  "panels/sources/DebuggerPlugin.ts | ignoreContentScripts": {
-    "message": "Ignorer utvidelsesskript"
-  },
-  "panels/sources/DebuggerPlugin.ts | ignoreScript": {
-    "message": "Ignorer denne filen"
-  },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Pause aldri her"
   },
@@ -12314,9 +12353,6 @@
   "panels/timeline/EventUICategory.ts | imageDecode": {
     "message": "Dekoding av bilde"
   },
-  "panels/timeline/EventUICategory.ts | imageResize": {
-    "message": "Endre størrelse på bilde"
-  },
   "panels/timeline/EventUICategory.ts | installTimer": {
     "message": "Installeringstimer"
   },
@@ -12546,13 +12582,13 @@
     "message": "Hendelse: {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | frameS": {
-    "message": "Ramme – {PH1}"
+    "message": "Ramme — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | main": {
     "message": "Hovedtråd"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
-    "message": "Primært – {PH1}"
+    "message": "Primært — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | onIgnoreList": {
     "message": "På ignoreringslisten"
@@ -12561,7 +12597,7 @@
     "message": "Raster"
   },
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
-    "message": "Rasteriseringstråd {PH1}"
+    "message": "Rasterisert tråd {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | sellerWorklet": {
     "message": "Arbeidsbok for selger"
@@ -12698,9 +12734,6 @@
   "panels/timeline/TimelinePanel.ts | SignificantOverheadDueToPaint": {
     "message": "- Betydelig overhead på grunn av instrumentering av opptegning"
   },
-  "panels/timeline/TimelinePanel.ts | afterRecordingSelectAnAreaOf": {
-    "message": "Velg et interesseområde etter innspilling i oversikten ved å dra. Zoom og panorer deretter tidslinjen med musehjulet eller {PH1}-tastene. {PH2}"
-  },
   "panels/timeline/TimelinePanel.ts | bufferUsage": {
     "message": "Hurtigbufferbruk"
   },
@@ -12718,12 +12751,6 @@
   },
   "panels/timeline/TimelinePanel.ts | clear": {
     "message": "Tøm"
-  },
-  "panels/timeline/TimelinePanel.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Trykk på opptaksknappen {PH1} eller trykk på {PH2} for å starte et nytt opptak."
-  },
-  "panels/timeline/TimelinePanel.ts | clickTheReloadButtonSOrHitSTo": {
-    "message": "Klikk på Last inn på nytt-knappen {PH1} eller trykk på {PH2} for å ta opp sideinnlastingen."
   },
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "Lukk"
@@ -12750,7 +12777,7 @@
     "message": "Aktiver avansert instrumentering ved opptegning (sakte)"
   },
   "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
-    "message": "Slå på statistikk for CSS-velgere"
+    "message": "Slå på statistikk for CSS-velgere (tregt)"
   },
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Kunne ikke lagre tidslinjen: {PH1} ({PH2})"
@@ -12760,9 +12787,6 @@
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Initialiserer profiler …"
-  },
-  "panels/timeline/TimelinePanel.ts | learnmore": {
-    "message": "Finn ut mer"
   },
   "panels/timeline/TimelinePanel.ts | loadProfile": {
     "message": "Last inn profil …"
@@ -12814,9 +12838,6 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Tid"
-  },
-  "panels/timeline/TimelinePanel.ts | wasd": {
-    "message": "WASD"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "Kopier tabellen"
@@ -12904,9 +12925,6 @@
   },
   "panels/timeline/TimelineTreeView.ts | noGrouping": {
     "message": "Ingen gruppering"
-  },
-  "panels/timeline/TimelineTreeView.ts | notOptimizedS": {
-    "message": "Ikke optimalisert: {PH1}"
   },
   "panels/timeline/TimelineTreeView.ts | page": {
     "message": "Side"
@@ -13140,7 +13158,7 @@
     "message": "Profileringsverktøy for opptegning"
   },
   "panels/timeline/TimelineUIUtils.ts | parse": {
-    "message": "Analyser"
+    "message": "Parsing"
   },
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "Venter på"
@@ -13223,6 +13241,9 @@
   "panels/timeline/TimelineUIUtils.ts | scriptLoadedFromCache": {
     "message": "skript lastet fra hurtigbuffer"
   },
+  "panels/timeline/TimelineUIUtils.ts | scriptNotEligibleToBeLoadedFromCache": {
+    "message": "skript er ikke kvalifisert"
+  },
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Velgerstatistikk"
   },
@@ -13261,6 +13282,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "Total tid"
+  },
+  "panels/timeline/TimelineUIUtils.ts | traceEvent": {
+    "message": "Sporingshendelse"
   },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "Type"
@@ -13844,9 +13868,6 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "Hvordan samme nettsted fungerer skjematisk"
   },
-  "ui/legacy/SearchableView.ts | cancel": {
-    "message": "Avbryt"
-  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} treff"
   },
@@ -13855,9 +13876,6 @@
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Finn"
-  },
-  "ui/legacy/SearchableView.ts | matchCase": {
-    "message": "Skill mellom store/små bokstaver"
   },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 treff"
@@ -13873,9 +13891,6 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Søk forrige"
-  },
-  "ui/legacy/SearchableView.ts | useRegularExpression": {
-    "message": "Bruk regulært uttrykk"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "En eller flere innstillinger er endret, men trer ikke i kraft før Utviklerverktøy startes på nytt."
@@ -13932,7 +13947,10 @@
     "message": "Når siden er lastet inn på nytt, vil utviklerverktøy automatisk koble til igjen."
   },
   "ui/legacy/Toolbar.ts | clearInput": {
-    "message": "Fjern filteret"
+    "message": "Tøm"
+  },
+  "ui/legacy/Toolbar.ts | filter": {
+    "message": "Filter"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "ikke trykket"
@@ -14351,6 +14369,15 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Skjermdump for {PH1} – velg for å vise foregående forespørsler."
   },
+  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
+    "message": "Legg til skript på ignoreringslisten"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
+    "message": "Konfigurer spor…"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | exitTrackConfigurationMode": {
+    "message": "Fullfør konfigureringen av spor"
+  },
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "Flammediagram"
   },
@@ -14362,6 +14389,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "Skjul gjentatte underordnede elementer"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
+    "message": "Fjern skript fra ignoreringslisten"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
     "message": "Tilbakestill underordnede elementer"

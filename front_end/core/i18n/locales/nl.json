@@ -1292,12 +1292,6 @@
   "generated/Deprecation.ts | WebSQL": {
     "message": "Web SQL is beëindigd. Gebruik SQLite WebAssembly of Indexed Database."
   },
-  "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
-    "message": "De rechtenbeschrijving window-placement is beëindigd. Gebruik in plaats daarvan window-management. Ga voor meer hulp naar https://bit.ly/window-placement-rename."
-  },
-  "generated/Deprecation.ts | WindowPlacementPermissionPolicyParsed": {
-    "message": "Het rechtenbeleid window-placement is beëindigd. Gebruik in plaats daarvan window-management. Ga voor meer hulp naar https://bit.ly/window-placement-rename."
-  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 wordt niet ondersteund door de reactie-json in XMLHttpRequest"
   },
@@ -1433,6 +1427,12 @@
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "onveilig"
   },
+  "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
+    "message": "Cookies van derden worden geblokkeerd in Chrome als onderdeel van de Privacy Sandbox."
+  },
+  "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
+    "message": "Cookies van derden worden in toekomstige Chrome-versies geblokkeerd als onderdeel van de Privacy Sandbox."
+  },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "Een bug melden"
   },
@@ -1525,6 +1525,9 @@
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer aanzetten"
+  },
+  "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
+    "message": "Compressiefunctie voor woordenboekoverdracht"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anoniem>"
@@ -2189,12 +2192,6 @@
   "panels/application/AppManifestView.ts | customizePwaTitleBar": {
     "message": "Pas de overlay voor bedieningselementen voor vensters van de titelbalk van je PWA aan"
   },
-  "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Donkere achtergrondkleur"
-  },
-  "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Kleur voor donker thema"
-  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Beschrijving"
   },
@@ -2647,6 +2644,9 @@
   },
   "panels/application/IndexedDBViews.ts | expandRecursively": {
     "message": "Recursief uitvouwen"
+  },
+  "panels/application/IndexedDBViews.ts | filterByKey": {
+    "message": "Filteren op sleutel (sleutels groter of gelijk aan tonen)"
   },
   "panels/application/IndexedDBViews.ts | idb": {
     "message": "IDB"
@@ -4262,6 +4262,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationUrlHasEffectiveUrl": {
     "message": "De pre-rendering is niet gebruikt omdat de navigatie tijdens de activeringstijd een effectieve URL heeft die anders is dan de normale URL. (Bijvoorbeeld de pagina Nieuw tabblad of gehoste apps.)"
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
+    "message": "Onbekend"
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "De vooraf gerenderde pagina heeft audio-uitvoer aangevraagd maar dat wordt op dit moment niet ondersteund."
   },
@@ -4300,6 +4303,12 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
     "message": "De pre-rendering navigatie is mislukt omdat deze omleidt naar een URL waarvan het schema niet http: of https: was."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
+    "message": "Onbekend"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
+    "message": "Onbekend"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "De pre-rendering navigatie vereiste HTTP-verificatie maar dit wordt momenteel niet ondersteund."
@@ -5258,6 +5267,9 @@
   "panels/coverage/CoverageView.ts | css": {
     "message": "Css"
   },
+  "panels/coverage/CoverageView.ts | filterByUrl": {
+    "message": "Filteren op URL"
+  },
   "panels/coverage/CoverageView.ts | filterCoverageByType": {
     "message": "Dekking op type filteren"
   },
@@ -5500,6 +5512,9 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
     "message": "Laden via website"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | filterByText": {
+    "message": "Filteren op URL en fout"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "HTTP(S)-resources voor ontwikkelaars laden via de geïnspecteerde website, niet via DevTools"
@@ -5757,7 +5772,7 @@
     "message": "bekijken"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
-    "message": "Alle nodes bekijken (nog {PH1})"
+    "message": "Alle nodes tonen (nog {PH1})"
   },
   "panels/elements/ElementsTreeOutline.ts | storeAsGlobalVariable": {
     "message": "Opslaan als globale variabele"
@@ -5865,7 +5880,7 @@
     "message": "{PH1}[Kenmerkstijl]"
   },
   "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
-    "message": "Alle property's bekijken (nog {PH1})"
+    "message": "Alle property's tonen (nog {PH1})"
   },
   "panels/elements/StylePropertiesSection.ts | styleAttribute": {
     "message": "Kenmerk style"
@@ -6824,6 +6839,24 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Problemen tonen"
   },
+  "panels/js_timeline/js_timeline-meta.ts | performance": {
+    "message": "Prestaties"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | record": {
+    "message": "Opnemen"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | showPerformance": {
+    "message": "Prestaties tonen"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | showRecentTimelineSessions": {
+    "message": "Recente tijdlijnsessies tonen"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | startProfilingAndReloadPage": {
+    "message": "Profilering starten en pagina opnieuw laden"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | stop": {
+    "message": "Stoppen"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Redenen voor compositing"
   },
@@ -7424,6 +7457,9 @@
   "panels/media/PlayerMessagesView.ts | errorStackLabel": {
     "message": "Stacktrace:"
   },
+  "panels/media/PlayerMessagesView.ts | filterByLogMessages": {
+    "message": "Filteren op logboekberichten"
+  },
   "panels/media/PlayerMessagesView.ts | info": {
     "message": "Informatie"
   },
@@ -7780,6 +7816,9 @@
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Gebeurtenisbron"
+  },
+  "panels/network/EventSourceMessagesView.ts | filterByRegex": {
+    "message": "Filteren met regex (bijvoorbeeld: https?)"
   },
   "panels/network/EventSourceMessagesView.ts | id": {
     "message": "ID"
@@ -8714,6 +8753,9 @@
   "panels/network/ResourceWebSocketFrameView.ts | filter": {
     "message": "Filter"
   },
+  "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
+    "message": "Filteren met regex (bijvoorbeeld: (web)?socket)"
+  },
   "panels/network/ResourceWebSocketFrameView.ts | length": {
     "message": "Lengte"
   },
@@ -9362,11 +9404,17 @@
   "panels/profiler/HeapSnapshotView.ts | containment": {
     "message": "Insluiting"
   },
+  "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
+    "message": "Dubbele tekenreeksen"
+  },
   "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
     "message": "Interne gegevens openbaar maken (waaronder aanvullende implementatiespecifieke details)"
   },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Filter"
+  },
+  "panels/profiler/HeapSnapshotView.ts | filterByClass": {
+    "message": "Filteren op klasse"
   },
   "panels/profiler/HeapSnapshotView.ts | find": {
     "message": "Zoeken"
@@ -9397,6 +9445,12 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsAllocatedBetweenSAndS": {
     "message": "Objecten toegewezen tussen {PH1} en {PH2}"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByConsole": {
+    "message": "Objecten bewaard door de DevTools-console"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
+    "message": "Objecten die worden bewaard door losgekoppelde DOM-nodes"
   },
   "panels/profiler/HeapSnapshotView.ts | percentagePlaceholder": {
     "message": "{PH1}%"
@@ -9998,34 +10052,37 @@
   "panels/recorder/components/RecordingView.ts | upload": {
     "message": "Uploaden: {value}"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
-    "message": "Extreem langzaam opnieuw afspelen"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
-    "message": "Extreem langzaam"
-  },
-  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+  "panels/recorder/components/ReplaySection.ts | Replay": {
     "message": "Opnieuw afspelen"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "Extreem lage snelheid"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayExtremelySlowItemLabel": {
+    "message": "Extreem langzaam"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayNormalButtonLabel": {
+    "message": "Normale snelheid"
+  },
+  "panels/recorder/components/ReplaySection.ts | ReplayNormalItemLabel": {
     "message": "Normaal (standaard)"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
-    "message": "Langzaam opnieuw afspelen"
+  "panels/recorder/components/ReplaySection.ts | ReplaySlowButtonLabel": {
+    "message": "Lage snelheid"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplaySlowItemLabel": {
     "message": "Langzaam"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
-    "message": "Zeer langzaam opnieuw afspelen"
+  "panels/recorder/components/ReplaySection.ts | ReplayVerySlowButtonLabel": {
+    "message": "Zeer lage snelheid"
   },
-  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+  "panels/recorder/components/ReplaySection.ts | ReplayVerySlowItemLabel": {
     "message": "Zeer langzaam"
   },
-  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+  "panels/recorder/components/ReplaySection.ts | extensionGroup": {
     "message": "Extensies"
   },
-  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+  "panels/recorder/components/ReplaySection.ts | speedGroup": {
     "message": "Snelheid"
   },
   "panels/recorder/components/StartView.ts | createRecording": {
@@ -10235,17 +10292,11 @@
   "panels/search/SearchView.ts | indexingInterrupted": {
     "message": "Indexering onderbroken."
   },
-  "panels/search/SearchView.ts | matchCase": {
-    "message": "Hoofdlettergevoelig"
-  },
   "panels/search/SearchView.ts | noMatchesFound": {
     "message": "Geen overeenkomsten gevonden."
   },
   "panels/search/SearchView.ts | refresh": {
     "message": "Vernieuwen"
-  },
-  "panels/search/SearchView.ts | search": {
-    "message": "Zoeken"
   },
   "panels/search/SearchView.ts | searchFinished": {
     "message": "Zoeken voltooid."
@@ -10253,14 +10304,8 @@
   "panels/search/SearchView.ts | searchInterrupted": {
     "message": "Zoekopdracht onderbroken."
   },
-  "panels/search/SearchView.ts | searchQuery": {
-    "message": "Zoekopdracht"
-  },
   "panels/search/SearchView.ts | searching": {
     "message": "Zoeken…"
-  },
-  "panels/search/SearchView.ts | useRegularExpression": {
-    "message": "Reguliere expressie gebruiken"
   },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} met {PH2}"
@@ -11390,12 +11435,6 @@
   "panels/sources/DebuggerPlugin.ts | errorLoading": {
     "message": "Fout bij laden van URL {PH1}: {PH2}"
   },
-  "panels/sources/DebuggerPlugin.ts | ignoreContentScripts": {
-    "message": "Extensiescripts negeren"
-  },
-  "panels/sources/DebuggerPlugin.ts | ignoreScript": {
-    "message": "Dit bestand negeren"
-  },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Hier nooit onderbreken"
   },
@@ -12314,9 +12353,6 @@
   "panels/timeline/EventUICategory.ts | imageDecode": {
     "message": "Afbeelding decoderen"
   },
-  "panels/timeline/EventUICategory.ts | imageResize": {
-    "message": "Formaat van afbeelding aanpassen"
-  },
   "panels/timeline/EventUICategory.ts | installTimer": {
     "message": "Installatietimer"
   },
@@ -12698,9 +12734,6 @@
   "panels/timeline/TimelinePanel.ts | SignificantOverheadDueToPaint": {
     "message": "- Significante overhead door weergave-instrumentatie"
   },
-  "panels/timeline/TimelinePanel.ts | afterRecordingSelectAnAreaOf": {
-    "message": "Selecteer na de opname een gewenst gebied in het overzicht door te slepen. Zoom en pan daarna de tijdlijn met het muiswiel of met {PH1}. {PH2}"
-  },
   "panels/timeline/TimelinePanel.ts | bufferUsage": {
     "message": "Buffergebruik"
   },
@@ -12718,12 +12751,6 @@
   },
   "panels/timeline/TimelinePanel.ts | clear": {
     "message": "Wissen"
-  },
-  "panels/timeline/TimelinePanel.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Klik op de opnameknop {PH1} of op {PH2} om een nieuwe opname te starten."
-  },
-  "panels/timeline/TimelinePanel.ts | clickTheReloadButtonSOrHitSTo": {
-    "message": "Klik op de knop Opnieuw laden {PH1} of druk op {PH2} om het laden van de pagina op te nemen."
   },
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "Sluiten"
@@ -12750,7 +12777,7 @@
     "message": "Geavanceerde weergave-instrumentatie aanzetten (langzaam)"
   },
   "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
-    "message": "Statistieken voor css-kiezer aanzetten"
+    "message": "Statistieken voor css-kiezer aanzetten (langzaam)"
   },
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Kan tijdlijn niet opslaan: {PH1} ({PH2})"
@@ -12760,9 +12787,6 @@
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Profiler initialiseren…"
-  },
-  "panels/timeline/TimelinePanel.ts | learnmore": {
-    "message": "Meer informatie"
   },
   "panels/timeline/TimelinePanel.ts | loadProfile": {
     "message": "Profiel laden…"
@@ -12814,9 +12838,6 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Tijd"
-  },
-  "panels/timeline/TimelinePanel.ts | wasd": {
-    "message": "WASD"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "Tabel kopiëren"
@@ -12904,9 +12925,6 @@
   },
   "panels/timeline/TimelineTreeView.ts | noGrouping": {
     "message": "Geen groepering"
-  },
-  "panels/timeline/TimelineTreeView.ts | notOptimizedS": {
-    "message": "Niet geoptimaliseerd: {PH1}"
   },
   "panels/timeline/TimelineTreeView.ts | page": {
     "message": "Pagina"
@@ -13223,6 +13241,9 @@
   "panels/timeline/TimelineUIUtils.ts | scriptLoadedFromCache": {
     "message": "script geladen uit cachegeheugen"
   },
+  "panels/timeline/TimelineUIUtils.ts | scriptNotEligibleToBeLoadedFromCache": {
+    "message": "script komt niet in aanmerking"
+  },
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Kiezerstatistieken"
   },
@@ -13261,6 +13282,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "Totale tijd"
+  },
+  "panels/timeline/TimelineUIUtils.ts | traceEvent": {
+    "message": "Traceringsgebeurtenis"
   },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "Type"
@@ -13844,9 +13868,6 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "Na voltooiing opnieuw verbinden door DevTools opnieuw te openen."
   },
-  "ui/legacy/SearchableView.ts | cancel": {
-    "message": "Annuleren"
-  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} overeenkomsten"
   },
@@ -13855,9 +13876,6 @@
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Zoeken"
-  },
-  "ui/legacy/SearchableView.ts | matchCase": {
-    "message": "Hoofdlettergevoelig"
   },
   "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 overeenkomst"
@@ -13873,9 +13891,6 @@
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Vorige zoeken"
-  },
-  "ui/legacy/SearchableView.ts | useRegularExpression": {
-    "message": "Reguliere expressie gebruiken"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Een of meer instellingen zijn gewijzigd. De wijzigingen worden pas na herladen van kracht."
@@ -13932,7 +13947,10 @@
     "message": "Zodra de pagina opnieuw is geladen, maakt DevTools automatisch opnieuw verbinding."
   },
   "ui/legacy/Toolbar.ts | clearInput": {
-    "message": "Invoer wissen"
+    "message": "Wissen"
+  },
+  "ui/legacy/Toolbar.ts | filter": {
+    "message": "Filteren"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "niet ingedrukt"
@@ -14351,6 +14369,15 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Screenshot voor {PH1}: selecteer om eerdere verzoeken te tonen."
   },
+  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
+    "message": "Script toevoegen aan negeerlijst"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
+    "message": "Tracks instellen…"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | exitTrackConfigurationMode": {
+    "message": "Instellen van tracks afronden"
+  },
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "Flame chart"
   },
@@ -14362,6 +14389,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "Terugkerende onderliggende items verbergen"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
+    "message": "Script verwijderen uit negeerlijst"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
     "message": "Onderliggende items resetten"

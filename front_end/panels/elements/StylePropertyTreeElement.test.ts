@@ -653,6 +653,12 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
           await matchProperty('var(--no, var(--no2))'),
           {hasUnresolvedVars: true, computedText: 'color: var(--no, var(--no2))'});
     });
+
+    it('layers correctly with the font renderer', () => {
+      const stylePropertyTreeElement = getTreeElement('font-size', 'calc(1 + var(--no))');
+      stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement?.querySelector('devtools-css-var-swatch'));
+    });
   });
 
   describe('ColorRenderer', () => {

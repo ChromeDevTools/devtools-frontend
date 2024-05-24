@@ -6,17 +6,17 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import * as CssOverviewModule from '../../../../panels/css_overview/css_overview.js';
 
 // The following regexes are used within in the StylesSidebarPropertyRenderer class
-// and will parse both invalid and valid values.
-// ^[^- ][a-zA-Z-]+ matches property key values (e.g. smaller, x-large, initial)
+// and will parse both invalid and valid values. They both match full strings.
+// [^- ][a-zA-Z-]+ matches property key values (e.g. smaller, x-large, initial)
 // -?\+?(?:[0-9]+\.[0-9]+|\.[0-9]+|[0-9]+) matches numeric property values (e.g. -.23, 3.3, 55)
 // [a-zA-Z%]{0,4} matches the units of numeric property values (e.g. px, vmin, or blank units)
-export const FontPropertiesRegex: RegExp = /^[^- ][a-zA-Z-]+|-?\+?(?:[0-9]+\.[0-9]+|\.[0-9]+|[0-9]+)[a-zA-Z%]{0,4}/;
+export const FontPropertiesRegex: RegExp = /^[^- ][a-zA-Z-]+$|^-?\+?(?:[0-9]+\.[0-9]+|\.[0-9]+|[0-9]+)[a-zA-Z%]{0,4}$/;
 
 // "[\w \,-]+",? ? matches double quoted values and the trailing comma/space (e.g. "Tahoma", )
 // ('[\w \,-]+',? ?) matches single quoted values and the trailing comma/space (e.g. 'Segoe UI', )
 // ([\w \,-]+,? ?) matches non quoted values and the trailing comma/space (e.g. Helvetica)
 // (?: ...)+ will match 1 or more of the groups above such that it would match a value with fallbacks (e.g. "Tahoma", 'Segoe UI', Helvetica)
-export const FontFamilyRegex: RegExp = /^"[\w \,-]+"|'[\w \,-]+'|[\w \-]+$/;
+export const FontFamilyRegex: RegExp = /^"[\w \,-]+"$|^'[\w \,-]+'$|^[\w \-]+$/;
 
 // The following regexes are used within the Font Editor and will only parse valid property values.
 // Example Input/Outputs:

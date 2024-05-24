@@ -717,7 +717,7 @@ describe('PropertyParser', () => {
   });
 
   it('parses fonts correctly', () => {
-    for (const fontSize of ['-.23', 'smaller', '17px', 'calc(17px + 17px)']) {
+    for (const fontSize of ['-.23', 'smaller', '17px']) {
       const {ast, match, text} = matchSingleValue('font-size', fontSize, new Elements.PropertyParser.FontMatcher());
 
       assert.exists(ast, text);

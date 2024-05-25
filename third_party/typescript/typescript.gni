@@ -60,7 +60,6 @@ template("ts_library") {
     inputs += [
       "//third_party/node/node.py",
       "//third_party/node/node_modules.py",
-      "//third_party/node/node_modules.tar.gz.sha1",
       devtools_location_prepend + "scripts/devtools_paths.py",
       devtools_location_prepend + "config/typescript/tsconfig.base.json",
       devtools_location_prepend + "node_modules/typescript/lib/tsc.js",

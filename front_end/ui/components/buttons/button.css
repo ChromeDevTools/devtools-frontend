@@ -167,28 +167,25 @@ button {
 
   &:disabled {
     pointer-events: none;
+    color: var(--sys-color-state-disabled);
 
     &.primary {
       border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
       background: var(--sys-color-state-disabled-container);
-      color: var(--sys-color-state-disabled);
     }
 
     &.tonal {
       border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
       background: var(--sys-color-state-disabled-container);
-      color: var(--sys-color-state-disabled);
     }
 
     &.outlined {
       border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
-      color: var(--sys-color-state-disabled);
     }
 
     &.toolbar,
     &.icon {
       background: transparent;
-      color: var(--sys-color-state-disabled);
     }
 
     devtools-icon {

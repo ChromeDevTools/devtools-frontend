@@ -11,7 +11,7 @@ import {closeDrawer} from '../helpers/quick_open-helpers.js';
 const NETWORK_TAB_SELECTOR = '#tab-network';
 const SERVICE_WORKER_ROW_SELECTOR = '[aria-label="Service workers"]';
 const TEST_HTML_FILE = 'service-worker-network';
-const SERVICE_WORKER_NETWORK_SELECTOR = '[aria-label="Network requests"]';
+const SERVICE_WORKER_NETWORK_SELECTOR = '[title="Network requests"]';
 
 describe('The Application Tab', () => {
   beforeEach(async () => {

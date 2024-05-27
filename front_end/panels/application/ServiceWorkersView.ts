@@ -9,6 +9,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -100,11 +101,11 @@ const UIStrings = {
   /**
    *@description Text for button in Service Workers View of the Application panel that dispatches a periodicsync event
    */
-  periodicSync: 'Periodic Sync',
+  periodicSync: 'Periodic sync',
   /**
    *@description Default tag for a periodicsync event in Service Workers View of the Application panel
    */
-  periodicSyncTag: 'Periodic Sync tag',
+  periodicSyncTag: 'Periodic sync tag',
   /**
    *@description Aria accessible name in Service Workers View of the Application panel
    *@example {3} PH1
@@ -134,15 +135,15 @@ const UIStrings = {
   /**
    *@description Text in Service Workers View of the Application panel
    */
-  stopString: 'stop',
+  stopString: 'Stop',
   /**
    *@description Text in Service Workers View of the Application panel
    */
-  inspect: 'inspect',
+  inspect: 'Inspect',
   /**
    *@description Text in Service Workers View of the Application panel
    */
-  startString: 'start',
+  startString: 'Start',
   /**
    * @description Text in Service Workers View of the Application panel. Service workers have
    * different versions, which are labelled with numbers e.g. version #2. This text indicates that a
@@ -487,12 +488,11 @@ export class Section {
   private readonly pushNotificationDataSetting: Common.Settings.Setting<string>;
   private readonly syncTagNameSetting: Common.Settings.Setting<string>;
   private readonly periodicSyncTagNameSetting: Common.Settings.Setting<string>;
-  private readonly toolbar: UI.Toolbar.Toolbar;
   private readonly updateCycleView: ServiceWorkerUpdateCycleView;
   private readonly routerView: ApplicationComponents.ServiceWorkerRouterView.ServiceWorkerRouterView;
-  private readonly networkRequests: UI.Toolbar.ToolbarButton;
-  private readonly updateButton: UI.Toolbar.ToolbarButton;
-  private readonly deleteButton: UI.Toolbar.ToolbarButton;
+  private readonly networkRequests: Buttons.Button.Button;
+  private readonly updateButton: Buttons.Button.Button;
+  private readonly deleteButton: Buttons.Button.Button;
   private sourceField: Element;
   private readonly statusField: Element;
   private readonly clientsField: Element;
@@ -516,27 +516,29 @@ export class Section {
     this.periodicSyncTagNameSetting =
         Common.Settings.Settings.instance().createLocalSetting('periodic-sync-tag-name', 'test-tag-from-devtools');
 
-    this.toolbar = section.createToolbar();
-    this.toolbar.renderAsLinks();
-
     this.updateCycleView = new ServiceWorkerUpdateCycleView(registration);
     this.routerView = new ApplicationComponents.ServiceWorkerRouterView.ServiceWorkerRouterView();
-    this.networkRequests = new UI.Toolbar.ToolbarButton(
-        i18nString(UIStrings.networkRequests), undefined, i18nString(UIStrings.networkRequests));
-    this.networkRequests.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.networkRequestsClicked, this);
-    this.networkRequests.element.setAttribute(
-        'jslog', `${VisualLogging.action('show-network-requests').track({click: true})}`);
-    this.toolbar.appendToolbarItem(this.networkRequests);
-    this.updateButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.update), undefined, i18nString(UIStrings.update));
-    this.updateButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.updateButtonClicked, this);
-    this.updateButton.element.setAttribute('jslog', `${VisualLogging.action('update').track({click: true})}`);
-    this.toolbar.appendToolbarItem(this.updateButton);
-    this.deleteButton = new UI.Toolbar.ToolbarButton(
-        i18nString(UIStrings.unregisterServiceWorker), undefined, i18nString(UIStrings.unregister));
-    this.deleteButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.unregisterButtonClicked, this);
-    this.deleteButton.element.setAttribute('jslog', `${VisualLogging.action('unregister').track({click: true})}`);
-    this.toolbar.appendToolbarItem(this.deleteButton);
+    this.networkRequests = new Buttons.Button.Button();
+    this.networkRequests.data = {
+      iconName: 'bottom-panel-open',
+      variant: Buttons.Button.Variant.TEXT,
+      title: i18nString(UIStrings.networkRequests),
+      jslogContext: 'show-network-requests',
+    };
+    this.networkRequests.textContent = i18nString(UIStrings.networkRequests);
+    this.networkRequests.addEventListener('click', this.networkRequestsClicked.bind(this));
+    this.section.appendButtonToHeader(this.networkRequests);
+    this.updateButton = UI.UIUtils.createTextButton(
+        i18nString(UIStrings.update), this.updateButtonClicked.bind(this),
+        {variant: Buttons.Button.Variant.TEXT, title: i18nString(UIStrings.update), jslogContext: 'update'});
+    this.section.appendButtonToHeader(this.updateButton);
+    this.deleteButton =
+        UI.UIUtils.createTextButton(i18nString(UIStrings.unregister), this.unregisterButtonClicked.bind(this), {
+          variant: Buttons.Button.Variant.TEXT,
+          title: i18nString(UIStrings.unregisterServiceWorker),
+          jslogContext: 'unregister',
+        });
+    this.section.appendButtonToHeader(this.deleteButton);
 
     // Preserve the order.
     this.sourceField = this.wrapWidget(this.section.appendField(i18nString(UIStrings.source)));
@@ -657,7 +659,7 @@ export class Section {
     }
     this.fingerprint = fingerprint;
 
-    this.toolbar.setEnabled(!this.registration.isDeleted);
+    this.section.setHeaderButtonsState(this.registration.isDeleted);
 
     const versions = this.registration.versionsByMode();
     const scopeURL = this.registration.scopeURL;
@@ -683,16 +685,19 @@ export class Section {
           i18nString(UIStrings.sActivatedAndIsS, {PH1: active.id, PH2: localizedRunningStatus}));
 
       if (active.isRunning() || active.isStarting()) {
-        const stopLink = this.createLink(
-            activeEntry, i18nString(UIStrings.stopString), this.stopButtonClicked.bind(this, active.id));
-        stopLink.setAttribute('jslog', `${VisualLogging.action('stop').track({click: true})}`);
+        const stopButton = UI.UIUtils.createTextButton(
+            i18nString(UIStrings.stopString), this.stopButtonClicked.bind(this, active.id), {jslogContext: 'stop'});
+        activeEntry.appendChild(stopButton);
         if (!this.targetForVersionId(active.id)) {
-          this.createLink(activeEntry, i18nString(UIStrings.inspect), this.inspectButtonClicked.bind(this, active.id));
+          const inspectButton = UI.UIUtils.createTextButton(
+              i18nString(UIStrings.inspect), this.inspectButtonClicked.bind(this, active.id),
+              {jslogContext: 'inspect'});
+          activeEntry.appendChild(inspectButton);
         }
       } else if (active.isStartable()) {
-        const startLink =
-            this.createLink(activeEntry, i18nString(UIStrings.startString), this.startButtonClicked.bind(this));
-        startLink.setAttribute('jslog', `${VisualLogging.action('start').track({click: true})}`);
+        const startButton = UI.UIUtils.createTextButton(
+            i18nString(UIStrings.startString), this.startButtonClicked.bind(this), {jslogContext: 'start'});
+        activeEntry.appendChild(startButton);
       }
       this.updateClientsField(active);
       this.maybeCreateRouterField();
@@ -853,10 +858,18 @@ export class Section {
     element.removeChildren();
     const clientString = element.createChild('span', 'service-worker-client-string');
     UI.UIUtils.createTextChild(clientString, targetInfo.url);
-    const focusLink = this.createLink(
-        element, i18nString(UIStrings.focus), this.activateTarget.bind(this, targetInfo.targetId),
-        'service-worker-client-focus-link');
-    focusLink.setAttribute('jslog', `${VisualLogging.action('client-focus').track({click: true})}`);
+
+    const focusButton = new Buttons.Button.Button();
+    focusButton.data = {
+      iconName: 'select-element',
+      variant: Buttons.Button.Variant.ICON,
+      size: Buttons.Button.Size.SMALL,
+      title: i18nString(UIStrings.focus),
+      jslogContext: 'client-focus',
+    };
+    focusButton.className = 'service-worker-client-focus-link';
+    focusButton.addEventListener('click', this.activateTarget.bind(this, targetInfo.targetId));
+    element.appendChild(focusButton);
   }
 
   private activateTarget(targetId: Protocol.Target.TargetID): void {

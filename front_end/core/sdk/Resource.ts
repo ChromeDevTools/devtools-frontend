@@ -215,7 +215,7 @@ export class Resource implements TextUtils.ContentProvider.SafeContentProvider {
   private async innerRequestContent(): Promise<TextUtils.ContentData.ContentDataOrError> {
     if (this.request) {
       // The `contentData` promise only resolves once the request is done.
-      return this.request.contentData();
+      return this.request.requestContentData();
     }
 
     const response = await this.#resourceTreeModel.target().pageAgent().invoke_getResourceContent(

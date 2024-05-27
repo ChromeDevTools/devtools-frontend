@@ -77,7 +77,7 @@ export class Writer {
     const harLog = await Log.build(requests);
     const promises = [];
     for (let i = 0; i < requests.length; i++) {
-      const promise = requests[i].contentData();
+      const promise = requests[i].requestContentData();
       promises.push(promise.then(contentLoaded.bind(null, harLog.entries[i])));
     }
 

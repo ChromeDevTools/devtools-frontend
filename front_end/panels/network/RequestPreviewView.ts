@@ -72,7 +72,7 @@ export class RequestPreviewView extends RequestResponseView {
   }
 
   private async htmlPreview(): Promise<UI.Widget.Widget|null> {
-    const contentData = await this.request.contentData();
+    const contentData = await this.request.requestContentData();
     if (TextUtils.ContentData.ContentData.isError(contentData)) {
       return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.failedToLoadResponseData) + ': ' + contentData.error);
     }

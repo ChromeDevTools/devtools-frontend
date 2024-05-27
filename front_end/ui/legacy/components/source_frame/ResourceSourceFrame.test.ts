@@ -27,6 +27,10 @@ class MockStreamingContentProvider implements TextUtils.ContentProvider.Streamin
     return this.#content;
   }
 
+  async requestContentData(): Promise<TextUtils.ContentData.ContentData> {
+    return this.#content.content();
+  }
+
   contentURL(): Platform.DevToolsPath.UrlString {
     return this.#contentURL;
   }

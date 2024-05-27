@@ -1367,7 +1367,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     return values.join(', ');
   }
 
-  contentData(): Promise<TextUtils.ContentData.ContentDataOrError> {
+  requestContentData(): Promise<TextUtils.ContentData.ContentDataOrError> {
     if (this.#contentDataInternal) {
       return this.#contentDataInternal;
     }
@@ -1389,7 +1389,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
       return this.#streamingContentData;
     }
 
-    const contentPromise = this.finished ? this.contentData() : NetworkManager.streamResponseBody(this);
+    const contentPromise = this.finished ? this.requestContentData() : NetworkManager.streamResponseBody(this);
     this.#streamingContentData = contentPromise.then(contentData => {
       if (TextUtils.ContentData.ContentData.isError(contentData)) {
         return contentData;
@@ -1411,7 +1411,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   async requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    return TextUtils.ContentData.ContentData.asDeferredContent(await this.contentData());
+    return TextUtils.ContentData.ContentData.asDeferredContent(await this.requestContentData());
   }
 
   async searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):
@@ -1420,7 +1420,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
       return NetworkManager.searchInRequest(this, query, caseSensitive, isRegex);
     }
 
-    const contentData = await this.contentData();
+    const contentData = await this.requestContentData();
     if (TextUtils.ContentData.ContentData.isError(contentData) || !contentData.isTextContent) {
       return [];
     }
@@ -1480,7 +1480,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   async populateImageSource(image: HTMLImageElement): Promise<void> {
-    const contentData = await this.contentData();
+    const contentData = await this.requestContentData();
     if (TextUtils.ContentData.ContentData.isError(contentData)) {
       return;
     }

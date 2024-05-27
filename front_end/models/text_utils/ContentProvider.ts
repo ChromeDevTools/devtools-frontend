@@ -83,7 +83,7 @@ export type DeferredContent = {
 // a fully completed "requestContent" as the request keeps on going indefinitely.
 // Such proivders can implement the "StreamingContentProvider" addition, which allows
 // for partial/streaming content.
-export interface StreamingContentProvider extends ContentProvider {
+export interface StreamingContentProvider extends SafeContentProvider {
   requestStreamingContent(): Promise<StreamingContentDataOrError>;
 }
 

@@ -11,6 +11,7 @@ lucicfg.config(
     tracked_files = [
         "commit-queue.cfg",
         "cr-buildbucket.cfg",
+        "luci-analysis.cfg",
         "luci-logdog.cfg",
         "luci-milo.cfg",
         "luci-notify.cfg",
@@ -94,6 +95,11 @@ luci.project(
             ],
         ),
     ] + analysis_bindings(),
+)
+
+lucicfg.emit(
+    dest = "luci-analysis.cfg",
+    data = io.read_file("luci-analysis.cfg"),
 )
 
 ## Swarming permissions (enable LED runs and "Debug" button)

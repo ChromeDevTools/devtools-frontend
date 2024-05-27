@@ -196,7 +196,7 @@ class Binding {
     const contentType = Common.ResourceType.resourceTypes.SourceMapStyleSheet;
     const embeddedContent = sourceMap.embeddedContentByURL(this.#url);
     const contentProvider = embeddedContent !== null ?
-        TextUtils.StaticContentProvider.StaticContentProvider.fromString(this.#url, contentType, embeddedContent) :
+        TextUtils.StaticContentProvider.SafeStaticContentProvider.fromString(this.#url, contentType, embeddedContent) :
         new SDK.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(
             this.#url, contentType, this.#initiator);
     const newUISourceCode = this.#project.createUISourceCode(this.#url, contentType);

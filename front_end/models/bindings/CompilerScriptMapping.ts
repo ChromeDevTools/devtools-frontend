@@ -95,7 +95,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
   private addStubUISourceCode(script: SDK.Script.Script): void {
     const stubUISourceCode = this.#stubProject.addContentProvider(
         Common.ParsedURL.ParsedURL.concatenate(script.sourceURL, ':sourcemap'),
-        TextUtils.StaticContentProvider.StaticContentProvider.fromString(
+        TextUtils.StaticContentProvider.SafeStaticContentProvider.fromString(
             script.sourceURL, Common.ResourceType.resourceTypes.Script,
             '\n\n\n\n\n// Please wait a bit.\n// Compiled script is not shown while source map is being loaded!'),
         'text/javascript');
@@ -385,7 +385,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
       }
       const content = sourceMap.embeddedContentByURL(url);
       const contentProvider = content !== null ?
-          TextUtils.StaticContentProvider.StaticContentProvider.fromString(url, contentType, content) :
+          TextUtils.StaticContentProvider.SafeStaticContentProvider.fromString(url, contentType, content) :
           new SDK.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(
               url, contentType, script.createPageResourceLoadInitiator());
       let metadata: Workspace.UISourceCode.UISourceCodeMetadata|null = null;

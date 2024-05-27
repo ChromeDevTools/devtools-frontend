@@ -39,8 +39,8 @@ export function createContentProviderUISourceCodes(options: {
   for (const item of options.items) {
     const resourceType = item.resourceType || Common.ResourceType.ResourceType.fromMimeType(item.mimeType);
     const uiSourceCode = project.createUISourceCode(item.url, resourceType);
-    const contentProvider =
-        TextUtils.StaticContentProvider.StaticContentProvider.fromString(item.url, resourceType, item.content || '');
+    const contentProvider = TextUtils.StaticContentProvider.SafeStaticContentProvider.fromString(
+        item.url, resourceType, item.content || '');
     const metadata = item.metadata || new Workspace.UISourceCode.UISourceCodeMetadata(null, null);
     project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata, item.mimeType);
     uiSourceCodes.push(uiSourceCode);

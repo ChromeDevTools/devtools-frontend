@@ -66,7 +66,7 @@ describeWithMockConnection('NavigatorView', () => {
     const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
         workspace, 'PROJECT_ID', projectType, 'Test project', false /* isServiceProject*/);
     Bindings.NetworkProject.NetworkProject.setTargetForProject(project, target);
-    const contentProvider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
+    const contentProvider = TextUtils.StaticContentProvider.SafeStaticContentProvider.fromString(
         url, Common.ResourceType.ResourceType.fromMimeType(mimeType), content);
     const metadata = new Workspace.UISourceCode.UISourceCodeMetadata(null, null);
     project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata, mimeType);

@@ -46,7 +46,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 interface UISourceCodeData {
   mimeType: string;
   metadata: Workspace.UISourceCode.UISourceCodeMetadata|null;
-  contentProvider: TextUtils.ContentProvider.ContentProvider;
+  contentProvider: TextUtils.ContentProvider.SafeContentProvider;
 }
 
 export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStore {
@@ -220,14 +220,14 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
   }
 
   addUISourceCodeWithProvider(
-      uiSourceCode: Workspace.UISourceCode.UISourceCode, contentProvider: TextUtils.ContentProvider.ContentProvider,
+      uiSourceCode: Workspace.UISourceCode.UISourceCode, contentProvider: TextUtils.ContentProvider.SafeContentProvider,
       metadata: Workspace.UISourceCode.UISourceCodeMetadata|null, mimeType: string): void {
     this.#uiSourceCodeToData.set(uiSourceCode, {mimeType, metadata, contentProvider});
     this.addUISourceCode(uiSourceCode);
   }
 
   addContentProvider(
-      url: Platform.DevToolsPath.UrlString, contentProvider: TextUtils.ContentProvider.ContentProvider,
+      url: Platform.DevToolsPath.UrlString, contentProvider: TextUtils.ContentProvider.SafeContentProvider,
       mimeType: string): Workspace.UISourceCode.UISourceCode {
     const uiSourceCode = this.createUISourceCode(url, contentProvider.contentType());
     this.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null, mimeType);

@@ -530,10 +530,11 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
   async function createUISourceCode(
       project: Bindings.ContentProviderBasedProject.ContentProviderBasedProject, url: Platform.DevToolsPath.UrlString) {
     const mimeType = 'text/html';
-    const dataProvider = () => Promise.resolve({content: 'content', isEncoded: false});
+    const dataProvider = () =>
+        Promise.resolve(new TextUtils.ContentData.ContentData('content', /* isBase64 */ false, mimeType));
     project.addUISourceCodeWithProvider(
         new Workspace.UISourceCode.UISourceCode(project, url, Common.ResourceType.resourceTypes.Document),
-        new TextUtils.StaticContentProvider.StaticContentProvider(
+        new TextUtils.StaticContentProvider.SafeStaticContentProvider(
             url, Common.ResourceType.resourceTypes.Document, dataProvider),
         null, mimeType);
     await project.uiSourceCodeForURL(url)?.requestContent();

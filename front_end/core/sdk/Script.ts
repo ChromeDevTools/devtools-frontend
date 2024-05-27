@@ -313,9 +313,9 @@ export class Script implements TextUtils.ContentProvider.SafeContentProvider, Fr
     return response.arrayBuffer();
   }
 
-  originalContentProvider(): TextUtils.ContentProvider.ContentProvider {
-    return new TextUtils.StaticContentProvider.StaticContentProvider(
-        this.contentURL(), this.contentType(), () => this.requestContent());
+  originalContentProvider(): TextUtils.ContentProvider.SafeContentProvider {
+    return new TextUtils.StaticContentProvider.SafeStaticContentProvider(
+        this.contentURL(), this.contentType(), () => this.requestContentData());
   }
 
   async searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):

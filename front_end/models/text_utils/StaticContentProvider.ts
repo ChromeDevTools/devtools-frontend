@@ -71,6 +71,14 @@ export class SafeStaticContentProvider implements SafeContentProvider {
     this.#lazyContent = lazyContent;
   }
 
+  static fromString(
+      contentURL: Platform.DevToolsPath.UrlString, contentType: Common.ResourceType.ResourceType,
+      content: string): SafeStaticContentProvider {
+    const lazyContent = (): Promise<ContentData> =>
+        Promise.resolve(new ContentData(content, /* isBase64 */ false, contentType.canonicalMimeType()));
+    return new SafeStaticContentProvider(contentURL, contentType, lazyContent);
+  }
+
   contentURL(): Platform.DevToolsPath.UrlString {
     return this.#contentURL;
   }

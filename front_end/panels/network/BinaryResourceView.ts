@@ -9,7 +9,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import binaryResourceViewStyles from './binaryResourceView.css.js';
 
 import type * as Platform from '../../core/platform/platform.js';
-import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -85,7 +84,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
       new BinaryViewObject(
           'base64', i18n.i18n.lockedString('Base64'), i18nString(UIStrings.copiedAsBase),
           this.binaryResourceViewFactory.createBase64View.bind(this.binaryResourceViewFactory),
-          this.binaryResourceViewFactory.base64.bind(this.binaryResourceViewFactory)),
+          () => Promise.resolve(this.binaryResourceViewFactory.base64())),
       new BinaryViewObject(
           'hex', i18nString(UIStrings.hexViewer), i18nString(UIStrings.copiedAsHex),
           this.binaryResourceViewFactory.createHexView.bind(this.binaryResourceViewFactory),
@@ -135,7 +134,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
     if (!viewObject) {
       return;
     }
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText((await viewObject.content()).content);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(await viewObject.content());
     this.copiedText.setText(viewObject.copiedMessage);
     this.copiedText.element.classList.remove('fadeout');
     function addFadeoutClass(this: BinaryResourceView): void {
@@ -191,16 +190,16 @@ export class BinaryResourceView extends UI.Widget.VBox {
     const footerSection = copyMenu.footerSection();
 
     footerSection.appendItem(i18nString(UIStrings.copyAsBase), async () => {
-      const content = await this.binaryResourceViewFactory.base64();
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(content.content);
+      const content = this.binaryResourceViewFactory.base64();
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(content);
     }, {jslogContext: 'copy-as-base'});
     footerSection.appendItem(i18nString(UIStrings.copyAsHex), async () => {
       const content = await this.binaryResourceViewFactory.hex();
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(content.content);
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(content);
     }, {jslogContext: 'copy-as-hex'});
     footerSection.appendItem(i18nString(UIStrings.copyAsUtf), async () => {
       const content = await this.binaryResourceViewFactory.utf8();
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(content.content);
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(content);
     }, {jslogContext: 'copy-as-utf'});
   }
 }
@@ -209,17 +208,17 @@ export class BinaryViewObject {
   type: string;
   label: string;
   copiedMessage: string;
-  content: () => Promise<TextUtils.ContentProvider.DeferredContent>;
+  content: () => Promise<string>;
   private createViewFn: () => UI.Widget.Widget;
   private view: UI.Widget.Widget|null;
 
   constructor(
       type: string, label: string, copiedMessage: string, createViewFn: () => UI.Widget.Widget,
-      deferredContent: () => Promise<TextUtils.ContentProvider.DeferredContent>) {
+      content: () => Promise<string>) {
     this.type = type;
     this.label = label;
     this.copiedMessage = copiedMessage;
-    this.content = deferredContent;
+    this.content = content;
     this.createViewFn = createViewFn;
 
     this.view = null;

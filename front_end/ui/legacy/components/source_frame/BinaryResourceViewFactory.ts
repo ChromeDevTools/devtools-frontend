@@ -13,8 +13,8 @@ export class BinaryResourceViewFactory {
   private readonly contentUrl: Platform.DevToolsPath.UrlString;
   private readonly resourceType: Common.ResourceType.ResourceType;
   private arrayPromise: Promise<Uint8Array>|null;
-  private hexPromise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
-  private utf8Promise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
+  private hexPromise: Promise<string>|null;
+  private utf8Promise: Promise<string>|null;
   constructor(
       base64content: string, contentUrl: Platform.DevToolsPath.UrlString,
       resourceType: Common.ResourceType.ResourceType) {
@@ -36,26 +36,28 @@ export class BinaryResourceViewFactory {
     return await this.arrayPromise;
   }
 
-  async hex(): Promise<TextUtils.ContentProvider.DeferredContent> {
+  async hex(): Promise<string> {
     if (!this.hexPromise) {
-      const content = await this.fetchContentAsArray();
-      const hexString = BinaryResourceViewFactory.uint8ArrayToHexString(content);
-      return {content: hexString, isEncoded: false};
+      this.hexPromise = new Promise(async resolve => {
+        const content = await this.fetchContentAsArray();
+        const hexString = BinaryResourceViewFactory.uint8ArrayToHexString(content);
+        resolve(hexString);
+      });
     }
 
     return this.hexPromise;
   }
 
-  async base64(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    return {content: this.base64content, isEncoded: true};
+  base64(): string {
+    return this.base64content;
   }
 
-  async utf8(): Promise<TextUtils.ContentProvider.DeferredContent> {
+  async utf8(): Promise<string> {
     if (!this.utf8Promise) {
       this.utf8Promise = new Promise(async resolve => {
         const content = await this.fetchContentAsArray();
         const utf8String = new TextDecoder('utf8').decode(content);
-        resolve({content: utf8String, isEncoded: false});
+        resolve(utf8String);
       });
     }
 
@@ -81,9 +83,10 @@ export class BinaryResourceViewFactory {
   }
 
   createUtf8View(): ResourceSourceFrame {
-    const utf8fn = this.utf8.bind(this);
+    const utf8fn = (): Promise<TextUtils.ContentData.ContentData> =>
+        this.utf8().then(str => new TextUtils.ContentData.ContentData(str, /* isBase64 */ false, 'text/plain'));
     const utf8ContentProvider =
-        new TextUtils.StaticContentProvider.StaticContentProvider(this.contentUrl, this.resourceType, utf8fn);
+        new TextUtils.StaticContentProvider.SafeStaticContentProvider(this.contentUrl, this.resourceType, utf8fn);
     return new ResourceSourceFrame(
         utf8ContentProvider, this.resourceType.canonicalMimeType(), {lineNumbers: true, lineWrapping: true});
   }

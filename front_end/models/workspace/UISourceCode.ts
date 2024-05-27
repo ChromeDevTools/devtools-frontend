@@ -62,7 +62,6 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   private decorations: Map<string, any> = new Map();
   private hasCommitsInternal: boolean;
   private messagesInternal: Set<Message>|null;
-  private contentLoadedInternal: boolean;
   private contentInternal: TextUtils.ContentProvider.DeferredContent|null;
   private forceLoadOnCheckContentInternal: boolean;
   private checkingContent: boolean;
@@ -102,7 +101,6 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     this.requestContentPromise = null;
     this.hasCommitsInternal = false;
     this.messagesInternal = null;
-    this.contentLoadedInternal = false;
     this.contentInternal = null;
     this.forceLoadOnCheckContentInternal = false;
     this.checkingContent = false;
@@ -221,8 +219,8 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
       return this.requestContentPromise;
     }
 
-    if (this.contentLoadedInternal) {
-      return Promise.resolve(this.contentInternal as TextUtils.ContentProvider.DeferredContent);
+    if (this.contentInternal) {
+      return Promise.resolve(this.contentInternal);
     }
 
     if (cachedWasmOnly && this.mimeType() === 'application/wasm') {
@@ -240,17 +238,15 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   private async requestContentImpl(): Promise<TextUtils.ContentProvider.DeferredContent> {
     try {
       const content = await this.projectInternal.requestFileContent(this);
-      if (!this.contentLoadedInternal) {
-        this.contentLoadedInternal = true;
+      if (!this.contentInternal) {
         this.contentInternal = content;
         this.contentEncodedInternal = content.isEncoded;
       }
     } catch (err) {
-      this.contentLoadedInternal = true;
       this.contentInternal = {content: null, error: err ? String(err) : '', isEncoded: false};
     }
 
-    return this.contentInternal as TextUtils.ContentProvider.DeferredContent;
+    return this.contentInternal;
   }
 
   #decodeContent(content: TextUtils.ContentProvider.DeferredContent|null): string|null {
@@ -261,7 +257,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   async checkContentUpdated(): Promise<void> {
-    if (!this.contentLoadedInternal && !this.forceLoadOnCheckContentInternal) {
+    if (!this.contentInternal && !this.forceLoadOnCheckContentInternal) {
       return;
     }
 
@@ -322,7 +318,6 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   private contentCommitted(content: string, committedByUser: boolean): void {
     this.lastAcceptedContent = null;
     this.contentInternal = {content, isEncoded: false};
-    this.contentLoadedInternal = true;
     this.requestContentPromise = null;
 
     this.hasCommitsInternal = true;
@@ -466,7 +461,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   contentLoaded(): boolean {
-    return this.contentLoadedInternal;
+    return Boolean(this.contentInternal);
   }
 
   uiLocation(lineNumber: number, columnNumber?: number): UILocation {

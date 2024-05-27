@@ -1826,6 +1826,14 @@ export namespace ProtocolMapping {
       returnType: Protocol.DOM.GetQueryingDescendantsForContainerResponse;
     };
     /**
+     * Returns the target anchor element of the given anchor query according to
+     * https://www.w3.org/TR/css-anchor-position-1/#target.
+     */
+    'DOM.getAnchorElement': {
+      paramsType: [Protocol.DOM.GetAnchorElementRequest];
+      returnType: Protocol.DOM.GetAnchorElementResponse;
+    };
+    /**
      * Returns event listeners of the given object.
      */
     'DOMDebugger.getEventListeners': {

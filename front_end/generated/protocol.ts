@@ -4734,6 +4734,27 @@ export namespace DOM {
     nodeIds: NodeId[];
   }
 
+  export interface GetAnchorElementRequest {
+    /**
+     * Id of the positioned element from which to find the anchor.
+     */
+    nodeId: NodeId;
+    /**
+     * An optional anchor specifier, as defined in
+     * https://www.w3.org/TR/css-anchor-position-1/#anchor-specifier.
+     * If not provided, it will return the implicit anchor element for
+     * the given positioned element.
+     */
+    anchorSpecifier?: string;
+  }
+
+  export interface GetAnchorElementResponse extends ProtocolResponseWithError {
+    /**
+     * The anchor element of the given anchor query.
+     */
+    nodeId: NodeId;
+  }
+
   /**
    * Fired when `Element`'s attribute is modified.
    */

@@ -1148,6 +1148,12 @@ declare namespace ProtocolProxyApi {
      */
     invoke_getQueryingDescendantsForContainer(params: Protocol.DOM.GetQueryingDescendantsForContainerRequest): Promise<Protocol.DOM.GetQueryingDescendantsForContainerResponse>;
 
+    /**
+     * Returns the target anchor element of the given anchor query according to
+     * https://www.w3.org/TR/css-anchor-position-1/#target.
+     */
+    invoke_getAnchorElement(params: Protocol.DOM.GetAnchorElementRequest): Promise<Protocol.DOM.GetAnchorElementResponse>;
+
   }
   export interface DOMDispatcher {
     /**

@@ -7071,6 +7071,31 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name": "getAnchorElement",
+                    "description": "Returns the target anchor element of the given anchor query according to\nhttps://www.w3.org/TR/css-anchor-position-1/#target.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "nodeId",
+                            "description": "Id of the positioned element from which to find the anchor.",
+                            "$ref": "NodeId"
+                        },
+                        {
+                            "name": "anchorSpecifier",
+                            "description": "An optional anchor specifier, as defined in\nhttps://www.w3.org/TR/css-anchor-position-1/#anchor-specifier.\nIf not provided, it will return the implicit anchor element for\nthe given positioned element.",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "nodeId",
+                            "description": "The anchor element of the given anchor query.",
+                            "$ref": "NodeId"
+                        }
+                    ]
                 }
             ],
             "events": [

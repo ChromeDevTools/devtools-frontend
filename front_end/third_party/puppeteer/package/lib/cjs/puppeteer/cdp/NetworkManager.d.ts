@@ -45,7 +45,7 @@ export declare class NetworkManager extends EventEmitter<NetworkManagerEvents> {
     #private;
     constructor(frameManager: FrameProvider);
     addClient(client: CDPSession): Promise<void>;
-    authenticate(credentials?: Credentials): Promise<void>;
+    authenticate(credentials: Credentials | null): Promise<void>;
     setExtraHTTPHeaders(headers: Record<string, string>): Promise<void>;
     extraHTTPHeaders(): Record<string, string>;
     inFlightRequestsCount(): number;

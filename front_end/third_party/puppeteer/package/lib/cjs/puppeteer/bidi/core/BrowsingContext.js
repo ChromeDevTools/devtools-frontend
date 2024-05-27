@@ -206,8 +206,9 @@ let BrowsingContext = (() => {
                 if (event.context !== this.id) {
                     return;
                 }
-                if (event.redirectCount !== 0) {
+                if (this.#requests.has(event.request.request)) {
                     // Means the request is a redirect. This is handled in Request.
+                    // Or an Auth event was issued
                     return;
                 }
                 const request = Request_js_1.Request.from(this, event);

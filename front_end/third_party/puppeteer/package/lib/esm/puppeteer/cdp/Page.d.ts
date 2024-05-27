@@ -66,7 +66,7 @@ export declare class CdpPage extends Page {
         default: Function;
     }): Promise<void>;
     removeExposedFunction(name: string): Promise<void>;
-    authenticate(credentials: Credentials): Promise<void>;
+    authenticate(credentials: Credentials | null): Promise<void>;
     setExtraHTTPHeaders(headers: Record<string, string>): Promise<void>;
     setUserAgent(userAgent: string, userAgentMetadata?: Protocol.Emulation.UserAgentMetadata): Promise<void>;
     metrics(): Promise<Metrics>;

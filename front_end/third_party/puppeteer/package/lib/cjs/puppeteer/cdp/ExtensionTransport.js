@@ -24,7 +24,7 @@ const pageTargetInfo = {
  * implements missing commands and events.
  *
  * @experimental
- * @internal
+ * @public
  */
 class ExtensionTransport {
     static async connectTab(tabId) {
@@ -159,6 +159,7 @@ class ExtensionTransport {
     }
     close() {
         chrome.debugger.onEvent.removeListener(this.#debuggerEventHandler);
+        void chrome.debugger.detach({ tabId: this.#tabId });
     }
 }
 exports.ExtensionTransport = ExtensionTransport;

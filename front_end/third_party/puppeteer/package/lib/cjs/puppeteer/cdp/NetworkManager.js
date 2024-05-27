@@ -22,7 +22,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
     #frameManager;
     #networkEventManager = new NetworkEventManager_js_1.NetworkEventManager();
     #extraHTTPHeaders;
-    #credentials;
+    #credentials = null;
     #attemptedAuthentications = new Set();
     #userRequestInterceptionEnabled = false;
     #protocolRequestInterceptionEnabled = false;

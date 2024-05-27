@@ -2219,7 +2219,24 @@ executablePath: (channel?: ChromeReleaseChannel | undefined) => string;
  */
 export declare type ExperimentsConfiguration = Record<string, never>;
 
-/* Excluded from this release type: ExtensionTransport */
+/**
+ * Experimental ExtensionTransport allows establishing a connection via
+ * chrome.debugger API if Puppeteer runs in an extension. Since Chrome
+ * DevTools Protocol is restricted for extensions, the transport
+ * implements missing commands and events.
+ *
+ * @experimental
+ * @public
+ */
+export declare class ExtensionTransport implements ConnectionTransport {
+    #private;
+    static connectTab(tabId: number): Promise<ExtensionTransport>;
+    onmessage?: (message: string) => void;
+    onclose?: () => void;
+    /* Excluded from this release type: __constructor */
+    send(message: string): void;
+    close(): void;
+}
 
 /* Excluded from this release type: FetchRequestId */
 
@@ -4970,7 +4987,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * @remarks
      * To disable authentication, pass `null`.
      */
-    abstract authenticate(credentials: Credentials): Promise<void>;
+    abstract authenticate(credentials: Credentials | null): Promise<void>;
     /**
      * The extra HTTP headers will be sent with every request the page initiates.
      *

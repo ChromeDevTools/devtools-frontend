@@ -1121,7 +1121,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * @remarks
      * To disable authentication, pass `null`.
      */
-    abstract authenticate(credentials: Credentials): Promise<void>;
+    abstract authenticate(credentials: Credentials | null): Promise<void>;
     /**
      * The extra HTTP headers will be sent with every request the page initiates.
      *

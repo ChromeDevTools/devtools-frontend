@@ -81,7 +81,7 @@ AutomappingTest.prototype = {
       const asset = assets[url];
       const contentType = asset.contentType || Common.ResourceType.resourceTypes.Script;
       const contentProvider =
-          TextUtils.StaticContentProvider.SafeStaticContentProvider.fromString(url, contentType, asset.content);
+          TextUtils.StaticContentProvider.StaticContentProvider.fromString(url, contentType, asset.content);
       const metadata =
           (typeof asset.content === 'string' || asset.time ?
                new Workspace.UISourceCode.UISourceCodeMetadata(asset.time, asset.content.length) :

@@ -76,7 +76,7 @@ export class BinaryResourceViewFactory {
         new TextUtils.StaticContentProvider.StaticContentProvider(this.contentUrl, this.resourceType, async () => {
           const contentAsArray = await this.fetchContentAsArray();
           const content = BinaryResourceViewFactory.uint8ArrayToHexViewer(contentAsArray);
-          return {content, isEncoded: false};
+          return new TextUtils.ContentData.ContentData(content, /* isBase64 */ false, 'text/plain');
         });
     return new ResourceSourceFrame(
         hexViewerContentProvider, this.resourceType.canonicalMimeType(), {lineNumbers: false, lineWrapping: false});
@@ -86,7 +86,7 @@ export class BinaryResourceViewFactory {
     const utf8fn = (): Promise<TextUtils.ContentData.ContentData> =>
         this.utf8().then(str => new TextUtils.ContentData.ContentData(str, /* isBase64 */ false, 'text/plain'));
     const utf8ContentProvider =
-        new TextUtils.StaticContentProvider.SafeStaticContentProvider(this.contentUrl, this.resourceType, utf8fn);
+        new TextUtils.StaticContentProvider.StaticContentProvider(this.contentUrl, this.resourceType, utf8fn);
     return new ResourceSourceFrame(
         utf8ContentProvider, this.resourceType.canonicalMimeType(), {lineNumbers: true, lineWrapping: true});
   }

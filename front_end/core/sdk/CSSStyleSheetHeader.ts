@@ -48,7 +48,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.SafeConten
   ownerNode: DeferredDOMNode|undefined;
   sourceMapURL: Platform.DevToolsPath.UrlString|undefined;
   readonly loadingFailed: boolean;
-  #originalContentProviderInternal: TextUtils.StaticContentProvider.SafeStaticContentProvider|null;
+  #originalContentProviderInternal: TextUtils.StaticContentProvider.StaticContentProvider|null;
 
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSStyleSheetHeader) {
     this.#cssModelInternal = cssModel;
@@ -84,8 +84,8 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.SafeConten
         }
         return new TextUtils.ContentData.ContentData(originalText, /* isBase64=*/ false, 'text/css');
       });
-      this.#originalContentProviderInternal = new TextUtils.StaticContentProvider.SafeStaticContentProvider(
-          this.contentURL(), this.contentType(), lazyContent);
+      this.#originalContentProviderInternal =
+          new TextUtils.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
     }
     return this.#originalContentProviderInternal;
   }

@@ -314,7 +314,7 @@ export class Script implements TextUtils.ContentProvider.SafeContentProvider, Fr
   }
 
   originalContentProvider(): TextUtils.ContentProvider.SafeContentProvider {
-    return new TextUtils.StaticContentProvider.SafeStaticContentProvider(
+    return new TextUtils.StaticContentProvider.StaticContentProvider(
         this.contentURL(), this.contentType(), () => this.requestContentData());
   }
 

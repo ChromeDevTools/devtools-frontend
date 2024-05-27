@@ -65,28 +65,8 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
       Promise<TextUtils.ContentProvider.DeferredContent> {
     const {contentProvider} = this.#uiSourceCodeToData.get(uiSourceCode) as UISourceCodeData;
     try {
-      const content = await contentProvider.requestContent();
-      if ('error' in content) {
-        return {
-          error: content.error,
-          isEncoded: content.isEncoded,
-          content: null,
-        };
-      }
-      const wasmDisassemblyInfo = 'wasmDisassemblyInfo' in content ? content.wasmDisassemblyInfo : undefined;
-
-      if (wasmDisassemblyInfo && content.isEncoded === false) {
-        return {
-          content: '',
-          wasmDisassemblyInfo,
-          isEncoded: false,
-        };
-      }
-
-      return {
-        content: content.content,
-        isEncoded: content.isEncoded,
-      };
+      const content = await contentProvider.requestContentData();
+      return TextUtils.ContentData.ContentData.asDeferredContent(content);
     } catch (err) {
       // TODO(rob.paveza): CRBug 1013683 - Consider propagating exceptions full-stack
       return {

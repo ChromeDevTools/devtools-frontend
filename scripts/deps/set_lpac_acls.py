@@ -101,7 +101,7 @@ def script_main():
     parser = argparse.ArgumentParser(
         description='Sets App Container ACL on a directory')
     parser.add_argument("dir", help='Set ACL on this directory')
-    set_lpac_acls(parser.parse_args().dir)
+    set_lpac_acls(parser.parse_args().dir, is_test_script=True)
 
 
 if __name__ == '__main__':

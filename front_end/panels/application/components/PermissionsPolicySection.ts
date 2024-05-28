@@ -80,8 +80,7 @@ export function renderIconLink(
     .variant=${Buttons.Button.Variant.ICON}
     .size=${Buttons.Button.Size.SMALL}
     @click=${clickHandler}
-    jslog=${VisualLogging.action().track({click: true}).context(jsLogContext)}>
-  </${Buttons.Button.Button.litTagName}>
+    jslog=${VisualLogging.action().track({click: true}).context(jsLogContext)}></${Buttons.Button.Button.litTagName}>
   `;
   // clang-format on
 }

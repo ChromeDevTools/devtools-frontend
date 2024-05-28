@@ -99,7 +99,7 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/ActionRegistration.ts', UISt
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface ActionDelegate {
-  handleAction(_context: Context, _actionId: string): boolean;
+  handleAction(context: Context, actionId: string): boolean;
 }
 
 export class Action extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {

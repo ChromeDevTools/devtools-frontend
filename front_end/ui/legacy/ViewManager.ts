@@ -15,7 +15,7 @@ import {type ContextMenu} from './ContextMenu.js';
 import {type EventData, Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
 import {type ItemsProvider, Toolbar, type ToolbarItem, ToolbarMenuButton} from './Toolbar.js';
 import {createTextChild} from './UIUtils.js';
-import {type TabbedViewLocation, type View, type ViewLocation, type ViewLocationResolver} from './View.js';
+import {type TabbedViewLocation, type View, type ViewLocation} from './View.js';
 import viewContainersStyles from './viewContainers.css.legacy.js';
 import {
   getLocalizedViewLocationCategory,
@@ -314,7 +314,7 @@ export class ViewManager {
 
   async resolveLocation(location?: string): Promise<Location|null> {
     if (!location) {
-      return Promise.resolve(null) as Promise<Location|null>;
+      return null;
     }
     const registeredResolvers = getRegisteredLocationResolvers().filter(resolver => resolver.name === location);
 
@@ -322,7 +322,7 @@ export class ViewManager {
       throw new Error('Duplicate resolver for location: ' + location);
     }
     if (registeredResolvers.length) {
-      const resolver = (await registeredResolvers[0].loadResolver() as ViewLocationResolver);
+      const resolver = await registeredResolvers[0].loadResolver();
       return resolver.resolveLocation(location) as Location | null;
     }
     throw new Error('Unresolved location: ' + location);

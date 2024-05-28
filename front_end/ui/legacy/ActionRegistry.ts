@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {getRegisteredActionExtensions, type Action, reset as resetActionRegistrations} from './ActionRegistration.js';
+import {type Action, getRegisteredActionExtensions, reset as resetActionRegistrations} from './ActionRegistration.js';
 import {Context} from './Context.js';
 
 let actionRegistryInstance: ActionRegistry|undefined;
@@ -56,8 +56,8 @@ export class ActionRegistry {
     for (const actionId of actionIds) {
       const action = this.actionsById.get(actionId);
       if (action && action.enabled()) {
-        if (isActionApplicableToContextTypes((action as Action), context.flavors())) {
-          applicableActions.push((action as Action));
+        if (isActionApplicableToContextTypes(action, context.flavors())) {
+          applicableActions.push(action);
         }
       }
     }

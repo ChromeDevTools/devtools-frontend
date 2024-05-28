@@ -32,8 +32,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-
-import type * as TextUtils from '../text_utils/text_utils.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 
 import {Events, type IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import {PlatformFileSystem} from './PlatformFileSystem.js';
@@ -54,11 +53,6 @@ const UIStrings = {
    *@example {Underlying error} PH2
    */
   cantReadFileSS: 'Can\'t read file: {PH1}: {PH2}',
-  /**
-   *@description Error message when failing to load a file
-   *@example {c:\dir\file.js} PH1
-   */
-  unknownErrorReadingFileS: 'Unknown error reading file: {PH1}',
   /**
    *@description Text to show something is linked to another
    *@example {example.url} PH1
@@ -328,49 +322,32 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     });
   }
 
-  override requestFileContent(path: Platform.DevToolsPath.EncodedPathString):
+  override async requestFileContent(path: Platform.DevToolsPath.EncodedPathString):
       Promise<TextUtils.ContentProvider.DeferredContent> {
+    return TextUtils.ContentData.ContentData.asDeferredContent(await this.requestFileContentData(path));
+  }
+
+  requestFileContentData(path: Platform.DevToolsPath.EncodedPathString):
+      Promise<TextUtils.ContentData.ContentDataOrError> {
     return this.serializedFileOperation(path, () => this.innerRequestFileContent(path));
   }
 
   private async innerRequestFileContent(path: Platform.DevToolsPath.EncodedPathString):
-      Promise<TextUtils.ContentProvider.DeferredContent> {
+      Promise<TextUtils.ContentData.ContentDataOrError> {
     const blob = await this.requestFileBlob(path);
     if (!blob) {
-      return {content: null, error: i18nString(UIStrings.blobCouldNotBeLoaded), isEncoded: false};
+      return {error: i18nString(UIStrings.blobCouldNotBeLoaded)};
     }
 
-    const reader = new FileReader();
-    const extension = Common.ParsedURL.ParsedURL.extractExtension(path);
-    const encoded = BinaryExtensions.has(extension);
-    const readPromise = new Promise(x => {
-      reader.onloadend = x;
-    });
-    if (encoded) {
-      reader.readAsBinaryString(blob);
-    } else {
-      reader.readAsText(blob);
-    }
-    await readPromise;
-    if (reader.error) {
-      const error = i18nString(UIStrings.cantReadFileSS, {PH1: path, PH2: reader.error.toString()});
-      console.error(error);
-      return {content: null, isEncoded: false, error};
-    }
-    let result: string|null = null;
-    let error: Common.UIString.LocalizedString|null = null;
+    const mimeType = mimeTypeForBlob(path, blob);
     try {
-      result = reader.result as string;
+      if (Platform.MimeType.isTextType(mimeType)) {
+        return new TextUtils.ContentData.ContentData(await blob.text(), /* isBase64 */ false, mimeType);
+      }
+      return new TextUtils.ContentData.ContentData(await Common.Base64.encode(blob), /* isBase64 */ true, mimeType);
     } catch (e) {
-      result = null;
-      error = i18nString(UIStrings.cantReadFileSS, {PH1: path, PH2: e.message});
+      return {error: i18nString(UIStrings.cantReadFileSS, {PH1: path, PH2: e.message})};
     }
-    if (result === undefined || result === null) {
-      error = error || i18nString(UIStrings.unknownErrorReadingFileS, {PH1: path});
-      console.error(error);
-      return {content: null, isEncoded: false, error};
-    }
-    return {isEncoded: encoded, content: encoded ? btoa(result) : result};
   }
 
   override async setFileContent(path: Platform.DevToolsPath.EncodedPathString, content: string, isBase64: boolean):
@@ -603,6 +580,27 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   override supportsAutomapping(): boolean {
     return this.type() !== 'overrides';
   }
+}
+
+/**
+ * @returns Tries to determine the mime type for this Blob:
+ *   1) If blob.type is non-empty, we return that.
+ *   2) If we know it from the extension, use that.
+ *   3) Check the list of known binary extensions and use application/octet-stream.
+ *   4) Use text/plain
+ */
+function mimeTypeForBlob(path: Platform.DevToolsPath.EncodedPathString, blob: Blob): string {
+  if (blob.type) {
+    return blob.type;
+  }
+
+  const extension = Common.ParsedURL.ParsedURL.extractExtension(path);
+  const maybeMime = Common.ResourceType.ResourceType.mimeFromExtension(extension);
+  if (maybeMime) {
+    return maybeMime;
+  }
+
+  return BinaryExtensions.has(extension) ? 'application/octet-stream' : 'text/plain';
 }
 
 const STYLE_SHEET_EXTENSIONS = new Set<string>(['css', 'scss', 'sass', 'less']);

@@ -121,7 +121,7 @@ describeWithEnvironment('TraceModel', function() {
 
     const entriesFilterModifications = {
       hiddenEntriesIndexes: [1, 2, 3],
-      modifiedEntriesIndexes: [4],
+      expandableEntriesIndexes: [4],
     };
 
     const modifications = {

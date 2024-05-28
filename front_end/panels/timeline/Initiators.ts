@@ -21,7 +21,7 @@ export function initiatorsDataToDraw(
     traceEngineData: TraceEngine.Handlers.Types.TraceParseData,
     selectedEvent: TraceEngine.Types.TraceEvents.TraceEventData,
     hiddenEntries: TraceEngine.Types.TraceEvents.TraceEventData[],
-    modifiedEntries: TraceEngine.Types.TraceEvents.TraceEventData[],
+    expandableEntries: TraceEngine.Types.TraceEvents.TraceEventData[],
     ): readonly InitiatorData[] {
   const initiatorsData = [
     ...findInitiatorDataPredecessors(traceEngineData, selectedEvent),
@@ -32,7 +32,7 @@ export function initiatorsDataToDraw(
   // If they are, it will reassign the event or initiator to the closest ancestor.
   initiatorsData.forEach(
       initiatorData =>
-          getClosestVisibleInitiatorEntriesAncestors(initiatorData, modifiedEntries, hiddenEntries, traceEngineData));
+          getClosestVisibleInitiatorEntriesAncestors(initiatorData, expandableEntries, hiddenEntries, traceEngineData));
   return initiatorsData;
 }
 
@@ -104,12 +104,12 @@ function findInitiatorDataDirectSuccessors(
  * If neither entry is hidden, this function returns the initial initiatorData object.
  */
 function getClosestVisibleInitiatorEntriesAncestors(
-    initiatorData: InitiatorData, modifiedEntries: TraceEngine.Types.TraceEvents.TraceEventData[],
+    initiatorData: InitiatorData, expandableEntries: TraceEngine.Types.TraceEvents.TraceEventData[],
     hiddenEntries: TraceEngine.Types.TraceEvents.TraceEventData[],
     traceEngineData: TraceEngine.Handlers.Types.TraceParseData): InitiatorData {
   if (hiddenEntries.includes(initiatorData.event)) {
     let nextParent = traceEngineData.Renderer.entryToNode.get(initiatorData.event)?.parent;
-    while (nextParent?.entry && !modifiedEntries.includes(nextParent?.entry)) {
+    while (nextParent?.entry && !expandableEntries.includes(nextParent?.entry)) {
       nextParent = nextParent.parent ?? undefined;
     }
     initiatorData.event = nextParent?.entry ?? initiatorData.event;
@@ -118,7 +118,7 @@ function getClosestVisibleInitiatorEntriesAncestors(
 
   if (hiddenEntries.includes(initiatorData.initiator)) {
     let nextParent = traceEngineData.Renderer.entryToNode.get(initiatorData.initiator)?.parent;
-    while (nextParent?.entry && !modifiedEntries.includes(nextParent?.entry)) {
+    while (nextParent?.entry && !expandableEntries.includes(nextParent?.entry)) {
       nextParent = nextParent.parent ?? undefined;
     }
     initiatorData.initiator = nextParent?.entry ?? initiatorData.initiator;

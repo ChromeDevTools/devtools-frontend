@@ -497,7 +497,7 @@ export class ThreadAppender implements TrackAppender {
     const flameChartData = this.#compatibilityBuilder.getFlameChartTimelineData();
     if (ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()
             ?.getEntriesFilter()
-            .isEntryModified(entry)) {
+            .isEntryExpandable(entry)) {
       addDecorationToEvent(
           flameChartData, index, {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW});
     }

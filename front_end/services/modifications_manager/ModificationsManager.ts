@@ -69,7 +69,7 @@ export class ModificationsManager {
     }
 
     const indexesOfModifiedEntries: number[] = [];
-    const modifiedEntries = this.#entriesFilter.modifiedEntries();
+    const modifiedEntries = this.#entriesFilter.expandableEntries();
     if (modifiedEntries) {
       for (const entry of modifiedEntries) {
         indexesOfModifiedEntries.push(this.getEntryIndex(entry));
@@ -79,7 +79,7 @@ export class ModificationsManager {
     return {
       entriesFilterModifications: {
         hiddenEntriesIndexes: indexesOfSynteticEntries,
-        modifiedEntriesIndexes: indexesOfModifiedEntries,
+        expandableEntriesIndexes: indexesOfModifiedEntries,
       },
       initialBreadcrumb: this.#timelineBreadcrumbs.initialBreadcrumb,
     };
@@ -88,11 +88,11 @@ export class ModificationsManager {
   applyModifications(modifications: TraceEngine.Types.File.Modifications): void {
     this.applyEntriesFilterModifications(
         modifications.entriesFilterModifications.hiddenEntriesIndexes,
-        modifications.entriesFilterModifications.modifiedEntriesIndexes);
+        modifications.entriesFilterModifications.expandableEntriesIndexes);
     this.#timelineBreadcrumbs.setInitialBreadcrumbFromLoadedModifications(modifications.initialBreadcrumb);
   }
 
-  applyEntriesFilterModifications(hiddenEntriesIndexes: number[], modifiedEntriesIndexes: number[]): void {
+  applyEntriesFilterModifications(hiddenEntriesIndexes: number[], expandableEntriesIndexes: number[]): void {
     // Build the hidden events array by getting the entries by their index in the allEntries array.
     const hiddenEntries: TraceEngine.Types.TraceEvents.SyntheticTraceEntry[] = [];
     hiddenEntriesIndexes.map(hiddenEntryHash => {
@@ -101,13 +101,13 @@ export class ModificationsManager {
         hiddenEntries.push(hiddenEntry);
       }
     });
-    const modifiedEntries: TraceEngine.Types.TraceEvents.SyntheticTraceEntry[] = [];
-    modifiedEntriesIndexes.map(hiddenEntryHash => {
-      const modifiedEntry = this.#allEntries[hiddenEntryHash];
-      if (modifiedEntry) {
-        modifiedEntries.push(modifiedEntry);
+    const expandableEntries: TraceEngine.Types.TraceEvents.SyntheticTraceEntry[] = [];
+    expandableEntriesIndexes.map(hiddenEntryHash => {
+      const expandableEntry = this.#allEntries[hiddenEntryHash];
+      if (expandableEntry) {
+        expandableEntries.push(expandableEntry);
       }
     });
-    this.#entriesFilter.setInvisibleAndModifiedEntries(hiddenEntries, modifiedEntries);
+    this.#entriesFilter.setHiddenAndExpandableEntries(hiddenEntries, expandableEntries);
   }
 }

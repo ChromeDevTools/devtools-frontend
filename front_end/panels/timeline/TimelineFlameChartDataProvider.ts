@@ -1058,17 +1058,17 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             ?.getEntriesFilter()
             .invisibleEntries() ??
         [];
-    const modifiedEntries: TraceEngine.Types.TraceEvents.TraceEventData[] =
+    const expandableEntries: TraceEngine.Types.TraceEvents.TraceEventData[] =
         ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()
             ?.getEntriesFilter()
-            .modifiedEntries() ??
+            .expandableEntries() ??
         [];
 
     const initiatorsData = initiatorsDataToDraw(
         this.traceEngineData,
         event,
         hiddenEvents,
-        modifiedEntries,
+        expandableEntries,
     );
     // This means there is no change for arrows.
     if (previousInitiatorsDataLength === 0 && initiatorsData.length === 0) {

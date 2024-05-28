@@ -22,7 +22,7 @@ export const enum DataOrigin {
 export interface Modifications {
   entriesFilterModifications: {
     hiddenEntriesIndexes: number[],
-    modifiedEntriesIndexes: number[],
+    expandableEntriesIndexes: number[],
   };
   initialBreadcrumb: Breadcrumb;
 }

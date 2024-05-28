@@ -295,6 +295,14 @@ export class RequestTimingView extends UI.Widget.VBox {
       }
     }
 
+    // In some situations, argument `start` may come before `startTime` (`timing.requestStart`). This is especially true
+    // in cases such as SW static routing API where fields like `workerRouterEvaluationStart` or `workerCacheLookupStart`
+    // is set before setting `timing.requestStart`. If the `start` and `end` is known to be a valid value (i.e. not default
+    // invalid value -1 or undefined), we allow adding the range.
+    function addMaybeNegativeOffsetRange(name: RequestTimeRangeNames, start: number, end: number): void {
+      addRange(name, startTime + (start / 1000), startTime + (end / 1000));
+    }
+
     const timing = request.timing;
     if (!timing) {
       const start = request.issueTime() !== -1 ? request.issueTime() : request.startTime !== -1 ? request.startTime : 0;
@@ -349,6 +357,34 @@ export class RequestTimingView extends UI.Widget.VBox {
       addOffsetRange(
           RequestTimeRangeNames.Waiting,
           Math.max(timing.sendEnd, timing.connectEnd, timing.dnsEnd, timing.proxyEnd, blockingEnd), responseReceived);
+    }
+
+    const {serviceWorkerRouterInfo} = request;
+    if (serviceWorkerRouterInfo) {
+      if (timing.workerRouterEvaluationStart) {
+        // Depending on the source,the next timestamp will be different. Determine the timestamp by checking
+        // the matched and actual source.
+        let routerEvaluationEnd = timing.sendStart;
+        if (serviceWorkerRouterInfo?.matchedSourceType === Protocol.Network.ServiceWorkerRouterSource.Cache &&
+            timing.workerCacheLookupStart) {
+          routerEvaluationEnd = timing.workerCacheLookupStart;
+        } else if (
+            serviceWorkerRouterInfo?.actualSourceType === Protocol.Network.ServiceWorkerRouterSource.FetchEvent) {
+          routerEvaluationEnd = timing.workerStart;
+        }
+        addMaybeNegativeOffsetRange(
+            RequestTimeRangeNames.ServiceWorkerRouterEvaluation, timing.workerRouterEvaluationStart,
+            routerEvaluationEnd);
+      }
+
+      if (timing.workerCacheLookupStart) {
+        let cacheLookupEnd = timing.sendStart;
+        if (serviceWorkerRouterInfo?.actualSourceType === Protocol.Network.ServiceWorkerRouterSource.Cache) {
+          cacheLookupEnd = timing.receiveHeadersStart;
+        }
+        addMaybeNegativeOffsetRange(
+            RequestTimeRangeNames.ServiceWorkerCacheLookup, timing.workerCacheLookupStart, cacheLookupEnd);
+      }
     }
 
     if (request.endTime !== -1) {
@@ -697,6 +733,8 @@ export const enum RequestTimeRangeNames {
   ServiceWorker = 'serviceworker',
   ServiceWorkerPreparation = 'serviceworker-preparation',
   ServiceWorkerRespondWith = 'serviceworker-respondwith',
+  ServiceWorkerRouterEvaluation = 'serviceworker-routerevaluation',
+  ServiceWorkerCacheLookup = 'serviceworker-cachelookup',
   SSL = 'ssl',
   Total = 'total',
   Waiting = 'waiting',
@@ -706,6 +744,8 @@ export const ServiceWorkerRangeNames = new Set<RequestTimeRangeNames>([
   RequestTimeRangeNames.ServiceWorker,
   RequestTimeRangeNames.ServiceWorkerPreparation,
   RequestTimeRangeNames.ServiceWorkerRespondWith,
+  RequestTimeRangeNames.ServiceWorkerRouterEvaluation,
+  RequestTimeRangeNames.ServiceWorkerCacheLookup,
 ]);
 
 export const ConnectionSetupRangeNames = new Set<RequestTimeRangeNames>([

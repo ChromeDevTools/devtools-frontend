@@ -111,6 +111,8 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 .network-timing-bar.connecting,
 .network-timing-bar.serviceworker,
 .network-timing-bar.serviceworker-preparation,
+.network-timing-bar.serviceworker-routerevaluation,
+.network-timing-bar.serviceworker-cachelookup,
 .-theme-preserve {
   background-color: var(--network-overview-service-worker); /* stylelint-disable-line plugin/use_theme_colors */
 }

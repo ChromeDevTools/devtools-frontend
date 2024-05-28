@@ -1,8 +1,14 @@
-import Result, { Message, ResultOptions } from './result.js'
+import Document from './document.js'
 import { SourceMap } from './postcss.js'
 import Processor from './processor.js'
-import Warning from './warning.js'
+import Result, { Message, ResultOptions } from './result.js'
 import Root from './root.js'
+import Warning from './warning.js'
+
+declare namespace LazyResult {
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  export { LazyResult_ as default }
+}
 
 /**
  * A Promise proxy for the result of PostCSS transformations.
@@ -13,22 +19,9 @@ import Root from './root.js'
  * const lazy = postcss([autoprefixer]).process(css)
  * ```
  */
-export default class LazyResult implements PromiseLike<Result> {
-  /**
-   * Processes input CSS through synchronous and asynchronous plugins
-   * and calls `onFulfilled` with a Result instance. If a plugin throws
-   * an error, the `onRejected` callback will be executed.
-   *
-   * It implements standard Promise API.
-   *
-   * ```js
-   * postcss([autoprefixer]).process(css, { from: cssPath }).then(result => {
-   *   console.log(result.css)
-   * })
-   * ```
-   */
-  then: Promise<Result>['then']
-
+declare class LazyResult_<RootNode = Document | Root>
+  implements PromiseLike<Result<RootNode>>
+{
   /**
    * Processes input CSS through synchronous and asynchronous plugins
    * and calls onRejected for each error thrown in any plugin.
@@ -43,7 +36,7 @@ export default class LazyResult implements PromiseLike<Result> {
    * })
    * ```
    */
-  catch: Promise<Result>['catch']
+  catch: Promise<Result<RootNode>>['catch']
 
   /**
    * Processes input CSS through synchronous and asynchronous plugins
@@ -57,7 +50,22 @@ export default class LazyResult implements PromiseLike<Result> {
    * })
    * ```
    */
-  finally: Promise<Result>['finally']
+  finally: Promise<Result<RootNode>>['finally']
+
+  /**
+   * Processes input CSS through synchronous and asynchronous plugins
+   * and calls `onFulfilled` with a Result instance. If a plugin throws
+   * an error, the `onRejected` callback will be executed.
+   *
+   * It implements standard Promise API.
+   *
+   * ```js
+   * postcss([autoprefixer]).process(css, { from: cssPath }).then(result => {
+   *   console.log(result.css)
+   * })
+   * ```
+   */
+  then: Promise<Result<RootNode>>['then']
 
   /**
    * @param processor Processor used for this transformation.
@@ -67,33 +75,37 @@ export default class LazyResult implements PromiseLike<Result> {
   constructor(processor: Processor, css: string, opts: ResultOptions)
 
   /**
-   * Returns the default string description of an object.
-   * Required to implement the Promise interface.
-   */
-  get [Symbol.toStringTag](): string
-
-  /**
-   * Returns a `Processor` instance, which will be used
-   * for CSS transformations.
-   */
-  get processor(): Processor
-
-  /**
-   * Options from the `Processor#process` call.
-   */
-  get opts(): ResultOptions
-
-  /**
-   * Processes input CSS through synchronous plugins, converts `Root`
-   * to a CSS string and returns `Result#css`.
+   * Run plugin in async way and return `Result`.
    *
-   * This property will only work with synchronous plugins.
-   * If the processor contains any asynchronous plugins
-   * it will throw an error.
-   *
-   * PostCSS runners should always use `LazyResult#then`.
+   * @return Result with output content.
    */
-  get css(): string
+  async(): Promise<Result<RootNode>>
+
+  /**
+   * Run plugin in sync way and return `Result`.
+   *
+   * @return Result with output content.
+   */
+  sync(): Result<RootNode>
+
+  /**
+   * Alias for the `LazyResult#css` property.
+   *
+   * ```js
+   * lazy + '' === lazy.css
+   * ```
+   *
+   * @return Output CSS.
+   */
+  toString(): string
+
+  /**
+   * Processes input CSS through synchronous plugins
+   * and calls `Result#warnings`.
+   *
+   * @return Warnings from plugins.
+   */
+  warnings(): Warning[]
 
   /**
    * An alias for the `css` property. Use it with syntaxes
@@ -106,6 +118,18 @@ export default class LazyResult implements PromiseLike<Result> {
    * PostCSS runners should always use `LazyResult#then`.
    */
   get content(): string
+
+  /**
+   * Processes input CSS through synchronous plugins, converts `Root`
+   * to a CSS string and returns `Result#css`.
+   *
+   * This property will only work with synchronous plugins.
+   * If the processor contains any asynchronous plugins
+   * it will throw an error.
+   *
+   * PostCSS runners should always use `LazyResult#then`.
+   */
+  get css(): string
 
   /**
    * Processes input CSS through synchronous plugins
@@ -121,17 +145,6 @@ export default class LazyResult implements PromiseLike<Result> {
 
   /**
    * Processes input CSS through synchronous plugins
-   * and returns `Result#root`.
-   *
-   * This property will only work with synchronous plugins. If the processor
-   * contains any asynchronous plugins it will throw an error.
-   *
-   * PostCSS runners should always use `LazyResult#then`.
-   */
-  get root(): Root
-
-  /**
-   * Processes input CSS through synchronous plugins
    * and returns `Result#messages`.
    *
    * This property will only work with synchronous plugins. If the processor
@@ -142,35 +155,36 @@ export default class LazyResult implements PromiseLike<Result> {
   get messages(): Message[]
 
   /**
+   * Options from the `Processor#process` call.
+   */
+  get opts(): ResultOptions
+
+  /**
+   * Returns a `Processor` instance, which will be used
+   * for CSS transformations.
+   */
+  get processor(): Processor
+
+  /**
    * Processes input CSS through synchronous plugins
-   * and calls `Result#warnings`.
+   * and returns `Result#root`.
    *
-   * @return Warnings from plugins.
+   * This property will only work with synchronous plugins. If the processor
+   * contains any asynchronous plugins it will throw an error.
+   *
+   * PostCSS runners should always use `LazyResult#then`.
    */
-  warnings(): Warning[]
+  get root(): RootNode
 
   /**
-   * Alias for the `LazyResult#css` property.
-   *
-   * ```js
-   * lazy + '' === lazy.css
-   * ```
-   *
-   * @return Output CSS.
+   * Returns the default string description of an object.
+   * Required to implement the Promise interface.
    */
-  toString(): string
-
-  /**
-   * Run plugin in sync way and return `Result`.
-   *
-   * @return Result with output content.
-   */
-  sync(): Result
-
-  /**
-   * Run plugin in async way and return `Result`.
-   *
-   * @return Result with output content.
-   */
-  async(): Promise<Result>
+  get [Symbol.toStringTag](): string
 }
+
+declare class LazyResult<
+  RootNode = Document | Root
+> extends LazyResult_<RootNode> {}
+
+export = LazyResult

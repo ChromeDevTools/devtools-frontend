@@ -1,41 +1,46 @@
-import { ProcessOptions } from './postcss.js'
+import { CssSyntaxError, ProcessOptions } from './postcss.js'
 import PreviousMap from './previous-map.js'
 
-export interface FilePosition {
-  /**
-   * URL for the source file.
-   */
-  url: string
+declare namespace Input {
+  export interface FilePosition {
+    /**
+     * Column of inclusive start position in source file.
+     */
+    column: number
 
-  /**
-   * Absolute path to the source file.
-   */
-  file?: string
+    /**
+     * Column of exclusive end position in source file.
+     */
+    endColumn?: number
 
-  /**
-   * Line of inclusive start position in source file.
-   */
-  line: number
+    /**
+     * Line of exclusive end position in source file.
+     */
+    endLine?: number
 
-  /**
-   * Column of inclusive start position in source file.
-   */
-  column: number
+    /**
+     * Absolute path to the source file.
+     */
+    file?: string
 
-  /**
-   * Line of exclusive end position in source file.
-   */
-  endLine?: number
+    /**
+     * Line of inclusive start position in source file.
+     */
+    line: number
 
-  /**
-   * Column of exclusive end position in source file.
-   */
-  endColumn?: number
+    /**
+     * Source code.
+     */
+    source?: string
 
-  /**
-   * Source code.
-   */
-  source?: string
+    /**
+     * URL for the source file.
+     */
+    url: string
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  export { Input_ as default }
 }
 
 /**
@@ -46,7 +51,7 @@ export interface FilePosition {
  * const input = root.source.input
  * ```
  */
-export default class Input {
+declare class Input_ {
   /**
    * Input CSS source.
    *
@@ -58,16 +63,6 @@ export default class Input {
   css: string
 
   /**
-   * The input source map passed from a compilation step before PostCSS
-   * (for example, from Sass compiler).
-   *
-   * ```js
-   * root.source.input.map.consumer().sources //=> ['a.sass']
-   * ```
-   */
-  map: PreviousMap
-
-  /**
    * The absolute path to the CSS source file defined
    * with the `from` option.
    *
@@ -77,6 +72,11 @@ export default class Input {
    * ```
    */
   file?: string
+
+  /**
+   * The flag to indicate whether or not the source code has Unicode BOM.
+   */
+  hasBOM: boolean
 
   /**
    * The unique ID of the CSS source. It will be created if `from` option
@@ -91,9 +91,14 @@ export default class Input {
   id?: string
 
   /**
-   * The flag to indicate whether or not the source code has Unicode BOM.
+   * The input source map passed from a compilation step before PostCSS
+   * (for example, from Sass compiler).
+   *
+   * ```js
+   * root.source.input.map.consumer().sources //=> ['a.sass']
+   * ```
    */
-  hasBOM: boolean
+  map: PreviousMap
 
   /**
    * @param css  Input CSS source.
@@ -101,20 +106,49 @@ export default class Input {
    */
   constructor(css: string, opts?: ProcessOptions)
 
-  /**
-   * The CSS source identifier. Contains `Input#file` if the user
-   * set the `from` option, or `Input#id` if they did not.
-   *
-   * ```js
-   * const root = postcss.parse(css, { from: 'a.css' })
-   * root.source.input.from //=> "/home/ai/a.css"
-   *
-   * const root = postcss.parse(css)
-   * root.source.input.from //=> "<input css 1>"
-   * ```
-   */
-  get from(): string
+  error(
+    message: string,
+    start:
+      | {
+          column: number
+          line: number
+        }
+      | {
+          offset: number
+        },
+    end:
+      | {
+          column: number
+          line: number
+        }
+      | {
+          offset: number
+        },
+    opts?: { plugin?: CssSyntaxError['plugin'] }
+  ): CssSyntaxError
 
+  /**
+   * Returns `CssSyntaxError` with information about the error and its position.
+   */
+  error(
+    message: string,
+    line: number,
+    column: number,
+    opts?: { plugin?: CssSyntaxError['plugin'] }
+  ): CssSyntaxError
+
+  error(
+    message: string,
+    offset: number,
+    opts?: { plugin?: CssSyntaxError['plugin'] }
+  ): CssSyntaxError
+
+  /**
+   * Converts source offset to line and column.
+   *
+   * @param offset Source offset.
+   */
+  fromOffset(offset: number): { col: number; line: number } | null
   /**
    * Reads the input source map and returns a symbol position
    * in the input source (e.g., in a Sass file that was compiled
@@ -139,12 +173,22 @@ export default class Input {
     column: number,
     endLine?: number,
     endColumn?: number
-  ): FilePosition | false
-
+  ): false | Input.FilePosition
   /**
-   * Converts source offset to line and column.
+   * The CSS source identifier. Contains `Input#file` if the user
+   * set the `from` option, or `Input#id` if they did not.
    *
-   * @param offset Source offset.
+   * ```js
+   * const root = postcss.parse(css, { from: 'a.css' })
+   * root.source.input.from //=> "/home/ai/a.css"
+   *
+   * const root = postcss.parse(css)
+   * root.source.input.from //=> "<input css 1>"
+   * ```
    */
-  fromOffset(offset: number): { line: number; col: number } | null
+  get from(): string
 }
+
+declare class Input extends Input_ {}
+
+export = Input

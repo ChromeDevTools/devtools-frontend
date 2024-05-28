@@ -1066,7 +1066,7 @@ IndexedSourceMapConsumer.prototype.sourceContentFor =
       var section = this._sections[i];
 
       var content = section.consumer.sourceContentFor(aSource, true);
-      if (content) {
+      if (content || content === '') {
         return content;
       }
     }

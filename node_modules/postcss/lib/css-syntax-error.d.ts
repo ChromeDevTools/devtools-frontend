@@ -1,18 +1,23 @@
 import { FilePosition } from './input.js'
 
-/**
- * A position that is part of a range.
- */
-export interface RangePosition {
+declare namespace CssSyntaxError {
   /**
-   * The line number in the input.
+   * A position that is part of a range.
    */
-  line: number
+  export interface RangePosition {
+    /**
+     * The column number in the input.
+     */
+    column: number
 
-  /**
-   * The column number in the input.
-   */
-  column: number
+    /**
+     * The line number in the input.
+     */
+    line: number
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  export { CssSyntaxError_ as default }
 }
 
 /**
@@ -44,89 +49,7 @@ export interface RangePosition {
  * }
  * ```
  */
-export default class CssSyntaxError {
-  /**
-   * Instantiates a CSS syntax error. Can be instantiated for a single position
-   * or for a range.
-   * @param message        Error message.
-   * @param lineOrStartPos If for a single position, the line number, or if for
-   *                       a range, the inclusive start position of the error.
-   * @param columnOrEndPos If for a single position, the column number, or if for
-   *                       a range, the exclusive end position of the error.
-   * @param source         Source code of the broken file.
-   * @param file           Absolute path to the broken file.
-   * @param plugin         PostCSS plugin name, if error came from plugin.
-   */
-  constructor(
-    message: string,
-    lineOrStartPos?: number | RangePosition,
-    columnOrEndPos?: number | RangePosition,
-    source?: string,
-    file?: string,
-    plugin?: string
-  )
-
-  stack: string
-
-  /**
-   * Always equal to `'CssSyntaxError'`. You should always check error type
-   * by `error.name === 'CssSyntaxError'`
-   * instead of `error instanceof CssSyntaxError`,
-   * because npm could have several PostCSS versions.
-   *
-   * ```js
-   * if (error.name === 'CssSyntaxError') {
-   *   error //=> CssSyntaxError
-   * }
-   * ```
-   */
-  name: 'CssSyntaxError'
-
-  /**
-   * Error message.
-   *
-   * ```js
-   * error.message //=> 'Unclosed block'
-   * ```
-   */
-  reason: string
-
-  /**
-   * Full error text in the GNU error format
-   * with plugin, file, line and column.
-   *
-   * ```js
-   * error.message //=> 'a.css:1:1: Unclosed block'
-   * ```
-   */
-  message: string
-
-  /**
-   * Absolute path to the broken file.
-   *
-   * ```js
-   * error.file       //=> 'a.sass'
-   * error.input.file //=> 'a.css'
-   * ```
-   *
-   * PostCSS will use the input source map to detect the original location.
-   * If you need the position in the PostCSS input, use `error.input.file`.
-   */
-  file?: string
-
-  /**
-   * Source line of the error.
-   *
-   * ```js
-   * error.line       //=> 2
-   * error.input.line //=> 4
-   * ```
-   *
-   * PostCSS will use the input source map to detect the original location.
-   * If you need the position in the PostCSS input, use `error.input.line`.
-   */
-  line?: number
-
+declare class CssSyntaxError_ {
   /**
    * Source column of the error.
    *
@@ -139,20 +62,6 @@ export default class CssSyntaxError {
    * If you need the position in the PostCSS input, use `error.input.column`.
    */
   column?: number
-
-  /**
-   * Source line of the error's end, exclusive. Provided if the error pertains
-   * to a range.
-   *
-   * ```js
-   * error.endLine       //=> 3
-   * error.input.endLine //=> 4
-   * ```
-   *
-   * PostCSS will use the input source map to detect the original location.
-   * If you need the position in the PostCSS input, use `error.input.endLine`.
-   */
-  endLine?: number
 
   /**
    * Source column of the error's end, exclusive. Provided if the error pertains
@@ -169,23 +78,31 @@ export default class CssSyntaxError {
   endColumn?: number
 
   /**
-   * Source code of the broken file.
+   * Source line of the error's end, exclusive. Provided if the error pertains
+   * to a range.
    *
    * ```js
-   * error.source       //=> 'a { b {} }'
-   * error.input.source //=> 'a b { }'
+   * error.endLine       //=> 3
+   * error.input.endLine //=> 4
    * ```
+   *
+   * PostCSS will use the input source map to detect the original location.
+   * If you need the position in the PostCSS input, use `error.input.endLine`.
    */
-  source?: string
+  endLine?: number
 
   /**
-   * Plugin name, if error came from plugin.
+   * Absolute path to the broken file.
    *
    * ```js
-   * error.plugin //=> 'postcss-vars'
+   * error.file       //=> 'a.sass'
+   * error.input.file //=> 'a.css'
    * ```
+   *
+   * PostCSS will use the input source map to detect the original location.
+   * If you need the position in the PostCSS input, use `error.input.file`.
    */
-  plugin?: string
+  file?: string
 
   /**
    * Input object with PostCSS internal information
@@ -202,17 +119,92 @@ export default class CssSyntaxError {
   input?: FilePosition
 
   /**
-   * Returns error position, message and source code of the broken part.
+   * Source line of the error.
    *
    * ```js
-   * error.toString() //=> "CssSyntaxError: app.css:1:1: Unclosed block
-   *                  //    > 1 | a {
-   *                  //        | ^"
+   * error.line       //=> 2
+   * error.input.line //=> 4
    * ```
    *
-   * @return Error position, message and source code.
+   * PostCSS will use the input source map to detect the original location.
+   * If you need the position in the PostCSS input, use `error.input.line`.
    */
-  toString(): string
+  line?: number
+
+  /**
+   * Full error text in the GNU error format
+   * with plugin, file, line and column.
+   *
+   * ```js
+   * error.message //=> 'a.css:1:1: Unclosed block'
+   * ```
+   */
+  message: string
+
+  /**
+   * Always equal to `'CssSyntaxError'`. You should always check error type
+   * by `error.name === 'CssSyntaxError'`
+   * instead of `error instanceof CssSyntaxError`,
+   * because npm could have several PostCSS versions.
+   *
+   * ```js
+   * if (error.name === 'CssSyntaxError') {
+   *   error //=> CssSyntaxError
+   * }
+   * ```
+   */
+  name: 'CssSyntaxError'
+
+  /**
+   * Plugin name, if error came from plugin.
+   *
+   * ```js
+   * error.plugin //=> 'postcss-vars'
+   * ```
+   */
+  plugin?: string
+
+  /**
+   * Error message.
+   *
+   * ```js
+   * error.message //=> 'Unclosed block'
+   * ```
+   */
+  reason: string
+
+  /**
+   * Source code of the broken file.
+   *
+   * ```js
+   * error.source       //=> 'a { b {} }'
+   * error.input.source //=> 'a b { }'
+   * ```
+   */
+  source?: string
+
+  stack: string
+
+  /**
+   * Instantiates a CSS syntax error. Can be instantiated for a single position
+   * or for a range.
+   * @param message        Error message.
+   * @param lineOrStartPos If for a single position, the line number, or if for
+   *                       a range, the inclusive start position of the error.
+   * @param columnOrEndPos If for a single position, the column number, or if for
+   *                       a range, the exclusive end position of the error.
+   * @param source         Source code of the broken file.
+   * @param file           Absolute path to the broken file.
+   * @param plugin         PostCSS plugin name, if error came from plugin.
+   */
+  constructor(
+    message: string,
+    lineOrStartPos?: CssSyntaxError.RangePosition | number,
+    columnOrEndPos?: CssSyntaxError.RangePosition | number,
+    source?: string,
+    file?: string,
+    plugin?: string
+  )
 
   /**
    * Returns a few lines of CSS source that caused the error.
@@ -236,4 +228,21 @@ export default class CssSyntaxError {
    * @return Few lines of CSS source that caused the error.
    */
   showSourceCode(color?: boolean): string
+
+  /**
+   * Returns error position, message and source code of the broken part.
+   *
+   * ```js
+   * error.toString() //=> "CssSyntaxError: app.css:1:1: Unclosed block
+   *                  //    > 1 | a {
+   *                  //        | ^"
+   * ```
+   *
+   * @return Error position, message and source code.
+   */
+  toString(): string
 }
+
+declare class CssSyntaxError extends CssSyntaxError_ {}
+
+export = CssSyntaxError

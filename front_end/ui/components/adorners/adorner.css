@@ -19,20 +19,50 @@ slot {
   line-height: 13px;
   padding: 0 6px;
   font-size: var(--override-adorner-font-size, 8.5px);
-  color: var(--override-adorner-text-color, var(--sys-color-on-surface));
-  background-color: var(--override-adorner-background-color, var(--sys-color-neutral-container));
-  border: 1px solid var(--override-adorner-border-color, var(--sys-color-neutral-outline));
+  color: var(--override-adorner-text-color, var(--sys-color-primary));
+  background-color: var(--override-adorner-background-color, var(--sys-color-cdt-base-container));
+  border: 1px solid var(--override-adorner-border-color, var(--sys-color-tonal-outline));
   border-radius: 10px;
+  position: relative;
+
+  &:hover::after,
+  &:active::before {
+    content: "";
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  &:hover::after {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
+
+  &:active::before {
+    background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+  }
 }
 
-:host(:focus) slot {
-  border-color: var(--override-adorner-focus-border-color, var(--sys-color-primary));
+:host(:focus-visible) slot {
+  outline: 2px solid var(--sys-color-state-focus-ring);
+  outline-offset: 2px;
+  z-index: 999;
 }
 
 :host([aria-pressed="true"]) slot {
-  color: var(--override-adorner-active-text-color, var(--sys-color-cdt-base-container));
+  color: var(--override-adorner-active-text-color, var(--sys-color-on-primary));
   background-color: var(--override-adorner-active-background-color, var(--sys-color-primary));
   border: 1px solid var(--override-adorner-active-background-color, var(--sys-color-primary));
+
+  &:hover::after {
+    background-color: var(--sys-color-state-hover-on-prominent);
+  }
+
+  &:active::before {
+    background-color: var(--sys-color-state-ripple-primary);
+  }
 }
 
 ::slotted(*) {

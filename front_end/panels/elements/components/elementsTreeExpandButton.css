@@ -21,20 +21,36 @@
   width: 14px;
   height: 10px;
   margin: 0 2px;
-  border: 1px solid var(--override-adorner-border-color, var(--sys-color-neutral-outline));
+  border: 1px solid var(--override-adorner-border-color, var(--sys-color-tonal-outline));
   border-radius: 10px;
-  background: var(--override-adorner-background-color, var(--sys-color-neutral-container));
+  background: var(--override-adorner-background-color, var(--sys-color-cdt-base-container));
   padding: 0;
-}
+  position: relative;
 
-.expand-button:hover {
-  background: var(--sys-color-state-hover-dim-blend-protection);
+  &:hover::after,
+  &:active::before {
+    content: "";
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  &:hover::after {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
+
+  &:active::before {
+    background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+  }
 }
 
 .dot {
-  height: 2px;
-  width: 2px;
-  background: var(--text-primary);
+  height: var(--sys-size-2);
+  width: var(--sys-size-2);
+  background: var(--sys-color-primary);
   border-radius: 50%;
 }
 

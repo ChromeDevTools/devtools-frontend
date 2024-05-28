@@ -39,8 +39,9 @@
   height: 100%;
 
   devtools-icon {
-    width: 10px;
-    height: 10px;
+    width: var(--sys-size-6);
+    height: var(--sys-size-6);
+    color: var(--icon-primary);
   }
 }
 

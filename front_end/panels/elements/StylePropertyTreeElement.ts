@@ -30,15 +30,12 @@ import {ElementsPanel} from './ElementsPanel.js';
 import {
   AngleMatch,
   AngleMatcher,
-  ASTUtils,
   type BezierMatch,
   BezierMatcher,
-  BottomUpTreeMatching,
   ColorMatch,
   ColorMatcher,
   ColorMixMatch,
   ColorMixMatcher,
-  type CSSControlMap,
   type FontMatch,
   FontMatcher,
   type GridTemplateMatch,
@@ -52,15 +49,10 @@ import {
   type LinkableNameMatch,
   LinkableNameMatcher,
   LinkableNameProperties,
-  type Match,
-  type Matcher,
   type ShadowMatch,
   ShadowMatcher,
   ShadowType,
-  tokenizeDeclaration,
-  VariableMatch,
-  VariableMatcher,
-} from './PropertyParser.js';
+} from './PropertyMatchers.js';
 import {type MatchRenderer, Renderer, RenderingContext, StringRenderer, URLRenderer} from './PropertyRenderer.js';
 import {StyleEditorWidget} from './StyleEditorWidget.js';
 import {type StylePropertiesSection} from './StylePropertiesSection.js';
@@ -71,6 +63,7 @@ import {
   StylesSidebarPane,
 } from './StylesSidebarPane.js';
 
+const ASTUtils = SDK.CSSPropertyParser.ASTUtils;
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
 
@@ -154,7 +147,7 @@ interface StylePropertyTreeElementParams {
   newProperty: boolean;
 }
 
-export class VariableRenderer implements MatchRenderer<VariableMatch> {
+export class VariableRenderer implements MatchRenderer<SDK.CSSPropertyParser.VariableMatch> {
   readonly #treeElement: StylePropertyTreeElement;
   readonly #style: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
   constructor(treeElement: StylePropertyTreeElement, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration) {
@@ -162,35 +155,34 @@ export class VariableRenderer implements MatchRenderer<VariableMatch> {
     this.#style = style;
   }
 
-  matcher(): VariableMatcher {
-    return new VariableMatcher(this.computedText.bind(this));
+  matcher(): SDK.CSSPropertyParser.VariableMatcher {
+    return new SDK.CSSPropertyParser.VariableMatcher(this.computedText.bind(this));
   }
 
-  resolveVariable(match: VariableMatch): SDK.CSSMatchedStyles.CSSVariableValue|null {
+  resolveVariable(match: SDK.CSSPropertyParser.VariableMatch): SDK.CSSMatchedStyles.CSSVariableValue|null {
     return this.#matchedStyles.computeCSSVariable(this.#style, match.name);
   }
 
-  fallbackValue(match: VariableMatch, matching: BottomUpTreeMatching): string|null {
-    if (match.fallback.length === 0 || match.fallback.some(node => matching.hasUnresolvedVars(node))) {
+  fallbackValue(match: SDK.CSSPropertyParser.VariableMatch): string|null {
+    if (match.fallback.length === 0 ||
+        match.matching.hasUnresolvedVarsRange(match.fallback[0], match.fallback[match.fallback.length - 1])) {
       return null;
     }
-    return match.fallback.map(node => matching.getComputedText(node)).join(' ');
+    return match.matching.getComputedTextRange(match.fallback[0], match.fallback[match.fallback.length - 1]);
   }
 
-  computedText(match: VariableMatch, matching: BottomUpTreeMatching): string|null {
-    return this.resolveVariable(
-                   match,
-                   )
-               ?.value ??
-        this.fallbackValue(match, matching);
+  // clang-format off
+  computedText(match: SDK.CSSPropertyParser.VariableMatch): string|null {
+    return this.resolveVariable(match)?.value ?? this.fallbackValue(match);
   }
+  // clang-format on
 
-  render(match: VariableMatch, context: RenderingContext): Node[] {
+  render(match: SDK.CSSPropertyParser.VariableMatch, context: RenderingContext): Node[] {
     const renderedFallback = match.fallback.length > 0 ? Renderer.render(match.fallback, context) : undefined;
 
     const {declaration, value: variableValue} = this.resolveVariable(match) ?? {};
     const fromFallback = !variableValue;
-    const computedValue = variableValue ?? this.fallbackValue(match, context.matchedResult);
+    const computedValue = variableValue ?? this.fallbackValue(match);
 
     const varSwatch = new InlineEditor.LinkSwatch.CSSVarSwatch();
     varSwatch.data = {
@@ -254,7 +246,7 @@ export class VariableRenderer implements MatchRenderer<VariableMatch> {
 }
 
 export class LinearGradientRenderer implements MatchRenderer<LinearGradientMatch> {
-  matcher(): Matcher<LinearGradientMatch> {
+  matcher(): SDK.CSSPropertyParser.Matcher<LinearGradientMatch> {
     return new LinearGradientMatcher();
   }
   render(match: LinearGradientMatch, context: RenderingContext): Node[] {
@@ -288,7 +280,7 @@ export class ColorRenderer implements MatchRenderer<ColorMatch> {
   }
 
   #getValueChild(match: ColorMatch, context: RenderingContext):
-      {valueChild: HTMLSpanElement, cssControls?: CSSControlMap} {
+      {valueChild: HTMLSpanElement, cssControls?: SDK.CSSPropertyParser.CSSControlMap} {
     const valueChild = document.createElement('span');
     if (match.node.name === 'ColorLiteral' ||
         (match.node.name === 'ValueName' && Common.Color.Nicknames.has(match.text))) {
@@ -895,7 +887,7 @@ export class ShadowRenderer implements MatchRenderer<ShadowMatch> {
     const queue: {
       value: CodeMirror.SyntaxNode,
       source: CodeMirror.SyntaxNode,
-      match: Match|undefined,
+      match: SDK.CSSPropertyParser.Match|undefined,
       expansionContext: RenderingContext|null,
     }[] =
         shadow.map(
@@ -917,14 +909,15 @@ export class ShadowRenderer implements MatchRenderer<ShadowMatch> {
           return null;
         }
         properties.push({value, source, length, propertyType, expansionContext});
-      } else if (match instanceof VariableMatch) {
+      } else if (match instanceof SDK.CSSPropertyParser.VariableMatch) {
         // This doesn't come from any computed text, so we can rely on context here
         const computedValue = context.matchedResult.getComputedText(value);
-        const computedValueAst = tokenizeDeclaration('--property', computedValue);
+        const computedValueAst = SDK.CSSPropertyParser.tokenizeDeclaration('--property', computedValue);
         if (!computedValueAst) {
           return null;
         }
-        const matches = BottomUpTreeMatching.walkExcludingSuccessors(computedValueAst, [new ColorMatcher()]);
+        const matches =
+            SDK.CSSPropertyParser.BottomUpTreeMatching.walkExcludingSuccessors(computedValueAst, [new ColorMatcher()]);
         if (matches.hasUnresolvedVars(matches.ast.tree)) {
           return null;
         }
@@ -1405,8 +1398,34 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     });
   }
 
+  // Resolves a CSS expression to its computed value with `var()` calls updated.
+  // Still returns the string even when a `var()` call is not resolved.
+  #computeCSSExpression(style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, text: string): string|null {
+    const ast = SDK.CSSPropertyParser.tokenizeDeclaration('--unused', text);
+    if (!ast) {
+      return null;
+    }
+
+    const matching: SDK.CSSPropertyParser.BottomUpTreeMatching = SDK.CSSPropertyParser.BottomUpTreeMatching.walk(
+        ast, [new SDK.CSSPropertyParser.VariableMatcher((match: SDK.CSSPropertyParser.VariableMatch) => {
+          const variableValue = this.matchedStylesInternal.computeCSSVariable(style, match.name)?.value;
+          if (variableValue !== undefined) {
+            return variableValue;
+          }
+
+          if (match.fallback.length === 0 ||
+              match.matching.hasUnresolvedVarsRange(match.fallback[0], match.fallback[match.fallback.length - 1])) {
+            return null;
+          }
+          return match.matching.getComputedTextRange(match.fallback[0], match.fallback[match.fallback.length - 1]);
+        })]);
+
+    const decl = SDK.CSSPropertyParser.ASTUtils.siblings(SDK.CSSPropertyParser.ASTUtils.declValue(matching.ast.tree));
+    return matching.getComputedTextRange(decl[0], decl[decl.length - 1]);
+  }
+
   updateTitleIfComputedValueChanged(): void {
-    const computedValue = this.matchedStylesInternal.computeValue(this.property.ownerStyle, this.property.value);
+    const computedValue = this.#computeCSSExpression(this.property.ownerStyle, this.property.value);
     if (computedValue === this.lastComputedValue) {
       return;
     }
@@ -1415,7 +1434,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   updateTitle(): void {
-    this.lastComputedValue = this.matchedStylesInternal.computeValue(this.property.ownerStyle, this.property.value);
+    this.lastComputedValue = this.#computeCSSExpression(this.property.ownerStyle, this.property.value);
     this.innerUpdateTitle();
   }
 
@@ -1426,7 +1445,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.expandElement.setAttribute('jslog', `${VisualLogging.expand().track({click: true})}`);
     }
 
-    const renderers: MatchRenderer<Match>[] = this.property.parsedOk ?
+    const renderers: MatchRenderer<SDK.CSSPropertyParser.Match>[] = this.property.parsedOk ?
         [
           new VariableRenderer(this, this.style),
           new ColorRenderer(this),

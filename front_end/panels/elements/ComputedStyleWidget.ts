@@ -46,8 +46,8 @@ import {type ComputedStyle, ComputedStyleModel, Events} from './ComputedStyleMod
 import computedStyleSidebarPaneStyles from './computedStyleSidebarPane.css.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {PlatformFontsWidget} from './PlatformFontsWidget.js';
+import {type ColorMatch, ColorMatcher} from './PropertyMatchers.js';
 import {categorizePropertyName, type Category, DefaultCategoryOrder} from './PropertyNameCategories.js';
-import {type ColorMatch, ColorMatcher} from './PropertyParser.js';
 import {type MatchRenderer, Renderer, type RenderingContext, StringRenderer, URLRenderer} from './PropertyRenderer.js';
 import {StylePropertiesSection} from './StylePropertiesSection.js';
 

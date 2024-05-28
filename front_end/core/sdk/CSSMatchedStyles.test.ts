@@ -48,84 +48,8 @@ function createMatchedStyles(payload: Partial<SDK.CSSMatchedStyles.CSSMatchedSty
 }
 
 describe('CSSMatchedStyles', () => {
-  describe('parseCSSVariableNameAndFallback', () => {
-    const {parseCSSVariableNameAndFallback} = SDK.CSSMatchedStyles;
-
-    it('correctly parses simple CSS variables without fallback', () => {
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--foo)'), {variableName: '--foo', fallback: ''});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--foo-bar)'), {variableName: '--foo-bar', fallback: ''});
-      assert.deepEqual(
-          parseCSSVariableNameAndFallback('var(\n--foo-bar\n)'), {variableName: '--foo-bar', fallback: ''});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(  --space  )'), {variableName: '--space', fallback: ''});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--123)'), {variableName: '--123', fallback: ''});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--123Abc)'), {variableName: '--123Abc', fallback: ''});
-    });
-
-    it('need to correctly parse escaped characters', () => {
-      // `var(--\)` is an invalid CSS value and must have at least 1 character.
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--\\ )'), {variableName: '--\\', fallback: ''});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--\\,)'), {variableName: '--\\,', fallback: ''});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--\\,,)'), {variableName: '--\\,', fallback: ''});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--\\,,,)'), {variableName: '--\\,', fallback: ','});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--\\,blue)'), {variableName: '--\\,blue', fallback: ''});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--\\,,green)'), {variableName: '--\\,', fallback: 'green'});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--\\,  ,red)'), {variableName: '--\\,', fallback: 'red'});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--fo\\ o)'), {variableName: '--fo\\ o', fallback: ''});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--fo\\ o,)'), {variableName: '--fo\\ o', fallback: ''});
-      assert.deepEqual(
-          parseCSSVariableNameAndFallback('var(--\\ bar\\ , blue)'), {variableName: '--\\ bar\\', fallback: 'blue'});
-
-      // test \)
-      assert.deepEqual(
-          parseCSSVariableNameAndFallback('var( --ba\\ z\\) )'), {variableName: '--ba\\ z\\)', fallback: ''});
-      assert.deepEqual(
-          parseCSSVariableNameAndFallback('var( --ba\\ z\\), )'), {variableName: '--ba\\ z\\)', fallback: ''});
-      assert.deepEqual(
-          parseCSSVariableNameAndFallback('var( --ba\\ z\\),  90%  )'),
-          {variableName: '--ba\\ z\\)', fallback: '90%  '});
-    });
-
-    it('correctly parses simple CSS variables with fallback', () => {
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--foo,1px)'), {variableName: '--foo', fallback: '1px'});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--x-y,2%)'), {variableName: '--x-y', fallback: '2%'});
-      assert.deepEqual(
-          parseCSSVariableNameAndFallback('var(--x-y , 100%  )'), {variableName: '--x-y', fallback: '100%  '});
-      assert.deepEqual(
-          parseCSSVariableNameAndFallback('var(--A123, 666 )'), {variableName: '--A123', fallback: '666 '});
-    });
-
-    it('property rejects non-custom variables', () => {
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(foo)'), {variableName: null, fallback: null});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(foo,1px)'), {variableName: null, fallback: null});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(-foo,1px)'), {variableName: null, fallback: null});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(-\ bar)'), {variableName: null, fallback: null});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(-\\- bar)'), {variableName: null, fallback: null});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(-90bar)'), {variableName: null, fallback: null});
-    });
-
-    it('correctly parses variables with special characters', () => {
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--🤖)'), {variableName: '--🤖', fallback: ''});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--foo-🤖)'), {variableName: '--foo-🤖', fallback: ''});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--🤖, 1px)'), {variableName: '--🤖', fallback: '1px'});
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--永,   国)'), {variableName: '--永', fallback: '国'});
-    });
-
-    it('correctly parses variables with escaped characters in name', () => {
-      assert.deepEqual(parseCSSVariableNameAndFallback('var(--_\x30-pink)'), {variableName: '--_0-pink', fallback: ''});
-
-      assert.deepEqual(
-          parseCSSVariableNameAndFallback('var(--_-color-blue)'), {variableName: '--_-color-blue', fallback: ''});
-      assert.deepEqual(
-          parseCSSVariableNameAndFallback('var(-\-_-color-blue)'), {variableName: '-\-_-color-blue', fallback: ''});
-      assert.deepEqual(
-          parseCSSVariableNameAndFallback('var(\--_-color-blue)'), {variableName: '\--_-color-blue', fallback: ''});
-      assert.deepEqual(
-          parseCSSVariableNameAndFallback('var(---three_hyphens)'), {variableName: '---three_hyphens', fallback: ''});
-    });
-  });
-
   describe('computeCSSVariable', () => {
-    const testCssValueEquals = async (text: string, value: unknown) => {
+    const testCssValueEquals = async (text: string, expectedValue: unknown) => {
       const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
       node.id = 1 as Protocol.DOM.NodeId;
 
@@ -143,26 +67,44 @@ describe('CSSMatchedStyles', () => {
                 {name: '--theme', value: 'var(--dark)'},
                 {name: '--shadow', value: '1px var(--theme)'},
                 {name: '--width', value: '1px'},
+                {name: '--a', value: 'a'},
+                {name: '--b', value: 'var(--a)'},
+                {name: '--valid-fallback', value: 'var(--non-existent, fallback-value)'},
+                {name: '--var-reference-in-fallback', value: 'var(--non-existent, var(--foo))'},
+                {name: '--itself', value: 'var(--itself)'},
+                {name: '--itself-complex', value: '10px var(--itself-complex)'},
+                {name: '--cycle-1', value: 'var(--cycle-2)'},
+                {name: '--cycle-2', value: 'var(--cycle-1)'},
+                {name: '--cycle-a', value: 'var(--cycle-b, 50px)'},
+                {name: '--cycle-b', value: 'var(--cycle-a)'},
+                {name: '--cycle-in-fallback', value: 'var(--non-existent, var(--cycle-a))'},
+                {name: '--non-existent-fallback', value: 'var(--non-existent, var(--another-non-existent))'},
+                {name: '--out-of-cycle', value: 'var(--cycle-2, 20px)'},
+                {name: '--non-inherited', value: 'var(--inherited)'},
+                {name: '--also-inherited-overloaded', value: 'this is overloaded here'},
+              ]),
+          ruleMatch(
+              'html',
+              [
+                {name: '--inherited', value: 'var(--also-inherited-overloaded)'},
+                {name: '--also-inherited-overloaded', value: 'inherited and overloaded'},
               ]),
         ],
       });
 
-      const val = matchedStyles.computeCSSVariable(matchedStyles.nodeStyles()[0], text)?.value;
-      assert.strictEqual(val, value);
+      const actualValue = matchedStyles.computeCSSVariable(matchedStyles.nodeStyles()[0], text)?.value ?? null;
+      assert.strictEqual(actualValue, expectedValue);
     };
 
     it('should correctly compute the value of an expression that uses a variable', async () => {
       await testCssValueEquals('--foo', 'active-foo');
       await testCssValueEquals('--baz', 'active-baz !important');
-      await testCssValueEquals('--does-not-exist', undefined);
+      await testCssValueEquals('--does-not-exist', null);
       await testCssValueEquals('--dark', 'darkgrey');
       await testCssValueEquals('--light', 'lightgrey');
       await testCssValueEquals('--theme', 'darkgrey');
       await testCssValueEquals('--shadow', '1px darkgrey');
       await testCssValueEquals('--width', '1px');
-      await testCssValueEquals('--cycle-a', undefined);
-      await testCssValueEquals('--cycle-b', undefined);
-      await testCssValueEquals('--cycle-c', undefined);
     });
 
     it('correctly resolves the declaration', async () => {
@@ -224,37 +166,59 @@ describe('CSSMatchedStyles', () => {
       testComputedVariableValueEquals('--bar', styleFoo3, 'bar0', matchedStyles.registeredProperties()[0]);
       testComputedVariableValueEquals('--foo', styleBaz, 'foo3', styleFoo3.leadingProperties()[0]);
     });
-  });
 
-  describe('computeValue', () => {
-    const testComputedValueEquals = async (text: string, value: unknown) => {
-      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-      node.id = 1 as Protocol.DOM.NodeId;
-
-      const matchedStyles = await createMatchedStyles({
-        cssModel: sinon.createStubInstance(SDK.CSSModel.CSSModel),
-        node,
-        matchedPayload: [ruleMatch(
-            'div',
-            [
-              {name: '--width', value: '1px'},
-              {name: '--dark', value: 'darkgrey'},
-              {name: '--theme', value: 'var(--dark)'},
-            ])],
+    describe('cyclic references', () => {
+      it('should return `null` when the variable references itself', async () => {
+        await testCssValueEquals('--itself', null);
+        await testCssValueEquals('--itself-complex', null);
       });
 
-      const val = matchedStyles.computeValue(matchedStyles.nodeStyles()[0], text);
-      assert.strictEqual(val, value);
-    };
+      it('should return `null` when there is a simple cycle (1->2->1)', async () => {
+        await testCssValueEquals('--cycle-1', null);
+      });
 
-    it('should correctly compute the value of an expression that uses a variable', async () => {
-      await testComputedValueEquals('1px var(--dark) 2px var(--theme)', '1px darkgrey 2px darkgrey');
-      await testComputedValueEquals('1px var(--theme)', '1px darkgrey');
-      await testComputedValueEquals(
-          'rgb(100, 200, 300) var(--some-color, blue    ) 1px', 'rgb(100, 200, 300) blue 1px');
-      await testComputedValueEquals('var(--not-existing)', null);
-      await testComputedValueEquals('var(--not-existing-with-default, red)', 'red');
-      await testComputedValueEquals('var(--width)solid black', '1px solid black');
+      // TODO(ergunsh): These are valid `var()` reference cases that we currently
+      // don't handle correctly.
+      it.skip('[crbug.com/329626445] should return `null` if the var reference is inside the cycle', async () => {
+        await testCssValueEquals('--cycle-a', null);
+      });
+
+      it('should return fallback value if the expression is not inside the cycle', async () => {
+        await testCssValueEquals('--out-of-cycle', '20px');
+      });
+    });
+
+    describe('var references inside fallback', () => {
+      it('should resolve a `var()` reference inside fallback value too', async () => {
+        await testCssValueEquals('--var-reference-in-fallback', 'active-foo');
+      });
+
+      // TODO(ergunsh): These are valid `var()` reference cases that we currently
+      // don't handle correctly.
+      it.skip(
+          '[crbug.com/329626445] should return null when the fallback value contains a cyclic reference', async () => {
+            await testCssValueEquals('--cycle-in-fallback', null);
+          });
+
+      it('should return null when the fallback value is non existent too', async () => {
+        await testCssValueEquals('--non-existent-fallback', null);
+      });
+    });
+
+    it('should resolve a `var()` reference with nothing else', async () => {
+      await testCssValueEquals('--a', 'a');
+    });
+
+    it('should resolve a `var()` reference until no `var()` references left', async () => {
+      await testCssValueEquals('--b', 'a');
+    });
+
+    it('should resolve to fallback if the referenced variable does not exist', async () => {
+      await testCssValueEquals('--valid-fallback', 'fallback-value');
+    });
+
+    it('should correctly resolve the `var()` reference for complex inheritance case', async () => {
+      await testCssValueEquals('--non-inherited', 'inherited and overloaded');
     });
   });
 

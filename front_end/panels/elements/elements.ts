@@ -53,7 +53,7 @@ import * as MetricsSidebarPane from './MetricsSidebarPane.js';
 import * as NodeStackTraceWidget from './NodeStackTraceWidget.js';
 import * as PlatformFontsWidget from './PlatformFontsWidget.js';
 import * as PropertiesWidget from './PropertiesWidget.js';
-import * as PropertyParser from './PropertyParser.js';
+import * as PropertyMatchers from './PropertyMatchers.js';
 import * as PropertyRenderer from './PropertyRenderer.js';
 import * as StyleEditorWidget from './StyleEditorWidget.js';
 import * as StylePropertiesSection from './StylePropertiesSection.js';
@@ -88,7 +88,7 @@ export {
   NodeStackTraceWidget,
   PlatformFontsWidget,
   PropertiesWidget,
-  PropertyParser,
+  PropertyMatchers,
   PropertyRenderer,
   StyleEditorWidget,
   StylePropertiesSection,

@@ -30,31 +30,27 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-enum ChatMessageEntity {
+export enum ChatMessageEntity {
   MODEL = 'model',
   USER = 'user',
 }
 
-const EXAMPLE_MESSAGES = [
-  {
-    entity: ChatMessageEntity.USER,
-    text: 'This is an example message',
-  },
-  {
-    entity: ChatMessageEntity.MODEL,
-    text: 'This is an example message',
-  },
-];
+export type ChatMessage = {
+  entity: ChatMessageEntity,
+  text: string,
+};
 
 export const enum State {
   CONSENT_VIEW = 'consent',
-  CHAT_VIEW = 'chat',
+  CHAT_VIEW = 'chat-view',
+  CHAT_VIEW_LOADING = 'chat-view-loading',
 }
 
 export type Props = {
   onTextSubmit: (text: string) => void,
   onAcceptPrivacyNotice: () => void,
   state: State,
+  messages: ChatMessage[],
 };
 
 export class FreestylerChatUi extends HTMLElement {
@@ -85,6 +81,7 @@ export class FreestylerChatUi extends HTMLElement {
     }
 
     this.#props.onTextSubmit(input.value);
+    input.value = '';
   };
 
   #renderConsentOnboarding = (): LitHtml.TemplateResult => {
@@ -94,17 +91,16 @@ export class FreestylerChatUi extends HTMLElement {
         Privacy Notice
       </h2>
       <main>
-        TODO: content
+        This is an example privacy notice.
 
         <div class="consent-buttons-container">
           <${Buttons.Button.Button.litTagName}
             class="next-button"
             @click=${this.#props.onAcceptPrivacyNotice}
             .data=${{
-      variant: Buttons.Button.Variant.PRIMARY,
-      jslogContext: 'accept',
-    } as Buttons.Button.ButtonData}
-          >
+              variant: Buttons.Button.Variant.PRIMARY,
+              jslogContext: 'accept',
+            } as Buttons.Button.ButtonData}>
             ${i18nString(UIStrings.acceptButtonTitle)}
           </${Buttons.Button.Button.litTagName}>
         </div>
@@ -127,11 +123,14 @@ export class FreestylerChatUi extends HTMLElement {
   };
 
   #renderChatUi = (): LitHtml.TemplateResult => {
+    const isLoading = this.#props.state === State.CHAT_VIEW_LOADING;
+
     // clang-format off
     return LitHtml.html`
       <div class="chat-ui">
         <div class="messages-container">
-          ${EXAMPLE_MESSAGES.map(message => this.#renderChatMessage(message.text, message.entity))}
+          ${this.#props.messages.map(message => this.#renderChatMessage(message.text, message.entity))}
+          ${isLoading ? 'Loading' : ''}
         </div>
         <form class="input-form" @submit=${this.#handleSubmit}>
           <div class="chat-input-container">
@@ -144,11 +143,11 @@ export class FreestylerChatUi extends HTMLElement {
               aria-label=${i18nString(UIStrings.sendButtonTitle)}
               jslog=${VisualLogging.action('send').track({click: true})}
               .data=${{
-              variant: Buttons.Button.Variant.ICON,
-              size: Buttons.Button.Size.SMALL,
-              iconName: 'send',
-              title: i18nString(UIStrings.sendButtonTitle),
-            } as Buttons.Button.ButtonData}
+                variant: Buttons.Button.Variant.ICON,
+                size: Buttons.Button.Size.SMALL,
+                iconName: 'send',
+                title: i18nString(UIStrings.sendButtonTitle),
+              } as Buttons.Button.ButtonData}
             ></${Buttons.Button.Button.litTagName}>
           </div>
           <span class="chat-input-disclaimer">${i18nString(UIStrings.inputDisclaimer)}</span>
@@ -164,6 +163,7 @@ export class FreestylerChatUi extends HTMLElement {
         LitHtml.render(this.#renderConsentOnboarding(), this.#shadow, {host: this});
         break;
       case State.CHAT_VIEW:
+      case State.CHAT_VIEW_LOADING:
         LitHtml.render(this.#renderChatUi(), this.#shadow, {host: this});
         break;
     }

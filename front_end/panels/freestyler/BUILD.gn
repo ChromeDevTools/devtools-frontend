@@ -23,7 +23,10 @@ devtools_module("freestyler") {
 
   deps = [
     ":css_files",
+    "../../core/host:bundle",
+    "../../core/i18n:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/lit-html:bundle",
   ]
 }
 

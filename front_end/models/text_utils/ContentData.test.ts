@@ -108,4 +108,47 @@ describe('ContentData', () => {
     assert.property(deferedErrorContent, 'error');
     assert.propertyVal(deferedErrorContent, 'error', 'something went wrong');
   });
+
+  describe('contentEqualTo', () => {
+    it('ignores mime type', () => {
+      const textContent1 = new ContentData('a simple text', false, MimeType.HTML);
+      const textContent2 = new ContentData('a simple text', false, MimeType.CSS);
+
+      assert.isTrue(textContent1.contentEqualTo(textContent2));
+    });
+
+    it('ignores charset', () => {
+      // Charset is only used for decoding, so creating a text ContentData with non-utf8 is fine.
+      const textContent1 = new ContentData('a simple text', false, MimeType.PLAIN, 'utf-8');
+      const textContent2 = new ContentData('a simple text', false, MimeType.PLAIN, 'utf-16');
+
+      assert.isTrue(textContent1.contentEqualTo(textContent2));
+    });
+
+    it('compares content accurately', () => {
+      const textContent1 = new ContentData('a simple text', false, MimeType.PLAIN);
+      const textContent2 = new ContentData('another text', false, MimeType.PLAIN);
+      const textContent3 = new ContentData('another text', false, MimeType.PLAIN);
+
+      assert.isFalse(textContent1.contentEqualTo(textContent2));
+      assert.isFalse(textContent1.contentEqualTo(textContent3));
+      assert.isTrue(textContent2.contentEqualTo(textContent3));
+
+      const binaryContent1 = new ContentData('AQIDBA==', true, 'application/wasm');
+      const binaryContent2 = new ContentData('AGFzbQEAAAA=', true, 'application/wasm');
+      const binaryContent3 = new ContentData('AQIDBA==', true, 'application/wasm');
+
+      assert.isFalse(binaryContent1.contentEqualTo(binaryContent2));
+      assert.isTrue(binaryContent1.contentEqualTo(binaryContent3));
+      assert.isFalse(binaryContent2.contentEqualTo(binaryContent3));
+    });
+
+    it('compares content when one is text and the other is binary', () => {
+      const content1 = new ContentData(
+          'PCFET0NUWVBFIGh0bWw+CjxwPknDsXTDq3Juw6J0acO0bsOgbGl6w6Z0acO4buKYg/CdjIY8L3A+Cg==', true, MimeType.HTML);
+      const content2 = new ContentData('<!DOCTYPE html>\n<p>Iñtërnâtiônàlizætiøn☃𝌆</p>\n', false, MimeType.HTML);
+
+      assert.isTrue(content1.contentEqualTo(content2));
+    });
+  });
 });

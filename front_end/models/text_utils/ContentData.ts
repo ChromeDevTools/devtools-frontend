@@ -91,6 +91,24 @@ export class ContentData {
     return this.#contentAsBase64 !== undefined;
   }
 
+  /**
+   * @returns True, iff the contents (base64 or text) are equal.
+   * Does not compare mime type and charset, but will decode base64 data if both
+   * mime types indicate that it's text content.
+   */
+  contentEqualTo(other: ContentData): boolean {
+    if (this.#contentAsBase64 !== undefined && other.#contentAsBase64 !== undefined) {
+      return this.#contentAsBase64 === other.#contentAsBase64;
+    }
+    if (this.#contentAsText !== undefined && other.#contentAsText !== undefined) {
+      return this.#contentAsText === other.#contentAsText;
+    }
+    if (this.isTextContent && other.isTextContent) {
+      return this.text === other.text;
+    }
+    return false;
+  }
+
   asDataUrl(): string|null {
     // To keep with existing behavior we prefer to return the content
     // encoded if that is how this ContentData was constructed with.

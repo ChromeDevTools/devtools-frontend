@@ -65,6 +65,34 @@ class RNPerfMetrics {
     });
   }
 
+  registerGlobalErrorReporting(): void {
+    window.addEventListener('error', event => {
+      this.sendEvent({
+        eventName: 'Browser.UnhandledError',
+        params: {
+          type: 'error',
+          message: event.message,
+        }
+      });
+    }, {passive: true});
+
+    window.addEventListener('unhandledrejection', event => {
+      let message: string;
+      try {
+        message = String(event.reason);
+      } catch {
+        message = '[Promise was rejected without a serialisable reason]';
+      }
+      this.sendEvent({
+        eventName: 'Browser.UnhandledError',
+        params: {
+          type: 'rejectedPromise',
+          message,
+        }
+      });
+    }, {passive: true});
+  }
+
   setLaunchId(launchId: string|null): void {
     this.#launchId = launchId;
   }
@@ -137,7 +165,15 @@ export type BrowserVisibilityChangeEvent = Readonly<{
   }>,
 }>;
 
-export type ReactNativeChromeDevToolsEvent =
-    EntrypointLoadingStartedEvent|EntrypointLoadingFinishedEvent|DebuggerReadyEvent|BrowserVisibilityChangeEvent;
+export type UnhandledErrorEvent = Readonly<{
+  eventName: 'Browser.UnhandledError',
+  params: Readonly<{
+    type: 'error' | 'rejectedPromise',
+    message: string,
+  }>,
+}>;
+
+export type ReactNativeChromeDevToolsEvent = EntrypointLoadingStartedEvent|EntrypointLoadingFinishedEvent|
+    DebuggerReadyEvent|BrowserVisibilityChangeEvent|UnhandledErrorEvent;
 
 export type DecoratedReactNativeChromeDevToolsEvent = CommonEventFields&ReactNativeChromeDevToolsEvent;

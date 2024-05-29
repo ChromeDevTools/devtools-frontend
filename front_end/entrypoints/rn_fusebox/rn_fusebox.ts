@@ -31,6 +31,7 @@ import * as RNExperiments from '../../core/rn_experiments/rn_experiments.js';
  * please make sure these perf metrics lines are called ahead of everything else
  */
 Host.rnPerfMetrics.registerPerfMetricsGlobalPostMessageHandler();
+Host.rnPerfMetrics.registerGlobalErrorReporting();
 Host.rnPerfMetrics.setLaunchId(Root.Runtime.Runtime.queryParam('launchId'));
 Host.rnPerfMetrics.entryPointLoadingStarted('rn_fusebox');
 

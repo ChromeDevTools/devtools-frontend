@@ -368,9 +368,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       event: Common.EventTarget.EventTargetEvent<number>): void {
     const entryIndex = event.data;
     if (dataProvider === this.mainDataProvider) {
-      if (this.mainDataProvider.buildFlowForInitiator(entryIndex)) {
-        this.mainFlameChart.scheduleUpdate();
-      }
+      this.mainDataProvider.buildFlowForInitiator(entryIndex);
     }
     this.delegate.select((dataProvider as TimelineFlameChartNetworkDataProvider | TimelineFlameChartDataProvider)
                              .createSelection(entryIndex));

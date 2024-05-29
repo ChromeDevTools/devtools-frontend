@@ -1024,6 +1024,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     this.dataProvider.modifyTree?.(index, treeAction);
     this.dataProvider.timelineData(true);
+    this.dataProvider.buildFlowForInitiator?.(index);
     this.update();
   }
 
@@ -3705,6 +3706,8 @@ export class FlameChartTimelineData {
 }
 
 export interface FlameChartDataProvider {
+  buildFlowForInitiator?(index: number): unknown;
+
   minimumBoundary(): number;
 
   totalTime(): number;

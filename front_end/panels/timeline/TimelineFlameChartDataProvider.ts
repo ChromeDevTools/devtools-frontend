@@ -104,6 +104,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private screenshotImageCache!: Map<TraceEngine.Types.TraceEvents.SyntheticScreenshot, HTMLImageElement|null>;
   private entryIndexToTitle!: string[];
   private lastInitiatorEntry!: number;
+  private lastInitiatorsData: PerfUI.FlameChart.FlameChartInitiatorData[] = [];
   private lastSelection?: Selection;
   #font: string;
   #eventIndexByEvent: WeakMap<TraceEngine.Types.TraceEvents.TraceEventData, number|null> = new WeakMap();
@@ -1014,13 +1015,16 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    * @returns if we should re-render the flame chart (canvas)
    */
   buildFlowForInitiator(entryIndex: number): boolean {
-    if (this.lastInitiatorEntry === entryIndex) {
-      return false;
-    }
     if (!this.traceEngineData) {
       return false;
     }
     if (!this.timelineDataInternal) {
+      return false;
+    }
+    if (this.lastInitiatorEntry === entryIndex) {
+      if (this.lastInitiatorsData) {
+        this.timelineDataInternal.initiatorsData = this.lastInitiatorsData;
+      }
       return false;
     }
     if (!this.compatibilityTracksAppender) {
@@ -1086,6 +1090,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         isEntryHidden: intiatorData.isEntryHidden,
       });
     }
+    this.lastInitiatorsData = this.timelineDataInternal.initiatorsData;
     return true;
   }
 

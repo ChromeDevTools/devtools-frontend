@@ -52,6 +52,28 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     assert.isTrue(addExtensionSpy.calledOnce, 'addExtension called once');
     assert.isTrue(addExtensionSpy.returned(undefined), 'addExtension returned undefined');
   });
+
+  it('only returns page resources for allowed targets', async () => {
+    const urls = ['http://example.com', 'chrome://version'] as Platform.DevToolsPath.UrlString[];
+    const targets = urls.map(async url => {
+      const target = createTarget({url});
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assert.isNotNull(resourceTreeModel);
+      await resourceTreeModel.once(SDK.ResourceTreeModel.Events.CachedResourcesLoaded);
+      target.setInspectedURL(url);
+      resourceTreeModel.mainFrame?.addResource(new SDK.Resource.Resource(
+          resourceTreeModel, null, url, url, null, null, Common.ResourceType.resourceTypes.Document, 'application/text',
+          null, null));
+      return target;
+    });
+
+    await Promise.all(targets);
+
+    const resources =
+        await new Promise<Chrome.DevTools.Resource[]>(r => context.chrome.devtools!.inspectedWindow.getResources(r));
+
+    assert.deepStrictEqual(resources.map(r => r.url), ['https://example.com/', 'http://example.com']);
+  });
 });
 
 describeWithDevtoolsExtension('Extensions', {}, context => {
@@ -244,6 +266,24 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     await onHiddenCalled;
 
     await context.chrome.devtools?.recorder.unregisterRecorderExtensionPlugin(extensionPlugin);
+  });
+
+  it('reload only the main toplevel frame', async () => {
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    assert.isNotNull(target);
+    const secondTarget = createTarget();
+
+    const secondResourceTreeModel = secondTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.isNotNull(secondResourceTreeModel);
+    const secondReloadStub = sinon.stub(secondResourceTreeModel, 'reloadPage');
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.isNotNull(resourceTreeModel);
+    const reloadStub = sinon.stub(resourceTreeModel, 'reloadPage');
+    const reloadPromise = new Promise(resolve => reloadStub.callsFake(resolve));
+    context.chrome.devtools!.inspectedWindow.reload();
+    await reloadPromise;
+    assert.isTrue(reloadStub.calledOnce);
+    assert.isTrue(secondReloadStub.notCalled);
   });
 });
 

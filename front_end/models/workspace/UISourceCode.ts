@@ -51,7 +51,7 @@ const str_ = i18n.i18n.registerUIStrings('models/workspace/UISourceCode.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
-    TextUtils.ContentProvider.SafeContentProvider {
+    TextUtils.ContentProvider.ContentProvider {
   private projectInternal: Project;
   private urlInternal: Platform.DevToolsPath.UrlString;
   private readonly originInternal: Platform.DevToolsPath.UrlString;

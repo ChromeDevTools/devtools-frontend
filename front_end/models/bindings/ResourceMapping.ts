@@ -391,7 +391,7 @@ class ModelInfo {
   }
 }
 
-class Binding implements TextUtils.ContentProvider.SafeContentProvider {
+class Binding implements TextUtils.ContentProvider.ContentProvider {
   readonly resources: Set<SDK.Resource.Resource>;
   readonly #project: ContentProviderBasedProject;
   readonly #uiSourceCode: Workspace.UISourceCode.UISourceCode;

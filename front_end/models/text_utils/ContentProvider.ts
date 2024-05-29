@@ -38,7 +38,9 @@ import {type WasmDisassembly} from './WasmDisassembly.js';
 export interface ContentProvider {
   contentURL(): Platform.DevToolsPath.UrlString;
   contentType(): Common.ResourceType.ResourceType;
+  /** @deprecated Prefer {@link requestContentData} instead */
   requestContent(): Promise<DeferredContent>;
+  requestContentData(): Promise<ContentDataOrError>;
   searchInContent(query: string, caseSensitive: boolean, isRegex: boolean): Promise<SearchMatch[]>;
 }
 
@@ -83,18 +85,10 @@ export type DeferredContent = {
 // a fully completed "requestContent" as the request keeps on going indefinitely.
 // Such proivders can implement the "StreamingContentProvider" addition, which allows
 // for partial/streaming content.
-export interface StreamingContentProvider extends SafeContentProvider {
+export interface StreamingContentProvider extends ContentProvider {
   requestStreamingContent(): Promise<StreamingContentDataOrError>;
 }
 
 export const isStreamingContentProvider = function(provider: ContentProvider): provider is StreamingContentProvider {
   return 'requestStreamingContent' in provider;
 };
-
-/**
- * Temporary interface to migrate ContentProvider#requestContent to return
- * {@link ContentData} instead of a DefferedContent.
- */
-export interface SafeContentProvider extends ContentProvider {
-  requestContentData(): Promise<ContentDataOrError>;
-}

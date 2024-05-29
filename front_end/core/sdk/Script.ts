@@ -64,7 +64,7 @@ let scriptCacheInstance: {
   registry: FinalizationRegistry<string>,
 }|null = null;
 
-export class Script implements TextUtils.ContentProvider.SafeContentProvider, FrameAssociated {
+export class Script implements TextUtils.ContentProvider.ContentProvider, FrameAssociated {
   debuggerModel: DebuggerModel;
   scriptId: Protocol.Runtime.ScriptId;
   sourceURL: Platform.DevToolsPath.UrlString;
@@ -313,7 +313,7 @@ export class Script implements TextUtils.ContentProvider.SafeContentProvider, Fr
     return response.arrayBuffer();
   }
 
-  originalContentProvider(): TextUtils.ContentProvider.SafeContentProvider {
+  originalContentProvider(): TextUtils.ContentProvider.ContentProvider {
     return new TextUtils.StaticContentProvider.StaticContentProvider(
         this.contentURL(), this.contentType(), () => this.requestContentData());
   }

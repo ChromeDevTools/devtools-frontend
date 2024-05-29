@@ -10,7 +10,7 @@ import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Bindings from '../bindings/bindings.js';
-import type * as TextUtils from '../text_utils/text_utils.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import * as Persistence from './persistence.js';
@@ -35,6 +35,8 @@ describeWithLocale('ContextMenuProvider', () => {
       contentType: () => Common.ResourceType.resourceTypes
                              .Document,  // Navigating a tab to an image will result in a document type for images.
       requestContent: () => Promise.resolve({isEncoded: true, content: 'AGFzbQEAAAA='}),
+      requestContentData: () =>
+          Promise.resolve(new TextUtils.ContentData.ContentData('AGFzbQEAAAA=', true, 'image/webp')),
       searchInContent: () => assert.fail('Not implemented'),
     };
 

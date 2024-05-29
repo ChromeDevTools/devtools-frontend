@@ -177,7 +177,7 @@ export class StylesSourceMapping implements SourceMapping {
   }
 }
 
-export class StyleFile implements TextUtils.ContentProvider.SafeContentProvider {
+export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
   readonly #cssModel: SDK.CSSModel.CSSModel;
   readonly #project: ContentProviderBasedProject;
   headers: Set<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>;

@@ -28,7 +28,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('core/sdk/CSSStyleSheetHeader.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class CSSStyleSheetHeader implements TextUtils.ContentProvider.SafeContentProvider, FrameAssociated {
+export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentProvider, FrameAssociated {
   #cssModelInternal: CSSModel;
   id: Protocol.CSS.StyleSheetId;
   frameId: Protocol.Page.FrameId;
@@ -75,7 +75,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.SafeConten
     this.#originalContentProviderInternal = null;
   }
 
-  originalContentProvider(): TextUtils.ContentProvider.SafeContentProvider {
+  originalContentProvider(): TextUtils.ContentProvider.ContentProvider {
     if (!this.#originalContentProviderInternal) {
       const lazyContent = (async(): Promise<TextUtils.ContentData.ContentDataOrError> => {
         const originalText = await this.#cssModelInternal.originalStyleSheetText(this);

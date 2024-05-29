@@ -47,7 +47,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('core/sdk/CompilerSourceMappingContentProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class CompilerSourceMappingContentProvider implements TextUtils.ContentProvider.SafeContentProvider {
+export class CompilerSourceMappingContentProvider implements TextUtils.ContentProvider.ContentProvider {
   readonly #sourceURL: Platform.DevToolsPath.UrlString;
   readonly #contentTypeInternal: Common.ResourceType.ResourceType;
   readonly #initiator: PageResourceLoadInitiator;

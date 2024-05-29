@@ -38,7 +38,7 @@ import * as Platform from '../platform/platform.js';
 import {type NetworkRequest} from './NetworkRequest.js';
 import {type ResourceTreeFrame, type ResourceTreeModel} from './ResourceTreeModel.js';
 
-export class Resource implements TextUtils.ContentProvider.SafeContentProvider {
+export class Resource implements TextUtils.ContentProvider.ContentProvider {
   readonly #resourceTreeModel: ResourceTreeModel;
   #requestInternal: NetworkRequest|null;
   #urlInternal!: Platform.DevToolsPath.UrlString;

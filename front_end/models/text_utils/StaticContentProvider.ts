@@ -7,13 +7,13 @@ import type * as Platform from '../../core/platform/platform.js';
 
 import {ContentData, type ContentDataOrError} from './ContentData.js';
 import {
+  type ContentProvider,
   type DeferredContent,
-  type SafeContentProvider,
   type SearchMatch,
 } from './ContentProvider.js';
 import {performSearchInContentData} from './TextUtils.js';
 
-export class StaticContentProvider implements SafeContentProvider {
+export class StaticContentProvider implements ContentProvider {
   readonly #contentURL: Platform.DevToolsPath.UrlString;
   readonly #contentType: Common.ResourceType.ResourceType;
   readonly #lazyContent: () => Promise<ContentDataOrError>;

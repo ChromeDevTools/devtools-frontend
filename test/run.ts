@@ -26,7 +26,7 @@ const options = commandLineArgs(yargs(process.argv.slice(2)))
                     })
                     .strict()
                     .argv;
-const CONSUMED_OPTIONS = ['tests', 'skip-ninja', 'debug-driver', 'verbose', 'watch'];
+const CONSUMED_OPTIONS = ['tests', 'skip-ninja', 'debug-driver', 'verbose', 'watch', 'v'];
 
 let logLevel = 'error';
 if (options['verbose'] === 1) {
@@ -121,7 +121,7 @@ class MochaTests extends Tests {
 
 class KarmaTests extends Tests {
   override run(tests: PathPair[]) {
-    if (os.type() === 'WINDOWS_NT') {
+    if (os.type() === 'Windows_NT') {
       const result = runProcess(
           'python3',
           [

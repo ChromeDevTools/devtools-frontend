@@ -4,6 +4,7 @@
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Formatter from '../formatter/formatter.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 
 type ScopeTreeNode = Formatter.FormatterWorkerPool.ScopeTreeNode;
 
@@ -21,13 +22,13 @@ const scopeTrees = new WeakMap<SDK.Script.Script, Promise<ScopeTreeNode|null>>()
 export function scopeTreeForScript(script: SDK.Script.Script): Promise<ScopeTreeNode|null> {
   let promise = scopeTrees.get(script);
   if (promise === undefined) {
-    promise = script.requestContent().then(({content}) => {
-      if (content === null) {
+    promise = script.requestContentData().then(content => {
+      if (TextUtils.ContentData.ContentData.isError(content)) {
         return null;
       }
 
       const sourceType = script.isModule ? 'module' : 'script';
-      return Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptScopeTree(content, sourceType);
+      return Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptScopeTree(content.text, sourceType);
     });
     scopeTrees.set(script, promise);
   }

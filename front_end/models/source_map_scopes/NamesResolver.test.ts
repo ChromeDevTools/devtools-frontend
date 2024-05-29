@@ -415,7 +415,7 @@ describeWithMockConnection('NameResolver', () => {
         return;
       }
       const {lineNumber, columnNumber} = scopeLocation;
-      await script?.requestContent();
+      await script?.requestContentData();
       const functionName = await SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(
           {scriptId, columnNumber, lineNumber}, target);
       assert.strictEqual(functionName, 'unminified');

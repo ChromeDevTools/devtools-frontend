@@ -55,5 +55,6 @@ ts_library("unittests") {
     "../../core/sdk:bundle",
     "../../testing",
     "../formatter:bundle",
+    "../text_utils:bundle",
   ]
 }

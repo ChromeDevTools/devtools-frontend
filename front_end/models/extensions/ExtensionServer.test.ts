@@ -537,7 +537,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
         new TextUtils.StaticContentProvider.StaticContentProvider(
             url, Common.ResourceType.resourceTypes.Document, dataProvider),
         null, mimeType);
-    await project.uiSourceCodeForURL(url)?.requestContent();
+    await project.uiSourceCodeForURL(url)?.requestContentData();
   }
 
   it('blocks getting resource contents on blocked urls', async () => {

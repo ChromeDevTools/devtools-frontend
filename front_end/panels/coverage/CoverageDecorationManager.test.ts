@@ -68,7 +68,7 @@ describeWithMockConnection('CoverageDeocrationManager', () => {
       await backend.addScript(target, {url: URL, content: 'function foo(a,b){return a+b;}'}, null);
       const uiSourceCode = workspace.uiSourceCodeForURL(URL);
       assert.exists(uiSourceCode);
-      await uiSourceCode.requestContent();
+      await uiSourceCode.requestContentData();
       const manager = new CoverageDecorationManager(coverageModel, workspace, debuggerBinding, cssBinding);
 
       const usage = await manager.usageByLine(uiSourceCode, lineRangesForContent(uiSourceCode.content()));
@@ -80,7 +80,7 @@ describeWithMockConnection('CoverageDeocrationManager', () => {
       await backend.addScript(target, {url: URL, content: 'function foo(a,b){return a+b;}'}, null);
       const uiSourceCode = workspace.uiSourceCodeForURL(URL);
       assert.exists(uiSourceCode);
-      await uiSourceCode.requestContent();
+      await uiSourceCode.requestContentData();
       coverageModel.usageForRange.returns(true);
       const manager = new CoverageDecorationManager(coverageModel, workspace, debuggerBinding, cssBinding);
 
@@ -96,7 +96,7 @@ describeWithMockConnection('CoverageDeocrationManager', () => {
       const script = await backend.addScript(target, {url: URL, content: scriptContent}, null);
       const uiSourceCode = workspace.uiSourceCodeForURL(URL);
       assert.exists(uiSourceCode);
-      await uiSourceCode.requestContent();
+      await uiSourceCode.requestContentData();
       coverageModel.usageForRange.callsFake((contentProvider, startOffset, endOffset) => {
         assert.strictEqual(contentProvider, script);
         // Everything is covered except the body of the `if`.
@@ -160,7 +160,7 @@ function mulWithOffset(param1, param2, offset) {
     it('marks lines as covered if coverage info says so', async () => {
       const uiSourceCode = workspace.uiSourceCodeForURL('file:///tmp/example.js' as Platform.DevToolsPath.UrlString);
       assert.exists(uiSourceCode);
-      await uiSourceCode.requestContent();
+      await uiSourceCode.requestContentData();
       coverageModel.usageForRange.callsFake((contentProvider, startOffset, endOffset) => {
         assert.strictEqual(contentProvider, script);
         // Everything is covered except the body of the `if`.

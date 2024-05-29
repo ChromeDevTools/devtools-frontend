@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Protocol from '../../generated/protocol.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
@@ -43,8 +44,9 @@ console.log("foo");
         };
       });
       const script = debuggerModel.scriptForId(scriptId) as SDK.Script.Script;
-      const {content} = await script.originalContentProvider().requestContent();
-      assert.strictEqual(content, scriptSource);
+      const content = await script.originalContentProvider().requestContentData();
+      assert.instanceOf(content, TextUtils.ContentData.ContentData);
+      assert.strictEqual(content.text, scriptSource);
     });
   });
 
@@ -97,7 +99,9 @@ console.log("foo");
       const {status} = await script.editSource(newContent);
 
       assert.strictEqual(status, Protocol.Debugger.SetScriptSourceResponseStatus.Ok);
-      assert.strictEqual((await script.requestContent()).content, newContent);
+      const contentData = await script.requestContentData();
+      assert.instanceOf(contentData, TextUtils.ContentData.ContentData);
+      assert.strictEqual(contentData.text, newContent);
     });
 
     it('does not update the source content when the live edit fails', async () => {
@@ -112,7 +116,9 @@ console.log("foo");
       const {status} = await script.editSource('console.log("bar")');
 
       assert.strictEqual(status, Protocol.Debugger.SetScriptSourceResponseStatus.CompileError);
-      assert.strictEqual((await script.requestContent()).content, scriptContent);
+      const contentData = await script.requestContentData();
+      assert.instanceOf(contentData, TextUtils.ContentData.ContentData);
+      assert.strictEqual(contentData.text, scriptContent);
     });
 
     it('throws an error for protocol failures', done => {

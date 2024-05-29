@@ -3744,6 +3744,8 @@ export interface FlameChartDataProvider {
   hasTrackConfigurationMode(): boolean;
 
   eventByIndex?(entryIndex: number): TraceEngine.Types.TraceEvents.TraceEventData|null;
+
+  indexForEvent?(event: TraceEngine.Types.TraceEvents.TraceEventData): number|null;
 }
 
 export interface FlameChartMarker {

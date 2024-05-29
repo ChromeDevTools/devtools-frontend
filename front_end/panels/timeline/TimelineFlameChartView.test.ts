@@ -358,7 +358,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       }
 
       function generateContextMenuForNode(node: TraceEngine.Types.TraceEvents.TraceEventData): void {
-        const nodeId = flameChartView.getMainDataProvider().getIndexForEvent(node);
+        const nodeId = flameChartView.getMainDataProvider().indexForEvent(node);
         assert.isNotNull(nodeId);
         generateContextMenuForNodeId(nodeId);
       }

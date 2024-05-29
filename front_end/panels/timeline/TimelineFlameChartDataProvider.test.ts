@@ -47,6 +47,17 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     });
   });
 
+  it('can provide the index for an event and the event for a given index', async function() {
+    setupIgnoreListManagerEnvironment();
+    const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+    const traceParsedData = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
+    dataProvider.setModel(traceParsedData);
+
+    // Need to use an index that is not a frame, so jump past the frames.
+    const event = dataProvider.eventByIndex(100);
+    assert.isOk(event);
+    assert.strictEqual(dataProvider.indexForEvent(event), 100);
+  });
   it('adds candy stripe and triangle decorations to long tasks in the main thread', async function() {
     setupIgnoreListManagerEnvironment();
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();

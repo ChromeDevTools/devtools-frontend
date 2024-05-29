@@ -26,6 +26,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
   #timelineDataInternal?: PerfUI.FlameChart.FlameChartTimelineData|null;
   #lastSelection?: Selection;
   #traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null;
+  #eventIndexByEvent: Map<TraceEngine.Types.TraceEvents.SyntheticNetworkRequest, number|null> = new Map();
   constructor() {
     this.#minimumBoundaryInternal = 0;
     this.#timeSpan = 0;
@@ -40,6 +41,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     this.#timelineDataInternal = null;
     this.#traceEngineData = traceEngineData;
     this.#events = traceEngineData?.NetworkRequests.byTime || [];
+    this.#eventIndexByEvent.clear();
 
     if (this.#traceEngineData) {
       this.#setTimingBoundsData(this.#traceEngineData);
@@ -95,6 +97,25 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     const event = this.#events[index];
     this.#lastSelection = new Selection(TimelineSelection.fromTraceEvent(event), index);
     return this.#lastSelection.timelineSelection;
+  }
+
+  indexForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): number|null {
+    if (!TraceEngine.Types.TraceEvents.isSyntheticNetworkRequestDetailsEvent(event)) {
+      return null;
+    }
+    const fromCache = this.#eventIndexByEvent.get(event);
+    // Cached value might be null, which is OK.
+    if (fromCache !== undefined) {
+      return fromCache;
+    }
+    const index = this.#events.indexOf(event);
+    const result = index > -1 ? index : null;
+    this.#eventIndexByEvent.set(event, result);
+    return result;
+  }
+
+  eventByIndex(entryIndex: number): TraceEngine.Types.TraceEvents.SyntheticNetworkRequest|null {
+    return this.#events.at(entryIndex) ?? null;
   }
 
   entryIndexForSelection(selection: TimelineSelection|null): number {

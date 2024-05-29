@@ -236,7 +236,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
   }
 
   requestFileContent(uiSourceCode: Workspace.UISourceCode.UISourceCode):
-      Promise<TextUtils.ContentProvider.DeferredContent> {
+      Promise<TextUtils.ContentData.ContentDataOrError> {
     const filePath = this.filePathForUISourceCode(uiSourceCode);
     return this.fileSystemInternal.requestFileContent(filePath);
   }
@@ -294,9 +294,9 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
       uiSourceCode: Workspace.UISourceCode.UISourceCode, query: string, caseSensitive: boolean,
       isRegex: boolean): Promise<TextUtils.ContentProvider.SearchMatch[]> {
     const filePath = this.filePathForUISourceCode(uiSourceCode);
-    const {content} = await this.fileSystemInternal.requestFileContent(filePath);
-    if (content) {
-      return TextUtils.TextUtils.performSearchInContent(content, query, caseSensitive, isRegex);
+    const content = await this.fileSystemInternal.requestFileContent(filePath);
+    if (!TextUtils.ContentData.ContentData.isError(content) && content.isTextContent) {
+      return TextUtils.TextUtils.performSearchInContent(content.text, query, caseSensitive, isRegex);
     }
     return [];
   }

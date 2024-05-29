@@ -15,6 +15,7 @@ devtools_module("workspace_diff") {
     "../../core/host:bundle",
     "../../models/formatter:bundle",
     "../../models/persistence:bundle",
+    "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
     "../../third_party/diff:bundle",
   ]

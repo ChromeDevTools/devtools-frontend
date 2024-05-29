@@ -62,16 +62,13 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
   }
 
   async requestFileContent(uiSourceCode: Workspace.UISourceCode.UISourceCode):
-      Promise<TextUtils.ContentProvider.DeferredContent> {
+      Promise<TextUtils.ContentData.ContentDataOrError> {
     const {contentProvider} = this.#uiSourceCodeToData.get(uiSourceCode) as UISourceCodeData;
     try {
-      const content = await contentProvider.requestContentData();
-      return TextUtils.ContentData.ContentData.asDeferredContent(content);
+      return await contentProvider.requestContentData();
     } catch (err) {
       // TODO(rob.paveza): CRBug 1013683 - Consider propagating exceptions full-stack
       return {
-        content: null,
-        isEncoded: false,
         error: err ? String(err) : i18nString(UIStrings.unknownErrorLoadingFile),
       };
     }

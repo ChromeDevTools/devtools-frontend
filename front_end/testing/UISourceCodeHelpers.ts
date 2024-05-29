@@ -99,8 +99,8 @@ class TestFileSystem extends Persistence.FileSystemWorkspaceBinding.FileSystem {
   }
 
   override requestFileContent(_uiSourceCode: Workspace.UISourceCode.UISourceCode):
-      Promise<TextUtils.ContentProvider.DeferredContent> {
-    return Promise.resolve({content: this.#content, isEncoded: false});
+      Promise<TextUtils.ContentData.ContentDataOrError> {
+    return Promise.resolve(new TextUtils.ContentData.ContentData(this.#content, /* isBase64 */ false, 'text/plain'));
   }
 
   override requestMetadata(_uiSourceCode: Workspace.UISourceCode.UISourceCode):

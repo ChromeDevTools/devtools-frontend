@@ -8,10 +8,9 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Persistence from '../../models/persistence/persistence.js';
-
-import type * as TextUtils from '../../models/text_utils/text_utils.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
@@ -77,14 +76,14 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
   }
 
   override async requestFileContent(path: Platform.DevToolsPath.EncodedPathString):
-      Promise<TextUtils.ContentProvider.DeferredContent> {
+      Promise<TextUtils.ContentData.ContentDataOrError> {
     const name = unescapeSnippetName(Common.ParsedURL.ParsedURL.substring(path, 1));
     const snippets: Snippet[] = this.snippetsSetting.get();
     const snippet = snippets.find(snippet => snippet.name === name);
     if (snippet) {
-      return {content: snippet.content, isEncoded: false};
+      return new TextUtils.ContentData.ContentData(snippet.content, /* isBase64 */ false, 'text/javascript');
     }
-    return {content: null, isEncoded: false, error: `A snippet with name '${name}' was not found`};
+    return {error: `A snippet with name '${name}' was not found`};
   }
 
   override async setFileContent(path: Platform.DevToolsPath.EncodedPathString, content: string, _isBase64: boolean):

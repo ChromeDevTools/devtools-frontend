@@ -4,7 +4,7 @@
 
 import type * as Platform from '../../core/platform/platform.js';
 import {setupMockedUISourceCode} from '../../testing/UISourceCodeHelpers.js';
-import type * as TextUtils from '../text_utils/text_utils.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 
 import * as Workspace from './workspace.js';
 
@@ -154,17 +154,17 @@ describe('UISourceCode', () => {
 
   it('can request content', async () => {
     const sutObject = setupMockedUISourceCode();
-    const deferredContentStub = {content: 'Example', isEncoded: true} as TextUtils.ContentProvider.DeferredContent;
-    sutObject.projectStub.requestFileContent.resolves(deferredContentStub);
+    const contentData = new TextUtils.ContentData.ContentData('Example', false, 'text/plain');
+    sutObject.projectStub.requestFileContent.resolves(contentData);
 
     const result = await sutObject.sut.requestContent();
 
-    assert.deepEqual(result, deferredContentStub);
+    assert.deepEqual(result, contentData.asDeferedContent());
   });
 
   it('check if the content is encoded', async () => {
     const sutObject = setupMockedUISourceCode();
-    const deferredContentStub = {content: 'Example', isEncoded: true} as TextUtils.ContentProvider.DeferredContent;
+    const deferredContentStub = new TextUtils.ContentData.ContentData('AQIDBA==', true, 'application/wasm');
     sutObject.projectStub.requestFileContent.resolves(deferredContentStub);
 
     const {isEncoded} = await sutObject.sut.requestContent();
@@ -282,8 +282,7 @@ describe('UISourceCode', () => {
 
   it('can return load error', async () => {
     const sutObject = setupMockedUISourceCode();
-    const deferredContentStub = {content: 'Content with error', isEncoded: true, error: 'Example Error'} as
-        TextUtils.ContentProvider.DeferredContent;
+    const deferredContentStub = {error: 'Example Error'};
     sutObject.projectStub.requestFileContent.resolves(deferredContentStub);
     sutObject.projectStub.workspace.returns(sinon.createStubInstance(Workspace.Workspace.WorkspaceImpl));
     await sutObject.sut.requestContent();

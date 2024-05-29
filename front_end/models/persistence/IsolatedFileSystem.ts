@@ -322,12 +322,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     });
   }
 
-  override async requestFileContent(path: Platform.DevToolsPath.EncodedPathString):
-      Promise<TextUtils.ContentProvider.DeferredContent> {
-    return TextUtils.ContentData.ContentData.asDeferredContent(await this.requestFileContentData(path));
-  }
-
-  requestFileContentData(path: Platform.DevToolsPath.EncodedPathString):
+  override requestFileContent(path: Platform.DevToolsPath.EncodedPathString):
       Promise<TextUtils.ContentData.ContentDataOrError> {
     return this.serializedFileOperation(path, () => this.innerRequestFileContent(path));
   }

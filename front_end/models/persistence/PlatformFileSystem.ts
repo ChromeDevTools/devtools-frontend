@@ -66,8 +66,8 @@ export class PlatformFileSystem {
   }
 
   async requestFileContent(_path: Platform.DevToolsPath.EncodedPathString):
-      Promise<TextUtils.ContentProvider.DeferredContent> {
-    return {content: null, error: i18nString(UIStrings.unableToReadFilesWithThis), isEncoded: false};
+      Promise<TextUtils.ContentData.ContentDataOrError> {
+    return {error: i18nString(UIStrings.unableToReadFilesWithThis)};
   }
 
   setFileContent(_path: Platform.DevToolsPath.EncodedPathString, _content: string, _isBase64: boolean): void {

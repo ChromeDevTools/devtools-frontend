@@ -242,16 +242,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     }
 
     try {
-      const content = await this.projectInternal.requestFileContent(this);
-      // TODO(crbug.com/342529015): Simplify this once the project interface also returns a ContentData.
-      if ('error' in content && typeof content.error === 'string') {
-        this.contentInternal = {error: content.error};
-      } else if ('wasmDisassemblyInfo' in content) {
-        this.contentInternal = content.wasmDisassemblyInfo;
-      } else {
-        this.contentInternal =
-            new TextUtils.ContentData.ContentData(content.content ?? '', content.isEncoded, this.mimeType());
-      }
+      this.contentInternal = await this.projectInternal.requestFileContent(this);
     } catch (err) {
       this.contentInternal = {error: err ? String(err) : ''};
     }
@@ -284,7 +275,8 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     }
 
     this.checkingContent = true;
-    const updatedContent = await this.projectInternal.requestFileContent(this);
+    const updatedContent =
+        TextUtils.ContentData.ContentData.asDeferredContent(await this.projectInternal.requestFileContent(this));
     if ('error' in updatedContent) {
       return;
     }

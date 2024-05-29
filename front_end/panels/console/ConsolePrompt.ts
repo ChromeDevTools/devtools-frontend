@@ -376,7 +376,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       executionContext: SDK.RuntimeModel.ExecutionContext, message: SDK.ConsoleModel.ConsoleMessage, expression: string,
       useCommandLineAPI: boolean): Promise<void> {
     const callFrame = executionContext.debuggerModel.selectedCallFrame();
-    if (callFrame) {
+    if (callFrame && callFrame.script.isJavaScript()) {
       const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame);
       expression = await this.substituteNames(expression, nameMap);
     }

@@ -347,7 +347,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   async #evaluateExpression(executionContext: SDK.RuntimeModel.ExecutionContext, expression: string):
       Promise<SDK.RuntimeModel.EvaluationResult> {
     const callFrame = executionContext.debuggerModel.selectedCallFrame();
-    if (callFrame) {
+    if (callFrame && callFrame.script.isJavaScript()) {
       const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame);
       try {
         expression =

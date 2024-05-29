@@ -45,9 +45,6 @@ This creates two output directories in the `out` folder:
 - `DevTools_CXX_Debugging.stage1` that contains some native binaries required for the second build stage.
 - `DevTools_CXX_Debugging.stage2` that contains the built extension.
 
-The bootstrap tool tries to autodetect `gomacc` to speed up the build.
-If `gomacc` is not detected, you can specify it with `-goma`.
-
 To get an overview of all available build options, run `./tools/bootstrap.py -help`.
 
 ## Run the extension

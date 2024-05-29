@@ -221,7 +221,7 @@ export class Section {
       this.contextMenu.setHandler(item.id(), handler);
     }
     if (options?.additionalElement) {
-      item.customElement = options?.additionalElement;
+      item.customElement = options.additionalElement;
     }
     return item;
   }

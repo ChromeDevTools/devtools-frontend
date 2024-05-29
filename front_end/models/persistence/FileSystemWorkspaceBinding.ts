@@ -393,8 +393,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     if (!filePath) {
       return null;
     }
-    const uiSourceCode = this.addFile(filePath);
-    uiSourceCode.setContent(content, Boolean(isBase64));
+    const uiSourceCode = this.addFile(filePath, content, isBase64);
     this.creatingFilesGuard.delete(guardFileName);
     return uiSourceCode;
   }
@@ -416,10 +415,14 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     this.fileSystemWorkspaceBinding.isolatedFileSystemManager.removeFileSystem(this.fileSystemInternal);
   }
 
-  private addFile(filePath: Platform.DevToolsPath.EncodedPathString): Workspace.UISourceCode.UISourceCode {
+  private addFile(filePath: Platform.DevToolsPath.EncodedPathString, content?: string, isBase64?: boolean):
+      Workspace.UISourceCode.UISourceCode {
     const contentType = this.fileSystemInternal.contentType(filePath);
     const uiSourceCode =
         this.createUISourceCode(Common.ParsedURL.ParsedURL.concatenate(this.fileSystemBaseURL, filePath), contentType);
+    if (content !== undefined) {
+      uiSourceCode.setContent(content, Boolean(isBase64));
+    }
     this.addUISourceCode(uiSourceCode);
     return uiSourceCode;
   }

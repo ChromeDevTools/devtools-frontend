@@ -299,34 +299,35 @@ export async function finalize(): Promise<void> {
     const frameId = interactionStartEvent.args.frame ?? interactionStartEvent.args.data.frame;
     const navigation = Helpers.Trace.getNavigationForTraceEvent(interactionStartEvent, frameId, navigationsByFrameId);
     const navigationId = navigation?.args.data?.navigationId;
-
-    const interactionEvent: Types.TraceEvents.SyntheticInteractionPair = {
-      // Use the start event to define the common fields.
-      rawSourceEvent: interactionStartEvent,
-      cat: interactionStartEvent.cat,
-      name: interactionStartEvent.name,
-      pid: interactionStartEvent.pid,
-      tid: interactionStartEvent.tid,
-      ph: interactionStartEvent.ph,
-      processingStart: processingStartRelativeToTraceTime,
-      processingEnd: processingEndRelativeToTraceTime,
-      // These will be set in writeSyntheticTimespans()
-      inputDelay: Types.Timing.MicroSeconds(-1),
-      mainThreadHandling: Types.Timing.MicroSeconds(-1),
-      presentationDelay: Types.Timing.MicroSeconds(-1),
-      args: {
-        data: {
-          beginEvent: interactionStartEvent,
-          endEvent: endEvent,
-          frame: frameId,
-          navigationId,
-        },
-      },
-      ts: interactionStartEvent.ts,
-      dur: Types.Timing.MicroSeconds(endEvent.ts - interactionStartEvent.ts),
-      type: interactionStartEvent.args.data.type,
-      interactionId: interactionStartEvent.args.data.interactionId,
-    };
+    const syntheticEventsManager = Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager();
+    const interactionEvent =
+        syntheticEventsManager.registerSyntheticBasedEvent<Types.TraceEvents.SyntheticInteractionPair>({
+          // Use the start event to define the common fields.
+          rawSourceEvent: interactionStartEvent,
+          cat: interactionStartEvent.cat,
+          name: interactionStartEvent.name,
+          pid: interactionStartEvent.pid,
+          tid: interactionStartEvent.tid,
+          ph: interactionStartEvent.ph,
+          processingStart: processingStartRelativeToTraceTime,
+          processingEnd: processingEndRelativeToTraceTime,
+          // These will be set in writeSyntheticTimespans()
+          inputDelay: Types.Timing.MicroSeconds(-1),
+          mainThreadHandling: Types.Timing.MicroSeconds(-1),
+          presentationDelay: Types.Timing.MicroSeconds(-1),
+          args: {
+            data: {
+              beginEvent: interactionStartEvent,
+              endEvent: endEvent,
+              frame: frameId,
+              navigationId,
+            },
+          },
+          ts: interactionStartEvent.ts,
+          dur: Types.Timing.MicroSeconds(endEvent.ts - interactionStartEvent.ts),
+          type: interactionStartEvent.args.data.type,
+          interactionId: interactionStartEvent.args.data.interactionId,
+        });
     writeSyntheticTimespans(interactionEvent);
 
     interactionEvents.push(interactionEvent);

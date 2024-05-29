@@ -345,9 +345,9 @@ export async function finalize(): Promise<void> {
     const isHttps = parsedUrl.protocol === 'https:';
     const requestingFrameUrl =
         Helpers.Trace.activeURLForFrameAtTime(frame, finalSendRequest.ts, rendererProcessesByFrame) || '';
-
+    const syntheticEventsManager = Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager();
     // Construct a synthetic trace event for this network request.
-    const networkEvent: Types.TraceEvents.SyntheticNetworkRequest = {
+    const networkEvent = syntheticEventsManager.registerSyntheticBasedEvent<Types.TraceEvents.SyntheticNetworkRequest>({
       rawSourceEvent: finalSendRequest,
       args: {
         data: {
@@ -413,7 +413,7 @@ export async function finalize(): Promise<void> {
       tts: Types.Timing.MicroSeconds(startTime),
       pid: finalSendRequest.pid,
       tid: finalSendRequest.tid,
-    };
+    });
 
     const requests = Platform.MapUtilities.getWithDefault(requestsByOrigin, parsedUrl.host, () => {
       return {

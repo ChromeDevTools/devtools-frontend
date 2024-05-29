@@ -7,6 +7,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import type * as CPUProfile from '../../cpu_profile/cpu_profile.js';
 import * as Types from '../types/types.js';
 
+import {SyntheticEventsManager} from './SyntheticEvents.js';
 import {eventTimingsMicroSeconds} from './Timing.js';
 
 type MatchedPairType<T extends Types.TraceEvents.TraceEventPairableAsync> = Types.TraceEvents.SyntheticEventPair<T>;
@@ -319,7 +320,9 @@ export function createSortedSyntheticEvents<T extends Types.TraceEvents.TraceEve
       continue;
     }
     const targetEvent = endEvent || beginEvent;
-    const event: MatchedPairType<T> = {
+    const syntheticEventsManager = SyntheticEventsManager.getActiveManager();
+
+    const event = syntheticEventsManager.registerSyntheticBasedEvent<MatchedPairType<T>>({
       rawSourceEvent: beginEvent,
       cat: targetEvent.cat,
       ph: targetEvent.ph,
@@ -334,7 +337,7 @@ export function createSortedSyntheticEvents<T extends Types.TraceEvents.TraceEve
       args: {
         data: triplet,
       },
-    };
+    });
 
     if (event.dur < 0) {
       // We have seen in the backend that sometimes animation events get

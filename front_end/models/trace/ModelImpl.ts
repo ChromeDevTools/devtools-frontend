@@ -33,7 +33,8 @@ export interface ParseConfig {
  * to be used at that point. For tests, if you want to construct a model with
  * all handlers, you can use the static `Model.createWithAllHandlers` method.
  **/
-export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.TraceEventHandler}> extends EventTarget {
+export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.TraceEventHandler} =
+                                                    typeof Handlers.ModelHandlers> extends EventTarget {
   readonly #traces: ParsedTraceFile<EnabledModelHandlers>[] = [];
   readonly #nextNumberByDomain = new Map<string, number>();
 

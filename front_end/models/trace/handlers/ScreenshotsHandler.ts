@@ -41,7 +41,8 @@ export async function finalize(): Promise<void> {
 
   for (const snapshotEvent of snapshotEvents) {
     const {cat, name, ph, pid, tid} = snapshotEvent;
-    const syntheticEvent: Types.TraceEvents.SyntheticScreenshot = {
+    const syntheticManagerInstance = Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager();
+    const syntheticEvent = syntheticManagerInstance.registerSyntheticBasedEvent<Types.TraceEvents.SyntheticScreenshot>({
       rawSourceEvent: snapshotEvent,
       cat,
       name,
@@ -53,7 +54,7 @@ export async function finalize(): Promise<void> {
       args: {
         dataUri: `data:image/jpg;base64,${snapshotEvent.args.snapshot}`,
       },
-    };
+    });
     syntheticScreenshotEvents.push(syntheticEvent);
   }
 }

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 /**
@@ -98,19 +99,20 @@ function workletType(input: string): Types.TraceEvents.AuctionWorkletType {
 function makeSyntheticEventBase(event: Types.TraceEvents.TraceEventAuctionWorkletDoneWithProcess|
                                 Types.TraceEvents.TraceEventAuctionWorkletRunningInProcess):
     Omit<Types.TraceEvents.SyntheticAuctionWorkletEvent, 'args'> {
-  return {
-    rawSourceEvent: event,
-    name: 'SyntheticAuctionWorkletEvent',
-    s: Types.TraceEvents.TraceEventScope.THREAD,
-    cat: event.cat,
-    tid: event.tid,
-    ts: event.ts,
-    ph: Types.TraceEvents.Phase.INSTANT,
-    pid: event.args.data.pid,
-    host: event.args.data.host,
-    target: event.args.data.target,
-    type: workletType(event.args.data.type),
-  };
+  return Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager()
+      .registerSyntheticBasedEvent<Omit<Types.TraceEvents.SyntheticAuctionWorkletEvent, 'args'>>({
+        rawSourceEvent: event,
+        name: 'SyntheticAuctionWorkletEvent',
+        s: Types.TraceEvents.TraceEventScope.THREAD,
+        cat: event.cat,
+        tid: event.tid,
+        ts: event.ts,
+        ph: Types.TraceEvents.Phase.INSTANT,
+        pid: event.args.data.pid,
+        host: event.args.data.host,
+        target: event.args.data.target,
+        type: workletType(event.args.data.type),
+      });
 }
 
 export async function finalize(): Promise<void> {

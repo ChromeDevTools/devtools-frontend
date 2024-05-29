@@ -74,6 +74,10 @@ RNExperiments.RNExperimentsImpl.Instance.enableExperimentsByDefault([
   Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,
 ]);
 
+document.addEventListener('visibilitychange', () => {
+  Host.rnPerfMetrics.browserVisibilityChanged(document.visibilityState);
+});
+
 class FuseboxClientMetadataModel extends SDK.SDKModel.SDKModel<void> {
   constructor(target: SDK.Target.Target) {
     super(target);

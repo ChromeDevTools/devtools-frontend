@@ -83,6 +83,15 @@ class RNPerfMetrics {
     });
   }
 
+  browserVisibilityChanged(visibilityState: BrowserVisibilityChangeEvent['params']['visibilityState']): void {
+    this.sendEvent({
+      eventName: 'Browser.VisibilityChange',
+      params: {
+        visibilityState,
+      }
+    });
+  }
+
   #decorateEvent(event: ReactNativeChromeDevToolsEvent): Readonly<DecoratedReactNativeChromeDevToolsEvent> {
     const commonFields: CommonEventFields = {
       timestamp: getPerfTimestamp(),
@@ -121,7 +130,14 @@ export type DebuggerReadyEvent = Readonly<{
   eventName: 'Debugger.IsReadyToPause',
 }>;
 
+export type BrowserVisibilityChangeEvent = Readonly<{
+  eventName: 'Browser.VisibilityChange',
+  params: Readonly<{
+    visibilityState: 'hidden' | 'visible',
+  }>,
+}>;
+
 export type ReactNativeChromeDevToolsEvent =
-    EntrypointLoadingStartedEvent|EntrypointLoadingFinishedEvent|DebuggerReadyEvent;
+    EntrypointLoadingStartedEvent|EntrypointLoadingFinishedEvent|DebuggerReadyEvent|BrowserVisibilityChangeEvent;
 
 export type DecoratedReactNativeChromeDevToolsEvent = CommonEventFields&ReactNativeChromeDevToolsEvent;

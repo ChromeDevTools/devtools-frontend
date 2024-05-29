@@ -51,18 +51,18 @@ const str_ = i18n.i18n.registerUIStrings('models/workspace/UISourceCode.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
-    TextUtils.ContentProvider.ContentProvider {
+    TextUtils.ContentProvider.SafeContentProvider {
   private projectInternal: Project;
   private urlInternal: Platform.DevToolsPath.UrlString;
   private readonly originInternal: Platform.DevToolsPath.UrlString;
   private readonly parentURLInternal: Platform.DevToolsPath.UrlString;
   private nameInternal: string;
   private contentTypeInternal: Common.ResourceType.ResourceType;
-  private requestContentPromise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
+  private requestContentPromise: Promise<TextUtils.ContentData.ContentDataOrError>|null;
   private decorations: Map<string, any> = new Map();
   private hasCommitsInternal: boolean;
   private messagesInternal: Set<Message>|null;
-  private contentInternal: TextUtils.ContentProvider.DeferredContent|null;
+  private contentInternal: TextUtils.ContentData.ContentDataOrError|null;
   private forceLoadOnCheckContentInternal: boolean;
   private checkingContent: boolean;
   private lastAcceptedContent: string|null;
@@ -213,8 +213,8 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return this.projectInternal;
   }
 
-  requestContent({cachedWasmOnly}: {cachedWasmOnly?: boolean} = {}):
-      Promise<TextUtils.ContentProvider.DeferredContent> {
+  requestContentData({cachedWasmOnly}: {cachedWasmOnly?: boolean} = {}):
+      Promise<TextUtils.ContentData.ContentDataOrError> {
     if (this.requestContentPromise) {
       return this.requestContentPromise;
     }
@@ -224,26 +224,36 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     }
 
     if (cachedWasmOnly && this.mimeType() === 'application/wasm') {
-      return Promise.resolve({
-        content: '',
-        isEncoded: false,
-        wasmDisassemblyInfo: new TextUtils.WasmDisassembly.WasmDisassembly([], [], []),
-      });
+      return Promise.resolve(new TextUtils.WasmDisassembly.WasmDisassembly([], [], []));
     }
 
     this.requestContentPromise = this.requestContentImpl();
     return this.requestContentPromise;
   }
 
-  private async requestContentImpl(): Promise<TextUtils.ContentProvider.DeferredContent> {
+  async requestContent(options: {cachedWasmOnly?: boolean} = {}): Promise<TextUtils.ContentProvider.DeferredContent> {
+    return TextUtils.ContentData.ContentData.asDeferredContent(await this.requestContentData(options));
+  }
+
+  private async requestContentImpl(): Promise<TextUtils.ContentData.ContentDataOrError> {
+    if (this.contentInternal) {
+      throw new Error(
+          'Called UISourceCode#requestContentImpl even though content is available for ' + this.urlInternal);
+    }
+
     try {
       const content = await this.projectInternal.requestFileContent(this);
-      if (!this.contentInternal) {
-        this.contentInternal = content;
-        this.contentEncodedInternal = content.isEncoded;
+      // TODO(crbug.com/342529015): Simplify this once the project interface also returns a ContentData.
+      if ('error' in content && typeof content.error === 'string') {
+        this.contentInternal = {error: content.error};
+      } else if ('wasmDisassemblyInfo' in content) {
+        this.contentInternal = content.wasmDisassemblyInfo;
+      } else {
+        this.contentInternal =
+            new TextUtils.ContentData.ContentData(content.content ?? '', content.isEncoded, this.mimeType());
       }
     } catch (err) {
-      this.contentInternal = {content: null, error: err ? String(err) : '', isEncoded: false};
+      this.contentInternal = {error: err ? String(err) : ''};
     }
 
     return this.contentInternal;
@@ -254,6 +264,14 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
       return null;
     }
     return content.isEncoded && content.content ? window.atob(content.content) : content.content;
+  }
+
+  /** Only used to compare whether content changed */
+  #unsafeDecodeContentData(content: TextUtils.ContentData.ContentDataOrError|null): string|null {
+    if (!content || TextUtils.ContentData.ContentData.isError(content)) {
+      return null;
+    }
+    return content.createdFromBase64 ? window.atob(content.base64) : content.text;
   }
 
   async checkContentUpdated(): Promise<void> {
@@ -281,7 +299,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
       return;
     }
 
-    if (this.#decodeContent(this.contentInternal) === this.#decodeContent(updatedContent)) {
+    if (this.#unsafeDecodeContentData(this.contentInternal) === this.#decodeContent(updatedContent)) {
       this.lastAcceptedContent = null;
       return;
     }
@@ -317,7 +335,8 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
 
   private contentCommitted(content: string, committedByUser: boolean): void {
     this.lastAcceptedContent = null;
-    this.contentInternal = {content, isEncoded: false};
+    this.contentInternal =
+        new TextUtils.ContentData.ContentData(content, Boolean(this.contentEncodedInternal), this.mimeType());
     this.requestContentPromise = null;
 
     this.hasCommitsInternal = true;
@@ -352,7 +371,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
       return {content: this.workingCopyInternal as string, isEncoded: false};
     }
     if (this.contentInternal) {
-      return this.contentInternal;
+      return TextUtils.ContentData.ContentData.asDeferredContent(this.contentInternal);
     }
     return {content: '', isEncoded: false};
   }
@@ -444,7 +463,10 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   content(): string {
-    return this.contentInternal?.content || '';
+    if (!this.contentInternal || 'error' in this.contentInternal) {
+      return '';
+    }
+    return this.contentInternal.text;
   }
 
   loadError(): string|null {

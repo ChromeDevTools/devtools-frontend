@@ -40,6 +40,7 @@ devtools_pre_built("easter-egg") {
 generate_css("css_files") {
   sources = [
     "historyToolbarButton.css",
+    "timelineFlameChartView.css",
     "timelineFlamechartPopover.css",
     "timelineHistoryManager.css",
     "timelineMiniMap.css",
@@ -69,6 +70,7 @@ devtools_module("timeline") {
     "IsolateSelector.ts",
     "LayoutShiftsTrackAppender.ts",
     "NetworkTrackAppender.ts",
+    "Overlays.ts",
     "SaveFileFormatter.ts",
     "SourceMapsResolver.ts",
     "TargetForEvent.ts",
@@ -182,6 +184,7 @@ ts_library("unittests") {
     "Breadcrumbs.test.ts",
     "FreshRecording.test.ts",
     "Initiators.test.ts",
+    "Overlays.test.ts",
     "SaveFileFormatter.test.ts",
     "SourceMapsResolver.test.ts",
     "TimelineController.test.ts",

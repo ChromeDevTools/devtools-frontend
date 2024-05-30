@@ -1851,6 +1851,17 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     this.resetCanvas();
 
+    this.dispatchEventToListeners(Events.LatestDrawDimensions, {
+      chart: {
+        widthPixels: this.offsetWidth,
+        heightPixels: this.offsetHeight,
+        scrollOffsetPixels: this.chartViewport.scrollOffset(),
+      },
+      traceWindow: TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(
+          this.minimumBoundary(),
+          this.maximumBoundary(),
+          ),
+    });
     const canvasWidth = this.offsetWidth;
     const canvasHeight = this.offsetHeight;
     const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
@@ -3795,6 +3806,8 @@ export const enum Events {
    */
   EntryHighlighted = 'EntryHighlighted',
   ChartPlayableStateChange = 'ChartPlayableStateChange',
+
+  LatestDrawDimensions = 'LatestDrawDimensions',
 }
 
 export type EventTypes = {
@@ -3803,6 +3816,14 @@ export type EventTypes = {
   [Events.EntrySelected]: number,
   [Events.EntryHighlighted]: number,
   [Events.ChartPlayableStateChange]: boolean,
+  [Events.LatestDrawDimensions]: {
+    chart: {
+      widthPixels: number,
+      heightPixels: number,
+      scrollOffsetPixels: number,
+    },
+    traceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds,
+  },
 };
 
 export interface Group {

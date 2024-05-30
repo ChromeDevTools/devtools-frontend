@@ -1,0 +1,23 @@
+/*
+ * Copyright 2024 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.timeline-overlays-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Ensure it appears on top of everything */
+  z-index: 200;
+  pointer-events: none;
+}
+
+.overlay-item {
+  position: absolute;
+  /* The FlameChartView will move these as the FlameChart is drawn */
+  top: 0;
+  left: 0;
+}

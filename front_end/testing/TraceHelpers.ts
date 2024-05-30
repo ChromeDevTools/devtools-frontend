@@ -293,7 +293,7 @@ export function makeCompleteEventInMilliseconds(
  * Builds a mock TraceEventInstant.
  */
 export function makeInstantEvent(
-    name: string, ts: number, cat: string = '', pid: number = 0, tid: number = 0,
+    name: string, tsMicroseconds: number, cat: string = '', pid: number = 0, tid: number = 0,
     s: TraceEngine.Types.TraceEvents.TraceEventScope =
         TraceEngine.Types.TraceEvents.TraceEventScope.THREAD): TraceEngine.Types.TraceEvents.TraceEventInstant {
   return {
@@ -303,7 +303,7 @@ export function makeInstantEvent(
     ph: TraceEngine.Types.TraceEvents.Phase.INSTANT,
     pid: TraceEngine.Types.TraceEvents.ProcessID(pid),
     tid: TraceEngine.Types.TraceEvents.ThreadID(tid),
-    ts: TraceEngine.Types.Timing.MicroSeconds(ts),
+    ts: TraceEngine.Types.Timing.MicroSeconds(tsMicroseconds),
     s,
   };
 }

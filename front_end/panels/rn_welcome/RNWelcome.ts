@@ -12,8 +12,10 @@ import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import type * as Platform from '../../core/platform/platform.js';
 
 const UIStrings = {
-  /** @description Label / description */
-  techPreviewLabel: 'Beta',
+  /** @description Beta label */
+  betaLabel: 'Beta',
+  /** @description Tech Preview label */
+  techPreviewLabel: 'Tech Preview',
   /** @description Welcome text */
   welcomeMessage: 'Welcome to debugging in React Native',
   /** @description "Debugging docs" link */
@@ -42,7 +44,9 @@ let rnWelcomeImplInstance: RNWelcomeImpl;
 
 type RNWelcomeOptions = {
   debuggerBrandName: () => Platform.UIString.LocalizedString,
-  showBetaLabel?: boolean
+  showBetaLabel?: boolean,
+  showTechPreviewLabel?: boolean,
+  showDocs?: boolean
 };
 
 export class RNWelcomeImpl extends UI.Widget.VBox {
@@ -75,7 +79,12 @@ export class RNWelcomeImpl extends UI.Widget.VBox {
   }
 
   render(): void {
-    const {debuggerBrandName, showBetaLabel = false} = this.options;
+    const {
+      debuggerBrandName,
+      showBetaLabel = false,
+      showTechPreviewLabel = false,
+      showDocs = false
+    } = this.options;
     const welcomeIconUrl = new URL(
       '../../Images/react_native/welcomeIcon.png',
       import.meta.url,
@@ -91,6 +100,11 @@ export class RNWelcomeImpl extends UI.Widget.VBox {
             </h1>
             ${showBetaLabel ? html`
               <div class="rn-welcome-title-accessory">
+                ${i18nString(UIStrings.betaLabel)}
+              </div>
+            ` : null}
+            ${showTechPreviewLabel ? html`
+              <div class="rn-welcome-title-accessory rn-welcome-title-accessory-purple">
                 ${i18nString(UIStrings.techPreviewLabel)}
               </div>
             ` : null}
@@ -107,31 +121,26 @@ export class RNWelcomeImpl extends UI.Widget.VBox {
             </x-link>
           </div>
         </header>
-        <section class="rn-welcome-docsfeed">
-          <h2 class="rn-welcome-h2">Learn</h2>
-          <button class="rn-welcome-docsfeed-item" type="button" role="link" @click=${this._handleLinkPress.bind(this, 'https:\/\/reactnative.dev/docs/debugging')} title="${i18nString(UIStrings.docsDebuggingBasics)}">
-            <div class="rn-welcome-image" style="background-image: url('https://reactnative.dev/assets/images/debugging-dev-menu-2453a57e031a9da86b2ed42f16ffe82a.jpg')"></div>
-            <div>
-              <p class="devtools-link">${i18nString(UIStrings.docsDebuggingBasics)}</p>
-              <p>${i18nString(UIStrings.docsDebuggingBasicsDetail)}</p>
-            </div>
-          </button>
-          <button class="rn-welcome-docsfeed-item" type="button" role="link" @click=${this._handleLinkPress.bind(this, 'https:\/\/reactnative.dev/docs/debugging/react-devtools')} title="${i18nString(UIStrings.docsReactDevTools)}">
-            <div class="rn-welcome-image" style="background-image: url('https://reactnative.dev/assets/images/debugging-react-devtools-detail-914f08a97163dd51ebe732fd8ae4ea3c.jpg')"></div>
-            <div>
-              <p class="devtools-link">${i18nString(UIStrings.docsReactDevTools)}</p>
-              <p>${i18nString(UIStrings.docsReactDevToolsDetail)}</p>
-            </div>
-          </button>
-          <!-- TODO(huntie): Re-enable this item when docs are complete, replacing React DevTools guide -->
-          <!-- <button class="rn-welcome-docsfeed-item" type="button" role="link" @click=${this._handleLinkPress.bind(this, 'https:\/\/reactnative.dev/docs/debugging')} title="${i18nString(UIStrings.docsRNDevTools)}">
-            <div class="rn-welcome-image" style="background-image: url('https://reactnative.dev/assets/images/debugging-react-devtools-detail-914f08a97163dd51ebe732fd8ae4ea3c.jpg')"></div>
-            <div>
-              <p class="devtools-link">${i18nString(UIStrings.docsRNDevTools)}</p>
-              <p>${i18nString(UIStrings.docsRNDevToolsDetail)}</p>
-            </div>
-          </button> -->
-        </section>
+        ${showDocs ? html`
+          <section class="rn-welcome-docsfeed">
+            <h2 class="rn-welcome-h2">Learn</h2>
+            <button class="rn-welcome-docsfeed-item" type="button" role="link" @click=${this._handleLinkPress.bind(this, 'https:\/\/reactnative.dev/docs/debugging')} title="${i18nString(UIStrings.docsDebuggingBasics)}">
+              <div class="rn-welcome-image" style="background-image: url('https://reactnative.dev/assets/images/debugging-dev-menu-2453a57e031a9da86b2ed42f16ffe82a.jpg')"></div>
+              <div>
+                <p class="devtools-link">${i18nString(UIStrings.docsDebuggingBasics)}</p>
+                <p>${i18nString(UIStrings.docsDebuggingBasicsDetail)}</p>
+              </div>
+            </button>
+            <!-- TODO(huntie): Replace this item when React Native DevTools docs are complete -->
+            <button class="rn-welcome-docsfeed-item" type="button" role="link" @click=${this._handleLinkPress.bind(this, 'https:\/\/reactnative.dev/docs/debugging/react-devtools')} title="${i18nString(UIStrings.docsReactDevTools)}">
+              <div class="rn-welcome-image" style="background-image: url('https://reactnative.dev/assets/images/debugging-react-devtools-detail-914f08a97163dd51ebe732fd8ae4ea3c.jpg')"></div>
+              <div>
+                <p class="devtools-link">${i18nString(UIStrings.docsReactDevTools)}</p>
+                <p>${i18nString(UIStrings.docsReactDevToolsDetail)}</p>
+              </div>
+            </button>
+          </section>
+        ` : null}
       </div>
     `, this.contentElement, {host: this});
   }

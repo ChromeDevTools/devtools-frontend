@@ -20,7 +20,7 @@ const UIStrings = {
    */
   showRnWelcome: 'Show React Native Welcome panel',
   /** @description The name of the debugging product */
-  debuggerBrandName: 'React Native JS Inspector (Legacy)',
+  debuggerBrandName: 'React Native JS Inspector',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/rn_welcome/rn_welcome-legacy-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -45,6 +45,7 @@ UI.ViewManager.registerViewExtension({
     const RNWelcome = await loadRNWelcomeModule();
     return RNWelcome.RNWelcome.RNWelcomeImpl.instance({
       debuggerBrandName: i18nLazyString(UIStrings.debuggerBrandName),
+      showTechPreviewLabel: true,
     });
   },
   experiment: Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,

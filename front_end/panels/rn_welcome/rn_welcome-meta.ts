@@ -57,6 +57,7 @@ UI.ViewManager.registerViewExtension({
               UIStrings.debuggerBrandNameInternal :
               UIStrings.debuggerBrandName),
       showBetaLabel: true,
+      showDocs: true,
     });
   },
   experiment: Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,

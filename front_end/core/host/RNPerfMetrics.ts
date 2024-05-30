@@ -120,6 +120,10 @@ class RNPerfMetrics {
     });
   }
 
+  remoteDebuggingTerminated(reason: string): void {
+    this.sendEvent({eventName: 'Connection.DebuggingTerminated', params: {reason}});
+  }
+
   #decorateEvent(event: ReactNativeChromeDevToolsEvent): Readonly<DecoratedReactNativeChromeDevToolsEvent> {
     const commonFields: CommonEventFields = {
       timestamp: getPerfTimestamp(),
@@ -173,7 +177,14 @@ export type UnhandledErrorEvent = Readonly<{
   }>,
 }>;
 
+export type RemoteDebuggingTerminatedEvent = Readonly<{
+  eventName: 'Connection.DebuggingTerminated',
+  params: Readonly<{
+    reason: string,
+  }>,
+}>;
+
 export type ReactNativeChromeDevToolsEvent = EntrypointLoadingStartedEvent|EntrypointLoadingFinishedEvent|
-    DebuggerReadyEvent|BrowserVisibilityChangeEvent|UnhandledErrorEvent;
+    DebuggerReadyEvent|BrowserVisibilityChangeEvent|UnhandledErrorEvent|RemoteDebuggingTerminatedEvent;
 
 export type DecoratedReactNativeChromeDevToolsEvent = CommonEventFields&ReactNativeChromeDevToolsEvent;

@@ -71,5 +71,6 @@ export class RemoteDebuggingTerminatedScreen extends VBox {
     dialog.setDimmed(true);
     new RemoteDebuggingTerminatedScreen(reason).show(dialog.contentElement);
     dialog.show();
+    Host.rnPerfMetrics.remoteDebuggingTerminated(reason);
   }
 }

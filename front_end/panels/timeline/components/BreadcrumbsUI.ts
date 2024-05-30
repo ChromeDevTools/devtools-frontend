@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as TraceEngine from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
@@ -74,8 +75,8 @@ export class BreadcrumbsUI extends HTMLElement {
           <div class="breadcrumb" @click=${() => this.#removeBreadcrumb(breadcrumb)}>
            <span class="${(index !== 0 && breadcrumb.child === null) ? 'last-breadcrumb' : ''} range">
             ${(index === 0) ?
-              `Full range (${breadcrumbRange.toFixed(2)}ms)` :
-              `${breadcrumbRange.toFixed(2)}ms`}
+              `Full range (${i18n.TimeUtilities.preciseMillisToString(breadcrumbRange, 2)})` :
+              `${i18n.TimeUtilities.preciseMillisToString(breadcrumbRange, 2)}`}
             </span>
           </div>
           ${breadcrumb.child !== null ?

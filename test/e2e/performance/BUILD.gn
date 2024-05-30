@@ -7,6 +7,7 @@ import("../../../third_party/typescript/typescript.gni")
 node_ts_library("performance") {
   sources = [
     "emulate-hardware-concurrency_test.ts",
+    "landing-page_test.ts",
     "recording_test.ts",
     "selector-stats-tracing_test.ts",
     "settings-throttle-persist_test.ts",

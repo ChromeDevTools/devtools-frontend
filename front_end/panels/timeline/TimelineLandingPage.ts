@@ -2,8 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
+import * as LiveMetrics from '../../models/live-metrics/live-metrics.js';
 import * as PanelFeedback from '../../ui/components/panel_feedback/panel_feedback.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -46,12 +49,62 @@ interface Options {
 
 export class TimelineLandingPage extends UI.Widget.VBox {
   private readonly toggleRecordAction: UI.ActionRegistration.Action;
+  private liveMetrics?: LiveMetrics.LiveMetrics;
 
   constructor(toggleRecordAction: UI.ActionRegistration.Action, options?: Options) {
     super();
 
     this.toggleRecordAction = toggleRecordAction;
+    this.renderLegacyLandingPage(options);
 
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS)) {
+      this.installLiveMetrics();
+    }
+  }
+
+  /**
+   * TODO: Create a separate component/element for the new landing page.
+   */
+  private installLiveMetrics(): void {
+    const lcpElem = this.contentElement.createChild('div', 'live-lcp');
+    const clsElem = this.contentElement.createChild('div', 'live-cls');
+    const inpElem = this.contentElement.createChild('div', 'live-inp');
+    this.liveMetrics = new LiveMetrics.LiveMetrics();
+    this.liveMetrics.addEventListener(LiveMetrics.Events.LCPChanged, event => {
+      lcpElem.textContent = '';
+      const lcpDataElem = lcpElem.createChild('div', 'lcp-data');
+      lcpDataElem.textContent = `LCP: ${Math.round(event.data.value)} `;
+      const node = event.data.node;
+      if (node) {
+        void Common.Linkifier.Linkifier.linkify(node).then(link => {
+          lcpDataElem.append(link);
+        });
+      }
+    });
+    this.liveMetrics.addEventListener(LiveMetrics.Events.CLSChanged, event => {
+      clsElem.textContent = '';
+      const clsDataElem = clsElem.createChild('div', 'cls-data');
+      clsDataElem.textContent = `CLS: ${event.data.value.toFixed(0.001)}`;
+    });
+    this.liveMetrics.addEventListener(LiveMetrics.Events.INPChanged, event => {
+      inpElem.textContent = '';
+      const inpDataElem = inpElem.createChild('div', 'inp-data');
+      inpDataElem.textContent = `INP: ${event.data.value} (${event.data.interactionType}) `;
+      const node = event.data.node;
+      if (node) {
+        void Common.Linkifier.Linkifier.linkify(node).then(link => {
+          inpDataElem.append(link);
+        });
+      }
+    });
+    this.liveMetrics.addEventListener(LiveMetrics.Events.Reset, () => {
+      lcpElem.textContent = '';
+      clsElem.textContent = '';
+      inpElem.textContent = '';
+    });
+  }
+
+  private renderLegacyLandingPage(options?: Options): void {
     function encloseWithTag(tagName: string, contents: string): HTMLElement {
       const e = document.createElement(tagName);
       e.textContent = contents;

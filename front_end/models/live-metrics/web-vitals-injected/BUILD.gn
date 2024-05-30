@@ -1,0 +1,61 @@
+# Copyright 2024 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../scripts/build/ninja/node.gni")
+
+devtools_module("web-vitals-injected") {
+  sources = [ "web-vitals-injected.ts" ]
+
+  deps = [
+    "../../../third_party/web-vitals:bundle",
+    "./spec:bundle",
+  ]
+
+  visibility = [
+    ":*",
+    "../:live-metrics",
+  ]
+}
+
+node_action("bundled_library") {
+  script = "node_modules/rollup/dist/bin/rollup"
+
+  _bundled_entrypoint = target_gen_dir + "/web-vitals-injected.js"
+  _output_file_location = target_gen_dir + "/web-vitals-injected.generated.js"
+
+  inputs = [
+    _bundled_entrypoint,
+    "rollup.config.js",
+  ]
+
+  deps = [ ":web-vitals-injected" ]
+
+  args = [
+    # TODO(crbug.com/1098074): We need to hide warnings that are written stderr,
+    # as Chromium does not process the returncode of the subprocess correctly
+    # and instead looks if `stderr` is empty.
+    "--silent",
+    "--config",
+    rebase_path("rollup.config.js", root_build_dir),
+    "--input",
+    rebase_path(_bundled_entrypoint, root_build_dir),
+    "--file",
+    rebase_path(_output_file_location, root_build_dir),
+  ]
+
+  if (is_debug) {
+    args += [ "--environment=DEBUG_INJECTED" ]
+  }
+
+  outputs = [ _output_file_location ]
+  metadata = {
+    grd_files = [ _output_file_location ]
+  }
+
+  visibility = [
+    ":*",
+    "../:live-metrics",
+  ]
+}

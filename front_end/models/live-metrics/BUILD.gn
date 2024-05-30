@@ -1,0 +1,31 @@
+# Copyright 2024 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+
+devtools_module("live-metrics") {
+  sources = [ "LiveMetrics.ts" ]
+
+  deps = [
+    "../../core/common:bundle",
+    "../../core/sdk:bundle",
+    "../../generated:protocol",
+    "./web-vitals-injected:web-vitals-injected",
+    "./web-vitals-injected/spec:bundle",
+  ]
+
+  public_deps = [ "./web-vitals-injected:bundled_library" ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "live-metrics.ts"
+
+  deps = [ ":live-metrics" ]
+
+  visibility = [
+    ":*",
+    "../../panels/timeline:timeline",
+  ]
+}

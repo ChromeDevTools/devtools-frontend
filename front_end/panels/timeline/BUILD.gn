@@ -103,6 +103,7 @@ devtools_module("timeline") {
     "../../generated:protocol",
     "../../models/cpu_profile:bundle",
     "../../models/extensions:bundle",
+    "../../models/live-metrics:bundle",
     "../../models/source_map_scopes:bundle",
     "../../models/timeline_model:bundle",
     "../../models/trace:bundle",
@@ -113,7 +114,6 @@ devtools_module("timeline") {
     "../../panels/profiler:bundle",
     "../../services/modifications_manager:bundle",
     "../../services/trace_bounds:bundle",
-    "../../third_party/web-vitals:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/code_highlighter:bundle",  # trace event highlighting
     "../../ui/components/data_grid:bundle",

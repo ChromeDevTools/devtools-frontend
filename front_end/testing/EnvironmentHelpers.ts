@@ -127,6 +127,7 @@ const REGISTERED_EXPERIMENTS = [
   Root.Runtime.ExperimentName.TIMELINE_SIDEBAR,
   Root.Runtime.ExperimentName.TIMELINE_EXTENSIONS,
   Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE,
+  Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS,
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {

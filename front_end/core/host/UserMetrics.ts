@@ -1033,9 +1033,10 @@ export enum DevtoolsExperiments {
   'timeline-debug-mode' = 93,
   'perf-panel-annotations' = 94,
   'timeline-rpp-sidebar' = 95,
+  'timeline-observations' = 96,
 
   // Increment this when new experiments are added.
-  'MaxValue' = 96,
+  'MaxValue' = 97,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

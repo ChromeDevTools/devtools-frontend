@@ -2174,7 +2174,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const markerIndices: number[] = [];
     const {entryTotalTimes, entryStartTimes} = timelineData;
 
-    const height = this.offsetHeight;
     const top = this.chartViewport.scrollOffset();
 
     const textPadding = this.textPadding;
@@ -2191,7 +2190,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const colorBuckets = new Map<string, {indexes: number[]}>();
     for (let level = 0; level < this.dataProvider.maxStackDepth(); ++level) {
       // Since tracks can be reordered the |visibleLevelOffsets| is not necessarily sorted, so we need to check all levels.
-      if (this.levelToOffset(level) < top || this.levelToOffset(level) > top + height) {
+      // Note that to check if a level is off the top of the screen, we can't
+      // just check its offset, because then the level will disappear the
+      // moment it is 1px off the top of the screen. So instead we check that
+      // the entire height of the level is off the top of the screen before
+      // skipping it.
+      if (this.levelToOffset(level) + this.levelHeight(level) < top ||
+          this.levelToOffset(level) > top + this.offsetHeight) {
         continue;
       }
       if (!this.visibleLevels || !this.visibleLevels[level]) {

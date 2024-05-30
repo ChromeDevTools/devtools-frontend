@@ -31,41 +31,13 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
   }
 
-  async #getIsolatedContextId(): Promise<Protocol.Runtime.ExecutionContextId|null> {
-    if (!this.#target) {
-      return null;
-    }
-
-    const resourceTreeModel = this.#target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    if (!resourceTreeModel) {
-      return null;
-    }
-
-    const mainFrameId = resourceTreeModel.mainFrame?.id;
-    if (!mainFrameId) {
-      return null;
-    }
-
-    // Will return previous context ID if it already exists
-    const {executionContextId} = await this.#target.pageAgent().invoke_createIsolatedWorld({
-      frameId: mainFrameId,
-      worldName: LIVE_METRICS_WORLD_NAME,
-    });
-
-    return executionContextId;
-  }
-
   /**
    * DOM nodes can't be sent over a runtime binding, so we have to retrieve
    * them separately.
    */
-  async #resolveDomNode(index: number): Promise<SDK.DOMModel.DOMNode|null> {
+  async #resolveDomNode(index: number, executionContextId: Protocol.Runtime.ExecutionContextId):
+      Promise<SDK.DOMModel.DOMNode|null> {
     if (!this.#target) {
-      return null;
-    }
-
-    const executionContextId = await this.#getIsolatedContextId();
-    if (executionContextId === null) {
       return null;
     }
 
@@ -101,7 +73,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
           rating: webVitalsEvent.rating,
         };
         if (webVitalsEvent.nodeIndex !== undefined) {
-          const node = await this.#resolveDomNode(webVitalsEvent.nodeIndex);
+          const node = await this.#resolveDomNode(webVitalsEvent.nodeIndex, data.executionContextId);
           if (node) {
             lcpEvent.node = node;
           }
@@ -123,7 +95,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
           interactionType: webVitalsEvent.interactionType,
         };
         if (webVitalsEvent.nodeIndex !== undefined) {
-          const node = await this.#resolveDomNode(webVitalsEvent.nodeIndex);
+          const node = await this.#resolveDomNode(webVitalsEvent.nodeIndex, data.executionContextId);
           if (node) {
             inpEvent.node = node;
           }

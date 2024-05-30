@@ -24,7 +24,9 @@ export class CookieDeprecationMetadataIssue extends Issue {
 
   constructor(
       issueDetails: Protocol.Audits.CookieDeprecationMetadataIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
-    super(Protocol.Audits.InspectorIssueCode.CookieDeprecationMetadataIssue, issuesModel);
+    // Set a distinct code for ReadCookie and SetCookie issues, so they are grouped separately.
+    const issueCode = Protocol.Audits.InspectorIssueCode.CookieDeprecationMetadataIssue + '_' + issueDetails.operation;
+    super(issueCode, issuesModel);
     this.#issueDetails = issueDetails;
   }
 
@@ -33,8 +35,20 @@ export class CookieDeprecationMetadataIssue extends Issue {
   }
 
   getDescription(): MarkdownIssueDescription {
+    const fileName = this.#issueDetails.operation === 'SetCookie' ? 'cookieWarnMetadataGrantSet.md' :
+                                                                    'cookieWarnMetadataGrantRead.md';
+
+    let optOutText = '';
+    if (this.#issueDetails.isOptOutTopLevel && this.#issueDetails.optOutPercentage >= 0) {
+      optOutText = '\n\n (Top level site opt-out: ' + this.#issueDetails.optOutPercentage +
+          '% - [learn more](gracePeriodStagedControlExplainer))';
+    }
+
     return {
-      file: 'cookieWarnMetadataGrantRead.md',
+      file: fileName,
+      substitutions: new Map([
+        ['PLACEHOLDER_topleveloptout', optOutText],
+      ]),
       links: [
         {
           link: 'https://developer.chrome.com/docs/privacy-sandbox/third-party-cookie-phase-out/',
@@ -54,13 +68,6 @@ export class CookieDeprecationMetadataIssue extends Issue {
 
   primaryKey(): string {
     return JSON.stringify(this.#issueDetails);
-  }
-
-  override metadataAllowedSites(): Iterable<string> {
-    if (this.#issueDetails.allowedSites) {
-      return this.#issueDetails.allowedSites;
-    }
-    return [];
   }
 
   static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):

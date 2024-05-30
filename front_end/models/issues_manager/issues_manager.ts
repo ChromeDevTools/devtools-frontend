@@ -7,6 +7,7 @@ import * as CheckFormsIssuesTrigger from './CheckFormsIssuesTrigger.js';
 import * as ClientHintIssue from './ClientHintIssue.js';
 import * as ContentSecurityPolicyIssue from './ContentSecurityPolicyIssue.js';
 import * as ContrastCheckTrigger from './ContrastCheckTrigger.js';
+import * as CookieDeprecationMetadataIssue from './CookieDeprecationMetadataIssue.js';
 import * as CookieIssue from './CookieIssue.js';
 import * as CorsIssue from './CorsIssue.js';
 import * as CrossOriginEmbedderPolicyIssue from './CrossOriginEmbedderPolicyIssue.js';
@@ -34,6 +35,7 @@ export {
   ClientHintIssue,
   ContentSecurityPolicyIssue,
   ContrastCheckTrigger,
+  CookieDeprecationMetadataIssue,
   CookieIssue,
   CorsIssue,
   CrossOriginEmbedderPolicyIssue,

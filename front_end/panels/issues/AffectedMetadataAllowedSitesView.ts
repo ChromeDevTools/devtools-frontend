@@ -4,6 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
 
@@ -27,14 +28,33 @@ export class AffectedMetadataAllowedSitesView extends AffectedResourcesView {
 
   override update(): void {
     this.clear();
-    const allowedSites = this.issue.getMetadataAllowedSites();
+    const issues = this.issue.getCookieDeprecationMetadataIssues();
     let count = 0;
 
-    for (const site of allowedSites) {
+    for (const issueData of issues) {
       const row = document.createElement('tr');
       row.classList.add('affected-resource-directive');
 
-      this.appendIssueDetailCell(row, site);
+      const textContentElement = document.createElement('div');
+      const textElement = document.createElement('span');
+      textElement.textContent = issueData.details().allowedSites.join(', ');
+      textContentElement.appendChild(textElement);
+
+      if (!issueData.details().isOptOutTopLevel && issueData.details().optOutPercentage > 0) {
+        const optOutTextElement = document.createElement('span');
+        optOutTextElement.textContent = ' (opt-out: ' + issueData.details().optOutPercentage + '% - ';
+        textContentElement.appendChild(optOutTextElement);
+
+        const linkElement = UI.XLink.XLink.create(
+            'https://github.com/amaliev/3pcd-exemption-heuristics/blob/main/explainer.md', 'learn more');
+        textContentElement.appendChild(linkElement);
+
+        const endTextElement = document.createElement('span');
+        endTextElement.textContent = ')';
+        textContentElement.appendChild(endTextElement);
+      }
+
+      this.appendIssueDetailCell(row, textContentElement);
       this.affectedResources.appendChild(row);
       count++;
     }

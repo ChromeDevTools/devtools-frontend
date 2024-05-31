@@ -105,7 +105,6 @@ devtools_module("timeline") {
     "../../generated:protocol",
     "../../models/cpu_profile:bundle",
     "../../models/extensions:bundle",
-    "../../models/live-metrics:bundle",
     "../../models/source_map_scopes:bundle",
     "../../models/timeline_model:bundle",
     "../../models/trace:bundle",

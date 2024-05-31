@@ -17,7 +17,7 @@ import {
 
 describe('The Performance panel landing page', () => {
   beforeEach(async () => {
-    await enableExperiment('perf-panel-observations');
+    await enableExperiment('timeline-observations');
   });
 
   it('displays live metrics', async () => {
@@ -62,8 +62,8 @@ describe('The Performance panel landing page', () => {
     // is hidden at this point in the test.
     await frontend.evaluate(`
       (async () => {
-        const {ViewManager} = await import('./ui/legacy/ViewManager.js');
-        await ViewManager.instance().showView('timeline');
+        const UI = await import('./ui/legacy/legacy.js');
+        await UI.ViewManager.ViewManager.instance().showView('timeline');
       })();
     `);
 

@@ -41,11 +41,6 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       return null;
     }
 
-    const {result} = await this.#target.runtimeAgent().invoke_evaluate({
-      expression: `window.getNodeForIndex(${index})`,
-      contextId: executionContextId,
-    });
-
     const runtimeModel = this.#target.model(SDK.RuntimeModel.RuntimeModel);
     if (!runtimeModel) {
       return null;
@@ -53,6 +48,15 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
     const domModel = this.#target.model(SDK.DOMModel.DOMModel);
     if (!domModel) {
+      return null;
+    }
+
+    const {result} = await this.#target.runtimeAgent().invoke_evaluate({
+      expression: `window.getNodeForIndex(${index})`,
+      contextId: executionContextId,
+    });
+
+    if (!result) {
       return null;
     }
 
@@ -186,18 +190,18 @@ export const enum Events {
   Reset = 'reset',
 }
 
-type MetricChangeEvent = Pick<Spec.MetricChangeEvent, 'value'|'rating'>;
+export type MetricChangeEvent = Pick<Spec.MetricChangeEvent, 'value'|'rating'>;
 
-interface LCPChangeEvent extends MetricChangeEvent {
+export interface LCPChangeEvent extends MetricChangeEvent {
   node?: SDK.DOMModel.DOMNode;
 }
 
-interface INPChangeEvent extends MetricChangeEvent {
+export interface INPChangeEvent extends MetricChangeEvent {
   interactionType: Spec.INPChangeEvent['interactionType'];
   node?: SDK.DOMModel.DOMNode;
 }
 
-type CLSChangeEvent = MetricChangeEvent;
+export type CLSChangeEvent = MetricChangeEvent;
 
 type EventTypes = {
   [Events.LCPChanged]: LCPChangeEvent,

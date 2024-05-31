@@ -26,6 +26,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../panels/timeline:timeline",
+    "../../panels/timeline/*",
   ]
 }

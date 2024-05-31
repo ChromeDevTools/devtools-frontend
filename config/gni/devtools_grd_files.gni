@@ -1687,6 +1687,7 @@ grd_files_debug_sources = [
   "front_end/panels/timeline/components/BreadcrumbsUI.js",
   "front_end/panels/timeline/components/DetailsView.js",
   "front_end/panels/timeline/components/InteractionBreakdown.js",
+  "front_end/panels/timeline/components/LiveMetricsView.js",
   "front_end/panels/timeline/components/Sidebar.js",
   "front_end/panels/timeline/components/breadcrumbsUI.css.js",
   "front_end/panels/timeline/components/interactionBreakdown.css.js",

@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
-import * as LiveMetrics from '../../models/live-metrics/live-metrics.js';
 import * as PanelFeedback from '../../ui/components/panel_feedback/panel_feedback.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
+import * as Components from './components/components.js';
 
 const UIStrings = {
   /**
@@ -49,59 +49,33 @@ interface Options {
 
 export class TimelineLandingPage extends UI.Widget.VBox {
   private readonly toggleRecordAction: UI.ActionRegistration.Action;
-  private liveMetrics?: LiveMetrics.LiveMetrics;
 
   constructor(toggleRecordAction: UI.ActionRegistration.Action, options?: Options) {
     super();
 
     this.toggleRecordAction = toggleRecordAction;
-    this.renderLegacyLandingPage(options);
 
+    this.contentElement.classList.add('timeline-landing-page', 'fill');
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS)) {
-      this.installLiveMetrics();
+      this.renderLandingPage();
+    } else {
+      this.renderLegacyLandingPage(options);
     }
   }
 
-  /**
-   * TODO: Create a separate component/element for the new landing page.
-   */
-  private installLiveMetrics(): void {
-    const lcpElem = this.contentElement.createChild('div', 'live-lcp');
-    const clsElem = this.contentElement.createChild('div', 'live-cls');
-    const inpElem = this.contentElement.createChild('div', 'live-inp');
-    this.liveMetrics = new LiveMetrics.LiveMetrics();
-    this.liveMetrics.addEventListener(LiveMetrics.Events.LCPChanged, event => {
-      lcpElem.textContent = '';
-      const lcpDataElem = lcpElem.createChild('div', 'lcp-data');
-      lcpDataElem.textContent = `LCP: ${Math.round(event.data.value)} `;
-      const node = event.data.node;
-      if (node) {
-        void Common.Linkifier.Linkifier.linkify(node).then(link => {
-          lcpDataElem.append(link);
-        });
-      }
-    });
-    this.liveMetrics.addEventListener(LiveMetrics.Events.CLSChanged, event => {
-      clsElem.textContent = '';
-      const clsDataElem = clsElem.createChild('div', 'cls-data');
-      clsDataElem.textContent = `CLS: ${event.data.value.toFixed(0.001)}`;
-    });
-    this.liveMetrics.addEventListener(LiveMetrics.Events.INPChanged, event => {
-      inpElem.textContent = '';
-      const inpDataElem = inpElem.createChild('div', 'inp-data');
-      inpDataElem.textContent = `INP: ${event.data.value} (${event.data.interactionType}) `;
-      const node = event.data.node;
-      if (node) {
-        void Common.Linkifier.Linkifier.linkify(node).then(link => {
-          inpDataElem.append(link);
-        });
-      }
-    });
-    this.liveMetrics.addEventListener(LiveMetrics.Events.Reset, () => {
-      lcpElem.textContent = '';
-      clsElem.textContent = '';
-      inpElem.textContent = '';
-    });
+  private renderLandingPage(): void {
+    const mainWidget = new UI.Widget.Widget();
+    mainWidget.contentElement.append(new Components.LiveMetricsView.LiveMetricsView());
+
+    const sidebarWidget = new UI.Widget.Widget();
+    const nextSteps = sidebarWidget.contentElement.createChild('div');
+    nextSteps.textContent = 'Next steps';
+
+    const splitView = new UI.SplitWidget.SplitWidget(true, true);
+    splitView.setMainWidget(mainWidget);
+    splitView.setSidebarWidget(sidebarWidget);
+
+    splitView.show(this.contentElement);
   }
 
   private renderLegacyLandingPage(options?: Options): void {
@@ -122,7 +96,7 @@ export class TimelineLandingPage extends UI.Widget.VBox {
         'b', UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('timeline.record-reload')[0].title());
     const navigateNode = encloseWithTag('b', i18nString(UIStrings.wasd));
 
-    this.contentElement.classList.add('timeline-landing-page', 'fill');
+    this.contentElement.classList.add('legacy');
     const centered = this.contentElement.createChild('div');
 
     const recordButton = UI.UIUtils.createInlineButton(UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction));

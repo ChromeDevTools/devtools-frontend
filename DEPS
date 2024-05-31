@@ -18,7 +18,7 @@ vars = {
   'buildtools_revision': 'efa920ce144e4dc1c1841e73179cd7e23b9f0d5e',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': 'da5e2f948a0e2642cd00d1c950a68474a9d3486a',
+  'depot_tools_revision': '6427b94bc2273c9e8a6ab04ef452c5e6c59137bd',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': '2915acabcf62efd7257c57bb8a443a7c389c65cb',
@@ -29,7 +29,7 @@ vars = {
   'emscripten_tag': 'ade9d780ff17c88d81aa13860361743e3c1e1396',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:e11af6727dd38fdd0e8cbbab2e207c369522ac7a',
+  'gn_version': 'git_revision:d010969ecc312c4c9512d4b4987b2589087df01a',
 
   'cmake_version': 'version:3.16.1',
 

@@ -82,7 +82,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   #gameTimeout = setTimeout(() => ({}), 0);
 
   #overlaysContainer: HTMLElement = document.createElement('div');
-  #overlays: Overlays = new Overlays({container: this.#overlaysContainer});
+  #overlays: Overlays;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -130,6 +130,16 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       this.#overlays.updateChartDimensions('network', dimensions.data.chart);
       this.#overlays.updateVisibleWindow(dimensions.data.traceWindow);
       this.#overlays.update();
+    });
+
+    this.#overlays = new Overlays({
+      container: this.#overlaysContainer,
+      charts: {
+        mainChart: this.mainFlameChart,
+        mainProvider: this.mainDataProvider,
+        networkChart: this.networkFlameChart,
+        networkProvider: this.networkDataProvider,
+      },
     });
 
     this.networkPane = new UI.Widget.VBox();

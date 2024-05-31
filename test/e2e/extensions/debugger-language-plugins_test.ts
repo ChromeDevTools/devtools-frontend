@@ -376,8 +376,7 @@ describe('The Debugger Language Plugins', () => {
 
     // Call stack shows inline function names and source locations.
     const funcNames = await getCallFrameNames();
-    assert.deepEqual(
-        funcNames, ['inner_inline_func', 'outer_inline_func', 'Main', 'go', 'await in go (async)', '(anonymous)']);
+    assert.deepEqual(funcNames, ['inner_inline_func', 'outer_inline_func', 'Main', 'go', 'await in go', '(anonymous)']);
     const sourceLocations = await getCallFrameLocations();
     assert.deepEqual(
         sourceLocations,
@@ -469,7 +468,7 @@ describe('The Debugger Language Plugins', () => {
 
     // Call stack shows inline function names and source locations.
     const funcNames = await getCallFrameNames();
-    assert.deepEqual(funcNames, ['$Main', 'go', 'await in go (async)', '(anonymous)']);
+    assert.deepEqual(funcNames, ['$Main', 'go', 'await in go', '(anonymous)']);
     const sourceLocations = await getCallFrameLocations();
     assert.deepEqual(sourceLocations, ['unreachable.ll:6', 'unreachable.html:27', 'unreachable.html:30']);
   });

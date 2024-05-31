@@ -129,7 +129,7 @@ describe('Ignore list', function() {
     await waitFor(RESUME_BUTTON);
     await waitFor(PAUSE_INDICATOR_SELECTOR);
     await waitForFunction(async () => await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT));
-    assert.deepEqual(await getCallFrameNames(), ['userTimeout', 'Promise.then (async)', '(anonymous)']);
+    assert.deepEqual(await getCallFrameNames(), ['userTimeout', 'Promise.then', '(anonymous)']);
 
     await click(RESUME_BUTTON);
 

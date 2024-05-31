@@ -64,7 +64,7 @@ describe('The Console\'s errors', () => {
         stackPreview: `
 loadXHR @ resource-errors.html:20
 step2 @ resource-errors.html:12
-error (async)
+error
 performActions @ resource-errors.html:7
 (anonymous) @ resource-errors.html:30`,
         wrapperClasses: 'console-message-wrapper console-error-level',
@@ -102,7 +102,7 @@ performActions @ resource-errors.html:7
         repeatCount: null,
         source: 'unknown-scheme://foo:1',
         stackPreview: `
-Image (async)
+Image
 performActions @ resource-errors.html:8
 (anonymous) @ resource-errors.html:30`,
         wrapperClasses: 'console-message-wrapper console-error-level',

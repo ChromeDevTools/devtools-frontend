@@ -273,13 +273,19 @@ export class NetworkManager extends SDKModel<EventTypes> {
     if (!conditions.download && !conditions.upload) {
       return Protocol.Network.ConnectionType.None;
     }
-    const title =
-        typeof conditions.title === 'function' ? conditions.title().toLowerCase() : conditions.title.toLowerCase();
-    for (const [name, protocolType] of CONNECTION_TYPES) {
-      if (title.includes(name)) {
-        return protocolType;
+    try {
+      const title =
+          typeof conditions.title === 'function' ? conditions.title().toLowerCase() : conditions.title.toLowerCase();
+      for (const [name, protocolType] of CONNECTION_TYPES) {
+        if (title.includes(name)) {
+          return protocolType;
+        }
       }
+    } catch {
+      // If the i18nKey for this condition has changed, calling conditions.title() will break, so in that case we reset to NONE
+      return Protocol.Network.ConnectionType.None;
     }
+
     return Protocol.Network.ConnectionType.Other;
   }
 
@@ -1963,8 +1969,11 @@ export class ConditionsSerializer implements Serializer<Conditions, Conditions> 
 export function networkConditionsEqual(first: Conditions, second: Conditions): boolean {
   // Caution: titles might be different function instances, which produce
   // the same value.
-  const firstTitle = typeof first.title === 'function' ? first.title() : first.title;
-  const secondTitle = typeof second.title === 'function' ? second.title() : second.title;
+  // We prefer to use the i18nTitleKey to prevent against locale changes or
+  // UIString changes that might change the value vs what the user has stored
+  // locally.
+  const firstTitle = first.i18nTitleKey || (typeof first.title === 'function' ? first.title() : first.title);
+  const secondTitle = second.i18nTitleKey || (typeof second.title === 'function' ? second.title() : second.title);
   return second.download === first.download && second.upload === first.upload && second.latency === first.latency &&
       first.packetLoss === second.packetLoss && first.packetQueueLength === second.packetQueueLength &&
       first.packetReordering === second.packetReordering && secondTitle === firstTitle;

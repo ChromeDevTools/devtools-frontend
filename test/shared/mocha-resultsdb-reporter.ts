@@ -46,6 +46,13 @@ interface TestRetry {
   currentRetry(): number;
 }
 
+interface HookWithParent {
+  parent: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: any,
+  };
+}
+
 class ResultsDbReporter extends Mocha.reporters.Spec {
   // The max length of the summary is 4000, but we need to leave some room for
   // the rest of the HTML formatting (e.g. <pre> and </pre>).
@@ -105,6 +112,16 @@ class ResultsDbReporter extends Mocha.reporters.Spec {
     ResultsDb.sendTestResult(testResult);
   }
 
+  private maybeHook(test: Mocha.Test): string|undefined {
+    if (!(test instanceof Mocha.Hook)) {
+      return undefined;
+    }
+    const hook = (test as unknown) as HookWithParent;
+    const suite = hook.parent;
+    const hookNames = ['afterAll', 'afterEach', 'beforeAll', 'beforeEach'];
+    return hookNames.find(hookName => suite[`_${hookName}`].includes(test) ? hookName : undefined);
+  }
+
   private onTestSkip(test: Mocha.Test) {
     const testResult = this.buildDefaultTestResultFrom(test);
     testResult.status = 'SKIP';
@@ -116,11 +133,16 @@ class ResultsDbReporter extends Mocha.reporters.Spec {
     let testId = this.suitePrefix ? this.suitePrefix + '/' : '';
     testId += test.titlePath().join('/');  // Chrome groups test by a path logic.
     const testRetry = ((test as unknown) as TestRetry);
-    return {
+    const result = {
       testId: ResultsDb.sanitizedTestId(testId),
       duration: `${test.duration || 0}ms`,
       tags: [{key: 'run', 'value': String(testRetry.currentRetry() + 1)}],
     };
+    const hookName = this.maybeHook(test);
+    if (hookName) {
+      result.tags.push({key: 'hook', value: hookName});
+    }
+    return result;
   }
 
   override epilogue() {

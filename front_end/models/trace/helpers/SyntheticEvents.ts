@@ -23,7 +23,8 @@ export class SyntheticEventsManager {
    * created here will be used by the handlers to register their
    * synthetic trace events.
    */
-  static initManagerForTrace(rawEvents: readonly Types.TraceEvents.TraceEventData[]): SyntheticEventsManager {
+  static initSyntheticEventsManagerForTrace(rawEvents: readonly Types.TraceEvents.TraceEventData[]):
+      SyntheticEventsManager {
     const manager = new SyntheticEventsManager(rawEvents);
     syntheticEventsManagerByTraceIndex.push(manager);
     return manager;
@@ -45,7 +46,7 @@ export class SyntheticEventsManager {
     }
     const manager = syntheticEventsManagerByTraceIndex.at(traceIndex);
     if (!manager) {
-      throw new Error(`Attempted to get a SyntheticEventsManager with an invalid index ${last}`);
+      throw new Error(`Attempted to get a SyntheticEventsManager with an invalid index ${traceIndex}`);
     }
     return manager;
   }
@@ -89,7 +90,7 @@ export class SyntheticEventsManager {
     return syntheticEvent;
   }
 
-  allSyntheticEventsForTest(): Types.TraceEvents.SyntheticBasedEvent[] {
+  allSyntheticEvents(): Types.TraceEvents.SyntheticBasedEvent[] {
     return this.#syntheticTraceEvents;
   }
 }

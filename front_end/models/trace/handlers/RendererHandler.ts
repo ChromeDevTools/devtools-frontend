@@ -49,6 +49,7 @@ const makeRendererProcess = (): RendererProcess => ({
 const makeRendererThread = (): RendererThread => ({
   name: null,
   entries: [],
+  profileCalls: [],
 });
 
 const getOrCreateRendererProcess =
@@ -334,6 +335,7 @@ export function buildHierarchy(
         if (samplesIntegrator && profileCalls) {
           allTraceEntries = [...allTraceEntries, ...profileCalls];
           thread.entries = Helpers.Trace.mergeEventsInOrder(thread.entries, profileCalls);
+          thread.profileCalls = profileCalls;
           // We'll also inject the instant JSSample events (in debug mode only)
           const jsSamples = samplesIntegrator.jsSampleEvents;
           if (jsSamples) {
@@ -420,5 +422,6 @@ export interface RendererThread {
    * samples.
    */
   entries: Types.TraceEvents.SyntheticTraceEntry[];
+  profileCalls: Types.TraceEvents.SyntheticProfileCall[];
   tree?: Helpers.TreeHelpers.TraceEntryTree;
 }

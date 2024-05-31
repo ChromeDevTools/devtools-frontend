@@ -92,7 +92,7 @@ export class TraceLoader {
     const contents = await TraceLoader.fixtureContents(context, name);
 
     const events = 'traceEvents' in contents ? contents.traceEvents : contents;
-    TraceEngine.Helpers.SyntheticEvents.SyntheticEventsManager.initManagerForTrace(events);
+    TraceEngine.Helpers.SyntheticEvents.SyntheticEventsManager.initSyntheticEventsManagerForTrace(events);
     return events;
   }
 

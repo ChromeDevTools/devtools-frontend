@@ -380,6 +380,7 @@ export function makeMockRendererHandlerData(entries: TraceEngine.Types.TraceEven
     tree,
     name: 'thread',
     entries,
+    profileCalls: entries.filter(TraceEngine.Types.TraceEvents.isProfileCall),
   };
 
   const mockProcess: TraceEngine.Handlers.ModelHandlers.Renderer.RendererProcess = {

@@ -56,7 +56,7 @@ describe('SyntheticEvents', function() {
            // Test synthetic events are stored in the correct position.
            assert.strictEqual(syntheticEventsManager.syntheticEventForRawEventIndex(rawEventIndex), syntheticEvent);
          }
-         const allSyntheticEventsInManagerCount = syntheticEventsManager.allSyntheticEventsForTest().reduce(
+         const allSyntheticEventsInManagerCount = syntheticEventsManager.allSyntheticEvents().reduce(
              (count, event) => event !== undefined ? (count + 1) : 0, 0);
          // Test synthetic events are stored only once.
          assert.strictEqual(allSyntheticEventsInManagerCount, allSyntheticEvents.length);

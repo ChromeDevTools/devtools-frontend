@@ -508,7 +508,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    * @deprecated
    **/
   getTraceEngineRawTraceEventsForLayoutTests(): readonly TraceEngine.Types.TraceEvents.TraceEventData[] {
-    const data = this.#traceEngineModel.traceEvents(this.#traceEngineActiveTraceIndex);
+    const data = this.#traceEngineModel.rawTraceEvents(this.#traceEngineActiveTraceIndex);
     if (data === null) {
       throw new Error('No trace engine data found.');
     }
@@ -708,7 +708,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (this.state !== State.Idle) {
       return;
     }
-    const traceEvents = this.#traceEngineModel.traceEvents(this.#traceEngineActiveTraceIndex);
+    const traceEvents = this.#traceEngineModel.rawTraceEvents(this.#traceEngineActiveTraceIndex);
     const metadata = this.#traceEngineModel.metadata(this.#traceEngineActiveTraceIndex);
     // Save modifications into the metadata if modifications experiment is on
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_WRITE_MODIFICATIONS_TO_DISK) &&

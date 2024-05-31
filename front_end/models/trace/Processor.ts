@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Handlers from './handlers/handlers.js';
-import * as Helpers from './helpers/helpers.js';
 import * as Insights from './insights/insights.js';
 import * as Types from './types/types.js';
 
@@ -144,7 +143,6 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
      * Illustration of a previous change to `eventsPerChunk`: https://imgur.com/wzp8BnR
      */
     const eventsPerChunk = 50_000;
-    Helpers.SyntheticEvents.SyntheticEventsManager.initManagerForTrace(traceEvents);
     // Convert to array so that we are able to iterate all handlers multiple times.
     const sortedHandlers = [...sortHandlers(this.#traceHandlers).values()];
 

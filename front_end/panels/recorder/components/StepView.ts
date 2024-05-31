@@ -783,7 +783,11 @@ export class StepView extends HTMLElement {
   };
 
   #onStepContextMenu(event: MouseEvent): void {
-    const menu = new UI.ContextMenu.ContextMenu(event);
+    const buttonElement = event.target instanceof Buttons.Button.Button ? event.target : undefined;
+    const menu = new UI.ContextMenu.ContextMenu(event, {
+      x: buttonElement?.getBoundingClientRect().left,
+      y: buttonElement?.getBoundingClientRect().bottom,
+    });
 
     const actions = this.#getActions();
     const copyActions = actions.filter(

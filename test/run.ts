@@ -17,6 +17,7 @@ const options = commandLineArgs(yargs(process.argv.slice(2)))
                     .options('debug-driver', {type: 'boolean', hidden: true, desc: 'Debug the driver part of tests'})
                     .options('verbose', {alias: 'v', type: 'count', desc: 'Increases the log level'})
                     .options('warn', {desc: 'Show deprecation warning'})
+                    .options('bail', {alias: 'b', desc: ' bail after first test failure'})
                     .positional('tests', {
                       type: 'string',
                       desc: 'Path to the test suite, starting from out/Target/gen directory.',
@@ -26,7 +27,7 @@ const options = commandLineArgs(yargs(process.argv.slice(2)))
                     })
                     .strict()
                     .argv;
-const CONSUMED_OPTIONS = ['tests', 'skip-ninja', 'debug-driver', 'verbose', 'watch', 'v'];
+const CONSUMED_OPTIONS = ['tests', 'skip-ninja', 'debug-driver', 'bail', 'b', 'verbose', 'v', 'watch'];
 
 let logLevel = 'error';
 if (options['verbose'] === 1) {

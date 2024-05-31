@@ -96,6 +96,9 @@ export const ResultsDBReporter = function(
         this.write(`\n${consoleDiffLines.join('\n')}\n`);
       }
       this.write(`${'='.repeat(consoleHeader.length)}\n\n`);
+      if (_config['bail']) {
+        throw new Error('Bailing (bail option is enabled)');
+      }
     } else if (skipped) {
       this.write(`==== ${status}: ${testId}\n\n`);
     }

@@ -616,9 +616,7 @@ export function asyncStackTraceLabel(
     if (description === 'Promise.reject') {
       return i18nString(UIStrings.promiseRejectedAsync);
     }
-    // TODO(crbug.com/1254259): Remove the check for 'async function'
-    // once the relevant V8 inspector CL rolls into Node LTS.
-    if ((description === 'await' || description === 'async function') && previousCallFrames.length !== 0) {
+    if (description === 'await' && previousCallFrames.length !== 0) {
       const lastPreviousFrame = previousCallFrames[previousCallFrames.length - 1];
       const lastPreviousFrameName = beautifyFunctionName(lastPreviousFrame.functionName);
       description = `await in ${lastPreviousFrameName}`;

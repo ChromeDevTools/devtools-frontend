@@ -1456,11 +1456,6 @@ export class DebuggerPausedDetails {
     let stack: (Protocol.Runtime.StackTrace|undefined)|Protocol.Runtime.StackTrace = asyncStackTrace;
     let previous: Protocol.Runtime.StackTrace|null = null;
     while (stack) {
-      // TODO(crbug.com/1254259): Remove this post-processing step once the V8
-      // inspector back-end change propagated to Node LTS.
-      if (stack.description === 'async function' && stack.callFrames.length) {
-        stack.callFrames.shift();
-      }
       if (previous && !stack.callFrames.length) {
         previous.parent = stack.parent;
       } else {

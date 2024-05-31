@@ -1632,7 +1632,9 @@ export interface TraceEventLayout extends TraceEventComplete {
       partialLayout: boolean,
       totalObjects: number,
     },
-    endData: {
+    // endData is not reliably populated.
+    // Why? TBD. https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/local_frame_view.cc;l=847-851;drc=8b6aaad8027390ce6b32d82d57328e93f34bb8e5
+    endData?: {
       layoutRoots: Array<{
         depth: number,
         nodeId: Protocol.DOM.BackendNodeId,

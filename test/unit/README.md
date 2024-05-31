@@ -4,6 +4,39 @@ Unit tests are written using [Mocha](https://mochajs.org/) and [Chai](https://ww
 [Karma](https://karma-runner.github.io/latest/index.html) in a web browser.  The unit tests live next to the source code
 they are testing and follow the naming convention `Foo.test.ts` for `Foo.ts`.
 
+## Running unit tests
+
+The unit tests are implicitly run as part of `npm run test`,
+but that also runs all the other test suites. To run only
+**all unit tests**, use:
+
+```
+npm run test front_end
+```
+
+To use `out/Debug` instead of the default `out/Default` target
+directory, use:
+
+```
+npm run test -- -t Debug front_end
+```
+
+To run the unit tests in **debug mode**, use:
+
+```
+npm run test -- --debug front_end
+```
+
+To run only **specific unit tests** from a single `.test.ts`
+file, say `SourcesView.test.ts` for example, use:
+
+```
+npm run test front_end/panels/sources/SourcesView.test.ts
+```
+
+Check the output of `npm run test -- --help` for an overview of
+all options.
+
 ## DOM Helpers
 
 ### Rendering a component in a test

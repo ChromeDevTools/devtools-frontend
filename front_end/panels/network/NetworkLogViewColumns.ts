@@ -611,7 +611,7 @@ export class NetworkLogViewColumns {
     for (const columnId of columnIds) {
       const setting = savedSettings[columnId];
       let columnConfig = this.columns.find(columnConfig => columnConfig.id === columnId);
-      if (!columnConfig) {
+      if (!columnConfig && setting.title) {
         columnConfig = this.addCustomHeader(setting.title, columnId) || undefined;
       }
       if (columnConfig && columnConfig.hideable && typeof setting.visible === 'boolean') {

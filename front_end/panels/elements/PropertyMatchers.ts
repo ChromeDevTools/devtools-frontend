@@ -566,3 +566,31 @@ export class GridTemplateMatcher extends matcherBase(GridTemplateMatch) {
     return new GridTemplateMatch(valueText, node, lines.filter(line => line.length > 0));
   }
 }
+export class AnchorFunctionMatch implements Match {
+  constructor(
+      readonly text: string, readonly matching: BottomUpTreeMatching, readonly node: CodeMirror.SyntaxNode,
+      readonly functionName: string, readonly args: CodeMirror.SyntaxNode[]) {
+  }
+}
+
+// clang-format off
+export class AnchorFunctionMatcher extends matcherBase(AnchorFunctionMatch) {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+    if (node.name !== 'CallExpression') {
+      return null;
+    }
+
+    const calleeText = matching.ast.text(node.getChild('Callee'));
+    if (calleeText !== 'anchor' && calleeText !== 'anchor-size') {
+      return null;
+    }
+
+    const [firstArg] = ASTUtils.callArgs(node);
+    if (!firstArg || firstArg.length === 0) {
+      return null;
+    }
+
+    return new AnchorFunctionMatch(matching.ast.text(node), matching, node, calleeText, firstArg);
+  }
+}
+// clang-format on

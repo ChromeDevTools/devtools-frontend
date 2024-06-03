@@ -18,7 +18,7 @@ interface KarmaConfig {
 }
 
 function describeBody(fn: () => void) {
-  before(async function() {
+  before('describeWithRealConnection', async function() {
     if (initialized) {
       return;
     }
@@ -53,14 +53,14 @@ function describeBody(fn: () => void) {
     initialized = true;
   });
 
-  beforeEach(() => {
+  beforeEach('describeWithRealConnection', () => {
     resetHostBindingStubState();
     Common.Settings.Settings.instance().clearAll();
   });
 
   fn();
 
-  afterEach(async () => {
+  afterEach('describeWithRealConnection', async () => {
     const runAfterPendingDispatches = ProtocolClient.InspectorBackend.test.deprecatedRunAfterPendingDispatches;
     if (!runAfterPendingDispatches) {
       throw new Error('Missing deprecatedRunAfterPendingDispatches');

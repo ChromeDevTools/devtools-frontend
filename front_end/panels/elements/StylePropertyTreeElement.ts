@@ -28,6 +28,8 @@ import * as ElementsComponents from './components/components.js';
 import {cssRuleValidatorsMap, type Hint} from './CSSRuleValidator.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {
+  type AnchorFunctionMatch,
+  AnchorFunctionMatcher,
   AngleMatch,
   AngleMatcher,
   type BezierMatch,
@@ -1078,6 +1080,70 @@ export class LengthRenderer implements MatchRenderer<LengthMatch> {
   }
 }
 
+export class AnchorFunctionRenderer implements MatchRenderer<AnchorFunctionMatch> {
+  #treeElement: StylePropertyTreeElement;
+  constructor(treeElement: StylePropertyTreeElement) {
+    this.#treeElement = treeElement;
+  }
+
+  anchorDecoratedForTest(): void {
+  }
+
+  async #decorateAnchor(element: HTMLElement, identifier?: string): Promise<void> {
+    const anchorNode = await this.#treeElement.node()?.getAnchorBySpecifier(identifier) ?? undefined;
+    const link = new ElementsComponents.AnchorFunctionLinkSwatch.AnchorFunctionLinkSwatch({
+      identifier,
+      anchorNode: anchorNode,
+      onLinkActivate: () => {
+        if (!anchorNode) {
+          return;
+        }
+
+        void Common.Revealer.reveal(anchorNode, false);
+      },
+      onMouseEnter: () => {
+        anchorNode?.highlight();
+      },
+      onMouseLeave: () => {
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+      },
+    });
+
+    element.removeChildren();
+    element.appendChild(link);
+
+    this.anchorDecoratedForTest();
+  }
+
+  render(match: AnchorFunctionMatch, context: RenderingContext): Node[] {
+    const content = document.createElement('span');
+    content.appendChild(document.createTextNode(`${match.functionName}(`));
+
+    const firstArgText = match.matching.ast.text(match.args[0]);
+    const hasDashedIdentifier = firstArgText.startsWith('--');
+    const linkContainer = document.createElement('span');
+    if (hasDashedIdentifier) {
+      linkContainer.textContent = `${firstArgText} `;
+    }
+    content.appendChild(linkContainer);
+
+    const remainingArgsContainer = content.appendChild(document.createElement('span'));
+    if (hasDashedIdentifier) {
+      Renderer.renderInto(match.args.slice(1), context, remainingArgsContainer);
+    } else {
+      Renderer.renderInto(match.args, context, remainingArgsContainer);
+    }
+
+    void this.#decorateAnchor(linkContainer, hasDashedIdentifier ? firstArgText : undefined);
+    content.appendChild(document.createTextNode(')'));
+    return [content];
+  }
+
+  matcher(): AnchorFunctionMatcher {
+    return new AnchorFunctionMatcher();
+  }
+}
+
 export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private readonly style: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
   private matchedStylesInternal: SDK.CSSMatchedStyles.CSSMatchedStyles;
@@ -1460,6 +1526,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           new LightDarkColorRenderer(this),
           new GridTemplateRenderer(),
           new LinearGradientRenderer(),
+          new AnchorFunctionRenderer(this),
         ] :
         [];
 

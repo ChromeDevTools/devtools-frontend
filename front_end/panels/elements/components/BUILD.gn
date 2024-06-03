@@ -11,6 +11,7 @@ generate_css("css_files") {
   sources = [
     "accessibilityTreeNode.css",
     "adornerSettingsPane.css",
+    "anchorFunctionLinkSwatch.css",
     "computedStyleProperty.css",
     "computedStyleTrace.css",
     "cssHintDetailsView.css",
@@ -30,6 +31,7 @@ devtools_module("components") {
     "AccessibilityTreeNode.ts",
     "AdornerManager.ts",
     "AdornerSettingsPane.ts",
+    "AnchorFunctionLinkSwatch.ts",
     "CSSHintDetailsView.ts",
     "CSSPropertyDocsView.ts",
     "CSSPropertyIconResolver.ts",
@@ -56,13 +58,16 @@ devtools_module("components") {
     "../../../ui/components/buttons:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/icon_button:bundle",
+    "../../../ui/components/icon_button:bundle",
     "../../../ui/components/legacy_wrapper:bundle",
     "../../../ui/components/node_text:bundle",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/components/survey_link:bundle",
     "../../../ui/components/tree_outline:bundle",
     "../../../ui/legacy:bundle",
+    "../../../ui/legacy/components/inline_editor:bundle",
     "../../../ui/lit-html:bundle",
+    "../../../ui/visual_logging:bundle",
   ]
 }
 
@@ -92,6 +97,7 @@ ts_library("unittests") {
   sources = [
     "AccessibilityTreeNode.test.ts",
     "AdornerManager.test.ts",
+    "AnchorFunctionLinkSwatch.test.ts",
     "CSSHintDetailsView.test.ts",
     "CSSPropertyDocsView.test.ts",
     "CSSPropertyIconResolver.test.ts",

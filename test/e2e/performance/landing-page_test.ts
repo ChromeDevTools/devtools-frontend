@@ -20,7 +20,8 @@ describe('The Performance panel landing page', () => {
     await enableExperiment('timeline-observations');
   });
 
-  it('displays live metrics', async () => {
+  // Flaky on mac
+  it.skipOnPlatforms(['mac'], '[crbug.com/344543189] displays live metrics', async () => {
     const {target, frontend} = await getBrowserAndPages();
 
     await navigateToPerformanceTab();

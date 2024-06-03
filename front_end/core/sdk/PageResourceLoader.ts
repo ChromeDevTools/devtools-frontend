@@ -295,13 +295,21 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       try {
         if (initiator.target) {
           Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageViaTarget);
+          Host.rnPerfMetrics.developerResourceLoadingStarted(
+              parsedURL, Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageViaTarget);
           const result = await this.loadFromTarget(initiator.target, initiator.frameId, url);
+          Host.rnPerfMetrics.developerResourceLoadingFinished(
+              parsedURL, Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageViaTarget, result);
           return result;
         }
         const frame = FrameManager.instance().getFrame(initiator.frameId);
         if (frame) {
           Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageViaFrame);
+          Host.rnPerfMetrics.developerResourceLoadingStarted(
+              parsedURL, Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageViaFrame);
           const result = await this.loadFromTarget(frame.resourceTreeModel().target(), initiator.frameId, url);
+          Host.rnPerfMetrics.developerResourceLoadingFinished(
+              parsedURL, Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageViaTarget, result);
           return result;
         }
       } catch (e) {
@@ -309,12 +317,18 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
           Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageFailure);
           failureReason = e.message;
         }
+        Host.rnPerfMetrics.developerResourceLoadingFinished(
+            parsedURL, Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageFailure,
+            {success: false, errorDescription: {message: failureReason}});
       }
       Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageFallback);
+      Host.rnPerfMetrics.developerResourceLoadingStarted(
+          parsedURL, Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageFallback);
     } else {
       const code = getLoadThroughTargetSetting().get() ? Host.UserMetrics.DeveloperResourceLoaded.FallbackPerProtocol :
                                                          Host.UserMetrics.DeveloperResourceLoaded.FallbackPerOverride;
       Host.userMetrics.developerResourceLoaded(code);
+      Host.rnPerfMetrics.developerResourceLoadingStarted(parsedURL, code);
     }
 
     const result = await MultitargetNetworkManager.instance().loadResource(url);
@@ -326,6 +340,8 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       result.errorDescription.message =
           `Fetch through target failed: ${failureReason}; Fallback: ${result.errorDescription.message}`;
     }
+    Host.rnPerfMetrics.developerResourceLoadingFinished(
+        parsedURL, Host.UserMetrics.DeveloperResourceLoaded.FallbackAfterFailure, result);
     return result;
   }
 

@@ -56,6 +56,15 @@ const UIStrings = {
    *@description Text in Timeline UIUtils of the Performance panel
    */
   websocketProtocol: 'WebSocket Protocol',
+  /**
+   * @description Details text indicating how many bytes were received in a WebSocket message
+   * @example {1024} PH1
+   */
+  webSocketBytes: '{PH1} byte(s)',
+  /**
+   * @description Details text indicating how many bytes were sent in a WebSocket message
+   */
+  webSocketDataLength: 'Data Length',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/DetailsView.ts', UIStrings);
@@ -122,9 +131,7 @@ export interface DetailRow {
 }
 export function buildRowsForWebSocketEvent(
     event: TraceEngine.Types.TraceEvents.TraceEventWebSocketCreate|
-    TraceEngine.Types.TraceEvents.TraceEventWebSocketDestroy|
-    TraceEngine.Types.TraceEvents.TraceEventWebSocketSendHandshakeRequest|
-    TraceEngine.Types.TraceEvents.TraceEventWebSocketReceiveHandshakeResponse,
+    TraceEngine.Types.TraceEvents.TraceEventWebSocketInfo|TraceEngine.Types.TraceEvents.TraceEventWebSocketTransfer,
     traceParsedData: TraceEngine.Handlers.Types.TraceParseData): readonly DetailRow[] {
   const rows: DetailRow[] = [];
 
@@ -139,6 +146,14 @@ export function buildRowsForWebSocketEvent(
     rows.push({key: i18n.i18n.lockedString('URL'), value: event.args.data.url});
     if (event.args.data.websocketProtocol) {
       rows.push({key: i18nString(UIStrings.websocketProtocol), value: event.args.data.websocketProtocol});
+    }
+  }
+  if (TraceEngine.Types.TraceEvents.isTraceEventWebSocketTransfer(event)) {
+    if (event.args.data.dataLength) {
+      rows.push({
+        key: i18nString(UIStrings.webSocketDataLength),
+        value: `${i18nString(UIStrings.webSocketBytes, {PH1: event.args.data.dataLength})}`,
+      });
     }
   }
 

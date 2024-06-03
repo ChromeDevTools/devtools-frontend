@@ -399,6 +399,14 @@ const UIStrings = {
    */
   receiveWebsocketHandshake: 'Receive WebSocket Handshake',
   /**
+   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   */
+  wsMessageReceived: 'Receive WebSocket Message',
+  /**
+   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   */
+  wsMessageSent: 'Send WebSocket Message',
+  /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
   destroyWebsocket: 'Destroy WebSocket',
@@ -954,6 +962,14 @@ export function maybeInitSylesMap(): EventStylesMap {
 
     [TraceEngine.Types.TraceEvents.KnownEventName.WebSocketDestroy]:
         new TimelineRecordStyle(i18nString(UIStrings.destroyWebsocket), defaultCategoryStyles.scripting),
+    [TraceEngine.Types.TraceEvents.KnownEventName.WebSocketSend]: new TimelineRecordStyle(
+        i18nString(UIStrings.wsMessageSent),
+        defaultCategoryStyles.scripting,
+        ),
+    [TraceEngine.Types.TraceEvents.KnownEventName.WebSocketReceive]: new TimelineRecordStyle(
+        i18nString(UIStrings.wsMessageReceived),
+        defaultCategoryStyles.scripting,
+        ),
 
     [TraceEngine.Types.TraceEvents.KnownEventName.EmbedderCallback]:
         new TimelineRecordStyle(i18nString(UIStrings.embedderCallback), defaultCategoryStyles.scripting),

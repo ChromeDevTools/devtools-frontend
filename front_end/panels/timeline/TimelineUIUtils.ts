@@ -856,6 +856,8 @@ export class TimelineUIUtils {
       case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketCreate:
       case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketSendHandshakeRequest:
       case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketReceiveHandshakeResponse:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketSend:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketReceive:
       case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketDestroy:
       case TraceEngine.Types.TraceEvents.KnownEventName.ResourceWillSendRequest:
       case TraceEngine.Types.TraceEvents.KnownEventName.ResourceSendRequest:
@@ -935,6 +937,8 @@ export class TimelineUIUtils {
       case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketCreate:
       case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketSendHandshakeRequest:
       case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketReceiveHandshakeResponse:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketSend:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketReceive:
       case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketDestroy: {
         detailsText = await TimelineUIUtils.buildDetailsTextForTraceEvent(event, traceParsedData);
         break;
@@ -1445,6 +1449,8 @@ export class TimelineUIUtils {
       case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketCreate:
       case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketSendHandshakeRequest:
       case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketReceiveHandshakeResponse:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketSend:
+      case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketReceive:
       case TraceEngine.Types.TraceEvents.KnownEventName.WebSocketDestroy: {
         if (TraceEngine.Types.TraceEvents.isWebSocketTraceEvent(event)) {
           const rows = TimelineComponents.DetailsView.buildRowsForWebSocketEvent(event, traceParseData);

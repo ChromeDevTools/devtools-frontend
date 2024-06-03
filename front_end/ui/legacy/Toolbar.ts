@@ -887,8 +887,12 @@ export class ToolbarMenuButton extends ToolbarButton {
       useSoftMenu: this.useSoftMenu,
       x: this.element.getBoundingClientRect().left,
       y: this.element.getBoundingClientRect().top + this.element.offsetHeight,
+      // Without rAF, pointer events will be un-ignored too early, and a single click causes the
+      // context menu to be closed and immediately re-opened on Windows (https://crbug.com/339560549).
+      onSoftMenuClosed: () => requestAnimationFrame(() => this.element.removeAttribute('aria-expanded')),
     });
     this.contextMenuHandler(contextMenu);
+    this.element.setAttribute('aria-expanded', 'true');
     void contextMenu.show();
   }
 

@@ -644,6 +644,14 @@ const InspectorFrontendHostImpl = class {
 
   /**
    * @override
+   * @param {function(Object<string, Object<string, string|boolean>>):void} callback
+   */
+  getHostConfig(callback) {
+    DevToolsAPI.sendMessageToEmbedder('getHostConfig', [], /** @type {function(?Object)} */ (callback));
+  }
+
+  /**
+   * @override
    * @param {string} origin
    * @param {string} script
    */

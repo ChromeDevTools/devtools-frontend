@@ -398,6 +398,30 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     });
   }
 
+  getHostConfig(callback: (arg0: Root.Runtime.HostConfig) => void): void {
+    callback({
+      devToolsConsoleInsights: {
+        aidaModelId: '',
+        aidaTemperature: 0,
+        blocked: true,
+        blockedByAge: false,
+        blockedByEnterprisePolicy: false,
+        blockedByFeatureFlag: true,
+        blockedByGeo: false,
+        blockedByRollout: false,
+        disallowLogging: false,
+        enabled: false,
+        optIn: false,
+      },
+      devToolsConsoleInsightsDogfood: {
+        aidaModelId: '',
+        aidaTemperature: 0,
+        enabled: false,
+        optIn: false,
+      },
+    });
+  }
+
   upgradeDraggedFileSystemPermissions(fileSystem: FileSystem): void {
   }
 

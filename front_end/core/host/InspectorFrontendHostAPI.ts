@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../core/platform/platform.js';
+import type * as Root from '../root/root.js';
 
 export enum Events {
   AppendedToURL = 'appendedToURL',
@@ -302,6 +303,8 @@ export interface InspectorFrontendHostAPI {
   clearPreferences(): void;
 
   getSyncInformation(callback: (arg0: SyncInformation) => void): void;
+
+  getHostConfig(callback: (arg0: Root.Runtime.HostConfig) => void): void;
 
   upgradeDraggedFileSystemPermissions(fileSystem: FileSystem): void;
 

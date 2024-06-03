@@ -78,10 +78,12 @@ export class Runtime {
     return runtimePlatform;
   }
 
-  static isDescriptorEnabled(descriptor: {
-    experiment: ((string | undefined)|null),
-    condition?: Condition,
-  }): boolean {
+  static isDescriptorEnabled(
+      descriptor: {
+        experiment: ((string | undefined)|null),
+        condition?: Condition,
+      },
+      config?: HostConfig): boolean {
     const {experiment} = descriptor;
     if (experiment === '*') {
       return true;
@@ -93,7 +95,7 @@ export class Runtime {
       return false;
     }
     const {condition} = descriptor;
-    return condition ? condition() : true;
+    return condition ? condition(config) : true;
   }
 
   loadLegacyModule(modulePath: string): Promise<void> {
@@ -296,11 +298,33 @@ export const enum ExperimentName {
   TIMELINE_OBSERVATIONS = 'timeline-observations',
 }
 
+export interface HostConfig {
+  devToolsConsoleInsights: {
+    aidaModelId: string,
+    aidaTemperature: number,
+    blocked: boolean,
+    blockedByAge: boolean,
+    blockedByEnterprisePolicy: boolean,
+    blockedByFeatureFlag: boolean,
+    blockedByGeo: boolean,
+    blockedByRollout: boolean,
+    disallowLogging: boolean,
+    enabled: boolean,
+    optIn: boolean,
+  };
+  devToolsConsoleInsightsDogfood: {
+    aidaModelId: string,
+    aidaTemperature: number,
+    enabled: boolean,
+    optIn: boolean,
+  };
+}
+
 /**
  * When defining conditions make sure that objects used by the function have
  * been instantiated.
  */
-export type Condition = () => boolean;
+export type Condition = (config?: HostConfig) => boolean;
 
 export const conditions = {
   canDock: () => Boolean(Runtime.queryParam('can_dock')),

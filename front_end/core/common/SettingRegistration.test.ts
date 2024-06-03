@@ -8,6 +8,7 @@ import {
 } from '../../testing/EnvironmentHelpers.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import * as i18n from '../i18n/i18n.js';
+import type * as Root from '../root/root.js';
 
 import * as Common from './common.js';
 
@@ -105,5 +106,37 @@ describe('SettingRegistration', () => {
         defaultValue: false,
       });
     });
+  });
+
+  it('can handle settings with condition which depends on host config', () => {
+    const configSettingName = 'mock-setting-with-host-config';
+    Common.Settings.registerSettingExtension({
+      settingName: configSettingName,
+      settingType: Common.Settings.SettingType.BOOLEAN,
+      defaultValue: false,
+      condition: config => {
+        return config?.devToolsConsoleInsightsDogfood?.enabled === true;
+      },
+    });
+    assert.throws(() => Common.Settings.Settings.instance().moduleSetting(configSettingName));
+
+    const dummyStorage = new Common.Settings.SettingsStorage({});
+    Common.Settings.Settings.instance({
+      forceNew: true,
+      syncedStorage: dummyStorage,
+      globalStorage: dummyStorage,
+      localStorage: dummyStorage,
+      config: {
+        devToolsConsoleInsightsDogfood: {
+          aidaModelId: 'mockModel',
+          aidaTemperature: 0.2,
+          optIn: false,
+          enabled: true,
+        },
+      } as Root.Runtime.HostConfig,
+    });
+    const setting = Common.Settings.Settings.instance().moduleSetting(configSettingName);
+    assert.isNotNull(setting);
+    assert.isFalse(setting.get());
   });
 });

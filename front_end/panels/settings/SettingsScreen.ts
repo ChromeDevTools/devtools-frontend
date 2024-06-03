@@ -293,7 +293,7 @@ export class GenericSettingsTab extends SettingsTab {
     ];
 
     // Some settings define their initial ordering.
-    const preRegisteredSettings = Common.Settings.getRegisteredSettings().sort(
+    const preRegisteredSettings = Common.Settings.Settings.instance().getRegisteredSettings().sort(
         (firstSetting, secondSetting) => {
           if (firstSetting.order && secondSetting.order) {
             return (firstSetting.order - secondSetting.order);
@@ -568,7 +568,7 @@ export class Revealer implements Common.Revealer.Revealer<Root.Runtime.Experimen
       return;
     }
 
-    for (const settingRegistration of Common.Settings.getRegisteredSettings()) {
+    for (const settingRegistration of Common.Settings.Settings.instance().getRegisteredSettings()) {
       if (!GenericSettingsTab.isSettingVisible(settingRegistration)) {
         continue;
       }

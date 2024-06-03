@@ -105,8 +105,12 @@ describe('Settings instance', () => {
   it('can be instantiated in a test', () => {
     const dummyStorage = new SettingsStorage({});
 
-    const settings = Common.Settings.Settings.instance(
-        {forceNew: true, syncedStorage: dummyStorage, globalStorage: dummyStorage, localStorage: dummyStorage});
+    const settings = Common.Settings.Settings.instance({
+      forceNew: true,
+      syncedStorage: dummyStorage,
+      globalStorage: dummyStorage,
+      localStorage: dummyStorage,
+    });
 
     assert.isOk(settings);
   });

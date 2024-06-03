@@ -211,7 +211,7 @@ export class CommandMenu {
       this.commandsInternal.push(CommandMenu.createRevealViewCommand(options));
     }
     // Populate allowlisted settings.
-    const settingsRegistrations = Common.Settings.getRegisteredSettings();
+    const settingsRegistrations = Common.Settings.Settings.instance().getRegisteredSettings();
     for (const settingRegistration of settingsRegistrations) {
       const options = settingRegistration.options;
       if (!options || !settingRegistration.category) {

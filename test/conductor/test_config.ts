@@ -62,8 +62,20 @@ function mochaGrep(): Config['mochaGrep'] {
   return grep;
 }
 
+function getTestsFromOptions() {
+  const tests = options['tests'];
+  if (Array.isArray(tests)) {
+    return tests;
+  }
+
+  if (typeof tests === 'string') {
+    return [tests];
+  }
+  return [];
+}
+
 export const TestConfig: Config = {
-  tests: options['tests'],
+  tests: getTestsFromOptions(),
   artifactsDir: options['artifacts-dir'] || SOURCE_ROOT,
   chromeBinary: options['chrome-binary'] ?? defaultChromePath(),
   serverType: ServerType.HostedMode,

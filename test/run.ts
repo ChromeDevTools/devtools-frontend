@@ -92,11 +92,11 @@ class Tests {
         pathToCheck => isContainedInDirectory(path.buildPath, pathToCheck.buildPath));
   }
 
-  protected run(tests: PathPair[], args: string[]) {
+  protected run(tests: PathPair[], args: string[], positionalTestArgs = true) {
     const argumentsForNode = [
       ...args,
       '--',
-      ...tests.map(t => t.buildPath),
+      ...tests.map(t => positionalTestArgs ? t.buildPath : `--tests=${t.buildPath}`),
       ...forwardOptions(),
     ];
     if (options['debug-driver']) {
@@ -112,11 +112,16 @@ class Tests {
 
 class MochaTests extends Tests {
   override run(tests: PathPair[]) {
-    return super.run(tests, [
-      path.join(SOURCE_ROOT, 'node_modules', 'mocha', 'bin', 'mocha'),
-      '--config',
-      path.join(this.suite.buildPath, 'mocharc.js'),
-    ]);
+    return super.run(
+        tests,
+        [
+          path.join(SOURCE_ROOT, 'node_modules', 'mocha', 'bin', 'mocha'),
+          '--config',
+          path.join(this.suite.buildPath, 'mocharc.js'),
+        ],
+        /* positionalTestArgs= */ false,  // Mocha interprets positional arguments as test files itself. Work around
+                                          // that by passing the tests as dashed args instead.
+    );
   }
 }
 

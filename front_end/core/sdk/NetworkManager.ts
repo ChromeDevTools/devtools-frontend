@@ -79,13 +79,23 @@ const UIStrings = {
    */
   offline: 'Offline',
   /**
-   *@description Text in Network Manager
+   *@description Text in Network Manager representing the "3G" throttling preset.
    */
-  slowG: 'Slow 3G',
+  slowG: '3G',  // Named `slowG` for legacy reasons and because this value
+                // is serialized locally on the user's machine: if we
+                // change it we break their stored throttling settings.
+                // (See crrev.com/c/2947255)
   /**
-   *@description Text in Network Manager
+   *@description Text in Network Manager representing the "Slow 4G" throttling preset
    */
-  fastG: 'Fast 3G',
+  fastG: 'Slow 4G',  // Named `fastG` for legacy reasons and because this value
+                     // is serialized locally on the user's machine: if we
+                     // change it we break their stored throttling settings.
+                     // (See crrev.com/c/2947255)
+  /**
+   *@description Text in Network Manager representing the "Fast 4G" throttling preset
+   */
+  fast4G: 'Fast 4G',
   /**
    *@description Text in Network Manager
    *@example {https://example.com} PH1
@@ -379,6 +389,13 @@ export type EventTypes = {
   [Events.ReportingApiEndpointsChangedForOrigin]: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent,
 };
 
+/**
+ * Define some built-in DevTools throttling presets.
+ * Note that for the download, upload and RTT values we multiply them by adjustment factors to make DevTools' emulation more accurate.
+ * @see https://docs.google.com/document/d/10lfVdS1iDWCRKQXPfbxEn4Or99D64mvNlugP1AQuFlE/edit for historical context.
+ * @see https://crbug.com/342406608#comment10 for context around the addition of 4G presets in June 2024.
+ */
+
 export const NoThrottlingConditions: Conditions = {
   title: i18nLazyString(UIStrings.noThrottling),
   i18nTitleKey: UIStrings.noThrottling,
@@ -398,17 +415,36 @@ export const OfflineConditions: Conditions = {
 export const Slow3GConditions: Conditions = {
   title: i18nLazyString(UIStrings.slowG),
   i18nTitleKey: UIStrings.slowG,
+  // ~500Kbps down
   download: 500 * 1000 / 8 * .8,
+  // ~500Kbps up
   upload: 500 * 1000 / 8 * .8,
+  // 400ms RTT
   latency: 400 * 5,
 };
 
-export const Fast3GConditions: Conditions = {
+// Note for readers: this used to be called "Fast 3G" but it was renamed in May
+// 2024 to align with LH (crbug.com/342406608).
+export const Slow4GConditions: Conditions = {
   title: i18nLazyString(UIStrings.fastG),
   i18nTitleKey: UIStrings.fastG,
+  // ~1.6 Mbps down
   download: 1.6 * 1000 * 1000 / 8 * .9,
+  // ~0.75 Mbps up
   upload: 750 * 1000 / 8 * .9,
+  // 150ms RTT
   latency: 150 * 3.75,
+};
+
+export const Fast4GConditions: Conditions = {
+  title: i18nLazyString(UIStrings.fast4G),
+  i18nTitleKey: UIStrings.fast4G,
+  // 9 Mbps down
+  download: 9 * 1000 * 1000 / 8 * .9,
+  // 1.5 Mbps up
+  upload: 1.5 * 1000 * 1000 / 8 * .9,
+  // 60ms RTT
+  latency: 60 * 2.75,
 };
 
 const MAX_EAGER_POST_REQUEST_BODY_LENGTH = 64 * 1024;  // bytes

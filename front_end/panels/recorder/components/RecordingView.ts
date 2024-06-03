@@ -269,7 +269,8 @@ const networkConditionPresets = [
   SDK.NetworkManager.NoThrottlingConditions,
   SDK.NetworkManager.OfflineConditions,
   SDK.NetworkManager.Slow3GConditions,
-  SDK.NetworkManager.Fast3GConditions,
+  SDK.NetworkManager.Slow4GConditions,
+  SDK.NetworkManager.Fast4GConditions,
 ];
 
 function converterIdToFlowMetric(

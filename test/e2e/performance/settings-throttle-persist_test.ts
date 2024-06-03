@@ -28,22 +28,22 @@ describe('The Performance panel', function() {
     {
       const select = await waitFor<HTMLSelectElement>('select', await waitForAria('Network conditions'));
       await assertOption(select, 'Disabled: No throttling');
-      await select.select('Fast 3G');
-      await assertOption(select, 'Presets: Fast 3G');
+      await select.select('3G');
+      await assertOption(select, 'Presets: 3G');
     }
     // Verify persistence for "A", select another option "B".
     await reloadDevTools({queryParams: {panel: 'timeline'}});
     {
       const select = await waitFor<HTMLSelectElement>('select', await waitForAria('Network conditions'));
-      await assertOption(select, 'Presets: Fast 3G');
-      await select.select('Slow 3G');
-      await assertOption(select, 'Presets: Slow 3G');
+      await assertOption(select, 'Presets: 3G');
+      await select.select('Slow 4G');
+      await assertOption(select, 'Presets: Slow 4G');
     }
     // Verify persistence for "B", disable throttling.
     await reloadDevTools({queryParams: {panel: 'timeline'}});
     {
       const select = await waitFor<HTMLSelectElement>('select', await waitForAria('Network conditions'));
-      await assertOption(select, 'Presets: Slow 3G');
+      await assertOption(select, 'Presets: Slow 4G');
       await select.select('No throttling');
       await assertOption(select, 'Disabled: No throttling');
     }

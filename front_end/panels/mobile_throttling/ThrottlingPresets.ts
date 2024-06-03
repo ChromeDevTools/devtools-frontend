@@ -83,7 +83,7 @@ export class ThrottlingPresets {
     return {
       title: i18nString(UIStrings.midtierMobile),
       description: i18nString(UIStrings.fastGXCpuSlowdown),
-      network: SDK.NetworkManager.Fast3GConditions,
+      network: SDK.NetworkManager.Slow4GConditions,
       cpuThrottlingRate: SDK.CPUThrottlingManager.CPUThrottlingRates.MidTierMobile,
       jslogContext: 'mid-tier-mobile',
     };
@@ -112,7 +112,8 @@ export class ThrottlingPresets {
   }
 
   static networkPresets: SDK.NetworkManager.Conditions[] = [
-    SDK.NetworkManager.Fast3GConditions,
+    SDK.NetworkManager.Fast4GConditions,
+    SDK.NetworkManager.Slow4GConditions,
     SDK.NetworkManager.Slow3GConditions,
     SDK.NetworkManager.OfflineConditions,
   ];

@@ -18,7 +18,7 @@ describeWithEnvironment('ThrottlingManager', () => {
       let checkbox = throttlingManager.createOfflineToolbarCheckbox();
       assert.isTrue(checkbox.checked());
 
-      SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(SDK.NetworkManager.Fast3GConditions);
+      SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(SDK.NetworkManager.Slow4GConditions);
       checkbox = throttlingManager.createOfflineToolbarCheckbox();
       assert.isFalse(checkbox.checked());
     });

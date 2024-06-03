@@ -406,7 +406,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       return true;
     }
     if (actionId === 'network-conditions.network-mid-tier-mobile') {
-      SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(SDK.NetworkManager.Fast3GConditions);
+      SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(SDK.NetworkManager.Slow4GConditions);
       return true;
     }
     if (actionId === 'network-conditions.network-offline') {

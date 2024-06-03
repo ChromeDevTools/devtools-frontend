@@ -55,33 +55,37 @@ describe('The Performance panel landing page', () => {
     await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
 
     const session = await target.createCDPSession();
-    await session.send('Runtime.enable');
-    const executionContextPromise = new Promise(r => session.once('Runtime.executionContextCreated', r));
+    try {
+      await session.send('Runtime.enable');
+      const executionContextPromise = new Promise(r => session.once('Runtime.executionContextCreated', r));
 
-    // Switch to the performance panel using internal JS because the inspector tab
-    // is hidden at this point in the test.
-    await frontend.evaluate(`
-      (async () => {
-        const UI = await import('./ui/legacy/legacy.js');
-        await UI.ViewManager.ViewManager.instance().showView('timeline');
-      })();
-    `);
+      // Switch to the performance panel using internal JS because the inspector tab
+      // is hidden at this point in the test.
+      await frontend.evaluate(`
+        (async () => {
+          const UI = await import('./ui/legacy/legacy.js');
+          await UI.ViewManager.ViewManager.instance().showView('timeline');
+        })();
+      `);
 
-    // An execution context will be created once the web vitals library has been injected
-    await executionContextPromise;
+      // An execution context will be created once the web vitals library has been injected
+      await executionContextPromise;
 
-    await frontend.bringToFront();
+      await frontend.bringToFront();
 
-    const liveLcpDataElem = await waitFor('.lcp-data');
-    const lcpText = await liveLcpDataElem.evaluate(el => el.textContent) || '';
-    assert.match(lcpText, /LCP:/);
+      const liveLcpDataElem = await waitFor('.lcp-data');
+      const lcpText = await liveLcpDataElem.evaluate(el => el.textContent) || '';
+      assert.match(lcpText, /LCP:/);
 
-    const liveClsDataElem = await waitFor('.cls-data');
-    const clsText = await liveClsDataElem.evaluate(el => el.textContent) || '';
-    assert.match(clsText, /CLS:/);
+      const liveClsDataElem = await waitFor('.cls-data');
+      const clsText = await liveClsDataElem.evaluate(el => el.textContent) || '';
+      assert.match(clsText, /CLS:/);
 
-    const liveInpDataElem = await waitFor('.inp-data');
-    const inpText = await liveInpDataElem.evaluate(el => el.textContent) || '';
-    assert.match(inpText, /INP:/);
+      const liveInpDataElem = await waitFor('.inp-data');
+      const inpText = await liveInpDataElem.evaluate(el => el.textContent) || '';
+      assert.match(inpText, /INP:/);
+    } finally {
+      await session.detach();
+    }
   });
 });

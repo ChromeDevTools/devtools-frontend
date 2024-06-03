@@ -833,6 +833,42 @@ describeWithMockConnection('NetworkLogView', () => {
 
     networkLogView.detach();
   });
+
+  it('skips unknown columns without title in persistence setting', async () => {
+    const columnSettings = Common.Settings.Settings.instance().createSetting('network-log-columns', {});
+    columnSettings.set({
+      '--this-does-not-exist-for-sure': {visible: false},
+    });
+    networkLogView = createNetworkLogView();
+    const columns = networkLogView.columns().dataGrid().columns;
+    assert.notExists(columns['--this-does-not-exist-for-sure']);
+  });
+
+  it('treats unknown columns with title in persistence setting as custom header', async () => {
+    const columnSettings = Common.Settings.Settings.instance().createSetting('network-log-columns', {});
+    columnSettings.set({
+      'custom-header-for-test': {visible: false, title: 'Custom-Header'},
+    });
+    networkLogView = createNetworkLogView();
+    const dataGrid = networkLogView.columns().dataGrid();
+    const columns = dataGrid.columns;
+    assert.exists(columns['custom-header-for-test']);
+
+    const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
+    const header = dataGrid.element.querySelector('thead');
+    const event = new MouseEvent('contextmenu');
+    sinon.stub(event, 'target').value(header);
+    dataGrid.element.dispatchEvent(event);
+
+    assert.isTrue(contextMenuShow.calledOnce);
+    const responseHeadersSubMenu = contextMenuShow.thisValues[0].footerSection().items.find(
+        (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Response Headers');
+    assert.exists(responseHeadersSubMenu);
+    assert.instanceOf(responseHeadersSubMenu, UI.ContextMenu.SubMenu);
+    const customHeaderItem = responseHeadersSubMenu.defaultSection().items.find(
+        (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Custom-Header');
+    assert.exists(customHeaderItem);
+  });
 });
 
 function clickCheckbox(checkbox: HTMLInputElement) {

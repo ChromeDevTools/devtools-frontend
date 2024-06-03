@@ -46,7 +46,8 @@ describe('The Performance panel landing page', () => {
     assert.match(inpText, /INP:/);
   });
 
-  it('displays live metrics after the page already loaded', async () => {
+  // Flaky on mac
+  it.skipOnPlatforms(['mac'], '[crbug.com/344543189] displays live metrics after the page already loaded', async () => {
     const {target, frontend} = await getBrowserAndPages();
 
     await target.bringToFront();

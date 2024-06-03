@@ -1294,20 +1294,24 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     switch (this.message.level) {
       case Protocol.Log.LogEntryLevel.Verbose:
         this.elementInternal.classList.add('console-verbose-level');
+        UI.ARIAUtils.setLabel(this.elementInternal, this.text);
         break;
       case Protocol.Log.LogEntryLevel.Info:
         this.elementInternal.classList.add('console-info-level');
         if (this.message.type === SDK.ConsoleModel.FrontendMessageType.System) {
           this.elementInternal.classList.add('console-system-type');
         }
+        UI.ARIAUtils.setLabel(this.elementInternal, this.text);
         break;
       case Protocol.Log.LogEntryLevel.Warning:
         this.elementInternal.classList.add('console-warning-level');
         this.elementInternal.role = 'log';
+        UI.ARIAUtils.setLabel(this.elementInternal, this.text);
         break;
       case Protocol.Log.LogEntryLevel.Error:
         this.elementInternal.classList.add('console-error-level');
         this.elementInternal.role = 'log';
+        UI.ARIAUtils.setLabel(this.elementInternal, this.text);
         break;
     }
     this.updateMessageIcon();

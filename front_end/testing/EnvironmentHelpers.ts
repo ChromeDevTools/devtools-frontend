@@ -128,6 +128,7 @@ const REGISTERED_EXPERIMENTS = [
   Root.Runtime.ExperimentName.TIMELINE_EXTENSIONS,
   Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE,
   Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS,
+  Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE,
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {
@@ -135,7 +136,11 @@ export async function initializeGlobalVars({reset = true} = {}) {
 
   // Create the appropriate settings needed to boot.
   const settings = [
+    createSettingValue(
+        Common.Settings.SettingCategory.ADORNER, 'adorner-settings', [], Common.Settings.SettingType.ARRAY),
     createSettingValue(Common.Settings.SettingCategory.APPEARANCE, 'disable-paused-state-overlay', false),
+    createSettingValue(
+        Common.Settings.SettingCategory.APPEARANCE, 'sidebar-position', 'auto', Common.Settings.SettingType.ENUM),
     createSettingValue(Common.Settings.SettingCategory.CONSOLE, 'custom-formatters', false),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'pause-on-exception-enabled', false),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'pause-on-caught-exception', false),
@@ -152,6 +157,8 @@ export async function initializeGlobalVars({reset = true} = {}) {
         Common.Settings.SettingType.REGEX),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'navigator-group-by-folder', true),
     createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-detailed-inspect-tooltip', true),
+    createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-html-comments', true),
+    createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-ua-shadow-dom', false),
     createSettingValue(Common.Settings.SettingCategory.NETWORK, 'cache-disabled', false),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'avif-format-disabled', false),
     createSettingValue(

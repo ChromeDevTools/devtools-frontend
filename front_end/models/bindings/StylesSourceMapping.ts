@@ -31,7 +31,7 @@
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as TextUtils from '../text_utils/text_utils.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
@@ -257,12 +257,11 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
       return;
     }
 
-    let newContent: string|(string | null)|null = null;
+    let newContent: string|null = null;
     if (fromProvider === this.uiSourceCode) {
       newContent = this.uiSourceCode.workingCopy();
     } else {
-      const deferredContent = await fromProvider.requestContent();
-      newContent = deferredContent.content;
+      newContent = TextUtils.ContentData.ContentData.textOr(await fromProvider.requestContentData(), null);
     }
 
     if (newContent === null || this.#terminated) {

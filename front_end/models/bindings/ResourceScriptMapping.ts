@@ -33,7 +33,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import type * as TextUtils from '../text_utils/text_utils.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
@@ -453,8 +453,8 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
       this.mappingCheckedForTest();
       return;
     }
-    void this.script.requestContent().then(deferredContent => {
-      this.#scriptSource = deferredContent.content;
+    void this.script.requestContentData().then(content => {
+      this.#scriptSource = TextUtils.ContentData.ContentData.textOr(content, null);
       void this.update().then(() => this.mappingCheckedForTest());
     });
   }

@@ -345,7 +345,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     // We append correct #sourceURL to script for consistency only. It's not actually needed for things to work correctly.
     newSource = this.appendSourceURLCommentIfNeeded(newSource);
 
-    const {content: oldSource} = await this.requestContent();
+    const oldSource = TextUtils.ContentData.ContentData.textOr(await this.requestContentData(), null);
     if (oldSource === newSource) {
       return {changed: false, status: Protocol.Debugger.SetScriptSourceResponseStatus.Ok};
     }

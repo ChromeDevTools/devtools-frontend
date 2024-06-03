@@ -141,6 +141,14 @@ export class ContentData {
     return 'error' in contentDataOrError;
   }
 
+  /** @returns `value` if the passed `ContentDataOrError` is an error, or the text content otherwise */
+  static textOr<T>(contentDataOrError: ContentDataOrError, value: T): string|T {
+    if (ContentData.isError(contentDataOrError)) {
+      return value;
+    }
+    return contentDataOrError.text;
+  }
+
   /**
    * @deprecated Used during migration from `DeferredContent` to `ContentData`.
    */

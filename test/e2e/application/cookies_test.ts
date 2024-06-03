@@ -20,6 +20,7 @@ import {
   clearStorageItemsFilter,
   doubleClickSourceTreeItem,
   filterStorageItems,
+  getDataGridData,
   getStorageItemsData,
   navigateToApplicationTab,
   selectCookieByName,
@@ -181,13 +182,18 @@ describe('The Application Tab', () => {
     ]);
 
     await filterStorageItems('foo2');
+    await waitForFunction(async () => {
+      const values = await getDataGridData('.storage-view table', ['name']);
+      return values.length === 1;
+    });
     await clearStorageItems();
     await clearStorageItemsFilter();
 
     const dataGridRowValues2 = await waitForFunction(async () => {
-      const data = await getStorageItemsData(['name'], 3);
-      return data.length === 3 ? data : undefined;
+      const values = await getDataGridData('.storage-view table', ['name']);
+      return values.length === 3 ? values : undefined;
     });
+
     assert.deepEqual(dataGridRowValues2, [
       {
         name: '__Host-foo3',

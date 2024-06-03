@@ -4,25 +4,34 @@
 
 import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import {type Attribute, Cookie} from './Cookie.js';
+import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
 import {type Resource} from './Resource.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
 import {SDKModel} from './SDKModel.js';
 import {Capability, type Target} from './Target.js';
-import {TargetManager} from './TargetManager.js';
 
-export class CookieModel extends SDKModel<void> {
+export class CookieModel extends SDKModel<EventTypes> {
   readonly #blockedCookies: Map<string, Cookie>;
   readonly #cookieToBlockedReasons: Map<Cookie, BlockedReason[]>;
+  readonly #refreshThrottler: Common.Throttler.Throttler;
+  #cookies: Map<string, Cookie[]>;
+
   constructor(target: Target) {
     super(target);
 
+    this.#refreshThrottler = new Common.Throttler.Throttler(300);
     this.#blockedCookies = new Map();
     this.#cookieToBlockedReasons = new Map();
-    TargetManager.instance().addModelListener(
-        ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
+    this.#cookies = new Map();
+    target.model(ResourceTreeModel)
+        ?.addEventListener(ResourceTreeModelEvents.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
+    target.model(NetworkManager)
+        ?.addEventListener(NetworkManagerEvents.ResponseReceived, this.#onResponseReceived, this);
+    target.model(NetworkManager)?.addEventListener(NetworkManagerEvents.LoadingFinished, this.#onLoadingFinished, this);
   }
 
   addBlockedCookie(cookie: Cookie, blockedReasons: BlockedReason[]|null): void {
@@ -43,22 +52,26 @@ export class CookieModel extends SDKModel<void> {
     this.#blockedCookies.delete(cookie.key());
   }
 
-  #onPrimaryPageChanged(): void {
+  async #onPrimaryPageChanged(): Promise<void> {
     this.#blockedCookies.clear();
     this.#cookieToBlockedReasons.clear();
+    await this.#refresh();
   }
 
   getCookieToBlockedReasonsMap(): ReadonlyMap<Cookie, BlockedReason[]> {
     return this.#cookieToBlockedReasons;
   }
 
-  async getCookies(urls: string[]): Promise<Cookie[]> {
-    const response = await this.target().networkAgent().invoke_getCookies({urls});
-    if (response.getError()) {
-      return [];
+  async #getCookies(urls: Platform.MapUtilities.Multimap<string, string>): Promise<void> {
+    const networkAgent = this.target().networkAgent();
+    const newCookies = new Map<string, Cookie[]>(await Promise.all(urls.keysArray().map(
+        domain => networkAgent.invoke_getCookies({urls: [...urls.get(domain).values()]})
+                      .then(({cookies}) => [domain, cookies.map(Cookie.fromProtocolCookie)] as const))));
+    const updated = this.#isUpdated(newCookies);
+    this.#cookies = newCookies;
+    if (updated) {
+      this.dispatchEventToListeners(Events.CookieListUpdated);
     }
-    const normalCookies = response.cookies.map(Cookie.fromProtocolCookie);
-    return normalCookies.concat(Array.from(this.#blockedCookies.values()));
   }
 
   async deleteCookie(cookie: Cookie): Promise<void> {
@@ -66,7 +79,11 @@ export class CookieModel extends SDKModel<void> {
   }
 
   async clear(domain?: string, securityOrigin?: string): Promise<void> {
-    const cookies = await this.getCookiesForDomain(domain || null);
+    if (!this.#isRefreshing()) {
+      await this.#refreshThrottled();
+    }
+    const cookies = domain ? (this.#cookies.get(domain) || []) : [...this.#cookies.values()].flat();
+    cookies.push(...this.#blockedCookies.values());
     if (securityOrigin) {
       const cookiesToDelete = cookies.filter(cookie => {
         return cookie.matchesSecurityOrigin(securityOrigin);
@@ -109,32 +126,19 @@ export class CookieModel extends SDKModel<void> {
     if (error || !response.success) {
       return false;
     }
+    await this.#refreshThrottled();
     return response.success;
   }
 
   /**
    * Returns cookies needed by current page's frames whose security origins are |domain|.
    */
-  getCookiesForDomain(domain: string|null): Promise<Cookie[]> {
-    const resourceURLs = [];
-    function populateResourceURLs(resource: Resource): boolean {
-      const documentURL = Common.ParsedURL.ParsedURL.fromString(resource.documentURL);
-      if (documentURL && (!domain || documentURL.securityOrigin() === domain)) {
-        resourceURLs.push(resource.url);
-      }
-      return false;
+  async getCookiesForDomain(domain: string): Promise<Cookie[]> {
+    if (!this.#isRefreshing()) {
+      await this.#refreshThrottled();
     }
-    const resourceTreeModel = this.target().model(ResourceTreeModel);
-    if (resourceTreeModel) {
-      // In case the current frame was unreachable, add its cookies
-      // because they might help to debug why the frame was unreachable.
-      if (resourceTreeModel.mainFrame && resourceTreeModel.mainFrame.unreachableUrl()) {
-        resourceURLs.push(resourceTreeModel.mainFrame.unreachableUrl());
-      }
-
-      resourceTreeModel.forAllResources(populateResourceURLs);
-    }
-    return this.getCookies(resourceURLs);
+    const normalCookies = this.#cookies.get(domain) || [];
+    return normalCookies.concat(Array.from(this.#blockedCookies.values()));
   }
 
   async deleteCookies(cookies: Cookie[]): Promise<void> {
@@ -148,6 +152,76 @@ export class CookieModel extends SDKModel<void> {
       path: cookie.path(),
       partitionKey: cookie.partitionKey(),
     })));
+    await this.#refreshThrottled();
+  }
+
+  #isRefreshing(): boolean {
+    return Boolean(this.listeners?.size);
+  }
+
+  #isUpdated(newCookies: Map<string, Cookie[]>): boolean {
+    if (newCookies.size !== this.#cookies.size) {
+      return true;
+    }
+    for (const [domain, newDomainCookies] of newCookies) {
+      if (!this.#cookies.has(domain)) {
+        return true;
+      }
+      const oldDomainCookies = this.#cookies.get(domain) || [];
+      if (newDomainCookies.length !== oldDomainCookies.length) {
+        return true;
+      }
+      const comparisonKey = (c: Cookie): string => c.key() + ' ' + c.value();
+      const oldDomainCookieKeys = new Set(oldDomainCookies.map(comparisonKey));
+      for (const newCookie of newDomainCookies) {
+        if (!oldDomainCookieKeys.has(comparisonKey(newCookie))) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  #refreshThrottled(): Promise<void> {
+    return this.#refreshThrottler.schedule(() => this.#refresh());
+  }
+
+  #refresh(): Promise<void> {
+    const resourceURLs = new Platform.MapUtilities.Multimap<string, string>();
+    function populateResourceURLs(resource: Resource): boolean {
+      const documentURL = Common.ParsedURL.ParsedURL.fromString(resource.documentURL);
+      if (documentURL) {
+        resourceURLs.set(documentURL.securityOrigin(), resource.url);
+      }
+      return false;
+    }
+    const resourceTreeModel = this.target().model(ResourceTreeModel);
+    if (resourceTreeModel) {
+      // In case the current frame was unreachable, add its cookies
+      // because they might help to debug why the frame was unreachable.
+      const unreachableUrl = resourceTreeModel.mainFrame?.unreachableUrl();
+      if (unreachableUrl) {
+        const documentURL = Common.ParsedURL.ParsedURL.fromString(unreachableUrl);
+        if (documentURL) {
+          resourceURLs.set(documentURL.securityOrigin(), unreachableUrl);
+        }
+      }
+
+      resourceTreeModel.forAllResources(populateResourceURLs);
+    }
+    return this.#getCookies(resourceURLs);
+  }
+
+  #onResponseReceived(): void {
+    if (this.#isRefreshing()) {
+      void this.#refreshThrottled();
+    }
+  }
+
+  #onLoadingFinished(): void {
+    if (this.#isRefreshing()) {
+      void this.#refreshThrottled();
+    }
   }
 }
 
@@ -159,3 +233,11 @@ export interface BlockedReason {
 export interface ExemptionReason {
   uiString: string;
 }
+
+export const enum Events {
+  CookieListUpdated = 'CookieListUpdated',
+}
+
+export type EventTypes = {
+  [Events.CookieListUpdated]: void,
+};

@@ -766,10 +766,10 @@ export class ConsoleMessage {
           // TODO(chromium:1136435): Remove this case.
           return false;
         }
-        // Never treat objects as equal - their properties might change over time. Errors can be treated as equal
-        // since they are always formatted as strings.
         if (msgParam.type === 'object' && msgParam.subtype !== 'error') {
-          return false;
+          if (!msgParam.objectId || msgParam.objectId !== param.objectId || msg.timestamp !== this.timestamp) {
+            return false;
+          }
         }
         if (param.type !== msgParam.type || param.value !== msgParam.value ||
             param.description !== msgParam.description) {

@@ -3,26 +3,23 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
-import {describeWithRealConnection} from '../../testing/RealConnection.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as PanelUtils from '../utils/utils.js';
 
 import * as Elements from './elements.js';
 
-describeWithRealConnection('StylePropertyHighlighter', () => {
+describeWithMockConnection('StylePropertyHighlighter', () => {
   async function setupStylesPane(): Promise<{
     stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane,
     matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
   }> {
-    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    assert.exists(target);
-    const domModel = target.model(SDK.DOMModel.DOMModel);
-    assert.exists(domModel);
-    await domModel.requestDocument();
-    UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, domModel.existingDocument());
+    const target = createTarget();
+    UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, sinon.createStubInstance(SDK.DOMModel.DOMNode));
     const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
     const matchedStyles = await SDK.CSSMatchedStyles.CSSMatchedStyles.create({
-      cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+      cssModel: target.model(SDK.CSSModel.CSSModel)!,
       node: stylesSidebarPane.node() as SDK.DOMModel.DOMNode,
       inlinePayload: null,
       attributesPayload: null,

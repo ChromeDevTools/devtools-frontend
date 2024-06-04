@@ -9,13 +9,13 @@ import {
   describeWithEnvironment,
   describeWithLocale,
 } from '../../testing/EnvironmentHelpers.js';
-import {describeWithRealConnection} from '../../testing/RealConnection.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 
 import * as Elements from './elements.js';
 
 describe('StylesSidebarPane', () => {
-  describeWithRealConnection('StylesSidebarPane', () => {
+  describeWithMockConnection('StylesSidebarPane', () => {
     it('unescapes CSS strings', () => {
       assert.strictEqual(
           Elements.StylesSidebarPane.unescapeCssString(
@@ -52,7 +52,7 @@ describe('StylesSidebarPane', () => {
         const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
         const matchedStyles = await SDK.CSSMatchedStyles.CSSMatchedStyles.create({
           cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
-          node: stylesSidebarPane.node() as SDK.DOMModel.DOMNode,
+          node: sinon.createStubInstance(SDK.DOMModel.DOMNode),
           inlinePayload: null,
           attributesPayload: null,
           matchedPayload: [],
@@ -90,7 +90,7 @@ describe('StylesSidebarPane', () => {
         const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
         const matchedStyles = await SDK.CSSMatchedStyles.CSSMatchedStyles.create({
           cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
-          node: stylesSidebarPane.node() as SDK.DOMModel.DOMNode,
+          node: sinon.createStubInstance(SDK.DOMModel.DOMNode),
           inlinePayload: null,
           attributesPayload: null,
           matchedPayload: [],
@@ -127,7 +127,7 @@ describe('StylesSidebarPane', () => {
       const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
       const matchedStyles = await SDK.CSSMatchedStyles.CSSMatchedStyles.create({
         cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
-        node: stylesSidebarPane.node() as SDK.DOMModel.DOMNode,
+        node: sinon.createStubInstance(SDK.DOMModel.DOMNode),
         inlinePayload: null,
         attributesPayload: null,
         matchedPayload: [],

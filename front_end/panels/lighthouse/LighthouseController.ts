@@ -61,14 +61,6 @@ const UIStrings = {
    */
   howLongDoesThisAppTakeToShow: 'How long does this app take to show content and become usable',
   /**
-   *@description Text of checkbox to include running the Progressive Web App audits in Lighthouse
-   */
-  progressiveWebApp: 'Progressive Web App',
-  /**
-   *@description Tooltip text of checkbox to include running the Progressive Web App audits in Lighthouse
-   */
-  doesThisPageMeetTheStandardOfA: 'Does this page meet the standard of a Progressive Web App',
-  /**
    *@description Text of checkbox to include running the Best Practices audits in Lighthouse
    */
   bestPractices: 'Best practices',
@@ -664,15 +656,6 @@ export const Presets: Preset[] = [
     description: i18nLazyString(UIStrings.isThisPageOptimizedForSearch),
     supportedModes: ['navigation', 'snapshot'],
     userMetric: Host.UserMetrics.LighthouseCategoryUsed.SEO,
-  },
-  {
-    setting: Common.Settings.Settings.instance().createSetting(
-        'lighthouse.cat-pwa', true, Common.Settings.SettingStorageType.Synced),
-    configID: 'pwa',
-    title: i18nLazyString(UIStrings.progressiveWebApp),
-    description: i18nLazyString(UIStrings.doesThisPageMeetTheStandardOfA),
-    supportedModes: ['navigation'],
-    userMetric: Host.UserMetrics.LighthouseCategoryUsed.PWA,
   },
 ];
 

@@ -5,20 +5,24 @@
  */
 
 button.soft-dropdown {
-  height: 26px;
+  height: var(--sys-size-9);
   text-align: left;
   position: relative;
   border: none;
   background: none;
   max-width: 120px;
+
+  devtools-icon {
+    top: 1px;
+  }
 }
 
 button.soft-dropdown[disabled] {
-  opacity: 50%;
+  background: var(--sys-color-state-disabled-container);
+  color: var(--sys-color-state-disabled);
 }
 
 button.soft-dropdown > .title {
-  padding-right: 5px;
   flex: 0 1 auto;
   overflow: hidden;
   text-overflow: ellipsis;

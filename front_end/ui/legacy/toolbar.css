@@ -83,7 +83,7 @@ devtools-issue-counter.main-toolbar {
 .toolbar-dropdown-arrow {
   pointer-events: none;
   flex: none;
-  margin-left: -4px;
+  top: 1px;
 }
 
 .toolbar-button.dark-text .toolbar-dropdown-arrow {
@@ -127,8 +127,39 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 
 .toolbar-has-dropdown {
   justify-content: space-between;
-  padding: 0 3px 0 5px;
-  border: 1px solid transparent;
+  height: var(--sys-size-9);
+  padding: 0 var(--sys-size-3) 0 var(--sys-size-5);
+  gap: var(--sys-size-2);
+  border-radius: var(--sys-shape-corner-extra-small);
+
+  &:hover::after,
+  &:active::before {
+    content: "";
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  &:hover::after {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
+
+  &:active::before {
+    background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+  }
+
+  &:focus-visible {
+    border: 2px solid var(--sys-color-state-focus-ring);
+  }
+
+  &[disabled] {
+    pointer-events: none;
+    background-color: var(--sys-color-state-disabled-container);
+    color: var(--sys-color-state-disabled);
+  }
 }
 
 .toolbar-has-dropdown-shrinkable {
@@ -136,7 +167,7 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 }
 
 .toolbar-has-dropdown .toolbar-text {
-  margin: 0 4px 0 0;
+  margin: 0;
   text-overflow: ellipsis;
   flex: auto;
   overflow: hidden;
@@ -159,7 +190,7 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
   outline: auto 5px -webkit-focus-ring-color;
 }
 
-:not(.toolbar-render-as-links) .toolbar-button:focus-visible::before {
+:not(.toolbar-render-as-links) .toolbar-button:not(.toolbar-has-dropdown):focus-visible::before {
   position: absolute;
   top: 2px;
   bottom: 2px;
@@ -319,19 +350,24 @@ select.toolbar-item {
   margin-bottom: 2px;
 }
 
-select.toolbar-item:disabled {
-  opacity: 50%;
-}
-
 button.toolbar-item:focus-visible,
 select.toolbar-item:focus-visible {
   background: var(--sys-color-state-hover-on-subtle);
   border-radius: 2px;
+
+  &.toolbar-has-dropdown {
+    background: none;
+    border-radius: var(--sys-shape-corner-extra-small);
+  }
 }
 
 select.toolbar-item:focus-visible > * {
   background: var(--sys-color-cdt-base-container);
   border-radius: 7px;
+}
+
+select.toolbar-item:not(.toolbar-has-dropdown):disabled {
+  opacity: 50%;
 }
 /* Input */
 

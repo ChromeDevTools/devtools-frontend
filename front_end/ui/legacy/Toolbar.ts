@@ -655,6 +655,79 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
   }
 }
 
+export class ToolbarCombobox extends ToolbarItem<ToolbarButton.EventTypes> {
+  private readonly glyphElement: IconButton.Icon.Icon;
+  private textElement: HTMLElement;
+  private text?: string;
+  private glyph?: string;
+
+  constructor(title: string, isIconDropdown?: boolean, jslogContext?: string) {
+    const element = document.createElement('button');
+    element.classList.add('toolbar-button');
+    super(element);
+    this.element.addEventListener('click', this.clicked.bind(this), false);
+    this.element.addEventListener('mousedown', this.mouseDown.bind(this), false);
+
+    this.glyphElement = new IconButton.Icon.Icon();
+    this.glyphElement.className = 'toolbar-glyph hidden';
+    this.element.appendChild(this.glyphElement);
+    this.textElement = this.element.createChild('div', 'toolbar-text hidden');
+
+    this.setTitle(title);
+    if (jslogContext) {
+      this.element.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context(jslogContext)}`);
+    }
+    this.title = '';
+    if (!isIconDropdown) {
+      this.element.classList.add('toolbar-has-dropdown');
+      const dropdownArrowIcon = IconButton.Icon.create('triangle-down', 'toolbar-dropdown-arrow');
+      this.element.appendChild(dropdownArrowIcon);
+    }
+  }
+
+  setText(text: string): void {
+    if (this.text === text) {
+      return;
+    }
+    this.textElement.textContent = text;
+    this.textElement.classList.toggle('hidden', !text);
+    this.text = text;
+  }
+
+  setGlyph(glyph: string): void {
+    if (this.glyph === glyph) {
+      return;
+    }
+    this.glyphElement.name = !glyph ? null : glyph;
+    this.glyphElement.classList.toggle('hidden', !glyph);
+    this.element.classList.toggle('toolbar-has-glyph', Boolean(glyph));
+    this.glyph = glyph;
+  }
+
+  setDarkText(): void {
+    this.element.classList.add('dark-text');
+  }
+
+  turnShrinkable(): void {
+    this.element.classList.add('toolbar-has-dropdown-shrinkable');
+  }
+
+  clicked(event: Event): void {
+    if (!this.enabled) {
+      return;
+    }
+    this.dispatchEventToListeners(ToolbarButton.Events.Click, event);
+    event.consume();
+  }
+
+  protected mouseDown(event: MouseEvent): void {
+    if (!this.enabled) {
+      return;
+    }
+    this.dispatchEventToListeners(ToolbarButton.Events.MouseDown, event);
+  }
+}
+
 export namespace ToolbarButton {
   export const enum Events {
     Click = 'Click',
@@ -855,12 +928,14 @@ export class ToolbarToggle extends ToolbarButton {
   }
 }
 
-export class ToolbarMenuButton extends ToolbarButton {
+export class ToolbarMenuButton extends ToolbarCombobox {
   private readonly contextMenuHandler: (arg0: ContextMenu) => void;
   private readonly useSoftMenu: boolean;
   private triggerTimeout?: number;
-  constructor(contextMenuHandler: (arg0: ContextMenu) => void, useSoftMenu?: boolean, jslogContext?: string) {
-    super('', 'dots-vertical', undefined, jslogContext);
+  constructor(
+      contextMenuHandler: (arg0: ContextMenu) => void, isIconDropdown?: boolean, useSoftMenu?: boolean,
+      jslogContext?: string) {
+    super('', isIconDropdown, jslogContext);
     if (jslogContext) {
       this.element.setAttribute('jslog', `${VisualLogging.dropDown().track({click: true}).context(jslogContext)}`);
     }

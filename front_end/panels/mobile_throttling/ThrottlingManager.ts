@@ -227,10 +227,8 @@ export class ThrottlingManager {
   }
 
   createMobileThrottlingButton(): UI.Toolbar.ToolbarMenuButton {
-    const button = new UI.Toolbar.ToolbarMenuButton(appendItems, undefined, 'mobile-throttling');
+    const button = new UI.Toolbar.ToolbarMenuButton(appendItems, undefined, undefined, 'mobile-throttling');
     button.setTitle(i18nString(UIStrings.throttling));
-    button.setGlyph('');
-    button.turnIntoSelect();
     button.setDarkText();
 
     let options: ConditionsList = [];

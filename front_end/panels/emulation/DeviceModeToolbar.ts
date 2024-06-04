@@ -190,7 +190,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  * than in the DevTools panel itself. Therefore, we need to fall back to using the
  * built-in tooltip by setting the title attribute on the button's element.
  */
-function setTitleForButton(button: UI.Toolbar.ToolbarButton, title: string): void {
+function setTitleForButton(button: UI.Toolbar.ToolbarButton|UI.Toolbar.ToolbarMenuButton, title: string): void {
   button.setTitle(title);
   button.element.title = title;
 }
@@ -314,9 +314,8 @@ export class DeviceModeToolbar {
   private fillLeftToolbar(toolbar: UI.Toolbar.Toolbar): void {
     toolbar.appendToolbarItem(this.wrapToolbarItem(this.createEmptyToolbarElement()));
     this.deviceSelectItem =
-        new UI.Toolbar.ToolbarMenuButton(this.appendDeviceMenuItems.bind(this), undefined, 'device');
-    this.deviceSelectItem.setGlyph('');
-    this.deviceSelectItem.turnIntoSelect(true);
+        new UI.Toolbar.ToolbarMenuButton(this.appendDeviceMenuItems.bind(this), undefined, undefined, 'device');
+    this.deviceSelectItem.turnShrinkable();
     this.deviceSelectItem.setDarkText();
     toolbar.appendToolbarItem(this.deviceSelectItem);
   }
@@ -335,30 +334,26 @@ export class DeviceModeToolbar {
 
   private fillRightToolbar(toolbar: UI.Toolbar.Toolbar): void {
     toolbar.appendToolbarItem(this.wrapToolbarItem(this.createEmptyToolbarElement()));
-    this.scaleItem = new UI.Toolbar.ToolbarMenuButton(this.appendScaleMenuItems.bind(this), undefined, 'scale');
+    this.scaleItem =
+        new UI.Toolbar.ToolbarMenuButton(this.appendScaleMenuItems.bind(this), undefined, undefined, 'scale');
     setTitleForButton(this.scaleItem, i18nString(UIStrings.zoom));
-    this.scaleItem.setGlyph('');
-    this.scaleItem.turnIntoSelect();
     this.scaleItem.setDarkText();
     toolbar.appendToolbarItem(this.scaleItem);
 
     toolbar.appendToolbarItem(this.wrapToolbarItem(this.createEmptyToolbarElement()));
 
-    this.deviceScaleItem =
-        new UI.Toolbar.ToolbarMenuButton(this.appendDeviceScaleMenuItems.bind(this), undefined, 'device-pixel-ratio');
+    this.deviceScaleItem = new UI.Toolbar.ToolbarMenuButton(
+        this.appendDeviceScaleMenuItems.bind(this), undefined, undefined, 'device-pixel-ratio');
     this.deviceScaleItem.setVisible(this.showDeviceScaleFactorSetting.get());
     setTitleForButton(this.deviceScaleItem, i18nString(UIStrings.devicePixelRatio));
-    this.deviceScaleItem.setGlyph('');
-    this.deviceScaleItem.turnIntoSelect();
     this.deviceScaleItem.setDarkText();
     toolbar.appendToolbarItem(this.deviceScaleItem);
 
     toolbar.appendToolbarItem(this.wrapToolbarItem(this.createEmptyToolbarElement()));
-    this.uaItem = new UI.Toolbar.ToolbarMenuButton(this.appendUserAgentMenuItems.bind(this), undefined, 'device-type');
+    this.uaItem =
+        new UI.Toolbar.ToolbarMenuButton(this.appendUserAgentMenuItems.bind(this), undefined, undefined, 'device-type');
     this.uaItem.setVisible(this.showUserAgentTypeSetting.get());
     setTitleForButton(this.uaItem, i18nString(UIStrings.deviceType));
-    this.uaItem.setGlyph('');
-    this.uaItem.turnIntoSelect();
     this.uaItem.setDarkText();
     toolbar.appendToolbarItem(this.uaItem);
 
@@ -380,10 +375,8 @@ export class DeviceModeToolbar {
 
     // Show posture toolbar menu for foldable devices.
     toolbar.appendToolbarItem(this.wrapToolbarItem(this.createEmptyToolbarElement()));
-    this.postureItem =
-        new UI.Toolbar.ToolbarMenuButton(this.appendDevicePostureItems.bind(this), undefined, 'device-posture');
-    this.postureItem.setGlyph('');
-    this.postureItem.turnIntoSelect();
+    this.postureItem = new UI.Toolbar.ToolbarMenuButton(
+        this.appendDevicePostureItems.bind(this), undefined, undefined, 'device-posture');
     this.postureItem.setDarkText();
     setTitleForButton(this.postureItem, i18nString(UIStrings.devicePosture));
     toolbar.appendToolbarItem(this.postureItem);
@@ -413,7 +406,7 @@ export class DeviceModeToolbar {
   private fillOptionsToolbar(toolbar: UI.Toolbar.Toolbar): void {
     toolbar.appendToolbarItem(this.wrapToolbarItem(this.createEmptyToolbarElement()));
     const moreOptionsButton =
-        new UI.Toolbar.ToolbarMenuButton(this.appendOptionsMenuItems.bind(this), undefined, 'more-options');
+        new UI.Toolbar.ToolbarMenuButton(this.appendOptionsMenuItems.bind(this), undefined, undefined, 'more-options');
     setTitleForButton(moreOptionsButton, i18nString(UIStrings.moreOptions));
     toolbar.appendToolbarItem(moreOptionsButton);
   }

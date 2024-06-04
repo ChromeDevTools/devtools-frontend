@@ -1650,9 +1650,7 @@ export class ConsoleViewFilter {
     ]));
 
     this.levelMenuButton =
-        new UI.Toolbar.ToolbarMenuButton(this.appendLevelMenuItems.bind(this), undefined, 'log-level');
-    this.levelMenuButton.setGlyph('');
-    this.levelMenuButton.turnIntoSelect();
+        new UI.Toolbar.ToolbarMenuButton(this.appendLevelMenuItems.bind(this), undefined, undefined, 'log-level');
 
     this.updateLevelMenuButtonText();
     this.messageLevelFiltersSetting.addChangeListener(this.updateLevelMenuButtonText.bind(this));

@@ -777,7 +777,9 @@ let mainMenuItemInstance: MainMenuItem;
 export class MainMenuItem implements UI.Toolbar.Provider {
   readonly #itemInternal: UI.Toolbar.ToolbarMenuButton;
   constructor() {
-    this.#itemInternal = new UI.Toolbar.ToolbarMenuButton(this.#handleContextMenu.bind(this), true, 'main-menu');
+    this.#itemInternal = new UI.Toolbar.ToolbarMenuButton(
+        this.#handleContextMenu.bind(this), /* isIconDropdown */ true, /* useSoftMenu */ true, 'main-menu');
+    this.#itemInternal.setGlyph('dots-vertical');
     this.#itemInternal.element.classList.add('main-menu');
     this.#itemInternal.setTitle(i18nString(UIStrings.customizeAndControlDevtools));
   }

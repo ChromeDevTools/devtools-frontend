@@ -148,4 +148,90 @@ describeWithEnvironment('Overlays', () => {
     // it, hence why this value is not 0px.
     assert.strictEqual(yPixel, 34);
   });
+
+  describe('rendering overlays', () => {
+    function setupChartWithDimensions(traceParsedData: TraceEngine.Handlers.Types.TraceParseData): {
+      container: HTMLElement,
+      overlays: Timeline.Overlays.Overlays,
+      charts: Timeline.Overlays.TimelineCharts,
+    } {
+      const charts = createCharts(traceParsedData);
+      const container = document.createElement('div');
+      const overlays = new Timeline.Overlays.Overlays({
+        container,
+        charts,
+      });
+
+      overlays.updateChartDimensions('main', {
+        widthPixels: 1000,
+        heightPixels: 500,
+        scrollOffsetPixels: 0,
+      });
+      overlays.updateChartDimensions('network', {
+        widthPixels: 1000,
+        heightPixels: 200,
+        scrollOffsetPixels: 0,
+      });
+
+      // Set the visible window to be the entire trace.
+      overlays.updateVisibleWindow(traceParsedData.Meta.traceBounds);
+      return {overlays, container, charts};
+    }
+
+    it('can render an entry selected overlay', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {overlays, container, charts} = setupChartWithDimensions(traceParsedData);
+      const event = charts.mainProvider.eventByIndex(50);
+      assert.isOk(event);
+
+      overlays.addOverlay({
+        type: 'ENTRY_SELECTED',
+        entry: event,
+        entryChart: 'main',
+      });
+      overlays.update();
+
+      // Ensure that the overlay was created.
+      const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_SELECTED');
+      assert.isOk(overlayDOM);
+    });
+
+    it('can return a list of overlays for an entry', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {overlays, charts} = setupChartWithDimensions(traceParsedData);
+      const event = charts.mainProvider.eventByIndex(50);
+      assert.isOk(event);
+
+      overlays.addOverlay({
+        type: 'ENTRY_SELECTED',
+        entry: event,
+        entryChart: 'main',
+      });
+
+      const existingOverlays = overlays.overlaysForEntry(event);
+      assert.deepEqual(existingOverlays, [{
+                         type: 'ENTRY_SELECTED',
+                         entry: event,
+                         entryChart: 'main',
+                       }]);
+    });
+
+    it('can delete overlays and remove them from the DOM', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {container, overlays, charts} = setupChartWithDimensions(traceParsedData);
+      const event = charts.mainProvider.eventByIndex(50);
+      assert.isOk(event);
+
+      overlays.addOverlay({
+        type: 'ENTRY_SELECTED',
+        entry: event,
+        entryChart: 'main',
+      });
+      overlays.update();
+
+      assert.lengthOf(container.children, 1);
+      overlays.removeOverlaysOfType('ENTRY_SELECTED');
+      assert.lengthOf(container.children, 0);
+    });
+  });
 });

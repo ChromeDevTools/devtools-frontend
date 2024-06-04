@@ -130,11 +130,17 @@ class Browser extends EventEmitter_js_1.EventEmitter {
     }
     /** @internal */
     [disposable_js_1.disposeSymbol]() {
-        return void this.close().catch(util_js_1.debugError);
+        if (this.process()) {
+            return void this.close().catch(util_js_1.debugError);
+        }
+        return void this.disconnect().catch(util_js_1.debugError);
     }
     /** @internal */
     [disposable_js_1.asyncDisposeSymbol]() {
-        return this.close();
+        if (this.process()) {
+            return this.close();
+        }
+        return this.disconnect();
     }
 }
 exports.Browser = Browser;

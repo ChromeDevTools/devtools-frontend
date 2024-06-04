@@ -20,16 +20,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.launch = exports.executablePath = exports.defaultArgs = exports.connect = void 0;
-__exportStar(require("./api/api.js"), exports);
-__exportStar(require("./cdp/cdp.js"), exports);
-__exportStar(require("./common/common.js"), exports);
-__exportStar(require("./node/node.js"), exports);
-__exportStar(require("./revisions.js"), exports);
-__exportStar(require("./util/util.js"), exports);
-/**
- * @deprecated Use the query handler API defined on {@link Puppeteer}
- */
-__exportStar(require("./common/CustomQueryHandler.js"), exports);
+__exportStar(require("./index.js"), exports);
 const PuppeteerNode_js_1 = require("./node/PuppeteerNode.js");
 /**
  * @public

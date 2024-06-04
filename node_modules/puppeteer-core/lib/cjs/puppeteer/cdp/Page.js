@@ -70,7 +70,6 @@ const Connection_js_1 = require("./Connection.js");
 const Coverage_js_1 = require("./Coverage.js");
 const Dialog_js_1 = require("./Dialog.js");
 const EmulationManager_js_1 = require("./EmulationManager.js");
-const ExecutionContext_js_1 = require("./ExecutionContext.js");
 const FirefoxTargetManager_js_1 = require("./FirefoxTargetManager.js");
 const FrameManager_js_1 = require("./FrameManager.js");
 const FrameManagerEvents_js_1 = require("./FrameManagerEvents.js");
@@ -92,8 +91,8 @@ function convertConsoleMessageLevel(method) {
  * @internal
  */
 class CdpPage extends Page_js_1.Page {
-    static async _create(client, target, ignoreHTTPSErrors, defaultViewport) {
-        const page = new CdpPage(client, target, ignoreHTTPSErrors);
+    static async _create(client, target, defaultViewport) {
+        const page = new CdpPage(client, target);
         await page.#initialize();
         if (defaultViewport) {
             try {
@@ -203,8 +202,6 @@ class CdpPage extends Page_js_1.Page {
                 return this.emit("load" /* PageEvent.Load */, undefined);
             },
         ],
-        ['Runtime.consoleAPICalled', this.#onConsoleAPI.bind(this)],
-        ['Runtime.bindingCalled', this.#onBindingCalled.bind(this)],
         ['Page.javascriptDialogOpening', this.#onDialog.bind(this)],
         ['Runtime.exceptionThrown', this.#handleException.bind(this)],
         ['Inspector.targetCrashed', this.#onTargetCrashed.bind(this)],
@@ -212,7 +209,7 @@ class CdpPage extends Page_js_1.Page {
         ['Log.entryAdded', this.#onLogEntryAdded.bind(this)],
         ['Page.fileChooserOpened', this.#onFileChooser.bind(this)],
     ];
-    constructor(client, target, ignoreHTTPSErrors) {
+    constructor(client, target) {
         super();
         this.#primaryTargetClient = client;
         this.#tabTargetClient = client.parentSession();
@@ -225,7 +222,7 @@ class CdpPage extends Page_js_1.Page {
         this.#mouse = new Input_js_1.CdpMouse(client, this.#keyboard);
         this.#touchscreen = new Input_js_1.CdpTouchscreen(client, this.#keyboard);
         this.#accessibility = new Accessibility_js_1.Accessibility(client);
-        this.#frameManager = new FrameManager_js_1.FrameManager(client, this, ignoreHTTPSErrors, this._timeoutSettings);
+        this.#frameManager = new FrameManager_js_1.FrameManager(client, this, this._timeoutSettings);
         this.#emulationManager = new EmulationManager_js_1.EmulationManager(client);
         this.#tracing = new Tracing_js_1.Tracing(client);
         this.#coverage = new Coverage_js_1.Coverage(client);
@@ -233,6 +230,12 @@ class CdpPage extends Page_js_1.Page {
         for (const [eventName, handler] of this.#frameManagerHandlers) {
             this.#frameManager.on(eventName, handler);
         }
+        this.#frameManager.on(FrameManagerEvents_js_1.FrameManagerEvent.ConsoleApiCalled, ([world, event]) => {
+            this.#onConsoleAPI(world, event);
+        });
+        this.#frameManager.on(FrameManagerEvents_js_1.FrameManagerEvent.BindingCalled, ([world, event]) => {
+            void this.#onBindingCalled(world, event);
+        });
         for (const [eventName, handler] of this.#networkManagerHandlers) {
             // TODO: Remove any.
             this.#frameManager.networkManager.on(eventName, handler);
@@ -468,7 +471,9 @@ class CdpPage extends Page_js_1.Page {
         const response = await this.mainFrame().client.send('Runtime.queryObjects', {
             prototypeObjectId: prototypeHandle.id,
         });
-        return (0, ExecutionContext_js_1.createCdpHandle)(this.mainFrame().mainRealm(), response.objects);
+        return this.mainFrame()
+            .mainRealm()
+            .createCdpHandle(response.objects);
     }
     async cookies(...urls) {
         const originalCookies = (await this.#primaryTargetClient.send('Network.getCookies', {
@@ -599,34 +604,13 @@ class CdpPage extends Page_js_1.Page {
     #handleException(exception) {
         this.emit("pageerror" /* PageEvent.PageError */, (0, utils_js_1.createClientError)(exception.exceptionDetails));
     }
-    async #onConsoleAPI(event) {
-        if (event.executionContextId === 0) {
-            // DevTools protocol stores the last 1000 console messages. These
-            // messages are always reported even for removed execution contexts. In
-            // this case, they are marked with executionContextId = 0 and are
-            // reported upon enabling Runtime agent.
-            //
-            // Ignore these messages since:
-            // - there's no execution context we can use to operate with message
-            //   arguments
-            // - these messages are reported before Puppeteer clients can subscribe
-            //   to the 'console'
-            //   page event.
-            //
-            // @see https://github.com/puppeteer/puppeteer/issues/3865
-            return;
-        }
-        const context = this.#frameManager.getExecutionContextById(event.executionContextId, this.#primaryTargetClient);
-        if (!context) {
-            (0, util_js_1.debugError)(new Error(`ExecutionContext not found for a console message: ${JSON.stringify(event)}`));
-            return;
-        }
+    #onConsoleAPI(world, event) {
         const values = event.args.map(arg => {
-            return (0, ExecutionContext_js_1.createCdpHandle)(context._world, arg);
+            return world.createCdpHandle(arg);
         });
         this.#addConsoleMessage(convertConsoleMessageLevel(event.type), values, event.stackTrace);
     }
-    async #onBindingCalled(event) {
+    async #onBindingCalled(world, event) {
         let payload;
         try {
             payload = JSON.parse(event.payload);
@@ -640,7 +624,7 @@ class CdpPage extends Page_js_1.Page {
         if (type !== 'exposedFun') {
             return;
         }
-        const context = this.#frameManager.executionContextById(event.executionContextId, this.#primaryTargetClient);
+        const context = world.context;
         if (!context) {
             return;
         }

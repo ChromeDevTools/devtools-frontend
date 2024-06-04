@@ -9,26 +9,6 @@ exports.ARIAQueryHandler = void 0;
 const QueryHandler_js_1 = require("../common/QueryHandler.js");
 const assert_js_1 = require("../util/assert.js");
 const AsyncIterableUtil_js_1 = require("../util/AsyncIterableUtil.js");
-const NON_ELEMENT_NODE_ROLES = new Set(['StaticText', 'InlineTextBox']);
-const queryAXTree = async (client, element, accessibleName, role) => {
-    const { nodes } = await client.send('Accessibility.queryAXTree', {
-        objectId: element.id,
-        accessibleName,
-        role,
-    });
-    return nodes.filter((node) => {
-        if (node.ignored) {
-            return false;
-        }
-        if (!node.role) {
-            return false;
-        }
-        if (NON_ELEMENT_NODE_ROLES.has(node.role.value)) {
-            return false;
-        }
-        return true;
-    });
-};
 const isKnownAttribute = (attribute) => {
     return ['name', 'role'].includes(attribute);
 };
@@ -69,10 +49,7 @@ class ARIAQueryHandler extends QueryHandler_js_1.QueryHandler {
     };
     static async *queryAll(element, selector) {
         const { name, role } = parseARIASelector(selector);
-        const results = await queryAXTree(element.realm.environment.client, element, name, role);
-        yield* AsyncIterableUtil_js_1.AsyncIterableUtil.map(results, node => {
-            return element.realm.adoptBackendNode(node.backendDOMNodeId);
-        });
+        yield* element.queryAXTree(name, role);
     }
     static queryOne = async (element, selector) => {
         return ((await AsyncIterableUtil_js_1.AsyncIterableUtil.first(this.queryAll(element, selector))) ?? null);

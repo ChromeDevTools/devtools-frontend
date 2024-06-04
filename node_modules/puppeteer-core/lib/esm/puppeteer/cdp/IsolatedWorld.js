@@ -3,207 +3,111 @@
  * Copyright 2019 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
-    if (value !== null && value !== void 0) {
-        if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-        var dispose;
-        if (async) {
-            if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
-            dispose = value[Symbol.asyncDispose];
-        }
-        if (dispose === void 0) {
-            if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
-            dispose = value[Symbol.dispose];
-        }
-        if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
-        env.stack.push({ value: value, dispose: dispose, async: async });
-    }
-    else if (async) {
-        env.stack.push({ async: true });
-    }
-    return value;
-};
-var __disposeResources = (this && this.__disposeResources) || (function (SuppressedError) {
-    return function (env) {
-        function fail(e) {
-            env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
-            env.hasError = true;
-        }
-        function next() {
-            while (env.stack.length) {
-                var rec = env.stack.pop();
-                try {
-                    var result = rec.dispose && rec.dispose.call(rec.value);
-                    if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
-                }
-                catch (e) {
-                    fail(e);
-                }
-            }
-            if (env.hasError) throw env.error;
-        }
-        return next();
-    };
-})(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
-    var e = new Error(message);
-    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
-});
+import { firstValueFrom, map, raceWith } from '../../third_party/rxjs/rxjs.js';
 import { Realm } from '../api/Realm.js';
-import { debugError, withSourcePuppeteerURLIfNone } from '../common/util.js';
-import { Deferred } from '../util/Deferred.js';
+import { EventEmitter } from '../common/EventEmitter.js';
+import { fromEmitterEvent, withSourcePuppeteerURLIfNone, } from '../common/util.js';
 import { disposeSymbol } from '../util/disposable.js';
-import { Mutex } from '../util/Mutex.js';
-import { ExecutionContext, createCdpHandle } from './ExecutionContext.js';
-import { addPageBinding } from './utils.js';
+import { CdpElementHandle } from './ElementHandle.js';
+import { CdpJSHandle } from './JSHandle.js';
 /**
  * @internal
  */
 export class IsolatedWorld extends Realm {
-    #context = Deferred.create();
-    // Set of bindings that have been registered in the current context.
-    #contextBindings = new Set();
-    // Contains mapping from functions that should be bound to Puppeteer functions.
-    #bindings = new Map();
-    get _bindings() {
-        return this.#bindings;
-    }
+    #context;
+    #emitter = new EventEmitter();
     #frameOrWorker;
     constructor(frameOrWorker, timeoutSettings) {
         super(timeoutSettings);
         this.#frameOrWorker = frameOrWorker;
-        this.frameUpdated();
     }
     get environment() {
         return this.#frameOrWorker;
     }
-    frameUpdated() {
-        this.client.on('Runtime.bindingCalled', this.#onBindingCalled);
-    }
     get client() {
         return this.#frameOrWorker.client;
     }
-    clearContext() {
-        // The message has to match the CDP message expected by the WaitTask class.
-        this.#context?.reject(new Error('Execution context was destroyed'));
-        this.#context = Deferred.create();
+    get emitter() {
+        return this.#emitter;
+    }
+    setContext(context) {
+        this.#context?.[disposeSymbol]();
+        context.once('disposed', this.#onContextDisposed.bind(this));
+        context.on('consoleapicalled', this.#onContextConsoleApiCalled.bind(this));
+        context.on('bindingcalled', this.#onContextBindingCalled.bind(this));
+        this.#context = context;
+        this.#emitter.emit('context', context);
+        void this.taskManager.rerunAll();
+    }
+    #onContextDisposed() {
+        this.#context = undefined;
         if ('clearDocumentHandle' in this.#frameOrWorker) {
             this.#frameOrWorker.clearDocumentHandle();
         }
     }
-    setContext(context) {
-        this.#contextBindings.clear();
-        this.#context.resolve(context);
-        void this.taskManager.rerunAll();
+    #onContextConsoleApiCalled(event) {
+        this.#emitter.emit('consoleapicalled', event);
+    }
+    #onContextBindingCalled(event) {
+        this.#emitter.emit('bindingcalled', event);
     }
     hasContext() {
-        return this.#context.resolved();
+        return !!this.#context;
+    }
+    get context() {
+        return this.#context;
     }
     #executionContext() {
         if (this.disposed) {
-            throw new Error(`Execution context is not available in detached frame "${this.environment.url()}" (are you trying to evaluate?)`);
+            throw new Error(`Execution context is not available in detached frame or worker "${this.environment.url()}" (are you trying to evaluate?)`);
         }
-        if (this.#context === null) {
-            throw new Error(`Execution content promise is missing`);
-        }
-        return this.#context.valueOrThrow();
+        return this.#context;
+    }
+    /**
+     * Waits for the next context to be set on the isolated world.
+     */
+    async #waitForExecutionContext() {
+        const result = await firstValueFrom(fromEmitterEvent(this.#emitter, 'context').pipe(raceWith(fromEmitterEvent(this.#emitter, 'disposed').pipe(map(() => {
+            // The message has to match the CDP message expected by the WaitTask class.
+            throw new Error('Execution context was destroyed');
+        })))));
+        return result;
     }
     async evaluateHandle(pageFunction, ...args) {
         pageFunction = withSourcePuppeteerURLIfNone(this.evaluateHandle.name, pageFunction);
-        const context = await this.#executionContext();
+        // This code needs to schedule evaluateHandle call synchroniously (at
+        // least when the context is there) so we cannot unconditionally
+        // await.
+        let context = this.#executionContext();
+        if (!context) {
+            context = await this.#waitForExecutionContext();
+        }
         return await context.evaluateHandle(pageFunction, ...args);
     }
     async evaluate(pageFunction, ...args) {
         pageFunction = withSourcePuppeteerURLIfNone(this.evaluate.name, pageFunction);
-        let context = this.#context.value();
-        if (!context || !(context instanceof ExecutionContext)) {
-            context = await this.#executionContext();
+        // This code needs to schedule evaluate call synchroniously (at
+        // least when the context is there) so we cannot unconditionally
+        // await.
+        let context = this.#executionContext();
+        if (!context) {
+            context = await this.#waitForExecutionContext();
         }
         return await context.evaluate(pageFunction, ...args);
     }
-    // If multiple waitFor are set up asynchronously, we need to wait for the
-    // first one to set up the binding in the page before running the others.
-    #mutex = new Mutex();
-    async _addBindingToContext(context, name) {
-        const env_1 = { stack: [], error: void 0, hasError: false };
-        try {
-            if (this.#contextBindings.has(name)) {
-                return;
-            }
-            const _ = __addDisposableResource(env_1, await this.#mutex.acquire(), false);
-            try {
-                await context._client.send('Runtime.addBinding', context._contextName
-                    ? {
-                        name,
-                        executionContextName: context._contextName,
-                    }
-                    : {
-                        name,
-                        executionContextId: context._contextId,
-                    });
-                await context.evaluate(addPageBinding, 'internal', name);
-                this.#contextBindings.add(name);
-            }
-            catch (error) {
-                // We could have tried to evaluate in a context which was already
-                // destroyed. This happens, for example, if the page is navigated while
-                // we are trying to add the binding
-                if (error instanceof Error) {
-                    // Destroyed context.
-                    if (error.message.includes('Execution context was destroyed')) {
-                        return;
-                    }
-                    // Missing context.
-                    if (error.message.includes('Cannot find context with specified id')) {
-                        return;
-                    }
-                }
-                debugError(error);
-            }
-        }
-        catch (e_1) {
-            env_1.error = e_1;
-            env_1.hasError = true;
-        }
-        finally {
-            __disposeResources(env_1);
-        }
-    }
-    #onBindingCalled = async (event) => {
-        let payload;
-        try {
-            payload = JSON.parse(event.payload);
-        }
-        catch {
-            // The binding was either called by something in the page or it was
-            // called before our wrapper was initialized.
-            return;
-        }
-        const { type, name, seq, args, isTrivial } = payload;
-        if (type !== 'internal') {
-            return;
-        }
-        if (!this.#contextBindings.has(name)) {
-            return;
-        }
-        try {
-            const context = await this.#context.valueOrThrow();
-            if (event.executionContextId !== context._contextId) {
-                return;
-            }
-            const binding = this._bindings.get(name);
-            await binding?.run(context, seq, args, isTrivial);
-        }
-        catch (err) {
-            debugError(err);
-        }
-    };
     async adoptBackendNode(backendNodeId) {
-        const executionContext = await this.#executionContext();
+        // This code needs to schedule resolveNode call synchroniously (at
+        // least when the context is there) so we cannot unconditionally
+        // await.
+        let context = this.#executionContext();
+        if (!context) {
+            context = await this.#waitForExecutionContext();
+        }
         const { object } = await this.client.send('DOM.resolveNode', {
             backendNodeId: backendNodeId,
-            executionContextId: executionContext._contextId,
+            executionContextId: context.id,
         });
-        return createCdpHandle(this, object);
+        return this.createCdpHandle(object);
     }
     async adoptHandle(handle) {
         if (handle.realm === this) {
@@ -233,9 +137,20 @@ export class IsolatedWorld extends Realm {
         await handle.dispose();
         return newHandle;
     }
+    /**
+     * @internal
+     */
+    createCdpHandle(remoteObject) {
+        if (remoteObject.subtype === 'node') {
+            return new CdpElementHandle(this, remoteObject);
+        }
+        return new CdpJSHandle(this, remoteObject);
+    }
     [disposeSymbol]() {
+        this.#context?.[disposeSymbol]();
+        this.#emitter.emit('disposed', undefined);
         super[disposeSymbol]();
-        this.client.off('Runtime.bindingCalled', this.#onBindingCalled);
+        this.#emitter.removeAllListeners();
     }
 }
 //# sourceMappingURL=IsolatedWorld.js.map

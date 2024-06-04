@@ -71,6 +71,7 @@ class BidiRealm extends Realm_js_1.Realm {
     initialize() {
         this.realm.on('destroyed', ({ reason }) => {
             this.taskManager.terminateAll(new Error(reason));
+            this.dispose();
         });
         this.realm.on('updated', () => {
             this.internalPuppeteerUtil = undefined;
@@ -175,6 +176,9 @@ class BidiRealm extends Realm_js_1.Realm {
         return Serializer_js_1.BidiSerializer.serialize(arg);
     }
     async destroyHandles(handles) {
+        if (this.disposed) {
+            return;
+        }
         const handleIds = handles
             .map(({ id }) => {
             return id;

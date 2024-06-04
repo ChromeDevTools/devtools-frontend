@@ -19,11 +19,10 @@ const NetworkEventManager_js_1 = require("./NetworkEventManager.js");
  * @internal
  */
 class NetworkManager extends EventEmitter_js_1.EventEmitter {
-    #ignoreHTTPSErrors;
     #frameManager;
     #networkEventManager = new NetworkEventManager_js_1.NetworkEventManager();
     #extraHTTPHeaders;
-    #credentials;
+    #credentials = null;
     #attemptedAuthentications = new Set();
     #userRequestInterceptionEnabled = false;
     #protocolRequestInterceptionEnabled = false;
@@ -43,9 +42,8 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         [CDPSession_js_1.CDPSessionEvent.Disconnected, this.#removeClient],
     ];
     #clients = new Map();
-    constructor(ignoreHTTPSErrors, frameManager) {
+    constructor(frameManager) {
         super();
-        this.#ignoreHTTPSErrors = ignoreHTTPSErrors;
         this.#frameManager = frameManager;
     }
     async addClient(client) {
@@ -61,11 +59,6 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             });
         }
         await Promise.all([
-            this.#ignoreHTTPSErrors
-                ? client.send('Security.setIgnoreCertificateErrors', {
-                    ignore: true,
-                })
-                : null,
             client.send('Network.enable'),
             this.#applyExtraHTTPHeaders(client),
             this.#applyNetworkConditions(client),

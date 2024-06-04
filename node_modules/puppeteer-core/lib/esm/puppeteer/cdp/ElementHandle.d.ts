@@ -6,6 +6,7 @@
 import type { Protocol } from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import { ElementHandle, type AutofillData } from '../api/ElementHandle.js';
+import type { AwaitableIterable } from '../common/types.js';
 import type { CdpFrame } from './Frame.js';
 import type { IsolatedWorld } from './IsolatedWorld.js';
 import { CdpJSHandle } from './JSHandle.js';
@@ -28,5 +29,6 @@ export declare class CdpElementHandle<ElementType extends Node = Element> extend
     scrollIntoView(this: CdpElementHandle<Element>): Promise<void>;
     uploadFile(this: CdpElementHandle<HTMLInputElement>, ...filePaths: string[]): Promise<void>;
     autofill(data: AutofillData): Promise<void>;
+    queryAXTree(name?: string | undefined, role?: string | undefined): AwaitableIterable<ElementHandle<Node>>;
 }
 //# sourceMappingURL=ElementHandle.d.ts.map

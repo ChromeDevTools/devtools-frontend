@@ -4,33 +4,194 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
+    if (value !== null && value !== void 0) {
+        if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+        var dispose;
+        if (async) {
+            if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+            dispose = value[Symbol.asyncDispose];
+        }
+        if (dispose === void 0) {
+            if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+            dispose = value[Symbol.dispose];
+        }
+        if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        env.stack.push({ value: value, dispose: dispose, async: async });
+    }
+    else if (async) {
+        env.stack.push({ async: true });
+    }
+    return value;
+};
+var __disposeResources = (this && this.__disposeResources) || (function (SuppressedError) {
+    return function (env) {
+        function fail(e) {
+            env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+            env.hasError = true;
+        }
+        function next() {
+            while (env.stack.length) {
+                var rec = env.stack.pop();
+                try {
+                    var result = rec.dispose && rec.dispose.call(rec.value);
+                    if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                }
+                catch (e) {
+                    fail(e);
+                }
+            }
+            if (env.hasError) throw env.error;
+        }
+        return next();
+    };
+})(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+});
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createCdpHandle = exports.ExecutionContext = void 0;
+exports.ExecutionContext = void 0;
+const CDPSession_js_1 = require("../api/CDPSession.js");
+const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const LazyArg_js_1 = require("../common/LazyArg.js");
 const ScriptInjector_js_1 = require("../common/ScriptInjector.js");
 const util_js_1 = require("../common/util.js");
 const AsyncIterableUtil_js_1 = require("../util/AsyncIterableUtil.js");
+const disposable_js_1 = require("../util/disposable.js");
 const Function_js_1 = require("../util/Function.js");
+const Mutex_js_1 = require("../util/Mutex.js");
 const AriaQueryHandler_js_1 = require("./AriaQueryHandler.js");
 const Binding_js_1 = require("./Binding.js");
 const ElementHandle_js_1 = require("./ElementHandle.js");
 const JSHandle_js_1 = require("./JSHandle.js");
 const utils_js_1 = require("./utils.js");
+const ariaQuerySelectorBinding = new Binding_js_1.Binding('__ariaQuerySelector', AriaQueryHandler_js_1.ARIAQueryHandler.queryOne);
+const ariaQuerySelectorAllBinding = new Binding_js_1.Binding('__ariaQuerySelectorAll', (async (element, selector) => {
+    const results = AriaQueryHandler_js_1.ARIAQueryHandler.queryAll(element, selector);
+    return await element.realm.evaluateHandle((...elements) => {
+        return elements;
+    }, ...(await AsyncIterableUtil_js_1.AsyncIterableUtil.collect(results)));
+}));
 /**
  * @internal
  */
-class ExecutionContext {
-    _client;
-    _world;
-    _contextId;
-    _contextName;
+class ExecutionContext extends EventEmitter_js_1.EventEmitter {
+    #client;
+    #world;
+    #id;
+    #name;
+    #disposables = new disposable_js_1.DisposableStack();
     constructor(client, contextPayload, world) {
-        this._client = client;
-        this._world = world;
-        this._contextId = contextPayload.id;
+        super();
+        this.#client = client;
+        this.#world = world;
+        this.#id = contextPayload.id;
         if (contextPayload.name) {
-            this._contextName = contextPayload.name;
+            this.#name = contextPayload.name;
         }
+        const clientEmitter = this.#disposables.use(new EventEmitter_js_1.EventEmitter(this.#client));
+        clientEmitter.on('Runtime.bindingCalled', this.#onBindingCalled.bind(this));
+        clientEmitter.on('Runtime.executionContextDestroyed', async (event) => {
+            if (event.executionContextId === this.#id) {
+                this[disposable_js_1.disposeSymbol]();
+            }
+        });
+        clientEmitter.on('Runtime.executionContextsCleared', async () => {
+            this[disposable_js_1.disposeSymbol]();
+        });
+        clientEmitter.on('Runtime.consoleAPICalled', this.#onConsoleAPI.bind(this));
+        clientEmitter.on(CDPSession_js_1.CDPSessionEvent.Disconnected, () => {
+            this[disposable_js_1.disposeSymbol]();
+        });
+    }
+    // Contains mapping from functions that should be bound to Puppeteer functions.
+    #bindings = new Map();
+    // If multiple waitFor are set up asynchronously, we need to wait for the
+    // first one to set up the binding in the page before running the others.
+    #mutex = new Mutex_js_1.Mutex();
+    async #addBinding(binding) {
+        const env_1 = { stack: [], error: void 0, hasError: false };
+        try {
+            if (this.#bindings.has(binding.name)) {
+                return;
+            }
+            const _ = __addDisposableResource(env_1, await this.#mutex.acquire(), false);
+            try {
+                await this.#client.send('Runtime.addBinding', this.#name
+                    ? {
+                        name: binding.name,
+                        executionContextName: this.#name,
+                    }
+                    : {
+                        name: binding.name,
+                        executionContextId: this.#id,
+                    });
+                await this.evaluate(utils_js_1.addPageBinding, 'internal', binding.name);
+                this.#bindings.set(binding.name, binding);
+            }
+            catch (error) {
+                // We could have tried to evaluate in a context which was already
+                // destroyed. This happens, for example, if the page is navigated while
+                // we are trying to add the binding
+                if (error instanceof Error) {
+                    // Destroyed context.
+                    if (error.message.includes('Execution context was destroyed')) {
+                        return;
+                    }
+                    // Missing context.
+                    if (error.message.includes('Cannot find context with specified id')) {
+                        return;
+                    }
+                }
+                (0, util_js_1.debugError)(error);
+            }
+        }
+        catch (e_1) {
+            env_1.error = e_1;
+            env_1.hasError = true;
+        }
+        finally {
+            __disposeResources(env_1);
+        }
+    }
+    async #onBindingCalled(event) {
+        let payload;
+        try {
+            payload = JSON.parse(event.payload);
+        }
+        catch {
+            // The binding was either called by something in the page or it was
+            // called before our wrapper was initialized.
+            return;
+        }
+        const { type, name, seq, args, isTrivial } = payload;
+        if (type !== 'internal') {
+            this.emit('bindingcalled', event);
+            return;
+        }
+        if (!this.#bindings.has(name)) {
+            this.emit('bindingcalled', event);
+            return;
+        }
+        try {
+            if (event.executionContextId !== this.#id) {
+                return;
+            }
+            const binding = this.#bindings.get(name);
+            await binding?.run(this, seq, args, isTrivial);
+        }
+        catch (err) {
+            (0, util_js_1.debugError)(err);
+        }
+    }
+    get id() {
+        return this.#id;
+    }
+    #onConsoleAPI(event) {
+        if (event.executionContextId !== this.#id) {
+            return;
+        }
+        this.emit('consoleapicalled', event);
     }
     #bindingsInstalled = false;
     #puppeteerUtil;
@@ -38,13 +199,8 @@ class ExecutionContext {
         let promise = Promise.resolve();
         if (!this.#bindingsInstalled) {
             promise = Promise.all([
-                this.#installGlobalBinding(new Binding_js_1.Binding('__ariaQuerySelector', AriaQueryHandler_js_1.ARIAQueryHandler.queryOne)),
-                this.#installGlobalBinding(new Binding_js_1.Binding('__ariaQuerySelectorAll', (async (element, selector) => {
-                    const results = AriaQueryHandler_js_1.ARIAQueryHandler.queryAll(element, selector);
-                    return await element.realm.evaluateHandle((...elements) => {
-                        return elements;
-                    }, ...(await AsyncIterableUtil_js_1.AsyncIterableUtil.collect(results)));
-                }))),
+                this.#addBindingWithoutThrowing(ariaQuerySelectorBinding),
+                this.#addBindingWithoutThrowing(ariaQuerySelectorAllBinding),
             ]);
             this.#bindingsInstalled = true;
         }
@@ -60,17 +216,15 @@ class ExecutionContext {
         }, !this.#puppeteerUtil);
         return this.#puppeteerUtil;
     }
-    async #installGlobalBinding(binding) {
+    async #addBindingWithoutThrowing(binding) {
         try {
-            if (this._world) {
-                this._world._bindings.set(binding.name, binding);
-                await this._world._addBindingToContext(this, binding.name);
-            }
+            await this.#addBinding(binding);
         }
-        catch {
+        catch (err) {
             // If the binding cannot be added, then either the browser doesn't support
             // bindings (e.g. Firefox) or the context is broken. Either breakage is
             // okay, so we ignore the error.
+            (0, util_js_1.debugError)(err);
         }
     }
     /**
@@ -172,12 +326,12 @@ class ExecutionContext {
         const sourceUrlComment = (0, util_js_1.getSourceUrlComment)((0, util_js_1.getSourcePuppeteerURLIfAvailable)(pageFunction)?.toString() ??
             util_js_1.PuppeteerURL.INTERNAL_URL);
         if ((0, util_js_1.isString)(pageFunction)) {
-            const contextId = this._contextId;
+            const contextId = this.#id;
             const expression = pageFunction;
             const expressionWithSourceUrl = util_js_1.SOURCE_URL_REGEX.test(expression)
                 ? expression
                 : `${expression}\n${sourceUrlComment}\n`;
-            const { exceptionDetails, result: remoteObject } = await this._client
+            const { exceptionDetails, result: remoteObject } = await this.#client
                 .send('Runtime.evaluate', {
                 expression: expressionWithSourceUrl,
                 contextId,
@@ -191,7 +345,7 @@ class ExecutionContext {
             }
             return returnByValue
                 ? (0, utils_js_1.valueFromRemoteObject)(remoteObject)
-                : createCdpHandle(this._world, remoteObject);
+                : this.#world.createCdpHandle(remoteObject);
         }
         const functionDeclaration = (0, Function_js_1.stringifyFunction)(pageFunction);
         const functionDeclarationWithSourceUrl = util_js_1.SOURCE_URL_REGEX.test(functionDeclaration)
@@ -199,9 +353,9 @@ class ExecutionContext {
             : `${functionDeclaration}\n${sourceUrlComment}\n`;
         let callFunctionOnPromise;
         try {
-            callFunctionOnPromise = this._client.send('Runtime.callFunctionOn', {
+            callFunctionOnPromise = this.#client.send('Runtime.callFunctionOn', {
                 functionDeclaration: functionDeclarationWithSourceUrl,
-                executionContextId: this._contextId,
+                executionContextId: this.#id,
                 arguments: args.length
                     ? await Promise.all(args.map(convertArgument.bind(this)))
                     : [],
@@ -223,7 +377,7 @@ class ExecutionContext {
         }
         return returnByValue
             ? (0, utils_js_1.valueFromRemoteObject)(remoteObject)
-            : createCdpHandle(this._world, remoteObject);
+            : this.#world.createCdpHandle(remoteObject);
         async function convertArgument(arg) {
             if (arg instanceof LazyArg_js_1.LazyArg) {
                 arg = await arg.get(this);
@@ -248,7 +402,7 @@ class ExecutionContext {
                 ? arg
                 : null;
             if (objectHandle) {
-                if (objectHandle.realm !== this._world) {
+                if (objectHandle.realm !== this.#world) {
                     throw new Error('JSHandles can be evaluated only in the context they were created!');
                 }
                 if (objectHandle.disposed) {
@@ -267,6 +421,10 @@ class ExecutionContext {
             return { value: arg };
         }
     }
+    [disposable_js_1.disposeSymbol]() {
+        this.#disposables.dispose();
+        this.emit('disposed', undefined);
+    }
 }
 exports.ExecutionContext = ExecutionContext;
 const rewriteError = (error) => {
@@ -282,14 +440,4 @@ const rewriteError = (error) => {
     }
     throw error;
 };
-/**
- * @internal
- */
-function createCdpHandle(realm, remoteObject) {
-    if (remoteObject.subtype === 'node') {
-        return new ElementHandle_js_1.CdpElementHandle(realm, remoteObject);
-    }
-    return new JSHandle_js_1.CdpJSHandle(realm, remoteObject);
-}
-exports.createCdpHandle = createCdpHandle;
 //# sourceMappingURL=ExecutionContext.js.map

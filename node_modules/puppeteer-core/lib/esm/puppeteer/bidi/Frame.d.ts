@@ -3,12 +3,11 @@
  * Copyright 2023 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import type { CDPSession } from '../api/CDPSession.js';
-import type { ElementHandle } from '../api/ElementHandle.js';
 import { Frame, type GoToOptions, type WaitForOptions } from '../api/Frame.js';
-import type { WaitForSelectorOptions } from '../api/Page.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
-import type { Awaitable, NodeFor } from '../common/types.js';
+import type { Awaitable } from '../common/types.js';
 import { BidiCdpSession } from './CDPSession.js';
 import type { BrowsingContext } from './core/BrowsingContext.js';
 import type { BidiElementHandle } from './ElementHandle.js';
@@ -43,8 +42,8 @@ export declare class BidiFrame extends Frame {
     get detached(): boolean;
     exposeFunction<Args extends unknown[], Ret>(name: string, apply: (...args: Args) => Awaitable<Ret>): Promise<void>;
     removeExposedFunction(name: string): Promise<void>;
-    waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<ElementHandle<NodeFor<Selector>> | null>;
     createCDPSession(): Promise<CDPSession>;
     setFiles(element: BidiElementHandle, files: string[]): Promise<void>;
+    locateNodes(element: BidiElementHandle, locator: Bidi.BrowsingContext.Locator): Promise<Bidi.Script.NodeRemoteValue[]>;
 }
 //# sourceMappingURL=Frame.d.ts.map

@@ -5,6 +5,7 @@
  */
 import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { ElementHandle, type AutofillData } from '../api/ElementHandle.js';
+import type { AwaitableIterable } from '../common/types.js';
 import type { BidiFrame } from './Frame.js';
 import { BidiJSHandle } from './JSHandle.js';
 import type { BidiFrameRealm } from './Realm.js';
@@ -21,5 +22,6 @@ export declare class BidiElementHandle<ElementType extends Node = Element> exten
     autofill(data: AutofillData): Promise<void>;
     contentFrame(this: BidiElementHandle<HTMLIFrameElement>): Promise<BidiFrame>;
     uploadFile(this: BidiElementHandle<HTMLInputElement>, ...files: string[]): Promise<void>;
+    queryAXTree(this: BidiElementHandle<HTMLElement>, name?: string | undefined, role?: string | undefined): AwaitableIterable<ElementHandle<Node>>;
 }
 //# sourceMappingURL=ElementHandle.d.ts.map

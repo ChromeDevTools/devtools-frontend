@@ -32,9 +32,13 @@ export class Realm {
     }
     #disposed = false;
     /** @internal */
-    [disposeSymbol]() {
+    dispose() {
         this.#disposed = true;
         this.taskManager.terminateAll(new Error('waitForFunction failed: frame got detached.'));
+    }
+    /** @internal */
+    [disposeSymbol]() {
+        this.dispose();
     }
 }
 //# sourceMappingURL=Realm.js.map

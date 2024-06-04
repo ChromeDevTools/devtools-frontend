@@ -1,3 +1,4 @@
+import { CDPSessionEvent } from '../api/CDPSession.js';
 import { TargetType } from '../api/Target.js';
 import { WebWorker } from '../api/WebWorker.js';
 import { TimeoutSettings } from '../common/TimeoutSettings.js';
@@ -22,7 +23,7 @@ export class CdpWebWorker extends WebWorker {
         this.#client.once('Runtime.executionContextCreated', async (event) => {
             this.#world.setContext(new ExecutionContext(client, event.context, this.#world));
         });
-        this.#client.on('Runtime.consoleAPICalled', async (event) => {
+        this.#world.emitter.on('consoleapicalled', async (event) => {
             try {
                 return consoleAPICalled(event.type, event.args.map((object) => {
                     return new CdpJSHandle(this.#world, object);
@@ -33,6 +34,9 @@ export class CdpWebWorker extends WebWorker {
             }
         });
         this.#client.on('Runtime.exceptionThrown', exceptionThrown);
+        this.#client.once(CDPSessionEvent.Disconnected, () => {
+            this.#world.dispose();
+        });
         // This might fail if the target is closed before we receive all execution contexts.
         this.#client.send('Runtime.enable').catch(debugError);
     }

@@ -6,7 +6,7 @@
 /// <reference types="node" />
 import type { Protocol } from 'devtools-protocol';
 import type { Frame } from '../api/Frame.js';
-import type { ElementFor, EvaluateFuncWith, HandleFor, HandleOr, NodeFor } from '../common/types.js';
+import type { AwaitableIterable, ElementFor, EvaluateFuncWith, HandleFor, HandleOr, NodeFor } from '../common/types.js';
 import type { KeyInput } from '../common/USKeyboardLayout.js';
 import { _isElementHandle } from './ElementHandleSymbol.js';
 import type { KeyboardTypeOptions, KeyPressOptions, MouseClickOptions } from './Input.js';
@@ -412,6 +412,10 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * absolute.
      */
     abstract uploadFile(this: ElementHandle<HTMLInputElement>, ...paths: string[]): Promise<void>;
+    /**
+     * @internal
+     */
+    abstract queryAXTree(name?: string, role?: string): AwaitableIterable<ElementHandle<Node>>;
     /**
      * This method scrolls element into view if needed, and then uses
      * {@link Touchscreen.tap} to tap in the center of the element.

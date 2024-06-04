@@ -187,7 +187,9 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     // ASAP to avoid inconsistency between a fresh viewport and stale preview.
     if (this.eagerEvalSetting.get()) {
       const asSoonAsPossible = !TextEditor.Config.contentIncludingHint(this.editor.editor);
-      this.previewRequestForTest = this.textChangeThrottler.schedule(this.requestPreviewBound, asSoonAsPossible);
+      this.previewRequestForTest = this.textChangeThrottler.schedule(
+          this.requestPreviewBound,
+          asSoonAsPossible ? Common.Throttler.Scheduling.AsSoonAsPossible : Common.Throttler.Scheduling.Default);
     }
     this.updatePromptIcon();
     this.dispatchEventToListeners(Events.TextChanged);

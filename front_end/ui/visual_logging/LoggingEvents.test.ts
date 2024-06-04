@@ -217,7 +217,7 @@ describe('LoggingEvents', () => {
     const event = new MouseEvent('click', {button: 1});
     sinon.stub(event, 'currentTarget').value(element);
     void VisualLogging.LoggingEvents.logDrag(throttler)(event);
-    await throttler.schedule(async () => {}, true);
+    await throttler.schedule(async () => {}, Common.Throttler.Scheduling.AsSoonAsPossible);
     await assertThrottled(recordDrag);
     assert.deepStrictEqual(recordDrag.firstCall.firstArg, {veid});
   });

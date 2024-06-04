@@ -251,11 +251,15 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
     if (storageBucket) {
       this.#storageBucketsUpdated.add(storageBucket);
 
-      void this.#throttler.schedule(() => {
-        const promises = Array.from(this.#storageBucketsUpdated, storageBucket => this.loadCacheNames(storageBucket));
-        this.#storageBucketsUpdated.clear();
-        return Promise.all(promises);
-      }, this.#scheduleAsSoonAsPossible);
+      void this.#throttler.schedule(
+          () => {
+            const promises =
+                Array.from(this.#storageBucketsUpdated, storageBucket => this.loadCacheNames(storageBucket));
+            this.#storageBucketsUpdated.clear();
+            return Promise.all(promises);
+          },
+          this.#scheduleAsSoonAsPossible ? Common.Throttler.Scheduling.AsSoonAsPossible :
+                                           Common.Throttler.Scheduling.Default);
     }
   }
 

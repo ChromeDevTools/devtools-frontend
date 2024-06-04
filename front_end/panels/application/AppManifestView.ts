@@ -619,7 +619,8 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     ]);
 
     void this.throttler.schedule(
-        () => this.renderManifest(url, data, errors, installabilityErrors, appId), immediately);
+        () => this.renderManifest(url, data, errors, installabilityErrors, appId),
+        immediately ? Common.Throttler.Scheduling.AsSoonAsPossible : Common.Throttler.Scheduling.Default);
   }
 
   private async renderManifest(

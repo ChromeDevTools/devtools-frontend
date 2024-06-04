@@ -231,7 +231,7 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
       return;
     }
     const mirrorContentBound = this.mirrorContent.bind(this, header, true /* majorChange */);
-    void this.#throttler.schedule(mirrorContentBound, false /* asSoonAsPossible */);
+    void this.#throttler.schedule(mirrorContentBound, Common.Throttler.Scheduling.Default);
   }
 
   private workingCopyCommitted(): void {
@@ -239,7 +239,7 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
       return;
     }
     const mirrorContentBound = this.mirrorContent.bind(this, this.uiSourceCode, true /* majorChange */);
-    void this.#throttler.schedule(mirrorContentBound, true /* asSoonAsPossible */);
+    void this.#throttler.schedule(mirrorContentBound, Common.Throttler.Scheduling.AsSoonAsPossible);
   }
 
   private workingCopyChanged(): void {
@@ -247,7 +247,7 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
       return;
     }
     const mirrorContentBound = this.mirrorContent.bind(this, this.uiSourceCode, false /* majorChange */);
-    void this.#throttler.schedule(mirrorContentBound, false /* asSoonAsPossible */);
+    void this.#throttler.schedule(mirrorContentBound, Common.Throttler.Scheduling.Default);
   }
 
   private async mirrorContent(fromProvider: TextUtils.ContentProvider.ContentProvider, majorChange: boolean):

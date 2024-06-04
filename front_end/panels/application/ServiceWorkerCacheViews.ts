@@ -382,7 +382,8 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     if ((!this.cache.inBucket(storageBucket) || this.cache.cacheName !== cacheName)) {
       return;
     }
-    void this.refreshThrottler.schedule(() => Promise.resolve(this.updateData(true)), true);
+    void this.refreshThrottler.schedule(
+        () => Promise.resolve(this.updateData(true)), Common.Throttler.Scheduling.AsSoonAsPossible);
   }
 
   private async previewCachedResponse(request: SDK.NetworkRequest.NetworkRequest): Promise<void> {

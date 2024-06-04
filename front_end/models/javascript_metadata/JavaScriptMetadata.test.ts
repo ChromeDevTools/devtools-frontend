@@ -24,7 +24,7 @@ describe('JavaScriptMetadata', () => {
   describe('with static methods', () => {
     it('retrieves by name and class', () => {
       const signatures = metadata.signaturesForStaticMethod('from', 'Array');
-      assert.deepEqual(signatures, [['iterable', '?mapfn', '?thisArg'], ['arrayLike', '?mapfn', '?thisArg']]);
+      assert.deepEqual(signatures, [['arrayLike', '?mapfn', '?thisArg'], ['iterable', '?mapfn', '?thisArg']]);
     });
 
     it('does not retrieve methods that are bound to an instance', () => {

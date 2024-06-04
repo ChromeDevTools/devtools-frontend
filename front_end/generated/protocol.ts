@@ -10360,7 +10360,7 @@ export namespace Network {
     FailedPrecondition = 'FailedPrecondition',
     ResourceExhausted = 'ResourceExhausted',
     AlreadyExists = 'AlreadyExists',
-    Unavailable = 'Unavailable',
+    ResourceLimited = 'ResourceLimited',
     Unauthorized = 'Unauthorized',
     BadResponse = 'BadResponse',
     InternalError = 'InternalError',
@@ -17320,6 +17320,10 @@ export namespace PWA {
      * IDs of the tab targets created as the result.
      */
     targetIds: Target.TargetID[];
+  }
+
+  export interface OpenCurrentPageInAppRequest {
+    manifestId: string;
   }
 }
 

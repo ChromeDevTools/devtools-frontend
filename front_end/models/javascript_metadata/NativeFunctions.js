@@ -93,13 +93,13 @@ export const NativeFunctions = [
   },
   {
     name: "get",
-    signatures: [["target","p","receiver"]],
-    receivers: ["ProxyHandler"]
+    signatures: [["key"]],
+    receivers: ["Map","ReadonlyMap","WeakMap","XRHand"]
   },
   {
     name: "get",
-    signatures: [["key"]],
-    receivers: ["Map","ReadonlyMap","WeakMap","XRHand"]
+    signatures: [["target","p","receiver"]],
+    receivers: ["ProxyHandler"]
   },
   {
     name: "get",
@@ -148,6 +148,11 @@ export const NativeFunctions = [
   },
   {
     name: "set",
+    signatures: [["key","value"]],
+    receivers: ["Map","WeakMap"]
+  },
+  {
+    name: "set",
     signatures: [["target","p","newValue","receiver"]],
     receivers: ["ProxyHandler"]
   },
@@ -155,11 +160,6 @@ export const NativeFunctions = [
     name: "set",
     signatures: [["value"]],
     receivers: ["ClassAccessorDecoratorTarget","ClassAccessorDecoratorResult"]
-  },
-  {
-    name: "set",
-    signatures: [["key","value"]],
-    receivers: ["Map","WeakMap"]
   },
   {
     name: "set",
@@ -899,7 +899,7 @@ export const NativeFunctions = [
   },
   {
     name: "from",
-    signatures: [["iterable","?mapfn","?thisArg"],["arrayLike","?mapfn","?thisArg"]],
+    signatures: [["arrayLike","?mapfn","?thisArg"],["iterable","?mapfn","?thisArg"]],
     receivers: ["ArrayConstructor"]
   },
   {
@@ -1259,13 +1259,13 @@ export const NativeFunctions = [
   },
   {
     name: "add",
-    signatures: [["typedArray","index","value"]],
-    receivers: ["Atomics"]
+    signatures: [["value"]],
+    receivers: ["Set","WeakSet"]
   },
   {
     name: "add",
-    signatures: [["value"]],
-    receivers: ["Set","WeakSet"]
+    signatures: [["typedArray","index","value"]],
+    receivers: ["Atomics"]
   },
   {
     name: "add",
@@ -1498,11 +1498,6 @@ export const NativeFunctions = [
   },
   {
     name: "has",
-    signatures: [["target","p"]],
-    receivers: ["ProxyHandler"]
-  },
-  {
-    name: "has",
     signatures: [["key"]],
     receivers: ["Map","ReadonlyMap","WeakMap"]
   },
@@ -1510,6 +1505,11 @@ export const NativeFunctions = [
     name: "has",
     signatures: [["value"]],
     receivers: ["Set","ReadonlySet","WeakSet"]
+  },
+  {
+    name: "has",
+    signatures: [["target","p"]],
+    receivers: ["ProxyHandler"]
   },
   {
     name: "has",
@@ -3679,6 +3679,11 @@ export const NativeFunctions = [
     receivers: ["Window"]
   },
   {
+    name: "prompt",
+    signatures: [["input"]],
+    receivers: ["AITextSession"]
+  },
+  {
     name: "watchAvailability",
     signatures: [["callback"]]
   },
@@ -5410,6 +5415,16 @@ export const NativeFunctions = [
     signatures: [["...data"]]
   },
   {
+    name: "entries",
+    signatures: [["o"]],
+    receivers: ["ObjectConstructor"]
+  },
+  {
+    name: "values",
+    signatures: [["o"]],
+    receivers: ["ObjectConstructor"]
+  },
+  {
     name: "importScripts",
     signatures: [["...urls"]]
   },
@@ -5445,220 +5460,6 @@ export const NativeFunctions = [
     name: "toArray",
     signatures: [["?options"]],
     receivers: ["Observable"]
-  },
-  {
-    name: "next",
-    signatures: [["...args"]],
-    receivers: ["Generator","Iterator","AsyncIterator","AsyncGenerator"]
-  },
-  {
-    name: "next",
-    signatures: [["result"]],
-    receivers: ["Subscriber"]
-  },
-  {
-    name: "return",
-    signatures: [["value"]],
-    receivers: ["Generator","AsyncGenerator"]
-  },
-  {
-    name: "return",
-    signatures: [["?value"]],
-    receivers: ["Iterator","AsyncIterator"]
-  },
-  {
-    name: "throw",
-    signatures: [["e"]],
-    receivers: ["Generator","AsyncGenerator"]
-  },
-  {
-    name: "throw",
-    signatures: [["?e"]],
-    receivers: ["Iterator","AsyncIterator"]
-  },
-  {
-    name: "entries",
-    signatures: [["o"]],
-    receivers: ["ObjectConstructor"]
-  },
-  {
-    name: "values",
-    signatures: [["o"]],
-    receivers: ["ObjectConstructor"]
-  },
-  {
-    name: "all",
-    signatures: [["values"]]
-  },
-  {
-    name: "race",
-    signatures: [["values"]]
-  },
-  {
-    name: "reject",
-    signatures: [["?reason"]]
-  },
-  {
-    name: "construct",
-    signatures: [["target","argArray","newTarget"]]
-  },
-  {
-    name: "deleteProperty",
-    signatures: [["target","p"]]
-  },
-  {
-    name: "ownKeys",
-    signatures: [["target"]]
-  },
-  {
-    name: "setPrototypeOf",
-    signatures: [["target","v"]],
-    receivers: ["ProxyHandler"]
-  },
-  {
-    name: "setPrototypeOf",
-    signatures: [["o","proto"]],
-    receivers: ["ObjectConstructor"]
-  },
-  {
-    name: "revocable",
-    signatures: [["target","handler"]]
-  },
-  {
-    name: "for",
-    signatures: [["key"]]
-  },
-  {
-    name: "keyFor",
-    signatures: [["sym"]]
-  },
-  {
-    name: "getOwnPropertyDescriptors",
-    signatures: [["o"]]
-  },
-  {
-    name: "and",
-    signatures: [["typedArray","index","value"]]
-  },
-  {
-    name: "compareExchange",
-    signatures: [["typedArray","index","expectedValue","replacementValue"]]
-  },
-  {
-    name: "exchange",
-    signatures: [["typedArray","index","value"]]
-  },
-  {
-    name: "isLockFree",
-    signatures: [["size"]]
-  },
-  {
-    name: "or",
-    signatures: [["typedArray","index","value"]]
-  },
-  {
-    name: "wait",
-    signatures: [["typedArray","index","value","?timeout"]]
-  },
-  {
-    name: "notify",
-    signatures: [["typedArray","index","?count"]]
-  },
-  {
-    name: "xor",
-    signatures: [["typedArray","index","value"]]
-  },
-  {
-    name: "padStart",
-    signatures: [["maxLength","?fillString"]]
-  },
-  {
-    name: "padEnd",
-    signatures: [["maxLength","?fillString"]]
-  },
-  {
-    name: "finally",
-    signatures: [["?onfinally"]]
-  },
-  {
-    name: "fromEntries",
-    signatures: [["entries"]]
-  },
-  {
-    name: "allSettled",
-    signatures: [["values"]]
-  },
-  {
-    name: "any",
-    signatures: [["values"]],
-    receivers: ["PromiseConstructor"]
-  },
-  {
-    name: "any",
-    signatures: [["signals"]],
-    receivers: ["AbortSignal"]
-  },
-  {
-    name: "any",
-    signatures: [["signals","?init"]],
-    receivers: ["TaskSignal"]
-  },
-  {
-    name: "replaceAll",
-    signatures: [["searchValue","replaceValue"],["searchValue","replacer"]]
-  },
-  {
-    name: "hasOwn",
-    signatures: [["o","v"]]
-  },
-  {
-    name: "waitAsync",
-    signatures: [["typedArray","index","value","?timeout"]]
-  },
-  {
-    name: "at",
-    signatures: [["index"]]
-  },
-  {
-    name: "use",
-    signatures: [["value"]]
-  },
-  {
-    name: "adopt",
-    signatures: [["value","onDispose"]],
-    receivers: ["DisposableStack"]
-  },
-  {
-    name: "adopt",
-    signatures: [["value","onDisposeAsync"]],
-    receivers: ["AsyncDisposableStack"]
-  },
-  {
-    name: "defer",
-    signatures: [["onDispose"]],
-    receivers: ["DisposableStack"]
-  },
-  {
-    name: "defer",
-    signatures: [["onDisposeAsync"]],
-    receivers: ["AsyncDisposableStack"]
-  },
-  {
-    name: "move",
-    signatures: [["new_entry_name"],["destination_directory","?new_entry_name"]],
-    receivers: ["FileSystemFileHandle","FileSystemHandle"]
-  },
-  {
-    name: "groupBy",
-    signatures: [["items","keySelector"]]
-  },
-  {
-    name: "addInitializer",
-    signatures: [["initializer"]]
-  },
-  {
-    name: "init",
-    signatures: [["value"]]
   },
   {
     name: "clz32",
@@ -5747,6 +5548,16 @@ export const NativeFunctions = [
     signatures: [["value1","value2"]]
   },
   {
+    name: "setPrototypeOf",
+    signatures: [["o","proto"]],
+    receivers: ["ObjectConstructor"]
+  },
+  {
+    name: "setPrototypeOf",
+    signatures: [["target","v"]],
+    receivers: ["ProxyHandler"]
+  },
+  {
     name: "codePointAt",
     signatures: [["pos"]]
   },
@@ -5787,6 +5598,120 @@ export const NativeFunctions = [
     signatures: [["template","...substitutions"]]
   },
   {
+    name: "next",
+    signatures: [["...args"]],
+    receivers: ["Generator","Iterator","AsyncGenerator","AsyncIterator"]
+  },
+  {
+    name: "next",
+    signatures: [["result"]],
+    receivers: ["Subscriber"]
+  },
+  {
+    name: "return",
+    signatures: [["value"]],
+    receivers: ["Generator","AsyncGenerator"]
+  },
+  {
+    name: "return",
+    signatures: [["?value"]],
+    receivers: ["Iterator","AsyncIterator"]
+  },
+  {
+    name: "throw",
+    signatures: [["e"]],
+    receivers: ["Generator","AsyncGenerator"]
+  },
+  {
+    name: "throw",
+    signatures: [["?e"]],
+    receivers: ["Iterator","AsyncIterator"]
+  },
+  {
+    name: "all",
+    signatures: [["values"]]
+  },
+  {
+    name: "race",
+    signatures: [["values"]]
+  },
+  {
+    name: "reject",
+    signatures: [["?reason"]]
+  },
+  {
+    name: "construct",
+    signatures: [["target","argArray","newTarget"]]
+  },
+  {
+    name: "deleteProperty",
+    signatures: [["target","p"]]
+  },
+  {
+    name: "ownKeys",
+    signatures: [["target"]]
+  },
+  {
+    name: "revocable",
+    signatures: [["target","handler"]]
+  },
+  {
+    name: "for",
+    signatures: [["key"]]
+  },
+  {
+    name: "keyFor",
+    signatures: [["sym"]]
+  },
+  {
+    name: "getOwnPropertyDescriptors",
+    signatures: [["o"]]
+  },
+  {
+    name: "and",
+    signatures: [["typedArray","index","value"]]
+  },
+  {
+    name: "compareExchange",
+    signatures: [["typedArray","index","expectedValue","replacementValue"]]
+  },
+  {
+    name: "exchange",
+    signatures: [["typedArray","index","value"]]
+  },
+  {
+    name: "isLockFree",
+    signatures: [["size"]]
+  },
+  {
+    name: "or",
+    signatures: [["typedArray","index","value"]]
+  },
+  {
+    name: "wait",
+    signatures: [["typedArray","index","value","?timeout"]]
+  },
+  {
+    name: "notify",
+    signatures: [["typedArray","index","?count"]]
+  },
+  {
+    name: "xor",
+    signatures: [["typedArray","index","value"]]
+  },
+  {
+    name: "padStart",
+    signatures: [["maxLength","?fillString"]]
+  },
+  {
+    name: "padEnd",
+    signatures: [["maxLength","?fillString"]]
+  },
+  {
+    name: "finally",
+    signatures: [["?onfinally"]]
+  },
+  {
     name: "flatMap",
     signatures: [["callback","?thisArg"]],
     receivers: ["ReadonlyArray","Array"]
@@ -5799,6 +5724,10 @@ export const NativeFunctions = [
   {
     name: "flat",
     signatures: [["?depth"]]
+  },
+  {
+    name: "fromEntries",
+    signatures: [["entries"]]
   },
   {
     name: "asIntN",
@@ -5825,6 +5754,41 @@ export const NativeFunctions = [
     signatures: [["byteOffset","value","?littleEndian"]]
   },
   {
+    name: "allSettled",
+    signatures: [["values"]]
+  },
+  {
+    name: "any",
+    signatures: [["values"]],
+    receivers: ["PromiseConstructor"]
+  },
+  {
+    name: "any",
+    signatures: [["signals"]],
+    receivers: ["AbortSignal"]
+  },
+  {
+    name: "any",
+    signatures: [["signals","?init"]],
+    receivers: ["TaskSignal"]
+  },
+  {
+    name: "replaceAll",
+    signatures: [["searchValue","replaceValue"],["searchValue","replacer"]]
+  },
+  {
+    name: "at",
+    signatures: [["index"]]
+  },
+  {
+    name: "hasOwn",
+    signatures: [["o","v"]]
+  },
+  {
+    name: "waitAsync",
+    signatures: [["typedArray","index","value","?timeout"]]
+  },
+  {
     name: "findLast",
     signatures: [["predicate","?thisArg"]]
   },
@@ -5843,6 +5807,47 @@ export const NativeFunctions = [
   {
     name: "with",
     signatures: [["index","value"]]
+  },
+  {
+    name: "groupBy",
+    signatures: [["items","keySelector"]]
+  },
+  {
+    name: "use",
+    signatures: [["value"]]
+  },
+  {
+    name: "adopt",
+    signatures: [["value","onDispose"]],
+    receivers: ["DisposableStack"]
+  },
+  {
+    name: "adopt",
+    signatures: [["value","onDisposeAsync"]],
+    receivers: ["AsyncDisposableStack"]
+  },
+  {
+    name: "defer",
+    signatures: [["onDispose"]],
+    receivers: ["DisposableStack"]
+  },
+  {
+    name: "defer",
+    signatures: [["onDisposeAsync"]],
+    receivers: ["AsyncDisposableStack"]
+  },
+  {
+    name: "move",
+    signatures: [["new_entry_name"],["destination_directory","?new_entry_name"]],
+    receivers: ["FileSystemFileHandle","FileSystemHandle"]
+  },
+  {
+    name: "addInitializer",
+    signatures: [["initializer"]]
+  },
+  {
+    name: "init",
+    signatures: [["value"]]
   },
   {
     name: "openWindow",
@@ -6366,7 +6371,7 @@ export const NativeFunctions = [
   },
   {
     name: "caretPositionFromPoint",
-    signatures: [["x","y","...shadowRoots"]]
+    signatures: [["x","y","?options"]]
   },
   {
     name: "hasPrivateToken",
@@ -7113,6 +7118,26 @@ export const NativeFunctions = [
     signatures: [["feature"]]
   },
   {
+    name: "execute",
+    signatures: [["input"]]
+  },
+  {
+    name: "promptStreaming",
+    signatures: [["input"]]
+  },
+  {
+    name: "executeStreaming",
+    signatures: [["input"]]
+  },
+  {
+    name: "createTextSession",
+    signatures: [["?options"]]
+  },
+  {
+    name: "createGenericSession",
+    signatures: [["?options"]]
+  },
+  {
     name: "registerAnimator",
     signatures: [["name","animatorCtor"]]
   },
@@ -7248,12 +7273,8 @@ export const NativeFunctions = [
     signatures: [["expires"]]
   },
   {
-    name: "transferToWebGPU",
+    name: "transferToGPUTexture",
     signatures: [["options"]]
-  },
-  {
-    name: "transferFromWebGPU",
-    signatures: [["tex"]]
   },
   {
     name: "CanvasFilter",
@@ -7910,18 +7931,6 @@ export const NativeFunctions = [
   {
     name: "build",
     signatures: [["outputs"]]
-  },
-  {
-    name: "execute",
-    signatures: [["input"]]
-  },
-  {
-    name: "executeStreaming",
-    signatures: [["input"]]
-  },
-  {
-    name: "createGenericSession",
-    signatures: [["?options"]]
   },
   {
     name: "getFileSystemAccessTransferToken",

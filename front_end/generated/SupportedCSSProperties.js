@@ -2840,6 +2840,16 @@ export const generatedProperties = [
  {
   "inherited": true,
   "keywords": [
+   "space-around",
+   "start",
+   "center",
+   "space-between"
+  ],
+  "name": "ruby-align"
+ },
+ {
+  "inherited": true,
+  "keywords": [
    "over",
    "under"
   ],
@@ -3565,6 +3575,10 @@ export const generatedProperties = [
   "name": "transition"
  },
  {
+  "keywords": [
+   "normal",
+   "allow-discrete"
+  ],
   "name": "transition-behavior"
  },
  {
@@ -5286,6 +5300,14 @@ export const generatedPropertyValues = {
    "normal"
   ]
  },
+ "ruby-align": {
+  "values": [
+   "space-around",
+   "start",
+   "center",
+   "space-between"
+  ]
+ },
  "ruby-position": {
   "values": [
    "over",
@@ -5707,6 +5729,12 @@ export const generatedPropertyValues = {
   "values": [
    "flat",
    "preserve-3d"
+  ]
+ },
+ "transition-behavior": {
+  "values": [
+   "normal",
+   "allow-discrete"
   ]
  },
  "transition-property": {

@@ -51,6 +51,8 @@ import {
   type LinkableNameMatch,
   LinkableNameMatcher,
   LinkableNameProperties,
+  type PositionAnchorMatch,
+  PositionAnchorMatcher,
   type ShadowMatch,
   ShadowMatcher,
   ShadowType,
@@ -1080,6 +1082,33 @@ export class LengthRenderer implements MatchRenderer<LengthMatch> {
   }
 }
 
+async function decorateAnchorForAnchorLink(container: HTMLElement, treeElement: StylePropertyTreeElement, options: {
+  identifier?: string, needsSpace: boolean,
+}): Promise<void> {
+  const anchorNode = await treeElement.node()?.getAnchorBySpecifier(options.identifier) ?? undefined;
+  const link = new ElementsComponents.AnchorFunctionLinkSwatch.AnchorFunctionLinkSwatch({
+    identifier: options.identifier,
+    anchorNode: anchorNode,
+    needsSpace: options.needsSpace,
+    onLinkActivate: () => {
+      if (!anchorNode) {
+        return;
+      }
+
+      void Common.Revealer.reveal(anchorNode, false);
+    },
+    onMouseEnter: () => {
+      anchorNode?.highlight();
+    },
+    onMouseLeave: () => {
+      SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    },
+  });
+
+  container.removeChildren();
+  container.appendChild(link);
+}
+
 export class AnchorFunctionRenderer implements MatchRenderer<AnchorFunctionMatch> {
   #treeElement: StylePropertyTreeElement;
   constructor(treeElement: StylePropertyTreeElement) {
@@ -1089,29 +1118,11 @@ export class AnchorFunctionRenderer implements MatchRenderer<AnchorFunctionMatch
   anchorDecoratedForTest(): void {
   }
 
-  async #decorateAnchor(element: HTMLElement, identifier?: string): Promise<void> {
-    const anchorNode = await this.#treeElement.node()?.getAnchorBySpecifier(identifier) ?? undefined;
-    const link = new ElementsComponents.AnchorFunctionLinkSwatch.AnchorFunctionLinkSwatch({
+  async #decorateAnchor(container: HTMLElement, identifier?: string): Promise<void> {
+    await decorateAnchorForAnchorLink(container, this.#treeElement, {
       identifier,
-      anchorNode: anchorNode,
-      onLinkActivate: () => {
-        if (!anchorNode) {
-          return;
-        }
-
-        void Common.Revealer.reveal(anchorNode, false);
-      },
-      onMouseEnter: () => {
-        anchorNode?.highlight();
-      },
-      onMouseLeave: () => {
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
-      },
+      needsSpace: true,
     });
-
-    element.removeChildren();
-    element.appendChild(link);
-
     this.anchorDecoratedForTest();
   }
 
@@ -1141,6 +1152,31 @@ export class AnchorFunctionRenderer implements MatchRenderer<AnchorFunctionMatch
 
   matcher(): AnchorFunctionMatcher {
     return new AnchorFunctionMatcher();
+  }
+}
+
+export class PositionAnchorRenderer implements MatchRenderer<PositionAnchorMatch> {
+  #treeElement: StylePropertyTreeElement;
+
+  constructor(treeElement: StylePropertyTreeElement) {
+    this.#treeElement = treeElement;
+  }
+
+  anchorDecoratedForTest(): void {
+  }
+
+  render(match: PositionAnchorMatch): Node[] {
+    const content = document.createElement('span');
+    content.appendChild(document.createTextNode(match.text));
+    void decorateAnchorForAnchorLink(content, this.#treeElement, {
+      identifier: match.text,
+      needsSpace: false,
+    }).then(() => this.anchorDecoratedForTest());
+    return [content];
+  }
+
+  matcher(): PositionAnchorMatcher {
+    return new PositionAnchorMatcher();
   }
 }
 
@@ -1527,6 +1563,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           new GridTemplateRenderer(),
           new LinearGradientRenderer(),
           new AnchorFunctionRenderer(this),
+          new PositionAnchorRenderer(this),
         ] :
         [];
 

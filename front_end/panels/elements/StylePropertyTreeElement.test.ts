@@ -1214,6 +1214,57 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     });
   });
 
+  describe('AnchorFunctionRenderer', () => {
+    let anchorDecoratedForTestStub: sinon.SinonStub;
+    let getAnchorBySpecifierStub: sinon.SinonStub;
+    let highlightMock: sinon.SinonExpectation;
+    let fakeDOMNode: SDK.DOMModel.DOMNode;
+
+    beforeEach(() => {
+      fakeDOMNode = {
+        localName() {
+          return 'span';
+        },
+        isSVGNode() {
+          return false;
+        },
+        highlight() {
+          highlightMock();
+        },
+      } as SDK.DOMModel.DOMNode;
+      highlightMock = sinon.mock();
+      anchorDecoratedForTestStub =
+          sinon.stub(Elements.StylePropertyTreeElement.PositionAnchorRenderer.prototype, 'anchorDecoratedForTest');
+      getAnchorBySpecifierStub =
+          sinon.stub(SDK.DOMModel.DOMNode.prototype, 'getAnchorBySpecifier').resolves(fakeDOMNode);
+    });
+
+    afterEach(() => {
+      anchorDecoratedForTestStub.restore();
+      getAnchorBySpecifierStub.restore();
+    });
+
+    it('renders `position-anchor` property correctly before anchor is decorated', async () => {
+      const stylePropertyTreeElement = getTreeElement('position-anchor', '--anchor');
+
+      stylePropertyTreeElement.updateTitle();
+
+      assert.strictEqual(stylePropertyTreeElement.valueElement!.textContent, '--anchor');
+    });
+
+    it('renders `position-anchor` property correctly after anchor is decorated', async () => {
+      const waitForDecorationPromise = expectCall(anchorDecoratedForTestStub);
+      const stylePropertyTreeElement = getTreeElement('position-anchor', '--anchor');
+
+      stylePropertyTreeElement.updateTitle();
+      await waitForDecorationPromise;
+
+      const anchorFunctionLinkSwatch =
+          stylePropertyTreeElement.valueElement!.querySelector('devtools-anchor-function-link-swatch');
+      assert.exists(anchorFunctionLinkSwatch);
+    });
+  });
+
   describe('LightDarkColorRenderer', () => {
     it('renders light-dark correctly', async () => {
       const colorSchemeSpy =

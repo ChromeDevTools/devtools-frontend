@@ -594,3 +594,26 @@ export class AnchorFunctionMatcher extends matcherBase(AnchorFunctionMatch) {
   }
 }
 // clang-format on
+
+// For linking `position-anchor: --anchor-name`.
+export class PositionAnchorMatch implements Match {
+  constructor(readonly text: string, readonly matching: BottomUpTreeMatching, readonly node: CodeMirror.SyntaxNode) {
+  }
+}
+
+// clang-format off
+export class PositionAnchorMatcher extends matcherBase(PositionAnchorMatch) {
+  override accepts(propertyName: string): boolean {
+    return propertyName === 'position-anchor';
+  }
+
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+    if (node.name !== 'VariableName') {
+      return null;
+    }
+
+    const dashedIdentifier = matching.ast.text(node);
+    return new PositionAnchorMatch(dashedIdentifier, matching, node);
+  }
+}
+// clang-format on

@@ -512,4 +512,19 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
       assert.strictEqual(anchorSizeAst!.text(anchorSizeMatch.args[0]), '--dashed-ident');
     });
   });
+
+  describe('PositionAnchorMatcher', () => {
+    it('should match `position-anchor` property with dashed identifier', () => {
+      const {match, text} =
+          matchSingleValue('position-anchor', '--dashed-ident', new Elements.PropertyMatchers.PositionAnchorMatcher());
+      assert.exists(match, text);
+      assert.strictEqual(match.text, '--dashed-ident');
+    });
+
+    it('should not match `position-anchor` property when it is not a dashed identifier', () => {
+      const {match} = matchSingleValue(
+          'position-anchor', 'something-non-dashed', new Elements.PropertyMatchers.PositionAnchorMatcher());
+      assert.isNull(match);
+    });
+  });
 });

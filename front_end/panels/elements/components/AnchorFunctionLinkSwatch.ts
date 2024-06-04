@@ -20,13 +20,27 @@ const str_ = i18n.i18n.registerUIStrings('panels/elements/components/AnchorFunct
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = LitHtml;
 
+// Clang format is messing up the formatting of the functions below. It's best
+// to leave formatting off for this type declaration.
+// clang-format off
 export type AnchorFunctionLinkSwatchData = {
   // The dashed identifier for the anchor function.
   // It is undefined when we're rendering for implicit or default anchor cases.
   identifier?: string,
   // The anchor node, it is undefined when it is not resolved correctly.
-  anchorNode?: SDK.DOMModel.DOMNode, onLinkActivate: () => void, onMouseEnter: () => void, onMouseLeave: () => void,
+  anchorNode?: SDK.DOMModel.DOMNode,
+  // Whether to add a space after the link or not. This is needed because for some cases,
+  // even though the link swatch is created; there might not be any links rendered for it.
+  // So adding the space from the outside causes an unnecessary space to be rendered for these cases.
+  // That's the reason we're controlling space behavior from the inside.
+  // However for `position-anchor: --dashed-ident` case, there is no space needed at all.
+  // That's why we need the parameter so that we don't render a space for that case.
+  needsSpace?: boolean,
+  onLinkActivate: () => void,
+  onMouseEnter: () => void,
+  onMouseLeave: () => void,
 };
+// clang-format on
 
 export class AnchorFunctionLinkSwatch extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-anchor-function-link-swatch`;
@@ -94,11 +108,11 @@ export class AnchorFunctionLinkSwatch extends HTMLElement {
 
     if (this.#data.identifier) {
       // clang-format off
-      render(html`${this.#renderIdentifierLink()} `, this.#shadow, {host: this});
+      render(html`${this.#renderIdentifierLink()}${this.#data.needsSpace ? ' ' : ''}`, this.#shadow, {host: this});
       // clang-format on
     } else {
       // clang-format off
-      render(html`${this.#renderIconLink()} `, this.#shadow, {host: this});
+      render(html`${this.#renderIconLink()}${this.#data.needsSpace ? ' ' : ''}`, this.#shadow, {host: this});
       // clang-format on
     }
   }

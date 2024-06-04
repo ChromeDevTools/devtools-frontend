@@ -150,6 +150,10 @@ export interface ViewRegistration {
    * Words used to find the view in the Command Menu.
    */
   tags?: Array<() => Platform.UIString.LocalizedString>;
+  /**
+   * Icon to be used next to view's title.
+   */
+  iconName?: string;
 }
 
 const viewIdSet = new Set<string>();

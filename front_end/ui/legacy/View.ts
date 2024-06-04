@@ -18,6 +18,8 @@ export interface View {
 
   isPreviewFeature(): boolean;
 
+  iconName(): string|undefined;
+
   isTransient(): boolean;
 
   toolbarItems(): Promise<ToolbarItem[]>;
@@ -75,6 +77,10 @@ export class SimpleView extends VBox implements View {
 
   isPreviewFeature(): boolean {
     return false;
+  }
+
+  iconName(): string|undefined {
+    return undefined;
   }
 }
 

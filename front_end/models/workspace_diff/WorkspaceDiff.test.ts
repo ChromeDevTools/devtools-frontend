@@ -3,14 +3,33 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../core/platform/platform.js';
-import {describeWithRealConnection} from '../../testing/RealConnection.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
+import * as Bindings from '../bindings/bindings.js';
+import * as Breakpoints from '../breakpoints/breakpoints.js';
+import * as Persistence from '../persistence/persistence.js';
 import * as Workspace from '../workspace/workspace.js';
 import * as WorkspaceDiff from '../workspace_diff/workspace_diff.js';
 
-describeWithRealConnection('UISourceCodeDiff', () => {
+describeWithEnvironment('UISourceCodeDiff', () => {
   it('returns formatted mapping with a diff', async () => {
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      targetManager: SDK.TargetManager.TargetManager.instance(),
+      resourceMapping:
+          new Bindings.ResourceMapping.ResourceMapping(SDK.TargetManager.TargetManager.instance(), workspace),
+    });
+    const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
+      forceNew: true,
+      targetManager: SDK.TargetManager.TargetManager.instance(),
+      workspace,
+      debuggerWorkspaceBinding,
+    });
+    Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
+
     const URL = 'file:///tmp/example.html' as Platform.DevToolsPath.UrlString;
     const {uiSourceCode, project} =
         createFileSystemUISourceCode({url: URL, content: 'const data={original:true}', mimeType: 'text/javascript'});

@@ -280,4 +280,68 @@ describe('decodeGeneratedRanges', () => {
     assert.strictEqual(generatedRange.children[0].originalScope, originalScopes[0].root.children[0]);
     assert.strictEqual(generatedRange.children[1].originalScope, originalScopes[1].root.children[0]);
   });
+
+  it('throws if an inlined range\'s callsite references an invalid source index', () => {
+    const originEncodedScpoes = new OriginalScopeBuilder().start(2, 0, 'function').end(5, 0).build();
+    const originalScopes = decodeOriginalScopes([originEncodedScpoes], []);
+    const range =
+        new GeneratedRangeBuilder().start(0, 0, {callsite: {sourceIdx: 1, line: 0, column: 0}}).end(0, 20).build();
+
+    assert.throws(() => decodeGeneratedRanges(range, originalScopes, []), /Invalid source index/);
+  });
+
+  it('decodes multiple callsite references in the same source file and the same line', () => {
+    const originEncodedScpoes =
+        new OriginalScopeBuilder().start(0, 0, 'global').start(1, 0, 'function').end(4, 0).end(10, 0).build();
+    const originalScopes = decodeOriginalScopes([originEncodedScpoes], []);
+    const range =
+        new GeneratedRangeBuilder()
+            .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
+            .start(0, 5, {definition: {sourceIdx: 0, scopeIdx: 1}, callsite: {sourceIdx: 0, line: 6, column: 0}})
+            .end(0, 7)
+            .start(0, 8, {definition: {sourceIdx: 0, scopeIdx: 1}, callsite: {sourceIdx: 0, line: 8, column: 5}})
+            .end(0, 12)
+            .start(0, 13, {definition: {sourceIdx: 0, scopeIdx: 1}, callsite: {sourceIdx: 0, line: 8, column: 15}})
+            .end(0, 18)
+            .end(0, 20)
+            .build();
+
+    const generatedRange = decodeGeneratedRanges(range, originalScopes, []);
+
+    assert.lengthOf(generatedRange.children, 3);
+    assert.deepEqual(generatedRange.children[0].callsite, {sourceIndex: 0, line: 6, column: 0});
+    assert.deepEqual(generatedRange.children[1].callsite, {sourceIndex: 0, line: 8, column: 5});
+    assert.deepEqual(generatedRange.children[2].callsite, {sourceIndex: 0, line: 8, column: 15});
+  });
+
+  it('decodes multiple callsite refrences over multiple source files', () => {
+    // A single function in the first file, is called in the first and second file. The bundler inlines both call-sites.
+    const originalEncodedScopes1 =
+        new OriginalScopeBuilder().start(0, 0, 'global').start(1, 0, 'function').end(4, 0).end(10, 0).build();
+    const originalEncodedScopes2 = new OriginalScopeBuilder().start(0, 0, 'global').end(10, 0).build();
+    const originalScopes = decodeOriginalScopes([originalEncodedScopes1, originalEncodedScopes2], []);
+    const range =
+        new GeneratedRangeBuilder()
+            .start(
+                0, 0)  // Pseudo root range so we can have multiple global ranges. This will be fixed soon in the spec.
+            .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
+            .start(5, 0, {definition: {sourceIdx: 0, scopeIdx: 1}, callsite: {sourceIdx: 0, line: 7, column: 5}})
+            .end(8, 0)
+            .end(20, 0)
+            .start(21, 0, {definition: {sourceIdx: 1, scopeIdx: 0}})
+            .start(22, 0, {definition: {sourceIdx: 0, scopeIdx: 1}, callsite: {sourceIdx: 1, line: 3, column: 7}})
+            .end(25, 0)
+            .end(40, 0)
+            .end(40, 0)
+            .build();
+
+    const generatedRange = decodeGeneratedRanges(range, originalScopes, []);
+
+    assert.lengthOf(generatedRange.children, 2);
+    assert.lengthOf(generatedRange.children[0].children, 1);
+    assert.deepEqual(generatedRange.children[0].children[0].callsite, {sourceIndex: 0, line: 7, column: 5});
+
+    assert.lengthOf(generatedRange.children[1].children, 1);
+    assert.deepEqual(generatedRange.children[1].children[0].callsite, {sourceIndex: 1, line: 3, column: 7});
+  });
 });

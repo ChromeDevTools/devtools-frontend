@@ -194,9 +194,15 @@ export class GeneratedRangeBuilder {
     column: 0,
     defSourceIdx: 0,
     defScopeIdx: 0,
+    callsiteSourceIdx: 0,
+    callsiteLine: 0,
+    callsiteColumn: 0,
   };
 
-  start(line: number, column: number, options?: {definition?: {sourceIdx: number, scopeIdx: number}}): this {
+  start(line: number, column: number, options?: {
+    definition?: {sourceIdx: number, scopeIdx: number},
+    callsite?: {sourceIdx: number, line: number, column: number},
+  }): this {
     this.#emitLineSeparator(line);
     this.#emitItemSepratorIfRequired();
 
@@ -210,6 +216,9 @@ export class GeneratedRangeBuilder {
     if (options?.definition) {
       flags |= SDK.SourceMapScopes.EncodedGeneratedRangeFlag.HasDefinition;
     }
+    if (options?.callsite) {
+      flags |= SDK.SourceMapScopes.EncodedGeneratedRangeFlag.HasCallsite;
+    }
     this.#encodedRange += encodeVlq(flags);
 
     if (options?.definition) {
@@ -222,6 +231,22 @@ export class GeneratedRangeBuilder {
       this.#state.defSourceIdx = sourceIdx;
       this.#state.defScopeIdx = scopeIdx;
     }
+
+    if (options?.callsite) {
+      const {sourceIdx, line, column} = options.callsite;
+      this.#encodedRange += encodeVlq(sourceIdx - this.#state.callsiteSourceIdx);
+
+      const emittedLine = line - (this.#state.callsiteSourceIdx === sourceIdx ? this.#state.callsiteLine : 0);
+      this.#encodedRange += encodeVlq(emittedLine);
+
+      const emittedColumn = column - (this.#state.callsiteLine === line ? this.#state.callsiteColumn : 0);
+      this.#encodedRange += encodeVlq(emittedColumn);
+
+      this.#state.callsiteSourceIdx = sourceIdx;
+      this.#state.callsiteLine = line;
+      this.#state.callsiteColumn = column;
+    }
+
     return this;
   }
 
@@ -257,6 +282,9 @@ export class GeneratedRangeBuilder {
       column: 0,
       defSourceIdx: 0,
       defScopeIdx: 0,
+      callsiteSourceIdx: 0,
+      callsiteLine: 0,
+      callsiteColumn: 0,
     };
     this.#encodedRange = '';
     return result;

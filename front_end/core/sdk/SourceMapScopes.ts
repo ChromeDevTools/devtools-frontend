@@ -204,6 +204,18 @@ export function decodeGeneratedRanges(
         range.originalScope = originalScope;
       }
 
+      if (item.callsite) {
+        const {sourceIdx, line, column} = item.callsite;
+        if (!originalScopeTrees[sourceIdx]) {
+          throw new Error('Invalid source index!');
+        }
+        range.callsite = {
+          sourceIndex: sourceIdx,
+          line,
+          column,
+        };
+      }
+
       rangeToStartItem.set(range, item);
       rangeStack.push(range);
     } else {
@@ -231,6 +243,11 @@ interface EncodedGeneratedRangeStart {
     sourceIdx: number,
     scopeIdx: number,
   };
+  callsite?: {
+    sourceIdx: number,
+    line: number,
+    column: number,
+  };
   // TODO(crbug.com/40277685): Add the rest.
 }
 
@@ -241,6 +258,7 @@ interface EncodedGeneratedRangeEnd {
 
 export const enum EncodedGeneratedRangeFlag {
   HasDefinition = 0x1,
+  HasCallsite = 0x2,
 }
 
 function isRangeStart(item: EncodedGeneratedRangeStart|EncodedGeneratedRangeEnd): item is EncodedGeneratedRangeStart {
@@ -260,6 +278,9 @@ function*
     column: 0,
     defSourceIdx: 0,
     defScopeIdx: 0,
+    callsiteSourceIdx: 0,
+    callsiteLine: 0,
+    callsiteColumn: 0,
   };
 
   while (iter.hasNext()) {
@@ -293,6 +314,20 @@ function*
       startItem.definition = {
         sourceIdx: state.defSourceIdx,
         scopeIdx: state.defScopeIdx,
+      };
+    }
+
+    if (startItem.flags & EncodedGeneratedRangeFlag.HasCallsite) {
+      const sourceIdx = iter.nextVLQ();
+      const line = iter.nextVLQ();
+      const column = iter.nextVLQ();
+      state.callsiteColumn = column + (line === 0 && sourceIdx === 0 ? state.callsiteColumn : 0);
+      state.callsiteLine = line + (sourceIdx === 0 ? state.callsiteLine : 0);
+      state.callsiteSourceIdx += sourceIdx;
+      startItem.callsite = {
+        sourceIdx: state.callsiteSourceIdx,
+        line: state.callsiteLine,
+        column: state.callsiteColumn,
       };
     }
 

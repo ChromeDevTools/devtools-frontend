@@ -90,7 +90,11 @@ export class SyntheticEventsManager {
     return syntheticEvent;
   }
 
-  allSyntheticEvents(): Types.TraceEvents.SyntheticBasedEvent[] {
+  getSyntheticTraceEvents(): Types.TraceEvents.SyntheticBasedEvent[] {
     return this.#syntheticTraceEvents;
+  }
+
+  getRawTraceEvents(): readonly Types.TraceEvents.TraceEventData[] {
+    return this.#rawTraceEvents;
   }
 }

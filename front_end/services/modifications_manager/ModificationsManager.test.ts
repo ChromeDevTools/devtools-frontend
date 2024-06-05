@@ -2,64 +2,45 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TraceEngine from '../../models/trace/trace.js';
-import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
+import type * as TraceEngine from '../../models/trace/trace.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import * as ModificationsManager from './modifications_manager.js';
 
-function getMainThread(data: TraceEngine.Handlers.ModelHandlers.Renderer.RendererHandlerData):
-    TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread {
-  let mainThread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread|null = null;
-  for (const [, process] of data.processes) {
-    for (const [, thread] of process.threads) {
-      if (thread.name === 'CrRendererMain') {
-        mainThread = thread;
-        break;
-      }
-    }
-  }
-  if (!mainThread) {
-    throw new Error('Could not find main thread.');
-  }
-  return mainThread;
-}
-
-function findFirstEntry(
-    allEntries: readonly TraceEngine.Types.TraceEvents.SyntheticTraceEntry[],
-    predicate: (entry: TraceEngine.Types.TraceEvents.SyntheticTraceEntry) =>
-        boolean): TraceEngine.Types.TraceEvents.SyntheticTraceEntry {
-  const entry = allEntries.find(entry => predicate(entry));
-  if (!entry) {
-    throw new Error('Could not find expected entry.');
-  }
-  return entry;
-}
-
-const baseTraceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
-  min: TraceEngine.Types.Timing.MicroSeconds(0),
-  max: TraceEngine.Types.Timing.MicroSeconds(10_000),
-  range: TraceEngine.Types.Timing.MicroSeconds(10_000),
-};
-
 describe('ModificationsManager', () => {
-  it('correctly generates an entry hash', async function() {
-    const data = await TraceLoader.traceEngine(null, 'basic-stack.json.gz');
-    const boundsManager =
-        TraceBounds.TraceBounds.BoundsManager.instance({forceNew: true}).resetWithNewBounds(baseTraceWindow);
-    const modificationsManager = ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance(
-        {entryToNodeMap: data.Renderer.entryToNode, wholeTraceBounds: boundsManager.state()?.micro.entireTraceBounds});
+  it('applies modifications when present in a trace file', async function() {
+    await TraceLoader.traceEngine(null, 'web-dev-modifications.json.gz');
+    const modificationsManager = ModificationsManager.ModificationsManager.ModificationsManager.activeManager();
     if (!modificationsManager) {
-      throw new Error('Manager does not exist.');
+      throw new Error('Modifications manager does not exist.');
     }
-    const mainThread = getMainThread(data.Renderer);
-    assert.exists(modificationsManager);
-    // Find first 'Timer Fired' entry in the trace
-    const timerFireEntry = findFirstEntry(mainThread.entries, entry => {
-      return entry.name === 'TimerFire';
-    });
+    modificationsManager.applyModificationsIfPresent();
+    const entriesFilter = modificationsManager.getEntriesFilter();
+    assert.strictEqual(entriesFilter.expandableEntries().length, 1);
+    assert.strictEqual(entriesFilter.invisibleEntries().length, 42);
+    assert.deepEqual(modificationsManager.getTimelineBreadcrumbs().initialBreadcrumb, {
+      'window': {'min': 967569605481, 'max': 967573120579, 'range': 3515098},
+      'child':
+          {'window': {'min': 967569967927.7909, 'max': 967571964564.4985, 'range': 1996636.7076416016}, 'child': null},
+    } as TraceEngine.Types.File.Breadcrumb);
+  });
 
-    const entryHash = modificationsManager.getEntryIndex(timerFireEntry);
-    assert.strictEqual(3649, entryHash);
+  it('generates a serializable modifications json ', async function() {
+    await TraceLoader.traceEngine(null, 'web-dev-modifications.json.gz');
+    const modificationsManager = ModificationsManager.ModificationsManager.ModificationsManager.activeManager();
+    if (!modificationsManager) {
+      throw new Error('Modifications manager does not exist.');
+    }
+    modificationsManager.applyModificationsIfPresent();
+    const entriesFilter = modificationsManager.getEntriesFilter();
+    const modifications = modificationsManager.toJSON();
+    assert.strictEqual(entriesFilter.expandableEntries().length, 1);
+    assert.strictEqual(modifications.entriesModifications.expandableEntries.length, 1);
+    assert.strictEqual(modifications.entriesModifications.hiddenEntries.length, 42);
+    assert.deepEqual(modifications.initialBreadcrumb, {
+      'window': {'min': 967569605481, 'max': 967573120579, 'range': 3515098},
+      'child':
+          {'window': {'min': 967569967927.7909, 'max': 967571964564.4985, 'range': 1996636.7076416016}, 'child': null},
+    } as TraceEngine.Types.File.Breadcrumb);
   });
 });

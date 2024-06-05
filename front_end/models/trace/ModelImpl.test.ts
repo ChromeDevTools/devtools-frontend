@@ -119,13 +119,13 @@ describeWithEnvironment('TraceModel', function() {
       child: null,
     };
 
-    const entriesFilterModifications = {
-      hiddenEntriesIndexes: [1, 2, 3],
-      expandableEntriesIndexes: [4],
-    };
+    const entriesModifications = {
+      hiddenEntries: ['r-1', 'r-2', 'r-3'],
+      expandableEntries: ['r-4'],
+    } as TraceModel.Types.File.Modifications['entriesModifications'];
 
     const modifications = {
-      entriesFilterModifications,
+      entriesModifications,
       initialBreadcrumb,
     };
 

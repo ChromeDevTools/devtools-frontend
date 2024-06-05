@@ -2006,7 +2006,7 @@ export class TimelineUIUtils {
         traceBoundsState.micro.minimapTraceBounds.max < entry.ts;
 
     // Check if it is in the hidden array
-    const isEntryHidden = ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()
+    const isEntryHidden = ModificationsManager.ModificationsManager.ModificationsManager.activeManager()
                               ?.getEntriesFilter()
                               .inEntryInvisible(entry);
 

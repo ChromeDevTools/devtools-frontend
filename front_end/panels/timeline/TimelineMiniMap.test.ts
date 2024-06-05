@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as TraceEngine from '../../models/trace/trace.js';
 import * as ModificationsManager from '../../services/modifications_manager/modifications_manager.js';
-import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
@@ -69,11 +69,6 @@ describeWithEnvironment('TimelineMiniMap', function() {
   it('creates the first breadcrumb', async function() {
     const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
 
-    const boundsManager =
-        TraceBounds.TraceBounds.BoundsManager.instance().resetWithNewBounds(traceParsedData.Meta.traceBounds);
-    ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance(
-        {entryToNodeMap: new Map(), wholeTraceBounds: boundsManager.state()?.micro.entireTraceBounds});
-
     const container = document.createElement('div');
     renderElementIntoDOM(container);
 
@@ -99,5 +94,29 @@ describeWithEnvironment('TimelineMiniMap', function() {
     assert.strictEqual(
         TimelineComponents.Breadcrumbs.flattenBreadcrumbs(minimap.breadcrumbs.initialBreadcrumb).length, 1);
     assert.deepEqual(minimap.breadcrumbs.initialBreadcrumb, {window: traceParsedData.Meta.traceBounds, child: null});
+  });
+  it('stores breadcrumbs to be serialized', async function() {
+    const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap();
+    minimap.setData({
+      traceParsedData,
+      settings: {
+        showMemory: true,
+        showScreenshots: true,
+      },
+    });
+    minimap.addInitialBreadcrumb();
+    const entireTraceBounds = traceParsedData.Meta.traceBounds;
+    const newBounds = {
+      ...entireTraceBounds,
+      min: TraceEngine.Types.Timing.MicroSeconds((entireTraceBounds.max + entireTraceBounds.min) / 2),
+    };
+    minimap.breadcrumbs?.add(newBounds);
+    const serializableModifications =
+        ModificationsManager.ModificationsManager.ModificationsManager.activeManager()?.toJSON();
+    assert.deepEqual(
+        serializableModifications?.initialBreadcrumb.child,
+        {window: {min: 1020035455504, max: 1020036087961, range: 1264914}, child: null} as
+            TraceEngine.Types.File.Breadcrumb);
   });
 });

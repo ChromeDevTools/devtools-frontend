@@ -6,20 +6,16 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../third_party/typescript/typescript.gni")
 
-devtools_module("modifications_manager") {
-  sources = [ "ModificationsManager.ts" ]
+devtools_module("events_serializer") {
+  sources = [ "EventsSerializer.ts" ]
 
-  deps = [
-    "../../models/trace:bundle",
-    "../../panels/timeline/components:bundle",
-    "../events_serializer:bundle",
-  ]
+  deps = [ "../../models/trace:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "modifications_manager.ts"
+  entrypoint = "events_serializer.ts"
 
-  deps = [ ":modifications_manager" ]
+  deps = [ ":events_serializer" ]
 
   visibility = [ "*" ]
 }
@@ -27,7 +23,7 @@ devtools_entrypoint("bundle") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "ModificationsManager.test.ts" ]
+  sources = [ "EventsSerializer.test.ts" ]
 
   deps = [
     ":bundle",

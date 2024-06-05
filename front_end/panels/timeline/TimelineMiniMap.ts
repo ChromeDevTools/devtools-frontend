@@ -137,7 +137,7 @@ export class TimelineMiniMap extends
 
     if (this.breadcrumbs === null) {
       this.breadcrumbs =
-          ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()?.getTimelineBreadcrumbs() ??
+          ModificationsManager.ModificationsManager.ModificationsManager.activeManager()?.getTimelineBreadcrumbs() ??
           null;
     } else {
       this.breadcrumbs.add(newVisibleTraceWindow);

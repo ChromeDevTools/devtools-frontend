@@ -444,7 +444,7 @@ export class ThreadAppender implements TrackAppender {
   #appendNodesAtLevel(
       nodes: Iterable<TraceEngine.Helpers.TreeHelpers.TraceEntryNode>, startingLevel: number,
       parentIsIgnoredListed: boolean = false): number {
-    const invisibleEntries = ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()
+    const invisibleEntries = ModificationsManager.ModificationsManager.ModificationsManager.activeManager()
                                  ?.getEntriesFilter()
                                  .invisibleEntries() ??
         [];
@@ -495,7 +495,7 @@ export class ThreadAppender implements TrackAppender {
 
   #addDecorationsToEntry(entry: TraceEngine.Types.TraceEvents.TraceEventData, index: number): void {
     const flameChartData = this.#compatibilityBuilder.getFlameChartTimelineData();
-    if (ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()
+    if (ModificationsManager.ModificationsManager.ModificationsManager.activeManager()
             ?.getEntriesFilter()
             .isEntryExpandable(entry)) {
       addDecorationToEvent(

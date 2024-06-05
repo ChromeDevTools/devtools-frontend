@@ -153,14 +153,14 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   modifyTree(node: number, action: TraceEngine.EntriesFilter.FilterAction): void {
     const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
 
-    ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()
+    ModificationsManager.ModificationsManager.ModificationsManager.activeManager()
         ?.getEntriesFilter()
         .applyFilterAction({type: action, entry});
   }
 
   findPossibleContextMenuActions(node: number): TraceEngine.EntriesFilter.PossibleFilterActions|void {
     const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
-    return ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()
+    return ModificationsManager.ModificationsManager.ModificationsManager.activeManager()
         ?.getEntriesFilter()
         .findPossibleActions(entry);
   }
@@ -634,7 +634,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     });
 
     const entry = this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
-    const hiddenEntriesAmount = ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()
+    const hiddenEntriesAmount = ModificationsManager.ModificationsManager.ModificationsManager.activeManager()
                                     ?.getEntriesFilter()
                                     .findHiddenDescendantsAmount(entry);
 
@@ -979,7 +979,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     // Try revealing the entry and getting the index again.
     if (this.entryData.indexOf(selection.object) === -1 && TimelineSelection.isTraceEventSelection(selection.object)) {
       if (this.timelineDataInternal?.selectedGroup) {
-        ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()?.getEntriesFilter().revealEntry(
+        ModificationsManager.ModificationsManager.ModificationsManager.activeManager()?.getEntriesFilter().revealEntry(
             selection.object as TraceEngine.Types.TraceEvents.SyntheticTraceEntry);
         this.timelineData(true);
       }
@@ -1057,12 +1057,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.lastInitiatorEntry = entryIndex;
 
     const hiddenEvents: TraceEngine.Types.TraceEvents.TraceEventData[] =
-        ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()
+        ModificationsManager.ModificationsManager.ModificationsManager.activeManager()
             ?.getEntriesFilter()
             .invisibleEntries() ??
         [];
     const expandableEntries: TraceEngine.Types.TraceEvents.TraceEventData[] =
-        ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()
+        ModificationsManager.ModificationsManager.ModificationsManager.activeManager()
             ?.getEntriesFilter()
             .expandableEntries() ??
         [];

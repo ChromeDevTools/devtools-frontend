@@ -41,6 +41,7 @@ devtools_entrypoint("bundle") {
     "../../panels/network/*",
     "../../panels/recorder/*",
     "../../panels/timeline/*",
+    "../../services/events_serializer/*",
     "../../services/modifications_manager/*",
     "../../services/trace_bounds/*",
     "../../services/tracing/*",

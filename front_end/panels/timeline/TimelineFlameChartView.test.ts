@@ -6,7 +6,6 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as ModificationsManager from '../../services/modifications_manager/modifications_manager.js';
-import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupIgnoreListManagerEnvironment} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
@@ -26,18 +25,8 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
   }
 }
 
-const baseTraceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
-  min: TraceEngine.Types.Timing.MicroSeconds(0),
-  max: TraceEngine.Types.Timing.MicroSeconds(10_000),
-  range: TraceEngine.Types.Timing.MicroSeconds(10_000),
-};
-
 describeWithEnvironment('TimelineFlameChartView', function() {
-  let boundsManager: TraceBounds.TraceBounds.BoundsManager;
   beforeEach(() => {
-    boundsManager =
-        TraceBounds.TraceBounds.BoundsManager.instance({forceNew: true}).resetWithNewBounds(baseTraceWindow);
-
     setupIgnoreListManagerEnvironment();
   });
 
@@ -113,10 +102,6 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
     flameChartView.setModel(traceParsedData);
-    ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance({
-      entryToNodeMap: traceParsedData.Renderer.entryToNode,
-      wholeTraceBounds: boundsManager.state()?.micro.entireTraceBounds,
-    });
 
     // Find the main track to later collapse entries of
     const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
@@ -161,10 +146,6 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
        const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
        flameChartView.setModel(traceParsedData);
-       ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance({
-         entryToNodeMap: traceParsedData.Renderer.entryToNode,
-         wholeTraceBounds: boundsManager.state()?.micro.entireTraceBounds,
-       });
 
        // Find the main track to later collapse entries of
        const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
@@ -212,10 +193,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
        const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
        flameChartView.setModel(traceParsedData);
-       ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance({
-         entryToNodeMap: traceParsedData.Renderer.entryToNode,
-         wholeTraceBounds: boundsManager.state()?.micro.entireTraceBounds,
-       });
+       ModificationsManager.ModificationsManager.ModificationsManager.activeManager();
 
        // Find the main track to later collapse entries of
        let mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
@@ -278,10 +256,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
       flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
       flameChartView.setModel(traceParsedData);
-      ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance({
-        entryToNodeMap: traceParsedData.Renderer.entryToNode,
-        wholeTraceBounds: boundsManager.state()?.micro.entireTraceBounds,
-      });
+      ModificationsManager.ModificationsManager.ModificationsManager.activeManager();
     });
 
     it('Does not create customized Context Menu for network track', async function() {

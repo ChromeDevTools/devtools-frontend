@@ -713,8 +713,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // Save modifications into the metadata if modifications experiment is on
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_WRITE_MODIFICATIONS_TO_DISK) &&
         metadata) {
-      metadata.modifications =
-          ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()?.getModifications();
+      metadata.modifications = ModificationsManager.ModificationsManager.ModificationsManager.activeManager()?.toJSON();
     }
     if (!traceEvents) {
       return;
@@ -769,8 +768,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   async showHistory(): Promise<void> {
-    this.#saveModificationsForActiveTrace();
     const recordingData = await this.#historyManager.showHistoryDropDown();
+    this.#saveModificationsForActiveTrace();
     if (recordingData && recordingData.traceParseDataIndex !== this.#traceEngineActiveTraceIndex) {
       this.setModel(recordingData.traceParseDataIndex);
     }
@@ -786,8 +785,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   #saveModificationsForActiveTrace(): void {
-    const newModifications =
-        ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()?.getModifications();
+    const newModifications = ModificationsManager.ModificationsManager.ModificationsManager.activeManager()?.toJSON();
     if (newModifications) {
       this.#traceEngineModel.overrideModifications(this.#traceEngineActiveTraceIndex, newModifications);
     }
@@ -1211,7 +1209,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const traceParsedData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
     const isCpuProfile = this.#traceEngineModel.metadata(this.#traceEngineActiveTraceIndex)?.dataOrigin ===
         TraceEngine.Types.File.DataOrigin.CPUProfile;
-    const modifications = this.#traceEngineModel.metadata(this.#traceEngineActiveTraceIndex)?.modifications;
 
     this.#minimapComponent.reset();
     // Order is important: the bounds must be set before we initiate any UI
@@ -1221,22 +1218,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           traceParsedData.Meta.traceBounds,
       );
 
-      // Since we have a single instance to ModificationsManager, combine both SyntheticEvent to Node maps
-      const samplesAndRendererEventsEntryToNodeMap =
-          new Map([...traceParsedData.Samples.entryToNode, ...traceParsedData.Renderer.entryToNode]);
-      // If the modifications experiment is on and there are some modifications saved, apply the modifications from the file.
-      // We create ModificationsManager regardless of the experiment because the EntriesFilterer initiated in the ModificationsManager
-      // needs to work even if the experiment is off.
-      const traceBounds = TraceBounds.TraceBounds.BoundsManager.instance().state();
-      ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance({
-        entryToNodeMap: samplesAndRendererEventsEntryToNodeMap,
-        wholeTraceBounds: traceBounds?.micro.entireTraceBounds,
-      });
-      if (modifications) {
-        ModificationsManager.ModificationsManager.ModificationsManager.maybeInstance()?.applyModifications(
-            modifications);
-      }
-
+      // Create an instance of the modifications manager for this trace.
+      ModificationsManager.ModificationsManager.ModificationsManager
+          .initModificationsManagerForTrace(this.#traceEngineModel, this.#traceEngineActiveTraceIndex)
+          .applyModificationsIfPresent();
       this.#applyActiveFilters(traceParsedData.Meta.traceIsGeneric, exclusiveFilter);
     }
     if (traceParsedData) {

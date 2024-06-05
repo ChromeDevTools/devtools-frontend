@@ -1363,6 +1363,7 @@ export interface SyntheticProfileCall extends SyntheticTraceEntry {
   nodeId: Protocol.integer;
   sampleIndex: number;
   profileId: ProfileID;
+  selfTime: MicroSeconds;
 }
 
 /**
@@ -1675,6 +1676,15 @@ export type CallFrameID = number&CallFrameIdTag;
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function CallFrameID(value: number): CallFrameID {
   return value as CallFrameID;
+}
+
+class SampleIndexTag {
+  readonly #sampleIndexTag: (symbol|undefined);
+}
+export type SampleIndex = number&SampleIndexTag;
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export function SampleIndex(value: number): SampleIndex {
+  return value as SampleIndex;
 }
 
 class ProcessIdTag {

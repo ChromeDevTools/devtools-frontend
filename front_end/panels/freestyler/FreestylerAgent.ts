@@ -6,8 +6,8 @@ import type * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-const SYSTEM_PROMPT = `
-Solve a question answering task about the page with interleaving Thought, Action, Observation steps.
+// clang-format off
+const SYSTEM_PROMPT = `Solve a question answering task about the page with interleaving Thought, Action, Observation steps.
 Thought can reason about the current situation, Observation is understanding relevant information from an Action's output and Action can be of two types:
 (1) <execute>entity</execute>, which executes JavaScript code on a page and returns the result of code execution. If not, it will return some similar entities to search and you can try to search the information from those topics. You have access to $0 variable to denote the currently inspected element while executing JS code.
 (2) <finish>answer</finish>, which returns the answer and finishes the task.
@@ -33,6 +33,7 @@ Observation
 }
 
 ===`;
+// clang-format on
 
 export enum Step {
   THOUGHT = 'thought',
@@ -78,7 +79,7 @@ const THOUGHT_REGEX = /^Thought\n(.*)/;
 const ACTION_REGEX = /^Action\n(.*)/ms;
 const EXECUTE_REGEX = /^<execute>(.*)<\/execute>$/ms;
 const FINISH_REGEX = /^<finish>(.*)<\/finish>$/ms;
-const MAX_STEPS = 10;
+const MAX_STEPS = 5;
 export class FreestylerAgent {
   #aidaClient: Host.AidaClient.AidaClient;
 
@@ -100,6 +101,8 @@ export class FreestylerAgent {
     for (let i = 0; i < MAX_STEPS; i++) {
       const combinedPrompt = [...prompts].join('\n');
       const step = await this.#aidaAutocomplete(combinedPrompt);
+      debugLog(`Iteration: ${i}: ${combinedPrompt}\n${step}`);
+
       const thoughtMatch = step.match(THOUGHT_REGEX);
       if (thoughtMatch) {
         const thoughtText = thoughtMatch[1];
@@ -115,6 +118,7 @@ export class FreestylerAgent {
         if (executeMatch) {
           const jsCode = executeMatch[1];
           const observation = await executeJsCode(`${jsCode};data`);
+          debugLog(`Executed action: ${jsCode}\nResult: ${observation}`);
           onStep(Step.ACTION, actionText);
           prompts.add(`\nObservation\n${observation}`);
         }
@@ -129,3 +133,23 @@ export class FreestylerAgent {
     }
   }
 }
+
+function debugLog(log: string): void {
+  if (!localStorage.getItem('debugFreestylerEnabled')) {
+    return;
+  }
+
+  // eslint-disable-next-line no-console
+  console.log(log);
+}
+
+function setDebugFreestylerEnabled(enabled: boolean): void {
+  if (enabled) {
+    localStorage.setItem('debugFreestylerEnabled', 'true');
+  } else {
+    localStorage.removeItem('debugFreestylerEnabled');
+  }
+}
+
+// @ts-ignore
+globalThis.setDebugFreestylerEnabled = setDebugFreestylerEnabled;

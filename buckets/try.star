@@ -24,6 +24,7 @@ bucket(
                 "project-devtools-tryjob-access",
                 "service-account-cq",
             ],
+            users = [TRY_ACCOUNT],
         ),
     ],
     led_service_accounts = [TRY_ACCOUNT],
@@ -188,7 +189,6 @@ try_builder(
     recipe_name = "devtools/tester",
     dimensions = dimensions.multibot,
     build_numbers = True,
-    triggers = ["dtf_linux_compile_rel"],
 )
 
 try_builder(

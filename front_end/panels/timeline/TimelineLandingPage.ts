@@ -50,6 +50,8 @@ interface Options {
 export class TimelineLandingPage extends UI.Widget.VBox {
   private readonly toggleRecordAction: UI.ActionRegistration.Action;
 
+  #splitWidget?: UI.SplitWidget.SplitWidget;
+
   constructor(toggleRecordAction: UI.ActionRegistration.Action, options?: Options) {
     super();
 
@@ -63,19 +65,27 @@ export class TimelineLandingPage extends UI.Widget.VBox {
     }
   }
 
+  override onResize(): void {
+    const useNarrowLayout = this.contentElement.offsetWidth < 500;
+    if (useNarrowLayout) {
+      this.#splitWidget?.setVertical(false);
+    } else {
+      this.#splitWidget?.setVertical(true);
+    }
+  }
+
   private renderLandingPage(): void {
     const mainWidget = new UI.Widget.Widget();
     mainWidget.contentElement.append(new Components.LiveMetricsView.LiveMetricsView());
 
     const sidebarWidget = new UI.Widget.Widget();
-    const nextSteps = sidebarWidget.contentElement.createChild('div');
-    nextSteps.textContent = 'Next steps';
+    sidebarWidget.contentElement.append(new Components.LiveMetricsView.LiveMetricsNextSteps());
 
-    const splitView = new UI.SplitWidget.SplitWidget(true, true);
-    splitView.setMainWidget(mainWidget);
-    splitView.setSidebarWidget(sidebarWidget);
+    this.#splitWidget = new UI.SplitWidget.SplitWidget(true, true);
+    this.#splitWidget.setMainWidget(mainWidget);
+    this.#splitWidget.setSidebarWidget(sidebarWidget);
 
-    splitView.show(this.contentElement);
+    this.#splitWidget.show(this.contentElement);
   }
 
   private renderLegacyLandingPage(options?: Options): void {

@@ -8,7 +8,7 @@ import {
   enableExperiment,
   getBrowserAndPages,
   goToResource,
-  waitFor,
+  waitForMany,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
@@ -45,17 +45,15 @@ describe('The Performance panel landing page', () => {
       await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
       await frontend.bringToFront();
 
-      const liveLcpDataElem = await waitFor('.lcp-data');
-      const lcpText = await liveLcpDataElem.evaluate(el => el.textContent) || '';
-      assert.match(lcpText, /LCP:/);
+      const [lcpValueElem, clsValueElem, inpValueElem] = await waitForMany('.metric-card-value:not(.waiting)', 3);
+      const lcpValue = await lcpValueElem.evaluate(el => el.textContent) || '';
+      assert.match(lcpValue, /[0-9\.]+ (s|ms)/);
 
-      const liveClsDataElem = await waitFor('.cls-data');
-      const clsText = await liveClsDataElem.evaluate(el => el.textContent) || '';
-      assert.match(clsText, /CLS:/);
+      const clsValue = await clsValueElem.evaluate(el => el.textContent) || '';
+      assert.match(clsValue, /[0-9\.]+/);
 
-      const liveInpDataElem = await waitFor('.inp-data');
-      const inpText = await liveInpDataElem.evaluate(el => el.textContent) || '';
-      assert.match(inpText, /INP:/);
+      const inpValue = await inpValueElem.evaluate(el => el.textContent) || '';
+      assert.match(inpValue, /[0-9\.]+ (s|ms)/);
     } finally {
       await targetSession.detach();
     }
@@ -100,17 +98,15 @@ describe('The Performance panel landing page', () => {
 
       await frontend.bringToFront();
 
-      const liveLcpDataElem = await waitFor('.lcp-data');
-      const lcpText = await liveLcpDataElem.evaluate(el => el.textContent) || '';
-      assert.match(lcpText, /LCP:/);
+      const [lcpValueElem, clsValueElem, inpValueElem] = await waitForMany('.metric-card-value:not(.waiting)', 3);
+      const lcpValue = await lcpValueElem.evaluate(el => el.textContent) || '';
+      assert.match(lcpValue, /[0-9\.]+ (s|ms)/);
 
-      const liveClsDataElem = await waitFor('.cls-data');
-      const clsText = await liveClsDataElem.evaluate(el => el.textContent) || '';
-      assert.match(clsText, /CLS:/);
+      const clsValue = await clsValueElem.evaluate(el => el.textContent) || '';
+      assert.match(clsValue, /[0-9\.]+/);
 
-      const liveInpDataElem = await waitFor('.inp-data');
-      const inpText = await liveInpDataElem.evaluate(el => el.textContent) || '';
-      assert.match(inpText, /INP:/);
+      const inpValue = await inpValueElem.evaluate(el => el.textContent) || '';
+      assert.match(inpValue, /[0-9\.]+ (s|ms)/);
     } finally {
       await targetSession.detach();
     }

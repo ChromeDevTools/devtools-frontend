@@ -1,0 +1,71 @@
+/*
+ * Copyright 2024 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.live-metrics,
+.next-steps {
+  padding: 8px 16px;
+  background-color: var(--sys-color-cdt-base-container);
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.metric-cards {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  width: 100%;
+}
+
+.section-title {
+  text-wrap: nowrap;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.metric-card {
+  border: 1px solid var(--sys-color-divider);
+  border-radius: 4px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: var(--color-background-elevation-1);
+}
+
+.metric-card-title {
+  text-wrap: nowrap;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.metric-card-section-title {
+  margin-top: 8px;
+  text-wrap: nowrap;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.metric-card-value {
+  text-wrap: nowrap;
+  font-size: 26px;
+}
+
+.metric-card-value.good {
+  color: var(--color-tertiary-bright);
+}
+
+.metric-card-value.needs-improvement {
+  color: var(--color-orange-bright);
+}
+
+.metric-card-value.poor {
+  color: var(--color-error-bright);
+}
+
+.metric-card-element {
+  overflow: hidden;
+}

@@ -11,6 +11,7 @@ generate_css("css_files") {
   sources = [
     "breadcrumbsUI.css",
     "interactionBreakdown.css",
+    "liveMetricsView.css",
     "sidebar.css",
   ]
 }

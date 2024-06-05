@@ -192,6 +192,8 @@ export const enum Events {
 
 export type MetricChangeEvent = Pick<Spec.MetricChangeEvent, 'value'|'rating'>;
 
+export type Rating = Spec.MetricChangeEvent['rating'];
+
 export interface LCPChangeEvent extends MetricChangeEvent {
   node?: SDK.DOMModel.DOMNode;
 }

@@ -140,6 +140,7 @@ UI.ViewManager.registerViewExtension({
   settings: [
     'emulation.locations',
   ],
+  iconName: 'location-on',
 });
 
 Common.Settings.registerSettingExtension({

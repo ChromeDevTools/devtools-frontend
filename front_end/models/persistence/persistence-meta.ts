@@ -75,6 +75,7 @@ UI.ViewManager.registerViewExtension({
     const Persistence = await loadPersistenceModule();
     return new Persistence.WorkspaceSettingsTab.WorkspaceSettingsTab();
   },
+  iconName: 'folder',
 });
 
 Common.Settings.registerSettingExtension({

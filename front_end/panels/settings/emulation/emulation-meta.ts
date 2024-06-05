@@ -44,4 +44,5 @@ UI.ViewManager.registerViewExtension({
     'standard-emulated-device-list',
     'custom-emulated-device-list',
   ],
+  iconName: 'devices',
 });

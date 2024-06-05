@@ -76,6 +76,7 @@ UI.ViewManager.registerViewExtension({
     const Settings = await loadSettingsModule();
     return new Settings.SettingsScreen.GenericSettingsTab();
   },
+  iconName: 'gear',
 });
 
 UI.ViewManager.registerViewExtension({
@@ -89,6 +90,7 @@ UI.ViewManager.registerViewExtension({
     const Settings = await loadSettingsModule();
     return new Settings.SettingsScreen.ExperimentsSettingsTab();
   },
+  iconName: 'experiment',
 });
 
 UI.ViewManager.registerViewExtension({
@@ -101,6 +103,7 @@ UI.ViewManager.registerViewExtension({
     const Settings = await loadSettingsModule();
     return new Settings.FrameworkIgnoreListSettingsTab.FrameworkIgnoreListSettingsTab();
   },
+  iconName: 'clear-list',
 });
 
 UI.ViewManager.registerViewExtension({
@@ -113,6 +116,7 @@ UI.ViewManager.registerViewExtension({
     const Settings = await loadSettingsModule();
     return new Settings.KeybindsSettingsTab.KeybindsSettingsTab();
   },
+  iconName: 'keyboard',
 });
 
 UI.ActionRegistration.registerActionExtension({

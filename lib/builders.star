@@ -36,6 +36,9 @@ dimensions = struct(
         "host_class": "beefy",
         "os": "Ubuntu",
     },
+    multibot = {
+        "host_class": "multibot",
+    },
     win10 = {
         "cpu": "x86-64",
         "os": "Windows-10",

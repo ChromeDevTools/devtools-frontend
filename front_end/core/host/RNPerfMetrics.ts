@@ -76,6 +76,7 @@ class RNPerfMetrics {
         params: {
           type: 'error',
           message: event.message,
+          error: event.error instanceof Error ? event.error : null,
         }
       });
     }, {passive: true});
@@ -92,6 +93,7 @@ class RNPerfMetrics {
         params: {
           type: 'rejectedPromise',
           message,
+          error: event.reason instanceof Error ? event.reason : null,
         }
       });
     }, {passive: true});
@@ -206,6 +208,7 @@ export type UnhandledErrorEvent = Readonly<{
   params: Readonly<{
     type: 'error' | 'rejectedPromise',
     message: string,
+    error: Error | null | undefined,
   }>,
 }>;
 

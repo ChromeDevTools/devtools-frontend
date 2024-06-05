@@ -4,7 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
+import type * as Root from '../../core/root/root.js';
 import * as Console from '../../panels/console/console.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -87,42 +87,40 @@ const actions = [
   },
 ];
 
-function isSettingAvailable(): boolean {
-  return isFeatureEnabled();
-}
-
-function isActionAvailable(): boolean {
-  return isSettingAvailable() && !isAgeRestricted() && !isLocaleRestricted() && !isGeoRestricted() &&
-      !isPolicyRestricted() && !isRolloutRestricted();
-}
-
 function isLocaleRestricted(): boolean {
   const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
   return !devtoolsLocale.locale.startsWith('en-');
 }
 
-function isAgeRestricted(): boolean {
-  return Root.Runtime.Runtime.queryParam('ci_blockedByAge') === 'true';
+function isAgeRestricted(config?: Root.Runtime.HostConfig): boolean {
+  return config?.devToolsConsoleInsights?.blockedByAge === true;
 }
 
-function isRolloutRestricted(): boolean {
-  return Root.Runtime.Runtime.queryParam('ci_blockedByRollout') === 'true';
+function isRolloutRestricted(config?: Root.Runtime.HostConfig): boolean {
+  return config?.devToolsConsoleInsights?.blockedByRollout === true;
 }
 
-function isGeoRestricted(): boolean {
-  return Root.Runtime.Runtime.queryParam('ci_blockedByGeo') === 'true';
+function isGeoRestricted(config?: Root.Runtime.HostConfig): boolean {
+  return config?.devToolsConsoleInsights?.blockedByGeo === true;
 }
 
-function isPolicyRestricted(): boolean {
-  return Root.Runtime.Runtime.queryParam('ci_blockedByEnterprisePolicy') === 'true';
+function isPolicyRestricted(config?: Root.Runtime.HostConfig): boolean {
+  return config?.devToolsConsoleInsights?.blockedByEnterprisePolicy === true;
 }
 
-function isDisabledByDefault(): boolean {
-  return Root.Runtime.Runtime.queryParam('ci_disabledByDefault') === 'true';
+function isOptIn(config?: Root.Runtime.HostConfig): boolean {
+  if (isDogfooder(config)) {
+    return config?.devToolsConsoleInsightsDogfood?.optIn === true;
+  }
+  return config?.devToolsConsoleInsights?.optIn === true;
 }
 
-function isFeatureEnabled(): boolean {
-  return Root.Runtime.Runtime.queryParam('enableAida') === 'true';
+function isDogfooder(config?: Root.Runtime.HostConfig): boolean {
+  return config?.devToolsConsoleInsightsDogfood?.enabled === true;
+}
+
+function isFeatureEnabled(config?: Root.Runtime.HostConfig): boolean {
+  return isDogfooder(config) || config?.devToolsConsoleInsights?.blockedByFeatureFlag === false;
 }
 
 Common.Settings.registerSettingExtension({
@@ -130,23 +128,26 @@ Common.Settings.registerSettingExtension({
   settingName: setting,
   settingType: Common.Settings.SettingType.BOOLEAN,
   title: i18nLazyString(UIStrings.enableConsoleInsights),
-  defaultValue: isDisabledByDefault() ? false : true,
+  defaultValue: (config: Root.Runtime.HostConfig): boolean => !isOptIn(config),
   reloadRequired: true,
-  condition: isSettingAvailable,
-  disabledCondition: () => {
+  condition: config => isFeatureEnabled(config),
+  disabledCondition: config => {
     if (isLocaleRestricted()) {
       return {disabled: true, reason: i18nString(UIStrings.wrongLocale)};
     }
-    if (isAgeRestricted()) {
+    if (isDogfooder(config)) {
+      return {disabled: false};
+    }
+    if (isAgeRestricted(config)) {
       return {disabled: true, reason: i18nString(UIStrings.ageRestricted)};
     }
-    if (isGeoRestricted()) {
+    if (isGeoRestricted(config)) {
       return {disabled: true, reason: i18nString(UIStrings.geoRestricted)};
     }
-    if (isPolicyRestricted()) {
+    if (isPolicyRestricted(config)) {
       return {disabled: true, reason: i18nString(UIStrings.policyRestricted)};
     }
-    if (isRolloutRestricted()) {
+    if (isRolloutRestricted(config)) {
       return {disabled: true, reason: i18nString(UIStrings.rolloutRestricted)};
     }
     return {disabled: false};
@@ -162,6 +163,15 @@ for (const action of actions) {
       const Explain = await import('./explain.js');
       return new Explain.ActionDelegate();
     },
-    condition: isActionAvailable,
+    condition: config => {
+      if (isLocaleRestricted()) {
+        return false;
+      }
+      if (isDogfooder(config)) {
+        return true;
+      }
+      return isFeatureEnabled(config) && !isAgeRestricted(config) && !isGeoRestricted(config) &&
+          !isPolicyRestricted(config) && !isRolloutRestricted(config);
+    },
   });
 }

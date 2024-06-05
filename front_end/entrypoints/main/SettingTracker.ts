@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
 
 const consoleInsightsToggledSettingName = 'console-insights-toggled';
 // Keep setting names in sync with front_end/panels/explain/*.
@@ -48,8 +47,9 @@ export class SettingTracker {
         Common.Settings.Settings.instance().createLocalSetting(consoleInsightsToggledSettingName, false);
     const enabledSetting = this.#getModuleSetting(consoleInsightsEnabledSettingName);
     if (!toggledSetting.get()) {
-      // If the setting was not toggled, update according to ci_disabledByDefault.
-      enabledSetting?.set(Root.Runtime.Runtime.queryParam('ci_disabledByDefault') !== 'true');
+      // If the setting was not toggled, update according to host config.
+      const config = Common.Settings.Settings.instance().getHostConfig();
+      enabledSetting?.set(config?.devToolsConsoleInsights.optIn !== true);
     }
   }
 }

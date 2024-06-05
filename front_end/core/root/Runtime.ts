@@ -298,26 +298,30 @@ export const enum ExperimentName {
   TIMELINE_OBSERVATIONS = 'timeline-observations',
 }
 
+export interface HostConfigConsoleInsights {
+  aidaModelId: string;
+  aidaTemperature: number;
+  blocked: boolean;
+  blockedByAge: boolean;
+  blockedByEnterprisePolicy: boolean;
+  blockedByFeatureFlag: boolean;
+  blockedByGeo: boolean;
+  blockedByRollout: boolean;
+  disallowLogging: boolean;
+  enabled: boolean;
+  optIn: boolean;
+}
+
+export interface HostConfigConsoleInsightsDogfood {
+  aidaModelId: string;
+  aidaTemperature: number;
+  enabled: boolean;
+  optIn: boolean;
+}
+
 export interface HostConfig {
-  devToolsConsoleInsights: {
-    aidaModelId: string,
-    aidaTemperature: number,
-    blocked: boolean,
-    blockedByAge: boolean,
-    blockedByEnterprisePolicy: boolean,
-    blockedByFeatureFlag: boolean,
-    blockedByGeo: boolean,
-    blockedByRollout: boolean,
-    disallowLogging: boolean,
-    enabled: boolean,
-    optIn: boolean,
-  };
-  devToolsConsoleInsightsDogfood: {
-    aidaModelId: string,
-    aidaTemperature: number,
-    enabled: boolean,
-    optIn: boolean,
-  };
+  devToolsConsoleInsights: HostConfigConsoleInsights;
+  devToolsConsoleInsightsDogfood: HostConfigConsoleInsightsDogfood;
 }
 
 /**

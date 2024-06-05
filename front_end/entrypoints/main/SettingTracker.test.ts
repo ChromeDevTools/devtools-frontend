@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
+import type * as Root from '../../core/root/root.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as Main from './main.js';
@@ -27,30 +27,54 @@ describeWithEnvironment('SettingTracker', () => {
         false);
   });
 
-  it('sets console-insights-enabled to false if ci_disabledByDefault is true', async () => {
+  it('sets console-insights-enabled to false if feature is opt-in', async () => {
+    const dummyStorage = new Common.Settings.SettingsStorage({});
+    Common.Settings.Settings.instance({
+      forceNew: true,
+      syncedStorage: dummyStorage,
+      globalStorage: dummyStorage,
+      localStorage: dummyStorage,
+      config: {'devToolsConsoleInsights': {'blockedByFeatureFlag': false, 'enabled': true, 'optIn': true}} as
+          Root.Runtime.HostConfig,
+    });
     Common.Settings.moduleSetting('console-insights-enabled').set(true);
     const toggledSetting = Common.Settings.Settings.instance().createLocalSetting('console-insights-toggled', false);
     toggledSetting.set(false);
-    Root.Runtime.Runtime.setQueryParamForTesting('ci_disabledByDefault', 'true');
     settingTracker = new Main.SettingTracker.SettingTracker();
     assert.strictEqual(Common.Settings.moduleSetting('console-insights-enabled').get(), false);
     assert.strictEqual(toggledSetting.get(), false);
   });
 
-  it('sets console-insights-enabled to true if ci_disabledByDefault is false', async () => {
+  it('sets console-insights-enabled to true if feature is opt-out', async () => {
+    const dummyStorage = new Common.Settings.SettingsStorage({});
+    Common.Settings.Settings.instance({
+      forceNew: true,
+      syncedStorage: dummyStorage,
+      globalStorage: dummyStorage,
+      localStorage: dummyStorage,
+      config: {'devToolsConsoleInsights': {'blockedByFeatureFlag': false, 'enabled': true, 'optIn': false}} as
+          Root.Runtime.HostConfig,
+    });
     Common.Settings.moduleSetting('console-insights-enabled').set(false);
     const toggledSetting = Common.Settings.Settings.instance().createLocalSetting('console-insights-toggled', false);
     toggledSetting.set(false);
-    Root.Runtime.Runtime.setQueryParamForTesting('ci_disabledByDefault', 'false');
     settingTracker = new Main.SettingTracker.SettingTracker();
     assert.strictEqual(Common.Settings.moduleSetting('console-insights-enabled').get(), true);
     assert.strictEqual(toggledSetting.get(), false);
   });
 
   it('does not change console-insights-enabled if console-insights-toggled is true', async () => {
+    const dummyStorage = new Common.Settings.SettingsStorage({});
+    Common.Settings.Settings.instance({
+      forceNew: true,
+      syncedStorage: dummyStorage,
+      globalStorage: dummyStorage,
+      localStorage: dummyStorage,
+      config: {'devToolsConsoleInsights': {'blockedByFeatureFlag': false, 'enabled': true, 'optIn': true}} as
+          Root.Runtime.HostConfig,
+    });
     Common.Settings.moduleSetting('console-insights-enabled').set(true);
     Common.Settings.Settings.instance().createLocalSetting('console-insights-toggled', false).set(true);
-    Root.Runtime.Runtime.setQueryParamForTesting('ci_disabledByDefault', 'true');
     settingTracker = new Main.SettingTracker.SettingTracker();
     assert.strictEqual(Common.Settings.moduleSetting('console-insights-enabled').get(), true);
   });

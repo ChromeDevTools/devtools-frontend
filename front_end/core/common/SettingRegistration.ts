@@ -278,7 +278,7 @@ export interface SettingRegistration {
    * A function that returns true if the setting should be disabled, along with
    * the reason why.
    */
-  disabledCondition?: () => DisabledConditionResult;
+  disabledCondition?: (config?: Root.Runtime.HostConfig) => DisabledConditionResult;
 
   /**
    * If a setting is deprecated, define this notice to show an appropriate warning according to the `warning` propertiy.

@@ -115,7 +115,7 @@ describe('SettingRegistration', () => {
       settingType: Common.Settings.SettingType.BOOLEAN,
       defaultValue: false,
       condition: config => {
-        return config?.devToolsConsoleInsightsDogfood?.enabled === true;
+        return config?.devToolsConsoleInsightsDogfood.enabled === true;
       },
     });
     assert.throws(() => Common.Settings.Settings.instance().moduleSetting(configSettingName));

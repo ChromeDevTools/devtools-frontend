@@ -91,6 +91,7 @@ export function stubNoopSettings() {
       type: () => Common.Settings.SettingType.BOOLEAN,
       getAsArray: () => [],
     }),
+    getHostConfig: () => {},
   } as unknown as Common.Settings.Settings);
 }
 

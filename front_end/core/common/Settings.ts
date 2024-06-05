@@ -77,9 +77,10 @@ export class Settings {
       const {settingName, defaultValue, storageType} = registration;
       const isRegex = registration.settingType === SettingType.REGEX;
 
-      const setting = isRegex && typeof defaultValue === 'string' ?
-          this.createRegExpSetting(settingName, defaultValue, undefined, storageType) :
-          this.createSetting(settingName, defaultValue, storageType);
+      const evaluatedDefaultValue = typeof defaultValue === 'function' ? defaultValue(this.#config) : defaultValue;
+      const setting = isRegex && typeof evaluatedDefaultValue === 'string' ?
+          this.createRegExpSetting(settingName, evaluatedDefaultValue, undefined, storageType) :
+          this.createSetting(settingName, evaluatedDefaultValue, storageType);
 
       setting.setTitleFunction(registration.title);
       if (registration.userActionCondition) {
@@ -120,6 +121,10 @@ export class Settings {
 
   static removeInstance(): void {
     settingsInstance = undefined;
+  }
+
+  getHostConfig(): Root.Runtime.HostConfig|undefined {
+    return this.#config;
   }
 
   private registerModuleSetting(setting: Setting<unknown>): void {
@@ -400,7 +405,7 @@ export class Setting<V> {
 
   disabled(): boolean {
     if (this.#registration?.disabledCondition) {
-      const {disabled} = this.#registration.disabledCondition();
+      const {disabled} = this.#registration.disabledCondition(Settings.instance().getHostConfig());
       // If registration does not disable it, pass through to #disabled
       // attribute check.
       if (disabled) {
@@ -412,7 +417,7 @@ export class Setting<V> {
 
   disabledReason(): string|undefined {
     if (this.#registration?.disabledCondition) {
-      const result = this.#registration.disabledCondition();
+      const result = this.#registration.disabledCondition(Settings.instance().getHostConfig());
       if (result.disabled) {
         return result.reason;
       }

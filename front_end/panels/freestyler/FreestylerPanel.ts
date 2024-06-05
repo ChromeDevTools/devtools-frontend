@@ -89,7 +89,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#agent = new FreestylerAgent({aidaClient: this.#aidaClient});
 
     this.#viewProps = {
-      state: FreestylerChatUiState.CONSENT_VIEW,
+      state: FreestylerChatUiState.CHAT_VIEW,
       messages: [],
       onTextSubmit: this.#handleTextSubmit.bind(this),
       onAcceptPrivacyNotice: this.#handleAcceptPrivacyNotice.bind(this),

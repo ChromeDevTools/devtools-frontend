@@ -22,10 +22,6 @@ const UIStrings = {
    *@description Title for the send icon button.
    */
   sendButtonTitle: 'Send',
-  /**
-   *@description Title of the button for accepting the privacy notice.
-   */
-  acceptButtonTitle: 'Accept',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -41,7 +37,6 @@ export type ChatMessage = {
 };
 
 export const enum State {
-  CONSENT_VIEW = 'consent',
   CHAT_VIEW = 'chat-view',
   CHAT_VIEW_LOADING = 'chat-view-loading',
 }
@@ -82,31 +77,6 @@ export class FreestylerChatUi extends HTMLElement {
 
     this.#props.onTextSubmit(input.value);
     input.value = '';
-  };
-
-  #renderConsentOnboarding = (): LitHtml.TemplateResult => {
-    // clang-format off
-    return LitHtml.html`
-      <h2 tabindex="-1" class="consent-onboarding-heading">
-        Privacy Notice
-      </h2>
-      <main>
-        This is an example privacy notice.
-
-        <div class="consent-buttons-container">
-          <${Buttons.Button.Button.litTagName}
-            class="next-button"
-            @click=${this.#props.onAcceptPrivacyNotice}
-            .data=${{
-              variant: Buttons.Button.Variant.PRIMARY,
-              jslogContext: 'accept',
-            } as Buttons.Button.ButtonData}>
-            ${i18nString(UIStrings.acceptButtonTitle)}
-          </${Buttons.Button.Button.litTagName}>
-        </div>
-      </main>
-    `;
-    // clang-format on
   };
 
   #renderChatMessage = (content: string, entity: ChatMessageEntity): LitHtml.TemplateResult => {
@@ -159,9 +129,6 @@ export class FreestylerChatUi extends HTMLElement {
 
   #render(): void {
     switch (this.#props.state) {
-      case State.CONSENT_VIEW:
-        LitHtml.render(this.#renderConsentOnboarding(), this.#shadow, {host: this});
-        break;
       case State.CHAT_VIEW:
       case State.CHAT_VIEW_LOADING:
         LitHtml.render(this.#renderChatUi(), this.#shadow, {host: this});

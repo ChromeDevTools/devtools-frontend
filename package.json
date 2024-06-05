@@ -121,7 +121,7 @@
     "license-checker": "25.0.1",
     "mocha": "9.2.2",
     "postcss": "8.4.38",
-    "puppeteer-core": "22.10.0",
+    "puppeteer-core": "22.7.0",
     "recast": "0.20.5",
     "rimraf": "3.0.2",
     "rollup": "2.63.0",

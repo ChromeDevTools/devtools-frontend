@@ -880,6 +880,7 @@ export interface TraceEventResourceSendRequest extends TraceEventInstant {
       requestMethod?: string,
       renderBlocking?: RenderBlocking,
       initiator?: Initiator,
+      isLinkPreload?: boolean,
     },
   };
 }
@@ -968,7 +969,8 @@ export interface TraceEventResourceReceiveResponse extends TraceEventInstant {
       responseTime: MilliSeconds,
       statusCode: number,
       timing: TraceEventResourceReceiveResponseTimingData,
-      isLinkPreload?: boolean, connectionId: number, connectionReused: boolean,
+      connectionId: number,
+      connectionReused: boolean,
       headers?: Array<{name: string, value: string}>,
     },
   };

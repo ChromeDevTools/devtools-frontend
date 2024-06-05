@@ -379,7 +379,7 @@ export async function finalize(): Promise<void> {
           encodedDataLength,
           frame,
           fromServiceWorker: request.receiveResponse.args.data.fromServiceWorker,
-          isLinkPreload: request.receiveResponse.args.data.isLinkPreload || false,
+          isLinkPreload: finalSendRequest.args.data.isLinkPreload || false,
           mimeType: request.receiveResponse.args.data.mimeType,
           priority: finalPriority,
           initialPriority,

@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
-import type * as Types from '../types/types.js';
+import * as Types from '../types/types.js';
 
 import {
   type InsightResult,
@@ -11,8 +12,8 @@ import {
   type RequiredData,
 } from './types.js';
 
-export function deps(): ['Meta', 'Animations'] {
-  return ['Meta', 'Animations'];
+export function deps(): ['Meta', 'Animations', 'LayoutShifts', 'NetworkRequests'] {
+  return ['Meta', 'Animations', 'LayoutShifts', 'NetworkRequests'];
 }
 
 export const enum AnimationFailureReasons {
@@ -73,6 +74,21 @@ const ACTIONABLE_FAILURE_REASONS = [
   },
 ];
 
+// 500ms window.
+// Use this window to consider events and requests that may have caused a layout shift.
+const INVALIDATION_WINDOW = Helpers.Timing.secondsToMicroseconds(Types.Timing.Seconds(0.5));
+
+export interface LayoutShiftRootCausesData {
+  iframes: Types.TraceEvents.TraceEventRenderFrameImplCreateChildFrame[];
+  fontRequests: Types.TraceEvents.SyntheticNetworkRequest[];
+}
+
+function isInInvalidationWindow(
+    event: Types.TraceEvents.TraceEventData, targetEvent: Types.TraceEvents.TraceEventData): boolean {
+  const eventEnd = event.dur ? event.ts + event.dur : event.ts;
+  return eventEnd < targetEvent.ts && eventEnd >= targetEvent.ts - INVALIDATION_WINDOW;
+}
+
 /**
  * Returns a list of NoncompositedAnimationFailures.
  */
@@ -106,15 +122,175 @@ function getNonCompositedAnimations(animations: readonly Types.TraceEvents.Synth
   return failures;
 }
 
-export function generateInsight(traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext):
-    InsightResult<{animationFailures?: readonly NoncompositedAnimationFailure[]}> {
-  const compositeAnimationEvents = traceParsedData.Animations.animations.filter(event => {
+/**
+ * Given an array of layout shift and PrePaint events, returns a mapping from
+ * PrePaint events to layout shifts dispatched within it.
+ */
+function getShiftsByPrePaintEvents(
+    layoutShifts: Types.TraceEvents.TraceEventLayoutShift[],
+    prePaintEvents: Types.TraceEvents.TraceEventPrePaint[],
+    ): Map<Types.TraceEvents.TraceEventPrePaint, Types.TraceEvents.TraceEventLayoutShift[]> {
+  // Maps from PrePaint events to LayoutShifts that occured in each one.
+  const shiftsByPrePaint = new Map<Types.TraceEvents.TraceEventPrePaint, Types.TraceEvents.TraceEventLayoutShift[]>();
+
+  // Associate all shifts to their corresponding PrePaint.
+  for (const prePaintEvent of prePaintEvents) {
+    const firstShiftIndex =
+        Platform.ArrayUtilities.nearestIndexFromBeginning(layoutShifts, shift => shift.ts >= prePaintEvent.ts);
+    if (firstShiftIndex === null) {
+      // No layout shifts registered after this PrePaint start. Continue.
+      continue;
+    }
+    for (let i = firstShiftIndex; i < layoutShifts.length; i++) {
+      const shift = layoutShifts[i];
+      if (shift.ts >= prePaintEvent.ts && shift.ts <= prePaintEvent.ts + prePaintEvent.dur) {
+        const shiftsInPrePaint = Platform.MapUtilities.getWithDefault(shiftsByPrePaint, prePaintEvent, () => []);
+        shiftsInPrePaint.push(shift);
+      }
+      if (shift.ts > prePaintEvent.ts + prePaintEvent.dur) {
+        // Reached all layoutShifts of this PrePaint. Break out to continue with the next prePaint event.
+        break;
+      }
+    }
+  }
+  return shiftsByPrePaint;
+}
+
+/**
+ * This gets the first prePaint event that follows the provided event and returns it.
+ */
+function getNextPrePaintEvent(
+    prePaintEvents: Types.TraceEvents.TraceEventPrePaint[],
+    targetEvent: Types.TraceEvents.TraceEventData): Types.TraceEvents.TraceEventPrePaint|undefined {
+  // Get the first PrePaint event that happened after the targetEvent.
+  const nextPrePaintIndex = Platform.ArrayUtilities.nearestIndexFromBeginning(
+      prePaintEvents, prePaint => prePaint.ts > targetEvent.ts + (targetEvent.dur || 0));
+  // No PrePaint event registered after this event
+  if (nextPrePaintIndex === null) {
+    return undefined;
+  }
+
+  return prePaintEvents[nextPrePaintIndex];
+}
+
+/**
+ * An Iframe is considered a root cause if the iframe event occurs before a prePaint event
+ * and within this prePaint event a layout shift(s) occurs.
+ */
+function getIframeRootCauses(
+    iframeCreatedEvents: readonly Types.TraceEvents.TraceEventRenderFrameImplCreateChildFrame[],
+    prePaintEvents: Types.TraceEvents.TraceEventPrePaint[],
+    shiftsByPrePaint: Map<Types.TraceEvents.TraceEventPrePaint, Types.TraceEvents.TraceEventLayoutShift[]>,
+    rootCausesByShift: Map<Types.TraceEvents.TraceEventLayoutShift, LayoutShiftRootCausesData>):
+    Map<Types.TraceEvents.TraceEventLayoutShift, LayoutShiftRootCausesData> {
+  for (const iframeEvent of iframeCreatedEvents) {
+    const nextPrePaint = getNextPrePaintEvent(prePaintEvents, iframeEvent);
+    // If no following prePaint, this is not a root cause.
+    if (!nextPrePaint) {
+      continue;
+    }
+    const shifts = shiftsByPrePaint.get(nextPrePaint);
+    // if no layout shift(s), this is not a root cause.
+    if (!shifts) {
+      continue;
+    }
+    for (const shift of shifts) {
+      const rootCausesForShift = Platform.MapUtilities.getWithDefault(rootCausesByShift, shift, () => {
+        return {
+          iframes: [],
+          fontRequests: [],
+        };
+      });
+      rootCausesForShift.iframes.push(iframeEvent);
+    }
+  }
+  return rootCausesByShift;
+}
+
+/**
+ * A font request is considered a root cause if the request occurs before a prePaint event
+ * and within this prePaint event a layout shift(s) occurs. Additionally, this font request should
+ * happen within the INVALIDATION_WINDOW of the prePaint event.
+ */
+function getFontRootCauses(
+    networkRequests: Types.TraceEvents.SyntheticNetworkRequest[],
+    prePaintEvents: Types.TraceEvents.TraceEventPrePaint[],
+    shiftsByPrePaint: Map<Types.TraceEvents.TraceEventPrePaint, Types.TraceEvents.TraceEventLayoutShift[]>,
+    rootCausesByShift: Map<Types.TraceEvents.TraceEventLayoutShift, LayoutShiftRootCausesData>):
+    Map<Types.TraceEvents.TraceEventLayoutShift, LayoutShiftRootCausesData> {
+  const fontRequests =
+      networkRequests.filter(req => req.args.data.resourceType === 'Font' && req.args.data.mimeType.startsWith('font'));
+
+  for (const req of fontRequests) {
+    const nextPrePaint = getNextPrePaintEvent(prePaintEvents, req);
+    if (!nextPrePaint) {
+      continue;
+    }
+
+    // If the req is outside the INVALIDATION_WINDOW, it could not be a root cause.
+    if (!isInInvalidationWindow(req, nextPrePaint)) {
+      continue;
+    }
+
+    // Get the shifts that belong to this prepaint
+    const shifts = shiftsByPrePaint.get(nextPrePaint);
+
+    // if no layout shift(s) in this prePaint, the request is not a root cause.
+    if (!shifts) {
+      continue;
+    }
+    // Include the root cause to the shifts in this prePaint.
+    for (const shift of shifts) {
+      const rootCausesForShift = Platform.MapUtilities.getWithDefault(rootCausesByShift, shift, () => {
+        return {
+          iframes: [],
+          fontRequests: [],
+        };
+      });
+      rootCausesForShift.fontRequests.push(req);
+    }
+  }
+  return rootCausesByShift;
+}
+
+export function generateInsight(
+    traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext): InsightResult<{
+  animationFailures?: readonly NoncompositedAnimationFailure[],
+  shifts?: Map<Types.TraceEvents.TraceEventLayoutShift, LayoutShiftRootCausesData>,
+}> {
+  const isWithinSameNavigation = ((event: Types.TraceEvents.TraceEventData): boolean => {
     const nav =
         Helpers.Trace.getNavigationForTraceEvent(event, context.frameId, traceParsedData.Meta.navigationsByFrameId);
     return nav?.args.data?.navigationId === context.navigationId;
   });
+
+  const compositeAnimationEvents = traceParsedData.Animations.animations.filter(isWithinSameNavigation);
   const animationFailures = getNonCompositedAnimations(compositeAnimationEvents);
+
+  const iframeEvents =
+      traceParsedData.LayoutShifts.renderFrameImplCreateChildFrameEvents.filter(isWithinSameNavigation);
+  const networkRequests = traceParsedData.NetworkRequests.byTime.filter(isWithinSameNavigation);
+
+  const layoutShifts = traceParsedData.LayoutShifts.clusters.flatMap(
+      cluster =>
+          // Use one of the events in the cluster to determine if within the same navigation.
+      isWithinSameNavigation(cluster.events[0]) ? cluster.events : [],
+  );
+  const prePaintEvents = traceParsedData.LayoutShifts.prePaintEvents.filter(isWithinSameNavigation);
+
+  // Get root causes.
+  const rootCausesByShift = new Map<Types.TraceEvents.TraceEventLayoutShift, LayoutShiftRootCausesData>();
+  const shiftsByPrePaint = getShiftsByPrePaintEvents(layoutShifts, prePaintEvents);
+
+  for (const shift of layoutShifts) {
+    rootCausesByShift.set(shift, {iframes: [], fontRequests: []});
+  }
+
+  getIframeRootCauses(iframeEvents, prePaintEvents, shiftsByPrePaint, rootCausesByShift);
+  getFontRootCauses(networkRequests, prePaintEvents, shiftsByPrePaint, rootCausesByShift);
+
   return {
     animationFailures,
+    shifts: rootCausesByShift,
   };
 }

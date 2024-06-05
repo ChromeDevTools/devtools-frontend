@@ -100,6 +100,7 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
       'v8.execute',
       'v8',
       'cppgc',
+      'navigation,rail',
     ];
 
     if (Root.Runtime.experiments.isEnabled('timeline-v8-runtime-call-stats') && options.enableJSSampling) {

@@ -185,3 +185,7 @@ Contains a recording of web-dev with the following modifications:
 
 - One entry with hidden children
 - A child breadcrumb under the total trace window.
+
+### iframe-shift
+
+Generated from the shift-attribution page in https://github.com/GoogleChrome/lighthouse/blob/main/cli/test/fixtures/shift-attribution.html. Contains an iframe and layout shifts.

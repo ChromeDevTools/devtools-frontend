@@ -1186,22 +1186,24 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     });
 
     const entry = this.dataProvider.eventByIndex?.(this.selectedEntryIndex);
-    const url = (entry && TraceEngine.Types.TraceEvents.isProfileCall(entry)) ?
-        entry.callFrame.url as Platform.DevToolsPath.UrlString :
-        undefined;
-    if (url) {
-      if (Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(url)) {
-        this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeScriptFromIgnoreList), () => {
-          Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListURL(url);
-        }, {
-          jslogContext: 'remove-from-ignore-list',
-        });
-      } else {
-        this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.addScriptToIgnoreList), () => {
-          Bindings.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(url);
-        }, {
-          jslogContext: 'add-to-ignore-list',
-        });
+    if (entry && entry instanceof TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame === false) {
+      const url = (TraceEngine.Types.TraceEvents.isProfileCall(entry)) ?
+          entry.callFrame.url as Platform.DevToolsPath.UrlString :
+          undefined;
+      if (url) {
+        if (Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(url)) {
+          this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeScriptFromIgnoreList), () => {
+            Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListURL(url);
+          }, {
+            jslogContext: 'remove-from-ignore-list',
+          });
+        } else {
+          this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.addScriptToIgnoreList), () => {
+            Bindings.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(url);
+          }, {
+            jslogContext: 'add-to-ignore-list',
+          });
+        }
       }
     }
 
@@ -3776,9 +3778,11 @@ export interface FlameChartDataProvider {
 
   hasTrackConfigurationMode(): boolean;
 
-  eventByIndex?(entryIndex: number): TraceEngine.Types.TraceEvents.TraceEventData|null;
+  eventByIndex?(entryIndex: number): TraceEngine.Types.TraceEvents.TraceEventData
+      |TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame|null;
 
-  indexForEvent?(event: TraceEngine.Types.TraceEvents.TraceEventData): number|null;
+  indexForEvent?(event: TraceEngine.Types.TraceEvents.TraceEventData|
+                 TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame): number|null;
 }
 
 export interface FlameChartMarker {

@@ -21,12 +21,22 @@ const NETWORK_RESIZE_ELEM_HEIGHT_PX = 8;
 export type EntryChartLocation = 'main'|'network';
 
 /**
+ * You can add overlays to trace events, but also right now frames are drawn on
+ * the timeline but they are not trace events, so we need to allow for that.
+ * In the future when the frames track has been migrated to be powered by
+ * animation frames (crbug.com/345144583), we can remove the requirement to
+ * support TimelineFrame instances (which themselves will be removed from the
+ * codebase.)
+ */
+export type OverlayEntry =
+    TraceEngine.Types.TraceEvents.TraceEventData|TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame;
+
+/**
  * Represents when a user has selected an entry in the timeline
  */
 export interface EntrySelected {
   type: 'ENTRY_SELECTED';
-  entry: TraceEngine.Types.TraceEvents.TraceEventData;
-  entryChart: EntryChartLocation;
+  entry: OverlayEntry;
 }
 
 /**
@@ -119,6 +129,36 @@ export class Overlays {
   }
 
   /**
+   * Because entries can be a TimelineFrame, which is not a trace event, this
+   * helper exists to return a consistent set of timings regardless of the type
+   * of entry.
+   */
+  #timingsForOverlayEntry(entry: OverlayEntry):
+      TraceEngine.Helpers.Timing.EventTimingsData<TraceEngine.Types.Timing.MicroSeconds> {
+    if (entry instanceof TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame) {
+      return {
+        startTime: entry.startTime,
+        endTime: entry.endTime,
+        duration: entry.duration,
+        selfTime: TraceEngine.Types.Timing.MicroSeconds(0),
+      };
+    }
+
+    return TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(entry);
+  }
+
+  #chartForOverlayEntry(entry: OverlayEntry): EntryChartLocation {
+    if (entry instanceof TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame) {
+      return 'main';
+    }
+    if (TraceEngine.Types.TraceEvents.isSyntheticNetworkRequestDetailsEvent(entry)) {
+      return 'network';
+    }
+
+    return 'main';
+  }
+
+  /**
    * Add a new overlay to the view.
    */
   addOverlay(overlay: TimelineOverlay): void {
@@ -134,7 +174,7 @@ export class Overlays {
   /**
    * @returns the list of overlays associated with a given entry.
    */
-  overlaysForEntry(entry: TraceEngine.Types.TraceEvents.TraceEventData): TimelineOverlay[] {
+  overlaysForEntry(entry: OverlayEntry): TimelineOverlay[] {
     const matches: TimelineOverlay[] = [];
     for (const [overlay] of this.#overlaysToElements) {
       if (overlay.entry === entry) {
@@ -217,7 +257,7 @@ export class Overlays {
   #positionOverlay(overlay: TimelineOverlay, element: HTMLElement): void {
     switch (overlay.type) {
       case 'ENTRY_SELECTED': {
-        if (this.entryIsVisibleOnChart(overlay.entryChart, overlay.entry)) {
+        if (this.entryIsVisibleOnChart(overlay.entry)) {
           element.style.visibility = 'visible';
           this.#positionEntrySelectedOverlay(overlay, element);
         } else {
@@ -238,20 +278,21 @@ export class Overlays {
    * @param element - the DOM element representing the overlay
    */
   #positionEntrySelectedOverlay(overlay: EntrySelected, element: HTMLElement): void {
-    let x = this.xPixelForEventOnChart(overlay.entryChart, overlay.entry);
-    let y = this.yPixelForEventOnChart(overlay.entryChart, overlay.entry);
+    const chartName = this.#chartForOverlayEntry(overlay.entry);
+    let x = this.xPixelForEventOnChart(overlay.entry);
+    let y = this.yPixelForEventOnChart(overlay.entry);
 
     if (x === null || y === null) {
       return;
     }
 
-    const {endTime} = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(overlay.entry);
-    const endX = this.#xPixelForMicroSeconds(overlay.entryChart, endTime);
+    const {endTime, duration} = this.#timingsForOverlayEntry(overlay.entry);
+    const endX = this.#xPixelForMicroSeconds(chartName, endTime);
     if (endX === null) {
       return;
     }
 
-    const totalHeight = this.pixelHeightForEventOnChart(overlay.entryChart, overlay.entry) ?? 0;
+    const totalHeight = this.pixelHeightForEventOnChart(overlay.entry) ?? 0;
 
     // We might modify the height we use when drawing the overlay, hence copying the totalHeight.
     let height = totalHeight;
@@ -264,10 +305,10 @@ export class Overlays {
     // minimum width.
     let widthPixels = endX - x;
 
-    if (!overlay.entry.dur) {
+    if (!duration) {
       // No duration = instant event, so we check in case it's a marker.
-      const provider = overlay.entryChart === 'main' ? this.#charts.mainProvider : this.#charts.networkProvider;
-      const chart = overlay.entryChart === 'main' ? this.#charts.mainChart : this.#charts.networkChart;
+      const provider = chartName === 'main' ? this.#charts.mainProvider : this.#charts.networkProvider;
+      const chart = chartName === 'main' ? this.#charts.mainChart : this.#charts.networkChart;
       // It could be a marker event, in which case we need to know the
       // exact position the marker was rendered. This is because markers
       // which have the same timestamp are rendered next to each other, so
@@ -293,7 +334,7 @@ export class Overlays {
     // the top border, making it appear like it is going behind the resizer.
     // We don't need to worry about it going off the bottom, because in that
     // case we don't draw the overlay anyway.
-    if (overlay.entryChart === 'main') {
+    if (chartName === 'main') {
       const chartTopPadding = this.#networkChartOffsetHeight();
       // We now calculate the available height: if the entry is cut off we don't
       // show the border for the part that is cut off.
@@ -340,8 +381,8 @@ export class Overlays {
    * @returns true if the entry is visible on chart, which means that both
    * horizontally and vertically it is at least partially in view.
    */
-  entryIsVisibleOnChart(chartName: EntryChartLocation, entry: TraceEngine.Types.TraceEvents.TraceEventData): boolean {
-    const verticallyVisible = this.#entryIsVerticallyVisibleOnChart(chartName, entry);
+  entryIsVisibleOnChart(entry: OverlayEntry): boolean {
+    const verticallyVisible = this.#entryIsVerticallyVisibleOnChart(entry);
     const horiziontallyVisible = this.#entryIsHorizontallyVisibleOnChart(entry);
     return verticallyVisible && horiziontallyVisible;
   }
@@ -351,11 +392,11 @@ export class Overlays {
    * don't have to consider any pixels and can instead check that its start and
    * end times intersect with the visible window.
    */
-  #entryIsHorizontallyVisibleOnChart(entry: TraceEngine.Types.TraceEvents.TraceEventData): boolean {
+  #entryIsHorizontallyVisibleOnChart(entry: OverlayEntry): boolean {
     if (this.#dimensions.trace.visibleWindow === null) {
       return false;
     }
-    const {startTime, endTime} = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(entry);
+    const {startTime, endTime} = this.#timingsForOverlayEntry(entry);
 
     const {min: visibleMin, max: visibleMax} = this.#dimensions.trace.visibleWindow;
 
@@ -392,14 +433,14 @@ export class Overlays {
    * we have to figure out its pixel offset and go on that. Unlike horizontal
    * visibility, we can't work soley from its microsecond values.
    */
-  #entryIsVerticallyVisibleOnChart(chartName: EntryChartLocation, entry: TraceEngine.Types.TraceEvents.TraceEventData):
-      boolean {
-    const y = this.yPixelForEventOnChart(chartName, entry);
+  #entryIsVerticallyVisibleOnChart(entry: OverlayEntry): boolean {
+    const chartName = this.#chartForOverlayEntry(entry);
+    const y = this.yPixelForEventOnChart(entry);
     if (y === null) {
       return false;
     }
 
-    const eventHeight = this.pixelHeightForEventOnChart(chartName, entry);
+    const eventHeight = this.pixelHeightForEventOnChart(entry);
     if (!eventHeight) {
       return false;
     }
@@ -459,9 +500,10 @@ export class Overlays {
    *
    * @param event - the trace event you want to get the pixel position of
    */
-  xPixelForEventOnChart(chartName: EntryChartLocation, event: TraceEngine.Types.TraceEvents.TraceEventData): number
-      |null {
-    return this.#xPixelForMicroSeconds(chartName, event.ts);
+  xPixelForEventOnChart(event: OverlayEntry): number|null {
+    const chartName = this.#chartForOverlayEntry(event);
+    const {startTime} = this.#timingsForOverlayEntry(event);
+    return this.#xPixelForMicroSeconds(chartName, startTime);
   }
 
   /**
@@ -496,7 +538,8 @@ export class Overlays {
    * we add the height of the network chart to the Y value to position it
    * correctly.
    */
-  yPixelForEventOnChart(chartName: 'main'|'network', event: TraceEngine.Types.TraceEvents.TraceEventData): number|null {
+  yPixelForEventOnChart(event: OverlayEntry): number|null {
+    const chartName = this.#chartForOverlayEntry(event);
     const chart = chartName === 'main' ? this.#charts.mainChart : this.#charts.networkChart;
     const provider = chartName === 'main' ? this.#charts.mainProvider : this.#charts.networkProvider;
 
@@ -529,8 +572,8 @@ export class Overlays {
   /**
    * Calculate the height of the event on the timeline.
    */
-  pixelHeightForEventOnChart(chartName: EntryChartLocation, event: TraceEngine.Types.TraceEvents.TraceEventData): number
-      |null {
+  pixelHeightForEventOnChart(event: OverlayEntry): number|null {
+    const chartName = this.#chartForOverlayEntry(event);
     const chart = chartName === 'main' ? this.#charts.mainChart : this.#charts.networkChart;
     const provider = chartName === 'main' ? this.#charts.mainProvider : this.#charts.networkProvider;
 

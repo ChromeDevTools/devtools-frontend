@@ -107,7 +107,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private lastInitiatorsData: PerfUI.FlameChart.FlameChartInitiatorData[] = [];
   private lastSelection?: Selection;
   #font: string;
-  #eventIndexByEvent: WeakMap<TraceEngine.Types.TraceEvents.TraceEventData, number|null> = new WeakMap();
+  #eventIndexByEvent: WeakMap<
+      TraceEngine.Types.TraceEvents.TraceEventData|TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame,
+      number|null> = new WeakMap();
 
   constructor() {
     super();
@@ -992,7 +994,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return index;
   }
 
-  indexForEvent(targetEvent: TraceEngine.Types.TraceEvents.TraceEventData): number|null {
+  indexForEvent(targetEvent: TraceEngine.Types.TraceEvents.TraceEventData|
+                TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame): number|null {
     // Gets the index for the given event by walking through the array of entryData.
     // This may seem inefficient - but we have seen that by building up large
     // maps keyed by trace events that this has a significant impact on the
@@ -1094,13 +1097,17 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return true;
   }
 
-  eventByIndex(entryIndex: number): TraceEngine.Types.TraceEvents.TraceEventData|null {
+  eventByIndex(entryIndex: number): TraceEngine.Types.TraceEvents.TraceEventData
+      |TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame|null {
     if (entryIndex < 0) {
       return null;
     }
     const entryType = this.#entryTypeForIndex(entryIndex);
     if (entryType === EntryType.TrackAppender) {
       return this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData;
+    }
+    if (entryType === EntryType.Frame) {
+      return this.entryData[entryIndex] as TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame;
     }
     return null;
   }

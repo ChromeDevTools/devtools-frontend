@@ -77,7 +77,7 @@ describeWithEnvironment('Overlays', () => {
     // Now set an event to be at 50 microseconds.
     const event = makeInstantEvent('test-event', 50);
 
-    const xPosition = overlays.xPixelForEventOnChart('main', event);
+    const xPosition = overlays.xPixelForEventOnChart(event);
     assert.strictEqual(xPosition, 50);
   });
 
@@ -107,8 +107,9 @@ describeWithEnvironment('Overlays', () => {
 
     // Find an event on the main chart that is not a frame (you cannot add overlays to frames)
     const event = charts.mainProvider.eventByIndex(50);
+    assert.notInstanceOf(event, TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
     assert.isOk(event);
-    const yPixel = overlays.yPixelForEventOnChart('main', event);
+    const yPixel = overlays.yPixelForEventOnChart(event);
     // The Y offset for the main chart is 233px, but we add 208px on (200px for the
     // network chart, and 8px for the re-size handle) giving us the expected
     // 441px.
@@ -142,7 +143,7 @@ describeWithEnvironment('Overlays', () => {
     // Find an event on the network chart
     const event = charts.networkProvider.eventByIndex(0);
     assert.isOk(event);
-    const yPixel = overlays.yPixelForEventOnChart('network', event);
+    const yPixel = overlays.yPixelForEventOnChart(event);
     // This event is in the first level, but the first level has some offset
     // above it to allow for the header row and the row with the timestamps on
     // it, hence why this value is not 0px.
@@ -183,11 +184,29 @@ describeWithEnvironment('Overlays', () => {
       const {overlays, container, charts} = setupChartWithDimensions(traceParsedData);
       const event = charts.mainProvider.eventByIndex(50);
       assert.isOk(event);
+      assert.notInstanceOf(event, TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
 
       overlays.addOverlay({
         type: 'ENTRY_SELECTED',
         entry: event,
-        entryChart: 'main',
+      });
+      overlays.update();
+
+      // Ensure that the overlay was created.
+      const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_SELECTED');
+      assert.isOk(overlayDOM);
+    });
+
+    it('can render an entry selected overlay for a frame', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const {overlays, container, charts} = setupChartWithDimensions(traceParsedData);
+      const timelineFrame = charts.mainProvider.eventByIndex(5);
+      assert.isOk(timelineFrame);
+      assert.instanceOf(timelineFrame, TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
+
+      overlays.addOverlay({
+        type: 'ENTRY_SELECTED',
+        entry: timelineFrame,
       });
       overlays.update();
 
@@ -201,18 +220,18 @@ describeWithEnvironment('Overlays', () => {
       const {overlays, charts} = setupChartWithDimensions(traceParsedData);
       const event = charts.mainProvider.eventByIndex(50);
       assert.isOk(event);
+      assert.notInstanceOf(event, TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
 
       overlays.addOverlay({
         type: 'ENTRY_SELECTED',
         entry: event,
-        entryChart: 'main',
       });
 
+      assert.notInstanceOf(event, TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
       const existingOverlays = overlays.overlaysForEntry(event);
       assert.deepEqual(existingOverlays, [{
                          type: 'ENTRY_SELECTED',
                          entry: event,
-                         entryChart: 'main',
                        }]);
     });
 
@@ -222,10 +241,10 @@ describeWithEnvironment('Overlays', () => {
       const event = charts.mainProvider.eventByIndex(50);
       assert.isOk(event);
 
+      assert.notInstanceOf(event, TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
       overlays.addOverlay({
         type: 'ENTRY_SELECTED',
         entry: event,
-        entryChart: 'main',
       });
       overlays.update();
 

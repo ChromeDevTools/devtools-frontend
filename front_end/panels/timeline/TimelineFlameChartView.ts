@@ -344,6 +344,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (!event || !this.#traceEngineData) {
       return;
     }
+    if (event instanceof TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame) {
+      return;
+    }
 
     const target = targetForEvent(this.#traceEngineData, event);
     if (!target) {
@@ -404,28 +407,29 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       void this.detailsView.setSelection(selection);
     }
 
+    const overlaysEnabled =
+        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_WRITE_MODIFICATIONS_TO_DISK);
+
     // Create the entry selected overlay, but only if the modifications experiment is enabled.
     // Hiding it behind this experiment is temporary to allow for us to test in Canary before pushing to stable.
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_WRITE_MODIFICATIONS_TO_DISK) &&
-        selection &&
-        (TimelineSelection.isTraceEventSelection(selection.object) ||
-         TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object))) {
-      const existingSelectedOverlayForEvent =
-          this.#overlays.overlaysForEntry(selection.object).some(overlay => overlay.type === 'ENTRY_SELECTED');
-      if (existingSelectedOverlayForEvent) {
-        // We don't need to add a new overlay because it already exists.
-        return;
+    if (overlaysEnabled && selection) {
+      if (TimelineSelection.isTraceEventSelection(selection.object) ||
+          TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object) ||
+          TimelineSelection.isFrameObject(selection.object)) {
+        const existingSelectedOverlayForEvent =
+            this.#overlays.overlaysForEntry(selection.object).some(overlay => overlay.type === 'ENTRY_SELECTED');
+        if (existingSelectedOverlayForEvent) {
+          // We don't need to add a new overlay because it already exists.
+          return;
+        }
+        // Clear the ENTRY_SELECTED for the previous selected event.
+        this.#overlays.removeOverlaysOfType('ENTRY_SELECTED');
+        this.#overlays.addOverlay({
+          type: 'ENTRY_SELECTED',
+          entry: selection.object,
+        });
+        this.#overlays.update();
       }
-      // Clear the ENTRY_SELECTED for the previous selected event.
-      this.#overlays.removeOverlaysOfType('ENTRY_SELECTED');
-      const chart =
-          TraceEngine.Types.TraceEvents.isSyntheticNetworkRequestDetailsEvent(selection.object) ? 'network' : 'main';
-      this.#overlays.addOverlay({
-        type: 'ENTRY_SELECTED',
-        entry: selection.object,
-        entryChart: chart,
-      });
-      this.#overlays.update();
     }
   }
 

@@ -188,6 +188,7 @@ try_builder(
     recipe_name = "devtools/tester",
     dimensions = dimensions.multibot,
     build_numbers = True,
+    triggers = ["dtf_linux_compile_rel"],
 )
 
 try_builder(

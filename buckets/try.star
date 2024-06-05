@@ -28,6 +28,7 @@ bucket(
         ),
     ],
     led_service_accounts = [TRY_ACCOUNT],
+    builders_can_led_trigger = True,
 )
 
 try_builders = []

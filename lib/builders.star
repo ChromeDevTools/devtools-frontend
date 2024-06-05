@@ -164,7 +164,15 @@ def builder_descriptor(
         description_html = description_html,
     )
 
-def bucket(name, acls, led_service_accounts = None, self_shadow = True):
+def bucket(
+        name,
+        acls,
+        led_service_accounts = None,
+        self_shadow = True,
+        builders_can_led_trigger = False):
+    extra_led_users = None
+    if builders_can_led_trigger and led_service_accounts:
+        extra_led_users = led_service_accounts
     luci.bucket(
         name = name,
         acls = acls,
@@ -172,6 +180,7 @@ def bucket(name, acls, led_service_accounts = None, self_shadow = True):
             luci.binding(
                 roles = "role/buildbucket.creator",
                 groups = ["mdb/v8-infra"],
+                users = extra_led_users,
             ),
         ],
         shadows = name if self_shadow else None,

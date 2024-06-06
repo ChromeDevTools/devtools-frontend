@@ -1337,6 +1337,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       // Do not show insights for direct calls to Console APIs from within DevTools Console.
       return false;
     }
+    if (this.message.messageText === '') {
+      return false;
+    }
     return this.message.level === Protocol.Log.LogEntryLevel.Error ||
         this.message.level === Protocol.Log.LogEntryLevel.Warning;
   }

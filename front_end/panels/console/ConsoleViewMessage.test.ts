@@ -10,6 +10,7 @@ import {
 } from '../../testing/ConsoleHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 describeWithMockConnection('ConsoleViewMessage', () => {
   describe('anchor rendering', () => {
@@ -85,6 +86,37 @@ describeWithMockConnection('ConsoleViewMessage', () => {
       sinon.assert.calledOnceWithExactly(
           linkifier.maybeLinkifyConsoleCallFrame, target, expectedCallFrame,
           {inlineFrameIndex: 0, revealBreakpoint: true, userMetric: undefined});
+    });
+  });
+
+  describe('console insights', () => {
+    it('shows a hover button', () => {
+      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction')
+          .withArgs('explain.console-message.hover')
+          .returns(true);
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
+          'got here');
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const messageElement = message.toMessageElement();  // Trigger rendering.
+      const button = messageElement.querySelector('[aria-label=\'Understand this error\']');
+      assert.strictEqual(button?.textContent, 'Understand this error');
+    });
+
+    it('does not show a hover button if the console message text is empty', () => {
+      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction')
+          .withArgs('explain.console-message.hover')
+          .returns(true);
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error, '');
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const messageElement = message.toMessageElement();  // Trigger rendering.
+      const button = messageElement.querySelector('[aria-label=\'Understand this error\']');
+      assert.isNull(button);
     });
   });
 });

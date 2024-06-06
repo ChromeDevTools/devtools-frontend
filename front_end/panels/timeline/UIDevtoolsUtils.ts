@@ -30,7 +30,8 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
-import * as TraceEngine from '../../models/trace/trace.js';
+
+import {type CategoryPalette, EventCategory, TimelineCategory, TimelineRecordStyle} from './EventUICategory.js';
 
 const UIStrings = {
   /**
@@ -98,9 +99,9 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/UIDevtoolsUtils.ts', U
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let eventStylesMap: {
-  [x: string]: TraceEngine.Helpers.EventUICategory.TimelineRecordStyle,
+  [x: string]: TimelineRecordStyle,
 }|null = null;
-let categories: TraceEngine.Helpers.EventUICategory.CategoryPalette|null = null;
+let categories: CategoryPalette|null = null;
 
 export class UIDevtoolsUtils {
   static isUiDevTools(): boolean {
@@ -108,7 +109,7 @@ export class UIDevtoolsUtils {
   }
 
   static categorizeEvents(): {
-    [x: string]: TraceEngine.Helpers.EventUICategory.TimelineRecordStyle,
+    [x: string]: TimelineRecordStyle,
   } {
     if (eventStylesMap) {
       return eventStylesMap;
@@ -123,95 +124,81 @@ export class UIDevtoolsUtils {
     const other = categories['other'];
 
     const eventStyles: {
-      [x: string]: TraceEngine.Helpers.EventUICategory.TimelineRecordStyle,
+      [x: string]: TimelineRecordStyle,
     } = {};
 
     // Paint Categories
-    eventStyles[type.ViewPaint] = new TraceEngine.Helpers.EventUICategory.TimelineRecordStyle('View::Paint', painting);
-    eventStyles[type.ViewOnPaint] =
-        new TraceEngine.Helpers.EventUICategory.TimelineRecordStyle('View::OnPaint', painting);
-    eventStyles[type.ViewPaintChildren] =
-        new TraceEngine.Helpers.EventUICategory.TimelineRecordStyle('View::PaintChildren', painting);
-    eventStyles[type.ViewOnPaintBackground] =
-        new TraceEngine.Helpers.EventUICategory.TimelineRecordStyle('View::OnPaintBackground', painting);
-    eventStyles[type.ViewOnPaintBorder] =
-        new TraceEngine.Helpers.EventUICategory.TimelineRecordStyle('View::OnPaintBorder', painting);
+    eventStyles[type.ViewPaint] = new TimelineRecordStyle('View::Paint', painting);
+    eventStyles[type.ViewOnPaint] = new TimelineRecordStyle('View::OnPaint', painting);
+    eventStyles[type.ViewPaintChildren] = new TimelineRecordStyle('View::PaintChildren', painting);
+    eventStyles[type.ViewOnPaintBackground] = new TimelineRecordStyle('View::OnPaintBackground', painting);
+    eventStyles[type.ViewOnPaintBorder] = new TimelineRecordStyle('View::OnPaintBorder', painting);
     eventStyles[type.LayerPaintContentsToDisplayList] =
-        new TraceEngine.Helpers.EventUICategory.TimelineRecordStyle('Layer::PaintContentsToDisplayList', painting);
+        new TimelineRecordStyle('Layer::PaintContentsToDisplayList', painting);
 
     // Layout Categories
-    eventStyles[type.ViewLayout] = new TraceEngine.Helpers.EventUICategory.TimelineRecordStyle('View::Layout', layout);
-    eventStyles[type.ViewLayoutBoundsChanged] =
-        new TraceEngine.Helpers.EventUICategory.TimelineRecordStyle('View::Layout(bounds_changed)', layout);
+    eventStyles[type.ViewLayout] = new TimelineRecordStyle('View::Layout', layout);
+    eventStyles[type.ViewLayoutBoundsChanged] = new TimelineRecordStyle('View::Layout(bounds_changed)', layout);
 
     // Raster Categories
-    eventStyles[type.RasterTask] =
-        new TraceEngine.Helpers.EventUICategory.TimelineRecordStyle('RasterTask', rasterizing);
-    eventStyles[type.RasterizerTaskImplRunOnWorkerThread] = new TraceEngine.Helpers.EventUICategory.TimelineRecordStyle(
-        'RasterizerTaskImpl::RunOnWorkerThread', rasterizing);
+    eventStyles[type.RasterTask] = new TimelineRecordStyle('RasterTask', rasterizing);
+    eventStyles[type.RasterizerTaskImplRunOnWorkerThread] =
+        new TimelineRecordStyle('RasterizerTaskImpl::RunOnWorkerThread', rasterizing);
 
     // Draw Categories
-    eventStyles[type.DirectRendererDrawFrame] =
-        new TraceEngine.Helpers.EventUICategory.TimelineRecordStyle('DirectRenderer::DrawFrame', drawing);
-    eventStyles[type.BeginFrame] =
-        new TraceEngine.Helpers.EventUICategory.TimelineRecordStyle(i18nString(UIStrings.frameStart), drawing, true);
-    eventStyles[type.DrawFrame] =
-        new TraceEngine.Helpers.EventUICategory.TimelineRecordStyle(i18nString(UIStrings.drawFrame), drawing, true);
-    eventStyles[type.NeedsBeginFrameChanged] =
-        new TraceEngine.Helpers.EventUICategory.TimelineRecordStyle('NeedsBeginFrameChanged', drawing, true);
+    eventStyles[type.DirectRendererDrawFrame] = new TimelineRecordStyle('DirectRenderer::DrawFrame', drawing);
+    eventStyles[type.BeginFrame] = new TimelineRecordStyle(i18nString(UIStrings.frameStart), drawing, true);
+    eventStyles[type.DrawFrame] = new TimelineRecordStyle(i18nString(UIStrings.drawFrame), drawing, true);
+    eventStyles[type.NeedsBeginFrameChanged] = new TimelineRecordStyle('NeedsBeginFrameChanged', drawing, true);
 
     // Other Categories
-    eventStyles[type.ThreadControllerImplRunTask] =
-        new TraceEngine.Helpers.EventUICategory.TimelineRecordStyle('ThreadControllerImpl::RunTask', other);
+    eventStyles[type.ThreadControllerImplRunTask] = new TimelineRecordStyle('ThreadControllerImpl::RunTask', other);
 
     eventStylesMap = eventStyles;
     return eventStyles;
   }
 
-  static categories(): TraceEngine.Helpers.EventUICategory.CategoryPalette {
+  static categories(): CategoryPalette {
     if (categories) {
       return categories;
     }
     categories = {
-      layout: new TraceEngine.Helpers.EventUICategory.TimelineCategory(
-          TraceEngine.Helpers.EventUICategory.EventCategory.LAYOUT, i18nString(UIStrings.layout), true,
-          '--app-color-loading-children', '--app-color-loading'),
-      rasterizing: new TraceEngine.Helpers.EventUICategory.TimelineCategory(
-          TraceEngine.Helpers.EventUICategory.EventCategory.RASTERIZING, i18nString(UIStrings.rasterizing), true,
-          '--app-color-children', '--app-color-scripting'),
-      drawing: new TraceEngine.Helpers.EventUICategory.TimelineCategory(
-          TraceEngine.Helpers.EventUICategory.EventCategory.DRAWING, i18nString(UIStrings.drawing), true,
-          '--app-color-rendering-children', '--app-color-rendering'),
-      painting: new TraceEngine.Helpers.EventUICategory.TimelineCategory(
-          TraceEngine.Helpers.EventUICategory.EventCategory.PAINTING, i18nString(UIStrings.painting), true,
-          '--app-color-painting-children', '--app-color-painting'),
-      other: new TraceEngine.Helpers.EventUICategory.TimelineCategory(
-          TraceEngine.Helpers.EventUICategory.EventCategory.OTHER, i18nString(UIStrings.system), false,
-          '--app-color-system-children', '--app-color-system'),
-      idle: new TraceEngine.Helpers.EventUICategory.TimelineCategory(
-          TraceEngine.Helpers.EventUICategory.EventCategory.IDLE, i18nString(UIStrings.idle), false,
-          '--app-color-idle-children', '--app-color-idle'),
-      loading: new TraceEngine.Helpers.EventUICategory.TimelineCategory(
-          TraceEngine.Helpers.EventUICategory.EventCategory.LOADING, i18nString(UIStrings.loading), false,
-          '--app-color-loading-children', '--app-color-loading'),
-      experience: new TraceEngine.Helpers.EventUICategory.TimelineCategory(
-          TraceEngine.Helpers.EventUICategory.EventCategory.EXPERIENCE, i18nString(UIStrings.experience), false,
-          '--app-color-rendering-children', '--pp-color-rendering'),
-      messaging: new TraceEngine.Helpers.EventUICategory.TimelineCategory(
-          TraceEngine.Helpers.EventUICategory.EventCategory.MESSAGING, i18nString(UIStrings.messaging), false,
-          '--app-color-messaging-children', '--pp-color-messaging'),
-      scripting: new TraceEngine.Helpers.EventUICategory.TimelineCategory(
-          TraceEngine.Helpers.EventUICategory.EventCategory.SCRIPTING, i18nString(UIStrings.scripting), false,
-          '--app-color-scripting-children', '--pp-color-scripting'),
-      rendering: new TraceEngine.Helpers.EventUICategory.TimelineCategory(
-          TraceEngine.Helpers.EventUICategory.EventCategory.RENDERING, i18nString(UIStrings.rendering), false,
-          '--app-color-rendering-children', '--pp-color-rendering'),
-      gpu: new TraceEngine.Helpers.EventUICategory.TimelineCategory(
-          TraceEngine.Helpers.EventUICategory.EventCategory.GPU, i18nString(UIStrings.gpu), false,
-          '--app-color-painting-children', '--app-color-painting'),
-      async: new TraceEngine.Helpers.EventUICategory.TimelineCategory(
-          TraceEngine.Helpers.EventUICategory.EventCategory.ASYNC, i18nString(UIStrings.async), false,
-          '--app-color-async-children', '--app-color-async'),
+      layout: new TimelineCategory(
+          EventCategory.LAYOUT, i18nString(UIStrings.layout), true, '--app-color-loading-children',
+          '--app-color-loading'),
+      rasterizing: new TimelineCategory(
+          EventCategory.RASTERIZING, i18nString(UIStrings.rasterizing), true, '--app-color-children',
+          '--app-color-scripting'),
+      drawing: new TimelineCategory(
+          EventCategory.DRAWING, i18nString(UIStrings.drawing), true, '--app-color-rendering-children',
+          '--app-color-rendering'),
+      painting: new TimelineCategory(
+          EventCategory.PAINTING, i18nString(UIStrings.painting), true, '--app-color-painting-children',
+          '--app-color-painting'),
+      other: new TimelineCategory(
+          EventCategory.OTHER, i18nString(UIStrings.system), false, '--app-color-system-children',
+          '--app-color-system'),
+      idle: new TimelineCategory(
+          EventCategory.IDLE, i18nString(UIStrings.idle), false, '--app-color-idle-children', '--app-color-idle'),
+      loading: new TimelineCategory(
+          EventCategory.LOADING, i18nString(UIStrings.loading), false, '--app-color-loading-children',
+          '--app-color-loading'),
+      experience: new TimelineCategory(
+          EventCategory.EXPERIENCE, i18nString(UIStrings.experience), false, '--app-color-rendering-children',
+          '--pp-color-rendering'),
+      messaging: new TimelineCategory(
+          EventCategory.MESSAGING, i18nString(UIStrings.messaging), false, '--app-color-messaging-children',
+          '--pp-color-messaging'),
+      scripting: new TimelineCategory(
+          EventCategory.SCRIPTING, i18nString(UIStrings.scripting), false, '--app-color-scripting-children',
+          '--pp-color-scripting'),
+      rendering: new TimelineCategory(
+          EventCategory.RENDERING, i18nString(UIStrings.rendering), false, '--app-color-rendering-children',
+          '--pp-color-rendering'),
+      gpu: new TimelineCategory(
+          EventCategory.GPU, i18nString(UIStrings.gpu), false, '--app-color-painting-children', '--app-color-painting'),
+      async: new TimelineCategory(
+          EventCategory.ASYNC, i18nString(UIStrings.async), false, '--app-color-async-children', '--app-color-async'),
     };
     return categories;
   }

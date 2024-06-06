@@ -413,12 +413,12 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
 
     it('should return the correct rgb value for a corresponding CSS variable', function() {
-      const parsedColor = TraceEngine.Helpers.EventUICategory.getCategoryStyles().scripting.getComputedColorValue();
+      const parsedColor = Timeline.EventUICategory.getCategoryStyles().scripting.getComputedColorValue();
       assert.strictEqual('rgb(2 2 2)', parsedColor);
     });
 
     it('should return the color as a CSS variable', function() {
-      const cssVariable = TraceEngine.Helpers.EventUICategory.getCategoryStyles().scripting.getCSSValue();
+      const cssVariable = Timeline.EventUICategory.getCategoryStyles().scripting.getCSSValue();
       assert.strictEqual('var(--app-color-scripting)', cssVariable);
     });
 

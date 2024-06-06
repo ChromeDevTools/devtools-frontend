@@ -9,6 +9,7 @@ import * as CLSLinkifier from './CLSLinkifier.js';
 import * as CompatibilityTracksAppender from './CompatibilityTracksAppender.js';
 import * as CountersGraph from './CountersGraph.js';
 import * as EventsTimelineTreeView from './EventsTimelineTreeView.js';
+import * as EventUICategory from './EventUICategory.js';
 import * as ExtensionDataGatherer from './ExtensionDataGatherer.js';
 import * as ExtensionTrackAppender from './ExtensionTrackAppender.js';
 import * as FreshRecording from './FreshRecording.js';
@@ -49,6 +50,7 @@ export {
   CompatibilityTracksAppender,
   CountersGraph,
   EventsTimelineTreeView,
+  EventUICategory,
   ExtensionDataGatherer,
   ExtensionTrackAppender,
   FreshRecording,

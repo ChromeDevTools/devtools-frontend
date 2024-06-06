@@ -36,6 +36,14 @@ import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import {
+  EventCategory,
+  getCategoryStyles,
+  getEventStyle,
+  getTimelineMainEventCategories,
+  type TimelineCategory,
+} from './EventUICategory.js';
+
 const UIStrings = {
   /**
    *@description Short for Network. Label for the network requests section of the Performance panel.
@@ -145,7 +153,7 @@ export class TimelineEventOverviewNetwork extends TimelineEventOverview {
   }
 }
 
-const categoryToIndex = new WeakMap<TraceEngine.Helpers.EventUICategory.TimelineCategory, number>();
+const categoryToIndex = new WeakMap<TimelineCategory, number>();
 
 export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
   private backgroundCanvas: HTMLCanvasElement;
@@ -166,19 +174,16 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     this.#end = TraceEngine.Helpers.Timing.traceWindowMilliSeconds(traceParsedData.Meta.traceBounds).max;
   }
 
-  #entryCategory(entry: TraceEngine.Types.TraceEvents.TraceEventData): TraceEngine.Helpers.EventUICategory.EventCategory
-      |undefined {
+  #entryCategory(entry: TraceEngine.Types.TraceEvents.TraceEventData): EventCategory|undefined {
     // Special case: in CPU Profiles we get a lot of ProfileCalls that
     // represent Idle time. We typically represent ProfileCalls in the
     // Scripting Category, but if they represent idle time, we do not want
     // that.
     if (TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === '(idle)') {
-      return TraceEngine.Helpers.EventUICategory.EventCategory.IDLE;
+      return EventCategory.IDLE;
     }
-    const eventStyle =
-        TraceEngine.Helpers.EventUICategory.getEventStyle(entry.name as TraceEngine.Types.TraceEvents.KnownEventName)
-            ?.category ||
-        TraceEngine.Helpers.EventUICategory.getCategoryStyles().other;
+    const eventStyle = getEventStyle(entry.name as TraceEngine.Types.TraceEvents.KnownEventName)?.category ||
+        getCategoryStyles().other;
     const categoryName = eventStyle.name;
     return categoryName;
   }
@@ -198,11 +203,11 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     const timeRange = this.#end - this.#start;
     const scale = width / timeRange;
     const quantTime = quantSizePx / scale;
-    const categories = TraceEngine.Helpers.EventUICategory.getCategoryStyles();
-    const categoryOrder = TraceEngine.Helpers.EventUICategory.getTimelineMainEventCategories();
-    const otherIndex = categoryOrder.indexOf(TraceEngine.Helpers.EventUICategory.EventCategory.OTHER);
+    const categories = getCategoryStyles();
+    const categoryOrder = getTimelineMainEventCategories();
+    const otherIndex = categoryOrder.indexOf(EventCategory.OTHER);
     const idleIndex = 0;
-    console.assert(idleIndex === categoryOrder.indexOf(TraceEngine.Helpers.EventUICategory.EventCategory.IDLE));
+    console.assert(idleIndex === categoryOrder.indexOf(EventCategory.IDLE));
     for (let i = 0; i < categoryOrder.length; ++i) {
       categoryToIndex.set(categories[categoryOrder[i]], i);
     }

@@ -29,17 +29,21 @@
  */
 
 import type * as SDK from '../../core/sdk/sdk.js';
-import * as TraceEngine from '../../models/trace/trace.js';
 
+import {
+  setCategories,
+  setEventStylesMap,
+  setTimelineMainEventCategories,
+  stringIsEventCategory,
+} from './EventUICategory.js';
 import {type Client, TimelineController} from './TimelineController.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
 
 export class UIDevtoolsController extends TimelineController {
   constructor(rootTarget: SDK.Target.Target, primaryPageTarget: SDK.Target.Target, client: Client) {
     super(rootTarget, primaryPageTarget, client);
-    TraceEngine.Helpers.EventUICategory.setEventStylesMap(UIDevtoolsUtils.categorizeEvents());
-    TraceEngine.Helpers.EventUICategory.setCategories(UIDevtoolsUtils.categories());
-    TraceEngine.Helpers.EventUICategory.setTimelineMainEventCategories(
-        UIDevtoolsUtils.getMainCategoriesList().filter(TraceEngine.Helpers.EventUICategory.stringIsEventCategory));
+    setEventStylesMap(UIDevtoolsUtils.categorizeEvents());
+    setCategories(UIDevtoolsUtils.categories());
+    setTimelineMainEventCategories(UIDevtoolsUtils.getMainCategoriesList().filter(stringIsEventCategory));
   }
 }

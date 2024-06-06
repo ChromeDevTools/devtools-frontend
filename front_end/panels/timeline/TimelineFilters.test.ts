@@ -51,7 +51,7 @@ describeWithEnvironment('TimelineFilters', () => {
       const traceParsedData = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
       // These events are usually visible, so make the category hidden before
       // running this test.
-      TraceEngine.Helpers.EventUICategory.getCategoryStyles()['scripting'].hidden = true;
+      Timeline.EventUICategory.getCategoryStyles()['scripting'].hidden = true;
 
       const userTimingEvent = (traceParsedData.UserTimings.performanceMeasures).at(0);
       if (!userTimingEvent) {
@@ -59,7 +59,7 @@ describeWithEnvironment('TimelineFilters', () => {
       }
       const filter = new Timeline.TimelineFilters.Category();
       assert.isFalse(filter.accept(userTimingEvent));
-      TraceEngine.Helpers.EventUICategory.getCategoryStyles()['scripting'].hidden = false;
+      Timeline.EventUICategory.getCategoryStyles()['scripting'].hidden = false;
     });
 
     it('returns true for a new event if it has a category that is visible', async function() {
@@ -70,7 +70,7 @@ describeWithEnvironment('TimelineFilters', () => {
       }
       const filter = new Timeline.TimelineFilters.Category();
       assert.isTrue(filter.accept(userTimingEvent));
-      TraceEngine.Helpers.EventUICategory.getCategoryStyles()['scripting'].hidden = false;
+      Timeline.EventUICategory.getCategoryStyles()['scripting'].hidden = false;
     });
   });
 });

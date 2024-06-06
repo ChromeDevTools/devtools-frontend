@@ -1167,7 +1167,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
       if (this.#responseCookiesPartitionKey) {
         for (const cookie of this.#responseCookiesInternal) {
           if (cookie.partitioned()) {
-            cookie.setPartitionKey(this.#responseCookiesPartitionKey);
+            cookie.setPartitionKey(this.#responseCookiesPartitionKey, cookie.hasCrossSiteAncestor());
           }
         }
       } else if (this.#responseCookiesPartitionKeyOpaque) {
@@ -1605,7 +1605,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     if (extraResponseInfo.exemptedResponseCookies) {
       this.#exemptedResponseCookiesInternal = extraResponseInfo.exemptedResponseCookies;
     }
-    this.#responseCookiesPartitionKey = extraResponseInfo.cookiePartitionKey || null;
+    this.#responseCookiesPartitionKey = extraResponseInfo.cookiePartitionKey?.topLevelSite || null;
     this.#responseCookiesPartitionKeyOpaque = extraResponseInfo.cookiePartitionKeyOpaque || null;
     this.responseHeaders = extraResponseInfo.responseHeaders;
     // We store a copy of the headers we initially received, so that after
@@ -2057,7 +2057,7 @@ export interface ExtraResponseInfo {
   responseHeadersText?: string;
   resourceIPAddressSpace: Protocol.Network.IPAddressSpace;
   statusCode: number|undefined;
-  cookiePartitionKey: string|undefined;
+  cookiePartitionKey?: Protocol.Network.CookiePartitionKey;
   cookiePartitionKeyOpaque: boolean|undefined;
   exemptedResponseCookies: {
     cookie: Cookie,

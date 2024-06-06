@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
+import type * as Platform from '../platform/platform.js';
 
 const OPAQUE_PARTITION_KEY = '<opaque>';
 
@@ -15,7 +15,11 @@ export class Cookie {
   #sizeInternal: number;
   #priorityInternal: Protocol.Network.CookiePriority;
   #cookieLine: string|null;
-  constructor(name: string, value: string, type?: Type|null, priority?: Protocol.Network.CookiePriority) {
+  #partitionKey: Protocol.Network.CookiePartitionKey|undefined;
+
+  constructor(
+      name: string, value: string, type?: Type|null, priority?: Protocol.Network.CookiePriority,
+      partitionKey?: Protocol.Network.CookiePartitionKey) {
     this.#nameInternal = name;
     this.#valueInternal = value;
     this.#typeInternal = type;
@@ -23,6 +27,7 @@ export class Cookie {
     this.#sizeInternal = 0;
     this.#priorityInternal = (priority || 'Medium' as Protocol.Network.CookiePriority);
     this.#cookieLine = null;
+    this.#partitionKey = partitionKey;
   }
 
   static fromProtocolCookie(protocolCookie: Protocol.Network.Cookie): Cookie {
@@ -48,7 +53,11 @@ export class Cookie {
       cookie.addAttribute(Attribute.SourceScheme, protocolCookie.sourceScheme);
     }
     if ('partitionKey' in protocolCookie) {
-      cookie.addAttribute(Attribute.PartitionKey, protocolCookie.partitionKey);
+      if (protocolCookie.partitionKey) {
+        cookie.setPartitionKey(
+            protocolCookie.partitionKey ? protocolCookie.partitionKey.topLevelSite : '',
+            protocolCookie.partitionKey ? protocolCookie.partitionKey.hasCrossSiteAncestor : false);
+      }
     }
     if ('partitionKeyOpaque' in protocolCookie && protocolCookie.partitionKeyOpaque) {
       cookie.addAttribute(Attribute.PartitionKey, OPAQUE_PARTITION_KEY);
@@ -58,7 +67,10 @@ export class Cookie {
   }
 
   key(): string {
-    return (this.domain() || '-') + ' ' + this.name() + ' ' + (this.path() || '-') + ' ' + (this.partitionKey() || '-');
+    return (this.domain() || '-') + ' ' + this.name() + ' ' + (this.path() || '-') + ' ' +
+        (this.partitionKey() ?
+             (this.topLevelSite() + ' ' + (this.hasCrossSiteAncestor() ? 'cross_site' : 'same_site')) :
+             '-');
   }
 
   name(): string {
@@ -91,20 +103,52 @@ export class Cookie {
     return this.#attributes.get(Attribute.SameSite) as Protocol.Network.CookieSameSite;
   }
 
-  partitionKey(): string {
-    return this.#attributes.get(Attribute.PartitionKey) as string;
+  partitionKey(): Protocol.Network.CookiePartitionKey {
+    return this.#partitionKey as Protocol.Network.CookiePartitionKey;
   }
 
-  setPartitionKey(key: string): void {
-    this.addAttribute(Attribute.PartitionKey, key);
+  setPartitionKey(topLevelSite: string, hasCrossSiteAncestor: boolean): void {
+    this.#partitionKey = {topLevelSite, hasCrossSiteAncestor};
+    if (!this.#attributes.has(Attribute.Partitioned)) {
+      this.addAttribute(Attribute.Partitioned);
+    }
+  }
+
+  topLevelSite(): string {
+    if (!this.#partitionKey) {
+      return '';
+    }
+    return this.#partitionKey?.topLevelSite as string;
+  }
+
+  setTopLevelSite(topLevelSite: string, hasCrossSiteAncestor: boolean): void {
+    this.setPartitionKey(topLevelSite, hasCrossSiteAncestor);
+  }
+
+  hasCrossSiteAncestor(): boolean {
+    if (!this.#partitionKey) {
+      return false;
+    }
+    return this.#partitionKey?.hasCrossSiteAncestor as boolean;
+  }
+
+  setHasCrossSiteAncestor(hasCrossSiteAncestor: boolean): void {
+    if (!this.partitionKey() || !Boolean(this.topLevelSite())) {
+      return;
+    }
+    this.setPartitionKey(this.topLevelSite(), hasCrossSiteAncestor);
   }
 
   partitionKeyOpaque(): boolean {
-    return (this.#attributes.get(Attribute.PartitionKey) === OPAQUE_PARTITION_KEY);
+    if (!this.#partitionKey) {
+      return false;
+    }
+    return (this.topLevelSite() === OPAQUE_PARTITION_KEY);
   }
 
   setPartitionKeyOpaque(): void {
     this.addAttribute(Attribute.PartitionKey, OPAQUE_PARTITION_KEY);
+    this.setPartitionKey(OPAQUE_PARTITION_KEY, false);
   }
 
   priority(): Protocol.Network.CookiePriority {
@@ -266,4 +310,6 @@ export const enum Attribute {
   Priority = 'priority',
   Partitioned = 'partitioned',
   PartitionKey = 'partition-key',
+  PartitionKeySite = 'partition-key-site',
+  HasCrossSiteAncestor = 'has-cross-site-ancestor',
 }

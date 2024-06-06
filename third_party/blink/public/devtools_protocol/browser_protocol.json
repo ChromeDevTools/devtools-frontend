@@ -1220,6 +1220,8 @@
                         "CoopSandboxedIFrameCannotNavigateToCoopPage",
                         "CorpNotSameOrigin",
                         "CorpNotSameOriginAfterDefaultedToSameOriginByCoep",
+                        "CorpNotSameOriginAfterDefaultedToSameOriginByDip",
+                        "CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip",
                         "CorpNotSameSite"
                     ]
                 },
@@ -12487,6 +12489,8 @@
                         "coop-sandboxed-iframe-cannot-navigate-to-coop-page",
                         "corp-not-same-origin",
                         "corp-not-same-origin-after-defaulted-to-same-origin-by-coep",
+                        "corp-not-same-origin-after-defaulted-to-same-origin-by-dip",
+                        "corp-not-same-origin-after-defaulted-to-same-origin-by-coep-and-dip",
                         "corp-not-same-site"
                     ]
                 },
@@ -12964,6 +12968,24 @@
                     ]
                 },
                 {
+                    "id": "CookiePartitionKey",
+                    "description": "cookiePartitionKey object\nThe representation of the components of the key that are created by the cookiePartitionKey class contained in net/cookies/cookie_partition_key.h.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "topLevelSite",
+                            "description": "The site of the top-level URL the browser was visiting at the start\nof the request to the endpoint that set the cookie.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "hasCrossSiteAncestor",
+                            "description": "Indicates if the cookie has any ancestors that are cross-site to the topLevelSite.",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
                     "id": "Cookie",
                     "description": "Cookie object",
                     "type": "object",
@@ -13046,10 +13068,10 @@
                         },
                         {
                             "name": "partitionKey",
-                            "description": "Cookie partition key. The site of the top-level URL the browser was visiting at the start\nof the request to the endpoint that set the cookie.",
+                            "description": "Cookie partition key.",
                             "experimental": true,
                             "optional": true,
-                            "type": "string"
+                            "$ref": "CookiePartitionKey"
                         },
                         {
                             "name": "partitionKeyOpaque",
@@ -13296,10 +13318,10 @@
                         },
                         {
                             "name": "partitionKey",
-                            "description": "Cookie partition key. The site of the top-level URL the browser was visiting at the start\nof the request to the endpoint that set the cookie.\nIf not set, the cookie will be set as not partitioned.",
+                            "description": "Cookie partition key. If not set, the cookie will be set as not partitioned.",
                             "experimental": true,
                             "optional": true,
-                            "type": "string"
+                            "$ref": "CookiePartitionKey"
                         }
                     ]
                 },
@@ -14051,10 +14073,10 @@
                         },
                         {
                             "name": "partitionKey",
-                            "description": "If specified, deletes only cookies with the the given name and partitionKey where domain\nmatches provided URL.",
+                            "description": "If specified, deletes only cookies with the the given name and partitionKey where\nwhere all partition key attributes match the cookie partition key attribute.",
                             "experimental": true,
                             "optional": true,
-                            "type": "string"
+                            "$ref": "CookiePartitionKey"
                         }
                     ]
                 },
@@ -14458,10 +14480,10 @@
                         },
                         {
                             "name": "partitionKey",
-                            "description": "Cookie partition key. The site of the top-level URL the browser was visiting at the start\nof the request to the endpoint that set the cookie.\nIf not set, the cookie will be set as not partitioned.",
+                            "description": "Cookie partition key. If not set, the cookie will be set as not partitioned.",
                             "experimental": true,
                             "optional": true,
-                            "type": "string"
+                            "$ref": "CookiePartitionKey"
                         }
                     ],
                     "returns": [
@@ -15297,8 +15319,9 @@
                         {
                             "name": "cookiePartitionKey",
                             "description": "The cookie partition key that will be used to store partitioned cookies set in this response.\nOnly sent when partitioned cookies are enabled.",
+                            "experimental": true,
                             "optional": true,
-                            "type": "string"
+                            "$ref": "CookiePartitionKey"
                         },
                         {
                             "name": "cookiePartitionKeyOpaque",
@@ -16795,6 +16818,7 @@
                         "clipboard-write",
                         "compute-pressure",
                         "cross-origin-isolated",
+                        "deferred-fetch",
                         "direct-sockets",
                         "display-capture",
                         "document-domain",

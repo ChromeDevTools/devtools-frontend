@@ -17,7 +17,7 @@ export interface CookieExpectation {
   expires?: null|number|string;
   size?: number;
   priority?: Protocol.Network.CookiePriority;
-  partitionKey?: string;
+  partitionKey?: Protocol.Network.CookiePartitionKey|null;
   partitionKeyOpaque?: boolean;
 }
 
@@ -33,7 +33,7 @@ const cookieExpectationDefaults: CookieExpectation = {
   expires: null,
   size: undefined,
   priority: Protocol.Network.CookiePriority.Medium,
-  partitionKey: undefined,
+  partitionKey: null,
   partitionKeyOpaque: false,
 };
 
@@ -61,6 +61,11 @@ export function expectCookie(cookie: SDK.Cookie.Cookie, cookieExpectation: Cooki
   }
   assert.strictEqual(cookie.size(), expectation.size, 'size');
   assert.strictEqual(cookie.priority(), expectation.priority, 'priority');
-  assert.strictEqual(cookie.partitionKey(), expectation.partitionKey, 'partitionKey');
+
+  assert.strictEqual(cookie.partitioned(), Boolean(expectation.partitionKey), 'partitioned');
+  if (cookie.partitioned()) {
+    assert.strictEqual(cookie.hasCrossSiteAncestor(), expectation.partitionKey?.hasCrossSiteAncestor, 'partitionKey');
+    assert.strictEqual(cookie.topLevelSite(), expectation.partitionKey?.topLevelSite, 'topLevelSite');
+  }
   assert.strictEqual(cookie.partitionKeyOpaque(), expectation.partitionKeyOpaque, 'partitionKeyOpaque');
 }

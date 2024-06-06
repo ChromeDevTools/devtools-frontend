@@ -47,11 +47,11 @@ describe('Cookie', () => {
       priority: Protocol.Network.CookiePriority.High,
       sourcePort: 443,
       sourceScheme: Protocol.Network.CookieSourceScheme.Secure,
-      partitionKey: 'https://a.com',
+      partitionKey: {topLevelSite: 'https://a.com', hasCrossSiteAncestor: false},
       partitionKeyOpaque: false,
     });
 
-    assert.strictEqual(cookie.key(), '.example.com name /test https://a.com');
+    assert.strictEqual(cookie.key(), '.example.com name /test https://a.com same_site');
     assert.strictEqual(cookie.name(), 'name');
     assert.strictEqual(cookie.value(), 'value');
 
@@ -69,7 +69,8 @@ describe('Cookie', () => {
     assert.strictEqual(cookie.getCookieLine(), null);
     assert.strictEqual(cookie.sourcePort(), 443);
     assert.strictEqual(cookie.sourceScheme(), Protocol.Network.CookieSourceScheme.Secure);
-    assert.strictEqual(cookie.partitionKey(), 'https://a.com');
+    assert.strictEqual(cookie.partitionKey().topLevelSite, 'https://a.com');
+    assert.strictEqual(cookie.partitionKey().hasCrossSiteAncestor, false);
     assert.strictEqual(cookie.partitionKeyOpaque(), false);
     assert.strictEqual(cookie.partitioned(), true);
   });
@@ -237,5 +238,57 @@ describe('Cookie', () => {
     const cookie = new SDK.Cookie.Cookie('name', 'value');
     cookie.addAttribute(SDK.Cookie.Attribute.Partitioned);
     assert.isTrue(cookie.partitioned());
+    assert.isFalse(cookie.hasCrossSiteAncestor());
+    assert.strictEqual(cookie.topLevelSite(), '');
+  });
+
+  it('can modify partition key', () => {
+    const cookie = new SDK.Cookie.Cookie('name', 'value');
+    cookie.setPartitionKey('https://a.com', true);
+    assert.isTrue(cookie.partitioned());
+    assert.isTrue(cookie.hasCrossSiteAncestor());
+    assert.strictEqual(cookie.topLevelSite(), 'https://a.com');
+    // set crossSiteAncestor
+    cookie.setHasCrossSiteAncestor(false);
+    assert.isFalse(cookie.hasCrossSiteAncestor());
+    // set topLevelSite
+    cookie.setTopLevelSite('https://b.com', true);
+    assert.isTrue(cookie.hasCrossSiteAncestor());
+    assert.strictEqual(cookie.topLevelSite(), 'https://b.com');
+  });
+
+  it('can compare partition keys', () => {
+    const unpartitionedCookie = new SDK.Cookie.Cookie('name', 'value');
+    assert.isFalse(unpartitionedCookie.partitioned());
+    assert.isFalse(Boolean(unpartitionedCookie.partitionKey()));
+
+    const partitionedCookie = new SDK.Cookie.Cookie('name', 'value');
+    partitionedCookie.setPartitionKey('https://a.com', true);
+    assert.isTrue(partitionedCookie.partitioned());
+    assert.isTrue(Boolean(partitionedCookie.partitionKey()));
+    assert.notStrictEqual(unpartitionedCookie.partitionKey(), partitionedCookie.partitionKey());
+    assert.strictEqual(partitionedCookie.partitionKey(), partitionedCookie.partitionKey());
+
+    const differentHasCrossSiteAncestor = new SDK.Cookie.Cookie('name', 'value');
+    differentHasCrossSiteAncestor.setPartitionKey('https://a.com', false);
+    assert.isTrue(differentHasCrossSiteAncestor.partitioned());
+    assert.notStrictEqual(differentHasCrossSiteAncestor.partitionKey(), partitionedCookie.partitionKey());
+
+    const differentTopLevel = new SDK.Cookie.Cookie('name', 'value');
+    differentTopLevel.setPartitionKey('https://b.com', true);
+    assert.isTrue(differentTopLevel.partitioned());
+    assert.notStrictEqual(differentTopLevel.partitionKey(), partitionedCookie.partitionKey());
+  });
+
+  it('can set opaque partition key', () => {
+    const partitionedCookie = new SDK.Cookie.Cookie('name', 'value');
+    partitionedCookie.setPartitionKey('https://a.com', true);
+    assert.isTrue(partitionedCookie.partitioned());
+    assert.isTrue(partitionedCookie.hasCrossSiteAncestor());
+    assert.isFalse(partitionedCookie.partitionKeyOpaque());
+    // Set key to opaque and confirm the the key is opaque and cross site.
+    partitionedCookie.setPartitionKeyOpaque();
+    assert.isTrue(partitionedCookie.partitionKeyOpaque());
+    assert.isFalse(partitionedCookie.hasCrossSiteAncestor());
   });
 });

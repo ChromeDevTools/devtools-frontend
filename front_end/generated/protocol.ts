@@ -882,6 +882,8 @@ export namespace Audits {
     CoopSandboxedIFrameCannotNavigateToCoopPage = 'CoopSandboxedIFrameCannotNavigateToCoopPage',
     CorpNotSameOrigin = 'CorpNotSameOrigin',
     CorpNotSameOriginAfterDefaultedToSameOriginByCoep = 'CorpNotSameOriginAfterDefaultedToSameOriginByCoep',
+    CorpNotSameOriginAfterDefaultedToSameOriginByDip = 'CorpNotSameOriginAfterDefaultedToSameOriginByDip',
+    CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip = 'CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip',
     CorpNotSameSite = 'CorpNotSameSite',
   }
 
@@ -8307,6 +8309,8 @@ export namespace Network {
     CoopSandboxedIframeCannotNavigateToCoopPage = 'coop-sandboxed-iframe-cannot-navigate-to-coop-page',
     CorpNotSameOrigin = 'corp-not-same-origin',
     CorpNotSameOriginAfterDefaultedToSameOriginByCoep = 'corp-not-same-origin-after-defaulted-to-same-origin-by-coep',
+    CorpNotSameOriginAfterDefaultedToSameOriginByDip = 'corp-not-same-origin-after-defaulted-to-same-origin-by-dip',
+    CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip = 'corp-not-same-origin-after-defaulted-to-same-origin-by-coep-and-dip',
     CorpNotSameSite = 'corp-not-same-site',
   }
 
@@ -8677,6 +8681,22 @@ export namespace Network {
   }
 
   /**
+   * cookiePartitionKey object
+   * The representation of the components of the key that are created by the cookiePartitionKey class contained in net/cookies/cookie_partition_key.h.
+   */
+  export interface CookiePartitionKey {
+    /**
+     * The site of the top-level URL the browser was visiting at the start
+     * of the request to the endpoint that set the cookie.
+     */
+    topLevelSite: string;
+    /**
+     * Indicates if the cookie has any ancestors that are cross-site to the topLevelSite.
+     */
+    hasCrossSiteAncestor: boolean;
+  }
+
+  /**
    * Cookie object
    */
   export interface Cookie {
@@ -8739,10 +8759,9 @@ export namespace Network {
      */
     sourcePort: integer;
     /**
-     * Cookie partition key. The site of the top-level URL the browser was visiting at the start
-     * of the request to the endpoint that set the cookie.
+     * Cookie partition key.
      */
-    partitionKey?: string;
+    partitionKey?: CookiePartitionKey;
     /**
      * True if cookie partition key is opaque.
      */
@@ -8935,11 +8954,9 @@ export namespace Network {
      */
     sourcePort?: integer;
     /**
-     * Cookie partition key. The site of the top-level URL the browser was visiting at the start
-     * of the request to the endpoint that set the cookie.
-     * If not set, the cookie will be set as not partitioned.
+     * Cookie partition key. If not set, the cookie will be set as not partitioned.
      */
-    partitionKey?: string;
+    partitionKey?: CookiePartitionKey;
   }
 
   export const enum AuthChallengeSource {
@@ -9404,10 +9421,10 @@ export namespace Network {
      */
     path?: string;
     /**
-     * If specified, deletes only cookies with the the given name and partitionKey where domain
-     * matches provided URL.
+     * If specified, deletes only cookies with the the given name and partitionKey where
+     * where all partition key attributes match the cookie partition key attribute.
      */
-    partitionKey?: string;
+    partitionKey?: CookiePartitionKey;
   }
 
   export interface EmulateNetworkConditionsRequest {
@@ -9663,11 +9680,9 @@ export namespace Network {
      */
     sourcePort?: integer;
     /**
-     * Cookie partition key. The site of the top-level URL the browser was visiting at the start
-     * of the request to the endpoint that set the cookie.
-     * If not set, the cookie will be set as not partitioned.
+     * Cookie partition key. If not set, the cookie will be set as not partitioned.
      */
-    partitionKey?: string;
+    partitionKey?: CookiePartitionKey;
   }
 
   export interface SetCookieResponse extends ProtocolResponseWithError {
@@ -10325,7 +10340,7 @@ export namespace Network {
      * The cookie partition key that will be used to store partitioned cookies set in this response.
      * Only sent when partitioned cookies are enabled.
      */
-    cookiePartitionKey?: string;
+    cookiePartitionKey?: CookiePartitionKey;
     /**
      * True if partitioned cookies are enabled, but the partition key is not serializable to string.
      */
@@ -11358,6 +11373,7 @@ export namespace Page {
     ClipboardWrite = 'clipboard-write',
     ComputePressure = 'compute-pressure',
     CrossOriginIsolated = 'cross-origin-isolated',
+    DeferredFetch = 'deferred-fetch',
     DirectSockets = 'direct-sockets',
     DisplayCapture = 'display-capture',
     DocumentDomain = 'document-domain',

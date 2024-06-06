@@ -213,11 +213,20 @@ export class CookiesTable extends UI.Widget.VBox {
         editable: editable,
       },
       {
-        id: SDK.Cookie.Attribute.PartitionKey,
-        title: 'Partition Key',
+        id: SDK.Cookie.Attribute.PartitionKeySite,
+        title: 'Partition Key Site',
         sortable: true,
         weight: 7,
         editable: editable,
+      },
+      {
+        id: SDK.Cookie.Attribute.HasCrossSiteAncestor,
+        title: 'Cross Site',
+        sortable: true,
+        align: DataGrid.DataGrid.Align.Center,
+        weight: 7,
+        dataType: DataGrid.DataGrid.DataType.Boolean,
+        editable,
       },
       {
         id: SDK.Cookie.Attribute.Priority,
@@ -471,8 +480,10 @@ export class CookiesTable extends UI.Widget.VBox {
           return String(cookie.secure());
         case SDK.Cookie.Attribute.SameSite:
           return String(cookie.sameSite());
-        case SDK.Cookie.Attribute.PartitionKey:
-          return cookie.partitionKeyOpaque() ? i18nString(UIStrings.opaquePartitionKey) : String(cookie.partitionKey());
+        case SDK.Cookie.Attribute.PartitionKeySite:
+          return cookie.partitionKeyOpaque() ? i18nString(UIStrings.opaquePartitionKey) : String(cookie.topLevelSite());
+        case SDK.Cookie.Attribute.HasCrossSiteAncestor:
+          return String(cookie.partitioned() ? cookie.hasCrossSiteAncestor() : false);
         case SDK.Cookie.Attribute.SourceScheme:
           return String(cookie.sourceScheme());
         default:
@@ -580,7 +591,8 @@ export class CookiesTable extends UI.Widget.VBox {
     data[SDK.Cookie.Attribute.SourcePort] = cookie.sourcePort();
     data[SDK.Cookie.Attribute.SourceScheme] = cookie.sourceScheme();
     data[SDK.Cookie.Attribute.Priority] = cookie.priority() || '';
-    data[SDK.Cookie.Attribute.PartitionKey] = cookie.partitionKey() || '';
+    data[SDK.Cookie.Attribute.PartitionKeySite] = cookie.topLevelSite();
+    data[SDK.Cookie.Attribute.HasCrossSiteAncestor] = cookie.hasCrossSiteAncestor() ? 'true' : '';
 
     const blockedReasons = this.cookieToBlockedReasons?.get(cookie);
     const exemptionReason = this.cookieToExemptionReason?.get(cookie);
@@ -672,8 +684,12 @@ export class CookiesTable extends UI.Widget.VBox {
       cookie.addAttribute(
           SDK.Cookie.Attribute.SourcePort, Number.parseInt(data[SDK.Cookie.Attribute.SourcePort], 10) || undefined);
     }
-    if (data[SDK.Cookie.Attribute.PartitionKey]) {
-      cookie.addAttribute(SDK.Cookie.Attribute.PartitionKey, data[SDK.Cookie.Attribute.PartitionKey]);
+    if (data[SDK.Cookie.Attribute.PartitionKeySite]) {
+      cookie.setPartitionKey(
+          data[SDK.Cookie.Attribute.PartitionKeySite],
+          Boolean(
+              data[SDK.Cookie.Attribute.HasCrossSiteAncestor] ? data[SDK.Cookie.Attribute.HasCrossSiteAncestor] :
+                                                                false));
     }
     cookie.setSize(data[SDK.Cookie.Attribute.Name].length + data[SDK.Cookie.Attribute.Value].length);
     return cookie;
@@ -681,7 +697,8 @@ export class CookiesTable extends UI.Widget.VBox {
 
   private isValidCookieData(data: {[x: string]: string}): boolean {
     return (Boolean(data.name) || Boolean(data.value)) && this.isValidDomain(data.domain) &&
-        this.isValidPath(data.path) && this.isValidDate(data.expires) && this.isValidPartitionKey(data.partitionKey);
+        this.isValidPath(data.path) && this.isValidDate(data.expires) &&
+        this.isValidPartitionKey(data.PartitionKeySite);
   }
 
   private isValidDomain(domain: string): boolean {

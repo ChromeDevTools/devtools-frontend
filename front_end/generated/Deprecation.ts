@@ -79,6 +79,10 @@ export const UIStrings = {
    */
   GeolocationInsecureOriginDeprecatedNotRemoved: "`getCurrentPosition()` and `watchPosition()` are deprecated on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details.",
   /**
+   * @description Warning displayed to developers when non-standard getInnerHTML function is called. This function is deprecated and will be removed.
+   */
+  GetInnerHTML: "The getInnerHTML() function is deprecated, and will be removed from this browser very soon. Please use getHTML() instead.",
+  /**
    * @description This warning occurs when the `getUserMedia()` API is invoked on an insecure (e.g., HTTP) site. This is only permitted on secure sites (e.g., HTTPS).
    */
   GetUserMediaInsecureOrigin: "`getUserMedia()` no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details.",
@@ -294,6 +298,9 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
   },
   "DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "milestone": 115
+  },
+  "GetInnerHTML": {
+    "chromeStatusFeature": 5081733588582400
   },
   "IdentityInCanMakePaymentEvent": {
     "chromeStatusFeature": 5190978431352832

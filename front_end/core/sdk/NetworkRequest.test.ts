@@ -87,12 +87,17 @@ describe('NetworkRequest', () => {
       responseHeaders:
           [{name: 'Set-Cookie', value: 'foo=bar'}, {name: 'Set-Cookie', value: 'baz=qux; Secure;Partitioned'}],
       resourceIPAddressSpace: 'Public' as Protocol.Network.IPAddressSpace,
-      cookiePartitionKey: 'partitionKey',
+      cookiePartitionKey: {topLevelSite: 'partitionKey', hasCrossSiteAncestor: false},
     } as unknown as SDK.NetworkRequest.ExtraResponseInfo);
     assert.strictEqual(request.responseCookies.length, 2);
     expectCookie(request.responseCookies[0], {name: 'foo', value: 'bar', size: 8});
-    expectCookie(
-        request.responseCookies[1], {name: 'baz', value: 'qux', secure: true, partitionKey: 'partitionKey', size: 27});
+    expectCookie(request.responseCookies[1], {
+      name: 'baz',
+      value: 'qux',
+      secure: true,
+      partitionKey: {topLevelSite: 'partitionKey', hasCrossSiteAncestor: false},
+      size: 27,
+    });
   });
 
   it('determines whether the response headers have been overridden', () => {

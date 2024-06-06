@@ -320,9 +320,8 @@ export function createSortedSyntheticEvents<T extends Types.TraceEvents.TraceEve
       continue;
     }
     const targetEvent = endEvent || beginEvent;
-    const syntheticEventsManager = SyntheticEventsManager.getActiveManager();
 
-    const event = syntheticEventsManager.registerSyntheticBasedEvent<MatchedPairType<T>>({
+    const event = SyntheticEventsManager.registerSyntheticBasedEvent<MatchedPairType<T>>({
       rawSourceEvent: beginEvent,
       cat: targetEvent.cat,
       ph: targetEvent.ph,

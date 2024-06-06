@@ -99,7 +99,7 @@ function workletType(input: string): Types.TraceEvents.AuctionWorkletType {
 function makeSyntheticEventBase(event: Types.TraceEvents.TraceEventAuctionWorkletDoneWithProcess|
                                 Types.TraceEvents.TraceEventAuctionWorkletRunningInProcess):
     Omit<Types.TraceEvents.SyntheticAuctionWorkletEvent, 'args'> {
-  return Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager()
+  return Helpers.SyntheticEvents.SyntheticEventsManager
       .registerSyntheticBasedEvent<Omit<Types.TraceEvents.SyntheticAuctionWorkletEvent, 'args'>>({
         rawSourceEvent: event,
         name: 'SyntheticAuctionWorkletEvent',

@@ -41,8 +41,8 @@ export async function finalize(): Promise<void> {
 
   for (const snapshotEvent of snapshotEvents) {
     const {cat, name, ph, pid, tid} = snapshotEvent;
-    const syntheticManagerInstance = Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager();
-    const syntheticEvent = syntheticManagerInstance.registerSyntheticBasedEvent<Types.TraceEvents.SyntheticScreenshot>({
+    const syntheticEvent = Helpers.SyntheticEvents.SyntheticEventsManager.registerSyntheticBasedEvent<
+        Types.TraceEvents.SyntheticScreenshot>({
       rawSourceEvent: snapshotEvent,
       cat,
       name,

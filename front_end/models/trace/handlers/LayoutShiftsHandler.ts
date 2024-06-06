@@ -315,27 +315,27 @@ async function buildLayoutShiftsClusters(): Promise<void> {
     if (!event.args.data) {
       continue;
     }
-    const syntheticEventsManager = Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager();
-    const shift = syntheticEventsManager.registerSyntheticBasedEvent<Types.TraceEvents.SyntheticLayoutShift>({
-      rawSourceEvent: event,
-      ...event,
-      args: {
-        frame: event.args.frame,
-        data: {
-          ...event.args.data,
-          rawEvent: event,
-        },
-      },
-      parsedData: {
-        timeFromNavigation,
-        cumulativeWeightedScoreInWindow: currentCluster.clusterCumulativeScore,
-        // The score of the session window is temporarily set to 0 just
-        // to initialize it. Since we need to get the score of all shifts
-        // in the session window to determine its value, its definite
-        // value is set when stepping through the built clusters.
-        sessionWindowData: {cumulativeWindowScore: 0, id: clusters.length},
-      },
-    });
+    const shift = Helpers.SyntheticEvents.SyntheticEventsManager
+                      .registerSyntheticBasedEvent<Types.TraceEvents.SyntheticLayoutShift>({
+                        rawSourceEvent: event,
+                        ...event,
+                        args: {
+                          frame: event.args.frame,
+                          data: {
+                            ...event.args.data,
+                            rawEvent: event,
+                          },
+                        },
+                        parsedData: {
+                          timeFromNavigation,
+                          cumulativeWeightedScoreInWindow: currentCluster.clusterCumulativeScore,
+                          // The score of the session window is temporarily set to 0 just
+                          // to initialize it. Since we need to get the score of all shifts
+                          // in the session window to determine its value, its definite
+                          // value is set when stepping through the built clusters.
+                          sessionWindowData: {cumulativeWindowScore: 0, id: clusters.length},
+                        },
+                      });
     currentCluster.events.push(shift);
     updateTraceWindowMax(currentCluster.clusterWindow, event.ts);
 

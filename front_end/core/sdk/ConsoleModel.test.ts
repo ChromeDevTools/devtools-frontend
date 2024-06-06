@@ -25,7 +25,7 @@ describeWithMockConnection('ConsoleMessage', () => {
   const scriptId2 = '2' as Protocol.Runtime.ScriptId;
 
   function newMessage({
-    source = SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI,
+    source = Common.Console.FrontendMessageSource.ConsoleAPI,
     message = 'Message',
     url,
     scriptId,
@@ -56,7 +56,7 @@ describeWithMockConnection('ConsoleMessage', () => {
   it('compares using source', () => {
     const a = newMessage({});
     const b = newMessage({});
-    const c = newMessage({source: SDK.ConsoleModel.FrontendMessageSource.CSS});
+    const c = newMessage({source: Common.Console.FrontendMessageSource.CSS});
     assert.isTrue(a.isEqual(b));
     assert.isFalse(b.isEqual(c));
     assert.isFalse(c.isEqual(a));

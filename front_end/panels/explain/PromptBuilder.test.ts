@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -230,7 +231,7 @@ export const y = "";
       };
       const ERROR_MESSAGE = 'kaboom!';
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
           messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const promptBuilder = new Explain.PromptBuilder(message);
@@ -265,7 +266,7 @@ export const y = "";
       debuggerWorkspaceBinding.addSourceMapping(mapping);
       const ERROR_MESSAGE = 'kaboom!';
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
           messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const promptBuilder = new Explain.PromptBuilder(message);
@@ -312,7 +313,7 @@ export const y = "";
       debuggerWorkspaceBinding.addSourceMapping(mapping);
       const ERROR_MESSAGE = 'kaboom!';
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
           ERROR_MESSAGE, messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const promptBuilder = new Explain.PromptBuilder(message);
@@ -378,7 +379,7 @@ export const y = "";
       ].join('\n');
       const ERROR_MESSAGE = 'kaboom!';
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
           messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const promptBuilder = new Explain.PromptBuilder(message);
@@ -405,7 +406,7 @@ export const y = "";
       const ERROR_MESSAGE = 'a'.repeat(2000);
       const TRIMMED_ERROR_MESSAGE = 'a'.repeat(1000);
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
           messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const promptBuilder = new Explain.PromptBuilder(message);
@@ -438,7 +439,7 @@ export const y = "";
       debuggerWorkspaceBinding.addSourceMapping(mapping);
       const ERROR_MESSAGE = 'kaboom!';
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
           ERROR_MESSAGE, messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const promptBuilder = new Explain.PromptBuilder(message);
@@ -489,7 +490,7 @@ export const y = "";
       ].join('\n');
       const ERROR_MESSAGE = 'kaboom!';
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
           messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const promptBuilder = new Explain.PromptBuilder(message);
@@ -521,7 +522,7 @@ export const y = "";
       sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'requestsForId').withArgs(REQUEST_ID).returns([]);
       const ERROR_MESSAGE = 'kaboom!';
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
           messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const promptBuilder = new Explain.PromptBuilder(message);
@@ -546,7 +547,7 @@ export const y = "";
       };
       const ERROR_MESSAGE = 'kaboom!';
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
           ERROR_MESSAGE, messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const promptBuilder = new Explain.PromptBuilder(message);
@@ -561,7 +562,7 @@ export const y = "";
       };
       const ERROR_MESSAGE = 'Got an error: ' + new Error('fail').stack;
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
           ERROR_MESSAGE, messageDetails);
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const promptBuilder = new Explain.PromptBuilder(message);

@@ -73,7 +73,7 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
     const consoleAPIParsedFilters = [{
       key: FilterType.Source,
-      text: SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI,
+      text: Common.Console.FrontendMessageSource.ConsoleAPI,
       negative: false,
       regex: undefined,
     }];

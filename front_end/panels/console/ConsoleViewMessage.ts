@@ -375,7 +375,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   protected buildMessage(): HTMLElement {
     let messageElement;
     let messageText: Common.UIString.LocalizedString|string = this.message.messageText;
-    if (this.message.source === SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI) {
+    if (this.message.source === Common.Console.FrontendMessageSource.ConsoleAPI) {
       switch (this.message.type) {
         case Protocol.Runtime.ConsoleAPICalledEventType.Trace:
           messageElement = this.format(this.message.parameters || ['console.trace']);
@@ -1276,7 +1276,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     if (this.message.isGroupStartMessage()) {
       this.elementInternal.classList.add('console-group-title');
     }
-    if (this.message.source === SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI) {
+    if (this.message.source === Common.Console.FrontendMessageSource.ConsoleAPI) {
       this.elementInternal.classList.add('console-from-api');
     }
     if (this.inSimilarGroup) {
@@ -1332,12 +1332,12 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   shouldShowInsights(): boolean {
-    if (this.message.source === SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI &&
+    if (this.message.source === Common.Console.FrontendMessageSource.ConsoleAPI &&
         this.message.stackTrace?.callFrames[0]?.url === '') {
       // Do not show insights for direct calls to Console APIs from within DevTools Console.
       return false;
     }
-    if (this.message.messageText === '') {
+    if (this.message.messageText === '' || this.message.source === Common.Console.FrontendMessageSource.SelfXss) {
       return false;
     }
     return this.message.level === Protocol.Log.LogEntryLevel.Error ||

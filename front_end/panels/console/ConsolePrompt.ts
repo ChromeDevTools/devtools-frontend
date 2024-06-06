@@ -313,7 +313,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   showSelfXssWarning(): void {
     Common.Console.Console.instance().warn(
-        i18nString(UIStrings.selfXssWarning, {PH1: i18nString(UIStrings.allowPasting)}));
+        i18nString(UIStrings.selfXssWarning, {PH1: i18nString(UIStrings.allowPasting)}),
+        Common.Console.FrontendMessageSource.SelfXss);
     this.#selfXssWarningShown = true;
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelfXssWarningConsoleMessageShown);
     this.#updateJavaScriptCompletionCompartment();

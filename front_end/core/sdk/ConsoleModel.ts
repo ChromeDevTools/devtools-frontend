@@ -34,7 +34,7 @@ import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
-import {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
+import {FrontendMessageType} from './ConsoleModelTypes.js';
 import {CPUProfilerModel, type EventData, Events as CPUProfilerModelEvents} from './CPUProfilerModel.js';
 import {
   BreakpointType,
@@ -63,7 +63,7 @@ import {SDKModel} from './SDKModel.js';
 import {Capability, type Target, Type} from './Target.js';
 import {TargetManager} from './TargetManager.js';
 
-export {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
+export {FrontendMessageType} from './ConsoleModelTypes.js';
 
 const UIStrings = {
   /**
@@ -211,7 +211,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
 
   addMessage(msg: ConsoleMessage): void {
     msg.setPageLoadSequenceNumber(this.#pageLoadSequenceNumber);
-    if (msg.source === FrontendMessageSource.ConsoleAPI &&
+    if (msg.source === Common.Console.FrontendMessageSource.ConsoleAPI &&
         msg.type === Protocol.Runtime.ConsoleAPICalledEventType.Clear) {
       this.clearIfNecessary();
     }
@@ -295,8 +295,8 @@ export class ConsoleModel extends SDKModel<EventTypes> {
       executionContextId: call.executionContextId,
       context: call.context,
     };
-    const consoleMessage =
-        new ConsoleMessage(runtimeModel, FrontendMessageSource.ConsoleAPI, level, (message as string), details);
+    const consoleMessage = new ConsoleMessage(
+        runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, level, (message as string), details);
     for (const msg of this.#messagesByTimestamp.get(consoleMessage.timestamp).values()) {
       if (consoleMessage.isEqual(msg)) {
         return;
@@ -314,7 +314,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
       executionContextId,
     };
     const consoleMessage = new ConsoleMessage(
-        runtimeModel, FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Info, '', details);
+        runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Info, '', details);
     this.addMessage(consoleMessage);
   }
 
@@ -364,8 +364,8 @@ export class ConsoleModel extends SDKModel<EventTypes> {
       columnNumber: scriptLocation.columnNumber || 0,
     }];
     this.addMessage(new ConsoleMessage(
-        cpuProfilerModel.runtimeModel(), FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Info, messageText,
-        {type, stackTrace: {callFrames}}));
+        cpuProfilerModel.runtimeModel(), Common.Console.FrontendMessageSource.ConsoleAPI,
+        Protocol.Log.LogEntryLevel.Info, messageText, {type, stackTrace: {callFrames}}));
   }
 
   private incrementErrorWarningCount(msg: ConsoleMessage): void {
@@ -741,7 +741,7 @@ export class ConsoleMessage {
     const isUngroupableError = this.level === Protocol.Log.LogEntryLevel.Error &&
         (this.source === Protocol.Log.LogEntrySource.Javascript || this.source === Protocol.Log.LogEntrySource.Network);
     return (
-        this.source !== FrontendMessageSource.ConsoleAPI && this.type !== FrontendMessageType.Command &&
+        this.source !== Common.Console.FrontendMessageSource.ConsoleAPI && this.type !== FrontendMessageType.Command &&
         this.type !== FrontendMessageType.Result && this.type !== FrontendMessageType.System && !isUngroupableError);
   }
 
@@ -820,7 +820,7 @@ export class ConsoleMessage {
 
 SDKModel.register(ConsoleModel, {capabilities: Capability.JS, autostart: true});
 
-export type MessageSource = Protocol.Log.LogEntrySource|FrontendMessageSource;
+export type MessageSource = Protocol.Log.LogEntrySource|Common.Console.FrontendMessageSource;
 export type MessageLevel = Protocol.Log.LogEntryLevel;
 export type MessageType = Protocol.Runtime.ConsoleAPICalledEventType|FrontendMessageType;
 
@@ -828,11 +828,11 @@ export const MessageSourceDisplayName = new Map<MessageSource, string>(([
   [Protocol.Log.LogEntrySource.XML, 'xml'],
   [Protocol.Log.LogEntrySource.Javascript, 'javascript'],
   [Protocol.Log.LogEntrySource.Network, 'network'],
-  [FrontendMessageSource.ConsoleAPI, 'console-api'],
+  [Common.Console.FrontendMessageSource.ConsoleAPI, 'console-api'],
   [Protocol.Log.LogEntrySource.Storage, 'storage'],
   [Protocol.Log.LogEntrySource.Appcache, 'appcache'],
   [Protocol.Log.LogEntrySource.Rendering, 'rendering'],
-  [FrontendMessageSource.CSS, 'css'],
+  [Common.Console.FrontendMessageSource.CSS, 'css'],
   [Protocol.Log.LogEntrySource.Security, 'security'],
   [Protocol.Log.LogEntrySource.Deprecation, 'deprecation'],
   [Protocol.Log.LogEntrySource.Worker, 'worker'],
@@ -840,5 +840,5 @@ export const MessageSourceDisplayName = new Map<MessageSource, string>(([
   [Protocol.Log.LogEntrySource.Intervention, 'intervention'],
   [Protocol.Log.LogEntrySource.Recommendation, 'recommendation'],
   [Protocol.Log.LogEntrySource.Other, 'other'],
-  [FrontendMessageSource.IssuePanel, 'issue-panel'],
+  [Common.Console.FrontendMessageSource.IssuePanel, 'issue-panel'],
 ]));

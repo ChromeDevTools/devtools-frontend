@@ -29,8 +29,8 @@ export class Console extends ObjectWrapper<EventTypes> {
     consoleInstance = undefined;
   }
 
-  addMessage(text: string, level: MessageLevel, show?: boolean): void {
-    const message = new Message(text, level || MessageLevel.Info, Date.now(), show || false);
+  addMessage(text: string, level: MessageLevel, show?: boolean, source?: FrontendMessageSource): void {
+    const message = new Message(text, level || MessageLevel.Info, Date.now(), show || false, source);
     this.#messagesInternal.push(message);
     this.dispatchEventToListeners(Events.MessageAdded, message);
   }
@@ -39,8 +39,8 @@ export class Console extends ObjectWrapper<EventTypes> {
     this.addMessage(text, MessageLevel.Info);
   }
 
-  warn(text: string): void {
-    this.addMessage(text, MessageLevel.Warning);
+  warn(text: string, source?: FrontendMessageSource): void {
+    this.addMessage(text, MessageLevel.Warning, undefined, source);
   }
 
   error(text: string): void {
@@ -74,15 +74,26 @@ export const enum MessageLevel {
   Error = 'error',
 }
 
+export enum FrontendMessageSource {
+  CSS = 'css',
+  ConsoleAPI = 'console-api',
+  IssuePanel = 'issue-panel',
+  SelfXss = 'self-xss',
+}
+
 export class Message {
   text: string;
   level: MessageLevel;
   timestamp: number;
   show: boolean;
-  constructor(text: string, level: MessageLevel, timestamp: number, show: boolean) {
+  source?: FrontendMessageSource;
+  constructor(text: string, level: MessageLevel, timestamp: number, show: boolean, source?: FrontendMessageSource) {
     this.text = text;
     this.level = level;
     this.timestamp = (typeof timestamp === 'number') ? timestamp : Date.now();
     this.show = show;
+    if (source) {
+      this.source = source;
+    }
   }
 }

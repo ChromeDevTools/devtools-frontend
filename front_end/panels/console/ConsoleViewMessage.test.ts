@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {
@@ -27,8 +28,7 @@ describeWithMockConnection('ConsoleViewMessage', () => {
         stackTrace,
       };
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, /* level */ null, 'got here',
-          messageDetails);
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, 'got here', messageDetails);
       const {message, linkifier} = createConsoleViewMessageWithStubDeps(rawMessage);
 
       message.toMessageElement();  // Trigger rendering.
@@ -49,7 +49,7 @@ describeWithMockConnection('ConsoleViewMessage', () => {
         stackTrace,
       };
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, /* level */ null, 'value of x is 42',
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, 'value of x is 42',
           messageDetails);
       const {message, linkifier} = createConsoleViewMessageWithStubDeps(rawMessage);
 
@@ -76,7 +76,7 @@ describeWithMockConnection('ConsoleViewMessage', () => {
         stackTrace,
       };
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, /* level */ null, 'value of x is 42',
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, 'value of x is 42',
           messageDetails);
       const {message, linkifier} = createConsoleViewMessageWithStubDeps(rawMessage);
 
@@ -97,8 +97,7 @@ describeWithMockConnection('ConsoleViewMessage', () => {
       const target = createTarget();
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
-          'got here');
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error, 'got here');
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const messageElement = message.toMessageElement();  // Trigger rendering.
       const button = messageElement.querySelector('[aria-label=\'Understand this error\']');
@@ -112,10 +111,25 @@ describeWithMockConnection('ConsoleViewMessage', () => {
       const target = createTarget();
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error, '');
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error, '');
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const messageElement = message.toMessageElement();  // Trigger rendering.
       const button = messageElement.querySelector('[aria-label=\'Understand this error\']');
+      assert.isNull(button);
+    });
+
+    it('does not show a hover button for the self-XSS warning message', () => {
+      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction')
+          .withArgs('explain.console-message.hover')
+          .returns(true);
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel, Common.Console.FrontendMessageSource.SelfXss, Protocol.Log.LogEntryLevel.Warning,
+          'Don’t paste code...');
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const messageElement = message.toMessageElement();  // Trigger rendering.
+      const button = messageElement.querySelector('[aria-label=\'Understand this warning\']');
       assert.isNull(button);
     });
   });

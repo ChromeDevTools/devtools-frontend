@@ -690,8 +690,9 @@ export class ConsoleView extends UI.Widget.VBox implements
         break;
     }
 
+    const source = message.source || Protocol.Log.LogEntrySource.Other;
     const consoleMessage = new SDK.ConsoleModel.ConsoleMessage(
-        null, Protocol.Log.LogEntrySource.Other, level, message.text,
+        null, source, level, message.text,
         {type: SDK.ConsoleModel.FrontendMessageType.System, timestamp: message.timestamp});
     this.addConsoleMessage(consoleMessage);
   }

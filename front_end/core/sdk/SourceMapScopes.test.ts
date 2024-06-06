@@ -344,4 +344,46 @@ describe('decodeGeneratedRanges', () => {
     assert.lengthOf(generatedRange.children[1].children, 1);
     assert.deepEqual(generatedRange.children[1].children[0].callsite, {sourceIndex: 1, line: 3, column: 7});
   });
+
+  it('decodes bindings that are available/unavailable for the full range', () => {
+    const names = ['foo', 'bar', 'baz', 'x', 'y'];
+    const originalEncodedScopes =
+        new OriginalScopeBuilder().start(0, 0, 'global', undefined, [0, 1, 2]).end(10, 0).build();
+    const originalScopes = decodeOriginalScopes([originalEncodedScopes], names);
+    const range = new GeneratedRangeBuilder()
+                      .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}, bindings: [3, -1, 4]})
+                      .end(0, 100)
+                      .build();
+
+    const generatedRange = decodeGeneratedRanges(range, originalScopes, names);
+
+    assert.lengthOf(generatedRange.values, 3);
+    assert.deepEqual(generatedRange.values, ['x', undefined, 'y']);
+  });
+
+  it('decodes bindings that are available with different expressions throughout a range', () => {
+    const names = ['foo', 'x', 'y'];
+    const originalEncodedScopes = new OriginalScopeBuilder().start(0, 0, 'global', undefined, [0]).end(10, 0).build();
+    const originalScopes = decodeOriginalScopes([originalEncodedScopes], names);
+    const range = new GeneratedRangeBuilder()
+                      .start(0, 0, {
+                        definition: {sourceIdx: 0, scopeIdx: 0},
+                        bindings: [[
+                          {line: 0, column: 0, nameIdx: 1},
+                          {line: 0, column: 30, nameIdx: -1},
+                          {line: 0, column: 60, nameIdx: 2},
+                        ]],
+                      })
+                      .end(0, 100)
+                      .build();
+
+    const generatedRange = decodeGeneratedRanges(range, originalScopes, names);
+
+    assert.lengthOf(generatedRange.values, 1);
+    assert.deepEqual(generatedRange.values[0], [
+      {from: {line: 0, column: 0}, to: {line: 0, column: 30}, value: 'x'},
+      {from: {line: 0, column: 30}, to: {line: 0, column: 60}, value: undefined},
+      {from: {line: 0, column: 60}, to: {line: 0, column: 100}, value: 'y'},
+    ]);
+  });
 });

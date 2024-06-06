@@ -202,6 +202,7 @@ export class GeneratedRangeBuilder {
   start(line: number, column: number, options?: {
     definition?: {sourceIdx: number, scopeIdx: number},
     callsite?: {sourceIdx: number, line: number, column: number},
+    bindings?: (number|{line: number, column: number, nameIdx: number}[])[],
   }): this {
     this.#emitLineSeparator(line);
     this.#emitItemSepratorIfRequired();
@@ -245,6 +246,28 @@ export class GeneratedRangeBuilder {
       this.#state.callsiteSourceIdx = sourceIdx;
       this.#state.callsiteLine = line;
       this.#state.callsiteColumn = column;
+    }
+
+    for (const bindings of options?.bindings ?? []) {
+      if (typeof bindings === 'number') {
+        this.#encodedRange += encodeVlq(bindings);
+        continue;
+      }
+
+      this.#encodedRange += encodeVlq(bindings[0].nameIdx);
+      this.#encodedRange += encodeVlq(-bindings.length);
+      if (bindings[0].line !== line || bindings[0].column !== column) {
+        throw new Error('First binding line/column must match the range start line/column');
+      }
+
+      for (let i = 1; i < bindings.length; ++i) {
+        const {line, column, nameIdx} = bindings[i];
+        const emittedLine = line - bindings[i - 1].line;
+        const emittedColumn = column - (line === bindings[i - 1].line ? bindings[i - 1].column : 0);
+        this.#encodedRange += encodeVlq(emittedLine);
+        this.#encodedRange += encodeVlq(emittedColumn);
+        this.#encodedRange += encodeVlq(nameIdx);
+      }
     }
 
     return this;

@@ -123,6 +123,9 @@ export interface TraceFrame {
   // Added to Chromium in April 2024:
   // crrev.com/c/5424783
   isOutermostMainFrame?: boolean;
+  // Added to Chromium in June 2024:
+  // crrev.com/c/5595033
+  isInPrimaryMainFrame?: boolean;
 }
 
 // Sample events.

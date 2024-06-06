@@ -217,25 +217,51 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
       if (!frame.parent) {
         topLevelRendererIds.add(frame.processId);
       }
+      /**
+       * The code here uses a few different methods to try to determine the main frame.
+       * The ideal is that the frames have two flags present:
+       *
+       * 1. isOutermostMainFrame (added in April 2024 - crrev.com/c/5424783)
+       * 2. isInPrimaryMainFrame (added in June 2024 - crrev.com/c/5595033)
+       *
+       * The frame where both of these are set to `true` is the main frame. The
+       * reason we need both of these flags to have 100% confidence is because
+       * with the introduction of MPArch and pre-rendering, we can have other
+       * frames that are the outermost frame, but are not the primary process.
+       * Relying on isOutermostMainFrame in isolation caused the engine to
+       * incorrectly identify the wrong frame as main (see crbug.com/343873756).
+       *
+       * See https://source.chromium.org/chromium/chromium/src/+/main:docs/frame_trees.md
+       * for a bit more context on FrameTrees in Chromium.
+       *
+       * To avoid breaking entirely for traces pre-June 2024 that don't have
+       * both of these flags, we will fallback to less accurate methods:
+       *
+       * 1. If we have isOutermostMainFrame, we will use that
+       *    (and accept we might get it wrong)
+       * 2. If we don't have isOutermostMainFrame, we fallback to finding a
+       *    frame that has a URL, but doesn't have a parent. This is a crude
+       *    guess at the main frame...but better than nothing and is historically
+       *    how DevTools identified the main frame.
+       */
 
-      // isOutermostMainFrame was added to trace events in April 2024
-      // [crrev.com/c/5424783].
-      // If our trace has that, it is the most accurate way of determining the
-      // main frame, as only one frame will have it set to true.
-      const canUseIsOutermostToDetermineMainFrame = 'isOutermostMainFrame' in frame;
-      if (canUseIsOutermostToDetermineMainFrame) {
-        // We have a "new" trace with isOutermostMainFrame. Therefore we mark
-        // the frame as the main frame if and ONLY IF it has
-        // isOutermostMainFrame set to true.
+      const traceHasPrimaryMainFrameFlag = 'isInPrimaryMainFrame' in frame;
+      const traceHasOutermostMainFrameFlag = 'isOutermostMainFrame' in frame;
+
+      if (traceHasPrimaryMainFrameFlag && traceHasOutermostMainFrameFlag) {
+        // Ideal situation: identify the main frame as the one that has both these flags set to true.
+        if (frame.isInPrimaryMainFrame && frame.isOutermostMainFrame) {
+          mainFrameId = frame.frame;
+          mainFrameURL = frame.url;
+        }
+      } else if (traceHasOutermostMainFrameFlag) {
+        // Less ideal: "guess" at the main thread by using this falg.
         if (frame.isOutermostMainFrame) {
           mainFrameId = frame.frame;
           mainFrameURL = frame.url;
         }
       } else {
-        // We have an "old" trace without isOutermostMainFrame.
-        // We fallback to looking for frames without a parent, and that have a
-        // URL set. This is a crude but pretty reliable way to determine the
-        // main frame.
+        // Worst case: guess by seeing if the frame doesn't have a parent, and does have a URL.
         if (!frame.parent && frame.url) {
           mainFrameId = frame.frame;
           mainFrameURL = frame.url;

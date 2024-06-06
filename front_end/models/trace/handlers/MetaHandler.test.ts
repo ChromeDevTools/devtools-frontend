@@ -616,4 +616,22 @@ describe('MetaHandler', function() {
        const data = TraceModel.Handlers.ModelHandlers.Meta.data();
        assert.strictEqual(data.mainFrameId, '881522AC20B813B0C0E99E27CEBAB951');
      });
+
+  it('will use isInPrimaryPage along with isOutermostMainFrame to identify the main frame from TracingStartedInBrowser',
+     async function() {
+       // See crbug.com/343873756 for context on this bug report and fix.
+       const events = await TraceLoader.rawEvents(this, 'primary-page-frame.json.gz');
+       for (const event of events) {
+         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
+       }
+       await TraceModel.Handlers.ModelHandlers.Meta.finalize();
+       const data = TraceModel.Handlers.ModelHandlers.Meta.data();
+       // If you look at the trace, this is the frame that is both:
+       // isInPrimaryPage === true
+       // isOutermostMainFrame == true
+       //
+       // The other frames have isOutermostMainFrame == true (as they are pre-rendered pages)
+       // But they are not in the primary page.
+       assert.strictEqual(data.mainFrameId, '07B7D55F5BE0ADB8AAD6502F2D3859FF');
+     });
 });

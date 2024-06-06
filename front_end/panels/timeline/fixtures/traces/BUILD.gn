@@ -53,6 +53,7 @@ copy_to_gen("traces") {
     "one-second-interaction.json.gz",
     "parser-blocking-after-paint.json.gz",
     "postmessage-initiators.json.gz",
+    "primary-page-frame.json.gz",
     "react-hello-world.json.gz",
     "recursive-blocking-js.json.gz",
     "recursive-counting-js.json.gz",

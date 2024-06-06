@@ -6,6 +6,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as TraceEngine from '../trace/trace.js';
 
@@ -37,7 +38,7 @@ function findFirstEntry(
   return entry;
 }
 
-describe('EntriesFilter', function() {
+describeWithEnvironment('EntriesFilter', function() {
   it('parses a stack and returns an empty list of invisible entries', async function() {
     const data = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');
     const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
@@ -685,5 +686,39 @@ describe('EntriesFilter', function() {
 
     // There should be 3 foo() entries hidden under the first foo call entry
     assert.strictEqual(stack.findHiddenDescendantsAmount(firstFooCallEntry), 3);
+  });
+
+  it('correctly assigns a visible parent to expandable entries if the direct parent is not visible', async function() {
+    const data = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');
+    const mainThread = getMainThread(data.Renderer);
+    /** This stack looks roughly like so (with some events omitted):
+     * ======== Task ===============
+     * ======== (anonymous) ========                  << entry with an invisible in the timeline direct parent. We need to make sure that we correctly add Task to the expandable entries
+     * ======== RegisterFrameID ====
+     * ======== postMessage ========
+     **/
+    const anonymousEntryWithInvisibleParent = findFirstEntry(mainThread.entries, entry => {
+      return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.nodeId === 42;
+    });
+
+    const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
+    if (!stack) {
+      throw new Error('EntriesFilter does not exist');
+    }
+
+    const taskEntry = findFirstEntry(mainThread.entries, entry => {
+      return entry.name === 'RunTask' && entry.dur === 978 && entry.ts === 164397762991;
+    });
+
+    // Make sure the expandable entries are empty at first
+    assert.strictEqual(stack.expandableEntries().length, 0);
+
+    // Hide the anonymous function
+    stack.applyFilterAction(
+        {type: TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION, entry: anonymousEntryWithInvisibleParent});
+
+    // Make sure Task entry is added to expandable entries
+    assert.strictEqual(stack.expandableEntries().length, 1);
+    assert.isTrue(stack.expandableEntries().includes(taskEntry));
   });
 });

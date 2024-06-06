@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Timeline from '../../../panels/timeline/timeline.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {
   getAllNodes,
@@ -15,6 +14,7 @@ import {
   prettyPrint,
 } from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
+import * as Helpers from '../helpers/helpers.js';
 import * as TraceModel from '../trace.js';
 
 const MAIN_FRAME_PID = 2154214;
@@ -202,7 +202,7 @@ describeWithEnvironment('RendererHandler', function() {
         (node: TraceModel.Helpers.TreeHelpers.TraceEntryNode,
          event: TraceModel.Types.TraceEvents.SyntheticTraceEntry) =>
             (!isRoot(node) || isInstant(event) || isLong(event)) &&
-        Boolean(Timeline.EventUICategory.getEventStyle(event.name as TraceModel.Types.TraceEvents.KnownEventName));
+        Boolean(Helpers.EventUICategory.getEventStyle(event.name as TraceModel.Types.TraceEvents.KnownEventName));
     assert.strictEqual(prettyPrint(tree, isIncluded), `
 ............
 -RunTask [2.21ms]
@@ -405,7 +405,7 @@ describeWithEnvironment('RendererHandler', function() {
     const isIncluded =
         (_node: TraceModel.Helpers.TreeHelpers.TraceEntryNode,
          event: TraceModel.Types.TraceEvents.SyntheticTraceEntry) =>
-            Boolean(Timeline.EventUICategory.getEventStyle(event.name as TraceModel.Types.TraceEvents.KnownEventName));
+            Boolean(Helpers.EventUICategory.getEventStyle(event.name as TraceModel.Types.TraceEvents.KnownEventName));
     assert.strictEqual(prettyPrint(tree, isIncluded), `
 -RunTask [0.13ms]
 -RunTask [0.005ms]
@@ -956,7 +956,7 @@ describeWithEnvironment('RendererHandler', function() {
       const onlyLongTasksPredicate =
           (_node: TraceModel.Helpers.TreeHelpers.TraceEntryNode,
            event: TraceModel.Types.TraceEvents.SyntheticTraceEntry) => Boolean(event.dur && event.dur > 1000) &&
-          Boolean(Timeline.EventUICategory.getEventStyle(event.name as TraceModel.Types.TraceEvents.KnownEventName));
+          Boolean(Helpers.EventUICategory.getEventStyle(event.name as TraceModel.Types.TraceEvents.KnownEventName));
       assert.strictEqual(prettyPrint(thread.tree, onlyLongTasksPredicate), `
 .............
 -RunTask [17.269ms]

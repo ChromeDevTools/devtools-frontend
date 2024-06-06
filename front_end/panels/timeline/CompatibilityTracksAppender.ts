@@ -11,7 +11,6 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import {AnimationsTrackAppender} from './AnimationsTrackAppender.js';
 import {getEventLevel} from './AppenderUtils.js';
 import * as TimelineComponents from './components/components.js';
-import {getEventStyle} from './EventUICategory.js';
 import {ExtensionDataGatherer} from './ExtensionDataGatherer.js';
 import {ExtensionTrackAppender} from './ExtensionTrackAppender.js';
 import {GPUTrackAppender} from './GPUTrackAppender.js';
@@ -472,36 +471,7 @@ export class CompatibilityTracksAppender {
     if (this.#traceParsedData.Meta.traceIsGeneric) {
       return true;
     }
-
-    if (TraceEngine.Types.TraceEvents.isTraceEventUpdateCounters(entry)) {
-      // These events are not "visible" on the timeline because they are instant events with 0 duration.
-      // However, the Memory view (CountersGraph in the codebase) relies on
-      // finding the UpdateCounters events within the user's active trace
-      // selection in order to show the memory usage for the selected time
-      // period.
-      // Therefore we mark them as visible so they are appended onto the Thread
-      // track, and hence accessible by the CountersGraph view.
-      return true;
-    }
-
-    // Gate the visibility of post message events behind the experiement flag
-    if (TraceEngine.Types.TraceEvents.isTraceEventSchedulePostMessage(entry) ||
-        TraceEngine.Types.TraceEvents.isTraceEventHandlePostMessage(entry)) {
-      return Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS);
-    }
-
-    if (TraceEngine.Types.Extensions.isSyntheticExtensionEntry(entry)) {
-      return true;
-    }
-
-    // Default styles are globally defined for each event name. Some
-    // events are hidden by default.
-    const eventStyle = getEventStyle(entry.name as TraceEngine.Types.TraceEvents.KnownEventName);
-    const eventIsTiming = TraceEngine.Types.TraceEvents.isTraceEventConsoleTime(entry) ||
-        TraceEngine.Types.TraceEvents.isTraceEventPerformanceMeasure(entry) ||
-        TraceEngine.Types.TraceEvents.isTraceEventPerformanceMark(entry);
-
-    return (eventStyle && !eventStyle.hidden) || eventIsTiming;
+    return TraceEngine.Helpers.EventUICategory.entryIsVisibleInTimeline(entry);
   }
 
   /**

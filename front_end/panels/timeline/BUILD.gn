@@ -59,7 +59,6 @@ devtools_module("timeline") {
     "CLSLinkifier.ts",
     "CompatibilityTracksAppender.ts",
     "CountersGraph.ts",
-    "EventUICategory.ts",
     "EventsTimelineTreeView.ts",
     "ExtensionDataGatherer.ts",
     "ExtensionTrackAppender.ts",

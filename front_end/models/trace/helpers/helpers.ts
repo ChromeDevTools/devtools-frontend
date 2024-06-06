@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+export * as EventUICategory from './EventUICategory.js';
 export * as Extensions from './Extensions.js';
 export * as SamplesIntegrator from './SamplesIntegrator.js';
 export * as SyntheticEvents from './SyntheticEvents.js';

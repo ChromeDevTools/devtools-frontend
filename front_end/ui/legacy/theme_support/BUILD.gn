@@ -27,6 +27,7 @@ devtools_entrypoint("bundle") {
     "../*",
     "../../../entrypoints/main/*",
     "../../../models/extensions/*",
+    "../../../models/trace/helpers/*",
     "../../../panels/*",
     "../../../testing/*",
     "../../components/docs/*",

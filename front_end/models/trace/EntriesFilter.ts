@@ -230,7 +230,9 @@ export class EntriesFilter {
   // The direct parent might be hidden by other actions, therefore we look for the next visible parent.
   #findNextVisibleParent(node: Helpers.TreeHelpers.TraceEntryNode): Helpers.TreeHelpers.TraceEntryNode|null {
     let parent = node.parent;
-    while (parent && this.#invisibleEntries.includes(parent.entry)) {
+    while (parent &&
+           (this.#invisibleEntries.includes(parent.entry) ||
+            !Helpers.EventUICategory.entryIsVisibleInTimeline(parent.entry))) {
       parent = parent.parent;
     }
     return parent;

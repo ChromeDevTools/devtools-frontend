@@ -14073,7 +14073,7 @@
                         },
                         {
                             "name": "partitionKey",
-                            "description": "If specified, deletes only cookies with the the given name and partitionKey where\nwhere all partition key attributes match the cookie partition key attribute.",
+                            "description": "If specified, deletes only cookies with the the given name and partitionKey where\nall partition key attributes match the cookie partition key attribute.",
                             "experimental": true,
                             "optional": true,
                             "$ref": "CookiePartitionKey"

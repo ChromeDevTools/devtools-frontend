@@ -45,9 +45,9 @@ export function*
         traceEvents: readonly TraceEngine.Types.TraceEvents.TraceEventData[],
         metadata: Readonly<TraceEngine.Types.File.MetaData>|null,
         ): IterableIterator<string> {
-  yield '{"traceEvents": ';
+  yield `{"metadata": ${JSON.stringify(metadata || {}, null, 2)}`;
+  yield ',\n"traceEvents": ';
   yield* arrayOfObjectsJsonGenerator(traceEvents);
-  yield `,\n"metadata": ${JSON.stringify(metadata || {}, null, 2)}`;
   yield '}\n';
 }
 

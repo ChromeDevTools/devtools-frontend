@@ -27,6 +27,14 @@ export class I18n {
     this.localeData.set(locale, messages);
   }
 
+  hasLocaleDataForTest(locale: Intl.UnicodeBCP47LocaleIdentifier): boolean {
+    return this.localeData.has(locale);
+  }
+
+  resetLocaleDataForTest(): void {
+    this.localeData.clear();
+  }
+
   registerFileStrings(filename: string, stringStructure: UIStrings): RegisteredFileStrings {
     return new RegisteredFileStrings(filename, stringStructure, this.localeData);
   }

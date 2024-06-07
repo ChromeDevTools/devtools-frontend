@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
+
 import * as i18n from './i18n.js';
 
-describe('preciseMillisToString', () => {
+describeWithLocale('preciseMillisToString', () => {
   it('formats without a given precision', () => {
     const inputNumber = 7.84;
     const outputString = i18n.TimeUtilities.preciseMillisToString(inputNumber);
@@ -19,7 +21,7 @@ describe('preciseMillisToString', () => {
   });
 });
 
-describe('millisToString', () => {
+describeWithLocale('millisToString', () => {
   it('formats when number is infinite', () => {
     const inputNumber = Infinity;
     const outputString = i18n.TimeUtilities.millisToString(inputNumber);
@@ -78,7 +80,7 @@ describe('millisToString', () => {
   });
 });
 
-describe('secondsToString', () => {
+describeWithLocale('secondsToString', () => {
   it('formats infinte numbers correctly', () => {
     const inputNumber = Infinity;
     const outputString = i18n.TimeUtilities.secondsToString(inputNumber);

@@ -72,6 +72,14 @@ export async function fetchAndRegisterLocaleData(
   i18nInstance.registerLocaleData(locale, localeData);
 }
 
+export function hasLocaleDataForTest(locale: Intl.UnicodeBCP47LocaleIdentifier): boolean {
+  return i18nInstance.hasLocaleDataForTest(locale);
+}
+
+export function resetLocaleDataForTest(): void {
+  i18nInstance.resetLocaleDataForTest();
+}
+
 /**
  * Returns an anonymous function that wraps a call to retrieve a localized string.
  * This is introduced so that localized strings can be declared in environments where

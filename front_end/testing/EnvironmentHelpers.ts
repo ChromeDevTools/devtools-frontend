@@ -383,11 +383,13 @@ export async function initializeGlobalLocaleVars() {
     },
   });
 
+  if (i18n.i18n.hasLocaleDataForTest('en-US')) {
+    return;
+  }
+
   // Load the strings from the resource file.
-  const locale = i18n.DevToolsLocale.DevToolsLocale.instance().locale;
-  // proxied call.
   try {
-    await i18n.i18n.fetchAndRegisterLocaleData(locale);
+    await i18n.i18n.fetchAndRegisterLocaleData('en-US');
   } catch (error) {
     // eslint-disable-next-line no-console
     console.warn('EnvironmentHelper: Loading en-US locale failed', error.message);

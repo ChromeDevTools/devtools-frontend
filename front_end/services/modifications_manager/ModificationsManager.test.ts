@@ -14,7 +14,6 @@ describe('ModificationsManager', () => {
     if (!modificationsManager) {
       throw new Error('Modifications manager does not exist.');
     }
-    modificationsManager.applyModificationsIfPresent();
     const entriesFilter = modificationsManager.getEntriesFilter();
     assert.strictEqual(entriesFilter.expandableEntries().length, 1);
     assert.strictEqual(entriesFilter.invisibleEntries().length, 42);
@@ -31,7 +30,6 @@ describe('ModificationsManager', () => {
     if (!modificationsManager) {
       throw new Error('Modifications manager does not exist.');
     }
-    modificationsManager.applyModificationsIfPresent();
     const entriesFilter = modificationsManager.getEntriesFilter();
     const modifications = modificationsManager.toJSON();
     assert.strictEqual(entriesFilter.expandableEntries().length, 1);

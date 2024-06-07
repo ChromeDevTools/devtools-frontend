@@ -1217,11 +1217,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       TraceBounds.TraceBounds.BoundsManager.instance().resetWithNewBounds(
           traceParsedData.Meta.traceBounds,
       );
-
-      // Create an instance of the modifications manager for this trace.
-      ModificationsManager.ModificationsManager.ModificationsManager
-          .initModificationsManagerForTrace(this.#traceEngineModel, this.#traceEngineActiveTraceIndex)
-          .applyModificationsIfPresent();
+      // Create an instance of the modifications manager for this trace or activate a manager for previousy loaded trace.
+      ModificationsManager.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(
+          this.#traceEngineModel, this.#traceEngineActiveTraceIndex);
       this.#applyActiveFilters(traceParsedData.Meta.traceIsGeneric, exclusiveFilter);
     }
     if (traceParsedData) {

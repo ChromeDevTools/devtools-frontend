@@ -144,7 +144,7 @@ export class TraceLoader {
 
     const fromCache = traceEngineCache.get(name)?.get(configCacheKey);
     if (fromCache) {
-      ModificationsManager.ModificationsManager.ModificationsManager.initModificationsManagerForTrace(
+      ModificationsManager.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(
           fromCache.model, 0);
       if (options.initTraceBounds) {
         TraceLoader.initTraceBoundsManager(fromCache.traceParsedData);
@@ -160,7 +160,7 @@ export class TraceLoader {
                 {traceParsedData: TraceEngine.Handlers.Types.TraceParseData, model: TraceEngine.TraceModel.Model}>();
     cacheByName.set(configCacheKey, traceEngineData);
     traceEngineCache.set(name, cacheByName);
-    ModificationsManager.ModificationsManager.ModificationsManager.initModificationsManagerForTrace(
+    ModificationsManager.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(
         traceEngineData.model, 0);
     if (options.initTraceBounds) {
       TraceLoader.initTraceBoundsManager(traceEngineData.traceParsedData);

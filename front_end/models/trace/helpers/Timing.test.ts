@@ -183,4 +183,110 @@ describeWithEnvironment('Timing helpers', () => {
       assert.strictEqual(timeAsMS.toFixed(2), String(178.92));
     });
   });
+
+  describe('BoundsIncludeTimeRange', () => {
+    const {boundsIncludeTimeRange, traceWindowFromMicroSeconds} = TraceModel.Helpers.Timing;
+
+    it('is false for an event that is outside the LHS of the visible bounds', () => {
+      const bounds = traceWindowFromMicroSeconds(
+          milliToMicro(50),
+          milliToMicro(100),
+      );
+
+      const timeRange = traceWindowFromMicroSeconds(
+          milliToMicro(10),
+          milliToMicro(20),
+      );
+
+      assert.isFalse(boundsIncludeTimeRange({
+        bounds,
+        timeRange,
+      }));
+    });
+
+    it('is false for an event that is outside the RHS of the visible bounds', () => {
+      const bounds = traceWindowFromMicroSeconds(
+          milliToMicro(50),
+          milliToMicro(100),
+      );
+
+      const timeRange = traceWindowFromMicroSeconds(
+          milliToMicro(101),
+          milliToMicro(200),
+      );
+
+      assert.isFalse(boundsIncludeTimeRange({
+        bounds,
+        timeRange,
+      }));
+    });
+
+    it('is true for an event that overlaps the LHS of the bounds', () => {
+      const bounds = traceWindowFromMicroSeconds(
+          milliToMicro(50),
+          milliToMicro(100),
+      );
+
+      const timeRange = traceWindowFromMicroSeconds(
+          milliToMicro(0),
+          milliToMicro(52),
+      );
+
+      assert.isTrue(boundsIncludeTimeRange({
+        bounds,
+        timeRange,
+      }));
+    });
+
+    it('is true for an event that overlaps the RHS of the bounds', () => {
+      const bounds = traceWindowFromMicroSeconds(
+          milliToMicro(50),
+          milliToMicro(100),
+      );
+
+      const timeRange = traceWindowFromMicroSeconds(
+          milliToMicro(99),
+          milliToMicro(101),
+      );
+
+      assert.isTrue(boundsIncludeTimeRange({
+        bounds,
+        timeRange,
+      }));
+    });
+
+    it('is true for an event that is entirely within the bounds', () => {
+      const bounds = traceWindowFromMicroSeconds(
+          milliToMicro(50),
+          milliToMicro(100),
+      );
+
+      const timeRange = traceWindowFromMicroSeconds(
+          milliToMicro(51),
+          milliToMicro(75),
+      );
+
+      assert.isTrue(boundsIncludeTimeRange({
+        bounds,
+        timeRange,
+      }));
+    });
+
+    it('is true for an event that is larger than the bounds', () => {
+      const bounds = traceWindowFromMicroSeconds(
+          milliToMicro(50),
+          milliToMicro(100),
+      );
+
+      const timeRange = traceWindowFromMicroSeconds(
+          milliToMicro(0),
+          milliToMicro(200),
+      );
+
+      assert.isTrue(boundsIncludeTimeRange({
+        bounds,
+        timeRange,
+      }));
+    });
+  });
 });

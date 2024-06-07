@@ -350,6 +350,10 @@ export class ThreadAppender implements TrackAppender {
     return this.#url;
   }
 
+  getEntries(): TraceEngine.Types.TraceEvents.TraceEventData[] {
+    return this.#entries;
+  }
+
   #buildNameForAuctionWorklet(): string {
     const workletMetadataEvent = this.#traceParsedData.AuctionWorklets.worklets.get(this.#processId);
     // We should always have this event - if we do not, we were instantiated with invalid data.

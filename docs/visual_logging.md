@@ -196,3 +196,7 @@ details of logging config for an element and all its ancestors on hover.
 
 **Note:** This will only work if you invoked Chrome with the command line flag
 `--enable-features=DevToolsVeLogging`. Otherwise you won't see any red lines.
+
+You can also run `setVeDebugLoggingEnabled(true)` in DevTools on DevTools. This
+will cause each VE log to be also logged to the DevTools on DevTools console.
+They will also be stored in the global variable `veDebugEventsLog`.

@@ -133,7 +133,7 @@ export class OverviewGrid {
 
 export const MinSelectableSize = 14;
 export const WindowScrollSpeedFactor = .3;
-export const ResizerOffset = 3.5;  // half pixel because offset values are not rounded but ceiled
+export const ResizerOffset = 5;
 export const OffsetFromWindowEnds = 10;
 
 export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
@@ -195,6 +195,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     UI.ARIAUtils.markAsSlider(this.leftResizeElement);
     const leftKeyDown = (event: Event): void => this.handleKeyboardResizing(event, false);
     this.leftResizeElement.addEventListener('keydown', leftKeyDown);
+    this.leftResizeElement.addEventListener('click', this.onResizerClicked);
 
     UI.ARIAUtils.setLabel(this.rightResizeElement, i18nString(UIStrings.rightResizer));
     UI.ARIAUtils.markAsSlider(this.rightResizeElement);
@@ -202,6 +203,8 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     const rightKeyDown = (event: Event): void => this.handleKeyboardResizing(event, true);
     this.rightResizeElement.addEventListener('keydown', rightKeyDown);
     this.rightResizeElement.addEventListener('focus', this.onRightResizeElementFocused.bind(this));
+    this.rightResizeElement.addEventListener('click', this.onResizerClicked);
+
     this.leftCurtainElement = (parentElement.createChild('div', 'window-curtain-left') as HTMLElement);
     this.rightCurtainElement = (parentElement.createChild('div', 'window-curtain-right') as HTMLElement);
 
@@ -257,6 +260,12 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
       this.breadcrumbButtonContainerElement.classList.toggle('is-breadcrumb-button-visible', false);
       this.#mouseOverGridOverview = false;
     });
+  }
+
+  private onResizerClicked(event: Event): void {
+    if (event.target) {
+      (event.target as HTMLElement).focus();
+    }
   }
 
   private onRightResizeElementFocused(): void {

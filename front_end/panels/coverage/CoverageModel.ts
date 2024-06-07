@@ -143,8 +143,8 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     // it means the source map is attached after the URLCoverage is created.
     // So now we need to create the sourceURLCoverageInfo and add it to the urlCoverage.
     if (urlCoverage.sourcesURLCoverageInfo.size === 0) {
-      const generatedContent = (await script.requestContent()).content || null;
-      const generatedText = new TextUtils.Text.Text(generatedContent || '');
+      const generatedContent = TextUtils.ContentData.ContentData.textOr(await script.requestContentData(), '');
+      const generatedText = new TextUtils.Text.Text(generatedContent);
       const [sourceSizeMap, sourceSegments] =
           this.calculateSizeForSources(sourceMap, generatedText, script.contentLength);
       urlCoverage.setSourceSegments(sourceSegments);
@@ -591,8 +591,9 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
       // If the script has source map, we need to create the sourceURLCoverageInfo for each source file.
       const sourceMap = await this.sourceMapManager?.sourceMapForClientPromise(contentProvider as SDK.Script.Script);
       if (sourceMap) {
-        const generatedContent = (await contentProvider.requestContent()).content || null;
-        const generatedText = new TextUtils.Text.Text(generatedContent || '');
+        const generatedContent =
+            TextUtils.ContentData.ContentData.textOr(await contentProvider.requestContentData(), '');
+        const generatedText = new TextUtils.Text.Text(generatedContent);
         const [sourceSizeMap, sourceSegments] = this.calculateSizeForSources(sourceMap, generatedText, contentLength);
         urlCoverage.setSourceSegments(sourceSegments);
         for (const sourceURL of sourceMap.sourceURLs()) {
@@ -816,8 +817,8 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
     if (!resource) {
       return null;
     }
-    const content = (await resource.requestContent()).content;
-    return new TextUtils.Text.Text(content || '');
+    const content = TextUtils.ContentData.ContentData.textOr(await resource.requestContentData(), '');
+    return new TextUtils.Text.Text(content);
   }
 
   entriesForExportBasedOnFullText(fullText: TextUtils.Text.Text): EntryForExport {
@@ -846,7 +847,7 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
       const entry: EntryForExport = {
         url: this.url(),
         ranges: info.rangesForExport(),
-        text: (await info.getContentProvider().requestContent()).content,
+        text: TextUtils.ContentData.ContentData.textOr(await info.getContentProvider().requestContentData(), null),
       };
       result.push(entry);
     }

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Host from '../../core/host/host.js';
+import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -89,7 +89,9 @@ export class FreestylerAgent {
 
   async #aidaAutocomplete(text: string): Promise<string> {
     let result;
-    for await (const lastResult of this.#aidaClient.fetch(text)) {
+    // TODO use a different request builder.
+    for await (
+        const lastResult of this.#aidaClient.fetch(Host.AidaClient.AidaClient.buildConsoleInsightsRequest(text))) {
       result = lastResult.explanation;
     }
 

@@ -446,6 +446,13 @@
    * Color for navigation drawers.
    */
   --app-color-navigation-drawer-label-selected: var(--sys-color-primary);
+
+  &.-theme-with-dark-background {
+    /**
+    * Color for navigation drawers.
+    */
+    --app-color-navigation-drawer-label-selected: var(--sys-color-surface);
+  }
 }
 
 :root.baseline-grayscale {
@@ -859,6 +866,6 @@
   /**
    * Colors for navigation drawers.
    */
-  --app-color-navigation-drawer-label-selected: var(--ref-palette-primary70);
-  --app-color-navigation-drawer-background-selected: var(--sys-color-surface);
+  --app-color-navigation-drawer-label-selected: var(--sys-color-surface);
+  --app-color-navigation-drawer-background-selected: var(--ref-palette-primary70);
 }

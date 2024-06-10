@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
 import {
-  type ChatMessage,
   ChatMessageEntity,
   FreestylerChatUi,
   type Props as FreestylerChatUiProps,
@@ -29,16 +29,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/freestyler/FreestylerPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-type ViewInput = {
-  onTextSubmit: (text: string) => void,
-  onAcceptPrivacyNotice: () => void,
-  state: FreestylerChatUiState,
-  messages: ChatMessage[],
-};
-
 type ViewOutput = {};
-
-type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+type View = (input: FreestylerChatUiProps, output: ViewOutput, target: HTMLElement) => void;
 
 // TODO(ergunsh): Use the WidgetElement instead of separately creating the toolbar.
 function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () => void}): void {
@@ -60,15 +52,10 @@ function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () =>
   rightToolbar.appendToolbarItem(helpButton);
 }
 
-function defaultView(input: ViewInput, output: ViewOutput, target: HTMLElement): void {
+function defaultView(input: FreestylerChatUiProps, output: ViewOutput, target: HTMLElement): void {
   // clang-format off
   LitHtml.render(LitHtml.html`
-    <${FreestylerChatUi.litTagName} .props=${{
-        onTextSubmit: input.onTextSubmit,
-        onAcceptPrivacyNotice: input.onAcceptPrivacyNotice,
-        state: input.state,
-        messages: input.messages,
-      } as FreestylerChatUiProps} >
+    <${FreestylerChatUi.litTagName} .props=${input} >
     </${FreestylerChatUi.litTagName}>
   `, target, {host: input}); // eslint-disable-line rulesdir/lit_html_host_this
   // clang-format on
@@ -76,6 +63,8 @@ function defaultView(input: ViewInput, output: ViewOutput, target: HTMLElement):
 
 let freestylerPanelInstance: FreestylerPanel;
 export class FreestylerPanel extends UI.Panel.Panel {
+  #toggleSearchElementAction: UI.ActionRegistration.Action;
+  #selectedNode: SDK.DOMModel.DOMNode|null;
   #contentContainer: HTMLElement;
   #aidaClient: Host.AidaClient.AidaClient;
   #agent: FreestylerAgent;
@@ -84,16 +73,31 @@ export class FreestylerPanel extends UI.Panel.Panel {
     super('freestyler');
 
     createToolbar(this.contentElement, {onClearClick: this.#handleClearClick.bind(this)});
+    this.#toggleSearchElementAction =
+        UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
     this.#aidaClient = new Host.AidaClient.AidaClient();
     this.#contentContainer = this.contentElement.createChild('div', 'freestyler-chat-ui-container');
     this.#agent = new FreestylerAgent({aidaClient: this.#aidaClient});
-
+    this.#selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     this.#viewProps = {
       state: FreestylerChatUiState.CHAT_VIEW,
       messages: [],
+      inspectElementToggled: this.#toggleSearchElementAction.toggled(),
+      selectedNode: this.#selectedNode,
       onTextSubmit: this.#handleTextSubmit.bind(this),
+      onInspectElementClick: this.#handleSelectElementClick.bind(this),
       onAcceptPrivacyNotice: this.#handleAcceptPrivacyNotice.bind(this),
     };
+
+    this.#toggleSearchElementAction.addEventListener(UI.ActionRegistration.Events.Toggled, ev => {
+      this.#viewProps.inspectElementToggled = ev.data;
+      this.doUpdate();
+    });
+
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, ev => {
+      this.#viewProps.selectedNode = ev.data;
+      this.doUpdate();
+    });
     this.doUpdate();
   }
 
@@ -114,6 +118,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
   doUpdate(): void {
     this.view(this.#viewProps, this, this.#contentContainer);
+  }
+
+  #handleSelectElementClick(): void {
+    void this.#toggleSearchElementAction.execute();
   }
 
   // TODO(ergunsh): Handle cancelling agent run.

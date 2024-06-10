@@ -61,6 +61,7 @@
 .chat-input-disclaimer {
   text-align: center;
   color: var(--sys-color-on-surface-subtle);
+  margin-bottom: 2px;
 }
 
 .chat-message {
@@ -95,4 +96,27 @@
 
 .consent-onboarding-heading {
   font-size: 1.2em;
+}
+
+.dom-node-link-container {
+  margin-bottom: 2px;
+  display: inline-flex;
+  align-items: center;
+  line-height: 20px;
+}
+
+.select-an-element-text {
+  margin-left: 2px;
+}
+
+.empty-state-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 16px;
+  opacity: 70%;
 }

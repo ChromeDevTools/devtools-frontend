@@ -2,8 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
+import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -22,6 +25,14 @@ const UIStrings = {
    *@description Title for the send icon button.
    */
   sendButtonTitle: 'Send',
+  /**
+   *@description Label for the "select an element" button.
+   */
+  selectAnElement: 'Select an element',
+  /**
+   *@description Text for the empty state of the Freestyler panel.
+   */
+  emptyStateText: 'How can I help you?',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -44,8 +55,11 @@ export const enum State {
 export type Props = {
   onTextSubmit: (text: string) => void,
   onAcceptPrivacyNotice: () => void,
+  onInspectElementClick: () => void,
+  inspectElementToggled: boolean,
   state: State,
   messages: ChatMessage[],
+  selectedNode: SDK.DOMModel.DOMNode|null,
 };
 
 export class FreestylerChatUi extends HTMLElement {
@@ -92,19 +106,55 @@ export class FreestylerChatUi extends HTMLElement {
     `;
   };
 
-  #renderChatUi = (): LitHtml.TemplateResult => {
-    const isLoading = this.#props.state === State.CHAT_VIEW_LOADING;
+  #renderSelectAnElement = (): LitHtml.TemplateResult => {
+    // clang-format off
+    return LitHtml.html`
+      <${Buttons.Button.Button.litTagName} .data=${{
+        variant: Buttons.Button.Variant.ICON_TOGGLE,
+        size: Buttons.Button.Size.SMALL,
+        iconName: 'select-element',
+        toggledIconName: 'select-element',
+        toggleType: Buttons.Button.ToggleType.PRIMARY,
+        toggled: this.#props.inspectElementToggled,
+        title: i18nString(UIStrings.sendButtonTitle),
+      } as Buttons.Button.ButtonData} @click=${this.#props.onInspectElementClick}></${Buttons.Button.Button.litTagName}>
+      <span class="select-an-element-text">${i18nString(UIStrings.selectAnElement)}</span>
+    `;
+    // clang-format on
+  };
 
+  #renderMessages = (): LitHtml.TemplateResult => {
+    const isLoading = this.#props.state === State.CHAT_VIEW_LOADING;
+    // clang-format off
+    return LitHtml.html`
+      <div class="messages-container">
+        ${this.#props.messages.map(message => this.#renderChatMessage(message.text, message.entity))}
+        ${isLoading ? 'Loading' : ''}
+      </div>
+    `;
+    // clang-format on
+  };
+
+  #renderEmptyState = (): LitHtml.TemplateResult => {
+    // clang-format off
+    return LitHtml.html`<div class="empty-state-container">
+      <${IconButton.Icon.Icon.litTagName} name="spark" style="width: 36px; height: 36px;"></${IconButton.Icon.Icon.litTagName}>
+      ${i18nString(UIStrings.emptyStateText)}
+    </div>`;
+    // clang-format on
+  };
+
+  #renderChatUi = (): LitHtml.TemplateResult => {
     // clang-format off
     return LitHtml.html`
       <div class="chat-ui">
-        <div class="messages-container">
-          ${this.#props.messages.map(message => this.#renderChatMessage(message.text, message.entity))}
-          ${isLoading ? 'Loading' : ''}
-        </div>
+        ${this.#props.messages.length > 0 ? this.#renderMessages() : this.#renderEmptyState()}
         <form class="input-form" @submit=${this.#handleSubmit}>
+          <div class="dom-node-link-container">
+            ${this.#props.selectedNode ? LitHtml.Directives.until(Common.Linkifier.Linkifier.linkify(this.#props.selectedNode)) : this.#renderSelectAnElement()}
+          </div>
           <div class="chat-input-container">
-            <input type="text" class="chat-input" autofocus
+            <input type="text" class="chat-input" .disabled=${!this.#props.selectedNode} autofocus
               placeholder=${i18nString(UIStrings.inputPlaceholder)}>
             <${Buttons.Button.Button.litTagName}
               class="step-actions"

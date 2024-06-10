@@ -1206,6 +1206,7 @@ export namespace Audits {
     MissingTransientUserActivation = 'MissingTransientUserActivation',
     ReplacedByButtonMode = 'ReplacedByButtonMode',
     RelyingPartyOriginIsOpaque = 'RelyingPartyOriginIsOpaque',
+    TypeNotMatching = 'TypeNotMatching',
   }
 
   export interface FederatedAuthUserInfoRequestIssueDetails {
@@ -12191,6 +12192,11 @@ export namespace Page {
     HTTPAuthRequired = 'HTTPAuthRequired',
     CookieFlushed = 'CookieFlushed',
     BroadcastChannelOnMessage = 'BroadcastChannelOnMessage',
+    WebViewSettingsChanged = 'WebViewSettingsChanged',
+    WebViewJavaScriptObjectChanged = 'WebViewJavaScriptObjectChanged',
+    WebViewMessageListenerInjected = 'WebViewMessageListenerInjected',
+    WebViewSafeBrowsingAllowlistChanged = 'WebViewSafeBrowsingAllowlistChanged',
+    WebViewDocumentStartJavascriptChanged = 'WebViewDocumentStartJavascriptChanged',
     WebSocket = 'WebSocket',
     WebTransport = 'WebTransport',
     WebRTC = 'WebRTC',

@@ -575,6 +575,37 @@ const UIStrings = {
    * @description Undefined.
    */
   BroadcastChannelOnMessage: 'Undefined',
+  // TODO(rakina): Please provide meaningful description.
+  /**
+   * @description Undefined.
+   */
+  RequestedByWebViewClient: 'Undefined',
+  // TODO(gjc): Please provide meaningful description.
+  /**
+   * @description Undefined.
+   */
+  WebViewSettingsChanged: 'Undefined',
+  // TODO(gjc): Please provide meaningful description.
+  /**
+   * @description Undefined.
+   */
+  WebViewJavaScriptObjectChanged: 'Undefined',
+  // TODO(gjc): Please provide meaningful description.
+  /**
+   * @description Undefined.
+   */
+  WebViewMessageListenerInjected: 'Undefined',
+  // TODO(gjc): Please provide meaningful description.
+  /**
+   * @description Undefined.
+   */
+  WebViewSafeBrowsingAllowlistChanged: 'Undefined',
+  // TODO(gjc): Please provide meaningful description.
+  /**
+   * @description Undefined.
+   */
+  WebViewDocumentStartJavascriptChanged: 'Undefined',
+
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/BackForwardCacheStrings.ts', UIStrings);
@@ -728,5 +759,10 @@ export const NotRestoredReasonDescription = {
   'UnloadHandler': {name: i18nLazyString(UIStrings.UnloadHandler)},
   'ParserAborted': {name: i18nLazyString(UIStrings.ParserAborted)},
   'BroadcastChannelOnMessage': {name: i18nLazyString(UIStrings.BroadcastChannelOnMessage)},
-  'RequestedByWebViewClient': {name: i18nLazyString(UIStrings.BroadcastChannelOnMessage)},
+  'RequestedByWebViewClient': {name: i18nLazyString(UIStrings.RequestedByWebViewClient)},
+  'WebViewSettingsChanged': {name: i18nLazyString(UIStrings.WebViewSettingsChanged)},
+  'WebViewJavaScriptObjectChanged': {name: i18nLazyString(UIStrings.WebViewJavaScriptObjectChanged)},
+  'WebViewMessageListenerInjected': {name: i18nLazyString(UIStrings.WebViewMessageListenerInjected)},
+  'WebViewSafeBrowsingAllowlistChanged': {name: i18nLazyString(UIStrings.WebViewSafeBrowsingAllowlistChanged)},
+  'WebViewDocumentStartJavascriptChanged': {name: i18nLazyString(UIStrings.WebViewDocumentStartJavascriptChanged)},
 };

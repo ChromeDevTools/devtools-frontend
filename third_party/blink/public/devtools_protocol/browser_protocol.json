@@ -1776,7 +1776,8 @@
                         "NotSignedInWithIdp",
                         "MissingTransientUserActivation",
                         "ReplacedByButtonMode",
-                        "RelyingPartyOriginIsOpaque"
+                        "RelyingPartyOriginIsOpaque",
+                        "TypeNotMatching"
                     ]
                 },
                 {
@@ -18122,6 +18123,11 @@
                         "HTTPAuthRequired",
                         "CookieFlushed",
                         "BroadcastChannelOnMessage",
+                        "WebViewSettingsChanged",
+                        "WebViewJavaScriptObjectChanged",
+                        "WebViewMessageListenerInjected",
+                        "WebViewSafeBrowsingAllowlistChanged",
+                        "WebViewDocumentStartJavascriptChanged",
                         "WebSocket",
                         "WebTransport",
                         "WebRTC",

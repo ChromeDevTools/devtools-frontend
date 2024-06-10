@@ -37,6 +37,13 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
+import {
+  decodeGeneratedRanges,
+  decodeOriginalScopes,
+  type GeneratedRange,
+  type OriginalScope,
+} from './SourceMapScopes.js';
+
 /**
  * Type of the base source map JSON object, which contains the sources and the mappings at the very least, plus
  * some additional fields.
@@ -52,6 +59,8 @@ export type SourceMapV3Object = {
   'sourcesContent'?: (string|null)[],
   'names'?: string[], 'mappings': string,
   'ignoreList'?: number[],
+  'originalScopes'?: string[],
+  'generatedRanges'?: string,
   'x_google_linecount'?: number,
   'x_google_ignoreList'?: number[],
   'x_com_bloomberg_sourcesFunctionMappings'?: string[],
@@ -179,6 +188,11 @@ export class SourceMap {
   readonly #baseURL: Platform.DevToolsPath.UrlString;
   #mappingsInternal: SourceMapEntry[]|null;
   readonly #sourceInfos: Map<Platform.DevToolsPath.UrlString, SourceInfo>;
+
+  /* eslint-disable-next-line no-unused-private-class-members */
+  #originalScopes: OriginalScope[]|null = null;
+  /* eslint-disable-next-line no-unused-private-class-members */
+  #generatedRanges: GeneratedRange|null = null;
 
   /**
    * Implements Source Map V3 model. See https://github.com/google/closure-compiler/wiki/Source-Maps
@@ -523,11 +537,12 @@ export class SourceMap {
     }
 
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES)) {
-      this.parseScopes(map);
+      this.parseBloombergScopes(map);
+      this.#parseScopes(map);
     }
   }
 
-  private parseScopes(map: SourceMapV3Object): void {
+  private parseBloombergScopes(map: SourceMapV3Object): void {
     if (!map.x_com_bloomberg_sourcesFunctionMappings) {
       return;
     }
@@ -604,6 +619,17 @@ export class SourceMap {
       stack.push(entry);
     }
     return toplevel;
+  }
+
+  #parseScopes(map: SourceMapV3Object): void {
+    if (!map.originalScopes || !map.generatedRanges) {
+      return;
+    }
+
+    const names = map.names ?? [];
+    const scopeTrees = decodeOriginalScopes(map.originalScopes, names);
+    this.#originalScopes = scopeTrees.map(tree => tree.root);
+    this.#generatedRanges = decodeGeneratedRanges(map.generatedRanges, scopeTrees, names);
   }
 
   findScopeEntry(sourceURL: Platform.DevToolsPath.UrlString, sourceLineNumber: number, sourceColumnNumber: number):

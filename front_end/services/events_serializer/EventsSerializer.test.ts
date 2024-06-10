@@ -40,9 +40,9 @@ describe('ModificationsManager', () => {
     const profileCallKey = eventsSerializer.keyForEvent(profileCall);
 
     // Test event -> key mappings
-    assert.deepEqual(rawEntryKey, ['r', 8036]);
-    assert.deepEqual(syntheticEventKey, ['s', 2078]);
-    assert.deepEqual(profileCallKey, ['p', 55385, 259, 38, 4]);
+    assert.deepEqual(rawEntryKey, 'r-8036');
+    assert.deepEqual(syntheticEventKey, 's-2078');
+    assert.deepEqual(profileCallKey, 'p-55385-259-38-4');
 
     assert.isOk(rawEntryKey);
     assert.isOk(syntheticEventKey);

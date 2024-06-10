@@ -95,14 +95,15 @@ export class ModificationsManager {
   toJSON(): TraceEngine.Types.File.Modifications {
     const hiddenEntries = this.#entriesFilter.invisibleEntries()
                               .map(entry => this.#eventsSerializer.keyForEvent(entry))
-                              .filter(key => key !== null) as TraceEngine.Types.File.TraceEventSerializableKey[];
-    const expandableEntries = this.#entriesFilter.expandableEntries()
-                                  .map(entry => this.#eventsSerializer.keyForEvent(entry))
-                                  .filter(key => key !== null) as TraceEngine.Types.File.TraceEventSerializableKey[];
+                              .filter(entry => entry !== null) as TraceEngine.Types.File.TraceEventSerializableKey[];
+    const expandableEntries =
+        this.#entriesFilter.expandableEntries()
+            .map(entry => this.#eventsSerializer.keyForEvent(entry))
+            .filter(entry => entry !== null) as TraceEngine.Types.File.TraceEventSerializableKey[];
     this.#modifications = {
       entriesModifications: {
-        hiddenEntries: hiddenEntries.map(key => key.join('-')),
-        expandableEntries: expandableEntries.map(key => key.join('-')),
+        hiddenEntries: hiddenEntries,
+        expandableEntries: expandableEntries,
       },
       initialBreadcrumb: this.#timelineBreadcrumbs.initialBreadcrumb,
     };
@@ -114,14 +115,8 @@ export class ModificationsManager {
     if (!modifications) {
       return;
     }
-    const hiddenEntries = modifications.entriesModifications.hiddenEntries.map(
-        key => key.split('-').map(item => isNaN(parseInt(item, 10)) ? item : parseInt(item, 10)));
-    const expandableEntries = modifications.entriesModifications.expandableEntries.map(
-        key => key.split('-').map(item => isNaN(parseInt(item, 10)) ? item : parseInt(item, 10)));
-    if (!hiddenEntries.every(EventsSerializer.EventsSerializer.isTraceEventSerializableKey) ||
-        !expandableEntries.every(EventsSerializer.EventsSerializer.isTraceEventSerializableKey)) {
-      throw new Error('Invalid event key found in JSON modifications');
-    }
+    const hiddenEntries = modifications.entriesModifications.hiddenEntries;
+    const expandableEntries = modifications.entriesModifications.expandableEntries;
     this.applyEntriesFilterModifications(hiddenEntries, expandableEntries);
     this.#timelineBreadcrumbs.setInitialBreadcrumbFromLoadedModifications(modifications.initialBreadcrumb);
   }

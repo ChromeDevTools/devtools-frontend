@@ -33,6 +33,21 @@ function*
   }
 }
 
+export function resultAssertionsDiff({assertionErrors}: any) {
+  return assertionErrors && assertionErrors.length > 0 ?
+      diff.diffLines(`${assertionErrors[0].expected}`, `${assertionErrors[0].actual}`) :
+      [];
+}
+
+export function formatAsPatch(assertionDiff: any) {
+  const consoleDiffLines = Array.from(formatDiff(
+      assertionDiff, same => ` ${same}`, actual => chalk.green(`+${actual}`), expected => chalk.red(`-${expected}`)));
+  if (consoleDiffLines.length > 0) {
+    return `${chalk.red('- expected')}\n${chalk.green('+ actual')}\n\n${consoleDiffLines.join('\n')}\n`;
+  }
+  return null;
+}
+
 export const ResultsDBReporter = function(
     this: any, baseReporterDecorator: (arg0: any) => void, formatError: any, _config: any) {
   baseReporterDecorator(this);
@@ -45,7 +60,7 @@ export const ResultsDBReporter = function(
   };
 
   const specComplete = (browser: any, result: any) => {
-    const {suite, description, log, startTime, endTime, success, skipped, assertionErrors} = result;
+    const {suite, description, log, startTime, endTime, success, skipped} = result;
     const testId = ResultsDb.sanitizedTestId([...suite, description].join('/'));
     const expected = success || skipped;
     const status = skipped ? 'SKIP' : success ? 'PASS' : 'FAIL';
@@ -60,10 +75,7 @@ export const ResultsDBReporter = function(
     let summaryHtml = undefined;
     if (!expected || consoleLog.length > 0) {
       const messages = [...consoleLog, ...log.map(formatError)];
-
-      const assertionDiff = assertionErrors && assertionErrors.length > 0 ?
-          diff.diffLines(`${assertionErrors[0].expected}`, `${assertionErrors[0].actual}`) :
-          [];
+      const assertionDiff = resultAssertionsDiff(result);
 
       // Prepare resultsdb summary
       const summaryLines = messages.map(m => `<p><pre>${m}</pre></p>`);
@@ -87,13 +99,9 @@ export const ResultsDBReporter = function(
       // Log to console
       const consoleHeader = `==== ${status}: ${testId}`;
       this.write(`${consoleHeader}\n${messages.join('\n\n')}\n`);
-      const consoleDiffLines = Array.from(formatDiff(
-          assertionDiff, same => ` ${same}`, actual => chalk.green(`+${actual}`),
-          expected => chalk.red(`-${expected}`)));
-      if (consoleDiffLines.length > 0) {
-        this.write(`${chalk.red('- expected')}\n`);
-        this.write(`${chalk.green('+ actual')}\n`);
-        this.write(`\n${consoleDiffLines.join('\n')}\n`);
+      const patch = formatAsPatch(assertionDiff);
+      if (patch) {
+        this.write(patch);
       }
       this.write(`${'='.repeat(consoleHeader.length)}\n\n`);
       if (_config['bail']) {

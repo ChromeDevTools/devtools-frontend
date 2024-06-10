@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint @typescript-eslint/no-explicit-any: 0 */
+
 import * as path from 'path';
 
-import {ResultsDBReporter} from '../../test/conductor/karma-resultsdb-reporter.js';
+import {formatAsPatch, resultAssertionsDiff, ResultsDBReporter} from '../../test/conductor/karma-resultsdb-reporter.js';
 import {GEN_DIR, SOURCE_ROOT} from '../../test/conductor/paths.js';
 // eslint-disable-next-line  rulesdir/es_modules_import
 import * as ResultsDb from '../../test/conductor/resultsdb.js';
@@ -19,7 +21,7 @@ function* reporters() {
   if (ResultsDb.available()) {
     yield 'resultsdb';
   } else {
-    yield 'progress';
+    yield 'progress-diff';
   }
   // TODO(333423685)   EXPANDED_REPORTING ? 'mocha' : 'resultsdb',
   if (TestConfig.coverage) {
@@ -41,7 +43,23 @@ CustomChrome.prototype = {
 };
 CustomChrome.$inject = ['baseBrowserDecorator', 'args', 'config'];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const BaseProgressReporter =
+    require(path.join(SOURCE_ROOT, 'node_modules', 'karma', 'lib', 'reporters', 'progress_color.js'));
+const ProgressWithDiffReporter = function(
+    this: any, formatError: unknown, reportSlow: unknown, useColors: unknown, browserConsoleLogOptions: unknown) {
+  BaseProgressReporter.call(this, formatError, reportSlow, useColors, browserConsoleLogOptions);
+  const baseSpecFailure = this.specFailure;
+  this.specFailure = function(this: any, browser: unknown, result: any) {
+    baseSpecFailure.apply(this, arguments);
+    const patch = formatAsPatch(resultAssertionsDiff(result));
+    if (patch) {
+      this.write(`\n${patch}\n\n`);
+    }
+  };
+};
+ProgressWithDiffReporter.$inject =
+    ['formatError', 'config.reportSlowerThan', 'config.colors', 'config.browserConsoleLogOptions'];
+
 module.exports = function(config: any) {
   const targetDir = path.relative(SOURCE_ROOT, GEN_DIR);
   const options = {
@@ -108,6 +126,7 @@ module.exports = function(config: any) {
       require('karma-spec-reporter'),
       require('karma-coverage'),
       {'reporter:resultsdb': ['type', ResultsDBReporter]},
+      {'reporter:progress-diff': ['type', ProgressWithDiffReporter]},
     ],
 
     preprocessors: {

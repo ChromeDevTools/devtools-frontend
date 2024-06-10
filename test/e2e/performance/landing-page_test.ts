@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {
+  $$,
   enableExperiment,
   getBrowserAndPages,
   goToResource,
@@ -40,12 +41,16 @@ describe('The Performance panel landing page', () => {
 
       await goToResource('performance/fake-website.html');
       await lcpPromise;
-      await target.click('div.container');
+      await target.click('#long-interaction');
+      await target.click('#long-interaction');
       await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
       await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
       await frontend.bringToFront();
 
       const [lcpValueElem, clsValueElem, inpValueElem] = await waitForMany('.metric-card-value:not(.waiting)', 3);
+      const interactions = await $$<HTMLElement>('.interaction');
+      assert.lengthOf(interactions, 2);
+
       const lcpValue = await lcpValueElem.evaluate(el => el.textContent) || '';
       assert.match(lcpValue, /[0-9\.]+ (s|ms)/);
 
@@ -54,6 +59,11 @@ describe('The Performance panel landing page', () => {
 
       const inpValue = await inpValueElem.evaluate(el => el.textContent) || '';
       assert.match(inpValue, /[0-9\.]+ (s|ms)/);
+
+      for (const interaction of interactions) {
+        const interactionText = await interaction.evaluate(el => el.innerText) || '';
+        assert.match(interactionText, /pointer\n[\d.]+ (s|ms)/);
+      }
     } finally {
       await targetSession.detach();
     }
@@ -77,7 +87,8 @@ describe('The Performance panel landing page', () => {
 
       await goToResource('performance/fake-website.html');
       await lcpPromise;
-      await target.click('div.container');
+      await target.click('#long-interaction');
+      await target.click('#long-interaction');
       await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
       await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
 
@@ -99,6 +110,9 @@ describe('The Performance panel landing page', () => {
       await frontend.bringToFront();
 
       const [lcpValueElem, clsValueElem, inpValueElem] = await waitForMany('.metric-card-value:not(.waiting)', 3);
+      const interactions = await $$<HTMLElement>('.interaction');
+      assert.lengthOf(interactions, 2);
+
       const lcpValue = await lcpValueElem.evaluate(el => el.textContent) || '';
       assert.match(lcpValue, /[0-9\.]+ (s|ms)/);
 
@@ -107,6 +121,11 @@ describe('The Performance panel landing page', () => {
 
       const inpValue = await inpValueElem.evaluate(el => el.textContent) || '';
       assert.match(inpValue, /[0-9\.]+ (s|ms)/);
+
+      for (const interaction of interactions) {
+        const interactionText = await interaction.evaluate(el => el.innerText) || '';
+        assert.match(interactionText, /pointer\n[\d.]+ (s|ms)/);
+      }
     } finally {
       await targetSession.detach();
     }

@@ -54,18 +54,48 @@
   font-size: 26px;
 }
 
-.metric-card-value.good {
+.good {
   color: var(--color-tertiary-bright);
 }
 
-.metric-card-value.needs-improvement {
+.needs-improvement {
   color: var(--color-orange-bright);
 }
 
-.metric-card-value.poor {
+.poor {
   color: var(--color-error-bright);
 }
 
 .metric-card-element {
   overflow: hidden;
+}
+
+.interactions-list {
+  display: grid;
+  grid-template-columns: 60px auto max-content;
+  column-gap: 32px;
+}
+
+.interaction {
+  display: contents;
+}
+
+.interaction-type {
+  font-weight: bold;
+}
+
+.interaction-node {
+  overflow: hidden;
+}
+
+.interaction-duration {
+  text-align: end;
+}
+
+.divider {
+  grid-column: 1/-1;
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--sys-color-divider);
+  margin: 4px 0;
 }

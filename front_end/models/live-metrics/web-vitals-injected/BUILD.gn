@@ -6,7 +6,10 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/node.gni")
 
 devtools_module("web-vitals-injected") {
-  sources = [ "web-vitals-injected.ts" ]
+  sources = [
+    "OnEachInteraction.ts",
+    "web-vitals-injected.ts",
+  ]
 
   deps = [
     "../../../third_party/web-vitals:bundle",

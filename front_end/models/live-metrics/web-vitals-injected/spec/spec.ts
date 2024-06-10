@@ -23,8 +23,17 @@ export interface INPChangeEvent extends MetricChangeEvent {
   nodeIndex?: number;
 }
 
+export interface InteractionEvent {
+  name: 'Interaction';
+  rating: MetricChangeEvent['rating'];
+  interactionType: INPAttribution['interactionType'];
+  interactionId: number;
+  duration: number;
+  nodeIndex?: number;
+}
+
 export interface ResetEvent {
   name: 'reset';
 }
 
-export type WebVitalsEvent = LCPChangeEvent|CLSChangeEvent|INPChangeEvent|ResetEvent;
+export type WebVitalsEvent = LCPChangeEvent|CLSChangeEvent|INPChangeEvent|InteractionEvent|ResetEvent;

@@ -64,6 +64,7 @@ ts_library("unittests") {
     "BreadcrumbsUI.test.ts",
     "InteractionBreakdown.test.ts",
     "Invalidations.test.ts",
+    "LiveMetricsView.test.ts",
   ]
 
   deps = [

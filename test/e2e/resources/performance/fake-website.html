@@ -11,5 +11,21 @@
   </head>
   <body>
     <div class="container">hello world</div>
+    <button id="long-interaction">Long interaction</button>
+    <script>
+      let clicks = 0;
+      const button = document.querySelector('button');
+      button.onclick = () => {
+        const start = Date.now();
+        let now = Date.now();
+        while (now - start < 300) {
+          now = Date.now();
+        }
+        ++clicks;
+        const click = document.createElement('div');
+        click.textContent = `Click #${clicks}`;
+        document.body.append(click);
+      }
+    </script>
   </body>
 </html>

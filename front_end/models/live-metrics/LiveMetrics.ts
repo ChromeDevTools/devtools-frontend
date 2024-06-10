@@ -25,6 +25,8 @@ class InjectedScript {
 export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDK.TargetManager.Observer {
   #target?: SDK.Target.Target;
   #scriptIdentifier?: Protocol.Page.ScriptIdentifier;
+  #lastResetContextId?: Protocol.Runtime.ExecutionContextId;
+  #mutex = new Common.Mutex.Mutex();
 
   constructor() {
     super();
@@ -64,12 +66,8 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     return domModel.pushObjectAsNodeToFrontend(remoteObject);
   }
 
-  async #onBindingCalled(event: {data: Protocol.Runtime.BindingCalledEvent}): Promise<void> {
-    const {data} = event;
-    if (data.name !== Spec.EVENT_BINDING_NAME) {
-      return;
-    }
-    const webVitalsEvent = JSON.parse(data.payload) as Spec.WebVitalsEvent;
+  async #handleWebVitalsEvent(
+      webVitalsEvent: Spec.WebVitalsEvent, executionContextId: Protocol.Runtime.ExecutionContextId): Promise<void> {
     switch (webVitalsEvent.name) {
       case 'LCP': {
         const lcpEvent: LCPChangeEvent = {
@@ -77,11 +75,12 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
           rating: webVitalsEvent.rating,
         };
         if (webVitalsEvent.nodeIndex !== undefined) {
-          const node = await this.#resolveDomNode(webVitalsEvent.nodeIndex, data.executionContextId);
+          const node = await this.#resolveDomNode(webVitalsEvent.nodeIndex, executionContextId);
           if (node) {
             lcpEvent.node = node;
           }
         }
+
         this.dispatchEventToListeners(Events.LCPChanged, lcpEvent);
         break;
       }
@@ -99,12 +98,26 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
           interactionType: webVitalsEvent.interactionType,
         };
         if (webVitalsEvent.nodeIndex !== undefined) {
-          const node = await this.#resolveDomNode(webVitalsEvent.nodeIndex, data.executionContextId);
+          const node = await this.#resolveDomNode(webVitalsEvent.nodeIndex, executionContextId);
           if (node) {
             inpEvent.node = node;
           }
         }
+
         this.dispatchEventToListeners(Events.INPChanged, inpEvent);
+        break;
+      }
+      case 'Interaction': {
+        const {nodeIndex, ...rest} = webVitalsEvent;
+        const interactionEvent: InteractionEvent = rest;
+        if (nodeIndex !== undefined) {
+          const node = await this.#resolveDomNode(nodeIndex, executionContextId);
+          if (node) {
+            interactionEvent.node = node;
+          }
+        }
+
+        this.dispatchEventToListeners(Events.Interaction, interactionEvent);
         break;
       }
       case 'reset': {
@@ -112,6 +125,30 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
         break;
       }
     }
+  }
+
+  async #onBindingCalled(event: {data: Protocol.Runtime.BindingCalledEvent}): Promise<void> {
+    const {data} = event;
+    if (data.name !== Spec.EVENT_BINDING_NAME) {
+      return;
+    }
+
+    const webVitalsEvent = JSON.parse(data.payload) as Spec.WebVitalsEvent;
+
+    // Previously injected scripts will persist if DevTools is closed and reopened.
+    // Ensure we only handle events from the same execution context as the most recent "reset" event.
+    // "reset" events are only emitted once when the script is injected.
+    if (webVitalsEvent.name === 'reset') {
+      this.#lastResetContextId = data.executionContextId;
+    } else if (this.#lastResetContextId !== data.executionContextId) {
+      return;
+    }
+
+    // Async tasks can be performed while handling an event (e.g. resolving DOM node)
+    // Use a mutex here to ensure the events are handled in the order they are received.
+    await this.#mutex.run(async () => {
+      await this.#handleWebVitalsEvent(webVitalsEvent, data.executionContextId);
+    });
   }
 
   targetAdded(target: SDK.Target.Target): void {
@@ -187,6 +224,7 @@ export const enum Events {
   LCPChanged = 'lcp_changed',
   CLSChanged = 'cls_changed',
   INPChanged = 'inp_changed',
+  Interaction = 'interaction',
   Reset = 'reset',
 }
 
@@ -205,9 +243,14 @@ export interface INPChangeEvent extends MetricChangeEvent {
 
 export type CLSChangeEvent = MetricChangeEvent;
 
+export type InteractionEvent = Pick<Spec.InteractionEvent, 'rating'|'interactionType'|'duration'>&{
+  node?: SDK.DOMModel.DOMNode,
+};
+
 type EventTypes = {
   [Events.LCPChanged]: LCPChangeEvent,
   [Events.CLSChanged]: CLSChangeEvent,
   [Events.INPChanged]: INPChangeEvent,
+  [Events.Interaction]: InteractionEvent,
   [Events.Reset]: void,
 };

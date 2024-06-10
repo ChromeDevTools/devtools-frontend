@@ -41,14 +41,16 @@ export class LiveMetricsView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-live-metrics-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  #liveMetrics: LiveMetrics.LiveMetrics = new LiveMetrics.LiveMetrics();
+  #liveMetrics: LiveMetrics.LiveMetrics;
 
   #lcpValue?: LiveMetrics.LCPChangeEvent;
   #clsValue?: LiveMetrics.CLSChangeEvent;
   #inpValue?: LiveMetrics.INPChangeEvent;
+  #interactions: LiveMetrics.InteractionEvent[] = [];
 
-  constructor() {
+  constructor(liveMetrics = new LiveMetrics.LiveMetrics()) {
     super();
+    this.#liveMetrics = liveMetrics;
     this.#render();
   }
 
@@ -56,6 +58,7 @@ export class LiveMetricsView extends HTMLElement {
     this.#lcpValue = undefined;
     this.#clsValue = undefined;
     this.#inpValue = undefined;
+    this.#interactions = [];
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   };
 
@@ -74,12 +77,18 @@ export class LiveMetricsView extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   };
 
+  #onInteraction = (event: {data: LiveMetrics.InteractionEvent}): void => {
+    this.#interactions.push(event.data);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+  };
+
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [liveMetricsViewStyles];
     this.#liveMetrics.addEventListener(LiveMetrics.Events.Reset, this.#onReset);
     this.#liveMetrics.addEventListener(LiveMetrics.Events.LCPChanged, this.#onLcpChange);
     this.#liveMetrics.addEventListener(LiveMetrics.Events.CLSChanged, this.#onClsChange);
     this.#liveMetrics.addEventListener(LiveMetrics.Events.INPChanged, this.#onInpChange);
+    this.#liveMetrics.addEventListener(LiveMetrics.Events.Interaction, this.#onInteraction);
   }
 
   disconnectedCallback(): void {
@@ -87,6 +96,7 @@ export class LiveMetricsView extends HTMLElement {
     this.#liveMetrics.removeEventListener(LiveMetrics.Events.LCPChanged, this.#onLcpChange);
     this.#liveMetrics.removeEventListener(LiveMetrics.Events.CLSChanged, this.#onClsChange);
     this.#liveMetrics.removeEventListener(LiveMetrics.Events.INPChanged, this.#onInpChange);
+    this.#liveMetrics.removeEventListener(LiveMetrics.Events.Interaction, this.#onInteraction);
   }
 
   #renderLiveLcp(lcpValue: LiveMetrics.LCPChangeEvent|undefined): LitHtml.LitTemplate {
@@ -126,7 +136,6 @@ export class LiveMetricsView extends HTMLElement {
         title,
         i18n.TimeUtilities.millisToString(inpValue.value),
         inpValue.rating,
-        inpValue.node,
     );
   }
 
@@ -155,25 +164,39 @@ export class LiveMetricsView extends HTMLElement {
   }
 
   #render = (): void => {
+    // clang-format off
     const output = html`
       <div class="live-metrics">
         <h3>Local and Field Metrics</h3>
         <div class="metric-cards">
-          <div>
+          <div id="lcp">
             ${this.#renderLiveLcp(this.#lcpValue)}
           </div>
-          <div>
+          <div id="cls">
             ${this.#renderLiveCls(this.#clsValue)}
           </div>
-          <div>
+          <div id="inp">
             ${this.#renderLiveInp(this.#inpValue)}
           </div>
         </div>
         <h3>Interactions</h3>
+        <div class="interactions-list">
+          ${this.#interactions.map((interaction, index) => html`
+            ${index === 0 ? html`<hr class="divider">` : nothing}
+            <div class="interaction">
+              <span class="interaction-type">${interaction.interactionType}</span>
+              <span class="interaction-node">${
+                interaction.node && until(Common.Linkifier.Linkifier.linkify(interaction.node))}</span>
+              <span class=${`interaction-duration ${interaction.rating}`}>${i18n.TimeUtilities.millisToString(interaction.duration)}</span>
+            </div>
+            <hr class="divider">
+          `)}
+        </div>
       </div>
     `;
     LitHtml.render(output, this.#shadow, {host: this});
   };
+  // clang-format on
 }
 
 customElements.define('devtools-live-metrics-view', LiveMetricsView);

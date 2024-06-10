@@ -199,7 +199,7 @@ export class SearchView extends UI.Widget.VBox {
     };
     clearInputFieldButton.classList.add('clear-button');
     clearInputFieldButton.addEventListener('click', () => {
-      this.search.value = '';
+      this.onSearchInputClear();
     });
     clearInputFieldButton.tabIndex = -1;
     searchElements.appendChild(clearInputFieldButton);

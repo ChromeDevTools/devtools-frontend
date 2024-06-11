@@ -181,9 +181,6 @@ function localizeType(sourceType: SourceType): string {
 }
 
 const TERMS_OF_SERVICE_URL = 'https://policies.google.com/terms';
-// Note: concatenation avoids presubmit rules.
-const GEN_AI_TERMS_OF_SERVICE_URL = 'https://policies.google.com/terms/gener' +
-    'ative-ai';
 const PRIVACY_POLICY_URL = 'https://policies.google.com/privacy';
 const CODE_SNIPPET_WARNING_URL = 'https://support.google.com/legal/answer/13505487';
 const LEARNMORE_URL = 'https://goo.gle/devtools-console-messages-ai' as Platform.DevToolsPath.UrlString;
@@ -719,7 +716,7 @@ export class ConsoleInsight extends HTMLElement {
             <p>
             <label>
               <input class="terms" @change=${this.#onTermsChange} type="checkbox" jslog=${VisualLogging.toggle('terms-of-service-accepted')}>
-              <span>I accept my use of "Understand this message" is subject to the <x-link href=${GEN_AI_TERMS_OF_SERVICE_URL} class="link" jslog=${VisualLogging.link('terms-of-service').track({click: true})}>Google Terms of Service</x-link>.</span>
+              <span>I accept my use of "Understand this message" is subject to the <x-link href=${TERMS_OF_SERVICE_URL} class="link" jslog=${VisualLogging.link('terms-of-service').track({click: true})}>Google Terms of Service</x-link>.</span>
             </label>
             </p>
             </main>`;

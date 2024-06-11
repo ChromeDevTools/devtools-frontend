@@ -185,19 +185,26 @@ builder_coverage(
     execution_timeout = 2 * time.hour,
 )
 
-try_builder(
-    name = "dtf_linux_rel",
-    recipe_name = "devtools/tester",
-    dimensions = dimensions.multibot,
-    build_numbers = True,
-)
+def try_pair(name, suffix, compiler_dimensions):
+    try_builder(
+        name = "%s_%s" % (name, suffix),
+        recipe_name = "devtools/tester",
+        dimensions = dimensions.multibot,
+        build_numbers = True,
+        properties = {
+            "compilator_name": "%s_compile_%s" % (name, suffix),
+        },
+    )
+    try_builder(
+        name = "%s_compile_%s" % (name, suffix),
+        recipe_name = "devtools/compilator",
+        dimensions = compiler_dimensions,
+        build_numbers = True,
+    )
 
-try_builder(
-    name = "dtf_linux_compile_rel",
-    recipe_name = "devtools/compilator",
-    dimensions = dimensions.default_ubuntu,
-    build_numbers = True,
-)
+try_pair("dtf_linux", "rel", dimensions.default_ubuntu)
+try_pair("dtf_win", "rel", dimensions.win10)
+try_pair("dtf_mac", "rel", dimensions.mac)
 
 luci.list_view(
     name = "tryserver",
@@ -217,6 +224,8 @@ cq_main = struct(
         "devtools_frontend_mac_arm64_rel",
         "devtools_frontend_win64_rel",
         "dtf_linux_rel",
+        "dtf_mac_rel",
+        "dtf_win_rel",
         "dtf_presubmit_linux",
         "dtf_presubmit_win64",
     ],
@@ -235,6 +244,8 @@ cq_main = struct(
         "devtools_frontend_shuffled_parallel_mac_rel",
         "devtools_frontend_shuffled_parallel_win64_rel",
         "dtf_linux_rel",
+        "dtf_mac_rel",
+        "dtf_win_rel",
     ],
 )
 

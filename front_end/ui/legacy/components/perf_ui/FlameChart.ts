@@ -1830,6 +1830,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       this.viewportElement.removeChild(confirmButton);
     }
   }
+
   #exitEditMode(): void {
     this.#removeEditModeButton();
     this.#inTrackConfigEditMode = false;
@@ -1868,6 +1869,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         widthPixels: this.offsetWidth,
         heightPixels: this.offsetHeight,
         scrollOffsetPixels: this.chartViewport.scrollOffset(),
+        // If there are no groups because we have no timeline data, we treat
+        // that as all being collapsed.
+        allGroupsCollapsed: this.rawTimelineData?.groups.every(g => !g.expanded) ?? true,
       },
       traceWindow: TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(
           this.minimumBoundary(),
@@ -3839,6 +3843,7 @@ export type EventTypes = {
       widthPixels: number,
       heightPixels: number,
       scrollOffsetPixels: number,
+      allGroupsCollapsed: boolean,
     },
     traceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds,
   },

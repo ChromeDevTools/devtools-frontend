@@ -76,6 +76,11 @@ interface FlameChartDimensions {
   widthPixels: number;
   heightPixels: number;
   scrollOffsetPixels: number;
+  // If every single group (e.g. track) within the chart is collapsed or not.
+  // This matters because in the network track if every group (there is only
+  // one) is collapsed, there is no resizer bar shown, which impacts our pixel
+  // calculations for overlay positioning.
+  allGroupsCollapsed: boolean;
 }
 
 export interface TimelineCharts {
@@ -607,6 +612,13 @@ export class Overlays {
 
     if (this.#dimensions.charts.network.heightPixels === 0) {
       return 0;
+    }
+
+    // At this point we know the network track exists and has height. But we
+    // need to check if it is collapsed, because if it is collapsed there is no
+    // resizer shown.
+    if (this.#dimensions.charts.network.allGroupsCollapsed) {
+      return this.#dimensions.charts.network.heightPixels;
     }
 
     return this.#dimensions.charts.network.heightPixels + NETWORK_RESIZE_ELEM_HEIGHT_PX;

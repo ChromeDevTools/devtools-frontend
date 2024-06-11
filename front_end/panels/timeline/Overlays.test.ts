@@ -62,11 +62,13 @@ describeWithEnvironment('Overlays', () => {
       widthPixels: 100,
       heightPixels: 50,
       scrollOffsetPixels: 0,
+      allGroupsCollapsed: false,
     });
     overlays.updateChartDimensions('network', {
       widthPixels: 100,
       heightPixels: 50,
       scrollOffsetPixels: 0,
+      allGroupsCollapsed: false,
     });
 
     const windowMin = TraceEngine.Types.Timing.MicroSeconds(0);
@@ -95,11 +97,13 @@ describeWithEnvironment('Overlays', () => {
       widthPixels: 1000,
       heightPixels: 500,
       scrollOffsetPixels: 0,
+      allGroupsCollapsed: false,
     });
     overlays.updateChartDimensions('network', {
       widthPixels: 1000,
       heightPixels: 200,
       scrollOffsetPixels: 0,
+      allGroupsCollapsed: false,
     });
 
     // Set the visible window to be the entire trace.
@@ -116,6 +120,44 @@ describeWithEnvironment('Overlays', () => {
     assert.strictEqual(yPixel, 441);
   });
 
+  it('can adjust the y position of a main chart event when the network track is collapsed', async function() {
+    const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const charts = createCharts(traceParsedData);
+
+    const container = document.createElement('div');
+    const overlays = new Timeline.Overlays.Overlays({
+      container,
+      charts,
+    });
+
+    overlays.updateChartDimensions('main', {
+      widthPixels: 1000,
+      heightPixels: 500,
+      scrollOffsetPixels: 0,
+      allGroupsCollapsed: false,
+    });
+    overlays.updateChartDimensions('network', {
+      widthPixels: 1000,
+      heightPixels: 34,
+      scrollOffsetPixels: 0,
+      // Make the network track collapsed
+      allGroupsCollapsed: true,
+    });
+
+    // Set the visible window to be the entire trace.
+    overlays.updateVisibleWindow(traceParsedData.Meta.traceBounds);
+
+    // Find an event on the main chart that is not a frame (you cannot add overlays to frames)
+    const event = charts.mainProvider.eventByIndex(50);
+    assert.notInstanceOf(event, TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
+    assert.isOk(event);
+    const yPixel = overlays.yPixelForEventOnChart(event);
+    // The Y offset for the main chart is 233px, but we add 34px on (the height
+    // of the collapsed network chart, with no resizer bar as it is hidden when
+    // the network track is collapsed). This gives us 233+34 = 267.
+    assert.strictEqual(yPixel, 267);
+  });
+
   it('can calculate the y position of a network chart event', async function() {
     const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const charts = createCharts(traceParsedData);
@@ -130,11 +172,13 @@ describeWithEnvironment('Overlays', () => {
       widthPixels: 1000,
       heightPixels: 500,
       scrollOffsetPixels: 0,
+      allGroupsCollapsed: false,
     });
     overlays.updateChartDimensions('network', {
       widthPixels: 1000,
       heightPixels: 200,
       scrollOffsetPixels: 0,
+      allGroupsCollapsed: false,
     });
 
     // Set the visible window to be the entire trace.
@@ -167,11 +211,13 @@ describeWithEnvironment('Overlays', () => {
         widthPixels: 1000,
         heightPixels: 500,
         scrollOffsetPixels: 0,
+        allGroupsCollapsed: false,
       });
       overlays.updateChartDimensions('network', {
         widthPixels: 1000,
         heightPixels: 200,
         scrollOffsetPixels: 0,
+        allGroupsCollapsed: false,
       });
 
       // Set the visible window to be the entire trace.

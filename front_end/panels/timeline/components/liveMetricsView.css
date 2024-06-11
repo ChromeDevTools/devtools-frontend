@@ -71,25 +71,30 @@
 }
 
 .interactions-list {
-  display: grid;
-  grid-template-columns: 60px auto max-content;
-  column-gap: 32px;
+  padding: 0;
 }
 
 .interaction {
-  display: contents;
+  display: flex;
+  align-items: center;
+  gap: 32px;
 }
 
 .interaction-type {
   font-weight: bold;
+  width: 60px;
+  flex-shrink: 0;
 }
 
 .interaction-node {
   overflow: hidden;
+  flex-grow: 1;
 }
 
 .interaction-duration {
   text-align: end;
+  width: max-content;
+  flex-shrink: 0;
 }
 
 .divider {

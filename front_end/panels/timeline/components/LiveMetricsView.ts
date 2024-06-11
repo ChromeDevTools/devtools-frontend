@@ -157,18 +157,18 @@ export class LiveMetricsView extends HTMLElement {
           </div>
         </div>
         <h3>Interactions</h3>
-        <div class="interactions-list">
+        <ol class="interactions-list">
           ${this.#interactions.map((interaction, index) => html`
             ${index === 0 ? html`<hr class="divider">` : nothing}
-            <div class="interaction">
+            <li class="interaction">
               <span class="interaction-type">${interaction.interactionType}</span>
               <span class="interaction-node">${
                 interaction.node && until(Common.Linkifier.Linkifier.linkify(interaction.node))}</span>
               <span class=${`interaction-duration ${interaction.rating}`}>${i18n.TimeUtilities.millisToString(interaction.duration)}</span>
-            </div>
+            </li>
             <hr class="divider">
           `)}
-        </div>
+        </ol>
       </div>
     `;
     LitHtml.render(output, this.#shadow, {host: this});

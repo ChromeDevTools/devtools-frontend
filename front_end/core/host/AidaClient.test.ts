@@ -2,16 +2,27 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../root/root.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import * as Common from '../common/common.js';
+import type * as Root from '../root/root.js';
 
 import * as Host from './host.js';
 
 const TEST_MODEL_ID = 'testModelId';
 
-describe('AidaClient', () => {
-  it('adds no model temperature if there is no aidaTemperature query param', () => {
-    const stub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
-    stub.withArgs('aidaTemperature').returns(null);
+describeWithEnvironment('AidaClient', () => {
+  it('adds no model temperature if console insights is not enabled', () => {
+    const settings = Common.Settings.Settings.instance();
+    const stub = sinon.stub(settings, 'getHostConfig').returns({
+      devToolsConsoleInsights: {
+        enabled: false,
+        aidaTemperature: 0.2,
+      } as Root.Runtime.HostConfigConsoleInsights,
+      devToolsConsoleInsightsDogfood: {
+        enabled: false,
+        aidaTemperature: 0.3,
+      } as Root.Runtime.HostConfigConsoleInsightsDogfood,
+    });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepStrictEqual(request, {
       input: 'foo',
@@ -21,8 +32,19 @@ describe('AidaClient', () => {
   });
 
   it('adds a model temperature', () => {
-    const stub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
-    stub.withArgs('aidaTemperature').returns('0.5');
+    const settings = Common.Settings.Settings.instance();
+    const stub = sinon.stub(settings, 'getHostConfig').returns({
+      devToolsConsoleInsights: {
+        enabled: true,
+        aidaModelId: '',
+        aidaTemperature: 0.5,
+      } as Root.Runtime.HostConfigConsoleInsights,
+      devToolsConsoleInsightsDogfood: {
+        enabled: false,
+        aidaModelId: '',
+        aidaTemperature: 0.3,
+      } as Root.Runtime.HostConfigConsoleInsightsDogfood,
+    });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepStrictEqual(request, {
       input: 'foo',
@@ -35,8 +57,17 @@ describe('AidaClient', () => {
   });
 
   it('adds a model temperature of 0', () => {
-    const stub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
-    stub.withArgs('aidaTemperature').returns('0');
+    const settings = Common.Settings.Settings.instance();
+    const stub = sinon.stub(settings, 'getHostConfig').returns({
+      devToolsConsoleInsights: {
+        enabled: true,
+        aidaTemperature: 0.5,
+      } as Root.Runtime.HostConfigConsoleInsights,
+      devToolsConsoleInsightsDogfood: {
+        enabled: true,
+        aidaTemperature: 0,
+      } as Root.Runtime.HostConfigConsoleInsightsDogfood,
+    });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepStrictEqual(request, {
       input: 'foo',
@@ -48,46 +79,19 @@ describe('AidaClient', () => {
     stub.restore();
   });
 
-  it('adds no model temperature if the aidaTemperature query param cannot be parsed into a float', () => {
-    const stub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
-    stub.withArgs('aidaTemperature').returns('not a number');
-    const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
-    assert.deepStrictEqual(request, {
-      input: 'foo',
-      client: 'CHROME_DEVTOOLS',
-    });
-    stub.restore();
-  });
-
-  it('adds no model id if there is no aidaModelId query param', () => {
-    const stub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
-    stub.withArgs('aidaModelId').returns(null);
-    const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
-    assert.deepStrictEqual(request, {
-      input: 'foo',
-      client: 'CHROME_DEVTOOLS',
-    });
-    stub.restore();
-  });
-
-  it('adds a model id', () => {
-    const stub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
-    stub.withArgs('aidaModelId').returns(TEST_MODEL_ID);
-    const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
-    assert.deepStrictEqual(request, {
-      input: 'foo',
-      client: 'CHROME_DEVTOOLS',
-      options: {
-        model_id: TEST_MODEL_ID,
-      },
-    });
-    stub.restore();
-  });
-
   it('adds a model id and temperature', () => {
-    const stub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
-    stub.withArgs('aidaModelId').returns(TEST_MODEL_ID);
-    stub.withArgs('aidaTemperature').returns('0.5');
+    const settings = Common.Settings.Settings.instance();
+    const stub = sinon.stub(settings, 'getHostConfig').returns({
+      devToolsConsoleInsights: {
+        enabled: true,
+        aidaModelId: TEST_MODEL_ID,
+        aidaTemperature: 0.5,
+      } as Root.Runtime.HostConfigConsoleInsights,
+      devToolsConsoleInsightsDogfood: {
+        enabled: false,
+      } as Root.Runtime.HostConfigConsoleInsightsDogfood,
+    });
+
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepStrictEqual(request, {
       input: 'foo',
@@ -101,14 +105,28 @@ describe('AidaClient', () => {
   });
 
   it('adds metadata to disallow logging', () => {
-    const stub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
-    stub.withArgs('ci_disallowLogging').returns('true');
+    const settings = Common.Settings.Settings.instance();
+    const stub = sinon.stub(settings, 'getHostConfig').returns({
+      devToolsConsoleInsights: {
+        enabled: true,
+        aidaModelId: '',
+        aidaTemperature: 0.5,
+        disallowLogging: true,
+      } as Root.Runtime.HostConfigConsoleInsights,
+      devToolsConsoleInsightsDogfood: {
+        enabled: false,
+      } as Root.Runtime.HostConfigConsoleInsightsDogfood,
+    });
+
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepStrictEqual(request, {
       input: 'foo',
       client: 'CHROME_DEVTOOLS',
       metadata: {
         disable_user_content_logging: true,
+      },
+      options: {
+        temperature: 0.5,
       },
     });
     stub.restore();

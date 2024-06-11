@@ -7709,7 +7709,7 @@ export const NativeFunctions = [
   },
   {
     name: "clamp",
-    signatures: [["?options"],["input","?options"]]
+    signatures: [["input","?options"]]
   },
   {
     name: "conv2d",
@@ -7901,7 +7901,7 @@ export const NativeFunctions = [
   },
   {
     name: "softmax",
-    signatures: [["?input"]]
+    signatures: [["input"]]
   },
   {
     name: "softplus",

@@ -63,6 +63,8 @@ function defaultView(input: FreestylerChatUiProps, output: ViewOutput, target: H
 
 let freestylerPanelInstance: FreestylerPanel;
 export class FreestylerPanel extends UI.Panel.Panel {
+  static panelName = 'freestyler';
+
   #toggleSearchElementAction: UI.ActionRegistration.Action;
   #selectedNode: SDK.DOMModel.DOMNode|null;
   #contentContainer: HTMLElement;
@@ -70,7 +72,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #agent: FreestylerAgent;
   #viewProps: FreestylerChatUiProps;
   private constructor(private view: View = defaultView) {
-    super('freestyler');
+    super(FreestylerPanel.panelName);
 
     createToolbar(this.contentElement, {onClearClick: this.#handleClearClick.bind(this)});
     this.#toggleSearchElementAction =
@@ -124,6 +126,15 @@ export class FreestylerPanel extends UI.Panel.Panel {
     void this.#toggleSearchElementAction.execute();
   }
 
+  handleAction(actionId: string): void {
+    switch (actionId) {
+      case 'freestyler.element-panel-context': {
+        this.#handleClearClick();
+        break;
+      }
+    }
+  }
+
   // TODO(ergunsh): Handle cancelling agent run.
   #handleClearClick(): void {
     this.#viewProps.messages = [];
@@ -158,5 +169,34 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #handleAcceptPrivacyNotice(): void {
     this.#viewProps.state = FreestylerChatUiState.CHAT_VIEW;
     this.doUpdate();
+  }
+}
+
+export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  handleAction(
+      _context: UI.Context.Context,
+      actionId: string,
+      ): boolean {
+    switch (actionId) {
+      case 'freestyler.element-panel-context': {
+        void (async () => {
+          const view = UI.ViewManager.ViewManager.instance().view(
+              FreestylerPanel.panelName,
+          );
+
+          if (view) {
+            await UI.ViewManager.ViewManager.instance().showView(
+                FreestylerPanel.panelName,
+            );
+            const widget = (await view.widget()) as FreestylerPanel;
+            // TODO(340805362): Add UMA
+            widget.handleAction(actionId);
+          }
+        })();
+        return true;
+      }
+    }
+
+    return false;
   }
 }

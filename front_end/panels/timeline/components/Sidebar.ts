@@ -14,7 +14,7 @@ const DEFAULT_EXPANDED_WIDTH = 240;
 
 const enum SidebarTabsName {
   INSIGHTS = 'Insights',
-  ANNOTATION = 'Annotation',
+  ANNOTATIONS = 'Annotations',
 }
 
 export class SidebarWidget extends UI.SplitWidget.SplitWidget {
@@ -79,9 +79,9 @@ export class SidebarUI extends HTMLElement {
           @click=${()=>this.#onTabHeaderClicked(SidebarTabsName.INSIGHTS)}>
         <input
           type="button"
-          value=${SidebarTabsName.ANNOTATION}
-          ?active=${this.#activeTab === SidebarTabsName.ANNOTATION}
-          @click=${()=>this.#onTabHeaderClicked(SidebarTabsName.ANNOTATION)}>
+          value=${SidebarTabsName.ANNOTATIONS}
+          ?active=${this.#activeTab === SidebarTabsName.ANNOTATIONS}
+          @click=${()=>this.#onTabHeaderClicked(SidebarTabsName.ANNOTATIONS)}>
       </div>
     `;
     // clang-format on
@@ -109,7 +109,7 @@ export class SidebarUI extends HTMLElement {
     switch (this.#activeTab) {
       case SidebarTabsName.INSIGHTS:
         return this.#renderInsightsTabContent();
-      case SidebarTabsName.ANNOTATION:
+      case SidebarTabsName.ANNOTATIONS:
         return this.#renderAnnotationTabContent();
       default:
         return null;
@@ -127,10 +127,10 @@ export class SidebarUI extends HTMLElement {
       switch (this.#activeTab) {
         case SidebarTabsName.INSIGHTS:
           tabSliderElement.style.left = '0';
-          tabSliderElement.style.width = `${insightsTabHeaderWidth + /* margin-left of tabs-header*/ 4}px`;
+          tabSliderElement.style.width = `${insightsTabHeaderWidth}px`;
           return;
-        case SidebarTabsName.ANNOTATION:
-          tabSliderElement.style.left = `${insightsTabHeaderWidth + /* margin-left of tabs-header*/ 4}px`;
+        case SidebarTabsName.ANNOTATIONS:
+          tabSliderElement.style.left = `${insightsTabHeaderWidth}px`;
           tabSliderElement.style.width = `${annotationTabHeaderWidth}px`;
           return;
       }
@@ -146,13 +146,13 @@ export class SidebarUI extends HTMLElement {
       'is-closed': !expanded,
     })}>
       <div class="tab-bar">
-        ${expanded? this.#renderHeader() :LitHtml.nothing}
+        ${expanded? this.#renderHeader() : LitHtml.nothing}
         <${IconButton.Icon.Icon.litTagName} name=${toggleIcon} @click=${this.#toggleButtonClick} class="sidebar-toggle-button">
         </${IconButton.Icon.Icon.litTagName}>
       </div>
       <div class="tab-slider" ?hidden=${!expanded}></div>
       <div class="tab-headers-bottom-line" ?hidden=${!expanded}></div>
-      ${expanded? this.#renderContent() :LitHtml.nothing}
+      ${expanded ? LitHtml.html`<div class="sidebar-body">${this.#renderContent()}</div>` : LitHtml.nothing}
     </div>`;
     // clang-format on
     LitHtml.render(output, this.#shadow, {host: this});

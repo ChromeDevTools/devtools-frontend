@@ -33,7 +33,6 @@
   justify-content: space-evenly;
   /* This is same as the sidebar expansion toggle button */
   height: 40px;
-  margin-left: 4px;
   margin-right: auto;
   flex-grow: 0;
   flex-shrink: 0;
@@ -44,6 +43,7 @@
   border: none;
   color: var(--color-text-secondary);
   box-sizing: border-box;
+  padding: 0 10px;
 }
 
 .tabs-header input[active] {
@@ -63,4 +63,8 @@
   height: 1px;
   width: 100%;
   background-color: var(--sys-color-divider);
+}
+
+.sidebar-body {
+  padding: 0 4px;
 }

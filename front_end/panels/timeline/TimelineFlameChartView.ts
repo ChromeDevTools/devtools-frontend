@@ -16,7 +16,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {CountersGraph} from './CountersGraph.js';
 import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
 import {ExtensionDataGatherer} from './ExtensionDataGatherer.js';
-import {Overlays} from './Overlays.js';
+import {Overlays, type TimeRangeLabel} from './Overlays.js';
 import {targetForEvent} from './TargetForEvent.js';
 import {TimelineDetailsView} from './TimelineDetailsView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
@@ -84,6 +84,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   #overlaysContainer: HTMLElement = document.createElement('div');
   #overlays: Overlays;
+
+  #timeRangeSelectionOverlay: TimeRangeLabel|null = null;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -257,8 +259,33 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     );
   }
 
+  /**
+   * @param startTime - the start time of the selection in MilliSeconds
+   * @param endTime - the end time of the selection in MilliSeconds
+   * TODO(crbug.com/346312365): update the type definitions in ChartViewport.ts
+   */
   updateRangeSelection(startTime: number, endTime: number): void {
     this.delegate.select(TimelineSelection.fromRange(startTime, endTime));
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS_OVERLAYS)) {
+      const bounds = TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(
+          TraceEngine.Types.Timing.MilliSeconds(startTime),
+          TraceEngine.Types.Timing.MilliSeconds(endTime),
+      );
+
+      if (this.#timeRangeSelectionOverlay) {
+        this.#overlays.updateExisting(this.#timeRangeSelectionOverlay, {
+          bounds,
+        });
+      } else {
+        this.#timeRangeSelectionOverlay = this.#overlays.add({
+          type: 'TIME_RANGE',
+          label: '',
+          showDuration: true,
+          bounds,
+        });
+      }
+      this.#overlays.update();
+    }
   }
 
   getMainFlameChart(): PerfUI.FlameChart.FlameChart {
@@ -398,6 +425,19 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.mainFlameChart.setSelectedEntry(mainIndex);
     this.networkFlameChart.setSelectedEntry(networkIndex);
 
+    const overlaysEnabled =
+        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS_OVERLAYS);
+
+    // If:
+    // 1. There is no selection, or the selection is not a range selection
+    // AND 2. we have an active time range selection overlay
+    // then we need to remove it.
+    if ((selection === null || !TimelineSelection.isRangeSelection(selection.object)) &&
+        this.#timeRangeSelectionOverlay) {
+      this.#overlays.remove(this.#timeRangeSelectionOverlay);
+      this.#timeRangeSelectionOverlay = null;
+    }
+
     let index = this.mainDataProvider.entryIndexForSelection(selection);
     this.mainFlameChart.setSelectedEntry(index);
     index = this.networkDataProvider.entryIndexForSelection(selection);
@@ -406,9 +446,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       // TODO(crbug.com/1459265):  Change to await after migration work.
       void this.detailsView.setSelection(selection);
     }
-
-    const overlaysEnabled =
-        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_WRITE_MODIFICATIONS_TO_DISK);
 
     // Create the entry selected overlay, but only if the modifications experiment is enabled.
     // Hiding it behind this experiment is temporary to allow for us to test in Canary before pushing to stable.
@@ -424,7 +461,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
         }
         // Clear the ENTRY_SELECTED for the previous selected event.
         this.#overlays.removeOverlaysOfType('ENTRY_SELECTED');
-        this.#overlays.addOverlay({
+        this.#overlays.add({
           type: 'ENTRY_SELECTED',
           entry: selection.object,
         });

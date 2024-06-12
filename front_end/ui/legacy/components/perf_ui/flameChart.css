@@ -65,6 +65,10 @@
   width: 2px;
   background-color: var(--sys-color-primary);
   pointer-events: none;
+
+  &.using-new-overlays {
+    background-color: var(--ref-palette-pink50);
+  }
 }
 
 .flame-chart-entry-info:not(:empty) {

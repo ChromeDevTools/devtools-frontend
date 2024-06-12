@@ -711,8 +711,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const traceEvents = this.#traceEngineModel.rawTraceEvents(this.#traceEngineActiveTraceIndex);
     const metadata = this.#traceEngineModel.metadata(this.#traceEngineActiveTraceIndex);
     // Save modifications into the metadata if modifications experiment is on
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_WRITE_MODIFICATIONS_TO_DISK) &&
-        metadata) {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS_OVERLAYS) && metadata) {
       metadata.modifications = ModificationsManager.ModificationsManager.ModificationsManager.activeManager()?.toJSON();
     }
     if (!traceEvents) {

@@ -5,6 +5,7 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import * as Root from '../../../../core/root/root.js';
 import * as Coordinator from '../../../components/render_coordinator/render_coordinator.js';
 import * as UI from '../../legacy.js';
 
@@ -52,6 +53,9 @@ export class ChartViewport extends UI.Widget.VBox {
   private isUpdateScheduled?: boolean;
   private cancelWindowTimesAnimation?: (() => void)|null;
 
+  #usingNewOverlayForTimeRange =
+      Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS_OVERLAYS);
+
   constructor(delegate: ChartViewportDelegate) {
     super();
     this.registerRequiredCSS(chartViewPortStyles);
@@ -82,6 +86,9 @@ export class ChartViewport extends UI.Widget.VBox {
     this.selectedTimeSpanLabel = this.selectionOverlay.createChild('div', 'time-span');
 
     this.cursorElement = this.contentElement.createChild('div', 'chart-cursor-element hidden');
+    if (this.#usingNewOverlayForTimeRange) {
+      this.cursorElement.classList.add('using-new-overlays');
+    }
 
     this.reset();
 
@@ -239,11 +246,13 @@ export class ChartViewport extends UI.Widget.VBox {
     this.isDraggingInternal = true;
     this.selectionOffsetShiftX = event.offsetX - event.pageX;
     this.selectionStartX = event.offsetX;
-    const style = this.selectionOverlay.style;
-    style.left = this.selectionStartX + 'px';
-    style.width = '1px';
-    this.selectedTimeSpanLabel.textContent = '';
-    this.selectionOverlay.classList.remove('hidden');
+    if (!this.#usingNewOverlayForTimeRange) {
+      const style = this.selectionOverlay.style;
+      style.left = this.selectionStartX + 'px';
+      style.width = '1px';
+      this.selectedTimeSpanLabel.textContent = '';
+      this.selectionOverlay.classList.remove('hidden');
+    }
     return true;
   }
 
@@ -258,6 +267,11 @@ export class ChartViewport extends UI.Widget.VBox {
     this.rangeSelectionEnd = null;
   }
 
+  /**
+   * @param startTime - the start time of the selection in MilliSeconds
+   * @param endTime - the end time of the selection in MilliSeconds
+   * TODO(crbug.com/346312365): update the type definitions in ChartViewport.ts
+   */
   setRangeSelection(startTime: number, endTime: number): void {
     if (!this.rangeSelectionEnabled) {
       return;
@@ -286,6 +300,10 @@ export class ChartViewport extends UI.Widget.VBox {
   }
 
   private updateRangeSelectionOverlay(): void {
+    if (this.#usingNewOverlayForTimeRange) {
+      return;
+    }
+
     const rangeSelectionStart = this.rangeSelectionStart || 0;
     const rangeSelectionEnd = this.rangeSelectionEnd || 0;
     const margin = 100;

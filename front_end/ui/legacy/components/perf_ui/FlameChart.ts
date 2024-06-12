@@ -268,6 +268,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #searchResultHighlightElements: HTMLElement[] = [];
   #inTrackConfigEditMode: boolean = false;
 
+  // Stored because we cache this value to save extra lookups and layoffs.
+  #canvasBoundingClientRect: DOMRect|null = null;
+
   constructor(
       dataProvider: FlameChartDataProvider, flameChartDelegate: FlameChartDelegate,
       groupExpansionSetting?: Common.Settings.Setting<GroupExpansionState>) {
@@ -307,7 +310,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         this.viewportElement.createChild('div', 'reveal-descendants-arrow-highlight-element');
     this.selectedElement = this.viewportElement.createChild('div', 'flame-chart-selected-element');
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_WRITE_MODIFICATIONS_TO_DISK)) {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS_OVERLAYS)) {
       // When this experiment is enabled the new Overlays system is
       // used to render the selected entry outline, so hide this one.
       // Once the overlay is ready we can remove this.selectedElement
@@ -355,6 +358,14 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   override willHide(): void {
     this.hideHighlight();
+  }
+
+  canvasBoundingClientRect(): DOMRect|null {
+    if (this.#canvasBoundingClientRect) {
+      return this.#canvasBoundingClientRect;
+    }
+    this.#canvasBoundingClientRect = this.canvas.getBoundingClientRect();
+    return this.#canvasBoundingClientRect;
   }
 
   getBarHeight(): number {
@@ -3546,6 +3557,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   override onResize(): void {
+    // Clear the rect cache because we have been resized.
+    this.#canvasBoundingClientRect = null;
     this.scheduleUpdate();
   }
 

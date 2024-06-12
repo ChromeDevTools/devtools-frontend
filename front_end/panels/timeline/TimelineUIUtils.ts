@@ -1536,9 +1536,9 @@ export class TimelineUIUtils {
           contentHelper.appendElementRow(i18nString(UIStrings.details), detailsNode);
         }
         if (TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(event)) {
-          const inputDelay = TraceEngine.Helpers.Timing.formatMicrosecondsTime(event.inputDelay);
-          const mainThreadTime = TraceEngine.Helpers.Timing.formatMicrosecondsTime(event.mainThreadHandling);
-          const presentationDelay = TraceEngine.Helpers.Timing.formatMicrosecondsTime(event.presentationDelay);
+          const inputDelay = i18n.TimeUtilities.formatMicroSecondsTime(event.inputDelay);
+          const mainThreadTime = i18n.TimeUtilities.formatMicroSecondsTime(event.mainThreadHandling);
+          const presentationDelay = i18n.TimeUtilities.formatMicroSecondsTime(event.presentationDelay);
           contentHelper.appendTextRow(i18nString(UIStrings.interactionID), event.interactionId);
           contentHelper.appendTextRow(i18nString(UIStrings.inputDelay), inputDelay);
           contentHelper.appendTextRow(i18nString(UIStrings.processingDuration), mainThreadTime);
@@ -1798,7 +1798,7 @@ export class TimelineUIUtils {
     // The time from queueing the request until resource processing is finished.
     const fullDuration = event.dur;
     if (isFinite(fullDuration)) {
-      let textRow = TraceEngine.Helpers.Timing.formatMicrosecondsTime(fullDuration);
+      let textRow = i18n.TimeUtilities.formatMicroSecondsTime(fullDuration);
       // The time from queueing the request until the download is finished. This
       // corresponds to the total time reported for the request in the network tab.
       const networkDuration = event.args.data.syntheticData.finishTime - event.ts;
@@ -1806,9 +1806,9 @@ export class TimelineUIUtils {
       const processingDuration = event.ts + event.dur - event.args.data.syntheticData.finishTime;
       if (isFinite(networkDuration) && isFinite(processingDuration)) {
         const networkDurationStr =
-            TraceEngine.Helpers.Timing.formatMicrosecondsTime(networkDuration as TraceEngine.Types.Timing.MicroSeconds);
-        const processingDurationStr = TraceEngine.Helpers.Timing.formatMicrosecondsTime(
-            processingDuration as TraceEngine.Types.Timing.MicroSeconds);
+            i18n.TimeUtilities.formatMicroSecondsTime(networkDuration as TraceEngine.Types.Timing.MicroSeconds);
+        const processingDurationStr =
+            i18n.TimeUtilities.formatMicroSecondsTime(processingDuration as TraceEngine.Types.Timing.MicroSeconds);
         const cached = event.args.data.syntheticData.isMemoryCached || event.args.data.syntheticData.isDiskCached;
         const cacheOrNetworkLabel =
             cached ? i18nString(UIStrings.loadFromCache) : i18nString(UIStrings.networkTransfer);

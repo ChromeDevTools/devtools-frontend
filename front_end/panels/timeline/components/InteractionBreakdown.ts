@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as TraceEngine from '../../../models/trace/trace.js';
+import type * as TraceEngine from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
@@ -47,9 +47,9 @@ export class InteractionBreakdown extends HTMLElement {
     if (!this.#entry) {
       return;
     }
-    const inputDelay = TraceEngine.Helpers.Timing.formatMicrosecondsTime(this.#entry.inputDelay);
-    const mainThreadTime = TraceEngine.Helpers.Timing.formatMicrosecondsTime(this.#entry.mainThreadHandling);
-    const presentationDelay = TraceEngine.Helpers.Timing.formatMicrosecondsTime(this.#entry.presentationDelay);
+    const inputDelay = i18n.TimeUtilities.formatMicroSecondsTime(this.#entry.inputDelay);
+    const mainThreadTime = i18n.TimeUtilities.formatMicroSecondsTime(this.#entry.mainThreadHandling);
+    const presentationDelay = i18n.TimeUtilities.formatMicroSecondsTime(this.#entry.presentationDelay);
     LitHtml.render(
         LitHtml.html`<ul class="breakdown">
                      <li data-entry="input-delay">${i18nString(UIStrings.inputDelay)}<span class="value">${

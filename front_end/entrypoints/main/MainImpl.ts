@@ -396,18 +396,19 @@ export class MainImpl {
 
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.TIMELINE_WRITE_MODIFICATIONS_TO_DISK,
-        'Enable saving and loading traces with modifications in the Performance panel',
+        'Performance panel: enable annotations',
+        true,
     );
 
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.TIMELINE_SIDEBAR,
-        'Enable the experimental, WIP sidebar for the Performance Panel.',
+        'Performance panel: enable sidebar',
         true,
     );
 
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS,
-        'Enable new Performance panel landing page which includes live metrics and field data',
+        'Performance panel: enable live metrics landing page',
     );
 
     Root.Runtime.experiments.enableExperimentsByDefault([

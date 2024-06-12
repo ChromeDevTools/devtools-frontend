@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Root from '../../../core/root/root.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -30,7 +31,7 @@ export class SidebarWidget extends UI.SplitWidget.SplitWidget {
       this.hideSidebar();
     }
 
-    this.#sidebarUI.render(this.#sidebarExpanded);
+    this.#sidebarUI.expanded = this.#sidebarExpanded;
 
     this.#sidebarUI.addEventListener('togglebuttonclick', () => {
       this.#sidebarExpanded = !this.#sidebarExpanded;
@@ -44,7 +45,7 @@ export class SidebarWidget extends UI.SplitWidget.SplitWidget {
         this.forceSetSidebarWidth(COLLAPSED_WIDTH);
       }
 
-      this.#sidebarUI.render(this.#sidebarExpanded);
+      this.#sidebarUI.expanded = this.#sidebarExpanded;
     });
   }
 }
@@ -53,9 +54,20 @@ export class SidebarUI extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-performance-sidebar`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #activeTab: SidebarTabsName = SidebarTabsName.INSIGHTS;
+  #expanded: boolean = false;
+
+  #renderBound = this.#render.bind(this);
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [sidebarStyles];
+  }
+
+  set expanded(expanded: boolean) {
+    if (expanded === this.#expanded) {
+      return;
+    }
+    this.#expanded = expanded;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
   #toggleButtonClick(): void {
@@ -63,9 +75,11 @@ export class SidebarUI extends HTMLElement {
   }
 
   #onTabHeaderClicked(activeTab: SidebarTabsName): void {
+    if (activeTab === this.#activeTab) {
+      return;
+    }
     this.#activeTab = activeTab;
-    // When the tabs are shown the sidebar is always open.
-    this.render(/* expanded= */ true);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
   #renderHeader(): LitHtml.LitTemplate {
@@ -137,22 +151,22 @@ export class SidebarUI extends HTMLElement {
     }
   }
 
-  render(expanded: boolean): void {
-    const toggleIcon = expanded ? 'left-panel-close' : 'left-panel-open';
+  #render(): void {
+    const toggleIcon = this.#expanded ? 'left-panel-close' : 'left-panel-open';
     // clang-format off
     const output = LitHtml.html`<div class=${LitHtml.Directives.classMap({
       sidebar: true,
-      'is-expanded': expanded,
-      'is-closed': !expanded,
+      'is-expanded': this.#expanded,
+      'is-closed': !this.#expanded,
     })}>
       <div class="tab-bar">
-        ${expanded? this.#renderHeader() : LitHtml.nothing}
+        ${this.#expanded? this.#renderHeader() : LitHtml.nothing}
         <${IconButton.Icon.Icon.litTagName} name=${toggleIcon} @click=${this.#toggleButtonClick} class="sidebar-toggle-button">
         </${IconButton.Icon.Icon.litTagName}>
       </div>
-      <div class="tab-slider" ?hidden=${!expanded}></div>
-      <div class="tab-headers-bottom-line" ?hidden=${!expanded}></div>
-      ${expanded ? LitHtml.html`<div class="sidebar-body">${this.#renderContent()}</div>` : LitHtml.nothing}
+      <div class="tab-slider" ?hidden=${!this.#expanded}></div>
+      <div class="tab-headers-bottom-line" ?hidden=${!this.#expanded}></div>
+      ${this.#expanded ? LitHtml.html`<div class="sidebar-body">${this.#renderContent()}</div>` : LitHtml.nothing}
     </div>`;
     // clang-format on
     LitHtml.render(output, this.#shadow, {host: this});

@@ -430,6 +430,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       this.targetRemoved(target);
       this.targetAdded(target);
     }
+    this.listeners?.clear();
   }
 
   dispose(): void {

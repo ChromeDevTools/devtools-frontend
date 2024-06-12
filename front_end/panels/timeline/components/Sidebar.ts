@@ -60,6 +60,8 @@ export class SidebarUI extends HTMLElement {
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [sidebarStyles];
+    // Force an immediate render of the default state (not expanded).
+    this.#render();
   }
 
   set expanded(expanded: boolean) {

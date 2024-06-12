@@ -100,10 +100,15 @@ export class FreestylerAgent {
 
   async run(query: string, onStep: (step: Step, stepOutput: string) => void): Promise<void> {
     const prompts: Set<string> = new Set([SYSTEM_PROMPT, query]);
+    const structuredLog = [];
     for (let i = 0; i < MAX_STEPS; i++) {
       const combinedPrompt = [...prompts].join('\n');
       const step = await this.#aidaAutocomplete(combinedPrompt);
       debugLog(`Iteration: ${i}: ${combinedPrompt}\n${step}`);
+      structuredLog.push({
+        prompt: combinedPrompt,
+        response: step,
+      });
 
       const thoughtMatch = step.match(THOUGHT_REGEX);
       if (thoughtMatch) {
@@ -133,11 +138,19 @@ export class FreestylerAgent {
         }
       }
     }
+    if (isDebugMode()) {
+      localStorage.setItem('freestylerStructuredLog', JSON.stringify(structuredLog));
+      window.dispatchEvent(new CustomEvent('freestylerdone'));
+    }
   }
 }
 
+function isDebugMode(): boolean {
+  return Boolean(localStorage.getItem('debugFreestylerEnabled'));
+}
+
 function debugLog(log: string): void {
-  if (!localStorage.getItem('debugFreestylerEnabled')) {
+  if (!isDebugMode()) {
     return;
   }
 

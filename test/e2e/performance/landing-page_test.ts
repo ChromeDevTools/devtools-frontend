@@ -95,19 +95,14 @@ describe('The Performance panel landing page', () => {
       await targetSession.send('Runtime.enable');
       const executionContextPromise = new Promise(r => targetSession.once('Runtime.executionContextCreated', r));
 
-      // Switch to the performance panel using internal JS because the inspector tab
-      // is hidden at this point in the test.
-      await frontend.evaluate(`
-        (async () => {
-          const UI = await import('./ui/legacy/legacy.js');
-          await UI.ViewManager.ViewManager.instance().showView('timeline');
-        })();
-      `);
+      // Reload DevTools to inject new listeners after content is loaded
+      await frontend.reload();
 
       // An execution context will be created once the web vitals library has been injected
       await executionContextPromise;
 
       await frontend.bringToFront();
+      await navigateToPerformanceTab();
 
       const [lcpValueElem, clsValueElem, inpValueElem] = await waitForMany('.metric-card-value:not(.waiting)', 3);
       const interactions = await $$<HTMLElement>('.interaction');

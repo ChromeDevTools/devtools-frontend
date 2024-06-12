@@ -41,65 +41,42 @@ export class LiveMetricsView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-live-metrics-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  #liveMetrics: LiveMetrics.LiveMetrics;
+  #lcpValue?: LiveMetrics.LCPValue;
+  #clsValue?: LiveMetrics.CLSValue;
+  #inpValue?: LiveMetrics.INPValue;
+  #interactions: LiveMetrics.InteractionValue[] = [];
 
-  #lcpValue?: LiveMetrics.LCPChangeEvent;
-  #clsValue?: LiveMetrics.CLSChangeEvent;
-  #inpValue?: LiveMetrics.INPChangeEvent;
-  #interactions: LiveMetrics.InteractionEvent[] = [];
-
-  constructor(liveMetrics = new LiveMetrics.LiveMetrics()) {
+  constructor() {
     super();
-    this.#liveMetrics = liveMetrics;
     this.#render();
   }
 
-  #onReset = (): void => {
-    this.#lcpValue = undefined;
-    this.#clsValue = undefined;
-    this.#inpValue = undefined;
-    this.#interactions = [];
+  #onMetricStatus(event: {data: LiveMetrics.StatusEvent}): void {
+    this.#lcpValue = event.data.lcp;
+    this.#clsValue = event.data.cls;
+    this.#inpValue = event.data.inp;
+    this.#interactions = event.data.interactions;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  };
-
-  #onLcpChange = (event: {data: LiveMetrics.LCPChangeEvent}): void => {
-    this.#lcpValue = event.data;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  };
-
-  #onClsChange = (event: {data: LiveMetrics.CLSChangeEvent}): void => {
-    this.#clsValue = event.data;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  };
-
-  #onInpChange = (event: {data: LiveMetrics.INPChangeEvent}): void => {
-    this.#inpValue = event.data;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  };
-
-  #onInteraction = (event: {data: LiveMetrics.InteractionEvent}): void => {
-    this.#interactions.push(event.data);
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  };
+  }
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [liveMetricsViewStyles];
-    this.#liveMetrics.addEventListener(LiveMetrics.Events.Reset, this.#onReset);
-    this.#liveMetrics.addEventListener(LiveMetrics.Events.LCPChanged, this.#onLcpChange);
-    this.#liveMetrics.addEventListener(LiveMetrics.Events.CLSChanged, this.#onClsChange);
-    this.#liveMetrics.addEventListener(LiveMetrics.Events.INPChanged, this.#onInpChange);
-    this.#liveMetrics.addEventListener(LiveMetrics.Events.Interaction, this.#onInteraction);
+
+    const liveMetrics = LiveMetrics.LiveMetrics.instance();
+    liveMetrics.addEventListener(LiveMetrics.Events.Status, this.#onMetricStatus, this);
+
+    this.#lcpValue = liveMetrics.lcpValue;
+    this.#clsValue = liveMetrics.clsValue;
+    this.#inpValue = liveMetrics.inpValue;
+    this.#interactions = liveMetrics.interactions;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   disconnectedCallback(): void {
-    this.#liveMetrics.removeEventListener(LiveMetrics.Events.Reset, this.#onReset);
-    this.#liveMetrics.removeEventListener(LiveMetrics.Events.LCPChanged, this.#onLcpChange);
-    this.#liveMetrics.removeEventListener(LiveMetrics.Events.CLSChanged, this.#onClsChange);
-    this.#liveMetrics.removeEventListener(LiveMetrics.Events.INPChanged, this.#onInpChange);
-    this.#liveMetrics.removeEventListener(LiveMetrics.Events.Interaction, this.#onInteraction);
+    LiveMetrics.LiveMetrics.instance().removeEventListener(LiveMetrics.Events.Status, this.#onMetricStatus, this);
   }
 
-  #renderLiveLcp(lcpValue: LiveMetrics.LCPChangeEvent|undefined): LitHtml.LitTemplate {
+  #renderLiveLcp(lcpValue: LiveMetrics.LCPValue|undefined): LitHtml.LitTemplate {
     const title = 'Largest Contentful Paint (LCP)';
     if (!lcpValue) {
       return this.#renderLiveMetric(title);
@@ -113,7 +90,7 @@ export class LiveMetricsView extends HTMLElement {
     );
   }
 
-  #renderLiveCls(clsValue: LiveMetrics.CLSChangeEvent|undefined): LitHtml.LitTemplate {
+  #renderLiveCls(clsValue: LiveMetrics.CLSValue|undefined): LitHtml.LitTemplate {
     const title = 'Cumulative Layout Shift (CLS)';
     if (!clsValue) {
       return this.#renderLiveMetric(title);
@@ -126,7 +103,7 @@ export class LiveMetricsView extends HTMLElement {
     );
   }
 
-  #renderLiveInp(inpValue: LiveMetrics.INPChangeEvent|undefined): LitHtml.LitTemplate {
+  #renderLiveInp(inpValue: LiveMetrics.INPValue|undefined): LitHtml.LitTemplate {
     const title = 'Interaction to Next Paint (INP)';
     if (!inpValue) {
       return this.#renderLiveMetric(title);

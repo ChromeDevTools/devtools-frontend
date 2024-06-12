@@ -14,11 +14,17 @@ import * as Components from './components.js';
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithEnvironment('LiveMetricsView', () => {
+  beforeEach(async () => {
+    LiveMetrics.LiveMetrics.instance({forceNew: true});
+  });
+
   it('should show LCP value', async () => {
-    const liveMetrics = new LiveMetrics.LiveMetrics();
-    const view = new Components.LiveMetricsView.LiveMetricsView(liveMetrics);
+    const view = new Components.LiveMetricsView.LiveMetricsView();
     renderElementIntoDOM(view);
-    liveMetrics.dispatchEventToListeners(LiveMetrics.Events.LCPChanged, {value: 100, rating: 'good'});
+    LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
+      lcp: {value: 100, rating: 'good'},
+      interactions: [],
+    });
     await coordinator.done();
     const metricEl = view.shadowRoot?.querySelector('#lcp') as HTMLDivElement;
     const metricValueEl = metricEl.querySelector('.metric-card-value') as HTMLDivElement;
@@ -27,11 +33,12 @@ describeWithEnvironment('LiveMetricsView', () => {
   });
 
   it('should show CLS value', async () => {
-    const liveMetrics = new LiveMetrics.LiveMetrics();
-    const view = new Components.LiveMetricsView.LiveMetricsView(liveMetrics);
+    const view = new Components.LiveMetricsView.LiveMetricsView();
     renderElementIntoDOM(view);
-    liveMetrics.dispatchEventToListeners(
-        LiveMetrics.Events.CLSChanged, {value: 1.34294789234, rating: 'needs-improvement'});
+    LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
+      cls: {value: 1.34294789234, rating: 'needs-improvement'},
+      interactions: [],
+    });
     await coordinator.done();
     const metricEl = view.shadowRoot?.querySelector('#cls') as HTMLDivElement;
     const metricValueEl = metricEl.querySelector('.metric-card-value') as HTMLDivElement;
@@ -40,11 +47,10 @@ describeWithEnvironment('LiveMetricsView', () => {
   });
 
   it('should show INP value', async () => {
-    const liveMetrics = new LiveMetrics.LiveMetrics();
-    const view = new Components.LiveMetricsView.LiveMetricsView(liveMetrics);
+    const view = new Components.LiveMetricsView.LiveMetricsView();
     renderElementIntoDOM(view);
-    liveMetrics.dispatchEventToListeners(
-        LiveMetrics.Events.INPChanged, {value: 2000, rating: 'poor', interactionType: 'pointer'});
+    LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(
+        LiveMetrics.Events.Status, {inp: {value: 2000, rating: 'poor', interactionType: 'pointer'}, interactions: []});
     await coordinator.done();
     const metricEl = view.shadowRoot?.querySelector('#inp') as HTMLDivElement;
     const metricValueEl = metricEl.querySelector('.metric-card-value') as HTMLDivElement;
@@ -53,8 +59,7 @@ describeWithEnvironment('LiveMetricsView', () => {
   });
 
   it('should show empty metric', async () => {
-    const liveMetrics = new LiveMetrics.LiveMetrics();
-    const view = new Components.LiveMetricsView.LiveMetricsView(liveMetrics);
+    const view = new Components.LiveMetricsView.LiveMetricsView();
     renderElementIntoDOM(view);
     await coordinator.done();
     const metricEl = view.shadowRoot?.querySelector('#inp') as HTMLDivElement;
@@ -64,13 +69,14 @@ describeWithEnvironment('LiveMetricsView', () => {
   });
 
   it('should show interactions', async () => {
-    const liveMetrics = new LiveMetrics.LiveMetrics();
-    const view = new Components.LiveMetricsView.LiveMetricsView(liveMetrics);
+    const view = new Components.LiveMetricsView.LiveMetricsView();
     renderElementIntoDOM(view);
-    liveMetrics.dispatchEventToListeners(
-        LiveMetrics.Events.Interaction, {duration: 500, rating: 'poor', interactionType: 'pointer'});
-    liveMetrics.dispatchEventToListeners(
-        LiveMetrics.Events.Interaction, {duration: 30, rating: 'good', interactionType: 'keyboard'});
+    LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
+      interactions: [
+        {duration: 500, rating: 'poor', interactionType: 'pointer'},
+        {duration: 30, rating: 'good', interactionType: 'keyboard'},
+      ],
+    });
     await coordinator.done();
     const interactionsListEl = view.shadowRoot?.querySelector('.interactions-list') as HTMLDivElement;
     const interactionsEls = interactionsListEl.querySelectorAll('.interaction');

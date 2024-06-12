@@ -10,6 +10,8 @@ import * as Spec from './web-vitals-injected/spec/spec.js';
 
 const LIVE_METRICS_WORLD_NAME = 'live_metrics_world';
 
+let liveMetricsInstance: LiveMetrics;
+
 class InjectedScript {
   static #injectedScript?: string;
   static async get(): Promise<string> {
@@ -26,11 +28,40 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   #target?: SDK.Target.Target;
   #scriptIdentifier?: Protocol.Page.ScriptIdentifier;
   #lastResetContextId?: Protocol.Runtime.ExecutionContextId;
+  #lcpValue?: LCPValue;
+  #clsValue?: CLSValue;
+  #inpValue?: INPValue;
+  #interactions: InteractionValue[] = [];
   #mutex = new Common.Mutex.Mutex();
 
-  constructor() {
+  private constructor() {
     super();
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
+  }
+
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): LiveMetrics {
+    const {forceNew} = opts;
+    if (!liveMetricsInstance || forceNew) {
+      liveMetricsInstance = new LiveMetrics();
+    }
+
+    return liveMetricsInstance;
+  }
+
+  get lcpValue(): LCPValue|undefined {
+    return this.#lcpValue;
+  }
+
+  get clsValue(): CLSValue|undefined {
+    return this.#clsValue;
+  }
+
+  get inpValue(): INPValue|undefined {
+    return this.#inpValue;
+  }
+
+  get interactions(): InteractionValue[] {
+    return this.#interactions;
   }
 
   /**
@@ -70,7 +101,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       webVitalsEvent: Spec.WebVitalsEvent, executionContextId: Protocol.Runtime.ExecutionContextId): Promise<void> {
     switch (webVitalsEvent.name) {
       case 'LCP': {
-        const lcpEvent: LCPChangeEvent = {
+        const lcpEvent: LCPValue = {
           value: webVitalsEvent.value,
           rating: webVitalsEvent.rating,
         };
@@ -81,18 +112,19 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
           }
         }
 
-        this.dispatchEventToListeners(Events.LCPChanged, lcpEvent);
+        this.#lcpValue = lcpEvent;
         break;
       }
       case 'CLS': {
-        this.dispatchEventToListeners(Events.CLSChanged, {
+        const event: CLSValue = {
           value: webVitalsEvent.value,
           rating: webVitalsEvent.rating,
-        });
+        };
+        this.#clsValue = event;
         break;
       }
       case 'INP': {
-        const inpEvent: INPChangeEvent = {
+        const inpEvent: INPValue = {
           value: webVitalsEvent.value,
           rating: webVitalsEvent.rating,
           interactionType: webVitalsEvent.interactionType,
@@ -104,12 +136,12 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
           }
         }
 
-        this.dispatchEventToListeners(Events.INPChanged, inpEvent);
+        this.#inpValue = inpEvent;
         break;
       }
       case 'Interaction': {
         const {nodeIndex, ...rest} = webVitalsEvent;
-        const interactionEvent: InteractionEvent = rest;
+        const interactionEvent: InteractionValue = rest;
         if (nodeIndex !== undefined) {
           const node = await this.#resolveDomNode(nodeIndex, executionContextId);
           if (node) {
@@ -117,14 +149,23 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
           }
         }
 
-        this.dispatchEventToListeners(Events.Interaction, interactionEvent);
+        this.#interactions.push(interactionEvent);
         break;
       }
       case 'reset': {
-        this.dispatchEventToListeners(Events.Reset);
+        this.#lcpValue = undefined;
+        this.#clsValue = undefined;
+        this.#inpValue = undefined;
+        this.#interactions = [];
         break;
       }
     }
+    this.dispatchEventToListeners(Events.Status, {
+      lcp: this.#lcpValue,
+      cls: this.#clsValue,
+      inp: this.#inpValue,
+      interactions: this.#interactions,
+    });
   }
 
   async #onBindingCalled(event: {data: Protocol.Runtime.BindingCalledEvent}): Promise<void> {
@@ -155,17 +196,17 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;
     }
-    void this.enable(target);
+    void this.#enable(target);
   }
 
   targetRemoved(target: SDK.Target.Target): void {
     if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;
     }
-    void this.disable();
+    void this.#disable();
   }
 
-  async enable(target: SDK.Target.Target): Promise<void> {
+  async #enable(target: SDK.Target.Target): Promise<void> {
     if (this.#target) {
       return;
     }
@@ -194,7 +235,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     this.#target = target;
   }
 
-  async disable(): Promise<void> {
+  async #disable(): Promise<void> {
     if (!this.#target) {
       return;
     }
@@ -221,36 +262,35 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 }
 
 export const enum Events {
-  LCPChanged = 'lcp_changed',
-  CLSChanged = 'cls_changed',
-  INPChanged = 'inp_changed',
-  Interaction = 'interaction',
-  Reset = 'reset',
+  Status = 'status',
 }
 
-export type MetricChangeEvent = Pick<Spec.MetricChangeEvent, 'value'|'rating'>;
+export type MetricValue = Pick<Spec.MetricChangeEvent, 'value'|'rating'>;
 
 export type Rating = Spec.MetricChangeEvent['rating'];
 
-export interface LCPChangeEvent extends MetricChangeEvent {
+export interface LCPValue extends MetricValue {
   node?: SDK.DOMModel.DOMNode;
 }
 
-export interface INPChangeEvent extends MetricChangeEvent {
+export interface INPValue extends MetricValue {
   interactionType: Spec.INPChangeEvent['interactionType'];
   node?: SDK.DOMModel.DOMNode;
 }
 
-export type CLSChangeEvent = MetricChangeEvent;
+export type CLSValue = MetricValue;
 
-export type InteractionEvent = Pick<Spec.InteractionEvent, 'rating'|'interactionType'|'duration'>&{
+export type InteractionValue = Pick<Spec.InteractionEvent, 'rating'|'interactionType'|'duration'>&{
   node?: SDK.DOMModel.DOMNode,
 };
 
+export interface StatusEvent {
+  lcp?: LCPValue;
+  cls?: CLSValue;
+  inp?: INPValue;
+  interactions: InteractionValue[];
+}
+
 type EventTypes = {
-  [Events.LCPChanged]: LCPChangeEvent,
-  [Events.CLSChanged]: CLSChangeEvent,
-  [Events.INPChanged]: INPChangeEvent,
-  [Events.Interaction]: InteractionEvent,
-  [Events.Reset]: void,
+  [Events.Status]: StatusEvent,
 };

@@ -10,6 +10,7 @@ load(
     "default_timeout",
     "defaults",
     "dimensions",
+    "recipe",
 )
 
 BUCKET_NAME = "try"
@@ -209,6 +210,33 @@ try_pair("dtf_linux", "rel", dimensions.default_ubuntu, "Ubuntu-22.04", "x86_64"
 try_pair("dtf_win", "rel", dimensions.win10, "Windows-10-19045", "x86_64")
 try_pair("dtf_mac", "rel", dimensions.mac, "Mac-14", "arm64")
 
+def cpp_debug_extension_try(suffix, extra_properties):
+    properties = {"$build/reclient": {
+        "instance": "rbe-chrome-trusted",
+        "metrics_project": "chromium-reclient-metrics",
+    }}
+    properties.update(extra_properties or {})
+    luci.builder(
+        name = "cpp_debug_extension_%s" % suffix,
+        bucket = "try",
+        executable = recipe(
+            name = "devtools_internal/backend",
+            cipd_package = "infra_internal/recipe_bundles/chrome-internal.googlesource.com/chrome/tools/build_limited/scripts/slave",
+        ),
+        service_account = TRY_ACCOUNT,
+        dimensions = dimensions.default_ubuntu,
+        properties = dict(
+            upload_dwarf_binary = False,
+            **properties
+        ),
+        build_numbers = True,
+    )
+
+cpp_debug_extension_try("dbg", extra_properties = {"builder_config": "Debug"})
+cpp_debug_extension_try("rel", extra_properties = {"builder_config": "Release"})
+cpp_debug_extension_try("e2e_dbg", extra_properties = {"e2e_builder": True, "builder_config": "Debug"})
+cpp_debug_extension_try("e2e_rel", extra_properties = {"e2e_builder": True, "builder_config": "Release"})
+
 luci.list_view(
     name = "tryserver",
     title = "Tryserver",
@@ -218,6 +246,10 @@ luci.list_view(
 
 cq_main = struct(
     builders = [
+        "cpp_debug_extension_dbg",
+        "cpp_debug_extension_rel",
+        "cpp_debug_extension_e2e_dbg",
+        "cpp_debug_extension_e2e_rel",
         "devtools_frontend_linux_blink_light_rel",
         "devtools_frontend_linux_blink_light_rel_fastbuild",
         "devtools_frontend_linux_dbg",
@@ -238,6 +270,10 @@ cq_main = struct(
         "devtools_frontend_mac_arm64_rel",
     ],
     includable_only_builders = [
+        "cpp_debug_extension_dbg",
+        "cpp_debug_extension_rel",
+        "cpp_debug_extension_e2e_dbg",
+        "cpp_debug_extension_e2e_rel",
         "devtools_frontend_linux_blink_light_rel",
         "devtools_screenshot_linux_rel",
         "devtools_screenshot_mac_rel",

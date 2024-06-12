@@ -15,12 +15,10 @@
 
 import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
-
-import {type TraceEventHandlerName} from './types.js';
-
 import * as Types from '../types/types.js';
 
 import {data as metaHandlerData} from './MetaHandler.js';
+import {type TraceEventHandlerName} from './types.js';
 
 /**
  * This represents the metric scores for all navigations, for all frames in a trace.
@@ -93,37 +91,24 @@ function storePageLoadMetricAgainstNavigationId(
 
   if (Types.TraceEvents.isTraceEventFirstContentfulPaint(event)) {
     const fcpTime = Types.Timing.MicroSeconds(event.ts - navigation.ts);
-    const score = Helpers.Timing.formatMicrosecondsTime(fcpTime, {
-      format: Types.Timing.TimeUnit.SECONDS,
-      maximumFractionDigits: 2,
-    });
     const classification = scoreClassificationForFirstContentfulPaint(fcpTime);
-    const metricScore = {event, score, metricName: MetricName.FCP, classification, navigation, timing: fcpTime};
+    const metricScore = {event, metricName: MetricName.FCP, classification, navigation, timing: fcpTime};
     storeMetricScore(frameId, navigationId, metricScore);
     return;
   }
 
   if (Types.TraceEvents.isTraceEventFirstPaint(event)) {
     const paintTime = Types.Timing.MicroSeconds(event.ts - navigation.ts);
-    const score = Helpers.Timing.formatMicrosecondsTime(paintTime, {
-      format: Types.Timing.TimeUnit.SECONDS,
-      maximumFractionDigits: 2,
-    });
     const classification = ScoreClassification.UNCLASSIFIED;
-    const metricScore = {event, score, metricName: MetricName.FP, classification, navigation, timing: paintTime};
+    const metricScore = {event, metricName: MetricName.FP, classification, navigation, timing: paintTime};
     storeMetricScore(frameId, navigationId, metricScore);
     return;
   }
 
   if (Types.TraceEvents.isTraceEventMarkDOMContent(event)) {
     const dclTime = Types.Timing.MicroSeconds(event.ts - navigation.ts);
-    const score = Helpers.Timing.formatMicrosecondsTime(dclTime, {
-      format: Types.Timing.TimeUnit.SECONDS,
-      maximumFractionDigits: 2,
-    });
     const metricScore = {
       event,
-      score,
       metricName: MetricName.DCL,
       classification: scoreClassificationForDOMContentLoaded(dclTime),
       navigation,
@@ -135,13 +120,8 @@ function storePageLoadMetricAgainstNavigationId(
 
   if (Types.TraceEvents.isTraceEventInteractiveTime(event)) {
     const ttiValue = Types.Timing.MicroSeconds(event.ts - navigation.ts);
-    const ttiScore = Helpers.Timing.formatMicrosecondsTime(ttiValue, {
-      format: Types.Timing.TimeUnit.SECONDS,
-      maximumFractionDigits: 2,
-    });
     const tti = {
       event,
-      score: ttiScore,
       metricName: MetricName.TTI,
       classification: scoreClassificationForTimeToInteractive(ttiValue),
       navigation,
@@ -151,13 +131,8 @@ function storePageLoadMetricAgainstNavigationId(
 
     const tbtValue =
         Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(event.args.args.total_blocking_time_ms));
-    const tbtScore = Helpers.Timing.formatMicrosecondsTime(tbtValue, {
-      format: Types.Timing.TimeUnit.MILLISECONDS,
-      maximumFractionDigits: 2,
-    });
     const tbt = {
       event,
-      score: tbtScore,
       metricName: MetricName.TBT,
       classification: scoreClassificationForTotalBlockingTime(tbtValue),
       navigation,
@@ -169,13 +144,8 @@ function storePageLoadMetricAgainstNavigationId(
 
   if (Types.TraceEvents.isTraceEventMarkLoad(event)) {
     const loadTime = Types.Timing.MicroSeconds(event.ts - navigation.ts);
-    const score = Helpers.Timing.formatMicrosecondsTime(loadTime, {
-      format: Types.Timing.TimeUnit.SECONDS,
-      maximumFractionDigits: 2,
-    });
     const metricScore = {
       event,
-      score,
       metricName: MetricName.L,
       classification: ScoreClassification.UNCLASSIFIED,
       navigation,
@@ -191,13 +161,8 @@ function storePageLoadMetricAgainstNavigationId(
       throw new Error('Largest Contenful Paint unexpectedly had no candidateIndex.');
     }
     const lcpTime = Types.Timing.MicroSeconds(event.ts - navigation.ts);
-    const lcpScore = Helpers.Timing.formatMicrosecondsTime(lcpTime, {
-      format: Types.Timing.TimeUnit.SECONDS,
-      maximumFractionDigits: 2,
-    });
     const lcp = {
       event,
-      score: lcpScore,
       metricName: MetricName.LCP,
       classification: scoreClassificationForLargestContentfulPaint(lcpTime),
       navigation,
@@ -478,7 +443,6 @@ export const enum MetricName {
 }
 
 export interface MetricScore {
-  score: string;
   metricName: MetricName;
   classification: ScoreClassification;
   event?: Types.TraceEvents.PageLoadEvent;

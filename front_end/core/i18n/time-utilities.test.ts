@@ -52,6 +52,19 @@ describeWithLocale('formatMicroSecondsTime', () => {
   });
 });
 
+describeWithLocale('formatMicroSecondsAsSeconds', () => {
+  const {formatMicroSecondsAsSeconds} = i18n.TimeUtilities;
+  it('formats smaller second values', async () => {
+    const time = 0.03 * 1_000 * 1_000 as Platform.Timing.MicroSeconds;
+    assert.strictEqual(formatMicroSecondsAsSeconds(time), '0.03\xA0s');
+  });
+
+  it('formats larger second values', async () => {
+    const time = 8.9122 * 1_000 * 1_000 as Platform.Timing.MicroSeconds;
+    assert.strictEqual(formatMicroSecondsAsSeconds(time), '8.91\xA0s');
+  });
+});
+
 describeWithLocale('millisToString', () => {
   it('formats when number is infinite', () => {
     const inputNumber = Infinity;

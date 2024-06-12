@@ -30,7 +30,6 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       const pageLoadEventsForMainFrame = pageLoadMetricsData.get(mainFrameId);
       if (!pageLoadEventsForMainFrame) {
         assert.fail('Page load events for main frame were unexpectedly null.');
-        return;
       }
 
       // There are 2 FCP events and 2 LCP events on the main frame: one for the first navigation,
@@ -58,7 +57,6 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       const pageLoadEventsForMainFrame = pageLoadMetricsData.get(mainFrameId);
       if (!pageLoadEventsForMainFrame) {
         assert.fail('Page load events for main frame were unexpectedly null.');
-        return;
       }
       // Single FCP event that occured after the refresh.
       assert.strictEqual(pageLoadEventsForMainFrame.size, 1);
@@ -78,7 +76,6 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       const navigationId = navigationBeforeMetrics?.args.data?.navigationId;
       if (!navigationBeforeMetrics || !navigationId) {
         assert.fail('Could not find expected navigation event or its navigation ID');
-        return;
       }
       const pageLoadMetricsData = PageLoadMetrics.metricScoresByFrameId;
       // Only one frame to deal with
@@ -87,7 +84,6 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       const pageLoadEventsForMainFrame = pageLoadMetricsData.get(mainFrameId);
       if (!pageLoadEventsForMainFrame) {
         assert.fail('Page load events for main frame were unexpectedly null.');
-        return;
       }
       // Single FCP event that occured after the refresh.
       assert.strictEqual(pageLoadEventsForMainFrame.size, 1);
@@ -109,7 +105,6 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       const pageLoadEventsForMainFrame = pageLoadMetricsData.get(mainFrameId);
       if (!pageLoadEventsForMainFrame) {
         assert.fail('Page load events for main frame were unexpectedly null.');
-        return;
       }
       // There are 2 MarkDOMContent events on the main frame: one for the first navigation,
       // and one for the second.
@@ -137,7 +132,6 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       const pageLoadMetricsData = PageLoadMetrics.metricScoresByFrameId.get(Meta.mainFrameId);
       if (!pageLoadMetricsData) {
         assert.fail('Page load events for main frame were unexpectedly undefined.');
-        return;
       }
       const scoresByMetricName = [...pageLoadMetricsData.values()];
       allMetricScores = scoresByMetricName.flatMap(metricScores => [...metricScores.values()]);
@@ -145,14 +139,12 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
     it('extracts DOMContentLoaded correctly', () => {
       const domContentLoadedMetrics =
           getMetricsByName(TraceModel.Handlers.ModelHandlers.PageLoadMetrics.MetricName.DCL);
-      assert.strictEqual(domContentLoadedMetrics[0].score, '0.03s');
       assert.strictEqual(domContentLoadedMetrics[0].timing, 34520);
       assert.strictEqual(
           domContentLoadedMetrics[0].classification,
           TraceModel.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.UNCLASSIFIED);
       assertMetricNavigationId(domContentLoadedMetrics[0], firstNavigationId);
 
-      assert.strictEqual(domContentLoadedMetrics[1].score, '0.04s');
       assert.strictEqual(domContentLoadedMetrics[1].timing, 40401);
       assert.strictEqual(
           domContentLoadedMetrics[1].classification,
@@ -162,14 +154,12 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
 
     it('extracts First Contentful Paint correctly', () => {
       const firstContentfulPaints = getMetricsByName(TraceModel.Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP);
-      assert.strictEqual(firstContentfulPaints[0].score, '0.04s');
       assert.strictEqual(firstContentfulPaints[0].timing, 37269);
       assert.strictEqual(
           firstContentfulPaints[0].classification,
           TraceModel.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD);
       assertMetricNavigationId(firstContentfulPaints[0], firstNavigationId);
 
-      assert.strictEqual(firstContentfulPaints[1].score, '0.04s');
       assert.strictEqual(firstContentfulPaints[1].timing, 42390);
       assert.strictEqual(
           firstContentfulPaints[1].classification,
@@ -179,14 +169,12 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
 
     it('extracts Largest Contentful Paint correctly', () => {
       const firstContentfulPaints = getMetricsByName(TraceModel.Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
-      assert.strictEqual(firstContentfulPaints[0].score, '0.04s');
       assert.strictEqual(firstContentfulPaints[0].timing, 37271);
       assert.strictEqual(
           firstContentfulPaints[0].classification,
           TraceModel.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD);
       assertMetricNavigationId(firstContentfulPaints[0], firstNavigationId);
 
-      assert.strictEqual(firstContentfulPaints[1].score, '0.04s');
       assert.strictEqual(firstContentfulPaints[1].timing, 42391);
       assert.strictEqual(
           firstContentfulPaints[1].classification,
@@ -196,14 +184,12 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
 
     it('extracts First Paint correctly', () => {
       const firstContentfulPaints = getMetricsByName(TraceModel.Handlers.ModelHandlers.PageLoadMetrics.MetricName.FP);
-      assert.strictEqual(firstContentfulPaints[0].score, '0.04s');
       assert.strictEqual(firstContentfulPaints[0].timing, 37269);
       assert.strictEqual(
           firstContentfulPaints[0].classification,
           TraceModel.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.UNCLASSIFIED);
       assertMetricNavigationId(firstContentfulPaints[0], firstNavigationId);
 
-      assert.strictEqual(firstContentfulPaints[1].score, '0.04s');
       assert.strictEqual(firstContentfulPaints[1].timing, 42389);
       assert.strictEqual(
           firstContentfulPaints[1].classification,
@@ -213,14 +199,12 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
 
     it('extracts Load correctly', () => {
       const firstContentfulPaints = getMetricsByName(TraceModel.Handlers.ModelHandlers.PageLoadMetrics.MetricName.L);
-      assert.strictEqual(firstContentfulPaints[0].score, '0.15s');
       assert.strictEqual(firstContentfulPaints[0].timing, 148980);
       assert.strictEqual(
           firstContentfulPaints[0].classification,
           TraceModel.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.UNCLASSIFIED);
       assertMetricNavigationId(firstContentfulPaints[0], firstNavigationId);
 
-      assert.strictEqual(firstContentfulPaints[1].score, '0.16s');
       assert.strictEqual(firstContentfulPaints[1].timing, 161333);
       assert.strictEqual(
           firstContentfulPaints[1].classification,
@@ -234,7 +218,6 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       const pageLoadMetricsData = PageLoadMetrics.metricScoresByFrameId.get(Meta.mainFrameId);
       if (!pageLoadMetricsData) {
         assert.fail('Page load events for main frame were unexpectedly null.');
-        return;
       }
 
       const scoresByMetricName = [...pageLoadMetricsData.values()];

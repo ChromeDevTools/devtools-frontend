@@ -31,6 +31,7 @@ export class SidebarWidget extends UI.SplitWidget.SplitWidget {
       this.hideSidebar();
     }
 
+    this.setResizable(this.#sidebarExpanded);
     this.#sidebarUI.expanded = this.#sidebarExpanded;
 
     this.#sidebarUI.addEventListener('togglebuttonclick', () => {

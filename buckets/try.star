@@ -206,8 +206,8 @@ def try_pair(name, suffix, compiler_dimensions, swarming_target_os, swarming_tar
         build_numbers = True,
     )
 
-try_pair("dtf_linux", "rel", dimensions.default_ubuntu, "Ubuntu-22.04", "x86_64")
-try_pair("dtf_win", "rel", dimensions.win10, "Windows-10-19045", "x86_64")
+try_pair("dtf_linux", "rel", dimensions.default_ubuntu, "Ubuntu-22.04", "x86-64")
+try_pair("dtf_win", "rel", dimensions.win10, "Windows-10-19045", "x86-64")
 try_pair("dtf_mac", "rel", dimensions.mac, "Mac-14", "arm64")
 
 def cpp_debug_extension_try(suffix, extra_properties):

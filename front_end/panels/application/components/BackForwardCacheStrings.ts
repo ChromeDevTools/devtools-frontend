@@ -540,71 +540,6 @@ const UIStrings = {
    * @description Description text for not restored reason WebSocketSticky.
    */
   webSocketSticky: 'Back/forward cache is disabled because WebSocket has been used.',
-  // TODO(leimy): Added in https://chromium-review.googlesource.com/c/chromium/src/+/4625807. Fill the below correctly.
-  /**
-   * @description Undefined.
-   */
-  HTTPAuthRequired: 'Undefined',
-  // TODO(kprokopenko, leimy): Please provide meaningful description.
-  /**
-   * @description Undefined.
-   */
-  CookieFlushed: 'Undefined',
-  // TODO(kprokopenko, leimy): Please provide meaningful description.
-  /**
-   * @description Undefined.
-   */
-  SmartCard: 'Undefined',
-  // TODO(kprokopenko, leimy): Please provide meaningful description.
-  /**
-   * @description Undefined.
-   */
-  LiveMediaStreamTrack: 'Undefined',
-  // TODO(kprokopenko, leimy): Please provide meaningful description.
-  /**
-   * @description Undefined.
-   */
-  UnloadHandler: 'Undefined',
-  // TODO(yuzus): Please provide meaningful description.
-  /**
-   * @description Undefined.
-   */
-  ParserAborted: 'Undefined',
-  // TODO(mkurumi): Please provide meaningful description.
-  /**
-   * @description Undefined.
-   */
-  BroadcastChannelOnMessage: 'Undefined',
-  // TODO(rakina): Please provide meaningful description.
-  /**
-   * @description Undefined.
-   */
-  RequestedByWebViewClient: 'Undefined',
-  // TODO(gjc): Please provide meaningful description.
-  /**
-   * @description Undefined.
-   */
-  WebViewSettingsChanged: 'Undefined',
-  // TODO(gjc): Please provide meaningful description.
-  /**
-   * @description Undefined.
-   */
-  WebViewJavaScriptObjectChanged: 'Undefined',
-  // TODO(gjc): Please provide meaningful description.
-  /**
-   * @description Undefined.
-   */
-  WebViewMessageListenerInjected: 'Undefined',
-  // TODO(gjc): Please provide meaningful description.
-  /**
-   * @description Undefined.
-   */
-  WebViewSafeBrowsingAllowlistChanged: 'Undefined',
-  // TODO(gjc): Please provide meaningful description.
-  /**
-   * @description Undefined.
-   */
-  WebViewDocumentStartJavascriptChanged: 'Undefined',
 
 };
 
@@ -752,17 +687,17 @@ export const NotRestoredReasonDescription = {
   'WebRTCSticky': {name: i18nLazyString(UIStrings.webRTCSticky)},
   'WebTransportSticky': {name: i18nLazyString(UIStrings.webTransportSticky)},
   'WebSocketSticky': {name: i18nLazyString(UIStrings.webSocketSticky)},
-  'HTTPAuthRequired': {name: i18nLazyString(UIStrings.HTTPAuthRequired)},
-  'CookieFlushed': {name: i18nLazyString(UIStrings.CookieFlushed)},
-  'SmartCard': {name: i18nLazyString(UIStrings.SmartCard)},
-  'LiveMediaStreamTrack': {name: i18nLazyString(UIStrings.LiveMediaStreamTrack)},
-  'UnloadHandler': {name: i18nLazyString(UIStrings.UnloadHandler)},
-  'ParserAborted': {name: i18nLazyString(UIStrings.ParserAborted)},
-  'BroadcastChannelOnMessage': {name: i18nLazyString(UIStrings.BroadcastChannelOnMessage)},
-  'RequestedByWebViewClient': {name: i18nLazyString(UIStrings.RequestedByWebViewClient)},
-  'WebViewSettingsChanged': {name: i18nLazyString(UIStrings.WebViewSettingsChanged)},
-  'WebViewJavaScriptObjectChanged': {name: i18nLazyString(UIStrings.WebViewJavaScriptObjectChanged)},
-  'WebViewMessageListenerInjected': {name: i18nLazyString(UIStrings.WebViewMessageListenerInjected)},
-  'WebViewSafeBrowsingAllowlistChanged': {name: i18nLazyString(UIStrings.WebViewSafeBrowsingAllowlistChanged)},
-  'WebViewDocumentStartJavascriptChanged': {name: i18nLazyString(UIStrings.WebViewDocumentStartJavascriptChanged)},
+  'HTTPAuthRequired': {name: i18n.i18n.lockedLazyString('HTTPAuthRequired')},
+  'CookieFlushed': {name: i18n.i18n.lockedLazyString('CookieFlushed')},
+  'SmartCard': {name: i18n.i18n.lockedLazyString('SmartCard')},
+  'LiveMediaStreamTrack': {name: i18n.i18n.lockedLazyString('LiveMediaStreamTrack')},
+  'UnloadHandler': {name: i18n.i18n.lockedLazyString('UnloadHandler')},
+  'ParserAborted': {name: i18n.i18n.lockedLazyString('ParserAborted')},
+  'BroadcastChannelOnMessage': {name: i18n.i18n.lockedLazyString('BroadcastChannelOnMessage')},
+  'RequestedByWebViewClient': {name: i18n.i18n.lockedLazyString('RequestedByWebViewClient')},
+  'WebViewSettingsChanged': {name: i18n.i18n.lockedLazyString('WebViewSettingsChanged')},
+  'WebViewJavaScriptObjectChanged': {name: i18n.i18n.lockedLazyString('WebViewJavaScriptObjectChanged')},
+  'WebViewMessageListenerInjected': {name: i18n.i18n.lockedLazyString('WebViewMessageListenerInjected')},
+  'WebViewSafeBrowsingAllowlistChanged': {name: i18n.i18n.lockedLazyString('WebViewSafeBrowsingAllowlistChanged')},
+  'WebViewDocumentStartJavascriptChanged': {name: i18n.i18n.lockedLazyString('WebViewDocumentStartJavascriptChanged')},
 };

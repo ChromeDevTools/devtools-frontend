@@ -3,18 +3,35 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import type * as puppeteer from 'puppeteer-core';
 
 import {
   $$,
   enableExperiment,
   getBrowserAndPages,
+  goTo,
   goToResource,
+  waitFor,
   waitForMany,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   navigateToPerformanceTab,
 } from '../helpers/performance-helpers.js';
+
+async function installLCPListener(session: puppeteer.CDPSession): Promise<() => Promise<void>> {
+  await session.send('PerformanceTimeline.enable', {eventTypes: ['largest-contentful-paint']});
+  const lcpPromise = new Promise<void>(resolve => {
+    const handler: puppeteer.Handler<puppeteer.Protocol.PerformanceTimeline.TimelineEventAddedEvent> = data => {
+      if (data.event.lcpDetails) {
+        resolve();
+        session.off('PerformanceTimeline.timelineEventAdded', handler);
+      }
+    };
+    session.on('PerformanceTimeline.timelineEventAdded', handler);
+  });
+  return () => lcpPromise;
+}
 
 describe('The Performance panel landing page', () => {
   beforeEach(async () => {
@@ -30,17 +47,9 @@ describe('The Performance panel landing page', () => {
 
     const targetSession = await target.createCDPSession();
     try {
-      await targetSession.send('PerformanceTimeline.enable', {eventTypes: ['largest-contentful-paint']});
-      const lcpPromise = new Promise<void>(resolve => {
-        targetSession.on('PerformanceTimeline.timelineEventAdded', data => {
-          if (data.event.lcpDetails) {
-            resolve();
-          }
-        });
-      });
-
+      const waitForLCP = await installLCPListener(targetSession);
       await goToResource('performance/fake-website.html');
-      await lcpPromise;
+      await waitForLCP();
       await target.click('#long-interaction');
       await target.click('#long-interaction');
       await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
@@ -76,17 +85,9 @@ describe('The Performance panel landing page', () => {
 
     const targetSession = await target.createCDPSession();
     try {
-      await targetSession.send('PerformanceTimeline.enable', {eventTypes: ['largest-contentful-paint']});
-      const lcpPromise = new Promise<void>(resolve => {
-        targetSession.on('PerformanceTimeline.timelineEventAdded', data => {
-          if (data.event.lcpDetails) {
-            resolve();
-          }
-        });
-      });
-
+      const waitForLCP = await installLCPListener(targetSession);
       await goToResource('performance/fake-website.html');
-      await lcpPromise;
+      await waitForLCP();
       await target.click('#long-interaction');
       await target.click('#long-interaction');
       await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
@@ -121,6 +122,67 @@ describe('The Performance panel landing page', () => {
         const interactionText = await interaction.evaluate(el => el.innerText) || '';
         assert.match(interactionText, /pointer\n[\d.]+ (s|ms)/);
       }
+    } finally {
+      await targetSession.detach();
+    }
+  });
+
+  it('treats bfcache restoration like a regular navigation', async () => {
+    const {target, frontend} = await getBrowserAndPages();
+
+    await navigateToPerformanceTab();
+
+    await target.bringToFront();
+
+    const targetSession = await target.createCDPSession();
+    try {
+      const waitForLCP1 = await installLCPListener(targetSession);
+      await goToResource('performance/fake-website.html');
+      await waitForLCP1();
+
+      await target.click('#long-interaction');
+      await target.click('#long-interaction');
+      await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+      await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+
+      await frontend.bringToFront();
+
+      await waitForMany('.metric-card-value:not(.waiting)', 3);
+      const interactions1 = await $$<HTMLElement>('.interaction');
+      assert.lengthOf(interactions1, 2);
+
+      await target.bringToFront();
+
+      const waitForLCP2 = await installLCPListener(targetSession);
+      await goTo('chrome://terms');
+      await waitForLCP2();
+      await target.click('body');
+      await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+      await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+
+      await frontend.bringToFront();
+
+      await waitForMany('.metric-card-value:not(.waiting)', 3);
+      const interactions2 = await $$<HTMLElement>('.interaction');
+      assert.lengthOf(interactions2, 1);
+
+      await target.bringToFront();
+
+      await target.goBack();
+      await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+      await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+
+      await frontend.bringToFront();
+
+      // New LCP and CLS values should be emitted
+      await waitForMany('.metric-card-value:not(.waiting)', 2);
+
+      // INP and interactions should be reset
+      const inpValueElem = await waitFor('.metric-card-value.waiting');
+      const inpCardText = await inpValueElem.evaluate(el => el.parentElement?.innerText) || '';
+      assert.match(inpCardText, /Interaction to Next Paint/);
+      const interactions3 = await $$<HTMLElement>('.interaction');
+      assert.lengthOf(interactions3, 0);
     } finally {
       await targetSession.detach();
     }

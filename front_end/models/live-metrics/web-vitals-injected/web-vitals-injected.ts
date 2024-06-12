@@ -59,6 +59,16 @@ function initialize(): void {
 
   sendEventToDevTools({name: 'reset'});
 
+  // We want to treat bfcache navigations like a standard navigations, so emit
+  // a reset event when bfcache is restored.
+  //
+  // Metric functions will also re-emit their values using this listener's callback.
+  // To ensure this event is fired before those values are emitted, register this
+  // callback before any others.
+  WebVitals.onBFCacheRestore(() => {
+    sendEventToDevTools({name: 'reset'});
+  });
+
   onLCP(metric => {
     const event: Spec.LCPChangeEvent = {
       name: 'LCP',

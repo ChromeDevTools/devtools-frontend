@@ -113,13 +113,13 @@
   background: linear-gradient(90deg, transparent 0%, rgb(231 241 253) 25%); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
-:host-context(.-theme-with-dark-background) .highlight-chip:hover > .delete-highlight-container {
+:host-context(.theme-with-dark-background) .highlight-chip:hover > .delete-highlight-container {
   display: flex;
   /* To avoid issues with stacking semi-transparent colors, we use a hardcoded solid color here. */
   background: linear-gradient(90deg, transparent 0%, rgb(41 42 45) 25%); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
-:host-context(.-theme-with-dark-background) .highlight-chip.focused:hover > .delete-highlight-container {
+:host-context(.theme-with-dark-background) .highlight-chip.focused:hover > .delete-highlight-container {
   /* To avoid issues with stacking semi-transparent colors, we use a hardcoded solid color here. */
   background: linear-gradient(90deg, transparent 0%, rgb(48 55 68) 25%); /* stylelint-disable-line plugin/use_theme_colors */
 }

@@ -27,7 +27,7 @@ div.verbose {
   background-color: var(--sys-color-token-attribute-value);
 }
 
-:host-context(.-theme-with-dark-background) div.verbose {
+:host-context(.theme-with-dark-background) div.verbose {
   /* --sys-color-token-attribute-value isn't blue in dark mode, but the text that gets logged is,
   so we use a different syntax in dark mode that matches the text. Once the text
   colors have been updated we can remove this. */
@@ -42,7 +42,7 @@ div.warning {
   background-color: var(--sys-color-token-attribute);
 }
 
-:host-context(.-theme-with-dark-background) div.warning {
+:host-context(.theme-with-dark-background) div.warning {
   /* Pick a color that's closer to the color shown on the background of the
   entire message */
   background-color: var(--sys-color-token-attribute-value);

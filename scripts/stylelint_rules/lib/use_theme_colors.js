@@ -176,8 +176,8 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
       // If you are providing a selector specifically for dark mode, you can use
       // any colors you want, as it means you are purposefully deviating. This
       // is not encouraged but we do need to allow it.
-      if (rule.selector.startsWith(':host-context(.-theme-with-dark-background)') ||
-          rule.selector.startsWith('.-theme-with-dark-background')) {
+      if (rule.selector.startsWith(':host-context(.theme-with-dark-background)') ||
+          rule.selector.startsWith('.theme-with-dark-background')) {
         return;
       }
 

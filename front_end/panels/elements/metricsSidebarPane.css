@@ -144,8 +144,8 @@
 /* In dark theme, when a specific box-model region is hovered, the other regions
 lose their background colors, so we need to give them a lighter border color so
 that region separators remain visible against the dark panel background. */
-:host-context(.-theme-with-dark-background) .margin:hover,
-:host-context(.-theme-with-dark-background) .margin:hover * {
+:host-context(.theme-with-dark-background) .margin:hover,
+:host-context(.theme-with-dark-background) .margin:hover * {
   border-color: var(--sys-color-token-subtle);
 }
 

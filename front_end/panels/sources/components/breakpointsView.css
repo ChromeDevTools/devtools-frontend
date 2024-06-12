@@ -181,8 +181,8 @@ devtools-icon {
   background-color: var(--sys-color-tonal-container);
 }
 
-.-theme-with-dark-background .type-indicator,
-:host-context(.-theme-with-dark-background) .type-indicator {
+.theme-with-dark-background .type-indicator,
+:host-context(.theme-with-dark-background) .type-indicator {
   --override-color-conditional-breakpoint: var(--ref-palette-yellow60);
   --override-color-logpoint: var(--ref-palette-pink70);
 }

@@ -24,8 +24,8 @@
   box-shadow: 0 0 0 1px var(--override-warning-input-color);
 }
 
-.-theme-with-dark-background .warning-input,
-:host-context(.-theme-with-dark-background) .warning-input {
+.theme-with-dark-background .warning-input,
+:host-context(.theme-with-dark-background) .warning-input {
   --override-warning-input-color: rgb(97 63 0);
 }
 

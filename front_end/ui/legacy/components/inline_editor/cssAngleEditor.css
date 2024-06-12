@@ -93,15 +93,15 @@
   background-color: var(--sys-color-tonal-container);
 }
 
-:host-context(.-theme-with-dark-background) .hand::before {
+:host-context(.theme-with-dark-background) .hand::before {
   box-shadow: 0 0 5px hsl(0deg 0% 0% / 80%);
 }
 
-:host-context(.-theme-with-dark-background) .center,
-:host-context(.-theme-with-dark-background) .hand {
+:host-context(.theme-with-dark-background) .center,
+:host-context(.theme-with-dark-background) .hand {
   box-shadow: 0 0 2px hsl(0deg 0% 0% / 60%);
 }
 
-:host-context(.-theme-with-dark-background) .clock {
+:host-context(.theme-with-dark-background) .clock {
   background-color: hsl(225deg 5% 27%);
 }

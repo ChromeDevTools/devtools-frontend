@@ -102,8 +102,8 @@
   margin-bottom: 10px;
 }
 
-.-theme-with-dark-background .orientation-stage,
-:host-context(.-theme-with-dark-background) .orientation-stage {
+.theme-with-dark-background .orientation-stage,
+:host-context(.theme-with-dark-background) .orientation-stage {
   --override-gradient-color-1: var(--ref-palette-cyan10);
   --override-gradient-color-2: var(--ref-palette-cyan30);
 }

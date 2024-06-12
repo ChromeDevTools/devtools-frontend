@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const DARK_THEME_CLASS = '-theme-with-dark-background';
+const DARK_THEME_CLASS = 'theme-with-dark-background';
 
 function toggleDarkMode(force?: boolean): void {
   // Only use the second arg if its not undefined. The spec treats `undefined` as falsy. :/

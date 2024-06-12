@@ -50,7 +50,7 @@
   --network-frame-divider-color: var(--ref-palette-yellow60);
 }
 
-.-theme-with-dark-background {
+.theme-with-dark-background {
   --network-grid-initiator-path-color: var(--ref-palette-green40);
   --network-grid-initiated-path-color: var(--ref-palette-error20);
   --network-grid-from-frame-color: var(--ref-palette-neutral50);

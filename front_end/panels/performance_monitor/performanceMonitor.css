@@ -23,7 +23,7 @@
   --override-color-perf-monitor-recalc-style-count: var(--sys-color-pink);
 }
 
-:host-context(.-theme-with-dark-background) .perfmon-pane {
+:host-context(.theme-with-dark-background) .perfmon-pane {
   --override-color-perf-monitor-jsheap-total-size: var(--ref-palette-purple50);
   --override-color-perf-monitor-js-event-listeners: var(--ref-palette-green50);
 }

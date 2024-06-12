@@ -183,7 +183,7 @@ export class ThemeSupport extends EventTarget {
 
     const useSystemPreferred = this.setting.get() === 'systemPreferred' || isForcedColorsMode;
     this.themeNameInternal = useSystemPreferred ? systemPreferredTheme : this.setting.get();
-    document.documentElement.classList.toggle('-theme-with-dark-background', this.themeNameInternal === 'dark');
+    document.documentElement.classList.toggle('theme-with-dark-background', this.themeNameInternal === 'dark');
 
     // Baseline is the name of Chrome's default color theme and there are two of these: default and grayscale.
     // The collective name for the rest of the color themes is dynamic.

@@ -49,7 +49,7 @@ type FlameChartData = {
 
 async function renderContent(expanded: boolean) {
   if (darkMode) {
-    document.documentElement.classList.add('-theme-with-dark-background');
+    document.documentElement.classList.add('theme-with-dark-background');
   }
 
   const container = document.getElementById('container');

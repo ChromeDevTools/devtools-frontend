@@ -164,7 +164,7 @@ describe('use_theme_colors', () => {
   });
 
   it('allows any color to be used when in a :host-context dark theme block', async () => {
-    const code = `:host-context(.-theme-with-dark-background) p {
+    const code = `:host-context(.theme-with-dark-background) p {
       color: #fff;
     }`;
     const warnings = await lint(code);
@@ -203,8 +203,8 @@ describe('use_theme_colors', () => {
     ]);
   });
 
-  it('allows any color to be used when in a .-theme-with-dark-background block', async () => {
-    const code = `.-theme-with-dark-background p {
+  it('allows any color to be used when in a .theme-with-dark-background block', async () => {
+    const code = `.theme-with-dark-background p {
       color: #fff;
     }`;
     const warnings = await lint(code);

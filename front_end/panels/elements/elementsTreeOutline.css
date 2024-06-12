@@ -266,7 +266,7 @@ select {
   border-radius: 2px;
 }
 
-:host-context(.-theme-with-dark-background) .dom-update-highlight {
+:host-context(.theme-with-dark-background) .dom-update-highlight {
   animation: dom-update-highlight-animation-dark 1.4s 1 cubic-bezier(0, 0, 0.2, 1);
 }
 

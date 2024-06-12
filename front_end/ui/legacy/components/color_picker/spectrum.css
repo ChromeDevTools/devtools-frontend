@@ -586,7 +586,7 @@ div.palette-preview {
 }
 
 .spectrum-contrast-line,
-:host-context(.-theme-with-dark-background) .spectrum-contrast-line {
+:host-context(.theme-with-dark-background) .spectrum-contrast-line {
   fill: none;
   stroke: #fff; /* stylelint-disable-line plugin/use_theme_colors */
   opacity: 70%;
@@ -682,7 +682,7 @@ div.palette-preview {
     background-color: Highlight !important; /* stylelint-disable-line declaration-no-important */
   }
 
-  :host-context(.-theme-with-dark-background) .spectrum-switcher {
+  :host-context(.theme-with-dark-background) .spectrum-switcher {
     filter: unset;
   }
 

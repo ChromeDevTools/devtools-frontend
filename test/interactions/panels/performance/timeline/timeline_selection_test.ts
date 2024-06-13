@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import type * as Types from '../../../../../front_end/models/trace/types/types.js';
+import type * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import type * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import {getBrowserAndPages, waitFor, waitForMany} from '../../../../shared/helper.js';
 import {describe, it} from '../../../../shared/mocha-extensions.js';
@@ -43,13 +43,15 @@ describe('FlameChart', function() {
   }
 
   async function createTimelineBreadcrumb(
-      startTime: Types.Timing.MilliSeconds, endTime: Types.Timing.MilliSeconds): Promise<void> {
+      startTime: TraceEngine.Types.Timing.MilliSeconds, endTime: TraceEngine.Types.Timing.MilliSeconds): Promise<void> {
     const {frontend} = getBrowserAndPages();
-    await frontend.evaluate((startTime: Types.Timing.MilliSeconds, endTime: Types.Timing.MilliSeconds) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const timelinePanel = (window as any).UI.panels.timeline as Timeline.TimelinePanel.TimelinePanel;
-      timelinePanel.getMinimap().addBreadcrumb({startTime, endTime});
-    }, startTime, endTime);
+    await frontend.evaluate(
+        (startTime: TraceEngine.Types.Timing.MilliSeconds, endTime: TraceEngine.Types.Timing.MilliSeconds) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const timelinePanel = (window as any).UI.panels.timeline as Timeline.TimelinePanel.TimelinePanel;
+          timelinePanel.getMinimap().addBreadcrumb({startTime, endTime});
+        },
+        startTime, endTime);
   }
 
   it('shows the details of an entry when selected on the timeline', async () => {
@@ -124,7 +126,7 @@ describe('FlameChart', function() {
     const {x: timerInstallEntryX, y: timerInstallEntryY} =
         await getCoordinatesForEntryWithTitleAndTs(titleForTimerInstall, timeStampForTimerInstall);
 
-    const highlightElement = await waitFor('.flame-chart-selected-element');
+    const highlightElement = await waitFor('.overlay-type-ENTRY_SELECTED');
 
     const {x: highlightX, y: highlightY} = await highlightElement.evaluate(element => {
       const {x, y} = element.getBoundingClientRect();
@@ -211,8 +213,8 @@ describe('FlameChart', function() {
        assert.strictEqual(initiatorLinkText, 'Install Timer');
 
        // Create a breadcrumb that is outside of the entry the displayed link is linking to.
-       const breadcrumbStart = 1020034823 as Types.Timing.MilliSeconds;
-       const breadcrumbEnd = 1020034830 as Types.Timing.MilliSeconds;
+       const breadcrumbStart = 1020034823 as TraceEngine.Types.Timing.MilliSeconds;
+       const breadcrumbEnd = 1020034830 as TraceEngine.Types.Timing.MilliSeconds;
        await createTimelineBreadcrumb(breadcrumbStart, breadcrumbEnd);
 
        timerFireHandle = await waitFor('.timeline-details-chip-title');

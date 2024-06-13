@@ -537,6 +537,7 @@ export class Overlays {
    */
   #entryIsVerticallyVisibleOnChart(entry: OverlayEntry): boolean {
     const chartName = this.#chartForOverlayEntry(entry);
+
     const y = this.yPixelForEventOnChart(entry);
     if (y === null) {
       return false;
@@ -639,6 +640,9 @@ export class Overlays {
    * This means if the event is in the main flame chart and below the network,
    * we add the height of the network chart to the Y value to position it
    * correctly.
+   * This can return null if any data waas missing, or if the event is not
+   * visible (if the level it's on is hidden because the track is collapsed,
+   * for example)
    */
   yPixelForEventOnChart(event: OverlayEntry): number|null {
     const chartName = this.#chartForOverlayEntry(event);
@@ -655,6 +659,10 @@ export class Overlays {
     }
     const level = timelineData.entryLevels.at(indexForEntry);
     if (typeof level === 'undefined') {
+      return null;
+    }
+
+    if (!chart.levelIsVisible(level)) {
       return null;
     }
 

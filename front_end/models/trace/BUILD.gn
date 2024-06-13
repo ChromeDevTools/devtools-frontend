@@ -35,6 +35,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../../test/interactions/*",
     "../../core/sdk:unittests",
     "../../legacy_test_runner/*",
     "../../panels/lighthouse/*",

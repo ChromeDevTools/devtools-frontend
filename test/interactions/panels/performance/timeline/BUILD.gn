@@ -23,6 +23,7 @@ node_ts_library("timeline") {
   ]
 
   deps = [
+    "../../../../../front_end/models/trace:bundle",
     "../../../../../front_end/panels/timeline:bundle",
     "../../../../shared",
     "../../../helpers",

@@ -187,6 +187,10 @@ describeWithEnvironment('Overlays', () => {
     // Set the visible window to be the entire trace.
     overlays.updateVisibleWindow(traceParsedData.Meta.traceBounds);
 
+    // Fake the level being visible: because we don't fully render the chart we
+    // need to fake this for this test.
+    sinon.stub(charts.networkChart, 'levelIsVisible').callsFake(() => true);
+
     // Find an event on the network chart
     const event = charts.networkProvider.eventByIndex(0);
     assert.isOk(event);

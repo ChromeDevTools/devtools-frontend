@@ -47,13 +47,8 @@
   }
 }
 
-.dot {
-  height: var(--sys-size-2);
-  width: var(--sys-size-2);
-  background: var(--sys-color-primary);
-  border-radius: 50%;
-}
-
-.dot + .dot {
-  margin-left: 1px;
+.expand-button devtools-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--sys-color-primary);
 }

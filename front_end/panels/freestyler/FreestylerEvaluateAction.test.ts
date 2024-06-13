@@ -71,8 +71,10 @@ describe('FreestylerEvaluateAction', () => {
       return getExecutionContext(runtimeModel!);
     }
 
-    async function executeForTest(code: string) {
-      return Freestyler.FreestylerEvaluateAction.execute(code, await executionContextForTest());
+    async function executeForTest(
+        code: string, {allowSideEffectForTest = false}: {allowSideEffectForTest?: boolean} = {}) {
+      return Freestyler.FreestylerEvaluateAction.execute(
+          code, await executionContextForTest(), {allowSideEffectForTest});
     }
 
     it('should serialize primitive values correctly', async () => {
@@ -82,16 +84,17 @@ describe('FreestylerEvaluateAction', () => {
       assert.strictEqual(await executeForTest('undefined'), 'undefined');
       assert.strictEqual(await executeForTest('42'), '42');
       assert.strictEqual(await executeForTest('Symbol("sym")'), 'Symbol(sym)');
-      assert.strictEqual(await executeForTest('function fn() {}; fn'), 'function fn() {}');
     });
 
     it('should serialize DOM nodes correctly', async () => {
       assert.strictEqual(
-          await executeForTest(`
+          await executeForTest(
+              `{
         const div = document.createElement('div');
         div.setAttribute('data-custom-attr', 'i exist');
         div
-      `),
+      }`,
+              {allowSideEffectForTest: true}),
           '"<div data-custom-attr=\\"i exist\\"></div>"');
     });
 
@@ -103,20 +106,20 @@ describe('FreestylerEvaluateAction', () => {
     });
 
     it('should serialize objects correctly', async () => {
-      assert.strictEqual(await executeForTest('const object = {key: "str"}; object'), '{"key":"str"}');
+      assert.strictEqual(await executeForTest('{const object = {key: "str"}; object}'), '{"key":"str"}');
       assert.strictEqual(
-          await executeForTest('const object = {key: "str", secondKey: "str2"}; object'),
+          await executeForTest('{const object = {key: "str", secondKey: "str2"}; object}'),
           '{"key":"str","secondKey":"str2"}');
-      assert.strictEqual(await executeForTest('const object = {key: 1}; object'), '{"key":1}');
+      assert.strictEqual(await executeForTest('{const object = {key: 1}; object}'), '{"key":1}');
     });
 
     it('should not continue serializing cycles', async () => {
       assert.strictEqual(
-          await executeForTest(`
+          await executeForTest(`{
         const obj = { a: 1 };
         obj.itself = obj;
         obj
-      `),
+      }`),
           '{"a":1,"itself":"(cycle)"}');
     });
 

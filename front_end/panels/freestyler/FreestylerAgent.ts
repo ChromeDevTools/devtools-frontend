@@ -46,9 +46,24 @@ export enum Step {
 }
 
 async function executeJsCode(code: string): Promise<string> {
-  const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
+  const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
+  if (!target) {
+    throw new Error('Target is not found for executing code');
+  }
+
+  const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+  const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+  const pageAgent = target.pageAgent();
+  if (!resourceTreeModel?.mainFrame) {
+    throw new Error('Main frame is not found for executing code');
+  }
+
+  // This returns previously created world if it exists for the frame.
+  const {executionContextId} = await pageAgent.invoke_createIsolatedWorld(
+      {frameId: resourceTreeModel.mainFrame.id, worldName: 'devtools_freestyler'});
+  const executionContext = runtimeModel?.executionContext(executionContextId);
   if (!executionContext) {
-    throw new Error('Execution context is not found');
+    throw new Error('Execution context is not found for executing code');
   }
 
   return FreestylerEvaluateAction.execute(code, executionContext);
@@ -125,7 +140,7 @@ export class FreestylerAgent {
         const executeMatch = actionText.match(EXECUTE_REGEX);
         if (executeMatch) {
           const jsCode = executeMatch[1];
-          const observation = await executeJsCode(`${jsCode};data`);
+          const observation = await executeJsCode(`{${jsCode};data}`);
           debugLog(`Executed action: ${jsCode}\nResult: ${observation}`);
           onStep(Step.ACTION, actionText);
           prompts.add(`\nObservation\n${observation}`);

@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import * as Root from '../../../core/root/root.js';
+import type * as Handlers from '../../../models/trace/handlers/handlers.js';
+import type * as TraceEngine from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -10,6 +12,7 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import sidebarStyles from './sidebar.css.js';
+import * as SidebarInsight from './SidebarInsight.js';
 
 const COLLAPSED_WIDTH = 40;
 const DEFAULT_EXPANDED_WIDTH = 240;
@@ -50,6 +53,10 @@ export class SidebarWidget extends UI.SplitWidget.SplitWidget {
       this.#sidebarUI.expanded = this.#sidebarExpanded;
     });
   }
+
+  set data(insights: TraceEngine.Insights.Types.TraceInsightData<typeof Handlers.ModelHandlers>) {
+    this.#sidebarUI.insights = insights;
+  }
 }
 
 export class SidebarUI extends HTMLElement {
@@ -59,6 +66,49 @@ export class SidebarUI extends HTMLElement {
   #expanded: boolean = false;
 
   #renderBound = this.#render.bind(this);
+  #phaseData: Array<{phase: string, timing: number|TraceEngine.Types.Timing.MilliSeconds, percent: string}> = [];
+  #insights: TraceEngine.Insights.Types.TraceInsightData<typeof Handlers.ModelHandlers>|null = null;
+
+  getLCPInsightData(): Array<{phase: string, timing: number|TraceEngine.Types.Timing.MilliSeconds, percent: string}> {
+    if (!this.#insights) {
+      return [];
+    }
+    // For now use the first navigation of the trace.
+    const firstNav = this.#insights.values().next().value;
+    if (!firstNav) {
+      return [];
+    }
+    const lcpInsight = firstNav.LargestContentfulPaint;
+    if (lcpInsight instanceof Error) {
+      return [];
+    }
+
+    const timing = lcpInsight.lcpMs;
+    const phases = lcpInsight.phases;
+
+    if (!timing || !phases) {
+      return [];
+    }
+
+    const {ttfb, loadDelay, loadTime, renderDelay} = phases;
+
+    if (loadDelay && loadTime) {
+      const phaseData = [
+        {phase: 'Time to first byte', timing: ttfb, percent: `${(100 * ttfb / timing).toFixed(0)}%`},
+        {phase: 'Resource load delay', timing: loadDelay, percent: `${(100 * loadDelay / timing).toFixed(0)}%`},
+        {phase: 'Resource load duration', timing: loadTime, percent: `${(100 * loadTime / timing).toFixed(0)}%`},
+        {phase: 'Resource render delay', timing: renderDelay, percent: `${(100 * ttfb / timing).toFixed(0)}%`},
+      ];
+      return phaseData;
+    }
+
+    // If the lcp is text, we only have ttfb and render delay.
+    const phaseData = [
+      {phase: 'Time to first byte', timing: ttfb, percent: `${(100 * ttfb / timing).toFixed(0)}%`},
+      {phase: 'Resource render delay', timing: renderDelay, percent: `${(100 * ttfb / timing).toFixed(0)}%`},
+    ];
+    return phaseData;
+  }
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [sidebarStyles];
@@ -71,6 +121,15 @@ export class SidebarUI extends HTMLElement {
       return;
     }
     this.#expanded = expanded;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+  }
+
+  set insights(insights: TraceEngine.Insights.Types.TraceInsightData<typeof Handlers.ModelHandlers>) {
+    if (insights === this.#insights) {
+      return;
+    }
+    this.#insights = insights;
+    this.#phaseData = this.getLCPInsightData();
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
@@ -105,11 +164,41 @@ export class SidebarUI extends HTMLElement {
     // clang-format on
   }
 
+  #renderLCPPhases(): LitHtml.LitTemplate {
+    const lcpTitle = 'LCP by Phase';
+    const showLCPPhases = this.#phaseData ? this.#phaseData.length > 0 : false;
+
+    // clang-format off
+    return LitHtml.html`${
+        showLCPPhases ? LitHtml.html`
+        <${SidebarInsight.SidebarInsight.litTagName} .data=${{
+            title: lcpTitle,
+          } as SidebarInsight.InsightDetails}>
+          <div slot="insight-description" class="insight-description">
+            Each
+            <x-link class="link" href="https://web.dev/articles/optimize-lcp#lcp-breakdown">phase has specific recommendations to improve.</x-link>
+            In an ideal load, the two delay phases should be quite short.
+          </div>
+          <div slot="insight-content" class="table-container">
+            <dl>
+              <dt class="dl-title">Phase</dt>
+              <dd class="dl-title">% of LCP</dd>
+              ${this.#phaseData?.map(phase => LitHtml.html`
+                <dt>${phase.phase}</dt>
+                <dd class="dl-value">${phase.percent}</dd>
+              `)}
+            </dl>
+          </div>
+        </${SidebarInsight.SidebarInsight}>` : LitHtml.nothing}`;
+    // clang-format on
+  }
+
   #renderInsightsTabContent(): LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
       <h2>Content for Insights Tab</h2>
       <p>This is the content of the Insights tab.</p>
+      <div class="insights">${this.#renderLCPPhases()}</div>
     `;
     // clang-format on
   }
@@ -174,7 +263,7 @@ export class SidebarUI extends HTMLElement {
       </div>
       <div class="tab-slider" ?hidden=${!this.#expanded}></div>
       <div class="tab-headers-bottom-line" ?hidden=${!this.#expanded}></div>
-      ${this.#expanded ? LitHtml.html`<div class="sidebar-body">${this.#renderContent()}</div>` : LitHtml.nothing}
+        ${this.#expanded ? LitHtml.html`<div class="sidebar-body">${this.#renderContent()}</div>` : LitHtml.nothing}
     </div>`;
     // clang-format on
     LitHtml.render(output, this.#shadow, {host: this});

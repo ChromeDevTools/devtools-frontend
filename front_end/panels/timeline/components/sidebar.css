@@ -68,3 +68,35 @@
 .sidebar-body {
   padding: 0 4px;
 }
+
+.table-container dl {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+
+.table-container dt {
+  padding: 3px;
+}
+
+.table-container dd {
+  display: grid;
+  justify-items: end;
+  margin-inline-start: auto;
+}
+
+.insight-description {
+  border-bottom: 1px solid var(--color-input-outline);
+  padding-bottom: 10px;
+}
+
+.link {
+  color: var(--sys-color-primary);
+}
+
+.dl-title {
+  font-weight: bold;
+}
+
+.dl-value {
+  font-weight: bold;
+}

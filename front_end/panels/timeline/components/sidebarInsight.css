@@ -1,0 +1,21 @@
+/*
+ * Copyright 2024 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.insight {
+  display: block;
+  width: auto;
+  height: auto;
+  margin: 10px;
+  border: 1px solid var(--box-shadow-outline-color);
+  padding: 10px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.insight-title {
+  color: var(--color-text-primary);
+  margin-block: 3px;
+}

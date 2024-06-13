@@ -225,6 +225,12 @@ let Page = (() => {
             }
             return super.off(type, handler);
         }
+        /**
+         * {@inheritDoc Accessibility}
+         */
+        get accessibility() {
+            return this.mainFrame().accessibility;
+        }
         locator(selectorOrFunc) {
             if (typeof selectorOrFunc === 'string') {
                 return NodeLocator.create(this, selectorOrFunc);
@@ -242,28 +248,58 @@ let Page = (() => {
             return Locator.race(locators);
         }
         /**
-         * Runs `document.querySelector` within the page. If no element matches the
-         * selector, the return value resolves to `null`.
+         * Finds the first element that matches the selector. If no element matches
+         * the selector, the return value resolves to `null`.
          *
-         * @param selector - A `selector` to query page for
-         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
          * to query page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
+         * Alternatively, you can specify a selector type using a prefix
+         * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+         *
+         * @remarks
+         *
+         * Shortcut for {@link Frame.$ | Page.mainFrame().$(selector) }.
          */
         async $(selector) {
             return await this.mainFrame().$(selector);
         }
         /**
-         * The method runs `document.querySelectorAll` within the page. If no elements
+         * Finds elements on the page that match the selector. If no elements
          * match the selector, the return value resolves to `[]`.
          *
-         * @param selector - A `selector` to query page for
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+         * to query page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
+         * Alternatively, you can specify a selector type using a prefix
+         * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
          *
          * @remarks
          *
          * Shortcut for {@link Frame.$$ | Page.mainFrame().$$(selector) }.
          */
-        async $$(selector) {
-            return await this.mainFrame().$$(selector);
+        async $$(selector, options) {
+            return await this.mainFrame().$$(selector, options);
         }
         /**
          * @remarks
@@ -327,8 +363,8 @@ let Page = (() => {
             return await this.mainFrame().evaluateHandle(pageFunction, ...args);
         }
         /**
-         * This method runs `document.querySelector` within the page and passes the
-         * result as the first argument to the `pageFunction`.
+         * This method finds the first element within the page that matches the selector
+         * and passes the result as the first argument to the `pageFunction`.
          *
          * @remarks
          *
@@ -376,11 +412,23 @@ let Page = (() => {
          * );
          * ```
          *
-         * @param selector - the
-         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
-         * to query for
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+         * to query page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
+         * Alternatively, you can specify a selector type using a prefix
+         * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
          * @param pageFunction - the function to be evaluated in the page context.
-         * Will be passed the result of `document.querySelector(selector)` as its
+         * Will be passed the result of the element matching the selector as its
          * first argument.
          * @param args - any additional arguments to pass through to `pageFunction`.
          *
@@ -393,8 +441,8 @@ let Page = (() => {
             return await this.mainFrame().$eval(selector, pageFunction, ...args);
         }
         /**
-         * This method runs `Array.from(document.querySelectorAll(selector))` within
-         * the page and passes the result as the first argument to the `pageFunction`.
+         * This method returns all elements matching the selector and passes the
+         * resulting array as the first argument to the `pageFunction`.
          *
          * @remarks
          * If `pageFunction` returns a promise `$$eval` will wait for the promise to
@@ -437,12 +485,23 @@ let Page = (() => {
          * );
          * ```
          *
-         * @param selector - the
-         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
-         * to query for
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+         * to query page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
+         * Alternatively, you can specify a selector type using a prefix
+         * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
          * @param pageFunction - the function to be evaluated in the page context.
-         * Will be passed the result of
-         * `Array.from(document.querySelectorAll(selector))` as its first argument.
+         * Will be passed an array of matching elements as its first argument.
          * @param args - any additional arguments to pass through to `pageFunction`.
          *
          * @returns The result of calling `pageFunction`. If it returns an element it
@@ -491,68 +550,12 @@ let Page = (() => {
          *
          * @param html - HTML markup to assign to the page.
          * @param options - Parameters that has some properties.
-         *
-         * @remarks
-         *
-         * The parameter `options` might have the following options.
-         *
-         * - `timeout` : Maximum time in milliseconds for resources to load, defaults
-         *   to 30 seconds, pass `0` to disable timeout. The default value can be
-         *   changed by using the {@link Page.setDefaultNavigationTimeout} or
-         *   {@link Page.setDefaultTimeout} methods.
-         *
-         * - `waitUntil`: When to consider setting markup succeeded, defaults to
-         *   `load`. Given an array of event strings, setting content is considered
-         *   to be successful after all events have been fired. Events can be
-         *   either:<br/>
-         * - `load` : consider setting content to be finished when the `load` event
-         *   is fired.<br/>
-         * - `domcontentloaded` : consider setting content to be finished when the
-         *   `DOMContentLoaded` event is fired.<br/>
-         * - `networkidle0` : consider setting content to be finished when there are
-         *   no more than 0 network connections for at least `500` ms.<br/>
-         * - `networkidle2` : consider setting content to be finished when there are
-         *   no more than 2 network connections for at least `500` ms.
          */
         async setContent(html, options) {
             await this.mainFrame().setContent(html, options);
         }
         /**
-         * Navigates the page to the given `url`.
-         *
-         * @remarks
-         *
-         * Navigation to `about:blank` or navigation to the same URL with a different
-         * hash will succeed and return `null`.
-         *
-         * :::warning
-         *
-         * Headless mode doesn't support navigation to a PDF document. See the {@link
-         * https://bugs.chromium.org/p/chromium/issues/detail?id=761295 | upstream
-         * issue}.
-         *
-         * :::
-         *
-         * Shortcut for {@link Frame.goto | page.mainFrame().goto(url, options)}.
-         *
-         * @param url - URL to navigate page to. The URL should include scheme, e.g.
-         * `https://`
-         * @param options - Options to configure waiting behavior.
-         * @returns A promise which resolves to the main resource response. In case of
-         * multiple redirects, the navigation will resolve with the response of the
-         * last redirect.
-         * @throws If:
-         *
-         * - there's an SSL error (e.g. in case of self-signed certificates).
-         * - target URL is invalid.
-         * - the timeout is exceeded during navigation.
-         * - the remote server does not respond or is unreachable.
-         * - the main resource failed to load.
-         *
-         * This method will not throw an error when any valid HTTP status code is
-         * returned by the remote server, including 404 "Not Found" and 500 "Internal
-         * Server Error". The status code for such responses can be retrieved by
-         * calling {@link HTTPResponse.status}.
+         * {@inheritDoc Frame.goto}
          */
         async goto(url, options) {
             return await this.mainFrame().goto(url, options);

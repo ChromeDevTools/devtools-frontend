@@ -31,6 +31,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Deferred_js_1 = require("../util/Deferred.js");
 const Function_js_1 = require("../util/Function.js");
 const ARIAQuerySelector = __importStar(require("./ARIAQuerySelector.js"));
+const CSSSelector = __importStar(require("./CSSSelector.js"));
 const CustomQuerySelectors = __importStar(require("./CustomQuerySelector.js"));
 const PierceQuerySelector = __importStar(require("./PierceQuerySelector.js"));
 const Poller_js_1 = require("./Poller.js");
@@ -50,6 +51,7 @@ const PuppeteerUtil = Object.freeze({
     ...TextQuerySelector,
     ...util,
     ...XPathQuerySelector,
+    ...CSSSelector,
     Deferred: Deferred_js_1.Deferred,
     createFunction: Function_js_1.createFunction,
     createTextContent: TextContent_js_1.createTextContent,

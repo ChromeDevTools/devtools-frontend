@@ -3,7 +3,7 @@
  * Copyright 2023 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { tokenize, TOKENS, stringify } from 'parsel-js';
+import { tokenize, TOKENS, stringify, } from '../../third_party/parsel-js/parsel-js.js';
 TOKENS['combinator'] = /\s*(>>>>?|[\s>+~])\s*/g;
 const ESCAPE_REGEXP = /\\[\s\S]/g;
 const unquote = (text) => {
@@ -17,11 +17,15 @@ const unquote = (text) => {
         return match[1];
     });
 };
+/**
+ * @internal
+ */
 export function parsePSelectors(selector) {
     let isPureCSS = true;
+    let hasPseudoClasses = false;
     const tokens = tokenize(selector);
     if (tokens.length === 0) {
-        return [[], isPureCSS];
+        return [[], isPureCSS, hasPseudoClasses];
     }
     let compoundSelector = [];
     let complexSelector = [compoundSelector];
@@ -67,6 +71,9 @@ export function parsePSelectors(selector) {
                     value: unquote(token.argument ?? ''),
                 });
                 continue;
+            case 'pseudo-class':
+                hasPseudoClasses = true;
+                continue;
             case 'comma':
                 if (storage.length) {
                     compoundSelector.push(stringify(storage));
@@ -82,6 +89,6 @@ export function parsePSelectors(selector) {
     if (storage.length) {
         compoundSelector.push(stringify(storage));
     }
-    return [selectors, isPureCSS];
+    return [selectors, isPureCSS, hasPseudoClasses];
 }
 //# sourceMappingURL=PSelectorParser.js.map

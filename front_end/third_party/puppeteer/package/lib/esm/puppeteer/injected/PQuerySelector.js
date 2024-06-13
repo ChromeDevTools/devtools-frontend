@@ -6,7 +6,6 @@
 import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
 import { ariaQuerySelectorAll } from './ARIAQuerySelector.js';
 import { customQuerySelectors } from './CustomQuerySelector.js';
-import { parsePSelectors, } from './PSelectorParser.js';
 import { textQuerySelectorAll } from './TextQuerySelector.js';
 import { pierce, pierceAll } from './util.js';
 import { xpathQuerySelectorAll } from './XPathQuerySelector.js';
@@ -14,20 +13,13 @@ const IDENT_TOKEN_START = /[-\w\P{ASCII}*]/;
 const isQueryableNode = (node) => {
     return 'querySelectorAll' in node;
 };
-class SelectorError extends Error {
-    constructor(selector, message) {
-        super(`${selector} is not a valid selector: ${message}`);
-    }
-}
 class PQueryEngine {
-    #input;
     #complexSelector;
     #compoundSelector = [];
     #selector = undefined;
     elements;
-    constructor(element, input, complexSelector) {
+    constructor(element, complexSelector) {
         this.elements = [element];
-        this.#input = input;
         this.#complexSelector = complexSelector;
         this.#next();
     }
@@ -47,7 +39,6 @@ class PQueryEngine {
         }
         for (; this.#selector !== undefined; this.#next()) {
             const selector = this.#selector;
-            const input = this.#input;
             if (typeof selector === 'string') {
                 // The regular expression tests if the selector is a type/universal
                 // selector. Any other case means we want to apply the selector onto
@@ -95,7 +86,7 @@ class PQueryEngine {
                         default:
                             const querySelector = customQuerySelectors.get(selector.name);
                             if (!querySelector) {
-                                throw new SelectorError(input, `Unknown selector type: ${selector.name}`);
+                                throw new Error(`Unknown selector type: ${selector.name}`);
                             }
                             yield* querySelector.querySelectorAll(element, selector.value);
                     }
@@ -187,17 +178,7 @@ const domSort = async function* (elements) {
  * @internal
  */
 export const pQuerySelectorAll = function (root, selector) {
-    let selectors;
-    let isPureCSS;
-    try {
-        [selectors, isPureCSS] = parsePSelectors(selector);
-    }
-    catch (error) {
-        return root.querySelectorAll(selector);
-    }
-    if (isPureCSS) {
-        return root.querySelectorAll(selector);
-    }
+    const selectors = JSON.parse(selector);
     // If there are any empty elements, then this implies the selector has
     // contiguous combinators (e.g. `>>> >>>>`) or starts/ends with one which we
     // treat as illegal, similar to existing behavior.
@@ -213,10 +194,10 @@ export const pQuerySelectorAll = function (root, selector) {
             return i > 1;
         });
     })) {
-        throw new SelectorError(selector, 'Multiple deep combinators found in sequence.');
+        throw new Error('Multiple deep combinators found in sequence.');
     }
     return domSort(AsyncIterableUtil.flatMap(selectors, selectorParts => {
-        const query = new PQueryEngine(root, selector, selectorParts);
+        const query = new PQueryEngine(root, selectorParts);
         void query.run();
         return query.elements;
     }));

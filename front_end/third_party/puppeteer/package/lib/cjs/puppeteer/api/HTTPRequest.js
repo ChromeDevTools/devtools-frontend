@@ -436,7 +436,12 @@ const errorReasons = {
  * @internal
  */
 function handleError(error) {
-    if (error.originalMessage.includes('Invalid header')) {
+    // Firefox throws an invalid argument error with a message starting with
+    // 'Expected "header" [...]'.
+    if (error.originalMessage.includes('Invalid header') ||
+        error.originalMessage.includes('Expected "header"') ||
+        // WebDriver BiDi error for invalid values, for example, headers.
+        error.originalMessage.includes('invalid argument')) {
         throw error;
     }
     // In certain cases, protocol will return error if the request was

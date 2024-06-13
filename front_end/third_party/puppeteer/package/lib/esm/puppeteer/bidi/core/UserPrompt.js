@@ -60,7 +60,7 @@ let UserPrompt = (() => {
             userPrompt.#initialize();
             return userPrompt;
         }
-        #reason = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        #reason = __runInitializers(this, _instanceExtraInitializers);
         #result;
         #disposables = new DisposableStack();
         browsingContext;

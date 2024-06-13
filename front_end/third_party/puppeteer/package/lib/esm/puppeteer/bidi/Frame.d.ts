@@ -6,6 +6,7 @@
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import type { CDPSession } from '../api/CDPSession.js';
 import { Frame, type GoToOptions, type WaitForOptions } from '../api/Frame.js';
+import { Accessibility } from '../cdp/Accessibility.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 import type { Awaitable } from '../common/types.js';
 import { BidiCdpSession } from './CDPSession.js';
@@ -25,6 +26,7 @@ export declare class BidiFrame extends Frame {
     };
     readonly _id: string;
     readonly client: BidiCdpSession;
+    readonly accessibility: Accessibility;
     private constructor();
     get timeoutSettings(): TimeoutSettings;
     mainRealm(): BidiFrameRealm;

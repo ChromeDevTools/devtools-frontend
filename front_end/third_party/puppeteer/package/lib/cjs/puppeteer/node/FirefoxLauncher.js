@@ -86,7 +86,7 @@ class FirefoxLauncher extends ProductLauncher_js_1.ProductLauncher {
         });
         if (profileArgIndex !== -1) {
             userDataDir = firefoxArguments[profileArgIndex + 1];
-            if (!userDataDir || !fs_1.default.existsSync(userDataDir)) {
+            if (!userDataDir) {
                 throw new Error(`Firefox profile not found at '${userDataDir}'`);
             }
             // When using a custom Firefox profile it needs to be populated

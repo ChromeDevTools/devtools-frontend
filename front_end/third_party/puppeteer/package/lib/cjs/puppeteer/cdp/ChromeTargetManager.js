@@ -75,9 +75,13 @@ class ChromeTargetManager extends EventEmitter_js_1.EventEmitter {
         }
         for (const [targetId, targetInfo,] of this.#discoveredTargetsByTargetId.entries()) {
             const targetForFilter = new Target_js_1.CdpTarget(targetInfo, undefined, undefined, this, undefined);
+            // Targets that will not be auto-attached. Therefore, we should
+            // not add them to #targetsIdsForInit.
+            const skipTarget = targetInfo.type === 'browser' ||
+                targetInfo.url.startsWith('chrome-extension://');
             if ((!this.#targetFilterCallback ||
                 this.#targetFilterCallback(targetForFilter)) &&
-                targetInfo.type !== 'browser') {
+                !skipTarget) {
                 this.#targetsIdsForInit.add(targetId);
             }
         }

@@ -40,6 +40,7 @@ __exportStar(require("./PDFOptions.js"), exports);
 __exportStar(require("./PierceQueryHandler.js"), exports);
 __exportStar(require("./PQueryHandler.js"), exports);
 __exportStar(require("./Product.js"), exports);
+__exportStar(require("./PSelectorParser.js"), exports);
 __exportStar(require("./Puppeteer.js"), exports);
 __exportStar(require("./QueryHandler.js"), exports);
 __exportStar(require("./ScriptInjector.js"), exports);

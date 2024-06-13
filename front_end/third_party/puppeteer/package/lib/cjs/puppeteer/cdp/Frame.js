@@ -45,6 +45,7 @@ const Errors_js_1 = require("../common/Errors.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
+const Accessibility_js_1 = require("./Accessibility.js");
 const FrameManagerEvents_js_1 = require("./FrameManagerEvents.js");
 const IsolatedWorld_js_1 = require("./IsolatedWorld.js");
 const IsolatedWorlds_js_1 = require("./IsolatedWorlds.js");
@@ -76,6 +77,7 @@ let CdpFrame = (() => {
         _lifecycleEvents = new Set();
         _id;
         _parentId;
+        accessibility;
         worlds;
         constructor(frameManager, frameId, parentFrameId, client) {
             super();
@@ -90,6 +92,7 @@ let CdpFrame = (() => {
                 [IsolatedWorlds_js_1.MAIN_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this, this._frameManager.timeoutSettings),
                 [IsolatedWorlds_js_1.PUPPETEER_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this, this._frameManager.timeoutSettings),
             };
+            this.accessibility = new Accessibility_js_1.Accessibility(this.worlds[IsolatedWorlds_js_1.MAIN_WORLD]);
             this.on(Frame_js_1.FrameEvent.FrameSwappedByActivation, () => {
                 // Emulate loading process for swapped frames.
                 this._onLoadingStarted();

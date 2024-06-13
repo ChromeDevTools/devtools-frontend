@@ -9,6 +9,7 @@ import type { QueryHandler } from './QueryHandler.js';
  */
 export declare function getQueryHandlerAndSelector(selector: string): {
     updatedSelector: string;
+    selectorHasPseudoClasses: boolean;
     QueryHandler: typeof QueryHandler;
 };
 //# sourceMappingURL=GetQueryHandler.d.ts.map

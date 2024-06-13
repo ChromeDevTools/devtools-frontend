@@ -9,6 +9,7 @@ import { Frame } from '../api/Frame.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { WaitTimeoutOptions } from '../api/Page.js';
 import { disposeSymbol } from '../util/disposable.js';
+import { Accessibility } from './Accessibility.js';
 import type { DeviceRequestPrompt } from './DeviceRequestPrompt.js';
 import type { FrameManager } from './FrameManager.js';
 import type { IsolatedWorldChart } from './IsolatedWorld.js';
@@ -25,6 +26,7 @@ export declare class CdpFrame extends Frame {
     _lifecycleEvents: Set<string>;
     _id: string;
     _parentId?: string;
+    accessibility: Accessibility;
     worlds: IsolatedWorldChart;
     constructor(frameManager: FrameManager, frameId: string, parentFrameId: string | undefined, client: CDPSession);
     /**

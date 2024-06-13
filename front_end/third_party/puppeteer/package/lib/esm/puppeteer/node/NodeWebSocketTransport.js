@@ -14,6 +14,8 @@ export class NodeWebSocketTransport {
             const ws = new NodeWebSocket(url, [], {
                 followRedirects: true,
                 perMessageDeflate: false,
+                // @ts-expect-error https://github.com/websockets/ws/blob/master/doc/ws.md#new-websocketaddress-protocols-options
+                allowSynchronousEvents: false,
                 maxPayload: 256 * 1024 * 1024, // 256Mb
                 headers: {
                     'User-Agent': `Puppeteer ${packageVersion}`,
@@ -32,18 +34,14 @@ export class NodeWebSocketTransport {
     constructor(ws) {
         this.#ws = ws;
         this.#ws.addEventListener('message', event => {
-            setImmediate(() => {
-                if (this.onmessage) {
-                    this.onmessage.call(null, event.data);
-                }
-            });
+            if (this.onmessage) {
+                this.onmessage.call(null, event.data);
+            }
         });
         this.#ws.addEventListener('close', () => {
-            setImmediate(() => {
-                if (this.onclose) {
-                    this.onclose.call(null);
-                }
-            });
+            if (this.onclose) {
+                this.onclose.call(null);
+            }
         });
         // Silently ignore all errors - we don't know what to do with them.
         this.#ws.addEventListener('error', () => { });

@@ -81,7 +81,7 @@ let ScreenRecorder = (() => {
             __esDecorate(this, null, _stop_decorators, { kind: "method", name: "stop", static: false, private: false, access: { has: obj => "stop" in obj, get: obj => obj.stop }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
-        #page = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        #page = __runInitializers(this, _instanceExtraInitializers);
         #process;
         #controller = new AbortController();
         #lastFrame;

@@ -6,8 +6,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parsePSelectors = void 0;
-const parsel_js_1 = require("parsel-js");
-parsel_js_1.TOKENS['combinator'] = /\s*(>>>>?|[\s>+~])\s*/g;
+const parsel_js_js_1 = require("../../third_party/parsel-js/parsel-js.js");
+parsel_js_js_1.TOKENS['combinator'] = /\s*(>>>>?|[\s>+~])\s*/g;
 const ESCAPE_REGEXP = /\\[\s\S]/g;
 const unquote = (text) => {
     if (text.length <= 1) {
@@ -20,11 +20,15 @@ const unquote = (text) => {
         return match[1];
     });
 };
+/**
+ * @internal
+ */
 function parsePSelectors(selector) {
     let isPureCSS = true;
-    const tokens = (0, parsel_js_1.tokenize)(selector);
+    let hasPseudoClasses = false;
+    const tokens = (0, parsel_js_js_1.tokenize)(selector);
     if (tokens.length === 0) {
-        return [[], isPureCSS];
+        return [[], isPureCSS, hasPseudoClasses];
     }
     let compoundSelector = [];
     let complexSelector = [compoundSelector];
@@ -37,7 +41,7 @@ function parsePSelectors(selector) {
                     case ">>>" /* PCombinator.Descendent */:
                         isPureCSS = false;
                         if (storage.length) {
-                            compoundSelector.push((0, parsel_js_1.stringify)(storage));
+                            compoundSelector.push((0, parsel_js_js_1.stringify)(storage));
                             storage.splice(0);
                         }
                         compoundSelector = [];
@@ -47,7 +51,7 @@ function parsePSelectors(selector) {
                     case ">>>>" /* PCombinator.Child */:
                         isPureCSS = false;
                         if (storage.length) {
-                            compoundSelector.push((0, parsel_js_1.stringify)(storage));
+                            compoundSelector.push((0, parsel_js_js_1.stringify)(storage));
                             storage.splice(0);
                         }
                         compoundSelector = [];
@@ -62,7 +66,7 @@ function parsePSelectors(selector) {
                 }
                 isPureCSS = false;
                 if (storage.length) {
-                    compoundSelector.push((0, parsel_js_1.stringify)(storage));
+                    compoundSelector.push((0, parsel_js_js_1.stringify)(storage));
                     storage.splice(0);
                 }
                 compoundSelector.push({
@@ -70,9 +74,12 @@ function parsePSelectors(selector) {
                     value: unquote(token.argument ?? ''),
                 });
                 continue;
+            case 'pseudo-class':
+                hasPseudoClasses = true;
+                continue;
             case 'comma':
                 if (storage.length) {
-                    compoundSelector.push((0, parsel_js_1.stringify)(storage));
+                    compoundSelector.push((0, parsel_js_js_1.stringify)(storage));
                     storage.splice(0);
                 }
                 compoundSelector = [];
@@ -83,9 +90,9 @@ function parsePSelectors(selector) {
         storage.push(token);
     }
     if (storage.length) {
-        compoundSelector.push((0, parsel_js_1.stringify)(storage));
+        compoundSelector.push((0, parsel_js_js_1.stringify)(storage));
     }
-    return [selectors, isPureCSS];
+    return [selectors, isPureCSS, hasPseudoClasses];
 }
 exports.parsePSelectors = parsePSelectors;
 //# sourceMappingURL=PSelectorParser.js.map

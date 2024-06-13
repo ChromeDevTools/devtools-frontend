@@ -87,7 +87,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiPage = void 0;
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const Page_js_1 = require("../api/Page.js");
-const Accessibility_js_1 = require("../cdp/Accessibility.js");
 const Coverage_js_1 = require("../cdp/Coverage.js");
 const EmulationManager_js_1 = require("../cdp/EmulationManager.js");
 const Tracing_js_1 = require("../cdp/Tracing.js");
@@ -107,14 +106,14 @@ const util_js_2 = require("./util.js");
  */
 let BidiPage = (() => {
     let _classSuper = Page_js_1.Page;
-    let _instanceExtraInitializers = [];
     let _trustedEmitter_decorators;
     let _trustedEmitter_initializers = [];
+    let _trustedEmitter_extraInitializers = [];
     return class BidiPage extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
             _trustedEmitter_decorators = [(0, decorators_js_1.bubble)()];
-            __esDecorate(this, null, _trustedEmitter_decorators, { kind: "accessor", name: "trustedEmitter", static: false, private: false, access: { has: obj => "trustedEmitter" in obj, get: obj => obj.trustedEmitter, set: (obj, value) => { obj.trustedEmitter = value; } }, metadata: _metadata }, _trustedEmitter_initializers, _instanceExtraInitializers);
+            __esDecorate(this, null, _trustedEmitter_decorators, { kind: "accessor", name: "trustedEmitter", static: false, private: false, access: { has: obj => "trustedEmitter" in obj, get: obj => obj.trustedEmitter, set: (obj, value) => { obj.trustedEmitter = value; } }, metadata: _metadata }, _trustedEmitter_initializers, _trustedEmitter_extraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         static from(browserContext, browsingContext) {
@@ -122,17 +121,16 @@ let BidiPage = (() => {
             page.#initialize();
             return page;
         }
-        #trustedEmitter_accessor_storage = (__runInitializers(this, _instanceExtraInitializers), __runInitializers(this, _trustedEmitter_initializers, new EventEmitter_js_1.EventEmitter()));
+        #trustedEmitter_accessor_storage = __runInitializers(this, _trustedEmitter_initializers, new EventEmitter_js_1.EventEmitter());
         get trustedEmitter() { return this.#trustedEmitter_accessor_storage; }
         set trustedEmitter(value) { this.#trustedEmitter_accessor_storage = value; }
-        #browserContext;
+        #browserContext = __runInitializers(this, _trustedEmitter_extraInitializers);
         #frame;
         #viewport = null;
         #workers = new Set();
         keyboard;
         mouse;
         touchscreen;
-        accessibility;
         tracing;
         coverage;
         #cdpEmulationManager;
@@ -144,7 +142,6 @@ let BidiPage = (() => {
             this.#browserContext = browserContext;
             this.#frame = Frame_js_1.BidiFrame.from(this, browsingContext);
             this.#cdpEmulationManager = new EmulationManager_js_1.EmulationManager(this.#frame.client);
-            this.accessibility = new Accessibility_js_1.Accessibility(this.#frame.client);
             this.tracing = new Tracing_js_1.Tracing(this.#frame.client);
             this.coverage = new Coverage_js_1.Coverage(this.#frame.client);
             this.keyboard = new Input_js_1.BidiKeyboard(this);

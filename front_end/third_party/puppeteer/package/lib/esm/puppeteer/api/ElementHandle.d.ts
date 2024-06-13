@@ -11,7 +11,7 @@ import type { KeyInput } from '../common/USKeyboardLayout.js';
 import { _isElementHandle } from './ElementHandleSymbol.js';
 import type { KeyboardTypeOptions, KeyPressOptions, MouseClickOptions } from './Input.js';
 import { JSHandle } from './JSHandle.js';
-import type { ScreenshotOptions, WaitForSelectorOptions } from './Page.js';
+import type { QueryOptions, ScreenshotOptions, WaitForSelectorOptions } from './Page.js';
 /**
  * @public
  */
@@ -203,7 +203,7 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * @returns An array of {@link ElementHandle | element handles} that point to
      * elements matching the given selector.
      */
-    $$<Selector extends string>(selector: Selector): Promise<Array<ElementHandle<NodeFor<Selector>>>>;
+    $$<Selector extends string>(selector: Selector, options?: QueryOptions): Promise<Array<ElementHandle<NodeFor<Selector>>>>;
     /**
      * Runs the given function on the first element matching the given selector in
      * the current element.

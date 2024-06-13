@@ -42,6 +42,7 @@ import { UnsupportedOperation } from '../common/Errors.js';
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { isErrorLike } from '../util/ErrorLike.js';
+import { Accessibility } from './Accessibility.js';
 import { FrameManagerEvent } from './FrameManagerEvents.js';
 import { IsolatedWorld } from './IsolatedWorld.js';
 import { MAIN_WORLD, PUPPETEER_WORLD } from './IsolatedWorlds.js';
@@ -73,6 +74,7 @@ let CdpFrame = (() => {
         _lifecycleEvents = new Set();
         _id;
         _parentId;
+        accessibility;
         worlds;
         constructor(frameManager, frameId, parentFrameId, client) {
             super();
@@ -87,6 +89,7 @@ let CdpFrame = (() => {
                 [MAIN_WORLD]: new IsolatedWorld(this, this._frameManager.timeoutSettings),
                 [PUPPETEER_WORLD]: new IsolatedWorld(this, this._frameManager.timeoutSettings),
             };
+            this.accessibility = new Accessibility(this.worlds[MAIN_WORLD]);
             this.on(FrameEvent.FrameSwappedByActivation, () => {
                 // Emulate loading process for swapped frames.
                 this._onLoadingStarted();

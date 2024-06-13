@@ -60,7 +60,6 @@ import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { AsyncDisposableStack } from '../util/disposable.js';
 import { isErrorLike } from '../util/ErrorLike.js';
-import { Accessibility } from './Accessibility.js';
 import { Binding } from './Binding.js';
 import { CdpCDPSession } from './CDPSession.js';
 import { isTargetClosedError } from './Connection.js';
@@ -115,7 +114,6 @@ export class CdpPage extends Page {
     #keyboard;
     #mouse;
     #touchscreen;
-    #accessibility;
     #frameManager;
     #emulationManager;
     #tracing;
@@ -218,7 +216,6 @@ export class CdpPage extends Page {
         this.#keyboard = new CdpKeyboard(client);
         this.#mouse = new CdpMouse(client, this.#keyboard);
         this.#touchscreen = new CdpTouchscreen(client, this.#keyboard);
-        this.#accessibility = new Accessibility(client);
         this.#frameManager = new FrameManager(client, this, this._timeoutSettings);
         this.#emulationManager = new EmulationManager(client);
         this.#tracing = new Tracing(client);
@@ -258,7 +255,6 @@ export class CdpPage extends Page {
         this.#keyboard.updateClient(newSession);
         this.#mouse.updateClient(newSession);
         this.#touchscreen.updateClient(newSession);
-        this.#accessibility.updateClient(newSession);
         this.#emulationManager.updateClient(newSession);
         this.#tracing.updateClient(newSession);
         this.#coverage.updateClient(newSession);
@@ -424,9 +420,6 @@ export class CdpPage extends Page {
     }
     get tracing() {
         return this.#tracing;
-    }
-    get accessibility() {
-        return this.#accessibility;
     }
     frames() {
         return this.#frameManager.frames();

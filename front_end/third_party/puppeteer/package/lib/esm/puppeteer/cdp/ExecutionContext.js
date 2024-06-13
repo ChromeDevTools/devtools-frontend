@@ -152,6 +152,9 @@ export class ExecutionContext extends EventEmitter {
         }
     }
     async #onBindingCalled(event) {
+        if (event.executionContextId !== this.#id) {
+            return;
+        }
         let payload;
         try {
             payload = JSON.parse(event.payload);
@@ -171,9 +174,6 @@ export class ExecutionContext extends EventEmitter {
             return;
         }
         try {
-            if (event.executionContextId !== this.#id) {
-                return;
-            }
             const binding = this.#bindings.get(name);
             await binding?.run(this, seq, args, isTrivial);
         }

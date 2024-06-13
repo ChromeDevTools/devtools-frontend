@@ -4,9 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { ARIAQueryHandler } from '../cdp/AriaQueryHandler.js';
+import { CSSQueryHandler } from './CSSQueryHandler.js';
 import { customQueryHandlers } from './CustomQueryHandler.js';
 import { PierceQueryHandler } from './PierceQueryHandler.js';
 import { PQueryHandler } from './PQueryHandler.js';
+import { parsePSelectors } from './PSelectorParser.js';
 import { TextQueryHandler } from './TextQueryHandler.js';
 import { XPathQueryHandler } from './XPathQueryHandler.js';
 const BUILTIN_QUERY_HANDLERS = {
@@ -31,11 +33,27 @@ export function getQueryHandlerAndSelector(selector) {
                 const prefix = `${name}${separator}`;
                 if (selector.startsWith(prefix)) {
                     selector = selector.slice(prefix.length);
-                    return { updatedSelector: selector, QueryHandler };
+                    return {
+                        updatedSelector: selector,
+                        selectorHasPseudoClasses: false,
+                        QueryHandler,
+                    };
                 }
             }
         }
     }
-    return { updatedSelector: selector, QueryHandler: PQueryHandler };
+    const [pSelector, isPureCSS, hasPseudoClasses] = parsePSelectors(selector);
+    if (isPureCSS) {
+        return {
+            updatedSelector: selector,
+            selectorHasPseudoClasses: hasPseudoClasses,
+            QueryHandler: CSSQueryHandler,
+        };
+    }
+    return {
+        updatedSelector: JSON.stringify(pSelector),
+        selectorHasPseudoClasses: hasPseudoClasses,
+        QueryHandler: PQueryHandler,
+    };
 }
 //# sourceMappingURL=GetQueryHandler.js.map

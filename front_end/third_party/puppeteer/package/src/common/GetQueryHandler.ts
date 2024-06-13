@@ -6,9 +6,11 @@
 
 import {ARIAQueryHandler} from '../cdp/AriaQueryHandler.js';
 
+import {CSSQueryHandler} from './CSSQueryHandler.js';
 import {customQueryHandlers} from './CustomQueryHandler.js';
 import {PierceQueryHandler} from './PierceQueryHandler.js';
 import {PQueryHandler} from './PQueryHandler.js';
+import {parsePSelectors} from './PSelectorParser.js';
 import type {QueryHandler} from './QueryHandler.js';
 import {TextQueryHandler} from './TextQueryHandler.js';
 import {XPathQueryHandler} from './XPathQueryHandler.js';
@@ -27,6 +29,7 @@ const QUERY_SEPARATORS = ['=', '/'];
  */
 export function getQueryHandlerAndSelector(selector: string): {
   updatedSelector: string;
+  selectorHasPseudoClasses: boolean;
   QueryHandler: typeof QueryHandler;
 } {
   for (const handlerMap of [
@@ -40,10 +43,26 @@ export function getQueryHandlerAndSelector(selector: string): {
         const prefix = `${name}${separator}`;
         if (selector.startsWith(prefix)) {
           selector = selector.slice(prefix.length);
-          return {updatedSelector: selector, QueryHandler};
+          return {
+            updatedSelector: selector,
+            selectorHasPseudoClasses: false,
+            QueryHandler,
+          };
         }
       }
     }
   }
-  return {updatedSelector: selector, QueryHandler: PQueryHandler};
+  const [pSelector, isPureCSS, hasPseudoClasses] = parsePSelectors(selector);
+  if (isPureCSS) {
+    return {
+      updatedSelector: selector,
+      selectorHasPseudoClasses: hasPseudoClasses,
+      QueryHandler: CSSQueryHandler,
+    };
+  }
+  return {
+    updatedSelector: JSON.stringify(pSelector),
+    selectorHasPseudoClasses: hasPseudoClasses,
+    QueryHandler: PQueryHandler,
+  };
 }

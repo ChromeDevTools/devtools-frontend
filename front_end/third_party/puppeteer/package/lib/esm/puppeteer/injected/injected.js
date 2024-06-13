@@ -6,6 +6,7 @@
 import { Deferred } from '../util/Deferred.js';
 import { createFunction } from '../util/Function.js';
 import * as ARIAQuerySelector from './ARIAQuerySelector.js';
+import * as CSSSelector from './CSSSelector.js';
 import * as CustomQuerySelectors from './CustomQuerySelector.js';
 import * as PierceQuerySelector from './PierceQuerySelector.js';
 import { IntervalPoller, MutationPoller, RAFPoller } from './Poller.js';
@@ -25,6 +26,7 @@ const PuppeteerUtil = Object.freeze({
     ...TextQuerySelector,
     ...util,
     ...XPathQuerySelector,
+    ...CSSSelector,
     Deferred,
     createFunction,
     createTextContent,

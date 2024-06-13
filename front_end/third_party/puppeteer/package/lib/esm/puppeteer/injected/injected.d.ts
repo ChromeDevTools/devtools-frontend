@@ -6,6 +6,7 @@
 import { Deferred } from '../util/Deferred.js';
 import * as CustomQuerySelectors from './CustomQuerySelector.js';
 import { IntervalPoller, MutationPoller, RAFPoller } from './Poller.js';
+import * as PQuerySelector from './PQuerySelector.js';
 /**
  * @internal
  */
@@ -17,17 +18,20 @@ declare const PuppeteerUtil: Readonly<{
     isSuitableNodeForTextMatching: (node: Node) => boolean;
     MutationPoller: typeof MutationPoller;
     RAFPoller: typeof RAFPoller;
+    cssQuerySelector: (root: Node, selector: string) => Element | null;
+    cssQuerySelectorAll: (root: Node, selector: string) => Iterable<Element>;
     xpathQuerySelectorAll: (root: Node, selector: string, maxResults?: number) => Iterable<Node>;
     pierce(root: Node): IterableIterator<Node | ShadowRoot>;
     pierceAll(root: Node): IterableIterator<Node | ShadowRoot>;
     checkVisibility: (node: Node | null, visible?: boolean | undefined) => boolean | Node;
     textQuerySelectorAll: (root: Node, selector: string) => Generator<Element, any, unknown>;
+    PCombinator: typeof PQuerySelector.PCombinator;
     pQuerySelectorAll: (root: Node, selector: string) => import("../index.js").AwaitableIterable<Node>;
     pQuerySelector: (root: Node, selector: string) => Promise<Node | null>;
     pierceQuerySelector: (root: Node, selector: string) => Element | null;
     pierceQuerySelectorAll: (element: Node, selector: string) => Element[];
     customQuerySelectors: {
-        "__#198@#selectors": Map<string, CustomQuerySelectors.CustomQuerySelector>;
+        "__#206@#selectors": Map<string, CustomQuerySelectors.CustomQuerySelector>;
         register(name: string, handler: import("../index.js").CustomQueryHandler): void;
         unregister(name: string): void;
         get(name: string): CustomQuerySelectors.CustomQuerySelector | undefined;

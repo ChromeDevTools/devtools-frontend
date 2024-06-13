@@ -84,7 +84,6 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 });
 import { firstValueFrom, from, raceWith } from '../../third_party/rxjs/rxjs.js';
 import { Page, } from '../api/Page.js';
-import { Accessibility } from '../cdp/Accessibility.js';
 import { Coverage } from '../cdp/Coverage.js';
 import { EmulationManager } from '../cdp/EmulationManager.js';
 import { Tracing } from '../cdp/Tracing.js';
@@ -104,14 +103,14 @@ import { rewriteNavigationError } from './util.js';
  */
 let BidiPage = (() => {
     let _classSuper = Page;
-    let _instanceExtraInitializers = [];
     let _trustedEmitter_decorators;
     let _trustedEmitter_initializers = [];
+    let _trustedEmitter_extraInitializers = [];
     return class BidiPage extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
             _trustedEmitter_decorators = [bubble()];
-            __esDecorate(this, null, _trustedEmitter_decorators, { kind: "accessor", name: "trustedEmitter", static: false, private: false, access: { has: obj => "trustedEmitter" in obj, get: obj => obj.trustedEmitter, set: (obj, value) => { obj.trustedEmitter = value; } }, metadata: _metadata }, _trustedEmitter_initializers, _instanceExtraInitializers);
+            __esDecorate(this, null, _trustedEmitter_decorators, { kind: "accessor", name: "trustedEmitter", static: false, private: false, access: { has: obj => "trustedEmitter" in obj, get: obj => obj.trustedEmitter, set: (obj, value) => { obj.trustedEmitter = value; } }, metadata: _metadata }, _trustedEmitter_initializers, _trustedEmitter_extraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         static from(browserContext, browsingContext) {
@@ -119,17 +118,16 @@ let BidiPage = (() => {
             page.#initialize();
             return page;
         }
-        #trustedEmitter_accessor_storage = (__runInitializers(this, _instanceExtraInitializers), __runInitializers(this, _trustedEmitter_initializers, new EventEmitter()));
+        #trustedEmitter_accessor_storage = __runInitializers(this, _trustedEmitter_initializers, new EventEmitter());
         get trustedEmitter() { return this.#trustedEmitter_accessor_storage; }
         set trustedEmitter(value) { this.#trustedEmitter_accessor_storage = value; }
-        #browserContext;
+        #browserContext = __runInitializers(this, _trustedEmitter_extraInitializers);
         #frame;
         #viewport = null;
         #workers = new Set();
         keyboard;
         mouse;
         touchscreen;
-        accessibility;
         tracing;
         coverage;
         #cdpEmulationManager;
@@ -141,7 +139,6 @@ let BidiPage = (() => {
             this.#browserContext = browserContext;
             this.#frame = BidiFrame.from(this, browsingContext);
             this.#cdpEmulationManager = new EmulationManager(this.#frame.client);
-            this.accessibility = new Accessibility(this.#frame.client);
             this.tracing = new Tracing(this.#frame.client);
             this.coverage = new Coverage(this.#frame.client);
             this.keyboard = new BidiKeyboard(this);

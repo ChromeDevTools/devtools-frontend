@@ -54,7 +54,7 @@ let BidiHTTPResponse = (() => {
             response.#initialize();
             return response;
         }
-        #data = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        #data = __runInitializers(this, _instanceExtraInitializers);
         #request;
         constructor(data, request) {
             super();

@@ -93,6 +93,7 @@
     "package/lib/esm/puppeteer/cdp/utils.js",
     "package/lib/esm/puppeteer/common/BrowserConnector.js",
     "package/lib/esm/puppeteer/common/BrowserWebSocketTransport.js",
+    "package/lib/esm/puppeteer/common/CSSQueryHandler.js",
     "package/lib/esm/puppeteer/common/CallbackRegistry.js",
     "package/lib/esm/puppeteer/common/Configuration.js",
     "package/lib/esm/puppeteer/common/ConnectOptions.js",
@@ -111,6 +112,7 @@
     "package/lib/esm/puppeteer/common/NetworkManagerEvents.js",
     "package/lib/esm/puppeteer/common/PDFOptions.js",
     "package/lib/esm/puppeteer/common/PQueryHandler.js",
+    "package/lib/esm/puppeteer/common/PSelectorParser.js",
     "package/lib/esm/puppeteer/common/PierceQueryHandler.js",
     "package/lib/esm/puppeteer/common/Product.js",
     "package/lib/esm/puppeteer/common/Puppeteer.js",
@@ -133,9 +135,9 @@
     "package/lib/esm/puppeteer/index-browser.js",
     "package/lib/esm/puppeteer/index.js",
     "package/lib/esm/puppeteer/injected/ARIAQuerySelector.js",
+    "package/lib/esm/puppeteer/injected/CSSSelector.js",
     "package/lib/esm/puppeteer/injected/CustomQuerySelector.js",
     "package/lib/esm/puppeteer/injected/PQuerySelector.js",
-    "package/lib/esm/puppeteer/injected/PSelectorParser.js",
     "package/lib/esm/puppeteer/injected/PierceQuerySelector.js",
     "package/lib/esm/puppeteer/injected/Poller.js",
     "package/lib/esm/puppeteer/injected/TextContent.js",
@@ -166,6 +168,7 @@
     "package/lib/esm/puppeteer/util/disposable.js",
     "package/lib/esm/puppeteer/util/util.js",
     "package/lib/esm/third_party/mitt/mitt.js",
+    "package/lib/esm/third_party/parsel-js/parsel-js.js",
     "package/lib/esm/third_party/rxjs/rxjs.js"
   ]
 }

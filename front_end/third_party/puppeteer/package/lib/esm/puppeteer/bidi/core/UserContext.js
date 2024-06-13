@@ -71,7 +71,7 @@ let UserContext = (() => {
             context.#initialize();
             return context;
         }
-        #reason = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        #reason = __runInitializers(this, _instanceExtraInitializers);
         // Note these are only top-level contexts.
         #browsingContexts = new Map();
         #disposables = new DisposableStack();

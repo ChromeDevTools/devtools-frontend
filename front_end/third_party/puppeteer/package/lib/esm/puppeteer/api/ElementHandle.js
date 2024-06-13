@@ -82,6 +82,10 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
+var __setFunctionName = (this && this.__setFunctionName) || function (f, name, prefix) {
+    if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
+    return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
+};
 import { getQueryHandlerAndSelector } from '../common/GetQueryHandler.js';
 import { LazyArg } from '../common/LazyArg.js';
 import { isString, withSourcePuppeteerURLIfNone } from '../common/util.js';
@@ -132,6 +136,8 @@ let ElementHandle = (() => {
     let _jsonValue_decorators;
     let _$_decorators;
     let _$$_decorators;
+    let _private_$$_decorators;
+    let _private_$$_descriptor;
     let _waitForSelector_decorators;
     let _isVisible_decorators;
     let _isHidden_decorators;
@@ -164,7 +170,8 @@ let ElementHandle = (() => {
             _getProperties_decorators = [throwIfDisposed(), (_b = ElementHandle).bindIsolatedHandle.bind(_b)];
             _jsonValue_decorators = [throwIfDisposed(), (_c = ElementHandle).bindIsolatedHandle.bind(_c)];
             _$_decorators = [throwIfDisposed(), (_d = ElementHandle).bindIsolatedHandle.bind(_d)];
-            _$$_decorators = [throwIfDisposed(), (_e = ElementHandle).bindIsolatedHandle.bind(_e)];
+            _$$_decorators = [throwIfDisposed()];
+            _private_$$_decorators = [(_e = ElementHandle).bindIsolatedHandle.bind(_e)];
             _waitForSelector_decorators = [throwIfDisposed(), (_f = ElementHandle).bindIsolatedHandle.bind(_f)];
             _isVisible_decorators = [throwIfDisposed(), (_g = ElementHandle).bindIsolatedHandle.bind(_g)];
             _isHidden_decorators = [throwIfDisposed(), (_h = ElementHandle).bindIsolatedHandle.bind(_h)];
@@ -195,6 +202,9 @@ let ElementHandle = (() => {
             __esDecorate(this, null, _jsonValue_decorators, { kind: "method", name: "jsonValue", static: false, private: false, access: { has: obj => "jsonValue" in obj, get: obj => obj.jsonValue }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _$_decorators, { kind: "method", name: "$", static: false, private: false, access: { has: obj => "$" in obj, get: obj => obj.$ }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _$$_decorators, { kind: "method", name: "$$", static: false, private: false, access: { has: obj => "$$" in obj, get: obj => obj.$$ }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, _private_$$_descriptor = { value: __setFunctionName(async function (selector) {
+                    return await this.#$$impl(selector);
+                }, "#$$") }, _private_$$_decorators, { kind: "method", name: "#$$", static: false, private: true, access: { has: obj => #$$ in obj, get: obj => obj.#$$ }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _waitForSelector_decorators, { kind: "method", name: "waitForSelector", static: false, private: false, access: { has: obj => "waitForSelector" in obj, get: obj => obj.waitForSelector }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _isVisible_decorators, { kind: "method", name: "isVisible", static: false, private: false, access: { has: obj => "isVisible" in obj, get: obj => obj.isVisible }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _isHidden_decorators, { kind: "method", name: "isHidden", static: false, private: false, access: { has: obj => "isHidden" in obj, get: obj => obj.isHidden }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -227,7 +237,7 @@ let ElementHandle = (() => {
          * Cached isolatedHandle to prevent
          * trying to adopt it multiple times
          */
-        isolatedHandle = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        isolatedHandle = __runInitializers(this, _instanceExtraInitializers);
         /**
          * A given method will have it's `this` replaced with an isolated version of
          * `this` when decorated with this decorator.
@@ -378,7 +388,24 @@ let ElementHandle = (() => {
          * @returns An array of {@link ElementHandle | element handles} that point to
          * elements matching the given selector.
          */
-        async $$(selector) {
+        async $$(selector, options) {
+            if (options?.isolate === false) {
+                return await this.#$$impl(selector);
+            }
+            return await this.#$$(selector);
+        }
+        /**
+         * Isolates {@link ElementHandle.$$} if needed.
+         *
+         * @internal
+         */
+        get #$$() { return _private_$$_descriptor.value; }
+        /**
+         * Implementation for {@link ElementHandle.$$}.
+         *
+         * @internal
+         */
+        async #$$impl(selector) {
             const { updatedSelector, QueryHandler } = getQueryHandlerAndSelector(selector);
             return await AsyncIterableUtil.collect(QueryHandler.queryAll(this, updatedSelector));
         }
@@ -521,8 +548,11 @@ let ElementHandle = (() => {
          * @throws Throws if an element matching the given selector doesn't appear.
          */
         async waitForSelector(selector, options = {}) {
-            const { updatedSelector, QueryHandler } = getQueryHandlerAndSelector(selector);
-            return (await QueryHandler.waitFor(this, updatedSelector, options));
+            const { updatedSelector, QueryHandler, selectorHasPseudoClasses } = getQueryHandlerAndSelector(selector);
+            return (await QueryHandler.waitFor(this, updatedSelector, {
+                polling: selectorHasPseudoClasses ? "raf" /* PollingOptions.RAF */ : undefined,
+                ...options,
+            }));
         }
         async #checkVisibility(visibility) {
             return await this.evaluate(async (element, PuppeteerUtil, visibility) => {

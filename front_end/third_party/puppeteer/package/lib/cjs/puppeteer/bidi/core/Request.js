@@ -62,7 +62,7 @@ let Request = (() => {
             request.#initialize();
             return request;
         }
-        #error = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        #error = __runInitializers(this, _instanceExtraInitializers);
         #redirect;
         #response;
         #browsingContext;

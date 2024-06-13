@@ -231,7 +231,7 @@ let EmulationManager = (() => {
                 }, "#setJavaScriptEnabled") }, _private_setJavaScriptEnabled_decorators, { kind: "method", name: "#setJavaScriptEnabled", static: false, private: true, access: { has: obj => #setJavaScriptEnabled in obj, get: obj => obj.#setJavaScriptEnabled }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
-        #client = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        #client = __runInitializers(this, _instanceExtraInitializers);
         #emulatingMobile = false;
         #hasTouch = false;
         #states = [];

@@ -29,18 +29,12 @@ exports.Accessibility = void 0;
  * @public
  */
 class Accessibility {
-    #client;
+    #realm;
     /**
      * @internal
      */
-    constructor(client) {
-        this.#client = client;
-    }
-    /**
-     * @internal
-     */
-    updateClient(client) {
-        this.#client = client;
+    constructor(realm) {
+        this.#realm = realm;
     }
     /**
      * Captures the current state of the accessibility tree.
@@ -83,15 +77,15 @@ class Accessibility {
      */
     async snapshot(options = {}) {
         const { interestingOnly = true, root = null } = options;
-        const { nodes } = await this.#client.send('Accessibility.getFullAXTree');
+        const { nodes } = await this.#realm.environment.client.send('Accessibility.getFullAXTree');
         let backendNodeId;
         if (root) {
-            const { node } = await this.#client.send('DOM.describeNode', {
+            const { node } = await this.#realm.environment.client.send('DOM.describeNode', {
                 objectId: root.id,
             });
             backendNodeId = node.backendNodeId;
         }
-        const defaultRoot = AXNode.createTree(nodes);
+        const defaultRoot = AXNode.createTree(this.#realm, nodes);
         let needle = defaultRoot;
         if (backendNodeId) {
             needle = defaultRoot.find(node => {
@@ -150,11 +144,13 @@ class AXNode {
     #role;
     #ignored;
     #cachedHasFocusableChild;
-    constructor(payload) {
+    #realm;
+    constructor(realm, payload) {
         this.payload = payload;
         this.#name = this.payload.name ? this.payload.name.value : '';
         this.#role = this.payload.role ? this.payload.role.value : 'Unknown';
         this.#ignored = this.payload.ignored;
+        this.#realm = realm;
         for (const property of this.payload.properties || []) {
             if (property.name === 'editable') {
                 this.#richlyEditable = property.value.value === 'richtext';
@@ -311,6 +307,12 @@ class AXNode {
         }
         const node = {
             role: this.#role,
+            elementHandle: async () => {
+                if (!this.payload.backendDOMNodeId) {
+                    return null;
+                }
+                return (await this.#realm.adoptBackendNode(this.payload.backendDOMNodeId));
+            },
         };
         const userStringProperties = [
             'name',
@@ -397,10 +399,10 @@ class AXNode {
         }
         return node;
     }
-    static createTree(payloads) {
+    static createTree(realm, payloads) {
         const nodeById = new Map();
         for (const payload of payloads) {
-            nodeById.set(payload.nodeId, new AXNode(payload));
+            nodeById.set(payload.nodeId, new AXNode(realm, payload));
         }
         for (const node of nodeById.values()) {
             for (const childId of node.payload.childIds || []) {

@@ -115,7 +115,7 @@ let BrowsingContext = (() => {
             browsingContext.#initialize();
             return browsingContext;
         }
-        #navigation = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        #navigation = __runInitializers(this, _instanceExtraInitializers);
         #reason;
         #url;
         #children = new Map();
@@ -177,7 +177,8 @@ let BrowsingContext = (() => {
                 if (info.context !== this.id) {
                     return;
                 }
-                this.#url = info.url;
+                // Note: we should not update this.#url at this point since the context
+                // has not finished navigating to the info.url yet.
                 for (const [id, request] of this.#requests) {
                     if (request.disposed) {
                         this.#requests.delete(id);

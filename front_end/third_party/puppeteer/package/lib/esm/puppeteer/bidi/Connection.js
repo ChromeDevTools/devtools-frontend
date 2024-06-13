@@ -26,7 +26,7 @@ export class BidiConnection extends EventEmitter {
         super();
         this.#url = url;
         this.#delay = delay;
-        this.#timeout = timeout ?? 180000;
+        this.#timeout = timeout ?? 180_000;
         this.#transport = transport;
         this.#transport.onmessage = this.onMessage.bind(this);
         this.#transport.onclose = this.unbind.bind(this);
@@ -78,7 +78,7 @@ export class BidiConnection extends EventEmitter {
                     if (object.id === null) {
                         break;
                     }
-                    this.#callbacks.reject(object.id, createProtocolError(object), object.message);
+                    this.#callbacks.reject(object.id, createProtocolError(object), `${object.error}: ${object.message}`);
                     return;
                 case 'event':
                     if (isCdpEvent(object)) {

@@ -70,6 +70,7 @@ exports.BidiFrame = void 0;
 const Bidi = __importStar(require("chromium-bidi/lib/cjs/protocol/protocol.js"));
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const Frame_js_1 = require("../api/Frame.js");
+const Accessibility_js_1 = require("../cdp/Accessibility.js");
 const ConsoleMessage_js_1 = require("../common/ConsoleMessage.js");
 const Errors_js_1 = require("../common/Errors.js");
 const util_js_1 = require("../common/util.js");
@@ -173,12 +174,13 @@ let BidiFrame = (() => {
             frame.#initialize();
             return frame;
         }
-        #parent = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        #parent = __runInitializers(this, _instanceExtraInitializers);
         browsingContext;
         #frames = new WeakMap();
         realms;
         _id;
         client;
+        accessibility;
         constructor(parent, browsingContext) {
             super();
             this.#parent = parent;
@@ -189,6 +191,7 @@ let BidiFrame = (() => {
                 default: Realm_js_1.BidiFrameRealm.from(this.browsingContext.defaultRealm, this),
                 internal: Realm_js_1.BidiFrameRealm.from(this.browsingContext.createWindowRealm(`__puppeteer_internal_${Math.ceil(Math.random() * 10000)}`), this),
             };
+            this.accessibility = new Accessibility_js_1.Accessibility(this.realms.default);
         }
         #initialize() {
             for (const browsingContext of this.browsingContext.children) {

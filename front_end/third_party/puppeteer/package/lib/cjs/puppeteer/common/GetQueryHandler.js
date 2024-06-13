@@ -7,9 +7,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getQueryHandlerAndSelector = void 0;
 const AriaQueryHandler_js_1 = require("../cdp/AriaQueryHandler.js");
+const CSSQueryHandler_js_1 = require("./CSSQueryHandler.js");
 const CustomQueryHandler_js_1 = require("./CustomQueryHandler.js");
 const PierceQueryHandler_js_1 = require("./PierceQueryHandler.js");
 const PQueryHandler_js_1 = require("./PQueryHandler.js");
+const PSelectorParser_js_1 = require("./PSelectorParser.js");
 const TextQueryHandler_js_1 = require("./TextQueryHandler.js");
 const XPathQueryHandler_js_1 = require("./XPathQueryHandler.js");
 const BUILTIN_QUERY_HANDLERS = {
@@ -34,12 +36,28 @@ function getQueryHandlerAndSelector(selector) {
                 const prefix = `${name}${separator}`;
                 if (selector.startsWith(prefix)) {
                     selector = selector.slice(prefix.length);
-                    return { updatedSelector: selector, QueryHandler };
+                    return {
+                        updatedSelector: selector,
+                        selectorHasPseudoClasses: false,
+                        QueryHandler,
+                    };
                 }
             }
         }
     }
-    return { updatedSelector: selector, QueryHandler: PQueryHandler_js_1.PQueryHandler };
+    const [pSelector, isPureCSS, hasPseudoClasses] = (0, PSelectorParser_js_1.parsePSelectors)(selector);
+    if (isPureCSS) {
+        return {
+            updatedSelector: selector,
+            selectorHasPseudoClasses: hasPseudoClasses,
+            QueryHandler: CSSQueryHandler_js_1.CSSQueryHandler,
+        };
+    }
+    return {
+        updatedSelector: JSON.stringify(pSelector),
+        selectorHasPseudoClasses: hasPseudoClasses,
+        QueryHandler: PQueryHandler_js_1.PQueryHandler,
+    };
 }
 exports.getQueryHandlerAndSelector = getQueryHandlerAndSelector;
 //# sourceMappingURL=GetQueryHandler.js.map

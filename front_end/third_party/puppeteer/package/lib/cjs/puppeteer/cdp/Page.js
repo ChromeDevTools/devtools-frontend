@@ -63,7 +63,6 @@ const assert_js_1 = require("../util/assert.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
-const Accessibility_js_1 = require("./Accessibility.js");
 const Binding_js_1 = require("./Binding.js");
 const CDPSession_js_2 = require("./CDPSession.js");
 const Connection_js_1 = require("./Connection.js");
@@ -118,7 +117,6 @@ class CdpPage extends Page_js_1.Page {
     #keyboard;
     #mouse;
     #touchscreen;
-    #accessibility;
     #frameManager;
     #emulationManager;
     #tracing;
@@ -221,7 +219,6 @@ class CdpPage extends Page_js_1.Page {
         this.#keyboard = new Input_js_1.CdpKeyboard(client);
         this.#mouse = new Input_js_1.CdpMouse(client, this.#keyboard);
         this.#touchscreen = new Input_js_1.CdpTouchscreen(client, this.#keyboard);
-        this.#accessibility = new Accessibility_js_1.Accessibility(client);
         this.#frameManager = new FrameManager_js_1.FrameManager(client, this, this._timeoutSettings);
         this.#emulationManager = new EmulationManager_js_1.EmulationManager(client);
         this.#tracing = new Tracing_js_1.Tracing(client);
@@ -261,7 +258,6 @@ class CdpPage extends Page_js_1.Page {
         this.#keyboard.updateClient(newSession);
         this.#mouse.updateClient(newSession);
         this.#touchscreen.updateClient(newSession);
-        this.#accessibility.updateClient(newSession);
         this.#emulationManager.updateClient(newSession);
         this.#tracing.updateClient(newSession);
         this.#coverage.updateClient(newSession);
@@ -427,9 +423,6 @@ class CdpPage extends Page_js_1.Page {
     }
     get tracing() {
         return this.#tracing;
-    }
-    get accessibility() {
-        return this.#accessibility;
     }
     frames() {
         return this.#frameManager.frames();

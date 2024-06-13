@@ -9,6 +9,7 @@ import type {Protocol} from 'devtools-protocol';
 import type {Frame} from '../api/Frame.js';
 import {getQueryHandlerAndSelector} from '../common/GetQueryHandler.js';
 import {LazyArg} from '../common/LazyArg.js';
+import {PollingOptions} from '../common/QueryHandler.js';
 import type {
   AwaitableIterable,
   ElementFor,
@@ -30,7 +31,11 @@ import type {
   MouseClickOptions,
 } from './Input.js';
 import {JSHandle} from './JSHandle.js';
-import type {ScreenshotOptions, WaitForSelectorOptions} from './Page.js';
+import type {
+  QueryOptions,
+  ScreenshotOptions,
+  WaitForSelectorOptions,
+} from './Page.js';
 
 /**
  * @public
@@ -370,8 +375,34 @@ export abstract class ElementHandle<
    * elements matching the given selector.
    */
   @throwIfDisposed()
-  @ElementHandle.bindIsolatedHandle
   async $$<Selector extends string>(
+    selector: Selector,
+    options?: QueryOptions
+  ): Promise<Array<ElementHandle<NodeFor<Selector>>>> {
+    if (options?.isolate === false) {
+      return await this.#$$impl(selector);
+    }
+    return await this.#$$(selector);
+  }
+
+  /**
+   * Isolates {@link ElementHandle.$$} if needed.
+   *
+   * @internal
+   */
+  @ElementHandle.bindIsolatedHandle
+  async #$$<Selector extends string>(
+    selector: Selector
+  ): Promise<Array<ElementHandle<NodeFor<Selector>>>> {
+    return await this.#$$impl(selector);
+  }
+
+  /**
+   * Implementation for {@link ElementHandle.$$}.
+   *
+   * @internal
+   */
+  async #$$impl<Selector extends string>(
     selector: Selector
   ): Promise<Array<ElementHandle<NodeFor<Selector>>>> {
     const {updatedSelector, QueryHandler} =
@@ -534,13 +565,12 @@ export abstract class ElementHandle<
     selector: Selector,
     options: WaitForSelectorOptions = {}
   ): Promise<ElementHandle<NodeFor<Selector>> | null> {
-    const {updatedSelector, QueryHandler} =
+    const {updatedSelector, QueryHandler, selectorHasPseudoClasses} =
       getQueryHandlerAndSelector(selector);
-    return (await QueryHandler.waitFor(
-      this,
-      updatedSelector,
-      options
-    )) as ElementHandle<NodeFor<Selector>> | null;
+    return (await QueryHandler.waitFor(this, updatedSelector, {
+      polling: selectorHasPseudoClasses ? PollingOptions.RAF : undefined,
+      ...options,
+    })) as ElementHandle<NodeFor<Selector>> | null;
   }
 
   async #checkVisibility(visibility: boolean): Promise<boolean> {

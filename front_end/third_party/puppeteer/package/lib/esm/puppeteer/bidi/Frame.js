@@ -44,6 +44,7 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { combineLatest, defer, delayWhen, filter, first, firstValueFrom, map, of, raceWith, switchMap, } from '../../third_party/rxjs/rxjs.js';
 import { Frame, throwIfDetached, } from '../api/Frame.js';
+import { Accessibility } from '../cdp/Accessibility.js';
 import { ConsoleMessage, } from '../common/ConsoleMessage.js';
 import { TargetCloseError, UnsupportedOperation } from '../common/Errors.js';
 import { debugError, fromEmitterEvent, timeout } from '../common/util.js';
@@ -147,12 +148,13 @@ let BidiFrame = (() => {
             frame.#initialize();
             return frame;
         }
-        #parent = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        #parent = __runInitializers(this, _instanceExtraInitializers);
         browsingContext;
         #frames = new WeakMap();
         realms;
         _id;
         client;
+        accessibility;
         constructor(parent, browsingContext) {
             super();
             this.#parent = parent;
@@ -163,6 +165,7 @@ let BidiFrame = (() => {
                 default: BidiFrameRealm.from(this.browsingContext.defaultRealm, this),
                 internal: BidiFrameRealm.from(this.browsingContext.createWindowRealm(`__puppeteer_internal_${Math.ceil(Math.random() * 10000)}`), this),
             };
+            this.accessibility = new Accessibility(this.realms.default);
         }
         #initialize() {
             for (const browsingContext of this.browsingContext.children) {

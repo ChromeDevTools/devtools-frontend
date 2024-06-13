@@ -3,7 +3,7 @@
  *
  * @internal
  */
-export declare const createFunction: (functionValue: string) => (...args: unknown[]) => unknown;
+export declare const createFunction: (functionValue: string) => ((...args: unknown[]) => unknown);
 /**
  * @internal
  */

@@ -27,6 +27,7 @@ export declare class CdpJSHandle<T = unknown> extends JSHandle<T> {
     toString(): string;
     get id(): string | undefined;
     remoteObject(): Protocol.Runtime.RemoteObject;
+    getProperties(): Promise<Map<string, JSHandle<unknown>>>;
 }
 /**
  * @internal

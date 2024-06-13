@@ -15,18 +15,18 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
         request.#initialize();
         return request;
     }
-    #redirectBy;
+    #redirectChain;
     #response = null;
     id;
     #frame;
     #request;
-    constructor(request, frame, redirectBy) {
+    constructor(request, frame, redirect) {
         super();
         exports.requests.set(request, this);
         this.interception.enabled = request.isBlocked;
         this.#request = request;
         this.#frame = frame;
-        this.#redirectBy = redirectBy;
+        this.#redirectChain = redirect ? redirect.#redirectChain : [];
         this.id = request.id;
     }
     get client() {
@@ -35,6 +35,7 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     #initialize() {
         this.#request.on('redirect', request => {
             const httpRequest = _a.from(request, this.#frame, this);
+            this.#redirectChain.push(this);
             request.once('success', () => {
                 this.#frame
                     .page()
@@ -115,16 +116,7 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
         return this.#request.initiator;
     }
     redirectChain() {
-        if (this.#redirectBy === undefined) {
-            return [];
-        }
-        const redirects = [this.#redirectBy];
-        for (const redirect of redirects) {
-            if (redirect.#redirectBy !== undefined) {
-                redirects.push(redirect.#redirectBy);
-            }
-        }
-        return redirects;
+        return this.#redirectChain.slice();
     }
     frame() {
         return this.#frame;

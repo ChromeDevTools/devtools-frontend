@@ -10,7 +10,6 @@ import type { WaitForOptions } from '../api/Frame.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { Credentials, GeolocationOptions, MediaFeature, PageEvents } from '../api/Page.js';
 import { Page, type NewDocumentScriptEvaluation, type ScreenshotOptions } from '../api/Page.js';
-import { Accessibility } from '../cdp/Accessibility.js';
 import { Coverage } from '../cdp/Coverage.js';
 import { Tracing } from '../cdp/Tracing.js';
 import type { Cookie, CookieParam, DeleteCookiesRequest } from '../common/Cookie.js';
@@ -39,7 +38,6 @@ export declare class BidiPage extends Page {
     readonly keyboard: BidiKeyboard;
     readonly mouse: BidiMouse;
     readonly touchscreen: BidiTouchscreen;
-    readonly accessibility: Accessibility;
     readonly tracing: Tracing;
     readonly coverage: Coverage;
     _client(): BidiCdpSession;

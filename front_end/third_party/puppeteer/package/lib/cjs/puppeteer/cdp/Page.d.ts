@@ -17,7 +17,6 @@ import type { Cookie, DeleteCookiesRequest, CookieParam } from '../common/Cookie
 import { FileChooser } from '../common/FileChooser.js';
 import type { PDFOptions } from '../common/PDFOptions.js';
 import type { Viewport } from '../common/Viewport.js';
-import { Accessibility } from './Accessibility.js';
 import { Coverage } from './Coverage.js';
 import type { DeviceRequestPrompt } from './DeviceRequestPrompt.js';
 import type { CdpFrame } from './Frame.js';
@@ -47,7 +46,6 @@ export declare class CdpPage extends Page {
     get touchscreen(): CdpTouchscreen;
     get coverage(): Coverage;
     get tracing(): Tracing;
-    get accessibility(): Accessibility;
     frames(): Frame[];
     workers(): CdpWebWorker[];
     setRequestInterception(value: boolean): Promise<void>;

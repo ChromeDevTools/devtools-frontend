@@ -177,6 +177,23 @@ function guarded(getKey = function () {
 }
 exports.guarded = guarded;
 const bubbleHandlers = new WeakMap();
+const bubbleInitializer = function (events) {
+    const handlers = bubbleHandlers.get(this) ?? new Map();
+    if (handlers.has(events)) {
+        return;
+    }
+    const handler = events !== undefined
+        ? (type, event) => {
+            if (events.includes(type)) {
+                this.emit(type, event);
+            }
+        }
+        : (type, event) => {
+            this.emit(type, event);
+        };
+    handlers.set(events, handler);
+    bubbleHandlers.set(this, handlers);
+};
 /**
  * Event emitter fields marked with `bubble` will have their events bubble up
  * the field owner.
@@ -186,21 +203,7 @@ const bubbleHandlers = new WeakMap();
 function bubble(events) {
     return ({ set, get }, context) => {
         context.addInitializer(function () {
-            const handlers = bubbleHandlers.get(this) ?? new Map();
-            if (handlers.has(events)) {
-                return;
-            }
-            const handler = events !== undefined
-                ? (type, event) => {
-                    if (events.includes(type)) {
-                        this.emit(type, event);
-                    }
-                }
-                : (type, event) => {
-                    this.emit(type, event);
-                };
-            handlers.set(events, handler);
-            bubbleHandlers.set(this, handlers);
+            return bubbleInitializer.apply(this, [events]);
         });
         return {
             set(emitter) {
@@ -216,12 +219,11 @@ function bubble(events) {
                 emitter.on('*', handler);
                 set.call(this, emitter);
             },
-            // @ts-expect-error -- TypeScript incorrectly types init to require a
-            // return.
             init(emitter) {
                 if (emitter === undefined) {
-                    return;
+                    return emitter;
                 }
+                bubbleInitializer.apply(this, [events]);
                 const handler = bubbleHandlers.get(this).get(events);
                 emitter.on('*', handler);
                 return emitter;

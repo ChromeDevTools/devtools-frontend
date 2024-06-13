@@ -305,4 +305,21 @@ describeWithMockConnection('NodeCascade', () => {
         matchedStyles.propertyState(nonInheritableProperty), SDK.CSSMatchedStyles.PropertyState.Overloaded);
     assert.strictEqual(matchedStyles.propertyState(inheritableProperty), SDK.CSSMatchedStyles.PropertyState.Active);
   });
+
+  it('correctly computes active properties for nested at-rules', async () => {
+    const outerRule = ruleMatch('a', [{name: 'color', value: 'var(--inner)'}]);
+    const nestedRule = ruleMatch('&', [{name: '--inner', value: 'red'}]);
+    nestedRule.rule.nestingSelectors = ['a'];
+    nestedRule.rule.selectorList = {selectors: [], text: '&'};
+    nestedRule.rule.supports = [{
+      'text': '(--var:s)',
+      'active': true,
+      styleSheetId: nestedRule.rule.styleSheetId,
+    }];
+    const matchedStyles = await createMatchedStyles({
+      matchedPayload: [outerRule, nestedRule],
+    });
+
+    assert.deepEqual(matchedStyles.availableCSSVariables(matchedStyles.nodeStyles()[0]), ['--inner']);
+  });
 });

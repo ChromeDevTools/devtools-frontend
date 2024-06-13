@@ -574,7 +574,7 @@ export class CSSMatchedStyles {
   }
 
   hasMatchingSelectors(rule: CSSStyleRule): boolean {
-    return this.getMatchingSelectors(rule).length > 0 && queryMatches(rule.style);
+    return (rule.selectors.length === 0 || this.getMatchingSelectors(rule).length > 0) && queryMatches(rule.style);
   }
 
   getParentLayoutNodeId(): Protocol.DOM.NodeId|undefined {

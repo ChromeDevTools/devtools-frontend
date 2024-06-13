@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../../core/host/host.js';
+import * as Common from '../../core/common/common.js';
+import type * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -87,11 +88,33 @@ export class FreestylerAgent {
     this.#aidaClient = aidaClient;
   }
 
+  static buildRequest(input: string, preamble?: string, chatHistory?: Host.AidaClient.Chunk[]):
+      Host.AidaClient.AidaRequest {
+    const config = Common.Settings.Settings.instance().getHostConfig();
+    const request: Host.AidaClient.AidaRequest = {
+      input,
+      preamble,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      chat_history: chatHistory,
+      client: 'CHROME_DEVTOOLS',
+      options: {
+        // TODO: have a config for temperature
+        temperature: 0,
+        // TODO: have a separate config for modelId
+        model_id: config?.devToolsConsoleInsightsDogfood.aidaModelId ?? config?.devToolsConsoleInsights.aidaModelId ??
+            undefined,
+      },
+      metadata: {
+        // TODO: enable logging later.
+        disable_user_content_logging: true,
+      },
+    };
+    return request;
+  }
+
   async #aidaAutocomplete(text: string): Promise<string> {
     let result;
-    // TODO use a different request builder.
-    for await (
-        const lastResult of this.#aidaClient.fetch(Host.AidaClient.AidaClient.buildConsoleInsightsRequest(text))) {
+    for await (const lastResult of this.#aidaClient.fetch(FreestylerAgent.buildRequest(text))) {
       result = lastResult.explanation;
     }
 

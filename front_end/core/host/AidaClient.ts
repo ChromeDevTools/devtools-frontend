@@ -8,8 +8,22 @@ import * as Platform from '../platform/platform.js';
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 import {bindOutputStream} from './ResourceLoader.js';
 
+export enum Entity {
+  UNKNOWN = 0,
+  USER = 1,
+  SYSTEM = 2,
+}
+
+export interface Chunk {
+  text: string;
+  entity: Entity;
+}
+
 export interface AidaRequest {
   input: string;
+  preamble?: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  chat_history?: Chunk[];
   client: string;
   options?: {
     temperature?: Number,

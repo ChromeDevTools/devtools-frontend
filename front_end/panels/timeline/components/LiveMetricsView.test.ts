@@ -50,7 +50,7 @@ describeWithEnvironment('LiveMetricsView', () => {
     const view = new Components.LiveMetricsView.LiveMetricsView();
     renderElementIntoDOM(view);
     LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(
-        LiveMetrics.Events.Status, {inp: {value: 2000, rating: 'poor', interactionType: 'pointer'}, interactions: []});
+        LiveMetrics.Events.Status, {inp: {value: 2000, rating: 'poor'}, interactions: []});
     await coordinator.done();
     const metricEl = view.shadowRoot?.querySelector('#inp') as HTMLDivElement;
     const metricValueEl = metricEl.querySelector('.metric-card-value') as HTMLDivElement;

@@ -97,6 +97,38 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     return domModel.pushObjectAsNodeToFrontend(remoteObject);
   }
 
+  async #refreshNode(domModel: SDK.DOMModel.DOMModel, node: SDK.DOMModel.DOMNode):
+      Promise<SDK.DOMModel.DOMNode|undefined> {
+    const backendNodeId = node.backendNodeId();
+    const nodes = await domModel.pushNodesByBackendIdsToFrontend(new Set([backendNodeId]));
+    return nodes?.get(backendNodeId) || undefined;
+  }
+
+  /**
+   * If there is a document update then any node handles we have already resolved will be invalid.
+   * This function should re-resolve any relevant DOM nodes after a document update.
+   */
+  async #onDocumentUpdate(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMModel>): Promise<void> {
+    const domModel = event.data;
+
+    if (this.lcpValue?.node) {
+      this.lcpValue.node = await this.#refreshNode(domModel, this.lcpValue.node);
+    }
+
+    for (const interaction of this.interactions) {
+      if (interaction.node) {
+        interaction.node = await this.#refreshNode(domModel, interaction.node);
+      }
+    }
+
+    this.dispatchEventToListeners(Events.Status, {
+      lcp: this.#lcpValue,
+      cls: this.#clsValue,
+      inp: this.#inpValue,
+      interactions: this.#interactions,
+    });
+  }
+
   async #handleWebVitalsEvent(
       webVitalsEvent: Spec.WebVitalsEvent, executionContextId: Protocol.Runtime.ExecutionContextId): Promise<void> {
     switch (webVitalsEvent.name) {
@@ -127,23 +159,14 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
         const inpEvent: INPValue = {
           value: webVitalsEvent.value,
           rating: webVitalsEvent.rating,
-          interactionType: webVitalsEvent.interactionType,
         };
-        if (webVitalsEvent.nodeIndex !== undefined) {
-          const node = await this.#resolveDomNode(webVitalsEvent.nodeIndex, executionContextId);
-          if (node) {
-            inpEvent.node = node;
-          }
-        }
-
         this.#inpValue = inpEvent;
         break;
       }
       case 'Interaction': {
-        const {nodeIndex, ...rest} = webVitalsEvent;
-        const interactionEvent: InteractionValue = rest;
-        if (nodeIndex !== undefined) {
-          const node = await this.#resolveDomNode(nodeIndex, executionContextId);
+        const interactionEvent: InteractionValue = webVitalsEvent;
+        if (webVitalsEvent.nodeIndex !== undefined) {
+          const node = await this.#resolveDomNode(webVitalsEvent.nodeIndex, executionContextId);
           if (node) {
             interactionEvent.node = node;
           }
@@ -211,6 +234,13 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       return;
     }
 
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    if (!domModel) {
+      return;
+    }
+
+    domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this.#onDocumentUpdate, this);
+
     const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
     if (!runtimeModel) {
       return;
@@ -241,8 +271,17 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     }
 
     const runtimeModel = this.#target.model(SDK.RuntimeModel.RuntimeModel);
-    if (!runtimeModel) {
-      return;
+    if (runtimeModel) {
+      await runtimeModel.removeBinding({
+        name: Spec.EVENT_BINDING_NAME,
+      });
+
+      runtimeModel.removeEventListener(SDK.RuntimeModel.Events.BindingCalled, this.#onBindingCalled, this);
+    }
+
+    const domModel = this.#target.model(SDK.DOMModel.DOMModel);
+    if (domModel) {
+      domModel.removeEventListener(SDK.DOMModel.Events.DocumentUpdated, this.#onDocumentUpdate, this);
     }
 
     if (this.#scriptIdentifier) {
@@ -250,12 +289,6 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
         identifier: this.#scriptIdentifier,
       });
     }
-
-    await runtimeModel.removeBinding({
-      name: Spec.EVENT_BINDING_NAME,
-    });
-
-    runtimeModel.removeEventListener(SDK.RuntimeModel.Events.BindingCalled, this.#onBindingCalled, this);
 
     this.#target = undefined;
   }
@@ -273,11 +306,7 @@ export interface LCPValue extends MetricValue {
   node?: SDK.DOMModel.DOMNode;
 }
 
-export interface INPValue extends MetricValue {
-  interactionType: Spec.INPChangeEvent['interactionType'];
-  node?: SDK.DOMModel.DOMNode;
-}
-
+export type INPValue = MetricValue;
 export type CLSValue = MetricValue;
 
 export type InteractionValue = Pick<Spec.InteractionEvent, 'rating'|'interactionType'|'duration'>&{

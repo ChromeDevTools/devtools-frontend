@@ -7,6 +7,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import sidebarStyles from './sidebar.css.js';
 
@@ -164,8 +165,12 @@ export class SidebarUI extends HTMLElement {
     })}>
       <div class="tab-bar">
         ${this.#expanded? this.#renderHeader() : LitHtml.nothing}
-        <${IconButton.Icon.Icon.litTagName} name=${toggleIcon} @click=${this.#toggleButtonClick} class="sidebar-toggle-button">
-        </${IconButton.Icon.Icon.litTagName}>
+        <${IconButton.Icon.Icon.litTagName}
+          name=${toggleIcon}
+          @click=${this.#toggleButtonClick}
+          class="sidebar-toggle-button"
+          jslog=${VisualLogging.action('performance.sidebar-toggle').track({click: true})}
+        ></${IconButton.Icon.Icon.litTagName}>
       </div>
       <div class="tab-slider" ?hidden=${!this.#expanded}></div>
       <div class="tab-headers-bottom-line" ?hidden=${!this.#expanded}></div>

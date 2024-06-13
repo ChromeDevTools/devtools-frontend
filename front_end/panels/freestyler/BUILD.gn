@@ -58,10 +58,15 @@ devtools_entrypoint("meta") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "FreestylerEvaluateAction.test.ts" ]
+  sources = [
+    "FreestylerAgent.test.ts",
+    "FreestylerEvaluateAction.test.ts",
+  ]
 
   deps = [
     ":bundle",
+    "../../core/common:bundle",
+    "../../core/host:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../testing",

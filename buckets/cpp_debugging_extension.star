@@ -40,7 +40,7 @@ BUILDERS = [
         dimensions = dimensions.ubuntu,
         properties = dict(
             builder_config = "Release",
-            upload_dwarf_binary = True,
+            upload_dwarf_binary = False,
             **common_properties()
         ),
         build_numbers = True,

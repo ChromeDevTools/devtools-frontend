@@ -1,7 +1,8 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as TraceEngine from '../../../models/trace/trace.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import type * as TraceEngine from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
@@ -136,7 +137,7 @@ export class TimeRangeOverlay extends HTMLElement {
   }
 
   #render(): void {
-    const durationText = this.#duration ? TraceEngine.Helpers.Timing.formatMicrosecondsTime(this.#duration) : '';
+    const durationText = this.#duration ? i18n.TimeUtilities.formatMicroSecondsTime(this.#duration) : '';
 
     LitHtml.render(
         LitHtml.html`<span class="label">${this.#label}<br>${durationText}</span>`, this.#shadow, {host: this});

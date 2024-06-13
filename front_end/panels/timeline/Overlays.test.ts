@@ -305,7 +305,7 @@ describeWithEnvironment('Overlays', () => {
       assert.isOk(component?.shadowRoot);
       const label = component.shadowRoot.querySelector<HTMLElement>('.label');
       assert.isOk(label);
-      assert.strictEqual(label?.innerText, '1.265s');
+      assert.strictEqual(label?.innerText, '1.26\xA0s');
     });
 
     it('can remove an overlay', async function() {

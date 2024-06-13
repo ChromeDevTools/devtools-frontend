@@ -1141,6 +1141,10 @@ export interface TraceEventUserTiming extends TraceEventData {
   id2?: {local?: string, global?: string};
   id?: string;
   cat: 'blink.user_timing';
+  // Note that the timestamp for user timing trace events is set to the
+  // start time passed by the user at the call site of the timing (based
+  // on the UserTiming spec).
+  // https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/timing/performance_user_timing.cc;l=236;drc=494419358caf690316f160a1f27d9e771a14c033
 }
 
 export type TraceEventPairableUserTiming = TraceEventUserTiming&TraceEventPairableAsync;

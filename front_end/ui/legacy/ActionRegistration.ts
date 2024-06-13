@@ -401,6 +401,7 @@ export const enum IconClass {
   UNDO = 'undo',
   COPY = 'copy',
   IMPORT = 'import',
+  SPARK = 'spark',
 }
 
 export const enum KeybindSet {

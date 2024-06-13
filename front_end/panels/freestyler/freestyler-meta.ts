@@ -18,17 +18,18 @@ const UIStrings = {
    * @description The title of the Freestyler panel.
    */
   freestyler: 'Freestyler',
-  /**
-   * @description The setting title to enable the freestyler via
-   * the settings tab.
-   */
 };
 
 /*
+  * TODO(nvitkov): b/346933425
   * Temporary string that should not be translated
   * as they may change often during development.
   */
 const TempUIStrings = {
+  /**
+   * @description The setting title to enable the freestyler via
+   * the settings tab.
+   */
   enableFreestyler: 'Enable Freestyler',
   /**
    *@description Text of a tooltip to redirect to the AI assistant panel with
@@ -87,6 +88,22 @@ UI.ActionRegistration.registerActionExtension({
   setting,
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
   title: i18n.i18n.lockedLazyString(TempUIStrings.askFreestyler),
+  async loadActionDelegate() {
+    const Freestyler = await loadFreestylerModule();
+    return new Freestyler.ActionDelegate();
+  },
+  condition: isFeatureAvailable,
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'freestyler.style-tab-context',
+  contextTypes(): [] {
+    return [];
+  },
+  setting,
+  category: UI.ActionRegistration.ActionCategory.GLOBAL,
+  title: i18n.i18n.lockedLazyString(TempUIStrings.askFreestyler),
+  iconClass: UI.ActionRegistration.IconClass.SPARK,
   async loadActionDelegate() {
     const Freestyler = await loadFreestylerModule();
     return new Freestyler.ActionDelegate();

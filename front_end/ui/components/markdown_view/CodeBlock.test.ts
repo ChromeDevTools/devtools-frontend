@@ -68,4 +68,29 @@ describeWithEnvironment('CodeBlock', () => {
       resetTestDOM();
     }
   });
+
+  it('renders toolbar by default', () => {
+    try {
+      const component = new MarkdownView.CodeBlock.CodeBlock();
+      component.code = 'test';
+      renderElementIntoDOM(component);
+      const toolbar = component.shadowRoot!.querySelector('.toolbar') as HTMLElement;
+      assert.exists(toolbar);
+    } finally {
+      resetTestDOM();
+    }
+  });
+
+  it('renders no toolbar when configured', () => {
+    try {
+      const component = new MarkdownView.CodeBlock.CodeBlock();
+      component.code = 'test';
+      component.displayToolbar = false;
+      renderElementIntoDOM(component);
+      const toolbar = component.shadowRoot!.querySelector('.toolbar') as HTMLElement;
+      assert(toolbar === null, '.toolbar was found');
+    } finally {
+      resetTestDOM();
+    }
+  });
 });

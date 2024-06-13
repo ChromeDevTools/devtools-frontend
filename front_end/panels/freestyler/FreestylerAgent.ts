@@ -41,9 +41,17 @@ Observation
 export enum Step {
   THOUGHT = 'thought',
   ACTION = 'action',
-  OBSERVATION = 'observation',
   ANSWER = 'answer',
 }
+
+export type StepData = {
+  step: Step.THOUGHT|Step.ANSWER,
+  text: string,
+}|{
+  step: Step.ACTION,
+  code: string,
+  output: string,
+};
 
 async function executeJsCode(code: string): Promise<string> {
   const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
@@ -114,7 +122,7 @@ export class FreestylerAgent {
     return result ?? '';
   }
 
-  async run(query: string, onStep: (step: Step, stepOutput: string) => void): Promise<void> {
+  async run(query: string, onStep: (data: StepData) => void): Promise<void> {
     const prompts: Set<string> = new Set([SYSTEM_PROMPT, query]);
     const structuredLog = [];
     for (let i = 0; i < MAX_STEPS; i++) {
@@ -129,7 +137,7 @@ export class FreestylerAgent {
       const thoughtMatch = step.match(THOUGHT_REGEX);
       if (thoughtMatch) {
         const thoughtText = thoughtMatch[1];
-        onStep(Step.THOUGHT, thoughtText);
+        onStep({step: Step.THOUGHT, text: thoughtText});
         prompts.add(step);
       }
 
@@ -139,17 +147,17 @@ export class FreestylerAgent {
         const actionText = actionMatch[1];
         const executeMatch = actionText.match(EXECUTE_REGEX);
         if (executeMatch) {
-          const jsCode = executeMatch[1];
+          const jsCode = executeMatch[1].trim();
           const observation = await executeJsCode(`{${jsCode};data}`);
           debugLog(`Executed action: ${jsCode}\nResult: ${observation}`);
-          onStep(Step.ACTION, actionText);
+          onStep({step: Step.ACTION, code: jsCode, output: observation});
           prompts.add(`\nObservation\n${observation}`);
         }
 
         const finishMatch = actionText.match(FINISH_REGEX);
         if (finishMatch) {
           const finishText = finishMatch[1];
-          onStep(Step.ANSWER, finishText);
+          onStep({step: Step.ANSWER, text: finishText});
           break;
         }
       }

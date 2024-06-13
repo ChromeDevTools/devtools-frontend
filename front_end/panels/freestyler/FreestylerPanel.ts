@@ -8,12 +8,13 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
 import {
+  type ChatMessage,
   ChatMessageEntity,
   FreestylerChatUi,
   type Props as FreestylerChatUiProps,
   State as FreestylerChatUiState,
 } from './components/FreestylerChatUi.js';
-import {FreestylerAgent, type Step} from './FreestylerAgent.js';
+import {FreestylerAgent, type StepData} from './FreestylerAgent.js';
 import freestylerPanelStyles from './freestylerPanel.css.js';
 
 const UIStrings = {
@@ -29,7 +30,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/freestyler/FreestylerPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-type ViewOutput = {};
+type ViewOutput = {
+  freestylerChatUi?: FreestylerChatUi,
+};
 type View = (input: FreestylerChatUiProps, output: ViewOutput, target: HTMLElement) => void;
 
 // TODO(ergunsh): Use the WidgetElement instead of separately creating the toolbar.
@@ -55,8 +58,13 @@ function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () =>
 function defaultView(input: FreestylerChatUiProps, output: ViewOutput, target: HTMLElement): void {
   // clang-format off
   LitHtml.render(LitHtml.html`
-    <${FreestylerChatUi.litTagName} .props=${input} >
-    </${FreestylerChatUi.litTagName}>
+    <${FreestylerChatUi.litTagName} .props=${input} ${LitHtml.Directives.ref((el: Element|undefined) => {
+      if (!el || !(el instanceof FreestylerChatUi)) {
+        return;
+      }
+
+      output.freestylerChatUi = el;
+    })}></${FreestylerChatUi.litTagName}>
   `, target, {host: input}); // eslint-disable-line rulesdir/lit_html_host_this
   // clang-format on
 }
@@ -71,6 +79,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #aidaClient: Host.AidaClient.AidaClient;
   #agent: FreestylerAgent;
   #viewProps: FreestylerChatUiProps;
+  #viewOutput: ViewOutput = {};
   private constructor(private view: View = defaultView) {
     super(FreestylerPanel.panelName);
 
@@ -88,7 +97,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
       selectedNode: this.#selectedNode,
       onTextSubmit: this.#handleTextSubmit.bind(this),
       onInspectElementClick: this.#handleSelectElementClick.bind(this),
-      onAcceptPrivacyNotice: this.#handleAcceptPrivacyNotice.bind(this),
     };
 
     this.#toggleSearchElementAction.addEventListener(UI.ActionRegistration.Events.Toggled, ev => {
@@ -116,10 +124,11 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
   override wasShown(): void {
     this.registerCSSFiles([freestylerPanelStyles]);
+    this.#viewOutput.freestylerChatUi?.focusTextInput();
   }
 
   doUpdate(): void {
-    this.view(this.#viewProps, this, this.#contentContainer);
+    this.view(this.#viewProps, this.#viewOutput, this.#contentContainer);
   }
 
   #handleSelectElementClick(): void {
@@ -156,25 +165,20 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#viewProps.state = FreestylerChatUiState.CHAT_VIEW_LOADING;
     this.doUpdate();
 
-    const systemMessage = {
+    const systemMessage: ChatMessage = {
       entity: ChatMessageEntity.MODEL,
-      text: '',
+      steps: [],
     };
-    this.#viewProps.messages.push(systemMessage);
 
-    await this.#agent.run(text, (step: Step, output: string) => {
+    this.#viewProps.messages.push(systemMessage);
+    await this.#agent.run(text, (data: StepData) => {
       if (this.#viewProps.state === FreestylerChatUiState.CHAT_VIEW_LOADING) {
         this.#viewProps.state = FreestylerChatUiState.CHAT_VIEW;
       }
-      // TODO(ergunsh): Better visualize.
-      systemMessage.text += `\n${output}`;
+
+      systemMessage.steps.push(data);
       this.doUpdate();
     });
-  }
-
-  #handleAcceptPrivacyNotice(): void {
-    this.#viewProps.state = FreestylerChatUiState.CHAT_VIEW;
-    this.doUpdate();
   }
 }
 

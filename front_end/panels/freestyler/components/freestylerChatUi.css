@@ -65,6 +65,8 @@
 }
 
 .chat-message {
+  user-select: text;
+  cursor: initial;
   max-width: 320px;
   width: fit-content;
   padding: 8px var(--sys-size-8);
@@ -119,4 +121,21 @@
   gap: 4px;
   font-size: 16px;
   opacity: 70%;
+}
+
+.action-result {
+  margin: 8px 0;
+}
+
+.js-code-output {
+  margin-top: -8px;
+  white-space: pre;
+  max-width: 100%;
+  overflow: auto;
+  scrollbar-width: none;
+  padding: 4px 6px;
+  background-color: var(--sys-color-surface3);
+  color: var(--sys-color-on-surface);
+  font-size: 10px;
+  font-family: var(--source-code-font-family);
 }

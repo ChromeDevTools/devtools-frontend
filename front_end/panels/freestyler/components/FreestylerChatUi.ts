@@ -7,8 +7,10 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import {Step, type StepData} from '../FreestylerAgent.js';
 
 import freestylerChatUiStyles from './freestylerChatUi.css.js';
 
@@ -43,8 +45,11 @@ export enum ChatMessageEntity {
 }
 
 export type ChatMessage = {
-  entity: ChatMessageEntity,
+  entity: ChatMessageEntity.USER,
   text: string,
+}|{
+  entity: ChatMessageEntity.MODEL,
+  steps: StepData[],
 };
 
 export const enum State {
@@ -54,7 +59,6 @@ export const enum State {
 
 export type Props = {
   onTextSubmit: (text: string) => void,
-  onAcceptPrivacyNotice: () => void,
   onInspectElementClick: () => void,
   inspectElementToggled: boolean,
   state: State,
@@ -82,6 +86,15 @@ export class FreestylerChatUi extends HTMLElement {
     this.#render();
   }
 
+  focusTextInput(): void {
+    const input = this.#shadow.querySelector('.chat-input') as HTMLInputElement;
+    if (!input) {
+      return;
+    }
+
+    input.focus();
+  }
+
   #handleSubmit = (ev: SubmitEvent): void => {
     ev.preventDefault();
     const input = this.#shadow.querySelector('.chat-input') as HTMLInputElement;
@@ -93,17 +106,29 @@ export class FreestylerChatUi extends HTMLElement {
     input.value = '';
   };
 
-  #renderChatMessage = (content: string, entity: ChatMessageEntity): LitHtml.TemplateResult => {
-    const classes = LitHtml.Directives.classMap({
-      'chat-message': true,
-      'query': entity === ChatMessageEntity.USER,
-      'answer': entity === ChatMessageEntity.MODEL,
-    });
+  #renderActionResult = ({code, output}: {code: string, output: string}): LitHtml.TemplateResult => {
     return LitHtml.html`
-      <div class=${classes}>
-        ${content}
+      <div class="action-result">
+        <${MarkdownView.CodeBlock.CodeBlock.litTagName} .code=${code.trim()} .codeLang="js" .displayToolbar=${
+        false}></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
+        <div class="js-code-output">${output}</div>
       </div>
     `;
+  };
+
+  #renderChatMessage = (message: ChatMessage): LitHtml.TemplateResult => {
+    if (message.entity === ChatMessageEntity.USER) {
+      return LitHtml.html`<div class="chat-message query">${message.text}</div>`;
+    }
+
+    const {steps} = message;
+    // clang-format off
+    return LitHtml.html`
+      <div class="chat-message answer">
+        ${steps.map(step => LitHtml.html`${step.step === Step.ACTION ? this.#renderActionResult(step) : LitHtml.html`<p>${step.text}</p>`}`)}
+      </div>
+    `;
+    // clang-format on
   };
 
   #renderSelectAnElement = (): LitHtml.TemplateResult => {
@@ -128,7 +153,7 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format off
     return LitHtml.html`
       <div class="messages-container">
-        ${this.#props.messages.map(message => this.#renderChatMessage(message.text, message.entity))}
+        ${this.#props.messages.map(message => this.#renderChatMessage(message))}
         ${isLoading ? 'Loading' : ''}
       </div>
     `;
@@ -154,7 +179,7 @@ export class FreestylerChatUi extends HTMLElement {
             ${this.#props.selectedNode ? LitHtml.Directives.until(Common.Linkifier.Linkifier.linkify(this.#props.selectedNode)) : this.#renderSelectAnElement()}
           </div>
           <div class="chat-input-container">
-            <input type="text" class="chat-input" .disabled=${!this.#props.selectedNode} autofocus
+            <input type="text" class="chat-input" .disabled=${!this.#props.selectedNode}
               placeholder=${i18nString(UIStrings.inputPlaceholder)}>
             <${Buttons.Button.Button.litTagName}
               class="step-actions"

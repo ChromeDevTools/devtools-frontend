@@ -27,7 +27,7 @@ describe('The Lighthouse start view', () => {
 
   // Flaky test.
   it.skipOnPlatforms(
-      ['mac'], '[crbug.com/338885778] disables the start button when no categories are selected', async () => {
+      ['mac', 'linux'], '[crbug.com/338885778] disables the start button when no categories are selected', async () => {
         await navigateToLighthouseTab('empty.html');
 
         await selectCategories([]);

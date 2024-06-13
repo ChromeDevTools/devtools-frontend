@@ -1312,6 +1312,7 @@ grd_files_debug_sources = [
   "front_end/panels/explain/components/consoleInsight.css.js",
   "front_end/panels/explain/components/consoleInsightSourcesList.css.js",
   "front_end/panels/freestyler/FreestylerAgent.js",
+  "front_end/panels/freestyler/FreestylerEvaluateAction.js",
   "front_end/panels/freestyler/FreestylerPanel.js",
   "front_end/panels/freestyler/components/FreestylerChatUi.js",
   "front_end/panels/freestyler/components/freestylerChatUi.css.js",

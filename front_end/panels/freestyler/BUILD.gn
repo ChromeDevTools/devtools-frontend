@@ -18,6 +18,7 @@ generate_css("css_files") {
 devtools_module("freestyler") {
   sources = [
     "FreestylerAgent.ts",
+    "FreestylerEvaluateAction.ts",
     "FreestylerPanel.ts",
     "components/FreestylerChatUi.ts",
   ]
@@ -52,4 +53,17 @@ devtools_entrypoint("meta") {
   deps = [ ":bundle" ]
 
   visibility = [ "../../entrypoints/*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "FreestylerEvaluateAction.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../core/sdk:bundle",
+    "../../generated:protocol",
+    "../../testing",
+  ]
 }

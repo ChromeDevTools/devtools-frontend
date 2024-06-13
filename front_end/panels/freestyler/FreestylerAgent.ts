@@ -7,6 +7,8 @@ import type * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import {FreestylerEvaluateAction} from './FreestylerEvaluateAction.js';
+
 // clang-format off
 const SYSTEM_PROMPT = `Solve a question answering task about the page with interleaving Thought, Action, Observation steps.
 Thought can reason about the current situation, Observation is understanding relevant information from an Action's output and Action can be of two types:
@@ -43,37 +45,13 @@ export enum Step {
   ANSWER = 'answer',
 }
 
-class ExecutionError extends Error {}
-
-// TODO(ergunsh): Better serialize the returned object.
 async function executeJsCode(code: string): Promise<string> {
   const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
   if (!executionContext) {
     throw new Error('Execution context is not found');
   }
 
-  const response = await executionContext.evaluate(
-      {
-        expression: code,
-        replMode: true,
-        includeCommandLineAPI: true,
-        returnByValue: true,
-      },
-      /* userGesture */ false, /* awaitPromise */ true);
-
-  if (!response) {
-    throw new Error('Response is not found');
-  }
-
-  if ('error' in response) {
-    throw new ExecutionError(response.error);
-  }
-
-  if (response.exceptionDetails) {
-    throw new ExecutionError(response.exceptionDetails.exception?.description || 'JS exception');
-  }
-
-  return JSON.stringify(response.object.value);
+  return FreestylerEvaluateAction.execute(code, executionContext);
 }
 
 const THOUGHT_REGEX = /^Thought\n(.*)/;

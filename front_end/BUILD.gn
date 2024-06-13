@@ -153,6 +153,7 @@ group("unittests") {
     "panels/elements:unittests",
     "panels/emulation:unittests",
     "panels/explain:unittests",
+    "panels/freestyler:unittests",
     "panels/issues:unittests",
     "panels/layer_viewer:unittests",
     "panels/layers:unittests",

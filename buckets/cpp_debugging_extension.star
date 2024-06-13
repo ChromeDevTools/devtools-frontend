@@ -19,17 +19,11 @@ def common_properties():
     }})
     return props
 
-# TODO(liviurau): Move recipe to public.
-backend_recipe = recipe(
-    name = "devtools_internal/backend",
-    cipd_package = "infra_internal/recipe_bundles/chrome-internal.googlesource.com/chrome/tools/build_limited/scripts/slave",
-)
-
 BUILDERS = [
     luci.builder(
         name = "Cpp Debugging Extension Linux Debug",
         bucket = "ci",
-        executable = backend_recipe,
+        executable = recipe("devtools/backend"),
         service_account = CI_ACCOUNT,
         dimensions = dimensions.ubuntu,
         properties = dict(
@@ -41,7 +35,7 @@ BUILDERS = [
     luci.builder(
         name = "Cpp Debugging Extension Linux Release",
         bucket = "ci",
-        executable = backend_recipe,
+        executable = recipe("devtools/backend"),
         service_account = CI_ACCOUNT,
         dimensions = dimensions.ubuntu,
         properties = dict(

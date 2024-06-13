@@ -219,10 +219,7 @@ def cpp_debug_extension_try(suffix, extra_properties):
     luci.builder(
         name = "cpp_debug_extension_%s" % suffix,
         bucket = "try",
-        executable = recipe(
-            name = "devtools_internal/backend",
-            cipd_package = "infra_internal/recipe_bundles/chrome-internal.googlesource.com/chrome/tools/build_limited/scripts/slave",
-        ),
+        executable = recipe("devtools/backend"),
         service_account = TRY_ACCOUNT,
         dimensions = dimensions.default_ubuntu,
         properties = dict(

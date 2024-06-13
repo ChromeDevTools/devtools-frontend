@@ -7901,7 +7901,7 @@ export const NativeFunctions = [
   },
   {
     name: "softmax",
-    signatures: [["input"]]
+    signatures: [["input","?axis"]]
   },
   {
     name: "softplus",

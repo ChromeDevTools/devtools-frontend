@@ -1,0 +1,11 @@
+Name: parsel
+Short Name: parsel
+URL: https://github.com/LeaVerou/parsel
+License: MIT
+License File: LICENSE
+Security Critical: no
+Shipped: yes
+
+Description: parsel is a transitive dependency of Puppeteer, shipped as part of
+Puppeteer. The license is also included in the source files in
+front_end/third_party/puppeteer/package/lib/esm/third_party/parsel/parsel.js.

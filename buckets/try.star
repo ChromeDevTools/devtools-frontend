@@ -229,8 +229,6 @@ def cpp_debug_extension_try(suffix, extra_properties):
         build_numbers = True,
     )
 
-cpp_debug_extension_try("dbg", extra_properties = {"builder_config": "Debug"})
-cpp_debug_extension_try("rel", extra_properties = {"builder_config": "Release"})
 cpp_debug_extension_try("e2e_dbg", extra_properties = {"e2e_builder": True, "builder_config": "Debug"})
 cpp_debug_extension_try("e2e_rel", extra_properties = {"e2e_builder": True, "builder_config": "Release"})
 
@@ -243,8 +241,6 @@ luci.list_view(
 
 cq_main = struct(
     builders = [
-        "cpp_debug_extension_dbg",
-        "cpp_debug_extension_rel",
         "cpp_debug_extension_e2e_dbg",
         "cpp_debug_extension_e2e_rel",
         "devtools_frontend_linux_blink_light_rel",
@@ -267,8 +263,6 @@ cq_main = struct(
         "devtools_frontend_mac_arm64_rel",
     ],
     includable_only_builders = [
-        "cpp_debug_extension_dbg",
-        "cpp_debug_extension_rel",
         "cpp_debug_extension_e2e_dbg",
         "cpp_debug_extension_e2e_rel",
         "devtools_frontend_linux_blink_light_rel",

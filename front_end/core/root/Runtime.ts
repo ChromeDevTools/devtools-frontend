@@ -28,6 +28,10 @@ export function getRemoteBase(location: string = self.location.toString()): {
   return {base: `devtools://devtools/remote/serve_file/${version[1]}/`, version: version[1]};
 }
 
+export function getPathName(): string {
+  return window.location.pathname;
+}
+
 export class Runtime {
   private constructor() {
   }

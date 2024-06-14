@@ -123,11 +123,13 @@ export class FreestylerAgent {
     let thought: string|undefined;
     let action: string|undefined;
     let answer: string|undefined;
-    for (let i = 0; i < lines.length; i++) {
+    let i = 0;
+    while (i < lines.length) {
       const trimmed = lines[i].trim();
       if (trimmed.startsWith('THOUGHT:') && !thought) {
         // TODO: multiline thoughts.
         thought = trimmed.substring('THOUGHT:'.length).trim();
+        i++;
       } else if (trimmed.startsWith('ACTION') && !action) {
         const actionLines = [];
         let j = i + 1;
@@ -139,8 +141,22 @@ export class FreestylerAgent {
         action = actionLines.join('\n').trim();
         i = j + 1;
       } else if (trimmed.startsWith('ANSWER:') && !answer) {
-        // TODO: multiline answers.
-        answer = trimmed.substring('ANSWER:'.length).trim();
+        const answerLines = [
+          trimmed.substring('ANSWER:'.length).trim(),
+        ];
+        let j = i + 1;
+        while (j < lines.length) {
+          const line = lines[j].trim();
+          if (line.startsWith('ACTION') || line.startsWith('OBSERVATION:') || line.startsWith('THOUGHT:')) {
+            break;
+          }
+          answerLines.push(lines[j]);
+          j++;
+        }
+        answer = answerLines.join('\n').trim();
+        i = j;
+      } else {
+        i++;
       }
     }
     return {thought, action, answer};

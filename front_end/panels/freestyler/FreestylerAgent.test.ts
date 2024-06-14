@@ -63,6 +63,41 @@ describeWithEnvironment('FreestylerAgent', () => {
         answer: payload,
       });
     });
+    it('parses a multiline answer', async () => {
+      const payload = `a
+b
+c`;
+      assert.deepStrictEqual(FreestylerAgent.parseResponse(`ANSWER: ${payload}`), {
+        action: undefined,
+        thought: undefined,
+        answer: payload,
+      });
+      assert.deepStrictEqual(FreestylerAgent.parseResponse(`   ANSWER: ${payload}`), {
+        action: undefined,
+        thought: undefined,
+        answer: payload,
+      });
+      assert.deepStrictEqual(FreestylerAgent.parseResponse(`Something\n   ANSWER: ${payload}`), {
+        action: undefined,
+        thought: undefined,
+        answer: payload,
+      });
+      assert.deepStrictEqual(FreestylerAgent.parseResponse(`ANSWER: ${payload}\nTHOUGHT: thought`), {
+        action: undefined,
+        thought: 'thought',
+        answer: payload,
+      });
+      assert.deepStrictEqual(FreestylerAgent.parseResponse(`ANSWER: ${payload}\nOBSERVATION: observation`), {
+        action: undefined,
+        thought: undefined,
+        answer: payload,
+      });
+      assert.deepStrictEqual(FreestylerAgent.parseResponse(`ANSWER: ${payload}\nACTION\naction\nSTOP`), {
+        action: 'action',
+        thought: undefined,
+        answer: payload,
+      });
+    });
     it('parses an action', async () => {
       const payload = `const data = {
   someKey: "value",

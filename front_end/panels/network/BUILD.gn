@@ -157,6 +157,7 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     ":meta",
+    "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",

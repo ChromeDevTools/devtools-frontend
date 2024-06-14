@@ -134,11 +134,12 @@ export class FreestylerAgent {
         const actionLines = [];
         let j = i + 1;
         while (j < lines.length && lines[j].trim() !== 'STOP') {
-          // TODO: handle markdown backticks.
           actionLines.push(lines[j]);
           j++;
         }
-        action = actionLines.join('\n').trim();
+        // TODO: perhaps trying to parse with a Markdown parser would
+        // yield more reliable results.
+        action = actionLines.join('\n').replaceAll('```', '').trim();
         i = j + 1;
       } else if (trimmed.startsWith('ANSWER:') && !answer) {
         const answerLines = [

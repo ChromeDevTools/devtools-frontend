@@ -119,6 +119,17 @@ c`;
       });
     });
 
+    it('parses an action with backticks in the code', async () => {
+      const payload = `const data = {
+  someKey: "value",
+}`;
+      assert.deepStrictEqual(FreestylerAgent.parseResponse(`ACTION\n\`\`\`\n${payload}\n\`\`\`\nSTOP`), {
+        action: payload,
+        thought: undefined,
+        answer: undefined,
+      });
+    });
+
     it('parses a thought and an action', async () => {
       const actionPayload = `const data = {
   someKey: "value",

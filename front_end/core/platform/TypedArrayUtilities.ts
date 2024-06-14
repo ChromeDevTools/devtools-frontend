@@ -130,3 +130,25 @@ class ExpandableBigUint32ArrayImpl extends Array<number> implements BigUint32Arr
     return this;
   }
 }
+
+export interface BitVector {
+  getBit(index: number): boolean;
+  setBit(index: number): void;
+}
+
+export function createBitVector(length: number): BitVector {
+  return new BitVectorImpl(length);
+}
+
+class BitVectorImpl extends Uint8Array {
+  constructor(length: number) {
+    super(Math.ceil(length / 8));
+  }
+  getBit(index: number): boolean {
+    const value = this[index >> 3] & (1 << (index & 7));
+    return value !== 0;
+  }
+  setBit(index: number): void {
+    this[index >> 3] |= (1 << (index & 7));
+  }
+}

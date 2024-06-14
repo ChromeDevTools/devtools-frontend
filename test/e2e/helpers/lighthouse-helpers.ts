@@ -138,9 +138,10 @@ export async function clickStartButton() {
 }
 
 export async function isGenerateReportButtonDisabled() {
-  const buttonWrapper = await waitFor('.lighthouse-start-view devtools-button');
-  const button = await buttonWrapper.waitForSelector('>>> button');
-  return button!.evaluate(element => (element as HTMLButtonElement).disabled);
+  const button = await waitFor<HTMLElement>('.lighthouse-start-view devtools-button');
+  return button.evaluate(element => {
+    return element.hasAttribute('disabled');
+  });
 }
 
 export async function getHelpText() {

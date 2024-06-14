@@ -26,6 +26,78 @@ describeWithEnvironment('FreestylerAgent', () => {
       } as Root.Runtime.HostConfigConsoleInsightsDogfood,
     });
   }
+  describe('parseResponse', () => {
+    it('parses a thought', async () => {
+      const payload = 'some response';
+      assert.deepStrictEqual(FreestylerAgent.parseResponse(`THOUGHT: ${payload}`), {
+        action: undefined,
+        thought: payload,
+        answer: undefined,
+      });
+      assert.deepStrictEqual(FreestylerAgent.parseResponse(`   THOUGHT: ${payload}`), {
+        action: undefined,
+        thought: payload,
+        answer: undefined,
+      });
+      assert.deepStrictEqual(FreestylerAgent.parseResponse(`Something\n   THOUGHT: ${payload}`), {
+        action: undefined,
+        thought: payload,
+        answer: undefined,
+      });
+    });
+    it('parses a answer', async () => {
+      const payload = 'some response';
+      assert.deepStrictEqual(FreestylerAgent.parseResponse(`ANSWER: ${payload}`), {
+        action: undefined,
+        thought: undefined,
+        answer: payload,
+      });
+      assert.deepStrictEqual(FreestylerAgent.parseResponse(`   ANSWER: ${payload}`), {
+        action: undefined,
+        thought: undefined,
+        answer: payload,
+      });
+      assert.deepStrictEqual(FreestylerAgent.parseResponse(`Something\n   ANSWER: ${payload}`), {
+        action: undefined,
+        thought: undefined,
+        answer: payload,
+      });
+    });
+    it('parses an action', async () => {
+      const payload = `const data = {
+  someKey: "value",
+}`;
+      assert.deepStrictEqual(FreestylerAgent.parseResponse(`ACTION\n${payload}\nSTOP`), {
+        action: payload,
+        thought: undefined,
+        answer: undefined,
+      });
+      assert.deepStrictEqual(FreestylerAgent.parseResponse(`ACTION\n${payload}`), {
+        action: payload,
+        thought: undefined,
+        answer: undefined,
+      });
+      assert.deepStrictEqual(FreestylerAgent.parseResponse(`ACTION\n\n${payload}\n\nSTOP`), {
+        action: payload,
+        thought: undefined,
+        answer: undefined,
+      });
+    });
+
+    it('parses a thought and an action', async () => {
+      const actionPayload = `const data = {
+  someKey: "value",
+}`;
+      const thoughtPayload = 'thought';
+      assert.deepStrictEqual(
+          FreestylerAgent.parseResponse(`THOUGHT:${thoughtPayload}\nACTION\n${actionPayload}\nSTOP`), {
+            action: actionPayload,
+            thought: thoughtPayload,
+            answer: undefined,
+          });
+    });
+  });
+
   describe('buildRequest', () => {
     beforeEach(() => {
       sinon.restore();

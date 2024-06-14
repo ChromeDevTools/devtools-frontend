@@ -3,40 +3,49 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as Host from '../../core/host/host.js';
+import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {FreestylerEvaluateAction} from './FreestylerEvaluateAction.js';
 
-// clang-format off
-const SYSTEM_PROMPT = `Solve a question answering task about the page with interleaving Thought, Action, Observation steps.
-Thought can reason about the current situation, Observation is understanding relevant information from an Action's output and Action can be of two types:
-(1) <execute>entity</execute>, which executes JavaScript code on a page and returns the result of code execution. If not, it will return some similar entities to search and you can try to search the information from those topics. You have access to $0 variable to denote the currently inspected element while executing JS code.
-(2) <finish>answer</finish>, which returns the answer and finishes the task.
-You can only execute one action.
+const preamble = `You are a CSS debugging agent integrated into Chrome DevTools.
+You are going to receive a query about the CSS on the page and you are going to answer to this query in these steps:
+* THOUGHT
+* ACTION
+* ANSWER
+Use ACTION to evaluate JS code (without markdown) on the page to gather all the data needed to answer the query and put it inside the data variable - then return STOP.
+OBSERVATION will be the result of running the JS code on the page.
+You can then answer the question with ANSWER or run another ACTION query.
+Please run ACTION again if the information you got is not enough to answer the query.
 
-* PUT THE INFORMATION YOU WANT TO RETRIEVE INSIDE 'data' object.
-
-Here is an example:
-
-Thought
-To solve the task I need to know the height of the current element.
-
-Action
-<execute>
- const data = {
-  currentElementHeight: window.getComputedStyle($0).height
- }
-</execute>
-
-Observation
-{
-  currentElementHeight: 300
+Example:
+ACTION
+const data = {
+  hoverStyles: window.getComputedStyle($0, 'hover') // USING 'hover' NOT ':hover'
 }
+STOP
 
-===`;
-// clang-format on
+You have access to $0 variable to denote the currently inspected element while executing JS code.
+
+Example session:
+QUERY: Why is this element centered in its container?
+THOUGHT: Let's check the layout properties of the container.
+ACTION
+/* COLLECT_INFORMATION_HERE */
+const data = {
+  /* THE RESULT YOU ARE GOING TO USE AS INFORMATION */
+}
+STOP
+
+You will be called again with this:
+OBSERVATION
+/* OBJECT_CONTAINING_YOUR_DATA */
+
+You then output:
+ANSWER: The element is centered on the page because the parent is a flex container with justify-content set to center.
+
+Please answer only if you are sure about the answer. Otherwise, explain why you're not able to answer.`;
 
 export enum Step {
   THOUGHT = 'thought',
@@ -77,10 +86,6 @@ async function executeJsCode(code: string): Promise<string> {
   return FreestylerEvaluateAction.execute(code, executionContext);
 }
 
-const THOUGHT_REGEX = /^Thought\n(.*)/;
-const ACTION_REGEX = /^Action\n(.*)/ms;
-const EXECUTE_REGEX = /^<execute>(.*)<\/execute>$/ms;
-const FINISH_REGEX = /^<finish>(.*)<\/finish>$/ms;
 const MAX_STEPS = 5;
 export class FreestylerAgent {
   #aidaClient: Host.AidaClient.AidaClient;
@@ -113,9 +118,37 @@ export class FreestylerAgent {
     return request;
   }
 
-  async #aidaAutocomplete(text: string): Promise<string> {
+  static parseResponse(response: string): {thought?: string, action?: string, answer?: string} {
+    const lines = response.split('\n');
+    let thought: string|undefined;
+    let action: string|undefined;
+    let answer: string|undefined;
+    for (let i = 0; i < lines.length; i++) {
+      const trimmed = lines[i].trim();
+      if (trimmed.startsWith('THOUGHT:') && !thought) {
+        // TODO: multiline thoughts.
+        thought = trimmed.substring('THOUGHT:'.length).trim();
+      } else if (trimmed.startsWith('ACTION') && !action) {
+        const actionLines = [];
+        let j = i + 1;
+        while (j < lines.length && lines[j].trim() !== 'STOP') {
+          // TODO: handle markdown backticks.
+          actionLines.push(lines[j]);
+          j++;
+        }
+        action = actionLines.join('\n').trim();
+        i = j + 1;
+      } else if (trimmed.startsWith('ANSWER:') && !answer) {
+        // TODO: multiline answers.
+        answer = trimmed.substring('ANSWER:'.length).trim();
+      }
+    }
+    return {thought, action, answer};
+  }
+
+  async #aidaFetch(request: Host.AidaClient.AidaRequest): Promise<string> {
     let result;
-    for await (const lastResult of this.#aidaClient.fetch(FreestylerAgent.buildRequest(text))) {
+    for await (const lastResult of this.#aidaClient.fetch(request)) {
       result = lastResult.explanation;
     }
 
@@ -123,43 +156,56 @@ export class FreestylerAgent {
   }
 
   async run(query: string, onStep: (data: StepData) => void): Promise<void> {
-    const prompts: Set<string> = new Set([SYSTEM_PROMPT, query]);
     const structuredLog = [];
+    const chatHistory: Host.AidaClient.Chunk[] = [];
+    query = `QUERY: ${query}`;
     for (let i = 0; i < MAX_STEPS; i++) {
-      const combinedPrompt = [...prompts].join('\n');
-      const step = await this.#aidaAutocomplete(combinedPrompt);
-      debugLog(`Iteration: ${i}: ${combinedPrompt}\n${step}`);
+      const request = FreestylerAgent.buildRequest(query, preamble, chatHistory.length ? chatHistory : undefined);
+      const response = await this.#aidaFetch(request);
+      debugLog(`Iteration: ${i}: ${JSON.stringify(request)}\n${response}`);
       structuredLog.push({
-        prompt: combinedPrompt,
-        response: step,
+        request: request,
+        response: response,
       });
 
-      const thoughtMatch = step.match(THOUGHT_REGEX);
-      if (thoughtMatch) {
-        const thoughtText = thoughtMatch[1];
-        onStep({step: Step.THOUGHT, text: thoughtText});
-        prompts.add(step);
+      chatHistory.push({
+        text: query,
+        entity: i === 0 ? Host.AidaClient.Entity.USER : Host.AidaClient.Entity.SYSTEM,
+      });
+
+      const {thought, action, answer} = FreestylerAgent.parseResponse(response);
+
+      if (!thought && !action && !answer) {
+        onStep({step: Step.ANSWER, text: 'Sorry, I could not help you with this query.'});
+        break;
       }
 
-      const actionMatch = step.match(ACTION_REGEX);
-      if (actionMatch) {
-        prompts.add(step);
-        const actionText = actionMatch[1];
-        const executeMatch = actionText.match(EXECUTE_REGEX);
-        if (executeMatch) {
-          const jsCode = executeMatch[1].trim();
-          const observation = await executeJsCode(`{${jsCode};data}`);
-          debugLog(`Executed action: ${jsCode}\nResult: ${observation}`);
-          onStep({step: Step.ACTION, code: jsCode, output: observation});
-          prompts.add(`\nObservation\n${observation}`);
-        }
+      if (answer) {
+        onStep({step: Step.ANSWER, text: answer});
+        chatHistory.push({
+          text: `ANSWER: ${answer}`,
+          entity: Host.AidaClient.Entity.SYSTEM,
+        });
+        break;
+      }
 
-        const finishMatch = actionText.match(FINISH_REGEX);
-        if (finishMatch) {
-          const finishText = finishMatch[1];
-          onStep({step: Step.ANSWER, text: finishText});
-          break;
-        }
+      if (thought) {
+        onStep({step: Step.THOUGHT, text: thought});
+        chatHistory.push({
+          text: `THOUGHT: ${thought}`,
+          entity: Host.AidaClient.Entity.SYSTEM,
+        });
+      }
+
+      if (action) {
+        chatHistory.push({
+          text: `ACTION\n${action}\nSTOP`,
+          entity: Host.AidaClient.Entity.SYSTEM,
+        });
+        const observation = await executeJsCode(`{${action};data}`);
+        debugLog(`Executed action: ${action}\nResult: ${observation}`);
+        onStep({step: Step.ACTION, code: action, output: observation});
+        query = `OBSERVATION: ${observation}`;
       }
     }
     if (isDebugMode()) {

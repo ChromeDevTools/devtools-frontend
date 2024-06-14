@@ -46,7 +46,7 @@ export class AffectedMetadataAllowedSitesView extends AffectedResourcesView {
         textContentElement.appendChild(optOutTextElement);
 
         const linkElement = UI.XLink.XLink.create(
-            'https://github.com/amaliev/3pcd-exemption-heuristics/blob/main/explainer.md', 'learn more');
+            'https://developers.google.com/privacy-sandbox/blog/grace-period-opt-out', 'learn more');
         textContentElement.appendChild(linkElement);
 
         const endTextElement = document.createElement('span');

@@ -39,7 +39,7 @@ export class CookieDeprecationMetadataIssue extends Issue {
                                                                     'cookieWarnMetadataGrantRead.md';
 
     let optOutText = '';
-    if (this.#issueDetails.isOptOutTopLevel && this.#issueDetails.optOutPercentage >= 0) {
+    if (this.#issueDetails.isOptOutTopLevel) {
       optOutText = '\n\n (Top level site opt-out: ' + this.#issueDetails.optOutPercentage +
           '% - [learn more](gracePeriodStagedControlExplainer))';
     }

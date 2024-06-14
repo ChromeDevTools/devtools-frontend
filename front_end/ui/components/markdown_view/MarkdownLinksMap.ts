@@ -52,7 +52,7 @@ export const markdownLinks = new Map<string, string>([
   ['PNASecureContextRestrictionFeatureStatus', 'https://chromestatus.com/feature/5954091755241472'],
   ['https://w3c.github.io/uievents/#legacy-event-types', 'https://w3c.github.io/uievents/#legacy-event-types'],
   ['manageCookiesHelpPage', 'https://support.google.com/chrome/answer/95647'],
-  ['gracePeriodStagedControlExplainer', 'https://github.com/amaliev/3pcd-exemption-heuristics/blob/main/explainer.md'],
+  ['gracePeriodStagedControlExplainer', 'https://developers.google.com/privacy-sandbox/blog/grace-period-opt-out'],
 ]);
 
 export const getMarkdownLink = (key: string): string => {

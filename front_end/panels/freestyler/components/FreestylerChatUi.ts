@@ -14,7 +14,12 @@ import {Step, type StepData} from '../FreestylerAgent.js';
 
 import freestylerChatUiStyles from './freestylerChatUi.css.js';
 
-const UIStrings = {
+/*
+  * TODO(nvitkov): b/346933425
+  * Temporary string that should not be translated
+  * as they may change often during development.
+  */
+const TempUIStrings = {
   /**
    *@description Placeholder text for the chat UI input.
    */
@@ -36,8 +41,10 @@ const UIStrings = {
    */
   emptyStateText: 'How can I help you?',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+// const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);
+// const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+/* eslint-disable  rulesdir/l10n_i18nString_call_only_with_uistrings */
+const i18nString = i18n.i18n.lockedString;
 
 export enum ChatMessageEntity {
   MODEL = 'model',
@@ -149,9 +156,9 @@ export class FreestylerChatUi extends HTMLElement {
         toggledIconName: 'select-element',
         toggleType: Buttons.Button.ToggleType.PRIMARY,
         toggled: this.#props.inspectElementToggled,
-        title: i18nString(UIStrings.sendButtonTitle),
+        title: i18nString(TempUIStrings.sendButtonTitle),
       } as Buttons.Button.ButtonData} @click=${this.#props.onInspectElementClick}></${Buttons.Button.Button.litTagName}>
-      <span class="select-an-element-text">${i18nString(UIStrings.selectAnElement)}</span>
+      <span class="select-an-element-text">${i18nString(TempUIStrings.selectAnElement)}</span>
     `;
     // clang-format on
   };
@@ -172,7 +179,7 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format off
     return LitHtml.html`<div class="empty-state-container">
       <${IconButton.Icon.Icon.litTagName} name="spark" style="width: 36px; height: 36px;"></${IconButton.Icon.Icon.litTagName}>
-      ${i18nString(UIStrings.emptyStateText)}
+      ${i18nString(TempUIStrings.emptyStateText)}
     </div>`;
     // clang-format on
   };
@@ -188,22 +195,22 @@ export class FreestylerChatUi extends HTMLElement {
           </div>
           <div class="chat-input-container">
             <input type="text" class="chat-input" .disabled=${!this.#props.selectedNode}
-              placeholder=${i18nString(UIStrings.inputPlaceholder)}>
+              placeholder=${i18nString(TempUIStrings.inputPlaceholder)}>
             <${Buttons.Button.Button.litTagName}
               class="step-actions"
               type="submit"
-              title=${i18nString(UIStrings.sendButtonTitle)}
-              aria-label=${i18nString(UIStrings.sendButtonTitle)}
+              title=${i18nString(TempUIStrings.sendButtonTitle)}
+              aria-label=${i18nString(TempUIStrings.sendButtonTitle)}
               jslog=${VisualLogging.action('send').track({click: true})}
               .data=${{
                 variant: Buttons.Button.Variant.ICON,
                 size: Buttons.Button.Size.SMALL,
                 iconName: 'send',
-                title: i18nString(UIStrings.sendButtonTitle),
+                title: i18nString(TempUIStrings.sendButtonTitle),
               } as Buttons.Button.ButtonData}
             ></${Buttons.Button.Button.litTagName}>
           </div>
-          <span class="chat-input-disclaimer">${i18nString(UIStrings.inputDisclaimer)}</span>
+          <span class="chat-input-disclaimer">${i18nString(TempUIStrings.inputDisclaimer)}</span>
         </form>
       </div>
     `;

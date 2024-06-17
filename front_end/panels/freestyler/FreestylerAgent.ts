@@ -208,10 +208,15 @@ export class FreestylerAgent {
         response: response,
       });
 
-      this.#chatHistory.push({
-        text: query,
-        entity: i === 0 ? Host.AidaClient.Entity.USER : Host.AidaClient.Entity.SYSTEM,
-      });
+      this.#chatHistory.push(
+          {
+            text: query,
+            entity: Host.AidaClient.Entity.USER,
+          },
+          {
+            text: response,
+            entity: Host.AidaClient.Entity.SYSTEM,
+          });
 
       const {thought, action, answer} = FreestylerAgent.parseResponse(response);
 
@@ -222,26 +227,14 @@ export class FreestylerAgent {
 
       if (answer) {
         onStep({step: Step.ANSWER, text: answer});
-        this.#chatHistory.push({
-          text: `ANSWER: ${answer}`,
-          entity: Host.AidaClient.Entity.SYSTEM,
-        });
         break;
       }
 
       if (thought) {
         onStep({step: Step.THOUGHT, text: thought});
-        this.#chatHistory.push({
-          text: `THOUGHT: ${thought}`,
-          entity: Host.AidaClient.Entity.SYSTEM,
-        });
       }
 
       if (action) {
-        this.#chatHistory.push({
-          text: `ACTION\n${action}\nSTOP`,
-          entity: Host.AidaClient.Entity.SYSTEM,
-        });
         debugLog(`Action to execute: ${action}`);
         const observation = await executeJsCode(`{${action};((typeof data !== "undefined") ? data : undefined)}`);
         debugLog(`Action result: ${observation}`);

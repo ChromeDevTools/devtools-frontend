@@ -30,12 +30,6 @@ describe('ConsoleInsight', function() {
         enabled: true,
         optIn: false,
       },
-      devToolsConsoleInsightsDogfood: {
-        aidaModelId: 'modelB',
-        aidaTemperature: 222,
-        enabled: false,
-        optIn: false,
-      },
       devToolsFreestylerDogfood: {
         enabled: false,
       },

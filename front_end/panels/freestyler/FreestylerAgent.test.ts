@@ -15,9 +15,6 @@ describeWithEnvironment('FreestylerAgent', () => {
       devToolsConsoleInsights: {
         aidaModelId: modelId,
       },
-      devToolsConsoleInsightsDogfood: {
-        aidaModelId: modelId,
-      },
     });
   }
   describe('parseResponse', () => {

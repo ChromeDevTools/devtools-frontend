@@ -496,11 +496,6 @@ export function getGetHostConfigStub(config: RecursivePartial<Root.Runtime.HostC
       aidaTemperature: 0.2,
       ...config.devToolsConsoleInsights,
     } as Root.Runtime.HostConfigConsoleInsights,
-    devToolsConsoleInsightsDogfood: {
-      enabled: false,
-      aidaTemperature: 0.3,
-      ...config.devToolsConsoleInsightsDogfood,
-    } as Root.Runtime.HostConfigConsoleInsightsDogfood,
     devToolsFreestylerDogfood: {
       enabled: false,
       ...config.devToolsFreestylerDogfood,

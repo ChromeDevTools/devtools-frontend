@@ -109,18 +109,11 @@ function isPolicyRestricted(config?: Root.Runtime.HostConfig): boolean {
 }
 
 function isOptIn(config?: Root.Runtime.HostConfig): boolean {
-  if (isDogfooder(config)) {
-    return config?.devToolsConsoleInsightsDogfood?.optIn === true;
-  }
   return config?.devToolsConsoleInsights?.optIn === true;
 }
 
-function isDogfooder(config?: Root.Runtime.HostConfig): boolean {
-  return config?.devToolsConsoleInsightsDogfood?.enabled === true;
-}
-
 function isFeatureEnabled(config?: Root.Runtime.HostConfig): boolean {
-  return isDogfooder(config) || config?.devToolsConsoleInsights?.blockedByFeatureFlag === false;
+  return config?.devToolsConsoleInsights?.blockedByFeatureFlag === false;
 }
 
 Common.Settings.registerSettingExtension({
@@ -134,9 +127,6 @@ Common.Settings.registerSettingExtension({
   disabledCondition: config => {
     if (isLocaleRestricted()) {
       return {disabled: true, reason: i18nString(UIStrings.wrongLocale)};
-    }
-    if (isDogfooder(config)) {
-      return {disabled: false};
     }
     if (isAgeRestricted(config)) {
       return {disabled: true, reason: i18nString(UIStrings.ageRestricted)};
@@ -164,14 +154,8 @@ for (const action of actions) {
       return new Explain.ActionDelegate();
     },
     condition: config => {
-      if (isLocaleRestricted()) {
-        return false;
-      }
-      if (isDogfooder(config)) {
-        return true;
-      }
       return isFeatureEnabled(config) && !isAgeRestricted(config) && !isGeoRestricted(config) &&
-          !isPolicyRestricted(config) && !isRolloutRestricted(config);
+          !isLocaleRestricted() && !isPolicyRestricted(config) && !isRolloutRestricted(config);
     },
   });
 }

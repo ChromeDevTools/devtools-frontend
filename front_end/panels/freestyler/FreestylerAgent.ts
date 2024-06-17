@@ -107,8 +107,7 @@ export class FreestylerAgent {
         // TODO: have a config for temperature
         temperature: 0,
         // TODO: have a separate config for modelId
-        model_id: config?.devToolsConsoleInsightsDogfood.aidaModelId ?? config?.devToolsConsoleInsights.aidaModelId ??
-            undefined,
+        model_id: config?.devToolsConsoleInsights.aidaModelId ?? undefined,
       },
       metadata: {
         // TODO: enable logging later.

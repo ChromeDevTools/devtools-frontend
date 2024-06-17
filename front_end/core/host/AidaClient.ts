@@ -53,10 +53,7 @@ export class AidaClient {
     let temperature = NaN;
     let modelId = null;
     let disallowLogging = false;
-    if (config?.devToolsConsoleInsightsDogfood.enabled) {
-      temperature = config.devToolsConsoleInsightsDogfood.aidaTemperature;
-      modelId = config.devToolsConsoleInsightsDogfood.aidaModelId;
-    } else if (config?.devToolsConsoleInsights.enabled) {
+    if (config?.devToolsConsoleInsights.enabled) {
       temperature = config.devToolsConsoleInsights.aidaTemperature;
       modelId = config.devToolsConsoleInsights.aidaModelId;
       disallowLogging = config.devToolsConsoleInsights.disallowLogging;

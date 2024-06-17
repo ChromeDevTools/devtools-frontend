@@ -257,11 +257,14 @@ cq_main = struct(
         "dtf_presubmit_linux",
         "dtf_presubmit_win64",
     ],
-    experiment_builders = [
+    experiment_builders = {
         # Quarantine a builder here
-        # This will make them experiment 100%
-        "devtools_frontend_mac_arm64_rel",
-    ],
+        # This will make them experiment with the given percentage
+        "devtools_frontend_mac_arm64_rel": 100,
+        "dtf_linux_rel": 20,
+        "dtf_mac_rel": 20,
+        "dtf_win_rel": 20,
+    },
     includable_only_builders = [
         "cpp_debug_extension_e2e_dbg",
         "cpp_debug_extension_e2e_rel",
@@ -273,17 +276,11 @@ cq_main = struct(
         "devtools_frontend_shuffled_parallel_linux_rel",
         "devtools_frontend_shuffled_parallel_mac_rel",
         "devtools_frontend_shuffled_parallel_win64_rel",
-        "dtf_linux_rel",
-        "dtf_mac_rel",
-        "dtf_win_rel",
     ],
 )
 
 def experiment_builder(builder):
-    if builder in cq_main.experiment_builders:
-        return 100
-    else:
-        return None
+    return cq_main.experiment_builders.get(builder, None)
 
 def includable_only_builder(builder):
     return builder in cq_main.includable_only_builders

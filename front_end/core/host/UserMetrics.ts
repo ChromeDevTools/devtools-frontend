@@ -571,7 +571,9 @@ export enum Action {
   AnimationGroupSelected = 142,
   ScrollDrivenAnimationGroupSelected = 143,
   ScrollDrivenAnimationGroupScrubbed = 144,
-  MaxValue = 145,
+  FreestylerOpenedFromElementsPanel = 145,
+  FreestylerOpenedFromStylesTab = 146,
+  MaxValue = 147,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -858,7 +860,6 @@ export enum KeybindSetSettings {
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export enum KeyboardShortcutAction {
   OtherShortcut = 0,
   'quick-open.show-command-menu' = 1,

@@ -36,6 +36,9 @@ describe('ConsoleInsight', function() {
         enabled: false,
         optIn: false,
       },
+      devToolsFreestylerDogfood: {
+        enabled: false,
+      },
     };
     const mergedConfig: Root.Runtime.HostConfig = {
       ...baseConfig,

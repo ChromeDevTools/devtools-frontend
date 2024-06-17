@@ -2,10 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import type * as Root from '../../core/root/root.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, getGetHostConfigStub} from '../../testing/EnvironmentHelpers.js';
 
 import * as Freestyler from './FreestylerAgent.js';
 
@@ -13,17 +11,13 @@ const {FreestylerAgent} = Freestyler;
 
 describeWithEnvironment('FreestylerAgent', () => {
   function mockHostConfig(modelId?: string) {
-    sinon.stub(Common.Settings.Settings.instance(), 'getHostConfig').returns({
+    getGetHostConfigStub({
       devToolsConsoleInsights: {
-        enabled: false,
-        aidaTemperature: 0.2,
         aidaModelId: modelId,
-      } as Root.Runtime.HostConfigConsoleInsights,
+      },
       devToolsConsoleInsightsDogfood: {
-        enabled: false,
-        aidaTemperature: 0.3,
         aidaModelId: modelId,
-      } as Root.Runtime.HostConfigConsoleInsightsDogfood,
+      },
     });
   }
   describe('parseResponse', () => {

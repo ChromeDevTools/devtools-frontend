@@ -319,9 +319,14 @@ export interface HostConfigConsoleInsightsDogfood {
   optIn: boolean;
 }
 
+export interface HostConfigFreestylerDogfood {
+  enabled: boolean;
+}
+
 export interface HostConfig {
   devToolsConsoleInsights: HostConfigConsoleInsights;
   devToolsConsoleInsightsDogfood: HostConfigConsoleInsightsDogfood;
+  devToolsFreestylerDogfood: HostConfigFreestylerDogfood;
 }
 
 /**

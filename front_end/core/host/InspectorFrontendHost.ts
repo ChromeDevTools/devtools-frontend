@@ -419,6 +419,9 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
         enabled: false,
         optIn: false,
       },
+      devToolsFreestylerDogfood: {
+        enabled: false,
+      },
     });
   }
 

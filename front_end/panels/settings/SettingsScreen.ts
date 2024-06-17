@@ -585,7 +585,8 @@ export class Revealer implements Common.Revealer.Revealer<Root.Runtime.Experimen
     }
 
     // Reveal settings views
-    for (const view of UI.ViewManager.getRegisteredViewExtensions()) {
+    for (const view of UI.ViewManager.getRegisteredViewExtensions(
+             Common.Settings.Settings.instance().getHostConfig())) {
       const id = view.viewId();
       const location = view.location();
       if (location !== UI.ViewManager.ViewLocationValues.SETTINGS_VIEW) {

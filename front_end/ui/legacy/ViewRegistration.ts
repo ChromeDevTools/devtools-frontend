@@ -166,9 +166,10 @@ export function registerViewExtension(registration: ViewRegistration): void {
   registeredViewExtensions.push(new PreRegisteredView(registration));
 }
 
-export function getRegisteredViewExtensions(): Array<PreRegisteredView> {
+export function getRegisteredViewExtensions(config?: Root.Runtime.HostConfig): Array<PreRegisteredView> {
   return registeredViewExtensions.filter(
-      view => Root.Runtime.Runtime.isDescriptorEnabled({experiment: view.experiment(), condition: view.condition()}));
+      view => Root.Runtime.Runtime.isDescriptorEnabled(
+          {experiment: view.experiment(), condition: view.condition()}, config));
 }
 
 export function maybeRemoveViewExtension(viewId: string): boolean {

@@ -158,7 +158,7 @@ export class ViewManager {
     // default ordering as defined by the views themselves.
 
     const viewsByLocation = new Map<ViewLocationValues|'none', PreRegisteredView[]>();
-    for (const view of getRegisteredViewExtensions()) {
+    for (const view of getRegisteredViewExtensions(Common.Settings.Settings.instance().getHostConfig())) {
       const location = view.location() || 'none';
       const views = viewsByLocation.get(location) || [];
       views.push(view);

@@ -243,7 +243,7 @@ export class FreestylerAgent {
           entity: Host.AidaClient.Entity.SYSTEM,
         });
         debugLog(`Action to execute: ${action}`);
-        const observation = await executeJsCode(`{${action};data}`);
+        const observation = await executeJsCode(`{${action};((typeof data !== "undefined") ? data : undefined)}`);
         debugLog(`Action result: ${observation}`);
         onStep({step: Step.ACTION, code: action, output: observation});
         query = `OBSERVATION: ${observation}`;

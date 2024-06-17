@@ -7,6 +7,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parsePSelectors = void 0;
 const parsel_js_js_1 = require("../../third_party/parsel-js/parsel-js.js");
+parsel_js_js_1.TOKENS['nesting'] = /&/g;
 parsel_js_js_1.TOKENS['combinator'] = /\s*(>>>>?|[\s>+~])\s*/g;
 const ESCAPE_REGEXP = /\\[\s\S]/g;
 const unquote = (text) => {
@@ -76,7 +77,7 @@ function parsePSelectors(selector) {
                 continue;
             case 'pseudo-class':
                 hasPseudoClasses = true;
-                continue;
+                break;
             case 'comma':
                 if (storage.length) {
                     compoundSelector.push((0, parsel_js_js_1.stringify)(storage));

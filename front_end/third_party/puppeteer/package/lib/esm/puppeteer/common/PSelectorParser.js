@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { tokenize, TOKENS, stringify, } from '../../third_party/parsel-js/parsel-js.js';
+TOKENS['nesting'] = /&/g;
 TOKENS['combinator'] = /\s*(>>>>?|[\s>+~])\s*/g;
 const ESCAPE_REGEXP = /\\[\s\S]/g;
 const unquote = (text) => {
@@ -73,7 +74,7 @@ export function parsePSelectors(selector) {
                 continue;
             case 'pseudo-class':
                 hasPseudoClasses = true;
-                continue;
+                break;
             case 'comma':
                 if (storage.length) {
                     compoundSelector.push(stringify(storage));

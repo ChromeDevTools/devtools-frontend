@@ -45,19 +45,28 @@ function getQueryHandlerAndSelector(selector) {
             }
         }
     }
-    const [pSelector, isPureCSS, hasPseudoClasses] = (0, PSelectorParser_js_1.parsePSelectors)(selector);
-    if (isPureCSS) {
+    try {
+        const [pSelector, isPureCSS, hasPseudoClasses] = (0, PSelectorParser_js_1.parsePSelectors)(selector);
+        if (isPureCSS) {
+            return {
+                updatedSelector: selector,
+                selectorHasPseudoClasses: hasPseudoClasses,
+                QueryHandler: CSSQueryHandler_js_1.CSSQueryHandler,
+            };
+        }
+        return {
+            updatedSelector: JSON.stringify(pSelector),
+            selectorHasPseudoClasses: hasPseudoClasses,
+            QueryHandler: PQueryHandler_js_1.PQueryHandler,
+        };
+    }
+    catch {
         return {
             updatedSelector: selector,
-            selectorHasPseudoClasses: hasPseudoClasses,
+            selectorHasPseudoClasses: false,
             QueryHandler: CSSQueryHandler_js_1.CSSQueryHandler,
         };
     }
-    return {
-        updatedSelector: JSON.stringify(pSelector),
-        selectorHasPseudoClasses: hasPseudoClasses,
-        QueryHandler: PQueryHandler_js_1.PQueryHandler,
-    };
 }
 exports.getQueryHandlerAndSelector = getQueryHandlerAndSelector;
 //# sourceMappingURL=GetQueryHandler.js.map

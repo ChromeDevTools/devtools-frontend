@@ -106,15 +106,23 @@ export class FreestylerChatUi extends HTMLElement {
     input.value = '';
   };
 
-  #renderActionResult = ({code, output}: {code: string, output: string}): LitHtml.TemplateResult => {
-    return LitHtml.html`
-      <div class="action-result">
-        <${MarkdownView.CodeBlock.CodeBlock.litTagName} .code=${code.trim()} .codeLang="js" .displayToolbar=${
-        false}></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
-        <div class="js-code-output">${output}</div>
-      </div>
-    `;
-  };
+  #renderStep(step: StepData): LitHtml.TemplateResult {
+    if (step.step === Step.ACTION) {
+      return LitHtml.html`
+        <div class="action-result">
+          <${MarkdownView.CodeBlock.CodeBlock.litTagName} .code=${step.code.trim()} .codeLang="js" .displayToolbar=${
+          false}></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
+          <div class="js-code-output">${step.output}</div>
+        </div>
+      `;
+    }
+
+    if (step.step === Step.ERROR) {
+      return LitHtml.html`<p class="error-step">${step.text}</p>`;
+    }
+
+    return LitHtml.html`<p>${step.text}</p>`;
+  }
 
   #renderChatMessage = (message: ChatMessage): LitHtml.TemplateResult => {
     if (message.entity === ChatMessageEntity.USER) {
@@ -125,7 +133,7 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format off
     return LitHtml.html`
       <div class="chat-message answer">
-        ${steps.map(step => LitHtml.html`${step.step === Step.ACTION ? this.#renderActionResult(step) : LitHtml.html`<p>${step.text}</p>`}`)}
+        ${steps.map(step => this.#renderStep(step))}
       </div>
     `;
     // clang-format on

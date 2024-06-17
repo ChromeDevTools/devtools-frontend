@@ -71,10 +71,8 @@ describe('FreestylerEvaluateAction', () => {
       return getExecutionContext(runtimeModel!);
     }
 
-    async function executeForTest(
-        code: string, {allowSideEffectForTest = false}: {allowSideEffectForTest?: boolean} = {}) {
-      return Freestyler.FreestylerEvaluateAction.execute(
-          code, await executionContextForTest(), {allowSideEffectForTest});
+    async function executeForTest(code: string) {
+      return Freestyler.FreestylerEvaluateAction.execute(code, await executionContextForTest());
     }
 
     it('should serialize primitive values correctly', async () => {
@@ -88,13 +86,11 @@ describe('FreestylerEvaluateAction', () => {
 
     it('should serialize DOM nodes correctly', async () => {
       assert.strictEqual(
-          await executeForTest(
-              `{
+          await executeForTest(`{
         const div = document.createElement('div');
         div.setAttribute('data-custom-attr', 'i exist');
         div
-      }`,
-              {allowSideEffectForTest: true}),
+      }`),
           '"<div data-custom-attr=\\"i exist\\"></div>"');
     });
 

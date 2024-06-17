@@ -83,7 +83,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   private constructor(private view: View = defaultView) {
     super(FreestylerPanel.panelName);
 
-    createToolbar(this.contentElement, {onClearClick: this.#handleClearClick.bind(this)});
+    createToolbar(this.contentElement, {onClearClick: this.#clearMessages.bind(this)});
     this.#toggleSearchElementAction =
         UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
     this.#aidaClient = new Host.AidaClient.AidaClient();
@@ -105,7 +105,13 @@ export class FreestylerPanel extends UI.Panel.Panel {
     });
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, ev => {
+      if (this.#viewProps.selectedNode === ev.data) {
+        return;
+      }
+
       this.#viewProps.selectedNode = ev.data;
+      this.#agent.resetHistory();
+      this.#clearMessages();
       this.doUpdate();
     });
     this.doUpdate();
@@ -139,21 +145,22 @@ export class FreestylerPanel extends UI.Panel.Panel {
     switch (actionId) {
       case 'freestyler.element-panel-context': {
         // TODO(340805362): Add UMA
-        this.#handleClearClick();
+        this.#clearMessages();
         break;
       }
       case 'freestyler.style-tab-context': {
         // TODO(340805362): Add UMA
-        this.#handleClearClick();
+        this.#clearMessages();
         break;
       }
     }
   }
 
   // TODO(ergunsh): Handle cancelling agent run.
-  #handleClearClick(): void {
+  #clearMessages(): void {
     this.#viewProps.messages = [];
     this.#viewProps.state = FreestylerChatUiState.CHAT_VIEW;
+    this.#agent.resetHistory();
     this.doUpdate();
   }
 

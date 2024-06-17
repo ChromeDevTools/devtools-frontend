@@ -139,3 +139,7 @@
   font-size: 10px;
   font-family: var(--source-code-font-family);
 }
+
+.error-step {
+  color: var(--sys-color-error);
+}

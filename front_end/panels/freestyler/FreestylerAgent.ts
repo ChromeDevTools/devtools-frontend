@@ -204,7 +204,7 @@ export class FreestylerAgent {
 
       debugLog(`Iteration: ${i}`, 'Request', request, 'Response', response);
       structuredLog.push({
-        request: request,
+        request: structuredClone(request),
         response: response,
       });
 

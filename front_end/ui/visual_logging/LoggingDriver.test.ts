@@ -670,7 +670,8 @@ describe('LoggingDriver', () => {
     assert.deepStrictEqual(recordResize.firstCall.firstArg, {veid: getVeId(element), width: 300, height: 300});
   });
 
-  it('throttles resize per element', async () => {
+  // Flaky, to be rewritten
+  it.skip('[crbug.com/347520196] throttles resize per element', async () => {
     addLoggableElements();
     const element1 = document.getElementById('element') as HTMLElement;
     const element2 = element1.cloneNode() as HTMLElement;

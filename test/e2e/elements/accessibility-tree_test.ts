@@ -7,6 +7,7 @@ import {
   click,
   enableExperiment,
   getBrowserAndPages,
+  getResourcesPath,
   goToResource,
   raf,
   waitForElementWithTextContent,
@@ -22,7 +23,7 @@ describe('Accessibility Tree in the Elements Tab', function() {
     await goToResource('elements/accessibility-simple-page.html');
     await toggleAccessibilityTree();
     await waitForElementWithTextContent('heading\xa0"Title"');
-    await waitForElementWithTextContent('link\xa0"cats" focusable:\xa0true');
+    await waitForElementWithTextContent(`link\xa0"cats" focusable:\xa0true url:\xa0${getResourcesPath()}/elements/x`);
   });
 
   it('allows navigating iframes', async () => {
@@ -30,13 +31,14 @@ describe('Accessibility Tree in the Elements Tab', function() {
     await goToResource('elements/accessibility-iframe-page.html');
     await toggleAccessibilityTree();
     const iframeDoc = await waitForElementWithTextContent(
-        'RootWebArea\xa0"Simple page with aria labeled element" focusable:\xa0true');
+        `RootWebArea\xa0"Simple page with aria labeled element" focusable:\xa0true url:\xa0${
+            getResourcesPath()}/elements/accessibility-simple-page.html`);
     const arrowIconContainer =
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         await iframeDoc.evaluateHandle(node => (node as any).parentElementOrShadowHost().parentElement.parentElement);
     assertNotNullOrUndefined(arrowIconContainer);
     await click('.arrow-icon', {root: arrowIconContainer});
-    await waitForElementWithTextContent('link\xa0"cats" focusable:\xa0true');
+    await waitForElementWithTextContent(`link\xa0"cats" focusable:\xa0true url:\xa0${getResourcesPath()}/elements/x`);
   });
 
   it('listens for text changes to DOM and redraws the tree', async () => {
@@ -46,7 +48,7 @@ describe('Accessibility Tree in the Elements Tab', function() {
     await goToResource('elements/accessibility-simple-page.html');
     await frontend.bringToFront();
     await toggleAccessibilityTree();
-    await waitForElementWithTextContent('link\xa0"cats" focusable:\xa0true');
+    await waitForElementWithTextContent(`link\xa0"cats" focusable:\xa0true url:\xa0${getResourcesPath()}/elements/x`);
     await target.bringToFront();
     const link = await target.waitForSelector('aria/cats [role="link"]');
     await link!.evaluate(node => {
@@ -57,7 +59,7 @@ describe('Accessibility Tree in the Elements Tab', function() {
       await raf(target);
     }
     await frontend.bringToFront();
-    await waitForElementWithTextContent('link\xa0"dogs" focusable:\xa0true');
+    await waitForElementWithTextContent(`link\xa0"dogs" focusable:\xa0true url:\xa0${getResourcesPath()}/elements/x`);
   });
 
   it('listens for changes to properties and redraws tree', async () => {
@@ -71,7 +73,7 @@ describe('Accessibility Tree in the Elements Tab', function() {
     const link = await target.waitForSelector('aria/cats [role="link"]');
     assertNotNullOrUndefined(link);
     await frontend.bringToFront();
-    await waitForElementWithTextContent('link\xa0"cats" focusable:\xa0true');
+    await waitForElementWithTextContent(`link\xa0"cats" focusable:\xa0true url:\xa0${getResourcesPath()}/elements/x`);
     await target.bringToFront();
     await link.evaluate(node => node.setAttribute('aria-label', 'birds'));
     // For some reason a11y tree takes a while to propagate.
@@ -79,7 +81,7 @@ describe('Accessibility Tree in the Elements Tab', function() {
       await raf(target);
     }
     await frontend.bringToFront();
-    await waitForElementWithTextContent('link\xa0"birds" focusable:\xa0true');
+    await waitForElementWithTextContent(`link\xa0"birds" focusable:\xa0true url:\xa0${getResourcesPath()}/elements/x`);
   });
 
   it('listen for removed nodes and redraw tree', async () => {
@@ -92,7 +94,7 @@ describe('Accessibility Tree in the Elements Tab', function() {
     await target.bringToFront();
     const link = await target.waitForSelector('aria/cats [role="link"]');
     await frontend.bringToFront();
-    await waitForElementWithTextContent('link\xa0"cats" focusable:\xa0true');
+    await waitForElementWithTextContent(`link\xa0"cats" focusable:\xa0true url:\xa0${getResourcesPath()}/elements/x`);
     await target.bringToFront();
     await link!.evaluate(node => node.remove());
     // For some reason a11y tree takes a while to propagate.
@@ -100,6 +102,7 @@ describe('Accessibility Tree in the Elements Tab', function() {
       await raf(target);
     }
     await frontend.bringToFront();
-    await waitForNoElementsWithTextContent('link\xa0"cats" focusable:\xa0true');
+    await waitForNoElementsWithTextContent(
+        `link\xa0"cats" focusable:\xa0true url:\xa0${getResourcesPath()}/elements/x`);
   });
 });

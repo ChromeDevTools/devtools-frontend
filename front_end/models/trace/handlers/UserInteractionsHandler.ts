@@ -6,6 +6,7 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {data as metaHandlerData} from './MetaHandler.js';
+import {ScoreClassification} from './PageLoadMetricsHandler.js';
 import {HandlerState, type TraceEventHandlerName} from './types.js';
 
 // This handler serves two purposes. It generates a list of events that are
@@ -20,6 +21,9 @@ const allEvents: Types.TraceEvents.TraceEventEventTiming[] = [];
 const beginCommitCompositorFrameEvents: Types.TraceEvents.TraceEventBeginCommitCompositorFrame[] = [];
 
 export const LONG_INTERACTION_THRESHOLD = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(200));
+
+const INP_GOOD_TIMING = LONG_INTERACTION_THRESHOLD;
+const INP_MEDIUM_TIMING = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(500));
 
 export interface UserInteractionsData {
   /** All the user events we found in the trace */
@@ -359,4 +363,20 @@ export function data(): UserInteractionsData {
 
 export function deps(): TraceEventHandlerName[] {
   return ['Meta'];
+}
+
+/**
+ * Classifications sourced from
+ * https://web.dev/articles/inp#good-score
+ */
+export function scoreClassificationForInteractionToNextPaint(timing: Types.Timing.MicroSeconds): ScoreClassification {
+  if (timing <= INP_GOOD_TIMING) {
+    return ScoreClassification.GOOD;
+  }
+
+  if (timing <= INP_MEDIUM_TIMING) {
+    return ScoreClassification.OK;
+  }
+
+  return ScoreClassification.BAD;
 }

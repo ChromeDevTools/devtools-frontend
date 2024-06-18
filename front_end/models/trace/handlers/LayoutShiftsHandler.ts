@@ -442,7 +442,7 @@ export function deps(): TraceEventHandlerName[] {
   return ['Screenshots', 'Meta'];
 }
 
-export function stateForLayoutShiftScore(score: number): ScoreClassification {
+export function scoreClassificationForLayoutShift(score: number): ScoreClassification {
   let state = ScoreClassification.GOOD;
   if (score >= LayoutShiftsThreshold.NEEDS_IMPROVEMENT) {
     state = ScoreClassification.OK;

@@ -2,11 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import type * as Handlers from '../../../models/trace/handlers/handlers.js';
-import type * as TraceEngine from '../../../models/trace/trace.js';
+import * as TraceEngine from '../../../models/trace/trace.js';
+import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as Menus from '../../../ui/components/menus/menus.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -20,6 +23,14 @@ const DEFAULT_EXPANDED_WIDTH = 240;
 const enum SidebarTabsName {
   INSIGHTS = 'Insights',
   ANNOTATIONS = 'Annotations',
+}
+
+enum InsightsCategories {
+  ALL = 'All',
+  INP = 'INP',
+  LCP = 'LCP',
+  CLS = 'CLS',
+  OTHER = 'Other',
 }
 
 export class SidebarWidget extends UI.SplitWidget.SplitWidget {
@@ -54,6 +65,10 @@ export class SidebarWidget extends UI.SplitWidget.SplitWidget {
     });
   }
 
+  setTraceParsedData(traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null): void {
+    this.#sidebarUI.traceParsedData = traceParsedData;
+  }
+
   set data(insights: TraceEngine.Insights.Types.TraceInsightData<typeof Handlers.ModelHandlers>) {
     this.#sidebarUI.insights = insights;
   }
@@ -63,11 +78,23 @@ export class SidebarUI extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-performance-sidebar`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #activeTab: SidebarTabsName = SidebarTabsName.INSIGHTS;
+  selectedCategory: InsightsCategories = InsightsCategories.ALL;
   #expanded: boolean = false;
 
-  #renderBound = this.#render.bind(this);
+  #traceParsedData?: TraceEngine.Handlers.Types.TraceParseData|null;
+  #inpMetric: {
+    longestINPDur: TraceEngine.Types.Timing.MicroSeconds,
+    inpScoreClassification: TraceEngine.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification,
+  }|null = null;
+  #lcpMetric: TraceEngine.Handlers.ModelHandlers.PageLoadMetrics.MetricScore|null = null;
+  #clsMetric: {
+    clsScore: number,
+    clsScoreClassification: TraceEngine.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification,
+  }|null = null;
   #phaseData: Array<{phase: string, timing: number|TraceEngine.Types.Timing.MilliSeconds, percent: string}> = [];
   #insights: TraceEngine.Insights.Types.TraceInsightData<typeof Handlers.ModelHandlers>|null = null;
+
+  #renderBound = this.#render.bind(this);
 
   getLCPInsightData(): Array<{phase: string, timing: number|TraceEngine.Types.Timing.MilliSeconds, percent: string}> {
     if (!this.#insights) {
@@ -133,6 +160,50 @@ export class SidebarUI extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
+  set traceParsedData(traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null) {
+    if (this.#traceParsedData === traceParsedData) {
+      // If this is the same trace, do not re-render.
+      return;
+    }
+    this.#traceParsedData = traceParsedData;
+    // Clear all data before re-render.
+    this.#inpMetric = null;
+    this.#lcpMetric = null;
+    this.#clsMetric = null;
+
+    if (!traceParsedData) {
+      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+      return;
+    }
+
+    // Get LCP metric for first navigation.
+    const eventsByNavigation =
+        traceParsedData.PageLoadMetrics.metricScoresByFrameId.get(traceParsedData.Meta.mainFrameId);
+    if (eventsByNavigation) {
+      const metricsByName = eventsByNavigation.values().next().value;
+      if (metricsByName) {
+        this.#lcpMetric = metricsByName.get(TraceEngine.Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
+      }
+    }
+
+    const clsScore = traceParsedData.LayoutShifts.sessionMaxScore;
+    this.#clsMetric = {
+      clsScore,
+      clsScoreClassification:
+          TraceEngine.Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(clsScore),
+    };
+
+    if (traceParsedData.UserInteractions.longestInteractionEvent) {
+      this.#inpMetric = {
+        longestINPDur: traceParsedData.UserInteractions.longestInteractionEvent.dur,
+        inpScoreClassification:
+            TraceEngine.Handlers.ModelHandlers.UserInteractions.scoreClassificationForInteractionToNextPaint(
+                traceParsedData.UserInteractions.longestInteractionEvent.dur),
+      };
+    }
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+  }
+
   #toggleButtonClick(): void {
     this.dispatchEvent(new Event('togglebuttonclick'));
   }
@@ -162,6 +233,72 @@ export class SidebarUI extends HTMLElement {
       </div>
     `;
     // clang-format on
+  }
+
+  #onTargetSelected(event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void {
+    this.selectedCategory = event.itemValue as InsightsCategories;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+  }
+
+  #renderMetricValue(
+      label: string, value: string,
+      classification: TraceEngine.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification): LitHtml.TemplateResult {
+    return LitHtml.html`
+      <div class="metric">
+        <div class="metric-value metric-value-${classification}">${value}</div>
+        <div class="metric-label">${label}</div>
+      </div>
+    `;
+  }
+
+  #renderINPMetric(): LitHtml.TemplateResult|null {
+    if (!this.#inpMetric) {
+      return null;
+    }
+    const timeString = i18n.TimeUtilities.formatMicroSecondsTime(this.#inpMetric.longestINPDur);
+    return this.#renderMetricValue('INP', timeString, this.#inpMetric.inpScoreClassification);
+  }
+
+  #renderLCPMetric(): LitHtml.TemplateResult|null {
+    if (!this.#lcpMetric) {
+      return null;
+    }
+    const timeString = i18n.TimeUtilities.formatMicroSecondsAsSeconds(this.#lcpMetric.timing);
+    return this.#renderMetricValue(this.#lcpMetric.metricName, timeString, this.#lcpMetric.classification);
+  }
+
+  #renderCLSMetric(): LitHtml.TemplateResult|null {
+    if (!this.#clsMetric) {
+      return null;
+    }
+    return this.#renderMetricValue(
+        TraceEngine.Handlers.ModelHandlers.PageLoadMetrics.MetricName.CLS, this.#clsMetric.clsScore.toPrecision(3),
+        this.#clsMetric.clsScoreClassification);
+  }
+
+  #renderInsightsForCategory(insightsCategory: InsightsCategories): LitHtml.TemplateResult {
+    switch (insightsCategory) {
+      case InsightsCategories.ALL:
+        return LitHtml.html`
+          <div class="metrics-row">
+            ${this.#renderINPMetric()}
+            ${this.#renderLCPMetric()}
+            ${this.#renderCLSMetric()}
+          </div>
+          <div class="insights">${this.#renderLCPPhases()}</div>
+        `;
+      case InsightsCategories.LCP:
+        return LitHtml.html`
+          ${this.#renderLCPMetric()}
+          <div class="insights">${this.#renderLCPPhases()}</div>
+        `;
+      case InsightsCategories.CLS:
+        return LitHtml.html`${this.#renderCLSMetric()}`;
+      case InsightsCategories.INP:
+        return LitHtml.html`${this.#renderINPMetric()}`;
+      case InsightsCategories.OTHER:
+        return LitHtml.html`<div>${insightsCategory}</div>`;
+    }
   }
 
   #renderLCPPhases(): LitHtml.LitTemplate {
@@ -196,9 +333,28 @@ export class SidebarUI extends HTMLElement {
   #renderInsightsTabContent(): LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
-      <h2>Content for Insights Tab</h2>
-      <p>This is the content of the Insights tab.</p>
-      <div class="insights">${this.#renderLCPPhases()}</div>
+      <${Menus.SelectMenu.SelectMenu.litTagName}
+            class="target-select-menu"
+            @selectmenuselected=${this.#onTargetSelected}
+            .showDivider=${true}
+            .showArrow=${true}
+            .sideButton=${false}
+            .showSelectedItem=${true}
+            .showConnector=${false}
+            .position=${Dialogs.Dialog.DialogVerticalPosition.BOTTOM}
+            .buttonTitle=${this.selectedCategory}
+            jslog=${VisualLogging.dropDown('performance.sidebar-insights-category-select').track({click: true})}
+          >
+          ${Object.values(InsightsCategories).map(insightsCategory => {
+            return LitHtml.html`
+              <${Menus.Menu.MenuItem.litTagName} .value=${insightsCategory}>
+                ${insightsCategory}
+              </${Menus.Menu.MenuItem.litTagName}>
+            `;
+          })}
+      </${Menus.SelectMenu.SelectMenu.litTagName}>
+
+      ${this.#renderInsightsForCategory(this.selectedCategory)}
     `;
     // clang-format on
   }
@@ -263,7 +419,7 @@ export class SidebarUI extends HTMLElement {
       </div>
       <div class="tab-slider" ?hidden=${!this.#expanded}></div>
       <div class="tab-headers-bottom-line" ?hidden=${!this.#expanded}></div>
-        ${this.#expanded ? LitHtml.html`<div class="sidebar-body">${this.#renderContent()}</div>` : LitHtml.nothing}
+      ${this.#expanded ? LitHtml.html`<div class="sidebar-body">${this.#renderContent()}</div>` : LitHtml.nothing}
     </div>`;
     // clang-format on
     LitHtml.render(output, this.#shadow, {host: this});

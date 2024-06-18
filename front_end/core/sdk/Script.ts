@@ -27,23 +27,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import type * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import type * as Platform from '../../core/platform/platform.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 
 import {
-  Location,
-  type DebuggerModel,
   COND_BREAKPOINT_SOURCE_URL,
-  LOGPOINT_SOURCE_URL,
+  type DebuggerModel,
   Events,
+  Location,
+  LOGPOINT_SOURCE_URL,
 } from './DebuggerModel.js';
 import {type FrameAssociated} from './FrameAssociated.js';
 import {type PageResourceLoadInitiator} from './PageResourceLoader.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 import {type ExecutionContext} from './RuntimeModel.js';
+import {type SourceMap} from './SourceMap.js';
 import {type Target} from './Target.js';
 
 const UIStrings = {
@@ -413,6 +414,14 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
    */
   get isBreakpointCondition(): boolean {
     return [COND_BREAKPOINT_SOURCE_URL, LOGPOINT_SOURCE_URL].includes(this.sourceURL);
+  }
+
+  /**
+   * @returns the currently attached source map for this Script or `undefined` if there is none or it
+   * hasn't loaded yet.
+   */
+  sourceMap(): SourceMap|undefined {
+    return this.debuggerModel.sourceMapManager().sourceMapForClient(this);
   }
 
   createPageResourceLoadInitiator(): PageResourceLoadInitiator {

@@ -107,7 +107,7 @@ export async function loadBasicSourceMapExample(target: SDK.Target.Target):
   if (!script) {
     throw new Error('Script could not be registered');
   }
-  const sourceMap = debuggerModel.sourceMapManager().sourceMapForClient(script);
+  const sourceMap = script.sourceMap();
   if (!sourceMap) {
     throw new Error('Source map could not be registered');
   }

@@ -88,6 +88,35 @@ export const TrackNames =
 // So manually add it to TrackAppenderName.
 export type TrackAppenderName = typeof TrackNames[number]|'Network';
 
+/**
+ * Used as the context when a track (aka group) is selected and we log
+ * something to the VE Logging framework.
+ * This enum broadly corresponds with the list of TrackNames, but can be more
+ * specific in some situations such as when we want to identify the thread type
+ * rather than log "thread" - it is useful to know if the thread is the main
+ * thread or not.
+ * VE context needs to be kebab-case, and not contain any PII, which is why we
+ * log this set list rather than full track names, which in the case of threads
+ * can contain URLswhich we do not want to log.
+ */
+export const enum VisualLoggingTrackName {
+  ANIMATIONS = 'animations',
+  TIMINGS = 'timings',
+  INTERACTIONS = 'interactions',
+  GPU = 'gpu',
+  LAYOUT_SHIFTS = 'layout-shifts',
+  THREAD_CPU_PROFILE = 'thread.cpu-profile',
+  THREAD_MAIN = 'thread.main',
+  THREAD_FRAME = 'thread.frame',
+  THREAD_WORKER = 'thread.worker',
+  THREAD_AUCTION_WORKLET = 'thread.auction-worklet',
+  THREAD_RASTERIZER = 'thread.rasterizer',
+  THREAD_POOL = 'thread.pool',
+  THREAD_OTHER = 'thread.other',
+  EXTENSION = 'extension',
+  NETWORK = 'network',
+}
+
 export class CompatibilityTracksAppender {
   #trackForLevel = new Map<number, TrackAppender>();
   #trackForGroup = new Map<PerfUI.FlameChart.Group, TrackAppender>();

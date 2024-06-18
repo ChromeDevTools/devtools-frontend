@@ -44,10 +44,12 @@ describeWithEnvironment('AppenderUtils', () => {
       selectable: true,
       expanded: true,
       showStackContextMenu: true,
+      jslogContext: 'animations',
     } as PerfUI.FlameChart.Group;
 
     it('builds a track header correctly', () => {
       const builtHeader = Timeline.AppenderUtils.buildTrackHeader(
+          Timeline.CompatibilityTracksAppender.VisualLoggingTrackName.ANIMATIONS,
           /* startLevel= */ 0, 'Header Name', Timeline.AppenderUtils.buildGroupStyle(), /* selectable= */ true,
           /* expanded= */ true, /* showStackContextMenu= */ true);
       assert.deepEqual(builtHeader, trackHeader);

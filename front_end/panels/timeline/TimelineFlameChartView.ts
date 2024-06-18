@@ -12,6 +12,7 @@ import * as TraceEngine from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CountersGraph} from './CountersGraph.js';
 import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
@@ -111,6 +112,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     const mainViewGroupExpansionSetting =
         Common.Settings.Settings.instance().createSetting('timeline-flamechart-main-view-group-expansion', {});
     this.mainDataProvider = new TimelineFlameChartDataProvider();
+    this.mainDataProvider.setVisualElementLoggingParent(this.delegate.element);
     this.mainDataProvider.addEventListener(
         TimelineFlameChartDataProviderEvents.DataChanged, () => this.mainFlameChart.scheduleUpdate());
     this.mainFlameChart = new PerfUI.FlameChart.FlameChart(this.mainDataProvider, this, {
@@ -130,6 +132,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.networkFlameChartGroupExpansionSetting =
         Common.Settings.Settings.instance().createSetting('timeline-flamechart-network-view-group-expansion', {});
     this.networkDataProvider = new TimelineFlameChartNetworkDataProvider();
+    this.networkDataProvider.setVisualElementLoggingParent(this.delegate.element);
     this.networkFlameChart = new PerfUI.FlameChart.FlameChart(this.networkDataProvider, this, {
       groupExpansionSetting: this.networkFlameChartGroupExpansionSetting,
       // The TimelineOverlays are used for selected elements
@@ -469,7 +472,20 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private onEntrySelected(
       dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider,
       event: Common.EventTarget.EventTargetEvent<number>): void {
+    const data = dataProvider.timelineData();
+    if (!data) {
+      return;
+    }
     const entryIndex = event.data;
+
+    const entryLevel = data.entryLevels[entryIndex];
+
+    // Find the group that contains this level and log a click for it.
+    const group = groupForLevel(data.groups, entryLevel);
+    if (group && group.jslogContext) {
+      VisualLogging.logClick(groupForLevel, new MouseEvent('click'));
+    }
+
     if (dataProvider === this.mainDataProvider) {
       this.mainDataProvider.buildFlowForInitiator(entryIndex);
     }
@@ -653,4 +669,18 @@ export class TimelineFlameChartMarker implements PerfUI.FlameChart.FlameChartMar
 
 export const enum ColorBy {
   URL = 'URL',
+}
+
+/**
+ * Find the Group that contains the provided level, or `null` if no group is
+ * found.
+ */
+export function groupForLevel(groups: PerfUI.FlameChart.Group[], level: number): PerfUI.FlameChart.Group|null {
+  const groupForLevel = groups.find((group, groupIndex) => {
+    const nextGroup = groups.at(groupIndex + 1);
+    const groupEndLevel = nextGroup ? nextGroup.startLevel - 1 : Infinity;
+
+    return group.startLevel <= level && groupEndLevel >= level;
+  });
+  return groupForLevel ?? null;
 }

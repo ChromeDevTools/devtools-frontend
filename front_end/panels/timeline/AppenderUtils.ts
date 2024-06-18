@@ -1,10 +1,13 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+
+import {type VisualLoggingTrackName} from './CompatibilityTracksAppender.js';
 
 const UIStrings = {
   /**
@@ -41,6 +44,10 @@ export function buildGroupStyle(extra?: Partial<PerfUI.FlameChart.GroupStyle>): 
 
 /**
  * Builds the header corresponding to the track. A header is added in the shape of a group in the flame chart data.
+ * @param jslogContext the text that will be set as the logging context
+ *                          for the Visual Elements logging framework. Pass
+ *                          `null` to not set a context and consequently
+ *                          cause this group not to be logged.
  * @param startLevel the flame chart level at which the track header is appended.
  * @param name the display name of the track.
  * @param style the GroupStyle for the track header.
@@ -51,9 +58,19 @@ export function buildGroupStyle(extra?: Partial<PerfUI.FlameChart.GroupStyle>): 
  * @returns the group that built from the give data
  */
 export function buildTrackHeader(
-    startLevel: number, name: string, style: PerfUI.FlameChart.GroupStyle, selectable: boolean, expanded?: boolean,
-    showStackContextMenu?: boolean): PerfUI.FlameChart.Group {
-  const group = ({startLevel, name, style, selectable, expanded, showStackContextMenu} as PerfUI.FlameChart.Group);
+    jslogContext: VisualLoggingTrackName|null, startLevel: number, name: string, style: PerfUI.FlameChart.GroupStyle,
+    selectable: boolean, expanded?: boolean, showStackContextMenu?: boolean): PerfUI.FlameChart.Group {
+  const group: PerfUI.FlameChart.Group = {
+    startLevel,
+    name: name as Common.UIString.LocalizedString,
+    style,
+    selectable,
+    expanded,
+    showStackContextMenu,
+  };
+  if (jslogContext !== null) {
+    group.jslogContext = jslogContext;
+  }
   return group;
 }
 

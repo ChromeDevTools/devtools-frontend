@@ -12,6 +12,7 @@ import {
   type HighlightedEntryInfo,
   type TrackAppender,
   type TrackAppenderName,
+  VisualLoggingTrackName,
 } from './CompatibilityTracksAppender.js';
 import * as Extensions from './extensions/extensions.js';
 import {TimelineFlameChartMarker} from './TimelineFlameChartView.js';
@@ -87,8 +88,9 @@ export class TimingsTrackAppender implements TrackAppender {
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
     const trackIsCollapsible = this.#traceParsedData.UserTimings.performanceMeasures.length > 0;
     const style = buildGroupStyle({useFirstLineForOverview: true, collapsible: trackIsCollapsible});
-    const group =
-        buildTrackHeader(currentLevel, i18nString(UIStrings.timings), style, /* selectable= */ true, expanded);
+    const group = buildTrackHeader(
+        VisualLoggingTrackName.TIMINGS, currentLevel, i18nString(UIStrings.timings), style, /* selectable= */ true,
+        expanded);
     this.#compatibilityBuilder.registerTrackForGroup(group, this);
   }
 

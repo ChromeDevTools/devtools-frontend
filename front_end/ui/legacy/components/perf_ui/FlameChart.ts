@@ -34,6 +34,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as TraceEngine from '../../../../models/trace/trace.js';
 import * as Buttons from '../../../components/buttons/buttons.js';
+import type * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 
@@ -3772,6 +3773,8 @@ export interface FlameChartDataProvider {
 
   totalTime(): number;
 
+  setVisualElementLoggingParent?(parent: VisualLogging.Loggable): void;
+
   formatValue(value: number, precision?: number): string;
 
   maxStackDepth(): number;
@@ -3882,6 +3885,7 @@ export interface Group {
   style: GroupStyle;
   /** Should be turned on if the track supports user editable stacks. */
   showStackContextMenu?: boolean;
+  jslogContext?: string;
 }
 
 export interface GroupStyle {

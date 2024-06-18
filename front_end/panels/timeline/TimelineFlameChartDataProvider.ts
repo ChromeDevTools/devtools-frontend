@@ -39,6 +39,7 @@ import * as ModificationsManager from '../../services/modifications_manager/modi
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CompatibilityTracksAppender, type TrackAppenderName} from './CompatibilityTracksAppender.js';
 import * as Components from './components/components.js';
@@ -110,6 +111,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   #eventIndexByEvent: WeakMap<
       TraceEngine.Types.TraceEvents.TraceEventData|TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame,
       number|null> = new WeakMap();
+  #visualElementsParent: VisualLogging.Loggable|null = null;
 
   constructor() {
     super();
@@ -146,6 +148,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container');
       }
     });
+  }
+
+  setVisualElementLoggingParent(parent: VisualLogging.Loggable|null): void {
+    this.#visualElementsParent = parent;
   }
 
   hasTrackConfigurationMode(): boolean {
@@ -339,7 +345,25 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       }
     }
 
+    this.#registerGroupsForLogging();
     return this.timelineDataInternal;
+  }
+
+  /**
+   * Register the groups (aka tracks) with the VisualElements framework so
+   * later on we can log when an entry inside this group is selected.
+   */
+  #registerGroupsForLogging(): void {
+    if (!this.timelineDataInternal) {
+      return;
+    }
+
+    for (const group of this.timelineDataInternal.groups) {
+      if (group.jslogContext) {
+        VisualLogging.registerLoggable(
+            group, `${VisualLogging.section().context(group.jslogContext)}`, this.#visualElementsParent);
+      }
+    }
   }
 
   #processGenericTrace(): void {

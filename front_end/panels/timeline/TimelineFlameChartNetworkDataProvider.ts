@@ -10,6 +10,7 @@ import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {NetworkTrackAppender} from './NetworkTrackAppender.js';
 import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
@@ -27,6 +28,8 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
   #lastSelection?: Selection;
   #traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null;
   #eventIndexByEvent: Map<TraceEngine.Types.TraceEvents.SyntheticNetworkRequest, number|null> = new Map();
+  #visualElementsParent: VisualLogging.Loggable|null = null;
+
   constructor() {
     this.#minimumBoundaryInternal = 0;
     this.#timeSpan = 0;
@@ -46,6 +49,10 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     if (this.#traceEngineData) {
       this.#setTimingBoundsData(this.#traceEngineData);
     }
+  }
+
+  setVisualElementLoggingParent(parent: VisualLogging.Loggable|null): void {
+    this.#visualElementsParent = parent;
   }
 
   isEmpty(): boolean {
@@ -75,6 +82,13 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     this.#events = this.#traceEngineData.NetworkRequests.byTime;
     this.#networkTrackAppender = new NetworkTrackAppender(this.#traceEngineData, this.#timelineDataInternal);
     this.#maxLevel = this.#networkTrackAppender.appendTrackAtLevel(0);
+
+    for (const group of this.#timelineDataInternal.groups) {
+      if (group.jslogContext) {
+        VisualLogging.registerLoggable(
+            group, `${VisualLogging.section().context(group.jslogContext)}`, this.#visualElementsParent);
+      }
+    }
     return this.#timelineDataInternal;
   }
 

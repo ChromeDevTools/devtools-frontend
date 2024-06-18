@@ -12,6 +12,7 @@ import {
   type HighlightedEntryInfo,
   type TrackAppender,
   type TrackAppenderName,
+  VisualLoggingTrackName,
 } from './CompatibilityTracksAppender.js';
 
 const UIStrings = {
@@ -68,8 +69,9 @@ export class InteractionsTrackAppender implements TrackAppender {
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
     const trackIsCollapsible = this.#traceParsedData.UserInteractions.interactionEvents.length > 0;
     const style = buildGroupStyle({collapsible: trackIsCollapsible, useDecoratorsForOverview: true});
-    const group =
-        buildTrackHeader(currentLevel, i18nString(UIStrings.interactions), style, /* selectable= */ true, expanded);
+    const group = buildTrackHeader(
+        VisualLoggingTrackName.INTERACTIONS, currentLevel, i18nString(UIStrings.interactions), style,
+        /* selectable= */ true, expanded);
     this.#compatibilityBuilder.registerTrackForGroup(group, this);
   }
 

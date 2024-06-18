@@ -12,6 +12,7 @@ import {
   type HighlightedEntryInfo,
   type TrackAppender,
   type TrackAppenderName,
+  VisualLoggingTrackName,
 } from './CompatibilityTracksAppender.js';
 
 const UIStrings = {
@@ -47,8 +48,9 @@ export class AnimationsTrackAppender implements TrackAppender {
 
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
     const style = buildGroupStyle({useFirstLineForOverview: false});
-    const group =
-        buildTrackHeader(currentLevel, i18nString(UIStrings.animations), style, /* selectable= */ true, expanded);
+    const group = buildTrackHeader(
+        VisualLoggingTrackName.ANIMATIONS, currentLevel, i18nString(UIStrings.animations), style,
+        /* selectable= */ true, expanded);
     this.#compatibilityBuilder.registerTrackForGroup(group, this);
   }
 

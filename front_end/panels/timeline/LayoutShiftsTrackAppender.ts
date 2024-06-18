@@ -11,6 +11,7 @@ import {
   type HighlightedEntryInfo,
   type TrackAppender,
   type TrackAppenderName,
+  VisualLoggingTrackName,
 } from './CompatibilityTracksAppender.js';
 
 const UIStrings = {
@@ -64,7 +65,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
     const style = buildGroupStyle({collapsible: false});
     const group = buildTrackHeader(
-        currentLevel, i18nString(UIStrings.layoutShifts), style,
+        VisualLoggingTrackName.LAYOUT_SHIFTS, currentLevel, i18nString(UIStrings.layoutShifts), style,
         /* selectable= */ true, expanded);
     this.#compatibilityBuilder.registerTrackForGroup(group, this);
   }

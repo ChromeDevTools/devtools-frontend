@@ -1688,6 +1688,7 @@ export const rowHeight = 18;
 export const headerHeight = 20;
 export interface TimelineModeViewDelegate {
   select(selection: TimelineSelection|null): void;
+  element: Element;
   selectEntryAtTime(events: TraceEngine.Types.TraceEvents.TraceEventData[]|null, time: number): void;
   highlightEvent(event: TraceEngine.Types.TraceEvents.TraceEventData|null): void;
 }

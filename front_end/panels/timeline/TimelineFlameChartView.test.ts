@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TraceEngine from '../../models/trace/trace.js';
@@ -23,11 +24,42 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
   }
   highlightEvent(_event: TraceEngine.Types.TraceEvents.TraceEventData|null): void {
   }
+  element = document.createElement('div');
 }
 
 describeWithEnvironment('TimelineFlameChartView', function() {
   beforeEach(() => {
     setupIgnoreListManagerEnvironment();
+  });
+
+  describe('groupForLevel', () => {
+    const {groupForLevel} = Timeline.TimelineFlameChartView;
+
+    it('finds the right group for the given level', async () => {
+      const groups: PerfUI.FlameChart.Group[] = [
+        {
+          name: 'group-1' as Common.UIString.LocalizedString,
+          startLevel: 0,
+          style: {} as PerfUI.FlameChart.GroupStyle,
+        },
+        {
+          name: 'group-2' as Common.UIString.LocalizedString,
+          startLevel: 10,
+          style: {} as PerfUI.FlameChart.GroupStyle,
+        },
+        {
+          name: 'group-3' as Common.UIString.LocalizedString,
+          startLevel: 12,
+          style: {} as PerfUI.FlameChart.GroupStyle,
+        },
+      ];
+
+      assert.strictEqual(groupForLevel(groups, 1), groups[0]);
+      assert.strictEqual(groupForLevel(groups, 10), groups[1]);
+      assert.strictEqual(groupForLevel(groups, 11), groups[1]);
+      assert.strictEqual(groupForLevel(groups, 12), groups[2]);
+      assert.strictEqual(groupForLevel(groups, 999), groups[2]);
+    });
   });
 
   it('Can search for events by name in the timeline', async function() {

@@ -10,6 +10,7 @@ import {
   type HighlightedEntryInfo,
   type TrackAppender,
   type TrackAppenderName,
+  VisualLoggingTrackName,
 } from './CompatibilityTracksAppender.js';
 import {type TrackData} from './ExtensionDataGatherer.js';
 import * as Extensions from './extensions/extensions.js';
@@ -35,7 +36,7 @@ export class ExtensionTrackAppender implements TrackAppender {
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
     const style = buildGroupStyle({collapsible: true});
     const group = buildTrackHeader(
-        currentLevel, this.#trackData.name, style,
+        VisualLoggingTrackName.EXTENSION, currentLevel, this.#trackData.name, style,
         /* selectable= */ true, expanded);
     this.#compatibilityBuilder.registerTrackForGroup(group, this);
   }

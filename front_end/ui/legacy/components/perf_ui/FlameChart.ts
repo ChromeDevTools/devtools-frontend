@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../../../../core/common/common.js';
+import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
@@ -797,10 +798,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           this.#selectGroup(groupIndex);
 
           const timelineData = this.timelineData();
+          const isMetaOrControl = Host.Platform.isMac() ? mouseEvent.metaKey : mouseEvent.ctrlKey;
           if (mouseEvent.shiftKey && this.highlightedEntryIndex !== -1 && timelineData) {
             const start = timelineData.entryStartTimes[this.highlightedEntryIndex];
             const end = start + timelineData.entryTotalTimes[this.highlightedEntryIndex];
             this.chartViewport.setRangeSelection(start, end);
+          } else if (isMetaOrControl && this.highlightedEntryIndex !== -1 && timelineData) {
+            this.dispatchEventToListeners(Events.AnnotateEntry, this.highlightedEntryIndex);
           } else {
             this.chartViewport.onClick(mouseEvent);
             this.dispatchEventToListeners(Events.EntryInvoked, this.highlightedEntryIndex);
@@ -3838,6 +3842,8 @@ export const enum Events {
    * away from any events)
    */
   EntryInvoked = 'EntryInvoked',
+  // Emmited when annotate entry shortcut is clicked.
+  AnnotateEntry = 'AnnotateEntry',
   /**
    * Emitted when an event is selected via keyboard navigation using the arrow
    * keys.
@@ -3860,6 +3866,7 @@ export const enum Events {
 }
 
 export type EventTypes = {
+  [Events.AnnotateEntry]: number,
   [Events.CanvasFocused]: number|void,
   [Events.EntryInvoked]: number,
   [Events.EntrySelected]: number,

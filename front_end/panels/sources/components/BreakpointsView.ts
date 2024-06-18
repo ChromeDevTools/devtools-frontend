@@ -716,8 +716,6 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
   #renderEditBreakpointButton(breakpointItem: BreakpointItem): LitHtml.TemplateResult {
     const clickHandler = (event: Event): void => {
-      Host.userMetrics.breakpointEditDialogRevealedFrom(
-          Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointSidebarEditButton);
       void this.#controller.breakpointEdited(breakpointItem, true /* editButtonClicked */);
       event.consume();
     };
@@ -879,8 +877,6 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     }, {jslogContext: 'jump-to-breakpoint'});
 
     menu.editSection().appendItem(editBreakpointText, () => {
-      Host.userMetrics.breakpointEditDialogRevealedFrom(
-          Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointSidebarContextMenu);
       void this.#controller.breakpointEdited(breakpointItem, false /* editButtonClicked */);
     }, {disabled: !editable, jslogContext: 'edit-breakpoint'});
 

@@ -41,15 +41,6 @@ export class UserMetrics {
     this.#launchPanelName = '';
   }
 
-  breakpointEditDialogRevealedFrom(breakpointEditDialogRevealedFrom: BreakpointEditDialogRevealedFrom): void {
-    if (breakpointEditDialogRevealedFrom >= BreakpointEditDialogRevealedFrom.MaxValue) {
-      return;
-    }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.BreakpointEditDialogRevealedFrom, breakpointEditDialogRevealedFrom,
-        BreakpointEditDialogRevealedFrom.MaxValue);
-  }
-
   panelShown(panelName: string, isLaunching?: boolean): void {
     const code = PanelCodes[panelName as keyof typeof PanelCodes] || 0;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.PanelShown, code, PanelCodes.MaxValue);
@@ -1040,17 +1031,6 @@ export enum DevtoolsExperiments {
   'MaxValue' = 97,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
-
-export const enum BreakpointEditDialogRevealedFrom {
-  BreakpointSidebarContextMenu = 0,
-  BreakpointSidebarEditButton = 1,
-  BreakpointMarkerContextMenu = 2,
-  LineGutterContextMenu = 3,
-  KeyboardShortcut = 4,
-  Linkifier = 5,
-  MouseClick = 6,
-  MaxValue = 7,
-}
 
 export const enum ColorConvertedFrom {
   ColorSwatch = 0,

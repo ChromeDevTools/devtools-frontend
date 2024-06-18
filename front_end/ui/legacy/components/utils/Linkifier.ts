@@ -779,13 +779,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
         section: 'reveal',
         title: destination ? i18nString(UIStrings.revealInS, {PH1: destination}) : i18nString(UIStrings.reveal),
         jslogContext: 'reveal',
-        handler: () => {
-          if (revealable instanceof Breakpoints.BreakpointManager.BreakpointLocation) {
-            Host.userMetrics.breakpointEditDialogRevealedFrom(
-                Host.UserMetrics.BreakpointEditDialogRevealedFrom.Linkifier);
-          }
-          return Common.Revealer.reveal(revealable);
-        },
+        handler: () => Common.Revealer.reveal(revealable),
       });
     }
     if (contentProvider) {

@@ -250,6 +250,51 @@ describeWithEnvironment('Overlays', () => {
       assert.isOk(overlayDOM);
     });
 
+    it('can render entry label overlay', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {overlays, container, charts} = setupChartWithDimensions(traceParsedData);
+      const event = charts.mainProvider.eventByIndex(50);
+      assert.isOk(event);
+      assert.notInstanceOf(event, TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
+
+      overlays.add({
+        type: 'ENTRY_LABEL',
+        entry: event,
+        label: 'entry label',
+      });
+      overlays.update();
+
+      // Ensure that the overlay was created.
+      const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_LABEL');
+      assert.isOk(overlayDOM);
+    });
+
+    it('can render the label for entry label overlay', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {overlays, container, charts} = setupChartWithDimensions(traceParsedData);
+      const event = charts.mainProvider.eventByIndex(50);
+      assert.isOk(event);
+      assert.notInstanceOf(event, TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
+
+      overlays.add({
+        type: 'ENTRY_LABEL',
+        entry: event,
+        label: 'entry label',
+      });
+      overlays.update();
+
+      const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_LABEL');
+      assert.isOk(overlayDOM);
+      const component = overlayDOM?.querySelector('devtools-entry-label-overlay');
+      assert.isOk(component?.shadowRoot);
+
+      const elementsWrapper = component.shadowRoot.querySelector<HTMLElement>('.label-parts-wrapper');
+      assert.isOk(elementsWrapper);
+
+      const label = elementsWrapper.querySelector<HTMLElement>('.label-box');
+      assert.strictEqual(label?.innerText, 'entry label');
+    });
+
     it('can render an overlay for a time range', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const {overlays, container} = setupChartWithDimensions(traceParsedData);

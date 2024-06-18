@@ -10,6 +10,7 @@ import("../../../../third_party/typescript/typescript.gni")
 generate_css("css_files") {
   sources = [
     "breadcrumbsUI.css",
+    "entryLabelOverlay.css",
     "interactionBreakdown.css",
     "liveMetricsView.css",
     "sidebar.css",
@@ -23,6 +24,7 @@ devtools_module("components") {
     "Breadcrumbs.ts",
     "BreadcrumbsUI.ts",
     "DetailsView.ts",
+    "EntryLabelOverlay.ts",
     "InteractionBreakdown.ts",
     "LiveMetricsView.ts",
     "Sidebar.ts",

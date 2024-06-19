@@ -2809,7 +2809,7 @@ export const generatedProperties = [
    "grid-columns",
    "grid-order"
   ],
-  "name": "reading-order-items"
+  "name": "reading-flow"
  },
  {
   "keywords": [
@@ -5242,7 +5242,7 @@ export const generatedPropertyValues = {
    "none"
   ]
  },
- "reading-order-items": {
+ "reading-flow": {
   "values": [
    "normal",
    "flex-visual",

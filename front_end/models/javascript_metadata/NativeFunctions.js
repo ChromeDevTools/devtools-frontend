@@ -6461,10 +6461,6 @@ export const NativeFunctions = [
     signatures: [["?options"]]
   },
   {
-    name: "getPartNode",
-    signatures: [["index"]]
-  },
-  {
     name: "expand",
     signatures: [["?unit"]],
     receivers: ["Range"]
@@ -7345,6 +7341,10 @@ export const NativeFunctions = [
   },
   {
     name: "parseCreationOptionsFromJSON",
+    signatures: [["options"]]
+  },
+  {
+    name: "parseRequestOptionsFromJSON",
     signatures: [["options"]]
   },
   {

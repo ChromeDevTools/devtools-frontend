@@ -677,6 +677,7 @@ inspectorBackend.registerEvent("Network.responseReceivedExtraInfo", ["requestId"
 inspectorBackend.registerEvent("Network.responseReceivedEarlyHints", ["requestId", "headers"]);
 inspectorBackend.registerEnum("Network.TrustTokenOperationDoneEventStatus", {Ok: "Ok", InvalidArgument: "InvalidArgument", MissingIssuerKeys: "MissingIssuerKeys", FailedPrecondition: "FailedPrecondition", ResourceExhausted: "ResourceExhausted", AlreadyExists: "AlreadyExists", ResourceLimited: "ResourceLimited", Unauthorized: "Unauthorized", BadResponse: "BadResponse", InternalError: "InternalError", UnknownError: "UnknownError", FulfilledLocally: "FulfilledLocally"});
 inspectorBackend.registerEvent("Network.trustTokenOperationDone", ["status", "type", "requestId", "topLevelOrigin", "issuerOrigin", "issuedTokenCount"]);
+inspectorBackend.registerEvent("Network.policyUpdated", []);
 inspectorBackend.registerEvent("Network.subresourceWebBundleMetadataReceived", ["requestId", "urls"]);
 inspectorBackend.registerEvent("Network.subresourceWebBundleMetadataError", ["requestId", "errorMessage"]);
 inspectorBackend.registerEvent("Network.subresourceWebBundleInnerResponseParsed", ["innerRequestId", "innerRequestURL", "bundleRequestId"]);

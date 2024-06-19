@@ -2891,6 +2891,7 @@
       computed_style_custom_functions: ["getter"],
       style_builder_custom_functions: ["initial", "inherit", "value"],
       valid_for_marker: true,
+      valid_for_page_context: true,
       supports_incremental_style: true,
     },
     {
@@ -4603,7 +4604,7 @@
       invalidate: ["layout"],
     },
     {
-      name: "reading-order-items",
+      name: "reading-flow",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       field_group: "*",
       field_template: "keyword",
@@ -4611,7 +4612,7 @@
       typedom_types: ["Keyword"],
       default_value: "normal",
       invalidate: ["layout"],
-      runtime_flag: "CSSReadingOrderItems",
+      runtime_flag: "CSSReadingFlow",
     },
     {
       name: "resize",
@@ -5890,6 +5891,7 @@
       keywords: ["baseline", "sub", "super", "text-top", "text-bottom", "middle"],
       valid_for_first_letter: true,
       valid_for_first_line: true,
+      valid_for_page_context: true,
     },
     {
       name: "view-timeline-axis",

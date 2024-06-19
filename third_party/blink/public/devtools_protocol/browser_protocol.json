@@ -15412,6 +15412,11 @@
                     ]
                 },
                 {
+                    "name": "policyUpdated",
+                    "description": "Fired once security policy has been updated.",
+                    "experimental": true
+                },
+                {
                     "name": "subresourceWebBundleMetadataReceived",
                     "description": "Fired once when parsing the .wbn file has succeeded.\nThe event contains the information about the web bundle contents.",
                     "experimental": true,

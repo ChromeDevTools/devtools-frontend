@@ -95,13 +95,20 @@ async function executeJsCode(code: string): Promise<string> {
   }
 }
 
+type HistoryChunk = {
+  text: string,
+  entity: Host.AidaClient.Entity,
+};
+
 const MAX_STEPS = 5;
 export class FreestylerAgent {
   #aidaClient: Host.AidaClient.AidaClient;
-  #chatHistory: {text: string, entity: Host.AidaClient.Entity}[] = [];
+  #chatHistory: Array<HistoryChunk> = [];
+  #execJs: typeof executeJsCode;
 
-  constructor({aidaClient}: {aidaClient: Host.AidaClient.AidaClient}) {
+  constructor({aidaClient, execJs}: {aidaClient: Host.AidaClient.AidaClient, execJs?: typeof executeJsCode}) {
     this.#aidaClient = aidaClient;
+    this.#execJs = execJs ?? executeJsCode;
   }
 
   static buildRequest(input: string, preamble?: string, chatHistory?: Host.AidaClient.Chunk[]):
@@ -125,6 +132,10 @@ export class FreestylerAgent {
       },
     };
     return request;
+  }
+
+  get chatHistoryForTesting(): Array<HistoryChunk> {
+    return this.#chatHistory;
   }
 
   static parseResponse(response: string): {thought?: string, action?: string, answer?: string} {
@@ -236,7 +247,7 @@ export class FreestylerAgent {
 
       if (action) {
         debugLog(`Action to execute: ${action}`);
-        const observation = await executeJsCode(`{${action};((typeof data !== "undefined") ? data : undefined)}`);
+        const observation = await this.#execJs(`{${action};((typeof data !== "undefined") ? data : undefined)}`);
         debugLog(`Action result: ${observation}`);
         onStep({step: Step.ACTION, code: action, output: observation});
         query = `OBSERVATION: ${observation}`;

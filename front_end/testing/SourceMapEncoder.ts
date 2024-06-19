@@ -200,6 +200,7 @@ export class GeneratedRangeBuilder {
   };
 
   start(line: number, column: number, options?: {
+    isScope?: boolean,
     definition?: {sourceIdx: number, scopeIdx: number},
     callsite?: {sourceIdx: number, line: number, column: number},
     bindings?: (number|{line: number, column: number, nameIdx: number}[])[],
@@ -219,6 +220,9 @@ export class GeneratedRangeBuilder {
     }
     if (options?.callsite) {
       flags |= SDK.SourceMapScopes.EncodedGeneratedRangeFlag.HasCallsite;
+    }
+    if (options?.isScope) {
+      flags |= SDK.SourceMapScopes.EncodedGeneratedRangeFlag.IsScope;
     }
     this.#encodedRange += encodeVlq(flags);
 

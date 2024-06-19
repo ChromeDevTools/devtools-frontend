@@ -386,4 +386,20 @@ describe('decodeGeneratedRanges', () => {
       {from: {line: 0, column: 60}, to: {line: 0, column: 100}, value: 'y'},
     ]);
   });
+
+  it('decodes the "isScope" flag', () => {
+    const range = new GeneratedRangeBuilder()
+                      .start(0, 0)
+                      .start(5, 0, {isScope: true})
+                      .end(10, 0)
+                      .start(20, 4, {isScope: false})
+                      .end(30, 0)
+                      .end(40, 0)
+                      .build();
+
+    const generatedRange = decodeGeneratedRanges(range, [], []);
+    assert.lengthOf(generatedRange.children, 2);
+    assert.isTrue(generatedRange.children[0].isScope);
+    assert.isFalse(generatedRange.children[1].isScope);
+  });
 });

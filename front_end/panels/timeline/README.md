@@ -63,3 +63,14 @@ This is used in:
 1. `TimelineDetailsView` to ensure the details at the bottom of the panel reflect only the active time range.
 2. `TimelineFlameChartView` to ensure the main canvas with the tracks is redrawn as the user changes views.
 3. `TimelineMiniMap` as mentioned above, to update the minimap as required.
+
+## Serializing and Deserealizing Events
+
+Serializing/Deserializing events allows for the creation of data (such as annotations) associated with events and enabling to save them to/load them from the trace file. Several classes handle the serialization and application of these serialized annotations:
+
+1. `SyntheticEventsManager` - stores all synthetic events based on a raw event. They are stored in an array indexed by the position the corresponding raw events have in the `Model::rawEvents` array. The `SyntheticEventsManager` needs to be called by handlers as synthetic events are created. To enforce this we make use of a branded type called `SyntheticEntry`, which the `SyntheticEventsManager` adds to trace-event-like objects.
+Having a single place where all synthetic events are stored allows us to easily map from a synthetic event key back to the event object.
+
+2. `EventsSerializer` - is responsible for event serialization. It generates the string key saved into the trace file and maps the key back to the corresponding Event (after reading keys from the trace file). To perform this mapping, it retrieves the raw event array registered by `SyntheticEventsManager` at the id extracted from the key. For profile calls, a binary search is conducted on the complete profile call list to efficiently find a match based on the sample index and node id retrieved from the string key.
+
+3. `ModificationsManager` - Takes the serialized modifications (ex. annotations, breadcrumbs, track customisations) in a trace file (under `metadata.modifications`) and applies it to the current timeline after `EventsSerializer` mapped the keys to events (by initializing `EntriesFilter` with the loaded modifications), as well as creates the object that gets saved under `metadata.modifications` when a trace file with modifications is saved.

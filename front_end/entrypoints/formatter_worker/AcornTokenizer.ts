@@ -64,6 +64,10 @@ export class AcornTokenizer {
     return token.type === Acorn.tokTypes.name && (!identifier || token.value === identifier);
   }
 
+  static arrowIdentifier(token: TokenOrComment, identifier?: string): boolean {
+    return token.type === Acorn.tokTypes.arrow && (!identifier || token.type.label === identifier);
+  }
+
   static lineComment(token: TokenOrComment): boolean {
     return token.type === 'Line';
   }

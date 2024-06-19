@@ -114,6 +114,13 @@ ol.expanded {
   height: 13px;
 }
 
+input.enabled-button.small {
+  &:hover::after,
+  &:active::before {
+    left: 0;
+  }
+}
+
 .overloaded:not(.has-ignorable-error, .invalid-property-value),
 .inactive:not(.invalid-property-value),
 .disabled,

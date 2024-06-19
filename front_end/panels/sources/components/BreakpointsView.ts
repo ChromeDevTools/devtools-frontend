@@ -849,7 +849,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
     const checked = group.breakpointItems.some(item => item.status === BreakpointStatus.ENABLED);
     return LitHtml.html`
-      <input class='group-checkbox' type='checkbox'
+      <input class='group-checkbox small' type='checkbox'
             aria-label=''
             .checked=${checked}
             @change=${groupCheckboxToggled}
@@ -950,6 +950,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         <span class='type-indicator'></span>
         <input type='checkbox'
               aria-label=${breakpointItem.location}
+              class='small'
               ?indeterminate=${breakpointItem.status === BreakpointStatus.INDETERMINATE}
               .checked=${breakpointItem.status === BreakpointStatus.ENABLED}
               @change=${(e: Event) => this.#onCheckboxToggled(e, breakpointItem)}

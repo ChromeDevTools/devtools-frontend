@@ -64,10 +64,11 @@
   align-items: center;
   pointer-events: auto;
   visibility: hidden;
-}
+  background-color: var(--sys-color-cdt-base-container);
 
-.list-item:hover .controls-buttons {
-  visibility: visible;
+  .list-item:hover & {
+    visibility: visible;
+  }
 }
 
 .list-item:focus-within:not(:active) .controls-buttons {

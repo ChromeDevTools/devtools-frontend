@@ -168,10 +168,6 @@ devtools-icon {
   padding-right: 8px;
 }
 
-.breakpoint-item:hover {
-  background-color: var(--sys-color-state-hover-on-subtle);
-}
-
 .breakpoint-item.hit {
   background-color: var(--sys-color-yellow-container);
   color: var(--sys-color-on-yellow-container);

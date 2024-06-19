@@ -1221,8 +1221,8 @@ export class ToolbarCheckbox extends ToolbarItem<void> {
 }
 
 export class ToolbarSettingCheckbox extends ToolbarCheckbox {
-  constructor(setting: Common.Settings.Setting<boolean>, tooltip?: string, alternateTitle?: string, small?: boolean) {
-    super(alternateTitle || setting.title() || '', tooltip, undefined, setting.name, small);
+  constructor(setting: Common.Settings.Setting<boolean>, tooltip?: string, alternateTitle?: string) {
+    super(alternateTitle || setting.title() || '', tooltip, undefined, setting.name);
     bindCheckbox(this.inputElement, setting);
   }
 }

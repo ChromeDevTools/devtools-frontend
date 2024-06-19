@@ -6,6 +6,7 @@ import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
 import {type Loggable} from './Loggable.js';
 import {type LoggingConfig, VisualElements} from './LoggingConfig.js';
+import {pendingWorkComplete} from './LoggingDriver.js';
 import {getLoggingState, type LoggingState} from './LoggingState.js';
 
 let veDebuggingEnabled = false;
@@ -88,6 +89,9 @@ export function processEventForDebugging(
     case DebugLoggingFormat.Intuitive:
       processEventForIntuitiveDebugging(event, state, extraInfo);
       break;
+    case DebugLoggingFormat.Test:
+      processEventForTestDebugging(event, state, extraInfo);
+      break;
     case DebugLoggingFormat.AdHocAnalysis:
       processEventForAdHocAnalysisDebugging(event, state, extraInfo);
       break;
@@ -106,6 +110,12 @@ export function processEventForIntuitiveDebugging(
   };
   deleteUndefinedFields(entry);
   maybeLogDebugEvent(entry);
+}
+
+export function processEventForTestDebugging(
+    event: EventType, state: LoggingState|null, _extraInfo?: EventAttributes): void {
+  lastImpressionLogEntry = null;
+  maybeLogDebugEvent({interaction: `${event}: ${veTestKeys.get(state?.veid || 0) || ''}`});
 }
 
 export function processEventForAdHocAnalysisDebugging(
@@ -164,11 +174,20 @@ type AdHocAnalysisLogEntry = AdHocAnalysisVisualElement&{
   interactions: AdHocAnalysisInteraction[],
 };
 
+type TestLogEntry = {
+  impressions: string[],
+}|{
+  interaction: string,
+};
+
 export function processImpressionsForDebugging(states: LoggingState[]): void {
   const format = localStorage.getItem('veDebugLoggingEnabled');
   switch (format) {
     case DebugLoggingFormat.Intuitive:
       processImpressionsForIntuitiveDebugLog(states);
+      break;
+    case DebugLoggingFormat.Test:
+      processImpressionsForTestDebugLog(states);
       break;
     case DebugLoggingFormat.AdHocAnalysis:
       processImpressionsForAdHocAnalysisDebugLog(states);
@@ -206,6 +225,28 @@ function processImpressionsForIntuitiveDebugLog(states: LoggingState[]): void {
     maybeLogDebugEvent(entries[0]);
   } else {
     maybeLogDebugEvent({event: 'Impression', children: entries, time: Date.now() - sessionStartTime});
+  }
+}
+
+const veTestKeys = new Map<number, string>();
+let lastImpressionLogEntry: {impressions: string[]}|null = null;
+
+function processImpressionsForTestDebugLog(states: LoggingState[]): void {
+  if (!lastImpressionLogEntry) {
+    lastImpressionLogEntry = {impressions: []};
+    veDebugEventsLog.push(lastImpressionLogEntry);
+  }
+  for (const state of states) {
+    let key = '';
+    if (state.parent) {
+      key = (veTestKeys.get(state.parent.veid) || '<UNKNOWN>') + ' > ';
+    }
+    key += VisualElements[state.config.ve];
+    if (state.config.context) {
+      key += ': ' + state.config.context;
+    }
+    veTestKeys.set(state.veid, key);
+    lastImpressionLogEntry.impressions.push(key);
   }
 }
 
@@ -279,9 +320,9 @@ export function debugString(config: LoggingConfig): string {
   return components.join('; ');
 }
 
-const veDebugEventsLog: (IntuitiveLogEntry|AdHocAnalysisLogEntry)[] = [];
+const veDebugEventsLog: (IntuitiveLogEntry|AdHocAnalysisLogEntry|TestLogEntry)[] = [];
 
-function maybeLogDebugEvent(entry: IntuitiveLogEntry|AdHocAnalysisLogEntry): void {
+function maybeLogDebugEvent(entry: IntuitiveLogEntry|AdHocAnalysisLogEntry|TestLogEntry): void {
   const format = localStorage.getItem('veDebugLoggingEnabled');
   if (!format) {
     return;
@@ -295,6 +336,7 @@ function maybeLogDebugEvent(entry: IntuitiveLogEntry|AdHocAnalysisLogEntry): voi
 
 enum DebugLoggingFormat {
   Intuitive = 'Intuitive',
+  Test = 'Test',
   AdHocAnalysis = 'AdHocAnalysis',
 }
 
@@ -527,6 +569,12 @@ export function processStartLoggingForDebugging(): void {
   }
 }
 
+async function getVeDebugEventsLog(): Promise<(IntuitiveLogEntry | AdHocAnalysisLogEntry | TestLogEntry)[]> {
+  await pendingWorkComplete();
+  lastImpressionLogEntry = null;
+  return veDebugEventsLog;
+}
+
 // @ts-ignore
 globalThis.setVeDebugLoggingEnabled = setVeDebugLoggingEnabled;
 // @ts-ignore
@@ -537,3 +585,5 @@ globalThis.findVeDebugImpression = findVeDebugImpression;
 globalThis.exportAdHocAnalysisLogForSql = exportAdHocAnalysisLogForSql;
 // @ts-ignore
 globalThis.buildStateFlow = buildStateFlow;
+// @ts-ignore
+globalThis.getVeDebugEventsLog = getVeDebugEventsLog;

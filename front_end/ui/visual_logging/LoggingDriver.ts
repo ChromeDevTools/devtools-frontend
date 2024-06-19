@@ -99,6 +99,23 @@ export function stopLogging(): void {
   pendingChange.clear();
 }
 
+export function pendingWorkComplete(): Promise<void> {
+  return Promise
+      .all([
+        processingThrottler,
+        keyboardLogThrottler,
+        hoverLogThrottler,
+        dragLogThrottler,
+        clickLogThrottler,
+        resizeLogThrottler,
+      ].map(async throttler => {
+        while (throttler.process) {
+          await throttler.processCompleted;
+        }
+      }))
+      .then(() => {});
+}
+
 async function yieldToInteractions(): Promise<void> {
   while (clickLogThrottler.process) {
     await clickLogThrottler.processCompleted;

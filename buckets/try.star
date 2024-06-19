@@ -261,9 +261,9 @@ cq_main = struct(
         # Quarantine a builder here
         # This will make them experiment with the given percentage
         "devtools_frontend_mac_arm64_rel": 100,
-        "dtf_linux_rel": 20,
-        "dtf_mac_rel": 20,
-        "dtf_win_rel": 20,
+        "dtf_linux_rel": 50,
+        "dtf_mac_rel": 50,
+        "dtf_win_rel": 50,
     },
     includable_only_builders = [
         "cpp_debug_extension_e2e_dbg",

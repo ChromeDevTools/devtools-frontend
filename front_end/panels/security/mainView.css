@@ -46,23 +46,19 @@
 .security-summary:not(.security-summary-neutral) .lock-icon-neutral,
 .security-summary:not(.security-summary-insecure) .lock-icon-insecure,
 .security-summary:not(.security-summary-insecure-broken) .lock-icon-insecure-broken {
-  background-color: var(--sys-color-state-disabled);
-}
-
-.security-summary.security-summary-insecure .lock-icon-insecure {
-  background-color: var(--sys-color-orange-bright);
+  color: var(--sys-color-state-disabled);
 }
 
 @media (forced-colors: active) {
   .security-summary-neutral .lock-icon-neutral {
-    background-color: Highlight;
+    color: Highlight;
   }
 
   .security-summary:not(.security-summary-secure) .lock-icon-secure,
   .security-summary:not(.security-summary-neutral) .lock-icon-neutral,
   .security-summary:not(.security-summary-insecure) .lock-icon-insecure,
   .security-summary:not(.security-summary-insecure-broken) .lock-icon-insecure-broken {
-    background-color: canvastext;
+    color: canvastext;
   }
 }
 
@@ -118,7 +114,7 @@
 .security-summary-secure .triangle-pointer,
 .security-summary-secure .security-summary-text,
 .security-explanation-title-secure {
-  color: var(--sys-color-tertiary);
+  color: var(--sys-color-green);
 }
 
 .security-summary-insecure-broken .triangle-pointer,

@@ -14,7 +14,7 @@ import {
   type Props as FreestylerChatUiProps,
   State as FreestylerChatUiState,
 } from './components/FreestylerChatUi.js';
-import {FreestylerAgent, type StepData} from './FreestylerAgent.js';
+import {FreestylerAgent} from './FreestylerAgent.js';
 import freestylerPanelStyles from './freestylerPanel.css.js';
 
 /*
@@ -195,7 +195,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     };
 
     this.#viewProps.messages.push(systemMessage);
-    await this.#agent.run(text, (data: StepData) => {
+    for await (const data of this.#agent.run(text)) {
       if (this.#viewProps.state === FreestylerChatUiState.CHAT_VIEW_LOADING) {
         this.#viewProps.state = FreestylerChatUiState.CHAT_VIEW;
       }
@@ -211,7 +211,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
       systemMessage.steps.push(data);
       this.doUpdate();
-    });
+    }
   }
 }
 

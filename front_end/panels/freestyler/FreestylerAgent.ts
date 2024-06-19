@@ -203,7 +203,7 @@ export class FreestylerAgent {
     this.#chatHistory = [];
   }
 
-  async run(query: string, onStep: (data: StepData) => void): Promise<void> {
+  async * run(query: string): AsyncGenerator<StepData, void, void> {
     const structuredLog = [];
     query = `QUERY: ${query}`;
     for (let i = 0; i < MAX_STEPS; i++) {
@@ -216,7 +216,7 @@ export class FreestylerAgent {
         response = fetchResult.response;
         rpcId = fetchResult.rpcId;
       } catch (err) {
-        onStep({step: Step.ERROR, text: err.message});
+        yield {step: Step.ERROR, text: err.message, rpcId};
         break;
       }
 
@@ -239,29 +239,29 @@ export class FreestylerAgent {
       const {thought, action, answer} = FreestylerAgent.parseResponse(response);
 
       if (!thought && !action && !answer) {
-        onStep({step: Step.ANSWER, text: 'Sorry, I could not help you with this query.'});
+        yield {step: Step.ANSWER, text: 'Sorry, I could not help you with this query.', rpcId};
         break;
       }
 
       if (answer) {
-        onStep({step: Step.ANSWER, text: answer, rpcId});
+        yield {step: Step.ANSWER, text: answer, rpcId};
         break;
       }
 
       if (thought) {
-        onStep({step: Step.THOUGHT, text: thought, rpcId});
+        yield {step: Step.THOUGHT, text: thought, rpcId};
       }
 
       if (action) {
         debugLog(`Action to execute: ${action}`);
         const observation = await this.#execJs(`{${action};((typeof data !== "undefined") ? data : undefined)}`);
         debugLog(`Action result: ${observation}`);
-        onStep({step: Step.ACTION, code: action, output: observation, rpcId});
+        yield {step: Step.ACTION, code: action, output: observation, rpcId};
         query = `OBSERVATION: ${observation}`;
       }
 
       if (i === MAX_STEPS - 1) {
-        onStep({step: Step.ERROR, text: 'Max steps reached, please try again.'});
+        yield {step: Step.ERROR, text: 'Max steps reached, please try again.'};
       }
     }
     if (isDebugMode()) {

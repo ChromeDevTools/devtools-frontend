@@ -339,14 +339,13 @@ c`;
         aidaClient: mockAidaClient(generateAnswer),
         execJs,
       });
-      const onStep = sinon.spy();
 
-      await agent.run('test', onStep);
-      sinon.assert.calledOnceWithExactly(onStep, {
-        step: 'answer',
-        text: 'this is the answer',
-        rpcId: undefined,
-      });
+      const steps = await Array.fromAsync(agent.run('test'));
+      assert.deepStrictEqual(steps, [{
+                               step: Freestyler.Step.ANSWER,
+                               text: 'this is the answer',
+                               rpcId: undefined,
+                             }]);
       sinon.assert.notCalled(execJs);
       assert.deepStrictEqual(agent.chatHistoryForTesting, [
         {
@@ -373,12 +372,12 @@ c`;
         aidaClient: mockAidaClient(generateNothing),
         execJs,
       });
-      const onStep = sinon.spy();
-      await agent.run('test', onStep);
-      sinon.assert.calledOnceWithExactly(onStep, {
-        step: 'answer',
-        text: 'Sorry, I could not help you with this query.',
-      });
+      const steps = await Array.fromAsync(agent.run('test'));
+      assert.deepStrictEqual(steps, [{
+                               step: Freestyler.Step.ANSWER,
+                               text: 'Sorry, I could not help you with this query.',
+                               rpcId: undefined,
+                             }]);
       sinon.assert.notCalled(execJs);
       assert.deepStrictEqual(agent.chatHistoryForTesting, [
         {
@@ -414,9 +413,8 @@ c`;
         aidaClient: mockAidaClient(generateMultipleTimes),
         execJs,
       });
-      const onStep = sinon.spy();
 
-      await agent.run('test', onStep);
+      await Array.fromAsync(agent.run('test'));
 
       assert.deepStrictEqual(agent.chatHistoryForTesting, [
         {

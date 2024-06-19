@@ -23,7 +23,7 @@ const TempUIStrings = {
   /**
    *@description Placeholder text for the chat UI input.
    */
-  inputPlaceholder: 'Ask Freestyler or type / for commands',
+  inputPlaceholder: 'Ask a question about the selected element',
   /**
    *@description Disclaimer text right after the chat input.
    */

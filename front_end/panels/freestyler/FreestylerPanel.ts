@@ -31,6 +31,10 @@ const TempUIStrings = {
    *@description Freestyler UI text for sending feedback.
    */
   sendFeedback: 'Send feedback',
+  /**
+   *@description Freestyelr UI text for the help button.
+   */
+  help: 'Help',
 };
 
 // TODO(nvitkov): b/346933425
@@ -58,8 +62,7 @@ function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () =>
   rightToolbar.appendSeparator();
   const feedbackButton =
       new UI.Toolbar.ToolbarButton(i18nString(TempUIStrings.sendFeedback), 'bug', undefined, 'freestyler.feedback');
-  const helpButton =
-      new UI.Toolbar.ToolbarButton(i18nString(TempUIStrings.sendFeedback), 'help', undefined, 'freestyler.help');
+  const helpButton = new UI.Toolbar.ToolbarButton(i18nString(TempUIStrings.help), 'help', undefined, 'freestyler.help');
   rightToolbar.appendToolbarItem(feedbackButton);
   rightToolbar.appendToolbarItem(helpButton);
 }

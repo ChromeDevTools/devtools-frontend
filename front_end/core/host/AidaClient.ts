@@ -20,6 +20,24 @@ export interface Chunk {
   entity: Entity;
 }
 
+export enum FunctionalityType {
+  // Unspecified functionality type.
+  FUNCTIONALITY_TYPE_UNSPECIFIED = 0,
+  // The generic AI chatbot functionality.
+  CHAT = 1,
+  // The explain error functionality.
+  EXPLAIN_ERROR = 2,
+}
+
+export enum ClientFeature {
+  // Unspecified client feature.
+  CLIENT_FEATURE_UNSPECIFIED = 0,
+  // Chrome console insights feature.
+  CHROME_CONSOLE_INSIGHTS = 1,
+  // Chrome freestyler.
+  CHROME_FREESTYLER = 2,
+}
+
 export interface AidaRequest {
   input: string;
   preamble?: string;
@@ -35,6 +53,10 @@ export interface AidaRequest {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     disable_user_content_logging: boolean,
   };
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  functionality_type?: FunctionalityType;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  client_feature?: ClientFeature;
 }
 
 export interface AidaResponse {
@@ -56,6 +78,8 @@ export class AidaClient {
     const request: AidaRequest = {
       input,
       client: 'CHROME_DEVTOOLS',
+      functionality_type: FunctionalityType.EXPLAIN_ERROR,
+      client_feature: ClientFeature.CHROME_CONSOLE_INSIGHTS,
     };
     const config = Common.Settings.Settings.instance().getHostConfig();
     let temperature = NaN;

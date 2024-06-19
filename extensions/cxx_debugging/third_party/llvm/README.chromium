@@ -2,8 +2,8 @@ Name: LLVM Compiler Infrastructure
 Short Name: llvm-project
 URL: https://github.com/llvm/llvm-project
 Version: 0
-Date: 2023-06-21
-Revision: c08d3b08f6d71e974537de226c68d4c94c396a46
+Date: 2022-11-30
+Revision: 3c51ea3619e488db19cd26840ed46d58cfc7062f
 License: Apache 2.0 with LLVM Exceptions
 License File: src/LICENSE.TXT
 Shipped: no

@@ -1183,10 +1183,12 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
 export class ToolbarCheckbox extends ToolbarItem<void> {
   inputElement: HTMLInputElement;
 
-  constructor(text: string, tooltip?: string, listener?: ((arg0: MouseEvent) => void), jslogContext?: string) {
+  constructor(
+      text: string, tooltip?: string, listener?: ((arg0: MouseEvent) => void), jslogContext?: string, small?: boolean) {
     super(CheckboxLabel.create(text));
     this.element.classList.add('checkbox');
     this.inputElement = (this.element as CheckboxLabel).checkboxElement;
+    this.inputElement.classList.toggle('small', small);
     if (tooltip) {
       // install on the checkbox
       Tooltip.install(this.inputElement, tooltip);
@@ -1219,8 +1221,8 @@ export class ToolbarCheckbox extends ToolbarItem<void> {
 }
 
 export class ToolbarSettingCheckbox extends ToolbarCheckbox {
-  constructor(setting: Common.Settings.Setting<boolean>, tooltip?: string, alternateTitle?: string) {
-    super(alternateTitle || setting.title() || '', tooltip, undefined, setting.name);
+  constructor(setting: Common.Settings.Setting<boolean>, tooltip?: string, alternateTitle?: string, small?: boolean) {
+    super(alternateTitle || setting.title() || '', tooltip, undefined, setting.name, small);
     bindCheckbox(this.inputElement, setting);
   }
 }

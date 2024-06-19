@@ -262,6 +262,57 @@ input {
 
 input {
   color: inherit;
+
+  &[type="checkbox"] {
+    position: relative;
+
+    &:hover::after,
+    &:active::before {
+      content: "";
+      height: 24px;
+      width: 24px;
+      border-radius: var(--sys-shape-corner-full);
+      position: absolute;
+      top: -6px;
+      left: -6px;
+    }
+
+    &:not(.-theme-preserve) {
+      accent-color: var(--sys-color-primary-bright);
+      color: var(--sys-color-on-primary);
+    }
+
+    &:not(:disabled):hover::after {
+      background-color: var(--sys-color-state-hover-on-subtle);
+    }
+
+    &:not(:disabled):active::before {
+      background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+    }
+
+    &:not(:disabled):focus-visible {
+      outline: none;
+
+      &::before {
+        content: "";
+        height: 15px;
+        width: 15px;
+        border-radius: 5px;
+        position: absolute;
+        top: -3px;
+        left: -3px;
+        border: 2px solid var(--sys-color-state-focus-ring);
+      }
+    }
+
+    &.small:hover::after,
+    &.small:active::before {
+      height: 18px;
+      width: 18px;
+      top: -3px;
+      left: -3px;
+    }
+  }
 }
 
 input::placeholder {
@@ -273,11 +324,6 @@ input::placeholder {
 .theme-with-dark-background input::placeholder,
 :host-context(.theme-with-dark-background) input::placeholder {
   --override-input-placeholder-color: rgb(230 230 230 / 54%);
-}
-
-input[type="checkbox"]:not(.-theme-preserve) {
-  accent-color: var(--sys-color-primary-bright);
-  color: var(--sys-color-on-primary);
 }
 
 .harmony-input:not([type]),

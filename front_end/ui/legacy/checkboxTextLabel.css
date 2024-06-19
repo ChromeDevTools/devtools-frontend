@@ -73,7 +73,6 @@ input.inside-datagrid {
 }
 
 .dt-checkbox-text {
-  margin-left: 3px;
   overflow: hidden;
   text-overflow: ellipsis;
 }

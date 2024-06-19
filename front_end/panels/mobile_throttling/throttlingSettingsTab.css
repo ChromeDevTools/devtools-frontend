@@ -81,8 +81,16 @@
 }
 
 .conditions-edit-row input {
-  width: 100%;
-  text-align: inherit;
+  &[type="checkbox"] {
+    display: block;
+    margin: auto;
+    top: 6px;
+  }
+
+  &:not([type="checkbox"]) {
+    width: 100%;
+    text-align: inherit;
+  }
 }
 
 .conditions-edit-optional {

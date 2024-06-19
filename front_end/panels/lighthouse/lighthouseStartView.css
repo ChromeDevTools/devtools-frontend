@@ -108,12 +108,13 @@ input[type="radio"] {
 
 .lighthouse-launcher-row,
 .lighthouse-radio {
-  margin-bottom: 6px;
-}
+  &:last-of-type {
+    margin-bottom: 0;
+  }
 
-.lighthouse-launcher-row:last-of-type,
-.lighthouse-radio:last-of-type {
-  margin-bottom: 0;
+  &:not(:has(span[is="dt-checkbox"])) {
+    margin-bottom: 6px;
+  }
 }
 
 .lighthouse-launcher-row .dimmed {

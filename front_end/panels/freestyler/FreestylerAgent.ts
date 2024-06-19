@@ -57,10 +57,12 @@ export enum Step {
 export type StepData = {
   step: Step.THOUGHT|Step.ANSWER|Step.ERROR,
   text: string,
+  rpcId?: number,
 }|{
   step: Step.ACTION,
   code: string,
   output: string,
+  rpcId?: number,
 };
 
 async function executeJsCode(code: string): Promise<string> {
@@ -186,13 +188,15 @@ export class FreestylerAgent {
     return {thought, action, answer};
   }
 
-  async #aidaFetch(request: Host.AidaClient.AidaRequest): Promise<string> {
-    let result;
+  async #aidaFetch(request: Host.AidaClient.AidaRequest): Promise<{response: string, rpcId: number|undefined}> {
+    let response = '';
+    let rpcId;
     for await (const lastResult of this.#aidaClient.fetch(request)) {
-      result = lastResult.explanation;
+      response = lastResult.explanation;
+      rpcId = lastResult.metadata.rpcGlobalId ?? rpcId;
     }
 
-    return result ?? '';
+    return {response, rpcId};
   }
 
   resetHistory(): void {
@@ -206,8 +210,11 @@ export class FreestylerAgent {
       const request =
           FreestylerAgent.buildRequest(query, preamble, this.#chatHistory.length ? this.#chatHistory : undefined);
       let response: string;
+      let rpcId: number|undefined;
       try {
-        response = await this.#aidaFetch(request);
+        const fetchResult = await this.#aidaFetch(request);
+        response = fetchResult.response;
+        rpcId = fetchResult.rpcId;
       } catch (err) {
         onStep({step: Step.ERROR, text: err.message});
         break;
@@ -237,19 +244,19 @@ export class FreestylerAgent {
       }
 
       if (answer) {
-        onStep({step: Step.ANSWER, text: answer});
+        onStep({step: Step.ANSWER, text: answer, rpcId});
         break;
       }
 
       if (thought) {
-        onStep({step: Step.THOUGHT, text: thought});
+        onStep({step: Step.THOUGHT, text: thought, rpcId});
       }
 
       if (action) {
         debugLog(`Action to execute: ${action}`);
         const observation = await this.#execJs(`{${action};((typeof data !== "undefined") ? data : undefined)}`);
         debugLog(`Action result: ${observation}`);
-        onStep({step: Step.ACTION, code: action, output: observation});
+        onStep({step: Step.ACTION, code: action, output: observation, rpcId});
         query = `OBSERVATION: ${observation}`;
       }
 

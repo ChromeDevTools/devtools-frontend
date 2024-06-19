@@ -109,6 +109,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       selectedNode: this.#selectedNode,
       onTextSubmit: this.#handleTextSubmit.bind(this),
       onInspectElementClick: this.#handleSelectElementClick.bind(this),
+      onRateClick: this.#handleRateClick.bind(this),
     };
 
     this.#toggleSearchElementAction.addEventListener(UI.ActionRegistration.Events.Toggled, ev => {
@@ -153,6 +154,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
     void this.#toggleSearchElementAction.execute();
   }
 
+  #handleRateClick(): void {
+    // TODO(348145480): Handle this -- e.g. there be dragons.
+  }
+
   handleAction(actionId: string): void {
     switch (actionId) {
       case 'freestyler.element-panel-context': {
@@ -193,6 +198,15 @@ export class FreestylerPanel extends UI.Panel.Panel {
     await this.#agent.run(text, (data: StepData) => {
       if (this.#viewProps.state === FreestylerChatUiState.CHAT_VIEW_LOADING) {
         this.#viewProps.state = FreestylerChatUiState.CHAT_VIEW;
+      }
+
+      // There can be multiple steps from the same call from the agent.
+      // We want to show `rate answer` buttons for the full response.
+      // That's why we're removing the `rpcId` from the previous step
+      // if there is a new incoming step from the call with the same rpcId.
+      const lastStep = systemMessage.steps.at(-1);
+      if (lastStep && lastStep.rpcId !== undefined && lastStep.rpcId === data.rpcId) {
+        delete lastStep.rpcId;
       }
 
       systemMessage.steps.push(data);

@@ -40,6 +40,16 @@ const TempUIStrings = {
    *@description Text for the empty state of the Freestyler panel.
    */
   emptyStateText: 'How can I help you?',
+  /**
+   * @description The title of the button that allows submitting positive
+   * feedback about the response for freestyler.
+   */
+  thumbsUp: 'Thumbs up',
+  /**
+   * @description The title of the button that allows submitting negative
+   * feedback about the response for freestyler.
+   */
+  thumbsDown: 'Thumbs down',
 };
 // const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);
 // const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -64,9 +74,15 @@ export const enum State {
   CHAT_VIEW_LOADING = 'chat-view-loading',
 }
 
+export const enum Rating {
+  POSITIVE = 'positive',
+  NEGATIVE = 'negative',
+}
+
 export type Props = {
   onTextSubmit: (text: string) => void,
   onInspectElementClick: () => void,
+  onRateClick: (rpcId: number, rate: Rating) => void,
   inspectElementToggled: boolean,
   state: State,
   messages: ChatMessage[],
@@ -113,6 +129,36 @@ export class FreestylerChatUi extends HTMLElement {
     input.value = '';
   };
 
+  #renderRateButtons(rpcId: number): LitHtml.TemplateResult {
+    // clang-format off
+    return LitHtml.html`
+      <div class="rate-buttons">
+        <${Buttons.Button.Button.litTagName}
+          .data=${{
+            variant: Buttons.Button.Variant.ICON,
+            size: Buttons.Button.Size.SMALL,
+            iconName: 'thumb-up',
+            active: false,
+            title: i18nString(TempUIStrings.thumbsUp),
+            jslogContext: 'thumbs-up',
+          } as Buttons.Button.ButtonData}
+          @click=${() => this.#props.onRateClick(rpcId, Rating.POSITIVE)}
+        ></${Buttons.Button.Button.litTagName}>
+        <${Buttons.Button.Button.litTagName}
+          .data=${{
+            variant: Buttons.Button.Variant.ICON,
+            size: Buttons.Button.Size.SMALL,
+            iconName: 'thumb-down',
+            active: false,
+            title: i18nString(TempUIStrings.thumbsDown),
+            jslogContext: 'thumbs-down',
+          } as Buttons.Button.ButtonData}
+          @click=${() => this.#props.onRateClick(rpcId, Rating.NEGATIVE)}
+        ></${Buttons.Button.Button.litTagName}>
+      </div>`;
+    // clang-format on
+  }
+
   #renderStep(step: StepData): LitHtml.TemplateResult {
     if (step.step === Step.ACTION) {
       return LitHtml.html`
@@ -140,7 +186,7 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format off
     return LitHtml.html`
       <div class="chat-message answer">
-        ${steps.map(step => this.#renderStep(step))}
+        ${steps.map(step => LitHtml.html`${this.#renderStep(step)}${step.rpcId !== undefined ? this.#renderRateButtons(step.rpcId): LitHtml.nothing}`)}
       </div>
     `;
     // clang-format on

@@ -329,7 +329,7 @@ c`;
     it('generates an answer immediately', async () => {
       async function* generateAnswer() {
         yield {
-          explanation: 'ANSWER: this is the anwser',
+          explanation: 'ANSWER: this is the answer',
           metadata: {},
         };
       }
@@ -344,7 +344,8 @@ c`;
       await agent.run('test', onStep);
       sinon.assert.calledOnceWithExactly(onStep, {
         step: 'answer',
-        text: 'this is the anwser',
+        text: 'this is the answer',
+        rpcId: undefined,
       });
       sinon.assert.notCalled(execJs);
       assert.deepStrictEqual(agent.chatHistoryForTesting, [
@@ -354,7 +355,7 @@ c`;
         },
         {
           entity: 2,
-          text: 'ANSWER: this is the anwser',
+          text: 'ANSWER: this is the answer',
         },
       ]);
     });
@@ -396,7 +397,7 @@ c`;
       async function* generateMultipleTimes() {
         if (count === 3) {
           yield {
-            explanation: 'ANSWER: this is the anwser',
+            explanation: 'ANSWER: this is the answer',
             metadata: {},
           };
           return;
@@ -448,7 +449,7 @@ c`;
         },
         {
           entity: 2,
-          text: 'ANSWER: this is the anwser',
+          text: 'ANSWER: this is the answer',
         },
       ]);
     });

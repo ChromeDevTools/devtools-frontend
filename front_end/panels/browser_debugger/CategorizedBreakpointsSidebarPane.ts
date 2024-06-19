@@ -194,7 +194,8 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
   }
 
   private createCategory(name: SDK.CategorizedBreakpoint.Category): void {
-    const labelNode = UI.UIUtils.CheckboxLabel.create(getLocalizedCategory(name), undefined, undefined, name);
+    const labelNode =
+        UI.UIUtils.CheckboxLabel.create(getLocalizedCategory(name), undefined, undefined, name, /* small */ true);
     labelNode.checkboxElement.addEventListener('click', this.categoryCheckboxClicked.bind(this, name), true);
     labelNode.checkboxElement.tabIndex = -1;
 
@@ -217,7 +218,7 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
   protected createBreakpoint(breakpoint: SDK.CategorizedBreakpoint.CategorizedBreakpoint): void {
     const labelNode = UI.UIUtils.CheckboxLabel.create(
         Sources.CategorizedBreakpointL10n.getLocalizedBreakpointName(breakpoint.name), undefined, undefined,
-        Platform.StringUtilities.toKebabCase(breakpoint.name));
+        Platform.StringUtilities.toKebabCase(breakpoint.name), /* small */ true);
     labelNode.classList.add('source-code');
     labelNode.checkboxElement.addEventListener('click', this.breakpointCheckboxClicked.bind(this, breakpoint), true);
     labelNode.checkboxElement.tabIndex = -1;

@@ -64,16 +64,11 @@
 }
 
 .perfmon-indicator {
-  padding: 6px 12px;
+  padding: 3px 9px;
   margin: -1px 0;
   display: flex;
   flex-shrink: 0;
   width: 210px;
-}
-
-.perfmon-indicator:hover,
-.perfmon-indicator:focus-visible {
-  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .perfmon-indicator span {

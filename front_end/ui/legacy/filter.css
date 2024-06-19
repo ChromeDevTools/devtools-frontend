@@ -92,7 +92,7 @@
 }
 
 .filter-checkbox-filter {
-  padding-left: 4px;
+  padding-left: 1px;
   padding-right: 7px;
   white-space: nowrap;
   text-overflow: ellipsis;

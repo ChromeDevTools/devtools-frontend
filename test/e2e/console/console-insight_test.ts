@@ -31,6 +31,8 @@ describe('ConsoleInsight', function() {
         optIn: false,
       },
       devToolsFreestylerDogfood: {
+        aidaModelId: 'modelB',
+        aidaTemperature: 222,
         enabled: false,
       },
     };

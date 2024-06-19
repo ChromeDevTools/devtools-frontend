@@ -414,6 +414,8 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
         optIn: false,
       },
       devToolsFreestylerDogfood: {
+        aidaModelId: '',
+        aidaTemperature: 0,
         enabled: false,
       },
     });

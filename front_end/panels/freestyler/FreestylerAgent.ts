@@ -123,10 +123,8 @@ export class FreestylerAgent {
       chat_history: chatHistory,
       client: 'CHROME_DEVTOOLS',
       options: {
-        // TODO: have a config for temperature
-        temperature: 0,
-        // TODO: have a separate config for modelId
-        model_id: config?.devToolsConsoleInsights.aidaModelId ?? undefined,
+        temperature: config?.devToolsFreestylerDogfood.aidaTemperature ?? 0,
+        model_id: config?.devToolsFreestylerDogfood.aidaModelId ?? undefined,
       },
       metadata: {
         // TODO: enable logging later.

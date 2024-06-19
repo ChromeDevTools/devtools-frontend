@@ -317,6 +317,8 @@ export interface HostConfigConsoleInsights {
 }
 
 export interface HostConfigFreestylerDogfood {
+  aidaModelId: string;
+  aidaTemperature: number;
   enabled: boolean;
 }
 

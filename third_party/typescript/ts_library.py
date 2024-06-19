@@ -41,8 +41,6 @@ GLOBAL_TYPESCRIPT_DEFINITION_FILES = [
     # e.g. TypeScript doesn't provide ResizeObserver definitions so we host them ourselves
     path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'global_typings',
               'global_defs.d.ts'),
-    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'global_typings',
-              'request_idle_callback.d.ts'),
     # Types for W3C FileSystem API
     path.join(NODE_MODULES_DIRECTORY, '@types', 'filesystem', 'index.d.ts'),
 ]

@@ -4,6 +4,10 @@
  * found in the LICENSE file.
  */
 
+.devices-settings-tab .settings-container-wrapper {
+  padding-top: 5px;
+}
+
 .devices-settings-tab .settings-tab.settings-content {
   display: flex;
   flex-direction: column;
@@ -15,12 +19,10 @@
 .devices-settings-tab .devices-button-row {
   flex: none;
   display: flex;
-}
 
-.devices-settings-tab .devices-button-row button {
-  margin-right: 10px;
-  min-width: 120px;
-  flex: none;
+  devtools-button {
+    margin: 4px 0 0 5px;
+  }
 }
 
 .devices-settings-tab .devices-list {

@@ -37,12 +37,7 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
-import {
-  decodeGeneratedRanges,
-  decodeOriginalScopes,
-  type GeneratedRange,
-  type OriginalScope,
-} from './SourceMapScopes.js';
+import {SourceMapScopesInfo} from './SourceMapScopesInfo.js';
 
 /**
  * Type of the base source map JSON object, which contains the sources and the mappings at the very least, plus
@@ -190,9 +185,7 @@ export class SourceMap {
   readonly #sourceInfos: Map<Platform.DevToolsPath.UrlString, SourceInfo>;
 
   /* eslint-disable-next-line no-unused-private-class-members */
-  #originalScopes: OriginalScope[]|null = null;
-  /* eslint-disable-next-line no-unused-private-class-members */
-  #generatedRanges: GeneratedRange|null = null;
+  #scopesInfo: SourceMapScopesInfo|null = null;
 
   /**
    * Implements Source Map V3 model. See https://github.com/google/closure-compiler/wiki/Source-Maps
@@ -622,14 +615,9 @@ export class SourceMap {
   }
 
   #parseScopes(map: SourceMapV3Object): void {
-    if (!map.originalScopes || !map.generatedRanges) {
-      return;
+    if (map.originalScopes && map.generatedRanges) {
+      this.#scopesInfo = SourceMapScopesInfo.parseFromMap(map);
     }
-
-    const names = map.names ?? [];
-    const scopeTrees = decodeOriginalScopes(map.originalScopes, names);
-    this.#originalScopes = scopeTrees.map(tree => tree.root);
-    this.#generatedRanges = decodeGeneratedRanges(map.generatedRanges, scopeTrees, names);
   }
 
   findScopeEntry(sourceURL: Platform.DevToolsPath.UrlString, sourceLineNumber: number, sourceColumnNumber: number):

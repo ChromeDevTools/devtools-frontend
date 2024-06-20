@@ -261,7 +261,6 @@ cq_main = struct(
         # Quarantine a builder here
         # This will make them experiment with the given percentage
         "devtools_frontend_mac_arm64_rel": 100,
-        "dtf_linux_rel": 50,
         "dtf_mac_rel": 50,
         "dtf_win_rel": 50,
     },
@@ -269,6 +268,7 @@ cq_main = struct(
         "cpp_debug_extension_e2e_dbg",
         "cpp_debug_extension_e2e_rel",
         "devtools_frontend_linux_blink_light_rel",
+        "devtools_frontend_linux_rel",
         "devtools_screenshot_linux_rel",
         "devtools_screenshot_mac_rel",
         "devtools_screenshot_mac_arm64_rel",

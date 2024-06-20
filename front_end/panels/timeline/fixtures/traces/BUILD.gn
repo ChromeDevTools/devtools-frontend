@@ -18,6 +18,7 @@ copy_to_gen("traces") {
     "cls-last-cluster-max-duration.json.gz",
     "cls-multiple-frames.json.gz",
     "cls-single-frame.json.gz",
+    "enhanced-traces.json.gz",
     "extension-tracks-and-marks.json.gz",
     "fenced-frame-fledge.json.gz",
     "forced-layouts-and-no-gpu.json.gz",

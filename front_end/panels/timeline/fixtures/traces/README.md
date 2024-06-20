@@ -193,3 +193,6 @@ Generated from the shift-attribution page in https://github.com/GoogleChrome/lig
 ### primary-page-frame
 
 Created from the speculation-rules demo page (https://speculative-rules.glitch.me/common-fruits.html). Contains a trace that includes the `isInPrimaryPageFrame` flag added to Chromium in crrev.com/c/5595033, which allows the trace engine to more accurately identify the main thread via the primary frame.
+
+### enhanced-traces
+Contains traces with metadata needed to power a rehydrated session for enhanced tracing.

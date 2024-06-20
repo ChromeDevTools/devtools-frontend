@@ -1191,6 +1191,92 @@ export interface TraceEventTimeStamp extends TraceEventData {
   };
 }
 
+export interface TraceEventTargetRundown extends TraceEventData {
+  cat: 'disabled-by-default-devtools.target-rundown';
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      frame: string,
+      frameType: string,
+      url: string,
+      isolate: string,
+      v8context: string,
+      origin: string,
+      scriptId: number,
+      isDefault?: boolean,
+      contextType?: string,
+    },
+  };
+}
+
+export function isTraceEventTargetRundown(traceEventData: TraceEventData): traceEventData is TraceEventTargetRundown {
+  if (traceEventData.cat !== 'disabled-by-default-devtools.target-rundown') {
+    return false;
+  }
+  const data = traceEventData.args?.data;
+  if (!data) {
+    return false;
+  }
+  return 'frame' in data && 'frameType' in data && 'url' in data && 'isolate' in data && 'v8context' in data &&
+      'scriptId' in data;
+}
+
+export interface TraceEventScriptRundown extends TraceEventData {
+  cat: 'disabled-by-default-devtools.v8-source-rundown';
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      isolate: string,
+      executionContextId: number,
+      scriptId: number,
+      startLine: number,
+      startColumn: number,
+      endLine: number,
+      endColumn: number,
+      url: string,
+      hash: string,
+      isModule: boolean,
+      hasSourceUrl: boolean,
+      sourceMapUrl?: string,
+    },
+  };
+}
+
+export function isTraceEventScriptRundown(traceEventData: TraceEventData): traceEventData is TraceEventScriptRundown {
+  if (traceEventData.cat !== 'disabled-by-default-devtools.v8-source-rundown') {
+    return false;
+  }
+  const data = traceEventData.args?.data;
+  if (!data) {
+    return false;
+  }
+  return 'isolate' in data && 'executionContextId' in data && 'scriptId' in data && 'startLine' in data &&
+      'startColumn' in data && 'endLine' in data && 'endColumn' in data && 'hash' in data && 'isModule' in data &&
+      'hasSourceUrl' in data;
+}
+
+export interface TraceEventScriptRundownSource extends TraceEventData {
+  cat: 'disabled-by-default-devtools.v8-source-rundown-sources';
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      isolate: string,
+      scriptId: number,
+      length?: number,
+      sourceText?: string,
+    },
+  };
+}
+
+export function isTraceEventScriptRundownSource(traceEventData: TraceEventData):
+    traceEventData is TraceEventScriptRundownSource {
+  if (traceEventData.cat !== 'disabled-by-default-devtools.v8-source-rundown-sources') {
+    return false;
+  }
+  const data = traceEventData.args?.data;
+  if (!data) {
+    return false;
+  }
+  return 'isolate' in data && 'scriptId' in data && 'length' in data && 'sourceText' in data;
+}
+
 /** ChromeFrameReporter args for PipelineReporter event.
     Matching proto: https://source.chromium.org/chromium/chromium/src/+/main:third_party/perfetto/protos/perfetto/trace/track_event/chrome_frame_reporter.proto
  */

@@ -11,6 +11,7 @@ devtools_module("handlers") {
   sources = [
     "AnimationHandler.ts",
     "AuctionWorkletsHandler.ts",
+    "EnhancedTracesHandler.ts",
     "ExtensionTraceDataHandler.ts",
     "FramesHandler.ts",
     "GPUHandler.ts",
@@ -65,6 +66,7 @@ ts_library("unittests") {
   sources = [
     "AnimationHandler.test.ts",
     "AuctionWorkletsHandler.test.ts",
+    "EnhancedTracesHandler.test.ts",
     "ExtensionTraceDataHandler.test.ts",
     "FramesHandler.test.ts",
     "GPUHandler.test.ts",

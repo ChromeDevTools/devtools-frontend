@@ -359,6 +359,29 @@ c`;
       ]);
     });
 
+    it('generates an rpcId for the answer', async () => {
+      async function* generateAnswer() {
+        yield {
+          explanation: 'ANSWER: this is the answer',
+          metadata: {
+            rpcGlobalId: 123,
+          },
+        };
+      }
+
+      const agent = new FreestylerAgent({
+        aidaClient: mockAidaClient(generateAnswer),
+        execJs: sinon.spy(),
+      });
+
+      const steps = await Array.fromAsync(agent.run('test'));
+      assert.deepStrictEqual(steps, [{
+                               step: Freestyler.Step.ANSWER,
+                               text: 'this is the answer',
+                               rpcId: 123,
+                             }]);
+    });
+
     it('generates a response if nothing is returned', async () => {
       async function* generateNothing() {
         yield {

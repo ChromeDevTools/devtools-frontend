@@ -1806,6 +1806,10 @@ export namespace Browser {
      */
     allowWithoutSanitization?: boolean;
     /**
+     * For "fullscreen" permission, must specify allowWithoutGesture:true.
+     */
+    allowWithoutGesture?: boolean;
+    /**
      * For "camera" permission, may specify panTiltZoom.
      */
     panTiltZoom?: boolean;

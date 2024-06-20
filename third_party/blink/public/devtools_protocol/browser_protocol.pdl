@@ -1367,6 +1367,8 @@ domain Browser
       optional boolean userVisibleOnly
       # For "clipboard" permission, may specify allowWithoutSanitization.
       optional boolean allowWithoutSanitization
+      # For "fullscreen" permission, must specify allowWithoutGesture:true.
+      optional boolean allowWithoutGesture
       # For "camera" permission, may specify panTiltZoom.
       optional boolean panTiltZoom
 
@@ -7118,9 +7120,6 @@ domain Network
       optional string issuerOrigin
       # The number of obtained Trust Tokens on a successful "Issuance" operation.
       optional integer issuedTokenCount
-
-  # Fired once security policy has been updated.
-  experimental event policyUpdated
 
   # Fired once when parsing the .wbn file has succeeded.
   # The event contains the information about the web bundle contents.

@@ -37,6 +37,7 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
+import {type CallFrame} from './DebuggerModel.js';
 import {SourceMapScopesInfo} from './SourceMapScopesInfo.js';
 
 /**
@@ -228,6 +229,11 @@ export class SourceMap {
       return null;
     }
     return entry.content;
+  }
+
+  hasScopeInfo(): boolean {
+    this.#ensureMappingsProcessed();
+    return this.#scopesInfo !== null;
   }
 
   findEntry(lineNumber: number, columnNumber: number): SourceMapEntry|null {
@@ -792,6 +798,21 @@ export class SourceMap {
   compatibleForURL(sourceURL: Platform.DevToolsPath.UrlString, other: SourceMap): boolean {
     return this.embeddedContentByURL(sourceURL) === other.embeddedContentByURL(sourceURL) &&
         this.hasIgnoreListHint(sourceURL) === other.hasIgnoreListHint(sourceURL);
+  }
+
+  expandCallFrame(frame: CallFrame): CallFrame[] {
+    this.#ensureMappingsProcessed();
+    if (this.#scopesInfo === null) {
+      return [frame];
+    }
+
+    const functionNames =
+        this.#scopesInfo.findInlinedFunctionNames(frame.location().lineNumber, frame.location().columnNumber);
+    const result: CallFrame[] = [];
+    for (const [index, name] of functionNames.entries()) {
+      result.push(frame.createVirtualCallFrame(index, name));
+    }
+    return result;
   }
 }
 

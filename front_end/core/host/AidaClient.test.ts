@@ -275,4 +275,56 @@ describeWithEnvironment('AidaClient', () => {
               'Cannot send request: Cannot get OAuth credentials {\'@type\': \'type.googleapis.com/google.rpc.DebugInfo\', \'detail\': \'DETAILS\'}');
     }
   });
+
+  describe('getAidaClientAvailability', () => {
+    function mockGetSyncInformation(information: Host.InspectorFrontendHostAPI.SyncInformation): void {
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'getSyncInformation').callsFake(cb => {
+        cb(information);
+      });
+    }
+
+    beforeEach(() => {
+      sinon.restore();
+    });
+
+    it('should return NO_INTERNET when navigator is not online', async () => {
+      const navigatorDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'navigator')!;
+      Object.defineProperty(globalThis, 'navigator', {
+        get() {
+          return {onLine: false};
+        },
+      });
+
+      try {
+        const result = await Host.AidaClient.AidaClient.getAidaClientAvailability();
+        assert.strictEqual(result, Host.AidaClient.AidaAvailability.NO_INTERNET);
+      } finally {
+        Object.defineProperty(globalThis, 'navigator', navigatorDescriptor);
+      }
+    });
+
+    it('should return NO_ACCOUNT_EMAIL when the syncInfo doesn\'t contain accountEmail', async () => {
+      mockGetSyncInformation({accountEmail: undefined, isSyncActive: true});
+
+      const result = await Host.AidaClient.AidaClient.getAidaClientAvailability();
+
+      assert.strictEqual(result, Host.AidaClient.AidaAvailability.NO_ACCOUNT_EMAIL);
+    });
+
+    it('should return NO_ACTIVE_SYNC when the syncInfo.isSyncActive is not true', async () => {
+      mockGetSyncInformation({accountEmail: 'some-email', isSyncActive: false});
+
+      const result = await Host.AidaClient.AidaClient.getAidaClientAvailability();
+
+      assert.strictEqual(result, Host.AidaClient.AidaAvailability.NO_ACTIVE_SYNC);
+    });
+
+    it('should return AVAILABLE when navigator is online, accountEmail exists and isSyncActive is true', async () => {
+      mockGetSyncInformation({accountEmail: 'some-email', isSyncActive: true});
+
+      const result = await Host.AidaClient.AidaClient.getAidaClientAvailability();
+
+      assert.strictEqual(result, Host.AidaClient.AidaAvailability.AVAILABLE);
+    });
+  });
 });

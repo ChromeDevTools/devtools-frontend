@@ -92,18 +92,22 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #agent: FreestylerAgent;
   #viewProps: FreestylerChatUiProps;
   #viewOutput: ViewOutput = {};
-  private constructor(private view: View = defaultView) {
+  private constructor(private view: View = defaultView, {aidaClient, aidaAvailability}: {
+    aidaClient: Host.AidaClient.AidaClient,
+    aidaAvailability: Host.AidaClient.AidaAvailability,
+  }) {
     super(FreestylerPanel.panelName);
 
     createToolbar(this.contentElement, {onClearClick: this.#clearMessages.bind(this)});
     this.#toggleSearchElementAction =
         UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
-    this.#aidaClient = new Host.AidaClient.AidaClient();
+    this.#aidaClient = aidaClient;
     this.#contentContainer = this.contentElement.createChild('div', 'freestyler-chat-ui-container');
     this.#agent = new FreestylerAgent({aidaClient: this.#aidaClient});
     this.#selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     this.#viewProps = {
       state: FreestylerChatUiState.CHAT_VIEW,
+      aidaAvailability,
       messages: [],
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
       selectedNode: this.#selectedNode,
@@ -130,12 +134,14 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.doUpdate();
   }
 
-  static instance(opts: {
+  static async instance(opts: {
     forceNew: boolean|null,
-  }|undefined = {forceNew: null}): FreestylerPanel {
+  }|undefined = {forceNew: null}): Promise<FreestylerPanel> {
     const {forceNew} = opts;
     if (!freestylerPanelInstance || forceNew) {
-      freestylerPanelInstance = new FreestylerPanel();
+      const aidaAvailability = await Host.AidaClient.AidaClient.getAidaClientAvailability();
+      const aidaClient = new Host.AidaClient.AidaClient();
+      freestylerPanelInstance = new FreestylerPanel(defaultView, {aidaClient, aidaAvailability});
     }
 
     return freestylerPanelInstance;

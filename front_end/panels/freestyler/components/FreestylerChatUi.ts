@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
+import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -50,11 +51,36 @@ const TempUIStrings = {
    * feedback about the response for freestyler.
    */
   thumbsDown: 'Thumbs down',
+  /**
+   * @description The error message when the user is not logged in into Chrome.
+   */
+  notLoggedIn: 'This feature is only available when you sign into Chrome with your Google account.',
+  /**
+   * @description The error message when the user is not logged in into Chrome.
+   */
+  syncIsOff: 'This feature requires you to turn on Chrome sync.',
+  /**
+   * @description Message shown when the user is offline.
+   */
+  offline: 'Check your internet connection and try again.',
 };
 // const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);
 // const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /* eslint-disable  rulesdir/l10n_i18nString_call_only_with_uistrings */
 const i18nString = i18n.i18n.lockedString;
+
+function getInputPlaceholderString(aidaAvailability: Host.AidaClient.AidaAvailability): string {
+  switch (aidaAvailability) {
+    case Host.AidaClient.AidaAvailability.AVAILABLE:
+      return i18nString(TempUIStrings.inputPlaceholder);
+    case Host.AidaClient.AidaAvailability.NO_ACCOUNT_EMAIL:
+      return i18nString(TempUIStrings.notLoggedIn);
+    case Host.AidaClient.AidaAvailability.NO_ACTIVE_SYNC:
+      return i18nString(TempUIStrings.syncIsOff);
+    case Host.AidaClient.AidaAvailability.NO_INTERNET:
+      return i18nString(TempUIStrings.offline);
+  }
+}
 
 export enum ChatMessageEntity {
   MODEL = 'model',
@@ -85,6 +111,7 @@ export type Props = {
   onRateClick: (rpcId: number, rate: Rating) => void,
   inspectElementToggled: boolean,
   state: State,
+  aidaAvailability: Host.AidaClient.AidaAvailability,
   messages: ChatMessage[],
   selectedNode: SDK.DOMModel.DOMNode|null,
 };
@@ -231,6 +258,9 @@ export class FreestylerChatUi extends HTMLElement {
   };
 
   #renderChatUi = (): LitHtml.TemplateResult => {
+    // TODO(ergunsh): Show a better UI for the states where Aida client is not available.
+    const isAidaAvailable = this.#props.aidaAvailability === Host.AidaClient.AidaAvailability.AVAILABLE;
+    const isTextInputDisabled = !Boolean(this.#props.selectedNode) || !isAidaAvailable;
     // clang-format off
     return LitHtml.html`
       <div class="chat-ui">
@@ -240,8 +270,8 @@ export class FreestylerChatUi extends HTMLElement {
             ${this.#props.selectedNode ? LitHtml.Directives.until(Common.Linkifier.Linkifier.linkify(this.#props.selectedNode)) : this.#renderSelectAnElement()}
           </div>
           <div class="chat-input-container">
-            <input type="text" class="chat-input" .disabled=${!this.#props.selectedNode}
-              placeholder=${i18nString(TempUIStrings.inputPlaceholder)}>
+            <input type="text" class="chat-input" .disabled=${isTextInputDisabled}
+              placeholder=${getInputPlaceholderString(this.#props.aidaAvailability)}>
             <${Buttons.Button.Button.litTagName}
               class="step-actions"
               type="submit"

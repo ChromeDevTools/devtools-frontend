@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../../../core/host/host.js';
 import * as Explain from '../../../../panels/explain/explain.js';
 import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
@@ -27,8 +28,5 @@ const component = new ConsoleInsight(
             throw new Error('Could not connect to the server');
           },
     },
-    {
-      isSyncActive: true,
-      accountEmail: 'some-email',
-    });
+    Host.AidaClient.AidaAvailability.AVAILABLE);
 document.getElementById('container')?.appendChild(component);

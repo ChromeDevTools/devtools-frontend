@@ -5,7 +5,7 @@
  */
 
 :host {
-  max-width: 610px;
+  max-width: 720px;
   width: 100%;
   height: 100%;
   user-select: text;
@@ -90,16 +90,6 @@
   }
 }
 
-.consent-buttons-container {
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.consent-onboarding-heading {
-  font-size: 1.2em;
-}
-
 .dom-node-link-container {
   margin-bottom: 2px;
   display: inline-flex;
@@ -142,4 +132,21 @@
 
 .error-step {
   color: var(--sys-color-error);
+}
+
+.consent-view {
+  padding: 24px;
+  text-wrap: pretty;
+
+  .accept-button {
+    margin-top: 8px;
+  }
+
+  ul {
+    padding: 0 13px;
+  }
+
+  h2 {
+    font-weight: 500;
+  }
 }

@@ -63,6 +63,27 @@ const TempUIStrings = {
    * @description Message shown when the user is offline.
    */
   offline: 'Check your internet connection and try again.',
+  /**
+   *@description Heading for the consent view.
+   */
+  consentScreenHeading: 'Things to consider',
+  /**
+   *@description Title of the button for accepting in the consent screen.
+   */
+  acceptButtonTitle: 'Accept',
+  /**
+   *@description Consent view main text
+   */
+  consentTextAiDisclaimer: 'This feature uses AI and won\'t always get it right.',
+  /**
+   *@description Consent view data collection text
+   */
+  consentTextDataDisclaimer:
+      'Your inputs and the information from the page you are using this feature for are sent to Google.',
+  /**
+   *@description Consent view data visibility text
+   */
+  consentTextVisibilityDisclaimer: 'Data may be seen by trained reviewers to improve this feature.',
 };
 // const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);
 // const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -96,6 +117,7 @@ export type ChatMessage = {
 };
 
 export const enum State {
+  CONSENT_VIEW = 'consent-view',
   CHAT_VIEW = 'chat-view',
   CHAT_VIEW_LOADING = 'chat-view-loading',
 }
@@ -109,6 +131,7 @@ export type Props = {
   onTextSubmit: (text: string) => void,
   onInspectElementClick: () => void,
   onRateClick: (rpcId: number, rate: Rating) => void,
+  onAcceptConsentClick: () => void,
   inspectElementToggled: boolean,
   state: State,
   aidaAvailability: Host.AidaClient.AidaAvailability,
@@ -293,11 +316,42 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format on
   };
 
+  #renderConsentView = (): LitHtml.TemplateResult => {
+    // clang-format off
+    return LitHtml.html`
+      <div class="consent-view">
+        <h2 tabindex="-1">
+          ${i18nString(TempUIStrings.consentScreenHeading)}
+        </h2>
+        <main>
+          ${i18nString(TempUIStrings.consentTextAiDisclaimer)}
+          <ul>
+            <li>${i18nString(TempUIStrings.consentTextDataDisclaimer)}</li>
+            <li>${i18nString(TempUIStrings.consentTextVisibilityDisclaimer)}</li>
+          </ul>
+          <${Buttons.Button.Button.litTagName}
+            class="accept-button"
+            @click=${this.#props.onAcceptConsentClick}
+            .data=${{
+              variant: Buttons.Button.Variant.PRIMARY,
+              jslogContext: 'accept',
+            } as Buttons.Button.ButtonData}>
+            ${i18nString(TempUIStrings.acceptButtonTitle)}
+          </${Buttons.Button.Button.litTagName}>
+        </main>
+      </div>
+    `;
+    // clang-format on
+  };
+
   #render(): void {
     switch (this.#props.state) {
       case State.CHAT_VIEW:
       case State.CHAT_VIEW_LOADING:
         LitHtml.render(this.#renderChatUi(), this.#shadow, {host: this});
+        break;
+      case State.CONSENT_VIEW:
+        LitHtml.render(this.#renderConsentView(), this.#shadow, {host: this});
         break;
     }
   }

@@ -1,6 +1,7 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -92,7 +93,9 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #agent: FreestylerAgent;
   #viewProps: FreestylerChatUiProps;
   #viewOutput: ViewOutput = {};
-  private constructor(private view: View = defaultView, {aidaClient, aidaAvailability}: {
+  #consentViewAcceptedSetting =
+      Common.Settings.Settings.instance().createLocalSetting('freestyler-dogfood-consent-onboarding-finished', false);
+  constructor(private view: View = defaultView, {aidaClient, aidaAvailability}: {
     aidaClient: Host.AidaClient.AidaClient,
     aidaAvailability: Host.AidaClient.AidaAvailability,
   }) {
@@ -106,7 +109,8 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#agent = new FreestylerAgent({aidaClient: this.#aidaClient});
     this.#selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     this.#viewProps = {
-      state: FreestylerChatUiState.CHAT_VIEW,
+      state: this.#consentViewAcceptedSetting.get() ? FreestylerChatUiState.CHAT_VIEW :
+                                                      FreestylerChatUiState.CONSENT_VIEW,
       aidaAvailability,
       messages: [],
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
@@ -114,8 +118,8 @@ export class FreestylerPanel extends UI.Panel.Panel {
       onTextSubmit: this.#handleTextSubmit.bind(this),
       onInspectElementClick: this.#handleSelectElementClick.bind(this),
       onRateClick: this.#handleRateClick.bind(this),
+      onAcceptConsentClick: this.#handleAcceptConsentClick.bind(this),
     };
-
     this.#toggleSearchElementAction.addEventListener(UI.ActionRegistration.Events.Toggled, ev => {
       this.#viewProps.inspectElementToggled = ev.data;
       this.doUpdate();
@@ -164,6 +168,12 @@ export class FreestylerPanel extends UI.Panel.Panel {
     // TODO(348145480): Handle this -- e.g. there be dragons.
   }
 
+  #handleAcceptConsentClick(): void {
+    this.#consentViewAcceptedSetting.set(true);
+    this.#viewProps.state = FreestylerChatUiState.CHAT_VIEW;
+    this.doUpdate();
+  }
+
   handleAction(actionId: string): void {
     switch (actionId) {
       case 'freestyler.element-panel-context': {
@@ -182,7 +192,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
   // TODO(ergunsh): Handle cancelling agent run.
   #clearMessages(): void {
     this.#viewProps.messages = [];
-    this.#viewProps.state = FreestylerChatUiState.CHAT_VIEW;
     this.#agent.resetHistory();
     this.doUpdate();
   }

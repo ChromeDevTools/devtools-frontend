@@ -62,12 +62,14 @@ ts_library("unittests") {
   sources = [
     "FreestylerAgent.test.ts",
     "FreestylerEvaluateAction.test.ts",
+    "FreestylerPanel.test.ts",
   ]
 
   deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
+    "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../testing",

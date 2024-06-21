@@ -6962,7 +6962,7 @@ export const NativeFunctions = [
   },
   {
     name: "setMenuListOptionsBoundsInAXTree",
-    signatures: [["options_bounds"]]
+    signatures: [["options_bounds","children_updated"]]
   },
   {
     name: "allowsFeature",
@@ -8090,6 +8090,10 @@ export const NativeFunctions = [
   {
     name: "setHeaderExtensionsToNegotiate",
     signatures: [["extensions"]]
+  },
+  {
+    name: "readReceivedAcks",
+    signatures: [["maxCount"]]
   },
   {
     name: "RTCSessionDescription",

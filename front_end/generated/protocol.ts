@@ -1183,7 +1183,9 @@ export namespace Audits {
     ClientMetadataNoResponse = 'ClientMetadataNoResponse',
     ClientMetadataInvalidResponse = 'ClientMetadataInvalidResponse',
     ClientMetadataInvalidContentType = 'ClientMetadataInvalidContentType',
+    IdpNotPotentiallyTrustworthy = 'IdpNotPotentiallyTrustworthy',
     DisabledInSettings = 'DisabledInSettings',
+    DisabledInFlags = 'DisabledInFlags',
     ErrorFetchingSignin = 'ErrorFetchingSignin',
     InvalidSigninResponse = 'InvalidSigninResponse',
     AccountsHttpNotFound = 'AccountsHttpNotFound',
@@ -1206,6 +1208,7 @@ export namespace Audits {
     NotSignedInWithIdp = 'NotSignedInWithIdp',
     MissingTransientUserActivation = 'MissingTransientUserActivation',
     ReplacedByButtonMode = 'ReplacedByButtonMode',
+    InvalidFieldsSpecified = 'InvalidFieldsSpecified',
     RelyingPartyOriginIsOpaque = 'RelyingPartyOriginIsOpaque',
     TypeNotMatching = 'TypeNotMatching',
   }

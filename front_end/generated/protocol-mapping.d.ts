@@ -293,6 +293,10 @@ export namespace ProtocolMapping {
      */
     'Network.trustTokenOperationDone': [Protocol.Network.TrustTokenOperationDoneEvent];
     /**
+     * Fired once security policy has been updated.
+     */
+    'Network.policyUpdated': [];
+    /**
      * Fired once when parsing the .wbn file has succeeded.
      * The event contains the information about the web bundle contents.
      */

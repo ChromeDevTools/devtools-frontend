@@ -1754,7 +1754,9 @@
                         "ClientMetadataNoResponse",
                         "ClientMetadataInvalidResponse",
                         "ClientMetadataInvalidContentType",
+                        "IdpNotPotentiallyTrustworthy",
                         "DisabledInSettings",
+                        "DisabledInFlags",
                         "ErrorFetchingSignin",
                         "InvalidSigninResponse",
                         "AccountsHttpNotFound",
@@ -1777,6 +1779,7 @@
                         "NotSignedInWithIdp",
                         "MissingTransientUserActivation",
                         "ReplacedByButtonMode",
+                        "InvalidFieldsSpecified",
                         "RelyingPartyOriginIsOpaque",
                         "TypeNotMatching"
                     ]
@@ -15416,6 +15419,11 @@
                             "type": "integer"
                         }
                     ]
+                },
+                {
+                    "name": "policyUpdated",
+                    "description": "Fired once security policy has been updated.",
+                    "experimental": true
                 },
                 {
                     "name": "subresourceWebBundleMetadataReceived",

@@ -2257,6 +2257,11 @@ declare namespace ProtocolProxyApi {
     trustTokenOperationDone(params: Protocol.Network.TrustTokenOperationDoneEvent): void;
 
     /**
+     * Fired once security policy has been updated.
+     */
+    policyUpdated(): void;
+
+    /**
      * Fired once when parsing the .wbn file has succeeded.
      * The event contains the information about the web bundle contents.
      */

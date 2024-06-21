@@ -34,6 +34,10 @@ const TempUIStrings = {
    */
   sendButtonTitle: 'Send',
   /**
+   *@description Title for the cancel icon button.
+   */
+  cancelButtonTitle: 'Cancel',
+  /**
    *@description Label for the "select an element" button.
    */
   selectAnElement: 'Select an element',
@@ -131,6 +135,7 @@ export type Props = {
   onInspectElementClick: () => void,
   onRateClick: (rpcId: number, rate: Rating) => void,
   onAcceptConsentClick: () => void,
+  onCancelClick: () => void,
   inspectElementToggled: boolean,
   state: State,
   aidaAvailability: Host.AidaClient.AidaAvailability,
@@ -176,6 +181,16 @@ export class FreestylerChatUi extends HTMLElement {
     }
     this.#props.onTextSubmit(input.value);
     input.value = '';
+  };
+
+  #handleCancel = (ev: SubmitEvent): void => {
+    ev.preventDefault();
+
+    if (!this.#props.isLoading) {
+      return;
+    }
+
+    this.#props.onCancelClick();
   };
 
   #renderRateButtons(rpcId: number): LitHtml.TemplateResult {
@@ -297,30 +312,67 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format off
     return LitHtml.html`
       <div class="chat-ui">
-        ${this.#props.messages.length > 0 ? this.#renderMessages() : this.#renderEmptyState()}
+        ${
+          this.#props.messages.length > 0
+            ? this.#renderMessages()
+            : this.#renderEmptyState()
+        }
         <form class="input-form" @submit=${this.#handleSubmit}>
           <div class="dom-node-link-container">
-            ${this.#props.selectedNode ? LitHtml.Directives.until(Common.Linkifier.Linkifier.linkify(this.#props.selectedNode)) : this.#renderSelectAnElement()}
+            ${
+              this.#props.selectedNode
+                ? LitHtml.Directives.until(
+                    Common.Linkifier.Linkifier.linkify(this.#props.selectedNode),
+                  )
+                : this.#renderSelectAnElement()
+            }
           </div>
           <div class="chat-input-container">
             <input type="text" class="chat-input" .disabled=${isTextInputDisabled}
-              placeholder=${getInputPlaceholderString(this.#props.aidaAvailability)}>
-            <${Buttons.Button.Button.litTagName}
-              class="step-actions"
-              type="submit"
-              title=${i18nString(TempUIStrings.sendButtonTitle)}
-              aria-label=${i18nString(TempUIStrings.sendButtonTitle)}
-              jslog=${VisualLogging.action('send').track({click: true})}
-              @click=${this.#handleSubmit}
-              .data=${{
-                variant: Buttons.Button.Variant.ICON,
-                size: Buttons.Button.Size.SMALL,
-                iconName: 'send',
-                title: i18nString(TempUIStrings.sendButtonTitle),
-              } as Buttons.Button.ButtonData}
-            ></${Buttons.Button.Button.litTagName}>
+              placeholder=${getInputPlaceholderString(
+                this.#props.aidaAvailability,
+              )}>
+              ${
+                this.#props.isLoading
+                  ? LitHtml.html`
+                    <${Buttons.Button.Button.litTagName}
+                      class="step-actions"
+                      type="button"
+                      title=${i18nString(TempUIStrings.cancelButtonTitle)}
+                      aria-label=${i18nString(TempUIStrings.cancelButtonTitle)}
+                      jslog=${VisualLogging.action('stop').track({ click: true })}
+                      @click=${this.#handleCancel}
+                      .data=${
+                        {
+                          variant: Buttons.Button.Variant.ICON,
+                          size: Buttons.Button.Size.SMALL,
+                          iconName: 'stop',
+                          title: i18nString(TempUIStrings.cancelButtonTitle),
+                        } as Buttons.Button.ButtonData
+                      }
+                    ></${Buttons.Button.Button.litTagName}>`
+                  : LitHtml.html`
+                    <${Buttons.Button.Button.litTagName}
+                      class="step-actions"
+                      type="submit"
+                      title=${i18nString(TempUIStrings.sendButtonTitle)}
+                      aria-label=${i18nString(TempUIStrings.sendButtonTitle)}
+                      jslog=${VisualLogging.action('send').track({ click: true })}
+                      @click=${this.#handleSubmit}
+                      .data=${
+                        {
+                          variant: Buttons.Button.Variant.ICON,
+                          size: Buttons.Button.Size.SMALL,
+                          iconName: 'send',
+                          title: i18nString(TempUIStrings.sendButtonTitle),
+                        } as Buttons.Button.ButtonData
+                      }
+                    ></${Buttons.Button.Button.litTagName}>`
+              }
           </div>
-          <span class="chat-input-disclaimer">${i18nString(TempUIStrings.inputDisclaimer)}</span>
+          <span class="chat-input-disclaimer">${i18nString(
+            TempUIStrings.inputDisclaimer,
+          )}</span>
         </form>
       </div>
     `;

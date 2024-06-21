@@ -105,7 +105,7 @@ type HistoryChunk = {
 const MAX_STEPS = 5;
 export class FreestylerAgent {
   #aidaClient: Host.AidaClient.AidaClient;
-  #chatHistory: Array<HistoryChunk> = [];
+  #chatHistory: Map<number, HistoryChunk[]> = new Map();
   #execJs: typeof executeJsCode;
 
   constructor({aidaClient, execJs}: {aidaClient: Host.AidaClient.AidaClient, execJs?: typeof executeJsCode}) {
@@ -134,8 +134,12 @@ export class FreestylerAgent {
     return request;
   }
 
+  get #getHistoryEntry(): Array<HistoryChunk> {
+    return [...this.#chatHistory.values()].flat();
+  }
+
   get chatHistoryForTesting(): Array<HistoryChunk> {
-    return this.#chatHistory;
+    return this.#getHistoryEntry;
   }
 
   static parseResponse(response: string): {thought?: string, action?: string, answer?: string} {
@@ -198,15 +202,21 @@ export class FreestylerAgent {
   }
 
   resetHistory(): void {
-    this.#chatHistory = [];
+    this.#chatHistory = new Map();
   }
 
-  async * run(query: string): AsyncGenerator<StepData, void, void> {
+  #runId = 0;
+  async * run(query: string, options?: {signal: AbortSignal}): AsyncGenerator<StepData, void, void> {
     const structuredLog = [];
     query = `QUERY: ${query}`;
+    const currentRunId = ++this.#runId;
+
+    options?.signal.addEventListener('abort', () => {
+      this.#chatHistory.delete(currentRunId);
+    });
     for (let i = 0; i < MAX_STEPS; i++) {
       const request =
-          FreestylerAgent.buildRequest(query, preamble, this.#chatHistory.length ? this.#chatHistory : undefined);
+          FreestylerAgent.buildRequest(query, preamble, this.#chatHistory.size ? this.#getHistoryEntry : undefined);
       let response: string;
       let rpcId: number|undefined;
       try {
@@ -214,7 +224,15 @@ export class FreestylerAgent {
         response = fetchResult.response;
         rpcId = fetchResult.rpcId;
       } catch (err) {
+        if (options?.signal.aborted) {
+          break;
+        }
+
         yield {step: Step.ERROR, text: err.message, rpcId};
+        break;
+      }
+
+      if (options?.signal.aborted) {
         break;
       }
 
@@ -223,16 +241,18 @@ export class FreestylerAgent {
         request: structuredClone(request),
         response: response,
       });
-
-      this.#chatHistory.push(
-          {
-            text: query,
-            entity: Host.AidaClient.Entity.USER,
-          },
-          {
-            text: response,
-            entity: Host.AidaClient.Entity.SYSTEM,
-          });
+      const currentRunEntries = this.#chatHistory.get(currentRunId) ?? [];
+      this.#chatHistory.set(currentRunId, [
+        ...currentRunEntries,
+        {
+          text: query,
+          entity: Host.AidaClient.Entity.USER,
+        },
+        {
+          text: response,
+          entity: Host.AidaClient.Entity.SYSTEM,
+        },
+      ]);
 
       const {thought, action, answer} = FreestylerAgent.parseResponse(response);
 

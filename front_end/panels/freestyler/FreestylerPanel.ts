@@ -15,7 +15,7 @@ import {
   type Props as FreestylerChatUiProps,
   State as FreestylerChatUiState,
 } from './components/FreestylerChatUi.js';
-import {FreestylerAgent} from './FreestylerAgent.js';
+import {FreestylerAgent, Step} from './FreestylerAgent.js';
 import freestylerPanelStyles from './freestylerPanel.css.js';
 
 /*
@@ -115,6 +115,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       messages: [],
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
       selectedNode: this.#selectedNode,
+      isLoading: false,
       onTextSubmit: this.#handleTextSubmit.bind(this),
       onInspectElementClick: this.#handleSelectElementClick.bind(this),
       onRateClick: this.#handleRateClick.bind(this),
@@ -201,18 +202,17 @@ export class FreestylerPanel extends UI.Panel.Panel {
       entity: ChatMessageEntity.USER,
       text,
     });
-    this.#viewProps.state = FreestylerChatUiState.CHAT_VIEW_LOADING;
-    this.doUpdate();
-
+    this.#viewProps.isLoading = true;
     const systemMessage: ChatMessage = {
       entity: ChatMessageEntity.MODEL,
       steps: [],
     };
-
     this.#viewProps.messages.push(systemMessage);
+    this.doUpdate();
+
     for await (const data of this.#agent.run(text)) {
-      if (this.#viewProps.state === FreestylerChatUiState.CHAT_VIEW_LOADING) {
-        this.#viewProps.state = FreestylerChatUiState.CHAT_VIEW;
+      if (data.step === Step.ANSWER || data.step === Step.ERROR) {
+        this.#viewProps.isLoading = false;
       }
 
       // There can be multiple steps from the same call from the agent.

@@ -119,7 +119,6 @@ export type ChatMessage = {
 export const enum State {
   CONSENT_VIEW = 'consent-view',
   CHAT_VIEW = 'chat-view',
-  CHAT_VIEW_LOADING = 'chat-view-loading',
 }
 
 export const enum Rating {
@@ -137,6 +136,7 @@ export type Props = {
   aidaAvailability: Host.AidaClient.AidaAvailability,
   messages: ChatMessage[],
   selectedNode: SDK.DOMModel.DOMNode|null,
+  isLoading: boolean,
 };
 
 export class FreestylerChatUi extends HTMLElement {
@@ -226,16 +226,27 @@ export class FreestylerChatUi extends HTMLElement {
     return LitHtml.html`<p>${step.text}</p>`;
   }
 
-  #renderChatMessage = (message: ChatMessage): LitHtml.TemplateResult => {
+  #renderChatMessage = (message: ChatMessage, {isLast}: {isLast: boolean}): LitHtml.TemplateResult => {
     if (message.entity === ChatMessageEntity.USER) {
       return LitHtml.html`<div class="chat-message query">${message.text}</div>`;
     }
 
-    const {steps} = message;
     // clang-format off
     return LitHtml.html`
       <div class="chat-message answer">
-        ${steps.map(step => LitHtml.html`${this.#renderStep(step)}${step.rpcId !== undefined ? this.#renderRateButtons(step.rpcId): LitHtml.nothing}`)}
+        ${message.steps.map(
+          step =>
+            LitHtml.html`${this.#renderStep(step)}${
+              step.rpcId !== undefined
+                ? this.#renderRateButtons(step.rpcId)
+                : LitHtml.nothing
+            }`,
+        )}
+        ${
+          this.#props.isLoading && isLast
+            ? LitHtml.html`<div class='chat-loading' >Loading...</div>`
+            : LitHtml.nothing
+        }
       </div>
     `;
     // clang-format on
@@ -259,12 +270,12 @@ export class FreestylerChatUi extends HTMLElement {
   };
 
   #renderMessages = (): LitHtml.TemplateResult => {
-    const isLoading = this.#props.state === State.CHAT_VIEW_LOADING;
     // clang-format off
     return LitHtml.html`
       <div class="messages-container">
-        ${this.#props.messages.map(message => this.#renderChatMessage(message))}
-        ${isLoading ? 'Loading' : ''}
+        ${this.#props.messages.map((message, _, array) =>
+          this.#renderChatMessage(message, {isLast: array.at(-1) === message}),
+        )}
       </div>
     `;
     // clang-format on
@@ -347,7 +358,6 @@ export class FreestylerChatUi extends HTMLElement {
   #render(): void {
     switch (this.#props.state) {
       case State.CHAT_VIEW:
-      case State.CHAT_VIEW_LOADING:
         LitHtml.render(this.#renderChatUi(), this.#shadow, {host: this});
         break;
       case State.CONSENT_VIEW:

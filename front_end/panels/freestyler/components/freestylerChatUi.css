@@ -68,6 +68,7 @@
   user-select: text;
   cursor: initial;
   max-width: 320px;
+  min-width: 160px;
   width: fit-content;
   padding: 8px var(--sys-size-8);
   font-size: 12px;
@@ -87,6 +88,11 @@
     max-width: 440px;
     color: var(--sys-color-on-surface);
     background: var(--sys-color-surface2);
+  }
+
+  & .chat-loading {
+    margin: 4px 0;
+    padding: 4px 0;
   }
 }
 

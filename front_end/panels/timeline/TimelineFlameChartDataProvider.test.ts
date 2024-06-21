@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupIgnoreListManagerEnvironment} from '../../testing/TraceHelpers.js';
@@ -57,6 +58,34 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     const event = dataProvider.eventByIndex(100);
     assert.isOk(event);
     assert.strictEqual(dataProvider.indexForEvent(event), 100);
+  });
+  it('renders track in the correct order by default', async function() {
+    Root.Runtime.experiments.enableForTest('timeline-extensions');
+    setupIgnoreListManagerEnvironment();
+    const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+    const traceParsedData = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
+    dataProvider.setModel(traceParsedData);
+    const groupNames = dataProvider.timelineData().groups.map(g => g.name);
+    assert.deepEqual(
+        groupNames,
+        [
+          'Frames',
+          // Screenshots track has an empty name
+          '',
+          'Timings',
+          'Interactions',
+          'Layout Shifts',
+          'An Extension Track',
+          'Another Extension Track',
+          'Main — http://localhost:3001/',
+          'Thread Pool',
+          'Thread Pool Worker 1',
+          'Thread Pool Worker 2',
+          'Thread Pool Worker 3',
+          'GPU',
+        ],
+    );
+    Root.Runtime.experiments.disableForTest('timeline-extensions');
   });
   it('adds candy stripe and triangle decorations to long tasks in the main thread', async function() {
     setupIgnoreListManagerEnvironment();

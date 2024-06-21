@@ -16,7 +16,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CountersGraph} from './CountersGraph.js';
 import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
-import {ExtensionDataGatherer} from './ExtensionDataGatherer.js';
 import {Overlays, type TimeRangeLabel} from './Overlays.js';
 import {targetForEvent} from './TargetForEvent.js';
 import {TimelineDetailsView} from './TimelineDetailsView.js';
@@ -335,7 +334,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.#selectedEvents = null;
     this.mainDataProvider.setModel(newTraceEngineData, isCpuProfile);
     this.networkDataProvider.setModel(newTraceEngineData);
-    ExtensionDataGatherer.instance().modelChanged(newTraceEngineData);
     this.#reset();
     this.updateSearchResults(false, false);
     this.refreshMainFlameChart();

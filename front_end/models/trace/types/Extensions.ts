@@ -37,7 +37,7 @@ export interface ExtensionDataPayload {
 }
 export interface ExtensionFlameChartEntryPayload extends ExtensionDataPayload {
   metadata: ExtensionDataPayload['metadata']&{dataType: ExtensionEntryType.TRACK_ENTRY};
-  color: ExtensionColorFromPalette;
+  color?: ExtensionColorFromPalette;
   track: string;
   detailsPairs?: [string, string][];
   hintText?: string;
@@ -45,7 +45,7 @@ export interface ExtensionFlameChartEntryPayload extends ExtensionDataPayload {
 
 export interface ExtensionMarkerPayload extends ExtensionDataPayload {
   metadata: ExtensionDataPayload['metadata']&{dataType: ExtensionEntryType.MARKER};
-  color: ExtensionColorFromPalette;
+  color?: ExtensionColorFromPalette;
   detailsPairs?: [string, string][];
   hintText?: string;
 }
@@ -60,24 +60,14 @@ export interface SyntheticExtensionMarker extends SyntheticTraceEntry {
 
 export type SyntheticExtensionEntry = SyntheticExtensionFlameChartEntry|SyntheticExtensionMarker;
 
-export function validateColorInPayload(payload: ExtensionDataPayload): boolean {
-  if (!('color' in payload) || !payload.color) {
-    return false;
-  }
-  const color = payload['color'] as ExtensionColorFromPalette;
-  return colorIsValid(color);
-}
-
 export function isExtensionPayloadMarker(payload: ExtensionDataPayload): payload is ExtensionMarkerPayload {
-  const colorIsValid = validateColorInPayload(payload);
-  return payload.metadata.dataType === ExtensionEntryType.MARKER && colorIsValid;
+  return payload.metadata.dataType === ExtensionEntryType.MARKER;
 }
 
 export function isExtensionPayloadFlameChartEntry(payload: ExtensionDataPayload):
     payload is ExtensionFlameChartEntryPayload {
-  const colorIsValid = validateColorInPayload(payload);
   const hasTrack = 'track' in payload && Boolean(payload.track);
-  return payload.metadata.dataType === ExtensionEntryType.TRACK_ENTRY && hasTrack && colorIsValid;
+  return payload.metadata.dataType === ExtensionEntryType.TRACK_ENTRY && hasTrack;
 }
 
 export function isSyntheticExtensionEntry(entry: TraceEventData): entry is SyntheticExtensionEntry {

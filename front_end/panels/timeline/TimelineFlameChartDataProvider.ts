@@ -43,6 +43,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CompatibilityTracksAppender, type TrackAppenderName} from './CompatibilityTracksAppender.js';
 import * as Components from './components/components.js';
+import {ExtensionDataGatherer} from './ExtensionDataGatherer.js';
 import {initiatorsDataToDraw} from './Initiators.js';
 import {ThreadAppender} from './ThreadAppender.js';
 import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
@@ -189,6 +190,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   setModel(traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null, isCpuProfile = false): void {
     this.reset();
     this.traceEngineData = traceEngineData;
+    ExtensionDataGatherer.instance().modelChanged(traceEngineData);
 
     this.isCpuProfile = isCpuProfile;
     if (traceEngineData) {
@@ -400,16 +402,16 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
           return 2;
         case 'LayoutShifts':
           return 3;
-        case 'GPU':
-          return 8;
-        case 'Thread':
-          return 4;
-        case 'Thread_AuctionWorklet':
-          return 10;
         case 'Extension':
-          return 11;
+          return 4;
+        case 'Thread':
+          return 5;
+        case 'GPU':
+          return 6;
+        case 'Thread_AuctionWorklet':
+          return 7;
         default:
-          return 12;
+          return 8;
       }
     };
 

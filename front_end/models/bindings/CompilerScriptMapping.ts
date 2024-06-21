@@ -207,7 +207,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
       return null;
     }
 
-    const entry = sourceMap.findEntry(lineNumber, columnNumber);
+    const entry = sourceMap.findEntry(lineNumber, columnNumber, rawLocation.inlineFrameIndex);
     if (!entry || !entry.sourceURL) {
       return null;
     }

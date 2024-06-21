@@ -9,7 +9,7 @@ import * as SDK from './sdk.js';
 const {SourceMapScopesInfo} = SDK.SourceMapScopesInfo;
 
 describe('SourceMapScopesInfo', () => {
-  describe('findInlinedFunctionNames', () => {
+  describe('findInlinedFunctions', () => {
     it('returns the single original function name if nothing was inlined', () => {
       const names = ['foo'];
       const originalScopes =
@@ -24,7 +24,7 @@ describe('SourceMapScopesInfo', () => {
 
       const info = SourceMapScopesInfo.parseFromMap({names, originalScopes, generatedRanges});
 
-      assert.deepEqual(info.findInlinedFunctionNames(0, 3), ['foo']);
+      assert.deepEqual(info.findInlinedFunctions(0, 3), [{name: 'foo', callsite: undefined}]);
     });
 
     it('returns the names of the surrounding function plus all the inlined function names', () => {
@@ -55,8 +55,12 @@ describe('SourceMapScopesInfo', () => {
 
       const info = SourceMapScopesInfo.parseFromMap({names, originalScopes, generatedRanges});
 
-      assert.deepEqual(info.findInlinedFunctionNames(0, 4), ['foo']);
-      assert.deepEqual(info.findInlinedFunctionNames(0, 7), ['baz', 'bar', 'foo']);
+      assert.deepEqual(info.findInlinedFunctions(0, 4), [{name: 'foo', callsite: undefined}]);
+      assert.deepEqual(info.findInlinedFunctions(0, 7), [
+        {name: 'baz', callsite: {sourceIndex: 0, line: 35, column: 0}},
+        {name: 'bar', callsite: {sourceIndex: 0, line: 15, column: 0}},
+        {name: 'foo', callsite: undefined},
+      ]);
     });
   });
 });

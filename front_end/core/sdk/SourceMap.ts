@@ -236,7 +236,26 @@ export class SourceMap {
     return this.#scopesInfo !== null;
   }
 
-  findEntry(lineNumber: number, columnNumber: number): SourceMapEntry|null {
+  findEntry(lineNumber: number, columnNumber: number, inlineFrameIndex?: number): SourceMapEntry|null {
+    this.#ensureMappingsProcessed();
+    if (inlineFrameIndex && this.#scopesInfo !== null) {
+      // For inlineFrameIndex != 0 we use the callsite info for the corresponding inlining site.
+      // Note that the callsite for "inlineFrameIndex" is actually in the previous frame.
+      const functions = this.#scopesInfo.findInlinedFunctions(lineNumber, columnNumber);
+      const {callsite} = functions[inlineFrameIndex - 1];
+      if (!callsite) {
+        console.error('Malformed source map. Expected to have a callsite info for index', inlineFrameIndex);
+        return null;
+      }
+      return {
+        lineNumber,
+        columnNumber,
+        sourceURL: this.sourceURLs()[callsite.sourceIndex],
+        sourceLineNumber: callsite.line,
+        sourceColumnNumber: callsite.column,
+        name: undefined,
+      };
+    }
     const mappings = this.mappings();
     const index = Platform.ArrayUtilities.upperBound(
         mappings, undefined, (unused, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber);
@@ -807,10 +826,10 @@ export class SourceMap {
     }
 
     const functionNames =
-        this.#scopesInfo.findInlinedFunctionNames(frame.location().lineNumber, frame.location().columnNumber);
+        this.#scopesInfo.findInlinedFunctions(frame.location().lineNumber, frame.location().columnNumber);
     const result: CallFrame[] = [];
-    for (const [index, name] of functionNames.entries()) {
-      result.push(frame.createVirtualCallFrame(index, name));
+    for (const [index, fn] of functionNames.entries()) {
+      result.push(frame.createVirtualCallFrame(index, fn.name));
     }
     return result;
   }

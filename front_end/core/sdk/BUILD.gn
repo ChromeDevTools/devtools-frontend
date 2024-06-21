@@ -182,5 +182,6 @@ ts_library("unittests") {
     "../../testing",
     "../common:bundle",
     "../protocol_client:bundle",
+    "../root:bundle",
   ]
 }

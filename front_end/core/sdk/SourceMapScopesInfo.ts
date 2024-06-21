@@ -7,6 +7,7 @@ import {
   decodeGeneratedRanges,
   decodeOriginalScopes,
   type GeneratedRange,
+  type OriginalPosition,
   type OriginalScope,
 } from './SourceMapScopes.js';
 
@@ -33,11 +34,14 @@ export class SourceMapScopesInfo {
 
   /**
    * Given a generated position, returns the original name of the surrounding function as well as
-   * all the original function names that got inlined into the surrounding generated function.
-   * (Ordered by inner to outer)
+   * all the original function names that got inlined into the surrounding generated function and their
+   * respective callsites in the original code (ordered from inner to outer).
+   *
+   * @returns a list with inlined functions. Every entry in the list has a callsite in the orignal code,
+   * except the last function (since the last function didn't get inlined).
    */
-  findInlinedFunctionNames(generatedLine: number, generatedColumn: number): string[] {
-    const result: string[] = [];
+  findInlinedFunctions(generatedLine: number, generatedColumn: number): {name: string, callsite?: OriginalPosition}[] {
+    const result: {name: string, callsite?: OriginalPosition}[] = [];
     const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
 
     // Walk the generated ranges from the innermost containing range outwards as long as we don't
@@ -49,7 +53,7 @@ export class SourceMapScopesInfo {
       // Record the name if the range corresponds to a function scope in the authored code. And it's either a scope in the
       // generated code as well or it has a callsite info (which indicates inlining).
       if (originalScope?.kind === 'function' && (range.isScope || range.callsite)) {
-        result.push(originalScope.name ?? '');
+        result.push({name: originalScope.name ?? '', callsite: range.callsite});
 
         if (range.isScope) {
           break;

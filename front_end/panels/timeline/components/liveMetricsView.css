@@ -4,15 +4,56 @@
  * found in the LICENSE file.
  */
 
+.container {
+  /* stylelint-disable-next-line property-no-unknown */
+  container-type: inline-size;
+  height: 100%;
+}
+
+.live-metrics-view {
+  --min-main-area-size: 60%;
+
+  background-color: var(--sys-color-cdt-base-container);
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+}
+
 .live-metrics,
 .next-steps {
   padding: 8px 16px;
-  background-color: var(--sys-color-cdt-base-container);
   height: 100%;
   overflow-y: auto;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+}
+
+.live-metrics {
+  flex: 1;
+}
+
+.next-steps {
+  flex: 0 0 30%;
+  box-sizing: border-box;
+  border: none;
+  border-left: 1px solid var(--sys-color-divider);
+  max-width: 300px;
+}
+
+/* stylelint-disable-next-line at-rule-no-unknown */
+@container (max-width: 500px) {
+  .live-metrics-view {
+    flex-direction: column;
+  }
+
+  .next-steps {
+    flex-basis: 40%;
+    border: none;
+    border-top: 1px solid var(--sys-color-divider);
+    max-width: unset;
+  }
 }
 
 .metric-cards {

@@ -14,29 +14,6 @@ import liveMetricsViewStyles from './liveMetricsView.css.js';
 const {html, nothing, Directives} = LitHtml;
 const {until, classMap} = Directives;
 
-export class LiveMetricsNextSteps extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-live-metrics-next-steps`;
-  readonly #shadow = this.attachShadow({mode: 'open'});
-
-  constructor() {
-    super();
-    this.#render();
-  }
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [liveMetricsViewStyles];
-  }
-
-  #render(): void {
-    const output = html`
-      <div class="next-steps">
-        <h3>Next steps</h3>
-      </div>
-    `;
-    LitHtml.render(output, this.#shadow, {host: this});
-  }
-}
-
 export class LiveMetricsView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-live-metrics-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -143,32 +120,39 @@ export class LiveMetricsView extends HTMLElement {
   #render = (): void => {
     // clang-format off
     const output = html`
-      <div class="live-metrics">
-        <h3>Local and Field Metrics</h3>
-        <div class="metric-cards">
-          <div id="lcp">
-            ${this.#renderLiveLcp(this.#lcpValue)}
+      <div class="container">
+        <div class="live-metrics-view">
+          <div class="live-metrics" slot="main">
+            <h3>Local and Field Metrics</h3>
+            <div class="metric-cards">
+              <div id="lcp">
+                ${this.#renderLiveLcp(this.#lcpValue)}
+              </div>
+              <div id="cls">
+                ${this.#renderLiveCls(this.#clsValue)}
+              </div>
+              <div id="inp">
+                ${this.#renderLiveInp(this.#inpValue)}
+              </div>
+            </div>
+            <h3>Interactions</h3>
+            <ol class="interactions-list">
+              ${this.#interactions.map((interaction, index) => html`
+                ${index === 0 ? html`<hr class="divider">` : nothing}
+                <li class="interaction">
+                  <span class="interaction-type">${interaction.interactionType}</span>
+                  <span class="interaction-node">${
+                    interaction.node && until(Common.Linkifier.Linkifier.linkify(interaction.node))}</span>
+                  <span class=${`interaction-duration ${interaction.rating}`}>${i18n.TimeUtilities.millisToString(interaction.duration)}</span>
+                </li>
+                <hr class="divider">
+              `)}
+            </ol>
           </div>
-          <div id="cls">
-            ${this.#renderLiveCls(this.#clsValue)}
-          </div>
-          <div id="inp">
-            ${this.#renderLiveInp(this.#inpValue)}
+          <div class="next-steps" slot="sidebar">
+            <h3>Next steps</h3>
           </div>
         </div>
-        <h3>Interactions</h3>
-        <ol class="interactions-list">
-          ${this.#interactions.map((interaction, index) => html`
-            ${index === 0 ? html`<hr class="divider">` : nothing}
-            <li class="interaction">
-              <span class="interaction-type">${interaction.interactionType}</span>
-              <span class="interaction-node">${
-                interaction.node && until(Common.Linkifier.Linkifier.linkify(interaction.node))}</span>
-              <span class=${`interaction-duration ${interaction.rating}`}>${i18n.TimeUtilities.millisToString(interaction.duration)}</span>
-            </li>
-            <hr class="divider">
-          `)}
-        </ol>
       </div>
     `;
     LitHtml.render(output, this.#shadow, {host: this});
@@ -177,11 +161,9 @@ export class LiveMetricsView extends HTMLElement {
 }
 
 customElements.define('devtools-live-metrics-view', LiveMetricsView);
-customElements.define('devtools-live-metrics-next-steps', LiveMetricsNextSteps);
 
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-live-metrics-view': LiveMetricsView;
-    'devtools-live-metrics-next-steps': LiveMetricsNextSteps;
   }
 }

@@ -332,10 +332,10 @@ export class Overlays {
       case 'ENTRY_LABEL': {
         if (this.entryIsVisibleOnChart(overlay.entry)) {
           element.style.visibility = 'visible';
-          const entryDimentions = this.#positionEntryLabelOverlay(overlay, element);
+          const entryDimensions = this.#positionEntryLabelOverlay(overlay, element);
           const component = element.querySelector('devtools-entry-label-overlay');
-          if (component && entryDimentions) {
-            component.afterOverlayUpdate(entryDimentions.entryHeight, entryDimentions.entryWidth);
+          if (component && entryDimensions) {
+            component.entryDimensions = entryDimensions;
           } else {
             element.style.visibility = 'hidden';
             console.error('Cannot calculate entry width and height values required to draw a label overlay.');
@@ -372,8 +372,7 @@ export class Overlays {
    * @param overlay - the EntrySelected overlay that we need to position.
    * @param element - the DOM element representing the overlay
    */
-  #positionEntryLabelOverlay(overlay: EntryLabel, element: HTMLElement):
-      {entryHeight: number, entryWidth: number}|null {
+  #positionEntryLabelOverlay(overlay: EntryLabel, element: HTMLElement): {height: number, width: number}|null {
     const chartName = this.#chartForOverlayEntry(overlay.entry);
     const x = this.xPixelForEventOnChart(overlay.entry);
     const y = this.yPixelForEventOnChart(overlay.entry);
@@ -386,8 +385,6 @@ export class Overlays {
 
     const entryHeight = this.pixelHeightForEventOnChart(overlay.entry) ?? 0;
 
-    // We might modify the height we use when drawing the overlay, hence copying the totalHeight.
-
     // The width of the overlay is by default the width of the entry. However
     // we modify that for instant events like LCP markers, and also ensure a
     // minimum width.
@@ -395,23 +392,12 @@ export class Overlays {
 
     // The part of the overlay that draws a box around an entry is always at least 2px wide.
     const entryWidth = Math.max(2, widthPixels);
-    const labelHeightWithPadding = entryHeight + Components.EntryLabelOverlay.EntryLabelOverlay.LABEL_PADDING * 2;
     // Position the start of label overlay at the start of the entry + length of connector + legth of the label element
-    element.style.top =
-        `${y - labelHeightWithPadding - Components.EntryLabelOverlay.EntryLabelOverlay.LABEL_CONNECTOR_HEIGHT}px`;
-    element.style.height = `${
-        entryHeight + labelHeightWithPadding +
-        Components.EntryLabelOverlay.EntryLabelOverlay.LABEL_CONNECTOR_HEIGHT}px`;
-
+    element.style.top = `${y - Components.EntryLabelOverlay.EntryLabelOverlay.LABEL_AND_CONNECTOR_HEIGHT}px`;
     // Position the start of the entry label overlay in the the middle of the entry.
     element.style.left = `${x + entryWidth / 2}px`;
-    // Move element by half of its own width to position so now it is covering the whole entry.
-    // The reason we cannot directly place it in the middle is that the width of the whole entry label overlay
-    // depends of which element is wider - the label or the entry it belongs to. Therefore we cannot make sure the
-    // label won't be positioned in front of the entry box.
-    element.style.transform = 'translate(-50%)';
 
-    return {entryHeight, entryWidth};
+    return {height: entryHeight, width: entryWidth};
   }
 
   /**
@@ -521,7 +507,6 @@ export class Overlays {
       case 'ENTRY_LABEL': {
         const component = new Components.EntryLabelOverlay.EntryLabelOverlay();
         component.label = overlay.label;
-        component.render();
         div.appendChild(component);
         return div;
       }

@@ -487,7 +487,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       this.#overlays.add({
         type: 'ENTRY_LABEL',
         entry: selection.object,
-        label: 'labley',
+        label: '',
       });
       this.#overlays.update();
     }

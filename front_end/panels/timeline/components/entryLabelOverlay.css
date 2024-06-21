@@ -12,16 +12,21 @@
   transform: translate(-50%);
   display: flex;
   flex-direction: column;
-  pointer-events: none;
   color: var(--color-selected-option);
   align-items: center;
 }
 
 .label-box {
+  pointer-events: auto;
   background-color: var(--sys-color-token-variable);
   border-radius: 4px;
   font-family: var(--monospace-font-family);
   font-weight: bold;
+}
+
+.label-box:focus {
+  background-color: var(--color-selected-option);
+  color: var(--sys-color-token-variable);
 }
 
 .entry-highlight-wrapper {

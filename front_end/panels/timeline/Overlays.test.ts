@@ -431,5 +431,66 @@ describeWithEnvironment('Overlays', () => {
       overlays.removeOverlaysOfType('ENTRY_SELECTED');
       assert.lengthOf(container.children, 0);
     });
+
+    it('the label entry field is editable when created', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {overlays, container} = setupChartWithDimensions(traceParsedData);
+      const charts = createCharts(traceParsedData);
+      const event = charts.mainProvider.eventByIndex(50);
+      assert.isOk(event);
+
+      overlays.add({
+        type: 'ENTRY_LABEL',
+        label: '',
+        entry: event,
+      });
+
+      overlays.update();
+      const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_LABEL');
+      assert.isOk(overlayDOM);
+      const component = overlayDOM?.querySelector('devtools-entry-label-overlay');
+      assert.isOk(component?.shadowRoot);
+
+      const elementsWrapper = component.shadowRoot.querySelector<HTMLElement>('.label-parts-wrapper');
+      const labelBox = elementsWrapper?.querySelector<HTMLElement>('.label-box') as HTMLSpanElement;
+
+      // The label input box should be editable after it is created and before anything else happened
+      assert.isTrue(labelBox.isContentEditable);
+    });
+
+    it('the label entry field is in focus after being double clicked on', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {overlays, container} = setupChartWithDimensions(traceParsedData);
+      const charts = createCharts(traceParsedData);
+      const event = charts.mainProvider.eventByIndex(50);
+      assert.isOk(event);
+
+      overlays.add({
+        type: 'ENTRY_LABEL',
+        label: '',
+        entry: event,
+      });
+
+      overlays.update();
+      const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_LABEL');
+      assert.isOk(overlayDOM);
+      const component = overlayDOM?.querySelector('devtools-entry-label-overlay');
+      assert.isOk(component?.shadowRoot);
+
+      const elementsWrapper = component.shadowRoot.querySelector<HTMLElement>('.label-parts-wrapper');
+      const labelBox = elementsWrapper?.querySelector<HTMLElement>('.label-box') as HTMLSpanElement;
+
+      // The label input box should be editable after it is created and before anything else happened
+      assert.isTrue(labelBox.isContentEditable);
+
+      // Make the content to editable by changing the element blur like when clicking outside of it.
+      // When that happens, the content should be set to not editable.
+      labelBox.dispatchEvent(new FocusEvent('blur', {bubbles: true}));
+      assert.isFalse(labelBox.isContentEditable);
+
+      // Double click on the label to make it editable again
+      labelBox.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
+      assert.isTrue(labelBox.isContentEditable);
+    });
   });
 });

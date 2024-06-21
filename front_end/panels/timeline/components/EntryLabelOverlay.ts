@@ -19,8 +19,11 @@ export class EntryLabelOverlay extends HTMLElement {
 
   static readonly litTagName = LitHtml.literal`devtools-entry-label-overlay`;
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.render.bind(this);
+  readonly #boundRender = this.#render.bind(this);
   #label = '';
+  // The label is set to editable when it is double clicked. If the user clicks away from the label box
+  // element, the lable is set to not editable until it double clicked.
+  #isLabelEditable: boolean = true;
   #entryDimensions: {height: number, width: number}|null = null;
 
   /*
@@ -45,7 +48,8 @@ Otherwise, the entry label overlay object only gets repositioned.
 
   constructor() {
     super();
-    this.render();
+    this.#render();
+    this.#drawLabel();
     this.#drawConnector();
   }
 
@@ -61,6 +65,10 @@ Otherwise, the entry label overlay object only gets repositioned.
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
     // We need to redraw the label only when the label is set to a new one
     this.#drawLabel();
+
+    // If the label is not empty, it was loaded from the trace file.
+    // In that case, do not make just created label editable.
+    this.#setLabelEditability(false);
   }
 
   set entryDimensions(entryDimensions: {height: number, width: number}) {
@@ -117,7 +125,6 @@ Otherwise, the entry label overlay object only gets repositioned.
     labelBox.style.height = `${EntryLabelOverlay.LABEL_HEIGHT}px`;
     labelBox.style.padding = `${EntryLabelOverlay.LABEL_PADDING}px`;
     labelBox.style.transform = `translateX(-${EntryLabelOverlay.LABEL_AND_CONNECTOR_SHIFT_LENGTH}px)`;
-    labelBox.innerHTML = this.#label;
   }
 
   #drawEntryHighlightWrapper(): void {
@@ -125,26 +132,59 @@ Otherwise, the entry label overlay object only gets repositioned.
     const entryHighlightWrapper = labelPartsWrapper?.querySelector('.entry-highlight-wrapper') as HTMLElement;
 
     if (!entryHighlightWrapper) {
-      console.error('Some entry label elements are missing.');
+      console.error('`entryHighlightWrapper` element is missing.');
       return;
     }
 
     // PART 3: draw the box that highlights the entry with a label
     entryHighlightWrapper.style.height = `${this.#entryDimensions?.height}px`;
     entryHighlightWrapper.style.width = `${this.#entryDimensions?.width}px`;
+
+    // If the label is editable, focus cursor on it.
+    // This method needs to be called after rendering the wrapper because it is the last label overlay element to render.
+    // By doing this, the cursor focuses when the label is created.
+    if (this.#isLabelEditable) {
+      this.#focusInputBox();
+    }
   }
 
-  render(): void {
+  #focusInputBox(): void {
+    const labelPartsWrapper = this.#shadow.querySelector<HTMLElement>('.label-parts-wrapper');
+    const labelBox = labelPartsWrapper?.querySelector<HTMLElement>('.label-box');
+    if (!labelBox) {
+      console.error('`labelBox` element is missing.');
+      return;
+    }
+    labelBox.focus();
+  }
+
+  #setLabelEditability(editable: boolean): void {
+    this.#isLabelEditable = editable;
+    this.#render();
+    // If the label is editable, focus cursor on it
+    if (editable) {
+      this.#focusInputBox();
+    }
+  }
+
+  #render(): void {
+    // clang-format off
     LitHtml.render(
         LitHtml.html`
         <span class="label-parts-wrapper">
-        <div class="label-box"></div>
-        <svg id="connectorContainer">
-          <line/>
-        </svg>
-        <div class="entry-highlight-wrapper"/>
+          <span 
+            class="label-box" @dblclick=${() => this.#setLabelEditability(true)}
+            @blur=${() => this.#setLabelEditability(false)} 
+            contenteditable=${this.#isLabelEditable} 
+            .innerText=${this.#label}>
+          </span>
+          <svg id="connectorContainer">
+            <line/>
+          </svg>
+          <div class="entry-highlight-wrapper"/>
         </span>`,
         this.#shadow, {host: this});
+    // clang-format on
   }
 }
 

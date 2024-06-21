@@ -15,7 +15,7 @@ vars = {
   'build_revision': 'ea08c530e2770fb61b649e70be31e11b85868d8f',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
-  'buildtools_revision': '0f37180034a7c13e1e570f5b41ca1f7c9c29ea70',
+  'buildtools_revision': '9cbb06d35ae23a02b7d19e1d238fd92819309a00',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
   'depot_tools_revision': '06673958a399758b95be5eeae3af2828e8d1a82d',
@@ -41,7 +41,7 @@ vars = {
 
   # ninja CIPD package version.
   # https://chrome-infra-packages.appspot.com/p/infra/3pp/build_support/ninja-1_11_1/
-  'ninja_version': 'version:2@1.11.1.chromium.1',
+  'ninja_version': 'version:2@1.11.1.chromium.2',
 
   # Chrome version used for tests. It should be regularly updated to
   # match the Canary version listed here:

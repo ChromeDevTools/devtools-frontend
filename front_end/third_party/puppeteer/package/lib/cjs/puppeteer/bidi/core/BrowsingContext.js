@@ -113,8 +113,8 @@ let BrowsingContext = (() => {
             __esDecorate(this, null, _locateNodes_decorators, { kind: "method", name: "locateNodes", static: false, private: false, access: { has: obj => "locateNodes" in obj, get: obj => obj.locateNodes }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
-        static from(userContext, parent, id, url) {
-            const browsingContext = new BrowsingContext(userContext, parent, id, url);
+        static from(userContext, parent, id, url, originalOpener) {
+            const browsingContext = new BrowsingContext(userContext, parent, id, url, originalOpener);
             browsingContext.#initialize();
             return browsingContext;
         }
@@ -129,12 +129,14 @@ let BrowsingContext = (() => {
         id;
         parent;
         userContext;
-        constructor(context, parent, id, url) {
+        originalOpener;
+        constructor(context, parent, id, url, originalOpener) {
             super();
             this.#url = url;
             this.id = id;
             this.parent = parent;
             this.userContext = context;
+            this.originalOpener = originalOpener;
             this.defaultRealm = this.#createWindowRealm();
         }
         #initialize() {
@@ -147,7 +149,7 @@ let BrowsingContext = (() => {
                 if (info.parent !== this.id) {
                     return;
                 }
-                const browsingContext = BrowsingContext.from(this.userContext, this, info.context, info.url);
+                const browsingContext = BrowsingContext.from(this.userContext, this, info.context, info.url, info.originalOpener);
                 this.#children.set(info.context, browsingContext);
                 const browsingContextEmitter = this.#disposables.use(new EventEmitter_js_1.EventEmitter(browsingContext));
                 browsingContextEmitter.once('closed', () => {

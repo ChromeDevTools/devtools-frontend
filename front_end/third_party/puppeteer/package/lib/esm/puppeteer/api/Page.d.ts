@@ -87,9 +87,13 @@ export interface WaitTimeoutOptions {
      * The default value can be changed by using the
      * {@link Page.setDefaultTimeout} method.
      *
-     * @defaultValue `30000`
+     * @defaultValue `30_000`
      */
     timeout?: number;
+    /**
+     * A signal object that allows you to cancel a waitFor call.
+     */
+    signal?: AbortSignal;
 }
 /**
  * @public
@@ -797,19 +801,27 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
      * Alternatively, you can specify a selector type using a prefix
      * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
-     *
-     * @remarks
-     * Locators API is experimental and we will not follow semver for breaking
-     * change in the Locators API.
      */
     locator<Selector extends string>(selector: Selector): Locator<NodeFor<Selector>>;
     /**
      * Creates a locator for the provided function. See {@link Locator} for
      * details and supported actions.
      *
-     * @remarks
-     * Locators API is experimental and we will not follow semver for breaking
-     * change in the Locators API.
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+     * to query page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+     * allows quering by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
+     * Alternatively, you can specify a selector type using a prefix
+     * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
      */
     locator<Ret>(func: () => Awaitable<Ret>): Locator<Ret>;
     /**

@@ -88,7 +88,20 @@ let BidiBrowserContext = (() => {
                 this.#createPage(browsingContext);
             }
             this.userContext.on('browsingcontext', ({ browsingContext }) => {
-                this.#createPage(browsingContext);
+                const page = this.#createPage(browsingContext);
+                // We need to wait for the DOMContentLoaded as the
+                // browsingContext still may be navigating from the about:blank
+                browsingContext.once('DOMContentLoaded', () => {
+                    if (browsingContext.originalOpener) {
+                        for (const context of this.userContext.browsingContexts) {
+                            if (context.id === browsingContext.originalOpener) {
+                                this.#pages
+                                    .get(context)
+                                    .trustedEmitter.emit("popup" /* PageEvent.Popup */, page);
+                            }
+                        }
+                    }
+                });
             });
             this.userContext.on('closed', () => {
                 this.trustedEmitter.removeAllListeners();
@@ -184,6 +197,7 @@ let BidiBrowserContext = (() => {
             catch (error) {
                 debugError(error);
             }
+            this.#targets.clear();
         }
         browser() {
             return this.#browser;

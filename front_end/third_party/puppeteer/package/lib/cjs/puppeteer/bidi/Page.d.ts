@@ -11,6 +11,7 @@ import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { Credentials, GeolocationOptions, MediaFeature, PageEvents } from '../api/Page.js';
 import { Page, type NewDocumentScriptEvaluation, type ScreenshotOptions } from '../api/Page.js';
 import { Coverage } from '../cdp/Coverage.js';
+import type { NetworkConditions } from '../cdp/NetworkManager.js';
 import { Tracing } from '../cdp/Tracing.js';
 import type { Cookie, CookieParam, DeleteCookiesRequest } from '../common/Cookie.js';
 import { EventEmitter } from '../common/EventEmitter.js';
@@ -106,8 +107,8 @@ export declare class BidiPage extends Page {
     authenticate(credentials: Credentials | null): Promise<void>;
     setDragInterception(): never;
     setBypassServiceWorker(): never;
-    setOfflineMode(): never;
-    emulateNetworkConditions(): never;
+    setOfflineMode(enabled: boolean): Promise<void>;
+    emulateNetworkConditions(networkConditions: NetworkConditions | null): Promise<void>;
     setCookie(...cookies: CookieParam[]): Promise<void>;
     deleteCookie(...cookies: DeleteCookiesRequest[]): Promise<void>;
     removeExposedFunction(name: string): Promise<void>;

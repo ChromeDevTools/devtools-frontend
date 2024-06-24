@@ -43,9 +43,9 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
-import { EMPTY, catchError, defaultIfEmpty, defer, filter, first, firstValueFrom, from, fromEvent, identity, ignoreElements, map, merge, mergeMap, noop, pipe, race, raceWith, retry, tap, throwIfEmpty, } from '../../../third_party/rxjs/rxjs.js';
+import { EMPTY, catchError, defaultIfEmpty, defer, filter, first, firstValueFrom, from, identity, ignoreElements, map, merge, mergeMap, noop, pipe, race, raceWith, retry, tap, throwIfEmpty, } from '../../../third_party/rxjs/rxjs.js';
 import { EventEmitter } from '../../common/EventEmitter.js';
-import { debugError, timeout } from '../../common/util.js';
+import { debugError, fromAbortSignal, timeout } from '../../common/util.js';
 /**
  * All the events that a locator instance may emit.
  *
@@ -101,12 +101,7 @@ export class Locator extends EventEmitter {
         retryAndRaceWithSignalAndTimer: (signal, cause) => {
             const candidates = [];
             if (signal) {
-                candidates.push(fromEvent(signal, 'abort').pipe(map(() => {
-                    if (signal.reason instanceof Error) {
-                        signal.reason.cause = cause;
-                    }
-                    throw signal.reason;
-                })));
+                candidates.push(fromAbortSignal(signal, cause));
             }
             candidates.push(timeout(this._timeout, cause));
             return pipe(retry({ delay: RETRY_DELAY }), raceWith(...candidates));

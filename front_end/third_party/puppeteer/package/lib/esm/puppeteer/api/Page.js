@@ -86,7 +86,7 @@ import { concat, EMPTY, filter, first, firstValueFrom, from, map, merge, mergeMa
 import { TargetCloseError } from '../common/Errors.js';
 import { EventEmitter, } from '../common/EventEmitter.js';
 import { TimeoutSettings } from '../common/TimeoutSettings.js';
-import { debugError, fromEmitterEvent, filterAsync, importFSPromises, isString, NETWORK_IDLE_TIME, timeout, withSourcePuppeteerURLIfNone, } from '../common/util.js';
+import { debugError, fromEmitterEvent, filterAsync, importFSPromises, isString, NETWORK_IDLE_TIME, timeout, withSourcePuppeteerURLIfNone, fromAbortSignal, } from '../common/util.js';
 import { guarded } from '../util/decorators.js';
 import { AsyncDisposableStack, asyncDisposeSymbol, DisposableStack, disposeSymbol, } from '../util/disposable.js';
 import { FunctionLocator, Locator, NodeLocator, } from './locators/locators.js';
@@ -615,14 +615,14 @@ let Page = (() => {
          *   {@link Page.setDefaultTimeout} method.
          */
         waitForRequest(urlOrPredicate, options = {}) {
-            const { timeout: ms = this._timeoutSettings.timeout() } = options;
+            const { timeout: ms = this._timeoutSettings.timeout(), signal } = options;
             if (typeof urlOrPredicate === 'string') {
                 const url = urlOrPredicate;
                 urlOrPredicate = (request) => {
                     return request.url() === url;
                 };
             }
-            const observable$ = fromEmitterEvent(this, "request" /* PageEvent.Request */).pipe(filterAsync(urlOrPredicate), raceWith(timeout(ms), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
+            const observable$ = fromEmitterEvent(this, "request" /* PageEvent.Request */).pipe(filterAsync(urlOrPredicate), raceWith(timeout(ms), fromAbortSignal(signal), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
                 throw new TargetCloseError('Page closed!');
             }))));
             return firstValueFrom(observable$);
@@ -655,14 +655,14 @@ let Page = (() => {
          *   the {@link Page.setDefaultTimeout} method.
          */
         waitForResponse(urlOrPredicate, options = {}) {
-            const { timeout: ms = this._timeoutSettings.timeout() } = options;
+            const { timeout: ms = this._timeoutSettings.timeout(), signal } = options;
             if (typeof urlOrPredicate === 'string') {
                 const url = urlOrPredicate;
                 urlOrPredicate = (response) => {
                     return response.url() === url;
                 };
             }
-            const observable$ = fromEmitterEvent(this, "response" /* PageEvent.Response */).pipe(filterAsync(urlOrPredicate), raceWith(timeout(ms), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
+            const observable$ = fromEmitterEvent(this, "response" /* PageEvent.Response */).pipe(filterAsync(urlOrPredicate), raceWith(timeout(ms), fromAbortSignal(signal), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
                 throw new TargetCloseError('Page closed!');
             }))));
             return firstValueFrom(observable$);
@@ -680,13 +680,13 @@ let Page = (() => {
          * @internal
          */
         waitForNetworkIdle$(options = {}) {
-            const { timeout: ms = this._timeoutSettings.timeout(), idleTime = NETWORK_IDLE_TIME, concurrency = 0, } = options;
+            const { timeout: ms = this._timeoutSettings.timeout(), idleTime = NETWORK_IDLE_TIME, concurrency = 0, signal, } = options;
             return this.#inflight$.pipe(switchMap(inflight => {
                 if (inflight > concurrency) {
                     return EMPTY;
                 }
                 return timer(idleTime);
-            }), map(() => { }), raceWith(timeout(ms), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
+            }), map(() => { }), raceWith(timeout(ms), fromAbortSignal(signal), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
                 throw new TargetCloseError('Page closed!');
             }))));
         }
@@ -702,13 +702,13 @@ let Page = (() => {
          * ```
          */
         async waitForFrame(urlOrPredicate, options = {}) {
-            const { timeout: ms = this.getDefaultTimeout() } = options;
+            const { timeout: ms = this.getDefaultTimeout(), signal } = options;
             if (isString(urlOrPredicate)) {
                 urlOrPredicate = (frame) => {
                     return urlOrPredicate === frame.url();
                 };
             }
-            return await firstValueFrom(merge(fromEmitterEvent(this, "frameattached" /* PageEvent.FrameAttached */), fromEmitterEvent(this, "framenavigated" /* PageEvent.FrameNavigated */), from(this.frames())).pipe(filterAsync(urlOrPredicate), first(), raceWith(timeout(ms), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
+            return await firstValueFrom(merge(fromEmitterEvent(this, "frameattached" /* PageEvent.FrameAttached */), fromEmitterEvent(this, "framenavigated" /* PageEvent.FrameNavigated */), from(this.frames())).pipe(filterAsync(urlOrPredicate), first(), raceWith(timeout(ms), fromAbortSignal(signal), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
                 throw new TargetCloseError('Page closed.');
             })))));
         }

@@ -127,5 +127,9 @@ export declare function fromEmitterEvent<Events extends Record<EventType, unknow
 /**
  * @internal
  */
+export declare function fromAbortSignal(signal?: AbortSignal, cause?: Error): Observable<never>;
+/**
+ * @internal
+ */
 export declare function filterAsync<T>(predicate: (value: T) => boolean | PromiseLike<boolean>): OperatorFunction<T, T>;
 //# sourceMappingURL=util.d.ts.map

@@ -68,6 +68,7 @@ import {
   NETWORK_IDLE_TIME,
   timeout,
   withSourcePuppeteerURLIfNone,
+  fromAbortSignal,
 } from '../common/util.js';
 import type {Viewport} from '../common/Viewport.js';
 import type {ScreenRecorder} from '../node/ScreenRecorder.js';
@@ -167,9 +168,13 @@ export interface WaitTimeoutOptions {
    * The default value can be changed by using the
    * {@link Page.setDefaultTimeout} method.
    *
-   * @defaultValue `30000`
+   * @defaultValue `30_000`
    */
   timeout?: number;
+  /**
+   * A signal object that allows you to cancel a waitFor call.
+   */
+  signal?: AbortSignal;
 }
 
 /**
@@ -1004,10 +1009,6 @@ export abstract class Page extends EventEmitter<PageEvents> {
    * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
    * Alternatively, you can specify a selector type using a prefix
    * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
-   *
-   * @remarks
-   * Locators API is experimental and we will not follow semver for breaking
-   * change in the Locators API.
    */
   locator<Selector extends string>(
     selector: Selector
@@ -1017,9 +1018,21 @@ export abstract class Page extends EventEmitter<PageEvents> {
    * Creates a locator for the provided function. See {@link Locator} for
    * details and supported actions.
    *
-   * @remarks
-   * Locators API is experimental and we will not follow semver for breaking
-   * change in the Locators API.
+   * @param selector -
+   * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+   * to query page for.
+   * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+   * can be passed as-is and a
+   * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+   * allows quering by
+   * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+   * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+   * and
+   * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+   * and
+   * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
+   * Alternatively, you can specify a selector type using a prefix
+   * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
    */
   locator<Ret>(func: () => Awaitable<Ret>): Locator<Ret>;
   locator<Selector extends string, Ret>(
@@ -1705,7 +1718,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
     urlOrPredicate: string | AwaitablePredicate<HTTPRequest>,
     options: WaitTimeoutOptions = {}
   ): Promise<HTTPRequest> {
-    const {timeout: ms = this._timeoutSettings.timeout()} = options;
+    const {timeout: ms = this._timeoutSettings.timeout(), signal} = options;
     if (typeof urlOrPredicate === 'string') {
       const url = urlOrPredicate;
       urlOrPredicate = (request: HTTPRequest) => {
@@ -1716,6 +1729,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
       filterAsync(urlOrPredicate),
       raceWith(
         timeout(ms),
+        fromAbortSignal(signal),
         fromEmitterEvent(this, PageEvent.Close).pipe(
           map(() => {
             throw new TargetCloseError('Page closed!');
@@ -1757,7 +1771,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
     urlOrPredicate: string | AwaitablePredicate<HTTPResponse>,
     options: WaitTimeoutOptions = {}
   ): Promise<HTTPResponse> {
-    const {timeout: ms = this._timeoutSettings.timeout()} = options;
+    const {timeout: ms = this._timeoutSettings.timeout(), signal} = options;
     if (typeof urlOrPredicate === 'string') {
       const url = urlOrPredicate;
       urlOrPredicate = (response: HTTPResponse) => {
@@ -1768,6 +1782,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
       filterAsync(urlOrPredicate),
       raceWith(
         timeout(ms),
+        fromAbortSignal(signal),
         fromEmitterEvent(this, PageEvent.Close).pipe(
           map(() => {
             throw new TargetCloseError('Page closed!');
@@ -1798,6 +1813,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
       timeout: ms = this._timeoutSettings.timeout(),
       idleTime = NETWORK_IDLE_TIME,
       concurrency = 0,
+      signal,
     } = options;
 
     return this.#inflight$.pipe(
@@ -1810,6 +1826,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
       map(() => {}),
       raceWith(
         timeout(ms),
+        fromAbortSignal(signal),
         fromEmitterEvent(this, PageEvent.Close).pipe(
           map(() => {
             throw new TargetCloseError('Page closed!');
@@ -1834,7 +1851,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
     urlOrPredicate: string | ((frame: Frame) => Awaitable<boolean>),
     options: WaitTimeoutOptions = {}
   ): Promise<Frame> {
-    const {timeout: ms = this.getDefaultTimeout()} = options;
+    const {timeout: ms = this.getDefaultTimeout(), signal} = options;
 
     if (isString(urlOrPredicate)) {
       urlOrPredicate = (frame: Frame) => {
@@ -1852,6 +1869,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
         first(),
         raceWith(
           timeout(ms),
+          fromAbortSignal(signal),
           fromEmitterEvent(this, PageEvent.Close).pipe(
             map(() => {
               throw new TargetCloseError('Page closed.');

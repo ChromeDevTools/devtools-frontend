@@ -104,12 +104,7 @@ class Locator extends EventEmitter_js_1.EventEmitter {
         retryAndRaceWithSignalAndTimer: (signal, cause) => {
             const candidates = [];
             if (signal) {
-                candidates.push((0, rxjs_js_1.fromEvent)(signal, 'abort').pipe((0, rxjs_js_1.map)(() => {
-                    if (signal.reason instanceof Error) {
-                        signal.reason.cause = cause;
-                    }
-                    throw signal.reason;
-                })));
+                candidates.push((0, util_js_1.fromAbortSignal)(signal, cause));
             }
             candidates.push((0, util_js_1.timeout)(this._timeout, cause));
             return (0, rxjs_js_1.pipe)((0, rxjs_js_1.retry)({ delay: exports.RETRY_DELAY }), (0, rxjs_js_1.raceWith)(...candidates));

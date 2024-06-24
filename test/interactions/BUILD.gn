@@ -19,6 +19,7 @@ node_ts_library("tests") {
     "data_grid_controller",
     "helpers",
     "panels/explain",
+    "panels/freestyler",
     "panels/performance/timeline",
     "panels/recorder/injected",
     "text_editor",

@@ -1,0 +1,32 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../scripts/build/ninja/copy.gni")
+import("../../../../../third_party/typescript/typescript.gni")
+
+ts_library("ts") {
+  testonly = true
+  sources = [
+    "basic.ts",
+    "empty_state.ts",
+  ]
+
+  deps = [
+    "../../../../core/host:bundle",
+    "../../../../panels/freestyler:bundle",
+    "../../../../testing",
+    "../../../../third_party/marked:bundle",
+    "../../../../ui/components/helpers:bundle",
+  ]
+}
+
+copy_to_gen("freestyler") {
+  testonly = true
+  sources = [
+    "basic.html",
+    "empty_state.html",
+  ]
+
+  deps = [ ":ts" ]
+}

@@ -24,6 +24,7 @@ group("docs") {
     "./dialog",
     "./elements_breadcrumbs",
     "./expandable_list",
+    "./freestyler",
     "./icon_button",
     "./icon_component",
     "./icon_dialog",

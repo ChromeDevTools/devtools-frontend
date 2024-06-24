@@ -28,6 +28,7 @@ devtools_module("freestyler") {
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
+    "../../third_party/marked:bundle",
     "../../ui/components/markdown_view:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit-html:bundle",
@@ -43,6 +44,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../../test/interactions/*",
     "../../entrypoints/*",
+    "../../ui/components/docs/freestyler/*",
   ]
 
   visibility += devtools_panels_visibility

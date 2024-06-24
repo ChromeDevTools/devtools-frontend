@@ -23,7 +23,7 @@ function getFakeToken(token: TestToken): Marked.Marked.Token {
 }
 
 describeWithEnvironment('MarkdownView', () => {
-  describe('renderToken', () => {
+  describe('MarkdownLitRenderer renderToken', () => {
     const renderer = new MarkdownView.MarkdownView.MarkdownLitRenderer();
 
     it('wraps paragraph tokens in <p> tags', () => {
@@ -122,6 +122,28 @@ describeWithEnvironment('MarkdownView', () => {
       const renderResult = renderer.renderToken(getFakeToken({type: 'em', text: 'em text'})).strings.join('');
 
       assert.isTrue(renderResult.includes('<em'));
+    });
+  });
+
+  describe('MarkdownInsightRenderer renderToken', () => {
+    const renderer = new MarkdownView.MarkdownView.MarkdownInsightRenderer();
+    it('renders link as an x-link', () => {
+      const result =
+          renderer.renderToken({type: 'link', text: 'learn more', href: 'exampleLink'} as Marked.Marked.Token);
+      assert((result.values[0] as HTMLElement).tagName === 'X-LINK');
+    });
+    it('renders images as an x-link', () => {
+      const result =
+          renderer.renderToken({type: 'image', text: 'learn more', href: 'exampleLink'} as Marked.Marked.Token);
+      assert((result.values[0] as HTMLElement).tagName === 'X-LINK');
+    });
+    it('renders headers as a strong element', () => {
+      const result = renderer.renderToken({type: 'heading', text: 'learn more'} as Marked.Marked.Token);
+      assert(result.strings.join('').includes('<strong>'));
+    });
+    it('renders unsupported tokens', () => {
+      const result = renderer.renderToken({type: 'html', raw: '<!DOCTYPE html>'} as Marked.Marked.Token);
+      assert(result.values.join('').includes('<!DOCTYPE html>'));
     });
   });
 

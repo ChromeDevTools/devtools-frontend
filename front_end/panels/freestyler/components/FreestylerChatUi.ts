@@ -6,6 +6,7 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
+import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
@@ -147,6 +148,7 @@ export type Props = {
 export class FreestylerChatUi extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-freestyler-chat-ui`;
   readonly #shadow = this.attachShadow({mode: 'open'});
+  readonly #markdownRenderer = new MarkdownView.MarkdownView.MarkdownInsightRenderer();
   #props: Props;
 
   constructor(props: Props) {
@@ -223,6 +225,31 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format on
   }
 
+  #renderTextAsMarkdown(text: string): LitHtml.TemplateResult {
+    let tokens = [];
+    try {
+      tokens = Marked.Marked.lexer(text);
+      for (const token of tokens) {
+        // Try to render all the tokens to make sure that
+        // they all have a template defined for them. If there
+        // isn't any template defined for a token, we'll fallback
+        // to rendering the text as plain text instead of markdown.
+        this.#markdownRenderer.renderToken(token);
+      }
+    } catch (err) {
+      // The tokens were not parsed correctly or
+      // one of the tokens are not supported, so we
+      // continue to render this as text.
+      return LitHtml.html`${text}`;
+    }
+
+    // clang-format off
+    return LitHtml.html`<${MarkdownView.MarkdownView.MarkdownView.litTagName}
+      .data=${{tokens, renderer: this.#markdownRenderer} as MarkdownView.MarkdownView.MarkdownViewData}>
+    </${MarkdownView.MarkdownView.MarkdownView.litTagName}>`;
+    // clang-format on
+  }
+
   #renderStep(step: StepData): LitHtml.TemplateResult {
     if (step.step === Step.ACTION) {
       return LitHtml.html`
@@ -235,10 +262,10 @@ export class FreestylerChatUi extends HTMLElement {
     }
 
     if (step.step === Step.ERROR) {
-      return LitHtml.html`<p class="error-step">${step.text}</p>`;
+      return LitHtml.html`<p class="error-step">${this.#renderTextAsMarkdown(step.text)}</p>`;
     }
 
-    return LitHtml.html`<p>${step.text}</p>`;
+    return LitHtml.html`<p>${this.#renderTextAsMarkdown(step.text)}</p>`;
   }
 
   #renderChatMessage = (message: ChatMessage, {isLast}: {isLast: boolean}): LitHtml.TemplateResult => {

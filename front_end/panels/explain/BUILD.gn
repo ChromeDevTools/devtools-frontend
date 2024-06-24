@@ -75,7 +75,6 @@ ts_library("unittests") {
   sources = [
     "PromptBuilder.test.ts",
     "components/ConsoleInsight.test.ts",
-    "components/MarkdownRenderer.test.ts",
   ]
 
   deps = [

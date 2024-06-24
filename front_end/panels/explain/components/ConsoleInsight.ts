@@ -242,7 +242,7 @@ export class ConsoleInsight extends HTMLElement {
 
   #promptBuilder: PublicPromptBuilder;
   #aidaClient: PublicAidaClient;
-  #renderer = new MarkdownRenderer();
+  #renderer = new MarkdownView.MarkdownView.MarkdownInsightRenderer();
 
   // Main state.
   #state: StateData;
@@ -979,33 +979,5 @@ declare global {
   interface HTMLElementTagNameMap {
     'devtools-console-insight': ConsoleInsight;
     'devtools-console-insight-sources-list': ConsoleInsightSourcesList;
-  }
-}
-
-export class MarkdownRenderer extends MarkdownView.MarkdownView.MarkdownLitRenderer {
-  override renderToken(token: Marked.Marked.Token): LitHtml.TemplateResult {
-    const template = this.templateForToken(token);
-    if (template === null) {
-      return LitHtml.html`${token.raw}`;
-    }
-    return template;
-  }
-
-  override templateForToken(token: Marked.Marked.Token): LitHtml.TemplateResult|null {
-    switch (token.type) {
-      case 'heading':
-        return html`<strong>${this.renderText(token)}</strong>`;
-      case 'link':
-      case 'image':
-        return LitHtml.html`${
-            UI.XLink.XLink.create(token.href, token.text, undefined, undefined, 'link-in-explanation')}`;
-      case 'code':
-        return LitHtml.html`<${MarkdownView.CodeBlock.CodeBlock.litTagName}
-          .code=${this.unescape(token.text)}
-          .codeLang=${token.lang}
-          .displayNotice=${true}>
-        </${MarkdownView.CodeBlock.CodeBlock.litTagName}>`;
-    }
-    return super.templateForToken(token);
   }
 }

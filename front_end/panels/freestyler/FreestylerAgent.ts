@@ -130,6 +130,10 @@ export class FreestylerAgent {
         // TODO: enable logging later.
         disable_user_content_logging: true,
       },
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      functionality_type: Host.AidaClient.FunctionalityType.CHAT,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_feature: Host.AidaClient.ClientFeature.CHROME_FREESTYLER,
     };
     return request;
   }

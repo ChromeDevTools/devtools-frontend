@@ -4,8 +4,9 @@
 
 import {assert} from 'chai';
 
-import {click, getBrowserAndPages, reloadDevTools, step, waitForFunction} from '../../shared/helper.js';
+import {click, getBrowserAndPages, step, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
+import {reloadDevTools} from '../helpers/cross-tool-helper.js';
 import {getDataGridRows} from '../helpers/datagrid-helpers.js';
 import {
   disableCSSSelectorStats,

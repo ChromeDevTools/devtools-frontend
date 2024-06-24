@@ -14,7 +14,6 @@ import {
   goToResource,
   platform,
   pressKey,
-  reloadDevTools,
   scrollElementIntoView,
   typeText,
   waitFor,
@@ -22,6 +21,7 @@ import {
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_MESSAGES_SELECTOR, navigateToConsoleTab} from '../helpers/console-helpers.js';
+import {reloadDevTools} from '../helpers/cross-tool-helper.js';
 import {navigateToCssOverviewTab, startCaptureCSSOverview} from '../helpers/css-overview-helpers.js';
 import {
   editCSSProperty,

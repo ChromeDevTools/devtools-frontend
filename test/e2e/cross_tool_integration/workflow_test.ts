@@ -2,13 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, closeAllCloseableTabs, goToResource, reloadDevTools, timeout, waitFor} from '../../shared/helper.js';
+import {click, closeAllCloseableTabs, goToResource, timeout, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToConsoleTab, waitForConsoleInfoMessageAndClickOnLink} from '../helpers/console-helpers.js';
 import {
   clickOnContextMenuItemFromTab,
   MOVE_TO_DRAWER_SELECTOR,
   MOVE_TO_MAIN_PANEL_SELECTOR,
+  reloadDevTools,
   tabExistsInDrawer,
   tabExistsInMainPanel,
 } from '../helpers/cross-tool-helper.js';

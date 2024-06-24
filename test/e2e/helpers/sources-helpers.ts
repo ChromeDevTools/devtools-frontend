@@ -22,7 +22,6 @@ import {
   pasteText,
   platform,
   pressKey,
-  reloadDevTools,
   setCheckBox,
   step,
   timeout,
@@ -35,6 +34,7 @@ import {
 } from '../../shared/helper.js';
 
 import {openSoftContextMenuAndClickOnItem} from './context-menu-helpers.js';
+import {reloadDevTools} from './cross-tool-helper.js';
 
 export const ACTIVE_LINE = '.CodeMirror-activeline > pre > span';
 export const PAUSE_BUTTON = '[aria-label="Pause script execution"]';

@@ -11,7 +11,6 @@ import {
   disableExperiment,
   enableExperiment,
   getTestServerPort,
-  reloadDevTools,
   step,
   typeText,
   waitFor,
@@ -20,6 +19,9 @@ import {
   waitForNone,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
+import {
+  reloadDevTools,
+} from '../helpers/cross-tool-helper.js';
 import {
   clearTextFilter,
   getAllRequestNames,

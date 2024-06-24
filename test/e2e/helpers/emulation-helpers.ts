@@ -6,12 +6,15 @@ import type * as puppeteer from 'puppeteer-core';
 import {
   $,
   click,
+  clickElement,
   getBrowserAndPages,
   goToResource,
-  reloadDevTools,
   waitFor,
-  clickElement,
 } from '../../shared/helper.js';
+
+import {
+  reloadDevTools,
+} from './cross-tool-helper.js';
 
 const DEVICE_TOOLBAR_TOGGLER_SELECTOR = '[aria-label="Toggle device toolbar"]';
 const DEVICE_TOOLBAR_SELECTOR = '.device-mode-toolbar';

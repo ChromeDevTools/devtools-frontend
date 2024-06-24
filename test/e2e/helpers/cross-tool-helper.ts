@@ -2,7 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, waitFor} from '../../shared/helper.js';
+import {type DevToolsFrontendReloadOptions} from '../../conductor/frontend_tab.js';
+import {click, reloadDevTools as baseReloadDevTools, waitFor} from '../../shared/helper.js';
+
+import {
+  expectVeImpressions,
+  veImpression,
+  veImpressionForElementsPanel,
+  veImpressionForMainToolbar,
+} from './visual-logging-helpers.js';
 
 export async function clickOnContextMenuItemFromTab(tabId: string, menuItemSelector: string) {
   // Find the selected node, right click.
@@ -34,3 +42,28 @@ export const checkIfTabExistsInDrawer = async (tabId: string) => {
   const tab = await waitFor(tabId, header);
   return Boolean(tab);
 };
+
+/**
+ * Reloads DevTools and checks for VE impressions
+ */
+export async function reloadDevTools(options?: DevToolsFrontendReloadOptions&{expectClosedPanels?: string[]}) {
+  await baseReloadDevTools(options);
+  const selectedPanel = options?.selectedPanel?.name || options?.queryParams?.panel || 'elements';
+  await waitFor(`.panel.${selectedPanel}`);
+  const expectClosedPanels = options?.expectClosedPanels;
+  const dockable = options?.canDock;
+  const panelImpression =
+      selectedPanel === 'elements' ? veImpressionForElementsPanel({dockable}) : veImpression('Panel', selectedPanel);
+  const expectedVeEvents = [veImpressionForMainToolbar({selectedPanel, expectClosedPanels, dockable}), panelImpression];
+  if (options?.drawerShown) {
+    expectedVeEvents.push(veImpression('Drawer', undefined, [
+      veImpression(
+          'Toolbar', 'drawer',
+          [
+            veImpression('PanelTabHeader', 'console'),
+            veImpression('Close'),
+          ]),
+    ]));
+  }
+  await expectVeImpressions(expectedVeEvents.flat());
+}

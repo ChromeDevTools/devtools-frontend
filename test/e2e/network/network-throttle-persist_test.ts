@@ -5,8 +5,9 @@
 import {assert} from 'chai';
 import {type ElementHandle} from 'puppeteer-core';
 
-import {reloadDevTools, waitFor, waitForAria} from '../../shared/helper.js';
+import {waitFor, waitForAria} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
+import {reloadDevTools} from '../helpers/cross-tool-helper.js';
 import {navigateToNetworkTab} from '../helpers/network-helpers.js';
 
 describe('The Network Tab', function() {

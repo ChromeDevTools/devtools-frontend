@@ -137,9 +137,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       }
 
       this.#viewProps.selectedNode = ev.data;
-      this.#agent.resetHistory();
       this.#clearMessages();
-      this.doUpdate();
     });
     this.doUpdate();
   }
@@ -197,6 +195,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
   #clearMessages(): void {
     this.#viewProps.messages = [];
+    this.#viewProps.isLoading = false;
     this.#agent.resetHistory();
     this.#cancel();
     this.doUpdate();

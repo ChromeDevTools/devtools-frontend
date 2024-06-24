@@ -298,15 +298,16 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format off
     return LitHtml.html`
       <${Buttons.Button.Button.litTagName} .data=${{
-        variant: Buttons.Button.Variant.ICON_TOGGLE,
+        variant: Buttons.Button.Variant.TEXT,
         size: Buttons.Button.Size.SMALL,
         iconName: 'select-element',
         toggledIconName: 'select-element',
         toggleType: Buttons.Button.ToggleType.PRIMARY,
         toggled: this.#props.inspectElementToggled,
         title: i18nString(TempUIStrings.sendButtonTitle),
-      } as Buttons.Button.ButtonData} @click=${this.#props.onInspectElementClick}></${Buttons.Button.Button.litTagName}>
-      <span class="select-an-element-text">${i18nString(TempUIStrings.selectAnElement)}</span>
+      } as Buttons.Button.ButtonData} @click=${this.#props.onInspectElementClick}>
+        <span class="select-an-element-text">${i18nString(TempUIStrings.selectAnElement)}</span>
+      </${Buttons.Button.Button.litTagName}>
     `;
     // clang-format on
   };

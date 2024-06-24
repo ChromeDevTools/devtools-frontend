@@ -29,7 +29,12 @@
   color: var(--sys-color-token-variable);
 }
 
+.connectorContainer {
+  overflow: visible;
+}
+
 .entry-highlight-wrapper {
   box-sizing: border-box;
   border: 2px solid var(--sys-color-token-variable);
+  border-radius: 7px;
 }

@@ -839,6 +839,54 @@ export interface CSSVariableValue {
   value: string;
   declaration: CSSProperty|CSSRegisteredProperty;
 }
+class SCCRecordEntry {
+  private rootDiscoveryTime: number;
+  get isRootEntry(): boolean {
+    return this.rootDiscoveryTime === this.discoveryTime;
+  }
+  updateRoot(neighbor: SCCRecordEntry): void {
+    this.rootDiscoveryTime = Math.min(this.rootDiscoveryTime, neighbor.rootDiscoveryTime);
+  }
+  constructor(readonly nodeCascade: NodeCascade, readonly name: string, private readonly discoveryTime: number) {
+    this.rootDiscoveryTime = discoveryTime;
+  }
+}
+
+class SCCRecord {
+  #time = 0;
+  #stack: SCCRecordEntry[] = [];
+  #entries = new Map<NodeCascade, Map<string, SCCRecordEntry>>();
+
+  get(nodeCascade: NodeCascade, variable: string): SCCRecordEntry|undefined {
+    return this.#entries.get(nodeCascade)?.get(variable);
+  }
+
+  add(nodeCascade: NodeCascade, variable: string): SCCRecordEntry {
+    const existing = this.get(nodeCascade, variable);
+    if (existing) {
+      return existing;
+    }
+    const entry = new SCCRecordEntry(nodeCascade, variable, this.#time++);
+    this.#stack.push(entry);
+    let map = this.#entries.get(nodeCascade);
+    if (!map) {
+      map = new Map();
+      this.#entries.set(nodeCascade, map);
+    }
+    map.set(variable, entry);
+    return entry;
+  }
+
+  isInInProgressSCC(childRecord: SCCRecordEntry): boolean {
+    return this.#stack.includes(childRecord);
+  }
+
+  finishSCC(root: SCCRecordEntry): SCCRecordEntry[] {
+    const startIndex = this.#stack.lastIndexOf(root);
+    console.assert(startIndex >= 0, 'Root is not an in-progress scc');
+    return this.#stack.splice(startIndex);
+  }
+}
 
 class DOMInheritanceCascade {
   readonly #nodeCascades: NodeCascade[];
@@ -883,25 +931,21 @@ class DOMInheritanceCascade {
       return null;
     }
     this.ensureInitialized();
-    const availableCSSVariables = this.#availableCSSVariables.get(nodeCascade);
-    const computedCSSVariables = this.#computedCSSVariables.get(nodeCascade);
-    if (!availableCSSVariables || !computedCSSVariables) {
-      return null;
-    }
-    return this.innerComputeCSSVariable(availableCSSVariables, computedCSSVariables, variableName);
+    return this.innerComputeCSSVariable(nodeCascade, variableName);
   }
 
-  private innerComputeCSSVariable(
-      availableCSSVariables: Map<string, CSSVariableValue|null>,
-      computedCSSVariables: Map<string, CSSVariableValue|null>, variableName: string): CSSVariableValue|null {
-    if (!availableCSSVariables.has(variableName)) {
+  private innerComputeCSSVariable(nodeCascade: NodeCascade, variableName: string, sccRecord = new SCCRecord()):
+      CSSVariableValue|null {
+    const availableCSSVariables = this.#availableCSSVariables.get(nodeCascade);
+    const computedCSSVariables = this.#computedCSSVariables.get(nodeCascade);
+    if (!computedCSSVariables || !availableCSSVariables?.has(variableName)) {
       return null;
     }
-    if (computedCSSVariables.has(variableName)) {
+
+    if (computedCSSVariables?.has(variableName)) {
       return computedCSSVariables.get(variableName) || null;
     }
-    // Set dummy value to avoid infinite recursion.
-    computedCSSVariables.set(variableName, null);
+
     const definedValue = availableCSSVariables.get(variableName);
     if (definedValue === undefined || definedValue === null) {
       return null;
@@ -912,14 +956,41 @@ class DOMInheritanceCascade {
       return null;
     }
 
+    // While computing CSS variable values we need to detect declaration cycles. Every declaration on the cycle is
+    // invalid. However, var()s outside of the cycle that reference a property on the cycle are not automatically
+    // invalid, but rather use the fallback value. We use a version of Tarjan's algorithm to detect cycles, which are
+    // SCCs on the custom property dependency graph. Computing variable values is DFS. When encountering a previously
+    // unseen variable, we record its discovery time. We keep a stack of visited variables and detect cycles when we
+    // find a reference to a variable already on the stack. For each node we also keep track of the "root" of the
+    // corresponding SCC, which is the node in that component with the smallest discovery time. This is determined by
+    // bubbling up the minimum discovery time whenever we close a cycle.
+    const record = sccRecord.add(nodeCascade, variableName);
+
     const matching = PropertyParser.BottomUpTreeMatching.walk(
         ast, [new PropertyParser.VariableMatcher((match: PropertyParser.VariableMatch) => {
           const parentStyle = 'ownerStyle' in definedValue.declaration ? definedValue.declaration.ownerStyle :
                                                                          definedValue.declaration.style();
-          const cssVariableValue = this.computeCSSVariable(parentStyle, match.name);
-          // Variable reference is resolved, so return it.
-          if (cssVariableValue?.value) {
-            return cssVariableValue?.value;
+          const nodeCascade = this.#styleToNodeCascade.get(parentStyle);
+          if (!nodeCascade) {
+            return null;
+          }
+          const childRecord = sccRecord.get(nodeCascade, match.name);
+          if (childRecord) {
+            if (sccRecord.isInInProgressSCC(childRecord)) {
+              // Cycle detected, update the root.
+              record.updateRoot(childRecord);
+              return null;
+            }
+          } else {
+            const cssVariableValue = this.innerComputeCSSVariable(nodeCascade, match.name, sccRecord);
+            // Variable reference is resolved, so return it.
+            const childRecord = sccRecord.get(nodeCascade, match.name);
+            // The SCC record for the referenced variable may not exist if the var was already computed in a previous
+            // iteration. That means it's in a different SCC.
+            childRecord && record.updateRoot(childRecord);
+            if (cssVariableValue?.value) {
+              return cssVariableValue?.value;
+            }
           }
 
           // Variable reference is not resolved, use the fallback.
@@ -929,12 +1000,27 @@ class DOMInheritanceCascade {
           }
           return match.matching.getComputedTextRange(match.fallback[0], match.fallback[match.fallback.length - 1]);
         })]);
+
     const decl = PropertyParser.ASTUtils.siblings(PropertyParser.ASTUtils.declValue(matching.ast.tree));
+    const computedText = matching.getComputedTextRange(decl[0], decl[decl.length - 1]);
+
+    if (record.isRootEntry) {
+      // Variables are kept on the stack until all descendents in the same SCC have been visited. That's the case when
+      // completing the recursion on the root of the SCC.
+      const scc = sccRecord.finishSCC(record);
+      if (scc.length > 1) {
+        for (const entry of scc) {
+          console.assert(entry.nodeCascade !== nodeCascade, 'Circles should be within the cascade');
+          computedCSSVariables.set(entry.name, null);
+        }
+        return null;
+      }
+    }
     if (matching.hasUnresolvedVarsRange(decl[0], decl[decl.length - 1])) {
+      computedCSSVariables.set(variableName, null);
       return null;
     }
 
-    const computedText = matching.getComputedTextRange(decl[0], decl[decl.length - 1]);
     const cssVariableValue = {value: computedText, declaration: definedValue.declaration};
     computedCSSVariables.set(variableName, cssVariableValue);
     return cssVariableValue;
@@ -1029,8 +1115,7 @@ class DOMInheritanceCascade {
       for (const variableName of variableNames) {
         const prevValue = accumulatedCSSVariables.get(variableName);
         accumulatedCSSVariables.delete(variableName);
-        const computedValue =
-            this.innerComputeCSSVariable(availableCSSVariablesMap, computedVariablesMap, variableName);
+        const computedValue = this.innerComputeCSSVariable(nodeCascade, variableName);
         if (prevValue && computedValue?.value === prevValue.value) {
           computedValue.declaration = prevValue.declaration;
         }

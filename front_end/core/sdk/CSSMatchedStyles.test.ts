@@ -27,9 +27,11 @@ function ruleMatch(
 }
 
 function createMatchedStyles(payload: Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>) {
+  const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+  node.id = 1 as Protocol.DOM.NodeId;
   return SDK.CSSMatchedStyles.CSSMatchedStyles.create({
     cssModel: sinon.createStubInstance(SDK.CSSModel.CSSModel),
-    node: sinon.createStubInstance(SDK.DOMModel.DOMNode),
+    node,
     inlinePayload: null,
     attributesPayload: null,
     matchedPayload: [],
@@ -50,11 +52,7 @@ function createMatchedStyles(payload: Partial<SDK.CSSMatchedStyles.CSSMatchedSty
 describe('CSSMatchedStyles', () => {
   describe('computeCSSVariable', () => {
     const testCssValueEquals = async (text: string, expectedValue: unknown) => {
-      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-      node.id = 1 as Protocol.DOM.NodeId;
-
       const matchedStyles = await createMatchedStyles({
-        node,
         matchedPayload: [
           ruleMatch(
               'div',
@@ -177,9 +175,7 @@ describe('CSSMatchedStyles', () => {
         await testCssValueEquals('--cycle-1', null);
       });
 
-      // TODO(ergunsh): These are valid `var()` reference cases that we currently
-      // don't handle correctly.
-      it.skip('[crbug.com/329626445] should return `null` if the var reference is inside the cycle', async () => {
+      it('should return `null` if the var reference is inside the cycle', async () => {
         await testCssValueEquals('--cycle-a', null);
       });
 
@@ -193,12 +189,9 @@ describe('CSSMatchedStyles', () => {
         await testCssValueEquals('--var-reference-in-fallback', 'active-foo');
       });
 
-      // TODO(ergunsh): These are valid `var()` reference cases that we currently
-      // don't handle correctly.
-      it.skip(
-          '[crbug.com/329626445] should return null when the fallback value contains a cyclic reference', async () => {
-            await testCssValueEquals('--cycle-in-fallback', null);
-          });
+      it('should return null when the fallback value contains a cyclic reference', async () => {
+        await testCssValueEquals('--cycle-in-fallback', null);
+      });
 
       it('should return null when the fallback value is non existent too', async () => {
         await testCssValueEquals('--non-existent-fallback', null);
@@ -219,6 +212,142 @@ describe('CSSMatchedStyles', () => {
 
     it('should correctly resolve the `var()` reference for complex inheritance case', async () => {
       await testCssValueEquals('--non-inherited', 'inherited and overloaded');
+    });
+
+    it('correcty handles cycles', async () => {
+      async function compute(name: string, styleRules: string[], inheritedRules: string[][]) {
+        const ruleToRuleMatch = (rule: string, index: number) => ruleMatch(
+            `.${index}`,
+            rule.split(';')
+                .filter(decl => decl.trim())
+                .map(decl => decl.split(':'))
+                .map(decl => ({name: decl[0].trim(), value: decl.slice(1).join(':').trim()})));
+        const matchedPayload = styleRules.map(ruleToRuleMatch);
+        const inheritedPayload = inheritedRules.map(
+            ruleTexts => ({matchedCSSRules: ruleTexts.map((rule, i) => ruleToRuleMatch(rule, i + styleRules.length))}));
+
+        const matchedStyles = await createMatchedStyles({matchedPayload, inheritedPayload});
+        return matchedStyles.computeCSSVariable(matchedStyles.nodeStyles()[0], name)?.value ?? null;
+      }
+
+      const simpleCycle = `
+        --a: var(--b);
+        --b: var(--a);
+        `;
+      assert.strictEqual(await compute('--a', [simpleCycle], []), null);
+      assert.strictEqual(await compute('--b', [simpleCycle], []), null);
+
+      const cycleOnUnusedFallback = `
+        --a: 2;
+        --b: var(--a, var(--c));
+        --c: var(--b);
+        `;
+      assert.strictEqual(await compute('--a', [cycleOnUnusedFallback], []), '2');
+      assert.strictEqual(await compute('--b', [cycleOnUnusedFallback], []), '2');
+      assert.strictEqual(await compute('--c', [cycleOnUnusedFallback], []), '2');
+
+      const simpleCycleWithFallbacks = `
+        --a: var(--b, 1);
+        --b: var(--a, 2);
+        `;
+      assert.strictEqual(await compute('--a', [simpleCycleWithFallbacks], []), null);
+      assert.strictEqual(await compute('--b', [simpleCycleWithFallbacks], []), null);
+
+      const longerCycle = `
+        --a: var(--b);
+        --b: var(--c);
+        --c: var(--a);
+        `;
+      assert.strictEqual(await compute('--a', [longerCycle], []), null);
+      assert.strictEqual(await compute('--b', [longerCycle], []), null);
+      assert.strictEqual(await compute('--c', [longerCycle], []), null);
+
+      const longerCycleWithFallbacks = `
+        --a: var(--b, 2);
+        --b: var(--c, 3);
+        --c: var(--a, 4);
+        `;
+      assert.strictEqual(await compute('--a', [longerCycleWithFallbacks], []), null);
+      assert.strictEqual(await compute('--b', [longerCycleWithFallbacks], []), null);
+      assert.strictEqual(await compute('--c', [longerCycleWithFallbacks], []), null);
+
+      const pointingIntoCycle = `
+        ${longerCycle}
+        --d: var(--a);
+        --e: var(--b);
+        `;
+      assert.strictEqual(await compute('--a', [pointingIntoCycle], []), null);
+      assert.strictEqual(await compute('--b', [pointingIntoCycle], []), null);
+      assert.strictEqual(await compute('--c', [pointingIntoCycle], []), null);
+      assert.strictEqual(await compute('--d', [pointingIntoCycle], []), null);
+      assert.strictEqual(await compute('--e', [pointingIntoCycle], []), null);
+
+      const pointingIntoCycleWithFallback = `
+        ${longerCycle}
+        --d: var(--a, 4);
+        --e: var(--b, 5);
+        `;
+      assert.strictEqual(await compute('--a', [pointingIntoCycleWithFallback], []), null);
+      assert.strictEqual(await compute('--b', [pointingIntoCycleWithFallback], []), null);
+      assert.strictEqual(await compute('--c', [pointingIntoCycleWithFallback], []), null);
+      assert.strictEqual(await compute('--d', [pointingIntoCycleWithFallback], []), '4');
+      assert.strictEqual(await compute('--e', [pointingIntoCycleWithFallback], []), '5');
+
+      const multipleEdges = `
+        --a: var(--b);
+        --b: var(--c) var(--d);
+        --c: var(--a) var(--b);
+        --d: var(--c);
+        `;
+      assert.strictEqual(await compute('--a', [multipleEdges], []), null);
+      assert.strictEqual(await compute('--b', [multipleEdges], []), null);
+      assert.strictEqual(await compute('--c', [multipleEdges], []), null);
+      assert.strictEqual(await compute('--d', [multipleEdges], []), null);
+
+      const pointingIntoMultipleEdgeCycle = `
+        ${multipleEdges}
+        --e: var(--c) var(--d);
+        `;
+      assert.strictEqual(await compute('--a', [pointingIntoMultipleEdgeCycle], []), null);
+      assert.strictEqual(await compute('--b', [pointingIntoMultipleEdgeCycle], []), null);
+      assert.strictEqual(await compute('--c', [pointingIntoMultipleEdgeCycle], []), null);
+      assert.strictEqual(await compute('--d', [pointingIntoMultipleEdgeCycle], []), null);
+      assert.strictEqual(await compute('--e', [pointingIntoMultipleEdgeCycle], []), null);
+
+      const pointingIntoMultipleEdgeCycleWithFallback = `
+        ${multipleEdges}
+        --e: var(--c, 4) var(--d, 5);
+        `;
+      assert.strictEqual(await compute('--a', [pointingIntoMultipleEdgeCycleWithFallback], []), null);
+      assert.strictEqual(await compute('--b', [pointingIntoMultipleEdgeCycleWithFallback], []), null);
+      assert.strictEqual(await compute('--c', [pointingIntoMultipleEdgeCycleWithFallback], []), null);
+      assert.strictEqual(await compute('--d', [pointingIntoMultipleEdgeCycleWithFallback], []), null);
+      assert.strictEqual(await compute('--e', [pointingIntoMultipleEdgeCycleWithFallback], []), '4 5');
+
+      const multipleCyclesWithFallback = `
+        ${longerCycle}
+        --d: var(--e);
+        --e: var(--f);
+        --f: var(--d);
+        --g: var(--a, var(--d, 5));
+        `;
+      assert.strictEqual(await compute('--a', [multipleCyclesWithFallback], []), null);
+      assert.strictEqual(await compute('--b', [multipleCyclesWithFallback], []), null);
+      assert.strictEqual(await compute('--c', [multipleCyclesWithFallback], []), null);
+      assert.strictEqual(await compute('--d', [multipleCyclesWithFallback], []), null);
+      assert.strictEqual(await compute('--e', [multipleCyclesWithFallback], []), null);
+      assert.strictEqual(await compute('--f', [multipleCyclesWithFallback], []), null);
+      assert.strictEqual(await compute('--g', [multipleCyclesWithFallback], []), '5');
+
+      const notACycle = `
+        --a: var(--b, 1);
+        `;
+      const inherited = `
+        --a: var(--b);
+        --b: var(--a);
+        `;
+      assert.strictEqual(await compute('--a', [notACycle], [[inherited]]), '1');
+      assert.strictEqual(await compute('--b', [notACycle], [[inherited]]), null);
     });
   });
 

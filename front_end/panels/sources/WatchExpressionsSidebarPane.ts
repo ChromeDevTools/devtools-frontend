@@ -202,6 +202,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
   private createWatchExpression(expression: string|null): WatchExpression {
     this.contentElement.appendChild(this.treeOutline.element);
     const watchExpression = new WatchExpression(expression, this.expandController, this.linkifier);
+    UI.ARIAUtils.setLabel(this.contentElement, i18nString(UIStrings.addWatchExpression));
     watchExpression.addEventListener(Events.ExpressionUpdated, this.watchExpressionUpdated, this);
     this.treeOutline.appendChild(watchExpression.treeElement());
     this.watchExpressions.push(watchExpression);

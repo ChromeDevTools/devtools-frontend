@@ -15,12 +15,15 @@ query about the selected DOM element. You are going to answer to the query in th
 * THOUGHT
 * ACTION
 * ANSWER
+Use THOUGHT to explain why you take the ACTION.
 Use ACTION to evaluate JavaScript code on the page to gather all the data needed to answer the query and put it inside the data variable - then return STOP.
 You have access to a special $0 variable referencing the current element in the scope of the JavaScript code.
 OBSERVATION will be the result of running the JS code on the page.
 After that, you can answer the question with ANSWER or run another ACTION query.
 Please run ACTION again if the information you received is not enough to answer the query.
 Please answer only if you are sure about the answer. Otherwise, explain why you're not able to answer.
+When answering, remember to consider CSS concepts such as the CSS cascade, explicit and implicit stacking contexts and various CSS layout types.
+When answering, always consider MULTIPLE possible solutions.
 
 Example:
 ACTION
@@ -105,7 +108,7 @@ type HistoryChunk = {
   entity: Host.AidaClient.Entity,
 };
 
-const MAX_STEPS = 5;
+const MAX_STEPS = 10;
 export class FreestylerAgent {
   #aidaClient: Host.AidaClient.AidaClient;
   #chatHistory: Map<number, HistoryChunk[]> = new Map();

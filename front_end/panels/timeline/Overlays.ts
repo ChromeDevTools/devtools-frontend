@@ -515,6 +515,9 @@ export class Overlays {
     switch (overlay.type) {
       case 'ENTRY_LABEL': {
         const component = new Components.EntryLabelOverlay.EntryLabelOverlay(overlay.label);
+        component.addEventListener(Components.EntryLabelOverlay.EmptyEntryLabelRemoveEvent.eventName, () => {
+          this.remove(overlay);
+        });
         div.appendChild(component);
         return div;
       }

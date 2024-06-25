@@ -336,6 +336,47 @@ describeWithEnvironment('Overlays', () => {
       assert.isFalse(label.isContentEditable);
     });
 
+    it('Removes empty label if it is empty when navigated away from (removed focused from)', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {overlays, container, charts} = setupChartWithDimensions(traceParsedData);
+      const event = charts.mainProvider.eventByIndex(50);
+      assert.isOk(event);
+
+      // Create an entry label overlay
+      overlays.add({
+        type: 'ENTRY_LABEL',
+        entry: event,
+        label: '',
+      });
+      overlays.update();
+
+      // Ensure that the overlay was created.
+      const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_LABEL');
+      assert.isOk(overlayDOM);
+      const component = overlayDOM?.querySelector('devtools-entry-label-overlay');
+      assert.isOk(component?.shadowRoot);
+
+      component.connectedCallback();
+      const elementsWrapper = component.shadowRoot.querySelector<HTMLElement>('.label-parts-wrapper');
+      assert.isOk(elementsWrapper);
+
+      const label = elementsWrapper.querySelector<HTMLElement>('.label-box');
+      assert.isOk(label);
+
+      // Double click on the label box to make it editable and focus on it
+      label.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
+
+      // Ensure that the entry has 1 overlay
+      assert.strictEqual(overlays.overlaysForEntry(event).length, 1);
+
+      // Change the content to not editable by changing the element blur like when clicking outside of it.
+      // The label is empty since no initial value was passed into it and no characters were entered.
+      label.dispatchEvent(new FocusEvent('blur', {bubbles: true}));
+
+      // Ensure that the entry overlay has been removed because it was saved empty
+      assert.strictEqual(overlays.overlaysForEntry(event).length, 0);
+    });
+
     it('can render an overlay for a time range', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const {overlays, container} = setupChartWithDimensions(traceParsedData);

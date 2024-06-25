@@ -6,6 +6,14 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import styles from './entryLabelOverlay.css.js';
 
+export class EmptyEntryLabelRemoveEvent extends Event {
+  static readonly eventName = 'emptyentrylabelremoveevent';
+
+  constructor() {
+    super(EmptyEntryLabelRemoveEvent.eventName);
+  }
+}
+
 export class EntryLabelOverlay extends HTMLElement {
   // The label is angled on the left from the centre of the entry it belongs to.
   // `LABEL_AND_CONNECTOR_SHIFT_LENGTH` specifies how many pixels to the left it is shifted.
@@ -22,7 +30,6 @@ export class EntryLabelOverlay extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-entry-label-overlay`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
-  #label = '';
   // The label is set to editable when it is double clicked. If the user clicks away from the label box
   // element, the lable is set to not editable until it double clicked.
   #isLabelEditable: boolean = true;
@@ -53,10 +60,9 @@ Otherwise, the entry label overlay object only gets repositioned.
 
   constructor(label: string) {
     super();
-    this.#label = label;
     this.#render();
     this.#labelPartsWrapper = this.#shadow.querySelector<HTMLElement>('.label-parts-wrapper');
-    this.#drawLabel();
+    this.#drawLabel(label);
     this.#drawConnector();
   }
 
@@ -175,7 +181,7 @@ Otherwise, the entry label overlay object only gets repositioned.
     circle.setAttribute('fill', 'black');
   }
 
-  #drawLabel(): void {
+  #drawLabel(initialLabel: string): void {
     if (!this.#labelPartsWrapper) {
       console.error('`labelPartsWrapper` element is missing.');
       return;
@@ -188,6 +194,7 @@ Otherwise, the entry label overlay object only gets repositioned.
       return;
     }
 
+    this.#labelBox.innerText = initialLabel;
     // PART 1: draw the label box
     // Set label height to the entry height
     this.#labelBox.style.height = `${EntryLabelOverlay.LABEL_HEIGHT}px`;
@@ -196,8 +203,8 @@ Otherwise, the entry label overlay object only gets repositioned.
 
     // If the label is not empty, it was loaded from the trace file.
     // In that case, do not make just created label editable.
-    if (this.#label !== '') {
-      this.#setLabelEditability(false);
+    if (initialLabel !== '') {
+      this.#setLabelEditabilityAndRemoveEmptyLabel(false);
     }
   }
 
@@ -233,26 +240,29 @@ Otherwise, the entry label overlay object only gets repositioned.
     this.#labelBox.focus();
   }
 
-  #setLabelEditability(editable: boolean): void {
+  #setLabelEditabilityAndRemoveEmptyLabel(editable: boolean): void {
     this.#isLabelEditable = editable;
     this.#render();
     // If the label is editable, focus cursor on it
     if (editable) {
       this.#focusInputBox();
     }
+    // If the label is empty when it is being navigated away from, dispatch an event to remove this entry overlay
+    if (!editable && this.#labelBox?.innerText.length === 0) {
+      this.dispatchEvent(new EmptyEntryLabelRemoveEvent());
+    }
   }
 
   #render(): void {
-    // clang-format offs
+    // clang-format off
     LitHtml.render(
         LitHtml.html`
         <span class="label-parts-wrapper">
           <span
             class="label-box"
-            @dblclick=${() => this.#setLabelEditability(true)}
-            @blur=${() => this.#setLabelEditability(false)}
-            contenteditable=${this.#isLabelEditable}
-            .innerText=${this.#label}>
+            @dblclick=${() => this.#setLabelEditabilityAndRemoveEmptyLabel(true)}
+            @blur=${() => this.#setLabelEditabilityAndRemoveEmptyLabel(false)}
+            contenteditable=${this.#isLabelEditable}>
           </span>
           <svg class="connectorContainer">
             <line/>

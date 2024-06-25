@@ -505,8 +505,7 @@ export class Overlays {
     div.classList.add('overlay-item', `overlay-type-${overlay.type}`);
     switch (overlay.type) {
       case 'ENTRY_LABEL': {
-        const component = new Components.EntryLabelOverlay.EntryLabelOverlay();
-        component.label = overlay.label;
+        const component = new Components.EntryLabelOverlay.EntryLabelOverlay(overlay.label);
         div.appendChild(component);
         return div;
       }

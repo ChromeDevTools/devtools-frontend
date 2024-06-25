@@ -22,6 +22,7 @@
   border-radius: 4px;
   font-family: var(--monospace-font-family);
   font-weight: bold;
+  white-space: nowrap;
 }
 
 .label-box:focus {

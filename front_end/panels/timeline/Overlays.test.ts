@@ -295,6 +295,47 @@ describeWithEnvironment('Overlays', () => {
       assert.strictEqual(label?.innerText, 'entry label');
     });
 
+    it('Inputting `Enter`into label overlay makes it non-editable', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {overlays, container, charts} = setupChartWithDimensions(traceParsedData);
+      const event = charts.mainProvider.eventByIndex(50);
+      assert.isOk(event);
+      assert.notInstanceOf(event, TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
+
+      // Create an entry label overlay
+      overlays.add({
+        type: 'ENTRY_LABEL',
+        entry: event,
+        label: 'label',
+      });
+      overlays.update();
+
+      // Ensure that the overlay was created.
+      const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_LABEL');
+      assert.isOk(overlayDOM);
+
+      const component = overlayDOM?.querySelector('devtools-entry-label-overlay');
+      assert.isOk(component?.shadowRoot);
+      component.connectedCallback();
+      const elementsWrapper = component.shadowRoot.querySelector<HTMLElement>('.label-parts-wrapper');
+      assert.isOk(elementsWrapper);
+
+      const label = elementsWrapper.querySelector<HTMLElement>('.label-box');
+      assert.isOk(label);
+
+      // Double click on the label box to make it editable and focus on it
+      label.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
+
+      // Ensure the label content is editable
+      assert.isTrue(label.isContentEditable);
+
+      // Press `Enter` to make the lable not editable
+      label.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', cancelable: true, bubbles: true}));
+
+      // Ensure the label content is not editable
+      assert.isFalse(label.isContentEditable);
+    });
+
     it('can render an overlay for a time range', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const {overlays, container} = setupChartWithDimensions(traceParsedData);
@@ -478,7 +519,8 @@ describeWithEnvironment('Overlays', () => {
       assert.isOk(component?.shadowRoot);
 
       const elementsWrapper = component.shadowRoot.querySelector<HTMLElement>('.label-parts-wrapper');
-      const labelBox = elementsWrapper?.querySelector<HTMLElement>('.label-box') as HTMLSpanElement;
+      assert.isOk(elementsWrapper);
+      const labelBox = elementsWrapper.querySelector<HTMLElement>('.label-box') as HTMLSpanElement;
 
       // The label input box should be editable after it is created and before anything else happened
       assert.isTrue(labelBox.isContentEditable);

@@ -16,6 +16,8 @@ export class EntryLabelOverlay extends HTMLElement {
   static readonly LABEL_PADDING = 4;
   static readonly LABEL_AND_CONNECTOR_HEIGHT =
       EntryLabelOverlay.LABEL_HEIGHT + EntryLabelOverlay.LABEL_PADDING * 2 + EntryLabelOverlay.LABEL_CONNECTOR_HEIGHT;
+  // Set the max label length to avoid labels that could signicantly increase the file size.
+  static readonly MAX_LABEL_LENGTH = 100;
 
   static readonly litTagName = LitHtml.literal`devtools-entry-label-overlay`;
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -25,6 +27,9 @@ export class EntryLabelOverlay extends HTMLElement {
   // element, the lable is set to not editable until it double clicked.
   #isLabelEditable: boolean = true;
   #entryDimensions: {height: number, width: number}|null = null;
+
+  #labelPartsWrapper: HTMLElement|null = null;
+  #labelBox: HTMLElement|null = null;
 
   /*
 The entry label overlay consists of 3 parts - the label part with the label string inside,
@@ -46,29 +51,81 @@ The connector and circle shapes never change so we only draw the second part whe
 Otherwise, the entry label overlay object only gets repositioned.
 */
 
-  constructor() {
+  constructor(label: string) {
     super();
+    this.#label = label;
     this.#render();
+    this.#labelPartsWrapper = this.#shadow.querySelector<HTMLElement>('.label-parts-wrapper');
     this.#drawLabel();
     this.#drawConnector();
   }
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [styles];
+    this.#labelBox?.addEventListener('keydown', this.#handleLabelInputKeyDown);
+    this.#labelBox?.addEventListener('paste', this.#handleLabelInputPaste);
   }
 
-  set label(label: string) {
-    if (label === this.#label) {
+  disconnectedCallback(): void {
+    this.#labelBox?.removeEventListener('keydown', this.#handleLabelInputKeyDown);
+    this.#labelBox?.removeEventListener('paste', this.#handleLabelInputPaste);
+  }
+
+  #handleLabelInputKeyDown(event: KeyboardEvent): boolean {
+    const allowedKeysAfterReachingLenLimit = [
+      'Backspace',
+      'Delete',
+      'ArrowLeft',
+      'ArrowRight',
+    ];
+
+    // We do not want to create multi-line labels.
+    // Therefore, if the new key is `Enter` key, treat it
+    // as the end of the label input and blur the input field.
+    if (event.key === 'Enter' || event.key === 'Escape') {
+      this.dispatchEvent(new FocusEvent('blur', {bubbles: true}));
+      return false;
+    }
+
+    // If the max limit is not reached, return true
+    if (!this.textContent || this.textContent.length <= EntryLabelOverlay.MAX_LABEL_LENGTH) {
+      return true;
+    }
+
+    if (allowedKeysAfterReachingLenLimit.includes(event.key)) {
+      return true;
+    }
+
+    if (event.key.length === 1 && event.ctrlKey /* Ctrl + A for selecting all */) {
+      return true;
+    }
+
+    event.preventDefault();
+    return false;
+  }
+
+  #handleLabelInputPaste(event: ClipboardEvent): void {
+    event.preventDefault();
+
+    const clipboardData = event.clipboardData;
+    if (!clipboardData) {
       return;
     }
-    this.#label = label;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-    // We need to redraw the label only when the label is set to a new one
-    this.#drawLabel();
 
-    // If the label is not empty, it was loaded from the trace file.
-    // In that case, do not make just created label editable.
-    this.#setLabelEditability(false);
+    const pastedText = clipboardData.getData('text');
+
+    const newText = this.textContent + pastedText;
+    const trimmedText = newText.slice(0, EntryLabelOverlay.MAX_LABEL_LENGTH + 1);
+
+    this.textContent = trimmedText;
+
+    // Reset the selection to the end
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(this);
+    range.collapse(false);
+    selection?.removeAllRanges();
+    selection?.addRange(range);
   }
 
   set entryDimensions(entryDimensions: {height: number, width: number}) {
@@ -84,11 +141,14 @@ Otherwise, the entry label overlay object only gets repositioned.
   }
 
   #drawConnector(): void {
-    const labelPartsWrapper = this.#shadow.querySelector<HTMLElement>('.label-parts-wrapper');
-    const connectorLineContainer = labelPartsWrapper?.querySelector('.connectorContainer') as SVGAElement;
+    if (!this.#labelPartsWrapper) {
+      console.error('`labelPartsWrapper` element is missing.');
+      return;
+    }
+    const connectorLineContainer = this.#labelPartsWrapper.querySelector('.connectorContainer') as SVGAElement;
     const connector = connectorLineContainer.querySelector('line');
     const circle = connectorLineContainer.querySelector('circle');
-    const entryHighlightWrapper = labelPartsWrapper?.querySelector('.entry-highlight-wrapper') as HTMLElement;
+    const entryHighlightWrapper = this.#labelPartsWrapper.querySelector('.entry-highlight-wrapper') as HTMLElement;
     if (!connectorLineContainer || !entryHighlightWrapper || !connector || !circle) {
       console.error('Some entry label elements are missing.');
       return;
@@ -116,24 +176,37 @@ Otherwise, the entry label overlay object only gets repositioned.
   }
 
   #drawLabel(): void {
-    const labelPartsWrapper = this.#shadow.querySelector<HTMLElement>('.label-parts-wrapper');
-    const labelBox = labelPartsWrapper?.querySelector<HTMLElement>('.label-box');
+    if (!this.#labelPartsWrapper) {
+      console.error('`labelPartsWrapper` element is missing.');
+      return;
+    }
 
-    if (!labelBox) {
+    this.#labelBox = this.#labelPartsWrapper.querySelector<HTMLElement>('.label-box');
+
+    if (!this.#labelBox) {
       console.error('`labelBox` element is missing.');
       return;
     }
 
     // PART 1: draw the label box
     // Set label height to the entry height
-    labelBox.style.height = `${EntryLabelOverlay.LABEL_HEIGHT}px`;
-    labelBox.style.padding = `${EntryLabelOverlay.LABEL_PADDING}px`;
-    labelBox.style.transform = `translateX(-${EntryLabelOverlay.LABEL_AND_CONNECTOR_SHIFT_LENGTH}px)`;
+    this.#labelBox.style.height = `${EntryLabelOverlay.LABEL_HEIGHT}px`;
+    this.#labelBox.style.padding = `${EntryLabelOverlay.LABEL_PADDING}px`;
+    this.#labelBox.style.transform = `translateX(-${EntryLabelOverlay.LABEL_AND_CONNECTOR_SHIFT_LENGTH}px)`;
+
+    // If the label is not empty, it was loaded from the trace file.
+    // In that case, do not make just created label editable.
+    if (this.#label !== '') {
+      this.#setLabelEditability(false);
+    }
   }
 
   #drawEntryHighlightWrapper(): void {
-    const labelPartsWrapper = this.#shadow.querySelector<HTMLElement>('.label-parts-wrapper');
-    const entryHighlightWrapper = labelPartsWrapper?.querySelector('.entry-highlight-wrapper') as HTMLElement;
+    if (!this.#labelPartsWrapper) {
+      console.error('`labelPartsWrapper` element is missing.');
+      return;
+    }
+    const entryHighlightWrapper = this.#labelPartsWrapper.querySelector('.entry-highlight-wrapper') as HTMLElement;
 
     if (!entryHighlightWrapper) {
       console.error('`entryHighlightWrapper` element is missing.');
@@ -153,13 +226,11 @@ Otherwise, the entry label overlay object only gets repositioned.
   }
 
   #focusInputBox(): void {
-    const labelPartsWrapper = this.#shadow.querySelector<HTMLElement>('.label-parts-wrapper');
-    const labelBox = labelPartsWrapper?.querySelector<HTMLElement>('.label-box');
-    if (!labelBox) {
+    if (!this.#labelBox) {
       console.error('`labelBox` element is missing.');
       return;
     }
-    labelBox.focus();
+    this.#labelBox.focus();
   }
 
   #setLabelEditability(editable: boolean): void {
@@ -172,14 +243,15 @@ Otherwise, the entry label overlay object only gets repositioned.
   }
 
   #render(): void {
-    // clang-format off
+    // clang-format offs
     LitHtml.render(
         LitHtml.html`
         <span class="label-parts-wrapper">
-          <span 
-            class="label-box" @dblclick=${() => this.#setLabelEditability(true)}
-            @blur=${() => this.#setLabelEditability(false)} 
-            contenteditable=${this.#isLabelEditable} 
+          <span
+            class="label-box"
+            @dblclick=${() => this.#setLabelEditability(true)}
+            @blur=${() => this.#setLabelEditability(false)}
+            contenteditable=${this.#isLabelEditable}
             .innerText=${this.#label}>
           </span>
           <svg class="connectorContainer">

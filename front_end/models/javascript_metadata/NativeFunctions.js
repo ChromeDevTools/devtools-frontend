@@ -6825,10 +6825,6 @@ export const NativeFunctions = [
     signatures: [["startTime","endTime","text"]]
   },
   {
-    name: "DeviceProperties",
-    signatures: [["?devicePropertiesInitDict"]]
-  },
-  {
     name: "InputDeviceCapabilities",
     signatures: [["?deviceInitDict"]]
   },

@@ -3728,7 +3728,9 @@ export const generatedProperties = [
   "keywords": [
    "horizontal-tb",
    "vertical-rl",
-   "vertical-lr"
+   "vertical-lr",
+   "sideways-rl",
+   "sideways-lr"
   ],
   "name": "writing-mode"
  },
@@ -5784,7 +5786,9 @@ export const generatedPropertyValues = {
   "values": [
    "horizontal-tb",
    "vertical-rl",
-   "vertical-lr"
+   "vertical-lr",
+   "sideways-rl",
+   "sideways-lr"
   ]
  },
  "z-index": {

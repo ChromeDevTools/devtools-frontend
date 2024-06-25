@@ -378,6 +378,26 @@ describeWithEnvironment('Overlays', () => {
       assert.isTrue(secondWidth < firstWidth);
     });
 
+    it('renders the overlay for a selected layout shift entry correctly', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
+      const {overlays, container} = setupChartWithDimensions(traceParsedData);
+      const layoutShiftEvent = traceParsedData.LayoutShifts.clusters.at(0)?.events.at(0);
+      if (!layoutShiftEvent) {
+        throw new Error('layoutShiftEvent was unexpectedly undefined');
+      }
+      overlays.add({
+        type: 'ENTRY_SELECTED',
+        entry: layoutShiftEvent,
+      });
+      const boundsRange = TraceEngine.Types.Timing.MicroSeconds(20_000);
+      const boundsMax = TraceEngine.Types.Timing.MicroSeconds(layoutShiftEvent.ts + boundsRange);
+      overlays.updateVisibleWindow({min: layoutShiftEvent.ts, max: boundsMax, range: boundsRange});
+      overlays.update();
+      const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_SELECTED');
+      assert.isOk(overlayDOM);
+      assert.strictEqual(window.parseInt(overlayDOM.style.width), 250);
+    });
+
     it('renders the duration and label for a time range overlay', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const {overlays, container} = setupChartWithDimensions(traceParsedData);

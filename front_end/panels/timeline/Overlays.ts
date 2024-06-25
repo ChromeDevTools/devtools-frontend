@@ -6,6 +6,7 @@ import * as TraceEngine from '../../models/trace/trace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import * as Components from './components/components.js';
+import {LAYOUT_SHIFT_SYNTHETIC_DURATION} from './LayoutShiftsTrackAppender.js';
 import {type TimelineFlameChartDataProvider} from './TimelineFlameChartDataProvider.js';
 import {type TimelineFlameChartNetworkDataProvider} from './TimelineFlameChartNetworkDataProvider.js';
 
@@ -170,7 +171,15 @@ export class Overlays {
         selfTime: TraceEngine.Types.Timing.MicroSeconds(0),
       };
     }
-
+    if (TraceEngine.Types.TraceEvents.isSyntheticLayoutShift(entry)) {
+      const endTime = TraceEngine.Types.Timing.MicroSeconds(entry.ts + LAYOUT_SHIFT_SYNTHETIC_DURATION);
+      return {
+        endTime,
+        duration: LAYOUT_SHIFT_SYNTHETIC_DURATION,
+        startTime: entry.ts,
+        selfTime: TraceEngine.Types.Timing.MicroSeconds(0),
+      };
+    }
     return TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(entry);
   }
 

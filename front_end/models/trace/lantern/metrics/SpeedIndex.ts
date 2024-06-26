@@ -1,0 +1,125 @@
+// Copyright 2024 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+import {BaseNode, type Node} from '../BaseNode.js';
+import type * as Lantern from '../types/lantern.js';
+
+import {type Extras, Metric} from './Metric.js';
+
+const mobileSlow4GRtt = 150;
+
+class SpeedIndex extends Metric {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static override get coefficients(): Lantern.Simulation.MetricCoefficients {
+    return {
+      // Note that the optimistic estimate is based on the real observed speed index rather than a
+      // real lantern graph (and the final estimate will be Math.max(FCP, Speed Index)).
+      intercept: 0,
+      optimistic: 1.4,
+      pessimistic: 0.4,
+    };
+  }
+
+  static override getScaledCoefficients(rttMs: number):
+      Lantern.Simulation.MetricCoefficients {  // eslint-disable-line no-unused-vars
+    // We want to scale our default coefficients based on the speed of the connection.
+    // We will linearly interpolate coefficients for the passed-in rttMs based on two pre-determined points:
+    //   1. Baseline point of 30 ms RTT where Speed Index should be a ~50/50 blend of optimistic/pessimistic.
+    //      30 ms was based on a typical home WiFi connection's actual RTT.
+    //      Coefficients here follow from the fact that the optimistic estimate should be very close
+    //      to reality at this connection speed and the pessimistic estimate compensates for minor
+    //      connection speed differences.
+    //   2. Default throttled point of 150 ms RTT where the default coefficients have been determined to be most accurate.
+    //      Coefficients here were determined through thorough analysis and linear regression on the
+    //      lantern test data set. See core/scripts/test-lantern.sh for more detail.
+    // While the coefficients haven't been analyzed at the interpolated points, it's our current best effort.
+    const defaultCoefficients = this.coefficients;
+    const defaultRttExcess = mobileSlow4GRtt - 30;
+    const multiplier = Math.max((rttMs - 30) / defaultRttExcess, 0);
+
+    return {
+      intercept: defaultCoefficients.intercept * multiplier,
+      optimistic: 0.5 + (defaultCoefficients.optimistic - 0.5) * multiplier,
+      pessimistic: 0.5 + (defaultCoefficients.pessimistic - 0.5) * multiplier,
+    };
+  }
+
+  static override getOptimisticGraph(dependencyGraph: Node): Node {
+    return dependencyGraph;
+  }
+
+  static override getPessimisticGraph(dependencyGraph: Node): Node {
+    return dependencyGraph;
+  }
+
+  static override getEstimateFromSimulation(simulationResult: Lantern.Simulation.Result, extras: Extras):
+      Lantern.Simulation.Result {
+    if (!extras.fcpResult) {
+      throw new Error('missing fcpResult');
+    }
+    if (extras.observedSpeedIndex === undefined) {
+      throw new Error('missing observedSpeedIndex');
+    }
+
+    const fcpTimeInMs = extras.fcpResult.pessimisticEstimate.timeInMs;
+    const estimate = extras.optimistic ?
+        extras.observedSpeedIndex :
+        SpeedIndex.computeLayoutBasedSpeedIndex(simulationResult.nodeTimings, fcpTimeInMs);
+    return {
+      timeInMs: estimate,
+      nodeTimings: simulationResult.nodeTimings,
+    };
+  }
+
+  static override async compute(
+      data: Lantern.Simulation.MetricComputationDataInput,
+      extras?: Omit<Extras, 'optimistic'>): Promise<Lantern.Metrics.Result> {
+    const fcpResult = extras?.fcpResult;
+    if (!fcpResult) {
+      throw new Error('FCP is required to calculate the SpeedIndex metric');
+    }
+
+    const metricResult = await super.compute(data, extras);
+    metricResult.timing = Math.max(metricResult.timing, fcpResult.timing);
+    return metricResult;
+  }
+
+  /**
+   * Approximate speed index using layout events from the simulated node timings.
+   * The layout-based speed index is the weighted average of the endTime of CPU nodes that contained
+   * a 'Layout' task. log(duration) is used as the weight to stand for "significance" to the page.
+   *
+   * If no layout events can be found or the endTime of a CPU task is too early, FCP is used instead.
+   *
+   * This approach was determined after evaluating the accuracy/complexity tradeoff of many
+   * different methods. Read more in the evaluation doc.
+   *
+   * @see https://docs.google.com/document/d/1qJWXwxoyVLVadezIp_Tgdk867G3tDNkkVRvUJSH3K1E/edit#
+   */
+  static computeLayoutBasedSpeedIndex(nodeTimings: Lantern.Simulation.Result['nodeTimings'], fcpTimeInMs: number):
+      number {
+    const layoutWeights: Array<{time: number, weight: number}> = [];
+    for (const [node, timing] of nodeTimings.entries()) {
+      if (node.type !== BaseNode.types.CPU) {
+        continue;
+      }
+
+      if (node.childEvents.some(x => x.name === 'Layout')) {
+        const timingWeight = Math.max(Math.log2(timing.endTime - timing.startTime), 0);
+        layoutWeights.push({time: timing.endTime, weight: timingWeight});
+      }
+    }
+
+    const totalWeightedTime =
+        layoutWeights.map(evt => evt.weight * Math.max(evt.time, fcpTimeInMs)).reduce((a, b) => a + b, 0);
+    const totalWeight = layoutWeights.map(evt => evt.weight).reduce((a, b) => a + b, 0);
+
+    if (!totalWeight) {
+      return fcpTimeInMs;
+    }
+    return totalWeightedTime / totalWeight;
+  }
+}
+
+export {SpeedIndex};

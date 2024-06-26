@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With ബ്ലോക്ക്"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "വേഗതയേറിയ 4G"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "വേഗതയേറിയ 3G"
+    "message": "വേഗത കുറഞ്ഞ 4G"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "പ്രീഫ്ലൈറ്റ് അഭ്യർത്ഥനയ്ക്ക് ഉള്ളടക്കമൊന്നും ലഭ്യമല്ല"
@@ -300,7 +303,7 @@
     "message": "{PH1} ലോഡ് ചെയ്യൽ പൂർത്തിയായി: {PH2} \"{PH3}\"."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "വേഗത കുറഞ്ഞ 3G"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "ഈ കുക്കി സംഭരിക്കാൻ ശ്രമിക്കുമ്പോൾ അജ്ഞാത പിശകുണ്ടായി."
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "സുരക്ഷിതമല്ലാത്ത ഉറവിടങ്ങളിൽ getCurrentPosition(), watchPosition() എന്നിവ അവസാനിപ്പിച്ചു. ഈ ഫീച്ചർ ഉപയോഗിക്കാൻ, HTTPS പോലുള്ള സുരക്ഷിതമായ ഉറവിടത്തിലേക്ക് നിങ്ങളുടെ ആപ്പ് മാറ്റുന്ന കാര്യം പരിഗണിക്കുക. കൂടുതൽ വിശദാംശങ്ങൾക്ക് https://goo.gle/chrome-insecure-origins കാണുക."
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "getInnerHTML() ഫംഗ്‌ഷൻ അവസാനിപ്പിച്ചു, ഈ ബ്രൗസറിൽ നിന്ന് ഉടൻ തന്നെ നീക്കം ചെയ്യും. പകരം, getHTML() ഉപയോഗിക്കുക."
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "സുരക്ഷിതമല്ലാത്ത ഉറവിടങ്ങളിൽ getUserMedia() ഇനി പ്രവർത്തിക്കില്ല. ഈ ഫീച്ചർ ഉപയോഗിക്കാൻ, HTTPS പോലുള്ള സുരക്ഷിതമായ ഉറവിടത്തിലേക്ക് നിങ്ങളുടെ ആപ്പ് മാറ്റുന്ന കാര്യം പരിഗണിക്കുക. കൂടുതൽ വിശദാംശങ്ങൾക്ക് https://goo.gle/chrome-insecure-origins കാണുക."
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "{PH1} -മായി ലിങ്ക് ചെയ്തിരിക്കുന്നു"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "ഫയൽ റീഡ് ചെയ്യുമ്പോൾ അജ്ഞാതമായ പിശകുണ്ടായി: {PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "ഫയൽ സിസ്റ്റം ചേർക്കാനാകുന്നില്ല: {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "ചിത്രം സംരക്ഷിക്കുക"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "ഡിസ്‌ക്കിലേക്ക് WASM മൊഡ്യൂൾ സംരക്ഷിക്കാനായില്ല. മൊഡ്യൂൾ വളരെ വലുതായതിനാലാകാം ഇത്."
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "എല്ലാ അസാധുവാക്കലുകളും കാണിക്കുക"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "ഇവന്റുകൾ റെക്കോർഡ് ചെയ്യുന്നത് നിർത്തുക"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "നിർവചിച്ചിട്ടില്ലാത്തത്"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "നിർവചിച്ചിട്ടില്ലാത്തത്"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "നിർവചിച്ചിട്ടില്ലാത്തത്"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "GET അഭ്യർത്ഥനയിലൂടെ ലോഡ് ചെയ്ത പേജുകൾക്ക് മാത്രമേ ബാക്ക്/ഫോർവേഡ് കാഷെയ്ക്ക് യോഗ്യതയുള്ളൂ."
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "കാഷെയിലായിരിക്കുമ്പോൾ JavaScript നിർവ്വഹിക്കാനുള്ള ശ്രമം Chrome കണ്ടെത്തി."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "നിർവചിച്ചിട്ടില്ലാത്തത്"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "നിർവചിച്ചിട്ടില്ലാത്തത്"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "നിർവചിച്ചിട്ടില്ലാത്തത്"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "നിർവചിച്ചിട്ടില്ലാത്തത്"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "AppBanner അഭ്യർത്ഥിച്ച പേജുകൾക്ക് നിലവിൽ ബാക്ക്/ഫോർവേഡ് കാഷെയ്ക്കുള്ള യോഗ്യതയില്ല."
@@ -4263,7 +4248,7 @@
     "message": "സജീവമാക്കൽ സമയത്ത്, നാവിഗേഷന് അതിന്റെ സാധാരണ URL-ൽ നിന്ന് വ്യത്യസ്തമായ ഒരു ഫലപ്രദമായ URL ഉണ്ടായിരുന്നതിനാൽ പ്രീറെൻഡർ ഉപയോഗിച്ചില്ല. (ഉദാഹരണത്തിന്, പുതിയ ടാബ് പേജ്, അല്ലെങ്കിൽ ഹോസ്റ്റ് ചെയ്ത ആപ്പുകൾ.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "അജ്ഞാതം"
+    "message": "ചില കാരണങ്ങളാൽ, പ്രീറെൻഡർ ചെയ്ത എല്ലാ പേജുകളും ബ്രൗസർ അൺലോഡ് ചെയ്തു (ഉദാഹരണത്തിന്, പ്രീറെൻഡറിംഗ് സമയത്ത് WebViewCompat.addWebMessageListener() റദ്ദാക്കി.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "പ്രീറെൻഡർ ചെയ്‌ത പേജ് ഓഡിയോ ഔട്ട്‌പുട്ട് അഭ്യർത്ഥിച്ചു, അത് നിലവിൽ പിന്തുണയ്‌ക്കുന്നില്ല."
@@ -4305,10 +4290,10 @@
     "message": "http: അല്ലെങ്കിൽ https: അല്ലാത്ത സ്‌കീമുള്ള URL-ലേക്ക് റീഡയറക്‌റ്റ് ചെയ്‌തതിനാൽ പ്രീറെൻഡറിംഗ് നാവിഗേഷൻ പരാജയപ്പെട്ടു."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "അജ്ഞാതം"
+    "message": "WebView.addJavascriptInterface(), ഒരു പുതിയ JavaScript ഇന്റർഫേസ് ഉൾച്ചേർത്തിരിക്കുന്നതിനാൽ, പ്രീറെൻഡർ ചെയ്ത പേജ് അൺലോഡ് ചെയ്തു."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "അജ്ഞാതം"
+    "message": "WebView.removeJavascriptInterface(), ഒരു JavaScript ഇന്റർഫേസ് നീക്കം ചെയ്തതിനാൽ, പ്രീറെൻഡർ ചെയ്ത പേജ് അൺലോഡ് ചെയ്തു."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "പ്രീറെൻഡറിംഗ് നാവിഗേഷന് HTTP പരിശോധിച്ചുറപ്പിക്കൽ ആവശ്യമാണ്, അത് നിലവിൽ പിന്തുണയ്ക്കുന്നില്ല."
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "iframe വിശദാംശങ്ങൾ കാണിക്കുക"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "പോപ്പ്ഓവർ ടാർഗറ്റ് കാണിക്കുക"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "ഈ ഫ്രെയിം ഒരു പരസ്യ ഫ്രെയിം ആണെന്ന് തിരിച്ചറിഞ്ഞു"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "ബാഡ്‌ജുകൾ കാണിക്കുക"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "ആങ്കർ നോഡിലേക്ക് പോകുക"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "കൂടുതലറിയുക"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "നിഷ്‌ക്രിയം"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "നീക്കം ചെയ്യുക"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "എലമെന്റുകളുടെ പാനലിൽ വെളിപ്പെടുത്തുക"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "ഈ ഫീച്ചർ ഉപയോഗിക്കാൻ, DevTools ക്രമീകരണത്തിലെ നിങ്ങളുടെ ഭാഷാ മുൻഗണന ഇംഗ്ലീഷിലേക്ക് അപ്ഡേറ്റ് ചെയ്യുക."
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "സന്ദേശങ്ങൾ മായ്ക്കുക"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "ഫീഡ്ബാക്ക് അയയ്ക്കുക"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "ഞാൻ എങ്ങനെയാണ് നിങ്ങളെ സഹായിക്കേണ്ടത്?"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "ഫ്രീസ്റ്റൈലർ കൃത്യമല്ലാത്ത വിവരങ്ങൾ കാണിച്ചേക്കാം, ഇതിന് ശരിയായ വിവരങ്ങൾ ലഭിക്കണമെന്നില്ല"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "ഫ്രീസ്റ്റൈലറോട് ആവശ്യപ്പെടുക അല്ലെങ്കിൽ ടൈപ്പ് ചെയ്യുക / കമാൻഡുകൾക്ക്"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "ഒരു ഘടകം തിരഞ്ഞെടുക്കുക"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "അയയ്ക്കുക"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "ഫ്രീസ്റ്റൈലർ"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "ഫ്രീസ്റ്റൈലർ കാണിക്കുക"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "ബ്ലോക്ക് ചെയ്‌ത ഉറവിടം"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "ഈ പേജ് ആധുനിക വെബ് ഡെവലപ്പ്മെന്റിനായുള്ള മികച്ച കീഴ്‍വഴക്കങ്ങൾ പാലിക്കുന്നുണ്ടോ"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "ഈ പേജ് ഒരു പ്രോഗ്രസീവ് വെബ്‌ ആപ്പിന്റെ നിലവാരം പുലർത്തുന്നുണ്ടോ"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "Lighthouse-ൽ റൺ ചെയ്യുമ്പോൾ JavaScript സാമ്പിൾ പ്രവർത്തനക്ഷമമാക്കുക. നിങ്ങൾ അടയാളം കാണുമ്പോൾ, ഇത് പ്രകടന പാനലിൽ കൂടുതൽ നടപ്പിലാക്കൽ വിശദാംശങ്ങൾ നൽകും, എന്നാൽ ഉയർന്ന CPU ഓവർഹെഡ് ഉള്ളതിനാൽ പേജിന്റെ പ്രകടനത്തെ ബാധിച്ചേക്കാം."
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "പ്രകടനം"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "പ്രോഗ്രസീവ് വെബ്‌ ആപ്പ്"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "ഓഡിറ്റിംഗിന് മുമ്പ് സ്റ്റോറേജ് (cache, service workers, മുതലായവ) റീസെറ്റ് ചെയ്യുക. (പ്രകടനത്തിനും PWA ടെസ്‌റ്റിംഗിനും മികച്ചത്)"
@@ -9648,7 +9657,7 @@
     "message": "ഓപ്റ്റിമൈസ് ചെയ്തിട്ടില്ല: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "ലോഡ് ചെയ്യുക"
+    "message": "പ്രൊഫൈൽ ലോഡ് ചെയ്യുക"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "JavaScript VM ഇൻസ്‌റ്റൻസ് തിരഞ്ഞെടുക്കുക"
@@ -10275,7 +10284,25 @@
     "message": "{PH1} എണ്ണം കൂടി കാണിക്കുക"
   },
   "panels/search/SearchView.ts | clear": {
+    "message": "തിരയൽ മായ്ക്കുക"
+  },
+  "panels/search/SearchView.ts | clearInput": {
     "message": "മായ്ക്കുക"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "കേസ് സെൻസിറ്റീവ് തിരയൽ പ്രവർത്തനരഹിതമാക്കുക"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "റെഗുലർ എക്‌സ്പ്രഷനുകൾ പ്രവർത്തനരഹിതമാക്കുക"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "കേസ് സെൻസിറ്റീവ് തിരയൽ പ്രവർത്തനക്ഷമമാക്കുക"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "റെഗുലർ എക്‌സ്പ്രഷനുകൾ പ്രവർത്തനക്ഷമമാക്കുക"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "കണ്ടെത്തുക"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "{PH2} ഫയലുകളിൽ പൊരുത്തമുള്ള {PH1} വരികൾ കണ്ടെത്തി."
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "അഭ്യർത്ഥന അയയ്‌ക്കും"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "WebSocket സന്ദേശം സ്വീകരിക്കുക"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "WebSocket സന്ദേശം അയയ്ക്കുക"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "XHR ലോഡ് ചെയ്യുക"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "ടൈംലൈൻ സെഷൻ തിരഞ്ഞെടുക്കുക"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "റെക്കോർഡ് ചെയ്‌തതിന് ശേഷം, വലിച്ചിട്ടുകൊണ്ട് അവലോകനത്തിൽ നിന്നും താൽപര്യമുള്ള മേഖല തിരഞ്ഞെടുക്കുക. തുടർന്ന്, മൗസ് വീൽ അല്ലെങ്കിൽ {PH1} കീകൾ ഉപയോഗിച്ച് ടൈംലൈൻ സൂം ചെയ്‌ത് പാൻ ചെയ്യുക. {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "ഒരു പുതിയ റെക്കോർഡിംഗ് ആരംഭിക്കാൻ റെക്കോർഡ് ബട്ടൺ {PH1} ക്ലിക്ക് ചെയ്യുക അല്ലെങ്കിൽ {PH2} അമർത്തുക."
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "പേജ് ലോഡ് ചെയ്യുന്നത് റെക്കോർഡ് ചെയ്യാൻ വീണ്ടും ലോഡ് ചെയ്യൽ ബട്ടൺ {PH1} ക്ലിക്ക് ചെയ്യുക അല്ലെങ്കിൽ {PH2} അമർത്തുക."
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "കൂടുതലറിയുക"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "തകരാറുള്ള ടൈംലൈൻ ഡാറ്റ: {PH1}"
   },
@@ -12857,6 +12905,9 @@
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
     "message": "സ്ലോ-പാത്ത് നോൺ മാച്ചുകളുടെ %"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "ബ്ലൂം ഫിൽട്ടർ വഴി വേഗത്തിൽ റദ്ദാക്കാൻ കഴിയാത്ത പൊരുത്തമില്ലാത്ത നോഡുകളുടെ (പൊരുത്തം കണ്ടെത്താൻ നടത്തിയ ശ്രമങ്ങൾ - പൊരുത്തപ്പെടുന്നവ) ശതമാനം. താഴ്ന്നതാണ് നല്ലത്."
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "സെലക്‌ടർ"
   },
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "ക്ലിപ്പ്‌ബോർഡിലേക്ക് പട്ടിക പകർത്തി"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(എല്ലാ സെലക്‌ടറുകൾക്കുമുള്ള ആകെ മൂല്യം)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "ലിങ്ക് ചെയ്യാനാകുന്നില്ല"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1}, {PH2} എടുത്തു."
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1} ബൈറ്റ്(കൾ)"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "ഡാറ്റയുടെ വലുപ്പം"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket പ്രോട്ടോക്കോൾ"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "തയ്യാറാകുമ്പോൾ DevTools വീണ്ടും തുറന്ന് വീണ്ടും കണക്റ്റ് ചെയ്യുക."
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "{PH2}-ൽ {PH1} ഫലം കാണിക്കുന്നു"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "മായ്ക്കുക"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "തിരയൽ ബാർ അടയ്ക്കുക"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} പൊരുത്തങ്ങൾ"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH2}-ൽ {PH1}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "കേസ് സെൻസിറ്റീവ് തിരയൽ പ്രവർത്തനരഹിതമാക്കുക"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "'കണ്ടെത്തി പകരം മറ്റൊന്ന് നൽകുക' പ്രവർത്തനരഹിതമാക്കുക"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "റെഗുലർ എക്‌സ്പ്രഷനുകൾ പ്രവർത്തനരഹിതമാക്കുക"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "കേസ് സെൻസിറ്റീവ് തിരയൽ പ്രവർത്തനക്ഷമമാക്കുക"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "കണ്ടെത്തി മറ്റൊന്ന് നൽകുക"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "റെഗുലർ എക്‌സ്പ്രഷനുകൾ പ്രവർത്തനക്ഷമമാക്കുക"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "കണ്ടെത്തുക"
@@ -13887,10 +13974,10 @@
     "message": "എല്ലാം മാറ്റി പകരം വെയ്ക്കുക"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "അടുത്തത് തിരയുക"
+    "message": "അടുത്ത ഫലം കാണിക്കുക"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "മുമ്പത്തേത് തിരയുക"
+    "message": "മുമ്പത്തെ ഫലം കാണിക്കുക"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "ഒന്നോ അതിലധികമോ ക്രമീകരണം മാറിയിരിക്കുന്നു, അത് പ്രാബല്യത്തിൽ വരാൻ റീലോഡ് ചെയ്യേണ്ടതുണ്ട്."
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "പ്രോമിസ് റിസോൾവ് ചെയ്തു (അസിങ്ക്രോണസ്)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (അസിങ്ക്രോണസ്)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} പാനൽ"

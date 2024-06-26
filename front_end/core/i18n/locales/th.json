@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "บล็อก With"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "4G แบบเร็ว"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "3G แบบเร็ว"
+    "message": "4G แบบช้า"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "ไม่มีเนื้อหาสำหรับคำขอการตรวจสอบล่วงหน้า"
@@ -300,7 +303,7 @@
     "message": "โหลด {PH1} เสร็จแล้ว: {PH2} \"{PH3}\""
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "3G แบบช้า"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "พบข้อผิดพลาดที่ไม่รู้จักขณะพยายามเก็บคุกกี้นี้"
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "getCurrentPosition() และ watchPosition() เลิกใช้งานแล้วในต้นทางที่ไม่ปลอดภัย คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "ฟังก์ชัน getInnerHTML() เลิกใช้งานแล้ว และจะถูกนำออกจากเบราว์เซอร์นี้ในเร็วๆ นี้ โปรดใช้ getHTML() แทน"
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia() ทำงานในต้นทางที่ไม่ปลอดภัยไม่ได้อีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "ลิงก์กับ {PH1}"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "เกิดข้อผิดพลาดที่ไม่รู้จักขณะอ่านไฟล์ {PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "เพิ่มระบบไฟล์ไม่ได้: {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "บันทึกรูปภาพ"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "บันทึกโมดูล WASM ลงในดิสก์ไม่ได้ เป็นไปได้ว่าโมดูลมีขนาดใหญ่เกินไป"
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "แสดงการลบล้างทั้งหมด"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "หยุดบันทึกเหตุการณ์"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "ไม่ระบุ"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "ไม่ระบุ"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "ไม่ระบุ"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "เฉพาะหน้าที่โหลดผ่านคำขอ GET เท่านั้นที่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome ตรวจพบความพยายามที่จะเรียกใช้ JavaScript ขณะอยู่ในแคช"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "ไม่ระบุ"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "ไม่ระบุ"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "ไม่ระบุ"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "ไม่ระบุ"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "หน้าที่ขอ AppBanner ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
@@ -4263,7 +4248,7 @@
     "message": "ไม่ได้ใช้การแสดงผลล่วงหน้าเนื่องจากในช่วงเวลาเปิดใช้งาน การนำทางมี URL ที่มีประสิทธิภาพซึ่งแตกต่างจาก URL ปกติ (เช่น หน้าแท็บใหม่หรือแอปที่โฮสต์)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "ไม่ทราบ"
+    "message": "เบราว์เซอร์ยกเลิกการโหลดหน้าที่แสดงผลล่วงหน้าทั้งหมดด้วยเหตุผลบางอย่าง (เช่น มีการเรียก WebViewCompat.addWebMessageListener() ระหว่างการแสดงผลล่วงหน้า)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "หน้าที่แสดงผลล่วงหน้าขอเอาต์พุตเสียงซึ่งยังไม่รองรับในขณะนี้"
@@ -4305,10 +4290,10 @@
     "message": "การนำทางโดยมีการแสดงผลล่วงหน้าไม่สำเร็จเนื่องจากมีการเปลี่ยนเส้นทางไปยัง URL ซึ่งมีรูปแบบที่ไม่ใช่ http: หรือ https:"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "ไม่ทราบ"
+    "message": "ยกเลิกการโหลดหน้าที่แสดงผลล่วงหน้าเนื่องจาก WebView.addJavascriptInterface() แทรกอินเทอร์เฟซ JavaScript ใหม่"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "ไม่ทราบ"
+    "message": "ยกเลิกการโหลดหน้าที่แสดงผลล่วงหน้าเนื่องจาก WebView.removeJavascriptInterface() นำอินเทอร์เฟซ JavaScript ออก"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "การนำทางโดยมีการแสดงผลล่วงหน้าจำเป็นต้องมีการตรวจสอบสิทธิ์ HTTP ซึ่งยังไม่รองรับในขณะนี้"
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "แสดงรายละเอียด iframe"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "แสดงเป้าหมายป๊อปอัป"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "เฟรมนี้ได้รับการระบุว่าเป็นเฟรมของโฆษณา"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "แสดงป้าย"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "ข้ามไปยังโหนดของแท็ก Anchor"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "ดูข้อมูลเพิ่มเติม"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "แพสซีฟ"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "นำออก"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "แสดงในแผงองค์ประกอบ"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "หากต้องการใช้ฟีเจอร์นี้ ให้อัปเดตค่ากำหนดภาษาของคุณในการตั้งค่าเครื่องมือสำหรับนักพัฒนาเว็บเป็นภาษาอังกฤษ"
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "ล้างข้อความ"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "ส่งความคิดเห็น"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "คุณต้องการความช่วยเหลือในเรื่องใด"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "Freestyler อาจแสดงข้อมูลที่ไม่ถูกต้องและอาจไม่ถูกต้อง"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "ขอ Freestyler หรือพิมพ์ / เพื่อขอคำสั่ง"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "เลือกองค์ประกอบ"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "ส่ง"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "แสดง FreeStyler"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "ทรัพยากรที่ถูกบล็อก"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "หน้านี้เป็นไปตามแนวทางปฏิบัติแนะนำในการพัฒนาเว็บสมัยใหม่หรือไม่"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "หน้านี้ตรงตามมาตรฐาน Progressive Web App หรือไม่"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "เปิดใช้การสุ่มตัวอย่าง JavaScript ระหว่างการเรียกใช้ Lighthouse ซึ่งจะให้รายละเอียดเพิ่มเติมเกี่ยวกับการดำเนินการดังกล่าวเมื่อคุณดูการติดตามในแผงประสิทธิภาพ แต่ก็จะทำให้โอเวอร์เฮดของ CPU สูงขึ้นและอาจส่งผลต่อประสิทธิภาพของหน้าเว็บ"
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "ประสิทธิภาพ"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "Progressive Web App"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "รีเซ็ตพื้นที่เก็บข้อมูล (cache, service workers และอื่นๆ) ก่อนตรวจสอบ (ดีสำหรับการทดสอบประสิทธิภาพและ PWA)"
@@ -9648,7 +9657,7 @@
     "message": "ไม่ได้เพิ่มประสิทธิภาพ: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "โหลด"
+    "message": "โหลดโปรไฟล์"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "เลือกอินสแตนซ์ VM ของ JavaScript"
@@ -10275,7 +10284,25 @@
     "message": "แสดงอีก {PH1} รายการ"
   },
   "panels/search/SearchView.ts | clear": {
+    "message": "ล้างการค้นหา"
+  },
+  "panels/search/SearchView.ts | clearInput": {
     "message": "ล้าง"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "ปิดใช้การค้นหาที่คำนึงถึงตัวพิมพ์เล็กและตัวพิมพ์ใหญ่"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "ปิดใช้นิพจน์ทั่วไป"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "เปิดใช้การค้นหาที่คำนึงถึงตัวพิมพ์เล็กและตัวพิมพ์ใหญ่"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "เปิดใช้นิพจน์ทั่วไป"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "ค้นหา"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "พบบรรทัดที่ตรงกัน {PH1} บรรทัดใน {PH2} ไฟล์"
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "จะส่งคำขอ"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "รับข้อความ WebSocket"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "ส่งข้อความ WebSocket"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "โหลด XHR"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "เลือกเซสชันไทม์ไลน์"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "หลังจากบันทึกแล้ว ให้เลือกพื้นที่ที่สนใจในภาพรวมโดยการลาก จากนั้นซูมและเลื่อนไทม์ไลน์ด้วยลูกกลิ้งเมาส์หรือแป้น {PH1} {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "คลิกปุ่ม \"บันทึก\" {PH1} หรือกด {PH2} เพื่อเริ่มการบันทึกใหม่"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "คลิกปุ่มโหลดซ้ำ {PH1} หรือกด {PH2} เพื่อบันทึกการโหลดหน้าเว็บ"
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "ดูข้อมูลเพิ่มเติม"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "ข้อมูลไทม์ไลน์มีรูปแบบไม่ถูกต้อง: {PH1}"
   },
@@ -12857,6 +12905,9 @@
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
     "message": "% ของการจับคู่ที่ไม่ตรงกันของเส้นทางที่ช้า"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "เปอร์เซ็นต์ของโหนดที่ไม่ตรงกัน (การพยายามจับคู่ - จํานวนการจับคู่) ที่ตัวกรองบลูมไม่สามารถตัดออกได้อย่างรวดเร็ว ยิ่งต่ำยิ่งดี"
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "ตัวเลือก"
   },
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "คัดลอกตารางไปยังคลิปบอร์ดแล้ว"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(ค่ารวมสำหรับตัวเลือกทั้งหมด)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "ลิงก์ไม่ได้"
@@ -12918,7 +12972,7 @@
     "message": "ซ่อนสแต็กที่ใช้เวลาดำเนินการสูงสุด"
   },
   "panels/timeline/TimelineTreeView.ts | matchCase": {
-    "message": "ให้ตัวพิมพ์เล็ก/พิมพ์ใหญ่ตรงกัน"
+    "message": "ตัวพิมพ์เล็กหรือใหญ่ตรงกัน"
   },
   "panels/timeline/TimelineTreeView.ts | matchWholeWord": {
     "message": "ตรงกันทั้งคำ"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1} ใช้ {PH2}"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1} ไบต์"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "ความยาวข้อมูล"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "โปรโตคอล WebSocket"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "เชื่อมต่ออีกครั้งเมื่อพร้อมโดยการเปิดเครื่องมือสำหรับนักพัฒนาเว็บขึ้นมาใหม่"
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "แสดงผลการค้นหา {PH1} จาก {PH2} รายการ"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "ล้าง"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "ปิดแถบค้นหา"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "ตรงกัน {PH1} รายการ"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} จาก {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "ปิดใช้การค้นหาที่คำนึงถึงตัวพิมพ์เล็กและตัวพิมพ์ใหญ่"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "ปิดใช้การค้นหาและแทนที่"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "ปิดใช้นิพจน์ทั่วไป"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "เปิดใช้การค้นหาที่คำนึงถึงตัวพิมพ์เล็กและตัวพิมพ์ใหญ่"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "ค้นหาและแทนที่"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "เปิดใช้นิพจน์ทั่วไป"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "ค้นหา"
@@ -13887,10 +13974,10 @@
     "message": "แทนที่ทั้งหมด"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "ค้นหารายการถัดไป"
+    "message": "แสดงผลการค้นหาถัดไป"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "ค้นหารายการก่อนหน้า"
+    "message": "แสดงผลการค้นหาก่อนหน้า"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "มีการเปลี่ยนการตั้งค่าอย่างน้อย 1 รายการซึ่งจะต้องโหลดซ้ำจึงจะมีผล"
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "Promise มีสถานะเป็น Resolved (async)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (ไม่พร้อมกัน)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "แผง {PH1}"

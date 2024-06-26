@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "Blok With"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "Brzi 4G"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "Brzi 3G"
+    "message": "Spori 4G"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "Nema dostupnog sadržaja za pripremnu provjeru"
@@ -300,7 +303,7 @@
     "message": "{PH1} je završio učitavanje: {PH2} \"{PH3}\"."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "Spori 3G"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "Došlo je do nepoznate greške prilikom pohranjivanja ovog kolačića."
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "Metode getCurrentPosition() i watchPosition() su zastarjele na nesigurnim porijeklima. Da koristite ovu funkciju, trebate razmotriti da prebacite svoju aplikaciju na sigurno porijeklo, kao što je HTTPS. Više detalja potražite na https://goo.gle/chrome-insecure-origins."
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "Funkcija getInnerHTML() je zastarjela i veoma brzo će se ukloniti iz ovog preglednika. Umjesto nje koristite getHTML()."
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "Metoda getUserMedia() više ne funkcionira na nesigurnim porijeklima. Da koristite ovu funkciju, trebate razmotriti da prebacite svoju aplikaciju na sigurno porijeklo, kao što je HTTPS. Više detalja potražite na https://goo.gle/chrome-insecure-origins."
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "Povezano s: {PH1}"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "Nepoznata greška pri očitavanju fajla: {PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Nije moguće dodati sistem fajlova: {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Sačuvaj sliku"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Nije moguće sačuvati WASM modul na disk. Modul je najvjerovatnije prevelik."
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "Prikaz svih zaobilaženja"
@@ -2850,7 +2856,7 @@
     "message": "fokus"
   },
   "panels/application/ServiceWorkersView.ts | inspect": {
-    "message": "pregledaj"
+    "message": "Pregledaj"
   },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "Mrežni zahtjevi"
@@ -2862,7 +2868,7 @@
     "message": "Periodična sinhronizacija"
   },
   "panels/application/ServiceWorkersView.ts | periodicSyncTag": {
-    "message": "Oznaka za Periodičnu sinhronizaciju"
+    "message": "Oznaka za periodičnu sinhronizaciju"
   },
   "panels/application/ServiceWorkersView.ts | pushData": {
     "message": "Podaci o push obavještenju"
@@ -2907,13 +2913,13 @@
     "message": "Izvor"
   },
   "panels/application/ServiceWorkersView.ts | startString": {
-    "message": "započni"
+    "message": "Pokreni"
   },
   "panels/application/ServiceWorkersView.ts | status": {
     "message": "Status"
   },
   "panels/application/ServiceWorkersView.ts | stopString": {
-    "message": "zaustavi"
+    "message": "Zaustavi"
   },
   "panels/application/ServiceWorkersView.ts | syncString": {
     "message": "Sinhronizacija"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Zaustavite snimanje događaja"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "Neodređeno"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "Neodređeno"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "Neodređeno"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "Samo stranice koje su učitane putem GET zahtjeva ispunjavaju uslove za keširanje cijele stranice."
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome je uočio pokušaj izvršavanja JavaScripte u keš memoriji."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "Neodređeno"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "Neodređeno"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "Neodređeno"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "Neodređeno"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Stranice koje su zatražile AppBanner trenutno ne ispunjavaju uslove za keširanje cijele stranice."
@@ -4263,7 +4248,7 @@
     "message": "Iscrtavanje unaprijed nije korišteno jer je tokom vremena aktivacije navigacija imala efektivni URL koji se razlikuje od njenog uobičajenog URL-a. (Naprimjer, stranica Nova kartica ili hostirane aplikacije.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "Nepoznato"
+    "message": "Preglednik je iz nekog razloga uklonio sve unaprijed iscrtane stranice (naprimjer, WebViewCompat.addWebMessageListener() pozvan je prilikom iscrtavanja unaprijed.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "Unaprijed iscrtana stranica je zatražila izlaz zvuka, što trenutno nije podržano."
@@ -4305,10 +4290,10 @@
     "message": "Navigacija za iscrtavanje unaprijed nije uspjela jer je preusmjerila na URL čija šema nije http: ili https:."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "Nepoznato"
+    "message": "Unaprijed iscrtana stranica je uklonjena jer je WebView.addJavascriptInterface() umetnuo novi JavaScript interfejs."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "Nepoznato"
+    "message": "Unaprijed iscrtana stranica je uklonjena jer je WebView.removeJavascriptInterface() uklonio novi JavaScript interfejs."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "Navigacija za iscrtavanje unaprijed je zahtijevala HTTP autentifikaciju, što trenutno nije podržano."
@@ -4587,7 +4572,7 @@
     "message": "Tastatura"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
-    "message": "Učitavanje"
+    "message": "Učitaj"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
     "message": "Medijski fajlovi"
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Prikaži detalje za: iframe"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "Prikaz cilja skočnog prozora"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Ovaj okvir je identificiran kao okvir oglasa"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Prikažite značke"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "Preskoči na čvor sidra"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "Saznajte više"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "Pasivno"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "Ukloni"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "Otkrij na ploči Elementi"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "Da koristite ovu funkciju, ažurirajte postavke jezika u postavkama alata za programere na engleski."
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "Obriši poruke"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "Pošalji povratne informacije"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "Kako vam mogu pomoći?"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "Freestyler može prikazivati netačne informacije i pogriješiti"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "Zatražite od Freestylera ili upišite / za komande"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "Odaberite element"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "Pošalji"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "Prikaz Freestylera"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blokirani izvor"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "Prati li ova stranica najbolje prakse za moderno web programiranje"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "Ispunjava li ova stranica standard progresivne web aplikacije"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "Omogućite JavaScript uzorkovanje tokom rada Lighthousea. Tako ćete dobiti više detalja o izvršenju na ploči performansi kada pregledate trag, ali je viša prekomjerna vrijednost procesora, što može uticati na performanse stranice."
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Performanse"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "Progresivna web aplikacija"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Poništite pohranu (cache, service workers, itd.) prije revizije. (Dobro za performanse i PWA testiranje)"
@@ -9648,7 +9657,7 @@
     "message": "Nije optimizirano: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "Učitavanje"
+    "message": "Učitaj profil"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "Odaberite instancu JavaScript VM-a"
@@ -10275,7 +10284,25 @@
     "message": "Prikaži još {PH1}"
   },
   "panels/search/SearchView.ts | clear": {
-    "message": "Obriši"
+    "message": "Obriši pretraživanje"
+  },
+  "panels/search/SearchView.ts | clearInput": {
+    "message": "Brisanje"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "Onemogućavanje pretraživanja s razlikovanjem velikih i malih slova"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "Onemogućavanje uobičajenih izraza"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "Omogućavanje pretraživanja s razlikovanjem velikih i malih slova"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "Omogućavanje uobičajenih izraza"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "Pronađite"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "Broj pronađenih podudarajućih redova je {PH1} u sljedećem broju fajlova: {PH2}."
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "Poslat će zahtjev"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "Primi WebSocket poruku"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "Pošalji WebSocket poruku"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "Učitavanje: XHR"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Izaberite sesiju vremenskog slijeda"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "Nakon snimanja, prevlačenjem izaberite područje interesovanja u pregledu. Potom zumirajte i pomičite vremenski slijed točkićem miša ili tipkama {PH1}. {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "Kliknite na dugme za snimanje {PH1} ili pritisnite {PH2} da započnete novo snimanje."
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "Kliknite na dugme za ponovno učitavanje {PH1} ili pritisnite {PH2} da snimite učitavanje stranice."
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "Saznajte više"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "Neispravno formirani podaci vremenskog slijeda: {PH1}"
   },
@@ -12857,6 +12905,9 @@
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
     "message": "% nepodudaranja sporih putanja"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "Postotak čvorova koji se ne podudaraju (pokušaji podudaranja – broj podudaranja) koje filter bloom nije mogao brzo isključiti. Niže je bolje."
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "Birač"
   },
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "Tabela je kopirana u međumemoriju"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(Ukupno za sve birače)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "Nije moguće povezati"
@@ -12954,7 +13008,7 @@
     "message": "[nije dodijeljeno]"
   },
   "panels/timeline/TimelineTreeView.ts | useRegularExpression": {
-    "message": "Koristi uobičajeni izraz"
+    "message": "Koristite uobičajeni izraz"
   },
   "panels/timeline/TimelineTreeView.ts | vRuntime": {
     "message": "[V8 vrijeme izvršavanja]"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "Trajanje zadatka {PH1}: {PH2}."
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1} B"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "Dužina podataka"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket protokol"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "Poveži ponovo kada bude spremno ponovnim otvaranjem DevToolsa."
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "Prikazuje {PH1}. rezultat od {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "Obriši"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "Zatvaranje trake za pretraživanje"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "Broj podudaranja: {PH1}"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} od {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "Onemogućavanje pretraživanja s razlikovanjem velikih i malih slova"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "Onemogućavanje traženja i zamjene"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "Onemogućavanje uobičajenih izraza"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "Omogućavanje pretraživanja s razlikovanjem velikih i malih slova"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "Traženje i zamjena"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "Omogućavanje uobičajenih izraza"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Pronađi"
@@ -13887,10 +13974,10 @@
     "message": "Zamijeni sve"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "Pretraži unaprijed"
+    "message": "Prikaz sljedećeg rezultata"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "Pretraži unazad"
+    "message": "Prikaz prethodnog rezultata"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Došlo je do promjene jedne postavke ili više njih, a njihova primjena zahtijeva ponovno učitavanje."
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "Obećanje je razriješeno (asinhrono)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (asinhrono)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Ploča {PH1}"

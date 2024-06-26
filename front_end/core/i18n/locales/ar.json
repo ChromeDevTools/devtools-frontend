@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "مجموعة With"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "شبكة الجيل الرابع سريعة"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "شبكة الجيل الثالث سريعة"
+    "message": "شبكة الجيل الرابع بطيئة"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "لا يتوفّر أي محتوى للطلب المبدئي."
@@ -300,7 +303,7 @@
     "message": "أكمل {PH1} التحميل: {PH2} \"{PH3}\"."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "شبكة الجيل الثالث بطيئة"
+    "message": "شبكة الجيل الثالث"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "حدث خطأ غير معروف أثناء محاولة حفظ ملف تعريف الارتباط هذا."
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "تم إيقاف الإجراءين getCurrentPosition() وwatchPosition() نهائيًا على المصادر غير الآمنة. لاستخدام هذه الميزة، يجب مراعاة نقل تطبيقك إلى مصدر آمن مثل HTTPS. لمعرفة مزيد من التفاصيل، يُرجى الاطّلاع على https://goo.gle/chrome-insecure-origins."
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "تم إيقاف الدالة getInnerHTML()‎ نهائيًا، وستتم إزالتها من هذا المتصفّح قريبًا جدًا. يُرجى استخدام الدالة getHTML()‎ بدلاً منها."
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "لم تعد الميزة getUserMedia() متوافقة مع المصادر غير الآمنة. لاستخدام هذه الميزة، يجب مراعاة نقل تطبيقك إلى مصدر آمن مثل HTTPS. لمعرفة مزيد من التفاصيل، يُرجى الاطّلاع على https://goo.gle/chrome-insecure-origins."
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "تم الربط بـ {PH1}."
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "حدث خطأ غير معروف أثناء قراءة الملف: {PH1}."
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "تتعذّر إضافة نظام الملفّات: {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "حفظ الصورة"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "يتعذّر حفظ وحدة WASM في القرص بسبب حجمها الكبير جدًا على الأرجح."
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "عرض كل الملفات التي تم تجاهلها"
@@ -2907,7 +2913,7 @@
     "message": "المصدر"
   },
   "panels/application/ServiceWorkersView.ts | startString": {
-    "message": "البدء"
+    "message": "بدء"
   },
   "panels/application/ServiceWorkersView.ts | status": {
     "message": "الحالة"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "إيقاف تسجيل الأحداث"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "غير محدّد"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "غير محدّد"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "غير محدّد"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "الصفحات فقط التي تم تحميلها من خلال طلب استرداد بيانات باستخدام GET يمكن حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "اكتشف Chrome محاولة لتنفيذ JavaScript أثناء التخزين المؤقت."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "غير محدّد"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "غير محدّد"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "غير محدّد"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "غير محدّد"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "الصفحات التي طلبت AppBanner يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
@@ -4263,7 +4248,7 @@
     "message": "لم يتم استخدام العرض المُسبَق، لأنّ التنقّل أثناء وقت التفعيل يحتوي على عنوان URL فعّال يختلف عن عنوان URL العادي. (على سبيل المثال، صفحة \"علامة تبويب جديدة\" أو التطبيقات المستضافة)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "غير معروف"
+    "message": "ألغى المتصفّح تحميل جميع الصفحات المعروضة مُسبقًا لسبب معيّن (على سبيل المثال، تم طلب البيانات من واجهة WebViewCompat.addWebMessageListener()‎ أثناء العرض المُسبَق)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "تطلّبت الصفحة المعروضة مُسبقًا مصادر لإخراج الصوت، وهي غير متاحة حاليًا."
@@ -4305,10 +4290,10 @@
     "message": "تعذَّر الانتقال إلى العرض المُسبَق لأنّه تمت إعادة التوجيه إلى عنوان URL لم يكن مخطَّطه http:‎ أو https:‎."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "غير معروف"
+    "message": "تم إلغاء تحميل الصفحة المعروضة مُسبقًا لأنّه تم إدخال واجهة JavaScript جديدة من خلال WebView.addJavascriptInterface()‎."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "غير معروف"
+    "message": "تم إلغاء تحميل الصفحة المعروضة مُسبقًا لأنّه تمت إزالة واجهة JavaScript من خلال WebView.removeJavascriptInterface()‎."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "تطلَّبَ الانتقال إلى العرض المُسبَق مصادقة HTTP، وهي غير متاحة حاليًا."
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "عرض تفاصيل iframe"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "عرض هدف النافذة المنبثقة"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "هذا الإطار تم تحديده بوصفه إطار إعلان"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "عرض الشارات"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "الانتقال إلى نقطة الارتساء"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "مزيد من المعلومات"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "أداة معالجة الحدث السلبية"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "إزالة"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "الاطّلاع على بيانات أكثر عن العقدة في لوحة العناصر"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "لاستخدام هذه الميزة، يجب تغيير اللغة المفضّلة إلى اللغة الإنجليزية من خلال إعدادات \"أدوات مطوّري البرامج\"."
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "محو الرسائل"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "إرسال ملاحظات"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "كيف يمكن مساعدتك؟"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "قد تعرض خدمة Freestyler معلومات غير دقيقة أو ترتكب أخطاءً"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "اسأل Freestyler أو اكتب / لبدء إدخال الأوامر"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "اختيار عنصر"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "إرسال"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "عرض لوحة Freestyler"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "الموارد المحظورة"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "هل تتبِع هذه الصفحة أفضل ممارسات التطوير الحديث للبرامج على الويب؟"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "تحديد ما إذا كانت هذه الصفحة متوافقة مع المعايير العادية الخاصة بتطبيق الويب التقدّمي"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "يمكنك تفعيل جمع عيّنات JavaScript أثناء تشغيل Lighthouse. سيؤدي ذلك إلى تقديم المزيد من تفاصيل التنفيذ في لوحة الأداء عند عرض بيانات التتبُّع، مع العِلم بأنّه قد يزيد من أعباء وحدة المعالجة المركزية (CPU) وقد يؤثِّر في أداء الصفحة."
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "الأداء"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "تطبيق الويب التقدّمي"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "عليك محو مساحة التخزين (cache، service workers، إلخ) قبل إجراء التدقيق. (خيار مناسب لتحسين الأداء وإجراء اختبار PWA)"
@@ -9648,7 +9657,7 @@
     "message": "غير محسّن: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "تحميل"
+    "message": "تحميل الملف التعريفي"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "اختيار مثيل جهاز افتراضي للغة JavaScript"
@@ -10275,7 +10284,25 @@
     "message": "عرض {PH1} أكثر"
   },
   "panels/search/SearchView.ts | clear": {
+    "message": "محو البحث"
+  },
+  "panels/search/SearchView.ts | clearInput": {
     "message": "محو"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "إيقاف عمليات البحث الحسّاسة لحالة الأحرف"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "إيقاف التعبيرات العادية"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "تفعيل عمليات البحث الحسّاسة لحالة الأحرف"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "تفعيل التعبيرات العادية"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "بحث"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "تم العثور على {PH1} صف مطابِق في {PH2} ملف."
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "سيؤدي إلى إرسال طلب."
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "تلقّي رسالة WebSocket"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "إرسال رسالة WebSocket"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "تحميل XHR"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "اختيار جلسة المخطّط الزمني"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "بعد التسجيل، اختَر منطقة معيّنة ضمن صفحة النظرة العامة من خلال السحب. بعد ذلك، كبّر صورة المخطط الزمني واعرضها عرضًا شاملاً باستخدام بكرة الماوس أو مفاتيح {PH1}. {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "انقر على زر التسجيل {PH1} أو اضغط على {PH2} لبدء تسجيل جديد."
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "انقر على زر إعادة التحميل {PH1} أو اضغط على {PH2} لتسجيل تحميل الصفحة."
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "مزيد من المعلومات"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "بيانات المخطّط الزمني غير الصالحة: {PH1}"
   },
@@ -12857,6 +12905,9 @@
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
     "message": "النسبة المئوية لحالات عدم التطابق في المسار البطيء"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "تشير هذه النسبة المئوية إلى العُقد غير المطابقة (إجمالي محاولات التطابق مطروحًا منها عدد حالات التطابق) التي لم يتمكّن فلتر Bloom من استبعادها بسرعة. وكلما انخفضت هذه النسبة، تحسَّن أداء نقل بيانات الشبكة."
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "أداة الاختيار"
   },
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "تم نسخ الجدول إلى الحافظة"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(القيم الإجمالية لجميع أدوات الاختيار)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "تعذَّر الربط"
@@ -12954,7 +13008,7 @@
     "message": "[حدث غير منسوب لأي فئة]"
   },
   "panels/timeline/TimelineTreeView.ts | useRegularExpression": {
-    "message": "استخدام التعبير العادي"
+    "message": "استخدِم التعبير العادي"
   },
   "panels/timeline/TimelineTreeView.ts | vRuntime": {
     "message": "[وقت تشغيل V8]"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "استغرقت المهمة {PH1} {PH2}."
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "‫{PH1} بايت"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "حجم البيانات"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "بروتوكول WebSocket"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "عندما تكون مستعدًا، أعِد فتح أدوات مطوري البرامج للاتصال بها مرة أخرى."
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "عرض النتيجة {PH1} من إجمالي {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "محو"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "إغلاق شريط البحث"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "عدد النتائج المطابِقة: {PH1}"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} من {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "إيقاف عمليات البحث الحسّاسة لحالة الأحرف"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "إيقاف ميزة \"البحث والاستبدال\""
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "إيقاف التعبيرات العادية"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "تفعيل عمليات البحث الحسّاسة لحالة الأحرف"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "البحث والاستبدال"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "تفعيل التعبيرات العادية"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "بحث"
@@ -13887,10 +13974,10 @@
     "message": "استبدال الكل"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "البحث في المثال التالي"
+    "message": "عرض النتيجة التالية"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "البحث في مثال سابق"
+    "message": "عرض النتيجة السابقة"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "تم تغيير إعداد أو أكثر، ما يتطلّب إعادة التحميل لتصبح هذه الإعدادات سارية المفعول."
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "تمت مطابقة الكائن المتوقع (غير متزامن)."
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (غير متزامن)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "لوحة {PH1}"

@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With-ի բլոկ"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "Արագ 4G ցանց"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "Արագ 3G ցանց"
+    "message": "Դանդաղ 4G ցանց"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "Նախնական գործընթացի հարցման համար բովանդակություն չկա"
@@ -300,7 +303,7 @@
     "message": "{PH1}-ի բեռնումն ավարտվեց՝ {PH2} «{PH3}»։"
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "Դանդաղ 3G ցանց"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "Անհայտ սխալի պատճառով չհաջողվեց պահել այս քուքին։"
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "Այս getCurrentPosition() և watchPosition() մեթոդներն այլևս չեն աջակցվում ոչ անվտանգ աղբյուրներում։ Այս գործառույթն օգտագործելու համար ձեր հավելվածի համար ընտրեք անվտանգ աղբյուր, օրինակ՝ HTTPS-ը։ Մանրամասների համար անցեք https://goo.gle/chrome-insecure-origins էջ։"
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "getInnerHTML() ֆունկցիան հնացած է և շատ շուտով կհեռացվի այս դիտարկիչից։ Փոխարենն օգտագործեք getHTML() ֆունկցիան։"
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "Այս մեթոդը (getUserMedia()) այլևս չի աշխատում ոչ անվտանգ աղբյուրներում։ Այս գործառույթն օգտագործելու համար ձեր հավելվածի համար ընտրեք անվտանգ աղբյուր, օրինակ՝ HTTPS-ը։ Մանրամասների համար անցեք https://goo.gle/chrome-insecure-origins էջ։"
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "Կապված է {PH1}-ի հետ"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "Ֆայլի ընթերցման ժամանակ անհայտ սխալ առաջացավ ({PH1})"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Հնարավոր չէ ավելացնել ֆայլային համակարգը՝ {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Պահել պատկերը"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Հնարավոր չէ WASM մոդուլը պահել սկավառակում։ Ամենայն հավանականությամբ մոդուլը շատ մեծ է:"
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "Ցույց տալ բոլոր փոխարինումները"
@@ -2850,7 +2856,7 @@
     "message": "ֆոկուս"
   },
   "panels/application/ServiceWorkersView.ts | inspect": {
-    "message": "ստուգել"
+    "message": "Ստուգել"
   },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "Ցանցի հարցումներ"
@@ -2907,13 +2913,13 @@
     "message": "Աղբյուր"
   },
   "panels/application/ServiceWorkersView.ts | startString": {
-    "message": "սկսել"
+    "message": "Սկսել"
   },
   "panels/application/ServiceWorkersView.ts | status": {
     "message": "Կարգավիճակ"
   },
   "panels/application/ServiceWorkersView.ts | stopString": {
-    "message": "կանգնեցնել"
+    "message": "Կանգնեցնել"
   },
   "panels/application/ServiceWorkersView.ts | syncString": {
     "message": "Համաժամացում"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Դադարեցնել իրադարձությունների գրանցումը"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "Անորոշ"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "Անորոշ"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "Անորոշ"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "Ամբողջությամբ հնարավոր է քեշավորել միայն այն էջերը, որոնք բեռնվել են GET հարցման միջոցով։"
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome-ը հայտնաբերել է JavaScript կոդը քեշում աշխատեցնելու փորձ։"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "Անորոշ"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "Անորոշ"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "Անորոշ"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "Անորոշ"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Էջերը, որոնք հայցել են AppBanner, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
@@ -4263,7 +4248,7 @@
     "message": "Չհաջողվեց օգտագործել նախաարտապատկերումը, քանի որ ակտիվացման ժամանակ նավիգացիան ունի վերջնական URL, որը տարբերվում է իր սովորական URL-ից (օրինակ՝ ուղղորդում է նոր ներդիրի էջ կամ տեղակայված հավելվածներ)։"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "Անհայտ"
+    "message": "Նախաարտապատկերված բոլոր էջերը որոշակի պատճառով ապաբեռնվել են դիտարկչի կողմից (օրինակ՝ նախաարտապատկերման ժամանակ կանչվել է WebViewCompat.addWebMessageListener() հրահանգը)։"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "Նախաարտապատկերված էջը պահանջել է աուդիո ելք, որը ներկայումս չի աջակցվում։"
@@ -4305,10 +4290,10 @@
     "message": "Նախաարտապատկերման նավիգացիան ձախողվեց, քանի որ այն վերաուղղորդում էր URL, որի սխեման http: կամ https: չէր։"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "Անհայտ"
+    "message": "Նախաարտապատկերված էջը ապաբեռնվել է, քանի որ JavaScript-ի միջերեսը զետեղվել է .addJavascriptInterface() WebView-ի կողմից։"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "Անհայտ"
+    "message": "Նախաարտապատկերված էջը ապաբեռնվել է, քանի որ JavaScript միջերես է հեռացվել WebView.removeJavascriptInterface() հրահանգի կողմից։"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "Նախաարտապատկերման նավիգացիայի համար պահանջվում էր HTTP իսկորոշում, որը ներկայումս չի աջակցվում։"
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Ցուցադրել մանրամասները՝ iframe"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "Ցույց տալ ելնող պատուհանի թիրախը"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Այս շրջանակը ճանաչվել է որպես գովազդային"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Ցուցադրել նշանակները"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "Անցնել խարիսխի հանգույց"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "Իմանալ ավելին"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "Պասիվ"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "Հեռացնել"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "Բացել տարրերի վահանակում"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "Այս գործառույթն օգտագործելու համար ծրագրավորողի գործիքների կարգավորումներում ձեր նախընտրելի լեզուն դարձրեք անգլերեն։"
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "Մաքրել հաղորդագրությունները"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "Կարծիք հայտնել"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "Ինչպե՞ս կարող եմ օգնել ձեզ։"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "Freestyler-ը կարող է ցույց տալ ոչ ճշգրիտ տեղեկություններ և կարող է սխալ հասկանալ հրահանգները"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "Հարցրեք Freestyler-ին կամ հրահանգ տալու համար մուտքագրեք «/» նշանը"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "Ընտրել տարր"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "Ուղարկել"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "Ցույց տալ Freestyler-ը"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Արգելափակված ռեսուրս"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "Արդյոք այս էջը համապատասխանո՞մ է ժամանակակից վեբ ծրագրավորման լավագույն գործելակերպերին"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "Արդյոք այս էջը համապատասխանում է պրոգրեսիվ վեբ հավելվածների ստանդարտներին"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "Միացնել JavaScript-ի նմուշառումը Lighthouse-ի գործարկման ընթացքում։ Սա կապահովի կատարման ավելի շատ մանրամասներ «Արդյունավետություն» վահանակում, երբ դիտելիս լինեք հետագիծը, սակայն կմեծացնի պրոցեսորի ծանրաբեռնվածությունը և կարող է ազդել էջի աշխատանքի վրա։"
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Արդյունավետություն"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "Պրոգրեսիվ վեբ հավելված"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Ստուգումից առաջ մաքրեք հիշողությունը (cache, service workersև այլն)` արդյունավետությունն ապահովելու PWA-ի փարձարկման համար)"
@@ -9648,7 +9657,7 @@
     "message": "Առանց օպտիմալացման՝ {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "Բեռնել"
+    "message": "Բեռնել պրոֆիլը"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "Ընտրել JavaScript VM-ի նմուշը"
@@ -10275,7 +10284,25 @@
     "message": "Ցույց տալ ևս {PH1}"
   },
   "panels/search/SearchView.ts | clear": {
+    "message": "Մաքրել որոնման դաշտը"
+  },
+  "panels/search/SearchView.ts | clearInput": {
     "message": "Մաքրել"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "Անջատել դուրճազգայուն որոնումը"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "Անջատել կանոնավոր արտահայտությունները"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "Միացնել դուրճազգայուն որոնումը"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "Միացնել կանոնավոր արտահայտությունները"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "Գտնել"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "Գտնվել է {PH1} համընկնող տող {PH2} ֆայլում։"
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "Հարցում կուղարկվի"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "Ստանալ WebSocket հաղորդագրություն"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "Ուղարկել WebSocket հաղորդագրություն"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "XHR-ի բեռնում"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Ընտրել ժամանակագրության աշխատաշրջանը"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "Գրանցումից հետո քաշեք հետաքրքրող տարածքը համատեսքից։ Ապա մասշտաբավորեք և տեղաշարժեք ժամանակագրությունը մկնիկի անիվի կամ {PH1} ստեղների միջոցով։ {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "Սեղմեք գրանցման կոճակը {PH1} կամ հպեք {PH2}՝ նոր գրանցում սկսելու համար։"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "Սեղմեք վերաբեռնման կոճակը {PH1} կամ հպեք {PH2}՝ էջի բեռնումը գրանցելու համար։"
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "Իմանալ ավելին"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "Ժամանակագրության սխալ տվյալներ՝ {PH1}"
   },
@@ -12855,7 +12903,10 @@
     "message": "Համընկնումների թիվը"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
-    "message": "Դանդաղ ուղով անհամապատասխանությունների %"
+    "message": "Դանդաղ ուղով անհամապատասխանությունների %-ը"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "Անհամապատասխան հանգույցների տոկոսը (համապատասխանությունների փորձեր – համապատասխանությունների քանակ), որը հնարավոր չէր արագ կարգավորել Bloom զտիչի կողմից։ Ցածր արժեքը լավ ցուցանիշ է։"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "Ընտրիչ"
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "Աղյուսակը պատճենվեց սեղմատախտակին"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(ընդհանուր բոլոր ընտրիչների համար)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "Հնարավոր չէ կապել"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1}՝ պահանջվեց {PH2}։"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1} բայթ"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "Տվյալների ծավալը"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket հաղորդակարգ"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "Նորից միանալու համար բացեք մշակողի գործիքները։"
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "Ցուցադրվում է արդյունք {PH1}՝ {PH2}-ից"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "Մաքրել"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "Փակել որոնման տողը"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} համընկնում"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1}/{PH2}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "Անջատել դուրճազգայուն որոնումը"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "Անջատել «Գտնել և փոխարինել» գործառույթը"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "Անջատել կանոնավոր արտահայտությունները"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "Միացնել դուրճազգայուն որոնումը"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "Գտնել և փոխարինել"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "Միացնել կանոնավոր արտահայտությունները"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Գտնել"
@@ -13887,10 +13974,10 @@
     "message": "Փոխարինել բոլորը"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "Որոնել տեքստ"
+    "message": "Ցույց տալ հաջորդ արդյունքը"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "Որոնել նախորդը"
+    "message": "Ցույց տալ նախորդ արդյունքը"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Մեկ կամ մի քանի կարգավորումներ փոխվել են, և դրանց կիրառման համար անհրաժեշտ է վերաբեռնել մշակողի գործիքները։"
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "Փրոմիսը ճանաչվել է (չհամաժամացված)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (չհամաժամացված)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "«{PH1}» վահանակ"

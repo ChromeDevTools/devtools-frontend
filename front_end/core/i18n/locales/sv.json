@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With-block"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "Snabbt 4G"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "Snabbt 3G"
+    "message": "Långsamt 4G"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "Inget innehåll är tillgängligt för preliminär begäran"
@@ -300,7 +303,7 @@
     "message": "{PH1} har lästs in: {PH2} {PH3}."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "Långsamt 3G"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "Ett okänt fel påträffades när cookien skulle sparas."
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "getCurrentPosition() och watchPosition() är utfasade i osäkra ursprung. Om du vill använda den här funktionen rekommenderar vi att du flyttar appen till ett säkert ursprung, till exempel HTTPS. Läs mer på https://goo.gle/chrome-insecure-origins."
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "Funktionen getInnerHTML() är utfasad och tas snart bort från den här webbläsaren. Använd getHTML() i stället."
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia() fungerar inte längre i osäkra ursprung. Om du vill använda den här funktionen rekommenderar vi att du flyttar appen till ett säkert ursprung, till exempel HTTPS. Läs mer på https://goo.gle/chrome-insecure-origins."
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "Länkat till {PH1}"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "Okänt fel vid läsning av filen: {PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Det gick inte att lägga till filsystem: {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Spara bild"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Det gick inte att spara WASM-modulen på disken. Modulen är troligen för stor."
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "Visa alla åsidosättningar"
@@ -2850,7 +2856,7 @@
     "message": "fokus"
   },
   "panels/application/ServiceWorkersView.ts | inspect": {
-    "message": "inspektera"
+    "message": "Granska"
   },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "Nätverksförfrågningar"
@@ -2907,13 +2913,13 @@
     "message": "Källa"
   },
   "panels/application/ServiceWorkersView.ts | startString": {
-    "message": "starta"
+    "message": "Börja"
   },
   "panels/application/ServiceWorkersView.ts | status": {
     "message": "Status"
   },
   "panels/application/ServiceWorkersView.ts | stopString": {
-    "message": "stoppa"
+    "message": "Stoppa"
   },
   "panels/application/ServiceWorkersView.ts | syncString": {
     "message": "Synkronisera"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Sluta spela in händelser"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "Odefinierad"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "Odefinierad"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "Odefinierad"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "Bara sidor som lästs in via en GET-begäran kan placeras i vilocacheminnet."
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Ett försök att köra JavaScript i cacheminnet upptäcktes."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "Odefinierad"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "Odefinierad"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "Odefinierad"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "Odefinierad"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Sidor som har begärt en AppBanner kan för närvarande inte placeras i vilocacheminnet."
@@ -4263,7 +4248,7 @@
     "message": "Förrenderingen användes inte eftersom navigeringen har en effektiv webbadress som skiljer sig från den vanliga webbadressen under aktiveringstiden. (Till exempel sidan Ny flik eller värdlagrade appar.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "Okänd"
+    "message": "Alla förrenderade sidor togs bort av webbläsaren av någon anledning (t.ex. anropet WebViewCompat.addWebMessageListener() under förrenderingen.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "Den förrenderade sidan begärde ljudutgång, vilket för närvarande inte stöds."
@@ -4305,10 +4290,10 @@
     "message": "Navigeringen vid förrenderingen misslyckades eftersom den omdirigerade till en webbadress vars schema inte var http: eller https:."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "Okänd"
+    "message": "Den förrenderade sidan togs bort eftersom ett nytt JavaScript-gränssnitt har injicerats av WebView.addJavaScriptInterface()."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "Okänd"
+    "message": "Den förrenderade sidan togs bort eftersom ett JavaScript-gränssnitt har tagits bort av WebView.removeJavaScriptInterface()."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "Navigeringen vid förrenderingen krävde HTTP-autentisering, vilket för närvarande inte stöds."
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Visa information om iframe"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "Visa mål för popup"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Denna bildruta har identifierats som en annonsbildruta"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Visa märken"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "Hoppa till ankarnod"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "Läs mer"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "Passiv"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "Ta bort"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "Visa i panelen Element"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "Om du vill använda den här funktionen uppdaterar du språkinställningen till engelska i inställningarna för Verktyg för programmerare."
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "Rensa meddelanden"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "Skicka feedback"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "Hur kan jag hjälpa dig?"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "Freestyler kan visa felaktig information och det blir kanske inte alltid korrekt"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "Fråga Freestyler eller skriv för att se kommandon"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "Välj ett element"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "Skicka"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "Visa Freestyler"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Spärrad resurs"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "Följer den här sidan rekommendationerna för modern webbutveckling"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "Uppfyller den här sidan standarden för en progressiv webbapp"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "Aktivera JavaScript-sampling under Lighthouse-körningen. Detta ger mer körningsinformation på prestandapanelen när du visar spårningen, men använder mer CPU och kan påverka sidans prestanda."
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Prestanda"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "Progressiv webbapp"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Återställ lagringsutrymme (cache, service workers, etc) innan du granskar. (Det är bra när du testar prestanda och PWA)"
@@ -7497,10 +7506,10 @@
     "message": "Bildfrekvens"
   },
   "panels/media/PlayerPropertiesView.ts | hardwareDecoder": {
-    "message": "Maskinvaruavkodare"
+    "message": "Hårdvaruavkodare"
   },
   "panels/media/PlayerPropertiesView.ts | hardwareEncoder": {
-    "message": "Maskinvaruomkodare"
+    "message": "Hårdvaruomkodare"
   },
   "panels/media/PlayerPropertiesView.ts | noDecoder": {
     "message": "Ingen avkodare"
@@ -7614,7 +7623,7 @@
     "message": "Tvungen att koppla bort från nätverket"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrency": {
-    "message": "Maskinvarans parallellkörningsnivå"
+    "message": "Hårdvarans parallellkörningsnivå"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Åsidosättande av hårdvarans parallellkörningsnivå har aktiverats"
@@ -9648,7 +9657,7 @@
     "message": "Inte optimerad: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "Läs in"
+    "message": "Läs in profil"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "Välj VM-instans för JavaScript"
@@ -10275,7 +10284,25 @@
     "message": "Visa {PH1} till"
   },
   "panels/search/SearchView.ts | clear": {
-    "message": "Ta bort"
+    "message": "Rensa sökning"
+  },
+  "panels/search/SearchView.ts | clearInput": {
+    "message": "Rensa"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "Inaktivera skiftlägeskänslig sökning"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "Inaktivera reguljära uttryck"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "Aktivera skiftlägeskänslig sökning"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "Aktivera reguljära uttryck"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "Hitta"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "{PH1} matchande rader påträffades i {PH2} filer."
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "Ska skicka begäran"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "Ta emot WebSocket-meddelande"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "Skicka WebSocket-meddelande"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "XHR-läsning"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Välj tidslinjesession"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "Efter inspelningen väljer du ett intresseområde i översikten genom att dra. Zooma och panorera sedan i tidslinjen med mushjulet eller tangenterna {PH1}. {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "Klicka på inspelningsknappen {PH1} eller tryck på {PH2} om du vill starta en ny inspelning."
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "Klicka på knappen Läs in igen {PH1} eller tryck på {PH2} om du vill spela in sidhämtningen."
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "Läs mer"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "Tidslinjedata har fel format: {PH1}"
   },
@@ -12857,6 +12905,9 @@
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
     "message": "% icke-matchande långsamma sökvägar"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "Procentandelen icke matchande noder (matchningsförsök – antal matchningar) som inte snabbt kunde uteslutas med hjälp av Bloom-filtret. Mindre är bättre."
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "Väljare"
   },
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "Tabellen har kopierats till urklipp"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(Totalen för alla väljare)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "Gick inte att länka"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1} tog {PH2}."
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1} byte"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "Datalängd"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket-protokoll"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "Återanslut när felsökningen har avslutats genom att öppna Verktyg för programmerare på nytt."
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "Visar resultat {PH1} av {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "Rensa"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "Stäng sökfältet"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} träffar"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} av {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "Inaktivera skiftlägeskänslig sökning"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "Inaktivera Sök och ersätt"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "Inaktivera reguljära uttryck"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "Aktivera skiftlägeskänslig sökning"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "Sök och ersätt"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "Aktivera reguljära uttryck"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Sök"
@@ -13887,10 +13974,10 @@
     "message": "Ersätt alla"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "Sök efter nästa"
+    "message": "Visa nästa resultat"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "Sök efter föregående"
+    "message": "Visa föregående resultat"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "En eller flera inställningar har ändrats. Läs in igen för att verkställa dem."
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "Löftet har matchats (asynkront)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (asynkron)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Panelen {PH1}"

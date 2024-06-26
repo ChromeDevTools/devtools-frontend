@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With-blokk"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "Rask 4G"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "Rask 3G"
+    "message": "Treg 4G"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "Det er ikke noe innhold tilgjengelig for forhåndskontrollforespørsel"
@@ -300,7 +303,7 @@
     "message": "{PH1} avsluttet innlasting: {PH2} «{PH3}»."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "Sakte 3G"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "Det oppstod en ukjent feil ved forsøk på å lagre denne informasjonskapselen."
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "getCurrentPosition() og watchPosition() er avviklet på usikre opphav. For å bruke denne funksjonen bør du vurdere å flytte programmet ditt til et sikkert opphav, for eksempel HTTPS. Se https://goo.gle/chrome-insecure-origins for mer informasjon."
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "getInnerHTML()-funksjonen er avviklet og blir snart fjernet fra denne nettleseren. Bruk getHTML() i stedet."
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia() fungerer ikke på usikre opphav lenger. For å bruke denne funksjonen bør du vurdere å flytte programmet ditt til et sikkert opphav, for eksempel HTTPS. Se https://goo.gle/chrome-insecure-origins for mer informasjon."
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "Knyttet til {PH1}"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "Ukjent feil ved lesing av fil: {PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Kunne ikke legge til filsystem: {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Lagre bilde"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Kan ikke lagre WASM-modulen på disken. Modulen er sannsynligvis for stor."
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "Vis alle overstyringer"
@@ -2268,10 +2274,10 @@
     "message": "Ingen Play Butikk-ID er oppgitt"
   },
   "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnDesktop": {
-    "message": "Mer omfattende UI for installasjon av PWA-er (progressive web apps – progressive nettprogrammer) er ikke tilgjengelig på datamaskin. Legg til minst én skjermdump der form_factor er satt til wide."
+    "message": "Mer omfattende UI for installasjon av PWA-er (progressive web apps – progressive nettprogrammer) er ikke tilgjengelig på datamaskin. Legg til minst én skjermbilde der form_factor er satt til wide."
   },
   "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnMobile": {
-    "message": "Mer omfattende UI for installasjon av PWA-er (progressive web apps – progressive nettprogrammer) er ikke tilgjengelig på mobilenheter. Legg til minst én skjermdump der form_factor er satt til en annen verdi enn wide eller ikke er angitt."
+    "message": "Mer omfattende UI for installasjon av PWA-er (progressive web apps – progressive nettprogrammer) er ikke tilgjengelig på mobilenheter. Legg til minst én skjermbilde der form_factor er satt til en annen verdi enn wide eller ikke er angitt."
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "Ingen oppgitte ikoner har en størrelse på minst {PH1} px (kvadratisk) og er i PNG-, SVG- eller WebP-format med «purpose»-attributtet satt til «any» eller ikke angitt."
@@ -2352,7 +2358,7 @@
     "message": "Skjermdump #{PH1}"
   },
   "panels/application/AppManifestView.ts | screenshotsMustHaveSameAspectRatio": {
-    "message": "Alle skjermdumper med samme form_factor-verdi må ha samme høyde/bredde-forhold som den første skjermdumpen med den aktuelle form_factor-verdien. Noen skjermdumper blir ignorert."
+    "message": "Alle skjermbilder med samme form_factor-verdi må ha samme høyde/bredde-forhold som den første skjermbildet med den aktuelle form_factor-verdien. Noen skjermbilder blir ignorert."
   },
   "panels/application/AppManifestView.ts | selectWindowControlsOverlayEmulationOs": {
     "message": "Emuler overlegget for vinduskontroller på"
@@ -2388,10 +2394,10 @@
     "message": "Temafarge"
   },
   "panels/application/AppManifestView.ts | tooManyScreenshotsForDesktop": {
-    "message": "Maksimalt åtte skjermdumper vises på datamaskin. Resten blir ignorert."
+    "message": "Maksimalt åtte skjermbilder vises på datamaskin. Resten blir ignorert."
   },
   "panels/application/AppManifestView.ts | tooManyScreenshotsForMobile": {
-    "message": "Det blir ikke vist mer enn fem skjermdumper på mobilenheter. Resten blir ignorert."
+    "message": "Det blir ikke vist mer enn fem skjermbilder på mobilenheter. Resten blir ignorert."
   },
   "panels/application/AppManifestView.ts | url": {
     "message": "Nettadresse"
@@ -2850,7 +2856,7 @@
     "message": "fokus"
   },
   "panels/application/ServiceWorkersView.ts | inspect": {
-    "message": "inspiser"
+    "message": "Inspiser"
   },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "Nettverksforespørsler"
@@ -2907,13 +2913,13 @@
     "message": "Kilde"
   },
   "panels/application/ServiceWorkersView.ts | startString": {
-    "message": "start"
+    "message": "Start"
   },
   "panels/application/ServiceWorkersView.ts | status": {
     "message": "Status"
   },
   "panels/application/ServiceWorkersView.ts | stopString": {
-    "message": "stopp"
+    "message": "Stopp"
   },
   "panels/application/ServiceWorkersView.ts | syncString": {
     "message": "Synkroniser"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Stopp opptak av hendelser"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "Udefinert"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "Udefinert"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "Udefinert"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "Kun sider som lastes inn via GET-forespørsler, kan lagres i frem-og-tilbake-bufferen."
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome oppdaget et forsøk på kjøring av JavaScript mens siden var i bufferen."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "Udefinert"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "Udefinert"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "Udefinert"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "Udefinert"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Sider som bruker har forespurt AppBanner, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
@@ -4263,7 +4248,7 @@
     "message": "Forhåndsgjengivelsen ble ikke brukt fordi navigeringen har en annen effektiv nettadresse enn den vanlige nettadressen på aktiveringstidspunktet. (Eksempel: Ny fane-siden eller vertsbaserte apper.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "Ukjent"
+    "message": "Alle forhåndsgjengitte sider ble lastet ut av nettleseren. (Det kan være ulike årsaker til dette, for eksempel at WebViewCompat.addWebMessageListener() ble kalt under forhåndsgjengivelsen.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "Den forhåndsgjengitte siden forespurte lydutdata, noe som ikke støttes for øyeblikket."
@@ -4305,10 +4290,10 @@
     "message": "Navigeringen for forhåndsgjengivelse mislyktes fordi den ble viderekoblet til en nettadresse med en annen protokoll enn http: og https:."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "Ukjent"
+    "message": "Den forhåndsgjengitte siden ble lastet ut fordi et nytt JavaScript-grensesnitt er injisert av WebView.addJavascriptInterface()."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "Ukjent"
+    "message": "Den forhåndsgjengitte siden ble lastet ut fordi et JavaScript-grensesnitt er fjernet av WebView.removeJavascriptInterface()."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "Navigeringen for forhåndsgjengivelse krevde HTTP-autentisering, noe som ikke støttes for øyeblikket."
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Vis iframe-detaljer"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "Vis mål for forgrunnsvindu"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Denne rammen ble identifisert som en annonseramme"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Vis merker"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "Hopp til ankernode"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "Finn ut mer"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "Passiv"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "Fjern"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "Vis i Elementer-panelet"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "For å bruke denne funksjonen må du oppdatere språkinnstillingen i Utviklerverktøy-innstillingene til engelsk."
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "Slett meldinger"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "Send tilbakemelding"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "Hvordan kan jeg hjelpe deg?"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "Freestyler kan vise unøyaktig informasjon og ta feil"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "Spør Freestyler, eller skriv inn / for kommandoer"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "Velg et element"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "Send"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "Vis Freestyler"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blokkert ressurs"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "Følger denne siden anbefalte fremgangsmåter for moderne nettutvikling?"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "Overholder siden standardene for progressive nettprogrammer"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "Slå på JavaScript-sampling mens Lighthouse kjøres. Da vises det flere detaljer om kjøringen i ytelsespanelet når du ser på sporingen, men det medfører høyere prosessorbruk og kan påvirke sideytelsen."
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Ytelse"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "Progressivt nettprogram"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Tilbakestill lagring (cache, service workers etc) før revisjon (Bra for ytelse- og PWA-testing)"
@@ -8415,7 +8424,7 @@
     "message": "Skjermdumper"
   },
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
-    "message": "Ta skjermdumper ved innlasting av sider"
+    "message": "Ta skjermbilder ved innlasting av sider"
   },
   "panels/network/NetworkPanel.ts | close": {
     "message": "Lukk"
@@ -9648,7 +9657,7 @@
     "message": "Ikke optimalisert: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "Last inn"
+    "message": "Last inn profil"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "Velg JavaScript VM-forekomst"
@@ -10275,7 +10284,25 @@
     "message": "Vis {PH1} til"
   },
   "panels/search/SearchView.ts | clear": {
+    "message": "Tøm søket"
+  },
+  "panels/search/SearchView.ts | clearInput": {
     "message": "Tøm"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "Slå av søk som skiller mellom store og små bokstaver"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "Deaktiver regulære uttrykk"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "Slå på søk som skiller mellom store og små bokstaver"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "Aktiver regulære uttrykk"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "Søk"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "Fant {PH1} samsvarende linjer i {PH2} filer."
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "Vil sende forespørsel"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "Motta WebSocket-melding"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "Send WebSocket-melding"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "XHR-innlasting"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Velg tidslinjeøkt"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "Velg et interesseområde etter innspilling i oversikten ved å dra. Zoom og panorer deretter tidslinjen med musehjulet eller {PH1}-tastene. {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "Trykk på opptaksknappen {PH1} eller trykk på {PH2} for å starte et nytt opptak."
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "Klikk på Last inn på nytt-knappen {PH1} eller trykk på {PH2} for å ta opp sideinnlastingen."
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "Finn ut mer"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "Feilformede tidslinjedata: {PH1}"
   },
@@ -12738,7 +12786,7 @@
     "message": "Hurtigbufferbruk"
   },
   "panels/timeline/TimelinePanel.ts | captureScreenshots": {
-    "message": "Ta skjermdumper"
+    "message": "Ta skjermbilder"
   },
   "panels/timeline/TimelinePanel.ts | captureSettings": {
     "message": "Opptaksinnstillinger"
@@ -12857,6 +12905,9 @@
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
     "message": "% av ikke-treff som følger trege baner"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "Prosentandelen av ikke-samsvarende noder (samsvarsforsøk – samsvarsantall) som ikke raskt kunne utelukkes ved hjelp av bloom-filteret. Lavere tall er bedre."
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "Velger"
   },
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "Tabellen er kopiert til utklippstavlen"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(Totalt for alle velgere)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "Kan ikke tilknytte"
@@ -12918,7 +12972,7 @@
     "message": "Skjul tyngste stabel"
   },
   "panels/timeline/TimelineTreeView.ts | matchCase": {
-    "message": "Skill mellom store og små bokstaver"
+    "message": "Skill mellom store/små bokstaver"
   },
   "panels/timeline/TimelineTreeView.ts | matchWholeWord": {
     "message": "Finn hele ordet"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1} tok {PH2}."
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1} byte"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "Datalengde"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket-protokoll"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "Hvordan samme nettsted fungerer skjematisk"
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "Viser resultat {PH1} av {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "Tøm"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "Lukk søkefeltet"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} treff"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} av {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "Slå av søk som skiller mellom store og små bokstaver"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "Slå av søk og erstatt"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "Deaktiver regulære uttrykk"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "Slå på søk som skiller mellom store og små bokstaver"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "Søk og erstatt"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "Aktiver regulære uttrykk"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Finn"
@@ -13887,10 +13974,10 @@
     "message": "Erstatt alle"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "Søk neste"
+    "message": "Vis neste resultat"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "Søk forrige"
+    "message": "Vis forrige resultat"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "En eller flere innstillinger er endret, men trer ikke i kraft før Utviklerverktøy startes på nytt."
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "Lovnad løst (asynkron)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (asynkron)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1}-panel"

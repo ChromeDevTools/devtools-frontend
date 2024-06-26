@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "Блок With"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "4G (высокая скорость)"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "3G (высокая скорость)"
+    "message": "4G (низкая скорость)"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "Для запроса предварительного процесса нет доступного контента."
@@ -300,7 +303,7 @@
     "message": "Загрузка {PH1} завершена: {PH2} ({PH3})."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "3G (низкая скорость)"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "При сохранении файла cookie произошла неизвестная ошибка"
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "Методы getCurrentPosition() и watchPosition() в небезопасных источниках больше не поддерживаются. Чтобы использовать их, задайте для приложения безопасный источник, например HTTPS. Подробнее: https://goo.gle/chrome-insecure-origins."
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "Функция getInnerHTML() больше не поддерживается и скоро будет удалена из этого браузера. Вместо нее используйте функцию getHTML()."
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "Метод getUserMedia() больше не работает с небезопасными источниками. Чтобы использовать его, задайте для приложения безопасный источник, например HTTPS. Подробнее: https://goo.gle/chrome-insecure-origins."
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "Связано с {PH1}"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "Неизвестная ошибка при чтении файла: {PH1}."
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Не удается добавить файловую систему: {PH1}."
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Сохранить изображение"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Не удалось сохранить модуль Wasm на диск. Скорее всего, превышен допустимый размер."
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "Показать все переопределения"
@@ -2850,7 +2856,7 @@
     "message": "фокус"
   },
   "panels/application/ServiceWorkersView.ts | inspect": {
-    "message": "проверить"
+    "message": "Посмотреть"
   },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "Сетевые запросы"
@@ -2907,13 +2913,13 @@
     "message": "Источник"
   },
   "panels/application/ServiceWorkersView.ts | startString": {
-    "message": "начать"
+    "message": "Начать"
   },
   "panels/application/ServiceWorkersView.ts | status": {
     "message": "Статус"
   },
   "panels/application/ServiceWorkersView.ts | stopString": {
-    "message": "остановить"
+    "message": "Остановить"
   },
   "panels/application/ServiceWorkersView.ts | syncString": {
     "message": "Синхронизация"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Остановить запись событий"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "Нет данных"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "Нет данных"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "Нет данных"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "В возвратный кеш можно добавить только страницы, загруженные с помощью GET-запроса."
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome обнаружил попытку выполнить код JavaScript в кеше."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "Нет данных"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "Нет данных"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "Нет данных"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "Нет данных"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Страницы, которые запросили AppBanner, в настоящее время нельзя добавить в возвратный кеш."
@@ -4263,7 +4248,7 @@
     "message": "Предварительная отрисовка не использована, так как во время вывода страницы конечный URL отличался от обычного URL (например, вел на страницу с новой вкладкой или к размещенным приложениям)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "Неизвестно"
+    "message": "Данные всех предварительно отрисованных страниц были выгружены по какой-то причине, например во время предварительной отрисовки был вызван метод WebViewCompat.addWebMessageListener()."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "На предварительно отрисованной странице запрошен вывод аудио, но эта функция сейчас не поддерживается."
@@ -4305,10 +4290,10 @@
     "message": "Не удалось выполнить переход с предварительной отрисовкой, так как была выполнена переадресация по URL, схема которого отличается от схемы HTTP или HTTPS."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "Неизвестно"
+    "message": "Данные предварительно отрисованной страницы были выгружены, так как метод WebView.addJavascriptInterface() внедрил новый интерфейс JavaScript."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "Неизвестно"
+    "message": "Данные предварительно отрисованной страницы были выгружены, так как метод WebView.removeJavascriptInterface() удалил интерфейс JavaScript."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "Для перехода с предварительной отрисовкой требовалась HTTP-аутентификация, которая сейчас не поддерживается."
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Показать сведения: iframe"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "Показать атрибут popovertarget"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Этот фрейм определен как фрейм объявлений"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Показать пометки"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "Перейти к узлу с анкером"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "Подробнее"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "Пассивен"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "Удалить"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "Открыть на панели \"Элементы\""
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "Чтобы использовать эту функцию, в настройках инструментов разработчика измените язык на английский."
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "Удалить сообщения"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "Отправить отзыв"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "Чем вам помочь?"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "Freestyler может показывать неточную и неверную информацию."
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "Чтобы получить список команд, попросите Freestyler показать их или введите \"/\""
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "Выбрать элемент"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "Отправить"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "Показать Freestyler"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Заблокированный ресурс"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "Эта страница следует рекомендациям современной веб-разработки?"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "Соответствует ли страница нормам современных веб-приложений?"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "Включить выборку JavaScript во время работы Lighthouse. При просмотре трассировки на панели \"Производительность\" вы будете видеть больше сведений о выполнении, однако это приведет к увеличенному потреблению ресурсов ЦП и может снизить скорость загрузки страницы."
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Производительность"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "Современное веб-приложение"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Очистить хранилище (cache, service workers и др.) перед аудитом. Это помогает при тестировании PWA и производительности."
@@ -9648,7 +9657,7 @@
     "message": "Не оптимизировано: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "Загрузить"
+    "message": "Загрузить профиль"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "Выберите экземпляр виртуальной машины JavaScript"
@@ -10275,7 +10284,25 @@
     "message": "Показать ещё {PH1}"
   },
   "panels/search/SearchView.ts | clear": {
-    "message": "Сбросить"
+    "message": "Очистить строку поиска"
+  },
+  "panels/search/SearchView.ts | clearInput": {
+    "message": "Очистить"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "Отключить поиск с учетом регистра"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "Отключить регулярные выражения"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "Включить поиск с учетом регистра"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "Включить регулярные выражения"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "Поиск"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "Найдены совпадающие строки ({PH1}) в нескольких файлах ({PH2})."
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "Запрос будет отправлен"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "Получение сообщения по протоколу WebSocket"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "Отправка сообщения по протоколу WebSocket"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "Загрузка XHR"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Выбрать сеанс хронологии"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "После записи выделите интересующую область в обзоре мышью. Затем масштабируйте и переместите хронологию, используя колесо мыши или клавиши {PH1}. {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "Чтобы начать запись, нажмите кнопку \"{PH1}\" или {PH2}."
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "Чтобы записать загрузку страницы, нажмите кнопку перезагрузки \"{PH1}\" или комбинацию клавиш {PH2}."
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "Подробнее"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "Неверный формат данных хронологии: {PH1}."
   },
@@ -12855,7 +12903,10 @@
     "message": "Совпадения"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
-    "message": "% несоответствий значений по медленному пути"
+    "message": "Процент несоответствий значений по медленному пути"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "Процент несоответствующих узлов (разница количества проверяемых элементов и найденных совпадений), которые не удалось быстро обнаружить с помощью фильтра Блума. Чем ниже этот показатель, тем лучше."
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "Селектор"
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "Таблица скопирована в буфер обмена"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(Итоговые значения всех селекторов)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "Невозможно связать"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1}: потребовалось {PH2}."
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1} байт"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "Размер сообщения"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Протокол WebSocket"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "Чтобы подключиться заново, откройте инструменты разработчика."
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "Показан результат {PH1} из {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "Очистить"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "Закрыть строку поиска"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "Найдено соответствий: {PH1}."
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} из {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "Отключить поиск с учетом регистра"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "Отключить \"Найти и заменить\""
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "Отключить регулярные выражения"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "Включить поиск с учетом регистра"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "Включить \"Найти и заменить\""
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "Включить регулярные выражения"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Найти"
@@ -13887,10 +13974,10 @@
     "message": "Заменить все"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "Искать следующий"
+    "message": "Показать следующий результат"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "Искать предыдущий"
+    "message": "Показать предыдущий результат"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Чтобы изменения настроек вступили в силу, перезапустите инструменты разработчика."
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "Объект Promise распознан (асинхронный)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "Объект {PH1} (асинхронный)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Панель \"{PH1}\""

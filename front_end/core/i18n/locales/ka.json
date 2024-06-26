@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With დაბლოკვა"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "სწრაფი 4G"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "სწრაფი 3G"
+    "message": "ნელი 4G"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "წინასწარი გაშვების მოთხოვნებისთვის კონტენტი მიუწვდომელია"
@@ -300,7 +303,7 @@
     "message": "{PH1} ბოლომდე ჩაიტვირთა: {PH2} „{PH3}“."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "ნელი 3G"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "ამ ქუქი-ჩანაწერის შენახვისას მოხდა უცნობი შეცდომა."
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "getCurrentPosition() და watchPosition() მოძველებულია დაუცველი წყაროების შემთხვევაში. ამ ფუნქციით სარგებლობისთვის გირჩევთ, თქვენი აპლიკაციისთვის გამოიყენოთ დაცული წყარო, როგორიცაა HTTPS. დეტალური ინფორმაციისთვის მოინახულეთ https://goo.gle/chrome-insecure-origins."
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "ფუნქცია getInnerHTML() მოძველებულია და ის მალე ამოიშლება ამ ბრაუზერიდან. მის ნაცვლად გამოიყენეთ getHTML()."
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia() აღარ მუშაობს დაუცველი წყაროების შემთხვევაში. ამ ფუნქციით სარგებლობისთვის გირჩევთ, თქვენი აპლიკაციისთვის გამოიყენოთ დაცული წყარო, როგორიცაა HTTPS. დეტალური ინფორმაციისთვის მოინახულეთ https://goo.gle/chrome-insecure-origins."
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "მიბმულია {PH1}-თან"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "ფაილის წაკითხვისას მოხდა უცნობი შეცდომა: {PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "ფაილური სისტემა ვერ დაემატა: {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "სურათის შენახვა"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "WASM მოდულის დისკზე შენახვა შეუძლებელია. როგორც ჩანს, ეს მოდული ძალიან დიდია."
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "ყველა უგულებელყოფის ჩვენება"
@@ -2907,7 +2913,7 @@
     "message": "წყარო"
   },
   "panels/application/ServiceWorkersView.ts | startString": {
-    "message": "დაწყება"
+    "message": "ჩართვა"
   },
   "panels/application/ServiceWorkersView.ts | status": {
     "message": "სტატუსი"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "მოვლენების ჩაწერის შეწყვეტა"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "განუსაზღვრელი"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "განუსაზღვრელი"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "განუსაზღვრელი"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "მხოლოდ GET მოთხოვნის მეშვეობით ჩატვირთული გვერდები შეძლებენ უკან-წინ გადასვლის ქეშის გამოყენებას."
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome-მა ქეშში მყოფ გვერდზე JavaScript-ის შესრულების მცდელობა აღმოაჩინა."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "განუსაზღვრელი"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "განუსაზღვრელი"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "განუსაზღვრელი"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "განუსაზღვრელი"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "გვერდები, რომლებმაც მოითხოვეს AppBanner, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
@@ -4263,7 +4248,7 @@
     "message": "წინასწარი ვიზუალიზაცია არ ყოფილა გამოყენებული, რადგან გააქტიურების დროს ნავიგაციას აქვს ეფექტური URL, რომელიც განსხვავდება თავისი ჩვეულებრივი URL-ისგან (მაგალითად, ახალი ჩანართის გვერდი, ან განთავსებული აპები)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "უცნობი"
+    "message": "წინასწარი ვიზუალიზაციით წარმოდგენილი ყველა გვერდი განიტვირთა ბრაუზერის მიერ გარკვეული მიზეზით (მაგალითად, WebViewCompat.addWebMessageListener() გამოძახებული იქნა წინასწარი ვიზუალიზაციის დროს)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "წინასწარი ვიზუალიზაციის გვერდმა მოითხოვა გამომავალი აუდიო, რომელიც ამჟამად მხარდაჭერილი არ არის."
@@ -4305,10 +4290,10 @@
     "message": "წინასწარი ვიზუალიზაციის ნავიგაცია ვერ მოხერხდა, რადგან ის გადამისამართდა URL-მისამართზე, რომლის სქემა არ იყო http: ან https:."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "უცნობი"
+    "message": "წინასწარი ვიზუალიზაციით წარმოდგენილი გვერდი განიტვირთა, რადგან შეტანილი იქნა JavaScript-ის ახალი ინტერფეისი WebView.addJavascriptInterface() ბრძანებით."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "უცნობი"
+    "message": "წინასწარი ვიზუალიზაციით წარმოდგენილი გვერდი განიტვირთა, რადგან JavaScript-ის ინტერფეისი ამოიშალა ბრძანებით WebView.removeJavascriptInterface()."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "წინასწარი ვიზუალიზაციის ნავიგაცია საჭიროებს HTTP-ავტორიზაციას, რომელიც ამჟამად მხარდაჭერილი არ არის."
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "iframe-ის დეტალური ინფორმაციის ჩვენება"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "ამომხტარი სამიზნის ჩვენება"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "ეს ფრეიმი იდენტიფიცირებული იყო, როგორც სარეკლამო ფრეიმი"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "ბეჯების ჩვენება"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "წამყვან კვანძე გადასვლა"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "შეიტყვეთ მეტი"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "პასიური"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "ამოშლა"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "ელემენტების პანელზე გამოჩენა"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "ეს ფუნქცია რომ გამოიყენოთ, DevTools-ის ენის პარამეტრებში მიუთითეთ ინგლისური."
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "შეტყობინებების გასუფთავება"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "გამოხმაურება"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "რით დაგეხმაროთ?"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "Freestyler-მა შეიძლება აჩვენოს არასწორი ინფორმაცია"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "ჰკითხეთ Freestyler-ს ან ბრძანებისთვის აკრიფეთ „/“"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "აირჩიეთ ელემენტი"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "გაგზავნა"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "Freestyler-ის ჩვენება"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "დაბლოკილი რესურსი"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "შეესაბამება თუ არა ეს გვერდი თანამედროვე ვებ-დეველოპმენტის საუკეთესო პრაქტიკებს"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "შეესაბამება თუ არა ეს გვერდი პროგრესული ვებ-აპის სტანდარტს"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "JavaScript-სემპლინგის ჩართვა, როცა გაშვებულია Lighthouse. აღნიშნული მოგაწვდით შესრულებასთან დაკავშირებულ მეტ დეტალს ეფექტურობის პანელში (კვალის ნახვისას), თუმცა CPU-ს ხარჯი უფრო დიდი იქნება, რაც გვერდის წარმადობაზეც აისახება."
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "წარმადობა"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "პროგრესული ვებ-აპი"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "მეხსიერების (cache, service workers და ა.შ.) გადაყენება აუდიტამდე (კარგი ვარიანტია წარმადობისა და PWA-ს ტესტირებისთვის)."
@@ -9648,7 +9657,7 @@
     "message": "არ არის ოპტიმიზებული: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "ჩატვირთვა"
+    "message": "პროფილის ჩატვირთვა"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "JavaScript VM ეგზემპლარის არჩევა"
@@ -10275,7 +10284,25 @@
     "message": "კიდევ {PH1}-ის ჩვენება"
   },
   "panels/search/SearchView.ts | clear": {
+    "message": "ძიების გასუფთავება"
+  },
+  "panels/search/SearchView.ts | clearInput": {
     "message": "გასუფთავება"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "რეგისტრზე დამოკიდებული ძიების გათიშვა"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "რეგულარული გამოსახულების გათიშვა"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "რეგისტრზე დამოკიდებული ძიების ჩართვა"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "რეგულარული გამოსახულების ჩართვა"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "პოვნა"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "მოიძებნა {PH1} შესატყვისი სტრიქონი {PH2} ფაილში."
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "გაგზავნის მოთხოვნას"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "WebSocket შეტყობინების მიღება"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "WebSocket შეტყობინების გაგზავნა"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "XHR ჩატვირთვა"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "ქრონოლოგიის სესიის არჩევა"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "ჩაწერის შემდეგ მიმოხილვაში აირჩიეთ თქვენთვის საინტერესო არე ჩავლების მეშვეობით. ამის შემდეგ, ქრონოლოგიის მასშტაბის შეცვლა და პანირება შესაძლებელი იქნება როგორც მაუსის ბორბლით, ისე {PH1} კლავიშთა კომბინაციით. {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "ახალი ჩაწერის დასაწყებად დააწკაპუნეთ ჩაწერის ღილაკზე {PH1} ან გამოიყენეთ კლავიშთა კომბინაცია {PH2}."
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "გვერდის ჩატვირთვის ჩასაწერად დააწკაპუნეთ გადატვირთვის ღილაკზე {PH1} ან გამოიყენეთ კლავიშთა კომბინაცია {PH2}."
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "შეიტყვეთ მეტი"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "ქრონოლოგიის არასწორად ფორმირებული მონაცემები: {PH1}"
   },
@@ -12855,7 +12903,10 @@
     "message": "შესატყვისი ელემენტების რაოდენობა"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
-    "message": "შენელებული გზის %-იანი შეუსაამობა"
+    "message": "შენელებული პროცესის %-იანი შეუსაბამობა"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "იმ შეუსაბამო კვანძების პროცენტული მაჩვენებლის ჩვენება (თანხვედრის მცდელობები — თანხვედრის რაოდენობა), რომელთა ფილტრით სწრაფად გამორიცხვა შეუძლებელია. მაჩვენებელი, რაც უფრო დაბალია, უკეთესია"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "ამომრჩევი"
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "ცხრილი დაკოპირდა გაცვლის ბუფერში"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(ჯამი ყველა ამომრჩევისთვის)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "მიბმა ვერ ხერხდება"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1} საჭიროებდა {PH2}-ს."
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1} ბაიტი"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "მონაცემთა სიგრძე"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket პროტოკოლი"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "ხელახლა დაუკავშირდით, როცა მზად იქნებით — ამისთვის ხელახლა გახსენით DevTools."
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "{PH2}-დან {PH1} შედეგის ჩვენება"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "გასუფთავება"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "ძიების ზოლის დახურვა"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} შესატყვისი"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} / {PH2}-დან"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "რეგისტრზე დამოკიდებული ძიების გათიშვა"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "პოვნისა და ჩანაცვლების გათიშვა"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "რეგულარული გამოსახულების გათიშვა"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "რეგისტრზე დამოკიდებული ძიების ჩართვა"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "პოვნა და ჩანაცვლება"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "რეგულარული გამოსახულების ჩართვა"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "პოვნა"
@@ -13887,10 +13974,10 @@
     "message": "ყველას ჩანაცვლება"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "შემდეგის ძიება"
+    "message": "შემდეგი შედეგის ჩვენება"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "წინას ძიება"
+    "message": "წინა შედეგების ჩვენება"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "ერთ-ერთი ან რამდენიმე პარამეტრი შეიცვალა, რაც საჭიროებს გადატვირთვას ძალაში შესასვლელად."
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "პირობა მოგვარდა (ასინქრონული)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (ასინქრონული)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} პანელი"

@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "קטע קוד With"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "‫4G מהיר"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "3G מהיר"
+    "message": "‫4G איטי"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "אין תוכן זמין לבקשת קדם-ההפעלה"
@@ -300,7 +303,7 @@
     "message": "{PH1} סיים לטעון: {PH2} \"{PH3}\"."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "3G איטי"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "אירעה שגיאה לא ידועה במהלך ניסיון לאחסן את קובץ ה-cookie."
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "האפשרויות getCurrentPosition() ו-watchPosition() הוצאו משימוש במקורות שאינם מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "הפונקציה getInnerHTML()‎ הוצאה משימוש ותוסר מהדפדפן בקרוב. במקומה צריך להשתמש ב-getHTML()‎."
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "האפשרות getUserMedia() לא פועלת יותר במקורות לא מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "מקושר אל {PH1}"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "אירעה שגיאה בלתי צפויה בזמן קריאת הקובץ: {PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "לא הצלחנו להוסיף מערכת קבצים: {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "שמירת תמונה"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "אי אפשר לשמור את מודול WASM בדיסק. סביר להניח שהמודול גדול מדי."
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "הצגת כל השינויים מברירת המחדל"
@@ -2913,7 +2919,7 @@
     "message": "סטטוס"
   },
   "panels/application/ServiceWorkersView.ts | stopString": {
-    "message": "הפסקה"
+    "message": "עצירה"
   },
   "panels/application/ServiceWorkersView.ts | syncString": {
     "message": "סנכרון"
@@ -3084,7 +3090,7 @@
     "message": "Web SQL"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
-    "message": "אסימוני מצב פרטי"
+    "message": "טוקנים של מצב פרטי"
   },
   "panels/application/application-meta.ts | application": {
     "message": "אפליקציה"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "הפסקה של הקלטת אירועים"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "לא מוגדר"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "לא מוגדר"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "לא מוגדר"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "רק דפים שהטעינה שלהם נעשית באמצעות בקשת GET מתאימים לשמירה במטמון לדף הקודם/הבא."
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "מערכת Chrome זיהתה ניסיון להפעיל JavaScript בזמן שהדף היה במטמון."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "לא מוגדר"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "לא מוגדר"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "לא מוגדר"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "לא מוגדר"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "בשלב זה, דפים שנשלחה מהם בקשה ל-AppBanner לא מתאימים לשמירה במטמון לדף הקודם/הבא."
@@ -3768,22 +3753,22 @@
     "message": "התאמה בין תת-דומיינים"
   },
   "panels/application/components/OriginTrialTreeView.ts | noTrialTokens": {
-    "message": "אין אסימונים לגרסאות לניסיון"
+    "message": "אין טוקנים לגרסאות לניסיון"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "מקור"
   },
   "panels/application/components/OriginTrialTreeView.ts | rawTokenText": {
-    "message": "אסימון גולמי"
+    "message": "טוקן גולמי"
   },
   "panels/application/components/OriginTrialTreeView.ts | status": {
-    "message": "סטטוס אסימון"
+    "message": "סטטוס טוקן"
   },
   "panels/application/components/OriginTrialTreeView.ts | token": {
-    "message": "אסימון"
+    "message": "טוקן"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "{PH1} אסימונים"
+    "message": "{PH1} טוקנים"
   },
   "panels/application/components/OriginTrialTreeView.ts | trialName": {
     "message": "שם הבדיקה"
@@ -3981,22 +3966,22 @@
     "message": "כן, כי האתר ברמה העליונה אטום"
   },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
-    "message": "כל אסימוני המצב הפרטי המאוחסנים זמינים במופע של הדפדפן הזה."
+    "message": "כל הטוקנים המאוחסנים של מצב פרטי זמינים במופע של הדפדפן הזה."
   },
   "panels/application/components/TrustTokensView.ts | deleteTrustTokens": {
-    "message": "יש למחוק את כל אסימוני המצב הפרטי המאוחסנים שהונפקו על ידי {PH1}."
+    "message": "יש למחוק את כל הטוקנים המאוחסנים של מצב פרטי שהונפקו על ידי {PH1}."
   },
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "מנפיק"
   },
   "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "אין כרגע אסימוני מצב פרטי שמורים."
+    "message": "אין כרגע טוקנים של מצב פרטי שמורים."
   },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
-    "message": "ספירת האסימונים המאוחסנים"
+    "message": "ספירת הטוקנים המאוחסנים"
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
-    "message": "אסימוני מצב פרטי"
+    "message": "טוקנים של מצב פרטי"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
     "message": "כל הטעינות הספקולטיביות"
@@ -4263,7 +4248,7 @@
     "message": "לא נעשה שימוש בעיבוד מראש כי בזמן ההפעלה כתובת ה-URL בפועל של המעבר שונה מכתובת ה-URL הרגילה שלו. (לדוגמה, דף הכרטיסייה החדשה או האפליקציות המתארחות)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "לא ידוע"
+    "message": "הדפדפן הסיר את הנתונים שנטענו של כל הדפים שעברו עיבוד מראש (לדוגמה, נשלחה קריאה ל-WebViewCompat.addWebMessageListener() במהלך העיבוד מראש)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "הדף שעבר עיבוד מראש ביקש פלט אודיו, שלא נתמך בשלב הזה."
@@ -4305,10 +4290,10 @@
     "message": "המעבר לעיבוד מראש נכשל כי ההפניה האוטומטית הייתה לכתובת URL שהסכמה שלה לא הייתה :http או :https."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "לא ידוע"
+    "message": "בדף שעבר עיבוד מראש הוסרו הנתונים שנטענו כי ממשק JavaScript חדש הוחדר על ידי WebView.addJavaScriptInterface()."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "לא ידוע"
+    "message": "בדף שעבר עיבוד מראש הוסרו הנתונים שנטענו כי ממשק JavaScript הוסר על ידי WebView.removeJavascriptInterface()."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "למעבר לעיבוד מראש נדרש אימות HTTP, שלא ניתן לבצע בשלב הזה."
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "הצגת הפרטים של iframe"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "הצגת היעד של החלון הקופץ"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "המסגרת זוהתה כמסגרת של מודעה"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "הצגת התגים"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "מעבר לצומת העוגן"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "מידע נוסף"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "לא פעיל"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "הסרה"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "הצגה בחלונית הרכיבים"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "כדי להשתמש בתכונה הזו, צריך לעדכן את העדפת השפה לאנגלית בהגדרות של כלי הפיתוח."
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "מחיקת ההודעות"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "שליחת משוב"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "איך אפשר לעזור?"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "יכול להיות שה-Freestyler יציג מידע לא מדויק ויטעה"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "להצגת פקודות, אפשר לשאול את Freestyler או להקליד"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "בחירת רכיב"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "שליחה"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "הצגה של Freestyler"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "משאב שנחסם"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "האם דף זה מוגדר בהתאם לשיטות המומלצות בפיתוח אתרים מודרני"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "האם דף זה עומד בתקן של Progressive Web App"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "הפעלה של דגימת JavaScript במהלך הרצה של Lighthouse. כשבודקים את המעקב מוצגים פרטים נוספים על הביצוע בחלונית הביצועים, אבל התקורה הגבוהה יותר של המעבד (CPU) עשויה להשפיע על ביצועי הדף."
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "ביצועים"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "Progressive Web App"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "איפוס האחסון (cache, service workers, וכדומה) לפני ביקורת. (מתאים לבדיקות של ביצועים ושל PWA)"
@@ -8088,10 +8097,10 @@
     "message": "תזמון"
   },
   "panels/network/NetworkItemView.ts | trustTokenOperationDetails": {
-    "message": "פרטי פעולה של אסימון מצב פרטי"
+    "message": "פרטי פעולה של טוקן מצב פרטי"
   },
   "panels/network/NetworkItemView.ts | trustTokens": {
-    "message": "אסימוני מצב פרטי"
+    "message": "טוקנים של מצב פרטי"
   },
   "panels/network/NetworkItemView.ts | websocketMessages": {
     "message": "הודעות WebSocket"
@@ -8967,7 +8976,7 @@
     "message": "מנפיקים"
   },
   "panels/network/components/RequestTrustTokensView.ts | numberOfIssuedTokens": {
-    "message": "מספר האסימונים שהונפקו"
+    "message": "מספר הטוקנים שהונפקו"
   },
   "panels/network/components/RequestTrustTokensView.ts | parameters": {
     "message": "פרמטרים"
@@ -9648,7 +9657,7 @@
     "message": "לא בוצעה אופטימיזציה: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "טעינה"
+    "message": "טעינת פרופיל"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "בחירת מופע VM של JavaScript"
@@ -10275,7 +10284,25 @@
     "message": "הצגה של {PH1} נוספים"
   },
   "panels/search/SearchView.ts | clear": {
+    "message": "ניקוי החיפוש"
+  },
+  "panels/search/SearchView.ts | clearInput": {
     "message": "ניקוי"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "השבתת חיפוש תלוי אותיות רישיות"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "השבתה של ביטויים רגולריים"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "הפעלת חיפוש תלוי אותיות רישיות"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "הפעלה של ביטויים רגולריים"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "חיפוש"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "נמצאו {PH1} שורות תואמות ב-{PH2} קבצים."
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "תישלח בקשה"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "קבלה של הודעת WebSocket"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "שליחת הודעת WebSocket"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "טעינת XHR"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "בחירת הסשן של ציר הזמן"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "לאחר ההקלטה, יש לבחור אזור עניין בסקירה הכללית על ידי גרירה. לאחר מכן, יש לשנות את מרחק התצוגה ולהזיז את ציר הזמן באמצעות גלגלת העכבר או המקשים {PH1}. {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "יש ללחוץ על לחצן ההקלטה {PH1} או ללחוץ על {PH2} כדי להתחיל הקלטה חדשה."
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "יש ללחוץ על לחצן הטעינה מחדש {PH1} או להקיש על {PH2} כדי להקליט את טעינת הדף."
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "למידע נוסף"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "נתוני ציר הזמן פגומים: {PH1}"
   },
@@ -12857,6 +12905,9 @@
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
     "message": "‫% של אי-התאמות איטיות"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "אחוז הצמתים הלא תואמים (ניסיונות התאמה פחות מספר ההתאמות) שאי אפשר היה לפסול במהירות על ידי מסנן הבלום. כמה שיותר נמוך, יותר טוב."
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "סלקטור"
   },
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "הטבלה הועתקה ללוח העריכה"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(סה\"כ לכל הבוררים)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "אין אפשרות לקשר"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "משך הזמן של {PH1} היה {PH2}."
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "‫{PH1} בייטים"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "אורך הנתונים"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "פרוטוקול WebSocket"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "כשהכול מוכן, יש להתחבר מחדש על ידי פתיחה מחדש של כלי הפיתוח"
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "הצגת תוצאה {PH1} מתוך {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "ניקוי"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "סגירת סרגל החיפוש"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} התאמות"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} מתוך {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "השבתת חיפוש תלוי אותיות רישיות"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "השבתת החיפוש וההחלפה"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "השבתה של ביטויים רגולריים"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "הפעלת חיפוש תלוי אותיות רישיות"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "חיפוש והחלפה"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "הפעלה של ביטויים רגולריים"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "חיפוש"
@@ -13887,10 +13974,10 @@
     "message": "החלפת הכול"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "חיפוש המופע הבא"
+    "message": "הצגת התוצאה הבאה"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "חיפוש מופע קודם"
+    "message": "הצגת התוצאה הקודמת"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "הגדרה אחת לפחות השתנתה ולכן יש צורך בטעינה חוזרת."
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "התבצעה התאמת נתונים ל-Promise (אסינכרוני)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (אסינכרוני)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "חלונית {PH1}"

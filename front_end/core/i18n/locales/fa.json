@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "قطعه With"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "شبکه نسل چهارم سریع"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "3G سریع"
+    "message": "شبکه نسل چهارم آهسته"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "هیچ محتوایی برای درخواست پیش‌پرواز موجود نیست"
@@ -300,7 +303,7 @@
     "message": "بارگیری {PH1} به پایان رسید: {PH2} «{PH3}»."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "3G آهسته"
+    "message": "شبکه نسل سوم"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "هنگام ذخیره کردن این کوکی، خطای ناشناخته‌ای روی داد."
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "getCurrentPosition() و watchPosition() در مبدأهای ناامن منسوخ شده‌اند. برای استفاده از این ویژگی، توصیه می‌کنیم برنامه‌تان را به مبدائی امن مثل HTTPS منتقل کنید. برای جزئیات بیشتر، به https://goo.gle/chrome-insecure-origins مراجعه کنید."
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "تابع getInnerHTML()‎ منسوخ شده است و به‌زودی از این مرورگر برداشته خواهد شد. لطفاً به‌جای آن از getHTML()‎ استفاده کنید."
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia() دیگر در مبدأهای ناامن کار نمی‌کند. برای استفاده از این ویژگی، توصیه می‌کنیم برنامه‌تان را به مبدائی امن مثل HTTPS منتقل کنید. برای جزئیات بیشتر، به https://goo.gle/chrome-insecure-origins مراجعه کنید."
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "پیوند داده‌شده با {PH1}"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "خطای ناشناخته هنگام خواندن فایل: {PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "سیستم فایل اضافه نشد: {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "ذخیره تصویر"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "واحد WASM در دیسک ذخیره نشد. به احتمال زیاد واحد بسیار بزرگ است."
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "نمایش همه موارد ملغی‌شده"
@@ -2862,7 +2868,7 @@
     "message": "همگام‌سازی دوره‌ای"
   },
   "panels/application/ServiceWorkersView.ts | periodicSyncTag": {
-    "message": "برچسب «همگام‌سازی دوره‌ای»"
+    "message": "برچسب همگام‌سازی دوره‌ای"
   },
   "panels/application/ServiceWorkersView.ts | pushData": {
     "message": "داده فشاری"
@@ -2913,7 +2919,7 @@
     "message": "وضعیت"
   },
   "panels/application/ServiceWorkersView.ts | stopString": {
-    "message": "توقف"
+    "message": "متوقف کردن"
   },
   "panels/application/ServiceWorkersView.ts | syncString": {
     "message": "همگام‌سازی"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "توقف ضبط رویدادها"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "تعریف‌نشده"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "تعریف‌نشده"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "تعریف‌نشده"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "فقط صفحه‌هایی که ازطریق «درخواست GET» بار می‌شوند واجدشرایط حافظه پنهان عقب-جلو هستند."
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome تلاشی برای اجرای جاوا اسکریپت درحالت ذخیره‌شده در حافظه پنهان شناسایی کرد."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "تعریف‌نشده"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "تعریف‌نشده"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "تعریف‌نشده"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "تعریف‌نشده"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "درحال‌حاضر، صفحه‌هایی که AppBanner درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
@@ -4263,7 +4248,7 @@
     "message": "پیش‌پرداز استفاده نشد زیرا درطول زمان فعال‌سازی، پیمایش نشانی وب مؤثری متفاوت از نشانی وب معمول آن دارد. (برای مثال، «صفحه برگه جدید» یا برنامه‌های میزبانی‌شده)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "نامشخص"
+    "message": "همه صفحه‌های پیش‌پردازشده به‌دلایلی توسط مرورگر تخلیه شدند (به‌عنوان مثال، WebViewCompat.addWebMessageListener()‎ درحین پیش‌پرداززنی فراخوانی شده است.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "صفحه پیش‌پردازشده خروجی صوتی درخواست کرد که درحال‌حاضر پشتیبانی نمی‌شود."
@@ -4305,10 +4290,10 @@
     "message": "پیمایش پیش‌پرداززنی ناموفق بود زیرا به نشانی وبی هدایت می‌کرد که طرح آن http:‎ یا https:‎ نبود."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "نامشخص"
+    "message": "صفحه پیش‌پردازشده تخلیه شد زیرا میانای جاوا اسکریپت جدیدی توسط WebView.addJavascriptInterface()‎ تزریق شده است."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "نامشخص"
+    "message": "صفحه پیش‌پردازشده تخلیه شد زیرا میانای جاوا اسکریپت توسط WebView.removeJavascriptInterface()‎ برداشته شده است."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "پیمایش پیش‌پرداززنی به اصالت‌سنجی HTTP نیاز داشت که درحال‌حاضر پشتیبانی نمی‌شود."
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "نمایش جزئیات iframe"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "نمایش هدف بالاپر"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "این قاب به‌عنوان قاب آگهی شناسایی شده است"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "نمایش نشان‌ها"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "پرش به گره لنگر"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "بیشتر بدانید"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "منفعل"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "برداشتن"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "نمایش در پانل «عناصر»"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "برای استفاده از این ویژگی، اولویت زبان خود را در «تنظیمات DevTools» به انگلیسی تغییر دهید."
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "پاک کردن پیام‌ها"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "ارسال بازخورد"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "چه کمکی می‌توانم به شما بکنم؟"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "ممکن است Freestyler اطلاعات نادرست نمایش دهد و شاید موفق نباشد"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "از Freestyler بپرسید یا برای دیدن فرمان‌ها / را تایپ کنید"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "انتخاب عنصر"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "ارسال"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "نمایش Freestyler"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "منبع مسدود"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "آیا این صفحه روال‌های مطلوب برای توسعه وب مدرن را دنبال می‌کند"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "آیا این صفحهْ استاندارد «برنامه وب پیش‌رو» را برآورده می‌کند یا نه"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "نمونه‌برداری جاوا اسکریپت درطول اجرای Lighthouse را فعال کنید. با این کار وقتی ردپا را مشاهده می‌کنید، جزئیات اجرای بیشتری در پانل عملکرد می‌بینید، اما سَربار CPU بالاتری دارد و ممکن است بر عملکرد صفحه تأثیر بگذارد."
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "عملکرد"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "برنامه وب پیش‌رو"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "فضای ذخیره‌سازی (cache، service workers و غیره) قبل‌از بررسی بازنشانی می‌شود. (برای آزمایش PWA و عملکرد مفید است)"
@@ -9648,7 +9657,7 @@
     "message": "بهینه‌نشده: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "بارگیری"
+    "message": "بار کردن نمایه"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "نمونه JavaScript VM (ماشین مجازی جاوا اسکریپت) را انتخاب کنید"
@@ -10275,7 +10284,25 @@
     "message": "نمایش {PH1} مورد دیگر"
   },
   "panels/search/SearchView.ts | clear": {
+    "message": "پاک کردن جستجو"
+  },
+  "panels/search/SearchView.ts | clearInput": {
     "message": "پاک کردن"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "غیرفعال کردن جستجوی حروف‌حساس"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "غیرفعال کردن عبارت‌های باقاعده"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "فعال کردن جستجوی حروف‌حساس"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "فعال کردن عبارت‌های باقاعده"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "یافتن"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "{PH1} خط منطبق در فایل‌های {PH2} پیدا شد."
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "درخواست ارسال خواهد کرد"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "دریافت پیام WebSocket"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "ارسال پیام WebSocket"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "بارگیری XHR"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "انتخاب جلسه خط زمان"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "پس از ضبط، ناحیه موردنظر در نمای کلی را با کشیدن انتخاب کنید. سپس، با چرخ موشواره یا کلیدهای {PH1}، خط زمان را بزرگ‌نمایی کنید و حرکت دهید. {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "برای ضبط جدید، روی دکمه ضبط {PH1} کلیک کنید یا {PH2} را فشار دهید."
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "برای ضبط کردن بارگیری صفحه، روی دکمه بار کردن مجدد {PH1} کلیک کنید یا {PH2} را فشار دهید."
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "بیشتر بدانید"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "داده‌های خط زمان ناقص: {PH1}"
   },
@@ -12855,7 +12903,10 @@
     "message": "تعداد موارد منطبق"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
-    "message": "٪ موارد غیرمنطبق مسیر آهسته"
+    "message": "درصد موارد غیرمنطبق مسیر آهسته"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "درصد گره‌های غیرمنطبق (تعداد تلاش برای تطبیق - تعداد تطابق) که نمی‌توان آن‌ها را به‌سرعت توسط فیلتر بولوم رد کرد. مقدار کمتر بهتر است."
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "گزینشگر"
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "جدول در بریده‌دان کپی شد"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(مجموع برای همه گزینشگرها)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "امکان پیوند وجود ندارد"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1} {PH2} طول کشید."
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "‫{PH1} بایت"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "طول داده‌ها"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "پروتکل WebSocket"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "هنگام آمادگی، DevTools را دوباره باز کنید و مجدداً متصل شوید."
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "نمایش نتیجه {PH1} از {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "پاک کردن"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "بستن نوار «جستجو»"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} مورد منطبق"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} از {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "غیرفعال کردن جستجوی حروف‌حساس"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "غیرفعال کردن یافتن و جایگزینی"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "غیرفعال کردن عبارت‌های باقاعده"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "فعال کردن جستجوی حروف‌حساس"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "یافتن و جایگزینی"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "فعال کردن عبارت‌های باقاعده"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "یافتن"
@@ -13887,10 +13974,10 @@
     "message": "جایگزینی همه"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "جستجوی بعدی"
+    "message": "نمایش نتیجه بعدی"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "جستجوی قبلی"
+    "message": "نمایش نتیجه قبلی"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "یک یا چند تنظیم تغییر کرده است که برای اعمال شدن به بار کردن مجدد نیاز دارد."
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "تعهد حل شد (غیرهمگام)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (غیرهمگام)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "پانل {PH1}"

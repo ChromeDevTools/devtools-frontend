@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "ບລັອກ With"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "4G ແບບໄວ"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "3G ແບບໄວ"
+    "message": "4G ແບບຊ້າ"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "ບໍ່ມີເນື້ອຫາທີ່ສາມາດໃຊ້ໄດ້ສຳລັບຄຳຮ້ອງຂໍການກວດສອບລ່ວງໜ້າ"
@@ -300,7 +303,7 @@
     "message": "ໂຫຼດ {PH1} ແລ້ວໆ: {PH2} \"{PH3}\"."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "3G ແບບຊ້າ"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "ເກີດຂໍ້ຜິດພາດທີ່ບໍ່ຮູ້ຈັກຂຶ້ນໃນການຈັດເກັບຄຸກກີ້ນີ້."
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "ສິ້ນສຸດການສະໜັບສະໜຸນ getCurrentPosition() ແລະ watchPosition() ຢູ່ຕົ້ນທາງທີ່ບໍ່ປອດໄພແລ້ວ. ເພື່ອໃຊ້ຄຸນສົມບັດນີ້, ທ່ານຄວນພິຈາລະນາການສະຫຼັບແອັບພລິເຄຊັນຂອງທ່ານໄປເປັນຕົ້ນທາງທີ່ປອດໄພ, ເຊັ່ນ: HTTPS. ກະລຸນາອ່ານລາຍລະອຽດເພີ່ມເຕີມໃນ https://goo.gle/chrome-insecure-origins."
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "ຟັງຊັນ getInnerHTML() ເຊົາໃຊ້ແລ້ວ ແລະ ຈະຖືກລຶບອອກຈາກໂປຣແກຣມທ່ອງເວັບນີ້ໃນໄວໆນີ້. ກະລຸນາໃຊ້ getHTML() ແທນ."
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "ບໍ່ສາມາດໃຊ້ getUserMedia() ຢູ່ຕົ້ນທາງທີ່ບໍ່ປອດໄພໄດ້ອີກຕໍ່ໄປ. ເພື່ອໃຊ້ຄຸນສົມບັດນີ້, ທ່ານຄວນພິຈາລະນາການສະຫຼັບແອັບພລິເຄຊັນຂອງທ່ານໄປເປັນຕົ້ນທາງທີ່ປອດໄພ, ເຊັ່ນ: HTTPS. ກະລຸນາອ່ານລາຍລະອຽດເພີ່ມເຕີມໃນ https://goo.gle/chrome-insecure-origins."
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "ເຊື່ອມໂຍງກັບ {PH1} ແລ້ວ"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "ເກີດຂໍ້ຜິດພາດທີ່ບໍ່ຮູ້ຈັກໃນຂະນະອ່ານໄຟລ໌: {PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "ບໍ່ສາມາດເພີ່ມລະບົບໄຟລ໌ໄດ້: {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "ບັນທຶກຮູບພາບ"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "ບໍ່ສາມາດບັນທຶກໂມດູນ WASM ໃສ່ໃນດິສກ໌ໄດ້. ມີຄວາມເປັນໄປໄດ້ວ່າໂມດູນມີຂະໜາດໃຫຍ່ເກີນໄປ."
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "ສະແດງການຍົກເລີກທັງໝົດ"
@@ -2850,7 +2856,7 @@
     "message": "ໂຟກັສ"
   },
   "panels/application/ServiceWorkersView.ts | inspect": {
-    "message": "ກວດກາ"
+    "message": "ກວດສອບ"
   },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "ຄຳຂໍເຄືອຂ່າຍ"
@@ -2859,10 +2865,10 @@
     "message": "ເມື່ອໂຫຼດໜ້າຄືນໃໝ່, ກະລຸນາບັງຄັບ service worker ໃຫ້ອັບເດດ ແລະ ເປີດນຳໃຊ້ມັນ"
   },
   "panels/application/ServiceWorkersView.ts | periodicSync": {
-    "message": "ຊິ້ງຂໍ້ມູນເປັນໄລຍະໆ"
+    "message": "ຊິ້ງຕາມໄລຍະເວລາ"
   },
   "panels/application/ServiceWorkersView.ts | periodicSyncTag": {
-    "message": "ແທັກການຊິ້ງຂໍ້ມູນເປັນຊ່ວງໄລຍະ"
+    "message": "ແທັກການຊິ້ງຕາມໄລຍະເວລາ"
   },
   "panels/application/ServiceWorkersView.ts | pushData": {
     "message": "ຂໍ້ມູນ Push"
@@ -2907,7 +2913,7 @@
     "message": "ແຫຼ່ງທີ່ມາ"
   },
   "panels/application/ServiceWorkersView.ts | startString": {
-    "message": "ເລີ່ມຕົ້ນ"
+    "message": "ເລີ່ມ"
   },
   "panels/application/ServiceWorkersView.ts | status": {
     "message": "ສະຖານະ"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "ຢຸດເຫດການບັນທຶກ"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "ບໍ່ໄດ້ລະບຸ"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "ບໍ່ໄດ້ລະບຸ"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "ບໍ່ໄດ້ລະບຸ"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "ສະເພາະໜ້າທີ່ໂຫຼດຜ່ານຄຳຮ້ອງຂໍ GET ທີ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome ກວດພົບຄວາມພະຍາຍາມເປີດໃຊ້ JavaScript ໃນຂະນະທີ່ຢູ່ໃນແຄສ."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "ບໍ່ໄດ້ລະບຸ"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "ບໍ່ໄດ້ລະບຸ"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "ບໍ່ໄດ້ລະບຸ"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "ບໍ່ໄດ້ລະບຸ"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍ AppBanner ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
@@ -4263,7 +4248,7 @@
     "message": "ການສະແດງພາບລ່ວງໜ້າບໍ່ໄດ້ຖືກນໍາໃຊ້ເພາະວ່າໃນລະຫວ່າງເວລາເປີດໃຊ້, ການນໍາທາງມີ URL ທີ່ມີປະສິດທິພາບທີ່ແຕກຕ່າງຈາກ URL ປົກກະຕິຂອງມັນ. (ຕົວຢ່າງ: ໜ້າແຖບໃໝ່ ຫຼື ແອັບທີ່ໂຮສ.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "ບໍ່ຮູ້ຈັກ"
+    "message": "ໂປຣແກຣມທ່ອງເວັບຍົກເລີກການໂຫຼດໜ້າທີ່ສະແດງພາບລ່ວງໜ້າທັງໝົດເນື່ອງຈາກເຫດຜົນບາງຢ່າງ (ຕົວຢ່າງ: ມີການເອີ້ນໃຊ້ WebViewCompat.addWebMessageListener() ໃນລະຫວ່າງການສະແດງພາບລ່ວງໜ້າ.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "ໜ້າທີ່ສະແດງພາບລ່ວງໜ້າຮ້ອງຂໍເອົ້າພຸດສຽງ, ເຊິ່ງຍັງບໍ່ຮອງຮັບໃນປັດຈຸບັນ."
@@ -4305,10 +4290,10 @@
     "message": "ການນຳທາງການສະແດງພາບລ່ວງໜ້າບໍ່ສຳເລັດ ເນື່ອງຈາກມີການປ່ຽນເສັ້ນທາງໄປຫາ URL ເຊິ່ງມີຮູບແບບທີ່ບໍ່ແມ່ນ http: ຫຼື https:."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "ບໍ່ຮູ້ຈັກ"
+    "message": "ຍົກເລີກການໂຫຼດໜ້າທີ່ສະແດງພາບລ່ວງໜ້າເນື່ອງຈາກ WebView.addJavascriptInterface() ແຊກສ່ວນຕິດຕໍ່ JavaScript ໃໝ່."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "ບໍ່ຮູ້ຈັກ"
+    "message": "ຍົກເລີກການໂຫຼດໜ້າທີ່ສະແດງພາບລ່ວງໜ້າເນື່ອງຈາກ WebView.removeJavascriptInterface() ລຶບສ່ວນຕິດຕໍ່ JavaScript ອອກ."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "ການນຳທາງໂດຍມີການສະແດງພາບລ່ວງໜ້າຈຳເປັນຕ້ອງມີການພິສູດຢືນຢັນ HTTP, ເຊິ່ງຍັງບໍ່ຮອງຮັບໃນປັດຈຸບັນ."
@@ -4587,7 +4572,7 @@
     "message": "ແປ້ນພິມ"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
-    "message": "ໂຫຼດ"
+    "message": "ໂຫລດ"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
     "message": "ມີເດຍ"
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "ສະແດງລາຍລະອຽດ iframe"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "ສະແດງເປົ້າໝາຍປັອບອັບ"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "ເຟຣມທີ່ລະບຸວ່າເປັນເຟຣມໂຄສະນາ"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "ສະແດງປ້າຍ"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "ຂ້າມໄປຫາໂໝດຂອງແທັກ Anchor"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "ສຶກສາເພີ່ມເຕີມ"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "ພາສຊີບ"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "ລຶບອອກ"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "ເປີດເຜີຍໃນແຜງອົງປະກອບ"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "ເພື່ອໃຊ້ຄຸນສົມບັດນີ້, ໃຫ້ອັບເດດການຕັ້ງຄ່າພາສາຂອງທ່ານໃນການຕັ້ງຄ່າ DevTools ເປັນພາສາອັງກິດ."
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "ລຶບລ້າງຂໍ້ຄວາມ"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "ສົ່ງຄຳຕິຊົມ"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "ທ່ານຕ້ອງການຄວາມຊ່ວຍເຫຼືອໃນເລື່ອງໃດ?"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "Freestyler ອາດສະແດງຂໍ້ມູນທີ່ບໍ່ຖືກຕ້ອງ ແລະ ອາດບໍ່ຖືກຕ້ອງ"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "ຂໍ Freestyler ຫຼື ພິມ / ເພື່ອຂໍຄຳສັ່ງ"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "ເລືອກອົງປະກອບ"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "ສົ່ງ"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "ສະແດງ Freestyler"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "ຊັບພະຍາກອນທີ່ຖືກບລັອກໄວ້"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "ໜ້ານີ້ປະຕິບັດຕາມວິທີປະຕິບັດທີ່ດີສຸດສຳລັບນັກພັດທະນາເວັບສະໄໝໃໝ່ຫຼືບໍ່"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "ໜ້ານີ້ຕອບສະໜອງໄດ້ມາດຕະຖານຂອງ Progressive Web App ຫຼືບໍ່"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "ເປີດການນຳໃຊ້ການສຸ່ມຕົວຢ່າງ JavaScript ໃນລະຫວ່າງການເອີ້ນໃຊ້ Lighthouse. ເຊິ່ງຈະໃຫ້ລາຍລະອຽດເພີ່ມເຕີມກ່ຽວກັບການດຳເນີນການດັ່ງກ່າວເມື່ອທ່ານເບິ່ງການຕິດຕາມໃນແຜງປະສິດທິພາບ, ແຕ່ຈະເຮັດໃຫ້ໂອເວີເຮດຂອງ CPU ສູງຂຶ້ນ ແລະ ອາດສົ່ງຜົນຕໍ່ປະສິດທິພາບຂອງໜ້າເວັບ."
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "ປະສິດທິພາບ"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "Progressive Web App"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "ຣີເຊັດບ່ອນຈັດເກັບຂໍ້ມູນ (cache, service workers ແລະ ອື່ນໆ) ກ່ອນການກວດສອບ. (ດີສຳລັບປະສິດທິພາບ ແລະ ການທົດສອບ PWA)"
@@ -9648,7 +9657,7 @@
     "message": "ບໍ່ໄດ້ປັບໃຫ້ແຕ່ງ: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "ໂຫຼດ"
+    "message": "ໂຫຼດໂປຣໄຟລ໌"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "ເລືອກອິນສະແຕນ VM ຂອງ JavaScript"
@@ -10275,7 +10284,25 @@
     "message": "ສະແດງອີກ {PH1} ລາຍການ"
   },
   "panels/search/SearchView.ts | clear": {
-    "message": "ລຶບ"
+    "message": "ລຶບລ້າງການຊອກຫາ"
+  },
+  "panels/search/SearchView.ts | clearInput": {
+    "message": "ລຶບລ້າງ"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "ປິດໃຊ້ການຊອກຫາທີ່ຕົວພິມນ້ອຍໃຫຍ່ມີຜົນຕ່າງກັນ"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "ປິດການນຳໃຊ້ regular expression"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "ເປີດໃຊ້ການຊອກຫາທີ່ຕົວພິມນ້ອຍໃຫຍ່ມີຜົນຕ່າງກັນ"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "ເປີດການນຳໃຊ້ regular expression"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "ຊອກຫາ"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "ພົບແຖວທີ່ກົງກັນ {PH1} ແຖວໃນ {PH2} ໄຟລ໌."
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "ຈະສົ່ງຄຳຮ້ອງຂໍ"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "ຮັບຂໍ້ຄວາມ WebSocket"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "ສົ່ງຂໍ້ຄວາມ WebSocket"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "ໂຫຼດ XHR"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "ເລືອກເຊດຊັນທາມລາຍ"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "ຫຼັງຈາກການບັນທຶກ, ໃຫ້ເລືອກພື້ນທີ່ຄວາມສົນໃຈໃນພາບຮວມໂດຍການລາກ. ຈາກນັ້ນ, ຊູມແລ້ວເລື່ອນທາມລາຍດ້ວຍລູກກິ້ງເມົ້າ ຫຼື ປຸ່ມ {PH1}. {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "ຄລິກໃສ່ປຸ່ມບັນທຶກ {PH1} ຫຼື ກົດ {PH2} ເພື່ອເລີ່ມການບັນທຶກໃໝ່."
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "ຄລິກປຸ່ມໂຫຼດໃໝ່ {PH1} ຫຼື ກົດ {PH2} ເພື່ອບັນທຶກການໂຫຼດໜ້າ."
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "ສຶກສາເພີ່ມເຕີມ"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "ຂໍ້ມູນທາມລາຍມີຮູບແບບບໍ່ຖືກຕ້ອງ: {PH1}"
   },
@@ -12857,6 +12905,9 @@
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
     "message": "% ຂອງການຈັບຄູ່ທີ່ບໍ່ກົງກັນຂອງເສັ້ນທາງທີ່ຊ້າ"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "ເປີເຊັນຂອງໂໜດທີ່ບໍ່ກົງກັນ (ການພະຍາຍາມຈັບຄູ່ - ຈຳນວນການຈັບຄູ່) ທີ່ຕົວກັ່ນຕອງ Bloom ບໍ່ສາມາດຕັດອອກໄດ້ຢ່າງວ່ອງໄວ. ຍິ່ງຕ່ຳຍິ່ງດີ."
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "ຕົວເລືອກ"
   },
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "ສຳເນົາຕາຕະລາງໄປໃສ່ຄລິບບອດແລ້ວ"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(ຄ່າຮວມສຳລັບຕົວເລືອກທັງໝົດ)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "ບໍ່ສາມາດລິ້ງໄດ້"
@@ -12918,7 +12972,7 @@
     "message": "ເຊື່ອງການວາງຊ້ອນກັນທີ່ໜັກທີ່ສຸດ"
   },
   "panels/timeline/TimelineTreeView.ts | matchCase": {
-    "message": "ຕົວພິມນ້ອຍ ຫຼື ໃຫຍ່ກົງກັນ"
+    "message": "ກົງຕາມໂຕພິມນ້ອຍໃຫຍ່"
   },
   "panels/timeline/TimelineTreeView.ts | matchWholeWord": {
     "message": "ຈັບຄູ່ທັງຄຳ"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1} ໃຊ້ {PH2}."
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1} ໄບຕ໌"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "ຄວາມຍາວຂໍ້ມູນ"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "ໂປຣໂຕຄໍ WebSocket"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "ເຊື່ອມຕໍ່ຄືນໃໝ່ເມື່ອພ້ອມໂດຍການເປີດ DevTools ຄືນໃໝ່."
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "ສະແດງຜົນການຊອກຫາ {PH1} ຈາກທັງໝົດ {PH2} ລາຍການ"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "ລຶບລ້າງ"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "ປິດແຖບຊອກຫາ"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "ຂໍ້ມູນກົງກັນ {PH1} ລາຍການ"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} ຈາກທັງໝົດ {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "ປິດໃຊ້ການຊອກຫາທີ່ຕົວພິມນ້ອຍໃຫຍ່ມີຜົນຕ່າງກັນ"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "ປິດໃຊ້ການຊອກຫາ ແລະ ປ່ຽນແທນ"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "ປິດການນຳໃຊ້ regular expression"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "ເປີດໃຊ້ການຊອກຫາທີ່ຕົວພິມນ້ອຍໃຫຍ່ມີຜົນຕ່າງກັນ"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "ຊອກຫາ ແລະ ປ່ຽນແທນ"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "ເປີດການນຳໃຊ້ regular expression"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "ຊອກຫາ"
@@ -13887,10 +13974,10 @@
     "message": "ແທນທີ່ທັງໝົດ"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "ຊອກຫາຕໍ່ໄປ"
+    "message": "ສະແດງຜົນການຊອກຫາຖັດໄປ"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "ຊອກຫາກ່ອນໜ້າ"
+    "message": "ສະແດງຜົນການຊອກຫາກ່ອນໜ້າ"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "ການຕັ້ງຄ່າໜຶ່ງ ຫຼື ຫຼາຍລາຍການໄດ້ປ່ຽນແປງເຊິ່ງຈຳເປັນຕ້ອງໂຫຼດຄືນໃໝ່ເພື່ອໃຫ້ມີຜົນນຳໃຊ້."
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "Promise ທີ່ມີສະຖານະແກ້ໄຂແລ້ວ (ບໍ່ພ້ອມກັນ)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (ບໍ່ພ້ອມກັນ)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "ແຜງ {PH1}"

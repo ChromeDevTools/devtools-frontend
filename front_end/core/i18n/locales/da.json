@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With-sektion"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "Hurtigt 4G"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "Hurtigt 3G"
+    "message": "Langsomt 4G"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "Der er intet tilgængeligt indhold for preflight-anmodning"
@@ -300,7 +303,7 @@
     "message": "{PH1} afsluttede indlæsningen: {PH2} \"{PH3}\"."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "Langsomt 3G"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "Der gik noget galt under forsøget på at gemme denne cookie."
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "getCurrentPosition() og watchPosition() er udfasede på usikre oprindelser. Hvis du vil bruge denne funktion, bør du overveje at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "Funktionen getInnerHTML() er udfaset og fjernes snart fra denne browser. Brug i stedet getHTML()."
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia() fungerer ikke længere på usikre oprindelser. Hvis du vil bruge denne funktion, bør du overveje at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "Linket til {PH1}"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "Der opstod en ukendt fejl under læsning af filen: {PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Filsystem kunne ikke tilføjes: {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Gem billede"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "WASM-modulet kunne ikke gemmes på disken. Modulet er sandsynligvis for stort."
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "Vis alle tilsidesættelser"
@@ -2850,7 +2856,7 @@
     "message": "fokus"
   },
   "panels/application/ServiceWorkersView.ts | inspect": {
-    "message": "inspicer"
+    "message": "Undersøg"
   },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "Netværksanmodninger"
@@ -2907,13 +2913,13 @@
     "message": "Kilde"
   },
   "panels/application/ServiceWorkersView.ts | startString": {
-    "message": "start"
+    "message": "Start"
   },
   "panels/application/ServiceWorkersView.ts | status": {
     "message": "Status"
   },
   "panels/application/ServiceWorkersView.ts | stopString": {
-    "message": "stop"
+    "message": "Stop"
   },
   "panels/application/ServiceWorkersView.ts | syncString": {
     "message": "Synkronisering"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Stop med at registrere hændelser"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "Udefineret"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "Udefineret"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "Udefineret"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "Det er kun sider, der indlæses via en GET-anmodning, som er kvalificeret til back/forward-cachen."
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome registrerede et forsøg på at køre JavaScript, mens siden var i cachen."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "Udefineret"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "Udefineret"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "Udefineret"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "Udefineret"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Sider, der har anmodet om et AppBanner, er ikke kvalificeret til back/forward-cachen i øjeblikket."
@@ -4263,7 +4248,7 @@
     "message": "Forhåndsgengivelsen blev ikke anvendt, fordi navigationen under aktiveringstidspunktet har en effektiv webadresse, der adskiller sig fra dens normale webadresse. Det kan f.eks. være siden Ny fane eller hostede apps."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "Ukendt"
+    "message": "Alle forhåndsgengivne sider blev af en eller anden årsag frigivet af browseren (f.eks. blev WebViewCompat.addWebMessageListener() kaldt under forhåndsgengivelsen)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "Den forhåndsgengivne side anmodede om lydudgang, som i øjeblikket ikke understøttes."
@@ -4305,10 +4290,10 @@
     "message": "Navigationen for forhåndsgengivelse mislykkedes, fordi den omdirigerede til en webadresse med et skema, der ikke var http: eller https:."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "Ukendt"
+    "message": "Den forhåndsgengivne side blev frigivet, fordi en ny JavaScript-grænseflade er blevet indsat af WebView.addJavaScriptInterface()."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "Ukendt"
+    "message": "Den forhåndsgengivne side blev frigivet, fordi en JavaScript-grænseflade er fjernet af WebView.removeJavaScriptInterface()."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "Navigationen for forhåndsgengivelse krævede HTTP-godkendelse, som i øjeblikket ikke understøttes."
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Se oplysninger om iframe"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "Vis pop op-mål"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Denne ramme blev identificeret som en annonceramme"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Vis badges"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "Gå til ankernode"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "Få flere oplysninger"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "Passiv"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "Fjern"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "Vis i panelet Elementer"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "Hvis du vil bruge denne funktion, skal du opdatere din sprogpræference i indstillingerne for Udviklerværktøjer til engelsk."
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "Ryd meddelelser"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "Send feedback"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "Hvad kan jeg hjælpe dig med?"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "Freestyler kan vise unøjagtige oplysninger og rammer ikke altid plet"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "Spørg Freestyler, eller indtast / for at bruge kommandoer"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "Vælg et element"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "Send"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "Vis Freestyler"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blokeret ressource"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "Følger denne side de bedste fremgangsmåder for moderne webudvikling?"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "Opfylder denne side standarden for en progressiv webapp"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "Aktivér JavaScript-sampling under kørslen af Lighthouse. Dette giver flere oplysninger om udførelse i panelet for ydeevne, når du får vist sporingen, men det medfører en højere CPU-overhead og kan påvirke sidens ydeevne."
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Effektivitet"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "Progressiv webapp"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Nulstil lagerplads (cache, service workers osv.) inden revision. (God til effektivitetsoptimering og PWA-tests)"
@@ -9648,7 +9657,7 @@
     "message": "Ikke optimeret: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "Indlæs"
+    "message": "Indlæs profil"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "Vælg JavaScript VM-forekomst"
@@ -10275,7 +10284,25 @@
     "message": "Vis {PH1} mere"
   },
   "panels/search/SearchView.ts | clear": {
+    "message": "Ryd søgning"
+  },
+  "panels/search/SearchView.ts | clearInput": {
     "message": "Ryd"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "Deaktiver søgning med forskel på store og små bogstaver"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "Deaktiver regulære udtryk"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "Aktivér søgning med forskel på store og små bogstaver"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "Aktivér regulære udtryk"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "Find"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "Fandt {PH1} matchende linjer i {PH2} filer."
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "Sender anmodning"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "Modtag WebSocket-meddelelse"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "Send WebSocket-meddelelse"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "XHR-indlæsning"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Vælg tidslinjesession"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "Vælg et interesseområde i oversigten efter optagelse ved at trække. Zoom og panorer tidslinjen med musehjulet eller tasterne {PH1}. {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "Klik på knappen Optag {PH1}, eller tryk på {PH2} for at starte en ny optagelse."
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "Klik på knappen Genindlæs {PH1}, eller tryk på {PH2} for at optage sideindlæsningen."
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "Få flere oplysninger"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "Ugyldige tidslinjedata: {PH1}"
   },
@@ -12857,6 +12905,9 @@
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
     "message": "Procentdel af ikke-match med langsomme stier"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "Procentdelen af ikke-matchende noder (Matchforsøg – Antal match), som ikke straks kunne udelukkes af Bloom-filteret. Jo lavere, desto bedre"
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "Vælger"
   },
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "Tabellen er kopieret til udklipsholderen"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(I alt for alle vælgere)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "Der kan ikke oprettes tilknytning"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1} tog {PH2}."
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1} byte"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "Datalængde"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket-protokol"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "Opret forbindelse igen, når du er klar til at åbne Udviklerværktøjer igen."
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "Viser resultat {PH1} af {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "Ryd"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "Luk søgefelt"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} resultater"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} af {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "Deaktiver søgning med forskel på store og små bogstaver"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "Deaktiver Søg og erstat"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "Deaktiver regulære udtryk"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "Aktivér søgning med forskel på store og små bogstaver"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "Søg og erstat"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "Aktivér regulære udtryk"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Find"
@@ -13887,10 +13974,10 @@
     "message": "Erstat alle"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "Søg næste"
+    "message": "Vis næste resultat"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "Søg efter forrige"
+    "message": "Vis forrige resultat"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Én eller flere indstillinger har ændret sig, hvilket betyder, at der skal foretages en genindlæsning."
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "Tilsagnet er matchet (asynkront)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (asynkron)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Panelet {PH1}"

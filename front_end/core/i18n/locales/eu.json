@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With blokea"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "4G bizkorra"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "3G bizkorra"
+    "message": "4G motela"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "Ez dago edukirik erabilgarri hasierako proba-eskaerarako"
@@ -300,7 +303,7 @@
     "message": "{PH1} kargatzen amaitu da: {PH2} \"{PH3}\"."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "3G motela"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "Errore ezezagun bat gertatu da cookie hau gordetzen saiatzean."
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "getCurrentPosition() eta watchPosition() zaharkituta daude jatorri ez-seguruetan. Eginbidea erabiltzeko, aplikazioa jatorri seguru batera eramatea gomendatzen dugu (adibidez, HTTPSra). Xehetasun gehiago ikusteko, joan https://goo.gle/chrome-insecure-origins helbidera."
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "getInnerHTML() funtzioa zaharkituta dago, eta laster kenduko da arakatzaile honetatik. Haren ordez, erabili getHTML()."
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia() metodoak jada ez du funtzionatzen jatorri ez-seguruetan. Eginbidea erabiltzeko, aplikazioa jatorri seguru batera eramatea gomendatzen dugu (adibidez, HTTPSra). Xehetasun gehiago ikusteko, joan https://goo.gle/chrome-insecure-origins helbidera."
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "Honekin lotuta: {PH1}"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "Errore ezezagun bat gertatu da fitxategi hau irakurtzean: {PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Ezin da gehitu fitxategi-sistema: {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Gorde irudia"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Ezin da gorde WASM modulua diskoan. Ziurrenik, handiegia da modulua."
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "Erakutsi ordezkapen guztiak"
@@ -2850,7 +2856,7 @@
     "message": "fokuratu"
   },
   "panels/application/ServiceWorkersView.ts | inspect": {
-    "message": "ikuskatu"
+    "message": "Ikuskatu"
   },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "Sare-eskaerak"
@@ -2862,7 +2868,7 @@
     "message": "Aldizkako sinkronizazioa"
   },
   "panels/application/ServiceWorkersView.ts | periodicSyncTag": {
-    "message": "Noizbehinkako sinkronizazioaren etiketa"
+    "message": "Aldizkako sinkronizazioaren etiketa"
   },
   "panels/application/ServiceWorkersView.ts | pushData": {
     "message": "Push datuak"
@@ -2907,13 +2913,13 @@
     "message": "Iturburua"
   },
   "panels/application/ServiceWorkersView.ts | startString": {
-    "message": "hasiera"
+    "message": "Hasiera"
   },
   "panels/application/ServiceWorkersView.ts | status": {
     "message": "Egoera"
   },
   "panels/application/ServiceWorkersView.ts | stopString": {
-    "message": "gelditu"
+    "message": "Gelditu"
   },
   "panels/application/ServiceWorkersView.ts | syncString": {
     "message": "Sinkronizatu"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Utzi gertaerak grabatzeari"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "Zehaztugabea"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "Zehaztugabea"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "Zehaztugabea"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "Aurreko orria cachean gordetzeko eginbidea GET eskaera baten bidez kargatutako orrietan bakarrik dago erabilgarri."
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome-k JavaScript exekutatzeko saiakera bat hauteman du cachean gordeta zegoen bitartean."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "Zehaztugabea"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "Zehaztugabea"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "Zehaztugabea"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "Zehaztugabea"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Une honetan, aurreko orria cachean gordetzeko eginbidea ez dago erabilgarri AppBanner bat eskatu duten orrietan."
@@ -4263,7 +4248,7 @@
     "message": "Ez da erabili aurrez errendatzeko aukera, ohiko URLa eta funtzionatzen duen URLa bat ez datozelako; adibidez, Fitxa berria orria edo aplikazio ostatatuak."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "Ezezaguna"
+    "message": "Arrazoiren batengatik, aurrez errendatutako orri guztiak deskargatu ditu arakatzaileak (adibidez, WebViewCompat.addWebMessageListener() metodoari deitu zaio aurrez errendatzean)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "Aurrez errendatutako orriak audioa erreproduzitzeko eskatu du, baina orain ez da halakorik onartzen."
@@ -4305,10 +4290,10 @@
     "message": "Errendatu aurreko nabigazioak huts egin du, http: edo https: ez den eskema bat daukan URL batera birbideratzen duelako."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "Ezezaguna"
+    "message": "Aurrez errendatutako orria deskargatu da, JavaScript-en interfaze bat txertatu baitu WebView.addJavascriptInterface() metodoak."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "Ezezaguna"
+    "message": "Aurrez errendatutako orria deskargatu da, JavaScript-en interfaze bat kendu baitu WebView.removeJavascriptInterface() metodoak."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "Errendatu aurreko nabigazioak HTTP autentifikazioa behar du, baina orain ez da halakorik onartzen."
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Erakutsi iframe-aren xehetasunak"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "Erakutsi leiho gainerakorraren helburua"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Iragarki-marko gisa identifikatu da marko hau"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Erakutsi bereizgarriak"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "Joan aingura-nodora"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "Lortu informazio gehiago"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "Modu pasiboa"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "Kendu"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "Erakutsi Elementuak panelean"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "Eginbide hau erabiltzeko, aldatu hizkuntza hobetsia ingelesera garatzaileentzako tresnen ezarpenetan."
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "Garbitu mezuak"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "Bidali oharrak"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "Nola lagun zaitzaket?"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "Freestyler-ek ez du beti asmatuko, eta baliteke informazio okerra bistaratzea"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "Galdetu Freestyler-i edo idatzi / aginduak gehitzeko"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "Hautatu elementu bat"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "Bidali"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "Erakutsi Freestyler"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blokeatutako baliabidea"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "Betetzen al ditu orri honek web-garapenaren inguruko jardunbide egokiak?"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "Sareko aplikazio progresibo baten arauak gordetzen al ditu orriak?"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "Gaitu JavaScript-en laginketa Lighthouse exekutatu bitartean. Horrela, exekuzioari buruzko xehetasun gehiago agertuko dira errendimenduaren panelean arrastoari begiratzean, baina PUZaren gainkarga areagotuko da, eta baliteke horrek orriaren errendimenduari eragitea."
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Errendimendua"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "Sareko aplikazio progresiboa"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Berrezarri biltegiratzea (cache, service workers, etab.) auditatu aurretik. (Errendimendurako eta PWA probatzeko aproposa)"
@@ -9648,7 +9657,7 @@
     "message": "Optimizatu gabe: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "Kargatu"
+    "message": "Kargatu profila"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "Hautatu JavaScript-eko makina birtualaren instantzia"
@@ -10275,7 +10284,25 @@
     "message": "Erakutsi beste {PH1}"
   },
   "panels/search/SearchView.ts | clear": {
+    "message": "Garbitu bilaketa"
+  },
+  "panels/search/SearchView.ts | clearInput": {
     "message": "Garbitu"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "Desgaitu maiuskulak eta minuskulak bereiziz bilatzeko aukera"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "Desgaitu adierazpen erregularrak"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "Gaitu maiuskulak eta minuskulak bereiziz bilatzeko aukera"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "Gaitu adierazpen erregularrak"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "Bilatu"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "Bat datozen {PH1} lerro aurkitu dira {PH2} fitxategitan."
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "Eskaera bidaliko da"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "Jaso WebSocket-eko mezu bat"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "Bidali WebSocket-eko mezu bat"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "XHR kargatzea"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Hautatu kronologia-saioa"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "Grabatu eta gero, joan informazio orokorrera eta hautatu intereseko eremu bat hura arrastatuta. Ondoren, egin zoom eta mugitu kronologia saguaren gurpilarekin edo {PH1} teklekin. {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "Sakatu grabatzeko botoia ({PH1}) edo sakatu {PH2} beste grabaketa bat hasteko."
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "Sakatu orria berriro kargatzeko {PH1} botoia edo sakatu {PH2} orriaren kargatzea erregistratzeko."
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "Lortu informazio gehiago"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "Kronologian gaizki eratutako datuak: {PH1}"
   },
@@ -12855,7 +12903,10 @@
     "message": "Bat-etortze kopurua"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
-    "message": "Bat etortzeak ez direnen bide-izen motelen ehunekoa"
+    "message": "Bat-etortzeak ez direnen bide-izen motelen ehunekoa"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "Bloom-en iragazkiak bizkor kanpoan utzi ezin izan dituen eta bat ez datozen nodoen (bat etortzeko saiakerak – bat-etortze kopurua) ehunekoa. Zenbat eta baxuago, hobeago."
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "Hautatzailea"
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "Kopiatu da taula arbelean"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(Hautatzaile guztien guztizkoak)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "Ezin da lotu"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH2} behar izan dira {PH1} egiteko."
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1} byte"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "Datuen luzera"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket protokoloa"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "Prest dagoenean berriro konektatzeko, ireki DevTools."
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "{PH1}/{PH2} emaitza erakusten du"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "Garbitu"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "Itxi bilaketa-barra"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} bat-etortze"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1}/{PH2}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "Desgaitu maiuskulak eta minuskulak bereiziz bilatzeko aukera"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "Desgaitu bilatu eta ordezteko aukera"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "Desgaitu adierazpen erregularrak"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "Gaitu maiuskulak eta minuskulak bereiziz bilatzeko aukera"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "Bilatu eta ordeztu"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "Gaitu adierazpen erregularrak"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Bilatu"
@@ -13887,10 +13974,10 @@
     "message": "Ordeztu guztiak"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "Bilatu hurrengoa"
+    "message": "Erakutsi hurrengo emaitza"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "Bilatu aurrekoa"
+    "message": "Erakutsi aurreko emaitza"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Ezarpen bat edo gehiago aldatu direnez, berriro kargatu behar da."
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "Promesa ebatzi da (asinkronoa)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (sinkronizatu gabeak)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} panela"

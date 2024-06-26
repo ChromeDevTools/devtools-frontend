@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With boʻlagi"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "Tez 4G"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "Tez 3G"
+    "message": "Sekin 4G"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "Erta versiya soʻrovi uchun kontent mavjud emas"
@@ -300,7 +303,7 @@
     "message": "{PH1} yuklanishi tugadi: {PH2} \"{PH3}\"."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "Sekin 3G"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "Cookie faylni saqlash vaqtida notanish xatolik yuz berdi."
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "Himoyasiz manbalarda getCurrentPosition() va watchPosition() eskirdi. Bu funksiyadan foydalanish uchun ilovangizni HTTPS kabi himoyalangan manbalarga oʻtkazing. Batafsil: https://goo.gle/chrome-insecure-origins."
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "getInnerHTML() funksiyasi eskirgan va tez orada bu brauzerdan olib tashlanadi. Oʻrniga getHTML() ishlating."
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "Endi himoyalanmagan manbalarda getUserMedia() ishlamaydi. Bu funksiyadan foydalanish uchun ilovangizni HTTPS kabi himoyalangan manbalarga oʻtkazing. Batafsil: https://goo.gle/chrome-insecure-origins."
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "{PH1} bilan ulangan"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "Faylni oʻqishda notanish xatolik yuz berdi: {PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Fayllar tizimi kiritilmadi: {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Rasmni saqlash"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "WASM moduli diskka saqlanmadi. Modul hajmi juda katta shekilli."
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "Barcha almashtirishlar"
@@ -2850,7 +2856,7 @@
     "message": "fokus"
   },
   "panels/application/ServiceWorkersView.ts | inspect": {
-    "message": "tekshirish"
+    "message": "Tekshirish"
   },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "Tarmoq soʻrovlari"
@@ -2907,13 +2913,13 @@
     "message": "Manba"
   },
   "panels/application/ServiceWorkersView.ts | startString": {
-    "message": "boshlash"
+    "message": "Boshlash"
   },
   "panels/application/ServiceWorkersView.ts | status": {
     "message": "Holati"
   },
   "panels/application/ServiceWorkersView.ts | stopString": {
-    "message": "stop"
+    "message": "Toʻxtatish"
   },
   "panels/application/ServiceWorkersView.ts | syncString": {
     "message": "Sinxronlash"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Hodisalar yozilishini toʻxtatish"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "Aniqlanmagan"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "Aniqlanmagan"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "Aniqlanmagan"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "Faqatgina GET soʻrovi orqali yuklangan sahifalar keshdan ortga qaytarilishi mumkin."
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome kesh ichidan JavaScript ishga tushirish urinishini aniqladi."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "Aniqlanmagan"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "Aniqlanmagan"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "Aniqlanmagan"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "Aniqlanmagan"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "AppBanner soʻrovini yuboradigan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
@@ -4263,7 +4248,7 @@
     "message": "Oldindan renderlanmadi, chunki sahifa koʻrsatilganda yakuniy URL oddiy URL manzilidan farq qildi (masalan, Yangi varaq sahifasi yoki ichki ilovalar)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "Noaniq"
+    "message": "Muayyan sabab bilan barcha oldindan renderlangan sahifalar xotiradan yechildi (masalan, erta renderlashda WebViewCompat.addWebMessageListener() chaqirilgan boʻlishi mumkin.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "Oldindan renderlangan sahifa audio chiqarishni talab qildi, lekin bu amal hozir ishlamaydi."
@@ -4305,10 +4290,10 @@
     "message": "Sahifa http: yoki https: protokolidagi URL manzilga yoʻnaltirilgani uchun navigatsiya oldindan renderlanmadi."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "Noaniq"
+    "message": "WebView.addJavascriptInterface() tomonidan yangi JabaScript interfeysi kiritilgani sababli oldindan renderlangan sahifa xotiradan yechildi."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "Noaniq"
+    "message": "WebView.addJavascriptInterface() tomonidan yangi JabaScript interfeysi olib tashlangani sababli oldindan renderlangan sahifa xotiradan yechildi."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "Hozir ishlamaydigan HTTP autentifikatsiyasi talab etilgani uchun navigatsiya oldindan renderlanmadi."
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "iframe tafsilotlarini ochish"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "Target bildirgisini chiqarish"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Bu freymning reklama freymi ekani aniqlandi"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Nishonlarni chiqarish"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "Anker nodiga oʻtish"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "Batafsil"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "Passiv"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "Olib tashlash"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "Elementlar panelida ochish"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "Bu funksiyadan foydalanish uchun DevTools sozlamalaridagi tilni ingliz tiliga oʻzgartiring."
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "Xabarlarni tozalash"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "Fikr-mulohaza"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "Bizga nima xizmat?"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "Fristayler xato axborot chiqarishi yoki soʻrovni yaxshi tushunmasligi mumkin"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "Fristaylerdan soʻrang yoki buyruqlarni / bilan yozing"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "Elementni tanlang"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "Yuborish"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Fristayler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "Fristaylerni chiqarish"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Resurs bloklandi"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "Bu sahifada zamonaviy veb dasturlash uslublarining qoʻllanilishi"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "Bu sahifaning Progressiv veb ilova standartiga mos kelishi"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "Lighthouse ishga tushganda JavaScript tartiblanishini yoqish. Trassirovka samaradorlik panelida ochilganda batafsil axborot chiqadi, ammo CPU ortiqcha ishlatilishi hamda sahifa yuklanishiga salbiy taʼsir qilishi mumkin."
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Unumdorlik"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "Progressiv veb ilova"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Tekshiruvdan oldin xotirani tiklash (cache, service workers va hokazo). (Unumdorlik va PWA sinoviga mos)"
@@ -9648,7 +9657,7 @@
     "message": "Optimizatsiyasiz: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "Yuklash"
+    "message": "Profil yuklash"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "JavaScript VM namunasini tanlang"
@@ -10275,7 +10284,25 @@
     "message": "Yana {PH1} ta"
   },
   "panels/search/SearchView.ts | clear": {
+    "message": "Qidiruv qatorini tozalash"
+  },
+  "panels/search/SearchView.ts | clearInput": {
     "message": "Tozalash"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "Qidiruvda katta-kichik harflar farqlanishini faolsizlantirish"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "Doimiy ifodalarni faolsizlantirish"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "Qidiruvda katta-kichik harflar farqlanishini yoqish"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "Doimiy ifodalarni yoqish"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "Qidirish"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "{PH2} faylda {PH1} ta mos qator topildi."
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "Soʻrov yuboradi"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "WebSocket xabarini qabul qilish"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "WebSocket xabarini yuborish"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "XHR yuklash"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Yilnoma seansini tanlash"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "Yozilganidan keyin kerakli hududni umumiy panelda sudrab tanlash mumkin. Keyin esa yilnomada kattalashtirish uchun sichqoncha gʻildiragi yoki {PH1} tugmalaridan foydalaning. {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "Yozib olish uchun {PH1} tugmasini yoki yangisini yozib olish uchun {PH2} tugmasini bosing."
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "Qayta yuklash uchun {PH1} tugmasini yoki sahifa yuklanishini yozib olish uchun {PH2} tugmalarini bosing."
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "Batafsil"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "Yilnomadagi yaroqsiz axborot: {PH1}"
   },
@@ -12857,6 +12905,9 @@
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
     "message": "Sekin usulda mos kelmagan qiymatlar %"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "Bloom filtri tez boshqara olmaydigan mos kelmagan nodlar foizi (moslik urinishlari - mosliklar soni). Kam boʻlsa, yaxshi."
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "Selektor"
   },
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "Jadval vaqtinchalik xotiraga nusxalandi"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(Barcha selektorlar uchun jami)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "Ulash imkonsiz"
@@ -12918,7 +12972,7 @@
     "message": "Eng katta stekni berkitish"
   },
   "panels/timeline/TimelineTreeView.ts | matchCase": {
-    "message": "Register mosligi"
+    "message": "Yuqori/quyi register"
   },
   "panels/timeline/TimelineTreeView.ts | matchWholeWord": {
     "message": "Butun soʻz mosligi"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1} amali {PH2} oldi."
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1} bayt"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "Axborot davomiyligi"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket protokoli"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "Tayyor boʻlganda DevToolsni qayta ochish orqali qayta ulanish."
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "Natijalarni chiqarish: {PH1}/{PH2}"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "Tozalash"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "Qidiruv panelini yopish"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} ta natija"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} / {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "Qidiruvda katta-kichik harflar farqlanishini faolsizlantirish"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "Topish va almashtirishni faolsizlantirish"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "Doimiy ifodalarni faolsizlantirish"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "Qidiruvda katta-kichik harflar farqlanishini yoqish"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "Topish va almashtirish"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "Doimiy ifodalarni yoqish"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Qidirish"
@@ -13887,10 +13974,10 @@
     "message": "Hammasini almashtirish"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "Keyingisini qidirish"
+    "message": "Keyingi natijani chiqarish"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "Avvalgisini qidirish"
+    "message": "Avvalgi natijani chiqarish"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Bajarilishi uchun qayta yuklanishi kerak bir yoki bir nechta sozlama oʻzgardi."
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "Promise hal qilindi (asynxron)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (async)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} paneli"

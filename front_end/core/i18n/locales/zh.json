@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With 代码块"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "高速 4G"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "高速 3G"
+    "message": "低速 4G"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "对于预检请求，没有可显示的内容"
@@ -300,7 +303,7 @@
     "message": "{PH1} 已完成加载：{PH2}“{PH3}”。"
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "低速 3G"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "尝试存储此 Cookie 时发生未知错误。"
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "getCurrentPosition() 和 watchPosition() 不再适用于不安全的源。若要使用此功能，您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "getInnerHTML() 函数已被弃用，很快将会从此浏览器中移除。请改用 getHTML()。"
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia() 不再适用于不安全的源。若要使用此功能，您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "已链接到 {PH1}"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "读取以下文件时发生未知错误：{PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "无法添加文件系统：{PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "保存图片"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "无法将 WASM 模块保存到磁盘。很可能是模块太大。"
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "显示所有替换项"
@@ -2619,7 +2625,7 @@
     "message": "表格中所显示条目的数量：{PH1}"
   },
   "panels/application/DOMStorageItemsView.ts | key": {
-    "message": "密钥"
+    "message": "键"
   },
   "panels/application/DOMStorageItemsView.ts | selectAValueToPreview": {
     "message": "选择一个值以预览"
@@ -2661,7 +2667,7 @@
     "message": "键路径： "
   },
   "panels/application/IndexedDBViews.ts | keyString": {
-    "message": "密钥"
+    "message": "键"
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "对象存储区"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "停止记录事件"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "未定义"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "未定义"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "未定义"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "只有通过 GET 请求进行加载的网页才能储存至往返缓存。"
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome 检测到一项在储存于缓存期间执行 JavaScript 的意图。"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "未定义"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "未定义"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "未定义"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "未定义"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "已请求 AppBanner 的网页目前无法储存至往返缓存。"
@@ -4263,7 +4248,7 @@
     "message": "未使用预渲染，因为激活期间导航的有效网址不同于它的常规网址。（例如，“新标签页”页面或托管的应用。）"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "未知"
+    "message": "由于某些原因（例如在预渲染期间调用了 WebViewCompat.addWebMessageListener()），浏览器卸载了所有预渲染的网页。"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "预渲染的网页请求进行音频输出，但目前不支持该操作。"
@@ -4305,10 +4290,10 @@
     "message": "预渲染导航失败，因为它重定向到的网址不是 http: 或 https: 架构。"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "未知"
+    "message": "由于 WebView.addJavascriptInterface() 已注入新的 JavaScript 接口，预渲染的网页已被卸载。"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "未知"
+    "message": "由于 WebView.removeJavascriptInterface() 已移除 JavaScript 接口，预渲染的网页已被卸载。"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "预渲染导航要求进行 HTTP 身份验证，但目前不支持这种验证。"
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "显示 iframe 详细信息"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "显示弹出式窗口目标"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "此框架被确定为广告框架"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "显示标志"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "跳转到锚标记节点"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "了解详情"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "被动式"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "移除"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "在“元素”面板中显示"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "如需使用此功能，请将开发者工具设置中的语言偏好设置更新为英语。"
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "清除消息"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "发送反馈"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "您需要什么帮助？"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "Freestyler 可能会显示不准确的信息，并且可能无法正确理解命令"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "向 Freestyler 提问，或输入 / 以查看命令"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "选择元素"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "发送"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "显示 Freestyler"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "已拦截的资源"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "此网页是否遵循现代 Web 开发的最佳做法"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "此网页是否符合渐进式 Web 应用的标准"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "在 Lighthouse 运行期间启用 JavaScript 采样。查看轨迹时，这将在性能面板中提供更多执行详细信息，但 CPU 开销较高，并且可能会影响页面的性能。"
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "性能"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "渐进式 Web 应用"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "在审核前重置存储空间（cache 和 service workers 等）。（适用于性能和 PWA 测试）"
@@ -9648,7 +9657,7 @@
     "message": "未优化：{PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "加载"
+    "message": "加载个人资料"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "选择 JavaScript 虚拟机实例"
@@ -10275,7 +10284,25 @@
     "message": "再显示 {PH1} 项"
   },
   "panels/search/SearchView.ts | clear": {
+    "message": "清除搜索内容"
+  },
+  "panels/search/SearchView.ts | clearInput": {
     "message": "清除"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "停用区分大小写的搜索功能"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "停用正则表达式"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "启用区分大小写的搜索功能"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "启用正则表达式"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "查找"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "在 {PH2} 个文件中找到 {PH1} 个匹配行。"
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "将发送请求"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "接收 WebSocket 消息"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "发送 WebSocket 消息"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "XHR 加载"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "选择时间轴会话"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "录制结束后，在概览中以拖动方式选择感兴趣的区域。然后，使用鼠标滚轮或 {PH1} 组合键缩放并平移时间轴。{PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "点击录制按钮“{PH1}”或按 {PH2} 即可开始录制新内容。"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "点击重新加载按钮 {PH1} 或按 {PH2} 即可录制网页加载过程。"
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "了解详情"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "格式有误的时间轴数据：{PH1}"
   },
@@ -12855,7 +12903,10 @@
     "message": "匹配数"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
-    "message": "慢路径不匹配项所占百分比"
+    "message": "慢路径不匹配项所占的百分比"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "无法通过 Bloom 过滤器快速排除的不匹配节点（匹配尝试次数 - 匹配次数）所占的百分比。占比越小越好。"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "选择器"
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "表格已复制到剪贴板"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "（所有选择器的总计）"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "无法关联"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1}耗时 {PH2}。"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1} 个字节"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "数据长度"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket 协议"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "准备就绪时，打开 DevTools 即可重新连接。"
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "显示第 {PH1} 条结果（共 {PH2} 条）"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "清除"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "关闭搜索栏"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} 条匹配结果"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} 个（共 {PH2} 个）"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "停用区分大小写的搜索功能"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "停用“查找和替换”功能"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "停用正则表达式"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "启用区分大小写的搜索功能"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "查找和替换"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "启用正则表达式"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "查找"
@@ -13887,10 +13974,10 @@
     "message": "全部替换"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "搜索下一个"
+    "message": "显示下一个结果"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "搜索上一个"
+    "message": "显示上一个结果"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "一项或多项设置已更改，需要重新加载才能生效。"
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "Promise 已解析（异步）"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1}（异步）"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1}面板"

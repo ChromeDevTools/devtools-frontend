@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With ब्लक"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "तीव्र गतिको 4G"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "तीव्र गतिको 3G"
+    "message": "सुस्त गतिको 4G"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "प्रिफ्लाइट अनुरोधसँग सम्बन्धित कुनै पनि सामग्री उपलब्ध छैन"
@@ -300,7 +303,7 @@
     "message": "{PH1} लोड गरिसकियो: {PH2} \"{PH3}\"।"
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "सुस्त गतिको 3G"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "यो कुकी भण्डारण गर्ने क्रममा कुनै त्रुटि भयो।"
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "असुरक्षित ओरिजिनहरूमा getCurrentPosition() र watchPosition() चल्तीबाट हटाइएका छन्। तपाईं यो सुविधा प्रयोग गर्न चाहनुहुन्छ भने तपाईंले आफ्नो एपको ओरिजिन परिवर्तन गरी HTTPS जस्ता सुरक्षित ओरिजिन प्रयोग गर्नु पर्ने हुन्छ। तपाईं यस सम्बन्धमा थप जानकारी प्राप्त गर्न चाहनुहुन्छ भने https://goo.gle/chrome-insecure-origins हेर्नुहोस्।"
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "getInnerHTML() फङ्सन चल्तीबाट हटाइएको छ र यसलाई यो ब्राउजरबाट चाँडै नै हटाइने छ। यसको साटो getHTML() प्रयोग गर्नुहोस्।"
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia() no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "{PH1} सँग लिंक गरिएको"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "फाइल लोड गर्ने क्रममा कुनै अज्ञात त्रुटि भयो: {PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "निम्न फाइल प्रणाली थप्न सकिएन: {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "फोटो सेभ गर्नुहोस्"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "WASM मोड्युल डिस्कमा सेभ गर्न सकिएन। यो मोड्युल धेरै ठुलो भएकाले यसो भएको हुन सक्छ।"
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "सबै ओभरराइडहरू देखाउनुहोस्"
@@ -2862,7 +2868,7 @@
     "message": "आवधिक रूपमा सिंक गर्नुहोस्"
   },
   "panels/application/ServiceWorkersView.ts | periodicSyncTag": {
-    "message": "समय समयमा हुने सिंकको ट्याग"
+    "message": "आवधिक रूपमा गरिने सिंकको ट्याग"
   },
   "panels/application/ServiceWorkersView.ts | pushData": {
     "message": "पुस डेटा"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "क्रियाकलापहरू रेकर्ड गर्न छाड्नुहोस्"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "अपरिभाषित"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "अपरिभाषित"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "अपरिभाषित"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "GET अनुरोधमार्फत लोड गरिएका पेजहरू मात्र ब्याक/फर्वार्ड क्यासमा राख्न मिल्छ।"
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome ले यो पेज क्यासमा भएका बेला JavaScript कार्यान्वयन गर्ने प्रयास भएको कुरा पत्ता लगायो।"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "अपरिभाषित"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "अपरिभाषित"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "अपरिभाषित"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "अपरिभाषित"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "AppBanner सम्बन्धी अनुरोध गरेका पेजहरूका हकमा हाल ब्याक/फर्वार्ड क्यास प्रयोग गर्न मिल्दैन।"
@@ -4065,7 +4050,7 @@
     "message": "तोकिएको नियम देखाउन क्लिक गर्नुहोस्"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonInspect": {
-    "message": "निरीक्षण गर्नुहोस्"
+    "message": "जाँच्नुहोस्"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "स्पेक्युलेटिभ तरिकाले लोड गर्न सकिएन।"
@@ -4263,7 +4248,7 @@
     "message": "एक्टिभेसनका समयमा नेभिगेसनमा सामान्य URL भन्दा फरक प्रकृतिको सक्रिय URL प्रयोग भएको हुनाले प्रिरेन्डर गरिएन। (उदाहरणका लागि, नयाँ ट्याबको पेज वा होस्ट गरिएका एपहरू।)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "अज्ञात"
+    "message": "कुनै कारणले गर्दा प्रिरेन्डर गरिएका सबै पेज अनलोड गरिएका थियो (उदाहरणका लागि, प्रिरेन्डरिङका क्रममा WebViewCompat.addWebMessageListener() लाई कल गरिएको थियो।)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "प्रिरेन्डर गरिएको पेजले हाल काम नगर्ने अडियो आउटपुट प्रयोग गर्न अनुरोध गरेको छ।"
@@ -4305,10 +4290,10 @@
     "message": "प्रिरेन्डरिङ नेभिगेसन रिडिरेक्ट गरेर http: वा https: स्किम नभएको URL मा पठाइएको हुनाले प्रिरेन्डरिङ नेभिगेसन प्रक्रिया पूरा हुन सकेन।"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "अज्ञात"
+    "message": "WebView.addJavascriptInterface() ले कुनै नयाँ JavaScript इन्टरफेस इन्जेक्ट गरेको हुनाले प्रिरेन्डर गरिएको पेज अनलोड गरिएको थियो।"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "अज्ञात"
+    "message": "WebView.removeJavascriptInterface() ले कुनै नयाँ JavaScript इन्टरफेस हटाएको हुनाले प्रिरेन्डर गरिएको पेज अनलोड गरिएको थियो।"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "प्रिरेन्डरिङ नेभिगेसन प्रक्रियाका लागि HTTP को प्रमाणीकरण गर्नु पर्ने हुन्छ तर अहिले HTTP को प्रमाणीकरण गर्न मिल्दैन।"
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "iframe का विवरणहरू देखाउनुहोस्"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "पपओभर टार्गेट देखाउनुहोस्"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "यो फ्रेमलाई विज्ञापनको फ्रेमका रूपमा पहिचान गरिएको थियो"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "ब्याजहरू देखाउनुहोस्"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "एङ्कर नोडमा जानुहोस्"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "थप जान्नुहोस्"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "निष्क्रिय"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "हटाउनुहोस्"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "एलिमेन्ट प्यानलमा देखाउनुहोस्"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "यो सुविधा प्रयोग गर्न विकासकर्ताका टुलहरूसम्बन्धी सेटिङमा गई आफ्नो रोजाइको भाषाका रूपमा अङ्ग्रेजी भाषा चयन गर्नुहोस्।"
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "म्यासेजहरू हटाउनुहोस्"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "प्रतिक्रिया पठाउनुहोस्"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "म तपाईंलाई कसरी मद्दत गर्न सक्छु?"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "Freestyler ले तपाईंको प्रम्प्ट नबुझ्न र गलत जानकारी देखाउन सक्छ"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "Freestyler सँग सोध्नुहोस् वा उपलब्ध कमान्ड हेर्न / टाइप गर्नुहोस्"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "एलिमेन्ट चयन गर्नुहोस्"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "पठाउनुहोस्"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "Freestyler प्यानल देखाउनुहोस्"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "ब्लक गरिएको रिसोर्स"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "यो पेजले आधुनिक वेब डेभलपमेन्टका उत्कृष्ट अभ्यासहरू पालना गर्छ?"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "यो पेज Progressive Web App का मापदण्डहरू अनुरूप छ वा छैन"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "Lighthouse चलाउने क्रममा JavaScript स्याम्पलिङ अन गर्नुहोस्। तपाईंले यसो गर्नुभयो भने तपाईंले ट्रेस हेर्दा पर्फर्मेन्स प्यानलमा कार्यान्वयनसम्बन्धी थप जानकारी देखिन्छ तर यसको CPU ओभरहेड तुलनात्मक रूपमा उच्च भएकाले यो पेजको पर्फर्मेन्समा असर पर्न सक्छ।"
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "कार्यसम्पादन"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "प्रोग्रेसिभ वेब एप"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "अडिट गर्नुभन्दा पहिले भण्डारण (cache, service workers, आदि) रिसेट गर्नुहोस्। (कार्यसम्पादन तथा PWA परीक्षणका लागि राम्रो)"
@@ -9648,7 +9657,7 @@
     "message": "अप्टिमाइज गरिएको छैन: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "लोड गर्नुहोस्"
+    "message": "प्रोफाइल लोड गर्नुहोस्"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "JavaScript VM इन्स्टेन्स चयन गर्नुहोस्"
@@ -10275,7 +10284,25 @@
     "message": "थप {PH1} वटा परिणाम देखाउनुहोस्"
   },
   "panels/search/SearchView.ts | clear": {
-    "message": "मेटाउनुहोस्"
+    "message": "खोज खाली गर्नुहोस्"
+  },
+  "panels/search/SearchView.ts | clearInput": {
+    "message": "हटाउनुहोस्"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "केस सेन्सेटिभ खोज अफ गर्नुहोस्"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "रेगुलर एक्स्प्रेसनहरू अफ गर्नुहोस्"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "केस सेन्सेटिभ खोज अन गर्नुहोस्"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "रेगुलर एक्स्प्रेसनहरू अन गर्नुहोस्"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "खोज्नुहोस्"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "{PH2} वटा फाइलमा {PH1} वटा मिल्दाजुल्दा हरफ भेटिए।"
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "अनुरोध पठाइने छ"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "WebSocket का माध्यमबाट म्यासेज प्राप्त गर्नुहोस्"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "WebSocket का माध्यमबाट म्यासेज पठाउनुहोस्"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "XHR लोड गर्नुहोस्"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "टाइमलाइन सत्र चयन गर्नुहोस्"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "रेकर्ड गरेपछि ड्र्याग गरेर 'संक्षिप्त जानकारी' मा रहेको आफ्नो रुचिको कुनै क्षेत्र चयन गर्नुहोस्। त्यसपछि माउसह्विल वा {PH1} की प्रयोग गरी टाइमलाइन जुम तथा प्यान गर्नुहोस्। {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "नयाँ रेकर्डिङ गर्न थाल्न रेकर्ड गर्नुहोस् नामक बटन {PH1} थिच्नुहोस् वा {PH2} थिच्नुहोस्।"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "पेज लोड गर्ने प्रक्रिया रेकर्ड गर्न 'रिलोड गर्नुहोस्' नामक बटन {PH1} मा क्लिक गर्नुहोस् वा {PH2} थिच्नुहोस्।"
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "थप जान्नुहोस्"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "गलत फर्म्याटका टाइमलाइन डेटा: {PH1}"
   },
@@ -12855,7 +12903,10 @@
     "message": "ठ्याक्कै मिल्ने नियमको सङ्ख्या"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
-    "message": "नमिल्ने स्लो-पाथहरूको %"
+    "message": "अमिल्दो स्लो पाथहरूको %"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "ब्लुम फिल्टरले तुरुन्तै हटाउन नसकेका अमिल्दा नोडहरू (मिलाउने प्रयासको सङ्ख्या - मिल्दा नोडको सङ्ख्या)। यो प्रतिशत जति कम भयो त्यति नै राम्रो हो।"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "सेलेक्टर"
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "तालिका क्लिपबोर्डमा कपी गरियो"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(सबै सेलेक्टरको कुल)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "लिंक गर्न सकिएन"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1} पूरा हुन {PH2} लाग्यो।"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1} बाइट"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "डेटाको साइज"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket प्रोटोकल"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "तयार भएपछि फेरि DevTools खोलेर रिकनेक्ट गर्नुहोस्।"
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "{PH2} मध्ये {PH1} औँ परिणाम देखाउँछ"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "हटाउनुहोस्"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "सर्च बार बन्द गर्नुहोस्"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "मिल्दा {PH1} परिणामहरू"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH2} मध्ये {PH1}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "केस सेन्सेटिभ खोज अफ गर्नुहोस्"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "'खोज्नुहोस् र प्रतिस्थापन गर्नुहोस्' अफ गर्नुहोस्"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "रेगुलर एक्स्प्रेसनहरू अफ गर्नुहोस्"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "केस सेन्सेटिभ खोज अन गर्नुहोस्"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "खोज्नुहोस् र प्रतिस्थापन गर्नुहोस्"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "रेगुलर एक्स्प्रेसनहरू अन गर्नुहोस्"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "खोज्नुहोस्"
@@ -13887,10 +13974,10 @@
     "message": "सबै शब्द बदल्नुहोस्"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "अर्को खोज्नुहोस्"
+    "message": "अर्को परिणाम देखाउनुहोस्"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "अघिल्लो खोज्नुहोस्"
+    "message": "अघिल्लो परिणाम देखाउनुहोस्"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "एउटा वा सोभन्दा बढी सेटिङ परिवर्तन गरिएका छन्। ती सेटिङ लागू गर्न रिलोड गर्नु पर्ने हुन्छ।"
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "वाचा समाधान गरियो (एसिंक्रोनस)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (एसिंक्रोनस)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} प्यानल"

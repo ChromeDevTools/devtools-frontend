@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "Lohko: With"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "Nopea 4G"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "Nopea 3G"
+    "message": "Hidas 4G"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "Sisältöä ei saatavilla valmistelupyynnölle"
@@ -300,7 +303,7 @@
     "message": "{PH1} suoritti latauksen loppuun: {PH2} \"{PH3}\"."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "Hidas 3G"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "Tätä evästettä tallennettaessa tapahtui tuntematon virhe."
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "getCurrentPosition() ja watchPosition() on poistettu käytöstä suojaamattomien alkuperien kohdalla. Jos haluat käyttää tätä ominaisuutta, suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://goo.gle/chrome-insecure-origins."
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "getInnerHTML()-funktio on poistettu käytöstä, ja se poistetaan pian tästä selaimesta. Ota sen sijaan käyttöön getHTML()."
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia() ei enää toimi suojaamattomien alkuperien kohdalla. Jos haluat käyttää tätä ominaisuutta, suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://goo.gle/chrome-insecure-origins."
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "Linkitetty kohteeseen {PH1}"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "Tuntematon virhe luettaessa tiedostoa: {PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Tiedostojärjestelmän lisääminen ei onnistu: {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Tallenna kuva"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "WASM-moduulia ei voi tallentaa levylle. Moduuli on todennäköisesti liian suuri."
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "Näytä kaikki ohitukset"
@@ -2850,7 +2856,7 @@
     "message": "tarkennus"
   },
   "panels/application/ServiceWorkersView.ts | inspect": {
-    "message": "tarkasta"
+    "message": "Tarkista"
   },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "Verkkopyynnöt"
@@ -2907,13 +2913,13 @@
     "message": "Lähde"
   },
   "panels/application/ServiceWorkersView.ts | startString": {
-    "message": "aloita"
+    "message": "Aloita"
   },
   "panels/application/ServiceWorkersView.ts | status": {
     "message": "Tila"
   },
   "panels/application/ServiceWorkersView.ts | stopString": {
-    "message": "lopeta"
+    "message": "Lopeta"
   },
   "panels/application/ServiceWorkersView.ts | syncString": {
     "message": "Synkronointi"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Lopeta tapahtumien nauhoittaminen"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "Määrittelemätön"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "Määrittelemätön"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "Määrittelemätön"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "Vain GET-pyynnön kautta ladattavat sivut voivat käyttää siirtymisvälimuistia."
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome havaitsi välimuistissa yrityksen suorittaa JavaScript."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "Määrittelemätön"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "Määrittelemätön"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "Määrittelemätön"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "Määrittelemätön"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "AppBanneria pyytäneet sivut eivät voi tällä hetkellä käyttää siirtymisvälimuistia."
@@ -4263,7 +4248,7 @@
     "message": "Esirenderöintiä ei käytetty, koska aktivoinnin aikana navigoinnissa on lopullinen URL-osoite, joka poikkeaa sen tavallisesta URL-osoitteesta. (Esimerkiksi Uusi välilehti ‑sivu tai hostatut sovellukset)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "Tuntematon"
+    "message": "Selain tyhjensi kaikki esirenderöidyt sivut jostain syystä (esimerkiksi WebViewCompat.addWebMessageListener() kutsuttiin esirenderöinnin aikana)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "Esirenderöity sivu pyysi audion toistoa, jota ei tällä hetkellä tueta."
@@ -4305,10 +4290,10 @@
     "message": "Esirenderöinnin siirtyminen epäonnistui, koska se uudelleenohjasi URL-osoitteeseen, jonka muoto ei ollut http: tai https:."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "Tuntematon"
+    "message": "Esirenderöity sivu tyhjennettiin, koska WebView.addJavaScriptInterface() on lisännyt uuden JavaScript-käyttöliittymän."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "Tuntematon"
+    "message": "Esirenderöity sivu tyhjennettiin, koska WebView.removeJavaScriptInterface() on poistanut JavaScript-käyttöliittymän."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "Esirenderöinnin siirtyminen edellytti HTTP-todennusta, jota ei tällä hetkellä tueta."
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Näytä tiedot: iframe"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "Näytä ponnahdusikkunan kohde"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Tämä kehys tunnistettiin mainoskehykseksi"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Näytä merkit"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "Siirry ankkurisolmuun"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "Lue lisää"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "Passiivinen"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "Poista"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "Näytä Elementit-paneelissa"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "Jos haluat käyttää tätä ominaisuutta, vaihda kieleksi englanti DevTools-asetuksissa."
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "Tyhjennä viestit"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "Lähetä palautetta"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "Miten voin auttaa?"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "Freestyler saattaa näyttää epätarkkoja tietoja eikä välttämättä ymmärrä niitä oikein"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "Kysy Freestyleriltä tai kirjoita \"/\" saadaksesi komentoja"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "Valitse elementti"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "Lähetä"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "Näytä Freestyler"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Resurssi estetty"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "Noudattaako sivu nykyisen verkkokehityksen parhaita käytäntöjä"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "Täyttääkö tämä sivu progressiivisen web-sovelluksen standardin"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "Ota JavaScript-näytteenotto käyttöön Lighthouse-suorituksen aikana. Tämä tarjoaa enemmän suoritustietoja suorituskykypaneelissa, kun katsot jälkeä, mutta suorittimen kuormitus on suurempi ja sivu voi toimia huonommin."
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Suorituskyky"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "Progressiivinen web-sovellus"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Tyhjennä tallennustila (cache, service workers jne.) ennen auditointia (hyödyllinen suorituskyky- ja PWA-testauksessa)."
@@ -9648,7 +9657,7 @@
     "message": "Ei optimoitu: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "Lataa"
+    "message": "Lataa profiili"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "Valitse JavaScript VM ‑instanssi"
@@ -10275,7 +10284,25 @@
     "message": "Näytä {PH1} muuta"
   },
   "panels/search/SearchView.ts | clear": {
-    "message": "Poista"
+    "message": "Tyhjennä haku"
+  },
+  "panels/search/SearchView.ts | clearInput": {
+    "message": "Tyhjennä"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "Poista käytöstä haku, jolla kirjainkoolla on väliä"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "Poista säännölliset lausekkeet käytöstä"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "Ota käyttöön haku kirjainkoolla"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "Ota säännölliset lausekkeet käyttöön"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "Hae"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "{PH1} vastaavaa riviä löytyi {PH2} tiedostosta"
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "Lähettää pyynnön"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "WebSocket-viestin vastaanottaminen"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "WebSocket-viestin lähettäminen"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "Lataus: XHR"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Valitse aikajanaistunto"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "Tallennuksen jälkeen valitse kiinnostava alue yleiskatsauksesta vetämällä. Sitten zoomaa ja panoroi aikajanaa hiiren rullalla tai näppäinyhdistelmällä {PH1}. {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "Klikkaa tallennuspainiketta {PH1} tai paina {PH2}, kun haluat aloittaa uuden tallennuksen."
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "Klikkaa uudelleenlatauspainiketta {PH1} tai paina {PH2}, jos haluat tallentaa sivun latauksen."
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "Lue lisää"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "Väärän muotoiset aikajanan tiedot: {PH1}"
   },
@@ -12857,6 +12905,9 @@
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
     "message": "% hitaista poluista, jotka eivät ole vastaavuuksia"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "Epävastaavien solmujen prosenttiosuus (Vastaavuusyritykset – Vastaavuusmäärä) ‐prosentti, joita bloom-suodatin ei voinut sulkea pois nopeasti. Mitä pienempi arvo, sitä parempi."
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "Valitsin"
   },
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "Taulukko kopioitu leikepöydälle"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(Kaikkien valitsimien kokonaismäärät)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "Linkitys ei onnistu"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1} vei {PH2}."
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1} tavua"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "Datan pituus"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket-protokolla"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "Kun valmista, muodosta uusi yhteys avaamalla DevTools uudelleen."
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "Näyttää tuloksen {PH1}/{PH2}"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "Tyhjennä"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "Sulje hakukenttä"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} tulosta"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1}/{PH2}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "Poista käytöstä haku, jolla kirjainkoolla on väliä"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "Etsi ja korvaa ‐toiminnon poistaminen käytöstä"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "Poista säännölliset lausekkeet käytöstä"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "Ota käyttöön haku kirjainkoolla"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "Etsi ja korvaa"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "Ota säännölliset lausekkeet käyttöön"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Hae"
@@ -13887,10 +13974,10 @@
     "message": "Korvaa kaikki"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "Hae seuraava"
+    "message": "Näytä seuraava tulos"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "Etsi edellinen"
+    "message": "Näytä edellinen tulos"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Ainakin yhtä asetusta on muutettu. Voimaantulo edellyttää päivitystä."
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "Lupaus selvitetty (asynkroninen)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (asynkroninen)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Paneeli: {PH1}"

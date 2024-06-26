@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With-letiltás"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "Gyors 4G"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "Gyors 3G"
+    "message": "Lassú 4G"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "Nem áll rendelkezésre tartalom az előzetes kérelemhez"
@@ -300,7 +303,7 @@
     "message": "{PH1} – befejezett betöltés: {PH2} „{PH3}”."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "Lassú 3G"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "A rendszer ismeretlen hibát észlelt, amikor menteni próbálta ezt a cookie-t."
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "A következő függvényeket megszüntettük a nem biztonságos eredetek esetében: getCurrentPosition() és watchPosition(). A funkció használatához fontolja meg az alkalmazás biztonságos eredetre (pl. HTTPS-re) való módosítását. További részletek: https://goo.gle/chrome-insecure-origins."
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "A getInnerHTML() függvény elavult, és hamarosan eltávolítjuk ebből a böngészőből. Használja helyette a getHTML() függvényt."
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "A getUserMedia() függvény többé nem működik nem biztonságos eredetek esetében. A funkció használatához fontolja meg az alkalmazás biztonságos eredetre (pl. HTTPS-re) való módosítását. További részletek: https://goo.gle/chrome-insecure-origins."
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "Összekapcsolva a következővel: {PH1}"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "Ismeretlen hiba történt a fájl olvasása közben: {PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Nem adható hozzá fájlrendszer: {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Kép mentése"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Nem sikerült a lemezre menteni a WASM-modult. A modul valószínűleg túl nagy."
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "Összes felülbírálás megjelenítése"
@@ -2850,7 +2856,7 @@
     "message": "fókusz"
   },
   "panels/application/ServiceWorkersView.ts | inspect": {
-    "message": "vizsgálat"
+    "message": "Vizsgálat"
   },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "Hálózati kérelmek"
@@ -2859,7 +2865,7 @@
     "message": "Az oldal újrabetöltésekor kényszerítse ki, hogy a service worker elvégezze a frissítést, majd aktiválja"
   },
   "panels/application/ServiceWorkersView.ts | periodicSync": {
-    "message": "Ütemezett szinkronizálás"
+    "message": "Rendszeres szinkronizálás"
   },
   "panels/application/ServiceWorkersView.ts | periodicSyncTag": {
     "message": "Rendszeres szinkronizálás címkéje"
@@ -2907,13 +2913,13 @@
     "message": "Forrás"
   },
   "panels/application/ServiceWorkersView.ts | startString": {
-    "message": "indítás"
+    "message": "Kezdés"
   },
   "panels/application/ServiceWorkersView.ts | status": {
     "message": "Állapot"
   },
   "panels/application/ServiceWorkersView.ts | stopString": {
-    "message": "leállítás"
+    "message": "Leállítás"
   },
   "panels/application/ServiceWorkersView.ts | syncString": {
     "message": "Szinkronizálás"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Események rögzítésének felfüggesztése"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "Nincs megadva"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "Nincs megadva"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "Nincs megadva"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "Kizárólag a GET metódussal betöltött oldalak alkalmasak az előre-vissza gyorsítótárazásra."
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "A Chrome JavaScript végrehajtására tett kísérletet észlelt, amíg az oldal a gyorsítótárban volt."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "Nincs megadva"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "Nincs megadva"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "Nincs megadva"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "Nincs megadva"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Az AppBannert kérelmező oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
@@ -4263,7 +4248,7 @@
     "message": "Az előmegjelenítést nem használta a rendszer, mert az aktiválási idő alatt a navigáció tényleges URL-je eltér a normál URL-től. (Például az Új lap oldal vagy a tárolt alkalmazások.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "Ismeretlen"
+    "message": "A böngésző valamilyen okból kiürítette az összes előmegjelenített oldalt. (Például a böngésző meghívta a WebViewCompat.addWebMessageListener() metódust az előmegjelenítés során.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "Az előmegjelenített oldal hangkimenetet kért, amely jelenleg nem támogatott."
@@ -4305,10 +4290,10 @@
     "message": "Az előmegjelenítési navigáció nem sikerült, mert olyan URL-re irányított át, amelynek a sémája nem http: vagy https: volt."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "Ismeretlen"
+    "message": "Az előmegjelenített oldal kiürült, mert a WebView.addJavaScriptInterface() új JavaScript-felületet szúrt be."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "Ismeretlen"
+    "message": "Az előmegjelenített oldal kiürült, mert a WebView.removeJavaScriptInterface() metódus eltávolított egy JavaScript-felületet."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "Az előmegjelenítési navigáció HTTP-hitelesítést igényelt, amely jelenleg nem támogatott."
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "A(z) iframe részleteinek megjelenítése"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "Előugró ablak céljának megjelenítése"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Ez a keret hirdetéskeretként lett azonosítva"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Jelvények megjelenítése"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "Ugrás a horgonycsomópontra"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "További információ"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "Passzív"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "Eltávolítás"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "Kibontás az Elemek panelen"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "A funkció használatához módosítsa angolra a DevTools beállításaiban található nyelvi beállításokat."
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "Üzenetek törlése"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "Visszajelzés küldése"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "Miben segíthetek?"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "Előfordulhat, hogy a Freestyler pontatlan információkat jelenít meg, vagy helytelen válaszokat ad"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "Parancsokért kérje meg valamire a Freestylert, vagy írja be a / karaktert"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "Elem kiválasztása"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "Küldés"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "Freestyler megjelenítése"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blokkolt erőforrás"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "Ez az oldal követi a modern webfejlesztés bevált módszereit?"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "Ez az oldal megfelel a progresszív webes alkalmazásokra vonatkozó standardnak"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "JavaScript-mintavételezés engedélyezése a Lighthouse-futtatás során. Így további végrehajtási adatok jelennek meg a teljesítménypanelen a trace megtekintésekor, de magasabb CPU-terheléssel jár, ami hatással lehet az oldal teljesítményére."
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Teljesítmény"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "Progresszív webes alkalmazás"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Az ellenőrzés előtt állítsa vissza a tárhelyet (cache, service workers stb.). (Ez jó a teljesítmény és a(z) PWA-tesztelés szempontjából)"
@@ -9648,7 +9657,7 @@
     "message": "Nincs optimalizálva: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "Betöltés"
+    "message": "Profil betöltése"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "JavaScript VM-példány kiválasztása"
@@ -10275,7 +10284,25 @@
     "message": "{PH1} további megjelenítése"
   },
   "panels/search/SearchView.ts | clear": {
+    "message": "Keresett kifejezés törlése"
+  },
+  "panels/search/SearchView.ts | clearInput": {
     "message": "Törlés"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "A kis- és nagybetűt megkülönböztető keresés letiltása"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "Reguláris kifejezések letiltása"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "Kis- és nagybetűt megkülönböztető keresés engedélyezése"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "Reguláris kifejezések engedélyezése"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "Keresés"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "{PH1} egyező sort talált {PH2} fájlban."
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "Kérelmet küld"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "WebSocket-üzenet fogadása"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "WebSocket-üzenet küldése"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "XHR-betöltés"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Idővonal-munkamenet kiválasztása"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "A rögzítés után húzással válassza ki a kívánt területet az áttekintési felületen. Ezután nagyítson rá, és pásztázza az idővonalat az egérgörgővel vagy a {PH1} billentyűkkel. {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "Kattintson a Felvétel {PH1} gombra, vagy nyomja le a(z) {PH2} billentyűkombinációt új felvétel indításához."
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "Kattintson az Újratöltés {PH1} gombra, vagy nyomja le a(z) {PH2} billentyűkombinációt az oldalbetöltés felvételéhez."
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "További információ"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "Hibás formátumú idővonaladatok: {PH1}"
   },
@@ -12857,6 +12905,9 @@
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
     "message": "Lassú útvonalú nem egyező elemek százalékos aránya"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "Azon nem egyező csomópontok (egyeztetési kísérletek - egyezési számláló) százalékos aránya, amelyeket nem sikerült gyorsan kizárni a Bloom-szűrővel. Az alacsonyabb érték a jobb."
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "Választó"
   },
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "Táblázat a vágólapra másolva"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(Összes választó összege)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "Nem lehet összekapcsolni"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "A(z) {PH1} időtartama {PH2} volt."
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1} bájt"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "Adatok hossza"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket-protokoll"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "Újracsatlakozás, amikor kész a DevTools megnyitásával."
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "{PH2}/{PH1}. találat megjelenítése"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "Törlés"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "Keresősáv bezárása"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} egyezés"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH2}/{PH1}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "A kis- és nagybetűt megkülönböztető keresés letiltása"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "A keresés és csere letiltása"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "Reguláris kifejezések letiltása"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "Kis- és nagybetűt megkülönböztető keresés engedélyezése"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "Keresés és csere"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "Reguláris kifejezések engedélyezése"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Keresés"
@@ -13887,10 +13974,10 @@
     "message": "Összes cseréje"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "Következő keresése"
+    "message": "Következő találat megjelenítése"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "Előző keresése"
+    "message": "Előző találat megjelenítése"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Egy vagy több beállítás megváltozott, amelynek életbe lépéséhez újratöltés szükséges."
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "Ígéret feloldva (aszinkron)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (aszinkron)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} panel"

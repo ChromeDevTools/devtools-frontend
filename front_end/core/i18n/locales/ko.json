@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With 차단"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "빠른 4G"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "빠른 3G"
+    "message": "느린 4G"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "프리플라이트 요청에 사용 가능한 콘텐츠 없음"
@@ -300,7 +303,7 @@
     "message": "{PH1} 로드 완료됨: {PH2} \"{PH3}\"."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "느린 3G"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "이 쿠키를 저장하던 중 알 수 없는 오류가 발생했습니다."
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "안전하지 않은 출처의 getCurrentPosition() 및 watchPosition()은 지원 중단되었습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "getInnerHTML() 함수는 지원 중단되었으며 곧 이 브라우저에서 삭제됩니다. 대신 getHTML() 함수를 사용하세요."
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia()는 더 이상 안전하지 않은 출처에서 작동하지 않습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "{PH1}에 연결됨"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "알 수 없는 파일 읽기 오류: {PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "파일 시스템을 추가할 수 없습니다. {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "이미지 저장"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "WASM 모듈을 디스크에 저장할 수 없습니다. 모듈이 너무 클 가능성이 큽니다."
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "모든 재정의 표시"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "이벤트 기록 중지"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "정의되지 않음"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "정의되지 않음"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "정의되지 않음"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "GET 요청을 통해 로드된 페이지만 뒤로-앞으로 캐시를 사용할 수 있습니다."
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome이 캐시된 페이지에서 자바스크립트 실행 시도를 감지했습니다."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "정의되지 않음"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "정의되지 않음"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "정의되지 않음"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "정의되지 않음"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "AppBanner를 요청한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
@@ -4263,7 +4248,7 @@
     "message": "활성화 시간 동안 탐색에 일반 URL과 다른 유효한 URL이 있으므로 사전 렌더링이 사용되지 않았습니다. (예: 새 탭 페이지 또는 호스팅된 앱)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "알 수 없음"
+    "message": "어떤 이유로 브라우저에서 모든 사전 렌더링된 페이지의 로드를 취소했습니다(예: 사전 렌더링 중에 WebViewCompat.addWebMessageListener()가 호출됨)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "사전 렌더링된 페이지에서 오디오 출력을 요청했으나 이는 현재 지원되지 않습니다."
@@ -4305,10 +4290,10 @@
     "message": "스키마가 http: 또는 https:가 아닌 URL로 리디렉션되었으므로 사전 렌더링 탐색이 실패했습니다."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "알 수 없음"
+    "message": "WebView.addJavascriptInterface()에서 새 JavaScript 인터페이스를 삽입했으므로 사전 렌더링된 페이지의 로드가 취소되었습니다."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "알 수 없음"
+    "message": "WebView.removeJavascriptInterface()에서 JavaScript 인터페이스를 삭제했으므로 사전 렌더링된 페이지의 로드가 취소되었습니다."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "사전 렌더링 탐색에 HTTP 인증이 필요하지만 현재 이 인증은 지원되지 않습니다."
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "iframe 세부정보 표시"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "팝오버 대상 표시"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "이 프레임은 광고 프레임으로 확인됨"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "배지 표시"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "앵커 노드로 이동"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "자세히 알아보기"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "패시브"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "삭제"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "요소 패널에서 보기"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "이 기능을 사용하려면 DevTools 설정에서 언어 환경설정을 영어로 업데이트하세요."
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "메시지 지우기"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "의견 보내기"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "무엇을 도와드릴까요?"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "Freestyler는 부정확한 정보를 표시할 수 있으며 정확하지 않을 수도 있습니다."
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "Freestyler에게 물어보거나 / 기호를 입력하여 명령어를 실행하세요."
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "요소 선택"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "보내기"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "Freestyler 표시"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "차단된 리소스"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "페이지에서 현대적인 웹 개발 권장사항을 준수하나요?"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "이 페이지가 프로그레시브 웹 앱의 표준을 충족하나요?"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "Lighthouse 실행 중에 JavaScript 샘플링을 사용 설정합니다. 이렇게 하면 트레이스를 확인할 때 성능 패널에 실행 세부정보가 더 자세하게 제공되지만 CPU 오버헤드가 높아지고 페이지 성능에 영향을 줄 수 있습니다."
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "성능"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "프로그레시브 웹 앱"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "감사 전에 스토리지(cache, service workers 등)를 재설정합니다. (성능 및 PWA 테스트에 적당함)"
@@ -9648,7 +9657,7 @@
     "message": "최적화되지 않음: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "로드"
+    "message": "프로필 로드"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "JavaScript VM 인스턴스 선택"
@@ -10275,7 +10284,25 @@
     "message": "{PH1}개 더보기"
   },
   "panels/search/SearchView.ts | clear": {
-    "message": "삭제"
+    "message": "검색어 지우기"
+  },
+  "panels/search/SearchView.ts | clearInput": {
+    "message": "지우기"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "대소문자를 구분하는 검색 사용 중지"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "정규 표현식 사용 중지"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "대소문자를 구분하는 검색 사용 설정"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "정규 표현식 사용 설정"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "찾기"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "파일 {PH2}개에서 일치하는 행 {PH1}개를 찾았습니다."
@@ -10917,7 +10944,7 @@
     "message": "변경사항 취소"
   },
   "panels/settings/KeybindsSettingsTab.ts | editShortcut": {
-    "message": "바로가기 수정"
+    "message": "단축키 수정"
   },
   "panels/settings/KeybindsSettingsTab.ts | keyboardShortcutsList": {
     "message": "단축키 목록"
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "요청 보내기"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "WebSocket 메시지 받기"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "WebSocket 메시지 보내기"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "XHR 로드"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "타임라인 세션 선택"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "기록 후 드래그하여 개요에서 관심 지역을 선택합니다. 그런 다음 마우스 휠 또는 {PH1} 키로 타임라인을 확대/축소하고 타임라인 화면을 이동합니다. {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "기록 버튼({PH1})을 클릭하거나 {PH2}을 눌러 새 기록을 시작합니다."
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "새로고침 버튼({PH1})을 클릭하거나 {PH2}을 눌러 페이지 로드를 기록합니다."
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "자세히 알아보기"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "잘못된 형식의 타임라인 데이터: {PH1}"
   },
@@ -12857,6 +12905,9 @@
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
     "message": "느린 경로 불일치 비율"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "블룸 필터로 빠르게 배제할 수 없는 불일치 노드(일치 시도 - 일치 횟수) 비율입니다. 낮을수록 좋습니다."
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "선택자"
   },
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "표가 클립보드에 복사되었습니다."
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(모든 선택기의 총계)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "링크할 수 없음"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1} 소요 시간: {PH2}"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1}바이트"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "데이터 길이"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket 프로토콜"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "준비되면 DevTools를 다시 열어 다시 연결합니다."
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "결과 {PH2}개 중 {PH1}번째 표시"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "지우기"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "검색창 닫기"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "일치하는 결과 {PH1}개"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1}/{PH2}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "대소문자를 구분하는 검색 사용 중지"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "찾기 및 바꾸기 사용 중지"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "정규 표현식 사용 중지"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "대소문자를 구분하는 검색 사용 설정"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "찾기 및 바꾸기"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "정규 표현식 사용 설정"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "찾기"
@@ -13887,10 +13974,10 @@
     "message": "모두 바꾸기"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "다음 항목 검색"
+    "message": "다음 결과 표시"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "이전 항목 검색"
+    "message": "이전 결과 표시"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "하나 이상의 설정이 변경되었으며 변경사항을 적용하려면 새로고침해야 합니다."
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "프로미스 결정됨(비동기)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1}(비동기)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} 패널"

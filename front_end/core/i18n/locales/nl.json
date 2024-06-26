@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With-blok"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "Snelle 4G"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "Snelle 3G"
+    "message": "Langzame 4G"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "Geen content beschikbaar voor pre-flightverzoek"
@@ -300,7 +303,7 @@
     "message": "{PH1} is klaar met laden: {PH2} '{PH3}'."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "Langzame 3G"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "Er is een onbekende fout opgetreden bij het opslaan van deze cookie."
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "getCurrentPosition() en watchPosition() zijn beëindigd op niet-beveiligde oorsprongen. Als je deze functie wilt gebruiken, kun je overwegen om een beveiligde oorsprong voor je app te gebruiken, zoals HTTPS. Zie https://goo.gle/chrome-insecure-origins voor meer informatie."
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "De functie getInnerHTML() is beëindigd en wordt binnenkort uit deze browser verwijderd. Gebruik in plaats daarvan getHTML()."
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia() werkt niet meer op niet-beveiligde oorsprongen. Als je deze functie wilt gebruiken, kun je overwegen om een beveiligde oorsprong voor je app te gebruiken, zoals HTTPS. Zie https://goo.gle/chrome-insecure-origins voor meer informatie."
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "Gekoppeld aan {PH1}"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "Onbekende fout bij het lezen van het bestand: {PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Kan het bestandssysteem niet toevoegen: {PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Afbeelding opslaan"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "Kan WASM-module niet opslaan op schijf. Waarschijnlijk is de module te groot."
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "Alle overschrijvingen tonen"
@@ -2850,7 +2856,7 @@
     "message": "focus"
   },
   "panels/application/ServiceWorkersView.ts | inspect": {
-    "message": "inspecteren"
+    "message": "Inspecteren"
   },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "Netwerkverzoeken"
@@ -2907,13 +2913,13 @@
     "message": "Bron"
   },
   "panels/application/ServiceWorkersView.ts | startString": {
-    "message": "starten"
+    "message": "Starten"
   },
   "panels/application/ServiceWorkersView.ts | status": {
     "message": "Status"
   },
   "panels/application/ServiceWorkersView.ts | stopString": {
-    "message": "stoppen"
+    "message": "Stoppen"
   },
   "panels/application/ServiceWorkersView.ts | syncString": {
     "message": "Synchroniseren"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Stoppen met gebeurtenissen registreren"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "Ongedefinieerd"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "Ongedefinieerd"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "Ongedefinieerd"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "Alleen pagina's die worden geladen via een GET-verzoek, komen in aanmerking voor Back-Forward Cache."
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome heeft een poging waargenomen om JavaScript uit te voeren in het cachegeheugen."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "Ongedefinieerd"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "Ongedefinieerd"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "Ongedefinieerd"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "Ongedefinieerd"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Pagina's die een AppBanner hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
@@ -4263,7 +4248,7 @@
     "message": "De pre-rendering is niet gebruikt omdat de navigatie tijdens de activeringstijd een effectieve URL heeft die anders is dan de normale URL. (Bijvoorbeeld de pagina Nieuw tabblad of gehoste apps.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "Onbekend"
+    "message": "Het laden van alle vooraf gerenderde pagina's is om de een of andere reden ongedaan gemaakt (bijvoorbeeld omdat WebViewCompat.addWebMessageListener() is aangeroepen tijdens pre-rendering.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "De vooraf gerenderde pagina heeft audio-uitvoer aangevraagd maar dat wordt op dit moment niet ondersteund."
@@ -4305,10 +4290,10 @@
     "message": "De pre-rendering navigatie is mislukt omdat deze omleidt naar een URL waarvan het schema niet http: of https: was."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "Onbekend"
+    "message": "Het laden van de vooraf gerenderde pagina is ongedaan gemaakt omdat een nieuwe JavaScript-interface is ingevoegd door WebView.addJavascriptInterface()."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "Onbekend"
+    "message": "Het laden van de vooraf gerenderde pagina is ongedaan gemaakt omdat een JavaScript-interface is verwijderd door WebView.removeJavascriptInterface()."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "De pre-rendering navigatie vereiste HTTP-verificatie maar dit wordt momenteel niet ondersteund."
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Details voor iframe bekijken"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "Pop-over-doel tonen"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Dit frame is herkend als advertentieframe"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Badges bekijken"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "Naar anker-node gaan"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "Meer informatie"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "Passief"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "Verwijderen"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "Tonen in deelvenster Elementen"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "Als je deze functie wilt gebruiken, update je je taalvoorkeur in de DevTools-instellingen naar het Engels."
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "Berichten wissen"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "Feedback sturen"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "Hoe kan ik je helpen?"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "Freestyler kan onjuiste informatie weergeven en geeft misschien niet het juiste antwoord"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "Vraag het aan Freestyler of typ / voor opdrachten"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "Element selecteren"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "Sturen"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "Freestyler tonen"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Geblokkeerde resource"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "Volgt deze pagina praktische tips voor moderne webontwikkeling?"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "Of deze pagina voldoet aan de standaard van een progressive web-app"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "Zet JavaScript-sampling aan tijdens de Lighthouse-uitvoering. Dit levert meer uitvoeringsgegevens op in het deelvenster Prestaties als je de tracering bekijkt maar leidt wel tot een hogere CPU-overhead en kan invloed hebben op de prestaties van de pagina."
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Prestaties"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "Progressive web-app"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Opslag resetten (cache, service workers enzovoort) voor controle. (Goed voor prestaties en PWA-tests)"
@@ -9648,7 +9657,7 @@
     "message": "Niet geoptimaliseerd: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "Laden"
+    "message": "Profiel laden"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "JavaScript VM-instantie selecteren"
@@ -10275,7 +10284,25 @@
     "message": "Nog {PH1} tonen"
   },
   "panels/search/SearchView.ts | clear": {
+    "message": "Zoekopdracht wissen"
+  },
+  "panels/search/SearchView.ts | clearInput": {
     "message": "Wissen"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "Hoofdlettergevoelig zoeken uitzetten"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "Reguliere expressies uitzetten"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "Hoofdlettergevoelig zoeken aanzetten"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "Reguliere expressies aanzetten"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "Zoeken"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "Er zijn {PH1} overeenkomende regels in {PH2} bestanden gevonden."
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "Verstuurt verzoek"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "WebSocket-bericht ontvangen"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "WebSocket-bericht sturen"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "XHR laden"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Tijdlijnsessie selecteren"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "Selecteer na de opname een gewenst gebied in het overzicht door te slepen. Zoom en pan daarna de tijdlijn met het muiswiel of met {PH1}. {PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "Klik op de opnameknop {PH1} of op {PH2} om een nieuwe opname te starten."
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "Klik op de knop Opnieuw laden {PH1} of druk op {PH2} om het laden van de pagina op te nemen."
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "Meer informatie"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "Onjuist gevormde tijdlijngegevens: {PH1}"
   },
@@ -12857,6 +12905,9 @@
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
     "message": "% van niet-overeenkomsten met langzaam pad"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "Het percentage niet-overeenkomende nodes (overeenkomstpogingen - aantal overeenkomsten) dat niet snel kon worden uitgesloten door het bloom-filter. Lager is beter."
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "Kiezer"
   },
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "Tabel gekopieerd naar klembord"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(Totalen voor alle kiezers)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "Kan niet koppelen"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1} duurde {PH2}."
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1} byte(s)"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "Gegevenslengte"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket-protocol"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "Na voltooiing opnieuw verbinden door DevTools opnieuw te openen."
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "Toont resultaat {PH1} van {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "Wissen"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "Zoekbalk sluiten"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} overeenkomsten"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} van {PH2}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "Hoofdlettergevoelig zoeken uitzetten"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "Zoeken en vervangen uitzetten"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "Reguliere expressies uitzetten"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "Hoofdlettergevoelig zoeken aanzetten"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "Zoeken en vervangen"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "Reguliere expressies aanzetten"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "Zoeken"
@@ -13887,10 +13974,10 @@
     "message": "Alles vervangen"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "Volgende zoeken"
+    "message": "Volgend resultaat tonen"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "Vorige zoeken"
+    "message": "Vorig resultaat tonen"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Een of meer instellingen zijn gewijzigd. De wijzigingen worden pas na herladen van kracht."
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "Belofte opgelost (asynchroon)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (asynchroon)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1}-deelvenster"

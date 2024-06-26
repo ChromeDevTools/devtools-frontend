@@ -272,8 +272,11 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With 區塊"
   },
+  "core/sdk/NetworkManager.ts | fast4G": {
+    "message": "快速 4G"
+  },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "快速 3G 網路"
+    "message": "慢速 4G"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "預檢要求沒有可用內容"
@@ -300,7 +303,7 @@
     "message": "{PH1} 已完成載入：{PH2}「{PH3}」。"
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "慢速 3G 網路"
+    "message": "3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "嘗試儲存這個 Cookie 時發生不明錯誤。"
@@ -1178,6 +1181,9 @@
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "不安全來源上的 getCurrentPosition() 和 watchPosition() 已遭淘汰。如要使用這個功能，請考慮將應用程式轉移至安全來源，例如 HTTPS。詳情請參閱 https://goo.gle/chrome-insecure-origins。"
   },
+  "generated/Deprecation.ts | GetInnerHTML": {
+    "message": "getInnerHTML() 函式已淘汰，並即將從這個瀏覽器中移除。請改用 getHTML()。"
+  },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia() 不再適用於不安全的來源。如要使用這個功能，請考慮將應用程式轉移至安全來源，例如 HTTPS。詳情請參閱 https://goo.gle/chrome-insecure-origins。"
   },
@@ -1586,9 +1592,6 @@
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "已連結 {PH1}"
   },
-  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "讀取檔案時發生不明錯誤：{PH1}"
-  },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "無法新增檔案系統：{PH1}"
   },
@@ -1609,6 +1612,9 @@
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "儲存圖片"
+  },
+  "models/persistence/PersistenceActions.ts | saveWasmFailed": {
+    "message": "無法將 WASM 模組存到磁碟，最有可能的原因是模組過大。"
   },
   "models/persistence/PersistenceActions.ts | showOverrides": {
     "message": "顯示所有覆寫檔案"
@@ -3107,15 +3113,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "停止記錄事件"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
-    "message": "未定義"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
-    "message": "未定義"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
-    "message": "未定義"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "只有透過 GET 要求載入的網頁才適用往返快取。"
   },
@@ -3124,18 +3121,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome 偵測到嘗試在快取中執行 JavaScript 的作業。"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
-    "message": "未定義"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
-    "message": "未定義"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
-    "message": "未定義"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
-    "message": "未定義"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "已要求 AppBanner 的網頁目前不適用往返快取。"
@@ -4263,7 +4248,7 @@
     "message": "在啟用期間，瀏覽作業的有效網址與一般網址不同 (例如新分頁或代管應用程式)，因此系統未使用預先算繪。"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
-    "message": "不明"
+    "message": "瀏覽器因故 (例如系統在預先算繪時呼叫 WebViewCompat.addWebMessageListener()) 卸載所有預先算繪頁面。"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "預先算繪頁面要求輸出音訊，但目前不支援。"
@@ -4305,10 +4290,10 @@
     "message": "系統重新導向的網址未採用 http: 或 https: 通訊協定，因此預先算繪瀏覽作業失敗。"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
-    "message": "不明"
+    "message": "WebView.addJavascriptInterface() 已插入新的 JavaScript 介面，因此系統卸載了預先算繪頁面。"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceRemoved": {
-    "message": "不明"
+    "message": "WebView.removeJavascriptInterface() 已移除 JavaScript 介面，因此系統卸載了預先算繪頁面。"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
     "message": "預先算繪瀏覽作業需要 HTTP 驗證，但目前不支援。"
@@ -5753,6 +5738,9 @@
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "顯示 iframe 詳細資料"
   },
+  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
+    "message": "顯示彈出式視窗目標"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "系統已將該頁框視為廣告頁框"
   },
@@ -5998,6 +5986,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "顯示標記"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
+    "message": "跳到錨點節點"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "瞭解詳情"
@@ -6329,9 +6320,6 @@
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "被動"
   },
-  "panels/event_listeners/EventListenersView.ts | remove": {
-    "message": "移除"
-  },
   "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "顯示在「元素」面板中"
   },
@@ -6454,6 +6442,33 @@
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "如要使用這項功能，請前往開發人員工具設定，將語言偏好設定更新為英文。"
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
+    "message": "清除訊息"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "提供意見"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
+    "message": "你需要哪方面的協助？"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
+    "message": "Freestyler 可能會顯示不正確的資訊，因此不一定符合需求"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
+    "message": "詢問 Freestyler 或輸入 / 即可查看指令"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
+    "message": "選取元素"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
+    "message": "傳送"
+  },
+  "panels/freestyler/freestyler-meta.ts | freestyler": {
+    "message": "Freestyler"
+  },
+  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
+    "message": "顯示 Freestyler"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "已封鎖資源"
@@ -7064,9 +7079,6 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "此頁面是否採取網頁程式開發的最佳做法"
   },
-  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "這個網頁是否符合漸進式網頁應用程式標準"
-  },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
     "message": "在 Lighthouse 執行期間啟用 JavaScript 取樣。查看追蹤記錄時，啟用這項功能可讓效能面板顯示更多執行作業詳細資料，但 CPU 負擔較高，且可能影響該頁面的效能。"
   },
@@ -7108,9 +7120,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "效能"
-  },
-  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "漸進式網頁應用程式"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "請在稽核前重設 cache、service workers 等儲存空間 (適用於效能和 PWA 測試)。"
@@ -9648,7 +9657,7 @@
     "message": "未最佳化：{PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
-    "message": "載入"
+    "message": "載入設定檔"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "選取 JavaScript VM 執行個體"
@@ -10275,7 +10284,25 @@
     "message": "顯示另外 {PH1} 個"
   },
   "panels/search/SearchView.ts | clear": {
+    "message": "清除搜尋內容"
+  },
+  "panels/search/SearchView.ts | clearInput": {
     "message": "清除"
+  },
+  "panels/search/SearchView.ts | disableCaseSensitive": {
+    "message": "停用搜尋功能 (區分大小寫)"
+  },
+  "panels/search/SearchView.ts | disableRegularExpression": {
+    "message": "停用規則運算式"
+  },
+  "panels/search/SearchView.ts | enableCaseSensitive": {
+    "message": "啟用搜尋功能 (區分大小寫)"
+  },
+  "panels/search/SearchView.ts | enableRegularExpression": {
+    "message": "啟用規則運算式"
+  },
+  "panels/search/SearchView.ts | find": {
+    "message": "尋找"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "在 {PH2} 個檔案中找到 {PH1} 行相符的內容。"
@@ -12530,6 +12557,12 @@
   "panels/timeline/EventUICategory.ts | willSendRequest": {
     "message": "將會傳送要求"
   },
+  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
+    "message": "接收 WebSocket 訊息"
+  },
+  "panels/timeline/EventUICategory.ts | wsMessageSent": {
+    "message": "傳送 WebSocket 訊息"
+  },
   "panels/timeline/EventUICategory.ts | xhrLoad": {
     "message": "XHR 載入"
   },
@@ -12713,6 +12746,21 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "選取時間軸工作階段"
   },
+  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
+    "message": "記錄完畢後，請在總覽中以拖曳的方式選取感興趣的區域，然後利用滑鼠滾輪或 {PH1} 鍵來縮放及平移時間軸。{PH2}"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "按一下記錄按鈕「{PH1}」或點擊 {PH2}以建立新的記錄。"
+  },
+  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
+    "message": "點選重新載入按鈕 {PH1} 或按下 {PH2} 鍵，即可記錄網頁載入作業。"
+  },
+  "panels/timeline/TimelineLandingPage.ts | learnmore": {
+    "message": "瞭解詳情"
+  },
+  "panels/timeline/TimelineLandingPage.ts | wasd": {
+    "message": "WASD"
+  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "格式錯誤的時間軸資料：{PH1}"
   },
@@ -12857,6 +12905,9 @@
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
     "message": "慢速路徑不相符的百分比"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
+    "message": "無法使用 Bloom 篩選條件快速排除的不相符節點百分比 (嘗試比對次數 - 相符項目數)。這個比率越低越好。"
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "選取器"
   },
@@ -12868,6 +12919,9 @@
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "資料表已複製到剪貼簿"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | totalForAllSelectors": {
+    "message": "(所有選取器的總計)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
     "message": "無法連結"
@@ -13366,6 +13420,12 @@
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1}需時 {PH2}。"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketBytes": {
+    "message": "{PH1} 個位元組"
+  },
+  "panels/timeline/components/DetailsView.ts | webSocketDataLength": {
+    "message": "資料長度"
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket 通訊協定"
@@ -13868,11 +13928,38 @@
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "在準備就緒時重新開啟開發人員工具，即可再次連線。"
   },
+  "ui/legacy/SearchableView.ts | accessibledOfD": {
+    "message": "顯示第 {PH1} 筆結果，共 {PH2} 筆"
+  },
+  "ui/legacy/SearchableView.ts | clearInput": {
+    "message": "清除"
+  },
+  "ui/legacy/SearchableView.ts | closeSearchBar": {
+    "message": "關閉搜尋列"
+  },
   "ui/legacy/SearchableView.ts | dMatches": {
     "message": "找到 {PH1} 項相符結果"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1}/{PH2}"
+  },
+  "ui/legacy/SearchableView.ts | disableCaseSensitive": {
+    "message": "停用搜尋功能 (區分大小寫)"
+  },
+  "ui/legacy/SearchableView.ts | disableFindAndReplace": {
+    "message": "停用「尋找與取代」"
+  },
+  "ui/legacy/SearchableView.ts | disableRegularExpression": {
+    "message": "停用規則運算式"
+  },
+  "ui/legacy/SearchableView.ts | enableCaseSensitive": {
+    "message": "啟用搜尋功能 (區分大小寫)"
+  },
+  "ui/legacy/SearchableView.ts | enableFindAndReplace": {
+    "message": "尋找與取代"
+  },
+  "ui/legacy/SearchableView.ts | enableRegularExpression": {
+    "message": "啟用規則運算式"
   },
   "ui/legacy/SearchableView.ts | findString": {
     "message": "尋找"
@@ -13887,10 +13974,10 @@
     "message": "全部取代"
   },
   "ui/legacy/SearchableView.ts | searchNext": {
-    "message": "搜尋下一個例項"
+    "message": "顯示下一筆結果"
   },
   "ui/legacy/SearchableView.ts | searchPrevious": {
-    "message": "搜尋上一個例項"
+    "message": "顯示上一筆結果"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "一或多項設定已變更，需要重新載入才能生效。"
@@ -13990,9 +14077,6 @@
   },
   "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "已解析 Promise (非同步)"
-  },
-  "ui/legacy/UIUtils.ts | sAsync": {
-    "message": "{PH1} (非同步)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1}面板"

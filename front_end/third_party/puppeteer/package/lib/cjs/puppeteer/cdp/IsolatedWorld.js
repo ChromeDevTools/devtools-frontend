@@ -73,7 +73,7 @@ class IsolatedWorld extends Realm_js_1.Realm {
         const result = await (0, rxjs_js_1.firstValueFrom)((0, util_js_1.fromEmitterEvent)(this.#emitter, 'context').pipe((0, rxjs_js_1.raceWith)((0, util_js_1.fromEmitterEvent)(this.#emitter, 'disposed').pipe((0, rxjs_js_1.map)(() => {
             // The message has to match the CDP message expected by the WaitTask class.
             throw new Error('Execution context was destroyed');
-        })))));
+        })), (0, util_js_1.timeout)(this.timeoutSettings.timeout()))));
         return result;
     }
     async evaluateHandle(pageFunction, ...args) {

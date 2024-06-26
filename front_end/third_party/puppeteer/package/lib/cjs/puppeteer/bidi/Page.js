@@ -330,13 +330,13 @@ let BidiPage = (() => {
         async setViewport(viewport) {
             if (!this.browser().cdpSupported) {
                 await this.#frame.browsingContext.setViewport({
-                    viewport: viewport.width && viewport.height
+                    viewport: viewport?.width && viewport?.height
                         ? {
                             width: viewport.width,
                             height: viewport.height,
                         }
                         : null,
-                    devicePixelRatio: viewport.deviceScaleFactor
+                    devicePixelRatio: viewport?.deviceScaleFactor
                         ? viewport.deviceScaleFactor
                         : null,
                 });

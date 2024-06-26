@@ -26,10 +26,11 @@ const unquote = (text) => {
  */
 function parsePSelectors(selector) {
     let isPureCSS = true;
+    let hasAria = false;
     let hasPseudoClasses = false;
     const tokens = (0, parsel_js_js_1.tokenize)(selector);
     if (tokens.length === 0) {
-        return [[], isPureCSS, hasPseudoClasses];
+        return [[], isPureCSS, hasPseudoClasses, false];
     }
     let compoundSelector = [];
     let complexSelector = [compoundSelector];
@@ -70,8 +71,12 @@ function parsePSelectors(selector) {
                     compoundSelector.push((0, parsel_js_js_1.stringify)(storage));
                     storage.splice(0);
                 }
+                const name = token.name.slice(3);
+                if (name === 'aria') {
+                    hasAria = true;
+                }
                 compoundSelector.push({
-                    name: token.name.slice(3),
+                    name,
                     value: unquote(token.argument ?? ''),
                 });
                 continue;
@@ -93,7 +98,7 @@ function parsePSelectors(selector) {
     if (storage.length) {
         compoundSelector.push((0, parsel_js_js_1.stringify)(storage));
     }
-    return [selectors, isPureCSS, hasPseudoClasses];
+    return [selectors, isPureCSS, hasPseudoClasses, hasAria];
 }
 exports.parsePSelectors = parsePSelectors;
 //# sourceMappingURL=PSelectorParser.js.map

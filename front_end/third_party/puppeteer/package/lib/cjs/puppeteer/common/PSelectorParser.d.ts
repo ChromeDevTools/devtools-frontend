@@ -10,6 +10,7 @@ import type { ComplexPSelectorList } from '../injected/PQuerySelector.js';
 export declare function parsePSelectors(selector: string): [
     selector: ComplexPSelectorList,
     isPureCSS: boolean,
-    hasPseudoClasses: boolean
+    hasPseudoClasses: boolean,
+    hasAria: boolean
 ];
 //# sourceMappingURL=PSelectorParser.d.ts.map

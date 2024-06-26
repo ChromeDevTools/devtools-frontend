@@ -64,12 +64,14 @@ export var LocatorEvent;
  * whole operation is retried. Various preconditions for a successful action are
  * checked automatically.
  *
+ * See {@link https://pptr.dev/guides/page-interactions#locators} for details.
+ *
  * @public
  */
 export class Locator extends EventEmitter {
     /**
-     * Creates a race between multiple locators but ensures that only a single one
-     * acts.
+     * Creates a race between multiple locators trying to locate elements in
+     * parallel but ensures that only a single element receives the action.
      *
      * @public
      */
@@ -111,26 +113,59 @@ export class Locator extends EventEmitter {
     get timeout() {
         return this._timeout;
     }
+    /**
+     * Creates a new locator instance by cloning the current locator and setting
+     * the total timeout for the locator actions.
+     *
+     * Pass `0` to disable timeout.
+     *
+     * @defaultValue `Page.getDefaultTimeout()`
+     */
     setTimeout(timeout) {
         const locator = this._clone();
         locator._timeout = timeout;
         return locator;
     }
+    /**
+     * Creates a new locator instance by cloning the current locator with the
+     * visibility property changed to the specified value.
+     */
     setVisibility(visibility) {
         const locator = this._clone();
         locator.visibility = visibility;
         return locator;
     }
+    /**
+     * Creates a new locator instance by cloning the current locator and
+     * specifying whether to wait for input elements to become enabled before the
+     * action. Applicable to `click` and `fill` actions.
+     *
+     * @defaultValue `true`
+     */
     setWaitForEnabled(value) {
         const locator = this._clone();
         locator.#waitForEnabled = value;
         return locator;
     }
+    /**
+     * Creates a new locator instance by cloning the current locator and
+     * specifying whether the locator should scroll the element into viewport if
+     * it is not in the viewport already.
+     *
+     * @defaultValue `true`
+     */
     setEnsureElementIsInTheViewport(value) {
         const locator = this._clone();
         locator.#ensureElementIsInTheViewport = value;
         return locator;
     }
+    /**
+     * Creates a new locator instance by cloning the current locator and
+     * specifying whether the locator has to wait for the element's bounding box
+     * to be same between two consecutive animation frames.
+     *
+     * @defaultValue `true`
+     */
     setWaitForStableBoundingBox(value) {
         const locator = this._clone();
         locator.#waitForStableBoundingBox = value;
@@ -458,21 +493,30 @@ export class Locator extends EventEmitter {
     mapHandle(mapper) {
         return new MappedLocator(this._clone(), mapper);
     }
+    /**
+     * Clicks the located element.
+     */
     click(options) {
         return firstValueFrom(this.#click(options));
     }
     /**
      * Fills out the input identified by the locator using the provided value. The
      * type of the input is determined at runtime and the appropriate fill-out
-     * method is chosen based on the type. contenteditable, selector, inputs are
-     * supported.
+     * method is chosen based on the type. `contenteditable`, select, textarea and
+     * input elements are supported.
      */
     fill(value, options) {
         return firstValueFrom(this.#fill(value, options));
     }
+    /**
+     * Hovers over the located element.
+     */
     hover(options) {
         return firstValueFrom(this.#hover(options));
     }
+    /**
+     * Scrolls the located element.
+     */
     scroll(options) {
         return firstValueFrom(this.#scroll(options));
     }

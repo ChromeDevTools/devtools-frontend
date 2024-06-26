@@ -84,7 +84,7 @@ export declare class CdpPage extends Page {
         isScreenUnlocked: boolean;
     }): Promise<void>;
     emulateVisionDeficiency(type?: Protocol.Emulation.SetEmulatedVisionDeficiencyRequest['type']): Promise<void>;
-    setViewport(viewport: Viewport): Promise<void>;
+    setViewport(viewport: Viewport | null): Promise<void>;
     viewport(): Viewport | null;
     evaluateOnNewDocument<Params extends unknown[], Func extends (...args: Params) => unknown = (...args: Params) => unknown>(pageFunction: Func | string, ...args: Params): Promise<NewDocumentScriptEvaluation>;
     removeScriptToEvaluateOnNewDocument(identifier: string): Promise<void>;

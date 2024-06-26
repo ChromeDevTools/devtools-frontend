@@ -80,6 +80,9 @@ export declare class Accessibility {
  * @public
  */
 export declare interface ActionOptions {
+    /**
+     * A signal to abort the locator action.
+     */
     signal?: AbortSignal;
 }
 
@@ -1060,10 +1063,7 @@ export declare interface ConnectOptions extends BrowserConnectOptions {
  */
 export declare class ConsoleMessage {
     #private;
-    /**
-     * @public
-     */
-    constructor(type: ConsoleMessageType, text: string, args: JSHandle[], stackTraceLocations: ConsoleMessageLocation[]);
+    /* Excluded from this release type: __constructor */
     /**
      * The type of the console message.
      */
@@ -1325,7 +1325,7 @@ export declare type CookieSourceScheme = 'Unset' | 'NonSecure' | 'Secure';
  */
 export declare class Coverage {
     #private;
-    constructor(client: CDPSession);
+    /* Excluded from this release type: __constructor */
     /* Excluded from this release type: updateClient */
     /**
      * @param options - Set of configurable options for coverage defaults to
@@ -1742,7 +1742,21 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
     /**
      * Queries the current element for an element matching the given selector.
      *
-     * @param selector - The selector to query for.
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows quering by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      * @returns A {@link ElementHandle | element handle} to the first element
      * matching the given selector. Otherwise, `null`.
      */
@@ -1750,7 +1764,21 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
     /**
      * Queries the current element for all elements matching the given selector.
      *
-     * @param selector - The selector to query for.
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows quering by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      * @returns An array of {@link ElementHandle | element handles} that point to
      * elements matching the given selector.
      */
@@ -1774,7 +1802,21 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * );
      * ```
      *
-     * @param selector - The selector to query for.
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows quering by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      * @param pageFunction - The function to be evaluated in this element's page's
      * context. The first element matching the selector will be passed in as the
      * first argument.
@@ -1808,7 +1850,21 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * ).toEqual(['Hello!', 'Hi!']);
      * ```
      *
-     * @param selector - The selector to query for.
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows quering by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      * @param pageFunction - The function to be evaluated in the element's page's
      * context. An array of elements matching the given selector will be passed to
      * the function as its first argument.
@@ -1855,13 +1911,30 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      */
     waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<ElementHandle<NodeFor<Selector>> | null>;
     /**
-     * Checks if an element is visible using the same mechanism as
-     * {@link ElementHandle.waitForSelector}.
+     * An element is considered to be visible if all of the following is
+     * true:
+     *
+     * - the element has
+     *   {@link https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle | computed styles}.
+     *
+     * - the element has a non-empty
+     *   {@link https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect | bounding client rect}.
+     *
+     * - the element's {@link https://developer.mozilla.org/en-US/docs/Web/CSS/visibility | visibility}
+     *   is not `hidden` or `collapse`.
      */
     isVisible(): Promise<boolean>;
     /**
-     * Checks if an element is hidden using the same mechanism as
-     * {@link ElementHandle.waitForSelector}.
+     * An element is considered to be hidden if at least one of the following is true:
+     *
+     * - the element has no
+     *   {@link https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle | computed styles}.
+     *
+     * - the element has an empty
+     *   {@link https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect | bounding client rect}.
+     *
+     * - the element's {@link https://developer.mozilla.org/en-US/docs/Web/CSS/visibility | visibility}
+     *   is `hidden` or `collapse`.
      */
     isHidden(): Promise<boolean>;
     /**
@@ -2461,14 +2534,14 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      * Behaves identically to {@link Page.evaluateHandle} except it's run within
      * the context of this frame.
      *
-     * @see {@link Page.evaluateHandle} for details.
+     * See {@link Page.evaluateHandle} for details.
      */
     evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     /**
      * Behaves identically to {@link Page.evaluate} except it's run within
      * the context of this frame.
      *
-     * @see {@link Page.evaluate} for details.
+     * See {@link Page.evaluate} for details.
      */
     evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
@@ -2476,20 +2549,20 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      * details and supported actions.
      *
      * @param selector -
-     * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
      * to query page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
-     * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
      * allows quering by
      * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
      * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
      * and
      * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
      * and
-     * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-     * Alternatively, you can specify a selector type using a prefix
-     * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      */
     locator<Selector extends string>(selector: Selector): Locator<NodeFor<Selector>>;
     /**
@@ -2501,20 +2574,20 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      * Queries the frame for an element matching the given selector.
      *
      * @param selector -
-     * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
      * to query page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
-     * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
      * allows quering by
      * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
      * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
      * and
      * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
      * and
-     * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-     * Alternatively, you can specify a selector type using a prefix
-     * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      *
      * @returns A {@link ElementHandle | element handle} to the first element
      * matching the given selector. Otherwise, `null`.
@@ -2524,20 +2597,20 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      * Queries the frame for all elements matching the given selector.
      *
      * @param selector -
-     * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
      * to query page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
-     * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
      * allows quering by
      * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
      * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
      * and
      * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
      * and
-     * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-     * Alternatively, you can specify a selector type using a prefix
-     * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      *
      * @returns An array of {@link ElementHandle | element handles} that point to
      * elements matching the given selector.
@@ -2557,20 +2630,20 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      * ```
      *
      * @param selector -
-     * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
      * to query page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
-     * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
      * allows quering by
      * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
      * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
      * and
      * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
      * and
-     * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-     * Alternatively, you can specify a selector type using a prefix
-     * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      * @param pageFunction - The function to be evaluated in the frame's context.
      * The first element matching the selector will be passed to the function as
      * its first argument.
@@ -2592,20 +2665,20 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      * ```
      *
      * @param selector -
-     * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
      * to query page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
-     * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
      * allows quering by
      * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
      * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
      * and
      * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
      * and
-     * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-     * Alternatively, you can specify a selector type using a prefix
-     * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      * @param pageFunction - The function to be evaluated in the frame's context.
      * An array of elements matching the given selector will be passed to the
      * function as its first argument.
@@ -3468,7 +3541,7 @@ export declare interface InternalNetworkConditions extends NetworkConditions {
  */
 export declare class JSCoverage {
     #private;
-    constructor(client: CDPSession);
+    /* Excluded from this release type: __constructor */
     /* Excluded from this release type: updateClient */
     start(options?: {
         resetOnNavigation?: boolean;
@@ -3923,13 +3996,15 @@ export declare interface LaunchOptions {
  * whole operation is retried. Various preconditions for a successful action are
  * checked automatically.
  *
+ * See {@link https://pptr.dev/guides/page-interactions#locators} for details.
+ *
  * @public
  */
 export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
     #private;
     /**
-     * Creates a race between multiple locators but ensures that only a single one
-     * acts.
+     * Creates a race between multiple locators trying to locate elements in
+     * parallel but ensures that only a single element receives the action.
      *
      * @public
      */
@@ -3942,10 +4017,43 @@ export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
     /* Excluded from this release type: _timeout */
     /* Excluded from this release type: operators */
     get timeout(): number;
+    /**
+     * Creates a new locator instance by cloning the current locator and setting
+     * the total timeout for the locator actions.
+     *
+     * Pass `0` to disable timeout.
+     *
+     * @defaultValue `Page.getDefaultTimeout()`
+     */
     setTimeout(timeout: number): Locator<T>;
+    /**
+     * Creates a new locator instance by cloning the current locator with the
+     * visibility property changed to the specified value.
+     */
     setVisibility<NodeType extends Node>(this: Locator<NodeType>, visibility: VisibilityOption): Locator<NodeType>;
+    /**
+     * Creates a new locator instance by cloning the current locator and
+     * specifying whether to wait for input elements to become enabled before the
+     * action. Applicable to `click` and `fill` actions.
+     *
+     * @defaultValue `true`
+     */
     setWaitForEnabled<NodeType extends Node>(this: Locator<NodeType>, value: boolean): Locator<NodeType>;
+    /**
+     * Creates a new locator instance by cloning the current locator and
+     * specifying whether the locator should scroll the element into viewport if
+     * it is not in the viewport already.
+     *
+     * @defaultValue `true`
+     */
     setEnsureElementIsInTheViewport<ElementType extends Element>(this: Locator<ElementType>, value: boolean): Locator<ElementType>;
+    /**
+     * Creates a new locator instance by cloning the current locator and
+     * specifying whether the locator has to wait for the element's bounding box
+     * to be same between two consecutive animation frames.
+     *
+     * @defaultValue `true`
+     */
     setWaitForStableBoundingBox<ElementType extends Element>(this: Locator<ElementType>, value: boolean): Locator<ElementType>;
     /* Excluded from this release type: copyOptions */
     /* Excluded from this release type: _clone */
@@ -3984,15 +4092,24 @@ export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
     filter<S extends T>(predicate: Predicate<T, S>): Locator<S>;
     /* Excluded from this release type: filterHandle */
     /* Excluded from this release type: mapHandle */
+    /**
+     * Clicks the located element.
+     */
     click<ElementType extends Element>(this: Locator<ElementType>, options?: Readonly<LocatorClickOptions>): Promise<void>;
     /**
      * Fills out the input identified by the locator using the provided value. The
      * type of the input is determined at runtime and the appropriate fill-out
-     * method is chosen based on the type. contenteditable, selector, inputs are
-     * supported.
+     * method is chosen based on the type. `contenteditable`, select, textarea and
+     * input elements are supported.
      */
     fill<ElementType extends Element>(this: Locator<ElementType>, value: string, options?: Readonly<ActionOptions>): Promise<void>;
+    /**
+     * Hovers over the located element.
+     */
     hover<ElementType extends Element>(this: Locator<ElementType>, options?: Readonly<ActionOptions>): Promise<void>;
+    /**
+     * Scrolls the located element.
+     */
     scroll<ElementType extends Element>(this: Locator<ElementType>, options?: Readonly<LocatorScrollOptions>): Promise<void>;
 }
 
@@ -4018,42 +4135,6 @@ export declare enum LocatorEvent {
  */
 export declare interface LocatorEvents extends Record<EventType, unknown> {
     [LocatorEvent.Action]: undefined;
-}
-
-/**
- * @public
- */
-export declare interface LocatorOptions {
-    /**
-     * Whether to wait for the element to be `visible` or `hidden`. `null` to
-     * disable visibility checks.
-     */
-    visibility: VisibilityOption;
-    /**
-     * Total timeout for the entire locator operation.
-     *
-     * Pass `0` to disable timeout.
-     *
-     * @defaultValue `Page.getDefaultTimeout()`
-     */
-    timeout: number;
-    /**
-     * Whether to scroll the element into viewport if not in the viewprot already.
-     * @defaultValue `true`
-     */
-    ensureElementIsInTheViewport: boolean;
-    /**
-     * Whether to wait for input elements to become enabled before the action.
-     * Applicable to `click` and `fill` actions.
-     * @defaultValue `true`
-     */
-    waitForEnabled: boolean;
-    /**
-     * Whether to wait for the element's bounding box to be same between two
-     * animation frames.
-     * @defaultValue `true`
-     */
-    waitForStableBoundingBox: boolean;
 }
 
 /**
@@ -4116,8 +4197,9 @@ export declare interface Metrics {
 /**
  * The Mouse class operates in main-frame CSS pixels
  * relative to the top-left corner of the viewport.
+ *
  * @remarks
- * Every `page` object has its own Mouse, accessible with [`page.mouse`](#pagemouse).
+ * Every `page` object has its own Mouse, accessible with {@link Page.mouse}.
  *
  * @example
  *
@@ -4723,20 +4805,20 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * details and supported actions.
      *
      * @param selector -
-     * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
      * to query page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
-     * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
      * allows quering by
      * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
      * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
      * and
      * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
      * and
-     * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-     * Alternatively, you can specify a selector type using a prefix
-     * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      */
     locator<Selector extends string>(selector: Selector): Locator<NodeFor<Selector>>;
     /**
@@ -4744,20 +4826,20 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * details and supported actions.
      *
      * @param selector -
-     * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
      * to query page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
-     * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
      * allows quering by
      * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
      * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
      * and
      * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
      * and
-     * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-     * Alternatively, you can specify a selector type using a prefix
-     * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      */
     locator<Ret>(func: () => Awaitable<Ret>): Locator<Ret>;
     /* Excluded from this release type: locatorRace */
@@ -4766,20 +4848,20 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * the selector, the return value resolves to `null`.
      *
      * @param selector -
-     * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
      * to query page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
-     * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
      * allows quering by
      * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
      * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
      * and
      * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
      * and
-     * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-     * Alternatively, you can specify a selector type using a prefix
-     * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      *
      * @remarks
      *
@@ -4791,20 +4873,20 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * match the selector, the return value resolves to `[]`.
      *
      * @param selector -
-     * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
      * to query page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
-     * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
      * allows quering by
      * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
      * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
      * and
      * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
      * and
-     * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-     * Alternatively, you can specify a selector type using a prefix
-     * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      *
      * @remarks
      *
@@ -4944,20 +5026,20 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * ```
      *
      * @param selector -
-     * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
      * to query page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
-     * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
      * allows quering by
      * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
      * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
      * and
      * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
      * and
-     * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-     * Alternatively, you can specify a selector type using a prefix
-     * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      * @param pageFunction - the function to be evaluated in the page context.
      * Will be passed the result of the element matching the selector as its
      * first argument.
@@ -5014,20 +5096,20 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * ```
      *
      * @param selector -
-     * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
      * to query page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
-     * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
      * allows quering by
      * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
      * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
      * and
      * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
      * and
-     * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-     * Alternatively, you can specify a selector type using a prefix
-     * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      * @param pageFunction - the function to be evaluated in the page context.
      * Will be passed an array of matching elements as its first argument.
      * @param args - any additional arguments to pass through to `pageFunction`.
@@ -5589,7 +5671,9 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * the page.
      *
      * In the case of multiple pages in a single browser, each page can have its
-     * own viewport size.
+     * own viewport size. Setting the viewport to `null` resets the viewport to
+     * its default value.
+     *
      * @example
      *
      * ```ts
@@ -5607,7 +5691,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * NOTE: in certain cases, setting viewport will reload the page in order to
      * set the isMobile or hasTouch properties.
      */
-    abstract setViewport(viewport: Viewport): Promise<void>;
+    abstract setViewport(viewport: Viewport | null): Promise<void>;
     /**
      * Returns the current page viewport settings without checking the actual page
      * viewport.
@@ -6419,17 +6503,13 @@ export declare interface PDFOptions {
     omitBackground?: boolean;
     /**
      * Generate tagged (accessible) PDF.
+     *
      * @defaultValue `true`
      * @experimental
      */
     tagged?: boolean;
     /**
      * Generate document outline.
-     *
-     * @remarks
-     * If this is enabled the PDF will also be tagged (accessible)
-     * Currently only works in old Headless (headless = 'shell')
-     * {@link https://issues.chromium.org/issues/41387522#comment48 | Chromium feature request}
      *
      * @defaultValue `false`
      * @experimental
@@ -6972,7 +7052,7 @@ export declare interface ScreencastOptions {
      */
     speed?: number;
     /**
-     * Path to the [ffmpeg](https://ffmpeg.org/).
+     * Path to the {@link https://ffmpeg.org/ | ffmpeg}.
      *
      * Required if `ffmpeg` is not in your PATH.
      */
@@ -7486,6 +7566,11 @@ export declare interface Viewport {
 }
 
 /**
+ * Whether to wait for the element to be
+ * {@link ElementHandle.isVisible | visible} or
+ * {@link ElementHandle.isHidden | hidden}.
+ * `null` to disable visibility checks.
+ *
  * @public
  */
 export declare type VisibilityOption = 'hidden' | 'visible' | null;
@@ -7537,15 +7622,16 @@ export declare interface WaitForOptions {
  */
 export declare interface WaitForSelectorOptions {
     /**
-     * Wait for the selected element to be present in DOM and to be visible, i.e.
-     * to not have `display: none` or `visibility: hidden` CSS properties.
+     * Wait for the selected element to be present in DOM and to be visible. See
+     * {@link ElementHandle.isVisible} for the definition of element visibility.
      *
      * @defaultValue `false`
      */
     visible?: boolean;
     /**
-     * Wait for the selected element to not be found in the DOM or to be hidden,
-     * i.e. have `display: none` or `visibility: hidden` CSS properties.
+     * Wait for the selected element to not be found in the DOM or to be hidden.
+     * See {@link ElementHandle.isHidden} for the definition of element
+     * invisibility.
      *
      * @defaultValue `false`
      */

@@ -47,6 +47,9 @@ import { DisposableStack } from '../util/disposable.js';
 export class Coverage {
     #jsCoverage;
     #cssCoverage;
+    /**
+     * @internal
+     */
     constructor(client) {
         this.#jsCoverage = new JSCoverage(client);
         this.#cssCoverage = new CSSCoverage(client);
@@ -117,6 +120,9 @@ export class JSCoverage {
     #resetOnNavigation = false;
     #reportAnonymousScripts = false;
     #includeRawScriptCoverage = false;
+    /**
+     * @internal
+     */
     constructor(client) {
         this.#client = client;
     }

@@ -13,7 +13,7 @@ export class ConsoleMessage {
     #args;
     #stackTraceLocations;
     /**
-     * @public
+     * @internal
      */
     constructor(type, text, args, stackTraceLocations) {
         this.#type = type;

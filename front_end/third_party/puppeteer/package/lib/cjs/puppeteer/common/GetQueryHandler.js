@@ -38,7 +38,7 @@ function getQueryHandlerAndSelector(selector) {
                     selector = selector.slice(prefix.length);
                     return {
                         updatedSelector: selector,
-                        selectorHasPseudoClasses: false,
+                        polling: name === 'aria' ? "raf" /* PollingOptions.RAF */ : "mutation" /* PollingOptions.MUTATION */,
                         QueryHandler,
                     };
                 }
@@ -46,24 +46,26 @@ function getQueryHandlerAndSelector(selector) {
         }
     }
     try {
-        const [pSelector, isPureCSS, hasPseudoClasses] = (0, PSelectorParser_js_1.parsePSelectors)(selector);
+        const [pSelector, isPureCSS, hasPseudoClasses, hasAria] = (0, PSelectorParser_js_1.parsePSelectors)(selector);
         if (isPureCSS) {
             return {
                 updatedSelector: selector,
-                selectorHasPseudoClasses: hasPseudoClasses,
+                polling: hasPseudoClasses
+                    ? "raf" /* PollingOptions.RAF */
+                    : "mutation" /* PollingOptions.MUTATION */,
                 QueryHandler: CSSQueryHandler_js_1.CSSQueryHandler,
             };
         }
         return {
             updatedSelector: JSON.stringify(pSelector),
-            selectorHasPseudoClasses: hasPseudoClasses,
+            polling: hasAria ? "raf" /* PollingOptions.RAF */ : "mutation" /* PollingOptions.MUTATION */,
             QueryHandler: PQueryHandler_js_1.PQueryHandler,
         };
     }
     catch {
         return {
             updatedSelector: selector,
-            selectorHasPseudoClasses: false,
+            polling: "mutation" /* PollingOptions.MUTATION */,
             QueryHandler: CSSQueryHandler_js_1.CSSQueryHandler,
         };
     }

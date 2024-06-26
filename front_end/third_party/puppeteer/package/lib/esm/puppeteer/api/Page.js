@@ -252,20 +252,20 @@ let Page = (() => {
          * the selector, the return value resolves to `null`.
          *
          * @param selector -
-         * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
          * to query page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
-         * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
          * allows quering by
          * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
          * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
          * and
          * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
          * and
-         * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-         * Alternatively, you can specify a selector type using a prefix
-         * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          *
          * @remarks
          *
@@ -279,20 +279,20 @@ let Page = (() => {
          * match the selector, the return value resolves to `[]`.
          *
          * @param selector -
-         * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
          * to query page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
-         * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
          * allows quering by
          * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
          * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
          * and
          * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
          * and
-         * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-         * Alternatively, you can specify a selector type using a prefix
-         * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          *
          * @remarks
          *
@@ -413,20 +413,20 @@ let Page = (() => {
          * ```
          *
          * @param selector -
-         * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
          * to query page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
-         * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
          * allows quering by
          * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
          * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
          * and
          * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
          * and
-         * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-         * Alternatively, you can specify a selector type using a prefix
-         * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          * @param pageFunction - the function to be evaluated in the page context.
          * Will be passed the result of the element matching the selector as its
          * first argument.
@@ -486,20 +486,20 @@ let Page = (() => {
          * ```
          *
          * @param selector -
-         * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
          * to query page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
-         * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
          * allows quering by
          * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
          * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
          * and
          * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
          * and
-         * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-         * Alternatively, you can specify a selector type using a prefix
-         * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          * @param pageFunction - the function to be evaluated in the page context.
          * Will be passed an array of matching elements as its first argument.
          * @param args - any additional arguments to pass through to `pageFunction`.
@@ -1046,15 +1046,7 @@ let Page = (() => {
                                 ...scrollDimensions,
                             });
                             stack.defer(async () => {
-                                if (viewport) {
-                                    await this.setViewport(viewport).catch(debugError);
-                                }
-                                else {
-                                    await this.setViewport({
-                                        width: 0,
-                                        height: 0,
-                                    }).catch(debugError);
-                                }
+                                await this.setViewport(viewport).catch(debugError);
                             });
                         }
                     }

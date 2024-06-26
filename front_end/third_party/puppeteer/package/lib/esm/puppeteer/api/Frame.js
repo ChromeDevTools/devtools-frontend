@@ -318,7 +318,7 @@ let Frame = (() => {
          * Behaves identically to {@link Page.evaluateHandle} except it's run within
          * the context of this frame.
          *
-         * @see {@link Page.evaluateHandle} for details.
+         * See {@link Page.evaluateHandle} for details.
          */
         async evaluateHandle(pageFunction, ...args) {
             pageFunction = withSourcePuppeteerURLIfNone(this.evaluateHandle.name, pageFunction);
@@ -328,7 +328,7 @@ let Frame = (() => {
          * Behaves identically to {@link Page.evaluate} except it's run within
          * the context of this frame.
          *
-         * @see {@link Page.evaluate} for details.
+         * See {@link Page.evaluate} for details.
          */
         async evaluate(pageFunction, ...args) {
             pageFunction = withSourcePuppeteerURLIfNone(this.evaluate.name, pageFunction);
@@ -349,20 +349,20 @@ let Frame = (() => {
          * Queries the frame for an element matching the given selector.
          *
          * @param selector -
-         * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
          * to query page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
-         * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
          * allows quering by
          * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
          * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
          * and
          * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
          * and
-         * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-         * Alternatively, you can specify a selector type using a prefix
-         * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          *
          * @returns A {@link ElementHandle | element handle} to the first element
          * matching the given selector. Otherwise, `null`.
@@ -376,20 +376,20 @@ let Frame = (() => {
          * Queries the frame for all elements matching the given selector.
          *
          * @param selector -
-         * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
          * to query page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
-         * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
          * allows quering by
          * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
          * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
          * and
          * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
          * and
-         * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-         * Alternatively, you can specify a selector type using a prefix
-         * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          *
          * @returns An array of {@link ElementHandle | element handles} that point to
          * elements matching the given selector.
@@ -413,20 +413,20 @@ let Frame = (() => {
          * ```
          *
          * @param selector -
-         * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
          * to query page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
-         * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
          * allows quering by
          * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
          * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
          * and
          * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
          * and
-         * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-         * Alternatively, you can specify a selector type using a prefix
-         * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          * @param pageFunction - The function to be evaluated in the frame's context.
          * The first element matching the selector will be passed to the function as
          * its first argument.
@@ -453,20 +453,20 @@ let Frame = (() => {
          * ```
          *
          * @param selector -
-         * {@link https://pptr.dev/guides/page-interactions#query-selectors | selector}
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
          * to query page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
-         * {@link https://pptr.dev/guides/page-interactions#p-selectors | Puppeteer-specific seletor syntax}
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
          * allows quering by
          * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
          * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
          * and
          * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
          * and
-         * {@link https://pptr.dev/guides/page-interactions#-and--combinators | combining these queries across shadow roots}.
-         * Alternatively, you can specify a selector type using a prefix
-         * {@link https://pptr.dev/guides/page-interactions#built-in-selectors | prefix}.
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          * @param pageFunction - The function to be evaluated in the frame's context.
          * An array of elements matching the given selector will be passed to the
          * function as its first argument.
@@ -515,9 +515,9 @@ let Frame = (() => {
          * @throws Throws if an element matching the given selector doesn't appear.
          */
         async waitForSelector(selector, options = {}) {
-            const { updatedSelector, QueryHandler, selectorHasPseudoClasses } = getQueryHandlerAndSelector(selector);
+            const { updatedSelector, QueryHandler, polling } = getQueryHandlerAndSelector(selector);
             return (await QueryHandler.waitFor(this, updatedSelector, {
-                polling: selectorHasPseudoClasses ? "raf" /* PollingOptions.RAF */ : undefined,
+                polling,
                 ...options,
             }));
         }

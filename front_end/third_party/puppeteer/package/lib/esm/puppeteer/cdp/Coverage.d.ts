@@ -109,6 +109,9 @@ export interface CSSCoverageOptions {
  */
 export declare class Coverage {
     #private;
+    /**
+     * @internal
+     */
     constructor(client: CDPSession);
     /**
      * @internal
@@ -158,6 +161,9 @@ export declare class Coverage {
  */
 export declare class JSCoverage {
     #private;
+    /**
+     * @internal
+     */
     constructor(client: CDPSession);
     /**
      * @internal

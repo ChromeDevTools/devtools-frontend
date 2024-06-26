@@ -11,48 +11,21 @@ import type { ClickOptions } from '../ElementHandle.js';
 import type { Frame } from '../Frame.js';
 import type { Page } from '../Page.js';
 /**
+ * Whether to wait for the element to be
+ * {@link ElementHandle.isVisible | visible} or
+ * {@link ElementHandle.isHidden | hidden}.
+ * `null` to disable visibility checks.
+ *
  * @public
  */
 export type VisibilityOption = 'hidden' | 'visible' | null;
 /**
  * @public
  */
-export interface LocatorOptions {
-    /**
-     * Whether to wait for the element to be `visible` or `hidden`. `null` to
-     * disable visibility checks.
-     */
-    visibility: VisibilityOption;
-    /**
-     * Total timeout for the entire locator operation.
-     *
-     * Pass `0` to disable timeout.
-     *
-     * @defaultValue `Page.getDefaultTimeout()`
-     */
-    timeout: number;
-    /**
-     * Whether to scroll the element into viewport if not in the viewprot already.
-     * @defaultValue `true`
-     */
-    ensureElementIsInTheViewport: boolean;
-    /**
-     * Whether to wait for input elements to become enabled before the action.
-     * Applicable to `click` and `fill` actions.
-     * @defaultValue `true`
-     */
-    waitForEnabled: boolean;
-    /**
-     * Whether to wait for the element's bounding box to be same between two
-     * animation frames.
-     * @defaultValue `true`
-     */
-    waitForStableBoundingBox: boolean;
-}
-/**
- * @public
- */
 export interface ActionOptions {
+    /**
+     * A signal to abort the locator action.
+     */
     signal?: AbortSignal;
 }
 /**
@@ -89,13 +62,15 @@ export interface LocatorEvents extends Record<EventType, unknown> {
  * whole operation is retried. Various preconditions for a successful action are
  * checked automatically.
  *
+ * See {@link https://pptr.dev/guides/page-interactions#locators} for details.
+ *
  * @public
  */
 export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
     #private;
     /**
-     * Creates a race between multiple locators but ensures that only a single one
-     * acts.
+     * Creates a race between multiple locators trying to locate elements in
+     * parallel but ensures that only a single element receives the action.
      *
      * @public
      */
@@ -120,10 +95,43 @@ export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
         retryAndRaceWithSignalAndTimer: <T_1>(signal?: AbortSignal, cause?: Error) => OperatorFunction<T_1, T_1>;
     };
     get timeout(): number;
+    /**
+     * Creates a new locator instance by cloning the current locator and setting
+     * the total timeout for the locator actions.
+     *
+     * Pass `0` to disable timeout.
+     *
+     * @defaultValue `Page.getDefaultTimeout()`
+     */
     setTimeout(timeout: number): Locator<T>;
+    /**
+     * Creates a new locator instance by cloning the current locator with the
+     * visibility property changed to the specified value.
+     */
     setVisibility<NodeType extends Node>(this: Locator<NodeType>, visibility: VisibilityOption): Locator<NodeType>;
+    /**
+     * Creates a new locator instance by cloning the current locator and
+     * specifying whether to wait for input elements to become enabled before the
+     * action. Applicable to `click` and `fill` actions.
+     *
+     * @defaultValue `true`
+     */
     setWaitForEnabled<NodeType extends Node>(this: Locator<NodeType>, value: boolean): Locator<NodeType>;
+    /**
+     * Creates a new locator instance by cloning the current locator and
+     * specifying whether the locator should scroll the element into viewport if
+     * it is not in the viewport already.
+     *
+     * @defaultValue `true`
+     */
     setEnsureElementIsInTheViewport<ElementType extends Element>(this: Locator<ElementType>, value: boolean): Locator<ElementType>;
+    /**
+     * Creates a new locator instance by cloning the current locator and
+     * specifying whether the locator has to wait for the element's bounding box
+     * to be same between two consecutive animation frames.
+     *
+     * @defaultValue `true`
+     */
     setWaitForStableBoundingBox<ElementType extends Element>(this: Locator<ElementType>, value: boolean): Locator<ElementType>;
     /**
      * @internal
@@ -183,15 +191,24 @@ export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
      * @internal
      */
     mapHandle<To>(mapper: HandleMapper<T, To>): Locator<To>;
+    /**
+     * Clicks the located element.
+     */
     click<ElementType extends Element>(this: Locator<ElementType>, options?: Readonly<LocatorClickOptions>): Promise<void>;
     /**
      * Fills out the input identified by the locator using the provided value. The
      * type of the input is determined at runtime and the appropriate fill-out
-     * method is chosen based on the type. contenteditable, selector, inputs are
-     * supported.
+     * method is chosen based on the type. `contenteditable`, select, textarea and
+     * input elements are supported.
      */
     fill<ElementType extends Element>(this: Locator<ElementType>, value: string, options?: Readonly<ActionOptions>): Promise<void>;
+    /**
+     * Hovers over the located element.
+     */
     hover<ElementType extends Element>(this: Locator<ElementType>, options?: Readonly<ActionOptions>): Promise<void>;
+    /**
+     * Scrolls the located element.
+     */
     scroll<ElementType extends Element>(this: Locator<ElementType>, options?: Readonly<LocatorScrollOptions>): Promise<void>;
 }
 /**

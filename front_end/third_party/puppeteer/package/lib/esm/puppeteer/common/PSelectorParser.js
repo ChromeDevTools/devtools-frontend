@@ -23,10 +23,11 @@ const unquote = (text) => {
  */
 export function parsePSelectors(selector) {
     let isPureCSS = true;
+    let hasAria = false;
     let hasPseudoClasses = false;
     const tokens = tokenize(selector);
     if (tokens.length === 0) {
-        return [[], isPureCSS, hasPseudoClasses];
+        return [[], isPureCSS, hasPseudoClasses, false];
     }
     let compoundSelector = [];
     let complexSelector = [compoundSelector];
@@ -67,8 +68,12 @@ export function parsePSelectors(selector) {
                     compoundSelector.push(stringify(storage));
                     storage.splice(0);
                 }
+                const name = token.name.slice(3);
+                if (name === 'aria') {
+                    hasAria = true;
+                }
                 compoundSelector.push({
-                    name: token.name.slice(3),
+                    name,
                     value: unquote(token.argument ?? ''),
                 });
                 continue;
@@ -90,6 +95,6 @@ export function parsePSelectors(selector) {
     if (storage.length) {
         compoundSelector.push(stringify(storage));
     }
-    return [selectors, isPureCSS, hasPseudoClasses];
+    return [selectors, isPureCSS, hasPseudoClasses, hasAria];
 }
 //# sourceMappingURL=PSelectorParser.js.map

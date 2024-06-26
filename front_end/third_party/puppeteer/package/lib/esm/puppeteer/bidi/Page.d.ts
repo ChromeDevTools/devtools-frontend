@@ -75,7 +75,7 @@ export declare class BidiPage extends Page {
         isScreenUnlocked: boolean;
     }): Promise<void>;
     emulateVisionDeficiency(type?: Protocol.Emulation.SetEmulatedVisionDeficiencyRequest['type']): Promise<void>;
-    setViewport(viewport: Viewport): Promise<void>;
+    setViewport(viewport: Viewport | null): Promise<void>;
     viewport(): Viewport | null;
     pdf(options?: PDFOptions): Promise<Buffer>;
     createPDFStream(options?: PDFOptions | undefined): Promise<ReadableStream<Uint8Array>>;

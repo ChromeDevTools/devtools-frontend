@@ -373,7 +373,21 @@ let ElementHandle = (() => {
         /**
          * Queries the current element for an element matching the given selector.
          *
-         * @param selector - The selector to query for.
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+         * to query page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          * @returns A {@link ElementHandle | element handle} to the first element
          * matching the given selector. Otherwise, `null`.
          */
@@ -384,7 +398,21 @@ let ElementHandle = (() => {
         /**
          * Queries the current element for all elements matching the given selector.
          *
-         * @param selector - The selector to query for.
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+         * to query page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          * @returns An array of {@link ElementHandle | element handles} that point to
          * elements matching the given selector.
          */
@@ -428,7 +456,21 @@ let ElementHandle = (() => {
          * );
          * ```
          *
-         * @param selector - The selector to query for.
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+         * to query page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          * @param pageFunction - The function to be evaluated in this element's page's
          * context. The first element matching the selector will be passed in as the
          * first argument.
@@ -479,7 +521,21 @@ let ElementHandle = (() => {
          * ).toEqual(['Hello!', 'Hi!']);
          * ```
          *
-         * @param selector - The selector to query for.
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+         * to query page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          * @param pageFunction - The function to be evaluated in the element's page's
          * context. An array of elements matching the given selector will be passed to
          * the function as its first argument.
@@ -548,9 +604,9 @@ let ElementHandle = (() => {
          * @throws Throws if an element matching the given selector doesn't appear.
          */
         async waitForSelector(selector, options = {}) {
-            const { updatedSelector, QueryHandler, selectorHasPseudoClasses } = getQueryHandlerAndSelector(selector);
+            const { updatedSelector, QueryHandler, polling } = getQueryHandlerAndSelector(selector);
             return (await QueryHandler.waitFor(this, updatedSelector, {
-                polling: selectorHasPseudoClasses ? "raf" /* PollingOptions.RAF */ : undefined,
+                polling,
                 ...options,
             }));
         }
@@ -562,15 +618,32 @@ let ElementHandle = (() => {
             }), visibility);
         }
         /**
-         * Checks if an element is visible using the same mechanism as
-         * {@link ElementHandle.waitForSelector}.
+         * An element is considered to be visible if all of the following is
+         * true:
+         *
+         * - the element has
+         *   {@link https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle | computed styles}.
+         *
+         * - the element has a non-empty
+         *   {@link https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect | bounding client rect}.
+         *
+         * - the element's {@link https://developer.mozilla.org/en-US/docs/Web/CSS/visibility | visibility}
+         *   is not `hidden` or `collapse`.
          */
         async isVisible() {
             return await this.#checkVisibility(true);
         }
         /**
-         * Checks if an element is hidden using the same mechanism as
-         * {@link ElementHandle.waitForSelector}.
+         * An element is considered to be hidden if at least one of the following is true:
+         *
+         * - the element has no
+         *   {@link https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle | computed styles}.
+         *
+         * - the element has an empty
+         *   {@link https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect | bounding client rect}.
+         *
+         * - the element's {@link https://developer.mozilla.org/en-US/docs/Web/CSS/visibility | visibility}
+         *   is `hidden` or `collapse`.
          */
         async isHidden() {
             return await this.#checkVisibility(false);

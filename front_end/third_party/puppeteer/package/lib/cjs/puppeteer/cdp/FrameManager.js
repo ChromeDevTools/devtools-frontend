@@ -371,8 +371,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
             if (contextPayload.auxData && contextPayload.auxData['isDefault']) {
                 world = frame.worlds[IsolatedWorlds_js_1.MAIN_WORLD];
             }
-            else if (contextPayload.name === util_js_1.UTILITY_WORLD_NAME &&
-                !frame.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].hasContext()) {
+            else if (contextPayload.name === util_js_1.UTILITY_WORLD_NAME) {
                 // In case of multiple sessions to the same target, there's a race between
                 // connections so we might end up creating multiple isolated worlds.
                 // We can use either.

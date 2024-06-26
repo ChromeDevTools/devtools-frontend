@@ -23,6 +23,42 @@ function getFakeToken(token: TestToken): Marked.Marked.Token {
 }
 
 describeWithEnvironment('MarkdownView', () => {
+  describe('tokenizer', () => {
+    it('tokenizers links in single quotes', () => {
+      assert.deepStrictEqual(Marked.Marked.lexer('\'https://example.com\''), [
+        {
+          'raw': '\'https://example.com\'',
+          'text': '\'https://example.com\'',
+          'tokens': [
+            {
+              'raw': '\'',
+              'text': '&#39;',
+              'type': 'text',
+            },
+            {
+              'href': 'https://example.com',
+              'raw': 'https://example.com',
+              'text': 'https://example.com',
+              'tokens': [
+                {
+                  'raw': 'https://example.com',
+                  'text': 'https://example.com',
+                  'type': 'text',
+                },
+              ],
+              'type': 'link',
+            },
+            {
+              'raw': '\'',
+              'text': '&#39;',
+              'type': 'text',
+            },
+          ],
+          'type': 'paragraph',
+        },
+      ] as unknown as Marked.Marked.TokensList);
+    });
+  });
   describe('MarkdownLitRenderer renderToken', () => {
     const renderer = new MarkdownView.MarkdownView.MarkdownLitRenderer();
 
@@ -202,7 +238,7 @@ console.log('test')
               if (token.type === 'codespan') {
                 return LitHtml.html`<code>overriden</code>`;
               }
-              return super.templateForToken(token);
+              return super.templateForToken(token as Marked.Marked.MarkedToken);
             }
           }());
       assert.strictEqual(codeBlock.innerText, 'overriden');

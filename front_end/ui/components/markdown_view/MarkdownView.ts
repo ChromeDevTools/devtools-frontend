@@ -127,7 +127,7 @@ export class MarkdownLitRenderer {
     // clang-format one
   }
 
-  templateForToken(token: Marked.Marked.Token): LitHtml.TemplateResult|null {
+  templateForToken(token: Marked.Marked.MarkedToken): LitHtml.TemplateResult|null {
     switch (token.type) {
       case 'paragraph':
         return html`<p>${this.renderChildTokens(token)}`;
@@ -163,7 +163,7 @@ export class MarkdownLitRenderer {
   }
 
   renderToken(token: Marked.Marked.Token): LitHtml.TemplateResult {
-    const template = this.templateForToken(token);
+    const template = this.templateForToken(token as Marked.Marked.MarkedToken);
     if (template === null) {
       throw new Error(`Markdown token type '${token.type}' not supported.`);
     }
@@ -198,6 +198,6 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
           .displayNotice=${true}>
         </${CodeBlock.litTagName}>`;
     }
-    return super.templateForToken(token);
+    return super.templateForToken(token as Marked.Marked.MarkedToken);
   }
 }

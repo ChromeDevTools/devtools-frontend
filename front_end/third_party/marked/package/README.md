@@ -26,8 +26,8 @@ Our [documentation pages](https://marked.js.org) are also rendered using marked 
 
 Also read about:
 
-* [Options](https://marked.js.org/#/USING_ADVANCED.md)
-* [Extensibility](https://marked.js.org/#/USING_PRO.md)
+* [Options](https://marked.js.org/using_advanced)
+* [Extensibility](https://marked.js.org/using_pro)
 
 ## Compatibility
 
@@ -37,22 +37,40 @@ Also read about:
 
 ## Installation
 
-**CLI:** `npm install -g marked`
+**CLI:**
 
-**In-browser:** `npm install marked`
+```sh
+npm install -g marked
+```
+
+**In-browser:**
+
+```sh
+npm install marked
+```
 
 ## Usage
 
-### Warning: 🚨 Marked does not [sanitize](https://marked.js.org/#/USING_ADVANCED.md#options) the output HTML. Please use a sanitize library, like [DOMPurify](https://github.com/cure53/DOMPurify) (recommended), [sanitize-html](https://github.com/apostrophecms/sanitize-html) or [insane](https://github.com/bevacqua/insane) on the output HTML! 🚨
+### Warning: 🚨 Marked does not [sanitize](https://marked.js.org/using_advanced#options) the output HTML. Please use a sanitize library, like [DOMPurify](https://github.com/cure53/DOMPurify) (recommended), [sanitize-html](https://github.com/apostrophecms/sanitize-html) or [insane](https://github.com/bevacqua/insane) on the *output* HTML! 🚨
+
+```
+DOMPurify.sanitize(marked.parse(`<img src="x" onerror="alert('not happening')">`));
+```
 
 **CLI**
 
 ``` bash
+# Example with stdin input
 $ marked -o hello.html
 hello world
 ^D
 $ cat hello.html
 <p>hello world</p>
+```
+
+```bash
+# Print all options
+$ marked --help
 ```
 
 **Browser**
@@ -74,7 +92,16 @@ $ cat hello.html
 </body>
 </html>
 ```
+or import esm module
+
+```html
+<script type="module">
+  import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
+  document.getElementById('content').innerHTML =
+    marked.parse('# Marked in the browser\n\nRendered by **marked**.');
+</script>
+```
 
 ## License
 
-Copyright (c) 2011-2018, Christopher Jeffrey. (MIT License)
+Copyright (c) 2011-2022, Christopher Jeffrey. (MIT License)

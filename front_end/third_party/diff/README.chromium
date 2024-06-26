@@ -2,6 +2,7 @@ Name: The Diff Match and Patch libraries offer robust algorithms to perform the 
 Short Name: diff-match-patch
 URL: https://github.com/google/diff-match-patch/tree/master/javascript
 Version: 5.60.0
+Revision: 0ae308daa77aeddb089cd6b7b0a443fca026266e
 License: Apache License 2.0
 License File: LICENSE
 Security Critical: no

@@ -9,6 +9,7 @@ import * as EntryLabelOverlay from './EntryLabelOverlay.js';
 import * as InteractionBreakdown from './InteractionBreakdown.js';
 import * as LiveMetricsView from './LiveMetricsView.js';
 import * as Sidebar from './Sidebar.js';
+import * as SidebarAnnotationsTab from './SidebarAnnotationsTab.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import * as TimeRangeOverlay from './TimeRangeOverlay.js';
 
@@ -20,6 +21,7 @@ export {
   InteractionBreakdown,
   LiveMetricsView,
   Sidebar,
+  SidebarAnnotationsTab,
   SidebarInsight,
   TimeRangeOverlay,
 };

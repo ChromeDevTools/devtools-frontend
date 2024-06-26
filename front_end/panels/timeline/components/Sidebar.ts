@@ -15,6 +15,7 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import sidebarStyles from './sidebar.css.js';
+import * as SidebarAnnotationsTab from './SidebarAnnotationsTab.js';
 import * as SidebarInsight from './SidebarInsight.js';
 
 const COLLAPSED_WIDTH = 40;
@@ -359,21 +360,12 @@ export class SidebarUI extends HTMLElement {
     // clang-format on
   }
 
-  #renderAnnotationTabContent(): LitHtml.TemplateResult {
-    // clang-format off
-    return LitHtml.html`
-      <h2>Content for Annotation Tab</h2>
-      <p>This is the content of the Annotation tab.</p>
-    `;
-    // clang-format on
-  }
-
-  #renderContent(): LitHtml.TemplateResult|null {
+  #renderContent(): LitHtml.TemplateResult|HTMLElement|null {
     switch (this.#activeTab) {
       case SidebarTabsName.INSIGHTS:
         return this.#renderInsightsTabContent();
       case SidebarTabsName.ANNOTATIONS:
-        return this.#renderAnnotationTabContent();
+        return new SidebarAnnotationsTab.SidebarAnnotationsTab();
       default:
         return null;
     }

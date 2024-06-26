@@ -21,6 +21,7 @@ import {
   getFrameTreeTitles,
   getTrimmedTextContent,
   navigateToApplicationTab,
+  navigateToServiceWorkers,
 } from '../helpers/application-helpers.js';
 import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
 
@@ -74,14 +75,6 @@ const getFieldValuesTextContent = async () => {
 };
 
 describe('The Application Tab', () => {
-  afterEach(async () => {
-    const {target} = getBrowserAndPages();
-    await target.evaluate(async () => {
-      const registrations = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(registrations.map(registration => registration.unregister()));
-    });
-  });
-
   // Update and reactivate when the whole FrameDetailsView is a custom component
   it.skip('[crbug.com/1519420]: shows details for a frame when clicked on in the frame tree', async () => {
     const {target} = getBrowserAndPages();
@@ -286,6 +279,12 @@ describe('The Application Tab', () => {
       'None',
     ];
     assert.deepEqual(fieldValuesTextContent, expected);
+
+    // Unregister service worker to prevent leftovers from causing test errors.
+    void pressKey('ArrowUp');
+    void pressKey('ArrowLeft');
+    await navigateToServiceWorkers();
+    await click('[title="Unregister service worker"]');
   });
 
   // Update and reactivate when the whole FrameDetailsView is a custom component

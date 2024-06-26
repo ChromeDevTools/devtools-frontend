@@ -16,11 +16,6 @@ import {
 
 const UIStrings = {
   /**
-   *@description Title for cross-origin portal post message error
-   */
-  crossOriginPortalPostMessage: 'Portals - Same-origin communication channels',
-
-  /**
    *@description title for autofill documentation page
    */
   howDoesAutofillWorkPageTitle: 'How does autofill work?',
@@ -107,14 +102,6 @@ export class GenericIssue extends Issue {
   }
 }
 
-export const genericCrossOriginPortalPostMessageError = {
-  file: 'genericCrossOriginPortalPostMessageError.md',
-  links: [{
-    link: 'https://github.com/WICG/portals#same-origin-communication-channels',
-    linkTitle: i18nLazyString(UIStrings.crossOriginPortalPostMessage),
-  }],
-};
-
 export const genericFormLabelForNameError = {
   file: 'genericFormLabelForNameError.md',
   links: [{
@@ -200,7 +187,6 @@ export const genericResponseWasBlockedbyORB = {
 };
 
 const issueDescriptions: Map<Protocol.Audits.GenericIssueErrorType, LazyMarkdownIssueDescription> = new Map([
-  [Protocol.Audits.GenericIssueErrorType.CrossOriginPortalPostMessageError, genericCrossOriginPortalPostMessageError],
   [Protocol.Audits.GenericIssueErrorType.FormLabelForNameError, genericFormLabelForNameError],
   [Protocol.Audits.GenericIssueErrorType.FormInputWithNoLabelError, genericFormInputWithNoLabelError],
   [
@@ -236,7 +222,6 @@ const issueDescriptions: Map<Protocol.Audits.GenericIssueErrorType, LazyMarkdown
 ]);
 
 const issueTypes: Map<Protocol.Audits.GenericIssueErrorType, IssueKind> = new Map([
-  [Protocol.Audits.GenericIssueErrorType.CrossOriginPortalPostMessageError, IssueKind.Improvement],
   [Protocol.Audits.GenericIssueErrorType.FormLabelForNameError, IssueKind.PageError],
   [Protocol.Audits.GenericIssueErrorType.FormInputWithNoLabelError, IssueKind.Improvement],
   [Protocol.Audits.GenericIssueErrorType.FormAutocompleteAttributeEmptyError, IssueKind.PageError],

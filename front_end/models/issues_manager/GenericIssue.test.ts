@@ -32,10 +32,9 @@ describeWithLocale('GenericIssue', () => {
     sinon.stub(console, 'warn');
   });
 
-  // TODO(crbug/1399414): Make this test reflect reality, cross origin errors do not have a violating node.
-  it('adds a cross origin portal post message issue with valid details', () => {
+  it('adds an incorrect form label use issue with valid details', () => {
     const issueDetails = {
-      errorType: Protocol.Audits.GenericIssueErrorType.CrossOriginPortalPostMessageError,
+      errorType: Protocol.Audits.GenericIssueErrorType.FormLabelForNameError,
       frameId: 'main' as Protocol.Page.FrameId,
       violatingNodeId: 1 as Protocol.DOM.BackendNodeId,
       violatingNodeAttribute: 'attribute',
@@ -49,13 +48,12 @@ describeWithLocale('GenericIssue', () => {
     assert.strictEqual(genericIssue.getCategory(), IssuesManager.Issue.IssueCategory.Generic);
     assert.strictEqual(
         genericIssue.primaryKey(),
-        `GenericIssue::CrossOriginPortalPostMessageError-(${
-        'main' as Protocol.Page.FrameId})-(1)-(attribute)-(no-request)`);
-    assert.strictEqual(genericIssue.getKind(), IssuesManager.Issue.IssueKind.Improvement);
+        `GenericIssue::FormLabelForNameError-(${'main' as Protocol.Page.FrameId})-(1)-(attribute)-(no-request)`);
+    assert.strictEqual(genericIssue.getKind(), IssuesManager.Issue.IssueKind.PageError);
     assert.isNotNull(genericIssue.getDescription());
   });
 
-  it('adds a cross origin portal post message issue without details', () => {
+  it('adds an incorrect form label use issue without details', () => {
     const inspectorIssueWithoutGenericDetails = createProtocolIssueWithoutDetails();
     const genericIssues =
         IssuesManager.GenericIssue.GenericIssue.fromInspectorIssue(mockModel, inspectorIssueWithoutGenericDetails);

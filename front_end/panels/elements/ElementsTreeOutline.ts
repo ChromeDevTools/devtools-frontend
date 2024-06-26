@@ -1418,9 +1418,6 @@ export class ElementsTreeOutline extends
     if (node.isIframe()) {
       return true;
     }
-    if (node.isPortal()) {
-      return true;
-    }
     if (node.contentDocument()) {
       return true;
     }

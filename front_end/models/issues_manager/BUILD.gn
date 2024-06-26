@@ -106,7 +106,6 @@ devtools_issue_description_files = [
   "cspTrustedTypesSinkViolation.md",
   "cspURLViolation.md",
   "deprecation.md",
-  "genericCrossOriginPortalPostMessageError.md",
   "genericFormLabelForNameError.md",
   "genericFormDuplicateIdForInputError.md",
   "genericFormInputHasWrongButWellIntendedAutocompleteValueError.md",

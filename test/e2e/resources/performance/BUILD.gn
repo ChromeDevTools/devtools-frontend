@@ -6,6 +6,8 @@ import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("performance") {
   sources = [
+    "crux-none.rawresponse",
+    "crux-valid.rawresponse",
     "fake-website.html",
     "selectorStats/page-with-style-perf-test.html",
     "selectorStats/page-with-style.css",

@@ -9,10 +9,13 @@ import {
   $$,
   enableExperiment,
   getBrowserAndPages,
+  getResourcesPath,
   goTo,
   goToResource,
+  goToResourceWithCustomHost,
   waitFor,
   waitForMany,
+  waitForNone,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
@@ -31,6 +34,17 @@ async function installLCPListener(session: puppeteer.CDPSession): Promise<() => 
     session.on('PerformanceTimeline.timelineEventAdded', handler);
   });
   return () => lcpPromise;
+}
+
+async function setCruxRawResponse(path: string) {
+  const {frontend} = getBrowserAndPages();
+  await frontend.evaluate(`(async () => {
+    const CrUXManager = await import('./models/crux-manager/crux-manager.js');
+    const cruxManager = CrUXManager.CrUXManager.instance();
+    cruxManager.setEndpointForTesting(
+      '${getResourcesPath()}/${path}'
+    )
+  })()`);
 }
 
 describe('The Performance panel landing page', () => {
@@ -56,7 +70,7 @@ describe('The Performance panel landing page', () => {
       await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
       await frontend.bringToFront();
 
-      const [lcpValueElem, clsValueElem, inpValueElem] = await waitForMany('.metric-card-value:not(.waiting)', 3);
+      const [lcpValueElem, clsValueElem, inpValueElem] = await waitForMany('.local-metric-value:not(.waiting)', 3);
       const interactions = await $$<HTMLElement>('.interaction');
       assert.lengthOf(interactions, 2);
 
@@ -105,7 +119,7 @@ describe('The Performance panel landing page', () => {
       await frontend.bringToFront();
       await navigateToPerformanceTab();
 
-      const [lcpValueElem, clsValueElem, inpValueElem] = await waitForMany('.metric-card-value:not(.waiting)', 3);
+      const [lcpValueElem, clsValueElem, inpValueElem] = await waitForMany('.local-metric-value:not(.waiting)', 3);
       const interactions = await $$<HTMLElement>('.interaction');
       assert.lengthOf(interactions, 2);
 
@@ -147,7 +161,7 @@ describe('The Performance panel landing page', () => {
 
       await frontend.bringToFront();
 
-      await waitForMany('.metric-card-value:not(.waiting)', 3);
+      await waitForMany('.local-metric-value:not(.waiting)', 3);
       const interactions1 = await $$<HTMLElement>('.interaction');
       assert.lengthOf(interactions1, 2);
 
@@ -162,7 +176,7 @@ describe('The Performance panel landing page', () => {
 
       await frontend.bringToFront();
 
-      await waitForMany('.metric-card-value:not(.waiting)', 3);
+      await waitForMany('.local-metric-value:not(.waiting)', 3);
       const interactions2 = await $$<HTMLElement>('.interaction');
       assert.lengthOf(interactions2, 1);
 
@@ -175,16 +189,57 @@ describe('The Performance panel landing page', () => {
       await frontend.bringToFront();
 
       // New LCP and CLS values should be emitted
-      await waitForMany('.metric-card-value:not(.waiting)', 2);
+      await waitForMany('.local-metric-value:not(.waiting)', 2);
 
       // INP and interactions should be reset
-      const inpValueElem = await waitFor('.metric-card-value.waiting');
-      const inpCardText = await inpValueElem.evaluate(el => el.parentElement?.innerText) || '';
+      const inpValueElem = await waitFor('.local-metric-value.waiting');
+      const inpCardText = await inpValueElem.evaluate(el => el.parentElement?.parentElement?.innerText) || '';
       assert.match(inpCardText, /Interaction to Next Paint/);
       const interactions3 = await $$<HTMLElement>('.interaction');
       assert.lengthOf(interactions3, 0);
     } finally {
       await targetSession.detach();
     }
+  });
+
+  it('gets field data manually', async () => {
+    await setCruxRawResponse('performance/crux-valid.rawresponse');
+    await navigateToPerformanceTab();
+
+    const manualFetchButton = await waitFor('#field-setup button');
+    await manualFetchButton.click();
+
+    const [lcpFieldElem, clsFieldElem, inpFieldElem] = await waitForMany('.metric-card-value .field-data', 3);
+
+    assert.strictEqual(await lcpFieldElem.evaluate(el => (el as HTMLElement).innerText), '96%\n3%\n1%');
+    assert.strictEqual(await clsFieldElem.evaluate(el => (el as HTMLElement).innerText), '100%\n0%\n0%');
+    assert.strictEqual(await inpFieldElem.evaluate(el => (el as HTMLElement).innerText), '98%\n2%\n1%');
+  });
+
+  it('gets field data automatically', async () => {
+    await navigateToPerformanceTab();
+
+    await setCruxRawResponse('performance/crux-none.rawresponse');
+    await goToResource('performance/fake-website.html');
+
+    const manualFetchButton = await waitFor('#field-setup setting-checkbox');
+    await manualFetchButton.click();
+
+    const histograms1 = await $$<HTMLElement>('.metric-card-value .field-data');
+    assert.lengthOf(histograms1, 0);
+
+    // Switch the fake CrUX endpoint data to simulate new data for a new origin
+    await setCruxRawResponse('performance/crux-valid.rawresponse');
+    await goToResourceWithCustomHost('devtools.oopif.test', 'performance/fake-website.html');
+
+    const [lcpFieldElem, clsFieldElem, inpFieldElem] = await waitForMany('.metric-card-value .field-data', 3);
+
+    assert.strictEqual(await lcpFieldElem.evaluate(el => (el as HTMLElement).innerText), '96%\n3%\n1%');
+    assert.strictEqual(await clsFieldElem.evaluate(el => (el as HTMLElement).innerText), '100%\n0%\n0%');
+    assert.strictEqual(await inpFieldElem.evaluate(el => (el as HTMLElement).innerText), '98%\n2%\n1%');
+
+    // Ensure the original CrUX data is restored when we return to the original page
+    await goToResource('performance/fake-website.html');
+    await waitForNone('.metric-card-value .field-data');
   });
 });

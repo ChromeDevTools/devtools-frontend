@@ -69,7 +69,7 @@
   font-weight: bold;
 }
 
-.metric-card {
+.card {
   border: 1px solid var(--sys-color-divider);
   border-radius: 4px;
   padding: 12px 16px;
@@ -79,13 +79,13 @@
   background-color: var(--color-background-elevation-1);
 }
 
-.metric-card-title {
+.card-title {
   text-wrap: nowrap;
   font-size: 12px;
   font-weight: bold;
 }
 
-.metric-card-section-title {
+.card-section-title {
   margin-top: 8px;
   text-wrap: nowrap;
   font-size: 12px;
@@ -93,8 +93,15 @@
 }
 
 .metric-card-value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.local-metric-value {
   text-wrap: nowrap;
-  font-size: 26px;
+  font-size: 30px;
+  flex: 1;
 }
 
 .good {
@@ -107,6 +114,18 @@
 
 .poor {
   color: var(--color-error-bright);
+}
+
+.good-bg {
+  background-color: var(--color-tertiary-bright);
+}
+
+.needs-improvement-bg {
+  background-color: var(--color-orange-bright);
+}
+
+.poor-bg {
+  background-color: var(--color-error-bright);
 }
 
 .metric-card-element {
@@ -149,4 +168,19 @@
   border: 0;
   border-bottom: 1px solid var(--sys-color-divider);
   margin: 4px 0;
+}
+
+.field-data {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto max-content;
+  grid-auto-rows: 1fr;
+  column-gap: 8px;
+  justify-items: flex-end;
+  align-items: center;
+  flex: 1;
+}
+
+.histogram-bar {
+  height: 6px;
 }

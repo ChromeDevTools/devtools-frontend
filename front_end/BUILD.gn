@@ -115,6 +115,7 @@ group("unittests") {
     "models/bindings:unittests",
     "models/breakpoints:unittests",
     "models/cpu_profile:unittests",
+    "models/crux-manager:unittests",
     "models/emulation:unittests",
     "models/extensions:unittests",
     "models/formatter:unittests",

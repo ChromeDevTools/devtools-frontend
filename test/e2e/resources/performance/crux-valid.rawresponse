@@ -1,0 +1,10 @@
+200
+Date: Wed, 19 Feb 2020 08:04:35 GMT
+Server: Apache/2.2.8 (Ubuntu) mod_ssl/2.2.8 OpenSSL/0.9.8g
+Last-Modified: Wed, 19 Feb 2020 08:04:35 GMT
+Accept-Ranges: bytes
+Content-Length: 736
+Connection: close
+Content-Type: application/json; charset=utf-8
+
+{"record":{"key":{"origin":"https://example.com"},"metrics":{"cumulative_layout_shift":{"histogram":[{"start":"0.00","end":"0.10","density":0.9974},{"start":"0.10","end":"0.25","density":0.0012},{"start":"0.25","density":0.0014}],"percentiles":{"p75":"0.00"}},"interaction_to_next_paint":{"histogram":[{"start":0,"end":200,"density":0.9769},{"start":200,"end":500,"density":0.0165},{"start":500,"density":0.0066}],"percentiles":{"p75":49}},"largest_contentful_paint":{"histogram":[{"start":0,"end":2500,"density":0.9555},{"start":2500,"end":4000,"density":0.031},{"start":4000,"density":0.0135}],"percentiles":{"p75":1198}}},"collectionPeriod":{"firstDate":{"year":2024,"month":5,"day":27},"lastDate":{"year":2024,"month":6,"day":23}}}}

@@ -179,7 +179,7 @@ builder_coverage(
 )
 
 builder_coverage(
-    covered_oss = ["linux", "mac", "mac_arm64", "win64"],
+    covered_oss = ["linux", "mac", "win64"],
     builder_factory = try_builder,
     builder_name_pattern = "devtools_screenshot_%s_rel",
     recipe_name = "devtools/dtf-screenshots",
@@ -261,14 +261,14 @@ cq_main = struct(
         # Quarantine a builder here
         # This will make them experiment with the given percentage
         "devtools_frontend_mac_arm64_rel": 100,
-        "dtf_mac_rel": 50,
-        "dtf_win_rel": 50,
     },
     includable_only_builders = [
         "cpp_debug_extension_e2e_dbg",
         "cpp_debug_extension_e2e_rel",
         "devtools_frontend_linux_blink_light_rel",
         "devtools_frontend_linux_rel",
+        "devtools_frontend_mac_rel",
+        "devtools_frontend_win_rel",
         "devtools_screenshot_linux_rel",
         "devtools_screenshot_mac_rel",
         "devtools_screenshot_mac_arm64_rel",

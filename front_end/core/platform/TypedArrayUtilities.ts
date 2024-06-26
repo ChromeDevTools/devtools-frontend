@@ -134,6 +134,9 @@ class ExpandableBigUint32ArrayImpl extends Array<number> implements BigUint32Arr
 export interface BitVector {
   getBit(index: number): boolean;
   setBit(index: number): void;
+  clearBit(index: number): void;
+  // Returns the last bit before `index` which is set, or -1 if there are none.
+  previous(index: number): number;
 }
 
 export function createBitVector(length: number): BitVector {
@@ -150,5 +153,31 @@ class BitVectorImpl extends Uint8Array {
   }
   setBit(index: number): void {
     this[index >> 3] |= (1 << (index & 7));
+  }
+  clearBit(index: number): void {
+    this[index >> 3] &= ~(1 << (index & 7));
+  }
+  previous(index: number): number {
+    // First, check for more bits in the current byte.
+    while (index !== ((index >> 3) << 3)) {
+      --index;
+      if (this.getBit(index)) {
+        return index;
+      }
+    }
+    // Next, iterate by bytes to skip over ranges of zeros.
+    let byteIndex: number;
+    for (byteIndex = (index >> 3) - 1; byteIndex >= 0 && this[byteIndex] === 0; --byteIndex) {
+    }
+    if (byteIndex < 0) {
+      return -1;
+    }
+    // Finally, iterate the nonzero byte to find the highest bit.
+    for (index = (byteIndex << 3) + 7; index >= (byteIndex << 3); --index) {
+      if (this.getBit(index)) {
+        return index;
+      }
+    }
+    throw new Error('Unreachable');
   }
 }

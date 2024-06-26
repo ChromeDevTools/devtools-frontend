@@ -1650,7 +1650,7 @@ export abstract class HeapSnapshot {
 
     // The affected array is used to mark entries which dominators
     // have to be recalculated because of changes in their retainers.
-    const affected = new Uint8Array(nodesCount);
+    const affected = Platform.TypedArrayUtilities.createBitVector(nodesCount);
     let nodeOrdinal;
 
     {  // Mark the root direct children as affected.
@@ -1661,18 +1661,16 @@ export abstract class HeapSnapshot {
           continue;
         }
         const childNodeOrdinal = containmentEdges.getValue(edgeIndex + edgeToNodeOffset) / nodeFieldCount;
-        affected[nodeOrdinal2PostOrderIndex[childNodeOrdinal]] = 1;
+        affected.setBit(nodeOrdinal2PostOrderIndex[childNodeOrdinal]);
       }
     }
 
     let changed = true;
     while (changed) {
       changed = false;
-      for (let postOrderIndex = rootPostOrderedIndex - 1; postOrderIndex >= 0; --postOrderIndex) {
-        if (affected[postOrderIndex] === 0) {
-          continue;
-        }
-        affected[postOrderIndex] = 0;
+      for (let postOrderIndex = affected.previous(rootPostOrderedIndex); postOrderIndex >= 0;
+           postOrderIndex = affected.previous(postOrderIndex)) {
+        affected.clearBit(postOrderIndex);
         // If dominator of the entry has already been set to root,
         // then it can't propagate any further.
         if (dominators[postOrderIndex] === rootPostOrderedIndex) {
@@ -1732,7 +1730,7 @@ export abstract class HeapSnapshot {
           for (let toNodeFieldIndex = beginEdgeToNodeFieldIndex; toNodeFieldIndex < endEdgeToNodeFieldIndex;
                toNodeFieldIndex += edgeFieldsCount) {
             const childNodeOrdinal = containmentEdges.getValue(toNodeFieldIndex) / nodeFieldCount;
-            affected[nodeOrdinal2PostOrderIndex[childNodeOrdinal]] = 1;
+            affected.setBit(nodeOrdinal2PostOrderIndex[childNodeOrdinal]);
           }
         }
       }

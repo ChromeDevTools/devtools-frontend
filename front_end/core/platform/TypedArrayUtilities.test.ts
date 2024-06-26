@@ -43,4 +43,19 @@ describe('TypedArrayUtilities', () => {
       assert.isFalse(array instanceof Uint32Array);
     });
   });
+
+  describe('BitVector', () => {
+    it('can be iterated', () => {
+      const bits = Platform.TypedArrayUtilities.createBitVector(100);
+      const indices = [99, 88, 66, 65, 64, 63, 15, 14, 1, 0];
+      for (const index of indices) {
+        bits.setBit(index);
+      }
+      const iterated = [];
+      for (let i = bits.previous(100); i !== -1; i = bits.previous(i)) {
+        iterated.push(i);
+      }
+      assert.deepEqual(iterated, indices);
+    });
+  });
 });

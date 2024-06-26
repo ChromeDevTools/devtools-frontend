@@ -105,27 +105,27 @@
 }
 
 .good {
-  color: var(--color-tertiary-bright);
+  color: var(--app-color-performance-good);
 }
 
 .needs-improvement {
-  color: var(--color-orange-bright);
+  color: var(--app-color-performance-ok);
 }
 
 .poor {
-  color: var(--color-error-bright);
+  color: var(--app-color-performance-bad);
 }
 
 .good-bg {
-  background-color: var(--color-tertiary-bright);
+  background-color: var(--app-color-performance-good);
 }
 
 .needs-improvement-bg {
-  background-color: var(--color-orange-bright);
+  background-color: var(--app-color-performance-ok);
 }
 
 .poor-bg {
-  background-color: var(--color-error-bright);
+  background-color: var(--app-color-performance-bad);
 }
 
 .metric-card-element {

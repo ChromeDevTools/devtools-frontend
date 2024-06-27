@@ -28,7 +28,7 @@ const UIStrings = {
   /**
    *@description Title of an action in the timeline tool to record reload
    */
-  startProfilingAndReloadPage: 'Start profiling and reload page',
+  recordAndReload: 'Record and reload',
   /**
    *@description Tooltip text that appears when hovering over the largeicon download button
    */
@@ -135,7 +135,7 @@ UI.ActionRegistration.registerActionExtension({
     return maybeRetrieveContextTypes(Timeline => [Timeline.TimelinePanel.TimelinePanel]);
   },
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
-  title: i18nLazyString(UIStrings.startProfilingAndReloadPage),
+  title: i18nLazyString(UIStrings.recordAndReload),
   async loadActionDelegate() {
     const Timeline = await loadTimelineModule();
     return new Timeline.TimelinePanel.ActionDelegate();

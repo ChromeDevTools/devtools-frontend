@@ -7,8 +7,10 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Settings from '../../../ui/components/settings/settings.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import liveMetricsViewStyles from './liveMetricsView.css.js';
@@ -31,8 +33,15 @@ export class LiveMetricsView extends HTMLElement {
   #fieldDeviceScope: CrUXManager.DeviceScope = 'ALL';
   #fieldPreferURL = true;
 
+  #toggleRecordAction: UI.ActionRegistration.Action;
+  #recordReloadAction: UI.ActionRegistration.Action;
+
   constructor() {
     super();
+
+    this.#toggleRecordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.toggle-recording');
+    this.#recordReloadAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.record-reload');
+
     this.#render();
   }
 
@@ -192,6 +201,29 @@ export class LiveMetricsView extends HTMLElement {
     // clang-format on
   }
 
+  #renderRecordAction(action: UI.ActionRegistration.Action): LitHtml.LitTemplate {
+    function onClick(): void {
+      void action.execute();
+    }
+
+    // clang-format off
+    return html`
+      <div class="record-action">
+        <${Buttons.Button.Button.litTagName} @click=${onClick} .data=${{
+            variant: Buttons.Button.Variant.TEXT,
+            size: Buttons.Button.Size.REGULAR,
+            iconName: action.icon(),
+            title: action.title(),
+            jslogContext: action.id(),
+        } as Buttons.Button.ButtonData}>
+          ${action.title()}
+        </${Buttons.Button.Button.litTagName}>
+        <span class="shortcut-label">${UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action.id())}</span>
+      </div>
+    `;
+    // clang-format on
+  }
+
   #render = (): void => {
     const automaticSetting = CrUXManager.CrUXManager.instance().getAutomaticSetting();
 
@@ -234,6 +266,12 @@ export class LiveMetricsView extends HTMLElement {
               <${Settings.SettingCheckbox.SettingCheckbox.litTagName} .data=${
                   {setting: automaticSetting} as Settings.SettingCheckbox.SettingCheckboxData}>
               </${Settings.SettingCheckbox.SettingCheckbox.litTagName}>
+            </div>
+            <div id="record" class="card">
+              ${this.#renderRecordAction(this.#toggleRecordAction)}
+            </div>
+            <div id="record-page-load" class="card">
+              ${this.#renderRecordAction(this.#recordReloadAction)}
             </div>
           </div>
         </div>

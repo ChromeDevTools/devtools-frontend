@@ -28,9 +28,9 @@ const UIStrings = {
    */
   stop: 'Stop',
   /**
-   *@description Title of an action in the timeline tool to record reload
+   *@description Title of an action in the timeline tool to record a reload of the current page
    */
-  startProfilingAndReloadPage: 'Start profiling and reload page',
+  recordAndReload: 'Record and reload',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/js_timeline/js_timeline-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -132,7 +132,7 @@ UI.ActionRegistration.registerActionExtension({
     return maybeRetrieveTimelineContextTypes(Timeline => [Timeline.TimelinePanel.TimelinePanel]);
   },
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
-  title: i18nLazyString(UIStrings.startProfilingAndReloadPage),
+  title: i18nLazyString(UIStrings.recordAndReload),
   async loadActionDelegate() {
     const Timeline = await loadTimelineModule();
     return new Timeline.TimelinePanel.ActionDelegate();

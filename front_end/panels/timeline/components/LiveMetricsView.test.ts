@@ -9,15 +9,41 @@ import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {createTarget} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 
 import * as Components from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithMockConnection('LiveMetricsView', () => {
+  const mockHandleAction = sinon.stub();
+
   beforeEach(async () => {
+    mockHandleAction.reset();
+
+    UI.ActionRegistration.registerActionExtension({
+      actionId: 'timeline.toggle-recording',
+      category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
+      loadActionDelegate: async () => ({handleAction: mockHandleAction}),
+    });
+    UI.ActionRegistration.registerActionExtension({
+      actionId: 'timeline.record-reload',
+      category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
+      loadActionDelegate: async () => ({handleAction: mockHandleAction}),
+    });
+
+    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
     LiveMetrics.LiveMetrics.instance({forceNew: true});
     CrUXManager.CrUXManager.instance({forceNew: true});
+  });
+
+  afterEach(async () => {
+    UI.ActionRegistry.ActionRegistry.reset();
+    UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
+
+    UI.ActionRegistration.maybeRemoveActionExtension('timeline.toggle-recording');
+    UI.ActionRegistration.maybeRemoveActionExtension('timeline.record-reload');
   });
 
   it('should show LCP value', async () => {
@@ -97,6 +123,34 @@ describeWithMockConnection('LiveMetricsView', () => {
     const durationEl2 = interactionsEls[1].querySelector('.interaction-duration') as HTMLDivElement;
     assert.strictEqual(durationEl2.textContent, '30 ms');
     assert.strictEqual(durationEl2.className, 'interaction-duration good');
+  });
+
+  it('record action button should work', async () => {
+    const view = new Components.LiveMetricsView.LiveMetricsView();
+    renderElementIntoDOM(view);
+    await coordinator.done();
+
+    const recordButton =
+        view.shadowRoot?.querySelector('#record devtools-button') as HTMLElementTagNameMap['devtools-button'];
+    recordButton.click();
+
+    await coordinator.done();
+
+    assert.strictEqual(mockHandleAction.firstCall.args[1], 'timeline.toggle-recording');
+  });
+
+  it('record page load button should work', async () => {
+    const view = new Components.LiveMetricsView.LiveMetricsView();
+    renderElementIntoDOM(view);
+    await coordinator.done();
+
+    const recordButton =
+        view.shadowRoot?.querySelector('#record-page-load devtools-button') as HTMLElementTagNameMap['devtools-button'];
+    recordButton.click();
+
+    await coordinator.done();
+
+    assert.strictEqual(mockHandleAction.firstCall.args[1], 'timeline.record-reload');
   });
 
   describe('field data', () => {

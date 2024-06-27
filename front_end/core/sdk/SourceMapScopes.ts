@@ -171,10 +171,8 @@ function*
       startItem.name = iter.nextVLQ();
     }
 
-    if (startItem.flags & 0x2) {
-      while (iter.hasNext() && iter.peek() !== ',') {
-        startItem.variables.push(iter.nextVLQ());
-      }
+    while (iter.hasNext() && iter.peek() !== ',') {
+      startItem.variables.push(iter.nextVLQ());
     }
 
     yield [itemCount++, startItem];

@@ -719,6 +719,7 @@ describe('LoggingDriver', () => {
 
     assert.isFalse(recordResize.called);
     await work();
+    await expectCalled(recordResize);
     assert.isTrue(recordResize.calledOnce);
     assert.deepStrictEqual(recordResize.firstCall.firstArg, {veid: getVeId(element), width: 400, height: 300});
   });
@@ -770,7 +771,7 @@ describe('LoggingDriver', () => {
     // Now hide one and wait for logging to finish
     throttle.callsArg(0);
     element2.style.display = 'none';
-    await expectCalled(recordResize, {callCount: 2});
+    await expectCalled(recordResize, {callCount: 1});
     throttle.reset();
     recordResize.reset();
 

@@ -325,51 +325,48 @@ function isAncestorOf(state1: LoggingState|null, state2: LoggingState|null): boo
 }
 
 async function onResizeOrIntersection(entries: ResizeObserverEntry[]|IntersectionObserverEntry[]): Promise<void> {
-  await Coordinator.RenderCoordinator.RenderCoordinator.instance().read('logResize', async () => {
-    for (const entry of entries) {
-      const element = entry.target;
-      const loggingState = getLoggingState(element);
-      const overlap = visibleOverlap(element, viewportRectFor(element)) || new DOMRect(0, 0, 0, 0);
-      if (!loggingState?.size) {
+  for (const entry of entries) {
+    const element = entry.target;
+    const loggingState = getLoggingState(element);
+    const overlap = visibleOverlap(element, viewportRectFor(element)) || new DOMRect(0, 0, 0, 0);
+    if (!loggingState?.size) {
+      continue;
+    }
+
+    let hasPendingParent = false;
+    for (const pendingElement of pendingResize.keys()) {
+      if (pendingElement === element) {
         continue;
       }
-
-      let hasPendingParent = false;
-      for (const pendingElement of pendingResize.keys()) {
-        if (pendingElement === element) {
+      const pendingState = getLoggingState(pendingElement);
+      if (isAncestorOf(pendingState, loggingState)) {
+        hasPendingParent = true;
+        break;
+      }
+      if (isAncestorOf(loggingState, pendingState)) {
+        pendingResize.delete(pendingElement);
+      }
+    }
+    if (hasPendingParent) {
+      continue;
+    }
+    pendingResize.set(element, overlap);
+    void resizeLogThrottler.schedule(async () => {
+      if (pendingResize.size) {
+        await yieldToInteractions();
+        flushPendingChangeEvents();
+      }
+      for (const [element, overlap] of pendingResize.entries()) {
+        const loggingState = getLoggingState(element);
+        if (!loggingState) {
           continue;
         }
-        const pendingState = getLoggingState(pendingElement);
-        if (isAncestorOf(pendingState, loggingState)) {
-          hasPendingParent = true;
-          break;
-        }
-        if (isAncestorOf(loggingState, pendingState)) {
-          pendingResize.delete(pendingElement);
+        if (Math.abs(overlap.width - loggingState.size.width) >= RESIZE_REPORT_THRESHOLD ||
+            Math.abs(overlap.height - loggingState.size.height) >= RESIZE_REPORT_THRESHOLD) {
+          logResize(element, overlap);
         }
       }
-      if (hasPendingParent) {
-        continue;
-      }
-      pendingResize.set(element, overlap);
-      await resizeLogThrottler.schedule(async () => {});
-      void resizeLogThrottler.schedule(async () => {
-        if (pendingResize.size) {
-          await yieldToInteractions();
-          flushPendingChangeEvents();
-        }
-        for (const [element, overlap] of pendingResize.entries()) {
-          const loggingState = getLoggingState(element);
-          if (!loggingState) {
-            continue;
-          }
-          if (Math.abs(overlap.width - loggingState.size.width) >= RESIZE_REPORT_THRESHOLD ||
-              Math.abs(overlap.height - loggingState.size.height) >= RESIZE_REPORT_THRESHOLD) {
-            logResize(element, overlap);
-          }
-        }
-        pendingResize.clear();
-      });
-    }
-  });
+      pendingResize.clear();
+    }, Common.Throttler.Scheduling.Delayed);
+  }
 }

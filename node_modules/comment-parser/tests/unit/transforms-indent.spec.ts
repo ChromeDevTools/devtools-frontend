@@ -1,6 +1,6 @@
-import indent from '../../src/transforms/indent';
-import getParser from '../../src/parser/index';
-import getStringifier from '../../src/stringifier/index';
+import indent from '../../src/transforms/indent.js';
+import getParser from '../../src/parser/index.js';
+import getStringifier from '../../src/stringifier/index.js';
 
 test('push', () => {
   const source = `

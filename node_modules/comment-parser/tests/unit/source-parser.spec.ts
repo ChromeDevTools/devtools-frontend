@@ -1,6 +1,6 @@
-import getParser, { Parser } from '../../src/parser/source-parser';
-import { Line } from '../../src/primitives';
-import { splitLines, seedBlock, seedTokens } from '../../src/util';
+import getParser, { Parser } from '../../src/parser/source-parser.js';
+import { Line } from '../../src/primitives.js';
+import { splitLines, seedBlock, seedTokens } from '../../src/util.js';
 
 let _parse: Parser;
 

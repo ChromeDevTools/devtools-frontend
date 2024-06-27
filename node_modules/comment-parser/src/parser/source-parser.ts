@@ -1,5 +1,5 @@
-import { Line, Tokens, BlockMarkers, Markers } from '../primitives';
-import { seedTokens, splitSpace, splitCR } from '../util';
+import { Line, Tokens, BlockMarkers, Markers } from '../primitives.js';
+import { seedTokens, splitSpace, splitCR } from '../util.js';
 
 export interface Options {
   startLine: number;

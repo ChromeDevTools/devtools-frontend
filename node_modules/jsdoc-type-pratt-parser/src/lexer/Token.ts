@@ -36,6 +36,7 @@ export type TokenType =
   | 'readonly'
   | 'import'
   | 'is'
+  | 'in'
   | 'Identifier'
   | 'StringValue'
   | 'Number'

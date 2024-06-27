@@ -1,5 +1,5 @@
-import { Token } from './lexer/Token'
-import { IntermediateResult } from './result/IntermediateResult'
+import { type Token } from './lexer/Token'
+import { type IntermediateResult } from './result/IntermediateResult'
 
 function tokenToString (token: Token): string {
   if (token.text !== undefined && token.text !== '') {

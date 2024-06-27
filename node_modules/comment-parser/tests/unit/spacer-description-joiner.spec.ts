@@ -1,6 +1,6 @@
-import { getJoiner } from '../../src/parser/tokenizers/description';
-import { Line } from '../../src/primitives';
-import { seedTokens } from '../../src/util';
+import { getJoiner } from '../../src/parser/tokenizers/description.js';
+import { Line } from '../../src/primitives.js';
+import { seedTokens } from '../../src/util.js';
 
 const source: Line[] = [
   {

@@ -1,6 +1,6 @@
-import crlf, { Ending } from '../../src/transforms/crlf';
-import getParser, { Parser } from '../../src/parser/index';
-import getStringifier, { Stringifier } from '../../src/stringifier/index';
+import crlf, { Ending } from '../../src/transforms/crlf.js';
+import getParser, { Parser } from '../../src/parser/index.js';
+import getStringifier, { Stringifier } from '../../src/stringifier/index.js';
 
 const tests = [
   [

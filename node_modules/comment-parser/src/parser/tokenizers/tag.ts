@@ -1,5 +1,5 @@
-import { Spec } from '../../primitives';
-import { Tokenizer } from './index';
+import { Spec } from '../../primitives.js';
+import { Tokenizer } from './index.js';
 
 /**
  * Splits the `@prefix` from remaining `Spec.lines[].token.description` into the `tag` token,

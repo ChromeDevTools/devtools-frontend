@@ -14,9 +14,9 @@ export declare enum Precedence {
     KEY_OF_TYPE_OF = 12,
     FUNCTION = 13,
     ARROW = 14,
-    GENERIC = 15,
-    NAME_PATH = 16,
-    ARRAY_BRACKETS = 17,
+    ARRAY_BRACKETS = 15,
+    GENERIC = 16,
+    NAME_PATH = 17,
     PARENTHESIS = 18,
     SPECIAL_TYPES = 19
 }

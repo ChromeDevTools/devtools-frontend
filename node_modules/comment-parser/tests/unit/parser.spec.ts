@@ -1,5 +1,5 @@
-import getParser from '../../src/parser';
-import { seedTokens } from '../../src/util';
+import getParser from '../../src/parser/index.js';
+import { seedTokens } from '../../src/util.js';
 
 test('block with tags', () => {
   const parsed = getParser()(`

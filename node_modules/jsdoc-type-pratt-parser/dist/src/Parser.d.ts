@@ -7,8 +7,8 @@ import { TokenType } from './lexer/Token';
 export declare class Parser {
     private readonly grammar;
     private _lexer;
-    readonly parent?: Parser;
-    constructor(grammar: Grammar, textOrLexer: string | Lexer, parent?: Parser);
+    readonly baseParser?: Parser;
+    constructor(grammar: Grammar, textOrLexer: string | Lexer, baseParser?: Parser);
     get lexer(): Lexer;
     /**
      * Parses a given string and throws an error if the parse ended before the end of the string.

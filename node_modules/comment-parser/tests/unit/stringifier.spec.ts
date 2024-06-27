@@ -1,4 +1,4 @@
-import getStringifier from '../../src/stringifier';
+import getStringifier from '../../src/stringifier/index.js';
 
 const source = [
   {

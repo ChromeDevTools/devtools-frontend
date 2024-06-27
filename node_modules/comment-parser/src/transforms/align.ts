@@ -1,6 +1,6 @@
-import { Transform } from './index';
-import { BlockMarkers, Block, Line, Markers } from '../primitives';
-import { rewireSource } from '../util';
+import { Transform } from './index.js';
+import { BlockMarkers, Block, Line, Markers } from '../primitives.js';
+import { rewireSource } from '../util.js';
 
 interface Width {
   start: number;

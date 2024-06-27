@@ -1,23 +1,23 @@
-import getParser, { Options as ParserOptions } from './parser/index';
-import descriptionTokenizer from './parser/tokenizers/description';
-import nameTokenizer from './parser/tokenizers/name';
-import tagTokenizer from './parser/tokenizers/tag';
-import typeTokenizer from './parser/tokenizers/type';
-import getStringifier from './stringifier/index';
-import alignTransform from './transforms/align';
-import indentTransform from './transforms/indent';
-import crlfTransform from './transforms/crlf';
-import { flow as flowTransform } from './transforms/index';
-import { rewireSpecs, rewireSource, seedBlock, seedTokens } from './util';
+import getParser, { Options as ParserOptions } from './parser/index.js';
+import descriptionTokenizer from './parser/tokenizers/description.js';
+import nameTokenizer from './parser/tokenizers/name.js';
+import tagTokenizer from './parser/tokenizers/tag.js';
+import typeTokenizer from './parser/tokenizers/type.js';
+import getStringifier from './stringifier/index.js';
+import alignTransform from './transforms/align.js';
+import indentTransform from './transforms/indent.js';
+import crlfTransform from './transforms/crlf.js';
+import { flow as flowTransform } from './transforms/index.js';
+import { rewireSpecs, rewireSource, seedBlock, seedTokens } from './util.js';
 
-export * from './primitives';
+export * from './primitives.js';
 
 export function parse(source: string, options: Partial<ParserOptions> = {}) {
   return getParser(options)(source);
 }
 
 export const stringify = getStringifier();
-export { default as inspect } from './stringifier/inspect';
+export { default as inspect } from './stringifier/inspect.js';
 
 export const transforms = {
   flow: flowTransform,

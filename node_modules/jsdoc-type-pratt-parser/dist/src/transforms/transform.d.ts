@@ -1,8 +1,8 @@
 import { KeyValueResult, NonRootResult } from '../result/NonRootResult';
 import { FunctionResult, RootResult } from '../result/RootResult';
-export declare type TransformFunction<TransformResult> = (parseResult: NonRootResult) => TransformResult;
-export declare type TransformRule<TransformResult, InputType extends NonRootResult> = (parseResult: InputType, transform: TransformFunction<TransformResult>) => TransformResult;
-export declare type TransformRules<TransformResult> = {
+export type TransformFunction<TransformResult> = (parseResult: NonRootResult) => TransformResult;
+export type TransformRule<TransformResult, InputType extends NonRootResult> = (parseResult: InputType, transform: TransformFunction<TransformResult>) => TransformResult;
+export type TransformRules<TransformResult> = {
     [P in NonRootResult as P['type']]: TransformRule<TransformResult, P>;
 };
 export declare function transform<TransformResult>(rules: TransformRules<TransformResult>, parseResult: NonRootResult): TransformResult;

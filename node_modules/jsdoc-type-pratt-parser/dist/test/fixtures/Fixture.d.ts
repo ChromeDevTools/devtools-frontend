@@ -1,8 +1,8 @@
 import 'mocha';
-import { RootResult, ParseMode } from '../../src';
-export declare type JtpMode = 'jsdoc' | 'closure' | 'typescript' | 'permissive';
-export declare type CatharsisMode = 'jsdoc' | 'closure';
-export declare type CompareMode = ParseMode | 'fail' | 'differ';
+import { type RootResult, type ParseMode } from '../../src';
+export type JtpMode = 'jsdoc' | 'closure' | 'typescript' | 'permissive';
+export type CatharsisMode = 'jsdoc' | 'closure';
+export type CompareMode = ParseMode | 'fail' | 'differ';
 interface BaseFixture {
     /**
      * The input that should be parsed
@@ -31,20 +31,20 @@ interface BaseFixture {
      */
     stringified?: string;
 }
-declare type SuccessFixture = BaseFixture & {
+type SuccessFixture = BaseFixture & {
     /**
      * The {@link ParseMode}s that the expression is expected to get parsed in. In all other modes it is expected to fail.
      */
     modes: ParseMode[];
 };
-declare type ErrorFixture = BaseFixture & ({
+type ErrorFixture = BaseFixture & ({
     error: string;
 } | {
     errors: {
         [K in ParseMode]?: string;
     };
 });
-export declare type Fixture = SuccessFixture | ErrorFixture;
+export type Fixture = SuccessFixture | ErrorFixture;
 /**
  * Function to run all relevant tests for a {@link Fixture}.
  */

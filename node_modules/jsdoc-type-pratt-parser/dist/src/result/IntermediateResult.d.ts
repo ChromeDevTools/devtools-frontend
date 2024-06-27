@@ -1,6 +1,6 @@
 import { KeyValueResult, NonRootResult } from './NonRootResult';
 import { RootResult } from './RootResult';
-export declare type IntermediateResult = NonRootResult | ParameterList | ReadonlyProperty;
+export type IntermediateResult = NonRootResult | ParameterList | ReadonlyProperty;
 export interface ParameterList {
     type: 'JsdocTypeParameterList';
     elements: Array<KeyValueResult | RootResult>;

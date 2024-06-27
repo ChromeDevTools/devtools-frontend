@@ -1,5 +1,5 @@
-import { Block, Tokens } from '../primitives';
-import { isSpace } from '../util';
+import { Block, Tokens } from '../primitives.js';
+import { isSpace } from '../util.js';
 
 interface Width {
   line: number;

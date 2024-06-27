@@ -1,5 +1,5 @@
-import typeTokenizer, { Joiner } from '../../src/parser/tokenizers/type';
-import { seedTokens, seedSpec } from '../../src/util';
+import typeTokenizer, { Joiner } from '../../src/parser/tokenizers/type.js';
+import { seedTokens, seedSpec } from '../../src/util.js';
 
 const tokenize = typeTokenizer();
 

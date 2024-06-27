@@ -1,6 +1,6 @@
 import type { AnySchemaObject } from "./types";
 import AjvCore from "./core";
-declare class Ajv extends AjvCore {
+export declare class Ajv extends AjvCore {
     _addVocabularies(): void;
     _addDefaultMetaSchema(): void;
     defaultMeta(): string | AnySchemaObject | undefined;

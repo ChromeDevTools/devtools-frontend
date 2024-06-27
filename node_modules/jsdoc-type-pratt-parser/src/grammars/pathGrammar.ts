@@ -1,4 +1,4 @@
-import { Grammar } from './Grammar'
+import { type Grammar } from './Grammar'
 import { createNamePathParslet } from '../parslets/NamePathParslet'
 import { createNameParslet } from '../parslets/NameParslet'
 import { stringValueParslet } from '../parslets/StringValueParslet'
@@ -12,6 +12,7 @@ const basePathGrammar: Grammar = [
   stringValueParslet,
   numberParslet,
   createNamePathParslet({
+    allowSquareBracketsOnAnyType: false,
     allowJsdocNamePaths: true,
     pathGrammar: null
   })

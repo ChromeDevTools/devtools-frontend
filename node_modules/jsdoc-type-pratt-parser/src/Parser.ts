@@ -10,16 +10,16 @@ import { TokenType } from './lexer/Token'
 export class Parser {
   private readonly grammar: Grammar
   private _lexer: Lexer
-  public readonly parent?: Parser
+  public readonly baseParser?: Parser
 
-  constructor (grammar: Grammar, textOrLexer: string | Lexer, parent?: Parser) {
+  constructor (grammar: Grammar, textOrLexer: string | Lexer, baseParser?: Parser) {
     this.grammar = grammar
     if (typeof textOrLexer === 'string') {
       this._lexer = Lexer.create(textOrLexer)
     } else {
       this._lexer = textOrLexer
     }
-    this.parent = parent
+    this.baseParser = baseParser
   }
 
   get lexer (): Lexer {

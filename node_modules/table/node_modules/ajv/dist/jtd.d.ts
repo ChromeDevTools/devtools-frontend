@@ -22,7 +22,7 @@ type JTDOptions = CurrentOptions & {
     loopRequired?: never;
     multipleOfPrecision?: never;
 };
-declare class Ajv extends AjvCore {
+export declare class Ajv extends AjvCore {
     constructor(opts?: JTDOptions);
     _addVocabularies(): void;
     _addDefaultMetaSchema(): void;

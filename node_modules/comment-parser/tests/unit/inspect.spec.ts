@@ -1,6 +1,6 @@
-import getParser from '../../src/parser/index';
-import inspect from '../../src/stringifier/inspect';
-import { seedBlock } from '../../src/util';
+import getParser from '../../src/parser/index.js';
+import inspect from '../../src/stringifier/inspect.js';
+import { seedBlock } from '../../src/util.js';
 
 test('multiple lines', () => {
   const source = `

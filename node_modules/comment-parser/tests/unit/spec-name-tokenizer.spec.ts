@@ -1,5 +1,5 @@
-import nameTokenizer from '../../src/parser/tokenizers/name';
-import { seedTokens, seedSpec } from '../../src/util';
+import nameTokenizer from '../../src/parser/tokenizers/name.js';
+import { seedTokens, seedSpec } from '../../src/util.js';
 
 const tokenize = nameTokenizer();
 

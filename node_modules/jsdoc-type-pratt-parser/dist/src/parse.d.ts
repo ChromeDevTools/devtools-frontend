@@ -1,5 +1,5 @@
 import { RootResult } from './result/RootResult';
-export declare type ParseMode = 'closure' | 'jsdoc' | 'typescript';
+export type ParseMode = 'closure' | 'jsdoc' | 'typescript';
 /**
  * This function parses the given expression in the given mode and produces a {@link RootResult}.
  * @param expression

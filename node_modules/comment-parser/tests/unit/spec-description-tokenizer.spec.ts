@@ -1,5 +1,5 @@
-import descriptionTokenizer from '../../src/parser/tokenizers/description';
-import { seedSpec, seedTokens } from '../../src/util';
+import descriptionTokenizer from '../../src/parser/tokenizers/description.js';
+import { seedSpec, seedTokens } from '../../src/util.js';
 
 const sourceSingle = [
   {

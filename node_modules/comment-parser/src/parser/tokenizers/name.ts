@@ -1,6 +1,6 @@
-import { Spec, Line } from '../../primitives';
-import { splitSpace, isSpace } from '../../util';
-import { Tokenizer } from './index';
+import { Spec, Line } from '../../primitives.js';
+import { splitSpace, isSpace } from '../../util.js';
+import { Tokenizer } from './index.js';
 
 const isQuoted = (s: string) => s && s.startsWith('"') && s.endsWith('"');
 

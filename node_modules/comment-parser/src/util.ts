@@ -1,4 +1,4 @@
-import { Block, Tokens, Spec, Line } from './primitives';
+import { Block, Tokens, Spec, Line } from './primitives.js';
 
 export function isSpace(source: string): boolean {
   return /^\s+$/.test(source);

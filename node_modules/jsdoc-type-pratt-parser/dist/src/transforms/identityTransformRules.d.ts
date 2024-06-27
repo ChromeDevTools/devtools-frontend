@@ -1,3 +1,3 @@
-import { TransformRules } from './transform';
-import { NonRootResult } from '../result/NonRootResult';
+import { type TransformRules } from './transform';
+import { type NonRootResult } from '../result/NonRootResult';
 export declare function identityTransformRules(): TransformRules<NonRootResult>;

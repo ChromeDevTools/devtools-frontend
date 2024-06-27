@@ -1,10 +1,10 @@
-import descriptionTokenizer from '../../src/parser/tokenizers/description';
-import nameTokenizer from '../../src/parser/tokenizers/name';
-import tagTokenizer from '../../src/parser/tokenizers/tag';
-import typeTokenizer from '../../src/parser/tokenizers/type';
-import getParser from '../../src/parser/spec-parser';
-import { seedTokens, seedSpec } from '../../src/util';
-import { Spec, Problem } from '../../src/primitives';
+import descriptionTokenizer from '../../src/parser/tokenizers/description.js';
+import nameTokenizer from '../../src/parser/tokenizers/name.js';
+import tagTokenizer from '../../src/parser/tokenizers/tag.js';
+import typeTokenizer from '../../src/parser/tokenizers/type.js';
+import getParser from '../../src/parser/spec-parser.js';
+import { seedTokens, seedSpec } from '../../src/util.js';
+import { Spec, Problem } from '../../src/primitives.js';
 
 const parse = getParser({
   tokenizers: [

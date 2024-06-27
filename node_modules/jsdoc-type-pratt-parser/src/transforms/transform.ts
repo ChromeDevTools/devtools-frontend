@@ -34,7 +34,7 @@ export function extractSpecialParams (source: FunctionResult): SpecialFunctionPa
   }
 
   for (const param of source.parameters) {
-    if (param.type === 'JsdocTypeKeyValue' && param.meta.quote === undefined) {
+    if (param.type === 'JsdocTypeKeyValue') {
       if (param.key === 'this') {
         result.this = param.right
       } else if (param.key === 'new') {

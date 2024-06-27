@@ -1,4 +1,4 @@
-import { Block, Tokens } from '../primitives';
+import { Block, Tokens } from '../primitives.js';
 
 export type Stringifier = (block: Block) => string;
 

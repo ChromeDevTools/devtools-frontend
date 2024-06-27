@@ -123,7 +123,7 @@ export declare function __generator(thisArg: any, body: Function): any;
  * Creates bindings for all enumerable properties of `m` on `exports`
  *
  * @param m The source object
- * @param exports The `exports` object.
+ * @param o The `exports` object.
  */
 export declare function __exportStar(m: any, o: any): void;
 

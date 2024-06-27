@@ -1,6 +1,6 @@
-import { Transform } from './index';
-import { Block, Line } from '../primitives';
-import { rewireSource } from '../util';
+import { Transform } from './index.js';
+import { Block, Line } from '../primitives.js';
+import { rewireSource } from '../util.js';
 
 const pull = (offset: number) => (str) => str.slice(offset);
 const push = (offset: number) => {

@@ -1,4 +1,4 @@
-import { Block } from '../primitives';
+import { Block } from '../primitives.js';
 
 export type Transform = (Block: Block) => Block;
 

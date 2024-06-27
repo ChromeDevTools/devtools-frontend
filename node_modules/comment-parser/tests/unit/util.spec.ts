@@ -6,7 +6,7 @@ import {
   splitLines,
   splitSpace,
   seedSpec,
-} from '../../src/util';
+} from '../../src/util.js';
 
 test.each([
   ['beginning', '\r to end', false],

@@ -1,15 +1,15 @@
-import { Block, Line, Problem, BlockMarkers, Markers } from '../primitives';
-import { splitLines } from '../util';
-import blockParser from './block-parser';
-import sourceParser from './source-parser';
-import specParser from './spec-parser';
-import { Tokenizer } from './tokenizers/index';
-import tokenizeTag from './tokenizers/tag';
-import tokenizeType from './tokenizers/type';
-import tokenizeName from './tokenizers/name';
+import { Block, Line, Problem, BlockMarkers, Markers } from '../primitives.js';
+import { splitLines } from '../util.js';
+import blockParser from './block-parser.js';
+import sourceParser from './source-parser.js';
+import specParser from './spec-parser.js';
+import { Tokenizer } from './tokenizers/index.js';
+import tokenizeTag from './tokenizers/tag.js';
+import tokenizeType from './tokenizers/type.js';
+import tokenizeName from './tokenizers/name.js';
 import tokenizeDescription, {
   getJoiner as getDescriptionJoiner,
-} from './tokenizers/description';
+} from './tokenizers/description.js';
 
 export interface Options {
   // start count for source line numbers

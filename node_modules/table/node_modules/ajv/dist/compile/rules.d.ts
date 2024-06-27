@@ -1,6 +1,6 @@
 import type { AddedKeywordDefinition } from "../types";
 declare const _jsonTypes: readonly ["string", "number", "integer", "boolean", "null", "object", "array"];
-export type JSONType = typeof _jsonTypes[number];
+export type JSONType = (typeof _jsonTypes)[number];
 export declare function isJSONType(x: unknown): x is JSONType;
 type ValidationTypes = {
     [K in JSONType]: boolean | RuleGroup | undefined;

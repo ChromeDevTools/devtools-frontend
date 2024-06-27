@@ -1,6 +1,6 @@
-import align from '../../src/transforms/align';
-import getParser, { Parser } from '../../src/parser/index';
-import getStringifier, { Stringifier } from '../../src/stringifier/index';
+import align from '../../src/transforms/align.js';
+import getParser, { Parser } from '../../src/parser/index.js';
+import getStringifier, { Stringifier } from '../../src/stringifier/index.js';
 
 let parse: Parser;
 let stringify: Stringifier;

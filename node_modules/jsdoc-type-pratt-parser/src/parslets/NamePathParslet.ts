@@ -1,14 +1,15 @@
-import { ParsletFunction } from './Parslet'
+import { type ParsletFunction } from './Parslet'
 import { Precedence } from '../Precedence'
 import { assertRootResult } from '../assertTypes'
 import { Parser } from '../Parser'
-import { NamePathResult, SpecialNamePath } from '../result/RootResult'
+import { type NamePathResult, type SpecialNamePath } from '../result/RootResult'
 import { UnexpectedTypeError } from '../errors'
-import { PropertyResult } from '../result/NonRootResult'
-import { Grammar } from '../grammars/Grammar'
+import { type PropertyResult } from '../result/NonRootResult'
+import { type Grammar } from '../grammars/Grammar'
 
-export function createNamePathParslet ({ allowJsdocNamePaths, pathGrammar }: {
+export function createNamePathParslet ({ allowSquareBracketsOnAnyType, allowJsdocNamePaths, pathGrammar }: {
   allowJsdocNamePaths: boolean
+  allowSquareBracketsOnAnyType: boolean
   pathGrammar: Grammar | null
 }): ParsletFunction {
   return function namePathParslet (parser, precedence, left) {
@@ -19,7 +20,7 @@ export function createNamePathParslet ({ allowJsdocNamePaths, pathGrammar }: {
     const next = parser.lexer.next.type
 
     const accept = (type === '.' && next !== '<') ||
-      (type === '[' && left.type === 'JsdocTypeName') ||
+      (type === '[' && (allowSquareBracketsOnAnyType || left.type === 'JsdocTypeName')) ||
       (allowJsdocNamePaths && (type === '~' || type === '#'))
 
     if (!accept) {
@@ -98,7 +99,7 @@ export function createNamePathParslet ({ allowJsdocNamePaths, pathGrammar }: {
       type: 'JsdocTypeNamePath',
       left: assertRootResult(left),
       right,
-      pathType: pathType
+      pathType
     }
   }
 }

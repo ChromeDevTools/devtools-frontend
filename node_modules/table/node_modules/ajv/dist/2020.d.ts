@@ -1,6 +1,6 @@
 import type { AnySchemaObject } from "./types";
 import AjvCore, { Options } from "./core";
-declare class Ajv2020 extends AjvCore {
+export declare class Ajv2020 extends AjvCore {
     constructor(opts?: Options);
     _addVocabularies(): void;
     _addDefaultMetaSchema(): void;

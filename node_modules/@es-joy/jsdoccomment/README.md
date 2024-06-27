@@ -94,11 +94,12 @@ to determine the specific comment-block that will be attached as AST).
 
 ### `JsdocBlock`
 
-Has two visitable properties:
+Has the following visitable properties:
 
-1. `tags` (an array of `JsdocTag`; see below)
-2. `descriptionLines` (an array of `JsdocDescriptionLine` for multiline
+1. `descriptionLines` (an array of `JsdocDescriptionLine` for multiline
     descriptions).
+2. `tags` (an array of `JsdocTag`; see below)
+3. `inlineTags` (an array of `JsdocInlineTag`; see below)
 
 Has the following custom non-visitable property:
 
@@ -124,13 +125,14 @@ May also have the following non-visitable properties from `comment-parser`:
 
 ### `JsdocTag`
 
-Has three visitable properties:
+Has the following visitable properties:
 
 1. `parsedType` (the `jsdoc-type-pratt-parser` AST representation of the tag's
     type (see the `jsdoc-type-pratt-parser` section below)).
-2. `descriptionLines` (an array of `JsdocDescriptionLine` for multiline
+2. `typeLines` (an array of `JsdocTypeLine` for multiline type strings)
+3. `descriptionLines` (an array of `JsdocDescriptionLine` for multiline
     descriptions)
-3. `typeLines` (an array of `JsdocTypeLine` for multiline type strings)
+4. `inlineTags` (an array of `JsdocInlineTag`)
 
 May also have the following non-visitable properties from `comment-parser`
 (note that all are included from `comment-parser` except `end` as that is only
@@ -176,6 +178,21 @@ May also have the following non-visitable properties from `comment-parser`:
 3. `initial` (from `start`)
 4. `rawType` - Renamed from `comment-parser` to avoid a conflict. See
     explanation under `JsdocTag`
+
+### `JsdocInlineTag`
+
+No visitable properties.
+
+Has the following non-visitable properties:
+
+1. `format`: 'pipe' | 'plain' | 'prefix' | 'space'. These follow the styles of [link](https://jsdoc.app/tags-inline-link.html) or [tutorial](https://jsdoc.app/tags-inline-tutorial.html).
+    1. `pipe`: `{@link namepathOrURL|link text}`
+    2. `plain`: `{@link namepathOrURL}`
+    3. `prefix`: `[link text]{@link namepathOrURL}`
+    4. `space`: `{@link namepathOrURL link text (after the first space)}`
+2. `namepathOrURL`: string
+3. `tag`: string. The standard allows `tutorial` or `link`
+4. `text`: string
 
 ## ESLint AST produced for `jsdoc-type-pratt-parser`
 

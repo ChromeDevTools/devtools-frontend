@@ -1,9 +1,9 @@
-import { composeParslet, ParsletFunction } from './Parslet'
+import { composeParslet, type ParsletFunction } from './Parslet'
 import { Parser } from '../Parser'
 import { Precedence } from '../Precedence'
 import { UnexpectedTypeError } from '../errors'
-import { ObjectResult } from '../result/RootResult'
-import { Grammar } from '../grammars/Grammar'
+import { type ObjectResult } from '../result/RootResult'
+import { type Grammar } from '../grammars/Grammar'
 
 export function createObjectParslet ({ objectFieldGrammar, allowKeyTypes }: {
   objectFieldGrammar: Grammar
@@ -49,18 +49,16 @@ export function createObjectParslet ({ objectFieldGrammar, allowKeyTypes }: {
             }
 
             result.elements.push({
-              type: 'JsdocTypeKeyValue',
+              type: 'JsdocTypeObjectField',
               key: field.value.toString(),
               right: undefined,
-              optional: optional,
+              optional,
               readonly: false,
-              variadic: false,
               meta: {
-                quote,
-                hasLeftSideExpression: false
+                quote
               }
             })
-          } else if (field.type === 'JsdocTypeKeyValue') {
+          } else if (field.type === 'JsdocTypeObjectField' || field.type === 'JsdocTypeJsdocObjectField') {
             result.elements.push(field)
           } else {
             throw new UnexpectedTypeError(field)

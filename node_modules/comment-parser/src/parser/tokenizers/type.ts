@@ -1,6 +1,6 @@
-import { Spec, Tokens } from '../../primitives';
-import { splitSpace } from '../../util';
-import { Tokenizer } from './index';
+import { Spec, Tokens } from '../../primitives.js';
+import { splitSpace } from '../../util.js';
+import { Tokenizer } from './index.js';
 
 /**
  * Joiner is a function taking collected type token string parts,

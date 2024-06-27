@@ -1,4 +1,4 @@
-import { seedTokens, rewireSource, rewireSpecs } from '../../src/util';
+import { seedTokens, rewireSource, rewireSpecs } from '../../src/util.js';
 
 test('source to spec', () => {
   const block = {

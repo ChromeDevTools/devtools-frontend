@@ -1,4 +1,4 @@
-import { Spec } from '../../primitives';
+import { Spec } from '../../primitives.js';
 
 /**
  * Splits `spect.lines[].token.description` into other tokens,

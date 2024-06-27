@@ -1,2 +1,2 @@
-import { Grammar } from './Grammar';
+import { type Grammar } from './Grammar';
 export declare const jsdocGrammar: Grammar;

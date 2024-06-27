@@ -192,6 +192,46 @@ function parse_advanced_parsing(source, parse, _, _, tokenizers) {
     .join('\n');
 }
 
+function stringify_rename(source, parse, stringify, transforms) {
+  // You can do any manipulations with the parsed result
+  // See how each block is being mapped. If you are updating a Block.source
+  // then rewireSource(block) should be called on each changed block.
+  // If changes were made to Block.tags[].source then call rewireSpecs(block).
+  // This example shows how you can "rename" @param tags: value1 -> value11, value2 -> value22
+
+  /**
+   * Description may go
+   * over multiple lines followed by @tags
+   * @param {string} name the name parameter
+   * @param {any} value1 first value parameter
+   *   with a multipline description
+   * @param {any} value2 second value parameter
+   */
+
+  function renameParam(from, to) {
+    return (block) => {
+      for (const tag of block.tags) {
+        if (tag.tag === 'param' && tag.name === from) {
+          tag.name = to;
+          for (const line of tag.source) {
+            if (line.tokens.name === from) line.tokens.name = to;
+          }
+        }
+      }
+      return block;
+    };
+  }
+
+  const transform = transforms.flow(
+    renameParam('value1', 'value11'),
+    renameParam('value2', 'value22'),
+    stringify
+  );
+
+  const parsed = parse(source);
+  const stringified = parsed.map(transform);
+}
+
 (typeof window === 'undefined' ? module.exports : window).examples = [
   parse_defaults,
   parse_line_numbering,
@@ -200,4 +240,5 @@ function parse_advanced_parsing(source, parse, _, _, tokenizers) {
   parse_source_exploration,
   parse_advanced_parsing,
   stringify_formatting,
+  stringify_rename,
 ];

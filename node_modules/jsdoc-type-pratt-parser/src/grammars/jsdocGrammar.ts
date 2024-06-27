@@ -1,5 +1,5 @@
 import { baseGrammar } from './baseGrammar'
-import { Grammar } from './Grammar'
+import { type Grammar } from './Grammar'
 import { pathGrammar } from './pathGrammar'
 import { createFunctionParslet } from '../parslets/FunctionParslet'
 import { stringValueParslet } from '../parslets/StringValueParslet'
@@ -9,8 +9,9 @@ import { createNameParslet } from '../parslets/NameParslet'
 import { symbolParslet } from '../parslets/SymbolParslet'
 import { arrayBracketsParslet } from '../parslets/ArrayBracketsParslet'
 import { createNamePathParslet } from '../parslets/NamePathParslet'
-import { createKeyValueParslet } from '../parslets/KeyValueParslet'
 import { createObjectParslet } from '../parslets/ObjectParslet'
+import { createObjectFieldParslet } from '../parslets/ObjectFieldParslet'
+import { createKeyValueParslet } from '../parslets/KeyValueParslet'
 
 const jsdocBaseGrammar = [
   ...baseGrammar,
@@ -35,14 +36,9 @@ const jsdocBaseGrammar = [
   symbolParslet,
   arrayBracketsParslet,
   createNamePathParslet({
+    allowSquareBracketsOnAnyType: false,
     allowJsdocNamePaths: true,
     pathGrammar
-  }),
-  createKeyValueParslet({
-    allowKeyTypes: true,
-    allowOptional: false,
-    allowReadonly: false,
-    allowVariadic: false
   })
 ]
 
@@ -53,10 +49,20 @@ export const jsdocGrammar: Grammar = [
     // we leave out the object type deliberately
     objectFieldGrammar: [
       createNameParslet({
-        allowedAdditionalTokens: ['module']
+        allowedAdditionalTokens: ['module', 'in']
+      }),
+      createObjectFieldParslet({
+        allowSquaredProperties: false,
+        allowKeyTypes: true,
+        allowOptional: false,
+        allowReadonly: false
       }),
       ...jsdocBaseGrammar
     ],
     allowKeyTypes: true
+  }),
+  createKeyValueParslet({
+    allowOptional: true,
+    allowVariadic: true
   })
 ]

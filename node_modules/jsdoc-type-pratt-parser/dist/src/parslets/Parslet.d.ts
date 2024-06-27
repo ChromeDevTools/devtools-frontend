@@ -9,18 +9,18 @@ import { IntermediateResult } from '../result/IntermediateResult';
  * In the infix parsing step the current precedence should be checked.
  * See {@link composeParslet} for a more convenient way to use this function.
  */
-export declare type ParsletFunction = (parser: Parser, precedence: Precedence, left: IntermediateResult | null) => IntermediateResult | null;
+export type ParsletFunction = (parser: Parser, precedence: Precedence, left: IntermediateResult | null) => IntermediateResult | null;
 interface BaseComposeParsletOptions {
     name: string;
     accept: (type: TokenType, next: TokenType) => boolean;
 }
-declare type ComposePrefixParsletOptions = BaseComposeParsletOptions & {
+type ComposePrefixParsletOptions = BaseComposeParsletOptions & {
     parsePrefix: (parser: Parser) => IntermediateResult;
 };
-declare type ComposeInfixParsletOptions = BaseComposeParsletOptions & {
+type ComposeInfixParsletOptions = BaseComposeParsletOptions & {
     precedence: Precedence;
     parseInfix: (parser: Parser, left: IntermediateResult) => IntermediateResult;
 };
-export declare type ComposeParsletOptions = ComposePrefixParsletOptions | ComposeInfixParsletOptions | (ComposePrefixParsletOptions & ComposeInfixParsletOptions);
+export type ComposeParsletOptions = ComposePrefixParsletOptions | ComposeInfixParsletOptions | (ComposePrefixParsletOptions & ComposeInfixParsletOptions);
 export declare function composeParslet(options: ComposeParsletOptions): ParsletFunction;
 export {};

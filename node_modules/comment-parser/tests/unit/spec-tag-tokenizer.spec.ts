@@ -1,5 +1,5 @@
-import tagTokenizer from '../../src/parser/tokenizers/tag';
-import { seedTokens, seedSpec } from '../../src/util';
+import tagTokenizer from '../../src/parser/tokenizers/tag.js';
+import { seedTokens, seedSpec } from '../../src/util.js';
 
 const tokenize = tagTokenizer();
 

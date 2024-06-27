@@ -1,5 +1,5 @@
-import { Spec, Line, BlockMarkers, Markers } from '../../primitives';
-import { Tokenizer } from './index';
+import { Spec, Line, BlockMarkers, Markers } from '../../primitives.js';
+import { Tokenizer } from './index.js';
 
 /**
  * Walks over provided lines joining description token into a single string.

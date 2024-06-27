@@ -1,6 +1,6 @@
 import { composeParslet } from './Parslet'
 import { Precedence } from '../Precedence'
-import { assertRootResult, isPlainKeyValue } from '../assertTypes'
+import { assertRootResult } from '../assertTypes'
 
 export const parenthesisParslet = composeParslet({
   name: 'parenthesisParslet',
@@ -19,7 +19,7 @@ export const parenthesisParslet = composeParslet({
     }
     if (result.type === 'JsdocTypeParameterList') {
       return result
-    } else if (result.type === 'JsdocTypeKeyValue' && isPlainKeyValue(result)) {
+    } else if (result.type === 'JsdocTypeKeyValue') {
       return {
         type: 'JsdocTypeParameterList',
         elements: [result]

@@ -1,6 +1,6 @@
-import { Line, Spec } from '../primitives';
-import { seedSpec } from '../util';
-import { Tokenizer } from './tokenizers/index';
+import { Line, Spec } from '../primitives.js';
+import { seedSpec } from '../util.js';
+import { Tokenizer } from './tokenizers/index.js';
 
 export type Parser = (source: Line[]) => Spec;
 

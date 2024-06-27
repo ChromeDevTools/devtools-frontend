@@ -906,8 +906,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         async(errorObj: SDK.RemoteObject.RemoteObject, includeCausedByPrefix: boolean): Promise<void> => {
       const error = SDK.RemoteObject.RemoteError.objectAsError(errorObj);
       const [details, cause] = await Promise.all([error.exceptionDetails(), error.cause()]);
-      const errorElement =
-          this.tryFormatAsError(error.errorStack, details) ?? this.linkifyStringAsFragment(error.errorStack);
+      const errorElementType = includeCausedByPrefix ? 'div' : 'span';
+      const errorElement = this.tryFormatAsError(error.errorStack, details, errorElementType) ??
+          this.linkifyStringAsFragment(error.errorStack);
       if (includeCausedByPrefix) {
         errorElement.prepend('Caused by: ');
       }
@@ -1649,7 +1650,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return scriptLocationLink;
   }
 
-  private tryFormatAsError(string: string, exceptionDetails?: Protocol.Runtime.ExceptionDetails): HTMLElement|null {
+  private tryFormatAsError(
+      string: string, exceptionDetails?: Protocol.Runtime.ExceptionDetails,
+      formattedResultType: 'div'|'span' = 'span'): HTMLElement|null {
     const runtimeModel = this.message.runtimeModel();
     if (!runtimeModel) {
       return null;
@@ -1664,7 +1667,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
 
     const debuggerModel = runtimeModel.debuggerModel();
-    const formattedResult = document.createElement('div');
+    const formattedResult = document.createElement(formattedResultType);
 
     for (let i = 0; i < linkInfos.length; ++i) {
       const newline = i < linkInfos.length - 1 ? '\n' : '';

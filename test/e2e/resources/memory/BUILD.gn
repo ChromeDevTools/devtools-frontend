@@ -12,6 +12,7 @@ copy_to_gen("memory") {
     "detached-dom-tree.html",
     "detached-iframe.html",
     "detached-node.html",
+    "dom-details.html",
     "dom-objects.html",
     "event-listeners.html",
     "filtering.html",

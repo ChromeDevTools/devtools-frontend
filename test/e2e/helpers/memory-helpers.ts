@@ -191,6 +191,18 @@ const normalizRetainerName = (retainerName: string) => {
     }
     return 'InternalNode';
   }
+
+  // Blink is changing its representation of HTML elements from WebIDL names
+  // like 'HTMLDivElement' to start tags like '<div id="something">'. The
+  // following is a temporary workaround to make tests pass with or without the
+  // upcoming change.
+  // TODO (343341610): Remove this.
+  if (retainerName === 'Detached HTMLDivElement') {
+    retainerName = 'Detached <div>';
+  } else if (retainerName === 'HTMLBodyElement') {
+    retainerName = '<body>';
+  }
+
   return retainerName;
 };
 
@@ -328,6 +340,12 @@ export async function getDistanceFromCategoryRow(text: string) {
   const row = await getCategoryRow(text);
   const numericColumns = await $$('.numeric-column', row);
   return await numericColumns[0].evaluate(e => parseInt(e.textContent as string, 10));
+}
+
+export async function getCountFromCategoryRow(text: string) {
+  const row = await getCategoryRow(text);
+  const countSpan = await waitFor('.objects-count', row);
+  return await countSpan.evaluate(e => parseInt((e.textContent ?? '').substring(1), 10));
 }
 
 export async function clickOnContextMenuForRetainer(retainerName: string, menuItem: string) {

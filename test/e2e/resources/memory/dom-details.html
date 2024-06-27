@@ -1,0 +1,18 @@
+<!--
+  Copyright 2024 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<h1>Memory Panel (Heap profiler) Test</h1>
+<div id="a">
+  <div class="b"></div>
+  <div data-x="x" data-y="y"></div>
+</div>
+<div id="c">
+  <div class="d"></div>
+  <div data-x="p" data-y="q"></div>
+</div>
+<script>
+  var removed = document.getElementById('c');
+  removed.parentElement.removeChild(removed);
+</script>

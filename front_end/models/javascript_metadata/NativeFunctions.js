@@ -8084,6 +8084,10 @@ export const NativeFunctions = [
     signatures: [["track"]]
   },
   {
+    name: "sendRtp",
+    signatures: [["packet","options"]]
+  },
+  {
     name: "setHeaderExtensionsToNegotiate",
     signatures: [["extensions"]]
   },

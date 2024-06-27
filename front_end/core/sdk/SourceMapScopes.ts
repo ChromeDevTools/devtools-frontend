@@ -370,19 +370,19 @@ function*
     }
 
     while (iter.hasNext() && iter.peek() !== ';' && iter.peek() !== ',') {
-      const value = iter.nextVLQ();
-      const bindings: EncodedGeneratedRangeStart['bindings'][number] =
-          [{line: startItem.line, column: startItem.column, nameIdx: value}];
+      const bindings: EncodedGeneratedRangeStart['bindings'][number] = [];
       startItem.bindings.push(bindings);
 
-      const nextVlq = iter.peekVLQ();
-      if (nextVlq === null || nextVlq >= -1) {
+      const idxOrSubrangeCount = iter.nextVLQ();
+      if (idxOrSubrangeCount >= -1) {
         // Variable is available under the same expression in the whole range, or it's unavailable in the whole range.
+        bindings.push({line: startItem.line, column: startItem.column, nameIdx: idxOrSubrangeCount});
         continue;
       }
 
       // Variable is available under different expressions in this range or unavailable in parts of this range.
-      const rangeCount = -iter.nextVLQ();
+      bindings.push({line: startItem.line, column: startItem.column, nameIdx: iter.nextVLQ()});
+      const rangeCount = -idxOrSubrangeCount;
       for (let i = 0; i < rangeCount - 1; ++i) {
         // line, column, valueOffset
         const line = iter.nextVLQ();

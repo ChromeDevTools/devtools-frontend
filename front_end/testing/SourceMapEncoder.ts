@@ -258,8 +258,8 @@ export class GeneratedRangeBuilder {
         continue;
       }
 
-      this.#encodedRange += encodeVlq(bindings[0].nameIdx);
       this.#encodedRange += encodeVlq(-bindings.length);
+      this.#encodedRange += encodeVlq(bindings[0].nameIdx);
       if (bindings[0].line !== line || bindings[0].column !== column) {
         throw new Error('First binding line/column must match the range start line/column');
       }

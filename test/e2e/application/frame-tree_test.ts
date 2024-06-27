@@ -14,6 +14,7 @@ import {
   pressKey,
   waitFor,
   waitForFunction,
+  waitForNone,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
@@ -36,6 +37,7 @@ const EXPAND_STACKTRACE_BUTTON_SELECTOR = '.arrow-icon-button';
 const STACKTRACE_ROW_SELECTOR = '.stack-trace-row';
 const STACKTRACE_ROW_LINK_SELECTOR = '.stack-trace-row .link';
 const APPLICATION_PANEL_SELECTED_SELECTOR = '.tabbed-pane-header-tab.selected[aria-label="Application"]';
+const UNREGISTER_SERVICE_WORKER_SELECTOR = '[title="Unregister service worker"]';
 
 const getTrailingURL = (text: string) => {
   const match = text.match(/http.*$/);
@@ -284,7 +286,8 @@ describe('The Application Tab', () => {
     void pressKey('ArrowUp');
     void pressKey('ArrowLeft');
     await navigateToServiceWorkers();
-    await click('[title="Unregister service worker"]');
+    await click(UNREGISTER_SERVICE_WORKER_SELECTOR);
+    await waitForNone(UNREGISTER_SERVICE_WORKER_SELECTOR);
   });
 
   // Update and reactivate when the whole FrameDetailsView is a custom component

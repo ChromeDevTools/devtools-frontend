@@ -81,7 +81,8 @@ describe('The Performance panel', function() {
     });
   });
 
-  it('CSS selector stats performance test', async () => {
+  // Flaking on multiple bots on CQ.
+  it.skip('[crbug.com/349787448] CSS selector stats performance test', async () => {
     // set a tentative threshold of 50%
     const timeDiffPercentageMax = 0.5;
 

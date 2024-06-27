@@ -34,6 +34,14 @@ enum InsightsCategories {
   OTHER = 'Other',
 }
 
+export class ToggleSidebarInsights extends Event {
+  static readonly eventName = 'toggleinsightclick';
+
+  constructor() {
+    super(ToggleSidebarInsights.eventName, {bubbles: true, composed: true});
+  }
+}
+
 export class SidebarWidget extends UI.SplitWidget.SplitWidget {
   #sidebarExpanded: boolean = false;
   #sidebarUI = new SidebarUI();
@@ -81,6 +89,7 @@ export class SidebarUI extends HTMLElement {
   #activeTab: SidebarTabsName = SidebarTabsName.INSIGHTS;
   selectedCategory: InsightsCategories = InsightsCategories.ALL;
   #expanded: boolean = false;
+  #lcpPhasesExpanded: boolean = false;
 
   #traceParsedData?: TraceEngine.Handlers.Types.TraceParseData|null;
   #inpMetric: {
@@ -125,7 +134,7 @@ export class SidebarUI extends HTMLElement {
         {phase: 'Time to first byte', timing: ttfb, percent: `${(100 * ttfb / timing).toFixed(0)}%`},
         {phase: 'Resource load delay', timing: loadDelay, percent: `${(100 * loadDelay / timing).toFixed(0)}%`},
         {phase: 'Resource load duration', timing: loadTime, percent: `${(100 * loadTime / timing).toFixed(0)}%`},
-        {phase: 'Resource render delay', timing: renderDelay, percent: `${(100 * ttfb / timing).toFixed(0)}%`},
+        {phase: 'Resource render delay', timing: renderDelay, percent: `${(100 * renderDelay / timing).toFixed(0)}%`},
       ];
       return phaseData;
     }
@@ -133,7 +142,7 @@ export class SidebarUI extends HTMLElement {
     // If the lcp is text, we only have ttfb and render delay.
     const phaseData = [
       {phase: 'Time to first byte', timing: ttfb, percent: `${(100 * ttfb / timing).toFixed(0)}%`},
-      {phase: 'Resource render delay', timing: renderDelay, percent: `${(100 * ttfb / timing).toFixed(0)}%`},
+      {phase: 'Resource render delay', timing: renderDelay, percent: `${(100 * renderDelay / timing).toFixed(0)}%`},
     ];
     return phaseData;
   }
@@ -158,6 +167,8 @@ export class SidebarUI extends HTMLElement {
     }
     this.#insights = insights;
     this.#phaseData = this.getLCPInsightData();
+    // Reset toggled insights.
+    this.#lcpPhasesExpanded = false;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
@@ -277,6 +288,12 @@ export class SidebarUI extends HTMLElement {
         this.#clsMetric.clsScoreClassification);
   }
 
+  #toggleLCPPhaseClick(): void {
+    this.#lcpPhasesExpanded = !this.#lcpPhasesExpanded;
+    this.dispatchEvent(new ToggleSidebarInsights());
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+  }
+
   #renderInsightsForCategory(insightsCategory: InsightsCategories): LitHtml.TemplateResult {
     switch (insightsCategory) {
       case InsightsCategories.ALL:
@@ -286,12 +303,12 @@ export class SidebarUI extends HTMLElement {
             ${this.#renderLCPMetric()}
             ${this.#renderCLSMetric()}
           </div>
-          <div class="insights">${this.#renderLCPPhases()}</div>
+          <div class="insights" @click=${this.#toggleLCPPhaseClick}>${this.#renderLCPPhases()}</div>
         `;
       case InsightsCategories.LCP:
         return LitHtml.html`
           ${this.#renderLCPMetric()}
-          <div class="insights">${this.#renderLCPPhases()}</div>
+          <div class="insights" @click=${this.#toggleLCPPhaseClick}>${this.#renderLCPPhases()}</div>
         `;
       case InsightsCategories.CLS:
         return LitHtml.html`${this.#renderCLSMetric()}`;
@@ -307,10 +324,12 @@ export class SidebarUI extends HTMLElement {
     const showLCPPhases = this.#phaseData ? this.#phaseData.length > 0 : false;
 
     // clang-format off
-    return LitHtml.html`${
+    if (this.#lcpPhasesExpanded) {
+      return LitHtml.html`${
         showLCPPhases ? LitHtml.html`
         <${SidebarInsight.SidebarInsight.litTagName} .data=${{
             title: lcpTitle,
+            expanded: this.#lcpPhasesExpanded,
           } as SidebarInsight.InsightDetails}>
           <div slot="insight-description" class="insight-description">
             Each
@@ -328,6 +347,14 @@ export class SidebarUI extends HTMLElement {
             </dl>
           </div>
         </${SidebarInsight.SidebarInsight}>` : LitHtml.nothing}`;
+    }
+      return LitHtml.html`
+      <${SidebarInsight.SidebarInsight.litTagName} .data=${{
+            title: lcpTitle,
+            expanded: this.#lcpPhasesExpanded,
+          } as SidebarInsight.InsightDetails}>
+        </${SidebarInsight.SidebarInsight}>`;
+
     // clang-format on
   }
 

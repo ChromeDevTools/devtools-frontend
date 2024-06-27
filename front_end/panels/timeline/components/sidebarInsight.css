@@ -9,13 +9,23 @@
   width: auto;
   height: auto;
   margin: 10px 0;
-  border: 1px solid var(--box-shadow-outline-color);
   padding: 10px;
   border-radius: 3px;
   overflow: hidden;
+  border: 1px solid var(--sys-color-outline);
+  background-color: var(--sys-color-base);
+
+  &.closed {
+    background-color: var(--sys-color-neutral-container);
+    border: none;
+  }
+
+  &.closed:hover {
+    background-color: var(--sys-color-state-disabled-container);
+  }
 }
 
 .insight-title {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-base);
   margin-block: 3px;
 }

@@ -126,7 +126,7 @@ devtools-select-menu {
 }
 
 .insight-description {
-  border-bottom: 1px solid var(--color-input-outline);
+  border-bottom: 1px solid var(--sys-color-outline);
   padding-bottom: 10px;
 }
 

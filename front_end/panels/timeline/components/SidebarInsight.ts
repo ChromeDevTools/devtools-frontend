@@ -9,6 +9,7 @@ import sidebarInsightStyles from './sidebarInsight.css.js';
 
 export interface InsightDetails {
   title: string;
+  expanded: boolean;
 }
 
 export class SidebarInsight extends HTMLElement {
@@ -16,9 +17,11 @@ export class SidebarInsight extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
   #insightTitle: string = '';
+  #expanded: boolean = false;
 
   set data(data: InsightDetails) {
     this.#insightTitle = data.title;
+    this.#expanded = data.expanded;
   }
 
   connectedCallback(): void {
@@ -27,12 +30,20 @@ export class SidebarInsight extends HTMLElement {
   }
 
   #render(): void {
-    const output = LitHtml.html`
+    let output: LitHtml.TemplateResult;
+    if (!this.#expanded) {
+      output = LitHtml.html`
+        <div class="insight closed">
+            <h3 class="insight-title">${this.#insightTitle}</h3>
+        </div>`;
+    } else {
+      output = LitHtml.html`
         <div class="insight">
             <h3 class="insight-title">${this.#insightTitle}</h3>
             <slot name="insight-description"></slot>
             <slot name="insight-content"></slot>
         </div>`;
+    }
     LitHtml.render(output, this.#shadow, {host: this});
   }
 }

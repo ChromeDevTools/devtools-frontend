@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Handlers from '../handlers/handlers.js';
+import type * as Types from '../types/types.js';
 
 import type * as InsightsRunners from './InsightRunners.js';
 
@@ -27,6 +28,15 @@ export enum InsightWarning {
 export type InsightResult<R extends Record<string, unknown>> = R&{
   warnings?: InsightWarning[],
 };
+
+export type LCPInsightResult = InsightResult<{
+  lcpMs?: Types.Timing.MilliSeconds,
+  lcpTs?: Types.Timing.MilliSeconds,
+  phases?: InsightsRunners.LargestContentfulPaint.LCPPhases,
+  shouldRemoveLazyLoading?: boolean,
+  shouldIncreasePriorityHint?: boolean,
+  shouldPreloadImage?: boolean,
+}>;
 
 /**
  * Contains insights for a specific navigation.

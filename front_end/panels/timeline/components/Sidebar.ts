@@ -106,47 +106,6 @@ export class SidebarUI extends HTMLElement {
 
   #renderBound = this.#render.bind(this);
 
-  getLCPInsightData(): Array<{phase: string, timing: number|TraceEngine.Types.Timing.MilliSeconds, percent: string}> {
-    if (!this.#insights) {
-      return [];
-    }
-    // For now use the first navigation of the trace.
-    const firstNav = this.#insights.values().next().value;
-    if (!firstNav) {
-      return [];
-    }
-    const lcpInsight = firstNav.LargestContentfulPaint;
-    if (lcpInsight instanceof Error) {
-      return [];
-    }
-
-    const timing = lcpInsight.lcpMs;
-    const phases = lcpInsight.phases;
-
-    if (!timing || !phases) {
-      return [];
-    }
-
-    const {ttfb, loadDelay, loadTime, renderDelay} = phases;
-
-    if (loadDelay && loadTime) {
-      const phaseData = [
-        {phase: 'Time to first byte', timing: ttfb, percent: `${(100 * ttfb / timing).toFixed(0)}%`},
-        {phase: 'Resource load delay', timing: loadDelay, percent: `${(100 * loadDelay / timing).toFixed(0)}%`},
-        {phase: 'Resource load duration', timing: loadTime, percent: `${(100 * loadTime / timing).toFixed(0)}%`},
-        {phase: 'Resource render delay', timing: renderDelay, percent: `${(100 * renderDelay / timing).toFixed(0)}%`},
-      ];
-      return phaseData;
-    }
-
-    // If the lcp is text, we only have ttfb and render delay.
-    const phaseData = [
-      {phase: 'Time to first byte', timing: ttfb, percent: `${(100 * ttfb / timing).toFixed(0)}%`},
-      {phase: 'Resource render delay', timing: renderDelay, percent: `${(100 * renderDelay / timing).toFixed(0)}%`},
-    ];
-    return phaseData;
-  }
-
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [sidebarStyles];
     // Force an immediate render of the default state (not expanded).
@@ -166,7 +125,7 @@ export class SidebarUI extends HTMLElement {
       return;
     }
     this.#insights = insights;
-    this.#phaseData = this.getLCPInsightData();
+    this.#phaseData = SidebarInsight.getLCPInsightData(this.#insights);
     // Reset toggled insights.
     this.#lcpPhasesExpanded = false;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
@@ -303,12 +262,14 @@ export class SidebarUI extends HTMLElement {
             ${this.#renderLCPMetric()}
             ${this.#renderCLSMetric()}
           </div>
-          <div class="insights" @click=${this.#toggleLCPPhaseClick}>${this.#renderLCPPhases()}</div>
+          <div class="insights" @click=${this.#toggleLCPPhaseClick}>${
+            SidebarInsight.renderLCPPhases(this.#phaseData, this.#lcpPhasesExpanded)}</div>
         `;
       case InsightsCategories.LCP:
         return LitHtml.html`
           ${this.#renderLCPMetric()}
-          <div class="insights" @click=${this.#toggleLCPPhaseClick}>${this.#renderLCPPhases()}</div>
+          <div class="insights" @click=${this.#toggleLCPPhaseClick}>${
+            SidebarInsight.renderLCPPhases(this.#phaseData, this.#lcpPhasesExpanded)}</div>
         `;
       case InsightsCategories.CLS:
         return LitHtml.html`${this.#renderCLSMetric()}`;
@@ -317,45 +278,6 @@ export class SidebarUI extends HTMLElement {
       case InsightsCategories.OTHER:
         return LitHtml.html`<div>${insightsCategory}</div>`;
     }
-  }
-
-  #renderLCPPhases(): LitHtml.LitTemplate {
-    const lcpTitle = 'LCP by Phase';
-    const showLCPPhases = this.#phaseData ? this.#phaseData.length > 0 : false;
-
-    // clang-format off
-    if (this.#lcpPhasesExpanded) {
-      return LitHtml.html`${
-        showLCPPhases ? LitHtml.html`
-        <${SidebarInsight.SidebarInsight.litTagName} .data=${{
-            title: lcpTitle,
-            expanded: this.#lcpPhasesExpanded,
-          } as SidebarInsight.InsightDetails}>
-          <div slot="insight-description" class="insight-description">
-            Each
-            <x-link class="link" href="https://web.dev/articles/optimize-lcp#lcp-breakdown">phase has specific recommendations to improve.</x-link>
-            In an ideal load, the two delay phases should be quite short.
-          </div>
-          <div slot="insight-content" class="table-container">
-            <dl>
-              <dt class="dl-title">Phase</dt>
-              <dd class="dl-title">% of LCP</dd>
-              ${this.#phaseData?.map(phase => LitHtml.html`
-                <dt>${phase.phase}</dt>
-                <dd class="dl-value">${phase.percent}</dd>
-              `)}
-            </dl>
-          </div>
-        </${SidebarInsight.SidebarInsight}>` : LitHtml.nothing}`;
-    }
-      return LitHtml.html`
-      <${SidebarInsight.SidebarInsight.litTagName} .data=${{
-            title: lcpTitle,
-            expanded: this.#lcpPhasesExpanded,
-          } as SidebarInsight.InsightDetails}>
-        </${SidebarInsight.SidebarInsight}>`;
-
-    // clang-format on
   }
 
   #renderInsightsTabContent(): LitHtml.TemplateResult {

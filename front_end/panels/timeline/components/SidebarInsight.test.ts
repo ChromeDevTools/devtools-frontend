@@ -12,57 +12,61 @@ describeWithEnvironment('SidebarInsight', () => {
   const {SidebarInsight} = TimelineComponents.SidebarInsight;
   const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-  it('renders insight title', async () => {
-    const component = new SidebarInsight();
-    component.data = {title: 'LCP by Phase', expanded: true};
-    renderElementIntoDOM(component);
+  describe('sidebar insight component rendering', () => {
+    it('renders insight title', async () => {
+      const component = new SidebarInsight();
+      component.data = {title: 'LCP by Phase', expanded: true};
+      renderElementIntoDOM(component);
 
-    await coordinator.done();
+      await coordinator.done();
 
-    assert.isNotNull(component.shadowRoot);
-    const titleElement = component.shadowRoot.querySelector<HTMLElement>('.insight-title');
-    assert.isNotNull(titleElement);
-    assert.deepEqual(titleElement.textContent, 'LCP by Phase');
-  });
+      assert.isNotNull(component.shadowRoot);
+      const titleElement = component.shadowRoot.querySelector<HTMLElement>('.insight-title');
+      assert.isNotNull(titleElement);
+      assert.deepEqual(titleElement.textContent, 'LCP by Phase');
+    });
 
-  it('renders only insight title when not toggled', async () => {
-    const component = new SidebarInsight();
-    component.data = {title: 'LCP by Phase', expanded: false};
-    renderElementIntoDOM(component);
+    describe('insight toggling', () => {
+      it('renders only insight title when not toggled', async () => {
+        const component = new SidebarInsight();
+        component.data = {title: 'LCP by Phase', expanded: false};
+        renderElementIntoDOM(component);
 
-    await coordinator.done();
+        await coordinator.done();
 
-    assert.isNotNull(component.shadowRoot);
-    const titleElement = component.shadowRoot.querySelector<HTMLElement>('.insight-title');
-    assert.isNotNull(titleElement);
-    assert.deepEqual(titleElement.textContent, 'LCP by Phase');
+        assert.isNotNull(component.shadowRoot);
+        const titleElement = component.shadowRoot.querySelector<HTMLElement>('.insight-title');
+        assert.isNotNull(titleElement);
+        assert.deepEqual(titleElement.textContent, 'LCP by Phase');
 
-    // Should not contain the description and content slots.
-    const slotElements = component.shadowRoot.querySelectorAll<HTMLSlotElement>('slot');
-    assert.isEmpty(slotElements);
-  });
+        // Should not contain the description and content slots.
+        const slotElements = component.shadowRoot.querySelectorAll<HTMLSlotElement>('slot');
+        assert.isEmpty(slotElements);
+      });
 
-  it('renders title, description and content when toggled', async () => {
-    const component = new SidebarInsight();
-    component.data = {title: 'LCP by Phase', expanded: true};
-    renderElementIntoDOM(component);
+      it('renders title, description and content when toggled', async () => {
+        const component = new SidebarInsight();
+        component.data = {title: 'LCP by Phase', expanded: true};
+        renderElementIntoDOM(component);
 
-    await coordinator.done();
+        await coordinator.done();
 
-    assert.isNotNull(component.shadowRoot);
-    const titleElement = component.shadowRoot.querySelector<HTMLElement>('.insight-title');
-    assert.isNotNull(titleElement);
-    assert.deepEqual(titleElement.textContent, 'LCP by Phase');
+        assert.isNotNull(component.shadowRoot);
+        const titleElement = component.shadowRoot.querySelector<HTMLElement>('.insight-title');
+        assert.isNotNull(titleElement);
+        assert.deepEqual(titleElement.textContent, 'LCP by Phase');
 
-    const slotElements = component.shadowRoot.querySelectorAll<HTMLSlotElement>('slot');
-    assert.isNotEmpty(slotElements);
+        const slotElements = component.shadowRoot.querySelectorAll<HTMLSlotElement>('slot');
+        assert.isNotEmpty(slotElements);
 
-    const descriptionSlot = slotElements[0];
-    assert.isNotNull(descriptionSlot);
-    assert.strictEqual(descriptionSlot.name, 'insight-description');
+        const descriptionSlot = slotElements[0];
+        assert.isNotNull(descriptionSlot);
+        assert.strictEqual(descriptionSlot.name, 'insight-description');
 
-    const contentSlot = slotElements[1];
-    assert.isNotNull(contentSlot);
-    assert.strictEqual(contentSlot.name, 'insight-content');
+        const contentSlot = slotElements[1];
+        assert.isNotNull(contentSlot);
+        assert.strictEqual(contentSlot.name, 'insight-content');
+      });
+    });
   });
 });

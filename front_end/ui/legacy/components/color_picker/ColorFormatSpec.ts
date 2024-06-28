@@ -38,8 +38,7 @@ type CanonicalParameters = [number, number, number, number];
 
 export type SpectrumColorFormat = Exclude<
     Common.Color.Format,
-    Common.Color.Format.RGBA|Common.Color.Format.HSLA|Common.Color.Format.HWBA|Common.Color.Format.HEXA|
-    Common.Color.Format.ShortHEXA>;
+    Common.Color.Format.RGBA|Common.Color.Format.HSLA|Common.Color.Format.HWBA|Common.Color.Format.HEXA>;
 
 const roundAndStringify = (arr: [number, number, number, number]): [string, string, string, string] =>
     arr.map(el => Platform.StringUtilities.stringifyWithPrecision(el, 2)) as [string, string, string, string];
@@ -48,9 +47,7 @@ const functionParamsText = (values: [string, string, string, string]): string =>
   return `${values[0]} ${values[1]} ${values[2]} / ${values[3]}`;
 };
 
-export const colorFormatSpec: Record<
-    Exclude<SpectrumColorFormat, Common.Color.Format.HEX|Common.Color.Format.ShortHEX|Common.Color.Format.Nickname>,
-    ColorFormatSpec> = {
+export const colorFormatSpec: Record<Exclude<SpectrumColorFormat, Common.Color.Format.HEX>, ColorFormatSpec> = {
   [Common.Color.Format.RGB]: {
     label: 'RGBA',
     toValues: function(color: Common.Color.Color): [string, string, string, string] {

@@ -6,8 +6,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import {
   createTarget,
-  deinitializeGlobalVars,
-  initializeGlobalVars,
+  describeWithEnvironment,
 } from '../../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../../testing/MockConnection.js';
 import * as UI from '../../legacy.js';
@@ -17,16 +16,11 @@ import * as ColorPicker from './color_picker.js';
 const displayP3Color = Common.Color.parse('color(display-p3 1 1 1)') as Common.Color.Color;
 const rgbColor = Common.Color.parse('rgb(255 0 0)') as Common.Color.Color;
 
-describe('ColorPicker aka Spectrum', () => {
+describeWithEnvironment('ColorPicker aka Spectrum', () => {
   beforeEach(async () => {
-    await initializeGlobalVars();
     const forceNew = true;
     const actionRegistry = UI.ActionRegistry.ActionRegistry.instance({forceNew});
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew, actionRegistry});
-  });
-
-  afterEach(async () => {
-    await deinitializeGlobalVars();
   });
 
   describe('sRGB overlay', () => {

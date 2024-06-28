@@ -130,12 +130,10 @@ const colorElementToMutable = new WeakMap<HTMLElement, boolean>();
 const colorElementToColor = new WeakMap<HTMLElement, string>();
 const srgbGamutFormats = [
   Common.Color.Format.SRGB,
-  Common.Color.Format.Nickname,
   Common.Color.Format.RGB,
   Common.Color.Format.HEX,
   Common.Color.Format.HSL,
   Common.Color.Format.HWB,
-  Common.Color.Format.ShortHEX,
 ];
 
 const enum SpectrumGamut {
@@ -161,9 +159,6 @@ function convertColorFormat(colorFormat: Common.Color.Format): SpectrumColorForm
   }
   if (colorFormat === Common.Color.Format.HEXA) {
     return Common.Color.Format.HEX;
-  }
-  if (colorFormat === Common.Color.Format.ShortHEXA) {
-    return Common.Color.Format.ShortHEX;
   }
 
   return colorFormat;
@@ -1168,12 +1163,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       return colorString;
     }
 
-    if (this.colorFormat === Common.Color.Format.Nickname) {
-      colorString =
-          color.asString(color.asLegacyColor().hasAlpha() ? Common.Color.Format.HEXA : Common.Color.Format.HEX);
-    } else if (this.colorFormat === Common.Color.Format.ShortHEX) {
-      colorString = color.asString(color.asLegacyColor().detectHEXFormat());
-    } else if (this.colorFormat === Common.Color.Format.HEX) {
+    if (this.colorFormat === Common.Color.Format.HEX) {
       colorString = color.asString(Common.Color.Format.HEXA);
     } else if (this.colorFormat === Common.Color.Format.HSL) {
       colorString = color.asString(Common.Color.Format.HSLA);
@@ -1214,16 +1204,11 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   private updateInput(): void {
-    if (this.colorFormat === Common.Color.Format.HEX || this.colorFormat === Common.Color.Format.ShortHEX ||
-        this.colorFormat === Common.Color.Format.Nickname) {
+    if (this.colorFormat === Common.Color.Format.HEX) {
       this.hexContainer.hidden = false;
       this.displayContainer.hidden = true;
-      if (this.colorFormat === Common.Color.Format.ShortHEX) {
-        this.hexValue.value = String(this.color.asString(this.color.asLegacyColor().detectHEXFormat()));
-      } else {  // Don't use ShortHEX if original was not in that format.
-        this.hexValue.value = String(this.color.asString(
-            this.color.asLegacyColor().hasAlpha() ? Common.Color.Format.HEXA : Common.Color.Format.HEX));
-      }
+      this.hexValue.value =
+          this.color.asString((this.color.alpha ?? 1) !== 1 ? Common.Color.Format.HEXA : Common.Color.Format.HEX);
     } else {
       // RGBA, HSLA, HWBA, color() display.
       this.hexContainer.hidden = true;
@@ -1291,11 +1276,10 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   private async showFormatPicker(event: MouseEvent): Promise<void> {
-    const contextMenu = new FormatPickerContextMenu(this.color, this.colorFormat);
+    const contextMenu = new FormatPickerContextMenu(this.color);
     this.isFormatPickerShown = true;
-    await contextMenu.show(event, (format: Common.Color.Format) => {
-      const newColor = this.color.as(format);
-      this.innerSetColor(newColor, undefined, undefined, format, ChangeSource.Other);
+    await contextMenu.show(event, newColor => {
+      this.innerSetColor(newColor, undefined, undefined, newColor.format(), ChangeSource.Other);
       Host.userMetrics.colorConvertedFrom(Host.UserMetrics.ColorConvertedFrom.ColorPicker);
     });
     this.isFormatPickerShown = false;
@@ -1329,8 +1313,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
 
     let color: Common.Color.Color|null = null;
     let colorFormat: Common.Color.Format|undefined;
-    if (this.colorFormat === Common.Color.Format.HEX || this.colorFormat === Common.Color.Format.ShortHEX ||
-        this.colorFormat === Common.Color.Format.Nickname) {
+    if (this.colorFormat === Common.Color.Format.HEX) {
       color = Common.Color.parse(this.hexValue.value);
     } else {
       const spec = colorFormatSpec[this.colorFormat];

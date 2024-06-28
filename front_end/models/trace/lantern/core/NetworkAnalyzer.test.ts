@@ -6,18 +6,18 @@
 
 import * as TraceModel from '../../trace.js';
 import * as Lantern from '../lantern.js';
-import {loadTrace, runTraceEngine} from '../testing/MetricTestUtils.js';
+import {loadTrace, runTraceEngine} from '../testing/testing.js';
 
-const {NetworkAnalyzer} = Lantern.Simulation;
+const {NetworkAnalyzer} = Lantern.Core;
 
-async function createRequests(trace: Lantern.Trace) {
+async function createRequests(trace: Lantern.Types.Trace) {
   const traceEngineData = await runTraceEngine(trace);
   return TraceModel.LanternComputationData.createNetworkRequests(trace, traceEngineData);
 }
 
 describe('NetworkAnalyzer', () => {
-  let trace: Lantern.Trace;
-  let traceWithRedirect: Lantern.Trace;
+  let trace: Lantern.Types.Trace;
+  let traceWithRedirect: Lantern.Types.Trace;
   before(async function() {
     trace = await loadTrace(this, 'lantern/paul/trace.json.gz');
     traceWithRedirect = await loadTrace(this, 'lantern/redirect/trace.json.gz');

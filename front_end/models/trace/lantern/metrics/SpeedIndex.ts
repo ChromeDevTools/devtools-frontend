@@ -2,16 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {BaseNode, type Node} from '../BaseNode.js';
-import type * as Lantern from '../types/lantern.js';
+import * as Graph from '../graph/graph.js';
+import type * as Simulation from '../simulation/simulation.js';
 
-import {type Extras, Metric} from './Metric.js';
+import {
+  type Extras,
+  Metric,
+  type MetricCoefficients,
+  type MetricComputationDataInput,
+  type MetricResult,
+} from './Metric.js';
 
 const mobileSlow4GRtt = 150;
 
 class SpeedIndex extends Metric {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static override get coefficients(): Lantern.Simulation.MetricCoefficients {
+  static override get coefficients(): MetricCoefficients {
     return {
       // Note that the optimistic estimate is based on the real observed speed index rather than a
       // real lantern graph (and the final estimate will be Math.max(FCP, Speed Index)).
@@ -21,8 +26,7 @@ class SpeedIndex extends Metric {
     };
   }
 
-  static override getScaledCoefficients(rttMs: number):
-      Lantern.Simulation.MetricCoefficients {  // eslint-disable-line no-unused-vars
+  static override getScaledCoefficients(rttMs: number): MetricCoefficients {
     // We want to scale our default coefficients based on the speed of the connection.
     // We will linearly interpolate coefficients for the passed-in rttMs based on two pre-determined points:
     //   1. Baseline point of 30 ms RTT where Speed Index should be a ~50/50 blend of optimistic/pessimistic.
@@ -45,16 +49,15 @@ class SpeedIndex extends Metric {
     };
   }
 
-  static override getOptimisticGraph(dependencyGraph: Node): Node {
+  static override getOptimisticGraph(dependencyGraph: Graph.Node): Graph.Node {
     return dependencyGraph;
   }
 
-  static override getPessimisticGraph(dependencyGraph: Node): Node {
+  static override getPessimisticGraph(dependencyGraph: Graph.Node): Graph.Node {
     return dependencyGraph;
   }
 
-  static override getEstimateFromSimulation(simulationResult: Lantern.Simulation.Result, extras: Extras):
-      Lantern.Simulation.Result {
+  static override getEstimateFromSimulation(simulationResult: Simulation.Result, extras: Extras): Simulation.Result {
     if (!extras.fcpResult) {
       throw new Error('missing fcpResult');
     }
@@ -72,9 +75,8 @@ class SpeedIndex extends Metric {
     };
   }
 
-  static override async compute(
-      data: Lantern.Simulation.MetricComputationDataInput,
-      extras?: Omit<Extras, 'optimistic'>): Promise<Lantern.Metrics.Result> {
+  static override async compute(data: MetricComputationDataInput, extras?: Omit<Extras, 'optimistic'>):
+      Promise<MetricResult> {
     const fcpResult = extras?.fcpResult;
     if (!fcpResult) {
       throw new Error('FCP is required to calculate the SpeedIndex metric');
@@ -97,11 +99,10 @@ class SpeedIndex extends Metric {
    *
    * @see https://docs.google.com/document/d/1qJWXwxoyVLVadezIp_Tgdk867G3tDNkkVRvUJSH3K1E/edit#
    */
-  static computeLayoutBasedSpeedIndex(nodeTimings: Lantern.Simulation.Result['nodeTimings'], fcpTimeInMs: number):
-      number {
+  static computeLayoutBasedSpeedIndex(nodeTimings: Simulation.Result['nodeTimings'], fcpTimeInMs: number): number {
     const layoutWeights: Array<{time: number, weight: number}> = [];
     for (const [node, timing] of nodeTimings.entries()) {
-      if (node.type !== BaseNode.types.CPU) {
+      if (node.type !== Graph.BaseNode.types.CPU) {
         continue;
       }
 

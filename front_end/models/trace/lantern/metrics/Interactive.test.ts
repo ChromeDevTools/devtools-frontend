@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 
 import * as Lantern from '../lantern.js';
-import {getComputationDataFromFixture, loadTrace} from '../testing/MetricTestUtils.js';
+import {getComputationDataFromFixture, loadTrace} from '../testing/testing.js';
 
 const {Interactive, FirstContentfulPaint, LargestContentfulPaint} = Lantern.Metrics;
 
 describe('Metrics: Lantern TTI', () => {
-  let trace: Lantern.Trace;
-  let iframeTrace: Lantern.Trace;
+  let trace: Lantern.Types.Trace;
+  let iframeTrace: Lantern.Types.Trace;
   before(async function() {
     trace = await loadTrace(this, 'lantern/progressive-app/trace.json.gz');
     iframeTrace = await loadTrace(this, 'lantern/iframe/trace.json.gz');

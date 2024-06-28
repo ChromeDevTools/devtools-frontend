@@ -2,24 +2,46 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {BaseNode, type Node} from '../BaseNode.js';
-import {type NetworkNode} from '../NetworkNode.js';
-import type * as Lantern from '../types/lantern.js';
+import * as Graph from '../graph/graph.js';
+import type * as Simulation from '../simulation/simulation.js';
+import type * as Types from '../types/types.js';
+
+export interface MetricComputationDataInput {
+  simulator: Simulation.Simulator;
+  graph: Graph.Node<unknown>;
+  processedNavigation: Types.Simulation.ProcessedNavigation;
+}
+
+export interface MetricCoefficients {
+  intercept: number;
+  optimistic: number;
+  pessimistic: number;
+}
+
+export interface MetricResult<T = Types.AnyNetworkObject> {
+  timing: number;
+  timestamp?: never;
+  optimisticEstimate: Simulation.Result<T>;
+  pessimisticEstimate: Simulation.Result<T>;
+  optimisticGraph: Graph.Node<T>;
+  pessimisticGraph: Graph.Node;
+}
 
 export interface Extras {
   optimistic: boolean;
-  fcpResult?: Lantern.Metrics.Result;
-  lcpResult?: Lantern.Metrics.Result;
-  interactiveResult?: Lantern.Metrics.Result;
+  fcpResult?: MetricResult;
+  lcpResult?: MetricResult;
+  interactiveResult?: MetricResult;
   observedSpeedIndex?: number;
 }
 
 class Metric {
-  static getScriptUrls(dependencyGraph: Node, treatNodeAsRenderBlocking?: (node: NetworkNode) => boolean): Set<string> {
+  static getScriptUrls(dependencyGraph: Graph.Node, treatNodeAsRenderBlocking?: (node: Graph.NetworkNode) => boolean):
+      Set<string> {
     const scriptUrls: Set<string> = new Set();
 
     dependencyGraph.traverse(node => {
-      if (node.type !== BaseNode.types.NETWORK) {
+      if (node.type !== Graph.BaseNode.types.NETWORK) {
         return;
       }
       if (node.request.resourceType !== 'Script') {
@@ -33,8 +55,7 @@ class Metric {
     return scriptUrls;
   }
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static get coefficients(): Lantern.Simulation.MetricCoefficients {
+  static get coefficients(): MetricCoefficients {
     throw new Error('coefficients unimplemented!');
   }
 
@@ -46,27 +67,27 @@ class Metric {
    * from the simulator. In this case, we need to adjust the coefficients as the target throttling
    * settings change.
    */
-  static getScaledCoefficients(rttMs: number): Lantern.Simulation.MetricCoefficients {
+  static getScaledCoefficients(rttMs: number): MetricCoefficients {
     return this.coefficients;
   }
 
-  static getOptimisticGraph(dependencyGraph: Node, processedNavigation: Lantern.Simulation.ProcessedNavigation): Node {
+  static getOptimisticGraph(dependencyGraph: Graph.Node, processedNavigation: Types.Simulation.ProcessedNavigation):
+      Graph.Node {
     throw new Error('Optimistic graph unimplemented!');
   }
 
-  static getPessimisticGraph(dependencyGraph: Node, processedNavigation: Lantern.Simulation.ProcessedNavigation): Node {
+  static getPessimisticGraph(dependencyGraph: Graph.Node, processedNavigation: Types.Simulation.ProcessedNavigation):
+      Graph.Node {
     throw new Error('Pessmistic graph unimplemented!');
   }
 
-  static getEstimateFromSimulation(simulationResult: Lantern.Simulation.Result, extras: Extras):
-      Lantern.Simulation.Result {
+  static getEstimateFromSimulation(simulationResult: Simulation.Result, extras: Extras): Simulation.Result {
     return simulationResult;
   }
 
   /* eslint-enable @typescript-eslint/no-unused-vars */
 
-  static async compute(data: Lantern.Simulation.MetricComputationDataInput, extras?: Omit<Extras, 'optimistic'>):
-      Promise<Lantern.Metrics.Result> {
+  static async compute(data: MetricComputationDataInput, extras?: Omit<Extras, 'optimistic'>): Promise<MetricResult> {
     const {simulator, graph, processedNavigation} = data;
 
     const metricName = this.name.replace('Lantern', '');

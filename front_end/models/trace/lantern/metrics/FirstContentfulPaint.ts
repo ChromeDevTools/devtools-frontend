@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {BaseNode, type Node} from '../BaseNode.js';
-import {type CPUNode} from '../CPUNode.js';
-import {type NetworkNode} from '../NetworkNode.js';
-import type * as Lantern from '../types/lantern.js';
+import * as Graph from '../graph/graph.js';
+import type * as Types from '../types/types.js';
 
-import {Metric} from './Metric.js';
+import {Metric, type MetricCoefficients} from './Metric.js';
 
 interface FirstPaintBasedGraphOpts<T> {
   /**
@@ -19,16 +17,16 @@ interface FirstPaintBasedGraphOpts<T> {
    * The function that determines which resources should be considered *possibly*
    * render-blocking.
    */
-  treatNodeAsRenderBlocking: (node: NetworkNode<T>) => boolean;
+  treatNodeAsRenderBlocking: (node: Graph.NetworkNode<T>) => boolean;
   /**
    * The function that determines which CPU nodes should also be included in our
    * blocking node IDs set, beyond what getRenderBlockingNodeData() already includes.
    */
-  additionalCpuNodesToTreatAsRenderBlocking?: (node: CPUNode) => boolean;
+  additionalCpuNodesToTreatAsRenderBlocking?: (node: Graph.CPUNode) => boolean;
 }
 
 class FirstContentfulPaint extends Metric {
-  static override get coefficients(): Lantern.Simulation.MetricCoefficients {
+  static override get coefficients(): MetricCoefficients {
     return {
       intercept: 0,
       optimistic: 0.5,
@@ -43,16 +41,16 @@ class FirstContentfulPaint extends Metric {
    * given timestamp.
    */
   static getRenderBlockingNodeData<T = unknown>(
-      graph: Node,
+      graph: Graph.Node,
       {cutoffTimestamp, treatNodeAsRenderBlocking, additionalCpuNodesToTreatAsRenderBlocking}:
           FirstPaintBasedGraphOpts<T>,
       ): {definitelyNotRenderBlockingScriptUrls: Set<string>, renderBlockingCpuNodeIds: Set<string>} {
     /** A map of blocking script URLs to the earliest EvaluateScript task node that executed them. */
-    const scriptUrlToNodeMap = new Map<string, CPUNode>();
+    const scriptUrlToNodeMap = new Map<string, Graph.CPUNode>();
 
-    const cpuNodes: CPUNode[] = [];
+    const cpuNodes: Graph.CPUNode[] = [];
     graph.traverse(node => {
-      if (node.type === BaseNode.types.CPU) {
+      if (node.type === Graph.BaseNode.types.CPU) {
         // A task is *possibly* render blocking if it *started* before cutoffTimestamp.
         // We use startTime here because the paint event can be *inside* the task that was render blocking.
         if (node.startTime <= cutoffTimestamp) {
@@ -132,10 +130,10 @@ class FirstContentfulPaint extends Metric {
    * Computes the graph required for the first paint of interest.
    */
   static getFirstPaintBasedGraph<T>(
-      dependencyGraph: Node,
+      dependencyGraph: Graph.Node,
       {cutoffTimestamp, treatNodeAsRenderBlocking, additionalCpuNodesToTreatAsRenderBlocking}:
           FirstPaintBasedGraphOpts<T>,
-      ): Node<T> {
+      ): Graph.Node<T> {
     const rbData = this.getRenderBlockingNodeData(dependencyGraph, {
       cutoffTimestamp,
       treatNodeAsRenderBlocking,
@@ -144,7 +142,7 @@ class FirstContentfulPaint extends Metric {
     const {definitelyNotRenderBlockingScriptUrls, renderBlockingCpuNodeIds} = rbData;
 
     return dependencyGraph.cloneWithRelationships(node => {
-      if (node.type === BaseNode.types.NETWORK) {
+      if (node.type === Graph.BaseNode.types.NETWORK) {
         // Exclude all nodes that ended after cutoffTimestamp (except for the main document which we always consider necessary)
         // endTime is negative if request does not finish, make sure startTime isn't after cutoffTimestamp in this case.
         const endedAfterPaint = node.endTime > cutoffTimestamp || node.startTime > cutoffTimestamp;
@@ -167,7 +165,7 @@ class FirstContentfulPaint extends Metric {
   }
 
   static override getOptimisticGraph<T>(
-      dependencyGraph: Node<T>, processedNavigation: Lantern.Simulation.ProcessedNavigation): Node<T> {
+      dependencyGraph: Graph.Node<T>, processedNavigation: Types.Simulation.ProcessedNavigation): Graph.Node<T> {
     return this.getFirstPaintBasedGraph(dependencyGraph, {
       cutoffTimestamp: processedNavigation.timestamps.firstContentfulPaint,
       // In the optimistic graph we exclude resources that appeared to be render blocking but were
@@ -178,7 +176,7 @@ class FirstContentfulPaint extends Metric {
   }
 
   static override getPessimisticGraph<T>(
-      dependencyGraph: Node<T>, processedNavigation: Lantern.Simulation.ProcessedNavigation): Node<T> {
+      dependencyGraph: Graph.Node<T>, processedNavigation: Types.Simulation.ProcessedNavigation): Graph.Node<T> {
     return this.getFirstPaintBasedGraph(dependencyGraph, {
       cutoffTimestamp: processedNavigation.timestamps.firstContentfulPaint,
       treatNodeAsRenderBlocking: node => node.hasRenderBlockingPriority(),

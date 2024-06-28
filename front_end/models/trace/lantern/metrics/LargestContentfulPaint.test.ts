@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 
 import * as Lantern from '../lantern.js';
-import {getComputationDataFromFixture, loadTrace} from '../testing/MetricTestUtils.js';
+import {getComputationDataFromFixture, loadTrace} from '../testing/testing.js';
 
 const {FirstContentfulPaint, LargestContentfulPaint} = Lantern.Metrics;
 
 describe('Metrics: Lantern LCP', () => {
-  let trace: Lantern.Trace;
+  let trace: Lantern.Types.Trace;
   before(async function() {
     trace = await loadTrace(this, 'lantern/paul/trace.json.gz');
   });

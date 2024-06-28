@@ -3,8 +3,27 @@
 // found in the LICENSE file.
 
 import type * as Protocol from '../../../../generated/protocol.js';
-import {type Node} from '../BaseNode.js';
-import {type Simulator} from '../simulation/Simulator.js';
+
+export const NetworkRequestTypes = {
+  XHR: 'XHR',
+  Fetch: 'Fetch',
+  EventSource: 'EventSource',
+  Script: 'Script',
+  Stylesheet: 'Stylesheet',
+  Image: 'Image',
+  Media: 'Media',
+  Font: 'Font',
+  Document: 'Document',
+  TextTrack: 'TextTrack',
+  WebSocket: 'WebSocket',
+  Other: 'Other',
+  Manifest: 'Manifest',
+  SignedExchange: 'SignedExchange',
+  Ping: 'Ping',
+  Preflight: 'Preflight',
+  CSPViolationReport: 'CSPViolationReport',
+  Prefetch: 'Prefetch',
+} as const;
 
 export type TraceEvent = {
   name: string,
@@ -29,9 +48,7 @@ export type Trace = {
   traceEvents: TraceEvent[],
 };
 export type ResourcePriority = ('VeryLow'|'Low'|'Medium'|'High'|'VeryHigh');
-export type ResourceType =
-    ('Document'|'Stylesheet'|'Image'|'Media'|'Font'|'Script'|'TextTrack'|'XHR'|'Fetch'|'Prefetch'|'EventSource'|
-     'WebSocket'|'Manifest'|'SignedExchange'|'Ping'|'CSPViolationReport'|'Preflight'|'Other');
+export type ResourceType = keyof typeof NetworkRequestTypes;
 type InitiatorType = ('parser'|'script'|'preload'|'SignedExchange'|'preflight'|'other');
 export type ResourceTiming = Protocol.Network.ResourceTiming;
 type CallStack = {
@@ -194,37 +211,9 @@ export namespace Simulation {
     };
   }
 
-  export interface MetricComputationDataInput {
-    simulator: Simulator;
-    graph: Node<unknown>;
-    processedNavigation: ProcessedNavigation;
-  }
-
-  export interface MetricCoefficients {
-    intercept: number;
-    optimistic: number;
-    pessimistic: number;
-  }
-
   export interface NodeTiming {
     startTime: number;
     endTime: number;
     duration: number;
-  }
-
-  export interface Result<T = AnyNetworkObject> {
-    timeInMs: number;
-    nodeTimings: Map<Node<T>, NodeTiming>;
-  }
-}
-
-export namespace Metrics {
-  export interface Result<T = AnyNetworkObject> {
-    timing: number;
-    timestamp?: never;
-    optimisticEstimate: Simulation.Result<T>;
-    pessimisticEstimate: Simulation.Result<T>;
-    optimisticGraph: Node<T>;
-    pessimisticGraph: Node<T>;
   }
 }

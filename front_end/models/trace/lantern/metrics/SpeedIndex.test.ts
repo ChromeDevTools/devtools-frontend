@@ -3,14 +3,14 @@
 // found in the LICENSE file.
 
 import * as Lantern from '../lantern.js';
-import {getComputationDataFromFixture, loadTrace} from '../testing/MetricTestUtils.js';
+import {getComputationDataFromFixture, loadTrace} from '../testing/testing.js';
 
 const {SpeedIndex, FirstContentfulPaint} = Lantern.Metrics;
 
 const defaultThrottling = Lantern.Simulation.Constants.throttling.mobileSlow4G;
 
 describe('Metrics: Lantern Speed Index', () => {
-  let trace: Lantern.Trace;
+  let trace: Lantern.Types.Trace;
   before(async function() {
     trace = await loadTrace(this, 'lantern/progressive-app/trace.json.gz');
   });
@@ -39,7 +39,7 @@ describe('Metrics: Lantern Speed Index', () => {
   });
 
   it('should compute predicted value for different settings', async () => {
-    const settings: Lantern.Simulation.Settings = {
+    const settings: Lantern.Types.Simulation.Settings = {
       throttlingMethod: 'simulate',
       throttling: {...defaultThrottling, rttMs: 300},
       // @ts-expect-error: not needed for test

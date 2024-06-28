@@ -8,14 +8,14 @@ import {TraceLoader} from '../../../../testing/TraceLoader.js';
 import * as TraceModel from '../../trace.js';
 import * as Lantern from '../lantern.js';
 
-async function loadTrace(context: Mocha.Context|Mocha.Suite|null, name: string): Promise<Lantern.Trace> {
+async function loadTrace(context: Mocha.Context|Mocha.Suite|null, name: string): Promise<Lantern.Types.Trace> {
   const traceEvents = await TraceLoader.rawEvents(context, name);
   return {
-    traceEvents: traceEvents as unknown as Lantern.TraceEvent[],
+    traceEvents: traceEvents as unknown as Lantern.Types.TraceEvent[],
   };
 }
 
-async function runTraceEngine(trace: Lantern.Trace) {
+async function runTraceEngine(trace: Lantern.Types.Trace) {
   const processor = TraceModel.Processor.TraceProcessor.createWithAllHandlers();
   await processor.parse(trace.traceEvents as TraceModel.Types.TraceEvents.TraceEventData[]);
   if (!processor.traceParsedData) {
@@ -24,16 +24,18 @@ async function runTraceEngine(trace: Lantern.Trace) {
   return processor.traceParsedData;
 }
 
-async function getComputationDataFromFixture(
-    {trace, settings, url}:
-        {trace: Lantern.Trace, settings?: Lantern.Simulation.Settings, url?: Lantern.Simulation.URL}) {
-  settings = settings ?? {} as Lantern.Simulation.Settings;
+async function getComputationDataFromFixture({trace, settings, url}: {
+  trace: Lantern.Types.Trace,
+  settings?: Lantern.Types.Simulation.Settings,
+  url?: Lantern.Types.Simulation.URL,
+}) {
+  settings = settings ?? {} as Lantern.Types.Simulation.Settings;
   if (!settings.throttlingMethod) {
     settings.throttlingMethod = 'simulate';
   }
   const traceEngineData = await runTraceEngine(trace);
   const requests = TraceModel.LanternComputationData.createNetworkRequests(trace, traceEngineData);
-  const networkAnalysis = Lantern.Simulation.NetworkAnalyzer.analyze(requests);
+  const networkAnalysis = Lantern.Core.NetworkAnalyzer.analyze(requests);
 
   return {
     simulator: Lantern.Simulation.Simulator.createSimulator({...settings, networkAnalysis}),

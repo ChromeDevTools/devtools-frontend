@@ -2,16 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {BaseNode, type Node} from '../BaseNode.js';
-import {type CPUNode} from '../CPUNode.js';
-import {type NetworkNode} from '../NetworkNode.js';
-import type * as Lantern from '../types/lantern.js';
+import * as Graph from '../graph/graph.js';
+import type * as Lantern from '../types/types.js';
 
 import {ConnectionPool} from './ConnectionPool.js';
 import {Constants} from './Constants.js';
 import {DNSCache} from './DNSCache.js';
 import {type CompleteNodeTiming, type ConnectionTiming, SimulatorTimingMap} from './SimulationTimingMap.js';
 import {TCPConnection} from './TCPConnection.js';
+
+export interface Result<T = Lantern.AnyNetworkObject> {
+  timeInMs: number;
+  nodeTimings: Map<Graph.Node<T>, Lantern.Simulation.NodeTiming>;
+}
 
 const defaultThrottling = Constants.throttling.mobileSlow4G;
 
@@ -37,7 +40,7 @@ const PriorityStartTimePenalty: Record<Lantern.ResourcePriority, number> = {
   VeryLow: 2,
 };
 
-const ALL_SIMULATION_NODE_TIMINGS = new Map<string, Map<Node, CompleteNodeTiming>>();
+const ALL_SIMULATION_NODE_TIMINGS = new Map<string, Map<Graph.Node, CompleteNodeTiming>>();
 
 class Simulator<T = Lantern.AnyNetworkObject> {
   static createSimulator(settings: Lantern.Simulation.Settings): Simulator {
@@ -94,10 +97,10 @@ class Simulator<T = Lantern.AnyNetworkObject> {
   _maximumConcurrentRequests: number;
   _cpuSlowdownMultiplier: number;
   _layoutTaskMultiplier: number;
-  _cachedNodeListByStartPosition: Node[];
+  _cachedNodeListByStartPosition: Graph.Node[];
   _nodeTimings: SimulatorTimingMap;
   _numberInProgressByType: Map<string, number>;
-  _nodes: Record<number, Set<Node>>;
+  _nodes: Record<number, Set<Graph.Node>>;
   _dns: DNSCache;
   _connectionPool: ConnectionPool;
 
@@ -147,10 +150,10 @@ class Simulator<T = Lantern.AnyNetworkObject> {
     return this._rtt;
   }
 
-  _initializeConnectionPool(graph: Node): void {
+  _initializeConnectionPool(graph: Graph.Node): void {
     const records: Lantern.NetworkRequest[] = [];
     graph.getRootNode().traverse(node => {
-      if (node.type === BaseNode.types.NETWORK) {
+      if (node.type === Graph.BaseNode.types.NETWORK) {
         records.push(node.request);
       }
     });
@@ -178,7 +181,7 @@ class Simulator<T = Lantern.AnyNetworkObject> {
     return this._numberInProgressByType.get(type) || 0;
   }
 
-  _markNodeAsReadyToStart(node: Node, queuedTime: number): void {
+  _markNodeAsReadyToStart(node: Graph.Node, queuedTime: number): void {
     const nodeStartPosition = Simulator._computeNodeStartPosition(node);
     const firstNodeIndexWithGreaterStartPosition = this._cachedNodeListByStartPosition.findIndex(
         candidate => Simulator._computeNodeStartPosition(candidate) > nodeStartPosition);
@@ -191,7 +194,7 @@ class Simulator<T = Lantern.AnyNetworkObject> {
     this._nodeTimings.setReadyToStart(node, {queuedTime});
   }
 
-  _markNodeAsInProgress(node: Node, startTime: number): void {
+  _markNodeAsInProgress(node: Graph.Node, startTime: number): void {
     const indexOfNodeToStart = this._cachedNodeListByStartPosition.indexOf(node);
     this._cachedNodeListByStartPosition.splice(indexOfNodeToStart, 1);
 
@@ -201,7 +204,7 @@ class Simulator<T = Lantern.AnyNetworkObject> {
     this._nodeTimings.setInProgress(node, {startTime});
   }
 
-  _markNodeAsComplete(node: Node, endTime: number, connectionTiming?: ConnectionTiming): void {
+  _markNodeAsComplete(node: Graph.Node, endTime: number, connectionTiming?: ConnectionTiming): void {
     this._nodes[NodeState.Complete].add(node);
     this._nodes[NodeState.InProgress].delete(node);
     this._numberInProgressByType.set(node.type, this._numberInProgress(node.type) - 1);
@@ -224,13 +227,13 @@ class Simulator<T = Lantern.AnyNetworkObject> {
     return this._connectionPool.acquire(request);
   }
 
-  _getNodesSortedByStartPosition(): Node[] {
+  _getNodesSortedByStartPosition(): Graph.Node[] {
     // Make a copy so we don't skip nodes due to concurrent modification
     return Array.from(this._cachedNodeListByStartPosition);
   }
 
-  _startNodeIfPossible(node: Node, totalElapsedTime: number): void {
-    if (node.type === BaseNode.types.CPU) {
+  _startNodeIfPossible(node: Graph.Node, totalElapsedTime: number): void {
+    if (node.type === Graph.BaseNode.types.CPU) {
       // Start a CPU task if there's no other CPU task in process
       if (this._numberInProgress(node.type) === 0) {
         this._markNodeAsInProgress(node, totalElapsedTime);
@@ -239,7 +242,7 @@ class Simulator<T = Lantern.AnyNetworkObject> {
       return;
     }
 
-    if (node.type !== BaseNode.types.NETWORK) {
+    if (node.type !== Graph.BaseNode.types.NETWORK) {
       throw new Error('Unsupported');
     }
 
@@ -264,7 +267,7 @@ class Simulator<T = Lantern.AnyNetworkObject> {
    * currently in flight.
    */
   _updateNetworkCapacity(): void {
-    const inFlight = this._numberInProgress(BaseNode.types.NETWORK);
+    const inFlight = this._numberInProgress(Graph.BaseNode.types.NETWORK);
     if (inFlight === 0) {
       return;
     }
@@ -277,17 +280,17 @@ class Simulator<T = Lantern.AnyNetworkObject> {
   /**
    * Estimates the number of milliseconds remaining given current condidtions before the node is complete.
    */
-  _estimateTimeRemaining(node: Node): number {
-    if (node.type === BaseNode.types.CPU) {
+  _estimateTimeRemaining(node: Graph.Node): number {
+    if (node.type === Graph.BaseNode.types.CPU) {
       return this._estimateCPUTimeRemaining(node);
     }
-    if (node.type === BaseNode.types.NETWORK) {
+    if (node.type === Graph.BaseNode.types.NETWORK) {
       return this._estimateNetworkTimeRemaining(node);
     }
     throw new Error('Unsupported');
   }
 
-  _estimateCPUTimeRemaining(cpuNode: CPUNode): number {
+  _estimateCPUTimeRemaining(cpuNode: Graph.CPUNode): number {
     const timingData = this._nodeTimings.getCpuStarted(cpuNode);
     const multiplier = cpuNode.didPerformLayout() ? this._layoutTaskMultiplier : this._cpuSlowdownMultiplier;
     const totalDuration = Math.min(
@@ -299,7 +302,7 @@ class Simulator<T = Lantern.AnyNetworkObject> {
     return estimatedTimeElapsed;
   }
 
-  _estimateNetworkTimeRemaining(networkNode: NetworkNode): number {
+  _estimateNetworkTimeRemaining(networkNode: Graph.NetworkNode): number {
     const request = networkNode.request;
     const timingData = this._nodeTimings.getNetworkStarted(networkNode);
 
@@ -351,11 +354,11 @@ class Simulator<T = Lantern.AnyNetworkObject> {
   /**
    * Given a time period, computes the progress toward completion that the node made durin that time.
    */
-  _updateProgressMadeInTimePeriod(node: Node, timePeriodLength: number, totalElapsedTime: number): void {
+  _updateProgressMadeInTimePeriod(node: Graph.Node, timePeriodLength: number, totalElapsedTime: number): void {
     const timingData = this._nodeTimings.getInProgress(node);
     const isFinished = timingData.estimatedTimeElapsed === timePeriodLength;
 
-    if (node.type === BaseNode.types.CPU || node.isConnectionless) {
+    if (node.type === Graph.BaseNode.types.CPU || node.isConnectionless) {
       if (isFinished) {
         this._markNodeAsComplete(node, totalElapsedTime);
       } else {
@@ -364,7 +367,7 @@ class Simulator<T = Lantern.AnyNetworkObject> {
       return;
     }
 
-    if (node.type !== BaseNode.types.NETWORK) {
+    if (node.type !== Graph.BaseNode.types.NETWORK) {
       throw new Error('Unsupported');
     }
     if (!('bytesDownloaded' in timingData)) {
@@ -400,17 +403,20 @@ class Simulator<T = Lantern.AnyNetworkObject> {
     }
   }
 
-  _computeFinalNodeTimings():
-      {nodeTimings: Map<Node, Lantern.Simulation.NodeTiming>, completeNodeTimings: Map<Node, CompleteNodeTiming>} {
-    const completeNodeTimingEntries: Array<[Node, CompleteNodeTiming]> = this._nodeTimings.getNodes().map(node => {
-      return [node, this._nodeTimings.getCompleted(node)];
-    });
+  _computeFinalNodeTimings(): {
+    nodeTimings: Map<Graph.Node, Lantern.Simulation.NodeTiming>,
+    completeNodeTimings: Map<Graph.Node, CompleteNodeTiming>,
+  } {
+    const completeNodeTimingEntries: Array<[Graph.Node, CompleteNodeTiming]> =
+        this._nodeTimings.getNodes().map(node => {
+          return [node, this._nodeTimings.getCompleted(node)];
+        });
 
     // Most consumers will want the entries sorted by startTime, so insert them in that order
     completeNodeTimingEntries.sort((a, b) => a[1].startTime - b[1].startTime);
 
     // Trimmed version of type `Lantern.Simulation.NodeTiming`.
-    const nodeTimingEntries: Array<[Node, Lantern.Simulation.NodeTiming]> =
+    const nodeTimingEntries: Array<[Graph.Node, Lantern.Simulation.NodeTiming]> =
         completeNodeTimingEntries.map(([node, timing]) => {
           return [
             node,
@@ -441,8 +447,8 @@ class Simulator<T = Lantern.AnyNetworkObject> {
    * wait around for a warm connection to be available if the original request was fetched on a warm
    * connection).
    */
-  simulate(graph: Node, options?: {label?: string}): Lantern.Simulation.Result<T> {
-    if (BaseNode.hasCycle(graph)) {
+  simulate(graph: Graph.Node, options?: {label?: string}): Result<T> {
+    if (Graph.BaseNode.hasCycle(graph)) {
       throw new Error('Cannot simulate graph with cycle');
     }
 
@@ -529,7 +535,7 @@ class Simulator<T = Lantern.AnyNetworkObject> {
     return Math.round(wastedMs / 10) * 10;
   }
 
-  static get allNodeTimings(): Map<string, Map<Node, CompleteNodeTiming>> {
+  static get allNodeTimings(): Map<string, Map<Graph.Node, CompleteNodeTiming>> {
     return ALL_SIMULATION_NODE_TIMINGS;
   }
 
@@ -538,7 +544,7 @@ class Simulator<T = Lantern.AnyNetworkObject> {
    * When simulating, just because a low priority image started 5ms before a high priority image doesn't mean
    * it would have happened like that when the network was slower.
    */
-  static _computeNodeStartPosition(node: Node): number {
+  static _computeNodeStartPosition(node: Graph.Node): number {
     if (node.type === 'cpu') {
       return node.startTime;
     }

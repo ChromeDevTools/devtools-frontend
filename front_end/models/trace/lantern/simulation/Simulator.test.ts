@@ -6,9 +6,9 @@
 
 import * as TraceModel from '../../trace.js';
 import * as Lantern from '../lantern.js';
-import {loadTrace, runTraceEngine} from '../testing/MetricTestUtils.js';
+import {loadTrace, runTraceEngine} from '../testing/testing.js';
 
-const {NetworkNode, CPUNode} = Lantern;
+const {NetworkNode, CPUNode} = Lantern.Graph;
 const {Simulator, DNSCache} = Lantern.Simulation;
 
 let nextRequestId = 1;

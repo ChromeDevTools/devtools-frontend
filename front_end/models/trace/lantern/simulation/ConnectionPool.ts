@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Lantern from '../types/lantern.js';
+import * as Core from '../core/core.js';
+import type * as Lantern from '../types/types.js';
 
-import {NetworkAnalyzer} from './NetworkAnalyzer.js';
 import {TCPConnection} from './TCPConnection.js';
 
 const DEFAULT_SERVER_RESPONSE_TIME = 30;
@@ -29,7 +29,7 @@ export class ConnectionPool {
     this._connectionsByOrigin = new Map();
     this._connectionsByRequest = new Map();
     this._connectionsInUse = new Set();
-    this._connectionReusedByRequestId = NetworkAnalyzer.estimateIfConnectionWasReused(records, {
+    this._connectionReusedByRequestId = Core.NetworkAnalyzer.estimateIfConnectionWasReused(records, {
       forceCoarseEstimates: true,
     });
 
@@ -45,7 +45,7 @@ export class ConnectionPool {
     const additionalRttByOrigin = this._options.additionalRttByOrigin;
     const serverResponseTimeByOrigin = this._options.serverResponseTimeByOrigin;
 
-    const recordsByOrigin = NetworkAnalyzer.groupByOrigin(this._records);
+    const recordsByOrigin = Core.NetworkAnalyzer.groupByOrigin(this._records);
     for (const [origin, requests] of recordsByOrigin.entries()) {
       const connections = [];
       const additionalRtt = additionalRttByOrigin.get(origin) || 0;

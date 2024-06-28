@@ -2,17 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {BaseNode, type Node} from '../BaseNode.js';
-import type * as Lantern from '../types/lantern.js';
+import * as Graph from '../graph/graph.js';
+import type * as Simulation from '../simulation/simulation.js';
 
-import {type Extras, Metric} from './Metric.js';
+import {
+  type Extras,
+  Metric,
+  type MetricCoefficients,
+  type MetricComputationDataInput,
+  type MetricResult,
+} from './Metric.js';
 
 // Any CPU task of 20 ms or more will end up being a critical long task on mobile
 const CRITICAL_LONG_TASK_THRESHOLD = 20;
 
 class Interactive extends Metric {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static override get coefficients(): Lantern.Simulation.MetricCoefficients {
+  static override get coefficients(): MetricCoefficients {
     return {
       intercept: 0,
       optimistic: 0.45,
@@ -20,13 +25,13 @@ class Interactive extends Metric {
     };
   }
 
-  static override getOptimisticGraph<T>(dependencyGraph: Node<T>): Node<T> {
+  static override getOptimisticGraph<T>(dependencyGraph: Graph.Node<T>): Graph.Node<T> {
     // Adjust the critical long task threshold for microseconds
     const minimumCpuTaskDuration = CRITICAL_LONG_TASK_THRESHOLD * 1000;
 
     return dependencyGraph.cloneWithRelationships(node => {
       // Include everything that might be a long task
-      if (node.type === BaseNode.types.CPU) {
+      if (node.type === Graph.BaseNode.types.CPU) {
         return node.duration > minimumCpuTaskDuration;
       }
 
@@ -37,12 +42,11 @@ class Interactive extends Metric {
     });
   }
 
-  static override getPessimisticGraph<T>(dependencyGraph: Node<T>): Node<T> {
+  static override getPessimisticGraph<T>(dependencyGraph: Graph.Node<T>): Graph.Node<T> {
     return dependencyGraph;
   }
 
-  static override getEstimateFromSimulation(simulationResult: Lantern.Simulation.Result, extras: Extras):
-      Lantern.Simulation.Result {
+  static override getEstimateFromSimulation(simulationResult: Simulation.Result, extras: Extras): Simulation.Result {
     if (!extras.lcpResult) {
       throw new Error('missing lcpResult');
     }
@@ -56,9 +60,8 @@ class Interactive extends Metric {
     };
   }
 
-  static override async compute(
-      data: Lantern.Simulation.MetricComputationDataInput,
-      extras?: Omit<Extras, 'optimistic'>): Promise<Lantern.Metrics.Result> {
+  static override async compute(data: MetricComputationDataInput, extras?: Omit<Extras, 'optimistic'>):
+      Promise<MetricResult> {
     const lcpResult = extras?.lcpResult;
     if (!lcpResult) {
       throw new Error('LCP is required to calculate the Interactive metric');
@@ -69,10 +72,10 @@ class Interactive extends Metric {
     return metricResult;
   }
 
-  static getLastLongTaskEndTime(nodeTimings: Lantern.Simulation.Result['nodeTimings'], duration = 50): number {
+  static getLastLongTaskEndTime(nodeTimings: Simulation.Result['nodeTimings'], duration = 50): number {
     return Array.from(nodeTimings.entries())
         .filter(([node, timing]) => {
-          if (node.type !== BaseNode.types.CPU) {
+          if (node.type !== Graph.BaseNode.types.CPU) {
             return false;
           }
           return timing.duration > duration;

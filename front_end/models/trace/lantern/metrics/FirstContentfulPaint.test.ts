@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 
 import * as Lantern from '../lantern.js';
-import {getComputationDataFromFixture, loadTrace} from '../testing/MetricTestUtils.js';
+import {getComputationDataFromFixture, loadTrace} from '../testing/testing.js';
 
 const {FirstContentfulPaint} = Lantern.Metrics;
 
 describe('Metrics: Lantern FCP', () => {
-  let trace: Lantern.Trace;
+  let trace: Lantern.Types.Trace;
   before(async function() {
     trace = await loadTrace(this, 'lantern/progressive-app/trace.json.gz');
   });
@@ -42,7 +42,7 @@ describe('Metrics: Lantern FCP', () => {
     data.graph.request.networkEndTime = -1;
     const result = await FirstContentfulPaint.compute(data);
 
-    const optimisticNodes: Lantern.NetworkNode[] = [];
+    const optimisticNodes: Lantern.Graph.NetworkNode[] = [];
     result.optimisticGraph.traverse(node => {
       if (node.type === 'network') {
         optimisticNodes.push(node);
@@ -50,7 +50,7 @@ describe('Metrics: Lantern FCP', () => {
     });
     expect(optimisticNodes.map(node => node.request.url)).to.deep.equal(['https://squoosh.app/']);
 
-    const pessimisticNodes: Lantern.NetworkNode[] = [];
+    const pessimisticNodes: Lantern.Graph.NetworkNode[] = [];
     result.pessimisticGraph.traverse(node => {
       if (node.type === 'network') {
         pessimisticNodes.push(node);

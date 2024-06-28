@@ -2,14 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {BaseNode, type Node} from '../BaseNode.js';
-import type * as Lantern from '../types/lantern.js';
+import * as Graph from '../graph/graph.js';
+import type * as Simulation from '../simulation/simulation.js';
 
-import {type Extras, Metric} from './Metric.js';
+import {
+  type Extras,
+  Metric,
+  type MetricCoefficients,
+  type MetricComputationDataInput,
+  type MetricResult,
+} from './Metric.js';
 
 class MaxPotentialFID extends Metric {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static override get coefficients(): Lantern.Simulation.MetricCoefficients {
+  static override get coefficients(): MetricCoefficients {
     return {
       intercept: 0,
       optimistic: 0.5,
@@ -17,16 +22,15 @@ class MaxPotentialFID extends Metric {
     };
   }
 
-  static override getOptimisticGraph(dependencyGraph: Node): Node {
+  static override getOptimisticGraph(dependencyGraph: Graph.Node): Graph.Node {
     return dependencyGraph;
   }
 
-  static override getPessimisticGraph(dependencyGraph: Node): Node {
+  static override getPessimisticGraph(dependencyGraph: Graph.Node): Graph.Node {
     return dependencyGraph;
   }
 
-  static override getEstimateFromSimulation(simulation: Lantern.Simulation.Result, extras: Extras):
-      Lantern.Simulation.Result {
+  static override getEstimateFromSimulation(simulation: Simulation.Result, extras: Extras): Simulation.Result {
     if (!extras.fcpResult) {
       throw new Error('missing fcpResult');
     }
@@ -47,8 +51,8 @@ class MaxPotentialFID extends Metric {
     };
   }
 
-  static override compute(data: Lantern.Simulation.MetricComputationDataInput, extras?: Omit<Extras, 'optimistic'>):
-      Promise<Lantern.Metrics.Result> {
+  static override compute(data: MetricComputationDataInput, extras?: Omit<Extras, 'optimistic'>):
+      Promise<MetricResult> {
     const fcpResult = extras?.fcpResult;
     if (!fcpResult) {
       throw new Error('FCP is required to calculate the Max Potential FID metric');
@@ -57,10 +61,10 @@ class MaxPotentialFID extends Metric {
     return super.compute(data, extras);
   }
 
-  static getTimingsAfterFCP(nodeTimings: Lantern.Simulation.Result['nodeTimings'], fcpTimeInMs: number):
+  static getTimingsAfterFCP(nodeTimings: Simulation.Result['nodeTimings'], fcpTimeInMs: number):
       Array<{duration: number}> {
     return Array.from(nodeTimings.entries())
-        .filter(([node, timing]) => node.type === BaseNode.types.CPU && timing.endTime > fcpTimeInMs)
+        .filter(([node, timing]) => node.type === Graph.BaseNode.types.CPU && timing.endTime > fcpTimeInMs)
         .map(([_, timing]) => timing);
   }
 }

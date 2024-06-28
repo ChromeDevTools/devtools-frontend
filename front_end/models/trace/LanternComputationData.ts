@@ -8,10 +8,10 @@ import * as Handlers from './handlers/handlers.js';
 import * as Lantern from './lantern/lantern.js';
 import type * as Types from './types/types.js';
 
-type NetworkRequest = Lantern.NetworkRequest<Types.TraceEvents.SyntheticNetworkRequest>;
+type NetworkRequest = Lantern.Types.NetworkRequest<Types.TraceEvents.SyntheticNetworkRequest>;
 
 function createProcessedNavigation(traceEngineData: Handlers.Types.TraceParseData):
-    Lantern.Simulation.ProcessedNavigation {
+    Lantern.Types.Simulation.ProcessedNavigation {
   const Meta = traceEngineData.Meta;
   const frameId = Meta.mainFrameId;
   const scoresByNav = traceEngineData.PageLoadMetrics.metricScoresByFrameId.get(frameId);
@@ -48,7 +48,7 @@ function createProcessedNavigation(traceEngineData: Handlers.Types.TraceParseDat
   };
 }
 
-function createParsedUrl(url: URL|string): Lantern.ParsedURL {
+function createParsedUrl(url: URL|string): Lantern.Types.ParsedURL {
   if (typeof url === 'string') {
     url = new URL(url);
   }
@@ -63,7 +63,7 @@ function createParsedUrl(url: URL|string): Lantern.ParsedURL {
 /**
  * Returns a map of `pid` -> `tid[]`.
  */
-function findWorkerThreads(trace: Lantern.Trace): Map<number, number[]> {
+function findWorkerThreads(trace: Lantern.Types.Trace): Map<number, number[]> {
   // TODO: WorkersHandler in TraceEngine needs to be updated to also include `pid` (only had `tid`).
   const workerThreads = new Map();
   const workerCreationEvents = ['ServiceWorker thread', 'DedicatedWorker thread'];
@@ -130,7 +130,7 @@ function createLanternRequest(
   // events over the CDP. This results in less accuracy in determining the initiator request,
   // which means less edges in the graph, which mean worse results.
   // TODO: Should fix in Chromium.
-  const initiator: Lantern.NetworkRequest['initiator'] =
+  const initiator: Lantern.Types.NetworkRequest['initiator'] =
       request.args.data.initiator ?? {type: Protocol.Network.InitiatorType.Other};
   if (request.args.data.stackTrace) {
     const callFrames = request.args.data.stackTrace.map(f => {
@@ -210,7 +210,7 @@ function chooseInitiatorRequest(request: NetworkRequest, requestsByURL: Map<stri
     return request.redirectSource;
   }
 
-  const initiatorURL = Lantern.PageDependencyGraph.getNetworkInitiators(request)[0];
+  const initiatorURL = Lantern.Graph.PageDependencyGraph.getNetworkInitiators(request)[0];
   let candidates = requestsByURL.get(initiatorURL) || [];
   // The (valid) initiator must come before the initiated request.
   candidates = candidates.filter(c => {
@@ -219,7 +219,8 @@ function chooseInitiatorRequest(request: NetworkRequest, requestsByURL: Map<stri
   if (candidates.length > 1) {
     // Disambiguate based on prefetch. Prefetch requests have type 'Other' and cannot
     // initiate requests, so we drop them here.
-    const nonPrefetchCandidates = candidates.filter(cand => cand.resourceType !== Lantern.NetworkRequestTypes.Other);
+    const nonPrefetchCandidates =
+        candidates.filter(cand => cand.resourceType !== Lantern.Types.NetworkRequestTypes.Other);
     if (nonPrefetchCandidates.length) {
       candidates = nonPrefetchCandidates;
     }
@@ -233,7 +234,8 @@ function chooseInitiatorRequest(request: NetworkRequest, requestsByURL: Map<stri
   }
   if (candidates.length > 1 && request.initiator.type === 'parser') {
     // Filter to just Documents when initiator type is parser.
-    const documentCandidates = candidates.filter(cand => cand.resourceType === Lantern.NetworkRequestTypes.Document);
+    const documentCandidates =
+        candidates.filter(cand => cand.resourceType === Lantern.Types.NetworkRequestTypes.Document);
     if (documentCandidates.length) {
       candidates = documentCandidates;
     }
@@ -271,7 +273,8 @@ function linkInitiators(lanternRequests: NetworkRequest[]): void {
   }
 }
 
-function createNetworkRequests(trace: Lantern.Trace, traceEngineData: Handlers.Types.TraceParseData): NetworkRequest[] {
+function createNetworkRequests(
+    trace: Lantern.Types.Trace, traceEngineData: Handlers.Types.TraceParseData): NetworkRequest[] {
   const workerThreads = findWorkerThreads(trace);
 
   const lanternRequests: NetworkRequest[] = [];
@@ -364,7 +367,7 @@ function createNetworkRequests(trace: Lantern.Trace, traceEngineData: Handlers.T
 }
 
 function collectMainThreadEvents(
-    trace: Lantern.Trace, traceEngineData: Handlers.Types.TraceParseData): Lantern.TraceEvent[] {
+    trace: Lantern.Types.Trace, traceEngineData: Handlers.Types.TraceParseData): Lantern.Types.TraceEvent[] {
   const Meta = traceEngineData.Meta;
   const mainFramePids = Meta.mainFrameNavigations.length ? new Set(Meta.mainFrameNavigations.map(nav => nav.pid)) :
                                                            Meta.topLevelRendererIds;
@@ -401,8 +404,9 @@ function collectMainThreadEvents(
 }
 
 function createGraph(
-    requests: Lantern.NetworkRequest[], trace: Lantern.Trace, traceEngineData: Handlers.Types.TraceParseData,
-    url?: Lantern.Simulation.URL): Lantern.Node<Types.TraceEvents.SyntheticNetworkRequest> {
+    requests: Lantern.Types.NetworkRequest[], trace: Lantern.Types.Trace,
+    traceEngineData: Handlers.Types.TraceParseData,
+    url?: Lantern.Types.Simulation.URL): Lantern.Graph.Node<Types.TraceEvents.SyntheticNetworkRequest> {
   const mainThreadEvents = collectMainThreadEvents(trace, traceEngineData);
 
   // url defines the initial request that the Lantern graph starts at (the root node) and the
@@ -420,7 +424,7 @@ function createGraph(
     url.mainDocumentUrl = request.url;
   }
 
-  return Lantern.PageDependencyGraph.createGraph(mainThreadEvents, requests, url);
+  return Lantern.Graph.PageDependencyGraph.createGraph(mainThreadEvents, requests, url);
 }
 
 export {

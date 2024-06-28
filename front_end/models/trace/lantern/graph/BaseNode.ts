@@ -4,7 +4,7 @@
 
 import {type CPUNode} from './CPUNode.js';
 import {type NetworkNode} from './NetworkNode.js';
-import type * as Lantern from './types/lantern.js';
+import type * as Lantern from '../types/types.js';
 
 /**
  * A union of all types derived from BaseNode, allowing type check discrimination

@@ -10,9 +10,7 @@
  * as nodes are queued, partially simulated, and completed.
  */
 
-import {BaseNode, type Node} from '../BaseNode.js';
-import {type CPUNode} from '../CPUNode.js';
-import {type NetworkNode} from '../NetworkNode.js';
+import * as Graph from '../graph/graph.js';
 
 interface NodeTimingComplete {
   startTime: number;
@@ -48,21 +46,21 @@ export interface ConnectionTiming {
 }
 
 class SimulatorTimingMap {
-  _nodeTimings: Map<Node, NodeTimingData>;
+  _nodeTimings: Map<Graph.Node, NodeTimingData>;
 
   constructor() {
-    this._nodeTimings = new Map<Node, NodeTimingData>();
+    this._nodeTimings = new Map<Graph.Node, NodeTimingData>();
   }
 
-  getNodes(): Node[] {
+  getNodes(): Graph.Node[] {
     return Array.from(this._nodeTimings.keys());
   }
 
-  setReadyToStart(node: Node, values: {queuedTime: number}): void {
+  setReadyToStart(node: Graph.Node, values: {queuedTime: number}): void {
     this._nodeTimings.set(node, values);
   }
 
-  setInProgress(node: Node, values: {startTime: number}): void {
+  setInProgress(node: Graph.Node, values: {startTime: number}): void {
     const nodeTiming = {
       ...this.getQueued(node),
       startTime: values.startTime,
@@ -71,12 +69,12 @@ class SimulatorTimingMap {
 
     this._nodeTimings.set(
         node,
-        node.type === BaseNode.types.NETWORK ? {...nodeTiming, timeElapsedOvershoot: 0, bytesDownloaded: 0} :
-                                               nodeTiming,
+        node.type === Graph.BaseNode.types.NETWORK ? {...nodeTiming, timeElapsedOvershoot: 0, bytesDownloaded: 0} :
+                                                     nodeTiming,
     );
   }
 
-  setCompleted(node: Node, values: {endTime: number, connectionTiming?: ConnectionTiming}): void {
+  setCompleted(node: Graph.Node, values: {endTime: number, connectionTiming?: ConnectionTiming}): void {
     const nodeTiming = {
       ...this.getInProgress(node),
       endTime: values.endTime,
@@ -86,7 +84,7 @@ class SimulatorTimingMap {
     this._nodeTimings.set(node, nodeTiming);
   }
 
-  setCpu(node: CPUNode, values: {timeElapsed: number}): void {
+  setCpu(node: Graph.CPUNode, values: {timeElapsed: number}): void {
     const nodeTiming = {
       ...this.getCpuStarted(node),
       timeElapsed: values.timeElapsed,
@@ -95,7 +93,7 @@ class SimulatorTimingMap {
     this._nodeTimings.set(node, nodeTiming);
   }
 
-  setCpuEstimated(node: CPUNode, values: {estimatedTimeElapsed: number}): void {
+  setCpuEstimated(node: Graph.CPUNode, values: {estimatedTimeElapsed: number}): void {
     const nodeTiming = {
       ...this.getCpuStarted(node),
       estimatedTimeElapsed: values.estimatedTimeElapsed,
@@ -104,8 +102,9 @@ class SimulatorTimingMap {
     this._nodeTimings.set(node, nodeTiming);
   }
 
-  setNetwork(node: NetworkNode, values: {timeElapsed: number, timeElapsedOvershoot: number, bytesDownloaded: number}):
-      void {
+  setNetwork(
+      node: Graph.NetworkNode,
+      values: {timeElapsed: number, timeElapsedOvershoot: number, bytesDownloaded: number}): void {
     const nodeTiming = {
       ...this.getNetworkStarted(node),
       timeElapsed: values.timeElapsed,
@@ -116,7 +115,7 @@ class SimulatorTimingMap {
     this._nodeTimings.set(node, nodeTiming);
   }
 
-  setNetworkEstimated(node: NetworkNode, values: {estimatedTimeElapsed: number}): void {
+  setNetworkEstimated(node: Graph.NetworkNode, values: {estimatedTimeElapsed: number}): void {
     const nodeTiming = {
       ...this.getNetworkStarted(node),
       estimatedTimeElapsed: values.estimatedTimeElapsed,
@@ -125,7 +124,7 @@ class SimulatorTimingMap {
     this._nodeTimings.set(node, nodeTiming);
   }
 
-  getQueued(node: Node): NodeTimingData {
+  getQueued(node: Graph.Node): NodeTimingData {
     const timing = this._nodeTimings.get(node);
     if (!timing) {
       throw new Error(`Node ${node.id} not yet queued`);
@@ -133,7 +132,7 @@ class SimulatorTimingMap {
     return timing;
   }
 
-  getCpuStarted(node: CPUNode): CpuNodeTimingStarted {
+  getCpuStarted(node: Graph.CPUNode): CpuNodeTimingStarted {
     const timing = this._nodeTimings.get(node);
     if (!timing) {
       throw new Error(`Node ${node.id} not yet queued`);
@@ -147,7 +146,7 @@ class SimulatorTimingMap {
     return timing;
   }
 
-  getNetworkStarted(node: NetworkNode): NetworkNodeTimingStarted {
+  getNetworkStarted(node: Graph.NetworkNode): NetworkNodeTimingStarted {
     const timing = this._nodeTimings.get(node);
     if (!timing) {
       throw new Error(`Node ${node.id} not yet queued`);
@@ -161,7 +160,7 @@ class SimulatorTimingMap {
     return timing;
   }
 
-  getInProgress(node: Node): CpuNodeTimingInProgress|NetworkNodeTimingInProgress {
+  getInProgress(node: Graph.Node): CpuNodeTimingInProgress|NetworkNodeTimingInProgress {
     const timing = this._nodeTimings.get(node);
     if (!timing) {
       throw new Error(`Node ${node.id} not yet queued`);
@@ -175,7 +174,7 @@ class SimulatorTimingMap {
     return timing;
   }
 
-  getCompleted(node: Node): CpuNodeTimingComplete|NetworkNodeTimingComplete {
+  getCompleted(node: Graph.Node): CpuNodeTimingComplete|NetworkNodeTimingComplete {
     const timing = this._nodeTimings.get(node);
     if (!timing) {
       throw new Error(`Node ${node.id} not yet queued`);

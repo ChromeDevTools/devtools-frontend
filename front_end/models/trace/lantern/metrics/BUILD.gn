@@ -1,0 +1,56 @@
+# Copyright 2024 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../../third_party/typescript/typescript.gni")
+import("../../../visibility.gni")
+
+devtools_module("metrics") {
+  sources = [
+    "FirstContentfulPaint.ts",
+    "Interactive.ts",
+    "LargestContentfulPaint.ts",
+    "MaxPotentialFID.ts",
+    "Metric.ts",
+    "SpeedIndex.ts",
+    "TBTUtils.ts",
+    "TotalBlockingTime.ts",
+  ]
+
+  deps = [
+    "../core:bundle",
+    "../graph:bundle",
+    "../simulation:bundle",
+    "../types:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "metrics.ts"
+  deps = [ ":metrics" ]
+  visibility = [
+    ":*",
+    "../*",
+  ]
+
+  visibility += devtools_models_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "FirstContentfulPaint.test.ts",
+    "Interactive.test.ts",
+    "LargestContentfulPaint.test.ts",
+    "SpeedIndex.test.ts",
+    "TBTUtils.test.ts",
+  ]
+
+  deps = [
+    "../:bundle",
+    "../testing:bundle",
+  ]
+}

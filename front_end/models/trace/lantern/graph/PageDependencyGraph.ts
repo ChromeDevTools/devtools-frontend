@@ -5,8 +5,8 @@
 import {type Node} from './BaseNode.js';
 import {CPUNode} from './CPUNode.js';
 import {NetworkNode} from './NetworkNode.js';
-import {NetworkAnalyzer} from './simulation/NetworkAnalyzer.js';
-import type * as Lantern from './types/lantern.js';
+import * as Core from '../core/core.js';
+import type * as Lantern from '../types/types.js';
 
 // COMPAT: m71+ We added RunTask to `disabled-by-default-lighthouse`
 const SCHEDULABLE_TASK_TITLE_LH = 'RunTask';
@@ -527,7 +527,7 @@ class PageDependencyGraph {
       throw new Error('mainDocumentUrl is required to get the main resource');
     }
 
-    const rootRequest = NetworkAnalyzer.findResourceForUrl(networkRequests, requestedUrl);
+    const rootRequest = Core.NetworkAnalyzer.findResourceForUrl(networkRequests, requestedUrl);
     if (!rootRequest) {
       throw new Error('rootRequest not found');
     }
@@ -535,7 +535,7 @@ class PageDependencyGraph {
     if (!rootNode) {
       throw new Error('rootNode not found');
     }
-    const mainDocumentRequest = NetworkAnalyzer.findLastDocumentForUrl(networkRequests, mainDocumentUrl);
+    const mainDocumentRequest = Core.NetworkAnalyzer.findLastDocumentForUrl(networkRequests, mainDocumentUrl);
     if (!mainDocumentRequest) {
       throw new Error('mainDocumentRequest not found');
     }

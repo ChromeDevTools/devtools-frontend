@@ -4,9 +4,10 @@
 
 // @ts-nocheck TODO(crbug.com/348449529)
 
-import * as Lantern from './lantern.js';
+import * as Lantern from '../lantern.js';
 
-const {PageDependencyGraph, NetworkRequestTypes} = Lantern;
+const {NetworkRequestTypes} = Lantern.Types;
+const {PageDependencyGraph} = Lantern.Graph;
 
 function createRequest(
     requestId,

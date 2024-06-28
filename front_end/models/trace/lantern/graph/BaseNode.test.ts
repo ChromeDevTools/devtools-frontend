@@ -4,9 +4,9 @@
 
 // @ts-nocheck TODO(crbug.com/348449529)
 
-import * as Lantern from './lantern.js';
+import * as Lantern from '../lantern.js';
 
-const {BaseNode, NetworkNode} = Lantern;
+const {BaseNode, NetworkNode} = Lantern.Graph;
 
 function sortedById(nodeArray: Lantern.Node[]) {
   return nodeArray.sort((node1, node2) => node1.id.localeCompare(node2.id));

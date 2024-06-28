@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {BaseNode} from './BaseNode.js';
-import type * as Lantern from './types/lantern.js';
+import type * as Lantern from '../types/types.js';
 
 class CPUNode<T = Lantern.AnyNetworkObject> extends BaseNode<T> {
   _event: Lantern.TraceEvent;

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {BaseNode} from './BaseNode.js';
-import type * as Lantern from './types/lantern.js';
+import type * as Lantern from '../types/types.js';
 
 const NON_NETWORK_SCHEMES = [
   'blob',        // @see https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL

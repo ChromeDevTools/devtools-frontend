@@ -8,33 +8,13 @@ import("../../../../third_party/typescript/typescript.gni")
 import("../../visibility.gni")
 
 devtools_module("lantern") {
-  sources = [
-    "BaseNode.ts",
-    "CPUNode.ts",
-    "LanternError.ts",
-    "MetricsModule.ts",
-    "NetworkNode.ts",
-    "PageDependencyGraph.ts",
-    "SimulationModule.ts",
-    "metrics/FirstContentfulPaint.ts",
-    "metrics/Interactive.ts",
-    "metrics/LargestContentfulPaint.ts",
-    "metrics/MaxPotentialFID.ts",
-    "metrics/Metric.ts",
-    "metrics/SpeedIndex.ts",
-    "metrics/TBTUtils.ts",
-    "metrics/TotalBlockingTime.ts",
-    "simulation/ConnectionPool.ts",
-    "simulation/Constants.ts",
-    "simulation/DNSCache.ts",
-    "simulation/NetworkAnalyzer.ts",
-    "simulation/SimulationTimingMap.ts",
-    "simulation/Simulator.ts",
-    "simulation/TCPConnection.ts",
-    "types/lantern.ts",
+  deps = [
+    "core:bundle",
+    "graph:bundle",
+    "metrics:bundle",
+    "simulation:bundle",
+    "types:bundle",
   ]
-
-  deps = [ "../types:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
@@ -46,29 +26,4 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility += devtools_models_visibility
-}
-
-ts_library("unittests") {
-  testonly = true
-
-  sources = [
-    "BaseNode.test.ts",
-    "PageDependencyGraph.test.ts",
-    "metrics/FirstContentfulPaint.test.ts",
-    "metrics/Interactive.test.ts",
-    "metrics/LargestContentfulPaint.test.ts",
-    "metrics/SpeedIndex.test.ts",
-    "metrics/TBTUtils.test.ts",
-    "simulation/ConnectionPool.test.ts",
-    "simulation/DNSCache.test.ts",
-    "simulation/NetworkAnalyzer.test.ts",
-    "simulation/Simulator.test.ts",
-    "simulation/TCPConnection.test.ts",
-    "testing/MetricTestUtils.ts",
-  ]
-
-  deps = [
-    "../:bundle",
-    "../../../testing",
-  ]
 }

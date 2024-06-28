@@ -1,0 +1,47 @@
+# Copyright 2024 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../../third_party/typescript/typescript.gni")
+import("../../../visibility.gni")
+
+devtools_module("graph") {
+  sources = [
+    "BaseNode.ts",
+    "CPUNode.ts",
+    "NetworkNode.ts",
+    "PageDependencyGraph.ts",
+  ]
+
+  deps = [
+    "../core:bundle",
+    "../types:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "graph.ts"
+  deps = [ ":graph" ]
+  visibility = [
+    ":*",
+    "../*",
+  ]
+
+  visibility += devtools_models_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "BaseNode.test.ts",
+    "PageDependencyGraph.test.ts",
+  ]
+
+  deps = [
+    "../:bundle",
+    "../testing:bundle",
+  ]
+}

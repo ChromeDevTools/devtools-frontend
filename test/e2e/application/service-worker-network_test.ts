@@ -4,7 +4,11 @@
 import {unregisterAllServiceWorkers} from '../../conductor/hooks.js';
 import {click, getBrowserAndPages, step} from '../../shared/helper.js';
 import {beforeEach, describe, it} from '../../shared/mocha-extensions.js';
-import {doubleClickSourceTreeItem, navigateToApplicationTab} from '../helpers/application-helpers.js';
+import {
+  doubleClickSourceTreeItem,
+  navigateToApplicationTab,
+  unregisterServiceWorker,
+} from '../helpers/application-helpers.js';
 import {tabExistsInDrawer, tabExistsInMainPanel} from '../helpers/cross-tool-helper.js';
 import {closeDrawer} from '../helpers/quick_open-helpers.js';
 
@@ -35,5 +39,7 @@ describe('The Application Tab', () => {
          await closeDrawer();
          await tabExistsInMainPanel(NETWORK_TAB_SELECTOR);
        });
+
+       await unregisterServiceWorker();
      });
 });

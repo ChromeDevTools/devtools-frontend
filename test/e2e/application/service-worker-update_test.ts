@@ -6,7 +6,11 @@ import {assert} from 'chai';
 import {unregisterAllServiceWorkers} from '../../conductor/hooks.js';
 import {getBrowserAndPages, step, waitFor} from '../../shared/helper.js';
 import {beforeEach, describe, it} from '../../shared/mocha-extensions.js';
-import {navigateToApplicationTab, navigateToServiceWorkers} from '../helpers/application-helpers.js';
+import {
+  navigateToApplicationTab,
+  navigateToServiceWorkers,
+  unregisterServiceWorker,
+} from '../helpers/application-helpers.js';
 
 const TEST_HTML_FILE = 'service-worker-network';
 const SERVICE_WORKER_UPDATE_TIMELINE_SELECTOR = '.service-worker-update-timing-table';
@@ -27,5 +31,6 @@ describe('The Application Tab', function() {
       const timeline = await waitFor(SERVICE_WORKER_UPDATE_TIMELINE_SELECTOR);
       assert.isDefined(timeline);
     });
+    await unregisterServiceWorker();
   });
 });

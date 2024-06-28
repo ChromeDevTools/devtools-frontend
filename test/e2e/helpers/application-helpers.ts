@@ -4,7 +4,16 @@
 
 import type * as puppeteer from 'puppeteer-core';
 
-import {$, $$, click, getBrowserAndPages, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
+import {
+  $,
+  $$,
+  click,
+  getBrowserAndPages,
+  goToResource,
+  waitFor,
+  waitForFunction,
+  waitForNone,
+} from '../../shared/helper.js';
 
 export async function navigateToApplicationTab(_target: puppeteer.Page, testName: string) {
   const {target, frontend} = getBrowserAndPages();
@@ -159,4 +168,12 @@ export async function getPieChartLegendRows() {
     return rows;
   });
   return rows;
+}
+
+export async function unregisterServiceWorker() {
+  const UNREGISTER_SERVICE_WORKER_SELECTOR = '[title="Unregister service worker"]';
+  await click('#tab-resources');
+  await navigateToServiceWorkers();
+  await click(UNREGISTER_SERVICE_WORKER_SELECTOR);
+  await waitForNone(UNREGISTER_SERVICE_WORKER_SELECTOR);
 }

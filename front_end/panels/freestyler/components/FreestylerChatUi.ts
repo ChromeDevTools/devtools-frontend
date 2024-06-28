@@ -252,13 +252,18 @@ export class FreestylerChatUi extends HTMLElement {
 
   #renderStep(step: StepData): LitHtml.TemplateResult {
     if (step.step === Step.ACTION) {
+      // clang-format off
       return LitHtml.html`
         <div class="action-result">
-          <${MarkdownView.CodeBlock.CodeBlock.litTagName} .code=${step.code.trim()} .codeLang="js" .displayToolbar=${
-          false}></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
+          <${MarkdownView.CodeBlock.CodeBlock.litTagName}
+            .code=${step.code.trim()}
+            .codeLang=${'js'}
+            .displayToolbar=${false}
+          ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
           <div class="js-code-output">${step.output}</div>
         </div>
       `;
+      // clang-format on
     }
 
     if (step.step === Step.ERROR) {

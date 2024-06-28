@@ -133,6 +133,17 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     }
   });
 
+  it('parses colors in logical border properties', () => {
+    for (const success
+             of ['border-block-end', 'border-block-end-color', 'border-block-start', 'border-block-start-color',
+                 'border-inline-end', 'border-inline-end-color', 'border-inline-start', 'border-inline-start-color']) {
+      const {ast, match, text} = matchSingleValue(success, 'red', new Elements.PropertyMatchers.ColorMatcher());
+      assert.exists(match, text);
+      assert.strictEqual(match.text, 'red');
+      assert.strictEqual(ast?.propertyName, success);
+    }
+  });
+
   it('parses linear gradients', () => {
     for (const succeed
              of ['linear-gradient(90deg, red, blue)', 'linear-gradient(to top left, red, blue)',

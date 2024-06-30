@@ -47,43 +47,43 @@ describe('ConnectionPool', () => {
     it('should create the pool', () => {
       const pool = new ConnectionPool([request()], simulationOptions({rtt, throughput}));
       // Make sure 6 connections are created for each origin
-      assert.strictEqual(pool._connectionsByOrigin.get('http://example.com').length, 6);
+      assert.strictEqual(pool.connectionsByOrigin.get('http://example.com').length, 6);
       // Make sure it populates connectionWasReused
-      assert.strictEqual(pool._connectionReusedByRequestId.get('1'), false);
+      assert.strictEqual(pool.connectionReusedByRequestId.get('1'), false);
 
-      const connection = pool._connectionsByOrigin.get('http://example.com')[0];
-      assert.strictEqual(connection._rtt, rtt);
-      assert.strictEqual(connection._throughput, throughput);
-      assert.strictEqual(connection._serverLatency, 30);  // sets to default value
+      const connection = pool.connectionsByOrigin.get('http://example.com')[0];
+      assert.strictEqual(connection.rtt, rtt);
+      assert.strictEqual(connection.throughput, throughput);
+      assert.strictEqual(connection.serverLatency, 30);  // sets to default value
     });
 
     it('should set TLS properly', () => {
       const recordA = request({url: 'https://example.com'});
       const pool = new ConnectionPool([recordA], simulationOptions({rtt, throughput}));
-      const connection = pool._connectionsByOrigin.get('https://example.com')[0];
-      assert.ok(connection._ssl, 'should have set connection TLS');
+      const connection = pool.connectionsByOrigin.get('https://example.com')[0];
+      assert.ok(connection.ssl, 'should have set connection TLS');
     });
 
     it('should set H2 properly', () => {
       const recordA = request({protocol: 'h2'});
       const pool = new ConnectionPool([recordA], simulationOptions({rtt, throughput}));
-      const connection = pool._connectionsByOrigin.get('http://example.com')[0];
+      const connection = pool.connectionsByOrigin.get('http://example.com')[0];
       assert.ok(connection.isH2(), 'should have set HTTP/2');
-      assert.strictEqual(pool._connectionsByOrigin.get('http://example.com').length, 1);
+      assert.strictEqual(pool.connectionsByOrigin.get('http://example.com').length, 1);
     });
 
     it('should set origin-specific RTT properly', () => {
       const additionalRttByOrigin = new Map([['http://example.com', 63]]);
       const pool = new ConnectionPool([request()], simulationOptions({rtt, throughput, additionalRttByOrigin}));
-      const connection = pool._connectionsByOrigin.get('http://example.com')[0];
-      assert.ok(connection._rtt, rtt + 63);
+      const connection = pool.connectionsByOrigin.get('http://example.com')[0];
+      assert.ok(connection.rtt, rtt + 63);
     });
 
     it('should set origin-specific server latency properly', () => {
       const serverResponseTimeByOrigin = new Map([['http://example.com', 63]]);
       const pool = new ConnectionPool([request()], simulationOptions({rtt, throughput, serverResponseTimeByOrigin}));
-      const connection = pool._connectionsByOrigin.get('http://example.com')[0];
-      assert.ok(connection._serverLatency, 63);
+      const connection = pool.connectionsByOrigin.get('http://example.com')[0];
+      assert.ok(connection.serverLatency, 63);
     });
   });
 
@@ -123,13 +123,13 @@ describe('ConnectionPool', () => {
       const coldRecord = request();
       const warmRecord = request();
       const pool = new ConnectionPool([coldRecord, warmRecord], simulationOptions({rtt, throughput}));
-      pool._connectionReusedByRequestId.set(warmRecord.requestId, true);
+      pool.connectionReusedByRequestId.set(warmRecord.requestId, true);
 
       assert.ok(pool.acquire(coldRecord), 'should have acquired connection');
       assert.ok(pool.acquire(warmRecord), 'should have acquired connection');
       pool.release(coldRecord);
 
-      for (const connection of pool._connectionsByOrigin.get('http://example.com')) {
+      for (const connection of pool.connectionsByOrigin.get('http://example.com')) {
         connection.setWarmed(true);
       }
 
@@ -142,11 +142,11 @@ describe('ConnectionPool', () => {
       const recordB = request();
       const recordC = request();
       const pool = new ConnectionPool([recordA, recordB, recordC], simulationOptions({rtt, throughput}));
-      pool._connectionReusedByRequestId.set(recordA.requestId, true);
-      pool._connectionReusedByRequestId.set(recordB.requestId, true);
-      pool._connectionReusedByRequestId.set(recordC.requestId, true);
+      pool.connectionReusedByRequestId.set(recordA.requestId, true);
+      pool.connectionReusedByRequestId.set(recordB.requestId, true);
+      pool.connectionReusedByRequestId.set(recordC.requestId, true);
 
-      const [connectionWarm, connectionWarmer, connectionWarmest] = pool._connectionsByOrigin.get('http://example.com');
+      const [connectionWarm, connectionWarmer, connectionWarmest] = pool.connectionsByOrigin.get('http://example.com');
       connectionWarm.setWarmed(true);
       connectionWarm.setCongestionWindow(10);
       connectionWarmer.setWarmed(true);

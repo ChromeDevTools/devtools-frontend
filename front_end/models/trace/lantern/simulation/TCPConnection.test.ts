@@ -13,7 +13,7 @@ describe('TCPConnection', () => {
       const throughput = 1600 * 1024;
       const connection = new TCPConnection(rtt, throughput);
       assert.ok(connection);
-      assert.strictEqual(connection._rtt, rtt);
+      assert.strictEqual(connection.rtt, rtt);
     });
   });
 

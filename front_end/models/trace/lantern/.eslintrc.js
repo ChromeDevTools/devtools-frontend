@@ -7,12 +7,10 @@ const rulesDirPlugin = require('eslint-plugin-rulesdir');
 rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', 'scripts', 'eslint_rules', 'lib');
 
 module.exports = {
-  'overrides' : [{
-    'files' : ['*.ts'],
-    'rules' : {
-      '@typescript-eslint/no-unused-vars' : ['error', {'argsIgnorePattern' : '^_'}],
-      // TODO(crbug.com/348449529): off due to Lantern needing more refactoring.
-      'rulesdir/no_underscored_properties' : 'off',
+  overrides : [{
+    files : ['*.ts'],
+    rules : {
+      '@typescript-eslint/no-unused-vars' : ['error', {argsIgnorePattern : '^_'}],
     }
   }]
 };

@@ -987,6 +987,13 @@ export const generatedProperties = [
  },
  {
   "keywords": [
+   "slice",
+   "clone"
+  ],
+  "name": "box-decoration-break"
+ },
+ {
+  "keywords": [
    "none"
   ],
   "name": "box-shadow"
@@ -4161,6 +4168,12 @@ export const generatedPropertyValues = {
  "bottom": {
   "values": [
    "auto"
+  ]
+ },
+ "box-decoration-break": {
+  "values": [
+   "slice",
+   "clone"
   ]
  },
  "box-shadow": {

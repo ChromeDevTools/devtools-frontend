@@ -1043,6 +1043,11 @@ export const NativeFunctions = [
     receivers: ["IdleDetector"]
   },
   {
+    name: "start",
+    signatures: [["?track"]],
+    receivers: ["SpeechRecognition"]
+  },
+  {
     name: "close",
     signatures: [["?returnValue"]],
     receivers: ["HTMLDialogElement"]
@@ -8093,6 +8098,10 @@ export const NativeFunctions = [
   },
   {
     name: "readReceivedAcks",
+    signatures: [["maxCount"]]
+  },
+  {
+    name: "readSentRtp",
     signatures: [["maxCount"]]
   },
   {

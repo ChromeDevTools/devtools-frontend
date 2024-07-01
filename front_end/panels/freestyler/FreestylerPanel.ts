@@ -137,7 +137,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       }
 
       this.#viewProps.selectedNode = ev.data;
-      this.#clearMessages();
+      this.doUpdate();
     });
     this.doUpdate();
   }
@@ -182,12 +182,12 @@ export class FreestylerPanel extends UI.Panel.Panel {
     switch (actionId) {
       case 'freestyler.element-panel-context': {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.FreestylerOpenedFromElementsPanel);
-        this.#clearMessages();
+        this.doUpdate();
         break;
       }
       case 'freestyler.style-tab-context': {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.FreestylerOpenedFromStylesTab);
-        this.#clearMessages();
+        this.doUpdate();
         break;
       }
     }

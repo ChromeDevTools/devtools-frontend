@@ -9,9 +9,9 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
 import {
-  type ChatMessage,
   ChatMessageEntity,
   FreestylerChatUi,
+  type ModelChatMessage,
   type Props as FreestylerChatUiProps,
   State as FreestylerChatUiState,
 } from './components/FreestylerChatUi.js';
@@ -215,33 +215,35 @@ export class FreestylerPanel extends UI.Panel.Panel {
       text,
     });
     this.#viewProps.isLoading = true;
-    const systemMessage: ChatMessage = {
+    let systemMessage: ModelChatMessage = {
       entity: ChatMessageEntity.MODEL,
       steps: [],
     };
-    this.#viewProps.messages.push(systemMessage);
     this.doUpdate();
 
     this.#runAbortController = new AbortController();
 
     const signal = this.#runAbortController.signal;
     signal.addEventListener('abort', () => {
+      systemMessage.rpcId = undefined;
       systemMessage.steps.push({step: Step.ERROR, text: i18nString(TempUIStrings.stoppedResponse)});
     });
     for await (const data of this.#agent.run(text, {signal})) {
+      if (data.step === Step.QUERYING) {
+        systemMessage = {
+          entity: ChatMessageEntity.MODEL,
+          steps: [],
+        };
+        this.#viewProps.messages.push(systemMessage);
+        this.doUpdate();
+        continue;
+      }
+
       if (data.step === Step.ANSWER || data.step === Step.ERROR) {
         this.#viewProps.isLoading = false;
       }
 
-      // There can be multiple steps from the same call from the agent.
-      // We want to show `rate answer` buttons for the full response.
-      // That's why we're removing the `rpcId` from the previous step
-      // if there is a new incoming step from the call with the same rpcId.
-      const lastStep = systemMessage.steps.at(-1);
-      if (lastStep && lastStep.rpcId && lastStep.rpcId === data.rpcId) {
-        delete lastStep.rpcId;
-      }
-
+      systemMessage.rpcId = data.rpcId;
       systemMessage.steps.push(data);
       this.doUpdate();
     }

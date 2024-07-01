@@ -12,7 +12,7 @@ import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
-import {Step, type StepData} from '../FreestylerAgent.js';
+import {type ActionStepData, type CommonStepData, Step, type StepData} from '../FreestylerAgent.js';
 
 import freestylerChatUiStyles from './freestylerChatUi.css.js';
 
@@ -108,18 +108,22 @@ function getInputPlaceholderString(aidaAvailability: Host.AidaClient.AidaAvailab
   }
 }
 
-export enum ChatMessageEntity {
+export const enum ChatMessageEntity {
   MODEL = 'model',
   USER = 'user',
 }
 
-export type ChatMessage = {
-  entity: ChatMessageEntity.USER,
-  text: string,
-}|{
-  entity: ChatMessageEntity.MODEL,
-  steps: StepData[],
-};
+export interface UserChatMessage {
+  entity: ChatMessageEntity.USER;
+  text: string;
+}
+export interface ModelChatMessage {
+  entity: ChatMessageEntity.MODEL;
+  rpcId?: number;
+  steps: Array<ActionStepData|CommonStepData>;
+}
+
+export type ChatMessage = UserChatMessage|ModelChatMessage;
 
 export const enum State {
   CONSENT_VIEW = 'consent-view',
@@ -281,17 +285,15 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format off
     return LitHtml.html`
       <div class="chat-message answer">
-        ${message.steps.map(
-          step =>
-            LitHtml.html`${this.#renderStep(step)}${
-              step.rpcId !== undefined
-                ? this.#renderRateButtons(step.rpcId)
-                : LitHtml.nothing
-            }`,
-        )}
+        ${message.steps.map(step => LitHtml.html`${this.#renderStep(step)}`)}
+        ${
+          message.rpcId !== undefined
+            ? LitHtml.html`${this.#renderRateButtons(message.rpcId)}`
+            : LitHtml.nothing
+        }
         ${
           this.#props.isLoading && isLast
-            ? LitHtml.html`<div class='chat-loading' >Loading...</div>`
+            ? LitHtml.html`<div class="chat-loading" >Loading...</div>`
             : LitHtml.nothing
         }
       </div>

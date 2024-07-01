@@ -58,18 +58,27 @@ export enum Step {
   ACTION = 'action',
   ANSWER = 'answer',
   ERROR = 'error',
+  QUERYING = 'querying',
 }
 
-export type StepData = {
-  step: Step.THOUGHT|Step.ANSWER|Step.ERROR,
-  text: string,
-  rpcId?: number,
-}|{
-  step: Step.ACTION,
-  code: string,
-  output: string,
-  rpcId?: number,
-};
+export interface CommonStepData {
+  step: Step.THOUGHT|Step.ANSWER|Step.ERROR;
+  text: string;
+  rpcId?: number;
+}
+
+export interface ActionStepData {
+  step: Step.ACTION;
+  code: string;
+  output: string;
+  rpcId?: number;
+}
+
+export interface QueryStepData {
+  step: Step.QUERYING;
+}
+
+export type StepData = CommonStepData|ActionStepData;
 
 async function executeJsCode(code: string): Promise<string> {
   const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
@@ -216,7 +225,7 @@ export class FreestylerAgent {
   }
 
   #runId = 0;
-  async * run(query: string, options?: {signal: AbortSignal}): AsyncGenerator<StepData, void, void> {
+  async * run(query: string, options?: {signal: AbortSignal}): AsyncGenerator<StepData|QueryStepData, void, void> {
     const structuredLog = [];
     query = `QUERY: ${query}`;
     const currentRunId = ++this.#runId;
@@ -225,6 +234,8 @@ export class FreestylerAgent {
       this.#chatHistory.delete(currentRunId);
     });
     for (let i = 0; i < MAX_STEPS; i++) {
+      yield {step: Step.QUERYING};
+
       const request =
           FreestylerAgent.buildRequest(query, preamble, this.#chatHistory.size ? this.#getHistoryEntry : undefined);
       let response: string;

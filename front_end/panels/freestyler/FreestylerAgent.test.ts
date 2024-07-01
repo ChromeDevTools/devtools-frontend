@@ -343,11 +343,16 @@ c`;
       });
 
       const steps = await Array.fromAsync(agent.run('test'));
-      assert.deepStrictEqual(steps, [{
-                               step: Freestyler.Step.ANSWER,
-                               text: 'this is the answer',
-                               rpcId: undefined,
-                             }]);
+      assert.deepStrictEqual(steps, [
+        {
+          step: Freestyler.Step.QUERYING,
+        },
+        {
+          step: Freestyler.Step.ANSWER,
+          text: 'this is the answer',
+          rpcId: undefined,
+        },
+      ]);
       sinon.assert.notCalled(execJs);
       assert.deepStrictEqual(agent.chatHistoryForTesting, [
         {
@@ -377,11 +382,16 @@ c`;
       });
 
       const steps = await Array.fromAsync(agent.run('test'));
-      assert.deepStrictEqual(steps, [{
-                               step: Freestyler.Step.ANSWER,
-                               text: 'this is the answer',
-                               rpcId: 123,
-                             }]);
+      assert.deepStrictEqual(steps, [
+        {
+          step: Freestyler.Step.QUERYING,
+        },
+        {
+          step: Freestyler.Step.ANSWER,
+          text: 'this is the answer',
+          rpcId: 123,
+        },
+      ]);
     });
 
     it('generates a response if nothing is returned', async () => {
@@ -398,11 +408,16 @@ c`;
         execJs,
       });
       const steps = await Array.fromAsync(agent.run('test'));
-      assert.deepStrictEqual(steps, [{
-                               step: Freestyler.Step.ANSWER,
-                               text: 'Sorry, I could not help you with this query.',
-                               rpcId: undefined,
-                             }]);
+      assert.deepStrictEqual(steps, [
+        {
+          step: Freestyler.Step.QUERYING,
+        },
+        {
+          step: Freestyler.Step.ANSWER,
+          text: 'Sorry, I could not help you with this query.',
+          rpcId: undefined,
+        },
+      ]);
       sinon.assert.notCalled(execJs);
       assert.deepStrictEqual(agent.chatHistoryForTesting, [
         {

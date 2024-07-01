@@ -369,7 +369,7 @@ export class ConsoleInsight extends HTMLElement {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRatedNegative);
     }
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.registerAidaClientEvent(JSON.stringify({
-      client: 'CHROME_DEVTOOLS',
+      client: Host.AidaClient.CLIENT_NAME,
       event_time: new Date().toISOString(),
       corresponding_aida_rpc_global_id: this.#state.metadata?.rpcGlobalId,
       do_conversation_client_event: {

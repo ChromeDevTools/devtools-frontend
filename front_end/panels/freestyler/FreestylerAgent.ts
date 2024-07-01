@@ -136,7 +136,7 @@ export class FreestylerAgent {
       preamble,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       chat_history: chatHistory,
-      client: 'CHROME_DEVTOOLS',
+      client: Host.AidaClient.CLIENT_NAME,
       options: {
         temperature: config?.devToolsFreestylerDogfood.aidaTemperature ?? 0,
         model_id: config?.devToolsFreestylerDogfood.aidaModelId ?? undefined,

@@ -73,11 +73,13 @@ export enum AidaAvailability {
   NO_INTERNET = 'no-internet',
 }
 
+export const CLIENT_NAME = 'CHROME_DEVTOOLS';
+
 export class AidaClient {
   static buildConsoleInsightsRequest(input: string): AidaRequest {
     const request: AidaRequest = {
       input,
-      client: 'CHROME_DEVTOOLS',
+      client: CLIENT_NAME,
       functionality_type: FunctionalityType.EXPLAIN_ERROR,
       client_feature: ClientFeature.CHROME_CONSOLE_INSIGHTS,
     };

@@ -302,20 +302,38 @@ export class FreestylerChatUi extends HTMLElement {
   };
 
   #renderSelectAnElement = (): LitHtml.TemplateResult => {
+    const data: Omit<Buttons.Button.ButtonData, 'variant'> = {
+      size: Buttons.Button.Size.SMALL,
+      iconName: 'select-element',
+      toggledIconName: 'select-element',
+      toggleType: Buttons.Button.ToggleType.PRIMARY,
+      toggled: this.#props.inspectElementToggled,
+      title: i18nString(TempUIStrings.selectAnElement),
+    };
+
     // clang-format off
-    return LitHtml.html`
-      <${Buttons.Button.Button.litTagName} .data=${{
-        variant: Buttons.Button.Variant.TEXT,
-        size: Buttons.Button.Size.SMALL,
-        iconName: 'select-element',
-        toggledIconName: 'select-element',
-        toggleType: Buttons.Button.ToggleType.PRIMARY,
-        toggled: this.#props.inspectElementToggled,
-        title: i18nString(TempUIStrings.sendButtonTitle),
-      } as Buttons.Button.ButtonData} @click=${this.#props.onInspectElementClick}>
-        <span class="select-an-element-text">${i18nString(TempUIStrings.selectAnElement)}</span>
-      </${Buttons.Button.Button.litTagName}>
-    `;
+    return this.#props.selectedNode
+      ? LitHtml.html`
+        <${Buttons.Button.Button.litTagName}
+          .data=${{
+            variant: Buttons.Button.Variant.ICON_TOGGLE,
+            ...data,
+          } as Buttons.Button.ButtonData}
+          @click=${this.#props.onInspectElementClick}
+        ></${Buttons.Button.Button.litTagName}>
+        ${LitHtml.Directives.until(
+          Common.Linkifier.Linkifier.linkify(this.#props.selectedNode),
+        )}`
+      : LitHtml.html`
+        <${Buttons.Button.Button.litTagName}
+          .data=${{
+            variant: Buttons.Button.Variant.TEXT,
+            ...data,
+          } as Buttons.Button.ButtonData}
+          @click=${this.#props.onInspectElementClick}
+        ><span class="select-an-element-text">${i18nString(
+          TempUIStrings.selectAnElement,
+        )}</span></${Buttons.Button.Button.litTagName}>`;
     // clang-format on
   };
 
@@ -354,13 +372,7 @@ export class FreestylerChatUi extends HTMLElement {
         }
         <form class="input-form" @submit=${this.#handleSubmit}>
           <div class="dom-node-link-container">
-            ${
-              this.#props.selectedNode
-                ? LitHtml.Directives.until(
-                    Common.Linkifier.Linkifier.linkify(this.#props.selectedNode),
-                  )
-                : this.#renderSelectAnElement()
-            }
+            ${this.#renderSelectAnElement()}
           </div>
           <div class="chat-input-container">
             <input type="text" class="chat-input" .disabled=${isTextInputDisabled}

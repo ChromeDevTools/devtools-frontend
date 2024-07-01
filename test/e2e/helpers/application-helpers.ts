@@ -15,6 +15,7 @@ import {
   waitForNone,
 } from '../../shared/helper.js';
 
+import {veImpression} from './visual-logging-helpers.js';
 export async function navigateToApplicationTab(_target: puppeteer.Page, testName: string) {
   const {target, frontend} = getBrowserAndPages();
   await target.bringToFront();
@@ -176,4 +177,49 @@ export async function unregisterServiceWorker() {
   await navigateToServiceWorkers();
   await click(UNREGISTER_SERVICE_WORKER_SELECTOR);
   await waitForNone(UNREGISTER_SERVICE_WORKER_SELECTOR);
+}
+export function veImpressionForApplicationPanel() {
+  return veImpression('Panel', 'resources', [
+    veImpression('Pane', 'sidebar', [
+      veImpression('Tree', undefined, [
+        veImpression('TreeItem', 'application', [
+          veImpression('Expand'),
+          veImpression('TreeItem', 'manifest', [veImpression('Expand')]),
+          veImpression('TreeItem', 'service-workers'),
+          veImpression('TreeItem', 'storage'),
+        ]),
+        veImpression('TreeItem', 'storage', [
+          veImpression('Expand'),
+          veImpression('TreeItem', 'cache-storage'),
+          veImpression('TreeItem', 'cookies', [veImpression('Expand')]),
+          veImpression('TreeItem', 'indexed-db'),
+          veImpression('TreeItem', 'interest-groups'),
+          veImpression('TreeItem', 'local-storage', [veImpression('Expand')]),
+          veImpression('TreeItem', 'private-state-tokens'),
+          veImpression('TreeItem', 'session-storage', [veImpression('Expand')]),
+          veImpression('TreeItem', 'shared-storage'),
+          veImpression('TreeItem', 'storage-buckets'),
+        ]),
+        veImpression('TreeItem', 'background-services', [
+          veImpression('Expand'),
+          veImpression('TreeItem', 'background-fetch'),
+          veImpression('TreeItem', 'background-sync'),
+          veImpression('TreeItem', 'bfcache'),
+          veImpression('TreeItem', 'bounce-tracking-mitigations'),
+          veImpression('TreeItem', 'notifications'),
+          veImpression('TreeItem', 'payment-handler'),
+          veImpression('TreeItem', 'periodic-background-sync'),
+          veImpression('TreeItem', 'preloading', [veImpression('Expand')]),
+          veImpression('TreeItem', 'push-messaging'),
+          veImpression('TreeItem', 'reporting-api'),
+        ]),
+        veImpression('TreeItem', 'frames', [
+          veImpression('Expand'),
+          veImpression('TreeItem', 'frame', [veImpression('Expand')]),
+        ]),
+      ]),
+    ]),
+    veImpression('Pane', 'manifest', [
+    ]),
+  ]);
 }

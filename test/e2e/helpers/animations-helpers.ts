@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 import {click, goToResource, waitFor} from '../../shared/helper.js';
+
 import {openPanelViaMoreTools} from './settings-helpers.js';
+import {veImpression} from './visual-logging-helpers.js';
 
 export async function waitForAnimationsPanelToLoad() {
   // Open panel and wait for content
@@ -21,4 +23,20 @@ export async function waitForAnimationContent() {
   await click('.animation-buffer-preview[aria-label="Animation Preview 1"]', {clickOptions: {offset: {x: 0, y: 0}}});
   await waitFor('.animation-node-row');
   await waitFor('svg.animation-ui');
+}
+
+export function veImpressionForAnimationsPanel() {
+  return veImpression('Panel', 'animations', [
+    veImpression(
+        'Toolbar', undefined,
+        [
+          veImpression('Action', 'animations.playback-rate-100'),
+          veImpression('Action', 'animations.playback-rate-25'),
+          veImpression('Action', 'animations.playback-rate-10'),
+          veImpression('Action', 'animations.clear'),
+          veImpression('Toggle', 'animations.pause-resume-all'),
+        ]),
+    veImpression('Timeline', 'animations.grid-header'),
+    veImpression('Action', 'animations.play-replay-pause-animation-group'),
+  ]);
 }

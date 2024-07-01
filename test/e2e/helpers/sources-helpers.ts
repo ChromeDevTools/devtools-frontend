@@ -35,6 +35,7 @@ import {
 
 import {openSoftContextMenuAndClickOnItem} from './context-menu-helpers.js';
 import {reloadDevTools} from './cross-tool-helper.js';
+import {veImpression} from './visual-logging-helpers.js';
 
 export const ACTIVE_LINE = '.CodeMirror-activeline > pre > span';
 export const PAUSE_BUTTON = '[aria-label="Pause script execution"]';
@@ -867,4 +868,80 @@ export async function isPrettyPrinted(): Promise<boolean> {
   const prettyButton = await waitFor('[aria-label="Pretty print"]');
   const isPretty = await prettyButton.evaluate(e => e.ariaPressed);
   return isPretty === 'true';
+}
+
+export function veImpressionForSourcesPanel() {
+  return veImpression('Panel', 'sources', [
+    veImpression(
+        'Toolbar', 'debug',
+        [
+          veImpression('Toggle', 'debugger.toggle-pause'),
+          veImpression('Action', 'debugger.step-over'),
+          veImpression('Action', 'debugger.step-into'),
+          veImpression('Action', 'debugger.step-out'),
+          veImpression('Action', 'debugger.step'),
+          veImpression('Toggle', 'debugger.toggle-breakpoints-active'),
+        ]),
+    veImpression(
+        'Pane', 'debug',
+        [
+          veImpression('SectionHeader', 'sources.watch'),
+          veImpression('SectionHeader', 'sources.js-breakpoints'),
+          veImpression('SectionHeader', 'sources.scope-chain'),
+          veImpression('SectionHeader', 'sources.callstack'),
+          veImpression('SectionHeader', 'sources.xhr-breakpoints'),
+          veImpression('SectionHeader', 'sources.dom-breakpoints'),
+          veImpression('SectionHeader', 'sources.global-listeners'),
+          veImpression('SectionHeader', 'sources.event-listener-breakpoints'),
+          veImpression('SectionHeader', 'sources.csp-violation-breakpoints'),
+          veImpression('Section', 'sources.scope-chain'),
+          veImpression('Section', 'sources.callstack'),
+          veImpression(
+              'Section', 'sources.js-breakpoints',
+              [
+                veImpression('Toggle', 'pause-uncaught'),
+                veImpression('Toggle', 'pause-on-caught-exception'),
+              ]),
+        ]),
+    veImpression(
+        'Pane', 'editor',
+        [
+          veImpression('Toolbar', 'bottom'),
+          veImpression(
+              'Toolbar', 'top',
+              [
+                veImpression('ToggleSubpane', 'navigator'),
+                veImpression('ToggleSubpane', 'debugger'),
+              ]),
+        ]),
+    veImpression(
+        'Toolbar', 'navigator',
+        [
+          veImpression('DropDown', 'more-tabs'),
+          veImpression('PanelTabHeader', 'navigator-network'),
+          veImpression('PanelTabHeader', 'navigator-files'),
+          veImpression('DropDown', 'more-options'),
+        ]),
+    veImpression(
+        'Pane', 'navigator-network',
+        [
+          veImpression(
+              'Tree', undefined,
+              [
+                veImpression(
+                    'TreeItem', 'frame',
+                    [
+                      veImpression('Expand'),
+                      veImpression(
+                          'TreeItem', 'domain',
+                          [
+                            veImpression('Expand'),
+                            veImpression('TreeItem', 'document', [
+                              veImpression('Value', 'title'),
+                            ]),
+                          ]),
+                    ]),
+              ]),
+        ]),
+  ]);
 }

@@ -19,6 +19,8 @@ import {
   waitForFunction,
 } from '../../shared/helper.js';
 
+import {veImpression} from './visual-logging-helpers.js';
+
 export const CONSOLE_TAB_SELECTOR = '#tab-console';
 export const CONSOLE_MESSAGES_SELECTOR = '.console-group-messages';
 export const CONSOLE_MESSAGES_TEXT_SELECTOR = '.source-code .console-message-text';
@@ -341,4 +343,22 @@ export async function checkCommandStacktrace(
     command: string, expected: string, leastMessages: number = 1, offset: number = 0) {
   await typeIntoConsoleAndWaitForResult(getBrowserAndPages().frontend, command, leastMessages);
   await unifyLogVM(await getLastConsoleStacktrace(offset), expected);
+}
+
+export function veImpressionForConsolePanel() {
+  return veImpression('Panel', 'console', [
+    veImpression(
+        'Toolbar', undefined,
+        [
+          veImpression('ToggleSubpane', 'console-sidebar'),
+          veImpression('Action', 'console.clear'),
+          veImpression('DropDown', 'javascript-context'),
+          veImpression('Action', 'console.create-pin'),
+          veImpression('DropDown', 'log-level'),
+          veImpression('Counter', 'issues'),
+          veImpression('ToggleSubpane', 'console-settings'),
+          veImpression('TextField'),
+        ]),
+    veImpression('TextField', 'console-prompt'),
+  ]);
 }

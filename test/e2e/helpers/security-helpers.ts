@@ -6,6 +6,7 @@ import {click, closePanelTab, getBrowserAndPages, typeText, waitFor, waitForNone
 
 import {openCommandMenu} from './quick_open-helpers.js';
 import {openPanelViaMoreTools} from './settings-helpers.js';
+import {veImpression} from './visual-logging-helpers.js';
 
 const SECURITY_PANEL_CONTENT = '.view-container[aria-label="Security panel"]';
 const SECURITY_TAB_SELECTOR = '#tab-security';
@@ -46,4 +47,20 @@ export async function openSecurityPanelFromCommandMenu() {
   await frontend.keyboard.press('Enter');
   await securityTabExists();
   await securityPanelContentIsLoaded();
+}
+
+export function veImpressionForSecurityPanel() {
+  return veImpression('Panel', 'security', [
+    veImpression(
+        'Pane', 'sidebar',
+        [
+          veImpression(
+              'Tree', undefined,
+              [
+                veImpression('TreeItem'),
+                veImpression('TreeItem', undefined, [veImpression('TreeItem'), veImpression('Expand')]),
+              ]),
+        ]),
+    veImpression('Pane', 'security.main-view'),
+  ]);
 }

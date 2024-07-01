@@ -9,7 +9,6 @@ import {
   $textContent,
   clickElement,
   disableExperiment,
-  enableExperiment,
   getTestServerPort,
   step,
   typeText,
@@ -330,7 +329,7 @@ describe('The Network Tab', function() {
   this.timeout(5000);
 
   beforeEach(async () => {
-    await enableExperiment('network-panel-filter-bar-redesign');
+    await reloadDevTools({enableExperiments: ['network-panel-filter-bar-redesign']});
 
     await navigateToNetworkTab('empty.html');
     await setCacheDisabled(true);
@@ -379,7 +378,7 @@ describe('The Network Tab', function() {
 
     await categoryXHRFilter.click();
 
-    await reloadDevTools({selectedPanel: {name: 'network'}});
+    await reloadDevTools({selectedPanel: {name: 'network'}, enableExperiments: ['network-panel-filter-bar-redesign']});
     const filterText = await getTextFilterContent();
     assert.strictEqual(filterText, 'foo');
 

@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 
 import {$$, getBrowserAndPages, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
-
 import {openCommandMenu} from '../helpers/quick_open-helpers.js';
+
+import {veImpression} from './visual-logging-helpers.js';
 
 const PANEL_ROOT_SELECTOR = 'div[aria-label="Changes panel"]';
 
@@ -36,4 +37,13 @@ export async function waitForNewChanges(initialChanges: string[]) {
     newChanges = await getChangesList();
     return newChanges.length !== initialChanges.length;
   });
+}
+
+export function veImpressionForChangesPanel() {
+  return veImpression('Panel', 'changes', [
+    veImpression('Pane', 'sidebar'),
+    veImpression('Section', 'empty-view'),
+    veImpression(
+        'Toolbar', undefined, [veImpression('Action', 'changes.copy'), veImpression('Action', 'changes.revert')]),
+  ]);
 }

@@ -151,7 +151,6 @@ export function veImpressionForDrawerToolbar(options?: {
 }
 
 export async function expectVeImpressions(expectedImpressions: string[]) {
-  const startTime = performance.now();
   const {frontend} = getBrowserAndPages();
   const actualEvents =
       // @ts-ignore
@@ -164,7 +163,6 @@ export async function expectVeImpressions(expectedImpressions: string[]) {
   }
 
   const {match, description} = compareVeImpressions(actualImpressions, expectedImpressions);
-  console.error('expectVeImpressions took', performance.now() - startTime);
   assert.isTrue(
       match,
       description + '\nAll VE Events:\n' +

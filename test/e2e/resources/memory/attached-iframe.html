@@ -6,7 +6,8 @@
 <h1>Memory Panel (Heap profiler) Test</h1>
 <script>
   var frame = document.createElement('iframe');
-  frame.src = 'data:text/html,<script>class Retainer{}; var aUniqueName = new Retainer();<'+
+  frame.src = 'data:text/html,<script>class Retainer{}; var aUniqueName = new Retainer();'+
+                    'aUniqueName.prop=\'searchable string\';<' +
                     '/script>';
   document.body.appendChild(frame);
   frame.addEventListener("load", function() {

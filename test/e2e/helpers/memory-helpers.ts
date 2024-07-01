@@ -191,18 +191,6 @@ const normalizRetainerName = (retainerName: string) => {
     }
     return 'InternalNode';
   }
-
-  // Blink is changing its representation of HTML elements from WebIDL names
-  // like 'HTMLDivElement' to start tags like '<div id="something">'. The
-  // following is a temporary workaround to make tests pass with or without the
-  // upcoming change.
-  // TODO (343341610): Remove this.
-  if (retainerName === 'Detached HTMLDivElement') {
-    retainerName = 'Detached <div>';
-  } else if (retainerName === 'HTMLBodyElement') {
-    retainerName = '<body>';
-  }
-
   return retainerName;
 };
 

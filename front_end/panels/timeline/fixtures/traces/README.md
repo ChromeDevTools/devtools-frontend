@@ -196,3 +196,7 @@ Created from the speculation-rules demo page (https://speculative-rules.glitch.m
 
 ### enhanced-traces
 Contains traces with metadata needed to power a rehydrated session for enhanced tracing.
+
+### initiators
+
+Contains a recording with network request's initiator information.

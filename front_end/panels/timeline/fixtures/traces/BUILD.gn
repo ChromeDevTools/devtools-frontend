@@ -26,6 +26,7 @@ copy_to_gen("traces") {
     "idle-callback.json.gz",
     "idle-tasks.json.gz",
     "iframe-shift.json.gz",
+    "initiators.json.gz",
     "instant-animation-events.json.gz",
     "interactive-time.json.gz",
     "invalid-animation-events.json.gz",

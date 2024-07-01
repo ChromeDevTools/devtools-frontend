@@ -16,7 +16,7 @@ export function get(traceParsedData: Handlers.Types.TraceParseData, entry: Types
     return entry.args.data.stackTrace[0].url as Platform.DevToolsPath.UrlString;
   }
 
-  if (Types.TraceEvents.isSyntheticNetworkRequestDetailsEvent(entry)) {
+  if (Types.TraceEvents.isSyntheticNetworkRequestEvent(entry)) {
     return entry.args.data.url as Platform.DevToolsPath.UrlString;
   }
 

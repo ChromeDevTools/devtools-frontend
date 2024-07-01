@@ -1802,14 +1802,13 @@ export class TimelineUIUtils {
       contentHelper.appendTextRow(
           i18nString(UIStrings.decodedBody), Platform.NumberUtilities.bytesToString(event.args.data.decodedBodyLength));
     }
-    const title = i18nString(UIStrings.initiatedBy);
 
     const topFrame = TraceEngine.Helpers.Trace.getZeroIndexedStackTraceForEvent(event)?.at(0) ?? null;
     if (topFrame) {
       const link = linkifier.maybeLinkifyConsoleCallFrame(
           maybeTarget, topFrame, {tabStop: true, inlineFrameIndex: 0, showColumnNumber: true});
       if (link) {
-        contentHelper.appendElementRow(title, link);
+        contentHelper.appendElementRow(i18nString(UIStrings.initiatedBy), link);
       }
     }
 

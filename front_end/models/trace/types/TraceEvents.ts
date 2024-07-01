@@ -2022,7 +2022,7 @@ export function isTraceEventResourceReceivedData(
   return traceEventData.name === 'ResourceReceivedData';
 }
 
-export function isSyntheticNetworkRequestDetailsEvent(
+export function isSyntheticNetworkRequestEvent(
     traceEventData: TraceEventData,
     ): traceEventData is SyntheticNetworkRequest {
   return traceEventData.name === 'SyntheticNetworkRequest';

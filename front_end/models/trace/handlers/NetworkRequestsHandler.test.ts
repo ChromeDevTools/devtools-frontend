@@ -289,6 +289,72 @@ describe('NetworkRequestsHandler', function() {
           'Incorrect number of redirects (request 1)');
     });
   });
+
+  describe('initiators', () => {
+    beforeEach(() => {
+      TraceModel.Handlers.ModelHandlers.Meta.reset();
+      TraceModel.Handlers.ModelHandlers.Meta.initialize();
+      TraceModel.Handlers.ModelHandlers.NetworkRequests.initialize();
+    });
+
+    it('calculate the initiator by `initiator` field correctly', async function() {
+      const traceEvents = await TraceLoader.rawEvents(this, 'initiators.json.gz');
+      for (const event of traceEvents) {
+        TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
+        TraceModel.Handlers.ModelHandlers.NetworkRequests.handleEvent(event);
+      }
+      await TraceModel.Handlers.ModelHandlers.Meta.finalize();
+      await TraceModel.Handlers.ModelHandlers.NetworkRequests.finalize();
+
+      const {eventToInitiator, byTime} = TraceModel.Handlers.ModelHandlers.NetworkRequests.data();
+
+      // Find the network request to test, it is initiated by `youtube.com`.
+      const event = byTime.find(event => event.ts === 1491680762420);
+      if (!event) {
+        throw new Error('Could not find the network request.');
+      }
+      assert.strictEqual(
+          event.args.data.url,
+          'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=YouTube+Sans:wght@300..900&display=swap');
+
+      const initiator = eventToInitiator.get(event);
+      if (!initiator) {
+        throw new Error('Did not find expected initiator for the network request');
+      }
+      assert.strictEqual(initiator.args.data.url, 'https://www.youtube.com/');
+      assert.strictEqual(initiator.args.data.url, event.args.data.initiator?.url);
+    });
+
+    it('calculate the initiator by top frame correctly', async function() {
+      const traceEvents = await TraceLoader.rawEvents(this, 'initiators.json.gz');
+      for (const event of traceEvents) {
+        TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
+        TraceModel.Handlers.ModelHandlers.NetworkRequests.handleEvent(event);
+      }
+      await TraceModel.Handlers.ModelHandlers.Meta.finalize();
+      await TraceModel.Handlers.ModelHandlers.NetworkRequests.finalize();
+
+      const {eventToInitiator, byTime} = TraceModel.Handlers.ModelHandlers.NetworkRequests.data();
+
+      // Find the network request to test, it is initiated by `                `.
+      const event = byTime.find(event => event.ts === 1491681999060);
+      if (!event) {
+        throw new Error('Could not find the network request.');
+      }
+      assert.strictEqual(
+          event.args.data.url, 'https://www.youtube.com/s/player/5b22937f/player_ias.vflset/en_US/base.js');
+
+      const initiator = eventToInitiator.get(event);
+      if (!initiator) {
+        throw new Error('Did not find expected initiator for the network request');
+      }
+      assert.strictEqual(
+          initiator.args.data.url,
+          'https://www.youtube.com/s/desktop/28bb7000/jsbin/desktop_polymer.vflset/desktop_polymer.js');
+      assert.isUndefined(event.args.data.initiator?.url);
+      assert.strictEqual(initiator.args.data.url, event.args.data.stackTrace?.[0].url);
+    });
+  });
 });
 
 function assertDataArgsStats<D extends keyof DataArgs>(

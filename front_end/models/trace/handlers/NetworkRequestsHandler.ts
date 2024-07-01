@@ -37,6 +37,7 @@ interface NetworkRequestData {
     all: Types.TraceEvents.SyntheticNetworkRequest[],
   }>;
   byTime: Types.TraceEvents.SyntheticNetworkRequest[];
+  eventToInitiator: Map<Types.TraceEvents.SyntheticNetworkRequest, Types.TraceEvents.SyntheticNetworkRequest>;
 }
 
 const requestMap = new Map<string, TraceEventsForNetworkRequest>();
@@ -46,6 +47,10 @@ const requestsByOrigin = new Map<string, {
   all: Types.TraceEvents.SyntheticNetworkRequest[],
 }>();
 const requestsByTime: Types.TraceEvents.SyntheticNetworkRequest[] = [];
+
+const networkRequestEventByInitiatorUrl = new Map<string, Types.TraceEvents.SyntheticNetworkRequest[]>();
+const eventToInitiatorMap =
+    new Map<Types.TraceEvents.SyntheticNetworkRequest, Types.TraceEvents.SyntheticNetworkRequest>();
 
 function storeTraceEventWithRequestId<K extends keyof TraceEventsForNetworkRequest>(
     requestId: string, key: K, value: TraceEventsForNetworkRequest[K]): void {
@@ -86,6 +91,8 @@ export function reset(): void {
   requestsByOrigin.clear();
   requestMap.clear();
   requestsByTime.length = 0;
+  networkRequestEventByInitiatorUrl.clear();
+  eventToInitiatorMap.clear();
 
   handlerState = HandlerState.UNINITIALIZED;
 }
@@ -435,6 +442,24 @@ export async function finalize(): Promise<void> {
     // the captured requests, so here we store all of them together.
     requests.all.push(networkEvent);
     requestsByTime.push(networkEvent);
+
+    const initiatorUrl = networkEvent.args.data.initiator?.url ||
+        Helpers.Trace.getZeroIndexedStackTraceForEvent(networkEvent)?.at(0)?.url;
+    if (initiatorUrl) {
+      const events = networkRequestEventByInitiatorUrl.get(initiatorUrl) ?? [];
+      events.push(networkEvent);
+      networkRequestEventByInitiatorUrl.set(initiatorUrl, events);
+    }
+  }
+
+  for (const request of requestsByTime) {
+    const initiatedEvents = networkRequestEventByInitiatorUrl.get(request.args.data.url);
+
+    if (initiatedEvents) {
+      for (const initiatedEvent of initiatedEvents) {
+        eventToInitiatorMap.set(initiatedEvent, request);
+      }
+    }
   }
 
   handlerState = HandlerState.FINALIZED;
@@ -448,6 +473,7 @@ export function data(): NetworkRequestData {
   return {
     byOrigin: requestsByOrigin,
     byTime: requestsByTime,
+    eventToInitiator: eventToInitiatorMap,
   };
 }
 

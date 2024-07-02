@@ -2619,11 +2619,6 @@ export const NativeFunctions = [
     receivers: ["Atomics"]
   },
   {
-    name: "load",
-    signatures: [["buffer"]],
-    receivers: ["MLModelLoader"]
-  },
-  {
     name: "check",
     signatures: [["font","?text"]]
   },
@@ -7654,13 +7649,7 @@ export const NativeFunctions = [
   },
   {
     name: "compute",
-    signatures: [["graph","inputs","outputs"]],
-    receivers: ["MLContext"]
-  },
-  {
-    name: "compute",
-    signatures: [["inputs"]],
-    receivers: ["MLModel"]
+    signatures: [["graph","inputs","outputs"]]
   },
   {
     name: "writeBuffer",
@@ -7675,10 +7664,6 @@ export const NativeFunctions = [
   {
     name: "dispatch",
     signatures: [["graph","inputs","outputs"]]
-  },
-  {
-    name: "MLModelLoader",
-    signatures: [["context"]]
   },
   {
     name: "createContext",

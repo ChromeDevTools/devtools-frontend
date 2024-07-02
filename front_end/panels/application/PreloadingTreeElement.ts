@@ -40,7 +40,7 @@ class PreloadingTreeElementBase<View extends PreloadingRuleSetView|PreloadingAtt
   constructor(
       panel: ResourcesPanel, viewConstructor: {new(model: SDK.PreloadingModel.PreloadingModel): View},
       path: Platform.DevToolsPath.UrlString, title: string) {
-    super(panel, title, false);
+    super(panel, title, false, 'speculative-loads');
 
     this.#viewConstructor = viewConstructor;
     this.#path = path;

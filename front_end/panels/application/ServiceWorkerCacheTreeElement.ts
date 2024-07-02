@@ -163,7 +163,7 @@ export class SWCacheTreeElement extends ApplicationPanelTreeElement {
     } else {
       cacheName = cache.cacheName;
     }
-    super(resourcesPanel, cacheName, false);
+    super(resourcesPanel, cacheName, false, 'cache-storage-instance');
     this.model = model;
     this.cache = cache;
     this.view = null;

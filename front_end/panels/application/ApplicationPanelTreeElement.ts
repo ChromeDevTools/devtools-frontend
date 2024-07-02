@@ -11,8 +11,8 @@ import {type ResourcesPanel} from './ResourcesPanel.js';
 export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
   protected readonly resourcesPanel: ResourcesPanel;
 
-  constructor(resourcesPanel: ResourcesPanel, title: string, expandable: boolean) {
-    super(title, expandable);
+  constructor(resourcesPanel: ResourcesPanel, title: string, expandable: boolean, jslogContext: string) {
+    super(title, expandable, jslogContext);
     this.resourcesPanel = resourcesPanel;
     UI.ARIAUtils.setLabel(this.listItemElement, title);
     this.listItemElement.tabIndex = -1;
@@ -56,7 +56,7 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
   protected categoryLink: Platform.DevToolsPath.UrlString|null;
 
   constructor(resourcesPanel: ResourcesPanel, categoryName: string, settingsKey: string, settingsDefault = false) {
-    super(resourcesPanel, categoryName, false);
+    super(resourcesPanel, categoryName, false, settingsKey);
     this.expandedSetting =
         Common.Settings.Settings.instance().createSetting('resources-' + settingsKey + '-expanded', settingsDefault);
     this.categoryName = categoryName;

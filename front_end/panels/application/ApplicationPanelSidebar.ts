@@ -285,7 +285,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.contentElement.appendChild(this.sidebarTree.element);
 
     const applicationSectionTitle = i18nString(UIStrings.application);
-    this.applicationTreeElement = this.addSidebarSection(applicationSectionTitle);
+    this.applicationTreeElement = this.addSidebarSection(applicationSectionTitle, 'application');
     const applicationPanelSidebar = this.applicationTreeElement.treeOutline?.contentElement;
     if (applicationPanelSidebar) {
       applicationPanelSidebar.ariaLabel = i18nString(UIStrings.applicationSidebarPanel);
@@ -299,7 +299,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.applicationTreeElement.appendChild(clearStorageTreeElement);
 
     const storageSectionTitle = i18nString(UIStrings.storage);
-    const storageTreeElement = this.addSidebarSection(storageSectionTitle);
+    const storageTreeElement = this.addSidebarSection(storageSectionTitle, 'storage');
     this.localStorageListTreeElement =
         new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.localStorage), 'local-storage');
     this.localStorageListTreeElement.setLink(
@@ -349,7 +349,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     storageTreeElement.appendChild(this.storageBucketsTreeElement);
 
     const backgroundServiceSectionTitle = i18nString(UIStrings.backgroundServices);
-    const backgroundServiceTreeElement = this.addSidebarSection(backgroundServiceSectionTitle);
+    const backgroundServiceTreeElement = this.addSidebarSection(backgroundServiceSectionTitle, 'background-services');
 
     this.backForwardCacheListTreeElement = new BackForwardCacheTreeElement(panel);
     backgroundServiceTreeElement.appendChild(this.backForwardCacheListTreeElement);
@@ -386,7 +386,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     backgroundServiceTreeElement.appendChild(this.reportingApiTreeElement);
 
     const resourcesSectionTitle = i18nString(UIStrings.frames);
-    const resourcesTreeElement = this.addSidebarSection(resourcesSectionTitle);
+    const resourcesTreeElement = this.addSidebarSection(resourcesSectionTitle, 'frames');
     this.resourcesSection = new ResourcesSection(panel, resourcesTreeElement);
 
     this.domStorageTreeElements = new Map();
@@ -447,8 +447,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.contentElement.style.contain = 'layout style';
   }
 
-  private addSidebarSection(title: string): UI.TreeOutline.TreeElement {
-    const treeElement = new UI.TreeOutline.TreeElement(title, true);
+  private addSidebarSection(title: string, jslogContext: string): UI.TreeOutline.TreeElement {
+    const treeElement = new UI.TreeOutline.TreeElement(title, true, jslogContext);
     treeElement.listItemElement.classList.add('storage-group-list-item');
     treeElement.setCollapsible(false);
     treeElement.selectable = false;
@@ -836,7 +836,9 @@ export class BackgroundServiceTreeElement extends ApplicationPanelTreeElement {
   private selectedInternal: boolean;
 
   constructor(storagePanel: ResourcesPanel, serviceName: Protocol.BackgroundService.ServiceName) {
-    super(storagePanel, BackgroundServiceView.getUIString(serviceName), false);
+    super(
+        storagePanel, BackgroundServiceView.getUIString(serviceName), false,
+        Platform.StringUtilities.toKebabCase(serviceName));
 
     this.serviceName = serviceName;
 
@@ -912,7 +914,7 @@ export class ServiceWorkersTreeElement extends ApplicationPanelTreeElement {
   private view?: ServiceWorkersView;
 
   constructor(storagePanel: ResourcesPanel) {
-    super(storagePanel, i18n.i18n.lockedString('Service workers'), false);
+    super(storagePanel, i18n.i18n.lockedString('Service workers'), false, 'service-workers');
     const icon = IconButton.Icon.create('gears');
     this.setLeadingIcons([icon]);
   }
@@ -935,7 +937,7 @@ export class ServiceWorkersTreeElement extends ApplicationPanelTreeElement {
 export class AppManifestTreeElement extends ApplicationPanelTreeElement {
   private view: AppManifestView;
   constructor(storagePanel: ResourcesPanel) {
-    super(storagePanel, i18nString(UIStrings.manifest), true);
+    super(storagePanel, i18nString(UIStrings.manifest), true, 'manifest');
     const icon = IconButton.Icon.create('document');
     this.setLeadingIcons([icon]);
     self.onInvokeElement(this.listItemElement, this.onInvoke.bind(this));
@@ -967,7 +969,8 @@ export class AppManifestTreeElement extends ApplicationPanelTreeElement {
       const sectionElement = section.getTitleElement();
       const childTitle = section.title();
       const sectionFieldElement = section.getFieldElement();
-      const child = new ManifestChildTreeElement(this.resourcesPanel, sectionElement, childTitle, sectionFieldElement);
+      const child = new ManifestChildTreeElement(
+          this.resourcesPanel, sectionElement, childTitle, sectionFieldElement, section.jslogContext || '');
       this.appendChild(child);
     }
   }
@@ -985,8 +988,10 @@ export class AppManifestTreeElement extends ApplicationPanelTreeElement {
 export class ManifestChildTreeElement extends ApplicationPanelTreeElement {
   #sectionElement: Element;
   #sectionFieldElement: HTMLElement;
-  constructor(storagePanel: ResourcesPanel, element: Element, childTitle: string, fieldElement: HTMLElement) {
-    super(storagePanel, childTitle, false);
+  constructor(
+      storagePanel: ResourcesPanel, element: Element, childTitle: string, fieldElement: HTMLElement,
+      jslogContext: string) {
+    super(storagePanel, childTitle, false, jslogContext);
     const icon = IconButton.Icon.create('document');
     this.setLeadingIcons([icon]);
     this.#sectionElement = element;
@@ -1032,7 +1037,7 @@ export class ManifestChildTreeElement extends ApplicationPanelTreeElement {
 export class ClearStorageTreeElement extends ApplicationPanelTreeElement {
   private view?: StorageView;
   constructor(storagePanel: ResourcesPanel) {
-    super(storagePanel, i18nString(UIStrings.storage), false);
+    super(storagePanel, i18nString(UIStrings.storage), false, 'storage');
     const icon = IconButton.Icon.create('database');
     this.setLeadingIcons([icon]);
   }
@@ -1196,7 +1201,7 @@ export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {
   private view?: LegacyWrapper.LegacyWrapper.LegacyWrapper<UI.Widget.VBox, IDBDatabaseView>;
 
   constructor(storagePanel: ResourcesPanel, model: IndexedDBModel, databaseId: DatabaseId) {
-    super(storagePanel, databaseId.name, false);
+    super(storagePanel, databaseId.name, false, 'indexed-db-database');
     this.model = model;
     this.databaseId = databaseId;
     this.idbObjectStoreTreeElements = new Map();
@@ -1319,7 +1324,7 @@ export class IDBObjectStoreTreeElement extends ApplicationPanelTreeElement {
   private view: IDBDataView|null;
 
   constructor(storagePanel: ResourcesPanel, model: IndexedDBModel, databaseId: DatabaseId, objectStore: ObjectStore) {
-    super(storagePanel, objectStore.name, false);
+    super(storagePanel, objectStore.name, false, 'indexed-db-object-store');
     this.model = model;
     this.databaseId = databaseId;
     this.idbIndexTreeElements = new Map();
@@ -1460,7 +1465,7 @@ export class IDBIndexTreeElement extends ApplicationPanelTreeElement {
   constructor(
       storagePanel: ResourcesPanel, model: IndexedDBModel, databaseId: DatabaseId, objectStore: ObjectStore,
       index: Index, refreshObjectStore: () => void) {
-    super(storagePanel, index.name, false);
+    super(storagePanel, index.name, false, 'indexed-db');
     this.model = model;
     this.databaseId = databaseId;
     this.objectStore = objectStore;
@@ -1535,7 +1540,7 @@ export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
         storagePanel,
         domStorage.storageKey ? SDK.StorageKeyManager.parseStorageKey(domStorage.storageKey).origin :
                                 i18nString(UIStrings.localFiles),
-        false);
+        false, domStorage.isLocalStorage ? 'local-storage' : 'session-storage');
     this.domStorage = domStorage;
     const icon = IconButton.Icon.create('table');
     this.setLeadingIcons([icon]);
@@ -1573,7 +1578,7 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
   constructor(
       storagePanel: ResourcesPanel, frame: SDK.ResourceTreeModel.ResourceTreeFrame,
       cookieUrl: Common.ParsedURL.ParsedURL) {
-    super(storagePanel, cookieUrl.securityOrigin() || i18nString(UIStrings.localFiles), false);
+    super(storagePanel, cookieUrl.securityOrigin() || i18nString(UIStrings.localFiles), false, 'cookies-for-frame');
     this.target = frame.resourceTreeModel().target();
     this.cookieDomainInternal = cookieUrl.securityOrigin();
     this.tooltip = i18nString(UIStrings.cookiesUsedByFramesFromS, {PH1: this.cookieDomainInternal});
@@ -1888,7 +1893,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
       .LegacyWrapper<UI.Widget.Widget, ApplicationComponents.FrameDetailsView.FrameDetailsReportView>|null;
 
   constructor(section: ResourcesSection, frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
-    super(section.panel, '', false);
+    super(section.panel, '', false, 'frame');
     this.section = section;
     this.frame = frame;
     this.frameId = frame.id;
@@ -2101,7 +2106,8 @@ export class FrameResourceTreeElement extends ApplicationPanelTreeElement {
 
   constructor(storagePanel: ResourcesPanel, resource: SDK.Resource.Resource) {
     super(
-        storagePanel, resource.isGenerated ? i18nString(UIStrings.documentNotAvailable) : resource.displayName, false);
+        storagePanel, resource.isGenerated ? i18nString(UIStrings.documentNotAvailable) : resource.displayName, false,
+        'frame-resource');
     this.panel = storagePanel;
     this.resource = resource;
     this.previewPromise = null;
@@ -2189,7 +2195,7 @@ class FrameWindowTreeElement extends ApplicationPanelTreeElement {
   private view: OpenedWindowDetailsView|null;
 
   constructor(storagePanel: ResourcesPanel, targetInfo: Protocol.Target.TargetInfo) {
-    super(storagePanel, targetInfo.title || i18nString(UIStrings.windowWithoutTitle), false);
+    super(storagePanel, targetInfo.title || i18nString(UIStrings.windowWithoutTitle), false, 'window');
     this.targetInfo = targetInfo;
     this.isWindowClosed = false;
     this.view = null;
@@ -2244,7 +2250,7 @@ class WorkerTreeElement extends ApplicationPanelTreeElement {
   private view: WorkerDetailsView|null;
 
   constructor(storagePanel: ResourcesPanel, targetInfo: Protocol.Target.TargetInfo) {
-    super(storagePanel, targetInfo.title || targetInfo.url || i18nString(UIStrings.worker), false);
+    super(storagePanel, targetInfo.title || targetInfo.url || i18nString(UIStrings.worker), false, 'worker');
     this.targetInfo = targetInfo;
     this.view = null;
     const icon = IconButton.Icon.create('gears', 'navigator-file-tree-item');

@@ -509,22 +509,20 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.reportView.show(this.contentElement);
     this.reportView.hideWidget();
 
-    this.errorsSection = this.reportView.appendSection(i18nString(UIStrings.errorsAndWarnings));
-    this.errorsSection.element.setAttribute('jslog', `${VisualLogging.section('errors-and-warnings')}`);
-    this.installabilitySection = this.reportView.appendSection(i18nString(UIStrings.installability));
-    this.installabilitySection.element.setAttribute('jslog', `${VisualLogging.section('installability')}`);
-    this.identitySection = this.reportView.appendSection(i18nString(UIStrings.identity));
-    this.identitySection.element.setAttribute('jslog', `${VisualLogging.section('identity')}`);
-    this.presentationSection = this.reportView.appendSection(i18nString(UIStrings.presentation));
-    this.presentationSection.element.setAttribute('jslog', `${VisualLogging.section('presentation')}`);
-    this.protocolHandlersSection = this.reportView.appendSection(i18nString(UIStrings.protocolHandlers));
-    this.protocolHandlersSection.element.setAttribute('jslog', `${VisualLogging.section('protocol-handlers')}`);
+    this.errorsSection =
+        this.reportView.appendSection(i18nString(UIStrings.errorsAndWarnings), undefined, 'errors-and-warnings');
+    this.installabilitySection =
+        this.reportView.appendSection(i18nString(UIStrings.installability), undefined, 'installability');
+    this.identitySection = this.reportView.appendSection(i18nString(UIStrings.identity), 'undefined,identity');
+    this.presentationSection =
+        this.reportView.appendSection(i18nString(UIStrings.presentation), 'undefined,presentation');
+    this.protocolHandlersSection =
+        this.reportView.appendSection(i18nString(UIStrings.protocolHandlers), 'undefined,protocol-handlers');
     this.protocolHandlersView = new ApplicationComponents.ProtocolHandlersView.ProtocolHandlersView();
     this.protocolHandlersSection.appendFieldWithCustomView(this.protocolHandlersView);
-    this.iconsSection = this.reportView.appendSection(i18nString(UIStrings.icons), 'report-section-icons');
-    this.iconsSection.element.setAttribute('jslog', `${VisualLogging.section('icons')}`);
-    this.windowControlsSection = this.reportView.appendSection(UIStrings.windowControlsOverlay);
-    this.windowControlsSection.element.setAttribute('jslog', `${VisualLogging.section('window-controls-overlay')}`);
+    this.iconsSection = this.reportView.appendSection(i18nString(UIStrings.icons), 'report-section-icons', 'icons');
+    this.windowControlsSection =
+        this.reportView.appendSection(UIStrings.windowControlsOverlay, undefined, 'window-controls-overlay');
     this.shortcutSections = [];
     this.screenshotsSections = [];
 

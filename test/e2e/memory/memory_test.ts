@@ -10,7 +10,6 @@ import {
   $$,
   assertNotNullOrUndefined,
   clickElement,
-  disableExperiment,
   enableExperiment,
   getBrowserAndPages,
   goToResource,
@@ -25,6 +24,7 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   changeAllocationSampleViewViaDropdown,
   changeViewViaDropdown,
+  checkExposeInternals,
   clickOnContextMenuForRetainer,
   expandFocusedRow,
   findSearchResult,
@@ -438,7 +438,9 @@ describe('The Memory Panel', function() {
 
   it('Does not include backing store size in the shallow size of a JS Set', async () => {
     await goToResource('memory/set.html');
-    await disableExperiment('heap-snapshot-treat-backing-store-as-containing-object');
+    await enableExperiment('show-option-tp-expose-internals-in-heap-snapshot');
+    await navigateToMemoryTab();
+    await checkExposeInternals();
     const sizes = await runJSSetTest();
 
     // The Set object is small, regardless of the contained content.
@@ -454,7 +456,6 @@ describe('The Memory Panel', function() {
 
   it('Includes backing store size in the shallow size of a JS Set', async () => {
     await goToResource('memory/set.html');
-    await enableExperiment('heap-snapshot-treat-backing-store-as-containing-object');
     const sizes = await runJSSetTest();
 
     // The Set is reported as containing at least 100 pointers.

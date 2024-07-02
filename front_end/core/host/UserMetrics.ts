@@ -1016,7 +1016,6 @@ export enum DevtoolsExperiments {
   'network-panel-filter-bar-redesign' = 79,
   'autofill-view' = 82,
   'sources-frame-indentation-markers-temporarily-disable' = 83,
-  'heap-snapshot-treat-backing-store-as-containing-object' = 84,
   'css-type-component-length-deprecate' = 85,
   'timeline-show-postmessage-events' = 86,
   'timeline-extensions' = 89,

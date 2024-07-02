@@ -353,3 +353,9 @@ export async function setFilterDropdown(filter: string) {
   const select = await waitFor('select.toolbar-item[aria-label="Filter"]');
   await select.select(filter);
 }
+
+export async function checkExposeInternals() {
+  const element =
+      await waitForElementWithTextContent('Expose internals (includes additional implementation-specific details)');
+  await clickElement(element);
+}

@@ -149,10 +149,34 @@ export type Props = {
   isLoading: boolean,
 };
 
+// The model returns multiline code blocks in an erroneous way with the language being in new line.
+// This renderer takes that into account and correctly updates the parsed multiline token with the language
+// correctly identified and stripped from the content.
+// Example:
+// ```
+// css <-- This should have been on the first line.
+// * {
+//   color: red;
+// }
+// ```
+class MarkdownRendererWithCodeBlock extends MarkdownView.MarkdownView.MarkdownInsightRenderer {
+  override templateForToken(token: Marked.Marked.Token): LitHtml.TemplateResult|null {
+    if (token.type === 'code') {
+      const lines = (token.text as string).split('\n');
+      if (lines[0]?.trim() === 'css') {
+        token.lang = 'css';
+        token.text = lines.slice(1).join('\n');
+      }
+    }
+
+    return super.templateForToken(token);
+  }
+}
+
 export class FreestylerChatUi extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-freestyler-chat-ui`;
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #markdownRenderer = new MarkdownView.MarkdownView.MarkdownInsightRenderer();
+  readonly #markdownRenderer = new MarkdownRendererWithCodeBlock();
   #props: Props;
 
   constructor(props: Props) {
@@ -471,5 +495,9 @@ declare global {
     'devtools-freestyler-chat-ui': FreestylerChatUi;
   }
 }
+
+export const FOR_TEST = {
+  MarkdownRendererWithCodeBlock,
+};
 
 customElements.define('devtools-freestyler-chat-ui', FreestylerChatUi);

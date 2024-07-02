@@ -167,6 +167,9 @@ export class CodeBlock extends HTMLElement {
       case 'jsx':
         language = CodeMirror.javascript.javascript({jsx: true});
         break;
+      case 'css':
+        language = CodeMirror.css.css();
+        break;
     }
     editor.dispatch({
       effects: this.#languageConf.reconfigure(language),

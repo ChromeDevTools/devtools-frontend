@@ -16,7 +16,15 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import liveMetricsViewStyles from './liveMetricsView.css.js';
 
 const {html, nothing, Directives} = LitHtml;
-const {until, classMap} = Directives;
+const {until} = Directives;
+
+type MetricRating = 'good'|'needs-improvement'|'poor';
+type MetricThresholds = [number, number];
+
+// TODO: Consolidate our metric rating logic with the trace engine.
+const LCP_THRESHOLDS = [2500, 4000] as MetricThresholds;
+const CLS_THRESHOLDS = [0.1, 0.25] as MetricThresholds;
+const INP_THRESHOLDS = [200, 500] as MetricThresholds;
 
 export class LiveMetricsView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-live-metrics-view`;
@@ -99,52 +107,63 @@ export class LiveMetricsView extends HTMLElement {
     cruxManager.removeEventListener(CrUXManager.Events.FieldDataChanged, this.#onFieldDataChanged, this);
   }
 
-  #renderLiveLcp(lcpValue: LiveMetrics.LCPValue|undefined): LitHtml.LitTemplate {
+  #renderMetricValue(value: number|string|undefined, thresholds: MetricThresholds, format: (value: number) => string):
+      LitHtml.LitTemplate {
+    if (value === undefined) {
+      return html`<span class="metric-value waiting">-<span>`;
+    }
+
+    if (typeof value === 'string') {
+      value = Number(value);
+    }
+
+    const rating = this.#rateMetric(value, thresholds);
+    const valueString = format(value);
+    return html`
+      <span class=${`metric-value ${rating}`}>${valueString}</span>
+    `;
+  }
+
+  #renderLcpCard(): LitHtml.LitTemplate {
     const title = 'Largest Contentful Paint (LCP)';
     const fieldData = this.#getFieldMetricData('largest_contentful_paint');
 
-    if (!lcpValue) {
-      return this.#renderLiveMetric(title, fieldData);
-    }
-
-    return this.#renderLiveMetric(
+    return this.#renderMetricCard(
         title,
-        fieldData,
-        i18n.TimeUtilities.millisToString(lcpValue.value),
-        lcpValue.rating,
-        lcpValue?.node,
+        this.#lcpValue?.value,
+        fieldData?.percentiles.p75,
+        fieldData?.histogram,
+        LCP_THRESHOLDS,
+        v => i18n.TimeUtilities.millisToString(v),
+        this.#lcpValue?.node,
     );
   }
 
-  #renderLiveCls(clsValue: LiveMetrics.CLSValue|undefined): LitHtml.LitTemplate {
+  #renderClsCard(): LitHtml.LitTemplate {
     const title = 'Cumulative Layout Shift (CLS)';
     const fieldData = this.#getFieldMetricData('cumulative_layout_shift');
 
-    if (!clsValue) {
-      return this.#renderLiveMetric(title, fieldData);
-    }
-
-    return this.#renderLiveMetric(
+    return this.#renderMetricCard(
         title,
-        fieldData,
-        clsValue.value === 0 ? '0' : clsValue.value.toFixed(3),
-        clsValue.rating,
+        this.#clsValue?.value,
+        fieldData?.percentiles.p75,
+        fieldData?.histogram,
+        CLS_THRESHOLDS,
+        v => v === 0 ? '0' : v.toFixed(2),
     );
   }
 
-  #renderLiveInp(inpValue: LiveMetrics.INPValue|undefined): LitHtml.LitTemplate {
+  #renderInpCard(): LitHtml.LitTemplate {
     const title = 'Interaction to Next Paint (INP)';
     const fieldData = this.#getFieldMetricData('interaction_to_next_paint');
 
-    if (!inpValue) {
-      return this.#renderLiveMetric(title, fieldData);
-    }
-
-    return this.#renderLiveMetric(
+    return this.#renderMetricCard(
         title,
-        fieldData,
-        i18n.TimeUtilities.millisToString(inpValue.value),
-        inpValue.rating,
+        this.#inpValue?.value,
+        fieldData?.percentiles.p75,
+        fieldData?.histogram,
+        INP_THRESHOLDS,
+        v => i18n.TimeUtilities.millisToString(v),
     );
   }
 
@@ -156,40 +175,54 @@ export class LiveMetricsView extends HTMLElement {
     return `${percent}%`;
   }
 
-  #renderFieldHistogram(histogram: CrUXManager.MetricResponse['histogram']): LitHtml.LitTemplate {
+  #renderFieldHistogram(
+      histogram: CrUXManager.MetricResponse['histogram'], thresholds: MetricThresholds,
+      format: (value: number) => string): LitHtml.LitTemplate {
     const goodPercent = this.#densityAsPercent(histogram[0].density);
     const needsImprovementPercent = this.#densityAsPercent(histogram[1].density);
     const poorPercent = this.#densityAsPercent(histogram[2].density);
     return html`
-      <div class="field-data">
+      <div class="field-data-histogram">
+        <span class="histogram-label">Good <span class="histogram-range">(&le;${format(thresholds[0])})</span></span>
         <span class="histogram-bar good-bg" style="width: ${goodPercent}"></span>
         <span>${goodPercent}</span>
+        <span class="histogram-label">Needs improvement <span class="histogram-range">(${format(thresholds[0])}-${
+        format(thresholds[1])})</span></span>
         <span class="histogram-bar needs-improvement-bg" style="width: ${needsImprovementPercent}"></span>
         <span>${needsImprovementPercent}</span>
+        <span class="histogram-label">Poor <span class="histogram-range">(&gt;${format(thresholds[1])})</span></span>
         <span class="histogram-bar poor-bg" style="width: ${poorPercent}"></span>
         <span>${poorPercent}</span>
       </div>
     `;
   }
 
-  #renderLiveMetric(
-      title: string, cruxData?: CrUXManager.MetricResponse, valueStr?: string, rating?: LiveMetrics.Rating,
-      node?: SDK.DOMModel.DOMNode): LitHtml.LitTemplate {
-    const ratingClass = rating || 'waiting';
-    const histogram = cruxData?.histogram;
+  #rateMetric(value: number, thresholds: MetricThresholds): MetricRating {
+    if (value <= thresholds[0]) {
+      return 'good';
+    }
+    if (value <= thresholds[1]) {
+      return 'needs-improvement';
+    }
+    return 'poor';
+  }
+
+  #renderMetricCard(
+      title: string, localValue: number|undefined, fieldValue: number|string|undefined,
+      histogram: CrUXManager.MetricResponse['histogram']|undefined, thresholds: MetricThresholds,
+      format: (value: number) => string, node?: SDK.DOMModel.DOMNode): LitHtml.LitTemplate {
     // clang-format off
     return html`
       <div class="card">
         <div class="card-title">${title}</div>
-        <div class="metric-card-value">
-          <div class=${classMap({
-            'local-metric-value': true,
-            [ratingClass]: true,
-          })}>
-            ${valueStr || '-'}
-          </div>
-          ${histogram ? this.#renderFieldHistogram(histogram) : nothing}
+        <div class="card-metric-values">
+          <span class="local-value">${this.#renderMetricValue(localValue, thresholds, format)}</span>
+          <span class="field-value">${this.#renderMetricValue(fieldValue, thresholds, format)}</span>
+          <span class="metric-value-label">Local</span>
+          <span class="metric-value-label">Field 75th Percentile</span>
         </div>
+        <hr class="divider">
+        ${histogram ? this.#renderFieldHistogram(histogram, thresholds, format) : nothing}
         <div class="metric-card-element">
           ${node ? html`
               <div class="card-section-title">Related node</div>
@@ -235,13 +268,13 @@ export class LiveMetricsView extends HTMLElement {
             <h3>Local and Field Metrics</h3>
             <div class="metric-cards">
               <div id="lcp">
-                ${this.#renderLiveLcp(this.#lcpValue)}
+                ${this.#renderLcpCard()}
               </div>
               <div id="cls">
-                ${this.#renderLiveCls(this.#clsValue)}
+                ${this.#renderClsCard()}
               </div>
               <div id="inp">
-                ${this.#renderLiveInp(this.#inpValue)}
+                ${this.#renderInpCard()}
               </div>
             </div>
             <h3>Interactions</h3>
@@ -252,7 +285,9 @@ export class LiveMetricsView extends HTMLElement {
                   <span class="interaction-type">${interaction.interactionType}</span>
                   <span class="interaction-node">${
                     interaction.node && until(Common.Linkifier.Linkifier.linkify(interaction.node))}</span>
-                  <span class=${`interaction-duration ${interaction.rating}`}>${i18n.TimeUtilities.millisToString(interaction.duration)}</span>
+                  <span class="interaction-duration">
+                    ${this.#renderMetricValue(interaction.duration, INP_THRESHOLDS, v => i18n.TimeUtilities.millisToString(v))}
+                  </span>
                 </li>
                 <hr class="divider">
               `)}

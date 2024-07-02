@@ -135,7 +135,6 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       case 'LCP': {
         const lcpEvent: LCPValue = {
           value: webVitalsEvent.value,
-          rating: webVitalsEvent.rating,
         };
         if (webVitalsEvent.nodeIndex !== undefined) {
           const node = await this.#resolveDomNode(webVitalsEvent.nodeIndex, executionContextId);
@@ -150,7 +149,6 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       case 'CLS': {
         const event: CLSValue = {
           value: webVitalsEvent.value,
-          rating: webVitalsEvent.rating,
         };
         this.#clsValue = event;
         break;
@@ -158,7 +156,6 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       case 'INP': {
         const inpEvent: INPValue = {
           value: webVitalsEvent.value,
-          rating: webVitalsEvent.rating,
         };
         this.#inpValue = inpEvent;
         break;
@@ -298,9 +295,7 @@ export const enum Events {
   Status = 'status',
 }
 
-export type MetricValue = Pick<Spec.MetricChangeEvent, 'value'|'rating'>;
-
-export type Rating = Spec.MetricChangeEvent['rating'];
+export type MetricValue = Pick<Spec.MetricChangeEvent, 'value'>;
 
 export interface LCPValue extends MetricValue {
   node?: SDK.DOMModel.DOMNode;
@@ -309,7 +304,7 @@ export interface LCPValue extends MetricValue {
 export type INPValue = MetricValue;
 export type CLSValue = MetricValue;
 
-export type InteractionValue = Pick<Spec.InteractionEvent, 'rating'|'interactionType'|'duration'>&{
+export type InteractionValue = Pick<Spec.InteractionEvent, 'interactionType'|'duration'>&{
   node?: SDK.DOMModel.DOMNode,
 };
 

@@ -27,7 +27,7 @@ export interface CrUXRequest {
 
 export interface MetricResponse {
   histogram: Array<{start: number, end?: number, density?: number}>;
-  percentiles: {p75: number};
+  percentiles: {p75: number|string};
 }
 
 interface CollectionDate {

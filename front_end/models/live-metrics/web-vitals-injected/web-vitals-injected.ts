@@ -73,7 +73,6 @@ function initialize(): void {
     const event: Spec.LCPChangeEvent = {
       name: 'LCP',
       value: metric.value,
-      rating: metric.rating,
     };
 
     const element = metric.attribution.lcpEntry?.element;
@@ -87,7 +86,6 @@ function initialize(): void {
     const event: Spec.CLSChangeEvent = {
       name: 'CLS',
       value: metric.value,
-      rating: metric.rating,
     };
     sendEventToDevTools(event);
   }, {reportAllChanges: true});
@@ -96,7 +94,6 @@ function initialize(): void {
     const event: Spec.INPChangeEvent = {
       name: 'INP',
       value: metric.value,
-      rating: metric.rating,
       interactionType: metric.attribution.interactionType,
     };
     const element = metric.attribution.interactionTargetElement;
@@ -110,7 +107,6 @@ function initialize(): void {
     const event: Spec.InteractionEvent = {
       name: 'Interaction',
       duration: interaction.value,
-      rating: interaction.rating,
       interactionId: interaction.attribution.interactionId,
       interactionType: interaction.attribution.interactionType,
     };

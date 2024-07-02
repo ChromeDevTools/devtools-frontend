@@ -22,6 +22,13 @@ import {
   navigateToPerformanceTab,
 } from '../helpers/performance-helpers.js';
 
+const READY_LOCAL_METRIC_SELECTOR = '.local-value .metric-value:not(.waiting)';
+const READY_FIELD_METRIC_SELECTOR = '.field-value .metric-value:not(.waiting)';
+const WAITING_LOCAL_METRIC_SELECTOR = '.local-value .metric-value.waiting';
+const INTERACTION_SELECTOR = '.interaction';
+const HISTOGRAM_SELECTOR = '.field-data-histogram';
+const FIELD_CHECKBOX_SELECTOR = '#field-setup setting-checkbox';
+
 async function installLCPListener(session: puppeteer.CDPSession): Promise<() => Promise<void>> {
   await session.send('PerformanceTimeline.enable', {eventTypes: ['largest-contentful-paint']});
   const lcpPromise = new Promise<void>(resolve => {
@@ -70,8 +77,8 @@ describe('The Performance panel landing page', () => {
       await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
       await frontend.bringToFront();
 
-      const [lcpValueElem, clsValueElem, inpValueElem] = await waitForMany('.local-metric-value:not(.waiting)', 3);
-      const interactions = await $$<HTMLElement>('.interaction');
+      const [lcpValueElem, clsValueElem, inpValueElem] = await waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
+      const interactions = await $$<HTMLElement>(INTERACTION_SELECTOR);
       assert.lengthOf(interactions, 2);
 
       const lcpValue = await lcpValueElem.evaluate(el => el.textContent) || '';
@@ -119,8 +126,8 @@ describe('The Performance panel landing page', () => {
       await frontend.bringToFront();
       await navigateToPerformanceTab();
 
-      const [lcpValueElem, clsValueElem, inpValueElem] = await waitForMany('.local-metric-value:not(.waiting)', 3);
-      const interactions = await $$<HTMLElement>('.interaction');
+      const [lcpValueElem, clsValueElem, inpValueElem] = await waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
+      const interactions = await $$<HTMLElement>(INTERACTION_SELECTOR);
       assert.lengthOf(interactions, 2);
 
       const lcpValue = await lcpValueElem.evaluate(el => el.textContent) || '';
@@ -161,8 +168,8 @@ describe('The Performance panel landing page', () => {
 
       await frontend.bringToFront();
 
-      await waitForMany('.local-metric-value:not(.waiting)', 3);
-      const interactions1 = await $$<HTMLElement>('.interaction');
+      await waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
+      const interactions1 = await $$<HTMLElement>(INTERACTION_SELECTOR);
       assert.lengthOf(interactions1, 2);
 
       await target.bringToFront();
@@ -176,8 +183,8 @@ describe('The Performance panel landing page', () => {
 
       await frontend.bringToFront();
 
-      await waitForMany('.local-metric-value:not(.waiting)', 3);
-      const interactions2 = await $$<HTMLElement>('.interaction');
+      await waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
+      const interactions2 = await $$<HTMLElement>(INTERACTION_SELECTOR);
       assert.lengthOf(interactions2, 1);
 
       await target.bringToFront();
@@ -189,13 +196,11 @@ describe('The Performance panel landing page', () => {
       await frontend.bringToFront();
 
       // New LCP and CLS values should be emitted
-      await waitForMany('.local-metric-value:not(.waiting)', 2);
+      await waitForMany(READY_LOCAL_METRIC_SELECTOR, 2);
 
       // INP and interactions should be reset
-      const inpValueElem = await waitFor('.local-metric-value.waiting');
-      const inpCardText = await inpValueElem.evaluate(el => el.parentElement?.parentElement?.innerText) || '';
-      assert.match(inpCardText, /Interaction to Next Paint/);
-      const interactions3 = await $$<HTMLElement>('.interaction');
+      await waitFor(`#inp ${WAITING_LOCAL_METRIC_SELECTOR}`);
+      const interactions3 = await $$<HTMLElement>(INTERACTION_SELECTOR);
       assert.lengthOf(interactions3, 0);
     } finally {
       await targetSession.detach();
@@ -206,14 +211,25 @@ describe('The Performance panel landing page', () => {
     await setCruxRawResponse('performance/crux-valid.rawresponse');
     await navigateToPerformanceTab();
 
-    const manualFetchButton = await waitFor('#field-setup button');
+    const manualFetchButton = await waitFor(FIELD_CHECKBOX_SELECTOR);
     await manualFetchButton.click();
 
-    const [lcpFieldElem, clsFieldElem, inpFieldElem] = await waitForMany('.metric-card-value .field-data', 3);
+    const [lcpHistogram, clsHistogram, inpHistogram] = await waitForMany(HISTOGRAM_SELECTOR, 3);
 
-    assert.strictEqual(await lcpFieldElem.evaluate(el => (el as HTMLElement).innerText), '96%\n3%\n1%');
-    assert.strictEqual(await clsFieldElem.evaluate(el => (el as HTMLElement).innerText), '100%\n0%\n0%');
-    assert.strictEqual(await inpFieldElem.evaluate(el => (el as HTMLElement).innerText), '98%\n2%\n1%');
+    assert.strictEqual(
+        await lcpHistogram.evaluate(el => (el as HTMLElement).innerText),
+        'Good (≤2.50 s)\n96%\nNeeds improvement (2.50 s-4.00 s)\n3%\nPoor (>4.00 s)\n1%');
+    assert.strictEqual(
+        await clsHistogram.evaluate(el => (el as HTMLElement).innerText),
+        'Good (≤0.10)\n100%\nNeeds improvement (0.10-0.25)\n0%\nPoor (>0.25)\n0%');
+    assert.strictEqual(
+        await inpHistogram.evaluate(el => (el as HTMLElement).innerText),
+        'Good (≤200 ms)\n98%\nNeeds improvement (200 ms-500 ms)\n2%\nPoor (>500 ms)\n1%');
+
+    const [lcpFieldValue, clsFieldValue, inpFieldValue] = await waitForMany(READY_FIELD_METRIC_SELECTOR, 3);
+    assert.strictEqual(await lcpFieldValue.evaluate(el => el.textContent) || '', '1.20 s');
+    assert.strictEqual(await clsFieldValue.evaluate(el => el.textContent) || '', '0');
+    assert.strictEqual(await inpFieldValue.evaluate(el => el.textContent) || '', '49 ms');
   });
 
   it('gets field data automatically', async () => {
@@ -222,24 +238,35 @@ describe('The Performance panel landing page', () => {
     await setCruxRawResponse('performance/crux-none.rawresponse');
     await goToResource('performance/fake-website.html');
 
-    const manualFetchButton = await waitFor('#field-setup setting-checkbox');
+    const manualFetchButton = await waitFor(FIELD_CHECKBOX_SELECTOR);
     await manualFetchButton.click();
 
-    const histograms1 = await $$<HTMLElement>('.metric-card-value .field-data');
+    const histograms1 = await $$<HTMLElement>(HISTOGRAM_SELECTOR);
     assert.lengthOf(histograms1, 0);
 
     // Switch the fake CrUX endpoint data to simulate new data for a new origin
     await setCruxRawResponse('performance/crux-valid.rawresponse');
     await goToResourceWithCustomHost('devtools.oopif.test', 'performance/fake-website.html');
 
-    const [lcpFieldElem, clsFieldElem, inpFieldElem] = await waitForMany('.metric-card-value .field-data', 3);
+    const [lcpHistogram, clsHistogram, inpHistogram] = await waitForMany(HISTOGRAM_SELECTOR, 3);
 
-    assert.strictEqual(await lcpFieldElem.evaluate(el => (el as HTMLElement).innerText), '96%\n3%\n1%');
-    assert.strictEqual(await clsFieldElem.evaluate(el => (el as HTMLElement).innerText), '100%\n0%\n0%');
-    assert.strictEqual(await inpFieldElem.evaluate(el => (el as HTMLElement).innerText), '98%\n2%\n1%');
+    assert.strictEqual(
+        await lcpHistogram.evaluate(el => (el as HTMLElement).innerText),
+        'Good (≤2.50 s)\n96%\nNeeds improvement (2.50 s-4.00 s)\n3%\nPoor (>4.00 s)\n1%');
+    assert.strictEqual(
+        await clsHistogram.evaluate(el => (el as HTMLElement).innerText),
+        'Good (≤0.10)\n100%\nNeeds improvement (0.10-0.25)\n0%\nPoor (>0.25)\n0%');
+    assert.strictEqual(
+        await inpHistogram.evaluate(el => (el as HTMLElement).innerText),
+        'Good (≤200 ms)\n98%\nNeeds improvement (200 ms-500 ms)\n2%\nPoor (>500 ms)\n1%');
+
+    const [lcpFieldValue, clsFieldValue, inpFieldValue] = await waitForMany(READY_FIELD_METRIC_SELECTOR, 3);
+    assert.strictEqual(await lcpFieldValue.evaluate(el => el.textContent) || '', '1.20 s');
+    assert.strictEqual(await clsFieldValue.evaluate(el => el.textContent) || '', '0');
+    assert.strictEqual(await inpFieldValue.evaluate(el => el.textContent) || '', '49 ms');
 
     // Ensure the original CrUX data is restored when we return to the original page
     await goToResource('performance/fake-website.html');
-    await waitForNone('.metric-card-value .field-data');
+    await waitForNone(HISTOGRAM_SELECTOR);
   });
 });

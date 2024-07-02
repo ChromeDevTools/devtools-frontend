@@ -8,7 +8,7 @@
  * https://github.com/GoogleChrome/web-vitals-extension/blob/main/src/browser_action/on-each-interaction.js
  */
 
-import * as WebVitals from '../../../third_party/web-vitals/web-vitals.js';
+import type * as WebVitals from '../../../third_party/web-vitals/web-vitals.js';
 
 export interface InteractionWithAttribution {
   attribution: {
@@ -18,18 +18,7 @@ export interface InteractionWithAttribution {
     interactionId: number,
   };
   entries: PerformanceEntry[];
-  rating: WebVitals.Metric['rating'];
   value: number;
-}
-
-function valueToRating(score: number): WebVitals.Metric['rating'] {
-  if (score < WebVitals.INPThresholds[0]) {
-    return 'good';
-  }
-  if (score <= WebVitals.INPThresholds[1]) {
-    return 'needs-improvement';
-  }
-  return 'poor';
 }
 
 export function onEachInteraction(callback: (interaction: InteractionWithAttribution) => void): void {
@@ -62,7 +51,6 @@ export function onEachInteraction(callback: (interaction: InteractionWithAttribu
           interactionId,
         },
         entries: interaction,
-        rating: valueToRating(value),
         value,
       });
     }

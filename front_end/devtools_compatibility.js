@@ -288,10 +288,6 @@ const DevToolsAPIImpl = class {
     }
   }
 
-  reattachMainTarget() {
-    this._dispatchOnInspectorFrontendAPI('reattachMainTarget', []);
-  }
-
   /**
    * @param {boolean} hard
    */

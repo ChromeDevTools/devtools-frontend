@@ -9,4 +9,4 @@ export = assertMethodExists;
  * @param {string} methodPath The name of the method to use for error messages
  * @throws {TypeError} When the method doesn't exist
  */
-declare function assertMethodExists(value: any, method: string, name: never, methodPath: string): void;
+declare function assertMethodExists(value: any, method: string, name: void, methodPath: string): void;

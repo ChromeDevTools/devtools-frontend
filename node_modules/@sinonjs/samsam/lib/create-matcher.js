@@ -60,6 +60,13 @@ function createMatcher(expectation, message) {
         m.message = `match(${valueToString(expectation)})`;
     }
 
+    // ensure that nothing mutates the exported message value, ref https://github.com/sinonjs/sinon/issues/2502
+    Object.defineProperty(m, "message", {
+        configurable: false,
+        writable: false,
+        value: m.message,
+    });
+
     return m;
 }
 

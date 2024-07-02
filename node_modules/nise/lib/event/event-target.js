@@ -5,22 +5,22 @@ function flattenOptions(options) {
         return {
             capture: Boolean(options),
             once: false,
-            passive: false
+            passive: false,
         };
     }
     return {
         capture: Boolean(options.capture),
         once: Boolean(options.once),
-        passive: Boolean(options.passive)
+        passive: Boolean(options.passive),
     };
 }
 function not(fn) {
-    return function() {
+    return function () {
         return !fn.apply(this, arguments);
     };
 }
 function hasListenerFilter(listener, capture) {
-    return function(listenerSpec) {
+    return function (listenerSpec) {
         return (
             listenerSpec.capture === capture &&
             listenerSpec.listener === listener
@@ -33,7 +33,7 @@ var EventTarget = {
     addEventListener: function addEventListener(
         event,
         listener,
-        providedOptions
+        providedOptions,
     ) {
         // 3. Let capture, passive, and once be the result of flattening more options.
         // Flatten property before executing step 2,
@@ -59,13 +59,13 @@ var EventTarget = {
         //    callback, capture is capture, passive is passive, and once is once.
         if (
             !this.eventListeners[event].some(
-                hasListenerFilter(listener, options.capture)
+                hasListenerFilter(listener, options.capture),
             )
         ) {
             this.eventListeners[event].push({
                 listener: listener,
                 capture: options.capture,
-                once: options.once
+                once: options.once,
             });
         }
     },
@@ -74,7 +74,7 @@ var EventTarget = {
     removeEventListener: function removeEventListener(
         event,
         listener,
-        providedOptions
+        providedOptions,
     ) {
         if (!this.eventListeners || !this.eventListeners[event]) {
             return;
@@ -88,7 +88,7 @@ var EventTarget = {
         //    and capture is capture, then set that event listener’s
         //    removed to true and remove it from the associated list of event listeners.
         this.eventListeners[event] = this.eventListeners[event].filter(
-            not(hasListenerFilter(listener, options.capture))
+            not(hasListenerFilter(listener, options.capture)),
         );
     },
 
@@ -103,10 +103,10 @@ var EventTarget = {
 
         // Remove listeners, that should be dispatched once
         // before running dispatch loop to avoid nested dispatch issues
-        self.eventListeners[type] = listeners.filter(function(listenerSpec) {
+        self.eventListeners[type] = listeners.filter(function (listenerSpec) {
             return !listenerSpec.once;
         });
-        listeners.forEach(function(listenerSpec) {
+        listeners.forEach(function (listenerSpec) {
             var listener = listenerSpec.listener;
             if (typeof listener === "function") {
                 listener.call(self, event);
@@ -116,7 +116,7 @@ var EventTarget = {
         });
 
         return Boolean(event.defaultPrevented);
-    }
+    },
 };
 
 module.exports = EventTarget;

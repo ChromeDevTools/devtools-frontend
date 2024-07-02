@@ -1,7 +1,7 @@
 # samsam
 
 [![CircleCI](https://circleci.com/gh/sinonjs/samsam.svg?style=svg)](https://circleci.com/gh/sinonjs/samsam)
-[![Coverage status](https://codecov.io/gh/sinonjs/samsam/branch/master/graph/badge.svg)](https://codecov.io/gh/sinonjs/samsam)
+[![Coverage status](https://codecov.io/gh/sinonjs/samsam/branch/main/graph/badge.svg)](https://codecov.io/gh/sinonjs/samsam)
 <a href="CODE_OF_CONDUCT.md"><img src="https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg" alt="Contributor Covenant" /></a>
 
 Value identification and comparison functions

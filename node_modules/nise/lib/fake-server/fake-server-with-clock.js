@@ -23,19 +23,19 @@ fakeServerWithClock.addRequest = function addRequest(xhr) {
             var clockSetInterval = this.clock.setInterval;
             var server = this;
 
-            this.clock.setTimeout = function(fn, timeout) {
+            this.clock.setTimeout = function (fn, timeout) {
                 server.longestTimeout = Math.max(
                     timeout,
-                    server.longestTimeout || 0
+                    server.longestTimeout || 0,
                 );
 
                 return clockSetTimeout.apply(this, arguments);
             };
 
-            this.clock.setInterval = function(fn, timeout) {
+            this.clock.setInterval = function (fn, timeout) {
                 server.longestTimeout = Math.max(
                     timeout,
-                    server.longestTimeout || 0
+                    server.longestTimeout || 0,
                 );
 
                 return clockSetInterval.apply(this, arguments);

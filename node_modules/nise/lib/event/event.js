@@ -5,7 +5,7 @@ function Event(type, bubbles, cancelable, target) {
 }
 
 Event.prototype = {
-    initEvent: function(type, bubbles, cancelable, target) {
+    initEvent: function (type, bubbles, cancelable, target) {
         this.type = type;
         this.bubbles = bubbles;
         this.cancelable = cancelable;
@@ -14,11 +14,11 @@ Event.prototype = {
     },
 
     // eslint-disable-next-line no-empty-function
-    stopPropagation: function() {},
+    stopPropagation: function () {},
 
-    preventDefault: function() {
+    preventDefault: function () {
         this.defaultPrevented = true;
-    }
+    },
 };
 
 module.exports = Event;

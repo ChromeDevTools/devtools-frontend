@@ -10,8 +10,10 @@ var mapForEach = require("@sinonjs/commons").prototypes.map.forEach;
 var getClass = require("./get-class");
 var identical = require("./identical");
 var isArguments = require("./is-arguments");
+var isArrayType = require("./is-array-type");
 var isDate = require("./is-date");
 var isElement = require("./is-element");
+var isIterable = require("./is-iterable");
 var isMap = require("./is-map");
 var isNaN = require("./is-nan");
 var isObject = require("./is-object");
@@ -187,6 +189,44 @@ function deepEqualCyclic(actual, expectation, match) {
             });
 
             return mapsDeeplyEqual;
+        }
+
+        // jQuery objects have iteration protocols
+        // see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
+        // But, they don't work well with the implementation concerning iterables below,
+        // so we will detect them and use jQuery's own equality function
+        /* istanbul ignore next -- this can only be tested in the `test-headless` script */
+        if (
+            actualObj.constructor &&
+            actualObj.constructor.name === "jQuery" &&
+            typeof actualObj.is === "function"
+        ) {
+            return actualObj.is(expectationObj);
+        }
+
+        var isActualNonArrayIterable =
+            isIterable(actualObj) &&
+            !isArrayType(actualObj) &&
+            !isArguments(actualObj);
+        var isExpectationNonArrayIterable =
+            isIterable(expectationObj) &&
+            !isArrayType(expectationObj) &&
+            !isArguments(expectationObj);
+        if (isActualNonArrayIterable || isExpectationNonArrayIterable) {
+            var actualArray = Array.from(actualObj);
+            var expectationArray = Array.from(expectationObj);
+            if (actualArray.length !== expectationArray.length) {
+                return false;
+            }
+
+            var arrayDeeplyEquals = true;
+            every(actualArray, function (key) {
+                arrayDeeplyEquals =
+                    arrayDeeplyEquals &&
+                    deepEqualCyclic(actualArray[key], expectationArray[key]);
+            });
+
+            return arrayDeeplyEquals;
         }
 
         return every(expectationKeysAndSymbols, function (key) {

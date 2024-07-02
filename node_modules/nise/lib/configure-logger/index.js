@@ -11,7 +11,7 @@ function configureLogger(config) {
     // Function which prints errors.
     if (!config.hasOwnProperty("logger")) {
         // eslint-disable-next-line no-empty-function
-        config.logger = function() {};
+        config.logger = function () {};
     }
     // When set to true, any errors logged will be thrown immediately;
     // If set to false, the errors will be thrown in separate execution frame.
@@ -28,7 +28,7 @@ function configureLogger(config) {
         var err = {
             name: e.name || label,
             message: e.message || e.toString(),
-            stack: e.stack
+            stack: e.stack,
         };
 
         function throwLoggedError() {

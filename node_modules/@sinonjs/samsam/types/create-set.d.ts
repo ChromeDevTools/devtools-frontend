@@ -10,4 +10,4 @@ export = createSet;
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
  */
-declare function createSet(array: any[], ...args: any[]): any;
+declare function createSet(array: any[], ...args: any[]): Set<any>;

@@ -12,7 +12,7 @@
     "Pierre Queinnec <pierre@queinnec.org>",
     "Zack Weinberg <zackw@panix.com>"
   ],
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "Polyfill for the Encoding Living Standard's API.",
   "main": "index.js",
   "files": [
@@ -22,7 +22,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/inexorabletash/text-encoding.git"
+    "url": "https://github.com/sinonjs/text-encoding.git"
   },
   "keywords": [
     "encoding",
@@ -30,8 +30,8 @@
     "living standard"
   ],
   "bugs": {
-    "url": "https://github.com/inexorabletash/text-encoding/issues"
+    "url": "https://github.com/sinonjs/text-encoding/issues"
   },
-  "homepage": "https://github.com/inexorabletash/text-encoding",
+  "homepage": "https://github.com/sinonjs/text-encoding",
   "license": "(Unlicense OR Apache-2.0)"
 }

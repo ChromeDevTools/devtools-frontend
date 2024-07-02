@@ -142,8 +142,8 @@ export class FreestylerAgent {
         model_id: config?.devToolsFreestylerDogfood.aidaModelId ?? undefined,
       },
       metadata: {
-        // TODO: enable logging later.
-        disable_user_content_logging: true,
+        // TODO: disable logging based on query params.
+        disable_user_content_logging: false,
       },
       // eslint-disable-next-line @typescript-eslint/naming-convention
       functionality_type: Host.AidaClient.FunctionalityType.CHAT,

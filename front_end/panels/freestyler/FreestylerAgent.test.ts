@@ -297,7 +297,7 @@ c`;
               },
             ],
             metadata: {
-              disable_user_content_logging: true,
+              disable_user_content_logging: false,
             },
             options: {
               model_id: 'test model',

@@ -144,6 +144,27 @@
   color: var(--sys-color-error);
 }
 
+.side-effect-confirmation {
+  background: var(--color-background);
+  padding: 24px;
+  border-radius: var(--sys-size-6);
+  margin-bottom: 8px;
+
+  p {
+    margin: 0;
+    margin-bottom: 12px;
+    padding: 0;
+  }
+}
+
+.side-effect-buttons-container {
+  margin-top: 8px;
+
+  devtools-button {
+    margin-top: 4px;
+  }
+}
+
 .consent-view {
   padding: 24px;
   text-wrap: pretty;

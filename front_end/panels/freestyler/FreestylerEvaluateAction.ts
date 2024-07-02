@@ -6,6 +6,7 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
 export class ExecutionError extends Error {}
+export class SideEffectError extends Error {}
 
 function stringifyObjectOnThePage(this: unknown): string {
   const seenBefore = new WeakMap();
@@ -66,8 +67,12 @@ async function stringifyRemoteObject(object: SDK.RemoteObject.RemoteObject): Pro
   }
 }
 
+export interface Options {
+  throwOnSideEffect: boolean;
+}
 export class FreestylerEvaluateAction {
-  static async execute(code: string, executionContext: SDK.RuntimeModel.ExecutionContext): Promise<string> {
+  static async execute(code: string, executionContext: SDK.RuntimeModel.ExecutionContext, {throwOnSideEffect}: Options):
+      Promise<string> {
     const response = await executionContext.evaluate(
         {
           expression: code,
@@ -77,6 +82,7 @@ export class FreestylerEvaluateAction {
           silent: false,
           generatePreview: true,
           allowUnsafeEvalBlockedByCSP: false,
+          throwOnSideEffect,
         },
         /* userGesture */ false, /* awaitPromise */ true);
 
@@ -89,8 +95,12 @@ export class FreestylerEvaluateAction {
     }
 
     if (response.exceptionDetails) {
-      // TODO(ergunsh): We can return the exception message so that it can tweak the code to run.
-      throw new ExecutionError(response.exceptionDetails.exception?.description || 'JS exception');
+      const exceptionDescription = response.exceptionDetails.exception?.description;
+      if (exceptionDescription?.startsWith('EvalError: Possible side-effect in debug-evaluate')) {
+        throw new SideEffectError(exceptionDescription);
+      }
+
+      throw new ExecutionError(exceptionDescription || 'JS exception');
     }
 
     return stringifyRemoteObject(response.object);

@@ -89,6 +89,18 @@ const TempUIStrings = {
    *@description Consent view data visibility text
    */
   consentTextVisibilityDisclaimer: 'Data may be seen by trained reviewers to improve this feature.',
+  /**
+   * @description Side effect confirmation text
+   */
+  sideEffectConfirmationDescription: 'The code contains side effects. Do you wish to continue?',
+  /**
+   * @description Side effect confirmation text for the button that says "Execute"
+   */
+  positiveSideEffectConfirmation: 'Execute',
+  /**
+   * @description Side effect confirmation text for the button that says "Cancel"
+   */
+  negativeSideEffectConfirmation: 'Cancel',
 };
 // const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);
 // const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -106,6 +118,11 @@ function getInputPlaceholderString(aidaAvailability: Host.AidaClient.AidaAvailab
     case Host.AidaClient.AidaAvailability.NO_INTERNET:
       return i18nString(TempUIStrings.offline);
   }
+}
+
+interface ConfirmSideEffectDialog {
+  code: string;
+  onAnswer: (result: boolean) => void;
 }
 
 export const enum ChatMessageEntity {
@@ -147,6 +164,9 @@ export type Props = {
   messages: ChatMessage[],
   selectedNode: SDK.DOMModel.DOMNode|null,
   isLoading: boolean,
+  // If there is a `confirmSideEffectDialog`, we show the
+  // confirmation dialog for executing that specific code.
+  confirmSideEffectDialog?: ConfirmSideEffectDialog,
 };
 
 // The model returns multiline code blocks in an erroneous way with the language being in new line.
@@ -301,6 +321,29 @@ export class FreestylerChatUi extends HTMLElement {
     return LitHtml.html`<p>${this.#renderTextAsMarkdown(step.text)}</p>`;
   }
 
+  #renderSideEffectConfirmationUi(confirmSideEffectDialog: ConfirmSideEffectDialog): LitHtml.TemplateResult {
+    return LitHtml.html`<div class="side-effect-confirmation">
+      <p>${i18nString(TempUIStrings.sideEffectConfirmationDescription)}</p>
+      <${MarkdownView.CodeBlock.CodeBlock.litTagName} .code=${
+        confirmSideEffectDialog.code} .codeLang=${'js'} .displayToolbar=${false}>
+      </${MarkdownView.CodeBlock.CodeBlock.litTagName}>
+      <div class="side-effect-buttons-container">
+        <${Buttons.Button.Button.litTagName}
+          .data=${{
+      variant: Buttons.Button.Variant.PRIMARY,
+    } as Buttons.Button.ButtonData}
+          @click=${() => confirmSideEffectDialog.onAnswer(true)}>${
+        i18nString(TempUIStrings.positiveSideEffectConfirmation)}</${Buttons.Button.Button.litTagName}>
+          <${Buttons.Button.Button.litTagName}
+          .data=${{
+      variant: Buttons.Button.Variant.OUTLINED,
+    } as Buttons.Button.ButtonData}
+          @click=${() => confirmSideEffectDialog.onAnswer(false)}>${
+        i18nString(TempUIStrings.negativeSideEffectConfirmation)}</${Buttons.Button.Button.litTagName}>
+      </div>
+    </div>`;
+  }
+
   #renderChatMessage = (message: ChatMessage, {isLast}: {isLast: boolean}): LitHtml.TemplateResult => {
     if (message.entity === ChatMessageEntity.USER) {
       return LitHtml.html`<div class="chat-message query">${message.text}</div>`;
@@ -310,13 +353,14 @@ export class FreestylerChatUi extends HTMLElement {
     return LitHtml.html`
       <div class="chat-message answer">
         ${message.steps.map(step => LitHtml.html`${this.#renderStep(step)}`)}
+        ${this.#props.confirmSideEffectDialog && isLast ? this.#renderSideEffectConfirmationUi(this.#props.confirmSideEffectDialog) : LitHtml.nothing}
         ${
           message.rpcId !== undefined
             ? LitHtml.html`${this.#renderRateButtons(message.rpcId)}`
             : LitHtml.nothing
         }
         ${
-          this.#props.isLoading && isLast
+          !this.#props.confirmSideEffectDialog && this.#props.isLoading && isLast
             ? LitHtml.html`<div class="chat-loading" >Loading...</div>`
             : LitHtml.nothing
         }

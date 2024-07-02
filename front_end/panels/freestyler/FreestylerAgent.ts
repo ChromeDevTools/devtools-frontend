@@ -7,7 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {ExecutionError, FreestylerEvaluateAction} from './FreestylerEvaluateAction.js';
+import {ExecutionError, FreestylerEvaluateAction, SideEffectError} from './FreestylerEvaluateAction.js';
 
 const preamble = `You are a CSS debugging assistant integrated into Chrome DevTools.
 The user selected a DOM element in the browser's DevTools and sends a CSS-related
@@ -80,7 +80,7 @@ export interface QueryStepData {
 
 export type StepData = CommonStepData|ActionStepData;
 
-async function executeJsCode(code: string): Promise<string> {
+async function executeJsCode(code: string, {throwOnSideEffect}: {throwOnSideEffect: boolean}): Promise<string> {
   const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
   if (!target) {
     throw new Error('Target is not found for executing code');
@@ -102,7 +102,7 @@ async function executeJsCode(code: string): Promise<string> {
   }
 
   try {
-    return await FreestylerEvaluateAction.execute(code, executionContext);
+    return await FreestylerEvaluateAction.execute(code, executionContext, {throwOnSideEffect});
   } catch (err) {
     if (err instanceof ExecutionError) {
       return `Error: ${err.message}`;
@@ -121,11 +121,16 @@ const MAX_STEPS = 10;
 export class FreestylerAgent {
   #aidaClient: Host.AidaClient.AidaClient;
   #chatHistory: Map<number, HistoryChunk[]> = new Map();
+  #confirmSideEffect: (action: string) => Promise<boolean>;
   #execJs: typeof executeJsCode;
 
-  constructor({aidaClient, execJs}: {aidaClient: Host.AidaClient.AidaClient, execJs?: typeof executeJsCode}) {
+  constructor({aidaClient, execJs, confirmSideEffect}: {
+    aidaClient: Host.AidaClient.AidaClient,
+    execJs?: typeof executeJsCode, confirmSideEffect: (action: string) => Promise<boolean>,
+  }) {
     this.#aidaClient = aidaClient;
     this.#execJs = execJs ?? executeJsCode;
+    this.#confirmSideEffect = confirmSideEffect;
   }
 
   static buildRequest(input: string, preamble?: string, chatHistory?: Host.AidaClient.Chunk[]):
@@ -224,6 +229,25 @@ export class FreestylerAgent {
     this.#chatHistory = new Map();
   }
 
+  async #generateObservation(action: string): Promise<string> {
+    try {
+      return await this.#execJs(
+          `{${action};((typeof data !== "undefined") ? data : undefined)}`, {throwOnSideEffect: true});
+    } catch (err) {
+      if (err instanceof SideEffectError) {
+        const shouldAllowSideEffect = await this.#confirmSideEffect(action);
+        if (!shouldAllowSideEffect) {
+          return `Error: ${err.message}`;
+        }
+
+        return await this.#execJs(
+            `{${action};((typeof data !== "undefined") ? data : undefined)}`, {throwOnSideEffect: false});
+      }
+
+      return `Error: ${err.message}`;
+    }
+  }
+
   #runId = 0;
   async * run(query: string, options?: {signal: AbortSignal}): AsyncGenerator<StepData|QueryStepData, void, void> {
     const structuredLog = [];
@@ -276,7 +300,6 @@ export class FreestylerAgent {
       ]);
 
       const {thought, action, answer} = FreestylerAgent.parseResponse(response);
-
       if (!thought && !action && !answer) {
         yield {step: Step.ANSWER, text: 'Sorry, I could not help you with this query.', rpcId};
         break;
@@ -293,7 +316,7 @@ export class FreestylerAgent {
 
       if (action) {
         debugLog(`Action to execute: ${action}`);
-        const observation = await this.#execJs(`{${action};((typeof data !== "undefined") ? data : undefined)}`);
+        const observation = await this.#generateObservation(action);
         debugLog(`Action result: ${observation}`);
         yield {step: Step.ACTION, code: action, output: observation, rpcId};
         query = `OBSERVATION: ${observation}`;

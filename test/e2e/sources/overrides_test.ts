@@ -386,33 +386,36 @@ describe('Overrides panel', function() {
     await waitFor('[aria-label="Close sourcemap-origin.min.js"]');
   });
 
-  it('show redirect dialog when override content of source mapped css file', async () => {
-    await goToResource('sources/sourcemap-origin.html');
-    await openSourcesPanel();
-    await enableLocalOverrides();
+  // crbug.com/350617272
+  it.skipOnPlatforms(
+      ['mac'], '[crbug.com/350617272]: show redirect dialog when override content of source mapped css file',
+      async () => {
+        await goToResource('sources/sourcemap-origin.html');
+        await openSourcesPanel();
+        await enableLocalOverrides();
 
-    await openNetworkTab();
-    await waitForSomeRequestsToAppear(4);
-    await waitForOverrideContentMenuItemIsEnabled('sourcemap-origin.css');
-    await click('aria/Open in Sources panel');
+        await openNetworkTab();
+        await waitForSomeRequestsToAppear(4);
+        await waitForOverrideContentMenuItemIsEnabled('sourcemap-origin.css');
+        await click('aria/Open in Sources panel');
 
-    // Actual file > Has override content
-    const file = await waitFor('[aria-label="sourcemap-origin.css"]');
-    await file.click({button: 'right'});
-    await click('aria/Close');
+        // Actual file > Has override content
+        const file = await waitFor('[aria-label="sourcemap-origin.css"]');
+        await file.click({button: 'right'});
+        await click('aria/Close');
 
-    // Source mapped file > Show redirect confirmation dialog
-    const mappedfile = await waitFor('[aria-label="sourcemap-origin.scss, file"]');
-    await mappedfile.click({button: 'right'});
-    await click('aria/Override content');
-    const p = await waitFor('.dimmed-pane');
-    const dialog = await p.waitForSelector('>>>> [role="dialog"]');
-    const okButton = await dialog?.waitForSelector('>>> devtools-button');
-    const okButtonTextContent = await okButton?.evaluate(e => e.textContent);
-    assert.deepEqual(okButtonTextContent, 'OK');
-    await okButton?.click();
-    await waitFor('[aria-label="Close sourcemap-origin.css"]');
-  });
+        // Source mapped file > Show redirect confirmation dialog
+        const mappedfile = await waitFor('[aria-label="sourcemap-origin.scss, file"]');
+        await mappedfile.click({button: 'right'});
+        await click('aria/Override content');
+        const p = await waitFor('.dimmed-pane');
+        const dialog = await p.waitForSelector('>>>> [role="dialog"]');
+        const okButton = await dialog?.waitForSelector('>>> devtools-button');
+        const okButtonTextContent = await okButton?.evaluate(e => e.textContent);
+        assert.deepEqual(okButtonTextContent, 'OK');
+        await okButton?.click();
+        await waitFor('[aria-label="Close sourcemap-origin.css"]');
+      });
 });
 
 describe('Overrides panel', () => {

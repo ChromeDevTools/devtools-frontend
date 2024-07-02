@@ -156,6 +156,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this.#animationGroupPausedBeforeScrub = false;
     this.createHeader();
     this.#animationsContainer = this.contentElement.createChild('div', 'animation-timeline-rows');
+    this.#animationsContainer.setAttribute('jslog', `${VisualLogging.section('animations')}`);
     const timelineHint = this.contentElement.createChild('div', 'animation-timeline-rows-hint');
     timelineHint.textContent = i18nString(UIStrings.selectAnEffectAboveToInspectAnd);
 
@@ -320,6 +321,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     }
     this.updatePlaybackControls();
     this.#previewContainer = (this.contentElement.createChild('div', 'animation-timeline-buffer') as HTMLElement);
+    this.#previewContainer.setAttribute('jslog', `${VisualLogging.section('film-strip')}`);
     UI.ARIAUtils.markAsListBox(this.#previewContainer);
     UI.ARIAUtils.setLabel(this.#previewContainer, i18nString(UIStrings.animationPreviews));
     const emptyBufferHint = this.contentElement.createChild('div', 'animation-timeline-buffer-hint');

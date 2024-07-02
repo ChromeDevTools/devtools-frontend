@@ -41,18 +41,22 @@ function compareVeImpressions(actual: string[], expected: string[]): {match: boo
   return {match: true};
 }
 
-export function veImpression(ve: string, context?: string, children?: string[][]) {
-  let key = ve;
-  if (context) {
-    key += ': ' + context;
-  }
-  const result = [key];
+export function veImpressionsUnder(key: string, children: string[][]) {
+  const result = [];
   for (const child of children || []) {
     for (const impression of child) {
       result.push(key + ' > ' + impression);
     }
   }
   return result;
+}
+
+export function veImpression(ve: string, context?: string, children?: string[][]) {
+  let key = ve;
+  if (context) {
+    key += ': ' + context;
+  }
+  return [key, ...veImpressionsUnder(key, children || [])];
 }
 
 function veImpressionForTabHeader(panel: string, options?: {closable: boolean}) {

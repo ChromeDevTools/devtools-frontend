@@ -109,7 +109,7 @@ export function pendingWorkComplete(): Promise<void> {
         clickLogThrottler,
         resizeLogThrottler,
       ].map(async throttler => {
-        while (throttler.process) {
+        for (let i = 0; throttler.process && i < 3; ++i) {
           await throttler.processCompleted;
         }
       }))

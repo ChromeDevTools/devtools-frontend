@@ -369,6 +369,10 @@ text.animation-timeline-grid-label {
   display: none;
 }
 
+.animation-timeline-rows:empty {
+  display: none;
+}
+
 .animation-timeline-buffer:not(:empty) ~ .animation-timeline-rows:empty {
   flex-grow: 0;
 }

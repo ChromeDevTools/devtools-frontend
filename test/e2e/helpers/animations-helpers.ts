@@ -5,13 +5,18 @@
 import {click, goToResource, waitFor} from '../../shared/helper.js';
 
 import {openPanelViaMoreTools} from './settings-helpers.js';
-import {veImpression} from './visual-logging-helpers.js';
+import {
+  expectVeImpressions,
+  veImpression,
+  veImpressionsUnder,
+} from './visual-logging-helpers.js';
 
 export async function waitForAnimationsPanelToLoad() {
   // Open panel and wait for content
   await openPanelViaMoreTools('Animations');
   await waitFor('div[aria-label="Animations panel"]');
-  await waitFor('div.animations-timeline');
+  await waitFor('div.animation-timeline-header');
+  await expectVeImpressions(veImpression('Drawer', undefined, [veImpressionForAnimationsPanel()]));
 }
 
 export async function navigateToSiteWithAnimation() {
@@ -23,6 +28,15 @@ export async function waitForAnimationContent() {
   await click('.animation-buffer-preview[aria-label="Animation Preview 1"]', {clickOptions: {offset: {x: 0, y: 0}}});
   await waitFor('.animation-node-row');
   await waitFor('svg.animation-ui');
+  await expectVeImpressions(veImpressionsUnder('Drawer > Panel: animations', [
+    veImpression('Section', 'film-strip', [veImpression('Item', 'animations.buffer-preview')]),
+    veImpression(
+        'Section', 'animations',
+        [
+          veImpression('TableCell', 'timeline'),
+          veImpression('TableCell', 'description', [veImpression('Link', 'node')]),
+        ]),
+  ]));
 }
 
 export function veImpressionForAnimationsPanel() {

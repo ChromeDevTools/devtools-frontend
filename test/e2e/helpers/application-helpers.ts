@@ -15,7 +15,8 @@ import {
   waitForNone,
 } from '../../shared/helper.js';
 
-import {expectVeImpressions, veImpression} from './visual-logging-helpers.js';
+import {expectVeEvents, veClick, veImpression} from './visual-logging-helpers.js';
+
 export async function navigateToApplicationTab(_target: puppeteer.Page, testName: string) {
   const {target, frontend} = getBrowserAndPages();
   await target.bringToFront();
@@ -24,7 +25,7 @@ export async function navigateToApplicationTab(_target: puppeteer.Page, testName
   await click('#tab-resources');
   // Make sure the application navigation list is shown
   await waitFor('.storage-group-list-item');
-  await expectVeImpressions(veImpressionForApplicationPanel());
+  await expectVeEvents([veClick('Toolbar: main > PanelTabHeader: resources'), veImpressionForApplicationPanel()]);
 }
 
 export async function navigateToServiceWorkers() {

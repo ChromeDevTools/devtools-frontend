@@ -16,7 +16,7 @@ import {veImpressionForPerformancePanel} from './performance-helpers.js';
 import {veImpressionForSecurityPanel} from './security-helpers.js';
 import {veImpressionForSourcesPanel} from './sources-helpers.js';
 import {
-  expectVeImpressions,
+  expectVeEvents,
   veImpression,
   veImpressionForElementsPanel,
   veImpressionForMainToolbar,
@@ -101,5 +101,5 @@ export async function reloadDevTools(
       veImpressionForConsolePanel(),
     ]));
   }
-  await expectVeImpressions(expectedVeEvents.flat());
+  await expectVeEvents(expectedVeEvents);
 }

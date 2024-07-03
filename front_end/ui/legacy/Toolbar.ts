@@ -783,6 +783,8 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
     const clearButtonText = i18nString(UIStrings.clearInput);
     const clearButton = new Buttons.Button.Button();
     clearButton.className = 'toolbar-input-clear-button';
+    clearButton.setAttribute('jslog', `${VisualLogging.action('clear').track({click: true}).parent('mapped')}`);
+    VisualLogging.setMappedParent(clearButton, internalPromptElement);
     clearButton.variant = Buttons.Button.Variant.ICON;
     clearButton.size = Buttons.Button.Size.SMALL;
     clearButton.iconName = 'cross-circle-filled';

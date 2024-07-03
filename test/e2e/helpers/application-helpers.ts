@@ -116,11 +116,16 @@ export async function filterStorageItems(filter: string) {
   await expectVeEvents(
       [veImpressionsUnder('Panel: resources > Pane: cookies-data > Toolbar', [veImpression('TextField')])]);
   await element.type(filter);
-  await expectVeEvents([veChange('Panel: resources > Pane: cookies-data > Toolbar > TextField')]);
+  await expectVeEvents([
+    veChange('Panel: resources > Pane: cookies-data > Toolbar > TextField'),
+    veImpressionsUnder(
+        'Panel: resources > Pane: cookies-data > Toolbar > TextField', [veImpression('Action', 'clear')]),
+  ]);
 }
 
 export async function clearStorageItemsFilter() {
   await click('.toolbar-input .toolbar-input-clear-button');
+  await expectVeEvents([veClick('Panel: resources > Pane: cookies-data > Toolbar > TextField > Action: clear')]);
 }
 
 export async function clearStorageItems() {

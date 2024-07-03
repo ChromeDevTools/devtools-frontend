@@ -16,7 +16,8 @@ describeWithEnvironment('NetworkTrackAppender', function() {
 
   beforeEach(async function() {
     traceParsedData = await TraceLoader.traceEngine(this, 'cls-cluster-max-timeout.json.gz');
-    networkTrackAppender = new Timeline.NetworkTrackAppender.NetworkTrackAppender(traceParsedData, flameChartData);
+    networkTrackAppender =
+        new Timeline.NetworkTrackAppender.NetworkTrackAppender(flameChartData, traceParsedData.NetworkRequests.byTime);
     networkTrackAppender.appendTrackAtLevel(0);
   });
 

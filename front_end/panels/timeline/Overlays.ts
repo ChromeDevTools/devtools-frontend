@@ -195,7 +195,7 @@ export class Overlays {
     if (entry instanceof TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame) {
       return 'main';
     }
-    if (TraceEngine.Types.TraceEvents.isSyntheticNetworkRequestEvent(entry)) {
+    if (TraceEngine.Types.TraceEvents.isNetworkTrackEntry(entry)) {
       return 'network';
     }
 

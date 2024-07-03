@@ -390,6 +390,25 @@ export interface SyntheticNetworkRequest extends TraceEventComplete, SyntheticBa
   tid: ThreadID;
 }
 
+export interface SyntheticWebSocketConnectionEvent extends TraceEventComplete, SyntheticBasedEvent<Phase.COMPLETE> {
+  rawSourceEvent: TraceEventData;
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      identifier: number,
+      priority: Protocol.Network.ResourcePriority,
+      url: string,
+    },
+  };
+  cat: string;
+  name: 'SyntheticWebSocketConnectionEvent';
+  ph: Phase.COMPLETE;
+  dur: MicroSeconds;
+  ts: MicroSeconds;
+  pid: ProcessID;
+  tid: ThreadID;
+  s: TraceEventScope;
+}
+
 export const enum AuctionWorkletType {
   BIDDER = 'bidder',
   SELLER = 'seller',
@@ -2028,6 +2047,18 @@ export function isSyntheticNetworkRequestEvent(
   return traceEventData.name === 'SyntheticNetworkRequest';
 }
 
+export function isSyntheticWebSocketConnectionEvent(
+    traceEventData: TraceEventData,
+    ): traceEventData is SyntheticWebSocketConnectionEvent {
+  return traceEventData.name === 'SyntheticWebSocketConnectionEvent';
+}
+
+export function isNetworkTrackEntry(traceEventData: TraceEventData):
+    traceEventData is SyntheticWebSocketConnectionEvent|SyntheticNetworkRequest {
+  return isSyntheticNetworkRequestEvent(traceEventData) || isSyntheticWebSocketConnectionEvent(traceEventData) ||
+      isWebSocketTraceEvent(traceEventData);
+}
+
 export function isTraceEventPrePaint(
     traceEventData: TraceEventData,
     ): traceEventData is TraceEventPrePaint {
@@ -2467,7 +2498,8 @@ export function isWebSocketTraceEvent(event: TraceEventData): event is TraceEven
     TraceEventWebSocketInfo|TraceEventWebSocketTransfer {
   return isTraceEventWebSocketCreate(event) || isTraceEventWebSocketInfo(event) || isTraceEventWebSocketTransfer(event);
 }
-export type WebSocketEvent = TraceEventWebSocketCreate|TraceEventWebSocketInfo|TraceEventWebSocketTransfer;
+export type WebSocketEvent =
+    TraceEventWebSocketCreate|TraceEventWebSocketInfo|TraceEventWebSocketTransfer|SyntheticWebSocketConnectionEvent;
 
 export interface TraceEventV8Compile extends TraceEventComplete {
   name: KnownEventName.Compile;

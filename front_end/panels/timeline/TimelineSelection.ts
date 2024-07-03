@@ -44,6 +44,16 @@ export class TimelineSelection {
     return TraceEngine.Types.TraceEvents.isSyntheticNetworkRequestEvent(object);
   }
 
+  static isNetworkEventSelection(object: PermittedObjectTypes):
+      object is TraceEngine.Types.TraceEvents.SyntheticNetworkRequest|TraceEngine.Types.TraceEvents.WebSocketEvent {
+    if (TimelineSelection.isFrameObject(object) || TimelineSelection.isRangeSelection(object)) {
+      return false;
+    }
+    // At this point we know the selection is a raw trace event, so we just
+    // need to check it's the right type of raw event.
+    return TraceEngine.Types.TraceEvents.isNetworkTrackEntry(object);
+  }
+
   static isTraceEventSelection(object: PermittedObjectTypes): object is TraceEngine.Types.TraceEvents.TraceEventData {
     // Trace events are just raw objects, so now we have to confirm it is a trace event by ruling everything else out.
     if (TimelineSelection.isFrameObject(object) || TimelineSelection.isRangeSelection(object)) {

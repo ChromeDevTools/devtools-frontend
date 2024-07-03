@@ -54,6 +54,7 @@ copy_to_gen("traces") {
     "multiple-top-level-renderers.json.gz",
     "nested-initiators.json.gz",
     "nested-interactions.json.gz",
+    "network-websocket-messages.json.gz",
     "node-fibonacci-website.cpuprofile.gz",
     "non-composited-animation.json.gz",
     "one-second-interaction.json.gz",

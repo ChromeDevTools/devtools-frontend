@@ -182,6 +182,20 @@ describe('NetworkRequestsHandler', function() {
           fontDataRequests.all, 'https://fonts.gstatic.com/s/orelegaone/v1/3qTpojOggD2XtAdFb-QXZFt93kY.woff2',
           fontDataRequestBlockingStatusExpected);
     });
+
+    it('calculates Websocket events correctly', async function() {
+      const traceEvents = await TraceLoader.rawEvents(this, 'network-websocket-messages.json.gz');
+      for (const event of traceEvents) {
+        TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
+        TraceModel.Handlers.ModelHandlers.NetworkRequests.handleEvent(event);
+      }
+      await TraceModel.Handlers.ModelHandlers.Meta.finalize();
+      await TraceModel.Handlers.ModelHandlers.NetworkRequests.finalize();
+
+      const webSocketEvents = TraceModel.Handlers.ModelHandlers.NetworkRequests.data().webSocket;
+
+      assert.strictEqual(webSocketEvents[0].events.length, 9, 'Incorrect number of events');
+    });
   });
 
   describe('parses the change priority request', () => {

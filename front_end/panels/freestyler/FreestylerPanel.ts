@@ -18,7 +18,7 @@ import {
   Rating,
   State as FreestylerChatUiState,
 } from './components/FreestylerChatUi.js';
-import {FreestylerAgent, Step} from './FreestylerAgent.js';
+import {FIX_THIS_ISSUE_PROMPT, FreestylerAgent, Step} from './FreestylerAgent.js';
 import freestylerPanelStyles from './freestylerPanel.css.js';
 
 /*
@@ -130,6 +130,9 @@ export class FreestylerPanel extends UI.Panel.Panel {
       onRateClick: this.#handleRateClick.bind(this),
       onAcceptConsentClick: this.#handleAcceptConsentClick.bind(this),
       onCancelClick: this.#cancel.bind(this),
+      onFixThisIssueClick: () => {
+        void this.#handleTextSubmit(FIX_THIS_ISSUE_PROMPT);
+      },
     };
     this.#toggleSearchElementAction.addEventListener(UI.ActionRegistration.Events.Toggled, ev => {
       this.#viewProps.inspectElementToggled = ev.data;

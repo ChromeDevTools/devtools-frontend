@@ -434,6 +434,40 @@ c`;
         assert.strictEqual((actionStep as any).output, 'Error: EvalError: Possible side-effect in debug-evaluate');
         assert.strictEqual(execJs.getCalls().length, 1);
       });
+
+      it('calls execJs with allowing side effects when the query includes "Fix this issue" prompt', async () => {
+        let count = 0;
+        async function* generateActionAndAnswer() {
+          if (count === 0) {
+            yield {
+              explanation: `ACTION
+              $0.style.backgroundColor = 'red'
+              STOP`,
+              metadata: {},
+            };
+          } else {
+            yield {
+              explanation: 'ANSWER: This is the answer',
+              metadata: {},
+            };
+          }
+
+          count++;
+        }
+        const execJs = sinon.mock().once();
+        const confirmSideEffect = sinon.mock();
+        const agent = new FreestylerAgent({
+          aidaClient: mockAidaClient(generateActionAndAnswer),
+          confirmSideEffect,
+          execJs,
+        });
+
+        await Array.fromAsync(agent.run(Freestyler.FIX_THIS_ISSUE_PROMPT));
+
+        const optionsArg = execJs.lastCall.args[1];
+        sinon.assert.notCalled(confirmSideEffect);
+        sinon.assert.match(optionsArg, sinon.match({throwOnSideEffect: false}));
+      });
     });
 
     it('generates an answer immediately', async () => {

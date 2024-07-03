@@ -80,6 +80,8 @@ export interface QueryStepData {
 
 export type StepData = CommonStepData|ActionStepData;
 
+export const FIX_THIS_ISSUE_PROMPT = 'Fix this issue using JavaScript code execution';
+
 async function executeJsCode(code: string, {throwOnSideEffect}: {throwOnSideEffect: boolean}): Promise<string> {
   const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
   if (!target) {
@@ -229,10 +231,9 @@ export class FreestylerAgent {
     this.#chatHistory = new Map();
   }
 
-  async #generateObservation(action: string): Promise<string> {
+  async #generateObservation(action: string, {throwOnSideEffect}: {throwOnSideEffect: boolean}): Promise<string> {
     try {
-      return await this.#execJs(
-          `{${action};((typeof data !== "undefined") ? data : undefined)}`, {throwOnSideEffect: true});
+      return await this.#execJs(`{${action};((typeof data !== "undefined") ? data : undefined)}`, {throwOnSideEffect});
     } catch (err) {
       if (err instanceof SideEffectError) {
         const shouldAllowSideEffect = await this.#confirmSideEffect(action);
@@ -316,7 +317,8 @@ export class FreestylerAgent {
 
       if (action) {
         debugLog(`Action to execute: ${action}`);
-        const observation = await this.#generateObservation(action);
+        const observation =
+            await this.#generateObservation(action, {throwOnSideEffect: !query.includes(FIX_THIS_ISSUE_PROMPT)});
         debugLog(`Action result: ${observation}`);
         yield {step: Step.ACTION, code: action, output: observation, rpcId};
         query = `OBSERVATION: ${observation}`;

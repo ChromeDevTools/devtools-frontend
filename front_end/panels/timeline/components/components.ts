@@ -13,6 +13,7 @@ import * as SidebarAnnotationsTab from './SidebarAnnotationsTab.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import * as TimeRangeOverlay from './TimeRangeOverlay.js';
 import * as TimespanBreakdownOverlay from './TimespanBreakdownOverlay.js';
+import * as Utils from './Utils.js';
 
 export {
   Breadcrumbs,
@@ -26,4 +27,5 @@ export {
   SidebarInsight,
   TimeRangeOverlay,
   TimespanBreakdownOverlay,
+  Utils,
 };

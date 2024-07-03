@@ -13,8 +13,8 @@ import {
   type TrackAppenderName,
   VisualLoggingTrackName,
 } from './CompatibilityTracksAppender.js';
+import {colorForNetworkRequest} from './components/Utils.js';
 import {InstantEventVisibleDurationMs} from './TimelineFlameChartDataProvider.js';
-import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 const UIStrings = {
   /**
@@ -192,8 +192,7 @@ export class NetworkTrackAppender implements TrackAppender {
     if (!TraceEngine.Types.TraceEvents.isSyntheticNetworkRequestDetailsEvent(event)) {
       throw new Error(`Unexpected Network Request: The event's type is '${event.name}'`);
     }
-    const category = TimelineUIUtils.syntheticNetworkRequestCategory(event);
-    return TimelineUIUtils.networkCategoryColor(category);
+    return colorForNetworkRequest(event);
   }
 
   /**

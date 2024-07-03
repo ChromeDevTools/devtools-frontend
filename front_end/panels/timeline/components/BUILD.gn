@@ -34,6 +34,7 @@ devtools_module("components") {
     "SidebarInsight.ts",
     "TimeRangeOverlay.ts",
     "TimespanBreakdownOverlay.ts",
+    "Utils.ts",
   ]
 
   deps = [

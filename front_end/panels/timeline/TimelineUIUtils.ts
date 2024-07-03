@@ -54,7 +54,6 @@ import * as LegacyComponents from '../../ui/legacy/components/utils/utils.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import inspectorCommonStyles from '../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {CLSRect} from './CLSLinkifier.js';
 import * as TimelineComponents from './components/components.js';
@@ -716,56 +715,6 @@ export class TimelineUIUtils {
 
   static isUserFrame(frame: Protocol.Runtime.CallFrame): boolean {
     return frame.scriptId !== '0' && !(frame.url && frame.url.startsWith('native '));
-  }
-
-  static syntheticNetworkRequestCategory(request: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest):
-      NetworkCategory {
-    switch (request.args.data.mimeType) {
-      case 'text/html':
-        return NetworkCategory.HTML;
-      case 'application/javascript':
-      case 'application/x-javascript':
-      case 'text/javascript':
-        return NetworkCategory.Script;
-      case 'text/css':
-        return NetworkCategory.Style;
-      case 'audio/ogg':
-      case 'image/gif':
-      case 'image/jpeg':
-      case 'image/png':
-      case 'image/svg+xml':
-      case 'image/webp':
-      case 'image/x-icon':
-      case 'font/opentype':
-      case 'font/woff2':
-      case 'font/ttf':
-      case 'application/font-woff':
-        return NetworkCategory.Media;
-      default:
-        return NetworkCategory.Other;
-    }
-  }
-
-  static networkCategoryColor(category: NetworkCategory): string {
-    let cssVarName = '--app-color-system';
-    switch (category) {
-      case NetworkCategory.HTML:
-        cssVarName = '--app-color-loading';
-        break;
-      case NetworkCategory.Script:
-        cssVarName = '--app-color-scripting';
-        break;
-      case NetworkCategory.Style:
-        cssVarName = '--app-color-rendering';
-        break;
-      case NetworkCategory.Media:
-        cssVarName = '--app-color-painting';
-        break;
-      default:
-        cssVarName = '--app-color-system';
-        break;
-    }
-    return ThemeSupport.ThemeSupport.instance().getComputedValue(cssVarName);
   }
 
   static async buildDetailsTextForTraceEvent(
@@ -1781,8 +1730,7 @@ export class TimelineUIUtils {
     const maybeTarget = targetForEvent(traceParseData, event);
     const contentHelper = new TimelineDetailsContentHelper(maybeTarget, linkifier);
 
-    const category = TimelineUIUtils.syntheticNetworkRequestCategory(event);
-    const color = TimelineUIUtils.networkCategoryColor(category);
+    const color = TimelineComponents.Utils.colorForNetworkRequest(event);
     contentHelper.addSection(i18nString(UIStrings.networkRequest), color);
 
     const options = {
@@ -2461,14 +2409,6 @@ export class TimelineUIUtils {
     return Common.ParsedURL.schemeIs(url, 'about:') ? `"${Platform.StringUtilities.trimMiddle(frame.name, trimAt)}"` :
                                                       frame.url.slice(0, trimAt);
   }
-}
-
-export const enum NetworkCategory {
-  HTML = 'HTML',
-  Script = 'Script',
-  Style = 'Style',
-  Media = 'Media',
-  Other = 'Other',
 }
 
 export const aggregatedStatsKey = Symbol('aggregatedStats');

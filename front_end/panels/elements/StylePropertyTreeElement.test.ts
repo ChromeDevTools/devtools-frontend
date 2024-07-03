@@ -1383,4 +1383,13 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.strictEqual(clock.style.background, 'linear-gradient(45deg, red, blue)');
     });
   });
+
+  describe('LengthRenderer', () => {
+    it('renders the length too', () => {
+      const stylePropertyTreeElement = getTreeElement('width', '100px');
+      stylePropertyTreeElement.updateTitle();
+      const swatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-length');
+      assert.exists(swatch);
+    });
+  });
 });

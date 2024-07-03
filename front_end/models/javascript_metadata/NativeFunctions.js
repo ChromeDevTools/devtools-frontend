@@ -6781,6 +6781,10 @@ export const NativeFunctions = [
     signatures: [["start","end"]]
   },
   {
+    name: "getActualBoundingBox",
+    signatures: [["start","end"]]
+  },
+  {
     name: "CloseWatcher",
     signatures: [["?options"]]
   },
@@ -7827,7 +7831,7 @@ export const NativeFunctions = [
   },
   {
     name: "prelu",
-    signatures: [["x","slope"]]
+    signatures: [["x","slope","?options"]]
   },
   {
     name: "reduceL1",

@@ -314,6 +314,7 @@ export class Overlays {
    * rendered in the right place.
    */
   update(): void {
+    const timeRangeOverlays: TimeRangeLabel[] = [];
     for (const [overlay, existingElement] of this.#overlaysToElements) {
       const element = existingElement || this.#createElementForNewOverlay(overlay);
       if (existingElement) {
@@ -324,6 +325,71 @@ export class Overlays {
         this.#overlaysContainer.appendChild(element);
       }
       this.#positionOverlay(overlay, element);
+      if (overlay.type === 'TIME_RANGE') {
+        timeRangeOverlays.push(overlay);
+      }
+    }
+
+    if (timeRangeOverlays.length > 1) {  // If there are 0 or 1 overlays, they can't overlap
+      this.#positionOverlappingTimeRangeLabels(timeRangeOverlays);
+    }
+  }
+
+  /**
+   * If any time-range overlays overlap, we try to adjust their horizontal
+   * position in order to make sure you can distinguish them and that the labels
+   * do not entirely overlap.
+   * This is very much minimal best effort, and does not guarantee that all
+   * labels will remain readable.
+   */
+  #positionOverlappingTimeRangeLabels(overlays: readonly TimeRangeLabel[]): void {
+    const overlaysSorted = overlays.toSorted((o1, o2) => {
+      return o1.bounds.min - o2.bounds.min;
+    });
+
+    // Track the overlays which overlap other overlays.
+    // This isn't bi-directional: if we find that O2 overlaps O1, we will
+    // store O1 => [O2]. We will not then also store O2 => [O1], because we
+    // only need to deal with the overlap once.
+    const overlapsByOverlay: Map<TimeRangeLabel, TimeRangeLabel[]> = new Map();
+
+    for (let i = 0; i < overlaysSorted.length; i++) {
+      const current = overlaysSorted[i];
+      const overlaps: TimeRangeLabel[] = [];
+
+      // Walk through subsequent overlays and find stop when you find the next one that does not overlap.
+      for (let j = i + 1; j < overlaysSorted.length; j++) {
+        const next = overlaysSorted[j];
+        const currentAndNextOverlap = TraceEngine.Helpers.Timing.boundsIncludeTimeRange({
+          bounds: current.bounds,
+          timeRange: next.bounds,
+        });
+        if (currentAndNextOverlap) {
+          overlaps.push(next);
+        } else {
+          // Overlays are sorted by time, if this one does not overlap, the next one will not, so we can break.
+          break;
+        }
+      }
+      overlapsByOverlay.set(current, overlaps);
+    }
+    for (const [firstOverlay, overlappingOverlays] of overlapsByOverlay) {
+      const element = this.#overlaysToElements.get(firstOverlay);
+      if (!element) {
+        continue;
+      }
+
+      // If the first overlay is adjusted, we can start back from 0 again
+      // rather than continually increment up.
+      let firstIndexForOverlapClass = 1;
+      if (element.getAttribute('class')?.includes('overlap-')) {
+        firstIndexForOverlapClass = 0;
+      }
+
+      overlappingOverlays.forEach(overlay => {
+        const element = this.#overlaysToElements.get(overlay);
+        element?.classList.add(`overlap-${firstIndexForOverlapClass++}`);
+      });
     }
   }
 

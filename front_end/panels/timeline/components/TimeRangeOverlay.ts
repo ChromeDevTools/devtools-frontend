@@ -140,7 +140,9 @@ export class TimeRangeOverlay extends HTMLElement {
     const durationText = this.#duration ? i18n.TimeUtilities.formatMicroSecondsTime(this.#duration) : '';
 
     LitHtml.render(
-        LitHtml.html`<span class="label">${this.#label}<br>${durationText}</span>`, this.#shadow, {host: this});
+        LitHtml.html`<span class="label" title=${this.#label}><span class="label-text">${this.#label}</span>${
+            durationText}</span>`,
+        this.#shadow, {host: this});
   }
 }
 

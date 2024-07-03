@@ -65,6 +65,8 @@ def update_gn_var(file, variable, files):
 
 
 def update_tsconfig(file, files):
+    if not files:
+        return
     files.sort()
     with open(file, 'w') as f:
         f.write("""{
@@ -81,22 +83,28 @@ def update_tsconfig(file, files):
 """)
 
 
-def update_readme_version(file, ver):
+def update_readme_chromium(file, **kwargs):
+    """ Update the README file with the given key-value pairs. The key is
+    searched in the file and the value is updated.
+    """
     content = None
     with open(file) as f:
         content = f.readlines()
 
-    # Find the `Version` line.
+    updates = []
     for i, line in enumerate(content):
-        if line.startswith("Version:"):
-            lineIndex = i
-            break
-    if lineIndex is None:
+        key = line.split(":")[0]
+        if key and key.lower() in kwargs.keys():
+            updates.append((i, f"{key}: {kwargs[key.lower()]}\n"))
+
+    if not updates:
         return
 
+    for line_index, line_update in updates:
+        content[line_index] = line_update
+
     with open(file, 'w') as f:
-        f.write(''.join(content[:lineIndex] + [f"Version: {ver}\n"] +
-                        content[lineIndex + 1:]))
+        f.write(''.join(content))
 
 
 def main():
@@ -175,9 +183,11 @@ def main():
             if not name.startswith(f'front_end/third_party/{output_dir}/')
         ])
 
-    # Update README.chromium
-    update_readme_version(
-        f'./front_end/third_party/{output_dir}/README.chromium', version)
+    update_readme_chromium(
+        f'./front_end/third_party/{output_dir}/README.chromium',
+        version=package_json['version'],
+        revision=package_json['gitHead'],
+    )
 
     tar.close()
 

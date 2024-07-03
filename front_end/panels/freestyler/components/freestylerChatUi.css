@@ -28,7 +28,7 @@
   margin-top: auto;
   display: flex;
   flex-direction: column;
-  padding: var(--sys-size-8) var(--sys-size-8) 0;
+  padding-top: var(--sys-size-8);
   margin-bottom: var(--sys-size-4);
   max-width: 100%;
 }

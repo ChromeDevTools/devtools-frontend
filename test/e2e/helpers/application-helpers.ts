@@ -9,13 +9,14 @@ import {
   $$,
   click,
   getBrowserAndPages,
+  getTestServerPort,
   goToResource,
   waitFor,
   waitForFunction,
   waitForNone,
 } from '../../shared/helper.js';
 
-import {expectVeEvents, veClick, veImpression} from './visual-logging-helpers.js';
+import {expectVeEvents, veChange, veClick, veImpression, veImpressionsUnder} from './visual-logging-helpers.js';
 
 export async function navigateToApplicationTab(_target: puppeteer.Page, testName: string) {
   const {target, frontend} = getBrowserAndPages();
@@ -38,6 +39,30 @@ export async function navigateToManifestInApplicationTab(testName: string) {
   const {target} = getBrowserAndPages();
   await navigateToApplicationTab(target, testName);
   await click(MANIFEST_SELECTOR);
+}
+
+export async function navigateToCookiesForTopDomain() {
+  // The parent suffix makes sure we wait for the Cookies item to have children before trying to click it.
+  const COOKIES_SELECTOR = '[aria-label="Cookies"].parent';
+  const DOMAIN_SELECTOR = `${COOKIES_SELECTOR} + ol > [aria-label="https://localhost:${getTestServerPort()}"]`;
+  await doubleClickSourceTreeItem(COOKIES_SELECTOR);
+  await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
+
+  await expectVeEvents([
+    veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: cookies'),
+    veImpressionsUnder(
+        'Panel: resources',
+        [
+          veImpression(
+              'Pane', 'cookies', [veImpression('Section', 'empty-view', [veImpression('Link', 'learn-more')])]),
+          veImpressionsUnder(
+              'Pane: sidebar > Tree > TreeItem: storage > TreeItem: cookies',
+              [veImpression('TreeItem', 'cookies-for-frame')]),
+        ]),
+    veClick(
+        'Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: cookies > TreeItem: cookies-for-frame'),
+    veImpressionsUnder('Panel: resources', [veImpressionForCookieTable()]),
+  ]);
 }
 
 export async function doubleClickSourceTreeItem(selector: string) {
@@ -88,7 +113,10 @@ export async function getStorageItemsData(columns: string[], leastExpected: numb
 
 export async function filterStorageItems(filter: string) {
   const element = await $('.toolbar-input-prompt') as puppeteer.ElementHandle;
+  await expectVeEvents(
+      [veImpressionsUnder('Panel: resources > Pane: cookies-data > Toolbar', [veImpression('TextField')])]);
   await element.type(filter);
+  await expectVeEvents([veChange('Panel: resources > Pane: cookies-data > Toolbar > TextField')]);
 }
 
 export async function clearStorageItemsFilter() {
@@ -131,7 +159,9 @@ export async function selectCookieByName(name: string) {
 
     return tmp.asElement() as puppeteer.ElementHandle<HTMLElement>|| undefined;
   });
+  await expectVeEvents([veImpressionsUnder('Panel: resources', [veImpression('Pane', 'cookies-data')])]);
   await cell.click();
+  await expectVeEvents([veClick('Panel: resources > Pane: cookies-data > TableRow > TableCell: name')]);
 }
 
 export async function waitForQuotaUsage(p: (quota: number) => boolean) {
@@ -223,5 +253,31 @@ export function veImpressionForApplicationPanel() {
     ]),
     veImpression('Pane', 'manifest', [
     ]),
+  ]);
+}
+
+function veImpressionForCookieTable() {
+  return veImpression('Pane', 'cookies-data', [
+    veImpression('Pane', 'preview', [veImpression('Section', 'empty-view')]),
+    veImpression('TableHeader', 'domain'),
+    veImpression('TableHeader', 'expires'),
+    veImpression('TableHeader', 'http-only'),
+    veImpression('TableHeader', 'name'),
+    veImpression('TableHeader', 'partition-key-site'),
+    veImpression('TableHeader', 'path'),
+    veImpression('TableHeader', 'priority'),
+    veImpression('TableHeader', 'same-site'),
+    veImpression('TableHeader', 'secure'),
+    veImpression('TableHeader', 'size'),
+    veImpression('TableHeader', 'value'),
+    veImpression(
+        'Toolbar', undefined,
+        [
+          veImpression('Action', 'storage-items-view.clear-all'),
+          veImpression('Action', 'storage-items-view.delete-selected'),
+          veImpression('Action', 'storage-items-view.refresh'),
+          veImpression('TextField'),
+          veImpression('Toggle', 'only-show-cookies-with-issues'),
+        ]),
   ]);
 }

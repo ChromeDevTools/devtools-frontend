@@ -78,6 +78,10 @@ export function veClick(ve: string): TestLogEntry {
   return {interaction: `Click: ${ve}`};
 }
 
+export function veChange(ve: string): TestLogEntry {
+  return {interaction: `Change: ${ve}`};
+}
+
 export function veImpression(ve: string, context?: string, children?: TestImpressionLogEntry[]) {
   let key = ve;
   if (context) {

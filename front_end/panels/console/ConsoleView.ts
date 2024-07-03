@@ -582,6 +582,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     issuesManager.addEventListener(
         IssuesManager.IssuesManager.Events.IssuesCountUpdated, this.#onIssuesCountUpdateBound);
   }
+
   static appendSettingsCheckboxToToolbar(
       toolbar: UI.Toolbar.Toolbar, settingOrSetingName: Common.Settings.Setting<boolean>|string, title: string,
       alternateTitle?: string): UI.Toolbar.ToolbarSettingCheckbox {
@@ -610,6 +611,10 @@ export class ConsoleView extends UI.Widget.VBox implements
 
   #onIssuesCountUpdate(): void {
     void this.issueToolbarThrottle.schedule(async () => this.updateIssuesToolbarItem());
+    this.issuesCountUpdatedForTest();
+  }
+
+  issuesCountUpdatedForTest(): void {
   }
 
   modelAdded(model: SDK.ConsoleModel.ConsoleModel): void {
@@ -713,6 +718,12 @@ export class ConsoleView extends UI.Widget.VBox implements
 
   override wasShown(): void {
     super.wasShown();
+    if (this.#isDetached) {
+      const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
+      issuesManager.addEventListener(
+          IssuesManager.IssuesManager.Events.IssuesCountUpdated, this.#onIssuesCountUpdateBound);
+    }
+    this.#isDetached = false;
     this.updateIssuesToolbarItem();
     this.viewport.refresh();
     this.registerCSSFiles([consoleViewStyles, objectValueStyles, CodeHighlighter.Style.default]);

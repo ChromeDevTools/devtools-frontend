@@ -7,6 +7,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import {dispatchPasteEvent} from '../../testing/DOMHelpers.js';
 import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
@@ -233,5 +234,23 @@ describeWithMockConnection('ConsoleView', () => {
         createConsoleMessage(target, 'await new Promise(() => ())', SDK.ConsoleModel.FrontendMessageType.Command));
 
     assert.deepStrictEqual(consoleHistorySetting.get(), ['await new Promise(() => ())']);
+  });
+
+  it('keeps updating the issue counter when re-attached after detaching', async () => {
+    consoleView.markAsRoot();
+    const spy = sinon.spy(consoleView, 'issuesCountUpdatedForTest');
+    const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
+    issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.IssuesCountUpdated);
+    assert.isTrue(spy.calledOnce);
+
+    // Pauses updating the issue counter
+    consoleView.onDetach();
+    issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.IssuesCountUpdated);
+    assert.isTrue(spy.calledOnce);
+
+    // Continues updating the issue counter
+    consoleView.show(document.body);
+    issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.IssuesCountUpdated);
+    assert.isTrue(spy.calledTwice);
   });
 });

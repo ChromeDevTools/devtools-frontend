@@ -11,6 +11,7 @@ import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
 import {
   ChatMessageEntity,
+  DOGFOOD_FEEDBACK_URL,
   FreestylerChatUi,
   type ModelChatMessage,
   type Props as FreestylerChatUiProps,
@@ -69,9 +70,10 @@ function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () =>
   rightToolbar.appendSeparator();
   const feedbackButton =
       new UI.Toolbar.ToolbarButton(i18nString(TempUIStrings.sendFeedback), 'bug', undefined, 'freestyler.feedback');
-  const helpButton = new UI.Toolbar.ToolbarButton(i18nString(TempUIStrings.help), 'help', undefined, 'freestyler.help');
+  feedbackButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(DOGFOOD_FEEDBACK_URL);
+  });
   rightToolbar.appendToolbarItem(feedbackButton);
-  rightToolbar.appendToolbarItem(helpButton);
 }
 
 function defaultView(input: FreestylerChatUiProps, output: ViewOutput, target: HTMLElement): void {

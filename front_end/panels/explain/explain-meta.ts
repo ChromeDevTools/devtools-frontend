@@ -93,19 +93,20 @@ function isLocaleRestricted(): boolean {
 }
 
 function isAgeRestricted(config?: Root.Runtime.HostConfig): boolean {
-  return config?.devToolsConsoleInsights?.blockedByAge === true;
+  return config?.devToolsAida?.blockedByAge === true || config?.devToolsConsoleInsights?.blockedByAge === true;
 }
 
 function isRolloutRestricted(config?: Root.Runtime.HostConfig): boolean {
-  return config?.devToolsConsoleInsights?.blockedByRollout === true;
+  return config?.devToolsAida?.blockedByRollout === true || config?.devToolsConsoleInsights?.blockedByRollout === true;
 }
 
 function isGeoRestricted(config?: Root.Runtime.HostConfig): boolean {
-  return config?.devToolsConsoleInsights?.blockedByGeo === true;
+  return config?.devToolsAida?.blockedByGeo === true || config?.devToolsConsoleInsights?.blockedByGeo === true;
 }
 
 function isPolicyRestricted(config?: Root.Runtime.HostConfig): boolean {
-  return config?.devToolsConsoleInsights?.blockedByEnterprisePolicy === true;
+  return config?.devToolsAida?.blockedByEnterprisePolicy === true ||
+      config?.devToolsConsoleInsights?.blockedByEnterprisePolicy === true;
 }
 
 function isOptIn(config?: Root.Runtime.HostConfig): boolean {
@@ -113,7 +114,9 @@ function isOptIn(config?: Root.Runtime.HostConfig): boolean {
 }
 
 function isFeatureEnabled(config?: Root.Runtime.HostConfig): boolean {
-  return config?.devToolsConsoleInsights?.blockedByFeatureFlag === false;
+  return (config?.devToolsAida?.blockedByFeatureFlag === false ||
+          config?.devToolsConsoleInsights?.blockedByFeatureFlag === false) &&
+      config?.devToolsConsoleInsights?.enabled;
 }
 
 Common.Settings.registerSettingExtension({

@@ -527,4 +527,10 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
       assert.isNull(match);
     });
   });
+
+  it('matches lengths', () => {
+    const {match, text} = matchSingleValue('min-width', '100px', new Elements.PropertyMatchers.LengthMatcher());
+    assert.exists(match, text);
+    assert.strictEqual(match.text, '100px');
+  });
 });

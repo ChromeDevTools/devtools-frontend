@@ -601,7 +601,7 @@ export class Overlays {
     // We don't need to worry about it going off the bottom, because in that
     // case we don't draw the overlay anyway.
     if (chartName === 'main') {
-      const chartTopPadding = this.#networkChartOffsetHeight();
+      const chartTopPadding = this.networkChartOffsetHeight();
       // We now calculate the available height: if the entry is cut off we don't
       // show the border for the part that is cut off.
       const cutOffTop = y < chartTopPadding;
@@ -786,7 +786,7 @@ export class Overlays {
       // its y value without the network track adjustment. If it is < 0, then
       // it's off the top of the screen.
       //
-      const yWithoutNetwork = y - this.#networkChartOffsetHeight();
+      const yWithoutNetwork = y - this.networkChartOffsetHeight();
       // Check if the y position + the height is less than 0. We add height so
       // that we correctly consider an event only partially scrolled off to be
       // visible.
@@ -900,7 +900,7 @@ export class Overlays {
     // Now if the event is in the main chart, we need to pad its Y position
     // down by the height of the network chart + the network resize element.
     if (chartName === 'main') {
-      pixelAdjustedForScroll += this.#networkChartOffsetHeight();
+      pixelAdjustedForScroll += this.networkChartOffsetHeight();
     }
 
     return pixelAdjustedForScroll;
@@ -937,7 +937,7 @@ export class Overlays {
    * Note that it is possible for the chart to have 0 height if the user is
    * looking at a trace with no network requests.
    */
-  #networkChartOffsetHeight(): number {
+  networkChartOffsetHeight(): number {
     if (this.#dimensions.charts.network === null) {
       return 0;
     }

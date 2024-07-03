@@ -56,3 +56,15 @@
     border-color: var(--ref-palette-pink60);
   }
 }
+
+.timeline-entry-tooltip-element:not(:empty) {
+  z-index: 2000;
+  position: absolute;
+  contain: content;
+  background-color: var(--sys-color-cdt-base-container);
+  pointer-events: none;
+  padding: 4px 8px;
+  white-space: nowrap;
+  max-width: 80%;
+  box-shadow: var(--drop-shadow);
+}

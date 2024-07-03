@@ -110,6 +110,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   #timespanBreakdownOverlay: TimespanBreakdown|null = null;
   #sidebarInsightToggled: Boolean = false;
 
+  #tooltipElement = document.createElement('div');
+
   constructor(delegate: TimelineModeViewDelegate) {
     super();
     this.element.classList.add('timeline-flamechart');
@@ -128,6 +130,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.#overlaysContainer.classList.add('timeline-overlays-container');
     flameChartsContainer.element.appendChild(this.#overlaysContainer);
 
+    this.#tooltipElement.classList.add('timeline-entry-tooltip-element');
+    flameChartsContainer.element.appendChild(this.#tooltipElement);
+
     // Ensure that the network panel & resizer appears above the main thread.
     this.networkSplitWidget.sidebarElement().style.zIndex = '120';
 
@@ -141,6 +146,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       groupExpansionSetting: mainViewGroupExpansionSetting,
       // The TimelineOverlays are used for selected elements
       selectedElementOutline: false,
+      tooltipElement: this.#tooltipElement,
     });
     this.mainFlameChart.alwaysShowVerticalScroll();
     this.mainFlameChart.enableRuler(false);
@@ -159,12 +165,18 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       groupExpansionSetting: this.networkFlameChartGroupExpansionSetting,
       // The TimelineOverlays are used for selected elements
       selectedElementOutline: false,
+      tooltipElement: this.#tooltipElement,
     });
     this.networkFlameChart.alwaysShowVerticalScroll();
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.LatestDrawDimensions, dimensions => {
       this.#overlays.updateChartDimensions('network', dimensions.data.chart);
       this.#overlays.updateVisibleWindow(dimensions.data.traceWindow);
       this.#overlays.update();
+
+      // If the height of the network chart has changed, we need to tell the
+      // main flame chart because its tooltips are positioned based in part on
+      // the height of the network chart.
+      this.mainFlameChart.setTooltipYPixelAdjustment(this.#overlays.networkChartOffsetHeight());
     });
 
     this.#overlays = new Overlays({

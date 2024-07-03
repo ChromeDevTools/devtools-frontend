@@ -214,6 +214,10 @@ export interface OptionalFlameChartConfig {
    */
   selectedElementOutline?: boolean;
   groupExpansionSetting?: Common.Settings.Setting<GroupExpansionState>;
+  /**
+   * The element to use when populating and positioning the mouse tooltip.
+   */
+  tooltipElement?: HTMLElement;
 }
 
 export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
@@ -277,6 +281,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private entryColorsCache?: string[]|null;
   private totalTime?: number;
   private lastPopoverState: PopoverState;
+
+  #tooltipPopoverYAdjustment: number = 0;
+
   #font: string;
   #groupTreeRoot?: GroupTreeNode|null;
   #searchResultEntryIndex: number;
@@ -323,7 +330,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.canvas.addEventListener('keydown', this.onKeyDown.bind(this), false);
     this.canvas.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
 
-    this.popoverElement = this.viewportElement.createChild('div', 'flame-chart-entry-info');
+    this.popoverElement =
+        optionalConfig.tooltipElement || this.viewportElement.createChild('div', 'flame-chart-entry-info');
     this.markerHighlighElement = this.viewportElement.createChild('div', 'flame-chart-marker-highlight-element');
     this.highlightElement = this.viewportElement.createChild('div', 'flame-chart-highlight-element');
     this.revealDescendantsArrowHighlightElement =
@@ -381,6 +389,26 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     this.#canvasBoundingClientRect = this.canvas.getBoundingClientRect();
     return this.#canvasBoundingClientRect;
+  }
+
+  /**
+   * In some cases we need to manually adjust the positioning of the tooltip
+   * vertically to account for the fact that it might be rendered not relative
+   * to just this flame chart. This is true of the main flame chart in the
+   * Performance Panel where the element is rendered in a higher-stack container
+   * and we need to manually adjust its Y position to correctly put the tooltip
+   * in the right place.
+   */
+  setTooltipYPixelAdjustment(y: number): void {
+    if (y === this.#tooltipPopoverYAdjustment) {
+      return;
+    }
+
+    this.#tooltipPopoverYAdjustment = y;
+    // Reposition the popover if it has any children (otherwise it is not visible)
+    if (this.popoverElement.children.length) {
+      this.updatePopoverOffset();
+    }
   }
 
   getBarHeight(): number {
@@ -750,7 +778,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       }
     }
     this.popoverElement.style.left = x + 'px';
-    this.popoverElement.style.top = y + 'px';
+    this.popoverElement.style.top = (y || 0) + this.#tooltipPopoverYAdjustment + 'px';
   }
 
   /**

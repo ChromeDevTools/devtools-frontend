@@ -13,6 +13,7 @@ generate_css("css_files") {
     "entryLabelOverlay.css",
     "interactionBreakdown.css",
     "liveMetricsView.css",
+    "networkRequestTooltip.css",
     "sidebar.css",
     "sidebarAnnotationsTab.css",
     "sidebarInsight.css",
@@ -29,6 +30,7 @@ devtools_module("components") {
     "EntryLabelOverlay.ts",
     "InteractionBreakdown.ts",
     "LiveMetricsView.ts",
+    "NetworkRequestTooltip.ts",
     "Sidebar.ts",
     "SidebarAnnotationsTab.ts",
     "SidebarInsight.ts",
@@ -50,6 +52,7 @@ devtools_module("components") {
     "../../../ui/components/menus:bundle",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/legacy:bundle",
+    "../../../ui/legacy/components/perf_ui:bundle",
     "../../../ui/lit-html:bundle",
     "../../../ui/visual_logging:bundle",
   ]

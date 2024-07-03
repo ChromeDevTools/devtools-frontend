@@ -1,0 +1,58 @@
+<!--
+  Copyright 2024 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Network request tooltip example</title>
+    <style>
+      .container{
+        /* copy from flamechart.css*/
+        z-index: 2000;
+        position: absolute;
+        contain: content;
+        background-color: var(--sys-color-cdt-base-container);
+        pointer-events: none;
+        padding: 4px 8px;
+        white-space: nowrap;
+        max-width: 80%;
+        box-shadow: var(--drop-shadow);
+      }
+
+      .container {
+        overflow: hidden;
+      }
+
+      .container devtools-interaction-breakdown {
+        margin-top: 10px;
+      }
+
+      .container span {
+        margin-right: 5px;
+      }
+
+      #container1 {
+        margin: 10px 10px;
+      }
+
+      #container2 {
+        margin: 150px 10px;
+      }
+
+      #container3 {
+        margin: 300px 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+    <div id="container1" class="container"></div>
+    <div id="container2" class="container"></div>
+    <div id="container3" class="container"></div>
+    <script type="module" src="./network_request_tooltip.js"></script>
+  </body>
+</html>

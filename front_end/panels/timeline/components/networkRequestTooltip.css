@@ -1,0 +1,81 @@
+/*
+ * Copyright (c) 2024 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.bold {
+  font-weight: bold;
+}
+
+.url {
+  margin-left: 15px;
+  margin-right: 5px;
+}
+
+.priority {
+  margin-left: 15px;
+}
+
+.priority > devtools-icon {
+  height: 13px;
+  width: 13px;
+  color: var(--sys-color-on-surface-subtle);
+}
+
+.render-blocking {
+  margin-left: 15px;
+  color: var(--sys-color-error);
+}
+
+.divider {
+  border-top: 1px solid var(--sys-color-divider);
+  margin: 5px 0;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  display: flex;
+  align-items: center;
+}
+
+.indicator {
+  display: inline-block;
+  width: 10px;
+  height: 4px;
+  margin-right: 5px;
+  border: 1px solid var(--sys-color-on-surface-subtle);
+}
+
+.whisker-left {
+  display: flex;
+  width: 10px;
+  height: 6px;
+  margin-right: 5px;
+  border-left: 1px solid var(--sys-color-on-surface-subtle);
+}
+
+.whisker-right {
+  display: flex;
+  width: 10px;
+  height: 6px;
+  margin-right: 5px;
+  border-right: 1px solid var(--sys-color-on-surface-subtle);
+}
+
+.horizontal {
+  background-color: var(--sys-color-on-surface-subtle);
+  height: 1px;
+  width: 10px;
+  align-self: center;
+}
+
+.time {
+  /* Push the time to right. */
+  margin-left: auto;
+}

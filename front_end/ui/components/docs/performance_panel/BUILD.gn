@@ -10,6 +10,7 @@ ts_library("ts") {
   sources = [
     "basic.ts",
     "flamechart.ts",
+    "network_request_tooltip.ts",
     "overview.ts",
     "timeline_history_manager.ts",
     "track_example.ts",
@@ -34,6 +35,7 @@ copy_to_gen("performance_panel") {
   sources = [
     "basic.html",
     "flamechart.html",
+    "network_request_tooltip.html",
     "overview.html",
     "timeline_history_manager.html",
     "track_example.html",

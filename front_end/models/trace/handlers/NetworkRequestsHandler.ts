@@ -393,7 +393,7 @@ export async function finalize(): Promise<void> {
                                    protocol: request.receiveResponse.args.data.protocol ?? 'unknown',
                                    redirects,
                                    // In the event the property isn't set, assume non-blocking.
-                                   renderBlocking: renderBlocking ? renderBlocking : 'non_blocking',
+                                   renderBlocking: renderBlocking ?? 'non_blocking',
                                    requestId,
                                    requestingFrameUrl,
                                    requestMethod: finalSendRequest.args.data.requestMethod,

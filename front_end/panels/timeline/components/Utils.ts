@@ -4,7 +4,7 @@
 import type * as TraceEngine from '../../../models/trace/trace.js';
 import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
 
-export const enum NetworkCategory {
+export enum NetworkCategory {
   HTML = 'HTML',
   Script = 'Script',
   Style = 'Style',
@@ -40,9 +40,7 @@ function syntheticNetworkRequestCategory(request: TraceEngine.Types.TraceEvents.
   }
 }
 
-export function colorForNetworkRequest(request: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest): string {
-  const category = syntheticNetworkRequestCategory(request);
-
+export function colorForNetworkCategory(category: NetworkCategory): string {
   let cssVarName = '--app-color-system';
   switch (category) {
     case NetworkCategory.HTML:
@@ -62,4 +60,9 @@ export function colorForNetworkRequest(request: TraceEngine.Types.TraceEvents.Sy
       break;
   }
   return ThemeSupport.ThemeSupport.instance().getComputedValue(cssVarName);
+}
+
+export function colorForNetworkRequest(request: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest): string {
+  const category = syntheticNetworkRequestCategory(request);
+  return colorForNetworkCategory(category);
 }

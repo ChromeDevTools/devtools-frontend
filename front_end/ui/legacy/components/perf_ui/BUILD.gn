@@ -30,6 +30,7 @@ generate_css("legacy_css_files") {
 devtools_module("perf_ui") {
   sources = [
     "BrickBreaker.ts",
+    "CanvasHelper.ts",
     "ChartViewport.ts",
     "FilmStripView.ts",
     "FlameChart.ts",

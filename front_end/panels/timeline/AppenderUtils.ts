@@ -59,7 +59,8 @@ export function buildGroupStyle(extra?: Partial<PerfUI.FlameChart.GroupStyle>): 
  */
 export function buildTrackHeader(
     jslogContext: VisualLoggingTrackName|null, startLevel: number, name: string, style: PerfUI.FlameChart.GroupStyle,
-    selectable: boolean, expanded?: boolean, showStackContextMenu?: boolean): PerfUI.FlameChart.Group {
+    selectable: boolean, expanded?: boolean, showStackContextMenu?: boolean,
+    legends?: PerfUI.FlameChart.Legend[]): PerfUI.FlameChart.Group {
   const group: PerfUI.FlameChart.Group = {
     startLevel,
     name: name as Common.UIString.LocalizedString,
@@ -67,6 +68,7 @@ export function buildTrackHeader(
     selectable,
     expanded,
     showStackContextMenu,
+    legends,
   };
   if (jslogContext !== null) {
     group.jslogContext = jslogContext;

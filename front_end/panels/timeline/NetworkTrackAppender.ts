@@ -13,7 +13,8 @@ import {
   type TrackAppenderName,
   VisualLoggingTrackName,
 } from './CompatibilityTracksAppender.js';
-import {colorForNetworkRequest} from './components/Utils.js';
+import {Utils} from './components/components.js';
+import {colorForNetworkRequest, NetworkCategory} from './components/Utils.js';
 import {InstantEventVisibleDurationMs} from './TimelineFlameChartDataProvider.js';
 
 const UIStrings = {
@@ -95,8 +96,16 @@ export class NetworkTrackAppender implements TrackAppender {
       useFirstLineForOverview: false,
       useDecoratorsForOverview: true,
     });
+    const legends: PerfUI.FlameChart.Legend[] = [];
+    for (const category in NetworkCategory) {
+      legends.push({
+        color: Utils.colorForNetworkCategory(category as NetworkCategory),
+        category,
+      });
+    }
     this.#group = buildTrackHeader(
-        VisualLoggingTrackName.NETWORK, 0, i18nString(UIStrings.network), style, /* selectable= */ true, expanded);
+        VisualLoggingTrackName.NETWORK, 0, i18nString(UIStrings.network), style, /* selectable= */ true, expanded,
+        /* showStackContextMenu= */ false, legends);
     this.#flameChartData.groups.push(this.#group);
   }
 

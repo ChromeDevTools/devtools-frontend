@@ -133,8 +133,8 @@ export class CookieModel extends SDKModel<EventTypes> {
   /**
    * Returns cookies needed by current page's frames whose security origins are |domain|.
    */
-  async getCookiesForDomain(domain: string): Promise<Cookie[]> {
-    if (!this.#isRefreshing()) {
+  async getCookiesForDomain(domain: string, forceUpdate?: boolean): Promise<Cookie[]> {
+    if (!this.#isRefreshing() || forceUpdate) {
       await this.#refreshThrottled();
     }
     const normalCookies = this.#cookies.get(domain) || [];

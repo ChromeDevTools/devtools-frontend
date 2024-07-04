@@ -215,11 +215,11 @@ export class CookieItemsView extends StorageItemsView {
   }
 
   setCookiesDomain(model: SDK.CookieModel.CookieModel, domain: string): void {
-    this.model.removeEventListener(SDK.CookieModel.Events.CookieListUpdated, this.refreshItems, this);
+    this.model.removeEventListener(SDK.CookieModel.Events.CookieListUpdated, this.onCookieListUpdate, this);
     this.model = model;
     this.cookieDomain = domain;
     this.refreshItems();
-    this.model.addEventListener(SDK.CookieModel.Events.CookieListUpdated, this.refreshItems, this);
+    this.model.addEventListener(SDK.CookieModel.Events.CookieListUpdated, this.onCookieListUpdate, this);
   }
 
   private showPreview(cookie: SDK.Cookie.Cookie|null): void {
@@ -312,8 +312,12 @@ export class CookieItemsView extends StorageItemsView {
     }
   }
 
-  override refreshItems(): void {
+  private onCookieListUpdate(): void {
     void this.model.getCookiesForDomain(this.cookieDomain).then(this.updateWithCookies.bind(this));
+  }
+
+  override refreshItems(): void {
+    void this.model.getCookiesForDomain(this.cookieDomain, true).then(this.updateWithCookies.bind(this));
   }
 
   override wasShown(): void {

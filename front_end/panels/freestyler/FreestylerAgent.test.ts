@@ -576,6 +576,64 @@ c`;
       ]);
     });
 
+    it('generates an action response if action and answer both present', async () => {
+      let i = 0;
+      async function* generateNothing() {
+        if (i !== 0) {
+          yield {
+            explanation: 'ANSWER: this is the actual answer',
+            metadata: {},
+          };
+          return;
+        }
+        yield {
+          explanation: `THOUGHT: I am thinking.
+
+ACTION
+console.log('hello');
+STOP
+
+ANSWER: this is the answer`,
+          metadata: {},
+        };
+        i++;
+      }
+
+      const execJs = sinon.mock().once();
+      execJs.onCall(0).returns('hello');
+      const agent = new FreestylerAgent({
+        aidaClient: mockAidaClient(generateNothing),
+        confirmSideEffect: () => Promise.resolve(true),
+        execJs,
+      });
+      const steps = await Array.fromAsync(agent.run('test'));
+      assert.deepStrictEqual(steps, [
+        {
+          step: Freestyler.Step.QUERYING,
+        },
+        {
+          step: Freestyler.Step.THOUGHT,
+          text: 'I am thinking.',
+          rpcId: undefined,
+        },
+        {
+          step: Freestyler.Step.ACTION,
+          code: 'console.log(\'hello\');',
+          output: 'hello',
+          rpcId: undefined,
+        },
+        {
+          step: Freestyler.Step.QUERYING,
+        },
+        {
+          step: Freestyler.Step.ANSWER,
+          text: 'this is the actual answer',
+          rpcId: undefined,
+        },
+      ]);
+      sinon.assert.calledOnce(execJs);
+    });
+
     it('generates history for multiple actions', async () => {
       let count = 0;
       async function* generateMultipleTimes() {

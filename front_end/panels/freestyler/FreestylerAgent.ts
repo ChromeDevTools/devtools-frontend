@@ -301,27 +301,26 @@ export class FreestylerAgent {
       ]);
 
       const {thought, action, answer} = FreestylerAgent.parseResponse(response);
-      if (!thought && !action && !answer) {
-        yield {step: Step.ANSWER, text: 'Sorry, I could not help you with this query.', rpcId};
-        break;
-      }
-
-      if (answer) {
-        yield {step: Step.ANSWER, text: answer, rpcId};
-        break;
-      }
-
-      if (thought) {
-        yield {step: Step.THOUGHT, text: thought, rpcId};
-      }
-
+      // Sometimes the answer will follow an action and a thought. In
+      // that case, we only use the action and the thought (if present)
+      // since the answer is not based on the observation resulted from
+      // the action.
       if (action) {
+        if (thought) {
+          yield {step: Step.THOUGHT, text: thought, rpcId};
+        }
         debugLog(`Action to execute: ${action}`);
         const observation =
             await this.#generateObservation(action, {throwOnSideEffect: !query.includes(FIX_THIS_ISSUE_PROMPT)});
         debugLog(`Action result: ${observation}`);
         yield {step: Step.ACTION, code: action, output: observation, rpcId};
         query = `OBSERVATION: ${observation}`;
+      } else if (answer) {
+        yield {step: Step.ANSWER, text: answer, rpcId};
+        break;
+      } else {
+        yield {step: Step.ANSWER, text: 'Sorry, I could not help you with this query.', rpcId};
+        break;
       }
 
       if (i === MAX_STEPS - 1) {

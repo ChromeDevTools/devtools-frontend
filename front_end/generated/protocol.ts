@@ -2890,6 +2890,7 @@ export namespace CSS {
      * Associated style declaration.
      */
     style: CSSStyle;
+    active: boolean;
   }
 
   /**

@@ -2937,7 +2937,7 @@ export const generatedProperties = [
    "after",
    "before"
   ],
-  "name": "scroll-markers"
+  "name": "scroll-marker-group"
  },
  {
   "longhands": [
@@ -5317,7 +5317,7 @@ export const generatedPropertyValues = {
    "smooth"
   ]
  },
- "scroll-markers": {
+ "scroll-marker-group": {
   "values": [
    "none",
    "after",

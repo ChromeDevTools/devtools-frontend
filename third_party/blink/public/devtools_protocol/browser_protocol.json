@@ -4217,6 +4217,10 @@
                             "name": "style",
                             "description": "Associated style declaration.",
                             "$ref": "CSSStyle"
+                        },
+                        {
+                            "name": "active",
+                            "type": "boolean"
                         }
                     ]
                 },

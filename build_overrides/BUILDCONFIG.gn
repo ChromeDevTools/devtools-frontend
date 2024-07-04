@@ -84,3 +84,15 @@ is_win = current_os == "win" || current_os == "winuwp"
 
 is_apple = is_ios || is_mac
 is_posix = !is_win && !is_fuchsia
+
+# =============================================================================
+# Variables
+# =============================================================================
+#
+# These variables are used by other files in the //build directory and come from
+# the //build/config/BUILDCONFIG.gn
+
+TESTONLY_AND_VISIBILITY = [
+  "testonly",
+  "visibility",
+]

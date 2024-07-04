@@ -154,6 +154,37 @@ describeWithMockConnection('CookieModel', () => {
     await expectCalled(eventListener);
   });
 
+  it('does not refetch cookies while listening unless requested', async () => {
+    const cookie = PROTOCOL_COOKIE;
+    setMockConnectionResponseHandler('Network.getCookies', () => ({cookies: [cookie]}));
+
+    const target = createTarget();
+    const dispatchLoadingFinished = () => target.model(SDK.NetworkManager.NetworkManager)!.dispatchEventToListeners(
+        SDK.NetworkManager.Events.LoadingFinished, createNetworkRequest('1'));
+
+    const mainFrame = getMainFrame(target);
+    const model = target.model(SDK.CookieModel.CookieModel)!;
+
+    createResource(mainFrame, `https://${DOMAIN}/main_resource` as Platform.DevToolsPath.UrlString, 'text/html', '');
+    dispatchLoadingFinished();
+
+    let [readCookie] = await model.getCookiesForDomain(`https://${DOMAIN}`);
+    assert.strictEqual(readCookie.value(), 'value');
+
+    cookie.value = 'new value';
+
+    model.addEventListener(SDK.CookieModel.Events.CookieListUpdated, () => {});
+
+    [readCookie] = await model.getCookiesForDomain(`https://${DOMAIN}`);
+    assert.strictEqual(readCookie.value(), 'value');
+
+    [readCookie] = await model.getCookiesForDomain(`https://${DOMAIN}`);
+    assert.strictEqual(readCookie.value(), 'value');
+
+    [readCookie] = await model.getCookiesForDomain(`https://${DOMAIN}`, true);
+    assert.strictEqual(readCookie.value(), 'new value');
+  });
+
   it('clears stored blocked cookies on primary page change', async () => {
     const target = createTarget();
     const cookieModel = new SDK.CookieModel.CookieModel(target);

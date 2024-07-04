@@ -4,24 +4,17 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPages, getTestServerPort, step} from '../../shared/helper.js';
+import {getBrowserAndPages, step} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   deleteSelectedStorageItem,
-  doubleClickSourceTreeItem,
   getStorageItemsData,
   navigateToApplicationTab,
+  navigateToSessionStorageForTopDomain,
   selectStorageItemAtIndex,
 } from '../helpers/application-helpers.js';
 
-const SESSION_STORAGE_SELECTOR = '[aria-label="Session storage"].parent';
-let DOMAIN_SELECTOR: string;
-
 describe('The Application Tab', () => {
-  before(async () => {
-    DOMAIN_SELECTOR = `${SESSION_STORAGE_SELECTOR} + ol > [aria-label="https://localhost:${getTestServerPort()}"]`;
-  });
-
   it('shows Session Storage keys and values', async () => {
     const {target} = getBrowserAndPages();
 
@@ -30,8 +23,7 @@ describe('The Application Tab', () => {
     });
 
     await step('open the domain storage', async () => {
-      await doubleClickSourceTreeItem(SESSION_STORAGE_SELECTOR);
-      await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
+      await navigateToSessionStorageForTopDomain();
     });
 
     await step('check that storage data values are correct', async () => {
@@ -54,8 +46,7 @@ describe('The Application Tab', () => {
 
     await navigateToApplicationTab(target, 'session-storage');
 
-    await doubleClickSourceTreeItem(SESSION_STORAGE_SELECTOR);
-    await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
+    await navigateToSessionStorageForTopDomain();
 
     await selectStorageItemAtIndex(0);
     await deleteSelectedStorageItem();

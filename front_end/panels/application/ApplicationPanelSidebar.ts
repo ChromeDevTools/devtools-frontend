@@ -1540,7 +1540,7 @@ export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
         storagePanel,
         domStorage.storageKey ? SDK.StorageKeyManager.parseStorageKey(domStorage.storageKey).origin :
                                 i18nString(UIStrings.localFiles),
-        false, domStorage.isLocalStorage ? 'local-storage' : 'session-storage');
+        false, domStorage.isLocalStorage ? 'local-storage-for-domain' : 'session-storage-for-domain');
     this.domStorage = domStorage;
     const icon = IconButton.Icon.create('table');
     this.setLeadingIcons([icon]);

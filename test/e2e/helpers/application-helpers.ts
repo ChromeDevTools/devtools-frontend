@@ -113,6 +113,54 @@ export async function navigateToCookiesForTopDomain() {
   ]);
 }
 
+export async function navigateToSessionStorageForTopDomain() {
+  const SESSION_STORAGE_SELECTOR = '[aria-label="Session storage"].parent';
+  const DOMAIN_SELECTOR = `${SESSION_STORAGE_SELECTOR} + ol > [aria-label="https://localhost:${getTestServerPort()}"]`;
+  await doubleClickSourceTreeItem(SESSION_STORAGE_SELECTOR);
+  await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
+
+  await expectVeEvents([
+    veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage'),
+    veImpressionsUnder(
+        'Panel: resources',
+        [
+          veImpression(
+              'Pane', 'session-storage', [veImpression('Section', 'empty-view', [veImpression('Link', 'learn-more')])]),
+          veImpressionsUnder(
+              'Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage',
+              [veImpression('TreeItem', 'session-storage-for-domain')]),
+        ]),
+    veClick(
+        'Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage > TreeItem: session-storage-for-domain'),
+    veImpressionsUnder('Panel: resources', [veImpressionForSessionStorageView()]),
+  ]);
+}
+
+const SHARED_STORAGE_SELECTOR = '[aria-label="Shared storage"].parent';
+
+export async function navigateToSharedStorage() {
+  await doubleClickSourceTreeItem(SHARED_STORAGE_SELECTOR);
+  await waitFor('devtools-shared-storage-access-grid');
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  await expectVeEvents([
+    veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: shared-storage'),
+    veImpressionsUnder(
+        'Panel: resources', [veImpression('Pane', 'shared-storage-events', [veImpression('Section', 'events-table')])]),
+  ]);
+}
+
+export async function navigateToSharedStorageForTopDomain() {
+  await navigateToSharedStorage();
+  const DOMAIN_SELECTOR = `${SHARED_STORAGE_SELECTOR} + ol > [aria-label="https://localhost:${getTestServerPort()}"]`;
+  await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  await expectVeEvents([
+    veClick(
+        'Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: shared-storage > TreeItem: shared-storage-instance'),
+    veImpressionsUnder('Panel: resources', [veImpressionForSharedStorageView()]),
+  ]);
+}
+
 export async function doubleClickSourceTreeItem(selector: string) {
   const element = await waitFor(selector);
   element.evaluate(el => el.scrollIntoView(true));
@@ -185,6 +233,7 @@ export async function selectStorageItemAtIndex(index: number) {
     try {
       const dataGridNodes = await $$('.storage-view .data-grid-data-grid-node:not(.creation-node)');
       await dataGridNodes[index].click();
+      await expectVeEvents([veClick('Panel: resources > Pane: session-storage-data > TableRow > TableCell: value')]);
     } catch (error) {
       if (error.message === 'Node is detached from document') {
         return false;
@@ -197,6 +246,8 @@ export async function selectStorageItemAtIndex(index: number) {
 
 export async function deleteSelectedStorageItem() {
   await click('[aria-label="Delete Selected"]');
+  await expectVeEvents([veClick(
+      'Panel: resources > Pane: session-storage-data > Toolbar > Action: storage-items-view.delete-selected')]);
 }
 
 export async function selectCookieByName(name: string) {
@@ -343,5 +394,33 @@ function veImpressionForFrameDetails() {
     veImpression('Link', 'learn-more.coop-coep'),
     veImpression('Link', 'learn-more.monitor-memory-usage'),
     veImpression('Link', 'learn-more.origin-trials'),
+  ]);
+}
+
+function veImpressionForStorageViewToolbar() {
+  return veImpression('Toolbar', undefined, [
+    veImpression('Action', 'storage-items-view.refresh'),
+    veImpression('TextField'),
+    veImpression('Action', 'storage-items-view.clear-all'),
+    veImpression('Action', 'storage-items-view.delete-selected'),
+  ]);
+}
+
+function veImpressionForSessionStorageView() {
+  return veImpression('Pane', 'session-storage-data', [
+    veImpressionForStorageViewToolbar(),
+    veImpression('Pane', 'preview'),
+    veImpression('TableHeader', 'key'),
+    veImpression('TableHeader', 'value'),
+  ]);
+}
+
+function veImpressionForSharedStorageView() {
+  return veImpression('Pane', 'shared-storage-data', [
+    veImpressionForStorageViewToolbar(),
+    veImpression('TableHeader', 'key'),
+    veImpression('TableHeader', 'value'),
+    veImpression('Action', 'reset-entropy-budget'),
+    veImpression('Pane', 'preview', [veImpression('Section', 'json-view')]),
   ]);
 }

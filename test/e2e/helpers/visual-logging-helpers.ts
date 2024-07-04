@@ -194,8 +194,8 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]) {
   const actualEvents =
       // @ts-ignore
       await frontend.evaluate(async () => (await globalThis.getVeDebugEventsLog()) as unknown as TestLogEntry[]);
-  let bestError: {difference: number, description?: string}|null = null;
   for (let i = 0; i < expectedEvents.length; ++i) {
+    let bestError: {difference: number, description?: string}|null = null;
     const expectedEvent = expectedEvents[i];
     while (true) {
       if (actualEvents.length <= i) {

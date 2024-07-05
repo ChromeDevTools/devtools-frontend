@@ -656,9 +656,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       VisualLogging.logClick(groupForLevel, new MouseEvent('click'));
     }
 
-    if (dataProvider === this.mainDataProvider) {
-      this.mainDataProvider.buildFlowForInitiator(entryIndex);
-    }
+    dataProvider.buildFlowForInitiator(entryIndex);
     this.delegate.select(dataProvider.createSelection(entryIndex));
   }
 

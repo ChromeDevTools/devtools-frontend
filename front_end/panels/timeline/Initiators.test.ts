@@ -24,6 +24,20 @@ describe('Initiators', () => {
                      }]);
   });
 
+  it('returns the initiator data for network requests', async function() {
+    const traceData = await TraceLoader.traceEngine(this, 'network-requests-initiators.json.gz');
+
+    // Find the network request to test, it is initiated by `youtube.com`.
+    const event = traceData.NetworkRequests.byTime.find(event => event.ts === 1491680762420);
+    assert.exists(event);
+    // Find the `youtube.com` network request.
+    const initiator = traceData.NetworkRequests.byTime.find(event => event.ts === 1491680629144);
+    assert.exists(initiator);
+    const initiatorData = Timeline.Initiators.initiatorsDataToDrawForNetwork(traceData, event);
+
+    assert.deepEqual(initiatorData, [{event, initiator}]);
+  });
+
   it('can walk up the tree to find the first parent with an initiator', async function() {
     const traceData = await TraceLoader.traceEngine(this, 'set-timeout-long-task.json.gz');
 

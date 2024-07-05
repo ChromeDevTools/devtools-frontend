@@ -389,15 +389,15 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format off
     return LitHtml.html`
       <div class="chat-message answer">
-        ${message.steps.map(step => LitHtml.html`${this.#renderStep(step)}`)}
+        ${message.steps.map(step => this.#renderStep(step))}
         ${this.#props.confirmSideEffectDialog && isLast
             ? this.#renderSideEffectConfirmationUi(this.#props.confirmSideEffectDialog)
             : LitHtml.nothing
         }
-        <div class="chat-message-bottom-bar">
+        <div class="actions">
           ${
             shouldShowRating && message.rpcId !== undefined
-              ? LitHtml.html`${this.#renderRateButtons(message.rpcId)}`
+              ? this.#renderRateButtons(message.rpcId)
               : LitHtml.nothing
           }
           ${
@@ -407,7 +407,8 @@ export class FreestylerChatUi extends HTMLElement {
                       variant: Buttons.Button.Variant.OUTLINED,
                       jslogContext: 'fix-this-issue',
                   } as Buttons.Button.ButtonData}
-                  @click=${this.#props.onFixThisIssueClick}>${i18nString(
+                  @click=${this.#props.onFixThisIssueClick}
+                >${i18nString(
                   TempUIStrings.fixThisIssue,
                 )}</${Buttons.Button.Button.litTagName}>`
               : LitHtml.nothing

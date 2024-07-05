@@ -71,8 +71,6 @@
 .chat-message {
   user-select: text;
   cursor: initial;
-  max-width: 320px;
-  min-width: 160px;
   width: fit-content;
   padding: 8px var(--sys-size-8);
   font-size: 12px;
@@ -84,6 +82,7 @@
   }
 
   &.query {
+    max-width: 320px;
     color: var(--sys-color-on-surface);
     background: var(--sys-color-surface2);
     margin-left: auto;
@@ -100,8 +99,9 @@
     padding: 4px 0;
   }
 
-  & .chat-message-bottom-bar {
+  & .actions {
     display: flex;
+    gap: var(--sys-size-8);
     justify-content: space-between;
   }
 }

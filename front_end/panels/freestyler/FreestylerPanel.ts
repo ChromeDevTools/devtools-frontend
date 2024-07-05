@@ -126,6 +126,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
       selectedNode: this.#selectedNode,
       isLoading: false,
+      lastActionIsFixThisIssue: false,
       onTextSubmit: this.#handleTextSubmit.bind(this),
       onInspectElementClick: this.#handleSelectElementClick.bind(this),
       onRateClick: this.#handleRateClick.bind(this),
@@ -247,6 +248,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       entity: ChatMessageEntity.USER,
       text,
     });
+    this.#viewProps.lastActionIsFixThisIssue = text === FIX_THIS_ISSUE_PROMPT;
     this.#viewProps.isLoading = true;
     let systemMessage: ModelChatMessage = {
       entity: ChatMessageEntity.MODEL,

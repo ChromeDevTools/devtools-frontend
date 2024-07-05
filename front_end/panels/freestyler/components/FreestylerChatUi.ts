@@ -167,23 +167,24 @@ export const enum Rating {
   NEGATIVE = 'negative',
 }
 
-export type Props = {
-  onTextSubmit: (text: string) => void,
-  onInspectElementClick: () => void,
-  onRateClick: (rpcId: number, rate: Rating) => void,
-  onAcceptConsentClick: () => void,
-  onCancelClick: () => void,
-  onFixThisIssueClick: () => void,
-  inspectElementToggled: boolean,
-  state: State,
-  aidaAvailability: Host.AidaClient.AidaAvailability,
-  messages: ChatMessage[],
-  selectedNode: SDK.DOMModel.DOMNode|null,
-  isLoading: boolean,
+export interface Props {
+  onTextSubmit: (text: string) => void;
+  onInspectElementClick: () => void;
+  onRateClick: (rpcId: number, rate: Rating) => void;
+  onAcceptConsentClick: () => void;
+  onCancelClick: () => void;
+  onFixThisIssueClick: () => void;
+  inspectElementToggled: boolean;
+  state: State;
+  aidaAvailability: Host.AidaClient.AidaAvailability;
+  messages: ChatMessage[];
+  selectedNode: SDK.DOMModel.DOMNode|null;
+  isLoading: boolean;
   // If there is a `confirmSideEffectDialog`, we show the
   // confirmation dialog for executing that specific code.
-  confirmSideEffectDialog?: ConfirmSideEffectDialog,
-};
+  confirmSideEffectDialog?: ConfirmSideEffectDialog;
+  lastActionIsFixThisIssue: boolean;
+}
 
 // The model returns multiline code blocks in an erroneous way with the language being in new line.
 // This renderer takes that into account and correctly updates the parsed multiline token with the language
@@ -381,7 +382,8 @@ export class FreestylerChatUi extends HTMLElement {
 
     // TODO: We should only show "Fix this issue" button when the answer suggests fix or fixes.
     // We shouldn't show this when the answer is complete like a confirmation without any suggestion.
-    const shouldShowFixThisIssueButton = isLast && message.steps.at(-1)?.step === Step.ANSWER;
+    const shouldShowFixThisIssueButton =
+        isLast && message.steps.at(-1)?.step === Step.ANSWER && !this.#props.lastActionIsFixThisIssue;
     const shouldShowRating = (!this.#props.confirmSideEffectDialog && isLast) || !isLast;
     const shouldShowLoading = !this.#props.confirmSideEffectDialog && this.#props.isLoading && isLast;
     // clang-format off

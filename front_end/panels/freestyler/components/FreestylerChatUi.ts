@@ -338,26 +338,40 @@ export class FreestylerChatUi extends HTMLElement {
   }
 
   #renderSideEffectConfirmationUi(confirmSideEffectDialog: ConfirmSideEffectDialog): LitHtml.TemplateResult {
+    // clang-format off
     return LitHtml.html`<div class="side-effect-confirmation">
       <p>${i18nString(TempUIStrings.sideEffectConfirmationDescription)}</p>
-      <${MarkdownView.CodeBlock.CodeBlock.litTagName} .code=${
-        confirmSideEffectDialog.code} .codeLang=${'js'} .displayToolbar=${false}>
-      </${MarkdownView.CodeBlock.CodeBlock.litTagName}>
+      <${MarkdownView.CodeBlock.CodeBlock.litTagName}
+        .code=${confirmSideEffectDialog.code}
+        .codeLang=${'js'}
+        .displayToolbar=${false}
+      ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
       <div class="side-effect-buttons-container">
         <${Buttons.Button.Button.litTagName}
-          .data=${{
-      variant: Buttons.Button.Variant.PRIMARY,
-    } as Buttons.Button.ButtonData}
-          @click=${() => confirmSideEffectDialog.onAnswer(true)}>${
-        i18nString(TempUIStrings.positiveSideEffectConfirmation)}</${Buttons.Button.Button.litTagName}>
-          <${Buttons.Button.Button.litTagName}
-          .data=${{
-      variant: Buttons.Button.Variant.OUTLINED,
-    } as Buttons.Button.ButtonData}
-          @click=${() => confirmSideEffectDialog.onAnswer(false)}>${
-        i18nString(TempUIStrings.negativeSideEffectConfirmation)}</${Buttons.Button.Button.litTagName}>
+          .data=${
+            {
+              variant: Buttons.Button.Variant.PRIMARY,
+              jslogContext: 'accept-execute-code',
+            } as Buttons.Button.ButtonData
+          }
+          @click=${() => confirmSideEffectDialog.onAnswer(true)}
+          >${
+            i18nString(TempUIStrings.positiveSideEffectConfirmation)
+          }</${Buttons.Button.Button.litTagName}>
+        <${Buttons.Button.Button.litTagName}
+          .data=${
+            {
+              variant: Buttons.Button.Variant.OUTLINED,
+              jslogContext: 'decline-execute-code',
+            } as Buttons.Button.ButtonData
+          }
+          @click=${() => confirmSideEffectDialog.onAnswer(false)}
+        >${i18nString(
+          TempUIStrings.negativeSideEffectConfirmation,
+        )}</${Buttons.Button.Button.litTagName}>
       </div>
     </div>`;
+    // clang-format on
   }
 
   #renderChatMessage = (message: ChatMessage, {isLast}: {isLast: boolean}): LitHtml.TemplateResult => {
@@ -368,28 +382,40 @@ export class FreestylerChatUi extends HTMLElement {
     // TODO: We should only show "Fix this issue" button when the answer suggests fix or fixes.
     // We shouldn't show this when the answer is complete like a confirmation without any suggestion.
     const shouldShowFixThisIssueButton = isLast && message.steps.at(-1)?.step === Step.ANSWER;
-    const shouldShowBottomBar = shouldShowFixThisIssueButton || message.rpcId !== undefined;
+    const shouldShowRating = (!this.#props.confirmSideEffectDialog && isLast) || !isLast;
+    const shouldShowLoading = !this.#props.confirmSideEffectDialog && this.#props.isLoading && isLast;
     // clang-format off
     return LitHtml.html`
       <div class="chat-message answer">
         ${message.steps.map(step => LitHtml.html`${this.#renderStep(step)}`)}
-        ${this.#props.confirmSideEffectDialog && isLast ? this.#renderSideEffectConfirmationUi(this.#props.confirmSideEffectDialog) : LitHtml.nothing}
-        ${
-          !this.#props.confirmSideEffectDialog && this.#props.isLoading && isLast
-            ? LitHtml.html`<div class="chat-loading" >Loading...</div>`
+        ${this.#props.confirmSideEffectDialog && isLast
+            ? this.#renderSideEffectConfirmationUi(this.#props.confirmSideEffectDialog)
             : LitHtml.nothing
         }
-        ${shouldShowBottomBar ? LitHtml.html`<div class="chat-message-bottom-bar">
+        <div class="chat-message-bottom-bar">
           ${
-            message.rpcId !== undefined
+            shouldShowRating && message.rpcId !== undefined
               ? LitHtml.html`${this.#renderRateButtons(message.rpcId)}`
               : LitHtml.nothing
           }
-          ${shouldShowFixThisIssueButton ? LitHtml.html`<${Buttons.Button.Button.litTagName}
-            .data=${{
-              variant: Buttons.Button.Variant.OUTLINED,
-            } as Buttons.Button.ButtonData} @click=${this.#props.onFixThisIssueClick}>${i18nString(TempUIStrings.fixThisIssue)}</${Buttons.Button.Button.litTagName}>` : LitHtml.nothing}
-        </div>` : LitHtml.nothing}
+          ${
+            shouldShowFixThisIssueButton
+              ? LitHtml.html`<${Buttons.Button.Button.litTagName}
+                  .data=${{
+                      variant: Buttons.Button.Variant.OUTLINED,
+                      jslogContext: 'fix-this-issue',
+                  } as Buttons.Button.ButtonData}
+                  @click=${this.#props.onFixThisIssueClick}>${i18nString(
+                  TempUIStrings.fixThisIssue,
+                )}</${Buttons.Button.Button.litTagName}>`
+              : LitHtml.nothing
+          }
+        </div>
+        ${
+          shouldShowLoading
+            ? LitHtml.html`<div class="chat-loading">Loading...</div>`
+            : LitHtml.nothing
+        }
       </div>
     `;
     // clang-format on

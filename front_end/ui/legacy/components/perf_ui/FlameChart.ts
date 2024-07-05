@@ -277,7 +277,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private visibleLevelHeights?: Uint32Array;
   private groupOffsets?: Uint32Array|null;
   private rawTimelineData?: FlameChartTimelineData|null;
-  private forceDecorationCache?: Int8Array|null;
+  private forceDecorationCache?: boolean[]|null;
   private entryColorsCache?: string[]|null;
   private totalTime?: number;
   private lastPopoverState: PopoverState;
@@ -2307,7 +2307,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           continue;
         }
 
-        if (duration >= minTextWidthDuration || (this.forceDecorationCache && this.forceDecorationCache[entryIndex])) {
+        if (duration >= minTextWidthDuration || this.forceDecorationCache?.[entryIndex]) {
           // If the event is big enough visually to have its text rendered,
           // or if it's in the array of event indexes that we forcibly render (as defined by the data provider)
           // then we store its index. Later on, we'll loop through all
@@ -3049,10 +3049,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     this.rawTimelineData = timelineData;
     this.rawTimelineDataLength = timelineData.entryStartTimes.length;
-    this.forceDecorationCache = new Int8Array(this.rawTimelineDataLength);
+    this.forceDecorationCache = new Array(this.rawTimelineDataLength);
     this.entryColorsCache = new Array(this.rawTimelineDataLength);
     for (let i = 0; i < this.rawTimelineDataLength; ++i) {
-      this.forceDecorationCache[i] = this.dataProvider.forceDecoration(i) ? 1 : 0;
+      this.forceDecorationCache[i] = this.dataProvider.forceDecoration(i) ?? false;
       this.entryColorsCache[i] = this.dataProvider.entryColor(i);
     }
 

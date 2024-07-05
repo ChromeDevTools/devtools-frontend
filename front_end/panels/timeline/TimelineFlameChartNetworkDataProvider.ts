@@ -285,7 +285,10 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
   #decorateNetworkRequest(
       index: number, context: CanvasRenderingContext2D, _text: string|null, barX: number, barY: number,
       barWidth: number, barHeight: number, unclippedBarX: number, timeToPixelRatio: number): boolean {
-    const event = this.#events[index] as TraceEngine.Types.TraceEvents.SyntheticNetworkRequest;
+    const event = this.#events[index];
+    if (!TraceEngine.Types.TraceEvents.isSyntheticNetworkRequestEvent(event)) {
+      return false;
+    }
     const {sendStart, headersEnd, finish, start, end} =
         this.getDecorationPixels(event, unclippedBarX, timeToPixelRatio);
 
@@ -447,6 +450,8 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
       entryTotalTimes: this.#timelineDataInternal?.entryTotalTimes,
       entryStartTimes: this.#timelineDataInternal?.entryStartTimes,
       groups: this.#timelineDataInternal?.groups,
+      initiatorsData: this.#timelineDataInternal.initiatorsData,
+      entryDecorations: this.#timelineDataInternal.entryDecorations,
     });
   }
 

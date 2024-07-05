@@ -103,7 +103,7 @@ export class NetworkTrackAppender implements TrackAppender {
    * appended.
    * @param expanded wether the track should be rendered expanded.
    */
-  #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
+  #appendTrackHeaderAtLevel(_currentLevel: number, expanded?: boolean): void {
     const style = buildGroupStyle({
       shareHeaderLine: false,
       useFirstLineForOverview: false,
@@ -155,10 +155,12 @@ export class NetworkTrackAppender implements TrackAppender {
           this.#appendEventAtLevel(event, trackStartLevel + level);
           websocketLevel += 1;
         }
-      } else {
+      } else if (TraceEngine.Types.TraceEvents.isSyntheticNetworkRequestEvent(event)) {
         // process network events
         level = getEventLevel(event, lastUsedTimeByLevel);
         this.#appendEventAtLevel(event, trackStartLevel + websocketLevel + level);
+      } else {
+        console.error('Invalid network event.');
       }
     }
     return trackStartLevel + lastUsedTimeByLevel.length;

@@ -2848,9 +2848,25 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     for (let i = 0; i < td.initiatorsData.length; ++i) {
       const initiatorsData = td.initiatorsData[i];
 
-      const initiatorArrowStartTime =
+      // Draw an arrow in an 'elbow connector' shape if the initiator ends before the initiated event starts, like this
+      // ---
+      //   |
+      //   --->
+      // Otherwise directly draw from the initiator start to initiated start, like this:
+      // |
+      // |
+      // ---->
+      const initiatorStartTime = entryStartTimes[initiatorsData.initiatorIndex];
+      const initiatorEndTime =
           entryStartTimes[initiatorsData.initiatorIndex] + entryTotalTimes[initiatorsData.initiatorIndex];
-      const initiatorArrowEndTime = entryStartTimes[initiatorsData.eventIndex];
+      const initiatedStartTime = entryStartTimes[initiatorsData.eventIndex];
+
+      const initiatorEndsBeforeInitiatedStart = initiatorEndTime < initiatedStartTime;
+      const initiatorArrowStartTime = initiatorEndsBeforeInitiatedStart ?
+          initiatorEndTime :
+          // The blue indicator's width is 2, so add a little bit offset to start the arrow.
+          Math.max(initiatorStartTime, this.chartViewport.pixelToTime(5));
+      const initiatorArrowEndTime = initiatedStartTime;
 
       // Do not draw the initiator if it is out of the viewport
       if (initiatorArrowEndTime < this.chartViewport.windowLeftTime()) {
@@ -2859,16 +2875,16 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       let startX = this.chartViewport.timeToPosition(initiatorArrowStartTime);
       let endX = this.chartViewport.timeToPosition(initiatorArrowEndTime);
 
-      // Draw a circle arround 'collapsed entries' arrow to indicate that the initiated entry is hidden
+      // Draw a circle around 'collapsed entries' arrow to indicate that the initiated entry is hidden
       if (initiatorsData.isInitiatorHidden) {
-        const {circleEndX} = this.drawCircleArroundCollapseArrow(initiatorsData.initiatorIndex, context, timelineData);
+        const {circleEndX} = this.drawCircleAroundCollapseArrow(initiatorsData.initiatorIndex, context, timelineData);
         // If the circle exists around the initiator, start the initiator arrow from the circle end
         if (circleEndX) {
           startX = circleEndX;
         }
       }
       if (initiatorsData.isEntryHidden) {
-        const {circleStartX} = this.drawCircleArroundCollapseArrow(initiatorsData.eventIndex, context, timelineData);
+        const {circleStartX} = this.drawCircleAroundCollapseArrow(initiatorsData.eventIndex, context, timelineData);
         // If the circle exists around the initiated event, draw the initiator arrow until the circle beginning
         if (circleStartX) {
           endX = circleStartX;
@@ -2881,15 +2897,28 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       const endY = this.levelToOffset(endLevel) + this.levelHeight(endLevel) / 2;
       const lineLength = endX - startX;
 
-      // Draw an arrow in an 'elbow connector' shape
-      context.beginPath();
-      context.moveTo(startX, startY);
-      context.lineTo(startX + lineLength / 2, startY);
-      context.lineTo(startX + lineLength / 2, endY);
-      context.lineTo(endX, endY);
-      context.stroke();
+      if (initiatorEndsBeforeInitiatedStart) {
+        // ---
+        //   |
+        //   --->
+        context.beginPath();
+        context.moveTo(startX, startY);
+        context.lineTo(startX + lineLength / 2, startY);
+        context.lineTo(startX + lineLength / 2, endY);
+        context.lineTo(endX, endY);
+        context.stroke();
+      } else {
+        // |
+        // |
+        // ---->
+        context.beginPath();
+        context.moveTo(startX, startY);
+        context.lineTo(startX, endY);
+        context.lineTo(endX, endY);
+        context.stroke();
+      }
 
-      // Make line an arrow if the line is long enough to fit the arrow head. Othewise, draw a thinner line without the arrow head.
+      // Make line an arrow if the line is long enough to fit the arrow head. Otherwise, draw a thinner line without the arrow head.
       if (lineLength > arrowWidth) {
         context.lineWidth = 0.5;
         context.beginPath();
@@ -2904,7 +2933,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     context.restore();
   }
 
-  private drawCircleArroundCollapseArrow(
+  private drawCircleAroundCollapseArrow(
       entryIndex: number, context: CanvasRenderingContext2D,
       timelineData: FlameChartTimelineData): {circleStartX?: number, circleEndX?: number} {
     const decorationsForEvent = timelineData.entryDecorations.at(entryIndex);

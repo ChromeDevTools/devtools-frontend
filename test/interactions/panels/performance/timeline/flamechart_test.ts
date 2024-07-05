@@ -26,19 +26,19 @@ describe('FlameChart', function() {
 
   itScreenshot('renders some events onto the timeline', async () => {
     await loadComponentDocExample('performance_panel/flamechart.html');
-    const flameChart = await getFlameChartContainerWhenReady('#container1');
+    const flameChart = await getFlameChartContainerWhenReady('#basic');
     await assertElementScreenshotUnchanged(flameChart, 'performance/flame_chart_1.png', 1);
   });
 
   itScreenshot('can add decorations to events', async () => {
     await loadComponentDocExample('performance_panel/flamechart.html');
-    const flameChart = await getFlameChartContainerWhenReady('#container2');
+    const flameChart = await getFlameChartContainerWhenReady('#long-task');
     await assertElementScreenshotUnchanged(flameChart, 'performance/flame_chart_candystripe.png', 0.75);
   });
 
   itScreenshot('can add initiators to events', async () => {
     await loadComponentDocExample('performance_panel/flamechart.html');
-    const flameChart = await getFlameChartContainerWhenReady('#container5');
+    const flameChart = await getFlameChartContainerWhenReady('#initiators');
     await assertElementScreenshotUnchanged(flameChart, 'performance/multiple_initiators.png', 0.75);
   });
 });

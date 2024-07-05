@@ -20,6 +20,13 @@ export const generatedProperties = [
   "name": "-alternative-animation-with-timeline"
  },
  {
+  "longhands": [
+   "position-try-order",
+   "position-try-fallbacks"
+  ],
+  "name": "-alternative-position-try"
+ },
+ {
   "inherited": true,
   "name": "-webkit-border-horizontal-spacing"
  },
@@ -2770,6 +2777,9 @@ export const generatedProperties = [
    "flip-inline",
    "flip-start"
   ],
+  "name": "position-try-fallbacks"
+ },
+ {
   "name": "position-try-options"
  },
  {
@@ -5227,7 +5237,7 @@ export const generatedPropertyValues = {
    "auto"
   ]
  },
- "position-try-options": {
+ "position-try-fallbacks": {
   "values": [
    "none",
    "flip-block",

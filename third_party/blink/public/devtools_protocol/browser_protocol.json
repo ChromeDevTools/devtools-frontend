@@ -4632,7 +4632,7 @@
                         },
                         {
                             "name": "cssPositionTryRules",
-                            "description": "A list of CSS @position-try rules matching this node, based on the position-try-options property.",
+                            "description": "A list of CSS @position-try rules matching this node, based on the position-try-fallbacks property.",
                             "optional": true,
                             "type": "array",
                             "items": {

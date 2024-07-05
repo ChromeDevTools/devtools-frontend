@@ -11,7 +11,6 @@ import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
 import {
   ChatMessageEntity,
-  DOGFOOD_FEEDBACK_URL,
   FreestylerChatUi,
   type ModelChatMessage,
   type Props as FreestylerChatUiProps,
@@ -20,6 +19,8 @@ import {
 } from './components/FreestylerChatUi.js';
 import {FIX_THIS_ISSUE_PROMPT, FreestylerAgent, Step} from './FreestylerAgent.js';
 import freestylerPanelStyles from './freestylerPanel.css.js';
+
+const DOGFOOD_INFO = ' https://goo.gle/freestyler-dogfood' as Platform.DevToolsPath.UrlString;
 
 /*
   * TODO(nvitkov): b/346933425
@@ -68,12 +69,12 @@ function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () =>
   leftToolbar.appendToolbarItem(clearButton);
 
   rightToolbar.appendSeparator();
-  const feedbackButton =
-      new UI.Toolbar.ToolbarButton(i18nString(TempUIStrings.sendFeedback), 'bug', undefined, 'freestyler.feedback');
-  feedbackButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(DOGFOOD_FEEDBACK_URL);
+  const helpButton =
+      new UI.Toolbar.ToolbarButton(i18nString(TempUIStrings.sendFeedback), 'help', undefined, 'freestyler.feedback');
+  helpButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(DOGFOOD_INFO);
   });
-  rightToolbar.appendToolbarItem(feedbackButton);
+  rightToolbar.appendToolbarItem(helpButton);
 }
 
 function defaultView(input: FreestylerChatUiProps, output: ViewOutput, target: HTMLElement): void {

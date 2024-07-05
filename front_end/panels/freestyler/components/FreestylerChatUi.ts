@@ -17,7 +17,7 @@ import {type ActionStepData, type CommonStepData, Step, type StepData} from '../
 
 import freestylerChatUiStyles from './freestylerChatUi.css.js';
 
-export const DOGFOOD_FEEDBACK_URL = 'https://goo.gle/freestyler-feedback' as Platform.DevToolsPath.UrlString;
+const DOGFOOD_FEEDBACK_URL = 'https://goo.gle/freestyler-feedback' as Platform.DevToolsPath.UrlString;
 
 /*
   * TODO(nvitkov): b/346933425

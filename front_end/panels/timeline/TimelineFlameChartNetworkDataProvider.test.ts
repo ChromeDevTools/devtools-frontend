@@ -51,8 +51,8 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     assert.strictEqual(dataProvider.preferredHeight(), 17);
     networkTrackGroup.expanded = true;
     assert.isTrue(dataProvider.isExpanded());
-    // The max level here is 3, so `clamp(this.#maxLevel + 1, 4, 8.5)` = 4
-    assert.strictEqual(dataProvider.preferredHeight(), 17 * 4);
+    // The max level here is 3, so `clamp(this.#maxLevel + 1, 7, 8.5)` = 7
+    assert.strictEqual(dataProvider.preferredHeight(), 17 * 7);
   });
 
   it('filters navigations to only return those that happen on the main frame', async function() {

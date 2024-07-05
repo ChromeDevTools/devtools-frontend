@@ -47,6 +47,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
 
   setModel(traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null): void {
     this.#timelineDataInternal = null;
+    this.#events = [];
     this.#traceParseData = traceEngineData;
     this.#eventIndexByEvent.clear();
 

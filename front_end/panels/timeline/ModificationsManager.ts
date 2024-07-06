@@ -4,7 +4,7 @@
 
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as TimelineComponents from '../../panels/timeline/components/components.js';
-import * as EventsSerializer from '../events_serializer/events_serializer.js';
+import {EventsSerializer} from './EventsSerializer.js';
 
 const modificationsManagerByTraceIndex: ModificationsManager[] = [];
 let activeManager: ModificationsManager|null;
@@ -22,7 +22,7 @@ export class ModificationsManager {
   #timelineBreadcrumbs: TimelineComponents.Breadcrumbs.Breadcrumbs;
   #modifications: TraceEngine.Types.File.Modifications|null = null;
   #traceParsedData: TraceEngine.Handlers.Types.TraceParseData;
-  #eventsSerializer: EventsSerializer.EventsSerializer;
+  #eventsSerializer: EventsSerializer;
 
   /**
    * Gets the ModificationsManager instance corresponding to a trace
@@ -77,7 +77,7 @@ export class ModificationsManager {
     this.#timelineBreadcrumbs = new TimelineComponents.Breadcrumbs.Breadcrumbs(traceBounds);
     this.#modifications = modifications || null;
     this.#traceParsedData = traceParsedData;
-    this.#eventsSerializer = new EventsSerializer.EventsSerializer();
+    this.#eventsSerializer = new EventsSerializer();
   }
 
   getEntriesFilter(): TraceEngine.EntriesFilter.EntriesFilter {

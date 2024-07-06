@@ -8,7 +8,6 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TraceEngine from '../../models/trace/trace.js';
-import * as ModificationsManager from '../../services/modifications_manager/modifications_manager.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import {
@@ -25,6 +24,7 @@ import {
   VisualLoggingTrackName,
 } from './CompatibilityTracksAppender.js';
 import {getCategoryStyles, getEventStyle} from './EventUICategory.js';
+import * as ModificationsManager from './ModificationsManager.js';
 
 const UIStrings = {
   /**
@@ -476,10 +476,8 @@ export class ThreadAppender implements TrackAppender {
   #appendNodesAtLevel(
       nodes: Iterable<TraceEngine.Helpers.TreeHelpers.TraceEntryNode>, startingLevel: number,
       parentIsIgnoredListed: boolean = false): number {
-    const invisibleEntries = ModificationsManager.ModificationsManager.ModificationsManager.activeManager()
-                                 ?.getEntriesFilter()
-                                 .invisibleEntries() ??
-        [];
+    const invisibleEntries =
+        ModificationsManager.ModificationsManager.activeManager()?.getEntriesFilter().invisibleEntries() ?? [];
     let maxDepthInTree = startingLevel;
     for (const node of nodes) {
       let nextLevel = startingLevel;
@@ -527,9 +525,7 @@ export class ThreadAppender implements TrackAppender {
 
   #addDecorationsToEntry(entry: TraceEngine.Types.TraceEvents.TraceEventData, index: number): void {
     const flameChartData = this.#compatibilityBuilder.getFlameChartTimelineData();
-    if (ModificationsManager.ModificationsManager.ModificationsManager.activeManager()
-            ?.getEntriesFilter()
-            .isEntryExpandable(entry)) {
+    if (ModificationsManager.ModificationsManager.activeManager()?.getEntriesFilter().isEntryExpandable(entry)) {
       addDecorationToEvent(
           flameChartData, index, {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW});
     }

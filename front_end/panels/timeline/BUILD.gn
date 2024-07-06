@@ -60,6 +60,7 @@ devtools_module("timeline") {
     "CompatibilityTracksAppender.ts",
     "CountersGraph.ts",
     "EventUICategory.ts",
+    "EventsSerializer.ts",
     "EventsTimelineTreeView.ts",
     "ExtensionDataGatherer.ts",
     "ExtensionTrackAppender.ts",
@@ -69,6 +70,7 @@ devtools_module("timeline") {
     "InteractionsTrackAppender.ts",
     "IsolateSelector.ts",
     "LayoutShiftsTrackAppender.ts",
+    "ModificationsManager.ts",
     "NetworkTrackAppender.ts",
     "Overlays.ts",
     "SaveFileFormatter.ts",
@@ -113,7 +115,6 @@ devtools_module("timeline") {
     "../../panels/layer_viewer:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../panels/profiler:bundle",
-    "../../services/modifications_manager:bundle",
     "../../services/trace_bounds:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/code_highlighter:bundle",  # trace event highlighting
@@ -181,8 +182,10 @@ ts_library("unittests") {
 
   sources = [
     "Breadcrumbs.test.ts",
+    "EventsSerializer.test.ts",
     "FreshRecording.test.ts",
     "Initiators.test.ts",
+    "ModificationsManager.test.ts",
     "Overlays.test.ts",
     "SaveFileFormatter.test.ts",
     "SourceMapsResolver.test.ts",

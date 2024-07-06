@@ -43,7 +43,6 @@ import type * as Protocol from '../../generated/protocol.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as ModificationsManager from '../../services/modifications_manager/modifications_manager.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import type * as Buttons from '../../ui/components/buttons/buttons.js';
@@ -59,6 +58,7 @@ import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
 import {Tracker} from './FreshRecording.js';
 import historyToolbarButtonStyles from './historyToolbarButton.css.js';
 import {IsolateSelector} from './IsolateSelector.js';
+import {ModificationsManager} from './ModificationsManager.js';
 import {cpuprofileJsonGenerator, traceJsonGenerator} from './SaveFileFormatter.js';
 import {NodeNamesUpdated, SourceMapsResolver} from './SourceMapsResolver.js';
 import {type Client, TimelineController} from './TimelineController.js';
@@ -753,7 +753,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const metadata = this.#traceEngineModel.metadata(this.#traceEngineActiveTraceIndex);
     // Save modifications into the metadata if modifications experiment is on
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS_OVERLAYS) && metadata) {
-      metadata.modifications = ModificationsManager.ModificationsManager.ModificationsManager.activeManager()?.toJSON();
+      metadata.modifications = ModificationsManager.activeManager()?.toJSON();
     }
     if (metadata && isEnhancedTraces) {
       metadata.enhancedTraceVersion = TraceEngine.Handlers.ModelHandlers.EnhancedTraces.EnhancedTracesVersion;
@@ -830,7 +830,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   #saveModificationsForActiveTrace(): void {
-    const newModifications = ModificationsManager.ModificationsManager.ModificationsManager.activeManager()?.toJSON();
+    const newModifications = ModificationsManager.activeManager()?.toJSON();
     if (newModifications) {
       this.#traceEngineModel.overrideModifications(this.#traceEngineActiveTraceIndex, newModifications);
     }
@@ -1265,7 +1265,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           traceParsedData.Meta.traceBounds,
       );
       // Create an instance of the modifications manager for this trace or activate a manager for previousy loaded trace.
-      ModificationsManager.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(
+      ModificationsManager.initAndActivateModificationsManager(
           this.#traceEngineModel, this.#traceEngineActiveTraceIndex);
       this.#applyActiveFilters(traceParsedData.Meta.traceIsGeneric, exclusiveFilter);
     }

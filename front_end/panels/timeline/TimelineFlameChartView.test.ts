@@ -6,7 +6,6 @@ import type * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TraceEngine from '../../models/trace/trace.js';
-import * as ModificationsManager from '../../services/modifications_manager/modifications_manager.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupIgnoreListManagerEnvironment} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
@@ -225,7 +224,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
        const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
        flameChartView.setModel(traceParsedData);
-       ModificationsManager.ModificationsManager.ModificationsManager.activeManager();
+       Timeline.ModificationsManager.ModificationsManager.activeManager();
 
        // Find the main track to later collapse entries of
        let mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
@@ -288,7 +287,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
       flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
       flameChartView.setModel(traceParsedData);
-      ModificationsManager.ModificationsManager.ModificationsManager.activeManager();
+      Timeline.ModificationsManager.ModificationsManager.activeManager();
     });
 
     it('Does not create customized Context Menu for network track', async function() {

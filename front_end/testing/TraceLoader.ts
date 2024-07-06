@@ -4,7 +4,7 @@
 
 import type * as Protocol from '../generated/protocol.js';
 import * as TraceEngine from '../models/trace/trace.js';
-import * as ModificationsManager from '../services/modifications_manager/modifications_manager.js';
+import * as Timeline from '../panels/timeline/timeline.js';
 import * as TraceBounds from '../services/trace_bounds/trace_bounds.js';
 
 // We maintain two caches:
@@ -144,8 +144,7 @@ export class TraceLoader {
 
     const fromCache = traceEngineCache.get(name)?.get(configCacheKey);
     if (fromCache) {
-      ModificationsManager.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(
-          fromCache.model, 0);
+      Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(fromCache.model, 0);
       if (options.initTraceBounds) {
         TraceLoader.initTraceBoundsManager(fromCache.traceParsedData);
       }
@@ -160,8 +159,7 @@ export class TraceLoader {
                 {traceParsedData: TraceEngine.Handlers.Types.TraceParseData, model: TraceEngine.TraceModel.Model}>();
     cacheByName.set(configCacheKey, traceEngineData);
     traceEngineCache.set(name, cacheByName);
-    ModificationsManager.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(
-        traceEngineData.model, 0);
+    Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(traceEngineData.model, 0);
     if (options.initTraceBounds) {
       TraceLoader.initTraceBoundsManager(traceEngineData.traceParsedData);
     }

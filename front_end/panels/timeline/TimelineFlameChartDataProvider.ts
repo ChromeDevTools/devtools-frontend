@@ -35,7 +35,6 @@ import * as Root from '../../core/root/root.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
-import * as ModificationsManager from '../../services/modifications_manager/modifications_manager.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
@@ -45,6 +44,7 @@ import {CompatibilityTracksAppender, type TrackAppenderName} from './Compatibili
 import * as Components from './components/components.js';
 import {ExtensionDataGatherer} from './ExtensionDataGatherer.js';
 import {initiatorsDataToDraw} from './Initiators.js';
+import {ModificationsManager} from './ModificationsManager.js';
 import {ThreadAppender} from './ThreadAppender.js';
 import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
@@ -162,16 +162,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   modifyTree(node: number, action: TraceEngine.EntriesFilter.FilterAction): void {
     const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
 
-    ModificationsManager.ModificationsManager.ModificationsManager.activeManager()
-        ?.getEntriesFilter()
-        .applyFilterAction({type: action, entry});
+    ModificationsManager.activeManager()?.getEntriesFilter().applyFilterAction({type: action, entry});
   }
 
   findPossibleContextMenuActions(node: number): TraceEngine.EntriesFilter.PossibleFilterActions|void {
     const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
-    return ModificationsManager.ModificationsManager.ModificationsManager.activeManager()
-        ?.getEntriesFilter()
-        .findPossibleActions(entry);
+    return ModificationsManager.activeManager()?.getEntriesFilter().findPossibleActions(entry);
   }
 
   private buildGroupStyle(extra: Object): PerfUI.FlameChart.GroupStyle {
@@ -662,9 +658,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     });
 
     const entry = this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
-    const hiddenEntriesAmount = ModificationsManager.ModificationsManager.ModificationsManager.activeManager()
-                                    ?.getEntriesFilter()
-                                    .findHiddenDescendantsAmount(entry);
+    const hiddenEntriesAmount =
+        ModificationsManager.activeManager()?.getEntriesFilter().findHiddenDescendantsAmount(entry);
 
     if (!hiddenEntriesAmount) {
       return null;
@@ -1007,7 +1002,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     // Try revealing the entry and getting the index again.
     if (this.entryData.indexOf(selection.object) === -1 && TimelineSelection.isTraceEventSelection(selection.object)) {
       if (this.timelineDataInternal?.selectedGroup) {
-        ModificationsManager.ModificationsManager.ModificationsManager.activeManager()?.getEntriesFilter().revealEntry(
+        ModificationsManager.activeManager()?.getEntriesFilter().revealEntry(
             selection.object as TraceEngine.Types.TraceEvents.SyntheticTraceEntry);
         this.timelineData(true);
       }
@@ -1086,15 +1081,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.lastInitiatorEntry = entryIndex;
 
     const hiddenEvents: TraceEngine.Types.TraceEvents.TraceEventData[] =
-        ModificationsManager.ModificationsManager.ModificationsManager.activeManager()
-            ?.getEntriesFilter()
-            .invisibleEntries() ??
-        [];
+        ModificationsManager.activeManager()?.getEntriesFilter().invisibleEntries() ?? [];
     const expandableEntries: TraceEngine.Types.TraceEvents.TraceEventData[] =
-        ModificationsManager.ModificationsManager.ModificationsManager.activeManager()
-            ?.getEntriesFilter()
-            .expandableEntries() ??
-        [];
+        ModificationsManager.activeManager()?.getEntriesFilter().expandableEntries() ?? [];
 
     const initiatorsData = initiatorsDataToDraw(
         this.traceEngineData,

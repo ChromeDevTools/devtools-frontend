@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as TraceEngine from '../../models/trace/trace.js';
-import * as ModificationsManager from '../../services/modifications_manager/modifications_manager.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
@@ -112,8 +111,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
       min: TraceEngine.Types.Timing.MicroSeconds((entireTraceBounds.max + entireTraceBounds.min) / 2),
     };
     minimap.breadcrumbs?.add(newBounds);
-    const serializableModifications =
-        ModificationsManager.ModificationsManager.ModificationsManager.activeManager()?.toJSON();
+    const serializableModifications = Timeline.ModificationsManager.ModificationsManager.activeManager()?.toJSON();
     assert.deepEqual(
         serializableModifications?.initialBreadcrumb.child,
         {window: {min: 1020035455504, max: 1020036087961, range: 1264914}, child: null} as

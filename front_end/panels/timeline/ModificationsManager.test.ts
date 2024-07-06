@@ -4,13 +4,12 @@
 
 import type * as TraceEngine from '../../models/trace/trace.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
-
-import * as ModificationsManager from './modifications_manager.js';
+import * as Timeline from './timeline.js';
 
 describe('ModificationsManager', () => {
   it('applies modifications when present in a trace file', async function() {
     await TraceLoader.traceEngine(null, 'web-dev-modifications.json.gz');
-    const modificationsManager = ModificationsManager.ModificationsManager.ModificationsManager.activeManager();
+    const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
     if (!modificationsManager) {
       throw new Error('Modifications manager does not exist.');
     }
@@ -26,7 +25,7 @@ describe('ModificationsManager', () => {
 
   it('generates a serializable modifications json ', async function() {
     await TraceLoader.traceEngine(null, 'web-dev-modifications.json.gz');
-    const modificationsManager = ModificationsManager.ModificationsManager.ModificationsManager.activeManager();
+    const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
     if (!modificationsManager) {
       throw new Error('Modifications manager does not exist.');
     }

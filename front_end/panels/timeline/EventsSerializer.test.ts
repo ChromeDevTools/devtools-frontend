@@ -3,10 +3,10 @@
 // found in the LICENSE file.
 
 import * as TraceEngine from '../../models/trace/trace.js';
+import * as Timeline from './timeline.js';
+
 import {getMainThread} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
-
-import * as EventsSerializer from './events_serializer.js';
 
 function findFirstEntry(
     allEntries: readonly TraceEngine.Types.TraceEvents.SyntheticTraceEntry[],
@@ -22,7 +22,7 @@ function findFirstEntry(
 describe('ModificationsManager', () => {
   it('correctly implements a bidirectional key <-> event mapping', async function() {
     const data = await TraceLoader.traceEngine(null, 'basic-stack.json.gz');
-    const eventsSerializer = new EventsSerializer.EventsSerializer();
+    const eventsSerializer = new Timeline.EventsSerializer.EventsSerializer();
     if (!eventsSerializer) {
       throw new Error('Modifications manager does not exist.');
     }

@@ -4,12 +4,12 @@
 
 import * as Common from '../../core/common/common.js';
 import * as TraceEngine from '../../models/trace/trace.js';
-import * as ModificationsManager from '../../services/modifications_manager/modifications_manager.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as TimelineComponents from './components/components.js';
+import {ModificationsManager} from './ModificationsManager.js';
 import {
   type TimelineEventOverview,
   TimelineEventOverviewCPUActivity,
@@ -136,9 +136,7 @@ export class TimelineMiniMap extends
         TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(breadcrumbTimes.startTime, breadcrumbTimes.endTime);
 
     if (this.breadcrumbs === null) {
-      this.breadcrumbs =
-          ModificationsManager.ModificationsManager.ModificationsManager.activeManager()?.getTimelineBreadcrumbs() ??
-          null;
+      this.breadcrumbs = ModificationsManager.activeManager()?.getTimelineBreadcrumbs() ?? null;
     } else {
       this.breadcrumbs.add(newVisibleTraceWindow);
     }

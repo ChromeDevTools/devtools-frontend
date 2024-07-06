@@ -42,7 +42,6 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
-import * as ModificationsManager from '../../services/modifications_manager/modifications_manager.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 // eslint-disable-next-line rulesdir/es_modules_import
@@ -68,6 +67,7 @@ import {
 import * as Extensions from './extensions/extensions.js';
 import {Tracker} from './FreshRecording.js';
 import {titleForInteractionEvent} from './InteractionsTrackAppender.js';
+import {ModificationsManager} from './ModificationsManager.js';
 import {SourceMapsResolver} from './SourceMapsResolver.js';
 import {targetForEvent} from './TargetForEvent.js';
 import {TimelinePanel} from './TimelinePanel.js';
@@ -1953,9 +1953,7 @@ export class TimelineUIUtils {
         traceBoundsState.micro.minimapTraceBounds.max < entry.ts;
 
     // Check if it is in the hidden array
-    const isEntryHidden = ModificationsManager.ModificationsManager.ModificationsManager.activeManager()
-                              ?.getEntriesFilter()
-                              .inEntryInvisible(entry);
+    const isEntryHidden = ModificationsManager.activeManager()?.getEntriesFilter().inEntryInvisible(entry);
 
     if (!isEntryOutsideBreadcrumb) {
       link.classList.add('devtools-link');

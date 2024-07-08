@@ -734,7 +734,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
     it('renders the details for an extension entry properly', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
-      const extensionEntry = traceParsedData.ExtensionTraceData.extensionTrackData[0].flameChartEntries[0];
+      const extensionEntry = traceParsedData.ExtensionTraceData.extensionTrackData[1].flameChartEntries[0];
 
       if (!extensionEntry) {
         throw new Error('Could not find extension entry.');
@@ -752,9 +752,9 @@ describeWithMockConnection('TimelineUIUtils', function() {
           [
             {
               title: 'Description',
-              value: 'This is a top level rendering task',
+              value: 'This is a child task',
             },
-            {title: 'Tip', value: 'A tip to improve this'},
+            {title: 'Tip', value: 'Do something about it'},
           ],
       );
     });

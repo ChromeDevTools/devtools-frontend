@@ -70,18 +70,16 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
         groupNames,
         [
           'Frames',
-          // Screenshots track has an empty name
-          '',
           'Timings',
           'Interactions',
-          'Layout Shifts',
-          'An Extension Track',
           'Another Extension Track',
-          'Main — http://localhost:3001/',
+          'An Extension Track',
+          'Main — http://localhost:3000/',
           'Thread Pool',
           'Thread Pool Worker 1',
           'Thread Pool Worker 2',
           'Thread Pool Worker 3',
+          'StackSamplingProfiler',
           'GPU',
         ],
     );

@@ -318,15 +318,15 @@ describeWithEnvironment('TimingTrackAppender', function() {
     it('sets a default value when a color is not set or is set an unknown value', function() {
       const mockExtensionEntryNoColor = {
         args: {
-          metadata: {dataType: 'marker', extensionName: 'Extension'},
+          dataType: 'marker',
         },
         cat: 'devtools.extension',
       } as unknown as TraceModel.Types.TraceEvents.TraceEventData;
 
       const mockExtensionEntryUnknownColor = {
         args: {
-          metadata: {dataType: 'marker', extensionName: 'Extension'},
           color: 'anUnknownColor',
+          dataType: 'marker',
         },
         cat: 'devtools.extension',
       } as unknown as TraceModel.Types.TraceEvents.TraceEventData;

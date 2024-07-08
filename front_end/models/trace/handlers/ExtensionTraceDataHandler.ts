@@ -8,7 +8,7 @@ import * as Types from '../types/types.js';
 import {HandlerState, type TraceEventHandlerName} from './types.js';
 import {data as userTimingsData} from './UserTimingsHandler.js';
 
-const extensionFlameChartEntries: Types.Extensions.SyntheticExtensionFlameChartEntry[] = [];
+const extensionFlameChartEntries: Types.Extensions.SyntheticExtensionTrackChartEntry[] = [];
 const extensionTrackData: Types.Extensions.ExtensionTrackData[] = [];
 const extensionMarkers: Types.Extensions.SyntheticExtensionMarker[] = [];
 
@@ -54,10 +54,7 @@ export function extractExtensionEntries(
       // Not an extension user timing.
       continue;
     }
-    const extensionName = extensionPayload.metadata.extensionName;
-    if (!extensionName) {
-      continue;
-    }
+
     const extensionSyntheticEntry = {
       name: timing.name,
       ph: Types.TraceEvents.Phase.COMPLETE,
@@ -73,8 +70,8 @@ export function extractExtensionEntries(
       extensionMarkers.push(extensionSyntheticEntry as Types.Extensions.SyntheticExtensionMarker);
       continue;
     }
-    if (Types.Extensions.isExtensionPayloadFlameChartEntry(extensionPayload)) {
-      extensionFlameChartEntries.push(extensionSyntheticEntry as Types.Extensions.SyntheticExtensionFlameChartEntry);
+    if (Types.Extensions.isExtensionPayloadTrackEntry(extensionPayload)) {
+      extensionFlameChartEntries.push(extensionSyntheticEntry as Types.Extensions.SyntheticExtensionTrackChartEntry);
       continue;
     }
   }
@@ -97,9 +94,6 @@ export function extensionDataInTiming(timing: Types.TraceEvents.SyntheticUserTim
     // If we hit either of these cases, we just ignore this mark and move on.
     const detailObj = JSON.parse(timingDetail);
     if (!('devtools' in detailObj)) {
-      return null;
-    }
-    if (!('metadata' in detailObj['devtools'])) {
       return null;
     }
     return detailObj.devtools;

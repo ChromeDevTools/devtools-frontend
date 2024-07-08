@@ -9,17 +9,14 @@ import {sortTraceEventsInPlace} from './Trace.js';
 import {canBuildTreesFromEvents, treify} from './TreeHelpers.js';
 
 export function buildTrackDataFromExtensionEntries(
-    extensionEntries: Types.Extensions.SyntheticExtensionFlameChartEntry[],
+    extensionEntries: Types.Extensions.SyntheticExtensionTrackChartEntry[],
     extensionTrackData: Types.Extensions.ExtensionTrackData[]): Types.Extensions.ExtensionTrackData[] {
   const dataByTrack = new Map<string, Omit<Types.Extensions.ExtensionTrackData, 'tree'|'entryToNode'>>();
   for (const entry of extensionEntries) {
-    const trackData = Platform.MapUtilities.getWithDefault(
-        dataByTrack, `${entry.args.metadata.extensionName}.${entry.args.track}`,
-        () => ({
-          name: entry.args.track,
-          extensionName: entry.args.metadata.extensionName,
-          flameChartEntries: [],
-        }));
+    const trackData = Platform.MapUtilities.getWithDefault(dataByTrack, entry.args.track, () => ({
+                                                                                            name: entry.args.track,
+                                                                                            flameChartEntries: [],
+                                                                                          }));
     trackData.flameChartEntries.push(entry);
   }
   for (const trackData of dataByTrack.values()) {

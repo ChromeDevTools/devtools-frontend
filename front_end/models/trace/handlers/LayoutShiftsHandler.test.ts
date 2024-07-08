@@ -81,6 +81,8 @@ describe('LayoutShiftsHandler', function() {
     }
 
     assert.strictEqual(layoutShifts.clusters[0].clusterWindow.max, navigations[0].ts);
+    // The first cluster happens before any navigation
+    assert.isUndefined(layoutShifts.clusters[0].navigationId);
 
     // We should see an initial cluster here from the first layout shifts,
     // followed by 1 for each of the navigations themselves.
@@ -89,6 +91,11 @@ describe('LayoutShiftsHandler', function() {
     const secondCluster = layoutShifts.clusters[1];
     // The second cluster should be marked to start at the first shift timestamp.
     assert.strictEqual(secondCluster.clusterWindow.min, secondCluster.events[0].ts);
+
+    // The second cluster happened after the first navigation, so it should
+    // have navigationId set to the ID of the first navigation
+    assert.isDefined(secondCluster.navigationId);
+    assert.strictEqual(secondCluster.navigationId, navigations[0].args.data?.navigationId);
   });
 
   it('creates a cluster after exceeding the continuous shift limit', async function() {

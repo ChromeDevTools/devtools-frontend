@@ -226,7 +226,6 @@ export class Dialog extends HTMLElement {
     this.#shadow.adoptedStyleSheets = [dialogStyles];
 
     window.addEventListener('resize', this.#forceDialogCloseInDevToolsBound);
-    document.body.addEventListener('keydown', this.#onKeyDownBound);
     this.#devtoolsMutationObserver.observe(this.#devToolsBoundingElement, {childList: true, subtree: true});
     this.#devToolsBoundingElement.addEventListener('wheel', this.#handleScrollAttemptBound);
     this.style.setProperty('--dialog-padding', '0');
@@ -238,7 +237,7 @@ export class Dialog extends HTMLElement {
 
   disconnectedCallback(): void {
     window.removeEventListener('resize', this.#forceDialogCloseInDevToolsBound);
-    document.body.removeEventListener('keydown', this.#onKeyDownBound);
+
     this.#devToolsBoundingElement.removeEventListener('wheel', this.#handleScrollAttemptBound);
     this.#devtoolsMutationObserver.disconnect();
     this.#dialogResizeObserver.disconnect();
@@ -593,6 +592,7 @@ export class Dialog extends HTMLElement {
       await this.#props.dialogShownCallback();
     }
     this.#updateDialogBounds();
+    document.body.addEventListener('keydown', this.#onKeyDownBound);
   }
 
   #handleScrollAttempt(event: WheelEvent): void {
@@ -649,6 +649,7 @@ export class Dialog extends HTMLElement {
       this.removeAttribute('open');
       this.#getDialog().close();
       this.#isPendingCloseDialog = false;
+      document.body.removeEventListener('keydown', this.#onKeyDownBound);
     });
   }
 

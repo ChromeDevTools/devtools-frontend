@@ -4,6 +4,26 @@
  * found in the LICENSE file.
  */
 
+.timeline-minimap {
+  position: relative;
+}
+
+.timeline-sidebar-floating-icon {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  z-index: 999;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--sys-color-cdt-base-container);
+
+  &:hover {
+    background: var(--sys-color-base-container-elevated);
+  }
+}
+
 .timeline-minimap .overview-strip {
   margin-top: 2px;
   justify-content: center;

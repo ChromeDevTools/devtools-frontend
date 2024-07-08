@@ -293,6 +293,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
 export const enum Events {
   OverviewPaneWindowChanged = 'OverviewPaneWindowChanged',
   OverviewPaneBreadcrumbAdded = 'OverviewPaneBreadcrumbAdded',
+  OpenSidebarButtonClicked = 'OpenSidebarButtonClicked',
 }
 
 export interface OverviewPaneWindowChangedEvent {
@@ -305,9 +306,12 @@ export interface OverviewPaneBreadcrumbAddedEvent {
   endTime: TraceEngine.Types.Timing.MilliSeconds;
 }
 
+export interface OpenSidebarButtonClicked {}
+
 export type EventTypes = {
   [Events.OverviewPaneWindowChanged]: OverviewPaneWindowChangedEvent,
   [Events.OverviewPaneBreadcrumbAdded]: OverviewPaneBreadcrumbAddedEvent,
+  [Events.OpenSidebarButtonClicked]: OpenSidebarButtonClicked,
 };
 
 export interface TimelineOverview {

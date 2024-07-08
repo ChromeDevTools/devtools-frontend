@@ -119,6 +119,7 @@ devtools_module("timeline") {
     "../../ui/components/buttons:bundle",
     "../../ui/components/code_highlighter:bundle",  # trace event highlighting
     "../../ui/components/data_grid:bundle",
+    "../../ui/components/icon_button:bundle",
     "../../ui/components/linkifier:bundle",
     "../../ui/components/menus:bundle",
     "../../ui/components/panel_feedback:bundle",

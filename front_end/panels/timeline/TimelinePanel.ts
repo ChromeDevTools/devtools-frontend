@@ -389,6 +389,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     topPaneElement.id = 'timeline-overview-panel';
 
     this.#minimapComponent.show(topPaneElement);
+    this.#minimapComponent.addEventListener(
+        PerfUI.TimelineOverviewPane.Events.OpenSidebarButtonClicked,
+        this.#showSidebar.bind(this),
+    );
 
     this.statusPaneContainer = this.timelinePane.element.createChild('div', 'status-pane-container fill');
 
@@ -413,6 +417,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.#sideBar.setMainWidget(this.timelinePane);
     this.#sideBar.show(this.element);
+
+    this.#sideBar.addEventListener(
+        TimelineComponents.Sidebar.WidgetEvents.SidebarCollapseClick,
+        this.#hideSidebar.bind(this),
+    );
 
     this.onModeChanged();
     this.populateToolbar();
@@ -453,6 +462,19 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.#sideBar.show(this.element);
     this.#sideBar.contentElement.addEventListener(
         TimelineComponents.Sidebar.ToggleSidebarInsights.eventName, this.#sidebarInsightEnabled.bind(this));
+  }
+
+  #showSidebar(): void {
+    this.#sideBar.showBoth();
+    this.#sideBar.updateContentsOnExpand();
+    this.#sideBar.setResizable(false);
+
+    this.#minimapComponent.hideSidebarFloatingIcon();
+  }
+
+  #hideSidebar(): void {
+    this.#minimapComponent.showSidebarFloatingIcon();
+    this.#sideBar.hideSidebar();
   }
 
   #sidebarInsightEnabled(): void {
@@ -1363,7 +1385,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   private showLandingPage(): void {
     this.updateSettingsPaneVisibility();
-    this.#sideBar.hideSidebar();
+    this.#hideSidebar();
     if (this.landingPage) {
       this.landingPage.show(this.statusPaneContainer);
       return;
@@ -1469,9 +1491,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.statusPane.remove();
       }
       this.statusPane = null;
+
       if (!isNode && Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SIDEBAR)) {
-        this.#sideBar.showBoth();
+        this.#minimapComponent.showSidebarFloatingIcon();
       }
+
       const traceData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
       if (!traceData) {
         throw new Error(`Could not get trace data at index ${this.#traceEngineActiveTraceIndex}`);

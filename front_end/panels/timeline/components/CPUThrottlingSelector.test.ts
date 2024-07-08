@@ -1,0 +1,81 @@
+// Copyright 2024 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+import * as SDK from '../../../core/sdk/sdk.js';
+import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import type * as Menus from '../../../ui/components/menus/menus.js';
+import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+
+import * as Components from './components.js';
+
+describeWithEnvironment('CPUThrottlingSelector', () => {
+  const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
+  let cpuThrottlingManager: SDK.CPUThrottlingManager.CPUThrottlingManager;
+
+  beforeEach(() => {
+    cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance({forceNew: true});
+  });
+
+  it('renders all CPU throttling presets', async () => {
+    const view = new Components.CPUThrottlingSelector.CPUThrottlingSelector();
+    renderElementIntoDOM(view);
+
+    await coordinator.done();
+
+    const menuItems = view.shadowRoot!.querySelectorAll('devtools-menu-item') as NodeListOf<Menus.Menu.MenuItem>;
+
+    assert.lengthOf(menuItems, 4);
+
+    assert.strictEqual(menuItems[0].value, 1);
+    assert.isTrue(menuItems[0].selected);
+    assert.match(menuItems[0].innerText, /No throttling/);
+
+    assert.strictEqual(menuItems[1].value, 4);
+    assert.isFalse(menuItems[1].selected);
+    assert.match(menuItems[1].innerText, /4× slowdown/);
+
+    assert.strictEqual(menuItems[2].value, 6);
+    assert.isFalse(menuItems[2].selected);
+    assert.match(menuItems[2].innerText, /6× slowdown/);
+
+    assert.strictEqual(menuItems[3].value, 20);
+    assert.isFalse(menuItems[3].selected);
+    assert.match(menuItems[3].innerText, /20× slowdown/);
+  });
+
+  it('updates CPU throttling manager on change', async () => {
+    const view = new Components.CPUThrottlingSelector.CPUThrottlingSelector();
+    renderElementIntoDOM(view);
+
+    await coordinator.done();
+
+    const menuItems = view.shadowRoot!.querySelectorAll('devtools-menu-item') as NodeListOf<Menus.Menu.MenuItem>;
+
+    assert.isTrue(menuItems[0].selected);
+    assert.strictEqual(cpuThrottlingManager.cpuThrottlingRate(), 1);
+
+    menuItems[1].click();
+    await coordinator.done();
+
+    assert.isTrue(menuItems[1].selected);
+    assert.strictEqual(cpuThrottlingManager.cpuThrottlingRate(), 4);
+  });
+
+  it('reacts to changes in CPU throttling manager', async () => {
+    const view = new Components.CPUThrottlingSelector.CPUThrottlingSelector();
+    renderElementIntoDOM(view);
+
+    await coordinator.done();
+
+    const menuItems = view.shadowRoot!.querySelectorAll('devtools-menu-item') as NodeListOf<Menus.Menu.MenuItem>;
+
+    assert.isTrue(menuItems[0].selected);
+
+    cpuThrottlingManager.setCPUThrottlingRate(6);
+    await coordinator.done();
+
+    assert.isTrue(menuItems[2].selected);
+  });
+});

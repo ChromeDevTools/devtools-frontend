@@ -221,3 +221,10 @@
   color: var(--sys-color-token-subtle);
   flex-shrink: 0;
 }
+
+.throttling-setting {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}

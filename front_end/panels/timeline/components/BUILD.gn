@@ -26,11 +26,13 @@ devtools_module("components") {
   sources = [
     "Breadcrumbs.ts",
     "BreadcrumbsUI.ts",
+    "CPUThrottlingSelector.ts",
     "DetailsView.ts",
     "EntryLabelOverlay.ts",
     "InteractionBreakdown.ts",
     "LiveMetricsView.ts",
     "NetworkRequestTooltip.ts",
+    "NetworkThrottlingSelector.ts",
     "Sidebar.ts",
     "SidebarAnnotationsTab.ts",
     "SidebarInsight.ts",
@@ -55,6 +57,7 @@ devtools_module("components") {
     "../../../ui/legacy/components/perf_ui:bundle",
     "../../../ui/lit-html:bundle",
     "../../../ui/visual_logging:bundle",
+    "../../mobile_throttling:bundle",
   ]
 }
 
@@ -79,9 +82,11 @@ ts_library("unittests") {
 
   sources = [
     "BreadcrumbsUI.test.ts",
+    "CPUThrottlingSelector.test.ts",
     "InteractionBreakdown.test.ts",
     "Invalidations.test.ts",
     "LiveMetricsView.test.ts",
+    "NetworkThrottlingSelector.test.ts",
     "SidebarAnnotationsTab.test.ts",
     "SidebarInsight.test.ts",
   ]

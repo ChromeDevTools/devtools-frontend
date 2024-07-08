@@ -248,6 +248,8 @@ export class FreestylerPanel extends UI.Panel.Panel {
       text,
     });
     this.#viewProps.isLoading = true;
+    // TODO: We should only show "Fix this issue" button when the answer suggests fix or fixes.
+    // We shouldn't show this when the answer is complete like a confirmation without any suggestion.
     const suggestingFix = text !== FIX_THIS_ISSUE_PROMPT;
     let systemMessage: ModelChatMessage = {
       entity: ChatMessageEntity.MODEL,

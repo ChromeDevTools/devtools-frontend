@@ -380,11 +380,9 @@ export class FreestylerChatUi extends HTMLElement {
       return LitHtml.html`<div class="chat-message query">${message.text}</div>`;
     }
 
-    // TODO: We should only show "Fix this issue" button when the answer suggests fix or fixes.
-    // We shouldn't show this when the answer is complete like a confirmation without any suggestion.
-    const shouldShowFixThisIssueButton = isLast && message.suggestingFix;
-    const shouldShowRating = (!this.#props.confirmSideEffectDialog && isLast) || !isLast;
-    const shouldShowLoading = !this.#props.confirmSideEffectDialog && this.#props.isLoading && isLast;
+    const shouldShowFixThisIssueButton = !this.#props.isLoading && isLast && message.suggestingFix;
+    const shouldShowRating = !isLast || (!this.#props.confirmSideEffectDialog && isLast);
+    const shouldShowLoading = this.#props.isLoading && isLast && !this.#props.confirmSideEffectDialog;
     // clang-format off
     return LitHtml.html`
       <div class="chat-message answer">

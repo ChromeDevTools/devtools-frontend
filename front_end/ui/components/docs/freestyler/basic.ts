@@ -20,6 +20,7 @@ const messages: Freestyler.ChatMessage[] = [
   },
   {
     entity: Freestyler.ChatMessageEntity.MODEL,
+    suggestingFix: true,
     steps: [
       {
         'step': Freestyler.Step.THOUGHT,
@@ -56,7 +57,6 @@ const component = new Freestyler.FreestylerChatUi({
   messages,
   selectedNode: {} as unknown as SDK.DOMModel.DOMNode,
   isLoading: false,
-  lastActionIsFixThisIssue: false,
 });
 
 document.getElementById('container')?.appendChild(component);

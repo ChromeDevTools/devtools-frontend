@@ -151,8 +151,9 @@ export interface UserChatMessage {
 }
 export interface ModelChatMessage {
   entity: ChatMessageEntity.MODEL;
-  rpcId?: number;
+  suggestingFix: boolean;
   steps: Array<ActionStepData|CommonStepData>;
+  rpcId?: number;
 }
 
 export type ChatMessage = UserChatMessage|ModelChatMessage;
@@ -183,7 +184,6 @@ export interface Props {
   // If there is a `confirmSideEffectDialog`, we show the
   // confirmation dialog for executing that specific code.
   confirmSideEffectDialog?: ConfirmSideEffectDialog;
-  lastActionIsFixThisIssue: boolean;
 }
 
 // The model returns multiline code blocks in an erroneous way with the language being in new line.
@@ -382,8 +382,7 @@ export class FreestylerChatUi extends HTMLElement {
 
     // TODO: We should only show "Fix this issue" button when the answer suggests fix or fixes.
     // We shouldn't show this when the answer is complete like a confirmation without any suggestion.
-    const shouldShowFixThisIssueButton =
-        isLast && message.steps.at(-1)?.step === Step.ANSWER && !this.#props.lastActionIsFixThisIssue;
+    const shouldShowFixThisIssueButton = isLast && message.suggestingFix;
     const shouldShowRating = (!this.#props.confirmSideEffectDialog && isLast) || !isLast;
     const shouldShowLoading = !this.#props.confirmSideEffectDialog && this.#props.isLoading && isLast;
     // clang-format off

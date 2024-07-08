@@ -27,6 +27,7 @@ import {observe} from './lib/observe.js';
 import {onHidden} from './lib/onHidden.js';
 import {initInteractionCountPolyfill} from './lib/polyfills/interactionCountPolyfill.js';
 import {whenActivated} from './lib/whenActivated.js';
+import {whenIdle} from './lib/whenIdle.js';
 
 import {INPMetric, MetricRatingThresholds, ReportOpts} from './types.js';
 
@@ -64,6 +65,16 @@ export const onINP = (
   onReport: (metric: INPMetric) => void,
   opts?: ReportOpts,
 ) => {
+  // Return if the browser doesn't support all APIs needed to measure INP.
+  if (
+    !(
+      'PerformanceEventTiming' in self &&
+      'interactionId' in PerformanceEventTiming.prototype
+    )
+  ) {
+    return;
+  }
+
   // Set defaults
   opts = opts || {};
 
@@ -75,15 +86,23 @@ export const onINP = (
     let report: ReturnType<typeof bindReporter>;
 
     const handleEntries = (entries: INPMetric['entries']) => {
-      entries.forEach(processInteractionEntry);
+      // Queue the `handleEntries()` callback in the next idle task.
+      // This is needed to increase the chances that all event entries that
+      // occurred between the user interaction and the next paint
+      // have been dispatched. Note: there is currently an experiment
+      // running in Chrome (EventTimingKeypressAndCompositionInteractionId)
+      // 123+ that if rolled out fully may make this no longer necessary.
+      whenIdle(() => {
+        entries.forEach(processInteractionEntry);
 
-      const inp = estimateP98LongestInteraction();
+        const inp = estimateP98LongestInteraction();
 
-      if (inp && inp.latency !== metric.value) {
-        metric.value = inp.latency;
-        metric.entries = inp.entries;
-        report();
-      }
+        if (inp && inp.latency !== metric.value) {
+          metric.value = inp.latency;
+          metric.entries = inp.entries;
+          report();
+        }
+      });
     };
 
     const po = observe('event', handleEntries, {
@@ -104,15 +123,9 @@ export const onINP = (
     );
 
     if (po) {
-      // If browser supports interactionId (and so supports INP), also
-      // observe entries of type `first-input`. This is useful in cases
+      // Also observe entries of type `first-input`. This is useful in cases
       // where the first interaction is less than the `durationThreshold`.
-      if (
-        'PerformanceEventTiming' in self &&
-        'interactionId' in PerformanceEventTiming.prototype
-      ) {
-        po.observe({type: 'first-input', buffered: true});
-      }
+      po.observe({type: 'first-input', buffered: true});
 
       onHidden(() => {
         handleEntries(po.takeRecords() as INPMetric['entries']);

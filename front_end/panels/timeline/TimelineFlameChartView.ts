@@ -16,7 +16,14 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CountersGraph} from './CountersGraph.js';
 import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
-import {Overlays, type TimeRangeLabel, type TimespanBreakdown} from './Overlays.js';
+import {ModificationsManager} from './ModificationsManager.js';
+import {
+  AnnotationOverlayRemoveEvent,
+  Overlays,
+  type TimelineOverlay,
+  type TimeRangeLabel,
+  type TimespanBreakdown,
+} from './Overlays.js';
 import {targetForEvent} from './TargetForEvent.js';
 import {TimelineDetailsView} from './TimelineDetailsView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
@@ -189,6 +196,11 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       },
     });
 
+    this.#overlays.addEventListener(AnnotationOverlayRemoveEvent.eventName, event => {
+      const overlay = (event as AnnotationOverlayRemoveEvent).overlay;
+      ModificationsManager.activeManager()?.removeAnnotationOverlay(overlay);
+    });
+
     this.networkPane = new UI.Widget.VBox();
     this.networkPane.setMinimumSize(23, 23);
     this.networkFlameChart.show(this.networkPane.element);
@@ -246,14 +258,13 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (this.#sidebarInsightToggled) {
       this.#timespanBreakdownOverlay = this.createLCPPhaseOverlay();
       if (this.#timespanBreakdownOverlay) {
-        this.#overlays.add(this.#timespanBreakdownOverlay);
+        this.addOverlay(this.#timespanBreakdownOverlay);
       }
     } else {
       if (this.#timespanBreakdownOverlay) {
-        this.#overlays.remove(this.#timespanBreakdownOverlay);
+        this.removeOverlay(this.#timespanBreakdownOverlay);
       }
     }
-    this.#overlays.update();
   }
 
   #keydownHandler(event: KeyboardEvent): void {
@@ -339,18 +350,17 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       );
 
       if (this.#timeRangeSelectionOverlay) {
-        this.#overlays.updateExisting(this.#timeRangeSelectionOverlay, {
+        this.updateExistingOverlay(this.#timeRangeSelectionOverlay, {
           bounds,
         });
       } else {
-        this.#timeRangeSelectionOverlay = this.#overlays.add({
+        this.#timeRangeSelectionOverlay = this.addOverlay({
           type: 'TIME_RANGE',
           label: '',
           showDuration: true,
           bounds,
         });
       }
-      this.#overlays.update();
     }
   }
 
@@ -614,12 +624,27 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
         (TimelineSelection.isTraceEventSelection(selection.object) ||
          TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object) ||
          TimelineSelection.isFrameObject(selection.object))) {
-      this.#overlays.add({
+      this.addOverlay({
         type: 'ENTRY_SELECTED',
         entry: selection.object,
       });
-      this.#overlays.update();
     }
+  }
+
+  addOverlay<T extends TimelineOverlay>(newOverlay: T): T {
+    const overlay = this.#overlays.add(newOverlay);
+    this.#overlays.update();
+    return overlay;
+  }
+
+  removeOverlay(removedOverlay: TimelineOverlay): void {
+    this.#overlays.remove(removedOverlay);
+    this.#overlays.update();
+  }
+
+  updateExistingOverlay<T extends TimelineOverlay>(existingOverlay: T, newData: Partial<T>): void {
+    this.#overlays.updateExisting(existingOverlay, newData);
+    this.#overlays.update();
   }
 
   private onAnnotateEntry(
@@ -630,12 +655,11 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
         (TimelineSelection.isTraceEventSelection(selection.object) ||
          TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object))) {
       this.setSelection(selection);
-      this.#overlays.add({
+      ModificationsManager.activeManager()?.createAnnotation({
         type: 'ENTRY_LABEL',
         entry: selection.object,
         label: '',
       });
-      this.#overlays.update();
     }
   }
 

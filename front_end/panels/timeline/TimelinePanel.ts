@@ -58,7 +58,7 @@ import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
 import {Tracker} from './FreshRecording.js';
 import historyToolbarButtonStyles from './historyToolbarButton.css.js';
 import {IsolateSelector} from './IsolateSelector.js';
-import {ModificationsManager} from './ModificationsManager.js';
+import {AnnotationAddedEvent, AnnotationRemovedEvent, ModificationsManager} from './ModificationsManager.js';
 import {cpuprofileJsonGenerator, traceJsonGenerator} from './SaveFileFormatter.js';
 import {NodeNamesUpdated, SourceMapsResolver} from './SourceMapsResolver.js';
 import {type Client, TimelineController} from './TimelineController.js';
@@ -1287,8 +1287,23 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           traceParsedData.Meta.traceBounds,
       );
       // Create an instance of the modifications manager for this trace or activate a manager for previousy loaded trace.
-      ModificationsManager.initAndActivateModificationsManager(
+      const currentManager = ModificationsManager.initAndActivateModificationsManager(
           this.#traceEngineModel, this.#traceEngineActiveTraceIndex);
+      if (!currentManager) {
+        console.error('ModificationsManager could not be created or activated.');
+      }
+
+      // Add ModificationsManager listeners for annotations change to update the Annotation Overlays.
+      currentManager?.addEventListener(AnnotationAddedEvent.eventName, event => {
+        const addedOverlay = (event as AnnotationAddedEvent).addedAnnotationOverlay;
+        this.flameChart.addOverlay(addedOverlay);
+      });
+
+      currentManager?.addEventListener(AnnotationRemovedEvent.eventName, event => {
+        const removedOverlay = (event as AnnotationRemovedEvent).removedAnnotationOverlay;
+        this.flameChart.removeOverlay(removedOverlay);
+      });
+
       this.#applyActiveFilters(traceParsedData.Meta.traceIsGeneric, exclusiveFilter);
     }
     if (traceParsedData) {

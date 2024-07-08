@@ -202,7 +202,8 @@ describeWithEnvironment('Overlays', () => {
   });
 
   describe('rendering overlays', () => {
-    function setupChartWithDimensions(traceParsedData: TraceEngine.Handlers.Types.TraceParseData): {
+    function setupChartWithDimensionsAndAnnotationOverlayListeners(
+        traceParsedData: TraceEngine.Handlers.Types.TraceParseData): {
       container: HTMLElement,
       overlays: Timeline.Overlays.Overlays,
       charts: Timeline.Overlays.TimelineCharts,
@@ -212,6 +213,21 @@ describeWithEnvironment('Overlays', () => {
       const overlays = new Timeline.Overlays.Overlays({
         container,
         charts,
+      });
+
+      const currManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
+      // The Annotations Overlays are added through the ModificationsManager listener
+      currManager?.addEventListener(Timeline.ModificationsManager.AnnotationAddedEvent.eventName, event => {
+        const addedOverlay = (event as Timeline.ModificationsManager.AnnotationAddedEvent).addedAnnotationOverlay;
+        overlays.add(addedOverlay);
+        overlays.update();
+      });
+
+      // When an annotation overlay is remomved, this event is dispatched to the Modifications Manager.
+      overlays.addEventListener(Timeline.Overlays.AnnotationOverlayRemoveEvent.eventName, event => {
+        const addedOverlay = (event as Timeline.Overlays.AnnotationOverlayRemoveEvent).overlay;
+        overlays.remove(addedOverlay);
+        overlays.update();
       });
 
       overlays.updateChartDimensions('main', {
@@ -234,7 +250,7 @@ describeWithEnvironment('Overlays', () => {
 
     it('can render an entry selected overlay', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const {overlays, container, charts} = setupChartWithDimensions(traceParsedData);
+      const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);
       const event = charts.mainProvider.eventByIndex(50);
       assert.isOk(event);
       assert.notInstanceOf(event, TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
@@ -252,7 +268,7 @@ describeWithEnvironment('Overlays', () => {
 
     it('can render entry label overlay', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const {overlays, container, charts} = setupChartWithDimensions(traceParsedData);
+      const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);
       const event = charts.mainProvider.eventByIndex(50);
       assert.isOk(event);
       assert.notInstanceOf(event, TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
@@ -271,7 +287,7 @@ describeWithEnvironment('Overlays', () => {
 
     it('can render the label for entry label overlay', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const {overlays, container, charts} = setupChartWithDimensions(traceParsedData);
+      const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);
       const event = charts.mainProvider.eventByIndex(50);
       assert.isOk(event);
       assert.notInstanceOf(event, TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
@@ -297,7 +313,7 @@ describeWithEnvironment('Overlays', () => {
 
     it('Inputting `Enter`into label overlay makes it non-editable', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const {overlays, container, charts} = setupChartWithDimensions(traceParsedData);
+      const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);
       const event = charts.mainProvider.eventByIndex(50);
       assert.isOk(event);
       assert.notInstanceOf(event, TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
@@ -338,14 +354,14 @@ describeWithEnvironment('Overlays', () => {
 
     it('Removes empty label if it is empty when navigated away from (removed focused from)', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const {overlays, container, charts} = setupChartWithDimensions(traceParsedData);
+      const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);
       const event = charts.mainProvider.eventByIndex(50);
       assert.isOk(event);
 
       // Create an entry label overlay
-      overlays.add({
+      Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
         type: 'ENTRY_LABEL',
-        entry: event,
+        entry: event as TraceEngine.Types.TraceEvents.TraceEventData,
         label: '',
       });
       overlays.update();
@@ -379,7 +395,7 @@ describeWithEnvironment('Overlays', () => {
 
     it('can render an overlay for a time range', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const {overlays, container} = setupChartWithDimensions(traceParsedData);
+      const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);
       overlays.add({
         type: 'TIME_RANGE',
         label: '',
@@ -394,7 +410,7 @@ describeWithEnvironment('Overlays', () => {
 
     it('can update a time range overlay with new bounds', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const {overlays, container} = setupChartWithDimensions(traceParsedData);
+      const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);
       const rangeOverlay = overlays.add({
         type: 'TIME_RANGE',
         label: '',
@@ -421,7 +437,7 @@ describeWithEnvironment('Overlays', () => {
 
     it('renders the overlay for a selected layout shift entry correctly', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
-      const {overlays, container} = setupChartWithDimensions(traceParsedData);
+      const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);
       const layoutShiftEvent = traceParsedData.LayoutShifts.clusters.at(0)?.events.at(0);
       if (!layoutShiftEvent) {
         throw new Error('layoutShiftEvent was unexpectedly undefined');
@@ -441,7 +457,7 @@ describeWithEnvironment('Overlays', () => {
 
     it('renders the duration and label for a time range overlay', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const {overlays, container} = setupChartWithDimensions(traceParsedData);
+      const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);
       overlays.add({
         type: 'TIME_RANGE',
         label: '',
@@ -461,7 +477,7 @@ describeWithEnvironment('Overlays', () => {
 
     it('can remove an overlay', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const {overlays, container, charts} = setupChartWithDimensions(traceParsedData);
+      const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);
       const event = charts.mainProvider.eventByIndex(50);
       assert.isOk(event);
       assert.notInstanceOf(event, TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
@@ -480,7 +496,7 @@ describeWithEnvironment('Overlays', () => {
 
     it('can render an entry selected overlay for a frame', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-      const {overlays, container, charts} = setupChartWithDimensions(traceParsedData);
+      const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);
       const timelineFrame = charts.mainProvider.eventByIndex(5);
       assert.isOk(timelineFrame);
       assert.instanceOf(timelineFrame, TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
@@ -498,7 +514,7 @@ describeWithEnvironment('Overlays', () => {
 
     it('can return a list of overlays for an entry', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const {overlays, charts} = setupChartWithDimensions(traceParsedData);
+      const {overlays, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);
       const event = charts.mainProvider.eventByIndex(50);
       assert.isOk(event);
       assert.notInstanceOf(event, TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
@@ -518,7 +534,7 @@ describeWithEnvironment('Overlays', () => {
 
     it('can delete overlays and remove them from the DOM', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const {container, overlays, charts} = setupChartWithDimensions(traceParsedData);
+      const {container, overlays, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);
       const event = charts.mainProvider.eventByIndex(50);
       assert.isOk(event);
 
@@ -536,15 +552,16 @@ describeWithEnvironment('Overlays', () => {
 
     it('the label entry field is editable when created', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const {overlays, container} = setupChartWithDimensions(traceParsedData);
+      const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);
       const charts = createCharts(traceParsedData);
       const event = charts.mainProvider.eventByIndex(50);
       assert.isOk(event);
 
-      overlays.add({
+      // Since ENTRY_LABEL is AnnotationOverlay, create it through ModificationsManager
+      Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
         type: 'ENTRY_LABEL',
         label: '',
-        entry: event,
+        entry: event as TraceEngine.Types.TraceEvents.TraceEventData,
       });
 
       overlays.update();
@@ -562,15 +579,16 @@ describeWithEnvironment('Overlays', () => {
 
     it('the label entry field is in focus after being double clicked on', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const {overlays, container} = setupChartWithDimensions(traceParsedData);
+      const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);
       const charts = createCharts(traceParsedData);
       const event = charts.mainProvider.eventByIndex(50);
       assert.isOk(event);
 
-      overlays.add({
+      // Since ENTRY_LABEL is AnnotationOverlay, create it through ModificationsManager
+      Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
         type: 'ENTRY_LABEL',
         label: '',
-        entry: event,
+        entry: event as TraceEngine.Types.TraceEvents.TraceEventData,
       });
 
       overlays.update();

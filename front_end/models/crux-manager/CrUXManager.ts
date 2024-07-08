@@ -67,14 +67,19 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   #originCache = new Map<string, CrUXResponse|null>();
   #urlCache = new Map<string, CrUXResponse|null>();
   #mainDocumentUrl?: string;
-  #automaticFieldSetting = Common.Settings.Settings.instance().createSetting('automatic-field-data', false);
+  #urlOverrideSetting = Common.Settings.Settings.instance().createSetting('field-data-url-override', '');
+  #enabledSetting = Common.Settings.Settings.instance().createSetting('field-data-enabled', false);
   #endpoint = DEFAULT_ENDPOINT;
 
   private constructor() {
     super();
 
-    this.#automaticFieldSetting.setTitle('Automatic field data');
-    this.#automaticFieldSetting.addChangeListener(() => {
+    this.#enabledSetting.setTitle('Enable field data');
+    this.#enabledSetting.addChangeListener(() => {
+      void this.#automaticRefresh();
+    });
+
+    this.#urlOverrideSetting.addChangeListener(() => {
       void this.#automaticRefresh();
     });
 
@@ -92,8 +97,12 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     return cruxManagerInstance;
   }
 
-  getAutomaticSetting(): Common.Settings.Setting<boolean> {
-    return this.#automaticFieldSetting;
+  getEnabledSetting(): Common.Settings.Setting<boolean> {
+    return this.#enabledSetting;
+  }
+
+  getUrlOverrideSetting(): Common.Settings.Setting<string> {
+    return this.#urlOverrideSetting;
   }
 
   async getFieldDataForPage(pageUrl: string): Promise<PageResult> {
@@ -139,7 +148,7 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
    * the main document URL cannot be found.
    */
   async getFieldDataForCurrentPage(): Promise<PageResult> {
-    const pageUrl = this.#mainDocumentUrl || await this.#getInspectedURL();
+    const pageUrl = this.#urlOverrideSetting.get() || this.#mainDocumentUrl || await this.#getInspectedURL();
     return this.getFieldDataForPage(pageUrl);
   }
 
@@ -172,13 +181,14 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   }
 
   async #automaticRefresh(): Promise<void> {
-    if (!this.#automaticFieldSetting.get()) {
+    // This does 2 things:
+    // - Tells listeners to clear old data so it isn't shown during a URL transition
+    // - Tells listeners to clear old data when field data is disabled.
+    this.dispatchEventToListeners(Events.FieldDataChanged, undefined);
+
+    if (!this.#enabledSetting.get()) {
       return;
     }
-
-    // Fetching field data for the next page can take time. To avoid showing field data that is
-    // irrelevant to the new page, clear the current set of field data until the new set is ready.
-    this.dispatchEventToListeners(Events.FieldDataChanged, undefined);
 
     const pageResult = await this.getFieldDataForCurrentPage();
 

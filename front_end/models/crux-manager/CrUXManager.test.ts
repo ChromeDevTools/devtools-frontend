@@ -63,6 +63,8 @@ describeWithMockConnection('CrUXManager', () => {
   afterEach(() => {
     mockFetch.restore();
     mockConsoleError.restore();
+    cruxManager.getEnabledSetting().set(false);
+    cruxManager.getUrlOverrideSetting().set('');
   });
 
   describe('getFieldDataForPage', () => {
@@ -265,6 +267,16 @@ describeWithMockConnection('CrUXManager', () => {
       assert.strictEqual(getFieldDataMock.firstCall.args[0], 'https://example.com/main/');
     });
 
+    it('should use URL override if set', async () => {
+      target.setInspectedURL('https://example.com/inspected' as Platform.DevToolsPath.UrlString);
+      cruxManager.getUrlOverrideSetting().set('https://example.com/override');
+
+      await cruxManager.getFieldDataForCurrentPage();
+
+      assert.strictEqual(getFieldDataMock.callCount, 1);
+      assert.strictEqual(getFieldDataMock.firstCall.args[0], 'https://example.com/override');
+    });
+
     it('should use inspected URL if main document is unavailable', async () => {
       target.setInspectedURL('https://example.com/inspected' as Platform.DevToolsPath.UrlString);
 
@@ -316,8 +328,8 @@ describeWithMockConnection('CrUXManager', () => {
       getFieldDataMock.restore();
     });
 
-    it('should trigger when setting changed to true', async () => {
-      const setting = cruxManager.getAutomaticSetting();
+    it('should update when enabled setting changes', async () => {
+      const setting = cruxManager.getEnabledSetting();
 
       setting.set(true);
       await triggerMicroTaskQueue();
@@ -331,13 +343,14 @@ describeWithMockConnection('CrUXManager', () => {
       await triggerMicroTaskQueue();
 
       assert.strictEqual(getFieldDataMock.callCount, 1);
-      assert.lengthOf(eventBodies, 2);
+      assert.lengthOf(eventBodies, 3);
       assert.isUndefined(eventBodies[0]);
       assert.isObject(eventBodies[1]);
+      assert.isUndefined(eventBodies[2]);
     });
 
     it('should trigger on frame navigation if enabled', async () => {
-      const setting = cruxManager.getAutomaticSetting();
+      const setting = cruxManager.getEnabledSetting();
       setting.set(true);
 
       await triggerMicroTaskQueue();
@@ -357,8 +370,26 @@ describeWithMockConnection('CrUXManager', () => {
       assert.isObject(eventBodies[3]);
     });
 
+    it('should trigger when URL override set', async () => {
+      const setting = cruxManager.getEnabledSetting();
+      setting.set(true);
+
+      await triggerMicroTaskQueue();
+
+      cruxManager.getUrlOverrideSetting().set('https://example.com/override');
+
+      await triggerMicroTaskQueue();
+
+      assert.strictEqual(getFieldDataMock.callCount, 2);
+      assert.lengthOf(eventBodies, 4);
+      assert.isUndefined(eventBodies[0]);
+      assert.isObject(eventBodies[1]);
+      assert.isUndefined(eventBodies[2]);
+      assert.isObject(eventBodies[3]);
+    });
+
     it('should not trigger on frame navigation if disabled', async () => {
-      const setting = cruxManager.getAutomaticSetting();
+      const setting = cruxManager.getEnabledSetting();
       setting.set(false);
 
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameNavigated, {
@@ -369,7 +400,9 @@ describeWithMockConnection('CrUXManager', () => {
       await triggerMicroTaskQueue();
 
       assert.strictEqual(getFieldDataMock.callCount, 0);
-      assert.lengthOf(eventBodies, 0);
+      assert.lengthOf(eventBodies, 2);
+      assert.isUndefined(eventBodies[0]);
+      assert.isUndefined(eventBodies[1]);
     });
   });
 });

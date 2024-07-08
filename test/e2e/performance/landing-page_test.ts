@@ -207,39 +207,15 @@ describe('The Performance panel landing page', () => {
     }
   });
 
-  it('gets field data manually', async () => {
-    await setCruxRawResponse('performance/crux-valid.rawresponse');
-    await navigateToPerformanceTab();
-
-    const manualFetchButton = await waitFor(FIELD_CHECKBOX_SELECTOR);
-    await manualFetchButton.click();
-
-    const [lcpHistogram, clsHistogram, inpHistogram] = await waitForMany(HISTOGRAM_SELECTOR, 3);
-
-    assert.strictEqual(
-        await lcpHistogram.evaluate(el => (el as HTMLElement).innerText),
-        'Good (≤2.50 s)\n96%\nNeeds improvement (2.50 s-4.00 s)\n3%\nPoor (>4.00 s)\n1%');
-    assert.strictEqual(
-        await clsHistogram.evaluate(el => (el as HTMLElement).innerText),
-        'Good (≤0.10)\n100%\nNeeds improvement (0.10-0.25)\n0%\nPoor (>0.25)\n0%');
-    assert.strictEqual(
-        await inpHistogram.evaluate(el => (el as HTMLElement).innerText),
-        'Good (≤200 ms)\n98%\nNeeds improvement (200 ms-500 ms)\n2%\nPoor (>500 ms)\n1%');
-
-    const [lcpFieldValue, clsFieldValue, inpFieldValue] = await waitForMany(READY_FIELD_METRIC_SELECTOR, 3);
-    assert.strictEqual(await lcpFieldValue.evaluate(el => el.textContent) || '', '1.20 s');
-    assert.strictEqual(await clsFieldValue.evaluate(el => el.textContent) || '', '0');
-    assert.strictEqual(await inpFieldValue.evaluate(el => el.textContent) || '', '49 ms');
-  });
-
   it('gets field data automatically', async () => {
     await navigateToPerformanceTab();
 
     await setCruxRawResponse('performance/crux-none.rawresponse');
     await goToResource('performance/fake-website.html');
 
-    const manualFetchButton = await waitFor(FIELD_CHECKBOX_SELECTOR);
-    await manualFetchButton.click();
+    const fieldEnableCheckbox = await waitFor<HTMLElement>(FIELD_CHECKBOX_SELECTOR);
+    // TODO: Investigate why the handle `click` doesn't work for Windows.
+    await fieldEnableCheckbox.evaluate(el => el.shadowRoot!.querySelector('input')!.click());
 
     const histograms1 = await $$<HTMLElement>(HISTOGRAM_SELECTOR);
     assert.lengthOf(histograms1, 0);

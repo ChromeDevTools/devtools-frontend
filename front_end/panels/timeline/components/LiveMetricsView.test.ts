@@ -162,7 +162,7 @@ describeWithMockConnection('LiveMetricsView', () => {
     let mockFieldData: CrUXManager.PageResult;
 
     beforeEach(async () => {
-      CrUXManager.CrUXManager.instance().getAutomaticSetting().set(false);
+      CrUXManager.CrUXManager.instance().getEnabledSetting().set(false);
 
       const tabTarget = createTarget({type: SDK.Target.Type.Tab});
       target = createTarget({parentTarget: tabTarget});
@@ -181,7 +181,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       sinon.stub(CrUXManager.CrUXManager.instance(), 'getFieldDataForCurrentPage').callsFake(async () => mockFieldData);
     });
 
-    it('should show when requested manually', async () => {
+    it('should not show when crux is disabled', async () => {
       mockFieldData['url-ALL'] = {
         record: {
           key: {
@@ -215,34 +215,29 @@ describeWithMockConnection('LiveMetricsView', () => {
       const view = new Components.LiveMetricsView.LiveMetricsView();
       renderElementIntoDOM(view);
 
-      const fieldDataCard = view.shadowRoot?.querySelector('#field-setup') as HTMLDivElement;
-
-      (fieldDataCard.querySelector('button') as HTMLButtonElement).click();
       await coordinator.done();
 
-      const lcpHistogramEl = view.shadowRoot?.querySelector('#lcp .field-data-histogram') as HTMLDivElement;
-      assert.strictEqual(
-          lcpHistogramEl.innerText, 'Good (≤2.50 s)\n50%\nNeeds improvement (2.50 s-4.00 s)\n30%\nPoor (>4.00 s)\n20%');
+      const lcpHistogramEl = view.shadowRoot?.querySelector('#lcp .field-data-histogram');
+      assert.isNull(lcpHistogramEl);
 
-      const clsHistogramEl = view.shadowRoot?.querySelector('#cls .field-data-histogram') as HTMLDivElement;
-      assert.strictEqual(
-          clsHistogramEl.innerText, 'Good (≤0.10)\n10%\nNeeds improvement (0.10-0.25)\n10%\nPoor (>0.25)\n80%');
+      const clsHistogramEl = view.shadowRoot?.querySelector('#cls .field-data-histogram');
+      assert.isNull(clsHistogramEl);
 
       const inpHistogramEl = view.shadowRoot?.querySelector('#inp .field-data-histogram');
       assert.isNull(inpHistogramEl);
 
       const lcpFieldEl = view.shadowRoot?.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
-      assert.strictEqual(lcpFieldEl.textContent, '1.00 s');
+      assert.strictEqual(lcpFieldEl.textContent, '-');
 
       const clsFieldEl = view.shadowRoot?.querySelector(`#cls ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
-      assert.strictEqual(clsFieldEl.textContent, '0.25');
+      assert.strictEqual(clsFieldEl.textContent, '-');
 
       const inpFieldEl = view.shadowRoot?.querySelector(`#inp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
       assert.strictEqual(inpFieldEl.textContent, '-');
     });
 
-    it('should show when requested automatically', async () => {
-      CrUXManager.CrUXManager.instance().getAutomaticSetting().set(true);
+    it('should show when crux is enabled', async () => {
+      CrUXManager.CrUXManager.instance().getEnabledSetting().set(true);
 
       const view = new Components.LiveMetricsView.LiveMetricsView();
       renderElementIntoDOM(view);
@@ -308,8 +303,8 @@ describeWithMockConnection('LiveMetricsView', () => {
       assert.strictEqual(inpFieldEl.textContent, '-');
     });
 
-    it('should make initial request on render when set to automatic', async () => {
-      CrUXManager.CrUXManager.instance().getAutomaticSetting().set(true);
+    it('should make initial request on render when crux is enabled', async () => {
+      CrUXManager.CrUXManager.instance().getEnabledSetting().set(true);
 
       mockFieldData['url-ALL'] = {
         record: {
@@ -346,16 +341,57 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       await coordinator.done();
 
-      const lcpHistogramEl = view.shadowRoot?.querySelector('#lcp .field-data-histogram') as HTMLDivElement;
-      assert.strictEqual(
-          lcpHistogramEl.innerText, 'Good (≤2.50 s)\n50%\nNeeds improvement (2.50 s-4.00 s)\n30%\nPoor (>4.00 s)\n20%');
+      const lcpFieldEl1 = view.shadowRoot?.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      assert.strictEqual(lcpFieldEl1.textContent, '1.00 s');
+    });
 
-      const clsHistogramEl = view.shadowRoot?.querySelector('#cls .field-data-histogram') as HTMLDivElement;
-      assert.strictEqual(
-          clsHistogramEl.innerText, 'Good (≤0.10)\n10%\nNeeds improvement (0.10-0.25)\n10%\nPoor (>0.25)\n80%');
+    it('should be removed once crux is disabled', async () => {
+      CrUXManager.CrUXManager.instance().getEnabledSetting().set(true);
 
-      const inpHistogramEl = view.shadowRoot?.querySelector('#inp .field-data-histogram');
-      assert.isNull(inpHistogramEl);
+      mockFieldData['url-ALL'] = {
+        record: {
+          key: {
+            url: 'https://example.com',
+          },
+          metrics: {
+            'largest_contentful_paint': {
+              histogram: [
+                {start: 0, end: 2500, density: 0.5},
+                {start: 2500, end: 4000, density: 0.3},
+                {start: 4000, density: 0.2},
+              ],
+              percentiles: {p75: 1000},
+            },
+            'cumulative_layout_shift': {
+              histogram: [
+                {start: 0, end: 0.1, density: 0.1},
+                {start: 0.1, end: 0.25, density: 0.1},
+                {start: 0.25, density: 0.8},
+              ],
+              percentiles: {p75: 0.25},
+            },
+          },
+          collectionPeriod: {
+            firstDate: {year: 2024, month: 1, day: 1},
+            lastDate: {year: 2024, month: 1, day: 29},
+          },
+        },
+      };
+
+      const view = new Components.LiveMetricsView.LiveMetricsView();
+      renderElementIntoDOM(view);
+
+      await coordinator.done();
+
+      const lcpFieldEl1 = view.shadowRoot?.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      assert.strictEqual(lcpFieldEl1.textContent, '1.00 s');
+
+      CrUXManager.CrUXManager.instance().getEnabledSetting().set(false);
+
+      await coordinator.done();
+
+      const lcpFieldEl2 = view.shadowRoot?.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      assert.strictEqual(lcpFieldEl2.textContent, '-');
     });
   });
 });

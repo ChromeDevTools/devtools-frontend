@@ -91,7 +91,7 @@ export class LiveMetricsView extends HTMLElement {
     const cruxManager = CrUXManager.CrUXManager.instance();
     cruxManager.addEventListener(CrUXManager.Events.FieldDataChanged, this.#onFieldDataChanged, this);
 
-    if (cruxManager.getAutomaticSetting().get()) {
+    if (cruxManager.getEnabledSetting().get()) {
       void this.#refreshFieldDataForCurrentPage();
     }
 
@@ -270,7 +270,7 @@ export class LiveMetricsView extends HTMLElement {
   }
 
   #render = (): void => {
-    const automaticSetting = CrUXManager.CrUXManager.instance().getAutomaticSetting();
+    const automaticSetting = CrUXManager.CrUXManager.instance().getEnabledSetting();
 
     // clang-format off
     const output = html`
@@ -309,7 +309,7 @@ export class LiveMetricsView extends HTMLElement {
             <h3>Next steps</h3>
             <div id="field-setup" class="card">
               <div class="card-title">Field data</div>
-              <button @click=${this.#refreshFieldDataForCurrentPage}>Get field data</button>
+              <div>While DevTools is open, the URLs you visit will be sent to Google to query field data. These requests are not tied to your Google account.</div>
               <${Settings.SettingCheckbox.SettingCheckbox.litTagName} .data=${
                   {setting: automaticSetting} as Settings.SettingCheckbox.SettingCheckboxData}>
               </${Settings.SettingCheckbox.SettingCheckbox.litTagName}>

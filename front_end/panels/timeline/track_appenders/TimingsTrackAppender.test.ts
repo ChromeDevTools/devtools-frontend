@@ -270,8 +270,8 @@ describeWithEnvironment('TimingTrackAppender', function() {
       styleElement.id = 'fake-perf-panel-colors';
       styleElement.textContent = `
         :root {
-          --ref-palette-primary60: rgb(4 4 4);
-          --ref-palette-error40: rgb(10 10 10);
+          --ref-palette-primary70: rgb(4 4 4);
+          --ref-palette-error50: rgb(10 10 10);
         }
       `;
       document.documentElement.appendChild(styleElement);
@@ -304,12 +304,12 @@ describeWithEnvironment('TimingTrackAppender', function() {
       for (const event of extensionMarkers) {
         assert.strictEqual(timingsTrackAppender.titleForEvent(event), event.name);
         if (event.args.color === 'error') {
-          // "error" color category is mapped to --ref-palette-error40
+          // "error" color category is mapped to --ref-palette-error50
           // which is faked out to 10, 10, 10
           assert.strictEqual(timingsTrackAppender.colorForEvent(event), 'rgb(10 10 10)');
         } else {
           // Unknown colors are mapped to "primary" by default, and
-          // "primary" color category is mapped to --ref-palette-primary60
+          // "primary" color category is mapped to --ref-palette-primary70
           // which is faked out to 4, 4, 4
           assert.strictEqual(timingsTrackAppender.colorForEvent(event), 'rgb(4 4 4)');
         }
@@ -330,7 +330,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
         },
         cat: 'devtools.extension',
       } as unknown as TraceModel.Types.TraceEvents.TraceEventData;
-      // "primary" color category is mapped to --ref-palette-primary60
+      // "primary" color category is mapped to --ref-palette-primary70
       // which is faked out to 4, 4, 4
       assert.strictEqual(timingsTrackAppender.colorForEvent(mockExtensionEntryNoColor), 'rgb(4 4 4)');
       assert.strictEqual(timingsTrackAppender.colorForEvent(mockExtensionEntryUnknownColor), 'rgb(4 4 4)');

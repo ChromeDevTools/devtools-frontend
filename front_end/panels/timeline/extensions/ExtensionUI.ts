@@ -9,38 +9,37 @@ export function extensionEntryColor(event: TraceEngine.Types.Extensions.Syntheti
   const color = event.args.color;
   // Use a default value for when the color of the extension entry
   // was not passed or was set an unknown value.
-  let themeColor = '--ref-palette-primary60';
-
+  let themeColor = '--ref-palette-primary70';
   switch (color) {
     case 'primary':
-      themeColor = '--ref-palette-primary60';
+      themeColor = '--ref-palette-primary70';
       break;
     case 'primary-light':
       themeColor = '--ref-palette-primary80';
       break;
     case 'primary-dark':
-      themeColor = '--ref-palette-primary50';
+      themeColor = '--ref-palette-primary60';
       break;
     case 'secondary':
-      themeColor = '--ref-palette-secondary60';
+      themeColor = '--ref-palette-secondary70';
       break;
     case 'secondary-light':
       themeColor = '--ref-palette-secondary80';
       break;
     case 'secondary-dark':
-      themeColor = '--ref-palette-secondary50';
+      themeColor = '--ref-palette-secondary60';
       break;
     case 'tertiary':
-      themeColor = '--ref-palette-tertiary60';
+      themeColor = '--ref-palette-tertiary70';
       break;
     case 'tertiary-light':
       themeColor = '--ref-palette-tertiary80';
       break;
     case 'tertiary-dark':
-      themeColor = '--ref-palette-tertiary50';
+      themeColor = '--ref-palette-tertiary60';
       break;
     case 'error':
-      themeColor = '--ref-palette-error40';
+      themeColor = '--ref-palette-error50';
       break;
   }
   return ThemeSupport.ThemeSupport.instance().getComputedValue(themeColor);

@@ -93,7 +93,7 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
       styleElement.id = 'fake-perf-panel-colors';
       styleElement.textContent = `
         :root {
-          --ref-palette-primary60: rgb(4 4 4);
+          --ref-palette-primary70: rgb(4 4 4);
           --ref-palette-tertiary80: rgb(10 10 10);
         }
       `;
@@ -119,7 +119,7 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
           assert.strictEqual(extensionTrackAppenders[0].colorForEvent(event), 'rgb(10 10 10)');
         } else {
           // Unknown colors are mapped to "primary" by default, and
-          // "primary" color category is mapped to --ref-palette-primary60
+          // "primary" color category is mapped to --ref-palette-primary70
           // which is faked out to 4, 4, 4
           assert.strictEqual(extensionTrackAppenders[0].colorForEvent(event), 'rgb(4 4 4)');
         }
@@ -143,7 +143,7 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
         },
         cat: 'devtools.extension',
       } as unknown as TraceEngine.Types.TraceEvents.TraceEventData;
-      // "primary" color category is mapped to --ref-palette-primary60
+      // "primary" color category is mapped to --ref-palette-primary70
       // which is faked out to 4, 4, 4
       assert.strictEqual(extensionTrackAppenders[0].colorForEvent(mockExtensionEntryNoColor), 'rgb(4 4 4)');
       assert.strictEqual(extensionTrackAppenders[0].colorForEvent(mockExtensionEntryUnknownColor), 'rgb(4 4 4)');

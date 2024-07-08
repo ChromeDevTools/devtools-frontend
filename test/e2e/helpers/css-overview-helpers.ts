@@ -5,6 +5,7 @@
 import {$, click, waitFor, waitForNone} from '../../shared/helper.js';
 
 import {openPanelViaMoreTools} from './settings-helpers.js';
+import {expectVeEvents, veClick, veImpression, veImpressionsUnder} from './visual-logging-helpers.js';
 
 const CSS_OVERVIEW_PANEL_CONTENT = '.view-container[aria-label="CSS overview panel"]';
 const CSS_OVERVIEW_TAB_SELECTOR = '#tab-cssoverview';
@@ -32,6 +33,7 @@ export async function cssOverviewTabDoesNotExist() {
 
 export async function cssOverviewPanelContentIsLoaded() {
   await waitFor(CSS_OVERVIEW_PANEL_CONTENT);
+  await expectVeEvents([veImpressionForCssOverviewPanel()]);
 }
 
 export async function openCSSOverviewPanelFromMoreTools() {
@@ -43,4 +45,28 @@ export async function openCSSOverviewPanelFromMoreTools() {
 export async function startCaptureCSSOverview() {
   await click(CSS_OVERVIEW_CAPTURE_BUTTON_SELECTOR);
   await waitFor(CSS_OVERVIEW_COMPLETED_VIEW_SELECTOR);
+  await expectVeEvents([
+    veClick('Panel: css-overview > Action: css-overview.capture-overview'),
+    veImpressionsUnder(
+        'Panel: css-overview',
+        [
+          veImpression('Action', 'css-overview.clear-overview'),
+          veImpression('Action', 'css-overview.color'),
+          veImpression('Action', 'css-overview.contrast'),
+          veImpression('Item', 'css-overview.colors'),
+          veImpression('Item', 'css-overview.font-info'),
+          veImpression('Item', 'css-overview.media-queries'),
+          veImpression('Item', 'css-overview.summary'),
+          veImpression('Item', 'css-overview.unused-declarations'),
+        ]),
+  ]);
+}
+
+function veImpressionForCssOverviewPanel() {
+  return veImpression('Panel', 'css-overview', [
+    veImpression('Action', 'css-overview.capture-overview'),
+    veImpression('Action', 'feedback'),
+    veImpression('Link', 'css-overview.quick-start'),
+    veImpression('Link', 'feedback'),
+  ]);
 }

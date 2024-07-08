@@ -7,15 +7,14 @@ import {assert} from 'chai';
 import {click, getBrowserAndPages, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
-  doubleClickSourceTreeItem,
   getPieChartLegendRows,
   getQuotaUsage,
   navigateToApplicationTab,
+  navigateToStorage,
   waitForQuotaUsage,
 } from '../helpers/application-helpers.js';
 
 // The parent suffix makes sure we wait for the Cookies item to have children before trying to click it.
-const STORAGE_SELECTOR = '[aria-label="Storage"]';
 const CLEAR_SITE_DATA_BUTTON_SELECTOR = '#storage-view-clear-button';
 
 describe('The Application Tab', () => {
@@ -25,7 +24,7 @@ describe('The Application Tab', () => {
     beforeEach(async () => {
       const {target} = getBrowserAndPages();
       await navigateToApplicationTab(target, 'storage-quota');
-      await doubleClickSourceTreeItem(STORAGE_SELECTOR);
+      await navigateToStorage();
     });
 
     it('which clears storage correctly using the clear button', async () => {

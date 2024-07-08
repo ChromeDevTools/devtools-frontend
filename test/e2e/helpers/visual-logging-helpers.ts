@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
+import {renderCoordinatorQueueEmpty} from '../../shared/helper.js';
 
 // Corresponds to the type in front_end/ui/visual_logging/Debugging.ts
 type TestImpressionLogEntry = {
@@ -191,6 +192,7 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]) {
   collapseConsecutiveImpressions(expectedEvents);
 
   const {frontend} = getBrowserAndPages();
+  await renderCoordinatorQueueEmpty();
   const actualEvents =
       // @ts-ignore
       await frontend.evaluate(async () => (await globalThis.getVeDebugEventsLog()) as unknown as TestLogEntry[]);

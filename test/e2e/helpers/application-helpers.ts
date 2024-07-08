@@ -32,10 +32,15 @@ export async function navigateToApplicationTab(_target: puppeteer.Page, testName
 export async function navigateToServiceWorkers() {
   const SERVICE_WORKER_ROW_SELECTOR = '[aria-label="Service workers"]';
   await click(SERVICE_WORKER_ROW_SELECTOR);
+  await waitFor('.service-worker-list');
+  await expectVeEvents([
+    veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: application > TreeItem: service-workers'),
+    veImpressionsUnder('Panel: resources', [veImpressionForServiceWorkersView()]),
+  ]);
 }
 
 export async function navigateToFrame(name: string) {
-  await doubleClickSourceTreeItem(`[aria-label="${name}"]`);
+  await doubleClickTreeItem(`[aria-label="${name}"]`);
   await waitFor('[title="Click to reveal in Sources panel"]');
   await expectVeEvents([
     veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: frames > TreeItem: frame'),
@@ -50,8 +55,18 @@ export async function navigateToManifestInApplicationTab(testName: string) {
   await click(MANIFEST_SELECTOR);
 }
 
+export async function navigateToStorage() {
+  const STORAGE_SELECTOR = '[aria-label="Storage"]';
+  await click(STORAGE_SELECTOR);
+  await waitFor('.clear-storage-button');
+  await expectVeEvents([
+    veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: application > TreeItem: storage'),
+    veImpressionsUnder('Panel: resources', [veImpressionForStorageOverview()]),
+  ]);
+}
+
 export async function navigateToOpenedWindows() {
-  await doubleClickSourceTreeItem('[aria-label="Opened Windows"]');
+  await doubleClickTreeItem('[aria-label="Opened Windows"]');
   await waitFor('.empty-view');
   await expectVeEvents([
     veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: frames > TreeItem: frame > TreeItem: opened-windows'),
@@ -65,7 +80,7 @@ export async function navigateToWebWorkers() {
   await expectVeEvents([veImpressionsUnder(
       'Panel: resources > Pane: sidebar > Tree > TreeItem: frames > TreeItem: frame',
       [veImpression('TreeItem', 'web-workers')])]);
-  await doubleClickSourceTreeItem(WEB_WORKERS_SELECTOR);
+  await doubleClickTreeItem(WEB_WORKERS_SELECTOR);
   await waitFor(`${WEB_WORKERS_SELECTOR} + ol li:first-child`);
   await waitFor('.empty-view');
   await expectVeEvents([
@@ -79,7 +94,7 @@ export async function navigateToFrameServiceWorkers(frameName: string) {
   await navigateToFrame(frameName);
   const SERVICE_WORKERS_SELECTOR = `[aria-label="${frameName}"] ~ ol [aria-label="Service workers"]`;
 
-  await doubleClickSourceTreeItem(SERVICE_WORKERS_SELECTOR);
+  await doubleClickTreeItem(SERVICE_WORKERS_SELECTOR);
   await waitFor(`${SERVICE_WORKERS_SELECTOR} + ol li:first-child`);
   await waitFor('.empty-view');
   await expectVeEvents([
@@ -93,8 +108,8 @@ export async function navigateToCookiesForTopDomain() {
   // The parent suffix makes sure we wait for the Cookies item to have children before trying to click it.
   const COOKIES_SELECTOR = '[aria-label="Cookies"].parent';
   const DOMAIN_SELECTOR = `${COOKIES_SELECTOR} + ol > [aria-label="https://localhost:${getTestServerPort()}"]`;
-  await doubleClickSourceTreeItem(COOKIES_SELECTOR);
-  await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
+  await doubleClickTreeItem(COOKIES_SELECTOR);
+  await doubleClickTreeItem(DOMAIN_SELECTOR);
 
   await expectVeEvents([
     veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: cookies'),
@@ -116,8 +131,8 @@ export async function navigateToCookiesForTopDomain() {
 export async function navigateToSessionStorageForTopDomain() {
   const SESSION_STORAGE_SELECTOR = '[aria-label="Session storage"].parent';
   const DOMAIN_SELECTOR = `${SESSION_STORAGE_SELECTOR} + ol > [aria-label="https://localhost:${getTestServerPort()}"]`;
-  await doubleClickSourceTreeItem(SESSION_STORAGE_SELECTOR);
-  await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
+  await doubleClickTreeItem(SESSION_STORAGE_SELECTOR);
+  await doubleClickTreeItem(DOMAIN_SELECTOR);
 
   await expectVeEvents([
     veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage'),
@@ -139,9 +154,9 @@ export async function navigateToSessionStorageForTopDomain() {
 const SHARED_STORAGE_SELECTOR = '[aria-label="Shared storage"].parent';
 
 export async function navigateToSharedStorage() {
-  await doubleClickSourceTreeItem(SHARED_STORAGE_SELECTOR);
+  await doubleClickTreeItem(SHARED_STORAGE_SELECTOR);
   await waitFor('devtools-shared-storage-access-grid');
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  // await new Promise(resolve => setTimeout(resolve, 1000));
   await expectVeEvents([
     veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: shared-storage'),
     veImpressionsUnder(
@@ -152,8 +167,8 @@ export async function navigateToSharedStorage() {
 export async function navigateToSharedStorageForTopDomain() {
   await navigateToSharedStorage();
   const DOMAIN_SELECTOR = `${SHARED_STORAGE_SELECTOR} + ol > [aria-label="https://localhost:${getTestServerPort()}"]`;
-  await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await doubleClickTreeItem(DOMAIN_SELECTOR);
+  // await new Promise(resolve => setTimeout(resolve, 1000));
   await expectVeEvents([
     veClick(
         'Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: shared-storage > TreeItem: shared-storage-instance'),
@@ -161,7 +176,7 @@ export async function navigateToSharedStorageForTopDomain() {
   ]);
 }
 
-export async function doubleClickSourceTreeItem(selector: string) {
+async function doubleClickTreeItem(selector: string) {
   const element = await waitFor(selector);
   element.evaluate(el => el.scrollIntoView(true));
   await click(selector, {clickOptions: {clickCount: 2}});
@@ -314,6 +329,7 @@ export async function unregisterServiceWorker() {
   await click(UNREGISTER_SERVICE_WORKER_SELECTOR);
   await waitForNone(UNREGISTER_SERVICE_WORKER_SELECTOR);
 }
+
 export function veImpressionForApplicationPanel() {
   return veImpression('Panel', 'resources', [
     veImpression('Pane', 'sidebar', [
@@ -422,5 +438,57 @@ function veImpressionForSharedStorageView() {
     veImpression('TableHeader', 'value'),
     veImpression('Action', 'reset-entropy-budget'),
     veImpression('Pane', 'preview', [veImpression('Section', 'json-view')]),
+  ]);
+}
+
+function veImpressionForServiceWorkersView() {
+  return veImpression('Pane', 'service-workers', [
+    veImpression('Section', 'other-origin', [veImpression('Link', 'view-all')]),
+    veImpression(
+        'Section', 'this-origin',
+        [
+          veImpression('Action', 'periodic-sync-tag'),
+          veImpression('Action', 'push-message'),
+          veImpression('Action', 'show-network-requests'),
+          veImpression('Action', 'sync-tag'),
+          veImpression('Action', 'unregister'),
+          veImpression('Action', 'update'),
+          veImpression('Link', 'source-location'),
+          veImpression('TextField', 'periodic-sync-tag'),
+          veImpression('TextField', 'push-message'),
+          veImpression('TextField', 'sync-tag'),
+          veImpression('Toggle', 'bypass-service-worker'),
+          veImpression('Toggle', 'disconnect-from-network'),
+          veImpression('Toggle', 'service-worker-update-on-reload'),
+          veImpression('Tree', 'update-timing-table'),
+        ]),
+  ]);
+}
+
+function veImpressionForStorageOverview() {
+  return veImpression('Pane', 'clear-storage', [
+    veImpression('Action', 'storage.clear-site-data'),
+    veImpression('Section', 'application', [veImpression('Toggle', 'clear-storage-service-workers')]),
+    veImpression(
+        'Section', 'storage',
+        [
+          veImpression('Toggle', 'clear-storage-cache-storage'),
+          veImpression('Toggle', 'clear-storage-cookies'),
+          veImpression('Toggle', 'clear-storage-indexeddb'),
+          veImpression('Toggle', 'clear-storage-local-storage'),
+          veImpression('Toggle', 'clear-storage-websql'),
+        ]),
+    veImpression(
+        'Section', 'usage',
+        [
+          veImpression('Link', 'learn-more'),
+          veImpression(
+              'PieChart', undefined,
+              [
+                veImpression('Section', 'legend', [veImpression('PieChartTotal', 'select-total')]),
+              ]),
+          veImpression('Toggle', 'simulate-custom-quota'),
+        ]),
+    veImpression('Toggle', 'clear-storage-include-third-party-cookies'),
   ]);
 }

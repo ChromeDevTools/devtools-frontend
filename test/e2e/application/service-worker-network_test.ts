@@ -5,15 +5,14 @@ import {unregisterAllServiceWorkers} from '../../conductor/hooks.js';
 import {click, getBrowserAndPages, step} from '../../shared/helper.js';
 import {beforeEach, describe, it} from '../../shared/mocha-extensions.js';
 import {
-  doubleClickSourceTreeItem,
   navigateToApplicationTab,
+  navigateToServiceWorkers,
   unregisterServiceWorker,
 } from '../helpers/application-helpers.js';
 import {tabExistsInDrawer, tabExistsInMainPanel} from '../helpers/cross-tool-helper.js';
 import {closeDrawer} from '../helpers/quick_open-helpers.js';
 
 const NETWORK_TAB_SELECTOR = '#tab-network';
-const SERVICE_WORKER_ROW_SELECTOR = '[aria-label="Service workers"]';
 const TEST_HTML_FILE = 'service-worker-network';
 const SERVICE_WORKER_NETWORK_SELECTOR = '[title="Network requests"]';
 
@@ -21,7 +20,7 @@ describe('The Application Tab', () => {
   beforeEach(async () => {
     const {target} = getBrowserAndPages();
     await navigateToApplicationTab(target, TEST_HTML_FILE);
-    await doubleClickSourceTreeItem(SERVICE_WORKER_ROW_SELECTOR);
+    await navigateToServiceWorkers();
   });
 
   afterEach(async () => {

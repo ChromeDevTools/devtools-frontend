@@ -67,14 +67,19 @@ export interface SyntheticExtensionMarker extends SyntheticTraceEntry {
 
 export type SyntheticExtensionEntry = SyntheticExtensionTrackChartEntry|SyntheticExtensionMarker;
 
-export function isExtensionPayloadMarker(payload: ExtensionDataPayload): payload is ExtensionMarkerPayload {
+export function isExtensionPayloadMarker(payload: {dataType?: string}): payload is ExtensionMarkerPayload {
   return payload.dataType === 'marker';
 }
 
-export function isExtensionPayloadTrackEntry(payload: ExtensionDataPayload): payload is ExtensionTrackEntryPayload {
+export function isExtensionPayloadTrackEntry(payload: {track?: string, dataType?: string}):
+    payload is ExtensionTrackEntryPayload {
   const hasTrack = 'track' in payload && Boolean(payload.track);
   const validEntryType = payload.dataType === 'track-entry' || payload.dataType === undefined;
   return validEntryType && hasTrack;
+}
+
+export function isValidExtensionPayload(payload: {track?: string, dataType?: string}): payload is ExtensionDataPayload {
+  return isExtensionPayloadMarker(payload) || isExtensionPayloadTrackEntry(payload);
 }
 
 export function isSyntheticExtensionEntry(entry: TraceEventData): entry is SyntheticExtensionEntry {

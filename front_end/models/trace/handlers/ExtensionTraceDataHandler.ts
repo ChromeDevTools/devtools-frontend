@@ -96,6 +96,9 @@ export function extensionDataInTiming(timing: Types.TraceEvents.SyntheticUserTim
     if (!('devtools' in detailObj)) {
       return null;
     }
+    if (!Types.Extensions.isValidExtensionPayload(detailObj.devtools)) {
+      return null;
+    }
     return detailObj.devtools;
   } catch (e) {
     // No need to worry about this error, just discard this event and don't

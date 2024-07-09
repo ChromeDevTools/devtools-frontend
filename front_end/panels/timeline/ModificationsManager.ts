@@ -147,6 +147,10 @@ export class ModificationsManager extends EventTarget {
     return null;
   }
 
+  getAnnotations(): TraceEngine.Types.File.Annotation[] {
+    return [...this.#overlayForAnnotation.keys()];
+  }
+
   /**
    * Builds all modifications into a serializable object written into
    * the 'modifications' trace file metadata field.

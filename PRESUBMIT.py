@@ -566,6 +566,7 @@ def _CannedChecks(canned_checks):
                   source_file_filter=lambda file: not file.LocalPath().
                   startswith('node_modules')),
         canned_checks.CheckGenderNeutral,
+        canned_checks.CheckDoNotSubmitInFiles,
     ]
 
 

@@ -210,6 +210,19 @@ c`;
           },
       );
     });
+
+    it('parses a response as an answer', async () => {
+      assert.deepStrictEqual(
+          FreestylerAgent.parseResponse(
+              'This is also an answer',
+              ),
+          {
+            action: undefined,
+            thought: undefined,
+            answer: 'This is also an answer',
+          },
+      );
+    });
   });
 
   describe('buildRequest', () => {

@@ -213,6 +213,11 @@ export class FreestylerAgent {
         i++;
       }
     }
+    // If we could not parse the parts, consider the response to be an
+    // answer.
+    if (!answer && !thought && !action) {
+      answer = response;
+    }
     return {thought, action, answer};
   }
 

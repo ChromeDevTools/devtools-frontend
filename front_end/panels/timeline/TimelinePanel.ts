@@ -417,11 +417,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.#sideBar.setMainWidget(this.timelinePane);
     this.#sideBar.show(this.element);
+    this.#sideBar.hideSidebar();
 
     this.#sideBar.addEventListener(
         TimelineComponents.Sidebar.WidgetEvents.SidebarCollapseClick,
         this.#hideSidebar.bind(this),
     );
+    this.#sideBar.contentElement.addEventListener(
+        TimelineComponents.Sidebar.ToggleSidebarInsights.eventName, this.#sidebarInsightEnabled.bind(this));
 
     this.onModeChanged();
     this.populateToolbar();
@@ -457,14 +460,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       },
       targetRemoved: (_: SDK.Target.Target) => {},
     });
-
-    this.#sideBar.setMainWidget(this.timelinePane);
-    this.#sideBar.show(this.element);
-    this.#sideBar.contentElement.addEventListener(
-        TimelineComponents.Sidebar.ToggleSidebarInsights.eventName, this.#sidebarInsightEnabled.bind(this));
   }
 
   #showSidebar(): void {
+    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SIDEBAR)) {
+      return;
+    }
     this.#sideBar.showBoth();
     this.#sideBar.updateContentsOnExpand();
     this.#sideBar.setResizable(false);
@@ -473,6 +474,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   #hideSidebar(): void {
+    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SIDEBAR)) {
+      return;
+    }
     this.#minimapComponent.showSidebarFloatingIcon();
     this.#sideBar.hideSidebar();
   }

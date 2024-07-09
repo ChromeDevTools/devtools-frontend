@@ -12,7 +12,7 @@ let runningServer: ChildProcess;
 
 // Starts a hosted mode server on any available port and returns the port number
 // once the server is ready to receive requests.
-export function startServer(server: 'hosted-mode'|'component-docs'): Promise<number> {
+export function startServer(server: 'hosted-mode'|'component-docs', commandLineArgs: string[]): Promise<number> {
   if (runningServer) {
     throw new Error('Server was already started.');
   }
@@ -33,7 +33,7 @@ export function startServer(server: 'hosted-mode'|'component-docs'): Promise<num
     // used back to us. For parallel test mode, we need to avoid specifying a
     // port directly and instead request any free port, which is what port 0
     // signifies to the OS.
-    const processArguments = [serverExecutable];
+    const processArguments = [serverExecutable, ...commandLineArgs];
     // The component docs server can take extra flags to configure it, so we
     // allow those to be set via an environment variable.
     const extraFlags = process.env.TEST_SERVER_COMMAND_LINE_FLAGS;

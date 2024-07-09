@@ -56,7 +56,11 @@ export async function mochaGlobalSetup(this: Mocha.Suite) {
   if (DERIVED_SERVER_TYPE === 'none') {
     return;
   }
-  process.env.testServerPort = String(await startServer(DERIVED_SERVER_TYPE));
+  const commandLineArgs = [];
+  if (TestConfig.coverage) {
+    commandLineArgs.push('--coverage');
+  }
+  process.env.testServerPort = String(await startServer(DERIVED_SERVER_TYPE, commandLineArgs));
   console.log(`Started ${DERIVED_SERVER_TYPE} server on port ${process.env.testServerPort}`);
 }
 
@@ -67,9 +71,7 @@ export function mochaGlobalTeardown() {
 
 const testSuiteCoverageMap = createCoverageMap();
 
-const testsRunWithCoverageEnvSet = Boolean(process.env.COVERAGE || process.env.COVERAGE_FOLDERS || TestConfig.coverage);
-
-const SHOULD_GATHER_COVERAGE_INFORMATION = testsRunWithCoverageEnvSet && DERIVED_SERVER_TYPE === 'component-docs';
+const SHOULD_GATHER_COVERAGE_INFORMATION = TestConfig.coverage && DERIVED_SERVER_TYPE === 'component-docs';
 const INTERACTIONS_COVERAGE_LOCATION = path.join(TestConfig.artifactsDir, 'interactions-coverage/');
 
 let didPauseAtBeginning = false;

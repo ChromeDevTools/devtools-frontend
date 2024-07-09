@@ -272,8 +272,6 @@ const COVERAGE_INSTRUMENTER = createInstrumenter({
 
 const instrumentedSourceCacheForFilePaths = new Map();
 
-const SHOULD_GATHER_COVERAGE_INFORMATION = process.env.COVERAGE === '1';
-
 /**
  * @param {http.IncomingMessage} request
  * @param {http.ServerResponse} response
@@ -401,7 +399,7 @@ async function requestHandler(request, response) {
     let fileContents = await fs.promises.readFile(fullPath, encoding);
     const isComputingCoverageRequest = request.headers['devtools-compute-coverage'] === '1';
 
-    if (SHOULD_GATHER_COVERAGE_INFORMATION && fullPath.endsWith('.js') && filePath.startsWith('/front_end/') &&
+    if (argv.coverage && fullPath.endsWith('.js') && filePath.startsWith('/front_end/') &&
         isIncludedForCoverageComputation(filePath)) {
       const previouslyGeneratedInstrumentedSource = instrumentedSourceCacheForFilePaths.get(fullPath);
 

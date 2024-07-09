@@ -66,7 +66,10 @@ devtools_entrypoint("meta") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "CommandMenu.test.ts" ]
+  sources = [
+    "CommandMenu.test.ts",
+    "FilteredListWidget.test.ts",
+  ]
 
   deps = [
     ":bundle",

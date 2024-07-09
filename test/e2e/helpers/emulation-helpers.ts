@@ -29,6 +29,7 @@ const TEST_DEVICE_MENU_ITEM_SELECTOR = '[aria-label*="Test device, unchecked"]';
 const DUAL_SCREEN_BUTTON_SELECTOR = '[aria-label="Toggle dual-screen mode"]';
 const DEVICE_POSTURE_DROPDOWN_SELECTOR = '[aria-label="Device posture"]';
 const SCREEN_DIM_INPUT_SELECTOR = '[title="Width"]';
+const AUTO_AUTO_ADJUST_ZOOM_SELECTOR = '[aria-label*="Auto-adjust zoom"]';
 
 export const reloadDockableFrontEnd = async () => {
   await reloadDevTools({canDock: true});
@@ -85,6 +86,11 @@ export const clickZoomDropDown = async () => {
   await click(ZOOM_LIST_DROPDOWN_SELECTOR, {root: toolbar});
 };
 
+export const clickWidthInput = async () => {
+  const toolbar = await waitFor(DEVICE_TOOLBAR_SELECTOR);
+  await click(SCREEN_DIM_INPUT_SELECTOR, {root: toolbar});
+};
+
 export const selectToggleButton = async () => {
   // button that toggles between single and double screen.
   const toggleButton = await $(DUAL_SCREEN_BUTTON_SELECTOR) as puppeteer.ElementHandle<HTMLButtonElement>;
@@ -138,6 +144,17 @@ export const getWidthOfDevice = async () => {
   // Read the width of spanned duo to make sure spanning works.
   const widthInput = await waitFor(SCREEN_DIM_INPUT_SELECTOR);
   return widthInput.evaluate(e => (e as HTMLInputElement).value);
+};
+
+export const getZoom = async () => {
+  // Read the width of spanned duo to make sure spanning works.
+  const widthInput = await waitFor(ZOOM_LIST_DROPDOWN_SELECTOR);
+  return widthInput.evaluate(e => (e as HTMLInputElement).innerText);
+};
+
+export const toggleAutoAdjustZoom = async () => {
+  await clickZoomDropDown();
+  await click(AUTO_AUTO_ADJUST_ZOOM_SELECTOR);
 };
 
 const IPAD_MENU_ITEM_SELECTOR = '[aria-label*="iPad"]';

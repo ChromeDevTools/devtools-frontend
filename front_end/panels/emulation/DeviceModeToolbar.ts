@@ -262,12 +262,20 @@ export class DeviceModeToolbar {
     this.widthInput = new EmulationComponents.DeviceSizeInputElement.SizeInputElement(
         i18nString(UIStrings.width), {jslogContext: 'width'});
     this.widthInput.addEventListener('sizechanged', ({size: width}) => {
-      this.model.setWidthAndScaleToFit(width);
+      if (this.autoAdjustScaleSetting.get()) {
+        this.model.setWidthAndScaleToFit(width);
+      } else {
+        this.model.setWidth(width);
+      }
     });
     this.heightInput = new EmulationComponents.DeviceSizeInputElement.SizeInputElement(
         i18nString(UIStrings.heightLeaveEmptyForFull), {jslogContext: 'height'});
     this.heightInput.addEventListener('sizechanged', ({size: height}) => {
-      this.model.setHeightAndScaleToFit(height);
+      if (this.autoAdjustScaleSetting.get()) {
+        this.model.setHeightAndScaleToFit(height);
+      } else {
+        this.model.setHeight(height);
+      }
     });
     this.fillMainToolbar(mainToolbar);
 

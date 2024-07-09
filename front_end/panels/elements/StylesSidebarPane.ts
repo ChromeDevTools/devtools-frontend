@@ -109,15 +109,17 @@ const UIStrings = {
   /**
    *@description Title of  in styles sidebar pane of the elements panel
    *@example {Ctrl} PH1
+   *@example {Alt} PH2
    */
   incrementdecrementWithMousewheelOne:
-      'Increment/decrement with mousewheel or up/down keys. {PH1}: R ±1, Shift: G ±1, Alt: B ±1',
+      'Increment/decrement with mousewheel or up/down keys. {PH1}: R ±1, Shift: G ±1, {PH2}: B ±1',
   /**
    *@description Title of  in styles sidebar pane of the elements panel
    *@example {Ctrl} PH1
+   *@example {Alt} PH2
    */
   incrementdecrementWithMousewheelHundred:
-      'Increment/decrement with mousewheel or up/down keys. {PH1}: ±100, Shift: ±10, Alt: ±0.1',
+      'Increment/decrement with mousewheel or up/down keys. {PH1}: ±100, Shift: ±10, {PH2}: ±0.1',
   /**
    *@description Announcement string for invalid properties.
    *@example {Invalid property value} PH1
@@ -1895,11 +1897,14 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       if (treeElement && treeElement.valueElement) {
         const cssValueText = treeElement.valueElement.textContent;
         const cmdOrCtrl = Host.Platform.isMac() ? 'Cmd' : 'Ctrl';
+        const optionOrAlt = Host.Platform.isMac() ? 'Option' : 'Alt';
         if (cssValueText !== null) {
           if (cssValueText.match(/#[\da-f]{3,6}$/i)) {
-            this.setTitle(i18nString(UIStrings.incrementdecrementWithMousewheelOne, {PH1: cmdOrCtrl}));
+            this.setTitle(
+                i18nString(UIStrings.incrementdecrementWithMousewheelOne, {PH1: cmdOrCtrl, PH2: optionOrAlt}));
           } else if (cssValueText.match(/\d+/)) {
-            this.setTitle(i18nString(UIStrings.incrementdecrementWithMousewheelHundred, {PH1: cmdOrCtrl}));
+            this.setTitle(
+                i18nString(UIStrings.incrementdecrementWithMousewheelHundred, {PH1: cmdOrCtrl, PH2: optionOrAlt}));
           }
         }
       }

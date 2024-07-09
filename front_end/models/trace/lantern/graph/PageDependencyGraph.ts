@@ -117,7 +117,7 @@ class PageDependencyGraph {
   static assertHasToplevelEvents(events: Lantern.TraceEvent[]): void {
     const hasToplevelTask = events.some(this.isScheduleableTask);
     if (!hasToplevelTask) {
-      throw new Error('Could not find any top level events');
+      throw new Core.LanternError('Could not find any top level events');
     }
   }
 
@@ -521,27 +521,27 @@ class PageDependencyGraph {
     const cpuNodes = PageDependencyGraph.getCPUNodes(mainThreadEvents);
     const {requestedUrl, mainDocumentUrl} = url;
     if (!requestedUrl) {
-      throw new Error('requestedUrl is required to get the root request');
+      throw new Core.LanternError('requestedUrl is required to get the root request');
     }
     if (!mainDocumentUrl) {
-      throw new Error('mainDocumentUrl is required to get the main resource');
+      throw new Core.LanternError('mainDocumentUrl is required to get the main resource');
     }
 
     const rootRequest = Core.NetworkAnalyzer.findResourceForUrl(networkRequests, requestedUrl);
     if (!rootRequest) {
-      throw new Error('rootRequest not found');
+      throw new Core.LanternError('rootRequest not found');
     }
     const rootNode = networkNodeOutput.idToNodeMap.get(rootRequest.requestId);
     if (!rootNode) {
-      throw new Error('rootNode not found');
+      throw new Core.LanternError('rootNode not found');
     }
     const mainDocumentRequest = Core.NetworkAnalyzer.findLastDocumentForUrl(networkRequests, mainDocumentUrl);
     if (!mainDocumentRequest) {
-      throw new Error('mainDocumentRequest not found');
+      throw new Core.LanternError('mainDocumentRequest not found');
     }
     const mainDocumentNode = networkNodeOutput.idToNodeMap.get(mainDocumentRequest.requestId);
     if (!mainDocumentNode) {
-      throw new Error('mainDocumentNode not found');
+      throw new Core.LanternError('mainDocumentNode not found');
     }
 
     PageDependencyGraph.linkNetworkNodes(rootNode, networkNodeOutput);
@@ -549,7 +549,7 @@ class PageDependencyGraph {
     mainDocumentNode.setIsMainDocument(true);
 
     if (NetworkNode.hasCycle(rootNode)) {
-      throw new Error('Invalid dependency graph created, cycle detected');
+      throw new Core.LanternError('Invalid dependency graph created, cycle detected');
     }
 
     return rootNode;

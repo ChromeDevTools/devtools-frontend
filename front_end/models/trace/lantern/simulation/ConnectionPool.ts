@@ -70,7 +70,7 @@ export class ConnectionPool {
       }
 
       if (!connections.length) {
-        throw new Error(`Could not find a connection for origin: ${origin}`);
+        throw new Core.LanternError(`Could not find a connection for origin: ${origin}`);
       }
 
       // Make sure each origin has minimum number of connections available for max throughput.
@@ -111,7 +111,7 @@ export class ConnectionPool {
    */
   acquire(request: Lantern.NetworkRequest): TCPConnection|null {
     if (this._connectionsByRequest.has(request)) {
-      throw new Error('Record already has a connection');
+      throw new Core.LanternError('Record already has a connection');
     }
 
     const origin = request.parsedURL.securityOrigin;
@@ -134,7 +134,7 @@ export class ConnectionPool {
   acquireActiveConnectionFromRequest(request: Lantern.NetworkRequest): TCPConnection {
     const activeConnection = this._connectionsByRequest.get(request);
     if (!activeConnection) {
-      throw new Error('Could not find an active connection for request');
+      throw new Core.LanternError('Could not find an active connection for request');
     }
 
     return activeConnection;

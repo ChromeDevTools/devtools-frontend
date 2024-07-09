@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Core from '../core/core.js';
 import * as Graph from '../graph/graph.js';
 import type * as Simulation from '../simulation/simulation.js';
 
@@ -48,7 +49,7 @@ class Interactive extends Metric {
 
   static override getEstimateFromSimulation(simulationResult: Simulation.Result, extras: Extras): Simulation.Result {
     if (!extras.lcpResult) {
-      throw new Error('missing lcpResult');
+      throw new Core.LanternError('missing lcpResult');
     }
 
     const lastTaskAt = Interactive.getLastLongTaskEndTime(simulationResult.nodeTimings);
@@ -64,7 +65,7 @@ class Interactive extends Metric {
       Promise<MetricResult> {
     const lcpResult = extras?.lcpResult;
     if (!lcpResult) {
-      throw new Error('LCP is required to calculate the Interactive metric');
+      throw new Core.LanternError('LCP is required to calculate the Interactive metric');
     }
 
     const metricResult = await super.compute(data, extras);

@@ -81,7 +81,7 @@ class LargestContentfulPaint extends Metric {
       Promise<MetricResult> {
     const fcpResult = extras?.fcpResult;
     if (!fcpResult) {
-      throw new Error('FCP is required to calculate the LCP metric');
+      throw new Core.LanternError('FCP is required to calculate the LCP metric');
     }
 
     const metricResult = await super.compute(data, extras);

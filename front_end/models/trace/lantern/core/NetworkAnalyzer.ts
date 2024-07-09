@@ -4,6 +4,8 @@
 
 import type * as Lantern from '../types/types.js';
 
+import {LanternError} from './LanternError.js';
+
 class UrlUtils {
   /**
    * There is fancy URL rewriting logic for the chrome://settings page that we need to work around.
@@ -458,7 +460,7 @@ class NetworkAnalyzer {
     }
 
     if (!estimatesByOrigin.size) {
-      throw new Error('No timing information available');
+      throw new LanternError('No timing information available');
     }
     return NetworkAnalyzer.summarize(estimatesByOrigin);
   }

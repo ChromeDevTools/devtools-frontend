@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Core from '../core/core.js';
 import * as Graph from '../graph/graph.js';
 import type * as Simulation from '../simulation/simulation.js';
 
@@ -32,7 +33,7 @@ class MaxPotentialFID extends Metric {
 
   static override getEstimateFromSimulation(simulation: Simulation.Result, extras: Extras): Simulation.Result {
     if (!extras.fcpResult) {
-      throw new Error('missing fcpResult');
+      throw new Core.LanternError('missing fcpResult');
     }
 
     // Intentionally use the opposite FCP estimate, a more pessimistic FCP means that more tasks
@@ -55,7 +56,7 @@ class MaxPotentialFID extends Metric {
       Promise<MetricResult> {
     const fcpResult = extras?.fcpResult;
     if (!fcpResult) {
-      throw new Error('FCP is required to calculate the Max Potential FID metric');
+      throw new Core.LanternError('FCP is required to calculate the Max Potential FID metric');
     }
 
     return super.compute(data, extras);

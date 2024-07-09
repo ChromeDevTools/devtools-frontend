@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Core from '../core/core.js';
 import * as Graph from '../graph/graph.js';
 import type * as Simulation from '../simulation/simulation.js';
 
@@ -59,10 +60,10 @@ class SpeedIndex extends Metric {
 
   static override getEstimateFromSimulation(simulationResult: Simulation.Result, extras: Extras): Simulation.Result {
     if (!extras.fcpResult) {
-      throw new Error('missing fcpResult');
+      throw new Core.LanternError('missing fcpResult');
     }
     if (extras.observedSpeedIndex === undefined) {
-      throw new Error('missing observedSpeedIndex');
+      throw new Core.LanternError('missing observedSpeedIndex');
     }
 
     const fcpTimeInMs = extras.fcpResult.pessimisticEstimate.timeInMs;
@@ -79,7 +80,7 @@ class SpeedIndex extends Metric {
       Promise<MetricResult> {
     const fcpResult = extras?.fcpResult;
     if (!fcpResult) {
-      throw new Error('FCP is required to calculate the SpeedIndex metric');
+      throw new Core.LanternError('FCP is required to calculate the SpeedIndex metric');
     }
 
     const metricResult = await super.compute(data, extras);

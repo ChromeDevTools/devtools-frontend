@@ -10,6 +10,7 @@
  * as nodes are queued, partially simulated, and completed.
  */
 
+import * as Core from '../core/core.js';
 import * as Graph from '../graph/graph.js';
 
 interface NodeTimingComplete {
@@ -127,7 +128,7 @@ class SimulatorTimingMap {
   getQueued(node: Graph.Node): NodeTimingData {
     const timing = this._nodeTimings.get(node);
     if (!timing) {
-      throw new Error(`Node ${node.id} not yet queued`);
+      throw new Core.LanternError(`Node ${node.id} not yet queued`);
     }
     return timing;
   }
@@ -135,13 +136,13 @@ class SimulatorTimingMap {
   getCpuStarted(node: Graph.CPUNode): CpuNodeTimingStarted {
     const timing = this._nodeTimings.get(node);
     if (!timing) {
-      throw new Error(`Node ${node.id} not yet queued`);
+      throw new Core.LanternError(`Node ${node.id} not yet queued`);
     }
     if (!('startTime' in timing)) {
-      throw new Error(`Node ${node.id} not yet started`);
+      throw new Core.LanternError(`Node ${node.id} not yet started`);
     }
     if ('bytesDownloaded' in timing) {
-      throw new Error(`Node ${node.id} timing not valid`);
+      throw new Core.LanternError(`Node ${node.id} timing not valid`);
     }
     return timing;
   }
@@ -149,13 +150,13 @@ class SimulatorTimingMap {
   getNetworkStarted(node: Graph.NetworkNode): NetworkNodeTimingStarted {
     const timing = this._nodeTimings.get(node);
     if (!timing) {
-      throw new Error(`Node ${node.id} not yet queued`);
+      throw new Core.LanternError(`Node ${node.id} not yet queued`);
     }
     if (!('startTime' in timing)) {
-      throw new Error(`Node ${node.id} not yet started`);
+      throw new Core.LanternError(`Node ${node.id} not yet started`);
     }
     if (!('bytesDownloaded' in timing)) {
-      throw new Error(`Node ${node.id} timing not valid`);
+      throw new Core.LanternError(`Node ${node.id} timing not valid`);
     }
     return timing;
   }
@@ -163,13 +164,13 @@ class SimulatorTimingMap {
   getInProgress(node: Graph.Node): CpuNodeTimingInProgress|NetworkNodeTimingInProgress {
     const timing = this._nodeTimings.get(node);
     if (!timing) {
-      throw new Error(`Node ${node.id} not yet queued`);
+      throw new Core.LanternError(`Node ${node.id} not yet queued`);
     }
     if (!('startTime' in timing)) {
-      throw new Error(`Node ${node.id} not yet started`);
+      throw new Core.LanternError(`Node ${node.id} not yet started`);
     }
     if (!('estimatedTimeElapsed' in timing)) {
-      throw new Error(`Node ${node.id} not yet in progress`);
+      throw new Core.LanternError(`Node ${node.id} not yet in progress`);
     }
     return timing;
   }
@@ -177,16 +178,16 @@ class SimulatorTimingMap {
   getCompleted(node: Graph.Node): CpuNodeTimingComplete|NetworkNodeTimingComplete {
     const timing = this._nodeTimings.get(node);
     if (!timing) {
-      throw new Error(`Node ${node.id} not yet queued`);
+      throw new Core.LanternError(`Node ${node.id} not yet queued`);
     }
     if (!('startTime' in timing)) {
-      throw new Error(`Node ${node.id} not yet started`);
+      throw new Core.LanternError(`Node ${node.id} not yet started`);
     }
     if (!('estimatedTimeElapsed' in timing)) {
-      throw new Error(`Node ${node.id} not yet in progress`);
+      throw new Core.LanternError(`Node ${node.id} not yet in progress`);
     }
     if (!('endTime' in timing)) {
-      throw new Error(`Node ${node.id} not yet completed`);
+      throw new Core.LanternError(`Node ${node.id} not yet completed`);
     }
     return timing;
   }

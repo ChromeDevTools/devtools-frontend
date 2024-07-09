@@ -18,6 +18,7 @@ devtools_module("simulation") {
   ]
 
   deps = [
+    "../core:bundle",
     "../graph:bundle",
     "../types:bundle",
   ]

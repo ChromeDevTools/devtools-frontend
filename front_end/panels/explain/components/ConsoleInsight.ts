@@ -376,7 +376,7 @@ export class ConsoleInsight extends HTMLElement {
       corresponding_aida_rpc_global_id: this.#state.metadata.rpcGlobalId,
       do_conversation_client_event: {
         user_feedback: {
-          sentiment: this.#selectedRating ? 'POSITIVE' : 'NEGATIVE',
+          sentiment: this.#selectedRating ? Host.AidaClient.Rating.POSITIVE : Host.AidaClient.Rating.NEGATIVE,
         },
       },
     });

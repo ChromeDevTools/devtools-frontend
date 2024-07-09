@@ -163,15 +163,10 @@ export const enum State {
   CHAT_VIEW = 'chat-view',
 }
 
-export const enum Rating {
-  POSITIVE = 'positive',
-  NEGATIVE = 'negative',
-}
-
 export interface Props {
   onTextSubmit: (text: string) => void;
   onInspectElementClick: () => void;
-  onRateClick: (rpcId: number, rate: Rating) => void;
+  onRateClick: (rpcId: number, rate: Host.AidaClient.Rating) => void;
   onAcceptConsentClick: () => void;
   onCancelClick: () => void;
   onFixThisIssueClick: () => void;
@@ -273,7 +268,7 @@ export class FreestylerChatUi extends HTMLElement {
             title: i18nString(TempUIStrings.thumbsUp),
             jslogContext: 'thumbs-up',
           } as Buttons.Button.ButtonData}
-          @click=${() => this.#props.onRateClick(rpcId, Rating.POSITIVE)}
+          @click=${() => this.#props.onRateClick(rpcId, Host.AidaClient.Rating.POSITIVE)}
         ></${Buttons.Button.Button.litTagName}>
         <${Buttons.Button.Button.litTagName}
           .data=${{
@@ -284,7 +279,7 @@ export class FreestylerChatUi extends HTMLElement {
             title: i18nString(TempUIStrings.thumbsDown),
             jslogContext: 'thumbs-down',
           } as Buttons.Button.ButtonData}
-          @click=${() => this.#props.onRateClick(rpcId, Rating.NEGATIVE)}
+          @click=${() => this.#props.onRateClick(rpcId, Host.AidaClient.Rating.NEGATIVE)}
         ></${Buttons.Button.Button.litTagName}>
       </div>`;
     // clang-format on

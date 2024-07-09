@@ -15,6 +15,11 @@ export enum Entity {
   SYSTEM = 2,
 }
 
+export const enum Rating {
+  POSITIVE = 'POSITIVE',
+  NEGATIVE = 'NEGATIVE',
+}
+
 export interface Chunk {
   text: string;
   entity: Entity;
@@ -66,7 +71,7 @@ export interface AidaDoConversationClientEvent {
   do_conversation_client_event: {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     user_feedback: {
-      sentiment?: 'POSITIVE'|'NEGATIVE',
+      sentiment?: `${Rating}`,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       user_input?: {comment?: string},
     },

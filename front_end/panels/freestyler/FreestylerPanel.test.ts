@@ -117,7 +117,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       });
       const callArgs = mockView.getCall(0).args[0];
       mockView.reset();
-      callArgs.onRateClick(RPC_ID, Freestyler.Rating.POSITIVE);
+      callArgs.onRateClick(RPC_ID, Host.AidaClient.Rating.POSITIVE);
 
       sinon.assert.match(aidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
         corresponding_aida_rpc_global_id: RPC_ID,
@@ -138,7 +138,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       });
       const callArgs = mockView.getCall(0).args[0];
       mockView.reset();
-      callArgs.onRateClick(RPC_ID, Freestyler.Rating.NEGATIVE);
+      callArgs.onRateClick(RPC_ID, Host.AidaClient.Rating.NEGATIVE);
 
       sinon.assert.match(aidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
         corresponding_aida_rpc_global_id: RPC_ID,

@@ -14,7 +14,6 @@ import {
   FreestylerChatUi,
   type ModelChatMessage,
   type Props as FreestylerChatUiProps,
-  Rating,
   State as FreestylerChatUiState,
 } from './components/FreestylerChatUi.js';
 import {FIX_THIS_ISSUE_PROMPT, FreestylerAgent, Step} from './FreestylerAgent.js';
@@ -192,12 +191,12 @@ export class FreestylerPanel extends UI.Panel.Panel {
     void this.#toggleSearchElementAction.execute();
   }
 
-  #handleRateClick(rpcId: number, rating: Rating): void {
+  #handleRateClick(rpcId: number, rating: Host.AidaClient.Rating): void {
     this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcId,
       do_conversation_client_event: {
         user_feedback: {
-          sentiment: rating === Rating.POSITIVE ? 'POSITIVE' : 'NEGATIVE',
+          sentiment: rating,
         },
       },
     });

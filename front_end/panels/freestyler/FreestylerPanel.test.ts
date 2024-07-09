@@ -14,6 +14,7 @@ function getTestAidaClient() {
         fetch() {
           yield {explanation: 'test', metadata: {}};
         },
+    registerClientEvent: sinon.spy(),
   };
 }
 
@@ -107,22 +108,18 @@ describeWithEnvironment('FreestylerPanel', () => {
     });
 
     it('should send POSITIVE rating to aida client when the user clicks on positive rating', () => {
-      const registerAidaClientEvent =
-          sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'registerAidaClientEvent');
       const RPC_ID = 0;
 
+      const aidaClient = getTestAidaClient();
       new Freestyler.FreestylerPanel(mockView, {
-        aidaClient: getTestAidaClient(),
+        aidaClient,
         aidaAvailability: Host.AidaClient.AidaAvailability.AVAILABLE,
       });
       const callArgs = mockView.getCall(0).args[0];
       mockView.reset();
       callArgs.onRateClick(RPC_ID, Freestyler.Rating.POSITIVE);
 
-      const arg = JSON.parse(registerAidaClientEvent.getCalls()[0].args[0]);
-      sinon.assert.match(arg, sinon.match({
-        client: Host.AidaClient.CLIENT_NAME,
-        event_time: sinon.match.string,
+      sinon.assert.match(aidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
         corresponding_aida_rpc_global_id: RPC_ID,
         do_conversation_client_event: {
           user_feedback: {
@@ -133,22 +130,17 @@ describeWithEnvironment('FreestylerPanel', () => {
     });
 
     it('should send NEGATIVE rating to aida client when the user clicks on positive rating', () => {
-      const registerAidaClientEvent =
-          sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'registerAidaClientEvent');
       const RPC_ID = 0;
-
+      const aidaClient = getTestAidaClient();
       new Freestyler.FreestylerPanel(mockView, {
-        aidaClient: getTestAidaClient(),
+        aidaClient,
         aidaAvailability: Host.AidaClient.AidaAvailability.AVAILABLE,
       });
       const callArgs = mockView.getCall(0).args[0];
       mockView.reset();
       callArgs.onRateClick(RPC_ID, Freestyler.Rating.NEGATIVE);
 
-      const arg = JSON.parse(registerAidaClientEvent.getCalls()[0].args[0]);
-      sinon.assert.match(arg, sinon.match({
-        client: Host.AidaClient.CLIENT_NAME,
-        event_time: sinon.match.string,
+      sinon.assert.match(aidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
         corresponding_aida_rpc_global_id: RPC_ID,
         do_conversation_client_event: {
           user_feedback: {

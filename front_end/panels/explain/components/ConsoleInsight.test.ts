@@ -13,8 +13,9 @@ describeWithEnvironment('ConsoleInsight', () => {
     return {
       async *
           fetch() {
-            yield {explanation: 'test', metadata: {}};
+            yield {explanation: 'test', metadata: {rpcGlobalId: 0}};
           },
+      registerClientEvent: sinon.spy(),
     };
   }
 
@@ -153,9 +154,9 @@ describeWithEnvironment('ConsoleInsight', () => {
       assert(component.shadowRoot!.querySelector('.rating'));
     });
 
-    const renderInsight = async(): Promise<Explain.ConsoleInsight> => {
-      const component = new Explain.ConsoleInsight(
-          getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAvailability.AVAILABLE);
+    const renderInsight = async(aidaClient = getTestAidaClient()): Promise<Explain.ConsoleInsight> => {
+      const component =
+          new Explain.ConsoleInsight(getTestPromptBuilder(), aidaClient, Host.AidaClient.AidaAvailability.AVAILABLE);
       renderElementIntoDOM(component);
       await drainMicroTasks();
       dispatchClickEvent(component.shadowRoot!.querySelector('.continue-button')!, {
@@ -169,17 +170,20 @@ describeWithEnvironment('ConsoleInsight', () => {
 
     const reportsRating = (positive: boolean) => async () => {
       const actionTaken = sinon.stub(Host.userMetrics, 'actionTaken');
-      const registerAidaClientEvent =
-          sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'registerAidaClientEvent');
-
-      const component = await renderInsight();
+      const aidaClient = getTestAidaClient();
+      const component = await renderInsight(aidaClient);
       dispatchClickEvent(component.shadowRoot!.querySelector(`.rating [data-rating=${positive}]`)!, {
         bubbles: true,
         composed: true,
       });
 
-      assert(registerAidaClientEvent.calledOnce);
-      assert.include(registerAidaClientEvent.firstCall.firstArg, positive ? 'POSITIVE' : 'NEGATIVE');
+      assert(aidaClient.registerClientEvent.calledOnce);
+      sinon.assert.match(aidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
+        corresponding_aida_rpc_global_id: 0,
+        do_conversation_client_event: {
+          user_feedback: {sentiment: positive ? 'POSITIVE' : 'NEGATIVE'},
+        },
+      }));
       assert(actionTaken.calledWith(
           positive ? Host.UserMetrics.Action.InsightRatedPositive : Host.UserMetrics.Action.InsightRatedNegative));
 
@@ -188,8 +192,7 @@ describeWithEnvironment('ConsoleInsight', () => {
         composed: true,
       });
       // Can only rate once.
-      assert(registerAidaClientEvent.calledOnce);
-      assert.include(registerAidaClientEvent.firstCall.firstArg, positive ? 'POSITIVE' : 'NEGATIVE');
+      assert(aidaClient.registerClientEvent.calledOnce);
     };
 
     it('reports positive rating', reportsRating(true));

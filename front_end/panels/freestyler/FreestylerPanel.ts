@@ -193,16 +193,14 @@ export class FreestylerPanel extends UI.Panel.Panel {
   }
 
   #handleRateClick(rpcId: number, rating: Rating): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.registerAidaClientEvent(JSON.stringify({
-      client: Host.AidaClient.CLIENT_NAME,
-      event_time: new Date().toISOString(),
+    this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcId,
       do_conversation_client_event: {
         user_feedback: {
           sentiment: rating === Rating.POSITIVE ? 'POSITIVE' : 'NEGATIVE',
         },
       },
-    }));
+    });
   }
 
   #handleAcceptConsentClick(): void {

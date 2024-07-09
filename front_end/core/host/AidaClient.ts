@@ -59,6 +59,20 @@ export interface AidaRequest {
   client_feature?: ClientFeature;
 }
 
+export interface AidaDoConversationClientEvent {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  corresponding_aida_rpc_global_id: number;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  do_conversation_client_event: {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    user_feedback: {
+      sentiment?: 'POSITIVE'|'NEGATIVE',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      user_input?: {comment?: string},
+    },
+  };
+}
+
 export interface AidaResponse {
   explanation: string;
   metadata: {
@@ -220,5 +234,13 @@ export class AidaClient {
         };
       }
     }
+  }
+
+  registerClientEvent(clientEvent: AidaDoConversationClientEvent): void {
+    InspectorFrontendHostInstance.registerAidaClientEvent(JSON.stringify({
+      client: CLIENT_NAME,
+      event_time: new Date().toISOString(),
+      ...clientEvent,
+    }));
   }
 }

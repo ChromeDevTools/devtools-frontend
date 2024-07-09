@@ -338,6 +338,7 @@ c`;
                 ): AsyncGenerator<Host.AidaClient.AidaResponse, void, void> {
               yield* generator();
             },
+        registerClientEvent() {},
       };
     }
 

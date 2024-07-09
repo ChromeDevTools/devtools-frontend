@@ -503,7 +503,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
 
   doAidaConversation(request: string, streamId: number, callback: (result: DoAidaConversationResult) => void): void {
     callback({
-      error: 'Not implemened',
+      error: 'Not implemented',
     });
   }
 

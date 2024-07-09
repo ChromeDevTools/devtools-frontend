@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
+import {getMenuForToolbarButton} from '../../testing/ContextMenuHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
@@ -34,17 +35,9 @@ describeWithMockConnection('MainMenuItem', () => {
     UI.DockController.DockController.instance().setDockSide(UI.DockController.DockState.UNDOCKED);
 
     const item = Main.MainImpl.MainMenuItem.instance({forceNew: true}).item() as UI.Toolbar.ToolbarMenuButton;
-    assert.exists(item);
-
-    const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
-    item.clicked(new MouseEvent('click', {
-      bubbles: true,
-      cancelable: true,
-    }));
-
-    assert.isTrue(contextMenuShow.calledOnce);
-    assert.exists(contextMenuShow.thisValues[0].defaultSection().items.find(
-        (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Focus page'));
+    const menu = getMenuForToolbarButton(item);
+    assert.exists(
+        menu.defaultSection().items.find((item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Focus page'));
   });
 
   it('does not include focus debuggee item when docked', async () => {

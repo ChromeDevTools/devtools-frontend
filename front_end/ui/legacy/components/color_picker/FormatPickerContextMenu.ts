@@ -106,7 +106,6 @@ export class FormatPickerContextMenu {
     if (!label) {
       return;
     }
-
     let icon = undefined;
     if (newColor.isGamutClipped()) {
       icon = new IconButton.Icon.Icon();

@@ -4,11 +4,16 @@
 
 import * as Common from '../../../../core/common/common.js';
 import {
+  findMenuItemWithLabel,
+  getMenuForShiftClick,
+  getMenuItemLabels,
+} from '../../../../testing/ContextMenuHelpers.js';
+import {
   dispatchClickEvent,
   renderElementIntoDOM,
 } from '../../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../../testing/EnvironmentHelpers.js';
-import * as UI from '../../legacy.js';
+import type * as UI from '../../legacy.js';
 
 import * as InlineEditor from './inline_editor.js';
 
@@ -140,7 +145,6 @@ describeWithLocale('ColorSwatch', () => {
   });
 
   it('does not dispatch a swatch-click event on shift-click', () => {
-    const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
     const swatch = createSwatch('red');
     const target = getClickTarget(swatch);
 
@@ -150,14 +154,12 @@ describeWithLocale('ColorSwatch', () => {
     };
     swatch.addEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, onClick);
 
-    dispatchClickEvent(target, {shiftKey: true});
-    dispatchClickEvent(target, {shiftKey: true});
-    dispatchClickEvent(target, {shiftKey: true});
+    const contextMenu = getMenuForShiftClick(target);
 
     assert.strictEqual(swatchClickEventsReceived.length, 0, 'No swatch-click events are received on shift-click');
 
     swatch.removeEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, onClick);
-    assert.isTrue(contextMenuShow.calledThrice);
+    assert.exists(contextMenu);
   });
 
   it('does not dispatch a formatchanged event on click', () => {
@@ -180,28 +182,30 @@ describeWithLocale('ColorSwatch', () => {
   });
 
   it('produces a color conversion menu', () => {
-    const menuEntries: string[] = [];
-    sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
-    sinon.stub(UI.ContextMenu.Section.prototype, 'appendItem').callsFake((label: string) => {
-      menuEntries.push(label);
-      return new UI.ContextMenu.Item(null, 'item');
-    });
-
     // Without alpha:
     const swatch = createSwatch('#ff0000');
     const target = getClickTarget(swatch);
-    dispatchClickEvent(target, {shiftKey: true});
-    assert.deepEqual(menuEntries, [
+    let menu = getMenuForShiftClick(target);
+
+    assert.deepEqual(getMenuItemLabels(menu.section('legacy')), [
       'red',
       // HEX is skipped because it is the input format
       '#f00',
       'rgb(255 0 0)',
       'hsl(0deg 100% 50%)',
       'hwb(0deg 0% 0%)',
+    ]);
+    assert.deepEqual(getMenuItemLabels(menu.section('wide')), [
       'lch(54 106.85 40.86)',
       'oklch(0.63 0.26 29.23)',
       'lab(54 80.82 69.9)',
       'oklab(0.63 0.22 0.13)',
+    ]);
+    let colorFunction =
+        (findMenuItemWithLabel(menu.section('color-function'), 'color()') as UI.ContextMenu.SubMenu).defaultSection();
+    assert.exists(colorFunction);
+
+    assert.deepEqual(getMenuItemLabels(colorFunction), [
       'color(srgb 1 0 0)',
       'color(srgb-linear 1 0 0)',
       'color(display-p3 0.92 0.2 0.14)',
@@ -214,19 +218,26 @@ describeWithLocale('ColorSwatch', () => {
     ]);
 
     // With alpha:
-    menuEntries.splice(0);
     swatch.renderColor('#ff000080');
-    dispatchClickEvent(target, {shiftKey: true});
+    menu = getMenuForShiftClick(target);
 
-    assert.deepEqual(menuEntries, [
+    assert.deepEqual(getMenuItemLabels(menu.section('legacy')), [
       // HEXA is skipped because it's the input
       'rgb(255 0 0 / 50%)',
       'hsl(0deg 100% 50% / 50.2%)',
       'hwb(0deg 0% 0% / 50.2%)',
+    ]);
+    assert.deepEqual(getMenuItemLabels(menu.section('wide')), [
       'lch(54 106.85 40.86 / 0.5)',
       'oklch(0.63 0.26 29.23 / 0.5)',
       'lab(54 80.82 69.9 / 0.5)',
       'oklab(0.63 0.22 0.13 / 0.5)',
+    ]);
+    colorFunction =
+        (findMenuItemWithLabel(menu.section('color-function'), 'color()') as UI.ContextMenu.SubMenu).defaultSection();
+    assert.exists(colorFunction);
+
+    assert.deepEqual(getMenuItemLabels(colorFunction), [
       'color(srgb 1 0 0 / 0.5)',
       'color(srgb-linear 1 0 0 / 0.5)',
       'color(display-p3 0.92 0.2 0.14 / 0.5)',
@@ -239,19 +250,26 @@ describeWithLocale('ColorSwatch', () => {
     ]);
 
     // With alpha:
-    menuEntries.splice(0);
     swatch.renderColor('lab(54.29 80.82 69.9 / 0.5)');
-    dispatchClickEvent(target, {shiftKey: true});
+    menu = getMenuForShiftClick(target);
 
-    assert.deepEqual(menuEntries, [
+    assert.deepEqual(getMenuItemLabels(menu.section('legacy')), [
       '#ff000080',
       'rgb(255 0 0 / 50%)',
       'hsl(360deg 100% 50% / 50%)',
       'hwb(360deg 0% 0% / 50%)',
+    ]);
+    assert.deepEqual(getMenuItemLabels(menu.section('wide')), [
       'lch(54 106.85 40.86 / 0.5)',
       'oklch(0.63 0.26 29.23 / 0.5)',
       //  'lab(54.29 80.82 69.9 / 0.5)',
       'oklab(0.63 0.22 0.13 / 0.5)',
+    ]);
+    colorFunction =
+        (findMenuItemWithLabel(menu.section('color-function'), 'color()') as UI.ContextMenu.SubMenu).defaultSection();
+    assert.exists(colorFunction);
+
+    assert.deepEqual(getMenuItemLabels(colorFunction), [
       'color(srgb 1 0 0 / 0.5)',
       'color(srgb-linear 1 0 0 / 0.5)',
       'color(display-p3 0.92 0.2 0.14 / 0.5)',
@@ -265,12 +283,10 @@ describeWithLocale('ColorSwatch', () => {
   });
 
   it('does not produce a color conversion menu when it is readonly', () => {
-    const showContextMenuStub = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show');
-
     const swatch = createSwatch('#ff0000');
     swatch.setReadonly(true);
     const target = getClickTarget(swatch);
-    dispatchClickEvent(target, {shiftKey: true});
-    assert.isTrue(showContextMenuStub.notCalled);
+    const menu = getMenuForShiftClick(target);
+    assert.notExists(menu);
   });
 });

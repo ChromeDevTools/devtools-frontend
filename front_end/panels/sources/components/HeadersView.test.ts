@@ -6,6 +6,9 @@ import * as Host from '../../../core/host/host.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import {
+  getContextMenuForElement,
+} from '../../../testing/ContextMenuHelpers.js';
+import {
   dispatchFocusEvent,
   dispatchFocusOutEvent,
   dispatchInputEvent,
@@ -23,7 +26,6 @@ import {
   resetRecordedMetrics,
 } from '../../../testing/UserMetricsHelpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as UI from '../../../ui/legacy/legacy.js';
 
 import * as SourcesComponents from './components.js';
 
@@ -565,8 +567,7 @@ describe('HeadersView', () => {
   it('shows context menu', async () => {
     const editor = await renderEditor();
     assert.isNotNull(editor.shadowRoot);
-    const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
-    editor.dispatchEvent(new MouseEvent('contextmenu', {bubbles: true}));
-    assert.isTrue(contextMenuShow.calledOnce);
+    const contextMenu = getContextMenuForElement(editor);
+    assert.exists(contextMenu);
   });
 });

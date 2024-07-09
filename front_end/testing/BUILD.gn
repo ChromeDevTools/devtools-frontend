@@ -9,6 +9,7 @@ ts_library("testing") {
 
   sources = [
     "ConsoleHelpers.ts",
+    "ContextMenuHelpers.ts",
     "Cookies.ts",
     "DOMHelpers.ts",
     "DataGridHelpers.ts",

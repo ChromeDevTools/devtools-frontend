@@ -143,7 +143,7 @@ export class Item {
 }
 
 export class Section {
-  private readonly contextMenu: ContextMenu|null;
+  readonly contextMenu: ContextMenu|null;
   readonly items: Item[];
   constructor(contextMenu: ContextMenu|null) {
     this.contextMenu = contextMenu;
@@ -228,7 +228,7 @@ export class Section {
 }
 
 export class SubMenu extends Item {
-  private readonly sections: Map<string, Section>;
+  readonly sections: Map<string, Section>;
   private readonly sectionList: Section[];
 
   constructor(contextMenu: ContextMenu|null, label?: string, disabled?: boolean, jslogContext?: string) {
@@ -242,6 +242,9 @@ export class SubMenu extends Item {
   }
 
   section(name?: string): Section {
+    if (!name) {
+      name = 'default';
+    }
     let section: Section|(Section | null | undefined) = name ? this.sections.get(name) : null;
     if (!section) {
       section = new Section(this.contextMenu);
@@ -568,6 +571,13 @@ export class ContextMenu extends SubMenu {
     }
   }
 
+  invokeHandler(id: number): void {
+    const handler = this.handlers.get(id);
+    if (handler) {
+      handler.call(this);
+    }
+  }
+
   private buildMenuDescriptors(): (SoftContextMenuDescriptor|Host.InspectorFrontendHostAPI.ContextMenuDescriptor)[] {
     return super.buildDescriptor().subItems as (
                SoftContextMenuDescriptor | Host.InspectorFrontendHostAPI.ContextMenuDescriptor)[];
@@ -578,10 +588,7 @@ export class ContextMenu extends SubMenu {
   }
 
   private itemSelected(id: number): void {
-    const handler = this.handlers.get(id);
-    if (handler) {
-      handler.call(this);
-    }
+    this.invokeHandler(id);
     if (this.openHostedMenu) {
       const itemWithId = (items: Host.InspectorFrontendHostAPI.ContextMenuDescriptor[],
                           id: number): Host.InspectorFrontendHostAPI.ContextMenuDescriptor|null => {

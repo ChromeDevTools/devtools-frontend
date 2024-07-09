@@ -8,6 +8,7 @@ import type * as Protocol from '../../../../generated/protocol.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as Breakpoints from '../../../../models/breakpoints/breakpoints.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
+import {findMenuItemWithLabel} from '../../../../testing/ContextMenuHelpers.js';
 import {
   createTarget,
   describeWithEnvironment,
@@ -376,8 +377,7 @@ describeWithEnvironment('ContentProviderContextMenuProvider', () => {
       contentURL: () => 'https://www.example.com/index.html',
     } as Workspace.UISourceCode.UISourceCode;
     provider.appendApplicableItems({} as Event, contextMenu, uiSourceCode);
-    let openInNewTabItem = contextMenu.revealSection().items.find(
-        (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Open in new tab');
+    let openInNewTabItem = findMenuItemWithLabel(contextMenu.revealSection(), 'Open in new tab');
     assert.exists(openInNewTabItem);
 
     contextMenu = new UI.ContextMenu.ContextMenu({} as Event);
@@ -385,8 +385,7 @@ describeWithEnvironment('ContentProviderContextMenuProvider', () => {
       contentURL: () => 'file://usr/local/example/index.html',
     } as Workspace.UISourceCode.UISourceCode;
     provider.appendApplicableItems({} as Event, contextMenu, uiSourceCode);
-    openInNewTabItem = contextMenu.revealSection().items.find(
-        (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Open in new tab');
+    openInNewTabItem = findMenuItemWithLabel(contextMenu.revealSection(), 'Open in new tab');
     assert.isUndefined(openInNewTabItem);
   });
 });

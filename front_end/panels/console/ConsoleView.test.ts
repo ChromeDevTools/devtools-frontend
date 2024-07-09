@@ -8,12 +8,12 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import {findMenuItemWithLabel, getContextMenuForElement} from '../../testing/ContextMenuHelpers.js';
 import {dispatchPasteEvent} from '../../testing/DOMHelpers.js';
 import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {stubFileManager} from '../../testing/FileManagerHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Console from './console.js';
 
@@ -64,15 +64,9 @@ describeWithMockConnection('ConsoleView', () => {
     const messagesElement = consoleView.element.querySelector('#console-messages');
     assert.exists(messagesElement);
 
-    const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
-    const contextMenuSetHandler = sinon.spy(UI.ContextMenu.ContextMenu.prototype, 'setHandler');
-    messagesElement.dispatchEvent(new MouseEvent('contextmenu', {bubbles: true}));
-    assert.isTrue(contextMenuShow.calledOnce);
-    const saveAsItem = contextMenuShow.thisValues[0].saveSection().items.find(
-        (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Save as...');
+    const contextMenu = getContextMenuForElement(messagesElement);
+    const saveAsItem = findMenuItemWithLabel(contextMenu.saveSection(), 'Save as...');
     assert.exists(saveAsItem);
-    const saveAsHandler = contextMenuSetHandler.getCalls().find(c => c.args[0] === saveAsItem.id());
-    assert.exists(saveAsHandler);
 
     const TIMESTAMP = 42;
     const URL_HOST = 'example.com';
@@ -81,7 +75,7 @@ describeWithMockConnection('ConsoleView', () => {
     const FILENAME = `${URL_HOST}-${TIMESTAMP}.log` as Platform.DevToolsPath.RawPathString;
     const fileManager = stubFileManager();
     const fileManagerCloseCall = expectCall(fileManager.close);
-    saveAsHandler.args[1]();
+    contextMenu.invokeHandler(saveAsItem.id());
     assert.isTrue(fileManager.save.calledOnceWith(FILENAME, '', true, false));
     await fileManagerCloseCall;
     assert.isTrue(fileManager.append.calledOnceWith(FILENAME, sinon.match('message 1\nmessage 2\n')));

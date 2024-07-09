@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 export * as Extensions from './Extensions.js';
+export * as Network from './Network.js';
 export * as SamplesIntegrator from './SamplesIntegrator.js';
 export * as SyntheticEvents from './SyntheticEvents.js';
 export * as Timing from './Timing.js';

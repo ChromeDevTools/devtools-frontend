@@ -141,7 +141,7 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     // This is used in flamechart to calculate unclippedBarX.
     // Start time is 183752441.977
     // End time is 183752670.454
-    // Finish time is 183752669.23299998
+    // Finish time is 183752669.233
     // request time is 183752.449687, but it is in second, so 183752449.687
     // in milliseconds.
     // sendStartTime is requestTime + sendStart = 183752462.479
@@ -150,14 +150,18 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     // To calculate the pixel of a timestamp, we substrate the begin time  from
     // it, then multiple the timeToPixelRatio and then add the unclippedBarX.
     // Then get the floor of the pixel.
-    // So the pixel of sendStart is 30.
-    // So the pixel of headersEnd is 235.
-    // So the pixel of finish is 237.
-    // So the pixel of start is 10.
-    // So the pixel of end is 238.
-    assert.deepEqual(
-        dataProvider.getDecorationPixels(event, /* unclippedBarX= */ 10, /* timeToPixelRatio= */ 1),
-        {sendStart: 30, headersEnd: 235, finish: 237, start: 10, end: 238});
+    // So the pixel of sendStart is (183752462.479 - 183752441.977) + 10, in ts it will be 30.502000004053116.
+    // So the pixel of headersEnd is (183752667.771 - 183752441.977) + 10, in ts it will be 235.79399999976158.
+    // So the pixel of finish is (183752669.233 - 183752441.977) + 10, in ts it will be 237.25600001215935.
+    // So the pixel of start is (183752441.977 - 183752441.977) + 10 = 10.
+    // So the pixel of end is (183752670.454 - 183752441.977) + 10, in ts it will be 238.47699999809265.
+    assert.deepEqual(dataProvider.getDecorationPixels(event, /* unclippedBarX= */ 10, /* timeToPixelRatio= */ 1), {
+      sendStart: (183752462.479 - 183752441.977) + 10,
+      headersEnd: (183752667.771 - 183752441.977) + 10,
+      finish: (183752669.233 - 183752441.977) + 10,
+      start: 10,
+      end: (183752670.454 - 183752441.977) + 10,
+    });
   });
 });
 

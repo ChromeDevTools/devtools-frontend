@@ -4,7 +4,7 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
-import type * as TraceEngine from '../../../models/trace/trace.js';
+import * as TraceEngine from '../../../models/trace/trace.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -157,8 +157,8 @@ export class NetworkRequestTooltip extends HTMLElement {
 
         <div class="divider"></div>
         ${this.#renderPriority()}
-        ${networkData.renderBlocking === 'non_blocking' ? LitHtml.nothing :
-          LitHtml.html`<div class="render-blocking"> ${UIStrings.renderBlocking} </div>`
+        ${TraceEngine.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(this.#networkRequest) ?
+          LitHtml.html`<div class="render-blocking"> ${UIStrings.renderBlocking} </div>` :  LitHtml.nothing
         }
         <div class="divider"></div>
 

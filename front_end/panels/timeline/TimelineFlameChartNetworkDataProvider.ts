@@ -222,8 +222,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
       event: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest, unclippedBarX: number,
       timeToPixelRatio: number): {sendStart: number, headersEnd: number, finish: number, start: number, end: number} {
     const beginTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.ts);
-    const timeToPixel = (time: number): number => Math.floor(unclippedBarX + (time - beginTime) * timeToPixelRatio);
-    const minBarWidthPx = 2;
+    const timeToPixel = (time: number): number => unclippedBarX + (time - beginTime) * timeToPixelRatio;
     const startTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.ts);
     const endTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(
         (event.ts + event.dur) as TraceEngine.Types.Timing.MicroSeconds);
@@ -235,7 +234,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     const headersEnd = Math.max(timeToPixel(headersEndTime), sendStart);
     const finish = Math.max(
         timeToPixel(TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.args.data.syntheticData.finishTime)),
-        headersEnd + minBarWidthPx);
+        headersEnd);
     const start = timeToPixel(startTime);
     const end = Math.max(timeToPixel(endTime), finish);
 

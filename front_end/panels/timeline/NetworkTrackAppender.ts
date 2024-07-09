@@ -6,7 +6,13 @@ import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
-import {buildGroupStyle, buildTrackHeader, getEventLevel, getFormattedTime} from './AppenderUtils.js';
+import {
+  addDecorationToEvent,
+  buildGroupStyle,
+  buildTrackHeader,
+  getEventLevel,
+  getFormattedTime,
+} from './AppenderUtils.js';
 import {
   type HighlightedEntryInfo,
   type TrackAppender,
@@ -159,6 +165,12 @@ export class NetworkTrackAppender implements TrackAppender {
         // process network events
         level = getEventLevel(event, lastUsedTimeByLevel);
         this.#appendEventAtLevel(event, trackStartLevel + websocketLevel + level);
+        if (TraceEngine.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(event)) {
+          addDecorationToEvent(this.#flameChartData, i, {
+            type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE,
+            customEndTime: event.args.data.syntheticData.finishTime,
+          });
+        }
       } else {
         console.error('Invalid network event.');
       }

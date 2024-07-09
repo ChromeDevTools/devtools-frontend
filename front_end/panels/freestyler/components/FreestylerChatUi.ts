@@ -536,7 +536,7 @@ export class FreestylerChatUi extends HTMLElement {
                       @click=${this.#handleCancel}
                       .data=${
                         {
-                          variant: Buttons.Button.Variant.ICON,
+                          variant: Buttons.Button.Variant.PRIMARY,
                           size: Buttons.Button.Size.SMALL,
                           iconName: 'stop',
                           title: i18nString(TempUIStrings.cancelButtonTitle),

@@ -4,6 +4,7 @@
 
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
+import * as glob from 'glob';
 import * as os from 'os';
 import * as path from 'path';
 
@@ -224,7 +225,11 @@ function main() {
   }
 
   const suites = new Map<MochaTests, PathPair[]>();
-  for (const t of tests) {
+  const testFiles = tests.flatMap(t => {
+    const globbed = glob.glob.sync(t);
+    return globbed.length > 0 ? globbed : t;
+  });
+  for (const t of testFiles) {
     const repoPath = PathPair.get(t);
     if (!repoPath) {
       console.error(`Could not locate the test input for '${t}'`);

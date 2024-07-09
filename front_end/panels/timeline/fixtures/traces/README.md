@@ -88,6 +88,11 @@ This is a trace that includes multiple navigations:
 
 Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/user-timings
 
+### user-timings-details
+
+A trace that contains one `performance.mark` and one `performance.measure` call, both of which have
+details. The measure contains the `devtools` property in details.
+
 ### lcp-web-font
 
 Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/lcp-web-font

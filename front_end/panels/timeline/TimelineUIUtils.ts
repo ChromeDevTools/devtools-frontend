@@ -1181,10 +1181,31 @@ export class TimelineUIUtils {
         contentHelper.appendElementRow(i18nString(UIStrings.warning), warning, true);
       }
     }
-    if (detailed && !Number.isNaN(duration || 0)) {
+
+    // Add timestamp to user timings.
+    if (TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.UserTiming)) {
+      const adjustedEventTimeStamp = timeStampForEventAdjustedForClosestNavigationIfPossible(
+          event,
+          traceParseData,
+      );
+      contentHelper.appendTextRow(
+          i18nString(UIStrings.timestamp), i18n.TimeUtilities.preciseMillisToString(adjustedEventTimeStamp, 1));
+    }
+
+    // Only show total time and self time for events with non-zero durations.
+    if (detailed && !Number.isNaN(duration || 0) && duration !== 0) {
       contentHelper.appendTextRow(
           i18nString(UIStrings.totalTime), i18n.TimeUtilities.millisToString(duration || 0, true));
       contentHelper.appendTextRow(i18nString(UIStrings.selfTime), i18n.TimeUtilities.millisToString(selfTime, true));
+    }
+
+    if (TraceEngine.Types.TraceEvents.isTraceEventPerformanceMark(event) && event.args.data?.detail) {
+      const detailContainer = TimelineUIUtils.renderObjectJson(JSON.parse(event.args.data?.detail));
+      contentHelper.appendElementRow(i18nString(UIStrings.details), detailContainer);
+    }
+    if (TraceEngine.Types.TraceEvents.isSyntheticUserTiming(event) && event.args?.data?.beginEvent.args.detail) {
+      const detailContainer = TimelineUIUtils.renderObjectJson(JSON.parse(event.args?.data?.beginEvent.args.detail));
+      contentHelper.appendElementRow(i18nString(UIStrings.details), detailContainer);
     }
 
     if (traceParseData.Meta.traceIsGeneric) {
@@ -1839,9 +1860,14 @@ export class TimelineUIUtils {
       ...{args: event.args},
       ...event,
     };
+    const highlightContainer = TimelineUIUtils.renderObjectJson(eventWithArgsFirst);
+    contentHelper.appendElementRow('', highlightContainer);
+  }
+
+  private static renderObjectJson(obj: Object): HTMLDivElement {
     const indentLength = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get().length;
     // Elide if the data is huge. Then remove the initial new-line for a denser UI
-    const eventStr = JSON.stringify(eventWithArgsFirst, null, indentLength).slice(0, 10_000).replace(/{\n  /, '{ ');
+    const eventStr = JSON.stringify(obj, null, indentLength).slice(0, 10_000).replace(/{\n  /, '{ ');
 
     // Use CodeHighlighter for syntax highlighting.
     const highlightContainer = document.createElement('div');
@@ -1851,7 +1877,7 @@ export class TimelineUIUtils {
     elem.classList.add('monospace', 'source-code');
     elem.textContent = eventStr;
     void CodeHighlighter.CodeHighlighter.highlightNode(elem, 'text/javascript');
-    contentHelper.appendElementRow('', highlightContainer);
+    return highlightContainer;
   }
 
   static stackTraceFromCallFrames(callFrames: Protocol.Runtime.CallFrame[]|

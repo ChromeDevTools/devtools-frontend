@@ -84,6 +84,7 @@ copy_to_gen("traces") {
     "two-functions-recursion.json.gz",
     "two-workers.json.gz",
     "user-timings-complex.json.gz",
+    "user-timings-details.json.gz",
     "user-timings.json.gz",
     "web-dev-initial-url.json.gz",
     "web-dev-modifications.json.gz",

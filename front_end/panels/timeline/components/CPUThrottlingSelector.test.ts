@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as MobileThrottling from '../../../panels/mobile_throttling/mobile_throttling.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import type * as Menus from '../../../ui/components/menus/menus.js';
@@ -16,6 +17,7 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
 
   beforeEach(() => {
     cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance({forceNew: true});
+    MobileThrottling.ThrottlingManager.ThrottlingManager.instance({forceNew: true});
   });
 
   it('renders all CPU throttling presets', async () => {

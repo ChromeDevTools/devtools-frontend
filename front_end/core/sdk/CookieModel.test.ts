@@ -129,7 +129,7 @@ describeWithMockConnection('CookieModel', () => {
   });
 
   it('can detect cookie value changes', async () => {
-    const cookie = PROTOCOL_COOKIE;
+    const cookie = {...PROTOCOL_COOKIE};
     setMockConnectionResponseHandler('Network.getCookies', () => ({cookies: [cookie]}));
 
     const target = createTarget();
@@ -155,7 +155,7 @@ describeWithMockConnection('CookieModel', () => {
   });
 
   it('does not refetch cookies while listening unless requested', async () => {
-    const cookie = PROTOCOL_COOKIE;
+    const cookie = {...PROTOCOL_COOKIE};
     setMockConnectionResponseHandler('Network.getCookies', () => ({cookies: [cookie]}));
 
     const target = createTarget();

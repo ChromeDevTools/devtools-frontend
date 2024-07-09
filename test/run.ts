@@ -155,9 +155,9 @@ function main() {
   const tests: string[] = options['tests'];
 
   const testKinds = [
+    new KarmaTests(path.join(GEN_DIR, 'front_end'), path.join(GEN_DIR, 'inspector_overlay')),
     new MochaTests(path.join(GEN_DIR, 'test/interactions')),
     new MochaTests(path.join(GEN_DIR, 'test/e2e')),
-    new KarmaTests(path.join(GEN_DIR, 'front_end'), path.join(GEN_DIR, 'inspector_overlay')),
     new MochaTests(path.join(GEN_DIR, 'test/perf')),
   ];
 

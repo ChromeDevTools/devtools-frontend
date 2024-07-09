@@ -6,14 +6,26 @@ Follow the steps outlined in [Get the Code](get_the_code.md) to checkout the Dev
 
 ## DevTools frontend
 
-Tests are run using `npm run test $TESTPATH`. $TESTPATH can be a path to a test file or test files, or to a directory,
-which will run all tests in that directory. Run `npm run test -- --help` to get an overview of the available options.
+Run tests with
+
+```
+npm test
+```
+
+This command runs all tests in the devtools frontend repo, which are the [unit tests](../test/unit/README.md),
+[interactions tests](../test/interactions/README.md), [e2e tests](../test/e2e/README.md), and performance tests.
+
+You can also run just a subset of tests like this:
+
+```
+npm test \
+   front_end/core/common/Color.test.ts \
+   front_end/core/sdk
+```
+
 
 The current test status can be seen at the [test waterfall](https://ci.chromium.org/p/devtools-frontend/g/main/console).
 
-*   [E2E test guide](../test/e2e/README.md)
-*   [Interactions test guide](../test/interactions/README.md)
-*   [Unit test guide](../test/unit/README.md)
 
 ### Debugging
 

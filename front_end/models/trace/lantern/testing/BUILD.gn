@@ -12,6 +12,7 @@ devtools_module("testing") {
 
   deps = [
     "../:bundle",
+    "../../:bundle",
     "../../../../testing",
   ]
 }

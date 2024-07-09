@@ -3,10 +3,10 @@
 // found in the LICENSE file.
 
 import * as TraceEngine from '../../models/trace/trace.js';
-import * as Timeline from './timeline.js';
-
 import {getMainThread} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
+
+import * as Timeline from './timeline.js';
 
 function findFirstEntry(
     allEntries: readonly TraceEngine.Types.TraceEvents.SyntheticTraceEntry[],
@@ -19,15 +19,11 @@ function findFirstEntry(
   return entry;
 }
 
-describe('ModificationsManager', () => {
+describe('EventsSerializer', () => {
   it('correctly implements a bidirectional key <-> event mapping', async function() {
-    const data = await TraceLoader.traceEngine(null, 'basic-stack.json.gz');
+    const data = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');
     const eventsSerializer = new Timeline.EventsSerializer.EventsSerializer();
-    if (!eventsSerializer) {
-      throw new Error('Modifications manager does not exist.');
-    }
     const mainThread = getMainThread(data.Renderer);
-    assert.exists(eventsSerializer);
     // Find first 'Timer Fired' entry in the trace
     const rawEntry = findFirstEntry(mainThread.entries, entry => {
       return entry.name === 'TimerFire';

@@ -95,7 +95,7 @@ export class TraceLoader {
     const contents = await TraceLoader.fixtureContents(context, name);
 
     const events = 'traceEvents' in contents ? contents.traceEvents : contents;
-    TraceEngine.Helpers.SyntheticEvents.SyntheticEventsManager.initSyntheticEventsManagerForTrace(events);
+    TraceEngine.Helpers.SyntheticEvents.SyntheticEventsManager.initAndActivate(events);
     return events;
   }
 
@@ -144,6 +144,19 @@ export class TraceLoader {
     if (fromCache) {
       TraceLoader.initTraceBoundsManager(fromCache.traceParsedData);
       Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(fromCache.model, 0);
+
+      // This init step is usually done in model.parse(), but as we loaded from
+      // the cache here, we manually run it.
+      // The SyntheticEventsManager caches instances based on the rawEvents()
+      // array, so we can safely do this even if we have already created an
+      // instance for this trace before - the old one will be re-used, rather
+      // than creating a new one.
+      const rawEvents = fromCache.model.rawTraceEvents();
+      if (rawEvents) {
+        TraceEngine.Helpers.SyntheticEvents.SyntheticEventsManager.initAndActivate(
+            rawEvents,
+        );
+      }
       return fromCache.traceParsedData;
     }
     const fileContents = await TraceLoader.fixtureContents(context, name);
@@ -158,7 +171,6 @@ export class TraceLoader {
 
     TraceLoader.initTraceBoundsManager(traceEngineData.traceParsedData);
     Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(traceEngineData.model, 0);
-
     return traceEngineData.traceParsedData;
   }
 

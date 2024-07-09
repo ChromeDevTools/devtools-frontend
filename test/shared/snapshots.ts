@@ -9,7 +9,7 @@ import {dirname} from 'path';
 import {GEN_DIR, rebase, SOURCE_ROOT} from '../conductor/paths.js';
 import {TestConfig} from '../conductor/test_config.js';
 
-const UPDATE_SNAPSHOTS = Boolean(process.env['UPDATE_SNAPSHOTS']) || TestConfig.onDiff.update;
+const UPDATE_SNAPSHOTS = TestConfig.onDiff.update;
 
 let currentTestPath: string|undefined;
 let currentTestTitle: string|undefined;
@@ -62,7 +62,7 @@ const saveSnapshotsIfTaken = () => {
 const restoreSnapshots = () => {
   if (!currentSnapshotPath || !existsSync(currentSnapshotPath)) {
     throw new Error(`Could not find snapshot for ${
-        currentSnapshotPath}. You can update the snapshots by running the tests with UPDATE_SNAPSHOTS=1.`);
+        currentSnapshotPath}. You can update the snapshots by running the tests with --diff=update.`);
   }
   currentSnapshot = JSON.parse(readFileSync(currentSnapshotPath, 'utf-8'));
 };

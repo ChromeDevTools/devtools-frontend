@@ -7,7 +7,6 @@ import("../../third_party/typescript/typescript.gni")
 
 group("perf") {
   deps = [
-    ":config",
     ":test_inputs",
     ":tests",
   ]
@@ -23,13 +22,6 @@ node_ts_library("tests") {
   ]
 
   sources = [ "mocharc.ts" ]
-}
-
-copy_to_gen("config") {
-  sources = [
-    ".mocharc.js",
-    "test-runner-config.json",
-  ]
 }
 
 generated_file("test_inputs") {

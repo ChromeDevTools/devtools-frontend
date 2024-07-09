@@ -1,5 +1,0 @@
-{
-  "test-suite-path": "gen/test/interactions",
-  "test-suite-source-dir": "test/interactions",
-  "test-server-type": "component-docs"
-}

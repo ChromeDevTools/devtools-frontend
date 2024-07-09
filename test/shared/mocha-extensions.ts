@@ -10,7 +10,6 @@ import {TestConfig} from '../conductor/test_config.js';
 import {ScreenshotError} from '../shared/screenshot-error.js';
 
 import {AsyncScope} from './async-scope.js';
-import {getEnvVar} from './config.js';
 import {platform, type Platform, TIMEOUT_ERROR_MESSAGE} from './helper.js';
 
 export {after, beforeEach} from 'mocha';
@@ -133,7 +132,7 @@ async function timeoutHook(this: Mocha.Runnable, done: Mocha.Done|undefined, err
       err.cause = new Error(msg);
     }
   }
-  if (err && !getEnvVar('DEBUG_TEST') && !(err instanceof ScreenshotError)) {
+  if (err && !TestConfig.debug && !(err instanceof ScreenshotError)) {
     const {target, frontend} = await takeScreenshots();
     err = ScreenshotError.fromBase64Images(err, target, frontend);
   }
@@ -149,8 +148,6 @@ export const it = makeCustomWrappedIt();
 
 type MochaCallback = Mocha.Func|Mocha.AsyncFunc;
 
-const iterations = getEnvVar('ITERATIONS', TestConfig.repetitions);
-
 function iterationSuffix(iteration: number): string {
   if (iteration === 0) {
     return '';
@@ -160,7 +157,7 @@ function iterationSuffix(iteration: number): string {
 
 export function makeCustomWrappedIt(namePrefix: string = '') {
   const newMochaItFunc = function(name: string, callback: MochaCallback) {
-    for (let i = 0; i < iterations; i++) {
+    for (let i = 0; i < TestConfig.repetitions; i++) {
       const testName = namePrefix ? `${namePrefix} ${name}` : name;
       wrapMochaCall(Mocha.it, testName + iterationSuffix(i), callback);
     }
@@ -181,7 +178,7 @@ export function makeCustomWrappedIt(namePrefix: string = '') {
   };
 
   newMochaItFunc.only = function(name: string, callback: Mocha.Func|Mocha.AsyncFunc) {
-    for (let i = 0; i < iterations; i++) {
+    for (let i = 0; i < TestConfig.repetitions; i++) {
       wrapMochaCall(Mocha.it.only, name + iterationSuffix(i), callback);
     }
   };
@@ -216,7 +213,7 @@ function wrapMochaCall(
     if (callback.length === 0) {
       async function onError(this: unknown, err?: unknown) {
         const isTimeoutError = err instanceof Error && err.message?.includes(TIMEOUT_ERROR_MESSAGE);
-        if (err && !getEnvVar('DEBUG_TEST') && !(err instanceof ScreenshotError) && !isTimeoutError) {
+        if (err && !TestConfig.debug && !(err instanceof ScreenshotError) && !isTimeoutError) {
           const {target, frontend} = await takeScreenshots();
           err = ScreenshotError.fromBase64Images(err, target, frontend);
         }

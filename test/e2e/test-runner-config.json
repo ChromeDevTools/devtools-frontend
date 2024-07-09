@@ -1,5 +1,0 @@
-{
-  "test-suite-path": "gen/test/e2e",
-  "test-suite-source-dir": "test/e2e",
-  "test-server-type": "hosted-mode"
-}

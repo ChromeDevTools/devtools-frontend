@@ -7,7 +7,6 @@ import("../../third_party/typescript/typescript.gni")
 
 group("e2e") {
   deps = [
-    ":config",
     ":test_inputs",
     ":tests",
     "resources",
@@ -50,13 +49,6 @@ node_ts_library("tests") {
     "webaudio",
   ]
   sources = [ "mocharc.ts" ]
-}
-
-copy_to_gen("config") {
-  sources = [
-    ".mocharc.js",
-    "test-runner-config.json",
-  ]
 }
 
 generated_file("test_inputs") {

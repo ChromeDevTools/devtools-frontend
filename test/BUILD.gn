@@ -7,7 +7,6 @@ import("../third_party/typescript/typescript.gni")
 
 group("test") {
   deps = [
-    ":config",
     ":run",
     ":unittests",
     "e2e",
@@ -19,19 +18,11 @@ group("test") {
 
 group("unittests") {
   deps = [
-    ":config",
     "../front_end:test_inputs",
     "../front_end:unittests",
     "../inspector_overlay:unittests",
     "shared",
     "unit:karma",
-  ]
-}
-
-copy_to_gen("config") {
-  sources = [
-    "base-mocharc.js",
-    "karma.conf.js",
   ]
 }
 

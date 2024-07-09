@@ -22,10 +22,8 @@ export const loadComponentDocExample = async (urlComponent: string) => {
   await frontend.evaluate(() => window.dispatchEvent(new Event('hidecomponentdocsui')));
 };
 
-const SHOULD_GATHER_COVERAGE_INFORMATION = process.env.COVERAGE === '1' || TestConfig.coverage;
-
 export const preloadForCodeCoverage = (name: string) => {
-  if (!SHOULD_GATHER_COVERAGE_INFORMATION) {
+  if (!TestConfig.coverage) {
     return;
   }
 

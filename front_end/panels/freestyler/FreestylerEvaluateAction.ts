@@ -8,6 +8,7 @@ import * as Protocol from '../../generated/protocol.js';
 export class ExecutionError extends Error {}
 export class SideEffectError extends Error {}
 
+/* istanbul ignore next */
 function stringifyObjectOnThePage(this: unknown): string {
   const seenBefore = new WeakMap();
   return JSON.stringify(this, function replacer(this: unknown, key: string, value: unknown) {

@@ -23,7 +23,6 @@ function* reporters() {
   } else {
     yield 'progress-diff';
   }
-  // TODO(333423685)   EXPANDED_REPORTING ? 'mocha' : 'resultsdb',
   if (TestConfig.coverage) {
     yield 'coverage';
   }
@@ -131,7 +130,9 @@ module.exports = function(config: any) {
 
     preprocessors: {
       '**/*.{js,mjs}': ['sourcemap'],
-      // TODO(333423685) ...COVERAGE_PREPROCESSING_FOLDERS,
+      [path.join(GEN_DIR, 'front_end/!(third_party)/**/!(*.test).{js,mjs}')]: ['coverage'],
+      [path.join(GEN_DIR, 'inspector_overlay/**/*.{js,mjs}')]: ['coverage'],
+      [path.join(GEN_DIR, 'front_end/third_party/i18n/**/*.{js,mjs}')]: ['coverage'],
     },
 
     proxies: {

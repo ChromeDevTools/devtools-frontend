@@ -130,9 +130,7 @@ export class TraceLoader {
    * will fall back to the Default config if not provided.
    */
   static async traceEngine(
-      context: Mocha.Context|Mocha.Suite|null, name: string, options: TraceEngineLoaderOptions = {
-        initTraceBounds: true,
-      },
+      context: Mocha.Context|Mocha.Suite|null, name: string,
       config: TraceEngine.Types.Configuration.Configuration = TraceEngine.Types.Configuration.defaults()):
       Promise<TraceEngine.Handlers.Types.TraceParseData> {
     // Force the TraceBounds to be reset to empty. This ensures that in
@@ -144,10 +142,8 @@ export class TraceLoader {
 
     const fromCache = traceEngineCache.get(name)?.get(configCacheKey);
     if (fromCache) {
+      TraceLoader.initTraceBoundsManager(fromCache.traceParsedData);
       Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(fromCache.model, 0);
-      if (options.initTraceBounds) {
-        TraceLoader.initTraceBoundsManager(fromCache.traceParsedData);
-      }
       return fromCache.traceParsedData;
     }
     const fileContents = await TraceLoader.fixtureContents(context, name);
@@ -159,10 +155,10 @@ export class TraceLoader {
                 {traceParsedData: TraceEngine.Handlers.Types.TraceParseData, model: TraceEngine.TraceModel.Model}>();
     cacheByName.set(configCacheKey, traceEngineData);
     traceEngineCache.set(name, cacheByName);
+
+    TraceLoader.initTraceBoundsManager(traceEngineData.traceParsedData);
     Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(traceEngineData.model, 0);
-    if (options.initTraceBounds) {
-      TraceLoader.initTraceBoundsManager(traceEngineData.traceParsedData);
-    }
+
     return traceEngineData.traceParsedData;
   }
 

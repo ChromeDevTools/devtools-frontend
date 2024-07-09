@@ -2310,6 +2310,10 @@ export namespace ProtocolMapping {
       paramsType: [Protocol.IO.ResolveBlobRequest];
       returnType: Protocol.IO.ResolveBlobResponse;
     };
+    'FileSystem.getDirectory': {
+      paramsType: [Protocol.FileSystem.GetDirectoryRequest];
+      returnType: Protocol.FileSystem.GetDirectoryResponse;
+    };
     /**
      * Clears all entries from an object store.
      */

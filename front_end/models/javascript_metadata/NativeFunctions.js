@@ -1156,7 +1156,7 @@ export const NativeFunctions = [
   {
     name: "createBuffer",
     signatures: [["descriptor"]],
-    receivers: ["MLContext","GPUDevice"]
+    receivers: ["GPUDevice"]
   },
   {
     name: "createChannelMerger",
@@ -4315,13 +4315,7 @@ export const NativeFunctions = [
   },
   {
     name: "readBuffer",
-    signatures: [["src"],["mode"]],
-    receivers: ["WebGL2RenderingContext"]
-  },
-  {
-    name: "readBuffer",
-    signatures: [["srcBuffer"]],
-    receivers: ["MLContext"]
+    signatures: [["src"],["mode"]]
   },
   {
     name: "renderbufferStorageMultisample",
@@ -6366,7 +6360,13 @@ export const NativeFunctions = [
   },
   {
     name: "caretPositionFromPoint",
-    signatures: [["x","y","?options"]]
+    signatures: [["x","y","?options"]],
+    receivers: ["Document"]
+  },
+  {
+    name: "caretPositionFromPoint",
+    signatures: [["x"]],
+    receivers: ["TextMetrics"]
   },
   {
     name: "hasPrivateToken",
@@ -7109,23 +7109,11 @@ export const NativeFunctions = [
     signatures: [["feature"]]
   },
   {
-    name: "execute",
-    signatures: [["input"]]
-  },
-  {
     name: "promptStreaming",
     signatures: [["input"]]
   },
   {
-    name: "executeStreaming",
-    signatures: [["input"]]
-  },
-  {
     name: "createTextSession",
-    signatures: [["?options"]]
-  },
-  {
-    name: "createGenericSession",
     signatures: [["?options"]]
   },
   {
@@ -7652,24 +7640,6 @@ export const NativeFunctions = [
     signatures: [["constraint","?message"]]
   },
   {
-    name: "compute",
-    signatures: [["graph","inputs","outputs"]]
-  },
-  {
-    name: "writeBuffer",
-    signatures: [["dstBuffer","srcData","?srcElementOffset","?srcElementSize"],["dstBuffer","srcData","?srcByteOffset","?srcByteSize"]],
-    receivers: ["MLContext"]
-  },
-  {
-    name: "writeBuffer",
-    signatures: [["buffer","bufferOffset","data","?dataElementOffset","?dataElementCount"],["buffer","bufferOffset","data","?dataByteOffset","?byteSize"]],
-    receivers: ["GPUQueue"]
-  },
-  {
-    name: "dispatch",
-    signatures: [["graph","inputs","outputs"]]
-  },
-  {
     name: "createContext",
     signatures: [["?options"]]
   },
@@ -7911,7 +7881,7 @@ export const NativeFunctions = [
   },
   {
     name: "where",
-    signatures: [["condition","true_value","false_value"]]
+    signatures: [["condition","trueValue","falseValue"]]
   },
   {
     name: "build",
@@ -8736,6 +8706,10 @@ export const NativeFunctions = [
   {
     name: "setBindGroup",
     signatures: [["index","bindGroup","?dynamicOffsets"],["index","bindGroup","dynamicOffsetsData","dynamicOffsetsDataStart","dynamicOffsetsDataLength"]]
+  },
+  {
+    name: "writeBuffer",
+    signatures: [["buffer","bufferOffset","data","?dataElementOffset","?dataElementCount"],["buffer","bufferOffset","data","?dataByteOffset","?byteSize"]]
   },
   {
     name: "writeTexture",

@@ -58,6 +58,8 @@ declare namespace ProtocolProxyApi {
 
     IO: IOApi;
 
+    FileSystem: FileSystemApi;
+
     IndexedDB: IndexedDBApi;
 
     Input: InputApi;
@@ -162,6 +164,8 @@ declare namespace ProtocolProxyApi {
     HeadlessExperimental: HeadlessExperimentalDispatcher;
 
     IO: IODispatcher;
+
+    FileSystem: FileSystemDispatcher;
 
     IndexedDB: IndexedDBDispatcher;
 
@@ -1629,6 +1633,13 @@ declare namespace ProtocolProxyApi {
 
   }
   export interface IODispatcher {
+  }
+
+  export interface FileSystemApi {
+    invoke_getDirectory(params: Protocol.FileSystem.GetDirectoryRequest): Promise<Protocol.FileSystem.GetDirectoryResponse>;
+
+  }
+  export interface FileSystemDispatcher {
   }
 
   // eslint thinks this is us prefixing our interfaces but it's not!

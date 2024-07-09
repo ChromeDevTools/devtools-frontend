@@ -1607,7 +1607,6 @@
                     "id": "GenericIssueErrorType",
                     "type": "string",
                     "enum": [
-                        "CrossOriginPortalPostMessageError",
                         "FormLabelForNameError",
                         "FormDuplicateIdForInputError",
                         "FormInputWithNoLabelError",
@@ -9883,6 +9882,108 @@
             ]
         },
         {
+            "domain": "FileSystem",
+            "experimental": true,
+            "dependencies": [
+                "Network",
+                "Storage"
+            ],
+            "types": [
+                {
+                    "id": "File",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "type": "string"
+                        },
+                        {
+                            "name": "lastModified",
+                            "description": "Timestamp",
+                            "$ref": "Network.TimeSinceEpoch"
+                        },
+                        {
+                            "name": "size",
+                            "description": "Size in bytes",
+                            "type": "number"
+                        },
+                        {
+                            "name": "type",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "Directory",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "type": "string"
+                        },
+                        {
+                            "name": "nestedDirectories",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "name": "nestedFiles",
+                            "description": "Files that are directly nested under this directory.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "File"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "BucketFileSystemLocator",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "storageKey",
+                            "description": "Storage key",
+                            "$ref": "Storage.SerializedStorageKey"
+                        },
+                        {
+                            "name": "bucketName",
+                            "description": "Bucket name. Not passing a `bucketName` will retrieve the default Bucket. (https://developer.mozilla.org/en-US/docs/Web/API/Storage_API#storage_buckets)",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "pathComponents",
+                            "description": "Path to the directory using each path component as an array item.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "commands": [
+                {
+                    "name": "getDirectory",
+                    "parameters": [
+                        {
+                            "name": "bucketFileSystemLocator",
+                            "$ref": "BucketFileSystemLocator"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "directory",
+                            "description": "Returns the directory object at the path.",
+                            "$ref": "Directory"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "domain": "IndexedDB",
             "experimental": true,
             "dependencies": [
@@ -16839,6 +16940,7 @@
                         "compute-pressure",
                         "cross-origin-isolated",
                         "deferred-fetch",
+                        "digital-credentials-get",
                         "direct-sockets",
                         "display-capture",
                         "document-domain",
@@ -18176,7 +18278,6 @@
                         "Printing",
                         "WebDatabase",
                         "PictureInPicture",
-                        "Portal",
                         "SpeechRecognizer",
                         "IdleManager",
                         "PaymentManager",
@@ -21616,6 +21717,10 @@
                             "name": "value",
                             "description": "number instead of integer because not all uint32 can be represented by\nint",
                             "type": "number"
+                        },
+                        {
+                            "name": "filteringId",
+                            "$ref": "UnsignedInt64AsBase10"
                         }
                     ]
                 },
@@ -21740,6 +21845,10 @@
                             "items": {
                                 "$ref": "AttributionReportingAggregatableValueEntry"
                             }
+                        },
+                        {
+                            "name": "aggregatableFilteringIdMaxBytes",
+                            "type": "integer"
                         },
                         {
                             "name": "debugReporting",
@@ -23018,7 +23127,7 @@
                         },
                         {
                             "name": "subtype",
-                            "description": "Provides additional details for specific target types. For example, for\nthe type of \"page\", this may be set to \"portal\" or \"prerender\".",
+                            "description": "Provides additional details for specific target types. For example, for\nthe type of \"page\", this may be set to \"prerender\".",
                             "experimental": true,
                             "optional": true,
                             "type": "string"
@@ -25776,7 +25885,8 @@
                         "ActivationUrlHasEffectiveUrl",
                         "JavaScriptInterfaceAdded",
                         "JavaScriptInterfaceRemoved",
-                        "AllPrerenderingCanceled"
+                        "AllPrerenderingCanceled",
+                        "WindowClosed"
                     ]
                 },
                 {

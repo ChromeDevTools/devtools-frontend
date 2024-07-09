@@ -122,13 +122,14 @@ export interface TimelineCharts {
 }
 
 // An event dispatched when one of the Annotation Overlays (overlay created by the user,
-// ex. EntryLabel) is removed. When one of the Annotation Overlays is removed,
+// ex. EntryLabel) is removed or updated. When one of the Annotation Overlays is removed or updated,
 // ModificationsManager listens to this event and updates the current annotations.
-export class AnnotationOverlayRemoveEvent extends Event {
-  static readonly eventName = 'annotationoverlayremoveevent';
+export type UpdateAction = 'Remove'|'Update';
+export class AnnotationOverlayActionEvent extends Event {
+  static readonly eventName = 'annotationoverlayactionsevent';
 
-  constructor(public overlay: TimelineOverlay) {
-    super(AnnotationOverlayRemoveEvent.eventName);
+  constructor(public overlay: TimelineOverlay, public action: UpdateAction) {
+    super(AnnotationOverlayActionEvent.eventName);
   }
 }
 
@@ -656,7 +657,12 @@ export class Overlays extends EventTarget {
       case 'ENTRY_LABEL': {
         const component = new Components.EntryLabelOverlay.EntryLabelOverlay(overlay.label);
         component.addEventListener(Components.EntryLabelOverlay.EmptyEntryLabelRemoveEvent.eventName, () => {
-          this.dispatchEvent(new AnnotationOverlayRemoveEvent(overlay));
+          this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Remove'));
+        });
+        component.addEventListener(Components.EntryLabelOverlay.EntryLabelChangeEvent.eventName, event => {
+          const newLabel = (event as Components.EntryLabelOverlay.EntryLabelChangeEvent).newLabel;
+          overlay.label = newLabel;
+          this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Update'));
         });
         div.appendChild(component);
         return div;

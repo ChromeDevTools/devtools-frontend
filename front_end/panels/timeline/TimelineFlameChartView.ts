@@ -18,7 +18,7 @@ import {CountersGraph} from './CountersGraph.js';
 import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
 import {ModificationsManager} from './ModificationsManager.js';
 import {
-  AnnotationOverlayRemoveEvent,
+  AnnotationOverlayActionEvent,
   Overlays,
   type TimelineOverlay,
   type TimeRangeLabel,
@@ -196,9 +196,13 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       },
     });
 
-    this.#overlays.addEventListener(AnnotationOverlayRemoveEvent.eventName, event => {
-      const overlay = (event as AnnotationOverlayRemoveEvent).overlay;
-      ModificationsManager.activeManager()?.removeAnnotationOverlay(overlay);
+    this.#overlays.addEventListener(AnnotationOverlayActionEvent.eventName, event => {
+      const {overlay, action} = (event as AnnotationOverlayActionEvent);
+      if (action === 'Remove') {
+        ModificationsManager.activeManager()?.removeAnnotationOverlay(overlay);
+      } else if (action === 'Update') {
+        ModificationsManager.activeManager()?.updateAnnotationOverlay(overlay);
+      }
     });
 
     this.networkPane = new UI.Widget.VBox();

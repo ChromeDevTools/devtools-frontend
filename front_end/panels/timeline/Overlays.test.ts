@@ -13,6 +13,7 @@ import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
+import * as Components from './components/components.js';
 import * as Timeline from './timeline.js';
 
 const coordinator = RenderCoordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -217,16 +218,20 @@ describeWithEnvironment('Overlays', () => {
 
       const currManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
       // The Annotations Overlays are added through the ModificationsManager listener
-      currManager?.addEventListener(Timeline.ModificationsManager.AnnotationAddedEvent.eventName, event => {
-        const addedOverlay = (event as Timeline.ModificationsManager.AnnotationAddedEvent).addedAnnotationOverlay;
-        overlays.add(addedOverlay);
+      currManager?.addEventListener(Timeline.ModificationsManager.AnnotationModifiedEvent.eventName, event => {
+        const {overlay, action} = (event as Timeline.ModificationsManager.AnnotationModifiedEvent);
+        if (action === 'Add') {
+          overlays.add(overlay);
+        }
         overlays.update();
       });
 
       // When an annotation overlay is remomved, this event is dispatched to the Modifications Manager.
-      overlays.addEventListener(Timeline.Overlays.AnnotationOverlayRemoveEvent.eventName, event => {
-        const addedOverlay = (event as Timeline.Overlays.AnnotationOverlayRemoveEvent).overlay;
-        overlays.remove(addedOverlay);
+      overlays.addEventListener(Timeline.Overlays.AnnotationOverlayActionEvent.eventName, event => {
+        const {overlay, action} = (event as Timeline.Overlays.AnnotationOverlayActionEvent);
+        if (action === 'Remove') {
+          overlays.remove(overlay);
+        }
         overlays.update();
       });
 
@@ -391,6 +396,35 @@ describeWithEnvironment('Overlays', () => {
 
       // Ensure that the entry overlay has been removed because it was saved empty
       assert.strictEqual(overlays.overlaysForEntry(event).length, 0);
+    });
+
+    it('Update label overlay when the label changes', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);
+      const event = charts.mainProvider.eventByIndex(50);
+      assert.isOk(event);
+
+      // Create an entry label overlay
+      Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
+        type: 'ENTRY_LABEL',
+        entry: event as TraceEngine.Types.TraceEvents.TraceEventData,
+        label: '',
+      });
+      overlays.update();
+
+      // Ensure that the overlay was created.
+      const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_LABEL');
+      assert.isOk(overlayDOM);
+      const component = overlayDOM?.querySelector('devtools-entry-label-overlay');
+      assert.isOk(component?.shadowRoot);
+
+      component.connectedCallback();
+      component.dispatchEvent(new Components.EntryLabelOverlay.EntryLabelChangeEvent('new label'));
+
+      const updatedOverlay = overlays.overlaysForEntry(event)[0] as Timeline.Overlays.EntryLabel;
+      assert.isOk(updatedOverlay);
+      // Make sure the label was updated in the Overlay Object
+      assert.strictEqual(updatedOverlay.label, 'new label');
     });
 
     it('can render an overlay for a time range', async function() {

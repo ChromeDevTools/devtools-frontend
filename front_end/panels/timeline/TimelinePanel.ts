@@ -58,7 +58,7 @@ import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
 import {Tracker} from './FreshRecording.js';
 import historyToolbarButtonStyles from './historyToolbarButton.css.js';
 import {IsolateSelector} from './IsolateSelector.js';
-import {AnnotationAddedEvent, AnnotationRemovedEvent, ModificationsManager} from './ModificationsManager.js';
+import {AnnotationModifiedEvent, ModificationsManager} from './ModificationsManager.js';
 import {cpuprofileJsonGenerator, traceJsonGenerator} from './SaveFileFormatter.js';
 import {NodeNamesUpdated, SourceMapsResolver} from './SourceMapsResolver.js';
 import {type Client, TimelineController} from './TimelineController.js';
@@ -1294,15 +1294,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       }
 
       // Add ModificationsManager listeners for annotations change to update the Annotation Overlays.
-      currentManager?.addEventListener(AnnotationAddedEvent.eventName, event => {
-        const addedOverlay = (event as AnnotationAddedEvent).addedAnnotationOverlay;
-        this.flameChart.addOverlay(addedOverlay);
-        this.#sideBar.setAnnotationsTabContent(currentManager.getAnnotations());
-      });
-
-      currentManager?.addEventListener(AnnotationRemovedEvent.eventName, event => {
-        const removedOverlay = (event as AnnotationRemovedEvent).removedAnnotationOverlay;
-        this.flameChart.removeOverlay(removedOverlay);
+      currentManager?.addEventListener(AnnotationModifiedEvent.eventName, event => {
+        const {overlay, action} = (event as AnnotationModifiedEvent);
+        if (action === 'Add') {
+          this.flameChart.addOverlay(overlay);
+        } else if (action === 'Remove') {
+          this.flameChart.removeOverlay(overlay);
+        }
         this.#sideBar.setAnnotationsTabContent(currentManager.getAnnotations());
       });
 

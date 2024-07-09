@@ -11,23 +11,16 @@ import {type EntryLabel, type TimelineOverlay} from './Overlays.js';
 const modificationsManagerByTraceIndex: ModificationsManager[] = [];
 let activeManager: ModificationsManager|null;
 
-// Event dispatched after an annotation was added.
-// The event argument is the Overlay that needs to be created by `Overlays.ts`.
-export class AnnotationAddedEvent extends Event {
-  static readonly eventName = 'annotationaddedevent';
+export type UpdateAction = 'Remove'|'Add'|'UpdateLabel';
 
-  constructor(public addedAnnotationOverlay: TimelineOverlay) {
-    super(AnnotationAddedEvent.eventName);
-  }
-}
+// Event dispatched after an annotation was added, removed or updated.
+// The event argument is the Overlay that needs to be created,removed
+// or updated by `Overlays.ts` and the action that needs to be applied to it.
+export class AnnotationModifiedEvent extends Event {
+  static readonly eventName = 'annotationmodifiedevent';
 
-// Event dispatched after an annotation was removed.
-// The event argument is the Overlay that needs to be removed from `Overlays.ts`.
-export class AnnotationRemovedEvent extends Event {
-  static readonly eventName = 'annotationremovedevent';
-
-  constructor(public removedAnnotationOverlay: TimelineOverlay) {
-    super(AnnotationRemovedEvent.eventName);
+  constructor(public overlay: TimelineOverlay, public action: UpdateAction) {
+    super(AnnotationModifiedEvent.eventName);
   }
 }
 
@@ -125,7 +118,7 @@ export class ModificationsManager extends EventTarget {
     this.#overlayForAnnotation.set(newAnnotation, newOverlay);
 
     // TODO: When we have more annotations, check the annotation type and create the appropriate one
-    this.dispatchEvent(new AnnotationAddedEvent(newOverlay));
+    this.dispatchEvent(new AnnotationModifiedEvent(newOverlay, 'Add'));
   }
 
   removeAnnotationOverlay(removedOverlay: TimelineOverlay): void {
@@ -135,7 +128,20 @@ export class ModificationsManager extends EventTarget {
       return;
     }
     this.#overlayForAnnotation.delete(annotationForRemovedOverlay);
-    this.dispatchEvent(new AnnotationRemovedEvent(removedOverlay));
+    this.dispatchEvent(new AnnotationModifiedEvent(removedOverlay, 'Remove'));
+  }
+
+  updateAnnotationOverlay(updatedOverlay: TimelineOverlay): void {
+    const annotationForUpdatedOverlay = this.#getAnnotationByOverlay(updatedOverlay);
+    if (!annotationForUpdatedOverlay) {
+      console.warn('Annotation for updated Overlay does not exist');
+      return;
+    }
+
+    if (updatedOverlay.type === 'ENTRY_LABEL') {
+      annotationForUpdatedOverlay.label = updatedOverlay.label;
+    }
+    this.dispatchEvent(new AnnotationModifiedEvent(updatedOverlay, 'UpdateLabel'));
   }
 
   #getAnnotationByOverlay(overlay: TimelineOverlay): TraceEngine.Types.File.Annotation|null {

@@ -11,6 +11,7 @@ load(
     "defaults",
     "dimensions",
     "highly_privileged_builder",
+    "recipe",
 )
 
 ROLL_BUILDER_NAME = "Roll deps and chromium pin into devtools-frontend"
@@ -44,11 +45,33 @@ highly_privileged_builder(
     ],
 )
 
+MOJOJS_ROLLER_NAME = "Sync mojojs.zip config"
+
+# Roll mojojs.zip config from chromium to src-internal
+luci.builder(
+    name = MOJOJS_ROLLER_NAME,
+    bucket = "ci-hp",
+    service_account = AUTOROLLER_ACCOUNT,
+    dimensions = {
+        "pool": "luci.v8.highly-privileged",
+        "host_class": "default",
+        "os": "Ubuntu",
+    },
+    executable = recipe(
+        name = "sync_mojojs_config",
+        cipd_package = "infra_internal/recipe_bundles/chrome-internal.googlesource.com/chrome/tools/build_limited/scripts/slave",
+    ),
+    schedule = "0 3,12 * * *",
+    build_numbers = True,
+    execution_timeout = default_timeout,
+)
+
 luci.list_view(
     name = "infra",
     title = "Infra",
     favicon = defaults.favicon,
     entries = [
         luci.list_view_entry(builder = ROLL_BUILDER_NAME),
+        luci.list_view_entry(builder = MOJOJS_ROLLER_NAME),
     ],
 )

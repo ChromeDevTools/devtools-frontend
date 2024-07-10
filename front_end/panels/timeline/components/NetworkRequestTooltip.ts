@@ -24,15 +24,15 @@ const UIStrings = {
    */
   queuingAndConnecting: 'Queuing and connecting',
   /**
-   *@description Text that refers to the queueing and connecting time of a network request
+   *@description Text that refers to the request sent and waiting time of a network request
    */
   requestSentAndWaiting: 'Request sent and waiting',
   /**
-   *@description Text that refers to the queueing and connecting time of a network request
+   *@description Text that refers to the content downloading time of a network request
    */
   contentDownloading: 'Content downloading',
   /**
-   *@description Text that refers to the queueing and connecting time of a network request
+   *@description Text that refers to the waiting on main thread time of a network request
    */
   waitingOnMainThread: 'Waiting on main thread',
   /**
@@ -42,7 +42,7 @@ const UIStrings = {
 };
 
 export class NetworkRequestTooltip extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-performance-network-request-info`;
+  static readonly litTagName = LitHtml.literal`devtools-performance-network-request-tooltip`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #networkRequest?: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest|null;
@@ -172,8 +172,8 @@ export class NetworkRequestTooltip extends HTMLElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'devtools-performance-network-request-info': NetworkRequestTooltip;
+    'devtools-performance-network-request-tooltip': NetworkRequestTooltip;
   }
 }
 
-customElements.define('devtools-performance-network-request-info', NetworkRequestTooltip);
+customElements.define('devtools-performance-network-request-tooltip', NetworkRequestTooltip);

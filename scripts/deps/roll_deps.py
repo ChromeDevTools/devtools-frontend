@@ -9,6 +9,7 @@ Update manually maintained dependencies from Chromium.
 
 import argparse
 import enum
+import json
 import os
 import shutil
 import subprocess
@@ -74,6 +75,11 @@ def parse_options(cli_args):
                         action="store_true",
                         default=False,
                         help='If set it syncs nodejs.')
+    parser.add_argument(
+        '--output',
+        default=None,
+        help=
+        'If set it outputs information about the roll in the specified file.')
     parser.add_argument('chromium_dir', help='path to chromium/src directory')
     parser.add_argument('devtools_dir',
                         help='path to devtools/devtools-frontend directory')
@@ -169,6 +175,32 @@ def run_eslint(options):
                           cwd=options.devtools_dir)
 
 
+def update_deps_revision(options):
+    print('updating DEPS revision')
+    old_revision = subprocess.check_output(
+        ['gclient', 'getdep', '--var=chromium_browser_protocol_revision'],
+        cwd=options.devtools_dir,
+        text=True).strip()
+    new_revision = subprocess.check_output(
+        ['git', 'log', '-1', '--pretty=format:%H'],
+        cwd=options.chromium_dir,
+        text=True).strip()
+    subprocess.check_call(
+        [
+            'gclient', 'setdep',
+            f'--var=chromium_browser_protocol_revision={new_revision}'
+        ],
+        cwd=options.devtools_dir,
+    )
+    if options.output:
+        with open(options.output, 'w', encoding='utf-8') as f:
+            json.dump(
+                {
+                    'old_revision': old_revision,
+                    'new_revision': new_revision
+                }, f)
+
+
 if __name__ == '__main__':
     OPTIONS = parse_options(sys.argv[1:])
     if OPTIONS.ref == ReferenceMode.Tot:
@@ -181,3 +213,4 @@ if __name__ == '__main__':
     generate_protocol_resources(OPTIONS)
     run_git_cl_format(OPTIONS)
     run_eslint(OPTIONS)
+    update_deps_revision(OPTIONS)

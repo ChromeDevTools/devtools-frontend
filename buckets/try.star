@@ -105,7 +105,6 @@ try_builder(
     properties = {
         "builder_config": "Debug",
         "devtools_skip_typecheck": True,
-        "parallel": True,
         "coverage": False,
     },
     description_html = """
@@ -120,7 +119,7 @@ builder_coverage(
     recipe_name = "devtools/devtools-frontend",
     execution_timeout = default_timeout,
     build_numbers = True,
-    properties = {"run_experimental_steps": True, "parallel": True},
+    properties = {"run_experimental_steps": True},
 )
 
 builder_coverage(
@@ -129,7 +128,7 @@ builder_coverage(
     builder_name_pattern = "devtools_frontend_%s_rel",
     recipe_name = "devtools/devtools-frontend",
     execution_timeout = default_timeout,
-    properties = {"clobber": True, "parallel": True},
+    properties = {"clobber": True},
 )
 
 builder_coverage(
@@ -138,7 +137,6 @@ builder_coverage(
     builder_name_pattern = "devtools_frontend_%s_rel",
     recipe_name = "devtools/devtools-frontend",
     execution_timeout = default_timeout,
-    properties = {"parallel": True},
 )
 
 builder_coverage(
@@ -146,17 +144,15 @@ builder_coverage(
     builder_factory = try_builder,
     builder_name_pattern = "devtools_frontend_%s_rel",
     recipe_name = "devtools/devtools-frontend",
-    properties = {"parallel": True},
 )
 
 builder_coverage(
     covered_oss = ["linux", "win64", "mac", "mac_arm64"],
     builder_factory = try_builder,
-    builder_name_pattern = "devtools_frontend_shuffled_parallel_%s_rel",
+    builder_name_pattern = "devtools_frontend_shuffled_%s_rel",
     recipe_name = "devtools/devtools-frontend",
     execution_timeout = default_timeout + 15 * time.minute,
     priority = 50,
-    properties = {"parallel": True},
 )
 
 builder_coverage(
@@ -165,7 +161,7 @@ builder_coverage(
     builder_name_pattern = "devtools_frontend_%s_dbg",
     recipe_name = "devtools/devtools-frontend",
     execution_timeout = default_timeout,
-    properties = {"builder_config": "Debug", "parallel": True},
+    properties = {"builder_config": "Debug"},
 )
 
 builder_coverage(
@@ -175,7 +171,6 @@ builder_coverage(
     recipe_name = "devtools/dtf-e2e-stress",
     execution_timeout = default_timeout,
     priority = 50,
-    properties = {"parallel": True},
 )
 
 builder_coverage(
@@ -275,9 +270,9 @@ cq_builders = struct(
         "devtools_screenshot_mac_rel",
         "devtools_screenshot_mac_arm64_rel",
         "devtools_screenshot_win64_rel",
-        "devtools_frontend_shuffled_parallel_linux_rel",
-        "devtools_frontend_shuffled_parallel_mac_rel",
-        "devtools_frontend_shuffled_parallel_win64_rel",
+        "devtools_frontend_shuffled_linux_rel",
+        "devtools_frontend_shuffled_mac_rel",
+        "devtools_frontend_shuffled_win64_rel",
     ],
 )
 

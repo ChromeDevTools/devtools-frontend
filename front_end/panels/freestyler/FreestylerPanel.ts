@@ -128,6 +128,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       onTextSubmit: this.#handleTextSubmit.bind(this),
       onInspectElementClick: this.#handleSelectElementClick.bind(this),
       onRateClick: this.#handleRateClick.bind(this),
+      onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
       onAcceptConsentClick: this.#handleAcceptConsentClick.bind(this),
       onCancelClick: this.#cancel.bind(this),
       onFixThisIssueClick: () => {
@@ -197,6 +198,19 @@ export class FreestylerPanel extends UI.Panel.Panel {
       do_conversation_client_event: {
         user_feedback: {
           sentiment: rating,
+        },
+      },
+    });
+  }
+
+  #handleFeedbackSubmit(rpcId: number, feedback: string): void {
+    this.#aidaClient.registerClientEvent({
+      corresponding_aida_rpc_global_id: rpcId,
+      do_conversation_client_event: {
+        user_feedback: {
+          user_input: {
+            comment: feedback,
+          },
         },
       },
     });

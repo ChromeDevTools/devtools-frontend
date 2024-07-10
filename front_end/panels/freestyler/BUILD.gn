@@ -11,6 +11,7 @@ import("../visibility.gni")
 generate_css("css_files") {
   sources = [
     "./components/freestylerChatUi.css",
+    "./components/provideFeedback.css",
     "./freestylerPanel.css",
   ]
 }
@@ -21,6 +22,7 @@ devtools_module("freestyler") {
     "FreestylerEvaluateAction.ts",
     "FreestylerPanel.ts",
     "components/FreestylerChatUi.ts",
+    "components/ProvideFeedback.ts",
   ]
 
   deps = [

@@ -17,6 +17,7 @@ const component = new Freestyler.FreestylerChatUi({
   onTextSubmit: noop,
   onInspectElementClick: noop,
   onRateClick: noop,
+  onFeedbackSubmit: noop,
   onAcceptConsentClick: noop,
   onCancelClick: noop,
   onFixThisIssueClick: noop,

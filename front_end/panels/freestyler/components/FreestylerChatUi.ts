@@ -16,6 +16,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {type ActionStepData, type CommonStepData, Step, type StepData} from '../FreestylerAgent.js';
 
 import freestylerChatUiStyles from './freestylerChatUi.css.js';
+import {ProvideFeedback, type ProvideFeedbackProps} from './ProvideFeedback.js';
 
 const DOGFOOD_FEEDBACK_URL = 'https://goo.gle/freestyler-feedback' as Platform.DevToolsPath.UrlString;
 
@@ -167,6 +168,7 @@ export interface Props {
   onTextSubmit: (text: string) => void;
   onInspectElementClick: () => void;
   onRateClick: (rpcId: number, rate: Host.AidaClient.Rating) => void;
+  onFeedbackSubmit: (rpcId: number, feedback: string) => void;
   onAcceptConsentClick: () => void;
   onCancelClick: () => void;
   onFixThisIssueClick: () => void;
@@ -257,31 +259,16 @@ export class FreestylerChatUi extends HTMLElement {
 
   #renderRateButtons(rpcId: number): LitHtml.TemplateResult {
     // clang-format off
-    return LitHtml.html`
-      <div class="rate-buttons">
-        <${Buttons.Button.Button.litTagName}
-          .data=${{
-            variant: Buttons.Button.Variant.ICON,
-            size: Buttons.Button.Size.SMALL,
-            iconName: 'thumb-up',
-            active: false,
-            title: i18nString(TempUIStrings.thumbsUp),
-            jslogContext: 'thumbs-up',
-          } as Buttons.Button.ButtonData}
-          @click=${() => this.#props.onRateClick(rpcId, Host.AidaClient.Rating.POSITIVE)}
-        ></${Buttons.Button.Button.litTagName}>
-        <${Buttons.Button.Button.litTagName}
-          .data=${{
-            variant: Buttons.Button.Variant.ICON,
-            size: Buttons.Button.Size.SMALL,
-            iconName: 'thumb-down',
-            active: false,
-            title: i18nString(TempUIStrings.thumbsDown),
-            jslogContext: 'thumbs-down',
-          } as Buttons.Button.ButtonData}
-          @click=${() => this.#props.onRateClick(rpcId, Host.AidaClient.Rating.NEGATIVE)}
-        ></${Buttons.Button.Button.litTagName}>
-      </div>`;
+    return LitHtml.html`<${ProvideFeedback.litTagName}
+      .props=${{
+        onRateClick: rating => {
+          this.#props.onRateClick(rpcId, rating);
+        },
+        onFeedbackSubmit: feedback => {
+          this.#props.onFeedbackSubmit(rpcId, feedback);
+        },
+      } as ProvideFeedbackProps}
+      ></${ProvideFeedback.litTagName}>`;
     // clang-format on
   }
 

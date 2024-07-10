@@ -181,29 +181,58 @@ builder_coverage(
     execution_timeout = 2 * time.hour,
 )
 
-def try_pair(name, suffix, compiler_dimensions, swarming_target_os, swarming_target_cpu):
+def try_pair(
+        name,
+        suffix,
+        compiler_dimensions,
+        swarming_target_os,
+        swarming_target_cpu,
+        properties = None):
     compilator_name = "%s_compile_%s" % (name, suffix)
+    tester_properties = properties or {}
+    tester_properties.update({
+        "compilator_name": compilator_name,
+        "target_os": swarming_target_os,
+        "target_cpu": swarming_target_cpu,
+    })
     try_builder(
         name = "%s_%s" % (name, suffix),
         recipe_name = "devtools/trybot_tester",
         dimensions = dimensions.multibot,
         build_numbers = True,
-        properties = {
-            "compilator_name": compilator_name,
-            "target_os": swarming_target_os,
-            "target_cpu": swarming_target_cpu,
-        },
+        properties = tester_properties,
     )
     try_builder(
         name = compilator_name,
         recipe_name = "devtools/compilator",
         dimensions = compiler_dimensions,
         build_numbers = True,
+        properties = properties,
     )
 
 try_pair("dtf_linux", "rel", dimensions.default_ubuntu, "Ubuntu-22.04", "x86-64")
-try_pair("dtf_win", "rel", dimensions.win10, "Windows-10-19045", "x86-64")
+try_pair("dtf_win64", "rel", dimensions.win10, "Windows-10-19045", "x86-64")
 try_pair("dtf_mac", "rel", dimensions.mac, "Mac-14", "x86-64")
+try_pair("dtf_mac_arm64", "rel", dimensions.mac, "Mac-14", "arm64")
+try_pair(
+    "dtf_linux",
+    "dbg",
+    dimensions.default_ubuntu,
+    "Ubuntu-22.04",
+    "x86-64",
+    properties = {"builder_config": "Debug"},
+)
+try_pair(
+    "dtf_linux",
+    "dbg_fastbuild",
+    dimensions.default_ubuntu,
+    "Ubuntu-22.04",
+    "x86-64",
+    properties = {
+        "builder_config": "Debug",
+        "devtools_skip_typecheck": True,
+    },
+)
 
 def cpp_debug_extension_try(suffix, extra_properties):
     properties = {"$build/reclient": {
@@ -244,9 +273,12 @@ cq_builders = struct(
         "devtools_frontend_mac_rel",
         "devtools_frontend_mac_arm64_rel",
         "devtools_frontend_win64_rel",
+        "dtf_linux_dbg",
+        "dtf_linux_dbg_fastbuild",
         "dtf_linux_rel",
+        "dtf_mac_arm64_rel",
         "dtf_mac_rel",
-        "dtf_win_rel",
+        "dtf_win64_rel",
         "dtf_presubmit_linux",
         "dtf_presubmit_win64",
     ],
@@ -257,7 +289,9 @@ cq_builders = struct(
     experiment_builders = {
         # Quarantine a builder here
         # This will make them experiment with the given percentage
-        "devtools_frontend_mac_arm64_rel": 100,
+        "dtf_mac_arm64_rel": 100,
+        "dtf_linux_dbg": 20,
+        "dtf_linux_dbg_fastbuild": 20,
     },
     includable_only_builders = [
         "cpp_debug_extension_e2e_dbg",
@@ -265,7 +299,7 @@ cq_builders = struct(
         "devtools_frontend_linux_blink_light_rel",
         "devtools_frontend_linux_rel",
         "devtools_frontend_mac_rel",
-        "devtools_frontend_win_rel",
+        "devtools_frontend_mac_arm64_rel",
         "devtools_screenshot_linux_rel",
         "devtools_screenshot_mac_rel",
         "devtools_screenshot_mac_arm64_rel",

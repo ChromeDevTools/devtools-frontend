@@ -240,4 +240,22 @@ describeWithEnvironment('Timing helpers', () => {
       }));
     });
   });
+
+  describe('timestampIsInBounds', () => {
+    const {timestampIsInBounds} = TraceModel.Helpers.Timing;
+    const {MicroSeconds} = TraceModel.Types.Timing;
+    it('is true if the value is in the bounds and false otherwise', async () => {
+      const bounds: TraceModel.Types.Timing.TraceWindowMicroSeconds = {
+        min: MicroSeconds(1),
+        max: MicroSeconds(10),
+        range: MicroSeconds(9),
+      };
+
+      assert.isTrue(timestampIsInBounds(bounds, MicroSeconds(1)));
+      assert.isTrue(timestampIsInBounds(bounds, MicroSeconds(5)));
+      assert.isTrue(timestampIsInBounds(bounds, MicroSeconds(10)));
+      assert.isFalse(timestampIsInBounds(bounds, MicroSeconds(0)));
+      assert.isFalse(timestampIsInBounds(bounds, MicroSeconds(11)));
+    });
+  });
 });

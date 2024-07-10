@@ -21,6 +21,10 @@ export interface ChartViewportDelegate {
   update(): void;
 }
 
+export interface Config {
+  enableCursorElement: boolean;
+}
+
 export class ChartViewport extends UI.Widget.VBox {
   private readonly delegate: ChartViewportDelegate;
   viewportElement: HTMLElement;
@@ -53,11 +57,14 @@ export class ChartViewport extends UI.Widget.VBox {
   private isUpdateScheduled?: boolean;
   private cancelWindowTimesAnimation?: (() => void)|null;
 
+  #config: Config;
+
   #usingNewOverlayForTimeRange =
       Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS_OVERLAYS);
 
-  constructor(delegate: ChartViewportDelegate) {
+  constructor(delegate: ChartViewportDelegate, config: Config) {
     super();
+    this.#config = config;
     this.registerRequiredCSS(chartViewPortStyles);
 
     this.delegate = delegate;
@@ -331,7 +338,7 @@ export class ChartViewport extends UI.Widget.VBox {
   private updateCursorPosition(e: Event): void {
     const mouseEvent = (e as MouseEvent);
     this.lastMouseOffsetX = mouseEvent.offsetX;
-    const shouldShowCursor = mouseEvent.shiftKey && !mouseEvent.metaKey;
+    const shouldShowCursor = this.#config.enableCursorElement && mouseEvent.shiftKey && !mouseEvent.metaKey;
     this.showCursor(shouldShowCursor);
     if (shouldShowCursor) {
       this.cursorElement.style.left = mouseEvent.offsetX + 'px';

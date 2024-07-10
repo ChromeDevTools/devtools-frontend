@@ -218,6 +218,10 @@ export interface OptionalFlameChartConfig {
    * The element to use when populating and positioning the mouse tooltip.
    */
   tooltipElement?: HTMLElement;
+  /**
+   * Used to disable the cursor element in ChartViewport and instead use the new overlays system.
+   */
+  useOverlaysForCursorRuler?: boolean;
 }
 
 export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
@@ -310,7 +314,16 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.groupHiddenState = {};
     this.flameChartDelegate = flameChartDelegate;
 
-    this.chartViewport = new ChartViewport(this);
+    // The ChartViewport has its own built-in ruler for when the user holds
+    // shift and moves the mouse. We want to disable that if we are within the
+    // performance panel where we use overlays, but enable it otherwise.
+    let enableCursorElement = true;
+    if (typeof optionalConfig.useOverlaysForCursorRuler === 'boolean') {
+      enableCursorElement = !optionalConfig.useOverlaysForCursorRuler;
+    }
+    this.chartViewport = new ChartViewport(this, {
+      enableCursorElement,
+    });
     this.chartViewport.show(this.contentElement);
 
     this.dataProvider = dataProvider;
@@ -610,6 +623,14 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (this.chartViewport.isDragging()) {
       return;
     }
+
+    const timeMilliSeconds = TraceEngine.Types.Timing.MilliSeconds(this.chartViewport.pixelToTime(mouseEvent.offsetX));
+
+    this.dispatchEventToListeners(Events.MouseMove, {
+      mouseEvent,
+      timeInMicroSeconds: TraceEngine.Helpers.Timing.millisecondsToMicroseconds(timeMilliSeconds),
+    });
+
     // Check if the mouse is hovering any group's header area
     const {groupIndex, hoverType} = this.coordinatesToGroupIndexAndHoverType(mouseEvent.offsetX, mouseEvent.offsetY);
     switch (hoverType) {
@@ -3891,6 +3912,8 @@ export const enum Events {
   ChartPlayableStateChange = 'ChartPlayableStateChange',
 
   LatestDrawDimensions = 'LatestDrawDimensions',
+
+  MouseMove = 'MouseMove',
 }
 
 export type EventTypes = {
@@ -3908,6 +3931,10 @@ export type EventTypes = {
       allGroupsCollapsed: boolean,
     },
     traceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds,
+  },
+  [Events.MouseMove]: {
+    mouseEvent: MouseEvent,
+    timeInMicroSeconds: TraceEngine.Types.Timing.MicroSeconds,
   },
 };
 

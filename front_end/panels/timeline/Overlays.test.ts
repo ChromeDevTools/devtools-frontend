@@ -580,7 +580,8 @@ describeWithEnvironment('Overlays', () => {
       overlays.update();
 
       assert.lengthOf(container.children, 1);
-      overlays.removeOverlaysOfType('ENTRY_SELECTED');
+      const removedCount = overlays.removeOverlaysOfType('ENTRY_SELECTED');
+      assert.strictEqual(removedCount, 1);
       assert.lengthOf(container.children, 0);
     });
 

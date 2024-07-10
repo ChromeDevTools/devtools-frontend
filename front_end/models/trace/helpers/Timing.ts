@@ -144,3 +144,8 @@ export function boundsIncludeTimeRange(data: BoundsIncludeTimeRange): boolean {
 
   return visibleMin <= rangeMax && visibleMax >= rangeMin;
 }
+
+export function timestampIsInBounds(
+    bounds: Types.Timing.TraceWindowMicroSeconds, timestamp: Types.Timing.MicroSeconds): boolean {
+  return timestamp >= bounds.min && timestamp <= bounds.max;
+}

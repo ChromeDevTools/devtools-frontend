@@ -19,6 +19,7 @@ import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
 import {ModificationsManager} from './ModificationsManager.js';
 import {
   AnnotationOverlayActionEvent,
+  type CursorTimestampMarker,
   Overlays,
   type TimelineOverlay,
   type TimeRangeLabel,
@@ -154,6 +155,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       // The TimelineOverlays are used for selected elements
       selectedElementOutline: false,
       tooltipElement: this.#tooltipElement,
+      useOverlaysForCursorRuler: true,
     });
     this.mainFlameChart.alwaysShowVerticalScroll();
     this.mainFlameChart.enableRuler(false);
@@ -173,6 +175,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       // The TimelineOverlays are used for selected elements
       selectedElementOutline: false,
       tooltipElement: this.#tooltipElement,
+      useOverlaysForCursorRuler: true,
     });
     this.networkFlameChart.alwaysShowVerticalScroll();
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.LatestDrawDimensions, dimensions => {
@@ -184,6 +187,14 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       // main flame chart because its tooltips are positioned based in part on
       // the height of the network chart.
       this.mainFlameChart.setTooltipYPixelAdjustment(this.#overlays.networkChartOffsetHeight());
+    });
+
+    this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.MouseMove, event => {
+      this.#processFlameChartMouseMoveEvent(event.data);
+    });
+
+    this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.MouseMove, event => {
+      this.#processFlameChartMouseMoveEvent(event.data);
     });
 
     this.#overlays = new Overlays({
@@ -267,6 +278,43 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     } else {
       if (this.#timespanBreakdownOverlay) {
         this.removeOverlay(this.#timespanBreakdownOverlay);
+      }
+    }
+  }
+
+  #processFlameChartMouseMoveEvent(data: PerfUI.FlameChart.EventTypes['MouseMove']): void {
+    const {mouseEvent, timeInMicroSeconds} = data;
+
+    // If the user is no longer holding shift, remove any existing marker.
+    if (!mouseEvent.shiftKey) {
+      const removedCount = this.#overlays.removeOverlaysOfType('CURSOR_TIMESTAMP_MARKER');
+      if (removedCount > 0) {
+        // Don't trigger lots of updates on a mouse move if we didn't actually
+        // remove any overlays.
+        this.#overlays.update();
+      }
+    }
+
+    if (!mouseEvent.metaKey && mouseEvent.shiftKey) {
+      // Try to use an existing marker if there is one - this means when the
+      // user moves their mouse whilst holding shift we update the position
+      // rather than destroy + recreate a new overlay every time.
+      const existing = this.#overlays.overlaysOfType<CursorTimestampMarker>('CURSOR_TIMESTAMP_MARKER').at(0);
+      if (existing && existing.timestamp === timeInMicroSeconds) {
+        // If the existing overlay is at the same time as the mouse, we don't
+        // need to do anything
+        return;
+      }
+
+      if (existing) {
+        this.updateExistingOverlay(existing, {
+          timestamp: timeInMicroSeconds,
+        });
+      } else {
+        this.addOverlay({
+          type: 'CURSOR_TIMESTAMP_MARKER',
+          timestamp: timeInMicroSeconds,
+        });
       }
     }
   }

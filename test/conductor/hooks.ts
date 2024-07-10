@@ -48,7 +48,7 @@ const viewportHeight = 720;
 const windowWidth = viewportWidth + 50;
 const windowHeight = viewportHeight + 200;
 
-const headless = TestConfig.debug;
+const headless = !TestConfig.debug;
 const envSlowMo = process.env['STRESS'] ? 50 : undefined;
 const envThrottleRate = process.env['STRESS'] ? 3 : 1;
 const envLatePromises = process.env['LATE_PROMISES'] !== undefined ?

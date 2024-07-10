@@ -489,8 +489,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
     this.revealDebuggerSidebar();
     window.focus();
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
-    if (!this.overlayLoggables &&
-        !Common.Settings.Settings.instance().moduleSetting('disable-paused-state-overlay').get()) {
+    const withOverlay = UI.Context.Context.instance().flavor(SDK.Target.Target)?.model(SDK.OverlayModel.OverlayModel) &&
+        !Common.Settings.Settings.instance().moduleSetting('disable-paused-state-overlay').get();
+    if (withOverlay && !this.overlayLoggables) {
       this.overlayLoggables = {debuggerPausedMessage: {}, resumeButton: {}, stepOverButton: {}};
       VisualLogging.registerLoggable(
           this.overlayLoggables.debuggerPausedMessage, `${VisualLogging.dialog('debugger-paused')}`, null);

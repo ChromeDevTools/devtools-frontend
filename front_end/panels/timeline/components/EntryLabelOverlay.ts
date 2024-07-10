@@ -33,13 +33,13 @@ export class EntryLabelOverlay extends HTMLElement {
   static readonly LABEL_AND_CONNECTOR_HEIGHT =
       EntryLabelOverlay.LABEL_HEIGHT + EntryLabelOverlay.LABEL_PADDING * 2 + EntryLabelOverlay.LABEL_CONNECTOR_HEIGHT;
   // Set the max label length to avoid labels that could signicantly increase the file size.
-  static readonly MAX_LABEL_LENGTH = 1;
+  static readonly MAX_LABEL_LENGTH = 100;
 
   static readonly litTagName = LitHtml.literal`devtools-entry-label-overlay`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
   // The label is set to editable when it is double clicked. If the user clicks away from the label box
-  // element, the lable is set to not editable until it double clicked.
+  // element, the lable is set to not editable until it double clicked.s
   #isLabelEditable: boolean = true;
   #entryDimensions: {height: number, width: number}|null = null;
 

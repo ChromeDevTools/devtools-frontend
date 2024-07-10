@@ -30,7 +30,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
         annotation.entry.name;
 
     return LitHtml.html`
-      <div>
+      <div class="annotation">
         <span class="entry-name">
           ${entryName}
         </span>

@@ -7,3 +7,23 @@
 .annotations {
   display: block;
 }
+
+.annotation {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  word-break: break-all;
+  padding-top: 15px;
+  gap: 6px;
+}
+
+.entry-name {
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-weight: bold;
+  background-color: var(--app-color-performance-sidebar-label);
+}
+
+.label {
+  font-size: larger;
+}

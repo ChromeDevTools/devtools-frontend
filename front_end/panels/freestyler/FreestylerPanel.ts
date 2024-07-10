@@ -36,7 +36,7 @@ const TempUIStrings = {
    */
   sendFeedback: 'Send feedback',
   /**
-   *@description Freestyelr UI text for the help button.
+   *@description Freestyler UI text for the help button.
    */
   help: 'Help',
   /**

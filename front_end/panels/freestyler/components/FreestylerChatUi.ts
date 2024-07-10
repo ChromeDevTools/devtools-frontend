@@ -511,10 +511,7 @@ export class FreestylerChatUi extends HTMLElement {
                   ? LitHtml.html`
                     <${Buttons.Button.Button.litTagName}
                       class="step-actions"
-                      type="button"
-                      title=${i18nString(TempUIStrings.cancelButtonTitle)}
                       aria-label=${i18nString(TempUIStrings.cancelButtonTitle)}
-                      jslog=${VisualLogging.action('stop').track({ click: true })}
                       @click=${this.#handleCancel}
                       .data=${
                         {
@@ -522,24 +519,23 @@ export class FreestylerChatUi extends HTMLElement {
                           size: Buttons.Button.Size.SMALL,
                           iconName: 'stop',
                           title: i18nString(TempUIStrings.cancelButtonTitle),
+                          jslogContext: 'stop',
                         } as Buttons.Button.ButtonData
                       }
                     ></${Buttons.Button.Button.litTagName}>`
                   : LitHtml.html`
                     <${Buttons.Button.Button.litTagName}
                       class="step-actions"
-                      type="submit"
-                      title=${i18nString(TempUIStrings.sendButtonTitle)}
                       aria-label=${i18nString(TempUIStrings.sendButtonTitle)}
-                      jslog=${VisualLogging.action('send').track({ click: true })}
-                      @click=${this.#handleSubmit}
                       .data=${
                         {
+                          type: 'submit',
                           variant: Buttons.Button.Variant.ICON,
                           size: Buttons.Button.Size.SMALL,
                           iconName: 'send',
                           title: i18nString(TempUIStrings.sendButtonTitle),
                           disabled: isInputDisabled,
+                          jslogContext: 'sent',
                         } as Buttons.Button.ButtonData
                       }
                     ></${Buttons.Button.Button.litTagName}>`

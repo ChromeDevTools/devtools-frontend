@@ -30,8 +30,12 @@ while (!fs.existsSync(path.join(pathToOutTargetDir, 'args.gn'))) {
     process.exit(1);
   }
 }
-// We care about everything in the gen/ directory.
-const devtoolsFolder = path.resolve(path.join(pathToOutTargetDir, 'gen'));
+// We care about everything in the gen/ directory, unless we are in a full checkout.
+let devtoolsFolder = path.resolve(path.join(pathToOutTargetDir, 'gen'));
+const fullCheckoutDevtoolsRootFolder = path.join(devtoolsFolder, 'third_party', 'devtools-frontend', 'src');
+if (__dirname.startsWith(fullCheckoutDevtoolsRootFolder)) {
+  devtoolsFolder = fullCheckoutDevtoolsRootFolder;
+}
 
 // The certificate is taken from
 // https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/tools/apache_config/webkit-httpd.pem

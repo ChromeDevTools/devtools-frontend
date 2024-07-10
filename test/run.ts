@@ -9,7 +9,15 @@ import * as os from 'os';
 import * as path from 'path';
 
 import {commandLineArgs} from './conductor/commandline.js';
-import {defaultChromePath, GEN_DIR, isContainedInDirectory, PathPair, SOURCE_ROOT} from './conductor/paths.js';
+import {
+  BUILD_WITH_CHROMIUM,
+  CHECKOUT_ROOT,
+  defaultChromePath,
+  GEN_DIR,
+  isContainedInDirectory,
+  PathPair,
+  SOURCE_ROOT,
+} from './conductor/paths.js';
 
 const yargs = require('yargs');
 const unparse = require('yargs-unparser');
@@ -62,7 +70,9 @@ function ninja(stdio: 'inherit'|'pipe', ...args: string[]) {
     buildRoot = parent;
   }
   const ninjaCommand = os.platform() === 'win32' ? 'autoninja.bat' : 'autoninja';
-  const result = runProcess(ninjaCommand, args, {encoding: 'utf-8', cwd: buildRoot, stdio});
+  // autoninja can't always find ninja if not run from the checkout root, so
+  // run it from there and pass the build root as an argument.
+  const result = runProcess(ninjaCommand, ['-C', buildRoot, ...args], {encoding: 'utf-8', cwd: CHECKOUT_ROOT, stdio});
   if (result.error) {
     throw result.error;
   }
@@ -162,7 +172,17 @@ function main() {
   ];
 
   if (!options['skip-ninja']) {
-    const {status} = ninja('inherit');
+    // For a devtools only checkout, it is fast enough to build everything. For
+    // a chromium checkout we want to build only the targets that are needed.
+    const targets = BUILD_WITH_CHROMIUM ?
+        [
+          'chrome',
+          'third_party/devtools-frontend/src/test:test',
+          'third_party/devtools-frontend/src/scripts/hosted_mode:hosted_mode',
+          'third_party/devtools-frontend/src/scripts/component_server:component_server',
+        ] :
+        [];
+    const {status} = ninja('inherit', ...targets);
     if (status) {
       return status;
     }

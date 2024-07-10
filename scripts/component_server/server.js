@@ -66,7 +66,12 @@ while (isRunningInGen && !pathToOutTargetDir.endsWith(`out${path.sep}${target}`)
 const pathToBuiltOutTargetDirectory =
     isRunningInGen ? pathToOutTargetDir : path.resolve(path.join(process.cwd(), 'out', target));
 
-const devtoolsRootFolder = path.resolve(path.join(pathToBuiltOutTargetDirectory, 'gen'));
+let devtoolsRootFolder = path.resolve(path.join(pathToBuiltOutTargetDirectory, 'gen'));
+const fullCheckoutDevtoolsRootFolder = path.join(devtoolsRootFolder, 'third_party', 'devtools-frontend', 'src');
+if (__dirname.startsWith(fullCheckoutDevtoolsRootFolder)) {
+  devtoolsRootFolder = fullCheckoutDevtoolsRootFolder;
+}
+
 const componentDocsBaseFolder = path.join(devtoolsRootFolder, componentDocsBaseArg);
 
 if (!fs.existsSync(devtoolsRootFolder)) {

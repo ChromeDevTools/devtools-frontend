@@ -5,8 +5,12 @@
 import * as os from 'os';
 import * as path from 'path';
 
-export const SOURCE_ROOT = path.join(__dirname, '..', require('../build.js').SOURCE_ROOT);
+const build = require('../build.js');
+export const SOURCE_ROOT = path.join(__dirname, '..', build.SOURCE_ROOT);
+export const CHECKOUT_ROOT = path.join(__dirname, '..', build.CHECKOUT_ROOT);
+export const BUILD_ROOT = path.join(__dirname, '..', build.BUILD_ROOT);
 export const GEN_DIR = path.normalize(path.join(__dirname, '..', '..'));
+export const BUILD_WITH_CHROMIUM = build.BUILD_WITH_CHROMIUM;
 
 export function rebase(fromRoot: string, toRoot: string, filename: string, newExt?: string) {
   if (!path.isAbsolute(filename) || !path.isAbsolute(fromRoot) || !path.isAbsolute(toRoot)) {
@@ -55,6 +59,10 @@ export class PathPair {
 }
 
 export function defaultChromePath() {
+  if (BUILD_WITH_CHROMIUM) {
+    // In a full chromium checkout, find the chrome binary in the build directory.
+    return path.join(BUILD_ROOT, 'chrome');
+  }
   const paths = {
     'linux': path.join('chrome-linux', 'chrome'),
     'darwin':

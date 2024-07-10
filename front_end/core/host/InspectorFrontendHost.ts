@@ -399,7 +399,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   getHostConfig(callback: (arg0: Root.Runtime.HostConfig) => void): void {
-    callback({
+    const result = {
       devToolsAida: {
         blocked: true,
         blockedByAge: false,
@@ -421,7 +421,17 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
         aidaTemperature: 0,
         enabled: false,
       },
-    });
+    };
+    if ('hostConfigForTesting' in globalThis) {
+      const {hostConfigForTesting} = (globalThis as unknown as {hostConfigForTesting: Root.Runtime.HostConfig});
+      for (const key of Object.keys(hostConfigForTesting)) {
+        const mergeEntry = <K extends keyof Root.Runtime.HostConfig>(key: K): void => {
+          result[key] = {...result[key], ...hostConfigForTesting[key]};
+        };
+        mergeEntry(key as keyof Root.Runtime.HostConfig);
+      }
+    }
+    callback(result);
   }
 
   upgradeDraggedFileSystemPermissions(fileSystem: FileSystem): void {
@@ -576,12 +586,6 @@ function initializeInspectorFrontendHost(): void {
     // Instantiate stub for web-hosted mode if necessary.
     // @ts-ignore Global injected by devtools-compatibility.js
     globalThis.InspectorFrontendHost = InspectorFrontendHostInstance = new InspectorFrontendHostStub();
-    if ('getHostConfigForTesting' in globalThis) {
-      InspectorFrontendHostInstance['getHostConfig'] =
-          (globalThis as unknown as {
-            getHostConfigForTesting: typeof InspectorFrontendHostInstance['getHostConfig'],
-          }).getHostConfigForTesting;
-    }
   } else {
     // Otherwise add stubs for missing methods that are declared in the interface.
     proto = InspectorFrontendHostStub.prototype;

@@ -171,6 +171,7 @@ luci.notifier(
         "gsutil upload",
         "taskkill",
     ] + EXCLUDED_STEPS,
+    notify_blamelist = True,
     notify_emails = ["liviurau@chromium.org", "devtools-waterfall-sheriff-onduty@rotations.google.com"],
 )
 

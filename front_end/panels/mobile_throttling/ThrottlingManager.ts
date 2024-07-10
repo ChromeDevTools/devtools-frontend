@@ -321,15 +321,17 @@ export class ThrottlingManager {
     warning: UI.Toolbar.ToolbarItem,
     toggle: UI.Toolbar.ToolbarItem,
   } {
-    const input = new UI.Toolbar.ToolbarItem(UI.UIUtils.createInput('devtools-text-input', 'number'));
+    const input = new UI.Toolbar.ToolbarItem(
+        UI.UIUtils.createInput('devtools-text-input', 'number', 'hardware-concurrency-selector'));
     input.setTitle(i18nString(UIStrings.hardwareConcurrencySettingTooltip));
     const inputElement = input.element as HTMLInputElement;
     inputElement.min = '1';
     input.setEnabled(false);
 
     const toggle = new UI.Toolbar.ToolbarCheckbox(
-        i18nString(UIStrings.hardwareConcurrency), i18nString(UIStrings.hardwareConcurrencySettingTooltip));
-    const reset = new UI.Toolbar.ToolbarButton('Reset concurrency', 'undo');
+        i18nString(UIStrings.hardwareConcurrency), i18nString(UIStrings.hardwareConcurrencySettingTooltip), undefined,
+        'hardware-concurrency-toggle');
+    const reset = new UI.Toolbar.ToolbarButton('Reset concurrency', 'undo', undefined, 'hardware-concurrency-reset');
     reset.setTitle(i18nString(UIStrings.resetConcurrency));
     const icon = new IconButton.Icon.Icon();
     icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};

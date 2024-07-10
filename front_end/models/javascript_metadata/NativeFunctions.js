@@ -518,7 +518,7 @@ export const NativeFunctions = [
   },
   {
     name: "max",
-    signatures: [["a","b"]],
+    signatures: [["a","b","?options"]],
     receivers: ["MLGraphBuilder"]
   },
   {
@@ -528,7 +528,7 @@ export const NativeFunctions = [
   },
   {
     name: "min",
-    signatures: [["a","b"]],
+    signatures: [["a","b","?options"]],
     receivers: ["MLGraphBuilder"]
   },
   {
@@ -538,7 +538,7 @@ export const NativeFunctions = [
   },
   {
     name: "pow",
-    signatures: [["a","b"]],
+    signatures: [["a","b","?options"]],
     receivers: ["MLGraphBuilder"]
   },
   {
@@ -1289,7 +1289,7 @@ export const NativeFunctions = [
   },
   {
     name: "add",
-    signatures: [["a","b"]],
+    signatures: [["a","b","?options"]],
     receivers: ["MLGraphBuilder"]
   },
   {
@@ -1304,7 +1304,7 @@ export const NativeFunctions = [
   },
   {
     name: "div",
-    signatures: [["a","b"]],
+    signatures: [["a","b","?options"]],
     receivers: ["MLGraphBuilder"]
   },
   {
@@ -1318,7 +1318,7 @@ export const NativeFunctions = [
   },
   {
     name: "mul",
-    signatures: [["a","b"]],
+    signatures: [["a","b","?options"]],
     receivers: ["MLGraphBuilder"]
   },
   {
@@ -1333,7 +1333,7 @@ export const NativeFunctions = [
   },
   {
     name: "sub",
-    signatures: [["a","b"]],
+    signatures: [["a","b","?options"]],
     receivers: ["MLGraphBuilder"]
   },
   {
@@ -6535,6 +6535,10 @@ export const NativeFunctions = [
     signatures: [["type","?eventInitDict"]]
   },
   {
+    name: "CommandEvent",
+    signatures: [["type","?eventInitDict"]]
+  },
+  {
     name: "CompositionEvent",
     signatures: [["type","?eventInitDict"]]
   },
@@ -6560,10 +6564,6 @@ export const NativeFunctions = [
   },
   {
     name: "InterestEvent",
-    signatures: [["type","?eventInitDict"]]
-  },
-  {
-    name: "InvokeEvent",
     signatures: [["type","?eventInitDict"]]
   },
   {
@@ -7681,23 +7681,23 @@ export const NativeFunctions = [
   },
   {
     name: "equal",
-    signatures: [["a","b"]]
+    signatures: [["a","b","?options"]]
   },
   {
     name: "greater",
-    signatures: [["a","b"]]
+    signatures: [["a","b","?options"]]
   },
   {
     name: "greaterOrEqual",
-    signatures: [["a","b"]]
+    signatures: [["a","b","?options"]]
   },
   {
     name: "lesser",
-    signatures: [["a","b"]]
+    signatures: [["a","b","?options"]]
   },
   {
     name: "lesserOrEqual",
-    signatures: [["a","b"]]
+    signatures: [["a","b","?options"]]
   },
   {
     name: "neg",

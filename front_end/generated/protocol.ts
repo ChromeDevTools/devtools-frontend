@@ -3162,6 +3162,11 @@ export namespace CSS {
      */
     cssPositionTryRules?: CSSPositionTryRule[];
     /**
+     * Index of the active fallback in the applied position-try-fallback property,
+     * will not be set if there is no active position-try fallback.
+     */
+    activePositionFallbackIndex?: integer;
+    /**
      * A list of CSS at-property rules matching this node.
      */
     cssPropertyRules?: CSSPropertyRule[];

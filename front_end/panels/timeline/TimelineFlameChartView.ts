@@ -19,7 +19,6 @@ import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
 import {ModificationsManager} from './ModificationsManager.js';
 import {
   AnnotationOverlayActionEvent,
-  type CursorTimestampMarker,
   Overlays,
   type TimelineOverlay,
   type TimeRangeLabel,
@@ -296,26 +295,12 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
 
     if (!mouseEvent.metaKey && mouseEvent.shiftKey) {
-      // Try to use an existing marker if there is one - this means when the
-      // user moves their mouse whilst holding shift we update the position
-      // rather than destroy + recreate a new overlay every time.
-      const existing = this.#overlays.overlaysOfType<CursorTimestampMarker>('CURSOR_TIMESTAMP_MARKER').at(0);
-      if (existing && existing.timestamp === timeInMicroSeconds) {
-        // If the existing overlay is at the same time as the mouse, we don't
-        // need to do anything
-        return;
-      }
-
-      if (existing) {
-        this.updateExistingOverlay(existing, {
-          timestamp: timeInMicroSeconds,
-        });
-      } else {
-        this.addOverlay({
-          type: 'CURSOR_TIMESTAMP_MARKER',
-          timestamp: timeInMicroSeconds,
-        });
-      }
+      // CURSOR_TIMESTAMP_MARKER is a singleton; if one already exists it will
+      // be updated rather than create an entirely new one.
+      this.addOverlay({
+        type: 'CURSOR_TIMESTAMP_MARKER',
+        timestamp: timeInMicroSeconds,
+      });
     }
   }
 

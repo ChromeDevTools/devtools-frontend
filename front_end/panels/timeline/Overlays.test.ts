@@ -290,6 +290,21 @@ describeWithEnvironment('Overlays', () => {
       assert.isOk(overlayDOM);
     });
 
+    it('only renders one CURSOR_TIMESTAMP_MARKER as it is a singleton', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);
+      overlays.add({
+        type: 'CURSOR_TIMESTAMP_MARKER',
+        timestamp: traceParsedData.Meta.traceBounds.min,
+      });
+      overlays.add({
+        type: 'CURSOR_TIMESTAMP_MARKER',
+        timestamp: traceParsedData.Meta.traceBounds.max,
+      });
+      overlays.update();
+      assert.lengthOf(container.children, 1);
+    });
+
     it('can render the label for entry label overlay', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);

@@ -81,6 +81,13 @@ export interface CursorTimestampMarker {
 export type TimelineOverlay = EntrySelected|TimeRangeLabel|EntryLabel|TimespanBreakdown|CursorTimestampMarker;
 
 /**
+ * Denotes overlays that are singletons; only one of these will be allowed to
+ * exist at any given time. If one exists and the add() method is called, the
+ * new overlay will replace the existing one.
+ */
+const SINGLETON_OVERLAYS = new Set<TimelineOverlay['type']>(['CURSOR_TIMESTAMP_MARKER']);
+
+/**
  * To be able to draw overlays accurately at the correct pixel position, we
  * need a variety of pixel values from both flame charts (Network and "Rest").
  * As each FlameChart draws, it emits an event with its latest set of
@@ -226,6 +233,19 @@ export class Overlays extends EventTarget {
   add<T extends TimelineOverlay>(overlay: T): T {
     if (this.#overlaysToElements.has(overlay)) {
       return overlay;
+    }
+
+    /**
+     * If the overlay type is a singleton, and we already have one, we update
+     * the existing one, rather than create a new one. This ensures you can only
+     * ever have one instance of the overlay type.
+     */
+    if (SINGLETON_OVERLAYS.has(overlay.type)) {
+      const existing = this.overlaysOfType<T>(overlay.type);
+      if (existing.length > 0) {
+        this.updateExisting(existing[0], overlay);
+        return existing[0];
+      }
     }
 
     // By setting the value to null, we ensure that on the next render that the

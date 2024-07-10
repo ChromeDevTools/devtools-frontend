@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Handlers from '../handlers/handlers.js';
+import type * as Lantern from '../lantern/lantern.js';
 import type * as Types from '../types/types.js';
 
 import type * as InsightsRunners from './InsightRunners.js';
@@ -13,6 +14,13 @@ import type * as InsightsRunners from './InsightRunners.js';
 export interface NavigationInsightContext {
   frameId: string;
   navigationId: string;
+  lantern?: LanternContext;
+}
+
+export interface LanternContext {
+  graph: Lantern.Graph.Node<Types.TraceEvents.SyntheticNetworkRequest>;
+  simulator: Lantern.Simulation.Simulator<Types.TraceEvents.SyntheticNetworkRequest>;
+  metrics: Record<string, Lantern.Metrics.MetricResult>;
 }
 
 type InsightRunnersType = typeof InsightsRunners;
@@ -27,6 +35,15 @@ export enum InsightWarning {
 
 export type InsightResult<R extends Record<string, unknown>> = R&{
   warnings?: InsightWarning[],
+  metricSavings?: {
+    /* eslint-disable @typescript-eslint/naming-convention */
+    FCP?: number,
+    LCP?: number,
+    TBT?: number,
+    CLS?: number,
+    INP?: number,
+    /* eslint-enable @typescript-eslint/naming-convention */
+  },
 };
 
 export type LCPInsightResult = InsightResult<{

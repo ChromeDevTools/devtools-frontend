@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 import * as Handlers from './handlers/handlers.js';
 import * as Insights from './insights/insights.js';
+import * as Lantern from './lantern/lantern.js';
+import * as LanternComputationData from './LanternComputationData.js';
 import * as Types from './types/types.js';
 
 const enum Status {
@@ -41,6 +43,20 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
 
   static createWithAllHandlers(): TraceProcessor<typeof Handlers.ModelHandlers> {
     return new TraceProcessor(Handlers.ModelHandlers, Types.Configuration.defaults());
+  }
+
+  static getEnabledInsightRunners<EnabledModelHandlers extends {[key: string]: Handlers.Types.TraceEventHandler}>(
+      traceParsedData: Handlers.Types.EnabledHandlerDataWithMeta<EnabledModelHandlers>):
+      Insights.Types.EnabledInsightRunners<EnabledModelHandlers> {
+    const enabledInsights = {} as Insights.Types.EnabledInsightRunners<EnabledModelHandlers>;
+    for (const [name, insight] of Object.entries(Insights.InsightRunners)) {
+      const deps = insight.deps();
+      if (deps.some(dep => !traceParsedData[dep])) {
+        continue;
+      }
+      Object.assign(enabledInsights, {[name]: insight.generateInsight});
+    }
+    return enabledInsights;
   }
 
   constructor(traceHandlers: EnabledModelHandlers, modelConfiguration?: Types.Configuration.Configuration) {
@@ -127,6 +143,16 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
       this.#status = Status.PARSING;
       await this.#parse(traceEvents, freshRecording);
       this.#status = Status.FINISHED_PARSING;
+
+      // TODO(crbug.com/313905799): `this.traceParsedData` is needed to compute insights, and that getter requires
+      // `Status.FINISHED_PARSING`. Consider doing what `this.#computeInsights` does (sets #data)
+      // inside #parse to simplify this method.
+
+      // Not actually possible for this to be null.
+      const traceParsedData = this.traceParsedData;
+      if (traceParsedData) {
+        this.#computeInsights(traceParsedData, traceEvents);
+      }
     } catch (e) {
       this.#status = Status.ERRORED_WHILE_PARSING;
       throw e;
@@ -227,47 +253,118 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
     return this.#data;
   }
 
-  #getEnabledInsightRunners(traceParsedData: Handlers.Types.EnabledHandlerDataWithMeta<EnabledModelHandlers>):
-      Insights.Types.EnabledInsightRunners<EnabledModelHandlers> {
-    const enabledInsights = {} as Insights.Types.EnabledInsightRunners<EnabledModelHandlers>;
-    for (const [name, insight] of Object.entries(Insights.InsightRunners)) {
-      const deps = insight.deps();
-      if (deps.some(dep => !traceParsedData[dep])) {
-        continue;
-      }
-      Object.assign(enabledInsights, {[name]: insight.generateInsight});
-    }
-    return enabledInsights;
+  get insights(): Insights.Types.TraceInsightData<EnabledModelHandlers>|null {
+    return this.#insights;
   }
 
-  get insights(): Insights.Types.TraceInsightData<EnabledModelHandlers>|null {
-    if (!this.traceParsedData) {
-      return null;
+  #createLanternContext(
+      traceParsedData: Handlers.Types.EnabledHandlerDataWithMeta<EnabledModelHandlers>,
+      traceEvents: readonly Types.TraceEvents.TraceEventData[]): Insights.Types.LanternContext|undefined {
+    const requiredHandlers = ['NetworkRequests', 'Workers', 'Meta', 'PageLoadMetrics'];
+    for (const requiredHandler of requiredHandlers) {
+      if (!(requiredHandler in traceParsedData)) {
+        return;
+      }
     }
 
-    if (this.#insights) {
-      return this.#insights;
+    // Lantern.Types.TraceEvent and Types.TraceEvents.TraceEventData represent the same
+    // object - a trace event - but one is more flexible than the other. It should be safe to cast between them.
+    const trace: Lantern.Types.Trace = {
+      traceEvents: traceEvents as unknown as Lantern.Types.TraceEvent[],
+    };
+    // NOTE: this isn't typesound - Insights.Types.TraceInsightData would need to be a Record of nullable
+    // properties with each possible handler, rather than an empty bag filled with a template parameter.
+    // Then the type could be narrowed safely.
+    const traceEngineDataNarrowed = this.#data as Handlers.Types.EnabledHandlerDataWithMeta<{
+      /* eslint-disable @typescript-eslint/naming-convention */
+      Meta: typeof Handlers.ModelHandlers.Meta,
+      NetworkRequests: typeof Handlers.ModelHandlers.NetworkRequests,
+      PageLoadMetrics: typeof Handlers.ModelHandlers.PageLoadMetrics,
+      Workers: typeof Handlers.ModelHandlers.Workers,
+      /* eslint-enable @typescript-eslint/naming-convention */
+    }>;
+    if (!traceEngineDataNarrowed.NetworkRequests.byTime.length) {
+      throw new Lantern.Core.LanternError('No network requests found in trace');
     }
 
+    const requests = LanternComputationData.createNetworkRequests(trace, traceEngineDataNarrowed);
+    const graph = LanternComputationData.createGraph(requests, trace, traceEngineDataNarrowed);
+    const processedNavigation = LanternComputationData.createProcessedNavigation(traceEngineDataNarrowed);
+
+    const networkAnalysis = Lantern.Core.NetworkAnalyzer.analyze(requests);
+    const simulator: Lantern.Simulation.Simulator<Types.TraceEvents.SyntheticNetworkRequest> =
+        Lantern.Simulation.Simulator.createSimulator({
+          networkAnalysis,
+          throttlingMethod: 'simulate',
+        });
+
+    const computeData = {graph, simulator, processedNavigation};
+    const fcpResult = Lantern.Metrics.FirstContentfulPaint.compute(computeData);
+    const lcpResult = Lantern.Metrics.LargestContentfulPaint.compute(computeData, {fcpResult});
+    const interactiveResult = Lantern.Metrics.Interactive.compute(computeData, {lcpResult});
+    const tbtResult = Lantern.Metrics.TotalBlockingTime.compute(computeData, {fcpResult, interactiveResult});
+    const metrics = {
+      firstContentfulPaint: fcpResult,
+      interactive: interactiveResult,
+      largestContentfulPaint: lcpResult,
+      totalBlockingTime: tbtResult,
+    };
+
+    return {graph, simulator, metrics};
+  }
+
+  #computeInsights(
+      traceParsedData: Handlers.Types.EnabledHandlerDataWithMeta<EnabledModelHandlers>,
+      traceEvents: readonly Types.TraceEvents.TraceEventData[]): void {
     this.#insights = new Map();
 
-    const enabledInsightRunners = this.#getEnabledInsightRunners(this.traceParsedData);
+    const enabledInsightRunners = TraceProcessor.getEnabledInsightRunners(traceParsedData);
 
-    for (const nav of this.traceParsedData.Meta.mainFrameNavigations) {
+    // The lantern sub-context is optional on NavigationInsightContext, so not setting it is OK.
+    // This is also a hedge against an error inside Lantern resulting in breaking the entire performance panel.
+    // Additionally, many trace fixtures are too old to be processed by Lantern.
+    // TODO(crbug.com/313905799): should be created and scoped per-navigation.
+    let lantern;
+    try {
+      lantern = this.#createLanternContext(traceParsedData, traceEvents);
+    } catch (e) {
+      // Don't allow an error in constructing the Lantern graphs to break the rest of the trace processor.
+      // Log unexpected errors, but suppress anything that occurs from a trace being too old.
+      // Otherwise tests using old fixtures become way too noisy.
+      const expectedErrors = [
+        'mainDocumentRequest not found',
+        'missing metric scores for main frame',
+        'missing metric: FCP',
+        'missing metric: LCP',
+        'No network requests found in trace',
+        'Trace is too old',
+      ];
+      if (!(e instanceof Lantern.Core.LanternError)) {
+        // If this wasn't a managed LanternError, the stack trace is likely needed for debugging.
+        console.error(e);
+      } else if (!expectedErrors.some(err => e.message === err)) {
+        // To reduce noise from tests, only print errors that are not expected to occur because a trace is
+        // too old (for which there is no single check).
+        console.error(e.message);
+      }
+    }
+
+    for (const nav of traceParsedData.Meta.mainFrameNavigations) {
       if (!nav.args.frame || !nav.args.data?.navigationId) {
         continue;
       }
 
-      const context = {
+      const context: Insights.Types.NavigationInsightContext = {
         frameId: nav.args.frame,
         navigationId: nav.args.data.navigationId,
+        lantern,
       };
 
       const navInsightData = {} as Insights.Types.NavigationInsightData<EnabledModelHandlers>;
       for (const [name, generateInsight] of Object.entries(enabledInsightRunners)) {
         let insightResult;
         try {
-          insightResult = generateInsight(this.traceParsedData, context);
+          insightResult = generateInsight(traceParsedData, context);
         } catch (err) {
           insightResult = err;
         }
@@ -276,8 +373,6 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
 
       this.#insights.set(context.navigationId, navInsightData);
     }
-
-    return this.#insights;
   }
 }
 

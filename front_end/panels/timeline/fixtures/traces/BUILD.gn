@@ -34,6 +34,7 @@ copy_to_gen("traces") {
     "lantern/paul/trace.json.gz",
     "lantern/progressive-app/trace.json.gz",
     "lantern/redirect/trace.json.gz",
+    "lantern/render-blocking/trace.json.gz",
     "large-layout-small-recalc.json.gz",
     "large-profile.cpuprofile.gz",
     "large-recalc-style.json.gz",

@@ -17,9 +17,9 @@ describe('Metrics: Lantern TTI', () => {
 
   it('should compute predicted value', async () => {
     const data = await getComputationDataFromFixture({trace});
-    const result = await Interactive.compute(data, {
-      lcpResult: await LargestContentfulPaint.compute(data, {
-        fcpResult: await FirstContentfulPaint.compute(data),
+    const result = Interactive.compute(data, {
+      lcpResult: LargestContentfulPaint.compute(data, {
+        fcpResult: FirstContentfulPaint.compute(data),
       }),
     });
 

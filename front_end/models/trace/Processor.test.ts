@@ -255,17 +255,18 @@ describeWithEnvironment('TraceProcessor', function() {
     });
 
     it('captures errors thrown by insights', async function() {
+      sinon.stub(TraceModel.Processor.TraceProcessor, 'getEnabledInsightRunners').callsFake(() => {
+        return {
+          RenderBlocking: () => {
+            throw new Error('forced error');
+          },
+        } as any;  // eslint-disable-line @typescript-eslint/no-explicit-any
+      });
+
       const processor = TraceModel.Processor.TraceProcessor.createWithAllHandlers();
       const file = await TraceLoader.rawEvents(this, 'load-simple.json.gz');
 
       await processor.parse(file);
-
-      // Create invalid trace data that forces insights to throw an error
-      processor.traceParsedData?.NetworkRequests.byTime.forEach(r => {
-        // @ts-expect-error
-        r.args.data = null;
-      });
-
       if (!processor.insights) {
         throw new Error('No insights');
       }
@@ -273,6 +274,7 @@ describeWithEnvironment('TraceProcessor', function() {
       const insights = Array.from(processor.insights.values());
       assert.strictEqual(insights.length, 1);
       assert(insights[0].RenderBlocking instanceof Error, 'RenderBlocking did not throw an error');
+      assert.strictEqual(insights[0].RenderBlocking.message, 'forced error');
     });
 
     it('skips insights that are missing one or more dependencies', async function() {

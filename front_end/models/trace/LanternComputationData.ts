@@ -9,20 +9,28 @@ import * as Lantern from './lantern/lantern.js';
 import type * as Types from './types/types.js';
 
 type NetworkRequest = Lantern.Types.NetworkRequest<Types.TraceEvents.SyntheticNetworkRequest>;
+type TraceEngineDataSubset = Handlers.Types.EnabledHandlerDataWithMeta<{
+  /* eslint-disable @typescript-eslint/naming-convention */
+  Meta: typeof Handlers.ModelHandlers.Meta,
+  NetworkRequests: typeof Handlers.ModelHandlers.NetworkRequests,
+  PageLoadMetrics: typeof Handlers.ModelHandlers.PageLoadMetrics,
+  Workers: typeof Handlers.ModelHandlers.Workers,
+  /* eslint-enable @typescript-eslint/naming-convention */
+}>;
 
-function createProcessedNavigation(traceEngineData: Handlers.Types.TraceParseData):
+function createProcessedNavigation(traceEngineData: TraceEngineDataSubset):
     Lantern.Types.Simulation.ProcessedNavigation {
   const Meta = traceEngineData.Meta;
   const frameId = Meta.mainFrameId;
   const scoresByNav = traceEngineData.PageLoadMetrics.metricScoresByFrameId.get(frameId);
   if (!scoresByNav) {
-    throw new Error('missing metric scores for main frame');
+    throw new Lantern.Core.LanternError('missing metric scores for main frame');
   }
 
   const lastNavigationId = Meta.mainFrameNavigations.at(-1)?.args.data?.navigationId;
   const scores = lastNavigationId && scoresByNav.get(lastNavigationId);
   if (!scores) {
-    throw new Error('missing metric scores for specified navigation');
+    throw new Lantern.Core.LanternError('missing metric scores for specified navigation');
   }
 
   const getTimestampOrUndefined =
@@ -36,7 +44,7 @@ function createProcessedNavigation(traceEngineData: Handlers.Types.TraceParseDat
   const getTimestamp = (metric: Handlers.ModelHandlers.PageLoadMetrics.MetricName): Types.Timing.MicroSeconds => {
     const metricScore = scores.get(metric);
     if (!metricScore?.event) {
-      throw new Error(`missing metric: ${metric}`);
+      throw new Lantern.Core.LanternError(`missing metric: ${metric}`);
     }
     return metricScore.event.ts;
   };
@@ -88,10 +96,10 @@ function findWorkerThreads(trace: Lantern.Types.Trace): Map<number, number[]> {
 }
 
 function createLanternRequest(
-    traceEngineData: Handlers.Types.TraceParseData, workerThreads: Map<number, number[]>,
+    traceEngineData: Readonly<TraceEngineDataSubset>, workerThreads: Map<number, number[]>,
     request: Types.TraceEvents.SyntheticNetworkRequest): NetworkRequest|undefined {
   if (request.args.data.connectionId === undefined || request.args.data.connectionReused === undefined) {
-    throw new Error('Trace is too old');
+    throw new Lantern.Core.LanternError('Trace is too old');
   }
 
   let url;
@@ -273,8 +281,7 @@ function linkInitiators(lanternRequests: NetworkRequest[]): void {
   }
 }
 
-function createNetworkRequests(
-    trace: Lantern.Types.Trace, traceEngineData: Handlers.Types.TraceParseData): NetworkRequest[] {
+function createNetworkRequests(trace: Lantern.Types.Trace, traceEngineData: TraceEngineDataSubset): NetworkRequest[] {
   const workerThreads = findWorkerThreads(trace);
 
   const lanternRequests: NetworkRequest[] = [];
@@ -367,7 +374,7 @@ function createNetworkRequests(
 }
 
 function collectMainThreadEvents(
-    trace: Lantern.Types.Trace, traceEngineData: Handlers.Types.TraceParseData): Lantern.Types.TraceEvent[] {
+    trace: Lantern.Types.Trace, traceEngineData: TraceEngineDataSubset): Lantern.Types.TraceEvent[] {
   const Meta = traceEngineData.Meta;
   const mainFramePids = Meta.mainFrameNavigations.length ? new Set(Meta.mainFrameNavigations.map(nav => nav.pid)) :
                                                            Meta.topLevelRendererIds;
@@ -404,8 +411,7 @@ function collectMainThreadEvents(
 }
 
 function createGraph(
-    requests: Lantern.Types.NetworkRequest[], trace: Lantern.Types.Trace,
-    traceEngineData: Handlers.Types.TraceParseData,
+    requests: Lantern.Types.NetworkRequest[], trace: Lantern.Types.Trace, traceEngineData: TraceEngineDataSubset,
     url?: Lantern.Types.Simulation.URL): Lantern.Graph.Node<Types.TraceEvents.SyntheticNetworkRequest> {
   const mainThreadEvents = collectMainThreadEvents(trace, traceEngineData);
 

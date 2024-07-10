@@ -17,7 +17,10 @@ devtools_module("insights") {
     "types.ts",
   ]
 
-  deps = [ "../handlers:bundle" ]
+  deps = [
+    "../handlers:bundle",
+    "../lantern:bundle",
+  ]
 }
 
 devtools_entrypoint("bundle") {

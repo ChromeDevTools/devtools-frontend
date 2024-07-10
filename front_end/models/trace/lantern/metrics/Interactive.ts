@@ -61,14 +61,13 @@ class Interactive extends Metric {
     };
   }
 
-  static override async compute(data: MetricComputationDataInput, extras?: Omit<Extras, 'optimistic'>):
-      Promise<MetricResult> {
+  static override compute(data: MetricComputationDataInput, extras?: Omit<Extras, 'optimistic'>): MetricResult {
     const lcpResult = extras?.lcpResult;
     if (!lcpResult) {
       throw new Core.LanternError('LCP is required to calculate the Interactive metric');
     }
 
-    const metricResult = await super.compute(data, extras);
+    const metricResult = super.compute(data, extras);
     metricResult.timing = Math.max(metricResult.timing, lcpResult.timing);
     return metricResult;
   }

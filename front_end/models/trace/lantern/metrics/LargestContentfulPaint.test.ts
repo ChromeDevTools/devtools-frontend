@@ -15,8 +15,8 @@ describe('Metrics: Lantern LCP', () => {
 
   it('should compute predicted value', async () => {
     const data = await getComputationDataFromFixture({trace});
-    const result = await LargestContentfulPaint.compute(data, {
-      fcpResult: await FirstContentfulPaint.compute(data),
+    const result = LargestContentfulPaint.compute(data, {
+      fcpResult: FirstContentfulPaint.compute(data),
     });
 
     assert.deepStrictEqual(

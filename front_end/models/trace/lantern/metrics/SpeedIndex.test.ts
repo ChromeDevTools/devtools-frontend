@@ -20,8 +20,8 @@ describe('Metrics: Lantern Speed Index', () => {
     // TODO: observedSpeedIndex is from the Speedline library, and is used for optimistic
     // mode. At the moment callers must pass the result into Lantern.
     const observedSpeedIndex = 379.04474997520487;
-    const result = await SpeedIndex.compute(data, {
-      fcpResult: await FirstContentfulPaint.compute(data),
+    const result = SpeedIndex.compute(data, {
+      fcpResult: FirstContentfulPaint.compute(data),
       observedSpeedIndex,
     });
 
@@ -47,8 +47,8 @@ describe('Metrics: Lantern Speed Index', () => {
     };
     const data = await getComputationDataFromFixture({trace, settings});
     const observedSpeedIndex = 379.04474997520487;
-    const result = await SpeedIndex.compute(data, {
-      fcpResult: await FirstContentfulPaint.compute(data),
+    const result = SpeedIndex.compute(data, {
+      fcpResult: FirstContentfulPaint.compute(data),
       observedSpeedIndex,
     });
 

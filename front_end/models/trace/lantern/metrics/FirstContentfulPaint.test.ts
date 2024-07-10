@@ -15,7 +15,7 @@ describe('Metrics: Lantern FCP', () => {
 
   it('should compute predicted value', async () => {
     const data = await getComputationDataFromFixture({trace});
-    const result = await FirstContentfulPaint.compute(data);
+    const result = FirstContentfulPaint.compute(data);
 
     assert.deepStrictEqual(
         {
@@ -40,7 +40,7 @@ describe('Metrics: Lantern FCP', () => {
     const data = await getComputationDataFromFixture({trace});
     assert(data.graph.type === 'network');
     data.graph.request.networkEndTime = -1;
-    const result = await FirstContentfulPaint.compute(data);
+    const result = FirstContentfulPaint.compute(data);
 
     const optimisticNodes: Lantern.Graph.NetworkNode[] = [];
     result.optimisticGraph.traverse(node => {

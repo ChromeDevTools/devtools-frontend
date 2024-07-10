@@ -88,7 +88,7 @@ class Metric {
 
   /* eslint-enable @typescript-eslint/no-unused-vars */
 
-  static async compute(data: MetricComputationDataInput, extras?: Omit<Extras, 'optimistic'>): Promise<MetricResult> {
+  static compute(data: MetricComputationDataInput, extras?: Omit<Extras, 'optimistic'>): MetricResult {
     const {simulator, graph, processedNavigation} = data;
 
     const metricName = this.name.replace('Lantern', '');

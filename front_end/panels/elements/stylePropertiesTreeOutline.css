@@ -4,35 +4,12 @@
  * found in the LICENSE file.
  */
 
+.has-ignorable-error .webkit-css-property {
+  color: inherit;
+}
+
 .tree-outline {
   padding: 0;
-}
-
-.tree-outline li.not-parsed-ok {
-  margin-left: 0;
-}
-
-.tree-outline li.filter-match {
-  background-color: var(--sys-color-tonal-container);
-}
-
-.tree-outline li.not-parsed-ok .exclamation-mark {
-  display: inline-block;
-  position: relative;
-  width: 11px;
-  height: 10px;
-  margin: 0 7px 0 0;
-  top: 1px;
-  left: -36px; /* outdent to compensate for the top-level property indent */
-  user-select: none;
-  cursor: default;
-  z-index: 1;
-  mask: var(--image-file-warning-filled) center / 14px no-repeat;
-  background-color: var(--icon-warning);
-}
-
-.tree-outline li.not-parsed-ok.has-ignorable-error .exclamation-mark {
-  background-color: unset;
 }
 
 .tree-outline li {
@@ -42,46 +19,85 @@
   text-overflow: ellipsis;
   cursor: auto;
   display: block;
-}
 
-.tree-outline li::before {
-  display: none;
-}
+  &::before {
+    display: none;
+  }
 
-.has-ignorable-error .webkit-css-property {
-  color: inherit;
-}
+  .webkit-css-property {
+    margin-left: -22px; /* outdent the first line of longhand properties (in an expanded shorthand) to compensate for the "padding-left" shift in .tree-outline li */
+  }
 
-.tree-outline li .webkit-css-property {
-  margin-left: -22px; /* outdent the first line of longhand properties (in an expanded shorthand) to compensate for the "padding-left" shift in .tree-outline li */
+  &.not-parsed-ok {
+    margin-left: 0;
+
+    .exclamation-mark {
+      display: inline-block;
+      position: relative;
+      width: 11px;
+      height: 10px;
+      margin: 0 7px 0 0;
+      top: 1px;
+      left: -36px; /* outdent to compensate for the top-level property indent */
+      user-select: none;
+      cursor: default;
+      z-index: 1;
+      mask: var(--image-file-warning-filled) center / 14px no-repeat;
+      background-color: var(--icon-warning);
+    }
+
+    &.has-ignorable-error .exclamation-mark {
+      background-color: unset;
+    }
+  }
+
+  &.filter-match {
+    background-color: var(--sys-color-tonal-container);
+  }
+
+  &.editing {
+    margin-left: 10px;
+    text-overflow: clip;
+  }
+
+  &.editing-sub-part {
+    padding: 3px 6px 8px 18px;
+    margin: -1px -6px -8px;
+    text-overflow: clip;
+  }
+
+  &.child-editing {
+    word-wrap: break-word !important; /* stylelint-disable-line declaration-no-important */
+    white-space: normal !important; /* stylelint-disable-line declaration-no-important */
+    padding-left: 0;
+  }
+
+  .info {
+    padding-top: 4px;
+    padding-bottom: 3px;
+  }
 }
 
 .tree-outline > li {
   padding-left: 38px;
   clear: both;
   min-height: 14px;
-}
 
-.tree-outline > li .webkit-css-property {
-  margin-left: -38px; /* outdent the first line of the top-level properties to compensate for the "padding-left" shift in .tree-outline > li */
-}
+  .webkit-css-property {
+    margin-left: -38px; /* outdent the first line of the top-level properties to compensate for the "padding-left" shift in .tree-outline > li */
+  }
 
-.tree-outline > li.child-editing {
-  padding-left: 8px;
-}
+  &.child-editing {
+    padding-left: 8px;
 
-.tree-outline > li.child-editing .text-prompt {
-  white-space: pre-wrap;
-}
+    .text-prompt {
+      white-space: pre-wrap;
+    }
 
-.tree-outline > li.child-editing .webkit-css-property {
-  margin-left: 0;
-}
-
-.tree-outline li.child-editing {
-  word-wrap: break-word !important; /* stylelint-disable-line declaration-no-important */
-  white-space: normal !important; /* stylelint-disable-line declaration-no-important */
-  padding-left: 0;
+    .webkit-css-property {
+      margin-left: 0;
+    }
+  }
 }
 
 ol:not(.tree-outline) {
@@ -93,11 +109,6 @@ ol:not(.tree-outline) {
 
 ol.expanded {
   display: block;
-}
-
-.tree-outline li .info {
-  padding-top: 4px;
-  padding-bottom: 3px;
 }
 
 .enabled-button {
@@ -124,10 +135,7 @@ input.enabled-button.small {
 .overloaded:not(.has-ignorable-error, .invalid-property-value),
 .inactive:not(.invalid-property-value),
 .disabled,
-.not-parsed-ok:not(.has-ignorable-error, .invalid-property-value) {
-  text-decoration: line-through;
-}
-
+.not-parsed-ok:not(.has-ignorable-error, .invalid-property-value),
 .not-parsed-ok.invalid-property-value .value {
   text-decoration: line-through;
 }
@@ -140,31 +148,31 @@ input.enabled-button.small {
 
 .changed {
   background-color: var(--sys-color-tertiary-container);
-}
 
-.changed::after {
-  content: "";
-  position: absolute;
-  left: -4px;
-  top: 0;
-  width: 2px;
-  height: 100%;
-  background-color: var(--sys-color-tertiary);
+  &::after {
+    content: "";
+    position: absolute;
+    left: -4px;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background-color: var(--sys-color-tertiary);
+  }
 }
 
 .copy {
   display: none;
-}
 
-.changed:hover .copy {
-  position: absolute;
-  right: -4px;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  display: inline-block;
-  cursor: pointer;
-  transform: scale(0.9);
+  .changed:hover & {
+    position: absolute;
+    right: -4px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    display: inline-block;
+    cursor: pointer;
+    transform: scale(0.9);
+  }
 }
 
 .hint-wrapper {
@@ -188,23 +196,12 @@ input.enabled-button.small {
   color: var(--sys-color-state-disabled);
 }
 
-.tree-outline li.editing {
-  margin-left: 10px;
-  text-overflow: clip;
-}
-
-.tree-outline li.editing-sub-part {
-  padding: 3px 6px 8px 18px;
-  margin: -1px -6px -8px;
-  text-overflow: clip;
-}
-
 :host-context(.no-affect) .tree-outline li {
   opacity: 50%;
-}
 
-:host-context(.no-affect) .tree-outline li.editing {
-  opacity: 100%;
+  &.editing {
+    opacity: 100%;
+  }
 }
 
 :host-context(.styles-panel-hovered:not(.read-only)) .webkit-css-property:hover,
@@ -226,6 +223,10 @@ input.enabled-button.small {
   opacity: 0%;
   pointer-events: none;
   white-space: pre;
+
+  .tree-outline li.child-editing & {
+    display: none;
+  }
 }
 
 .styles-pane-button {
@@ -247,10 +248,6 @@ input.enabled-button.small {
     color: var(--icon-default-hover);
   }
 }
-
-.tree-outline li.child-editing .styles-clipboard-only {
-  display: none;
-}
 /* Matched styles */
 
 :host-context(.matched-styles) .tree-outline li {
@@ -262,10 +259,10 @@ input.enabled-button.small {
   margin-left: -6px;
   margin-right: 2px;
   margin-bottom: -4px;
-}
 
-.tree-outline li:not(.parent) .expand-icon {
-  display: none;
+  .tree-outline li:not(.parent) & {
+    display: none;
+  }
 }
 
 :host-context(.matched-styles:not(.read-only):hover) li:not(.child-editing) .enabled-button,

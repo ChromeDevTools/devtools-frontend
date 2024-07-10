@@ -59,6 +59,13 @@ const ProgressWithDiffReporter = function(
 ProgressWithDiffReporter.$inject =
     ['formatError', 'config.reportSlowerThan', 'config.colors', 'config.browserConsoleLogOptions'];
 
+const coveragePreprocessors = TestConfig.coverage ? {
+  [path.join(GEN_DIR, 'front_end/!(third_party)/**/!(*.test).{js,mjs}')]: ['coverage'],
+  [path.join(GEN_DIR, 'inspector_overlay/**/*.{js,mjs}')]: ['coverage'],
+  [path.join(GEN_DIR, 'front_end/third_party/i18n/**/*.{js,mjs}')]: ['coverage'],
+} :
+                                                    {};
+
 module.exports = function(config: any) {
   const targetDir = path.relative(SOURCE_ROOT, GEN_DIR);
   const options = {
@@ -130,9 +137,7 @@ module.exports = function(config: any) {
 
     preprocessors: {
       '**/*.{js,mjs}': ['sourcemap'],
-      [path.join(GEN_DIR, 'front_end/!(third_party)/**/!(*.test).{js,mjs}')]: ['coverage'],
-      [path.join(GEN_DIR, 'inspector_overlay/**/*.{js,mjs}')]: ['coverage'],
-      [path.join(GEN_DIR, 'front_end/third_party/i18n/**/*.{js,mjs}')]: ['coverage'],
+      ...coveragePreprocessors,
     },
 
     proxies: {

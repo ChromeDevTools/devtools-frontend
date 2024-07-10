@@ -22,12 +22,12 @@ describe('ColorUtils', () => {
     assert.deepEqual(result, [0, 0.5, 0.5, 0.5], 'RGBA color was not converted to HWB successfully');
   });
 
-  it('is able to return the luminance of an RGBA value with the RGB values more than 0.03928', () => {
+  it('is able to return the luminance of an RGBA value with the RGB values more than 0.04045', () => {
     const lum = Common.ColorUtils.luminance([0.5, 0.5, 0.5, 0.5]);
     assert.strictEqual(lum, 0.21404114048223255, 'luminance was not calculated correctly');
   });
 
-  it('is able to return the luminance of an RGBA value with the RGB values less than 0.03928', () => {
+  it('is able to return the luminance of an RGBA value with the RGB values less than 0.04045', () => {
     const lum = Common.ColorUtils.luminance([0.03927, 0.03927, 0.03927, 0.5]);
     assert.strictEqual(lum, 0.003039473684210526, 'luminance was not calculated correctly');
   });

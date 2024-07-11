@@ -335,6 +335,7 @@ export class ConsoleInsight extends HTMLElement {
         type: State.CONSENT_ONBOARDING,
         page: ConsentOnboardingPage.PAGE1,
       });
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOnboardingShown);
       return;
     }
     if (!this.#state.consentReminderConfirmed) {
@@ -344,11 +345,21 @@ export class ConsoleInsight extends HTMLElement {
         sources,
         isPageReloadRecommended,
       });
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsentReminderShown);
       return;
     }
   }
 
   #onClose(): void {
+    if (this.#state.type === State.CONSENT_REMINDER) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsentReminderCanceled);
+    } else if (this.#state.type === State.CONSENT_ONBOARDING) {
+      if (this.#state.page === ConsentOnboardingPage.PAGE1) {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOnboardingCanceledOnPage1);
+      } else {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOnboardingCanceledOnPage2);
+      }
+    }
     this.dispatchEvent(new CloseEvent());
     this.classList.add('closing');
   }
@@ -397,6 +408,7 @@ export class ConsoleInsight extends HTMLElement {
       consentReminderConfirmed: true,
       consentOnboardingFinished: this.#getOnboardingCompletedSetting().get(),
     });
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsentReminderConfirmed);
     try {
       for await (const {sources, isPageReloadRecommended, explanation, metadata} of this.#getInsight()) {
         const tokens = this.#validateMarkdown(explanation);
@@ -486,6 +498,7 @@ export class ConsoleInsight extends HTMLElement {
       this.#onClose();
       UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning('Reload for the change to apply.');
     }
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOnboardingFeatureDisabled);
   }
 
   #goToNextPage(): void {
@@ -493,6 +506,7 @@ export class ConsoleInsight extends HTMLElement {
       type: State.CONSENT_ONBOARDING,
       page: ConsentOnboardingPage.PAGE2,
     });
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOnboardingNextPage);
   }
 
   #focusHeader(): void {
@@ -517,6 +531,7 @@ export class ConsoleInsight extends HTMLElement {
       consentReminderConfirmed: false,
       consentOnboardingFinished: this.#getOnboardingCompletedSetting().get(),
     });
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOnboardingConfirmed);
     void this.#generateInsightIfNeeded();
   }
 
@@ -525,6 +540,7 @@ export class ConsoleInsight extends HTMLElement {
       type: State.CONSENT_ONBOARDING,
       page: ConsentOnboardingPage.PAGE1,
     });
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOnboardingPrevPage);
   }
 
   #renderCancelButton(): LitHtml.TemplateResult {

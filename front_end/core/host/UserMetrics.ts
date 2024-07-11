@@ -567,7 +567,17 @@ export enum Action {
   ConsoleFilterByContext = 147,
   ConsoleFilterBySource = 148,
   ConsoleFilterByUrl = 149,
-  MaxValue = 150,
+  InsightConsentReminderShown = 150,
+  InsightConsentReminderCanceled = 151,
+  InsightConsentReminderConfirmed = 152,
+  InsightsOnboardingShown = 153,
+  InsightsOnboardingCanceledOnPage1 = 154,
+  InsightsOnboardingCanceledOnPage2 = 155,
+  InsightsOnboardingConfirmed = 156,
+  InsightsOnboardingNextPage = 157,
+  InsightsOnboardingPrevPage = 158,
+  InsightsOnboardingFeatureDisabled = 159,
+  MaxValue = 160,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

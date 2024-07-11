@@ -7,6 +7,7 @@ import * as TraceEngine from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {flattenBreadcrumbs} from './Breadcrumbs.js';
 import breadcrumbsUIStyles from './breadcrumbsUI.css.js';
@@ -72,7 +73,8 @@ export class BreadcrumbsUI extends HTMLElement {
     const breadcrumbRange = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(breadcrumb.window.range);
     // clang-format off
     return html`
-          <div class="breadcrumb" @click=${() => this.#removeBreadcrumb(breadcrumb)}>
+          <div class="breadcrumb" @click=${() => this.#removeBreadcrumb(breadcrumb)}
+          jslog=${VisualLogging.action('timeline.breadcrumb-select').track({click: true})}>
            <span class="${(index !== 0 && breadcrumb.child === null) ? 'last-breadcrumb' : ''} range">
             ${(index === 0) ?
               `Full range (${i18n.TimeUtilities.preciseMillisToString(breadcrumbRange, 2)})` :

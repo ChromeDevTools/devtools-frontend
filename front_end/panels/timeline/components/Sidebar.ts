@@ -297,7 +297,7 @@ export class SidebarUI extends HTMLElement {
             .showConnector=${false}
             .position=${Dialogs.Dialog.DialogVerticalPosition.BOTTOM}
             .buttonTitle=${this.selectedCategory}
-            jslog=${VisualLogging.dropDown('performance.sidebar-insights-category-select').track({click: true})}
+            jslog=${VisualLogging.dropDown('timeline.sidebar-insights-category-select').track({click: true})}
           >
           ${Object.values(InsightsCategories).map(insightsCategory => {
             return LitHtml.html`
@@ -357,7 +357,7 @@ export class SidebarUI extends HTMLElement {
           name='left-panel-close'
           @click=${this.#closeButtonClick}
           class="sidebar-toggle-button"
-          jslog=${VisualLogging.action('performance.sidebar-close').track({click: true})}
+          jslog=${VisualLogging.action('timeline.sidebar-close').track({click: true})}
         ></${IconButton.Icon.Icon.litTagName}>
       </div>
       <div class="tab-slider"></div>

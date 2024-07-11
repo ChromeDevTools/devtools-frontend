@@ -296,7 +296,7 @@ export class TimelineHistoryManager {
     const preview = document.createElement('div');
     preview.classList.add('preview-item');
     preview.classList.add('vbox');
-    preview.setAttribute('jslog', `${VisualLogging.dropDown('performance.history-item').track({click: true})}`);
+    preview.setAttribute('jslog', `${VisualLogging.dropDown('timeline.history-item').track({click: true})}`);
     const data = {
       preview,
       title: titleWithSequenceNumber,

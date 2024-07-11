@@ -72,7 +72,7 @@ export class TimelineMiniMap extends
 
     const icon = new IconButton.Icon.Icon();
     icon.setAttribute('name', 'left-panel-open');
-    icon.setAttribute('jslog', `${VisualLogging.action('performance.sidebar-open').track({click: true})}`);
+    icon.setAttribute('jslog', `${VisualLogging.action('timeline.sidebar-open').track({click: true})}`);
     icon.addEventListener('click', () => {
       this.dispatchEventToListeners(PerfUI.TimelineOverviewPane.Events.OpenSidebarButtonClicked, {});
     });

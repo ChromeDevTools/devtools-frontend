@@ -74,3 +74,70 @@ Having a single place where all synthetic events are stored allows us to easily 
 2. `EventsSerializer` - is responsible for event serialization. It generates the string key saved into the trace file and maps the key back to the corresponding Event (after reading keys from the trace file). To perform this mapping, it retrieves the raw event array registered by `SyntheticEventsManager` at the id extracted from the key. For profile calls, a binary search is conducted on the complete profile call list to efficiently find a match based on the sample index and node id retrieved from the string key.
 
 3. `ModificationsManager` - Takes the serialized modifications (ex. annotations, breadcrumbs, track customisations) in a trace file (under `metadata.modifications`) and applies it to the current timeline after `EventsSerializer` mapped the keys to events (by initializing `EntriesFilter` with the loaded modifications), as well as creates the object that gets saved under `metadata.modifications` when a trace file with modifications is saved.
+
+## Overlays
+
+Overlays are what we use to draw on top of the performance panel to draw the user's attention or to mark areas of interest.
+
+As of July 2024, they are used to power:
+
+1. Overlays for Insights; when a user expands an Insight in the sidebar, that insight can draw overlays over the timeline to highlight areas of interest.
+2. Annotations; the user has the ability to create labels and attach them to entries. These are drawn with overlays.
+3. Selected entry; the box drawn around the entry a user selects is drawn as an overlay.
+4. Vertical ruler: when holding shift and moving their mouse, the vertical cursor drawn is drawn as an overlay.
+
+Overlays are drawn in **DOM**, not Canvas, and are drawn on a layer that sits above the entire timeline. This is important because it means they are drawn over both the canvases we have in the panel (network + main/rest).
+
+Overlays are rendered and positioned absolutely; by default an overlay will sit at (0, 0) which will put it in the very top left of the timeline.
+
+Overlays are managed by the `Overlays` class instance. An instance of this exists in `TimelineFlameChartView`.
+
+To render an overlay, call the `add()` method and pass in the overlay you would like to create. Once you have done this, you must then call the `update()` method to trigger a redraw, otherwise the overlay will not be added.
+
+> When the user pans/scrolls/zooms the timeline, the `update()` method is called automatically.
+
+### Creating a new overlay
+
+To create a new overlay, first define its type. This is done as an interface, and must contain a `type` field.
+
+All other fields are completely custom and depend on the specifics of the overlay.
+
+```
+/**
+ * Represents when a user has selected an entry in the timeline
+ */
+export interface EntrySelected {
+  type: 'ENTRY_SELECTED';
+  entry: OverlayEntry;
+}
+```
+
+Once you have done this, add the interface to the union type `TimelineOverlay`. This will likely trigger some TypeScript errors because there are some places in the code where we check we have exhaustively dealt with every possible overlay type.
+
+When you create an overlay by default it will be created as a `div` with a class, and no contents. Sometimes this is all you need (for example, the `ENTRY_SELECTED` outline has no other HTML), but if you need more you can tell the Overlays class what DOM to create for your overlay. To do this, modify the `#createElementForNewOverlay` method. You will see examples there of how we use custom elements to build out overlays.
+
+Once you have created the overlay, you now need to teach the Overlays class how to position the element on the page relative to the timeline. To do this, add a new case to the `#positionOverlay` method for your new overlay type. There are some helpers available to you to aid with the positioning:
+
+1. `#xPixelForMicroSeconds` will take a microseconds value and convert it into the X coordinate on screen.
+1. `#xPixelForEventOnChart` will calculate the X position from a given `OverlayEntry` (e.g. an entry from the main thread).
+1. `pixelHeightForEventOnChart` will calculate the pixel height of an entry.
+1. `#yPixelForEventOnChart` will calculate the Y pixel for an entry on the timeline.
+
+### Charts
+
+You will notice in the Overlays code we also check which chart an entry is in - either `main` or `network`. This is required because of how the overlays are drawn over both canvases. If we want an overlay to be positioned relative to an entry on the main canvas, we need to bump its Y position down by the height of the network canvas.
+
+If you ever need to know how high the network canvas is, use `networkChartOffsetHeight()` which will calculate this for you.
+
+```
++-------------------------------------------+
+|                                           | |
+|     Network canvas                        | | have to adjust an overlay by this height
+|                                           | v if we are drawing it on the main canvas
++-------------------------------------------+
+|                                           |
+|                                           |
+|     Main canvas                           |
+|                                           |
++-------------------------------------------+
+```

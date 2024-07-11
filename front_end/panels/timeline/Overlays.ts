@@ -85,7 +85,10 @@ export type TimelineOverlay = EntrySelected|TimeRangeLabel|EntryLabel|TimespanBr
  * exist at any given time. If one exists and the add() method is called, the
  * new overlay will replace the existing one.
  */
-const SINGLETON_OVERLAYS = new Set<TimelineOverlay['type']>(['CURSOR_TIMESTAMP_MARKER']);
+type SingletonOverlay = EntrySelected|CursorTimestampMarker;
+export function overlayIsSingleton(overlay: TimelineOverlay): overlay is SingletonOverlay {
+  return overlay.type === 'CURSOR_TIMESTAMP_MARKER' || overlay.type === 'ENTRY_SELECTED';
+}
 
 /**
  * To be able to draw overlays accurately at the correct pixel position, we
@@ -145,6 +148,13 @@ export class AnnotationOverlayActionEvent extends Event {
   }
 }
 
+/**
+ * This class manages all the overlays that get drawn onto the performance
+ * timeline. Overlays are DOM and are drawn above the network and main flame
+ * chart.
+ *
+ * For more documentation, see `timeline/README.md` which has a section on overlays.
+ */
 export class Overlays extends EventTarget {
   /**
    * The list of active overlays. Overlays can't be marked as visible or
@@ -230,9 +240,9 @@ export class Overlays extends EventTarget {
   /**
    * Add a new overlay to the view.
    */
-  add<T extends TimelineOverlay>(overlay: T): T {
-    if (this.#overlaysToElements.has(overlay)) {
-      return overlay;
+  add<T extends TimelineOverlay>(newOverlay: T): T {
+    if (this.#overlaysToElements.has(newOverlay)) {
+      return newOverlay;
     }
 
     /**
@@ -240,18 +250,16 @@ export class Overlays extends EventTarget {
      * the existing one, rather than create a new one. This ensures you can only
      * ever have one instance of the overlay type.
      */
-    if (SINGLETON_OVERLAYS.has(overlay.type)) {
-      const existing = this.overlaysOfType<T>(overlay.type);
-      if (existing.length > 0) {
-        this.updateExisting(existing[0], overlay);
-        return existing[0];
-      }
+    const existing = this.overlaysOfType<T>(newOverlay.type);
+    if (overlayIsSingleton(newOverlay) && existing[0]) {
+      this.updateExisting(existing[0], newOverlay);
+      return existing[0];
     }
 
     // By setting the value to null, we ensure that on the next render that the
     // overlay will have a new HTML element created for it.
-    this.#overlaysToElements.set(overlay, null);
-    return overlay;
+    this.#overlaysToElements.set(newOverlay, null);
+    return newOverlay;
   }
 
   /**

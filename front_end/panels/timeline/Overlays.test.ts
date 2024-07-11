@@ -271,6 +271,30 @@ describeWithEnvironment('Overlays', () => {
       assert.isOk(overlayDOM);
     });
 
+    it('only ever renders a single selected overlay', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);
+      const event1 = charts.mainProvider.eventByIndex(50);
+      const event2 = charts.mainProvider.eventByIndex(51);
+      assert.isOk(event1);
+      assert.isOk(event2);
+
+      overlays.add({
+        type: 'ENTRY_SELECTED',
+        entry: event1,
+      });
+      overlays.update();
+      overlays.add({
+        type: 'ENTRY_SELECTED',
+        entry: event2,
+      });
+      overlays.update();
+
+      // There should only be one of these
+      const entrySelectedOverlays = container.querySelectorAll<HTMLElement>('.overlay-type-ENTRY_SELECTED');
+      assert.lengthOf(entrySelectedOverlays, 1);
+    });
+
     it('can render entry label overlay', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceParsedData);

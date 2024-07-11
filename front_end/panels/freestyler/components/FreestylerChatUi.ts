@@ -535,7 +535,7 @@ export class FreestylerChatUi extends HTMLElement {
                           iconName: 'send',
                           title: i18nString(TempUIStrings.sendButtonTitle),
                           disabled: isInputDisabled,
-                          jslogContext: 'sent',
+                          jslogContext: 'send',
                         } as Buttons.Button.ButtonData
                       }
                     ></${Buttons.Button.Button.litTagName}>`
@@ -569,9 +569,10 @@ export class FreestylerChatUi extends HTMLElement {
             .data=${{
               variant: Buttons.Button.Variant.PRIMARY,
               jslogContext: 'accept',
-            } as Buttons.Button.ButtonData}>
-            ${i18nString(TempUIStrings.acceptButtonTitle)}
-          </${Buttons.Button.Button.litTagName}>
+            } as Buttons.Button.ButtonData}
+          >${
+            i18nString(TempUIStrings.acceptButtonTitle)
+          }</${Buttons.Button.Button.litTagName}>
         </main>
       </div>
     `;

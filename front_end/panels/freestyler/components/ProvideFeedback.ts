@@ -168,9 +168,9 @@ export class ProvideFeedback extends HTMLElement {
            TempUIStrings.provideFeedbackPlaceholder,
           )}
         >
-        <span class="feedback-disclaimer">${i18nString(
-            TempUIStrings.disclaimer,
-        )}</span>
+        <span class="feedback-disclaimer">${
+          i18nString(TempUIStrings.disclaimer)
+        }</span>
         <${Buttons.Button.Button.litTagName}
         aria-label=${i18nString(TempUIStrings.submit)}
         .data=${
@@ -179,10 +179,12 @@ export class ProvideFeedback extends HTMLElement {
               variant: Buttons.Button.Variant.OUTLINED,
               size: Buttons.Button.Size.SMALL,
               title: i18nString(TempUIStrings.submit),
-              jslogContext: 'sent',
+              jslogContext: 'send',
             } as Buttons.Button.ButtonData
           }
-        >${i18nString(TempUIStrings.submit)}</${Buttons.Button.Button.litTagName}>
+        >${
+          i18nString(TempUIStrings.submit)
+        }</${Buttons.Button.Button.litTagName}>
       </div>
     `;
     // clang-format on

@@ -227,6 +227,10 @@ export class FreestylerAgent {
     for await (const lastResult of this.#aidaClient.fetch(request)) {
       response = lastResult.explanation;
       rpcId = lastResult.metadata.rpcGlobalId ?? rpcId;
+      if (lastResult.metadata.attributionMetadata?.some(
+              meta => meta.attributionAction === Host.AidaClient.RecitationAction.BLOCK)) {
+        throw new Error('Attribution action does not allow providing the response');
+      }
     }
 
     return {response, rpcId};
@@ -256,6 +260,7 @@ export class FreestylerAgent {
 
   #runId = 0;
   async * run(query: string, options?: {signal: AbortSignal}): AsyncGenerator<StepData|QueryStepData, void, void> {
+    const genericErrorMessage = 'Sorry, I could not help you with this query.';
     const structuredLog = [];
     query = `QUERY: ${query}`;
     const currentRunId = ++this.#runId;
@@ -275,11 +280,13 @@ export class FreestylerAgent {
         response = fetchResult.response;
         rpcId = fetchResult.rpcId;
       } catch (err) {
+        debugLog('Error calling the AIDA API', err);
+
         if (options?.signal.aborted) {
           break;
         }
 
-        yield {step: Step.ERROR, text: err.message, rpcId};
+        yield {step: Step.ERROR, text: genericErrorMessage, rpcId};
         break;
       }
 
@@ -324,7 +331,7 @@ export class FreestylerAgent {
         yield {step: Step.ANSWER, text: answer, rpcId};
         break;
       } else {
-        yield {step: Step.ANSWER, text: 'Sorry, I could not help you with this query.', rpcId};
+        yield {step: Step.ANSWER, text: genericErrorMessage, rpcId};
         break;
       }
 

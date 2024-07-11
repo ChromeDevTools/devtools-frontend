@@ -223,6 +223,50 @@ describeWithEnvironment('AidaClient', () => {
     ]);
   });
 
+  it('handles attributionMetadata', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
+        .callsFake(async (_, streamId, callback) => {
+          const response = JSON.stringify([
+            {
+              textChunk: {text: 'Chunk1\n'},
+              metadata: {rpcGlobalId: 123, attributionMetadata: {attributionAction: 'BLOCK', citations: []}},
+            },
+            {
+              textChunk: {text: 'Chunk2\n'},
+              metadata: {
+                rpcGlobalId: 123,
+                attributionMetadata:
+                    {attributionAction: 'CITE', citations: [{startIndex: 0, endIndex: 1, url: 'https://example.com'}]},
+              },
+            },
+          ]);
+          const chunks = response.split(',{');
+          await new Promise(resolve => setTimeout(resolve, 0));
+          Host.ResourceLoader.streamWrite(streamId, chunks[0] + ',{' + chunks[1]);
+          await new Promise(resolve => setTimeout(resolve, 0));
+          callback({statusCode: 200});
+        });
+
+    const provider = new Host.AidaClient.AidaClient();
+    const results = await getAllResults(provider);
+    assert.deepStrictEqual(results, [
+      {
+        explanation: 'Chunk1\n' +
+            'Chunk2\n',
+        metadata: {
+          rpcGlobalId: 123,
+          attributionMetadata: [
+            {attributionAction: Host.AidaClient.RecitationAction.BLOCK, citations: []},
+            {
+              attributionAction: Host.AidaClient.RecitationAction.CITE,
+              citations: [{startIndex: 0, endIndex: 1, url: 'https://example.com'}],
+            },
+          ],
+        },
+      },
+    ]);
+  });
+
   it('handles subsequent code chunks', async () => {
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
         .callsFake(async (_, streamId, callback) => {

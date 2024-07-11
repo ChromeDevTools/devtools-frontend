@@ -78,11 +78,33 @@ export interface AidaDoConversationClientEvent {
   };
 }
 
+export enum RecitationAction {
+  ACTION_UNSPECIFIED = 'ACTION_UNSPECIFIED',
+  CITE = 'CITE',
+  BLOCK = 'BLOCK',
+  NO_ACTION = 'NO_ACTION',
+  EXEMPT_FOUND_IN_PROMPT = 'EXEMPT_FOUND_IN_PROMPT',
+}
+
+export interface Citation {
+  startIndex: number;
+  endIndex: number;
+  url: string;
+}
+
+export interface AttributionMetadata {
+  attributionAction: RecitationAction;
+  citations: Citation[];
+}
+
+export interface AidaResponseMetadata {
+  rpcGlobalId?: number;
+  attributionMetadata?: AttributionMetadata[];
+}
+
 export interface AidaResponse {
   explanation: string;
-  metadata: {
-    rpcGlobalId?: number,
-  };
+  metadata: AidaResponseMetadata;
 }
 
 export enum AidaAvailability {
@@ -181,7 +203,7 @@ export class AidaClient {
     let chunk;
     const text = [];
     let inCodeChunk = false;
-    const metadata = {rpcGlobalId: 0};
+    const metadata: AidaResponseMetadata = {rpcGlobalId: 0};
     while ((chunk = await stream.read())) {
       let textUpdated = false;
       // The AIDA response is a JSON array of objects, split at the object
@@ -211,6 +233,12 @@ export class AidaClient {
       for (const result of results) {
         if ('metadata' in result) {
           metadata.rpcGlobalId = result.metadata.rpcGlobalId;
+          if ('attributionMetadata' in result.metadata) {
+            if (!metadata.attributionMetadata) {
+              metadata.attributionMetadata = [];
+            }
+            metadata.attributionMetadata.push(result.metadata.attributionMetadata);
+          }
         }
         if ('textChunk' in result) {
           if (inCodeChunk) {

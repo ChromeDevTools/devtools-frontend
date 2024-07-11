@@ -10,11 +10,17 @@ import * as Protocol from '../../generated/protocol.js';
 import * as HAR from '../../models/har/har.js';
 import * as Logs from '../../models/logs/logs.js';
 import {
+  findMenuItemWithLabel,
+  getContextMenuForElement,
+  getMenuItemLabels,
+} from '../../testing/ContextMenuHelpers.js';
+import {
   dispatchClickEvent,
   dispatchMouseUpEvent,
   raf,
 } from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {expectCalled} from '../../testing/ExpectStubCall.js';
 import {stubFileManager} from '../../testing/FileManagerHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../../testing/MockConnection.js';
 import {activate} from '../../testing/ResourceTreeHelpers.js';
@@ -830,6 +836,140 @@ describeWithMockConnection('NetworkLogView', () => {
       urlContentOverridden,
       urlHeaderAndContentOverridden,
     ]);
+
+    networkLogView.detach();
+  });
+
+  it('"Copy all" commands respects filters', async () => {
+    createOverrideRequests();
+
+    const filterBar = new UI.FilterBar.FilterBar('network-panel', true);
+    networkLogView = createNetworkLogView(filterBar);
+    networkLogView.markAsRoot();
+    networkLogView.show(document.body);
+    const copyText = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText').resolves();
+
+    // Set network filter
+    networkLogView.setTextFilterValue('has-overrides:headers');
+
+    // Get DataGrid
+    const dataGrid = networkLogView.columns().dataGrid().element;
+    assert.isDefined(dataGrid);
+    // Select first element
+    networkLogView.columns().dataGrid().rootNode().children[0].select();
+    // Get context menu, clipboard section
+    const contextMenu = getContextMenuForElement(dataGrid);
+    const clipboardSection = contextMenu.clipboardSection();
+    // Assert that there is only one entry (for 'Copy') in the clipboard section
+    assert.deepEqual(['Copy'], getMenuItemLabels(clipboardSection));
+    const copyItem = clipboardSection.items[0];
+    // Use the 'Copy' sub-menu, get menu items from the footer section
+    const footerSection = (copyItem as UI.ContextMenu.SubMenu).footerSection();
+
+    const copyAllURLs = findMenuItemWithLabel(footerSection, 'Copy all (filtered) URLs');
+    assert.isDefined(copyAllURLs);
+    contextMenu.invokeHandler(copyAllURLs.id());
+    await expectCalled(copyText);
+    assert.strictEqual(copyText.callCount, 1);
+    assert.deepEqual(copyText.lastCall.args, [`url-header-overridden
+url-header-und-content-overridden`]);
+    copyText.resetHistory();
+
+    const copyAllCurlComnmands = findMenuItemWithLabel(
+        footerSection, Host.Platform.isWin() ? 'Copy all (filtered) as cURL (bash)' : 'Copy all (filtered) as cURL');
+    assert.isDefined(copyAllCurlComnmands);
+    contextMenu.invokeHandler(copyAllCurlComnmands.id());
+    await expectCalled(copyText);
+    assert.strictEqual(copyText.callCount, 1);
+    assert.deepEqual(copyText.lastCall.args, [`curl 'url-header-overridden' ;
+curl 'url-header-und-content-overridden'`]);
+    copyText.resetHistory();
+
+    const copyAllFetchCall = findMenuItemWithLabel(footerSection, 'Copy all (filtered) as fetch');
+    assert.isDefined(copyAllFetchCall);
+    contextMenu.invokeHandler(copyAllFetchCall.id());
+    await expectCalled(copyText);
+    assert.strictEqual(copyText.callCount, 1);
+    assert.deepEqual(copyText.lastCall.args, [`fetch("url-header-overridden", {
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "omit"
+}); ;
+fetch("url-header-und-content-overridden", {
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "omit"
+});`]);
+    copyText.resetHistory();
+
+    const copyAllPowerShell = findMenuItemWithLabel(footerSection, 'Copy all (filtered) as PowerShell');
+    assert.isDefined(copyAllPowerShell);
+    contextMenu.invokeHandler(copyAllPowerShell.id());
+    await expectCalled(copyText);
+    assert.strictEqual(copyText.callCount, 1);
+    assert.deepEqual(copyText.lastCall.args, [`Invoke-WebRequest -UseBasicParsing -Uri "url-header-overridden";\r
+Invoke-WebRequest -UseBasicParsing -Uri "url-header-und-content-overridden"`]);
+    // Clear network filter
+    networkLogView.setTextFilterValue('');
+    copyText.resetHistory();
+
+    contextMenu.invokeHandler(copyAllURLs.id());
+    await expectCalled(copyText);
+    assert.strictEqual(copyText.callCount, 1);
+    assert.deepEqual(copyText.lastCall.args, [`url-not-overridden
+url-header-overridden
+url-content-overridden
+url-header-und-content-overridden`]);
+    copyText.resetHistory();
+
+    contextMenu.invokeHandler(copyAllCurlComnmands.id());
+    await expectCalled(copyText);
+    assert.strictEqual(copyText.callCount, 1);
+    assert.deepEqual(copyText.lastCall.args, [`curl 'url-not-overridden' ;
+curl 'url-header-overridden' ;
+curl 'url-content-overridden' ;
+curl 'url-header-und-content-overridden'`]);
+    copyText.resetHistory();
+
+    contextMenu.invokeHandler(copyAllFetchCall.id());
+    await expectCalled(copyText);
+    assert.strictEqual(copyText.callCount, 1);
+    assert.deepEqual(copyText.lastCall.args, [`fetch("url-not-overridden", {
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "omit"
+}); ;
+fetch("url-header-overridden", {
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "omit"
+}); ;
+fetch("url-content-overridden", {
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "omit"
+}); ;
+fetch("url-header-und-content-overridden", {
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "omit"
+});`]);
+    copyText.resetHistory();
+
+    contextMenu.invokeHandler(copyAllPowerShell.id());
+    await expectCalled(copyText);
+    assert.strictEqual(copyText.callCount, 1);
+    assert.deepEqual(copyText.lastCall.args, [`Invoke-WebRequest -UseBasicParsing -Uri "url-not-overridden";\r
+Invoke-WebRequest -UseBasicParsing -Uri "url-header-overridden";\r
+Invoke-WebRequest -UseBasicParsing -Uri "url-content-overridden";\r
+Invoke-WebRequest -UseBasicParsing -Uri "url-header-und-content-overridden"`]);
+    copyText.resetHistory();
 
     networkLogView.detach();
   });

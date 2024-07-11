@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
+import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {createTarget} from '../../../testing/EnvironmentHelpers.js';
@@ -18,6 +20,41 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 const LOCAL_METRIC_SELECTOR = '.local-value .metric-value';
 const FIELD_METRIC_SELECTOR = '.field-value .metric-value';
 const INTERACTION_SELECTOR = '.interaction';
+
+function createMockFieldData() {
+  return {
+    record: {
+      key: {
+        // Only one of these keys will be set for a given result in reality
+        // Setting both here to make testing easier.
+        url: 'https://example.com/',
+        origin: 'https://example.com',
+      },
+      metrics: {
+        'largest_contentful_paint': {
+          histogram: [
+            {start: 0, end: 2500, density: 0.5},
+            {start: 2500, end: 4000, density: 0.3},
+            {start: 4000, density: 0.2},
+          ],
+          percentiles: {p75: 1000},
+        },
+        'cumulative_layout_shift': {
+          histogram: [
+            {start: 0, end: 0.1, density: 0.1},
+            {start: 0.1, end: 0.25, density: 0.1},
+            {start: 0.25, density: 0.8},
+          ],
+          percentiles: {p75: 0.25},
+        },
+      },
+      collectionPeriod: {
+        firstDate: {year: 2024, month: 1, day: 1},
+        lastDate: {year: 2024, month: 1, day: 29},
+      },
+    },
+  };
+}
 
 describeWithMockConnection('LiveMetricsView', () => {
   const mockHandleAction = sinon.stub();
@@ -36,10 +73,25 @@ describeWithMockConnection('LiveMetricsView', () => {
       loadActionDelegate: async () => ({handleAction: mockHandleAction}),
     });
 
+    const dummyStorage = new Common.Settings.SettingsStorage({});
+    Common.Settings.registerSettingExtension({
+      category: Common.Settings.SettingCategory.MOBILE,
+      settingName: 'emulation.show-device-outline',
+      settingType: Common.Settings.SettingType.BOOLEAN,
+      defaultValue: false,
+    });
+    Common.Settings.Settings.instance({
+      forceNew: true,
+      syncedStorage: dummyStorage,
+      globalStorage: dummyStorage,
+      localStorage: dummyStorage,
+    });
+
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
     LiveMetrics.LiveMetrics.instance({forceNew: true});
     CrUXManager.CrUXManager.instance({forceNew: true});
+    EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
   });
 
   afterEach(async () => {
@@ -162,8 +214,6 @@ describeWithMockConnection('LiveMetricsView', () => {
     let mockFieldData: CrUXManager.PageResult;
 
     beforeEach(async () => {
-      CrUXManager.CrUXManager.instance().getEnabledSetting().set(false);
-
       const tabTarget = createTarget({type: SDK.Target.Type.Tab});
       target = createTarget({parentTarget: tabTarget});
 
@@ -179,9 +229,12 @@ describeWithMockConnection('LiveMetricsView', () => {
       };
 
       sinon.stub(CrUXManager.CrUXManager.instance(), 'getFieldDataForCurrentPage').callsFake(async () => mockFieldData);
+      CrUXManager.CrUXManager.instance().getEnabledSetting().set(true);
     });
 
     it('should not show when crux is disabled', async () => {
+      CrUXManager.CrUXManager.instance().getEnabledSetting().set(false);
+
       mockFieldData['url-ALL'] = {
         record: {
           key: {
@@ -237,42 +290,12 @@ describeWithMockConnection('LiveMetricsView', () => {
     });
 
     it('should show when crux is enabled', async () => {
-      CrUXManager.CrUXManager.instance().getEnabledSetting().set(true);
-
       const view = new Components.LiveMetricsView.LiveMetricsView();
       renderElementIntoDOM(view);
 
       await coordinator.done();
 
-      mockFieldData['url-ALL'] = {
-        record: {
-          key: {
-            url: 'https://example.com',
-          },
-          metrics: {
-            'largest_contentful_paint': {
-              histogram: [
-                {start: 0, end: 2500, density: 0.5},
-                {start: 2500, end: 4000, density: 0.3},
-                {start: 4000, density: 0.2},
-              ],
-              percentiles: {p75: 1000},
-            },
-            'cumulative_layout_shift': {
-              histogram: [
-                {start: 0, end: 0.1, density: 0.1},
-                {start: 0.1, end: 0.25, density: 0.1},
-                {start: 0.25, density: 0.8},
-              ],
-              percentiles: {p75: 0.25},
-            },
-          },
-          collectionPeriod: {
-            firstDate: {year: 2024, month: 1, day: 1},
-            lastDate: {year: 2024, month: 1, day: 29},
-          },
-        },
-      };
+      mockFieldData['url-ALL'] = createMockFieldData();
 
       target.model(SDK.ResourceTreeModel.ResourceTreeModel)
           ?.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameNavigated, {
@@ -304,37 +327,7 @@ describeWithMockConnection('LiveMetricsView', () => {
     });
 
     it('should make initial request on render when crux is enabled', async () => {
-      CrUXManager.CrUXManager.instance().getEnabledSetting().set(true);
-
-      mockFieldData['url-ALL'] = {
-        record: {
-          key: {
-            url: 'https://example.com',
-          },
-          metrics: {
-            'largest_contentful_paint': {
-              histogram: [
-                {start: 0, end: 2500, density: 0.5},
-                {start: 2500, end: 4000, density: 0.3},
-                {start: 4000, density: 0.2},
-              ],
-              percentiles: {p75: 1000},
-            },
-            'cumulative_layout_shift': {
-              histogram: [
-                {start: 0, end: 0.1, density: 0.1},
-                {start: 0.1, end: 0.25, density: 0.1},
-                {start: 0.25, density: 0.8},
-              ],
-              percentiles: {p75: 0.25},
-            },
-          },
-          collectionPeriod: {
-            firstDate: {year: 2024, month: 1, day: 1},
-            lastDate: {year: 2024, month: 1, day: 29},
-          },
-        },
-      };
+      mockFieldData['url-ALL'] = createMockFieldData();
 
       const view = new Components.LiveMetricsView.LiveMetricsView();
       renderElementIntoDOM(view);
@@ -346,37 +339,7 @@ describeWithMockConnection('LiveMetricsView', () => {
     });
 
     it('should be removed once crux is disabled', async () => {
-      CrUXManager.CrUXManager.instance().getEnabledSetting().set(true);
-
-      mockFieldData['url-ALL'] = {
-        record: {
-          key: {
-            url: 'https://example.com',
-          },
-          metrics: {
-            'largest_contentful_paint': {
-              histogram: [
-                {start: 0, end: 2500, density: 0.5},
-                {start: 2500, end: 4000, density: 0.3},
-                {start: 4000, density: 0.2},
-              ],
-              percentiles: {p75: 1000},
-            },
-            'cumulative_layout_shift': {
-              histogram: [
-                {start: 0, end: 0.1, density: 0.1},
-                {start: 0.1, end: 0.25, density: 0.1},
-                {start: 0.25, density: 0.8},
-              ],
-              percentiles: {p75: 0.25},
-            },
-          },
-          collectionPeriod: {
-            firstDate: {year: 2024, month: 1, day: 1},
-            lastDate: {year: 2024, month: 1, day: 29},
-          },
-        },
-      };
+      mockFieldData['url-ALL'] = createMockFieldData();
 
       const view = new Components.LiveMetricsView.LiveMetricsView();
       renderElementIntoDOM(view);
@@ -392,6 +355,140 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       const lcpFieldEl2 = view.shadowRoot?.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
       assert.strictEqual(lcpFieldEl2.textContent, '-');
+    });
+
+    it('should take from selected page scope', async () => {
+      mockFieldData['url-ALL'] = createMockFieldData();
+
+      mockFieldData['origin-ALL'] = createMockFieldData();
+      mockFieldData['origin-ALL'].record.metrics.largest_contentful_paint!.percentiles.p75 = 2000;
+
+      const view = new Components.LiveMetricsView.LiveMetricsView();
+      renderElementIntoDOM(view);
+
+      await coordinator.done();
+
+      const lcpFieldEl1 = view.shadowRoot!.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      assert.strictEqual(lcpFieldEl1.textContent, '1.00 s');
+
+      const pageScopeSelector =
+          view.shadowRoot!.querySelector('#page-scope-select devtools-select-menu') as HTMLElement;
+      pageScopeSelector.click();
+
+      const pageScopeOptions =
+          Array.from(pageScopeSelector.querySelectorAll('#page-scope-select devtools-menu-item')) as
+          HTMLElementTagNameMap['devtools-menu-item'][];
+      const originOption = pageScopeOptions.find(o => o.value === 'origin');
+      originOption!.click();
+
+      await coordinator.done();
+
+      const lcpFieldEl2 = view.shadowRoot!.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      assert.strictEqual(lcpFieldEl2.textContent, '2.00 s');
+    });
+
+    it('should take from selected device scope', async () => {
+      mockFieldData['url-ALL'] = createMockFieldData();
+
+      mockFieldData['url-PHONE'] = createMockFieldData();
+      mockFieldData['url-PHONE'].record.metrics.largest_contentful_paint!.percentiles.p75 = 2000;
+
+      const view = new Components.LiveMetricsView.LiveMetricsView();
+      renderElementIntoDOM(view);
+
+      await coordinator.done();
+
+      const deviceScopeSelector =
+          view.shadowRoot!.querySelector('#device-scope-select devtools-select-menu') as HTMLElement;
+      const deviceScopeOptions =
+          Array.from(deviceScopeSelector.querySelectorAll('#device-scope-select devtools-menu-item')) as
+          HTMLElementTagNameMap['devtools-menu-item'][];
+
+      deviceScopeSelector.click();
+      deviceScopeOptions.find(o => o.value === 'ALL')!.click();
+
+      const lcpFieldEl1 = view.shadowRoot!.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      assert.strictEqual(lcpFieldEl1.textContent, '1.00 s');
+
+      deviceScopeSelector.click();
+      deviceScopeOptions.find(o => o.value === 'PHONE')!.click();
+
+      await coordinator.done();
+
+      const lcpFieldEl2 = view.shadowRoot!.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      assert.strictEqual(lcpFieldEl2.textContent, '2.00 s');
+    });
+
+    it('auto device option should chose based on emulation', async () => {
+      mockFieldData['url-DESKTOP'] = createMockFieldData();
+
+      mockFieldData['url-PHONE'] = createMockFieldData();
+      mockFieldData['url-PHONE'].record.metrics.largest_contentful_paint!.percentiles.p75 = 2000;
+
+      const view = new Components.LiveMetricsView.LiveMetricsView();
+      renderElementIntoDOM(view);
+
+      await coordinator.done();
+
+      const deviceScopeSelector =
+          view.shadowRoot!.querySelector('#device-scope-select devtools-select-menu') as HTMLElement;
+      const deviceScopeOptions =
+          Array.from(deviceScopeSelector.querySelectorAll('#device-scope-select devtools-menu-item')) as
+          HTMLElementTagNameMap['devtools-menu-item'][];
+
+      deviceScopeSelector.click();
+      deviceScopeOptions.find(o => o.value === 'AUTO')!.click();
+
+      const lcpFieldEl1 = view.shadowRoot!.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      assert.strictEqual(lcpFieldEl1.textContent, '1.00 s');
+
+      for (const device of EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
+        if (device.title === 'Moto G Power') {
+          EmulationModel.DeviceModeModel.DeviceModeModel.instance().emulate(
+              EmulationModel.DeviceModeModel.Type.Device, device, device.modes[0], 1);
+        }
+      }
+
+      await coordinator.done();
+
+      const lcpFieldEl2 = view.shadowRoot!.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      assert.strictEqual(lcpFieldEl2.textContent, '2.00 s');
+    });
+
+    it('auto device option should fall back to all devices', async () => {
+      mockFieldData['url-DESKTOP'] = createMockFieldData();
+
+      mockFieldData['url-ALL'] = createMockFieldData();
+      mockFieldData['url-ALL'].record.metrics.largest_contentful_paint!.percentiles.p75 = 2000;
+
+      const view = new Components.LiveMetricsView.LiveMetricsView();
+      renderElementIntoDOM(view);
+
+      await coordinator.done();
+
+      const deviceScopeSelector =
+          view.shadowRoot!.querySelector('#device-scope-select devtools-select-menu') as HTMLElement;
+      const deviceScopeOptions =
+          Array.from(deviceScopeSelector.querySelectorAll('#device-scope-select devtools-menu-item')) as
+          HTMLElementTagNameMap['devtools-menu-item'][];
+
+      deviceScopeSelector.click();
+      deviceScopeOptions.find(o => o.value === 'AUTO')!.click();
+
+      const lcpFieldEl1 = view.shadowRoot!.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      assert.strictEqual(lcpFieldEl1.textContent, '1.00 s');
+
+      for (const device of EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
+        if (device.title === 'Moto G Power') {
+          EmulationModel.DeviceModeModel.DeviceModeModel.instance().emulate(
+              EmulationModel.DeviceModeModel.Type.Device, device, device.modes[0], 1);
+        }
+      }
+
+      await coordinator.done();
+
+      const lcpFieldEl2 = view.shadowRoot!.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      assert.strictEqual(lcpFieldEl2.textContent, '2.00 s');
     });
   });
 });

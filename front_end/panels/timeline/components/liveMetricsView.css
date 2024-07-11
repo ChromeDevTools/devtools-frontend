@@ -222,9 +222,20 @@
   flex-shrink: 0;
 }
 
-.throttling-setting {
+.live-metrics-option {
   display: flex;
-  flex-direction: row;
+  flex-flow: row nowrap;
   align-items: center;
   gap: 8px;
+  max-width: 100%;
+  text-wrap: nowrap;
+}
+
+.live-metrics-option > devtools-select-menu {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.no-data {
+  color: var(--sys-color-token-subtle);
 }

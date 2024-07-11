@@ -59,7 +59,9 @@ export type PageResult = {
 
 let cruxManagerInstance: CrUXManager;
 
-const deviceScopeList: DeviceScope[] = ['ALL', 'DESKTOP', 'PHONE', 'TABLET'];
+// TODO: Potentially support `TABLET`. Tablet field data will always be `null` until then.
+export const DEVICE_SCOPE_LIST: DeviceScope[] = ['ALL', 'DESKTOP', 'PHONE'];
+
 const pageScopeList: PageScope[] = ['origin', 'url'];
 const metrics: MetricNames[] = ['largest_contentful_paint', 'cumulative_layout_shift', 'interaction_to_next_paint'];
 
@@ -122,7 +124,7 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       const promises: Promise<void>[] = [];
 
       for (const pageScope of pageScopeList) {
-        for (const deviceScope of deviceScopeList) {
+        for (const deviceScope of DEVICE_SCOPE_LIST) {
           const promise = this.#getScopedData(normalizedUrl, pageScope, deviceScope).then(response => {
             pageResult[`${pageScope}-${deviceScope}`] = response;
           });

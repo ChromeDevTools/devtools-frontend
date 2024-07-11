@@ -83,11 +83,11 @@ describeWithMockConnection('CrUXManager', () => {
         'origin-ALL': mockResponse(),
         'origin-DESKTOP': mockResponse(),
         'origin-PHONE': mockResponse(),
-        'origin-TABLET': mockResponse(),
+        'origin-TABLET': null,
         'url-ALL': mockResponse(),
         'url-DESKTOP': mockResponse(),
         'url-PHONE': mockResponse(),
-        'url-TABLET': mockResponse(),
+        'url-TABLET': null,
       });
 
       assert.deepStrictEqual(fetchBodies, [
@@ -110,15 +110,6 @@ describeWithMockConnection('CrUXManager', () => {
           origin: 'https://example.com',
         },
         {
-          formFactor: 'TABLET',
-          metrics: [
-            'largest_contentful_paint',
-            'cumulative_layout_shift',
-            'interaction_to_next_paint',
-          ],
-          origin: 'https://example.com',
-        },
-        {
           metrics: [
             'largest_contentful_paint',
             'cumulative_layout_shift',
@@ -137,15 +128,6 @@ describeWithMockConnection('CrUXManager', () => {
         },
         {
           formFactor: 'PHONE',
-          metrics: [
-            'largest_contentful_paint',
-            'cumulative_layout_shift',
-            'interaction_to_next_paint',
-          ],
-          url: 'https://example.com/',
-        },
-        {
-          formFactor: 'TABLET',
           metrics: [
             'largest_contentful_paint',
             'cumulative_layout_shift',
@@ -188,11 +170,11 @@ describeWithMockConnection('CrUXManager', () => {
 
       await cruxManager.getFieldDataForPage('https://example.com');
 
-      assert.strictEqual(mockFetch.callCount, 8);
+      assert.strictEqual(mockFetch.callCount, 6);
 
       await cruxManager.getFieldDataForPage('https://example.com');
 
-      assert.strictEqual(mockFetch.callCount, 8);
+      assert.strictEqual(mockFetch.callCount, 6);
     });
 
     it('should cache "NOT_FOUND" responses', async () => {
@@ -202,11 +184,11 @@ describeWithMockConnection('CrUXManager', () => {
 
       await cruxManager.getFieldDataForPage('https://example.com');
 
-      assert.strictEqual(mockFetch.callCount, 8);
+      assert.strictEqual(mockFetch.callCount, 6);
 
       await cruxManager.getFieldDataForPage('https://example.com');
 
-      assert.strictEqual(mockFetch.callCount, 8);
+      assert.strictEqual(mockFetch.callCount, 6);
     });
 
     it('should not cache error responses', async () => {
@@ -216,13 +198,13 @@ describeWithMockConnection('CrUXManager', () => {
 
       await cruxManager.getFieldDataForPage('https://example.com');
 
-      assert.strictEqual(mockFetch.callCount, 8);
-      assert.strictEqual(mockConsoleError.callCount, 8);
+      assert.strictEqual(mockFetch.callCount, 6);
+      assert.strictEqual(mockConsoleError.callCount, 6);
 
       await cruxManager.getFieldDataForPage('https://example.com');
 
-      assert.strictEqual(mockFetch.callCount, 16);
-      assert.strictEqual(mockConsoleError.callCount, 16);
+      assert.strictEqual(mockFetch.callCount, 12);
+      assert.strictEqual(mockConsoleError.callCount, 12);
     });
 
     it('should ignore hash and search params for caching', async () => {
@@ -232,11 +214,11 @@ describeWithMockConnection('CrUXManager', () => {
 
       await cruxManager.getFieldDataForPage('https://example.com#hash');
 
-      assert.strictEqual(mockFetch.callCount, 8);
+      assert.strictEqual(mockFetch.callCount, 6);
 
       await cruxManager.getFieldDataForPage('https://example.com?search');
 
-      assert.strictEqual(mockFetch.callCount, 8);
+      assert.strictEqual(mockFetch.callCount, 6);
     });
   });
 

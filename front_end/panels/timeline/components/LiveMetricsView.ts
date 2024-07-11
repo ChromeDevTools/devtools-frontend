@@ -6,9 +6,11 @@ import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
+import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as Menus from '../../../ui/components/menus/menus.js';
 import * as Settings from '../../../ui/components/settings/settings.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -22,11 +24,14 @@ const {until} = Directives;
 
 type MetricRating = 'good'|'needs-improvement'|'poor';
 type MetricThresholds = [number, number];
+type DeviceOption = CrUXManager.DeviceScope|'AUTO';
 
 // TODO: Consolidate our metric rating logic with the trace engine.
 const LCP_THRESHOLDS = [2500, 4000] as MetricThresholds;
 const CLS_THRESHOLDS = [0.1, 0.25] as MetricThresholds;
 const INP_THRESHOLDS = [200, 500] as MetricThresholds;
+
+const DEVICE_OPTION_LIST: DeviceOption[] = ['AUTO', ...CrUXManager.DEVICE_SCOPE_LIST];
 
 export class LiveMetricsView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-live-metrics-view`;
@@ -39,9 +44,8 @@ export class LiveMetricsView extends HTMLElement {
 
   #cruxPageResult?: CrUXManager.PageResult;
 
-  // TODO: Link these to real setting inputs
-  #fieldDeviceScope: CrUXManager.DeviceScope = 'ALL';
-  #fieldPreferURL = true;
+  #fieldDeviceOption: DeviceOption = 'AUTO';
+  #fieldPageScope: CrUXManager.PageScope = 'url';
 
   #toggleRecordAction: UI.ActionRegistration.Action;
   #recordReloadAction: UI.ActionRegistration.Action;
@@ -68,18 +72,18 @@ export class LiveMetricsView extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
+  #onEmulationChanged(): void {
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+  }
+
   async #refreshFieldDataForCurrentPage(): Promise<void> {
     this.#cruxPageResult = await CrUXManager.CrUXManager.instance().getFieldDataForCurrentPage();
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #getFieldMetricData(fieldMetric: CrUXManager.MetricNames): CrUXManager.MetricResponse|undefined {
-    const originResponse = this.#cruxPageResult?.[`origin-${this.#fieldDeviceScope}`];
-    const urlResponse = this.#cruxPageResult?.[`url-${this.#fieldDeviceScope}`];
-    if (this.#fieldPreferURL && urlResponse) {
-      return urlResponse?.record.metrics[fieldMetric];
-    }
-    return originResponse?.record.metrics[fieldMetric];
+    const deviceScope = this.#fieldDeviceOption === 'AUTO' ? this.#getAutoDeviceScope() : this.#fieldDeviceOption;
+    return this.#cruxPageResult?.[`${this.#fieldPageScope}-${deviceScope}`]?.record.metrics[fieldMetric];
   }
 
   connectedCallback(): void {
@@ -90,6 +94,9 @@ export class LiveMetricsView extends HTMLElement {
 
     const cruxManager = CrUXManager.CrUXManager.instance();
     cruxManager.addEventListener(CrUXManager.Events.FieldDataChanged, this.#onFieldDataChanged, this);
+
+    const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
+    emulationModel.addEventListener(EmulationModel.DeviceModeModel.Events.Updated, this.#onEmulationChanged, this);
 
     if (cruxManager.getEnabledSetting().get()) {
       void this.#refreshFieldDataForCurrentPage();
@@ -107,6 +114,9 @@ export class LiveMetricsView extends HTMLElement {
 
     const cruxManager = CrUXManager.CrUXManager.instance();
     cruxManager.removeEventListener(CrUXManager.Events.FieldDataChanged, this.#onFieldDataChanged, this);
+
+    const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
+    emulationModel.removeEventListener(EmulationModel.DeviceModeModel.Events.Updated, this.#onEmulationChanged, this);
   }
 
   #renderMetricValue(value: number|string|undefined, thresholds: MetricThresholds, format: (value: number) => string):
@@ -262,11 +272,158 @@ export class LiveMetricsView extends HTMLElement {
   #renderThrottlingSettings(): LitHtml.LitTemplate {
     return html`
       <div class="card-title">Throttling</div>
-      <span class="throttling-setting">CPU: <${CPUThrottlingSelector.litTagName}></${
+      <span class="live-metrics-option">CPU: <${CPUThrottlingSelector.litTagName}></${
         CPUThrottlingSelector.litTagName}></span>
-      <span class="throttling-setting">Network: <${NetworkThrottlingSelector.litTagName}></${
+      <span class="live-metrics-option">Network: <${NetworkThrottlingSelector.litTagName}></${
         NetworkThrottlingSelector.litTagName}></span>
     `;
+  }
+
+  #getPageScopeLabel(pageScope: CrUXManager.PageScope): string {
+    const baseLabel = pageScope === 'url' ? 'URL' : 'Origin';
+
+    const key = this.#cruxPageResult?.[`${pageScope}-ALL`]?.record.key[pageScope];
+    if (key) {
+      return `${baseLabel} (${key})`;
+    }
+
+    return `${baseLabel} - No data`;
+  }
+
+  #onPageScopeMenuItemSelected(event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void {
+    if (event.itemValue === 'url') {
+      this.#fieldPageScope = 'url';
+    } else {
+      this.#fieldPageScope = 'origin';
+    }
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+  }
+
+  #renderPageScopeSetting(): LitHtml.LitTemplate {
+    if (!CrUXManager.CrUXManager.instance().getEnabledSetting().get()) {
+      return LitHtml.nothing;
+    }
+
+    const urlLabel = this.#getPageScopeLabel('url');
+    const originLabel = this.#getPageScopeLabel('origin');
+
+    return html`
+      <span id="page-scope-select" class="live-metrics-option">
+        URL/Origin:
+        <${Menus.SelectMenu.SelectMenu.litTagName}
+          @selectmenuselected=${this.#onPageScopeMenuItemSelected}
+          .showDivider=${true}
+          .showArrow=${true}
+          .sideButton=${false}
+          .showSelectedItem=${true}
+          .showConnector=${false}
+          .buttonTitle=${this.#fieldPageScope === 'url' ? urlLabel : originLabel}
+        >
+          <${Menus.Menu.MenuItem.litTagName}
+            .value=${'url'}
+            .selected=${this.#fieldPageScope === 'url'}
+          >
+            ${urlLabel}
+          </${Menus.Menu.MenuItem.litTagName}>
+          <${Menus.Menu.MenuItem.litTagName}
+            .value=${'origin'}
+            .selected=${this.#fieldPageScope === 'origin'}
+          >
+            ${originLabel}
+          </${Menus.Menu.MenuItem.litTagName}>
+        </${Menus.SelectMenu.SelectMenu.litTagName}>
+      </span>
+    `;
+  }
+
+  #getDeviceScopeDisplayName(deviceScope: CrUXManager.DeviceScope): string {
+    switch (deviceScope) {
+      case 'ALL':
+        return 'All devices';
+      case 'DESKTOP':
+        return 'Desktop';
+      case 'PHONE':
+        return 'Mobile';
+      case 'TABLET':
+        return 'Tablet';
+    }
+  }
+
+  #getAutoDeviceScope(): CrUXManager.DeviceScope {
+    const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
+    if (emulationModel.device()?.mobile()) {
+      if (this.#cruxPageResult?.[`${this.#fieldPageScope}-PHONE`]) {
+        return 'PHONE';
+      }
+
+      return 'ALL';
+    }
+
+    if (this.#cruxPageResult?.[`${this.#fieldPageScope}-DESKTOP`]) {
+      return 'DESKTOP';
+    }
+
+    return 'ALL';
+  }
+
+  #getLabelForDeviceOption(deviceOption: DeviceOption): string {
+    const deviceScope = deviceOption === 'AUTO' ? this.#getAutoDeviceScope() : deviceOption;
+    const deviceScopeLabel = this.#getDeviceScopeDisplayName(deviceScope);
+    const baseLabel = deviceOption === 'AUTO' ? `Auto (${deviceScopeLabel})` : deviceScopeLabel;
+
+    if (!this.#cruxPageResult) {
+      return `${baseLabel} - Loading…`;
+    }
+
+    const result = this.#cruxPageResult[`${this.#fieldPageScope}-${deviceScope}`];
+    if (!result) {
+      return `${baseLabel} - No data`;
+    }
+
+    return baseLabel;
+  }
+
+  #onDeviceOptionMenuItemSelected(event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void {
+    this.#fieldDeviceOption = event.itemValue as DeviceOption;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+  }
+
+  #renderDeviceScopeSetting(): LitHtml.LitTemplate {
+    if (!CrUXManager.CrUXManager.instance().getEnabledSetting().get()) {
+      return LitHtml.nothing;
+    }
+    // If there is no data at all we should force users to try adjusting the page scope
+    // before coming back to this option.
+    const shouldDisable = !this.#cruxPageResult?.[`${this.#fieldPageScope}-ALL`];
+
+    // clang-format off
+    return html`
+      <span id="device-scope-select" class="live-metrics-option">
+        Device type:
+        <${Menus.SelectMenu.SelectMenu.litTagName}
+          @selectmenuselected=${this.#onDeviceOptionMenuItemSelected}
+          .showDivider=${true}
+          .showArrow=${true}
+          .sideButton=${false}
+          .showSelectedItem=${true}
+          .showConnector=${false}
+          .buttonTitle=${this.#getLabelForDeviceOption(this.#fieldDeviceOption)}
+          .disabled=${shouldDisable}
+        >
+          ${DEVICE_OPTION_LIST.map(deviceOption => {
+            return html`
+              <${Menus.Menu.MenuItem.litTagName}
+                .value=${deviceOption}
+                .selected=${this.#fieldDeviceOption === deviceOption}
+              >
+                ${this.#getLabelForDeviceOption(deviceOption)}
+              </${Menus.Menu.MenuItem.litTagName}>
+            `;
+          })}
+        </${Menus.SelectMenu.SelectMenu.litTagName}>
+      </span>
+    `;
+    // clang-format on
   }
 
   #render = (): void => {
@@ -313,6 +470,8 @@ export class LiveMetricsView extends HTMLElement {
               <${Settings.SettingCheckbox.SettingCheckbox.litTagName} .data=${
                   {setting: automaticSetting} as Settings.SettingCheckbox.SettingCheckboxData}>
               </${Settings.SettingCheckbox.SettingCheckbox.litTagName}>
+              ${this.#renderPageScopeSetting()}
+              ${this.#renderDeviceScopeSetting()}
             </div>
             <div id="throttling" class="card">
               ${this.#renderThrottlingSettings()}

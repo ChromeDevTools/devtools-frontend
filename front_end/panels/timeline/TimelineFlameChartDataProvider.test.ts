@@ -72,6 +72,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
           'Frames',
           'Timings',
           'Interactions',
+          'A track group',
           'Another Extension Track',
           'An Extension Track',
           'Main — http://localhost:3000/',

@@ -49,15 +49,23 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
   });
 
   describe('appendTrackAtLevel', function() {
-    it('creates a flamechart group for the Extension tracks', function() {
-      assert.strictEqual(flameChartData.groups.length, 2);
-      assert.strictEqual(flameChartData.groups[1].name, 'An Extension Track');
-      assert.strictEqual(flameChartData.groups[0].name, 'Another Extension Track');
+    it('creates flamechart groups for the Extension tracks properly', function() {
+      assert.strictEqual(flameChartData.groups.length, 3);
+      assert.strictEqual(flameChartData.groups[0].name, 'A track group');
+      assert.strictEqual(flameChartData.groups[0].startLevel, 0);
+      assert.strictEqual(flameChartData.groups[0].style.nestingLevel, 0);
+      assert.strictEqual(flameChartData.groups[1].name, 'Another Extension Track');
+      assert.strictEqual(flameChartData.groups[1].startLevel, 0);
+      assert.strictEqual(flameChartData.groups[1].style.nestingLevel, 1);
+      assert.strictEqual(flameChartData.groups[2].name, 'An Extension Track');
+      assert.strictEqual(flameChartData.groups[2].startLevel, 1);
+      assert.strictEqual(flameChartData.groups[2].style.nestingLevel, 0);
     });
 
     it('adds start times correctly', function() {
       const allExtensionTrackEntries =
-          traceParsedData.ExtensionTraceData.extensionTrackData.flatMap(track => track.flameChartEntries);
+          traceParsedData.ExtensionTraceData.extensionTrackData.map(track => Object.values(track.entriesByTrack))
+              .flat(2);
       for (let i = 0; i < allExtensionTrackEntries.length; ++i) {
         const event = allExtensionTrackEntries[i];
         assert.strictEqual(
@@ -67,7 +75,8 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
 
     it('adds total times correctly', function() {
       const allExtensionTrackEntries =
-          traceParsedData.ExtensionTraceData.extensionTrackData.flatMap(track => track.flameChartEntries);
+          traceParsedData.ExtensionTraceData.extensionTrackData.map(track => Object.values(track.entriesByTrack))
+              .flat(2);
       for (let i = 0; i < allExtensionTrackEntries.length; i++) {
         const event = allExtensionTrackEntries[i];
         if (TraceEngine.Types.TraceEvents.isTraceEventMarkerEvent(event)) {
@@ -110,7 +119,8 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
     });
     it('returns the correct color and title for extension entries', function() {
       const allExtensionTrackEntries =
-          traceParsedData.ExtensionTraceData.extensionTrackData.flatMap(track => track.flameChartEntries);
+          traceParsedData.ExtensionTraceData.extensionTrackData.map(track => Object.values(track.entriesByTrack))
+              .flat(2);
       for (const event of allExtensionTrackEntries) {
         assert.strictEqual(extensionTrackAppenders[0].titleForEvent(event), event.name);
         if (event.args.color === 'tertiary') {
@@ -153,7 +163,8 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
   describe('highlightedEntryInfo', function() {
     it('returns the info for an entry correctly', function() {
       const allExtensionTrackEntries =
-          traceParsedData.ExtensionTraceData.extensionTrackData.flatMap(track => track.flameChartEntries);
+          traceParsedData.ExtensionTraceData.extensionTrackData.map(track => Object.values(track.entriesByTrack))
+              .flat(2);
       const highlightedEntryInfo = extensionTrackAppenders[0].highlightedEntryInfo(allExtensionTrackEntries[0]);
       // The i18n encodes spaces using the u00A0 unicode character.
       assert.strictEqual(highlightedEntryInfo.formattedTime, '1.00\u00A0s');

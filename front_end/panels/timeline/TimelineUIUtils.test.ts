@@ -782,7 +782,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
     it('renders the details for an extension entry properly', async function() {
       const traceParsedData = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
-      const extensionEntry = traceParsedData.ExtensionTraceData.extensionTrackData[1].flameChartEntries[0];
+      const extensionEntry =
+          traceParsedData.ExtensionTraceData.extensionTrackData[1].entriesByTrack['An Extension Track'][0];
 
       if (!extensionEntry) {
         throw new Error('Could not find extension entry.');

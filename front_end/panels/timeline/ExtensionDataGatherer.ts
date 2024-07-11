@@ -3,10 +3,7 @@
 // found in the LICENSE file.
 import type * as TraceEngine from '../../models/trace/trace.js';
 
-type TrackData = TraceEngine.Types.Extensions.ExtensionTrackData;
-export {TrackData};
-
-type ExtensionData = readonly TrackData[];
+type ExtensionData = readonly TraceEngine.Types.Extensions.ExtensionTrackData[];
 
 let extensionDataGathererInstance: ExtensionDataGatherer|undefined;
 

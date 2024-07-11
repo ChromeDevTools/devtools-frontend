@@ -12,33 +12,67 @@ import {
   type TrackAppenderName,
   VisualLoggingTrackName,
 } from './CompatibilityTracksAppender.js';
-import {type TrackData} from './ExtensionDataGatherer.js';
 import * as Extensions from './extensions/extensions.js';
 
 export class ExtensionTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'Extension';
 
-  #trackData: TrackData;
+  #extensionTopLevelTrack: TraceEngine.Types.Extensions.ExtensionTrackData;
   #compatibilityBuilder: CompatibilityTracksAppender;
-  constructor(compatibilityBuilder: CompatibilityTracksAppender, trackData: TrackData) {
-    this.#trackData = trackData;
+  constructor(
+      compatibilityBuilder: CompatibilityTracksAppender,
+      extensionTracks: TraceEngine.Types.Extensions.ExtensionTrackData) {
+    this.#extensionTopLevelTrack = extensionTracks;
     this.#compatibilityBuilder = compatibilityBuilder;
   }
 
   appendTrackAtLevel(trackStartLevel: number, expanded?: boolean): number {
-    if (this.#trackData.flameChartEntries.length === 0) {
+    const totalEntryCount =
+        Object.values(this.#extensionTopLevelTrack.entriesByTrack).reduce((prev, current) => current.length + prev, 0);
+    if (totalEntryCount === 0) {
       return trackStartLevel;
     }
-    this.#appendTrackHeaderAtLevel(trackStartLevel, expanded);
-    return this.#compatibilityBuilder.appendEventsAtLevel(this.#trackData.flameChartEntries, trackStartLevel, this);
+    this.#appendTopLevelHeaderAtLevel(trackStartLevel, expanded);
+    return this.#appendExtensionTrackData(trackStartLevel);
   }
 
-  #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
-    const style = buildGroupStyle({collapsible: true});
+  /**
+   * Appends the top level header for a track. Extension entries can be
+   * added to tracks or sub-tracks. In the former case, the top level
+   * header corresponds to the track name, in the latter it corresponds
+   * to the track group name.
+   */
+  #appendTopLevelHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
+    const style = buildGroupStyle({shareHeaderLine: false, collapsible: true});
+    const headerTitle = this.#extensionTopLevelTrack.name;
     const group = buildTrackHeader(
-        VisualLoggingTrackName.EXTENSION, currentLevel, this.#trackData.name, style,
+        VisualLoggingTrackName.EXTENSION, currentLevel, headerTitle, style,
         /* selectable= */ true, expanded);
     this.#compatibilityBuilder.registerTrackForGroup(group, this);
+  }
+
+  /**
+   * Appends the second level header for a grouped track, which
+   * corresponds to the track name itself, instead of the track name.
+   */
+  #appendSecondLevelHeader(trackStartLevel: number, headerTitle: string): void {
+    const style = buildGroupStyle({shareHeaderLine: false, padding: 2, nestingLevel: 1, collapsible: true});
+    const group = buildTrackHeader(
+        VisualLoggingTrackName.EXTENSION, trackStartLevel, headerTitle, style,
+        /* selectable= */ true);
+    this.#compatibilityBuilder.registerTrackForGroup(group, this);
+  }
+
+  #appendExtensionTrackData(trackStartLevel: number): number {
+    let currentStartLevel = trackStartLevel;
+    for (const [trackName, entries] of Object.entries(this.#extensionTopLevelTrack.entriesByTrack)) {
+      if (this.#extensionTopLevelTrack.isTrackGroup) {
+        // Second level header is used for only sub-tracks.
+        this.#appendSecondLevelHeader(currentStartLevel, trackName as string);
+      }
+      currentStartLevel = this.#compatibilityBuilder.appendEventsAtLevel(entries, currentStartLevel, this);
+    }
+    return currentStartLevel;
   }
 
   colorForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): string {

@@ -1700,6 +1700,19 @@ export class ConsoleViewFilter {
 
   private updateCurrentFilter(): void {
     const parsedFilters = this.filterParser.parse(this.textFilterUI.value());
+    for (const {key} of parsedFilters) {
+      switch (key) {
+        case FilterType.Context:
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleFilterByContext);
+          break;
+        case FilterType.Source:
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleFilterBySource);
+          break;
+        case FilterType.Url:
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleFilterByUrl);
+          break;
+      }
+    }
     if (this.hideNetworkMessagesSetting.get()) {
       parsedFilters.push(
           {key: FilterType.Source, text: Protocol.Log.LogEntrySource.Network, negative: true, regex: undefined});

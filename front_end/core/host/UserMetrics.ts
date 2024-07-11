@@ -564,7 +564,10 @@ export enum Action {
   ScrollDrivenAnimationGroupScrubbed = 144,
   FreestylerOpenedFromElementsPanel = 145,
   FreestylerOpenedFromStylesTab = 146,
-  MaxValue = 147,
+  ConsoleFilterByContext = 147,
+  ConsoleFilterBySource = 148,
+  ConsoleFilterByUrl = 149,
+  MaxValue = 150,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

@@ -753,7 +753,7 @@ describeWithEnvironment('FlameChart', () => {
         const context = (chartInstance.getCanvas().getContext('2d') as CanvasRenderingContext2D);
         const labelWidth = chartInstance.labelWidthForGroup(context, provider.timelineData()?.groups[0]!);
 
-        // Start of the view (before the edit icon).
+        // Start of the view
         assert.deepEqual(
             chartInstance.coordinatesToGroupIndexAndHoverType(0, 17),
             {groupIndex: 0, hoverType: PerfUI.FlameChart.HoverType.INSIDE_TRACK_HEADER});

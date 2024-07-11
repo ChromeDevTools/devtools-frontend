@@ -609,13 +609,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   /**
-   * Handle the mouse move event.
-   *
-   * And the handle priority will be:
-   * 1. Track configuration icons -> show tooltip for the icons
-   * 2. Inside a track header -> mouse style will be a "pointer", show edit icon
-   * 3.1 Inside a track -> show edit icon, update the highlight of hovered event
-   * 3.2 Outside all tracks -> clear all highlights
+   * Handle the mouse move event. The handle priority will be:
+   *   1. Track configuration icons -> show tooltip for the icons
+   *   2. Inside a track header -> mouse style will be a "pointer", indicating track can be focused
+   *   3. Inside a track -> update the highlight of hovered event
    */
   private onMouseMove(event: Event): void {
     this.#searchResultEntryIndex = -1;
@@ -657,12 +654,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         this.viewportElement.style.cursor = 'pointer';
         return;
       case HoverType.INSIDE_TRACK:
-        this.updateHighlight();
-        return;
-      case HoverType.OUTSIDE_TRACKS:
-        // No group is hovered.
-        // Redraw the flame chart to clear the potentially previously draw edit icon.
-        this.draw();
         this.updateHighlight();
         return;
     }

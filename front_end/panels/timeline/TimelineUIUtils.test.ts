@@ -451,24 +451,6 @@ describeWithMockConnection('TimelineUIUtils', function() {
       const titleSwatch: HTMLElement|null = details.querySelector('.timeline-details-chip-title div');
       assert.strictEqual(titleSwatch?.style.backgroundColor, 'rgb(10, 10, 10)');
     });
-    it('assigns the correct color to the swatch of a network request title', async function() {
-      const traceParsedData = await TraceLoader.traceEngine(this, 'lcp-web-font.json.gz');
-      const networkRequests = traceParsedData.NetworkRequests.byTime;
-      const cssRequest = networkRequests.find(request => {
-        return request.args.data.url === 'https://chromedevtools.github.io/performance-stories/lcp-web-font/app.css';
-      });
-      if (!cssRequest) {
-        throw new Error('Could not find expected network request.');
-      }
-
-      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildSyntheticNetworkRequestDetails(
-          traceParsedData,
-          cssRequest,
-          new Components.Linkifier.Linkifier(),
-      );
-      const titleSwatch: HTMLElement|null = details.querySelector('.timeline-details-chip-title div');
-      assert.strictEqual(titleSwatch?.style.backgroundColor, 'rgb(4, 4, 4)');
-    });
   });
 
   describe('testContentMatching', () => {
@@ -1081,41 +1063,6 @@ describeWithMockConnection('TimelineUIUtils', function() {
     // assertions.
     const value = (durationValue.innerText.replaceAll(/\s/g, ' '));
     assert.strictEqual(value, '37.85 ms (at 109.82 ms)');
-  });
-
-  describe('buildNetworkRequestDetails', function() {
-    it('renders the right details for a network event from TraceEngine', async function() {
-      const traceParsedData = await TraceLoader.traceEngine(this, 'lcp-web-font.json.gz');
-      const networkRequests = traceParsedData.NetworkRequests.byTime;
-      const cssRequest = networkRequests.find(request => {
-        return request.args.data.url === 'https://chromedevtools.github.io/performance-stories/lcp-web-font/app.css';
-      });
-      if (!cssRequest) {
-        throw new Error('Could not find expected network request.');
-      }
-
-      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildSyntheticNetworkRequestDetails(
-          traceParsedData,
-          cssRequest,
-          new Components.Linkifier.Linkifier(),
-      );
-
-      const rowData = getRowDataForDetailsElement(details);
-
-      assert.deepEqual(
-          rowData,
-          [
-            {title: 'URL', value: 'chromedevtools.github.io/performance-stories/lcp-web-font/app.css'},
-            {title: 'Duration', value: '12.58\xA0ms (8.29\xA0ms load from cache + 4.29\xA0ms resource loading)'},
-            {title: 'Request Method', value: 'GET'},
-            {title: 'Initial Priority', value: 'Highest'},
-            {title: 'Priority', value: 'Highest'},
-            {title: 'Mime Type', value: 'text/css'},
-            {title: 'Encoded Data', value: ' (from cache)'},
-            {title: 'Decoded Body', value: '96 B'},
-          ],
-      );
-    });
   });
 
   describe('eventTitle', function() {

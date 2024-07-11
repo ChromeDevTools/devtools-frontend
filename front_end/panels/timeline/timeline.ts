@@ -23,6 +23,7 @@ import * as NetworkTrackAppender from './NetworkTrackAppender.js';
 import * as Overlays from './Overlays.js';
 import * as SaveFileFormatter from './SaveFileFormatter.js';
 import * as SourceMapsResolver from './SourceMapsResolver.js';
+import * as TargetForEvent from './TargetForEvent.js';
 import * as ThreadAppender from './ThreadAppender.js';
 import * as TimelineController from './TimelineController.js';
 import * as TimelineDetailsView from './TimelineDetailsView.js';
@@ -66,6 +67,7 @@ export {
   Overlays,
   SaveFileFormatter,
   SourceMapsResolver,
+  TargetForEvent,
   ThreadAppender,
   TimelineController,
   TimelineDetailsView,

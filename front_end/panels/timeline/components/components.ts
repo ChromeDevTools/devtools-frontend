@@ -9,6 +9,7 @@ import * as DetailsView from './DetailsView.js';
 import * as EntryLabelOverlay from './EntryLabelOverlay.js';
 import * as InteractionBreakdown from './InteractionBreakdown.js';
 import * as LiveMetricsView from './LiveMetricsView.js';
+import * as NetworkRequestDetails from './NetworkRequestDetails.js';
 import * as NetworkRequestTooltip from './NetworkRequestTooltip.js';
 import * as NetworkThrottlingSelector from './NetworkThrottlingSelector.js';
 import * as Sidebar from './Sidebar.js';
@@ -26,6 +27,7 @@ export {
   EntryLabelOverlay,
   InteractionBreakdown,
   LiveMetricsView,
+  NetworkRequestDetails,
   NetworkRequestTooltip,
   NetworkThrottlingSelector,
   Sidebar,

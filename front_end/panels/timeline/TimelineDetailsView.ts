@@ -11,7 +11,9 @@ import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import * as TimelineComponents from './components/components.js';
 import {EventsTimelineTreeView} from './EventsTimelineTreeView.js';
+import {targetForEvent} from './TargetForEvent.js';
 import {TimelineLayersView} from './TimelineLayersView.js';
 import {TimelinePaintProfilerView} from './TimelinePaintProfilerView.js';
 import {type TimelineModeViewDelegate} from './TimelinePanel.js';
@@ -73,6 +75,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   private lazySelectorStatsView: TimelineSelectorStatsView|null;
   #traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null = null;
   #filmStrip: TraceEngine.Extras.FilmStrip.Data|null = null;
+  #networkRequestDetails: TimelineComponents.NetworkRequestDetails.NetworkRequestDetails;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
 
   constructor(delegate: TimelineModeViewDelegate) {
@@ -105,6 +108,9 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     const eventsView = new EventsTimelineTreeView(delegate);
     this.appendTab(Tab.EventLog, i18nString(UIStrings.eventLog), eventsView);
     this.rangeDetailViews.set(Tab.EventLog, eventsView);
+
+    this.#networkRequestDetails =
+        new TimelineComponents.NetworkRequestDetails.NetworkRequestDetails(this.detailsLinkifier);
 
     this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
 
@@ -276,10 +282,10 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     }
     const selectionObject = this.selection.object;
     if (TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selectionObject)) {
-      const event = selectionObject;
-      const networkDetails = await TimelineUIUtils.buildSyntheticNetworkRequestDetails(
-          this.#traceEngineData, event, this.detailsLinkifier);
-      this.setContent(networkDetails);
+      const networkRequest = selectionObject;
+      const maybeTarget = targetForEvent(this.#traceEngineData, networkRequest);
+      await this.#networkRequestDetails.setData(networkRequest, maybeTarget);
+      this.setContent(this.#networkRequestDetails);
     } else if (TimelineSelection.isTraceEventSelection(selectionObject)) {
       const event = selectionObject;
       const traceEventDetails =

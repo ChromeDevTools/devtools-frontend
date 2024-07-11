@@ -1,0 +1,154 @@
+/*
+ * Copyright (c) 2024 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.network-request-details-title {
+  font-size: 13px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.network-request-details-title > div {
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--sys-color-divider);
+  display: inline-block;
+  margin-right: 4px;
+  content: " ";
+}
+
+.network-request-details-body {
+  display: flex;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--sys-color-divider);
+}
+
+.network-request-details-col {
+  flex: 1;
+}
+
+.network-request-details-row {
+  display: flex;
+  padding: 0 10px;
+  min-height: 20px;
+}
+
+.title {
+  color: var(--sys-color-token-subtle);
+  overflow: hidden;
+  padding-right: 10px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.value {
+  display: inline-block;
+  user-select: text;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding: 0 3px;
+}
+
+.devtools-link {
+  color: var(--text-link);
+  text-decoration: underline;
+  outline-offset: 2px;
+  padding: 0;
+
+  .elements-disclosure & {
+    color: var(--text-link);
+  }
+
+  devtools-icon {
+    vertical-align: baseline;
+    color: var(--sys-color-primary);
+  }
+
+  :focus .selected & devtools-icon {
+    color: var(--sys-color-tonal-container);
+  }
+
+  &:focus-visible {
+    outline-width: unset;
+  }
+
+  &.invalid-link {
+    color: var(--text-disabled);
+    text-decoration: none;
+  }
+
+  &:not(.devtools-link-prevent-click, .invalid-link) {
+    cursor: pointer;
+  }
+
+  @media (forced-colors: active) {
+    &:not(.devtools-link-prevent-click) {
+      forced-color-adjust: none;
+      color: linktext;
+    }
+
+    &:focus-visible {
+      background: Highlight;
+      color: HighlightText;
+    }
+  }
+}
+
+.text-button.link-style,
+.text-button.link-style:hover,
+.text-button.link-style:active {
+  background: none;
+  border: none;
+  font: inherit;
+}
+
+.timings-row {
+  align-self: start;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.indicator {
+  display: inline-block;
+  width: 10px;
+  height: 4px;
+  margin-right: 5px;
+  border: 1px solid var(--sys-color-on-surface-subtle);
+}
+
+.whisker-left {
+  align-self: center;
+  display: inline-flex;
+  width: 10px;
+  height: 6px;
+  margin-right: 5px;
+  border-left: 1px solid var(--sys-color-on-surface-subtle);
+}
+
+.whisker-right {
+  align-self: center;
+  display: inline-flex;
+  width: 10px;
+  height: 6px;
+  margin-right: 5px;
+  border-right: 1px solid var(--sys-color-on-surface-subtle);
+}
+
+.horizontal {
+  background-color: var(--sys-color-on-surface-subtle);
+  height: 1px;
+  width: 10px;
+  align-self: center;
+}
+
+.time {
+  display: inline-block;
+  padding-left: 10px;
+  /* Push the time to right. */
+  margin-left: auto;
+}

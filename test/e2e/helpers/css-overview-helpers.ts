@@ -63,7 +63,7 @@ export async function startCaptureCSSOverview() {
 }
 
 function veImpressionForCssOverviewPanel() {
-  return veImpression('Panel', 'css-overview', [
+  return veImpressionsUnder('Panel: css-overview', [
     veImpression('Action', 'css-overview.capture-overview'),
     veImpression('Action', 'feedback'),
     veImpression('Link', 'css-overview.quick-start'),

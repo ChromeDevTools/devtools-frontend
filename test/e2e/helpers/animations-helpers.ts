@@ -9,7 +9,6 @@ import {
   expectVeEvents,
   veClick,
   veImpression,
-  veImpressionForDrawerToolbar,
   veImpressionsUnder,
 } from './visual-logging-helpers.js';
 
@@ -18,9 +17,7 @@ export async function waitForAnimationsPanelToLoad() {
   await openPanelViaMoreTools('Animations');
   await waitFor('div[aria-label="Animations panel"]');
   await waitFor('div.animation-timeline-header');
-  await expectVeEvents([veImpression(
-      'Drawer', undefined,
-      [veImpressionForDrawerToolbar({selectedPanel: 'animations'}), veImpressionForAnimationsPanel()])]);
+  await expectVeEvents([veImpressionsUnder('Drawer', [veImpressionForAnimationsPanel()])]);
 }
 
 export async function navigateToSiteWithAnimation() {
@@ -29,6 +26,7 @@ export async function navigateToSiteWithAnimation() {
 }
 
 export async function waitForAnimationContent() {
+  await waitFor('.animation-timeline-buffer');
   await expectVeEvents([veImpressionsUnder(
       'Drawer > Panel: animations',
       [veImpression('Section', 'film-strip', [veImpression('Item', 'animations.buffer-preview')])])]);

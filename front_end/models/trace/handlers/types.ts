@@ -3,7 +3,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import type * as Types from './../types/types.js';
-import * as ModelHandlers from './ModelHandlers.js';
+import type * as ModelHandlers from './ModelHandlers.js';
 
 export interface TraceEventHandler {
   reset(): void;
@@ -54,29 +54,10 @@ export type HandlersWithMeta<T extends {[key: string]: TraceEventHandler}> = {
   [K in keyof T]: T[K];
 };
 
-// Represents the final parsed data from all of the handlers. Note that because
-// we are currently in the middle of the migration of data engines, not all the
-// handlers are enabled. Therefore for now you should use the type defined in
-// models/trace/handlers/Migration.ts, `PartialTraceData`, which
-// represents the final parsed data for only the enabled handlers.
+// Represents the final parsed data from all of the handlers. If you instantiate a
+// TraceProcessor with a subset of handlers, you should instead use
+// `EnabledHandlerDataWithMeta<>`.
 export type TraceParseData = Readonly<EnabledHandlerDataWithMeta<typeof ModelHandlers>>;
-
-/**
- * Because you can run the trace engine with a subset of handlers enabled,
- * there can be times when you need to confirm if the trace contains all
- * handlers or not, because some parts of the engine expect to be given all
- * the handlers.
- */
-export function handlerDataHasAllHandlers(data: Readonly<EnabledHandlerDataWithMeta<{}>>): data is TraceParseData {
-  let isMissingHandler = false;
-  for (const handlerName of Object.keys(ModelHandlers)) {
-    if (handlerName in data === false) {
-      isMissingHandler = true;
-      break;
-    }
-  }
-  return !isMissingHandler;
-}
 
 type DeepWriteable<T> = {
   -readonly[P in keyof T]: DeepWriteable<T[P]>

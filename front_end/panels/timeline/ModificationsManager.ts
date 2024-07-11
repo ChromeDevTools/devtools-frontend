@@ -54,9 +54,8 @@ export class ModificationsManager extends EventTarget {
    * Initializes a ModificationsManager instance for a parsed trace or changes the active manager for an existing one.
    * This needs to be called if and a trace has been parsed or switched to.
    */
-  static initAndActivateModificationsManager(
-      traceModel: TraceEngine.TraceModel.Model<typeof TraceEngine.Handlers.ModelHandlers>,
-      traceIndex: number): ModificationsManager|null {
+  static initAndActivateModificationsManager(traceModel: TraceEngine.TraceModel.Model, traceIndex: number):
+      ModificationsManager|null {
     // If a manager for a given index has already been created, active it.
     if (modificationsManagerByTraceIndex[traceIndex]) {
       activeManager = modificationsManagerByTraceIndex[traceIndex];

@@ -78,7 +78,7 @@ export class SidebarWidget extends Common.ObjectWrapper.eventMixin<WidgetEventTy
     this.#sidebarUI.traceParsedData = traceParsedData;
   }
 
-  set data(insights: TraceEngine.Insights.Types.TraceInsightData<typeof Handlers.ModelHandlers>) {
+  set data(insights: TraceEngine.Insights.Types.TraceInsightData) {
     this.#sidebarUI.insights = insights;
   }
 }
@@ -101,7 +101,7 @@ export class SidebarUI extends HTMLElement {
     clsScoreClassification: TraceEngine.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification,
   }|null = null;
   #phaseData: Array<{phase: string, timing: number|TraceEngine.Types.Timing.MilliSeconds, percent: string}> = [];
-  #insights: TraceEngine.Insights.Types.TraceInsightData<typeof Handlers.ModelHandlers>|null = null;
+  #insights: TraceEngine.Insights.Types.TraceInsightData|null = null;
   #annotations: TraceEngine.Types.File.Annotation[] = [];
 
   #renderBound = this.#render.bind(this);
@@ -124,7 +124,7 @@ export class SidebarUI extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
-  set insights(insights: TraceEngine.Insights.Types.TraceInsightData<typeof Handlers.ModelHandlers>) {
+  set insights(insights: TraceEngine.Insights.Types.TraceInsightData) {
     if (insights === this.#insights) {
       return;
     }

@@ -31,11 +31,11 @@ describeWithEnvironment('TraceModel', function() {
 
   it('supports being given a set of handlers to run and will run just those and the Meta handler', async function() {
     const model = new TraceModel.TraceModel.Model({
-      Animation: TraceModel.Handlers.ModelHandlers.Animations,
-    });
+      Animations: TraceModel.Handlers.ModelHandlers.Animations,
+    } as TraceModel.Handlers.Types.Handlers);
     const file1 = await TraceLoader.rawEvents(this, 'animation.json.gz');
     await model.parse(file1);
-    assert.deepEqual(Object.keys(model.traceParsedData(0) || {}), ['Meta', 'Animation']);
+    assert.deepEqual(Object.keys(model.traceParsedData(0) || {}), ['Meta', 'Animations']);
   });
 
   it('supports parsing multiple traces', async function() {

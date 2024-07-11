@@ -21,34 +21,40 @@ export interface ParseConfig {
 }
 
 /**
- * The new trace engine model we are migrating to. The Model is responsible for
- * parsing arrays of raw trace events and storing the resulting data. It can
- * store multiple traces at once, and can return the data for any of them.
- * Currently as we migrate from the old engine to this, we are turning on the
- * model handlers incrementally as we need the data, to save performance costs
- * of running handlers that we do not use. Therefore, when the model is
- * constructed we pass through a set of handlers that should be used. Once we
- * have migrated all tracks in the Performance Panel to this model, we can
- * remove this ability to run a subset of handlers, as we will need all handlers
- * to be used at that point. For tests, if you want to construct a model with
- * all handlers, you can use the static `Model.createWithAllHandlers` method.
+ * The Model is responsible for parsing arrays of raw trace events and storing the
+ * resulting data. It can store multiple traces at once, and can return the data for
+ * any of them.
+ *
+ * Most uses of this class should be through `createWithAllHandlers`, but
+ * `createWithSubsetOfHandlers` can be used to run just some handlers.
  **/
-export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.TraceEventHandler} =
-                                                    typeof Handlers.ModelHandlers> extends EventTarget {
-  readonly #traces: ParsedTraceFile<EnabledModelHandlers>[] = [];
+export class Model extends EventTarget {
+  readonly #traces: ParsedTraceFile[] = [];
   readonly #syntheticEventsManagerByTrace: Helpers.SyntheticEvents.SyntheticEventsManager[] = [];
   readonly #nextNumberByDomain = new Map<string, number>();
 
   readonly #recordingsAvailable: string[] = [];
   #lastRecordingIndex = 0;
-  #processor: TraceProcessor<Handlers.Types.HandlersWithMeta<EnabledModelHandlers>>;
+  #processor: TraceProcessor;
   #config: Types.Configuration.Configuration = Types.Configuration.defaults();
 
-  static createWithAllHandlers(config?: Types.Configuration.Configuration): Model<typeof Handlers.ModelHandlers> {
+  static createWithAllHandlers(config?: Types.Configuration.Configuration): Model {
     return new Model(Handlers.ModelHandlers, config);
   }
 
-  constructor(handlers: EnabledModelHandlers, config?: Types.Configuration.Configuration) {
+  /**
+   * Runs only the provided handlers.
+   *
+   * Callers must ensure they are providing all dependant handlers (although Meta is included automatically),
+   * and must know that the result of `.traceParsedData` will be limited to the handlers provided, even though
+   * the type won't reflect that.
+   */
+  static createWithSubsetOfHandlers(
+      traceHandlers: Partial<Handlers.Types.Handlers>, config?: Types.Configuration.Configuration): Model {
+    return new Model(traceHandlers as Handlers.Types.Handlers, config);
+  }
+
+  constructor(handlers: Handlers.Types.Handlers, config?: Types.Configuration.Configuration) {
     super();
     if (config) {
       this.#config = config;
@@ -96,7 +102,7 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
     this.#processor.addEventListener(TraceParseProgressEvent.eventName, onTraceUpdate);
 
     // Create a parsed trace file.  It will be populated with data from the processor.
-    const file: ParsedTraceFile<EnabledModelHandlers> = {
+    const file: ParsedTraceFile = {
       traceEvents,
       metadata,
       traceParsedData: null,
@@ -124,9 +130,8 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
   }
 
   #storeParsedFileData(
-      file: ParsedTraceFile<EnabledModelHandlers>,
-      data: Handlers.Types.EnabledHandlerDataWithMeta<EnabledModelHandlers>|null,
-      insights: Insights.Types.TraceInsightData<EnabledModelHandlers>|null): void {
+      file: ParsedTraceFile, data: Handlers.Types.TraceParseData|null,
+      insights: Insights.Types.TraceInsightData|null): void {
     file.traceParsedData = data;
     file.traceInsights = insights;
     this.#lastRecordingIndex++;
@@ -147,8 +152,7 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
    * Returns the parsed trace data indexed by the order in which it was stored.
    * If no index is given, the last stored parsed data is returned.
    */
-  traceParsedData(index: number = this.#traces.length - 1):
-      Handlers.Types.EnabledHandlerDataWithMeta<EnabledModelHandlers>|null {
+  traceParsedData(index: number = this.#traces.length - 1): Handlers.Types.TraceParseData|null {
     if (!this.#traces[index]) {
       return null;
     }
@@ -156,7 +160,7 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
     return this.#traces[index].traceParsedData;
   }
 
-  traceInsights(index: number = this.#traces.length - 1): Insights.Types.TraceInsightData<EnabledModelHandlers>|null {
+  traceInsights(index: number = this.#traces.length - 1): Insights.Types.TraceInsightData|null {
     if (!this.#traces[index]) {
       return null;
     }
@@ -217,9 +221,9 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
  * of these so that the user can swap between them. The key is that it is
  * essentially the TraceFile plus whatever the model has parsed from it.
  */
-export type ParsedTraceFile<Handlers extends {[key: string]: Handlers.Types.TraceEventHandler}> = Types.File.TraceFile&{
-  traceParsedData: Handlers.Types.EnabledHandlerDataWithMeta<Handlers>| null,
-  traceInsights: Insights.Types.TraceInsightData<Handlers>| null,
+export type ParsedTraceFile = Types.File.TraceFile&{
+  traceParsedData: Handlers.Types.TraceParseData | null,
+  traceInsights: Insights.Types.TraceInsightData | null,
 };
 
 export const enum ModelUpdateType {

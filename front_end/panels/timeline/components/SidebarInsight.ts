@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Handlers from '../../../models/trace/handlers/handlers.js';
 import type * as TraceEngine from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -14,8 +13,7 @@ export interface InsightDetails {
   expanded: boolean;
 }
 
-export function getLCPInsightData(insights: TraceEngine.Insights.Types.TraceInsightData<typeof Handlers.ModelHandlers>|
-                                  null):
+export function getLCPInsightData(insights: TraceEngine.Insights.Types.TraceInsightData|null):
     Array<{phase: string, timing: number | TraceEngine.Types.Timing.MilliSeconds, percent: string}> {
   if (!insights) {
     return [];

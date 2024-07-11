@@ -83,12 +83,12 @@ describeWithEnvironment('TraceProcessor', function() {
 
   it('can be given a subset of handlers to run and will run just those along with the meta handler', async function() {
     const processor = new TraceModel.Processor.TraceProcessor({
-      Animation: TraceModel.Handlers.ModelHandlers.Animations,
+      Animations: TraceModel.Handlers.ModelHandlers.Animations,
     });
     const events = await TraceLoader.rawEvents(this, 'animation.json.gz');
     await processor.parse(events);
     assert.isNotNull(processor.traceParsedData);
-    assert.deepEqual(Object.keys(processor.traceParsedData || {}), ['Meta', 'Animation']);
+    assert.deepEqual(Object.keys(processor.traceParsedData || {}), ['Meta', 'Animations']);
   });
 
   it('does not error if the user does not enable the Meta handler when it is a dependency', async function() {
@@ -257,10 +257,13 @@ describeWithEnvironment('TraceProcessor', function() {
     it('captures errors thrown by insights', async function() {
       sinon.stub(TraceModel.Processor.TraceProcessor, 'getEnabledInsightRunners').callsFake(() => {
         return {
-          RenderBlocking: () => {
-            throw new Error('forced error');
+          RenderBlocking: {
+            generateInsight: () => {
+              throw new Error('forced error');
+            },
+            deps: TraceModel.Insights.InsightRunners.RenderBlocking.deps,
           },
-        } as any;  // eslint-disable-line @typescript-eslint/no-explicit-any
+        };
       });
 
       const processor = TraceModel.Processor.TraceProcessor.createWithAllHandlers();
@@ -279,7 +282,7 @@ describeWithEnvironment('TraceProcessor', function() {
 
     it('skips insights that are missing one or more dependencies', async function() {
       const processor = new TraceModel.Processor.TraceProcessor({
-        Animation: TraceModel.Handlers.ModelHandlers.Animations,
+        Animations: TraceModel.Handlers.ModelHandlers.Animations,
       });
       const file = await TraceLoader.rawEvents(this, 'load-simple.json.gz');
 

@@ -820,11 +820,11 @@ export class FilmStripRecorder implements TraceEngine.TracingManager.TracingMana
   private readonly filmStripView: PerfUI.FilmStripView.FilmStripView;
   private callback: ((filmStrip: TraceEngine.Extras.FilmStrip.Data) => void)|null;
   // Used to fetch screenshots of the page load and show them in the panel.
-  #traceEngine: TraceEngine.TraceModel.Model<TraceEngine.Extras.FilmStrip.HandlersWithFilmStrip>;
+  #traceEngine: TraceEngine.TraceModel.Model;
   #collectedTraceEvents: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
 
   constructor(timeCalculator: NetworkTimeCalculator, filmStripView: PerfUI.FilmStripView.FilmStripView) {
-    this.#traceEngine = new TraceEngine.TraceModel.Model({
+    this.#traceEngine = TraceEngine.TraceModel.Model.createWithSubsetOfHandlers({
       Screenshots: TraceEngine.Handlers.ModelHandlers.Screenshots,
     });
 
@@ -846,7 +846,8 @@ export class FilmStripRecorder implements TraceEngine.TracingManager.TracingMana
     this.tracingManager = null;
     await this.#traceEngine.parse(this.#collectedTraceEvents);
 
-    const data = this.#traceEngine.traceParsedData(this.#traceEngine.size() - 1);
+    const data = this.#traceEngine.traceParsedData(this.#traceEngine.size() - 1) as
+        TraceEngine.Extras.FilmStrip.HandlerDataWithScreenshots;
     if (!data) {
       return;
     }

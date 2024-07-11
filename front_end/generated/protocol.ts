@@ -9276,6 +9276,7 @@ export namespace Network {
     UnsafeNone = 'UnsafeNone',
     SameOriginPlusCoep = 'SameOriginPlusCoep',
     RestrictPropertiesPlusCoep = 'RestrictPropertiesPlusCoep',
+    NoopenerAllowPopups = 'NoopenerAllowPopups',
   }
 
   export interface CrossOriginOpenerPolicyStatus {

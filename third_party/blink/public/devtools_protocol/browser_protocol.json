@@ -13790,7 +13790,8 @@
                         "RestrictProperties",
                         "UnsafeNone",
                         "SameOriginPlusCoep",
-                        "RestrictPropertiesPlusCoep"
+                        "RestrictPropertiesPlusCoep",
+                        "NoopenerAllowPopups"
                     ]
                 },
                 {

@@ -7308,6 +7308,10 @@ export const NativeFunctions = [
     signatures: [["type","init"]]
   },
   {
+    name: "report",
+    signatures: [["options"]]
+  },
+  {
     name: "FederatedCredential",
     signatures: [["data"]]
   },

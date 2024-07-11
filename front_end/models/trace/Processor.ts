@@ -140,25 +140,22 @@ export class TraceProcessor extends EventTarget {
     }
     try {
       this.#status = Status.PARSING;
-      await this.#parse(traceEvents, freshRecording);
-      this.#status = Status.FINISHED_PARSING;
-
-      // TODO(crbug.com/313905799): `this.traceParsedData` is needed to compute insights, and that getter requires
-      // `Status.FINISHED_PARSING`. Consider doing what `this.#computeInsights` does (sets #data)
-      // inside #parse to simplify this method.
-
-      // Not actually possible for this to be null.
-      const traceParsedData = this.traceParsedData;
-      if (traceParsedData) {
-        this.#computeInsights(traceParsedData, traceEvents);
+      await this.#computeTraceParsedData(traceEvents, freshRecording);
+      if (this.#data) {
+        this.#computeInsights(this.#data, traceEvents);
       }
+      this.#status = Status.FINISHED_PARSING;
     } catch (e) {
       this.#status = Status.ERRORED_WHILE_PARSING;
       throw e;
     }
   }
 
-  async #parse(traceEvents: readonly Types.TraceEvents.TraceEventData[], freshRecording: boolean): Promise<void> {
+  /**
+   * Run all the handlers and set the result to `#data`.
+   */
+  async #computeTraceParsedData(traceEvents: readonly Types.TraceEvents.TraceEventData[], freshRecording: boolean):
+      Promise<void> {
     /**
      * We want to yield regularly to maintain responsiveness. If we yield too often, we're wasting idle time.
      * We could do this by checking `performance.now()` regularly, but it's an expensive call in such a hot loop.
@@ -205,16 +202,6 @@ export class TraceProcessor extends EventTarget {
         await handler.finalize();
       }
     }
-  }
-
-  get traceParsedData(): Handlers.Types.TraceParseData|null {
-    if (this.#status !== Status.FINISHED_PARSING) {
-      return null;
-    }
-
-    if (this.#data) {
-      return this.#data;
-    }
 
     // Handlers that depend on other handlers do so via .data(), which used to always
     // return a shallow clone of its internal data structures. However, that pattern
@@ -249,10 +236,21 @@ export class TraceProcessor extends EventTarget {
     }
 
     this.#data = traceParsedData as Handlers.Types.TraceParseData;
+  }
+
+  get traceParsedData(): Handlers.Types.TraceParseData|null {
+    if (this.#status !== Status.FINISHED_PARSING) {
+      return null;
+    }
+
     return this.#data;
   }
 
   get insights(): Insights.Types.TraceInsightData|null {
+    if (this.#status !== Status.FINISHED_PARSING) {
+      return null;
+    }
+
     return this.#insights;
   }
 

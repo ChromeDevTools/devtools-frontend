@@ -106,7 +106,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
           continue;
         }
         const expectedTotalTimeForEvent = event.dur ?
-            TraceModel.Helpers.Timing.microSecondsToMilliseconds(event.dur as TraceModel.Types.Timing.MicroSeconds) :
+            TraceModel.Helpers.Timing.microSecondsToMilliseconds(event.dur) :
             Timeline.TimelineFlameChartDataProvider.InstantEventVisibleDurationMs;
         assert.strictEqual(flameChartData.entryTotalTimes[markerIndex], expectedTotalTimeForEvent);
       }

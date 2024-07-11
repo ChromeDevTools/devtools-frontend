@@ -2490,12 +2490,16 @@ export function isTraceEventWebSocketDestroy(event: TraceEventData): event is Tr
   return event.name === KnownEventName.WebSocketDestroy;
 }
 
-export function isWebSocketTraceEvent(event: TraceEventData): event is TraceEventWebSocketCreate|
-    TraceEventWebSocketInfo|TraceEventWebSocketTransfer {
+export type WebSocketTraceEvent = TraceEventWebSocketCreate|TraceEventWebSocketInfo|TraceEventWebSocketTransfer;
+export function isWebSocketTraceEvent(event: TraceEventData): event is WebSocketTraceEvent {
   return isTraceEventWebSocketCreate(event) || isTraceEventWebSocketInfo(event) || isTraceEventWebSocketTransfer(event);
 }
-export type WebSocketEvent =
-    TraceEventWebSocketCreate|TraceEventWebSocketInfo|TraceEventWebSocketTransfer|SyntheticWebSocketConnectionEvent;
+
+export type WebSocketEvent = WebSocketTraceEvent|SyntheticWebSocketConnectionEvent;
+export function isWebSocketEvent(event: TraceEventData): event is WebSocketTraceEvent|
+    SyntheticWebSocketConnectionEvent {
+  return isWebSocketTraceEvent(event) || isSyntheticWebSocketConnectionEvent(event);
+}
 
 export interface TraceEventV8Compile extends TraceEventComplete {
   name: KnownEventName.Compile;

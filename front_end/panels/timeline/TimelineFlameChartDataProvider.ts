@@ -1128,7 +1128,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 }
 
-export const InstantEventVisibleDurationMs = 0.001;
+export const InstantEventVisibleDurationMs = TraceEngine.Types.Timing.MilliSeconds(0.001);
 
 export const enum Events {
   DataChanged = 'DataChanged',

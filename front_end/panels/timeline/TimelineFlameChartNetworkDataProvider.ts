@@ -122,7 +122,8 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     return this.#timeSpan;
   }
 
-  setWindowTimes(startTime: number, endTime: number): void {
+  setWindowTimes(startTime: TraceEngine.Types.Timing.MilliSeconds, endTime: TraceEngine.Types.Timing.MilliSeconds):
+      void {
     this.#updateTimelineData(startTime, endTime);
   }
 
@@ -434,12 +435,12 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
    * PerfUI.FlameChart.FlameChartTimelineData instance to force the flamechart
    * to re-render.
    */
-  #updateTimelineData(startTime: number, endTime: number): void {
+  #updateTimelineData(startTime: TraceEngine.Types.Timing.MilliSeconds, endTime: TraceEngine.Types.Timing.MilliSeconds):
+      void {
     if (!this.#networkTrackAppender || !this.#timelineDataInternal) {
       return;
     }
-    this.#maxLevel = this.#networkTrackAppender.filterTimelineDataBetweenTimes(
-        this.#events, TraceEngine.Types.Timing.MilliSeconds(startTime), TraceEngine.Types.Timing.MilliSeconds(endTime));
+    this.#maxLevel = this.#networkTrackAppender.relayoutEntriesWithinBounds(this.#events, startTime, endTime);
 
     // TODO(crbug.com/1459225): Remove this recreating code.
     // Force to create a new PerfUI.FlameChart.FlameChartTimelineData instance

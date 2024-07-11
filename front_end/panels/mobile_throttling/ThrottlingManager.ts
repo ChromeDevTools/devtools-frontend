@@ -299,14 +299,15 @@ export class ThrottlingManager {
   createCPUThrottlingSelector(): UI.Toolbar.ToolbarComboBox {
     const control = new UI.Toolbar.ToolbarComboBox(
         event => this.setCPUThrottlingRate(this.cpuThrottlingRates[(event.target as HTMLSelectElement).selectedIndex]),
-        i18nString(UIStrings.cpuThrottling));
+        i18nString(UIStrings.cpuThrottling), '', 'cpu-throttling-selector');
     this.cpuThrottlingControls.add(control);
     const currentRate = this.cpuThrottlingManager.cpuThrottlingRate();
 
     for (let i = 0; i < this.cpuThrottlingRates.length; ++i) {
       const rate = this.cpuThrottlingRates[i];
       const title = rate === 1 ? i18nString(UIStrings.noThrottling) : i18nString(UIStrings.dSlowdown, {PH1: rate});
-      const option = control.createOption(title);
+      const value = rate === 1 ? 'cpu-no-throttling' : `cpu-throttled-${rate}`;
+      const option = control.createOption(title, value);
       control.addOption(option);
       if (currentRate === rate) {
         control.setSelectedIndex(i);

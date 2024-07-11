@@ -820,34 +820,12 @@ export class Overlays extends EventTarget {
     }
     const {startTime, endTime} = this.#timingsForOverlayEntry(entry);
 
-    const {min: visibleMin, max: visibleMax} = this.#dimensions.trace.visibleWindow;
+    const entryTimeRange = TraceEngine.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
 
-    // The event is visible if
-    // 1. Its endTime is within the visible window
-    // OR
-    // 2. Its startTime is within the visible window
-    // OR
-    // 3. Its startTime is less than the visible window, and its endTime is
-    // greater than it. This means that the event spans the entire visible
-    // window but starts and ends outside of it.
-    // If none of these cases are true, the event must be off screen.
-
-    // 1. End time is within the visible window.
-    if (endTime >= visibleMin && endTime <= visibleMax) {
-      return true;
-    }
-
-    // 2. Start time is within the visible window.
-    if (startTime >= visibleMin && startTime <= visibleMax) {
-      return true;
-    }
-
-    // 3. Start time is before the visible window and end time is after.
-    if (startTime <= visibleMin && endTime >= visibleMax) {
-      return true;
-    }
-
-    return false;
+    return TraceEngine.Helpers.Timing.boundsIncludeTimeRange({
+      bounds: this.#dimensions.trace.visibleWindow,
+      timeRange: entryTimeRange,
+    });
   }
 
   /**

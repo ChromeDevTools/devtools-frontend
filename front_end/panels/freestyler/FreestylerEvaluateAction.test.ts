@@ -98,14 +98,56 @@ describe('FreestylerEvaluateAction', () => {
       assert.strictEqual(await executeForTest('Symbol("sym")'), 'Symbol(sym)');
     });
 
-    it('should serialize DOM nodes correctly', async () => {
-      assert.strictEqual(
-          await executeForTest(`{
-        const div = document.createElement('div');
-        div.setAttribute('data-custom-attr', 'i exist');
-        div
-      }`),
-          '"<div data-custom-attr=\\"i exist\\"></div>"');
+    describe('HTMLElement', () => {
+      it('should work with plain nodes', async () => {
+        const serializedElement = await executeForTest(`{
+          const el = document.createElement('div');
+
+          el;
+        }`);
+        assert.strictEqual(serializedElement, '"<div></div>"');
+      });
+
+      it('should serialize node with classes', async () => {
+        const serializedElement = await executeForTest(`{
+          const el = document.createElement('div');
+          el.classList.add('section');
+          el.classList.add('section-main');
+
+          el;
+        }`);
+        assert.strictEqual(serializedElement, '"<div class=\\"section section-main\\"></div>"');
+      });
+
+      it('should serialize node with id', async () => {
+        const serializedElement = await executeForTest(`{
+          const el = document.createElement('div');
+          el.id = 'promotion-section';
+
+          el;
+        }`);
+        assert.strictEqual(serializedElement, '"<div id=\\"promotion-section\\"></div>"');
+      });
+      it('should serialize node with class and id', async () => {
+        const serializedElement = await executeForTest(`{
+          const el = document.createElement('div');
+          el.id = 'promotion-section';
+          el.classList.add('section');
+
+          el;
+        }`);
+        assert.strictEqual(serializedElement, '"<div id=\\"promotion-section\\" class=\\"section\\"></div>"');
+      });
+      it('should serialize node with children', async () => {
+        const serializedElement = await executeForTest(`{
+          const el = document.createElement('div');
+          const p = document.createElement('p');
+          el.appendChild(p);
+
+          el;
+        }`);
+        assert.strictEqual(serializedElement, '"<div>...</div>"');
+      });
     });
 
     it('should serialize arrays correctly', async () => {

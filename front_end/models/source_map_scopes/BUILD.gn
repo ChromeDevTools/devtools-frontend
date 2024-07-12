@@ -10,6 +10,7 @@ import("../visibility.gni")
 devtools_module("source_map_scopes") {
   sources = [
     "NamesResolver.ts",
+    "ScopeChainModel.ts",
     "ScopeTreeCache.ts",
   ]
 

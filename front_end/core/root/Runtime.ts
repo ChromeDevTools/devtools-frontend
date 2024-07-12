@@ -303,25 +303,15 @@ export const enum ExperimentName {
   TIMELINE_ENHANCED_TRACES = 'timeline-enhanced-traces',
 }
 
-export interface HostConfigAida {
+export interface HostConfigConsoleInsights {
+  aidaModelId: string;
+  aidaTemperature: number;
   blocked: boolean;
   blockedByAge: boolean;
   blockedByEnterprisePolicy: boolean;
   blockedByFeatureFlag: boolean;
   blockedByGeo: boolean;
   blockedByRollout: boolean;
-  enabled: boolean;
-}
-export interface HostConfigConsoleInsights {
-  aidaModelId: string;
-  aidaTemperature: number;
-  // TODO(crbug.com/348136212): remove optional params after next Dev build
-  blocked?: boolean;
-  blockedByAge?: boolean;
-  blockedByEnterprisePolicy?: boolean;
-  blockedByFeatureFlag?: boolean;
-  blockedByGeo?: boolean;
-  blockedByRollout?: boolean;
   disallowLogging: boolean;
   enabled: boolean;
   optIn: boolean;
@@ -334,7 +324,6 @@ export interface HostConfigFreestylerDogfood {
 }
 
 export interface HostConfig {
-  devToolsAida?: HostConfigAida;
   devToolsConsoleInsights: HostConfigConsoleInsights;
   devToolsFreestylerDogfood: HostConfigFreestylerDogfood;
 }

@@ -52,9 +52,7 @@ async function loadFreestylerModule(): Promise<typeof Freestyler> {
 }
 
 function isFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
-  const blockedByFeatureFlag = config?.devToolsAida ? config.devToolsAida.blockedByFeatureFlag === true :
-                                                      config?.devToolsConsoleInsights?.blockedByFeatureFlag === true;
-  return config?.devToolsFreestylerDogfood?.enabled === true && !blockedByFeatureFlag;
+  return config?.devToolsFreestylerDogfood?.enabled === true;
 }
 
 UI.ViewManager.registerViewExtension({

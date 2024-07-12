@@ -400,18 +400,15 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
 
   getHostConfig(callback: (arg0: Root.Runtime.HostConfig) => void): void {
     const result = {
-      devToolsAida: {
+      devToolsConsoleInsights: {
+        aidaModelId: '',
+        aidaTemperature: 0,
         blocked: true,
         blockedByAge: false,
         blockedByEnterprisePolicy: false,
         blockedByFeatureFlag: true,
         blockedByGeo: false,
         blockedByRollout: false,
-        enabled: false,
-      },
-      devToolsConsoleInsights: {
-        aidaModelId: '',
-        aidaTemperature: 0,
         disallowLogging: false,
         enabled: false,
         optIn: false,

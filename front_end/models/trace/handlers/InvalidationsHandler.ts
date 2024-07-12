@@ -8,18 +8,15 @@ import {HandlerState} from './types.js';
 
 let handlerState = HandlerState.UNINITIALIZED;
 
-const invalidationsForEvent = new Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.SyntheticInvalidation[]>();
+const invalidationsForEvent =
+    new Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.InvalidationTrackingEvent[]>();
 
 let lastRecalcStyleEvent: Types.TraceEvents.TraceEventUpdateLayoutTree|null = null;
 
 // Used to track paints so we track invalidations correctly per paint.
 let hasPainted = false;
 
-const allInvalidationTrackingEvents:
-    Array<Types.TraceEvents.TraceEventScheduleStyleInvalidationTracking|
-          Types.TraceEvents.TraceEventStyleRecalcInvalidationTracking|Types.TraceEvents
-              .TraceEventStyleInvalidatorInvalidationTracking|Types.TraceEvents.TraceEventLayoutInvalidationTracking> =
-        [];
+const allInvalidationTrackingEvents: Array<Types.TraceEvents.InvalidationTrackingEvent> = [];
 
 export function reset(): void {
   handlerState = HandlerState.UNINITIALIZED;
@@ -38,32 +35,9 @@ export function initialize(): void {
 }
 
 function addInvalidationToEvent(
-    event: Types.TraceEvents.TraceEventData,
-    invalidation: Types.TraceEvents.TraceEventScheduleStyleInvalidationTracking|
-    Types.TraceEvents.TraceEventStyleRecalcInvalidationTracking|
-    Types.TraceEvents.TraceEventStyleInvalidatorInvalidationTracking|
-    Types.TraceEvents.TraceEventLayoutInvalidationTracking): void {
+    event: Types.TraceEvents.TraceEventData, invalidation: Types.TraceEvents.InvalidationTrackingEvent): void {
   const existingInvalidations = invalidationsForEvent.get(event) || [];
-
-  const syntheticInvalidation: Types.TraceEvents.SyntheticInvalidation = {
-    ...invalidation,
-    name: 'SyntheticInvalidation',
-    frame: invalidation.args.data.frame,
-    nodeId: invalidation.args.data.nodeId,
-    rawEvent: invalidation,
-  };
-
-  if (invalidation.args.data.nodeName) {
-    syntheticInvalidation.nodeName = invalidation.args.data.nodeName;
-  }
-  if (invalidation.args.data.reason) {
-    syntheticInvalidation.reason = invalidation.args.data.reason;
-  }
-  if (invalidation.args.data.stackTrace) {
-    syntheticInvalidation.stackTrace = invalidation.args.data.stackTrace;
-  }
-
-  existingInvalidations.push(syntheticInvalidation);
+  existingInvalidations.push(invalidation);
   invalidationsForEvent.set(event, existingInvalidations);
 }
 
@@ -88,10 +62,7 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     return;
   }
 
-  if (Types.TraceEvents.isTraceEventScheduleStyleInvalidationTracking(event) ||
-      Types.TraceEvents.isTraceEventStyleRecalcInvalidationTracking(event) ||
-      Types.TraceEvents.isTraceEventStyleInvalidatorInvalidationTracking(event) ||
-      Types.TraceEvents.isTraceEventLayoutInvalidationTracking(event)) {
+  if (Types.TraceEvents.isTraceEventInvalidationTracking(event)) {
     if (hasPainted) {
       // If we have painted, then we can clear out the list of all existing
       // invalidations, as we cannot associate them across frames.
@@ -150,7 +121,7 @@ export async function finalize(): Promise<void> {
 }
 
 interface InvalidationsData {
-  invalidationsForEvent: Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.SyntheticInvalidation[]>;
+  invalidationsForEvent: Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.InvalidationTrackingEvent[]>;
 }
 
 export function data(): InvalidationsData {

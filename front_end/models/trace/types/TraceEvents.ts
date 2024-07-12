@@ -1660,19 +1660,13 @@ export function isTraceEventActivateLayerTree(event: TraceEventData): event is T
   return event.name === KnownEventName.ActivateLayerTree;
 }
 
-export interface SyntheticInvalidation extends TraceEventInstant {
-  name: 'SyntheticInvalidation';
-  nodeName?: string;
-  rawEvent: TraceEventScheduleStyleInvalidationTracking|TraceEventStyleRecalcInvalidationTracking|
-      TraceEventStyleInvalidatorInvalidationTracking|TraceEventLayoutInvalidationTracking;
-  nodeId: Protocol.DOM.BackendNodeId;
-  frame: string;
-  reason?: string;
-  stackTrace?: TraceEventCallFrame[];
-}
+export type InvalidationTrackingEvent =
+    TraceEventScheduleStyleInvalidationTracking|TraceEventStyleRecalcInvalidationTracking|
+    TraceEventStyleInvalidatorInvalidationTracking|TraceEventLayoutInvalidationTracking;
 
-export function isSyntheticInvalidation(event: TraceEventData): event is SyntheticInvalidation {
-  return event.name === 'SyntheticInvalidation';
+export function isTraceEventInvalidationTracking(event: TraceEventData): event is InvalidationTrackingEvent {
+  return isTraceEventScheduleStyleInvalidationTracking(event) || isTraceEventStyleRecalcInvalidationTracking(event) ||
+      isTraceEventStyleInvalidatorInvalidationTracking(event) || isTraceEventLayoutInvalidationTracking(event);
 }
 
 export interface TraceEventDrawLazyPixelRef extends TraceEventInstant {

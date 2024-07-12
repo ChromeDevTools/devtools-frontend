@@ -1840,7 +1840,7 @@ export class TimelineUIUtils {
   }
 
   private static async generateInvalidationsList(
-      invalidations: TraceEngine.Types.TraceEvents.SyntheticInvalidation[],
+      invalidations: TraceEngine.Types.TraceEvents.InvalidationTrackingEvent[],
       contentHelper: TimelineDetailsContentHelper): Promise<void> {
     const {groupedByReason, backendNodeIds} = TimelineComponents.DetailsView.generateInvalidationsList(invalidations);
 
@@ -1857,19 +1857,21 @@ export class TimelineUIUtils {
   }
 
   private static generateInvalidationsForReason(
-      reason: string, invalidations: TraceEngine.Types.TraceEvents.SyntheticInvalidation[],
+      reason: string, invalidations: TraceEngine.Types.TraceEvents.InvalidationTrackingEvent[],
       relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null, contentHelper: TimelineDetailsContentHelper): void {
-    function createLinkForInvalidationNode(invalidation: TraceEngine.Types.TraceEvents.SyntheticInvalidation):
+    function createLinkForInvalidationNode(invalidation: TraceEngine.Types.TraceEvents.InvalidationTrackingEvent):
         HTMLSpanElement {
-      const node = (invalidation.nodeId && relatedNodesMap) ? relatedNodesMap.get(invalidation.nodeId) : null;
+      const node = (invalidation.args.data.nodeId && relatedNodesMap) ?
+          relatedNodesMap.get(invalidation.args.data.nodeId) :
+          null;
       if (node) {
         const nodeSpan = document.createElement('span');
         void Common.Linkifier.Linkifier.linkify(node).then(link => nodeSpan.appendChild(link));
         return nodeSpan;
       }
-      if (invalidation.nodeName) {
+      if (invalidation.args.data.nodeName) {
         const nodeSpan = document.createElement('span');
-        nodeSpan.textContent = invalidation.nodeName;
+        nodeSpan.textContent = invalidation.args.data.nodeName;
         return nodeSpan;
       }
       const nodeSpan = document.createElement('span');

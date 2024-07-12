@@ -4,6 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import type * as CPUProfile from '../../cpu_profile/cpu_profile.js';
 import * as Types from '../types/types.js';
 
@@ -25,9 +26,6 @@ type MatchingPairableAsyncEvents = {
  * indiscriminately.
  */
 function stackTraceForEvent(event: Types.TraceEvents.TraceEventData): Types.TraceEvents.TraceEventCallFrame[]|null {
-  if (Types.TraceEvents.isSyntheticInvalidation(event)) {
-    return event.stackTrace || null;
-  }
   if (event.args?.data?.stackTrace) {
     return event.args.data.stackTrace;
   }
@@ -621,4 +619,9 @@ export function eventHasCategory(event: Types.TraceEvents.TraceEventData, catego
     parsedCategoriesForEvent = new Set(event.cat.split(',') || []);
   }
   return parsedCategoriesForEvent.has(category);
+}
+
+export function nodeIdForInvalidationEvent(event: Types.TraceEvents.InvalidationTrackingEvent):
+    Protocol.DOM.BackendNodeId|null {
+  return event.args.data.nodeId ?? null;
 }

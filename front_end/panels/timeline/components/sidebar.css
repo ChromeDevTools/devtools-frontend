@@ -135,6 +135,9 @@ devtools-select-menu {
   font-weight: bold;
 }
 
-devtools-performance-sidebar-single-navigation + devtools-performance-sidebar-single-navigation {
-  border-top: 1px solid var(--sys-color-divider);
+.navigation-wrapper summary {
+  text-wrap: nowrap;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

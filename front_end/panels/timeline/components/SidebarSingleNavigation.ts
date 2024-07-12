@@ -153,7 +153,6 @@ export class SidebarSingleNavigation extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <div class="navigation">
-        <span class="url" title=${navigation.args.data?.documentLoaderURL}>${navigation.args.data?.documentLoaderURL}</span>
         ${this.#renderMetrics(traceParsedData, navigationId)}
         </div>
       `, this.#shadow, {host: this});

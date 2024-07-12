@@ -14,7 +14,6 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import sidebarStyles from './sidebar.css.js';
 import * as SidebarAnnotationsTab from './SidebarAnnotationsTab.js';
-import * as SidebarInsight from './SidebarInsight.js';
 import {SidebarSingleNavigation, type SidebarSingleNavigationData} from './SidebarSingleNavigation.js';
 
 const DEFAULT_EXPANDED_WIDTH = 240;
@@ -87,15 +86,20 @@ export class SidebarUI extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-performance-sidebar`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #activeTab: SidebarTabsName = DEFAULT_SIDEBAR_TAB;
-  selectedCategory: InsightsCategories = InsightsCategories.ALL;
-  #lcpPhasesExpanded: boolean = false;
+  #selectedCategory: InsightsCategories = InsightsCategories.ALL;
 
   #traceParsedData?: TraceEngine.Handlers.Types.TraceParseData|null;
-  #phaseData: Array<{phase: string, timing: number|TraceEngine.Types.Timing.MilliSeconds, percent: string}> = [];
   #insights: TraceEngine.Insights.Types.TraceInsightData|null = null;
   #annotations: TraceEngine.Types.File.Annotation[] = [];
 
   #renderBound = this.#render.bind(this);
+
+  /**
+   * When a trace has multiple navigations, we show an accordion with each
+   * navigation in. You can only have one of these open at any time, and we
+   * track it via this ID.
+   */
+  #activeNavigationId: string|null = null;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [sidebarStyles];
@@ -120,9 +124,7 @@ export class SidebarUI extends HTMLElement {
       return;
     }
     this.#insights = insights;
-    this.#phaseData = SidebarInsight.getLCPInsightData(this.#insights);
     // Reset toggled insights.
-    this.#lcpPhasesExpanded = false;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
@@ -168,51 +170,15 @@ export class SidebarUI extends HTMLElement {
   }
 
   #onTargetSelected(event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void {
-    this.selectedCategory = event.itemValue as InsightsCategories;
+    this.#selectedCategory = event.itemValue as InsightsCategories;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
-  }
-
-  #toggleLCPPhaseClick(): void {
-    this.#lcpPhasesExpanded = !this.#lcpPhasesExpanded;
-    this.dispatchEvent(new ToggleSidebarInsights());
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
-  }
-
-  #renderInsightsForCategory(insightsCategory: InsightsCategories): LitHtml.TemplateResult {
-    // TODO: this will render the metrics for each navigation, but we need to
-    // update the Insights to render them per-navigation and move them into the
-    // SidebarSingleNavigation component.
-    const navigations = this.#traceParsedData?.Meta.mainFrameNavigations ?? [];
-
-    // clang-format off
-    return LitHtml.html`
-      ${navigations.map(navigation => {
-        if (!navigation.args.data?.navigationId) {
-          return LitHtml.nothing;
-        }
-        const data = {
-          traceParsedData: this.#traceParsedData ?? null,
-          insights: this.#insights,
-          navigationId: navigation.args.data.navigationId,
-          activeCategory: insightsCategory,
-        };
-
-        return LitHtml.html`
-          <${SidebarSingleNavigation.litTagName} .data=${data as SidebarSingleNavigationData}>
-          </${SidebarSingleNavigation.litTagName}>
-        `;
-      })}
-
-      ${insightsCategory === InsightsCategories.ALL || insightsCategory === InsightsCategories.LCP ?
-        LitHtml.html`<div class="insights" @click=${this.#toggleLCPPhaseClick}>${
-            SidebarInsight.renderLCPPhases(this.#phaseData, this.#lcpPhasesExpanded)
-        }</div>` : LitHtml.nothing
-      }
-    `;
-    // clang-format on
   }
 
   #renderInsightsTabContent(): LitHtml.TemplateResult {
+    const navigations = this.#traceParsedData?.Meta.mainFrameNavigations ?? [];
+
+    const hasMultipleNavigations = navigations.length > 1;
+
     // clang-format off
     return LitHtml.html`
       <${Menus.SelectMenu.SelectMenu.litTagName}
@@ -224,7 +190,7 @@ export class SidebarUI extends HTMLElement {
             .showSelectedItem=${true}
             .showConnector=${false}
             .position=${Dialogs.Dialog.DialogVerticalPosition.BOTTOM}
-            .buttonTitle=${this.selectedCategory}
+            .buttonTitle=${this.#selectedCategory}
             jslog=${VisualLogging.dropDown('timeline.sidebar-insights-category-select').track({click: true})}
           >
           ${Object.values(InsightsCategories).map(insightsCategory => {
@@ -236,9 +202,42 @@ export class SidebarUI extends HTMLElement {
           })}
       </${Menus.SelectMenu.SelectMenu.litTagName}>
 
-      ${this.#renderInsightsForCategory(this.selectedCategory)}
+      ${navigations.map(navigation => {
+        const id = navigation.args.data?.navigationId;
+        const url = navigation.args.data?.documentLoaderURL;
+        if(!id || !url) {
+          return LitHtml.nothing;
+        }
+        const data = {
+          traceParsedData: this.#traceParsedData ?? null,
+          insights: this.#insights,
+          navigationId: id,
+          activeCategory: this.#selectedCategory,
+        };
+
+        const contents = LitHtml.html`
+          <${SidebarSingleNavigation.litTagName} .data=${data as SidebarSingleNavigationData}>
+          </${SidebarSingleNavigation.litTagName}>
+        `;
+
+        if(hasMultipleNavigations) {
+          return LitHtml.html`<div class="multi-nav-container">
+            <details ?open=${id === this.#activeNavigationId} class="navigation-wrapper"><summary @click=${this.#navigationClicked(id)}>${url}</summary>${contents}</details>
+            </div>`;
+        }
+
+        return contents;
+      })}
     `;
     // clang-format on
+  }
+
+  #navigationClicked(id: string): (event: Event) => void {
+    return (event: Event) => {
+      event.preventDefault();
+      this.#activeNavigationId = id;
+      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+    };
   }
 
   #renderContent(): LitHtml.TemplateResult|HTMLElement|null {

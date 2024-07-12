@@ -44,8 +44,10 @@ describeWithEnvironment('TraceModel', function() {
     const file2 = await TraceLoader.rawEvents(this, 'slow-interaction-keydown.json.gz');
 
     await model.parse(file1);
+    assert.strictEqual(model.lastTraceIndex(), 0);
     model.resetProcessor();
     await model.parse(file2);
+    assert.strictEqual(model.lastTraceIndex(), 1);
     model.resetProcessor();
 
     assert.strictEqual(model.size(), 2);
@@ -133,5 +135,4 @@ describeWithEnvironment('TraceModel', function() {
     // Make sure metadata contains overwritten modifications
     assert.strictEqual(model.metadata(0)?.modifications, modifications);
   });
-
 });

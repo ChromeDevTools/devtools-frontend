@@ -148,6 +148,10 @@ export class Model extends EventTarget {
     this.#recordingsAvailable.push(recordingName);
   }
 
+  lastTraceIndex(): number {
+    return this.size() - 1;
+  }
+
   /**
    * Returns the parsed trace data indexed by the order in which it was stored.
    * If no index is given, the last stored parsed data is returned.

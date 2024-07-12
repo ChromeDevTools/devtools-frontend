@@ -1490,7 +1490,18 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.setState(State.Idle);
 
     if (collectedEvents.length === 0) {
-      this.clear();
+      // 0 collected events indicates probably an invalid file was imported.
+      // If the user does not have any already-loaded traces, then we should
+      // just reset the panel back to the landing page. However if they had a
+      // previous trace imported, we should go to that instead.
+      if (this.#traceEngineModel.size()) {
+        if (this.statusPane) {
+          this.statusPane.remove();
+        }
+        this.setModel(this.#traceEngineModel.lastTraceIndex());
+      } else {
+        this.clear();
+      }
       return;
     }
 

@@ -62,15 +62,15 @@ describe('WarningsHandler', function() {
 
   it('identifies long interactions', async function() {
     // We run the entire model here as the WarningsHandler actually depends on the UserInteractionsHandler to fetch this data
-    const traceParsedData = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
+    const {traceData} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
 
     // These events do exist on the UserInteractionsHandler, but we also put
     // them into the WarningsHandler so that the warnings handler can be the
     // source of truth and the way to look up all warnings for a given event.
-    const {interactionsOverThreshold} = traceParsedData.UserInteractions;
+    const {interactionsOverThreshold} = traceData.UserInteractions;
 
     for (const interaction of interactionsOverThreshold) {
-      const warnings = traceParsedData.Warnings.perEvent.get(interaction);
+      const warnings = traceData.Warnings.perEvent.get(interaction);
       assert.deepEqual(warnings, ['LONG_INTERACTION']);
     }
   });

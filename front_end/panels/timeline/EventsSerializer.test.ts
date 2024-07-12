@@ -21,15 +21,15 @@ function findFirstEntry(
 
 describe('EventsSerializer', () => {
   it('correctly implements a bidirectional key <-> event mapping', async function() {
-    const data = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');
+    const {traceData} = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');
     const eventsSerializer = new Timeline.EventsSerializer.EventsSerializer();
-    const mainThread = getMainThread(data.Renderer);
+    const mainThread = getMainThread(traceData.Renderer);
     // Find first 'Timer Fired' entry in the trace
     const rawEntry = findFirstEntry(mainThread.entries, entry => {
       return entry.name === 'TimerFire';
     });
 
-    const syntheticEvent = data.NetworkRequests.byTime[0];
+    const syntheticEvent = traceData.NetworkRequests.byTime[0];
     const profileCall = findFirstEntry(mainThread.entries, entry => TraceEngine.Types.TraceEvents.isProfileCall(entry));
     const rawEntryKey = eventsSerializer.keyForEvent(rawEntry);
     const syntheticEventKey = eventsSerializer.keyForEvent(syntheticEvent);
@@ -44,9 +44,9 @@ describe('EventsSerializer', () => {
     assert.isOk(syntheticEventKey);
     assert.isOk(profileCallKey);
 
-    const resolvedRawEntry = eventsSerializer.eventForKey(rawEntryKey, data);
-    const resolvedSyntheticEntry = eventsSerializer.eventForKey(syntheticEventKey, data);
-    const resolvedProfileCall = eventsSerializer.eventForKey(profileCallKey, data);
+    const resolvedRawEntry = eventsSerializer.eventForKey(rawEntryKey, traceData);
+    const resolvedSyntheticEntry = eventsSerializer.eventForKey(syntheticEventKey, traceData);
+    const resolvedProfileCall = eventsSerializer.eventForKey(profileCallKey, traceData);
 
     // Test key -> event mappings
     assert.strictEqual(resolvedRawEntry, rawEntry);

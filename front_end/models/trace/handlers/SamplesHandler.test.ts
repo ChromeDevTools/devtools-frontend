@@ -292,30 +292,30 @@ describeWithEnvironment('SamplesHandler', function() {
     }
 
     it('falls back to the call frame name if the ProfileNode name is empty', async function() {
-      const traceParsedData = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
-      const {entry, profileNode} = getProfileEventAndNode(traceParsedData);
+      const {traceData} = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
+      const {entry, profileNode} = getProfileEventAndNode(traceData);
       // Store and then reset this: we are doing this to test the fallback to
       // the entry callFrame.functionName property. After the assertion we
       // reset this to avoid impacting other tests.
       const originalProfileNodeName = profileNode.functionName;
       profileNode.setFunctionName('');
       assert.strictEqual(
-          TraceModel.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(traceParsedData.Samples, entry),
+          TraceModel.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(traceData.Samples, entry),
           'performConcurrentWorkOnRoot');
       // St
       profileNode.setFunctionName(originalProfileNodeName);
     });
 
     it('uses the profile name if it has been set', async function() {
-      const traceParsedData = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
-      const {entry, profileNode} = getProfileEventAndNode(traceParsedData);
+      const {traceData} = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
+      const {entry, profileNode} = getProfileEventAndNode(traceData);
       // Store and then reset this: we are doing this to test the fallback to
       // the entry callFrame.functionName property. After the assertion we
       // reset this to avoid impacting other tests.
       const originalProfileNodeName = profileNode.functionName;
       profileNode.setFunctionName('testing-profile-name');
       assert.strictEqual(
-          TraceModel.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(traceParsedData.Samples, entry),
+          TraceModel.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(traceData.Samples, entry),
           'testing-profile-name');
       profileNode.setFunctionName(originalProfileNodeName);
     });

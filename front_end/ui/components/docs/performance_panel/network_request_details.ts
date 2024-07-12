@@ -22,9 +22,9 @@ async function renderDetails() {
     throw new Error('No container');
   }
 
-  const traceParsedData = await TraceLoader.TraceLoader.traceEngine(/* mocha context */ null, 'lcp-images.json.gz');
-  const networkEvent = traceParsedData.NetworkRequests.byTime[0];
-  const maybeTarget = Timeline.TargetForEvent.targetForEvent(traceParsedData, networkEvent);
+  const {traceData} = await TraceLoader.TraceLoader.traceEngine(/* mocha context */ null, 'lcp-images.json.gz');
+  const networkEvent = traceData.NetworkRequests.byTime[0];
+  const maybeTarget = Timeline.TargetForEvent.targetForEvent(traceData, networkEvent);
 
   const details = new TimelineComponents.NetworkRequestDetails.NetworkRequestDetails(detailsLinkifier);
   await details.setData(networkEvent, maybeTarget);

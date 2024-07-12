@@ -12,7 +12,7 @@ import * as Timeline from './timeline.js';
 
 describeWithEnvironment('TimelineMiniMap', function() {
   it('always shows the responsiveness, CPU activity and network panel', async function() {
-    const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
 
     const container = document.createElement('div');
     renderElementIntoDOM(container);
@@ -22,7 +22,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
     minimap.show(container);
 
     minimap.setData({
-      traceParsedData,
+      traceParsedData: traceData,
       settings: {
         showMemory: false,
         showScreenshots: false,
@@ -39,7 +39,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
   });
 
   it('will show the other panels if they are set to visible', async function() {
-    const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
 
     const container = document.createElement('div');
     renderElementIntoDOM(container);
@@ -49,7 +49,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
     minimap.show(container);
 
     minimap.setData({
-      traceParsedData,
+      traceParsedData: traceData,
       settings: {
         showMemory: true,
         showScreenshots: true,
@@ -66,7 +66,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
   });
 
   it('creates the first breadcrumb', async function() {
-    const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
 
     const container = document.createElement('div');
     renderElementIntoDOM(container);
@@ -76,7 +76,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
     minimap.show(container);
 
     minimap.setData({
-      traceParsedData,
+      traceParsedData: traceData,
       settings: {
         showMemory: true,
         showScreenshots: true,
@@ -92,20 +92,20 @@ describeWithEnvironment('TimelineMiniMap', function() {
 
     assert.strictEqual(
         TimelineComponents.Breadcrumbs.flattenBreadcrumbs(minimap.breadcrumbs.initialBreadcrumb).length, 1);
-    assert.deepEqual(minimap.breadcrumbs.initialBreadcrumb, {window: traceParsedData.Meta.traceBounds, child: null});
+    assert.deepEqual(minimap.breadcrumbs.initialBreadcrumb, {window: traceData.Meta.traceBounds, child: null});
   });
   it('stores breadcrumbs to be serialized', async function() {
-    const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap();
     minimap.setData({
-      traceParsedData,
+      traceParsedData: traceData,
       settings: {
         showMemory: true,
         showScreenshots: true,
       },
     });
     minimap.addInitialBreadcrumb();
-    const entireTraceBounds = traceParsedData.Meta.traceBounds;
+    const entireTraceBounds = traceData.Meta.traceBounds;
     const newBounds = {
       ...entireTraceBounds,
       min: TraceEngine.Types.Timing.MicroSeconds((entireTraceBounds.max + entireTraceBounds.min) / 2),

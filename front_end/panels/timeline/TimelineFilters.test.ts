@@ -12,8 +12,8 @@ import * as Timeline from './timeline.js';
 describeWithEnvironment('TimelineFilters', () => {
   describe('IsLong', () => {
     it('returns true if the event is longer than the defined duration for a new engine event', async function() {
-      const traceParsedData = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
-      const longEvent = getMainThread(traceParsedData.Renderer).entries.find(event => {
+      const {traceData} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
+      const longEvent = getMainThread(traceData.Renderer).entries.find(event => {
         return event.dur &&
             event.dur >
             TraceEngine.Helpers.Timing.millisecondsToMicroseconds(TraceEngine.Types.Timing.MilliSeconds(50));
@@ -28,8 +28,8 @@ describeWithEnvironment('TimelineFilters', () => {
     });
 
     it('returns false if the event is shorter than the defined duration for a new engine event', async function() {
-      const traceParsedData = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
-      const longEvent = getMainThread(traceParsedData.Renderer).entries.find(event => {
+      const {traceData} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
+      const longEvent = getMainThread(traceData.Renderer).entries.find(event => {
         return event.dur &&
             event.dur >
             TraceEngine.Helpers.Timing.millisecondsToMicroseconds(TraceEngine.Types.Timing.MilliSeconds(50)) &&
@@ -48,12 +48,12 @@ describeWithEnvironment('TimelineFilters', () => {
 
   describe('Category', () => {
     it('returns false for a new event if it has a category that is hidden', async function() {
-      const traceParsedData = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
+      const {traceData} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
       // These events are usually visible, so make the category hidden before
       // running this test.
       Timeline.EventUICategory.getCategoryStyles()['scripting'].hidden = true;
 
-      const userTimingEvent = (traceParsedData.UserTimings.performanceMeasures).at(0);
+      const userTimingEvent = traceData.UserTimings.performanceMeasures.at(0);
       if (!userTimingEvent) {
         throw new Error('Could not find expected event.');
       }
@@ -63,8 +63,8 @@ describeWithEnvironment('TimelineFilters', () => {
     });
 
     it('returns true for a new event if it has a category that is visible', async function() {
-      const traceParsedData = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
-      const userTimingEvent = (traceParsedData.UserTimings.performanceMeasures).at(0);
+      const {traceData} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
+      const userTimingEvent = traceData.UserTimings.performanceMeasures.at(0);
       if (!userTimingEvent) {
         throw new Error('Could not find expected event.');
       }

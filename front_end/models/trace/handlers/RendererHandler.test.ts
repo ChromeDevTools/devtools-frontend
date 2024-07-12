@@ -24,7 +24,7 @@ const SUB_FRAME_PID_3 = 2236123;
 
 async function handleEventsFromTraceFile(
     context: Mocha.Suite|Mocha.Context|null, file: string): Promise<TraceModel.Handlers.Types.TraceParseData> {
-  const traceData = await TraceLoader.traceEngine(context, file);
+  const {traceData} = await TraceLoader.traceEngine(context, file);
   return traceData;
 }
 

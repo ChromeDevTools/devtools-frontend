@@ -48,20 +48,20 @@ export async function getMainFlameChartWithTracks(
   await initializeGlobalVars();
 
   // This function is used to load a component example.
-  const traceParsedData = await TraceLoader.traceEngine(/* context= */ null, traceFileName);
+  const {traceData} = await TraceLoader.traceEngine(/* context= */ null, traceFileName);
 
   const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
   // The data provider still needs a reference to the legacy model to
   // work properly.
-  dataProvider.setModel(traceParsedData);
+  dataProvider.setModel(traceData);
   const tracksAppender = dataProvider.compatibilityTracksAppenderInstance();
   tracksAppender.setVisibleTracks(trackAppenderNames);
   dataProvider.buildFromTrackAppenders(
       {filterThreadsByName: trackName, expandedTracks: expanded ? trackAppenderNames : undefined});
   const delegate = new MockFlameChartDelegate();
   const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
-  const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
-  const maxTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.max);
+  const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceData.Meta.traceBounds.min);
+  const maxTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceData.Meta.traceBounds.max);
   flameChart.setWindowTimes(minTime, maxTime);
   flameChart.markAsRoot();
   flameChart.update();
@@ -82,11 +82,11 @@ export async function getNetworkFlameChart(traceFileName: string, expanded: bool
 }> {
   await initializeGlobalVars();
 
-  const traceParsedData = await TraceLoader.traceEngine(/* context= */ null, traceFileName);
-  const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
-  const maxTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.max);
+  const {traceData} = await TraceLoader.traceEngine(/* context= */ null, traceFileName);
+  const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceData.Meta.traceBounds.min);
+  const maxTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceData.Meta.traceBounds.max);
   const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-  dataProvider.setModel(traceParsedData);
+  dataProvider.setModel(traceData);
   dataProvider.setWindowTimes(minTime, maxTime);
   dataProvider.timelineData().groups.forEach(group => {
     group.expanded = expanded;

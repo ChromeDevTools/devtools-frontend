@@ -16,27 +16,27 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
   describe('groupTreeEvents', function() {
     it('returns the correct events for tree views given a flame chart group', async function() {
       const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-      const traceParsedData = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
-      dataProvider.setModel(traceParsedData);
+      const {traceData} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
+      dataProvider.setModel(traceData);
       const timingsTrackGroup = dataProvider.timelineData().groups.find(g => g.name === 'Timings');
       if (!timingsTrackGroup) {
         assert.fail('Could not find Timings track flame chart group');
       }
       const groupTreeEvents = dataProvider.groupTreeEvents(timingsTrackGroup);
       const allTimingEvents = [
-        ...traceParsedData.UserTimings.consoleTimings,
-        ...traceParsedData.UserTimings.timestampEvents,
-        ...traceParsedData.UserTimings.performanceMarks,
-        ...traceParsedData.UserTimings.performanceMeasures,
-        ...traceParsedData.PageLoadMetrics.allMarkerEvents,
+        ...traceData.UserTimings.consoleTimings,
+        ...traceData.UserTimings.timestampEvents,
+        ...traceData.UserTimings.performanceMarks,
+        ...traceData.UserTimings.performanceMeasures,
+        ...traceData.PageLoadMetrics.allMarkerEvents,
       ].sort((a, b) => a.ts - b.ts);
       assert.deepEqual(groupTreeEvents, allTimingEvents);
     });
 
     it('filters out async events if they cannot be added to the tree', async function() {
       const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-      const traceParsedData = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
-      dataProvider.setModel(traceParsedData);
+      const {traceData} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
+      dataProvider.setModel(traceData);
       const timingsTrackGroup = dataProvider.timelineData().groups.find(g => g.name === 'Timings');
       if (!timingsTrackGroup) {
         assert.fail('Could not find Timings track flame chart group');
@@ -51,8 +51,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
   it('can provide the index for an event and the event for a given index', async function() {
     setupIgnoreListManagerEnvironment();
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-    const traceParsedData = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
-    dataProvider.setModel(traceParsedData);
+    const {traceData} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
+    dataProvider.setModel(traceData);
 
     // Need to use an index that is not a frame, so jump past the frames.
     const event = dataProvider.eventByIndex(100);
@@ -63,8 +63,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     Root.Runtime.experiments.enableForTest('timeline-extensions');
     setupIgnoreListManagerEnvironment();
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-    const traceParsedData = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
-    dataProvider.setModel(traceParsedData);
+    const {traceData} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
+    dataProvider.setModel(traceData);
     const groupNames = dataProvider.timelineData().groups.map(g => g.name);
     assert.deepEqual(
         groupNames,
@@ -89,8 +89,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
   it('adds candy stripe and triangle decorations to long tasks in the main thread', async function() {
     setupIgnoreListManagerEnvironment();
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-    const traceParsedData = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
-    dataProvider.setModel(traceParsedData);
+    const {traceData} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
+    dataProvider.setModel(traceData);
 
     const {entryDecorations} = dataProvider.timelineData();
     const stripingTitles: string[] = [];
@@ -120,8 +120,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
 
   it('populates the frames track with frames and screenshots', async function() {
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-    const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-    dataProvider.setModel(traceParsedData);
+    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    dataProvider.setModel(traceData);
     const framesTrack = dataProvider.timelineData().groups.find(g => {
       return g.name.includes('Frames');
     });
@@ -147,8 +147,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
       const {ignoreListManager} = setupIgnoreListManagerEnvironment();
 
       const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-      const traceParsedData = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
-      dataProvider.setModel(traceParsedData);
+      const {traceData} = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
+      dataProvider.setModel(traceData);
 
       const eventCountBeforeIgnoreList = dataProvider.timelineData().entryStartTimes.length;
 
@@ -173,11 +173,11 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
 
   it('filters navigations to only return those that happen on the main frame', async function() {
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-    const traceParsedData = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
+    const {traceData} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
 
-    dataProvider.setModel(traceParsedData);
+    dataProvider.setModel(traceData);
 
-    const mainFrameID = traceParsedData.Meta.mainFrameId;
+    const mainFrameID = traceData.Meta.mainFrameId;
     const navigationEvents = dataProvider.mainFrameNavigationStartEvents();
     // Ensure that every navigation event that we return is for the main frame.
     assert.isTrue(navigationEvents.every(navEvent => {

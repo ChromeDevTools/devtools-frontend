@@ -10,15 +10,15 @@ import * as TimelineComponents from './components.js';
 
 describeWithEnvironment('TimelineComponents Invalidations', () => {
   it('processes and groups invalidations correctly', async function() {
-    const data = await TraceLoader.traceEngine(this, 'style-invalidation-change-attribute.json.gz');
-    const updateLayoutTreeEvent = data.Renderer.allTraceEntries.find(event => {
+    const {traceData} = await TraceLoader.traceEngine(this, 'style-invalidation-change-attribute.json.gz');
+    const updateLayoutTreeEvent = traceData.Renderer.allTraceEntries.find(event => {
       return TraceEngine.Types.TraceEvents.isTraceEventUpdateLayoutTree(event) &&
           event.args.beginData?.stackTrace?.[0].functionName === 'testFuncs.changeAttributeAndDisplay';
     });
     if (!updateLayoutTreeEvent) {
       throw new Error('Could not find update layout tree event');
     }
-    const invalidations = data.Invalidations.invalidationsForEvent.get(updateLayoutTreeEvent) ?? [];
+    const invalidations = traceData.Invalidations.invalidationsForEvent.get(updateLayoutTreeEvent) ?? [];
 
     const {groupedByReason, backendNodeIds} = TimelineComponents.DetailsView.generateInvalidationsList(invalidations);
     const reasons = Object.keys(groupedByReason);

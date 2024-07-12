@@ -49,32 +49,32 @@ describeWithEnvironment('TraceEvent types', function() {
   });
 
   it('is able to determine that an event is a synthetic user timing event', async function() {
-    const traceParsedData = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
-    const timingEvent = traceParsedData.UserTimings.performanceMeasures[0];
+    const {traceData} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
+    const timingEvent = traceData.UserTimings.performanceMeasures[0];
     assert.isTrue(TraceEngine.Types.TraceEvents.isSyntheticUserTiming(timingEvent));
-    const consoleEvent = traceParsedData.UserTimings.consoleTimings[0];
+    const consoleEvent = traceData.UserTimings.consoleTimings[0];
     assert.isFalse(TraceEngine.Types.TraceEvents.isSyntheticUserTiming(consoleEvent));
   });
 
   it('is able to determine that an event is a synthetic console event', async function() {
-    const traceParsedData = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
-    const consoleEvent = traceParsedData.UserTimings.consoleTimings[0];
+    const {traceData} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
+    const consoleEvent = traceData.UserTimings.consoleTimings[0];
     assert.isTrue(TraceEngine.Types.TraceEvents.isSyntheticConsoleTiming(consoleEvent));
-    const timingEvent = traceParsedData.UserTimings.performanceMeasures[0];
+    const timingEvent = traceData.UserTimings.performanceMeasures[0];
     assert.isFalse(TraceEngine.Types.TraceEvents.isSyntheticConsoleTiming(timingEvent));
   });
 
   it('is able to detemrine that an event is a synthetic network request event', async function() {
-    const traceParsedData = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
-    const networkEvent = traceParsedData.NetworkRequests.byTime[0];
+    const {traceData} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+    const networkEvent = traceData.NetworkRequests.byTime[0];
     assert.isTrue(TraceEngine.Types.TraceEvents.isSyntheticNetworkRequestEvent(networkEvent));
-    const otherEvent = traceParsedData.Renderer.allTraceEntries[0];
+    const otherEvent = traceData.Renderer.allTraceEntries[0];
     assert.isFalse(TraceEngine.Types.TraceEvents.isSyntheticNetworkRequestEvent(otherEvent));
   });
 
   it('is able to determine that an event is a synthetic layout shift event', async function() {
-    const traceParsedData = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
-    const syntheticLayoutShift = traceParsedData.LayoutShifts.clusters[0].events[0];
+    const {traceData} = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
+    const syntheticLayoutShift = traceData.LayoutShifts.clusters[0].events[0];
     assert.isTrue(TraceEngine.Types.TraceEvents.isSyntheticLayoutShift(syntheticLayoutShift));
   });
 });

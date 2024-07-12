@@ -42,14 +42,14 @@ describeWithMockConnection('FetchNodes', function() {
       await domModel.requestDocument();
       domModel.registerNode(domNode);
 
-      const modelData = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
-      const result = await TraceEngine.Extras.FetchNodes.domNodeForBackendNodeID(modelData, nodeId(2));
+      const {traceData} = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
+      const result = await TraceEngine.Extras.FetchNodes.domNodeForBackendNodeID(traceData, nodeId(2));
       assert.strictEqual(result, domNode);
 
       // Clear the mock and re-set it to return nothing to test the bad path.
       clearMockConnectionResponseHandler('DOM.pushNodesByBackendIdsToFrontend');
       setMockConnectionResponseHandler('DOM.pushNodesByBackendIdsToFrontend', () => ({nodeIds: []}));
-      const doesNotExistResult = await TraceEngine.Extras.FetchNodes.domNodeForBackendNodeID(modelData, nodeId(99));
+      const doesNotExistResult = await TraceEngine.Extras.FetchNodes.domNodeForBackendNodeID(traceData, nodeId(99));
       assert.isNull(doesNotExistResult);
     });
 
@@ -115,7 +115,7 @@ describeWithMockConnection('FetchNodes', function() {
 
   describe('nodeIdsForEvent', () => {
     it('identifies node ids for a Layout event', async function() {
-      const traceData = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       const layoutEvent = traceData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventLayout);
       assert.isOk(layoutEvent);
       const nodeIds = TraceEngine.Extras.FetchNodes.nodeIdsForEvent(traceData, layoutEvent);
@@ -123,7 +123,7 @@ describeWithMockConnection('FetchNodes', function() {
     });
 
     it('identifies node ids for a LayoutShift event', async function() {
-      const traceData = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
+      const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
       const layoutShiftEvent = traceData.LayoutShifts.clusters[0].events.at(0);
       assert.isOk(layoutShiftEvent);
       const nodeIds = TraceEngine.Extras.FetchNodes.nodeIdsForEvent(traceData, layoutShiftEvent);
@@ -137,7 +137,7 @@ describeWithMockConnection('FetchNodes', function() {
     });
 
     it('identifies node ids for a Paint event', async function() {
-      const traceData = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
+      const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
       const paintEvent = traceData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventPaint);
       assert.isOk(paintEvent);
       const nodeIds = TraceEngine.Extras.FetchNodes.nodeIdsForEvent(traceData, paintEvent);
@@ -145,7 +145,7 @@ describeWithMockConnection('FetchNodes', function() {
     });
 
     it('identifies node ids for a PaintImage event', async function() {
-      const traceData = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
+      const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
       const paintImageEvent =
           traceData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventPaintImage);
       assert.isOk(paintImageEvent);
@@ -156,7 +156,7 @@ describeWithMockConnection('FetchNodes', function() {
     it('identifies node ids for a ScrollLayer event', async function() {
       // This trace chosen as it happens to have ScrollLayer events, unlike the
       // web-dev traces used in tests above.
-      const traceData = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
+      const {traceData} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
       const scrollLayerEvent =
           traceData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventScrollLayer);
       assert.isOk(scrollLayerEvent);
@@ -165,7 +165,7 @@ describeWithMockConnection('FetchNodes', function() {
     });
 
     it('identifies node ids for a DecodeImage event', async function() {
-      const traceData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {traceData} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const decodeImageEvent =
           traceData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventDecodeImage);
       assert.isOk(decodeImageEvent);
@@ -174,7 +174,7 @@ describeWithMockConnection('FetchNodes', function() {
     });
 
     it('identifies node ids for a DrawLazyPixelRef event', async function() {
-      const traceData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {traceData} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const drawLazyPixelRefEvent =
           traceData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventDrawLazyPixelRef);
       assert.isOk(drawLazyPixelRefEvent);
@@ -183,7 +183,7 @@ describeWithMockConnection('FetchNodes', function() {
     });
 
     it('identifies node ids for a MarkLCP event', async function() {
-      const traceData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {traceData} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const lcpCandidateEvent = traceData.PageLoadMetrics.allMarkerEvents.find(
           TraceEngine.Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate);
       assert.isOk(lcpCandidateEvent);

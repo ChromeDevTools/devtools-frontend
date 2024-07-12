@@ -11,8 +11,8 @@ import * as TimelineComponents from './components.js';
 
 describeWithMockConnection('NetworkRequestDetails', () => {
   it('renders the right details for a network event from TraceEngine', async function() {
-    const traceParsedData = await TraceLoader.traceEngine(this, 'lcp-web-font.json.gz');
-    const networkRequests = traceParsedData.NetworkRequests.byTime;
+    const {traceData} = await TraceLoader.traceEngine(this, 'lcp-web-font.json.gz');
+    const networkRequests = traceData.NetworkRequests.byTime;
     const cssRequest = networkRequests.find(request => {
       return request.args.data.url === 'https://chromedevtools.github.io/performance-stories/lcp-web-font/app.css';
     });
@@ -22,7 +22,7 @@ describeWithMockConnection('NetworkRequestDetails', () => {
 
     const details =
         new TimelineComponents.NetworkRequestDetails.NetworkRequestDetails(new Components.Linkifier.Linkifier());
-    await details.setData(cssRequest, Timeline.TargetForEvent.targetForEvent(traceParsedData, cssRequest));
+    await details.setData(cssRequest, Timeline.TargetForEvent.targetForEvent(traceData, cssRequest));
 
     if (!details.shadowRoot) {
       throw new Error('Could not find expected element to test.');

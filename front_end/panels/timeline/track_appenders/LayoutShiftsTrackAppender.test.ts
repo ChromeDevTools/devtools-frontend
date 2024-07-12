@@ -29,13 +29,13 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
     const entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
     const entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
     const flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
-    const traceParsedData = await TraceLoader.traceEngine(context, trace);
-    const layoutShiftsTrackAppender = initTrackAppender(flameChartData, traceParsedData, entryData, entryTypeByLevel);
+    const {traceData} = await TraceLoader.traceEngine(context, trace);
+    const layoutShiftsTrackAppender = initTrackAppender(flameChartData, traceData, entryData, entryTypeByLevel);
     layoutShiftsTrackAppender.appendTrackAtLevel(0);
 
     return {
       entryTypeByLevel,
-      traceParsedData,
+      traceParsedData: traceData,
       flameChartData,
       layoutShiftsTrackAppender,
       entryData,

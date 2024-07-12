@@ -28,9 +28,11 @@ const fileContentsCache = new Map<string, TraceEngine.Types.File.Contents>();
 // file with different trace engine configurations, we will not use the cache
 // and will reparse. This is required as some of the settings and experiments
 // change if events are kept and dropped.
-const traceEngineCache = new Map<
-    string,
-    Map<string, {traceParsedData: TraceEngine.Handlers.Types.TraceParseData, model: TraceEngine.TraceModel.Model}>>();
+const traceEngineCache = new Map<string, Map<string, {
+                                   traceData: TraceEngine.Handlers.Types.TraceParseData,
+                                   insights: TraceEngine.Insights.Types.TraceInsightData | null,
+                                   model: TraceEngine.TraceModel.Model,
+                                 }>>();
 
 export interface TraceEngineLoaderOptions {
   initTraceBounds: boolean;
@@ -131,8 +133,10 @@ export class TraceLoader {
    */
   static async traceEngine(
       context: Mocha.Context|Mocha.Suite|null, name: string,
-      config: TraceEngine.Types.Configuration.Configuration = TraceEngine.Types.Configuration.defaults()):
-      Promise<TraceEngine.Handlers.Types.TraceParseData> {
+      config: TraceEngine.Types.Configuration.Configuration = TraceEngine.Types.Configuration.defaults()): Promise<{
+    traceData: TraceEngine.Handlers.Types.TraceParseData,
+    insights: TraceEngine.Insights.Types.TraceInsightData|null,
+  }> {
     // Force the TraceBounds to be reset to empty. This ensures that in
     // tests where we are using the new engine data we don't accidentally
     // rely on the fact that a previous test has set the BoundsManager.
@@ -142,7 +146,7 @@ export class TraceLoader {
 
     const fromCache = traceEngineCache.get(name)?.get(configCacheKey);
     if (fromCache) {
-      TraceLoader.initTraceBoundsManager(fromCache.traceParsedData);
+      TraceLoader.initTraceBoundsManager(fromCache.traceData);
       Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(fromCache.model, 0);
 
       // This init step is usually done in model.parse(), but as we loaded from
@@ -157,21 +161,26 @@ export class TraceLoader {
             rawEvents,
         );
       }
-      return fromCache.traceParsedData;
+      return {traceData: fromCache.traceData, insights: fromCache.insights};
     }
     const fileContents = await TraceLoader.fixtureContents(context, name);
     const traceEngineData =
         await TraceLoader.executeTraceEngineOnFileContents(fileContents, /* emulate fresh recording */ false, config);
 
-    const cacheByName = traceEngineCache.get(name) ||
-        new Map<string,
-                {traceParsedData: TraceEngine.Handlers.Types.TraceParseData, model: TraceEngine.TraceModel.Model}>();
+    const cacheByName = traceEngineCache.get(name) || new Map<string, {
+                          traceData: TraceEngine.Handlers.Types.TraceParseData,
+                          insights: TraceEngine.Insights.Types.TraceInsightData | null,
+                          model: TraceEngine.TraceModel.Model,
+                        }>();
     cacheByName.set(configCacheKey, traceEngineData);
     traceEngineCache.set(name, cacheByName);
 
-    TraceLoader.initTraceBoundsManager(traceEngineData.traceParsedData);
+    TraceLoader.initTraceBoundsManager(traceEngineData.traceData);
     Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(traceEngineData.model, 0);
-    return traceEngineData.traceParsedData;
+    return {
+      traceData: traceEngineData.traceData,
+      insights: traceEngineData.insights,
+    };
   }
 
   /**
@@ -193,7 +202,8 @@ export class TraceLoader {
       traceEngineConfig?: TraceEngine.Types.Configuration.Configuration): Promise<{
     model: TraceEngine.TraceModel.Model,
     metadata: TraceEngine.Types.File.MetaData,
-    traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
+    traceData: TraceEngine.Handlers.Types.TraceParseData,
+    insights: TraceEngine.Insights.Types.TraceInsightData|null,
   }> {
     const events = 'traceEvents' in contents ? contents.traceEvents : contents;
     const metadata = 'metadata' in contents ? contents.metadata : {};
@@ -206,12 +216,14 @@ export class TraceLoader {
         // state back to waiting.
         if (TraceEngine.TraceModel.isModelUpdateDataComplete(data)) {
           const metadata = model.metadata(0);
-          const traceParsedData = model.traceParsedData(0);
-          if (metadata && traceParsedData) {
+          const traceData = model.traceParsedData(0);
+          const insights = model.traceInsights(0);
+          if (metadata && traceData) {
             resolve({
               model,
               metadata,
-              traceParsedData,
+              traceData,
+              insights,
             });
           } else {
             reject(new Error('Unable to load trace'));

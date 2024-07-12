@@ -21,15 +21,15 @@ function initTrackAppender(
 }
 
 describeWithEnvironment('AnimationsTrackAppender', function() {
-  let traceParsedData: TraceModel.Handlers.Types.TraceParseData;
+  let traceData: TraceModel.Handlers.Types.TraceParseData;
   let animationsTrackAppender: Timeline.AnimationsTrackAppender.AnimationsTrackAppender;
   let entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
   let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
   let entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
 
   beforeEach(async function() {
-    traceParsedData = await TraceLoader.traceEngine(this, 'animation.json.gz');
-    animationsTrackAppender = initTrackAppender(flameChartData, traceParsedData, entryData, entryTypeByLevel);
+    ({traceData} = await TraceLoader.traceEngine(this, 'animation.json.gz'));
+    animationsTrackAppender = initTrackAppender(flameChartData, traceData, entryData, entryTypeByLevel);
     animationsTrackAppender.appendTrackAtLevel(0);
   });
 
@@ -46,7 +46,7 @@ describeWithEnvironment('AnimationsTrackAppender', function() {
     });
 
     it('adds start times correctly', function() {
-      const animationsRequests = traceParsedData.Animations.animations;
+      const animationsRequests = traceData.Animations.animations;
       for (let i = 0; i < animationsRequests.length; ++i) {
         const event = animationsRequests[i];
         assert.strictEqual(
@@ -55,7 +55,7 @@ describeWithEnvironment('AnimationsTrackAppender', function() {
     });
 
     it('adds total times correctly', function() {
-      const animationsRequests = traceParsedData.Animations.animations;
+      const animationsRequests = traceData.Animations.animations;
       for (let i = 0; i < animationsRequests.length; i++) {
         const event = animationsRequests[i];
         if (TraceEngine.Types.TraceEvents.isTraceEventMarkerEvent(event)) {
@@ -96,7 +96,7 @@ describeWithEnvironment('AnimationsTrackAppender', function() {
       ThemeSupport.ThemeSupport.clearThemeCache();
     });
     it('returns the correct color and title for GPU tasks', function() {
-      const animationsRequests = traceParsedData.Animations.animations;
+      const animationsRequests = traceData.Animations.animations;
       for (const event of animationsRequests) {
         assert.strictEqual(animationsTrackAppender.titleForEvent(event), event.name);
         assert.strictEqual(animationsTrackAppender.colorForEvent(), 'rgb(4 4 4)');
@@ -106,7 +106,7 @@ describeWithEnvironment('AnimationsTrackAppender', function() {
 
   describe('highlightedEntryInfo', function() {
     it('returns the info for an entry correctly', function() {
-      const animationsRequests = traceParsedData.Animations.animations;
+      const animationsRequests = traceData.Animations.animations;
       const highlightedEntryInfo = animationsTrackAppender.highlightedEntryInfo(animationsRequests[0]);
       // The i18n encodes spaces using the u00A0 unicode character.
       assert.strictEqual(highlightedEntryInfo.formattedTime, '2.01\u00A0s');

@@ -3,12 +3,13 @@
 # found in the LICENSE file.
 
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../../third_party/typescript/typescript.gni")
 import("../../../visibility.gni")
 
-devtools_module("testing") {
+ts_library("testing") {
   sources = [ "MetricTestUtils.ts" ]
+
+  testonly = true
 
   deps = [
     "../:bundle",

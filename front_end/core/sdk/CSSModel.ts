@@ -189,7 +189,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       return text;
     }
     const sourceURLLine = text.substr(sourceURLLineIndex + 1).split('\n', 1)[0];
-    const sourceURLRegex = /[\040\t]*\/\*[#@] sourceURL=[\040\t]*([^\s]*)[\040\t]*\*\/[\040\t]*$/;
+    const sourceURLRegex = /[\x20\t]*\/\*[#@] sourceURL=[\x20\t]*([^\s]*)[\x20\t]*\*\/[\x20\t]*$/;
     if (sourceURLLine.search(sourceURLRegex) === -1) {
       return text;
     }

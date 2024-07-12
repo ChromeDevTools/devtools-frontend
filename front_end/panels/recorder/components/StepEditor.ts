@@ -397,6 +397,7 @@ export class EditorState {
     const state = structuredClone(step) as EditorState;
     for (const key of ['parameters', 'properties'] as Array<'properties'>) {
       if (key in step && step[key] !== undefined) {
+        // @ts-ignore Potential infinite type instantiation.
         state[key] = JSON.stringify(step[key]);
       }
     }

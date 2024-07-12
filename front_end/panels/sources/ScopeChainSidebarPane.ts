@@ -186,7 +186,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
       scope: SDK.DebuggerModel.ScopeChainEntry,
       extraProperties: SDK.RemoteObject.RemoteObjectProperty[]): ObjectUI.ObjectPropertiesSection.RootElement {
     let emptyPlaceholder: Common.UIString.LocalizedString|null = null;
-    if (scope.type() === Protocol.Debugger.ScopeType.Local || Protocol.Debugger.ScopeType.Closure) {
+    if (scope.type() === Protocol.Debugger.ScopeType.Local || scope.type() === Protocol.Debugger.ScopeType.Closure) {
       emptyPlaceholder = i18nString(UIStrings.noVariables);
     }
 

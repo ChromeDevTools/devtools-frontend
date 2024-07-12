@@ -298,6 +298,8 @@ def main():
         tsconfig['compilerOptions']['types'] = [
             "mocha", "chai", "sinon", "karma-chai-sinon"
         ]
+        # Required for sinon global access.
+        tsconfig['compilerOptions']['allowUmdGlobalAccess'] = True
         if runs_in_node_environment:
             tsconfig['compilerOptions']['types'] += ["node"]
     if runs_in_node_environment:

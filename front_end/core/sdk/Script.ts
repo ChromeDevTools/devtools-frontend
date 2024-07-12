@@ -496,7 +496,7 @@ function frameIdForScript(script: Script): Protocol.Page.FrameId|null {
   return resourceTreeModel.mainFrame.id;
 }
 
-export const sourceURLRegex = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;
+export const sourceURLRegex = /^[\x20\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;
 
 async function disassembleWasm(content: string): Promise<TextUtils.WasmDisassembly.WasmDisassembly> {
   const worker = Common.Worker.WorkerWrapper.fromURL(

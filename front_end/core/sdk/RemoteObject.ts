@@ -1179,9 +1179,7 @@ const descriptionLengthSquareRegex = /\[([0-9]+)\]/;
 
 const enum UnserializableNumber {
   Negative0 = ('-0'),
-  // @ts-expect-error
   NaN = ('NaN'),
-  // @ts-expect-error
   Infinity = ('Infinity'),
   NegativeInfinity = ('-Infinity'),
 }

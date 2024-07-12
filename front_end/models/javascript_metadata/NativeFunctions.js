@@ -179,7 +179,7 @@ export const NativeFunctions = [
   {
     name: "toLocaleString",
     signatures: [["?locales","?options"]],
-    receivers: ["Date","Number","BigInt"]
+    receivers: ["Date","ReadonlyArray","Array","Int8Array","Uint8Array","Uint8ClampedArray","Int16Array","Uint16Array","Int32Array","Uint32Array","Float32Array","Float64Array","Number","BigInt","BigInt64Array","BigUint64Array"]
   },
   {
     name: "hasOwnProperty",
@@ -714,7 +714,7 @@ export const NativeFunctions = [
   {
     name: "forEach",
     signatures: [["callbackfn","?thisArg"]],
-    receivers: ["ReadonlyArray","Array","Int8Array","Uint8Array","Uint8ClampedArray","Int16Array","Uint16Array","Int32Array","Uint32Array","Float32Array","Float64Array","AudioParamMap","CSSNumericArray","CSSTransformValue","CSSUnparsedValue","DOMTokenList","EventCounts","FontFaceSet","FormData","Headers","Highlight","HighlightRegistry","MIDIInputMap","MIDIOutputMap","MediaKeyStatusMap","NodeList","NodeListOf","RTCStatsReport","StylePropertyMapReadOnly","URLSearchParams","Map","ReadonlyMap","Set","ReadonlySet","BigInt64Array","BigUint64Array"]
+    receivers: ["ReadonlyArray","Array","Int8Array","Uint8Array","Uint8ClampedArray","Int16Array","Uint16Array","Int32Array","Uint32Array","Float32Array","Float64Array","AudioParamMap","CSSNumericArray","CSSTransformValue","CSSUnparsedValue","CustomStateSet","DOMTokenList","EventCounts","FontFaceSet","FormData","Headers","Highlight","HighlightRegistry","MIDIInputMap","MIDIOutputMap","MediaKeyStatusMap","NodeList","NodeListOf","RTCStatsReport","StylePropertyMapReadOnly","URLSearchParams","Map","ReadonlyMap","Set","ReadonlySet","BigInt64Array","BigUint64Array"]
   },
   {
     name: "forEach",
@@ -1514,7 +1514,7 @@ export const NativeFunctions = [
   {
     name: "has",
     signatures: [["value"]],
-    receivers: ["Set","ReadonlySet","WeakSet"]
+    receivers: ["Set","ReadonlySet","WeakSet","ReadonlySetLike"]
   },
   {
     name: "has",
@@ -2429,6 +2429,10 @@ export const NativeFunctions = [
   {
     name: "setAttributeNodeNS",
     signatures: [["attr"]]
+  },
+  {
+    name: "setHTMLUnsafe",
+    signatures: [["html"]]
   },
   {
     name: "setPointerCapture",
@@ -5481,6 +5485,11 @@ export const NativeFunctions = [
     receivers: ["ObjectConstructor"]
   },
   {
+    name: "values",
+    signatures: [["?options"]],
+    receivers: ["ReadableStream"]
+  },
+  {
     name: "all",
     signatures: [["values"]]
   },
@@ -5837,6 +5846,38 @@ export const NativeFunctions = [
   {
     name: "with",
     signatures: [["index","value"]]
+  },
+  {
+    name: "fromAsync",
+    signatures: [["iterableOrArrayLike","?mapFn","?thisArg"]]
+  },
+  {
+    name: "union",
+    signatures: [["other"]]
+  },
+  {
+    name: "intersection",
+    signatures: [["other"]]
+  },
+  {
+    name: "difference",
+    signatures: [["other"]]
+  },
+  {
+    name: "symmetricDifference",
+    signatures: [["other"]]
+  },
+  {
+    name: "isSubsetOf",
+    signatures: [["other"]]
+  },
+  {
+    name: "isSupersetOf",
+    signatures: [["other"]]
+  },
+  {
+    name: "isDisjointFrom",
+    signatures: [["other"]]
   },
   {
     name: "openWindow",
@@ -6387,10 +6428,6 @@ export const NativeFunctions = [
   {
     name: "DOMException",
     signatures: [["?message","?name"]]
-  },
-  {
-    name: "setHTMLUnsafe",
-    signatures: [["html"]]
   },
   {
     name: "getInnerHTML",

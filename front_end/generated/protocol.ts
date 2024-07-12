@@ -14438,6 +14438,7 @@ export namespace Storage {
     aggregationKeys: AttributionReportingAggregationKeysEntry[];
     debugKey?: UnsignedInt64AsBase10;
     triggerDataMatching: AttributionReportingTriggerDataMatching;
+    destinationLimitPriority: SignedInt64AsBase10;
   }
 
   export const enum AttributionReportingSourceRegistrationResult {

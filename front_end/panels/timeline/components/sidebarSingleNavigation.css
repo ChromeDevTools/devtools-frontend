@@ -1,0 +1,53 @@
+/*
+ * Copyright 2024 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  display: block;
+  padding: 5px 0;
+}
+
+.metrics-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.metric {
+  margin-top: 10px;
+  flex: 1;
+}
+
+.metric-value {
+  font-size: 20px;
+}
+
+.metric-value-bad {
+  color: var(--app-color-performance-bad);
+}
+
+.metric-value-ok {
+  color: var(--app-color-performance-ok);
+}
+
+.metric-value-good {
+  color: var(--app-color-performance-good);
+}
+
+.metric-score-unclassified {
+  color: var(--sys-color-token-subtle);
+}
+
+.metric-label {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.url {
+  text-wrap: nowrap;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

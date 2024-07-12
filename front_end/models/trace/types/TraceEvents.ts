@@ -581,8 +581,10 @@ export interface TraceEventNavigationStart extends TraceEventMark {
   name: 'navigationStart';
   args: TraceEventArgs&{
     data?: TraceEventArgsData & {
-      documentLoaderURL: string,
-      isLoadingMainFrame: boolean,
+      /**
+       * @deprecated use documentLoaderURL for navigation events URLs
+       **/
+      url?: string, documentLoaderURL: string, isLoadingMainFrame: boolean,
       // isOutermostMainFrame was introduced in crrev.com/c/3625434 and exists
       // because of Fenced Frames
       // [github.com/WICG/fenced-frame/tree/master/explainer].

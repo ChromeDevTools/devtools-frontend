@@ -134,3 +134,7 @@ devtools-select-menu {
 .dl-value {
   font-weight: bold;
 }
+
+devtools-performance-sidebar-single-navigation + devtools-performance-sidebar-single-navigation {
+  border-top: 1px solid var(--sys-color-divider);
+}

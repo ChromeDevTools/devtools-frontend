@@ -123,14 +123,6 @@ type HistoryChunk = {
 const MAX_STEPS = 10;
 const MAX_OBSERVATION_BYTE_LENGTH = 25_000;
 
-/**
- * Error response message to be return whenever a OBSERVATION
- * fails due to some issue.
- */
-const getErrorResponse = (message: string): string => {
-  return `Error: ${message}`;
-};
-
 export class FreestylerAgent {
   #aidaClient: Host.AidaClient.AidaClient;
   #chatHistory: Map<number, HistoryChunk[]> = new Map();
@@ -254,33 +246,38 @@ export class FreestylerAgent {
   resetHistory(): void {
     this.#chatHistory = new Map();
   }
-  async #generateObservation(action: string, {throwOnSideEffect}: {
-    throwOnSideEffect: boolean,
-  }): Promise<string> {
+  async #generateObservation(
+      action: string, {throwOnSideEffect, confirmExecJs: confirm, execJsDeniedMesssage: denyErrorMessage}: {
+        throwOnSideEffect: boolean,
+        confirmExecJs?: (this: FreestylerAgent, action: string) => Promise<boolean>,
+        execJsDeniedMesssage?: string,
+      }): Promise<string> {
     const actionExpression = `{${action};((typeof data !== "undefined") ? data : undefined)}`;
 
     try {
+      const runConfirmed = await (confirm?.call(this, action) ?? Promise.resolve(true));
+      if (!runConfirmed) {
+        throw new Error(denyErrorMessage ?? 'Code execution is not allowed');
+      }
       const result = await this.#execJs(
           actionExpression,
           {throwOnSideEffect},
       );
       const byteCount = Platform.StringUtilities.countWtf8Bytes(result);
       if (byteCount > MAX_OBSERVATION_BYTE_LENGTH) {
-        return getErrorResponse('Output exceeded the maximum allowed length.');
+        throw new Error('Output exceeded the maximum allowed length.');
       }
       return result;
     } catch (error) {
-      if (throwOnSideEffect && error instanceof SideEffectError) {
-        const shouldAllowSideEffect = await this.#confirmSideEffect(action);
-        if (!shouldAllowSideEffect) {
-          return getErrorResponse(error.message);
-        }
+      if (error instanceof SideEffectError) {
         return await this.#generateObservation(action, {
           throwOnSideEffect: false,
+          confirmExecJs: this.#confirmSideEffect,
+          execJsDeniedMesssage: error.message,
         });
       }
 
-      return getErrorResponse(error.message);
+      return `Error: ${error.message}`;
     }
   }
 

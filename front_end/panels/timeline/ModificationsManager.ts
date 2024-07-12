@@ -27,9 +27,9 @@ export class AnnotationModifiedEvent extends Event {
 type ModificationsManagerData = {
   traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
   traceBounds: TraceEngine.Types.Timing.TraceWindowMicroSeconds,
+  rawTraceEvents: readonly TraceEngine.Types.TraceEvents.TraceEventData[],
+  syntheticEvents: TraceEngine.Types.TraceEvents.SyntheticBasedEvent[],
   modifications?: TraceEngine.Types.File.Modifications,
-               rawTraceEvents: readonly TraceEngine.Types.TraceEvents.TraceEventData[],
-               syntheticEvents: TraceEngine.Types.TraceEvents.SyntheticBasedEvent[],
 };
 
 export class ModificationsManager extends EventTarget {

@@ -24,6 +24,9 @@ const {render, html} = LitHtml;
 // to leave formatting off for this type declaration.
 // clang-format off
 export type AnchorFunctionLinkSwatchData = {
+  onLinkActivate: () => void,
+  onMouseEnter: () => void,
+  onMouseLeave: () => void,
   // The dashed identifier for the anchor function.
   // It is undefined when we're rendering for implicit or default anchor cases.
   identifier?: string,
@@ -36,9 +39,6 @@ export type AnchorFunctionLinkSwatchData = {
   // However for `position-anchor: --dashed-ident` case, there is no space needed at all.
   // That's why we need the parameter so that we don't render a space for that case.
   needsSpace?: boolean,
-  onLinkActivate: () => void,
-  onMouseEnter: () => void,
-  onMouseLeave: () => void,
 };
 // clang-format on
 

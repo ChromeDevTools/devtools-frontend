@@ -3,11 +3,12 @@
 // found in the LICENSE file.
 
 type AsyncActivity = {
+  pending: boolean,
   cancelDelayed?: () => void,
   id?: string,
   runImmediate?: () => void,
   stack?: string,
-  promise?: Promise<unknown>, pending: boolean,
+  promise?: Promise<unknown>,
 };
 
 const asyncActivity: AsyncActivity[] = [];

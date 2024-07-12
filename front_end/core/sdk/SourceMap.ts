@@ -50,10 +50,14 @@ import {SourceMapScopesInfo} from './SourceMapScopesInfo.js';
 export type SourceMapV3Object = {
   /* eslint-disable @typescript-eslint/naming-convention */
   'version': number,
+  'sources': string[],
+  'mappings': string,
+
   'file'?: string,
-  'sourceRoot'?: string, 'sources': string[],
+  'sourceRoot'?: string,
   'sourcesContent'?: (string|null)[],
-  'names'?: string[], 'mappings': string,
+
+  'names'?: string[],
   'ignoreList'?: number[],
   'originalScopes'?: string[],
   'generatedRanges'?: string,

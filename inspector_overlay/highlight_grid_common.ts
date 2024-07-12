@@ -29,7 +29,6 @@
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import {type AreaBounds, type Bounds} from './common.js';
-
 import {drawGridLabels, type GridLabelState} from './css_grid_label_helpers.js';
 import {applyMatrixToPoint, buildPath, emptyBounds, hatchFillPath} from './highlight_common.js';
 
@@ -222,22 +221,22 @@ export interface GridHighlight {
   columns: Array<string|number>;
   areaNames: {[key: string]: Array<string|number>};
   gridHighlightConfig: {
+    gridBorderDash: boolean,
+    rowLineDash: boolean,
+    columnLineDash: boolean,
+    showGridExtensionLines: boolean,
+    showPositiveLineNumbers: boolean,
+    showNegativeLineNumbers: boolean,
+    rowLineColor: string,
+    columnLineColor: string,
+    rowHatchColor: string,
+    columnHatchColor: string,
+    showLineNames: boolean,
     gridBackgroundColor?: string,
     gridBorderColor?: string,
     rowGapColor?: string,
     columnGapColor?: string,
     areaBorderColor?: string,
-                   gridBorderDash: boolean,
-                   rowLineDash: boolean,
-                   columnLineDash: boolean,
-                   showGridExtensionLines: boolean,
-                   showPositiveLineNumbers: boolean,
-                   showNegativeLineNumbers: boolean,
-                   rowLineColor: string,
-                   columnLineColor: string,
-                   rowHatchColor: string,
-                   columnHatchColor: string,
-                   showLineNames: boolean,
   };
 }
 

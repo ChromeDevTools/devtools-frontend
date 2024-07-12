@@ -48,6 +48,7 @@ module.exports = {
         'rulesdir/ban_a_tags_in_lit_html': 'error',
         'rulesdir/check_component_naming': 'error',
         'rulesdir/check_css_import': 'error',
+        'rulesdir/enforce-optional-properties-last': 'error',
         'rulesdir/check_enumerated_histograms': 'error',
         'rulesdir/check_was_shown_methods': 'error',
         'rulesdir/static_custom_event_names': 'error',

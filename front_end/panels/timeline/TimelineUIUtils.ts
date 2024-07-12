@@ -517,8 +517,10 @@ type LinkifyLocationOptions = {
   scriptId: Protocol.Runtime.ScriptId|null,
   url: string,
   lineNumber: number,
+  target: SDK.Target.Target|null,
+  linkifier: LegacyComponents.Linkifier.Linkifier,
+  isFreshRecording?: boolean,
   columnNumber?: number,
-  isFreshRecording?: boolean, target: SDK.Target.Target|null, linkifier: LegacyComponents.Linkifier.Linkifier,
 };
 
 export class TimelineUIUtils {

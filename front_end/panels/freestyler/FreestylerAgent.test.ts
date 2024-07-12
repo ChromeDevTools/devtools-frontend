@@ -238,6 +238,23 @@ c`;
       );
     });
 
+    it('builds a request with logging', async () => {
+      mockHostConfig('test model');
+      assert.strictEqual(
+          FreestylerAgent.buildRequest('test input', undefined, undefined, true).metadata?.disable_user_content_logging,
+          false,
+      );
+    });
+
+    it('builds a request without logging', async () => {
+      mockHostConfig('test model');
+      assert.strictEqual(
+          FreestylerAgent.buildRequest('test input', undefined, undefined, false)
+              .metadata?.disable_user_content_logging,
+          true,
+      );
+    });
+
     it('builds a request with input', async () => {
       mockHostConfig();
       const request = FreestylerAgent.buildRequest('test input');
@@ -310,7 +327,7 @@ c`;
               },
             ],
             metadata: {
-              disable_user_content_logging: false,
+              disable_user_content_logging: true,
             },
             options: {
               model_id: 'test model',

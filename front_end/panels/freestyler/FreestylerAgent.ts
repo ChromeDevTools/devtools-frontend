@@ -125,18 +125,22 @@ export class FreestylerAgent {
   #chatHistory: Map<number, HistoryChunk[]> = new Map();
   #confirmSideEffect: (action: string) => Promise<boolean>;
   #execJs: typeof executeJsCode;
+  #serverSideLoggingEnabled: boolean;
 
-  constructor({aidaClient, execJs, confirmSideEffect}: {
+  constructor({aidaClient, execJs, confirmSideEffect, serverSideLoggingEnabled}: {
     aidaClient: Host.AidaClient.AidaClient,
+    serverSideLoggingEnabled?: boolean,
     execJs?: typeof executeJsCode, confirmSideEffect: (action: string) => Promise<boolean>,
   }) {
     this.#aidaClient = aidaClient;
     this.#execJs = execJs ?? executeJsCode;
     this.#confirmSideEffect = confirmSideEffect;
+    this.#serverSideLoggingEnabled = serverSideLoggingEnabled ?? false;
   }
 
-  static buildRequest(input: string, preamble?: string, chatHistory?: Host.AidaClient.Chunk[]):
-      Host.AidaClient.AidaRequest {
+  static buildRequest(
+      input: string, preamble?: string, chatHistory?: Host.AidaClient.Chunk[],
+      serverSideLoggingEnabled = false): Host.AidaClient.AidaRequest {
     const config = Common.Settings.Settings.instance().getHostConfig();
     const request: Host.AidaClient.AidaRequest = {
       input,
@@ -150,7 +154,7 @@ export class FreestylerAgent {
       },
       metadata: {
         // TODO: disable logging based on query params.
-        disable_user_content_logging: false,
+        disable_user_content_logging: !serverSideLoggingEnabled,
       },
       // eslint-disable-next-line @typescript-eslint/naming-convention
       functionality_type: Host.AidaClient.FunctionalityType.CHAT,
@@ -271,8 +275,8 @@ export class FreestylerAgent {
     for (let i = 0; i < MAX_STEPS; i++) {
       yield {step: Step.QUERYING};
 
-      const request =
-          FreestylerAgent.buildRequest(query, preamble, this.#chatHistory.size ? this.#getHistoryEntry : undefined);
+      const request = FreestylerAgent.buildRequest(
+          query, preamble, this.#chatHistory.size ? this.#getHistoryEntry : undefined, this.#serverSideLoggingEnabled);
       let response: string;
       let rpcId: number|undefined;
       try {

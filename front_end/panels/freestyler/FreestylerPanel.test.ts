@@ -107,6 +107,29 @@ describeWithEnvironment('FreestylerPanel', () => {
       Common.Settings.settingForTest('freestyler-dogfood-consent-onboarding-finished').set(true);
     });
 
+    afterEach(() => {
+      // @ts-expect-error global test variable
+      setFreestylerServerSideLoggingEnabled(false);
+    });
+
+    it('should allow logging if configured', () => {
+      // @ts-expect-error global test variable
+      setFreestylerServerSideLoggingEnabled(true);
+
+      const aidaClient = getTestAidaClient();
+      new Freestyler.FreestylerPanel(mockView, {
+        aidaClient,
+        aidaAvailability: Host.AidaClient.AidaAvailability.AVAILABLE,
+      });
+      const callArgs = mockView.getCall(0).args[0];
+      mockView.reset();
+      callArgs.onRateClick(0, Host.AidaClient.Rating.POSITIVE);
+
+      sinon.assert.match(aidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
+        disable_user_content_logging: false,
+      }));
+    });
+
     it('should send POSITIVE rating to aida client when the user clicks on positive rating', () => {
       const RPC_ID = 0;
 
@@ -126,6 +149,7 @@ describeWithEnvironment('FreestylerPanel', () => {
             sentiment: 'POSITIVE',
           },
         },
+        disable_user_content_logging: true,
       }));
     });
 
@@ -147,6 +171,7 @@ describeWithEnvironment('FreestylerPanel', () => {
             sentiment: 'NEGATIVE',
           },
         },
+        disable_user_content_logging: true,
       }));
     });
   });

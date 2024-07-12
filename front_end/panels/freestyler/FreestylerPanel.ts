@@ -101,6 +101,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #agent: FreestylerAgent;
   #viewProps: FreestylerChatUiProps;
   #viewOutput: ViewOutput = {};
+  #serverSideLoggingEnabled = isFreestylerServerSideLoggingEnabled();
   #consentViewAcceptedSetting =
       Common.Settings.Settings.instance().createLocalSetting('freestyler-dogfood-consent-onboarding-finished', false);
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability}: {
@@ -114,8 +115,11 @@ export class FreestylerPanel extends UI.Panel.Panel {
         UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
     this.#aidaClient = aidaClient;
     this.#contentContainer = this.contentElement.createChild('div', 'freestyler-chat-ui-container');
-    this.#agent =
-        new FreestylerAgent({aidaClient: this.#aidaClient, confirmSideEffect: this.showConfirmSideEffectUi.bind(this)});
+    this.#agent = new FreestylerAgent({
+      aidaClient: this.#aidaClient,
+      serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
+      confirmSideEffect: this.showConfirmSideEffectUi.bind(this),
+    });
     this.#selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     this.#viewProps = {
       state: this.#consentViewAcceptedSetting.get() ? FreestylerChatUiState.CHAT_VIEW :
@@ -195,6 +199,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #handleRateClick(rpcId: number, rating: Host.AidaClient.Rating): void {
     this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcId,
+      disable_user_content_logging: !this.#serverSideLoggingEnabled,
       do_conversation_client_event: {
         user_feedback: {
           sentiment: rating,
@@ -206,6 +211,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #handleFeedbackSubmit(rpcId: number, feedback: string): void {
     this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcId,
+      disable_user_content_logging: !this.#serverSideLoggingEnabled,
       do_conversation_client_event: {
         user_feedback: {
           user_input: {
@@ -327,3 +333,18 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     return false;
   }
 }
+
+function setFreestylerServerSideLoggingEnabled(enabled: boolean): void {
+  if (enabled) {
+    localStorage.setItem('freestyler_enableServerSideLogging', 'true');
+  } else {
+    localStorage.removeItem('freestyler_enableServerSideLogging');
+  }
+}
+
+function isFreestylerServerSideLoggingEnabled(): boolean {
+  return localStorage.getItem('freestyler_enableServerSideLogging') === 'true';
+}
+
+// @ts-ignore
+globalThis.setFreestylerServerSideLoggingEnabled = setFreestylerServerSideLoggingEnabled;

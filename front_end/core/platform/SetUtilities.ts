@@ -7,18 +7,3 @@ export const addAll = function<T>(set: Set<T>, iterable: Iterable<T>): void {
     set.add(item);
   }
 };
-
-export const isEqual = function<T>(setA: Set<T>, setB: Set<T>): boolean {
-  if (setA === setB) {
-    return true;
-  }
-  if (setA.size !== setB.size) {
-    return false;
-  }
-  for (const item of setA) {
-    if (!setB.has(item)) {
-      return false;
-    }
-  }
-  return true;
-};

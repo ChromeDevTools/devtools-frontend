@@ -37,4 +37,6 @@ ts_library("unittests") {
     "../../:bundle",  # Trace engine bundle
     "../testing:bundle",
   ]
+
+  public_deps = [ "../../../../panels/timeline/fixtures/traces" ]
 }

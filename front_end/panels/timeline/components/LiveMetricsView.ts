@@ -11,11 +11,11 @@ import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
-import * as Settings from '../../../ui/components/settings/settings.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import {CPUThrottlingSelector} from './CPUThrottlingSelector.js';
+import {FieldSettingsDialog} from './FieldSettingsDialog.js';
 import liveMetricsViewStyles from './liveMetricsView.css.js';
 import {NetworkThrottlingSelector} from './NetworkThrottlingSelector.js';
 
@@ -98,7 +98,7 @@ export class LiveMetricsView extends HTMLElement {
     const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
     emulationModel.addEventListener(EmulationModel.DeviceModeModel.Events.Updated, this.#onEmulationChanged, this);
 
-    if (cruxManager.getEnabledSetting().get()) {
+    if (cruxManager.getConfigSetting().get().enabled) {
       void this.#refreshFieldDataForCurrentPage();
     }
 
@@ -300,7 +300,7 @@ export class LiveMetricsView extends HTMLElement {
   }
 
   #renderPageScopeSetting(): LitHtml.LitTemplate {
-    if (!CrUXManager.CrUXManager.instance().getEnabledSetting().get()) {
+    if (!CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled) {
       return LitHtml.nothing;
     }
 
@@ -389,7 +389,7 @@ export class LiveMetricsView extends HTMLElement {
   }
 
   #renderDeviceScopeSetting(): LitHtml.LitTemplate {
-    if (!CrUXManager.CrUXManager.instance().getEnabledSetting().get()) {
+    if (!CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled) {
       return LitHtml.nothing;
     }
     // If there is no data at all we should force users to try adjusting the page scope
@@ -427,8 +427,6 @@ export class LiveMetricsView extends HTMLElement {
   }
 
   #render = (): void => {
-    const automaticSetting = CrUXManager.CrUXManager.instance().getEnabledSetting();
-
     // clang-format off
     const output = html`
       <div class="container">
@@ -466,12 +464,9 @@ export class LiveMetricsView extends HTMLElement {
             <h3>Next steps</h3>
             <div id="field-setup" class="card">
               <div class="card-title">Field data</div>
-              <div>While DevTools is open, the URLs you visit will be sent to Google to query field data. These requests are not tied to your Google account.</div>
-              <${Settings.SettingCheckbox.SettingCheckbox.litTagName} .data=${
-                  {setting: automaticSetting} as Settings.SettingCheckbox.SettingCheckboxData}>
-              </${Settings.SettingCheckbox.SettingCheckbox.litTagName}>
               ${this.#renderPageScopeSetting()}
               ${this.#renderDeviceScopeSetting()}
+              <${FieldSettingsDialog.litTagName}></${FieldSettingsDialog.litTagName}>
             </div>
             <div id="throttling" class="card">
               ${this.#renderThrottlingSettings()}

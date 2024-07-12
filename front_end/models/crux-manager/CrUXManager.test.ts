@@ -63,8 +63,7 @@ describeWithMockConnection('CrUXManager', () => {
   afterEach(() => {
     mockFetch.restore();
     mockConsoleError.restore();
-    cruxManager.getEnabledSetting().set(false);
-    cruxManager.getUrlOverrideSetting().set('');
+    cruxManager.getConfigSetting().set({enabled: false, override: ''});
   });
 
   describe('getFieldDataForPage', () => {
@@ -251,7 +250,7 @@ describeWithMockConnection('CrUXManager', () => {
 
     it('should use URL override if set', async () => {
       target.setInspectedURL('https://example.com/inspected' as Platform.DevToolsPath.UrlString);
-      cruxManager.getUrlOverrideSetting().set('https://example.com/override');
+      cruxManager.getConfigSetting().set({enabled: false, override: 'https://example.com/override'});
 
       await cruxManager.getFieldDataForCurrentPage();
 
@@ -311,9 +310,9 @@ describeWithMockConnection('CrUXManager', () => {
     });
 
     it('should update when enabled setting changes', async () => {
-      const setting = cruxManager.getEnabledSetting();
+      const setting = cruxManager.getConfigSetting();
 
-      setting.set(true);
+      setting.set({enabled: true, override: ''});
       await triggerMicroTaskQueue();
 
       assert.strictEqual(getFieldDataMock.callCount, 1);
@@ -321,7 +320,7 @@ describeWithMockConnection('CrUXManager', () => {
       assert.isUndefined(eventBodies[0]);
       assert.isObject(eventBodies[1]);
 
-      setting.set(false);
+      setting.set({enabled: false, override: ''});
       await triggerMicroTaskQueue();
 
       assert.strictEqual(getFieldDataMock.callCount, 1);
@@ -332,8 +331,8 @@ describeWithMockConnection('CrUXManager', () => {
     });
 
     it('should trigger on frame navigation if enabled', async () => {
-      const setting = cruxManager.getEnabledSetting();
-      setting.set(true);
+      const setting = cruxManager.getConfigSetting();
+      setting.set({enabled: true, override: ''});
 
       await triggerMicroTaskQueue();
 
@@ -353,12 +352,12 @@ describeWithMockConnection('CrUXManager', () => {
     });
 
     it('should trigger when URL override set', async () => {
-      const setting = cruxManager.getEnabledSetting();
-      setting.set(true);
+      const setting = cruxManager.getConfigSetting();
+      setting.set({enabled: true, override: ''});
 
       await triggerMicroTaskQueue();
 
-      cruxManager.getUrlOverrideSetting().set('https://example.com/override');
+      setting.set({enabled: true, override: 'https://example.com/override'});
 
       await triggerMicroTaskQueue();
 
@@ -371,8 +370,8 @@ describeWithMockConnection('CrUXManager', () => {
     });
 
     it('should not trigger on frame navigation if disabled', async () => {
-      const setting = cruxManager.getEnabledSetting();
-      setting.set(false);
+      const setting = cruxManager.getConfigSetting();
+      setting.set({enabled: false, override: ''});
 
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameNavigated, {
         url: 'https://example.com/main/',

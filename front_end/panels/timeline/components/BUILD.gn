@@ -11,6 +11,7 @@ generate_css("css_files") {
   sources = [
     "breadcrumbsUI.css",
     "entryLabelOverlay.css",
+    "fieldSettingsDialog.css",
     "interactionBreakdown.css",
     "liveMetricsView.css",
     "networkRequestDetails.css",
@@ -31,6 +32,7 @@ devtools_module("components") {
     "CPUThrottlingSelector.ts",
     "DetailsView.ts",
     "EntryLabelOverlay.ts",
+    "FieldSettingsDialog.ts",
     "InteractionBreakdown.ts",
     "LiveMetricsView.ts",
     "NetworkRequestDetails.ts",
@@ -88,6 +90,7 @@ ts_library("unittests") {
   sources = [
     "BreadcrumbsUI.test.ts",
     "CPUThrottlingSelector.test.ts",
+    "FieldSettingsDialog.test.ts",
     "InteractionBreakdown.test.ts",
     "Invalidations.test.ts",
     "LiveMetricsView.test.ts",

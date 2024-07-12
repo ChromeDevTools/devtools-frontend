@@ -16,6 +16,7 @@ import {
   waitFor,
   waitForMany,
   waitForNone,
+  waitForVisible,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
@@ -27,7 +28,11 @@ const READY_FIELD_METRIC_SELECTOR = '.field-value .metric-value:not(.waiting)';
 const WAITING_LOCAL_METRIC_SELECTOR = '.local-value .metric-value.waiting';
 const INTERACTION_SELECTOR = '.interaction';
 const HISTOGRAM_SELECTOR = '.field-data-histogram';
-const FIELD_CHECKBOX_SELECTOR = '#field-setup setting-checkbox';
+const SETUP_FIELD_BUTTON_SELECTOR = 'devtools-button[jslogcontext="field-data-setup"]';
+const ENABLE_FIELD_BUTTON_SELECTOR = 'devtools-button[jslogcontext="field-data-enable"]';
+const ADVANCED_DETAILS_SELECTOR = '.content summary';
+const OVERRIDE_FIELD_CHECKBOX_SELECTOR = '.content input[type="checkbox"]';
+const OVERRIDE_FIELD_TEXT_SELECTOR = '.content input[type="text"]';
 
 async function installLCPListener(session: puppeteer.CDPSession): Promise<() => Promise<void>> {
   await session.send('PerformanceTimeline.enable', {eventTypes: ['largest-contentful-paint']});
@@ -213,9 +218,11 @@ describe('The Performance panel landing page', () => {
     await setCruxRawResponse('performance/crux-none.rawresponse');
     await goToResource('performance/fake-website.html');
 
-    const fieldEnableCheckbox = await waitFor<HTMLElement>(FIELD_CHECKBOX_SELECTOR);
-    // TODO: Investigate why the handle `click` doesn't work for Windows.
-    await fieldEnableCheckbox.evaluate(el => el.shadowRoot!.querySelector('input')!.click());
+    const fieldSetupButton = await waitFor<HTMLElement>(SETUP_FIELD_BUTTON_SELECTOR);
+    await fieldSetupButton.click();
+
+    const fieldEnableButton = await waitForVisible<HTMLElement>(ENABLE_FIELD_BUTTON_SELECTOR);
+    await fieldEnableButton.click();
 
     const histograms1 = await $$<HTMLElement>(HISTOGRAM_SELECTOR);
     assert.lengthOf(histograms1, 0);
@@ -244,5 +251,48 @@ describe('The Performance panel landing page', () => {
     // Ensure the original CrUX data is restored when we return to the original page
     await goToResource('performance/fake-website.html');
     await waitForNone(HISTOGRAM_SELECTOR);
+  });
+
+  it('uses URL override for field data', async () => {
+    await navigateToPerformanceTab();
+
+    await setCruxRawResponse('performance/crux-valid.rawresponse');
+    await goToResource('performance/fake-website.html');
+
+    const fieldSetupButton = await waitFor(SETUP_FIELD_BUTTON_SELECTOR);
+    await fieldSetupButton.click();
+
+    await (await waitFor<HTMLElement>(ADVANCED_DETAILS_SELECTOR)).evaluate(el => el.click());
+
+    const urlOverrideCheckbox = await waitForVisible<HTMLInputElement>(OVERRIDE_FIELD_CHECKBOX_SELECTOR);
+    await urlOverrideCheckbox.evaluate(el => el.click());
+
+    const urlOverrideText = await waitForVisible<HTMLInputElement>(OVERRIDE_FIELD_TEXT_SELECTOR);
+    await urlOverrideText.evaluate(el => {
+      el.value = 'https://example.com';
+      el.dispatchEvent(new Event('change'));
+    });
+
+    const fieldEnableButton = await waitForVisible(ENABLE_FIELD_BUTTON_SELECTOR);
+    await fieldEnableButton.click();
+
+    {
+      const [lcpFieldValue, clsFieldValue, inpFieldValue] = await waitForMany(READY_FIELD_METRIC_SELECTOR, 3);
+      assert.strictEqual(await lcpFieldValue.evaluate(el => el.textContent) || '', '1.20 s');
+      assert.strictEqual(await clsFieldValue.evaluate(el => el.textContent) || '', '0');
+      assert.strictEqual(await inpFieldValue.evaluate(el => el.textContent) || '', '49 ms');
+    }
+
+    // Switch the fake CrUX endpoint data to simulate new data for a new origin
+    await setCruxRawResponse('performance/crux-none.rawresponse');
+    await goToResourceWithCustomHost('devtools.oopif.test', 'performance/fake-website.html');
+
+    // Even though the URL and field data should change, the displayed data remains teh same
+    {
+      const [lcpFieldValue, clsFieldValue, inpFieldValue] = await waitForMany(READY_FIELD_METRIC_SELECTOR, 3);
+      assert.strictEqual(await lcpFieldValue.evaluate(el => el.textContent) || '', '1.20 s');
+      assert.strictEqual(await clsFieldValue.evaluate(el => el.textContent) || '', '0');
+      assert.strictEqual(await inpFieldValue.evaluate(el => el.textContent) || '', '49 ms');
+    }
   });
 });

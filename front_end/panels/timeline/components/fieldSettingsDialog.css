@@ -1,0 +1,52 @@
+/*
+ * Copyright 2024 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host * {
+  box-sizing: border-box;
+}
+
+devtools-dialog {
+  --override-transparent: rgb(0 0 0 / 50%);
+}
+
+.content {
+  max-width: 500px;
+  padding: 16px;
+}
+
+.content > :first-child {
+  margin-top: 0;
+}
+
+.buttons-section {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+  gap: 8px;
+}
+
+input[type="checkbox"] {
+  height: 12px;
+  width: 12px;
+  min-height: 12px;
+  min-width: 12px;
+  margin: 6px;
+}
+
+input[type="text"][disabled] {
+  color: var(--sys-color-state-disabled);
+}
+
+label {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.warning {
+  color: var(--color-error-text);
+}

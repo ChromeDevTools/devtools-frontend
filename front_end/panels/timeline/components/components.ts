@@ -7,6 +7,7 @@ import * as BreadcrumbsUI from './BreadcrumbsUI.js';
 import * as CPUThrottlingSelector from './CPUThrottlingSelector.js';
 import * as DetailsView from './DetailsView.js';
 import * as EntryLabelOverlay from './EntryLabelOverlay.js';
+import * as FieldSettingsDialog from './FieldSettingsDialog.js';
 import * as InteractionBreakdown from './InteractionBreakdown.js';
 import * as LiveMetricsView from './LiveMetricsView.js';
 import * as NetworkRequestDetails from './NetworkRequestDetails.js';
@@ -25,6 +26,7 @@ export {
   CPUThrottlingSelector,
   DetailsView,
   EntryLabelOverlay,
+  FieldSettingsDialog,
   InteractionBreakdown,
   LiveMetricsView,
   NetworkRequestDetails,

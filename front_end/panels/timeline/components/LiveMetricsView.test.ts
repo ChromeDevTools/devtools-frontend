@@ -229,11 +229,11 @@ describeWithMockConnection('LiveMetricsView', () => {
       };
 
       sinon.stub(CrUXManager.CrUXManager.instance(), 'getFieldDataForCurrentPage').callsFake(async () => mockFieldData);
-      CrUXManager.CrUXManager.instance().getEnabledSetting().set(true);
+      CrUXManager.CrUXManager.instance().getConfigSetting().set({enabled: true, override: ''});
     });
 
     it('should not show when crux is disabled', async () => {
-      CrUXManager.CrUXManager.instance().getEnabledSetting().set(false);
+      CrUXManager.CrUXManager.instance().getConfigSetting().set({enabled: false, override: ''});
 
       mockFieldData['url-ALL'] = {
         record: {
@@ -349,7 +349,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       const lcpFieldEl1 = view.shadowRoot?.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
       assert.strictEqual(lcpFieldEl1.textContent, '1.00 s');
 
-      CrUXManager.CrUXManager.instance().getEnabledSetting().set(false);
+      CrUXManager.CrUXManager.instance().getConfigSetting().set({enabled: false, override: ''});
 
       await coordinator.done();
 

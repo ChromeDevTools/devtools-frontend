@@ -5,23 +5,13 @@
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TraceModel from '../trace.js';
 
-async function parseAndFinalizeData(testContext: Mocha.Suite|Mocha.Context|null, traceFile: string) {
-  const traceEvents = await TraceLoader.rawEvents(testContext, traceFile);
-  TraceModel.Handlers.ModelHandlers.Meta.reset();
-  TraceModel.Handlers.ModelHandlers.Meta.initialize();
-  for (const event of traceEvents) {
-    TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
-    TraceModel.Handlers.ModelHandlers.UserInteractions.handleEvent(event);
+export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, traceFile: string) {
+  const {traceData, insights} = await TraceLoader.traceEngine(testContext, traceFile);
+  if (!insights) {
+    throw new Error('No insights');
   }
-  await TraceModel.Handlers.ModelHandlers.Meta.finalize();
-  await TraceModel.Handlers.ModelHandlers.UserInteractions.finalize();
 
-  const data = {
-    Meta: TraceModel.Handlers.ModelHandlers.Meta.data(),
-    UserInteractions: TraceModel.Handlers.ModelHandlers.UserInteractions.data(),
-  } as TraceModel.Handlers.Types.EnabledHandlerDataWithMeta<typeof TraceModel.Handlers.ModelHandlers>;
-
-  return data;
+  return {data: traceData, insights};
 }
 
 describe('InteractionToNextPaint', function() {
@@ -31,13 +21,16 @@ describe('InteractionToNextPaint', function() {
     }
 
     it(`process ${traceFile}`, async () => {
-      const data = await parseAndFinalizeData(this, traceFile);
-      const context = {
+      const {data} = await processTrace(this, traceFile);
+
+      // TODO(crbug.com/313905799): The traces don't all have navigations, and currently #computeInsights
+      // doesn't account for analyzing stuff outside a navigation bound. So instead of this ...
+      //      const insight = getInsight(insights, data.Meta.navigationsByNavigationId.keys().next().value);
+      // we manually run the insight.
+      const insight = TraceModel.Insights.InsightRunners.InteractionToNextPaint.generateInsight(data, {
         frameId: data.Meta.mainFrameId,
         navigationId: data.Meta.navigationsByNavigationId.keys().next().value,
-      };
-
-      const insight = TraceModel.Insights.InsightRunners.InteractionToNextPaint.generateInsight(data, context);
+      });
       assert.strictEqual(insight.longestInteractionEvent?.dur, longest);
       assert.strictEqual(insight.highPercentileInteractionEvent?.dur, highPercentile);
     });

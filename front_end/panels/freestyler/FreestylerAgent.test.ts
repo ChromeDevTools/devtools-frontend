@@ -346,15 +346,10 @@ c`;
     });
 
     function mockAidaClient(
-        generator: () => AsyncGenerator<Host.AidaClient.AidaResponse, void, void>,
+        fetch: () => AsyncGenerator<Host.AidaClient.AidaResponse, void, void>,
         ): Host.AidaClient.AidaClient {
       return {
-        async *
-            fetch(
-                _request: Host.AidaClient.AidaRequest,
-                ): AsyncGenerator<Host.AidaClient.AidaResponse, void, void> {
-              yield* generator();
-            },
+        fetch,
         registerClientEvent() {},
       };
     }
@@ -498,6 +493,40 @@ c`;
         const optionsArg = execJs.lastCall.args[1];
         sinon.assert.notCalled(confirmSideEffect);
         sinon.assert.match(optionsArg, sinon.match({throwOnSideEffect: false}));
+      });
+    });
+
+    describe('long `Observation` text handling', () => {
+      it('errors with too long input', async () => {
+        let count = 0;
+        async function* generateActionAndAnswer() {
+          if (count === 0) {
+            yield {
+              explanation: `ACTION
+              $0.style.backgroundColor = 'red'
+              STOP`,
+              metadata: {},
+            };
+          } else {
+            yield {
+              explanation: 'ANSWER: This is the answer',
+              metadata: {},
+            };
+          }
+          count++;
+        }
+        const execJs = sinon.mock().returns(new Array(10_000).fill('<div>...</div>').join());
+        const confirmSideEffect = sinon.mock().resolves(false);
+        const agent = new FreestylerAgent({
+          aidaClient: mockAidaClient(generateActionAndAnswer),
+          confirmSideEffect,
+          execJs,
+        });
+
+        const result = await Array.fromAsync(agent.run('test'));
+        const lastStepData = result.at(-3)!;
+        assert(lastStepData.step === Freestyler.Step.ACTION, 'Not an Action step');
+        assert(lastStepData.output.includes('Error: Output exceeded the maximum allowed length.'));
       });
     });
 
@@ -748,7 +777,7 @@ ANSWER: this is the answer`,
         };
       }
 
-      const execJs = sinon.spy();
+      const execJs = sinon.spy(async () => 'undefined');
       const agent = new FreestylerAgent({
         aidaClient: mockAidaClient(generateMultipleTimes),
         confirmSideEffect: () => Promise.resolve(true),

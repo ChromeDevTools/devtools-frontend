@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -120,6 +121,16 @@ type HistoryChunk = {
 };
 
 const MAX_STEPS = 10;
+const MAX_OBSERVATION_BYTE_LENGTH = 25_000;
+
+/**
+ * Error response message to be return whenever a OBSERVATION
+ * fails due to some issue.
+ */
+const getErrorResponse = (message: string): string => {
+  return `Error: ${message}`;
+};
+
 export class FreestylerAgent {
   #aidaClient: Host.AidaClient.AidaClient;
   #chatHistory: Map<number, HistoryChunk[]> = new Map();
@@ -243,22 +254,33 @@ export class FreestylerAgent {
   resetHistory(): void {
     this.#chatHistory = new Map();
   }
+  async #generateObservation(action: string, {throwOnSideEffect}: {
+    throwOnSideEffect: boolean,
+  }): Promise<string> {
+    const actionExpression = `{${action};((typeof data !== "undefined") ? data : undefined)}`;
 
-  async #generateObservation(action: string, {throwOnSideEffect}: {throwOnSideEffect: boolean}): Promise<string> {
     try {
-      return await this.#execJs(`{${action};((typeof data !== "undefined") ? data : undefined)}`, {throwOnSideEffect});
-    } catch (err) {
-      if (err instanceof SideEffectError) {
+      const result = await this.#execJs(
+          actionExpression,
+          {throwOnSideEffect},
+      );
+      const byteCount = Platform.StringUtilities.countWtf8Bytes(result);
+      if (byteCount > MAX_OBSERVATION_BYTE_LENGTH) {
+        return getErrorResponse('Output exceeded the maximum allowed length.');
+      }
+      return result;
+    } catch (error) {
+      if (throwOnSideEffect && error instanceof SideEffectError) {
         const shouldAllowSideEffect = await this.#confirmSideEffect(action);
         if (!shouldAllowSideEffect) {
-          return `Error: ${err.message}`;
+          return getErrorResponse(error.message);
         }
-
-        return await this.#execJs(
-            `{${action};((typeof data !== "undefined") ? data : undefined)}`, {throwOnSideEffect: false});
+        return await this.#generateObservation(action, {
+          throwOnSideEffect: false,
+        });
       }
 
-      return `Error: ${err.message}`;
+      return getErrorResponse(error.message);
     }
   }
 

@@ -64,7 +64,7 @@ This is used in:
 2. `TimelineFlameChartView` to ensure the main canvas with the tracks is redrawn as the user changes views.
 3. `TimelineMiniMap` as mentioned above, to update the minimap as required.
 
-## Serializing and Deserealizing Events
+## Serializing and Deserializing Events
 
 Serializing/Deserializing events allows for the creation of data (such as annotations) associated with events and enabling to save them to/load them from the trace file. Several classes handle the serialization and application of these serialized annotations:
 

@@ -1052,8 +1052,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.showPalette(palette, false);
   }
 
-  setColor(color: Common.Color.Color, colorFormat: Common.Color.Format): void {
-    this.innerSetColor(color, '', undefined /* colorName */, colorFormat, ChangeSource.Model);
+  setColor(color: Common.Color.Color): void {
+    this.innerSetColor(color, '', undefined /* colorName */, color.format(), ChangeSource.Model);
     const colorValues = color.as(Common.Color.Format.HSL).canonicalHSLA();
     UI.ARIAUtils.setValueNow(this.hueElement, colorValues[0]);
     UI.ARIAUtils.setValueText(this.alphaElement, colorValues[3]);

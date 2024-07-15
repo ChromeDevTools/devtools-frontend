@@ -192,13 +192,12 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<C
     }
 
     const color = this.swatch.getColor();
-    const format = this.swatch.getFormat();
-    if (!color || !format) {
+    if (!color) {
       return;
     }
 
     this.spectrum = new ColorPicker.Spectrum.Spectrum(this.contrastInfo);
-    this.spectrum.setColor(color, format);
+    this.spectrum.setColor(color);
     this.spectrum.addPalette(this.generateCSSVariablesPalette());
 
     this.spectrum.addEventListener(ColorPicker.Spectrum.Events.SizeChanged, this.spectrumResized, this);

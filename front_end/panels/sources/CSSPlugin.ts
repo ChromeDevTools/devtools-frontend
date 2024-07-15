@@ -159,16 +159,15 @@ class ColorSwatchWidget extends CodeMirror.WidgetType {
   }
 
   toDOM(view: CodeMirror.EditorView): HTMLElement {
-    const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
-    swatch.renderColor(this.#color, false, i18nString(UIStrings.openColorPicker));
+    const swatch = new InlineEditor.ColorSwatch.ColorSwatch(i18nString(UIStrings.openColorPicker));
+    swatch.renderColor(this.#color);
     const value = swatch.createChild('span');
     value.textContent = this.#text;
     value.setAttribute('hidden', 'true');
     swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, event => {
-      view.dispatch({
-        changes: {from: this.#from, to: this.#from + this.#text.length, insert: event.data.text},
-      });
-      this.#text = event.data.text;
+      const insert = event.data.color.getAuthoredText() ?? event.data.color.asString();
+      view.dispatch({changes: {from: this.#from, to: this.#from + this.#text.length, insert}});
+      this.#text = insert;
       this.#color = swatch.getColor() as Common.Color.Color;
     });
     swatch.addEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, event => {
@@ -257,7 +256,7 @@ function createCSSTooltip(active: ActiveTooltip): CodeMirror.Tooltip {
           spectrum.addEventListener(ColorPicker.Spectrum.Events.ColorChanged, handler);
         };
         spectrum.addEventListener(ColorPicker.Spectrum.Events.SizeChanged, () => view.requestMeasure());
-        spectrum.setColor(active.color, active.color.format());
+        spectrum.setColor(active.color);
         widget = spectrum;
         Host.userMetrics.colorPickerOpenedFrom(Host.UserMetrics.ColorPickerOpenedFrom.SourcesPanel);
       } else {

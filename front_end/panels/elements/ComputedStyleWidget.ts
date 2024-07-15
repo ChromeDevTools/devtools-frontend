@@ -166,17 +166,22 @@ const createTraceElement =
 
 class ColorRenderer implements MatchRenderer<ColorMatch> {
   render(match: ColorMatch, context: RenderingContext): Node[] {
+    const color = Common.Color.parse(match.text);
+    if (!color) {
+      return [document.createTextNode(match.text)];
+    }
+
     const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
     swatch.setReadonly(true);
-    swatch.renderColor(match.text, true);
+    swatch.renderColor(color);
     const valueElement = document.createElement('span');
-    valueElement.textContent = swatch.getText();
+    valueElement.textContent = match.text;
     swatch.append(valueElement);
 
     swatch.addEventListener(
         InlineEditor.ColorSwatch.ColorChangedEvent.eventName, (event: InlineEditor.ColorSwatch.ColorChangedEvent) => {
-          const {data} = event;
-          valueElement.textContent = data.text;
+          const {data: {color}} = event;
+          valueElement.textContent = color.getAuthoredText() ?? color.asString();
         });
 
     context.addControl('color', swatch);

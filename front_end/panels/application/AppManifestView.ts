@@ -735,13 +735,13 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.themeColorSwatch.classList.toggle('hidden', !stringProperty('theme_color'));
     const themeColor = Common.Color.parse(stringProperty('theme_color') || 'white') || Common.Color.parse('white');
     if (themeColor) {
-      this.themeColorSwatch.renderColor(themeColor, true);
+      this.themeColorSwatch.renderColor(themeColor);
     }
     this.backgroundColorSwatch.classList.toggle('hidden', !stringProperty('background_color'));
     const backgroundColor =
         Common.Color.parse(stringProperty('background_color') || 'white') || Common.Color.parse('white');
     if (backgroundColor) {
-      this.backgroundColorSwatch.renderColor(backgroundColor, true);
+      this.backgroundColorSwatch.renderColor(backgroundColor);
     }
 
     this.orientationField.textContent = stringProperty('orientation');

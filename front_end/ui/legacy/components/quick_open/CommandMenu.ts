@@ -96,7 +96,7 @@ export class CommandMenu {
       keys: tags,
       title,
       shortcut: '',
-      jslogContext: setting.name,
+      jslogContext: Platform.StringUtilities.toKebabCase(`${setting.name}-${value}`),
       executeHandler: () => {
         if (setting.deprecation?.disabled &&
             (!setting.deprecation?.experiment || setting.deprecation.experiment.isEnabled())) {

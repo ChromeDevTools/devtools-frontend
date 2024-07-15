@@ -51,13 +51,13 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
   describe('appendTrackAtLevel', function() {
     it('creates flamechart groups for the Extension tracks properly', function() {
       assert.strictEqual(flameChartData.groups.length, 3);
-      assert.strictEqual(flameChartData.groups[0].name, 'A track group');
+      assert.strictEqual(flameChartData.groups[0].name, 'A track group — Custom Track');
       assert.strictEqual(flameChartData.groups[0].startLevel, 0);
       assert.strictEqual(flameChartData.groups[0].style.nestingLevel, 0);
       assert.strictEqual(flameChartData.groups[1].name, 'Another Extension Track');
       assert.strictEqual(flameChartData.groups[1].startLevel, 0);
       assert.strictEqual(flameChartData.groups[1].style.nestingLevel, 1);
-      assert.strictEqual(flameChartData.groups[2].name, 'An Extension Track');
+      assert.strictEqual(flameChartData.groups[2].name, 'An Extension Track — Custom Track');
       assert.strictEqual(flameChartData.groups[2].startLevel, 1);
       assert.strictEqual(flameChartData.groups[2].style.nestingLevel, 0);
     });

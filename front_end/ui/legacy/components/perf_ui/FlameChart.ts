@@ -194,7 +194,10 @@ interface GroupHiddenState {
 }
 
 interface PopoverState {
+  // Index of the last entry the popover was shown over.
   entryIndex: number;
+  // Index of the last group the popover was shown over.
+  groupIndex: number;
   hiddenEntriesPopover: boolean;
 }
 interface GroupTreeNode {
@@ -381,6 +384,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.selectedGroupIndex = -1;
     this.lastPopoverState = {
       entryIndex: -1,
+      groupIndex: -1,
       hiddenEntriesPopover: false,
     };
 
@@ -485,6 +489,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       this.popoverElement.removeChildren();
       this.lastPopoverState = {
         entryIndex: -1,
+        groupIndex: -1,
         hiddenEntriesPopover: false,
       };
     }
@@ -648,7 +653,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         return;
       }
       case HoverType.INSIDE_TRACK_HEADER:
-        this.hideHighlight();
+        this.updateHighlight();
         this.viewportElement.style.cursor = 'pointer';
         return;
       case HoverType.INSIDE_TRACK:
@@ -709,7 +714,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     // No entry is hovered.
     if (entryIndex === -1) {
       this.hideHighlight();
-      const {groupIndex} = this.coordinatesToGroupIndexAndHoverType(this.lastMouseOffsetX, this.lastMouseOffsetY);
+
+      const {groupIndex, hoverType} =
+          this.coordinatesToGroupIndexAndHoverType(this.lastMouseOffsetX, this.lastMouseOffsetY);
+      if (hoverType === HoverType.INSIDE_TRACK_HEADER) {
+        this.#updatePopoverForGroup(groupIndex);
+      }
       if (groupIndex >= 0 && this.rawTimelineData && this.rawTimelineData.groups &&
           this.rawTimelineData.groups[groupIndex].selectable) {
         // This means the mouse is in a selectable group's area, and not hovering any entry.
@@ -765,7 +775,30 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     this.lastPopoverState = {
       entryIndex,
+      groupIndex: -1,
       hiddenEntriesPopover: isMouseOverRevealChildrenArrow,
+    };
+  }
+
+  #updatePopoverForGroup(groupIndex: number): void {
+    // Just update position if cursor is hovering the group name.
+    if (groupIndex === this.lastPopoverState.groupIndex) {
+      return this.updatePopoverOffset();
+    }
+    this.popoverElement.removeChildren();
+    const data = this.timelineData();
+    if (!data) {
+      return;
+    }
+    const group = data.groups.at(groupIndex);
+    if (group?.description) {
+      this.popoverElement.innerText = (group?.description);
+      this.updatePopoverOffset();
+    }
+    this.lastPopoverState = {
+      groupIndex: groupIndex,
+      entryIndex: -1,
+      hiddenEntriesPopover: false,
     };
   }
 
@@ -3947,6 +3980,7 @@ export interface Group {
   showStackContextMenu?: boolean;
   legends?: Legend[];
   jslogContext?: string;
+  description?: string;
 }
 
 export interface GroupStyle {

@@ -41,7 +41,23 @@ describe('FlameChart', function() {
       return {x, y};
     }, title, tsMicroSecs);
   }
-
+  async function getOffsetForGroupWithName(title: string): Promise<number> {
+    const {frontend} = getBrowserAndPages();
+    return await frontend.evaluate((title: string) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const panel = (window as any).UI.panels.timeline as Timeline.TimelinePanel.TimelinePanel;
+      const mainFlameChart = panel.getFlameChart().getMainFlameChart();
+      const data = mainFlameChart.timelineData();
+      if (!data) {
+        throw new Error('Timeline data was not found');
+      }
+      const groupIndex = data.groups.findIndex(group => group.name === title);
+      if (groupIndex < 0) {
+        throw new Error('Group not found');
+      }
+      return mainFlameChart.groupIndexToOffsetForTest(groupIndex) + mainFlameChart.getCanvasOffset().y;
+    }, title);
+  }
   async function createTimelineBreadcrumb(
       startTime: TraceEngine.Types.Timing.MilliSeconds, endTime: TraceEngine.Types.Timing.MilliSeconds): Promise<void> {
     const {frontend} = getBrowserAndPages();
@@ -229,4 +245,16 @@ describe('FlameChart', function() {
        initiatorLinkRole = await initiatorLink.evaluate(element => element.querySelector('span')?.getAttribute('role'));
        assert.notEqual(initiatorLinkRole, 'link');
      });
+  it('shows a tooltip describing an extension track when its header is hovered', async () => {
+    await loadComponentDocExample('performance_panel/basic.html?trace=extension-tracks-and-marks');
+    await waitFor('.timeline-flamechart');
+    const {frontend} = getBrowserAndPages();
+    const margin = 3;
+    const trackName = 'A track group — Custom Track';
+    const groupOffset = await getOffsetForGroupWithName(trackName);
+    await frontend.mouse.move(margin, groupOffset);
+    const popoverHandle = await waitFor('.timeline-entry-tooltip-element');
+    const timingTitle = await popoverHandle.evaluate(element => (element as HTMLElement).innerText);
+    assert.strictEqual(timingTitle, 'This is a custom track added by a third party.');
+  });
 });

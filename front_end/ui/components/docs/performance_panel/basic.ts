@@ -101,6 +101,7 @@ const traceUrl = params.get('loadTimelineFromURL');
 const nodeMode = params.get('isNode');
 const isNodeMode = nodeMode === 'true' ? true : false;
 Root.Runtime.experiments.setEnabled('timeline-invalidation-tracking', params.has('invalidations'));
+Root.Runtime.experiments.setEnabled('timeline-extensions', true);
 
 const timeline = Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, isNode: isNodeMode});
 const container = document.getElementById('container');

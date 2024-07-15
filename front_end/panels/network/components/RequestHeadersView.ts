@@ -299,7 +299,6 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
     const fileIcon = html`
       <${IconButton.Icon.Icon.litTagName} class=${overridesSetting.get() ? 'inline-icon dot purple': 'inline-icon'} .data=${{
           iconName: 'document',
-          color: 'var(--icon-default)',
           width: '16px',
           height: '16px',
         } as IconButton.Icon.IconData}>
@@ -325,7 +324,6 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
       >
         <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
             iconName: 'help',
-            color: 'var(--icon-link)',
             width: '16px',
             height: '16px',
           } as IconButton.Icon.IconData}>

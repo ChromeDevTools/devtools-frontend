@@ -19,7 +19,9 @@ describe('ConsoleInsight', function() {
     const {frontend} = getBrowserAndPages();
     await frontend.bringToFront();
     await frontend.evaluateOnNewDocument(
-        `globalThis.hostConfigForTesting = ${JSON.stringify({devToolsConsoleInsights})};`);
+        `globalThis.hostConfigForTesting = {...globalThis.hostConfigForTesting, devToolsConsoleInsights: ${
+            JSON.stringify(devToolsConsoleInsights)}
+    };`);
     await frontend.reload({
       waitUntil: 'networkidle0',
     });

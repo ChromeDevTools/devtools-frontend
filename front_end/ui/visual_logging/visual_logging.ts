@@ -9,6 +9,7 @@ import * as LoggingEvents from './LoggingEvents.js';
 import * as NonDomState from './NonDomState.js';
 
 export type Loggable = LoggableModule.Loggable;
+export {setVeDebugLoggingEnabled, DebugLoggingFormat} from './Debugging.js';
 export {startLogging, stopLogging, addDocument} from './LoggingDriver.js';
 export {logImpressions} from './LoggingEvents.js';
 export const logClick = (l: Loggable, e: Event): void => LoggingEvents.logClick(LoggingDriver.clickLogThrottler)(l, e);

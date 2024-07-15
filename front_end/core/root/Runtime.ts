@@ -323,9 +323,15 @@ export interface HostConfigFreestylerDogfood {
   enabled: boolean;
 }
 
+export interface HostConfigVeLogging {
+  enabled: boolean;
+  testing: boolean;
+}
+
 export interface HostConfig {
   devToolsConsoleInsights: HostConfigConsoleInsights;
   devToolsFreestylerDogfood: HostConfigFreestylerDogfood;
+  devToolsVeLogging: HostConfigVeLogging;
 }
 
 /**

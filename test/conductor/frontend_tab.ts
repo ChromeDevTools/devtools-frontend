@@ -69,11 +69,9 @@ export class DevToolsFrontendTab {
 
     const frontend = await browser.newPage();
     installPageErrorHandlers(frontend);
+    const devToolsVeLogging = {enabled: true, testing: true};
+    await frontend.evaluateOnNewDocument(`globalThis.hostConfigForTesting = ${JSON.stringify({devToolsVeLogging})};`);
     await frontend.goto(frontendUrl, {waitUntil: DEVTOOLS_WAITUNTIL_EVENTS});
-    await frontend.evaluate(() => {
-      // @ts-ignore
-      globalThis.startTestLogging();
-    });
 
     const tab = new DevToolsFrontendTab(frontend, frontendUrl);
     return tab;
@@ -82,12 +80,10 @@ export class DevToolsFrontendTab {
   /** Same as `reload` but also clears out experiments and settings (window.localStorage really) */
   async reset(): Promise<void> {
     // Clear any local storage settings.
-    await this.page.evaluate(() => localStorage.clear());
-
-    // Test logging needs debug event logging, which is controlled via localStorage, hence we need to restart test logging here
     await this.page.evaluate(() => {
-      // @ts-ignore
-      globalThis.startTestLogging();
+      localStorage.clear();
+      // @ts-ignore Test logging needs debug event logging, which is controlled via localStorage, hence we need to restart test logging here
+      globalThis.setVeDebugLoggingEnabled(true, 'Test');
     });
     await this.reload();
   }

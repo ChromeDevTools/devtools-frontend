@@ -418,6 +418,10 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
         aidaTemperature: 0,
         enabled: false,
       },
+      devToolsVeLogging: {
+        enabled: true,
+        testing: false,
+      },
     };
     if ('hostConfigForTesting' in globalThis) {
       const {hostConfigForTesting} = (globalThis as unknown as {hostConfigForTesting: Root.Runtime.HostConfig});

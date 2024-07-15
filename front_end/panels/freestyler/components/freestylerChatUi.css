@@ -127,11 +127,11 @@
     align-items: center;
     gap: var(--sys-size-2);
   }
+}
 
-  & .link {
-    color: var(--text-link);
-    text-decoration: underline;
-  }
+.link {
+  color: var(--text-link);
+  text-decoration: underline;
 }
 
 .select-an-element-text {

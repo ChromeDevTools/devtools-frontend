@@ -19,6 +19,7 @@ import freestylerChatUiStyles from './freestylerChatUi.css.js';
 import {ProvideFeedback, type ProvideFeedbackProps} from './ProvideFeedback.js';
 
 const DOGFOOD_FEEDBACK_URL = 'https://goo.gle/freestyler-feedback' as Platform.DevToolsPath.UrlString;
+export const DOGFOOD_INFO = 'https://goo.gle/freestyler-dogfood' as Platform.DevToolsPath.UrlString;
 
 /*
   * TODO(nvitkov): b/346933425
@@ -33,7 +34,8 @@ const UIStringsTemp = {
   /**
    *@description Disclaimer text right after the chat input.
    */
-  inputDisclaimer: 'Freestyler may display inaccurate information and may not get it right',
+  inputDisclaimer:
+      'Chat messages and data from this page will be sent to Google, reviewed by humans, and used to improve the feature. Do not use on pages with personal or sensitive information. Freestyler may display inaccurate information.',
   /**
    *@description Title for the send icon button.
    */
@@ -83,16 +85,20 @@ const UIStringsTemp = {
   /**
    *@description Consent view main text
    */
-  consentTextAiDisclaimer: 'This feature uses AI and won\'t always get it right.',
+  consentTextAiDisclaimer: 'This feature uses AI and might produce inaccurate information.',
   /**
    *@description Consent view data collection text
    */
   consentTextDataDisclaimer:
       'Your inputs and the information from the page you are using this feature for are sent to Google.',
   /**
+   *@description Consent view data collection text
+   */
+  consentTextDoNotUseDisclaimer: 'Do not use on pages with personal or sensitive information.',
+  /**
    *@description Consent view data visibility text
    */
-  consentTextVisibilityDisclaimer: 'Data may be seen by trained reviewers to improve this feature.',
+  consentTextVisibilityDisclaimer: 'Data may be seen by human reviewers and can be used to improve this feature.',
   /**
    * @description Side effect confirmation text
    */
@@ -543,7 +549,7 @@ export class FreestylerChatUi extends HTMLElement {
           </div>
           <span class="chat-input-disclaimer">${i18nString(
             UIStringsTemp.inputDisclaimer,
-          )}</span>
+          )} See <x-link class="link" href=${DOGFOOD_INFO}>dogfood terms</x-link>.</span>
         </form>
       </div>
     `;
@@ -562,6 +568,8 @@ export class FreestylerChatUi extends HTMLElement {
           <ul>
             <li>${i18nString(UIStringsTemp.consentTextDataDisclaimer)}</li>
             <li>${i18nString(UIStringsTemp.consentTextVisibilityDisclaimer)}</li>
+            <li>${i18nString(UIStringsTemp.consentTextDoNotUseDisclaimer)}</li>
+            <li>See <x-link class="link" href=${DOGFOOD_INFO}>dogfood terms</x-link>./li>
           </ul>
           <${Buttons.Button.Button.litTagName}
             class="accept-button"

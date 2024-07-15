@@ -11,6 +11,7 @@ import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
 import {
   ChatMessageEntity,
+  DOGFOOD_INFO,
   FreestylerChatUi,
   type ModelChatMessage,
   type Props as FreestylerChatUiProps,
@@ -18,8 +19,6 @@ import {
 } from './components/FreestylerChatUi.js';
 import {FIX_THIS_ISSUE_PROMPT, FreestylerAgent, Step} from './FreestylerAgent.js';
 import freestylerPanelStyles from './freestylerPanel.css.js';
-
-const DOGFOOD_INFO = ' https://goo.gle/freestyler-dogfood' as Platform.DevToolsPath.UrlString;
 
 /*
   * TODO(nvitkov): b/346933425

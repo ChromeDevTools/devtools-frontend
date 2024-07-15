@@ -569,7 +569,7 @@ export class FreestylerChatUi extends HTMLElement {
             <li>${i18nString(UIStringsTemp.consentTextDataDisclaimer)}</li>
             <li>${i18nString(UIStringsTemp.consentTextVisibilityDisclaimer)}</li>
             <li>${i18nString(UIStringsTemp.consentTextDoNotUseDisclaimer)}</li>
-            <li>See <x-link class="link" href=${DOGFOOD_INFO}>dogfood terms</x-link>./li>
+            <li>See <x-link class="link" href=${DOGFOOD_INFO}>dogfood terms</x-link>.</li>
           </ul>
           <${Buttons.Button.Button.litTagName}
             class="accept-button"

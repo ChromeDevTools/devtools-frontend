@@ -15,7 +15,7 @@ import provideFeedbackStyles from './provideFeedback.css.js';
   * Temporary string that should not be translated
   * as they may change often during development.
   */
-const TempUIStrings = {
+const UIStringsTemp = {
 
   /**
    * @description The title of the button that allows submitting positive
@@ -118,7 +118,7 @@ export class ProvideFeedback extends HTMLElement {
           iconName: 'thumb-up',
           active: this.#currentRating === Host.AidaClient.Rating.POSITIVE,
           disabled: this.#currentRating && this.#currentRating !== Host.AidaClient.Rating.POSITIVE,
-          title: i18nString(TempUIStrings.thumbsUp),
+          title: i18nString(UIStringsTemp.thumbsUp),
           jslogContext: 'thumbs-up',
         } as Buttons.Button.ButtonData}
         @click=${() => this.#handleRateClick(Host.AidaClient.Rating.POSITIVE)}
@@ -130,7 +130,7 @@ export class ProvideFeedback extends HTMLElement {
           iconName: 'thumb-down',
           active: this.#currentRating === Host.AidaClient.Rating.NEGATIVE,
           disabled: this.#currentRating && this.#currentRating !== Host.AidaClient.Rating.NEGATIVE,
-          title: i18nString(TempUIStrings.thumbsDown),
+          title: i18nString(UIStringsTemp.thumbsDown),
           jslogContext: 'thumbs-down',
         } as Buttons.Button.ButtonData}
         @click=${() => this.#handleRateClick(Host.AidaClient.Rating.NEGATIVE)}
@@ -145,17 +145,17 @@ export class ProvideFeedback extends HTMLElement {
       <form class="feedback" @submit=${this.#handleSubmit}>
         <div class="feedback-header">
           <h4 class="feedback-title">${i18nString(
-              TempUIStrings.whyThisRating,
+              UIStringsTemp.whyThisRating,
           )}</h4>
           <${Buttons.Button.Button.litTagName}
-            aria-label=${i18nString(TempUIStrings.close)}
+            aria-label=${i18nString(UIStringsTemp.close)}
             @click=${this.#handleClose}
             .data=${
               {
                 variant: Buttons.Button.Variant.ICON,
                 iconName: 'cross',
                 size: Buttons.Button.Size.SMALL,
-                title: i18nString(TempUIStrings.close),
+                title: i18nString(UIStringsTemp.close),
                 jslogContext: 'close',
               } as Buttons.Button.ButtonData
             }
@@ -165,25 +165,25 @@ export class ProvideFeedback extends HTMLElement {
           type="text"
           class="devtools-text-input feedback-input"
           placeholder=${i18nString(
-           TempUIStrings.provideFeedbackPlaceholder,
+           UIStringsTemp.provideFeedbackPlaceholder,
           )}
         >
         <span class="feedback-disclaimer">${
-          i18nString(TempUIStrings.disclaimer)
+          i18nString(UIStringsTemp.disclaimer)
         }</span>
         <${Buttons.Button.Button.litTagName}
-        aria-label=${i18nString(TempUIStrings.submit)}
+        aria-label=${i18nString(UIStringsTemp.submit)}
         .data=${
           {
               type: 'submit',
               variant: Buttons.Button.Variant.OUTLINED,
               size: Buttons.Button.Size.SMALL,
-              title: i18nString(TempUIStrings.submit),
+              title: i18nString(UIStringsTemp.submit),
               jslogContext: 'send',
             } as Buttons.Button.ButtonData
           }
         >${
-          i18nString(TempUIStrings.submit)
+          i18nString(UIStringsTemp.submit)
         }</${Buttons.Button.Button.litTagName}>
       </div>
     `;

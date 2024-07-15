@@ -51,7 +51,7 @@ if (inputDirectories.length === 0) {
   throw new Error('Provide at least one directory!');
 }
 
-/** @type {Record<string, CtcMessage} */
+/** @type {Record<string, CtcMessage>} */
 let collectedStrings = {};
 /** @type {string[]} */
 const files = [];

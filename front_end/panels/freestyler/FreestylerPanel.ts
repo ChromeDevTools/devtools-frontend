@@ -26,7 +26,7 @@ const DOGFOOD_INFO = ' https://goo.gle/freestyler-dogfood' as Platform.DevToolsP
   * Temporary string that should not be translated
   * as they may change often during development.
   */
-const TempUIStrings = {
+const UIStringsTemp = {
   /**
    *@description Freestyler UI text for clearing messages.
    */
@@ -63,13 +63,13 @@ function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () =>
   const rightToolbar = new UI.Toolbar.Toolbar('freestyler-right-toolbar', toolbarContainer);
 
   const clearButton =
-      new UI.Toolbar.ToolbarButton(i18nString(TempUIStrings.clearMessages), 'clear', undefined, 'freestyler.clear');
+      new UI.Toolbar.ToolbarButton(i18nString(UIStringsTemp.clearMessages), 'clear', undefined, 'freestyler.clear');
   clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, onClearClick);
   leftToolbar.appendToolbarItem(clearButton);
 
   rightToolbar.appendSeparator();
   const helpButton =
-      new UI.Toolbar.ToolbarButton(i18nString(TempUIStrings.sendFeedback), 'help', undefined, 'freestyler.feedback');
+      new UI.Toolbar.ToolbarButton(i18nString(UIStringsTemp.sendFeedback), 'help', undefined, 'freestyler.feedback');
   helpButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(DOGFOOD_INFO);
   });
@@ -284,7 +284,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     const signal = this.#runAbortController.signal;
     signal.addEventListener('abort', () => {
       systemMessage.rpcId = undefined;
-      systemMessage.steps.push({step: Step.ERROR, text: i18nString(TempUIStrings.stoppedResponse)});
+      systemMessage.steps.push({step: Step.ERROR, text: i18nString(UIStringsTemp.stoppedResponse)});
     });
     for await (const data of this.#agent.run(text, {signal})) {
       if (data.step === Step.QUERYING) {

@@ -25,7 +25,7 @@ const DOGFOOD_FEEDBACK_URL = 'https://goo.gle/freestyler-feedback' as Platform.D
   * Temporary string that should not be translated
   * as they may change often during development.
   */
-const TempUIStrings = {
+const UIStringsTemp = {
   /**
    *@description Placeholder text for the chat UI input.
    */
@@ -126,13 +126,13 @@ const i18nString = i18n.i18n.lockedString;
 function getInputPlaceholderString(aidaAvailability: Host.AidaClient.AidaAvailability): string {
   switch (aidaAvailability) {
     case Host.AidaClient.AidaAvailability.AVAILABLE:
-      return i18nString(TempUIStrings.inputPlaceholder);
+      return i18nString(UIStringsTemp.inputPlaceholder);
     case Host.AidaClient.AidaAvailability.NO_ACCOUNT_EMAIL:
-      return i18nString(TempUIStrings.notLoggedIn);
+      return i18nString(UIStringsTemp.notLoggedIn);
     case Host.AidaClient.AidaAvailability.NO_ACTIVE_SYNC:
-      return i18nString(TempUIStrings.syncIsOff);
+      return i18nString(UIStringsTemp.syncIsOff);
     case Host.AidaClient.AidaAvailability.NO_INTERNET:
-      return i18nString(TempUIStrings.offline);
+      return i18nString(UIStringsTemp.offline);
   }
 }
 
@@ -323,7 +323,7 @@ export class FreestylerChatUi extends HTMLElement {
   #renderSideEffectConfirmationUi(confirmSideEffectDialog: ConfirmSideEffectDialog): LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`<div class="side-effect-confirmation">
-      <p>${i18nString(TempUIStrings.sideEffectConfirmationDescription)}</p>
+      <p>${i18nString(UIStringsTemp.sideEffectConfirmationDescription)}</p>
       <${MarkdownView.CodeBlock.CodeBlock.litTagName}
         .code=${confirmSideEffectDialog.code}
         .codeLang=${'js'}
@@ -339,7 +339,7 @@ export class FreestylerChatUi extends HTMLElement {
           }
           @click=${() => confirmSideEffectDialog.onAnswer(true)}
           >${
-            i18nString(TempUIStrings.positiveSideEffectConfirmation)
+            i18nString(UIStringsTemp.positiveSideEffectConfirmation)
           }</${Buttons.Button.Button.litTagName}>
         <${Buttons.Button.Button.litTagName}
           .data=${
@@ -350,7 +350,7 @@ export class FreestylerChatUi extends HTMLElement {
           }
           @click=${() => confirmSideEffectDialog.onAnswer(false)}
         >${i18nString(
-          TempUIStrings.negativeSideEffectConfirmation,
+          UIStringsTemp.negativeSideEffectConfirmation,
         )}</${Buttons.Button.Button.litTagName}>
       </div>
     </div>`;
@@ -388,7 +388,7 @@ export class FreestylerChatUi extends HTMLElement {
                   } as Buttons.Button.ButtonData}
                   @click=${this.#props.onFixThisIssueClick}
                 >${i18nString(
-                  TempUIStrings.fixThisIssue,
+                  UIStringsTemp.fixThisIssue,
                 )}</${Buttons.Button.Button.litTagName}>`
               : LitHtml.nothing
           }
@@ -410,7 +410,7 @@ export class FreestylerChatUi extends HTMLElement {
       toggledIconName: 'select-element',
       toggleType: Buttons.Button.ToggleType.PRIMARY,
       toggled: this.#props.inspectElementToggled,
-      title: i18nString(TempUIStrings.selectAnElement),
+      title: i18nString(UIStringsTemp.selectAnElement),
       jslogContext: 'select-element',
     };
 
@@ -435,7 +435,7 @@ export class FreestylerChatUi extends HTMLElement {
           } as Buttons.Button.ButtonData}
           @click=${this.#props.onInspectElementClick}
         ><span class="select-an-element-text">${i18nString(
-          TempUIStrings.selectAnElement,
+          UIStringsTemp.selectAnElement,
         )}</span></${Buttons.Button.Button.litTagName}>`;
     // clang-format on
   };
@@ -447,14 +447,14 @@ export class FreestylerChatUi extends HTMLElement {
           name="dog-paw"
           class="feedback-icon"
         ></${IconButton.Icon.Icon.litTagName}>
-        <span>${i18nString(TempUIStrings.dogfood)}</span>
+        <span>${i18nString(UIStringsTemp.dogfood)}</span>
         <span>-</span>
         <x-link href=${DOGFOOD_FEEDBACK_URL}
           class="link"
           jslog=${VisualLogging.action('freestyler.feedback').track({
           click: true,
         })}>
-         ${i18nString(TempUIStrings.feedbackLink)}
+         ${i18nString(UIStringsTemp.feedbackLink)}
         </x-link>`;
     // clang-format on
   };
@@ -475,7 +475,7 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format off
     return LitHtml.html`<div class="empty-state-container">
       <${IconButton.Icon.Icon.litTagName} name="spark" style="width: 36px; height: 36px;"></${IconButton.Icon.Icon.litTagName}>
-      ${i18nString(TempUIStrings.emptyStateText)}
+      ${i18nString(UIStringsTemp.emptyStateText)}
     </div>`;
     // clang-format on
   };
@@ -511,14 +511,14 @@ export class FreestylerChatUi extends HTMLElement {
                   ? LitHtml.html`
                     <${Buttons.Button.Button.litTagName}
                       class="step-actions"
-                      aria-label=${i18nString(TempUIStrings.cancelButtonTitle)}
+                      aria-label=${i18nString(UIStringsTemp.cancelButtonTitle)}
                       @click=${this.#handleCancel}
                       .data=${
                         {
                           variant: Buttons.Button.Variant.PRIMARY,
                           size: Buttons.Button.Size.SMALL,
                           iconName: 'stop',
-                          title: i18nString(TempUIStrings.cancelButtonTitle),
+                          title: i18nString(UIStringsTemp.cancelButtonTitle),
                           jslogContext: 'stop',
                         } as Buttons.Button.ButtonData
                       }
@@ -526,14 +526,14 @@ export class FreestylerChatUi extends HTMLElement {
                   : LitHtml.html`
                     <${Buttons.Button.Button.litTagName}
                       class="step-actions"
-                      aria-label=${i18nString(TempUIStrings.sendButtonTitle)}
+                      aria-label=${i18nString(UIStringsTemp.sendButtonTitle)}
                       .data=${
                         {
                           type: 'submit',
                           variant: Buttons.Button.Variant.ICON,
                           size: Buttons.Button.Size.SMALL,
                           iconName: 'send',
-                          title: i18nString(TempUIStrings.sendButtonTitle),
+                          title: i18nString(UIStringsTemp.sendButtonTitle),
                           disabled: isInputDisabled,
                           jslogContext: 'send',
                         } as Buttons.Button.ButtonData
@@ -542,7 +542,7 @@ export class FreestylerChatUi extends HTMLElement {
               }
           </div>
           <span class="chat-input-disclaimer">${i18nString(
-            TempUIStrings.inputDisclaimer,
+            UIStringsTemp.inputDisclaimer,
           )}</span>
         </form>
       </div>
@@ -555,13 +555,13 @@ export class FreestylerChatUi extends HTMLElement {
     return LitHtml.html`
       <div class="consent-view">
         <h2 tabindex="-1">
-          ${i18nString(TempUIStrings.consentScreenHeading)}
+          ${i18nString(UIStringsTemp.consentScreenHeading)}
         </h2>
         <main>
-          ${i18nString(TempUIStrings.consentTextAiDisclaimer)}
+          ${i18nString(UIStringsTemp.consentTextAiDisclaimer)}
           <ul>
-            <li>${i18nString(TempUIStrings.consentTextDataDisclaimer)}</li>
-            <li>${i18nString(TempUIStrings.consentTextVisibilityDisclaimer)}</li>
+            <li>${i18nString(UIStringsTemp.consentTextDataDisclaimer)}</li>
+            <li>${i18nString(UIStringsTemp.consentTextVisibilityDisclaimer)}</li>
           </ul>
           <${Buttons.Button.Button.litTagName}
             class="accept-button"
@@ -571,7 +571,7 @@ export class FreestylerChatUi extends HTMLElement {
               jslogContext: 'accept',
             } as Buttons.Button.ButtonData}
           >${
-            i18nString(TempUIStrings.acceptButtonTitle)
+            i18nString(UIStringsTemp.acceptButtonTitle)
           }</${Buttons.Button.Button.litTagName}>
         </main>
       </div>

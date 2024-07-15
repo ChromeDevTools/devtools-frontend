@@ -17,9 +17,48 @@ import * as Components from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const LOCAL_METRIC_SELECTOR = '.local-value .metric-value';
-const FIELD_METRIC_SELECTOR = '.field-value .metric-value';
-const INTERACTION_SELECTOR = '.interaction';
+function getLocalMetricValue(view: Element, metric: string): HTMLElement {
+  const card = view.shadowRoot!.querySelector(`#${metric} devtools-metric-card`);
+  return card!.querySelector('[slot="local-value"] .metric-value') as HTMLElement;
+}
+
+function getFieldMetricValue(view: Element, metric: string): HTMLElement {
+  const card = view.shadowRoot!.querySelector(`#${metric} devtools-metric-card`);
+  return card!.querySelector('[slot="field-value"] .metric-value') as HTMLElement;
+}
+
+function getFieldHistogramPercents(view: Element, metric: string): string[] {
+  const card = view.shadowRoot!.querySelector(`#${metric} devtools-metric-card`);
+  const histogram = card!.querySelector('.field-data-histogram') as HTMLElement;
+  const percents = Array.from(histogram.querySelectorAll('.histogram-percent')) as HTMLElement[];
+  return percents.map(p => p.textContent || '');
+}
+
+function getInteractions(view: Element): HTMLElement[] {
+  const interactionsListEl = view.shadowRoot?.querySelector('.interactions-list') as HTMLElement;
+  return Array.from(interactionsListEl.querySelectorAll('.interaction')) as HTMLElement[];
+}
+
+function selectDeviceOption(view: Element, deviceOption: string): void {
+  const deviceScopeSelector =
+      view.shadowRoot!.querySelector('#device-scope-select devtools-select-menu') as HTMLElement;
+  const deviceScopeOptions =
+      Array.from(deviceScopeSelector.querySelectorAll('#device-scope-select devtools-menu-item')) as
+      HTMLElementTagNameMap['devtools-menu-item'][];
+
+  deviceScopeSelector.click();
+  deviceScopeOptions.find(o => o.value === deviceOption)!.click();
+}
+
+function selectPageScope(view: Element, pageScope: string): void {
+  const pageScopeSelector = view.shadowRoot!.querySelector('#page-scope-select devtools-select-menu') as HTMLElement;
+  pageScopeSelector.click();
+
+  const pageScopeOptions = Array.from(pageScopeSelector.querySelectorAll('#page-scope-select devtools-menu-item')) as
+      HTMLElementTagNameMap['devtools-menu-item'][];
+  const originOption = pageScopeOptions.find(o => o.value === pageScope);
+  originOption!.click();
+}
 
 function createMockFieldData() {
   return {
@@ -110,8 +149,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       interactions: [],
     });
     await coordinator.done();
-    const metricEl = view.shadowRoot?.querySelector('#lcp') as HTMLDivElement;
-    const metricValueEl = metricEl.querySelector(LOCAL_METRIC_SELECTOR) as HTMLDivElement;
+    const metricValueEl = getLocalMetricValue(view, 'lcp');
     assert.strictEqual(metricValueEl.className, 'metric-value good');
     assert.strictEqual(metricValueEl.innerText, '100 ms');
   });
@@ -124,8 +162,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       interactions: [],
     });
     await coordinator.done();
-    const metricEl = view.shadowRoot?.querySelector('#cls') as HTMLDivElement;
-    const metricValueEl = metricEl.querySelector(LOCAL_METRIC_SELECTOR) as HTMLDivElement;
+    const metricValueEl = getLocalMetricValue(view, 'cls');
     assert.strictEqual(metricValueEl.className, 'metric-value needs-improvement');
     assert.strictEqual(metricValueEl.innerText, '0.14');
   });
@@ -136,8 +173,7 @@ describeWithMockConnection('LiveMetricsView', () => {
     LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(
         LiveMetrics.Events.Status, {inp: {value: 2000}, interactions: []});
     await coordinator.done();
-    const metricEl = view.shadowRoot?.querySelector('#inp') as HTMLDivElement;
-    const metricValueEl = metricEl.querySelector(LOCAL_METRIC_SELECTOR) as HTMLDivElement;
+    const metricValueEl = getLocalMetricValue(view, 'inp');
     assert.strictEqual(metricValueEl.className, 'metric-value poor');
     assert.strictEqual(metricValueEl.innerText, '2.00 s');
   });
@@ -146,8 +182,7 @@ describeWithMockConnection('LiveMetricsView', () => {
     const view = new Components.LiveMetricsView.LiveMetricsView();
     renderElementIntoDOM(view);
     await coordinator.done();
-    const metricEl = view.shadowRoot?.querySelector('#inp') as HTMLDivElement;
-    const metricValueEl = metricEl.querySelector(LOCAL_METRIC_SELECTOR) as HTMLDivElement;
+    const metricValueEl = getLocalMetricValue(view, 'inp');
     assert.strictEqual(metricValueEl.className.trim(), 'metric-value waiting');
     assert.strictEqual(metricValueEl.innerText, '-');
   });
@@ -162,8 +197,8 @@ describeWithMockConnection('LiveMetricsView', () => {
       ],
     });
     await coordinator.done();
-    const interactionsListEl = view.shadowRoot?.querySelector('.interactions-list') as HTMLDivElement;
-    const interactionsEls = interactionsListEl.querySelectorAll(INTERACTION_SELECTOR);
+
+    const interactionsEls = getInteractions(view);
     assert.lengthOf(interactionsEls, 2);
 
     const typeEl1 = interactionsEls[0].querySelector('.interaction-type') as HTMLDivElement;
@@ -270,22 +305,22 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       await coordinator.done();
 
-      const lcpHistogramEl = view.shadowRoot?.querySelector('#lcp .field-data-histogram');
-      assert.isNull(lcpHistogramEl);
+      const lcpPercents = getFieldHistogramPercents(view, 'lcp');
+      assert.deepStrictEqual(lcpPercents, ['-', '-', '-']);
 
-      const clsHistogramEl = view.shadowRoot?.querySelector('#cls .field-data-histogram');
-      assert.isNull(clsHistogramEl);
+      const clsPercents = getFieldHistogramPercents(view, 'cls');
+      assert.deepStrictEqual(clsPercents, ['-', '-', '-']);
 
-      const inpHistogramEl = view.shadowRoot?.querySelector('#inp .field-data-histogram');
-      assert.isNull(inpHistogramEl);
+      const inpPercents = getFieldHistogramPercents(view, 'inp');
+      assert.deepStrictEqual(inpPercents, ['-', '-', '-']);
 
-      const lcpFieldEl = view.shadowRoot?.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      const lcpFieldEl = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl.textContent, '-');
 
-      const clsFieldEl = view.shadowRoot?.querySelector(`#cls ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      const clsFieldEl = getFieldMetricValue(view, 'cls');
       assert.strictEqual(clsFieldEl.textContent, '-');
 
-      const inpFieldEl = view.shadowRoot?.querySelector(`#inp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      const inpFieldEl = getFieldMetricValue(view, 'inp');
       assert.strictEqual(inpFieldEl.textContent, '-');
     });
 
@@ -305,24 +340,22 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       await coordinator.done();
 
-      const lcpHistogramEl = view.shadowRoot?.querySelector('#lcp .field-data-histogram') as HTMLDivElement;
-      assert.strictEqual(
-          lcpHistogramEl.innerText, 'Good (≤2.50 s)\n50%\nNeeds improvement (2.50 s-4.00 s)\n30%\nPoor (>4.00 s)\n20%');
+      const lcpPercents = getFieldHistogramPercents(view, 'lcp');
+      assert.deepStrictEqual(lcpPercents, ['50%', '30%', '20%']);
 
-      const clsHistogramEl = view.shadowRoot?.querySelector('#cls .field-data-histogram') as HTMLDivElement;
-      assert.strictEqual(
-          clsHistogramEl.innerText, 'Good (≤0.10)\n10%\nNeeds improvement (0.10-0.25)\n10%\nPoor (>0.25)\n80%');
+      const clsPercents = getFieldHistogramPercents(view, 'cls');
+      assert.deepStrictEqual(clsPercents, ['10%', '10%', '80%']);
 
-      const inpHistogramEl = view.shadowRoot?.querySelector('#inp .field-data-histogram');
-      assert.isNull(inpHistogramEl);
+      const inpPercents = getFieldHistogramPercents(view, 'inp');
+      assert.deepStrictEqual(inpPercents, ['-', '-', '-']);
 
-      const lcpFieldEl = view.shadowRoot?.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      const lcpFieldEl = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl.textContent, '1.00 s');
 
-      const clsFieldEl = view.shadowRoot?.querySelector(`#cls ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      const clsFieldEl = getFieldMetricValue(view, 'cls');
       assert.strictEqual(clsFieldEl.textContent, '0.25');
 
-      const inpFieldEl = view.shadowRoot?.querySelector(`#inp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      const inpFieldEl = getFieldMetricValue(view, 'inp');
       assert.strictEqual(inpFieldEl.textContent, '-');
     });
 
@@ -334,8 +367,8 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       await coordinator.done();
 
-      const lcpFieldEl1 = view.shadowRoot?.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
-      assert.strictEqual(lcpFieldEl1.textContent, '1.00 s');
+      const lcpFieldEl = getFieldMetricValue(view, 'lcp');
+      assert.strictEqual(lcpFieldEl.textContent, '1.00 s');
     });
 
     it('should be removed once crux is disabled', async () => {
@@ -346,14 +379,14 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       await coordinator.done();
 
-      const lcpFieldEl1 = view.shadowRoot?.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      const lcpFieldEl1 = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl1.textContent, '1.00 s');
 
       CrUXManager.CrUXManager.instance().getConfigSetting().set({enabled: false, override: ''});
 
       await coordinator.done();
 
-      const lcpFieldEl2 = view.shadowRoot?.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      const lcpFieldEl2 = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl2.textContent, '-');
     });
 
@@ -368,22 +401,14 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       await coordinator.done();
 
-      const lcpFieldEl1 = view.shadowRoot!.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      const lcpFieldEl1 = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl1.textContent, '1.00 s');
 
-      const pageScopeSelector =
-          view.shadowRoot!.querySelector('#page-scope-select devtools-select-menu') as HTMLElement;
-      pageScopeSelector.click();
-
-      const pageScopeOptions =
-          Array.from(pageScopeSelector.querySelectorAll('#page-scope-select devtools-menu-item')) as
-          HTMLElementTagNameMap['devtools-menu-item'][];
-      const originOption = pageScopeOptions.find(o => o.value === 'origin');
-      originOption!.click();
+      selectPageScope(view, 'origin');
 
       await coordinator.done();
 
-      const lcpFieldEl2 = view.shadowRoot!.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      const lcpFieldEl2 = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl2.textContent, '2.00 s');
     });
 
@@ -398,24 +423,16 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       await coordinator.done();
 
-      const deviceScopeSelector =
-          view.shadowRoot!.querySelector('#device-scope-select devtools-select-menu') as HTMLElement;
-      const deviceScopeOptions =
-          Array.from(deviceScopeSelector.querySelectorAll('#device-scope-select devtools-menu-item')) as
-          HTMLElementTagNameMap['devtools-menu-item'][];
+      selectDeviceOption(view, 'ALL');
 
-      deviceScopeSelector.click();
-      deviceScopeOptions.find(o => o.value === 'ALL')!.click();
-
-      const lcpFieldEl1 = view.shadowRoot!.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      const lcpFieldEl1 = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl1.textContent, '1.00 s');
 
-      deviceScopeSelector.click();
-      deviceScopeOptions.find(o => o.value === 'PHONE')!.click();
+      selectDeviceOption(view, 'PHONE');
 
       await coordinator.done();
 
-      const lcpFieldEl2 = view.shadowRoot!.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      const lcpFieldEl2 = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl2.textContent, '2.00 s');
     });
 
@@ -430,16 +447,9 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       await coordinator.done();
 
-      const deviceScopeSelector =
-          view.shadowRoot!.querySelector('#device-scope-select devtools-select-menu') as HTMLElement;
-      const deviceScopeOptions =
-          Array.from(deviceScopeSelector.querySelectorAll('#device-scope-select devtools-menu-item')) as
-          HTMLElementTagNameMap['devtools-menu-item'][];
+      selectDeviceOption(view, 'AUTO');
 
-      deviceScopeSelector.click();
-      deviceScopeOptions.find(o => o.value === 'AUTO')!.click();
-
-      const lcpFieldEl1 = view.shadowRoot!.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      const lcpFieldEl1 = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl1.textContent, '1.00 s');
 
       for (const device of EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
@@ -451,7 +461,7 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       await coordinator.done();
 
-      const lcpFieldEl2 = view.shadowRoot!.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      const lcpFieldEl2 = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl2.textContent, '2.00 s');
     });
 
@@ -466,16 +476,9 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       await coordinator.done();
 
-      const deviceScopeSelector =
-          view.shadowRoot!.querySelector('#device-scope-select devtools-select-menu') as HTMLElement;
-      const deviceScopeOptions =
-          Array.from(deviceScopeSelector.querySelectorAll('#device-scope-select devtools-menu-item')) as
-          HTMLElementTagNameMap['devtools-menu-item'][];
+      selectDeviceOption(view, 'AUTO');
 
-      deviceScopeSelector.click();
-      deviceScopeOptions.find(o => o.value === 'AUTO')!.click();
-
-      const lcpFieldEl1 = view.shadowRoot!.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      const lcpFieldEl1 = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl1.textContent, '1.00 s');
 
       for (const device of EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
@@ -487,7 +490,7 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       await coordinator.done();
 
-      const lcpFieldEl2 = view.shadowRoot!.querySelector(`#lcp ${FIELD_METRIC_SELECTOR}`) as HTMLElement;
+      const lcpFieldEl2 = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl2.textContent, '2.00 s');
     });
   });

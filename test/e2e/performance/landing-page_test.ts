@@ -23,9 +23,9 @@ import {
   navigateToPerformanceTab,
 } from '../helpers/performance-helpers.js';
 
-const READY_LOCAL_METRIC_SELECTOR = '.local-value .metric-value:not(.waiting)';
-const READY_FIELD_METRIC_SELECTOR = '.field-value .metric-value:not(.waiting)';
-const WAITING_LOCAL_METRIC_SELECTOR = '.local-value .metric-value.waiting';
+const READY_LOCAL_METRIC_SELECTOR = '[slot="local-value"] .metric-value:not(.waiting)';
+const READY_FIELD_METRIC_SELECTOR = '[slot="field-value"] .metric-value:not(.waiting)';
+const WAITING_LOCAL_METRIC_SELECTOR = '[slot="local-value"] .metric-value.waiting';
 const INTERACTION_SELECTOR = '.interaction';
 const HISTOGRAM_SELECTOR = '.field-data-histogram';
 const SETUP_FIELD_BUTTON_SELECTOR = 'devtools-button[jslogcontext="field-data-setup"]';
@@ -224,33 +224,48 @@ describe('The Performance panel landing page', () => {
     const fieldEnableButton = await waitForVisible<HTMLElement>(ENABLE_FIELD_BUTTON_SELECTOR);
     await fieldEnableButton.click();
 
-    const histograms1 = await $$<HTMLElement>(HISTOGRAM_SELECTOR);
-    assert.lengthOf(histograms1, 0);
+    {
+      const [lcpHistogram, clsHistogram, inpHistogram] = await waitForMany(HISTOGRAM_SELECTOR, 3);
+      assert.deepStrictEqual(
+          await lcpHistogram.$$eval('.histogram-percent', els => els.map(el => el.textContent)), ['-', '-', '-']);
+      assert.deepStrictEqual(
+          await clsHistogram.$$eval('.histogram-percent', els => els.map(el => el.textContent)), ['-', '-', '-']);
+      assert.deepStrictEqual(
+          await inpHistogram.$$eval('.histogram-percent', els => els.map(el => el.textContent)), ['-', '-', '-']);
+    }
 
     // Switch the fake CrUX endpoint data to simulate new data for a new origin
     await setCruxRawResponse('performance/crux-valid.rawresponse');
     await goToResourceWithCustomHost('devtools.oopif.test', 'performance/fake-website.html');
-
-    const [lcpHistogram, clsHistogram, inpHistogram] = await waitForMany(HISTOGRAM_SELECTOR, 3);
-
-    assert.strictEqual(
-        await lcpHistogram.evaluate(el => (el as HTMLElement).innerText),
-        'Good (≤2.50 s)\n96%\nNeeds improvement (2.50 s-4.00 s)\n3%\nPoor (>4.00 s)\n1%');
-    assert.strictEqual(
-        await clsHistogram.evaluate(el => (el as HTMLElement).innerText),
-        'Good (≤0.10)\n100%\nNeeds improvement (0.10-0.25)\n0%\nPoor (>0.25)\n0%');
-    assert.strictEqual(
-        await inpHistogram.evaluate(el => (el as HTMLElement).innerText),
-        'Good (≤200 ms)\n98%\nNeeds improvement (200 ms-500 ms)\n2%\nPoor (>500 ms)\n1%');
 
     const [lcpFieldValue, clsFieldValue, inpFieldValue] = await waitForMany(READY_FIELD_METRIC_SELECTOR, 3);
     assert.strictEqual(await lcpFieldValue.evaluate(el => el.textContent) || '', '1.20 s');
     assert.strictEqual(await clsFieldValue.evaluate(el => el.textContent) || '', '0');
     assert.strictEqual(await inpFieldValue.evaluate(el => el.textContent) || '', '49 ms');
 
+    {
+      const [lcpHistogram, clsHistogram, inpHistogram] = await waitForMany(HISTOGRAM_SELECTOR, 3);
+      assert.deepStrictEqual(
+          await lcpHistogram.$$eval('.histogram-percent', els => els.map(el => el.textContent)), ['96%', '3%', '1%']);
+      assert.deepStrictEqual(
+          await clsHistogram.$$eval('.histogram-percent', els => els.map(el => el.textContent)), ['100%', '0%', '0%']);
+      assert.deepStrictEqual(
+          await inpHistogram.$$eval('.histogram-percent', els => els.map(el => el.textContent)), ['98%', '2%', '1%']);
+    }
+
     // Ensure the original CrUX data is restored when we return to the original page
     await goToResource('performance/fake-website.html');
-    await waitForNone(HISTOGRAM_SELECTOR);
+    await waitForNone(READY_FIELD_METRIC_SELECTOR);
+
+    {
+      const [lcpHistogram, clsHistogram, inpHistogram] = await waitForMany(HISTOGRAM_SELECTOR, 3);
+      assert.deepStrictEqual(
+          await lcpHistogram.$$eval('.histogram-percent', els => els.map(el => el.textContent)), ['-', '-', '-']);
+      assert.deepStrictEqual(
+          await clsHistogram.$$eval('.histogram-percent', els => els.map(el => el.textContent)), ['-', '-', '-']);
+      assert.deepStrictEqual(
+          await inpHistogram.$$eval('.histogram-percent', els => els.map(el => el.textContent)), ['-', '-', '-']);
+    }
   });
 
   it('uses URL override for field data', async () => {

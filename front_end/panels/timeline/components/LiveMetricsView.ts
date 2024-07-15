@@ -9,6 +9,7 @@ import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
+import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -32,6 +33,105 @@ const CLS_THRESHOLDS = [0.1, 0.25] as MetricThresholds;
 const INP_THRESHOLDS = [200, 500] as MetricThresholds;
 
 const DEVICE_OPTION_LIST: DeviceOption[] = ['AUTO', ...CrUXManager.DEVICE_SCOPE_LIST];
+
+export class MetricCard extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-metric-card`;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+
+  constructor() {
+    super();
+
+    this.#render();
+  }
+
+  #metricValuesEl?: Element;
+  #dialog?: Dialogs.Dialog.Dialog|null;
+
+  connectedCallback(): void {
+    this.#shadow.adoptedStyleSheets = [liveMetricsViewStyles];
+
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+  }
+
+  #showDialog(): void {
+    if (!this.#dialog) {
+      return;
+    }
+    void this.#dialog.setDialogVisible(true);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+  }
+
+  #closeDialog(event?: Event): void {
+    if (!this.#dialog || !this.#metricValuesEl) {
+      return;
+    }
+
+    if (event) {
+      const path = event.composedPath();
+      if (path.includes(this.#metricValuesEl)) {
+        return;
+      }
+      if (path.includes(this.#dialog)) {
+        return;
+      }
+    }
+
+    void this.#dialog.setDialogVisible(false);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+  }
+
+  #render = (): void => {
+    // clang-format off
+    const output = html`
+      <div class="card metric-card">
+        <div class="card-title">
+          <slot name="headline"></slot>
+        </div>
+        <div class="card-metric-values"
+          @mouseenter=${this.#showDialog}
+          @mouseleave=${this.#closeDialog}
+          on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
+            this.#metricValuesEl = node;
+          })}
+        >
+          <span class="local-value">
+            <slot name="local-value"></slot>
+          </span>
+          <span class="field-value">
+            <slot name="field-value"></slot>
+          </span>
+          <span class="metric-value-label">Local</span>
+          <span class="metric-value-label">Field 75th Percentile</span>
+        </div>
+        <${Dialogs.Dialog.Dialog.litTagName}
+          @pointerleftdialog=${() => this.#closeDialog()}
+          .showConnector=${true}
+          .centered=${true}
+          .closeOnScroll=${false}
+          .origin=${() => {
+            if (!this.#metricValuesEl) {
+              throw new Error('No metric values element');
+            }
+            return this.#metricValuesEl;
+          }}
+          on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
+            this.#dialog = node as Dialogs.Dialog.Dialog;
+          })}
+        >
+          <div class="tooltip-content">
+            <slot name="tooltip"></slot>
+          </div>
+        </${Dialogs.Dialog.Dialog.litTagName}>
+        <hr class="divider">
+        <div class="metric-card-element">
+          <slot name="related-element"><slot>
+        </div>
+      </div>
+    `;
+    LitHtml.render(output, this.#shadow, {host: this});
+  };
+  // clang-format on
+}
 
 export class LiveMetricsView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-live-metrics-view`;
@@ -179,7 +279,7 @@ export class LiveMetricsView extends HTMLElement {
     );
   }
 
-  #densityAsPercent(density?: number): string {
+  #densityToCSSPercent(density?: number): string {
     if (density === undefined) {
       density = 0;
     }
@@ -187,24 +287,32 @@ export class LiveMetricsView extends HTMLElement {
     return `${percent}%`;
   }
 
+  #densityToLabel(density?: number): string {
+    if (density === undefined) {
+      return '-';
+    }
+    const percent = Math.round(density * 100);
+    return `${percent}%`;
+  }
+
   #renderFieldHistogram(
-      histogram: CrUXManager.MetricResponse['histogram'], thresholds: MetricThresholds,
+      histogram: CrUXManager.MetricResponse['histogram']|undefined, thresholds: MetricThresholds,
       format: (value: number) => string): LitHtml.LitTemplate {
-    const goodPercent = this.#densityAsPercent(histogram[0].density);
-    const needsImprovementPercent = this.#densityAsPercent(histogram[1].density);
-    const poorPercent = this.#densityAsPercent(histogram[2].density);
+    const goodPercent = this.#densityToCSSPercent(histogram?.[0].density);
+    const needsImprovementPercent = this.#densityToCSSPercent(histogram?.[1].density);
+    const poorPercent = this.#densityToCSSPercent(histogram?.[2].density);
     return html`
       <div class="field-data-histogram">
         <span class="histogram-label">Good <span class="histogram-range">(&le;${format(thresholds[0])})</span></span>
         <span class="histogram-bar good-bg" style="width: ${goodPercent}"></span>
-        <span>${goodPercent}</span>
+        <span class="histogram-percent">${this.#densityToLabel(histogram?.[0].density)}</span>
         <span class="histogram-label">Needs improvement <span class="histogram-range">(${format(thresholds[0])}-${
         format(thresholds[1])})</span></span>
         <span class="histogram-bar needs-improvement-bg" style="width: ${needsImprovementPercent}"></span>
-        <span>${needsImprovementPercent}</span>
+        <span class="histogram-percent">${this.#densityToLabel(histogram?.[1].density)}</span>
         <span class="histogram-label">Poor <span class="histogram-range">(&gt;${format(thresholds[1])})</span></span>
         <span class="histogram-bar poor-bg" style="width: ${poorPercent}"></span>
-        <span>${poorPercent}</span>
+        <span class="histogram-percent">${this.#densityToLabel(histogram?.[2].density)}</span>
       </div>
     `;
   }
@@ -225,23 +333,20 @@ export class LiveMetricsView extends HTMLElement {
       format: (value: number) => string, node?: SDK.DOMModel.DOMNode): LitHtml.LitTemplate {
     // clang-format off
     return html`
-      <div class="card">
-        <div class="card-title">${title}</div>
-        <div class="card-metric-values">
-          <span class="local-value">${this.#renderMetricValue(localValue, thresholds, format)}</span>
-          <span class="field-value">${this.#renderMetricValue(fieldValue, thresholds, format)}</span>
-          <span class="metric-value-label">Local</span>
-          <span class="metric-value-label">Field 75th Percentile</span>
+      <${MetricCard.litTagName}>
+        <div slot="headline">${title}</div>
+        <span slot="local-value">${this.#renderMetricValue(localValue, thresholds, format)}</span>
+        <span slot="field-value">${this.#renderMetricValue(fieldValue, thresholds, format)}</span>
+        <div slot="tooltip">
+          ${this.#renderFieldHistogram(histogram, thresholds, format)}
         </div>
-        <hr class="divider">
-        ${histogram ? this.#renderFieldHistogram(histogram, thresholds, format) : nothing}
-        <div class="metric-card-element">
+        <div slot="related-element">
           ${node ? html`
               <div class="card-section-title">Related node</div>
               <div>${until(Common.Linkifier.Linkifier.linkify(node))}</div>`
             : nothing}
         </div>
-      </div>
+      </${MetricCard.litTagName}>
     `;
     // clang-format on
   }
@@ -486,10 +591,12 @@ export class LiveMetricsView extends HTMLElement {
   // clang-format on
 }
 
+customElements.define('devtools-metric-card', MetricCard);
 customElements.define('devtools-live-metrics-view', LiveMetricsView);
 
 declare global {
   interface HTMLElementTagNameMap {
+    'devtools-metric-card': MetricCard;
     'devtools-live-metrics-view': LiveMetricsView;
   }
 }

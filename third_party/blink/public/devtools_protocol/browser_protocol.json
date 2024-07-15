@@ -21604,6 +21604,58 @@
                     ]
                 },
                 {
+                    "id": "AttributionReportingAggregatableDebugReportingData",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "keyPiece",
+                            "$ref": "UnsignedInt128AsBase16"
+                        },
+                        {
+                            "name": "value",
+                            "description": "number instead of integer because not all uint32 can be represented by\nint",
+                            "type": "number"
+                        },
+                        {
+                            "name": "types",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "AttributionReportingAggregatableDebugReportingConfig",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "budget",
+                            "description": "number instead of integer because not all uint32 can be represented by\nint, only present for source registrations",
+                            "optional": true,
+                            "type": "number"
+                        },
+                        {
+                            "name": "keyPiece",
+                            "$ref": "UnsignedInt128AsBase16"
+                        },
+                        {
+                            "name": "debugData",
+                            "type": "array",
+                            "items": {
+                                "$ref": "AttributionReportingAggregatableDebugReportingData"
+                            }
+                        },
+                        {
+                            "name": "aggregationCoordinatorOrigin",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
                     "id": "AttributionReportingSourceRegistration",
                     "experimental": true,
                     "type": "object",
@@ -21682,6 +21734,10 @@
                         {
                             "name": "destinationLimitPriority",
                             "$ref": "SignedInt64AsBase10"
+                        },
+                        {
+                            "name": "aggregatableDebugReportingConfig",
+                            "$ref": "AttributionReportingAggregatableDebugReportingConfig"
                         }
                     ]
                 },
@@ -21878,6 +21934,10 @@
                             "name": "triggerContextId",
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "aggregatableDebugReportingConfig",
+                            "$ref": "AttributionReportingAggregatableDebugReportingConfig"
                         }
                     ]
                 },

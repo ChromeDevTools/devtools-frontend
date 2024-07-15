@@ -263,6 +263,12 @@ c`;
       assert.strictEqual(request.chat_history, undefined);
     });
 
+    it('builds a request with a sessionId', async () => {
+      mockHostConfig();
+      const request = FreestylerAgent.buildRequest('test input', undefined, undefined, undefined, 'sessionId');
+      assert.strictEqual(request.metadata?.string_session_id, 'sessionId');
+    });
+
     it('builds a request with preamble', async () => {
       mockHostConfig();
       const request = FreestylerAgent.buildRequest('test input', 'preamble');
@@ -307,7 +313,8 @@ c`;
                   text: 'third',
                   entity: Host.AidaClient.Entity.USER,
                 },
-              ]),
+              ],
+              true, 'sessionId'),
           {
             input: 'test input',
             client: 'CHROME_DEVTOOLS',
@@ -327,7 +334,8 @@ c`;
               },
             ],
             metadata: {
-              disable_user_content_logging: true,
+              disable_user_content_logging: false,
+              string_session_id: 'sessionId',
             },
             options: {
               model_id: 'test model',

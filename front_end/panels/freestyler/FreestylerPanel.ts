@@ -115,11 +115,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
         UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
     this.#aidaClient = aidaClient;
     this.#contentContainer = this.contentElement.createChild('div', 'freestyler-chat-ui-container');
-    this.#agent = new FreestylerAgent({
-      aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
-      confirmSideEffect: this.showConfirmSideEffectUi.bind(this),
-    });
+
     this.#selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     this.#viewProps = {
       state: this.#consentViewAcceptedSetting.get() ? FreestylerChatUiState.CHAT_VIEW :
@@ -143,7 +139,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       this.#viewProps.inspectElementToggled = ev.data;
       this.doUpdate();
     });
-
+    this.#agent = this.#createAgent();
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, ev => {
       if (this.#viewProps.selectedNode === ev.data) {
         return;
@@ -153,6 +149,14 @@ export class FreestylerPanel extends UI.Panel.Panel {
       this.doUpdate();
     });
     this.doUpdate();
+  }
+
+  #createAgent(): FreestylerAgent {
+    return new FreestylerAgent({
+      aidaClient: this.#aidaClient,
+      serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
+      confirmSideEffect: this.showConfirmSideEffectUi.bind(this),
+    });
   }
 
   static async instance(opts: {
@@ -246,7 +250,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #clearMessages(): void {
     this.#viewProps.messages = [];
     this.#viewProps.isLoading = false;
-    this.#agent.resetHistory();
+    this.#agent = this.#createAgent();
     this.#cancel();
     this.doUpdate();
   }

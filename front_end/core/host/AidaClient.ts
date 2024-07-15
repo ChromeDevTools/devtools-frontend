@@ -57,6 +57,8 @@ export interface AidaRequest {
   metadata?: {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     disable_user_content_logging: boolean,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    string_session_id?: string,
   };
   // eslint-disable-next-line @typescript-eslint/naming-convention
   functionality_type?: FunctionalityType;

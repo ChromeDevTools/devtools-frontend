@@ -8,7 +8,8 @@
       "webworker",
       "webworker.iterable"
     ],
-    "outDir": "ignored-for-vscode"
+    "outDir": "ignored-for-vscode",
+    "allowUmdGlobalAccess": true
   },
   "include": [
     "front_end/",

@@ -35,10 +35,6 @@ const UIStringsTemp = {
    */
   sendFeedback: 'Send feedback',
   /**
-   *@description Freestyler UI text for the help button.
-   */
-  help: 'Help',
-  /**
    *@description Displayed when the user stop the response
    */
   stoppedResponse: 'You stopped this response',
@@ -283,6 +279,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     const signal = this.#runAbortController.signal;
     signal.addEventListener('abort', () => {
       systemMessage.rpcId = undefined;
+      systemMessage.suggestingFix = false;
       systemMessage.steps.push({step: Step.ERROR, text: i18nString(UIStringsTemp.stoppedResponse)});
     });
     for await (const data of this.#agent.run(text, {signal})) {

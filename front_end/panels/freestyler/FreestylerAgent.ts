@@ -123,37 +123,36 @@ type HistoryChunk = {
 const MAX_STEPS = 10;
 const MAX_OBSERVATION_BYTE_LENGTH = 25_000;
 
+interface AgentOptions {
+  aidaClient: Host.AidaClient.AidaClient;
+  serverSideLoggingEnabled?: boolean;
+  execJs?: typeof executeJsCode;
+  confirmSideEffect: (action: string) => Promise<boolean>;
+}
+
+interface AidaRequestOptions {
+  input: string;
+  preamble?: string;
+  chatHistory?: Host.AidaClient.Chunk[];
+  /**
+   * @default false
+   */
+  serverSideLoggingEnabled?: boolean;
+  sessionId?: string;
+}
+
 /**
- * One agent instance matches on conversation.
+ * One agent instance handles one conversation. Create a new agent
+ * instance for a new conversation.
  */
 export class FreestylerAgent {
-  #aidaClient: Host.AidaClient.AidaClient;
-  readonly #sessionId = crypto.randomUUID();
-  #chatHistory: Map<number, HistoryChunk[]> = new Map();
-  #confirmSideEffect: (action: string) => Promise<boolean>;
-  #execJs: typeof executeJsCode;
-  #serverSideLoggingEnabled: boolean;
-
-  constructor({aidaClient, execJs, confirmSideEffect, serverSideLoggingEnabled}: {
-    aidaClient: Host.AidaClient.AidaClient,
-    serverSideLoggingEnabled?: boolean,
-    execJs?: typeof executeJsCode, confirmSideEffect: (action: string) => Promise<boolean>,
-  }) {
-    this.#aidaClient = aidaClient;
-    this.#execJs = execJs ?? executeJsCode;
-    this.#confirmSideEffect = confirmSideEffect;
-    this.#serverSideLoggingEnabled = serverSideLoggingEnabled ?? false;
-  }
-
-  static buildRequest(
-      input: string, preamble?: string, chatHistory?: Host.AidaClient.Chunk[], serverSideLoggingEnabled = false,
-      sessionId?: string): Host.AidaClient.AidaRequest {
+  static buildRequest(opts: AidaRequestOptions): Host.AidaClient.AidaRequest {
     const config = Common.Settings.Settings.instance().getHostConfig();
     const request: Host.AidaClient.AidaRequest = {
-      input,
-      preamble,
+      input: opts.input,
+      preamble: opts.preamble,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      chat_history: chatHistory,
+      chat_history: opts.chatHistory,
       client: Host.AidaClient.CLIENT_NAME,
       options: {
         temperature: config?.devToolsFreestylerDogfood.aidaTemperature ?? 0,
@@ -161,8 +160,8 @@ export class FreestylerAgent {
       },
       metadata: {
         // TODO: disable logging based on query params.
-        disable_user_content_logging: !serverSideLoggingEnabled,
-        string_session_id: sessionId,
+        disable_user_content_logging: !(opts.serverSideLoggingEnabled ?? false),
+        string_session_id: opts.sessionId,
       },
       // eslint-disable-next-line @typescript-eslint/naming-convention
       functionality_type: Host.AidaClient.FunctionalityType.CHAT,
@@ -170,14 +169,6 @@ export class FreestylerAgent {
       client_feature: Host.AidaClient.ClientFeature.CHROME_FREESTYLER,
     };
     return request;
-  }
-
-  get #getHistoryEntry(): Array<HistoryChunk> {
-    return [...this.#chatHistory.values()].flat();
-  }
-
-  get chatHistoryForTesting(): Array<HistoryChunk> {
-    return this.#getHistoryEntry;
   }
 
   static parseResponse(response: string): {thought?: string, action?: string, answer?: string} {
@@ -231,6 +222,30 @@ export class FreestylerAgent {
       answer = response;
     }
     return {thought, action, answer};
+  }
+
+  #aidaClient: Host.AidaClient.AidaClient;
+  #chatHistory: Map<number, HistoryChunk[]> = new Map();
+  #serverSideLoggingEnabled: boolean;
+
+  #confirmSideEffect: (action: string) => Promise<boolean>;
+  #execJs: typeof executeJsCode;
+
+  readonly #sessionId = crypto.randomUUID();
+
+  constructor(opts: AgentOptions) {
+    this.#aidaClient = opts.aidaClient;
+    this.#execJs = opts.execJs ?? executeJsCode;
+    this.#confirmSideEffect = opts.confirmSideEffect;
+    this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
+  }
+
+  get #getHistoryEntry(): Array<HistoryChunk> {
+    return [...this.#chatHistory.values()].flat();
+  }
+
+  get chatHistoryForTesting(): Array<HistoryChunk> {
+    return this.#getHistoryEntry;
   }
 
   async #aidaFetch(request: Host.AidaClient.AidaRequest): Promise<{response: string, rpcId: number|undefined}> {
@@ -296,9 +311,13 @@ export class FreestylerAgent {
     for (let i = 0; i < MAX_STEPS; i++) {
       yield {step: Step.QUERYING};
 
-      const request = FreestylerAgent.buildRequest(
-          query, preamble, this.#chatHistory.size ? this.#getHistoryEntry : undefined, this.#serverSideLoggingEnabled,
-          this.#sessionId);
+      const request = FreestylerAgent.buildRequest({
+        input: query,
+        preamble,
+        chatHistory: this.#chatHistory.size ? this.#getHistoryEntry : undefined,
+        serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
+        sessionId: this.#sessionId,
+      });
       let response: string;
       let rpcId: number|undefined;
       try {

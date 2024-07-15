@@ -233,7 +233,7 @@ c`;
     it('builds a request with a model id', async () => {
       mockHostConfig('test model');
       assert.strictEqual(
-          FreestylerAgent.buildRequest('test input').options?.model_id,
+          FreestylerAgent.buildRequest({input: 'test input'}).options?.model_id,
           'test model',
       );
     });
@@ -241,7 +241,8 @@ c`;
     it('builds a request with logging', async () => {
       mockHostConfig('test model');
       assert.strictEqual(
-          FreestylerAgent.buildRequest('test input', undefined, undefined, true).metadata?.disable_user_content_logging,
+          FreestylerAgent.buildRequest({input: 'test input', serverSideLoggingEnabled: true})
+              .metadata?.disable_user_content_logging,
           false,
       );
     });
@@ -249,7 +250,7 @@ c`;
     it('builds a request without logging', async () => {
       mockHostConfig('test model');
       assert.strictEqual(
-          FreestylerAgent.buildRequest('test input', undefined, undefined, false)
+          FreestylerAgent.buildRequest({input: 'test input', serverSideLoggingEnabled: false})
               .metadata?.disable_user_content_logging,
           true,
       );
@@ -257,7 +258,7 @@ c`;
 
     it('builds a request with input', async () => {
       mockHostConfig();
-      const request = FreestylerAgent.buildRequest('test input');
+      const request = FreestylerAgent.buildRequest({input: 'test input'});
       assert.strictEqual(request.input, 'test input');
       assert.strictEqual(request.preamble, undefined);
       assert.strictEqual(request.chat_history, undefined);
@@ -265,13 +266,13 @@ c`;
 
     it('builds a request with a sessionId', async () => {
       mockHostConfig();
-      const request = FreestylerAgent.buildRequest('test input', undefined, undefined, undefined, 'sessionId');
+      const request = FreestylerAgent.buildRequest({input: 'test input', sessionId: 'sessionId'});
       assert.strictEqual(request.metadata?.string_session_id, 'sessionId');
     });
 
     it('builds a request with preamble', async () => {
       mockHostConfig();
-      const request = FreestylerAgent.buildRequest('test input', 'preamble');
+      const request = FreestylerAgent.buildRequest({input: 'test input', preamble: 'preamble'});
       assert.strictEqual(request.input, 'test input');
       assert.strictEqual(request.preamble, 'preamble');
       assert.strictEqual(request.chat_history, undefined);
@@ -279,12 +280,15 @@ c`;
 
     it('builds a request with chat history', async () => {
       mockHostConfig();
-      const request = FreestylerAgent.buildRequest('test input', undefined, [
-        {
-          text: 'test',
-          entity: Host.AidaClient.Entity.USER,
-        },
-      ]);
+      const request = FreestylerAgent.buildRequest({
+        input: 'test input',
+        chatHistory: [
+          {
+            text: 'test',
+            entity: Host.AidaClient.Entity.USER,
+          },
+        ],
+      });
       assert.strictEqual(request.input, 'test input');
       assert.strictEqual(request.preamble, undefined);
       assert.deepStrictEqual(request.chat_history, [
@@ -298,23 +302,26 @@ c`;
     it('structure matches the snapshot', () => {
       mockHostConfig('test model');
       assert.deepStrictEqual(
-          FreestylerAgent.buildRequest(
-              'test input', 'preamble',
-              [
-                {
-                  text: 'first',
-                  entity: Host.AidaClient.Entity.UNKNOWN,
-                },
-                {
-                  text: 'second',
-                  entity: Host.AidaClient.Entity.SYSTEM,
-                },
-                {
-                  text: 'third',
-                  entity: Host.AidaClient.Entity.USER,
-                },
-              ],
-              true, 'sessionId'),
+          FreestylerAgent.buildRequest({
+            input: 'test input',
+            preamble: 'preamble',
+            chatHistory: [
+              {
+                text: 'first',
+                entity: Host.AidaClient.Entity.UNKNOWN,
+              },
+              {
+                text: 'second',
+                entity: Host.AidaClient.Entity.SYSTEM,
+              },
+              {
+                text: 'third',
+                entity: Host.AidaClient.Entity.USER,
+              },
+            ],
+            serverSideLoggingEnabled: true,
+            sessionId: 'sessionId',
+          }),
           {
             input: 'test input',
             client: 'CHROME_DEVTOOLS',

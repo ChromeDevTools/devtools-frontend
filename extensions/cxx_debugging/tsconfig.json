@@ -11,6 +11,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "baseUrl": ".",
+    "allowUmdGlobalAccess": true,
     "paths": {
       "lit-html": ["./third_party/lit-html"],
       "lit-html/*": ["./third_party/lit-html/*"]

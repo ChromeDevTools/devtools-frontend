@@ -426,6 +426,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.#sideBar.contentElement.addEventListener(
         TimelineComponents.Sidebar.ToggleSidebarInsights.eventName, this.#sidebarInsightEnabled.bind(this));
 
+    this.#sideBar.contentElement.addEventListener(TimelineComponents.Sidebar.RemoveAnnotation.eventName, event => {
+      const {removedAnnotation} = (event as TimelineComponents.Sidebar.RemoveAnnotation);
+      ModificationsManager.activeManager()?.removeAnnotation(removedAnnotation);
+    });
+
     this.onModeChanged();
     this.populateToolbar();
     this.showLandingPage();

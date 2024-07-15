@@ -4,8 +4,10 @@
 
 import * as TraceEngine from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
+import {RemoveAnnotation} from './Sidebar.js';
 import sidebarAnnotationsTabStyles from './sidebarAnnotationsTab.css.js';
 
 export class SidebarAnnotationsTab extends HTMLElement {
@@ -30,13 +32,23 @@ export class SidebarAnnotationsTab extends HTMLElement {
         annotation.entry.name;
 
     return LitHtml.html`
-      <div class="annotation">
-        <span class="entry-name">
-          ${entryName}
-        </span>
-        <span class="label">
-         ${annotation.label}
-        </span>
+      <div class="annotation-container">
+        <div class="annotation">
+          <span class="entry-name">
+            ${entryName}
+          </span>
+          <span class="label">
+          ${annotation.label}
+          </span>
+        </div>
+        <${IconButton.Icon.Icon.litTagName} class="bin-icon" .data=${{
+      iconName: 'bin',
+      color: 'var(--icon-default)',
+      width: '20px',
+      height: '20px',
+    } as IconButton.Icon.IconData} @click=${() => {
+      this.dispatchEvent(new RemoveAnnotation(annotation));
+    }}>
       </div>
     `;
   }

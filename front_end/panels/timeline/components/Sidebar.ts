@@ -40,6 +40,14 @@ export class ToggleSidebarInsights extends Event {
   }
 }
 
+export class RemoveAnnotation extends Event {
+  static readonly eventName = 'removeannotation';
+
+  constructor(public removedAnnotation: TraceEngine.Types.File.Annotation) {
+    super(RemoveAnnotation.eventName, {bubbles: true, composed: true});
+  }
+}
+
 export const enum WidgetEvents {
   SidebarCollapseClick = 'SidebarCollapseClick',
 }

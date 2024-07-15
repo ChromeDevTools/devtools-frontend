@@ -120,6 +120,16 @@ export class ModificationsManager extends EventTarget {
     this.dispatchEvent(new AnnotationModifiedEvent(newOverlay, 'Add'));
   }
 
+  removeAnnotation(removedAnnotation: TraceEngine.Types.File.Annotation): void {
+    const overlayToRemove = this.#overlayForAnnotation.get(removedAnnotation);
+    if (!overlayToRemove) {
+      console.warn('Overlay for deleted Annotation does not exist');
+      return;
+    }
+    this.#overlayForAnnotation.delete(removedAnnotation);
+    this.dispatchEvent(new AnnotationModifiedEvent(overlayToRemove, 'Remove'));
+  }
+
   removeAnnotationOverlay(removedOverlay: TimelineOverlay): void {
     const annotationForRemovedOverlay = this.#getAnnotationByOverlay(removedOverlay);
     if (!annotationForRemovedOverlay) {

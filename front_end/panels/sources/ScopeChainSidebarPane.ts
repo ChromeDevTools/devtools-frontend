@@ -110,12 +110,21 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     this.#scopeChainModel?.dispose();
     this.#scopeChainModel = null;
 
+    this.linkifier.reset();
+    this.contentElement.removeChildren();
+    this.contentElement.appendChild(this.infoElement);
+
     if (callFrame) {
+      // Resolving the scope may take a while to complete, so indicate to the user that something
+      // is happening (see https://crbug.com/1162416).
+      this.infoElement.textContent = i18nString(UIStrings.loading);
+
       this.#scopeChainModel = new SourceMapScopes.ScopeChainModel.ScopeChainModel(callFrame);
       this.#scopeChainModel.addEventListener(
-          SourceMapScopes.ScopeChainModel.Events.ScopeChainUpdated, event => this.update(event.data), this);
+          SourceMapScopes.ScopeChainModel.Events.ScopeChainUpdated, event => this.buildScopeTreeOutline(event.data),
+          this);
     } else {
-      void this.update(null);
+      this.infoElement.textContent = i18nString(UIStrings.notPaused);
     }
   }
 
@@ -129,21 +138,9 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     }
   }
 
-  private async update(eventScopeChain: SourceMapScopes.ScopeChainModel.ScopeChain|null): Promise<void> {
-    // The `resolveThisObject(callFrame)` and `resolveScopeChain(callFrame)` calls
-    // below may take a while to complete, so indicate to the user that something
-    // is happening (see https://crbug.com/1162416).
-    this.infoElement.textContent = i18nString(UIStrings.loading);
-    this.contentElement.removeChildren();
-    this.contentElement.appendChild(this.infoElement);
+  private buildScopeTreeOutline(eventScopeChain: SourceMapScopes.ScopeChainModel.ScopeChain): void {
+    const {callFrame, thisObject, scopeChain} = eventScopeChain;
 
-    this.linkifier.reset();
-
-    const callFrame = eventScopeChain?.callFrame ?? null;
-    const [thisObject, scopeChain] = await Promise.all([
-      SourceMapScopes.NamesResolver.resolveThisObject(callFrame),
-      SourceMapScopes.NamesResolver.resolveScopeChain(callFrame),
-    ]);
     // By now the developer might have moved on, and we don't want to show stale
     // scope information, so check again that we're still on the same CallFrame.
     if (callFrame === UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame)) {

@@ -360,6 +360,13 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.mainFlameChart.update();
   }
 
+  extensionDataVisibilityChanged(): void {
+    this.#reset();
+    this.mainDataProvider.reset(true);
+    this.mainDataProvider.timelineData(true);
+    this.refreshMainFlameChart();
+  }
+
   windowChanged(
       windowStartTime: TraceEngine.Types.Timing.MilliSeconds, windowEndTime: TraceEngine.Types.Timing.MilliSeconds,
       animate: boolean): void {

@@ -33,6 +33,7 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
 
   beforeEach(async function() {
     Root.Runtime.experiments.enableForTest('timeline-extensions');
+    Timeline.ExtensionDataGatherer.ExtensionDataGatherer.removeInstance();
     ({traceData} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz'));
     extensionTrackAppenders = initTrackAppender(flameChartData, traceData, entryData, entryTypeByLevel);
     let level = 0;
@@ -154,6 +155,25 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
       // which is faked out to 4, 4, 4
       assert.strictEqual(extensionTrackAppenders[0].colorForEvent(mockExtensionEntryNoColor), 'rgb(4 4 4)');
       assert.strictEqual(extensionTrackAppenders[0].colorForEvent(mockExtensionEntryUnknownColor), 'rgb(4 4 4)');
+    });
+  });
+
+  describe('toggling', function() {
+    it('Does not append extension data when the configuration is set to disabled', async function() {
+      Root.Runtime.experiments.enableForTest('timeline-extensions');
+      Timeline.ExtensionDataGatherer.ExtensionDataGatherer.removeInstance();
+      entryData = [];
+      flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
+      entryTypeByLevel = [];
+      Timeline.TimelinePanel.TimelinePanel.extensionDataVisibilitySetting().set(false);
+      traceData = (await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz')).traceData;
+      extensionTrackAppenders = initTrackAppender(flameChartData, traceData, entryData, entryTypeByLevel);
+      let level = 0;
+      extensionTrackAppenders.forEach(appender => {
+        level = appender.appendTrackAtLevel(level);
+      });
+      assert.strictEqual(flameChartData.groups.length, 0);
+      Timeline.TimelinePanel.TimelinePanel.extensionDataVisibilitySetting().set(true);
     });
   });
 

@@ -342,5 +342,23 @@ describeWithEnvironment('TimingTrackAppender', function() {
       const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(extensionMarker);
       assert.strictEqual(highlightedEntryInfo.title, 'A mark');
     });
+    describe('toggling', function() {
+      it('Does not append extension data when the configuration is set to disabled', async function() {
+        Root.Runtime.experiments.enableForTest('timeline-extensions');
+        Timeline.ExtensionDataGatherer.ExtensionDataGatherer.removeInstance();
+        Timeline.TimelinePanel.TimelinePanel.extensionDataVisibilitySetting().set(false);
+        traceData = (await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz')).traceData;
+        timingsTrackAppender = initTrackAppender(flameChartData, traceData, entryData, entryTypeByLevel);
+        timingsTrackAppender.appendTrackAtLevel(0);
+
+        const extensionMarkers = traceData.ExtensionTraceData.extensionMarkers;
+        for (const traceMarker of extensionMarkers) {
+          const markerTimeMs = TraceModel.Helpers.Timing.microSecondsToMilliseconds(traceMarker.ts);
+          const flameChartMarker =
+              flameChartData.markers.find(flameChartMarker => flameChartMarker.startTime() === markerTimeMs);
+          assert.isUndefined(flameChartMarker);
+        }
+      });
+    });
   });
 });

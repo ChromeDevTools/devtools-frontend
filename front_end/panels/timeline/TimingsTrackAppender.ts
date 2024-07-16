@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 
 import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
@@ -14,6 +13,7 @@ import {
   type TrackAppenderName,
   VisualLoggingTrackName,
 } from './CompatibilityTracksAppender.js';
+import {ExtensionDataGatherer} from './ExtensionDataGatherer.js';
 import * as Extensions from './extensions/extensions.js';
 import {TimelineFlameChartMarker} from './TimelineFlameChartView.js';
 import {type TimelineMarkerStyle} from './TimelineUIUtils.js';
@@ -53,10 +53,9 @@ export class TimingsTrackAppender implements TrackAppender {
    * appended the track's events.
    */
   appendTrackAtLevel(trackStartLevel: number, expanded?: boolean): number {
-    const extensionMarkers = this.#traceParsedData.ExtensionTraceData.extensionMarkers;
+    const extensionMarkers = ExtensionDataGatherer.instance().getExtensionData().extensionMarkers;
     const pageloadMarkers = this.#traceParsedData.PageLoadMetrics.allMarkerEvents;
-    const extensionMarkersAreEmpty = extensionMarkers.length === 0 ||
-        !Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_EXTENSIONS);
+    const extensionMarkersAreEmpty = extensionMarkers.length === 0;
     const performanceMarks = this.#traceParsedData.UserTimings.performanceMarks.filter(
         m => !TraceEngine.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInTiming(m));
     const performanceMeasures = this.#traceParsedData.UserTimings.performanceMeasures.filter(
@@ -106,9 +105,7 @@ export class TimingsTrackAppender implements TrackAppender {
   #appendMarkersAtLevel(currentLevel: number): number {
     let markers: (TraceEngine.Types.Extensions.SyntheticExtensionMarker|TraceEngine.Types.TraceEvents.PageLoadEvent)[] =
         this.#traceParsedData.PageLoadMetrics.allMarkerEvents;
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_EXTENSIONS)) {
-      markers = markers.concat(this.#traceParsedData.ExtensionTraceData.extensionMarkers);
-    }
+    markers = markers.concat(ExtensionDataGatherer.instance().getExtensionData().extensionMarkers);
     if (markers.length === 0) {
       return currentLevel;
     }

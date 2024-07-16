@@ -253,6 +253,15 @@ const UIStrings = {
    * @description Text for exporting enhanced traces
    */
   exportEnhancedTraces: 'Enhanced Performance Traces',
+  /**
+   *@description Tooltip description for a checkbox that toggles the visibility of data added by extensions of this panel (Performance).
+   */
+  showDataAddedByExtensions: 'Show data added by extensions of the Performance panel',
+  /**
+   Label for a checkbox that toggles the visibility of data added by extensions of this panel (Performance).
+   */
+  performanceExtension: 'Extension data',
+
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -272,6 +281,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private disableCaptureJSProfileSetting: Common.Settings.Setting<boolean>;
   private readonly captureLayersAndPicturesSetting: Common.Settings.Setting<boolean>;
   private readonly captureSelectorStatsSetting: Common.Settings.Setting<boolean>;
+  readonly #thirdPartyTracksSetting: Common.Settings.Setting<boolean>;
   private showScreenshotsSetting: Common.Settings.Setting<boolean>;
   private showMemorySetting: Common.Settings.Setting<boolean>;
   private readonly panelToolbar: UI.Toolbar.Toolbar;
@@ -374,6 +384,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.showMemorySetting = Common.Settings.Settings.instance().createSetting('timeline-show-memory', false);
     this.showMemorySetting.setTitle(i18nString(UIStrings.memory));
     this.showMemorySetting.addChangeListener(this.onModeChanged, this);
+
+    this.#thirdPartyTracksSetting = TimelinePanel.extensionDataVisibilitySetting();
+    this.#thirdPartyTracksSetting.addChangeListener(this.#extensionDataVisibilityChanged, this);
+    this.#thirdPartyTracksSetting.setTitle(i18nString(UIStrings.performanceExtension));
 
     const timelineToolbarContainer = this.element.createChild('div', 'timeline-toolbar-container');
     timelineToolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
@@ -504,6 +518,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     return timelinePanelInstance;
   }
 
+  static extensionDataVisibilitySetting(): Common.Settings.Setting<boolean> {
+    // Calling this multiple times doesn't recreate the setting.
+    // Instead, after the second call, the cached setting is returned.
+    return Common.Settings.Settings.instance().createSetting('timeline-show-extension-data', true);
+  }
   override searchableView(): UI.SearchableView.SearchableView|null {
     return this.searchableViewInternal;
   }
@@ -731,6 +750,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     hardwareConcurrencyPane.element.classList.add('flex-auto');
     hardwareConcurrencyPane.show(this.settingsPane.element);
 
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_EXTENSIONS)) {
+      const thirdPartyToolbar = new UI.Toolbar.Toolbar('', this.settingsPane.element);
+      thirdPartyToolbar.element.classList.add('flex-auto');
+      thirdPartyToolbar.makeVertical();
+      thirdPartyToolbar.appendToolbarItem(
+          this.createSettingCheckbox(this.#thirdPartyTracksSetting, i18nString(UIStrings.showDataAddedByExtensions)));
+    }
+
     const {toggle, input, reset, warning} =
         MobileThrottling.ThrottlingManager.throttlingManager().createHardwareConcurrencySelector();
     const concurrencyThrottlingToolbar = new UI.Toolbar.Toolbar('', hardwareConcurrencyPane.element);
@@ -915,6 +942,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.updateOverviewControls();
     this.doResize();
     this.select(null);
+  }
+
+  #extensionDataVisibilityChanged(): void {
+    this.flameChart.extensionDataVisibilityChanged();
   }
 
   private updateSettingsPaneVisibility(): void {

@@ -141,42 +141,33 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
   private buildScopeTreeOutline(eventScopeChain: SourceMapScopes.ScopeChainModel.ScopeChain): void {
     const {callFrame, thisObject, scopeChain} = eventScopeChain;
 
-    // By now the developer might have moved on, and we don't want to show stale
-    // scope information, so check again that we're still on the same CallFrame.
-    if (callFrame === UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame)) {
-      const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
-      this.treeOutline.removeChildren();
+    const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
+    this.treeOutline.removeChildren();
 
-      if (!details) {
-        this.infoElement.textContent = i18nString(UIStrings.notPaused);
-        return;
+    this.contentElement.removeChildren();
+    this.contentElement.appendChild(this.treeOutline.element);
+    let foundLocalScope = false;
+    for (let i = 0; i < scopeChain.length; ++i) {
+      const scope = scopeChain[i];
+      const extraProperties = this.extraPropertiesForScope(scope, details, callFrame, thisObject, i === 0);
+
+      if (scope.type() === Protocol.Debugger.ScopeType.Local) {
+        foundLocalScope = true;
       }
 
-      this.contentElement.removeChildren();
-      this.contentElement.appendChild(this.treeOutline.element);
-      let foundLocalScope = false;
-      for (let i = 0; i < scopeChain.length; ++i) {
-        const scope = scopeChain[i];
-        const extraProperties = this.extraPropertiesForScope(scope, details, callFrame, thisObject, i === 0);
-
-        if (scope.type() === Protocol.Debugger.ScopeType.Local) {
-          foundLocalScope = true;
-        }
-
-        const section = this.createScopeSectionTreeElement(scope, extraProperties);
-        if (scope.type() === Protocol.Debugger.ScopeType.Global) {
-          section.collapse();
-        } else if (!foundLocalScope || scope.type() === Protocol.Debugger.ScopeType.Local) {
-          section.expand();
-        }
-
-        this.treeOutline.appendChild(section);
-        if (i === 0) {
-          section.select(/* omitFocus */ true);
-        }
+      const section = this.createScopeSectionTreeElement(scope, extraProperties);
+      if (scope.type() === Protocol.Debugger.ScopeType.Global) {
+        section.collapse();
+      } else if (!foundLocalScope || scope.type() === Protocol.Debugger.ScopeType.Local) {
+        section.expand();
       }
-      this.sidebarPaneUpdatedForTest();
+
+      this.treeOutline.appendChild(section);
+      if (i === 0) {
+        section.select(/* omitFocus */ true);
+      }
     }
+    this.sidebarPaneUpdatedForTest();
   }
 
   private createScopeSectionTreeElement(
@@ -226,7 +217,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
   }
 
   private extraPropertiesForScope(
-      scope: SDK.DebuggerModel.ScopeChainEntry, details: SDK.DebuggerModel.DebuggerPausedDetails,
+      scope: SDK.DebuggerModel.ScopeChainEntry, details: SDK.DebuggerModel.DebuggerPausedDetails|null,
       callFrame: SDK.DebuggerModel.CallFrame, thisObject: SDK.RemoteObject.RemoteObject|null,
       isFirstScope: boolean): SDK.RemoteObject.RemoteObjectProperty[] {
     if (scope.type() !== Protocol.Debugger.ScopeType.Local || callFrame.script.isWasm()) {
@@ -239,7 +230,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
           'this', thisObject, undefined, undefined, undefined, undefined, undefined, /* synthetic */ true));
     }
     if (isFirstScope) {
-      const exception = details.exception();
+      const exception = details?.exception();
       if (exception) {
         extraProperties.push(new SDK.RemoteObject.RemoteObjectProperty(
             i18nString(UIStrings.exception), exception, undefined, undefined, undefined, undefined, undefined,

@@ -42,6 +42,7 @@ export class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         SDK.DebuggerModel.Events.DebugInfoAttached, this.#debugInfoAttached, this);
     this.#callFrame.debuggerModel.sourceMapManager().removeEventListener(
         SDK.SourceMapManager.Events.SourceMapAttached, this.#sourceMapAttached, this);
+    this.listeners?.clear();
   }
 
   async #update(): Promise<void> {

@@ -47,6 +47,7 @@ ts_library("unittests") {
   testonly = true
   sources = [
     "NamesResolver.test.ts",
+    "ScopeChainModel.test.ts",
     "ScopeTreeCache.test.ts",
   ]
 

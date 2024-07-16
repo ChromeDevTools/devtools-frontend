@@ -291,6 +291,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
         };
         this.#viewProps.messages.push(systemMessage);
         this.doUpdate();
+        this.#viewOutput.freestylerChatUi?.scrollToLastMessage();
         continue;
       }
 
@@ -301,6 +302,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       systemMessage.rpcId = data.rpcId;
       systemMessage.steps.push(data);
       this.doUpdate();
+      this.#viewOutput.freestylerChatUi?.scrollToLastMessage();
     }
   }
 }

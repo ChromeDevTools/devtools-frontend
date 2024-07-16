@@ -243,6 +243,14 @@ export class FreestylerChatUi extends HTMLElement {
     input.focus();
   }
 
+  scrollToLastMessage(): void {
+    const message = this.#shadow.querySelector('.chat-message:last-child') as HTMLDivElement;
+    if (!message) {
+      return;
+    }
+    message.scrollIntoViewIfNeeded();
+  }
+
   #handleSubmit = (ev: SubmitEvent): void => {
     ev.preventDefault();
     const input = this.#shadow.querySelector('.chat-input') as HTMLInputElement;
@@ -469,10 +477,12 @@ export class FreestylerChatUi extends HTMLElement {
   #renderMessages = (): LitHtml.TemplateResult => {
     // clang-format off
     return LitHtml.html`
-      <div class="messages-container">
-        ${this.#props.messages.map((message, _, array) =>
-          this.#renderChatMessage(message, {isLast: array.at(-1) === message}),
-        )}
+      <div class="messages-scroll-container">
+        <div class="messages-container">
+          ${this.#props.messages.map((message, _, array) =>
+            this.#renderChatMessage(message, {isLast: array.at(-1) === message}),
+          )}
+        </div>
       </div>
     `;
     // clang-format on

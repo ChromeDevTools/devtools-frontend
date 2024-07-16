@@ -346,6 +346,9 @@ describeWithEnvironment('TimingTrackAppender', function() {
       it('Does not append extension data when the configuration is set to disabled', async function() {
         Root.Runtime.experiments.enableForTest('timeline-extensions');
         Timeline.ExtensionDataGatherer.ExtensionDataGatherer.removeInstance();
+        entryData = [];
+        flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
+        entryTypeByLevel = [];
         Timeline.TimelinePanel.TimelinePanel.extensionDataVisibilitySetting().set(false);
         traceData = (await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz')).traceData;
         timingsTrackAppender = initTrackAppender(flameChartData, traceData, entryData, entryTypeByLevel);

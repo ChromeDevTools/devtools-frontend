@@ -112,7 +112,7 @@ export class ModificationsManager extends EventTarget {
     const newOverlay = {
       type: 'ENTRY_LABEL',
       entry: newAnnotation.entry,
-      label: '',
+      label: newAnnotation.label,
     } as EntryLabel;
     this.#overlayForAnnotation.set(newAnnotation, newOverlay);
 
@@ -166,6 +166,10 @@ export class ModificationsManager extends EventTarget {
     return [...this.#overlayForAnnotation.keys()];
   }
 
+  getOverlays(): TimelineOverlay[] {
+    return [...this.#overlayForAnnotation.values()];
+  }
+
   /**
    * Builds all modifications into a serializable object written into
    * the 'modifications' trace file metadata field.
@@ -212,16 +216,25 @@ export class ModificationsManager extends EventTarget {
 
   applyModificationsIfPresent(): void {
     const modifications = this.#modifications;
-    if (!modifications) {
+    if (!modifications || !modifications.annotations) {
       return;
     }
     const hiddenEntries = modifications.entriesModifications.hiddenEntries;
     const expandableEntries = modifications.entriesModifications.expandableEntries;
-    this.applyEntriesFilterModifications(hiddenEntries, expandableEntries);
+    this.#applyEntriesFilterModifications(hiddenEntries, expandableEntries);
     this.#timelineBreadcrumbs.setInitialBreadcrumbFromLoadedModifications(modifications.initialBreadcrumb);
+
+    const entryLabels = modifications.annotations.entryLabels;
+    entryLabels.forEach(entryLabel => {
+      this.createAnnotation({
+        type: 'ENTRY_LABEL',
+        entry: this.#eventsSerializer.eventForKey(entryLabel.entry, this.#traceParsedData),
+        label: entryLabel.label,
+      });
+    });
   }
 
-  applyEntriesFilterModifications(
+  #applyEntriesFilterModifications(
       hiddenEntriesKeys: TraceEngine.Types.File.TraceEventSerializableKey[],
       expandableEntriesKeys: TraceEngine.Types.File.TraceEventSerializableKey[]): void {
     const hiddenEntries = hiddenEntriesKeys.map(key => this.#eventsSerializer.eventForKey(key, this.#traceParsedData));

@@ -1399,6 +1399,15 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.panelToolbar.removeToolbarItem(this.fixMeButton);
     }
 
+    // Add overlays for annotations loaded from the trace file
+    const currModificationManager = ModificationsManager.activeManager();
+    if (currModificationManager) {
+      currModificationManager.getOverlays().forEach(overlay => {
+        this.flameChart.addOverlay(overlay);
+      });
+      this.#sideBar.setAnnotationsTabContent(currModificationManager.getAnnotations());
+    }
+
     // Set up line level profiling with CPU profiles, if we found any.
     PerfUI.LineLevelProfile.Performance.instance().reset();
     if (traceParsedData && traceParsedData.Samples.profilesInProcess.size) {

@@ -49,7 +49,9 @@ if (!window.HOT_STYLE_SHEETS_WEB_SOCKET) {
   let exportStatement;
   if (isLegacy) {
     exportStatement = `export default {
-  cssContent: \`${stylesheetContents}\`
+  cssContent: \`${stylesheetContents}
+/*# sourceURL=${fileName} */
+\`
 };`;
   } else {
     exportStatement = `const styles = new CSSStyleSheet();

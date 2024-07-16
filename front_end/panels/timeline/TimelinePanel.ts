@@ -379,7 +379,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.showScreenshotsSetting =
         Common.Settings.Settings.instance().createSetting('timeline-show-screenshots', isNode ? false : true);
     this.showScreenshotsSetting.setTitle(i18nString(UIStrings.screenshots));
-    this.showScreenshotsSetting.addChangeListener(this.updateOverviewControls, this);
+    this.showScreenshotsSetting.addChangeListener(this.updateMiniMap, this);
 
     this.showMemorySetting = Common.Settings.Settings.instance().createSetting('timeline-show-memory', false);
     this.showMemorySetting.setTitle(i18nString(UIStrings.memory));
@@ -919,7 +919,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.loader = await TimelineLoader.loadFromURL(url, this);
   }
 
-  private updateOverviewControls(): void {
+  private updateMiniMap(): void {
     const traceParsedData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
     const isCpuProfile = this.#traceEngineModel.metadata(this.#traceEngineActiveTraceIndex)?.dataOrigin ===
         TraceEngine.Types.File.DataOrigin.CPUProfile;
@@ -939,7 +939,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   private onModeChanged(): void {
     this.flameChart.updateCountersGraphToggle(this.showMemorySetting.get());
-    this.updateOverviewControls();
+    this.updateMiniMap();
     this.doResize();
     this.select(null);
   }
@@ -1312,10 +1312,22 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     ActiveFilters.instance().setFilters(newActiveFilters);
   }
 
+  /**
+   * Called when we update the active trace that is being shown to the user.
+   * This is called from {@see loadingComplete} when a trace is
+   * imported/recorded, but it can also be called when the user uses the history
+   * dropdown.
+   *
+   * If you need code to execute whenever the active trace changes, this is the method to use.
+   * If you need code to execute ONLY ON NEW TRACES, then use {@see loadingComplete}
+   */
   setModel(
       traceEngineIndex: number,
       exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null,
       ): void {
+    // Before loading a new trace, update modifications of the previous one
+    this.#saveModificationsForActiveTrace();
+
     this.#traceEngineActiveTraceIndex = traceEngineIndex;
     const traceParsedData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
     const isCpuProfile = this.#traceEngineModel.metadata(this.#traceEngineActiveTraceIndex)?.dataOrigin ===
@@ -1323,12 +1335,30 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.#minimapComponent.reset();
     // Order is important: the bounds must be set before we initiate any UI
-    // rendering.
+    // rendering. This is why we pull this out into its own block.
     if (traceParsedData) {
       TraceBounds.TraceBounds.BoundsManager.instance().resetWithNewBounds(
           traceParsedData.Meta.traceBounds,
       );
-      // Create an instance of the modifications manager for this trace or activate a manager for previousy loaded trace.
+    }
+
+    this.flameChart.setModel(traceParsedData, isCpuProfile);
+    this.flameChart.resizeToPreferredHeights();
+    // Reset the visual selection as we've just swapped to a new trace.
+    this.flameChart.setSelection(null);
+    this.#sideBar.setTraceParsedData(traceParsedData);
+
+    // Hide/show the searchable UI depending on if we have a trace active or not.
+    // Also apply any filters to the data.
+    if (traceParsedData) {
+      this.searchableViewInternal.showWidget();
+      this.#applyActiveFilters(traceParsedData.Meta.traceIsGeneric, exclusiveFilter);
+    } else {
+      this.searchableViewInternal.hideWidget();
+    }
+
+    // Set up the modifications manager for the newly active trace.
+    if (traceParsedData) {
       const currentManager = ModificationsManager.initAndActivateModificationsManager(
           this.#traceEngineModel, this.#traceEngineActiveTraceIndex);
       if (!currentManager) {
@@ -1346,21 +1376,26 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.#sideBar.setAnnotationsTabContent(currentManager.getAnnotations());
       });
 
-      this.#applyActiveFilters(traceParsedData.Meta.traceIsGeneric, exclusiveFilter);
+      // Create breadcrumbs.
+      if (this.#minimapComponent.breadcrumbsActivated) {
+        this.#minimapComponent.addInitialBreadcrumb();
+      }
+
+      // To calculate the activity we might want to zoom in, we use the top-most main-thread track
+      const topMostMainThreadAppender =
+          this.flameChart.getMainDataProvider().compatibilityTracksAppenderInstance().threadAppenders().at(0);
+      if (topMostMainThreadAppender) {
+        const zoomedInBounds = TraceEngine.Extras.MainThreadActivity.calculateWindow(
+            traceParsedData.Meta.traceBounds, topMostMainThreadAppender.getEntries());
+
+        TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(zoomedInBounds);
+      }
     }
-    if (traceParsedData) {
-      this.searchableViewInternal.showWidget();
-    } else {
-      this.searchableViewInternal.hideWidget();
+
+    if (!traceParsedData) {
+      // Hide the brick-breaker easter egg
       this.fixMeButtonAdded = false;
       this.panelToolbar.removeToolbarItem(this.fixMeButton);
-    }
-    this.flameChart.setModel(traceParsedData, isCpuProfile);
-    this.flameChart.setSelection(null);
-
-    const traceInsightsData = this.#traceEngineModel.traceInsights(this.#traceEngineActiveTraceIndex);
-    if (traceInsightsData) {
-      this.flameChart.setInsights(traceInsightsData);
     }
 
     // Set up line level profiling with CPU profiles, if we found any.
@@ -1378,32 +1413,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       }
     }
 
-    this.updateOverviewControls();
-    if (this.flameChart) {
-      this.flameChart.resizeToPreferredHeights();
-    }
-
-    // Set the initial zoom and if we are using breadcrumbs, create the initial breadcrum.
-    // We expect traceParsedData to always exist, this check is to keep TS happy.
-    if (traceParsedData) {
-      if (this.#minimapComponent.breadcrumbsActivated) {
-        this.#minimapComponent.addInitialBreadcrumb();
-      }
-
-      // To calculate the activity we might want to zoom in, we use the top-most main-thread track
-      const topMostMainThreadAppender =
-          this.flameChart.getMainDataProvider().compatibilityTracksAppenderInstance().threadAppenders().at(0);
-      if (topMostMainThreadAppender) {
-        const zoomedInBounds = TraceEngine.Extras.MainThreadActivity.calculateWindow(
-            traceParsedData.Meta.traceBounds, topMostMainThreadAppender.getEntries());
-
-        TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(zoomedInBounds);
-      }
-    }
-
-    this.#sideBar.setTraceParsedData(traceParsedData);
-
+    this.updateMiniMap();
     this.updateTimelineControls();
+
+    const traceInsightsData = this.#traceEngineModel.traceInsights(this.#traceEngineActiveTraceIndex);
+    if (traceInsightsData) {
+      this.flameChart.setInsights(traceInsightsData);
+      this.#sideBar.setInsights(traceInsightsData);
+    }
   }
 
   private recordingStarted(config?: {navigateToUrl: Platform.DevToolsPath.UrlString}): void {
@@ -1504,14 +1521,16 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   /**
    * This is called with we are done loading a trace from a file, or after we
    * have recorded a fresh trace.
+   *
+   * IMPORTANT: All the code in here should be code that is only required when we have
+   * recorded or loaded a brand new trace. If you need the code to run when the
+   * user switches to an existing trace, please {@see setModel} and put your
+   * code in there.
    **/
   async loadingComplete(
       collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[],
       exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null, isCpuProfile: boolean,
       recordingStartTime: number|null, metadata: TraceEngine.Types.File.MetaData|null): Promise<void> {
-    // Before loading a new trace, update modifications of the previous one
-    this.#saveModificationsForActiveTrace();
-
     this.#traceEngineModel.resetProcessor();
     SourceMapsResolver.clearResolvedNodeNames();
 
@@ -1547,31 +1566,28 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     try {
       await this.#executeNewTraceEngine(collectedEvents, recordingIsFresh, metadata);
-
-      // This code path is only executed when a new trace is recorded/imported,
-      // so we know that the active index will be the size of the model because
-      // the newest trace will be automatically set to active.
-      this.#traceEngineActiveTraceIndex = this.#traceEngineModel.size() - 1;
-
-      this.setModel(this.#traceEngineActiveTraceIndex, exclusiveFilter);
+      this.setModel(this.#traceEngineModel.lastTraceIndex(), exclusiveFilter);
 
       if (this.statusPane) {
         this.statusPane.remove();
       }
       this.statusPane = null;
 
-      if (!isNode && Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SIDEBAR)) {
+      // Show the sidebar but only if:
+      // 1. the experiment is enabled
+      // 2. the trace engine has one trace in it (the one we just loaded). This
+      //    is because we only need to show this button for the first time when we
+      //    go from landing page => trace. On subsequent trace loads, we will
+      //    maintain the sidebar state (e.g. if you have it open + record a new
+      //    trace, it will remain open).
+      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SIDEBAR) &&
+          this.#traceEngineModel.size() === 1) {
         this.#minimapComponent.showSidebarFloatingIcon();
       }
 
       const traceData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
       if (!traceData) {
         throw new Error(`Could not get trace data at index ${this.#traceEngineActiveTraceIndex}`);
-      }
-
-      const traceInsightsData = this.#traceEngineModel.traceInsights(this.#traceEngineActiveTraceIndex);
-      if (traceInsightsData) {
-        this.#sideBar.data = traceInsightsData;
       }
 
       if (recordingIsFresh) {

@@ -85,7 +85,7 @@ export class SidebarWidget extends Common.ObjectWrapper.eventMixin<WidgetEventTy
     this.#sidebarUI.traceParsedData = traceParsedData;
   }
 
-  set data(insights: TraceEngine.Insights.Types.TraceInsightData) {
+  setInsights(insights: TraceEngine.Insights.Types.TraceInsightData): void {
     this.#sidebarUI.insights = insights;
   }
 }

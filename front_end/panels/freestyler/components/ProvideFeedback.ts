@@ -4,6 +4,7 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -48,12 +49,19 @@ const UIStringsTemp = {
    * @description The button text for the action that hides the feedback form.
    */
   close: 'Close',
+  /**
+   * @description The title of the button that opens a page to report a legal
+   * issue with the Freestyler message.
+   */
+  report: 'Report legal issue',
 };
 // const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/AiRatings.ts', UIStrings);
 // const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /* eslint-disable  rulesdir/l10n_i18nString_call_only_with_uistrings */
 const i18nString = i18n.i18n.lockedString;
 
+const REPORT_URL = 'https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504' as
+    Platform.DevToolsPath.UrlString;
 export interface ProvideFeedbackProps {
   onRateClick: (rate: Host.AidaClient.Rating) => void;
   onFeedbackSubmit: (feedback: string) => void;
@@ -108,6 +116,10 @@ export class ProvideFeedback extends HTMLElement {
     this.#render();
   };
 
+  #handleReportClick = (): void => {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(REPORT_URL);
+  };
+
   #renderButtons(): LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
@@ -134,6 +146,19 @@ export class ProvideFeedback extends HTMLElement {
           jslogContext: 'thumbs-down',
         } as Buttons.Button.ButtonData}
         @click=${() => this.#handleRateClick(Host.AidaClient.Rating.NEGATIVE)}
+      ></${Buttons.Button.Button.litTagName}>
+      <div class="vertical-separator"></div>
+      <${Buttons.Button.Button.litTagName}
+        .data=${
+          {
+            variant: Buttons.Button.Variant.ICON,
+            size: Buttons.Button.Size.SMALL,
+            title: i18nString(UIStringsTemp.report),
+            iconName: 'report',
+            jslogContext: 'report',
+          } as Buttons.Button.ButtonData
+        }
+        @click=${this.#handleReportClick}
       ></${Buttons.Button.Button.litTagName}>
     `;
     // clang-format on

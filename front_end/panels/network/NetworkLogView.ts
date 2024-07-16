@@ -317,7 +317,7 @@ const UIStrings = {
    *@description A context menu command in the Network panel, for copying the URLs of all requestes
    (after applying the Network filter) to the clipboard.
    */
-  copyAllFilteredURLs: 'Copy all (filtered) URLs',
+  copyAllListedURLs: 'Copy all listed URLs',
   /**
    *@description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with a PowerShell script to
@@ -329,7 +329,7 @@ const UIStrings = {
    *the clipboard. It will copy the command in the format compatible with a PowerShell script to
    *represent all network requests (after applying the Network filter).
    */
-  copyAllFilteredAsPowershell: 'Copy all (filtered) as `PowerShell`',
+  copyAllListedAsPowershell: 'Copy all listed as `PowerShell`',
   /**
    *@description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with a 'fetch' command (fetch
@@ -341,7 +341,7 @@ const UIStrings = {
    *the clipboard. It will copy the command in the format compatible with a 'fetch' command (fetch
    *should not be translated) to represent all network requests (after applying the Network filter).
    */
-  copyAllFilteredAsFetch: 'Copy all (filtered) as `fetch`',
+  copyAllListedAsFetch: 'Copy all listed as `fetch`',
   /**
    *@description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with a Node.js 'fetch' command
@@ -354,7 +354,7 @@ const UIStrings = {
    *(fetch and Node.js should not be translated) to represent all network requests (after applying
    *the Network filter).
    */
-  copyAllFilteredAsNodejsFetch: 'Copy all (filtered) as `fetch` (`Node.js`)',
+  copyAllListedAsNodejsFetch: 'Copy all listed as `fetch` (`Node.js`)',
   /**
    *@description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with cURL (a program, not
@@ -366,7 +366,7 @@ const UIStrings = {
    *the clipboard. It will copy the command in the format compatible with cURL (a program, not
    *translatable) to represent all network requests (after applying the Network filter).
    */
-  copyAllFilteredAsCurlCmd: 'Copy all (filtered) as `cURL` (`cmd`)',
+  copyAllListedAsCurlCmd: 'Copy all listed as `cURL` (`cmd`)',
   /**
    *@description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with a Bash script to represent
@@ -378,7 +378,7 @@ const UIStrings = {
    *the clipboard. It will copy the command in the format compatible with a Bash script to represent
    *all network requests (after applying the Network filter).
    */
-  copyAllFilteredAsCurlBash: 'Copy all (filtered) as `cURL` (`bash`)',
+  copyAllListedAsCurlBash: 'Copy all listed as `cURL` (`bash`)',
   /**
    *@description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with cURL (a program, not
@@ -396,7 +396,7 @@ const UIStrings = {
    *the clipboard. It will copy the command in the format compatible with cURL (a program, not
    *translatable) to represent all network requests (after applying the Network filter).
    */
-  copyAllFilteredAsCurl: 'Copy all (filtered) as `cURL`',
+  copyAllListedAsCurl: 'Copy all listed as `cURL`',
   /**
    * @description Text in Network Log View of the Network panel. An action that copies data to the
    * clipboard. It will copy the data in the HAR (not translatable) format. 'all' refers to every
@@ -408,7 +408,7 @@ const UIStrings = {
    * clipboard. It will copy the data in the HAR (not translatable) format. 'all' refers to every
    * network request that is currently shown (after applying the Network filter).
    */
-  copyAllFilteredAsHar: 'Copy all (filtered) as `HAR`',
+  copyAllListedAsHar: 'Copy all listed as `HAR`',
   /**
    *@description A context menu item in the Network Log View of the Network panel
    */
@@ -1747,7 +1747,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
               Host.InspectorFrontendHost.InspectorFrontendHostInstance, request.contentURL()),
           {jslogContext: 'copy-url'});
       copyMenu.footerSection().appendItem(
-          filtered ? i18nString(UIStrings.copyAllFilteredURLs) : i18nString(UIStrings.copyAllURLs),
+          filtered ? i18nString(UIStrings.copyAllListedURLs) : i18nString(UIStrings.copyAllURLs),
           this.copyAllURLs.bind(this), {jslogContext: 'copy-all-urls'});
       if (request.requestHeadersText()) {
         copyMenu.saveSection().appendItem(
@@ -1809,28 +1809,28 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
       if (Host.Platform.isWin()) {
         copyMenu.footerSection().appendItem(
-            filtered ? i18nString(UIStrings.copyAllFilteredAsCurlCmd) : i18nString(UIStrings.copyAllAsCurlCmd),
+            filtered ? i18nString(UIStrings.copyAllListedAsCurlCmd) : i18nString(UIStrings.copyAllAsCurlCmd),
             this.copyAllCurlCommand.bind(this, 'win'), {jslogContext: 'copy-all-as-curl-cmd'});
         copyMenu.footerSection().appendItem(
-            filtered ? i18nString(UIStrings.copyAllFilteredAsCurlBash) : i18nString(UIStrings.copyAllAsCurlBash),
+            filtered ? i18nString(UIStrings.copyAllListedAsCurlBash) : i18nString(UIStrings.copyAllAsCurlBash),
             this.copyAllCurlCommand.bind(this, 'unix'), {jslogContext: 'copy-all-as-curl-bash'});
       } else {
         copyMenu.footerSection().appendItem(
-            filtered ? i18nString(UIStrings.copyAllFilteredAsCurl) : i18nString(UIStrings.copyAllAsCurl),
+            filtered ? i18nString(UIStrings.copyAllListedAsCurl) : i18nString(UIStrings.copyAllAsCurl),
             this.copyAllCurlCommand.bind(this, 'unix'), {jslogContext: 'copy-all-as-curl'});
       }
       copyMenu.footerSection().appendItem(
-          filtered ? i18nString(UIStrings.copyAllFilteredAsPowershell) : i18nString(UIStrings.copyAllAsPowershell),
+          filtered ? i18nString(UIStrings.copyAllListedAsPowershell) : i18nString(UIStrings.copyAllAsPowershell),
           this.copyAllPowerShellCommand.bind(this), {jslogContext: 'copy-all-as-powershell'});
       copyMenu.footerSection().appendItem(
-          filtered ? i18nString(UIStrings.copyAllFilteredAsFetch) : i18nString(UIStrings.copyAllAsFetch),
+          filtered ? i18nString(UIStrings.copyAllListedAsFetch) : i18nString(UIStrings.copyAllAsFetch),
           this.copyAllFetchCall.bind(this, FetchStyle.Browser), {jslogContext: 'copy-all-as-fetch'});
       copyMenu.footerSection().appendItem(
-          filtered ? i18nString(UIStrings.copyAllFilteredAsNodejsFetch) : i18nString(UIStrings.copyAllAsNodejsFetch),
+          filtered ? i18nString(UIStrings.copyAllListedAsNodejsFetch) : i18nString(UIStrings.copyAllAsNodejsFetch),
           this.copyAllFetchCall.bind(this, FetchStyle.NodeJs), {jslogContext: 'copy-all-as-nodejs-fetch'});
     }
     copyMenu.footerSection().appendItem(
-        filtered ? i18nString(UIStrings.copyAllFilteredAsHar) : i18nString(UIStrings.copyAllAsHar),
+        filtered ? i18nString(UIStrings.copyAllListedAsHar) : i18nString(UIStrings.copyAllAsHar),
         this.copyAllAsHAR.bind(this), {jslogContext: 'copy-all-as-har'});
 
     contextMenu.saveSection().appendItem(

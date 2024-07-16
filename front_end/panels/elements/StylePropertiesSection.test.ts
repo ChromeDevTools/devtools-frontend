@@ -298,4 +298,52 @@ describeWithMockConnection('StylesPropertySection', () => {
         stylesSidebarPane, matchedStyles, declaration, 0);
     assert.strictEqual(section.element.textContent, '{}');
   });
+
+  it('renders active and inactive position-try rule sections correctly', async () => {
+    const cssModel = createTarget().model(SDK.CSSModel.CSSModel);
+    assert.exists(cssModel);
+    const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
+    const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+    const styleSheetId = '0' as Protocol.CSS.StyleSheetId;
+    const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 6};
+    const positionTryRules = [
+      {
+        styleSheetId,
+        origin,
+        name: {
+          text: '--try-1',
+        },
+        style: {
+          range,
+          cssProperties: [],
+          shorthandEntries: [],
+        },
+        active: true,
+      },
+      {
+        styleSheetId,
+        origin,
+        name: {
+          text: '--try-2',
+        },
+        style: {
+          range,
+          cssProperties: [],
+          shorthandEntries: [],
+        },
+        active: false,
+      },
+    ];
+    const matchedStyles = await setUpStyles(cssModel, origin, styleSheetId, {...range}, {positionTryRules});
+    const declaration1 = matchedStyles.positionTryRules()[0].style;
+    const declaration2 = matchedStyles.positionTryRules()[1].style;
+    assert.exists(declaration1);
+    assert.exists(declaration2);
+    const section1 = new Elements.StylePropertiesSection.PositionTryRuleSection(
+        stylesSidebarPane, matchedStyles, declaration1, 0, positionTryRules[0].active);
+    const section2 = new Elements.StylePropertiesSection.PositionTryRuleSection(
+        stylesSidebarPane, matchedStyles, declaration1, 1, positionTryRules[1].active);
+    assert.isFalse(section1.propertiesTreeOutline.element.classList.contains('no-affect'));
+    assert.isTrue(section2.propertiesTreeOutline.element.classList.contains('no-affect'));
+  });
 });

@@ -1734,9 +1734,10 @@ export class FontPaletteValuesRuleSection extends StylePropertiesSection {
 export class PositionTryRuleSection extends StylePropertiesSection {
   constructor(
       stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
-      style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number) {
+      style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, active: boolean) {
     super(stylesPane, matchedStyles, style, sectionIdx, null, null);
     this.selectorElement.className = 'position-try-values-key';
+    this.propertiesTreeOutline.element.classList.toggle('no-affect', !active);
   }
 }
 

@@ -355,12 +355,18 @@ export class CSSPositionFallbackRule {
 
 export class CSSPositionTryRule extends CSSRule {
   readonly #name: CSSValue;
+  readonly #active: boolean;
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSPositionTryRule) {
     super(cssModel, {origin: payload.origin, style: payload.style, styleSheetId: payload.styleSheetId});
     this.#name = new CSSValue(payload.name);
+    this.#active = payload.active;
   }
 
   name(): CSSValue {
     return this.#name;
+  }
+
+  active(): boolean {
+    return this.#active;
   }
 }

@@ -1197,7 +1197,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     for (const positionTryRule of matchedStyles.positionTryRules()) {
       const block = SectionBlock.createPositionTryBlock(positionTryRule.name().text);
       this.idleCallbackManager.schedule(() => {
-        block.sections.push(new PositionTryRuleSection(this, matchedStyles, positionTryRule.style, sectionIdx));
+        block.sections.push(new PositionTryRuleSection(
+            this, matchedStyles, positionTryRule.style, sectionIdx, positionTryRule.active()));
         sectionIdx++;
       });
       blocks.push(block);

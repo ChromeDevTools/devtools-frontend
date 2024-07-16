@@ -149,8 +149,8 @@ describe('decodeOriginalScopes', () => {
 });
 
 describe('decodeGeneratedRanges', () => {
-  it('throws for empty input', () => {
-    assert.throws(() => decodeGeneratedRanges('', [], []));
+  it('returns an empty array for empty input', () => {
+    assert.lengthOf(decodeGeneratedRanges('', [], []), 0);
   });
 
   it('throws for missing "end" item', () => {
@@ -161,16 +161,28 @@ describe('decodeGeneratedRanges', () => {
   it('decodes a single range', () => {
     const range = new GeneratedRangeBuilder().start(0, 0).end(5, 0).build();
 
-    const generatedRange = decodeGeneratedRanges(range, [], []);
+    const [generatedRange] = decodeGeneratedRanges(range, [], []);
 
     assert.deepEqual(generatedRange.start, {line: 0, column: 0});
     assert.deepEqual(generatedRange.end, {line: 5, column: 0});
   });
 
+  it('decodes multiple top-level ranges', () => {
+    const range = new GeneratedRangeBuilder().start(0, 0).end(0, 10).start(0, 11).end(0, 20).build();
+
+    const [generatedRange1, generatedRange2] = decodeGeneratedRanges(range, [], []);
+
+    assert.deepEqual(generatedRange1.start, {line: 0, column: 0});
+    assert.deepEqual(generatedRange1.end, {line: 0, column: 10});
+
+    assert.deepEqual(generatedRange2.start, {line: 0, column: 11});
+    assert.deepEqual(generatedRange2.end, {line: 0, column: 20});
+  });
+
   it('decodes a nested range on a single line', () => {
     const range = new GeneratedRangeBuilder().start(0, 0).start(0, 5).end(0, 10).end(0, 15).build();
 
-    const generatedRange = decodeGeneratedRanges(range, [], []);
+    const [generatedRange] = decodeGeneratedRanges(range, [], []);
 
     assert.deepEqual(generatedRange.start, {line: 0, column: 0});
     assert.deepEqual(generatedRange.end, {line: 0, column: 15});
@@ -184,7 +196,7 @@ describe('decodeGeneratedRanges', () => {
     const range =
         new GeneratedRangeBuilder().start(0, 0).start(0, 5).end(0, 10).start(0, 15).end(0, 20).end(0, 25).build();
 
-    const generatedRange = decodeGeneratedRanges(range, [], []);
+    const [generatedRange] = decodeGeneratedRanges(range, [], []);
 
     assert.deepEqual(generatedRange.start, {line: 0, column: 0});
     assert.deepEqual(generatedRange.end, {line: 0, column: 25});
@@ -208,7 +220,7 @@ describe('decodeGeneratedRanges', () => {
                       .end(35, 0)
                       .build();
 
-    const generatedRange = decodeGeneratedRanges(range, [], []);
+    const [generatedRange] = decodeGeneratedRanges(range, [], []);
 
     assert.deepEqual(generatedRange.start, {line: 0, column: 0});
     assert.deepEqual(generatedRange.end, {line: 35, column: 0});
@@ -252,7 +264,7 @@ describe('decodeGeneratedRanges', () => {
                       .end(0, 20)
                       .build();
 
-    const generatedRange = decodeGeneratedRanges(range, originalScopes, []);
+    const [generatedRange] = decodeGeneratedRanges(range, originalScopes, []);
 
     assert.strictEqual(generatedRange.originalScope, originalScopes[0].root, 'range does not reference global scope');
     assert.strictEqual(
@@ -275,7 +287,7 @@ describe('decodeGeneratedRanges', () => {
                       .end(0, 16)
                       .build();
 
-    const generatedRange = decodeGeneratedRanges(range, originalScopes, []);
+    const [generatedRange] = decodeGeneratedRanges(range, originalScopes, []);
 
     assert.strictEqual(generatedRange.children[0].originalScope, originalScopes[0].root.children[0]);
     assert.strictEqual(generatedRange.children[1].originalScope, originalScopes[1].root.children[0]);
@@ -306,7 +318,7 @@ describe('decodeGeneratedRanges', () => {
             .end(0, 20)
             .build();
 
-    const generatedRange = decodeGeneratedRanges(range, originalScopes, []);
+    const [generatedRange] = decodeGeneratedRanges(range, originalScopes, []);
 
     assert.lengthOf(generatedRange.children, 3);
     assert.deepEqual(generatedRange.children[0].callsite, {sourceIndex: 0, line: 6, column: 0});
@@ -335,7 +347,7 @@ describe('decodeGeneratedRanges', () => {
             .end(40, 0)
             .build();
 
-    const generatedRange = decodeGeneratedRanges(range, originalScopes, []);
+    const [generatedRange] = decodeGeneratedRanges(range, originalScopes, []);
 
     assert.lengthOf(generatedRange.children, 2);
     assert.lengthOf(generatedRange.children[0].children, 1);
@@ -355,7 +367,7 @@ describe('decodeGeneratedRanges', () => {
                       .end(0, 100)
                       .build();
 
-    const generatedRange = decodeGeneratedRanges(range, originalScopes, names);
+    const [generatedRange] = decodeGeneratedRanges(range, originalScopes, names);
 
     assert.lengthOf(generatedRange.values, 3);
     assert.deepEqual(generatedRange.values, ['x', undefined, 'y']);
@@ -377,7 +389,7 @@ describe('decodeGeneratedRanges', () => {
                       .end(0, 100)
                       .build();
 
-    const generatedRange = decodeGeneratedRanges(range, originalScopes, names);
+    const [generatedRange] = decodeGeneratedRanges(range, originalScopes, names);
 
     assert.lengthOf(generatedRange.values, 1);
     assert.deepEqual(generatedRange.values[0], [
@@ -397,7 +409,7 @@ describe('decodeGeneratedRanges', () => {
                       .end(40, 0)
                       .build();
 
-    const generatedRange = decodeGeneratedRanges(range, [], []);
+    const [generatedRange] = decodeGeneratedRanges(range, [], []);
     assert.lengthOf(generatedRange.children, 2);
     assert.isTrue(generatedRange.children[0].isScope);
     assert.isFalse(generatedRange.children[1].isScope);

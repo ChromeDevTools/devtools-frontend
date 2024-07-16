@@ -14,9 +14,9 @@ import {
 export class SourceMapScopesInfo {
   /* eslint-disable-next-line no-unused-private-class-members */
   readonly #originalScopes: OriginalScope[];
-  readonly #generatedRanges: GeneratedRange;
+  readonly #generatedRanges: GeneratedRange[];
 
-  constructor(originalScopes: OriginalScope[], generatedRanges: GeneratedRange) {
+  constructor(originalScopes: OriginalScope[], generatedRanges: GeneratedRange[]) {
     this.#originalScopes = originalScopes;
     this.#generatedRanges = generatedRanges;
   }
@@ -71,13 +71,13 @@ export class SourceMapScopesInfo {
   #findGeneratedRangeChain(line: number, column: number): GeneratedRange[] {
     const result: GeneratedRange[] = [];
 
-    (function walkRange(range: GeneratedRange) {
-      if (!contains(range, line, column)) {
-        return;
-      }
-      result.push(range);
-      for (const childRange of range.children) {
-        walkRange(childRange);
+    (function walkRanges(ranges: GeneratedRange[]) {
+      for (const range of ranges) {
+        if (!contains(range, line, column)) {
+          continue;
+        }
+        result.push(range);
+        walkRanges(range.children);
       }
     })(this.#generatedRanges);
 

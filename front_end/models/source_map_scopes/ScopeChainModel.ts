@@ -82,11 +82,11 @@ export type EventTypes = {
 export class ScopeChain {
   readonly callFrame: SDK.DebuggerModel.CallFrame;
   readonly thisObject: SDK.RemoteObject.RemoteObject|null;
-  readonly scopeChain: SDK.DebuggerModel.ScopeChainEntry[]|null;
+  readonly scopeChain: SDK.DebuggerModel.ScopeChainEntry[];
 
   constructor(
       callFrame: SDK.DebuggerModel.CallFrame, thisObject: SDK.RemoteObject.RemoteObject|null,
-      scopeChain: SDK.DebuggerModel.ScopeChainEntry[]|null) {
+      scopeChain: SDK.DebuggerModel.ScopeChainEntry[]) {
     this.callFrame = callFrame;
     this.thisObject = thisObject;
     this.scopeChain = scopeChain;

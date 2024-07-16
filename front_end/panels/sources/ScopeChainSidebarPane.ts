@@ -147,7 +147,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
       const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
       this.treeOutline.removeChildren();
 
-      if (!details || !callFrame || !scopeChain) {
+      if (!details) {
         this.infoElement.textContent = i18nString(UIStrings.notPaused);
         return;
       }

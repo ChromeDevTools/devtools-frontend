@@ -384,10 +384,7 @@ const resolveScope = async(script: SDK.Script.Script, scopeChain: Formatter.Form
     };
 
 export const resolveScopeChain =
-    async function(callFrame: SDK.DebuggerModel.CallFrame|null): Promise<SDK.DebuggerModel.ScopeChainEntry[]|null> {
-  if (!callFrame) {
-    return null;
-  }
+    async function(callFrame: SDK.DebuggerModel.CallFrame): Promise<SDK.DebuggerModel.ScopeChainEntry[]> {
   const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
   const scopeChain = await pluginManager.resolveScopeChain(callFrame);
   if (scopeChain) {
@@ -551,10 +548,7 @@ export const resolveExpression = async(
 };
 
 export const resolveThisObject =
-    async(callFrame: SDK.DebuggerModel.CallFrame|null): Promise<SDK.RemoteObject.RemoteObject|null> => {
-  if (!callFrame) {
-    return null;
-  }
+    async(callFrame: SDK.DebuggerModel.CallFrame): Promise<SDK.RemoteObject.RemoteObject|null> => {
   const scopeChain = callFrame.scopeChain();
   if (scopeChain.length === 0) {
     return callFrame.thisObject();
@@ -572,7 +566,7 @@ export const resolveThisObject =
     silent: true,
     returnByValue: false,
     generatePreview: true,
-  } as SDK.RuntimeModel.EvaluationOptions));
+  }));
   if ('exceptionDetails' in result) {
     return !result.exceptionDetails && result.object ? result.object : callFrame.thisObject();
   }

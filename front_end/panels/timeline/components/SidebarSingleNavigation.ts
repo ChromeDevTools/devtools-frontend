@@ -7,7 +7,8 @@ import * as TraceEngine from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
-import {InsightsCategories} from './Sidebar.js';
+import * as Insights from './insights/insights.js';
+import {InsightsCategories, ToggleSidebarInsights} from './Sidebar.js';
 import styles from './sidebarSingleNavigation.css.js';
 
 export interface SidebarSingleNavigationData {
@@ -37,6 +38,11 @@ export class SidebarSingleNavigation extends HTMLElement {
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [styles];
     this.#render();
+  }
+
+  #toggleInsightClick(): void {
+    this.dispatchEvent(new ToggleSidebarInsights());
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
   #metricIsVisible(label: 'LCP'|'CLS'|'INP'): boolean {
@@ -133,6 +139,23 @@ export class SidebarSingleNavigation extends HTMLElement {
     `;
   }
 
+  #renderInsights(
+      insights: TraceEngine.Insights.Types.TraceInsightData|null,
+      navigationId: string,
+      ): LitHtml.TemplateResult {
+    const renderLCPInsights =
+        this.#data.activeCategory === InsightsCategories.LCP || this.#data.activeCategory === InsightsCategories.ALL;
+    // clang-format off
+      return LitHtml.html`${renderLCPInsights ? LitHtml.html`
+        <div @click=${this.#toggleInsightClick}>
+          <${Insights.LCPPhases.LCPPhases.litTagName}
+            .insights=${insights}
+            .navigationId=${navigationId}
+          </${Insights.LCPPhases.LCPPhases}>
+        </div>` : LitHtml.nothing}`;
+    // clang-format on
+  }
+
   #render(): void {
     const {
       traceParsedData,
@@ -154,6 +177,7 @@ export class SidebarSingleNavigation extends HTMLElement {
     LitHtml.render(LitHtml.html`
       <div class="navigation">
         ${this.#renderMetrics(traceParsedData, navigationId)}
+        ${this.#renderInsights(insights, navigationId)}
         </div>
       `, this.#shadow, {host: this});
     // clang-format on

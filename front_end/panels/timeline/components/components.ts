@@ -15,7 +15,6 @@ import * as NetworkRequestTooltip from './NetworkRequestTooltip.js';
 import * as NetworkThrottlingSelector from './NetworkThrottlingSelector.js';
 import * as Sidebar from './Sidebar.js';
 import * as SidebarAnnotationsTab from './SidebarAnnotationsTab.js';
-import * as SidebarInsight from './SidebarInsight.js';
 import * as TimeRangeOverlay from './TimeRangeOverlay.js';
 import * as TimespanBreakdownOverlay from './TimespanBreakdownOverlay.js';
 import * as Utils from './Utils.js';
@@ -34,7 +33,6 @@ export {
   NetworkThrottlingSelector,
   Sidebar,
   SidebarAnnotationsTab,
-  SidebarInsight,
   TimeRangeOverlay,
   TimespanBreakdownOverlay,
   Utils,

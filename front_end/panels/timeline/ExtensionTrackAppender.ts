@@ -112,8 +112,8 @@ export class ExtensionTrackAppender implements TrackAppender {
    * is hovered in the timeline.
    */
   highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.TraceEventData): HighlightedEntryInfo {
-    const title = TraceEngine.Types.Extensions.isSyntheticExtensionEntry(event) && event.args.hintText ?
-        event.args.hintText :
+    const title = TraceEngine.Types.Extensions.isSyntheticExtensionEntry(event) && event.args.tooltipText ?
+        event.args.tooltipText :
         this.titleForEvent(event);
     return {title, formattedTime: getFormattedTime(event.dur)};
   }

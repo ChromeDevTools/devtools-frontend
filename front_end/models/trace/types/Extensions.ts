@@ -29,15 +29,15 @@ export function colorIsValid(color: string): boolean {
   return (extensionPalette as readonly string[]).includes(color);
 }
 
-export interface ExtensionDataPayload {
-  dataType?: 'track-entry'|'marker';
+export interface ExtensionDataPayloadBase {
   color?: ExtensionColorFromPalette;
-  track?: string;
-  detailsPairs?: [string, string][];
-  hintText?: string;
+  properties?: [string, string][];
+  tooltipText?: string;
 }
 
-export interface ExtensionTrackEntryPayload extends ExtensionDataPayload {
+export type ExtensionDataPayload = ExtensionTrackEntryPayload|ExtensionMarkerPayload;
+
+export interface ExtensionTrackEntryPayload extends ExtensionDataPayloadBase {
   // Typed as possibly undefined since when no data type is provided
   // the entry is defaulted to a track entry
   dataType?: 'track-entry';
@@ -53,9 +53,8 @@ export interface ExtensionTrackEntryPayload extends ExtensionDataPayload {
   trackGroup?: string;
 }
 
-export interface ExtensionMarkerPayload extends ExtensionDataPayload {
+export interface ExtensionMarkerPayload extends ExtensionDataPayloadBase {
   dataType: 'marker';
-  track: undefined;
 }
 
 /**

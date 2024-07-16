@@ -8,7 +8,8 @@ describe('ExtensionTraceDataHandler', function() {
   let extensionHandlerOutput: TraceModel.Handlers.ModelHandlers.ExtensionTraceData.ExtensionTraceData;
 
   let idCounter = 0;
-  type ExtensionTestData = {detail: unknown, name: string, ts: number, dur?: number};
+  type ExtensionTestData =
+      {detail: {devtools?: TraceModel.Types.Extensions.ExtensionDataPayload}, name: string, ts: number, dur?: number};
   function makeTimingEventWithExtensionData({name, ts: tsMicro, detail, dur: durMicro}: ExtensionTestData):
       TraceModel.Types.TraceEvents.TraceEventData[] {
     const isMark = durMicro === undefined;
@@ -66,8 +67,8 @@ describe('ExtensionTraceDataHandler', function() {
           devtools: {
             color: 'error',
             dataType: 'marker',
-            detailsPairs: [['Description', 'This marks the start of a task']],
-            hintText: 'A mark',
+            properties: [['Description', 'This marks the start of a task']],
+            tooltipText: 'A mark',
           },
         },
         name: 'A custom mark',
@@ -81,8 +82,7 @@ describe('ExtensionTraceDataHandler', function() {
       },
       {
         detail: {
-          devtools:
-              {dataType: 'track-entry', track: 'An Extension Track', detailsPairs: [['Description', 'Something']]},
+          devtools: {dataType: 'track-entry', track: 'An Extension Track', properties: [['Description', 'Something']]},
         },
         name: 'An extension measurement',
         ts: 100,
@@ -101,8 +101,8 @@ describe('ExtensionTraceDataHandler', function() {
           devtools: {
             dataType: 'track-entry',
             track: 'Another Extension Track',
-            detailsPairs: [['Description', 'Something'], ['Tip', 'A tip to improve this']],
-            hintText: 'A hint if needed',
+            properties: [['Description', 'Something'], ['Tip', 'A tip to improve this']],
+            tooltipText: 'A hint if needed',
           },
         },
         name: 'An extension measurement',
@@ -111,19 +111,24 @@ describe('ExtensionTraceDataHandler', function() {
       },
       // Track entry with invalid data type (should be ignored).
       {
-        detail: {devtools: {dataType: 'invalid-type', track: 'Another Extension Track'}},
+        detail: {
+          devtools: {
+            dataType: 'invalid-type' as TraceModel.Types.Extensions.ExtensionDataPayload['dataType'],
+            track: 'Another Extension Track',
+          },
+        },
         name: 'An extension measurement',
         ts: 105,
         dur: 50,
       },
       // Track entry with no track value (should be ignored).
       {
-        detail: {devtools: {dataType: 'track-type'}},
+        detail: {devtools: {dataType: 'track-entry'}},
         name: 'An extension measurement',
         ts: 105,
         dur: 50,
       },
-    ];
+    ] as ExtensionTestData[];
     return createTraceExtensionDataFromTestInput(extensionData);
   }
 
@@ -143,11 +148,11 @@ describe('ExtensionTraceDataHandler', function() {
     });
 
     it('gets data from individual entries', async () => {
-      const {hintText, track, detailsPairs} =
+      const {tooltipText, track, properties} =
           extensionHandlerOutput.extensionTrackData[1].entriesByTrack['Another Extension Track'][0].args;
-      assert.strictEqual(hintText, 'A hint if needed');
+      assert.strictEqual(tooltipText, 'A hint if needed');
       assert.strictEqual(track, 'Another Extension Track');
-      assert.strictEqual(JSON.stringify(detailsPairs), '[["Description","Something"],["Tip","A tip to improve this"]]');
+      assert.strictEqual(JSON.stringify(properties), '[["Description","Something"],["Tip","A tip to improve this"]]');
     });
 
     it('discards track data without a corresponding track field', async () => {
@@ -178,9 +183,9 @@ describe('ExtensionTraceDataHandler', function() {
     it('parses marker data correctly', async () => {
       assert.lengthOf(extensionHandlerOutput.extensionMarkers, 1);
       assert.strictEqual(extensionHandlerOutput.extensionMarkers[0].name, 'A custom mark');
-      const {hintText, detailsPairs} = extensionHandlerOutput.extensionMarkers[0].args;
-      assert.strictEqual(hintText, 'A mark');
-      assert.strictEqual(JSON.stringify(detailsPairs), '[["Description","This marks the start of a task"]]');
+      const {tooltipText, properties} = extensionHandlerOutput.extensionMarkers[0].args;
+      assert.strictEqual(tooltipText, 'A mark');
+      assert.strictEqual(JSON.stringify(properties), '[["Description","This marks the start of a task"]]');
     });
 
     it('discards markers whose details are not valid stringified JSON', async () => {
@@ -215,14 +220,14 @@ describe('ExtensionTraceDataHandler', function() {
 
   describe('Data filtering', () => {
     it('extracts the extension data from a timing\'s detail when present', async function() {
-      const extensionData = [
+      const extensionData: ExtensionTestData[] = [
         {
           detail: {
             devtools: {
               color: 'error',
               dataType: 'marker',
-              detailsPairs: [['Description', 'This marks the start of a task']],
-              hintText: 'A mark',
+              properties: [['Description', 'This marks the start of a task']],
+              tooltipText: 'A mark',
             },
           },
           name: 'A custom mark',
@@ -235,13 +240,11 @@ describe('ExtensionTraceDataHandler', function() {
     it('ignores a timing if its detail does not contain a devtools object', async function() {
       const extensionData = [
         {
-          detail: {
-            moreDetails: 'a detail',
-          },
+          detail: {},
           name: 'A custom mark',
           ts: 100,
         },
-      ];
+      ] as ExtensionTestData[];
       const extensionHandlerOutput = await createTraceExtensionDataFromTestInput(extensionData);
       assert.strictEqual(extensionHandlerOutput.extensionMarkers.length, 0);
     });
@@ -252,7 +255,7 @@ describe('ExtensionTraceDataHandler', function() {
           detail: {
             devtools: {
               color: 'error',
-              dataType: 'invalid',
+              dataType: 'invalid' as TraceModel.Types.Extensions.ExtensionDataPayload['dataType'],
             },
           },
           name: 'A custom mark',
@@ -278,7 +281,7 @@ describe('ExtensionTraceDataHandler', function() {
           name: 'A measurement',
           ts: 100,
         },
-      ];
+      ] as ExtensionTestData[];
       const extensionHandlerOutput = await createTraceExtensionDataFromTestInput(extensionData);
       assert.strictEqual(extensionHandlerOutput.extensionMarkers.length, 0);
     });
@@ -295,7 +298,7 @@ describe('ExtensionTraceDataHandler', function() {
           ts: 100,
           dur: 100,
         },
-      ];
+      ] as ExtensionTestData[];
       const extensionHandlerOutput = await createTraceExtensionDataFromTestInput(extensionData);
       assert.strictEqual(extensionHandlerOutput.extensionMarkers.length, 0);
     });
@@ -303,7 +306,7 @@ describe('ExtensionTraceDataHandler', function() {
 
   describe('Track groups', () => {
     it('builds extension track data for grouped tracks correctly', async function() {
-      const extensionDevToolsObjects = [
+      const extensionDevToolsObjects: ExtensionTestData['detail']['devtools'][] = [
         // Track group 1
         {
           dataType: 'track-entry',
@@ -378,7 +381,7 @@ describe('ExtensionTraceDataHandler', function() {
       assert.deepEqual(Object.values(fourthTrackData.entriesByTrack).map(entries => entries.length), [2]);
     });
     it('calculates self time sub track by sub track', async function() {
-      const extensionDevToolsObjects = [
+      const extensionDevToolsObjects: ExtensionTestData[] = [
         // Track group 1
         {
           detail: {

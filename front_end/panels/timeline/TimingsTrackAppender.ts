@@ -248,8 +248,8 @@ export class TimingsTrackAppender implements TrackAppender {
    * is hovered in the timeline.
    */
   highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.TraceEventData): HighlightedEntryInfo {
-    const title = TraceEngine.Types.Extensions.isSyntheticExtensionEntry(event) && event.args.hintText ?
-        event.args.hintText :
+    const title = TraceEngine.Types.Extensions.isSyntheticExtensionEntry(event) && event.args.tooltipText ?
+        event.args.tooltipText :
         this.titleForEvent(event);
 
     // If an event is a marker event, rather than show a duration of 0, we can instead show the time that the event happened, which is much more useful. We do this currently for:

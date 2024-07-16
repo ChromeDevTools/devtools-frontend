@@ -1175,7 +1175,7 @@ export class TimelineUIUtils {
     }
 
     if (TraceEngine.Types.Extensions.isSyntheticExtensionEntry(event)) {
-      for (const [key, value] of event.args.detailsPairs || []) {
+      for (const [key, value] of event.args.properties || []) {
         contentHelper.appendTextRow(key, value);
       }
     }

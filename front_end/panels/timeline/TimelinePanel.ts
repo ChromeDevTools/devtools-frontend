@@ -790,7 +790,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.fileSelectorElement.remove();
     }
     // .gz is far more popular than .gzip, but both are valid.
-    this.fileSelectorElement = UI.UIUtils.createFileSelectorElement(this.loadFromFile.bind(this), '.json,.gz,.gzip');
+    this.fileSelectorElement =
+        UI.UIUtils.createFileSelectorElement(this.loadFromFile.bind(this), '.json,.gz,.gzip,.cpuprofile');
     this.timelinePane.element.appendChild(this.fileSelectorElement);
   }
 

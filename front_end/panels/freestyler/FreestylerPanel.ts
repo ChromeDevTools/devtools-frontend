@@ -120,14 +120,14 @@ export class FreestylerPanel extends UI.Panel.Panel {
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
       selectedNode: this.#selectedNode,
       isLoading: false,
-      onTextSubmit: this.#handleTextSubmit.bind(this),
+      onTextSubmit: this.#startConversation.bind(this),
       onInspectElementClick: this.#handleSelectElementClick.bind(this),
       onRateClick: this.#handleRateClick.bind(this),
       onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
       onAcceptConsentClick: this.#handleAcceptConsentClick.bind(this),
       onCancelClick: this.#cancel.bind(this),
       onFixThisIssueClick: () => {
-        void this.#handleTextSubmit(FIX_THIS_ISSUE_PROMPT);
+        void this.#startConversation(FIX_THIS_ISSUE_PROMPT, true);
       },
     };
     this.#toggleSearchElementAction.addEventListener(UI.ActionRegistration.Events.Toggled, ev => {
@@ -258,7 +258,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.doUpdate();
   }
 
-  async #handleTextSubmit(text: string): Promise<void> {
+  async #startConversation(text: string, isFixQuery: boolean = false): Promise<void> {
     this.#viewProps.messages.push({
       entity: ChatMessageEntity.USER,
       text,
@@ -282,7 +282,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       systemMessage.suggestingFix = false;
       systemMessage.steps.push({step: Step.ERROR, text: i18nString(UIStringsTemp.stoppedResponse)});
     });
-    for await (const data of this.#agent.run(text, {signal})) {
+    for await (const data of this.#agent.run(text, {signal, isFixQuery})) {
       if (data.step === Step.QUERYING) {
         systemMessage = {
           entity: ChatMessageEntity.MODEL,

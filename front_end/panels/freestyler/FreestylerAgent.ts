@@ -54,6 +54,8 @@ ANSWER: The element is centered on the page because the parent is a flex contain
 
 The example session ends here.`;
 
+export const FIX_THIS_ISSUE_PROMPT = 'Fix this issue using JavaScript code execution';
+
 export enum Step {
   THOUGHT = 'thought',
   ACTION = 'action',
@@ -80,8 +82,6 @@ export interface QueryStepData {
 }
 
 export type StepData = CommonStepData|ActionStepData;
-
-export const FIX_THIS_ISSUE_PROMPT = 'Fix this issue using JavaScript code execution';
 
 async function executeJsCode(code: string, {throwOnSideEffect}: {throwOnSideEffect: boolean}): Promise<string> {
   const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
@@ -299,13 +299,15 @@ export class FreestylerAgent {
   }
 
   #runId = 0;
-  async * run(query: string, options?: {signal: AbortSignal}): AsyncGenerator<StepData|QueryStepData, void, void> {
+  async *
+      run(query: string, options: {signal?: AbortSignal, isFixQuery: boolean} = {isFixQuery: false}):
+          AsyncGenerator<StepData|QueryStepData, void, void> {
     const genericErrorMessage = 'Sorry, I could not help you with this query.';
     const structuredLog = [];
     query = `QUERY: ${query}`;
     const currentRunId = ++this.#runId;
 
-    options?.signal.addEventListener('abort', () => {
+    options.signal?.addEventListener('abort', () => {
       this.#chatHistory.delete(currentRunId);
     });
     for (let i = 0; i < MAX_STEPS; i++) {
@@ -327,7 +329,7 @@ export class FreestylerAgent {
       } catch (err) {
         debugLog('Error calling the AIDA API', err);
 
-        if (options?.signal.aborted) {
+        if (options.signal?.aborted) {
           break;
         }
 
@@ -335,7 +337,7 @@ export class FreestylerAgent {
         break;
       }
 
-      if (options?.signal.aborted) {
+      if (options.signal?.aborted) {
         break;
       }
 
@@ -367,8 +369,7 @@ export class FreestylerAgent {
           yield {step: Step.THOUGHT, text: thought, rpcId};
         }
         debugLog(`Action to execute: ${action}`);
-        const observation =
-            await this.#generateObservation(action, {throwOnSideEffect: !query.includes(FIX_THIS_ISSUE_PROMPT)});
+        const observation = await this.#generateObservation(action, {throwOnSideEffect: !options.isFixQuery});
         debugLog(`Action result: ${observation}`);
         yield {step: Step.ACTION, code: action, output: observation, rpcId};
         query = `OBSERVATION: ${observation}`;

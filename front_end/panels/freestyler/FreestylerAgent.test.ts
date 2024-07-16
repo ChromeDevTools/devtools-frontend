@@ -503,7 +503,7 @@ c`;
           execJs,
         });
 
-        await Array.fromAsync(agent.run(Freestyler.FIX_THIS_ISSUE_PROMPT));
+        await Array.fromAsync(agent.run(Freestyler.FIX_THIS_ISSUE_PROMPT, {isFixQuery: true}));
 
         const optionsArg = execJs.lastCall.args[1];
         sinon.assert.notCalled(confirmSideEffect);
@@ -863,7 +863,7 @@ ANSWER: this is the answer`,
 
       const controller = new AbortController();
       controller.abort();
-      await Array.fromAsync(agent.run('test', {signal: controller.signal}));
+      await Array.fromAsync(agent.run('test', {signal: controller.signal, isFixQuery: false}));
 
       assert.deepStrictEqual(agent.chatHistoryForTesting, []);
     });

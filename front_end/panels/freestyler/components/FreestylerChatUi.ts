@@ -312,6 +312,7 @@ export class FreestylerChatUi extends HTMLElement {
             .code=${step.code.trim()}
             .codeLang=${'js'}
             .displayToolbar=${false}
+            .displayNotice=${true}
           ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
           <div class="js-code-output">${step.output}</div>
         </div>

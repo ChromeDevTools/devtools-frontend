@@ -28,11 +28,25 @@ export const enum EventKeyType {
 }
 
 /**
+ * Represents an object that is saved in the file when user created annotations in the timeline.
+ *
+ * Expected to add more annotations.
+ */
+export interface SerializedAnnotations {
+  entryLabels: EntryLabelAnnotationSerialized[];
+}
+
+/**
  * Represents an object that is saved in the file when a user creates a label for an entry in the timeline.
  */
 export interface EntryLabelAnnotation {
   type: 'ENTRY_LABEL';
   entry: TraceEventData;
+  label: string;
+}
+
+export interface EntryLabelAnnotationSerialized {
+  entry: TraceEventSerializableKey;
   label: string;
 }
 
@@ -83,6 +97,7 @@ export interface Modifications {
     expandableEntries: TraceEventSerializableKey[],
   };
   initialBreadcrumb: Breadcrumb;
+  annotations: SerializedAnnotations;
 }
 
 /**

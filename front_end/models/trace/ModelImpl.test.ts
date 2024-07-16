@@ -126,9 +126,19 @@ describeWithEnvironment('TraceModel', function() {
       expandableEntries: ['r-4'],
     } as TraceModel.Types.File.Modifications['entriesModifications'];
 
+    const annotations = {
+      entryLabels: [
+        {
+          entry: 'r-4',
+          label: 'entry label',
+        },
+      ],
+    } as TraceModel.Types.File.Modifications['annotations'];
+
     const modifications = {
       entriesModifications,
       initialBreadcrumb,
+      annotations,
     };
 
     model.overrideModifications(0, modifications);

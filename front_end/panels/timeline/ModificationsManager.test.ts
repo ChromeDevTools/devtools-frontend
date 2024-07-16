@@ -39,5 +39,31 @@ describe('ModificationsManager', () => {
       'child':
           {'window': {'min': 967569967927.7909, 'max': 967571964564.4985, 'range': 1996636.7076416016}, 'child': null},
     } as TraceEngine.Types.File.Breadcrumb);
+    assert.deepEqual(modifications.annotations, {
+      entryLabels: [],
+    });
+  });
+
+  it('creates an annotation and generates correct json for annotations', async function() {
+    const traceParsedData = (await TraceLoader.traceEngine(null, 'web-dev-with-commit.json.gz')).traceData;
+    // Get any entry to create a label with.
+    const entry = traceParsedData.Renderer.allTraceEntries[0];
+
+    const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
+    assert.isOk(modificationsManager);
+
+    modificationsManager.createAnnotation({
+      type: 'ENTRY_LABEL',
+      entry,
+      label: 'entry label',
+    });
+
+    const modifications = modificationsManager.toJSON().annotations;
+    assert.deepEqual(modifications, {
+      entryLabels: [{
+        entry: 'r-38',
+        label: 'entry label',
+      }],
+    });
   });
 });

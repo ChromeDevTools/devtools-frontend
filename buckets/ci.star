@@ -73,7 +73,7 @@ DevTools Linux</a> but has devtools_skip_typecheck=True.""",
         ),
         builder_descriptor(
             name = "Stand-alone Shuffled Linux",
-            recipe_name = "devtools/devtools-frontend",
+            recipe_name = "devtools/dtf-shuffled",
             consoles = ["shuffled"],
         ),
         builder_descriptor(

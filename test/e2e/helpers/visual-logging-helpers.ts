@@ -196,6 +196,7 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]) {
   const actualEvents =
       // @ts-ignore
       await frontend.evaluate(async () => (await globalThis.getVeDebugEventsLog()) as unknown as TestLogEntry[]);
+  const unmatchedEvents: TestLogEntry[] = [];
   for (let i = 0; i < expectedEvents.length; ++i) {
     let bestError: {difference: number, description?: string}|null = null;
     const expectedEvent = expectedEvents[i];
@@ -211,6 +212,7 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]) {
       }
       const error = compareVeEvents(actualEvents[i], expectedEvent);
       if (error.difference) {
+        unmatchedEvents.push(actualEvents[i]);
         actualEvents.splice(i, 1);
         if (error.difference <= (bestError?.difference || 1)) {
           bestError = error;
@@ -220,6 +222,10 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]) {
       }
     }
   }
+  await frontend.evaluate(unmatchedEvents => {
+    // @ts-ignore
+    globalThis.veDebugEventsLog = unmatchedEvents;
+  }, unmatchedEvents);
 }
 
 function collapseConsecutiveImpressions(events: TestLogEntry[]) {
@@ -266,4 +272,17 @@ function editDistance(a: string, b: string) {
     }
   }
   return v1[b.length];
+}
+
+// Prints all VE events that haven't been matched by expectVeEvents calls
+// Useful for writing new assertions.
+export async function dumpVeEvents(label: string) {
+  const {frontend} = getBrowserAndPages();
+  await renderCoordinatorQueueEmpty();
+  const actualEvents =
+      // @ts-ignore
+      await frontend.evaluate(async () => (await globalThis.getVeDebugEventsLog()) as unknown as TestLogEntry[]);
+  // eslint-disable-next-line no-console
+  console.log(
+      label, actualEvents.map(e => 'interaction' in e ? e.interaction : formatImpressions(e.impressions)).join('\n'));
 }

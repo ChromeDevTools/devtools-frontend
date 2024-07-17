@@ -78,7 +78,7 @@ devtools_module("network") {
     "../../panels/mobile_throttling:bundle",
     "../../panels/search:bundle",
     "../../panels/sources:bundle",
-    "../../panels/timeline:bundle",
+    "../../panels/timeline/utils:bundle",
     "../../panels/utils:bundle",
     "../../third_party/chromium/client-variations:bundle",
     "../../ui/components/expandable_list:bundle",

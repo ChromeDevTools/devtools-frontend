@@ -130,6 +130,7 @@ devtools_module("timeline") {
     "../../ui/lit-html:bundle",
     "./components:bundle",
     "./extensions:bundle",
+    "./utils:bundle",
   ]
 
   visibility = [ "../../component_docs/*" ]
@@ -155,7 +156,6 @@ devtools_entrypoint("bundle") {
     "../input/*",
     "../js_timeline/*",
     "../lighthouse/*",
-    "../network/*",
     "../recorder/*",
     "./track_appenders:unittests",
   ]

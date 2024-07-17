@@ -8,7 +8,9 @@ import type * as SDK from '../../../core/sdk/sdk.js';
 import * as TraceEngine from '../../../models/trace/trace.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as LegacyComponents from '../../../ui/legacy/components/utils/utils.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as TimelineUtils from '../utils/utils.js';
 
 import NetworkRequestDetailsStyles from './networkRequestDetails.css.js';
 import {colorForNetworkRequest} from './Utils.js';
@@ -168,6 +170,19 @@ export class NetworkRequestDetails extends HTMLElement {
     };
     const linkifiedURL = LegacyComponents.Linkifier.Linkifier.linkifyURL(
         this.#networkRequest.args.data.url as Platform.DevToolsPath.UrlString, options);
+    linkifiedURL.addEventListener('contextmenu', (event: MouseEvent) => {
+      if (!this.#networkRequest) {
+        return;
+      }
+      // Add a wrapper class here. The reason is the `Reveal in Network panel` option is handled by the context menu
+      // provider, which will add this option for all supporting types. And there are a lot of context menu providers that
+      // support `SDK.NetworkRequest.NetworkRequest`, for example `Override content` by PersistenceActions, but we so far
+      // just want the one to reveal in network panel, so add a new class which will only be supported by Network panel.
+      const request = new TimelineUtils.NetworkRequest.TimelineNetworkRequest(this.#networkRequest);
+      const contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
+      contextMenu.appendApplicableItems(request);
+      void contextMenu.show();
+    });
     return this.#renderRow(i18n.i18n.lockedString('URL'), linkifiedURL);
   }
 

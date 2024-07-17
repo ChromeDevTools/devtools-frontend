@@ -63,6 +63,7 @@ devtools_module("components") {
     "../../../ui/visual_logging:bundle",
     "../../emulation:bundle",
     "../../mobile_throttling:bundle",
+    "../utils:bundle",
     "./insights:bundle",
   ]
 }
@@ -79,7 +80,6 @@ devtools_entrypoint("bundle") {
     ":*",
     "..:*",
     "../../../ui/components/docs/*",
-    "../../application/components/*",
   ]
 }
 

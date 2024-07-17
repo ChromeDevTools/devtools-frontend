@@ -133,7 +133,14 @@ export class OriginalScopeBuilder {
   #encodedScope = '';
   #lastLine = 0;
 
-  start(line: number, column: number, kind: SDK.SourceMapScopes.ScopeKind, name?: number, variables?: number[]): this {
+  readonly #names: string[];
+
+  /** The 'names' field of the SourceMap. The builder will modify it. */
+  constructor(names: string[]) {
+    this.#names = names;
+  }
+
+  start(line: number, column: number, kind: SDK.SourceMapScopes.ScopeKind, name?: string, variables?: string[]): this {
     if (this.#encodedScope !== '') {
       this.#encodedScope += ',';
     }
@@ -145,10 +152,10 @@ export class OriginalScopeBuilder {
     this.#encodedScope += encodeVlqList([lineDiff, column, this.#encodeKind(kind), flags]);
 
     if (name !== undefined) {
-      this.#encodedScope += encodeVlq(name);
+      this.#encodedScope += encodeVlq(this.#nameIdx(name));
     }
     if (variables !== undefined) {
-      this.#encodedScope += encodeVlqList(variables);
+      this.#encodedScope += encodeVlqList(variables.map(variable => this.#nameIdx(variable)));
     }
 
     return this;
@@ -185,6 +192,15 @@ export class OriginalScopeBuilder {
         return 0x04;
     }
   }
+
+  #nameIdx(name: string): number {
+    let idx = this.#names.indexOf(name);
+    if (idx < 0) {
+      idx = this.#names.length;
+      this.#names.push(name);
+    }
+    return idx;
+  }
 }
 
 export class GeneratedRangeBuilder {
@@ -199,11 +215,18 @@ export class GeneratedRangeBuilder {
     callsiteColumn: 0,
   };
 
+  readonly #names: string[];
+
+  /** The 'names' field of the SourceMap. The builder will modify it. */
+  constructor(names: string[]) {
+    this.#names = names;
+  }
+
   start(line: number, column: number, options?: {
     isScope?: boolean,
     definition?: {sourceIdx: number, scopeIdx: number},
     callsite?: {sourceIdx: number, line: number, column: number},
-    bindings?: (number|{line: number, column: number, nameIdx: number}[])[],
+    bindings?: (string|undefined|{line: number, column: number, name: string|undefined}[])[],
   }): this {
     this.#emitLineSeparator(line);
     this.#emitItemSepratorIfRequired();
@@ -253,24 +276,24 @@ export class GeneratedRangeBuilder {
     }
 
     for (const bindings of options?.bindings ?? []) {
-      if (typeof bindings === 'number') {
-        this.#encodedRange += encodeVlq(bindings);
+      if (bindings === undefined || typeof bindings === 'string') {
+        this.#encodedRange += encodeVlq(this.#nameIdx(bindings));
         continue;
       }
 
       this.#encodedRange += encodeVlq(-bindings.length);
-      this.#encodedRange += encodeVlq(bindings[0].nameIdx);
+      this.#encodedRange += encodeVlq(this.#nameIdx(bindings[0].name));
       if (bindings[0].line !== line || bindings[0].column !== column) {
         throw new Error('First binding line/column must match the range start line/column');
       }
 
       for (let i = 1; i < bindings.length; ++i) {
-        const {line, column, nameIdx} = bindings[i];
+        const {line, column, name} = bindings[i];
         const emittedLine = line - bindings[i - 1].line;
         const emittedColumn = column - (line === bindings[i - 1].line ? bindings[i - 1].column : 0);
         this.#encodedRange += encodeVlq(emittedLine);
         this.#encodedRange += encodeVlq(emittedColumn);
-        this.#encodedRange += encodeVlq(nameIdx);
+        this.#encodedRange += encodeVlq(this.#nameIdx(name));
       }
     }
 
@@ -300,6 +323,19 @@ export class GeneratedRangeBuilder {
     if (this.#encodedRange !== '' && this.#encodedRange[this.#encodedRange.length - 1] !== ';') {
       this.#encodedRange += ',';
     }
+  }
+
+  #nameIdx(name?: string): number {
+    if (name === undefined) {
+      return -1;
+    }
+
+    let idx = this.#names.indexOf(name);
+    if (idx < 0) {
+      idx = this.#names.length;
+      this.#names.push(name);
+    }
+    return idx;
   }
 
   build(): string {

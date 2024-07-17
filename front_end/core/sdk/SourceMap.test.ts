@@ -1237,20 +1237,20 @@ describeWithEnvironment('SourceMap', () => {
     it('can resolve generated positions with inlineFrameIndex', () => {
       Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES);
       // 'foo' calls 'bar', 'bar' calls 'baz'. 'bar' and 'baz' are inlined into 'foo'.
-      const names = ['foo', 'bar', 'baz'];
-      const originalScopes = [new OriginalScopeBuilder()
+      const names: string[] = [];
+      const originalScopes = [new OriginalScopeBuilder(names)
                                   .start(0, 0, 'global')
-                                  .start(10, 0, 'function', 0)
+                                  .start(10, 0, 'function', 'foo')
                                   .end(20, 0)
-                                  .start(30, 0, 'function', 1)
+                                  .start(30, 0, 'function', 'bar')
                                   .end(40, 0)
-                                  .start(50, 0, 'function', 2)
+                                  .start(50, 0, 'function', 'baz')
                                   .end(60, 0)
                                   .end(70, 0)
                                   .build()];
 
       const generatedRanges =
-          new GeneratedRangeBuilder()
+          new GeneratedRangeBuilder(names)
               .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
               .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 1}, isScope: true})
               .start(0, 5, {definition: {sourceIdx: 0, scopeIdx: 3}, callsite: {sourceIdx: 0, line: 15, column: 0}})

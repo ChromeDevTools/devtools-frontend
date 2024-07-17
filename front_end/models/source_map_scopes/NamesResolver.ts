@@ -390,7 +390,7 @@ export const resolveScopeChain =
   if (scopeChain) {
     return scopeChain;
   }
-  return callFrame.scopeChain();
+  return callFrame.scopeChain().map(scope => new ScopeWithSourceMappedVariables(scope));
 };
 
 /**
@@ -584,6 +584,53 @@ export const resolveScopeInObject = function(scope: SDK.DebuggerModel.ScopeChain
 
   return new RemoteObject(scope);
 };
+
+/**
+ * Wraps a debugger `Scope` but returns a scope object where variable names are
+ * mapped to their authored name.
+ *
+ * This implementation does not utilize source map "Scopes" information but obtains
+ * original variable names via parsing + mappings + names.
+ */
+class ScopeWithSourceMappedVariables implements SDK.DebuggerModel.ScopeChainEntry {
+  readonly #debuggerScope: SDK.DebuggerModel.ScopeChainEntry;
+
+  constructor(scope: SDK.DebuggerModel.ScopeChainEntry) {
+    this.#debuggerScope = scope;
+  }
+
+  callFrame(): SDK.DebuggerModel.CallFrame {
+    return this.#debuggerScope.callFrame();
+  }
+
+  type(): string {
+    return this.#debuggerScope.type();
+  }
+
+  typeName(): string {
+    return this.#debuggerScope.typeName();
+  }
+
+  name(): string|undefined {
+    return this.#debuggerScope.name();
+  }
+
+  range(): SDK.DebuggerModel.LocationRange|null {
+    return this.#debuggerScope.range();
+  }
+
+  object(): SDK.RemoteObject.RemoteObject {
+    return resolveScopeInObject(this.#debuggerScope);
+  }
+
+  description(): string {
+    return this.#debuggerScope.description();
+  }
+
+  icon(): string|undefined {
+    return this.#debuggerScope.icon();
+  }
+}
 
 export class RemoteObject extends SDK.RemoteObject.RemoteObject {
   private readonly scope: SDK.DebuggerModel.ScopeChainEntry;

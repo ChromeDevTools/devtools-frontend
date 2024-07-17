@@ -859,7 +859,6 @@ describe('LoggingDriver', () => {
       {id: getVeId('#element'), type: 1, context: 42, parent: getVeId(parent), width: 300, height: 300},
       {id: getVeId(parent), type: 1, width: 300, height: 300},
     ]);
-    assert.isEmpty(VisualLoggingTesting.NonDomState.getNonDomState().loggables);
   });
 
   it('logs root non-DOM impressions', async () => {
@@ -890,7 +889,7 @@ describe('LoggingDriver', () => {
       {id: getVeId('#parent'), type: 1, width: 300, height: 300},
     ]);
     assert.deepInclude(
-        VisualLoggingTesting.NonDomState.getNonDomState().loggables,
+        VisualLoggingTesting.NonDomState.getNonDomState(parent).loggables,
         {loggable, config: {ve: 1, context: '123'}, parent});
   });
 });

@@ -1273,14 +1273,6 @@ export class CallFrame {
     const debuggerModel = this.debuggerModel;
     const runtimeModel = debuggerModel.runtimeModel();
 
-    // Assume backends either support both throwOnSideEffect and timeout options or neither.
-    const needsTerminationOptions = Boolean(options.throwOnSideEffect) || options.timeout !== undefined;
-    if (needsTerminationOptions &&
-        (runtimeModel.hasSideEffectSupport() === false ||
-         (runtimeModel.hasSideEffectSupport() === null && !await runtimeModel.checkSideEffectSupport()))) {
-      return {error: 'Side-effect checks not supported by backend.'};
-    }
-
     const evaluateOnCallFrameCallback = debuggerModel.getEvaluateOnCallFrameCallback();
     if (evaluateOnCallFrameCallback) {
       const result = await evaluateOnCallFrameCallback(this, options);

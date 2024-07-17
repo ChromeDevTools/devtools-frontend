@@ -185,7 +185,10 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
     if (!runtimeModel) {
       return;
     }
-    await runtimeModel.checkSideEffectSupport();
+    await runtimeModel.agent.invoke_evaluate({
+      expression: '(async function(){ await 1; })()',
+      throwOnSideEffect: true,
+    });
   }
 
   traceEventsCollected(events: TraceEngine.Types.TraceEvents.TraceEventData[]): void {

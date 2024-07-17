@@ -13,15 +13,19 @@ describe('NonDomState', () => {
 
     assert.sameDeepMembers(VisualLogging.NonDomState.getNonDomState().loggables, [
       {loggable: parent, config: {ve: 1, context: '1'}, parent: undefined},
+    ]);
+    assert.sameDeepMembers(VisualLogging.NonDomState.getNonDomState(parent).loggables, [
       {loggable: child, config: {ve: 1, context: '2'}, parent: parent},
     ]);
 
-    VisualLogging.NonDomState.unregisterLoggable(child);
+    VisualLogging.NonDomState.unregisterLoggables(parent);
 
+    assert.sameDeepMembers(VisualLogging.NonDomState.getNonDomState(parent).loggables, []);
     assert.sameDeepMembers(VisualLogging.NonDomState.getNonDomState().loggables, [
       {loggable: parent, config: {ve: 1, context: '1'}, parent: undefined},
     ]);
-    VisualLogging.NonDomState.unregisterLoggable(parent);
+    VisualLogging.NonDomState.unregisterLoggables();
+    assert.sameDeepMembers(VisualLogging.NonDomState.getNonDomState().loggables, []);
   });
 
   it('prevents external changes to the registry', () => {
@@ -34,6 +38,6 @@ describe('NonDomState', () => {
     assert.sameDeepMembers(VisualLogging.NonDomState.getNonDomState().loggables, [
       {loggable: loggable, config: {ve: 1, context: '1'}, parent: undefined},
     ]);
-    VisualLogging.NonDomState.unregisterLoggable(loggable);
+    VisualLogging.NonDomState.unregisterLoggables();
   });
 });

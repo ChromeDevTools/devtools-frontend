@@ -84,8 +84,8 @@ function createMockFieldData() {
         },
         'cumulative_layout_shift': {
           histogram: [
-            {start: 0, end: 0.1, density: 0.1},
-            {start: 0.1, end: 0.25, density: 0.1},
+            {start: 0, end: 0.1},
+            {start: 0.1, end: 0.25, density: 0.2},
             {start: 0.25, density: 0.8},
           ],
           percentiles: {p75: 0.25},
@@ -326,7 +326,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       assert.deepStrictEqual(lcpPercents, ['50%', '30%', '20%']);
 
       const clsPercents = getFieldHistogramPercents(view, 'cls');
-      assert.deepStrictEqual(clsPercents, ['10%', '10%', '80%']);
+      assert.deepStrictEqual(clsPercents, ['0%', '20%', '80%']);
 
       const inpPercents = getFieldHistogramPercents(view, 'inp');
       assert.deepStrictEqual(inpPercents, ['-', '-', '-']);

@@ -9,6 +9,7 @@ import("../../visibility.gni")
 devtools_module("insights") {
   sources = [
     "CumulativeLayoutShift.ts",
+    "DocumentLatency.ts",
     "InsightRunners.ts",
     "InteractionToNextPaint.ts",
     "LargestContentfulPaint.ts",
@@ -39,6 +40,7 @@ ts_library("unittests") {
 
   sources = [
     "CumulativeLayoutShift.test.ts",
+    "DocumentLatency.test.ts",
     "InteractionToNextPaint.test.ts",
     "LargestContentfulPaint.test.ts",
     "RenderBlocking.test.ts",

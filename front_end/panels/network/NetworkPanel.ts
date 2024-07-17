@@ -48,6 +48,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as Search from '../search/search.js';
+import * as Timeline from '../timeline/timeline.js';
 
 import {Events, type RequestActivatedEvent} from './NetworkDataGridNode.js';
 import {NetworkItemView} from './NetworkItemView.js';
@@ -714,7 +715,8 @@ export class NetworkPanel extends UI.Panel.Panel implements
 
   appendApplicableItems(
       this: NetworkPanel, event: Event, contextMenu: UI.ContextMenu.ContextMenu,
-      target: SDK.NetworkRequest.NetworkRequest|SDK.Resource.Resource|Workspace.UISourceCode.UISourceCode): void {
+      target: SDK.NetworkRequest.NetworkRequest|SDK.Resource.Resource|Workspace.UISourceCode.UISourceCode|
+      Timeline.TimelineFlameChartNetworkDataProvider.TimelineNetworkRequest): void {
     const appendRevealItem = (request: SDK.NetworkRequest.NetworkRequest): void => {
       contextMenu.revealSection().appendItem(
           i18nString(UIStrings.revealInNetworkPanel),
@@ -740,6 +742,10 @@ export class NetworkPanel extends UI.Panel.Panel implements
       if (resource && resource.request) {
         appendRevealItem(resource.request);
       }
+      return;
+    }
+    if (target instanceof Timeline.TimelineFlameChartNetworkDataProvider.TimelineNetworkRequest) {
+      appendRevealItem(target.request);
       return;
     }
 

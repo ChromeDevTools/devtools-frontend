@@ -155,6 +155,7 @@ devtools_entrypoint("bundle") {
     "../input/*",
     "../js_timeline/*",
     "../lighthouse/*",
+    "../network/*",
     "../recorder/*",
     "./track_appenders:unittests",
   ]

@@ -1214,12 +1214,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       this.#buildEnterEditModeContextMenu(event);
     }
 
-    // The following context menu should only work for the flame chart that support tree modification.
-    // So if the data provider doesn't have the |modifyTree| function, simply return to show the default context menu.
-    if (!this.dataProvider.modifyTree) {
-      return;
-    }
-
     if (this.highlightedEntryIndex === -1) {
       // If the user has not selected an individual entry, we do not show any
       // context menu, so finish here.
@@ -1237,6 +1231,22 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.setSelectedEntry(this.highlightedEntryIndex);
     // Update the selected group as well.
     this.#selectGroup(groupIndex);
+
+    // If the flame chart provider can build a customized context menu for the given entry, we will use that, otherwise
+    // just do nothing and fall back to default context menu.
+    if (this.dataProvider.customizedContextMenu) {
+      this.contextMenu = this.dataProvider.customizedContextMenu(event, this.highlightedEntryIndex);
+      if (this.contextMenu) {
+        void this.contextMenu.show();
+        return;
+      }
+    }
+
+    // The following context menu should only work for the flame chart that support tree modification.
+    // So if the data provider doesn't have the |modifyTree| function, simply return to show the default context menu.
+    if (!this.dataProvider.modifyTree) {
+      return;
+    }
 
     const possibleActions = this.getPossibleActions();
     if (!possibleActions) {
@@ -3879,6 +3889,8 @@ export interface FlameChartDataProvider {
   mainFrameNavigationStartEvents?(): readonly TraceEngine.Types.TraceEvents.TraceEventNavigationStart[];
 
   modifyTree?(node: number, action: TraceEngine.EntriesFilter.FilterAction): void;
+
+  customizedContextMenu?(event: MouseEvent, eventIndex: number): UI.ContextMenu.ContextMenu|undefined;
 
   findPossibleContextMenuActions?(node: number): TraceEngine.EntriesFilter.PossibleFilterActions|void;
 

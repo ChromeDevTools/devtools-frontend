@@ -5,7 +5,9 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -134,6 +136,24 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     const event = this.#events[index];
     this.#lastSelection = new Selection(TimelineSelection.fromTraceEvent(event), index);
     return this.#lastSelection.timelineSelection;
+  }
+
+  customizedContextMenu(event: MouseEvent, eventIndex: number): UI.ContextMenu.ContextMenu|undefined {
+    const networkRequest = this.eventByIndex(eventIndex);
+    if (!networkRequest) {
+      return;
+    }
+    const url = networkRequest.args.data.url as Platform.DevToolsPath.UrlString;
+    const urlWithoutHash = Common.ParsedURL.ParsedURL.urlWithoutHash(url) as Platform.DevToolsPath.UrlString;
+    const resource =
+        Bindings.ResourceUtils.resourceForURL(url) || Bindings.ResourceUtils.resourceForURL(urlWithoutHash);
+    if (!resource?.request) {
+      return;
+    }
+    const request = new TimelineNetworkRequest(resource.request);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
+    contextMenu.appendApplicableItems(request);
+    return contextMenu;
   }
 
   indexForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData|
@@ -547,5 +567,20 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     }
     this.#lastInitiatorsData = this.#timelineDataInternal.initiatorsData;
     return true;
+  }
+}
+
+// Add a wrapper class here. The reason is the `Reveal in Network panel` option is handled by the context menu
+// provider, which will add this option for all supporting types. And there are a lot of context menu providers that
+// support `SDK.NetworkRequest.NetworkRequest`, for example `Override content` by PersistenceActions, but we so far
+// just want the one to reveal in network panel, so add a new class which will only be supported by Network panel.
+export class TimelineNetworkRequest {
+  #request: SDK.NetworkRequest.NetworkRequest;
+  constructor(request: SDK.NetworkRequest.NetworkRequest) {
+    this.#request = request;
+  }
+
+  get request(): SDK.NetworkRequest.NetworkRequest {
+    return this.#request;
   }
 }

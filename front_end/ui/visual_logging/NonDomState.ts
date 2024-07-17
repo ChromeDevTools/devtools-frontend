@@ -22,8 +22,12 @@ export function registerLoggable(loggable: Loggable, config: LoggingConfig, pare
   registry.set(parent || nullParent, values);
 }
 
-export function getNonDomState(parent?: Loggable): {loggables: LoggableRegistration[]} {
-  return {loggables: [...getLoggables(parent)]};
+export function hasNonDomLoggables(parent?: Loggable): boolean {
+  return registry.has(parent || nullParent);
+}
+
+export function getNonDomLoggables(parent?: Loggable): LoggableRegistration[] {
+  return [...getLoggables(parent)];
 }
 
 export function unregisterLoggables(parent?: Loggable): void {

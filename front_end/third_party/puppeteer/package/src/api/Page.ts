@@ -1921,7 +1921,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
    *
    * ```ts
    * import {KnownDevices} from 'puppeteer';
-   * const iPhone = KnownDevices['iPhone 6'];
+   * const iPhone = KnownDevices['iPhone 15 Pro'];
    *
    * (async () => {
    *   const browser = await puppeteer.launch();
@@ -2471,6 +2471,18 @@ export abstract class Page extends EventEmitter<PageEvents> {
    * Captures a screenshot of this {@link Page | page}.
    *
    * @param options - Configures screenshot behavior.
+   *
+   * @remarks
+   *
+   * While a screenshot is being taken in a {@link BrowserContext}, the
+   * following methods will automatically wait for the screenshot to
+   * finish to prevent interference with the screenshot process:
+   * {@link BrowserContext.newPage}, {@link Browser.newPage},
+   * {@link Page.close}.
+   *
+   * Calling {@link Page.bringToFront} will not wait for existing
+   * screenshot operations.
+   *
    */
   async screenshot(
     options: Readonly<ScreenshotOptions> & {encoding: 'base64'}
@@ -2482,6 +2494,8 @@ export abstract class Page extends EventEmitter<PageEvents> {
   async screenshot(
     userOptions: Readonly<ScreenshotOptions> = {}
   ): Promise<Buffer | string> {
+    using _guard = await this.browserContext().startScreenshot();
+
     await this.bringToFront();
 
     // TODO: use structuredClone after Node 16 support is dropped.
@@ -2513,7 +2527,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
       }
     }
     if (options.quality !== undefined) {
-      if (options.quality < 0 && options.quality > 100) {
+      if (options.quality < 0 || options.quality > 100) {
         throw new Error(
           `Expected 'quality' (${options.quality}) to be between 0 and 100, inclusive.`
         );

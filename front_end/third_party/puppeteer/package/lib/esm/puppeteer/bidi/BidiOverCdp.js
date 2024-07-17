@@ -35,9 +35,15 @@ export async function connectBidiOverCdp(cdp, options) {
         pptrTransport.onmessage(JSON.stringify(message));
     });
     const pptrBiDiConnection = new BidiConnection(cdp.url(), pptrTransport, cdp.delay, cdp.timeout);
-    const bidiServer = await BidiMapper.BidiServer.createAndStart(transportBiDi, cdpConnectionAdapter, 
-    // TODO: most likely need a little bit of refactoring
-    cdpConnectionAdapter.browserClient(), '', options, undefined, bidiServerLogger);
+    const bidiServer = await BidiMapper.BidiServer.createAndStart(transportBiDi, cdpConnectionAdapter, cdpConnectionAdapter.browserClient(), 
+    /* selfTargetId= */ '', {
+        // Override Mapper's `unhandledPromptBehavior` default value of `dismiss` to
+        // `ignore`, so that user can handle the prompt instead of just closing it.
+        unhandledPromptBehavior: {
+            default: "ignore" /* Bidi.Session.UserPromptHandlerType.Ignore */,
+        },
+        ...options,
+    }, undefined, bidiServerLogger);
     return pptrBiDiConnection;
 }
 /**

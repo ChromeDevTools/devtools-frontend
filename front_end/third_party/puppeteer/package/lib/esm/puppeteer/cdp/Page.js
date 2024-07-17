@@ -246,6 +246,25 @@ export class CdpPage extends Page {
         })
             .catch(debugError);
         this.#setupPrimaryTargetListeners();
+        this.#attachExistingTargets();
+    }
+    #attachExistingTargets() {
+        const queue = [];
+        for (const childTarget of this.#targetManager.getChildTargets(this.#primaryTarget)) {
+            queue.push(childTarget);
+        }
+        let idx = 0;
+        while (idx < queue.length) {
+            const next = queue[idx];
+            idx++;
+            const session = next._session();
+            if (session) {
+                this.#onAttachedToTarget(session);
+            }
+            for (const childTarget of this.#targetManager.getChildTargets(next)) {
+                queue.push(childTarget);
+            }
+        }
     }
     async #onActivation(newSession) {
         this.#primaryTargetClient = newSession;
@@ -511,57 +530,36 @@ export class CdpPage extends Page {
         if (this.#bindings.has(name)) {
             throw new Error(`Failed to add page binding with name ${name}: window['${name}'] already exists!`);
         }
+        const source = pageBindingInitString('exposedFun', name);
         let binding;
         switch (typeof pptrFunction) {
             case 'function':
-                binding = new Binding(name, pptrFunction);
+                binding = new Binding(name, pptrFunction, source);
                 break;
             default:
-                binding = new Binding(name, pptrFunction.default);
+                binding = new Binding(name, pptrFunction.default, source);
                 break;
         }
         this.#bindings.set(name, binding);
-        const expression = pageBindingInitString('exposedFun', name);
-        await this.#primaryTargetClient.send('Runtime.addBinding', { name });
-        // TODO: investigate this as it appears to only apply to the main frame and
-        // local subframes instead of the entire frame tree (including future
-        // frame).
-        const { identifier } = await this.#primaryTargetClient.send('Page.addScriptToEvaluateOnNewDocument', {
-            source: expression,
-        });
+        const [{ identifier }] = await Promise.all([
+            this.#frameManager.evaluateOnNewDocument(source),
+            this.#frameManager.addExposedFunctionBinding(binding),
+        ]);
         this.#exposedFunctions.set(name, identifier);
-        await Promise.all(this.frames().map(frame => {
-            // If a frame has not started loading, it might never start. Rely on
-            // addScriptToEvaluateOnNewDocument in that case.
-            if (frame !== this.mainFrame() && !frame._hasStartedLoading) {
-                return;
-            }
-            return frame.evaluate(expression).catch(debugError);
-        }));
     }
     async removeExposedFunction(name) {
-        const exposedFun = this.#exposedFunctions.get(name);
-        if (!exposedFun) {
-            throw new Error(`Failed to remove page binding with name ${name}: window['${name}'] does not exists!`);
+        const exposedFunctionId = this.#exposedFunctions.get(name);
+        if (!exposedFunctionId) {
+            throw new Error(`Function with name "${name}" does not exist`);
         }
-        await this.#primaryTargetClient.send('Runtime.removeBinding', { name });
-        await this.removeScriptToEvaluateOnNewDocument(exposedFun);
-        await Promise.all(this.frames().map(frame => {
-            // If a frame has not started loading, it might never start. Rely on
-            // addScriptToEvaluateOnNewDocument in that case.
-            if (frame !== this.mainFrame() && !frame._hasStartedLoading) {
-                return;
-            }
-            return frame
-                .evaluate(name => {
-                // Removes the dangling Puppeteer binding wrapper.
-                // @ts-expect-error: In a different context.
-                globalThis[name] = undefined;
-            }, name)
-                .catch(debugError);
-        }));
+        // #bindings must be updated together with #exposedFunctions.
+        const binding = this.#bindings.get(name);
         this.#exposedFunctions.delete(name);
         this.#bindings.delete(name);
+        await Promise.all([
+            this.#frameManager.removeScriptToEvaluateOnNewDocument(exposedFunctionId),
+            this.#frameManager.removeExposedFunctionBinding(binding),
+        ]);
     }
     async authenticate(credentials) {
         return await this.#frameManager.networkManager.authenticate(credentials);
@@ -730,15 +728,10 @@ export class CdpPage extends Page {
     }
     async evaluateOnNewDocument(pageFunction, ...args) {
         const source = evaluationString(pageFunction, ...args);
-        const { identifier } = await this.#primaryTargetClient.send('Page.addScriptToEvaluateOnNewDocument', {
-            source,
-        });
-        return { identifier };
+        return await this.#frameManager.evaluateOnNewDocument(source);
     }
     async removeScriptToEvaluateOnNewDocument(identifier) {
-        await this.#primaryTargetClient.send('Page.removeScriptToEvaluateOnNewDocument', {
-            identifier,
-        });
+        return await this.#frameManager.removeScriptToEvaluateOnNewDocument(identifier);
     }
     async setCacheEnabled(enabled = true) {
         await this.#frameManager.networkManager.setCacheEnabled(enabled);
@@ -791,15 +784,17 @@ export class CdpPage extends Page {
     }
     async createPDFStream(options = {}) {
         const { timeout: ms = this._timeoutSettings.timeout() } = options;
-        const { landscape, displayHeaderFooter, headerTemplate, footerTemplate, printBackground, scale, width: paperWidth, height: paperHeight, margin, pageRanges, preferCSSPageSize, omitBackground, tagged: generateTaggedPDF, outline: generateDocumentOutline, } = parsePDFOptions(options);
+        const { landscape, displayHeaderFooter, headerTemplate, footerTemplate, printBackground, scale, width: paperWidth, height: paperHeight, margin, pageRanges, preferCSSPageSize, omitBackground, tagged: generateTaggedPDF, outline: generateDocumentOutline, waitForFonts, } = parsePDFOptions(options);
         if (omitBackground) {
             await this.#emulationManager.setTransparentBackgroundColor();
         }
-        await firstValueFrom(from(this.mainFrame()
-            .isolatedRealm()
-            .evaluate(() => {
-            return document.fonts.ready;
-        })).pipe(raceWith(timeout(ms))));
+        if (waitForFonts) {
+            await firstValueFrom(from(this.mainFrame()
+                .isolatedRealm()
+                .evaluate(() => {
+                return document.fonts.ready;
+            })).pipe(raceWith(timeout(ms))));
+        }
         const printCommandPromise = this.#primaryTargetClient.send('Page.printToPDF', {
             transferMode: 'ReturnAsStream',
             landscape,
@@ -834,17 +829,28 @@ export class CdpPage extends Page {
         return buffer;
     }
     async close(options = { runBeforeUnload: undefined }) {
-        const connection = this.#primaryTargetClient.connection();
-        assert(connection, 'Protocol error: Connection closed. Most likely the page has been closed.');
-        const runBeforeUnload = !!options.runBeforeUnload;
-        if (runBeforeUnload) {
-            await this.#primaryTargetClient.send('Page.close');
+        const env_3 = { stack: [], error: void 0, hasError: false };
+        try {
+            const _guard = __addDisposableResource(env_3, await this.browserContext().waitForScreenshotOperations(), false);
+            const connection = this.#primaryTargetClient.connection();
+            assert(connection, 'Protocol error: Connection closed. Most likely the page has been closed.');
+            const runBeforeUnload = !!options.runBeforeUnload;
+            if (runBeforeUnload) {
+                await this.#primaryTargetClient.send('Page.close');
+            }
+            else {
+                await connection.send('Target.closeTarget', {
+                    targetId: this.#primaryTarget._targetId,
+                });
+                await this.#tabTarget._isClosedDeferred.valueOrThrow();
+            }
         }
-        else {
-            await connection.send('Target.closeTarget', {
-                targetId: this.#primaryTarget._targetId,
-            });
-            await this.#tabTarget._isClosedDeferred.valueOrThrow();
+        catch (e_3) {
+            env_3.error = e_3;
+            env_3.hasError = true;
+        }
+        finally {
+            __disposeResources(env_3);
         }
     }
     isClosed() {

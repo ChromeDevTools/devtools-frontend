@@ -106,6 +106,7 @@ export declare class BrowsingContext extends EventEmitter<{
     traverseHistory(delta: number): Promise<void>;
     navigate(url: string, wait?: Bidi.BrowsingContext.ReadinessState): Promise<void>;
     reload(options?: ReloadOptions): Promise<void>;
+    setCacheBehavior(cacheBehavior: 'default' | 'bypass'): Promise<void>;
     print(options?: PrintOptions): Promise<string>;
     handleUserPrompt(options?: HandleUserPromptOptions): Promise<void>;
     setViewport(options?: SetViewportOptions): Promise<void>;

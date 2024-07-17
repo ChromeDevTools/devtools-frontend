@@ -130,14 +130,12 @@ export function valueFromRemoteObject(remoteObject) {
 /**
  * @internal
  */
-export function addPageBinding(type, name) {
-    // This is the CDP binding.
-    // @ts-expect-error: In a different context.
-    const callCdp = globalThis[name];
+export function addPageBinding(type, name, prefix) {
     // Depending on the frame loading state either Runtime.evaluate or
     // Page.addScriptToEvaluateOnNewDocument might succeed. Let's check that we
     // don't re-wrap Puppeteer's binding.
-    if (callCdp[Symbol.toStringTag] === 'PuppeteerBinding') {
+    // @ts-expect-error: In a different context.
+    if (globalThis[name]) {
         return;
     }
     // We replace the CDP binding with a Puppeteer binding.
@@ -151,7 +149,9 @@ export function addPageBinding(type, name) {
             const seq = (callPuppeteer.lastSeq ?? 0) + 1;
             callPuppeteer.lastSeq = seq;
             callPuppeteer.args.set(seq, args);
-            callCdp(JSON.stringify({
+            // @ts-expect-error: In a different context.
+            // Needs to be the same as CDP_BINDING_PREFIX.
+            globalThis[prefix + name](JSON.stringify({
                 type,
                 name,
                 seq,
@@ -174,13 +174,15 @@ export function addPageBinding(type, name) {
             });
         },
     });
-    // @ts-expect-error: In a different context.
-    globalThis[name][Symbol.toStringTag] = 'PuppeteerBinding';
 }
 /**
  * @internal
  */
+export const CDP_BINDING_PREFIX = 'puppeteer_';
+/**
+ * @internal
+ */
 export function pageBindingInitString(type, name) {
-    return evaluationString(addPageBinding, type, name);
+    return evaluationString(addPageBinding, type, name, CDP_BINDING_PREFIX);
 }
 //# sourceMappingURL=utils.js.map

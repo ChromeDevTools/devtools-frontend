@@ -42,6 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CdpFrame = void 0;
 const Frame_js_1 = require("../api/Frame.js");
 const Errors_js_1 = require("../common/Errors.js");
+const util_js_1 = require("../common/util.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
@@ -50,6 +51,7 @@ const FrameManagerEvents_js_1 = require("./FrameManagerEvents.js");
 const IsolatedWorld_js_1 = require("./IsolatedWorld.js");
 const IsolatedWorlds_js_1 = require("./IsolatedWorlds.js");
 const LifecycleWatcher_js_1 = require("./LifecycleWatcher.js");
+const utils_js_1 = require("./utils.js");
 /**
  * @internal
  */
@@ -59,6 +61,9 @@ let CdpFrame = (() => {
     let _goto_decorators;
     let _waitForNavigation_decorators;
     let _setContent_decorators;
+    let _addPreloadScript_decorators;
+    let _addExposedFunctionBinding_decorators;
+    let _removeExposedFunctionBinding_decorators;
     let _waitForDevicePrompt_decorators;
     return class CdpFrame extends _classSuper {
         static {
@@ -66,6 +71,9 @@ let CdpFrame = (() => {
             __esDecorate(this, null, _goto_decorators, { kind: "method", name: "goto", static: false, private: false, access: { has: obj => "goto" in obj, get: obj => obj.goto }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _waitForNavigation_decorators, { kind: "method", name: "waitForNavigation", static: false, private: false, access: { has: obj => "waitForNavigation" in obj, get: obj => obj.waitForNavigation }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setContent_decorators, { kind: "method", name: "setContent", static: false, private: false, access: { has: obj => "setContent" in obj, get: obj => obj.setContent }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _addPreloadScript_decorators, { kind: "method", name: "addPreloadScript", static: false, private: false, access: { has: obj => "addPreloadScript" in obj, get: obj => obj.addPreloadScript }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _addExposedFunctionBinding_decorators, { kind: "method", name: "addExposedFunctionBinding", static: false, private: false, access: { has: obj => "addExposedFunctionBinding" in obj, get: obj => obj.addExposedFunctionBinding }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _removeExposedFunctionBinding_decorators, { kind: "method", name: "removeExposedFunctionBinding", static: false, private: false, access: { has: obj => "removeExposedFunctionBinding" in obj, get: obj => obj.removeExposedFunctionBinding }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _waitForDevicePrompt_decorators, { kind: "method", name: "waitForDevicePrompt", static: false, private: false, access: { has: obj => "waitForDevicePrompt" in obj, get: obj => obj.waitForDevicePrompt }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
@@ -252,6 +260,48 @@ let CdpFrame = (() => {
                 return rootFrame._frameManager._deviceRequestPromptManager(this.#client);
             }
         }
+        async addPreloadScript(preloadScript) {
+            if (!this.isOOPFrame() && this !== this._frameManager.mainFrame()) {
+                return;
+            }
+            if (preloadScript.getIdForFrame(this)) {
+                return;
+            }
+            const { identifier } = await this.#client.send('Page.addScriptToEvaluateOnNewDocument', {
+                source: preloadScript.source,
+            });
+            preloadScript.setIdForFrame(this, identifier);
+        }
+        async addExposedFunctionBinding(binding) {
+            // If a frame has not started loading, it might never start. Rely on
+            // addScriptToEvaluateOnNewDocument in that case.
+            if (this !== this._frameManager.mainFrame() && !this._hasStartedLoading) {
+                return;
+            }
+            await Promise.all([
+                this.#client.send('Runtime.addBinding', {
+                    name: utils_js_1.CDP_BINDING_PREFIX + binding.name,
+                }),
+                this.evaluate(binding.initSource).catch(util_js_1.debugError),
+            ]);
+        }
+        async removeExposedFunctionBinding(binding) {
+            // If a frame has not started loading, it might never start. Rely on
+            // addScriptToEvaluateOnNewDocument in that case.
+            if (this !== this._frameManager.mainFrame() && !this._hasStartedLoading) {
+                return;
+            }
+            await Promise.all([
+                this.#client.send('Runtime.removeBinding', {
+                    name: utils_js_1.CDP_BINDING_PREFIX + binding.name,
+                }),
+                this.evaluate(name => {
+                    // Removes the dangling Puppeteer binding wrapper.
+                    // @ts-expect-error: In a different context.
+                    globalThis[name] = undefined;
+                }, binding.name).catch(util_js_1.debugError),
+            ]);
+        }
         async waitForDevicePrompt(options = {}) {
             return await this.#deviceRequestPromptManager().waitForDevicePrompt(options);
         }
@@ -279,7 +329,7 @@ let CdpFrame = (() => {
         get detached() {
             return this.#detached;
         }
-        [(_goto_decorators = [Frame_js_1.throwIfDetached], _waitForNavigation_decorators = [Frame_js_1.throwIfDetached], _setContent_decorators = [Frame_js_1.throwIfDetached], _waitForDevicePrompt_decorators = [Frame_js_1.throwIfDetached], disposable_js_1.disposeSymbol)]() {
+        [(_goto_decorators = [Frame_js_1.throwIfDetached], _waitForNavigation_decorators = [Frame_js_1.throwIfDetached], _setContent_decorators = [Frame_js_1.throwIfDetached], _addPreloadScript_decorators = [Frame_js_1.throwIfDetached], _addExposedFunctionBinding_decorators = [Frame_js_1.throwIfDetached], _removeExposedFunctionBinding_decorators = [Frame_js_1.throwIfDetached], _waitForDevicePrompt_decorators = [Frame_js_1.throwIfDetached], disposable_js_1.disposeSymbol)]() {
             if (this.#detached) {
                 return;
             }

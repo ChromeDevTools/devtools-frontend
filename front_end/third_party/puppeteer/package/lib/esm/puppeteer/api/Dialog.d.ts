@@ -33,6 +33,10 @@ export declare abstract class Dialog {
     /**
      * @internal
      */
+    protected handled: boolean;
+    /**
+     * @internal
+     */
     constructor(type: Protocol.Page.DialogType, message: string, defaultValue?: string);
     /**
      * The type of the dialog.

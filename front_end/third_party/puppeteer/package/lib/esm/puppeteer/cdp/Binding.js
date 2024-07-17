@@ -58,12 +58,17 @@ import { isErrorLike } from '../util/ErrorLike.js';
 export class Binding {
     #name;
     #fn;
-    constructor(name, fn) {
+    #initSource;
+    constructor(name, fn, initSource) {
         this.#name = name;
         this.#fn = fn;
+        this.#initSource = initSource;
     }
     get name() {
         return this.#name;
+    }
+    get initSource() {
+        return this.#initSource;
     }
     /**
      * @param context - Context to run the binding in; the context should have

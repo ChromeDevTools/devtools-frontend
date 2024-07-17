@@ -6,7 +6,7 @@
 
 import type {ChildProcess} from 'child_process';
 
-import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
+import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 
 import type {BrowserEvents} from '../api/Browser.js';
 import {
@@ -48,7 +48,6 @@ export interface BidiBrowserOptions {
 export class BidiBrowser extends Browser {
   readonly protocol = 'webDriverBiDi';
 
-  // TODO: Update generator to include fully module
   static readonly subscribeModules: [string, ...string[]] = [
     'browsingContext',
     'network',
@@ -72,6 +71,9 @@ export class BidiBrowser extends Browser {
     const session = await Session.from(opts.connection, {
       alwaysMatch: {
         acceptInsecureCerts: opts.ignoreHTTPSErrors,
+        unhandledPromptBehavior: {
+          default: Bidi.Session.UserPromptHandlerType.Ignore,
+        },
         webSocketUrl: true,
       },
     });

@@ -1,5 +1,5 @@
 import { headersArray, HTTPRequest, STATUS_TEXTS, handleError, } from '../api/HTTPRequest.js';
-import { debugError, isString } from '../common/util.js';
+import { debugError } from '../common/util.js';
 /**
  * @internal
  */
@@ -97,9 +97,7 @@ export class CdpHTTPRequest extends HTTPRequest {
     async _continue(overrides = {}) {
         const { url, method, postData, headers } = overrides;
         this.interception.handled = true;
-        const postDataBinaryBase64 = postData
-            ? Buffer.from(postData).toString('base64')
-            : undefined;
+        const postDataBinaryBase64 = postData ? btoa(postData) : undefined;
         if (this._interceptionId === undefined) {
             throw new Error('HTTPRequest is missing _interceptionId needed for Fetch.continueRequest');
         }
@@ -118,9 +116,10 @@ export class CdpHTTPRequest extends HTTPRequest {
     }
     async _respond(response) {
         this.interception.handled = true;
-        const responseBody = response.body && isString(response.body)
-            ? Buffer.from(response.body)
-            : response.body || null;
+        let parsedBody;
+        if (response.body) {
+            parsedBody = HTTPRequest.getResponse(response.body);
+        }
         const responseHeaders = {};
         if (response.headers) {
             for (const header of Object.keys(response.headers)) {
@@ -135,8 +134,8 @@ export class CdpHTTPRequest extends HTTPRequest {
         if (response.contentType) {
             responseHeaders['content-type'] = response.contentType;
         }
-        if (responseBody && !('content-length' in responseHeaders)) {
-            responseHeaders['content-length'] = String(Buffer.byteLength(responseBody));
+        if (parsedBody?.contentLength && !('content-length' in responseHeaders)) {
+            responseHeaders['content-length'] = String(parsedBody.contentLength);
         }
         const status = response.status || 200;
         if (this._interceptionId === undefined) {
@@ -148,7 +147,7 @@ export class CdpHTTPRequest extends HTTPRequest {
             responseCode: status,
             responsePhrase: STATUS_TEXTS[status],
             responseHeaders: headersArray(responseHeaders),
-            body: responseBody ? responseBody.toString('base64') : undefined,
+            body: parsedBody?.base64,
         })
             .catch(error => {
             this.interception.handled = false;

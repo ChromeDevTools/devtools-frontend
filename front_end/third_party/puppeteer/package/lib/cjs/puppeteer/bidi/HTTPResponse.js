@@ -37,6 +37,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiHTTPResponse = void 0;
 const HTTPResponse_js_1 = require("../api/HTTPResponse.js");
 const Errors_js_1 = require("../common/Errors.js");
+const SecurityDetails_js_1 = require("../common/SecurityDetails.js");
 const decorators_js_1 = require("../util/decorators.js");
 /**
  * @internal
@@ -52,17 +53,25 @@ let BidiHTTPResponse = (() => {
             __esDecorate(this, null, _remoteAddress_decorators, { kind: "method", name: "remoteAddress", static: false, private: false, access: { has: obj => "remoteAddress" in obj, get: obj => obj.remoteAddress }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
-        static from(data, request) {
-            const response = new BidiHTTPResponse(data, request);
+        static from(data, request, cdpSupported) {
+            const response = new BidiHTTPResponse(data, request, cdpSupported);
             response.#initialize();
             return response;
         }
         #data = __runInitializers(this, _instanceExtraInitializers);
         #request;
-        constructor(data, request) {
+        #securityDetails;
+        #cdpSupported = false;
+        constructor(data, request, cdpSupported) {
             super();
             this.#data = data;
             this.#request = request;
+            this.#cdpSupported = cdpSupported;
+            // @ts-expect-error non-standard property.
+            const securityDetails = data['goog:securityDetails'];
+            if (cdpSupported && securityDetails) {
+                this.#securityDetails = new SecurityDetails_js_1.SecurityDetails(securityDetails);
+            }
         }
         #initialize() {
             if (this.#data.fromCache) {
@@ -107,7 +116,6 @@ let BidiHTTPResponse = (() => {
             return this.#data.fromCache;
         }
         timing() {
-            // TODO: File and issue with BiDi spec
             throw new Errors_js_1.UnsupportedOperation();
         }
         frame() {
@@ -117,7 +125,10 @@ let BidiHTTPResponse = (() => {
             return false;
         }
         securityDetails() {
-            throw new Errors_js_1.UnsupportedOperation();
+            if (!this.#cdpSupported) {
+                throw new Errors_js_1.UnsupportedOperation();
+            }
+            return this.#securityDetails ?? null;
         }
         buffer() {
             throw new Errors_js_1.UnsupportedOperation();

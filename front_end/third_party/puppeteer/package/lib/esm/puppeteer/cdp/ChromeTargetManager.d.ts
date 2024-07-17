@@ -19,6 +19,7 @@ export declare class ChromeTargetManager extends EventEmitter<TargetManagerEvent
     #private;
     constructor(connection: Connection, targetFactory: TargetFactory, targetFilterCallback?: TargetFilterCallback, waitForInitiallyDiscoveredTargets?: boolean);
     initialize(): Promise<void>;
+    getChildTargets(target: CdpTarget): ReadonlySet<CdpTarget>;
     dispose(): void;
     getAvailableTargets(): ReadonlyMap<string, CdpTarget>;
 }

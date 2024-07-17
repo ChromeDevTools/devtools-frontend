@@ -277,11 +277,22 @@ let BidiPage = (() => {
             return this.#frame.detached;
         }
         async close(options) {
+            const env_2 = { stack: [], error: void 0, hasError: false };
             try {
-                await this.#frame.browsingContext.close(options?.runBeforeUnload);
+                const _guard = __addDisposableResource(env_2, await this.#browserContext.waitForScreenshotOperations(), false);
+                try {
+                    await this.#frame.browsingContext.close(options?.runBeforeUnload);
+                }
+                catch {
+                    return;
+                }
             }
-            catch {
-                return;
+            catch (e_2) {
+                env_2.error = e_2;
+                env_2.hasError = true;
+            }
+            finally {
+                __disposeResources(env_2);
             }
         }
         async reload(options = {}) {
@@ -456,6 +467,10 @@ let BidiPage = (() => {
             return false;
         }
         async setCacheEnabled(enabled) {
+            if (!this.#browserContext.browser().cdpSupported) {
+                await this.#frame.browsingContext.setCacheBehavior(enabled ? 'default' : 'bypass');
+                return;
+            }
             // TODO: handle CDP-specific cases such as mprach.
             await this._client().send('Network.setCacheDisabled', {
                 cacheDisabled: !enabled,

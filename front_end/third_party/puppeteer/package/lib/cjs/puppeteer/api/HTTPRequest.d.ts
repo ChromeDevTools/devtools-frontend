@@ -1,4 +1,3 @@
-/// <reference types="node" />
 /**
  * @license
  * Copyright 2020 Google Inc.
@@ -40,7 +39,7 @@ export interface ResponseForRequest {
      */
     headers: Record<string, unknown>;
     contentType: string;
-    body: string | Buffer;
+    body: string | Uint8Array;
 }
 /**
  * Resource types for HTTPRequests as perceived by the rendering engine.
@@ -367,6 +366,13 @@ export declare abstract class HTTPRequest {
      * throw an exception immediately.
      */
     abort(errorCode?: ErrorCode, priority?: number): Promise<void>;
+    /**
+     * @internal
+     */
+    static getResponse(body: string | Uint8Array): {
+        contentLength: number;
+        base64: string;
+    };
 }
 /**
  * @public

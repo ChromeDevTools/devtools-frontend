@@ -41,8 +41,6 @@ import { EventEmitter } from '../../common/EventEmitter.js';
 import { bubble, inertIfDisposed, throwIfDisposed, } from '../../util/decorators.js';
 import { DisposableStack, disposeSymbol } from '../../util/disposable.js';
 import { Browser } from './Browser.js';
-// TODO: Once Chrome supports session.status properly, uncomment this block.
-// const MAX_RETRIES = 5;
 /**
  * @internal
  */
@@ -69,24 +67,6 @@ let Session = (() => {
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         static async from(connection, capabilities) {
-            // Wait until the session is ready.
-            //
-            // TODO: Once Chrome supports session.status properly, uncomment this block
-            // and remove `getBiDiConnection` in BrowserConnector.
-            // let status = {message: '', ready: false};
-            // for (let i = 0; i < MAX_RETRIES; ++i) {
-            //   status = (await connection.send('session.status', {})).result;
-            //   if (status.ready) {
-            //     break;
-            //   }
-            //   // Backoff a little bit each time.
-            //   await new Promise(resolve => {
-            //     return setTimeout(resolve, (1 << i) * 100);
-            //   });
-            // }
-            // if (!status.ready) {
-            //   throw new Error(status.message);
-            // }
             const { result } = await connection.send('session.new', {
                 capabilities,
             });

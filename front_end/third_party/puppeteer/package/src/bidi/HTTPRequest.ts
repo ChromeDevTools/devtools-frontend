@@ -84,7 +84,11 @@ export class BidiHTTPRequest extends HTTPRequest {
       void httpRequest.finalizeInterceptions();
     });
     this.#request.once('success', data => {
-      this.#response = BidiHTTPResponse.from(data, this);
+      this.#response = BidiHTTPResponse.from(
+        data,
+        this,
+        this.#frame.page().browser().cdpSupported
+      );
     });
     this.#request.on('authenticate', this.#handleAuthentication);
 
@@ -107,7 +111,12 @@ export class BidiHTTPRequest extends HTTPRequest {
   }
 
   override resourceType(): ResourceType {
-    throw new UnsupportedOperation();
+    if (!this.#frame.page().browser().cdpSupported) {
+      throw new UnsupportedOperation();
+    }
+    return (
+      this.#request.resourceType || 'other'
+    ).toLowerCase() as ResourceType;
   }
 
   override method(): string {
@@ -115,11 +124,17 @@ export class BidiHTTPRequest extends HTTPRequest {
   }
 
   override postData(): string | undefined {
-    throw new UnsupportedOperation();
+    if (!this.#frame.page().browser().cdpSupported) {
+      throw new UnsupportedOperation();
+    }
+    return this.#request.postData;
   }
 
   override hasPostData(): boolean {
-    throw new UnsupportedOperation();
+    if (!this.#frame.page().browser().cdpSupported) {
+      throw new UnsupportedOperation();
+    }
+    return this.#request.hasPostData;
   }
 
   override async fetchPostData(): Promise<string | undefined> {
@@ -230,12 +245,16 @@ export class BidiHTTPRequest extends HTTPRequest {
     _priority?: number
   ): Promise<void> {
     this.interception.handled = true;
-    const responseBody: string | undefined =
-      response.body && response.body instanceof Uint8Array
-        ? response.body.toString('base64')
-        : response.body
-          ? btoa(response.body)
-          : undefined;
+
+    let parsedBody:
+      | {
+          contentLength: number;
+          base64: string;
+        }
+      | undefined;
+    if (response.body) {
+      parsedBody = HTTPRequest.getResponse(response.body);
+    }
 
     const headers: Bidi.Network.Header[] = getBidiHeaders(response.headers);
     const hasContentLength = headers.some(header => {
@@ -252,13 +271,12 @@ export class BidiHTTPRequest extends HTTPRequest {
       });
     }
 
-    if (responseBody && !hasContentLength) {
-      const encoder = new TextEncoder();
+    if (parsedBody?.contentLength && !hasContentLength) {
       headers.push({
         name: 'content-length',
         value: {
           type: 'string',
-          value: String(encoder.encode(responseBody).byteLength),
+          value: String(parsedBody.contentLength),
         },
       });
     }
@@ -269,10 +287,10 @@ export class BidiHTTPRequest extends HTTPRequest {
         statusCode: status,
         headers: headers.length > 0 ? headers : undefined,
         reasonPhrase: STATUS_TEXTS[status],
-        body: responseBody
+        body: parsedBody?.base64
           ? {
               type: 'base64',
-              value: responseBody,
+              value: parsedBody?.base64,
             }
           : undefined,
       })

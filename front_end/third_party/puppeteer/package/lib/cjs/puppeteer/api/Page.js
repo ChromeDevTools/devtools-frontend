@@ -756,7 +756,7 @@ let Page = (() => {
          *
          * ```ts
          * import {KnownDevices} from 'puppeteer';
-         * const iPhone = KnownDevices['iPhone 6'];
+         * const iPhone = KnownDevices['iPhone 15 Pro'];
          *
          * (async () => {
          *   const browser = await puppeteer.launch();
@@ -998,6 +998,7 @@ let Page = (() => {
         async screenshot(userOptions = {}) {
             const env_2 = { stack: [], error: void 0, hasError: false };
             try {
+                const _guard = __addDisposableResource(env_2, await this.browserContext().startScreenshot(), false);
                 await this.bringToFront();
                 // TODO: use structuredClone after Node 16 support is dropped.
                 const options = {
@@ -1028,7 +1029,7 @@ let Page = (() => {
                     }
                 }
                 if (options.quality !== undefined) {
-                    if (options.quality < 0 && options.quality > 100) {
+                    if (options.quality < 0 || options.quality > 100) {
                         throw new Error(`Expected 'quality' (${options.quality}) to be between 0 and 100, inclusive.`);
                     }
                     if (options.type === undefined ||

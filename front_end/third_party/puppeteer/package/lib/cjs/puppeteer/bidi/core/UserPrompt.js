@@ -98,6 +98,10 @@ let UserPrompt = (() => {
             return this.closed;
         }
         get handled() {
+            if (this.info.handler === "accept" /* Bidi.Session.UserPromptHandlerType.Accept */ ||
+                this.info.handler === "dismiss" /* Bidi.Session.UserPromptHandlerType.Dismiss */) {
+                return true;
+            }
             return this.#result !== undefined;
         }
         get result() {

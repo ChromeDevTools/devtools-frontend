@@ -26,6 +26,7 @@ export class CdpTarget extends Target {
     #targetInfo;
     #targetManager;
     #sessionFactory;
+    #childTargets = new Set();
     _initializedDeferred = Deferred.create();
     _isClosedDeferred = Deferred.create();
     _targetId;
@@ -60,6 +61,15 @@ export class CdpTarget extends Target {
     }
     _session() {
         return this.#session;
+    }
+    _addChildTarget(target) {
+        this.#childTargets.add(target);
+    }
+    _removeChildTarget(target) {
+        this.#childTargets.delete(target);
+    }
+    _childTargets() {
+        return this.#childTargets;
     }
     _sessionFactory() {
         if (!this.#sessionFactory) {

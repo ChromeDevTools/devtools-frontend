@@ -49,6 +49,7 @@ export interface TargetManagerEvents extends Record<EventType, unknown> {
  */
 export interface TargetManager extends EventEmitter<TargetManagerEvents> {
     getAvailableTargets(): ReadonlyMap<string, CdpTarget>;
+    getChildTargets(target: CdpTarget): ReadonlySet<CdpTarget>;
     initialize(): Promise<void>;
     dispose(): void;
 }

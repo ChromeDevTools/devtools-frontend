@@ -5,7 +5,7 @@
  */
 /// <reference types="node" />
 import type { ChildProcess } from 'child_process';
-import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
+import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { Browser, type BrowserCloseCallback, type BrowserContextOptions, type DebugInfo } from '../api/Browser.js';
 import type { Page } from '../api/Page.js';
 import type { Target } from '../api/Target.js';

@@ -10,6 +10,8 @@ import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { WaitTimeoutOptions } from '../api/Page.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { Accessibility } from './Accessibility.js';
+import type { Binding } from './Binding.js';
+import type { CdpPreloadScript } from './CdpPreloadScript.js';
 import type { DeviceRequestPrompt } from './DeviceRequestPrompt.js';
 import type { FrameManager } from './FrameManager.js';
 import type { IsolatedWorldChart } from './IsolatedWorld.js';
@@ -64,6 +66,9 @@ export declare class CdpFrame extends Frame {
     url(): string;
     parentFrame(): CdpFrame | null;
     childFrames(): CdpFrame[];
+    addPreloadScript(preloadScript: CdpPreloadScript): Promise<void>;
+    addExposedFunctionBinding(binding: Binding): Promise<void>;
+    removeExposedFunctionBinding(binding: Binding): Promise<void>;
     waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
     _navigated(framePayload: Protocol.Page.Frame): void;
     _navigatedWithinDocument(url: string): void;

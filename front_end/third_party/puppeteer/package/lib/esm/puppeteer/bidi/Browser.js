@@ -65,7 +65,6 @@ let BidiBrowser = (() => {
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         protocol = 'webDriverBiDi';
-        // TODO: Update generator to include fully module
         static subscribeModules = [
             'browsingContext',
             'network',
@@ -88,6 +87,9 @@ let BidiBrowser = (() => {
             const session = await Session.from(opts.connection, {
                 alwaysMatch: {
                     acceptInsecureCerts: opts.ignoreHTTPSErrors,
+                    unhandledPromptBehavior: {
+                        default: "ignore" /* Bidi.Session.UserPromptHandlerType.Ignore */,
+                    },
                     webSocketUrl: true,
                 },
             });

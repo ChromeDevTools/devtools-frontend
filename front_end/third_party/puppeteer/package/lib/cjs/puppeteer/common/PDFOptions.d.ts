@@ -154,9 +154,20 @@ export interface PDFOptions {
     outline?: boolean;
     /**
      * Timeout in milliseconds. Pass `0` to disable timeout.
+     *
+     * The default value can be changed by using {@link Page.setDefaultTimeout}
+     *
      * @defaultValue `30_000`
      */
     timeout?: number;
+    /**
+     * If true, waits for `document.fonts.ready` to resolve. This might require
+     * activating the page using {@link Page.bringToFront} if the page is in the
+     * background.
+     *
+     * @defaultValue `true`
+     */
+    waitForFonts?: boolean;
 }
 /**
  * @internal

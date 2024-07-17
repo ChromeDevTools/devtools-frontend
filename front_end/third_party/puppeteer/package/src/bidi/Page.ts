@@ -267,6 +267,7 @@ export class BidiPage extends Page {
   }
 
   override async close(options?: {runBeforeUnload?: boolean}): Promise<void> {
+    using _guard = await this.#browserContext.waitForScreenshotOperations();
     try {
       await this.#frame.browsingContext.close(options?.runBeforeUnload);
     } catch {
@@ -537,6 +538,12 @@ export class BidiPage extends Page {
   }
 
   override async setCacheEnabled(enabled?: boolean): Promise<void> {
+    if (!this.#browserContext.browser().cdpSupported) {
+      await this.#frame.browsingContext.setCacheBehavior(
+        enabled ? 'default' : 'bypass'
+      );
+      return;
+    }
     // TODO: handle CDP-specific cases such as mprach.
     await this._client().send('Network.setCacheDisabled', {
       cacheDisabled: !enabled,

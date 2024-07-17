@@ -35,6 +35,9 @@ export declare class Request extends EventEmitter<{
     get response(): Bidi.Network.ResponseData | undefined;
     get url(): string;
     get isBlocked(): boolean;
+    get resourceType(): string | undefined;
+    get postData(): string | undefined;
+    get hasPostData(): boolean;
     continueRequest({ url, method, headers, cookies, body, }: Omit<Bidi.Network.ContinueRequestParameters, 'request'>): Promise<void>;
     failRequest(): Promise<void>;
     provideResponse({ statusCode, reasonPhrase, headers, body, }: Omit<Bidi.Network.ProvideResponseParameters, 'request'>): Promise<void>;

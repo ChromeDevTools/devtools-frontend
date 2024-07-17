@@ -1475,7 +1475,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * ```ts
      * import {KnownDevices} from 'puppeteer';
-     * const iPhone = KnownDevices['iPhone 6'];
+     * const iPhone = KnownDevices['iPhone 15 Pro'];
      *
      * (async () => {
      *   const browser = await puppeteer.launch();
@@ -1844,6 +1844,18 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * Captures a screenshot of this {@link Page | page}.
      *
      * @param options - Configures screenshot behavior.
+     *
+     * @remarks
+     *
+     * While a screenshot is being taken in a {@link BrowserContext}, the
+     * following methods will automatically wait for the screenshot to
+     * finish to prevent interference with the screenshot process:
+     * {@link BrowserContext.newPage}, {@link Browser.newPage},
+     * {@link Page.close}.
+     *
+     * Calling {@link Page.bringToFront} will not wait for existing
+     * screenshot operations.
+     *
      */
     screenshot(options: Readonly<ScreenshotOptions> & {
         encoding: 'base64';

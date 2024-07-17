@@ -65,7 +65,6 @@ async function getBiDiConnection(connectionTransport, url, options) {
     if (version.product.toLowerCase().includes('firefox')) {
         throw new UnsupportedOperation('Firefox is not supported in BiDi over CDP mode.');
     }
-    // TODO: use other options too.
     const bidiOverCdpConnection = await BiDi.connectBidiOverCdp(cdpConnection, {
         acceptInsecureCerts: ignoreHTTPSErrors,
     });

@@ -65,13 +65,15 @@ const Binding_js_1 = require("./Binding.js");
 const ElementHandle_js_1 = require("./ElementHandle.js");
 const JSHandle_js_1 = require("./JSHandle.js");
 const utils_js_1 = require("./utils.js");
-const ariaQuerySelectorBinding = new Binding_js_1.Binding('__ariaQuerySelector', AriaQueryHandler_js_1.ARIAQueryHandler.queryOne);
+const ariaQuerySelectorBinding = new Binding_js_1.Binding('__ariaQuerySelector', AriaQueryHandler_js_1.ARIAQueryHandler.queryOne, '' // custom init
+);
 const ariaQuerySelectorAllBinding = new Binding_js_1.Binding('__ariaQuerySelectorAll', (async (element, selector) => {
     const results = AriaQueryHandler_js_1.ARIAQueryHandler.queryAll(element, selector);
     return await element.realm.evaluateHandle((...elements) => {
         return elements;
     }, ...(await AsyncIterableUtil_js_1.AsyncIterableUtil.collect(results)));
-}));
+}), '' // custom init
+);
 /**
  * @internal
  */
@@ -119,14 +121,14 @@ class ExecutionContext extends EventEmitter_js_1.EventEmitter {
             try {
                 await this.#client.send('Runtime.addBinding', this.#name
                     ? {
-                        name: binding.name,
+                        name: utils_js_1.CDP_BINDING_PREFIX + binding.name,
                         executionContextName: this.#name,
                     }
                     : {
-                        name: binding.name,
+                        name: utils_js_1.CDP_BINDING_PREFIX + binding.name,
                         executionContextId: this.#id,
                     });
-                await this.evaluate(utils_js_1.addPageBinding, 'internal', binding.name);
+                await this.evaluate(utils_js_1.addPageBinding, 'internal', binding.name, utils_js_1.CDP_BINDING_PREFIX);
                 this.#bindings.set(binding.name, binding);
             }
             catch (error) {

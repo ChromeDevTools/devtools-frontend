@@ -94,7 +94,7 @@ export declare function timeout(ms: number, cause?: Error): Observable<never>;
 /**
  * @internal
  */
-export declare const UTILITY_WORLD_NAME = "__puppeteer_utility_world__";
+export declare const UTILITY_WORLD_NAME: string;
 /**
  * @internal
  */

@@ -5,6 +5,7 @@
  */
 import { EventEmitter, type EventType } from '../common/EventEmitter.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
+import { Mutex } from '../util/Mutex.js';
 import type { Browser, Permission, WaitForTargetOptions } from './Browser.js';
 import type { Page } from './Page.js';
 import type { Target } from './Target.js';
@@ -72,6 +73,7 @@ export interface BrowserContextEvents extends Record<EventType, unknown> {
  * @public
  */
 export declare abstract class BrowserContext extends EventEmitter<BrowserContextEvents> {
+    #private;
     /**
      * @internal
      */
@@ -81,6 +83,14 @@ export declare abstract class BrowserContext extends EventEmitter<BrowserContext
      * {@link BrowserContext | browser context}.
      */
     abstract targets(): Target[];
+    /**
+     * @internal
+     */
+    startScreenshot(): Promise<InstanceType<typeof Mutex.Guard>>;
+    /**
+     * @internal
+     */
+    waitForScreenshotOperations(): Promise<InstanceType<typeof Mutex.Guard>> | undefined;
     /**
      * Waits until a {@link Target | target} matching the given `predicate`
      * appears and returns it.

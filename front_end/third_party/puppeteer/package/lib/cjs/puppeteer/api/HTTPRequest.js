@@ -313,6 +313,23 @@ class HTTPRequest {
             return;
         }
     }
+    /**
+     * @internal
+     */
+    static getResponse(body) {
+        // Needed to get the correct byteLength
+        const byteBody = (0, util_js_1.isString)(body)
+            ? new TextEncoder().encode(body)
+            : body;
+        const bytes = [];
+        for (const byte of byteBody) {
+            bytes.push(String.fromCharCode(byte));
+        }
+        return {
+            contentLength: byteBody.byteLength,
+            base64: btoa(bytes.join('')),
+        };
+    }
 }
 exports.HTTPRequest = HTTPRequest;
 /**

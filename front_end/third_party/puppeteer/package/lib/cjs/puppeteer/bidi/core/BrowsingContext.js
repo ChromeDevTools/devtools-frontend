@@ -61,6 +61,7 @@ let BrowsingContext = (() => {
     let _traverseHistory_decorators;
     let _navigate_decorators;
     let _reload_decorators;
+    let _setCacheBehavior_decorators;
     let _print_decorators;
     let _handleUserPrompt_decorators;
     let _setViewport_decorators;
@@ -95,6 +96,7 @@ let BrowsingContext = (() => {
             __esDecorate(this, null, _traverseHistory_decorators, { kind: "method", name: "traverseHistory", static: false, private: false, access: { has: obj => "traverseHistory" in obj, get: obj => obj.traverseHistory }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _navigate_decorators, { kind: "method", name: "navigate", static: false, private: false, access: { has: obj => "navigate" in obj, get: obj => obj.navigate }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _reload_decorators, { kind: "method", name: "reload", static: false, private: false, access: { has: obj => "reload" in obj, get: obj => obj.reload }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _setCacheBehavior_decorators, { kind: "method", name: "setCacheBehavior", static: false, private: false, access: { has: obj => "setCacheBehavior" in obj, get: obj => obj.setCacheBehavior }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _print_decorators, { kind: "method", name: "print", static: false, private: false, access: { has: obj => "print" in obj, get: obj => obj.print }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _handleUserPrompt_decorators, { kind: "method", name: "handleUserPrompt", static: false, private: false, access: { has: obj => "handleUserPrompt" in obj, get: obj => obj.handleUserPrompt }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setViewport_decorators, { kind: "method", name: "setViewport", static: false, private: false, access: { has: obj => "setViewport" in obj, get: obj => obj.setViewport }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -313,6 +315,13 @@ let BrowsingContext = (() => {
                 ...options,
             });
         }
+        async setCacheBehavior(cacheBehavior) {
+            // @ts-expect-error not in BiDi types yet.
+            await this.#session.send('network.setCacheBehavior', {
+                contexts: [this.id],
+                cacheBehavior,
+            });
+        }
         async print(options = {}) {
             const { result: { data }, } = await this.#session.send('browsingContext.print', {
                 context: this.id,
@@ -410,6 +419,9 @@ let BrowsingContext = (() => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
             })], _reload_decorators = [(0, decorators_js_1.throwIfDisposed)(context => {
+                // SAFETY: Disposal implies this exists.
+                return context.#reason;
+            })], _setCacheBehavior_decorators = [(0, decorators_js_1.throwIfDisposed)(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
             })], _print_decorators = [(0, decorators_js_1.throwIfDisposed)(context => {

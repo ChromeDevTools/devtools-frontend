@@ -81,6 +81,9 @@ export class FirefoxTargetManager extends EventEmitter {
     getAvailableTargets() {
         return this.#availableTargetsByTargetId;
     }
+    getChildTargets(_target) {
+        return new Set();
+    }
     dispose() {
         this.#connection.off('Target.targetCreated', this.#onTargetCreated);
         this.#connection.off('Target.targetDestroyed', this.#onTargetDestroyed);

@@ -11,6 +11,7 @@ import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { isErrorLike } from '../util/ErrorLike.js';
+import { CdpPreloadScript } from './CdpPreloadScript.js';
 import { CdpCDPSession } from './CDPSession.js';
 import { isTargetClosedError } from './Connection.js';
 import { DeviceRequestPromptManager } from './DeviceRequestPrompt.js';
@@ -32,6 +33,8 @@ export class FrameManager extends EventEmitter {
     #timeoutSettings;
     #isolatedWorlds = new Set();
     #client;
+    #scriptsToEvaluateOnNewDocument = new Map();
+    #bindings = new Set();
     _frameTree = new FrameTree();
     /**
      * Set of frame IDs stored to indicate if a frame has received a
@@ -108,7 +111,7 @@ export class FrameManager extends EventEmitter {
         client.once(CDPSessionEvent.Disconnected, () => {
             this.#onClientDisconnect().catch(debugError);
         });
-        await this.initialize(client);
+        await this.initialize(client, frame);
         await this.#networkManager.addClient(client);
         if (frame) {
             frame.emit(FrameEvent.FrameSwappedByActivation, undefined);
@@ -152,7 +155,7 @@ export class FrameManager extends EventEmitter {
             this.#onLifecycleEvent(event);
         });
     }
-    async initialize(client) {
+    async initialize(client, frame) {
         try {
             this.#frameTreeHandled?.resolve();
             this.#frameTreeHandled = Deferred.create();
@@ -170,6 +173,14 @@ export class FrameManager extends EventEmitter {
                 client.send('Page.setLifecycleEventsEnabled', { enabled: true }),
                 client.send('Runtime.enable').then(() => {
                     return this.#createIsolatedWorld(client, UTILITY_WORLD_NAME);
+                }),
+                ...(frame
+                    ? Array.from(this.#scriptsToEvaluateOnNewDocument.values())
+                    : []).map(script => {
+                    return frame?.addPreloadScript(script);
+                }),
+                ...(frame ? Array.from(this.#bindings.values()) : []).map(binding => {
+                    return frame?.addExposedFunctionBinding(binding);
                 }),
             ]);
         }
@@ -196,6 +207,50 @@ export class FrameManager extends EventEmitter {
     frame(frameId) {
         return this._frameTree.getById(frameId) || null;
     }
+    async addExposedFunctionBinding(binding) {
+        this.#bindings.add(binding);
+        await Promise.all(this.frames().map(async (frame) => {
+            return await frame.addExposedFunctionBinding(binding);
+        }));
+    }
+    async removeExposedFunctionBinding(binding) {
+        this.#bindings.delete(binding);
+        await Promise.all(this.frames().map(async (frame) => {
+            return await frame.removeExposedFunctionBinding(binding);
+        }));
+    }
+    async evaluateOnNewDocument(source) {
+        const { identifier } = await this.mainFrame()
+            ._client()
+            .send('Page.addScriptToEvaluateOnNewDocument', {
+            source,
+        });
+        const preloadScript = new CdpPreloadScript(this.mainFrame(), identifier, source);
+        this.#scriptsToEvaluateOnNewDocument.set(identifier, preloadScript);
+        await Promise.all(this.frames().map(async (frame) => {
+            return await frame.addPreloadScript(preloadScript);
+        }));
+        return { identifier };
+    }
+    async removeScriptToEvaluateOnNewDocument(identifier) {
+        const preloadScript = this.#scriptsToEvaluateOnNewDocument.get(identifier);
+        if (!preloadScript) {
+            throw new Error(`Script to evaluate on new document with id ${identifier} not found`);
+        }
+        this.#scriptsToEvaluateOnNewDocument.delete(identifier);
+        await Promise.all(this.frames().map(frame => {
+            const identifier = preloadScript.getIdForFrame(frame);
+            if (!identifier) {
+                return;
+            }
+            return frame
+                ._client()
+                .send('Page.removeScriptToEvaluateOnNewDocument', {
+                identifier,
+            })
+                .catch(debugError);
+        }));
+    }
     onAttachedToTarget(target) {
         if (target._getTargetInfo().type !== 'iframe') {
             return;
@@ -205,7 +260,7 @@ export class FrameManager extends EventEmitter {
             frame.updateClient(target._session());
         }
         this.setupEventListeners(target._session());
-        void this.initialize(target._session());
+        void this.initialize(target._session(), frame);
     }
     _deviceRequestPromptManager(client) {
         let manager = this.#deviceRequestPromptManagerMap.get(client);

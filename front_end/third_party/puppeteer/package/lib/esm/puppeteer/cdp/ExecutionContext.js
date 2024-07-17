@@ -61,14 +61,16 @@ import { ARIAQueryHandler } from './AriaQueryHandler.js';
 import { Binding } from './Binding.js';
 import { CdpElementHandle } from './ElementHandle.js';
 import { CdpJSHandle } from './JSHandle.js';
-import { addPageBinding, createEvaluationError, valueFromRemoteObject, } from './utils.js';
-const ariaQuerySelectorBinding = new Binding('__ariaQuerySelector', ARIAQueryHandler.queryOne);
+import { addPageBinding, CDP_BINDING_PREFIX, createEvaluationError, valueFromRemoteObject, } from './utils.js';
+const ariaQuerySelectorBinding = new Binding('__ariaQuerySelector', ARIAQueryHandler.queryOne, '' // custom init
+);
 const ariaQuerySelectorAllBinding = new Binding('__ariaQuerySelectorAll', (async (element, selector) => {
     const results = ARIAQueryHandler.queryAll(element, selector);
     return await element.realm.evaluateHandle((...elements) => {
         return elements;
     }, ...(await AsyncIterableUtil.collect(results)));
-}));
+}), '' // custom init
+);
 /**
  * @internal
  */
@@ -116,14 +118,14 @@ export class ExecutionContext extends EventEmitter {
             try {
                 await this.#client.send('Runtime.addBinding', this.#name
                     ? {
-                        name: binding.name,
+                        name: CDP_BINDING_PREFIX + binding.name,
                         executionContextName: this.#name,
                     }
                     : {
-                        name: binding.name,
+                        name: CDP_BINDING_PREFIX + binding.name,
                         executionContextId: this.#id,
                     });
-                await this.evaluate(addPageBinding, 'internal', binding.name);
+                await this.evaluate(addPageBinding, 'internal', binding.name, CDP_BINDING_PREFIX);
                 this.#bindings.set(binding.name, binding);
             }
             catch (error) {

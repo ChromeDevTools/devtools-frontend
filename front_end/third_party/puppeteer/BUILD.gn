@@ -133,6 +133,8 @@ SOURCES = [
   "package/lib/esm/puppeteer/cdp/BrowserContext.js",
   "package/lib/esm/puppeteer/cdp/CDPSession.d.ts",
   "package/lib/esm/puppeteer/cdp/CDPSession.js",
+  "package/lib/esm/puppeteer/cdp/CdpPreloadScript.d.ts",
+  "package/lib/esm/puppeteer/cdp/CdpPreloadScript.js",
   "package/lib/esm/puppeteer/cdp/ChromeTargetManager.d.ts",
   "package/lib/esm/puppeteer/cdp/ChromeTargetManager.js",
   "package/lib/esm/puppeteer/cdp/Connection.d.ts",

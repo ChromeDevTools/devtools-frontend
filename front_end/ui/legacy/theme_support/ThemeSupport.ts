@@ -211,6 +211,7 @@ export class ThemeSupport extends EventTarget {
 
   #fetchColorsAndApplyHostTheme(document: Document): void {
     if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
+      this.#applyThemeToDocument(document);
       return;
     }
 

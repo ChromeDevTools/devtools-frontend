@@ -481,10 +481,10 @@ export class Overlays extends EventTarget {
       case 'ENTRY_LABEL': {
         if (this.entryIsVisibleOnChart(overlay.entry)) {
           element.style.visibility = 'visible';
-          const entryDimensions = this.#positionEntryLabelOverlay(overlay, element);
+          const entryLabelParams = this.#positionEntryLabelOverlay(overlay, element);
           const component = element.querySelector('devtools-entry-label-overlay');
-          if (component && entryDimensions) {
-            component.entryDimensions = entryDimensions;
+          if (component && entryLabelParams) {
+            component.entryLabelParams = entryLabelParams;
           } else {
             element.style.visibility = 'hidden';
             console.error('Cannot calculate entry width and height values required to draw a label overlay.');
@@ -594,32 +594,47 @@ export class Overlays extends EventTarget {
    * @param overlay - the EntrySelected overlay that we need to position.
    * @param element - the DOM element representing the overlay
    */
-  #positionEntryLabelOverlay(overlay: EntryLabel, element: HTMLElement): {height: number, width: number}|null {
+  #positionEntryLabelOverlay(overlay: EntryLabel, element: HTMLElement):
+      {height: number, width: number, cutOffEntryHeight: number, chart: string}|null {
     const chartName = this.#chartForOverlayEntry(overlay.entry);
     const x = this.xPixelForEventOnChart(overlay.entry);
     const y = this.yPixelForEventOnChart(overlay.entry);
     const {endTime} = this.#timingsForOverlayEntry(overlay.entry);
     const endX = this.#xPixelForMicroSeconds(chartName, endTime);
+    const entryHeight = this.pixelHeightForEventOnChart(overlay.entry) ?? 0;
 
     if (x === null || y === null || endX === null) {
       return null;
     }
 
-    const entryHeight = this.pixelHeightForEventOnChart(overlay.entry) ?? 0;
-
     // The width of the overlay is by default the width of the entry. However
     // we modify that for instant events like LCP markers, and also ensure a
     // minimum width.
     const widthPixels = endX - x;
-
     // The part of the overlay that draws a box around an entry is always at least 2px wide.
     const entryWidth = Math.max(2, widthPixels);
+    const networkHeight = this.#dimensions.charts.network?.heightPixels ?? 0;
+
+    // Find the part of the entry that is covered by resizer to not draw it over the resizer.
+    // If the entry is in the main flamechart, find the part of the entry that is covered from the top.
+    // If it is in the network track, find the part covered by the resizer from the bottom.
+    const entryHiddenTop = this.networkChartOffsetHeight() - y;
+    const entryHiddenBottom = entryHeight + y - networkHeight;
+    // If the covered part is negative, the entry is fully visible and the cut off part is 0.
+    const cutOffEntryHeight = Math.max((chartName === 'main') ? entryHiddenTop : entryHiddenBottom, 0);
+
+    let topOffset = y - Components.EntryLabelOverlay.EntryLabelOverlay.LABEL_AND_CONNECTOR_HEIGHT;
+    // If part of the entry height is not visible in the main flamechart, take that into the account in the top offset.
+    if (chartName === 'main') {
+      topOffset += cutOffEntryHeight;
+    }
+
     // Position the start of label overlay at the start of the entry + length of connector + legth of the label element
-    element.style.top = `${y - Components.EntryLabelOverlay.EntryLabelOverlay.LABEL_AND_CONNECTOR_HEIGHT}px`;
+    element.style.top = `${topOffset}px`;
     // Position the start of the entry label overlay in the the middle of the entry.
     element.style.left = `${x + entryWidth / 2}px`;
 
-    return {height: entryHeight, width: entryWidth};
+    return {height: entryHeight, width: entryWidth, cutOffEntryHeight, chart: chartName};
   }
 
   /**
@@ -727,7 +742,8 @@ export class Overlays extends EventTarget {
     div.classList.add('overlay-item', `overlay-type-${overlay.type}`);
     switch (overlay.type) {
       case 'ENTRY_LABEL': {
-        const component = new Components.EntryLabelOverlay.EntryLabelOverlay(overlay.label);
+        const component = new Components.EntryLabelOverlay.EntryLabelOverlay(
+            overlay.label, this.#chartForOverlayEntry(overlay.entry) === 'main');
         component.addEventListener(Components.EntryLabelOverlay.EmptyEntryLabelRemoveEvent.eventName, () => {
           this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Remove'));
         });

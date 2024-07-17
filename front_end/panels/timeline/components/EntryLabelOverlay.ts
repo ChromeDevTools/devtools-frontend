@@ -41,12 +41,14 @@ export class EntryLabelOverlay extends HTMLElement {
   // The label is set to editable when it is double clicked. If the user clicks away from the label box
   // element, the lable is set to not editable until it double clicked.s
   #isLabelEditable: boolean = true;
-  #entryDimensions: {height: number, width: number}|null = null;
+  #entryLabelParams: {height: number, width: number, cutOffEntryHeight: number}|null = null;
 
   #labelPartsWrapper: HTMLElement|null = null;
   #labelBox: HTMLElement|null = null;
+  #entryHighlightWrapper: HTMLElement|null = null;
+  #connectorLineContainer: SVGAElement|null = null;
   #label: string;
-
+  #entryIsInMainChart: boolean;
   /*
 The entry label overlay consists of 3 parts - the label part with the label string inside,
 the line connecting the label to the entry, and a black box around an entry to highlight the entry with a label.
@@ -67,11 +69,16 @@ The connector and circle shapes never change so we only draw the second part whe
 Otherwise, the entry label overlay object only gets repositioned.
 */
 
-  constructor(label: string) {
+  constructor(label: string, entryIsInMainChart: boolean) {
     super();
     this.#render();
     this.#labelPartsWrapper = this.#shadow.querySelector<HTMLElement>('.label-parts-wrapper');
+    this.#labelBox = this.#labelPartsWrapper?.querySelector<HTMLElement>('.label-box') ?? null;
+    this.#connectorLineContainer = this.#labelPartsWrapper?.querySelector<SVGAElement>('.connectorContainer') ?? null;
+    this.#entryHighlightWrapper =
+        this.#labelPartsWrapper?.querySelector<HTMLElement>('.entry-highlight-wrapper') ?? null;
     this.#label = label;
+    this.#entryIsInMainChart = entryIsInMainChart;
     this.#drawLabel(label);
     this.#drawConnector();
   }
@@ -151,28 +158,28 @@ Otherwise, the entry label overlay object only gets repositioned.
     selection?.addRange(range);
   }
 
-  set entryDimensions(entryDimensions: {height: number, width: number}) {
-    if (entryDimensions.height === this.#entryDimensions?.height &&
-        entryDimensions.width === this.#entryDimensions?.width) {
+  set entryLabelParams(entryLabelParams: {height: number, width: number, cutOffEntryHeight: number, chart: string}) {
+    if (entryLabelParams.height === this.#entryLabelParams?.height &&
+        entryLabelParams.width === this.#entryLabelParams?.width &&
+        entryLabelParams.cutOffEntryHeight === this.#entryLabelParams?.cutOffEntryHeight) {
       return;
     }
 
-    this.#entryDimensions = entryDimensions;
+    this.#entryLabelParams = entryLabelParams;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
     // We need to redraw the entry wrapper only if the entry dimensions change
     this.#drawEntryHighlightWrapper();
   }
 
   #drawConnector(): void {
-    if (!this.#labelPartsWrapper) {
-      console.error('`labelPartsWrapper` element is missing.');
+    if (!this.#connectorLineContainer) {
+      console.error('`connectorLineContainer` element is missing.');
       return;
     }
-    const connectorLineContainer = this.#labelPartsWrapper.querySelector('.connectorContainer') as SVGAElement;
-    const connector = connectorLineContainer.querySelector('line');
-    const circle = connectorLineContainer.querySelector('circle');
-    const entryHighlightWrapper = this.#labelPartsWrapper.querySelector('.entry-highlight-wrapper') as HTMLElement;
-    if (!connectorLineContainer || !entryHighlightWrapper || !connector || !circle) {
+
+    const connector = this.#connectorLineContainer.querySelector('line');
+    const circle = this.#connectorLineContainer.querySelector('circle');
+    if (!connector || !circle) {
       console.error('Some entry label elements are missing.');
       return;
     }
@@ -180,8 +187,9 @@ Otherwise, the entry label overlay object only gets repositioned.
     // Set the width of the canvas that draws the connector to be equal to the length of the shift multiplied by two.
     // That way, we can draw the connector from its corner to its middle. Since all elements are alligned in the middle, the connector
     // will end in the middle of the entry.
-    connectorLineContainer.setAttribute('width', (EntryLabelOverlay.LABEL_AND_CONNECTOR_SHIFT_LENGTH * 2).toString());
-    connectorLineContainer.setAttribute('height', EntryLabelOverlay.LABEL_CONNECTOR_HEIGHT.toString());
+    this.#connectorLineContainer.setAttribute(
+        'width', (EntryLabelOverlay.LABEL_AND_CONNECTOR_SHIFT_LENGTH * 2).toString());
+    this.#connectorLineContainer.setAttribute('height', EntryLabelOverlay.LABEL_CONNECTOR_HEIGHT.toString());
     // Start drawing the top right corner.
     connector.setAttribute('x1', '0');
     connector.setAttribute('y1', '0');
@@ -199,13 +207,6 @@ Otherwise, the entry label overlay object only gets repositioned.
   }
 
   #drawLabel(initialLabel: string): void {
-    if (!this.#labelPartsWrapper) {
-      console.error('`labelPartsWrapper` element is missing.');
-      return;
-    }
-
-    this.#labelBox = this.#labelPartsWrapper.querySelector<HTMLElement>('.label-box');
-
     if (!this.#labelBox) {
       console.error('`labelBox` element is missing.');
       return;
@@ -226,20 +227,27 @@ Otherwise, the entry label overlay object only gets repositioned.
   }
 
   #drawEntryHighlightWrapper(): void {
-    if (!this.#labelPartsWrapper) {
-      console.error('`labelPartsWrapper` element is missing.');
+    if (!this.#entryHighlightWrapper || !this.#entryLabelParams || !this.#labelBox || !this.#connectorLineContainer) {
+      console.error('Some elements required to draw `entryHighlightWrapper` are missing.');
       return;
     }
-    const entryHighlightWrapper = this.#labelPartsWrapper.querySelector('.entry-highlight-wrapper') as HTMLElement;
 
-    if (!entryHighlightWrapper) {
-      console.error('`entryHighlightWrapper` element is missing.');
-      return;
+    const {height, width, cutOffEntryHeight} = this.#entryLabelParams;
+
+    // If part of the entry is hidden by the resizer in the main chart, it is hidden from the top.
+    // Therefore, set the bottom border to hidden and hide the label and connector parts of the label.
+    // If it's partly hidden in the network chart, it's hidden from the bottom. In that case, hide the bottom border.
+    if (this.#entryIsInMainChart) {
+      this.#labelBox.style.visibility = cutOffEntryHeight > 0 ? 'hidden' : 'visible';
+      this.#connectorLineContainer.style.visibility = cutOffEntryHeight > 0 ? 'hidden' : 'visible';
+      this.#entryHighlightWrapper.style.borderTopWidth = cutOffEntryHeight > 0 ? '0' : '2px';
+    } else {
+      this.#entryHighlightWrapper.style.borderBottomWidth = cutOffEntryHeight > 0 ? '0' : '2px';
     }
 
     // PART 3: draw the box that highlights the entry with a label
-    entryHighlightWrapper.style.height = `${this.#entryDimensions?.height}px`;
-    entryHighlightWrapper.style.width = `${this.#entryDimensions?.width}px`;
+    this.#entryHighlightWrapper.style.height = `${height - cutOffEntryHeight}px`;
+    this.#entryHighlightWrapper.style.width = `${width}px`;
 
     // If the label is editable, focus cursor on it.
     // This method needs to be called after rendering the wrapper because it is the last label overlay element to render.

@@ -83,6 +83,14 @@ export function veChange(ve: string): TestLogEntry {
   return {interaction: `Change: ${ve}`};
 }
 
+export function veKeyDown(ve: string): TestLogEntry {
+  return {interaction: `KeyDown: ${ve}`};
+}
+
+export function veResize(ve: string): TestLogEntry {
+  return {interaction: `Resize: ${ve}`};
+}
+
 export function veImpression(ve: string, context?: string, children?: TestImpressionLogEntry[]) {
   let key = ve;
   if (context) {
@@ -192,7 +200,7 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]) {
   collapseConsecutiveImpressions(expectedEvents);
 
   const {frontend} = getBrowserAndPages();
-  await renderCoordinatorQueueEmpty();
+  await Promise.race([renderCoordinatorQueueEmpty(), new Promise(resolve => setTimeout(resolve, 100))]);
   const actualEvents =
       // @ts-ignore
       await frontend.evaluate(async () => (await globalThis.getVeDebugEventsLog()) as unknown as TestLogEntry[]);

@@ -5,7 +5,11 @@
 import {$$, getBrowserAndPages, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
 
 import {openCommandMenu} from './quick_open-helpers.js';
-import {expectVeEvents, veImpression, veImpressionForDrawerToolbar} from './visual-logging-helpers.js';
+import {
+  expectVeEvents,
+  veImpression,
+  veImpressionsUnder,
+} from './visual-logging-helpers.js';
 
 const PANEL_ROOT_SELECTOR = 'div[aria-label="Changes panel"]';
 
@@ -20,12 +24,7 @@ export async function openChangesPanelAndNavigateTo(testName: string) {
 
   await waitFor(PANEL_ROOT_SELECTOR);
   await expectVeEvents([
-    veImpression(
-        'Drawer', undefined,
-        [
-          veImpressionForDrawerToolbar({selectedPanel: 'changes.changes'}),
-          veImpressionForChangesPanel(),
-        ]),
+    veImpressionsUnder('Drawer', [veImpressionForChangesPanel()]),
 
   ]);
 }

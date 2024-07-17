@@ -23,7 +23,7 @@ describe('The Console Tab', () => {
     await typeIntoConsole(frontend, '({a: {x: 21}, b: {y: 42}})');
 
     // Expand the object node recursively
-    await clickOnContextMenu('.console-view-object-properties-section', 'Expand recursively');
+    await clickOnContextMenu('.console-view-object-properties-section', 'expand-recursively');
     const root = await waitFor('.console-view-object-properties-section.expanded');
 
     // Ensure that both a and b are expanded.

@@ -14,6 +14,7 @@ import {clickOnContextMenu, CONSOLE_TAB_SELECTOR} from '../helpers/console-helpe
 describe('ConsoleInsight', function() {
   const CLICK_TARGET_SELECTOR = '.console-message-text';
   const EXPLAIN_LABEL = 'Understand this error';
+  const EXPLAIN_ACTION_ID = 'explain.console-message.context.error';
 
   async function setupMocks(devToolsConsoleInsights: Partial<Root.Runtime.HostConfigConsoleInsights>) {
     const {frontend} = getBrowserAndPages();
@@ -34,7 +35,7 @@ describe('ConsoleInsight', function() {
     await target.evaluate(() => {
       console.error(new Error('Unexpected error'));
     });
-    await clickOnContextMenu(CLICK_TARGET_SELECTOR, EXPLAIN_LABEL);
+    await clickOnContextMenu(CLICK_TARGET_SELECTOR, EXPLAIN_ACTION_ID);
     await waitFor('devtools-console-insight', undefined, undefined, 'pierce');
   });
 

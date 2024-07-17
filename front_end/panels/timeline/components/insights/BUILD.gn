@@ -18,6 +18,7 @@ devtools_module("insights") {
   ]
 
   deps = [
+    "../:css_files",
     "../../../../models/trace:bundle",
     "../../../../services/trace_bounds:bundle",
     "../../../../ui/components/helpers:bundle",

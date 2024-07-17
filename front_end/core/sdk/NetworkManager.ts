@@ -418,6 +418,7 @@ export const OfflineConditions: Conditions = {
   latency: 0,
 };
 
+const slow3GTargetLatency = 400;
 export const Slow3GConditions: Conditions = {
   title: i18nLazyString(UIStrings.slowG),
   i18nTitleKey: UIStrings.slowG,
@@ -426,11 +427,13 @@ export const Slow3GConditions: Conditions = {
   // ~500Kbps up
   upload: 500 * 1000 / 8 * .8,
   // 400ms RTT
-  latency: 400 * 5,
+  latency: slow3GTargetLatency * 5,
+  targetLatency: slow3GTargetLatency,
 };
 
 // Note for readers: this used to be called "Fast 3G" but it was renamed in May
 // 2024 to align with LH (crbug.com/342406608).
+const slow4GTargetLatency = 150;
 export const Slow4GConditions: Conditions = {
   title: i18nLazyString(UIStrings.fastG),
   i18nTitleKey: UIStrings.fastG,
@@ -439,9 +442,11 @@ export const Slow4GConditions: Conditions = {
   // ~0.75 Mbps up
   upload: 750 * 1000 / 8 * .9,
   // 150ms RTT
-  latency: 150 * 3.75,
+  latency: slow4GTargetLatency * 3.75,
+  targetLatency: slow4GTargetLatency,
 };
 
+const fast4GTargetLatency = 60;
 export const Fast4GConditions: Conditions = {
   title: i18nLazyString(UIStrings.fast4G),
   i18nTitleKey: UIStrings.fast4G,
@@ -450,7 +455,8 @@ export const Fast4GConditions: Conditions = {
   // 1.5 Mbps up
   upload: 1.5 * 1000 * 1000 / 8 * .9,
   // 60ms RTT
-  latency: 60 * 2.75,
+  latency: fast4GTargetLatency * 2.75,
+  targetLatency: fast4GTargetLatency,
 };
 
 const MAX_EAGER_POST_REQUEST_BODY_LENGTH = 64 * 1024;  // bytes
@@ -2001,6 +2007,12 @@ export interface Conditions {
   // should not be irrecoverably baked, just in case the string changes
   // (or the user switches locales).
   i18nTitleKey?: string;
+  /**
+   * RTT values are multiplied by adjustment factors to make DevTools' emulation more accurate.
+   * This value represents the RTT value *before* the adjustment factor is applied.
+   * @see https://docs.google.com/document/d/10lfVdS1iDWCRKQXPfbxEn4Or99D64mvNlugP1AQuFlE/edit for historical context.
+   */
+  targetLatency?: number;
 }
 
 export interface BlockedPattern {

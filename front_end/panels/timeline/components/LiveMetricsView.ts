@@ -4,7 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as SDK from '../../../core/sdk/sdk.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
@@ -14,6 +14,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 
 import {CPUThrottlingSelector} from './CPUThrottlingSelector.js';
 import {FieldSettingsDialog} from './FieldSettingsDialog.js';
@@ -33,6 +34,9 @@ const CLS_THRESHOLDS = [0.1, 0.25] as MetricThresholds;
 const INP_THRESHOLDS = [200, 500] as MetricThresholds;
 
 const DEVICE_OPTION_LIST: DeviceOption[] = ['AUTO', ...CrUXManager.DEVICE_SCOPE_LIST];
+
+const RTT_COMPARISON_THRESHOLD = 200;
+const RTT_MINIMUM = 60;
 
 export class MetricCard extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-metric-card`;
@@ -243,7 +247,7 @@ export class LiveMetricsView extends HTMLElement {
     return this.#renderMetricCard(
         title,
         this.#lcpValue?.value,
-        fieldData?.percentiles.p75,
+        fieldData?.percentiles?.p75,
         fieldData?.histogram,
         LCP_THRESHOLDS,
         v => i18n.TimeUtilities.millisToString(v),
@@ -258,7 +262,7 @@ export class LiveMetricsView extends HTMLElement {
     return this.#renderMetricCard(
         title,
         this.#clsValue?.value,
-        fieldData?.percentiles.p75,
+        fieldData?.percentiles?.p75,
         fieldData?.histogram,
         CLS_THRESHOLDS,
         v => v === 0 ? '0' : v.toFixed(2),
@@ -272,7 +276,7 @@ export class LiveMetricsView extends HTMLElement {
     return this.#renderMetricCard(
         title,
         this.#inpValue?.value,
-        fieldData?.percentiles.p75,
+        fieldData?.percentiles?.p75,
         fieldData?.histogram,
         INP_THRESHOLDS,
         v => i18n.TimeUtilities.millisToString(v),
@@ -374,9 +378,61 @@ export class LiveMetricsView extends HTMLElement {
     // clang-format on
   }
 
+  #getClosestNetworkPreset(): SDK.NetworkManager.Conditions|null {
+    const response = this.#getFieldMetricData('round_trip_time');
+    if (!response?.percentiles) {
+      return null;
+    }
+
+    const rtt = Number(response.percentiles.p75);
+    if (!Number.isFinite(rtt)) {
+      return null;
+    }
+
+    if (rtt < RTT_MINIMUM) {
+      return SDK.NetworkManager.NoThrottlingConditions;
+    }
+
+    let closestPreset: SDK.NetworkManager.Conditions|null = null;
+    let smallestDiff = Infinity;
+    for (const preset of MobileThrottling.ThrottlingPresets.ThrottlingPresets.networkPresets) {
+      const {targetLatency} = preset;
+      if (!targetLatency) {
+        continue;
+      }
+
+      const diff = Math.abs(targetLatency - rtt);
+      if (diff > RTT_COMPARISON_THRESHOLD) {
+        continue;
+      }
+
+      if (smallestDiff < diff) {
+        continue;
+      }
+
+      closestPreset = preset;
+      smallestDiff = diff;
+    }
+
+    return closestPreset;
+  }
+
   #renderThrottlingSettings(): LitHtml.LitTemplate {
+    const throttlingRec = this.#getClosestNetworkPreset();
+
+    let recStr;
+    if (throttlingRec) {
+      if (throttlingRec === SDK.NetworkManager.NoThrottlingConditions) {
+        recStr = 'Try disabling network throttling to approximate the network latency measured by real users.';
+      } else {
+        const title = typeof throttlingRec.title === 'function' ? throttlingRec.title() : throttlingRec.title;
+        recStr = `Try using ${title} network throttling to approximate the network latency measured by real users.`;
+      }
+    }
+
     return html`
       <div class="card-title">Throttling</div>
+      ${recStr ? html`<div class="throttling-recommendation">${recStr}</div>` : nothing}
       <span class="live-metrics-option">CPU: <${CPUThrottlingSelector.litTagName}></${
         CPUThrottlingSelector.litTagName}></span>
       <span class="live-metrics-option">Network: <${NetworkThrottlingSelector.litTagName}></${

@@ -11,7 +11,7 @@ const CRUX_API_KEY = 'AIzaSyCCSOx25vrb5z0tbedCB3_JRzzbVW6Uwgw';
 const DEFAULT_ENDPOINT = `https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=${CRUX_API_KEY}`;
 
 export type MetricNames = 'cumulative_layout_shift'|'first_contentful_paint'|'first_input_delay'|
-    'interaction_to_next_paint'|'largest_contentful_paint'|'experimental_time_to_first_byte';
+    'interaction_to_next_paint'|'largest_contentful_paint'|'experimental_time_to_first_byte'|'round_trip_time';
 export type FormFactor = 'DESKTOP'|'PHONE'|'TABLET';
 export type DeviceScope = FormFactor|'ALL';
 export type PageScope = 'url'|'origin';
@@ -26,8 +26,8 @@ export interface CrUXRequest {
 }
 
 export interface MetricResponse {
-  histogram: Array<{start: number, end?: number, density?: number}>;
-  percentiles: {p75: number|string};
+  histogram?: Array<{start: number, end?: number, density?: number}>;
+  percentiles?: {p75: number|string};
 }
 
 interface CollectionDate {
@@ -68,7 +68,8 @@ let cruxManagerInstance: CrUXManager;
 export const DEVICE_SCOPE_LIST: DeviceScope[] = ['ALL', 'DESKTOP', 'PHONE'];
 
 const pageScopeList: PageScope[] = ['origin', 'url'];
-const metrics: MetricNames[] = ['largest_contentful_paint', 'cumulative_layout_shift', 'interaction_to_next_paint'];
+const metrics: MetricNames[] =
+    ['largest_contentful_paint', 'cumulative_layout_shift', 'interaction_to_next_paint', 'round_trip_time'];
 
 export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   #originCache = new Map<string, CrUXResponse|null>();

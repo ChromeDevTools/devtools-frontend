@@ -34,6 +34,10 @@ function getFieldHistogramPercents(view: Element, metric: string): string[] {
   return percents.map(p => p.textContent || '');
 }
 
+function getThrottlingRecommendation(view: Element): HTMLElement|null {
+  return view.shadowRoot!.querySelector('.throttling-recommendation');
+}
+
 function getInteractions(view: Element): HTMLElement[] {
   const interactionsListEl = view.shadowRoot?.querySelector('.interactions-list') as HTMLElement;
   return Array.from(interactionsListEl.querySelectorAll('.interaction')) as HTMLElement[];
@@ -85,6 +89,9 @@ function createMockFieldData() {
             {start: 0.25, density: 0.8},
           ],
           percentiles: {p75: 0.25},
+        },
+        'round_trip_time': {
+          percentiles: {p75: 150},
         },
       },
       collectionPeriod: {
@@ -270,35 +277,7 @@ describeWithMockConnection('LiveMetricsView', () => {
     it('should not show when crux is disabled', async () => {
       CrUXManager.CrUXManager.instance().getConfigSetting().set({enabled: false, override: ''});
 
-      mockFieldData['url-ALL'] = {
-        record: {
-          key: {
-            url: 'https://example.com',
-          },
-          metrics: {
-            'largest_contentful_paint': {
-              histogram: [
-                {start: 0, end: 2500, density: 0.5},
-                {start: 2500, end: 4000, density: 0.3},
-                {start: 4000, density: 0.2},
-              ],
-              percentiles: {p75: 1000},
-            },
-            'cumulative_layout_shift': {
-              histogram: [
-                {start: 0, end: 0.1, density: 0.1},
-                {start: 0.1, end: 0.25, density: 0.1},
-                {start: 0.25, density: 0.8},
-              ],
-              percentiles: {p75: 0.25},
-            },
-          },
-          collectionPeriod: {
-            firstDate: {year: 2024, month: 1, day: 1},
-            lastDate: {year: 2024, month: 1, day: 29},
-          },
-        },
-      };
+      mockFieldData['url-ALL'] = createMockFieldData();
 
       const view = new Components.LiveMetricsView.LiveMetricsView();
       renderElementIntoDOM(view);
@@ -322,6 +301,9 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       const inpFieldEl = getFieldMetricValue(view, 'inp');
       assert.strictEqual(inpFieldEl.textContent, '-');
+
+      const throttlingRec = getThrottlingRecommendation(view);
+      assert.isNull(throttlingRec);
     });
 
     it('should show when crux is enabled', async () => {
@@ -357,6 +339,9 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       const inpFieldEl = getFieldMetricValue(view, 'inp');
       assert.strictEqual(inpFieldEl.textContent, '-');
+
+      const throttlingRec = getThrottlingRecommendation(view);
+      assert.match(throttlingRec!.innerText, /Slow 4G/);
     });
 
     it('should make initial request on render when crux is enabled', async () => {
@@ -394,7 +379,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       mockFieldData['url-ALL'] = createMockFieldData();
 
       mockFieldData['origin-ALL'] = createMockFieldData();
-      mockFieldData['origin-ALL'].record.metrics.largest_contentful_paint!.percentiles.p75 = 2000;
+      mockFieldData['origin-ALL'].record.metrics.largest_contentful_paint!.percentiles!.p75 = 2000;
 
       const view = new Components.LiveMetricsView.LiveMetricsView();
       renderElementIntoDOM(view);
@@ -416,7 +401,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       mockFieldData['url-ALL'] = createMockFieldData();
 
       mockFieldData['url-PHONE'] = createMockFieldData();
-      mockFieldData['url-PHONE'].record.metrics.largest_contentful_paint!.percentiles.p75 = 2000;
+      mockFieldData['url-PHONE'].record.metrics.largest_contentful_paint!.percentiles!.p75 = 2000;
 
       const view = new Components.LiveMetricsView.LiveMetricsView();
       renderElementIntoDOM(view);
@@ -440,7 +425,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       mockFieldData['url-DESKTOP'] = createMockFieldData();
 
       mockFieldData['url-PHONE'] = createMockFieldData();
-      mockFieldData['url-PHONE'].record.metrics.largest_contentful_paint!.percentiles.p75 = 2000;
+      mockFieldData['url-PHONE'].record.metrics.largest_contentful_paint!.percentiles!.p75 = 2000;
 
       const view = new Components.LiveMetricsView.LiveMetricsView();
       renderElementIntoDOM(view);
@@ -469,7 +454,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       mockFieldData['url-DESKTOP'] = createMockFieldData();
 
       mockFieldData['url-ALL'] = createMockFieldData();
-      mockFieldData['url-ALL'].record.metrics.largest_contentful_paint!.percentiles.p75 = 2000;
+      mockFieldData['url-ALL'].record.metrics.largest_contentful_paint!.percentiles!.p75 = 2000;
 
       const view = new Components.LiveMetricsView.LiveMetricsView();
       renderElementIntoDOM(view);
@@ -492,6 +477,70 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       const lcpFieldEl2 = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl2.textContent, '2.00 s');
+    });
+
+    describe('throttling recommendation', () => {
+      it('should show for closest target RTT', async () => {
+        mockFieldData['url-ALL'] = createMockFieldData();
+
+        // 165ms is the adjusted latency of "Fast 4G" but 165ms is actually closer to the target RTT
+        // of "Slow 4G" than the target RTT of "Fast 4G".
+        // So we should expect the recommended preset to be "Slow 4G".
+        mockFieldData['url-ALL'].record.metrics.round_trip_time!.percentiles!.p75 = 165;
+
+        const view = new Components.LiveMetricsView.LiveMetricsView();
+        renderElementIntoDOM(view);
+
+        await coordinator.done();
+
+        const throttlingRec = getThrottlingRecommendation(view);
+        assert.match(throttlingRec!.innerText, /Slow 4G/);
+      });
+
+      it('should hide if no RTT data', async () => {
+        mockFieldData['url-ALL'] = createMockFieldData();
+        mockFieldData['url-ALL'].record.metrics.round_trip_time = undefined;
+
+        const view = new Components.LiveMetricsView.LiveMetricsView();
+        renderElementIntoDOM(view);
+
+        await coordinator.done();
+
+        const throttlingRec = getThrottlingRecommendation(view);
+        assert.isNull(throttlingRec);
+      });
+
+      it('should suggest no throttling for very low latency', async () => {
+        mockFieldData['url-ALL'] = createMockFieldData();
+
+        // In theory this is closest to the "offline" preset latency of 0,
+        // but that preset should be ignored.
+        mockFieldData['url-ALL'].record.metrics.round_trip_time!.percentiles!.p75 = 1;
+
+        const view = new Components.LiveMetricsView.LiveMetricsView();
+        renderElementIntoDOM(view);
+
+        await coordinator.done();
+
+        const throttlingRec = getThrottlingRecommendation(view);
+        assert.match(throttlingRec!.innerText, /Try disabling/);
+      });
+
+      it('should ignore presets that are generally too far off', async () => {
+        mockFieldData['url-ALL'] = createMockFieldData();
+
+        // This is closest to the "3G" preset compared to other presets, but it's
+        // still too far away in general.
+        mockFieldData['url-ALL'].record.metrics.round_trip_time!.percentiles!.p75 = 10_000;
+
+        const view = new Components.LiveMetricsView.LiveMetricsView();
+        renderElementIntoDOM(view);
+
+        await coordinator.done();
+
+        const throttlingRec = getThrottlingRecommendation(view);
+        assert.isNull(throttlingRec);
+      });
     });
   });
 });

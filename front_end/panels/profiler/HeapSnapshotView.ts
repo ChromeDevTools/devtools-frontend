@@ -203,11 +203,6 @@ const UIStrings = {
    */
   exposeInternals: 'Expose internals (includes additional implementation-specific details)',
   /**
-   *@description Text in Heap Snapshot View of a profiler tool
-   * This option turns on inclusion of numerical values in the heap snapshot.
-   */
-  captureNumericValue: 'Include numerical values in capture',
-  /**
    *@description Progress update that the profiler is capturing a snapshot of the heap
    */
   snapshotting: 'Snapshotting…',
@@ -1265,8 +1260,7 @@ export class HeapSnapshotProfileType extends
     Common.ObjectWrapper.eventMixin<HeapSnapshotProfileTypeEventTypes, typeof ProfileType>(ProfileType)
         implements SDK.TargetManager.SDKModelObserver<SDK.HeapProfilerModel.HeapProfilerModel> {
   readonly exposeInternals: Common.Settings.Setting<boolean>;
-  readonly captureNumericValue: Common.Settings.Setting<boolean>;
-  customContentInternal: HTMLElement|null;
+  customContentInternal: UI.UIUtils.CheckboxLabel|null;
   constructor(id?: string, title?: string) {
     super(id || HeapSnapshotProfileType.TypeId, title || i18nString(UIStrings.heapSnapshot));
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.HeapProfilerModel.HeapProfilerModel, this);
@@ -1279,7 +1273,6 @@ export class HeapSnapshotProfileType extends
         SDK.HeapProfilerModel.HeapProfilerModel, SDK.HeapProfilerModel.Events.ReportHeapSnapshotProgress,
         this.reportHeapSnapshotProgress, this);
     this.exposeInternals = Common.Settings.Settings.instance().createSetting('expose-internals', false);
-    this.captureNumericValue = Common.Settings.Settings.instance().createSetting('capture-numeric-value', false);
     this.customContentInternal = null;
   }
 
@@ -1321,27 +1314,18 @@ export class HeapSnapshotProfileType extends
   }
 
   override customContent(): Element|null {
-    const optionsContainer = document.createElement('div');
     const showOptionToExposeInternalsInHeapSnapshot =
         Root.Runtime.experiments.isEnabled('show-option-tp-expose-internals-in-heap-snapshot');
-    const omitParagraphElement = !showOptionToExposeInternalsInHeapSnapshot;
-    if (showOptionToExposeInternalsInHeapSnapshot) {
-      const exposeInternalsInHeapSnapshotCheckbox = UI.SettingsUI.createSettingCheckbox(
-          i18nString(UIStrings.exposeInternals), this.exposeInternals, omitParagraphElement);
-      optionsContainer.appendChild(exposeInternalsInHeapSnapshotCheckbox);
-    }
-    const captureNumericValueCheckbox = UI.SettingsUI.createSettingCheckbox(
-        i18nString(UIStrings.captureNumericValue), this.captureNumericValue, omitParagraphElement);
-    optionsContainer.appendChild(captureNumericValueCheckbox);
-    this.customContentInternal = optionsContainer;
-    return optionsContainer;
+    const omitParagraphElement = true;
+    const exposeInternalsInHeapSnapshotCheckbox = UI.SettingsUI.createSettingCheckbox(
+        i18nString(UIStrings.exposeInternals), this.exposeInternals, omitParagraphElement);
+    this.customContentInternal = exposeInternalsInHeapSnapshotCheckbox as UI.UIUtils.CheckboxLabel;
+    return showOptionToExposeInternalsInHeapSnapshot ? exposeInternalsInHeapSnapshotCheckbox : null;
   }
 
   override setCustomContentEnabled(enable: boolean): void {
     if (this.customContentInternal) {
-      this.customContentInternal.querySelectorAll('[is=dt-checkbox]').forEach(label => {
-        (label as UI.UIUtils.CheckboxLabel).checkboxElement.disabled = !enable;
-      });
+      this.customContentInternal.checkboxElement.disabled = !enable;
     }
   }
 
@@ -1365,7 +1349,7 @@ export class HeapSnapshotProfileType extends
 
     await heapProfilerModel.takeHeapSnapshot({
       reportProgress: true,
-      captureNumericValue: this.captureNumericValue.get(),
+      captureNumericValue: true,
       exposeInternals: this.exposeInternals.get(),
     });
     profile = this.profileBeingRecorded() as HeapProfileHeader;

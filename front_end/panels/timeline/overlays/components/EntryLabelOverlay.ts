@@ -1,8 +1,8 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
+import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
 import styles from './entryLabelOverlay.css.js';
 

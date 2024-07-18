@@ -20,7 +20,6 @@ import * as InteractionsTrackAppender from './InteractionsTrackAppender.js';
 import * as LayoutShiftsTrackAppender from './LayoutShiftsTrackAppender.js';
 import * as ModificationsManager from './ModificationsManager.js';
 import * as NetworkTrackAppender from './NetworkTrackAppender.js';
-import * as Overlays from './Overlays.js';
 import * as SaveFileFormatter from './SaveFileFormatter.js';
 import * as SourceMapsResolver from './SourceMapsResolver.js';
 import * as TargetForEvent from './TargetForEvent.js';
@@ -64,7 +63,6 @@ export {
   LayoutShiftsTrackAppender,
   ModificationsManager,
   NetworkTrackAppender,
-  Overlays,
   SaveFileFormatter,
   SourceMapsResolver,
   TargetForEvent,

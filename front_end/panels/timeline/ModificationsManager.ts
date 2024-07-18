@@ -6,7 +6,7 @@ import * as TraceEngine from '../../models/trace/trace.js';
 import * as TimelineComponents from '../../panels/timeline/components/components.js';
 
 import {EventsSerializer} from './EventsSerializer.js';
-import {type EntryLabel, type TimelineOverlay} from './Overlays.js';
+import type * as Overlays from './overlays/overlays.js';
 
 const modificationsManagerByTraceIndex: ModificationsManager[] = [];
 let activeManager: ModificationsManager|null;
@@ -19,7 +19,7 @@ export type UpdateAction = 'Remove'|'Add'|'UpdateLabel';
 export class AnnotationModifiedEvent extends Event {
   static readonly eventName = 'annotationmodifiedevent';
 
-  constructor(public overlay: TimelineOverlay, public action: UpdateAction) {
+  constructor(public overlay: Overlays.Overlays.TimelineOverlay, public action: UpdateAction) {
     super(AnnotationModifiedEvent.eventName);
   }
 }
@@ -38,7 +38,7 @@ export class ModificationsManager extends EventTarget {
   #modifications: TraceEngine.Types.File.Modifications|null = null;
   #traceParsedData: TraceEngine.Handlers.Types.TraceParseData;
   #eventsSerializer: EventsSerializer;
-  #overlayForAnnotation: Map<TraceEngine.Types.File.Annotation, TimelineOverlay>;
+  #overlayForAnnotation: Map<TraceEngine.Types.File.Annotation, Overlays.Overlays.TimelineOverlay>;
 
   /**
    * Gets the ModificationsManager instance corresponding to a trace
@@ -113,7 +113,7 @@ export class ModificationsManager extends EventTarget {
       type: 'ENTRY_LABEL',
       entry: newAnnotation.entry,
       label: newAnnotation.label,
-    } as EntryLabel;
+    } as Overlays.Overlays.EntryLabel;
     this.#overlayForAnnotation.set(newAnnotation, newOverlay);
 
     // TODO: When we have more annotations, check the annotation type and create the appropriate one
@@ -130,7 +130,7 @@ export class ModificationsManager extends EventTarget {
     this.dispatchEvent(new AnnotationModifiedEvent(overlayToRemove, 'Remove'));
   }
 
-  removeAnnotationOverlay(removedOverlay: TimelineOverlay): void {
+  removeAnnotationOverlay(removedOverlay: Overlays.Overlays.TimelineOverlay): void {
     const annotationForRemovedOverlay = this.#getAnnotationByOverlay(removedOverlay);
     if (!annotationForRemovedOverlay) {
       console.warn('Annotation for deleted Overlay does not exist');
@@ -140,7 +140,7 @@ export class ModificationsManager extends EventTarget {
     this.dispatchEvent(new AnnotationModifiedEvent(removedOverlay, 'Remove'));
   }
 
-  updateAnnotationOverlay(updatedOverlay: TimelineOverlay): void {
+  updateAnnotationOverlay(updatedOverlay: Overlays.Overlays.TimelineOverlay): void {
     const annotationForUpdatedOverlay = this.#getAnnotationByOverlay(updatedOverlay);
     if (!annotationForUpdatedOverlay) {
       console.warn('Annotation for updated Overlay does not exist');
@@ -153,7 +153,7 @@ export class ModificationsManager extends EventTarget {
     this.dispatchEvent(new AnnotationModifiedEvent(updatedOverlay, 'UpdateLabel'));
   }
 
-  #getAnnotationByOverlay(overlay: TimelineOverlay): TraceEngine.Types.File.Annotation|null {
+  #getAnnotationByOverlay(overlay: Overlays.Overlays.TimelineOverlay): TraceEngine.Types.File.Annotation|null {
     for (const [annotation, currOverlay] of this.#overlayForAnnotation.entries()) {
       if (currOverlay === overlay) {
         return annotation;
@@ -166,7 +166,7 @@ export class ModificationsManager extends EventTarget {
     return [...this.#overlayForAnnotation.keys()];
   }
 
-  getOverlays(): TimelineOverlay[] {
+  getOverlays(): Overlays.Overlays.TimelineOverlay[] {
     return [...this.#overlayForAnnotation.values()];
   }
 

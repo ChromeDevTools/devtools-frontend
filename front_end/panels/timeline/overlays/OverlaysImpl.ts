@@ -1,14 +1,18 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Platform from '../../core/platform/platform.js';
-import * as TraceEngine from '../../models/trace/trace.js';
-import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as Platform from '../../../core/platform/platform.js';
+import * as TraceEngine from '../../../models/trace/trace.js';
+import type * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import * as Components from './components/components.js';
-import {LAYOUT_SHIFT_SYNTHETIC_DURATION} from './LayoutShiftsTrackAppender.js';
-import {type TimelineFlameChartDataProvider} from './TimelineFlameChartDataProvider.js';
-import {type TimelineFlameChartNetworkDataProvider} from './TimelineFlameChartNetworkDataProvider.js';
+
+// Bit of a hack: LayoutShifts are instant events, so have no duration. But
+// OPP doesn't do well at making tiny events easy to spot and click. So we
+// set it to a small duration so that the user is able to see and click
+// them more easily. Long term we will explore a better UI solution to
+// allow us to do this properly and not hack around it.
+export const LAYOUT_SHIFT_SYNTHETIC_DURATION = TraceEngine.Types.Timing.MicroSeconds(5_000);
 
 /**
  * Below the network track there is a resize bar the user can click and drag.
@@ -131,9 +135,9 @@ interface FlameChartDimensions {
 
 export interface TimelineCharts {
   mainChart: PerfUI.FlameChart.FlameChart;
-  mainProvider: TimelineFlameChartDataProvider;
+  mainProvider: PerfUI.FlameChart.FlameChartDataProvider;
   networkChart: PerfUI.FlameChart.FlameChart;
-  networkProvider: TimelineFlameChartNetworkDataProvider;
+  networkProvider: PerfUI.FlameChart.FlameChartDataProvider;
 }
 
 // An event dispatched when one of the Annotation Overlays (overlay created by the user,
@@ -680,7 +684,7 @@ export class Overlays extends EventTarget {
       // which have the same timestamp are rendered next to each other, so
       // the timestamp is not necessarily exactly where the marker was
       // rendered.
-      const index = provider.indexForEvent(overlay.entry);
+      const index = provider.indexForEvent?.(overlay.entry);
       const markerPixels = chart.getMarkerPixelsForEntryIndex(index ?? -1);
       if (markerPixels) {
         x = markerPixels.x;
@@ -963,7 +967,7 @@ export class Overlays extends EventTarget {
     const chart = chartName === 'main' ? this.#charts.mainChart : this.#charts.networkChart;
     const provider = chartName === 'main' ? this.#charts.mainProvider : this.#charts.networkProvider;
 
-    const indexForEntry = provider.indexForEvent(event);
+    const indexForEntry = provider.indexForEvent?.(event);
     if (typeof indexForEntry !== 'number') {
       return null;
     }
@@ -1001,7 +1005,7 @@ export class Overlays extends EventTarget {
     const chart = chartName === 'main' ? this.#charts.mainChart : this.#charts.networkChart;
     const provider = chartName === 'main' ? this.#charts.mainProvider : this.#charts.networkProvider;
 
-    const indexForEntry = provider.indexForEvent(event);
+    const indexForEntry = provider.indexForEvent?.(event);
     if (typeof indexForEntry !== 'number') {
       return null;
     }

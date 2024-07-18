@@ -17,13 +17,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {CountersGraph} from './CountersGraph.js';
 import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
 import {ModificationsManager} from './ModificationsManager.js';
-import {
-  AnnotationOverlayActionEvent,
-  Overlays,
-  type TimelineOverlay,
-  type TimeRangeLabel,
-  type TimespanBreakdown,
-} from './Overlays.js';
+import * as Overlays from './overlays/overlays.js';
 import {targetForEvent} from './TargetForEvent.js';
 import {TimelineDetailsView} from './TimelineDetailsView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
@@ -109,11 +103,11 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   #gameTimeout = setTimeout(() => ({}), 0);
 
   #overlaysContainer: HTMLElement = document.createElement('div');
-  #overlays: Overlays;
+  #overlays: Overlays.Overlays.Overlays;
 
-  #timeRangeSelectionOverlay: TimeRangeLabel|null = null;
+  #timeRangeSelectionOverlay: Overlays.Overlays.TimeRangeLabel|null = null;
 
-  #timespanBreakdownOverlay: TimespanBreakdown|null = null;
+  #timespanBreakdownOverlay: Overlays.Overlays.TimespanBreakdown|null = null;
   #sidebarInsightToggled: Boolean = false;
 
   #tooltipElement = document.createElement('div');
@@ -200,7 +194,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       this.#processFlameChartMouseMoveEvent(event.data);
     });
 
-    this.#overlays = new Overlays({
+    this.#overlays = new Overlays.Overlays.Overlays({
       container: this.#overlaysContainer,
       charts: {
         mainChart: this.mainFlameChart,
@@ -210,8 +204,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       },
     });
 
-    this.#overlays.addEventListener(AnnotationOverlayActionEvent.eventName, event => {
-      const {overlay, action} = (event as AnnotationOverlayActionEvent);
+    this.#overlays.addEventListener(Overlays.Overlays.AnnotationOverlayActionEvent.eventName, event => {
+      const {overlay, action} = (event as Overlays.Overlays.AnnotationOverlayActionEvent);
       if (action === 'Remove') {
         ModificationsManager.activeManager()?.removeAnnotationOverlay(overlay);
       } else if (action === 'Update') {
@@ -457,7 +451,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   /**
    * This creates and returns a new timespanBreakdownOverlay with LCP phases data.
    */
-  createLCPPhaseOverlay(): TimespanBreakdown|null {
+  createLCPPhaseOverlay(): Overlays.Overlays.TimespanBreakdown|null {
     if (!this.#traceInsightsData || !this.#traceEngineData) {
       return null;
     }
@@ -699,18 +693,18 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
   }
 
-  addOverlay<T extends TimelineOverlay>(newOverlay: T): T {
+  addOverlay<T extends Overlays.Overlays.TimelineOverlay>(newOverlay: T): T {
     const overlay = this.#overlays.add(newOverlay);
     this.#overlays.update();
     return overlay;
   }
 
-  removeOverlay(removedOverlay: TimelineOverlay): void {
+  removeOverlay(removedOverlay: Overlays.Overlays.TimelineOverlay): void {
     this.#overlays.remove(removedOverlay);
     this.#overlays.update();
   }
 
-  updateExistingOverlay<T extends TimelineOverlay>(existingOverlay: T, newData: Partial<T>): void {
+  updateExistingOverlay<T extends Overlays.Overlays.TimelineOverlay>(existingOverlay: T, newData: Partial<T>): void {
     this.#overlays.updateExisting(existingOverlay, newData);
     this.#overlays.update();
   }

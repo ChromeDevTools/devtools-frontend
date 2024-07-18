@@ -72,7 +72,6 @@ devtools_module("timeline") {
     "LayoutShiftsTrackAppender.ts",
     "ModificationsManager.ts",
     "NetworkTrackAppender.ts",
-    "Overlays.ts",
     "SaveFileFormatter.ts",
     "SourceMapsResolver.ts",
     "TargetForEvent.ts",
@@ -130,6 +129,7 @@ devtools_module("timeline") {
     "../../ui/lit-html:bundle",
     "./components:bundle",
     "./extensions:bundle",
+    "./overlays:bundle",
     "./utils:bundle",
   ]
 
@@ -188,7 +188,6 @@ ts_library("unittests") {
     "FreshRecording.test.ts",
     "Initiators.test.ts",
     "ModificationsManager.test.ts",
-    "Overlays.test.ts",
     "SaveFileFormatter.test.ts",
     "SourceMapsResolver.test.ts",
     "TimelineController.test.ts",

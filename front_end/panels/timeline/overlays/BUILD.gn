@@ -1,0 +1,46 @@
+# Copyright 2024 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../third_party/typescript/typescript.gni")
+
+devtools_module("overlays") {
+  sources = [ "OverlaysImpl.ts" ]
+
+  deps = [
+    "../../../core/platform:bundle",
+    "../../../models/trace:bundle",
+    "../../../services/trace_bounds:bundle",
+    "../../../ui/legacy/components/perf_ui:bundle",
+    "../../../ui/lit-html:bundle",
+    "./components:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "overlays.ts"
+
+  deps = [ ":overlays" ]
+
+  visibility = [
+    ":*",
+    "..:*",
+    "../../../ui/components/docs/*",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "OverlaysImpl.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../core/sdk:bundle",
+    "../../../models/trace:bundle",
+    "../../../testing",
+    "../../../ui/components/render_coordinator:bundle",
+  ]
+}

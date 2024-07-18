@@ -863,18 +863,29 @@ describe('LoggingDriver', () => {
 
   it('logs non-DOM impressions after parent was logged', async () => {
     addLoggableElements();
-    const loggable = {};
+    const loggable1 = {};
     const parent = document.getElementById('parent')!;
     await VisualLoggingTesting.LoggingDriver.startLogging();
     assert.isTrue(recordImpression.calledOnce);
-    VisualLoggingTesting.NonDomState.registerLoggable(loggable, {ve: 1, context: '123'}, parent);
+    VisualLoggingTesting.NonDomState.registerLoggable(loggable1, {ve: 1, context: '123'}, parent);
     recordImpression.resetHistory();
     await VisualLoggingTesting.LoggingDriver.scheduleProcessing();
     await expectCalled(recordImpression);
 
     assert.sameDeepMembers(recordImpression.lastCall.firstArg.impressions, [
-      {id: getVeId(loggable), type: 1, context: 123, parent: getVeId(parent), width: 0, height: 0},
+      {id: getVeId(loggable1), type: 1, context: 123, parent: getVeId(parent), width: 0, height: 0},
     ]);
+    recordImpression.resetHistory();
+
+    const loggable2 = {};
+    VisualLoggingTesting.NonDomState.registerLoggable(loggable2, {ve: 1, context: '345'}, parent);
+    await VisualLoggingTesting.LoggingDriver.scheduleProcessing();
+    await expectCalled(recordImpression);
+
+    assert.sameDeepMembers(recordImpression.lastCall.firstArg.impressions, [
+      {id: getVeId(loggable2), type: 1, context: 345, parent: getVeId(parent), width: 0, height: 0},
+    ]);
+
   });
 
   it('logs root non-DOM impressions', async () => {

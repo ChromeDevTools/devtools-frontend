@@ -273,10 +273,10 @@ async function process(): Promise<void> {
         nonDomRoots.push(loggable);
       }
     }
+    // No need to track loggable as soon as we've logged the impression
+    // We can still log interaction events with a handle to a loggable
+    unregisterLoggables(root);
   }
-  // No need to track loggable as soon as we've logged the impression
-  // We can still log interaction events with a handle to a loggable
-  unregisterLoggables();
   if (visibleLoggables.length) {
     await yieldToInteractions();
     flushPendingChangeEvents();

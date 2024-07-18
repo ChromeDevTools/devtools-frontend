@@ -196,7 +196,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   }
 
   #handleRateClick(rpcId: number, rating: Host.AidaClient.Rating): void {
-    this.#aidaClient.registerClientEvent({
+    void this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcId,
       disable_user_content_logging: !this.#serverSideLoggingEnabled,
       do_conversation_client_event: {
@@ -208,7 +208,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   }
 
   #handleFeedbackSubmit(rpcId: number, feedback: string): void {
-    this.#aidaClient.registerClientEvent({
+    void this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcId,
       disable_user_content_logging: !this.#serverSideLoggingEnabled,
       do_conversation_client_event: {

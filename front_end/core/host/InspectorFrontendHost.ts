@@ -37,6 +37,7 @@ import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import {
+  type AidaClientResult,
   type CanShowSurveyResult,
   type ChangeEvent,
   type ClickEvent,
@@ -518,7 +519,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     });
   }
 
-  registerAidaClientEvent(request: string): void {
+  registerAidaClientEvent(request: string, callback: (result: AidaClientResult) => void): void {
   }
 
   recordImpression(event: ImpressionEvent): void {

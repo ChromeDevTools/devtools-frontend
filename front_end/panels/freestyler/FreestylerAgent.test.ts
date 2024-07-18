@@ -365,7 +365,7 @@ c`;
         ): Host.AidaClient.AidaClient {
       return {
         fetch,
-        registerClientEvent() {},
+        registerClientEvent: () => Promise.resolve({}),
       };
     }
 

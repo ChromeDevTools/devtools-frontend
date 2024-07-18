@@ -6,7 +6,7 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
-import {type SyncInformation} from './InspectorFrontendHostAPI.js';
+import {type AidaClientResult, type SyncInformation} from './InspectorFrontendHostAPI.js';
 import {bindOutputStream} from './ResourceLoader.js';
 
 export enum Entity {
@@ -273,11 +273,17 @@ export class AidaClient {
     }
   }
 
-  registerClientEvent(clientEvent: AidaDoConversationClientEvent): void {
-    InspectorFrontendHostInstance.registerAidaClientEvent(JSON.stringify({
-      client: CLIENT_NAME,
-      event_time: new Date().toISOString(),
-      ...clientEvent,
-    }));
+  registerClientEvent(clientEvent: AidaDoConversationClientEvent): Promise<AidaClientResult> {
+    const {promise, resolve} = Platform.PromiseUtilities.promiseWithResolvers<AidaClientResult>();
+    InspectorFrontendHostInstance.registerAidaClientEvent(
+        JSON.stringify({
+          client: CLIENT_NAME,
+          event_time: new Date().toISOString(),
+          ...clientEvent,
+        }),
+        resolve,
+    );
+
+    return promise;
   }
 }

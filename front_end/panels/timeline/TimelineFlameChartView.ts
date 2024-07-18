@@ -118,6 +118,13 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   #tooltipElement = document.createElement('div');
 
+  // We use an symbol as the loggable for each group. This is because
+  // groups can get re-built at times and we need a common reference to act as
+  // the reference for each group that we log. By storing these symbols in
+  // a map keyed off the context of the group, we ensure we persist the
+  // loggable even if the group gets rebuilt at some point in time.
+  #loggableForGroupByLogContext: Map<string, Symbol> = new Map();
+
   constructor(delegate: TimelineModeViewDelegate) {
     super();
     this.element.classList.add('timeline-flamechart');
@@ -145,7 +152,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     const mainViewGroupExpansionSetting =
         Common.Settings.Settings.instance().createSetting('timeline-flamechart-main-view-group-expansion', {});
     this.mainDataProvider = new TimelineFlameChartDataProvider();
-    this.mainDataProvider.setVisualElementLoggingParent(this.delegate.element);
     this.mainDataProvider.addEventListener(
         TimelineFlameChartDataProviderEvents.DataChanged, () => this.mainFlameChart.scheduleUpdate());
     this.mainFlameChart = new PerfUI.FlameChart.FlameChart(this.mainDataProvider, this, {
@@ -167,7 +173,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.networkFlameChartGroupExpansionSetting =
         Common.Settings.Settings.instance().createSetting('timeline-flamechart-network-view-group-expansion', {});
     this.networkDataProvider = new TimelineFlameChartNetworkDataProvider();
-    this.networkDataProvider.setVisualElementLoggingParent(this.delegate.element);
     this.networkFlameChart = new PerfUI.FlameChart.FlameChart(this.networkDataProvider, this, {
       groupExpansionSetting: this.networkFlameChartGroupExpansionSetting,
       // The TimelineOverlays are used for selected elements
@@ -576,6 +581,28 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   #updateFlameCharts(): void {
     this.mainFlameChart.scheduleUpdate();
     this.networkFlameChart.scheduleUpdate();
+
+    this.#registerLoggableGroups();
+  }
+
+  #registerLoggableGroups(): void {
+    const groups = [
+      ...this.mainFlameChart.timelineData()?.groups ?? [],
+      ...this.networkFlameChart.timelineData()?.groups ?? [],
+    ];
+    for (const group of groups) {
+      if (!group.jslogContext) {
+        continue;
+      }
+      const loggable = this.#loggableForGroupByLogContext.get(group.jslogContext) ?? Symbol(group.jslogContext);
+
+      if (!this.#loggableForGroupByLogContext.has(group.jslogContext)) {
+        // This is the first time this group has been created, so register its loggable.
+        this.#loggableForGroupByLogContext.set(group.jslogContext, loggable);
+        VisualLogging.registerLoggable(
+            loggable, `${VisualLogging.section().context(`timeline.${group.jslogContext}`)}`, this.delegate.element);
+      }
+    }
   }
 
   private onEntryHighlighted(commonEvent: Common.EventTarget.EventTargetEvent<number>): void {
@@ -718,7 +745,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     // Find the group that contains this level and log a click for it.
     const group = groupForLevel(data.groups, entryLevel);
     if (group && group.jslogContext) {
-      VisualLogging.logClick(groupForLevel, new MouseEvent('click'));
+      const loggable = this.#loggableForGroupByLogContext.get(group.jslogContext) ?? null;
+      if (loggable) {
+        VisualLogging.logClick(loggable, new MouseEvent('click'));
+      }
     }
 
     dataProvider.buildFlowForInitiator(entryIndex);

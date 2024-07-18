@@ -444,7 +444,8 @@ export class SoftContextMenu {
     if (!detailsForElement.subItems) {
       return;
     }
-    this.subMenu = new SoftContextMenu(detailsForElement.subItems, this.itemSelectedCallback, false, this);
+    this.subMenu = new SoftContextMenu(
+        detailsForElement.subItems, this.itemSelectedCallback, false, this, undefined, menuItemElement);
     const anchorBox = menuItemElement.boxInWindow();
     // Adjust for padding.
     anchorBox.y -= 9;

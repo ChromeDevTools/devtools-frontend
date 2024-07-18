@@ -619,7 +619,7 @@ export enum PanelCodes {
   'settings-shortcuts' = 36,
   'issues-pane' = 37,
   'settings-keybinds' = 38,
-  'cssoverview' = 39,
+  'css-overview' = 39,
   'chrome-recorder' = 40,
   'trust-tokens' = 41,
   'reporting-api' = 42,

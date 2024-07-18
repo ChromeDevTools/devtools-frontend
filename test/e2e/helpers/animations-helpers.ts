@@ -25,7 +25,10 @@ export async function navigateToSiteWithAnimation() {
 }
 
 export async function waitForAnimationContent() {
-  await waitFor('.animation-timeline-buffer');
+  await waitFor('.animation-buffer-preview');
+  await expectVeEvents([veImpressionsUnder(
+      'Drawer > Panel: animations',
+      [veImpression('Section', 'film-strip', [veImpression('Item', 'animations.buffer-preview')])])]);
   await click('.animation-buffer-preview[aria-label="Animation Preview 1"]', {clickOptions: {offset: {x: 4, y: 4}}});
   await waitFor('.animation-node-row');
   await waitFor('svg.animation-ui');

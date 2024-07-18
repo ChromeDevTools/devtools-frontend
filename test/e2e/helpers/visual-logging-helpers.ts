@@ -140,6 +140,48 @@ export function veImpressionForMainToolbar(options?: {
   ]);
 }
 
+export function veImpressionForMainMenu() {
+  return veImpressionsUnder('Toolbar: main > DropDown: main-menu', [veImpression('Menu', undefined, [
+                              veImpression('Action', 'inspector-main.focus-debuggee'),
+                              veImpression('Action', 'main.toggle-drawer'),
+                              veImpression('Action', 'quick-open.show'),
+                              veImpression('Action', 'quick-open.show-command-menu'),
+                              veImpression('Action', 'settings.shortcuts'),
+                              veImpression('Action', 'sources.search'),
+                              veImpression('Item', 'help'),
+                              veImpression('Item', 'more-tools'),
+                            ])]);
+}
+
+export function veImpressionForMainMenuMoreTools() {
+  const panels = [
+    'animations',
+    'autofill-view',
+    'changes.changes',
+    'chrome-recorder',
+    'coverage',
+    'css-overview',
+    'developer-resources',
+    'issues',
+    'layers',
+    'linear-memory-inspector',
+    'media',
+    'network.blocked-urls',
+    'network.config',
+    'performance.monitor',
+    'rendering',
+    'security',
+    'sensors',
+    'sources.quick',
+    'sources.search-sources-tab',
+    'web-audio',
+    'webauthn-pane',
+  ];
+  return veImpressionsUnder(
+      'Toolbar: main > DropDown: main-menu > Menu > Item: more-tools',
+      [veImpression('Menu', undefined, panels.map(i => veImpression('Action', i)))]);
+}
+
 export function veImpressionForElementsPanel(options?: {dockable?: boolean}) {
   return veImpression('Panel', 'elements', [
     veImpression('Toolbar', 'sidebar', [

@@ -2431,7 +2431,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     adorner.classList.add('media');
 
     const onClick = ((() => {
-                       void UI.ViewManager.ViewManager.instance().showView('medias');
+                       void UI.ViewManager.ViewManager.instance().showView('media');
                      }) as EventListener);
 
     adorner.addInteraction(onClick, {

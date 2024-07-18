@@ -543,7 +543,9 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
   private animationGroupUpdated({data: group}: Common.EventTarget.EventTargetEvent<AnimationGroup>): void {
     void this.#animationGroupUpdatedThrottler.schedule(async () => {
       const preview = this.#previewMap.get(group);
-      preview?.render();
+      if (preview) {
+        preview.replay();
+      }
 
       if (this.#selectedGroup !== group) {
         return;

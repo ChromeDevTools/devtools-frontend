@@ -2,11 +2,27 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import {AnimationDOMNode} from './AnimationDOMNode.js';
+
+function shouldGroupAnimations(firstAnimation: AnimationImpl, anim: AnimationImpl): boolean {
+  const firstAnimationTimeline = firstAnimation.viewOrScrollTimeline();
+  const animationTimeline = anim.viewOrScrollTimeline();
+  if (firstAnimationTimeline) {
+    // This is a SDA group so check whether the animation's
+    // scroll container and scroll axis is the same with the first animation.
+    return Boolean(
+        animationTimeline && firstAnimationTimeline.sourceNodeId === animationTimeline.sourceNodeId &&
+        firstAnimationTimeline.axis === animationTimeline.axis);
+  }
+  // This is a non-SDA group so check whether the coming animation
+  // is a time based one too and if so, compare their start times.
+  return !animationTimeline && firstAnimation.startTime() === anim.startTime();
+}
 
 export class AnimationModel extends SDK.SDKModel.SDKModel<EventTypes> {
   readonly runtimeModel: SDK.RuntimeModel.RuntimeModel;
@@ -17,6 +33,7 @@ export class AnimationModel extends SDK.SDKModel.SDKModel<EventTypes> {
   playbackRate: number;
   readonly #screenshotCapture?: ScreenshotCapture;
   #enabled?: boolean;
+  #flushPendingAnimations: () => void;
 
   constructor(target: SDK.Target.Target) {
     super(target);
@@ -34,6 +51,12 @@ export class AnimationModel extends SDK.SDKModel.SDKModel<EventTypes> {
     if (screenCaptureModel) {
       this.#screenshotCapture = new ScreenshotCapture(this, screenCaptureModel);
     }
+
+    this.#flushPendingAnimations = Common.Debouncer.debounce(() => {
+      while (this.#pendingAnimations.size) {
+        this.matchExistingGroups(this.createGroupFromPendingAnimations());
+      }
+    }, 100);
   }
 
   private reset(): void {
@@ -52,13 +75,8 @@ export class AnimationModel extends SDK.SDKModel.SDKModel<EventTypes> {
     return 1;
   }
 
-  animationCreated(id: string): void {
-    this.#pendingAnimations.add(id);
-  }
-
   animationCanceled(id: string): void {
     this.#pendingAnimations.delete(id);
-    this.flushPendingAnimationsIfNeeded();
   }
 
   async animationUpdated(payload: Protocol.Animation.Animation): Promise<void> {
@@ -87,10 +105,6 @@ export class AnimationModel extends SDK.SDKModel.SDKModel<EventTypes> {
     }
 
     const animation = await AnimationImpl.parsePayload(this, payload);
-    if (!animation) {
-      return;
-    }
-
     // Ignore Web Animations custom effects & groups.
     const keyframesRule = animation.source().keyframesRule();
     if (animation.type() === 'WebAnimation' && keyframesRule && keyframesRule.keyframes().length === 0) {
@@ -100,19 +114,7 @@ export class AnimationModel extends SDK.SDKModel.SDKModel<EventTypes> {
       this.#pendingAnimations.add(animation.id());
     }
 
-    this.flushPendingAnimationsIfNeeded();
-  }
-
-  private flushPendingAnimationsIfNeeded(): void {
-    for (const id of this.#pendingAnimations) {
-      if (!this.#animationsById.get(id)) {
-        return;
-      }
-    }
-
-    while (this.#pendingAnimations.size) {
-      this.matchExistingGroups(this.createGroupFromPendingAnimations());
-    }
+    this.#flushPendingAnimations();
   }
 
   private matchExistingGroups(incomingGroup: AnimationGroup): boolean {
@@ -120,7 +122,13 @@ export class AnimationModel extends SDK.SDKModel.SDKModel<EventTypes> {
     for (const group of this.animationGroups.values()) {
       if (group.matches(incomingGroup)) {
         matchedGroup = group;
-        group.update(incomingGroup);
+        group.rebaseTo(incomingGroup);
+        break;
+      }
+
+      if (group.shouldInclude(incomingGroup)) {
+        matchedGroup = group;
+        group.appendAnimations(incomingGroup.animations());
         break;
       }
     }
@@ -130,8 +138,10 @@ export class AnimationModel extends SDK.SDKModel.SDKModel<EventTypes> {
       if (this.#screenshotCapture) {
         this.#screenshotCapture.captureScreenshots(incomingGroup.finiteDuration(), incomingGroup.screenshotsInternal);
       }
+      this.dispatchEventToListeners(Events.AnimationGroupStarted, incomingGroup);
+    } else {
+      this.dispatchEventToListeners(Events.AnimationGroupUpdated, matchedGroup);
     }
-    this.dispatchEventToListeners(Events.AnimationGroupStarted, matchedGroup || incomingGroup);
     return Boolean(matchedGroup);
   }
 
@@ -145,27 +155,12 @@ export class AnimationModel extends SDK.SDKModel.SDKModel<EventTypes> {
       throw new Error('Unable to locate first animation');
     }
 
-    const shouldGroupAnimation = (anim: AnimationImpl): boolean => {
-      const firstAnimationTimeline = firstAnimation.viewOrScrollTimeline();
-      const animationTimeline = anim.viewOrScrollTimeline();
-      if (firstAnimationTimeline) {
-        // This is a SDA group so check whether the animation's
-        // scroll container and scroll axis is the same with the first animation.
-        return Boolean(
-            animationTimeline && firstAnimationTimeline.sourceNodeId === animationTimeline.sourceNodeId &&
-            firstAnimationTimeline.axis === animationTimeline.axis);
-      }
-      // This is a non-SDA group so check whether the coming animation
-      // is a time based one too and if so, compare their start times.
-      return !animationTimeline && firstAnimation.startTime() === anim.startTime();
-    };
-
     const groupedAnimations = [firstAnimation];
     const remainingAnimations = new Set<string>();
 
     for (const id of this.#pendingAnimations) {
       const anim = this.#animationsById.get(id) as AnimationImpl;
-      if (shouldGroupAnimation(anim)) {
+      if (shouldGroupAnimations(firstAnimation, anim)) {
         groupedAnimations.push(anim);
       } else {
         remainingAnimations.add(id);
@@ -734,7 +729,19 @@ export class AnimationGroup {
     return true;
   }
 
-  update(group: AnimationGroup): void {
+  shouldInclude(group: AnimationGroup): boolean {
+    // We want to include the animations coming from the incoming group
+    // inside this group if they were to be grouped if the events came at the same time.
+    const [firstIncomingAnimation] = group.#animationsInternal;
+    const [firstAnimation] = this.#animationsInternal;
+    return shouldGroupAnimations(firstAnimation, firstIncomingAnimation);
+  }
+
+  appendAnimations(animations: AnimationImpl[]): void {
+    this.#animationsInternal.push(...animations);
+  }
+
+  rebaseTo(group: AnimationGroup): void {
     this.#animationModel.releaseAnimations(this.animationIds());
     this.#animationsInternal = group.#animationsInternal;
     this.#scrollNodeInternal = undefined;
@@ -757,8 +764,22 @@ export class AnimationDispatcher implements ProtocolProxyApi.AnimationDispatcher
     this.#animationModel = animationModel;
   }
 
-  animationCreated({id}: Protocol.Animation.AnimationCreatedEvent): void {
-    this.#animationModel.animationCreated(id);
+  animationCreated(_event: Protocol.Animation.AnimationCreatedEvent): void {
+    // Previously this event was used to batch the animations into groups
+    // and we were waiting for animationStarted events to be sent for
+    // all the created animations and until then we weren't creating any
+    // groups. This was allowing us to not miss any animations that were
+    // going to be in the same group. However, now we're not using this event
+    // to do batching and instead:
+    // * We debounce the flush calls so that if the animationStarted events
+    // for the same animation group come in different times; we create one
+    // group for them.
+    // * Even though an animation group is created and rendered for some animations
+    // that have the same startTime (or same timeline & scroll axis for SDAs), now
+    // whenever an `animationStarted` event comes we check whether there is a group
+    // we can add the related animation. If so, we add it and emit `animationGroupUpdated`
+    // event. So that, all the animations that were supposed to be in the same group
+    // will be in the same group.
   }
 
   animationCanceled({id}: Protocol.Animation.AnimationCanceledEvent): void {

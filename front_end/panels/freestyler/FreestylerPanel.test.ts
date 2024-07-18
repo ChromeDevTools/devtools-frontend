@@ -123,7 +123,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       });
       const callArgs = mockView.getCall(0).args[0];
       mockView.reset();
-      callArgs.onRateClick(0, Host.AidaClient.Rating.POSITIVE);
+      callArgs.onFeedbackSubmit(0, Host.AidaClient.Rating.POSITIVE);
 
       sinon.assert.match(aidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
         disable_user_content_logging: false,
@@ -140,7 +140,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       });
       const callArgs = mockView.getCall(0).args[0];
       mockView.reset();
-      callArgs.onRateClick(RPC_ID, Host.AidaClient.Rating.POSITIVE);
+      callArgs.onFeedbackSubmit(RPC_ID, Host.AidaClient.Rating.POSITIVE);
 
       sinon.assert.match(aidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
         corresponding_aida_rpc_global_id: RPC_ID,
@@ -162,13 +162,39 @@ describeWithEnvironment('FreestylerPanel', () => {
       });
       const callArgs = mockView.getCall(0).args[0];
       mockView.reset();
-      callArgs.onRateClick(RPC_ID, Host.AidaClient.Rating.NEGATIVE);
+      callArgs.onFeedbackSubmit(RPC_ID, Host.AidaClient.Rating.NEGATIVE);
 
       sinon.assert.match(aidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
         corresponding_aida_rpc_global_id: RPC_ID,
         do_conversation_client_event: {
           user_feedback: {
             sentiment: 'NEGATIVE',
+          },
+        },
+        disable_user_content_logging: true,
+      }));
+    });
+
+    it('should send feedback text with data', () => {
+      const RPC_ID = 0;
+      const feedback = 'This helped me a ton.';
+      const aidaClient = getTestAidaClient();
+      new Freestyler.FreestylerPanel(mockView, {
+        aidaClient,
+        aidaAvailability: Host.AidaClient.AidaAvailability.AVAILABLE,
+      });
+      const callArgs = mockView.getCall(0).args[0];
+      mockView.reset();
+      callArgs.onFeedbackSubmit(RPC_ID, Host.AidaClient.Rating.POSITIVE, feedback);
+
+      sinon.assert.match(aidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
+        corresponding_aida_rpc_global_id: RPC_ID,
+        do_conversation_client_event: {
+          user_feedback: {
+            sentiment: 'POSITIVE',
+            user_input: {
+              comment: feedback,
+            },
           },
         },
         disable_user_content_logging: true,

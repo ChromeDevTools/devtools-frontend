@@ -122,7 +122,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
       isLoading: false,
       onTextSubmit: this.#startConversation.bind(this),
       onInspectElementClick: this.#handleSelectElementClick.bind(this),
-      onRateClick: this.#handleRateClick.bind(this),
       onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
       onAcceptConsentClick: this.#handleAcceptConsentClick.bind(this),
       onCancelClick: this.#cancel.bind(this),
@@ -195,24 +194,13 @@ export class FreestylerPanel extends UI.Panel.Panel {
     void this.#toggleSearchElementAction.execute();
   }
 
-  #handleRateClick(rpcId: number, rating: Host.AidaClient.Rating): void {
+  #handleFeedbackSubmit(rpcId: number, rating: Host.AidaClient.Rating, feedback?: string): void {
     void this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcId,
       disable_user_content_logging: !this.#serverSideLoggingEnabled,
       do_conversation_client_event: {
         user_feedback: {
           sentiment: rating,
-        },
-      },
-    });
-  }
-
-  #handleFeedbackSubmit(rpcId: number, feedback: string): void {
-    void this.#aidaClient.registerClientEvent({
-      corresponding_aida_rpc_global_id: rpcId,
-      disable_user_content_logging: !this.#serverSideLoggingEnabled,
-      do_conversation_client_event: {
-        user_feedback: {
           user_input: {
             comment: feedback,
           },

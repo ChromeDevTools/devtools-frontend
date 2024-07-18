@@ -173,8 +173,7 @@ export const enum State {
 export interface Props {
   onTextSubmit: (text: string) => void;
   onInspectElementClick: () => void;
-  onRateClick: (rpcId: number, rate: Host.AidaClient.Rating) => void;
-  onFeedbackSubmit: (rpcId: number, feedback: string) => void;
+  onFeedbackSubmit: (rpcId: number, rate: Host.AidaClient.Rating, feedback?: string) => void;
   onAcceptConsentClick: () => void;
   onCancelClick: () => void;
   onFixThisIssueClick: () => void;
@@ -275,11 +274,8 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format off
     return LitHtml.html`<${ProvideFeedback.litTagName}
       .props=${{
-        onRateClick: rating => {
-          this.#props.onRateClick(rpcId, rating);
-        },
-        onFeedbackSubmit: feedback => {
-          this.#props.onFeedbackSubmit(rpcId, feedback);
+        onFeedbackSubmit: (rating, feedback) => {
+          this.#props.onFeedbackSubmit(rpcId, rating, feedback);
         },
       } as ProvideFeedbackProps}
       ></${ProvideFeedback.litTagName}>`;

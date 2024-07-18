@@ -63,8 +63,7 @@ const i18nString = i18n.i18n.lockedString;
 const REPORT_URL = 'https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504' as
     Platform.DevToolsPath.UrlString;
 export interface ProvideFeedbackProps {
-  onRateClick: (rate: Host.AidaClient.Rating) => void;
-  onFeedbackSubmit: (feedback: string) => void;
+  onFeedbackSubmit: (rate: Host.AidaClient.Rating, feedback?: string) => void;
 }
 
 export class ProvideFeedback extends HTMLElement {
@@ -90,13 +89,13 @@ export class ProvideFeedback extends HTMLElement {
   }
 
   #handleRateClick(rating: Host.AidaClient.Rating): void {
-    if (this.#currentRating) {
+    if (this.#currentRating === rating) {
       return;
     }
 
     this.#currentRating = rating;
     this.#showFeedbackForm = true;
-    this.#props.onRateClick(this.#currentRating);
+    this.#props.onFeedbackSubmit(this.#currentRating);
     this.#render();
   }
 
@@ -111,7 +110,7 @@ export class ProvideFeedback extends HTMLElement {
     if (!this.#currentRating || !input || !input.value) {
       return;
     }
-    this.#props.onFeedbackSubmit(input.value);
+    this.#props.onFeedbackSubmit(this.#currentRating, input.value);
     this.#showFeedbackForm = false;
     this.#render();
   };
@@ -129,7 +128,6 @@ export class ProvideFeedback extends HTMLElement {
           size: Buttons.Button.Size.SMALL,
           iconName: 'thumb-up',
           active: this.#currentRating === Host.AidaClient.Rating.POSITIVE,
-          disabled: this.#currentRating && this.#currentRating !== Host.AidaClient.Rating.POSITIVE,
           title: i18nString(UIStringsTemp.thumbsUp),
           jslogContext: 'thumbs-up',
         } as Buttons.Button.ButtonData}
@@ -141,7 +139,6 @@ export class ProvideFeedback extends HTMLElement {
           size: Buttons.Button.Size.SMALL,
           iconName: 'thumb-down',
           active: this.#currentRating === Host.AidaClient.Rating.NEGATIVE,
-          disabled: this.#currentRating && this.#currentRating !== Host.AidaClient.Rating.NEGATIVE,
           title: i18nString(UIStringsTemp.thumbsDown),
           jslogContext: 'thumbs-down',
         } as Buttons.Button.ButtonData}

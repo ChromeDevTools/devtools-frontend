@@ -8,23 +8,10 @@
 .security-property {
   height: var(--sys-size-9);
   width: var(--sys-size-9);
-  color: var(--sys-color-on-surface-subtle);
 }
 
 .lock-icon-secure {
   color: var(--sys-color-green);
-}
-
-.lock-icon-unknown,
-.lock-icon-neutral {
-  color: var(--sys-color-on-surface);
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-  .lock-icon-unknown,
-  .lock-icon-neutral {
-    color: var(--sys-color-token-subtle);
-  }
 }
 
 .lock-icon-insecure {

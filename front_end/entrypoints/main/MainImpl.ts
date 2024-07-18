@@ -170,8 +170,8 @@ export class MainImpl {
         const options = {
           processingThrottler: new Common.Throttler.Throttler(10),
           keyboardLogThrottler: new Common.Throttler.Throttler(10),
-          hoverLogThrottler: new Common.Throttler.Throttler(400),
-          dragLogThrottler: new Common.Throttler.Throttler(400),
+          hoverLogThrottler: new Common.Throttler.Throttler(10),
+          dragLogThrottler: new Common.Throttler.Throttler(10),
           clickLogThrottler: new Common.Throttler.Throttler(10),
           resizeLogThrottler: new Common.Throttler.Throttler(10),
         };
@@ -933,7 +933,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
         moreTools.defaultSection().appendItem(title, () => {
           Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.HamburgerMenu);
           void UI.ViewManager.ViewManager.instance().showView('issues-pane', /* userGesture */ true);
-        }, {jslogContext: 'issues'});
+        }, {jslogContext: id});
         continue;
       }
 

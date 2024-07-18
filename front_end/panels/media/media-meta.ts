@@ -35,7 +35,7 @@ async function loadMediaModule(): Promise<typeof Media> {
 
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
-  id: 'media',
+  id: 'medias',
   title: i18nLazyString(UIStrings.media),
   commandPrompt: i18nLazyString(UIStrings.showMedia),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,

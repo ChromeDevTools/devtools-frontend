@@ -13,13 +13,6 @@ import {
   waitForAria,
   waitForFunction,
 } from '../../shared/helper.js';
-import {
-  expectVeEvents,
-  veClick,
-  veImpressionForMainMenu,
-  veImpressionForMainMenuMoreTools,
-  veResize,
-} from '../helpers/visual-logging-helpers.js';
 
 export const openPanelViaMoreTools = async (panelTitle: string) => {
   const {frontend} = getBrowserAndPages();
@@ -40,17 +33,6 @@ export const openPanelViaMoreTools = async (panelTitle: string) => {
 
   // Wait for the corresponding panel to appear.
   await waitForAria(`${panelTitle} panel[role="tabpanel"]`);
-  const panelContext = panelTitle === 'CSS overview' ? 'css-overview' :
-      panelTitle === 'WebAudio'                      ? 'web-audio' :
-      panelTitle === 'Network request blocking'      ? 'network.blocked-urls' :
-      panelTitle === 'Recorder'                      ? 'chrome-recorder' :
-                                                       panelTitle.toLowerCase();
-  await expectVeEvents([
-    veImpressionForMainMenu(),
-    veImpressionForMainMenuMoreTools(),
-    veClick(`Toolbar: main > DropDown: main-menu > Menu > Item: more-tools > Menu > Action: ${panelContext}`),
-    veResize('Toolbar: main > DropDown: main-menu > Menu'),
-  ]);
 };
 
 export const openSettingsTab = async (tabTitle: string) => {

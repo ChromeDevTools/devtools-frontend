@@ -32,7 +32,7 @@ async function loadCSSOverviewModule(): Promise<typeof CSSOverview> {
 
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
-  id: 'css-overview',
+  id: 'cssoverview',
   commandPrompt: i18nLazyString(UIStrings.showCssOverview),
   title: i18nLazyString(UIStrings.cssOverview),
   order: 95,

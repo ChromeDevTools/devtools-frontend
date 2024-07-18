@@ -720,6 +720,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.settingsPane = new UI.Widget.HBox();
     this.settingsPane.element.classList.add('timeline-settings-pane');
+    this.settingsPane.element.setAttribute(
+        'jslog', `${VisualLogging.pane('timeline-settings-pane').track({resize: true})}`);
     this.settingsPane.show(this.element);
 
     const captureToolbar = new UI.Toolbar.Toolbar('', this.settingsPane.element);

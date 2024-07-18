@@ -480,9 +480,8 @@ export class HeapSnapshotGridNode extends
           }
         }
 
-        // TODO: fix this.
         this.instanceCount += items.length;
-        if (firstNotSerializedPosition < toPosition) {
+        if (firstNotSerializedPosition < toPosition && firstNotSerializedPosition < itemsRange.totalLength) {
           serializeNextChunk.call(this, toPosition);
           return;
         }

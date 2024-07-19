@@ -20,7 +20,6 @@ import {
   describeWithEnvironment,
 } from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
-import {describeWithRealConnection} from '../../../testing/RealConnection.js';
 import {
   createContentProviderUISourceCode,
   createFakeScriptMapping,
@@ -747,7 +746,20 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
   });
 });
 
-describeWithRealConnection('BreakpointsSidebarController', () => {
+describeWithMockConnection('BreakpointsSidebarController', () => {
+  beforeEach(() => {
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping,
+      targetManager,
+    });
+    Breakpoints.BreakpointManager.BreakpointManager.instance(
+        {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
+  });
+
   const DEFAULT_BREAKPOINT:
       [Breakpoints.BreakpointManager.UserCondition, boolean, boolean, Breakpoints.BreakpointManager.BreakpointOrigin] =
           [

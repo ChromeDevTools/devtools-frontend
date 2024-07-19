@@ -62,14 +62,6 @@ const UIStrings = {
    *@description Text that refers to closure as a programming term
    */
   closure: 'Closure',
-  /**
-   *@description Text in Scope Chain Sidebar Pane of the Sources panel
-   */
-  exception: 'Exception',
-  /**
-   *@description Text in Scope Chain Sidebar Pane of the Sources panel
-   */
-  returnValue: 'Return value',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ScopeChainSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -141,7 +133,6 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
   private buildScopeTreeOutline(eventScopeChain: SourceMapScopes.ScopeChainModel.ScopeChain): void {
     const {callFrame, thisObject, scopeChain} = eventScopeChain;
 
-    const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
     this.treeOutline.removeChildren();
 
     this.contentElement.removeChildren();
@@ -149,7 +140,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     let foundLocalScope = false;
     for (let i = 0; i < scopeChain.length; ++i) {
       const scope = scopeChain[i];
-      const extraProperties = this.extraPropertiesForScope(scope, details, callFrame, thisObject, i === 0);
+      const extraProperties = this.extraPropertiesForScope(scope, callFrame, thisObject);
 
       if (scope.type() === Protocol.Debugger.ScopeType.Local) {
         foundLocalScope = true;
@@ -217,9 +208,8 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
   }
 
   private extraPropertiesForScope(
-      scope: SDK.DebuggerModel.ScopeChainEntry, details: SDK.DebuggerModel.DebuggerPausedDetails|null,
-      callFrame: SDK.DebuggerModel.CallFrame, thisObject: SDK.RemoteObject.RemoteObject|null,
-      isFirstScope: boolean): SDK.RemoteObject.RemoteObjectProperty[] {
+      scope: SDK.DebuggerModel.ScopeChainEntry, callFrame: SDK.DebuggerModel.CallFrame,
+      thisObject: SDK.RemoteObject.RemoteObject|null): SDK.RemoteObject.RemoteObjectProperty[] {
     if (scope.type() !== Protocol.Debugger.ScopeType.Local || callFrame.script.isWasm()) {
       return [];
     }
@@ -229,21 +219,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
       extraProperties.push(new SDK.RemoteObject.RemoteObjectProperty(
           'this', thisObject, undefined, undefined, undefined, undefined, undefined, /* synthetic */ true));
     }
-    if (isFirstScope) {
-      const exception = details?.exception();
-      if (exception) {
-        extraProperties.push(new SDK.RemoteObject.RemoteObjectProperty(
-            i18nString(UIStrings.exception), exception, undefined, undefined, undefined, undefined, undefined,
-            /* synthetic */ true));
-      }
-      const returnValue = callFrame.returnValue();
-      if (returnValue) {
-        extraProperties.push(new SDK.RemoteObject.RemoteObjectProperty(
-            i18nString(UIStrings.returnValue), returnValue, undefined, undefined, undefined, undefined, undefined,
-            /* synthetic */ true, callFrame.setReturnValue.bind(callFrame)));
-      }
-    }
-
+    extraProperties.push(...scope.extraProperties());
     return extraProperties;
   }
 

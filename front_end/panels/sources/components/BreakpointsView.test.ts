@@ -843,6 +843,10 @@ describeWithMockConnection('BreakpointsSidebarController', () => {
   });
 
   it('auto-expands if a breakpoint was hit', async () => {
+    sinon.stub(
+        Common.Revealer.RevealerRegistry.instance(),
+        'reveal');  // Prevent pending reveal promises after tests are done.
+
     const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance();
 
     // Set up sdk and ui location, and a mapping between them, such that we can identify that

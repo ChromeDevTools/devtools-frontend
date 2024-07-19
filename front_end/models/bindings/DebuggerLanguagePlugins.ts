@@ -293,6 +293,10 @@ export class SourceScope implements SDK.DebuggerModel.ScopeChainEntry {
   icon(): string|undefined {
     return this.#iconInternal;
   }
+
+  extraProperties(): SDK.RemoteObject.RemoteObjectProperty[] {
+    return [];
+  }
 }
 
 export class ExtensionRemoteObject extends SDK.RemoteObject.RemoteObject {

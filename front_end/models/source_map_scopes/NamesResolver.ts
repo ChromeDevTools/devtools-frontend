@@ -630,6 +630,10 @@ class ScopeWithSourceMappedVariables implements SDK.DebuggerModel.ScopeChainEntr
   icon(): string|undefined {
     return this.#debuggerScope.icon();
   }
+
+  extraProperties(): SDK.RemoteObject.RemoteObjectProperty[] {
+    return this.#debuggerScope.extraProperties();
+  }
 }
 
 export class RemoteObject extends SDK.RemoteObject.RemoteObject {

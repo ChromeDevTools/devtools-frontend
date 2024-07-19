@@ -2,6 +2,7 @@ Name: intl-messageformat
 Short Name: intl-messageformat
 URL: https://github.com/formatjs/formatjs
 Version: 9.8.0
+Revision: 51a665ca0a7c6129c0c93b6b7837603a8e31caa4
 License: New BSD
 License File: LICENSE
 Security Critical: no

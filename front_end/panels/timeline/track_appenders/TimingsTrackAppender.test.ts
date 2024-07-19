@@ -15,6 +15,7 @@ function initTrackAppender(
     entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[],
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
     ): Timeline.TimingsTrackAppender.TimingsTrackAppender {
+  Timeline.ExtensionDataGatherer.ExtensionDataGatherer.instance().modelChanged(traceData);
   const compatibilityTracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
       flameChartData, traceData, entryData, entryTypeByLevel);
   return compatibilityTracksAppender.timingsTrackAppender();
@@ -255,7 +256,9 @@ describeWithEnvironment('TimingTrackAppender', function() {
 
   describe('extension markers', () => {
     beforeEach(async function() {
-
+      entryData = [];
+      flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
+      entryTypeByLevel = [];
       ({traceData} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz'));
       timingsTrackAppender = initTrackAppender(flameChartData, traceData, entryData, entryTypeByLevel);
       timingsTrackAppender.appendTrackAtLevel(0);

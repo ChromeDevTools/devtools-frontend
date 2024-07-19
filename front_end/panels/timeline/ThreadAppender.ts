@@ -18,6 +18,7 @@ import {
 } from './AppenderUtils.js';
 import {
   type CompatibilityTracksAppender,
+  entryIsVisibleInTimeline,
   type HighlightedEntryInfo,
   type TrackAppender,
   type TrackAppenderName,
@@ -492,7 +493,7 @@ export class ThreadAppender implements TrackAppender {
       // large). To avoid the extra cost we  add the check in the
       // traversal we already need to append events.
       const entryIsVisible = !invisibleEntries.includes(entry) &&
-          (this.#compatibilityBuilder.entryIsVisibleInTimeline(entry) || this.#showAllEventsEnabled);
+          (entryIsVisibleInTimeline(entry, this.#traceParsedData) || this.#showAllEventsEnabled);
       // For ignore listing support, these two conditions need to be met
       // to not append a profile call to the flame chart:
       // 1. It is ignore listed

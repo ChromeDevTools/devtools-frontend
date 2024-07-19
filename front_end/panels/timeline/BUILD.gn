@@ -59,6 +59,7 @@ devtools_module("timeline") {
     "CLSLinkifier.ts",
     "CompatibilityTracksAppender.ts",
     "CountersGraph.ts",
+    "EntriesFilter.ts",
     "EventUICategory.ts",
     "EventsSerializer.ts",
     "EventsTimelineTreeView.ts",
@@ -184,6 +185,7 @@ ts_library("unittests") {
 
   sources = [
     "Breadcrumbs.test.ts",
+    "EntriesFilter.test.ts",
     "EventsSerializer.test.ts",
     "FreshRecording.test.ts",
     "Initiators.test.ts",

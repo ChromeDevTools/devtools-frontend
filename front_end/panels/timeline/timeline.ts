@@ -8,6 +8,7 @@ import * as BenchmarkEvents from './BenchmarkEvents.js';
 import * as CLSLinkifier from './CLSLinkifier.js';
 import * as CompatibilityTracksAppender from './CompatibilityTracksAppender.js';
 import * as CountersGraph from './CountersGraph.js';
+import * as EntriesFilter from './EntriesFilter.js';
 import * as EventsSerializer from './EventsSerializer.js';
 import * as EventsTimelineTreeView from './EventsTimelineTreeView.js';
 import * as EventUICategory from './EventUICategory.js';
@@ -51,6 +52,7 @@ export {
   CLSLinkifier,
   CompatibilityTracksAppender,
   CountersGraph,
+  EntriesFilter,
   EventsSerializer,
   EventsTimelineTreeView,
   EventUICategory,

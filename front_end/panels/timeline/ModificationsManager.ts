@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TraceEngine from '../../models/trace/trace.js';
+import type * as TraceEngine from '../../models/trace/trace.js';
 import * as TimelineComponents from '../../panels/timeline/components/components.js';
 
+import {EntriesFilter} from './EntriesFilter.js';
 import {EventsSerializer} from './EventsSerializer.js';
 import type * as Overlays from './overlays/overlays.js';
 
@@ -33,7 +34,7 @@ type ModificationsManagerData = {
 };
 
 export class ModificationsManager extends EventTarget {
-  #entriesFilter: TraceEngine.EntriesFilter.EntriesFilter;
+  #entriesFilter: EntriesFilter;
   #timelineBreadcrumbs: TimelineComponents.Breadcrumbs.Breadcrumbs;
   #modifications: TraceEngine.Types.File.Modifications|null = null;
   #traceParsedData: TraceEngine.Handlers.Types.TraceParseData;
@@ -91,7 +92,7 @@ export class ModificationsManager extends EventTarget {
   private constructor({traceParsedData, traceBounds, modifications}: ModificationsManagerData) {
     super();
     const entryToNodeMap = new Map([...traceParsedData.Samples.entryToNode, ...traceParsedData.Renderer.entryToNode]);
-    this.#entriesFilter = new TraceEngine.EntriesFilter.EntriesFilter(entryToNodeMap);
+    this.#entriesFilter = new EntriesFilter(entryToNodeMap);
     this.#timelineBreadcrumbs = new TimelineComponents.Breadcrumbs.Breadcrumbs(traceBounds);
     this.#modifications = modifications || null;
     this.#traceParsedData = traceParsedData;
@@ -100,7 +101,7 @@ export class ModificationsManager extends EventTarget {
     this.#overlayForAnnotation = new Map();
   }
 
-  getEntriesFilter(): TraceEngine.EntriesFilter.EntriesFilter {
+  getEntriesFilter(): EntriesFilter {
     return this.#entriesFilter;
   }
 

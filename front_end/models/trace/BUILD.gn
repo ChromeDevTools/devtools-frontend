@@ -9,7 +9,6 @@ import("../visibility.gni")
 
 devtools_module("trace") {
   sources = [
-    "EntriesFilter.ts",
     "LanternComputationData.ts",
     "ModelImpl.ts",
     "Processor.ts",
@@ -60,7 +59,6 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
-    "EntriesFilter.test.ts",
     "ModelImpl.test.ts",
     "Processor.test.ts",
     "TracingManager.test.ts",

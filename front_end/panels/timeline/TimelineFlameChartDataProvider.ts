@@ -153,13 +153,13 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return true;
   }
 
-  modifyTree(node: number, action: TraceEngine.EntriesFilter.FilterAction): void {
+  modifyTree(node: number, action: PerfUI.FlameChart.FilterAction): void {
     const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
 
     ModificationsManager.activeManager()?.getEntriesFilter().applyFilterAction({type: action, entry});
   }
 
-  findPossibleContextMenuActions(node: number): TraceEngine.EntriesFilter.PossibleFilterActions|void {
+  findPossibleContextMenuActions(node: number): PerfUI.FlameChart.PossibleFilterActions|void {
     const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
     return ModificationsManager.activeManager()?.getEntriesFilter().findPossibleActions(entry);
   }

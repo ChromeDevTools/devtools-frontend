@@ -226,6 +226,28 @@ export interface OptionalFlameChartConfig {
   useOverlaysForCursorRuler?: boolean;
 }
 
+export const enum FilterAction {
+  MERGE_FUNCTION = 'MERGE_FUNCTION',
+  COLLAPSE_FUNCTION = 'COLLAPSE_FUNCTION',
+  COLLAPSE_REPEATING_DESCENDANTS = 'COLLAPSE_REPEATING_DESCENDANTS',
+  RESET_CHILDREN = 'RESET_CHILDREN',
+  UNDO_ALL_ACTIONS = 'UNDO_ALL_ACTIONS',
+}
+
+export interface UserFilterAction {
+  type: FilterAction;
+  entry: TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
+}
+
+// Object used to indicate to the Context Menu if an action is possible on the selected entry.
+export interface PossibleFilterActions {
+  [FilterAction.MERGE_FUNCTION]: boolean;
+  [FilterAction.COLLAPSE_FUNCTION]: boolean;
+  [FilterAction.COLLAPSE_REPEATING_DESCENDANTS]: boolean;
+  [FilterAction.RESET_CHILDREN]: boolean;
+  [FilterAction.UNDO_ALL_ACTIONS]: boolean;
+}
+
 export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
     implements Calculator, ChartViewportDelegate {
   private readonly groupExpansionSetting?: Common.Settings.Setting<GroupExpansionState>;
@@ -1128,7 +1150,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.draw();
   }
 
-  modifyTree(treeAction: TraceEngine.EntriesFilter.FilterAction, index: number): void {
+  modifyTree(treeAction: FilterAction, index: number): void {
     const data = this.timelineData();
     if (!data) {
       return;
@@ -1139,7 +1161,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.update();
   }
 
-  getPossibleActions(): TraceEngine.EntriesFilter.PossibleFilterActions|void {
+  getPossibleActions(): PossibleFilterActions|void {
     const data = this.timelineData();
     if (!data) {
       return;
@@ -1255,44 +1277,43 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
 
     const hideEntryOption = this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.hideFunction), () => {
-      this.modifyTree(TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION, this.selectedEntryIndex);
+      this.modifyTree(FilterAction.MERGE_FUNCTION, this.selectedEntryIndex);
     }, {
-      disabled: !possibleActions?.[TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION],
+      disabled: !possibleActions?.[FilterAction.MERGE_FUNCTION],
       jslogContext: 'hide-function',
     });
     hideEntryOption.setShortcut('H');
 
     const hideChildrenOption = this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.hideChildren), () => {
-      this.modifyTree(TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION, this.selectedEntryIndex);
+      this.modifyTree(FilterAction.COLLAPSE_FUNCTION, this.selectedEntryIndex);
     }, {
-      disabled: !possibleActions?.[TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION],
+      disabled: !possibleActions?.[FilterAction.COLLAPSE_FUNCTION],
       jslogContext: 'hide-children',
     });
     hideChildrenOption.setShortcut('C');
 
     const hideRepeatingChildrenOption =
         this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.hideRepeatingChildren), () => {
-          this.modifyTree(
-              TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, this.selectedEntryIndex);
+          this.modifyTree(FilterAction.COLLAPSE_REPEATING_DESCENDANTS, this.selectedEntryIndex);
         }, {
-          disabled: !possibleActions?.[TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS],
+          disabled: !possibleActions?.[FilterAction.COLLAPSE_REPEATING_DESCENDANTS],
           jslogContext: 'hide-repeating-children',
         });
     hideRepeatingChildrenOption.setShortcut('R');
 
     const resetChildrenOption =
         this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.resetChildren), () => {
-          this.modifyTree(TraceEngine.EntriesFilter.FilterAction.RESET_CHILDREN, this.selectedEntryIndex);
+          this.modifyTree(FilterAction.RESET_CHILDREN, this.selectedEntryIndex);
         }, {
-          disabled: !possibleActions?.[TraceEngine.EntriesFilter.FilterAction.RESET_CHILDREN],
+          disabled: !possibleActions?.[FilterAction.RESET_CHILDREN],
           jslogContext: 'reset-children',
         });
     resetChildrenOption.setShortcut('U');
 
     this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.resetTrace), () => {
-      this.modifyTree(TraceEngine.EntriesFilter.FilterAction.UNDO_ALL_ACTIONS, this.selectedEntryIndex);
+      this.modifyTree(FilterAction.UNDO_ALL_ACTIONS, this.selectedEntryIndex);
     }, {
-      disabled: !possibleActions?.[TraceEngine.EntriesFilter.FilterAction.UNDO_ALL_ACTIONS],
+      disabled: !possibleActions?.[FilterAction.UNDO_ALL_ACTIONS],
       jslogContext: 'reset-trace',
     });
 
@@ -1335,20 +1356,17 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const keyboardEvent = (event as KeyboardEvent);
     let handled = false;
 
-    if (keyboardEvent.code === 'KeyH' && possibleActions[TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION]) {
-      this.modifyTree(TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION, this.selectedEntryIndex);
+    if (keyboardEvent.code === 'KeyH' && possibleActions[FilterAction.MERGE_FUNCTION]) {
+      this.modifyTree(FilterAction.MERGE_FUNCTION, this.selectedEntryIndex);
       handled = true;
-    } else if (
-        keyboardEvent.code === 'KeyC' && possibleActions[TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION]) {
-      this.modifyTree(TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION, this.selectedEntryIndex);
+    } else if (keyboardEvent.code === 'KeyC' && possibleActions[FilterAction.COLLAPSE_FUNCTION]) {
+      this.modifyTree(FilterAction.COLLAPSE_FUNCTION, this.selectedEntryIndex);
       handled = true;
-    } else if (
-        keyboardEvent.code === 'KeyR' &&
-        possibleActions[TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS]) {
-      this.modifyTree(TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, this.selectedEntryIndex);
+    } else if (keyboardEvent.code === 'KeyR' && possibleActions[FilterAction.COLLAPSE_REPEATING_DESCENDANTS]) {
+      this.modifyTree(FilterAction.COLLAPSE_REPEATING_DESCENDANTS, this.selectedEntryIndex);
       handled = true;
     } else if (keyboardEvent.code === 'KeyU') {
-      this.modifyTree(TraceEngine.EntriesFilter.FilterAction.RESET_CHILDREN, this.selectedEntryIndex);
+      this.modifyTree(FilterAction.RESET_CHILDREN, this.selectedEntryIndex);
       handled = true;
     }
 
@@ -3480,7 +3498,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     // Check if the button that resets children of the entry is clicked. We need to check it even if the entry
     // clicked is not selected to avoid needing to double click
     if (this.isMouseOverRevealChildrenArrow(this.lastMouseOffsetX, entryIndex)) {
-      this.modifyTree(TraceEngine.EntriesFilter.FilterAction.RESET_CHILDREN, entryIndex);
+      this.modifyTree(FilterAction.RESET_CHILDREN, entryIndex);
     }
     if (this.selectedEntryIndex === entryIndex) {
       return;
@@ -3885,11 +3903,11 @@ export interface FlameChartDataProvider {
 
   mainFrameNavigationStartEvents?(): readonly TraceEngine.Types.TraceEvents.TraceEventNavigationStart[];
 
-  modifyTree?(node: number, action: TraceEngine.EntriesFilter.FilterAction): void;
+  modifyTree?(node: number, action: FilterAction): void;
 
   customizedContextMenu?(event: MouseEvent, eventIndex: number): UI.ContextMenu.ContextMenu|undefined;
 
-  findPossibleContextMenuActions?(node: number): TraceEngine.EntriesFilter.PossibleFilterActions|void;
+  findPossibleContextMenuActions?(node: number): PossibleFilterActions|void;
 
   hasTrackConfigurationMode(): boolean;
 

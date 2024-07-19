@@ -6,25 +6,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {TraceLoader} from '../../testing/TraceLoader.js';
-import * as TraceEngine from '../trace/trace.js';
+import * as TraceEngine from '../../models/trace/trace.js';
+import * as Timeline from './timeline.js';
+import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
-function getMainThread(traceData: TraceEngine.Handlers.ModelHandlers.Renderer.RendererHandlerData):
-    TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread {
-  let mainThread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread|null = null;
-  for (const [, process] of traceData.processes) {
-    for (const [, thread] of process.threads) {
-      if (thread.name === 'CrRendererMain') {
-        mainThread = thread;
-        break;
-      }
-    }
-  }
-  if (!mainThread) {
-    throw new Error('Could not find main thread.');
-  }
-  return mainThread;
-}
+import {TraceLoader} from '../../testing/TraceLoader.js';
+import {getMainThread} from '../../testing/TraceHelpers.js';
+import { describeWithEnvironment } from '../../testing/EnvironmentHelpers.js';
 
 function findFirstEntry(
     allEntries: readonly TraceEngine.Types.TraceEvents.SyntheticTraceEntry[],
@@ -37,10 +25,10 @@ function findFirstEntry(
   return entry;
 }
 
-describe('EntriesFilter', function() {
+describeWithEnvironment('EntriesFilter', function() {
   it('parses a stack and returns an empty list of invisible entries', async function() {
     const {traceData} = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
     assert.deepEqual([], stack?.invisibleEntries());
   });
 
@@ -75,11 +63,11 @@ describe('EntriesFilter', function() {
       return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'basicTwo' &&
           entry.dur === 827;
     });
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }
-    stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION, entry: entryTwo});
+    stack.applyFilterAction({type: PerfUI.FlameChart.FilterAction.MERGE_FUNCTION, entry: entryTwo});
     assert.isTrue(stack.invisibleEntries().includes(entryTwo), 'entryTwo is invisble');
     // Only one entry - the one for the `basicTwo` function - should have been hidden.
     assert.strictEqual(stack.invisibleEntries().length, 1);
@@ -114,11 +102,11 @@ describe('EntriesFilter', function() {
       return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'basicTwo' &&
           entry.dur === 827;
     });
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }
-    stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION, entry: entryTwo});
+    stack.applyFilterAction({type: PerfUI.FlameChart.FilterAction.MERGE_FUNCTION, entry: entryTwo});
     assert.isTrue(stack.invisibleEntries().includes(entryTwo), 'entryTwo is invisble');
 
     // Get the parent of basicTwo, which is basicStackOne.
@@ -156,11 +144,11 @@ describe('EntriesFilter', function() {
       return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'basicTwo' &&
           entry.dur === 827;
     });
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }
-    stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION, entry: entryTwo});
+    stack.applyFilterAction({type: PerfUI.FlameChart.FilterAction.COLLAPSE_FUNCTION, entry: entryTwo});
     // basicTwo is marked as expandable.
     assert.isTrue(stack.isEntryExpandable(entryTwo));
   });
@@ -210,13 +198,13 @@ describe('EntriesFilter', function() {
          const {endTime} = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(entry);
          return endTime <= firstFooCallEndTime;
        });
-       const stack = new TraceEngine.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
+       const stack = new Timeline.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
        if (!stack) {
          throw new Error('EntriesFilter does not exist');
        }
        // Collapse all foo calls after the first one.
        stack.applyFilterAction({
-         type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS,
+         type: PerfUI.FlameChart.FilterAction.COLLAPSE_REPEATING_DESCENDANTS,
          entry: firstFooCallEntry,
        });
 
@@ -245,7 +233,7 @@ describe('EntriesFilter', function() {
        });
 
        // Merge second foo2 entry.
-       stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION, entry: foo2Calls[1]});
+       stack.applyFilterAction({type: PerfUI.FlameChart.FilterAction.MERGE_FUNCTION, entry: foo2Calls[1]});
        // First foo2 entry should be in the expandableEntries array.
        assert.isTrue(stack.isEntryExpandable(foo2Calls[0]));
      });
@@ -289,11 +277,11 @@ describe('EntriesFilter', function() {
       const basicTwoCallEndTime = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(basicTwoCallEntry).endTime;
       return endTime <= basicTwoCallEndTime;
     });
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }
-    stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION, entry: basicTwoCallEntry});
+    stack.applyFilterAction({type: PerfUI.FlameChart.FilterAction.COLLAPSE_FUNCTION, entry: basicTwoCallEntry});
 
     // We collapsed at the `basicTwo` entry - so it should not be included in the invisible list itself.
     assert.isFalse(stack.invisibleEntries().includes(basicTwoCallEntry), 'entryTwo is not visible');
@@ -352,12 +340,12 @@ describe('EntriesFilter', function() {
       return endTime <= firstFooCallEndTime;
     });
 
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }
     stack.applyFilterAction(
-        {type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, entry: firstFooCallEntry});
+        {type: PerfUI.FlameChart.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, entry: firstFooCallEntry});
 
     // We collapsed identical descendants after the first `foo` entry - so it should not be included in the invisible list itself,
     // but all foo() calls below it in the stack should now be invisible.
@@ -411,7 +399,7 @@ describe('EntriesFilter', function() {
      * Applying 'undo all actions' should bring the stack to the original state.
      **/
 
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }
@@ -434,7 +422,7 @@ describe('EntriesFilter', function() {
 
     // Collapse all repeating descendants of the first fibonacci call:
     stack.applyFilterAction(
-        {type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, entry: fibonacciCalls[0]});
+        {type: PerfUI.FlameChart.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, entry: fibonacciCalls[0]});
     // We collapsed identical descendants after the first `foo` entry - so it should not be included in the invisible list itself,
     // but all foo() calls below it in the stack should now be invisible.
     const allFibExceptFirstInStackAreHidden = fibonacciCalls.every((fibCall, i) => {
@@ -452,11 +440,11 @@ describe('EntriesFilter', function() {
       return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'basicStackOne' &&
           entry.dur === 827;
     });
-    stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION, entry: basicStackOne});
+    stack.applyFilterAction({type: PerfUI.FlameChart.FilterAction.MERGE_FUNCTION, entry: basicStackOne});
     assert.isTrue(stack.invisibleEntries().includes(basicStackOne), 'entrybasicStackOneTwo is visble');
 
     // Collapse basicTwo():
-    stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION, entry: basicTwoCallEntry});
+    stack.applyFilterAction({type: PerfUI.FlameChart.FilterAction.COLLAPSE_FUNCTION, entry: basicTwoCallEntry});
     // basicThree and first fibnacci should now be hidden:
     const basicThree = findFirstEntry(mainThread.entries, entry => {
       return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'basicThree' &&
@@ -467,7 +455,7 @@ describe('EntriesFilter', function() {
 
     // Apply UNDO_ALL_ACTIONS to bring back all of the hidden entries:
     // UNDO_ALL_ACTIONS can be called on any visible entry
-    stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.UNDO_ALL_ACTIONS, entry: basicTwoCallEntry});
+    stack.applyFilterAction({type: PerfUI.FlameChart.FilterAction.UNDO_ALL_ACTIONS, entry: basicTwoCallEntry});
     // If the length of invisibleEntries list is 0, all of the entries added earlier were removed and are now visible.
     assert.strictEqual(stack.invisibleEntries().length, 0);
   });
@@ -505,7 +493,7 @@ describe('EntriesFilter', function() {
      * This should result in all basicTwo children being removed from the invisible array and stack being in the initial state.
      **/
 
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }
@@ -520,7 +508,7 @@ describe('EntriesFilter', function() {
     assert.strictEqual(stack.invisibleEntries().length, 0);
 
     // Collapse all children of basicTwo call:
-    stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION, entry: basicTwoCallEntry});
+    stack.applyFilterAction({type: PerfUI.FlameChart.FilterAction.COLLAPSE_FUNCTION, entry: basicTwoCallEntry});
 
     // Make sure all 37 of basicTwo descdendants are hidden
     assert.strictEqual(stack.invisibleEntries().length, 37);
@@ -598,12 +586,12 @@ describe('EntriesFilter', function() {
       return endTime <= firstFooCallEndTime;
     });
 
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }
     stack.applyFilterAction(
-        {type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, entry: firstFooCallEntry});
+        {type: PerfUI.FlameChart.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, entry: firstFooCallEntry});
 
     // We collapsed identical descendants after the first `foo` entry - so it should not be included in the invisible list itself,
     // but all foo() calls below it in the stack should now be invisible.
@@ -625,7 +613,7 @@ describe('EntriesFilter', function() {
 
     // Reset all children after second foo2 call
     assert.strictEqual(foo2Calls.length, 3);
-    stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.RESET_CHILDREN, entry: foo2Calls[1]});
+    stack.applyFilterAction({type: PerfUI.FlameChart.FilterAction.RESET_CHILDREN, entry: foo2Calls[1]});
 
     // All foo and foo2 calls except the second foo cll should now be visible
     allFoo2InStackAreVisible = foo2Calls.every(fooCall => {
@@ -673,7 +661,7 @@ describe('EntriesFilter', function() {
           entry.dur === 233;
     });
 
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }
@@ -681,9 +669,43 @@ describe('EntriesFilter', function() {
     assert.strictEqual(stack.findHiddenDescendantsAmount(firstFooCallEntry), 0);
 
     stack.applyFilterAction(
-        {type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, entry: firstFooCallEntry});
+        {type: PerfUI.FlameChart.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, entry: firstFooCallEntry});
 
     // There should be 3 foo() entries hidden under the first foo call entry
     assert.strictEqual(stack.findHiddenDescendantsAmount(firstFooCallEntry), 3);
+  });
+
+  it('correctly assigns a visible parent to expandable entries if the direct parent is not visible', async function() {
+    const {traceData} = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');
+    const mainThread = getMainThread(traceData.Renderer);
+    /** This stack looks roughly like so (with some events omitted):
+     * ======== Task ===============
+     * ======== (anonymous) ========                  << entry with an invisible in the timeline direct parent. We need to make sure that we correctly add Task to the expandable entries
+     * ======== RegisterFrameID ====
+     * ======== postMessage ========
+     **/
+    const anonymousEntryWithInvisibleParent = findFirstEntry(mainThread.entries, entry => {
+      return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.nodeId === 42;
+    });
+
+    const stack = new Timeline.EntriesFilter.EntriesFilter(traceData.Renderer.entryToNode);
+    if (!stack) {
+      throw new Error('EntriesFilter does not exist');
+    }
+
+    const taskEntry = findFirstEntry(mainThread.entries, entry => {
+      return entry.name === 'RunTask' && entry.dur === 978 && entry.ts === 164397762991;
+    });
+
+    // Make sure the expandable entries are empty at first
+    assert.strictEqual(stack.expandableEntries().length, 0);
+
+    // Hide the anonymous function
+    stack.applyFilterAction(
+        {type: PerfUI.FlameChart.FilterAction.MERGE_FUNCTION, entry: anonymousEntryWithInvisibleParent});
+
+    // Make sure Task entry is added to expandable entries
+    assert.strictEqual(stack.expandableEntries().length, 1);
+    assert.isTrue(stack.expandableEntries().includes(taskEntry));
   });
 });

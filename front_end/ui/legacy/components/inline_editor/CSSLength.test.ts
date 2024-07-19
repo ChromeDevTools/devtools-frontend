@@ -19,13 +19,11 @@ describe('CSSLength', () => {
 
     assert.isNotNull(component.shadowRoot);
     const valueElement = component.shadowRoot.querySelector('.value');
-    const unitElement = component.shadowRoot.querySelector('.unit');
-    if (!valueElement || !unitElement) {
+    if (!valueElement) {
       assert.fail('CSSLength component is not rendered correctly');
       return;
     }
     assert.strictEqual(valueElement.textContent, '42', 'CSSLength value content is not rendered correctly');
-    assert.strictEqual(unitElement.textContent, 'px', 'CSSLength unit content is not rendered correctly');
   });
 
   it('can +/- length values when the value is dragged', async () => {

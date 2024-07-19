@@ -16,16 +16,18 @@ below.**
 ## Document Index
 
 ### Design Documents
+
 *   See the shared [Design Documents](https://drive.google.com/drive/folders/1JbUthATfybvMQR3yAHC4J0P7n6oftYNq) folder in the Chromium drive.
 
 ### General Development
+
 *   [Get the Code](get_the_code.md)
+*   [UX Style Guide](./styleguide/ux/README.md)
 *   [Contributing Changes](contributing_changes.md)
 *   [Chrome DevTools Design Review Guidelines](design_guidelines.md)
 *   [Release Management](release_management.md)
 *   [Dependencies](dependencies.md)
 *   [Localization](l10n.md)
-*   [Material 3 in DevTools](material3_guidelines.md)
 *   [V8 debugger support checklist for new language features](https://goo.gle/v8-checklist)
 *   [Chrome DevTools Protocol](devtools-protocol.md)
 *   [Visual logging in DevTools](visual_logging.md)
@@ -34,15 +36,18 @@ below.**
 *   [How to add experiments in DevTools frontend](add_experiments.md)
 
 ### Testing
+
 *   [Testing Chromium DevTools](testing.md)
 *   [E2E test guide](../test/e2e/README.md)
 *   [Unit test guide](unit_testing.md)
 
 ### Architectural Documentation
+
 *   [Architecture of DevTools](architecture_of_devtools.md)
 *   [Resource management in DevTools](resource_management.md)
 
 ### Chromium
+
 *   [Chromium Docs](https://chromium.googlesource.com/chromium/src/+/master/docs/README.md)
 *   [V8 Documention](https://v8.dev/docs)
 

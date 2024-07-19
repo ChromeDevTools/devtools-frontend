@@ -21,12 +21,6 @@ export function veImpressionForLayersPanel() {
         'Pane', 'layers-3d-view',
         [
           veImpression(
-              'Dialog', 'panel-deprecated',
-              [
-                veImpression('Action', 'Sendfeedback'),
-                veImpression('Close'),
-              ]),
-          veImpression(
               'Toolbar', undefined,
               [
                 veImpression('Toggle', 'layers.3d-pan'),

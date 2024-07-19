@@ -29,7 +29,6 @@
  */
 
 import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
@@ -89,14 +88,6 @@ const UIStrings = {
    *@description A context menu item in the DView of the Layers panel
    */
   showPaintProfiler: 'Show Paint Profiler',
-  /**
-   *@description Text for a button in the DView of the Layers panel
-   */
-  sendFeedback: 'Send feedback',
-  /**
-   *@description Text for a warning message in the DView of the Layers panel
-   */
-  deprecationWarning: 'Layers panel might be deprecated soon. Share your thoughts and concerns before we decide.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/Layers3DView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -116,7 +107,6 @@ const imageForTexture = new Map<WebGLTexture, HTMLImageElement>();
 export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
     implements LayerView {
   private readonly failBanner: UI.Widget.VBox;
-  private readonly deprecationBanner: UI.Infobar.Infobar;
   private readonly layerViewHost: LayerViewHost;
   private transformController: TransformController;
   private canvasElement: HTMLCanvasElement;
@@ -159,10 +149,6 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     this.transformController = new TransformController(this.contentElement as HTMLElement);
     this.transformController.addEventListener(TransformControllerEvents.TransformChanged, this.update, this);
 
-    this.deprecationBanner = this.#createDeprecationBanner();
-    this.deprecationBanner.setParentView(this);
-    this.contentElement.appendChild(this.deprecationBanner.element);
-
     this.initToolbar();
     this.canvasElement = this.contentElement.createChild('canvas') as HTMLCanvasElement;
     this.canvasElement.tabIndex = 0;
@@ -189,30 +175,6 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     this.layerViewHost.setLayerSnapshotMap(this.snapshotLayers);
 
     this.layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
-  }
-
-  #createDeprecationBanner(): UI.Infobar.Infobar {
-    function openLink(): void {
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-          'https://crbug.com/328948996' as Platform.DevToolsPath.UrlString);
-    }
-
-    return new UI.Infobar.Infobar(
-        UI.Infobar.Type.Warning,
-        i18nString(UIStrings.deprecationWarning),
-        [
-          {
-            text: i18nString(UIStrings.sendFeedback),
-            highlight: false,
-            delegate: openLink,
-            dismiss: false,
-            jslogContext: 'Send feedback',
-          },
-        ],
-        /* disableSetting? */ undefined,
-        /* isCloseable */ true,
-        'panel-deprecated',
-    );
   }
 
   setLayerTree(layerTree: SDK.LayerTreeBase.LayerTreeBase|null): void {

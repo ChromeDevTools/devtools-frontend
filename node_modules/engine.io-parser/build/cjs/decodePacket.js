@@ -1,11 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.decodePacket = void 0;
 const commons_js_1 = require("./commons.js");
 const decodePacket = (encodedPacket, binaryType) => {
     if (typeof encodedPacket !== "string") {
         return {
             type: "message",
-            data: mapBinary(encodedPacket, binaryType)
+            data: mapBinary(encodedPacket, binaryType),
         };
     }
     const type = encodedPacket.charAt(0);
@@ -13,7 +14,7 @@ const decodePacket = (encodedPacket, binaryType) => {
         const buffer = Buffer.from(encodedPacket.substring(1), "base64");
         return {
             type: "message",
-            data: mapBinary(buffer, binaryType)
+            data: mapBinary(buffer, binaryType),
         };
     }
     if (!commons_js_1.PACKET_TYPES_REVERSE[type]) {
@@ -22,28 +23,37 @@ const decodePacket = (encodedPacket, binaryType) => {
     return encodedPacket.length > 1
         ? {
             type: commons_js_1.PACKET_TYPES_REVERSE[type],
-            data: encodedPacket.substring(1)
+            data: encodedPacket.substring(1),
         }
         : {
-            type: commons_js_1.PACKET_TYPES_REVERSE[type]
+            type: commons_js_1.PACKET_TYPES_REVERSE[type],
         };
 };
+exports.decodePacket = decodePacket;
 const mapBinary = (data, binaryType) => {
-    const isBuffer = Buffer.isBuffer(data);
     switch (binaryType) {
         case "arraybuffer":
-            return isBuffer ? toArrayBuffer(data) : data;
+            if (data instanceof ArrayBuffer) {
+                // from WebSocket & binaryType "arraybuffer"
+                return data;
+            }
+            else if (Buffer.isBuffer(data)) {
+                // from HTTP long-polling
+                return data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+            }
+            else {
+                // from WebTransport (Uint8Array)
+                return data.buffer;
+            }
         case "nodebuffer":
         default:
-            return data; // assuming the data is already a Buffer
+            if (Buffer.isBuffer(data)) {
+                // from HTTP long-polling or WebSocket & binaryType "nodebuffer" (default)
+                return data;
+            }
+            else {
+                // from WebTransport (Uint8Array)
+                return Buffer.from(data);
+            }
     }
 };
-const toArrayBuffer = (buffer) => {
-    const arrayBuffer = new ArrayBuffer(buffer.length);
-    const view = new Uint8Array(arrayBuffer);
-    for (let i = 0; i < buffer.length; i++) {
-        view[i] = buffer[i];
-    }
-    return arrayBuffer;
-};
-exports.default = decodePacket;

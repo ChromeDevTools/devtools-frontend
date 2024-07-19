@@ -1,7 +1,7 @@
 import type { BroadcastFlags, Room, SocketId } from "socket.io-adapter";
 import { Handshake } from "./socket";
 import type { Adapter } from "socket.io-adapter";
-import type { EventParams, EventNames, EventsMap, TypedEventBroadcaster, DecorateAcknowledgements, DecorateAcknowledgementsWithTimeoutAndMultipleResponses, AllButLast, Last, SecondArg } from "./typed-events";
+import type { EventParams, EventNames, EventsMap, TypedEventBroadcaster, DecorateAcknowledgements, AllButLast, Last, FirstNonErrorArg, EventNamesWithError } from "./typed-events";
 export declare class BroadcastOperator<EmitEvents extends EventsMap, SocketData> implements TypedEventBroadcaster<EmitEvents> {
     private readonly adapter;
     private readonly rooms;
@@ -100,7 +100,7 @@ export declare class BroadcastOperator<EmitEvents extends EventsMap, SocketData>
      *
      * @param timeout
      */
-    timeout(timeout: number): BroadcastOperator<DecorateAcknowledgementsWithTimeoutAndMultipleResponses<EmitEvents>, SocketData>;
+    timeout(timeout: number): BroadcastOperator<DecorateAcknowledgements<EmitEvents>, SocketData>;
     /**
      * Emits to all clients.
      *
@@ -136,7 +136,7 @@ export declare class BroadcastOperator<EmitEvents extends EventsMap, SocketData>
      *
      * @return a Promise that will be fulfilled when all clients have acknowledged the event
      */
-    emitWithAck<Ev extends EventNames<EmitEvents>>(ev: Ev, ...args: AllButLast<EventParams<EmitEvents, Ev>>): Promise<SecondArg<Last<EventParams<EmitEvents, Ev>>>>;
+    emitWithAck<Ev extends EventNamesWithError<EmitEvents>>(ev: Ev, ...args: AllButLast<EventParams<EmitEvents, Ev>>): Promise<FirstNonErrorArg<Last<EventParams<EmitEvents, Ev>>>>;
     /**
      * Gets a list of clients.
      *

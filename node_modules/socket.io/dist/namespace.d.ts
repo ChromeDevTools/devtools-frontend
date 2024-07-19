@@ -1,6 +1,6 @@
 import { Socket } from "./socket";
 import type { Server } from "./index";
-import { EventParams, EventNames, EventsMap, StrictEventEmitter, DefaultEventsMap, DecorateAcknowledgementsWithTimeoutAndMultipleResponses, AllButLast, Last, FirstArg, SecondArg } from "./typed-events";
+import { EventParams, EventNames, EventsMap, StrictEventEmitter, DefaultEventsMap, DecorateAcknowledgementsWithTimeoutAndMultipleResponses, AllButLast, Last, DecorateAcknowledgementsWithMultipleResponses, DecorateAcknowledgements, RemoveAcknowledgements, EventNamesWithAck, FirstNonErrorArg, EventNamesWithoutAck } from "./typed-events";
 import type { Client } from "./client";
 import type { Adapter, Room, SocketId } from "socket.io-adapter";
 import { BroadcastOperator } from "./broadcast-operator";
@@ -68,7 +68,7 @@ export declare const RESERVED_EVENTS: ReadonlySet<string | Symbol>;
  * });
  * ```
  */
-export declare class Namespace<ListenEvents extends EventsMap = DefaultEventsMap, EmitEvents extends EventsMap = ListenEvents, ServerSideEvents extends EventsMap = DefaultEventsMap, SocketData = any> extends StrictEventEmitter<ServerSideEvents, EmitEvents, NamespaceReservedEventsMap<ListenEvents, EmitEvents, ServerSideEvents, SocketData>> {
+export declare class Namespace<ListenEvents extends EventsMap = DefaultEventsMap, EmitEvents extends EventsMap = ListenEvents, ServerSideEvents extends EventsMap = DefaultEventsMap, SocketData = any> extends StrictEventEmitter<ServerSideEvents, RemoveAcknowledgements<EmitEvents>, NamespaceReservedEventsMap<ListenEvents, EmitEvents, ServerSideEvents, SocketData>> {
     readonly name: string;
     readonly sockets: Map<SocketId, Socket<ListenEvents, EmitEvents, ServerSideEvents, SocketData>>;
     adapter: Adapter;
@@ -133,7 +133,7 @@ export declare class Namespace<ListenEvents extends EventsMap = DefaultEventsMap
      * @param room - a room, or an array of rooms
      * @return a new {@link BroadcastOperator} instance for chaining
      */
-    to(room: Room | Room[]): BroadcastOperator<EmitEvents, SocketData>;
+    to(room: Room | Room[]): BroadcastOperator<DecorateAcknowledgementsWithMultipleResponses<EmitEvents>, SocketData>;
     /**
      * Targets a room when emitting. Similar to `to()`, but might feel clearer in some cases:
      *
@@ -146,7 +146,7 @@ export declare class Namespace<ListenEvents extends EventsMap = DefaultEventsMap
      * @param room - a room, or an array of rooms
      * @return a new {@link BroadcastOperator} instance for chaining
      */
-    in(room: Room | Room[]): BroadcastOperator<EmitEvents, SocketData>;
+    in(room: Room | Room[]): BroadcastOperator<DecorateAcknowledgementsWithMultipleResponses<EmitEvents>, SocketData>;
     /**
      * Excludes a room when emitting.
      *
@@ -165,7 +165,7 @@ export declare class Namespace<ListenEvents extends EventsMap = DefaultEventsMap
      * @param room - a room, or an array of rooms
      * @return a new {@link BroadcastOperator} instance for chaining
      */
-    except(room: Room | Room[]): BroadcastOperator<EmitEvents, SocketData>;
+    except(room: Room | Room[]): BroadcastOperator<DecorateAcknowledgementsWithMultipleResponses<EmitEvents>, SocketData>;
     /**
      * Adds a new client.
      *
@@ -203,23 +203,7 @@ export declare class Namespace<ListenEvents extends EventsMap = DefaultEventsMap
      *
      * @return Always true
      */
-    emit<Ev extends EventNames<EmitEvents>>(ev: Ev, ...args: EventParams<EmitEvents, Ev>): boolean;
-    /**
-     * Emits an event and waits for an acknowledgement from all clients.
-     *
-     * @example
-     * const myNamespace = io.of("/my-namespace");
-     *
-     * try {
-     *   const responses = await myNamespace.timeout(1000).emitWithAck("some-event");
-     *   console.log(responses); // one response per client
-     * } catch (e) {
-     *   // some clients did not acknowledge the event in the given delay
-     * }
-     *
-     * @return a Promise that will be fulfilled when all clients have acknowledged the event
-     */
-    emitWithAck<Ev extends EventNames<EmitEvents>>(ev: Ev, ...args: AllButLast<EventParams<EmitEvents, Ev>>): Promise<SecondArg<Last<EventParams<EmitEvents, Ev>>>>;
+    emit<Ev extends EventNamesWithoutAck<EmitEvents>>(ev: Ev, ...args: EventParams<EmitEvents, Ev>): boolean;
     /**
      * Sends a `message` event to all clients.
      *
@@ -291,7 +275,7 @@ export declare class Namespace<ListenEvents extends EventsMap = DefaultEventsMap
      *
      * @return a Promise that will be fulfilled when all servers have acknowledged the event
      */
-    serverSideEmitWithAck<Ev extends EventNames<ServerSideEvents>>(ev: Ev, ...args: AllButLast<EventParams<ServerSideEvents, Ev>>): Promise<FirstArg<Last<EventParams<ServerSideEvents, Ev>>>[]>;
+    serverSideEmitWithAck<Ev extends EventNamesWithAck<ServerSideEvents>>(ev: Ev, ...args: AllButLast<EventParams<ServerSideEvents, Ev>>): Promise<FirstNonErrorArg<Last<EventParams<ServerSideEvents, Ev>>>[]>;
     /**
      * Called when a packet is received from another Socket.IO server
      *
@@ -318,7 +302,7 @@ export declare class Namespace<ListenEvents extends EventsMap = DefaultEventsMap
      * @param compress - if `true`, compresses the sending data
      * @return self
      */
-    compress(compress: boolean): BroadcastOperator<EmitEvents, SocketData>;
+    compress(compress: boolean): BroadcastOperator<DecorateAcknowledgementsWithMultipleResponses<EmitEvents>, SocketData>;
     /**
      * Sets a modifier for a subsequent event emission that the event data may be lost if the client is not ready to
      * receive messages (because of network slowness or other issues, or because they’re connected through long polling
@@ -331,7 +315,7 @@ export declare class Namespace<ListenEvents extends EventsMap = DefaultEventsMap
      *
      * @return self
      */
-    get volatile(): BroadcastOperator<EmitEvents, SocketData>;
+    get volatile(): BroadcastOperator<DecorateAcknowledgementsWithMultipleResponses<EmitEvents>, SocketData>;
     /**
      * Sets a modifier for a subsequent event emission that the event data will only be broadcast to the current node.
      *
@@ -343,7 +327,7 @@ export declare class Namespace<ListenEvents extends EventsMap = DefaultEventsMap
      *
      * @return a new {@link BroadcastOperator} instance for chaining
      */
-    get local(): BroadcastOperator<EmitEvents, SocketData>;
+    get local(): BroadcastOperator<DecorateAcknowledgementsWithMultipleResponses<EmitEvents>, SocketData>;
     /**
      * Adds a timeout in milliseconds for the next operation.
      *
@@ -360,7 +344,7 @@ export declare class Namespace<ListenEvents extends EventsMap = DefaultEventsMap
      *
      * @param timeout
      */
-    timeout(timeout: number): BroadcastOperator<DecorateAcknowledgementsWithTimeoutAndMultipleResponses<EmitEvents>, SocketData>;
+    timeout(timeout: number): BroadcastOperator<DecorateAcknowledgements<DecorateAcknowledgementsWithMultipleResponses<EmitEvents>>, SocketData>;
     /**
      * Returns the matching socket instances.
      *

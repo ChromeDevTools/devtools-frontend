@@ -44,6 +44,7 @@ import rdb_wrapper
 AUTOROLL_ACCOUNT = "devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com"
 USE_PYTHON3 = True
 
+
 def _ExecuteSubProcess(input_api, output_api, script_path, args, results):
     if isinstance(script_path, six.string_types):
         script_path = [input_api.python3_executable, script_path]
@@ -409,21 +410,30 @@ def _CheckDevToolsNonJSFileLicenseHeaders(input_api, output_api):
 
 
 def _CheckGeneratedFiles(input_api, output_api):
-    v8_directory_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'v8')
-    blink_directory_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'third_party', 'blink')
-    protocol_location = input_api.os_path.join(blink_directory_path, 'public', 'devtools_protocol')
-    scripts_build_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'build')
-    scripts_generated_output_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end', 'generated')
+    v8_directory_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                               'v8')
+    blink_directory_path = input_api.os_path.join(
+        input_api.PresubmitLocalPath(), 'third_party', 'blink')
+    protocol_location = input_api.os_path.join(blink_directory_path, 'public',
+                                               'devtools_protocol')
+    scripts_build_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                                'scripts', 'build')
+    scripts_generated_output_path = input_api.os_path.join(
+        input_api.PresubmitLocalPath(), 'front_end', 'generated')
 
-    generated_aria_path = input_api.os_path.join(scripts_build_path, 'generate_aria.py')
-    generated_supported_css_path = input_api.os_path.join(scripts_build_path, 'generate_supported_css.py')
+    generated_aria_path = input_api.os_path.join(scripts_build_path,
+                                                 'generate_aria.py')
+    generated_supported_css_path = input_api.os_path.join(
+        scripts_build_path, 'generate_supported_css.py')
     generated_deprecation_path = input_api.os_path.join(
         scripts_build_path, 'generate_deprecations.py')
-    generated_protocol_path = input_api.os_path.join(scripts_build_path, 'code_generator_frontend.py')
+    generated_protocol_path = input_api.os_path.join(
+        scripts_build_path, 'code_generator_frontend.py')
     generated_protocol_typescript_path = input_api.os_path.join(
         input_api.PresubmitLocalPath(), 'scripts', 'protocol_typescript')
-    concatenate_protocols_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'third_party', 'inspector_protocol',
-                                                        'concatenate_protocols.py')
+    concatenate_protocols_path = input_api.os_path.join(
+        input_api.PresubmitLocalPath(), 'third_party', 'inspector_protocol',
+        'concatenate_protocols.py')
 
     affected_files = _getAffectedFiles(input_api, [
         v8_directory_path,
@@ -445,11 +455,15 @@ def _CheckGeneratedFiles(input_api, output_api):
                 'No affected files for generated files check')
         ]
 
-    results = [output_api.PresubmitNotifyResult('Running Generated Files Check:')]
-    generate_protocol_resources_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'deps',
-                                                              'generate_protocol_resources.py')
+    results = [
+        output_api.PresubmitNotifyResult('Running Generated Files Check:')
+    ]
+    generate_protocol_resources_path = input_api.os_path.join(
+        input_api.PresubmitLocalPath(), 'scripts', 'deps',
+        'generate_protocol_resources.py')
 
-    return _ExecuteSubProcess(input_api, output_api, generate_protocol_resources_path, [], results)
+    return _ExecuteSubProcess(input_api, output_api,
+                              generate_protocol_resources_path, [], results)
 
 
 def _CheckL10nStrings(input_api, output_api):
@@ -494,6 +508,7 @@ def _CheckNoUncheckedFiles(input_api, output_api):
         ]
     return []
 
+
 def _CheckForTooLargeFiles(input_api, output_api):
     """Avoid large files, especially binary files, in the repository since
   git doesn't scale well for those. They will be in everyone's repo
@@ -513,12 +528,14 @@ def _CheckForTooLargeFiles(input_api, output_api):
                 too_large_files.append("%s: %d bytes" % (f.LocalPath(), size))
     if too_large_files:
         message = (
-          'Do not commit large files to git since git scales badly for those.\n' +
-          'Instead put the large files in cloud storage and use DEPS to\n' +
-          'fetch them.\n' + '\n'.join(too_large_files)
-        )
-        return [output_api.PresubmitError(
-            'Too large files found in commit', long_text=message + '\n')]
+            'Do not commit large files to git since git scales badly for those.\n'
+            +
+            'Instead put the large files in cloud storage and use DEPS to\n' +
+            'fetch them.\n' + '\n'.join(too_large_files))
+        return [
+            output_api.PresubmitError('Too large files found in commit',
+                                      long_text=message + '\n')
+        ]
     else:
         return []
 
@@ -549,6 +566,7 @@ def _CheckObsoleteScreenshotGoldens(input_api, output_api):
 
 
 def _WithArgs(checkType, **kwargs):
+
     def _WithArgsWrapper(input_api, output_api):
         return checkType(input_api, output_api, **kwargs)
 
@@ -663,12 +681,14 @@ def CheckChangeOnCommit(input_api, output_api):
     return _RunAllChecks(checks, input_api, output_api)
 
 
-def _getAffectedFiles(input_api, parent_directories, excluded_actions, accepted_endings):  # pylint: disable=invalid-name
+def _getAffectedFiles(input_api, parent_directories, excluded_actions,
+                      accepted_endings):  # pylint: disable=invalid-name
     """Return absolute file paths of affected files (not due to an excluded action)
        under a parent directory with an accepted file ending.
     """
     local_paths = [
-        f.AbsoluteLocalPath() for f in input_api.AffectedFiles() if all(f.Action() != action for action in excluded_actions)
+        f.AbsoluteLocalPath() for f in input_api.AffectedFiles()
+        if all(f.Action() != action for action in excluded_actions)
     ]
     affected_files = [
         file_name for file_name in local_paths
@@ -681,15 +701,22 @@ def _getAffectedFiles(input_api, parent_directories, excluded_actions, accepted_
     return affected_files
 
 
-def _checkWithNodeScript(input_api, output_api, script_path, script_arguments=[]):  # pylint: disable=invalid-name
+def _checkWithNodeScript(input_api,
+                         output_api,
+                         script_path,
+                         script_arguments=[]):  # pylint: disable=invalid-name
     original_sys_path = sys.path
     try:
-        sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')]
+        sys.path = sys.path + [
+            input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')
+        ]
         import devtools_paths
     finally:
         sys.path = original_sys_path
 
-    return _ExecuteSubProcess(input_api, output_api, [devtools_paths.node_path(), script_path], script_arguments, [])
+    return _ExecuteSubProcess(input_api, output_api,
+                              [devtools_paths.node_path(), script_path],
+                              script_arguments, [])
 
 
 def _getFilesToLint(input_api, output_api, lint_config_files,
@@ -732,9 +759,10 @@ def _CheckNodeModules(input_api, output_api):
         file_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                            'node_modules', file)
         if not Path(file_path).is_file():
-            results.extend(
+            results.extend([
                 output_api.PresubmitError(
                     "node_modules/%s is missing. Use npm run install-deps to re-create it."
-                    % file))
+                    % file)
+            ])
 
-    return []
+    return results

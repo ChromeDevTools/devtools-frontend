@@ -307,24 +307,6 @@ class Namespace extends typed_events_1.StrictEventEmitter {
         return new broadcast_operator_1.BroadcastOperator(this.adapter).emit(ev, ...args);
     }
     /**
-     * Emits an event and waits for an acknowledgement from all clients.
-     *
-     * @example
-     * const myNamespace = io.of("/my-namespace");
-     *
-     * try {
-     *   const responses = await myNamespace.timeout(1000).emitWithAck("some-event");
-     *   console.log(responses); // one response per client
-     * } catch (e) {
-     *   // some clients did not acknowledge the event in the given delay
-     * }
-     *
-     * @return a Promise that will be fulfilled when all clients have acknowledged the event
-     */
-    emitWithAck(ev, ...args) {
-        return new broadcast_operator_1.BroadcastOperator(this.adapter).emitWithAck(ev, ...args);
-    }
-    /**
      * Sends a `message` event to all clients.
      *
      * This method mimics the WebSocket.send() method.
@@ -342,6 +324,8 @@ class Namespace extends typed_events_1.StrictEventEmitter {
      * @return self
      */
     send(...args) {
+        // This type-cast is needed because EmitEvents likely doesn't have `message` as a key.
+        // if you specify the EmitEvents, the type of args will be never.
         this.emit("message", ...args);
         return this;
     }
@@ -351,6 +335,8 @@ class Namespace extends typed_events_1.StrictEventEmitter {
      * @return self
      */
     write(...args) {
+        // This type-cast is needed because EmitEvents likely doesn't have `message` as a key.
+        // if you specify the EmitEvents, the type of args will be never.
         this.emit("message", ...args);
         return this;
     }

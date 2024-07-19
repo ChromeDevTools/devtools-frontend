@@ -8,20 +8,16 @@ This package contains type definitions for cors (https://github.com/expressjs/co
 Files were exported from https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/cors.
 ## [index.d.ts](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/cors/index.d.ts)
 ````ts
-// Type definitions for cors 2.8
-// Project: https://github.com/expressjs/cors/
-// Definitions by: Alan Plum <https://github.com/pluma>
-//                 Gaurav Sharma <https://github.com/gtpan77>
-// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
-// TypeScript Version: 2.3
-
 /// <reference types="node" />
 
-import { IncomingHttpHeaders } from 'http';
+import { IncomingHttpHeaders } from "http";
 
-type StaticOrigin = boolean | string | RegExp | (boolean | string | RegExp)[];
+type StaticOrigin = boolean | string | RegExp | Array<boolean | string | RegExp>;
 
-type CustomOrigin = (requestOrigin: string | undefined, callback: (err: Error | null, origin?: StaticOrigin) => void) => void;
+type CustomOrigin = (
+    requestOrigin: string | undefined,
+    callback: (err: Error | null, origin?: StaticOrigin) => void,
+) => void;
 
 declare namespace e {
     interface CorsRequest {
@@ -72,9 +68,8 @@ export = e;
 ````
 
 ### Additional Details
- * Last updated: Mon, 05 Dec 2022 07:33:01 GMT
+ * Last updated: Mon, 20 Nov 2023 23:36:24 GMT
  * Dependencies: [@types/node](https://npmjs.com/package/@types/node)
- * Global values: none
 
 # Credits
 These definitions were written by [Alan Plum](https://github.com/pluma), and [Gaurav Sharma](https://github.com/gtpan77).

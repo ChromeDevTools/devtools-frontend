@@ -4,7 +4,7 @@ const withNativeBlob = typeof Blob === "function" ||
         Object.prototype.toString.call(Blob) === "[object BlobConstructor]");
 const withNativeArrayBuffer = typeof ArrayBuffer === "function";
 // ArrayBuffer.isView method is not defined in IE10
-const isView = obj => {
+const isView = (obj) => {
     return typeof ArrayBuffer.isView === "function"
         ? ArrayBuffer.isView(obj)
         : obj && obj.buffer instanceof ArrayBuffer;
@@ -38,4 +38,31 @@ const encodeBlobAsBase64 = (data, callback) => {
     };
     return fileReader.readAsDataURL(data);
 };
-export default encodePacket;
+function toArray(data) {
+    if (data instanceof Uint8Array) {
+        return data;
+    }
+    else if (data instanceof ArrayBuffer) {
+        return new Uint8Array(data);
+    }
+    else {
+        return new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
+    }
+}
+let TEXT_ENCODER;
+export function encodePacketToBinary(packet, callback) {
+    if (withNativeBlob && packet.data instanceof Blob) {
+        return packet.data.arrayBuffer().then(toArray).then(callback);
+    }
+    else if (withNativeArrayBuffer &&
+        (packet.data instanceof ArrayBuffer || isView(packet.data))) {
+        return callback(toArray(packet.data));
+    }
+    encodePacket(packet, false, (encoded) => {
+        if (!TEXT_ENCODER) {
+            TEXT_ENCODER = new TextEncoder();
+        }
+        callback(TEXT_ENCODER.encode(encoded));
+    });
+}
+export { encodePacket };

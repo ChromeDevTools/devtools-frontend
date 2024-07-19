@@ -193,7 +193,7 @@ class BroadcastOperator {
                 clearTimeout(timer);
                 ack.apply(this, [
                     null,
-                    this.flags.expectSingleResponse ? null : responses,
+                    this.flags.expectSingleResponse ? responses[0] : responses,
                 ]);
             }
         };

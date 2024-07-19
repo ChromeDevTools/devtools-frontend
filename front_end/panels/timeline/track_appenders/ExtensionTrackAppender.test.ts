@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../../../core/root/root.js';
 import type * as TraceModel from '../../../models/trace/trace.js';
 import * as TraceEngine from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
@@ -32,7 +31,6 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
   let entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
 
   beforeEach(async function() {
-    Root.Runtime.experiments.enableForTest('timeline-extensions');
     Timeline.ExtensionDataGatherer.ExtensionDataGatherer.removeInstance();
     ({traceData} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz'));
     extensionTrackAppenders = initTrackAppender(flameChartData, traceData, entryData, entryTypeByLevel);
@@ -43,7 +41,6 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
   });
 
   afterEach(() => {
-    Root.Runtime.experiments.disableForTest('timeline-extensions');
     entryData = [];
     flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
     entryTypeByLevel = [];
@@ -160,7 +157,6 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
 
   describe('toggling', function() {
     it('Does not append extension data when the configuration is set to disabled', async function() {
-      Root.Runtime.experiments.enableForTest('timeline-extensions');
       Timeline.ExtensionDataGatherer.ExtensionDataGatherer.removeInstance();
       entryData = [];
       flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();

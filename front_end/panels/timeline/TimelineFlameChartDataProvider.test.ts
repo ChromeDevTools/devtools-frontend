@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupIgnoreListManagerEnvironment} from '../../testing/TraceHelpers.js';
@@ -60,7 +59,6 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     assert.strictEqual(dataProvider.indexForEvent(event), 100);
   });
   it('renders track in the correct order by default', async function() {
-    Root.Runtime.experiments.enableForTest('timeline-extensions');
     setupIgnoreListManagerEnvironment();
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
     const {traceData} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
@@ -84,7 +82,6 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
           'GPU',
         ],
     );
-    Root.Runtime.experiments.disableForTest('timeline-extensions');
   });
   it('adds candy stripe and triangle decorations to long tasks in the main thread', async function() {
     setupIgnoreListManagerEnvironment();

@@ -752,13 +752,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     hardwareConcurrencyPane.element.classList.add('flex-auto');
     hardwareConcurrencyPane.show(this.settingsPane.element);
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_EXTENSIONS)) {
-      const thirdPartyToolbar = new UI.Toolbar.Toolbar('', this.settingsPane.element);
-      thirdPartyToolbar.element.classList.add('flex-auto');
-      thirdPartyToolbar.makeVertical();
-      thirdPartyToolbar.appendToolbarItem(
-          this.createSettingCheckbox(this.#thirdPartyTracksSetting, i18nString(UIStrings.showDataAddedByExtensions)));
-    }
+    const thirdPartyToolbar = new UI.Toolbar.Toolbar('', this.settingsPane.element);
+    thirdPartyToolbar.element.classList.add('flex-auto');
+    thirdPartyToolbar.makeVertical();
+    thirdPartyToolbar.appendToolbarItem(
+        this.createSettingCheckbox(this.#thirdPartyTracksSetting, i18nString(UIStrings.showDataAddedByExtensions)));
 
     const {toggle, input, reset, warning} =
         MobileThrottling.ThrottlingManager.throttlingManager().createHardwareConcurrencySelector();

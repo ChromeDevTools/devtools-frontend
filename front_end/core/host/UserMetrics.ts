@@ -1031,7 +1031,6 @@ export enum DevtoolsExperiments {
   'sources-frame-indentation-markers-temporarily-disable' = 83,
   'css-type-component-length-deprecate' = 85,
   'timeline-show-postmessage-events' = 86,
-  'timeline-extensions' = 89,
   'timeline-enhanced-traces' = 90,
   'timeline-compiled-sources' = 91,
   'timeline-debug-mode' = 93,

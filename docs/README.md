@@ -65,7 +65,7 @@ Runs all static analysis checks on DevTools code.
     and the
     [Chromium Documentation Best Practices](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/documentation_best_practices.md).
 *   Markdown documents must follow the
-    [style guide](https://github.com/google/styleguide/tree/gh-pages/docguide).
+    [Markdown style guide](styleguide/markdown/markdown.md).
 
 ### Previewing changes
 
@@ -87,11 +87,7 @@ and preview the result by opening http://localhost:8080/docs/README.md in your b
 2.  View a specific .md file.
     e.g. https://chromium-review.googlesource.com/c/3362532/2/docs/README.md
 3.  You will see something like <br>
-    Base
-    [preview](https://chromium.googlesource.com/chromium/src/+/ad44f6081ccc6b92479b12f1eb7e9482f474859d/docs/README.md)
-    -> Patchset 3
-    [preview](https://chromium.googlesource.com/chromium/src/+/refs/changes/32/3362532/3/docs/README.md)
-    | DOWNLOAD <br>
+    ![Preview changes with Gitiles from Gerrit](./images/gerrit-preview.png) <br>
     at the top left of the page. Click on the second
     "[preview](https://chromium.googlesource.com/chromium/src/+/refs/changes/32/3362532/3/docs/README.md)"
     link to open the preview for the current patch set.

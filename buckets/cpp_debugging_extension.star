@@ -31,6 +31,7 @@ BUILDERS = [
             **common_properties()
         ),
         build_numbers = True,
+        notifies = ["devtools notifier"],
     ),
     luci.builder(
         name = "Cpp Debugging Extension Linux Release",
@@ -44,6 +45,7 @@ BUILDERS = [
             **common_properties()
         ),
         build_numbers = True,
+        notifies = ["devtools notifier"],
     ),
 ]
 

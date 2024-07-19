@@ -185,4 +185,17 @@
   --ref-palette-pink95: rgb(255 236 240 / 100%);
   --ref-palette-pink99: rgb(255 251 255 / 100%);
   --ref-palette-pink100: rgb(255 255 255 / 100%);
+  --ref-palette-indigo0: rgb(0 0 0 / 100%);
+  --ref-palette-indigo10: rgb(23 0 101 / 100%);
+  --ref-palette-indigo20: rgb(41 0 159 / 100%);
+  --ref-palette-indigo30: rgb(63 28 203 / 100%);
+  --ref-palette-indigo40: rgb(88 64 227 / 100%);
+  --ref-palette-indigo50: rgb(113 93 253 / 100%);
+  --ref-palette-indigo60: rgb(141 127 255 / 100%);
+  --ref-palette-indigo70: rgb(170 160 255 / 100%);
+  --ref-palette-indigo80: rgb(199 191 255 / 100%);
+  --ref-palette-indigo90: rgb(228 223 255 / 100%);
+  --ref-palette-indigo95: rgb(243 238 255 / 100%);
+  --ref-palette-indigo99: rgb(255 251 255 / 100%);
+  --ref-palette-indigo100: rgb(255 255 255 / 100%);
 }

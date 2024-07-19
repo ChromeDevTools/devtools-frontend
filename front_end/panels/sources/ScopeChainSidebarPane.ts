@@ -131,22 +131,19 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
   }
 
   private buildScopeTreeOutline(eventScopeChain: SourceMapScopes.ScopeChainModel.ScopeChain): void {
-    const {callFrame, thisObject, scopeChain} = eventScopeChain;
+    const {scopeChain} = eventScopeChain;
 
     this.treeOutline.removeChildren();
 
     this.contentElement.removeChildren();
     this.contentElement.appendChild(this.treeOutline.element);
     let foundLocalScope = false;
-    for (let i = 0; i < scopeChain.length; ++i) {
-      const scope = scopeChain[i];
-      const extraProperties = this.extraPropertiesForScope(scope, callFrame, thisObject);
-
+    for (const [i, scope] of scopeChain.entries()) {
       if (scope.type() === Protocol.Debugger.ScopeType.Local) {
         foundLocalScope = true;
       }
 
-      const section = this.createScopeSectionTreeElement(scope, extraProperties);
+      const section = this.createScopeSectionTreeElement(scope);
       if (scope.type() === Protocol.Debugger.ScopeType.Global) {
         section.collapse();
       } else if (!foundLocalScope || scope.type() === Protocol.Debugger.ScopeType.Local) {
@@ -161,9 +158,8 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     this.sidebarPaneUpdatedForTest();
   }
 
-  private createScopeSectionTreeElement(
-      scope: SDK.DebuggerModel.ScopeChainEntry,
-      extraProperties: SDK.RemoteObject.RemoteObjectProperty[]): ObjectUI.ObjectPropertiesSection.RootElement {
+  private createScopeSectionTreeElement(scope: SDK.DebuggerModel.ScopeChainEntry):
+      ObjectUI.ObjectPropertiesSection.RootElement {
     let emptyPlaceholder: Common.UIString.LocalizedString|null = null;
     if (scope.type() === Protocol.Debugger.ScopeType.Local || scope.type() === Protocol.Debugger.ScopeType.Closure) {
       emptyPlaceholder = i18nString(UIStrings.noVariables);
@@ -198,29 +194,13 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
 
     const section = new ObjectUI.ObjectPropertiesSection.RootElement(
         scope.object(), this.linkifier, emptyPlaceholder, ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.All,
-        extraProperties);
+        scope.extraProperties());
     section.title = titleElement;
     section.listItemElement.classList.add('scope-chain-sidebar-pane-section');
     section.listItemElement.setAttribute('aria-label', title);
     this.expandController.watchSection(title + (subtitle ? ':' + subtitle : ''), section);
 
     return section;
-  }
-
-  private extraPropertiesForScope(
-      scope: SDK.DebuggerModel.ScopeChainEntry, callFrame: SDK.DebuggerModel.CallFrame,
-      thisObject: SDK.RemoteObject.RemoteObject|null): SDK.RemoteObject.RemoteObjectProperty[] {
-    if (scope.type() !== Protocol.Debugger.ScopeType.Local || callFrame.script.isWasm()) {
-      return [];
-    }
-
-    const extraProperties = [];
-    if (thisObject) {
-      extraProperties.push(new SDK.RemoteObject.RemoteObjectProperty(
-          'this', thisObject, undefined, undefined, undefined, undefined, undefined, /* synthetic */ true));
-    }
-    extraProperties.push(...scope.extraProperties());
-    return extraProperties;
   }
 
   private sidebarPaneUpdatedForTest(): void {

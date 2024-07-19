@@ -5,7 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 
-import {resolveScopeChain, resolveThisObject} from './NamesResolver.js';
+import {resolveScopeChain} from './NamesResolver.js';
 
 /**
  * This class is responsible for resolving / updating the scope chain for a specific {@link SDK.DebuggerModel.CallFrame}
@@ -46,11 +46,8 @@ export class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   async #update(): Promise<void> {
-    const [thisObject, scopeChain] = await Promise.all([
-      resolveThisObject(this.#callFrame),
-      resolveScopeChain(this.#callFrame),
-    ]);
-    this.dispatchEventToListeners(Events.ScopeChainUpdated, new ScopeChain(this.#callFrame, thisObject, scopeChain));
+    const scopeChain = await resolveScopeChain(this.#callFrame);
+    this.dispatchEventToListeners(Events.ScopeChainUpdated, new ScopeChain(scopeChain));
   }
 
   #debugInfoAttached(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
@@ -76,20 +73,12 @@ export type EventTypes = {
 };
 
 /**
- * Placeholder event payload.
- *
- * TODO(crbug.com/40277685): Send an actual scope chain.
+ * A scope chain ready to be shown in the UI with debugging info applied.
  */
 export class ScopeChain {
-  readonly callFrame: SDK.DebuggerModel.CallFrame;
-  readonly thisObject: SDK.RemoteObject.RemoteObject|null;
   readonly scopeChain: SDK.DebuggerModel.ScopeChainEntry[];
 
-  constructor(
-      callFrame: SDK.DebuggerModel.CallFrame, thisObject: SDK.RemoteObject.RemoteObject|null,
-      scopeChain: SDK.DebuggerModel.ScopeChainEntry[]) {
-    this.callFrame = callFrame;
-    this.thisObject = thisObject;
+  constructor(scopeChain: SDK.DebuggerModel.ScopeChainEntry[]) {
     this.scopeChain = scopeChain;
   }
 }

@@ -42,6 +42,8 @@ describeWithMockConnection('ScopeChainModel', () => {
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel)!;
     const fakeFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
     fakeFrame.debuggerModel = debuggerModel;
+    // @ts-ignore readonly for test.
+    fakeFrame.script = sinon.createStubInstance(SDK.Script.Script, {isWasm: false});
     fakeFrame.scopeChain.returns([]);
 
     const scopeChainModel = new SourceMapScopes.ScopeChainModel.ScopeChainModel(fakeFrame);
@@ -62,6 +64,9 @@ describeWithMockConnection('ScopeChainModel', () => {
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel)!;
     const fakeFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
     fakeFrame.debuggerModel = debuggerModel;
+    // @ts-ignore readonly for test.
+    fakeFrame.script = sinon.createStubInstance(SDK.Script.Script, {isWasm: false});
+
     fakeFrame.scopeChain.returns([]);
 
     const scopeChainModel = new SourceMapScopes.ScopeChainModel.ScopeChainModel(fakeFrame);

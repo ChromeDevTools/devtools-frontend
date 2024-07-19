@@ -390,7 +390,12 @@ export const resolveScopeChain =
   if (scopeChain) {
     return scopeChain;
   }
-  return callFrame.scopeChain().map(scope => new ScopeWithSourceMappedVariables(scope));
+
+  if (callFrame.script.isWasm()) {
+    return callFrame.scopeChain();
+  }
+  const thisObject = await resolveThisObject(callFrame);
+  return callFrame.scopeChain().map(scope => new ScopeWithSourceMappedVariables(scope, thisObject));
 };
 
 /**
@@ -594,9 +599,12 @@ export const resolveScopeInObject = function(scope: SDK.DebuggerModel.ScopeChain
  */
 class ScopeWithSourceMappedVariables implements SDK.DebuggerModel.ScopeChainEntry {
   readonly #debuggerScope: SDK.DebuggerModel.ScopeChainEntry;
+  /** The resolved `this` of the current call frame */
+  readonly #thisObject: SDK.RemoteObject.RemoteObject|null;
 
-  constructor(scope: SDK.DebuggerModel.ScopeChainEntry) {
+  constructor(scope: SDK.DebuggerModel.ScopeChainEntry, thisObject: SDK.RemoteObject.RemoteObject|null) {
     this.#debuggerScope = scope;
+    this.#thisObject = thisObject;
   }
 
   callFrame(): SDK.DebuggerModel.CallFrame {
@@ -632,7 +640,12 @@ class ScopeWithSourceMappedVariables implements SDK.DebuggerModel.ScopeChainEntr
   }
 
   extraProperties(): SDK.RemoteObject.RemoteObjectProperty[] {
-    return this.#debuggerScope.extraProperties();
+    const extraProperties = this.#debuggerScope.extraProperties();
+    if (this.#thisObject && this.type() === Protocol.Debugger.ScopeType.Local) {
+      extraProperties.unshift(new SDK.RemoteObject.RemoteObjectProperty(
+          'this', this.#thisObject, undefined, undefined, undefined, undefined, undefined, /* synthetic */ true));
+    }
+    return extraProperties;
   }
 }
 

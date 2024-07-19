@@ -40,7 +40,6 @@ function createMatchedStyles(payload: Partial<SDK.CSSMatchedStyles.CSSMatchedSty
     inheritedPseudoPayload: [],
     animationsPayload: [],
     parentLayoutNodeId: undefined,
-    positionFallbackRules: [],
     positionTryRules: [],
     propertyRules: [],
     cssPropertyRegistrations: [],

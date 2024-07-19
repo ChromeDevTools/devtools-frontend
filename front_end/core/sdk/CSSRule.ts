@@ -334,25 +334,6 @@ export class CSSKeyframeRule extends CSSRule {
   }
 }
 
-export class CSSPositionFallbackRule {
-  readonly #name: CSSValue;
-  readonly #tryRules: CSSRule[];
-  constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSPositionFallbackRule) {
-    this.#name = new CSSValue(payload.name);
-    this.#tryRules = payload.tryRules.map(
-        tryRule =>
-            new CSSRule(cssModel, {origin: tryRule.origin, style: tryRule.style, styleSheetId: tryRule.styleSheetId}));
-  }
-
-  name(): CSSValue {
-    return this.#name;
-  }
-
-  tryRules(): CSSRule[] {
-    return this.#tryRules;
-  }
-}
-
 export class CSSPositionTryRule extends CSSRule {
   readonly #name: CSSValue;
   readonly #active: boolean;

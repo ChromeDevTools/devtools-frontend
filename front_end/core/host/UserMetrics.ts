@@ -1478,7 +1478,6 @@ export const enum SwatchType {
   Flex = 6,
   Angle = 7,
   Length = 8,
-  PositionFallbackLink = 9,
   PositionTryLink = 10,
   MaxValue = 11,
 }

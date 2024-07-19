@@ -67,7 +67,6 @@ import {
   PositionTryRuleSection,
   RegisteredPropertiesSection,
   StylePropertiesSection,
-  TryRuleSection,
 } from './StylePropertiesSection.js';
 import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
 import {activeHints, type StylePropertyTreeElement} from './StylePropertyTreeElement.js';
@@ -1182,18 +1181,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       blocks.push(block);
     }
 
-    for (const positionFallbackRule of matchedStyles.positionFallbackRules()) {
-      const block = SectionBlock.createPositionFallbackBlock(positionFallbackRule.name().text);
-      for (const tryRule of positionFallbackRule.tryRules()) {
-        this.idleCallbackManager.schedule(() => {
-          block.sections.push(new TryRuleSection(
-              this, matchedStyles, tryRule.style, sectionIdx, computedStyles, parentsComputedStyles));
-          sectionIdx++;
-        });
-      }
-      blocks.push(block);
-    }
-
     for (const positionTryRule of matchedStyles.positionTryRules()) {
       const block = SectionBlock.createPositionTryBlock(positionTryRule.name().text);
       this.idleCallbackManager.schedule(() => {
@@ -1723,14 +1710,6 @@ export class SectionBlock {
     const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator';
     separatorElement.textContent = `@font-palette-values ${name}`;
-    return new SectionBlock(separatorElement);
-  }
-
-  static createPositionFallbackBlock(positionFallbackName: string): SectionBlock {
-    const separatorElement = document.createElement('div');
-    separatorElement.className = 'sidebar-separator';
-    separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader('position-fallback')}`);
-    separatorElement.textContent = `@position-fallback ${positionFallbackName}`;
     return new SectionBlock(separatorElement);
   }
 

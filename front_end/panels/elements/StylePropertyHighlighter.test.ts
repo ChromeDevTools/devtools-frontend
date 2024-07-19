@@ -29,7 +29,6 @@ describeWithMockConnection('StylePropertyHighlighter', () => {
       inheritedPseudoPayload: [],
       animationsPayload: [],
       parentLayoutNodeId: undefined,
-      positionFallbackRules: [],
       positionTryRules: [],
       propertyRules: [],
       cssPropertyRegistrations: [],

@@ -72,7 +72,6 @@ function setUpStyles(
     inheritedPseudoPayload: [],
     animationsPayload: [],
     parentLayoutNodeId: undefined,
-    positionFallbackRules: [],
     positionTryRules: [],
     propertyRules: [],
     cssPropertyRegistrations: [],

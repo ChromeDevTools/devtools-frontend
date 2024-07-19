@@ -657,14 +657,6 @@ export class LinkableNameRenderer implements MatchRenderer<LinkableNameMatch> {
           ruleBlock: '@font-palette-values',
           isDefined: this.#treeElement.matchedStyles().fontPaletteValuesRule()?.name().text === match.text,
         };
-      case LinkableNameProperties.PositionFallback:
-        return {
-          jslogContext: 'css-position-fallback',
-          metric: Host.UserMetrics.SwatchType.PositionFallbackLink,
-          ruleBlock: '@position-fallback',
-          isDefined: Boolean(
-              this.#treeElement.matchedStyles().positionFallbackRules().find(pf => pf.name().text === match.text)),
-        };
       case LinkableNameProperties.PositionTry:
       case LinkableNameProperties.PositionTryOptions:
         return {

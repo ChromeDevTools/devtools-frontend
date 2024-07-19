@@ -229,7 +229,6 @@ export const enum LinkableNameProperties {
   Animation = 'animation',
   AnimationName = 'animation-name',
   FontPalette = 'font-palette',
-  PositionFallback = 'position-fallback',
   PositionTryOptions = 'position-try-options',
   PositionTry = 'position-try',
 }
@@ -256,7 +255,6 @@ export class LinkableNameMatcher extends matcherBase(LinkableNameMatch) {
       LinkableNameProperties.Animation,
       LinkableNameProperties.AnimationName,
       LinkableNameProperties.FontPalette,
-      LinkableNameProperties.PositionFallback,
       LinkableNameProperties.PositionTryOptions,
       LinkableNameProperties.PositionTry,
     ];

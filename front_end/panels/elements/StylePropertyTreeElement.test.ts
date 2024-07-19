@@ -638,7 +638,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       inheritedPseudoPayload: [],
       animationsPayload: [],
       parentLayoutNodeId: undefined,
-      positionFallbackRules: [],
       positionTryRules: [],
       propertyRules: [],
       cssPropertyRegistrations: [],

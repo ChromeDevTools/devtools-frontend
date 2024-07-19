@@ -29,8 +29,8 @@ describeWithMockConnection('NetworkRequestDetails', () => {
     }
 
     const titleSwatch: HTMLElement|null = details.shadowRoot.querySelector('.network-request-details-title div');
-    // css request is in 'Style' category, which will use `--app-color-rendering` colour
-    assert.strictEqual(titleSwatch?.style.backgroundColor, 'rgb(209, 144, 255)');
+    // css request is in 'Css' category, which will use `--app-color-css: var(--ref-palette-purple60)` colour
+    assert.strictEqual(titleSwatch?.style.backgroundColor, 'rgb(191, 103, 255)');
 
     const rowData = getRowDataForDetailsElement(details.shadowRoot);
     const durationInnerText = '12.58 ms' +

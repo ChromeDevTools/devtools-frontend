@@ -2170,6 +2170,25 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Overrides a pressure source of a given type, as used by the Compute
+     * Pressure API, so that updates to PressureObserver.observe() are provided
+     * via setPressureStateOverride instead of being retrieved from
+     * platform-provided telemetry data.
+     */
+    'Emulation.setPressureSourceOverrideEnabled': {
+      paramsType: [Protocol.Emulation.SetPressureSourceOverrideEnabledRequest];
+      returnType: void;
+    };
+    /**
+     * Provides a given pressure state that will be processed and eventually be
+     * delivered to PressureObserver users. |source| must have been previously
+     * overridden by setPressureSourceOverrideEnabled.
+     */
+    'Emulation.setPressureStateOverride': {
+      paramsType: [Protocol.Emulation.SetPressureStateOverrideRequest];
+      returnType: void;
+    };
+    /**
      * Overrides the Idle state.
      */
     'Emulation.setIdleOverride': {

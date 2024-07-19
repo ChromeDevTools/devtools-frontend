@@ -5999,6 +5999,21 @@ export namespace Emulation {
     quaternion?: SensorReadingQuaternion;
   }
 
+  export const enum PressureSource {
+    Cpu = 'cpu',
+  }
+
+  export const enum PressureState {
+    Nominal = 'nominal',
+    Fair = 'fair',
+    Serious = 'serious',
+    Critical = 'critical',
+  }
+
+  export interface PressureMetadata {
+    available?: boolean;
+  }
+
   /**
    * Enum of image types that can be disabled.
    */
@@ -6203,6 +6218,17 @@ export namespace Emulation {
   export interface SetSensorOverrideReadingsRequest {
     type: SensorType;
     reading: SensorReading;
+  }
+
+  export interface SetPressureSourceOverrideEnabledRequest {
+    enabled: boolean;
+    source: PressureSource;
+    metadata?: PressureMetadata;
+  }
+
+  export interface SetPressureStateOverrideRequest {
+    source: PressureSource;
+    state: PressureState;
   }
 
   export interface SetIdleOverrideRequest {

@@ -9126,6 +9126,37 @@
                     ]
                 },
                 {
+                    "id": "PressureSource",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "cpu"
+                    ]
+                },
+                {
+                    "id": "PressureState",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "nominal",
+                        "fair",
+                        "serious",
+                        "critical"
+                    ]
+                },
+                {
+                    "id": "PressureMetadata",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "available",
+                            "optional": true,
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
                     "id": "DisabledImageType",
                     "description": "Enum of image types that can be disabled.",
                     "experimental": true,
@@ -9478,6 +9509,41 @@
                         {
                             "name": "reading",
                             "$ref": "SensorReading"
+                        }
+                    ]
+                },
+                {
+                    "name": "setPressureSourceOverrideEnabled",
+                    "description": "Overrides a pressure source of a given type, as used by the Compute\nPressure API, so that updates to PressureObserver.observe() are provided\nvia setPressureStateOverride instead of being retrieved from\nplatform-provided telemetry data.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "enabled",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "source",
+                            "$ref": "PressureSource"
+                        },
+                        {
+                            "name": "metadata",
+                            "optional": true,
+                            "$ref": "PressureMetadata"
+                        }
+                    ]
+                },
+                {
+                    "name": "setPressureStateOverride",
+                    "description": "Provides a given pressure state that will be processed and eventually be\ndelivered to PressureObserver users. |source| must have been previously\noverridden by setPressureSourceOverrideEnabled.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "source",
+                            "$ref": "PressureSource"
+                        },
+                        {
+                            "name": "state",
+                            "$ref": "PressureState"
                         }
                     ]
                 },

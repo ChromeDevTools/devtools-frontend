@@ -2,6 +2,7 @@ Name: Lit
 Short Name: lit
 URL: https://github.com/lit/lit
 Version: 2.4.1
+Revision: 02c28397c612845ffab9e22af08eecc869f8ce47
 License: BSD-3
 License File: LICENSE
 Security Critical: no

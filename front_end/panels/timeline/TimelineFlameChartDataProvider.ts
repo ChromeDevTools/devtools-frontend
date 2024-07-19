@@ -451,6 +451,11 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         continue;
       }
 
+      if (TraceEngine.Types.TraceEvents.isTraceEventScreenshot(entry)) {
+        // Screenshots are represented as trace events, but you can't search for them, so skip.
+        continue;
+      }
+
       const entryStartTime = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(entry).startTime;
       const entryEndTime = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(entry).endTime;
 

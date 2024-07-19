@@ -2385,49 +2385,19 @@ export const IsolationModeHighlight = {
   Mask: Legacy.fromRGBA([248, 249, 249, 1]),
 };
 
+type Space = number|{
+  min: number,
+  max: number,
+  count: (number|undefined),
+};
+
 export class Generator {
-  readonly #hueSpace: number|{
-    min: number,
-    max: number,
-    count: (number|undefined),
-  };
-  readonly #satSpace: number|{
-    min: number,
-    max: number,
-    count: (number|undefined),
-  };
-  readonly #lightnessSpace: number|{
-    min: number,
-    max: number,
-    count: (number|undefined),
-  };
-  readonly #alphaSpace: number|{
-    min: number,
-    max: number,
-    count: (number|undefined),
-  };
+  readonly #hueSpace: Space;
+  readonly #satSpace: Space;
+  readonly #lightnessSpace: Space;
+  readonly #alphaSpace: Space;
   readonly #colors: Map<string, string>;
-  constructor(
-      hueSpace?: number|{
-        min: number,
-        max: number,
-        count: (number|undefined),
-      },
-      satSpace?: number|{
-        min: number,
-        max: number,
-        count: (number|undefined),
-      },
-      lightnessSpace?: number|{
-        min: number,
-        max: number,
-        count: (number|undefined),
-      },
-      alphaSpace?: number|{
-        min: number,
-        max: number,
-        count: (number|undefined),
-      }) {
+  constructor(hueSpace?: Space, satSpace?: Space, lightnessSpace?: Space, alphaSpace?: Space) {
     this.#hueSpace = hueSpace || {min: 0, max: 360, count: undefined};
     this.#satSpace = satSpace || 67;
     this.#lightnessSpace = lightnessSpace || 80;
@@ -2461,11 +2431,7 @@ export class Generator {
     return `${start})`;
   }
 
-  private indexToValueInSpace(index: number, space: number|{
-    min: number,
-    max: number,
-    count: (number|undefined),
-  }): number {
+  private indexToValueInSpace(index: number, space: Space): number {
     if (typeof space === 'number') {
       return space;
     }

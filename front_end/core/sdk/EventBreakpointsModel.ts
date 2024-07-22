@@ -17,9 +17,9 @@ export const enum InstrumentationNames {
   BeforeSellerWorkletReportingStart = 'beforeSellerWorkletReportingStart',
   SetTimeout = 'setTimeout',
   ClearTimeout = 'clearTimeout',
+  SetTimeoutCallback = 'setTimeout.callback',
   SetInterval = 'setInterval',
   ClearInterval = 'clearInterval',
-  SetTimeoutCallback = 'setTimeout.callback',
   SetIntervalCallback = 'setInterval.callback',
   ScriptFirstStatement = 'scriptFirstStatement',
   ScriptBlockedByCSP = 'scriptBlockedByCSP',
@@ -119,9 +119,9 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
     this.createInstrumentationBreakpoints(Category.Timer, [
       InstrumentationNames.SetTimeout,
       InstrumentationNames.ClearTimeout,
+      InstrumentationNames.SetTimeoutCallback,
       InstrumentationNames.SetInterval,
       InstrumentationNames.ClearInterval,
-      InstrumentationNames.SetTimeoutCallback,
       InstrumentationNames.SetIntervalCallback,
     ]);
     this.createInstrumentationBreakpoints(Category.Window, [

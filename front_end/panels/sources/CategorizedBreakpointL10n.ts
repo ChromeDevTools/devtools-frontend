@@ -127,10 +127,10 @@ const LOCALIZED_INSTRUMENTATION_NAMES:
           i18nLazyString(UIStrings.beforeSellerWorkletReportingStart),
       [SDK.EventBreakpointsModel.InstrumentationNames.SetTimeout]: i18n.i18n.lockedLazyString('setTimeout'),
       [SDK.EventBreakpointsModel.InstrumentationNames.ClearTimeout]: i18n.i18n.lockedLazyString('clearTimeout'),
-      [SDK.EventBreakpointsModel.InstrumentationNames.SetInterval]: i18n.i18n.lockedLazyString('setInterval'),
-      [SDK.EventBreakpointsModel.InstrumentationNames.ClearInterval]: i18n.i18n.lockedLazyString('clearInterval'),
       [SDK.EventBreakpointsModel.InstrumentationNames.SetTimeoutCallback]:
           i18nLazyString(UIStrings.setTimeoutOrIntervalFired, {PH1: 'setTimeout'}),
+      [SDK.EventBreakpointsModel.InstrumentationNames.SetInterval]: i18n.i18n.lockedLazyString('setInterval'),
+      [SDK.EventBreakpointsModel.InstrumentationNames.ClearInterval]: i18n.i18n.lockedLazyString('clearInterval'),
       [SDK.EventBreakpointsModel.InstrumentationNames.SetIntervalCallback]:
           i18nLazyString(UIStrings.setTimeoutOrIntervalFired, {PH1: 'setInterval'}),
       [SDK.EventBreakpointsModel.InstrumentationNames.ScriptFirstStatement]:

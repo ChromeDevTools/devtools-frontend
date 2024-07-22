@@ -15,6 +15,8 @@ Tips to create meaningful CL descriptions:
 - Provide relevant link to demo or example (if applicable)
 - Provide link to design doc (if applicable)
 
+At least two committers need to have been involved in the CL either as reviewer or author. See [committers policy](https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/committers_policy.md) for more information.
+
 Example CL, adapted from [Chromium guidelines](https://chromium.googlesource.com/chromium/src/+/main/docs/contributing.md#uploading-a-change-for-review):
 
 ```

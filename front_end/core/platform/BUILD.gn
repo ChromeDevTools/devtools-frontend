@@ -20,7 +20,6 @@ devtools_module("platform") {
     "MimeType.ts",
     "NumberUtilities.ts",
     "PromiseUtilities.ts",
-    "SetUtilities.ts",
     "StringUtilities.ts",
     "Timing.ts",
     "TypedArrayUtilities.ts",
@@ -50,7 +49,6 @@ ts_library("unittests") {
     "MapUtilities.test.ts",
     "MimeType.test.ts",
     "NumberUtilities.test.ts",
-    "SetUtilities.test.ts",
     "StringUtilities.test.ts",
     "TypedArrayUtilities.test.ts",
   ]

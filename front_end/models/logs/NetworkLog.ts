@@ -301,7 +301,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     while (checkRequest) {
       const initiatorData = this.initializeInitiatorSymbolIfNeeded(checkRequest);
       if (initiatorData.chain) {
-        Platform.SetUtilities.addAll(initiatorChainCache, initiatorData.chain);
+        initiatorChainCache = initiatorChainCache.union(initiatorData.chain);
         break;
       }
       if (initiatorChainCache.has(checkRequest)) {

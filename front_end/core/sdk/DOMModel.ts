@@ -1262,8 +1262,8 @@ export class DOMModel extends SDKModel<EventTypes> {
     this.scheduleMutationEvent(node);
   }
 
-  inlineStyleInvalidated(nodeIds: number[]): void {
-    Platform.SetUtilities.addAll(this.#attributeLoadNodeIds, nodeIds);
+  inlineStyleInvalidated(nodeIds: Protocol.DOM.NodeId[]): void {
+    nodeIds.forEach(nodeId => this.#attributeLoadNodeIds.add(nodeId));
     if (!this.#loadNodeAttributesTimeout) {
       this.#loadNodeAttributesTimeout = window.setTimeout(this.loadNodeAttributes.bind(this), 20);
     }

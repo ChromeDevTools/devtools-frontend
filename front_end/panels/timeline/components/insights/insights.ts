@@ -4,8 +4,10 @@
 
 import * as LCPPhases from './LCPPhases.js';
 import * as SidebarInsight from './SidebarInsight.js';
+import * as Types from './types.js';
 
 export {
   LCPPhases,
   SidebarInsight,
+  Types,
 };

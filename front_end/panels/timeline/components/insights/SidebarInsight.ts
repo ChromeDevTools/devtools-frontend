@@ -4,12 +4,37 @@
 
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import type * as Overlays from '../../overlays/overlays.js';
 
 import sidebarInsightStyles from './sidebarInsight.css.js';
 
 export interface InsightDetails {
   title: string;
   expanded: boolean;
+}
+
+export class InsightActivated extends Event {
+  static readonly eventName = 'insightactivated';
+
+  constructor(
+      public name: string, public navigationId: string,
+      public createOverlayFn: () => Array<Overlays.Overlays.TimelineOverlay>) {
+    super(InsightActivated.eventName, {bubbles: true, composed: true});
+  }
+}
+
+export class InsightDeactivated extends Event {
+  static readonly eventName = 'insightdeactivated';
+  constructor() {
+    super(InsightDeactivated.eventName, {bubbles: true, composed: true});
+  }
+}
+
+declare global {
+  interface GlobalEventHandlersEventMap {
+    [InsightActivated.eventName]: InsightActivated;
+    [InsightDeactivated.eventName]: InsightDeactivated;
+  }
 }
 
 export class SidebarInsight extends HTMLElement {
@@ -22,6 +47,7 @@ export class SidebarInsight extends HTMLElement {
   set data(data: InsightDetails) {
     this.#insightTitle = data.title;
     this.#expanded = data.expanded;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   connectedCallback(): void {

@@ -57,6 +57,7 @@ devtools_module("components") {
     "../../../ui/visual_logging:bundle",
     "../../emulation:bundle",
     "../../mobile_throttling:bundle",
+    "../overlays:bundle",
     "../utils:bundle",
     "./insights:bundle",
   ]

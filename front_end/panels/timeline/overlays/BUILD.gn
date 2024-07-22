@@ -27,6 +27,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "..:*",
+    "../*",
     "../../../ui/components/docs/*",
   ]
 }

@@ -15,15 +15,16 @@ devtools_module("insights") {
   sources = [
     "LCPPhases.ts",
     "SidebarInsight.ts",
+    "types.ts",
   ]
 
   deps = [
-    "../:css_files",
     "../../../../models/trace:bundle",
     "../../../../services/trace_bounds:bundle",
     "../../../../ui/components/helpers:bundle",
     "../../../../ui/components/icon_button:bundle",
     "../../../../ui/lit-html:bundle",
+    "../../overlays:bundle",
   ]
 }
 

@@ -54,6 +54,7 @@ import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import {ActiveFilters} from './ActiveFilters.js';
 import {TraceLoadEvent} from './BenchmarkEvents.js';
 import * as TimelineComponents from './components/components.js';
+import * as TimelineInsights from './components/insights/insights.js';
 import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
 import {Tracker} from './FreshRecording.js';
 import historyToolbarButtonStyles from './historyToolbarButton.css.js';
@@ -437,8 +438,15 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         TimelineComponents.Sidebar.WidgetEvents.SidebarCollapseClick,
         this.#hideSidebar.bind(this),
     );
-    this.#sideBar.contentElement.addEventListener(
-        TimelineComponents.Sidebar.ToggleSidebarInsights.eventName, this.#sidebarInsightEnabled.bind(this));
+
+    this.#sideBar.contentElement.addEventListener(TimelineInsights.SidebarInsight.InsightDeactivated.eventName, () => {
+      this.#setActiveInsight(null);
+    });
+
+    this.#sideBar.contentElement.addEventListener(TimelineInsights.SidebarInsight.InsightActivated.eventName, event => {
+      const {name, navigationId, createOverlayFn} = event;
+      this.#setActiveInsight({name, navigationId, createOverlayFn});
+    });
 
     this.#sideBar.contentElement.addEventListener(TimelineComponents.Sidebar.RemoveAnnotation.eventName, event => {
       const {removedAnnotation} = (event as TimelineComponents.Sidebar.RemoveAnnotation);
@@ -500,8 +508,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.#sideBar.hideSidebar();
   }
 
-  #sidebarInsightEnabled(): void {
-    this.flameChart.toggleSidebarInsights();
+  #setActiveInsight(insight: TimelineComponents.Sidebar.ActiveInsight|null): void {
+    this.#sideBar.setActiveInsight(insight);
+    this.flameChart.setActiveInsight(insight);
   }
 
   static instance(opts: {
@@ -1430,6 +1439,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (traceInsightsData) {
       this.flameChart.setInsights(traceInsightsData);
       this.#sideBar.setInsights(traceInsightsData);
+      this.#setActiveInsight(null);
     }
   }
 

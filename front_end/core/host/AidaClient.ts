@@ -75,9 +75,11 @@ export interface AidaDoConversationClientEvent {
   do_conversation_client_event: {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     user_feedback: {
-      sentiment?: `${Rating}`,
+      sentiment?: Rating,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      user_input?: {comment?: string},
+      user_input?: {
+        comment?: string,
+      },
     },
   };
 }

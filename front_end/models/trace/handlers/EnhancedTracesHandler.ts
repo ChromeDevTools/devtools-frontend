@@ -23,6 +23,7 @@ export interface Script {
   sourceMapUrl?: string;
   length?: number;
   sourceText?: string;
+  auxData?: ExecutionContextAuxData;
 }
 
 export interface ExecutionContextAuxData {
@@ -36,10 +37,11 @@ export interface ExecutionContext {
   origin: string;
   v8Context?: string;
   auxData?: ExecutionContextAuxData;
+  isolate?: string;
 }
 
 export interface Target {
-  id: string;
+  targetId: string;
   type: string;
   url: string;
   pid?: number;
@@ -57,6 +59,7 @@ let handlerState = HandlerState.UNINITIALIZED;
 const scriptRundownEvents: Types.TraceEvents.TraceEventScriptRundown[] = [];
 const scriptToV8Context: Map<string, string> = new Map<string, string>();
 const scriptToScriptSource: Map<string, string> = new Map<string, string>();
+const largeScriptToScriptSource: Map<string, string[]> = new Map<string, string[]>();
 const scriptToSourceLength: Map<string, number> = new Map<string, number>();
 const targets: Target[] = [];
 const executionContexts: ExecutionContext[] = [];
@@ -78,6 +81,7 @@ export function reset(): void {
   scriptRundownEvents.length = 0;
   scriptToV8Context.clear();
   scriptToScriptSource.clear();
+  largeScriptToScriptSource.clear();
   scriptToSourceLength.clear();
   targets.length = 0;
   executionContexts.length = 0;
@@ -94,9 +98,9 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     const data = event.args?.data;
     scriptToV8Context.set(getScriptIsolateId(data.isolate, data.scriptId), data.v8context);
     // Add target
-    if (!targets.find(target => target.id === data.frame)) {
+    if (!targets.find(target => target.targetId === data.frame)) {
       targets.push({
-        id: data.frame,
+        targetId: data.frame,
         type: data.frameType,
         isolate: data.isolate,
         pid: event.pid,
@@ -114,6 +118,7 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
           isDefault: data.isDefault,
           type: data.contextType,
         },
+        isolate: data.isolate,
       });
     }
   } else if (Types.TraceEvents.isTraceEventScriptRundown(event)) {
@@ -140,11 +145,21 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     // Set up script to source text and length mapping
     const data = event.args.data;
     const scriptIsolateId = getScriptIsolateId(data.isolate, data.scriptId);
-    if (data.sourceText) {
-      scriptToScriptSource.set(scriptIsolateId, data.sourceText);
-    }
-    if (data.length) {
-      scriptToSourceLength.set(scriptIsolateId, data.length);
+    if ('splitIndex' in data && 'splitCount' in data) {
+      if (!largeScriptToScriptSource.has(scriptIsolateId)) {
+        largeScriptToScriptSource.set(scriptIsolateId, new Array(data.splitCount).fill('') as string[]);
+      }
+      const splittedSource = largeScriptToScriptSource.get(scriptIsolateId);
+      if (splittedSource && data.sourceText) {
+        splittedSource[data.splitIndex as number] = data.sourceText;
+      }
+    } else {
+      if (data.sourceText) {
+        scriptToScriptSource.set(scriptIsolateId, data.sourceText);
+      }
+      if (data.length) {
+        scriptToSourceLength.set(scriptIsolateId, data.length);
+      }
     }
   }
 }
@@ -174,8 +189,21 @@ export async function finalize(): Promise<void> {
   // Put back script source text and length
   scripts.forEach(script => {
     const scriptIsolateId = getScriptIsolateId(script.isolate, script.scriptId);
-    script.sourceText = scriptToScriptSource.get(scriptIsolateId);
-    script.length = scriptToSourceLength.get(scriptIsolateId);
+    if (scriptToScriptSource.has(scriptIsolateId)) {
+      script.sourceText = scriptToScriptSource.get(scriptIsolateId);
+      script.length = scriptToSourceLength.get(scriptIsolateId);
+    } else if (largeScriptToScriptSource.has(scriptIsolateId)) {
+      const splittedSources = largeScriptToScriptSource.get(scriptIsolateId);
+      if (splittedSources) {
+        script.sourceText = splittedSources.join('');
+        script.length = script.sourceText.length;
+      }
+    }
+    // put in the aux data
+    script.auxData =
+        executionContexts
+            .find(context => context.id === script.executionContextId && context.isolate === script.isolate)
+            ?.auxData;
   });
   handlerState = HandlerState.FINALIZED;
 }

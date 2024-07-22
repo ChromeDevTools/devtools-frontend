@@ -132,6 +132,7 @@ export function encodeSourceMap(textMap: string[], sourceRoot?: string): SDK.Sou
 export class OriginalScopeBuilder {
   #encodedScope = '';
   #lastLine = 0;
+  #lastKind = 0;
 
   readonly #names: string[];
 
@@ -140,7 +141,7 @@ export class OriginalScopeBuilder {
     this.#names = names;
   }
 
-  start(line: number, column: number, kind: SDK.SourceMapScopes.ScopeKind, name?: string, variables?: string[]): this {
+  start(line: number, column: number, kind: string, name?: string, variables?: string[]): this {
     if (this.#encodedScope !== '') {
       this.#encodedScope += ',';
     }
@@ -180,17 +181,11 @@ export class OriginalScopeBuilder {
     return result;
   }
 
-  #encodeKind(kind: SDK.SourceMapScopes.ScopeKind): number {
-    switch (kind) {
-      case 'global':
-        return 0x01;
-      case 'function':
-        return 0x02;
-      case 'class':
-        return 0x03;
-      case 'block':
-        return 0x04;
-    }
+  #encodeKind(kind: string): number {
+    const kindIdx = this.#nameIdx(kind);
+    const encodedIdx = kindIdx - this.#lastKind;
+    this.#lastKind = kindIdx;
+    return encodedIdx;
   }
 
   #nameIdx(name: string): number {

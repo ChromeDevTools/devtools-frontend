@@ -20,7 +20,13 @@ import {TokenIterator} from './SourceMap.js';
 export interface OriginalScope {
   start: Position;
   end: Position;
-  kind: ScopeKind;
+
+  /**
+   * JavaScript-like languages are encouraged to use 'global', 'class', 'function' and 'block'.
+   * Other languages might require language-specific scope kinds, in which case we'll print the
+   * kind as-is.
+   */
+  kind: string;
   name?: string;
   variables: string[];
   children: OriginalScope[];
@@ -60,8 +66,6 @@ export interface GeneratedRange {
   children: GeneratedRange[];
 }
 
-export type ScopeKind = 'global'|'class'|'function'|'block';
-
 export interface BindingRange {
   value?: string;
   from: Position;
@@ -90,12 +94,17 @@ function decodeOriginalScope(encodedOriginalScope: string, names: string[]): Ori
   const scopeForItemIndex = new Map<number, OriginalScope>();
   const scopeStack: OriginalScope[] = [];
   let line = 0;
+  let kindIdx = 0;
 
   for (const [index, item] of decodeOriginalScopeItems(encodedOriginalScope)) {
     line += item.line;
     const {column} = item;
     if (isStart(item)) {
-      const kind = decodeKind(item.kind);
+      kindIdx += item.kind;
+      const kind = resolveName(kindIdx, names);
+      if (kind === undefined) {
+        throw new Error(`Scope does not have a valid kind '${kind}'`);
+      }
       const name = resolveName(item.name, names);
       const variables = item.variables.map(idx => names[idx]);
       const scope: OriginalScope = {start: {line, column}, end: {line, column}, kind, name, variables, children: []};
@@ -411,19 +420,4 @@ function resolveName(idx: number|undefined, names: string[]): string|undefined {
     return undefined;
   }
   return names[idx];
-}
-
-function decodeKind(kind: number): ScopeKind {
-  switch (kind) {
-    case 0x1:
-      return 'global';
-    case 0x2:
-      return 'function';
-    case 0x3:
-      return 'class';
-    case 0x4:
-      return 'block';
-    default:
-      throw new Error(`Unknown scope kind ${kind}`);
-  }
 }

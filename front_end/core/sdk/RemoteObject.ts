@@ -631,7 +631,7 @@ export class RemoteObjectImpl extends RemoteObject {
 }
 
 export class ScopeRemoteObject extends RemoteObjectImpl {
-  #scopeRef: ScopeRef;
+  readonly #scopeRef: ScopeRef;
   #savedScopeProperties: RemoteObjectProperty[]|undefined;
 
   constructor(
@@ -658,12 +658,10 @@ export class ScopeRemoteObject extends RemoteObjectImpl {
 
     const allProperties = await super.doGetProperties(
         ownProperties, accessorPropertiesOnly, false /* nonIndexedPropertiesOnly */, true /* generatePreview */);
-    if (this.#scopeRef && Array.isArray(allProperties.properties)) {
+    if (Array.isArray(allProperties.properties)) {
       this.#savedScopeProperties = allProperties.properties.slice();
-      if (!this.#scopeRef.callFrameId) {
-        for (const property of this.#savedScopeProperties) {
-          property.writable = false;
-        }
+      for (const property of this.#savedScopeProperties) {
+        property.writable = false;
       }
     }
     return allProperties;
@@ -673,8 +671,7 @@ export class ScopeRemoteObject extends RemoteObjectImpl {
       result: Protocol.Runtime.RemoteObject, argumentName: Protocol.Runtime.CallArgument): Promise<string|undefined> {
     const name = (argumentName.value as string);
     const error = await this.debuggerModel().setVariableValue(
-        this.#scopeRef.number, name, RemoteObject.toCallArgument(result),
-        (this.#scopeRef.callFrameId as Protocol.Debugger.CallFrameId));
+        this.#scopeRef.number, name, RemoteObject.toCallArgument(result), this.#scopeRef.callFrameId);
     if (error) {
       return error;
     }
@@ -690,9 +687,10 @@ export class ScopeRemoteObject extends RemoteObjectImpl {
 }
 
 export class ScopeRef {
-  number: number;
-  callFrameId: Protocol.Debugger.CallFrameId|undefined;
-  constructor(number: number, callFrameId?: Protocol.Debugger.CallFrameId) {
+  readonly number: number;
+  readonly callFrameId: Protocol.Debugger.CallFrameId;
+
+  constructor(number: number, callFrameId: Protocol.Debugger.CallFrameId) {
     this.number = number;
     this.callFrameId = callFrameId;
   }

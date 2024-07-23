@@ -323,6 +323,10 @@ def branch_verifiers(with_chromium = True):
             disable_reuse = ("presubmit" in builder),
             experiment_percentage = experiment_builder(builder),
             includable_only = includable_only_builder(builder),
+            location_filters = None if includable_only_builder(builder) else [
+                cq.location_filter(path_regexp = "docs/.+", exclude = True),
+                cq.location_filter(path_regexp = ".+\\.md", exclude = True),
+            ],
         )
         for builder in cq_builders.devtools_builders + (
             cq_builders.chromium_builders if with_chromium else []

@@ -292,8 +292,7 @@ def generate_ci_configs(configurations, builders):
             path_regexps = [".+"],
             path_regexps_exclude = [
                 "docs/.+",
-                "README.md",
-                ".+/README.md",
+                ".+\\.md",
             ],
             triggers = [name for name, _ in builders_refs],
         )

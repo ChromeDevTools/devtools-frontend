@@ -383,8 +383,11 @@ export class ConsoleInsight extends HTMLElement {
     } else {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRatedNegative);
     }
+    const disallowLogging =
+        Common.Settings.Settings.instance().getHostConfig()?.devToolsConsoleInsights.disallowLogging === true;
     void this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: this.#state.metadata.rpcGlobalId,
+      disable_user_content_logging: disallowLogging,
       do_conversation_client_event: {
         user_feedback: {
           sentiment: this.#selectedRating ? Host.AidaClient.Rating.POSITIVE : Host.AidaClient.Rating.NEGATIVE,

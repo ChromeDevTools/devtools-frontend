@@ -70,7 +70,7 @@ export interface AidaDoConversationClientEvent {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   corresponding_aida_rpc_global_id: number;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  disable_user_content_logging?: boolean;
+  disable_user_content_logging: boolean;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   do_conversation_client_event: {
     // eslint-disable-next-line @typescript-eslint/naming-convention

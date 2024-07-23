@@ -175,6 +175,22 @@ luci.notifier(
     notify_emails = ["liviurau@chromium.org", "devtools-waterfall-sheriff-onduty@rotations.google.com"],
 )
 
+luci.notifier(
+    name = "devtools notifier no blamelist",
+    on_occurrence = ["FAILURE"],
+    failed_step_regexp_exclude = [
+        "bot_update",
+        "isolate tests",
+        "package build",
+        "extract build",
+        "cleanup_temp",
+        "gsutil upload",
+        "taskkill",
+    ] + EXCLUDED_STEPS,
+    notify_blamelist = False,
+    notify_emails = ["liviurau@chromium.org", "devtools-waterfall-sheriff-onduty@rotations.google.com"],
+)
+
 luci.tree_closer(
     name = "devtools tree closer",
     tree_status_host = "devtools-status.appspot.com",

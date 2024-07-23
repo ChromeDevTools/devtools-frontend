@@ -1070,56 +1070,32 @@ export class RemoteArray {
 }
 
 export class RemoteFunction {
-  readonly #objectInternal: RemoteObject;
+  readonly #object: RemoteObject;
 
   constructor(object: RemoteObject) {
-    this.#objectInternal = object;
+    this.#object = object;
   }
 
-  static objectAsFunction(object: RemoteObject|null): RemoteFunction {
-    if (!object || object.type !== 'function') {
+  static objectAsFunction(object: RemoteObject): RemoteFunction {
+    if (object.type !== 'function') {
       throw new Error('Object is empty or not a function');
     }
     return new RemoteFunction(object);
   }
 
-  targetFunction(): Promise<RemoteObject> {
-    return this.#objectInternal.getOwnProperties(false /* generatePreview */).then(targetFunction.bind(this));
-
-    function targetFunction(this: RemoteFunction, ownProperties: GetPropertiesResult): RemoteObject {
-      if (!ownProperties.internalProperties) {
-        return this.#objectInternal;
-      }
-      const internalProperties = ownProperties.internalProperties;
-      for (const property of internalProperties) {
-        if (property.name === '[[TargetFunction]]') {
-          return property.value as RemoteObject;
-        }
-      }
-      return this.#objectInternal;
-    }
+  async targetFunction(): Promise<RemoteObject> {
+    const ownProperties = await this.#object.getOwnProperties(false /* generatePreview */);
+    const targetFunction = ownProperties.internalProperties?.find(({name}) => name === '[[TargetFunction]]');
+    return targetFunction?.value ?? this.#object;
   }
 
-  targetFunctionDetails(): Promise<FunctionDetails|null> {
-    return this.targetFunction().then(functionDetails.bind(this));
-
-    function functionDetails(this: RemoteFunction, targetFunction: RemoteObject): Promise<FunctionDetails|null> {
-      const boundReleaseFunctionDetails =
-          releaseTargetFunction.bind(null, this.#objectInternal !== targetFunction ? targetFunction : null);
-      return targetFunction.debuggerModel().functionDetailsPromise(targetFunction).then(boundReleaseFunctionDetails);
+  async targetFunctionDetails(): Promise<FunctionDetails|null> {
+    const targetFunction = await this.targetFunction();
+    const functionDetails = await targetFunction.debuggerModel().functionDetailsPromise(targetFunction);
+    if (this.#object !== targetFunction) {
+      targetFunction.release();
     }
-
-    function releaseTargetFunction(
-        targetFunction: RemoteObject|null, functionDetails: FunctionDetails|null): FunctionDetails|null {
-      if (targetFunction) {
-        targetFunction.release();
-      }
-      return functionDetails;
-    }
-  }
-
-  object(): RemoteObject {
-    return this.#objectInternal;
+    return functionDetails;
   }
 }
 

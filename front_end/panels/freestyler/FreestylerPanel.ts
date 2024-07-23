@@ -233,6 +233,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #clearMessages(): void {
     this.#viewProps.messages = [];
     this.#viewProps.isLoading = false;
+    this.#viewProps.confirmSideEffectDialog = undefined;
     this.#agent = this.#createAgent();
     this.#cancel();
     this.doUpdate();

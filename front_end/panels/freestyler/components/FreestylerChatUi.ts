@@ -496,7 +496,8 @@ export class FreestylerChatUi extends HTMLElement {
   #renderChatUi = (): LitHtml.TemplateResult => {
     // TODO(ergunsh): Show a better UI for the states where Aida client is not available.
     const isAidaAvailable = this.#props.aidaAvailability === Host.AidaClient.AidaAvailability.AVAILABLE;
-    const isInputDisabled = !Boolean(this.#props.selectedNode) || !isAidaAvailable;
+    const isInputDisabled =
+        !Boolean(this.#props.selectedNode) || !isAidaAvailable || Boolean(this.#props.confirmSideEffectDialog);
     // clang-format off
     return LitHtml.html`
       <div class="chat-ui">
@@ -530,6 +531,7 @@ export class FreestylerChatUi extends HTMLElement {
                         {
                           variant: Buttons.Button.Variant.PRIMARY,
                           size: Buttons.Button.Size.SMALL,
+                          disabled: isInputDisabled,
                           iconName: 'stop',
                           title: i18nString(UIStringsTemp.cancelButtonTitle),
                           jslogContext: 'stop',
@@ -545,9 +547,9 @@ export class FreestylerChatUi extends HTMLElement {
                           type: 'submit',
                           variant: Buttons.Button.Variant.ICON,
                           size: Buttons.Button.Size.SMALL,
+                          disabled: isInputDisabled,
                           iconName: 'send',
                           title: i18nString(UIStringsTemp.sendButtonTitle),
-                          disabled: isInputDisabled,
                           jslogContext: 'send',
                         } as Buttons.Button.ButtonData
                       }

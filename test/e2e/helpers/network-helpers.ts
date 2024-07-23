@@ -166,10 +166,10 @@ export function veImpressionForNetworkPanel(options?: {newFilterBar?: boolean}) 
         veImpression('DropDown', 'request-types'),
         veImpression('DropDown', 'more-filters'),
         veImpression('Toggle', 'invert-filter'),
-        veImpression('TextField'),
+        veImpression('TextField', 'filter'),
       ] :
       [
-        veImpression('TextField'),
+        veImpression('TextField', 'filter'),
         veImpression('Toggle', 'invert-filter'),
         veImpression('Toggle', 'hide-data-urls'),
         veImpression('Toggle', 'hide-extension-urls'),

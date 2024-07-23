@@ -864,7 +864,7 @@ export class ToolbarFilter extends ToolbarInput {
     const filterPlaceholder = filterBy ? filterBy : i18nString(UIStrings.filter);
     super(
         filterPlaceholder, filterPlaceholder, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions,
-        jslogContext);
+        jslogContext || 'filter');
 
     const filterIcon = IconButton.Icon.create('filter');
     this.element.prepend(filterIcon);

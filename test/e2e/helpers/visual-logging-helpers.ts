@@ -177,7 +177,7 @@ export function veImpressionForElementsPanel(options?: {dockable?: boolean}) {
       veImpression('Action', 'elements.new-style-rule'),
       veImpression('DropDown', 'rendering-emulations'),
       veImpression('ToggleSubpane', 'computed-styles'),
-      veImpression('TextField'),
+      veImpression('TextField', 'filter'),
     ]),
   ]);
 }

@@ -68,7 +68,7 @@ export async function deleteConsoleMessagesFilter(frontend: puppeteer.Page) {
       deleteButton.click();
     }
   }, main);
-  await expectVeEvents([veClick('Panel: console > Toolbar > TextField > Action: clear')]);
+  await expectVeEvents([veClick('Panel: console > Toolbar > TextField: filter > Action: clear')]);
 }
 
 export async function filterConsoleMessages(frontend: puppeteer.Page, filter: string) {
@@ -81,7 +81,7 @@ export async function filterConsoleMessages(frontend: puppeteer.Page, filter: st
   await pasteText(filter);
   await frontend.keyboard.press('Tab');
   if (filter.length) {
-    await expectVeEvents([veChange('Panel: console > Toolbar > TextField')]);
+    await expectVeEvents([veChange('Panel: console > Toolbar > TextField: filter')]);
   }
 }
 
@@ -423,7 +423,7 @@ export function veImpressionForConsolePanel() {
           veImpression('Action', 'console.create-pin'),
           veImpression('DropDown', 'log-level'),
           veImpression('ToggleSubpane', 'console-settings'),
-          veImpression('TextField'),
+          veImpression('TextField', 'filter'),
         ]),
     veImpression('TextField', 'console-prompt'),
   ]);

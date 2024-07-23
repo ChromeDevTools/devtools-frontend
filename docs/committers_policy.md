@@ -16,7 +16,7 @@ In a nutshell, contribute 20 non-trivial patches and get at least three differen
 * understanding of the projects' code base and coding style, and
 * ability to write good code (last but certainly not least)
 
-A current committer nominates you by sending email to [chrome-devtools-committers@googlegroups.com](mailto:chrome-devtools-committers@googlegroups.com) containing:
+A current committer nominates you by sending email to [chrome-devtools-committers@chromium.org](mailto:chrome-devtools-committers@chromium.org) containing:
 
 * your first and last name
 * your email address in Gerrit
@@ -25,7 +25,7 @@ A current committer nominates you by sending email to [chrome-devtools-committer
 
 Two other committers need to second your nomination. If no one objects in 5 working days (U.S.), you're a committer. If anyone objects or wants more information, the committers discuss and usually come to a consensus (within 5 working days). If issues cannot be resolved, there's a vote among current committers.
 
-Once you get approval from the existing committers, you'll be added to [chrome-devtools-committers@googlegroups.com](mailto:chrome-devtools-committers@googlegroups.com) and to the project's committers group granting you additional review permissions.
+Once you get approval from the existing committers, you'll be added to [chrome-devtools-committers@chromium.org](mailto:chrome-devtools-committers@chromium.org) and to the project's committers group granting you additional review permissions.
 
 In the most unfavorable circumstances, the process could extend up to two weeks. Maintain your commitment to writing patches. Even in the uncommon instances where a nomination fails, the objection is frequently something specific to resolve, such as "more patches" or "not enough people are familiar with this person's work."
 

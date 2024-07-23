@@ -7142,6 +7142,14 @@ export const NativeFunctions = [
     signatures: [["url","?base"]]
   },
   {
+    name: "PageRevealEvent",
+    signatures: [["type","?eventInitDict"]]
+  },
+  {
+    name: "PageSwapEvent",
+    signatures: [["type","?eventInitDict"]]
+  },
+  {
     name: "startViewTransition",
     signatures: [["?update"],["opts"]]
   },

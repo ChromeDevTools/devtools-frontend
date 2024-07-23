@@ -116,6 +116,12 @@ export function pendingWorkComplete(): Promise<void> {
       .then(() => {});
 }
 
+async function yieldToResize(): Promise<void> {
+  while (resizeLogThrottler.process) {
+    await resizeLogThrottler.processCompleted;
+  }
+}
+
 async function yieldToInteractions(): Promise<void> {
   while (clickLogThrottler.process) {
     await clickLogThrottler.processCompleted;
@@ -279,6 +285,7 @@ async function process(): Promise<void> {
   }
   if (visibleLoggables.length) {
     await yieldToInteractions();
+    await yieldToResize();
     flushPendingChangeEvents();
     await logImpressions(visibleLoggables);
   }

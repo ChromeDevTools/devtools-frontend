@@ -808,9 +808,18 @@ describe('LoggingDriver', () => {
     assert.deepStrictEqual(recordResize.firstCall.firstArg, {veid: getVeId(element), width: 0, height: 0});
   });
 
-  it('logs interactions before impressions and resize', async () => {
+  it('logs interactions, then resize, then impressions', async () => {
     addLoggableElements();
-    await VisualLoggingTesting.LoggingDriver.startLogging({resizeLogThrottler: throttler});
+    const processingThrottler = new Common.Throttler.Throttler(10);
+    const clickLogThrottler = new Common.Throttler.Throttler(100);
+    const keyboardLogThrottler = new Common.Throttler.Throttler(100);
+    const resizeLogThrottler = new Common.Throttler.Throttler(100);
+    await VisualLoggingTesting.LoggingDriver.startLogging({
+      processingThrottler,
+      clickLogThrottler,
+      keyboardLogThrottler,
+      resizeLogThrottler,
+    });
     const recordResize = sinon.stub(
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordResize',
@@ -832,7 +841,6 @@ describe('LoggingDriver', () => {
     parent.appendChild(element.cloneNode());
     element.click();
     element.dispatchEvent(new KeyboardEvent('keydown', {key: 'a'}));
-    throttle.callsArg(0);
 
     await Promise.all([
       expectCalled(recordImpression),
@@ -840,10 +848,9 @@ describe('LoggingDriver', () => {
       expectCalled(recordClick),
       expectCalled(recordKeyDown),
     ]);
-    assert.isTrue(recordClick.calledBefore(recordImpression));
     assert.isTrue(recordClick.calledBefore(recordResize));
-    assert.isTrue(recordKeyDown.calledBefore(recordImpression));
     assert.isTrue(recordKeyDown.calledBefore(recordResize));
+    assert.isTrue(recordResize.calledBefore(recordImpression));
   });
 
   it('logs non-DOM impressions', async () => {

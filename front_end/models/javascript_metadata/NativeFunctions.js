@@ -7726,11 +7726,11 @@ export const NativeFunctions = [
   },
   {
     name: "argMin",
-    signatures: [["input","?options"]]
+    signatures: [["input","axis","?options"]]
   },
   {
     name: "argMax",
-    signatures: [["input","?options"]]
+    signatures: [["input","axis","?options"]]
   },
   {
     name: "batchNormalization",

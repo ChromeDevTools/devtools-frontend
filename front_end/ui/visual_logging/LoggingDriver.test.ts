@@ -38,8 +38,8 @@ describe('LoggingDriver', () => {
     );
   });
 
-  afterEach(() => {
-    VisualLoggingTesting.LoggingDriver.stopLogging();
+  afterEach(async () => {
+    await VisualLoggingTesting.LoggingDriver.stopLogging();
   });
 
   function addLoggableElements() {
@@ -808,7 +808,7 @@ describe('LoggingDriver', () => {
     assert.deepStrictEqual(recordResize.firstCall.firstArg, {veid: getVeId(element), width: 0, height: 0});
   });
 
-  it('logs interactions, then resize, then impressions', async () => {
+  it('logs click, then resize, then impressions', async () => {
     addLoggableElements();
     const processingThrottler = new Common.Throttler.Throttler(10);
     const clickLogThrottler = new Common.Throttler.Throttler(100);
@@ -828,10 +828,6 @@ describe('LoggingDriver', () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordClick',
     );
-    const recordKeyDown = sinon.stub(
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
-        'recordKeyDown',
-    );
     recordImpression.resetHistory();
 
     const element = document.getElementById('element') as HTMLElement;
@@ -840,15 +836,49 @@ describe('LoggingDriver', () => {
     parent.removeChild(element);
     parent.appendChild(element.cloneNode());
     element.click();
-    element.dispatchEvent(new KeyboardEvent('keydown', {key: 'a'}));
 
     await Promise.all([
       expectCalled(recordImpression),
       expectCalled(recordResize),
       expectCalled(recordClick),
-      expectCalled(recordKeyDown),
     ]);
     assert.isTrue(recordClick.calledBefore(recordResize));
+    assert.isTrue(recordResize.calledBefore(recordImpression));
+  });
+
+  it('logs keydown, then resize, then impressions', async () => {
+    addLoggableElements();
+    const element = document.getElementById('element') as HTMLElement;
+    element.setAttribute('jslog', 'TreeItem; context:42; track: keydown: KeyA, resize');
+    const keyboardLogThrottler = new Common.Throttler.Throttler(100);
+    const resizeLogThrottler = new Common.Throttler.Throttler(100);
+    await VisualLoggingTesting.LoggingDriver.startLogging({
+      processingThrottler: throttler,
+      keyboardLogThrottler,
+      resizeLogThrottler,
+    });
+    const recordResize = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordResize',
+    );
+    const recordKeyDown = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordKeyDown',
+    );
+    recordImpression.resetHistory();
+    throttle.callsArg(0);
+
+    const parent = document.getElementById('parent') as HTMLElement;
+
+    parent.removeChild(element);
+    parent.appendChild(element.cloneNode());
+    element.dispatchEvent(new KeyboardEvent('keydown', {code: 'KeyA', key: 'a'}));
+
+    await Promise.all([
+      expectCalled(recordImpression),
+      expectCalled(recordResize),
+      expectCalled(recordKeyDown),
+    ]);
     assert.isTrue(recordKeyDown.calledBefore(recordResize));
     assert.isTrue(recordResize.calledBefore(recordImpression));
   });

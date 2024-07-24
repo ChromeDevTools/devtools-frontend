@@ -130,6 +130,6 @@ describeWithEnvironment('ContextMenu', () => {
 
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.isTrue(recordClick.calledOnce);
-    VisualLogging.stopLogging();
+    await VisualLogging.stopLogging();
   });
 });

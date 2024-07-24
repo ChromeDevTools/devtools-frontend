@@ -114,9 +114,6 @@ export const logKeyDown =
       if (!context && codes?.length) {
         context = contextFromKeyCodes(event);
       }
-      if (context) {
-        keyDownEvent.context = await contextAsNumber(context);
-      }
 
       if (pendingKeyDownContext && context && pendingKeyDownContext !== context) {
         void throttler.process?.();
@@ -124,6 +121,10 @@ export const logKeyDown =
 
       pendingKeyDownContext = context || null;
       void throttler.schedule(async () => {
+        if (context) {
+          keyDownEvent.context = await contextAsNumber(context);
+        }
+
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordKeyDown(keyDownEvent);
         processEventForDebugging('KeyDown', loggingState, {context});
         pendingKeyDownContext = null;

@@ -1398,7 +1398,6 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
   private readonly fromIndex: number;
   private readonly toIndex: number;
   private readonly object: SDK.RemoteObject.RemoteObject;
-  private readonly readOnly: boolean;
   private readonly propertyCount: number;
   private readonly linkifier: Components.Linkifier.Linkifier|undefined;
   constructor(
@@ -1409,7 +1408,6 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
     this.fromIndex = fromIndex;
     this.toIndex = toIndex;
     this.object = object;
-    this.readOnly = true;
     this.propertyCount = propertyCount;
     this.linkifier = linkifier;
   }
@@ -1423,9 +1421,6 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
   private static async populateRanges(
       treeNode: UI.TreeOutline.TreeElement, object: SDK.RemoteObject.RemoteObject, fromIndex: number, toIndex: number,
       topLevel: boolean, linkifier?: Components.Linkifier.Linkifier): Promise<void> {
-    // The definition of callFunctionJSON expects an unknown, and setting to `any` causes Closure to fail.
-    // However, leaving this as unknown also causes TypeScript to fail, so for now we leave this as unchecked.
-    // @ts-ignore  TODO(crbug.com/1011811): Fix after Closure is removed.
     const jsonValue = await object.callFunctionJSON(packRanges, [
       {value: fromIndex},
       {value: toIndex},
@@ -1558,10 +1553,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
   private static async populateAsFragment(
       this: ArrayGroupingTreeElement, treeNode: UI.TreeOutline.TreeElement, object: SDK.RemoteObject.RemoteObject,
       fromIndex: number, toIndex: number, linkifier?: Components.Linkifier.Linkifier): Promise<void> {
-    // The definition of callFunction expects an unknown, and setting to `any` causes Closure to fail.
-    // However, leaving this as unknown also causes TypeScript to fail, so for now we leave this as unchecked.
     const result = await object.callFunction(
-        // @ts-ignore  TODO(crbug.com/1011811): Fix after Closure is removed.
         buildArrayFragment,
         [{value: fromIndex}, {value: toIndex}, {value: ArrayGroupingTreeElement.sparseIterationThreshold}]);
     if (!result.object || result.wasThrown) {
@@ -1587,9 +1579,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
         this: {
           [x: number]: Object,
         },
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        fromIndex?: number, toIndex?: number, sparseIterationThreshold?: number): any {
+        fromIndex?: number, toIndex?: number, sparseIterationThreshold?: number): unknown {
       const result = Object.create(null);
 
       if (fromIndex === undefined || toIndex === undefined || sparseIterationThreshold === undefined) {

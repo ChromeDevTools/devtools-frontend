@@ -175,6 +175,12 @@ def run_eslint(options):
                           cwd=options.devtools_dir)
 
 
+def files_changed(options):
+    return subprocess.check_output(['git', 'diff', '--name-only'],
+                                   cwd=options.devtools_dir,
+                                   text=True).strip()
+
+
 def update_deps_revision(options):
     print('updating DEPS revision')
     old_revision = subprocess.check_output(
@@ -211,6 +217,7 @@ if __name__ == '__main__':
     generate_signatures(OPTIONS)
     generate_dom_pinned_properties(OPTIONS)
     generate_protocol_resources(OPTIONS)
-    run_git_cl_format(OPTIONS)
-    run_eslint(OPTIONS)
-    update_deps_revision(OPTIONS)
+    if files_changed(OPTIONS):
+        run_git_cl_format(OPTIONS)
+        run_eslint(OPTIONS)
+        update_deps_revision(OPTIONS)

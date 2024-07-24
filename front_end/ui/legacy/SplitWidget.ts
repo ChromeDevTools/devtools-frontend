@@ -852,14 +852,18 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     return this.showHideSidebarButton;
   }
 
-  toggleSidebar(): void {
+  /**
+   * @returns true if this call makes the sidebar visible, and false otherwise.
+   */
+  toggleSidebar(): boolean {
     if (this.showModeInternal !== ShowMode.Both) {
       this.showBoth(true);
       ARIAUtils.alert(this.shownSidebarString);
-    } else {
-      this.hideSidebar(true);
-      ARIAUtils.alert(this.hiddenSidebarString);
+      return true;
     }
+    this.hideSidebar(true);
+    ARIAUtils.alert(this.hiddenSidebarString);
+    return false;
   }
 
   private updateShowHideSidebarButton(): void {

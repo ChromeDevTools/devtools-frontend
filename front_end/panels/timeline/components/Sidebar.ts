@@ -2,11 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../core/common/common.js';
 import type * as TraceEngine from '../../../models/trace/trace.js';
 import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -48,29 +46,13 @@ export class RemoveAnnotation extends Event {
   }
 }
 
-export const enum WidgetEvents {
-  SidebarCollapseClick = 'SidebarCollapseClick',
-}
-
-export type WidgetEventTypes = {
-  [WidgetEvents.SidebarCollapseClick]: {},
-};
-
-export class SidebarWidget extends Common.ObjectWrapper.eventMixin<WidgetEventTypes, typeof UI.SplitWidget.SplitWidget>(
-    UI.SplitWidget.SplitWidget) {
+export class SidebarWidget extends UI.SplitWidget.SplitWidget {
   #sidebarUI = new SidebarUI();
 
   constructor() {
     super(true /* isVertical */, false /* secondIsSidebar */, undefined /* settingName */, DEFAULT_EXPANDED_WIDTH);
 
     this.sidebarElement().append(this.#sidebarUI);
-
-    this.#sidebarUI.addEventListener('closebuttonclick', () => {
-      this.dispatchEventToListeners(
-          WidgetEvents.SidebarCollapseClick,
-          {},
-      );
-    });
   }
 
   updateContentsOnExpand(): void {
@@ -155,10 +137,6 @@ export class SidebarUI extends HTMLElement {
     this.#traceParsedData = traceParsedData;
 
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
-  }
-
-  #closeButtonClick(): void {
-    this.dispatchEvent(new Event('closebuttonclick'));
   }
 
   #onTabHeaderClicked(activeTab: SidebarTabsName): void {
@@ -305,12 +283,6 @@ export class SidebarUI extends HTMLElement {
     const output = LitHtml.html`<div class="sidebar">
       <div class="tab-bar">
         ${this.#renderHeader()}
-        <${IconButton.Icon.Icon.litTagName}
-          name='left-panel-close'
-          @click=${this.#closeButtonClick}
-          class="sidebar-toggle-button"
-          jslog=${VisualLogging.action('timeline.sidebar-close').track({click: true})}
-        ></${IconButton.Icon.Icon.litTagName}>
       </div>
       <div class="tab-slider"></div>
       <div class="tab-headers-bottom-line"></div>

@@ -263,6 +263,23 @@ const UIStrings = {
    */
   performanceExtension: 'Extension data',
 
+  /**
+   * @description Tooltip for the the sidebar toggle in the Performance panel. Command to open/show the sidebar.
+   */
+  showSidebar: 'Show sidebar',
+  /**
+   * @description Tooltip for the the sole sidebar toggle in the Performance panel. Command to close the sidebar.
+   */
+  hideSidebar: 'Hide sole sidebar',
+  /**
+   * @description Screen reader announcement when the sidebar is shown in the Performance panel.
+   */
+  sidebarShown: 'Performance sidebar shown',
+  /**
+   * @description Screen reader announcement when the sidebar is hidden in the Performance panel.
+   */
+  sidebarHidden: 'Performance sidebar hidden',
+
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -325,6 +342,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   #sourceMapsResolver: SourceMapsResolver|null = null;
   #onSourceMapsNodeNamesResolvedBound = this.#onSourceMapsNodeNamesResolved.bind(this);
   readonly #onChartPlayableStateChangeBound: (event: Common.EventTarget.EventTargetEvent<boolean>) => void;
+  #sidebarToggleButton = this.#sideBar.createShowHideSidebarButton(
+      i18nString(UIStrings.showSidebar),
+      i18nString(UIStrings.hideSidebar),
+      // These are used to announce to screen-readers and not shown visibly.
+      i18nString(UIStrings.sidebarShown),
+      i18nString(UIStrings.sidebarHidden),
+      'timeline.sidebar',  // jslog context
+  );
 
   constructor() {
     super('timeline');
@@ -404,10 +429,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     topPaneElement.id = 'timeline-overview-panel';
 
     this.#minimapComponent.show(topPaneElement);
-    this.#minimapComponent.addEventListener(
-        PerfUI.TimelineOverviewPane.Events.OpenSidebarButtonClicked,
-        this.#showSidebar.bind(this),
-    );
 
     this.statusPaneContainer = this.timelinePane.element.createChild('div', 'status-pane-container fill');
 
@@ -432,12 +453,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.#sideBar.setMainWidget(this.timelinePane);
     this.#sideBar.show(this.element);
-    this.#sideBar.hideSidebar();
-
-    this.#sideBar.addEventListener(
-        TimelineComponents.Sidebar.WidgetEvents.SidebarCollapseClick,
-        this.#hideSidebar.bind(this),
-    );
 
     this.#sideBar.contentElement.addEventListener(TimelineInsights.SidebarInsight.InsightDeactivated.eventName, () => {
       this.#setActiveInsight(null);
@@ -489,25 +504,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     });
   }
 
-  #showSidebar(): void {
-    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SIDEBAR)) {
-      return;
-    }
-    this.#sideBar.showBoth();
-    this.#sideBar.updateContentsOnExpand();
-    this.#sideBar.setResizable(false);
-
-    this.#minimapComponent.hideSidebarFloatingIcon();
-  }
-
-  #hideSidebar(): void {
-    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SIDEBAR)) {
-      return;
-    }
-    this.#minimapComponent.showSidebarFloatingIcon();
-    this.#sideBar.hideSidebar();
-  }
-
   #setActiveInsight(insight: TimelineComponents.Sidebar.ActiveInsight|null): void {
     this.#sideBar.setActiveInsight(insight);
     this.flameChart.setActiveInsight(insight);
@@ -542,6 +538,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.registerCSSFiles([timelinePanelStyles]);
     // Record the performance tool load time.
     Host.userMetrics.panelLoaded('timeline', 'DevTools.Launch.Timeline');
+
+    // The sidebar state is by-default persisted across reloads; we do not want
+    // that as if you come back to the panel you see the landing page, and the
+    // sidebar is empty in that state.
+    this.#sideBar.hideSidebar();
   }
 
   override willHide(): void {
@@ -626,6 +627,26 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const checkboxItem = new UI.Toolbar.ToolbarSettingCheckbox(setting, tooltip);
     this.recordingOptionUIControls.push(checkboxItem);
     return checkboxItem;
+  }
+
+  #addSidebarIconToToolbar(): void {
+    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SIDEBAR)) {
+      return;
+    }
+
+    if (this.panelToolbar.hasItem(this.#sidebarToggleButton)) {
+      return;
+    }
+
+    this.panelToolbar.prependToolbarItem(this.#sidebarToggleButton);
+  }
+
+  /**
+   * Used when the user deletes their last trace and is taken back to the
+   * landing page - we don't add this icon until there is a trace loaded.
+   */
+  #removeSidebarIconFromToolbar(): void {
+    this.panelToolbar.removeToolbarItem(this.#sidebarToggleButton);
   }
 
   private populateToolbar(): void {
@@ -1252,6 +1273,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.dropTarget.setEnabled(this.state === State.Idle);
     this.loadButton.setEnabled(this.state === State.Idle);
     this.saveButton.setEnabled(this.state === State.Idle && this.#hasActiveTrace());
+    if (this.#traceEngineActiveTraceIndex > -1) {
+      this.#addSidebarIconToToolbar();
+    }
   }
 
   async toggleRecording(): Promise<void> {
@@ -1479,7 +1503,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   private showLandingPage(): void {
     this.updateSettingsPaneVisibility();
-    this.#hideSidebar();
+    this.#removeSidebarIconFromToolbar();
     if (this.landingPage) {
       this.landingPage.show(this.statusPaneContainer);
       return;
@@ -1592,18 +1616,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.statusPane.remove();
       }
       this.statusPane = null;
-
-      // Show the sidebar but only if:
-      // 1. the experiment is enabled
-      // 2. the trace engine has one trace in it (the one we just loaded). This
-      //    is because we only need to show this button for the first time when we
-      //    go from landing page => trace. On subsequent trace loads, we will
-      //    maintain the sidebar state (e.g. if you have it open + record a new
-      //    trace, it will remain open).
-      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SIDEBAR) &&
-          this.#traceEngineModel.size() === 1) {
-        this.#minimapComponent.showSidebarFloatingIcon();
-      }
 
       const traceData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
       if (!traceData) {

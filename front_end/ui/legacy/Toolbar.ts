@@ -325,6 +325,21 @@ export class Toolbar {
     this.hideSeparatorDupes();
   }
 
+  hasItem(item: ToolbarItem): boolean {
+    return this.items.includes(item);
+  }
+
+  prependToolbarItem(item: ToolbarItem): void {
+    this.items.unshift(item);
+    item.toolbar = this;
+    item.setCompactLayout(this.hasCompactLayout());
+    if (!this.enabled) {
+      item.applyEnabledState(false);
+    }
+    this.contentElement.prepend(item.element);
+    this.hideSeparatorDupes();
+  }
+
   appendSeparator(): void {
     this.appendToolbarItem(new ToolbarSeparator());
   }

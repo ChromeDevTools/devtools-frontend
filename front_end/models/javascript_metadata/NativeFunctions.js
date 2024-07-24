@@ -7337,6 +7337,10 @@ export const NativeFunctions = [
     signatures: [["formattedText","x","y"]]
   },
   {
+    name: "placeElement",
+    signatures: [["element","x","y"]]
+  },
+  {
     name: "createMesh2DVertexBuffer",
     signatures: [["buffer"]]
   },

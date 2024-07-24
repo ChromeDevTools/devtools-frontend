@@ -186,7 +186,7 @@ const UIStrings = {
    */
   gtRange: '(>{PH1})',
   /**
-   * @description Text for a percentage value
+   * @description Text for a percentage value in the live metrics view.
    * @example {13} PH1
    */
   percentage: '{PH1}%',

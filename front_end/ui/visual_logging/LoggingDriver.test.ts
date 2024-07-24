@@ -75,9 +75,17 @@ describe('LoggingDriver', () => {
     assert.isTrue(recordImpression.called);
   }
 
-  it('does not log impressions when hidden', async () => {
+  it('does not log impressions when document hidden', async () => {
     addLoggableElements();
     sinon.stub(document, 'hidden').value(true);
+    await VisualLoggingTesting.LoggingDriver.startLogging({processingThrottler: throttler});
+    assert.isFalse(recordImpression.called);
+  });
+
+  it('does not log impressions when parent hidden', async () => {
+    addLoggableElements();
+    const parent = document.getElementById('parent') as HTMLElement;
+    parent.style.height = '0';
     await VisualLoggingTesting.LoggingDriver.startLogging({processingThrottler: throttler});
     assert.isFalse(recordImpression.called);
   });

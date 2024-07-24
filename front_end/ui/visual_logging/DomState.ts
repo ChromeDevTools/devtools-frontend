@@ -58,8 +58,9 @@ export function visibleOverlap(element: Element, viewportRect: DOMRect): DOMRect
   const elementRect = element.getBoundingClientRect();
   const overlap = intersection(viewportRect, elementRect);
 
-  if (!overlap || overlap.width < MIN_ELEMENT_SIZE_FOR_IMPRESSIONS ||
-      overlap.height < MIN_ELEMENT_SIZE_FOR_IMPRESSIONS) {
+  const sizeThreshold = Math.max(Math.min(MIN_ELEMENT_SIZE_FOR_IMPRESSIONS, elementRect.width, elementRect.height), 1);
+
+  if (!overlap || overlap.width < sizeThreshold || overlap.height < sizeThreshold) {
     return null;
   }
   return overlap;

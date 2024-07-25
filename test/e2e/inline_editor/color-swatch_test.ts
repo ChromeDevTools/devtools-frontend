@@ -129,7 +129,8 @@ describe('The color swatch', () => {
     if (!property) {
       assert.fail('Property not found');
     }
-    await shiftClickColorSwatch(property, 0);
+    await shiftClickColorSwatch(
+        property, 0, 'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: color > Value');
 
     const menu = await waitForSoftContextMenu();
     await click('[aria-label="#f00"]', {root: menu});
@@ -144,7 +145,9 @@ describe('The color swatch', () => {
     if (!property) {
       assert.fail('Property not found');
     }
-    await shiftClickColorSwatch(property, 0);
+    await shiftClickColorSwatch(
+        property, 0,
+        'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: background-color > Value');
 
     const menu = await waitForSoftContextMenu();
     await click('[aria-label="#00f"]', {root: menu});

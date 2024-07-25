@@ -17,7 +17,7 @@ describe('Color swatches in the sources panel', () => {
 
     await waitForFunction(() => $textContent('red', editor));
 
-    await shiftClickColorSwatch(editor, 0);
+    await shiftClickColorSwatch(editor, 0, 'Panel: sources > Pane: editor > TextField');
     const menu = await waitForSoftContextMenu();
     await click('[aria-label="#f00"]', {root: menu});
 

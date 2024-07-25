@@ -603,12 +603,19 @@ export const getColorSwatchColor = async (parent: puppeteer.ElementHandle<Elemen
   return await swatch.evaluate(node => (node as HTMLElement).style.backgroundColor);
 };
 
-export const shiftClickColorSwatch = async (ruleSection: puppeteer.ElementHandle<Element>, index: number) => {
-  const swatch = await getColorSwatch(ruleSection, index);
+export const shiftClickColorSwatch =
+    async (parent: puppeteer.ElementHandle<Element>, index: number, parentVe: string) => {
+  const swatch = await getColorSwatch(parent, index);
   const {frontend} = getBrowserAndPages();
   await frontend.keyboard.down('Shift');
   await clickElement(swatch);
   await frontend.keyboard.up('Shift');
+  await expectVeEvents([
+    veClick(`${parentVe} > ShowStyleEditor: color`),
+    veImpressionsUnder(
+        `${parentVe} > ShowStyleEditor: color`,
+        [veImpression('Menu', undefined, [veImpression('Action', 'clipped-color'), veImpression('Item', 'color')])]),
+  ]);
 };
 
 export const getElementStyleFontEditorButton = async () => {

@@ -613,7 +613,10 @@ export const shiftClickColorSwatch = async (ruleSection: puppeteer.ElementHandle
 
 export const getElementStyleFontEditorButton = async () => {
   const section = await waitFor(ELEMENT_STYLE_SECTION_SELECTOR);
-  return await $(FONT_EDITOR_SELECTOR, section);
+  const result = await $(FONT_EDITOR_SELECTOR, section);
+  await expectVeEvents([veImpressionsUnder(
+      'Panel: elements > Pane: styles > Section: style-properties', [veImpression('Action', 'font-editor')])]);
+  return result;
 };
 
 export const getFontEditorButtons = async () => {

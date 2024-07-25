@@ -252,7 +252,8 @@ export class StylePropertiesSection {
     if (Root.Runtime.experiments.isEnabled('font-editor') && this.editable) {
       this.fontEditorToolbar = new UI.Toolbar.Toolbar('sidebar-pane-section-toolbar', this.#styleRuleElement);
       this.fontEditorSectionManager = new FontEditorSectionManager(this.parentPane.swatchPopoverHelper(), this);
-      this.fontEditorButton = new UI.Toolbar.ToolbarButton('Font Editor', 'custom-typography');
+      this.fontEditorButton =
+          new UI.Toolbar.ToolbarButton('Font Editor', 'custom-typography', undefined, 'font-editor');
       this.fontEditorButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
         this.onFontEditorButtonClicked();
       }, this);

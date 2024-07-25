@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import type * as Protocol from '../../generated/protocol.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -319,12 +318,6 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     drawTick(rightTick, finish, lineY);
     context.stroke();
 
-    const color = this.#colorForPriority(event.args.data.priority);
-    if (color) {
-      context.fillStyle = color;
-      context.fillRect(sendStart + 0.5, barY + 0.5, 3.5, 3.5);
-    }
-
     // Draw request URL as text
     const textStart = Math.max(sendStart, 0);
     const textWidth = finish - textStart;
@@ -409,11 +402,6 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
       return element;
     }
     return null;
-  }
-
-  #colorForPriority(priority: Protocol.Network.ResourcePriority): string|null {
-    const value = PerfUI.NetworkPriorities.networkPriorityWeight(priority);
-    return value ? `hsla(214, 80%, 50%, ${value / 5})` : null;
   }
 
   /**

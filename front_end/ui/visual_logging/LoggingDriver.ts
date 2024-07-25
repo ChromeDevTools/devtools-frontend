@@ -185,6 +185,7 @@ async function process(): Promise<void> {
     if (!loggingState.processed) {
       const clickLikeHandler = (doubleClick: boolean) => (e: Event) => {
         const loggable = e.currentTarget as Element;
+        maybeCancelDrag(e);
         logClick(clickLogThrottler)(loggable, e, {doubleClick});
       };
       if (loggingState.config.track?.click) {

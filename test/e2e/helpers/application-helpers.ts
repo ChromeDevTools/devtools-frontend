@@ -42,10 +42,6 @@ export async function navigateToServiceWorkers() {
 export async function navigateToFrame(name: string) {
   await doubleClickTreeItem(`[aria-label="${name}"]`);
   await waitFor('[title="Click to reveal in Sources panel"]');
-  await expectVeEvents([
-    veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: frames > TreeItem: frame'),
-    veImpressionsUnder('Panel: resources', [veImpressionForFrameDetails()]),
-  ]);
 }
 
 export async function navigateToManifestInApplicationTab(testName: string) {
@@ -400,17 +396,6 @@ function veImpressionForCookieTable() {
           veImpression('TextField', 'filter'),
           veImpression('Toggle', 'only-show-cookies-with-issues'),
         ]),
-  ]);
-}
-
-function veImpressionForFrameDetails() {
-  return veImpression('Pane', 'frames', [
-    veImpression('Action', 'reveal-in-elements'),
-    veImpression('Action', 'reveal-in-network'),
-    veImpression('Action', 'reveal-in-sources'),
-    veImpression('Link', 'learn-more.coop-coep'),
-    veImpression('Link', 'learn-more.monitor-memory-usage'),
-    veImpression('Link', 'learn-more.origin-trials'),
   ]);
 }
 

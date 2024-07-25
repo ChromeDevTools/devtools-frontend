@@ -19,6 +19,9 @@ function formatImpressions(impressions: string[]) {
   const result: string[] = [];
   let lastImpression = '';
   for (const impression of impressions.sort()) {
+    if (impression === lastImpression) {
+      continue;
+    }
     while (!impression.startsWith(lastImpression)) {
       lastImpression = lastImpression.substr(0, lastImpression.lastIndexOf(' > '));
     }
@@ -196,15 +199,17 @@ export function veImpressionForDrawerToolbar(options?: {
 
 // Verifies that VE events contains all the expected events in given order.
 // Unexpected VE events are ignored.
-export async function expectVeEvents(expectedEvents: TestLogEntry[]) {
+export async function expectVeEvents(expectedEvents: TestLogEntry[], root?: string) {
   collapseConsecutiveImpressions(expectedEvents);
+  prependRoot(expectedEvents, root);
 
   const {frontend} = getBrowserAndPages();
   await Promise.race([renderCoordinatorQueueEmpty(), new Promise(resolve => setTimeout(resolve, 100))]);
   const actualEvents =
       // @ts-ignore
       await frontend.evaluate(async () => (await globalThis.getVeDebugEventsLog()) as unknown as TestLogEntry[]);
-  const dump = actualEvents.map(e => 'interaction' in e ? e.interaction : formatImpressions(e.impressions)).join('\n');
+  const actualEventsString =
+      actualEvents.map(e => 'interaction' in e ? e.interaction : formatImpressions(e.impressions)).join('\n');
   const unmatchedEvents: TestLogEntry[] = [];
   for (let i = 0; i < expectedEvents.length; ++i) {
     let bestError: {difference: number, description?: string}|null = null;
@@ -217,7 +222,7 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]) {
               'Missing VE interaction:\n' + expectedEvent.interaction :
               'Missing VE impressions:\n' + formatImpressions(expectedEvent.impressions),
         };
-        assert.fail(bestError.description + '\n' + dump);
+        assert.fail(bestError.description + '\n\nActual events:\n' + actualEventsString);
       }
       const error = compareVeEvents(actualEvents[i], expectedEvent);
       if (error.difference) {
@@ -253,6 +258,25 @@ function collapseConsecutiveImpressions(events: TestLogEntry[]) {
         events.splice(i, 1);
         --i;
       }
+    }
+  }
+}
+
+function prependRoot(events: TestLogEntry[], root?: string): void {
+  if (!root) {
+    return;
+  }
+  for (const event of events) {
+    if ('interaction' in event) {
+      if (event.interaction.endsWith(': ')) {
+        event.interaction = event.interaction + root;
+      } else {
+        event.interaction = event.interaction.replace(': ', ': ' + root + ' > ');
+      }
+    }
+
+    if ('impressions' in event) {
+      event.impressions = event.impressions.map(i => root + ' > ' + i);
     }
   }
 }

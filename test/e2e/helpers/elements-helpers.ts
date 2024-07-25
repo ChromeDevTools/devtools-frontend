@@ -150,6 +150,9 @@ export const waitForAdornerOnSelectedNode = async (expectedAdornerText: string) 
     const adorner = await waitFor(ADORNER_SELECTOR, selectedNode);
     return expectedAdornerText === await adorner.evaluate(node => node.textContent);
   });
+  await expectVeEvents([veImpressionsUnder(
+      'Panel: elements > Tree: elements > TreeItem', [veImpression('Adorner', expectedAdornerText)])]);
+
 };
 
 export const toggleElementCheckboxInLayoutPane = async () => {
@@ -682,7 +685,7 @@ export async function editCSSProperty(selector: string, propertyName: string, ne
   await waitForFunction(async () => {
     // Wait until the value element is not a text-prompt anymore.
     const property = await getCSSPropertyInRule(selector, propertyName);
-    const value = await $(CSS_PROPERTY_VALUE_SELECTOR, property);
+    const value = property ? await $(CSS_PROPERTY_VALUE_SELECTOR, property) : null;
     if (!value) {
       assert.fail(`Could not find property ${propertyName} in rule ${selector}`);
     }

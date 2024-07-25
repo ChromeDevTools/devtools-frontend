@@ -7,7 +7,9 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   editCSSProperty,
   expandSelectedNodeRecursively,
+  focusElementsTree,
   INACTIVE_GRID_ADORNER_SELECTOR,
+  toggleAdornerSetting,
   waitForAdornerOnSelectedNode,
   waitForAdorners,
   waitForContentOfSelectedElementsNode,
@@ -54,6 +56,8 @@ describe('Adornment in the Elements Tab', function() {
     // Note that this test simulates several property value editing, with delay between each keystrokes.
     // If this test become flaky in the future, it is likely that we will have to increase the timeout.
     await goToResource('elements/adornment-media.html');
+    await toggleAdornerSetting('media');
+    await focusElementsTree();
     await prepareElementsTab();
 
     await waitForAdorners([
@@ -65,9 +69,6 @@ describe('Adornment in the Elements Tab', function() {
     const {frontend} = getBrowserAndPages();
     await frontend.keyboard.press('ArrowDown');
     await waitForAdornerOnSelectedNode('media');
-
-    // Remove the video element.
-    await editCSSProperty('video', 'display', 'none');
 
     // Select the second audio element.
     await frontend.keyboard.press('ArrowDown');

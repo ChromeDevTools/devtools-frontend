@@ -209,7 +209,7 @@ export function veImpressionForNetworkPanel(options?: {newFilterBar?: boolean}) 
           veImpression('Toggle', 'cache-disabled'),
           veImpression('DropDown', 'preferred-network-condition'),
         ]),
-    veImpression('Pane', 'network-overview'),
+    veImpression('Timeline', 'network-overview'),
     veImpression('Toggle', 'network-settings'),
     veImpression('Link', 'learn-more'),
     veImpression('TableHeader', 'name'),

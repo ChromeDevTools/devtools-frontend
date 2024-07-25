@@ -333,7 +333,10 @@ export class FreestylerChatUi extends HTMLElement {
 
   #renderSideEffectConfirmationUi(confirmSideEffectDialog: ConfirmSideEffectDialog): LitHtml.TemplateResult {
     // clang-format off
-    return LitHtml.html`<div class="side-effect-confirmation">
+    return LitHtml.html`<div
+      class="side-effect-confirmation"
+      jslog=${VisualLogging.section('side-effect-confirmation')}
+    >
       <p>${i18nString(UIStringsTemp.sideEffectConfirmationDescription)}</p>
       <${MarkdownView.CodeBlock.CodeBlock.litTagName}
         .code=${confirmSideEffectDialog.code}
@@ -370,7 +373,8 @@ export class FreestylerChatUi extends HTMLElement {
 
   #renderChatMessage = (message: ChatMessage, {isLast}: {isLast: boolean}): LitHtml.TemplateResult => {
     if (message.entity === ChatMessageEntity.USER) {
-      return LitHtml.html`<div class="chat-message query">${message.text}</div>`;
+      return LitHtml.html`<div class="chat-message query" jslog=${VisualLogging.section('question')}>${
+          message.text}</div>`;
     }
 
     const shouldShowFixThisIssueButton = !this.#props.isLoading && isLast && message.suggestingFix;
@@ -378,7 +382,7 @@ export class FreestylerChatUi extends HTMLElement {
     const shouldShowLoading = this.#props.isLoading && isLast && !this.#props.confirmSideEffectDialog;
     // clang-format off
     return LitHtml.html`
-      <div class="chat-message answer">
+      <div class="chat-message answer" jslog=${VisualLogging.section('answer')}>
         ${message.steps.map(step => this.#renderStep(step))}
         ${this.#props.confirmSideEffectDialog && isLast
             ? this.#renderSideEffectConfirmationUi(this.#props.confirmSideEffectDialog)
@@ -519,8 +523,9 @@ export class FreestylerChatUi extends HTMLElement {
             <input type="text" class="chat-input" .disabled=${isInputDisabled}
               placeholder=${getInputPlaceholderString(
                 this.#props.aidaAvailability,
-              )}>
-              ${
+              )}
+              jslog=${VisualLogging.textField('query').track({ change: true })}
+            >${
                 this.#props.isLoading
                   ? LitHtml.html`
                     <${Buttons.Button.Button.litTagName}

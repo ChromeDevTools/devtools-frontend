@@ -168,10 +168,10 @@ export class MainImpl {
       if (veLogging?.testing) {
         VisualLogging.setVeDebugLoggingEnabled(true, VisualLogging.DebugLoggingFormat.Test);
         const options = {
-          processingThrottler: new Common.Throttler.Throttler(10),
+          processingThrottler: new Common.Throttler.Throttler(0),
           keyboardLogThrottler: new Common.Throttler.Throttler(10),
-          hoverLogThrottler: new Common.Throttler.Throttler(10),
-          dragLogThrottler: new Common.Throttler.Throttler(10),
+          hoverLogThrottler: new Common.Throttler.Throttler(50),
+          dragLogThrottler: new Common.Throttler.Throttler(50),
           clickLogThrottler: new Common.Throttler.Throttler(10),
           resizeLogThrottler: new Common.Throttler.Throttler(10),
         };

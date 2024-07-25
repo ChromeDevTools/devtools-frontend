@@ -161,6 +161,12 @@ export async function createNewSnippet(snippetName: string, content?: string) {
   }
 }
 
+export async function openWorkspaceSubPane() {
+  const root = await waitFor('.navigator-tabbed-pane');
+  await click('[aria-label="Workspace"]', {root});
+  await waitFor('[aria-label="Workspace panel"]');
+}
+
 export async function openOverridesSubPane() {
   const root = await waitFor('.navigator-tabbed-pane');
   await clickMoreTabsButton(root);

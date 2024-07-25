@@ -204,6 +204,7 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]) {
   const actualEvents =
       // @ts-ignore
       await frontend.evaluate(async () => (await globalThis.getVeDebugEventsLog()) as unknown as TestLogEntry[]);
+  const dump = actualEvents.map(e => 'interaction' in e ? e.interaction : formatImpressions(e.impressions)).join('\n');
   const unmatchedEvents: TestLogEntry[] = [];
   for (let i = 0; i < expectedEvents.length; ++i) {
     let bestError: {difference: number, description?: string}|null = null;
@@ -216,7 +217,7 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]) {
               'Missing VE interaction:\n' + expectedEvent.interaction :
               'Missing VE impressions:\n' + formatImpressions(expectedEvent.impressions),
         };
-        assert.fail(bestError.description);
+        assert.fail(bestError.description + '\n' + dump);
       }
       const error = compareVeEvents(actualEvents[i], expectedEvent);
       if (error.difference) {

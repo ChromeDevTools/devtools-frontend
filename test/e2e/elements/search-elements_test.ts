@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {getBrowserAndPages, goToResource, timeout, waitFor, waitForNone} from '../../shared/helper.js';
+import {getBrowserAndPages, goToResource, pressKey, timeout, waitFor, waitForNone} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   assertSearchResultMatchesText,
@@ -21,6 +21,7 @@ describe('The Elements tab', function() {
     await frontend.keyboard.type('html');
 
     await assertSearchResultMatchesText('1 of 1');
+    await pressKey('Escape');
   });
 
   it('search is closed on reload', async () => {
@@ -35,6 +36,7 @@ describe('The Elements tab', function() {
     await waitForNone(`${SEARCH_BOX_SELECTOR}.hidden`);
     await target.reload();
     await waitFor(`${SEARCH_BOX_SELECTOR}.hidden`);
+    await pressKey('Escape');
   });
 
   describe('when searchAsYouType setting is disabled', () => {

@@ -128,6 +128,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       onFixThisIssueClick: () => {
         void this.#startConversation(FIX_THIS_ISSUE_PROMPT, true);
       },
+      canShowFeedbackForm: this.#serverSideLoggingEnabled,
     };
     this.#toggleSearchElementAction.addEventListener(UI.ActionRegistration.Events.Toggled, ev => {
       this.#viewProps.inspectElementToggled = ev.data;

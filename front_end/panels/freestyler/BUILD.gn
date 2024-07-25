@@ -68,6 +68,7 @@ ts_library("unittests") {
     "FreestylerEvaluateAction.test.ts",
     "FreestylerPanel.test.ts",
     "components/FreestylerChatUi.test.ts",
+    "components/ProvideFeedback.test.ts",
   ]
 
   deps = [

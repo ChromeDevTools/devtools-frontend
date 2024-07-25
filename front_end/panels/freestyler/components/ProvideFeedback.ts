@@ -64,13 +64,14 @@ const REPORT_URL = 'https://support.google.com/legal/troubleshooter/1114905?hl=e
     Platform.DevToolsPath.UrlString;
 export interface ProvideFeedbackProps {
   onFeedbackSubmit: (rate: Host.AidaClient.Rating, feedback?: string) => void;
+  canShowFeedbackForm: boolean;
 }
 
 export class ProvideFeedback extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-provide-feedback`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #props: ProvideFeedbackProps;
-  #showFeedbackForm = false;
+  #isShowingFeedbackForm = false;
   #currentRating?: Host.AidaClient.Rating;
 
   constructor(props: ProvideFeedbackProps) {
@@ -94,13 +95,13 @@ export class ProvideFeedback extends HTMLElement {
     }
 
     this.#currentRating = rating;
-    this.#showFeedbackForm = true;
+    this.#isShowingFeedbackForm = this.#props.canShowFeedbackForm;
     this.#props.onFeedbackSubmit(this.#currentRating);
     this.#render();
   }
 
   #handleClose = (): void => {
-    this.#showFeedbackForm = false;
+    this.#isShowingFeedbackForm = false;
     this.#render();
   };
 
@@ -111,7 +112,7 @@ export class ProvideFeedback extends HTMLElement {
       return;
     }
     this.#props.onFeedbackSubmit(this.#currentRating, input.value);
-    this.#showFeedbackForm = false;
+    this.#isShowingFeedbackForm = false;
     this.#render();
   };
 
@@ -218,7 +219,7 @@ export class ProvideFeedback extends HTMLElement {
       LitHtml.html`
         <div class="rate-buttons">
           ${this.#renderButtons()}
-          ${this.#showFeedbackForm
+          ${this.#isShowingFeedbackForm
             ? this.#renderFeedbackForm()
             : LitHtml.nothing
           }

@@ -13,12 +13,15 @@ generate_css("css_files") {
 
 devtools_module("insights") {
   sources = [
+    "LCPDiscovery.ts",
     "LCPPhases.ts",
     "SidebarInsight.ts",
     "types.ts",
   ]
 
   deps = [
+    "../../../../core/common:bundle",
+    "../../../../core/platform:bundle",
     "../../../../models/trace:bundle",
     "../../../../services/trace_bounds:bundle",
     "../../../../ui/components/helpers:bundle",

@@ -1747,6 +1747,7 @@ grd_files_debug_sources = [
   "front_end/panels/timeline/components/Utils.js",
   "front_end/panels/timeline/components/breadcrumbsUI.css.js",
   "front_end/panels/timeline/components/fieldSettingsDialog.css.js",
+  "front_end/panels/timeline/components/insights/LCPDiscovery.js",
   "front_end/panels/timeline/components/insights/LCPPhases.js",
   "front_end/panels/timeline/components/insights/SidebarInsight.js",
   "front_end/panels/timeline/components/insights/sidebarInsight.css.js",

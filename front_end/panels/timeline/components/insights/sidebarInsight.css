@@ -61,3 +61,37 @@
 .dl-value {
   font-weight: bold;
 }
+
+.metric-value-bad {
+  color: var(--app-color-performance-bad);
+}
+
+.metric-value-good {
+  color: var(--app-color-performance-good);
+}
+
+.insight-entry {
+  font-weight: bold;
+  padding-block: 2px;
+  display: flex;
+  align-items: center;
+}
+
+.insight-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding-block: 10px;
+}
+
+.element-img {
+  max-width: 90%;
+}
+
+.element-img-details {
+  font-weight: bold;
+
+  .element-img-details-size {
+    color: var(--color-text-secondary);
+  }
+}

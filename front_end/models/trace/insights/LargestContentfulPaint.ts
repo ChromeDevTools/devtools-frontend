@@ -155,5 +155,6 @@ export function generateInsight(
     shouldRemoveLazyLoading: imageLoadingAttr === 'lazy',
     shouldIncreasePriorityHint: imageFetchPriorityHint !== 'high',
     shouldPreloadImage: !imagePreloaded,
+    lcpResource,
   };
 }

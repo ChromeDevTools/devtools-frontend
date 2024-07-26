@@ -121,7 +121,7 @@ export class LCPPhases extends HTMLElement {
       return [];
     }
 
-    const lcpInsight: Error|TraceEngine.Insights.Types.LCPInsightResult = insightsByNavigation.LargestContentfulPaint;
+    const lcpInsight: TraceEngine.Insights.Types.LCPInsightResult|Error = insightsByNavigation.LargestContentfulPaint;
     if (lcpInsight instanceof Error) {
       return [];
     }

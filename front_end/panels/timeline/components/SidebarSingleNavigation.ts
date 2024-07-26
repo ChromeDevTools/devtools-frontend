@@ -140,15 +140,23 @@ export class SidebarSingleNavigation extends HTMLElement {
       navigationId: string,
       ): LitHtml.TemplateResult {
     // clang-format off
-      return LitHtml.html`
-       <div>
-          <${Insights.LCPPhases.LCPPhases.litTagName}
-            .insights=${insights}
-            .navigationId=${navigationId}
-            .activeInsight=${this.#data.activeInsight}
-            .activeCategory=${this.#data.activeCategory}
-          </${Insights.LCPPhases.LCPPhases}>
-        </div>`;
+    return LitHtml.html`
+    <div>
+      <${Insights.LCPPhases.LCPPhases.litTagName}
+        .insights=${insights}
+        .navigationId=${navigationId}
+        .activeInsight=${this.#data.activeInsight}
+        .activeCategory=${this.#data.activeCategory}
+      </${Insights.LCPPhases.LCPPhases}>
+    </div>
+    <div>
+      <${Insights.LCPDiscovery.LCPDiscovery.litTagName}
+        .insights=${insights}
+        .navigationId=${navigationId}
+        .activeInsight=${this.#data.activeInsight}
+        .activeCategory=${this.#data.activeCategory}
+      </${Insights.LCPDiscovery.LCPDiscovery}>
+    </div>`;
     // clang-format on
   }
 

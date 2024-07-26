@@ -64,7 +64,8 @@ export function expectCookie(cookie: SDK.Cookie.Cookie, cookieExpectation: Cooki
 
   assert.strictEqual(cookie.partitioned(), Boolean(expectation.partitionKey), 'partitioned');
   if (cookie.partitioned()) {
-    assert.strictEqual(cookie.hasCrossSiteAncestor(), expectation.partitionKey?.hasCrossSiteAncestor, 'partitionKey');
+    assert.strictEqual(
+        cookie.hasCrossSiteAncestor(), expectation.partitionKey?.hasCrossSiteAncestor, 'hasCrossSiteAncestor');
     assert.strictEqual(cookie.topLevelSite(), expectation.partitionKey?.topLevelSite, 'topLevelSite');
   }
   assert.strictEqual(cookie.partitionKeyOpaque(), expectation.partitionKeyOpaque, 'partitionKeyOpaque');

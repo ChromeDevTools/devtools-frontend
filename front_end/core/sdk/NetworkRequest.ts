@@ -300,7 +300,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #includedRequestCookiesInternal: IncludedCookieWithReason[];
   #blockedResponseCookiesInternal: BlockedSetCookieWithReason[];
   #exemptedResponseCookiesInternal: ExemptedSetCookieWithReason[];
-  #responseCookiesPartitionKey: string|null;
+  #responseCookiesPartitionKey: Protocol.Network.CookiePartitionKey|null;
   #responseCookiesPartitionKeyOpaque: boolean|null;
   #siteHasCookieInOtherPartition: boolean;
   localizedFailDescription: string|null;
@@ -1171,7 +1171,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
       if (this.#responseCookiesPartitionKey) {
         for (const cookie of this.#responseCookiesInternal) {
           if (cookie.partitioned()) {
-            cookie.setPartitionKey(this.#responseCookiesPartitionKey, cookie.hasCrossSiteAncestor());
+            cookie.setPartitionKey(
+                this.#responseCookiesPartitionKey.topLevelSite, this.#responseCookiesPartitionKey.hasCrossSiteAncestor);
           }
         }
       } else if (this.#responseCookiesPartitionKeyOpaque) {
@@ -1609,7 +1610,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     if (extraResponseInfo.exemptedResponseCookies) {
       this.#exemptedResponseCookiesInternal = extraResponseInfo.exemptedResponseCookies;
     }
-    this.#responseCookiesPartitionKey = extraResponseInfo.cookiePartitionKey?.topLevelSite || null;
+    this.#responseCookiesPartitionKey =
+        extraResponseInfo.cookiePartitionKey ? extraResponseInfo.cookiePartitionKey : null;
     this.#responseCookiesPartitionKeyOpaque = extraResponseInfo.cookiePartitionKeyOpaque || null;
     this.responseHeaders = extraResponseInfo.responseHeaders;
     // We store a copy of the headers we initially received, so that after
@@ -1709,7 +1711,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     return responseCookies;
   }
 
-  responseCookiesPartitionKey(): string|null {
+  responseCookiesPartitionKey(): Protocol.Network.CookiePartitionKey|null {
     return this.#responseCookiesPartitionKey;
   }
 

@@ -55,8 +55,7 @@ export class Cookie {
     if ('partitionKey' in protocolCookie) {
       if (protocolCookie.partitionKey) {
         cookie.setPartitionKey(
-            protocolCookie.partitionKey ? protocolCookie.partitionKey.topLevelSite : '',
-            protocolCookie.partitionKey ? protocolCookie.partitionKey.hasCrossSiteAncestor : false);
+            protocolCookie.partitionKey.topLevelSite, protocolCookie.partitionKey.hasCrossSiteAncestor);
       }
     }
     if ('partitionKeyOpaque' in protocolCookie && protocolCookie.partitionKeyOpaque) {

@@ -26,7 +26,7 @@ describe('NetworkRequest', () => {
         'OK');
   });
 
-  it('parses reponse cookies from headers', () => {
+  it('parses response cookies from headers', () => {
     const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
         'requestId', 'url' as Platform.DevToolsPath.UrlString, 'documentURL' as Platform.DevToolsPath.UrlString, null);
     request.addExtraResponseInfo({

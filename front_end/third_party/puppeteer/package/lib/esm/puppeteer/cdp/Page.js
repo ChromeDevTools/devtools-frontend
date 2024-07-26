@@ -53,6 +53,7 @@ import { CDPSessionEvent } from '../api/CDPSession.js';
 import { Page, } from '../api/Page.js';
 import { ConsoleMessage, } from '../common/ConsoleMessage.js';
 import { TargetCloseError } from '../common/Errors.js';
+import { EventEmitter } from '../common/EventEmitter.js';
 import { FileChooser } from '../common/FileChooser.js';
 import { NetworkManagerEvent } from '../common/NetworkManagerEvents.js';
 import { debugError, evaluationString, getReadableAsBuffer, getReadableFromProtocolStream, parsePDFOptions, timeout, validateDialogType, } from '../common/util.js';
@@ -126,84 +127,6 @@ export class CdpPage extends Page {
     #sessionCloseDeferred = Deferred.create();
     #serviceWorkerBypassed = false;
     #userDragInterceptionEnabled = false;
-    #frameManagerHandlers = [
-        [
-            FrameManagerEvent.FrameAttached,
-            (frame) => {
-                this.emit("frameattached" /* PageEvent.FrameAttached */, frame);
-            },
-        ],
-        [
-            FrameManagerEvent.FrameDetached,
-            (frame) => {
-                this.emit("framedetached" /* PageEvent.FrameDetached */, frame);
-            },
-        ],
-        [
-            FrameManagerEvent.FrameNavigated,
-            (frame) => {
-                this.emit("framenavigated" /* PageEvent.FrameNavigated */, frame);
-            },
-        ],
-    ];
-    #networkManagerHandlers = [
-        [
-            NetworkManagerEvent.Request,
-            (request) => {
-                this.emit("request" /* PageEvent.Request */, request);
-            },
-        ],
-        [
-            NetworkManagerEvent.RequestServedFromCache,
-            (request) => {
-                this.emit("requestservedfromcache" /* PageEvent.RequestServedFromCache */, request);
-            },
-        ],
-        [
-            NetworkManagerEvent.Response,
-            (response) => {
-                this.emit("response" /* PageEvent.Response */, response);
-            },
-        ],
-        [
-            NetworkManagerEvent.RequestFailed,
-            (request) => {
-                this.emit("requestfailed" /* PageEvent.RequestFailed */, request);
-            },
-        ],
-        [
-            NetworkManagerEvent.RequestFinished,
-            (request) => {
-                this.emit("requestfinished" /* PageEvent.RequestFinished */, request);
-            },
-        ],
-    ];
-    #sessionHandlers = [
-        [
-            CDPSessionEvent.Disconnected,
-            () => {
-                this.#sessionCloseDeferred.reject(new TargetCloseError('Target closed'));
-            },
-        ],
-        [
-            'Page.domContentEventFired',
-            () => {
-                return this.emit("domcontentloaded" /* PageEvent.DOMContentLoaded */, undefined);
-            },
-        ],
-        [
-            'Page.loadEventFired',
-            () => {
-                return this.emit("load" /* PageEvent.Load */, undefined);
-            },
-        ],
-        ['Page.javascriptDialogOpening', this.#onDialog.bind(this)],
-        ['Runtime.exceptionThrown', this.#handleException.bind(this)],
-        ['Inspector.targetCrashed', this.#onTargetCrashed.bind(this)],
-        ['Performance.metrics', this.#emitMetrics.bind(this)],
-        ['Log.entryAdded', this.#onLogEntryAdded.bind(this)],
-        ['Page.fileChooserOpened', this.#onFileChooser.bind(this)],
-    ];
     constructor(client, target) {
         super();
         this.#primaryTargetClient = client;
@@ -221,19 +144,38 @@ export class CdpPage extends Page {
         this.#tracing = new Tracing(client);
         this.#coverage = new Coverage(client);
         this.#viewport = null;
-        for (const [eventName, handler] of this.#frameManagerHandlers) {
-            this.#frameManager.on(eventName, handler);
-        }
-        this.#frameManager.on(FrameManagerEvent.ConsoleApiCalled, ([world, event]) => {
+        const frameManagerEmitter = new EventEmitter(this.#frameManager);
+        frameManagerEmitter.on(FrameManagerEvent.FrameAttached, frame => {
+            this.emit("frameattached" /* PageEvent.FrameAttached */, frame);
+        });
+        frameManagerEmitter.on(FrameManagerEvent.FrameDetached, frame => {
+            this.emit("framedetached" /* PageEvent.FrameDetached */, frame);
+        });
+        frameManagerEmitter.on(FrameManagerEvent.FrameNavigated, frame => {
+            this.emit("framenavigated" /* PageEvent.FrameNavigated */, frame);
+        });
+        frameManagerEmitter.on(FrameManagerEvent.ConsoleApiCalled, ([world, event]) => {
             this.#onConsoleAPI(world, event);
         });
-        this.#frameManager.on(FrameManagerEvent.BindingCalled, ([world, event]) => {
+        frameManagerEmitter.on(FrameManagerEvent.BindingCalled, ([world, event]) => {
             void this.#onBindingCalled(world, event);
         });
-        for (const [eventName, handler] of this.#networkManagerHandlers) {
-            // TODO: Remove any.
-            this.#frameManager.networkManager.on(eventName, handler);
-        }
+        const networkManagerEmitter = new EventEmitter(this.#frameManager.networkManager);
+        networkManagerEmitter.on(NetworkManagerEvent.Request, request => {
+            this.emit("request" /* PageEvent.Request */, request);
+        });
+        networkManagerEmitter.on(NetworkManagerEvent.RequestServedFromCache, request => {
+            this.emit("requestservedfromcache" /* PageEvent.RequestServedFromCache */, request);
+        });
+        networkManagerEmitter.on(NetworkManagerEvent.Response, response => {
+            this.emit("response" /* PageEvent.Response */, response);
+        });
+        networkManagerEmitter.on(NetworkManagerEvent.RequestFailed, request => {
+            this.emit("requestfailed" /* PageEvent.RequestFailed */, request);
+        });
+        networkManagerEmitter.on(NetworkManagerEvent.RequestFinished, request => {
+            this.emit("requestfinished" /* PageEvent.RequestFinished */, request);
+        });
         this.#tabTargetClient.on(CDPSessionEvent.Swapped, this.#onActivation.bind(this));
         this.#tabTargetClient.on(CDPSessionEvent.Ready, this.#onSecondaryTarget.bind(this));
         this.#targetManager.on("targetGone" /* TargetManagerEvent.TargetGone */, this.#onDetachedFromTarget);
@@ -295,11 +237,23 @@ export class CdpPage extends Page {
      * during a navigation to a prerended page.
      */
     #setupPrimaryTargetListeners() {
-        this.#primaryTargetClient.on(CDPSessionEvent.Ready, this.#onAttachedToTarget);
-        for (const [eventName, handler] of this.#sessionHandlers) {
-            // TODO: Remove any.
-            this.#primaryTargetClient.on(eventName, handler);
-        }
+        const clientEmitter = new EventEmitter(this.#primaryTargetClient);
+        clientEmitter.on(CDPSessionEvent.Ready, this.#onAttachedToTarget);
+        clientEmitter.on(CDPSessionEvent.Disconnected, () => {
+            this.#sessionCloseDeferred.reject(new TargetCloseError('Target closed'));
+        });
+        clientEmitter.on('Page.domContentEventFired', () => {
+            this.emit("domcontentloaded" /* PageEvent.DOMContentLoaded */, undefined);
+        });
+        clientEmitter.on('Page.loadEventFired', () => {
+            this.emit("load" /* PageEvent.Load */, undefined);
+        });
+        clientEmitter.on('Page.javascriptDialogOpening', this.#onDialog.bind(this));
+        clientEmitter.on('Runtime.exceptionThrown', this.#handleException.bind(this));
+        clientEmitter.on('Inspector.targetCrashed', this.#onTargetCrashed.bind(this));
+        clientEmitter.on('Performance.metrics', this.#emitMetrics.bind(this));
+        clientEmitter.on('Log.entryAdded', this.#onLogEntryAdded.bind(this));
+        clientEmitter.on('Page.fileChooserOpened', this.#onFileChooser.bind(this));
     }
     #onDetachedFromTarget = (target) => {
         const sessionId = target._session()?.id();
@@ -495,7 +449,16 @@ export class CdpPage extends Page {
             }
             return cookie;
         };
-        return originalCookies.map(filterUnsupportedAttributes);
+        return originalCookies.map(filterUnsupportedAttributes).map(cookie => {
+            return {
+                ...cookie,
+                // TODO: a breaking change is needed in Puppeteer types to support other
+                // partition keys.
+                partitionKey: cookie.partitionKey
+                    ? cookie.partitionKey.topLevelSite
+                    : undefined,
+            };
+        });
     }
     async deleteCookie(...cookies) {
         const pageURL = this.url();
@@ -522,7 +485,19 @@ export class CdpPage extends Page {
         await this.deleteCookie(...items);
         if (items.length) {
             await this.#primaryTargetClient.send('Network.setCookies', {
-                cookies: items,
+                cookies: items.map(cookieParam => {
+                    return {
+                        ...cookieParam,
+                        partitionKey: cookieParam.partitionKey
+                            ? {
+                                // TODO: a breaking change neeeded to change the partition key
+                                // type in Puppeteer.
+                                topLevelSite: cookieParam.partitionKey,
+                                hasCrossSiteAncestor: false,
+                            }
+                            : undefined,
+                    };
+                }),
             });
         }
     }

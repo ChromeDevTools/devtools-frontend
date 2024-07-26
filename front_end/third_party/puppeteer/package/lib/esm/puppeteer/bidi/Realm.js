@@ -126,11 +126,17 @@ export class BidiRealm extends Realm {
                 : `${functionDeclaration}\n${sourceUrlComment}\n`;
             responsePromise = this.realm.callFunction(functionDeclaration, 
             /* awaitPromise= */ true, {
-                arguments: args.length
+                // LazyArgs are used only internally and should not affect the order
+                // evaluate calls for the public APIs.
+                arguments: args.some(arg => {
+                    return arg instanceof LazyArg;
+                })
                     ? await Promise.all(args.map(arg => {
-                        return this.serialize(arg);
+                        return this.serializeAsync(arg);
                     }))
-                    : [],
+                    : args.map(arg => {
+                        return this.serialize(arg);
+                    }),
                 resultOwnership,
                 userActivation: true,
                 serializationOptions,
@@ -151,10 +157,13 @@ export class BidiRealm extends Realm {
         }
         return BidiJSHandle.from(result, this);
     }
-    async serialize(arg) {
+    async serializeAsync(arg) {
         if (arg instanceof LazyArg) {
             arg = await arg.get(this);
         }
+        return this.serialize(arg);
+    }
+    serialize(arg) {
         if (arg instanceof BidiJSHandle || arg instanceof BidiElementHandle) {
             if (arg.realm !== this) {
                 if (!(arg.realm instanceof BidiFrameRealm) ||

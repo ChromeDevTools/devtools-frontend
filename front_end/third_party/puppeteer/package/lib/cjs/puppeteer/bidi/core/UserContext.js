@@ -88,7 +88,10 @@ let UserContext = (() => {
         #initialize() {
             const browserEmitter = this.#disposables.use(new EventEmitter_js_1.EventEmitter(this.browser));
             browserEmitter.once('closed', ({ reason }) => {
-                this.dispose(`User context already closed: ${reason}`);
+                this.dispose(`User context was closed: ${reason}`);
+            });
+            browserEmitter.once('disconnected', ({ reason }) => {
+                this.dispose(`User context was closed: ${reason}`);
             });
             const sessionEmitter = this.#disposables.use(new EventEmitter_js_1.EventEmitter(this.#session));
             sessionEmitter.on('browsingContext.contextCreated', info => {

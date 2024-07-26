@@ -109,12 +109,14 @@ let BidiBrowser = (() => {
         #defaultViewport;
         #browserContexts = new WeakMap();
         #target = new BidiBrowserTarget(this);
+        #cdpConnection;
         constructor(browserCore, opts) {
             super();
             this.#process = opts.process;
             this.#closeCallback = opts.closeCallback;
             this.#browserCore = browserCore;
             this.#defaultViewport = opts.defaultViewport;
+            this.#cdpConnection = opts.cdpConnection;
         }
         #initialize() {
             // Initializing existing contexts.
@@ -137,7 +139,10 @@ let BidiBrowser = (() => {
             return this.#browserCore.session.capabilities.browserVersion;
         }
         get cdpSupported() {
-            return !this.#browserName.toLocaleLowerCase().includes('firefox');
+            return this.#cdpConnection !== undefined;
+        }
+        get cdpConnection() {
+            return this.#cdpConnection;
         }
         async userAgent() {
             return this.#browserCore.session.capabilities.userAgent;

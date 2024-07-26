@@ -41,7 +41,6 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
     if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
     return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
 };
-import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { combineLatest, defer, delayWhen, filter, first, firstValueFrom, map, of, raceWith, switchMap, } from '../../third_party/rxjs/rxjs.js';
 import { Frame, throwIfDetached, } from '../api/Frame.js';
 import { Accessibility } from '../cdp/Accessibility.js';
@@ -349,7 +348,9 @@ let BidiFrame = (() => {
                 return frame.#detached$();
             });
             return await firstValueFrom(combineLatest([
-                fromEmitterEvent(this.browsingContext, 'navigation').pipe(switchMap(({ navigation }) => {
+                fromEmitterEvent(this.browsingContext, 'navigation')
+                    .pipe(first())
+                    .pipe(switchMap(({ navigation }) => {
                     return this.#waitForLoad$(options).pipe(delayWhen(() => {
                         if (frames.length === 0) {
                             return of(undefined);
@@ -416,12 +417,11 @@ let BidiFrame = (() => {
             await exposedFunction[Symbol.asyncDispose]();
         }
         async createCDPSession() {
-            const { sessionId } = await this.client.send('Target.attachToTarget', {
-                targetId: this._id,
-                flatten: true,
-            });
-            await this.browsingContext.subscribe([Bidi.ChromiumBidi.BiDiModule.Cdp]);
-            return new BidiCdpSession(this, sessionId);
+            if (!this.page().browser().cdpSupported) {
+                throw new UnsupportedOperation();
+            }
+            const cdpConnection = this.page().browser().cdpConnection;
+            return await cdpConnection._createSession({ targetId: this._id });
         }
         get #waitForLoad$() { return _private_waitForLoad$_descriptor.value; }
         get #waitForNetworkIdle$() { return _private_waitForNetworkIdle$_descriptor.value; }

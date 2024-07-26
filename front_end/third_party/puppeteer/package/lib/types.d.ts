@@ -1566,7 +1566,7 @@ export declare interface Device {
  * @example
  *
  * ```ts
- * const [deviceRequest] = Promise.all([
+ * const [devicePrompt] = Promise.all([
  *   page.waitForDevicePrompt(),
  *   page.click('#connect-bluetooth'),
  * ]);
@@ -2263,8 +2263,6 @@ export declare class EventEmitter<Events extends Record<EventType, unknown>> imp
     removeAllListeners(type?: keyof EventsWithWildcard<Events>): this;
     /* Excluded from this release type: [disposeSymbol] */
 }
-
-/* Excluded from this release type: EventSubscription */
 
 /**
  * @public

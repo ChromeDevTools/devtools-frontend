@@ -129,11 +129,17 @@ class BidiRealm extends Realm_js_1.Realm {
                 : `${functionDeclaration}\n${sourceUrlComment}\n`;
             responsePromise = this.realm.callFunction(functionDeclaration, 
             /* awaitPromise= */ true, {
-                arguments: args.length
+                // LazyArgs are used only internally and should not affect the order
+                // evaluate calls for the public APIs.
+                arguments: args.some(arg => {
+                    return arg instanceof LazyArg_js_1.LazyArg;
+                })
                     ? await Promise.all(args.map(arg => {
-                        return this.serialize(arg);
+                        return this.serializeAsync(arg);
                     }))
-                    : [],
+                    : args.map(arg => {
+                        return this.serialize(arg);
+                    }),
                 resultOwnership,
                 userActivation: true,
                 serializationOptions,
@@ -154,10 +160,13 @@ class BidiRealm extends Realm_js_1.Realm {
         }
         return JSHandle_js_1.BidiJSHandle.from(result, this);
     }
-    async serialize(arg) {
+    async serializeAsync(arg) {
         if (arg instanceof LazyArg_js_1.LazyArg) {
             arg = await arg.get(this);
         }
+        return this.serialize(arg);
+    }
+    serialize(arg) {
         if (arg instanceof JSHandle_js_1.BidiJSHandle || arg instanceof ElementHandle_js_1.BidiElementHandle) {
             if (arg.realm !== this) {
                 if (!(arg.realm instanceof BidiFrameRealm) ||

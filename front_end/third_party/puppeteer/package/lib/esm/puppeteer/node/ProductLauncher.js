@@ -199,6 +199,7 @@ export class ProductLauncher {
         });
         return await BiDi.BidiBrowser.create({
             connection: bidiConnection,
+            cdpConnection: connection,
             closeCallback,
             process: browserProcess.nodeProcess,
             defaultViewport: opts.defaultViewport,

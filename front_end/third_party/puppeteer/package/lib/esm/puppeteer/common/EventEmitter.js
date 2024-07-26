@@ -125,21 +125,4 @@ export class EventEmitter {
         this.#handlers.clear();
     }
 }
-/**
- * @internal
- */
-export class EventSubscription {
-    #target;
-    #type;
-    #handler;
-    constructor(target, type, handler) {
-        this.#target = target;
-        this.#type = type;
-        this.#handler = handler;
-        this.#target.on(this.#type, this.#handler);
-    }
-    [disposeSymbol]() {
-        this.#target.off(this.#type, this.#handler);
-    }
-}
 //# sourceMappingURL=EventEmitter.js.map

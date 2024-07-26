@@ -355,9 +355,17 @@ export class ExecutionContext extends EventEmitter {
             callFunctionOnPromise = this.#client.send('Runtime.callFunctionOn', {
                 functionDeclaration: functionDeclarationWithSourceUrl,
                 executionContextId: this.#id,
-                arguments: args.length
-                    ? await Promise.all(args.map(convertArgument.bind(this)))
-                    : [],
+                // LazyArgs are used only internally and should not affect the order
+                // evaluate calls for the public APIs.
+                arguments: args.some(arg => {
+                    return arg instanceof LazyArg;
+                })
+                    ? await Promise.all(args.map(arg => {
+                        return convertArgumentAsync(this, arg);
+                    }))
+                    : args.map(arg => {
+                        return convertArgument(this, arg);
+                    }),
                 returnByValue,
                 awaitPromise: true,
                 userGesture: true,
@@ -377,10 +385,13 @@ export class ExecutionContext extends EventEmitter {
         return returnByValue
             ? valueFromRemoteObject(remoteObject)
             : this.#world.createCdpHandle(remoteObject);
-        async function convertArgument(arg) {
+        async function convertArgumentAsync(context, arg) {
             if (arg instanceof LazyArg) {
-                arg = await arg.get(this);
+                arg = await arg.get(context);
             }
+            return convertArgument(context, arg);
+        }
+        function convertArgument(context, arg) {
             if (typeof arg === 'bigint') {
                 // eslint-disable-line valid-typeof
                 return { unserializableValue: `${arg.toString()}n` };
@@ -401,7 +412,7 @@ export class ExecutionContext extends EventEmitter {
                 ? arg
                 : null;
             if (objectHandle) {
-                if (objectHandle.realm !== this.#world) {
+                if (objectHandle.realm !== context.#world) {
                     throw new Error('JSHandles can be evaluated only in the context they were created!');
                 }
                 if (objectHandle.disposed) {

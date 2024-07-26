@@ -68,6 +68,7 @@ devtools_entrypoint("meta") {
   visibility = [
     "../../testing/*",
     "../devtools_app/*",
+    "../rehydrated_devtools_app/*",
   ]
 }
 

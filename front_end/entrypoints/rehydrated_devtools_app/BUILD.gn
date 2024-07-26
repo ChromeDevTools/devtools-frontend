@@ -1,0 +1,33 @@
+# Copyright 2024 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../visibility.gni")
+
+devtools_entrypoint("entrypoint") {
+  entrypoint = "rehydrated_devtools_app.ts"
+
+  deps = [
+    "../../Images:optimize_images",
+    "../../core/sdk:meta",
+    "../../entrypoints/inspector_main:meta",
+    "../../entrypoints/main:meta",
+    "../../models/logs:meta",
+    "../../models/persistence:meta",
+    "../../panels/browser_debugger:meta",
+    "../../panels/mobile_throttling:meta",
+    "../../panels/protocol_monitor:meta",
+    "../../panels/sensors:meta",
+    "../../panels/settings:meta",
+    "../../panels/sources:meta",
+    "../../panels/timeline:meta",
+    "../../ui/legacy/components/perf_ui:meta",
+    "../../ui/legacy/components/quick_open:meta",
+    "../../ui/legacy/components/source_frame:meta",
+    "../main:bundle",
+  ]
+
+  visibility = [ "../../:*" ]
+
+  visibility += devtools_entrypoints_visibility
+}

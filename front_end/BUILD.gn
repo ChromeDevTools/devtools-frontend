@@ -24,6 +24,7 @@ group("front_end") {
     "entrypoints/lighthouse_worker:bundle",
     "entrypoints/ndb_app:entrypoint",
     "entrypoints/node_app:entrypoint",
+    "entrypoints/rehydrated_devtools_app:entrypoint",
     "entrypoints/shell",
     "entrypoints/wasmparser_worker:worker_entrypoint",
     "entrypoints/worker_app:entrypoint",
@@ -55,6 +56,7 @@ node_action("html_entrypoints") {
     "js_app",
     "ndb_app",
     "node_app",
+    "rehydrated_devtools_app",
     "worker_app",
     "device_mode_emulation_frame",
   ]

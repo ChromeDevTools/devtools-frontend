@@ -120,6 +120,7 @@ export class SidebarUI extends HTMLElement {
       return;
     }
     this.#insights = insights;
+
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
@@ -133,6 +134,12 @@ export class SidebarUI extends HTMLElement {
     if (this.#traceParsedData === traceParsedData) {
       // If this is the same trace, do not re-render.
       return;
+    }
+    // When the trace data gets set, we clear the active navigation ID (as any old
+    // navigation ID is now outdated) and we auto-set the first ID to be
+    // active.
+    if (traceParsedData) {
+      this.#activeNavigationId = traceParsedData.Meta.mainFrameNavigations.at(0)?.args.data?.navigationId ?? null;
     }
     this.#traceParsedData = traceParsedData;
 
@@ -199,34 +206,40 @@ export class SidebarUI extends HTMLElement {
           })}
       </${Menus.SelectMenu.SelectMenu.litTagName}>
 
-      ${navigations.map(navigation => {
-        const id = navigation.args.data?.navigationId;
-        const url = navigation.args.data?.documentLoaderURL;
-        if(!id || !url) {
-          return LitHtml.nothing;
-        }
-        const data = {
-          traceParsedData: this.#traceParsedData ?? null,
-          insights: this.#insights,
-          navigationId: id,
-          activeCategory: this.#selectedCategory,
-          activeInsight: this.#activeInsight,
-        };
+      <div class="navigations-wrapper">
+        ${navigations.map(navigation => {
+          const id = navigation.args.data?.navigationId;
+          const url = navigation.args.data?.documentLoaderURL;
+          if(!id || !url) {
+            return LitHtml.nothing;
+          }
+          const data = {
+            traceParsedData: this.#traceParsedData ?? null,
+            insights: this.#insights,
+            navigationId: id,
+            activeCategory: this.#selectedCategory,
+            activeInsight: this.#activeInsight,
+          };
 
-        const contents = LitHtml.html`
-          <${SidebarSingleNavigation.litTagName}
-            .data=${data as SidebarSingleNavigationData}>
-          </${SidebarSingleNavigation.litTagName}>
-        `;
+          const contents = LitHtml.html`
+            <${SidebarSingleNavigation.litTagName}
+              .data=${data as SidebarSingleNavigationData}>
+            </${SidebarSingleNavigation.litTagName}>
+          `;
 
-        if(hasMultipleNavigations) {
-          return LitHtml.html`<div class="multi-nav-container">
-            <details ?open=${id === this.#activeNavigationId} class="navigation-wrapper"><summary @click=${() => this.#navigationClicked(id)}>${url}</summary>${contents}</details>
-            </div>`;
-        }
+          if(hasMultipleNavigations) {
+            return LitHtml.html`<details
+              ?open=${id === this.#activeNavigationId}
+              class="navigation-wrapper"
+            >
+              <summary @click=${() => this.#navigationClicked(id)}>${url}</summary>
+              ${contents}
+            </details>`;
+          }
 
-        return contents;
-      })}
+          return contents;
+        })}
+      </div>
     `;
     // clang-format on
   }

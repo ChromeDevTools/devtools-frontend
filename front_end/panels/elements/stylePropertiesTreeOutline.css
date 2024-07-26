@@ -126,7 +126,7 @@ ol.expanded {
 input.enabled-button.small {
   &:hover::after,
   &:active::before {
-    left: 0;
+    left: 3px;
   }
 }
 

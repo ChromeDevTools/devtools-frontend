@@ -526,7 +526,7 @@ export const activeElementTextContent = async () => {
 
 export const activeElementAccessibleName = async () => {
   const element = await activeElement();
-  return element.evaluate(node => node.getAttribute('aria-label'));
+  return element.evaluate(node => node.getAttribute('aria-label') || node.getAttribute('title'));
 };
 
 export const tabForward = async (page?: puppeteer.Page) => {

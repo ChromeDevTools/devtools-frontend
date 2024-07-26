@@ -166,7 +166,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
         input.checked = false;
       }
     }
-    ButtonProvider.instance().item().setToggled(this.inputs.some(input => input.checked));
+    ButtonProvider.instance().item().setChecked(this.inputs.some(input => input.checked));
   }
 }
 let buttonProviderInstance: ButtonProvider;
@@ -174,12 +174,12 @@ export class ButtonProvider implements UI.Toolbar.Provider {
   private readonly button: UI.Toolbar.ToolbarToggle;
   private view: ElementStatePaneWidget;
   private constructor() {
-    this.button = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleElementState), '');
-    this.button.setText(i18n.i18n.lockedString(':hov'));
-    this.button.setToggleWithDot(true);
+    this.button = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleElementState), 'hover');
     this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clicked, this);
-    this.button.element.classList.add('monospace');
+    this.button.element.classList.add('element-state');
     this.button.element.setAttribute('jslog', `${VisualLogging.toggleSubpane('element-states').track({click: true})}`);
+    this.button.element.style.setProperty('--dot-toggle-top', '12px');
+    this.button.element.style.setProperty('--dot-toggle-left', '18px');
     this.view = new ElementStatePaneWidget();
   }
   static instance(opts: {
@@ -192,7 +192,7 @@ export class ButtonProvider implements UI.Toolbar.Provider {
     return buttonProviderInstance;
   }
   private clicked(): void {
-    ElementsPanel.instance().showToolbarPane(!this.view.isShowing() ? this.view : null, null);
+    ElementsPanel.instance().showToolbarPane(!this.view.isShowing() ? this.view : null, this.button);
   }
   item(): UI.Toolbar.ToolbarToggle {
     return this.button;

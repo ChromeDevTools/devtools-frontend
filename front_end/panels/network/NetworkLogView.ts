@@ -2651,7 +2651,7 @@ export type Filter = (request: SDK.NetworkRequest.NetworkRequest) => boolean;
 export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.FilterBar.FilterUIEventTypes> implements
     UI.FilterBar.FilterUI {
   private readonly filterElement: HTMLDivElement;
-  private readonly dropDownButton: UI.Toolbar.ToolbarButton;
+  private readonly dropDownButton: UI.Toolbar.ToolbarCombobox;
   private displayedTypes: Set<string>;
   private readonly setting: Common.Settings.Setting<{[key: string]: boolean}>;
   private readonly items: UI.FilterBar.Item[];
@@ -2675,11 +2675,10 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
     };
     this.typesCountAdorner.classList.add('active-filters-count');
 
-    this.dropDownButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.requestTypesTooltip), this.typesCountAdorner);
+    this.dropDownButton = new UI.Toolbar.ToolbarCombobox(i18nString(UIStrings.requestTypesTooltip));
+    this.dropDownButton.setAdorner(this.typesCountAdorner);
     this.dropDownButton.setText(i18nString(UIStrings.requestTypes));
     this.filterElement.appendChild(this.dropDownButton.element);
-    this.dropDownButton.turnIntoSelect();
     this.dropDownButton.element.classList.add('dropdown-filterbar');
 
     this.dropDownButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.showContextMenu.bind(this));
@@ -2863,7 +2862,7 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
 export class MoreFiltersDropDownUI extends
     Common.ObjectWrapper.ObjectWrapper<UI.FilterBar.FilterUIEventTypes> implements UI.FilterBar.FilterUI {
   private readonly filterElement: HTMLDivElement;
-  private readonly dropDownButton: UI.Toolbar.ToolbarButton;
+  private readonly dropDownButton: UI.Toolbar.ToolbarCombobox;
   private networkHideDataURLSetting: Common.Settings.Setting<boolean>;
   private networkHideChromeExtensionsSetting: Common.Settings.Setting<boolean>;
   private networkShowBlockedCookiesOnlySetting: Common.Settings.Setting<boolean>;
@@ -2900,10 +2899,10 @@ export class MoreFiltersDropDownUI extends
     this.activeFiltersCountAdorner.classList.add('active-filters-count');
     this.updateActiveFiltersCount();
 
-    this.dropDownButton = new UI.Toolbar.ToolbarButton(
-        i18nString(UIStrings.showOnlyHideRequests), this.activeFiltersCountAdorner, i18nString(UIStrings.moreFilters));
+    this.dropDownButton = new UI.Toolbar.ToolbarCombobox(i18nString(UIStrings.showOnlyHideRequests));
+    this.dropDownButton.setText(i18nString(UIStrings.moreFilters));
+    this.dropDownButton.setAdorner(this.activeFiltersCountAdorner);
     this.filterElement.appendChild(this.dropDownButton.element);
-    this.dropDownButton.turnIntoSelect();
     this.dropDownButton.element.classList.add('dropdown-filterbar');
     this.dropDownButton.addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click, this.showMoreFiltersContextMenu.bind(this));

@@ -9,10 +9,13 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
+import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as Coverage from '../coverage/coverage.js';
 
 import * as Sources from './sources.js';
+
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithMockConnection('CoveragePlugin', () => {
   let target: SDK.Target.Target;
@@ -49,29 +52,33 @@ describeWithMockConnection('CoveragePlugin', () => {
   it('shows stats', async () => {
     const coveragePlugin =
         new Sources.CoveragePlugin.CoveragePlugin(uiSourceCode, <SourceFrame.SourceFrame.Transformer>{});
+    await coordinator.done({waitForWork: true});
     const [toolbarItem] = coveragePlugin.rightToolbarItems();
-    assert.strictEqual('Show Details', toolbarItem.element.title);
-    assert.strictEqual('Coverage: 32.1%', toolbarItem.element.querySelector('.toolbar-text:not(.hidden)')?.textContent);
+
+    assert.strictEqual('Show Details', toolbarItem.element.shadowRoot?.querySelector('button')?.title);
+    assert.strictEqual('Coverage: 32.1%', toolbarItem.element.textContent);
   });
 
   it('updates stats', async () => {
     const coveragePlugin =
         new Sources.CoveragePlugin.CoveragePlugin(uiSourceCode, <SourceFrame.SourceFrame.Transformer>{});
+    await coordinator.done({waitForWork: true});
     const [toolbarItem] = coveragePlugin.rightToolbarItems();
-    assert.strictEqual('Coverage: 32.1%', toolbarItem.element.querySelector('.toolbar-text:not(.hidden)')?.textContent);
+    assert.strictEqual('Coverage: 32.1%', toolbarItem.element.textContent);
 
     coverageInfo.addToSizes(10, 2);
-    assert.strictEqual('Coverage: 63.3%', toolbarItem.element.querySelector('.toolbar-text:not(.hidden)')?.textContent);
+    assert.strictEqual('Coverage: 63.3%', toolbarItem.element.textContent);
   });
 
   it('resets stats', async () => {
     const coveragePlugin =
         new Sources.CoveragePlugin.CoveragePlugin(uiSourceCode, <SourceFrame.SourceFrame.Transformer>{});
+    await coordinator.done({waitForWork: true});
     const [toolbarItem] = coveragePlugin.rightToolbarItems();
-    assert.strictEqual('Coverage: 32.1%', toolbarItem.element.querySelector('.toolbar-text:not(.hidden)')?.textContent);
+    assert.strictEqual('Coverage: 32.1%', toolbarItem.element.textContent);
 
     model.dispatchEventToListeners(Coverage.CoverageModel.Events.CoverageReset);
-    assert.strictEqual('Click to show Coverage Panel', toolbarItem.element.title);
-    assert.strictEqual('Coverage: n/a', toolbarItem.element.querySelector('.toolbar-text:not(.hidden)')?.textContent);
+    assert.strictEqual('Click to show Coverage Panel', toolbarItem.element.ariaLabel);
+    assert.strictEqual('Coverage: n/a', toolbarItem.element.textContent);
   });
 });

@@ -36,7 +36,7 @@ export const openPanelViaMoreTools = async (panelTitle: string) => {
 };
 
 export const openSettingsTab = async (tabTitle: string) => {
-  const gearIconSelector = '.toolbar-button[aria-label="Settings"]';
+  const gearIconSelector = 'devtools-button[aria-label="Settings"]';
   const settingsMenuSelector = `.tabbed-pane-header-tab[aria-label="${tabTitle}"]`;
   const panelSelector = `.view-container[aria-label="${tabTitle} panel"]`;
 

@@ -837,7 +837,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.hideSidebarButtonTitle = hideTitle;
     this.shownSidebarString = shownString;
     this.hiddenSidebarString = hiddenString;
-    this.showHideSidebarButton = new ToolbarButton('', '');
+    this.showHideSidebarButton = new ToolbarButton('', 'right-panel-open');
     this.showHideSidebarButton.addEventListener(ToolbarButton.Events.Click, buttonClicked, this);
     if (jslogContext) {
       this.showHideSidebarButton.element.setAttribute(

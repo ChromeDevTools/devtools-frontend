@@ -936,7 +936,7 @@ describeWithMockConnection('PreloadingAttemptView', () => {
 
     const buttons = report.querySelectorAll('devtools-report-value:nth-of-type(2) devtools-button');
     assert.strictEqual(buttons[0].textContent?.trim(), 'Inspect');
-    assert.strictEqual(buttons[0].getAttribute('disabled'), '');
+    assert.strictEqual(buttons[0].shadowRoot?.querySelector('button')?.getAttribute('disabled'), '');
   });
 });
 

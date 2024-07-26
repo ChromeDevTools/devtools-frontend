@@ -6,8 +6,8 @@ import {click, goToResource, waitFor, waitForMany, waitForNone} from '../../shar
 
 import {openPanelViaMoreTools} from './settings-helpers.js';
 
-const START_INSTRUMENTING_BUTTON = 'button[aria-label="Start instrumenting coverage and reload page"]';
-const STOP_INSTRUMENTING_BUTTON = 'button[aria-label="Stop instrumenting coverage and show results"]';
+const START_INSTRUMENTING_BUTTON = 'devtools-button[aria-label="Start instrumenting coverage and reload page"]';
+const STOP_INSTRUMENTING_BUTTON = 'devtools-button[aria-label="Stop instrumenting coverage and show results"]';
 
 export async function waitForTheCoveragePanelToLoad() {
   // Open panel and wait for content
@@ -27,11 +27,11 @@ export async function startInstrumentingCoverage() {
 
 export async function stopInstrumentingCoverage() {
   await click(STOP_INSTRUMENTING_BUTTON);
-  await waitForNone('button[aria-label="Clear coverage"][disabled]');
+  await waitForNone('button[title="Clear coverage"][disabled]');
 }
 
 export async function clearCoverageContent() {
-  await click('button[aria-label="Clear coverage"]');
+  await click('devtools-button[aria-label="Clear coverage"]');
   await waitFor('.coverage-results .landing-page');
 }
 

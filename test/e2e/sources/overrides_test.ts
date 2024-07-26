@@ -54,8 +54,14 @@ async function waitForOverrideContentMenuItemIsEnabled(requestName: string) {
 describe('Overrides panel', function() {
   afterEach(async () => {
     await openSourcesPanel();
-    await click('[aria-label="Overrides"]');
-    await click('[aria-label="Clear configuration"]');
+    await Promise.any([
+      waitFor(ENABLE_OVERRIDES_SELECTOR),
+      new Promise<void>(async resolve => {
+        await click('[aria-label="Overrides"]');
+        await click('[aria-label="Clear configuration"]');
+        resolve();
+      }),
+    ]);
     await waitFor(ENABLE_OVERRIDES_SELECTOR);
   });
 
@@ -265,7 +271,7 @@ describe('Overrides panel', function() {
       await waitForAria('Select folder for overrides');
 
       const assertElements = await $$('Select folder for overrides', undefined, 'aria');
-      assert.strictEqual(assertElements.length, 1);
+      assert.strictEqual(assertElements.length, 2);
     });
 
     await step('when overrides setting is enabled', async () => {

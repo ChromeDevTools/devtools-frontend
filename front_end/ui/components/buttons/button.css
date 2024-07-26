@@ -86,6 +86,31 @@ button {
 
     &.toggled devtools-icon {
       color: var(--toggle-color); /* stylelint-disable-line plugin/use_theme_colors */
+
+      &.long-click {
+        color: var(--icon-default);
+      }
+    }
+
+    &.checked devtools-icon {
+      color: var(--toggle-color); /* stylelint-disable-line plugin/use_theme_colors */
+
+      &::after {
+        content: "";
+        width: var(--sys-size-3);
+        height: var(--sys-size-3);
+        border-radius: var(--sys-shape-corner-full);
+        background-color: var(--sys-color-primary-bright);
+        position: absolute;
+        top: var(--dot-toggle-top);
+        left: var(--dot-toggle-left);
+      }
+    }
+
+    devtools-icon.long-click {
+      position: absolute;
+      top: 2px;
+      left: 3px;
     }
   }
 

@@ -29,6 +29,7 @@ import {
   isBreakpointSet,
   openSourceCodeEditorForFile,
   openSourcesPanel,
+  PAUSE_BUTTON,
   reloadPageAndWaitForSourceFile,
   removeBreakpointForLine,
   RESUME_BUTTON,
@@ -38,7 +39,6 @@ import {
   stepThroughTheCode,
   switchToCallFrame,
   THREADS_SELECTOR,
-  TURNED_OFF_PAUSE_BUTTON_SELECTOR,
 } from '../helpers/sources-helpers.js';
 
 describe('Sources Tab', function() {
@@ -115,7 +115,7 @@ describe('Sources Tab', function() {
 
     await step('resume script execution', async () => {
       await frontend.keyboard.press('F8');
-      await waitFor(TURNED_OFF_PAUSE_BUTTON_SELECTOR);
+      await waitFor(PAUSE_BUTTON);
     });
 
     await step('reload the page', async () => {
@@ -229,7 +229,7 @@ describe('Sources Tab', function() {
 
     await step('resume script execution', async () => {
       await frontend.keyboard.press('F8');
-      await waitFor(TURNED_OFF_PAUSE_BUTTON_SELECTOR);
+      await waitFor(PAUSE_BUTTON);
     });
 
     await step('remove the breakpoint from the line 0x060', async () => {
@@ -266,7 +266,7 @@ describe('Sources Tab', function() {
 
     await step('resume script execution', async () => {
       await frontend.keyboard.press('F8');
-      await waitFor(TURNED_OFF_PAUSE_BUTTON_SELECTOR);
+      await waitFor(PAUSE_BUTTON);
     });
 
     await checkBreakpointDidNotActivate();
@@ -338,7 +338,7 @@ describe('Sources Tab', function() {
 
     await step('resume script execution', async () => {
       await frontend.keyboard.press('F8');
-      await waitFor(TURNED_OFF_PAUSE_BUTTON_SELECTOR);
+      await waitFor(PAUSE_BUTTON);
     });
 
     await step('remove the breakpoint from the line 0x060', async () => {
@@ -387,7 +387,7 @@ describe('Sources Tab', function() {
 
     await step('resume script execution', async () => {
       await frontend.keyboard.press('F8');
-      await waitFor(TURNED_OFF_PAUSE_BUTTON_SELECTOR);
+      await waitFor(PAUSE_BUTTON);
     });
 
     await checkBreakpointDidNotActivate();
@@ -500,7 +500,7 @@ describe('Sources Tab', function() {
 
     await step('resume script execution', async () => {
       await frontend.keyboard.press('F8');
-      await waitFor(TURNED_OFF_PAUSE_BUTTON_SELECTOR);
+      await waitFor(PAUSE_BUTTON);
     });
 
     await checkBreakpointDidNotActivate();

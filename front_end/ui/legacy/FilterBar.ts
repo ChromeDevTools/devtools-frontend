@@ -84,6 +84,8 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTyp
         Common.Settings.Settings.instance().createSetting('filter-bar-' + name + '-toggled', Boolean(visibleByDefault));
     this.filterButtonInternal =
         new ToolbarSettingToggle(this.stateSetting, 'filter', i18nString(UIStrings.filter), 'filter-filled', 'filter');
+    this.filterButtonInternal.element.style.setProperty('--dot-toggle-top', '13px');
+    this.filterButtonInternal.element.style.setProperty('--dot-toggle-left', '14px');
 
     this.filters = [];
 
@@ -167,8 +169,7 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTyp
 
   private updateFilterButton(): void {
     const isActive = this.hasActiveFilter();
-    this.filterButtonInternal.setDefaultWithRedColor(isActive);
-    this.filterButtonInternal.setToggleWithRedColor(isActive);
+    this.filterButtonInternal.setChecked(isActive);
   }
 
   clear(): void {

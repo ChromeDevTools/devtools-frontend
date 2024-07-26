@@ -1013,8 +1013,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       messages.push(i18nString(UIStrings.JavascriptSamplingIsDisabled));
     }
 
-    this.showSettingsPaneButton.setDefaultWithRedColor(messages.length > 0);
-    this.showSettingsPaneButton.setToggleWithRedColor(messages.length > 0);
+    this.showSettingsPaneButton.setChecked(messages.length > 0);
+    this.showSettingsPaneButton.element.style.setProperty('--dot-toggle-top', '16px');
+    this.showSettingsPaneButton.element.style.setProperty('--dot-toggle-left', '15px');
 
     if (messages.length) {
       const tooltipElement = document.createElement('div');

@@ -48,10 +48,8 @@ describe('The Performance panel', () => {
 
     // Check that the warning is shown on the settings gear:
     const gear =
-        await waitForAria('- Hardware concurrency override is enabled') as puppeteer.ElementHandle<HTMLElement>;
-    assert.isTrue(
-        await hasClass(gear, 'toolbar-toggle-with-red-color'),
-        'Performance settings toggle icon should be shown in red');
+        await waitFor('[title="- Hardware concurrency override is enabled"]') as puppeteer.ElementHandle<HTMLElement>;
+    assert.isTrue(await hasClass(gear, 'checked'), 'Performance settings toggle icon should be shown with a dot');
 
     // Check that the concurrency input shows the correct value:
     const input =

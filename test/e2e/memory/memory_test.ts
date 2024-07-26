@@ -272,7 +272,7 @@ describe('The Memory Panel', function() {
         retainerChain => retainerChain.some(({retainerClassName}) => retainerClassName === 'Detached Window'));
   });
 
-  it('Shows the a tooltip', async () => {
+  it('Shows a tooltip', async () => {
     await goToResource('memory/detached-dom-tree.html');
     await navigateToMemoryTab();
     await takeHeapSnapshot();

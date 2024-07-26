@@ -25,6 +25,7 @@ export const enum Variant {
   PRIMARY_TOOLBAR = 'primary_toolbar',
   ICON = 'icon',
   ICON_TOGGLE = 'icon_toggle',
+  ADORNER_ICON = 'adorner_icon',
 }
 
 export const enum Size {
@@ -46,6 +47,9 @@ interface ButtonState {
   size?: Size;
   disabled: boolean;
   toggled?: boolean;
+  toggleOnClick?: boolean;
+  checked?: boolean;
+  pressed?: boolean;
   active: boolean;
   spinner?: boolean;
   type: ButtonType;
@@ -55,6 +59,7 @@ interface ButtonState {
   toggledIconName?: string;
   toggleType?: ToggleType;
   jslogContext?: string;
+  longClickable?: boolean;
 }
 
 interface CommonButtonData {
@@ -63,15 +68,18 @@ interface CommonButtonData {
   iconName?: string;
   toggledIconName?: string;
   toggleType?: ToggleType;
+  toggleOnClick?: boolean;
   size?: Size;
   disabled?: boolean;
   toggled?: boolean;
+  checked?: boolean;
   active?: boolean;
   spinner?: boolean;
   type?: ButtonType;
   value?: string;
   title?: string;
   jslogContext?: string;
+  longClickable?: boolean;
 }
 
 export type ButtonData = CommonButtonData&(|{
@@ -81,7 +89,7 @@ export type ButtonData = CommonButtonData&(|{
   variant: Variant.PRIMARY_TOOLBAR | Variant.TOOLBAR | Variant.ICON,
   iconName: string,
 }|{
-  variant: Variant.PRIMARY | Variant.OUTLINED | Variant.TONAL | Variant.TEXT,
+  variant: Variant.PRIMARY | Variant.OUTLINED | Variant.TONAL | Variant.TEXT | Variant.ADORNER_ICON,
 }|{
   variant: Variant.ICON_TOGGLE,
   iconName: string,
@@ -98,10 +106,12 @@ export class Button extends HTMLElement {
   readonly #boundOnClick = this.#onClick.bind(this);
   readonly #props: ButtonState = {
     size: Size.REGULAR,
+    toggleOnClick: true,
     disabled: false,
     active: false,
     spinner: false,
     type: 'button',
+    longClickable: false,
   };
   #isEmpty = true;
   #internals = this.attachInternals();
@@ -121,6 +131,7 @@ export class Button extends HTMLElement {
     this.#props.iconUrl = data.iconUrl;
     this.#props.iconName = data.iconName;
     this.#props.toggledIconName = data.toggledIconName;
+    this.#props.toggleOnClick = data.toggleOnClick !== undefined ? data.toggleOnClick : true;
     this.#props.size = Size.REGULAR;
 
     if ('size' in data && data.size) {
@@ -136,9 +147,11 @@ export class Button extends HTMLElement {
     }
     this.#props.toggled = data.toggled;
     this.#props.toggleType = data.toggleType;
+    this.#props.checked = data.checked;
     this.#setDisabledProperty(data.disabled || false);
     this.#props.title = data.title;
     this.#props.jslogContext = data.jslogContext;
+    this.#props.longClickable = data.longClickable;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -185,6 +198,11 @@ export class Button extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
+  set toggleOnClick(toggleOnClick: boolean) {
+    this.#props.toggleOnClick = toggleOnClick;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
   set toggled(toggled: boolean) {
     this.#props.toggled = toggled;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
@@ -192,6 +210,16 @@ export class Button extends HTMLElement {
 
   get toggled(): boolean {
     return Boolean(this.#props.toggled);
+  }
+
+  set checked(checked: boolean) {
+    this.#props.checked = checked;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  set pressed(pressed: boolean) {
+    this.#props.pressed = pressed;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   set active(active: boolean) {
@@ -217,9 +245,14 @@ export class Button extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
+  set longClickable(longClickable: boolean) {
+    this.#props.longClickable = longClickable;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
   #setDisabledProperty(disabled: boolean): void {
     this.#props.disabled = disabled;
-    this.toggleAttribute('disabled', disabled);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   override focus(): void {
@@ -247,7 +280,7 @@ export class Button extends HTMLElement {
       event.preventDefault();
       this.form.reset();
     }
-    if (this.#props.variant === Variant.ICON_TOGGLE && this.#props.iconName) {
+    if (this.#props.toggleOnClick && this.#props.variant === Variant.ICON_TOGGLE && this.#props.iconName) {
       this.toggled = !this.#props.toggled;
     }
   }
@@ -298,6 +331,7 @@ export class Button extends HTMLElement {
       'primary-toggle': this.#props.toggleType === ToggleType.PRIMARY,
       'red-toggle': this.#props.toggleType === ToggleType.RED,
       toggled: Boolean(this.#props.toggled),
+      checked: Boolean(this.#props.checked),
       'text-with-icon': hasIcon && !this.#isEmpty,
       'only-icon': hasIcon && this.#isEmpty,
       'only-text': !hasIcon && !this.#isEmpty,
@@ -316,12 +350,15 @@ export class Button extends HTMLElement {
     // clang-format off
     LitHtml.render(
       LitHtml.html`
-        <button title=${LitHtml.Directives.ifDefined(this.#props.title)} .disabled=${this.#props.disabled} class=${LitHtml.Directives.classMap(classes)} jslog=${LitHtml.Directives.ifDefined(jslog)}>
+        <button title=${LitHtml.Directives.ifDefined(this.#props.title)} .disabled=${this.#props.disabled} class=${LitHtml.Directives.classMap(classes)} aria-pressed=${LitHtml.Directives.ifDefined(this.#props.pressed)} jslog=${LitHtml.Directives.ifDefined(jslog)}>
           ${hasIcon
             ? LitHtml.html`
                 <${IconButton.Icon.Icon.litTagName} name=${this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName || this.#props.iconUrl}>
                 </${IconButton.Icon.Icon.litTagName}>`
             : ''}
+          ${this.#props.longClickable ? LitHtml.html`<${IconButton.Icon.Icon.litTagName} name=${'triangle-bottom-right'} class="long-click">
+          </${IconButton.Icon.Icon.litTagName}>`
+      : ''}
           ${this.#props.spinner ? LitHtml.html`<span class=${LitHtml.Directives.classMap(spinnerClasses)}></span>` : ''}
           <slot @slotchange=${this.#onSlotChange}></slot>
         </button>

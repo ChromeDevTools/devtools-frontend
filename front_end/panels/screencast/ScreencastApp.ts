@@ -87,7 +87,7 @@ export class ScreencastApp implements Common.App.App,
   }
 
   private toggleButtonClicked(): void {
-    const enabled = !this.toggleButton.toggled();
+    const enabled = !this.toggleButton.isToggled();
     this.enabledSetting.set(enabled);
     this.onScreencastEnabledChanged();
   }

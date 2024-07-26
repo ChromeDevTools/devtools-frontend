@@ -289,7 +289,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
    * Called when the `Toggle Record` button is clicked.
    */
   toggleRecording(): void {
-    this.model.setRecording(!this.recordButton.toggled(), this.serviceName);
+    this.model.setRecording(!this.recordButton.isToggled(), this.serviceName);
   }
 
   /**
@@ -305,7 +305,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
       return;
     }
 
-    if (state.isRecording === this.recordButton.toggled()) {
+    if (state.isRecording === this.recordButton.isToggled()) {
       return;
     }
 
@@ -315,8 +315,8 @@ export class BackgroundServiceView extends UI.Widget.VBox {
   }
 
   private updateRecordButtonTooltip(): void {
-    const buttonTooltip = this.recordButton.toggled() ? i18nString(UIStrings.stopRecordingEvents) :
-                                                        i18nString(UIStrings.startRecordingEvents);
+    const buttonTooltip = this.recordButton.isToggled() ? i18nString(UIStrings.stopRecordingEvents) :
+                                                          i18nString(UIStrings.startRecordingEvents);
     this.recordButton.setTitle(buttonTooltip, 'background-service.toggle-recording');
   }
 
@@ -472,7 +472,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     if (this.dataGrid.rootNode().children.length) {
       // Inform users that grid entries are clickable.
       centered.createChild('p').textContent = i18nString(UIStrings.selectAnEntryToViewMetadata);
-    } else if (this.recordButton.toggled()) {
+    } else if (this.recordButton.isToggled()) {
       // Inform users that we are recording/waiting for events.
       const featureName = BackgroundServiceView.getUIString(this.serviceName).toLowerCase();
       centered.createChild('p').textContent = i18nString(UIStrings.recordingSActivity, {PH1: featureName});

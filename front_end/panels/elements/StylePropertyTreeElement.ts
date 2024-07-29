@@ -337,9 +337,9 @@ export class ColorRenderer implements MatchRenderer<ColorMatch> {
             return;
           }
           if (color.is(Common.Color.Format.HSL) || color.is(Common.Color.Format.HSLA)) {
-            swatch.renderColor(new Common.Color.HSL(hue, color.s, color.l, color.alpha));
+            swatch.setColor(new Common.Color.HSL(hue, color.s, color.l, color.alpha));
           } else if (color.is(Common.Color.Format.HWB) || color.is(Common.Color.Format.HWBA)) {
-            swatch.renderColor(new Common.Color.HWB(hue, color.w, color.b, color.alpha));
+            swatch.setColor(new Common.Color.HWB(hue, color.w, color.b, color.alpha));
           }
           angle.updateProperty(swatch.getColor()?.asString() ?? '');
         });

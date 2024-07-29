@@ -720,13 +720,18 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const stylePropertyTreeElement = getTreeElement('color', 'hsl(120deg, 50%, 25%)');
       stylePropertyTreeElement.updateTitle();
       const colorSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
+
       assert.exists(colorSwatch);
       assert.strictEqual(colorSwatch.getColor()?.asString(Common.Color.Format.HSL), 'hsl(120deg 50% 25%)');
+      const eventHandler = sinon.stub<[InlineEditor.ColorSwatch.ColorChangedEvent]>();
+      colorSwatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, eventHandler);
 
       const angleSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-angle');
       assert.exists(angleSwatch);
       angleSwatch.updateAngle({value: 130, unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg});
       assert.strictEqual(colorSwatch.getColor()?.asString(Common.Color.Format.HSL), 'hsl(130deg 50% 25%)');
+      assert.isTrue(eventHandler.calledOnce);
+      assert.strictEqual(eventHandler.args[0][0].data.color, colorSwatch.getColor());
     });
 
     it('renders relative colors', () => {

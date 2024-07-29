@@ -269,6 +269,7 @@ export class NetworkRequestDetails extends HTMLElement {
                  imageAltText: LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(
                      this.#networkRequest.args.data.url as Platform.DevToolsPath.UrlString),
                  precomputedFeatures: undefined,
+                 align: LegacyComponents.ImagePreview.Align.START,
                }) as HTMLImageElement);
 
       this.#requestPreviewElements.set(this.#networkRequest, previewElement);

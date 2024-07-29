@@ -1080,6 +1080,7 @@ export class TimelineUIUtils {
           previewElement = await LegacyComponents.ImagePreview.ImagePreview.build(maybeTarget, url, false, {
             imageAltText: LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(url),
             precomputedFeatures: undefined,
+            align: LegacyComponents.ImagePreview.Align.START,
           });
         } else if (TraceEngine.Types.TraceEvents.isTraceEventPaint(event)) {
           previewElement = await TimelineUIUtils.buildPicturePreviewContent(traceParseData, event, maybeTarget);

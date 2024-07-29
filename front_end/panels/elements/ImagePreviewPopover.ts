@@ -47,8 +47,11 @@ export class ImagePreviewPopover {
         }
         const precomputedFeatures = await Components.ImagePreview.ImagePreview.loadDimensionsForNode(node);
         const preview = await Components.ImagePreview.ImagePreview.build(
-            node.domModel().target(), href as Platform.DevToolsPath.UrlString, true,
-            {imageAltText: undefined, precomputedFeatures});
+            node.domModel().target(), href as Platform.DevToolsPath.UrlString, true, {
+              imageAltText: undefined,
+              precomputedFeatures,
+              align: Components.ImagePreview.Align.CENTER,
+            });
         if (preview) {
           popover.contentElement.appendChild(preview);
         }

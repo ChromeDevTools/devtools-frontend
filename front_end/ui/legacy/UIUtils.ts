@@ -621,9 +621,12 @@ export function asyncStackTraceLabel(
   return i18nString(UIStrings.asyncCall);
 }
 
-export function installComponentRootStyles(element: Element): void {
-  injectCoreStyles(element);
+export function addPlatformClass(element: HTMLElement): void {
   element.classList.add('platform-' + Host.Platform.platform());
+}
+
+export function installComponentRootStyles(element: HTMLElement): void {
+  injectCoreStyles(element);
 
   // Detect overlay scrollbar enable by checking for nonzero scrollbar width.
   if (!Host.Platform.isMac() && measuredScrollbarWidth(element.ownerDocument) === 0) {

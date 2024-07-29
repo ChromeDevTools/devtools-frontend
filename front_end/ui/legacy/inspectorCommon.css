@@ -50,6 +50,11 @@
   --sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
   --sys-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
   --sys-motion-easing-emphasized-accelerate: cubic-bezier(0.2, 0, 0, 1);
+
+  /* This will be overridden by the platform-X classes that get
+   * added to the html tag on load, but is here as a safe
+   * fallback */
+  --default-font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
 }
 
 .theme-with-dark-background {
@@ -81,8 +86,6 @@
 }
 
 body {
-  --default-font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
-
   height: 100%;
   width: 100%;
   position: relative;

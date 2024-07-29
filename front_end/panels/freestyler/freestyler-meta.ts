@@ -63,7 +63,7 @@ UI.ViewManager.registerViewExtension({
   order: 10,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   hasToolbar: false,
-  condition: isFeatureAvailable,
+  condition: config => isFeatureAvailable(config) && Common.Settings.Settings.instance().moduleSetting(setting).get(),
   async loadView() {
     const Freestyler = await loadFreestylerModule();
     return Freestyler.FreestylerPanel.instance();

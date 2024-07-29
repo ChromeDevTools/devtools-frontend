@@ -22,7 +22,8 @@
   left: 0;
 }
 
-.overlay-type-ENTRY_SELECTED {
+.overlay-type-ENTRY_SELECTED,
+.overlay-type-ENTRY_OUTLINE {
   pointer-events: none;
   border: 2px solid var(--sys-color-primary);
   background-color: var(--sys-color-state-ripple-primary);
@@ -33,6 +34,15 @@
 
   &.cut-off-bottom {
     border-bottom: none;
+  }
+}
+
+.overlay-type-ENTRY_OUTLINE {
+  background-color: transparent;
+
+  &.outline-reason-ERROR {
+    border-color: var(--sys-color-error-bright);
+    border-radius: var(--sys-shape-corner-small);
   }
 }
 

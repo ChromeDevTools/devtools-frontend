@@ -272,6 +272,33 @@ describeWithEnvironment('Overlays', () => {
       assert.isOk(overlayDOM);
     });
 
+    it('does not render an ENTRY_OUTLINE if the entry is also the ENTRY_SELECTED entry', async function() {
+      const {traceData} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceData);
+      const event = charts.mainProvider.eventByIndex?.(50);
+      assert.isOk(event);
+      overlays.add({
+        type: 'ENTRY_OUTLINE',
+        entry: event,
+        outlineReason: 'ERROR',
+      });
+      overlays.update();
+
+      const outlineVisible =
+          container.querySelector<HTMLElement>('.overlay-type-ENTRY_OUTLINE')?.style.visibility === 'visible';
+      assert.isTrue(outlineVisible, 'The ENTRY_OUTLINE should be visible');
+
+      // Now make a selected entry too
+      overlays.add({
+        type: 'ENTRY_SELECTED',
+        entry: event,
+      });
+      overlays.update();
+      const outlineNowHidden =
+          container.querySelector<HTMLElement>('.overlay-type-ENTRY_OUTLINE')?.style.visibility === 'hidden';
+      assert.isTrue(outlineNowHidden, 'The ENTRY_OUTLINE should be hidden');
+    });
+
     it('only ever renders a single selected overlay', async function() {
       const {traceData} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceData);

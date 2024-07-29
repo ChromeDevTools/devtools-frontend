@@ -47,6 +47,17 @@ export interface EntrySelected {
 }
 
 /**
+ * Drawn around an entry when we want to highlight it to the user.
+ */
+export interface EntryOutline {
+  type: 'ENTRY_OUTLINE';
+  entry: OverlayEntry;
+  // Currently the only supported use-case is highlighting errors, but we may
+  // want to expand this in the future and have the outline appear differently.
+  outlineReason: 'ERROR';
+}
+
+/**
  * Represents an object created when a user creates a label for an entry in the timeline.
  */
 export interface EntryLabel {
@@ -82,7 +93,8 @@ export interface CursorTimestampMarker {
 /**
  * All supported overlay types. Expected to grow in time!
  */
-export type TimelineOverlay = EntrySelected|TimeRangeLabel|EntryLabel|TimespanBreakdown|CursorTimestampMarker;
+export type TimelineOverlay =
+    EntrySelected|EntryOutline|TimeRangeLabel|EntryLabel|TimespanBreakdown|CursorTimestampMarker;
 
 /**
  * Denotes overlays that are singletons; only one of these will be allowed to
@@ -468,12 +480,26 @@ export class Overlays extends EventTarget {
       case 'ENTRY_SELECTED': {
         if (this.entryIsVisibleOnChart(overlay.entry)) {
           element.style.visibility = 'visible';
-          this.#positionEntrySelectedOverlay(overlay, element);
+          this.#positionEntryBorderOutlineType(overlay, element);
         } else {
           element.style.visibility = 'hidden';
         }
         break;
       }
+      case 'ENTRY_OUTLINE': {
+        const selectedOverlay = this.overlaysOfType<EntrySelected>('ENTRY_SELECTED')?.at(0);
+        // Check if this entry has also been selected by the user. If it has,
+        // do not show the outline, but only show the selected outline.
+        const outlinedEntryIsSelected = Boolean(selectedOverlay && selectedOverlay.entry === overlay.entry);
+        if (!outlinedEntryIsSelected && this.entryIsVisibleOnChart(overlay.entry)) {
+          element.style.visibility = 'visible';
+          this.#positionEntryBorderOutlineType(overlay, element);
+        } else {
+          element.style.visibility = 'hidden';
+        }
+        break;
+      }
+
       case 'TIME_RANGE': {
         this.#positionTimeRangeOverlay(overlay, element);
         const component = element.querySelector('devtools-time-range-overlay');
@@ -642,12 +668,12 @@ export class Overlays extends EventTarget {
   }
 
   /**
-   * Positions an EntrySelected overlay. As we extend the list of overlays,
-   * some of the code in here around positioning may be re-used elsewhere.
-   * @param overlay - the EntrySelected overlay that we need to position.
+   * Positions an EntrySelected or EntryOutline overlay. These share the same
+   * method as they are both borders around an entry.
+   * @param overlay - the EntrySelected/EntryOutline overlay that we need to position.
    * @param element - the DOM element representing the overlay
    */
-  #positionEntrySelectedOverlay(overlay: EntrySelected, element: HTMLElement): void {
+  #positionEntryBorderOutlineType(overlay: EntrySelected|EntryOutline, element: HTMLElement): void {
     const chartName = this.#chartForOverlayEntry(overlay.entry);
     let x = this.xPixelForEventOnChart(overlay.entry);
     let y = this.yPixelForEventOnChart(overlay.entry);
@@ -759,6 +785,10 @@ export class Overlays extends EventTarget {
         div.appendChild(component);
         return div;
       }
+      case 'ENTRY_OUTLINE': {
+        div.classList.add(`outline-reason-${overlay.outlineReason}`);
+        return div;
+      }
       case 'TIME_RANGE': {
         const component = new Components.TimeRangeOverlay.TimeRangeOverlay(overlay.label);
         component.duration = overlay.showDuration ? overlay.bounds.range : null;
@@ -796,6 +826,8 @@ export class Overlays extends EventTarget {
         }
         break;
       }
+      case 'ENTRY_OUTLINE':
+        break;
       case 'ENTRY_LABEL': {
         // TODO: update if the label changes
         // Nothing to do here.

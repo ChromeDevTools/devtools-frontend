@@ -504,7 +504,7 @@ export function getGetHostConfigStub(config: RecursivePartial<Root.Runtime.HostC
       aidaTemperature: 0,
       enabled: false,
       ...config.devToolsFreestylerDogfood,
-    },
+    } as Root.Runtime.HostConfigFreestylerDogfood,
     devToolsVeLogging: {
       enabled: true,
       testing: false,

@@ -319,6 +319,9 @@ export interface HostConfigConsoleInsights {
 export interface HostConfigFreestylerDogfood {
   aidaModelId: string;
   aidaTemperature: number;
+  blockedByAge: boolean;
+  blockedByEnterprisePolicy: boolean;
+  blockedByGeo: boolean;
   enabled: boolean;
 }
 

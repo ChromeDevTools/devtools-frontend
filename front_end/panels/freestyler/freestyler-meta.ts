@@ -33,6 +33,25 @@ const UIStringsTemp = {
    *the current element as context
    */
   askFreestyler: 'Ask Freestyler',
+  /**
+   * @description Message shown to the user if the DevTools locale is not
+   * supported.
+   */
+  wrongLocale: 'To use this feature, update your Language preference in DevTools Settings to English.',
+  /**
+   * @description Message shown to the user if the age check is not successful.
+   */
+  ageRestricted: 'This feature is only available to users who are 18 years of age or older.',
+  /**
+   * @description Message shown to the user if the user's region is not
+   * supported.
+   */
+  geoRestricted: 'This feature is unavailable in your region.',
+  /**
+   * @description Message shown to the user if the enterprise policy does
+   * not allow this feature.
+   */
+  policyRestricted: 'Your organization turned off this feature. Contact your administrators for more information.',
 };
 
 // TODO(nvitkov): b/346933425
@@ -40,8 +59,26 @@ const UIStringsTemp = {
 // const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 /* eslint-disable  rulesdir/l10n_i18nString_call_only_with_uistrings */
 const i18nLazyString = i18n.i18n.lockedLazyString;
+const i18nString = i18n.i18n.lockedString;
 
 const setting = 'freestyler-enabled';
+
+function isLocaleRestricted(): boolean {
+  const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
+  return !devtoolsLocale.locale.startsWith('en-');
+}
+
+function isAgeRestricted(config?: Root.Runtime.HostConfig): boolean {
+  return config?.devToolsFreestylerDogfood?.blockedByAge === true;
+}
+
+function isGeoRestricted(config?: Root.Runtime.HostConfig): boolean {
+  return config?.devToolsFreestylerDogfood?.blockedByGeo === true;
+}
+
+function isPolicyRestricted(config?: Root.Runtime.HostConfig): boolean {
+  return config?.devToolsFreestylerDogfood?.blockedByEnterprisePolicy === true;
+}
 
 let loadedFreestylerModule: (typeof Freestyler|undefined);
 async function loadFreestylerModule(): Promise<typeof Freestyler> {
@@ -78,6 +115,22 @@ Common.Settings.registerSettingExtension({
   defaultValue: isFeatureAvailable,
   reloadRequired: true,
   condition: isFeatureAvailable,
+  disabledCondition: config => {
+    if (isLocaleRestricted()) {
+      return {disabled: true, reason: i18nString(UIStringsTemp.wrongLocale)};
+    }
+    if (isAgeRestricted(config)) {
+      return {disabled: true, reason: i18nString(UIStringsTemp.ageRestricted)};
+    }
+    if (isGeoRestricted(config)) {
+      return {disabled: true, reason: i18nString(UIStringsTemp.geoRestricted)};
+    }
+    if (isPolicyRestricted(config)) {
+      return {disabled: true, reason: i18nString(UIStringsTemp.policyRestricted)};
+    }
+
+    return {disabled: false};
+  },
 });
 
 UI.ActionRegistration.registerActionExtension({

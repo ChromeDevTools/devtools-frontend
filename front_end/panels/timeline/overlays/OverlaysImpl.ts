@@ -760,9 +760,8 @@ export class Overlays extends EventTarget {
         return div;
       }
       case 'TIME_RANGE': {
-        const component = new Components.TimeRangeOverlay.TimeRangeOverlay();
+        const component = new Components.TimeRangeOverlay.TimeRangeOverlay(overlay.label);
         component.duration = overlay.showDuration ? overlay.bounds.range : null;
-        component.label = overlay.label;
         component.canvasRect = this.#charts.mainChart.canvasBoundingClientRect();
         div.appendChild(component);
         return div;
@@ -793,7 +792,6 @@ export class Overlays extends EventTarget {
         const component = element.querySelector('devtools-time-range-overlay');
         if (component) {
           component.duration = overlay.showDuration ? overlay.bounds.range : null;
-          component.label = overlay.label;
           component.canvasRect = this.#charts.mainChart.canvasBoundingClientRect();
         }
         break;

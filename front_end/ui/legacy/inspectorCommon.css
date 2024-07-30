@@ -295,6 +295,9 @@ input {
 
     &:not(:disabled):focus-visible {
       outline: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       &::before {
         content: "";
@@ -302,8 +305,6 @@ input {
         width: 15px;
         border-radius: 5px;
         position: absolute;
-        top: -3.5px;
-        left: -3.5px;
         border: 2px solid var(--sys-color-state-focus-ring);
       }
     }

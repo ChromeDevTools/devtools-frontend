@@ -5755,7 +5755,7 @@ export const NativeFunctions = [
   },
   {
     name: "tanh",
-    signatures: [["?input","?options"]],
+    signatures: [["input","?options"]],
     receivers: ["MLGraphBuilder"]
   },
   {
@@ -6611,6 +6611,10 @@ export const NativeFunctions = [
   {
     name: "TextUpdateEvent",
     signatures: [["type","?options"]]
+  },
+  {
+    name: "getComposedRanges",
+    signatures: [["...shadowRoots"]]
   },
   {
     name: "AnimationEvent",
@@ -7851,7 +7855,7 @@ export const NativeFunctions = [
   },
   {
     name: "elu",
-    signatures: [["?options"],["x","?options"]]
+    signatures: [["x","?options"]]
   },
   {
     name: "gather",
@@ -7859,7 +7863,7 @@ export const NativeFunctions = [
   },
   {
     name: "gelu",
-    signatures: [["?input","?options"]]
+    signatures: [["input","?options"]]
   },
   {
     name: "gemm",
@@ -7875,11 +7879,11 @@ export const NativeFunctions = [
   },
   {
     name: "hardSigmoid",
-    signatures: [["?options"],["x","?options"]]
+    signatures: [["x","?options"]]
   },
   {
     name: "hardSwish",
-    signatures: [["?x","?options"]]
+    signatures: [["x","?options"]]
   },
   {
     name: "instanceNormalization",
@@ -7895,11 +7899,11 @@ export const NativeFunctions = [
   },
   {
     name: "leakyRelu",
-    signatures: [["?options"],["x","?options"]]
+    signatures: [["x","?options"]]
   },
   {
     name: "linear",
-    signatures: [["?options"],["input","?options"]]
+    signatures: [["input","?options"]]
   },
   {
     name: "lstm",
@@ -7971,7 +7975,7 @@ export const NativeFunctions = [
   },
   {
     name: "relu",
-    signatures: [["?input","?options"]]
+    signatures: [["input","?options"]]
   },
   {
     name: "reshape",
@@ -7983,7 +7987,7 @@ export const NativeFunctions = [
   },
   {
     name: "sigmoid",
-    signatures: [["?input","?options"]]
+    signatures: [["input","?options"]]
   },
   {
     name: "softmax",
@@ -7991,11 +7995,11 @@ export const NativeFunctions = [
   },
   {
     name: "softplus",
-    signatures: [["?input","?options"]]
+    signatures: [["input","?options"]]
   },
   {
     name: "softsign",
-    signatures: [["?input","?options"]]
+    signatures: [["input","?options"]]
   },
   {
     name: "transpose",

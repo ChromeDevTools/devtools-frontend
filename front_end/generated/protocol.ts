@@ -11487,6 +11487,7 @@ export namespace Page {
     KeyboardMap = 'keyboard-map',
     LocalFonts = 'local-fonts',
     Magnetometer = 'magnetometer',
+    MediaPlaybackWhileNotVisible = 'media-playback-while-not-visible',
     Microphone = 'microphone',
     Midi = 'midi',
     OtpCredentials = 'otp-credentials',

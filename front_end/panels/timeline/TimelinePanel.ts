@@ -306,7 +306,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private readonly panelRightToolbar: UI.Toolbar.Toolbar;
   private readonly timelinePane: UI.Widget.VBox;
   readonly #minimapComponent = new TimelineMiniMap();
-  readonly #sideBar = new TimelineComponents.Sidebar.SidebarWidget();
+  readonly #splitWidget = new UI.SplitWidget.SplitWidget(
+      true,
+      false,
+      undefined,
+      240,  // TODO: move into a constant
+  );
   private readonly statusPaneContainer: HTMLElement;
   private readonly flameChart: TimelineFlameChartView;
   private readonly searchableViewInternal: UI.SearchableView.SearchableView;
@@ -342,7 +347,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   #sourceMapsResolver: SourceMapsResolver|null = null;
   #onSourceMapsNodeNamesResolvedBound = this.#onSourceMapsNodeNamesResolved.bind(this);
   readonly #onChartPlayableStateChangeBound: (event: Common.EventTarget.EventTargetEvent<boolean>) => void;
-  #sidebarToggleButton = this.#sideBar.createShowHideSidebarButton(
+  #sidebarToggleButton = this.#splitWidget.createShowHideSidebarButton(
       i18nString(UIStrings.showSidebar),
       i18nString(UIStrings.hideSidebar),
       // These are used to announce to screen-readers and not shown visibly.
@@ -350,6 +355,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       i18nString(UIStrings.sidebarHidden),
       'timeline.sidebar',  // jslog context
   );
+
+  #sideBar = new TimelineComponents.Sidebar.SidebarWidget();
 
   constructor() {
     super('timeline');
@@ -451,19 +458,20 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.flameChart.setSearchableView(this.searchableViewInternal);
     this.searchableViewInternal.hideWidget();
 
-    this.#sideBar.setMainWidget(this.timelinePane);
-    this.#sideBar.show(this.element);
+    this.#splitWidget.setMainWidget(this.timelinePane);
+    this.#splitWidget.show(this.element);
+    this.#splitWidget.setSidebarWidget(this.#sideBar);
 
-    this.#sideBar.contentElement.addEventListener(TimelineInsights.SidebarInsight.InsightDeactivated.eventName, () => {
+    this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightDeactivated.eventName, () => {
       this.#setActiveInsight(null);
     });
 
-    this.#sideBar.contentElement.addEventListener(TimelineInsights.SidebarInsight.InsightActivated.eventName, event => {
+    this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightActivated.eventName, event => {
       const {name, navigationId, createOverlayFn} = event;
       this.#setActiveInsight({name, navigationId, createOverlayFn});
     });
 
-    this.#sideBar.contentElement.addEventListener(TimelineComponents.Sidebar.RemoveAnnotation.eventName, event => {
+    this.#sideBar.element.addEventListener(TimelineComponents.Sidebar.RemoveAnnotation.eventName, event => {
       const {removedAnnotation} = (event as TimelineComponents.Sidebar.RemoveAnnotation);
       ModificationsManager.activeManager()?.removeAnnotation(removedAnnotation);
     });
@@ -542,7 +550,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // The sidebar state is by-default persisted across reloads; we do not want
     // that as if you come back to the panel you see the landing page, and the
     // sidebar is empty in that state.
-    this.#sideBar.hideSidebar();
+    this.#splitWidget.hideSidebar();
   }
 
   override willHide(): void {
@@ -1408,7 +1416,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         } else if (action === 'Remove') {
           this.flameChart.removeOverlay(overlay);
         }
-        this.#sideBar.setAnnotationsTabContent(currentManager.getAnnotations());
+        this.#sideBar.setAnnotations(currentManager.getAnnotations());
       });
 
       // Create breadcrumbs.
@@ -1439,7 +1447,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       currModificationManager.getOverlays().forEach(overlay => {
         this.flameChart.addOverlay(overlay);
       });
-      this.#sideBar.setAnnotationsTabContent(currModificationManager.getAnnotations());
+      this.#sideBar.setAnnotations(currModificationManager.getAnnotations());
     }
 
     // Set up line level profiling with CPU profiles, if we found any.

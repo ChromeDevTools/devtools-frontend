@@ -482,6 +482,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (effectiveTab && this.autoSelectFirstItemOnShow) {
       this.selectTab(effectiveTab.id);
     }
+    this.updateTabElements();
   }
 
   makeTabSlider(): void {

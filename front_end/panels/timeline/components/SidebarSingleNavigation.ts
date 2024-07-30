@@ -8,7 +8,8 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import * as Insights from './insights/insights.js';
-import {type ActiveInsight, InsightsCategories} from './Sidebar.js';
+import {type ActiveInsight} from './Sidebar.js';
+import {InsightsCategories} from './SidebarInsightsTab.js';
 import styles from './sidebarSingleNavigation.css.js';
 
 export interface SidebarSingleNavigationData {

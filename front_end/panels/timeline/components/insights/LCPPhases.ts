@@ -216,7 +216,7 @@ export class LCPPhases extends HTMLElement {
   #renderLCPPhases(phaseData: PhaseData[]): LitHtml.LitTemplate {
     // clang-format off
     return LitHtml.html`
-    <div class="insights" @click=${()=>this.#sidebarClicked()}>
+    <div class="insights" @click=${this.#sidebarClicked}>
       <${SidebarInsight.SidebarInsight.litTagName} .data=${{
             title: this.#insightTitle,
             expanded: this.#isActive(),

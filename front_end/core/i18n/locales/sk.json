@@ -254,6 +254,9 @@
   "core/sdk/DebuggerModel.ts | closure": {
     "message": "Uzavretie"
   },
+  "core/sdk/DebuggerModel.ts | exception": {
+    "message": "Výnimka"
+  },
   "core/sdk/DebuggerModel.ts | expression": {
     "message": "Výraz"
   },
@@ -265,6 +268,9 @@
   },
   "core/sdk/DebuggerModel.ts | module": {
     "message": "Modul"
+  },
+  "core/sdk/DebuggerModel.ts | returnValue": {
+    "message": "Vrátená hodnota"
   },
   "core/sdk/DebuggerModel.ts | script": {
     "message": "Skript"
@@ -341,17 +347,20 @@
   "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
     "message": "Tento súbor cookie je povolený pravidlami licencie Chrome Enterprise. Viac sa dozviete na goo.gle/ce-3pc."
   },
+  "core/sdk/NetworkRequest.ts | exemptionReasonScheme": {
+    "message": "Tento súbor cookie je povolený schémou webovej adresy najvyššej úrovne"
+  },
   "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
     "message": "Tento súbor cookie je povolený rozhraním Storage Access API. Viac sa dozviete na goo.gle/saa."
   },
   "core/sdk/NetworkRequest.ts | exemptionReasonTPCDDeprecationTrial": {
-    "message": "Tento súbor cookie je povolený dočasným predĺžením podpory súboru cookie tretej strany."
+    "message": "Tento súbor cookie je povolený dočasným predĺžením podpory súboru cookie tretej strany. Viac sa dozviete na goo.gle/ps-dt."
   },
   "core/sdk/NetworkRequest.ts | exemptionReasonTPCDHeuristics": {
     "message": "Tento súbor cookie je povolený heuristikou súboru cookie tretej strany, ktorého podpora sa končí Viac sa dozviete na goo.gle/hbe."
   },
   "core/sdk/NetworkRequest.ts | exemptionReasonTPCDMetadata": {
-    "message": "Tento súbor cookie je povolený ochrannou lehotou v rámci dočasného predĺženia podpory súboru cookie tretej strany. Viac sa dozviete na goo.gle/ps-dt."
+    "message": "Tento súbor cookie je povolený ochrannou lehotou v rámci dočasného predĺženia podpory súboru cookie tretej strany. Viac sa dozviete na goo.gle/dt-grace."
   },
   "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelStorageAccessAPI": {
     "message": "Tento súbor cookie je povolený rozhraním Storage Access API najvyššej úrovne. Viac sa dozviete na goo.gle/saa-top."
@@ -959,6 +968,9 @@
   "entrypoints/main/main-meta.ts | browserLanguage": {
     "message": "Jazyk používateľského rozhrania prehliadača"
   },
+  "entrypoints/main/main-meta.ts | browserPreference": {
+    "message": "Predvoľba prehliadača"
+  },
   "entrypoints/main/main-meta.ts | cancelSearch": {
     "message": "Zrušiť vyhľadávanie"
   },
@@ -1046,17 +1058,14 @@
   "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
     "message": "Vypnúť vyhľadávanie počas zadávania (vyhľadávajte stlačením klávesa Enter)"
   },
+  "entrypoints/main/main-meta.ts | switchToBrowserPreferredColor": {
+    "message": "Prepnutie na preferovaný farebný motív prehliadača"
+  },
   "entrypoints/main/main-meta.ts | switchToDarkTheme": {
     "message": "Prepnúť na tmavý motív"
   },
   "entrypoints/main/main-meta.ts | switchToLightTheme": {
     "message": "Prepnúť na svetlý motív"
-  },
-  "entrypoints/main/main-meta.ts | switchToSystemPreferredColor": {
-    "message": "Prepnúť na farebný motív preferovaný systémom"
-  },
-  "entrypoints/main/main-meta.ts | systemPreference": {
-    "message": "Predvoľba systému"
   },
   "entrypoints/main/main-meta.ts | theme": {
     "message": "Motív:"
@@ -1171,6 +1180,9 @@
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "Podpora údajov: podpora webových adries v prvku SVGUseElement bola ukončená a v budúcnosti bude odstránená."
+  },
+  "generated/Deprecation.ts | DelegatedInkExpectedImprovement": {
+    "message": "Podpora parametra DelegatedInkTrailPresenter.expectedImprovement bola ukončená pre potenciálne problémy s digitálnymi stopami."
   },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Podpora uvoľnenia pravidla z rovnakých zdrojov nastavením funkcie document.domain bola ukončená a táto možnosť bude predvolene zakázaná. Ak chcete naďalej používať túto funkciu, odhláste sa z klastrov zástupcu spojených so zdrojom odoslaním hlavičky Origin-Agent-Cluster: ?0 spolu s odpoveďou HTTP pre dokument a rámy. Viac sa dozviete na https://developer.chrome.com/blog/immutable-document-domain/."
@@ -1486,9 +1498,6 @@
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Vysvetlenie blokovania CORB"
-  },
-  "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portály – komunikačné kanály s rovnakým zdrojom"
   },
   "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
     "message": "Ako funguje automatické dopĺňanie?"
@@ -3261,7 +3270,7 @@
     "message": "Stránky, ktoré udelili prístup k streamu médií, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
   },
   "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Stránky s portálmi momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+    "message": "Stránky s určitými druhmi vloženého obsahu (napr. súbormi PDF) momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
   },
   "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
     "message": "Stránky s nástrojom IdleManager momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
@@ -3343,9 +3352,6 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
     "message": "Stránky s obrazom v obraze momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | portal": {
-    "message": "Stránky s portálmi momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
   },
   "panels/application/components/BackForwardCacheStrings.ts | printing": {
     "message": "Stránky zobrazujúce používateľské rozhranie na tlač momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
@@ -5937,10 +5943,10 @@
     "message": "Skopírovať zmeny šablón CSS"
   },
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelHundred": {
-    "message": "Zvyšujte a znižujte prírastky kolieskom myši alebo klávesmi so šípkou nahor či nadol. {PH1}: ±100, Shift: ±10, Alt: ±0,1"
+    "message": "Zvyšujte a znižujte prírastky kolieskom myši alebo klávesmi so šípkou nahor či nadol. {PH1}: ±100, Shift: ±10, {PH2}: ±0,1"
   },
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
-    "message": "Zvyšujte a znižujte prírastky kolieskom myši alebo klávesmi so šípkou nahor či nadol. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
+    "message": "Zvyšujte a znižujte prírastky kolieskom myši alebo klávesmi so šípkou nahor či nadol. {PH1}: R ±1, Shift: G ±1, {PH2}: B ±1"
   },
   "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
     "message": "Zdedené zo pseudoprvku ::{PH1} zo zdroja "
@@ -6443,33 +6449,6 @@
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "Ak chcete používať túto funkciu, aktualizujte predvoľbu jazyka v nastaveniach nástrojov pre vývojárov na angličtinu."
   },
-  "panels/freestyler/FreestylerPanel.ts | clearMessages": {
-    "message": "Vymazať správy"
-  },
-  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
-    "message": "Odoslať spätnú väzbu"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | emptyStateText": {
-    "message": "Ako vám môžem pomôcť?"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimer": {
-    "message": "Freestyler môže zobrazovať nepresné a nesprávne informácie"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | inputPlaceholder": {
-    "message": "Požiadajte pomocou funkcie Freestyler alebo napíšte / a zobrazte si príkazy"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | selectAnElement": {
-    "message": "Vybrať prvok"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | sendButtonTitle": {
-    "message": "Odoslať"
-  },
-  "panels/freestyler/freestyler-meta.ts | freestyler": {
-    "message": "Freestyler"
-  },
-  "panels/freestyler/freestyler-meta.ts | showFreestyler": {
-    "message": "Zobraziť Freestyler"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blokovaný zdroj"
   },
@@ -6860,14 +6839,14 @@
   "panels/js_timeline/js_timeline-meta.ts | record": {
     "message": "Zaznamenať"
   },
+  "panels/js_timeline/js_timeline-meta.ts | recordAndReload": {
+    "message": "Nahrať a znova načítať"
+  },
   "panels/js_timeline/js_timeline-meta.ts | showPerformance": {
     "message": "Zobraziť výkonnosť"
   },
   "panels/js_timeline/js_timeline-meta.ts | showRecentTimelineSessions": {
     "message": "Zobraziť nedávne relácie časovej osi"
-  },
-  "panels/js_timeline/js_timeline-meta.ts | startProfilingAndReloadPage": {
-    "message": "Spustiť profilovanie a znova načítať stránku"
   },
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Ukončiť"
@@ -6956,9 +6935,6 @@
   "panels/layer_viewer/Layers3DView.ts | dLayersView": {
     "message": "Zobrazenie 3D vrstiev"
   },
-  "panels/layer_viewer/Layers3DView.ts | deprecationWarning": {
-    "message": "Podpora panela Vrstvy môže byť čoskoro ukončená. Podeľte sa o svoje názory a obavy, než sa rozhodneme."
-  },
   "panels/layer_viewer/Layers3DView.ts | layerInformationIsNotYet": {
     "message": "Informácia o vrstvách zatiaľ nie je dostupná."
   },
@@ -6967,9 +6943,6 @@
   },
   "panels/layer_viewer/Layers3DView.ts | resetView": {
     "message": "Resetovať zobrazenie"
-  },
-  "panels/layer_viewer/Layers3DView.ts | sendFeedback": {
-    "message": "Odoslať spätnú väzbu"
   },
   "panels/layer_viewer/Layers3DView.ts | showPaintProfiler": {
     "message": "Zobraziť Paint Profiler"
@@ -8156,6 +8129,30 @@
   "panels/network/NetworkLogView.ts | copyAllAsPowershell": {
     "message": "Kopírovať všetko ako PowerShell"
   },
+  "panels/network/NetworkLogView.ts | copyAllListedAsCurl": {
+    "message": "Kopírovať všetky položky uvedené ako cURL"
+  },
+  "panels/network/NetworkLogView.ts | copyAllListedAsCurlBash": {
+    "message": "Kopírovať všetky položky uvedené ako cURL (bash)"
+  },
+  "panels/network/NetworkLogView.ts | copyAllListedAsCurlCmd": {
+    "message": "Kopírovať všetky položky uvedené ako cURL (cmd)"
+  },
+  "panels/network/NetworkLogView.ts | copyAllListedAsFetch": {
+    "message": "Kopírovať všetky položky uvedené ako fetch"
+  },
+  "panels/network/NetworkLogView.ts | copyAllListedAsHar": {
+    "message": "Kopírovať všetky položky uvedené ako HAR"
+  },
+  "panels/network/NetworkLogView.ts | copyAllListedAsNodejsFetch": {
+    "message": "Kopírovať všetky položky uvedené ako fetch (Node.js)"
+  },
+  "panels/network/NetworkLogView.ts | copyAllListedAsPowershell": {
+    "message": "Kopírovať všetky položky uvedené ako PowerShell"
+  },
+  "panels/network/NetworkLogView.ts | copyAllListedURLs": {
+    "message": "Kopírovať všetky uvedené webové adresy"
+  },
   "panels/network/NetworkLogView.ts | copyAllURLs": {
     "message": "Skopírovať všetky webové adresy"
   },
@@ -9201,7 +9198,7 @@
     "message": "{PH1} B"
   },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
-    "message": "VZORKOVACIE PROFILY"
+    "message": "Vzorkovacie profily"
   },
   "panels/profiler/HeapProfileView.ts | selectedSizeS": {
     "message": "Vybraná veľkosť: {PH1}"
@@ -9396,13 +9393,10 @@
     "message": "Zásobník pridelenia"
   },
   "panels/profiler/HeapSnapshotView.ts | allocationTimelines": {
-    "message": "ČASOVÉ OSI PRIDELENIA"
+    "message": "Časové osi pridelenia"
   },
   "panels/profiler/HeapSnapshotView.ts | baseSnapshot": {
     "message": "Základný prehľad stavu"
-  },
-  "panels/profiler/HeapSnapshotView.ts | captureNumericValue": {
-    "message": "Zahrnúť do snímky číselné hodnoty"
   },
   "panels/profiler/HeapSnapshotView.ts | code": {
     "message": "Kód"
@@ -9438,7 +9432,7 @@
     "message": "Profily prehľadu stavu haldy zobrazujú distribúciu pamäte medzi objektmi JavaScript a súvisiacimi uzlami DOM vašej stránky."
   },
   "panels/profiler/HeapSnapshotView.ts | heapSnapshots": {
-    "message": "PREHĽADY STAVU HALDY"
+    "message": "Prehľady stavu haldy"
   },
   "panels/profiler/HeapSnapshotView.ts | jsArrays": {
     "message": "Polia JS"
@@ -11630,9 +11624,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | closureS": {
     "message": "Uzavretie ({PH1})"
   },
-  "panels/sources/ScopeChainSidebarPane.ts | exception": {
-    "message": "Výnimka"
-  },
   "panels/sources/ScopeChainSidebarPane.ts | loading": {
     "message": "Načítava sa…"
   },
@@ -11641,9 +11632,6 @@
   },
   "panels/sources/ScopeChainSidebarPane.ts | notPaused": {
     "message": "Nepozastavené"
-  },
-  "panels/sources/ScopeChainSidebarPane.ts | returnValue": {
-    "message": "Vrátená hodnota"
   },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
@@ -12581,6 +12569,12 @@
   "panels/timeline/EventsTimelineTreeView.ts | startTime": {
     "message": "Čas začatia"
   },
+  "panels/timeline/ExtensionTrackAppender.ts | customTrackDescription": {
+    "message": "Toto je vlastný kanál pridaný treťou stranou."
+  },
+  "panels/timeline/ExtensionTrackAppender.ts | customTrackName": {
+    "message": "{PH1} – vlastný kanál"
+  },
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "Grafický procesor"
   },
@@ -12598,6 +12592,15 @@
   },
   "panels/timeline/NetworkTrackAppender.ts | network": {
     "message": "Sieť"
+  },
+  "panels/timeline/NetworkTrackAppender.ts | wsConnectionClosed": {
+    "message": "Protokol WebSocket je zavretý"
+  },
+  "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpened": {
+    "message": "Protokol WebSocket je otvorený"
+  },
+  "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpenedWithUrl": {
+    "message": "Protokol WebSocket je otvorený: {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(anonymné)"
@@ -12827,6 +12830,12 @@
   "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
     "message": "Povolenie štatistík selektora CSS (pomalé)"
   },
+  "panels/timeline/TimelinePanel.ts | exportEnhancedTraces": {
+    "message": "Zlepšené stopy výkonnosti"
+  },
+  "panels/timeline/TimelinePanel.ts | exportNormalTraces": {
+    "message": "Základné stopy výkonnosti"
+  },
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Časovú os sa nepodarilo uložiť: {PH1} ({PH2})"
   },
@@ -12851,6 +12860,9 @@
   "panels/timeline/TimelinePanel.ts | networkConditions": {
     "message": "Podmienky siete"
   },
+  "panels/timeline/TimelinePanel.ts | performanceExtension": {
+    "message": "Údaje pridané rozšíreniami"
+  },
   "panels/timeline/TimelinePanel.ts | processingProfile": {
     "message": "Spracúva sa profil…"
   },
@@ -12868,6 +12880,9 @@
   },
   "panels/timeline/TimelinePanel.ts | screenshots": {
     "message": "Snímky obrazovky"
+  },
+  "panels/timeline/TimelinePanel.ts | showDataAddedByExtensions": {
+    "message": "Zobrazovať údaje pridané rozšíreniami panela Výkon"
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "Zobraziť časovú os pamäte"
@@ -13013,21 +13028,6 @@
   "panels/timeline/TimelineTreeView.ts | vRuntime": {
     "message": "[spustenie V8]"
   },
-  "panels/timeline/TimelineUIUtils.ts | FromCache": {
-    "message": " (z vyrovnávacej pamäte)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | FromMemoryCache": {
-    "message": " (z vyrovnávacej pamäte pamäte)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | FromPush": {
-    "message": " (zo správy push)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | FromServiceWorker": {
-    "message": " (zo štítka service worker)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | SSSResourceLoading": {
-    "message": " ({PH1} {PH2} + {PH3} načítanie zdroja)"
-  },
   "panels/timeline/TimelineUIUtils.ts | UnknownNode": {
     "message": "[ neznámy uzol ]"
   },
@@ -13076,9 +13076,6 @@
   "panels/timeline/TimelineUIUtils.ts | currentClusterScore": {
     "message": "Skóre aktuálneho klastra"
   },
-  "panels/timeline/TimelineUIUtils.ts | decodedBody": {
-    "message": "Dekódovaný text"
-  },
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Podrobnosti"
   },
@@ -13096,9 +13093,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | emptyPlaceholder": {
     "message": "{PH1}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | encodedData": {
-    "message": "Kódované údaje"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(záznam je skrytý)"
@@ -13129,9 +13123,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | imageUrl": {
     "message": "Webová adresa obrázka"
-  },
-  "panels/timeline/TimelineUIUtils.ts | initialPriority": {
-    "message": "Počiatočná priorita"
   },
   "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
     "message": "Spustila udalosť"
@@ -13169,17 +13160,11 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Ďalšie informácie"
   },
-  "panels/timeline/TimelineUIUtils.ts | loadFromCache": {
-    "message": "načítať z vyrovnávacej pamäte"
-  },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Oblasť"
   },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Správa"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mimeType": {
-    "message": "Typ média"
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "Modul"
@@ -13189,12 +13174,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | movedTo": {
     "message": "Presunuté do umiestnenia"
-  },
-  "panels/timeline/TimelineUIUtils.ts | networkRequest": {
-    "message": "Požiadavka siete"
-  },
-  "panels/timeline/TimelineUIUtils.ts | networkTransfer": {
-    "message": "prenos siete"
   },
   "panels/timeline/TimelineUIUtils.ts | no": {
     "message": "Nie"
@@ -13223,9 +13202,6 @@
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Ukážka"
   },
-  "panels/timeline/TimelineUIUtils.ts | priority": {
-    "message": "Priorita"
-  },
   "panels/timeline/TimelineUIUtils.ts | processingDuration": {
     "message": "Trvanie spracovania"
   },
@@ -13243,9 +13219,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "Opakuje sa"
-  },
-  "panels/timeline/TimelineUIUtils.ts | requestMethod": {
-    "message": "Metóda požiadavky"
   },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1} o {PH2}"
@@ -13400,6 +13373,12 @@
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "Systém"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
+    "message": "{PH1}× spomalenie"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | noThrottling": {
+    "message": "Žiadne obmedzenie toku dát"
+  },
   "panels/timeline/components/DetailsView.ts | forcedReflow": {
     "message": "Vynútené preformátovanie"
   },
@@ -13430,6 +13409,45 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Protokol WebSocket"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
+    "message": "Rozšírené"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
+    "message": "Zrušiť"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | configure": {
+    "message": "Konfigurovať"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
+    "message": "Konfigurácia načítania údajov polí"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
+    "message": "Metriky Chrome UX Report nemajú dostatok skutočných údajov o rýchlosti tejto stránky."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
+    "message": "Načítajte súhrnné údaje polí z metrík Chrome UX Report, aby ste mohli uviesť do kontextu miestne merania s tým, čo používatelia skutočne vidia na danom webe."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | ok": {
+    "message": "OK"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
+    "message": "Načítať iba údaje poľa pre webovú adresu nižšie"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
+    "message": "Odhlásiť sa"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
+    "message": "Informácie o ochrane súkromia"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
+    "message": "Nastaviť"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | urlOverride": {
+    "message": "Prepísanie webovej adresy"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
+    "message": "Keď sú nástroje pre vývojárov otvorené, webové adresy, ktoré navštívite, budú odosielané Googlu na účely načítania údajov polí. Tieto žiadosti nie sú spojené s vaším účtom Google."
+  },
   "panels/timeline/components/InteractionBreakdown.ts | inputDelay": {
     "message": "Oneskorenie vstupu"
   },
@@ -13438,6 +13456,216 @@
   },
   "panels/timeline/components/InteractionBreakdown.ts | processingDuration": {
     "message": "Trvanie spracovania"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | allDevices": {
+    "message": "Všetky zariadenia"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | auto": {
+    "message": "Automaticky ({PH1})"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | betweenRange": {
+    "message": "({PH1} – {PH2})"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | clsTitle": {
+    "message": "Súhrn posunov rozloženia stránky"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
+    "message": "Obmedzenie toku dát procesora:"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | desktop": {
+    "message": "Počítač"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | deviceType": {
+    "message": "Typ zariadenia:"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | field75thPercentile": {
+    "message": "75. percentil poľa"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
+    "message": "Údaje poľa"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | good": {
+    "message": "Dobré"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | gtRange": {
+    "message": "(>{PH1})"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | inpTitle": {
+    "message": "Oneskorenie vykreslenia po interakcii"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | interactions": {
+    "message": "Interakcie"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | lcpTitle": {
+    "message": "Vykreslenie najväčšieho prvku"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | leqRange": {
+    "message": "(≤{PH1})"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | loadingOption": {
+    "message": "{PH1} – načítava sa…"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
+    "message": "Miestne metriky a metriky polí"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localValue": {
+    "message": "Miestne"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | mobile": {
+    "message": "Mobil"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
+    "message": "{PH1} –žiadne údaje"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | needsImprovement": {
+    "message": "Vyžaduje zlepšenie"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
+    "message": "Obmedzovanie rýchlosti:"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
+    "message": "Ďalší postup"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | originOption": {
+    "message": "Zdroj"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
+    "message": "Zdroj ({PH1})"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | percentage": {
+    "message": "{PH1} %"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | poor": {
+    "message": "Slabé"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | relatedNode": {
+    "message": "Súvisiaci uzol"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | tablet": {
+    "message": "Tablet"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | throttling": {
+    "message": "Obmedzenie toku dát"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
+    "message": "Skúste deaktivovať obmedzovanie rýchlosti, aby ste približne určili latenciu siete meranú skutočnými používateľmi."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | tryUsingThrottling": {
+    "message": "Skúste používať obmedzovanie rýchlosti ({PH1}), aby ste približne určili latenciu siete meranú skutočnými používateľmi."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | urlOption": {
+    "message": "Webová adresa"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | urlOptionWithKey": {
+    "message": "Webová adresa ({PH1})"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | urlOrOrigin": {
+    "message": "Webová adresa / zdroj:"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | FromCache": {
+    "message": " (z vyrovnávacej pamäte)"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | FromMemoryCache": {
+    "message": " (z vyrovnávacej pamäte pamäte)"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | FromPush": {
+    "message": " (zo správy push)"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | FromServiceWorker": {
+    "message": " (zo štítka service worker)"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | contentDownloading": {
+    "message": "Sťahuje sa obsah"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | decodedBody": {
+    "message": "Dekódovaný text"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | duration": {
+    "message": "Trvanie"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | encodedData": {
+    "message": "Kódované údaje"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
+    "message": "Z vyrovnávacej pamäte"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | initialPriority": {
+    "message": "Počiatočná priorita"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | initiatedBy": {
+    "message": "Spustila udalosť"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | mimeType": {
+    "message": "Typ média"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | networkRequest": {
+    "message": "Požiadavka siete"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | no": {
+    "message": "Nie"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | preview": {
+    "message": "Ukážka"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | priority": {
+    "message": "Priorita"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | queuingAndConnecting": {
+    "message": "Pridávanie do poradia a pripájanie"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | requestMethod": {
+    "message": "Metóda požiadavky"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | requestSentAndWaiting": {
+    "message": "Požiadavka bola odoslaná a čaká"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | waitingOnMainThread": {
+    "message": "Čaká sa na hlavné vlákno"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | yes": {
+    "message": "Áno"
+  },
+  "panels/timeline/components/NetworkRequestTooltip.ts | contentDownloading": {
+    "message": "Sťahuje sa obsah"
+  },
+  "panels/timeline/components/NetworkRequestTooltip.ts | priority": {
+    "message": "Priorita"
+  },
+  "panels/timeline/components/NetworkRequestTooltip.ts | queuingAndConnecting": {
+    "message": "Pridávanie do poradia a pripájanie"
+  },
+  "panels/timeline/components/NetworkRequestTooltip.ts | renderBlocking": {
+    "message": "Blokovanie vykreslenia"
+  },
+  "panels/timeline/components/NetworkRequestTooltip.ts | requestSentAndWaiting": {
+    "message": "Požiadavka bola odoslaná a čaká"
+  },
+  "panels/timeline/components/NetworkRequestTooltip.ts | waitingOnMainThread": {
+    "message": "Čaká sa na hlavné vlákno"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | add": {
+    "message": "Pridať…"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | custom": {
+    "message": "Vlastné"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
+    "message": "Vypnuté"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
+    "message": "Predvoľby"
+  },
+  "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
+    "message": "Oneskorenie vykreslenia prvku"
+  },
+  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
+    "message": "Oneskorenie načítania zdroja"
+  },
+  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadTime": {
+    "message": "Čas načítania zdroja"
+  },
+  "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
+    "message": "Oneskorenie prvého bajtu"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "Skryť rám chrome v zobrazení Vrstvy"
@@ -13463,6 +13691,9 @@
   "panels/timeline/timeline-meta.ts | record": {
     "message": "Zaznamenať"
   },
+  "panels/timeline/timeline-meta.ts | recordAndReload": {
+    "message": "Nahrať a znova načítať"
+  },
   "panels/timeline/timeline-meta.ts | saveProfile": {
     "message": "Uložiť profil…"
   },
@@ -13471,9 +13702,6 @@
   },
   "panels/timeline/timeline-meta.ts | showRecentTimelineSessions": {
     "message": "Zobraziť nedávne relácie časovej osi"
-  },
-  "panels/timeline/timeline-meta.ts | startProfilingAndReloadPage": {
-    "message": "Spustiť profilovanie a znova načítať stránku"
   },
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Ukončiť"

@@ -68,9 +68,9 @@ template("ts_library") {
       devtools_location_prepend + "node_modules/@types/filesystem/index.d.ts",
     ]
 
-    # When use_remoteexec=true or use_siso=true, node actions run on remote
-    # Linux worker. So it should include linux node binary in inputs.
-    if (use_remoteexec || use_siso) {
+    # When use_remoteexec=true, node actions run on remote Linux worker.
+    # So it should include linux node binary in inputs.
+    if (use_remoteexec) {
       inputs += [ "//third_party/node/linux/node-linux-x64/bin/node" ]
     }
 

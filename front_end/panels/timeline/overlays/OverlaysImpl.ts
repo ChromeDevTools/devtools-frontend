@@ -78,6 +78,17 @@ export interface TimeRangeLabel {
 }
 
 /**
+ * Used to highlight with a red-candy stripe a time range. It takes an entry
+ * because this entry is the row that will be used to place the candy stripe,
+ * and its height will be set to the height of that row.
+ */
+export interface CandyStripedTimeRange {
+  type: 'CANDY_STRIPED_TIME_RANGE';
+  bounds: TraceEngine.Types.Timing.TraceWindowMicroSeconds;
+  entry: TraceEngine.Types.TraceEvents.TraceEventData;
+}
+
+/**
  * Represents a timespan on a trace broken down into parts. Each part has a label to it.
  */
 export interface TimespanBreakdown {
@@ -94,7 +105,7 @@ export interface CursorTimestampMarker {
  * All supported overlay types. Expected to grow in time!
  */
 export type TimelineOverlay =
-    EntrySelected|EntryOutline|TimeRangeLabel|EntryLabel|TimespanBreakdown|CursorTimestampMarker;
+    EntrySelected|EntryOutline|TimeRangeLabel|EntryLabel|TimespanBreakdown|CursorTimestampMarker|CandyStripedTimeRange;
 
 /**
  * Denotes overlays that are singletons; only one of these will be allowed to
@@ -546,6 +557,23 @@ export class Overlays extends EventTarget {
         break;
       }
 
+      case 'CANDY_STRIPED_TIME_RANGE': {
+        const {visibleWindow} = this.#dimensions.trace;
+        // If the bounds of this overlay are not within the visible bounds, we
+        // can skip updating its position and just hide it.
+        if (visibleWindow && TraceEngine.Helpers.Timing.boundsIncludeTimeRange({
+              bounds: visibleWindow,
+              timeRange: overlay.bounds,
+            })) {
+          element.style.visibility = 'visible';
+          this.#positionCandyStripedTimeRange(overlay, element);
+
+        } else {
+          element.style.visibility = 'hidden';
+        }
+        break;
+      }
+
       default: {
         Platform.TypeScriptUtilities.assertNever(overlay, `Unknown overlay: ${JSON.stringify(overlay)}`);
       }
@@ -665,6 +693,77 @@ export class Overlays extends EventTarget {
     element.style.left = `${x + entryWidth / 2}px`;
 
     return {height: entryHeight, width: entryWidth, cutOffEntryHeight, chart: chartName};
+  }
+
+  #positionCandyStripedTimeRange(overlay: CandyStripedTimeRange, element: HTMLElement): void {
+    const chartName = this.#chartForOverlayEntry(overlay.entry);
+
+    const startX = this.#xPixelForMicroSeconds(chartName, overlay.bounds.min);
+    const endX = this.#xPixelForMicroSeconds(chartName, overlay.bounds.max);
+    if (startX === null || endX === null) {
+      return;
+    }
+
+    let y = this.yPixelForEventOnChart(overlay.entry);
+    if (y === null) {
+      return;
+    }
+
+    const totalHeight = this.pixelHeightForEventOnChart(overlay.entry) ?? 0;
+
+    // We might modify the height we use when drawing the overlay, hence copying the totalHeight.
+    let height = totalHeight;
+    if (height === null) {
+      return;
+    }
+    const widthPixels = endX - startX;
+    // The entry selected overlay is always at least 2px wide.
+    const finalWidth = Math.max(2, widthPixels);
+    element.style.width = `${finalWidth}px`;
+
+    // If the event is on the main chart, we need to adjust its selected border
+    // if the event is cut off the top of the screen, because we need to ensure
+    // that it does not overlap the resize element. Unfortunately we cannot
+    // z-index our way out of this, so instead we calculate if the event is cut
+    // off, and if it is, we draw the partial selected outline and do not draw
+    // the top border, making it appear like it is going behind the resizer.
+    // We don't need to worry about it going off the bottom, because in that
+    // case we don't draw the overlay anyway.
+    if (chartName === 'main') {
+      const chartTopPadding = this.networkChartOffsetHeight();
+      // We now calculate the available height: if the entry is cut off we don't
+      // show the border for the part that is cut off.
+      const cutOffTop = y < chartTopPadding;
+
+      height = cutOffTop ? Math.abs(y + height - chartTopPadding) : height;
+      element.classList.toggle('cut-off-top', cutOffTop);
+      if (cutOffTop) {
+        // Adjust the y position: we need to move it down from the top Y
+        // position to the Y position of the first visible pixel. The
+        // adjustment is totalHeight - height because if the totalHeight is 17,
+        // and the visibleHeight is 5, we need to draw the overay at 17-5=12px
+        // vertically from the top of the event.
+        y = y + totalHeight - height;
+      }
+    } else {
+      // If the event is on the network chart, we use the same logic as above
+      // for the main chart, but to check if the event is cut off the bottom of
+      // the network track and only part of the overlay is visible.
+      // We don't need to worry about the even going off the top of the panel
+      // as we can show the full overlay and it gets cut off by the minimap UI.
+      const networkHeight = this.#dimensions.charts.network?.heightPixels ?? 0;
+      const lastVisibleY = y + totalHeight;
+      const cutOffBottom = lastVisibleY > networkHeight;
+      element.classList.toggle('cut-off-bottom', cutOffBottom);
+      if (cutOffBottom) {
+        // Adjust the height of the overlay to be the amount of visible pixels.
+        height = networkHeight - y;
+      }
+    }
+
+    element.style.height = `${height}px`;
+    element.style.top = `${y}px`;
+    element.style.left = `${startX}px`;
   }
 
   /**
@@ -844,6 +943,8 @@ export class Overlays extends EventTarget {
       case 'CURSOR_TIMESTAMP_MARKER':
         // No contents within this that need updating.
         break;
+      case 'CANDY_STRIPED_TIME_RANGE':
+        break;
       default:
         Platform.TypeScriptUtilities.assertNever(overlay, `Unexpected overlay ${overlay}`);
     }
@@ -970,7 +1071,7 @@ export class Overlays extends EventTarget {
       return null;
     }
     const canvasWidthPixels = this.#dimensions.charts[chart]?.widthPixels ?? null;
-    if (!canvasWidthPixels) {
+    if (canvasWidthPixels === null) {
       console.error(`Cannot calculate xPixel without ${chart} dimensions.`);
       return null;
     }

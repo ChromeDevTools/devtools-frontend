@@ -46,6 +46,21 @@
   }
 }
 
+.overlay-type-CANDY_STRIPED_TIME_RANGE {
+  --red-stripe-width: 2px;
+  --white-stripe-width: 10px;
+
+  background-image:
+    repeating-linear-gradient(
+      315deg,
+      var(--sys-color-error-bright),
+      var(--sys-color-error-bright) var(--red-stripe-width),
+      transparent var(--red-stripe-width),
+      transparent var(--white-stripe-width)
+    );
+  border: 2px solid var(--sys-color-error-bright);
+}
+
 .overlay-type-TIME_RANGE {
   background: linear-gradient(180deg, rgb(255 125 210 / 0%) 0%, rgb(255 125 210 / 15%) 85%); /* stylelint-disable-line plugin/use_theme_colors */
   border-color: var(--ref-palette-pink80);

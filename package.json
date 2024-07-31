@@ -110,9 +110,12 @@
     "stylelint-config-standard": "24.0.0",
     "svgo": "2.8.0",
     "terser": "5.19.1",
-    "typescript": "5.5.3",
+    "typescript": "5.5.4",
     "webidl2": "24.2.2",
     "ws": "8.18.0",
     "yargs": "17.3.1"
+  },
+  "overrides": {
+    "ws": "$ws"
   }
 }

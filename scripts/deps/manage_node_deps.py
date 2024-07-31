@@ -52,7 +52,7 @@ def load_json_file(location):
 
 DEPS = {}
 
-pkg_file = path.join(devtools_paths.root_path(), 'package.json')
+pkg_file = path.join(devtools_paths.devtools_root_path(), 'package.json')
 with open(pkg_file, 'r+') as pkg_file:
     DEPS = load_json_file(pkg_file)["devDependencies"]
 
@@ -60,9 +60,8 @@ with open(pkg_file, 'r+') as pkg_file:
 def exec_command(cmd):
     try:
         new_env = os.environ.copy()
-        cmd_proc_result = subprocess.check_call(cmd,
-                                                cwd=devtools_paths.root_path(),
-                                                env=new_env)
+        cmd_proc_result = subprocess.check_call(
+            cmd, cwd=devtools_paths.devtools_root_path(), env=new_env)
     except Exception as error:
         print(error)
         return True

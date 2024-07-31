@@ -154,9 +154,9 @@ const UIStrings = {
    */
   tryUsingThrottling: 'Try using {PH1} network throttling to approximate the network latency measured by real users.',
   /**
-   * @description Text label for a link to a DOM node.
+   * @description Text label for a link to the Largest Contentful Paint (LCP) related DOM node.
    */
-  relatedNode: 'Related node',
+  lcpElement: 'LCP Element',
   /**
    * @description Text label for values that are classified as "good".
    */
@@ -266,7 +266,7 @@ export class MetricCard extends HTMLElement {
         </div>
         <${Dialogs.Dialog.Dialog.litTagName}
           @pointerleftdialog=${() => this.#closeDialog()}
-          .showConnector=${true}
+          .showConnector=${false}
           .centered=${true}
           .closeOnScroll=${false}
           .origin=${() => {
@@ -511,12 +511,13 @@ export class LiveMetricsView extends HTMLElement {
         <div slot="tooltip">
           ${this.#renderFieldHistogram(histogram, thresholds, format)}
         </div>
-        <div slot="related-element">
-          ${node ? html`
-              <div class="card-section-title">${i18nString(UIStrings.relatedNode)}</div>
-              <div>${until(Common.Linkifier.Linkifier.linkify(node))}</div>`
-            : nothing}
-        </div>
+        ${node ? html`
+            <div slot="related-element">
+              <span class="related-element-label">${i18nString(UIStrings.lcpElement)}</span>
+              <span class="related-element">${until(Common.Linkifier.Linkifier.linkify(node))}</span>
+            </div>
+          `
+          : nothing}
       </${MetricCard.litTagName}>
     `;
     // clang-format on
@@ -766,7 +767,7 @@ export class LiveMetricsView extends HTMLElement {
       <div class="container">
         <div class="live-metrics-view">
           <div class="live-metrics" slot="main">
-            <h3>${i18nString(UIStrings.localAndFieldMetrics)}</h3>
+            <div class="section-title">${i18nString(UIStrings.localAndFieldMetrics)}</div>
             <div class="metric-cards">
               <div id="lcp">
                 ${this.#renderLcpCard()}
@@ -778,24 +779,24 @@ export class LiveMetricsView extends HTMLElement {
                 ${this.#renderInpCard()}
               </div>
             </div>
-            <h3>${i18nString(UIStrings.interactions)}</h3>
-            <ol class="interactions-list">
-              ${this.#interactions.map((interaction, index) => html`
-                ${index === 0 ? html`<hr class="divider">` : nothing}
-                <li class="interaction">
-                  <span class="interaction-type">${interaction.interactionType}</span>
-                  <span class="interaction-node">${
-                    interaction.node && until(Common.Linkifier.Linkifier.linkify(interaction.node))}</span>
-                  <span class="interaction-duration">
-                    ${this.#renderMetricValue(interaction.duration, INP_THRESHOLDS, v => i18n.TimeUtilities.millisToString(v))}
-                  </span>
-                </li>
-                <hr class="divider">
-              `)}
-            </ol>
+            ${this.#interactions.length > 0 ? html`
+              <div class="section-title">${i18nString(UIStrings.interactions)}</div>
+              <ol class="interactions-list">
+                ${this.#interactions.map(interaction => html`
+                  <li class="interaction">
+                    <span class="interaction-type">${interaction.interactionType}</span>
+                    <span class="interaction-node">${
+                      interaction.node && until(Common.Linkifier.Linkifier.linkify(interaction.node))}</span>
+                    <span class="interaction-duration">
+                      ${this.#renderMetricValue(interaction.duration, INP_THRESHOLDS, v => i18n.TimeUtilities.millisToString(v))}
+                    </span>
+                  </li>
+                `)}
+              </ol>
+            ` : nothing}
           </div>
           <div class="next-steps" slot="sidebar">
-            <h3>${i18nString(UIStrings.nextSteps)}</h3>
+            <div class="section-title">${i18nString(UIStrings.nextSteps)}</div>
             <div id="field-setup" class="card">
               <div class="card-title">${i18nString(UIStrings.fieldData)}</div>
               ${this.#renderPageScopeSetting()}

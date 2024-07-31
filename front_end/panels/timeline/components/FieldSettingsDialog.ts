@@ -263,10 +263,12 @@ export class FieldSettingsDialog extends HTMLElement {
         })}
       >
         <div class="content">
-          <h2>${i18nString(UIStrings.configureFieldData)}</h2>
-          <p>${i18nString(UIStrings.fetchAggregated)}</p>
-          <h3>${i18nString(UIStrings.privacyDisclosure)}</h3>
-          <p>${i18nString(UIStrings.whenPerformanceIsShown)}</p>
+          <div class="title">${i18nString(UIStrings.configureFieldData)}</div>
+          <div>${i18nString(UIStrings.fetchAggregated)}</div>
+          <p>
+            <div class="section-title">${i18nString(UIStrings.privacyDisclosure)}</div>
+            <div>${i18nString(UIStrings.whenPerformanceIsShown)}</div>
+          </p>
           <details>
             <summary>${i18nString(UIStrings.advanced)}</summary>
             <p>

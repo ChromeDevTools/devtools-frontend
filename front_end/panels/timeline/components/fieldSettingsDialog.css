@@ -12,13 +12,27 @@ devtools-dialog {
   --override-transparent: rgb(0 0 0 / 50%);
 }
 
+.title {
+  font-size: var(--sys-typescale-headline4-size);
+  line-height: var(--sys-typescale-headline4-line-height);
+  font-weight: var(--ref-typeface-weight-medium);
+}
+
+.section-title {
+  font-size: var(--sys-typescale-headline5-size);
+  line-height: var(--sys-typescale-headline5-line-height);
+  font-weight: var(--ref-typeface-weight-medium);
+}
+
+details > summary {
+  font-size: var(--sys-typescale-body4-size);
+  line-height: var(--sys-typescale-body4-line-height);
+  font-weight: var(--ref-typeface-weight-medium);
+}
+
 .content {
   max-width: 500px;
   padding: 16px;
-}
-
-.content > :first-child {
-  margin-top: 0;
 }
 
 .buttons-section {

@@ -4,6 +4,29 @@
  * found in the LICENSE file.
  */
 
+.shared-disclaimer {
+  background: linear-gradient(135deg, var(--sys-color-gradient-primary), var(--sys-color-gradient-tertiary));
+  border-radius: var(--sys-size-5);
+  padding: var(--sys-size-9) var(--sys-size-11);
+
+  h2 {
+    font: var(--sys-typescale-headline5);
+    margin: 0 0 var(--sys-size-6);
+  }
+}
+
+.disclaimer-list-header {
+  font: var(--sys-typescale-body5-medium);
+}
+
+.disclaimer-list {
+  padding: var(--sys-size-6) 0 0;
+  display: grid;
+  grid-template-columns: var(--sys-size-12) auto;
+  gap: var(--sys-size-6) 0;
+  line-height: var(--sys-typescale-body5-line-height);
+}
+
 .settings-container-wrapper {
   position: absolute;
   top: 31px;

@@ -129,15 +129,15 @@ const UIStringsTemp = {
 /* eslint-disable  rulesdir/l10n_i18nString_call_only_with_uistrings */
 const i18nString = i18n.i18n.lockedString;
 
-function getInputPlaceholderString(aidaAvailability: Host.AidaClient.AidaAvailability): string {
+function getInputPlaceholderString(aidaAvailability: Host.AidaClient.AidaAccessPreconditions): string {
   switch (aidaAvailability) {
-    case Host.AidaClient.AidaAvailability.AVAILABLE:
+    case Host.AidaClient.AidaAccessPreconditions.AVAILABLE:
       return i18nString(UIStringsTemp.inputPlaceholder);
-    case Host.AidaClient.AidaAvailability.NO_ACCOUNT_EMAIL:
+    case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
       return i18nString(UIStringsTemp.notLoggedIn);
-    case Host.AidaClient.AidaAvailability.NO_ACTIVE_SYNC:
+    case Host.AidaClient.AidaAccessPreconditions.NO_ACTIVE_SYNC:
       return i18nString(UIStringsTemp.syncIsOff);
-    case Host.AidaClient.AidaAvailability.NO_INTERNET:
+    case Host.AidaClient.AidaAccessPreconditions.NO_INTERNET:
       return i18nString(UIStringsTemp.offline);
   }
 }
@@ -179,7 +179,7 @@ export interface Props {
   onFixThisIssueClick: () => void;
   inspectElementToggled: boolean;
   state: State;
-  aidaAvailability: Host.AidaClient.AidaAvailability;
+  aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
   messages: ChatMessage[];
   selectedNode: SDK.DOMModel.DOMNode|null;
   isLoading: boolean;
@@ -501,7 +501,7 @@ export class FreestylerChatUi extends HTMLElement {
 
   #renderChatUi = (): LitHtml.TemplateResult => {
     // TODO(ergunsh): Show a better UI for the states where Aida client is not available.
-    const isAidaAvailable = this.#props.aidaAvailability === Host.AidaClient.AidaAvailability.AVAILABLE;
+    const isAidaAvailable = this.#props.aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
     const isInputDisabled =
         !Boolean(this.#props.selectedNode) || !isAidaAvailable || Boolean(this.#props.confirmSideEffectDialog);
     // clang-format off

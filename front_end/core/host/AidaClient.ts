@@ -113,7 +113,7 @@ export interface AidaResponse {
   metadata: AidaResponseMetadata;
 }
 
-export enum AidaAvailability {
+export const enum AidaAccessPreconditions {
   AVAILABLE = 'available',
   NO_ACCOUNT_EMAIL = 'no-account-email',
   NO_ACTIVE_SYNC = 'no-active-sync',
@@ -156,22 +156,22 @@ export class AidaClient {
     return request;
   }
 
-  static async getAidaClientAvailability(): Promise<AidaAvailability> {
+  static async checkAccessPreconditions(): Promise<AidaAccessPreconditions> {
     if (!navigator.onLine) {
-      return AidaAvailability.NO_INTERNET;
+      return AidaAccessPreconditions.NO_INTERNET;
     }
 
     const syncInfo = await new Promise<SyncInformation>(
         resolve => InspectorFrontendHostInstance.getSyncInformation(syncInfo => resolve(syncInfo)));
     if (!syncInfo.accountEmail) {
-      return AidaAvailability.NO_ACCOUNT_EMAIL;
+      return AidaAccessPreconditions.NO_ACCOUNT_EMAIL;
     }
 
     if (!syncInfo.isSyncActive) {
-      return AidaAvailability.NO_ACTIVE_SYNC;
+      return AidaAccessPreconditions.NO_ACTIVE_SYNC;
     }
 
-    return AidaAvailability.AVAILABLE;
+    return AidaAccessPreconditions.AVAILABLE;
   }
 
   async * fetch(request: AidaRequest): AsyncGenerator<AidaResponse, void, void> {

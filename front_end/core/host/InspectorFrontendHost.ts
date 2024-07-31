@@ -523,6 +523,9 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   registerAidaClientEvent(request: string, callback: (result: AidaClientResult) => void): void {
+    callback({
+      error: 'Not implemented',
+    });
   }
 
   recordImpression(event: ImpressionEvent): void {

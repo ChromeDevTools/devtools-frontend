@@ -350,8 +350,8 @@ describeWithEnvironment('AidaClient', () => {
       });
 
       try {
-        const result = await Host.AidaClient.AidaClient.getAidaClientAvailability();
-        assert.strictEqual(result, Host.AidaClient.AidaAvailability.NO_INTERNET);
+        const result = await Host.AidaClient.AidaClient.checkAccessPreconditions();
+        assert.strictEqual(result, Host.AidaClient.AidaAccessPreconditions.NO_INTERNET);
       } finally {
         Object.defineProperty(globalThis, 'navigator', navigatorDescriptor);
       }
@@ -360,25 +360,25 @@ describeWithEnvironment('AidaClient', () => {
     it('should return NO_ACCOUNT_EMAIL when the syncInfo doesn\'t contain accountEmail', async () => {
       mockGetSyncInformation({accountEmail: undefined, isSyncActive: true});
 
-      const result = await Host.AidaClient.AidaClient.getAidaClientAvailability();
+      const result = await Host.AidaClient.AidaClient.checkAccessPreconditions();
 
-      assert.strictEqual(result, Host.AidaClient.AidaAvailability.NO_ACCOUNT_EMAIL);
+      assert.strictEqual(result, Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
     });
 
     it('should return NO_ACTIVE_SYNC when the syncInfo.isSyncActive is not true', async () => {
       mockGetSyncInformation({accountEmail: 'some-email', isSyncActive: false});
 
-      const result = await Host.AidaClient.AidaClient.getAidaClientAvailability();
+      const result = await Host.AidaClient.AidaClient.checkAccessPreconditions();
 
-      assert.strictEqual(result, Host.AidaClient.AidaAvailability.NO_ACTIVE_SYNC);
+      assert.strictEqual(result, Host.AidaClient.AidaAccessPreconditions.NO_ACTIVE_SYNC);
     });
 
     it('should return AVAILABLE when navigator is online, accountEmail exists and isSyncActive is true', async () => {
       mockGetSyncInformation({accountEmail: 'some-email', isSyncActive: true});
 
-      const result = await Host.AidaClient.AidaClient.getAidaClientAvailability();
+      const result = await Host.AidaClient.AidaClient.checkAccessPreconditions();
 
-      assert.strictEqual(result, Host.AidaClient.AidaAvailability.AVAILABLE);
+      assert.strictEqual(result, Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
     });
   });
 

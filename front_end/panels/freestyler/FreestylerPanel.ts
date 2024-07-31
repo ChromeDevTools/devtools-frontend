@@ -101,7 +101,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       Common.Settings.Settings.instance().createLocalSetting('freestyler-dogfood-consent-onboarding-finished', false);
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability}: {
     aidaClient: Host.AidaClient.AidaClient,
-    aidaAvailability: Host.AidaClient.AidaAvailability,
+    aidaAvailability: Host.AidaClient.AidaAccessPreconditions,
   }) {
     super(FreestylerPanel.panelName);
 
@@ -159,7 +159,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   }|undefined = {forceNew: null}): Promise<FreestylerPanel> {
     const {forceNew} = opts;
     if (!freestylerPanelInstance || forceNew) {
-      const aidaAvailability = await Host.AidaClient.AidaClient.getAidaClientAvailability();
+      const aidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
       const aidaClient = new Host.AidaClient.AidaClient();
       freestylerPanelInstance = new FreestylerPanel(defaultView, {aidaClient, aidaAvailability});
     }

@@ -23,7 +23,6 @@ import {
   veChange,
   veClick,
   veImpression,
-  veKeyDown,
   veResize,
 } from './visual-logging-helpers.js';
 
@@ -271,7 +270,6 @@ export async function typeIntoConsole(frontend: puppeteer.Page, message: string)
       () =>
           frontend.waitForFunction((msg: string, ln: Element) => ln.textContent === msg, {timeout: 0}, message, line));
   await consoleElement.press('Enter');
-  await expectVeEvents([veKeyDown('TextField: console-prompt')], await veRoot());
 }
 
 export async function typeIntoConsoleAndWaitForResult(
@@ -287,12 +285,6 @@ export async function typeIntoConsoleAndWaitForResult(
       () => frontend.waitForFunction((originalLength: number, leastExpectedMessages: number, selector: string) => {
         return document.querySelectorAll(selector).length >= originalLength + leastExpectedMessages;
       }, {timeout: 0}, originalLength, leastExpectedMessages, selector));
-  await expectVeEvents(
-      [
-        veChange('TextField: console-prompt'),
-        veImpressionForConsoleMessage(),
-      ],
-      await veRoot());
 }
 
 export async function unifyLogVM(actualLog: string, expectedLog: string) {

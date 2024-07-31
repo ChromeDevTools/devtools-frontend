@@ -522,7 +522,9 @@ export class UISourceCodeFrame extends
     const mimeType = Common.ResourceType.ResourceType.mimeFromURL(this.uiSourceCodeInternal.url());
     const mediaType = Common.ResourceType.ResourceType.mediaTypeForMetrics(
         mimeType ?? '', this.uiSourceCodeInternal.contentType().isFromSourceMap(),
-        TextUtils.TextUtils.isMinified(this.uiSourceCodeInternal.content()));
+        TextUtils.TextUtils.isMinified(this.uiSourceCodeInternal.content()),
+        this.uiSourceCodeInternal.url().startsWith('snippet://'),
+        this.uiSourceCodeInternal.url().startsWith('debugger://'));
     Host.userMetrics.sourcesPanelFileOpened(mediaType);
   }
 }

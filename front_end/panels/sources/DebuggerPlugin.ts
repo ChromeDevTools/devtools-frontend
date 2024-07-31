@@ -1765,7 +1765,8 @@ export class DebuggerPlugin extends Plugin {
     const mimeType = Common.ResourceType.ResourceType.mimeFromURL(this.uiSourceCode.url());
     const mediaType = Common.ResourceType.ResourceType.mediaTypeForMetrics(
         mimeType ?? '', this.uiSourceCode.contentType().isFromSourceMap(),
-        TextUtils.TextUtils.isMinified(this.uiSourceCode.content()));
+        TextUtils.TextUtils.isMinified(this.uiSourceCode.content()), this.uiSourceCode.url().startsWith('snippet://'),
+        this.uiSourceCode.url().startsWith('debugger://'));
     Host.userMetrics.sourcesPanelFileDebugged(mediaType);
   }
 }

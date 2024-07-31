@@ -47,27 +47,6 @@ export class TimespanBreakdownOverlay extends HTMLElement {
   }
 
   /**
-   * This calculates how much of the time range is in the user's view. This is
-   * used to determine how much of the label can fit into the view, and if we
-   * should even show the label.
-   */
-  #visibleOverlayWidth(overlayRect: DOMRect): number {
-    if (!this.#canvasRect) {
-      return 0;
-    }
-
-    const {x: overlayStartX, width} = overlayRect;
-    const overlayEndX = overlayStartX + width;
-
-    const canvasStartX = this.#canvasRect.x;
-    const canvasEndX = this.#canvasRect.x + this.#canvasRect.width;
-
-    const leftVisible = Math.max(canvasStartX, overlayStartX);
-    const rightVisible = Math.min(canvasEndX, overlayEndX);
-    return rightVisible - leftVisible;
-  }
-
-  /**
    * We use this method after the overlay has been positioned in order to move
    * the section label as required to keep it on screen.
    * If the label is off to the left or right, we fix it to that corner and
@@ -89,24 +68,42 @@ export class TimespanBreakdownOverlay extends HTMLElement {
     // consistent on both edges of the UI.
     const paddingForScrollbar = 9;
 
-    // Align the labels for all the breakdown sections.
+    // Fetch the rects for each section and label now, rather than in the loop,
+    // to avoid causing a bunch of recalcStyles
+    const sectionLayoutData = new Map<HTMLElement, {sectionRect: DOMRect, labelRect: DOMRect, label: HTMLElement}>();
     for (const section of sections) {
       const label = section.querySelector<HTMLElement>('.timespan-breakdown-overlay-label');
       if (!label) {
-        break;
+        continue;
       }
-      const overlayRect = this.getBoundingClientRect();
-
       const sectionRect = section.getBoundingClientRect();
       const labelRect = label.getBoundingClientRect();
+      sectionLayoutData.set(section, {sectionRect, labelRect, label});
+    }
 
-      const visibleOverlayWidth = this.#visibleOverlayWidth(overlayRect) - paddingForScrollbar;
-      const overlayTooNarrow = visibleOverlayWidth <= labelRect.width - paddingForScrollbar;
-      label.classList.toggle('labelHidden', overlayTooNarrow);
+    const minSectionWidthToShowAnyLabel = 30;
 
-      if (overlayTooNarrow) {
-        // Label is invisible, no need to do all the layout.
+    // Align the labels for all the breakdown sections.
+    for (const section of sections) {
+      const layoutData = sectionLayoutData.get(section);
+      if (!layoutData) {
         break;
+      }
+      const {labelRect, sectionRect, label} = layoutData;
+
+      const labelHidden = sectionRect.width < minSectionWidthToShowAnyLabel;
+      // Subtract 5 from the section width to allow a tiny bit of padding.
+      const labelTruncated = sectionRect.width - 5 <= labelRect.width;
+      // We differentiate between hidden + truncated; if it is truncated we
+      // will show the text with ellipsis for overflow, but if the section is
+      // really small we just hide the label entirely.
+      label.classList.toggle('labelHidden', labelHidden);
+      label.classList.toggle('labelTruncated', labelTruncated);
+
+      if (labelHidden || labelTruncated) {
+        // Label is hidden or doesn't fully fit, so we don't need to do the
+        // logic to left/right align if it needs it.
+        continue;
       }
 
       // Check if label is off the LHS of the screen.
@@ -151,13 +148,13 @@ export class TimespanBreakdownOverlay extends HTMLElement {
       }
     }
   }
-
   renderSection(section: EntryBreakdown): LitHtml.TemplateResult {
     const sectionRange = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(section.bounds.range);
     return LitHtml.html`
       <div class="timespan-breakdown-overlay-section">
-        <div class="timespan-breakdown-overlay-label">${section.label}
-          <div>${i18n.TimeUtilities.preciseMillisToString(sectionRange, 2)}</div>
+        <div class="timespan-breakdown-overlay-label">
+          <span class="duration-text">${i18n.TimeUtilities.preciseMillisToString(sectionRange, 2)}</span>
+          ${section.label}
         </div>
       </div>`;
   }

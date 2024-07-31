@@ -587,9 +587,9 @@ export class Overlays extends EventTarget {
   }
 
   #positionTimespanBreakdownOverlay(overlay: TimespanBreakdown, element: HTMLElement): void {
-    const component = element?.querySelector('devtools-timespan-breakdown-overlay');
+    const component = element.querySelector<HTMLElement>('devtools-timespan-breakdown-overlay');
     const shadow = component?.shadowRoot;
-    const elementSections = shadow?.querySelectorAll('.timespan-breakdown-overlay-section');
+    const elementSections = shadow?.querySelectorAll<HTMLElement>('.timespan-breakdown-overlay-section');
 
     if (overlay.sections.length === 0) {
       return;
@@ -604,10 +604,10 @@ export class Overlays extends EventTarget {
     const rangeWidth = rightEdgePixel - leftEdgePixel;
     element.style.left = `${leftEdgePixel}px`;
     element.style.width = `${rangeWidth}px`;
+    element.style.bottom = '0px';
 
     if (elementSections?.length === overlay.sections.length) {
       let count = 0;
-      let stagger = false;
       for (const section of overlay.sections) {
         const leftPixel = this.#xPixelForMicroSeconds('main', section.bounds.min);
         const rightPixel = this.#xPixelForMicroSeconds('main', section.bounds.max);
@@ -615,18 +615,11 @@ export class Overlays extends EventTarget {
           return;
         }
         const rangeWidth = rightPixel - leftPixel;
-        const sectionElement = elementSections[count] as HTMLElement;
+        const sectionElement = elementSections[count];
 
-        const networkHeight = this.#dimensions.charts.network?.heightPixels ?? 0;
         sectionElement.style.left = `${leftPixel}px`;
         sectionElement.style.width = `${rangeWidth}px`;
-        const staggeredHeight = stagger ? networkHeight +
-                Components.TimespanBreakdownOverlay.TimespanBreakdownOverlay.TIMESPAN_BREAKDOWN_OVERLAY_STAGGER_PX :
-                                          networkHeight;
-        sectionElement.style.height = `${staggeredHeight}px`;
         count++;
-        // Stagger every other section.
-        stagger = !stagger;
       }
     }
   }

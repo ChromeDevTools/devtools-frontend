@@ -28,7 +28,7 @@ function getInsight(insights: TraceModel.Insights.Types.TraceInsightData, naviga
 }
 
 describe('LargestContentfulPaint', function() {
-  it('text lcp phases', async () => {
+  it('calculates text lcp phases', async () => {
     const {data, insights} = await processTrace(this, 'lcp-web-font.json.gz');
     const insight = getInsight(insights, data.Meta.navigationsByNavigationId.keys().next().value);
 
@@ -39,7 +39,7 @@ describe('LargestContentfulPaint', function() {
     assert.deepEqual(insight.phases, {ttfb: wantTtfb, renderDelay: wantRenderDelay});
   });
 
-  it('image lcp phases', async () => {
+  it('calculates image lcp phases', async () => {
     const {data, insights} = await processTrace(this, 'lcp-images.json.gz');
     const insight = getInsight(insights, data.Meta.navigationsByNavigationId.keys().next().value);
 
@@ -58,7 +58,7 @@ describe('LargestContentfulPaint', function() {
     assert.deepEqual(phases, {ttfb: '6.94', loadTime: '12.09', loadDelay: '33.74', renderDelay: '56.85'});
   });
 
-  it('image lcp attributes', async () => {
+  it('calculates image lcp attributes', async () => {
     const {data, insights} = await processTrace(this, 'lcp-images.json.gz');
     const insight = getInsight(insights, data.Meta.navigationsByNavigationId.keys().next().value);
     const {shouldIncreasePriorityHint, shouldPreloadImage, shouldRemoveLazyLoading} = insight;
@@ -68,8 +68,19 @@ describe('LargestContentfulPaint', function() {
     assert.strictEqual(shouldIncreasePriorityHint, true);
   });
 
+  it('calculates the LCP optimal time as the main request download start time', async () => {
+    const {data, insights} = await processTrace(this, 'web-dev-with-commit.json.gz');
+    const firstNav = Array.from(data.Meta.navigationsByNavigationId.keys())[0];
+    const insight = getInsight(insights, firstNav);
+    assert.strictEqual(
+        insight.earliestDiscoveryTimeTs,
+        // this is the TTFB for the main request
+        122411004828,
+    );
+  });
+
   describe('warnings', function() {
-    it('no lcp', async () => {
+    it('warns when there is no lcp', async () => {
       const {data, insights} = await processTrace(this, 'user-timings.json.gz');
       const insight = getInsight(insights, data.Meta.navigationsByNavigationId.keys().next().value);
 

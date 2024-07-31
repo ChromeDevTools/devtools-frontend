@@ -148,6 +148,12 @@ export function generateInsight(
   const imagePreloaded = lcpResource?.args.data.isLinkPreload || lcpResource?.args.data.initiator?.type === 'preload';
   const imageFetchPriorityHint = lcpResource?.args.data.fetchPriorityHint;
 
+  // This is the earliest discovery time an LCP resource could have - it's TTFB.
+  const earliestDiscoveryTime = mainReq && mainReq.args.data.timing ?
+      Helpers.Timing.secondsToMicroseconds(mainReq.args.data.timing.requestTime) +
+          Helpers.Timing.millisecondsToMicroseconds(mainReq.args.data.timing.receiveHeadersStart) :
+      undefined;
+
   return {
     lcpMs: lcpMs,
     lcpTs: lcpTs,
@@ -156,5 +162,6 @@ export function generateInsight(
     shouldIncreasePriorityHint: imageFetchPriorityHint !== 'high',
     shouldPreloadImage: !imagePreloaded,
     lcpResource,
+    earliestDiscoveryTimeTs: earliestDiscoveryTime ? Types.Timing.MicroSeconds(earliestDiscoveryTime) : undefined,
   };
 }

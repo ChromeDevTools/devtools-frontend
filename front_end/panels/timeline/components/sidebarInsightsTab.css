@@ -22,16 +22,32 @@
 
   details[open] {
     flex-grow: 1;
+    border-bottom: 1px solid var(--sys-color-divider);
   }
 
   summary {
-    border-top: 1px solid var(--sys-color-divider);
+    background-color: var(--sys-color-surface2);
     border-bottom: 1px solid var(--sys-color-divider);
-    color: var(--color-text-primary);
-    padding: 3px 4px;
-    font: var(--sys-typescale-body4-medium);
-    text-overflow: ellipsis;
     overflow: hidden;
+    padding: 2px 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font: var(--sys-typescale-body4-medium);
+
+    &:focus {
+      background-color: var(--sys-color-tonal-container);
+    }
+
+    &::marker {
+      color: var(--sys-color-on-surface-subtle);
+      font-size: 11px;
+      line-height: 1;
+    }
+
+    /* make sure the first summary has a top border */
+    details:first-child & {
+      border-top: 1px solid var(--sys-color-divider);
+    }
   }
 }
 

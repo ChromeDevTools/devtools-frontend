@@ -1437,11 +1437,19 @@ export namespace Audits {
 }
 
 /**
- * Defines commands and events for browser extensions. Available if the client
- * is connected using the --remote-debugging-pipe flag and
- * the --enable-unsafe-extension-debugging flag is set.
+ * Defines commands and events for browser extensions.
  */
 export namespace Extensions {
+
+  /**
+   * Storage areas.
+   */
+  export const enum StorageArea {
+    Session = 'session',
+    Local = 'local',
+    Sync = 'sync',
+    Managed = 'managed',
+  }
 
   export interface LoadUnpackedRequest {
     /**
@@ -1455,6 +1463,25 @@ export namespace Extensions {
      * Extension id.
      */
     id: string;
+  }
+
+  export interface GetStorageItemsRequest {
+    /**
+     * ID of extension.
+     */
+    id: string;
+    /**
+     * StorageArea to retrieve data from.
+     */
+    storageArea: StorageArea;
+    /**
+     * Keys to retrieve.
+     */
+    keys?: string[];
+  }
+
+  export interface GetStorageItemsResponse extends ProtocolResponseWithError {
+    data: any;
   }
 }
 
@@ -11431,6 +11458,7 @@ export namespace Page {
    */
   export const enum PermissionsPolicyFeature {
     Accelerometer = 'accelerometer',
+    AllScreensCapture = 'all-screens-capture',
     AmbientLightSensor = 'ambient-light-sensor',
     AttributionReporting = 'attribution-reporting',
     Autoplay = 'autoplay',
@@ -17155,6 +17183,8 @@ export namespace Preload {
     JavaScriptInterfaceRemoved = 'JavaScriptInterfaceRemoved',
     AllPrerenderingCanceled = 'AllPrerenderingCanceled',
     WindowClosed = 'WindowClosed',
+    SlowNetwork = 'SlowNetwork',
+    OtherPrerenderedPageActivated = 'OtherPrerenderedPageActivated',
   }
 
   /**

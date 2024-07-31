@@ -688,6 +688,8 @@ export function prerenderFailureReason(attempt: SDK.PreloadingModel.PrerenderAtt
     case Protocol.Preload.PrerenderFinalStatus.AllPrerenderingCanceled:
       return i18nString(UIStrings.prerenderFinalStatusAllPrerenderingCanceled);
     case Protocol.Preload.PrerenderFinalStatus.WindowClosed:
+    case Protocol.Preload.PrerenderFinalStatus.SlowNetwork:
+    case Protocol.Preload.PrerenderFinalStatus.OtherPrerenderedPageActivated:
       // TODO(crbug.com/350870118): Add message for this.
       return '';
     default:

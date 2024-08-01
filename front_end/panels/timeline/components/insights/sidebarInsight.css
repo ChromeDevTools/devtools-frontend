@@ -57,7 +57,7 @@
 }
 
 .insight-description {
-  border-bottom: 1px solid var(--sys-color-outline);
+  border-bottom: 1px solid var(--sys-color-divider);
   padding-bottom: 10px;
 }
 
@@ -82,7 +82,7 @@
 }
 
 .insight-entry {
-  font-weight: bold;
+  font: var(--sys-typescale-body4-medium);
   padding-block: 2px;
   display: flex;
   align-items: center;
@@ -100,9 +100,13 @@
 }
 
 .element-img-details {
-  font-weight: bold;
+  font: var(--sys-typescale-body4-regular);
 
   .element-img-details-size {
     color: var(--color-text-secondary);
   }
+}
+
+::slotted(*) {
+  font: var(--sys-typescale-body4-regular);
 }

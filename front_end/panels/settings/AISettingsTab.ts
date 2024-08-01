@@ -2,10 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as Input from '../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -53,6 +56,61 @@ const UIStrings = {
    */
   adminSettings: 'Features available to managed users may vary depending upon their administrator’s settings',
   /**
+   *@description Text describing the 'Console Insights' feature
+   */
+  helpUnderstandConsole: 'Helps you understand and fix console warnings and errors',
+  /**
+   *@description Label for a button to collapse an accordion
+   */
+  collapse: 'collapse',
+  /**
+   *@description Label for a button to expand an accordion
+   */
+  expand: 'expand',
+  /**
+   *@description Header for a list of feature attributes. 'When (the feature is turned) on, you'll be able to ...'
+   */
+  whenOn: 'When on',
+  /**
+   *@description Description of the console insights feature
+   */
+  explainConsole: 'Get explanations for console warnings and errors',
+  /**
+   *@description Description of the console insights feature ('these issues' refers to console warnings and errors)
+   */
+  receiveSuggestions: 'Receive suggestions and code samples to address these issues',
+  /**
+   *@description Explainer for which data is being sent by the console insights feature
+   */
+  consoleInsightsSendsData:
+      'The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data may be seen by human reviewers to improve this feature.',
+  /**
+   *@description Reference to the terms of service and privacy notice
+   *@example {Google Terms of Service} PH1
+   *@example {Privacy Notice} PH2
+   */
+  termsOfServicePrivacyNotice: 'Use of this feature is subject to the {PH1} and {PH2}',
+  /**
+   *@description Label for a link to a URL, which asks to use generated code responsibly
+   */
+  generatedSnippets: 'Use generated code snippets with caution',
+  /**
+   *@description Text which is a hyperlink to more documentation
+   */
+  learnMore: 'Learn more',
+  /**
+   *@description Label for a link to the terms of service
+   */
+  termsOfService: 'Google Terms of Service',
+  /**
+   *@description Label for a link to the privacy notice
+   */
+  privacyNotice: 'Privacy Notice',
+  /**
+   *@description Message to display if a setting change requires a reload of DevTools
+   */
+  oneOrMoreSettingsHaveChanged: 'One or more settings have changed which requires a reload to take effect.',
+  /**
    *@description Header for the Chrome AI settings page
    */
   chromeAi: 'Chrome AI',
@@ -60,12 +118,49 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/settings/AISettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+const chevronDownIconUrl = new URL('../../Images/chevron-down.svg', import.meta.url).toString();
+const chevronUpIconUrl = new URL('../../Images/chevron-up.svg', import.meta.url).toString();
+
 export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   static readonly litTagName = LitHtml.literal`devtools-settings-ai-settings-tab`;
   readonly #shadow = this.attachShadow({mode: 'open'});
+  #consoleInsightsSetting?: Common.Settings.Setting<boolean>;
+  #isConsoleInsightsSettingExpanded: boolean;
+  #shouldAnimate = false;  // Allows not animating on initial render
+
+  constructor() {
+    super();
+    try {
+      this.#consoleInsightsSetting = Common.Settings.Settings.instance().moduleSetting('console-insights-enabled');
+      this.#isConsoleInsightsSettingExpanded = this.#consoleInsightsSetting.get();
+    } catch {
+      this.#consoleInsightsSetting = undefined;
+      this.#isConsoleInsightsSettingExpanded = false;
+    }
+  }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [aiSettingsTabStyles];
+    this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, aiSettingsTabStyles];
+  }
+
+  disconnectedCallback(): void {
+    this.#shouldAnimate = false;
+  }
+
+  #expandConsoleInsightsSetting(): void {
+    this.#isConsoleInsightsSettingExpanded = !this.#isConsoleInsightsSettingExpanded;
+    this.#shouldAnimate = true;
+    void this.render();
+  }
+
+  #onConsoleInsightsCheckboxChanged(e: Event): void {
+    const {checked} = e.target as HTMLInputElement;
+    this.#consoleInsightsSetting?.set(checked);
+    UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
+        i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
+    if (checked && !this.#isConsoleInsightsSettingExpanded) {
+      this.#expandConsoleInsightsSetting();
+    }
   }
 
   #renderSharedDisclaimerItem(icon: string, text: Common.UIString.LocalizedString): LitHtml.TemplateResult {
@@ -107,6 +202,112 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     `;
   }
 
+  #renderSettingItem(icon: string, text: Common.UIString.LocalizedString|LitHtml.TemplateResult):
+      LitHtml.TemplateResult {
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return LitHtml.html`
+      <div>
+        <${IconButton.Icon.Icon.litTagName} .data=${{
+          iconName: icon,
+          width: 'var(--sys-size-9)',
+          height: 'var(--sys-size-9)',
+        } as IconButton.Icon.IconData}>
+        </${IconButton.Icon.Icon.litTagName}>
+      </div>
+      <div class="padded">${text}</div>
+    `;
+    // clang-format on
+  }
+
+  #renderConsoleInsightsSetting(): LitHtml.TemplateResult {
+    const detailsClasses = {
+      'whole-row': true,
+      animate: this.#shouldAnimate,
+      open: this.#isConsoleInsightsSettingExpanded,
+    };
+    const tabindex = this.#isConsoleInsightsSettingExpanded ? '0' : '-1';
+    const tosLink = UI.XLink.XLink.create(
+        'http://policies.google.com/terms', i18nString(UIStrings.termsOfService), undefined, undefined,
+        'terms-of-service');
+    const privacyNoticeLink = UI.XLink.XLink.create(
+        'http://policies.google.com/privacy', i18nString(UIStrings.privacyNotice), undefined, undefined,
+        'privacy-notice');
+
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return LitHtml.html`
+      <div class="icon-container centered">
+        <${IconButton.Icon.Icon.litTagName} name="lightbulb-spark"></${IconButton.Icon.Icon.litTagName}>
+      </div>
+      <div class="setting-card">
+        <div>${i18n.i18n.lockedString('Console Insights')}</div>
+        <div class="setting-description">${i18nString(UIStrings.helpUnderstandConsole)}</div>
+      </div>
+      <div class="dropdown centered">
+        <${Buttons.Button.Button.litTagName}
+          .data=${{
+            title: this.#isConsoleInsightsSettingExpanded ? i18nString(UIStrings.collapse) : i18nString(UIStrings.expand),
+            size: Buttons.Button.Size.SMALL,
+            iconUrl: this.#isConsoleInsightsSettingExpanded ? chevronUpIconUrl : chevronDownIconUrl,
+            variant: Buttons.Button.Variant.ICON,
+            jslogContext: 'console-insights.accordion',
+          } as Buttons.Button.ButtonData}
+          @click=${this.#expandConsoleInsightsSetting}
+        ></${Buttons.Button.Button.litTagName}>
+      </div>
+      <div class="divider"></div>
+      <div class="toggle-container centered">
+        <input
+          type="checkbox"
+          .checked=${this.#consoleInsightsSetting?.get()}
+          @change=${this.#onConsoleInsightsCheckboxChanged.bind(this)}
+          jslog=${VisualLogging.toggle(this.#consoleInsightsSetting?.name).track({
+            change: true,
+          })}
+        />
+      </div>
+      <div class=${LitHtml.Directives.classMap(detailsClasses)}>
+        <div class="overflow-hidden">
+          <div class="expansion-grid">
+            <div class="expansion-grid-whole-row">${i18nString(UIStrings.whenOn)}</div>
+            ${this.#renderSettingItem('lightbulb', i18nString(UIStrings.explainConsole))}
+            ${this.#renderSettingItem('code', i18nString(UIStrings.receiveSuggestions))}
+            <div class="expansion-grid-whole-row">${i18nString(UIStrings.thingsToConsider)}</div>
+            ${this.#renderSettingItem('google', i18nString(UIStrings.consoleInsightsSendsData))}
+            ${this.#renderSettingItem('policy', LitHtml.html`
+              ${i18n.i18n.getFormatLocalizedString(str_, UIStrings.termsOfServicePrivacyNotice, {
+                PH1: tosLink,
+                PH2: privacyNoticeLink,
+              })}
+            `)}
+            ${this.#renderSettingItem('warning', LitHtml.html`
+              <x-link
+                href="http://support.google.com/legal/answer/13505487"
+                class="link"
+                tabindex=${tabindex}
+                jslog=${VisualLogging.link('code-snippets-explainer.console-insights').track({
+                  click: true,
+                })}
+              >${i18nString(UIStrings.generatedSnippets)}</x-link>
+            `)}
+            <div class="expansion-grid-whole-row">
+              <x-link
+                href="http://goo.gle/devtools-console-messages-ai"
+                class="link"
+                tabindex=${tabindex}
+                jslog=${VisualLogging.link('learn-more.console-insights').track({
+                  click: true,
+                })}
+              >${i18nString(UIStrings.learnMore)}</x-link>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    // clang-format on
+  }
+
   override async render(): Promise<void> {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -114,6 +315,9 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       <header>${i18nString(UIStrings.chromeAi)}</header>
       <div class="settings-container-wrapper" jslog=${VisualLogging.pane('chrome-ai')}>
         ${this.#renderSharedDisclaimer()}
+        <div class="settings-container">
+          ${this.#consoleInsightsSetting ? this.#renderConsoleInsightsSetting() : LitHtml.nothing}
+        </div>
       </div>
     `, this.#shadow, {host: this});
     // clang-format on

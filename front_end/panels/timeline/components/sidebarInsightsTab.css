@@ -51,8 +51,8 @@
   }
 }
 
-devtools-select-menu {
+.insights-category-select {
+  width: max-content;
   margin-top: 10px;
-  height: 25px;
-  border: none;
+  margin-left: 10px;
 }

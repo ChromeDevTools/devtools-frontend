@@ -8,6 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
+import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as SourceMapScopes from '../source_map_scopes/source_map_scopes.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -540,6 +541,27 @@ function mulWithOffset(param1, param2, offset) {
       const mapping = await SourceMapScopes.NamesResolver.allVariablesAtPosition(location);
 
       assert.isNull(mapping.get('param1'));
+    });
+  });
+
+  describe('getTextFor', () => {
+    it('caches Text instances for scripts', async () => {
+      const script = await backend.addScript(target, {url: URL, content: 'console.log(42)'}, null);
+
+      const text1 = await SourceMapScopes.NamesResolver.getTextFor(script);
+      const text2 = await SourceMapScopes.NamesResolver.getTextFor(script);
+
+      assert.strictEqual(text1, text2);
+    });
+
+    it('caches Text instances for UISourceCodes', async () => {
+      const {uiSourceCode} = createContentProviderUISourceCode(
+          {target, url: URL, mimeType: 'text/typescript', content: 'console.log(42)'});
+
+      const text1 = await SourceMapScopes.NamesResolver.getTextFor(uiSourceCode);
+      const text2 = await SourceMapScopes.NamesResolver.getTextFor(uiSourceCode);
+
+      assert.strictEqual(text1, text2);
     });
   });
 });

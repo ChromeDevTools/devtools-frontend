@@ -422,6 +422,11 @@ export class MainImpl {
         'Performance panel: enable live metrics landing page',
     );
 
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.GEN_AI_SETTINGS_PANEL,
+        'Dedicated panel for generative AI settings',
+    );
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       'css-type-component-length-deprecate',
       Root.Runtime.ExperimentName.OUTERMOST_TARGET_SELECTOR,

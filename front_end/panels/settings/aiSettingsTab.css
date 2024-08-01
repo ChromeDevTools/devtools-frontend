@@ -1,0 +1,21 @@
+/*
+ * Copyright 2024 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.settings-container-wrapper {
+  position: absolute;
+  top: 31px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  padding: var(--sys-size-6);
+  border-top: 1px solid var(--sys-color-divider);
+}
+
+header {
+  font-size: var(--sys-typescale-headline3-size);
+  font-weight: var(--ref-typeface-weight-regular);
+}

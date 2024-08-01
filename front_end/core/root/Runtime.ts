@@ -300,6 +300,7 @@ export const enum ExperimentName {
   TIMELINE_DEBUG_MODE = 'timeline-debug-mode',
   TIMELINE_OBSERVATIONS = 'timeline-observations',
   TIMELINE_ENHANCED_TRACES = 'timeline-enhanced-traces',
+  GEN_AI_SETTINGS_PANEL = 'gen-ai-settings-panel',
 }
 
 export interface HostConfigConsoleInsights {

@@ -295,9 +295,9 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     assert.deepStrictEqual(match('animation-name', 'first'), ['first']);
     assert.deepStrictEqual(match('font-palette', 'first'), ['first']);
     {
-      assert.deepStrictEqual(match('position-try-options', 'flip-block'), []);
-      assert.deepStrictEqual(match('position-try-options', '--one'), ['--one']);
-      assert.deepStrictEqual(match('position-try-options', '--one, --two'), ['--one', '--two']);
+      assert.deepStrictEqual(match('position-try-fallbacks', 'flip-block'), []);
+      assert.deepStrictEqual(match('position-try-fallbacks', '--one'), ['--one']);
+      assert.deepStrictEqual(match('position-try-fallbacks', '--one, --two'), ['--one', '--two']);
     }
     {
       assert.deepStrictEqual(match('position-try', 'flip-block'), []);

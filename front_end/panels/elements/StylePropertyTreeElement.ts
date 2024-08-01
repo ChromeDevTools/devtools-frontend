@@ -658,7 +658,7 @@ export class LinkableNameRenderer implements MatchRenderer<LinkableNameMatch> {
           isDefined: this.#treeElement.matchedStyles().fontPaletteValuesRule()?.name().text === match.text,
         };
       case LinkableNameProperties.PositionTry:
-      case LinkableNameProperties.PositionTryOptions:
+      case LinkableNameProperties.PositionTryFallbacks:
         return {
           jslogContext: 'css-position-try',
           metric: Host.UserMetrics.SwatchType.PositionTryLink,

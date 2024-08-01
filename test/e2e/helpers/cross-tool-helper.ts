@@ -53,10 +53,13 @@ export const checkIfTabExistsInDrawer = async (tabId: string) => {
   return Boolean(tab);
 };
 
-export async function reloadDevTools(
-    options?: DevToolsFrontendReloadOptions&
-    {expectClosedPanels?: string[], enableExperiments?: string[], disableExperiments?: string[]}) {
-  const {frontend} = getBrowserAndPages();
+export async function reloadDevTools(options?: DevToolsFrontendReloadOptions&{
+  expectClosedPanels?: string[],
+  enableExperiments?: string[],
+  disableExperiments?: string[],
+  removeBackendState?: boolean,
+}) {
+  const {frontend, target} = getBrowserAndPages();
   const enableExperiments = options?.enableExperiments || [];
   const disableExperiments = options?.disableExperiments || [];
   if (enableExperiments.length || disableExperiments.length) {
@@ -69,6 +72,10 @@ export async function reloadDevTools(
         Root.Runtime.experiments.setEnabled(experiment, false);
       }
     })()`);
+  }
+  if (options?.removeBackendState) {
+    // Navigate to a different site to make sure that back-end state will be removed.
+    await target.goto('about:blank');
   }
   await baseReloadDevTools(options);
   const selectedPanel = options?.selectedPanel?.name || options?.queryParams?.panel || 'elements';

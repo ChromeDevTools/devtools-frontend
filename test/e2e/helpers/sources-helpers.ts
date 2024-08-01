@@ -34,7 +34,6 @@ import {
 } from '../../shared/helper.js';
 
 import {openSoftContextMenuAndClickOnItem} from './context-menu-helpers.js';
-import {reloadDevTools} from './cross-tool-helper.js';
 import {veImpression} from './visual-logging-helpers.js';
 
 export const ACTIVE_LINE = '.CodeMirror-activeline > pre > span';
@@ -732,12 +731,6 @@ export async function addSelectedTextToWatches() {
   await frontend.keyboard.press('A');
   await frontend.keyboard.up(modifierKey);
   await frontend.keyboard.up('Shift');
-}
-
-export async function refreshDevToolsAndRemoveBackendState(target: puppeteer.Page) {
-  // Navigate to a different site to make sure that back-end state will be removed.
-  await target.goto('about:blank');
-  await reloadDevTools({selectedPanel: {name: 'sources'}});
 }
 
 export async function enableLocalOverrides() {

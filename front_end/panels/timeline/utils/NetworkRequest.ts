@@ -7,15 +7,18 @@ import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
 import type * as TraceEngine from '../../../models/trace/trace.js';
 
-export function createTimelineNetworkRequest(
-    syntheticNetworkRequest: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest): TimelineNetworkRequest|null {
+export function getNetworkRequest(syntheticNetworkRequest: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest):
+    SDK.NetworkRequest.NetworkRequest|undefined|null {
   const url = syntheticNetworkRequest.args.data.url as Platform.DevToolsPath.UrlString;
   const urlWithoutHash = Common.ParsedURL.ParsedURL.urlWithoutHash(url) as Platform.DevToolsPath.UrlString;
   const resource = Bindings.ResourceUtils.resourceForURL(url) || Bindings.ResourceUtils.resourceForURL(urlWithoutHash);
-  if (!resource?.request) {
-    return null;
-  }
-  return new TimelineNetworkRequest(resource.request);
+  return resource?.request;
+}
+
+export function createTimelineNetworkRequest(
+    syntheticNetworkRequest: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest): TimelineNetworkRequest|null {
+  const request = getNetworkRequest(syntheticNetworkRequest);
+  return request ? new TimelineNetworkRequest(request) : null;
 }
 
 // Add a wrapper class here.

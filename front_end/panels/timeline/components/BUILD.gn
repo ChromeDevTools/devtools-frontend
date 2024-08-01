@@ -55,6 +55,7 @@ devtools_module("components") {
     "../../../ui/components/legacy_wrapper:bundle",
     "../../../ui/components/menus:bundle",
     "../../../ui/components/render_coordinator:bundle",
+    "../../../ui/components/request_link_icon:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/legacy/components/perf_ui:bundle",
     "../../../ui/lit-html:bundle",

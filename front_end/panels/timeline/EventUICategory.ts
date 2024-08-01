@@ -476,7 +476,7 @@ const UIStrings = {
   /**
    *@description Text in Timeline for Layout Shift records
    */
-  layoutShift: 'Layout Shift',
+  layoutShift: 'Layout shift',
   /**
    *@description Text in Timeline for an Event Timing record
    */

@@ -52,7 +52,7 @@ const UIStrings = {
    * (regions) of the page that were shifted (where a 'layout shift' occurred). A layout shift is
    * where elements on the webpage move around and cause other nearby elements to move as well.
    */
-  layoutShiftRegions: 'Layout Shift Regions',
+  layoutShiftRegions: 'Layout shift regions',
   /**
    * @description Explanation text for the 'Layout Shift Regions' setting in the Rendering tool.
    */

@@ -213,8 +213,6 @@ export class CompatibilityTracksAppender {
     this.#gpuTrackAppender = new GPUTrackAppender(this, this.#traceParsedData);
     this.#allTrackAppenders.push(this.#gpuTrackAppender);
 
-    // Layout Shifts track in OPP was called the "Experience" track even though
-    // all it shows are layout shifts.
     this.#layoutShiftsTrackAppender = new LayoutShiftsTrackAppender(this, this.#traceParsedData);
     this.#allTrackAppenders.push(this.#layoutShiftsTrackAppender);
 

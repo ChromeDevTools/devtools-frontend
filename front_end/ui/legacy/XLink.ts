@@ -24,8 +24,9 @@ export class XLink extends XElement {
   private clickable: boolean;
   private readonly onClick: (arg0: Event) => void;
   private readonly onKeyDown: (arg0: KeyboardEvent) => void;
-  static create(url: string, linkText?: string, className?: string, preventClick?: boolean, jsLogContext?: string):
-      HTMLElement {
+  static create(
+      url: string, linkText?: string, className?: string, preventClick?: boolean, jsLogContext?: string,
+      tabindex = '0'): HTMLElement {
     if (!linkText) {
       linkText = url;
     }
@@ -33,7 +34,7 @@ export class XLink extends XElement {
     // clang-format off
     // TODO(dgozman): migrate css from 'devtools-link' to 'x-link'.
     const element = html `
-  <x-link href='${url}' tabindex="0" class='${className} devtools-link' ${preventClick ? 'no-click' : ''}
+  <x-link href='${url}' tabindex='${tabindex}' class='${className} devtools-link' ${preventClick ? 'no-click' : ''}
   jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context(jsLogContext)}>${Platform.StringUtilities.trimMiddle(linkText, MaxLengthForDisplayedURLs)}</x-link>`;
     // clang-format on
     return element as HTMLElement;
@@ -71,7 +72,7 @@ export class XLink extends XElement {
 
   static override get observedAttributes(): string[] {
     // TODO(dgozman): should be super.observedAttributes, but it does not compile.
-    return XElement.observedAttributes.concat(['href', 'no-click', 'title']);
+    return XElement.observedAttributes.concat(['href', 'no-click', 'title', 'tabindex']);
   }
 
   get href(): Platform.DevToolsPath.UrlString|null {
@@ -106,6 +107,13 @@ export class XLink extends XElement {
         Tooltip.install(this, newValue);
       }
       this.updateClick();
+      return;
+    }
+
+    if (attr === 'tabindex') {
+      if (oldValue !== newValue) {
+        this.setAttribute('tabindex', newValue || '0');
+      }
       return;
     }
 

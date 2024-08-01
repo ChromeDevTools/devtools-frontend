@@ -8,7 +8,9 @@ import {
   click,
   step,
   waitFor,
+  waitForFunction,
 } from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   elementContainsTextWithSelector,
   navigateToNetworkTab,
@@ -64,7 +66,7 @@ describe('The Network Tab', function() {
     });
 
     await step('can highlight the pretty-printed text', async () => {
-      assert.isTrue(await isPrettyPrinted());
+      await waitForFunction(isPrettyPrinted);
       assert.isTrue(await elementContainsTextWithSelector(editor, '"Value1"', '.token-string'));
 
       assert.isTrue(await elementContainsTextWithSelector(editor, 'true', '.token-atom'));
@@ -81,7 +83,7 @@ describe('The Network Tab', function() {
     });
 
     await step('can highlight the un-pretty-printed text', async () => {
-      assert.isFalse(await isPrettyPrinted());
+      await waitForFunction(async () => !(await isPrettyPrinted()));
       assert.isTrue(await elementContainsTextWithSelector(editor, '"Value1"', '.token-string'));
 
       assert.isTrue(await elementContainsTextWithSelector(editor, 'true', '.token-atom'));
@@ -129,7 +131,7 @@ describe('The Network Tab', function() {
     });
 
     await step('can highlight the pretty-printed text', async () => {
-      assert.isTrue(await isPrettyPrinted());
+      await waitForFunction(isPrettyPrinted);
       assert.isTrue(await elementContainsTextWithSelector(editor, '"Value1"', '.token-string'));
 
       assert.isTrue(await elementContainsTextWithSelector(editor, 'true', '.token-atom'));

@@ -385,9 +385,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     Host.userMetrics.actionTaken(
         this.#allPaused ? Host.UserMetrics.Action.AnimationsPaused : Host.UserMetrics.Action.AnimationsResumed,
     );
-    if (this.#pauseButton) {
-      this.#pauseButton.setToggled(this.#allPaused);
-    }
     this.setPlaybackRate(this.#playbackRate);
     if (this.#pauseButton) {
       this.#pauseButton.setTitle(this.#allPaused ? i18nString(UIStrings.resumeAll) : i18nString(UIStrings.pauseAll));

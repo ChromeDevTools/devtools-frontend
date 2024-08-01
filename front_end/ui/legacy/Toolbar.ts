@@ -288,10 +288,6 @@ export class Toolbar {
     this.contentElement.classList.add('vertical');
   }
 
-  makeBlueOnHover(): void {
-    this.contentElement.classList.add('toolbar-blue-on-hover');
-  }
-
   renderAsLinks(): void {
     this.contentElement.classList.add('toolbar-render-as-links');
   }

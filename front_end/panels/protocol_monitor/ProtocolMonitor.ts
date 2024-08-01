@@ -195,7 +195,6 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
     const recordButton = new UI.Toolbar.ToolbarToggle(
         i18nString(UIStrings.record), 'record-start', 'record-stop', 'protocol-monitor.toggle-recording');
     recordButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
-      recordButton.setToggled(!recordButton.isToggled());
       this.setRecording(recordButton.isToggled());
     });
     recordButton.enableToggleWithRedColor();

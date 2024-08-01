@@ -841,7 +841,6 @@ export class MainMenuItem implements UI.Toolbar.Provider {
       const dockItemToolbar = new UI.Toolbar.Toolbar('', dockItemElement);
       dockItemElement.setAttribute(
           'jslog', `${VisualLogging.item('dock-side').track({keydown: 'ArrowDown|ArrowLeft|ArrowRight'})}`);
-      dockItemToolbar.makeBlueOnHover();
       const undock = new UI.Toolbar.ToolbarToggle(
           i18nString(UIStrings.undockIntoSeparateWindow), 'dock-window', undefined, 'current-dock-state-undock');
       const bottom = new UI.Toolbar.ToolbarToggle(

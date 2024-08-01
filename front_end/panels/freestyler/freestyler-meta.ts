@@ -16,13 +16,13 @@ import type * as Freestyler from './freestyler.js';
   */
 const UIStringsTemp = {
   /**
-   * @description The title of the action for showing Freestyler panel.
+   * @description The title of the action for showing Ai Assistant panel.
    */
-  showFreestyler: 'Show Freestyler',
+  showAiAssistant: 'Show  AI Assistant',
   /**
-   * @description The title of the Freestyler panel.
+   * @description The title of the AI Assistant panel.
    */
-  freestyler: 'Freestyler',
+  aiAssistant: 'AI Assistant',
   /**
    * @description The setting title to enable the freestyler via
    * the settings tab.
@@ -32,7 +32,7 @@ const UIStringsTemp = {
    *@description Text of a tooltip to redirect to the AI assistant panel with
    *the current element as context
    */
-  askFreestyler: 'Ask Freestyler',
+  askAiAssistant: 'Ask AI Assistant',
   /**
    * @description Message shown to the user if the DevTools locale is not
    * supported.
@@ -95,8 +95,8 @@ function isFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'freestyler',
-  commandPrompt: i18nLazyString(UIStringsTemp.showFreestyler),
-  title: i18nLazyString(UIStringsTemp.freestyler),
+  commandPrompt: i18nLazyString(UIStringsTemp.showAiAssistant),
+  title: i18nLazyString(UIStringsTemp.aiAssistant),
   order: 10,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   hasToolbar: false,
@@ -140,7 +140,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   setting,
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStringsTemp.askFreestyler),
+  title: i18nLazyString(UIStringsTemp.askAiAssistant),
   async loadActionDelegate() {
     const Freestyler = await loadFreestylerModule();
     return new Freestyler.ActionDelegate();
@@ -155,7 +155,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   setting,
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStringsTemp.askFreestyler),
+  title: i18nLazyString(UIStringsTemp.askAiAssistant),
   iconClass: UI.ActionRegistration.IconClass.SPARK,
   async loadActionDelegate() {
     const Freestyler = await loadFreestylerModule();

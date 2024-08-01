@@ -216,11 +216,13 @@ export class LCPPhases extends HTMLElement {
   #renderLCPPhases(phaseData: PhaseData[]): LitHtml.LitTemplate {
     // clang-format off
     return LitHtml.html`
-    <div class="insights" @click=${this.#sidebarClicked}>
+    <div class="insights">
       <${SidebarInsight.SidebarInsight.litTagName} .data=${{
             title: this.#insightTitle,
             expanded: this.#isActive(),
-        } as SidebarInsight.InsightDetails}>
+        } as SidebarInsight.InsightDetails}
+        @insighttoggleclick=${this.#sidebarClicked}
+      >
         <div slot="insight-description" class="insight-description">
           Each
           <x-link class="link" href="https://web.dev/articles/optimize-lcp#lcp-breakdown">phase has specific recommendations to improve.</x-link>

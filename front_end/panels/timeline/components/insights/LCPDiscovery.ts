@@ -133,40 +133,42 @@ export class LCPDiscovery extends HTMLElement {
   }
 
   #renderDiscovery(imageData: ImageData): LitHtml.TemplateResult {
+    // clang-format off
     return LitHtml.html`
-        <div class="insights"  @click=${() => this.#sidebarClicked()}>
-            <${SidebarInsight.SidebarInsight.litTagName} .data=${{
-      title: this.#insightTitle,
-      expanded: this.#isActive(),
-    } as SidebarInsight.InsightDetails}>
-            <div slot="insight-description" class="insight-description">
-                The LCP image should be requested as early as possible.
-                <div class="insight-results">
-                  <div class="insight-entry">
-                      ${this.#adviceIcon(imageData.shouldIncreasePriorityHint)}
-                      fetchpriority=high applied
-                  </div>
-                  <div class="insight-entry">
-                      ${this.#adviceIcon(imageData.shouldPreloadImage)}
-                      Request is discoverable in initial document
-                  </div>
-                  <div class="insight-entry">
-                      ${this.#adviceIcon(imageData.shouldRemoveLazyLoading)}
-                      lazyload not applied
-                  </div>
-                </div>
+        <div class="insights">
+          <${SidebarInsight.SidebarInsight.litTagName} .data=${{
+            title: this.#insightTitle,
+            expanded: this.#isActive(),
+          } as SidebarInsight.InsightDetails}
+          @insighttoggleclick=${this.#sidebarClicked}
+        >
+          <div slot="insight-description" class="insight-description">
+            The LCP image should be requested as early as possible.
+            <div class="insight-results">
+              <div class="insight-entry">
+                ${this.#adviceIcon(imageData.shouldIncreasePriorityHint)}
+                fetchpriority=high applied
+              </div>
+              <div class="insight-entry">
+                ${this.#adviceIcon(imageData.shouldPreloadImage)}
+                Request is discoverable in initial document
+              </div>
+              <div class="insight-entry">
+                ${this.#adviceIcon(imageData.shouldRemoveLazyLoading)}
+                lazyload not applied
+              </div>
             </div>
-            <div slot="insight-content" class="insight-content">
-                <img class="element-img" data-src=${imageData.resource.args.data.url} src=${
-        imageData.resource.args.data.url}>
-                <div class="element-img-details">
-                    ${Common.ParsedURL.ParsedURL.extractName(imageData.resource.args.data.url ?? '')}
-                    <div class="element-img-details-size">${
-        Platform.NumberUtilities.bytesToString(imageData.resource.args.data.decodedBodyLength ?? 0)}</div>
-                </div>
+          </div>
+          <div slot="insight-content" class="insight-content">
+            <img class="element-img" data-src=${imageData.resource.args.data.url} src=${imageData.resource.args.data.url}>
+            <div class="element-img-details">
+              ${Common.ParsedURL.ParsedURL.extractName(imageData.resource.args.data.url ?? '')}
+              <div class="element-img-details-size">${Platform.NumberUtilities.bytesToString(imageData.resource.args.data.decodedBodyLength ?? 0)}</div>
             </div>
-            </${SidebarInsight.SidebarInsight}>
-        </div>`;
+          </div>
+        </${SidebarInsight.SidebarInsight}>
+      </div>`;
+    // clang-format on
   }
 
   connectedCallback(): void {

@@ -287,6 +287,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let timelinePanelInstance: TimelinePanel;
 let isNode: boolean;
 
+const DEFAULT_SIDEBAR_WIDTH_PX = 240;
+
 export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineModeViewDelegate {
   private readonly dropTarget: UI.DropTarget.DropTarget;
   private readonly recordingOptionUIControls: UI.Toolbar.ToolbarItem[];
@@ -306,11 +308,15 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private readonly panelRightToolbar: UI.Toolbar.Toolbar;
   private readonly timelinePane: UI.Widget.VBox;
   readonly #minimapComponent = new TimelineMiniMap();
+  /**
+   * This widget holds the timeline sidebar which shows Insights & Annotations,
+   * and the main UI which shows the timeline
+   */
   readonly #splitWidget = new UI.SplitWidget.SplitWidget(
-      true,
-      false,
-      undefined,
-      240,  // TODO: move into a constant
+      true,       // isVertical
+      false,      // secondIsSidebar
+      undefined,  // settingName (we don't want to persist this state to a setting)
+      DEFAULT_SIDEBAR_WIDTH_PX,
   );
   private readonly statusPaneContainer: HTMLElement;
   private readonly flameChart: TimelineFlameChartView;
@@ -1473,6 +1479,17 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.flameChart.setInsights(traceInsightsData);
       this.#sideBar.setInsights(traceInsightsData);
       this.#setActiveInsight(null);
+    }
+
+    // Automatically show the sidebar when a trace is loaded if we have data.
+    // Or hide it when we do not have data (which likely means we are back on the landing page)
+    const hasInsights = traceInsightsData !== null && traceInsightsData.size > 0;
+    const hasAnnotations = (currModificationManager?.getAnnotations().length ?? 0) > 0;
+    const shouldOpenSidebar = hasInsights || hasAnnotations;
+    if (shouldOpenSidebar) {
+      this.#splitWidget.showBoth();
+    } else {
+      this.#splitWidget.hideSidebar();
     }
   }
 

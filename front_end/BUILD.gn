@@ -225,6 +225,7 @@ group("unittests") {
     "ui/components/settings:unittests",
     "ui/components/split_view:unittests",
     "ui/components/survey_link:unittests",
+    "ui/components/switch:unittests",
     "ui/components/text_editor:unittests",
     "ui/components/text_prompt:unittests",
     "ui/components/tree_outline:unittests",

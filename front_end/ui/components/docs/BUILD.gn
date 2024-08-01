@@ -55,6 +55,7 @@ group("docs") {
     "./shortcut_dialog",
     "./style_property_editor",
     "./survey_link",
+    "./switch",
     "./text_editor",
     "./text_prompt",
     "./theme_colors",

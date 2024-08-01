@@ -174,13 +174,17 @@ export class NetworkRequestDetails extends HTMLElement {
       if (!this.#networkRequest) {
         return;
       }
-      // Add a wrapper class here. The reason is the `Reveal in Network panel` option is handled by the context menu
-      // provider, which will add this option for all supporting types. And there are a lot of context menu providers that
-      // support `SDK.NetworkRequest.NetworkRequest`, for example `Override content` by PersistenceActions, but we so far
-      // just want the one to reveal in network panel, so add a new class which will only be supported by Network panel.
-      const request = new TimelineUtils.NetworkRequest.TimelineNetworkRequest(this.#networkRequest);
+      // Add a wrapper class here.
+      // The main reason is the `Reveal in Network panel` option is handled by the context
+      // menu provider, which will add this option for all supporting types. And there are a lot of context menu
+      // providers that support `SDK.NetworkRequest.NetworkRequest`, for example `Override content` by
+      // PersistenceActions, but we so far just want the one to reveal in network panel, so add a new class which will
+      // only be supported by Network panel.
+      // Also we want to have a different behavior(select the network request) from the
+      // `SDK.NetworkRequest.NetworkRequest` (highlight the network request once).
+      const timelineNetworkRequest = TimelineUtils.NetworkRequest.createTimelineNetworkRequest(this.#networkRequest);
       const contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
-      contextMenu.appendApplicableItems(request);
+      contextMenu.appendApplicableItems(timelineNetworkRequest);
       void contextMenu.show();
     });
     return this.#renderRow(i18n.i18n.lockedString('URL'), linkifiedURL);

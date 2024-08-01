@@ -42,7 +42,7 @@ import type * as Extensions from '../../models/extensions/extensions.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import type * as NetworkForward from '../../panels/network/forward/forward.js';
+import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -724,6 +724,17 @@ export class NetworkPanel extends UI.Panel.Panel implements
                     .then(this.revealAndHighlightRequest.bind(this, request)),
           {jslogContext: 'reveal-in-network'});
     };
+    const appendRevealItemAndSelect = (request: TimelineUtils.NetworkRequest.TimelineNetworkRequest): void => {
+      contextMenu.revealSection().appendItem(
+          i18nString(UIStrings.revealInNetworkPanel),
+          () => UI.ViewManager.ViewManager.instance()
+                    .showView('network')
+                    .then(this.networkLogView.resetFilter.bind(this.networkLogView))
+                    .then(this.selectAndActivateRequest.bind(
+                        this, request.request, NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent,
+                        /* FilterOptions= */ undefined)),
+          {jslogContext: 'timeline.reveal-in-network'});
+    };
 
     if ((event.target as Node).isSelfOrDescendant(this.element)) {
       return;
@@ -743,9 +754,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
       return;
     }
     if (target instanceof TimelineUtils.NetworkRequest.TimelineNetworkRequest) {
-      if (target.request) {
-        appendRevealItem(target.request);
-      }
+      appendRevealItemAndSelect(target);
       return;
     }
 

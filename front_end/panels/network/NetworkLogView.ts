@@ -2003,10 +2003,6 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     }
   }
 
-  private removeAllHighlights(): void {
-    this.removeAllNodeHighlights();
-  }
-
   private applyFilter(request: SDK.NetworkRequest.NetworkRequest): boolean {
     if (this.timeFilter && !this.timeFilter(request)) {
       return false;
@@ -2193,7 +2189,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   private filterRequests(): void {
-    this.removeAllHighlights();
+    this.removeAllNodeHighlights();
     this.invalidateAllItems();
   }
 

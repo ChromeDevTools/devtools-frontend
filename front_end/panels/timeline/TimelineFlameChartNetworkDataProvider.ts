@@ -129,9 +129,9 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     if (!networkRequest || !TraceEngine.Types.TraceEvents.isSyntheticNetworkRequestEvent(networkRequest)) {
       return;
     }
-    const request = new TimelineUtils.NetworkRequest.TimelineNetworkRequest(networkRequest);
+    const timelineNetworkRequest = TimelineUtils.NetworkRequest.createTimelineNetworkRequest(networkRequest);
     const contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
-    contextMenu.appendApplicableItems(request);
+    contextMenu.appendApplicableItems(timelineNetworkRequest);
     return contextMenu;
   }
 

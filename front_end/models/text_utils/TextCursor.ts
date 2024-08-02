@@ -5,47 +5,40 @@
 import * as Platform from '../../core/platform/platform.js';
 
 export class TextCursor {
-  private lineEndings: number[];
-  private offsetInternal: number;
-  private lineNumberInternal: number;
-  private columnNumberInternal: number;
+  readonly #lineEndings: number[];
+
+  #offset: number = 0;
+  #lineNumber: number = 0;
+  #columnNumber: number = 0;
 
   constructor(lineEndings: number[]) {
-    this.lineEndings = lineEndings;
-    this.offsetInternal = 0;
-    this.lineNumberInternal = 0;
-    this.columnNumberInternal = 0;
+    this.#lineEndings = lineEndings;
   }
 
   advance(offset: number): void {
-    this.offsetInternal = offset;
-    while (this.lineNumberInternal < this.lineEndings.length &&
-           this.lineEndings[this.lineNumberInternal] < this.offsetInternal) {
-      ++this.lineNumberInternal;
+    this.#offset = offset;
+    while (this.#lineNumber < this.#lineEndings.length && this.#lineEndings[this.#lineNumber] < this.#offset) {
+      ++this.#lineNumber;
     }
-    this.columnNumberInternal = this.lineNumberInternal ?
-        this.offsetInternal - this.lineEndings[this.lineNumberInternal - 1] - 1 :
-        this.offsetInternal;
+    this.#columnNumber = this.#lineNumber ? this.#offset - this.#lineEndings[this.#lineNumber - 1] - 1 : this.#offset;
   }
 
   offset(): number {
-    return this.offsetInternal;
+    return this.#offset;
   }
 
   resetTo(offset: number): void {
-    this.offsetInternal = offset;
-    this.lineNumberInternal =
-        Platform.ArrayUtilities.lowerBound(this.lineEndings, offset, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
-    this.columnNumberInternal = this.lineNumberInternal ?
-        this.offsetInternal - this.lineEndings[this.lineNumberInternal - 1] - 1 :
-        this.offsetInternal;
+    this.#offset = offset;
+    this.#lineNumber =
+        Platform.ArrayUtilities.lowerBound(this.#lineEndings, offset, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
+    this.#columnNumber = this.#lineNumber ? this.#offset - this.#lineEndings[this.#lineNumber - 1] - 1 : this.#offset;
   }
 
   lineNumber(): number {
-    return this.lineNumberInternal;
+    return this.#lineNumber;
   }
 
   columnNumber(): number {
-    return this.columnNumberInternal;
+    return this.#columnNumber;
   }
 }

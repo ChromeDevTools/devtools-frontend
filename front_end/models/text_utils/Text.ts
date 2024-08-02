@@ -8,22 +8,22 @@ import {TextCursor} from './TextCursor.js';
 import {SourceRange, TextRange} from './TextRange.js';
 
 export class Text {
-  private valueInternal: string;
-  private lineEndingsInternal?: number[];
+  readonly #value: string;
+  #lineEndings?: number[];
 
   constructor(value: string) {
-    this.valueInternal = value;
+    this.#value = value;
   }
 
   lineEndings(): number[] {
-    if (!this.lineEndingsInternal) {
-      this.lineEndingsInternal = Platform.StringUtilities.findLineEndingIndexes(this.valueInternal);
+    if (!this.#lineEndings) {
+      this.#lineEndings = Platform.StringUtilities.findLineEndingIndexes(this.#value);
     }
-    return this.lineEndingsInternal;
+    return this.#lineEndings;
   }
 
   value(): string {
-    return this.valueInternal;
+    return this.#value;
   }
 
   lineCount(): number {
@@ -46,7 +46,7 @@ export class Text {
     const lineEndings = this.lineEndings();
     const lineStart = lineNumber > 0 ? lineEndings[lineNumber - 1] + 1 : 0;
     const lineEnd = lineEndings[lineNumber];
-    let lineContent = this.valueInternal.substring(lineStart, lineEnd);
+    let lineContent = this.#value.substring(lineStart, lineEnd);
     if (lineContent.length > 0 && lineContent.charAt(lineContent.length - 1) === '\r') {
       lineContent = lineContent.substring(0, lineContent.length - 1);
     }
@@ -75,13 +75,13 @@ export class Text {
 
   replaceRange(range: TextRange, replacement: string): string {
     const sourceRange = this.toSourceRange(range);
-    return this.valueInternal.substring(0, sourceRange.offset) + replacement +
-        this.valueInternal.substring(sourceRange.offset + sourceRange.length);
+    return this.#value.substring(0, sourceRange.offset) + replacement +
+        this.#value.substring(sourceRange.offset + sourceRange.length);
   }
 
   extract(range: TextRange): string {
     const sourceRange = this.toSourceRange(range);
-    return this.valueInternal.substr(sourceRange.offset, sourceRange.length);
+    return this.#value.substr(sourceRange.offset, sourceRange.length);
   }
 }
 export interface Position {

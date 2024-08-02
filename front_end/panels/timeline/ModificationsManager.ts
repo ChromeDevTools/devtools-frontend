@@ -148,7 +148,7 @@ export class ModificationsManager extends EventTarget {
   }
 
   removeAnnotationOverlay(removedOverlay: Overlays.Overlays.TimelineOverlay): void {
-    const annotationForRemovedOverlay = this.#getAnnotationByOverlay(removedOverlay);
+    const annotationForRemovedOverlay = this.getAnnotationByOverlay(removedOverlay);
     if (!annotationForRemovedOverlay) {
       console.warn('Annotation for deleted Overlay does not exist');
       return;
@@ -171,7 +171,7 @@ export class ModificationsManager extends EventTarget {
   }
 
   updateAnnotationOverlay(updatedOverlay: Overlays.Overlays.TimelineOverlay): void {
-    const annotationForUpdatedOverlay = this.#getAnnotationByOverlay(updatedOverlay);
+    const annotationForUpdatedOverlay = this.getAnnotationByOverlay(updatedOverlay);
     if (!annotationForUpdatedOverlay) {
       console.warn('Annotation for updated Overlay does not exist');
       return;
@@ -183,7 +183,7 @@ export class ModificationsManager extends EventTarget {
     this.dispatchEvent(new AnnotationModifiedEvent(updatedOverlay, 'UpdateLabel'));
   }
 
-  #getAnnotationByOverlay(overlay: Overlays.Overlays.TimelineOverlay): TraceEngine.Types.File.Annotation|null {
+  getAnnotationByOverlay(overlay: Overlays.Overlays.TimelineOverlay): TraceEngine.Types.File.Annotation|null {
     for (const [annotation, currOverlay] of this.#overlayForAnnotation.entries()) {
       if (currOverlay === overlay) {
         return annotation;

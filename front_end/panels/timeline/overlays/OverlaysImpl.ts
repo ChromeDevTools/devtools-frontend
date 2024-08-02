@@ -894,6 +894,9 @@ export class Overlays extends EventTarget {
           overlay.label = newLabel;
           this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Update'));
         });
+        component.addEventListener(Components.TimeRangeOverlay.TimeRangeRemoveEvent.eventName, () => {
+          this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Remove'));
+        });
         div.appendChild(component);
         return div;
       }

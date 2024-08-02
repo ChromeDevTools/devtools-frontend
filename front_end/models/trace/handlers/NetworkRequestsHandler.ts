@@ -241,23 +241,22 @@ export async function finalize(): Promise<void> {
     const isDiskCached = request.receiveResponse.args.data.fromCache &&
         !request.receiveResponse.args.data.fromServiceWorker && !isPushedResource;
     // If the request contains a resourceMarkAsCached event, it was served from memory cache.
-    const isMemoryCached = request.resourceMarkAsCached !== undefined;
-
     // The timing data returned is from the original (uncached) request, which
     // means that if we leave the above network record data as-is when the
     // request came from either the disk cache or memory cache, our calculations
     // will be incorrect.
     //
-    // Here we add a flag so when we calculate the timestamps of the various
+    // So we use this flag so when we calculate the timestamps of the various
     // events, we can overwrite them.
     // These timestamps may not be perfect (indeed they don't always match
     // the Network CDP domain exactly, which is likely an artifact of the way
     // the data is routed on the backend), but they're the closest we have.
-    const isCached = isMemoryCached || isDiskCached;
-
-    const timing = request.receiveResponse.args.data.timing;
+    const isMemoryCached = request.resourceMarkAsCached !== undefined;
+    // If a request has `resourceMarkAsCached` field, the `timing` field is not correct.
+    // So let's discard it and override to 0 (which will be handled in later logic if timing field is undefined).
+    const timing = isMemoryCached ? undefined : request.receiveResponse.args.data.timing;
     // If a non-cached request has no |timing| indicates data URLs, we ignore it.
-    if (!timing && !isCached) {
+    if (!timing && !isMemoryCached) {
       continue;
     }
 
@@ -302,8 +301,7 @@ export async function finalize(): Promise<void> {
     // Network duration
     // =======================
     // Time spent on the network.
-    const networkDuration = isCached ? Types.Timing.MicroSeconds(0) :
-                                       Types.Timing.MicroSeconds((finishTime || endRedirectTime) - endRedirectTime);
+    const networkDuration = Types.Timing.MicroSeconds(timing ? (finishTime || endRedirectTime) - endRedirectTime : 0);
 
     // Processing duration
     // =======================
@@ -322,10 +320,9 @@ export async function finalize(): Promise<void> {
     // The amount of time queueing is the time between the request's start time to the requestTime
     // arg recorded in the receiveResponse event. In the cases where the recorded start time is larger
     // that the requestTime we set queueing time to zero.
-    const queueing = isCached ?
-        Types.Timing.MicroSeconds(0) :
-        Types.Timing.MicroSeconds(Platform.NumberUtilities.clamp(
-            (timing.requestTime * SECONDS_TO_MICROSECONDS - endRedirectTime), 0, Number.MAX_VALUE));
+    const queueingFromTraceData = timing ? timing.requestTime * SECONDS_TO_MICROSECONDS - endRedirectTime : 0;
+    const queueing =
+        Types.Timing.MicroSeconds(Platform.NumberUtilities.clamp(queueingFromTraceData, 0, Number.MAX_VALUE));
 
     // Stalled
     // =======================
@@ -334,57 +331,57 @@ export async function finalize(): Promise<void> {
     // Otherwise it is whichever positive number comes first from the following timing info:
     // DNS start, Connection start, Send Start, or the time duration between our start time and
     // receiving a response.
-    const stalled = isCached ? Types.Timing.MicroSeconds(request.receiveResponse.ts - startTime) :
-                               Types.Timing.MicroSeconds(firstPositiveValueInList([
-                                 timing.dnsStart * MILLISECONDS_TO_MICROSECONDS,
-                                 timing.connectStart * MILLISECONDS_TO_MICROSECONDS,
-                                 timing.sendStart * MILLISECONDS_TO_MICROSECONDS,
-                                 (request.receiveResponse.ts - endRedirectTime),
-                               ]));
+    const stalled = timing ? Types.Timing.MicroSeconds(firstPositiveValueInList([
+      timing.dnsStart * MILLISECONDS_TO_MICROSECONDS,
+      timing.connectStart * MILLISECONDS_TO_MICROSECONDS,
+      timing.sendStart * MILLISECONDS_TO_MICROSECONDS,
+      (request.receiveResponse.ts - endRedirectTime),
+    ])) :
+                             Types.Timing.MicroSeconds(request.receiveResponse.ts - startTime);
 
     // Sending HTTP request
     // =======================
     // Time when the HTTP request is sent.
-    const sendStartTime = isCached ?
-        startTime :
+    const sendStartTime = timing ?
         Types.Timing.MicroSeconds(
-            timing.requestTime * SECONDS_TO_MICROSECONDS + timing.sendStart * MILLISECONDS_TO_MICROSECONDS);
+            timing.requestTime * SECONDS_TO_MICROSECONDS + timing.sendStart * MILLISECONDS_TO_MICROSECONDS) :
+        startTime;
 
     // Waiting
     // =======================
     // Time from when the send finished going to when the headers were received.
-    const waiting = isCached ?
-        Types.Timing.MicroSeconds(0) :
-        Types.Timing.MicroSeconds((timing.receiveHeadersEnd - timing.sendEnd) * MILLISECONDS_TO_MICROSECONDS);
+    const waiting = timing ?
+        Types.Timing.MicroSeconds((timing.receiveHeadersEnd - timing.sendEnd) * MILLISECONDS_TO_MICROSECONDS) :
+        Types.Timing.MicroSeconds(0);
 
     // Download
     // =======================
     // Time from receipt of headers to the finish time.
-    const downloadStart = isCached ?
-        startTime :
+    const downloadStart = timing ?
         Types.Timing.MicroSeconds(
-            timing.requestTime * SECONDS_TO_MICROSECONDS + timing.receiveHeadersEnd * MILLISECONDS_TO_MICROSECONDS);
-    const download = isCached ? Types.Timing.MicroSeconds(endTime - request.receiveResponse.ts) :
-                                Types.Timing.MicroSeconds(((finishTime || downloadStart) - downloadStart));
+            timing.requestTime * SECONDS_TO_MICROSECONDS + timing.receiveHeadersEnd * MILLISECONDS_TO_MICROSECONDS) :
+        startTime;
+    const download = timing ? Types.Timing.MicroSeconds(((finishTime || downloadStart) - downloadStart)) :
+                              Types.Timing.MicroSeconds(endTime - request.receiveResponse.ts);
 
     const totalTime = Types.Timing.MicroSeconds(networkDuration + processingDuration);
 
     // Collect a few values from the timing info.
-    // If the Network request is cached, we zero out them.
-    const dnsLookup = isCached ?
-        Types.Timing.MicroSeconds(0) :
-        Types.Timing.MicroSeconds((timing.dnsEnd - timing.dnsStart) * MILLISECONDS_TO_MICROSECONDS);
-    const ssl = isCached ? Types.Timing.MicroSeconds(0) :
-                           Types.Timing.MicroSeconds((timing.sslEnd - timing.sslStart) * MILLISECONDS_TO_MICROSECONDS);
-    const proxyNegotiation = isCached ?
-        Types.Timing.MicroSeconds(0) :
-        Types.Timing.MicroSeconds((timing.proxyEnd - timing.proxyStart) * MILLISECONDS_TO_MICROSECONDS);
-    const requestSent = isCached ?
-        Types.Timing.MicroSeconds(0) :
-        Types.Timing.MicroSeconds((timing.sendEnd - timing.sendStart) * MILLISECONDS_TO_MICROSECONDS);
-    const initialConnection = isCached ?
-        Types.Timing.MicroSeconds(0) :
-        Types.Timing.MicroSeconds((timing.connectEnd - timing.connectStart) * MILLISECONDS_TO_MICROSECONDS);
+    // If the Network request is cached, these fields will be zero, so the minus will zero out them.
+    const dnsLookup = timing ?
+        Types.Timing.MicroSeconds((timing.dnsEnd - timing.dnsStart) * MILLISECONDS_TO_MICROSECONDS) :
+        Types.Timing.MicroSeconds(0);
+    const ssl = timing ? Types.Timing.MicroSeconds((timing.sslEnd - timing.sslStart) * MILLISECONDS_TO_MICROSECONDS) :
+                         Types.Timing.MicroSeconds(0);
+    const proxyNegotiation = timing ?
+        Types.Timing.MicroSeconds((timing.proxyEnd - timing.proxyStart) * MILLISECONDS_TO_MICROSECONDS) :
+        Types.Timing.MicroSeconds(0);
+    const requestSent = timing ?
+        Types.Timing.MicroSeconds((timing.sendEnd - timing.sendStart) * MILLISECONDS_TO_MICROSECONDS) :
+        Types.Timing.MicroSeconds(0);
+    const initialConnection = timing ?
+        Types.Timing.MicroSeconds((timing.connectEnd - timing.connectStart) * MILLISECONDS_TO_MICROSECONDS) :
+        Types.Timing.MicroSeconds(0);
 
     // Finally get some of the general data from the trace events.
     const {frame, url, renderBlocking} = finalSendRequest.args.data;

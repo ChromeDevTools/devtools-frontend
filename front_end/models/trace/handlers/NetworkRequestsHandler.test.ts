@@ -66,7 +66,7 @@ describe('NetworkRequestsHandler', function() {
       ]);
       assertDataArgsProcessedDataStats(topLevelRequests.all, 'http://localhost:8080/', pageRequestExpected);
 
-      // CSS Request.
+      // CSS Request (cached event (with resourceMarkAsCached event)),
       const cssRequestExpected: DataArgsProcessedDataMap = new Map([
         ['queueing', TraceModel.Types.Timing.MicroSeconds(0)],
         ['stalled', TraceModel.Types.Timing.MicroSeconds(2175)],
@@ -109,15 +109,15 @@ describe('NetworkRequestsHandler', function() {
 
       // Module JS Request (cached).
       const moduleRequestExpected: DataArgsProcessedDataMap = new Map([
-        ['queueing', TraceModel.Types.Timing.MicroSeconds(0)],
-        ['stalled', TraceModel.Types.Timing.MicroSeconds(76865)],
+        ['queueing', TraceModel.Types.Timing.MicroSeconds(7681)],
+        ['stalled', TraceModel.Types.Timing.MicroSeconds(1527)],
         ['dnsLookup', TraceModel.Types.Timing.MicroSeconds(0)],
         ['initialConnection', TraceModel.Types.Timing.MicroSeconds(0)],
         ['ssl', TraceModel.Types.Timing.MicroSeconds(0)],
         ['requestSent', TraceModel.Types.Timing.MicroSeconds(0)],
-        ['waiting', TraceModel.Types.Timing.MicroSeconds(0)],
-        ['download', TraceModel.Types.Timing.MicroSeconds(27839)],
-        ['networkDuration', TraceModel.Types.Timing.MicroSeconds(0)],
+        ['waiting', TraceModel.Types.Timing.MicroSeconds(20200)],
+        ['download', TraceModel.Types.Timing.MicroSeconds(19273)],
+        ['networkDuration', TraceModel.Types.Timing.MicroSeconds(48681)],
       ]);
 
       const moduleRequestBlockingStatusExpected: DataArgsMap = new Map([

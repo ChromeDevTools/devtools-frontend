@@ -996,9 +996,8 @@ export interface TraceEventResourceReceiveResponse extends TraceEventInstant {
       requestId: string,
       responseTime: MilliSeconds,
       statusCode: number,
-      timing: TraceEventResourceReceiveResponseTimingData,
-      connectionId: number,
-      connectionReused: boolean,
+      // Some cached events don't have this field
+      timing?: TraceEventResourceReceiveResponseTimingData, connectionId: number, connectionReused: boolean,
       headers?: Array<{name: string, value: string}>,
     },
   };

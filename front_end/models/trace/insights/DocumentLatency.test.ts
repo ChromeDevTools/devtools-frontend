@@ -50,6 +50,9 @@ describe('DocumentLatency', function() {
     const mainRequestEvent = structuredClone(traceEvents[mainRequestEventIndex]);
     assert(Types.TraceEvents.isTraceEventResourceReceiveResponse(mainRequestEvent));
     assert.strictEqual(mainRequestEvent.args.data.requestId, '1000C0FDC0A75327167272FC7438E999');
+    if (!mainRequestEvent.args.data.timing) {
+      throw new Error('missing timing field');
+    }
     mainRequestEvent.args.data.timing.receiveHeadersStart =
         Types.Timing.MilliSeconds(mainRequestEvent.args.data.timing.receiveHeadersStart + 1000);
     traceEvents[mainRequestEventIndex] = mainRequestEvent;

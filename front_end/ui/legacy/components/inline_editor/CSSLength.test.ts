@@ -12,7 +12,7 @@ describe('CSSLength', () => {
   it('can render CSSLength component correctly', () => {
     const component = new CSSLength();
     renderElementIntoDOM(component);
-    component.data = {lengthText: '42rem', overloaded: false};
+    component.data = {lengthText: '42rem'};
 
     assert.strictEqual(component.shadowRoot!.textContent?.trim(), '42rem');
     const valueElement = component.shadowRoot!.querySelector('.value');
@@ -22,7 +22,7 @@ describe('CSSLength', () => {
   it('correctly preserves lengths in decimal notation', () => {
     const component = new CSSLength();
     renderElementIntoDOM(component);
-    component.data = {lengthText: '.0000001px', overloaded: false};
+    component.data = {lengthText: '.0000001px'};
 
     assert.strictEqual(component.shadowRoot!.textContent?.trim(), '.0000001px');
     const valueElement = component.shadowRoot!.querySelector('.value');
@@ -32,7 +32,7 @@ describe('CSSLength', () => {
   it('correctly preserves lengths in exponential notation', () => {
     const component = new CSSLength();
     renderElementIntoDOM(component);
-    component.data = {lengthText: '1e-7vw', overloaded: false};
+    component.data = {lengthText: '1e-7vw'};
 
     assert.strictEqual(component.shadowRoot!.textContent?.trim(), '1e-7vw');
     const valueElement = component.shadowRoot!.querySelector('.value');
@@ -44,7 +44,7 @@ describe('CSSLength', () => {
 
     const component = new CSSLength();
     renderElementIntoDOM(component);
-    component.data = {lengthText, overloaded: false};
+    component.data = {lengthText};
     component.addEventListener('valuechanged', (event: Event) => {
       const {data} = event as InlineEditor.InlineEditorUtils.ValueChangedEvent;
       lengthText = data.value;

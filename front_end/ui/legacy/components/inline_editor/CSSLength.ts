@@ -8,7 +8,7 @@ import * as LitHtml from '../../../lit-html/lit-html.js';
 import cssLengthStyles from './cssLength.css.js';
 import {ValueChangedEvent} from './InlineEditorUtils.js';
 
-const {render, html, Directives: {classMap}} = LitHtml;
+const {render, html} = LitHtml;
 
 export class DraggingFinishedEvent extends Event {
   static readonly eventName = 'draggingfinished';
@@ -53,7 +53,6 @@ export const CSS_LENGTH_REGEX =
 
 type CSSLengthData = {
   lengthText: string,
-  overloaded: boolean,
 };
 
 export class CSSLength extends HTMLElement {
@@ -63,20 +62,18 @@ export class CSSLength extends HTMLElement {
   private readonly onDraggingValue = this.dragValue.bind(this);
   private value = '';
   private unit = CSSLengthUnit.PIXEL;
-  private overloaded: boolean = false;
   private isEditingSlot = false;
   private isDraggingValue = false;
   private currentMouseClientX = 0;
   #valueMousedownTime = 0;
 
-  set data({lengthText, overloaded}: CSSLengthData) {
+  set data({lengthText}: CSSLengthData) {
     const groups = lengthText.match(CSS_LENGTH_REGEX)?.groups;
     if (!groups) {
       throw new Error();
     }
     this.value = groups.value;
     this.unit = groups.unit as CSSLengthUnit;
-    this.overloaded = overloaded;
     this.render();
   }
 
@@ -141,21 +138,9 @@ export class CSSLength extends HTMLElement {
   }
 
   private render(): void {
-    const classes = {
-      'css-length': true,
-      'overloaded': this.overloaded,
-    };
-
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    render(html`
-      <div class=${classMap(classes)}>
-        ${this.renderContent()}
-      </div>
-    `, this.shadow, {
+    render(this.renderContent(), this.shadow, {
       host: this,
     });
-    // clang-format on
   }
 
   private renderContent(): LitHtml.TemplateResult {

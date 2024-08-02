@@ -1067,10 +1067,7 @@ export class LengthRenderer implements MatchRenderer<LengthMatch> {
     const cssLength = new InlineEditor.CSSLength.CSSLength();
     const valueElement = document.createElement('span');
     valueElement.textContent = lengthText;
-    cssLength.data = {
-      lengthText,
-      overloaded: this.#treeElement.overloaded(),
-    };
+    cssLength.data = {lengthText};
     cssLength.append(valueElement);
 
     const onValueChanged = (event: Event): void => {

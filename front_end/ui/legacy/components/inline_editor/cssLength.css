@@ -4,34 +4,20 @@
  * found in the LICENSE file.
  */
 
-.css-length {
+:host {
   display: inline-block;
   position: relative;
   outline: none;
 }
 
-.css-length.overloaded {
+:host(:not(:last-child)) {
+  margin-right: 0.1em;
+}
+
+:host-context(.overloaded) {
   text-decoration: line-through;
 }
 
 .value {
   cursor: ew-resize;
-}
-
-.icon {
-  position: absolute;
-  display: inline-block;
-  mask-image: var(--image-file-chevron-down);
-  mask-repeat: no-repeat;
-  background-color: var(--icon-default);
-  transform: scale(0.7);
-  margin-left: -7px;
-  margin-top: -3px;
-  content: "";
-  height: 2em;
-  width: 2em;
-}
-
-:host(:not(:last-child)) {
-  margin-right: 0.1em;
 }

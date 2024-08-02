@@ -60,6 +60,7 @@ import {Tracker} from './FreshRecording.js';
 import historyToolbarButtonStyles from './historyToolbarButton.css.js';
 import {IsolateSelector} from './IsolateSelector.js';
 import {AnnotationModifiedEvent, ModificationsManager} from './ModificationsManager.js';
+import * as Overlays from './overlays/overlays.js';
 import {cpuprofileJsonGenerator, traceJsonGenerator} from './SaveFileFormatter.js';
 import {NodeNamesUpdated, SourceMapsResolver} from './SourceMapsResolver.js';
 import {type Client, TimelineController} from './TimelineController.js';
@@ -1421,6 +1422,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           this.flameChart.addOverlay(overlay);
         } else if (action === 'Remove') {
           this.flameChart.removeOverlay(overlay);
+        } else if (action === 'UpdateTimeRange' && Overlays.Overlays.isTimeRangeLabel(overlay)) {
+          this.flameChart.updateExistingOverlay(overlay, {
+            bounds: overlay.bounds,
+          });
         }
         this.#sideBar.setAnnotations(currentManager.getAnnotations());
       });

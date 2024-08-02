@@ -45,6 +45,15 @@ export interface EntryLabelAnnotation {
   label: string;
 }
 
+/**
+ * Represents an object that is saved in the file when a user creates a time range with a label in the timeline.
+ */
+export interface TimeRangeAnnotation {
+  type: 'TIME_RANGE';
+  label: string;
+  bounds: TraceWindowMicroSeconds;
+}
+
 export interface EntryLabelAnnotationSerialized {
   entry: TraceEventSerializableKey;
   label: string;
@@ -57,7 +66,15 @@ export interface EntryLabelAnnotationSerialized {
  * TODO: Implement other OverlayAnnotations (annotated time ranges, links between entries).
  * TODO: Save/load overlay annotations to/from the trace file.
  */
-export type Annotation = EntryLabelAnnotation;
+export type Annotation = EntryLabelAnnotation|TimeRangeAnnotation;
+
+export function isTimeRangeAnnotation(annotation: Annotation): annotation is TimeRangeAnnotation {
+  return annotation.type === 'TIME_RANGE';
+}
+
+export function isEntryLabelAnnotation(annotation: Annotation): annotation is EntryLabelAnnotation {
+  return annotation.type === 'ENTRY_LABEL';
+}
 
 // Serializable keys are created for trace events to be able to save
 // references to timeline events in a trace file. These keys enable

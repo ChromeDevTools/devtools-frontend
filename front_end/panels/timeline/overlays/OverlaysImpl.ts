@@ -77,6 +77,10 @@ export interface TimeRangeLabel {
   showDuration: boolean;
 }
 
+export function isTimeRangeLabel(annotation: TimelineOverlay): annotation is TimeRangeLabel {
+  return annotation.type === 'TIME_RANGE';
+}
+
 /**
  * Used to highlight with a red-candy stripe a time range. It takes an entry
  * because this entry is the row that will be used to place the candy stripe,

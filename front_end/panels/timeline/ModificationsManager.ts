@@ -2,17 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as TraceEngine from '../../models/trace/trace.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as TraceEngine from '../../models/trace/trace.js';
 import * as TimelineComponents from '../../panels/timeline/components/components.js';
 
 import {EntriesFilter} from './EntriesFilter.js';
 import {EventsSerializer} from './EventsSerializer.js';
-import type * as Overlays from './overlays/overlays.js';
+import * as Overlays from './overlays/overlays.js';
 
 const modificationsManagerByTraceIndex: ModificationsManager[] = [];
 let activeManager: ModificationsManager|null;
 
-export type UpdateAction = 'Remove'|'Add'|'UpdateLabel';
+export type UpdateAction = 'Remove'|'Add'|'UpdateLabel'|'UpdateTimeRange';
 
 // Event dispatched after an annotation was added, removed or updated.
 // The event argument is the Overlay that needs to be created,removed
@@ -110,15 +111,30 @@ export class ModificationsManager extends EventTarget {
   }
 
   createAnnotation(newAnnotation: TraceEngine.Types.File.Annotation): void {
-    const newOverlay = {
-      type: 'ENTRY_LABEL',
-      entry: newAnnotation.entry,
-      label: newAnnotation.label,
-    } as Overlays.Overlays.EntryLabel;
+    const newOverlay = this.#createOverlayFromAnnotation(newAnnotation);
     this.#overlayForAnnotation.set(newAnnotation, newOverlay);
-
-    // TODO: When we have more annotations, check the annotation type and create the appropriate one
     this.dispatchEvent(new AnnotationModifiedEvent(newOverlay, 'Add'));
+  }
+
+  #createOverlayFromAnnotation(annotation: TraceEngine.Types.File.Annotation): Overlays.Overlays.EntryLabel
+      |Overlays.Overlays.TimeRangeLabel {
+    switch (annotation.type) {
+      case 'ENTRY_LABEL':
+        return {
+          type: 'ENTRY_LABEL',
+          entry: annotation.entry,
+          label: annotation.label,
+        };
+      case 'TIME_RANGE':
+        return {
+          type: 'TIME_RANGE',
+          label: '',
+          showDuration: true,
+          bounds: annotation.bounds,
+        };
+      default:
+        Platform.assertNever(annotation, 'Overlay for provided annotation cannot be created');
+    }
   }
 
   removeAnnotation(removedAnnotation: TraceEngine.Types.File.Annotation): void {
@@ -139,6 +155,19 @@ export class ModificationsManager extends EventTarget {
     }
     this.#overlayForAnnotation.delete(annotationForRemovedOverlay);
     this.dispatchEvent(new AnnotationModifiedEvent(removedOverlay, 'Remove'));
+  }
+
+  updateAnnotation(updatedAnnotation: TraceEngine.Types.File.Annotation): void {
+    const overlay = this.#overlayForAnnotation.get(updatedAnnotation);
+
+    if (overlay && Overlays.Overlays.isTimeRangeLabel(overlay) &&
+        TraceEngine.Types.File.isTimeRangeAnnotation(updatedAnnotation)) {
+      overlay.label = updatedAnnotation.label;
+      overlay.bounds = updatedAnnotation.bounds;
+      this.dispatchEvent(new AnnotationModifiedEvent(overlay, 'UpdateTimeRange'));
+    } else {
+      console.error('Annotation could not be updated');
+    }
   }
 
   updateAnnotationOverlay(updatedOverlay: Overlays.Overlays.TimelineOverlay): void {
@@ -199,8 +228,9 @@ export class ModificationsManager extends EventTarget {
     const entryLabelsSerialized: TraceEngine.Types.File.EntryLabelAnnotationSerialized[] = [];
 
     for (let i = 0; i < annotations.length; i++) {
-      if (annotations[i].type === 'ENTRY_LABEL') {
-        const serializedEvent = this.#eventsSerializer.keyForEvent(annotations[i].entry);
+      const currAnnotation = annotations[i];
+      if (TraceEngine.Types.File.isEntryLabelAnnotation(currAnnotation)) {
+        const serializedEvent = this.#eventsSerializer.keyForEvent(currAnnotation.entry);
         if (serializedEvent) {
           entryLabelsSerialized.push({
             entry: serializedEvent,

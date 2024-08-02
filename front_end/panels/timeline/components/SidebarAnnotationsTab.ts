@@ -27,6 +27,11 @@ export class SidebarAnnotationsTab extends HTMLElement {
   }
 
   #renderAnnotation(annotation: TraceEngine.Types.File.Annotation): LitHtml.LitTemplate {
+    // TODO: Render annotations other than Entry Labels
+    if (!TraceEngine.Types.File.isEntryLabelAnnotation(annotation)) {
+      return LitHtml.html``;
+    }
+
     const entryName = TraceEngine.Types.TraceEvents.isProfileCall(annotation.entry) ?
         annotation.entry.callFrame.functionName :
         annotation.entry.name;

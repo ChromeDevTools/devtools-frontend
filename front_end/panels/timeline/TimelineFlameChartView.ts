@@ -90,7 +90,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   #overlaysContainer: HTMLElement = document.createElement('div');
   #overlays: Overlays.Overlays.Overlays;
 
-  #timeRangeSelectionOverlay: Overlays.Overlays.TimeRangeLabel|null = null;
+  #timeRangeSelectionAnnotation: TraceEngine.Types.File.TimeRangeAnnotation|null = null;
 
   #currentInsightOverlays: Array<Overlays.Overlays.TimelineOverlay> = [];
   #activeInsight: TimelineComponents.Sidebar.ActiveInsight|null = null;
@@ -382,17 +382,16 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
           TraceEngine.Types.Timing.MilliSeconds(endTime),
       );
 
-      if (this.#timeRangeSelectionOverlay) {
-        this.updateExistingOverlay(this.#timeRangeSelectionOverlay, {
-          bounds,
-        });
+      if (this.#timeRangeSelectionAnnotation) {
+        this.#timeRangeSelectionAnnotation.bounds = bounds;
+        ModificationsManager.activeManager()?.updateAnnotation(this.#timeRangeSelectionAnnotation);
       } else {
-        this.#timeRangeSelectionOverlay = this.addOverlay({
+        this.#timeRangeSelectionAnnotation = {
           type: 'TIME_RANGE',
           label: '',
-          showDuration: true,
           bounds,
-        });
+        };
+        ModificationsManager.activeManager()?.createAnnotation(this.#timeRangeSelectionAnnotation);
       }
     }
   }
@@ -568,9 +567,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     // AND 2. we have an active time range selection overlay
     // then we need to remove it.
     if ((selection === null || !TimelineSelection.isRangeSelection(selection.object)) &&
-        this.#timeRangeSelectionOverlay) {
-      this.#overlays.remove(this.#timeRangeSelectionOverlay);
-      this.#timeRangeSelectionOverlay = null;
+        this.#timeRangeSelectionAnnotation) {
+      ModificationsManager.activeManager()?.removeAnnotation(this.#timeRangeSelectionAnnotation);
+      this.#timeRangeSelectionAnnotation = null;
     }
 
     let index = this.mainDataProvider.entryIndexForSelection(selection);

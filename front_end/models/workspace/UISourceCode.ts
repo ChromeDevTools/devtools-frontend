@@ -467,11 +467,11 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
 
   searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):
       Promise<TextUtils.ContentProvider.SearchMatch[]> {
-    const content = this.content();
-    if (!content) {
+    if (!this.contentInternal || 'error' in this.contentInternal) {
       return this.projectInternal.searchInFileContent(this, query, caseSensitive, isRegex);
     }
-    return Promise.resolve(TextUtils.TextUtils.performSearchInContent(content, query, caseSensitive, isRegex));
+    return Promise.resolve(
+        TextUtils.TextUtils.performSearchInContentData(this.contentInternal, query, caseSensitive, isRegex));
   }
 
   contentLoaded(): boolean {

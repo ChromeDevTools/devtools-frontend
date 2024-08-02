@@ -227,10 +227,11 @@ export class SourcesSearchScope implements Search.SearchScope.SearchScope {
 
     function searchInNextFile(this: SourcesSearchScope, uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
       if (uiSourceCode.isDirty()) {
-        contentLoaded.call(this, uiSourceCode, uiSourceCode.workingCopy());
+        contentLoaded.call(this, uiSourceCode, new TextUtils.Text.Text(uiSourceCode.workingCopy()));
       } else {
-        void uiSourceCode.requestContent().then(deferredContent => {
-          contentLoaded.call(this, uiSourceCode, deferredContent.content || '');
+        void uiSourceCode.requestContentData().then(contentData => {
+          contentLoaded.call(
+              this, uiSourceCode, TextUtils.ContentData.ContentData.contentDataOrEmpty(contentData).textObj);
         });
       }
     }
@@ -251,7 +252,8 @@ export class SourcesSearchScope implements Search.SearchScope.SearchScope {
     }
 
     function contentLoaded(
-        this: SourcesSearchScope, uiSourceCode: Workspace.UISourceCode.UISourceCode, content: string): void {
+        this: SourcesSearchScope, uiSourceCode: Workspace.UISourceCode.UISourceCode,
+        content: TextUtils.Text.Text): void {
       progress.incrementWorked(1);
       let matches: TextUtils.ContentProvider.SearchMatch[] = [];
       const searchConfig = (this.searchConfig as Workspace.SearchConfig.SearchConfig);
@@ -264,7 +266,7 @@ export class SourcesSearchScope implements Search.SearchScope.SearchScope {
               matches, nextMatches, TextUtils.ContentProvider.SearchMatch.comparator);
         }
         if (!searchConfig.queries().length) {
-          matches = [new TextUtils.ContentProvider.SearchMatch(0, (new TextUtils.Text.Text(content)).lineAt(0), 0, 0)];
+          matches = [new TextUtils.ContentProvider.SearchMatch(0, content.lineAt(0), 0, 0)];
         }
       }
       if (matches && this.searchResultCallback) {

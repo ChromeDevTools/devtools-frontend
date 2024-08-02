@@ -1429,7 +1429,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     if (TextUtils.ContentData.ContentData.isError(contentData) || !contentData.isTextContent) {
       return [];
     }
-    return TextUtils.TextUtils.performSearchInContent(contentData.text, query, caseSensitive, isRegex);
+    return TextUtils.TextUtils.performSearchInContentData(contentData, query, caseSensitive, isRegex);
   }
 
   isHttpFamily(): boolean {

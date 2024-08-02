@@ -295,10 +295,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
       isRegex: boolean): Promise<TextUtils.ContentProvider.SearchMatch[]> {
     const filePath = this.filePathForUISourceCode(uiSourceCode);
     const content = await this.fileSystemInternal.requestFileContent(filePath);
-    if (!TextUtils.ContentData.ContentData.isError(content) && content.isTextContent) {
-      return TextUtils.TextUtils.performSearchInContent(content.text, query, caseSensitive, isRegex);
-    }
-    return [];
+    return TextUtils.TextUtils.performSearchInContentData(content, query, caseSensitive, isRegex);
   }
 
   async findFilesMatchingSearchRequest(

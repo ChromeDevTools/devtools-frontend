@@ -709,7 +709,8 @@ export class ApiProxy {
     it('returns an entry for each match on the same line', () => {
       const lines = ['The first line with a second "the".', 'The second line.'];
 
-      const result = TextUtils.TextUtils.performSearchInContent(lines.join('\n'), 'the', false, false);
+      const result =
+          TextUtils.TextUtils.performSearchInContent(new TextUtils.Text.Text(lines.join('\n')), 'the', false, false);
 
       assert.deepEqual(result, [
         new TextUtils.ContentProvider.SearchMatch(0, lines[0], 0, 3),

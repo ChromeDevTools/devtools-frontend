@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../../core/host/host.js';
+import * as UI from '../../../legacy/legacy.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
 
 import cssLengthStyles from './cssLength.css.js';
@@ -64,7 +65,6 @@ export class CSSLength extends HTMLElement {
   private unit = CSSLengthUnit.PIXEL;
   private isEditingSlot = false;
   private isDraggingValue = false;
-  private currentMouseClientX = 0;
   #valueMousedownTime = 0;
 
   set data({lengthText}: CSSLengthData) {
@@ -90,18 +90,13 @@ export class CSSLength extends HTMLElement {
     }
 
     this.isDraggingValue = true;
-    let displacement = event.clientX - this.currentMouseClientX;
-    this.currentMouseClientX = event.clientX;
-    if (event.shiftKey) {
-      displacement *= 10;
+    const newValue = UI.UIUtils.createReplacementString(this.value, event);
+    if (newValue) {
+      this.value = newValue;
+      this.dispatchEvent(new ValueChangedEvent(`${this.value}${this.unit}`));
+      Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Length);
+      this.render();
     }
-    if (event.altKey) {
-      displacement *= 0.1;
-    }
-    this.value = `${Number(this.value) + displacement}`;
-    this.dispatchEvent(new ValueChangedEvent(`${this.value}${this.unit}`));
-    Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Length);
-    this.render();
   }
 
   private onValueMousedown(event: MouseEvent): void {
@@ -111,7 +106,6 @@ export class CSSLength extends HTMLElement {
 
     this.#valueMousedownTime = Date.now();
 
-    this.currentMouseClientX = event.clientX;
     const targetDocument = event.target instanceof Node && event.target.ownerDocument;
     if (targetDocument) {
       targetDocument.addEventListener('mousemove', this.onDraggingValue, {capture: true});

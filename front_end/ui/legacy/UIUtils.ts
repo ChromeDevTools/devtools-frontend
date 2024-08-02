@@ -380,19 +380,23 @@ export const StyleValueDelimiters = ' \xA0\t\n"\':;,/()';
 
 export function getValueModificationDirection(event: Event): string|null {
   let direction: 'Up'|'Down'|null = null;
-  if (event.type === 'wheel') {
+  if (event instanceof WheelEvent) {
     // When shift is pressed while spinning mousewheel, delta comes as wheelDeltaX.
-    const wheelEvent = (event as WheelEvent);
-    if (wheelEvent.deltaY < 0 || wheelEvent.deltaX < 0) {
+    if (event.deltaY < 0 || event.deltaX < 0) {
       direction = 'Up';
-    } else if (wheelEvent.deltaY > 0 || wheelEvent.deltaX > 0) {
+    } else if (event.deltaY > 0 || event.deltaX > 0) {
       direction = 'Down';
     }
-  } else {
-    const keyEvent = (event as KeyboardEvent);
-    if (keyEvent.key === 'ArrowUp' || keyEvent.key === 'PageUp') {
+  } else if (event instanceof MouseEvent) {
+    if (event.movementX < 0) {
+      direction = 'Down';
+    } else if (event.movementX > 0) {
       direction = 'Up';
-    } else if (keyEvent.key === 'ArrowDown' || keyEvent.key === 'PageDown') {
+    }
+  } else if (event instanceof KeyboardEvent) {
+    if (event.key === 'ArrowUp' || event.key === 'PageUp') {
+      direction = 'Up';
+    } else if (event.key === 'ArrowDown' || event.key === 'PageDown') {
       direction = 'Down';
     }
   }
@@ -468,13 +472,13 @@ export function modifiedFloatNumber(number: number, event: Event, modifierMultip
   // When shift is pressed, increase by 10.
   // When alt is pressed, increase by 0.1.
   // Otherwise increase by 1.
-  let delta = 1;
+  let delta = mouseEvent.type === 'mousemove' ? Math.abs(mouseEvent.movementX) : 1;
   if (KeyboardShortcut.eventHasCtrlEquivalentKey(mouseEvent)) {
-    delta = 100;
+    delta *= 100;
   } else if (mouseEvent.shiftKey) {
-    delta = 10;
+    delta *= 10;
   } else if (mouseEvent.altKey) {
-    delta = 0.1;
+    delta *= 0.1;
   }
 
   if (direction === 'Down') {
@@ -524,11 +528,15 @@ export function createReplacementString(
 }
 
 export function isElementValueModification(event: Event): boolean {
-  const arrowKeyOrWheelEvent =
-      ((event as KeyboardEvent).key === 'ArrowUp' || (event as KeyboardEvent).key === 'ArrowDown' ||
-       event.type === 'wheel');
-  const pageKeyPressed = ((event as KeyboardEvent).key === 'PageUp' || (event as KeyboardEvent).key === 'PageDown');
-  return arrowKeyOrWheelEvent || pageKeyPressed;
+  if (event instanceof MouseEvent) {
+    const {type} = event;
+    return type === 'mousemove' || type === 'wheel';
+  }
+  if (event instanceof KeyboardEvent) {
+    const {key} = event;
+    return key === 'ArrowUp' || key === 'ArrowDown' || key === 'PageUp' || key === 'PageDown';
+  }
+  return false;
 }
 
 export function handleElementValueModifications(

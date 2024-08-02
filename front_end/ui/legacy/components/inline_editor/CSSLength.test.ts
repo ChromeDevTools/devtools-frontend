@@ -39,43 +39,37 @@ describe('CSSLength', () => {
     assert.strictEqual(valueElement!.textContent, '1e-7');
   });
 
-  it('correctly incremenets and decrements lengths via dragging', async () => {
-    let lengthText = '42px';
-
+  it('correctly increments and decrements lengths via dragging', async () => {
     const component = new CSSLength();
     renderElementIntoDOM(component);
-    component.data = {lengthText};
-    component.addEventListener('valuechanged', (event: Event) => {
-      const {data} = event as InlineEditor.InlineEditorUtils.ValueChangedEvent;
-      lengthText = data.value;
-    });
+    component.data = {lengthText: '42px'};
 
-    let mousePositionX = 1;
     const valueElement = component.shadowRoot!.querySelector('.value');
-    valueElement!.dispatchEvent(new MouseEvent('mousedown', {clientX: mousePositionX}));
+    valueElement!.dispatchEvent(new MouseEvent('mousedown', {clientX: 1}));
     // Wait enough to let CSSLength think it is not a click.
     await new Promise<void>(res => setTimeout(() => res(), 400));
 
-    const mousemoveRight = new MouseEvent('mousemove', {
-      clientX: ++mousePositionX,
-    });
-    document.dispatchEvent(mousemoveRight);
-    assert.strictEqual(lengthText, '43px', 'length value should increase by 1 when the mouse is dragged to right');
+    document.dispatchEvent(new MouseEvent('mousemove', {movementX: 1}));
+    assert.strictEqual(valueElement!.textContent, '43');
 
-    const mousemoveLeftShift = new MouseEvent('mousemove', {
-      clientX: --mousePositionX,
-      shiftKey: true,
-    });
-    document.dispatchEvent(mousemoveLeftShift);
-    assert.strictEqual(
-        lengthText, '33px', 'length value should decrease by 10 when the mouse is dragged to left with shift key');
+    document.dispatchEvent(new MouseEvent('mousemove', {movementX: -1, shiftKey: true}));
+    assert.strictEqual(valueElement!.textContent, '33');
 
-    const mousemoveRightAlt = new MouseEvent('mousemove', {
-      clientX: ++mousePositionX,
-      altKey: true,
-    });
-    document.dispatchEvent(mousemoveRightAlt);
-    assert.strictEqual(
-        lengthText, '33.1px', 'length value should increase by 0.1 when the mouse is dragged to right with alt key');
+    document.dispatchEvent(new MouseEvent('mousemove', {movementX: 1, altKey: true}));
+    assert.strictEqual(valueElement!.textContent, '33.1');
+  });
+
+  it('correctly increments by 0.1 with Alt key held', async () => {
+    const component = new CSSLength();
+    renderElementIntoDOM(component);
+    component.data = {lengthText: '100px'};
+
+    const valueElement = component.shadowRoot!.querySelector('.value');
+    valueElement!.dispatchEvent(new MouseEvent('mousedown', {clientX: 1}));
+    // Wait enough to let CSSLength think it is not a click.
+    await new Promise<void>(res => setTimeout(() => res(), 400));
+
+    document.dispatchEvent(new MouseEvent('mousemove', {movementX: 1, altKey: true}));
+    assert.strictEqual(valueElement!.textContent, '100.1');
   });
 });

@@ -333,10 +333,10 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
       const showColumn = numBreakpointsOnLine > 1;
       const locationText = uiLocation.lineAndColumnText(showColumn) as string;
 
-      const text = content[idx];
-      const codeSnippet = text instanceof TextUtils.Text.Text ?
-          text.lineAt(uiLocation.lineNumber) :
-          text.lines[text.bytecodeOffsetToLineNumber(uiLocation.columnNumber ?? 0)] ?? '';
+      const contentData = content[idx];
+      const codeSnippet = contentData instanceof TextUtils.WasmDisassembly.WasmDisassembly ?
+          contentData.lines[contentData.bytecodeOffsetToLineNumber(uiLocation.columnNumber ?? 0)] ?? '' :
+          contentData.textObj.lineAt(uiLocation.lineNumber);
 
       if (isHit && this.#collapsedFiles.has(sourceURL)) {
         this.#collapsedFiles.delete(sourceURL);
@@ -507,25 +507,10 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
   }
 
   #getContent(locations: Breakpoints.BreakpointManager.BreakpointLocation[][]):
-      Promise<Array<TextUtils.Text.Text|TextUtils.WasmDisassembly.WasmDisassembly>> {
-    // Use a cache to share the Text objects between all breakpoints. This way
-    // we share the cached line ending information that Text calculates. This
-    // was very slow to calculate with a lot of breakpoints in the same very
-    // large source file.
-    const contentToTextMap = new Map<string, TextUtils.Text.Text>();
-
+      Promise<TextUtils.ContentData.ContentData[]> {
     return Promise.all(locations.map(async ([{uiLocation: {uiSourceCode}}]) => {
-      const deferredContent = await uiSourceCode.requestContent({cachedWasmOnly: true});
-      if ('wasmDisassemblyInfo' in deferredContent && deferredContent.wasmDisassemblyInfo) {
-        return deferredContent.wasmDisassemblyInfo;
-      }
-      const contentText = deferredContent.content || '';
-      if (contentToTextMap.has(contentText)) {
-        return contentToTextMap.get(contentText) as TextUtils.Text.Text;
-      }
-      const text = new TextUtils.Text.Text(contentText);
-      contentToTextMap.set(contentText, text);
-      return text;
+      const contentData = await uiSourceCode.requestContentData({cachedWasmOnly: true});
+      return TextUtils.ContentData.ContentData.contentDataOrEmpty(contentData);
     }));
   }
 }

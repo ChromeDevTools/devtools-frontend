@@ -8,6 +8,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Breakpoints from '../../../models/breakpoints/breakpoints.js';
+import * as TextUtils from '../../../models/text_utils/text_utils.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import {
   assertElements,
@@ -65,8 +66,9 @@ interface LocationTestData {
 function createBreakpointLocations(testData: LocationTestData[]): Breakpoints.BreakpointManager.BreakpointLocation[] {
   const breakpointLocations = testData.map(data => {
     const mocked = setupMockedUISourceCode(data.url);
-    const mockedContent = Promise.resolve({content: data.content, isEncoded: true});
-    sinon.stub(mocked.sut, 'requestContent').returns(mockedContent);
+    const mockedContent =
+        Promise.resolve(new TextUtils.ContentData.ContentData(data.content, /* isBase64 */ false, 'text/plain'));
+    sinon.stub(mocked.sut, 'requestContentData').returns(mockedContent);
     const uiLocation = new Workspace.UISourceCode.UILocation(mocked.sut, data.lineNumber, data.columnNumber);
     const breakpoint = sinon.createStubInstance(Breakpoints.BreakpointManager.Breakpoint);
     breakpoint.enabled.returns(data.enabled);

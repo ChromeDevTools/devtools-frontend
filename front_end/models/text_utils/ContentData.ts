@@ -165,6 +165,14 @@ export class ContentData {
     return contentDataOrError.text;
   }
 
+  /** @returns an empty 'text/plain' content data if the passed `ContentDataOrError` is an error, or the content data itself otherwise */
+  static contentDataOrEmpty(contentDataOrError: ContentDataOrError): ContentData {
+    if (ContentData.isError(contentDataOrError)) {
+      return EMPTY_TEXT_CONTENT_DATA;
+    }
+    return contentDataOrError;
+  }
+
   /**
    * @deprecated Used during migration from `DeferredContent` to `ContentData`.
    */
@@ -175,5 +183,7 @@ export class ContentData {
     return contentDataOrError.asDeferedContent();
   }
 }
+
+export const EMPTY_TEXT_CONTENT_DATA = new ContentData('', /* isBase64 */ false, 'text/palin');
 
 export type ContentDataOrError = ContentData|{error: string};

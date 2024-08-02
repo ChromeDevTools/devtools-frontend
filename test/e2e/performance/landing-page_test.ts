@@ -23,9 +23,9 @@ import {
   navigateToPerformanceTab,
 } from '../helpers/performance-helpers.js';
 
-const READY_LOCAL_METRIC_SELECTOR = '[slot="local-value"] .metric-value:not(.waiting)';
-const READY_FIELD_METRIC_SELECTOR = '[slot="field-value"] .metric-value:not(.waiting)';
-const WAITING_LOCAL_METRIC_SELECTOR = '[slot="local-value"] .metric-value.waiting';
+const READY_LOCAL_METRIC_SELECTOR = '.local-value .metric-value:not(.waiting)';
+const READY_FIELD_METRIC_SELECTOR = '.field-value .metric-value:not(.waiting)';
+const WAITING_LOCAL_METRIC_SELECTOR = '.local-value .metric-value.waiting';
 const INTERACTION_SELECTOR = '.interaction';
 const HISTOGRAM_SELECTOR = '.field-data-histogram';
 const SETUP_FIELD_BUTTON_SELECTOR = 'devtools-button[jslogcontext="field-data-setup"]';
@@ -204,7 +204,9 @@ describe('The Performance panel landing page', () => {
       await waitForMany(READY_LOCAL_METRIC_SELECTOR, 2);
 
       // INP and interactions should be reset
-      await waitFor(`#inp ${WAITING_LOCAL_METRIC_SELECTOR}`);
+      const inpCard = await waitFor('#inp devtools-metric-card');
+      await waitFor(WAITING_LOCAL_METRIC_SELECTOR, inpCard);
+
       const interactions3 = await $$<HTMLElement>(INTERACTION_SELECTOR);
       assert.lengthOf(interactions3, 0);
     } finally {

@@ -30,6 +30,7 @@ devtools_module("components") {
     "FieldSettingsDialog.ts",
     "InteractionBreakdown.ts",
     "LiveMetricsView.ts",
+    "MetricCompareStrings.ts",
     "NetworkRequestDetails.ts",
     "NetworkRequestTooltip.ts",
     "NetworkThrottlingSelector.ts",

@@ -75,22 +75,21 @@
   margin-top: 0;
 }
 
-.card {
+.metric-card {
   border-radius: var(--sys-shape-corner-small);
   padding: 14px 16px;
   background-color: var(--sys-color-surface3);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.metric-card {
   height: 100%;
   box-sizing: border-box;
 }
 
-.next-steps .card {
+.next-steps-card {
+  border-radius: var(--sys-shape-corner-small);
+  padding: 14px 16px;
+  background-color: var(--sys-color-surface3);
   margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }
 
@@ -100,11 +99,24 @@
   font-weight: var(--ref-typeface-weight-medium);
 }
 
+.metric-card .card-title {
+  margin-bottom: 6px;
+}
+
+.compare-text {
+  margin: 8px 0;
+}
+
+.related-element-info {
+  overflow: hidden;
+  text-wrap: nowrap;
+}
+
 .related-element-label {
   font-weight: var(--ref-typeface-weight-medium);
 }
 
-.related-element {
+.related-element-link {
   background-color: var(--sys-color-cdt-base-container);
   border-radius: 2px;
   padding: 0 2px;
@@ -115,6 +127,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 8px;
+  margin-bottom: 8px;
 }
 
 .metric-value {
@@ -154,10 +167,6 @@
 
 .poor-bg {
   background-color: var(--app-color-performance-bad);
-}
-
-.metric-card-element {
-  overflow: hidden;
 }
 
 .interactions-list {

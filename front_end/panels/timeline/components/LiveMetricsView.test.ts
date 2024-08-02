@@ -19,19 +19,24 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 function getLocalMetricValue(view: Element, metric: string): HTMLElement {
   const card = view.shadowRoot!.querySelector(`#${metric} devtools-metric-card`);
-  return card!.querySelector('[slot="local-value"] .metric-value') as HTMLElement;
+  return card!.shadowRoot!.querySelector('.local-value .metric-value') as HTMLElement;
 }
 
-function getFieldMetricValue(view: Element, metric: string): HTMLElement {
+function getFieldMetricValue(view: Element, metric: string): HTMLElement|null {
   const card = view.shadowRoot!.querySelector(`#${metric} devtools-metric-card`);
-  return card!.querySelector('[slot="field-value"] .metric-value') as HTMLElement;
+  return card!.shadowRoot!.querySelector('.field-value .metric-value');
 }
 
 function getFieldHistogramPercents(view: Element, metric: string): string[] {
   const card = view.shadowRoot!.querySelector(`#${metric} devtools-metric-card`);
-  const histogram = card!.querySelector('.field-data-histogram') as HTMLElement;
+  const histogram = card!.shadowRoot!.querySelector('.field-data-histogram') as HTMLElement;
   const percents = Array.from(histogram.querySelectorAll('.histogram-percent')) as HTMLElement[];
   return percents.map(p => p.textContent || '');
+}
+
+function getCompareText(view: Element, metric: string): HTMLElement|null {
+  const card = view.shadowRoot!.querySelector(`#${metric} devtools-metric-card`);
+  return card!.shadowRoot!.querySelector('.compare-text');
 }
 
 function getThrottlingRecommendation(view: Element): HTMLElement|null {
@@ -294,13 +299,13 @@ describeWithMockConnection('LiveMetricsView', () => {
       assert.deepStrictEqual(inpPercents, ['-', '-', '-']);
 
       const lcpFieldEl = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl.textContent, '-');
+      assert.isNull(lcpFieldEl);
 
       const clsFieldEl = getFieldMetricValue(view, 'cls');
-      assert.strictEqual(clsFieldEl.textContent, '-');
+      assert.isNull(clsFieldEl);
 
       const inpFieldEl = getFieldMetricValue(view, 'inp');
-      assert.strictEqual(inpFieldEl.textContent, '-');
+      assert.isNull(inpFieldEl);
 
       const throttlingRec = getThrottlingRecommendation(view);
       assert.isNull(throttlingRec);
@@ -332,13 +337,13 @@ describeWithMockConnection('LiveMetricsView', () => {
       assert.deepStrictEqual(inpPercents, ['-', '-', '-']);
 
       const lcpFieldEl = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl.textContent, '1.00 s');
+      assert.strictEqual(lcpFieldEl!.textContent, '1.00 s');
 
       const clsFieldEl = getFieldMetricValue(view, 'cls');
-      assert.strictEqual(clsFieldEl.textContent, '0.25');
+      assert.strictEqual(clsFieldEl!.textContent, '0.25');
 
       const inpFieldEl = getFieldMetricValue(view, 'inp');
-      assert.strictEqual(inpFieldEl.textContent, '-');
+      assert.isNull(inpFieldEl);
 
       const throttlingRec = getThrottlingRecommendation(view);
       assert.match(throttlingRec!.innerText, /Slow 4G/);
@@ -353,7 +358,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       await coordinator.done();
 
       const lcpFieldEl = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl.textContent, '1.00 s');
+      assert.strictEqual(lcpFieldEl!.textContent, '1.00 s');
     });
 
     it('should be removed once crux is disabled', async () => {
@@ -365,14 +370,14 @@ describeWithMockConnection('LiveMetricsView', () => {
       await coordinator.done();
 
       const lcpFieldEl1 = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl1.textContent, '1.00 s');
+      assert.strictEqual(lcpFieldEl1!.textContent, '1.00 s');
 
       CrUXManager.CrUXManager.instance().getConfigSetting().set({enabled: false, override: ''});
 
       await coordinator.done();
 
       const lcpFieldEl2 = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl2.textContent, '-');
+      assert.isNull(lcpFieldEl2);
     });
 
     it('should take from selected page scope', async () => {
@@ -387,14 +392,14 @@ describeWithMockConnection('LiveMetricsView', () => {
       await coordinator.done();
 
       const lcpFieldEl1 = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl1.textContent, '1.00 s');
+      assert.strictEqual(lcpFieldEl1!.textContent, '1.00 s');
 
       selectPageScope(view, 'origin');
 
       await coordinator.done();
 
       const lcpFieldEl2 = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl2.textContent, '2.00 s');
+      assert.strictEqual(lcpFieldEl2!.textContent, '2.00 s');
     });
 
     it('should take from selected device scope', async () => {
@@ -411,14 +416,14 @@ describeWithMockConnection('LiveMetricsView', () => {
       selectDeviceOption(view, 'ALL');
 
       const lcpFieldEl1 = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl1.textContent, '1.00 s');
+      assert.strictEqual(lcpFieldEl1!.textContent, '1.00 s');
 
       selectDeviceOption(view, 'PHONE');
 
       await coordinator.done();
 
       const lcpFieldEl2 = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl2.textContent, '2.00 s');
+      assert.strictEqual(lcpFieldEl2!.textContent, '2.00 s');
     });
 
     it('auto device option should chose based on emulation', async () => {
@@ -435,7 +440,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       selectDeviceOption(view, 'AUTO');
 
       const lcpFieldEl1 = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl1.textContent, '1.00 s');
+      assert.strictEqual(lcpFieldEl1!.textContent, '1.00 s');
 
       for (const device of EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
         if (device.title === 'Moto G Power') {
@@ -447,7 +452,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       await coordinator.done();
 
       const lcpFieldEl2 = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl2.textContent, '2.00 s');
+      assert.strictEqual(lcpFieldEl2!.textContent, '2.00 s');
     });
 
     it('auto device option should fall back to all devices', async () => {
@@ -464,7 +469,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       selectDeviceOption(view, 'AUTO');
 
       const lcpFieldEl1 = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl1.textContent, '1.00 s');
+      assert.strictEqual(lcpFieldEl1!.textContent, '1.00 s');
 
       for (const device of EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
         if (device.title === 'Moto G Power') {
@@ -476,7 +481,93 @@ describeWithMockConnection('LiveMetricsView', () => {
       await coordinator.done();
 
       const lcpFieldEl2 = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl2.textContent, '2.00 s');
+      assert.strictEqual(lcpFieldEl2!.textContent, '2.00 s');
+    });
+
+    describe('local/field comparison', () => {
+      it('should show message when values are similar', async () => {
+        mockFieldData['url-ALL'] = createMockFieldData();
+
+        const view = new Components.LiveMetricsView.LiveMetricsView();
+        renderElementIntoDOM(view);
+
+        LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
+          lcp: {value: 100},
+          interactions: [],
+        });
+
+        await coordinator.done();
+
+        const compareText = getCompareText(view, 'lcp');
+        assert.strictEqual(
+            compareText!.innerText, 'Your local LCP 100 ms is good, and is similar to your users’ experience.');
+      });
+
+      it('should show message when local is better', async () => {
+        mockFieldData['url-ALL'] = createMockFieldData();
+        mockFieldData['url-ALL'].record.metrics.largest_contentful_paint!.percentiles!.p75 = 5000;
+
+        const view = new Components.LiveMetricsView.LiveMetricsView();
+        renderElementIntoDOM(view);
+
+        LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
+          lcp: {value: 100},
+          interactions: [],
+        });
+
+        await coordinator.done();
+
+        const compareText = getCompareText(view, 'lcp');
+        assert.strictEqual(
+            compareText!.innerText,
+            'Your local LCP 100 ms is good, and is significantly better than your users’ experience.');
+      });
+
+      it('should show message when local is worse', async () => {
+        mockFieldData['url-ALL'] = createMockFieldData();
+
+        const view = new Components.LiveMetricsView.LiveMetricsView();
+        renderElementIntoDOM(view);
+
+        LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
+          lcp: {value: 5000},
+          interactions: [],
+        });
+
+        await coordinator.done();
+
+        const compareText = getCompareText(view, 'lcp');
+        assert.strictEqual(
+            compareText!.innerText,
+            'Your local LCP 5.00 s is poor, and is significantly worse than your users’ experience.');
+      });
+
+      it('should show generic summary if field is missing', async () => {
+        const view = new Components.LiveMetricsView.LiveMetricsView();
+        renderElementIntoDOM(view);
+
+        LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
+          lcp: {value: 3000},
+          interactions: [],
+        });
+
+        await coordinator.done();
+
+        const compareText = getCompareText(view, 'lcp');
+        assert.strictEqual(compareText!.innerText, 'Your local LCP 3.00 s needs improvement.');
+      });
+
+      it('should suggest interaction if local INP is missing', async () => {
+        mockFieldData['url-ALL'] = createMockFieldData();
+
+        const view = new Components.LiveMetricsView.LiveMetricsView();
+        renderElementIntoDOM(view);
+
+        await coordinator.done();
+
+        const compareText = getCompareText(view, 'inp');
+        assert.strictEqual(compareText!.innerText, 'Interact with the page to measure INP.');
+      });
     });
 
     describe('throttling recommendation', () => {

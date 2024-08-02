@@ -1754,6 +1754,7 @@ grd_files_debug_sources = [
   "front_end/panels/timeline/components/FieldSettingsDialog.js",
   "front_end/panels/timeline/components/InteractionBreakdown.js",
   "front_end/panels/timeline/components/LiveMetricsView.js",
+  "front_end/panels/timeline/components/MetricCompareStrings.js",
   "front_end/panels/timeline/components/NetworkRequestDetails.js",
   "front_end/panels/timeline/components/NetworkRequestTooltip.js",
   "front_end/panels/timeline/components/NetworkThrottlingSelector.js",

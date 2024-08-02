@@ -335,6 +335,11 @@ export interface HostConfig {
   devToolsConsoleInsights: HostConfigConsoleInsights;
   devToolsFreestylerDogfood: HostConfigFreestylerDogfood;
   devToolsVeLogging: HostConfigVeLogging;
+  /**
+   * OffTheRecord here indicates that the user's profile is either incognito,
+   * or guest mode, rather than a "normal" profile.
+   */
+  isOffTheRecord: boolean;
 }
 
 /**

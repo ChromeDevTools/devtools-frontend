@@ -509,6 +509,7 @@ export function getGetHostConfigStub(config: RecursivePartial<Root.Runtime.HostC
       enabled: true,
       testing: false,
     },
+    isOffTheRecord: false,
   });
 }
 

@@ -105,7 +105,8 @@ export class TimingsTrackAppender implements TrackAppender {
   #appendMarkersAtLevel(currentLevel: number): number {
     let markers: (TraceEngine.Types.Extensions.SyntheticExtensionMarker|TraceEngine.Types.TraceEvents.PageLoadEvent)[] =
         this.#traceParsedData.PageLoadMetrics.allMarkerEvents;
-    markers = markers.concat(ExtensionDataGatherer.instance().getExtensionData().extensionMarkers);
+    markers = markers.concat(ExtensionDataGatherer.instance().getExtensionData().extensionMarkers)
+                  .sort((m1, m2) => m1.ts - m2.ts);
     if (markers.length === 0) {
       return currentLevel;
     }

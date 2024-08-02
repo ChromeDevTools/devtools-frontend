@@ -36,6 +36,12 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return autofillManagerInstance;
   }
 
+  onShowAutofillTestAddressesSettingsChanged(): void {
+    for (const autofillModel of SDK.TargetManager.TargetManager.instance().models(SDK.AutofillModel.AutofillModel)) {
+      autofillModel.setTestAddresses();
+    }
+  }
+
   async #addressFormFilled(
       {data}: Common.EventTarget
           .EventTargetEvent<SDK.AutofillModel.EventTypes[SDK.AutofillModel.Events.AddressFormFilled]>): Promise<void> {

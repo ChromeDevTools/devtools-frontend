@@ -8,6 +8,12 @@ main {
   height: 100%;
 }
 
+.header {
+  display: flex;
+  border-bottom: 1px solid var(--sys-color-divider);
+  width: 100%;
+}
+
 .placeholder-container {
   height: calc(100% - 29px);
   display: flex;
@@ -46,21 +52,23 @@ main {
 }
 
 .right-to-left {
+  border-bottom: 1px solid var(--sys-color-divider);
   display: flex;
   flex-flow: row-reverse wrap;
   justify-content: flex-end;
 }
 
 .label-container {
-  padding: 5px 5px 0;
+  padding: 5px;
   display: flex;
   align-items: flex-start;
 }
 
-.top-right-corner {
+.top-left-corner {
+  border-bottom: 1px solid var(--sys-color-divider);
   display: flex;
-  justify-content: flex-end;
   padding: 5px;
+  gap: 10px;
 }
 
 .matches-filled-field {
@@ -77,5 +85,5 @@ main {
 }
 
 .feedback {
-  margin: 1.5px 3px 0 5px;
+  margin: auto 5px auto auto;
 }

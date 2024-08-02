@@ -166,7 +166,8 @@ describeWithMockConnection('AutofillView', () => {
     assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
     showViewStub.reset();
 
-    const checkbox = view.shadowRoot!.querySelector('input');
+    // The auto-opening checkbox is the second one.
+    const checkbox = view.shadowRoot!.querySelectorAll('input')[1];
     assert.isNotNull(checkbox);
     assert.isTrue(checkbox.checked);
     checkbox.checked = false;
@@ -182,6 +183,29 @@ describeWithMockConnection('AutofillView', () => {
 
     autofillModel.addressFormFilled(addressFormFilledEvent);
     assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
+    await coordinator.done();
+  });
+
+  it('showing test addresses in autofill menu can be turned off/on', async () => {
+    const view = await renderAutofillView();
+
+    autofillModel.addressFormFilled(addressFormFilledEvent);
+    assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
+    showViewStub.reset();
+
+    // The show test addresses checkbox is the first one.
+    const checkbox = view.shadowRoot!.querySelectorAll('input')[0];
+    assert.isNotNull(checkbox);
+    assert.isFalse(checkbox.checked);
+
+    const setAddressSpy = sinon.spy(autofillModel!.agent, 'invoke_setAddresses');
+    assert.isTrue(setAddressSpy.notCalled);
+
+    checkbox.checked = true;
+    const event = new Event('change');
+    checkbox.dispatchEvent(event);
+    assert.isTrue(setAddressSpy.calledOnce);
+
     await coordinator.done();
   });
 

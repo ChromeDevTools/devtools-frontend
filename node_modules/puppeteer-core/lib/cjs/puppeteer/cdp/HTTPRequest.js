@@ -100,9 +100,7 @@ class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     async _continue(overrides = {}) {
         const { url, method, postData, headers } = overrides;
         this.interception.handled = true;
-        const postDataBinaryBase64 = postData
-            ? Buffer.from(postData).toString('base64')
-            : undefined;
+        const postDataBinaryBase64 = postData ? btoa(postData) : undefined;
         if (this._interceptionId === undefined) {
             throw new Error('HTTPRequest is missing _interceptionId needed for Fetch.continueRequest');
         }
@@ -121,9 +119,10 @@ class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     }
     async _respond(response) {
         this.interception.handled = true;
-        const responseBody = response.body && (0, util_js_1.isString)(response.body)
-            ? Buffer.from(response.body)
-            : response.body || null;
+        let parsedBody;
+        if (response.body) {
+            parsedBody = HTTPRequest_js_1.HTTPRequest.getResponse(response.body);
+        }
         const responseHeaders = {};
         if (response.headers) {
             for (const header of Object.keys(response.headers)) {
@@ -138,8 +137,8 @@ class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
         if (response.contentType) {
             responseHeaders['content-type'] = response.contentType;
         }
-        if (responseBody && !('content-length' in responseHeaders)) {
-            responseHeaders['content-length'] = String(Buffer.byteLength(responseBody));
+        if (parsedBody?.contentLength && !('content-length' in responseHeaders)) {
+            responseHeaders['content-length'] = String(parsedBody.contentLength);
         }
         const status = response.status || 200;
         if (this._interceptionId === undefined) {
@@ -151,7 +150,7 @@ class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
             responseCode: status,
             responsePhrase: HTTPRequest_js_1.STATUS_TEXTS[status],
             responseHeaders: (0, HTTPRequest_js_1.headersArray)(responseHeaders),
-            body: responseBody ? responseBody.toString('base64') : undefined,
+            body: parsedBody?.base64,
         })
             .catch(error => {
             this.interception.handled = false;

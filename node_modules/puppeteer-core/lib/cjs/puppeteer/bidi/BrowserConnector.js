@@ -42,10 +42,11 @@ const util_js_1 = require("../common/util.js");
  */
 async function _connectToBiDiBrowser(connectionTransport, url, options) {
     const { ignoreHTTPSErrors = false, defaultViewport = util_js_1.DEFAULT_VIEWPORT } = options;
-    const { bidiConnection, closeCallback } = await getBiDiConnection(connectionTransport, url, options);
+    const { bidiConnection, cdpConnection, closeCallback } = await getBiDiConnection(connectionTransport, url, options);
     const BiDi = await Promise.resolve().then(() => __importStar(require(/* webpackIgnore: true */ './bidi.js')));
     const bidiBrowser = await BiDi.BidiBrowser.create({
         connection: bidiConnection,
+        cdpConnection,
         closeCallback,
         process: undefined,
         defaultViewport: defaultViewport,
@@ -92,11 +93,11 @@ async function getBiDiConnection(connectionTransport, url, options) {
     if (version.product.toLowerCase().includes('firefox')) {
         throw new Errors_js_1.UnsupportedOperation('Firefox is not supported in BiDi over CDP mode.');
     }
-    // TODO: use other options too.
     const bidiOverCdpConnection = await BiDi.connectBidiOverCdp(cdpConnection, {
         acceptInsecureCerts: ignoreHTTPSErrors,
     });
     return {
+        cdpConnection,
         bidiConnection: bidiOverCdpConnection,
         closeCallback: async () => {
             // In case of BiDi over CDP, we need to close browser via CDP.

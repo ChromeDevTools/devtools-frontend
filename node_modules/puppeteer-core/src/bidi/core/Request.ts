@@ -164,6 +164,21 @@ export class Request extends EventEmitter<{
     return this.#event.isBlocked;
   }
 
+  get resourceType(): string | undefined {
+    // @ts-expect-error non-standard attribute.
+    return this.#event.request['goog:resourceType'] ?? undefined;
+  }
+
+  get postData(): string | undefined {
+    // @ts-expect-error non-standard attribute.
+    return this.#event.request['goog:postData'] ?? undefined;
+  }
+
+  get hasPostData(): boolean {
+    // @ts-expect-error non-standard attribute.
+    return this.#event.request['goog:hasPostData'] ?? false;
+  }
+
   async continueRequest({
     url,
     method,

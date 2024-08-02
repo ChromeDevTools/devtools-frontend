@@ -6,7 +6,7 @@
 import { firstValueFrom, map, raceWith } from '../../third_party/rxjs/rxjs.js';
 import { Realm } from '../api/Realm.js';
 import { EventEmitter } from '../common/EventEmitter.js';
-import { fromEmitterEvent, withSourcePuppeteerURLIfNone, } from '../common/util.js';
+import { fromEmitterEvent, timeout, withSourcePuppeteerURLIfNone, } from '../common/util.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { CdpElementHandle } from './ElementHandle.js';
 import { CdpJSHandle } from './JSHandle.js';
@@ -70,7 +70,7 @@ export class IsolatedWorld extends Realm {
         const result = await firstValueFrom(fromEmitterEvent(this.#emitter, 'context').pipe(raceWith(fromEmitterEvent(this.#emitter, 'disposed').pipe(map(() => {
             // The message has to match the CDP message expected by the WaitTask class.
             throw new Error('Execution context was destroyed');
-        })))));
+        })), timeout(this.timeoutSettings.timeout()))));
         return result;
     }
     async evaluateHandle(pageFunction, ...args) {

@@ -62,7 +62,7 @@ let Realm = (() => {
             __esDecorate(this, null, _resolveExecutionContextId_decorators, { kind: "method", name: "resolveExecutionContextId", static: false, private: false, access: { has: obj => "resolveExecutionContextId" in obj, get: obj => obj.resolveExecutionContextId }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
-        #reason = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        #reason = __runInitializers(this, _instanceExtraInitializers);
         disposables = new DisposableStack();
         id;
         origin;

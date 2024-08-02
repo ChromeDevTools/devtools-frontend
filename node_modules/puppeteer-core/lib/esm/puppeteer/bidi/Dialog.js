@@ -12,6 +12,7 @@ export class BidiDialog extends Dialog {
     constructor(prompt) {
         super(prompt.info.type, prompt.info.message, prompt.info.defaultValue);
         this.#prompt = prompt;
+        this.handled = prompt.handled;
     }
     async handle(options) {
         await this.#prompt.handle({

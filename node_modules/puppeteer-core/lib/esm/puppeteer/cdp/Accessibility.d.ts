@@ -3,8 +3,8 @@
  * Copyright 2018 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import type { CDPSession } from '../api/CDPSession.js';
 import type { ElementHandle } from '../api/ElementHandle.js';
+import type { Realm } from '../api/Realm.js';
 /**
  * Represents a Node and the properties of it that are relevant to Accessibility.
  * @public
@@ -76,6 +76,13 @@ export interface SerializedAXNode {
      * Children of this node, if there are any.
      */
     children?: SerializedAXNode[];
+    /**
+     * Get an ElementHandle for this AXNode if available.
+     *
+     * If the underlying DOM element has been disposed, the method might return an
+     * error.
+     */
+    elementHandle(): Promise<ElementHandle | null>;
 }
 /**
  * @public
@@ -119,11 +126,7 @@ export declare class Accessibility {
     /**
      * @internal
      */
-    constructor(client: CDPSession);
-    /**
-     * @internal
-     */
-    updateClient(client: CDPSession): void;
+    constructor(realm: Realm);
     /**
      * Captures the current state of the accessibility tree.
      * The returned object represents the root accessible node of the page.

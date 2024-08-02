@@ -14,17 +14,20 @@ const disposable_js_1 = require("./disposable.js");
 class Mutex {
     static Guard = class Guard {
         #mutex;
-        constructor(mutex) {
+        #onRelease;
+        constructor(mutex, onRelease) {
             this.#mutex = mutex;
+            this.#onRelease = onRelease;
         }
         [disposable_js_1.disposeSymbol]() {
+            this.#onRelease?.();
             return this.#mutex.release();
         }
     };
     #locked = false;
     #acquirers = [];
     // This is FIFO.
-    async acquire() {
+    async acquire(onRelease) {
         if (!this.#locked) {
             this.#locked = true;
             return new Mutex.Guard(this);
@@ -32,7 +35,7 @@ class Mutex {
         const deferred = Deferred_js_1.Deferred.create();
         this.#acquirers.push(deferred.resolve.bind(deferred));
         await deferred.valueOrThrow();
-        return new Mutex.Guard(this);
+        return new Mutex.Guard(this, onRelease);
     }
     release() {
         const resolve = this.#acquirers.shift();

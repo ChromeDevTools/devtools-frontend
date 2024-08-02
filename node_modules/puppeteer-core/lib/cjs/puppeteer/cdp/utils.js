@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pageBindingInitString = exports.addPageBinding = exports.valueFromRemoteObject = exports.createClientError = exports.createEvaluationError = void 0;
+exports.pageBindingInitString = exports.CDP_BINDING_PREFIX = exports.addPageBinding = exports.valueFromRemoteObject = exports.createClientError = exports.createEvaluationError = void 0;
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
 /**
@@ -136,14 +136,12 @@ exports.valueFromRemoteObject = valueFromRemoteObject;
 /**
  * @internal
  */
-function addPageBinding(type, name) {
-    // This is the CDP binding.
-    // @ts-expect-error: In a different context.
-    const callCdp = globalThis[name];
+function addPageBinding(type, name, prefix) {
     // Depending on the frame loading state either Runtime.evaluate or
     // Page.addScriptToEvaluateOnNewDocument might succeed. Let's check that we
     // don't re-wrap Puppeteer's binding.
-    if (callCdp[Symbol.toStringTag] === 'PuppeteerBinding') {
+    // @ts-expect-error: In a different context.
+    if (globalThis[name]) {
         return;
     }
     // We replace the CDP binding with a Puppeteer binding.
@@ -157,7 +155,9 @@ function addPageBinding(type, name) {
             const seq = (callPuppeteer.lastSeq ?? 0) + 1;
             callPuppeteer.lastSeq = seq;
             callPuppeteer.args.set(seq, args);
-            callCdp(JSON.stringify({
+            // @ts-expect-error: In a different context.
+            // Needs to be the same as CDP_BINDING_PREFIX.
+            globalThis[prefix + name](JSON.stringify({
                 type,
                 name,
                 seq,
@@ -180,15 +180,17 @@ function addPageBinding(type, name) {
             });
         },
     });
-    // @ts-expect-error: In a different context.
-    globalThis[name][Symbol.toStringTag] = 'PuppeteerBinding';
 }
 exports.addPageBinding = addPageBinding;
 /**
  * @internal
  */
+exports.CDP_BINDING_PREFIX = 'puppeteer_';
+/**
+ * @internal
+ */
 function pageBindingInitString(type, name) {
-    return (0, util_js_1.evaluationString)(addPageBinding, type, name);
+    return (0, util_js_1.evaluationString)(addPageBinding, type, name, exports.CDP_BINDING_PREFIX);
 }
 exports.pageBindingInitString = pageBindingInitString;
 //# sourceMappingURL=utils.js.map

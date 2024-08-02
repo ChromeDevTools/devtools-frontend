@@ -5,7 +5,7 @@
  */
 import type Debug from 'debug';
 declare global {
-    var __PUPPETEER_DEBUG: string;
+    const __PUPPETEER_DEBUG: string;
 }
 /**
  * @internal
@@ -49,7 +49,7 @@ export declare function importDebug(): Promise<typeof Debug>;
  *
  * @internal
  */
-export declare const debug: (prefix: string) => (...args: unknown[]) => void;
+export declare const debug: (prefix: string) => ((...args: unknown[]) => void);
 /**
  * @internal
  */

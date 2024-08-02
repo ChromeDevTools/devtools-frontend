@@ -107,6 +107,12 @@ let EmulationManager = (() => {
             _private_setJavaScriptEnabled_decorators = [invokeAtMostOnceForArguments];
             __esDecorate(this, _private_applyViewport_descriptor = { value: __setFunctionName(async function (client, viewportState) {
                     if (!viewportState.viewport) {
+                        await Promise.all([
+                            client.send('Emulation.clearDeviceMetricsOverride'),
+                            client.send('Emulation.setTouchEmulationEnabled', {
+                                enabled: false,
+                            }),
+                        ]).catch(debugError);
                         return;
                     }
                     const { viewport } = viewportState;
@@ -231,7 +237,7 @@ let EmulationManager = (() => {
                 }, "#setJavaScriptEnabled") }, _private_setJavaScriptEnabled_decorators, { kind: "method", name: "#setJavaScriptEnabled", static: false, private: true, access: { has: obj => #setJavaScriptEnabled in obj, get: obj => obj.#setJavaScriptEnabled }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
-        #client = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        #client = __runInitializers(this, _instanceExtraInitializers);
         #emulatingMobile = false;
         #hasTouch = false;
         #states = [];
@@ -295,12 +301,20 @@ let EmulationManager = (() => {
             return this.#javascriptEnabledState.state.javaScriptEnabled;
         }
         async emulateViewport(viewport) {
-            await this.#viewportState.setState({
-                viewport,
-                active: true,
-            });
-            const mobile = viewport.isMobile || false;
-            const hasTouch = viewport.hasTouch || false;
+            const currentState = this.#viewportState.state;
+            if (!viewport && !currentState.active) {
+                return false;
+            }
+            await this.#viewportState.setState(viewport
+                ? {
+                    viewport,
+                    active: true,
+                }
+                : {
+                    active: false,
+                });
+            const mobile = viewport?.isMobile || false;
+            const hasTouch = viewport?.hasTouch || false;
             const reloadNeeded = this.#emulatingMobile !== mobile || this.#hasTouch !== hasTouch;
             this.#emulatingMobile = mobile;
             this.#hasTouch = hasTouch;

@@ -86,11 +86,12 @@ export declare class BrowsingContext extends EventEmitter<{
     };
 }> {
     #private;
-    static from(userContext: UserContext, parent: BrowsingContext | undefined, id: string, url: string): BrowsingContext;
+    static from(userContext: UserContext, parent: BrowsingContext | undefined, id: string, url: string, originalOpener: string | null): BrowsingContext;
     readonly defaultRealm: WindowRealm;
     readonly id: string;
     readonly parent: BrowsingContext | undefined;
     readonly userContext: UserContext;
+    readonly originalOpener: string | null;
     private constructor();
     get children(): Iterable<BrowsingContext>;
     get closed(): boolean;
@@ -105,6 +106,7 @@ export declare class BrowsingContext extends EventEmitter<{
     traverseHistory(delta: number): Promise<void>;
     navigate(url: string, wait?: Bidi.BrowsingContext.ReadinessState): Promise<void>;
     reload(options?: ReloadOptions): Promise<void>;
+    setCacheBehavior(cacheBehavior: 'default' | 'bypass'): Promise<void>;
     print(options?: PrintOptions): Promise<string>;
     handleUserPrompt(options?: HandleUserPromptOptions): Promise<void>;
     setViewport(options?: SetViewportOptions): Promise<void>;

@@ -6,7 +6,7 @@
 
 import type {ChildProcess} from 'child_process';
 
-import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
+import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 
 import type {BrowserEvents} from '../api/Browser.js';
 import {
@@ -19,6 +19,7 @@ import {
 import {BrowserContextEvent} from '../api/BrowserContext.js';
 import type {Page} from '../api/Page.js';
 import type {Target} from '../api/Target.js';
+import type {Connection as CdpConnection} from '../cdp/Connection.js';
 import {EventEmitter} from '../common/EventEmitter.js';
 import {debugError} from '../common/util.js';
 import type {Viewport} from '../common/Viewport.js';
@@ -38,6 +39,7 @@ export interface BidiBrowserOptions {
   process?: ChildProcess;
   closeCallback?: BrowserCloseCallback;
   connection: BidiConnection;
+  cdpConnection?: CdpConnection;
   defaultViewport: Viewport | null;
   ignoreHTTPSErrors?: boolean;
 }
@@ -48,7 +50,6 @@ export interface BidiBrowserOptions {
 export class BidiBrowser extends Browser {
   readonly protocol = 'webDriverBiDi';
 
-  // TODO: Update generator to include fully module
   static readonly subscribeModules: [string, ...string[]] = [
     'browsingContext',
     'network',
@@ -72,6 +73,9 @@ export class BidiBrowser extends Browser {
     const session = await Session.from(opts.connection, {
       alwaysMatch: {
         acceptInsecureCerts: opts.ignoreHTTPSErrors,
+        unhandledPromptBehavior: {
+          default: Bidi.Session.UserPromptHandlerType.Ignore,
+        },
         webSocketUrl: true,
       },
     });
@@ -96,6 +100,7 @@ export class BidiBrowser extends Browser {
   #defaultViewport: Viewport | null;
   #browserContexts = new WeakMap<UserContext, BidiBrowserContext>();
   #target = new BidiBrowserTarget(this);
+  #cdpConnection?: CdpConnection;
 
   private constructor(browserCore: BrowserCore, opts: BidiBrowserOptions) {
     super();
@@ -103,6 +108,7 @@ export class BidiBrowser extends Browser {
     this.#closeCallback = opts.closeCallback;
     this.#browserCore = browserCore;
     this.#defaultViewport = opts.defaultViewport;
+    this.#cdpConnection = opts.cdpConnection;
   }
 
   #initialize() {
@@ -129,7 +135,11 @@ export class BidiBrowser extends Browser {
   }
 
   get cdpSupported(): boolean {
-    return !this.#browserName.toLocaleLowerCase().includes('firefox');
+    return this.#cdpConnection !== undefined;
+  }
+
+  get cdpConnection(): CdpConnection | undefined {
+    return this.#cdpConnection;
   }
 
   override async userAgent(): Promise<string> {

@@ -84,7 +84,6 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 });
 import { firstValueFrom, from, raceWith } from '../../third_party/rxjs/rxjs.js';
 import { Page, } from '../api/Page.js';
-import { Accessibility } from '../cdp/Accessibility.js';
 import { Coverage } from '../cdp/Coverage.js';
 import { EmulationManager } from '../cdp/EmulationManager.js';
 import { Tracing } from '../cdp/Tracing.js';
@@ -104,14 +103,14 @@ import { rewriteNavigationError } from './util.js';
  */
 let BidiPage = (() => {
     let _classSuper = Page;
-    let _instanceExtraInitializers = [];
     let _trustedEmitter_decorators;
     let _trustedEmitter_initializers = [];
+    let _trustedEmitter_extraInitializers = [];
     return class BidiPage extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
             _trustedEmitter_decorators = [bubble()];
-            __esDecorate(this, null, _trustedEmitter_decorators, { kind: "accessor", name: "trustedEmitter", static: false, private: false, access: { has: obj => "trustedEmitter" in obj, get: obj => obj.trustedEmitter, set: (obj, value) => { obj.trustedEmitter = value; } }, metadata: _metadata }, _trustedEmitter_initializers, _instanceExtraInitializers);
+            __esDecorate(this, null, _trustedEmitter_decorators, { kind: "accessor", name: "trustedEmitter", static: false, private: false, access: { has: obj => "trustedEmitter" in obj, get: obj => obj.trustedEmitter, set: (obj, value) => { obj.trustedEmitter = value; } }, metadata: _metadata }, _trustedEmitter_initializers, _trustedEmitter_extraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         static from(browserContext, browsingContext) {
@@ -119,20 +118,20 @@ let BidiPage = (() => {
             page.#initialize();
             return page;
         }
-        #trustedEmitter_accessor_storage = (__runInitializers(this, _instanceExtraInitializers), __runInitializers(this, _trustedEmitter_initializers, new EventEmitter()));
+        #trustedEmitter_accessor_storage = __runInitializers(this, _trustedEmitter_initializers, new EventEmitter());
         get trustedEmitter() { return this.#trustedEmitter_accessor_storage; }
         set trustedEmitter(value) { this.#trustedEmitter_accessor_storage = value; }
-        #browserContext;
+        #browserContext = __runInitializers(this, _trustedEmitter_extraInitializers);
         #frame;
         #viewport = null;
         #workers = new Set();
         keyboard;
         mouse;
         touchscreen;
-        accessibility;
         tracing;
         coverage;
         #cdpEmulationManager;
+        #emulatedNetworkConditions;
         _client() {
             return this.#frame.client;
         }
@@ -141,7 +140,6 @@ let BidiPage = (() => {
             this.#browserContext = browserContext;
             this.#frame = BidiFrame.from(this, browsingContext);
             this.#cdpEmulationManager = new EmulationManager(this.#frame.client);
-            this.accessibility = new Accessibility(this.#frame.client);
             this.tracing = new Tracing(this.#frame.client);
             this.coverage = new Coverage(this.#frame.client);
             this.keyboard = new BidiKeyboard(this);
@@ -276,11 +274,22 @@ let BidiPage = (() => {
             return this.#frame.detached;
         }
         async close(options) {
+            const env_2 = { stack: [], error: void 0, hasError: false };
             try {
-                await this.#frame.browsingContext.close(options?.runBeforeUnload);
+                const _guard = __addDisposableResource(env_2, await this.#browserContext.waitForScreenshotOperations(), false);
+                try {
+                    await this.#frame.browsingContext.close(options?.runBeforeUnload);
+                }
+                catch {
+                    return;
+                }
             }
-            catch {
-                return;
+            catch (e_2) {
+                env_2.error = e_2;
+                env_2.hasError = true;
+            }
+            finally {
+                __disposeResources(env_2);
             }
         }
         async reload(options = {}) {
@@ -329,13 +338,13 @@ let BidiPage = (() => {
         async setViewport(viewport) {
             if (!this.browser().cdpSupported) {
                 await this.#frame.browsingContext.setViewport({
-                    viewport: viewport.width && viewport.height
+                    viewport: viewport?.width && viewport?.height
                         ? {
                             width: viewport.width,
                             height: viewport.height,
                         }
                         : null,
-                    devicePixelRatio: viewport.deviceScaleFactor
+                    devicePixelRatio: viewport?.deviceScaleFactor
                         ? viewport.deviceScaleFactor
                         : null,
                 });
@@ -455,6 +464,10 @@ let BidiPage = (() => {
             return false;
         }
         async setCacheEnabled(enabled) {
+            if (!this.#browserContext.browser().cdpSupported) {
+                await this.#frame.browsingContext.setCacheBehavior(enabled ? 'default' : 'bypass');
+                return;
+            }
             // TODO: handle CDP-specific cases such as mprach.
             await this._client().send('Network.setCacheDisabled', {
                 cacheDisabled: !enabled,
@@ -532,11 +545,54 @@ let BidiPage = (() => {
         setBypassServiceWorker() {
             throw new UnsupportedOperation();
         }
-        setOfflineMode() {
-            throw new UnsupportedOperation();
+        async setOfflineMode(enabled) {
+            if (!this.#browserContext.browser().cdpSupported) {
+                throw new UnsupportedOperation();
+            }
+            if (!this.#emulatedNetworkConditions) {
+                this.#emulatedNetworkConditions = {
+                    offline: false,
+                    upload: -1,
+                    download: -1,
+                    latency: 0,
+                };
+            }
+            this.#emulatedNetworkConditions.offline = enabled;
+            return await this.#applyNetworkConditions();
         }
-        emulateNetworkConditions() {
-            throw new UnsupportedOperation();
+        async emulateNetworkConditions(networkConditions) {
+            if (!this.#browserContext.browser().cdpSupported) {
+                throw new UnsupportedOperation();
+            }
+            if (!this.#emulatedNetworkConditions) {
+                this.#emulatedNetworkConditions = {
+                    offline: false,
+                    upload: -1,
+                    download: -1,
+                    latency: 0,
+                };
+            }
+            this.#emulatedNetworkConditions.upload = networkConditions
+                ? networkConditions.upload
+                : -1;
+            this.#emulatedNetworkConditions.download = networkConditions
+                ? networkConditions.download
+                : -1;
+            this.#emulatedNetworkConditions.latency = networkConditions
+                ? networkConditions.latency
+                : 0;
+            return await this.#applyNetworkConditions();
+        }
+        async #applyNetworkConditions() {
+            if (!this.#emulatedNetworkConditions) {
+                return;
+            }
+            await this._client().send('Network.emulateNetworkConditions', {
+                offline: this.#emulatedNetworkConditions.offline,
+                latency: this.#emulatedNetworkConditions.latency,
+                uploadThroughput: this.#emulatedNetworkConditions.upload,
+                downloadThroughput: this.#emulatedNetworkConditions.download,
+            });
         }
         async setCookie(...cookies) {
             const pageURL = this.url();

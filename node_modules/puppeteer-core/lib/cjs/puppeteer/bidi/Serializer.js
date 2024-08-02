@@ -118,7 +118,7 @@ class BidiSerializer {
                 value: arg.toISOString(),
             };
         }
-        throw new UnserializableError('Custom object sterilization not possible. Use plain objects instead.');
+        throw new UnserializableError('Custom object serialization not possible. Use plain objects instead.');
     }
 }
 exports.BidiSerializer = BidiSerializer;

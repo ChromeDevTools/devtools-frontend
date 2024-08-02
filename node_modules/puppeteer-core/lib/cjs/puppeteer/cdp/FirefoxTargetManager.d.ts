@@ -29,6 +29,7 @@ export declare class FirefoxTargetManager extends EventEmitter<TargetManagerEven
     setupAttachmentListeners(session: CDPSession | Connection): void;
     removeSessionListeners(session: CDPSession): void;
     getAvailableTargets(): ReadonlyMap<string, CdpTarget>;
+    getChildTargets(_target: CdpTarget): ReadonlySet<CdpTarget>;
     dispose(): void;
     initialize(): Promise<void>;
 }

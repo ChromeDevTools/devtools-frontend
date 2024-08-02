@@ -83,6 +83,10 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
+var __setFunctionName = (this && this.__setFunctionName) || function (f, name, prefix) {
+    if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
+    return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ElementHandle = void 0;
 const GetQueryHandler_js_1 = require("../common/GetQueryHandler.js");
@@ -135,6 +139,8 @@ let ElementHandle = (() => {
     let _jsonValue_decorators;
     let _$_decorators;
     let _$$_decorators;
+    let _private_$$_decorators;
+    let _private_$$_descriptor;
     let _waitForSelector_decorators;
     let _isVisible_decorators;
     let _isHidden_decorators;
@@ -167,7 +173,8 @@ let ElementHandle = (() => {
             _getProperties_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_b = ElementHandle).bindIsolatedHandle.bind(_b)];
             _jsonValue_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_c = ElementHandle).bindIsolatedHandle.bind(_c)];
             _$_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_d = ElementHandle).bindIsolatedHandle.bind(_d)];
-            _$$_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_e = ElementHandle).bindIsolatedHandle.bind(_e)];
+            _$$_decorators = [(0, decorators_js_1.throwIfDisposed)()];
+            _private_$$_decorators = [(_e = ElementHandle).bindIsolatedHandle.bind(_e)];
             _waitForSelector_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_f = ElementHandle).bindIsolatedHandle.bind(_f)];
             _isVisible_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_g = ElementHandle).bindIsolatedHandle.bind(_g)];
             _isHidden_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_h = ElementHandle).bindIsolatedHandle.bind(_h)];
@@ -198,6 +205,9 @@ let ElementHandle = (() => {
             __esDecorate(this, null, _jsonValue_decorators, { kind: "method", name: "jsonValue", static: false, private: false, access: { has: obj => "jsonValue" in obj, get: obj => obj.jsonValue }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _$_decorators, { kind: "method", name: "$", static: false, private: false, access: { has: obj => "$" in obj, get: obj => obj.$ }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _$$_decorators, { kind: "method", name: "$$", static: false, private: false, access: { has: obj => "$$" in obj, get: obj => obj.$$ }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, _private_$$_descriptor = { value: __setFunctionName(async function (selector) {
+                    return await this.#$$impl(selector);
+                }, "#$$") }, _private_$$_decorators, { kind: "method", name: "#$$", static: false, private: true, access: { has: obj => #$$ in obj, get: obj => obj.#$$ }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _waitForSelector_decorators, { kind: "method", name: "waitForSelector", static: false, private: false, access: { has: obj => "waitForSelector" in obj, get: obj => obj.waitForSelector }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _isVisible_decorators, { kind: "method", name: "isVisible", static: false, private: false, access: { has: obj => "isVisible" in obj, get: obj => obj.isVisible }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _isHidden_decorators, { kind: "method", name: "isHidden", static: false, private: false, access: { has: obj => "isHidden" in obj, get: obj => obj.isHidden }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -230,7 +240,7 @@ let ElementHandle = (() => {
          * Cached isolatedHandle to prevent
          * trying to adopt it multiple times
          */
-        isolatedHandle = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        isolatedHandle = __runInitializers(this, _instanceExtraInitializers);
         /**
          * A given method will have it's `this` replaced with an isolated version of
          * `this` when decorated with this decorator.
@@ -366,7 +376,21 @@ let ElementHandle = (() => {
         /**
          * Queries the current element for an element matching the given selector.
          *
-         * @param selector - The selector to query for.
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+         * to query page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          * @returns A {@link ElementHandle | element handle} to the first element
          * matching the given selector. Otherwise, `null`.
          */
@@ -377,11 +401,42 @@ let ElementHandle = (() => {
         /**
          * Queries the current element for all elements matching the given selector.
          *
-         * @param selector - The selector to query for.
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+         * to query page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          * @returns An array of {@link ElementHandle | element handles} that point to
          * elements matching the given selector.
          */
-        async $$(selector) {
+        async $$(selector, options) {
+            if (options?.isolate === false) {
+                return await this.#$$impl(selector);
+            }
+            return await this.#$$(selector);
+        }
+        /**
+         * Isolates {@link ElementHandle.$$} if needed.
+         *
+         * @internal
+         */
+        get #$$() { return _private_$$_descriptor.value; }
+        /**
+         * Implementation for {@link ElementHandle.$$}.
+         *
+         * @internal
+         */
+        async #$$impl(selector) {
             const { updatedSelector, QueryHandler } = (0, GetQueryHandler_js_1.getQueryHandlerAndSelector)(selector);
             return await AsyncIterableUtil_js_1.AsyncIterableUtil.collect(QueryHandler.queryAll(this, updatedSelector));
         }
@@ -404,7 +459,21 @@ let ElementHandle = (() => {
          * );
          * ```
          *
-         * @param selector - The selector to query for.
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+         * to query page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          * @param pageFunction - The function to be evaluated in this element's page's
          * context. The first element matching the selector will be passed in as the
          * first argument.
@@ -455,7 +524,21 @@ let ElementHandle = (() => {
          * ).toEqual(['Hello!', 'Hi!']);
          * ```
          *
-         * @param selector - The selector to query for.
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+         * to query page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          * @param pageFunction - The function to be evaluated in the element's page's
          * context. An array of elements matching the given selector will be passed to
          * the function as its first argument.
@@ -524,8 +607,11 @@ let ElementHandle = (() => {
          * @throws Throws if an element matching the given selector doesn't appear.
          */
         async waitForSelector(selector, options = {}) {
-            const { updatedSelector, QueryHandler } = (0, GetQueryHandler_js_1.getQueryHandlerAndSelector)(selector);
-            return (await QueryHandler.waitFor(this, updatedSelector, options));
+            const { updatedSelector, QueryHandler, polling } = (0, GetQueryHandler_js_1.getQueryHandlerAndSelector)(selector);
+            return (await QueryHandler.waitFor(this, updatedSelector, {
+                polling,
+                ...options,
+            }));
         }
         async #checkVisibility(visibility) {
             return await this.evaluate(async (element, PuppeteerUtil, visibility) => {
@@ -535,15 +621,32 @@ let ElementHandle = (() => {
             }), visibility);
         }
         /**
-         * Checks if an element is visible using the same mechanism as
-         * {@link ElementHandle.waitForSelector}.
+         * An element is considered to be visible if all of the following is
+         * true:
+         *
+         * - the element has
+         *   {@link https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle | computed styles}.
+         *
+         * - the element has a non-empty
+         *   {@link https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect | bounding client rect}.
+         *
+         * - the element's {@link https://developer.mozilla.org/en-US/docs/Web/CSS/visibility | visibility}
+         *   is not `hidden` or `collapse`.
          */
         async isVisible() {
             return await this.#checkVisibility(true);
         }
         /**
-         * Checks if an element is hidden using the same mechanism as
-         * {@link ElementHandle.waitForSelector}.
+         * An element is considered to be hidden if at least one of the following is true:
+         *
+         * - the element has no
+         *   {@link https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle | computed styles}.
+         *
+         * - the element has an empty
+         *   {@link https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect | bounding client rect}.
+         *
+         * - the element's {@link https://developer.mozilla.org/en-US/docs/Web/CSS/visibility | visibility}
+         *   is `hidden` or `collapse`.
          */
         async isHidden() {
             return await this.#checkVisibility(false);

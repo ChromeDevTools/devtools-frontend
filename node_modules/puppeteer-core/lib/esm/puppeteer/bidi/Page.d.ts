@@ -10,8 +10,8 @@ import type { WaitForOptions } from '../api/Frame.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { Credentials, GeolocationOptions, MediaFeature, PageEvents } from '../api/Page.js';
 import { Page, type NewDocumentScriptEvaluation, type ScreenshotOptions } from '../api/Page.js';
-import { Accessibility } from '../cdp/Accessibility.js';
 import { Coverage } from '../cdp/Coverage.js';
+import type { NetworkConditions } from '../cdp/NetworkManager.js';
 import { Tracing } from '../cdp/Tracing.js';
 import type { Cookie, CookieParam, DeleteCookiesRequest } from '../common/Cookie.js';
 import { EventEmitter } from '../common/EventEmitter.js';
@@ -39,7 +39,6 @@ export declare class BidiPage extends Page {
     readonly keyboard: BidiKeyboard;
     readonly mouse: BidiMouse;
     readonly touchscreen: BidiTouchscreen;
-    readonly accessibility: Accessibility;
     readonly tracing: Tracing;
     readonly coverage: Coverage;
     _client(): BidiCdpSession;
@@ -76,7 +75,7 @@ export declare class BidiPage extends Page {
         isScreenUnlocked: boolean;
     }): Promise<void>;
     emulateVisionDeficiency(type?: Protocol.Emulation.SetEmulatedVisionDeficiencyRequest['type']): Promise<void>;
-    setViewport(viewport: Viewport): Promise<void>;
+    setViewport(viewport: Viewport | null): Promise<void>;
     viewport(): Viewport | null;
     pdf(options?: PDFOptions): Promise<Buffer>;
     createPDFStream(options?: PDFOptions | undefined): Promise<ReadableStream<Uint8Array>>;
@@ -108,8 +107,8 @@ export declare class BidiPage extends Page {
     authenticate(credentials: Credentials | null): Promise<void>;
     setDragInterception(): never;
     setBypassServiceWorker(): never;
-    setOfflineMode(): never;
-    emulateNetworkConditions(): never;
+    setOfflineMode(enabled: boolean): Promise<void>;
+    emulateNetworkConditions(networkConditions: NetworkConditions | null): Promise<void>;
     setCookie(...cookies: CookieParam[]): Promise<void>;
     deleteCookie(...cookies: DeleteCookiesRequest[]): Promise<void>;
     removeExposedFunction(name: string): Promise<void>;

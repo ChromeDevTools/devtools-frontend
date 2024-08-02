@@ -9,7 +9,6 @@ exports.pQuerySelector = exports.pQuerySelectorAll = void 0;
 const AsyncIterableUtil_js_1 = require("../util/AsyncIterableUtil.js");
 const ARIAQuerySelector_js_1 = require("./ARIAQuerySelector.js");
 const CustomQuerySelector_js_1 = require("./CustomQuerySelector.js");
-const PSelectorParser_js_1 = require("./PSelectorParser.js");
 const TextQuerySelector_js_1 = require("./TextQuerySelector.js");
 const util_js_1 = require("./util.js");
 const XPathQuerySelector_js_1 = require("./XPathQuerySelector.js");
@@ -17,20 +16,13 @@ const IDENT_TOKEN_START = /[-\w\P{ASCII}*]/;
 const isQueryableNode = (node) => {
     return 'querySelectorAll' in node;
 };
-class SelectorError extends Error {
-    constructor(selector, message) {
-        super(`${selector} is not a valid selector: ${message}`);
-    }
-}
 class PQueryEngine {
-    #input;
     #complexSelector;
     #compoundSelector = [];
     #selector = undefined;
     elements;
-    constructor(element, input, complexSelector) {
+    constructor(element, complexSelector) {
         this.elements = [element];
-        this.#input = input;
         this.#complexSelector = complexSelector;
         this.#next();
     }
@@ -50,7 +42,6 @@ class PQueryEngine {
         }
         for (; this.#selector !== undefined; this.#next()) {
             const selector = this.#selector;
-            const input = this.#input;
             if (typeof selector === 'string') {
                 // The regular expression tests if the selector is a type/universal
                 // selector. Any other case means we want to apply the selector onto
@@ -98,7 +89,7 @@ class PQueryEngine {
                         default:
                             const querySelector = CustomQuerySelector_js_1.customQuerySelectors.get(selector.name);
                             if (!querySelector) {
-                                throw new SelectorError(input, `Unknown selector type: ${selector.name}`);
+                                throw new Error(`Unknown selector type: ${selector.name}`);
                             }
                             yield* querySelector.querySelectorAll(element, selector.value);
                     }
@@ -190,17 +181,7 @@ const domSort = async function* (elements) {
  * @internal
  */
 const pQuerySelectorAll = function (root, selector) {
-    let selectors;
-    let isPureCSS;
-    try {
-        [selectors, isPureCSS] = (0, PSelectorParser_js_1.parsePSelectors)(selector);
-    }
-    catch (error) {
-        return root.querySelectorAll(selector);
-    }
-    if (isPureCSS) {
-        return root.querySelectorAll(selector);
-    }
+    const selectors = JSON.parse(selector);
     // If there are any empty elements, then this implies the selector has
     // contiguous combinators (e.g. `>>> >>>>`) or starts/ends with one which we
     // treat as illegal, similar to existing behavior.
@@ -216,10 +197,10 @@ const pQuerySelectorAll = function (root, selector) {
             return i > 1;
         });
     })) {
-        throw new SelectorError(selector, 'Multiple deep combinators found in sequence.');
+        throw new Error('Multiple deep combinators found in sequence.');
     }
     return domSort(AsyncIterableUtil_js_1.AsyncIterableUtil.flatMap(selectors, selectorParts => {
-        const query = new PQueryEngine(root, selector, selectorParts);
+        const query = new PQueryEngine(root, selectorParts);
         void query.run();
         return query.elements;
     }));

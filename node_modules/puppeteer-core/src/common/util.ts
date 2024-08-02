@@ -10,6 +10,7 @@ import type {OperatorFunction} from '../../third_party/rxjs/rxjs.js';
 import {
   filter,
   from,
+  fromEvent,
   map,
   mergeMap,
   NEVER,
@@ -17,6 +18,7 @@ import {
   timer,
 } from '../../third_party/rxjs/rxjs.js';
 import type {CDPSession} from '../api/CDPSession.js';
+import {packageVersion} from '../generated/version.js';
 import {assert} from '../util/assert.js';
 
 import {debug} from './Debug.js';
@@ -325,7 +327,8 @@ export function timeout(ms: number, cause?: Error): Observable<never> {
 /**
  * @internal
  */
-export const UTILITY_WORLD_NAME = '__puppeteer_utility_world__';
+export const UTILITY_WORLD_NAME =
+  '__puppeteer_utility_world__' + packageVersion;
 
 /**
  * @internal
@@ -362,6 +365,7 @@ export function parsePDFOptions(
     omitBackground: false,
     outline: false,
     tagged: true,
+    waitForFonts: true,
   };
 
   let width = 8.5;
@@ -461,6 +465,27 @@ export function fromEmitterEvent<
       emitter.off(eventName, listener);
     };
   });
+}
+
+/**
+ * @internal
+ */
+export function fromAbortSignal(
+  signal?: AbortSignal,
+  cause?: Error
+): Observable<never> {
+  return signal
+    ? fromEvent(signal, 'abort').pipe(
+        map(() => {
+          if (signal.reason instanceof Error) {
+            signal.reason.cause = cause;
+            throw signal.reason;
+          }
+
+          throw new Error(signal.reason, {cause});
+        })
+      )
+    : NEVER;
 }
 
 /**

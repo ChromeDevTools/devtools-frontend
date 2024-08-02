@@ -65,8 +65,9 @@ export const MouseButton = Object.freeze({
 /**
  * The Mouse class operates in main-frame CSS pixels
  * relative to the top-left corner of the viewport.
+ *
  * @remarks
- * Every `page` object has its own Mouse, accessible with [`page.mouse`](#pagemouse).
+ * Every `page` object has its own Mouse, accessible with {@link Page.mouse}.
  *
  * @example
  *

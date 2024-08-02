@@ -99,12 +99,4 @@ export declare class EventEmitter<Events extends Record<EventType, unknown>> imp
      */
     [disposeSymbol](): void;
 }
-/**
- * @internal
- */
-export declare class EventSubscription<Target extends CommonEventEmitter<Record<Type, Event>>, Type extends EventType = EventType, Event = unknown> {
-    #private;
-    constructor(target: Target, type: Type, handler: Handler<Event>);
-    [disposeSymbol](): void;
-}
 //# sourceMappingURL=EventEmitter.d.ts.map

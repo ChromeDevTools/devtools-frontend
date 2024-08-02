@@ -8,7 +8,6 @@ import { CallbackRegistry } from '../common/CallbackRegistry.js';
 import { debug } from '../common/Debug.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
-import { assert } from '../util/assert.js';
 import { createProtocolErrorMessage } from '../util/ErrorLike.js';
 import { CdpCDPSession } from './CDPSession.js';
 const debugProtocolSend = debug('puppeteer:protocol:SEND ►');
@@ -29,7 +28,7 @@ export class Connection extends EventEmitter {
         super();
         this.#url = url;
         this.#delay = delay;
-        this.#timeout = timeout ?? 180000;
+        this.#timeout = timeout ?? 180_000;
         this.#transport = transport;
         this.#transport.onmessage = this.onMessage.bind(this);
         this.#transport.onclose = this.#onClose.bind(this);
@@ -81,7 +80,9 @@ export class Connection extends EventEmitter {
      * @internal
      */
     _rawSend(callbacks, method, params, sessionId, options) {
-        assert(!this.#closed, 'Protocol error: Connection closed.');
+        if (this.#closed) {
+            return Promise.reject(new Error('Protocol error: Connection closed.'));
+        }
         return callbacks.create(method, options?.timeout ?? this.#timeout, id => {
             const stringifiedMessage = JSON.stringify({
                 method,

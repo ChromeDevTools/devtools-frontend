@@ -58,6 +58,7 @@ let BrowsingContext = (() => {
     let _traverseHistory_decorators;
     let _navigate_decorators;
     let _reload_decorators;
+    let _setCacheBehavior_decorators;
     let _print_decorators;
     let _handleUserPrompt_decorators;
     let _setViewport_decorators;
@@ -92,6 +93,7 @@ let BrowsingContext = (() => {
             __esDecorate(this, null, _traverseHistory_decorators, { kind: "method", name: "traverseHistory", static: false, private: false, access: { has: obj => "traverseHistory" in obj, get: obj => obj.traverseHistory }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _navigate_decorators, { kind: "method", name: "navigate", static: false, private: false, access: { has: obj => "navigate" in obj, get: obj => obj.navigate }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _reload_decorators, { kind: "method", name: "reload", static: false, private: false, access: { has: obj => "reload" in obj, get: obj => obj.reload }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _setCacheBehavior_decorators, { kind: "method", name: "setCacheBehavior", static: false, private: false, access: { has: obj => "setCacheBehavior" in obj, get: obj => obj.setCacheBehavior }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _print_decorators, { kind: "method", name: "print", static: false, private: false, access: { has: obj => "print" in obj, get: obj => obj.print }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _handleUserPrompt_decorators, { kind: "method", name: "handleUserPrompt", static: false, private: false, access: { has: obj => "handleUserPrompt" in obj, get: obj => obj.handleUserPrompt }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setViewport_decorators, { kind: "method", name: "setViewport", static: false, private: false, access: { has: obj => "setViewport" in obj, get: obj => obj.setViewport }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -110,12 +112,12 @@ let BrowsingContext = (() => {
             __esDecorate(this, null, _locateNodes_decorators, { kind: "method", name: "locateNodes", static: false, private: false, access: { has: obj => "locateNodes" in obj, get: obj => obj.locateNodes }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
-        static from(userContext, parent, id, url) {
-            const browsingContext = new BrowsingContext(userContext, parent, id, url);
+        static from(userContext, parent, id, url, originalOpener) {
+            const browsingContext = new BrowsingContext(userContext, parent, id, url, originalOpener);
             browsingContext.#initialize();
             return browsingContext;
         }
-        #navigation = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        #navigation = __runInitializers(this, _instanceExtraInitializers);
         #reason;
         #url;
         #children = new Map();
@@ -126,12 +128,14 @@ let BrowsingContext = (() => {
         id;
         parent;
         userContext;
-        constructor(context, parent, id, url) {
+        originalOpener;
+        constructor(context, parent, id, url, originalOpener) {
             super();
             this.#url = url;
             this.id = id;
             this.parent = parent;
             this.userContext = context;
+            this.originalOpener = originalOpener;
             this.defaultRealm = this.#createWindowRealm();
         }
         #initialize() {
@@ -144,7 +148,7 @@ let BrowsingContext = (() => {
                 if (info.parent !== this.id) {
                     return;
                 }
-                const browsingContext = BrowsingContext.from(this.userContext, this, info.context, info.url);
+                const browsingContext = BrowsingContext.from(this.userContext, this, info.context, info.url, info.originalOpener);
                 this.#children.set(info.context, browsingContext);
                 const browsingContextEmitter = this.#disposables.use(new EventEmitter(browsingContext));
                 browsingContextEmitter.once('closed', () => {
@@ -177,7 +181,8 @@ let BrowsingContext = (() => {
                 if (info.context !== this.id) {
                     return;
                 }
-                this.#url = info.url;
+                // Note: we should not update this.#url at this point since the context
+                // has not finished navigating to the info.url yet.
                 for (const [id, request] of this.#requests) {
                     if (request.disposed) {
                         this.#requests.delete(id);
@@ -203,8 +208,9 @@ let BrowsingContext = (() => {
                 if (event.context !== this.id) {
                     return;
                 }
-                if (event.redirectCount !== 0) {
+                if (this.#requests.has(event.request.request)) {
                     // Means the request is a redirect. This is handled in Request.
+                    // Or an Auth event was issued
                     return;
                 }
                 const request = Request.from(this, event);
@@ -306,6 +312,13 @@ let BrowsingContext = (() => {
                 ...options,
             });
         }
+        async setCacheBehavior(cacheBehavior) {
+            // @ts-expect-error not in BiDi types yet.
+            await this.#session.send('network.setCacheBehavior', {
+                contexts: [this.id],
+                cacheBehavior,
+            });
+        }
         async print(options = {}) {
             const { result: { data }, } = await this.#session.send('browsingContext.print', {
                 context: this.id,
@@ -403,6 +416,9 @@ let BrowsingContext = (() => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
             })], _reload_decorators = [throwIfDisposed(context => {
+                // SAFETY: Disposal implies this exists.
+                return context.#reason;
+            })], _setCacheBehavior_decorators = [throwIfDisposed(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
             })], _print_decorators = [throwIfDisposed(context => {

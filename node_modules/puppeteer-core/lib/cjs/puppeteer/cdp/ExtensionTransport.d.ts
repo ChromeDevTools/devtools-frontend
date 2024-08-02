@@ -11,7 +11,7 @@ import type { ConnectionTransport } from '../common/ConnectionTransport.js';
  * implements missing commands and events.
  *
  * @experimental
- * @internal
+ * @public
  */
 export declare class ExtensionTransport implements ConnectionTransport {
     #private;

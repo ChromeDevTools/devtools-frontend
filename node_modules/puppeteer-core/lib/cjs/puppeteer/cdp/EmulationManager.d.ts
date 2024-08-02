@@ -29,7 +29,7 @@ export declare class EmulatedState<T extends {
 /**
  * @internal
  */
-export declare class EmulationManager {
+export declare class EmulationManager implements ClientProvider {
     #private;
     constructor(client: CDPSession);
     updateClient(client: CDPSession): void;
@@ -37,7 +37,7 @@ export declare class EmulationManager {
     clients(): CDPSession[];
     registerSpeculativeSession(client: CDPSession): Promise<void>;
     get javascriptEnabled(): boolean;
-    emulateViewport(viewport: Viewport): Promise<boolean>;
+    emulateViewport(viewport: Viewport | null): Promise<boolean>;
     emulateIdleState(overrides?: {
         isUserActive: boolean;
         isScreenUnlocked: boolean;

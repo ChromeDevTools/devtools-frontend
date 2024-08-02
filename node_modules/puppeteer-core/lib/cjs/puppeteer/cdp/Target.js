@@ -29,6 +29,7 @@ class CdpTarget extends Target_js_1.Target {
     #targetInfo;
     #targetManager;
     #sessionFactory;
+    #childTargets = new Set();
     _initializedDeferred = Deferred_js_1.Deferred.create();
     _isClosedDeferred = Deferred_js_1.Deferred.create();
     _targetId;
@@ -63,6 +64,15 @@ class CdpTarget extends Target_js_1.Target {
     }
     _session() {
         return this.#session;
+    }
+    _addChildTarget(target) {
+        this.#childTargets.add(target);
+    }
+    _removeChildTarget(target) {
+        this.#childTargets.delete(target);
+    }
+    _childTargets() {
+        return this.#childTargets;
     }
     _sessionFactory() {
         if (!this.#sessionFactory) {

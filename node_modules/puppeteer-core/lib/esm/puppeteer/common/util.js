@@ -3,7 +3,8 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { filter, from, map, mergeMap, NEVER, Observable, timer, } from '../../third_party/rxjs/rxjs.js';
+import { filter, from, fromEvent, map, mergeMap, NEVER, Observable, timer, } from '../../third_party/rxjs/rxjs.js';
+import { packageVersion } from '../generated/version.js';
 import { assert } from '../util/assert.js';
 import { debug } from './Debug.js';
 import { TimeoutError } from './Errors.js';
@@ -253,7 +254,7 @@ export function timeout(ms, cause) {
 /**
  * @internal
  */
-export const UTILITY_WORLD_NAME = '__puppeteer_utility_world__';
+export const UTILITY_WORLD_NAME = '__puppeteer_utility_world__' + packageVersion;
 /**
  * @internal
  */
@@ -284,6 +285,7 @@ export function parsePDFOptions(options = {}, lengthUnit = 'in') {
         omitBackground: false,
         outline: false,
         tagged: true,
+        waitForFonts: true,
     };
     let width = 8.5;
     let height = 11;
@@ -369,6 +371,20 @@ export function fromEmitterEvent(emitter, eventName) {
             emitter.off(eventName, listener);
         };
     });
+}
+/**
+ * @internal
+ */
+export function fromAbortSignal(signal, cause) {
+    return signal
+        ? fromEvent(signal, 'abort').pipe(map(() => {
+            if (signal.reason instanceof Error) {
+                signal.reason.cause = cause;
+                throw signal.reason;
+            }
+            throw new Error(signal.reason, { cause });
+        }))
+        : NEVER;
 }
 /**
  * @internal

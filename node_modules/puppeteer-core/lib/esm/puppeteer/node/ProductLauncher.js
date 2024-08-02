@@ -106,9 +106,6 @@ export class ProductLauncher {
                 }
                 if (protocol === 'webDriverBiDi') {
                     browser = await this.createBiDiOverCdpBrowser(browserProcess, cdpConnection, browserCloseCallback, {
-                        timeout,
-                        protocolTimeout,
-                        slowMo,
                         defaultViewport,
                         ignoreHTTPSErrors,
                     });
@@ -125,7 +122,7 @@ export class ProductLauncher {
             }
             throw error;
         }
-        if (waitForInitialPage && protocol !== 'webDriverBiDi') {
+        if (waitForInitialPage) {
             await this.waitForPageTarget(browser, timeout);
         }
         return browser;
@@ -196,13 +193,13 @@ export class ProductLauncher {
      * @internal
      */
     async createBiDiOverCdpBrowser(browserProcess, connection, closeCallback, opts) {
-        // TODO: use other options too.
         const BiDi = await import(/* webpackIgnore: true */ '../bidi/bidi.js');
         const bidiConnection = await BiDi.connectBidiOverCdp(connection, {
             acceptInsecureCerts: opts.ignoreHTTPSErrors ?? false,
         });
         return await BiDi.BidiBrowser.create({
             connection: bidiConnection,
+            cdpConnection: connection,
             closeCallback,
             process: browserProcess.nodeProcess,
             defaultViewport: opts.defaultViewport,
@@ -217,7 +214,6 @@ export class ProductLauncher {
         const transport = await WebSocketTransport.create(browserWSEndpoint);
         const BiDi = await import(/* webpackIgnore: true */ '../bidi/bidi.js');
         const bidiConnection = new BiDi.BidiConnection(browserWSEndpoint, transport, opts.slowMo, opts.protocolTimeout);
-        // TODO: use other options too.
         return await BiDi.BidiBrowser.create({
             connection: bidiConnection,
             closeCallback,

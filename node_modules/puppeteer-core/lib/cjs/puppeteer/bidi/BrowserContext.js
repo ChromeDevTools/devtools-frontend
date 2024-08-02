@@ -38,6 +38,51 @@ var __runInitializers = (this && this.__runInitializers) || function (thisArg, i
     }
     return useValue ? value : void 0;
 };
+var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
+    if (value !== null && value !== void 0) {
+        if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+        var dispose;
+        if (async) {
+            if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+            dispose = value[Symbol.asyncDispose];
+        }
+        if (dispose === void 0) {
+            if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+            dispose = value[Symbol.dispose];
+        }
+        if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        env.stack.push({ value: value, dispose: dispose, async: async });
+    }
+    else if (async) {
+        env.stack.push({ async: true });
+    }
+    return value;
+};
+var __disposeResources = (this && this.__disposeResources) || (function (SuppressedError) {
+    return function (env) {
+        function fail(e) {
+            env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+            env.hasError = true;
+        }
+        function next() {
+            while (env.stack.length) {
+                var rec = env.stack.pop();
+                try {
+                    var result = rec.dispose && rec.dispose.call(rec.value);
+                    if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                }
+                catch (e) {
+                    fail(e);
+                }
+            }
+            if (env.hasError) throw env.error;
+        }
+        return next();
+    };
+})(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+});
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiBrowserContext = void 0;
 const Browser_js_1 = require("../api/Browser.js");
@@ -54,14 +99,14 @@ const Target_js_2 = require("./Target.js");
  */
 let BidiBrowserContext = (() => {
     let _classSuper = BrowserContext_js_1.BrowserContext;
-    let _instanceExtraInitializers = [];
     let _trustedEmitter_decorators;
     let _trustedEmitter_initializers = [];
+    let _trustedEmitter_extraInitializers = [];
     return class BidiBrowserContext extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
             _trustedEmitter_decorators = [(0, decorators_js_1.bubble)()];
-            __esDecorate(this, null, _trustedEmitter_decorators, { kind: "accessor", name: "trustedEmitter", static: false, private: false, access: { has: obj => "trustedEmitter" in obj, get: obj => obj.trustedEmitter, set: (obj, value) => { obj.trustedEmitter = value; } }, metadata: _metadata }, _trustedEmitter_initializers, _instanceExtraInitializers);
+            __esDecorate(this, null, _trustedEmitter_decorators, { kind: "accessor", name: "trustedEmitter", static: false, private: false, access: { has: obj => "trustedEmitter" in obj, get: obj => obj.trustedEmitter, set: (obj, value) => { obj.trustedEmitter = value; } }, metadata: _metadata }, _trustedEmitter_initializers, _trustedEmitter_extraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         static from(browser, userContext, options) {
@@ -69,10 +114,10 @@ let BidiBrowserContext = (() => {
             context.#initialize();
             return context;
         }
-        #trustedEmitter_accessor_storage = (__runInitializers(this, _instanceExtraInitializers), __runInitializers(this, _trustedEmitter_initializers, new EventEmitter_js_1.EventEmitter()));
+        #trustedEmitter_accessor_storage = __runInitializers(this, _trustedEmitter_initializers, new EventEmitter_js_1.EventEmitter());
         get trustedEmitter() { return this.#trustedEmitter_accessor_storage; }
         set trustedEmitter(value) { this.#trustedEmitter_accessor_storage = value; }
-        #browser;
+        #browser = __runInitializers(this, _trustedEmitter_extraInitializers);
         #defaultViewport;
         // This is public because of cookies.
         userContext;
@@ -91,7 +136,20 @@ let BidiBrowserContext = (() => {
                 this.#createPage(browsingContext);
             }
             this.userContext.on('browsingcontext', ({ browsingContext }) => {
-                this.#createPage(browsingContext);
+                const page = this.#createPage(browsingContext);
+                // We need to wait for the DOMContentLoaded as the
+                // browsingContext still may be navigating from the about:blank
+                browsingContext.once('DOMContentLoaded', () => {
+                    if (browsingContext.originalOpener) {
+                        for (const context of this.userContext.browsingContexts) {
+                            if (context.id === browsingContext.originalOpener) {
+                                this.#pages
+                                    .get(context)
+                                    .trustedEmitter.emit("popup" /* PageEvent.Popup */, page);
+                            }
+                        }
+                    }
+                });
             });
             this.userContext.on('closed', () => {
                 this.trustedEmitter.removeAllListeners();
@@ -162,20 +220,31 @@ let BidiBrowserContext = (() => {
             });
         }
         async newPage() {
-            const context = await this.userContext.createBrowsingContext("tab" /* Bidi.BrowsingContext.CreateType.Tab */);
-            const page = this.#pages.get(context);
-            if (!page) {
-                throw new Error('Page is not found');
-            }
-            if (this.#defaultViewport) {
-                try {
-                    await page.setViewport(this.#defaultViewport);
+            const env_1 = { stack: [], error: void 0, hasError: false };
+            try {
+                const _guard = __addDisposableResource(env_1, await this.waitForScreenshotOperations(), false);
+                const context = await this.userContext.createBrowsingContext("tab" /* Bidi.BrowsingContext.CreateType.Tab */);
+                const page = this.#pages.get(context);
+                if (!page) {
+                    throw new Error('Page is not found');
                 }
-                catch {
-                    // No support for setViewport in Firefox.
+                if (this.#defaultViewport) {
+                    try {
+                        await page.setViewport(this.#defaultViewport);
+                    }
+                    catch {
+                        // No support for setViewport in Firefox.
+                    }
                 }
+                return page;
             }
-            return page;
+            catch (e_1) {
+                env_1.error = e_1;
+                env_1.hasError = true;
+            }
+            finally {
+                __disposeResources(env_1);
+            }
         }
         async close() {
             if (!this.isIncognito()) {
@@ -187,6 +256,7 @@ let BidiBrowserContext = (() => {
             catch (error) {
                 (0, util_js_1.debugError)(error);
             }
+            this.#targets.clear();
         }
         browser() {
             return this.#browser;

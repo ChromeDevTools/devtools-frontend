@@ -1,4 +1,4 @@
-import { debugError } from '../common/util.js';
+import { debugError, isString } from '../common/util.js';
 import { assert } from '../util/assert.js';
 /**
  * The default cooperative request interception resolution priority
@@ -310,6 +310,23 @@ export class HTTPRequest {
             return;
         }
     }
+    /**
+     * @internal
+     */
+    static getResponse(body) {
+        // Needed to get the correct byteLength
+        const byteBody = isString(body)
+            ? new TextEncoder().encode(body)
+            : body;
+        const bytes = [];
+        for (const byte of byteBody) {
+            bytes.push(String.fromCharCode(byte));
+        }
+        return {
+            contentLength: byteBody.byteLength,
+            base64: btoa(bytes.join('')),
+        };
+    }
 }
 /**
  * @public
@@ -431,7 +448,12 @@ const errorReasons = {
  * @internal
  */
 export function handleError(error) {
-    if (error.originalMessage.includes('Invalid header')) {
+    // Firefox throws an invalid argument error with a message starting with
+    // 'Expected "header" [...]'.
+    if (error.originalMessage.includes('Invalid header') ||
+        error.originalMessage.includes('Expected "header"') ||
+        // WebDriver BiDi error for invalid values, for example, headers.
+        error.originalMessage.includes('invalid argument')) {
         throw error;
     }
     // In certain cases, protocol will return error if the request was

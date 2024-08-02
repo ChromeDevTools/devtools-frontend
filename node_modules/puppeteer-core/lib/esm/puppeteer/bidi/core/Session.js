@@ -38,12 +38,9 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     done = true;
 };
 import { EventEmitter } from '../../common/EventEmitter.js';
-import { debugError } from '../../common/util.js';
 import { bubble, inertIfDisposed, throwIfDisposed, } from '../../util/decorators.js';
 import { DisposableStack, disposeSymbol } from '../../util/disposable.js';
 import { Browser } from './Browser.js';
-// TODO: Once Chrome supports session.status properly, uncomment this block.
-// const MAX_RETRIES = 5;
 /**
  * @internal
  */
@@ -52,6 +49,7 @@ let Session = (() => {
     let _instanceExtraInitializers = [];
     let _connection_decorators;
     let _connection_initializers = [];
+    let _connection_extraInitializers = [];
     let _dispose_decorators;
     let _send_decorators;
     let _subscribe_decorators;
@@ -60,7 +58,7 @@ let Session = (() => {
     return class Session extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
-            __esDecorate(this, null, _connection_decorators, { kind: "accessor", name: "connection", static: false, private: false, access: { has: obj => "connection" in obj, get: obj => obj.connection, set: (obj, value) => { obj.connection = value; } }, metadata: _metadata }, _connection_initializers, _instanceExtraInitializers);
+            __esDecorate(this, null, _connection_decorators, { kind: "accessor", name: "connection", static: false, private: false, access: { has: obj => "connection" in obj, get: obj => obj.connection, set: (obj, value) => { obj.connection = value; } }, metadata: _metadata }, _connection_initializers, _connection_extraInitializers);
             __esDecorate(this, null, _dispose_decorators, { kind: "method", name: "dispose", static: false, private: false, access: { has: obj => "dispose" in obj, get: obj => obj.dispose }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _send_decorators, { kind: "method", name: "send", static: false, private: false, access: { has: obj => "send" in obj, get: obj => obj.send }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _subscribe_decorators, { kind: "method", name: "subscribe", static: false, private: false, access: { has: obj => "subscribe" in obj, get: obj => obj.subscribe }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -69,51 +67,14 @@ let Session = (() => {
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         static async from(connection, capabilities) {
-            // Wait until the session is ready.
-            //
-            // TODO: Once Chrome supports session.status properly, uncomment this block
-            // and remove `getBiDiConnection` in BrowserConnector.
-            // let status = {message: '', ready: false};
-            // for (let i = 0; i < MAX_RETRIES; ++i) {
-            //   status = (await connection.send('session.status', {})).result;
-            //   if (status.ready) {
-            //     break;
-            //   }
-            //   // Backoff a little bit each time.
-            //   await new Promise(resolve => {
-            //     return setTimeout(resolve, (1 << i) * 100);
-            //   });
-            // }
-            // if (!status.ready) {
-            //   throw new Error(status.message);
-            // }
-            let result;
-            try {
-                result = (await connection.send('session.new', {
-                    capabilities,
-                })).result;
-            }
-            catch (err) {
-                // Chrome does not support session.new.
-                debugError(err);
-                result = {
-                    sessionId: '',
-                    capabilities: {
-                        acceptInsecureCerts: false,
-                        browserName: '',
-                        browserVersion: '',
-                        platformName: '',
-                        setWindowRect: false,
-                        webSocketUrl: '',
-                        userAgent: '',
-                    },
-                };
-            }
+            const { result } = await connection.send('session.new', {
+                capabilities,
+            });
             const session = new Session(connection, result);
             await session.#initialize();
             return session;
         }
-        #reason = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        #reason = __runInitializers(this, _instanceExtraInitializers);
         #disposables = new DisposableStack();
         #info;
         browser;
@@ -122,6 +83,7 @@ let Session = (() => {
         set connection(value) { this.#connection_accessor_storage = value; }
         constructor(connection, info) {
             super();
+            __runInitializers(this, _connection_extraInitializers);
             this.#info = info;
             this.connection = connection;
         }

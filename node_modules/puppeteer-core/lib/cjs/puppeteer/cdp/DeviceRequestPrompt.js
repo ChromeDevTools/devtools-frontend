@@ -42,7 +42,7 @@ exports.DeviceRequestPromptDevice = DeviceRequestPromptDevice;
  * @example
  *
  * ```ts
- * const [deviceRequest] = Promise.all([
+ * const [devicePrompt] = Promise.all([
  *   page.waitForDevicePrompt(),
  *   page.click('#connect-bluetooth'),
  * ]);

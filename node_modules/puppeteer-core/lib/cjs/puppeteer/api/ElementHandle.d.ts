@@ -11,7 +11,7 @@ import type { KeyInput } from '../common/USKeyboardLayout.js';
 import { _isElementHandle } from './ElementHandleSymbol.js';
 import type { KeyboardTypeOptions, KeyPressOptions, MouseClickOptions } from './Input.js';
 import { JSHandle } from './JSHandle.js';
-import type { ScreenshotOptions, WaitForSelectorOptions } from './Page.js';
+import type { QueryOptions, ScreenshotOptions, WaitForSelectorOptions } from './Page.js';
 /**
  * @public
  */
@@ -191,7 +191,21 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
     /**
      * Queries the current element for an element matching the given selector.
      *
-     * @param selector - The selector to query for.
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows quering by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      * @returns A {@link ElementHandle | element handle} to the first element
      * matching the given selector. Otherwise, `null`.
      */
@@ -199,11 +213,25 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
     /**
      * Queries the current element for all elements matching the given selector.
      *
-     * @param selector - The selector to query for.
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows quering by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      * @returns An array of {@link ElementHandle | element handles} that point to
      * elements matching the given selector.
      */
-    $$<Selector extends string>(selector: Selector): Promise<Array<ElementHandle<NodeFor<Selector>>>>;
+    $$<Selector extends string>(selector: Selector, options?: QueryOptions): Promise<Array<ElementHandle<NodeFor<Selector>>>>;
     /**
      * Runs the given function on the first element matching the given selector in
      * the current element.
@@ -223,7 +251,21 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * );
      * ```
      *
-     * @param selector - The selector to query for.
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows quering by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      * @param pageFunction - The function to be evaluated in this element's page's
      * context. The first element matching the selector will be passed in as the
      * first argument.
@@ -257,7 +299,21 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * ).toEqual(['Hello!', 'Hi!']);
      * ```
      *
-     * @param selector - The selector to query for.
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows quering by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      * @param pageFunction - The function to be evaluated in the element's page's
      * context. An array of elements matching the given selector will be passed to
      * the function as its first argument.
@@ -304,13 +360,30 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      */
     waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<ElementHandle<NodeFor<Selector>> | null>;
     /**
-     * Checks if an element is visible using the same mechanism as
-     * {@link ElementHandle.waitForSelector}.
+     * An element is considered to be visible if all of the following is
+     * true:
+     *
+     * - the element has
+     *   {@link https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle | computed styles}.
+     *
+     * - the element has a non-empty
+     *   {@link https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect | bounding client rect}.
+     *
+     * - the element's {@link https://developer.mozilla.org/en-US/docs/Web/CSS/visibility | visibility}
+     *   is not `hidden` or `collapse`.
      */
     isVisible(): Promise<boolean>;
     /**
-     * Checks if an element is hidden using the same mechanism as
-     * {@link ElementHandle.waitForSelector}.
+     * An element is considered to be hidden if at least one of the following is true:
+     *
+     * - the element has no
+     *   {@link https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle | computed styles}.
+     *
+     * - the element has an empty
+     *   {@link https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect | bounding client rect}.
+     *
+     * - the element's {@link https://developer.mozilla.org/en-US/docs/Web/CSS/visibility | visibility}
+     *   is `hidden` or `collapse`.
      */
     isHidden(): Promise<boolean>;
     /**

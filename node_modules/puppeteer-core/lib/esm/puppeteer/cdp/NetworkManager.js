@@ -19,7 +19,7 @@ export class NetworkManager extends EventEmitter {
     #frameManager;
     #networkEventManager = new NetworkEventManager();
     #extraHTTPHeaders;
-    #credentials;
+    #credentials = null;
     #attemptedAuthentications = new Set();
     #userRequestInterceptionEnabled = false;
     #protocolRequestInterceptionEnabled = false;

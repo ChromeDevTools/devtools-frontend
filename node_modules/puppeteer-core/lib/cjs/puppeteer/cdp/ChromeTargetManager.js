@@ -75,9 +75,14 @@ class ChromeTargetManager extends EventEmitter_js_1.EventEmitter {
         }
         for (const [targetId, targetInfo,] of this.#discoveredTargetsByTargetId.entries()) {
             const targetForFilter = new Target_js_1.CdpTarget(targetInfo, undefined, undefined, this, undefined);
+            // Targets from extensions and the browser that will not be
+            // auto-attached. Therefore, we should not add them to
+            // #targetsIdsForInit.
+            const skipTarget = targetInfo.type === 'browser' ||
+                targetInfo.url.startsWith('chrome-extension://');
             if ((!this.#targetFilterCallback ||
                 this.#targetFilterCallback(targetForFilter)) &&
-                targetInfo.type !== 'browser') {
+                !skipTarget) {
                 this.#targetsIdsForInit.add(targetId);
             }
         }
@@ -102,6 +107,9 @@ class ChromeTargetManager extends EventEmitter_js_1.EventEmitter {
         });
         this.#finishInitializationIfReady();
         await this.#initializeDeferred.valueOrThrow();
+    }
+    getChildTargets(target) {
+        return target._childTargets();
     }
     dispose() {
         this.#connection.off('Target.targetCreated', this.#onTargetCreated);
@@ -256,6 +264,10 @@ class ChromeTargetManager extends EventEmitter_js_1.EventEmitter {
             this.#attachedTargetsByTargetId.set(targetInfo.targetId, target);
             this.#attachedTargetsBySessionId.set(session.id(), target);
         }
+        const parentTarget = parentSession instanceof CDPSession_js_1.CDPSession
+            ? parentSession._target()
+            : null;
+        parentTarget?._addChildTarget(target);
         parentSession.emit(CDPSession_js_1.CDPSessionEvent.Ready, session);
         this.#targetsIdsForInit.delete(target._targetId);
         if (!isExistingTarget) {
@@ -280,11 +292,14 @@ class ChromeTargetManager extends EventEmitter_js_1.EventEmitter {
             this.#initializeDeferred.resolve();
         }
     }
-    #onDetachedFromTarget = (_parentSession, event) => {
+    #onDetachedFromTarget = (parentSession, event) => {
         const target = this.#attachedTargetsBySessionId.get(event.sessionId);
         this.#attachedTargetsBySessionId.delete(event.sessionId);
         if (!target) {
             return;
+        }
+        if (parentSession instanceof CDPSession_js_1.CDPSession) {
+            parentSession._target()._removeChildTarget(target);
         }
         this.#attachedTargetsByTargetId.delete(target._targetId);
         this.emit("targetGone" /* TargetManagerEvent.TargetGone */, target);

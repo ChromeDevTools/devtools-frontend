@@ -60,7 +60,7 @@ let UserPrompt = (() => {
             userPrompt.#initialize();
             return userPrompt;
         }
-        #reason = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        #reason = __runInitializers(this, _instanceExtraInitializers);
         #result;
         #disposables = new DisposableStack();
         browsingContext;
@@ -95,6 +95,10 @@ let UserPrompt = (() => {
             return this.closed;
         }
         get handled() {
+            if (this.info.handler === "accept" /* Bidi.Session.UserPromptHandlerType.Accept */ ||
+                this.info.handler === "dismiss" /* Bidi.Session.UserPromptHandlerType.Dismiss */) {
+                return true;
+            }
             return this.#result !== undefined;
         }
         get result() {

@@ -81,9 +81,6 @@ export declare abstract class ProductLauncher {
      * @internal
      */
     protected createBiDiOverCdpBrowser(browserProcess: ReturnType<typeof launch>, connection: Connection, closeCallback: BrowserCloseCallback, opts: {
-        timeout: number;
-        protocolTimeout: number | undefined;
-        slowMo: number;
         defaultViewport: Viewport | null;
         ignoreHTTPSErrors?: boolean;
     }): Promise<Browser>;

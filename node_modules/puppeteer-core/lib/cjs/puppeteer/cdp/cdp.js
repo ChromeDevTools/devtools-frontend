@@ -24,7 +24,6 @@ __exportStar(require("./AriaQueryHandler.js"), exports);
 __exportStar(require("./Binding.js"), exports);
 __exportStar(require("./Browser.js"), exports);
 __exportStar(require("./BrowserConnector.js"), exports);
-__exportStar(require("./cdp.js"), exports);
 __exportStar(require("./CDPSession.js"), exports);
 __exportStar(require("./ChromeTargetManager.js"), exports);
 __exportStar(require("./Connection.js"), exports);

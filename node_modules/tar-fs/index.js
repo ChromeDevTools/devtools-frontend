@@ -44,6 +44,7 @@ exports.pack = function pack (cwd, opts) {
   }
 
   function onstat (err, filename, stat) {
+    if (pack.destroyed) return
     if (err) return pack.destroy(err)
     if (!filename) {
       if (opts.finalize !== false) pack.finalize()

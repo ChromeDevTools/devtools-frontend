@@ -254,6 +254,11 @@ class ExposeableFunction {
                     realm.evaluate(name => {
                         delete globalThis[name];
                     }, this.name),
+                    ...frame.childFrames().map(childFrame => {
+                        return childFrame.evaluate(name => {
+                            delete globalThis[name];
+                        }, this.name);
+                    }),
                     frame.browsingContext.removePreloadScript(script),
                 ]);
             }

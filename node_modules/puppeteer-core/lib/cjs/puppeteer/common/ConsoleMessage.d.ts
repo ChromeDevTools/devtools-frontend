@@ -33,7 +33,7 @@ export type ConsoleMessageType = 'log' | 'debug' | 'info' | 'error' | 'warn' | '
 export declare class ConsoleMessage {
     #private;
     /**
-     * @public
+     * @internal
      */
     constructor(type: ConsoleMessageType, text: string, args: JSHandle[], stackTraceLocations: ConsoleMessageLocation[]);
     /**

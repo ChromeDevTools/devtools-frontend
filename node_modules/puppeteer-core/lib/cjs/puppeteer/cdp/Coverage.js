@@ -50,6 +50,9 @@ const disposable_js_1 = require("../util/disposable.js");
 class Coverage {
     #jsCoverage;
     #cssCoverage;
+    /**
+     * @internal
+     */
     constructor(client) {
         this.#jsCoverage = new JSCoverage(client);
         this.#cssCoverage = new CSSCoverage(client);
@@ -121,6 +124,9 @@ class JSCoverage {
     #resetOnNavigation = false;
     #reportAnonymousScripts = false;
     #includeRawScriptCoverage = false;
+    /**
+     * @internal
+     */
     constructor(client) {
         this.#client = client;
     }

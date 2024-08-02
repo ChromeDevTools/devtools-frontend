@@ -4,9 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { ARIAQueryHandler } from '../cdp/AriaQueryHandler.js';
+import { CSSQueryHandler } from './CSSQueryHandler.js';
 import { customQueryHandlers } from './CustomQueryHandler.js';
 import { PierceQueryHandler } from './PierceQueryHandler.js';
 import { PQueryHandler } from './PQueryHandler.js';
+import { parsePSelectors } from './PSelectorParser.js';
 import { TextQueryHandler } from './TextQueryHandler.js';
 import { XPathQueryHandler } from './XPathQueryHandler.js';
 const BUILTIN_QUERY_HANDLERS = {
@@ -31,11 +33,38 @@ export function getQueryHandlerAndSelector(selector) {
                 const prefix = `${name}${separator}`;
                 if (selector.startsWith(prefix)) {
                     selector = selector.slice(prefix.length);
-                    return { updatedSelector: selector, QueryHandler };
+                    return {
+                        updatedSelector: selector,
+                        polling: name === 'aria' ? "raf" /* PollingOptions.RAF */ : "mutation" /* PollingOptions.MUTATION */,
+                        QueryHandler,
+                    };
                 }
             }
         }
     }
-    return { updatedSelector: selector, QueryHandler: PQueryHandler };
+    try {
+        const [pSelector, isPureCSS, hasPseudoClasses, hasAria] = parsePSelectors(selector);
+        if (isPureCSS) {
+            return {
+                updatedSelector: selector,
+                polling: hasPseudoClasses
+                    ? "raf" /* PollingOptions.RAF */
+                    : "mutation" /* PollingOptions.MUTATION */,
+                QueryHandler: CSSQueryHandler,
+            };
+        }
+        return {
+            updatedSelector: JSON.stringify(pSelector),
+            polling: hasAria ? "raf" /* PollingOptions.RAF */ : "mutation" /* PollingOptions.MUTATION */,
+            QueryHandler: PQueryHandler,
+        };
+    }
+    catch {
+        return {
+            updatedSelector: selector,
+            polling: "mutation" /* PollingOptions.MUTATION */,
+            QueryHandler: CSSQueryHandler,
+        };
+    }
 }
 //# sourceMappingURL=GetQueryHandler.js.map

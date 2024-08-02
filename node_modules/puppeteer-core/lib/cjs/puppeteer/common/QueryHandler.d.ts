@@ -19,6 +19,13 @@ export type QuerySelector = (node: Node, selector: string, PuppeteerUtil: Puppet
 /**
  * @internal
  */
+export declare const enum PollingOptions {
+    RAF = "raf",
+    MUTATION = "mutation"
+}
+/**
+ * @internal
+ */
 export declare class QueryHandler {
     static querySelectorAll?: QuerySelectorAll;
     static querySelector?: QuerySelector;
@@ -43,6 +50,8 @@ export declare class QueryHandler {
      * This will always query the handle in the Puppeteer world and migrate the
      * result to the main world.
      */
-    static waitFor(elementOrFrame: ElementHandle<Node> | Frame, selector: string, options: WaitForSelectorOptions): Promise<ElementHandle<Node> | null>;
+    static waitFor(elementOrFrame: ElementHandle<Node> | Frame, selector: string, options: WaitForSelectorOptions & {
+        polling?: PollingOptions;
+    }): Promise<ElementHandle<Node> | null>;
 }
 //# sourceMappingURL=QueryHandler.d.ts.map

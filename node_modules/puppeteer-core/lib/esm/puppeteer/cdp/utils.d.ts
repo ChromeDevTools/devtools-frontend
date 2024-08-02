@@ -19,7 +19,11 @@ export declare function valueFromRemoteObject(remoteObject: Protocol.Runtime.Rem
 /**
  * @internal
  */
-export declare function addPageBinding(type: string, name: string): void;
+export declare function addPageBinding(type: string, name: string, prefix: string): void;
+/**
+ * @internal
+ */
+export declare const CDP_BINDING_PREFIX = "puppeteer_";
 /**
  * @internal
  */

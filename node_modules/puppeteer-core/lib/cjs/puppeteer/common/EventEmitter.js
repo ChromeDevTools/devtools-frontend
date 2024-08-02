@@ -8,7 +8,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EventSubscription = exports.EventEmitter = void 0;
+exports.EventEmitter = void 0;
 const mitt_js_1 = __importDefault(require("../../third_party/mitt/mitt.js"));
 const disposable_js_1 = require("../util/disposable.js");
 /**
@@ -132,22 +132,4 @@ class EventEmitter {
     }
 }
 exports.EventEmitter = EventEmitter;
-/**
- * @internal
- */
-class EventSubscription {
-    #target;
-    #type;
-    #handler;
-    constructor(target, type, handler) {
-        this.#target = target;
-        this.#type = type;
-        this.#handler = handler;
-        this.#target.on(this.#type, this.#handler);
-    }
-    [disposable_js_1.disposeSymbol]() {
-        this.#target.off(this.#type, this.#handler);
-    }
-}
-exports.EventSubscription = EventSubscription;
 //# sourceMappingURL=EventEmitter.js.map

@@ -59,7 +59,7 @@ let Navigation = (() => {
             navigation.#initialize();
             return navigation;
         }
-        #request = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        #request = __runInitializers(this, _instanceExtraInitializers);
         #navigation;
         #browsingContext;
         #disposables = new DisposableStack();

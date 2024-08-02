@@ -59,7 +59,7 @@ let Request = (() => {
             request.#initialize();
             return request;
         }
-        #error = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        #error = __runInitializers(this, _instanceExtraInitializers);
         #redirect;
         #response;
         #browsingContext;
@@ -167,6 +167,18 @@ let Request = (() => {
         }
         get isBlocked() {
             return this.#event.isBlocked;
+        }
+        get resourceType() {
+            // @ts-expect-error non-standard attribute.
+            return this.#event.request['goog:resourceType'] ?? undefined;
+        }
+        get postData() {
+            // @ts-expect-error non-standard attribute.
+            return this.#event.request['goog:postData'] ?? undefined;
+        }
+        get hasPostData() {
+            // @ts-expect-error non-standard attribute.
+            return this.#event.request['goog:hasPostData'] ?? false;
         }
         async continueRequest({ url, method, headers, cookies, body, }) {
             await this.#session.send('network.continueRequest', {

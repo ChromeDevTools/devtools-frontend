@@ -160,6 +160,8 @@ export class QueryHandler {
                 return await frame.isolatedRealm().adoptHandle(elementOrFrame);
             })(), false);
             const { visible = false, hidden = false, timeout, signal } = options;
+            const polling = options.polling ??
+                (visible || hidden ? "raf" /* PollingOptions.RAF */ : "mutation" /* PollingOptions.MUTATION */);
             try {
                 const env_4 = { stack: [], error: void 0, hasError: false };
                 try {
@@ -169,7 +171,7 @@ export class QueryHandler {
                         const node = await querySelector(root ?? document, selector, PuppeteerUtil);
                         return PuppeteerUtil.checkVisibility(node, visible);
                     }, {
-                        polling: visible || hidden ? 'raf' : 'mutation',
+                        polling,
                         root: element,
                         timeout,
                         signal,

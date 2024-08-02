@@ -1485,7 +1485,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // Or hide it when we do not have data (which likely means we are back on the landing page)
     const hasInsights = traceInsightsData !== null && traceInsightsData.size > 0;
     const hasAnnotations = (currModificationManager?.getAnnotations().length ?? 0) > 0;
-    const shouldOpenSidebar = hasInsights || hasAnnotations;
+    const shouldOpenSidebar = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SIDEBAR) &&
+        (hasInsights || hasAnnotations);
     if (shouldOpenSidebar) {
       this.#splitWidget.showBoth();
     } else {

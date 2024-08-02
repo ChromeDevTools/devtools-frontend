@@ -44,7 +44,11 @@ export declare class BidiPage extends Page {
     readonly coverage: Coverage;
     _client(): BidiCdpSession;
     private constructor();
-    setUserAgent(userAgent: string, userAgentMetadata?: Protocol.Emulation.UserAgentMetadata | undefined): Promise<void>;
+    /**
+     * @internal
+     */
+    _userAgentHeaders: Record<string, string>;
+    setUserAgent(userAgent: string, userAgentMetadata?: Protocol.Emulation.UserAgentMetadata): Promise<void>;
     setBypassCSP(enabled: boolean): Promise<void>;
     queryObjects<Prototype>(prototypeHandle: BidiJSHandle<Prototype>): Promise<BidiJSHandle<Prototype[]>>;
     browser(): BidiBrowser;

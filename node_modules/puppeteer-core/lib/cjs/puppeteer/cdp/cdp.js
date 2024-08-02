@@ -34,6 +34,7 @@ __exportStar(require("./Dialog.js"), exports);
 __exportStar(require("./ElementHandle.js"), exports);
 __exportStar(require("./EmulationManager.js"), exports);
 __exportStar(require("./ExecutionContext.js"), exports);
+__exportStar(require("./ExtensionTransport.js"), exports);
 __exportStar(require("./FirefoxTargetManager.js"), exports);
 __exportStar(require("./Frame.js"), exports);
 __exportStar(require("./FrameManager.js"), exports);

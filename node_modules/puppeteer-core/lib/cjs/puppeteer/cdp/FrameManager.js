@@ -33,7 +33,6 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
     #page;
     #networkManager;
     #timeoutSettings;
-    #contextIdToContext = new Map();
     #isolatedWorlds = new Set();
     #client;
     _frameTree = new FrameTree_js_1.FrameTree();
@@ -54,11 +53,11 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
     get client() {
         return this.#client;
     }
-    constructor(client, page, ignoreHTTPSErrors, timeoutSettings) {
+    constructor(client, page, timeoutSettings) {
         super();
         this.#client = client;
         this.#page = page;
-        this.#networkManager = new NetworkManager_js_1.NetworkManager(ignoreHTTPSErrors, this);
+        this.#networkManager = new NetworkManager_js_1.NetworkManager(this);
         this.#timeoutSettings = timeoutSettings;
         this.setupEventListeners(this.#client);
         client.once(CDPSession_js_1.CDPSessionEvent.Disconnected, () => {
@@ -98,7 +97,6 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
      * its frame tree and ID.
      */
     async swapFrameTree(client) {
-        this.#onExecutionContextsCleared(this.#client);
         this.#client = client;
         (0, assert_js_1.assert)(this.#client instanceof CDPSession_js_2.CdpCDPSession, 'CDPSession is not an instance of CDPSessionImpl.');
         const frame = this._frameTree.getMainFrame();
@@ -106,10 +104,8 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
             this.#frameNavigatedReceived.add(this.#client._target()._targetId);
             this._frameTree.removeFrame(frame);
             frame.updateId(this.#client._target()._targetId);
-            frame.mainRealm().clearContext();
-            frame.isolatedRealm().clearContext();
             this._frameTree.addFrame(frame);
-            frame.updateClient(client, true);
+            frame.updateClient(client);
         }
         this.setupEventListeners(client);
         client.once(CDPSession_js_1.CDPSessionEvent.Disconnected, () => {
@@ -154,14 +150,6 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
             await this.#frameTreeHandled?.valueOrThrow();
             this.#onExecutionContextCreated(event.context, session);
         });
-        session.on('Runtime.executionContextDestroyed', async (event) => {
-            await this.#frameTreeHandled?.valueOrThrow();
-            this.#onExecutionContextDestroyed(event.executionContextId, session);
-        });
-        session.on('Runtime.executionContextsCleared', async () => {
-            await this.#frameTreeHandled?.valueOrThrow();
-            this.#onExecutionContextsCleared(session);
-        });
         session.on('Page.lifecycleEvent', async (event) => {
             await this.#frameTreeHandled?.valueOrThrow();
             this.#onLifecycleEvent(event);
@@ -196,14 +184,6 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
             }
             throw error;
         }
-    }
-    executionContextById(contextId, session = this.#client) {
-        const context = this.getExecutionContextById(contextId, session);
-        (0, assert_js_1.assert)(context, 'INTERNAL ERROR: missing context with id = ' + contextId);
-        return context;
-    }
-    getExecutionContextById(contextId, session = this.#client) {
-        return this.#contextIdToContext.get(`${session.id()}:${contextId}`);
     }
     page() {
         return this.#page;
@@ -404,35 +384,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
             return;
         }
         const context = new ExecutionContext_js_1.ExecutionContext(frame?.client || this.#client, contextPayload, world);
-        if (world) {
-            world.setContext(context);
-        }
-        const key = `${session.id()}:${contextPayload.id}`;
-        this.#contextIdToContext.set(key, context);
-    }
-    #onExecutionContextDestroyed(executionContextId, session) {
-        const key = `${session.id()}:${executionContextId}`;
-        const context = this.#contextIdToContext.get(key);
-        if (!context) {
-            return;
-        }
-        this.#contextIdToContext.delete(key);
-        if (context._world) {
-            context._world.clearContext();
-        }
-    }
-    #onExecutionContextsCleared(session) {
-        for (const [key, context] of this.#contextIdToContext.entries()) {
-            // Make sure to only clear execution contexts that belong
-            // to the current session.
-            if (context._client !== session) {
-                continue;
-            }
-            if (context._world) {
-                context._world.clearContext();
-            }
-            this.#contextIdToContext.delete(key);
-        }
+        world.setContext(context);
     }
     #removeFramesRecursively(frame) {
         for (const child of frame.childFrames()) {

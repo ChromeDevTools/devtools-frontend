@@ -4,9 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 export const ariaQuerySelector = (root, selector) => {
-    return window.__ariaQuerySelector(root, selector);
+    // In Firefox sandboxes globalThis !== window and we expose bindings on globalThis.
+    return globalThis.__ariaQuerySelector(root, selector);
 };
 export const ariaQuerySelectorAll = async function* (root, selector) {
-    yield* await window.__ariaQuerySelectorAll(root, selector);
+    // In Firefox sandboxes globalThis !== window and we expose bindings on globalThis.
+    yield* await globalThis.__ariaQuerySelectorAll(root, selector);
 };
 //# sourceMappingURL=ARIAQuerySelector.js.map

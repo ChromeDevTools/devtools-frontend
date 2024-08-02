@@ -31,8 +31,8 @@ import { CdpWebWorker } from './WebWorker.js';
  */
 export declare class CdpPage extends Page {
     #private;
-    static _create(client: CDPSession, target: CdpTarget, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null): Promise<CdpPage>;
-    constructor(client: CDPSession, target: CdpTarget, ignoreHTTPSErrors: boolean);
+    static _create(client: CDPSession, target: CdpTarget, defaultViewport: Viewport | null): Promise<CdpPage>;
+    constructor(client: CDPSession, target: CdpTarget);
     _client(): CDPSession;
     isServiceWorkerBypassed(): boolean;
     isDragInterceptionEnabled(): boolean;

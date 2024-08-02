@@ -45,6 +45,7 @@ const Errors_js_1 = require("../common/Errors.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
+const FrameManagerEvents_js_1 = require("./FrameManagerEvents.js");
 const IsolatedWorld_js_1 = require("./IsolatedWorld.js");
 const IsolatedWorlds_js_1 = require("./IsolatedWorlds.js");
 const LifecycleWatcher_js_1 = require("./LifecycleWatcher.js");
@@ -70,12 +71,12 @@ let CdpFrame = (() => {
         #url = (__runInitializers(this, _instanceExtraInitializers), '');
         #detached = false;
         #client;
-        worlds;
         _frameManager;
-        _id;
         _loaderId = '';
         _lifecycleEvents = new Set();
+        _id;
         _parentId;
+        worlds;
         constructor(frameManager, frameId, parentFrameId, client) {
             super();
             this._frameManager = frameManager;
@@ -83,13 +84,31 @@ let CdpFrame = (() => {
             this._id = frameId;
             this._parentId = parentFrameId;
             this.#detached = false;
+            this.#client = client;
             this._loaderId = '';
-            this.updateClient(client);
+            this.worlds = {
+                [IsolatedWorlds_js_1.MAIN_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this, this._frameManager.timeoutSettings),
+                [IsolatedWorlds_js_1.PUPPETEER_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this, this._frameManager.timeoutSettings),
+            };
             this.on(Frame_js_1.FrameEvent.FrameSwappedByActivation, () => {
                 // Emulate loading process for swapped frames.
                 this._onLoadingStarted();
                 this._onLoadingStopped();
             });
+            this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].emitter.on('consoleapicalled', this.#onMainWorldConsoleApiCalled.bind(this));
+            this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].emitter.on('bindingcalled', this.#onMainWorldBindingCalled.bind(this));
+        }
+        #onMainWorldConsoleApiCalled(event) {
+            this._frameManager.emit(FrameManagerEvents_js_1.FrameManagerEvent.ConsoleApiCalled, [
+                this.worlds[IsolatedWorlds_js_1.MAIN_WORLD],
+                event,
+            ]);
+        }
+        #onMainWorldBindingCalled(event) {
+            this._frameManager.emit(FrameManagerEvents_js_1.FrameManagerEvent.BindingCalled, [
+                this.worlds[IsolatedWorlds_js_1.MAIN_WORLD],
+                event,
+            ]);
         }
         /**
          * This is used internally in DevTools.
@@ -106,23 +125,8 @@ let CdpFrame = (() => {
         updateId(id) {
             this._id = id;
         }
-        updateClient(client, keepWorlds = false) {
+        updateClient(client) {
             this.#client = client;
-            if (!keepWorlds) {
-                // Clear the current contexts on previous world instances.
-                if (this.worlds) {
-                    this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].clearContext();
-                    this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].clearContext();
-                }
-                this.worlds = {
-                    [IsolatedWorlds_js_1.MAIN_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this, this._frameManager.timeoutSettings),
-                    [IsolatedWorlds_js_1.PUPPETEER_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this, this._frameManager.timeoutSettings),
-                };
-            }
-            else {
-                this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].frameUpdated();
-                this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].frameUpdated();
-            }
         }
         page() {
             return this._frameManager.page();

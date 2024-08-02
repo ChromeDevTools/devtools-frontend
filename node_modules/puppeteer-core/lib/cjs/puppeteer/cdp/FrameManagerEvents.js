@@ -21,5 +21,7 @@ var FrameManagerEvent;
     FrameManagerEvent.FrameSwapped = Symbol('FrameManager.FrameSwapped');
     FrameManagerEvent.LifecycleEvent = Symbol('FrameManager.LifecycleEvent');
     FrameManagerEvent.FrameNavigatedWithinDocument = Symbol('FrameManager.FrameNavigatedWithinDocument');
+    FrameManagerEvent.ConsoleApiCalled = Symbol('FrameManager.ConsoleApiCalled');
+    FrameManagerEvent.BindingCalled = Symbol('FrameManager.BindingCalled');
 })(FrameManagerEvent || (exports.FrameManagerEvent = FrameManagerEvent = {}));
 //# sourceMappingURL=FrameManagerEvents.js.map

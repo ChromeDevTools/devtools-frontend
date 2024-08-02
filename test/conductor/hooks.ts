@@ -101,14 +101,18 @@ function launchChrome() {
     'AutofillEnableDevtoolsIssues',
   ];
   const launchArgs = [
-    '--remote-allow-origins=*', '--remote-debugging-port=0', '--enable-experimental-web-platform-features',
+    '--remote-allow-origins=*',
+    '--remote-debugging-port=0',
+    '--enable-experimental-web-platform-features',
     // This fingerprint may be generated from the certificate using
     // openssl x509 -noout -pubkey -in scripts/hosted_mode/cert.pem | openssl pkey -pubin -outform der | openssl dgst -sha256 -binary | base64
     '--ignore-certificate-errors-spki-list=KLy6vv6synForXwI6lDIl+D3ZrMV6Y1EMTY6YpOcAos=',
     '--site-per-process',  // Default on Desktop anyway, but ensure that we always use out-of-process frames when we intend to.
-    '--host-resolver-rules=MAP *.test 127.0.0.1', '--disable-gpu',
+    '--host-resolver-rules=MAP *.test 127.0.0.1',
+    '--disable-gpu',
     '--enable-blink-features=CSSContainerQueries,HighlightInheritance',  // TODO(crbug.com/1218390) Remove globally enabled flags and conditionally enable them
     '--disable-blink-features=WebAssemblyJSPromiseIntegration',  // TODO(crbug.com/325123665) Remove once heap snapshots work again with JSPI
+    '--disable-field-trial-config',
   ];
   const opts: puppeteer.LaunchOptions&puppeteer.BrowserLaunchArgumentOptions&puppeteer.BrowserConnectOptions = {
     headless,

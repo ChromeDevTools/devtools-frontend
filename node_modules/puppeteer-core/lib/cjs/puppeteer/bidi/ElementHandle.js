@@ -109,6 +109,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiElementHandle = void 0;
 const ElementHandle_js_1 = require("../api/ElementHandle.js");
+const AsyncIterableUtil_js_1 = require("../util/AsyncIterableUtil.js");
 const decorators_js_1 = require("../util/decorators.js");
 const JSHandle_js_1 = require("./JSHandle.js");
 /**
@@ -210,6 +211,19 @@ let BidiElementHandle = (() => {
                 }
             });
             await this.frame.setFiles(this, files);
+        }
+        async *queryAXTree(name, role) {
+            const results = await this.frame.locateNodes(this, {
+                type: 'accessibility',
+                value: {
+                    role,
+                    name,
+                },
+            });
+            return yield* AsyncIterableUtil_js_1.AsyncIterableUtil.map(results, node => {
+                // TODO: maybe change ownership since the default ownership is probably none.
+                return Promise.resolve(BidiElementHandle.from(node, this.realm));
+            });
         }
     };
 })();

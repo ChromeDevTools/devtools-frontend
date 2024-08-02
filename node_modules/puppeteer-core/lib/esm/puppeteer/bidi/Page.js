@@ -160,12 +160,54 @@ let BidiPage = (() => {
                 this.#workers.delete(worker);
             });
         }
+        /**
+         * @internal
+         */
+        _userAgentHeaders = {};
+        #userAgentInterception;
+        #userAgentPreloadScript;
         async setUserAgent(userAgent, userAgentMetadata) {
-            // TODO: handle CDP-specific cases such as mprach.
-            await this._client().send('Network.setUserAgentOverride', {
-                userAgent: userAgent,
-                userAgentMetadata: userAgentMetadata,
-            });
+            if (!this.#browserContext.browser().cdpSupported && userAgentMetadata) {
+                throw new UnsupportedOperation('Current Browser does not support `userAgentMetadata`');
+            }
+            else if (this.#browserContext.browser().cdpSupported &&
+                userAgentMetadata) {
+                return await this._client().send('Network.setUserAgentOverride', {
+                    userAgent: userAgent,
+                    userAgentMetadata: userAgentMetadata,
+                });
+            }
+            const enable = userAgent !== '';
+            userAgent = userAgent ?? (await this.#browserContext.browser().userAgent());
+            this._userAgentHeaders = enable
+                ? {
+                    'User-Agent': userAgent,
+                }
+                : {};
+            this.#userAgentInterception = await this.#toggleInterception(["beforeRequestSent" /* Bidi.Network.InterceptPhase.BeforeRequestSent */], this.#userAgentInterception, enable);
+            const changeUserAgent = (userAgent) => {
+                Object.defineProperty(navigator, 'userAgent', {
+                    value: userAgent,
+                });
+            };
+            const frames = [this.#frame];
+            for (const frame of frames) {
+                frames.push(...frame.childFrames());
+            }
+            if (this.#userAgentPreloadScript) {
+                await this.removeScriptToEvaluateOnNewDocument(this.#userAgentPreloadScript);
+            }
+            const [evaluateToken] = await Promise.all([
+                enable
+                    ? this.evaluateOnNewDocument(changeUserAgent, userAgent)
+                    : undefined,
+                // When we disable the UserAgent we want to
+                // evaluate the original value in all Browsing Contexts
+                frames.map(frame => {
+                    return frame.evaluate(changeUserAgent, userAgent);
+                }),
+            ]);
+            this.#userAgentPreloadScript = evaluateToken?.identifier;
         }
         async setBypassCSP(enabled) {
             // TODO: handle CDP-specific cases such as mprach.

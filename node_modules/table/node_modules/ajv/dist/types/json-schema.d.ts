@@ -63,10 +63,10 @@ type UncheckedJSONSchemaType<T, IsPartial extends boolean> = (// these two union
         type?: "string";
     };
     dependencies?: {
-        [K in keyof T]?: Readonly<(keyof T)[]> | UncheckedPartialSchema<T>;
+        [K in keyof T]?: readonly (keyof T)[] | UncheckedPartialSchema<T>;
     };
     dependentRequired?: {
-        [K in keyof T]?: Readonly<(keyof T)[]>;
+        [K in keyof T]?: readonly (keyof T)[];
     };
     dependentSchemas?: {
         [K in keyof T]?: UncheckedPartialSchema<T>;
@@ -74,18 +74,18 @@ type UncheckedJSONSchemaType<T, IsPartial extends boolean> = (// these two union
     minProperties?: number;
     maxProperties?: number;
 } & (IsPartial extends true ? {
-    required: Readonly<(keyof T)[]>;
+    required: readonly (keyof T)[];
 } : [UncheckedRequiredMembers<T>] extends [never] ? {
-    required?: Readonly<UncheckedRequiredMembers<T>[]>;
+    required?: readonly UncheckedRequiredMembers<T>[];
 } : {
-    required: Readonly<UncheckedRequiredMembers<T>[]>;
+    required: readonly UncheckedRequiredMembers<T>[];
 }) : T extends null ? {
     type: JSONType<"null", IsPartial>;
     nullable: true;
 } : never) & {
-    allOf?: Readonly<UncheckedPartialSchema<T>[]>;
-    anyOf?: Readonly<UncheckedPartialSchema<T>[]>;
-    oneOf?: Readonly<UncheckedPartialSchema<T>[]>;
+    allOf?: readonly UncheckedPartialSchema<T>[];
+    anyOf?: readonly UncheckedPartialSchema<T>[];
+    oneOf?: readonly UncheckedPartialSchema<T>[];
     if?: UncheckedPartialSchema<T>;
     then?: UncheckedPartialSchema<T>;
     else?: UncheckedPartialSchema<T>;
@@ -114,12 +114,12 @@ export type RequiredMembers<T> = StrictNullChecksWrapper<"RequiredMembers", Unch
 type Nullable<T> = undefined extends T ? {
     nullable: true;
     const?: null;
-    enum?: Readonly<(T | null)[]>;
+    enum?: readonly (T | null)[];
     default?: T | null;
 } : {
     nullable?: false;
     const?: T;
-    enum?: Readonly<T[]>;
+    enum?: readonly T[];
     default?: T;
 };
 export {};

@@ -20,25 +20,14 @@ interface CachedScopeMap {
 
 const scopeToCachedIdentifiersMap = new WeakMap<Formatter.FormatterWorkerPool.ScopeTreeNode, CachedScopeMap>();
 const cachedMapByCallFrame = new WeakMap<SDK.DebuggerModel.CallFrame, Map<string, string|null>>();
-const cachedTextByContentData = new WeakMap<TextUtils.ContentData.ContentData, TextUtils.Text.Text>();
 
 export async function getTextFor(contentProvider: TextUtils.ContentProvider.ContentProvider):
     Promise<TextUtils.Text.Text|null> {
-  // We intentionally cache based on the ContentData object rather
-  // than the ContentProvider object, which may appear as a more sensible
-  // choice, since the content of both Script and UISourceCode objects
-  // can change over time.
   const contentData = await contentProvider.requestContentData();
   if (TextUtils.ContentData.ContentData.isError(contentData) || !contentData.isTextContent) {
     return null;
   }
-
-  let text = cachedTextByContentData.get(contentData);
-  if (text === undefined) {
-    text = new TextUtils.Text.Text(contentData.text);
-    cachedTextByContentData.set(contentData, text);
-  }
-  return text;
+  return contentData.textObj;
 }
 
 export class IdentifierPositions {

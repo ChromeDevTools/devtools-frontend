@@ -37,7 +37,6 @@ devtools_module("inline_editor") {
     "CSSAngleSwatch.ts",
     "CSSAngleUtils.ts",
     "CSSLength.ts",
-    "CSSLengthUtils.ts",
     "CSSLinearEasingModel.ts",
     "CSSShadowEditor.ts",
     "ColorMixSwatch.ts",

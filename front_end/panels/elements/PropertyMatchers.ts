@@ -464,7 +464,7 @@ export class LengthMatcher extends matcherBase(LengthMatch) {
   // clang-format on
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
     const text = matching.ast.text(node);
-    const regexp = new RegExp(`^${InlineEditor.CSSLengthUtils.CSSLengthRegex.source}$`);
+    const regexp = new RegExp(`^${InlineEditor.CSSLength.CSS_LENGTH_REGEX.source}$`);
     const match = regexp.exec(text);
     if (!match || match.index !== 0) {
       return null;

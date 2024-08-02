@@ -3680,6 +3680,14 @@ export const generatedProperties = [
  },
  {
   "keywords": [
+   "normal",
+   "contain",
+   "nearest"
+  ],
+  "name": "view-transition-group"
+ },
+ {
+  "keywords": [
    "none"
   ],
   "name": "view-transition-name"
@@ -5770,6 +5778,13 @@ export const generatedPropertyValues = {
  "view-transition-class": {
   "values": [
    "none"
+  ]
+ },
+ "view-transition-group": {
+  "values": [
+   "normal",
+   "contain",
+   "nearest"
   ]
  },
  "view-transition-name": {

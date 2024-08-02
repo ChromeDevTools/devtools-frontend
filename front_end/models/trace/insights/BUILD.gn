@@ -8,6 +8,7 @@ import("../../visibility.gni")
 
 devtools_module("insights") {
   sources = [
+    "Common.ts",
     "CumulativeLayoutShift.ts",
     "DocumentLatency.ts",
     "InsightRunners.ts",

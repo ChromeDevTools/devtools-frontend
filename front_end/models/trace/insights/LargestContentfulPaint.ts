@@ -6,6 +6,7 @@ import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
+import {findLCPRequest} from './Common.js';
 import {InsightWarning, type LCPInsightResult, type NavigationInsightContext, type RequiredData} from './types.js';
 
 export function deps(): ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'] {
@@ -68,38 +69,6 @@ function breakdownPhases(
     loadTime,
     renderDelay,
   };
-}
-
-function findLCPRequest(
-    traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext,
-    lcpEvent: Types.TraceEvents.TraceEventLargestContentfulPaintCandidate): Types.TraceEvents.SyntheticNetworkRequest|
-    null {
-  const lcpNodeId = lcpEvent.args.data?.nodeId;
-  if (!lcpNodeId) {
-    throw new Error('no lcp node id');
-  }
-
-  const imagePaint = traceParsedData.LargestImagePaint.get(lcpNodeId);
-  if (!imagePaint) {
-    return null;
-  }
-
-  const lcpUrl = imagePaint.args.data?.imageUrl;
-  if (!lcpUrl) {
-    throw new Error('no lcp url');
-  }
-  // Look for the LCP resource.
-  const lcpResource = traceParsedData.NetworkRequests.byTime.find(req => {
-    const nav =
-        Helpers.Trace.getNavigationForTraceEvent(req, context.frameId, traceParsedData.Meta.navigationsByFrameId);
-    return (nav?.args.data?.navigationId === context.navigationId) && (req.args.data.url === lcpUrl);
-  });
-
-  if (!lcpResource) {
-    throw new Error('no lcp resource found');
-  }
-
-  return lcpResource;
 }
 
 export function generateInsight(

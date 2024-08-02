@@ -97,7 +97,7 @@ describe('RenderBlockingRequests', function() {
     ]);
   });
 
-  it('estimates savings with Lantern', async () => {
+  it('estimates savings with Lantern (image LCP)', async () => {
     const {data, insights} = await processTrace(this, 'lantern/render-blocking/trace.json.gz');
     assert.strictEqual(insights.size, 1);
     const insight = getInsight(insights, data.Meta.navigationsByNavigationId.keys().next().value);
@@ -107,15 +107,37 @@ describe('RenderBlockingRequests', function() {
       LCP: 0,
     });
 
-    const requestIds = [
-      'http://localhost:50049/style.css',
-      'http://localhost:50049/script.js',
-    ].map(url => insight.renderBlockingRequests.find(r => r.args.data.url === url)?.args.data.requestId);
-
     assert.exists(insight.requestIdToWastedMs);
-    assert.deepStrictEqual([...insight.requestIdToWastedMs], [
-      [requestIds[0], 2254],
-      [requestIds[1], 304],
+    const urlToWastedMs = [...insight.requestIdToWastedMs].map(([requestId, wastedMs]) => {
+      const url = insight.renderBlockingRequests.find(r => r.args.data.requestId === requestId)?.args.data.url;
+      return [url, wastedMs];
+    });
+    assert.deepStrictEqual(urlToWastedMs, [
+      ['http://localhost:50049/style.css', 2254],
+      ['http://localhost:50049/script.js', 304],
+    ]);
+  });
+
+  it('estimates savings with Lantern (text LCP)', async () => {
+    const {data, insights} = await processTrace(this, 'lantern/typescript-angular/trace.json.gz');
+    assert.strictEqual(insights.size, 1);
+    const insight = getInsight(insights, data.Meta.navigationsByNavigationId.keys().next().value);
+
+    assert.deepStrictEqual(insight.metricSavings, {
+      FCP: 13,
+      LCP: 13,
+    });
+    assert.exists(insight.requestIdToWastedMs);
+    const urlToWastedMs = [...insight.requestIdToWastedMs].map(([requestId, wastedMs]) => {
+      const url = insight.renderBlockingRequests.find(r => r.args.data.requestId === requestId)?.args.data.url;
+      return [url, wastedMs];
+    });
+    assert.deepStrictEqual(urlToWastedMs, [
+      ['http://[::]:8000/typescript-angular/node_modules/todomvc-common/base.css', 153],
+      ['http://[::]:8000/typescript-angular/node_modules/todomvc-app-css/index.css', 303],
+      ['http://[::]:8000/typescript-angular/node_modules/todomvc-common/base.js', 303],
+      ['http://[::]:8000/typescript-angular/node_modules/angular/angular.js', 303],
+      ['http://[::]:8000/typescript-angular/js/Application.js', 303],
     ]);
   });
 });

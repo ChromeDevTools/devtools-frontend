@@ -6,8 +6,9 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import type * as Lantern from '../lantern/lantern.js';
-import type * as Types from '../types/types.js';
+import * as Types from '../types/types.js';
 
+import {findLCPRequest} from './Common.js';
 import {
   type InsightResult,
   InsightWarning,
@@ -27,8 +28,8 @@ export type RenderBlockingInsightResult = InsightResult<{
 // to possibly be non-blocking (and they have minimal impact anyway).
 const MINIMUM_WASTED_MS = 50;
 
-export function deps(): ['NetworkRequests', 'PageLoadMetrics'] {
-  return ['NetworkRequests', 'PageLoadMetrics'];
+export function deps(): ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint'] {
+  return ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint'];
 }
 
 /**
@@ -81,11 +82,40 @@ function estimateSavingsWithGraphs(deferredIds: Set<string>, lanternContext: Lan
   return Math.round(Math.max(estimateBeforeInline - estimateAfterInline, 0));
 }
 
+function hasImageLCP(traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext): boolean {
+  const nav = traceParsedData.Meta.navigationsByNavigationId.get(context.navigationId);
+  if (!nav) {
+    throw new Error('no trace navigation');
+  }
+
+  const frameMetrics = traceParsedData.PageLoadMetrics.metricScoresByFrameId.get(context.frameId);
+  if (!frameMetrics) {
+    throw new Error('no frame metrics');
+  }
+
+  const navMetrics = frameMetrics.get(context.navigationId);
+  if (!navMetrics) {
+    throw new Error('no navigation metrics');
+  }
+  const metricScore = navMetrics.get(Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
+  const lcpEvent = metricScore?.event;
+  if (!lcpEvent || !Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate(lcpEvent)) {
+    return false;
+  }
+
+  return findLCPRequest(traceParsedData, context, lcpEvent) !== null;
+}
+
 function computeSavings(
-    renderBlockingRequests: Types.TraceEvents.SyntheticNetworkRequest[],
-    lanternContext: LanternContext): Pick<RenderBlockingInsightResult, 'metricSavings'|'requestIdToWastedMs'> {
+    traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext,
+    renderBlockingRequests: Types.TraceEvents.SyntheticNetworkRequest[]):
+    Pick<RenderBlockingInsightResult, 'metricSavings'|'requestIdToWastedMs'>|undefined {
+  if (!context.lantern) {
+    return;
+  }
+
   const nodesAndTimingsByRequestId =
-      getNodesAndTimingByRequestId(lanternContext.metrics.firstContentfulPaint.optimisticEstimate.nodeTimings);
+      getNodesAndTimingByRequestId(context.lantern.metrics.firstContentfulPaint.optimisticEstimate.nodeTimings);
 
   const metricSavings = {FCP: 0, LCP: 0};
   const requestIdToWastedMs = new Map<string, number>();
@@ -111,14 +141,12 @@ function computeSavings(
   }
 
   if (requestIdToWastedMs.size) {
-    metricSavings.FCP = estimateSavingsWithGraphs(deferredNodeIds, lanternContext);
+    metricSavings.FCP = estimateSavingsWithGraphs(deferredNodeIds, context.lantern);
 
     // In most cases, render blocking resources only affect LCP if LCP isn't an image.
-    // TODO(crbug.com/313905799): https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/5684935/comment/c85b06da_90b0c274/
-    // const lcpIsImage = ???
-    // if (!lcpIsImage) {
-    //   metricSavings.LCP = metricSavings.FCP;
-    // }
+    if (!hasImageLCP(traceParsedData, context)) {
+      metricSavings.LCP = metricSavings.FCP;
+    }
   }
 
   return {metricSavings, requestIdToWastedMs};
@@ -175,7 +203,7 @@ export function generateInsight(
     renderBlockingRequests.push(req);
   }
 
-  const savings = context.lantern && computeSavings(renderBlockingRequests, context.lantern);
+  const savings = computeSavings(traceParsedData, context, renderBlockingRequests);
 
   return {
     renderBlockingRequests,

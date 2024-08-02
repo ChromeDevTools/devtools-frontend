@@ -112,7 +112,30 @@ let BidiHTTPResponse = (() => {
             return this.#data.fromCache;
         }
         timing() {
-            throw new UnsupportedOperation();
+            const bidiTiming = this.#request.timing();
+            return {
+                requestTime: bidiTiming.requestTime,
+                proxyStart: -1,
+                proxyEnd: -1,
+                dnsStart: bidiTiming.dnsStart,
+                dnsEnd: bidiTiming.dnsEnd,
+                connectStart: bidiTiming.connectStart,
+                connectEnd: bidiTiming.connectEnd,
+                sslStart: bidiTiming.tlsStart,
+                sslEnd: -1,
+                workerStart: -1,
+                workerReady: -1,
+                workerFetchStart: -1,
+                workerRespondWithSettled: -1,
+                workerRouterEvaluationStart: -1,
+                workerCacheLookupStart: -1,
+                sendStart: bidiTiming.requestStart,
+                sendEnd: -1,
+                pushStart: -1,
+                pushEnd: -1,
+                receiveHeadersStart: bidiTiming.responseStart,
+                receiveHeadersEnd: bidiTiming.responseEnd,
+            };
         }
         frame() {
             return this.#request.frame();

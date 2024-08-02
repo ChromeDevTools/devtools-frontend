@@ -147,7 +147,7 @@ class HTTPRequest {
         await this.interception.handlers.reduce((promiseChain, interceptAction) => {
             return promiseChain.then(interceptAction);
         }, Promise.resolve());
-        this.interception.handlers = []; // TODO: verify this is correct top let gc run
+        this.interception.handlers = [];
         const { action } = this.interceptResolutionState();
         switch (action) {
             case 'abort':

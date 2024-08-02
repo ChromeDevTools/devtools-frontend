@@ -38,7 +38,7 @@ export type ProtocolLifeCycleEvent = 'load' | 'DOMContentLoaded' | 'networkIdle'
  */
 export declare class LifecycleWatcher {
     #private;
-    constructor(networkManager: NetworkManager, frame: CdpFrame, waitUntil: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[], timeout: number);
+    constructor(networkManager: NetworkManager, frame: CdpFrame, waitUntil: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[], timeout: number, signal?: AbortSignal);
     navigationResponse(): Promise<HTTPResponse | null>;
     sameDocumentNavigationPromise(): Promise<Error | undefined>;
     newDocumentNavigationPromise(): Promise<Error | undefined>;

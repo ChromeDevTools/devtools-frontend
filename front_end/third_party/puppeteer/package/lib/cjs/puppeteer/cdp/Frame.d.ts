@@ -5,6 +5,7 @@
  */
 import type { Protocol } from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
+import type { WaitForOptions } from '../api/Frame.js';
 import { Frame } from '../api/Frame.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { WaitTimeoutOptions } from '../api/Page.js';
@@ -51,11 +52,7 @@ export declare class CdpFrame extends Frame {
         timeout?: number;
         waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
     }): Promise<HTTPResponse | null>;
-    waitForNavigation(options?: {
-        timeout?: number;
-        waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
-        ignoreSameDocumentNavigation?: boolean;
-    }): Promise<HTTPResponse | null>;
+    waitForNavigation(options?: WaitForOptions): Promise<HTTPResponse | null>;
     get client(): CDPSession;
     mainRealm(): IsolatedWorld;
     isolatedRealm(): IsolatedWorld;

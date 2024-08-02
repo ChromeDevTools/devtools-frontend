@@ -39,5 +39,6 @@ export declare class BidiHTTPRequest extends HTTPRequest {
     _continue(overrides?: ContinueRequestOverrides): Promise<void>;
     _abort(): Promise<void>;
     _respond(response: Partial<ResponseForRequest>, _priority?: number): Promise<void>;
+    timing(): Bidi.Network.FetchTimingInfo;
 }
 //# sourceMappingURL=HTTPRequest.d.ts.map

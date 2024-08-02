@@ -703,12 +703,12 @@ let Page = (() => {
          */
         async waitForFrame(urlOrPredicate, options = {}) {
             const { timeout: ms = this.getDefaultTimeout(), signal } = options;
-            if (isString(urlOrPredicate)) {
-                urlOrPredicate = (frame) => {
+            const predicate = isString(urlOrPredicate)
+                ? (frame) => {
                     return urlOrPredicate === frame.url();
-                };
-            }
-            return await firstValueFrom(merge(fromEmitterEvent(this, "frameattached" /* PageEvent.FrameAttached */), fromEmitterEvent(this, "framenavigated" /* PageEvent.FrameNavigated */), from(this.frames())).pipe(filterAsync(urlOrPredicate), first(), raceWith(timeout(ms), fromAbortSignal(signal), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
+                }
+                : urlOrPredicate;
+            return await firstValueFrom(merge(fromEmitterEvent(this, "frameattached" /* PageEvent.FrameAttached */), fromEmitterEvent(this, "framenavigated" /* PageEvent.FrameNavigated */), from(this.frames())).pipe(filterAsync(predicate), first(), raceWith(timeout(ms), fromAbortSignal(signal), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
                 throw new TargetCloseError('Page closed.');
             })))));
         }

@@ -195,8 +195,8 @@ let CdpFrame = (() => {
             }
         }
         async waitForNavigation(options = {}) {
-            const { waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
-            const watcher = new LifecycleWatcher_js_1.LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout);
+            const { waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), signal, } = options;
+            const watcher = new LifecycleWatcher_js_1.LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout, signal);
             const error = await Deferred_js_1.Deferred.race([
                 watcher.terminationPromise(),
                 ...(options.ignoreSameDocumentNavigation

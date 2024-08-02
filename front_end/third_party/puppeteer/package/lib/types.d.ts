@@ -7643,6 +7643,10 @@ export declare interface WaitForOptions {
      */
     waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
     /* Excluded from this release type: ignoreSameDocumentNavigation */
+    /**
+     * A signal object that allows you to cancel the call.
+     */
+    signal?: AbortSignal;
 }
 
 /**

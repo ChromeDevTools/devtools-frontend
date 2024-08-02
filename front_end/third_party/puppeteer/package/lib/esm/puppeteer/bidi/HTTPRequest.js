@@ -229,6 +229,9 @@ export class BidiHTTPRequest extends HTTPRequest {
             });
         }
     };
+    timing() {
+        return this.#request.timing();
+    }
 }
 _a = BidiHTTPRequest;
 function getBidiHeaders(rawHeaders) {

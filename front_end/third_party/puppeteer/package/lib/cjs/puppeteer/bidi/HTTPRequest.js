@@ -232,6 +232,9 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
             });
         }
     };
+    timing() {
+        return this.#request.timing();
+    }
 }
 exports.BidiHTTPRequest = BidiHTTPRequest;
 _a = BidiHTTPRequest;

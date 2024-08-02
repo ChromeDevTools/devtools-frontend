@@ -46,7 +46,7 @@ import { Frame, throwIfDetached, } from '../api/Frame.js';
 import { Accessibility } from '../cdp/Accessibility.js';
 import { ConsoleMessage, } from '../common/ConsoleMessage.js';
 import { TargetCloseError, UnsupportedOperation } from '../common/Errors.js';
-import { debugError, fromEmitterEvent, timeout } from '../common/util.js';
+import { debugError, fromAbortSignal, fromEmitterEvent, timeout, } from '../common/util.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { BidiCdpSession } from './CDPSession.js';
 import { BidiDeserializer } from './Deserializer.js';
@@ -343,7 +343,7 @@ let BidiFrame = (() => {
             ]);
         }
         async waitForNavigation(options = {}) {
-            const { timeout: ms = this.timeoutSettings.navigationTimeout() } = options;
+            const { timeout: ms = this.timeoutSettings.navigationTimeout(), signal } = options;
             const frames = this.childFrames().map(frame => {
                 return frame.#detached$();
             });
@@ -390,7 +390,7 @@ let BidiFrame = (() => {
                 const lastRequest = request.lastRedirect ?? request;
                 const httpRequest = requests.get(lastRequest);
                 return httpRequest.response();
-            }), raceWith(timeout(ms), this.#detached$().pipe(map(() => {
+            }), raceWith(timeout(ms), fromAbortSignal(signal), this.#detached$().pipe(map(() => {
                 throw new TargetCloseError('Frame detached.');
             })))));
         }

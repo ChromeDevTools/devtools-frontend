@@ -163,7 +163,7 @@ class FirefoxLauncher extends ProductLauncher_js_1.ProductLauncher {
     }
     defaultArgs(options = {}) {
         const { devtools = false, headless = !devtools, args = [], userDataDir = null, } = options;
-        const firefoxArguments = ['--no-remote'];
+        const firefoxArguments = [];
         switch (os_1.default.platform()) {
             case 'darwin':
                 firefoxArguments.push('--foreground');

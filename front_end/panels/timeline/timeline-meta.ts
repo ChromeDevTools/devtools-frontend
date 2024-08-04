@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as Timeline from './timeline.js';
@@ -332,4 +333,15 @@ UI.ContextMenu.registerItem({
   location: UI.ContextMenu.ItemLocation.TIMELINE_MENU_OPEN,
   actionId: 'timeline.save-to-file',
   order: 15,
+});
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [SDK.TraceObject.TraceObject];
+  },
+  destination: Common.Revealer.RevealerDestination.TIMELINE_PANEL,
+  async loadRevealer() {
+    const Timeline = await loadTimelineModule();
+    return new Timeline.TimelinePanel.TraceRevealer();
+  },
 });

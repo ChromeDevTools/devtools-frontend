@@ -50,9 +50,7 @@ import * as Logs from '../../models/logs/logs.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Snippets from '../../panels/snippets/snippets.js';
-import * as Timeline from '../../panels/timeline/timeline.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
-import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
@@ -603,6 +601,9 @@ export class MainImpl {
 
     const value = Root.Runtime.Runtime.queryParam('loadTimelineFromURL');
     if (value !== null) {
+      // Only import Timeline if neeeded. If this was a static import, every load of devtools
+      // would request and evaluate the Timeline panel dep tree, slowing down the UI's load.
+      const Timeline = await import('../../panels/timeline/timeline.js');
       Timeline.TimelinePanel.LoadTimelineHandler.instance().handleQueryParam(value);
     }
 
@@ -632,7 +633,7 @@ export class MainImpl {
     MainImpl.timeEnd('Main._initializeTarget');
   }
 
-  #lateInitialization(): void {
+  async #lateInitialization(): Promise<void> {
     MainImpl.time('Main._lateInitialization');
     Extensions.ExtensionServer.ExtensionServer.instance().initializeExtensions();
     const promises: Promise<void>[] =
@@ -641,6 +642,7 @@ export class MainImpl {
           return runnable.run();
         });
     if (Root.Runtime.experiments.isEnabled('live-heap-profile')) {
+      const PerfUI = await import('../../ui/legacy/components/perf_ui/perf_ui.js');
       const setting = 'memory-live-heap-profile';
       if (Common.Settings.Settings.instance().moduleSetting(setting).get()) {
         promises.push(PerfUI.LiveHeapProfile.LiveHeapProfile.instance().run());

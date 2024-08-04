@@ -83,6 +83,7 @@ devtools_module("sdk") {
     "StorageKeyManager.ts",
     "Target.ts",
     "TargetManager.ts",
+    "TraceObject.ts",
     "WebAuthnModel.ts",
   ]
 
@@ -169,6 +170,7 @@ ts_library("unittests") {
     "StorageKeyManager.test.ts",
     "Target.test.ts",
     "TargetManager.test.ts",
+    "TraceObject.test.ts",
   ]
 
   deps = [

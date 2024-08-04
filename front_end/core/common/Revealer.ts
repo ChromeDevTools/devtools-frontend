@@ -37,6 +37,10 @@ const UIStrings = {
   /**
    *@description The UI destination when right clicking an item that can be revealed
    */
+  timelinePanel: 'Performance panel',
+  /**
+   *@description The UI destination when right clicking an item that can be revealed
+   */
   memoryInspectorPanel: 'Memory inspector panel',
   /**
    * @description The UI destination when revealing loaded resources through the Developer Resources Panel
@@ -169,6 +173,7 @@ export const RevealerDestination = {
   CHANGES_DRAWER: i18nLazyString(UIStrings.changesDrawer),
   ISSUES_VIEW: i18nLazyString(UIStrings.issuesView),
   NETWORK_PANEL: i18nLazyString(UIStrings.networkPanel),
+  TIMELINE_PANEL: i18nLazyString(UIStrings.timelinePanel),
   APPLICATION_PANEL: i18nLazyString(UIStrings.applicationPanel),
   SOURCES_PANEL: i18nLazyString(UIStrings.sourcesPanel),
   MEMORY_INSPECTOR_PANEL: i18nLazyString(UIStrings.memoryInspectorPanel),

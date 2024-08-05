@@ -318,11 +318,6 @@ export class UserMetrics {
         EnumeratedHistogram.LighthouseCategoryUsed, type, LighthouseCategoryUsed.MaxValue);
   }
 
-  colorConvertedFrom(type: ColorConvertedFrom): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.ColorConvertedFrom, type, ColorConvertedFrom.MaxValue);
-  }
-
   colorPickerOpenedFrom(type: ColorPickerOpenedFrom): void {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.ColorPickerOpenedFrom, type, ColorPickerOpenedFrom.MaxValue);
@@ -1045,12 +1040,6 @@ export enum DevtoolsExperiments {
   'MaxValue' = 98,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
-
-export const enum ColorConvertedFrom {
-  ColorSwatch = 0,
-  ColorPicker = 1,
-  MaxValue = 2,
-}
 
 export const enum ColorPickerOpenedFrom {
   SourcesPanel = 0,

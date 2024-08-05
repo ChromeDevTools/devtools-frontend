@@ -9,7 +9,7 @@ import {type LCPInsightResult} from '../../../../models/trace/insights/types.js'
 import * as TraceEngine from '../../../../models/trace/trace.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
-import {type TimelineOverlay} from '../../overlays/OverlaysImpl.js';
+import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
 import discoveryStyles from './lcpDiscovery.css.js';
@@ -120,7 +120,7 @@ export class LCPDiscovery extends BaseInsight {
     return i18n.i18n.getFormatLocalizedString(str_, UIStrings.lcpLoadDelay, {PH1: timeWrapper});
   }
 
-  override createOverlays(): TimelineOverlay[] {
+  override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     // TODO: create overlays
     return [];
   }

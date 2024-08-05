@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as TraceEngine from '../../../models/trace/trace.js';
+import * as TraceEngine from '../../../models/trace/trace.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
@@ -43,7 +43,17 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
       label: 'Entry Label 2',
     };
 
-    component.annotations = [entryLabelAnnotation, entryLabelAnnotation2];
+    const labelledTimeRangeAnnotation: TraceEngine.Types.File.Annotation = {
+      type: 'TIME_RANGE',
+      bounds: {
+        min: TraceEngine.Types.Timing.MicroSeconds(0),
+        max: TraceEngine.Types.Timing.MicroSeconds(10),
+        range: TraceEngine.Types.Timing.MicroSeconds(10),
+      },
+      label: 'Labelled Time Range',
+    };
+
+    component.annotations = [entryLabelAnnotation, entryLabelAnnotation2, labelledTimeRangeAnnotation];
     assert.isNotNull(component.shadowRoot);
 
     await coordinator.done();
@@ -54,15 +64,17 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
     const deleteButton = component.shadowRoot.querySelector<HTMLElement>('.bin-icon');
     assert.isNotNull(deleteButton);
 
-    // Ensure there are 2 labels and their entry names and labels and rendered
+    // Ensure annotations names and labels are rendered for all 3 annotations -
+    // 2 entry labels and 1 labelled time range
     const annotationEntryNameElements = component.shadowRoot.querySelectorAll<HTMLElement>('.entry-name');
-    assert.strictEqual(annotationEntryNameElements.length, 2);
+    assert.strictEqual(annotationEntryNameElements.length, 3);
 
     const annotationEntryLabelElements = component.shadowRoot.querySelectorAll<HTMLElement>('.label');
-    assert.strictEqual(annotationEntryNameElements.length, 2);
+    assert.strictEqual(annotationEntryNameElements.length, 3);
 
     assert.strictEqual(annotationEntryLabelElements[0].innerText, 'Entry Label 1');
     assert.strictEqual(annotationEntryLabelElements[1].innerText, 'Entry Label 2');
+    assert.strictEqual(annotationEntryLabelElements[2].innerText, 'Labelled Time Range');
   });
 
   it('dispatches RemoveAnnotation Events when delete annotation button is clicked', async function() {
@@ -125,23 +137,37 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
     assert.isNotNull(annotationsWrapperElement);
 
     // Ensure there are 2 labels and their entry names and labels and rendered
-    const annotationEntryNameElements = component.shadowRoot.querySelectorAll<HTMLElement>('.entry-name');
-    assert.strictEqual(annotationEntryNameElements.length, 2);
-    const annotationEntryLabelElements = component.shadowRoot.querySelectorAll<HTMLElement>('.label');
-    assert.strictEqual(annotationEntryNameElements.length, 2);
+    const annotationNameElements = component.shadowRoot.querySelectorAll<HTMLElement>('.entry-name');
+    assert.strictEqual(annotationNameElements.length, 2);
+    let annotationLabelElements = component.shadowRoot.querySelectorAll<HTMLElement>('.label');
+    assert.strictEqual(annotationNameElements.length, 2);
 
-    assert.strictEqual(annotationEntryLabelElements[0].innerText, 'Entry Label 1');
-    assert.strictEqual(annotationEntryLabelElements[1].innerText, 'Entry Label 2');
+    assert.strictEqual(annotationLabelElements[0].innerText, 'Entry Label 1');
+    assert.strictEqual(annotationLabelElements[1].innerText, 'Entry Label 2');
 
-    // Update the labels and pass the list again
+    // Update the labels and add a range annotation
     entryLabelAnnotation.label = 'New Entry Label 1';
     entryLabelAnnotation2.label = 'New Entry Label 2';
 
-    component.annotations = [entryLabelAnnotation, entryLabelAnnotation2];
+    const labelledTimeRangeAnnotation: TraceEngine.Types.File.Annotation = {
+      type: 'TIME_RANGE',
+      bounds: {
+        min: TraceEngine.Types.Timing.MicroSeconds(0),
+        max: TraceEngine.Types.Timing.MicroSeconds(10),
+        range: TraceEngine.Types.Timing.MicroSeconds(10),
+      },
+      label: 'Labelled Time Range',
+    };
+
+    component.annotations = [entryLabelAnnotation, entryLabelAnnotation2, labelledTimeRangeAnnotation];
     await coordinator.done();
 
-    // Ensure the labels changed to new ones
-    assert.strictEqual(annotationEntryLabelElements[0].innerText, 'New Entry Label 1');
-    assert.strictEqual(annotationEntryLabelElements[1].innerText, 'New Entry Label 2');
+    annotationLabelElements = component.shadowRoot.querySelectorAll<HTMLElement>('.label');
+
+    // Ensure the labels changed to new ones and a labbel range was added
+    assert.strictEqual(annotationLabelElements.length, 3);
+    assert.strictEqual(annotationLabelElements[0].innerText, 'New Entry Label 1');
+    assert.strictEqual(annotationLabelElements[1].innerText, 'New Entry Label 2');
+    assert.strictEqual(annotationLabelElements[2].innerText, 'Labelled Time Range');
   });
 });

@@ -369,7 +369,9 @@
   /**
    * Colors for performance panel annotations list in sidebar.
    */
-  --app-color-performance-sidebar-label: var(--ref-palette-purple80);
+  --app-color-performance-sidebar-entry-label: var(--ref-palette-purple80);
+  --app-color-performance-sidebar-time-range: var(--ref-palette-pink60);
+  --app-color-performance-sidebar-time-range-text: rgb(255 255 255);
 }
 
 :root.baseline-default {

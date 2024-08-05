@@ -45,7 +45,15 @@
   padding: 4px 8px;
   border-radius: 10px;
   font-weight: bold;
-  background-color: var(--app-color-performance-sidebar-label);
+
+  &.entry-label {
+    background-color: var(--app-color-performance-sidebar-entry-label);
+  }
+
+  &.time-range {
+    background-color: var(--app-color-performance-sidebar-time-range);
+    color: var(--app-color-performance-sidebar-time-range-text);
+  }
 }
 
 .label {

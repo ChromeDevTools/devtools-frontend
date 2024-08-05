@@ -494,6 +494,22 @@ describeWithEnvironment('Overlays', () => {
       assert.strictEqual(updatedOverlay.label, 'new label');
     });
 
+    it('creates an overlay for a time range when an time range annotation is created', async function() {
+      const {traceData} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceData);
+
+      // Since TIME_RANGE is AnnotationOverlay, create it through ModificationsManager
+      Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
+        type: 'TIME_RANGE',
+        label: '',
+        // Make this overlay the entire span of the trace
+        bounds: traceData.Meta.traceBounds,
+      });
+      overlays.update();
+      const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-TIME_RANGE');
+      assert.isOk(overlayDOM);
+    });
+
     it('can render an overlay for a time range', async function() {
       const {traceData} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(traceData);

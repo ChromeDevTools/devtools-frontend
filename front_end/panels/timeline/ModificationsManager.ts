@@ -177,7 +177,7 @@ export class ModificationsManager extends EventTarget {
       return;
     }
 
-    if (updatedOverlay.type === 'ENTRY_LABEL') {
+    if (updatedOverlay.type === 'ENTRY_LABEL' || updatedOverlay.type === 'TIME_RANGE') {
       annotationForUpdatedOverlay.label = updatedOverlay.label;
     }
     this.dispatchEvent(new AnnotationModifiedEvent(updatedOverlay, 'UpdateLabel'));

@@ -889,6 +889,11 @@ export class Overlays extends EventTarget {
         const component = new Components.TimeRangeOverlay.TimeRangeOverlay(overlay.label);
         component.duration = overlay.showDuration ? overlay.bounds.range : null;
         component.canvasRect = this.#charts.mainChart.canvasBoundingClientRect();
+        component.addEventListener(Components.TimeRangeOverlay.TimeRangeLabelChangeEvent.eventName, event => {
+          const newLabel = (event as Components.TimeRangeOverlay.TimeRangeLabelChangeEvent).newLabel;
+          overlay.label = newLabel;
+          this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Update'));
+        });
         div.appendChild(component);
         return div;
       }

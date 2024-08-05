@@ -8,12 +8,21 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
 import styles from './timeRangeOverlay.css.js';
 
+export class TimeRangeLabelChangeEvent extends Event {
+  static readonly eventName = 'timerangelabelchange';
+
+  constructor(public newLabel: string) {
+    super(TimeRangeLabelChangeEvent.eventName);
+  }
+}
+
 export class TimeRangeOverlay extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-time-range-overlay`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
   #duration: TraceEngine.Types.Timing.MicroSeconds|null = null;
   #canvasRect: DOMRect|null = null;
+  #label: string;
 
   // The label is set to editable and in focus anytime the label is empty and when the label it is double clicked.
   // If the user clicks away from the selected range element and the label is not empty, the lable is set to not editable until it is double clicked.
@@ -31,6 +40,7 @@ export class TimeRangeOverlay extends HTMLElement {
     this.#render();
     this.#rangeContainer = this.#shadow.querySelector<HTMLElement>('.label');
     this.#labelBox = this.#rangeContainer?.querySelector<HTMLElement>('.label-text') ?? null;
+    this.#label = initialLabel;
     if (!this.#labelBox) {
       console.error('`labelBox` element is missing.');
       return;
@@ -174,6 +184,15 @@ export class TimeRangeOverlay extends HTMLElement {
     }
   }
 
+  #handleLabelInputKeyUp(): void {
+    // If the label changed on key up, dispatch label changed event
+    const labelBoxTextContent = this.#labelBox?.textContent ?? '';
+    if (labelBoxTextContent !== this.#label) {
+      this.#label = labelBoxTextContent;
+      this.dispatchEvent(new TimeRangeLabelChangeEvent(this.#label));
+    }
+  }
+
   #render(): void {
     const durationText = this.#duration ? i18n.TimeUtilities.formatMicroSecondsTime(this.#duration) : '';
     // clang-format off
@@ -185,6 +204,7 @@ export class TimeRangeOverlay extends HTMLElement {
              class="label-text"
              @focusout=${() => this.#setLabelEditability(false)}
              @dblclick=${() => this.#setLabelEditability(true)}
+             @keyup=${this.#handleLabelInputKeyUp}
              contenteditable=${this.#isLabelEditable}>
             </span>
             <span

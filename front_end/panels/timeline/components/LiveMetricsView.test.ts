@@ -49,10 +49,8 @@ function getInteractions(view: Element): HTMLElement[] {
 }
 
 function selectDeviceOption(view: Element, deviceOption: string): void {
-  const deviceScopeSelector =
-      view.shadowRoot!.querySelector('#device-scope-select devtools-select-menu') as HTMLElement;
-  const deviceScopeOptions =
-      Array.from(deviceScopeSelector.querySelectorAll('#device-scope-select devtools-menu-item')) as
+  const deviceScopeSelector = view.shadowRoot!.querySelector('devtools-select-menu#device-scope-select') as HTMLElement;
+  const deviceScopeOptions = Array.from(deviceScopeSelector.querySelectorAll('devtools-menu-item')) as
       HTMLElementTagNameMap['devtools-menu-item'][];
 
   deviceScopeSelector.click();
@@ -60,10 +58,10 @@ function selectDeviceOption(view: Element, deviceOption: string): void {
 }
 
 function selectPageScope(view: Element, pageScope: string): void {
-  const pageScopeSelector = view.shadowRoot!.querySelector('#page-scope-select devtools-select-menu') as HTMLElement;
+  const pageScopeSelector = view.shadowRoot!.querySelector('devtools-select-menu#page-scope-select') as HTMLElement;
   pageScopeSelector.click();
 
-  const pageScopeOptions = Array.from(pageScopeSelector.querySelectorAll('#page-scope-select devtools-menu-item')) as
+  const pageScopeOptions = Array.from(pageScopeSelector.querySelectorAll('devtools-menu-item')) as
       HTMLElementTagNameMap['devtools-menu-item'][];
   const originOption = pageScopeOptions.find(o => o.value === pageScope);
   originOption!.click();
@@ -218,14 +216,14 @@ describeWithMockConnection('LiveMetricsView', () => {
 
     const durationEl1 = interactionsEls[0].querySelector('.interaction-duration .metric-value') as HTMLDivElement;
     assert.strictEqual(durationEl1.textContent, '500 ms');
-    assert.strictEqual(durationEl1.className, 'metric-value needs-improvement');
+    assert.strictEqual(durationEl1.className, 'metric-value needs-improvement dim');
 
     const typeEl2 = interactionsEls[1].querySelector('.interaction-type') as HTMLDivElement;
     assert.strictEqual(typeEl2.textContent, 'keyboard');
 
     const durationEl2 = interactionsEls[1].querySelector('.interaction-duration .metric-value') as HTMLDivElement;
     assert.strictEqual(durationEl2.textContent, '30 ms');
-    assert.strictEqual(durationEl2.className, 'metric-value good');
+    assert.strictEqual(durationEl2.className, 'metric-value good dim');
   });
 
   it('record action button should work', async () => {

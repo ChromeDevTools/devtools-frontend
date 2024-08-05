@@ -81,21 +81,15 @@ const UIStrings = {
    */
   field75thPercentile: 'Field 75th Percentile',
   /**
-   * @description Label for an select box that selects which device type should be used for field data (e.g. desktop/mobile/etc).
+   * @description Label for an select box that selects which device type field data be shown for (e.g. desktop/mobile/all devices/etc).
+   * @example {Mobile} PH1
    */
-  deviceType: 'Device type:',
+  showFieldDataForDevice: 'Show field data for device type: {PH1}',
   /**
-   * @description Label for an select box that selects either the page URL or page origin for field data collection.
+   * @description Label for an select box that selects which device type field data be shown for (e.g. desktop/mobile/all devices/etc).
+   * @example {Mobile} PH1
    */
-  urlOrOrigin: 'URL/Origin:',
-  /**
-   * @description Label for an select box that selects which network throttling preset to use.
-   */
-  networkThrottling: 'Network throttling:',
-  /**
-   * @description Label for an select box that selects which CPU throttling preset to use.
-   */
-  cpuThrottling: 'CPU throttling:',
+  device: 'Device: {PH1}',
   /**
    * @description Label for an option to select all device form factors.
    */
@@ -139,12 +133,17 @@ const UIStrings = {
    * @description Label for an option that selects the page's specific URL as opposed to it's entire origin/domain.
    * @example {https://example.com/} PH1
    */
-  urlOptionWithKey: 'URL ({PH1})',
+  urlOptionWithKey: 'URL: {PH1}',
   /**
    * @description Label for an option that selects the page's entire origin/domain as opposed to it's specific URL.
    * @example {https://example.com} PH1
    */
-  originOptionWithKey: 'Origin ({PH1})',
+  originOptionWithKey: 'Origin: {PH1}',
+  /**
+   * @description Label for an combo-box that indicates if field data should be taken from the page's URL or it's origin/domain.
+   * @example {Origin: https://example.com} PH1
+   */
+  showFieldDataForPage: 'Show field data for {PH1}',
   /**
    * @description Text block recommendation instructing the user to disable network throttling to best match real user network data.
    */
@@ -195,6 +194,10 @@ const UIStrings = {
    * @description Text instructing the user to interact with the page because a user interaction is required to measure Interaction to Next Paint (INP).
    */
   interactToMeasure: 'Interact with the page to measure INP.',
+  /**
+   * @description Label for a tooltip that provides more details.
+   */
+  viewCardDetails: 'View card details',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LiveMetricsView.ts', UIStrings);
@@ -211,16 +214,24 @@ function rateMetric(value: number, thresholds: MetricThresholds): MetricRating {
 }
 
 function renderMetricValue(
-    value: number|undefined, thresholds: MetricThresholds, format: (value: number) => string): LitHtml.LitTemplate {
+    value: number|undefined, thresholds: MetricThresholds, format: (value: number) => string,
+    options?: {dim?: boolean}): HTMLElement {
+  const metricValueEl = document.createElement('span');
+  metricValueEl.classList.add('metric-value');
   if (value === undefined) {
-    return html`<span class="metric-value waiting">-<span>`;
+    metricValueEl.classList.add('waiting');
+    metricValueEl.textContent = '-';
+    return metricValueEl;
   }
 
+  metricValueEl.textContent = format(value);
   const rating = rateMetric(value, thresholds);
-  const valueString = format(value);
-  return html`
-    <span class=${`metric-value ${rating}`}>${valueString}</span>
-  `;
+  metricValueEl.classList.add(rating);
+  if (options?.dim) {
+    metricValueEl.classList.add('dim');
+  }
+
+  return metricValueEl;
 }
 
 export interface MetricCardData {
@@ -373,13 +384,11 @@ export class MetricCard extends HTMLElement {
       return LitHtml.nothing;
     }
 
-    const format = this.#getFormatFn();
     const compare = this.#getCompareRating();
     const rating = rateMetric(localValue, this.#getThresholds());
 
-    const valueEl = document.createElement('span');
-    valueEl.classList.add(rating);
-    valueEl.textContent = format(localValue);
+    const valueEl = renderMetricValue(localValue, this.#getThresholds(), this.#getFormatFn(), {dim: true});
+    valueEl.classList.add('metric-value-label');
 
     // clang-format off
     return html`
@@ -454,15 +463,16 @@ export class MetricCard extends HTMLElement {
     // clang-format off
     const output = html`
       <div class="metric-card">
-        <div class="card-title">
+        <h3 class="card-title">
           ${this.#getTitle()}
-        </div>
+        </h3>
         <div class="card-metric-values"
           @mouseenter=${this.#showDialog}
           @mouseleave=${this.#closeDialog}
           on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
             this.#metricValuesEl = node;
           })}
+          aria-describedby="tooltip-content"
         >
           <span class="local-value">
             ${renderMetricValue(this.#getLocalValue(), this.#getThresholds(), this.#getFormatFn())}
@@ -490,7 +500,7 @@ export class MetricCard extends HTMLElement {
             this.#dialog = node as Dialogs.Dialog.Dialog;
           })}
         >
-          <div class="tooltip-content">
+          <div id="tooltip-content" class="tooltip-content" role="tooltip" aria-label=${i18nString(UIStrings.viewCardDetails)}>
             ${this.#renderFieldHistogram()}
           </div>
         </${Dialogs.Dialog.Dialog.litTagName}>
@@ -711,28 +721,27 @@ export class LiveMetricsView extends HTMLElement {
   #renderThrottlingSettings(): LitHtml.LitTemplate {
     const throttlingRec = this.#getClosestNetworkPreset();
 
-    let recStr;
+    let recEl;
     if (throttlingRec) {
       if (throttlingRec === SDK.NetworkManager.NoThrottlingConditions) {
-        recStr = i18nString(UIStrings.tryDisablingThrottling);
+        recEl = i18nString(UIStrings.tryDisablingThrottling);
       } else {
         const title = typeof throttlingRec.title === 'function' ? throttlingRec.title() : throttlingRec.title;
-        recStr = i18nString(UIStrings.tryUsingThrottling, {PH1: title});
+
+        const recValueEl = document.createElement('span');
+        recValueEl.classList.add('throttling-recommendation-value');
+        recValueEl.textContent = title;
+
+        recEl = i18n.i18n.getFormatLocalizedString(str_, UIStrings.tryUsingThrottling, {PH1: recValueEl});
       }
     }
 
     // clang-format off
     return html`
-      <div class="card-title">${i18nString(UIStrings.throttling)}</div>
-      ${recStr ? html`<div class="throttling-recommendation">${recStr}</div>` : nothing}
-      <span class="live-metrics-option">
-        ${i18nString(UIStrings.cpuThrottling)}<${CPUThrottlingSelector.litTagName}>
-        </${CPUThrottlingSelector.litTagName}>
-      </span>
-      <span class="live-metrics-option">
-        ${i18nString(UIStrings.networkThrottling)}
-        <${NetworkThrottlingSelector.litTagName}></${NetworkThrottlingSelector.litTagName}>
-      </span>
+      <h3 class="card-title">${i18nString(UIStrings.throttling)}</h3>
+      ${recEl ? html`<div class="throttling-recommendation">${recEl}</div>` : nothing}
+      <${CPUThrottlingSelector.litTagName} class="live-metrics-option"></${CPUThrottlingSelector.litTagName}>
+      <${NetworkThrottlingSelector.litTagName} class="live-metrics-option"></${NetworkThrottlingSelector.litTagName}>
     `;
     // clang-format on
   }
@@ -765,32 +774,35 @@ export class LiveMetricsView extends HTMLElement {
     const urlLabel = this.#getPageScopeLabel('url');
     const originLabel = this.#getPageScopeLabel('origin');
 
+    const buttonTitle = this.#fieldPageScope === 'url' ? urlLabel : originLabel;
+    const accessibleTitle = i18nString(UIStrings.showFieldDataForPage, {PH1: buttonTitle});
+
     return html`
-      <span id="page-scope-select" class="live-metrics-option">
-        ${i18nString(UIStrings.urlOrOrigin)}
-        <${Menus.SelectMenu.SelectMenu.litTagName}
-          @selectmenuselected=${this.#onPageScopeMenuItemSelected}
-          .showDivider=${true}
-          .showArrow=${true}
-          .sideButton=${false}
-          .showSelectedItem=${true}
-          .showConnector=${false}
-          .buttonTitle=${this.#fieldPageScope === 'url' ? urlLabel : originLabel}
+      <${Menus.SelectMenu.SelectMenu.litTagName}
+        id="page-scope-select"
+        class="live-metrics-option"
+        @selectmenuselected=${this.#onPageScopeMenuItemSelected}
+        .showDivider=${true}
+        .showArrow=${true}
+        .sideButton=${false}
+        .showSelectedItem=${true}
+        .showConnector=${false}
+        .buttonTitle=${buttonTitle}
+        title=${accessibleTitle}
+      >
+        <${Menus.Menu.MenuItem.litTagName}
+          .value=${'url'}
+          .selected=${this.#fieldPageScope === 'url'}
         >
-          <${Menus.Menu.MenuItem.litTagName}
-            .value=${'url'}
-            .selected=${this.#fieldPageScope === 'url'}
-          >
-            ${urlLabel}
-          </${Menus.Menu.MenuItem.litTagName}>
-          <${Menus.Menu.MenuItem.litTagName}
-            .value=${'origin'}
-            .selected=${this.#fieldPageScope === 'origin'}
-          >
-            ${originLabel}
-          </${Menus.Menu.MenuItem.litTagName}>
-        </${Menus.SelectMenu.SelectMenu.litTagName}>
-      </span>
+          ${urlLabel}
+        </${Menus.Menu.MenuItem.litTagName}>
+        <${Menus.Menu.MenuItem.litTagName}
+          .value=${'origin'}
+          .selected=${this.#fieldPageScope === 'origin'}
+        >
+          ${originLabel}
+        </${Menus.Menu.MenuItem.litTagName}>
+      </${Menus.SelectMenu.SelectMenu.litTagName}>
     `;
   }
 
@@ -854,32 +866,34 @@ export class LiveMetricsView extends HTMLElement {
     // before coming back to this option.
     const shouldDisable = !this.#cruxPageResult?.[`${this.#fieldPageScope}-ALL`];
 
+    const currentDeviceLabel = this.#getLabelForDeviceOption(this.#fieldDeviceOption);
+
     // clang-format off
     return html`
-      <span id="device-scope-select" class="live-metrics-option">
-        ${i18nString(UIStrings.deviceType)}
-        <${Menus.SelectMenu.SelectMenu.litTagName}
-          @selectmenuselected=${this.#onDeviceOptionMenuItemSelected}
-          .showDivider=${true}
-          .showArrow=${true}
-          .sideButton=${false}
-          .showSelectedItem=${true}
-          .showConnector=${false}
-          .buttonTitle=${this.#getLabelForDeviceOption(this.#fieldDeviceOption)}
-          .disabled=${shouldDisable}
-        >
-          ${DEVICE_OPTION_LIST.map(deviceOption => {
-            return html`
-              <${Menus.Menu.MenuItem.litTagName}
-                .value=${deviceOption}
-                .selected=${this.#fieldDeviceOption === deviceOption}
-              >
-                ${this.#getLabelForDeviceOption(deviceOption)}
-              </${Menus.Menu.MenuItem.litTagName}>
-            `;
-          })}
-        </${Menus.SelectMenu.SelectMenu.litTagName}>
-      </span>
+      <${Menus.SelectMenu.SelectMenu.litTagName}
+        id="device-scope-select"
+        class="live-metrics-option"
+        @selectmenuselected=${this.#onDeviceOptionMenuItemSelected}
+        .showDivider=${true}
+        .showArrow=${true}
+        .sideButton=${false}
+        .showSelectedItem=${true}
+        .showConnector=${false}
+        .buttonTitle=${i18nString(UIStrings.device, {PH1: currentDeviceLabel})}
+        .disabled=${shouldDisable}
+        title=${i18nString(UIStrings.showFieldDataForDevice, {PH1: currentDeviceLabel})}
+      >
+        ${DEVICE_OPTION_LIST.map(deviceOption => {
+          return html`
+            <${Menus.Menu.MenuItem.litTagName}
+              .value=${deviceOption}
+              .selected=${this.#fieldDeviceOption === deviceOption}
+            >
+              ${this.#getLabelForDeviceOption(deviceOption)}
+            </${Menus.Menu.MenuItem.litTagName}>
+          `;
+        })}
+      </${Menus.SelectMenu.SelectMenu.litTagName}>
     `;
     // clang-format on
   }
@@ -889,8 +903,8 @@ export class LiveMetricsView extends HTMLElement {
     const output = html`
       <div class="container">
         <div class="live-metrics-view">
-          <div class="live-metrics" slot="main">
-            <div class="section-title">${i18nString(UIStrings.localAndFieldMetrics)}</div>
+          <main class="live-metrics">
+            <h2 class="section-title">${i18nString(UIStrings.localAndFieldMetrics)}</h2>
             <div class="metric-cards">
               <div id="lcp">
                 ${this.#renderLcpCard()}
@@ -903,39 +917,43 @@ export class LiveMetricsView extends HTMLElement {
               </div>
             </div>
             ${this.#interactions.length > 0 ? html`
-              <div class="section-title">${i18nString(UIStrings.interactions)}</div>
-              <ol class="interactions-list">
-                ${this.#interactions.map(interaction => html`
-                  <li class="interaction">
-                    <span class="interaction-type">${interaction.interactionType}</span>
-                    <span class="interaction-node">${
-                      interaction.node && until(Common.Linkifier.Linkifier.linkify(interaction.node))}</span>
-                    <span class="interaction-duration">
-                      ${renderMetricValue(interaction.duration, INP_THRESHOLDS, v => i18n.TimeUtilities.millisToString(v))}
-                    </span>
-                  </li>
-                `)}
-              </ol>
+              <section class="interactions-section" aria-labelledby="interactions-section-title">
+                <h2 id="interactions-section-title" class="section-title">${i18nString(UIStrings.interactions)}</h2>
+                <ol class="interactions-list">
+                  ${this.#interactions.map(interaction => html`
+                    <li class="interaction">
+                      <span class="interaction-type">${interaction.interactionType}</span>
+                      <span class="interaction-node">${
+                        interaction.node && until(Common.Linkifier.Linkifier.linkify(interaction.node))}</span>
+                      <span class="interaction-duration">
+                        ${renderMetricValue(interaction.duration, INP_THRESHOLDS, v => i18n.TimeUtilities.millisToString(v), {dim: true})}
+                      </span>
+                    </li>
+                  `)}
+                </ol>
+              </section>
             ` : nothing}
-          </div>
-          <div class="next-steps" slot="sidebar">
-            <div class="section-title">${i18nString(UIStrings.nextSteps)}</div>
-            <div id="field-setup" class="next-steps-card">
-              <div class="card-title">${i18nString(UIStrings.fieldData)}</div>
+          </main>
+          <aside class="next-steps" aria-labelledby="next-steps-section-title">
+            <h2 id="next-steps-section-title" class="section-title">${i18nString(UIStrings.nextSteps)}</h2>
+            <div id="field-setup" class="settings-card">
+              <h3 class="card-title">${i18nString(UIStrings.fieldData)}</h3>
               ${this.#renderPageScopeSetting()}
               ${this.#renderDeviceScopeSetting()}
-              <${FieldSettingsDialog.litTagName}></${FieldSettingsDialog.litTagName}>
+              <div class="field-setup-buttons">
+                <${FieldSettingsDialog.litTagName}></${FieldSettingsDialog.litTagName}>
+              </div>
             </div>
-            <div id="throttling" class="next-steps-card">
+            <div id="throttling" class="settings-card">
               ${this.#renderThrottlingSettings()}
             </div>
-            <div id="record" class="next-steps-card">
+            <div id="record" class="record-action-card">
               ${this.#renderRecordAction(this.#toggleRecordAction)}
             </div>
-            <div id="record-page-load" class="next-steps-card">
+            <div id="record-page-load" class="record-action-card">
               ${this.#renderRecordAction(this.#recordReloadAction)}
             </div>
-          </div>
+          </aside>
         </div>
       </div>
     `;

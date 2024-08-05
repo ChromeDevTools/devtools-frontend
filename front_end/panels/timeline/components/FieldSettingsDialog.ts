@@ -41,7 +41,7 @@ const UIStrings = {
   /**
    * @description Text label for a text box that that contains the manual override URL for fetching field data.
    */
-  urlOverride: 'URL Override',
+  url: 'URL',
   /**
    * @description Warning message explaining that the Chrome UX Report could not find enough real world speed data for the page.
    */
@@ -110,6 +110,7 @@ export class FieldSettingsDialog extends HTMLElement {
   #pullFromSettings(): void {
     this.#urlOverride = this.#configSetting.get().override;
     this.#urlOverrideEnabled = Boolean(this.#urlOverride);
+    this.#showInvalidUrlWarning = false;
   }
 
   #flushToSetting(enabled: boolean): void {
@@ -263,26 +264,23 @@ export class FieldSettingsDialog extends HTMLElement {
         })}
       >
         <div class="content">
-          <div class="title">${i18nString(UIStrings.configureFieldData)}</div>
+          <h2 class="title">${i18nString(UIStrings.configureFieldData)}</h2>
           <div>${i18nString(UIStrings.fetchAggregated)}</div>
-          <p>
-            <div class="section-title">${i18nString(UIStrings.privacyDisclosure)}</div>
+          <div class="privacy-disclosure">
+            <h3 class="section-title">${i18nString(UIStrings.privacyDisclosure)}</h3>
             <div>${i18nString(UIStrings.whenPerformanceIsShown)}</div>
-          </p>
-          <details>
+          </div>
+          <details aria-label=${i18nString(UIStrings.advanced)}>
             <summary>${i18nString(UIStrings.advanced)}</summary>
-            <p>
-              <label>
-                <input
-                  type="checkbox"
-                  .checked=${this.#urlOverrideEnabled}
-                  @change=${this.#onUrlOverrideEnabledChange}
-                  jslog=${VisualLogging.toggle().track({click: true}).context('field-url-override-enabled')}
-                  aria-label=${i18nString(UIStrings.onlyFetchFieldData)}
-                />
-                ${i18nString(UIStrings.onlyFetchFieldData)}
-              </label>
-            </p>
+            <label class="url-override">
+              <input
+                type="checkbox"
+                .checked=${this.#urlOverrideEnabled}
+                @change=${this.#onUrlOverrideEnabledChange}
+                jslog=${VisualLogging.toggle().track({click: true}).context('field-url-override-enabled')}
+              />
+              ${i18nString(UIStrings.onlyFetchFieldData)}
+            </label>
             <input
               type="text"
               @change=${this.#onUrlOverrideChange}
@@ -290,10 +288,10 @@ export class FieldSettingsDialog extends HTMLElement {
               class="devtools-text-input"
               .disabled=${!this.#urlOverrideEnabled}
               .value=${this.#urlOverride}
-              aria-label=${i18nString(UIStrings.urlOverride)}
-              />
+              placeholder=${i18nString(UIStrings.url)}
+            />
             ${this.#showInvalidUrlWarning ? html`
-              <p class="warning">${i18nString(UIStrings.doesNotHaveSufficientData)}</p>
+              <div class="warning" role="alert" aria-label=${i18nString(UIStrings.doesNotHaveSufficientData)}>${i18nString(UIStrings.doesNotHaveSufficientData)}</div>
             ` : nothing}
           </details>
           <div class="buttons-section">

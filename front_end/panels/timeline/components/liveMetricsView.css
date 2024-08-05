@@ -25,12 +25,10 @@
 
 .live-metrics,
 .next-steps {
-  padding: 8px 16px;
+  padding: 16px;
   height: 100%;
   overflow-y: auto;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
 }
 
 .live-metrics {
@@ -68,11 +66,8 @@
   font-size: var(--sys-typescale-headline4-size);
   line-height: var(--sys-typescale-headline4-line-height);
   font-weight: var(--ref-typeface-weight-medium);
-  margin: 10px 0;
-}
-
-.section-title:first-child {
-  margin-top: 0;
+  margin: 0;
+  margin-bottom: 10px;
 }
 
 .metric-card {
@@ -83,28 +78,45 @@
   box-sizing: border-box;
 }
 
-.next-steps-card {
+.settings-card {
   border-radius: var(--sys-shape-corner-small);
-  padding: 14px 16px;
+  padding: 14px 16px 16px;
   background-color: var(--sys-color-surface3);
   margin-bottom: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+}
+
+.record-action-card {
+  border-radius: var(--sys-shape-corner-small);
+  padding: 12px 16px 12px 12px;
+  background-color: var(--sys-color-surface3);
+  margin-bottom: 16px;
 }
 
 .card-title {
   font-size: var(--sys-typescale-headline5-size);
   line-height: var(--sys-typescale-headline5-line-height);
   font-weight: var(--ref-typeface-weight-medium);
+  margin: 0;
 }
 
 .metric-card .card-title {
   margin-bottom: 6px;
 }
 
+.settings-card .card-title {
+  margin-bottom: 4px;
+}
+
 .compare-text {
   margin: 8px 0;
+}
+
+.throttling-recommendation {
+  margin-bottom: 12px;
+}
+
+.throttling-recommendation-value {
+  font-weight: var(--ref-typeface-weight-medium);
 }
 
 .related-element-info {
@@ -120,7 +132,6 @@
   background-color: var(--sys-color-cdt-base-container);
   border-radius: 2px;
   padding: 0 2px;
-  margin-left: 4px;
 }
 
 .card-metric-values {
@@ -134,15 +145,15 @@
   text-wrap: nowrap;
 }
 
+.metric-value.dim {
+  font-weight: var(--ref-typeface-weight-medium);
+}
+
 .local-value,
 .field-value {
   font-size: 32px;
   line-height: 36px;
   font-weight: var(--ref-typeface-weight-regular);
-}
-
-.metric-value-label {
-  font-weight: var(--ref-typeface-weight-medium);
 }
 
 .good {
@@ -157,6 +168,18 @@
   color: var(--app-color-performance-bad);
 }
 
+.good.dim {
+  color: var(--app-color-performance-good-dim);
+}
+
+.needs-improvement.dim {
+  color: var(--app-color-performance-ok-dim);
+}
+
+.poor.dim {
+  color: var(--app-color-performance-bad-dim);
+}
+
 .good-bg {
   background-color: var(--app-color-performance-good);
 }
@@ -167,6 +190,10 @@
 
 .poor-bg {
   background-color: var(--app-color-performance-bad);
+}
+
+.interactions-section {
+  margin-top: 24px;
 }
 
 .interactions-list {
@@ -258,22 +285,18 @@
 
 .shortcut-label {
   width: max-content;
-  color: var(--sys-color-token-subtle);
   flex-shrink: 0;
 }
 
 .live-metrics-option {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  gap: 8px;
-  max-width: 100%;
-  text-wrap: nowrap;
-}
-
-.live-metrics-option > devtools-select-menu {
+  display: block;
+  margin-top: 8px;
   min-width: 0;
   max-width: 100%;
+}
+
+.field-setup-buttons {
+  margin-top: 10px;
 }
 
 .no-data {

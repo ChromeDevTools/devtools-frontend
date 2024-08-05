@@ -18,6 +18,10 @@ ruleTester.run('ban_a_tags_in_lit_html', rule, {
       filename: 'front_end/components/test.ts',
     },
     {
+      code: 'LitHtml.html`<aside></aside>`',
+      filename: 'front_end/components/test.ts',
+    },
+    {
       code: 'LitHtml.html`<input />`',
       filename: 'front_end/components/test.ts',
     },

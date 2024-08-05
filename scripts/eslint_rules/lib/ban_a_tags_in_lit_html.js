@@ -25,7 +25,7 @@ module.exports = {
 
         // node.quasi.quasis are all the static parts of the template literal.
         for (const templatePart of node.quasi.quasis) {
-          if (templatePart.value.raw.includes('<a') || templatePart.value.raw.includes('</a>')) {
+          if (templatePart.value.raw.match(/<a[\s>]/) || templatePart.value.raw.includes('</a>')) {
             context.report({
               node,
               message: 'Adding links to a component should be done using `front_end/ui/legacy/XLink.ts`',

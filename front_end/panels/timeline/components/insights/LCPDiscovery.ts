@@ -7,16 +7,14 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import {type LCPInsightResult} from '../../../../models/trace/insights/types.js';
 import * as TraceEngine from '../../../../models/trace/trace.js';
-import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import {type TimelineOverlay} from '../../overlays/OverlaysImpl.js';
 
+import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
 import discoveryStyles from './lcpDiscovery.css.js';
-import sidebarInsightStyles from './sidebarInsight.css.js';
 import * as SidebarInsight from './SidebarInsight.js';
-import {type ActiveInsight, InsightsCategories} from './types.js';
-
-export const InsightName = 'lcp-discovery';
+import {InsightsCategories} from './types.js';
 
 const UIStrings = {
   /**
@@ -27,7 +25,6 @@ const UIStrings = {
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/LCPDiscovery.ts', UIStrings);
-// const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 interface LCPImageDiscoveryData {
   shouldIncreasePriorityHint: boolean;
@@ -94,53 +91,15 @@ function getImageData(
   return data;
 }
 
-export class LCPDiscovery extends HTMLElement {
+export class LCPDiscovery extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-lcp-discovery`;
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
-  #insightTitle: string = 'LCP request discovery';
-  #insights: TraceEngine.Insights.Types.TraceInsightData|null = null;
-  #navigationId: string|null = null;
-  #activeInsight: ActiveInsight|null = null;
-  #activeCategory: InsightsCategories = InsightsCategories.ALL;
+  override insightCategory: InsightsCategories = InsightsCategories.LCP;
+  override internalName: string = 'lcp-discovery';
+  override userVisibleTitle: string = 'LCP request discovery';
 
-  set insights(insights: TraceEngine.Insights.Types.TraceInsightData|null) {
-    this.#insights = insights;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-  }
-
-  set navigationId(navigationId: string|null) {
-    this.#navigationId = navigationId;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-  }
-
-  set activeInsight(activeInsight: ActiveInsight) {
-    this.#activeInsight = activeInsight;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-  }
-
-  set activeCategory(activeCategory: InsightsCategories) {
-    this.#activeCategory = activeCategory;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-  }
-
-  #sidebarClicked(): void {
-    // deactivate current insight if already selected.
-    if (this.#isActive()) {
-      this.dispatchEvent(new SidebarInsight.InsightDeactivated());
-      return;
-    }
-    if (!this.#navigationId) {
-      // Shouldn't happen, but needed to satisfy TS.
-      return;
-    }
-
-    this.dispatchEvent(new SidebarInsight.InsightActivated(
-        InsightName,
-        this.#navigationId,
-        // TODO: create the overlay for this insight.
-        () => [],
-        ));
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.shadow.adoptedStyleSheets.push(discoveryStyles);
   }
 
   #adviceIcon(didFail: boolean): LitHtml.TemplateResult {
@@ -161,15 +120,20 @@ export class LCPDiscovery extends HTMLElement {
     return i18n.i18n.getFormatLocalizedString(str_, UIStrings.lcpLoadDelay, {PH1: timeWrapper});
   }
 
+  override createOverlays(): TimelineOverlay[] {
+    // TODO: create overlays
+    return [];
+  }
+
   #renderDiscovery(imageData: LCPImageDiscoveryData): LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
         <div class="insights">
           <${SidebarInsight.SidebarInsight.litTagName} .data=${{
-            title: this.#insightTitle,
-            expanded: this.#isActive(),
+            title: this.userVisibleTitle,
+            expanded: this.isActive(),
           } as SidebarInsight.InsightDetails}
-          @insighttoggleclick=${this.#sidebarClicked}
+          @insighttoggleclick=${this.onSidebarClick}
         >
           <div slot="insight-description" class="insight-description">
           ${imageData.discoveryDelay ? LitHtml.html`<p class="discovery-delay">${this.#renderDiscoveryDelay(imageData.discoveryDelay)}</p>` : LitHtml.nothing}
@@ -200,28 +164,14 @@ export class LCPDiscovery extends HTMLElement {
     // clang-format on
   }
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [sidebarInsightStyles, discoveryStyles];
-  }
-
-  #shouldRenderForCateogory(): boolean {
-    if (this.#activeCategory === InsightsCategories.ALL) {
-      return true;
-    }
-    return this.#activeCategory === InsightsCategories.LCP;
-  }
-
-  #isActive(): boolean {
-    const isActive = this.#activeInsight && this.#activeInsight.name === InsightName &&
-        this.#activeInsight.navigationId === this.#navigationId;
-    return Boolean(isActive);
-  }
-
-  #render(): void {
-    const imageResults = getImageData(this.#insights, this.#navigationId);
-    const output =
-        imageResults && this.#shouldRenderForCateogory() ? this.#renderDiscovery(imageResults) : LitHtml.nothing;
-    LitHtml.render(output, this.#shadow, {host: this});
+  override render(): void {
+    const imageResults = getImageData(this.data.insights, this.data.navigationId);
+    const matchesCategory = shouldRenderForCategory({
+      activeCategory: this.data.activeCategory,
+      insightCategory: this.insightCategory,
+    });
+    const output = imageResults && matchesCategory ? this.#renderDiscovery(imageResults) : LitHtml.nothing;
+    LitHtml.render(output, this.shadow, {host: this});
   }
 }
 

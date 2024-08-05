@@ -1,0 +1,110 @@
+// Copyright 2024 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+import type * as TraceEngine from '../../../../models/trace/trace.js';
+import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
+import type * as Overlays from '../../overlays/overlays.js';
+
+import sidebarInsightStyles from './sidebarInsight.css.js';
+import * as SidebarInsight from './SidebarInsight.js';
+import {type ActiveInsight, InsightsCategories} from './types.js';
+
+export function shouldRenderForCategory(options: {
+  activeCategory: InsightsCategories,
+  insightCategory: InsightsCategories,
+}): boolean {
+  return options.activeCategory === InsightsCategories.ALL || options.activeCategory === options.insightCategory;
+}
+
+export function insightIsActive(options: {
+  activeInsight: ActiveInsight|null,
+  insightName: string,
+  insightNavigationId: string|null,
+}): boolean {
+  const active = options.activeInsight && options.activeInsight.name === options.insightName &&
+      options.activeInsight.navigationId === options.insightNavigationId;
+  return Boolean(active);
+}
+
+export interface BaseInsightData {
+  insights: TraceEngine.Insights.Types.TraceInsightData|null;
+  navigationId: string|null;
+  activeInsight: ActiveInsight|null;
+  activeCategory: InsightsCategories;
+}
+
+// This is an abstract base class so the component naming rules do not apply.
+// eslint-disable-next-line rulesdir/check_component_naming
+export abstract class BaseInsight extends HTMLElement {
+  abstract internalName: string;
+  abstract insightCategory: InsightsCategories;
+  abstract userVisibleTitle: string;
+
+  protected readonly shadow = this.attachShadow({mode: 'open'});
+
+  protected data: BaseInsightData = {
+    insights: null,
+    navigationId: null,
+    activeInsight: null,
+    activeCategory: InsightsCategories.ALL,
+  };
+
+  readonly #boundRender = this.render.bind(this);
+
+  protected scheduleRender(): void {
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets.push(sidebarInsightStyles);
+  }
+
+  set insights(insights: TraceEngine.Insights.Types.TraceInsightData|null) {
+    this.data.insights = insights;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  set navigationId(navigationId: string|null) {
+    this.data.navigationId = navigationId;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  set activeInsight(activeInsight: ActiveInsight) {
+    this.data.activeInsight = activeInsight;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  set activeCategory(activeCategory: InsightsCategories) {
+    this.data.activeCategory = activeCategory;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  protected onSidebarClick(): void {
+    if (this.isActive()) {
+      this.dispatchEvent(new SidebarInsight.InsightDeactivated());
+      return;
+    }
+    if (!this.data.navigationId) {
+      // Shouldn't happen, but needed to satisfy TS.
+      return;
+    }
+
+    this.dispatchEvent(new SidebarInsight.InsightActivated(
+        this.internalName,
+        this.data.navigationId,
+        this.createOverlays.bind(this),
+        ));
+  }
+
+  abstract createOverlays(): Overlays.Overlays.TimelineOverlay[];
+
+  abstract render(): void;
+
+  protected isActive(): boolean {
+    return insightIsActive({
+      activeInsight: this.data.activeInsight,
+      insightName: this.internalName,
+      insightNavigationId: this.data.navigationId,
+    });
+  }
+}

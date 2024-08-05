@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import type * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -64,6 +66,48 @@ describeWithMockConnection('CrUXManager', () => {
     mockFetch.restore();
     mockConsoleError.restore();
     cruxManager.getConfigSetting().set({enabled: false, override: ''});
+  });
+
+  describe('storing the user consent', () => {
+    it('uses global storage if the user is not in an OffTheRecord profile', async () => {
+      const dummyStorage = new Common.Settings.SettingsStorage({});
+      const globalStorage = new Common.Settings.SettingsStorage({});
+
+      Common.Settings.Settings.instance({
+        forceNew: true,
+        syncedStorage: dummyStorage,
+        globalStorage: globalStorage,
+        localStorage: dummyStorage,
+        config: {
+          isOffTheRecord: false,
+        } as Root.Runtime.HostConfig,
+      });
+      const manager = CrUXManager.CrUXManager.instance({forceNew: true});
+      manager.getConfigSetting().set({enabled: true, override: ''});
+      assert.isTrue(globalStorage.has(manager.getConfigSetting().name));
+    });
+
+    it('uses session storage if the user is in an OffTheRecord profile', async () => {
+      const dummyStorage = new Common.Settings.SettingsStorage({});
+
+      Common.Settings.Settings.instance({
+        forceNew: true,
+        syncedStorage: dummyStorage,
+        globalStorage: dummyStorage,
+        localStorage: dummyStorage,
+        config: {
+          isOffTheRecord: true,
+        } as Root.Runtime.HostConfig,
+      });
+      const manager = CrUXManager.CrUXManager.instance({forceNew: true});
+      manager.getConfigSetting().set({enabled: true, override: ''});
+      // SessionStorage is created and managed internally to the Settings
+      // class, and is a private instance variable, so we cannot actually
+      // assert that it contains the value. Best we can do here is to assert
+      // that it did not use the dummy storage, which means that it must have
+      // used session storage as those are the 4 available storage types.
+      assert.isFalse(dummyStorage.has(manager.getConfigSetting().name));
+    });
   });
 
   describe('getFieldDataForPage', () => {

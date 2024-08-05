@@ -75,12 +75,30 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   #originCache = new Map<string, CrUXResponse|null>();
   #urlCache = new Map<string, CrUXResponse|null>();
   #mainDocumentUrl?: string;
-  #configSetting =
-      Common.Settings.Settings.instance().createSetting<ConfigSetting>('field-data', {enabled: false, override: ''});
+  #configSetting: Common.Settings.Setting<ConfigSetting>;
   #endpoint = DEFAULT_ENDPOINT;
 
   private constructor() {
     super();
+
+    /**
+     * In an incognito or guest window - which is called an "OffTheRecord"
+     * profile in Chromium -, we do not want to persist the user consent and
+     * should ask for it every time. This is why we see what window type the
+     * user is in before choosing where to look/create this setting. If the
+     * user is in OTR, we store it in the session, which uses sessionStorage
+     * and is short-lived. If the user is not in OTR, we use global, which is
+     * the default behaviour and persists the value to the Chrome profile.
+     * This behaviour has been approved by Chrome Privacy as part of the launch
+     * review.
+     */
+    const hostConfig = Common.Settings.Settings.instance().getHostConfig();
+    const useSessionStorage = !hostConfig || hostConfig.isOffTheRecord === true;
+    const storageTypeForConsent =
+        useSessionStorage ? Common.Settings.SettingStorageType.Session : Common.Settings.SettingStorageType.Global;
+
+    this.#configSetting = Common.Settings.Settings.instance().createSetting<ConfigSetting>(
+        'field-data', {enabled: false, override: ''}, storageTypeForConsent);
 
     this.#configSetting.addChangeListener(() => {
       void this.#automaticRefresh();

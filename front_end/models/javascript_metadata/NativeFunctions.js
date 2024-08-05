@@ -8058,6 +8058,16 @@ export const NativeFunctions = [
     signatures: [["timestamp"]]
   },
   {
+    name: "detect",
+    signatures: [["input"]],
+    receivers: ["LanguageDetector"]
+  },
+  {
+    name: "detect",
+    signatures: [["image"]],
+    receivers: ["BarcodeDetector","FaceDetector","TextDetector"]
+  },
+  {
     name: "canTranslate",
     signatures: [["options"]]
   },
@@ -8336,10 +8346,6 @@ export const NativeFunctions = [
   {
     name: "BarcodeDetector",
     signatures: [["?barcodeDetectorOptions"]]
-  },
-  {
-    name: "detect",
-    signatures: [["image"]]
   },
   {
     name: "FaceDetector",

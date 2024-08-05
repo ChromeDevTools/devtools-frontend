@@ -143,12 +143,7 @@ export class CSSLength extends HTMLElement {
     }
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-      return html`
-        <span class="value"
-          @mousedown=${this.onValueMousedown}
-          @mouseup=${this.onValueMouseup}
-        >${this.value}</span>${this.unit}
-      `;
+      return html`<span class="value" @mousedown=${this.onValueMousedown} @mouseup=${this.onValueMouseup}>${this.value}</span><span class="unit">${this.unit}</span>`;
     // clang-format on
   }
 }

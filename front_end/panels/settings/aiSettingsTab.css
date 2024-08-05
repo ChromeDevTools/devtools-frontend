@@ -4,10 +4,16 @@
  * found in the LICENSE file.
  */
 
+* {
+  box-sizing: border-box;
+}
+
 .shared-disclaimer {
   background: linear-gradient(135deg, var(--sys-color-gradient-primary), var(--sys-color-gradient-tertiary));
   border-radius: var(--sys-size-5);
   padding: var(--sys-size-9) var(--sys-size-11);
+  max-width: var(--sys-size-35);
+  min-width: var(--sys-size-28);
 
   h2 {
     font: var(--sys-typescale-headline5);
@@ -29,12 +35,22 @@
 
 .settings-container {
   display: grid;
-  grid-template-columns: auto 1fr auto auto auto;
+  grid-template-columns: 1fr auto auto;
   border-radius: var(--sys-size-5);
   box-shadow: var(--sys-elevation-level3); /* stylelint-disable-line plugin/use_theme_colors */
   margin: var(--sys-size-11) 0 var(--sys-size-4);
   line-height: var(--sys-typescale-body5-line-height);
   min-width: var(--sys-size-28);
+  max-width: var(--sys-size-35);
+}
+
+.accordion-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+
+  &:hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
 }
 
 .icon-container,
@@ -44,6 +60,10 @@
 
 .toggle-container {
   padding: 0 var(--sys-size-8) 0 var(--sys-size-9);
+
+  &:hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
 }
 
 .expansion-grid {
@@ -80,19 +100,22 @@
   border-left: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
+.accordion-header ~ .accordion-header,
+.divider ~ .divider,
+.toggle-container ~ .toggle-container {
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+}
+
 .whole-row {
   grid-column: span 5;
   overflow: hidden;
   display: grid;
   grid-template-rows: 0fr;
+  transition: grid-template-rows var(--sys-motion-duration-short4) ease-in;
 }
 
 .whole-row.open {
   grid-template-rows: 1fr;
-}
-
-.animate {
-  transition: grid-template-rows var(--sys-motion-duration-short4) ease-in;
 }
 
 .overflow-hidden {
@@ -106,6 +129,7 @@
   cursor: pointer;
   outline-offset: var(--sys-size-2);
   padding: 0;
+  font-weight: var(--ref-typeface-weight-regular);
 }
 
 .padded {
@@ -121,6 +145,9 @@
   overflow: auto;
   padding: var(--sys-size-6);
   border-top: 1px solid var(--sys-color-divider);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 header {

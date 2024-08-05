@@ -195,6 +195,7 @@ devtools_svg_sources = [
   "network-settings.svg",
   "open-externally.svg",
   "pause.svg",
+  "pen-spark.svg",
   "performance.svg",
   "person.svg",
   "play.svg",

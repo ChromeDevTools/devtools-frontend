@@ -554,7 +554,7 @@ export class DebuggerLanguagePluginManager implements
       if (scripts.length === 0) {
         rawModuleHandle.plugin.removeRawModule(rawModuleId).catch(error => {
           Common.Console.Console.instance().error(
-              i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}));
+              i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}), /* show=*/ false);
         });
         this.#rawModuleHandles.delete(rawModuleId);
       } else {
@@ -676,7 +676,7 @@ export class DebuggerLanguagePluginManager implements
       }
     } catch (error) {
       Common.Console.Console.instance().error(
-          i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}));
+          i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}), /* show=*/ false);
     }
     return null;
   }
@@ -706,7 +706,7 @@ export class DebuggerLanguagePluginManager implements
 
     return Promise.all(locationPromises).then(locations => locations.flat()).catch(error => {
       Common.Console.Console.instance().error(
-          i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}));
+          i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}), /* show=*/ false);
       return null;
     });
 
@@ -844,7 +844,8 @@ export class DebuggerLanguagePluginManager implements
             return sourceFileURLs;
           } catch (error) {
             console.error(
-                i18nString(UIStrings.failedToLoadDebugSymbolsFor, {PH1: plugin.name, PH2: url, PH3: error.message}));
+                i18nString(UIStrings.failedToLoadDebugSymbolsFor, {PH1: plugin.name, PH2: url, PH3: error.message}),
+                /* show=*/ false);
             this.#rawModuleHandles.delete(rawModuleId);
             return [];
           }
@@ -931,7 +932,7 @@ export class DebuggerLanguagePluginManager implements
       return Array.from(scopes.values());
     } catch (error) {
       Common.Console.Console.instance().error(
-          i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}));
+          i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}), /* show=*/ false);
       return null;
     }
   }

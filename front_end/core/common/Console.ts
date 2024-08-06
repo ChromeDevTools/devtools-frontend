@@ -29,8 +29,16 @@ export class Console extends ObjectWrapper<EventTypes> {
     consoleInstance = undefined;
   }
 
-  addMessage(text: string, level: MessageLevel, show?: boolean, source?: FrontendMessageSource): void {
-    const message = new Message(text, level || MessageLevel.Info, Date.now(), show || false, source);
+  /**
+   * Add a message to the Console panel.
+   *
+   * @param text the message text.
+   * @param level the message level.
+   * @param show whether to show the Console panel (if it's not already shown).
+   * @param source the message source.
+   */
+  addMessage(text: string, level = MessageLevel.Info, show = false, source?: FrontendMessageSource): void {
+    const message = new Message(text, level, Date.now(), show, source);
     this.#messagesInternal.push(message);
     this.dispatchEventToListeners(Events.MessageAdded, message);
   }
@@ -43,8 +51,14 @@ export class Console extends ObjectWrapper<EventTypes> {
     this.addMessage(text, MessageLevel.Warning, undefined, source);
   }
 
-  error(text: string): void {
-    this.addMessage(text, MessageLevel.Error, true);
+  /**
+   * Adds an error message to the Console panel.
+   *
+   * @param text the message text.
+   * @param show whether to show the Console panel (if it's not already shown).
+   */
+  error(text: string, show = true): void {
+    this.addMessage(text, MessageLevel.Error, show);
   }
 
   messages(): Message[] {

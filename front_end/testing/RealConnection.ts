@@ -71,6 +71,7 @@ function describeBody(fn: () => void) {
 
 const realConnectionSuites: {title: string, fn: ((this: Mocha.Suite) => void), only: boolean}[] = [];
 
+/** @deprecated Migrate to `describeWithMockConnection`, e2e tests or web test if needed */
 export function describeWithRealConnection(title: string, fn: (this: Mocha.Suite) => void) {
   realConnectionSuites.push({title, fn, only: false});
 }

@@ -6,6 +6,7 @@
 
 .insight {
   display: block;
+  position: relative;
   width: auto;
   height: auto;
   margin: 10px 0;
@@ -19,16 +20,38 @@
     border: none;
   }
 
-  &.closed:hover {
-    background-color: var(--sys-color-state-disabled-container);
-  }
-
   header {
     padding: 10px;
 
     h3 {
       font: var(--sys-typescale-body4-medium);
     }
+  }
+}
+
+.insight-hover-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  width: 20px;
+  height: 20px;
+  box-shadow: var(--drop-shadow-depth-1);
+  border-radius: 50%;
+  background: var(--sys-color-cdt-base-container);
+  opacity: 0%;
+  transition: opacity 0.2s ease;
+
+  .insight:hover & {
+    opacity: 100%;
+  }
+
+  devtools-button {
+    transition: transform 0.2s ease;
+  }
+
+  &.active devtools-button {
+    transform: rotate(180deg);
   }
 }
 

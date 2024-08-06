@@ -34,10 +34,11 @@ export const enum EventKeyType {
  */
 export interface SerializedAnnotations {
   entryLabels: EntryLabelAnnotationSerialized[];
+  labelledTimeRanges: TimeRangeAnnotationSerialized[];
 }
 
 /**
- * Represents an object that is saved in the file when a user creates a label for an entry in the timeline.
+ * Represents an object that is used to store the Entry Label annotation that is created when a user creates a label for an entry in the timeline.
  */
 export interface EntryLabelAnnotation {
   type: 'ENTRY_LABEL';
@@ -46,7 +47,7 @@ export interface EntryLabelAnnotation {
 }
 
 /**
- * Represents an object that is saved in the file when a user creates a time range with a label in the timeline.
+ * Represents an object that is used to store the Labelled Time Range Annotation that is created when a user creates a Time Range Selection in the timeline.
  */
 export interface TimeRangeAnnotation {
   type: 'TIME_RANGE';
@@ -54,8 +55,19 @@ export interface TimeRangeAnnotation {
   bounds: TraceWindowMicroSeconds;
 }
 
+/**
+ * Represents an object that is saved in the file when a user creates a label for an entry in the timeline.
+ */
 export interface EntryLabelAnnotationSerialized {
   entry: TraceEventSerializableKey;
+  label: string;
+}
+
+/**
+ * Represents an object that is saved in the file when a user creates a time range with a label in the timeline.
+ */
+export interface TimeRangeAnnotationSerialized {
+  bounds: TraceWindowMicroSeconds;
   label: string;
 }
 

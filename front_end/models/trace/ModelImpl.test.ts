@@ -133,6 +133,16 @@ describeWithEnvironment('TraceModel', function() {
           label: 'entry label',
         },
       ],
+      labelledTimeRanges: [
+        {
+          bounds: {
+            min: TraceModel.Types.Timing.MicroSeconds(0),
+            max: TraceModel.Types.Timing.MicroSeconds(10),
+            range: TraceModel.Types.Timing.MicroSeconds(10),
+          },
+          label: 'range label',
+        },
+      ],
     } as TraceModel.Types.File.Modifications['annotations'];
 
     const modifications = {

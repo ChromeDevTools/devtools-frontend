@@ -128,7 +128,7 @@ export class ModificationsManager extends EventTarget {
       case 'TIME_RANGE':
         return {
           type: 'TIME_RANGE',
-          label: '',
+          label: annotation.label,
           showDuration: true,
           bounds: annotation.bounds,
         };
@@ -226,6 +226,7 @@ export class ModificationsManager extends EventTarget {
   #annotationsJSON(): TraceEngine.Types.File.SerializedAnnotations {
     const annotations = this.getAnnotations();
     const entryLabelsSerialized: TraceEngine.Types.File.EntryLabelAnnotationSerialized[] = [];
+    const labelledTimeRangesSerialized: TraceEngine.Types.File.TimeRangeAnnotationSerialized[] = [];
 
     for (let i = 0; i < annotations.length; i++) {
       const currAnnotation = annotations[i];
@@ -234,14 +235,20 @@ export class ModificationsManager extends EventTarget {
         if (serializedEvent) {
           entryLabelsSerialized.push({
             entry: serializedEvent,
-            label: annotations[i].label,
+            label: currAnnotation.label,
           });
         }
+      } else if (TraceEngine.Types.File.isTimeRangeAnnotation(currAnnotation)) {
+        labelledTimeRangesSerialized.push({
+          bounds: currAnnotation.bounds,
+          label: currAnnotation.label,
+        });
       }
     }
 
     return {
       entryLabels: entryLabelsSerialized,
+      labelledTimeRanges: labelledTimeRangesSerialized,
     };
   }
 
@@ -255,12 +262,23 @@ export class ModificationsManager extends EventTarget {
     this.#applyEntriesFilterModifications(hiddenEntries, expandableEntries);
     this.#timelineBreadcrumbs.setInitialBreadcrumbFromLoadedModifications(modifications.initialBreadcrumb);
 
-    const entryLabels = modifications.annotations.entryLabels;
+    // Assign annotations to an empty array if they don't exist to not
+    // break the traces that were saved before those annotations were implemented
+    const entryLabels = modifications.annotations.entryLabels ?? [];
     entryLabels.forEach(entryLabel => {
       this.createAnnotation({
         type: 'ENTRY_LABEL',
         entry: this.#eventsSerializer.eventForKey(entryLabel.entry, this.#traceParsedData),
         label: entryLabel.label,
+      });
+    });
+
+    const timeRanges = modifications.annotations.labelledTimeRanges ?? [];
+    timeRanges.forEach(timeRange => {
+      this.createAnnotation({
+        type: 'TIME_RANGE',
+        bounds: timeRange.bounds,
+        label: timeRange.label,
       });
     });
   }

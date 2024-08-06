@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TraceEngine from '../../models/trace/trace.js';
+import type * as TraceEngine from '../../models/trace/trace.js';
 
 export interface InitiatorData {
   event: TraceEngine.Types.TraceEvents.TraceEventData;
@@ -65,13 +65,6 @@ function findInitiatorDataPredecessors(
       initiatorsData.push({event: currentEvent, initiator: currentInitiator});
       currentEvent = currentInitiator;
       continue;
-    }
-
-    if (!TraceEngine.Types.TraceEvents.isSyntheticTraceEntry(currentEvent)) {
-      // If the current event is not a renderer, we have no
-      // concept of a parent event, so we can bail.
-      currentEvent = null;
-      break;
     }
 
     const nodeForCurrentEvent = traceParsedData.Renderer.entryToNode.get(currentEvent);

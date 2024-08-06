@@ -32,8 +32,8 @@ const compositorTileWorkers = Array<{
   pid: Types.TraceEvents.ProcessID,
   tid: Types.TraceEvents.ThreadID,
 }>();
-const entryToNode: Map<Types.TraceEvents.SyntheticTraceEntry, Helpers.TreeHelpers.TraceEntryNode> = new Map();
-let allTraceEntries: Types.TraceEvents.SyntheticTraceEntry[] = [];
+const entryToNode: Map<Types.TraceEvents.TraceEventData, Helpers.TreeHelpers.TraceEntryNode> = new Map();
+let allTraceEntries: Types.TraceEvents.TraceEventData[] = [];
 
 const completeEventStack: (Types.TraceEvents.SyntheticCompleteEvent)[] = [];
 
@@ -399,12 +399,12 @@ export interface RendererHandlerData {
    * by the process ID.
    */
   compositorTileWorkers: Map<Types.TraceEvents.ProcessID, Types.TraceEvents.ThreadID[]>;
-  entryToNode: Map<Types.TraceEvents.SyntheticTraceEntry, Helpers.TreeHelpers.TraceEntryNode>;
+  entryToNode: Map<Types.TraceEvents.TraceEventData, Helpers.TreeHelpers.TraceEntryNode>;
   /**
    * All trace events and synthetic profile calls made from
    * samples.
    */
-  allTraceEntries: Types.TraceEvents.SyntheticTraceEntry[];
+  allTraceEntries: Types.TraceEvents.TraceEventData[];
 }
 
 export interface RendererProcess {
@@ -421,7 +421,7 @@ export interface RendererThread {
    * Contains trace events and synthetic profile calls made from
    * samples.
    */
-  entries: Types.TraceEvents.SyntheticTraceEntry[];
+  entries: Types.TraceEvents.TraceEventData[];
   profileCalls: Types.TraceEvents.SyntheticProfileCall[];
   tree?: Helpers.TreeHelpers.TraceEntryTree;
 }

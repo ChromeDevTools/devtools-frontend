@@ -13,7 +13,7 @@ export const makeEmptyTraceEntryTree = (): TraceEntryTree => ({
 });
 
 export const makeEmptyTraceEntryNode =
-    (entry: Types.TraceEvents.SyntheticTraceEntry, id: TraceEntryNodeId): TraceEntryNode => ({
+    (entry: Types.TraceEvents.TraceEventData, id: TraceEntryNodeId): TraceEntryNode => ({
       entry,
       id,
       parent: null,
@@ -27,7 +27,7 @@ export interface TraceEntryTree {
 }
 
 export interface TraceEntryNode {
-  entry: Types.TraceEvents.SyntheticTraceEntry;
+  entry: Types.TraceEvents.TraceEventData;
   depth: number;
   id: TraceEntryNodeId;
   parent: TraceEntryNode|null;
@@ -56,13 +56,13 @@ export type TraceEntryNodeId = number&TraceEntryNodeIdTag;
  *
  * Complexity: O(n), where n = number of events
  */
-export function treify(entries: Types.TraceEvents.SyntheticTraceEntry[], options?: {
+export function treify(entries: Types.TraceEvents.TraceEventData[], options?: {
   filter: {has: (name: Types.TraceEvents.KnownEventName) => boolean},
-}): {tree: TraceEntryTree, entryToNode: Map<Types.TraceEvents.SyntheticTraceEntry, TraceEntryNode>} {
+}): {tree: TraceEntryTree, entryToNode: Map<Types.TraceEvents.TraceEventData, TraceEntryNode>} {
   // As we construct the tree, store a map of each entry to its node. This
   // means if you are iterating over a list of RendererEntry events you can
   // easily look up that node in the tree.
-  const entryToNode = new Map<Types.TraceEvents.SyntheticTraceEntry, TraceEntryNode>();
+  const entryToNode = new Map<Types.TraceEvents.TraceEventData, TraceEntryNode>();
 
   const stack = [];
   // Reset the node id counter for every new renderer.
@@ -178,10 +178,10 @@ export function treify(entries: Types.TraceEvents.SyntheticTraceEntry[], options
  *
  */
 export function walkTreeFromEntry(
-    entryToNode: Map<Types.TraceEvents.SyntheticTraceEntry, TraceEntryNode>,
-    rootEntry: Types.TraceEvents.SyntheticTraceEntry,
-    onEntryStart: (entry: Types.TraceEvents.SyntheticTraceEntry) => void,
-    onEntryEnd: (entry: Types.TraceEvents.SyntheticTraceEntry) => void,
+    entryToNode: Map<Types.TraceEvents.TraceEventData, TraceEntryNode>,
+    rootEntry: Types.TraceEvents.TraceEventData,
+    onEntryStart: (entry: Types.TraceEvents.TraceEventData) => void,
+    onEntryEnd: (entry: Types.TraceEvents.TraceEventData) => void,
     ): void {
   const startNode = entryToNode.get(rootEntry);
   if (!startNode) {
@@ -215,10 +215,10 @@ export function walkTreeFromEntry(
  */
 
 export function walkEntireTree(
-    entryToNode: Map<Types.TraceEvents.SyntheticTraceEntry, TraceEntryNode>,
+    entryToNode: Map<Types.TraceEvents.TraceEventData, TraceEntryNode>,
     tree: TraceEntryTree,
-    onEntryStart: (entry: Types.TraceEvents.SyntheticTraceEntry) => void,
-    onEntryEnd: (entry: Types.TraceEvents.SyntheticTraceEntry) => void,
+    onEntryStart: (entry: Types.TraceEvents.TraceEventData) => void,
+    onEntryEnd: (entry: Types.TraceEvents.TraceEventData) => void,
     traceWindowToInclude?: Types.Timing.TraceWindowMicroSeconds,
     minDuration?: Types.Timing.MicroSeconds,
     ): void {
@@ -228,10 +228,10 @@ export function walkEntireTree(
 }
 
 function walkTreeByNode(
-    entryToNode: Map<Types.TraceEvents.SyntheticTraceEntry, TraceEntryNode>,
+    entryToNode: Map<Types.TraceEvents.TraceEventData, TraceEntryNode>,
     rootNode: TraceEntryNode,
-    onEntryStart: (entry: Types.TraceEvents.SyntheticTraceEntry) => void,
-    onEntryEnd: (entry: Types.TraceEvents.SyntheticTraceEntry) => void,
+    onEntryStart: (entry: Types.TraceEvents.TraceEventData) => void,
+    onEntryEnd: (entry: Types.TraceEvents.TraceEventData) => void,
     traceWindowToInclude?: Types.Timing.TraceWindowMicroSeconds,
     minDuration?: Types.Timing.MicroSeconds,
     ): void {

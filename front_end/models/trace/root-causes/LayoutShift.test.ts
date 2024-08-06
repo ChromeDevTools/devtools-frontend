@@ -634,7 +634,7 @@ describeWithMockConnection('LayoutShift root causes', () => {
         modelMut.Renderer.allTraceEntries = [{
           name: 'Layout',
           ts: 82,
-        } as unknown as TraceEngine.Types.TraceEvents.SyntheticTraceEntry];
+        } as unknown as TraceEngine.Types.TraceEvents.TraceEventData];
 
         const node = {
           entry: model.Renderer.allTraceEntries[0],

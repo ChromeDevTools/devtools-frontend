@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {
-  type SyntheticTraceEntry,
   type TraceEventArgs,
   type TraceEventData,
 } from './TraceEvents.js';
@@ -60,7 +59,7 @@ export interface ExtensionMarkerPayload extends ExtensionDataPayloadBase {
 /**
  * Synthetic events created for extension tracks.
  */
-export interface SyntheticExtensionTrackChartEntry extends SyntheticTraceEntry {
+export interface SyntheticExtensionTrackChartEntry extends TraceEventData {
   args: TraceEventArgs&ExtensionTrackEntryPayload;
   cat: 'devtools.extension';
 }
@@ -68,7 +67,7 @@ export interface SyntheticExtensionTrackChartEntry extends SyntheticTraceEntry {
 /**
  * Synthetic events created for extension marks.
  */
-export interface SyntheticExtensionMarker extends SyntheticTraceEntry {
+export interface SyntheticExtensionMarker extends TraceEventData {
   args: TraceEventArgs&ExtensionMarkerPayload;
   cat: 'devtools.extension';
 }

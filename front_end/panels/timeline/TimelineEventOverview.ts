@@ -237,7 +237,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
             x += quantSizePx;
           }
 
-          const onEntryStart = (entry: TraceEngine.Types.TraceEvents.SyntheticTraceEntry): void => {
+          const onEntryStart = (entry: TraceEngine.Types.TraceEvents.TraceEventData): void => {
             const category = this.#entryCategory(entry);
             if (!category || category === 'idle') {
               // Idle event won't show in CPU activity, so just skip them.
@@ -250,7 +250,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
             categoryIndexStack.push(categoryIndex || otherIndex);
           };
 
-          function onEntryEnd(entry: TraceEngine.Types.TraceEvents.SyntheticTraceEntry): void {
+          function onEntryEnd(entry: TraceEngine.Types.TraceEvents.TraceEventData): void {
             const endTimeMilli = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(entry.ts) +
                 TraceEngine.Helpers.Timing.microSecondsToMilliseconds(
                     TraceEngine.Types.Timing.MicroSeconds(entry.dur || 0));

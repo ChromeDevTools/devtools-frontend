@@ -197,9 +197,9 @@ export function getEventsIn(nodes: IterableIterator<TraceEngine.Helpers.TreeHelp
  */
 export function prettyPrint(
     tree: TraceEngine.Helpers.TreeHelpers.TraceEntryTree,
-    predicate: (
-        node: TraceEngine.Helpers.TreeHelpers.TraceEntryNode,
-        event: TraceEngine.Types.TraceEvents.SyntheticTraceEntry) => boolean = () => true,
+    predicate:
+        (node: TraceEngine.Helpers.TreeHelpers.TraceEntryNode, event: TraceEngine.Types.TraceEvents.TraceEventData) =>
+            boolean = () => true,
     indentation: number = 2, delimiter: string = ' ', prefix: string = '-', newline: string = '\n',
     out: string = ''): string {
   let skipped = false;
@@ -373,7 +373,7 @@ export const DevToolsTimelineCategory = 'disabled-by-default-devtools.timeline';
  * Mocks an object compatible with the return type of the
  * RendererHandler using only an array of ordered entries.
  */
-export function makeMockRendererHandlerData(entries: TraceEngine.Types.TraceEvents.SyntheticTraceEntry[]):
+export function makeMockRendererHandlerData(entries: TraceEngine.Types.TraceEvents.TraceEventData[]):
     TraceEngine.Handlers.ModelHandlers.Renderer.RendererHandlerData {
   const {tree, entryToNode} = TraceEngine.Helpers.TreeHelpers.treify(entries, {filter: {has: () => true}});
   const mockThread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread = {

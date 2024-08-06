@@ -9,9 +9,9 @@ import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Timeline from './timeline.js';
 
 function findFirstEntry(
-    allEntries: readonly TraceEngine.Types.TraceEvents.SyntheticTraceEntry[],
-    predicate: (entry: TraceEngine.Types.TraceEvents.SyntheticTraceEntry) =>
-        boolean): TraceEngine.Types.TraceEvents.SyntheticTraceEntry {
+    allEntries: readonly TraceEngine.Types.TraceEvents.TraceEventData[],
+    predicate: (entry: TraceEngine.Types.TraceEvents.TraceEventData) =>
+        boolean): TraceEngine.Types.TraceEvents.TraceEventData {
   const entry = allEntries.find(entry => predicate(entry));
   if (!entry) {
     throw new Error('Could not find expected entry.');

@@ -154,13 +154,13 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   modifyTree(node: number, action: PerfUI.FlameChart.FilterAction): void {
-    const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
+    const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.TraceEventData;
 
     ModificationsManager.activeManager()?.getEntriesFilter().applyFilterAction({type: action, entry});
   }
 
   findPossibleContextMenuActions(node: number): PerfUI.FlameChart.PossibleFilterActions|void {
-    const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
+    const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.TraceEventData;
     return ModificationsManager.activeManager()?.getEntriesFilter().findPossibleActions(entry);
   }
 
@@ -641,7 +641,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       delegatesFocus: undefined,
     });
 
-    const entry = this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
+    const entry = this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData;
     const hiddenEntriesAmount =
         ModificationsManager.activeManager()?.getEntriesFilter().findHiddenDescendantsAmount(entry);
 
@@ -987,7 +987,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (this.entryData.indexOf(selection.object) === -1 && TimelineSelection.isTraceEventSelection(selection.object)) {
       if (this.timelineDataInternal?.selectedGroup) {
         ModificationsManager.activeManager()?.getEntriesFilter().revealEntry(
-            selection.object as TraceEngine.Types.TraceEvents.SyntheticTraceEntry);
+            selection.object as TraceEngine.Types.TraceEvents.TraceEventData);
         this.timelineData(true);
       }
     }

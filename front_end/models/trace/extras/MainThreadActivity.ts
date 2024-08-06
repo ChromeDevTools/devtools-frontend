@@ -12,7 +12,7 @@ const IDLE_FUNCTION_CALL_NAMES = new Set([
 
 export function calculateWindow(
     traceBounds: Types.Timing.TraceWindowMicroSeconds,
-    mainThreadEntries: readonly Types.TraceEvents.SyntheticTraceEntry[]): Types.Timing.TraceWindowMicroSeconds {
+    mainThreadEntries: readonly Types.TraceEvents.TraceEventData[]): Types.Timing.TraceWindowMicroSeconds {
   if (!mainThreadEntries.length) {
     return traceBounds;
   }

@@ -14,7 +14,7 @@ const events =
     new Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ThreadID, Types.TraceEvents.TraceEventComplete[]>>();
 
 const profilesInProcess = new Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ThreadID, ProfileData>>();
-const entryToNode = new Map<Types.TraceEvents.SyntheticTraceEntry, Helpers.TreeHelpers.TraceEntryNode>();
+const entryToNode = new Map<Types.TraceEvents.TraceEventData, Helpers.TreeHelpers.TraceEntryNode>();
 
 // The profile head, containing its metadata like its start
 // time, comes in a "Profile" event. The sample data comes in

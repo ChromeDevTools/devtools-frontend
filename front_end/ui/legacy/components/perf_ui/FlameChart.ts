@@ -236,7 +236,7 @@ export const enum FilterAction {
 
 export interface UserFilterAction {
   type: FilterAction;
-  entry: TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
+  entry: TraceEngine.Types.TraceEvents.TraceEventData;
 }
 
 // Object used to indicate to the Context Menu if an action is possible on the selected entry.

@@ -5,7 +5,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -59,9 +59,11 @@ export class HideIssuesMenu extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
-      <button class="hide-issues-menu-btn" @click=${this.onMenuOpen.bind(this)} title=${i18nString(UIStrings.tooltipTitle)}>
-        <${IconButton.Icon.Icon.litTagName} name="dots-vertical" jslog=${VisualLogging.dropDown('hide-issues').track({click: true})}></${IconButton.Icon.Icon.litTagName}>
-      </button>
+    <${Buttons.Button.Button.litTagName}
+      .data=${{variant: Buttons.Button.Variant.ICON,iconName: 'dots-vertical', title: i18nString(UIStrings.tooltipTitle)} as Buttons.Button.ButtonData}
+      .jslogContext=${VisualLogging.dropDown('hide-issues').track({click: true})}
+      class="hide-issues-menu-btn"
+      @click=${this.onMenuOpen.bind(this)}></${Buttons.Button.Button.litTagName}>
     `, this.#shadow, {host: this});
   }
 }

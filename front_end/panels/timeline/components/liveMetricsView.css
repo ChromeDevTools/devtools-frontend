@@ -36,14 +36,14 @@
 }
 
 .next-steps {
-  flex: 0 0 300px;
+  flex: 0 0 336px;
   box-sizing: border-box;
   border: none;
   border-left: 1px solid var(--sys-color-divider);
 }
 
 /* stylelint-disable-next-line at-rule-no-unknown */
-@container (max-width: 600px) {
+@container (max-width: 650px) {
   .live-metrics-view {
     flex-direction: column;
   }
@@ -296,7 +296,7 @@
 }
 
 .field-setup-buttons {
-  margin-top: 10px;
+  margin-top: 14px;
 }
 
 .no-data {
@@ -305,4 +305,17 @@
 
 .tooltip-content {
   margin: 0 6px;
+}
+
+.field-data-message {
+  margin-bottom: 12px;
+}
+
+.collection-period-range {
+  font-weight: var(--ref-typeface-weight-medium);
+}
+
+x-link { /* stylelint-disable-line selector-type-no-unknown */
+  color: var(--sys-color-primary);
+  text-decoration-line: underline;
 }

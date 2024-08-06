@@ -198,6 +198,21 @@ const UIStrings = {
    * @description Label for a tooltip that provides more details.
    */
   viewCardDetails: 'View card details',
+  /**
+   * @description Label for a a range of dates that represents the period of time a set of field data is collected from.
+   */
+  collectionPeriod: 'Collection period:',
+  /**
+   * @description Text showing a range of dates meant to represent a period of time.
+   * @example {Oct 1, 2024} PH1
+   * @example {Nov 1, 2024} PH2
+   */
+  dateRange: '{PH1} - {PH2}',
+  /**
+   * @description Text block telling the user to see how performance metrics measured on their local computer compare to data collected from real users. PH1 will be a link to more information about the Chrome UX Report and the link text will be untranslated because it is a product name.
+   * @example {Chrome UX Report} PH1
+   */
+  seeHowYourLocalMetricsCompare: 'See how your local metrics compare to real user data in the {PH1}.',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LiveMetricsView.ts', UIStrings);
@@ -562,9 +577,13 @@ export class LiveMetricsView extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
-  #getFieldMetricData(fieldMetric: CrUXManager.MetricNames): CrUXManager.MetricResponse|undefined {
+  #getSelectedFieldResponse(): CrUXManager.CrUXResponse|null|undefined {
     const deviceScope = this.#fieldDeviceOption === 'AUTO' ? this.#getAutoDeviceScope() : this.#fieldDeviceOption;
-    return this.#cruxPageResult?.[`${this.#fieldPageScope}-${deviceScope}`]?.record.metrics[fieldMetric];
+    return this.#cruxPageResult?.[`${this.#fieldPageScope}-${deviceScope}`];
+  }
+
+  #getFieldMetricData(fieldMetric: CrUXManager.MetricNames): CrUXManager.MetricResponse|undefined {
+    return this.#getSelectedFieldResponse()?.record.metrics[fieldMetric];
   }
 
   connectedCallback(): void {
@@ -898,6 +917,62 @@ export class LiveMetricsView extends HTMLElement {
     // clang-format on
   }
 
+  #renderCollectionPeriod(): LitHtml.LitTemplate {
+    const selectedResponse = this.#getSelectedFieldResponse();
+    if (!selectedResponse) {
+      return LitHtml.nothing;
+    }
+
+    const {firstDate, lastDate} = selectedResponse.record.collectionPeriod;
+
+    const formattedFirstDate = new Date(
+        firstDate.year,
+        // CrUX month is 1-indexed but `Date` month is 0-indexed
+        firstDate.month - 1,
+        firstDate.day,
+    );
+    const formattedLastDate = new Date(
+        lastDate.year,
+        // CrUX month is 1-indexed but `Date` month is 0-indexed
+        lastDate.month - 1,
+        lastDate.day,
+    );
+
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    };
+
+    const dateEl = document.createElement('span');
+    dateEl.classList.add('collection-period-range');
+    dateEl.textContent = i18nString(UIStrings.dateRange, {
+      PH1: formattedFirstDate.toLocaleDateString(undefined, options),
+      PH2: formattedLastDate.toLocaleDateString(undefined, options),
+    });
+
+    return html`
+      <div class="field-data-message">
+        ${i18nString(UIStrings.collectionPeriod)}
+        ${dateEl}
+      </div>
+    `;
+  }
+
+  #renderFieldDataMessage(): LitHtml.LitTemplate {
+    if (CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled) {
+      return this.#renderCollectionPeriod();
+    }
+
+    // "Chrome UX Report" is intentionally left untranslated because it is a product name.
+    const linkEl = UI.XLink.XLink.create('https://developer.chrome.com/docs/crux', 'Chrome UX Report');
+    const messageEl = i18n.i18n.getFormatLocalizedString(str_, UIStrings.seeHowYourLocalMetricsCompare, {PH1: linkEl});
+
+    return html`
+      <div class="field-data-message">${messageEl}</div>
+    `;
+  }
+
   #render = (): void => {
     // clang-format off
     const output = html`
@@ -938,6 +1013,7 @@ export class LiveMetricsView extends HTMLElement {
             <h2 id="next-steps-section-title" class="section-title">${i18nString(UIStrings.nextSteps)}</h2>
             <div id="field-setup" class="settings-card">
               <h3 class="card-title">${i18nString(UIStrings.fieldData)}</h3>
+              ${this.#renderFieldDataMessage()}
               ${this.#renderPageScopeSetting()}
               ${this.#renderDeviceScopeSetting()}
               <div class="field-setup-buttons">

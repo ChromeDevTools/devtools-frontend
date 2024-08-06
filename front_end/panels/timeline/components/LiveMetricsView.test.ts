@@ -67,6 +67,10 @@ function selectPageScope(view: Element, pageScope: string): void {
   originOption!.click();
 }
 
+function getFieldMessage(view: Element): HTMLElement|null {
+  return view.shadowRoot!.querySelector('#field-setup .field-data-message');
+}
+
 function createMockFieldData() {
   return {
     record: {
@@ -307,6 +311,9 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       const throttlingRec = getThrottlingRecommendation(view);
       assert.isNull(throttlingRec);
+
+      const fieldMessage = getFieldMessage(view);
+      assert.match(fieldMessage!.innerText, /See how your local metrics compare/);
     });
 
     it('should show when crux is enabled', async () => {
@@ -345,6 +352,9 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       const throttlingRec = getThrottlingRecommendation(view);
       assert.match(throttlingRec!.innerText, /Slow 4G/);
+
+      const fieldMessage = getFieldMessage(view);
+      assert.strictEqual(fieldMessage!.innerText, 'Collection period: Jan 1, 2024 - Jan 29, 2024');
     });
 
     it('should make initial request on render when crux is enabled', async () => {

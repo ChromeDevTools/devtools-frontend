@@ -649,7 +649,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return this.status.E_BADARG('page', 'Resources paths cannot point to non-extension resources');
     }
     let persistentId = this.getExtensionOrigin(port) + message.title;
-    persistentId = persistentId.replace(/\s/g, '');
+    persistentId = persistentId.replace(/\s|:\d+/g, '');
     const panelView = new ExtensionServerPanelView(
         persistentId, i18n.i18n.lockedString(message.title), new ExtensionPanel(this, persistentId, id, page));
     this.clientObjects.set(id, panelView);

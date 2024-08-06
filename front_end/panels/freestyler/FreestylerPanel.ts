@@ -256,7 +256,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#viewProps.isLoading = true;
     // TODO: We should only show "Fix this issue" button when the answer suggests fix or fixes.
     // We shouldn't show this when the answer is complete like a confirmation without any suggestion.
-    const suggestingFix = text !== FIX_THIS_ISSUE_PROMPT;
+    const suggestingFix = !isFixQuery;
     let systemMessage: ModelChatMessage = {
       entity: ChatMessageEntity.MODEL,
       suggestingFix,
@@ -287,6 +287,9 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
       if (data.step === Step.ANSWER || data.step === Step.ERROR) {
         this.#viewProps.isLoading = false;
+      }
+      if (data.step === Step.ERROR) {
+        systemMessage.suggestingFix = false;
       }
 
       systemMessage.rpcId = data.rpcId;

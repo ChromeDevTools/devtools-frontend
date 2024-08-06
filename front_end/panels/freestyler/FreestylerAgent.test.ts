@@ -709,7 +709,7 @@ c`;
           step: Freestyler.Step.QUERYING,
         },
         {
-          step: Freestyler.Step.ANSWER,
+          step: Freestyler.Step.ERROR,
           text: 'Sorry, I could not help you with this query.',
           rpcId: undefined,
         },

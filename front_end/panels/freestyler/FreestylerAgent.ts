@@ -393,7 +393,7 @@ export class FreestylerAgent {
         yield {step: Step.ANSWER, text: answer, rpcId};
         break;
       } else {
-        yield {step: Step.ANSWER, text: genericErrorMessage, rpcId};
+        yield {step: Step.ERROR, text: genericErrorMessage, rpcId};
         break;
       }
 

@@ -26,6 +26,8 @@ Please answer only if you are sure about the answer. Otherwise, explain why you'
 When answering, remember to consider CSS concepts such as the CSS cascade, explicit and implicit stacking contexts and various CSS layout types.
 When answering, always consider MULTIPLE possible solutions.
 
+If you need to set inline styles on an HTML element, always call the \`async setInlineStyles(el: Element, styles: object)\` function.
+
 Example:
 ACTION
 const data = {
@@ -115,6 +117,12 @@ async function executeJsCode(code: string, {throwOnSideEffect}: {throwOnSideEffe
   }
 }
 
+const functions = `async function setInlineStyles(el, styles) {
+  for (const key of Object.keys(styles)) {
+    el.style[key] = styles[key];
+  }
+}`;
+
 type HistoryChunk = {
   text: string,
   entity: Host.AidaClient.Entity,
@@ -127,6 +135,7 @@ interface AgentOptions {
   aidaClient: Host.AidaClient.AidaClient;
   serverSideLoggingEnabled?: boolean;
   execJs?: typeof executeJsCode;
+  internalExecJs?: typeof executeJsCode;
   confirmSideEffect: (action: string) => Promise<boolean>;
 }
 
@@ -230,14 +239,20 @@ export class FreestylerAgent {
 
   #confirmSideEffect: (action: string) => Promise<boolean>;
   #execJs: typeof executeJsCode;
+  #internalExecJs: typeof executeJsCode;
 
   readonly #sessionId = crypto.randomUUID();
 
   constructor(opts: AgentOptions) {
     this.#aidaClient = opts.aidaClient;
     this.#execJs = opts.execJs ?? executeJsCode;
+    this.#internalExecJs = opts.internalExecJs ?? executeJsCode;
     this.#confirmSideEffect = opts.confirmSideEffect;
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
+  }
+
+  async #setupContext(): Promise<void> {
+    await this.#internalExecJs?.(functions, {throwOnSideEffect: false});
   }
 
   get #getHistoryEntry(): Array<HistoryChunk> {
@@ -302,6 +317,7 @@ export class FreestylerAgent {
   async *
       run(query: string, options: {signal?: AbortSignal, isFixQuery: boolean} = {isFixQuery: false}):
           AsyncGenerator<StepData|QueryStepData, void, void> {
+    await this.#setupContext();
     const genericErrorMessage = 'Sorry, I could not help you with this query.';
     const structuredLog = [];
     query = `QUERY: ${query}`;

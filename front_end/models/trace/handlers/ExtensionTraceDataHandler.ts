@@ -11,10 +11,12 @@ import {data as userTimingsData} from './UserTimingsHandler.js';
 const extensionFlameChartEntries: Types.Extensions.SyntheticExtensionTrackChartEntry[] = [];
 const extensionTrackData: Types.Extensions.ExtensionTrackData[] = [];
 const extensionMarkers: Types.Extensions.SyntheticExtensionMarker[] = [];
+const entryToNode: Map<Types.TraceEvents.TraceEventData, Helpers.TreeHelpers.TraceEntryNode> = new Map();
 
 export interface ExtensionTraceData {
   extensionTrackData: readonly Types.Extensions.ExtensionTrackData[];
   extensionMarkers: readonly Types.Extensions.SyntheticExtensionMarker[];
+  entryToNode: Map<Types.TraceEvents.TraceEventData, Helpers.TreeHelpers.TraceEntryNode>;
 }
 let handlerState = HandlerState.UNINITIALIZED;
 
@@ -27,6 +29,7 @@ export function reset(): void {
   extensionFlameChartEntries.length = 0;
   extensionTrackData.length = 0;
   extensionMarkers.length = 0;
+  entryToNode.clear();
 }
 
 export async function finalize(): Promise<void> {
@@ -43,7 +46,7 @@ function createExtensionFlameChartEntries(): void {
   const mergedRawExtensionEvents = Helpers.Trace.mergeEventsInOrder(pairedMeasures, marks);
 
   extractExtensionEntries(mergedRawExtensionEvents);
-  Helpers.Extensions.buildTrackDataFromExtensionEntries(extensionFlameChartEntries, extensionTrackData);
+  Helpers.Extensions.buildTrackDataFromExtensionEntries(extensionFlameChartEntries, extensionTrackData, entryToNode);
 }
 
 export function extractExtensionEntries(
@@ -61,7 +64,6 @@ export function extractExtensionEntries(
       pid: Types.TraceEvents.ProcessID(0),
       tid: Types.TraceEvents.ThreadID(0),
       ts: timing.ts,
-      selfTime: Types.Timing.MicroSeconds(0),
       dur: timing.dur as Types.Timing.MicroSeconds,
       cat: 'devtools.extension',
       args: extensionPayload,
@@ -113,6 +115,7 @@ export function data(): ExtensionTraceData {
   }
 
   return {
+    entryToNode,
     extensionTrackData: [...extensionTrackData],
     extensionMarkers: [...extensionMarkers],
   };

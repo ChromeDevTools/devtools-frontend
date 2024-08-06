@@ -242,7 +242,6 @@ export class Overlays extends EventTarget {
         startTime: entry.startTime,
         endTime: entry.endTime,
         duration: entry.duration,
-        selfTime: TraceEngine.Types.Timing.MicroSeconds(0),
       };
     }
     if (TraceEngine.Types.TraceEvents.isSyntheticLayoutShift(entry)) {
@@ -251,7 +250,6 @@ export class Overlays extends EventTarget {
         endTime,
         duration: LAYOUT_SHIFT_SYNTHETIC_DURATION,
         startTime: entry.ts,
-        selfTime: TraceEngine.Types.Timing.MicroSeconds(0),
       };
     }
     return TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(entry);

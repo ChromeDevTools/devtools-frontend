@@ -148,7 +148,10 @@ describeWithEnvironment('SamplesHandler', function() {
       }
       await TraceModel.Handlers.ModelHandlers.Samples.finalize();
       const data = TraceModel.Handlers.ModelHandlers.Samples.data();
-      const calls = data.profilesInProcess.get(pid)?.get(tid)?.profileCalls;
+      const calls = data.profilesInProcess.get(pid)?.get(tid)?.profileCalls.map(call => {
+        const selfTime = data.entryToNode.get(call)?.selfTime;
+        return {...call, selfTime};
+      });
       const tree = data.profilesInProcess.get(pid)?.get(tid)?.profileTree;
       const expectedResult = [
         {id: A, ts: 0, dur: 154, selfTime: 58, children: [B, D]},
@@ -185,7 +188,10 @@ describeWithEnvironment('SamplesHandler', function() {
       const threadId = TraceModel.Types.TraceEvents.ThreadID(1);
       const firstProcessId = TraceModel.Types.TraceEvents.ProcessID(2236123);
       const profilesFirstProcess = data.profilesInProcess.get(firstProcessId);
-      const calls = profilesFirstProcess?.get(threadId)?.profileCalls.slice(0, 5);
+      const calls = profilesFirstProcess?.get(threadId)?.profileCalls.slice(0, 5).map(call => {
+        const selfTime = data.entryToNode.get(call)?.selfTime;
+        return {...call, selfTime};
+      });
       const tree = profilesFirstProcess?.get(threadId)?.profileTree;
       const expectedResult = [
         {'id': 2, 'dur': 392, 'ts': 643496962681, 'selfTime': 392, 'children': []},

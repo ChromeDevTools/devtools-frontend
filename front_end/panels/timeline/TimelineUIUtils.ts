@@ -1064,8 +1064,8 @@ export class TimelineUIUtils {
       detailed: boolean,
       ): Promise<DocumentFragment> {
     const maybeTarget = targetForEvent(traceParseData, event);
-    const {duration, selfTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
-
+    const {duration} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
+    const selfTime = getEventSelfTime(event, traceParseData);
     const relatedNodesMap = await TraceEngine.Extras.FetchNodes.extractRelatedDOMNodesFromEvent(
         traceParseData,
         event,
@@ -1942,12 +1942,12 @@ export class TimelineUIUtils {
     if (endTime) {
       for (let i = index; i < events.length; i++) {
         const nextEvent = events[i];
-        const {startTime: nextEventStartTime, selfTime: nextEventSelfTime} =
-            TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(nextEvent);
+        const {startTime: nextEventStartTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(nextEvent);
         if (nextEventStartTime >= endTime) {
           break;
         }
-        if (!nextEvent.selfTime) {
+        const nextEventSelfTime = getEventSelfTime(nextEvent, traceParseData);
+        if (!nextEventSelfTime) {
           continue;
         }
         if (nextEvent.tid !== event.tid) {
@@ -2475,4 +2475,15 @@ export function isMarkerEvent(
   }
 
   return false;
+}
+
+function getEventSelfTime(
+    event: TraceEngine.Types.TraceEvents.TraceEventData,
+    traceParseData: TraceEngine.Handlers.Types.TraceParseData): TraceEngine.Types.Timing.MilliSeconds {
+  const mapToUse = TraceEngine.Types.Extensions.isSyntheticExtensionEntry(event) ?
+      traceParseData.ExtensionTraceData.entryToNode :
+      traceParseData.Renderer.entryToNode;
+  const selfTime = mapToUse.get(event)?.selfTime;
+  return selfTime ? TraceEngine.Helpers.Timing.microSecondsToMilliseconds(selfTime) :
+                    TraceEngine.Types.Timing.MilliSeconds(0);
 }

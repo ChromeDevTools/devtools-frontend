@@ -456,8 +456,8 @@ describeWithEnvironment('RendererHandler', function() {
       'tid': 1,
       'ts': 643492822363,
       'tts': 291450,
-      'selfTime': 132,
     });
+    assert.strictEqual(renderers.entryToNode.get(event0)?.selfTime, 132);
 
     const event1 = getRootAt(thread, 2).entry;
     assert.deepEqual(event1 as unknown, {
@@ -471,8 +471,8 @@ describeWithEnvironment('RendererHandler', function() {
       'tid': 1,
       'ts': 643492822500,
       'tts': 291586,
-      'selfTime': 4,
     });
+    assert.strictEqual(renderers.entryToNode.get(event1)?.selfTime, 4);
 
     const eventLast = getRootAt(thread, tree.roots.size - 1).entry;
     assert.deepEqual(eventLast as unknown, {
@@ -486,8 +486,9 @@ describeWithEnvironment('RendererHandler', function() {
       'tid': 1,
       'ts': 643499551460,
       'tts': 949032,
-      'selfTime': 35,
     });
+    assert.strictEqual(renderers.entryToNode.get(eventLast)?.selfTime, 35);
+
   });
 
   it('has some correct known roots for the sub frame\'s main thread in a real world profile', async () => {
@@ -518,8 +519,8 @@ describeWithEnvironment('RendererHandler', function() {
       'tid': 1,
       'ts': 643492822099,
       'tts': 62157,
-      'selfTime': 130,
     });
+    assert.strictEqual(renderers.entryToNode.get(event0)?.selfTime, 130);
 
     const event1 = getRootAt(thread, 1).entry;
     assert.deepEqual(event1 as unknown, {
@@ -533,8 +534,8 @@ describeWithEnvironment('RendererHandler', function() {
       'tid': 1,
       'ts': 643492822234,
       'tts': 62291,
-      'selfTime': 5,
     });
+    assert.strictEqual(renderers.entryToNode.get(event1)?.selfTime, 5);
 
     const event2 = getRootAt(thread, 2).entry;
 
@@ -549,8 +550,8 @@ describeWithEnvironment('RendererHandler', function() {
       'tid': 1,
       'ts': 643492822242,
       'tts': 62299,
-      'selfTime': 9,
     });
+    assert.strictEqual(renderers.entryToNode.get(event2)?.selfTime, 9);
   });
 
   it('can correctly sort a simple list of complete events', async () => {

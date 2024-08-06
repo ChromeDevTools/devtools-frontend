@@ -48,7 +48,6 @@ describeWithEnvironment('Timing helpers', () => {
       startTime: TraceModel.Types.Timing.MicroSeconds(10),
       endTime: TraceModel.Types.Timing.MicroSeconds(15),
       duration: TraceModel.Types.Timing.MicroSeconds(5),
-      selfTime: TraceModel.Types.Timing.MicroSeconds(5),
     });
   });
 
@@ -61,7 +60,6 @@ describeWithEnvironment('Timing helpers', () => {
       startTime: TraceModel.Types.Timing.MilliSeconds(10),
       endTime: TraceModel.Types.Timing.MilliSeconds(15),
       duration: TraceModel.Types.Timing.MilliSeconds(5),
-      selfTime: TraceModel.Types.Timing.MilliSeconds(5),
     });
   });
 
@@ -74,7 +72,6 @@ describeWithEnvironment('Timing helpers', () => {
       startTime: TraceModel.Types.Timing.Seconds(0.1),
       endTime: TraceModel.Types.Timing.Seconds(0.15),
       duration: TraceModel.Types.Timing.Seconds(0.05),
-      selfTime: TraceModel.Types.Timing.Seconds(0.05),
     });
   });
 

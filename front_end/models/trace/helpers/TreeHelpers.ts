@@ -29,6 +29,7 @@ export interface TraceEntryTree {
 export interface TraceEntryNode {
   entry: Types.TraceEvents.TraceEventData;
   depth: number;
+  selfTime?: Types.Timing.MicroSeconds;
   id: TraceEntryNodeId;
   parent: TraceEntryNode|null;
   children: TraceEntryNode[];
@@ -85,7 +86,7 @@ export function treify(entries: Types.TraceEvents.TraceEventData[], options?: {
     // node for it, mark it as a root, then proceed with the next event.
     if (stack.length === 0) {
       tree.roots.add(node);
-      event.selfTime = Types.Timing.MicroSeconds(duration);
+      node.selfTime = Types.Timing.MicroSeconds(duration);
       stack.push(node);
       tree.maxDepth = Math.max(tree.maxDepth, stack.length);
       entryToNode.set(event, node);
@@ -145,9 +146,9 @@ export function treify(entries: Types.TraceEvents.TraceEventData[], options?: {
     node.depth = stack.length;
     node.parent = parentNode;
     parentNode.children.push(node);
-    event.selfTime = Types.Timing.MicroSeconds(duration);
-    if (parentEvent.selfTime !== undefined) {
-      parentEvent.selfTime = Types.Timing.MicroSeconds(parentEvent.selfTime - (event.dur || 0));
+    node.selfTime = Types.Timing.MicroSeconds(duration);
+    if (parentNode.selfTime !== undefined) {
+      parentNode.selfTime = Types.Timing.MicroSeconds(parentNode.selfTime - (event.dur || 0));
     }
     stack.push(node);
     tree.maxDepth = Math.max(tree.maxDepth, stack.length);

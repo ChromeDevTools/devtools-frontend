@@ -34,7 +34,7 @@ export class ExtensionDataGatherer {
   getExtensionData(): ExtensionData {
     const extensionDataEnabled = TimelinePanel.extensionDataVisibilitySetting().get();
     if (!extensionDataEnabled || !this.#traceParsedData || !this.#traceParsedData.ExtensionTraceData) {
-      return {extensionMarkers: [], extensionTrackData: []};
+      return {extensionMarkers: [], extensionTrackData: [], entryToNode: new Map()};
     }
     const maybeCachedData = this.#extensionDataByModel.get(this.#traceParsedData);
     if (maybeCachedData) {

@@ -6,11 +6,16 @@ import * as Platform from '../../../core/platform/platform.js';
 import type * as Types from '../types/types.js';
 
 import {sortTraceEventsInPlace} from './Trace.js';
-import {canBuildTreesFromEvents, treify} from './TreeHelpers.js';
+import {canBuildTreesFromEvents, type TraceEntryNode, treify} from './TreeHelpers.js';
 
 export function buildTrackDataFromExtensionEntries(
     extensionEntries: Types.Extensions.SyntheticExtensionTrackChartEntry[],
-    extensionTrackData: Types.Extensions.ExtensionTrackData[]): Types.Extensions.ExtensionTrackData[] {
+    extensionTrackData: Types.Extensions.ExtensionTrackData[],
+    entryToNode: Map<Types.TraceEvents.TraceEventData, TraceEntryNode>,
+    ): {
+  extensionTrackData: Types.Extensions.ExtensionTrackData[],
+  entryToNode?: Map<Types.TraceEvents.TraceEventData, TraceEntryNode>,
+} {
   const dataByTrack = new Map<string, Types.Extensions.ExtensionTrackData>();
   for (const entry of extensionEntries) {
     // Batch data by track group. For each batch, add the data of every
@@ -38,10 +43,12 @@ export function buildTrackDataFromExtensionEntries(
     for (const entries of Object.values(trackData.entriesByTrack)) {
       sortTraceEventsInPlace(entries);
       if (canBuildTreesFromEvents(entries)) {
-        treify(entries);
+        for (const [entry, node] of treify(entries).entryToNode) {
+          entryToNode.set(entry, node);
+        }
       }
     }
     extensionTrackData.push(trackData);
   }
-  return extensionTrackData;
+  return {extensionTrackData, entryToNode};
 }

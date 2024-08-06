@@ -209,7 +209,6 @@ export function makeProfileCall(
     tid,
     ts,
     dur: Types.Timing.MicroSeconds(0),
-    selfTime: Types.Timing.MicroSeconds(0),
     callFrame: node.callFrame,
     sampleIndex,
     profileId,

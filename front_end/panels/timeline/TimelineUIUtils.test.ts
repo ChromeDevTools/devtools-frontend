@@ -532,7 +532,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           title: '',
           // Generic traces get their events rendered as JSON
           value:
-              '{   "args": {\n        "chrome_task_annotator": {\n            "delay_policy": "PRECISE",\n            "task_delay_us": 7159\n        },\n        "src_file": "cc/scheduler/scheduler.cc",\n        "src_func": "ScheduleBeginImplFrameDeadline"\n    },\n    "cat": "toplevel",\n    "dur": 222,\n    "name": "ThreadControllerImpl::RunTask",\n    "ph": "X",\n    "pid": 1214129,\n    "tdur": 163,\n    "tid": 7,\n    "ts": 1670373249790,\n    "tts": 5752392,\n    "selfTime": 202\n}',
+              '{   "args": {\n        "chrome_task_annotator": {\n            "delay_policy": "PRECISE",\n            "task_delay_us": 7159\n        },\n        "src_file": "cc/scheduler/scheduler.cc",\n        "src_func": "ScheduleBeginImplFrameDeadline"\n    },\n    "cat": "toplevel",\n    "dur": 222,\n    "name": "ThreadControllerImpl::RunTask",\n    "ph": "X",\n    "pid": 1214129,\n    "tdur": 163,\n    "tid": 7,\n    "ts": 1670373249790,\n    "tts": 5752392\n}',
         },
       ]);
     });
@@ -634,7 +634,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           title: 'Timestamp',
           value: '1058.3\xA0ms',
         },
-        {title: 'Details', value: '{   \"hello\": \"world\"\n}'},
+        {title: 'Details', value: '{   "hello": "world"\n}'},
       ]);
     });
 
@@ -659,7 +659,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
         {
           title: 'Details',
           value:
-              '{   \"devtools\": {\n        \"metadata\": {\n            \"extensionName\": \"hello\",\n            \"dataType\": \"track-entry\"\n        },\n        \"color\": \"error\",\n        \"track\": \"An extension track\"\n    }\n}',
+              '{   "devtools": {\n        "metadata": {\n            "extensionName": "hello",\n            "dataType": "track-entry"\n        },\n        "color": "error",\n        "track": "An extension track"\n    }\n}',
         },
       ]);
     });

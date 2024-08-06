@@ -73,7 +73,6 @@ export const enum TraceEventScope {
 }
 
 export interface TraceEventData {
-  selfTime?: MicroSeconds;
   args?: TraceEventArgs;
   cat: string;
   name: string;
@@ -1399,18 +1398,17 @@ export function isTraceEventPipelineReporter(event: TraceEventData): event is Tr
 }
 
 // A type used for synthetic events created based on a raw trace event.
-export interface SyntheticBasedEvent<Ph extends Phase = Phase> extends SyntheticEntry {
-  ph: Ph;
-  rawSourceEvent: TraceEventData;
-}
-
 // A branded type is used to ensure not all events can be typed as
-// SyntheticEntry and prevent places different to the
+// SyntheticBasedEvent and prevent places different to the
 // SyntheticEventsManager from creating synthetic events. This is
 // because synthetic events need to be registered in order to resolve
 // serialized event keys into event objects, so we ensure events are
 // registered at the time they are created by the SyntheticEventsManager.
-export type SyntheticEntry = TraceEventData&{_tag: 'SyntheticEntryTag'};
+export interface SyntheticBasedEvent<Ph extends Phase = Phase> extends TraceEventData {
+  ph: Ph;
+  rawSourceEvent: TraceEventData;
+  _tag: 'SyntheticEntryTag';
+}
 
 export function isSyntheticBasedEvent(event: TraceEventData): event is SyntheticBasedEvent {
   return 'rawSourceEvent' in event;
@@ -1487,7 +1485,6 @@ export interface SyntheticProfileCall extends TraceEventData {
   nodeId: Protocol.integer;
   sampleIndex: number;
   profileId: ProfileID;
-  selfTime: MicroSeconds;
 }
 
 /**

@@ -31,6 +31,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
 
@@ -1179,21 +1180,19 @@ export class TabbedPaneTab {
     return tabElement as HTMLElement;
   }
 
-  private createCloseIconButton(): HTMLButtonElement {
-    const closeIconContainer = document.createElement('button');
-    closeIconContainer.classList.add('close-button', 'tabbed-pane-close-button');
-    closeIconContainer.setAttribute('jslog', `${VisualLogging.close().track({click: true})}`);
-    const closeIcon = new IconButton.Icon.Icon();
-    closeIcon.data = {
+  private createCloseIconButton(): Buttons.Button.Button {
+    const closeButton = new Buttons.Button.Button();
+    closeButton.data = {
+      variant: Buttons.Button.Variant.ICON,
+      size: Buttons.Button.Size.SMALL,
       iconName: 'cross',
-      color: 'var(--tabbed-pane-close-icon-color)',
-      width: '16px',
+      title: i18nString(UIStrings.closeS, {PH1: this.title}),
     };
-    closeIconContainer.appendChild(closeIcon);
-    closeIconContainer.setAttribute('role', 'button');
-    closeIconContainer.setAttribute('title', i18nString(UIStrings.closeS, {PH1: this.title}));
-    closeIconContainer.setAttribute('aria-label', i18nString(UIStrings.closeS, {PH1: this.title}));
-    return closeIconContainer;
+    closeButton.classList.add('close-button', 'tabbed-pane-close-button');
+    closeButton.setAttribute('jslog', `${VisualLogging.close().track({click: true})}`);
+
+    closeButton.setAttribute('aria-label', i18nString(UIStrings.closeS, {PH1: this.title}));
+    return closeButton;
   }
 
   private createPreviewIcon(): HTMLDivElement {

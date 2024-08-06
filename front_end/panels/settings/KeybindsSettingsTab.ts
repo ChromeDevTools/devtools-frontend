@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -315,7 +316,7 @@ export class ShortcutListItem {
   private readonly shortcutInputs: Map<UI.KeyboardShortcut.KeyboardShortcut, Element>;
   private readonly shortcuts: UI.KeyboardShortcut.KeyboardShortcut[];
   private elementToFocus: HTMLElement|null;
-  private confirmButton: HTMLButtonElement|null;
+  private confirmButton: Buttons.Button.Button|null;
   private addShortcutLinkContainer: Element|null;
   private errorMessageElement: Element|null;
   private secondKeyTimeout: number|null;
@@ -373,15 +374,12 @@ export class ShortcutListItem {
   }
 
   private setupEditor(): void {
-    this.addShortcutLinkContainer = this.element.createChild('div', 'keybinds-shortcut devtools-link');
-    const addShortcutLink = this.addShortcutLinkContainer.createChild('span', 'devtools-link') as HTMLDivElement;
-    addShortcutLink.setAttribute('jslog', `${VisualLogging.action('add-shortcut').track({click: true})}`);
-    addShortcutLink.textContent = i18nString(UIStrings.addAShortcut);
-    addShortcutLink.tabIndex = 0;
-    UI.ARIAUtils.markAsLink(addShortcutLink);
-    self.onInvokeElement(addShortcutLink, this.addShortcut.bind(this));
+    this.addShortcutLinkContainer = this.element.createChild('div', 'keybinds-shortcut');
+    const addShortcutButton = UI.UIUtils.createTextButton(
+        i18nString(UIStrings.addAShortcut), this.addShortcut.bind(this), {jslogContext: 'add-shortcut'});
+    this.addShortcutLinkContainer.appendChild(addShortcutButton);
     if (!this.elementToFocus) {
-      this.elementToFocus = addShortcutLink;
+      this.elementToFocus = addShortcutButton;
     }
 
     this.errorMessageElement = this.element.createChild('div', 'keybinds-info keybinds-error hidden');
@@ -481,11 +479,9 @@ export class ShortcutListItem {
 
   private createIconButton(
       label: string, iconName: string, className: string, jslogContext: string,
-      listener: () => void): HTMLButtonElement {
-    const button = document.createElement('button') as HTMLButtonElement;
-    button.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context(jslogContext)}`);
-    button.setAttribute('title', label);
-    button.appendChild(IconButton.Icon.create(iconName));
+      listener: () => void): Buttons.Button.Button {
+    const button = new Buttons.Button.Button();
+    button.data = {variant: Buttons.Button.Variant.ICON, iconName, jslogContext, title: label};
     button.addEventListener('click', listener);
     UI.ARIAUtils.setLabel(button, label);
     if (className) {

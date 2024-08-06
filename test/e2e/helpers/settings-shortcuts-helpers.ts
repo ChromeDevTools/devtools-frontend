@@ -113,7 +113,7 @@ export const clickAddShortcutLink = async () => {
   let addShortcutLinkElement;
   // the link container and the link have the same textContent, but only the latter has a click handler
   for (const matchingElement of addShortcutLinkTextMatches) {
-    if (await matchingElement.evaluate(element => element.matches('[role="link"]'))) {
+    if (await matchingElement.evaluate(element => element.matches('devtools-button'))) {
       addShortcutLinkElement = matchingElement;
       break;
     }

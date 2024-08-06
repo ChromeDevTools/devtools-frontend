@@ -29,6 +29,8 @@
  */
 
 import * as i18n from '../../../../core/i18n/i18n.js';
+import type * as Buttons from '../../../components/buttons/buttons.js';
+import * as UI from '../../legacy.js';
 
 import {DataGridNode} from './DataGrid.js';
 
@@ -62,9 +64,9 @@ export class ShowMoreDataGridNode extends DataGridNode<ShowMoreDataGridNode> {
   private startPosition: number;
   private endPosition: number;
   private readonly chunkSize: number;
-  showNext: HTMLButtonElement;
-  showAll: HTMLButtonElement;
-  showLast: HTMLButtonElement;
+  showNext: Buttons.Button.Button;
+  showAll: Buttons.Button.Button;
+  showLast: Buttons.Button.Button;
   override selectable: boolean;
   private hasCells?: boolean;
 
@@ -75,22 +77,14 @@ export class ShowMoreDataGridNode extends DataGridNode<ShowMoreDataGridNode> {
     this.endPosition = endPosition;
     this.chunkSize = chunkSize;
 
-    this.showNext = document.createElement('button');
-    this.showNext.classList.add('text-button');
-    this.showNext.type = 'button';
+    this.showNext = UI.UIUtils.createTextButton(i18nString(UIStrings.showDBefore, {PH1: this.chunkSize}));
     this.showNext.addEventListener('click', this.showNextChunk.bind(this), false);
-    this.showNext.textContent = i18nString(UIStrings.showDBefore, {PH1: this.chunkSize});
 
-    this.showAll = document.createElement('button');
-    this.showAll.classList.add('text-button');
-    this.showAll.type = 'button';
+    this.showAll = UI.UIUtils.createTextButton('');
     this.showAll.addEventListener('click', this.showAllInternal.bind(this), false);
 
-    this.showLast = document.createElement('button');
-    this.showLast.classList.add('text-button');
-    this.showLast.type = 'button';
+    this.showLast = UI.UIUtils.createTextButton(i18nString(UIStrings.showDAfter, {PH1: this.chunkSize}));
     this.showLast.addEventListener('click', this.showLastChunk.bind(this), false);
-    this.showLast.textContent = i18nString(UIStrings.showDAfter, {PH1: this.chunkSize});
 
     this.updateLabels();
     this.selectable = false;

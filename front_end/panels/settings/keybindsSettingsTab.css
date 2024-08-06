@@ -121,10 +121,6 @@ h1 {
   opacity: 40%;
 }
 
-.keybinds-confirm-button {
-  grid-column: -2 / span 1;
-}
-
 .keybinds-cancel-button {
   grid-column: -1 / span 1;
 }

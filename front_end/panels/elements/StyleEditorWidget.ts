@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type * as ElementsComponents from './components/components.js';
 
+import type * as ElementsComponents from './components/components.js';
 import {type StylePropertiesSection} from './StylePropertiesSection.js';
 import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
 import {type StylesSidebarPane} from './StylesSidebarPane.js';
@@ -148,18 +148,20 @@ export class StyleEditorWidget extends UI.Widget.VBox {
   }
 }
 
-function createButton(buttonTitle: string): HTMLButtonElement {
-  const button = document.createElement('button');
+function createButton(buttonTitle: string): Buttons.Button.Button {
+  const button = new Buttons.Button.Button();
+  button.data = {
+    variant: Buttons.Button.Variant.ICON,
+    size: Buttons.Button.Size.SMALL,
+    iconName: 'flex-wrap',
+    title: buttonTitle,
+    jslogContext: 'flex-wrap',
+  };
   button.classList.add('styles-pane-button');
-  button.tabIndex = 0;
-  button.title = buttonTitle;
   button.onmouseup = event => {
     // Stop propagation to prevent the property editor from being activated.
     event.stopPropagation();
   };
-  const icon = new IconButton.Icon.Icon();
-  icon.data = {iconName: 'flex-wrap', color: 'var(--sys-color-token-subtle)', width: '16px', height: '16px'};
-  button.appendChild(icon);
   return button;
 }
 

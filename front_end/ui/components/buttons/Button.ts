@@ -327,7 +327,8 @@ export class Button extends HTMLElement {
       text: this.#props.variant === Variant.TEXT,
       toolbar: this.#isToolbarVariant(),
       'primary-toolbar': this.#props.variant === Variant.PRIMARY_TOOLBAR,
-      icon: this.#props.variant === Variant.ICON || this.#props.variant === Variant.ICON_TOGGLE,
+      icon: this.#props.variant === Variant.ICON || this.#props.variant === Variant.ICON_TOGGLE ||
+          this.#props.variant === Variant.ADORNER_ICON,
       'primary-toggle': this.#props.toggleType === ToggleType.PRIMARY,
       'red-toggle': this.#props.toggleType === ToggleType.RED,
       toggled: Boolean(this.#props.toggled),

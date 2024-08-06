@@ -89,13 +89,7 @@
 }
 
 .request-payload-show-more-button {
-  border: none;
-  border-radius: 3px;
-  display: inline-block;
-  font-size: 12px;
-  font-family: sans-serif;
   margin: 0 4px;
-  padding: 2px 4px;
 }
 
 @media (forced-colors: active) {

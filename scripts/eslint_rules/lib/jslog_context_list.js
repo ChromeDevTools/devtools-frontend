@@ -7,6 +7,12 @@
 const fs = require('fs');
 
 const FILE = 'front_end/ui/visual_logging/KnownContextValues.ts';
+const CURRENT_YEAR = new Date().getFullYear();
+const LICENSE_HEADER = `// Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+`;
 
 module.exports = {
   meta: {
@@ -72,9 +78,8 @@ module.exports = {
         if (process.env.ESLINT_FAIL_ON_UNKNOWN_JSLOG_CONTEXT_VALUE) {
           return;
         }
-        const finalContents = 'export const knownContextValues = new Set([\n'
-            + [...formattedValues].sort().join('\n')
-            + '\n]);';
+        const finalContents = LICENSE_HEADER + 'export const knownContextValues = new Set([\n' +
+            [...formattedValues].sort().join('\n') + '\n]);';
         fs.writeFileSync(FILE, finalContents, 'utf-8');
       }
     };

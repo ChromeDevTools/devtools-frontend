@@ -5,6 +5,7 @@
 import("./config/gni/devtools_grd_files.gni")
 import("./config/gni/devtools_image_files.gni")
 import("./front_end/emulated_devices/optimized/optimized_images.gni")
+import("./scripts/build/ninja/copy.gni")
 import("./scripts/build/ninja/node.gni")
 import("./scripts/build/ninja/vars.gni")
 import("./third_party/blink/public/public_features.gni")
@@ -13,6 +14,7 @@ import("./third_party/typescript/typescript.gni")
 #-------------------------------------------------------------------------------
 
 devtools_frontend_resources_deps = [
+  ":favicon",
   "front_end",
   "test",
 ]
@@ -198,4 +200,8 @@ ts_library("frontend_indexer_tsconfig") {
   tsconfigonly = true
   sourceslist = "$root_build_dir/indexer_ts_files.txt"
   public_deps = [ ":indexer_ts_files" ]
+}
+
+copy_to_gen("favicon") {
+  sources = [ "favicon.ico" ]
 }

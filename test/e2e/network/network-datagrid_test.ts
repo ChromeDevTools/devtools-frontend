@@ -18,11 +18,14 @@ import {
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
+  clearTextFilter,
   getAllRequestNames,
   navigateToNetworkTab,
   selectRequestByName,
   setCacheDisabled,
+  setInvert,
   setPersistLog,
+  setTextFilter,
   waitForSelectedRequestChange,
   waitForSomeRequestsToAppear,
 } from '../helpers/network-helpers.js';
@@ -55,12 +58,15 @@ describe('The Network Tab', function() {
 
   beforeEach(async () => {
     await navigateToNetworkTab('empty.html');
+    await setTextFilter('favicon.ico');
+    await setInvert(true);
     await setCacheDisabled(true);
     await setPersistLog(false);
   });
 
   afterEach(async () => {
     await unregisterAllServiceWorkers();
+    await clearTextFilter();
   });
 
   it('can click on checkbox label to toggle checkbox', async () => {

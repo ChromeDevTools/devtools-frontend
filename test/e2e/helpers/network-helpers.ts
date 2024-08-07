@@ -11,7 +11,9 @@ import {
   getBrowserAndPages,
   goToResource,
   setCheckBox,
+  typeText,
   waitFor,
+  waitForAria,
   waitForFunction,
 } from '../../shared/helper.js';
 
@@ -110,6 +112,10 @@ export async function setCacheDisabled(disabled: boolean): Promise<void> {
   await setCheckBox('[title^="Disable cache"]', disabled);
 }
 
+export async function setInvert(invert: boolean) {
+  await setCheckBox('[title="Invert"]', invert);
+}
+
 export async function setTimeWindow(): Promise<void> {
   const overviewGridCursorArea = await waitFor('.overview-grid-cursor-area');
   await overviewGridCursorArea.click({offset: {x: 0, y: 10}});
@@ -118,6 +124,13 @@ export async function setTimeWindow(): Promise<void> {
 export async function clearTimeWindow(): Promise<void> {
   const overviewGridCursorArea = await waitFor('.overview-grid-cursor-area');
   await overviewGridCursorArea.click({count: 2});
+}
+
+export async function setTextFilter(text: string): Promise<void> {
+  const toolbarHandle = await waitFor('.text-filter');
+  const input = await waitForAria('Filter', toolbarHandle);
+  await input.focus();
+  await typeText(text);
 }
 
 export async function getTextFilterContent(): Promise<string> {

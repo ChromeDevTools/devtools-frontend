@@ -10,8 +10,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 const CRUX_API_KEY = 'AIzaSyCCSOx25vrb5z0tbedCB3_JRzzbVW6Uwgw';
 const DEFAULT_ENDPOINT = `https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=${CRUX_API_KEY}`;
 
-export type MetricNames = 'cumulative_layout_shift'|'first_contentful_paint'|'first_input_delay'|
+export type StandardMetricNames = 'cumulative_layout_shift'|'first_contentful_paint'|'first_input_delay'|
     'interaction_to_next_paint'|'largest_contentful_paint'|'experimental_time_to_first_byte'|'round_trip_time';
+export type MetricNames = StandardMetricNames|'form_factors';
 export type FormFactor = 'DESKTOP'|'PHONE'|'TABLET';
 export type DeviceScope = FormFactor|'ALL';
 export type PageScope = 'url'|'origin';
@@ -30,15 +31,26 @@ export interface MetricResponse {
   percentiles?: {p75: number|string};
 }
 
+export interface FormFactorsResponse {
+  fractions?: {
+    desktop: number,
+    phone: number,
+    tablet: number,
+  };
+}
+
 interface CollectionDate {
   year: number;
   month: number;
   day: number;
 }
 
-interface Record {
+interface CrUXRecord {
   key: Omit<CrUXRequest, 'metrics'>;
-  metrics: {[K in MetricNames]?: MetricResponse;};
+  metrics: {[K in StandardMetricNames]?: MetricResponse;}&{
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    form_factors?: FormFactorsResponse,
+  };
   collectionPeriod: {
     firstDate: CollectionDate,
     lastDate: CollectionDate,
@@ -46,7 +58,7 @@ interface Record {
 }
 
 export interface CrUXResponse {
-  record: Record;
+  record: CrUXRecord;
   urlNormalizationDetails?: {
     originalUrl: string,
     normalizedUrl: string,
@@ -68,8 +80,13 @@ let cruxManagerInstance: CrUXManager;
 export const DEVICE_SCOPE_LIST: DeviceScope[] = ['ALL', 'DESKTOP', 'PHONE'];
 
 const pageScopeList: PageScope[] = ['origin', 'url'];
-const metrics: MetricNames[] =
-    ['largest_contentful_paint', 'cumulative_layout_shift', 'interaction_to_next_paint', 'round_trip_time'];
+const metrics: MetricNames[] = [
+  'largest_contentful_paint',
+  'cumulative_layout_shift',
+  'interaction_to_next_paint',
+  'round_trip_time',
+  'form_factors',
+];
 
 export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   #originCache = new Map<string, CrUXResponse|null>();

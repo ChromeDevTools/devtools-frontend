@@ -57,9 +57,9 @@ const UIStrings = {
    */
   fieldData: 'Field data',
   /**
-   * @description Title of a section that shows throttling settings.
+   * @description Title of a section that shows recording settings.
    */
-  throttling: 'Throttling',
+  recordingSettings: 'Recording settings',
   /**
    * @description Title of a report section for the largest contentful paint metric.
    */
@@ -153,6 +153,14 @@ const UIStrings = {
    * @example {Slow 4G} PH1
    */
   tryUsingThrottling: 'Try using {PH1} network throttling to approximate the network latency measured by real users.',
+  /**
+   * @description Text block recommendation instructing the user to emulate a mobile device to match most real users.
+   */
+  mostUsersMobile: 'A majority of users are on mobile. Try emulating a mobile device that matches real users.',
+  /**
+   * @description Text block recommendation instructing the user to emulate different desktop window sizes to match most real users.
+   */
+  mostUsersDesktop: 'A majority of users are on desktop. Try emulating a desktop window size that matches real users.',
   /**
    * @description Text label for a link to the Largest Contentful Paint (LCP) related DOM node.
    */
@@ -632,7 +640,7 @@ export class LiveMetricsView extends HTMLElement {
     return this.#cruxPageResult?.[`${this.#fieldPageScope}-${deviceScope}`];
   }
 
-  #getFieldMetricData(fieldMetric: CrUXManager.MetricNames): CrUXManager.MetricResponse|undefined {
+  #getFieldMetricData(fieldMetric: CrUXManager.StandardMetricNames): CrUXManager.MetricResponse|undefined {
     return this.#getSelectedFieldResponse()?.record.metrics[fieldMetric];
   }
 
@@ -787,13 +795,32 @@ export class LiveMetricsView extends HTMLElement {
     return closestPreset;
   }
 
-  #renderThrottlingSettings(): LitHtml.LitTemplate {
-    const throttlingRec = this.#getClosestNetworkPreset();
+  #getDeviceRec(): Common.UIString.LocalizedString|null {
+    // `form_factors` metric is only populated if CrUX data is fetched for all devices.
+    const fractions = this.#cruxPageResult?.[`${this.#fieldPageScope}-ALL`]?.record.metrics.form_factors?.fractions;
+    if (!fractions) {
+      return null;
+    }
 
-    let recEl;
+    if (fractions.desktop > 0.5) {
+      return i18nString(UIStrings.mostUsersDesktop);
+    }
+
+    if (fractions.phone > 0.5) {
+      return i18nString(UIStrings.mostUsersMobile);
+    }
+
+    return null;
+  }
+
+  #renderRecordingSettings(): LitHtml.LitTemplate {
+    const throttlingRec = this.#getClosestNetworkPreset();
+    const deviceRec = this.#getDeviceRec();
+
+    let networkRecEl;
     if (throttlingRec) {
       if (throttlingRec === SDK.NetworkManager.NoThrottlingConditions) {
-        recEl = i18nString(UIStrings.tryDisablingThrottling);
+        networkRecEl = i18nString(UIStrings.tryDisablingThrottling);
       } else {
         const title = typeof throttlingRec.title === 'function' ? throttlingRec.title() : throttlingRec.title;
 
@@ -801,14 +828,15 @@ export class LiveMetricsView extends HTMLElement {
         recValueEl.classList.add('throttling-recommendation-value');
         recValueEl.textContent = title;
 
-        recEl = i18n.i18n.getFormatLocalizedString(str_, UIStrings.tryUsingThrottling, {PH1: recValueEl});
+        networkRecEl = i18n.i18n.getFormatLocalizedString(str_, UIStrings.tryUsingThrottling, {PH1: recValueEl});
       }
     }
 
     // clang-format off
     return html`
-      <h3 class="card-title">${i18nString(UIStrings.throttling)}</h3>
-      ${recEl ? html`<div class="throttling-recommendation">${recEl}</div>` : nothing}
+      <h3 class="card-title">${i18nString(UIStrings.recordingSettings)}</h3>
+      ${deviceRec ? html`<div id="device-recommendation" class="setting-recommendation">${deviceRec}</div>` : nothing}
+      ${networkRecEl ? html`<div id="network-recommendation" class="setting-recommendation">${networkRecEl}</div>` : nothing}
       <${CPUThrottlingSelector.litTagName} class="live-metrics-option"></${CPUThrottlingSelector.litTagName}>
       <${NetworkThrottlingSelector.litTagName} class="live-metrics-option"></${NetworkThrottlingSelector.litTagName}>
     `;
@@ -1070,8 +1098,8 @@ export class LiveMetricsView extends HTMLElement {
                 <${FieldSettingsDialog.litTagName}></${FieldSettingsDialog.litTagName}>
               </div>
             </div>
-            <div id="throttling" class="settings-card">
-              ${this.#renderThrottlingSettings()}
+            <div id="recording-settings" class="settings-card">
+              ${this.#renderRecordingSettings()}
             </div>
             <div id="record" class="record-action-card">
               ${this.#renderRecordAction(this.#toggleRecordAction)}

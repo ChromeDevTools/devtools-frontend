@@ -45,7 +45,11 @@ function getDetailedCompareText(view: Element, metric: string): HTMLElement|null
 }
 
 function getThrottlingRecommendation(view: Element): HTMLElement|null {
-  return view.shadowRoot!.querySelector('.throttling-recommendation');
+  return view.shadowRoot!.querySelector('#network-recommendation');
+}
+
+function getDeviceRecommendation(view: Element): HTMLElement|null {
+  return view.shadowRoot!.querySelector('#device-recommendation');
 }
 
 function getInteractions(view: Element): HTMLElement[] {
@@ -104,6 +108,13 @@ function createMockFieldData() {
         },
         'round_trip_time': {
           percentiles: {p75: 150},
+        },
+        'form_factors': {
+          fractions: {
+            desktop: 0.6,
+            phone: 0.3,
+            tablet: 0.1,
+          },
         },
       },
       collectionPeriod: {
@@ -317,6 +328,9 @@ describeWithMockConnection('LiveMetricsView', () => {
       const throttlingRec = getThrottlingRecommendation(view);
       assert.isNull(throttlingRec);
 
+      const deviceRec = getDeviceRecommendation(view);
+      assert.isNull(deviceRec);
+
       const fieldMessage = getFieldMessage(view);
       assert.match(fieldMessage!.innerText, /See how your local metrics compare/);
     });
@@ -357,6 +371,9 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       const throttlingRec = getThrottlingRecommendation(view);
       assert.match(throttlingRec!.innerText, /Slow 4G/);
+
+      const deviceRec = getDeviceRecommendation(view);
+      assert.match(deviceRec!.innerText, /desktop/);
 
       const fieldMessage = getFieldMessage(view);
       assert.strictEqual(fieldMessage!.innerText, 'Collection period: Jan 1, 2024 - Jan 29, 2024');
@@ -653,7 +670,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       });
     });
 
-    describe('throttling recommendation', () => {
+    describe('network throttling recommendation', () => {
       it('should show for closest target RTT', async () => {
         mockFieldData['url-ALL'] = createMockFieldData();
 
@@ -714,6 +731,56 @@ describeWithMockConnection('LiveMetricsView', () => {
 
         const throttlingRec = getThrottlingRecommendation(view);
         assert.isNull(throttlingRec);
+      });
+    });
+
+    describe('form factor recommendation', () => {
+      it('should recommend desktop if it is the majority', async () => {
+        mockFieldData['url-ALL'] = createMockFieldData();
+
+        const view = new Components.LiveMetricsView.LiveMetricsView();
+        renderElementIntoDOM(view);
+
+        await coordinator.done();
+
+        const deviceRec = getDeviceRecommendation(view);
+        assert.match(deviceRec!.innerText, /desktop/);
+      });
+
+      it('should recommend mobile if it is the majority', async () => {
+        mockFieldData['url-ALL'] = createMockFieldData();
+
+        mockFieldData['url-ALL'].record.metrics.form_factors!.fractions = {
+          desktop: 0.1,
+          phone: 0.8,
+          tablet: 0.1,
+        };
+
+        const view = new Components.LiveMetricsView.LiveMetricsView();
+        renderElementIntoDOM(view);
+
+        await coordinator.done();
+
+        const deviceRec = getDeviceRecommendation(view);
+        assert.match(deviceRec!.innerText, /mobile/);
+      });
+
+      it('should recommend nothing if there is no majority', async () => {
+        mockFieldData['url-ALL'] = createMockFieldData();
+
+        mockFieldData['url-ALL'].record.metrics.form_factors!.fractions = {
+          desktop: 0.49,
+          phone: 0.49,
+          tablet: 0.02,
+        };
+
+        const view = new Components.LiveMetricsView.LiveMetricsView();
+        renderElementIntoDOM(view);
+
+        await coordinator.done();
+
+        const deviceRec = getDeviceRecommendation(view);
+        assert.isNull(deviceRec);
       });
     });
   });

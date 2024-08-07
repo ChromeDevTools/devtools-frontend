@@ -45,8 +45,18 @@ details > summary {
 }
 
 .content {
-  max-width: 500px;
-  padding: 16px;
+  max-width: 360px;
+  padding: 16px 20px 18px;
+  box-sizing: border-box;
+}
+
+.open-button-section {
+  display: flex;
+  flex-direction: row;
+}
+
+.config-button {
+  margin-left: auto;
 }
 
 .buttons-section {
@@ -78,4 +88,9 @@ label {
 .warning {
   margin: 2px 8px;
   color: var(--color-error-text);
+}
+
+x-link { /* stylelint-disable-line selector-type-no-unknown */
+  color: var(--sys-color-primary);
+  text-decoration-line: underline;
 }

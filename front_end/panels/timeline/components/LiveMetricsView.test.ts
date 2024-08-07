@@ -383,7 +383,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       assert.strictEqual(clsFieldEl!.textContent, '0.25');
 
       const inpFieldEl = getFieldMetricValue(view, 'inp');
-      assert.isNull(inpFieldEl);
+      assert.strictEqual(inpFieldEl!.textContent, '-');
 
       const throttlingRec = getThrottlingRecommendation(view);
       assert.match(throttlingRec!.innerText, /Slow 4G/);

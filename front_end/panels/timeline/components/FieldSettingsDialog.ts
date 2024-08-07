@@ -8,6 +8,7 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Input from '../../../ui/components/input/input.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -51,10 +52,11 @@ const UIStrings = {
    */
   configureFieldData: 'Configure field data fetching',
   /**
-   * @description Paragraph explaining where field data comes from and and how it can be used. "Chrome UX Report" is a product name and should not be translated.
+   * @description Paragraph explaining where field data comes from and and how it can be used. PH1 will be a link with text "Chrome UX Report" that is untranslated because it is a product name.
+   * @example {Chrome UX Report} PH1
    */
   fetchAggregated:
-      'Fetch aggregated field data from the Chrome UX Report to help you contextualize local measurements with what real users experience on the site.',
+      'Fetch aggregated field data from the {PH1} to help you contextualize local measurements with what real users experience on the site.',
   /**
    * @description Heading for a section that explains what user data needs to be collected to fetch field data.
    */
@@ -176,6 +178,7 @@ export class FieldSettingsDialog extends HTMLElement {
       // clang-format off
       return html`
         <${Buttons.Button.Button.litTagName}
+          class="config-button"
           @click=${this.#showDialog}
           .data=${{
             variant: Buttons.Button.Variant.OUTLINED,
@@ -189,6 +192,7 @@ export class FieldSettingsDialog extends HTMLElement {
     // clang-format off
     return html`
       <${Buttons.Button.Button.litTagName}
+        class="setup-button"
         @click=${this.#showDialog}
         .data=${{
           variant: Buttons.Button.Variant.PRIMARY,
@@ -250,9 +254,13 @@ export class FieldSettingsDialog extends HTMLElement {
   }
 
   #render = (): void => {
+    // "Chrome UX Report" is intentionally left untranslated because it is a product name.
+    const linkEl = UI.XLink.XLink.create('https://developer.chrome.com/docs/crux', 'Chrome UX Report');
+    const descriptionEl = i18n.i18n.getFormatLocalizedString(str_, UIStrings.fetchAggregated, {PH1: linkEl});
+
     // clang-format off
     const output = html`
-      ${this.#renderOpenButton()}
+      <div class="open-button-section">${this.#renderOpenButton()}</div>
       <${Dialogs.Dialog.Dialog.litTagName}
         @clickoutsidedialog=${this.#closeDialog}
         .showConnector=${true}
@@ -265,7 +273,7 @@ export class FieldSettingsDialog extends HTMLElement {
       >
         <div class="content">
           <h2 class="title">${i18nString(UIStrings.configureFieldData)}</h2>
-          <div>${i18nString(UIStrings.fetchAggregated)}</div>
+          <div>${descriptionEl}</div>
           <div class="privacy-disclosure">
             <h3 class="section-title">${i18nString(UIStrings.privacyDisclosure)}</h3>
             <div>${i18nString(UIStrings.whenPerformanceIsShown)}</div>

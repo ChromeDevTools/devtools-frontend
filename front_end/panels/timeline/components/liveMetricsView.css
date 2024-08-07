@@ -108,7 +108,7 @@
 }
 
 .compare-text {
-  margin: 8px 0;
+  margin-top: 8px;
 }
 
 .setting-recommendation {
@@ -122,6 +122,7 @@
 .related-element-info {
   overflow: hidden;
   text-wrap: nowrap;
+  margin-top: 8px;
 }
 
 .related-element-label {
@@ -141,6 +142,10 @@
   margin-bottom: 8px;
 }
 
+.card-metric-label {
+  font-weight: var(--ref-typeface-weight-medium);
+}
+
 .metric-value {
   text-wrap: nowrap;
 }
@@ -154,6 +159,10 @@
   font-size: 32px;
   line-height: 36px;
   font-weight: var(--ref-typeface-weight-regular);
+}
+
+.waiting {
+  color: var(--sys-color-token-subtle);
 }
 
 .good {
@@ -200,8 +209,7 @@
   padding: 0;
   margin: 0;
   overflow: auto;
-  flex-grow: 1;
-  min-height: 100px;
+  max-height: 300px;
 }
 
 .interaction {

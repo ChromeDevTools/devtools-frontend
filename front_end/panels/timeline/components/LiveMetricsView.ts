@@ -433,7 +433,6 @@ export class MetricCard extends HTMLElement {
     const rating = rateMetric(localValue, this.#getThresholds());
 
     const valueEl = renderMetricValue(localValue, this.#getThresholds(), this.#getFormatFn(), {dim: true});
-    valueEl.classList.add('metric-value-label');
 
     // clang-format off
     return html`
@@ -464,10 +463,7 @@ export class MetricCard extends HTMLElement {
     const fieldRating = fieldValue !== undefined ? rateMetric(fieldValue, this.#getThresholds()) : undefined;
 
     const localValueEl = renderMetricValue(localValue, this.#getThresholds(), this.#getFormatFn(), {dim: true});
-    localValueEl.classList.add('metric-value-label');
-
     const fieldValueEl = renderMetricValue(fieldValue, this.#getThresholds(), this.#getFormatFn(), {dim: true});
-    fieldValueEl.classList.add('metric-value-label');
 
     // clang-format off
     return html`
@@ -551,7 +547,7 @@ export class MetricCard extends HTMLElement {
   }
 
   #render = (): void => {
-    const hasFieldData = this.#getFieldValue() !== undefined;
+    const fieldEnabled = CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled;
 
     // clang-format off
     const output = html`
@@ -570,12 +566,12 @@ export class MetricCard extends HTMLElement {
           <span class="local-value">
             ${renderMetricValue(this.#getLocalValue(), this.#getThresholds(), this.#getFormatFn())}
           </span>
-          ${hasFieldData ? html`
+          ${fieldEnabled ? html`
             <span class="field-value">
               ${renderMetricValue(this.#getFieldValue(), this.#getThresholds(), this.#getFormatFn())}
             </span>
-            <span class="metric-value-label">${i18nString(UIStrings.localValue)}</span>
-            <span class="metric-value-label">${i18nString(UIStrings.field75thPercentile)}</span>
+            <span class="card-metric-label">${i18nString(UIStrings.localValue)}</span>
+            <span class="card-metric-label">${i18nString(UIStrings.field75thPercentile)}</span>
           `: nothing}
         </div>
         <${Dialogs.Dialog.Dialog.litTagName}
@@ -599,7 +595,7 @@ export class MetricCard extends HTMLElement {
             ${this.#renderFieldHistogram()}
           </div>
         </${Dialogs.Dialog.Dialog.litTagName}>
-        ${hasFieldData ? html`<hr class="divider">` : nothing}
+        ${fieldEnabled ? html`<hr class="divider">` : nothing}
         ${this.#renderCompareString()}
         <slot name="extra-info"><slot>
       </div>

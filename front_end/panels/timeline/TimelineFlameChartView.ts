@@ -274,7 +274,45 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       for (const overlay of this.#currentInsightOverlays) {
         this.addOverlay(overlay);
       }
+      const newBounds = this.calculateZoom(this.#currentInsightOverlays);
+      TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(newBounds);
     }
+  }
+
+  // Returns a trace windows to zoom onto insight overlays so that the overlay covers 50% of the visible window.
+  calculateZoom(overlays: Overlays.Overlays.TimelineOverlay[]): TraceEngine.Types.Timing.TraceWindowMicroSeconds {
+    const allOverlayBounds: TraceEngine.Types.Timing.MicroSeconds[] = [];
+
+    for (const overlay of overlays) {
+      switch (overlay.type) {
+        case 'ENTRY_OUTLINE': {
+          const {startTime, endTime} = this.#overlays.timingsForOverlayEntry(overlay.entry);
+          allOverlayBounds.push(startTime, endTime);
+          break;
+        }
+        case 'CANDY_STRIPED_TIME_RANGE':
+          allOverlayBounds.push(overlay.bounds.min, overlay.bounds.max);
+          break;
+        case 'TIMESPAN_BREAKDOWN':
+          if (overlay.type === 'TIMESPAN_BREAKDOWN') {
+            for (const section of overlay.sections) {
+              allOverlayBounds.push(section.bounds.min, section.bounds.max);
+            }
+          }
+          break;
+      }
+    }
+
+    const min = Math.min(...allOverlayBounds);
+    const max = Math.max(...allOverlayBounds);
+    const range = max - min;
+    const quarterPadding = range / 2;
+
+    return {
+      min: TraceEngine.Types.Timing.MicroSeconds(min - quarterPadding),
+      max: TraceEngine.Types.Timing.MicroSeconds(max + quarterPadding),
+      range: TraceEngine.Types.Timing.MicroSeconds(range),
+    };
   }
 
   #processFlameChartMouseMoveEvent(data: PerfUI.FlameChart.EventTypes['MouseMove']): void {

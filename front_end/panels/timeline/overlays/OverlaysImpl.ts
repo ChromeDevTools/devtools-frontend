@@ -235,7 +235,7 @@ export class Overlays extends EventTarget {
    * helper exists to return a consistent set of timings regardless of the type
    * of entry.
    */
-  #timingsForOverlayEntry(entry: OverlayEntry):
+  timingsForOverlayEntry(entry: OverlayEntry):
       TraceEngine.Helpers.Timing.EventTimingsData<TraceEngine.Types.Timing.MicroSeconds> {
     if (entry instanceof TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame) {
       return {
@@ -652,7 +652,7 @@ export class Overlays extends EventTarget {
     const chartName = this.#chartForOverlayEntry(overlay.entry);
     const x = this.xPixelForEventOnChart(overlay.entry);
     const y = this.yPixelForEventOnChart(overlay.entry);
-    const {endTime} = this.#timingsForOverlayEntry(overlay.entry);
+    const {endTime} = this.timingsForOverlayEntry(overlay.entry);
     const endX = this.#xPixelForMicroSeconds(chartName, endTime);
     const entryHeight = this.pixelHeightForEventOnChart(overlay.entry) ?? 0;
 
@@ -776,7 +776,7 @@ export class Overlays extends EventTarget {
       return;
     }
 
-    const {endTime, duration} = this.#timingsForOverlayEntry(overlay.entry);
+    const {endTime, duration} = this.timingsForOverlayEntry(overlay.entry);
     const endX = this.#xPixelForMicroSeconds(chartName, endTime);
     if (endX === null) {
       return;
@@ -972,7 +972,7 @@ export class Overlays extends EventTarget {
     if (this.#dimensions.trace.visibleWindow === null) {
       return false;
     }
-    const {startTime, endTime} = this.#timingsForOverlayEntry(entry);
+    const {startTime, endTime} = this.timingsForOverlayEntry(entry);
 
     const entryTimeRange = TraceEngine.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
 
@@ -1057,7 +1057,7 @@ export class Overlays extends EventTarget {
    */
   xPixelForEventOnChart(event: OverlayEntry): number|null {
     const chartName = this.#chartForOverlayEntry(event);
-    const {startTime} = this.#timingsForOverlayEntry(event);
+    const {startTime} = this.timingsForOverlayEntry(event);
     return this.#xPixelForMicroSeconds(chartName, startTime);
   }
 

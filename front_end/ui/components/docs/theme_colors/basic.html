@@ -21,22 +21,24 @@
     }
 
     #container {
-      display: flex;
-    }
-
-    .light-mode-container, .dark-mode-container {
-      width: 50%;
+      display: grid;
       max-width: 600px;
+      grid-template-columns: repeat(2, 1fr);
+      row-gap: var(--sys-size-5);
+      column-gap: var(--sys-size-5);
 
-    }
-    .light-mode-container li, .dark-mode-container li {
-      display: block;
-      list-style: none;
-      border-bottom-width: 20px;
-      border-bottom-style: solid;
-      text-align: center;
-      font-size: 14px;
-      margin-bottom: 10px;
+      > span {
+        font: var(--sys-typescale-headline1);
+      }
+
+      > div {
+        display: block;
+        border-bottom-width: var(--sys-size-9);
+        border-bottom-style: solid;
+        text-align: center;
+        font: var(--sys-typescale-body1-regular);
+        margin-bottom: var(--sys-size-5);
+      }
     }
   </style>
 </head>
@@ -44,8 +46,8 @@
 <body>
 
   <div id="container">
-    <ul class="light-mode-container"></ul>
-    <ul class="dark-mode-container theme-with-dark-background"></ul>
+    <span>Light Mode</span>
+    <span>Dark Mode</span>
   </div>
 
   <script type="module" src="./basic.js"></script>

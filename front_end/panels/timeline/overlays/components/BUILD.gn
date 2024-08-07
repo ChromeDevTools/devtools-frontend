@@ -9,6 +9,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 generate_css("css_files") {
   sources = [
+    "entriesLinkOverlay.css",
     "entryLabelOverlay.css",
     "timeRangeOverlay.css",
     "timespanBreakdownOverlay.css",
@@ -17,6 +18,7 @@ generate_css("css_files") {
 
 devtools_module("components") {
   sources = [
+    "EntriesLinkOverlay.ts",
     "EntryLabelOverlay.ts",
     "TimeRangeOverlay.ts",
     "TimespanBreakdownOverlay.ts",

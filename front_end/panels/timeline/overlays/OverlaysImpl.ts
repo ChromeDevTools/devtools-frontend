@@ -67,6 +67,15 @@ export interface EntryLabel {
 }
 
 /**
+ * Represents an object created when a user creates a link between two entries.
+ */
+export interface EntriesLink {
+  type: 'ENTRIES_LINK';
+  entryFrom: OverlayEntry;
+  entryTo: OverlayEntry;
+}
+
+/**
  * Represents a time range on the trace. Also used when the user shift+clicks
  * and drags to create a time range.
  */
@@ -108,8 +117,8 @@ export interface CursorTimestampMarker {
 /**
  * All supported overlay types. Expected to grow in time!
  */
-export type TimelineOverlay =
-    EntrySelected|EntryOutline|TimeRangeLabel|EntryLabel|TimespanBreakdown|CursorTimestampMarker|CandyStripedTimeRange;
+export type TimelineOverlay = EntrySelected|EntryOutline|TimeRangeLabel|EntryLabel|EntriesLink|TimespanBreakdown|
+    CursorTimestampMarker|CandyStripedTimeRange;
 
 /**
  * Denotes overlays that are singletons; only one of these will be allowed to
@@ -537,6 +546,10 @@ export class Overlays extends EventTarget {
         }
         break;
       }
+      case 'ENTRIES_LINK': {
+        this.#positionEntriesLinkOverlay(overlay, element);
+        break;
+      }
       case 'TIMESPAN_BREAKDOWN': {
         this.#positionTimespanBreakdownOverlay(overlay, element);
         const component = element.querySelector('devtools-timespan-breakdown-overlay');
@@ -624,6 +637,15 @@ export class Overlays extends EventTarget {
         count++;
       }
     }
+  }
+
+  #positionEntriesLinkOverlay(overlay: EntriesLink, element: HTMLElement): void {
+    const fromEntryX = this.xPixelForEventOnChart(overlay.entryFrom);
+    const romEntryY = this.yPixelForEventOnChart(overlay.entryFrom);
+
+    // TODO: Position the entries link correctly
+    element.style.top = `${fromEntryX}px`;
+    element.style.left = `${romEntryY}px`;
   }
 
   #positionTimeRangeOverlay(overlay: TimeRangeLabel, element: HTMLElement): void {
@@ -879,6 +901,11 @@ export class Overlays extends EventTarget {
         div.appendChild(component);
         return div;
       }
+      case 'ENTRIES_LINK': {
+        const component = new Components.EntriesLinkOverlay.EntriesLinkOverlay();
+        div.appendChild(component);
+        return div;
+      }
       case 'ENTRY_OUTLINE': {
         div.classList.add(`outline-reason-${overlay.outlineReason}`);
         return div;
@@ -929,6 +956,8 @@ export class Overlays extends EventTarget {
         break;
       }
       case 'ENTRY_OUTLINE':
+        break;
+      case 'ENTRIES_LINK':
         break;
       case 'ENTRY_LABEL': {
         // TODO: update if the label changes

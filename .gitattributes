@@ -1,3 +1,4 @@
 package-lock.json binary
+front_end/ui/visual_logging/KnownContextValues.ts merge=union
 # Automatically normalize line endings (to LF) for all text-based files.
 * text=auto eol=lf

@@ -39,6 +39,11 @@ function getCompareText(view: Element, metric: string): HTMLElement|null {
   return card!.shadowRoot!.querySelector('.compare-text');
 }
 
+function getDetailedCompareText(view: Element, metric: string): HTMLElement|null {
+  const card = view.shadowRoot!.querySelector(`#${metric} devtools-metric-card`);
+  return card!.shadowRoot!.querySelector('.detailed-compare-text');
+}
+
 function getThrottlingRecommendation(view: Element): HTMLElement|null {
   return view.shadowRoot!.querySelector('.throttling-recommendation');
 }
@@ -574,6 +579,76 @@ describeWithMockConnection('LiveMetricsView', () => {
         await coordinator.done();
 
         const compareText = getCompareText(view, 'inp');
+        assert.strictEqual(compareText!.innerText, 'Interact with the page to measure INP.');
+      });
+    });
+
+    describe('detailed local/field comparison', () => {
+      it('should show message when values are rated the same', async () => {
+        mockFieldData['url-ALL'] = createMockFieldData();
+
+        const view = new Components.LiveMetricsView.LiveMetricsView();
+        renderElementIntoDOM(view);
+
+        LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
+          lcp: {value: 100},
+          interactions: [],
+        });
+
+        await coordinator.done();
+
+        const compareText = getDetailedCompareText(view, 'lcp');
+        assert.strictEqual(
+            compareText!.innerText,
+            'Your local LCP 100 ms is good and is rated the same as 50% of real-user LCP experiences. Additionally, the field data 75th percentile LCP 1.00 s is good.',
+        );
+      });
+
+      it('should show message when values are rated differently', async () => {
+        mockFieldData['url-ALL'] = createMockFieldData();
+        mockFieldData['url-ALL'].record.metrics.largest_contentful_paint!.percentiles!.p75 = 5000;
+
+        const view = new Components.LiveMetricsView.LiveMetricsView();
+        renderElementIntoDOM(view);
+
+        LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
+          lcp: {value: 100},
+          interactions: [],
+        });
+
+        await coordinator.done();
+
+        const compareText = getDetailedCompareText(view, 'lcp');
+        assert.strictEqual(
+            compareText!.innerText,
+            'Your local LCP 100 ms is good and is rated the same as 50% of real-user LCP experiences. However, the field data 75th percentile LCP 5.00 s is poor.',
+        );
+      });
+
+      it('should show generic summary if field is missing', async () => {
+        const view = new Components.LiveMetricsView.LiveMetricsView();
+        renderElementIntoDOM(view);
+
+        LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
+          lcp: {value: 3000},
+          interactions: [],
+        });
+
+        await coordinator.done();
+
+        const compareText = getDetailedCompareText(view, 'lcp');
+        assert.strictEqual(compareText!.innerText, 'Your local LCP 3.00 s needs improvement.');
+      });
+
+      it('should suggest interaction if local INP is missing', async () => {
+        mockFieldData['url-ALL'] = createMockFieldData();
+
+        const view = new Components.LiveMetricsView.LiveMetricsView();
+        renderElementIntoDOM(view);
+
+        await coordinator.done();
+
+        const compareText = getDetailedCompareText(view, 'inp');
         assert.strictEqual(compareText!.innerText, 'Interact with the page to measure INP.');
       });
     });

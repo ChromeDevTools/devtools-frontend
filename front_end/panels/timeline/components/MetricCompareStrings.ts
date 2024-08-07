@@ -84,6 +84,87 @@ const UIStrings = {
    * @example {500 ms} PH2
    */
   poorSummarized: 'Your local {PH1} {PH2} is poor.',
+  /**
+   * @description Text block that compares a local metric value to real user experiences.
+   * @example {LCP} PH1
+   * @example {500 ms} PH2
+   * @example {400 ms} PH3
+   * @example {40%} PH4
+   */
+  goodGoodDetailedCompare:
+      'Your local {PH1} {PH2} is good and is rated the same as {PH4} of real-user {PH1} experiences. Additionally, the field data 75th percentile {PH1} {PH3} is good.',
+  /**
+   * @description Text block that compares a local metric value to real user experiences.
+   * @example {LCP} PH1
+   * @example {500 ms} PH2
+   * @example {400 ms} PH3
+   * @example {40%} PH4
+   */
+  goodNeedsImprovementDetailedCompare:
+      'Your local {PH1} {PH2} is good and is rated the same as {PH4} of real-user {PH1} experiences. However, the field data 75th percentile {PH1} {PH3} needs improvement.',
+  /**
+   * @description Text block that compares a local metric value to real user experiences.
+   * @example {LCP} PH1
+   * @example {500 ms} PH2
+   * @example {400 ms} PH3
+   * @example {40%} PH4
+   */
+  goodPoorDetailedCompare:
+      'Your local {PH1} {PH2} is good and is rated the same as {PH4} of real-user {PH1} experiences. However, the field data 75th percentile {PH1} {PH3} is poor.',
+  /**
+   * @description Text block that compares a local metric value to real user experiences.
+   * @example {LCP} PH1
+   * @example {500 ms} PH2
+   * @example {400 ms} PH3
+   * @example {40%} PH4
+   */
+  needsImprovementGoodDetailedCompare:
+      'Your local {PH1} {PH2} needs improvement and is rated the same as {PH4} of real-user {PH1} experiences. However, the field data 75th percentile {PH1} {PH3} is good.',
+  /**
+   * @description Text block that compares a local metric value to real user experiences.
+   * @example {LCP} PH1
+   * @example {500 ms} PH2
+   * @example {400 ms} PH3
+   * @example {40%} PH4
+   */
+  needsImprovementNeedsImprovementDetailedCompare:
+      'Your local {PH1} {PH2} needs improvement and is rated the same as {PH4} of real-user {PH1} experiences. Additionally, the field data 75th percentile {PH1} {PH3} needs improvement.',
+  /**
+   * @description Text block that compares a local metric value to real user experiences.
+   * @example {LCP} PH1
+   * @example {500 ms} PH2
+   * @example {400 ms} PH3
+   * @example {40%} PH4
+   */
+  needsImprovementPoorDetailedCompare:
+      'Your local {PH1} {PH2} needs improvement and is rated the same as {PH4} of real-user {PH1} experiences. However, the field data 75th percentile {PH1} {PH3} is poor.',
+  /**
+   * @description Text block that compares a local metric value to real user experiences.
+   * @example {LCP} PH1
+   * @example {500 ms} PH2
+   * @example {400 ms} PH3
+   * @example {40%} PH4
+   */
+  poorGoodDetailedCompare:
+      'Your local {PH1} {PH2} is poor and is rated the same as {PH4} of real-user {PH1} experiences. However, the field data 75th percentile {PH1} {PH3} is good.',
+  /**
+   * @description Text block that compares a local metric value to real user experiences.
+   * @example {LCP} PH1
+   * @example {500 ms} PH2
+   * @example {400 ms} PH3
+   * @example {40%} PH4
+   */
+  poorNeedsImprovementDetailedCompare:
+      'Your local {PH1} {PH2} is poor and is rated the same as {PH4} of real-user {PH1} experiences. However, the field data 75th percentile {PH1} {PH3} needs improvement.',
+  /**
+   * @description Text block that compares a local metric value to real user experiences.
+   * @example {LCP} PH1
+   * @example {500 ms} PH2
+   * @example {400 ms} PH3
+   * @example {40%} PH4
+   */
+  poorPoorDetailedCompare:
+      'Your local {PH1} {PH2} is poor and is rated the same as {PH4} of real-user {PH1} experiences. Additionally, the field data 75th percentile {PH1} {PH3} is poor.',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/MetricCompareStrings.ts', UIStrings);
@@ -133,4 +214,51 @@ export function renderCompareText(
   }
 
   throw new Error('Compare string not found');
+}
+
+export function renderDetailedCompareText(
+    localRating: 'good'|'needs-improvement'|'poor', fieldRating?: 'good'|'needs-improvement'|'poor',
+    values?: Record<string, Object>): Element {
+  if (!values) {
+    values = {};
+  }
+
+  if (localRating === 'good' && fieldRating === 'good') {
+    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.goodGoodDetailedCompare, values);
+  }
+  if (localRating === 'good' && fieldRating === 'needs-improvement') {
+    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.goodNeedsImprovementDetailedCompare, values);
+  }
+  if (localRating === 'good' && fieldRating === 'poor') {
+    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.goodPoorDetailedCompare, values);
+  }
+  if (localRating === 'good' && !fieldRating) {
+    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.goodSummarized, values);
+  }
+  if (localRating === 'needs-improvement' && fieldRating === 'good') {
+    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.needsImprovementGoodDetailedCompare, values);
+  }
+  if (localRating === 'needs-improvement' && fieldRating === 'needs-improvement') {
+    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.needsImprovementNeedsImprovementDetailedCompare, values);
+  }
+  if (localRating === 'needs-improvement' && fieldRating === 'poor') {
+    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.needsImprovementPoorDetailedCompare, values);
+  }
+  if (localRating === 'needs-improvement' && !fieldRating) {
+    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.needsImprovementSummarized, values);
+  }
+  if (localRating === 'poor' && fieldRating === 'good') {
+    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.poorGoodDetailedCompare, values);
+  }
+  if (localRating === 'poor' && fieldRating === 'needs-improvement') {
+    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.poorNeedsImprovementDetailedCompare, values);
+  }
+  if (localRating === 'poor' && fieldRating === 'poor') {
+    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.poorPoorDetailedCompare, values);
+  }
+  if (localRating === 'poor' && !fieldRating) {
+    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.poorSummarized, values);
+  }
+
+  throw new Error('Detailed compare string not found');
 }

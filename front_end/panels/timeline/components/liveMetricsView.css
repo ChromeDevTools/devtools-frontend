@@ -251,6 +251,7 @@
   justify-items: flex-end;
   align-items: center;
   flex: 1;
+  margin-top: 8px;
 }
 
 .histogram-bar {
@@ -304,7 +305,13 @@
 }
 
 .tooltip-content {
-  margin: 0 6px;
+  margin: 0 12px;
+  min-width: min-content;
+  width: 300px;
+}
+
+.detailed-compare-text {
+  margin-bottom: 8px;
 }
 
 .field-data-message {

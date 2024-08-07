@@ -19,7 +19,7 @@ import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js'
 import {CPUThrottlingSelector} from './CPUThrottlingSelector.js';
 import {FieldSettingsDialog} from './FieldSettingsDialog.js';
 import liveMetricsViewStyles from './liveMetricsView.css.js';
-import {renderCompareText} from './MetricCompareStrings.js';
+import {renderCompareText, renderDetailedCompareText} from './MetricCompareStrings.js';
 import {NetworkThrottlingSelector} from './NetworkThrottlingSelector.js';
 
 const {html, nothing, Directives} = LitHtml;
@@ -417,6 +417,40 @@ export class MetricCard extends HTMLElement {
     // clang-format on
   }
 
+  #renderDetailedCompareString(): LitHtml.LitTemplate {
+    const localValue = this.#getLocalValue();
+    if (localValue === undefined) {
+      if (this.#data.metric === 'INP') {
+        return html`
+          <div class="detailed-compare-text">${i18nString(UIStrings.interactToMeasure)}</div>
+        `;
+      }
+      return LitHtml.nothing;
+    }
+
+    const localRating = rateMetric(localValue, this.#getThresholds());
+
+    const fieldValue = this.#getFieldValue();
+    const fieldRating = fieldValue !== undefined ? rateMetric(fieldValue, this.#getThresholds()) : undefined;
+
+    const localValueEl = renderMetricValue(localValue, this.#getThresholds(), this.#getFormatFn(), {dim: true});
+    localValueEl.classList.add('metric-value-label');
+
+    const fieldValueEl = renderMetricValue(fieldValue, this.#getThresholds(), this.#getFormatFn(), {dim: true});
+    fieldValueEl.classList.add('metric-value-label');
+
+    // clang-format off
+    return html`
+      <div class="detailed-compare-text">${renderDetailedCompareText(localRating, fieldRating, {
+        PH1: this.#data.metric,
+        PH2: localValueEl,
+        PH3: fieldValueEl,
+        PH4: this.#getBucketLabel(localRating),
+      })}</div>
+    `;
+    // clang-format on
+  }
+
   #densityToCSSPercent(density?: number): string {
     if (density === undefined) {
       density = 0;
@@ -425,9 +459,23 @@ export class MetricCard extends HTMLElement {
     return `${percent}%`;
   }
 
-  #getBucketLabel(histogram: CrUXManager.MetricResponse['histogram']|undefined, bucket: number): string {
+  #getBucketLabel(rating: MetricRating): string {
+    const histogram = this.#data.histogram;
     if (histogram === undefined) {
       return '-';
+    }
+
+    let bucket;
+    switch (rating) {
+      case 'good':
+        bucket = 0;
+        break;
+      case 'needs-improvement':
+        bucket = 1;
+        break;
+      case 'poor':
+        bucket = 2;
+        break;
     }
 
     // A missing density value should be interpreted as 0%
@@ -454,19 +502,19 @@ export class MetricCard extends HTMLElement {
           <span class="histogram-range">${i18nString(UIStrings.leqRange, {PH1: format(thresholds[0])})}</span>
         </span>
         <span class="histogram-bar good-bg" style="width: ${goodPercent}"></span>
-        <span class="histogram-percent">${this.#getBucketLabel(histogram, 0)}</span>
+        <span class="histogram-percent">${this.#getBucketLabel('good')}</span>
         <span class="histogram-label">
           ${i18nString(UIStrings.needsImprovement)}
           <span class="histogram-range">${i18nString(UIStrings.betweenRange, {PH1: format(thresholds[0]), PH2: format(thresholds[1])})}</span>
         </span>
         <span class="histogram-bar needs-improvement-bg" style="width: ${needsImprovementPercent}"></span>
-        <span class="histogram-percent">${this.#getBucketLabel(histogram, 1)}</span>
+        <span class="histogram-percent">${this.#getBucketLabel('needs-improvement')}</span>
         <span class="histogram-label">
           ${i18nString(UIStrings.poor)}
           <span class="histogram-range">${i18nString(UIStrings.gtRange, {PH1: format(thresholds[1])})}</span>
         </span>
         <span class="histogram-bar poor-bg" style="width: ${poorPercent}"></span>
-        <span class="histogram-percent">${this.#getBucketLabel(histogram, 2)}</span>
+        <span class="histogram-percent">${this.#getBucketLabel('poor')}</span>
       </div>
     `;
     // clang-format on
@@ -516,6 +564,8 @@ export class MetricCard extends HTMLElement {
           })}
         >
           <div id="tooltip-content" class="tooltip-content" role="tooltip" aria-label=${i18nString(UIStrings.viewCardDetails)}>
+            ${this.#renderDetailedCompareString()}
+            <hr class="divider">
             ${this.#renderFieldHistogram()}
           </div>
         </${Dialogs.Dialog.Dialog.litTagName}>

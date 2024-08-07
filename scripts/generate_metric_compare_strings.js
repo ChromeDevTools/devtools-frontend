@@ -52,6 +52,21 @@ for (const [rating, ratingText] of Object.entries(ratings)) {
    */
   ${tag}: 'Your local {PH1} {PH2} ${ratingText}.',`);
 }
+for (const [localRating, localRatingText] of Object.entries(ratings)) {
+  for (const [fieldRating, fieldRatingText] of Object.entries(ratings)) {
+    const tag = camelize(localRating) + capitalizeFirstLetter(camelize(fieldRating)) + 'DetailedCompare';
+    const transition = localRating === fieldRating ? 'Additionally' : 'However';
+    console.log(`  /**
+   * @description Text block that compares a local metric value to real user experiences.
+   * @example {LCP} PH1
+   * @example {500 ms} PH2
+   * @example {400 ms} PH3
+   * @example {40%} PH4
+   */
+  ${tag}: 'Your local {PH1} {PH2} ${localRatingText} and is rated the same as {PH4} of real-user {PH1} experiences. ${
+        transition}, the field data 75th percentile {PH1} {PH3} ${fieldRatingText}.',`);
+  }
+}
 console.log(`};
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/MetricCompareStrings.ts', UIStrings);`);
@@ -78,4 +93,29 @@ for (const rating of Object.keys(ratings)) {
 }
 console.log(`
   throw new Error('Compare string not found');
+}`);
+
+console.log(`
+export function renderDetailedCompareText(localRating: ${
+    Object.keys(ratings).map(c => `'${c}'`).join('|')}, fieldRating?: ${
+    Object.keys(ratings).map(c => `'${c}'`).join('|')}, values?: Record<string, Object>): Element {
+  if (!values) {
+    values = {};
+  }
+`);
+
+for (const localRating of Object.keys(ratings)) {
+  for (const fieldRating of Object.keys(ratings)) {
+    const tag = camelize(localRating) + capitalizeFirstLetter(camelize(fieldRating)) + 'DetailedCompare';
+    console.log(`  if (localRating === '${localRating}' && fieldRating === '${fieldRating}') {
+    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.${tag}, values);
+  }`);
+  }
+  const tag = camelize(localRating) + 'Summarized';
+  console.log(`  if (localRating === '${localRating}' && !fieldRating) {
+    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.${tag}, values);
+  }`);
+}
+console.log(`
+  throw new Error('Detailed compare string not found');
 }`);

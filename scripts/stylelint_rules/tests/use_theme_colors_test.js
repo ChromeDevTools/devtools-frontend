@@ -245,6 +245,18 @@ describe('use_theme_colors', () => {
     assert.lengthOf(warnings, 0);
   });
 
+  it('does not error when using --sys-elevation for box-shadow', async () => {
+    const warnings = await lint('p { box-shadow: var(--sys-elevation-level1); }');
+
+    assert.lengthOf(warnings, 0);
+  });
+
+  it('does error when using a random color for box shadow', async () => {
+    const warnings = await lint('p { box-shadow: 0 1px 2px 0 #ff0000; }');
+
+    assert.lengthOf(warnings, 1);
+  });
+
   it('is silent when linting code that has an empty var()', async () => {
     /**
      * This is a weird test case but if you've got Stylelint in your editor and

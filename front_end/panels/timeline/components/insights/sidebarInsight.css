@@ -34,10 +34,10 @@
   top: 10px;
   right: 10px;
   border: none;
-  width: 20px;
-  height: 20px;
-  box-shadow: var(--drop-shadow-depth-1);
-  border-radius: 50%;
+  width: var(--sys-size-9);
+  height: var(--sys-size-9);
+  box-shadow: var(--sys-elevation-level1);
+  border-radius: var(--sys-shape-corner-full);
   background: var(--sys-color-cdt-base-container);
   opacity: 0%;
   transition: opacity 0.2s ease;

@@ -5,6 +5,7 @@
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import sidebarInsightStyles from './sidebarInsight.css.js';
@@ -72,7 +73,8 @@ export class SidebarInsight extends HTMLElement {
           variant: Buttons.Button.Variant.ICON,
           iconName: 'chevron-down',
           size: Buttons.Button.Size.SMALL,
-        } as Buttons.Button.ButtonData}></${Buttons.Button.Button.litTagName}>
+        } as Buttons.Button.ButtonData}
+      ></${Buttons.Button.Button.litTagName}>
       </div>
 
     `;
@@ -88,7 +90,7 @@ export class SidebarInsight extends HTMLElement {
     // clang-format off
     const output = LitHtml.html`
       <div class=${containerClasses}>
-        <header @click=${this.#dispatchInsightToggle}>
+        <header @click=${this.#dispatchInsightToggle} jslog=${VisualLogging.action('timeline.toggle-insight').track({click: true})}>
           ${this.#renderHoverIcon(this.#expanded)}
           <h3 class="insight-title">${this.#insightTitle}</h3>
         </header>

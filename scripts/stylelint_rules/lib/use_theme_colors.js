@@ -74,6 +74,8 @@ const ALL_DEFINED_VARIABLES = new Set([
   ...DEFINED_INSPECTOR_STYLE_VARIABLES
 ]);
 
+const BOX_SHADOW_VARIABLES = new Set([1, 2, 3, 4, 5].map(x => `var(--sys-elevation-level${x})`));
+
 module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, context) {
   return function(postcssRoot, postcssResult) {
     function reportError(declaration, shouldFix) {
@@ -184,6 +186,13 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
       rule.walkDecls(declaration => {
         if (!CSS_PROPS_TO_CHECK_FOR_COLOR_USAGE.has(declaration.prop)) {
           return;
+        }
+
+        if (declaration.prop === 'box-shadow') {
+          // Along with the colour values, we also have predefined elevation values for box-shadow which are allowed.
+          if (BOX_SHADOW_VARIABLES.has(declaration.value)) {
+            return;
+          }
         }
 
         /**

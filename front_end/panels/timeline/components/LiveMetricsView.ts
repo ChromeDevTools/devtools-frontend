@@ -41,9 +41,13 @@ const RTT_MINIMUM = 60;
 
 const UIStrings = {
   /**
-   * @description Title of a view that shows metrics from the local environment and field metrics collected from real users in the field.
+   * @description Title of a view that shows performance metrics from the local environment and field metrics collected from real users in the field.
    */
-  localAndFieldMetrics: 'Local and Field Metrics',
+  localAndFieldMetrics: 'Local and field metrics',
+  /**
+   * @description Title of a view that shows performance metrics from the local environment.
+   */
+  localMetrics: 'Local metrics',
   /**
    * @description Title of a section that lists user interactions.
    */
@@ -221,6 +225,24 @@ const UIStrings = {
    * @example {Chrome UX Report} PH1
    */
   seeHowYourLocalMetricsCompare: 'See how your local metrics compare to real user data in the {PH1}.',
+  /**
+   * @description Text block explaining that local metrics are collected from the local environment used to load the page being tested. PH1 will be a link with text that will be translated separately.
+   * @example {local metrics} PH1
+   */
+  theLocalMetricsAre: 'The {PH1} are captured from the current page using your network connection and device.',
+  /**
+   * @description Link text that is inserted in another translated text block that describes performance metrics measured in the developers local environment.
+   */
+  localMetricsLink: 'local metrics',
+  /**
+   * @description Text block explaining that field metrics are measured by real users using many different connections and hardware over a 28 period. PH1 will be a link with text that will be translated separately.
+   * @example {field data} PH1
+   */
+  theFieldMetricsAre: 'The {PH1} is measured by real users using many different network connections and devices.',
+  /**
+   * @description Link text that is inserted in another translated text block that describes performance data measured by real users in the field.
+   */
+  fieldDataLink: 'field data',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LiveMetricsView.ts', UIStrings);
@@ -1051,13 +1073,36 @@ export class LiveMetricsView extends HTMLElement {
     `;
   }
 
+  #renderDataDescriptions(): LitHtml.LitTemplate {
+    const fieldEnabled = CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled;
+
+    const localLink = UI.XLink.XLink.create(
+        'https://web.dev/articles/lab-and-field-data-differences#lab_data', i18nString(UIStrings.localMetricsLink));
+    const localEl = i18n.i18n.getFormatLocalizedString(str_, UIStrings.theLocalMetricsAre, {PH1: localLink});
+
+    const fieldLink = UI.XLink.XLink.create(
+        'https://web.dev/articles/lab-and-field-data-differences#field_data', i18nString(UIStrings.fieldDataLink));
+    const fieldEl = i18n.i18n.getFormatLocalizedString(str_, UIStrings.theFieldMetricsAre, {PH1: fieldLink});
+
+    return html`
+      <div class="data-descriptions">
+        <div>${localEl}</div>
+        ${fieldEnabled ? html`<div>${fieldEl}</div>` : nothing}
+      </div>
+    `;
+  }
+
   #render = (): void => {
+    const fieldEnabled = CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled;
+    const liveMetricsTitle =
+        fieldEnabled ? i18nString(UIStrings.localAndFieldMetrics) : i18nString(UIStrings.localMetrics);
+
     // clang-format off
     const output = html`
       <div class="container">
         <div class="live-metrics-view">
           <main class="live-metrics">
-            <h2 class="section-title">${i18nString(UIStrings.localAndFieldMetrics)}</h2>
+            <h2 class="section-title">${liveMetricsTitle}</h2>
             <div class="metric-cards">
               <div id="lcp">
                 ${this.#renderLcpCard()}
@@ -1069,6 +1114,7 @@ export class LiveMetricsView extends HTMLElement {
                 ${this.#renderInpCard()}
               </div>
             </div>
+            ${this.#renderDataDescriptions()}
             ${this.#interactions.length > 0 ? html`
               <section class="interactions-section" aria-labelledby="interactions-section-title">
                 <h2 id="interactions-section-title" class="section-title">${i18nString(UIStrings.interactions)}</h2>

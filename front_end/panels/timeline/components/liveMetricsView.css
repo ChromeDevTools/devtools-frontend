@@ -326,3 +326,9 @@ x-link { /* stylelint-disable-line selector-type-no-unknown */
   color: var(--sys-color-primary);
   text-decoration-line: underline;
 }
+
+.data-descriptions {
+  margin-top: 10px;
+  padding-left: 12px;
+  border-left: 1px solid var(--sys-color-divider);
+}

@@ -46,6 +46,8 @@ describe('ExtensionTraceDataHandler', function() {
   async function createTraceExtensionDataFromTestInput(extensionData: ExtensionTestData[]):
       Promise<TraceModel.Handlers.ModelHandlers.ExtensionTraceData.ExtensionTraceData> {
     const events = extensionData.flatMap(makeTimingEventWithExtensionData).sort((e1, e2) => e1.ts - e2.ts);
+    TraceModel.Helpers.SyntheticEvents.SyntheticEventsManager.initAndActivate(events);
+
     TraceModel.Handlers.ModelHandlers.UserTimings.reset();
     for (const event of events) {
       TraceModel.Handlers.ModelHandlers.UserTimings.handleEvent(event);

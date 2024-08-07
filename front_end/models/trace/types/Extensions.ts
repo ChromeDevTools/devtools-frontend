@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import {
+  type Phase,
+  type SyntheticBasedEvent,
   type TraceEventArgs,
   type TraceEventData,
 } from './TraceEvents.js';
@@ -59,20 +61,18 @@ export interface ExtensionMarkerPayload extends ExtensionDataPayloadBase {
 /**
  * Synthetic events created for extension tracks.
  */
-export interface SyntheticExtensionTrackChartEntry extends TraceEventData {
+export interface SyntheticExtensionTrackEntry extends SyntheticBasedEvent<Phase.COMPLETE> {
   args: TraceEventArgs&ExtensionTrackEntryPayload;
-  cat: 'devtools.extension';
 }
 
 /**
  * Synthetic events created for extension marks.
  */
-export interface SyntheticExtensionMarker extends TraceEventData {
+export interface SyntheticExtensionMarker extends SyntheticBasedEvent<Phase.COMPLETE> {
   args: TraceEventArgs&ExtensionMarkerPayload;
-  cat: 'devtools.extension';
 }
 
-export type SyntheticExtensionEntry = SyntheticExtensionTrackChartEntry|SyntheticExtensionMarker;
+export type SyntheticExtensionEntry = SyntheticExtensionTrackEntry|SyntheticExtensionMarker;
 
 export function isExtensionPayloadMarker(payload: {dataType?: string}): payload is ExtensionMarkerPayload {
   return payload.dataType === 'marker';
@@ -102,6 +102,6 @@ export interface ExtensionTrackData {
   // the entries of each of the tracks in the the group. If this is a
   // standalone track, then this contains that track's entries only.
   entriesByTrack: {
-    [x: string]: SyntheticExtensionTrackChartEntry[],
+    [x: string]: SyntheticExtensionTrackEntry[],
   };
 }

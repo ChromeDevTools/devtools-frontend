@@ -9,7 +9,7 @@ import {sortTraceEventsInPlace} from './Trace.js';
 import {canBuildTreesFromEvents, type TraceEntryNode, treify} from './TreeHelpers.js';
 
 export function buildTrackDataFromExtensionEntries(
-    extensionEntries: Types.Extensions.SyntheticExtensionTrackChartEntry[],
+    extensionEntries: Types.Extensions.SyntheticExtensionTrackEntry[],
     extensionTrackData: Types.Extensions.ExtensionTrackData[],
     entryToNode: Map<Types.TraceEvents.TraceEventData, TraceEntryNode>,
     ): {

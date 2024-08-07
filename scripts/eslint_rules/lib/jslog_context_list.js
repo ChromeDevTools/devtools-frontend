@@ -4,9 +4,12 @@
 
 'use strict';
 
+const path = require('path');
 const fs = require('fs');
 
 const FILE = 'front_end/ui/visual_logging/KnownContextValues.ts';
+const FRONT_END_PARENT_FOLDER = path.join(__filename, '..', '..', '..', '..');
+const ABSOLUTE_FILE_PATH = path.join(FRONT_END_PARENT_FOLDER, FILE);
 const LICENSE_HEADER = `// Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -25,7 +28,7 @@ module.exports = {
     schema: []  // no options
   },
   create: function(context) {
-    const formattedValues = new Set(fs.readFileSync(FILE, 'utf-8')
+    const formattedValues = new Set(fs.readFileSync(ABSOLUTE_FILE_PATH, 'utf-8')
         .split('\n')
         .filter(l=>l.startsWith('  \'')));
     const checkValue = (value, node) => {
@@ -79,7 +82,7 @@ module.exports = {
         }
         const finalContents = LICENSE_HEADER + 'export const knownContextValues = new Set([\n' +
             [...formattedValues].sort().join('\n') + '\n]);\n';
-        fs.writeFileSync(FILE, finalContents, 'utf-8');
+        fs.writeFileSync(ABSOLUTE_FILE_PATH, finalContents, 'utf-8');
       }
     };
   }

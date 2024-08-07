@@ -311,7 +311,8 @@ describe('The Network Tab', function() {
     await setPersistLog(false);
   });
 
-  it('can show only third-party requests from checkbox', async () => {
+  // Flaky test
+  it.skipOnPlatforms(['mac'], '[crbug.com/358158964] can show only third-party requests from checkbox', async () => {
     await navigateToNetworkTab('third-party-resources.html');
     await waitForSomeRequestsToAppear(3);
     let names = await getAllRequestNames();

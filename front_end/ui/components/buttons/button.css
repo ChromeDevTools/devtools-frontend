@@ -234,11 +234,7 @@ button {
 
     &.toolbar,
     &.icon {
-      outline-offset: -1px;
-
-      &.small {
-        outline-offset: -2px;
-      }
+      outline-offset: -2px;
     }
   }
 

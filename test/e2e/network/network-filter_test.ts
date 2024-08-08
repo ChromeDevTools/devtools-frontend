@@ -10,6 +10,7 @@ import {
   clickElement,
   disableExperiment,
   getTestServerPort,
+  setCheckBox,
   step,
   typeText,
   waitFor,
@@ -311,18 +312,12 @@ describe('The Network Tab', function() {
     await setPersistLog(false);
   });
 
-  // Flaky test
-  it.skipOnPlatforms(['mac'], '[crbug.com/358158964] can show only third-party requests from checkbox', async () => {
+  it('can show only third-party requests from checkbox', async () => {
+    await setCheckBox('[title="3rd-party requests"]', true);
     await navigateToNetworkTab('third-party-resources.html');
-    await waitForSomeRequestsToAppear(3);
-    let names = await getAllRequestNames();
-    const filters = await waitFor('.filter-bar');
+    await waitForSomeRequestsToAppear(1);
 
-    const thirdPartyFilter = await getFilter('3rd-party requests', filters);
-    await thirdPartyFilter.click();
-
-    names = await getAllRequestNames();
-    assert.deepStrictEqual(names, ['external_image.svg'], 'The right request names should appear in the list');
+    assert.deepStrictEqual(await getAllRequestNames(), ['external_image.svg']);
   });
 });
 

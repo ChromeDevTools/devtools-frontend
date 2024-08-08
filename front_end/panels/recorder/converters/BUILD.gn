@@ -13,6 +13,7 @@ devtools_module("converters") {
     "JSONConverter.ts",
     "LighthouseConverter.ts",
     "PuppeteerConverter.ts",
+    "PuppeteerFirefoxConverter.ts",
     "PuppeteerReplayConverter.ts",
   ]
 

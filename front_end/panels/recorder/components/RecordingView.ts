@@ -278,6 +278,7 @@ function converterIdToFlowMetric(
     ): Host.UserMetrics.RecordingCopiedToClipboard {
   switch (converterId) {
     case Models.ConverterIds.ConverterIds.Puppeteer:
+    case Models.ConverterIds.ConverterIds.PuppeteerFirefox:
       return Host.UserMetrics.RecordingCopiedToClipboard.CopiedRecordingWithPuppeteer;
     case Models.ConverterIds.ConverterIds.JSON:
       return Host.UserMetrics.RecordingCopiedToClipboard.CopiedRecordingWithJSON;
@@ -293,6 +294,7 @@ function converterIdToStepMetric(
     ): Host.UserMetrics.RecordingCopiedToClipboard {
   switch (converterId) {
     case Models.ConverterIds.ConverterIds.Puppeteer:
+    case Models.ConverterIds.ConverterIds.PuppeteerFirefox:
       return Host.UserMetrics.RecordingCopiedToClipboard.CopiedStepWithPuppeteer;
     case Models.ConverterIds.ConverterIds.JSON:
       return Host.UserMetrics.RecordingCopiedToClipboard.CopiedStepWithJSON;

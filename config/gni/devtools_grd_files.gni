@@ -1586,6 +1586,7 @@ grd_files_debug_sources = [
   "front_end/panels/recorder/converters/JSONConverter.js",
   "front_end/panels/recorder/converters/LighthouseConverter.js",
   "front_end/panels/recorder/converters/PuppeteerConverter.js",
+  "front_end/panels/recorder/converters/PuppeteerFirefoxConverter.js",
   "front_end/panels/recorder/converters/PuppeteerReplayConverter.js",
   "front_end/panels/recorder/extensions/ExtensionManager.js",
   "front_end/panels/recorder/injected/Logger.js",

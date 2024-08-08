@@ -181,4 +181,16 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
       return navEvent.args.frame === mainFrameID;
     }));
   });
+
+  it('can search for entries within a given time-range', async function() {
+    const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    dataProvider.setModel(traceData);
+
+    const bounds = TraceEngine.Helpers.Timing.traceWindowMilliSeconds(traceData.Meta.traceBounds);
+    const filter = new Timeline.TimelineFilters.TimelineRegExp(/Evaluate Script/);
+    const results = dataProvider.search(bounds.min, bounds.max, filter);
+    assert.lengthOf(results, 12);
+    assert.deepEqual(results[0], {index: 154, startTimeMilli: 122411041.395, provider: 'main'});
+  });
 });

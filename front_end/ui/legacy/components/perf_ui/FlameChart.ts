@@ -33,6 +33,7 @@ import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
+import type * as TimelineModel from '../../../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../models/trace/trace.js';
 import * as Buttons from '../../../components/buttons/buttons.js';
 import * as UI from '../../legacy.js';
@@ -3866,6 +3867,12 @@ export class FlameChartTimelineData {
   }
 }
 
+export interface DataProviderSearchResult {
+  index: number;
+  startTimeMilli: TraceEngine.Types.Timing.MilliSeconds;
+  provider: 'main'|'network'|'other';
+}
+
 export interface FlameChartDataProvider {
   buildFlowForInitiator?(index: number): unknown;
 
@@ -3916,6 +3923,10 @@ export interface FlameChartDataProvider {
 
   indexForEvent?(event: TraceEngine.Types.TraceEvents.TraceEventData|
                  TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame): number|null;
+
+  search?
+      (startTime: TraceEngine.Types.Timing.MilliSeconds, endTime: TraceEngine.Types.Timing.MilliSeconds,
+       filter: TimelineModel.TimelineModelFilter.TimelineModelFilter): DataProviderSearchResult[];
 }
 
 export interface FlameChartMarker {

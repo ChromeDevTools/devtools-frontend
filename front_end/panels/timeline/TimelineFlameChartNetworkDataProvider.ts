@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -465,6 +466,36 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
 
   canJumpToEntry(_entryIndex: number): boolean {
     return false;
+  }
+
+  /**
+   * searches entries within the specified time and returns a list of entry
+   * indexes
+   */
+  search(
+      startTime: TraceEngine.Types.Timing.MilliSeconds,
+      endTime: TraceEngine.Types.Timing.MilliSeconds,
+      filter: TimelineModel.TimelineModelFilter.TimelineModelFilter,
+      ): PerfUI.FlameChart.DataProviderSearchResult[] {
+    const results: PerfUI.FlameChart.DataProviderSearchResult[] = [];
+    for (let i = 0; i < this.#events.length; i++) {
+      const entry = this.#events.at(i);
+      if (!entry) {
+        continue;
+      }
+      const entryStartTime = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(entry).startTime;
+      const entryEndTime = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(entry).endTime;
+      if (entryStartTime > endTime) {
+        continue;
+      }
+      if (entryEndTime < startTime) {
+        continue;
+      }
+      if (filter.accept(entry, this.#traceParseData ?? undefined)) {
+        results.push({startTimeMilli: entryStartTime, index: i, provider: 'network'});
+      }
+    }
+    return results;
   }
 
   /**

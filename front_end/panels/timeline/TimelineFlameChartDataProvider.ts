@@ -437,8 +437,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   search(
       startTime: TraceEngine.Types.Timing.MilliSeconds, endTime: TraceEngine.Types.Timing.MilliSeconds,
-      filter: TimelineModel.TimelineModelFilter.TimelineModelFilter): number[] {
-    const result = [];
+      filter: TimelineModel.TimelineModelFilter.TimelineModelFilter): PerfUI.FlameChart.DataProviderSearchResult[] {
+    const results: PerfUI.FlameChart.DataProviderSearchResult[] = [];
     this.timelineData();
     for (let i = 0; i < this.entryData.length; ++i) {
       const entry = this.entryData[i];
@@ -466,27 +466,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         continue;
       }
       if (filter.accept(entry, this.traceEngineData || undefined)) {
-        result.push(i);
+        results.push({index: i, startTimeMilli: entryStartTime, provider: 'main'});
       }
     }
-    result.sort((a, b) => {
-      const firstEvent = this.entryData.at(a);
-      if (!firstEvent) {
-        return 0;
-      }
-      const secondEvent = this.entryData.at(b);
-      if (!secondEvent) {
-        return 0;
-      }
-
-      if (!TimelineFlameChartDataProvider.timelineEntryIsTraceEvent(firstEvent) ||
-          !TimelineFlameChartDataProvider.timelineEntryIsTraceEvent(secondEvent)) {
-        return 0;
-      }
-
-      return TraceEngine.Helpers.Trace.eventTimeComparator(firstEvent, secondEvent);
-    });
-    return result;
+    return results;
   }
 
   isIgnoreListedEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): boolean {

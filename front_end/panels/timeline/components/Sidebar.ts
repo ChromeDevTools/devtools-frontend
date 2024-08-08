@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Root from '../../../core/root/root.js';
 import type * as TraceEngine from '../../../models/trace/trace.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import type * as Overlays from '../overlays/overlays.js';
@@ -37,12 +38,14 @@ export class SidebarWidget extends UI.Widget.VBox {
 
   override wasShown(): void {
     this.#tabbedPane.show(this.element);
-    if (!this.#tabbedPane.hasTab(SidebarTabs.INSIGHTS)) {
+    if (!this.#tabbedPane.hasTab(SidebarTabs.INSIGHTS) &&
+        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS)) {
       this.#tabbedPane.appendTab(
           SidebarTabs.INSIGHTS, 'Insights', this.#insightsView, undefined, undefined, false, false, 0,
           'timeline.insights-tab');
     }
-    if (!this.#tabbedPane.hasTab(SidebarTabs.ANNOTATIONS)) {
+    if (!this.#tabbedPane.hasTab(SidebarTabs.ANNOTATIONS) &&
+        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS)) {
       this.#tabbedPane.appendTab(
           'annotations', 'Annotations', this.#annotationsView, undefined, undefined, false, false, 1,
           'timeline.annotations-tab');

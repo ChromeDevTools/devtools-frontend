@@ -644,8 +644,17 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     return checkboxItem;
   }
 
+  /**
+   * Users don't explicitly opt in to the sidebar, but if they opt into either
+   * Insights or Annotations, we will show the sidebar.
+   */
+  #panelSidebarEnabled(): boolean {
+    const sidebarEnabled = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS) ||
+        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS);
+    return sidebarEnabled;
+  }
   #addSidebarIconToToolbar(): void {
-    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SIDEBAR)) {
+    if (!this.#panelSidebarEnabled()) {
       return;
     }
 
@@ -858,7 +867,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const traceEvents = this.#traceEngineModel.rawTraceEvents(this.#traceEngineActiveTraceIndex);
     const metadata = this.#traceEngineModel.metadata(this.#traceEngineActiveTraceIndex);
     // Save modifications into the metadata if modifications experiment is on
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS_OVERLAYS) && metadata) {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS) && metadata) {
       metadata.modifications = ModificationsManager.activeManager()?.toJSON();
     }
     if (metadata && isEnhancedTraces) {
@@ -1490,8 +1499,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // Or hide it when we do not have data (which likely means we are back on the landing page)
     const hasInsights = traceInsightsData !== null && traceInsightsData.size > 0;
     const hasAnnotations = (currModificationManager?.getAnnotations().length ?? 0) > 0;
-    const shouldOpenSidebar = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SIDEBAR) &&
-        (hasInsights || hasAnnotations);
+    const shouldOpenSidebar = this.#panelSidebarEnabled() && (hasInsights || hasAnnotations);
     if (shouldOpenSidebar) {
       this.#splitWidget.showBoth();
     } else {

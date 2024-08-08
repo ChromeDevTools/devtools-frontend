@@ -237,7 +237,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
     this.onMainAnnotateEntry = this.onAnnotateEntry.bind(this, this.mainDataProvider);
     this.onNetworkAnnotateEntry = this.onAnnotateEntry.bind(this, this.networkDataProvider);
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS_OVERLAYS)) {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS)) {
       this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.AnnotateEntry, this.onMainAnnotateEntry, this);
       this.networkFlameChart.addEventListener(
           PerfUI.FlameChart.Events.AnnotateEntry, this.onNetworkAnnotateEntry, this);
@@ -425,7 +425,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
    */
   updateRangeSelection(startTime: number, endTime: number): void {
     this.delegate.select(TimelineSelection.fromRange(startTime, endTime));
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS_OVERLAYS)) {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS)) {
       const bounds = TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(
           TraceEngine.Types.Timing.MilliSeconds(startTime),
           TraceEngine.Types.Timing.MilliSeconds(endTime),

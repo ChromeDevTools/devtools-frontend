@@ -404,14 +404,14 @@ export class MainImpl {
     );
 
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS_OVERLAYS,
+        Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS,
         'Performance panel: enable annotations',
         true,
     );
 
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.TIMELINE_SIDEBAR,
-        'Performance panel: enable sidebar',
+        Root.Runtime.ExperimentName.TIMELINE_INSIGHTS,
+        'Performance panel: enable performance insights',
         true,
     );
 

@@ -4,7 +4,6 @@
 
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
-import * as ComponentHelpers from '../helpers/helpers.js';
 import * as IconButton from '../icon_button/icon_button.js';
 
 import buttonStyles from './button.css.js';
@@ -43,7 +42,7 @@ type ButtonType = 'button'|'submit'|'reset';
 
 interface ButtonState {
   iconUrl?: string;
-  variant?: Variant;
+  variant: Variant;
   size?: Size;
   disabled: boolean;
   toggled?: boolean;
@@ -102,10 +101,10 @@ export class Button extends HTMLElement {
   static formAssociated = true;
   static readonly litTagName = LitHtml.literal`devtools-button`;
   readonly #shadow = this.attachShadow({mode: 'open', delegatesFocus: true});
-  readonly #boundRender = this.#render.bind(this);
   readonly #boundOnClick = this.#onClick.bind(this);
   readonly #props: ButtonState = {
     size: Size.REGULAR,
+    variant: Variant.PRIMARY,
     toggleOnClick: true,
     disabled: false,
     active: false,
@@ -113,8 +112,8 @@ export class Button extends HTMLElement {
     type: 'button',
     longClickable: false,
   };
-  #isEmpty = true;
   #internals = this.attachInternals();
+  #slotRef = LitHtml.Directives.createRef();
 
   constructor() {
     super();
@@ -148,64 +147,66 @@ export class Button extends HTMLElement {
     this.#props.toggled = data.toggled;
     this.#props.toggleType = data.toggleType;
     this.#props.checked = data.checked;
-    this.#setDisabledProperty(data.disabled || false);
+    this.#props.disabled = Boolean(data.disabled);
     this.#props.title = data.title;
     this.#props.jslogContext = data.jslogContext;
     this.#props.longClickable = data.longClickable;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   set iconUrl(iconUrl: string|undefined) {
     this.#props.iconUrl = iconUrl;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   set iconName(iconName: string|undefined) {
     this.#props.iconName = iconName;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   set toggledIconName(toggledIconName: string) {
     this.#props.toggledIconName = toggledIconName;
+    this.#render();
   }
 
   set toggleType(toggleType: ToggleType) {
     this.#props.toggleType = toggleType;
+    this.#render();
   }
 
   set variant(variant: Variant) {
     this.#props.variant = variant;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   set size(size: Size) {
     this.#props.size = size;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   set type(type: ButtonType) {
     this.#props.type = type;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   override set title(title: string) {
     this.#props.title = title;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   set disabled(disabled: boolean) {
     this.#setDisabledProperty(disabled);
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   set toggleOnClick(toggleOnClick: boolean) {
     this.#props.toggleOnClick = toggleOnClick;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   set toggled(toggled: boolean) {
     this.#props.toggled = toggled;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   get toggled(): boolean {
@@ -214,17 +215,17 @@ export class Button extends HTMLElement {
 
   set checked(checked: boolean) {
     this.#props.checked = checked;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   set pressed(pressed: boolean) {
     this.#props.pressed = pressed;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   set active(active: boolean) {
     this.#props.active = active;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   get active(): boolean {
@@ -233,7 +234,7 @@ export class Button extends HTMLElement {
 
   set spinner(spinner: boolean) {
     this.#props.spinner = spinner;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   get jslogContext(): string|undefined {
@@ -242,17 +243,17 @@ export class Button extends HTMLElement {
 
   set jslogContext(jslogContext: string|undefined) {
     this.#props.jslogContext = jslogContext;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   set longClickable(longClickable: boolean) {
     this.#props.longClickable = longClickable;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   #setDisabledProperty(disabled: boolean): void {
     this.#props.disabled = disabled;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   override focus(): void {
@@ -261,7 +262,7 @@ export class Button extends HTMLElement {
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [buttonStyles];
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   #onClick(event: Event): void {
@@ -285,18 +286,13 @@ export class Button extends HTMLElement {
     }
   }
 
-  #onSlotChange(event: Event): void {
-    const slot = event.target as HTMLSlotElement | undefined;
-    const nodes = slot?.assignedNodes();
-    this.#isEmpty = !nodes || !Boolean(nodes.length);
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-  }
-
   #isToolbarVariant(): boolean {
     return this.#props.variant === Variant.TOOLBAR || this.#props.variant === Variant.PRIMARY_TOOLBAR;
   }
 
   #render(): void {
+    const nodes = (this.#slotRef.value as HTMLSlotElement | undefined)?.assignedNodes();
+    const isEmpty = !Boolean(nodes?.length);
     if (!this.#props.variant) {
       throw new Error('Button requires a variant to be defined');
     }
@@ -304,7 +300,7 @@ export class Button extends HTMLElement {
       if (!this.#props.iconUrl && !this.#props.iconName) {
         throw new Error('Toolbar button requires an icon');
       }
-      if (!this.#isEmpty) {
+      if (!isEmpty) {
         throw new Error('Toolbar button does not accept children');
       }
     }
@@ -312,7 +308,7 @@ export class Button extends HTMLElement {
       if (!this.#props.iconUrl && !this.#props.iconName) {
         throw new Error('Icon button requires an icon');
       }
-      if (!this.#isEmpty) {
+      if (!isEmpty) {
         throw new Error('Icon button does not accept children');
       }
     }
@@ -333,9 +329,9 @@ export class Button extends HTMLElement {
       'red-toggle': this.#props.toggleType === ToggleType.RED,
       toggled: Boolean(this.#props.toggled),
       checked: Boolean(this.#props.checked),
-      'text-with-icon': hasIcon && !this.#isEmpty,
-      'only-icon': hasIcon && this.#isEmpty,
-      'only-text': !hasIcon && !this.#isEmpty,
+      'text-with-icon': hasIcon && !isEmpty,
+      'only-icon': hasIcon && isEmpty,
+      'only-text': !hasIcon && !isEmpty,
       micro: this.#props.size === Size.MICRO,
       small: Boolean(this.#props.size === Size.SMALL),
       active: this.#props.active,
@@ -361,7 +357,7 @@ export class Button extends HTMLElement {
           </${IconButton.Icon.Icon.litTagName}>`
       : ''}
           ${this.#props.spinner ? LitHtml.html`<span class=${LitHtml.Directives.classMap(spinnerClasses)}></span>` : ''}
-          <slot @slotchange=${this.#onSlotChange}></slot>
+          <slot @slotchange=${this.#render} ${LitHtml.Directives.ref(this.#slotRef)}></slot>
         </button>
       `, this.#shadow, {host: this});
     // clang-format on

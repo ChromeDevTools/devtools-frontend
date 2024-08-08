@@ -399,6 +399,8 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
               return LitHtml.html`${elapsedTimeInMs.toFixed(3)}`;
             },
           },
+          {columnId: SelectorTimingsKey.MatchAttempts, value: x[SelectorTimingsKey.MatchAttempts]},
+          {columnId: SelectorTimingsKey.MatchCount, value: x[SelectorTimingsKey.MatchCount]},
           {
             columnId: SelectorTimingsKey.RejectPercentage,
             value: rejectPercentage,
@@ -406,8 +408,6 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
               return LitHtml.html`${rejectPercentage.toFixed(1)}`;
             },
           },
-          {columnId: SelectorTimingsKey.MatchAttempts, value: x[SelectorTimingsKey.MatchAttempts]},
-          {columnId: SelectorTimingsKey.MatchCount, value: x[SelectorTimingsKey.MatchCount]},
           {
             columnId: SelectorTimingsKey.Selector,
             title: x[SelectorTimingsKey.Selector],

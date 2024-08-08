@@ -205,3 +205,7 @@ Contains traces with metadata needed to power a rehydrated session for enhanced 
 ### initiators
 
 Contains a recording with network request's initiator information.
+
+### over-20-invalidations-per-event
+
+Contains a trace where one Layout event has 26 invalidations associated with it.

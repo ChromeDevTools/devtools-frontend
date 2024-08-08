@@ -60,6 +60,7 @@ copy_to_gen("traces") {
     "node-fibonacci-website.cpuprofile.gz",
     "non-composited-animation.json.gz",
     "one-second-interaction.json.gz",
+    "over-20-invalidations-per-event.json.gz",
     "parser-blocking-after-paint.json.gz",
     "postmessage-initiators.json.gz",
     "primary-page-frame.json.gz",

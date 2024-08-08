@@ -153,4 +153,34 @@ describe('InvalidationsHandler', () => {
       },
     ]);
   });
+
+  it('limits the number of kept invalidations per event', async function() {
+    const events = await TraceLoader.rawEvents(this, 'over-20-invalidations-per-event.json.gz');
+
+    TraceEngine.Handlers.ModelHandlers.Invalidations.handleUserConfig(
+        {
+          ...TraceEngine.Types.Configuration.defaults(),
+          maxInvalidationEventsPerEvent: 5,
+        },
+    );
+    for (const event of events) {
+      TraceEngine.Handlers.ModelHandlers.Invalidations.handleEvent(event);
+    }
+    await TraceEngine.Handlers.ModelHandlers.Invalidations.finalize();
+    const data = TraceEngine.Handlers.ModelHandlers.Invalidations.data();
+
+    // Find the UpdateLayoutEvent that had 26 invalidations
+    const layoutEvent = Array.from(data.invalidationCountForEvent.entries())
+                            .filter(entry => {
+                              const [, count] = entry;
+                              return count === 26;
+                            })
+                            .map(entry => entry[0])
+                            .at(0);
+    assert.isOk(layoutEvent);
+    const invalidations = data.invalidationsForEvent.get(layoutEvent);
+    assert.isOk(invalidations);
+    // We know there are 26 invalidation events, but the handler only kept the last 5 as per the config we passed in.
+    assert.lengthOf(invalidations, 5);
+  });
 });

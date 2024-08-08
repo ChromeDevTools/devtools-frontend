@@ -15,12 +15,29 @@ export type Configuration = {
    * Extra detail for RPP developers (eg Trace Event json in Summary, and individual JS Sample events)
    */
   debugMode: boolean,
+  /**
+   * How many invalidation events will be stored for a layout (or similar) event.
+   * On large sites with a lot of DOM there can be thousands of invalidations
+   * associated with any given event. It is not useful to show the user 1000s of
+   * invalidations in the UI, but it is also expensive for us to hold onto them
+   * all, and it helps prevents OOM issues when running in NodeJS
+   * [https://github.com/GoogleChrome/lighthouse/issues/16111].
+   * Therefore, instead, we store only the latest 20 per event. We do also store
+   * the total count, so we can show that, but we'll only ever hold on to the
+   * last 20 invalidations (in DESC trace order - so the latest 20 in the trace file)
+   *
+   * If you set this to 0, we will skip the Invalidations processing entirely.
+   * 0 effectively disables the InvalidationsHandler and it will not even
+   * attempt to gather or track invalidations.
+   */
+  maxInvalidationEventsPerEvent: number,
 };
 
 export const defaults = (): Configuration => ({
   includeRuntimeCallStats: false,
   showAllEvents: false,
   debugMode: false,
+  maxInvalidationEventsPerEvent: 20,
 });
 
 /**

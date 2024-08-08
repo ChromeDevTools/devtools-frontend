@@ -10,6 +10,7 @@ let handlerState = HandlerState.UNINITIALIZED;
 
 const invalidationsForEvent =
     new Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.InvalidationTrackingEvent[]>();
+const invalidationCountForEvent = new Map<Types.TraceEvents.TraceEventData, number>();
 
 let lastRecalcStyleEvent: Types.TraceEvents.TraceEventUpdateLayoutTree|null = null;
 
@@ -24,6 +25,12 @@ export function reset(): void {
   lastRecalcStyleEvent = null;
   allInvalidationTrackingEvents.length = 0;
   hasPainted = false;
+  maxInvalidationsPerEvent = null;
+}
+
+let maxInvalidationsPerEvent: number|null = null;
+export function handleUserConfig(userConfig: Types.Configuration.Configuration): void {
+  maxInvalidationsPerEvent = userConfig.maxInvalidationEventsPerEvent;
 }
 
 export function initialize(): void {
@@ -38,10 +45,24 @@ function addInvalidationToEvent(
     event: Types.TraceEvents.TraceEventData, invalidation: Types.TraceEvents.InvalidationTrackingEvent): void {
   const existingInvalidations = invalidationsForEvent.get(event) || [];
   existingInvalidations.push(invalidation);
+
+  if (maxInvalidationsPerEvent !== null && existingInvalidations.length > maxInvalidationsPerEvent) {
+    existingInvalidations.shift();
+  }
   invalidationsForEvent.set(event, existingInvalidations);
+
+  const count = invalidationCountForEvent.get(event) ?? 0;
+  invalidationCountForEvent.set(event, count + 1);
 }
 
 export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
+  // Special case: if we have been configured to not store any invalidations,
+  // we take that as a sign that we don't even want to gather any invalidations
+  // data at all and early exit.
+  if (maxInvalidationsPerEvent === 0) {
+    return;
+  }
+
   if (Types.TraceEvents.isTraceEventUpdateLayoutTree(event)) {
     lastRecalcStyleEvent = event;
 
@@ -122,10 +143,12 @@ export async function finalize(): Promise<void> {
 
 interface InvalidationsData {
   invalidationsForEvent: Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.InvalidationTrackingEvent[]>;
+  invalidationCountForEvent: Map<Types.TraceEvents.TraceEventData, number>;
 }
 
 export function data(): InvalidationsData {
   return {
     invalidationsForEvent,
+    invalidationCountForEvent,
   };
 }

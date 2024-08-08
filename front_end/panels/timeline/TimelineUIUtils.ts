@@ -432,8 +432,9 @@ const UIStrings = {
   stackTrace: 'Stack Trace',
   /**
    *@description Text used to show any invalidations for a particular event that caused the browser to have to do more work to update the page.
+   * @example {2} PH1
    */
-  invalidations: 'Invalidations',
+  invalidations: 'Invalidations ({PH1} total)',
   /**
    * @description Text in Timeline UIUtils of the Performance panel. Phrase is followed by a number of milliseconds.
    * Some events or tasks might have been only started, but have not ended yet. Such events or tasks are considered
@@ -1792,7 +1793,9 @@ export class TimelineUIUtils {
     }
 
     if (invalidations && invalidations.length) {
-      contentHelper.addSection(i18nString(UIStrings.invalidations));
+      const totalInvalidations = traceParseData.Invalidations.invalidationCountForEvent.get(event) ??
+          0;  // Won't be 0, but saves us dealing with undefined.
+      contentHelper.addSection(i18nString(UIStrings.invalidations, {PH1: totalInvalidations}));
       await TimelineUIUtils.generateInvalidationsList(invalidations, contentHelper);
     }
   }

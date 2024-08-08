@@ -1,10 +1,10 @@
 Name: @puppeteer/replay
 Short Name: @puppeteer/replay
 URL: https://github.com/puppeteer/replay
-Version: 3.0.0
+Version: 3.1.0
 License: Apache-2.0
 License File: package/LICENSE
-Revision: 7c030c59c737c2352fa444d0536cec439904dff9
+Revision: 223e2f0ba3c96d9e3c5a9286a3522432faa33243
 Security Critical: no
 Shipped: yes
 

@@ -867,11 +867,21 @@ const formatAsJSLiteral = (content) => {
  */
 class PuppeteerStringifyExtension extends StringifyExtension {
     #shouldAppendWaitForElementHelper = false;
+    #targetBrowser;
+    constructor(targetBrowser = 'chrome') {
+        super();
+        this.#targetBrowser = targetBrowser;
+    }
     async beforeAllSteps(out, flow) {
-        out.appendLine("const puppeteer = require('puppeteer'); // v22.0.0 or later");
+        out.appendLine("const puppeteer = require('puppeteer'); // v23.0.0 or later");
         out.appendLine('');
         out.appendLine('(async () => {').startBlock();
-        out.appendLine('const browser = await puppeteer.launch();');
+        if (this.#targetBrowser === 'firefox') {
+            out.appendLine(`const browser = await puppeteer.launch({browser: 'firefox'});`);
+        }
+        else {
+            out.appendLine('const browser = await puppeteer.launch();');
+        }
         out.appendLine('const page = await browser.newPage();');
         out.appendLine(`const timeout = ${flow.timeout || defaultTimeout};`);
         out.appendLine('page.setDefaultTimeout(timeout);');
@@ -1435,16 +1445,7 @@ class PuppeteerRunnerExtension extends RunnerExtension {
         const targetPage = await getTargetPageForStep(browser, page, step, timeout);
         let targetFrame = null;
         if (!targetPage && step.target) {
-            const frames = page.frames();
-            for (const f of frames) {
-                if (f.isOOPFrame() && f.url() === step.target) {
-                    targetFrame = f;
-                    break;
-                }
-            }
-            if (!targetFrame) {
-                targetFrame = await page.waitForFrame(step.target, { timeout });
-            }
+            targetFrame = await page.waitForFrame(step.target, { timeout });
         }
         const targetPageOrFrame = targetFrame || targetPage;
         if (!targetPageOrFrame) {

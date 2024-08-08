@@ -65,6 +65,10 @@ const UIStrings = {
    *@example {10} PH2
    */
   ss: '[{PH1} – {PH2}]',
+  /**
+   * @description text shown when no counter events are found and the graph is empty
+   */
+  noEventsFound: 'No memory usage data found within selected events.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/CountersGraph.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -86,6 +90,9 @@ export class CountersGraph extends UI.Widget.VBox {
   currentValuesBar?: HTMLElement;
   private markerXPosition?: number;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
+
+  #noEventsFoundMessage = document.createElement('div');
+  #showNoEventsMessage: boolean = false;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -111,6 +118,13 @@ export class CountersGraph extends UI.Widget.VBox {
     this.canvas = document.createElement('canvas');
     this.canvasContainer.appendChild(this.canvas);
     this.canvas.id = 'memory-counters-graph';
+
+    const noEventsFound = document.createElement('p');
+    noEventsFound.innerText = i18nString(UIStrings.noEventsFound);
+    this.#noEventsFoundMessage.classList.add('no-events-found');
+    this.#noEventsFoundMessage.setAttribute('hidden', 'hidden');
+    this.#noEventsFoundMessage.appendChild(noEventsFound);
+    this.canvasContainer.appendChild(this.#noEventsFoundMessage);
 
     this.canvasContainer.addEventListener('mouseover', this.onMouseMove.bind(this), true);
     this.canvasContainer.addEventListener('mousemove', this.onMouseMove.bind(this), true);
@@ -156,11 +170,10 @@ export class CountersGraph extends UI.Widget.VBox {
       traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null,
       events: TraceEngine.Types.TraceEvents.TraceEventData[]|null): void {
     this.#events = events;
-    if (!events) {
+    if (!events || !traceEngineData) {
       return;
     }
-    const minTime =
-        traceEngineData ? TraceEngine.Helpers.Timing.traceWindowMilliSeconds(traceEngineData.Meta.traceBounds).min : 0;
+    const minTime = TraceEngine.Helpers.Timing.traceWindowMilliSeconds(traceEngineData.Meta.traceBounds).min;
     this.calculator.setZeroTime(minTime);
 
     for (let i = 0; i < this.counters.length; ++i) {
@@ -168,11 +181,13 @@ export class CountersGraph extends UI.Widget.VBox {
       this.counterUI[i].reset();
     }
     this.#scheduleRefresh();
+    let counterEventsFound = 0;
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];
       if (!TraceEngine.Types.TraceEvents.isTraceEventUpdateCounters(event)) {
         continue;
       }
+      counterEventsFound++;
 
       const counters = event.args.data;
       if (!counters) {
@@ -191,6 +206,7 @@ export class CountersGraph extends UI.Widget.VBox {
         this.gpuMemoryCounter.setLimit(counters.gpuMemoryLimitKB);
       }
     }
+    this.#showNoEventsMessage = counterEventsFound === 0;
   }
 
   private createCurrentValuesBar(): void {
@@ -224,6 +240,11 @@ export class CountersGraph extends UI.Widget.VBox {
 
   draw(): void {
     this.clear();
+    if (this.#showNoEventsMessage) {
+      this.#noEventsFoundMessage.removeAttribute('hidden');
+    } else {
+      this.#noEventsFoundMessage.setAttribute('hidden', 'hidden');
+    }
     for (const counter of this.counters) {
       counter.calculateVisibleIndexes(this.calculator);
       counter.calculateXValues(this.canvas.width);

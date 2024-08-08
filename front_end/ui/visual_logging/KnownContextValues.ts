@@ -2250,6 +2250,7 @@ export const knownContextValues = new Set([
   'settings.add-ignore-list-pattern',
   'settings.documentation',
   'settings.ignore-list-pattern',
+  'settings.remove-file-system',
   'settings.restore-defaults-and-reload',
   'settings.shortcuts',
   'settings.show',

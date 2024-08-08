@@ -4,4 +4,4 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 export {};
-//# sourceMappingURL=Product.js.map
+//# sourceMappingURL=SupportedBrowser.js.map

@@ -23,11 +23,18 @@ export class HTTPResponse {
         return status === 0 || (status >= 200 && status <= 299);
     }
     /**
+     * {@inheritDoc HTTPResponse.content}
+     */
+    async buffer() {
+        const content = await this.content();
+        return Buffer.from(content);
+    }
+    /**
      * Promise which resolves to a text (utf8) representation of response body.
      */
     async text() {
-        const content = await this.buffer();
-        return content.toString('utf8');
+        const content = await this.content();
+        return new TextDecoder().decode(content);
     }
     /**
      * Promise which resolves to a JSON representation of response body.

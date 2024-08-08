@@ -1,5 +1,6 @@
 import { debugError, isString } from '../common/util.js';
 import { assert } from '../util/assert.js';
+import { typedArrayToBase64 } from '../util/encoding.js';
 /**
  * The default cooperative request interception resolution priority
  *
@@ -318,13 +319,9 @@ export class HTTPRequest {
         const byteBody = isString(body)
             ? new TextEncoder().encode(body)
             : body;
-        const bytes = [];
-        for (const byte of byteBody) {
-            bytes.push(String.fromCharCode(byte));
-        }
         return {
             contentLength: byteBody.byteLength,
-            base64: btoa(bytes.join('')),
+            base64: typedArrayToBase64(byteBody),
         };
     }
 }

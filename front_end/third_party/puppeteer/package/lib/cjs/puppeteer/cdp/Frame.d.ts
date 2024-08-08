@@ -45,7 +45,6 @@ export declare class CdpFrame extends Frame {
     updateId(id: string): void;
     updateClient(client: CDPSession): void;
     page(): CdpPage;
-    isOOPFrame(): boolean;
     goto(url: string, options?: {
         referer?: string;
         referrerPolicy?: string;

@@ -4,6 +4,7 @@ import type { ChildProcess } from 'child_process';
 import { PassThrough } from 'stream';
 import { Protocol } from 'devtools-protocol';
 import type { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
+import { Session } from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 
 /**
  * The Accessibility class provides methods for inspecting the browser's
@@ -381,7 +382,7 @@ export declare interface BrowserConnectOptions {
      * Whether to ignore HTTPS errors during navigation.
      * @defaultValue `false`
      */
-    ignoreHTTPSErrors?: boolean;
+    acceptInsecureCerts?: boolean;
     /**
      * Sets the viewport for each page.
      *
@@ -399,7 +400,14 @@ export declare interface BrowserConnectOptions {
     targetFilter?: TargetFilterCallback;
     /* Excluded from this release type: _isPageTarget */
     /**
-     * @defaultValue 'cdp'
+     * @defaultValue Determined at run time:
+     *
+     * - Launching Chrome - 'cdp'.
+     *
+     * - Launching Firefox - 'webDriverBiDi'.
+     *
+     * - Connecting to a browser - 'cdp'.
+     *
      * @public
      */
     protocol?: ProtocolType;
@@ -415,8 +423,8 @@ export declare interface BrowserConnectOptions {
  * {@link BrowserContext} represents individual user contexts within a
  * {@link Browser | browser}.
  *
- * When a {@link Browser | browser} is launched, it has a single
- * {@link BrowserContext | browser context} by default. Others can be created
+ * When a {@link Browser | browser} is launched, it has at least one default
+ * {@link BrowserContext | browser context}. Others can be created
  * using {@link Browser.createBrowserContext}. Each context has isolated storage
  * (cookies/localStorage/etc.)
  *
@@ -439,6 +447,13 @@ export declare interface BrowserConnectOptions {
  * // Dispose context once it's no longer needed.
  * await context.close();
  * ```
+ *
+ * @remarks
+ *
+ * In Chrome all non-default contexts are incognito,
+ * and {@link Browser.defaultBrowserContext | default browser context}
+ * might be incognito if you provide the `--incognito` argument when launching
+ * the browser.
  *
  * @public
  */
@@ -476,25 +491,6 @@ export declare abstract class BrowserContext extends EventEmitter<BrowserContext
      * will not be listed here. You can find them using {@link Target.page}.
      */
     abstract pages(): Promise<Page[]>;
-    /**
-     * Whether this {@link BrowserContext | browser context} is incognito.
-     *
-     * In Chrome, the
-     * {@link Browser.defaultBrowserContext | default browser context} is the only
-     * non-incognito browser context.
-     *
-     * @deprecated In Chrome, the
-     * {@link Browser.defaultBrowserContext | default browser context} can also be
-     * "incognito" if configured via the arguments and in such cases this getter
-     * returns wrong results (see
-     * https://github.com/puppeteer/puppeteer/issues/8836). Also, the term
-     * "incognito" is not applicable to other browsers. To migrate, check the
-     * {@link Browser.defaultBrowserContext | default browser context} instead: in
-     * Chrome all non-default contexts are incognito, and the default context
-     * might be incognito if you provide the `--incognito` argument when launching
-     * the browser.
-     */
-    abstract isIncognito(): boolean;
     /**
      * Grants this {@link BrowserContext | browser context} the given
      * `permissions` within the given `origin`.
@@ -709,6 +705,31 @@ export declare interface BrowserLaunchArgumentOptions {
     args?: string[];
 }
 
+/**
+ * Describes a launcher - a class that is able to create and launch a browser instance.
+ *
+ * @public
+ */
+export declare abstract class BrowserLauncher {
+    #private;
+    /* Excluded from this release type: puppeteer */
+    /* Excluded from this release type: __constructor */
+    get browser(): SupportedBrowser;
+    launch(options?: PuppeteerNodeLaunchOptions): Promise<Browser>;
+    abstract executablePath(channel?: ChromeReleaseChannel): string;
+    abstract defaultArgs(object: BrowserLaunchArgumentOptions): string[];
+    /* Excluded from this release type: computeLaunchArguments */
+    /* Excluded from this release type: cleanUserDataDir */
+    /* Excluded from this release type: closeBrowser */
+    /* Excluded from this release type: waitForPageTarget */
+    /* Excluded from this release type: createCdpSocketConnection */
+    /* Excluded from this release type: createCdpPipeConnection */
+    /* Excluded from this release type: createBiDiOverCdpBrowser */
+    /* Excluded from this release type: createBiDiBrowser */
+    /* Excluded from this release type: getProfilePath */
+    /* Excluded from this release type: resolveExecutablePath */
+}
+
 /* Excluded from this release type: BrowserWebSocketTransport */
 
 /* Excluded from this release type: Callback */
@@ -824,6 +845,45 @@ export declare interface CDPSessionEvents extends CDPEvents, Record<EventType, u
 
 /* Excluded from this release type: CdpWebWorker */
 
+/**
+ * @public
+ */
+export declare interface ChromeHeadlessShellSettings {
+    /**
+     * Tells Puppeteer to not download the browser during installation.
+     *
+     * Can be overridden by `PUPPETEER_CHROME_HEADLESS_SHELL_SKIP_DOWNLOAD`
+     * or `PUPPETEER_SKIP_CHROME_HEADLESS_SHELL_DOWNLOAD`.
+     *
+     * @defaultValue false
+     */
+    skipDownload?: boolean;
+    /**
+     * Specifies the URL prefix that is used to download the browser.
+     *
+     * Can be overridden by `PUPPETEER_CHROME_HEADLESS_SHELL_DOWNLOAD_BASE_URL`.
+     *
+     * @remarks
+     * This must include the protocol and may even need a path prefix.
+     *
+     * @defaultValue https://storage.googleapis.com/chrome-for-testing-public
+     */
+    downloadBaseUrl?: string;
+    /**
+     * Specifies a certain version of the browser you'd like Puppeteer to use.
+     *
+     * Can be overridden by `PUPPETEER_CHROME_HEADLESS_SHELL_VERSION`.
+     *
+     * See {@link PuppeteerNode.launch | puppeteer.launch} on how executable path
+     * is inferred.
+     *
+     * @example 119.0.6045.105
+     * @defaultValue The pinned browser version supported by the current Puppeteer
+     * version.
+     */
+    version?: string;
+}
+
 /* Excluded from this release type: ChromeLauncher */
 
 /**
@@ -831,15 +891,46 @@ export declare interface CDPSessionEvents extends CDPEvents, Record<EventType, u
  */
 export declare type ChromeReleaseChannel = 'chrome' | 'chrome-beta' | 'chrome-canary' | 'chrome-dev';
 
-/* Excluded from this release type: ChromeTargetManager */
-
 /**
- * @deprecated Import {@link Puppeteer} and use the static method
- * {@link Puppeteer.clearCustomQueryHandlers}
- *
  * @public
  */
-export declare function clearCustomQueryHandlers(): void;
+export declare interface ChromeSettings {
+    /**
+     * Tells Puppeteer to not download the browser during installation.
+     *
+     * Can be overridden by `PUPPETEER_CHROME_SKIP_DOWNLOAD`.
+     *
+     * @defaultValue false
+     */
+    skipDownload?: boolean;
+    /**
+     * Specifies the URL prefix that is used to download the browser.
+     *
+     * Can be overridden by `PUPPETEER_CHROME_DOWNLOAD_BASE_URL`.
+     *
+     * @remarks
+     * This must include the protocol and may even need a path prefix.
+     *
+     * @defaultValue https://storage.googleapis.com/chrome-for-testing-public
+     */
+    downloadBaseUrl?: string;
+    /**
+     * Specifies a certain version of the browser you'd like Puppeteer to use.
+     *
+     * Can be overridden by `PUPPETEER_CHROME_VERSION`
+     * or `PUPPETEER_SKIP_CHROME_DOWNLOAD`.
+     *
+     * See {@link PuppeteerNode.launch | puppeteer.launch} on how executable path
+     * is inferred.
+     *
+     * @example 119.0.6045.105
+     * @defaultValue The pinned browser version supported by the current Puppeteer
+     * version.
+     */
+    version?: string;
+}
+
+/* Excluded from this release type: ChromeTargetManager */
 
 /**
  * @public
@@ -894,19 +985,6 @@ declare type CompoundSelectorsOfComplexSelector<ComplexSelector extends string> 
  */
 export declare interface Configuration {
     /**
-     * Specifies a certain version of the browser you'd like Puppeteer to use.
-     *
-     * Can be overridden by `PUPPETEER_BROWSER_REVISION`.
-     *
-     * See {@link PuppeteerNode.launch | puppeteer.launch} on how executable path
-     * is inferred.
-     *
-     * @example 119.0.6045.105
-     * @defaultValue The pinned browser version supported by the current Puppeteer
-     * version.
-     */
-    browserRevision?: string;
-    /**
      * Defines the directory to be used by Puppeteer for caching.
      *
      * Can be overridden by `PUPPETEER_CACHE_DIR`.
@@ -914,19 +992,6 @@ export declare interface Configuration {
      * @defaultValue `path.join(os.homedir(), '.cache', 'puppeteer')`
      */
     cacheDirectory?: string;
-    /**
-     * Specifies the URL prefix that is used to download the browser.
-     *
-     * Can be overridden by `PUPPETEER_DOWNLOAD_BASE_URL`.
-     *
-     * @remarks
-     * This must include the protocol and may even need a path prefix.
-     *
-     * @defaultValue Either https://storage.googleapis.com/chrome-for-testing-public or
-     * https://archive.mozilla.org/pub/firefox/nightly/latest-mozilla-central,
-     * depending on the product.
-     */
-    downloadBaseUrl?: string;
     /**
      * Specifies an executable path to be used in
      * {@link PuppeteerNode.launch | puppeteer.launch}.
@@ -939,11 +1004,11 @@ export declare interface Configuration {
     /**
      * Specifies which browser you'd like Puppeteer to use.
      *
-     * Can be overridden by `PUPPETEER_PRODUCT`.
+     * Can be overridden by `PUPPETEER_BROWSER`.
      *
      * @defaultValue `chrome`
      */
-    defaultProduct?: Product;
+    defaultBrowser?: SupportedBrowser;
     /**
      * Defines the directory to be used by Puppeteer for creating temporary files.
      *
@@ -959,18 +1024,6 @@ export declare interface Configuration {
      */
     skipDownload?: boolean;
     /**
-     * Tells Puppeteer to not Chrome download during installation.
-     *
-     * Can be overridden by `PUPPETEER_SKIP_CHROME_DOWNLOAD`.
-     */
-    skipChromeDownload?: boolean;
-    /**
-     * Tells Puppeteer to not chrome-headless-shell download during installation.
-     *
-     * Can be overridden by `PUPPETEER_SKIP_CHROME_HEADLESS_SHELL_DOWNLOAD`.
-     */
-    skipChromeHeadlessShellDownload?: boolean;
-    /**
      * Tells Puppeteer to log at the given level.
      *
      * @defaultValue `warn`
@@ -980,6 +1033,9 @@ export declare interface Configuration {
      * Defines experimental options for Puppeteer.
      */
     experiments?: ExperimentsConfiguration;
+    chrome?: ChromeSettings;
+    ['chrome-headless-shell']?: ChromeHeadlessShellSettings;
+    firefox?: FirefoxSettings;
 }
 
 /**
@@ -1054,6 +1110,13 @@ export declare interface ConnectOptions extends BrowserConnectOptions {
      * Only works in the Node.js environment.
      */
     headers?: Record<string, string>;
+    /**
+     * WebDriver BiDi capabilities passed to BiDi `session.new`.
+     *
+     * @remarks
+     * Only works for `protocol="webDriverBiDi"` and {@link Puppeteer.connect}.
+     */
+    capabilities?: SupportedWebDriverCapabilities;
 }
 
 /* Excluded from this release type: _connectToCdpBrowser */
@@ -1448,14 +1511,6 @@ export declare interface CustomQueryHandler {
     queryAll?: (node: Node, selector: string) => Iterable<Node>;
 }
 
-/**
- * @deprecated Import {@link Puppeteer} and use the static method
- * {@link Puppeteer.customQueryHandlerNames}
- *
- * @public
- */
-export declare function customQueryHandlerNames(): string[];
-
 /* Excluded from this release type: CustomQueryHandlerRegistry */
 
 /* Excluded from this release type: customQueryHandlers */
@@ -1748,7 +1803,7 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      *
      * @param selector -
      * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-     * to query page for.
+     * to query the page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
      * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -1770,7 +1825,7 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      *
      * @param selector -
      * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-     * to query page for.
+     * to query the page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
      * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -1808,7 +1863,7 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      *
      * @param selector -
      * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-     * to query page for.
+     * to query the page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
      * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -1856,7 +1911,7 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      *
      * @param selector -
      * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-     * to query page for.
+     * to query the page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
      * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -2120,7 +2175,7 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
     screenshot(options: Readonly<ScreenshotOptions> & {
         encoding: 'base64';
     }): Promise<string>;
-    screenshot(options?: Readonly<ScreenshotOptions>): Promise<Buffer>;
+    screenshot(options?: Readonly<ScreenshotOptions>): Promise<Uint8Array>;
     /* Excluded from this release type: assertConnectedElement */
     /* Excluded from this release type: scrollIntoViewIfNeeded */
     /**
@@ -2375,6 +2430,44 @@ export declare class FileChooser {
 
 /* Excluded from this release type: FirefoxLauncher */
 
+/**
+ * @public
+ */
+export declare interface FirefoxSettings {
+    /**
+     * Tells Puppeteer to not download the browser during installation.
+     *
+     * Can be overridden by `PUPPETEER_FIREFOX_SKIP_DOWNLOAD`.
+     *
+     * @defaultValue true
+     */
+    skipDownload?: boolean;
+    /**
+     * Specifies the URL prefix that is used to download the browser.
+     *
+     * Can be overridden by `PUPPETEER_FIREFOX_DOWNLOAD_BASE_URL`.
+     *
+     * @remarks
+     * This must include the protocol and may even need a path prefix.
+     *
+     * @defaultValue https://archive.mozilla.org/pub/firefox/releases
+     */
+    downloadBaseUrl?: string;
+    /**
+     * Specifies a certain version of the browser you'd like Puppeteer to use.
+     *
+     * Can be overridden by `PUPPETEER_FIREFOX_VERSION`.
+     *
+     * See {@link PuppeteerNode.launch | puppeteer.launch} on how executable path
+     * is inferred.
+     *
+     * @example stable_129.0
+     * @defaultValue The pinned browser version supported by the current Puppeteer
+     * version.
+     */
+    version?: string;
+}
+
 /* Excluded from this release type: FirefoxTargetManager */
 
 declare type FlatmapSplitWithDelemiters<Inputs extends readonly string[], Delemiters extends readonly string[], Acc extends string[] = []> = Inputs extends [infer FirstInput, ...infer RestInputs] ? FirstInput extends string ? RestInputs extends readonly string[] ? FlatmapSplitWithDelemiters<RestInputs, Delemiters, [
@@ -2453,15 +2546,6 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      * The page associated with the frame.
      */
     abstract page(): Page;
-    /**
-     * Is `true` if the frame is an out-of-process (OOP) frame. Otherwise,
-     * `false`.
-     *
-     * @deprecated Generally, there should be no difference between local and
-     * out-of-process frames from the Puppeteer API perspective. This is an
-     * implementation detail that should not have been exposed.
-     */
-    abstract isOOPFrame(): boolean;
     /**
      * Navigates the frame or page to the given `url`.
      *
@@ -2552,7 +2636,7 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      *
      * @param selector -
      * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-     * to query page for.
+     * to query the page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
      * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -2577,7 +2661,7 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      *
      * @param selector -
      * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-     * to query page for.
+     * to query the page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
      * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -2600,7 +2684,7 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      *
      * @param selector -
      * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-     * to query page for.
+     * to query the page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
      * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -2633,7 +2717,7 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      *
      * @param selector -
      * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-     * to query page for.
+     * to query the page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
      * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -2668,7 +2752,7 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      *
      * @param selector -
      * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-     * to query page for.
+     * to query the page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
      * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -3059,7 +3143,7 @@ export declare interface GeolocationOptions {
 
 /* Excluded from this release type: getQueryHandlerAndSelector */
 
-/* Excluded from this release type: getReadableAsBuffer */
+/* Excluded from this release type: getReadableAsTypedArray */
 
 /* Excluded from this release type: getReadableFromProtocolStream */
 
@@ -3435,7 +3519,11 @@ export declare abstract class HTTPResponse {
      * failed to detect the correct encoding, the buffer might
      * be encoded incorrectly. See https://github.com/puppeteer/puppeteer/issues/6478.
      */
-    abstract buffer(): Promise<Buffer>;
+    abstract content(): Promise<Uint8Array>;
+    /**
+     * {@inheritDoc HTTPResponse.content}
+     */
+    buffer(): Promise<Buffer>;
     /**
      * Promise which resolves to a text (utf8) representation of response body.
      */
@@ -3470,8 +3558,6 @@ export declare abstract class HTTPResponse {
 }
 
 /* Excluded from this release type: importDebug */
-
-/* Excluded from this release type: importFSPromises */
 
 /* Excluded from this release type: InitializationStatus */
 
@@ -3976,7 +4062,7 @@ export declare interface LaunchOptions {
      * Which browser to launch.
      * @defaultValue `chrome`
      */
-    product?: Product;
+    browser?: SupportedBrowser;
     /**
      * {@link https://searchfox.org/mozilla-release/source/modules/libpref/init/all.js | Additional preferences } that can be passed when launching with Firefox.
      */
@@ -4811,7 +4897,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * @param selector -
      * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-     * to query page for.
+     * to query the page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
      * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -4832,7 +4918,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * @param selector -
      * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-     * to query page for.
+     * to query the page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
      * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -4854,7 +4940,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * @param selector -
      * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-     * to query page for.
+     * to query the page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
      * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -4879,7 +4965,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * @param selector -
      * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-     * to query page for.
+     * to query the page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
      * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -5032,7 +5118,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * @param selector -
      * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-     * to query page for.
+     * to query the page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
      * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -5102,7 +5188,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * @param selector -
      * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-     * to query page for.
+     * to query the page for.
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
      * can be passed as-is and a
      * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -5801,7 +5887,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * @defaultValue `true`
      */
     abstract setCacheEnabled(enabled?: boolean): Promise<void>;
-    /* Excluded from this release type: _maybeWriteBufferToFile */
+    /* Excluded from this release type: _maybeWriteTypedArrayToFile */
     /**
      * Captures a screencast of this {@link Page | page}.
      *
@@ -5865,7 +5951,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
     screenshot(options: Readonly<ScreenshotOptions> & {
         encoding: 'base64';
     }): Promise<string>;
-    screenshot(options?: Readonly<ScreenshotOptions>): Promise<Buffer>;
+    screenshot(options?: Readonly<ScreenshotOptions>): Promise<Uint8Array>;
     /* Excluded from this release type: _screenshot */
     /**
      * Generates a PDF of the page with the `print` CSS media type.
@@ -5887,7 +5973,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
     /**
      * {@inheritDoc Page.createPDFStream}
      */
-    abstract pdf(options?: PDFOptions): Promise<Buffer>;
+    abstract pdf(options?: PDFOptions): Promise<Uint8Array>;
     /**
      * The page's title
      *
@@ -5929,7 +6015,21 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * ```
      *
      * Shortcut for {@link Frame.click | page.mainFrame().click(selector[, options]) }.
-     * @param selector - A `selector` to search for element to click. If there are
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query the page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows quering by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}. If there are
      * multiple elements satisfying the `selector`, the first will be clicked
      * @param options - `Object`
      * @returns Promise which resolves when the element matching `selector` is
@@ -5938,19 +6038,33 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      */
     click(selector: string, options?: Readonly<ClickOptions>): Promise<void>;
     /**
-     * This method fetches an element with `selector` and focuses it. If there's no
-     * element matching `selector`, the method throws an error.
-     * @param selector - A
-     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector }
-     * of an element to focus. If there are multiple elements satisfying the
-     * selector, the first will be focused.
-     * @returns Promise which resolves when the element matching selector is
-     * successfully focused. The promise will be rejected if there is no element
-     * matching selector.
+     * This method fetches an element with `selector` and focuses it. If
+     * there's no element matching `selector`, the method throws an error.
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query the page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows quering by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
+     * If there are multiple elements satisfying the selector, the first
+     * will be focused.
+     * @returns Promise which resolves when the element matching selector
+     * is successfully focused. The promise will be rejected if there is
+     * no element matching selector.
      *
      * @remarks
      *
-     * Shortcut for {@link Frame.focus | page.mainFrame().focus(selector)}.
+     * Shortcut for
+     * {@link Frame.focus | page.mainFrame().focus(selector)}.
      */
     focus(selector: string): Promise<void>;
     /**
@@ -5958,10 +6072,22 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * needed, and then uses {@link Page.mouse}
      * to hover over the center of the element.
      * If there's no element matching `selector`, the method throws an error.
-     * @param selector - A
-     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
-     * to search for element to hover. If there are multiple elements satisfying
-     * the selector, the first will be hovered.
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query the page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows quering by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}. If there are
+     * multiple elements satisfying the `selector`, the first will be hovered.
      * @returns Promise which resolves when the element matching `selector` is
      * successfully hovered. Promise gets rejected if there's no element matching
      * `selector`.
@@ -5983,9 +6109,21 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * page.select('select#colors', 'red', 'green', 'blue'); // multiple selections
      * ```
      *
-     * @param selector - A
-     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | Selector}
-     * to query the page for
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query the page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows quering by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      * @param values - Values of options to select. If the `<select>` has the
      * `multiple` attribute, all values are considered, otherwise only the first one
      * is taken into account.
@@ -6001,9 +6139,21 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * needed, and then uses {@link Page.touchscreen}
      * to tap in the center of the element.
      * If there's no element matching `selector`, the method throws an error.
-     * @param selector - A
-     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | Selector}
-     * to search for element to tap. If there are multiple elements satisfying the
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query the page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows quering by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}. If there are multiple elements satisfying the
      * selector, the first will be tapped.
      *
      * @remarks
@@ -6025,10 +6175,21 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * // Types slower, like a user
      * ```
      *
-     * @param selector - A
-     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
-     * of an element to type into. If there are multiple elements satisfying the
-     * selector, the first will be used.
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query the page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows quering by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      * @param text - A text to type into a focused element.
      * @param options - have property `delay` which is the Time to wait between
      * key presses in milliseconds. Defaults to `0`.
@@ -6064,9 +6225,21 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * })();
      * ```
      *
-     * @param selector - A
-     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
-     * of an element to wait for
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query the page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows quering by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
      * @param options - Optional waiting parameters
      * @returns Promise which resolves when element specified by selector string
      * is added to DOM. Resolves to `null` if waiting for hidden: `true` and
@@ -6631,44 +6804,6 @@ export declare const PredefinedNetworkConditions: Readonly<{
  */
 export declare type Predicate<From, To extends From = From> = ((value: From) => value is To) | ((value: From) => Awaitable<boolean>);
 
-/**
- * @license
- * Copyright 2020 Google Inc.
- * SPDX-License-Identifier: Apache-2.0
- */
-/**
- * Supported products.
- * @public
- */
-export declare type Product = 'chrome' | 'firefox';
-
-/**
- * Describes a launcher - a class that is able to create and launch a browser instance.
- *
- * @public
- */
-export declare abstract class ProductLauncher {
-    #private;
-    /* Excluded from this release type: puppeteer */
-    /* Excluded from this release type: actualBrowserRevision */
-    /* Excluded from this release type: __constructor */
-    get product(): Product;
-    launch(options?: PuppeteerNodeLaunchOptions): Promise<Browser>;
-    abstract executablePath(channel?: ChromeReleaseChannel): string;
-    abstract defaultArgs(object: BrowserLaunchArgumentOptions): string[];
-    /* Excluded from this release type: getActualBrowserRevision */
-    /* Excluded from this release type: computeLaunchArguments */
-    /* Excluded from this release type: cleanUserDataDir */
-    /* Excluded from this release type: closeBrowser */
-    /* Excluded from this release type: waitForPageTarget */
-    /* Excluded from this release type: createCdpSocketConnection */
-    /* Excluded from this release type: createCdpPipeConnection */
-    /* Excluded from this release type: createBiDiOverCdpBrowser */
-    /* Excluded from this release type: createBiDiBrowser */
-    /* Excluded from this release type: getProfilePath */
-    /* Excluded from this release type: resolveExecutablePath */
-}
-
 export { Protocol }
 
 /**
@@ -6725,7 +6860,9 @@ export declare class Puppeteer {
      * @example
      *
      * ```
-     * puppeteer.registerCustomQueryHandler('text', { … });
+     * import {Puppeteer}, puppeteer from 'puppeteer';
+     *
+     * Puppeteer.registerCustomQueryHandler('text', { … });
      * const aHandle = await page.$('text/…');
      * ```
      *
@@ -6750,7 +6887,7 @@ export declare class Puppeteer {
      */
     static clearCustomQueryHandlers(): void;
     /* Excluded from this release type: _isPuppeteerCore */
-    /* Excluded from this release type: _changedProduct */
+    /* Excluded from this release type: _changedBrowsers */
     /* Excluded from this release type: __constructor */
     /**
      * This method attaches Puppeteer to an existing browser instance.
@@ -6792,7 +6929,7 @@ export declare class PuppeteerError extends Error {
  * @public
  */
 export declare interface PuppeteerLaunchOptions extends LaunchOptions, BrowserLaunchArgumentOptions, BrowserConnectOptions {
-    product?: Product;
+    browser?: SupportedBrowser;
     extraPrefsFirefox?: Record<string, unknown>;
 }
 
@@ -6907,23 +7044,23 @@ export declare class PuppeteerNode extends Puppeteer {
      * The default executable path.
      */
     executablePath(channel?: ChromeReleaseChannel): string;
-    /* Excluded from this release type: browserRevision */
+    /* Excluded from this release type: browserVersion */
     /* Excluded from this release type: defaultDownloadPath */
     /**
      * The name of the browser that was last launched.
      */
-    get lastLaunchedProduct(): Product;
+    get lastLaunchedBrowser(): SupportedBrowser;
     /**
      * The name of the browser that will be launched by default. For
      * `puppeteer`, this is influenced by your configuration. Otherwise, it's
      * `chrome`.
      */
-    get defaultProduct(): Product;
+    get defaultBrowser(): SupportedBrowser;
     /**
      * @deprecated Do not use as this field as it does not take into account
      * multiple browsers of different types. Use
-     * {@link PuppeteerNode.defaultProduct | defaultProduct} or
-     * {@link PuppeteerNode.lastLaunchedProduct | lastLaunchedProduct}.
+     * {@link PuppeteerNode.defaultBrowser | defaultBrowser} or
+     * {@link PuppeteerNode.lastLaunchedBrowser | lastLaunchedBrowser}.
      *
      * @returns The name of the browser that is under automation.
      */
@@ -6999,14 +7136,6 @@ export declare interface QueryOptions {
 /* Excluded from this release type: Realm */
 
 /* Excluded from this release type: RedirectInfo */
-
-/**
- * @deprecated Import {@link Puppeteer} and use the static method
- * {@link Puppeteer.registerCustomQueryHandler}
- *
- * @public
- */
-export declare function registerCustomQueryHandler(name: string, handler: CustomQueryHandler): void;
 
 /* Excluded from this release type: releaseObject */
 
@@ -7294,6 +7423,8 @@ export declare interface SerializedAXNode {
     elementHandle(): Promise<ElementHandle | null>;
 }
 
+export { Session }
+
 /* Excluded from this release type: setDefaultScreenshotOptions */
 
 /* Excluded from this release type: setLogCapture */
@@ -7322,7 +7453,31 @@ declare type SplitWithDelemiters<Input extends string, Delemiters extends readon
 
 /* Excluded from this release type: STATUS_TEXTS */
 
+/**
+ * @license
+ * Copyright 2020 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+/**
+ * Browsers supported by Puppeteer.
+ *
+ * @public
+ */
+export declare type SupportedBrowser = 'chrome' | 'firefox';
+
 /* Excluded from this release type: supportedMetrics */
+
+/**
+ * WebDriver BiDi capabilities that are not set by Puppeteer itself.
+ *
+ * @public
+ */
+export declare interface SupportedWebDriverCapabilities {
+    firstMatch?: SupportedWebDriverCapability[];
+    alwaysMatch?: SupportedWebDriverCapability;
+}
+
+export declare type SupportedWebDriverCapability = Exclude<Session.CapabilityRequest, 'unhandledPromptBehavior' | 'acceptInsecureCerts'>;
 
 /**
  * Target represents a
@@ -7500,7 +7655,7 @@ export declare class Tracing {
      * Stops a trace started with the `start` method.
      * @returns Promise which resolves to buffer with trace data.
      */
-    stop(): Promise<Buffer | undefined>;
+    stop(): Promise<Uint8Array | undefined>;
 }
 
 /**
@@ -7519,14 +7674,6 @@ declare type TypeSelectorOfComplexSelector<ComplexSelector extends string> = Com
 declare type TypeSelectorOfCompoundSelector<CompoundSelector extends string> = SplitWithDelemiters<CompoundSelector, BeginSubclassSelectorTokens> extends infer CompoundSelectorTokens ? CompoundSelectorTokens extends [infer TypeSelector, ...any[]] ? TypeSelector extends '' ? unknown : TypeSelector : never : never;
 
 /* Excluded from this release type: unitToPixels */
-
-/**
- * @deprecated Import {@link Puppeteer} and use the static method
- * {@link Puppeteer.unregisterCustomQueryHandler}
- *
- * @public
- */
-export declare function unregisterCustomQueryHandler(name: string): void;
 
 /**
  * Puppeteer will throw this error if a method is not

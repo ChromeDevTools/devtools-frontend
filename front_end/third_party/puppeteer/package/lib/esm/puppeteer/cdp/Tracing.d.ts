@@ -1,4 +1,3 @@
-/// <reference types="node" />
 /**
  * @license
  * Copyright 2017 Google Inc.
@@ -51,6 +50,6 @@ export declare class Tracing {
      * Stops a trace started with the `start` method.
      * @returns Promise which resolves to buffer with trace data.
      */
-    stop(): Promise<Buffer | undefined>;
+    stop(): Promise<Uint8Array | undefined>;
 }
 //# sourceMappingURL=Tracing.d.ts.map

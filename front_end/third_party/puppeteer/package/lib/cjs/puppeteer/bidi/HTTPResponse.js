@@ -152,7 +152,7 @@ let BidiHTTPResponse = (() => {
             }
             return this.#securityDetails ?? null;
         }
-        buffer() {
+        content() {
             throw new Errors_js_1.UnsupportedOperation();
         }
     };

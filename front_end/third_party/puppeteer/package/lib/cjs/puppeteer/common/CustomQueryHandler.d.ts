@@ -72,32 +72,4 @@ export declare class CustomQueryHandlerRegistry {
  * @internal
  */
 export declare const customQueryHandlers: CustomQueryHandlerRegistry;
-/**
- * @deprecated Import {@link Puppeteer} and use the static method
- * {@link Puppeteer.registerCustomQueryHandler}
- *
- * @public
- */
-export declare function registerCustomQueryHandler(name: string, handler: CustomQueryHandler): void;
-/**
- * @deprecated Import {@link Puppeteer} and use the static method
- * {@link Puppeteer.unregisterCustomQueryHandler}
- *
- * @public
- */
-export declare function unregisterCustomQueryHandler(name: string): void;
-/**
- * @deprecated Import {@link Puppeteer} and use the static method
- * {@link Puppeteer.customQueryHandlerNames}
- *
- * @public
- */
-export declare function customQueryHandlerNames(): string[];
-/**
- * @deprecated Import {@link Puppeteer} and use the static method
- * {@link Puppeteer.clearCustomQueryHandlers}
- *
- * @public
- */
-export declare function clearCustomQueryHandlers(): void;
 //# sourceMappingURL=CustomQueryHandler.d.ts.map

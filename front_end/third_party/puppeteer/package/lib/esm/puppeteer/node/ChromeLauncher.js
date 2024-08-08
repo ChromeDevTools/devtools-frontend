@@ -9,12 +9,12 @@ import path from 'path';
 import { computeSystemExecutablePath, Browser as SupportedBrowsers, ChromeReleaseChannel as BrowsersChromeReleaseChannel, } from '@puppeteer/browsers';
 import { debugError } from '../common/util.js';
 import { assert } from '../util/assert.js';
-import { ProductLauncher } from './ProductLauncher.js';
+import { BrowserLauncher } from './BrowserLauncher.js';
 import { rm } from './util/fs.js';
 /**
  * @internal
  */
-export class ChromeLauncher extends ProductLauncher {
+export class ChromeLauncher extends BrowserLauncher {
     constructor(puppeteer) {
         super(puppeteer, 'chrome');
     }

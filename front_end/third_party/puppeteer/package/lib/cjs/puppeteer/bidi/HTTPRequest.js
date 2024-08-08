@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiHTTPRequest = exports.requests = void 0;
 const HTTPRequest_js_1 = require("../api/HTTPRequest.js");
 const Errors_js_1 = require("../common/Errors.js");
+const encoding_js_1 = require("../util/encoding.js");
 const HTTPResponse_js_1 = require("./HTTPResponse.js");
 exports.requests = new WeakMap();
 /**
@@ -146,7 +147,7 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
             body: overrides.postData
                 ? {
                     type: 'base64',
-                    value: btoa(overrides.postData),
+                    value: (0, encoding_js_1.stringToBase64)(overrides.postData),
                 }
                 : undefined,
             headers: headers.length > 0 ? headers : undefined,

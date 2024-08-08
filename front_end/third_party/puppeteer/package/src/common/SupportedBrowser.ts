@@ -3,9 +3,10 @@
  * Copyright 2020 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+
 /**
- * Supported products.
+ * Browsers supported by Puppeteer.
+ *
  * @public
  */
-export type Product = 'chrome' | 'firefox';
-//# sourceMappingURL=Product.d.ts.map
+export type SupportedBrowser = 'chrome' | 'firefox';

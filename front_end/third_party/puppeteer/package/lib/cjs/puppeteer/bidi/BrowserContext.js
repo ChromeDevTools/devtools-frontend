@@ -89,6 +89,7 @@ const Browser_js_1 = require("../api/Browser.js");
 const BrowserContext_js_1 = require("../api/BrowserContext.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const util_js_1 = require("../common/util.js");
+const assert_js_1 = require("../util/assert.js");
 const decorators_js_1 = require("../util/decorators.js");
 const UserContext_js_1 = require("./core/UserContext.js");
 const Page_js_1 = require("./Page.js");
@@ -247,9 +248,7 @@ let BidiBrowserContext = (() => {
             }
         }
         async close() {
-            if (!this.isIncognito()) {
-                throw new Error('Default context cannot be closed!');
-            }
+            (0, assert_js_1.assert)(this.userContext.id !== UserContext_js_1.UserContext.DEFAULT, 'Default BrowserContext cannot be closed!');
             try {
                 await this.userContext.remove();
             }
@@ -265,9 +264,6 @@ let BidiBrowserContext = (() => {
             return [...this.userContext.browsingContexts].map(context => {
                 return this.#pages.get(context);
             });
-        }
-        isIncognito() {
-            return this.userContext.id !== UserContext_js_1.UserContext.DEFAULT;
         }
         async overridePermissions(origin, permissions) {
             const permissionsSet = new Set(permissions.map(permission => {

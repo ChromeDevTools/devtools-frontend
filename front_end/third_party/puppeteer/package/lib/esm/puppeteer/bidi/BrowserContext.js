@@ -86,6 +86,7 @@ import { WEB_PERMISSION_TO_PROTOCOL_PERMISSION } from '../api/Browser.js';
 import { BrowserContext } from '../api/BrowserContext.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { debugError } from '../common/util.js';
+import { assert } from '../util/assert.js';
 import { bubble } from '../util/decorators.js';
 import { UserContext } from './core/UserContext.js';
 import { BidiPage } from './Page.js';
@@ -244,9 +245,7 @@ let BidiBrowserContext = (() => {
             }
         }
         async close() {
-            if (!this.isIncognito()) {
-                throw new Error('Default context cannot be closed!');
-            }
+            assert(this.userContext.id !== UserContext.DEFAULT, 'Default BrowserContext cannot be closed!');
             try {
                 await this.userContext.remove();
             }
@@ -262,9 +261,6 @@ let BidiBrowserContext = (() => {
             return [...this.userContext.browsingContexts].map(context => {
                 return this.#pages.get(context);
             });
-        }
-        isIncognito() {
-            return this.userContext.id !== UserContext.DEFAULT;
         }
         async overridePermissions(origin, permissions) {
             const permissionsSet = new Set(permissions.map(permission => {

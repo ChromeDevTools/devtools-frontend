@@ -23,7 +23,7 @@ __exportStar(require("./ChromeLauncher.js"), exports);
 __exportStar(require("./FirefoxLauncher.js"), exports);
 __exportStar(require("./LaunchOptions.js"), exports);
 __exportStar(require("./PipeTransport.js"), exports);
-__exportStar(require("./ProductLauncher.js"), exports);
+__exportStar(require("./BrowserLauncher.js"), exports);
 __exportStar(require("./PuppeteerNode.js"), exports);
 __exportStar(require("./ScreenRecorder.js"), exports);
 //# sourceMappingURL=node.js.map

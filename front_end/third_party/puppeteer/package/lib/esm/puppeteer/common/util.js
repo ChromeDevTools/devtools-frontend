@@ -4,8 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { filter, from, fromEvent, map, mergeMap, NEVER, Observable, timer, } from '../../third_party/rxjs/rxjs.js';
+import { environment } from '../environment.js';
 import { packageVersion } from '../generated/version.js';
 import { assert } from '../util/assert.js';
+import { mergeUint8Arrays } from '../util/encoding.js';
 import { debug } from './Debug.js';
 import { TimeoutError } from './Errors.js';
 import { paperFormats } from './PDFOptions.js';
@@ -137,33 +139,11 @@ export function evaluationString(fun, ...args) {
 /**
  * @internal
  */
-let fs = null;
-/**
- * @internal
- */
-export async function importFSPromises() {
-    if (!fs) {
-        try {
-            fs = await import('fs/promises');
-        }
-        catch (error) {
-            if (error instanceof TypeError) {
-                throw new Error('Cannot write to a path outside of a Node-like environment.');
-            }
-            throw error;
-        }
-    }
-    return fs;
-}
-/**
- * @internal
- */
-export async function getReadableAsBuffer(readable, path) {
+export async function getReadableAsTypedArray(readable, path) {
     const buffers = [];
     const reader = readable.getReader();
     if (path) {
-        const fs = await importFSPromises();
-        const fileHandle = await fs.open(path, 'w+');
+        const fileHandle = await environment.value.fs.promises.open(path, 'w+');
         try {
             while (true) {
                 const { done, value } = await reader.read();
@@ -188,7 +168,11 @@ export async function getReadableAsBuffer(readable, path) {
         }
     }
     try {
-        return Buffer.concat(buffers);
+        const concat = mergeUint8Arrays(buffers);
+        if (concat.length === 0) {
+            return null;
+        }
+        return concat;
     }
     catch (error) {
         debugError(error);

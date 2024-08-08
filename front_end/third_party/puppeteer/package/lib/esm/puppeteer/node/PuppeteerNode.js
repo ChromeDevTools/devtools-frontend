@@ -3,7 +3,7 @@
  * Copyright 2020 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { Browser as SupportedBrowser, resolveBuildId, detectBrowserPlatform, getInstalledBrowsers, uninstall, } from '@puppeteer/browsers';
+import { Browser as browsers_SupportedBrowser, resolveBuildId, detectBrowserPlatform, getInstalledBrowsers, uninstall, } from '@puppeteer/browsers';
 import { Puppeteer } from '../common/Puppeteer.js';
 import { PUPPETEER_REVISIONS } from '../revisions.js';
 import { ChromeLauncher } from './ChromeLauncher.js';
@@ -45,7 +45,7 @@ import { FirefoxLauncher } from './FirefoxLauncher.js';
  */
 export class PuppeteerNode extends Puppeteer {
     #_launcher;
-    #lastLaunchedProduct;
+    #lastLaunchedBrowser;
     /**
      * @internal
      */
@@ -63,12 +63,12 @@ export class PuppeteerNode extends Puppeteer {
         if (configuration) {
             this.configuration = configuration;
         }
-        switch (this.configuration.defaultProduct) {
+        switch (this.configuration.defaultBrowser) {
             case 'firefox':
                 this.defaultBrowserRevision = PUPPETEER_REVISIONS.firefox;
                 break;
             default:
-                this.configuration.defaultProduct = 'chrome';
+                this.configuration.defaultBrowser = 'chrome';
                 this.defaultBrowserRevision = PUPPETEER_REVISIONS.chrome;
                 break;
         }
@@ -124,8 +124,8 @@ export class PuppeteerNode extends Puppeteer {
      * @param options - Options to configure launching behavior.
      */
     launch(options = {}) {
-        const { product = this.defaultProduct } = options;
-        this.#lastLaunchedProduct = product;
+        const { browser: product = this.defaultBrowser } = options;
+        this.#lastLaunchedBrowser = product;
         return this.#launcher.launch(options);
     }
     /**
@@ -133,10 +133,10 @@ export class PuppeteerNode extends Puppeteer {
      */
     get #launcher() {
         if (this.#_launcher &&
-            this.#_launcher.product === this.lastLaunchedProduct) {
+            this.#_launcher.browser === this.lastLaunchedBrowser) {
             return this.#_launcher;
         }
-        switch (this.lastLaunchedProduct) {
+        switch (this.lastLaunchedBrowser) {
             case 'chrome':
                 this.defaultBrowserRevision = PUPPETEER_REVISIONS.chrome;
                 this.#_launcher = new ChromeLauncher(this);
@@ -146,7 +146,7 @@ export class PuppeteerNode extends Puppeteer {
                 this.#_launcher = new FirefoxLauncher(this);
                 break;
             default:
-                throw new Error(`Unknown product: ${this.#lastLaunchedProduct}`);
+                throw new Error(`Unknown product: ${this.#lastLaunchedBrowser}`);
         }
         return this.#_launcher;
     }
@@ -159,9 +159,8 @@ export class PuppeteerNode extends Puppeteer {
     /**
      * @internal
      */
-    get browserRevision() {
-        return (this.#_launcher?.getActualBrowserRevision() ??
-            this.configuration.browserRevision ??
+    get browserVersion() {
+        return (this.configuration?.[this.lastLaunchedBrowser]?.version ??
             this.defaultBrowserRevision);
     }
     /**
@@ -176,27 +175,27 @@ export class PuppeteerNode extends Puppeteer {
     /**
      * The name of the browser that was last launched.
      */
-    get lastLaunchedProduct() {
-        return this.#lastLaunchedProduct ?? this.defaultProduct;
+    get lastLaunchedBrowser() {
+        return this.#lastLaunchedBrowser ?? this.defaultBrowser;
     }
     /**
      * The name of the browser that will be launched by default. For
      * `puppeteer`, this is influenced by your configuration. Otherwise, it's
      * `chrome`.
      */
-    get defaultProduct() {
-        return this.configuration.defaultProduct ?? 'chrome';
+    get defaultBrowser() {
+        return this.configuration.defaultBrowser ?? 'chrome';
     }
     /**
      * @deprecated Do not use as this field as it does not take into account
      * multiple browsers of different types. Use
-     * {@link PuppeteerNode.defaultProduct | defaultProduct} or
-     * {@link PuppeteerNode.lastLaunchedProduct | lastLaunchedProduct}.
+     * {@link PuppeteerNode.defaultBrowser | defaultBrowser} or
+     * {@link PuppeteerNode.lastLaunchedBrowser | lastLaunchedBrowser}.
      *
      * @returns The name of the browser that is under automation.
      */
     get product() {
-        return this.#launcher.product;
+        return this.#launcher.browser;
     }
     /**
      * @param options - Set of configurable options to set on the browser.
@@ -229,24 +228,23 @@ export class PuppeteerNode extends Puppeteer {
         const installedBrowsers = await getInstalledBrowsers({
             cacheDir,
         });
-        const product = this.configuration.defaultProduct;
         const puppeteerBrowsers = [
             {
                 product: 'chrome',
-                browser: SupportedBrowser.CHROME,
+                browser: browsers_SupportedBrowser.CHROME,
                 currentBuildId: '',
             },
             {
                 product: 'firefox',
-                browser: SupportedBrowser.FIREFOX,
+                browser: browsers_SupportedBrowser.FIREFOX,
                 currentBuildId: '',
             },
         ];
         // Resolve current buildIds.
         for (const item of puppeteerBrowsers) {
-            item.currentBuildId = await resolveBuildId(item.browser, platform, (product === item.product
-                ? this.configuration.browserRevision
-                : null) || PUPPETEER_REVISIONS[item.product]);
+            const tag = this.configuration?.[item.product]?.version ??
+                PUPPETEER_REVISIONS[item.product];
+            item.currentBuildId = await resolveBuildId(item.browser, platform, tag);
         }
         const currentBrowserBuilds = new Set(puppeteerBrowsers.map(browser => {
             return `${browser.browser}_${browser.currentBuildId}`;

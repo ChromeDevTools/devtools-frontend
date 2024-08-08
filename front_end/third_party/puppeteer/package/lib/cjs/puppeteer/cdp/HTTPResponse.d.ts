@@ -1,4 +1,3 @@
-/// <reference types="node" />
 /**
  * @license
  * Copyright 2020 Google Inc.
@@ -24,7 +23,7 @@ export declare class CdpHTTPResponse extends HTTPResponse {
     headers(): Record<string, string>;
     securityDetails(): SecurityDetails | null;
     timing(): Protocol.Network.ResourceTiming | null;
-    buffer(): Promise<Buffer>;
+    content(): Promise<Uint8Array>;
     request(): CdpHTTPRequest;
     fromCache(): boolean;
     fromServiceWorker(): boolean;

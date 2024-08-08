@@ -3,7 +3,6 @@
  * Copyright 2022 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-/// <reference types="node" />
 import type Protocol from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { WaitForOptions } from '../api/Frame.js';
@@ -77,7 +76,7 @@ export declare class BidiPage extends Page {
     emulateVisionDeficiency(type?: Protocol.Emulation.SetEmulatedVisionDeficiencyRequest['type']): Promise<void>;
     setViewport(viewport: Viewport | null): Promise<void>;
     viewport(): Viewport | null;
-    pdf(options?: PDFOptions): Promise<Buffer>;
+    pdf(options?: PDFOptions): Promise<Uint8Array>;
     createPDFStream(options?: PDFOptions | undefined): Promise<ReadableStream<Uint8Array>>;
     _screenshot(options: Readonly<ScreenshotOptions>): Promise<string>;
     createCDPSession(): Promise<CDPSession>;

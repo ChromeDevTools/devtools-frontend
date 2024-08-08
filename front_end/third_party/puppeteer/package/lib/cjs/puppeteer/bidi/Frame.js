@@ -290,9 +290,6 @@ let BidiFrame = (() => {
             }
             return parent;
         }
-        isOOPFrame() {
-            throw new Errors_js_1.UnsupportedOperation();
-        }
         url() {
             return this.browsingContext.url;
         }

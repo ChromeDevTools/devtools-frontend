@@ -3,7 +3,7 @@
  * Copyright 2022 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import type { Product } from './Product.js';
+import type { SupportedBrowser } from './SupportedBrowser.js';
 /**
  * Defines experiment options for Puppeteer.
  *
@@ -22,19 +22,6 @@ export type ExperimentsConfiguration = Record<string, never>;
  */
 export interface Configuration {
     /**
-     * Specifies a certain version of the browser you'd like Puppeteer to use.
-     *
-     * Can be overridden by `PUPPETEER_BROWSER_REVISION`.
-     *
-     * See {@link PuppeteerNode.launch | puppeteer.launch} on how executable path
-     * is inferred.
-     *
-     * @example 119.0.6045.105
-     * @defaultValue The pinned browser version supported by the current Puppeteer
-     * version.
-     */
-    browserRevision?: string;
-    /**
      * Defines the directory to be used by Puppeteer for caching.
      *
      * Can be overridden by `PUPPETEER_CACHE_DIR`.
@@ -42,19 +29,6 @@ export interface Configuration {
      * @defaultValue `path.join(os.homedir(), '.cache', 'puppeteer')`
      */
     cacheDirectory?: string;
-    /**
-     * Specifies the URL prefix that is used to download the browser.
-     *
-     * Can be overridden by `PUPPETEER_DOWNLOAD_BASE_URL`.
-     *
-     * @remarks
-     * This must include the protocol and may even need a path prefix.
-     *
-     * @defaultValue Either https://storage.googleapis.com/chrome-for-testing-public or
-     * https://archive.mozilla.org/pub/firefox/nightly/latest-mozilla-central,
-     * depending on the product.
-     */
-    downloadBaseUrl?: string;
     /**
      * Specifies an executable path to be used in
      * {@link PuppeteerNode.launch | puppeteer.launch}.
@@ -67,11 +41,11 @@ export interface Configuration {
     /**
      * Specifies which browser you'd like Puppeteer to use.
      *
-     * Can be overridden by `PUPPETEER_PRODUCT`.
+     * Can be overridden by `PUPPETEER_BROWSER`.
      *
      * @defaultValue `chrome`
      */
-    defaultProduct?: Product;
+    defaultBrowser?: SupportedBrowser;
     /**
      * Defines the directory to be used by Puppeteer for creating temporary files.
      *
@@ -87,18 +61,6 @@ export interface Configuration {
      */
     skipDownload?: boolean;
     /**
-     * Tells Puppeteer to not Chrome download during installation.
-     *
-     * Can be overridden by `PUPPETEER_SKIP_CHROME_DOWNLOAD`.
-     */
-    skipChromeDownload?: boolean;
-    /**
-     * Tells Puppeteer to not chrome-headless-shell download during installation.
-     *
-     * Can be overridden by `PUPPETEER_SKIP_CHROME_HEADLESS_SHELL_DOWNLOAD`.
-     */
-    skipChromeHeadlessShellDownload?: boolean;
-    /**
      * Tells Puppeteer to log at the given level.
      *
      * @defaultValue `warn`
@@ -108,5 +70,121 @@ export interface Configuration {
      * Defines experimental options for Puppeteer.
      */
     experiments?: ExperimentsConfiguration;
+    chrome?: ChromeSettings;
+    ['chrome-headless-shell']?: ChromeHeadlessShellSettings;
+    firefox?: FirefoxSettings;
+}
+/**
+ * @public
+ */
+export interface ChromeSettings {
+    /**
+     * Tells Puppeteer to not download the browser during installation.
+     *
+     * Can be overridden by `PUPPETEER_CHROME_SKIP_DOWNLOAD`.
+     *
+     * @defaultValue false
+     */
+    skipDownload?: boolean;
+    /**
+     * Specifies the URL prefix that is used to download the browser.
+     *
+     * Can be overridden by `PUPPETEER_CHROME_DOWNLOAD_BASE_URL`.
+     *
+     * @remarks
+     * This must include the protocol and may even need a path prefix.
+     *
+     * @defaultValue https://storage.googleapis.com/chrome-for-testing-public
+     */
+    downloadBaseUrl?: string;
+    /**
+     * Specifies a certain version of the browser you'd like Puppeteer to use.
+     *
+     * Can be overridden by `PUPPETEER_CHROME_VERSION`
+     * or `PUPPETEER_SKIP_CHROME_DOWNLOAD`.
+     *
+     * See {@link PuppeteerNode.launch | puppeteer.launch} on how executable path
+     * is inferred.
+     *
+     * @example 119.0.6045.105
+     * @defaultValue The pinned browser version supported by the current Puppeteer
+     * version.
+     */
+    version?: string;
+}
+/**
+ * @public
+ */
+export interface ChromeHeadlessShellSettings {
+    /**
+     * Tells Puppeteer to not download the browser during installation.
+     *
+     * Can be overridden by `PUPPETEER_CHROME_HEADLESS_SHELL_SKIP_DOWNLOAD`
+     * or `PUPPETEER_SKIP_CHROME_HEADLESS_SHELL_DOWNLOAD`.
+     *
+     * @defaultValue false
+     */
+    skipDownload?: boolean;
+    /**
+     * Specifies the URL prefix that is used to download the browser.
+     *
+     * Can be overridden by `PUPPETEER_CHROME_HEADLESS_SHELL_DOWNLOAD_BASE_URL`.
+     *
+     * @remarks
+     * This must include the protocol and may even need a path prefix.
+     *
+     * @defaultValue https://storage.googleapis.com/chrome-for-testing-public
+     */
+    downloadBaseUrl?: string;
+    /**
+     * Specifies a certain version of the browser you'd like Puppeteer to use.
+     *
+     * Can be overridden by `PUPPETEER_CHROME_HEADLESS_SHELL_VERSION`.
+     *
+     * See {@link PuppeteerNode.launch | puppeteer.launch} on how executable path
+     * is inferred.
+     *
+     * @example 119.0.6045.105
+     * @defaultValue The pinned browser version supported by the current Puppeteer
+     * version.
+     */
+    version?: string;
+}
+/**
+ * @public
+ */
+export interface FirefoxSettings {
+    /**
+     * Tells Puppeteer to not download the browser during installation.
+     *
+     * Can be overridden by `PUPPETEER_FIREFOX_SKIP_DOWNLOAD`.
+     *
+     * @defaultValue true
+     */
+    skipDownload?: boolean;
+    /**
+     * Specifies the URL prefix that is used to download the browser.
+     *
+     * Can be overridden by `PUPPETEER_FIREFOX_DOWNLOAD_BASE_URL`.
+     *
+     * @remarks
+     * This must include the protocol and may even need a path prefix.
+     *
+     * @defaultValue https://archive.mozilla.org/pub/firefox/releases
+     */
+    downloadBaseUrl?: string;
+    /**
+     * Specifies a certain version of the browser you'd like Puppeteer to use.
+     *
+     * Can be overridden by `PUPPETEER_FIREFOX_VERSION`.
+     *
+     * See {@link PuppeteerNode.launch | puppeteer.launch} on how executable path
+     * is inferred.
+     *
+     * @example stable_129.0
+     * @defaultValue The pinned browser version supported by the current Puppeteer
+     * version.
+     */
+    version?: string;
 }
 //# sourceMappingURL=Configuration.d.ts.map

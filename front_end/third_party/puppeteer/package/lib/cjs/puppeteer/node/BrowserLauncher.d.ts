@@ -1,7 +1,7 @@
 import { launch } from '@puppeteer/browsers';
 import type { Browser, BrowserCloseCallback } from '../api/Browser.js';
 import { Connection } from '../cdp/Connection.js';
-import type { Product } from '../common/Product.js';
+import type { SupportedBrowser } from '../common/SupportedBrowser.js';
 import type { Viewport } from '../common/Viewport.js';
 import type { BrowserLaunchArgumentOptions, ChromeReleaseChannel, PuppeteerNodeLaunchOptions } from './LaunchOptions.js';
 import type { PuppeteerNode } from './PuppeteerNode.js';
@@ -19,7 +19,7 @@ export interface ResolvedLaunchArgs {
  *
  * @public
  */
-export declare abstract class ProductLauncher {
+export declare abstract class BrowserLauncher {
     #private;
     /**
      * @internal
@@ -28,21 +28,11 @@ export declare abstract class ProductLauncher {
     /**
      * @internal
      */
-    protected actualBrowserRevision?: string;
-    /**
-     * @internal
-     */
-    constructor(puppeteer: PuppeteerNode, product: Product);
-    get product(): Product;
+    constructor(puppeteer: PuppeteerNode, browser: SupportedBrowser);
+    get browser(): SupportedBrowser;
     launch(options?: PuppeteerNodeLaunchOptions): Promise<Browser>;
     abstract executablePath(channel?: ChromeReleaseChannel): string;
     abstract defaultArgs(object: BrowserLaunchArgumentOptions): string[];
-    /**
-     * Set only for Firefox, after the launcher resolves the `latest` revision to
-     * the actual revision.
-     * @internal
-     */
-    getActualBrowserRevision(): string | undefined;
     /**
      * @internal
      */
@@ -82,7 +72,7 @@ export declare abstract class ProductLauncher {
      */
     protected createBiDiOverCdpBrowser(browserProcess: ReturnType<typeof launch>, connection: Connection, closeCallback: BrowserCloseCallback, opts: {
         defaultViewport: Viewport | null;
-        ignoreHTTPSErrors?: boolean;
+        acceptInsecureCerts?: boolean;
     }): Promise<Browser>;
     /**
      * @internal
@@ -92,7 +82,7 @@ export declare abstract class ProductLauncher {
         protocolTimeout: number | undefined;
         slowMo: number;
         defaultViewport: Viewport | null;
-        ignoreHTTPSErrors?: boolean;
+        acceptInsecureCerts?: boolean;
     }): Promise<Browser>;
     /**
      * @internal
@@ -103,4 +93,4 @@ export declare abstract class ProductLauncher {
      */
     protected resolveExecutablePath(headless?: boolean | 'shell'): string;
 }
-//# sourceMappingURL=ProductLauncher.d.ts.map
+//# sourceMappingURL=BrowserLauncher.d.ts.map

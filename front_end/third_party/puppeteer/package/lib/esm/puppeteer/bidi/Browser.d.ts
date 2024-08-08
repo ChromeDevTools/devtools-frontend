@@ -10,6 +10,7 @@ import { Browser, type BrowserCloseCallback, type BrowserContextOptions, type De
 import type { Page } from '../api/Page.js';
 import type { Target } from '../api/Target.js';
 import type { Connection as CdpConnection } from '../cdp/Connection.js';
+import type { SupportedWebDriverCapabilities } from '../common/ConnectOptions.js';
 import type { Viewport } from '../common/Viewport.js';
 import { BidiBrowserContext } from './BrowserContext.js';
 import type { BidiConnection } from './Connection.js';
@@ -23,7 +24,8 @@ export interface BidiBrowserOptions {
     connection: BidiConnection;
     cdpConnection?: CdpConnection;
     defaultViewport: Viewport | null;
-    ignoreHTTPSErrors?: boolean;
+    acceptInsecureCerts?: boolean;
+    capabilities?: SupportedWebDriverCapabilities;
 }
 /**
  * @internal

@@ -19,8 +19,8 @@ import { PipeTransport } from './PipeTransport.js';
  *
  * @public
  */
-export class ProductLauncher {
-    #product;
+export class BrowserLauncher {
+    #browser;
     /**
      * @internal
      */
@@ -28,20 +28,24 @@ export class ProductLauncher {
     /**
      * @internal
      */
-    actualBrowserRevision;
-    /**
-     * @internal
-     */
-    constructor(puppeteer, product) {
+    constructor(puppeteer, browser) {
         this.puppeteer = puppeteer;
-        this.#product = product;
+        this.#browser = browser;
     }
-    get product() {
-        return this.#product;
+    get browser() {
+        return this.#browser;
     }
     async launch(options = {}) {
-        const { dumpio = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = DEFAULT_VIEWPORT, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, protocol, } = options;
-        const launchArgs = await this.computeLaunchArguments(options);
+        const { dumpio = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, acceptInsecureCerts = false, defaultViewport = DEFAULT_VIEWPORT, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, } = options;
+        let { protocol } = options;
+        // Default to 'webDriverBiDi' for Firefox.
+        if (this.#browser === 'firefox' && protocol === undefined) {
+            protocol = 'webDriverBiDi';
+        }
+        const launchArgs = await this.computeLaunchArguments({
+            ...options,
+            protocol,
+        });
         if (!existsSync(launchArgs.executablePath)) {
             throw new Error(`Browser was not found at the configured executablePath (${launchArgs.executablePath})`);
         }
@@ -51,7 +55,7 @@ export class ProductLauncher {
                 isTemp: launchArgs.isTempUserDataDir,
             });
         };
-        if (this.#product === 'firefox' &&
+        if (this.#browser === 'firefox' &&
             protocol !== 'webDriverBiDi' &&
             this.puppeteer.configuration.logLevel === 'warn') {
             console.warn(`Chrome DevTools Protocol (CDP) support for Firefox is deprecated in Puppeteer ` +
@@ -80,13 +84,13 @@ export class ProductLauncher {
             await this.closeBrowser(browserProcess, cdpConnection);
         };
         try {
-            if (this.#product === 'firefox' && protocol === 'webDriverBiDi') {
+            if (this.#browser === 'firefox' && protocol === 'webDriverBiDi') {
                 browser = await this.createBiDiBrowser(browserProcess, browserCloseCallback, {
                     timeout,
                     protocolTimeout,
                     slowMo,
                     defaultViewport,
-                    ignoreHTTPSErrors,
+                    acceptInsecureCerts,
                 });
             }
             else {
@@ -107,11 +111,11 @@ export class ProductLauncher {
                 if (protocol === 'webDriverBiDi') {
                     browser = await this.createBiDiOverCdpBrowser(browserProcess, cdpConnection, browserCloseCallback, {
                         defaultViewport,
-                        ignoreHTTPSErrors,
+                        acceptInsecureCerts,
                     });
                 }
                 else {
-                    browser = await CdpBrowser._create(this.product, cdpConnection, [], ignoreHTTPSErrors, defaultViewport, browserProcess.nodeProcess, browserCloseCallback, options.targetFilter);
+                    browser = await CdpBrowser._create(this.browser, cdpConnection, [], acceptInsecureCerts, defaultViewport, browserProcess.nodeProcess, browserCloseCallback, options.targetFilter);
                 }
             }
         }
@@ -126,14 +130,6 @@ export class ProductLauncher {
             await this.waitForPageTarget(browser, timeout);
         }
         return browser;
-    }
-    /**
-     * Set only for Firefox, after the launcher resolves the `latest` revision to
-     * the actual revision.
-     * @internal
-     */
-    getActualBrowserRevision() {
-        return this.actualBrowserRevision;
     }
     /**
      * @internal
@@ -194,16 +190,14 @@ export class ProductLauncher {
      */
     async createBiDiOverCdpBrowser(browserProcess, connection, closeCallback, opts) {
         const BiDi = await import(/* webpackIgnore: true */ '../bidi/bidi.js');
-        const bidiConnection = await BiDi.connectBidiOverCdp(connection, {
-            acceptInsecureCerts: opts.ignoreHTTPSErrors ?? false,
-        });
+        const bidiConnection = await BiDi.connectBidiOverCdp(connection);
         return await BiDi.BidiBrowser.create({
             connection: bidiConnection,
             cdpConnection: connection,
             closeCallback,
             process: browserProcess.nodeProcess,
             defaultViewport: opts.defaultViewport,
-            ignoreHTTPSErrors: opts.ignoreHTTPSErrors,
+            acceptInsecureCerts: opts.acceptInsecureCerts,
         });
     }
     /**
@@ -219,14 +213,14 @@ export class ProductLauncher {
             closeCallback,
             process: browserProcess.nodeProcess,
             defaultViewport: opts.defaultViewport,
-            ignoreHTTPSErrors: opts.ignoreHTTPSErrors,
+            acceptInsecureCerts: opts.acceptInsecureCerts,
         });
     }
     /**
      * @internal
      */
     getProfilePath() {
-        return join(this.puppeteer.configuration.temporaryDirectory ?? tmpdir(), `puppeteer_dev_${this.product}_profile-`);
+        return join(this.puppeteer.configuration.temporaryDirectory ?? tmpdir(), `puppeteer_dev_${this.browser}_profile-`);
     }
     /**
      * @internal
@@ -239,8 +233,8 @@ export class ProductLauncher {
             }
             return executablePath;
         }
-        function productToBrowser(product, headless) {
-            switch (product) {
+        function puppeteerBrowserToInstalledBrowser(browser, headless) {
+            switch (browser) {
                 case 'chrome':
                     if (headless === 'shell') {
                         return InstalledBrowser.CHROMEHEADLESSSHELL;
@@ -253,21 +247,22 @@ export class ProductLauncher {
         }
         executablePath = computeExecutablePath({
             cacheDir: this.puppeteer.defaultDownloadPath,
-            browser: productToBrowser(this.product, headless),
-            buildId: this.puppeteer.browserRevision,
+            browser: puppeteerBrowserToInstalledBrowser(this.browser, headless),
+            buildId: this.puppeteer.browserVersion,
         });
         if (!existsSync(executablePath)) {
-            if (this.puppeteer.configuration.browserRevision) {
-                throw new Error(`Tried to find the browser at the configured path (${executablePath}) for revision ${this.puppeteer.browserRevision}, but no executable was found.`);
+            const configVersion = this.puppeteer.configuration?.[this.browser]?.version;
+            if (configVersion) {
+                throw new Error(`Tried to find the browser at the configured path (${executablePath}) for version ${configVersion}, but no executable was found.`);
             }
-            switch (this.product) {
+            switch (this.browser) {
                 case 'chrome':
-                    throw new Error(`Could not find Chrome (ver. ${this.puppeteer.browserRevision}). This can occur if either\n` +
+                    throw new Error(`Could not find Chrome (ver. ${this.puppeteer.browserVersion}). This can occur if either\n` +
                         ' 1. you did not perform an installation before running the script (e.g. `npx puppeteer browsers install chrome`) or\n' +
                         ` 2. your cache path is incorrectly configured (which is: ${this.puppeteer.configuration.cacheDirectory}).\n` +
                         'For (2), check out our guide on configuring puppeteer at https://pptr.dev/guides/configuration.');
                 case 'firefox':
-                    throw new Error(`Could not find Firefox (rev. ${this.puppeteer.browserRevision}). This can occur if either\n` +
+                    throw new Error(`Could not find Firefox (rev. ${this.puppeteer.browserVersion}). This can occur if either\n` +
                         ' 1. you did not perform an installation for Firefox before running the script (e.g. `npx puppeteer browsers install firefox`) or\n' +
                         ` 2. your cache path is incorrectly configured (which is: ${this.puppeteer.configuration.cacheDirectory}).\n` +
                         'For (2), check out our guide on configuring puppeteer at https://pptr.dev/guides/configuration.');
@@ -276,4 +271,4 @@ export class ProductLauncher {
         return executablePath;
     }
 }
-//# sourceMappingURL=ProductLauncher.js.map
+//# sourceMappingURL=BrowserLauncher.js.map

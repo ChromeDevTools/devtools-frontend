@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CdpHTTPRequest = void 0;
 const HTTPRequest_js_1 = require("../api/HTTPRequest.js");
 const util_js_1 = require("../common/util.js");
+const encoding_js_1 = require("../util/encoding.js");
 /**
  * @internal
  */
@@ -100,7 +101,9 @@ class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     async _continue(overrides = {}) {
         const { url, method, postData, headers } = overrides;
         this.interception.handled = true;
-        const postDataBinaryBase64 = postData ? btoa(postData) : undefined;
+        const postDataBinaryBase64 = postData
+            ? (0, encoding_js_1.stringToBase64)(postData)
+            : undefined;
         if (this._interceptionId === undefined) {
             throw new Error('HTTPRequest is missing _interceptionId needed for Fetch.continueRequest');
         }

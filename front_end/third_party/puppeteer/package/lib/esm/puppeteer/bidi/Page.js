@@ -92,6 +92,7 @@ import { EventEmitter } from '../common/EventEmitter.js';
 import { evaluationString, isString, parsePDFOptions, timeout, } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { bubble } from '../util/decorators.js';
+import { stringToTypedArray } from '../util/encoding.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { BidiFrame } from './Frame.js';
 import { BidiKeyboard, BidiMouse, BidiTouchscreen } from './Input.js';
@@ -381,15 +382,15 @@ let BidiPage = (() => {
                 scale,
                 shrinkToFit: !preferCSSPageSize,
             })).pipe(raceWith(timeout(ms))));
-            const buffer = Buffer.from(data, 'base64');
-            await this._maybeWriteBufferToFile(path, buffer);
-            return buffer;
+            const typedArray = stringToTypedArray(data, true);
+            await this._maybeWriteTypedArrayToFile(path, typedArray);
+            return typedArray;
         }
         async createPDFStream(options) {
-            const buffer = await this.pdf(options);
+            const typedArray = await this.pdf(options);
             return new ReadableStream({
                 start(controller) {
-                    controller.enqueue(buffer);
+                    controller.enqueue(typedArray);
                     controller.close();
                 },
             });

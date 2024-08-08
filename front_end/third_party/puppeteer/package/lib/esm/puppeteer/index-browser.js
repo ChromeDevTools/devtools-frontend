@@ -8,8 +8,4 @@ export * from './cdp/cdp.js';
 export * from './common/common.js';
 export * from './revisions.js';
 export * from './util/util.js';
-/**
- * @deprecated Use the query handler API defined on {@link Puppeteer}
- */
-export * from './common/CustomQueryHandler.js';
 //# sourceMappingURL=index-browser.js.map

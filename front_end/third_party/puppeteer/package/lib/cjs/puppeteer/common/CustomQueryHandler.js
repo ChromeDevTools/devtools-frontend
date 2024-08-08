@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clearCustomQueryHandlers = exports.customQueryHandlerNames = exports.unregisterCustomQueryHandler = exports.registerCustomQueryHandler = exports.customQueryHandlers = exports.CustomQueryHandlerRegistry = void 0;
+exports.customQueryHandlers = exports.CustomQueryHandlerRegistry = void 0;
 const assert_js_1 = require("../util/assert.js");
 const Function_js_1 = require("../util/Function.js");
 const QueryHandler_js_1 = require("./QueryHandler.js");
@@ -115,44 +115,4 @@ exports.CustomQueryHandlerRegistry = CustomQueryHandlerRegistry;
  * @internal
  */
 exports.customQueryHandlers = new CustomQueryHandlerRegistry();
-/**
- * @deprecated Import {@link Puppeteer} and use the static method
- * {@link Puppeteer.registerCustomQueryHandler}
- *
- * @public
- */
-function registerCustomQueryHandler(name, handler) {
-    exports.customQueryHandlers.register(name, handler);
-}
-exports.registerCustomQueryHandler = registerCustomQueryHandler;
-/**
- * @deprecated Import {@link Puppeteer} and use the static method
- * {@link Puppeteer.unregisterCustomQueryHandler}
- *
- * @public
- */
-function unregisterCustomQueryHandler(name) {
-    exports.customQueryHandlers.unregister(name);
-}
-exports.unregisterCustomQueryHandler = unregisterCustomQueryHandler;
-/**
- * @deprecated Import {@link Puppeteer} and use the static method
- * {@link Puppeteer.customQueryHandlerNames}
- *
- * @public
- */
-function customQueryHandlerNames() {
-    return exports.customQueryHandlers.names();
-}
-exports.customQueryHandlerNames = customQueryHandlerNames;
-/**
- * @deprecated Import {@link Puppeteer} and use the static method
- * {@link Puppeteer.clearCustomQueryHandlers}
- *
- * @public
- */
-function clearCustomQueryHandlers() {
-    exports.customQueryHandlers.clear();
-}
-exports.clearCustomQueryHandlers = clearCustomQueryHandlers;
 //# sourceMappingURL=CustomQueryHandler.js.map

@@ -86,9 +86,11 @@ import { concat, EMPTY, filter, first, firstValueFrom, from, map, merge, mergeMa
 import { TargetCloseError } from '../common/Errors.js';
 import { EventEmitter, } from '../common/EventEmitter.js';
 import { TimeoutSettings } from '../common/TimeoutSettings.js';
-import { debugError, fromEmitterEvent, filterAsync, importFSPromises, isString, NETWORK_IDLE_TIME, timeout, withSourcePuppeteerURLIfNone, fromAbortSignal, } from '../common/util.js';
+import { debugError, fromEmitterEvent, filterAsync, isString, NETWORK_IDLE_TIME, timeout, withSourcePuppeteerURLIfNone, fromAbortSignal, } from '../common/util.js';
+import { environment } from '../environment.js';
 import { guarded } from '../util/decorators.js';
 import { AsyncDisposableStack, asyncDisposeSymbol, DisposableStack, disposeSymbol, } from '../util/disposable.js';
+import { stringToTypedArray } from '../util/encoding.js';
 import { FunctionLocator, Locator, NodeLocator, } from './locators/locators.js';
 /**
  * @internal
@@ -253,7 +255,7 @@ let Page = (() => {
          *
          * @param selector -
          * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-         * to query page for.
+         * to query the page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
          * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -280,7 +282,7 @@ let Page = (() => {
          *
          * @param selector -
          * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-         * to query page for.
+         * to query the page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
          * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -414,7 +416,7 @@ let Page = (() => {
          *
          * @param selector -
          * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-         * to query page for.
+         * to query the page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
          * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -487,7 +489,7 @@ let Page = (() => {
          *
          * @param selector -
          * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-         * to query page for.
+         * to query the page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
          * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -801,12 +803,11 @@ let Page = (() => {
         /**
          * @internal
          */
-        async _maybeWriteBufferToFile(path, buffer) {
+        async _maybeWriteTypedArrayToFile(path, typedArray) {
             if (!path) {
                 return;
             }
-            const fs = await importFSPromises();
-            await fs.writeFile(path, buffer);
+            await environment.value.fs.promises.writeFile(path, typedArray);
         }
         /**
          * Captures a screencast of this {@link Page | page}.
@@ -849,10 +850,8 @@ let Page = (() => {
          * You must have {@link https://ffmpeg.org/ | ffmpeg} installed on your system.
          */
         async screencast(options = {}) {
-            const [{ ScreenRecorder }, [width, height, devicePixelRatio]] = await Promise.all([
-                import('../node/ScreenRecorder.js'),
-                this.#getNativePixelDimensions(),
-            ]);
+            const ScreenRecorder = environment.value.ScreenRecorder;
+            const [width, height, devicePixelRatio] = await this.#getNativePixelDimensions();
             let crop;
             if (options.crop) {
                 const { x, y, width: cropWidth, height: cropHeight, } = roundRectangle(normalizeRectangle(options.crop));
@@ -896,7 +895,7 @@ let Page = (() => {
                 throw error;
             }
             if (options.path) {
-                const { createWriteStream } = await import('fs');
+                const { createWriteStream } = environment.value.fs;
                 const stream = createWriteStream(options.path, 'binary');
                 recorder.pipe(stream);
             }
@@ -1059,9 +1058,9 @@ let Page = (() => {
                 if (options.encoding === 'base64') {
                     return data;
                 }
-                const buffer = Buffer.from(data, 'base64');
-                await this._maybeWriteBufferToFile(options.path, buffer);
-                return buffer;
+                const typedArray = stringToTypedArray(data, true);
+                await this._maybeWriteTypedArrayToFile(options.path, typedArray);
+                return typedArray;
             }
             catch (e_2) {
                 env_2.error = e_2;
@@ -1104,7 +1103,21 @@ let Page = (() => {
          * ```
          *
          * Shortcut for {@link Frame.click | page.mainFrame().click(selector[, options]) }.
-         * @param selector - A `selector` to search for element to click. If there are
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+         * to query the page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}. If there are
          * multiple elements satisfying the `selector`, the first will be clicked
          * @param options - `Object`
          * @returns Promise which resolves when the element matching `selector` is
@@ -1115,19 +1128,33 @@ let Page = (() => {
             return this.mainFrame().click(selector, options);
         }
         /**
-         * This method fetches an element with `selector` and focuses it. If there's no
-         * element matching `selector`, the method throws an error.
-         * @param selector - A
-         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector }
-         * of an element to focus. If there are multiple elements satisfying the
-         * selector, the first will be focused.
-         * @returns Promise which resolves when the element matching selector is
-         * successfully focused. The promise will be rejected if there is no element
-         * matching selector.
+         * This method fetches an element with `selector` and focuses it. If
+         * there's no element matching `selector`, the method throws an error.
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+         * to query the page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
+         * If there are multiple elements satisfying the selector, the first
+         * will be focused.
+         * @returns Promise which resolves when the element matching selector
+         * is successfully focused. The promise will be rejected if there is
+         * no element matching selector.
          *
          * @remarks
          *
-         * Shortcut for {@link Frame.focus | page.mainFrame().focus(selector)}.
+         * Shortcut for
+         * {@link Frame.focus | page.mainFrame().focus(selector)}.
          */
         focus(selector) {
             return this.mainFrame().focus(selector);
@@ -1137,10 +1164,22 @@ let Page = (() => {
          * needed, and then uses {@link Page.mouse}
          * to hover over the center of the element.
          * If there's no element matching `selector`, the method throws an error.
-         * @param selector - A
-         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
-         * to search for element to hover. If there are multiple elements satisfying
-         * the selector, the first will be hovered.
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+         * to query the page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}. If there are
+         * multiple elements satisfying the `selector`, the first will be hovered.
          * @returns Promise which resolves when the element matching `selector` is
          * successfully hovered. Promise gets rejected if there's no element matching
          * `selector`.
@@ -1164,9 +1203,21 @@ let Page = (() => {
          * page.select('select#colors', 'red', 'green', 'blue'); // multiple selections
          * ```
          *
-         * @param selector - A
-         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | Selector}
-         * to query the page for
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+         * to query the page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          * @param values - Values of options to select. If the `<select>` has the
          * `multiple` attribute, all values are considered, otherwise only the first one
          * is taken into account.
@@ -1184,9 +1235,21 @@ let Page = (() => {
          * needed, and then uses {@link Page.touchscreen}
          * to tap in the center of the element.
          * If there's no element matching `selector`, the method throws an error.
-         * @param selector - A
-         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | Selector}
-         * to search for element to tap. If there are multiple elements satisfying the
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+         * to query the page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}. If there are multiple elements satisfying the
          * selector, the first will be tapped.
          *
          * @remarks
@@ -1210,10 +1273,21 @@ let Page = (() => {
          * // Types slower, like a user
          * ```
          *
-         * @param selector - A
-         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
-         * of an element to type into. If there are multiple elements satisfying the
-         * selector, the first will be used.
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+         * to query the page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          * @param text - A text to type into a focused element.
          * @param options - have property `delay` which is the Time to wait between
          * key presses in milliseconds. Defaults to `0`.
@@ -1251,9 +1325,21 @@ let Page = (() => {
          * })();
          * ```
          *
-         * @param selector - A
-         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
-         * of an element to wait for
+         * @param selector -
+         * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+         * to query the page for.
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+         * can be passed as-is and a
+         * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+         * allows quering by
+         * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+         * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+         * and
+         * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+         * Alternatively, you can specify the selector type using a
+         * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
          * @param options - Optional waiting parameters
          * @returns Promise which resolves when element specified by selector string
          * is added to DOM. Resolves to `null` if waiting for hidden: `true` and

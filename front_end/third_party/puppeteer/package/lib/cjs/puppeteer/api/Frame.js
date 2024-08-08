@@ -89,6 +89,7 @@ const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const GetQueryHandler_js_1 = require("../common/GetQueryHandler.js");
 const HandleIterator_js_1 = require("../common/HandleIterator.js");
 const util_js_1 = require("../common/util.js");
+const environment_js_1 = require("../environment.js");
 const assert_js_1 = require("../util/assert.js");
 const decorators_js_1 = require("../util/decorators.js");
 const locators_js_1 = require("./locators/locators.js");
@@ -353,7 +354,7 @@ let Frame = (() => {
          *
          * @param selector -
          * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-         * to query page for.
+         * to query the page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
          * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -380,7 +381,7 @@ let Frame = (() => {
          *
          * @param selector -
          * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-         * to query page for.
+         * to query the page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
          * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -417,7 +418,7 @@ let Frame = (() => {
          *
          * @param selector -
          * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-         * to query page for.
+         * to query the page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
          * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -457,7 +458,7 @@ let Frame = (() => {
          *
          * @param selector -
          * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-         * to query page for.
+         * to query the page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
          * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -637,8 +638,7 @@ let Frame = (() => {
                 throw new Error('Exactly one of `url`, `path`, or `content` must be specified.');
             }
             if (path) {
-                const fs = await (0, util_js_1.importFSPromises)();
-                content = await fs.readFile(path, 'utf8');
+                content = await environment_js_1.environment.value.fs.promises.readFile(path, 'utf8');
                 content += `//# sourceURL=${path.replace(/\n/g, '')}`;
             }
             type = type ?? 'text/javascript';
@@ -677,8 +677,7 @@ let Frame = (() => {
                 throw new Error('Exactly one of `url`, `path`, or `content` must be specified.');
             }
             if (path) {
-                const fs = await (0, util_js_1.importFSPromises)();
-                content = await fs.readFile(path, 'utf8');
+                content = await environment_js_1.environment.value.fs.promises.readFile(path, 'utf8');
                 content += '/*# sourceURL=' + path.replace(/\n/g, '') + '*/';
                 options.content = content;
             }

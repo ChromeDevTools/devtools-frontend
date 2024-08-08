@@ -95,6 +95,7 @@ const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
 const decorators_js_1 = require("../util/decorators.js");
+const encoding_js_1 = require("../util/encoding.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const Frame_js_1 = require("./Frame.js");
 const Input_js_1 = require("./Input.js");
@@ -384,15 +385,15 @@ let BidiPage = (() => {
                 scale,
                 shrinkToFit: !preferCSSPageSize,
             })).pipe((0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms))));
-            const buffer = Buffer.from(data, 'base64');
-            await this._maybeWriteBufferToFile(path, buffer);
-            return buffer;
+            const typedArray = (0, encoding_js_1.stringToTypedArray)(data, true);
+            await this._maybeWriteTypedArrayToFile(path, typedArray);
+            return typedArray;
         }
         async createPDFStream(options) {
-            const buffer = await this.pdf(options);
+            const typedArray = await this.pdf(options);
             return new ReadableStream({
                 start(controller) {
-                    controller.enqueue(buffer);
+                    controller.enqueue(typedArray);
                     controller.close();
                 },
             });

@@ -7,15 +7,15 @@ import fs from 'fs';
 import { rename, unlink, mkdtemp } from 'fs/promises';
 import os from 'os';
 import path from 'path';
-import { Browser as SupportedBrowsers, createProfile, Cache, detectBrowserPlatform, Browser, } from '@puppeteer/browsers';
+import { Browser as SupportedBrowsers, createProfile } from '@puppeteer/browsers';
 import { debugError } from '../common/util.js';
 import { assert } from '../util/assert.js';
-import { ProductLauncher } from './ProductLauncher.js';
+import { BrowserLauncher } from './BrowserLauncher.js';
 import { rm } from './util/fs.js';
 /**
  * @internal
  */
-export class FirefoxLauncher extends ProductLauncher {
+export class FirefoxLauncher extends BrowserLauncher {
     constructor(puppeteer) {
         super(puppeteer, 'firefox');
     }
@@ -142,17 +142,6 @@ export class FirefoxLauncher extends ProductLauncher {
         }
     }
     executablePath() {
-        // replace 'latest' placeholder with actual downloaded revision
-        if (this.puppeteer.browserRevision === 'latest') {
-            const cache = new Cache(this.puppeteer.defaultDownloadPath);
-            const installedFirefox = cache.getInstalledBrowsers().find(browser => {
-                return (browser.platform === detectBrowserPlatform() &&
-                    browser.browser === Browser.FIREFOX);
-            });
-            if (installedFirefox) {
-                this.actualBrowserRevision = installedFirefox.buildId;
-            }
-        }
         return this.resolveExecutablePath();
     }
     defaultArgs(options = {}) {

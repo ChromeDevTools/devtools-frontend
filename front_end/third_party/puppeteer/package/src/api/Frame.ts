@@ -27,10 +27,8 @@ import type {
   HandleFor,
   NodeFor,
 } from '../common/types.js';
-import {
-  importFSPromises,
-  withSourcePuppeteerURLIfNone,
-} from '../common/util.js';
+import {withSourcePuppeteerURLIfNone} from '../common/util.js';
+import {environment} from '../environment.js';
 import {assert} from '../util/assert.js';
 import {throwIfDisposed} from '../util/decorators.js';
 
@@ -301,16 +299,6 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
   abstract page(): Page;
 
   /**
-   * Is `true` if the frame is an out-of-process (OOP) frame. Otherwise,
-   * `false`.
-   *
-   * @deprecated Generally, there should be no difference between local and
-   * out-of-process frames from the Puppeteer API perspective. This is an
-   * implementation detail that should not have been exposed.
-   */
-  abstract isOOPFrame(): boolean;
-
-  /**
    * Navigates the frame or page to the given `url`.
    *
    * @remarks
@@ -490,7 +478,7 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
    *
    * @param selector -
    * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-   * to query page for.
+   * to query the page for.
    * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
    * can be passed as-is and a
    * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -532,7 +520,7 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
    *
    * @param selector -
    * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-   * to query page for.
+   * to query the page for.
    * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
    * can be passed as-is and a
    * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -563,7 +551,7 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
    *
    * @param selector -
    * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-   * to query page for.
+   * to query the page for.
    * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
    * can be passed as-is and a
    * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -605,7 +593,7 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
    *
    * @param selector -
    * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-   * to query page for.
+   * to query the page for.
    * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
    * can be passed as-is and a
    * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -658,7 +646,7 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
    *
    * @param selector -
    * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-   * to query page for.
+   * to query the page for.
    * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
    * can be passed as-is and a
    * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -911,8 +899,7 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
     }
 
     if (path) {
-      const fs = await importFSPromises();
-      content = await fs.readFile(path, 'utf8');
+      content = await environment.value.fs.promises.readFile(path, 'utf8');
       content += `//# sourceURL=${path.replace(/\n/g, '')}`;
     }
 
@@ -992,9 +979,7 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
     }
 
     if (path) {
-      const fs = await importFSPromises();
-
-      content = await fs.readFile(path, 'utf8');
+      content = await environment.value.fs.promises.readFile(path, 'utf8');
       content += '/*# sourceURL=' + path.replace(/\n/g, '') + '*/';
       options.content = content;
     }

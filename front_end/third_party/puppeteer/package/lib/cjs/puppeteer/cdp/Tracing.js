@@ -93,8 +93,8 @@ class Tracing {
             try {
                 (0, assert_js_1.assert)(event.stream, 'Missing "stream"');
                 const readable = await (0, util_js_1.getReadableFromProtocolStream)(this.#client, event.stream);
-                const buffer = await (0, util_js_1.getReadableAsBuffer)(readable, this.#path);
-                contentDeferred.resolve(buffer ?? undefined);
+                const typedArray = await (0, util_js_1.getReadableAsTypedArray)(readable, this.#path);
+                contentDeferred.resolve(typedArray ?? undefined);
             }
             catch (error) {
                 if ((0, ErrorLike_js_1.isErrorLike)(error)) {

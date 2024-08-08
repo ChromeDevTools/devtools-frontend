@@ -86,9 +86,6 @@ export class CdpBrowserContext extends BrowserContext {
             return !!page;
         });
     }
-    isIncognito() {
-        return !!this.#id;
-    }
     async overridePermissions(origin, permissions) {
         const protocolPermissions = permissions.map(permission => {
             const protocolPermission = WEB_PERMISSION_TO_PROTOCOL_PERMISSION.get(permission);
@@ -126,7 +123,7 @@ export class CdpBrowserContext extends BrowserContext {
         return this.#browser;
     }
     async close() {
-        assert(this.#id, 'Non-incognito profiles cannot be closed!');
+        assert(this.#id, 'Default BrowserContext cannot be closed!');
         await this.#browser._disposeContext(this.#id);
     }
 }

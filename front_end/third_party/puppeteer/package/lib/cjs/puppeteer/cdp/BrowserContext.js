@@ -89,9 +89,6 @@ class CdpBrowserContext extends BrowserContext_js_1.BrowserContext {
             return !!page;
         });
     }
-    isIncognito() {
-        return !!this.#id;
-    }
     async overridePermissions(origin, permissions) {
         const protocolPermissions = permissions.map(permission => {
             const protocolPermission = Browser_js_1.WEB_PERMISSION_TO_PROTOCOL_PERMISSION.get(permission);
@@ -129,7 +126,7 @@ class CdpBrowserContext extends BrowserContext_js_1.BrowserContext {
         return this.#browser;
     }
     async close() {
-        (0, assert_js_1.assert)(this.#id, 'Non-incognito profiles cannot be closed!');
+        (0, assert_js_1.assert)(this.#id, 'Default BrowserContext cannot be closed!');
         await this.#browser._disposeContext(this.#id);
     }
 }

@@ -165,7 +165,7 @@ describeWithEnvironment('FlameChart', () => {
       renderChart(chartInstance);
 
       const highlightedEventListener = sinon.stub();
-      chartInstance.addEventListener(PerfUI.FlameChart.Events.EntryHighlighted, highlightedEventListener);
+      chartInstance.addEventListener(PerfUI.FlameChart.Events.EntryHovered, highlightedEventListener);
 
       // Nothing highlighted, so the highlightElement should be hidden.
       assert.isTrue(chartInstance.highlightElement.classList.contains('hidden'));
@@ -196,7 +196,7 @@ describeWithEnvironment('FlameChart', () => {
       renderChart(chartInstance);
 
       const highlightedEventListener = sinon.stub();
-      chartInstance.addEventListener(PerfUI.FlameChart.Events.EntryHighlighted, highlightedEventListener);
+      chartInstance.addEventListener(PerfUI.FlameChart.Events.EntryHovered, highlightedEventListener);
       chartInstance.highlightEntry(2);
       chartInstance.highlightEntry(2);
       // Ensure that there is only one event listener called, despite the
@@ -217,7 +217,7 @@ describeWithEnvironment('FlameChart', () => {
       renderChart(chartInstance);
 
       const highlightedEventListener = sinon.stub();
-      chartInstance.addEventListener(PerfUI.FlameChart.Events.EntryHighlighted, highlightedEventListener);
+      chartInstance.addEventListener(PerfUI.FlameChart.Events.EntryHovered, highlightedEventListener);
       chartInstance.highlightEntry(2);
       // No calls because entryColor returned a false value.
       assert.strictEqual(highlightedEventListener.callCount, 0);
@@ -230,7 +230,7 @@ describeWithEnvironment('FlameChart', () => {
       renderChart(chartInstance);
 
       const highlightedEventListener = sinon.stub();
-      chartInstance.addEventListener(PerfUI.FlameChart.Events.EntryHighlighted, highlightedEventListener);
+      chartInstance.addEventListener(PerfUI.FlameChart.Events.EntryHovered, highlightedEventListener);
       chartInstance.highlightEntry(2);
       chartInstance.hideHighlight();
       // Ensure the argument to the last event listener call was -1

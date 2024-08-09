@@ -487,7 +487,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     this.highlightedEntryIndex = entryIndex;
     this.updateElementPosition(this.highlightElement, this.highlightedEntryIndex);
-    this.dispatchEventToListeners(Events.EntryHighlighted, entryIndex);
+    this.dispatchEventToListeners(Events.EntryHovered, entryIndex);
   }
 
   highlightAllEntries(entries: number[]): void {
@@ -520,7 +520,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     this.highlightedEntryIndex = -1;
     this.updateElementPosition(this.highlightElement, this.highlightedEntryIndex);
-    this.dispatchEventToListeners(Events.EntryHighlighted, -1);
+    this.dispatchEventToListeners(Events.EntryHovered, -1);
   }
 
   private createCandyStripePattern(): CanvasPattern {
@@ -3968,7 +3968,7 @@ export const enum Events {
    * been hovered on, or -1 if no entry is selected (the user has moved their
    * mouse off the event)
    */
-  EntryHighlighted = 'EntryHighlighted',
+  EntryHovered = 'EntryHovered',
   ChartPlayableStateChange = 'ChartPlayableStateChange',
 
   LatestDrawDimensions = 'LatestDrawDimensions',
@@ -3981,7 +3981,7 @@ export type EventTypes = {
   [Events.CanvasFocused]: number|void,
   [Events.EntryInvoked]: number,
   [Events.EntrySelected]: number,
-  [Events.EntryHighlighted]: number,
+  [Events.EntryHovered]: number,
   [Events.ChartPlayableStateChange]: boolean,
   [Events.LatestDrawDimensions]: {
     chart: {

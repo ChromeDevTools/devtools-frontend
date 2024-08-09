@@ -248,7 +248,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this.onMainEntrySelected, this);
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this.onNetworkEntrySelected, this);
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this.onNetworkEntrySelected, this);
-    this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryHighlighted, this.onEntryHighlighted, this);
+    this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryHovered, this.onEntryHovered, this);
     this.element.addEventListener('keydown', this.#keydownHandler.bind(this));
     this.#boundRefreshAfterIgnoreList = this.#refreshAfterIgnoreList.bind(this);
     this.#selectedEvents = null;
@@ -550,7 +550,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
   }
 
-  private onEntryHighlighted(commonEvent: Common.EventTarget.EventTargetEvent<number>): void {
+  private onEntryHovered(commonEvent: Common.EventTarget.EventTargetEvent<number>): void {
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     const entryIndex = commonEvent.data;
     const event = this.mainDataProvider.eventByIndex(entryIndex);

@@ -11,10 +11,10 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
-import type * as LegacyUI from '../../ui/legacy/legacy.js';
+import * as LegacyUI from '../../ui/legacy/legacy.js';
 
 import * as ElementsComponents from './components/components.js';
 import * as Elements from './elements.js';
@@ -42,6 +42,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     mockCssStyleDeclaration = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
     mockMatchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
     mockMatchedStyles.keyframes.returns([]);
+    mockMatchedStyles.availableCSSVariables.returns(Object.keys(mockVariableMap));
     mockMatchedStyles.computeCSSVariable.callsFake((style, name) => {
       return {
         value: mockVariableMap[name],
@@ -1455,6 +1456,84 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       const swatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-length');
       assert.exists(swatch);
+    });
+  });
+
+  describe('Autocompletion', function(this: Mocha.Suite) {
+    let promptStub: sinon.SinonStub<Parameters<Elements.StylesSidebarPane.CSSPropertyPrompt['initialize']>>;
+    beforeEach(async () => {
+      promptStub = sinon.stub(Elements.StylesSidebarPane.CSSPropertyPrompt.prototype, 'initialize').resolves([]);
+      setMockConnectionResponseHandler('CSS.enable', () => ({}));
+
+      const cssModel = new SDK.CSSModel.CSSModel(createTarget());
+      await cssModel.resumeModel();
+      const domModel = cssModel.domModel();
+      const gridNode = new SDK.DOMModel.DOMNode(domModel);
+      gridNode.id = 0 as Protocol.DOM.NodeId;
+      const currentNode = new SDK.DOMModel.DOMNode(domModel);
+      currentNode.id = 1 as Protocol.DOM.NodeId;
+      currentNode.parentNode = gridNode;
+      LegacyUI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, currentNode);
+    });
+
+    function suggestions() {
+      assert.lengthOf(promptStub.args, 1);
+      return promptStub.args[0][0].call(null, '', '');
+    }
+
+    function setParentComputedStyle(style: Record<string, string>) {
+      const computedStyle = Object.keys(style).map(name => ({name, value: style[name]}));
+      setMockConnectionResponseHandler('CSS.getComputedStyleForNode', ({nodeId}) => {
+        if (nodeId === 0) {
+          return {computedStyle};
+        }
+        return {};
+      });
+    }
+
+    it('includes grid row names', async () => {
+      setParentComputedStyle({display: 'grid', 'grid-template-rows': '[row-name] 1fr [row-name-2]'});
+      const stylePropertyTreeElement = getTreeElement('grid-row', 'somename');
+      await stylePropertyTreeElement.onpopulate();
+      stylePropertyTreeElement.updateTitle();
+      stylePropertyTreeElement.startEditingValue();
+      const autocompletions = await suggestions();
+      assert.deepEqual(
+          autocompletions.map(({text}) => text),
+          ['row-name', 'row-name-2', 'auto', 'none', 'inherit', 'initial', 'revert', 'revert-layer', 'unset']);
+    });
+
+    it('includes grid column names', async () => {
+      setParentComputedStyle({display: 'grid', 'grid-template-columns': '[col-name] 1fr [col-name-2]'});
+      const stylePropertyTreeElement = getTreeElement('grid-column', 'somename');
+      await stylePropertyTreeElement.onpopulate();
+      stylePropertyTreeElement.updateTitle();
+      stylePropertyTreeElement.startEditingValue();
+      const autocompletions = await suggestions();
+      assert.deepEqual(
+          autocompletions.map(({text}) => text),
+          ['col-name', 'col-name-2', 'auto', 'none', 'inherit', 'initial', 'revert', 'revert-layer', 'unset']);
+    });
+
+    it('includes grid area names', async () => {
+      setParentComputedStyle({display: 'grid', 'grid-template-areas': '"area-name-a area-name-b" "area-name-c ."'});
+      const stylePropertyTreeElement = getTreeElement('grid-area', 'somename');
+      await stylePropertyTreeElement.onpopulate();
+      stylePropertyTreeElement.updateTitle();
+      stylePropertyTreeElement.startEditingValue();
+      const autocompletions = await suggestions();
+      assert.deepEqual(autocompletions.map(({text}) => text), [
+        'area-name-a',
+        'area-name-b',
+        'area-name-c',
+        'auto',
+        'none',
+        'inherit',
+        'initial',
+        'revert',
+        'revert-layer',
+        'unset',
+      ]);
     });
   });
 });

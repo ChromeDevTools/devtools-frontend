@@ -1831,7 +1831,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
   private isEditingName: boolean;
   private readonly cssVariables: string[];
 
-  constructor(treeElement: StylePropertyTreeElement, isEditingName: boolean) {
+  constructor(treeElement: StylePropertyTreeElement, isEditingName: boolean, completions: string[] = []) {
     // Use the same callback both for applyItemCallback and acceptItemCallback.
     super();
     this.initialize(this.buildPropertyCompletions.bind(this), UI.UIUtils.StyleValueDelimiters);
@@ -1845,7 +1845,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         this.cssCompletions = this.cssCompletions.filter(property => !cssMetadata.isSVGProperty(property));
       }
     } else {
-      this.cssCompletions = cssMetadata.getPropertyValues(treeElement.property.name);
+      this.cssCompletions = [...completions, ...cssMetadata.getPropertyValues(treeElement.property.name)];
       if (node && cssMetadata.isFontFamilyProperty(treeElement.property.name)) {
         const fontFamilies = node.domModel().cssModel().fontFaces().map(font => quoteFamilyName(font.getFontFamily()));
         this.cssCompletions.unshift(...fontFamilies);

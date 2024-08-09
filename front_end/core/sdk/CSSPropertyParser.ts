@@ -643,3 +643,41 @@ export function tokenizePropertyName(name: string): string|null {
 
   return nodeText(propertyName, rule);
 }
+
+export class TreeSearch extends TreeWalker {
+  #found: CodeMirror.SyntaxNode|null = null;
+  #predicate: (node: CodeMirror.SyntaxNode) => boolean;
+
+  constructor(ast: SyntaxTree, predicate: (node: CodeMirror.SyntaxNode) => boolean) {
+    super(ast);
+    this.#predicate = predicate;
+  }
+
+  protected override enter({node}: SyntaxNodeRef): boolean {
+    if (this.#found) {
+      return false;
+    }
+
+    if (this.#predicate(node)) {
+      this.#found = this.#found ?? node;
+      return false;
+    }
+    return true;
+  }
+
+  static find(ast: SyntaxTree, predicate: (node: CodeMirror.SyntaxNode) => boolean): CodeMirror.SyntaxNode|null {
+    return TreeSearch.walk(ast, predicate).#found;
+  }
+
+  static findAll(ast: SyntaxTree, predicate: (node: CodeMirror.SyntaxNode) => boolean): CodeMirror.SyntaxNode[] {
+    const foundNodes: CodeMirror.SyntaxNode[] = [];
+    TreeSearch.walk(ast, (node: CodeMirror.SyntaxNode) => {
+      if (predicate(node)) {
+        foundNodes.push(node);
+      }
+
+      return false;
+    });
+    return foundNodes;
+  }
+}

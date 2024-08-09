@@ -198,6 +198,26 @@ export class CSSMetadata {
     return propertyName === 'grid' || propertyName === 'grid-template' || propertyName === 'grid-template-areas';
   }
 
+  isGridColumnNameAwareProperty(propertyName: string): boolean {
+    propertyName = propertyName.toLowerCase();
+    return ['grid-column', 'grid-column-start', 'grid-column-end'].includes(propertyName);
+  }
+
+  isGridRowNameAwareProperty(propertyName: string): boolean {
+    propertyName = propertyName.toLowerCase();
+    return ['grid-row', 'grid-row-start', 'grid-row-end'].includes(propertyName);
+  }
+
+  isGridAreaNameAwareProperty(propertyName: string): boolean {
+    propertyName = propertyName.toLowerCase();
+    return propertyName === 'grid-area';
+  }
+
+  isGridNameAwareProperty(propertyName: string): boolean {
+    return this.isGridAreaNameAwareProperty(propertyName) || this.isGridColumnNameAwareProperty(propertyName) ||
+        this.isGridRowNameAwareProperty(propertyName);
+  }
+
   isLengthProperty(propertyName: string): boolean {
     propertyName = propertyName.toLowerCase();
     if (propertyName === 'line-height') {

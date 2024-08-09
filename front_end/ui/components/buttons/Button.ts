@@ -331,7 +331,6 @@ export class Button extends HTMLElement {
       checked: Boolean(this.#props.checked),
       'text-with-icon': hasIcon && !isEmpty,
       'only-icon': hasIcon && isEmpty,
-      'only-text': !hasIcon && !isEmpty,
       micro: this.#props.size === Size.MICRO,
       small: Boolean(this.#props.size === Size.SMALL),
       active: this.#props.active,

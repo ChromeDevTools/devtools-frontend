@@ -23,6 +23,7 @@ below.**
 
 *   [Get the Code](get_the_code.md)
 *   [UX Style Guide](./styleguide/ux/README.md)
+*   [Testing Guide](../test/README.md)
 *   [Contributing Changes](contributing_changes.md)
 *   [Chrome DevTools Design Review Guidelines](design_guidelines.md)
 *   [Release Management](release_management.md)
@@ -34,12 +35,6 @@ below.**
 *   [UMA metrics in DevTools](uma_metrics.md)
     *   [How to add UMA metrics in DevTools frontend](add_uma_metrics.md)
 *   [How to add experiments in DevTools frontend](add_experiments.md)
-
-### Testing
-
-*   [Testing Chromium DevTools](testing.md)
-*   [E2E test guide](../test/e2e/README.md)
-*   [Unit test guide](unit_testing.md)
 
 ### Architectural Documentation
 

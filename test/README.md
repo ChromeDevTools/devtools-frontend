@@ -1,21 +1,29 @@
-# Testing Chromium DevTools
+# Unit Testing
 
-Follow the steps outlined in [Get the Code](get_the_code.md) to checkout the DevTools front-end code.
+[goo.gle/devtools-testing-guide](http://goo.gle/devtools-testing-guide)
+
+Follow the steps outlined in [Get the Code](../docs/get_the_code.md) to checkout the DevTools front-end code.
 
 [TOC]
 
-## DevTools frontend
+## DevTools front-end tests
 
-Run tests with
+The `devtools-frontend` repository contains a variety of test suites, check
+out the individual guides below:
+
+* [Unit Testing Guide](./unit/README.md)
+* [Interactions Testing Guide](./interactions/README.md)
+* [E2E Testing Guide](./e2e/README.md)
+* [Performance Testing Guide](./perf/README.md)
+
+You can use
 
 ```
 npm test
 ```
 
-This command runs all tests in the devtools frontend repo, which are the [unit tests](../test/unit/README.md),
-[interactions tests](../test/interactions/README.md), [e2e tests](../test/e2e/README.md), and performance tests.
-
-You can also run just a subset of tests like this:
+to run all tests in the devtools frontend repo. You can also run just a
+subset of tests like this:
 
 ```
 npm test \
@@ -23,34 +31,8 @@ npm test \
    front_end/core/sdk
 ```
 
-
-The current test status can be seen at the [test waterfall](https://ci.chromium.org/p/devtools-frontend/g/main/console).
-
-
-### Debugging
-
-#### Debugging with VSCode
-
-To run tests under the debugger, open the "Run and Debug" sidebar, select "Run unit tests in VS Code debugger" from the
-dropdown, and click the start button or press F5.
-
-Current limitations when using VSCode for e2e and interactions tests:
-
-- VSCode only attaches to the node portion of the code (mostly the test files and the test helpers), not to Chrome.
-- VSCode debugging only works with headless mode.
-
-#### Debugging with DevTools
-
-To run tests under the DevTools debugger use the `--debug` command line option.
-
-For unittests this will bring up Chrome with a Karma launcher page. Wait for "Debug" button to appear and click it. A
-new page will open, here you can open DevTools, set breakpoints in the tests and reload page to rerun tests.
-
-For e2e tests, you can debug the "DevTools under test" with DevTools-on-DevTools. Use the standard DevTools key
-combination to open another DevTools instance while you look at the "DevTools under test". You can set breakpoints and
-inspect the status of the "DevTools under test" this way. You can debug the puppeteer side by inspecting the Node.js
-process that runs the e2e suite. Either open `chrome://inspect` or click the Node.js icon in any open DevTools window to
-connect to the puppeteer process. You can step through the puppeteer test code this way.
+The current test status can be seen at the
+[test waterfall](https://ci.chromium.org/p/devtools-frontend/g/main/console).
 
 ### Obtaining code coverage
 

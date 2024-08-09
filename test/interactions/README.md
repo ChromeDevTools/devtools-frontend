@@ -1,4 +1,4 @@
-# Interaction tests
+# Interaction Testing
 
 Interaction tests are used to test individual pieces of DevTools in isolation - whether that be a single UI component, or an entire panel, or something inbetween. They load up the page in the browser and use Puppeteer to query it.
 

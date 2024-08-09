@@ -22,11 +22,15 @@ describe('ModificationsManager', () => {
       'child': {'window': {'min': 1020034823047, 'max': 1020035228006.5569, 'range': 404959.5568847656}, 'child': null},
     } as TraceEngine.Types.File.Breadcrumb);
     // Make sure the saved Label Annotation is applied
-    assert.deepEqual(modificationsManager.getAnnotations()[0].type, 'ENTRY_LABEL');
-    assert.deepEqual(modificationsManager.getAnnotations()[0].label, 'Initialize App');
+    const labelAnnotation = modificationsManager.getAnnotations()[0];
+    const label = (labelAnnotation.type === 'ENTRY_LABEL') ? labelAnnotation.label : '';
+    assert.deepEqual(labelAnnotation.type, 'ENTRY_LABEL');
+    assert.deepEqual(label, 'Initialize App');
     // Make sure the saved Range Annotation is applied
+    const timeRangeAnnotation = modificationsManager.getAnnotations()[1];
+    const rangeLabel = (timeRangeAnnotation.type === 'TIME_RANGE') ? timeRangeAnnotation.label : '';
     assert.deepEqual(modificationsManager.getAnnotations()[1].type, 'TIME_RANGE');
-    assert.deepEqual(modificationsManager.getAnnotations()[1].label, 'Visibility change 1');
+    assert.deepEqual(rangeLabel, 'Visibility change 1');
   });
 
   it('generates a serializable modifications json ', async function() {

@@ -80,7 +80,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
                   <div class="annotation">
                     ${this.#renderAnnotationIdentifier(annotation)}
                     <span class="label">
-                      ${annotation.label}
+                      ${(annotation.type === 'ENTRY_LABEL' || annotation.type === 'TIME_RANGE') ? annotation.label : ''}
                     </span>
                   </div>
                   <${IconButton.Icon.Icon.litTagName} class="bin-icon" .data=${{

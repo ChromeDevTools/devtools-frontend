@@ -72,7 +72,7 @@ export interface EntryLabel {
 export interface EntriesLink {
   type: 'ENTRIES_LINK';
   entryFrom: OverlayEntry;
-  entryTo: OverlayEntry;
+  entryTo?: OverlayEntry;
 }
 
 /**

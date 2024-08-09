@@ -117,7 +117,7 @@ export class ModificationsManager extends EventTarget {
   }
 
   #createOverlayFromAnnotation(annotation: TraceEngine.Types.File.Annotation): Overlays.Overlays.EntryLabel
-      |Overlays.Overlays.TimeRangeLabel {
+      |Overlays.Overlays.TimeRangeLabel|Overlays.Overlays.EntriesLink {
     switch (annotation.type) {
       case 'ENTRY_LABEL':
         return {
@@ -131,6 +131,12 @@ export class ModificationsManager extends EventTarget {
           label: annotation.label,
           showDuration: true,
           bounds: annotation.bounds,
+        };
+      case 'ENTRIES_LINK':
+        return {
+          type: 'ENTRIES_LINK',
+          entryFrom: annotation.entryFrom,
+          entryTo: annotation.entryTo,
         };
       default:
         Platform.assertNever(annotation, 'Overlay for provided annotation cannot be created');
@@ -177,7 +183,8 @@ export class ModificationsManager extends EventTarget {
       return;
     }
 
-    if (updatedOverlay.type === 'ENTRY_LABEL' || updatedOverlay.type === 'TIME_RANGE') {
+    if ((updatedOverlay.type === 'ENTRY_LABEL' && annotationForUpdatedOverlay.type === 'ENTRY_LABEL') ||
+        (updatedOverlay.type === 'TIME_RANGE' && annotationForUpdatedOverlay.type === 'TIME_RANGE')) {
       annotationForUpdatedOverlay.label = updatedOverlay.label;
     }
     this.dispatchEvent(new AnnotationModifiedEvent(updatedOverlay, 'UpdateLabel'));

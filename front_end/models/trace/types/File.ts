@@ -56,6 +56,15 @@ export interface TimeRangeAnnotation {
 }
 
 /**
+ * Represents an object that is used to store the Entries link Annotation.
+ */
+export interface EntriesLinkAnnotation {
+  type: 'ENTRIES_LINK';
+  entryFrom: TraceEventData;
+  entryTo?: TraceEventData;
+}
+
+/**
  * Represents an object that is saved in the file when a user creates a label for an entry in the timeline.
  */
 export interface EntryLabelAnnotationSerialized {
@@ -78,7 +87,7 @@ export interface TimeRangeAnnotationSerialized {
  * TODO: Implement other OverlayAnnotations (annotated time ranges, links between entries).
  * TODO: Save/load overlay annotations to/from the trace file.
  */
-export type Annotation = EntryLabelAnnotation|TimeRangeAnnotation;
+export type Annotation = EntryLabelAnnotation|TimeRangeAnnotation|EntriesLinkAnnotation;
 
 export function isTimeRangeAnnotation(annotation: Annotation): annotation is TimeRangeAnnotation {
   return annotation.type === 'TIME_RANGE';

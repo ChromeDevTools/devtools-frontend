@@ -447,7 +447,7 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
   private show(anchor: Element, activeTraceDataIndex: number): Promise<number|null> {
     DropDown.instance = this;
     this.glassPane.setContentAnchorBox(anchor.boxInWindow());
-    this.glassPane.show((this.glassPane.contentElement.ownerDocument as Document));
+    this.glassPane.show(this.glassPane.contentElement.ownerDocument);
     this.listControl.element.focus();
     this.listControl.selectItem(activeTraceDataIndex);
 

@@ -5,21 +5,32 @@
  */
 
 .drop-down {
-  padding: 1px;
   box-shadow: var(--drop-shadow);
   background: var(--sys-color-cdt-base-container);
 }
 
 .preview-item {
-  border-color: transparent;
-  border-style: solid;
-  border-width: 1px 5px;
-  padding: 2px 0;
-  margin: 2px 1px;
-}
+  border-bottom: 1px solid var(--sys-color-divider);
 
-.preview-item.selected {
-  border-color: var(--sys-color-primary);
+  &:first-child {
+    border-top: 1px solid var(--sys-color-divider);
+  }
+
+  padding: 6px 10px;
+  position: relative;
+
+  /* done this way because if we have a border it
+   * awkwardly merges in a diagonal with the top and
+   * bottom border */
+  &.selected::before {
+    content: " ";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    background-color: var(--sys-color-primary);
+  }
 }
 
 .preview-item canvas {
@@ -27,29 +38,25 @@
   height: 100%;
 }
 
-.text-details {
-  font-size: 11px;
-  padding: 3px;
-}
-
-.text-details span {
+.text-details > span {
   flex: 1 0;
   padding-left: 8px;
   padding-right: 8px;
 }
 
 .text-details .name {
-  font-weight: bold;
+  font: var(--sys-typescale-body4-medium);
 }
 
 .text-details span.time {
   color: var(--sys-color-token-subtle);
+  font: var(--sys-typescale-body4-regular);
   text-align: right;
 }
 
 .screenshot-thumb {
   display: flex;
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: 1px solid var(--sys-color-surface3);
   margin: 2px 4px;
 }
 

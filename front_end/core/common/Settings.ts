@@ -57,7 +57,7 @@ export class Settings {
   #eventSupport: ObjectWrapper<GenericEvents>;
   #registry: Map<string, Setting<unknown>>;
   readonly moduleSettings: Map<string, Setting<unknown>>;
-  readonly #config?: Root.Runtime.HostConfig;
+  readonly #config: Root.Runtime.HostConfig;
 
   private constructor(
       readonly syncedStorage: SettingsStorage, readonly globalStorage: SettingsStorage,
@@ -72,7 +72,7 @@ export class Settings {
     this.#registry = new Map();
     this.moduleSettings = new Map();
 
-    this.#config = config;
+    this.#config = config || {};
     for (const registration of this.getRegisteredSettings()) {
       const {settingName, defaultValue, storageType} = registration;
       const isRegex = registration.settingType === SettingType.REGEX;
@@ -123,7 +123,7 @@ export class Settings {
     settingsInstance = undefined;
   }
 
-  getHostConfig(): Root.Runtime.HostConfig|undefined {
+  getHostConfig(): Root.Runtime.HostConfig {
     return this.#config;
   }
 

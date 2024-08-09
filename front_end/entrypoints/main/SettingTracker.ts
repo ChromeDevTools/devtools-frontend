@@ -49,7 +49,7 @@ export class SettingTracker {
     if (!toggledSetting.get()) {
       // If the setting was not toggled, update according to host config.
       const config = Common.Settings.Settings.instance().getHostConfig();
-      enabledSetting?.set(config?.devToolsConsoleInsights.optIn !== true);
+      enabledSetting?.set(config.devToolsConsoleInsights?.optIn !== true);
     }
   }
 }

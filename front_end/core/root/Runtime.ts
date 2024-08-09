@@ -331,16 +331,23 @@ export interface HostConfigVeLogging {
   testing: boolean;
 }
 
-export interface HostConfig {
-  devToolsConsoleInsights: HostConfigConsoleInsights;
-  devToolsFreestylerDogfood: HostConfigFreestylerDogfood;
-  devToolsVeLogging: HostConfigVeLogging;
+// We use `RecursivePartial` here to enforce that DevTools code is able to
+// handle `HostConfig` objects of an unexpected shape. This can happen if
+// the implementation in the Chromium backend is changed without correctly
+// updating the DevTools frontend. Or if remote debugging a different version
+// of Chrome, resulting in the local browser window and the local DevTools
+// window being of different versions, and consequently potentially having
+// differently shaped `HostConfig`s.
+export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
+  devToolsConsoleInsights: HostConfigConsoleInsights,
+  devToolsFreestylerDogfood: HostConfigFreestylerDogfood,
+  devToolsVeLogging: HostConfigVeLogging,
   /**
    * OffTheRecord here indicates that the user's profile is either incognito,
    * or guest mode, rather than a "normal" profile.
    */
-  isOffTheRecord: boolean;
-}
+  isOffTheRecord: boolean,
+}>;
 
 /**
  * When defining conditions make sure that objects used by the function have

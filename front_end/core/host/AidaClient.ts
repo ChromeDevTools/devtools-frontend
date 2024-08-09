@@ -132,13 +132,12 @@ export class AidaClient {
     };
     const config = Common.Settings.Settings.instance().getHostConfig();
     let temperature = NaN;
-    let modelId = null;
-    let disallowLogging = false;
-    if (config?.devToolsConsoleInsights.enabled) {
-      temperature = config.devToolsConsoleInsights.aidaTemperature;
-      modelId = config.devToolsConsoleInsights.aidaModelId;
-      disallowLogging = config.devToolsConsoleInsights.disallowLogging;
+    let modelId = '';
+    if (config.devToolsConsoleInsights?.enabled) {
+      temperature = config.devToolsConsoleInsights.aidaTemperature || 0;
+      modelId = config.devToolsConsoleInsights.aidaModelId || '';
     }
+    const disallowLogging = config.devToolsConsoleInsights?.disallowLogging ?? true;
 
     if (!isNaN(temperature)) {
       request.options ??= {};

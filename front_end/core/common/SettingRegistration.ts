@@ -89,7 +89,7 @@ export function registerSettingExtension(registration: SettingRegistration): voi
   registeredSettings.push(registration);
 }
 
-export function getRegisteredSettings(config?: Root.Runtime.HostConfig): Array<SettingRegistration> {
+export function getRegisteredSettings(config: Root.Runtime.HostConfig): Array<SettingRegistration> {
   return registeredSettings.filter(
       setting => Root.Runtime.Runtime.isDescriptorEnabled(
           {experiment: setting.experiment, condition: setting.condition}, config));

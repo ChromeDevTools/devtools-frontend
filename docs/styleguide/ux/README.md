@@ -1,5 +1,7 @@
 # Chromium DevTools UX Style Guide
 
+[goo.gle/devtools-ux-style-guide](https://goo.gle/devtools-ux-style-guide)
+
 These guidelines cover the best practices for extending Chromium DevTools'
 user interface.
 

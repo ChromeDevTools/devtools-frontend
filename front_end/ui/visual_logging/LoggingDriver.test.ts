@@ -516,7 +516,7 @@ describe('LoggingDriver', () => {
 
     const element = document.getElementById('element') as HTMLElement;
     element.dispatchEvent(new MouseEvent('mouseover'));
-    const [logging] = await expectCall(throttle);
+    const [logging] = await expectCalled(throttle);
     assert.isFalse(recordHover.called);
     await logging();
     assert.isTrue(recordHover.calledOnce);
@@ -532,7 +532,7 @@ describe('LoggingDriver', () => {
 
     const element = document.getElementById('element') as HTMLElement;
     element.dispatchEvent(new MouseEvent('mouseover'));
-    await expectCall(throttle);
+    await expectCalled(throttle);
     assert.isFalse(recordHover.called);
     element.dispatchEvent(new MouseEvent('mouseout'));
     await expectCalled(throttle).then(([work]) => work());
@@ -550,12 +550,13 @@ describe('LoggingDriver', () => {
     const parent = document.getElementById('parent') as HTMLElement;
     const element = document.getElementById('element') as HTMLElement;
     parent.dispatchEvent(new MouseEvent('mouseover'));
-    await expectCall(throttle);
+    await expectCalled(throttle);
 
+    throttle.resetHistory();
     element.dispatchEvent(new MouseEvent('mouseover'));
-    await expectCall(throttle).then(([work]) => work());
+    await expectCalled(throttle).then(([work]) => work());
     assert.isTrue(recordHover.called);
-    assert.deepStrictEqual(recordHover.firstCall.firstArg, {veid: getVeId(parent)});
+    assert.deepStrictEqual(recordHover.firstCall.firstArg, {veid: getVeId(element)});
   });
 
   it('logs drag', async () => {
@@ -572,7 +573,6 @@ describe('LoggingDriver', () => {
     assert.exists(dragLogThrottler.process);
     assert.isFalse(recordDrag.called);
 
-    await dragLogThrottler.schedule(async () => {}, Common.Throttler.Scheduling.AsSoonAsPossible);
     await dragLogThrottler.process?.();
     assert.isTrue(recordDrag.called);
     assert.isTrue(recordDrag.calledOnce);
@@ -599,9 +599,8 @@ describe('LoggingDriver', () => {
   });
 
   it('logs drag if short in time but long in distance', async () => {
-    const dragLogThrottler = new Common.Throttler.Throttler(1000000000);
     addLoggableElements();
-    await VisualLoggingTesting.LoggingDriver.startLogging({dragLogThrottler});
+    await VisualLoggingTesting.LoggingDriver.startLogging({dragLogThrottler: throttler});
     const recordDrag = sinon.stub(
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordDrag',
@@ -609,12 +608,13 @@ describe('LoggingDriver', () => {
 
     const element = document.getElementById('element') as HTMLElement;
     element.dispatchEvent(new MouseEvent('pointerdown', {screenX: 0, screenY: 0}));
-    assert.exists(dragLogThrottler.process);
+
+    await expectCalled(throttle);
     assert.isFalse(recordDrag.called);
 
     element.dispatchEvent(new MouseEvent('pointerup', {screenX: 100, screenY: 100}));
 
-    await dragLogThrottler.process?.();
+    await throttler.process?.();
     assert.isFalse(recordDrag.called);
   });
 

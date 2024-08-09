@@ -62,7 +62,7 @@ export class SidebarWidget extends UI.Widget.VBox {
     this.#insightsView.setTraceParsedData(traceParsedData);
   }
 
-  setInsights(insights: TraceEngine.Insights.Types.TraceInsightData): void {
+  setInsights(insights: TraceEngine.Insights.Types.TraceInsightData|null): void {
     this.#insightsView.setInsights(insights);
   }
 

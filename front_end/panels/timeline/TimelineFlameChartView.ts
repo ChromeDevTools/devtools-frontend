@@ -357,10 +357,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (this.#gameKeyMatches !== keyCombo.length) {
       return;
     }
-    this.fixMe();
+    this.runBrickBreakerGame();
   }
 
-  fixMe(): void {
+  runBrickBreakerGame(): void {
     if (!SHOULD_SHOW_EASTER_EGG) {
       return;
     }

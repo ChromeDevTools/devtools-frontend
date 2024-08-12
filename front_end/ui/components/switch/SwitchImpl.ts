@@ -57,7 +57,7 @@ export class Switch extends HTMLElement {
         @change=${this.#handleChange}
         ?disabled=${this.#disabled}
         ?checked=${this.#checked}>
-      <span class="slider"></span>
+      <span class="slider" @click=${(ev: Event) => ev.stopPropagation()}></span>
     </label>
     `, this.#shadow, {host: this});
     // clang-format on

@@ -19,12 +19,12 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 function getLocalMetricValue(view: Element, metric: string): HTMLElement {
   const card = view.shadowRoot!.querySelector(`#${metric} devtools-metric-card`);
-  return card!.shadowRoot!.querySelector('.local-value .metric-value') as HTMLElement;
+  return card!.shadowRoot!.querySelector('#local-value .metric-value') as HTMLElement;
 }
 
 function getFieldMetricValue(view: Element, metric: string): HTMLElement|null {
   const card = view.shadowRoot!.querySelector(`#${metric} devtools-metric-card`);
-  return card!.shadowRoot!.querySelector('.field-value .metric-value');
+  return card!.shadowRoot!.querySelector('#field-value .metric-value');
 }
 
 function getFieldHistogramPercents(view: Element, metric: string): string[] {

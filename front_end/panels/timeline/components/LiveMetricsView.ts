@@ -555,7 +555,7 @@ export class MetricCard extends HTMLElement {
         <h3 class="card-title">
           ${this.#getTitle()}
         </h3>
-        <div class="card-metric-values"
+        <div class="card-values"
           @mouseenter=${this.#showDialog}
           @mouseleave=${this.#closeDialog}
           on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
@@ -563,15 +563,15 @@ export class MetricCard extends HTMLElement {
           })}
           aria-describedby="tooltip-content"
         >
-          <span class="local-value">
-            ${renderMetricValue(this.#getLocalValue(), this.#getThresholds(), this.#getFormatFn())}
-          </span>
+          <div class="card-value-block">
+            <div class="card-value" id="local-value">${renderMetricValue(this.#getLocalValue(), this.#getThresholds(), this.#getFormatFn())}</div>
+            ${fieldEnabled ? html`<div class="card-metric-label">${i18nString(UIStrings.localValue)}</div>` : nothing}
+          </div>
           ${fieldEnabled ? html`
-            <span class="field-value">
-              ${renderMetricValue(this.#getFieldValue(), this.#getThresholds(), this.#getFormatFn())}
-            </span>
-            <span class="card-metric-label">${i18nString(UIStrings.localValue)}</span>
-            <span class="card-metric-label">${i18nString(UIStrings.field75thPercentile)}</span>
+            <div class="card-value-block">
+              <div class="card-value" id="field-value">${renderMetricValue(this.#getFieldValue(), this.#getThresholds(), this.#getFormatFn())}</div>
+              <div class="card-value-label">${i18nString(UIStrings.field75thPercentile)}</div>
+            </div>
           `: nothing}
         </div>
         <${Dialogs.Dialog.Dialog.litTagName}

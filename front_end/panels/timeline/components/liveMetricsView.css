@@ -135,14 +135,23 @@
   padding: 0 2px;
 }
 
-.card-metric-values {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.card-values {
+  display: flex;
   column-gap: 8px;
   margin-bottom: 8px;
 }
 
-.card-metric-label {
+.card-value-block {
+  flex: 1;
+}
+
+.card-value {
+  font-size: 32px;
+  line-height: 36px;
+  font-weight: var(--ref-typeface-weight-regular);
+}
+
+.card-value-label {
   font-weight: var(--ref-typeface-weight-medium);
 }
 
@@ -152,13 +161,6 @@
 
 .metric-value.dim {
   font-weight: var(--ref-typeface-weight-medium);
-}
-
-.local-value,
-.field-value {
-  font-size: 32px;
-  line-height: 36px;
-  font-weight: var(--ref-typeface-weight-regular);
 }
 
 .waiting {

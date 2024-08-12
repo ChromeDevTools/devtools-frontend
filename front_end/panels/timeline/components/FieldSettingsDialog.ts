@@ -588,6 +588,7 @@ export class FieldSettingsDialog extends HTMLElement {
                   type="checkbox"
                   .checked=${this.#urlOverrideEnabled}
                   @change=${this.#onUrlOverrideEnabledChange}
+                  aria-label=${i18nString(UIStrings.onlyFetchFieldData)}
                   jslog=${VisualLogging.toggle().track({click: true}).context('field-url-override-enabled')}
                 />
                 ${i18nString(UIStrings.onlyFetchFieldData)}

@@ -36,6 +36,11 @@ devtools-dialog {
 
 .url-override {
   margin: 8px 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: max-content;
 }
 
 details > summary {
@@ -92,13 +97,6 @@ input[type="checkbox"] {
 
 input[type="text"][disabled] {
   color: var(--sys-color-state-disabled);
-}
-
-label {
-  display: inline-flex;
-  align-items: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .warning {

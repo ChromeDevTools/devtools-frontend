@@ -661,6 +661,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       // we also uninstall any source maps resolver for the trace that was active.
       // If the user swaps back to this trace via the history dropdown, this will be reinstated.
       this.#uninstallSourceMapsResolver();
+
+      // Store any modifications (e.g. annotations) that the user has created
+      // on the current trace before we move away to a new view.
+      this.#saveModificationsForActiveTrace();
     }
 
     this.#viewMode = newMode;
@@ -1551,9 +1555,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.#changeView({mode: 'LANDING_PAGE'});
       return;
     }
-
-    // Before loading a new trace, update modifications of the previous one.
-    this.#saveModificationsForActiveTrace();
 
     // Clear the line level profile that could exist from the previous trace.
     PerfUI.LineLevelProfile.Performance.instance().reset();

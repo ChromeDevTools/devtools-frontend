@@ -2634,6 +2634,7 @@ export const knownContextValues = new Set([
   'timing',
   'timing-info',
   'title',
+  'toggle-accessibility-tree',
   'toggle-property-and-continue-editing',
   'toggle-recording',
   'toggle-similar-issues',

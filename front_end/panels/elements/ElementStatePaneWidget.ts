@@ -71,7 +71,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
       const input = label.checkboxElement;
       this.inputStates.set(input, state);
       input.addEventListener('click', (clickListener as EventListener), false);
-      input.setAttribute('jslog', `${VisualLogging.toggle().track({click: true}).context(state)}`);
+      input.setAttribute('jslog', `${VisualLogging.toggle().track({change: true}).context(state)}`);
       inputs.push(input);
       td.appendChild(label);
       return td;
@@ -80,7 +80,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
       const div = document.createElement('div');
       div.classList.add('page-state-checkbox');
       const label = UI.UIUtils.CheckboxLabel.create(
-          i18nString(UIStrings.emulateFocusedPage), undefined, undefined, undefined, true);
+          i18nString(UIStrings.emulateFocusedPage), undefined, undefined, 'emulate-page-focus', true);
       UI.SettingsUI.bindCheckbox(
           label.checkboxElement, Common.Settings.Settings.instance().moduleSetting('emulate-page-focus'), {
             enable: Host.UserMetrics.Action.ToggleEmulateFocusedPageFromStylesPaneOn,

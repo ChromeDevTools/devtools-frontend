@@ -84,7 +84,7 @@ export class Icon extends HTMLElement {
     this.#shadowRoot = this.attachShadow({mode: 'open'});
     this.#shadowRoot.appendChild(this.#icon);
 
-    // TODO(bmeurer): Ideally we'd have a `connectedCallback()` that would just
+    // TODO(crbug.com/359141904): Ideally we'd have a `connectedCallback()` that would just
     // install the CSS via `adoptedStyleSheets`, but that throws when using the
     // same `CSSStyleSheet` across two different documents (which happens in the
     // case of undocked DevTools windows and using the DeviceMode). So the work-

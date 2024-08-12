@@ -6,7 +6,7 @@ import * as LitHtml from '../../lit-html/lit-html.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as IconButton from '../icon_button/icon_button.js';
 
-import buttonStyles from './button.css.js';
+import buttonStyles from './button.css.legacy.js';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -119,6 +119,14 @@ export class Button extends HTMLElement {
     super();
     this.setAttribute('role', 'presentation');
     this.addEventListener('click', this.#boundOnClick, true);
+
+    // TODO(crbug.com/359141904): Ideally we would be using
+    // adopted style sheets for installing css styles, but this
+    // currently throws an error when sharing the styles across
+    // multiple documents. This is a workaround.
+    const styleElement = document.createElement('style');
+    styleElement.textContent = buttonStyles.cssContent;
+    this.#shadow.appendChild(styleElement);
   }
 
   /**
@@ -261,7 +269,6 @@ export class Button extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [buttonStyles];
     this.#render();
   }
 

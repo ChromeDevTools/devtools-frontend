@@ -404,10 +404,8 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
       devToolsConsoleInsights: {
         aidaModelId: '',
         aidaTemperature: 0,
-        blocked: true,
         blockedByAge: false,
         blockedByEnterprisePolicy: false,
-        blockedByFeatureFlag: true,
         blockedByGeo: false,
         blockedByRollout: false,
         disallowLogging: false,

@@ -113,7 +113,7 @@ function isOptIn(config?: Root.Runtime.HostConfig): boolean {
 }
 
 function isFeatureEnabled(config?: Root.Runtime.HostConfig): boolean {
-  return config?.devToolsConsoleInsights?.blockedByFeatureFlag === false;
+  return config?.devToolsConsoleInsights?.enabled === true;
 }
 
 Common.Settings.registerSettingExtension({

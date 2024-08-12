@@ -30,7 +30,7 @@ describe('ConsoleInsight', function() {
 
   it('shows an insight for a console message via the context menu', async () => {
     const {target} = getBrowserAndPages();
-    await setupMocks({blocked: false, blockedByFeatureFlag: false, enabled: true});
+    await setupMocks({enabled: true});
     await click(CONSOLE_TAB_SELECTOR);
     await target.evaluate(() => {
       console.error(new Error('Unexpected error'));
@@ -41,7 +41,7 @@ describe('ConsoleInsight', function() {
 
   it('shows an insight for a console message via the hover button', async () => {
     const {target} = getBrowserAndPages();
-    await setupMocks({blocked: false, blockedByFeatureFlag: false, enabled: true});
+    await setupMocks({enabled: true});
     await click(CONSOLE_TAB_SELECTOR);
     await target.evaluate(() => {
       console.error(new Error('Unexpected error'));
@@ -55,7 +55,7 @@ describe('ConsoleInsight', function() {
 
   it('does not show context menu if AIDA is not available', async () => {
     const {target} = getBrowserAndPages();
-    await setupMocks({blocked: false, blockedByFeatureFlag: true, enabled: false});
+    await setupMocks({enabled: false});
     await click(CONSOLE_TAB_SELECTOR);
     await target.evaluate(() => {
       console.error(new Error('Unexpected error'));
@@ -74,7 +74,7 @@ describe('ConsoleInsight', function() {
   it('does not show the hover button if locale is not supported', async () => {
     const {target} = getBrowserAndPages();
     await setDevToolsSettings({language: 'zh'});
-    await setupMocks({blocked: false, blockedByFeatureFlag: false, enabled: true});
+    await setupMocks({enabled: true});
     await click(CONSOLE_TAB_SELECTOR);
     await target.evaluate(() => {
       console.error(new Error('Unexpected error'));
@@ -85,7 +85,7 @@ describe('ConsoleInsight', function() {
 
   it('does not show the hover button if age check is not passing', async () => {
     const {target} = getBrowserAndPages();
-    await setupMocks({blocked: false, blockedByFeatureFlag: false, enabled: true, blockedByAge: true});
+    await setupMocks({enabled: true, blockedByAge: true});
     await click(CONSOLE_TAB_SELECTOR);
     await target.evaluate(() => {
       console.error(new Error('Unexpected error'));
@@ -96,7 +96,7 @@ describe('ConsoleInsight', function() {
 
   it('does not show the hover button if policy does not allow it', async () => {
     const {target} = getBrowserAndPages();
-    await setupMocks({blocked: false, blockedByFeatureFlag: false, enabled: true, blockedByEnterprisePolicy: true});
+    await setupMocks({enabled: true, blockedByEnterprisePolicy: true});
     await click(CONSOLE_TAB_SELECTOR);
     await target.evaluate(() => {
       console.error(new Error('Unexpected error'));
@@ -107,7 +107,7 @@ describe('ConsoleInsight', function() {
 
   it('does not show the hover button if the feature is not rolled out', async () => {
     const {target} = getBrowserAndPages();
-    await setupMocks({blocked: false, blockedByFeatureFlag: false, enabled: true, blockedByRollout: true});
+    await setupMocks({enabled: true, blockedByRollout: true});
     await click(CONSOLE_TAB_SELECTOR);
     await target.evaluate(() => {
       console.error(new Error('Unexpected error'));
@@ -118,7 +118,7 @@ describe('ConsoleInsight', function() {
 
   it('does not show the hover button if it is restriced by geography', async () => {
     const {target} = getBrowserAndPages();
-    await setupMocks({blocked: false, blockedByFeatureFlag: false, enabled: true, blockedByGeo: true});
+    await setupMocks({enabled: true, blockedByGeo: true});
     await click(CONSOLE_TAB_SELECTOR);
     await target.evaluate(() => {
       console.error(new Error('Unexpected error'));
@@ -129,7 +129,7 @@ describe('ConsoleInsight', function() {
 
   it('does not show the hover button if disabled by default', async () => {
     const {target} = getBrowserAndPages();
-    await setupMocks({blocked: false, blockedByFeatureFlag: false, enabled: true, optIn: true});
+    await setupMocks({enabled: true, optIn: true});
     await click(CONSOLE_TAB_SELECTOR);
     await target.evaluate(() => {
       console.error(new Error('Unexpected error'));

@@ -32,7 +32,7 @@ vars = {
   'emscripten_tag': 'ade9d780ff17c88d81aa13860361743e3c1e1396',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:05eed8f6252e2dd6b555e0b65192ef03e2c4a276',
+  'gn_version': 'git_revision:449f3e4dfb45f6489321746f79f47f3e0d50211d',
 
   'cmake_version': 'version:2@3.21.3',
 

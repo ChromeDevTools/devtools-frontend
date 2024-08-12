@@ -819,6 +819,11 @@ export const clickOnFirstLinkInStylesPanel = async () => {
 
 export const toggleClassesPane = async () => {
   await click(CLS_BUTTON_SELECTOR);
+  await expectVeEvents([
+    veClick('Panel: elements > Pane: styles > ToggleSubpane: elements-classes'),
+    veImpressionsUnder(
+        'Panel: elements > Pane: styles', [veImpression('Pane', 'elements-classes', [veImpression('TextField')])]),
+  ]);
 };
 
 export const typeInClassesPaneInput =

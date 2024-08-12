@@ -36,7 +36,7 @@ const UIStringsTemp = {
    * @description The disclaimer text that tells the user what will be shared
    * and what will be stored.
    */
-  disclaimer: 'Feedback submitted will also include your conversation.',
+  disclaimer: 'Feedback submitted will also include your conversation',
   /**
    * @description The button text for the action of submitting feedback.
    */

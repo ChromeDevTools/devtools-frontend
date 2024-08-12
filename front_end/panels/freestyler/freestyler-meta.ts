@@ -16,13 +16,13 @@ import type * as Freestyler from './freestyler.js';
   */
 const UIStringsTemp = {
   /**
-   * @description The title of the action for showing Ai Assistant panel.
+   * @description The title of the command menu action for showing the Freestyler panel.
    */
-  showAiAssistant: 'Show  AI Assistant',
+  showAiAssistant: 'Show  AI assistant',
   /**
-   * @description The title of the AI Assistant panel.
+   * @description The title of the AI assistant panel.
    */
-  aiAssistant: 'AI Assistant',
+  aiAssistant: 'AI assistant',
   /**
    * @description The setting title to enable the freestyler via
    * the settings tab.
@@ -32,26 +32,26 @@ const UIStringsTemp = {
    *@description Text of a tooltip to redirect to the AI assistant panel with
    *the current element as context
    */
-  askAiAssistant: 'Ask AI Assistant',
+  askAiAssistant: 'Ask AI assistant',
   /**
    * @description Message shown to the user if the DevTools locale is not
    * supported.
    */
-  wrongLocale: 'To use this feature, update your Language preference in DevTools Settings to English.',
+  wrongLocale: 'To use this feature, update your Language preference in DevTools Settings to English',
   /**
    * @description Message shown to the user if the age check is not successful.
    */
-  ageRestricted: 'This feature is only available to users who are 18 years of age or older.',
+  ageRestricted: 'This feature is only available to users who are 18 years of age or older',
   /**
    * @description Message shown to the user if the user's region is not
    * supported.
    */
-  geoRestricted: 'This feature is unavailable in your region.',
+  geoRestricted: 'This feature is unavailable in your region',
   /**
    * @description Message shown to the user if the enterprise policy does
    * not allow this feature.
    */
-  policyRestricted: 'Your organization turned off this feature. Contact your administrators for more information.',
+  policyRestricted: 'Your organization turned off this feature. Contact your administrators for more information',
 };
 
 // TODO(nvitkov): b/346933425

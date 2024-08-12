@@ -55,14 +55,30 @@ details > summary {
   flex-direction: row;
 }
 
+.origin-mapping-grid {
+  border: 1px solid var(--sys-color-divider);
+  margin-top: 8px;
+}
+
+.origin-mapping-button-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 6px;
+}
+
 .config-button {
   margin-left: auto;
+}
+
+.advanced-section-contents {
+  margin: 4px 0 14px;
 }
 
 .buttons-section {
   display: flex;
   justify-content: flex-end;
-  margin-top: 14px;
+  margin-top: 6px;
   gap: 8px;
 }
 
@@ -93,4 +109,10 @@ label {
 x-link { /* stylelint-disable-line selector-type-no-unknown */
   color: var(--sys-color-primary);
   text-decoration-line: underline;
+}
+
+.divider {
+  margin: 10px 0;
+  border: none;
+  border-top: 1px solid var(--sys-color-divider);
 }

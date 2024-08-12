@@ -314,6 +314,40 @@ describeWithMockConnection('CrUXManager', () => {
       assert.strictEqual(getFieldDataMock.firstCall.args[0], 'https://example.com/override');
     });
 
+    it('should use origin map if set', async () => {
+      target.setInspectedURL('http://localhost:8080/inspected?param' as Platform.DevToolsPath.UrlString);
+      cruxManager.getConfigSetting().set({
+        enabled: false,
+        override: '',
+        originMappings: [{
+          developmentOrigin: 'http://localhost:8080',
+          productionOrigin: 'https://example.com',
+        }],
+      });
+
+      await cruxManager.getFieldDataForCurrentPage();
+
+      assert.strictEqual(getFieldDataMock.callCount, 1);
+      assert.strictEqual(getFieldDataMock.firstCall.args[0], 'https://example.com/inspected');
+    });
+
+    it('should not use origin map if URL override is set', async () => {
+      target.setInspectedURL('http://localhost:8080/inspected?param' as Platform.DevToolsPath.UrlString);
+      cruxManager.getConfigSetting().set({
+        enabled: false,
+        override: 'https://google.com',
+        originMappings: [{
+          developmentOrigin: 'http://localhost:8080',
+          productionOrigin: 'https://example.com',
+        }],
+      });
+
+      await cruxManager.getFieldDataForCurrentPage();
+
+      assert.strictEqual(getFieldDataMock.callCount, 1);
+      assert.strictEqual(getFieldDataMock.firstCall.args[0], 'https://google.com');
+    });
+
     it('should use inspected URL if main document is unavailable', async () => {
       target.setInspectedURL('https://example.com/inspected' as Platform.DevToolsPath.UrlString);
 

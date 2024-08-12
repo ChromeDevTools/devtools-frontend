@@ -69,9 +69,15 @@ export type PageResult = {
   [K in`${PageScope}-${DeviceScope}`]: CrUXResponse|null;
 };
 
+export interface OriginMapping {
+  developmentOrigin: string;
+  productionOrigin: string;
+}
+
 export interface ConfigSetting {
   enabled: boolean;
   override: string;
+  originMappings?: OriginMapping[];
 }
 
 let cruxManagerInstance: CrUXManager;
@@ -115,7 +121,7 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
         useSessionStorage ? Common.Settings.SettingStorageType.Session : Common.Settings.SettingStorageType.Global;
 
     this.#configSetting = Common.Settings.Settings.instance().createSetting<ConfigSetting>(
-        'field-data', {enabled: false, override: ''}, storageTypeForConsent);
+        'field-data', {enabled: false, override: '', originMappings: []}, storageTypeForConsent);
 
     this.#configSetting.addChangeListener(() => {
       void this.#automaticRefresh();
@@ -172,6 +178,24 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     }
   }
 
+  #getMappedUrl(unmappedUrl: string): string {
+    try {
+      const unmapped = new URL(unmappedUrl);
+      const mappings = this.#configSetting.get().originMappings || [];
+      const mapping = mappings.find(m => m.developmentOrigin === unmapped.origin);
+      if (!mapping) {
+        return unmappedUrl;
+      }
+
+      const mapped = new URL(mapping.productionOrigin);
+      mapped.pathname = unmapped.pathname;
+
+      return mapped.href;
+    } catch {
+      return unmappedUrl;
+    }
+  }
+
   /**
    * In general, this function should use the main document URL
    * (i.e. the URL after all redirects but before SPA navigations)
@@ -182,7 +206,8 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
    * the main document URL cannot be found.
    */
   async getFieldDataForCurrentPage(): Promise<PageResult> {
-    const pageUrl = this.#configSetting.get().override || this.#mainDocumentUrl || await this.#getInspectedURL();
+    const pageUrl = this.#configSetting.get().override ||
+        this.#getMappedUrl(this.#mainDocumentUrl || await this.#getInspectedURL());
     return this.getFieldDataForPage(pageUrl);
   }
 

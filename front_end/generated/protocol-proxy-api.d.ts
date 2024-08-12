@@ -112,6 +112,8 @@ declare namespace ProtocolProxyApi {
 
     PWA: PWAApi;
 
+    BluetoothEmulation: BluetoothEmulationApi;
+
     Debugger: DebuggerApi;
 
     HeapProfiler: HeapProfilerApi;
@@ -218,6 +220,8 @@ declare namespace ProtocolProxyApi {
     FedCm: FedCmDispatcher;
 
     PWA: PWADispatcher;
+
+    BluetoothEmulation: BluetoothEmulationDispatcher;
 
     Debugger: DebuggerDispatcher;
 
@@ -1114,6 +1118,11 @@ declare namespace ProtocolProxyApi {
      * File wrapper.
      */
     invoke_getFileInfo(params: Protocol.DOM.GetFileInfoRequest): Promise<Protocol.DOM.GetFileInfoResponse>;
+
+    /**
+     * Returns list of detached nodes
+     */
+    invoke_getDetachedDomNodes(): Promise<Protocol.DOM.GetDetachedDomNodesResponse>;
 
     /**
      * Enables console to refer to the node with given id via $x (see Command Line API for more details
@@ -4032,6 +4041,33 @@ declare namespace ProtocolProxyApi {
 
   }
   export interface PWADispatcher {
+  }
+
+  export interface BluetoothEmulationApi {
+    /**
+     * Enable the BluetoothEmulation domain.
+     */
+    invoke_enable(params: Protocol.BluetoothEmulation.EnableRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Disable the BluetoothEmulation domain.
+     */
+    invoke_disable(): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Simulates a peripheral with |address|, |name| and |knownServiceUuids|
+     * that has already been connected to the system.
+     */
+    invoke_simulatePreconnectedPeripheral(params: Protocol.BluetoothEmulation.SimulatePreconnectedPeripheralRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Simulates an advertisement packet described in |entry| being received by
+     * the central.
+     */
+    invoke_simulateAdvertisement(params: Protocol.BluetoothEmulation.SimulateAdvertisementRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+  }
+  export interface BluetoothEmulationDispatcher {
   }
 
   export interface DebuggerApi {

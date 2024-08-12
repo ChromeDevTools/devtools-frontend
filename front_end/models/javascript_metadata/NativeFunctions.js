@@ -6614,7 +6614,7 @@ export const NativeFunctions = [
   },
   {
     name: "getComposedRanges",
-    signatures: [["...shadowRoots"]]
+    signatures: [["?options"]]
   },
   {
     name: "AnimationEvent",
@@ -7079,10 +7079,6 @@ export const NativeFunctions = [
     signatures: [["callback","?options"]]
   },
   {
-    name: "yield",
-    signatures: [["?options"]]
-  },
-  {
     name: "TaskController",
     signatures: [["?init"]]
   },
@@ -7231,12 +7227,16 @@ export const NativeFunctions = [
     signatures: [["feature"]]
   },
   {
-    name: "promptStreaming",
+    name: "summarize",
     signatures: [["input"]]
   },
   {
-    name: "createTextSession",
-    signatures: [["?options"]]
+    name: "summarizeStreaming",
+    signatures: [["input"]]
+  },
+  {
+    name: "promptStreaming",
+    signatures: [["input"]]
   },
   {
     name: "registerAnimator",
@@ -8188,6 +8188,10 @@ export const NativeFunctions = [
     signatures: [["track"]]
   },
   {
+    name: "RTCRtpScriptTransform",
+    signatures: [["worker","?options","?transfer"]]
+  },
+  {
     name: "sendRtp",
     signatures: [["packet","options"]]
   },
@@ -8402,6 +8406,10 @@ export const NativeFunctions = [
   {
     name: "SpeechRecognitionEvent",
     signatures: [["type","?initDict"]]
+  },
+  {
+    name: "onDeviceWebSpeechAvailable",
+    signatures: [["lang"]]
   },
   {
     name: "SpeechSynthesisErrorEvent",

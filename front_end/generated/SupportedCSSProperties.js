@@ -1410,7 +1410,9 @@ export const generatedProperties = [
    "flow",
    "math",
    "ruby",
-   "ruby-text"
+   "ruby-text",
+   "masonry",
+   "inline-masonry"
   ],
   "name": "display"
  },
@@ -2770,6 +2772,26 @@ export const generatedProperties = [
    "auto"
   ],
   "name": "position-anchor"
+ },
+ {
+  "keywords": [
+   "none",
+   "top",
+   "bottom",
+   "center",
+   "left",
+   "right",
+   "x-start",
+   "x-end",
+   "y-start",
+   "y-end",
+   "start",
+   "end",
+   "self-start",
+   "self-end",
+   "all"
+  ],
+  "name": "position-area"
  },
  {
   "longhands": [
@@ -4517,7 +4539,9 @@ export const generatedPropertyValues = {
    "flow",
    "math",
    "ruby",
-   "ruby-text"
+   "ruby-text",
+   "masonry",
+   "inline-masonry"
   ]
  },
  "dominant-baseline": {
@@ -5257,6 +5281,25 @@ export const generatedPropertyValues = {
  "position-anchor": {
   "values": [
    "auto"
+  ]
+ },
+ "position-area": {
+  "values": [
+   "none",
+   "top",
+   "bottom",
+   "center",
+   "left",
+   "right",
+   "x-start",
+   "x-end",
+   "y-start",
+   "y-end",
+   "start",
+   "end",
+   "self-start",
+   "self-end",
+   "all"
   ]
  },
  "position-try-fallbacks": {

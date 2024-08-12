@@ -5603,6 +5603,8 @@
                         "first-line-inherited",
                         "scroll-marker",
                         "scroll-marker-group",
+                        "scroll-next-button",
+                        "scroll-prev-button",
                         "scrollbar",
                         "scrollbar-thumb",
                         "scrollbar-button",
@@ -5865,6 +5867,24 @@
                             "name": "assignedSlot",
                             "optional": true,
                             "$ref": "BackendNode"
+                        }
+                    ]
+                },
+                {
+                    "id": "DetachedElementInfo",
+                    "description": "A structure to hold the top-level node of a detached tree and an array of its retained descendants.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "treeNode",
+                            "$ref": "Node"
+                        },
+                        {
+                            "name": "retainedNodeIds",
+                            "type": "array",
+                            "items": {
+                                "$ref": "NodeId"
+                            }
                         }
                     ]
                 },
@@ -6953,6 +6973,21 @@
                         {
                             "name": "path",
                             "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "getDetachedDomNodes",
+                    "description": "Returns list of detached nodes",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "detachedNodes",
+                            "description": "The list of detached nodes",
+                            "type": "array",
+                            "items": {
+                                "$ref": "DetachedElementInfo"
+                            }
                         }
                     ]
                 },
@@ -17785,14 +17820,16 @@
                     "experimental": true,
                     "type": "string",
                     "enum": [
+                        "anchorClick",
                         "formSubmissionGet",
                         "formSubmissionPost",
                         "httpHeaderRefresh",
-                        "scriptInitiated",
+                        "initialFrameNavigation",
                         "metaTagRefresh",
+                        "other",
                         "pageBlockInterstitial",
                         "reload",
-                        "anchorClick"
+                        "scriptInitiated"
                     ]
                 },
                 {
@@ -20142,6 +20179,16 @@
                             "name": "url",
                             "description": "Frame's new url.",
                             "type": "string"
+                        },
+                        {
+                            "name": "navigationType",
+                            "description": "Navigation type",
+                            "type": "string",
+                            "enum": [
+                                "fragment",
+                                "historyApi",
+                                "other"
+                            ]
                         }
                     ]
                 },
@@ -26652,6 +26699,155 @@
                             "name": "displayMode",
                             "optional": true,
                             "$ref": "DisplayMode"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "domain": "BluetoothEmulation",
+            "description": "This domain allows configuring virtual Bluetooth devices to test\nthe web-bluetooth API.",
+            "experimental": true,
+            "types": [
+                {
+                    "id": "CentralState",
+                    "description": "Indicates the various states of Central.",
+                    "type": "string",
+                    "enum": [
+                        "absent",
+                        "powered-off",
+                        "powered-on"
+                    ]
+                },
+                {
+                    "id": "ManufacturerData",
+                    "description": "Stores the manufacturer data",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "key",
+                            "description": "Company identifier\nhttps://bitbucket.org/bluetooth-SIG/public/src/main/assigned_numbers/company_identifiers/company_identifiers.yaml\nhttps://usb.org/developers",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "data",
+                            "description": "Manufacturer-specific data",
+                            "type": "binary"
+                        }
+                    ]
+                },
+                {
+                    "id": "ScanRecord",
+                    "description": "Stores the byte data of the advertisement packet sent by a Bluetooth device.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "uuids",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "name": "appearance",
+                            "description": "Stores the external appearance description of the device.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "txPower",
+                            "description": "Stores the transmission power of a broadcasting device.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "manufacturerData",
+                            "description": "Key is the company identifier and the value is an array of bytes of\nmanufacturer specific data.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "ManufacturerData"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "ScanEntry",
+                    "description": "Stores the advertisement packet information that is sent by a Bluetooth device.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "deviceAddress",
+                            "type": "string"
+                        },
+                        {
+                            "name": "rssi",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "scanRecord",
+                            "$ref": "ScanRecord"
+                        }
+                    ]
+                }
+            ],
+            "commands": [
+                {
+                    "name": "enable",
+                    "description": "Enable the BluetoothEmulation domain.",
+                    "parameters": [
+                        {
+                            "name": "state",
+                            "description": "State of the simulated central.",
+                            "$ref": "CentralState"
+                        }
+                    ]
+                },
+                {
+                    "name": "disable",
+                    "description": "Disable the BluetoothEmulation domain."
+                },
+                {
+                    "name": "simulatePreconnectedPeripheral",
+                    "description": "Simulates a peripheral with |address|, |name| and |knownServiceUuids|\nthat has already been connected to the system.",
+                    "parameters": [
+                        {
+                            "name": "address",
+                            "type": "string"
+                        },
+                        {
+                            "name": "name",
+                            "type": "string"
+                        },
+                        {
+                            "name": "manufacturerData",
+                            "type": "array",
+                            "items": {
+                                "$ref": "ManufacturerData"
+                            }
+                        },
+                        {
+                            "name": "knownServiceUuids",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "simulateAdvertisement",
+                    "description": "Simulates an advertisement packet described in |entry| being received by\nthe central.",
+                    "parameters": [
+                        {
+                            "name": "entry",
+                            "$ref": "ScanEntry"
                         }
                     ]
                 }

@@ -191,6 +191,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
     this.#overlays = new Overlays.Overlays.Overlays({
       container: this.#overlaysContainer,
+      flameChartsContainer: flameChartsContainer.element,
       charts: {
         mainChart: this.mainFlameChart,
         mainProvider: this.mainDataProvider,

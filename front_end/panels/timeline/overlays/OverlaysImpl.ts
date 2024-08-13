@@ -230,12 +230,20 @@ export class Overlays extends EventTarget {
    */
   #overlaysContainer: HTMLElement;
 
+  /**
+   * The parent HTMLElement of both Flamecharts.
+   * This container is used to get the mouse position over the Flamecharts.
+   */
+  #flameChartsContainer: HTMLElement;
+
   constructor(init: {
     container: HTMLElement,
+    flameChartsContainer: HTMLElement,
     charts: TimelineCharts,
   }) {
     super();
     this.#overlaysContainer = init.container;
+    this.#flameChartsContainer = init.flameChartsContainer;
     this.#charts = init.charts;
   }
 
@@ -640,12 +648,16 @@ export class Overlays extends EventTarget {
   }
 
   #positionEntriesLinkOverlay(overlay: EntriesLink, element: HTMLElement): void {
-    const fromEntryX = this.xPixelForEventOnChart(overlay.entryFrom);
-    const romEntryY = this.yPixelForEventOnChart(overlay.entryFrom);
+    // The entry arrow starts from the end on the X axis and middle of the Y axis
+    const entryEndX = this.xPixelForEventEndOnChart(overlay.entryFrom) ?? 0;
+    const halfEntryHeight = (this.pixelHeightForEventOnChart(overlay.entryFrom) ?? 0) / 2;
+    const entryMiddleY = (this.yPixelForEventOnChart(overlay.entryFrom) ?? 0) + halfEntryHeight;
 
-    // TODO: Position the entries link correctly
-    element.style.top = `${fromEntryX}px`;
-    element.style.left = `${romEntryY}px`;
+    const component = element.querySelector('devtools-entries-link-overlay');
+
+    if (component) {
+      component.coordinateFrom = {x: entryEndX, y: entryMiddleY};
+    }
   }
 
   #positionTimeRangeOverlay(overlay: TimeRangeLabel, element: HTMLElement): void {
@@ -672,7 +684,7 @@ export class Overlays extends EventTarget {
   #positionEntryLabelOverlay(overlay: EntryLabel, element: HTMLElement):
       {height: number, width: number, cutOffEntryHeight: number, chart: string}|null {
     const chartName = this.#chartForOverlayEntry(overlay.entry);
-    const x = this.xPixelForEventOnChart(overlay.entry);
+    const x = this.xPixelForEventStartOnChart(overlay.entry);
     const y = this.yPixelForEventOnChart(overlay.entry);
     const {endTime} = this.timingsForOverlayEntry(overlay.entry);
     const endX = this.#xPixelForMicroSeconds(chartName, endTime);
@@ -791,7 +803,7 @@ export class Overlays extends EventTarget {
    */
   #positionEntryBorderOutlineType(overlay: EntrySelected|EntryOutline, element: HTMLElement): void {
     const chartName = this.#chartForOverlayEntry(overlay.entry);
-    let x = this.xPixelForEventOnChart(overlay.entry);
+    let x = this.xPixelForEventStartOnChart(overlay.entry);
     let y = this.yPixelForEventOnChart(overlay.entry);
 
     if (x === null || y === null) {
@@ -902,8 +914,30 @@ export class Overlays extends EventTarget {
         return div;
       }
       case 'ENTRIES_LINK': {
-        const component = new Components.EntriesLinkOverlay.EntriesLinkOverlay();
+        // The entry arrow starts from the end on the X axis and middle of the Y axis
+        const entryEndX = this.xPixelForEventEndOnChart(overlay.entryFrom) ?? 0;
+        const halfEntryHeight = (this.pixelHeightForEventOnChart(overlay.entryFrom) ?? 0) / 2;
+        const entryMiddleY = (this.yPixelForEventOnChart(overlay.entryFrom) ?? 0) + halfEntryHeight;
+
+        const component = new Components.EntriesLinkOverlay.EntriesLinkOverlay({x: entryEndX, y: entryMiddleY});
         div.appendChild(component);
+
+        // Add an event listener to track mousemove and draw the arrow after
+        // the mouse before the entry the arrow will connect to is selected.
+        //
+        // The 'mousemove' event is attached to `flameChartsContainer` instead of `overlaysContainer`
+        // because `overlaysContainer` doesn't have events to enable the interaction with the
+        // Flamecharts beneath it.
+        // TODO: Remove the mousemove event when the connecting entry is selected
+        this.#flameChartsContainer.addEventListener('mousemove', event => {
+          const mouseEvent = (event as MouseEvent);
+          const lastMouseOffsetX = mouseEvent.offsetX;
+          const lastMouseOffsetY = mouseEvent.offsetY;
+          // TODO: Check if the mouse is over network track and do not add the network height if it is
+          const networkHeight = this.#dimensions.charts.network?.heightPixels ?? 0;
+          component.coordinateTo = {x: lastMouseOffsetX, y: lastMouseOffsetY + networkHeight};
+        });
+
         return div;
       }
       case 'ENTRY_OUTLINE': {
@@ -1077,17 +1111,31 @@ export class Overlays extends EventTarget {
   }
 
   /**
-   * Calculate the X pixel position for an event on the timeline.
+   * Calculate the X pixel position for an event start on the timeline.
    * @param chartName - the chart that the event is on. It is expected that both
    * charts have the same width so this doesn't make a difference - but it might
    * in the future if the UI changes, hence asking for it.
    *
    * @param event - the trace event you want to get the pixel position of
    */
-  xPixelForEventOnChart(event: OverlayEntry): number|null {
+  xPixelForEventStartOnChart(event: OverlayEntry): number|null {
     const chartName = this.#chartForOverlayEntry(event);
     const {startTime} = this.timingsForOverlayEntry(event);
     return this.#xPixelForMicroSeconds(chartName, startTime);
+  }
+
+  /**
+   * Calculate the X pixel position for an event end on the timeline.
+   * @param chartName - the chart that the event is on. It is expected that both
+   * charts have the same width so this doesn't make a difference - but it might
+   * in the future if the UI changes, hence asking for it.
+   *
+   * @param event - the trace event you want to get the pixel position of
+   */
+  xPixelForEventEndOnChart(event: OverlayEntry): number|null {
+    const chartName = this.#chartForOverlayEntry(event);
+    const {endTime} = this.timingsForOverlayEntry(event);
+    return this.#xPixelForMicroSeconds(chartName, endTime);
   }
 
   /**

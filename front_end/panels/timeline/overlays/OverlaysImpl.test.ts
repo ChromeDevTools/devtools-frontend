@@ -56,9 +56,11 @@ describeWithEnvironment('Overlays', () => {
   });
 
   it('can calculate the x position of an event based on the dimensions and its timestamp', async () => {
-    const container = document.createElement('div');
+    const flameChartsContainer = document.createElement('div');
+    const container = flameChartsContainer.createChild('div');
     const overlays = new Overlays.Overlays.Overlays({
       container,
+      flameChartsContainer,
       charts: createCharts(),
     });
 
@@ -84,7 +86,7 @@ describeWithEnvironment('Overlays', () => {
     // Now set an event to be at 50 microseconds.
     const event = makeInstantEvent('test-event', 50);
 
-    const xPosition = overlays.xPixelForEventOnChart(event);
+    const xPosition = overlays.xPixelForEventStartOnChart(event);
     assert.strictEqual(xPosition, 50);
   });
 
@@ -92,9 +94,12 @@ describeWithEnvironment('Overlays', () => {
     const {traceData} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const charts = createCharts(traceData);
 
-    const container = document.createElement('div');
+    const flameChartsContainer = document.createElement('div');
+    const container = flameChartsContainer.createChild('div');
+
     const overlays = new Overlays.Overlays.Overlays({
       container,
+      flameChartsContainer,
       charts,
     });
 
@@ -129,9 +134,11 @@ describeWithEnvironment('Overlays', () => {
     const {traceData} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const charts = createCharts(traceData);
 
-    const container = document.createElement('div');
+    const flameChartsContainer = document.createElement('div');
+    const container = flameChartsContainer.createChild('div');
     const overlays = new Overlays.Overlays.Overlays({
       container,
+      flameChartsContainer,
       charts,
     });
 
@@ -167,9 +174,11 @@ describeWithEnvironment('Overlays', () => {
     const {traceData} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const charts = createCharts(traceData);
 
-    const container = document.createElement('div');
+    const flameChartsContainer = document.createElement('div');
+    const container = flameChartsContainer.createChild('div');
     const overlays = new Overlays.Overlays.Overlays({
       container,
+      flameChartsContainer,
       charts,
     });
 
@@ -211,9 +220,12 @@ describeWithEnvironment('Overlays', () => {
       charts: Overlays.Overlays.TimelineCharts,
     } {
       const charts = createCharts(traceData);
-      const container = document.createElement('div');
+
+      const flameChartsContainer = document.createElement('div');
+      const container = flameChartsContainer.createChild('div');
       const overlays = new Overlays.Overlays.Overlays({
         container,
+        flameChartsContainer,
         charts,
       });
 

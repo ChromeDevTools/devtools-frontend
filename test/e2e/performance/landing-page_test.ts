@@ -24,7 +24,7 @@ const READY_LOCAL_METRIC_SELECTOR = '#local-value .metric-value:not(.waiting)';
 const READY_FIELD_METRIC_SELECTOR = '#field-value .metric-value:not(.waiting)';
 const WAITING_LOCAL_METRIC_SELECTOR = '#local-value .metric-value.waiting';
 const INTERACTION_SELECTOR = '.interaction';
-const HISTOGRAM_SELECTOR = '.field-data-histogram';
+const HISTOGRAM_SELECTOR = '.bucket-summaries.histogram';
 const SETUP_FIELD_BUTTON_SELECTOR = 'devtools-button[jslogcontext="field-data-setup"]';
 const ENABLE_FIELD_BUTTON_SELECTOR = 'devtools-button[jslogcontext="field-data-enable"]';
 const ADVANCED_DETAILS_SELECTOR = '.content summary';

@@ -254,29 +254,31 @@
   box-sizing: border-box;
 }
 
-.field-data-histogram {
-  display: grid;
-  grid-template-columns: max-content 100px max-content;
-  grid-auto-rows: 1fr;
-  column-gap: 8px;
-  justify-items: flex-end;
-  align-items: center;
-  flex: 1;
+.bucket-summaries {
   margin-top: 8px;
   overflow-x: auto;
 }
 
-.histogram-bar {
-  height: 6px;
+.bucket-summaries.histogram {
+  display: grid;
+  grid-template-columns: minmax(min-content, auto) minmax(20px, auto) max-content;
+  grid-auto-rows: 1fr;
+  column-gap: 8px;
+  justify-items: flex-end;
+  align-items: center;
 }
 
-.histogram-label {
-  width: 100%;
+.bucket-label {
+  justify-self: start;
   font-weight: var(--ref-typeface-weight-medium);
 }
 
-.histogram-range {
+.bucket-range {
   color: var(--sys-color-token-subtle);
+}
+
+.histogram-bar {
+  height: 6px;
 }
 
 .histogram-percent {
@@ -318,7 +320,8 @@
 
 .tooltip {
   display: none;
-  width: min-content;
+  width: min(var(--tooltip-container-width, 350px), 350px);
+  max-width: max-content;
   position: absolute;
   top: 100%;
   left: 50%;

@@ -252,8 +252,8 @@ export class FieldSettingsDialog extends HTMLElement {
           .data=${{
             variant: Buttons.Button.Variant.OUTLINED,
             title: i18nString(UIStrings.configure),
+            jslogContext: 'field-data-configure',
           } as Buttons.Button.ButtonData}
-          jslogContext=${'field-data-configure'}
         >${i18nString(UIStrings.configure)}</${Buttons.Button.Button.litTagName}>
       `;
       // clang-format on

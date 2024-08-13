@@ -671,6 +671,7 @@ export class ToolbarButton extends UI.Toolbar.ToolbarItem {
   constructor(action: UI.ActionRegistration.Action) {
     const element = document.createElement('button');
     element.classList.add('history-dropdown-button');
+    element.setAttribute('jslog', `${VisualLogging.dropDown('history')}`);
     super(element);
     this.contentElement = this.element.createChild('span', 'content');
     this.element.addEventListener('click', () => void action.execute(), false);

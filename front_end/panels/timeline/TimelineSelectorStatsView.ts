@@ -11,6 +11,7 @@ import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 import * as Linkifier from '../../ui/components/linkifier/linkifier.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 const UIStrings = {
   /**
@@ -107,6 +108,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
     super();
 
     this.#datagrid = new DataGrid.DataGridController.DataGridController();
+    this.element.setAttribute('jslog', `${VisualLogging.pane('selector-stats').track({resize: true})}`);
     this.#selectorLocations = new Map<string, Protocol.CSS.SourceRange[]>();
     this.#traceParsedData = traceParsedData;
 

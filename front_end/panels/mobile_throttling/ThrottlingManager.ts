@@ -299,7 +299,7 @@ export class ThrottlingManager {
   createCPUThrottlingSelector(): UI.Toolbar.ToolbarComboBox {
     const control = new UI.Toolbar.ToolbarComboBox(
         event => this.setCPUThrottlingRate(this.cpuThrottlingRates[(event.target as HTMLSelectElement).selectedIndex]),
-        i18nString(UIStrings.cpuThrottling), '', 'cpu-throttling-selector');
+        i18nString(UIStrings.cpuThrottling), '', 'cpu-throttling');
     this.cpuThrottlingControls.add(control);
     const currentRate = this.cpuThrottlingManager.cpuThrottlingRate();
 
@@ -322,8 +322,8 @@ export class ThrottlingManager {
     warning: UI.Toolbar.ToolbarItem,
     toggle: UI.Toolbar.ToolbarItem,
   } {
-    const input = new UI.Toolbar.ToolbarItem(
-        UI.UIUtils.createInput('devtools-text-input', 'number', 'hardware-concurrency-selector'));
+    const input =
+        new UI.Toolbar.ToolbarItem(UI.UIUtils.createInput('devtools-text-input', 'number', 'hardware-concurrency'));
     input.setTitle(i18nString(UIStrings.hardwareConcurrencySettingTooltip));
     const inputElement = input.element as HTMLInputElement;
     inputElement.min = '1';
@@ -331,7 +331,7 @@ export class ThrottlingManager {
 
     const toggle = new UI.Toolbar.ToolbarCheckbox(
         i18nString(UIStrings.hardwareConcurrency), i18nString(UIStrings.hardwareConcurrencySettingTooltip), undefined,
-        'hardware-concurrency-toggle');
+        'hardware-concurrency');
     const reset = new UI.Toolbar.ToolbarButton('Reset concurrency', 'undo', undefined, 'hardware-concurrency-reset');
     reset.setTitle(i18nString(UIStrings.resetConcurrency));
     const icon = new IconButton.Icon.Icon();

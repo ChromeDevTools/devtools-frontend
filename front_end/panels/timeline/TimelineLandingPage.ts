@@ -90,7 +90,8 @@ export class TimelineLandingPage extends UI.Widget.VBox {
     this.contentElement.classList.add('legacy');
     const centered = this.contentElement.createChild('div');
 
-    const recordButton = UI.UIUtils.createInlineButton(UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction));
+    const recordButton = UI.UIUtils.createInlineButton(
+        UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction, {showLabel: false, ignoreToggleable: true}));
     const reloadButton =
         UI.UIUtils.createInlineButton(UI.Toolbar.Toolbar.createActionButtonForId('timeline.record-reload'));
 

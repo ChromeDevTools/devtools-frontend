@@ -9,7 +9,7 @@ import {
   $,
   click,
   goToResource,
-  platform,
+  summonSearchBox,
   waitFor,
   waitForAria,
   waitForElementWithTextContent,
@@ -17,7 +17,15 @@ import {
   waitForMany,
 } from '../../shared/helper.js';
 
-import {veImpression} from './visual-logging-helpers.js';
+import {
+  expectVeEvents,
+  veChange,
+  veClick,
+  veImpression,
+  veImpressionsUnder,
+  veKeyDown,
+  veResize,
+} from './visual-logging-helpers.js';
 
 export const FILTER_TEXTBOX_SELECTOR = '[aria-label="Filter"]';
 export const RECORD_BUTTON_SELECTOR = '[aria-label="Record"]';
@@ -44,52 +52,144 @@ export async function navigateToPerformanceTab(testName?: string) {
 
   // Make sure the landing page is shown.
   await waitFor('.timeline-landing-page');
+  await expectVeEvents([veClick('Toolbar: main > PanelTabHeader: timeline'), veImpressionForPerformancePanel()]);
 }
 
 export async function openCaptureSettings(sectionClassName: string) {
   const captureSettingsButton = await waitForAria('Capture settings');
   await captureSettingsButton.click();
-  return await waitFor(sectionClassName);
+  await waitFor(sectionClassName);
+  await expectVeEvents(
+      [
+        veClick('Toolbar > Toggle: timeline-settings-toggle'),
+        veImpression(
+            'Pane', 'timeline-settings-pane',
+            [
+              veImpression('Toggle', 'timeline-capture-layers-and-pictures'),
+              veImpression('Toggle', 'timeline-capture-selector-stats'),
+              veImpression('Toggle', 'timeline-disable-js-sampling'),
+              veImpression('DropDown', 'cpu-throttling'),
+              veImpression('DropDown', 'preferred-network-condition'),
+              veImpression('Toggle', 'hardware-concurrency'),
+              veImpression('TextField', 'hardware-concurrency'),
+              veImpression('Action', 'hardware-concurrency-reset'),
+              veImpression('Toggle', 'timeline-show-extension-data'),
+            ]),
+      ],
+      'Panel: timeline');
 }
 
 export async function searchForComponent(frontend: puppeteer.Page, searchEntry: string) {
-  const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
-  await frontend.keyboard.down(modifierKey);
-  await frontend.keyboard.press('KeyF');
-  await frontend.keyboard.up(modifierKey);
+  await waitFor('.timeline-details-chip-body');
+  await summonSearchBox();
+  await waitFor('.search-bar');
   await frontend.keyboard.type(searchEntry);
-}
-
-export async function navigateToSummaryTab() {
-  await click(SUMMARY_TAB_SELECTOR);
+  await frontend.keyboard.press('Tab');
+  await expectVeEvents([
+    veKeyDown(''),
+    veImpressionsUnder('Panel: timeline', [veImpression(
+                                              'Toolbar', 'search',
+                                              [
+                                                veImpression('TextField', 'search'),
+                                                veImpression('Action', 'regular-expression'),
+                                                veImpression('Action', 'match-case'),
+                                                veImpression('Action', 'select-previous'),
+                                                veImpression('Action', 'select-next'),
+                                                veImpression('Action', 'close-search'),
+                                              ])]),
+    veChange('Panel: timeline > Toolbar: search > TextField: search'),
+  ]);
 }
 
 export async function navigateToBottomUpTab() {
   await click(BOTTOM_UP_SELECTOR);
+  await expectVeEvents(
+      [
+        veClick('Toolbar: sidebar > PanelTabHeader: bottom-up'),
+        veImpression(
+            'Pane', 'bottom-up',
+            [
+              veImpression(
+                  'Toolbar', undefined,
+                  [
+                    veImpression('Toggle', 'match-case'),
+                    veImpression('Toggle', 'regular-expression'),
+                    veImpression('Toggle', 'match-whole-word'),
+                    veImpression('TextField', 'filter'),
+                    veImpression('DropDown', 'timeline-tree-group-by'),
+                  ]),
+              veImpression('TableHeader', 'self'),
+              veImpression('TableHeader', 'total'),
+              veImpression('TableHeader', 'activity'),
+              veImpression(
+                  'TableRow', undefined,
+                  [
+                    veImpression('TableCell', 'self'),
+                    veImpression('TableCell', 'total'),
+                    veImpression('TableCell', 'activity', [veImpression('Link', 'url')]),
+                  ]),
+            ]),
+
+      ],
+      'Panel: timeline');
 }
 
 export async function navigateToCallTreeTab() {
   await click(CALL_TREE_SELECTOR);
+  await expectVeEvents(
+      [
+        veClick('Toolbar: sidebar > PanelTabHeader: call-tree'),
+        veImpression(
+            'Pane', 'call-tree',
+            [
+              veImpression(
+                  'Toolbar', undefined,
+                  [
+                    veImpression('Toggle', 'match-case'),
+                    veImpression('Toggle', 'regular-expression'),
+                    veImpression('Toggle', 'match-whole-word'),
+                    veImpression('TextField', 'filter'),
+                    veImpression('DropDown', 'timeline-tree-group-by'),
+                  ]),
+              veImpression('TableHeader: self'),
+              veImpression('TableHeader: total'),
+              veImpression('TableHeader: activity'),
+              veImpression(
+                  'TableRow', undefined,
+                  [
+                    veImpression('TableCell: self'),
+                    veImpression('TableCell: total'),
+                    veImpression('TableCell: activity'),
+                  ]),
+            ]),
+      ],
+      'Panel: timeline');
 }
 
 export async function setFilter(filter: string) {
   const filterBoxElement = await click(FILTER_TEXTBOX_SELECTOR);
   await filterBoxElement.type(filter);
+  await expectVeEvents(
+      [veChange(''), veImpression('Action', 'clear')],
+      'Panel: timeline > Pane: bottom-up > Toolbar > TextField: filter');
 }
 
 export async function toggleCaseSensitive() {
   const matchCaseButton = await waitForAria('Match Case');
   await matchCaseButton.click();
+  await expectVeEvents([veClick('Panel: timeline > Pane: bottom-up > Toolbar > Toggle: match-case')]);
 }
 
 export async function toggleRegExButtonBottomUp() {
   const regexButton = await waitFor('[aria-label="Use Regular Expression"]');
   await regexButton.click();
+  await expectVeEvents([veClick('Panel: timeline > Pane: bottom-up > Toolbar > Toggle: regular-expression')]);
 }
 
 export async function toggleMatchWholeWordButtonBottomUp() {
   const wholeWordButton = await waitForAria('Match whole word');
   await wholeWordButton.click();
+  await expectVeEvents([veClick('Panel: timeline > Pane: bottom-up > Toolbar > Toggle: match-whole-word')]);
 }
 
 export async function startRecording() {
@@ -97,6 +197,8 @@ export async function startRecording() {
 
   // Wait for the button to turn to its stop state.
   await waitFor(STOP_BUTTON_SELECTOR);
+  await expectVeEvents(
+      [veClick('Toolbar > Toggle: timeline.toggle-recording'), veImpressionForStatusDialog()], 'Panel: timeline');
 }
 
 export async function reloadAndRecord() {
@@ -105,6 +207,8 @@ export async function reloadAndRecord() {
   // that a recording is actually displayed as some of the other elements in
   // the timeline remain in the DOM even after the recording has been cleared.
   await waitFor('.timeline-details-chip-body');
+  await expectVeEvents(
+      [veClick('Toolbar > Action: timeline.record-reload'), veImpressionForStatusDialog()], 'Panel: timeline');
 }
 
 export async function stopRecording() {
@@ -114,6 +218,12 @@ export async function stopRecording() {
   // that a recording is actually displayed as some of the other elements in
   // the timeline remain in the DOM even after the recording has been cleared.
   await waitFor('.timeline-details-chip-body');
+  await expectVeEvents(
+      [
+        veClick('Toolbar > Toggle: timeline.toggle-recording'),
+        veResize('Dialog: timeline-status'),
+      ],
+      'Panel: timeline');
 }
 
 export async function getTotalTimeFromSummary(): Promise<number> {
@@ -143,16 +253,24 @@ export async function retrieveSelectedAndExpandedActivityItems(frontend: puppete
   return tree;
 }
 
-export async function navigateToPerformanceSidebarTab(tabName: string) {
-  await click(`[aria-label="${tabName}"]`);
-}
-
-export async function clickOnFunctionLink() {
-  await click('.timeline-details.devtools-link');
-}
-
 export async function navigateToSelectorStatsTab() {
   await click(SELECTOR_STATS_SELECTOR);
+  await expectVeEvents(
+      [
+        veClick('Toolbar: sidebar > PanelTabHeader: selector-stats'),
+        veImpression(
+            'Pane', 'selector-stats',
+            [
+              veImpression('TableHeader', 'elapsed(us)'),
+              veImpression('TableHeader', 'match_attempts'),
+              veImpression('TableHeader', 'match_count'),
+              veImpression('TableHeader', 'reject_percentage'),
+              veImpression('TableHeader', 'selector'),
+              veImpression('TableHeader', 'style_sheet_id'),
+              veImpression('TableRow', undefined, [veImpression('TableCell')]),
+            ]),
+      ],
+      'Panel: timeline');
 }
 
 export async function selectRecalculateStylesEvent() {
@@ -187,6 +305,8 @@ export async function enableCSSSelectorStats() {
     }
     return true;
   }));
+  await expectVeEvents(
+      [veChange('Panel: timeline > Pane: timeline-settings-pane > Toggle: timeline-capture-selector-stats')]);
 }
 
 export async function disableCSSSelectorStats() {
@@ -207,24 +327,35 @@ export async function disableCSSSelectorStats() {
     }
     return true;
   }));
+  await expectVeEvents(
+      [veChange('Panel: timeline > Pane: timeline-settings-pane > Toggle: timeline-capture-selector-stats')]);
 }
 
-export function veImpressionForPerformancePanel() {
+export function veImpressionForPerformancePanel(options?: {timelineObservationLandingPage?: boolean}) {
   return veImpression('Panel', 'timeline', [
     veImpression(
         'Toolbar', undefined,
         [
           veImpression('Toggle', 'timeline.toggle-recording'),
           veImpression('Action', 'timeline.record-reload'),
+          veImpression('Action', 'timeline.clear'),
           veImpression('Action', 'timeline.load-from-file'),
           veImpression('Action', 'timeline.save-to-file'),
-          veImpression('Action', 'components.collect-garbage'),
+          veImpression('DropDown', 'history'),
           veImpression('Toggle', 'timeline-show-screenshots'),
           veImpression('Toggle', 'timeline-show-memory'),
+          veImpression('Action', 'components.collect-garbage'),
         ]),
-    // veImpression('Pane', 'timeline-settings-pane', {optional: true}),
-    veImpression('Link', 'learn-more'),
-    veImpression('Toggle', 'timeline.toggle-recording'),
+    veImpression('Action', 'timeline.toggle-recording'),
     veImpression('Action', 'timeline.record-reload'),
+    ...(options?.timelineObservationLandingPage ?
+            [veImpression('DropDown', 'cpu-throttling'), veImpression('DropDown', 'network-conditions')] :
+            [veImpression('Link', 'learn-more')]),
   ]);
+}
+
+function veImpressionForStatusDialog() {
+  return veImpression(
+      'Dialog', 'timeline-status',
+      [veImpression('Action', 'timeline.download-after-error'), veImpression('Action', 'timeline.stop-recording')]);
 }

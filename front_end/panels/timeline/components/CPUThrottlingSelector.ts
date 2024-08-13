@@ -80,6 +80,7 @@ export class CPUThrottlingSelector extends HTMLElement {
             .sideButton=${false}
             .showSelectedItem=${true}
             .showConnector=${false}
+            .jslogContext=${'cpu-throttling'}
             .buttonTitle=${i18nString(UIStrings.cpu, {PH1: selectionTitle})}
             aria-label=${i18nString(UIStrings.cpuThrottling, {PH1: selectionTitle})}
           >

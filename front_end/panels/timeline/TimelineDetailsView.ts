@@ -10,6 +10,7 @@ import * as TraceEngine from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as TimelineComponents from './components/components.js';
 import {EventsTimelineTreeView} from './EventsTimelineTreeView.js';
@@ -86,9 +87,13 @@ export class TimelineDetailsView extends UI.Widget.VBox {
 
     this.tabbedPane = new UI.TabbedPane.TabbedPane();
     this.tabbedPane.show(this.element);
+    this.tabbedPane.headerElement().setAttribute(
+        'jslog',
+        `${VisualLogging.toolbar('sidebar').track({keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space'})}`);
 
     this.defaultDetailsWidget = new UI.Widget.VBox();
     this.defaultDetailsWidget.element.classList.add('timeline-details-view');
+    this.defaultDetailsWidget.element.setAttribute('jslog', `${VisualLogging.pane('details').track({resize: true})}`);
     this.defaultDetailsContentElement =
         this.defaultDetailsWidget.element.createChild('div', 'timeline-details-view-body vbox');
     this.appendTab(Tab.Details, i18nString(UIStrings.summary), this.defaultDetailsWidget);

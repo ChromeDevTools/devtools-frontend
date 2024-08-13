@@ -7,7 +7,6 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {
   $$,
-  enableExperiment,
   getBrowserAndPages,
   getResourcesPath,
   goTo,
@@ -19,9 +18,7 @@ import {
   waitForVisible,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {
-  navigateToPerformanceTab,
-} from '../helpers/performance-helpers.js';
+import {reloadDevTools} from '../helpers/cross-tool-helper.js';
 
 const READY_LOCAL_METRIC_SELECTOR = '#local-value .metric-value:not(.waiting)';
 const READY_FIELD_METRIC_SELECTOR = '#field-value .metric-value:not(.waiting)';
@@ -61,13 +58,11 @@ async function setCruxRawResponse(path: string) {
 
 describe('The Performance panel landing page', () => {
   beforeEach(async () => {
-    await enableExperiment('timeline-observations');
+    await reloadDevTools({selectedPanel: {name: 'timeline'}, enableExperiments: ['timeline-observations']});
   });
 
   it('displays live metrics', async () => {
     const {target, frontend} = await getBrowserAndPages();
-
-    await navigateToPerformanceTab();
 
     await target.bringToFront();
 
@@ -129,7 +124,6 @@ describe('The Performance panel landing page', () => {
       await executionContextPromise;
 
       await frontend.bringToFront();
-      await navigateToPerformanceTab();
 
       const [lcpValueElem, clsValueElem, inpValueElem] = await waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
       const interactions = await $$<HTMLElement>(INTERACTION_SELECTOR);
@@ -155,8 +149,6 @@ describe('The Performance panel landing page', () => {
 
   it('treats bfcache restoration like a regular navigation', async () => {
     const {target, frontend} = await getBrowserAndPages();
-
-    await navigateToPerformanceTab();
 
     await target.bringToFront();
 
@@ -215,8 +207,6 @@ describe('The Performance panel landing page', () => {
   });
 
   it('gets field data automatically', async () => {
-    await navigateToPerformanceTab();
-
     await setCruxRawResponse('performance/crux-none.rawresponse');
     await goToResource('performance/fake-website.html');
 
@@ -271,8 +261,6 @@ describe('The Performance panel landing page', () => {
   });
 
   it('uses URL override for field data', async () => {
-    await navigateToPerformanceTab();
-
     await setCruxRawResponse('performance/crux-valid.rawresponse');
     await goToResource('performance/fake-website.html');
 

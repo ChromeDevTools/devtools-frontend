@@ -838,7 +838,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // Record
     this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction));
     this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.recordReloadAction));
-    this.clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'clear');
+    this.clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'clear', undefined, 'timeline.clear');
     this.clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this.onClearButton());
     this.panelToolbar.appendToolbarItem(this.clearButton);
 
@@ -2119,6 +2119,7 @@ export class StatusPane extends UI.Widget.VBox {
     super(true);
 
     this.contentElement.classList.add('timeline-status-dialog');
+    this.contentElement.setAttribute('jslog', `${VisualLogging.dialog('timeline-status').track({resize: true})}`);
 
     const statusLine = this.contentElement.createChild('div', 'status-dialog-line status');
     statusLine.createChild('div', 'label').textContent = i18nString(UIStrings.status);

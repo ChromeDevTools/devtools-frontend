@@ -4,12 +4,12 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -284,6 +284,7 @@ export interface MetricCardData {
   localValue?: number;
   fieldValue?: number|string;
   histogram?: CrUXManager.MetricResponse['histogram'];
+  tooltipContainer?: HTMLElement;
 }
 
 export class MetricCard extends HTMLElement {
@@ -296,8 +297,7 @@ export class MetricCard extends HTMLElement {
     this.#render();
   }
 
-  #metricValuesEl?: Element;
-  #dialog?: Dialogs.Dialog.Dialog|null;
+  #tooltipEl?: HTMLElement;
 
   #data: MetricCardData = {
     metric: 'LCP',
@@ -314,31 +314,84 @@ export class MetricCard extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
-  #showDialog(): void {
-    if (!this.#dialog) {
+  #hideTooltipOnEsc = (event: KeyboardEvent): void => {
+    if (Platform.KeyboardUtilities.isEscKey(event)) {
+      event.stopPropagation();
+      this.#hideTooltip();
+    }
+  };
+
+  #hideTooltipOnMouseLeave(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target?.hasFocus()) {
       return;
     }
-    void this.#dialog.setDialogVisible(true);
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+
+    this.#hideTooltip();
   }
 
-  #closeDialog(event?: Event): void {
-    if (!this.#dialog || !this.#metricValuesEl) {
+  #hideTooltipOnFocusOut(event: FocusEvent): void {
+    const target = event.target as HTMLElement;
+    if (target?.hasFocus()) {
       return;
     }
 
-    if (event) {
-      const path = event.composedPath();
-      if (path.includes(this.#metricValuesEl)) {
-        return;
-      }
-      if (path.includes(this.#dialog)) {
-        return;
-      }
+    const relatedTarget = event.relatedTarget;
+    if (relatedTarget instanceof Node && target.contains(relatedTarget)) {
+      // `focusout` bubbles so we should get another event once focus leaves `relatedTarget`
+      return;
     }
 
-    void this.#dialog.setDialogVisible(false);
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+    this.#hideTooltip();
+  }
+
+  #hideTooltip(): void {
+    const tooltipEl = this.#tooltipEl;
+    if (!tooltipEl) {
+      return;
+    }
+
+    document.body.removeEventListener('keydown', this.#hideTooltipOnEsc);
+
+    tooltipEl.style.left = '';
+    tooltipEl.style.maxWidth = '';
+    tooltipEl.style.display = 'none';
+  }
+
+  #showTooltip(): void {
+    const tooltipEl = this.#tooltipEl;
+    if (!tooltipEl || tooltipEl.style.display === 'block') {
+      return;
+    }
+
+    document.body.addEventListener('keydown', this.#hideTooltipOnEsc);
+
+    tooltipEl.style.display = 'block';
+
+    const container = this.#data.tooltipContainer;
+    if (!container) {
+      return;
+    }
+
+    const containerBox = container.getBoundingClientRect();
+    tooltipEl.style.maxWidth = `${Math.round(containerBox.width)}px`;
+
+    requestAnimationFrame(() => {
+      let offset = 0;
+
+      const tooltipBox = tooltipEl.getBoundingClientRect();
+
+      const rightDiff = tooltipBox.right - containerBox.right;
+      const leftDiff = tooltipBox.left - containerBox.left;
+
+      if (leftDiff < 0) {
+        offset = Math.round(leftDiff);
+      } else if (rightDiff > 0) {
+        offset = Math.round(rightDiff);
+      }
+
+      tooltipEl.style.left = `calc(50% - ${offset}px)`;
+    });
   }
 
   #getTitle(): string {
@@ -555,13 +608,12 @@ export class MetricCard extends HTMLElement {
         <h3 class="card-title">
           ${this.#getTitle()}
         </h3>
-        <div class="card-values"
-          @mouseenter=${this.#showDialog}
-          @mouseleave=${this.#closeDialog}
-          on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
-            this.#metricValuesEl = node;
-          })}
-          aria-describedby="tooltip-content"
+        <div tabindex="0" class="card-values"
+          @mouseenter=${this.#showTooltip}
+          @mouseleave=${this.#hideTooltipOnMouseLeave}
+          @focusin=${this.#showTooltip}
+          @focusout=${this.#hideTooltipOnFocusOut}
+          aria-describedby="tooltip"
         >
           <div class="card-value-block">
             <div class="card-value" id="local-value">${renderMetricValue(this.#getLocalValue(), this.#getThresholds(), this.#getFormatFn())}</div>
@@ -573,28 +625,20 @@ export class MetricCard extends HTMLElement {
               <div class="card-value-label">${i18nString(UIStrings.field75thPercentile)}</div>
             </div>
           `: nothing}
-        </div>
-        <${Dialogs.Dialog.Dialog.litTagName}
-          @pointerleftdialog=${() => this.#closeDialog()}
-          .showConnector=${false}
-          .centered=${true}
-          .closeOnScroll=${false}
-          .origin=${() => {
-            if (!this.#metricValuesEl) {
-              throw new Error('No metric values element');
-            }
-            return this.#metricValuesEl;
-          }}
-          on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
-            this.#dialog = node as Dialogs.Dialog.Dialog;
-          })}
-        >
-          <div id="tooltip-content" class="tooltip-content" role="tooltip" aria-label=${i18nString(UIStrings.viewCardDetails)}>
+          <div
+            id="tooltip"
+            class="tooltip"
+            role="tooltip"
+            aria-label=${i18nString(UIStrings.viewCardDetails)}
+            on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
+              this.#tooltipEl = node as HTMLElement;
+            })}
+          >
             ${this.#renderDetailedCompareString()}
             <hr class="divider">
             ${this.#renderFieldHistogram()}
           </div>
-        </${Dialogs.Dialog.Dialog.litTagName}>
+        </div>
         ${fieldEnabled ? html`<hr class="divider">` : nothing}
         ${this.#renderCompareString()}
         <slot name="extra-info"><slot>
@@ -621,6 +665,8 @@ export class LiveMetricsView extends HTMLElement {
 
   #toggleRecordAction: UI.ActionRegistration.Action;
   #recordReloadAction: UI.ActionRegistration.Action;
+
+  #tooltipContainerEl?: Element;
 
   constructor() {
     super();
@@ -706,6 +752,7 @@ export class LiveMetricsView extends HTMLElement {
         localValue: this.#lcpValue?.value,
         fieldValue: fieldData?.percentiles?.p75,
         histogram: fieldData?.histogram,
+        tooltipContainer: this.#tooltipContainerEl,
       } as MetricCardData}>
         ${node ? html`
             <div class="related-element-info" slot="extra-info">
@@ -729,6 +776,7 @@ export class LiveMetricsView extends HTMLElement {
         localValue: this.#clsValue?.value,
         fieldValue: fieldData?.percentiles?.p75,
         histogram: fieldData?.histogram,
+        tooltipContainer: this.#tooltipContainerEl,
       } as MetricCardData}>
       </${MetricCard.litTagName}>
     `;
@@ -745,6 +793,7 @@ export class LiveMetricsView extends HTMLElement {
         localValue: this.#inpValue?.value,
         fieldValue: fieldData?.percentiles?.p75,
         histogram: fieldData?.histogram,
+        tooltipContainer: this.#tooltipContainerEl,
       } as MetricCardData}>
       </${MetricCard.litTagName}>
     `;
@@ -1097,9 +1146,14 @@ export class LiveMetricsView extends HTMLElement {
     const output = html`
       <div class="container">
         <div class="live-metrics-view">
-          <main class="live-metrics">
+          <main class="live-metrics"
+          >
             <h2 class="section-title">${liveMetricsTitle}</h2>
-            <div class="metric-cards">
+            <div class="metric-cards"
+              on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
+                this.#tooltipContainerEl = node;
+              })}
+            >
               <div id="lcp">
                 ${this.#renderLcpCard()}
               </div>

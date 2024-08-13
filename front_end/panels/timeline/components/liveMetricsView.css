@@ -136,6 +136,7 @@
 }
 
 .card-values {
+  position: relative;
   display: flex;
   column-gap: 8px;
   margin-bottom: 8px;
@@ -262,6 +263,7 @@
   align-items: center;
   flex: 1;
   margin-top: 8px;
+  overflow-x: auto;
 }
 
 .histogram-bar {
@@ -314,10 +316,19 @@
   color: var(--sys-color-token-subtle);
 }
 
-.tooltip-content {
-  margin: 0 12px;
-  min-width: min-content;
-  width: 300px;
+.tooltip {
+  display: none;
+  width: min-content;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  box-sizing: border-box;
+  padding: var(--sys-size-5) var(--sys-size-6);
+  border-radius: var(--sys-shape-corner-small);
+  background-color: var(--sys-color-cdt-base-container);
+  box-shadow: var(--drop-shadow-depth-3);
 }
 
 .detailed-compare-text {

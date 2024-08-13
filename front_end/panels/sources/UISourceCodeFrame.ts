@@ -106,11 +106,11 @@ export class UISourceCodeFrame extends
     this.initializeUISourceCode();
   }
 
-  private async workingCopy(): Promise<TextUtils.ContentProvider.DeferredContent> {
+  private async workingCopy(): Promise<TextUtils.ContentData.ContentDataOrError> {
     if (this.uiSourceCodeInternal.isDirty()) {
-      return {content: this.uiSourceCodeInternal.workingCopy(), isEncoded: false};
+      return this.uiSourceCodeInternal.workingCopyContentData();
     }
-    return this.uiSourceCodeInternal.requestContent();
+    return this.uiSourceCodeInternal.requestContentData();
   }
 
   protected override editorConfiguration(doc: string): CodeMirror.Extension {

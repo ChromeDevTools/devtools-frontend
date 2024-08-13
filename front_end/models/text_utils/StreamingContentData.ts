@@ -5,8 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
-import {ContentData} from './ContentData.js';
-import {type DeferredContent} from './ContentProvider.js';
+import {ContentData, type ContentDataOrError} from './ContentData.js';
 
 /**
  * Usage of this class is mostly intended for content that is never "complete".
@@ -89,11 +88,11 @@ error:
   return 'error' in contentDataOrError;
 };
 
-export const asDeferredContent = function(contentDataOrError: StreamingContentDataOrError): DeferredContent {
+export const asContentDataOrError = function(contentDataOrError: StreamingContentDataOrError): ContentDataOrError {
   if (isError(contentDataOrError)) {
-    return {error: contentDataOrError.error, content: null, isEncoded: false};
+    return contentDataOrError;
   }
-  return contentDataOrError.content().asDeferedContent();
+  return contentDataOrError.content();
 };
 
 export const enum Events {

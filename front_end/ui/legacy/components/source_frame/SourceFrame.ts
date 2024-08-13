@@ -146,7 +146,7 @@ export const LINE_NUMBER_FORMATTER = CodeMirror.Facet.define<FormatFn, FormatFn>
 
 export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.View.SimpleView>(
     UI.View.SimpleView) implements UI.SearchableView.Searchable, UI.SearchableView.Replaceable, Transformer {
-  private readonly lazyContent: () => Promise<TextUtils.ContentProvider.DeferredContent>;
+  private readonly lazyContent: () => Promise<TextUtils.ContentData.ContentDataOrError>;
   private prettyInternal: boolean;
   private rawContent: string|CodeMirror.Text|null;
   private formattedMap: Formatter.ScriptFormatter.FormatterSourceMapping|null;
@@ -181,7 +181,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   private selfXssWarningDisabledSetting: Common.Settings.Setting<boolean>;
 
   constructor(
-      lazyContent: () => Promise<TextUtils.ContentProvider.DeferredContent>,
+      lazyContent: () => Promise<TextUtils.ContentData.ContentDataOrError>,
       private readonly options: SourceFrameOptions = {}) {
     super(i18nString(UIStrings.source));
 
@@ -537,7 +537,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   private async ensureContentLoaded(): Promise<void> {
     if (!this.contentRequested) {
       this.contentRequested = true;
-      await this.setDeferredContent(this.lazyContent());
+      await this.setDeferredContent(this.lazyContent().then(TextUtils.ContentData.ContentData.asDeferredContent));
 
       this.contentSet = true;
     }

@@ -39,7 +39,7 @@ const UIStrings = {
   /**
    * @description Text label for a checkbox that controls if a manual URL override is enabled for field data.
    */
-  onlyFetchFieldData: 'Only fetch field data for the below URL',
+  onlyFetchFieldData: 'Always show field data for the below URL',
   /**
    * @description Text label for a text box that that contains the manual override URL for fetching field data.
    */
@@ -74,7 +74,7 @@ const UIStrings = {
   /**
    * @description Paragraph explaining that the user can associate a development origin with a production origin for the purposes of fetching real user data.
    */
-  mapDevelopmentOrigins: 'Map development origins to production origins.',
+  mapDevelopmentOrigins: 'Set a development origin to automatically get relevant field data for its production origin.',
   /**
    * @description Title for a column in a data table representing a site origin used for development
    */
@@ -417,17 +417,19 @@ export class FieldSettingsDialog extends HTMLElement {
             value: i18nString(UIStrings.delete),
             // clang-format off
             renderer: value => html`
-              <${Buttons.Button.Button.litTagName}
-                class="delete-mapping"
-                .data=${{
-                  variant: Buttons.Button.Variant.ICON,
-                  size: Buttons.Button.Size.SMALL,
-                  title: value,
-                  iconName: 'bin',
-                  jslogContext: 'delete-origin-mapping',
-                } as Buttons.Button.ButtonData}
-                @click=${() => this.#deleteOriginMapping(index)}
-              ></${Buttons.Button.Button.litTagName}>
+              <div style="display: flex; align-items: center; justify-content: center;">
+                <${Buttons.Button.Button.litTagName}
+                  class="delete-mapping"
+                  .data=${{
+                    variant: Buttons.Button.Variant.ICON,
+                    size: Buttons.Button.Size.SMALL,
+                    title: value,
+                    iconName: 'bin',
+                    jslogContext: 'delete-origin-mapping',
+                  } as Buttons.Button.ButtonData}
+                  @click=${() => this.#deleteOriginMapping(index)}
+                ></${Buttons.Button.Button.litTagName}>
+              </div>
             `,
             // clang-format on
           },
@@ -478,20 +480,24 @@ export class FieldSettingsDialog extends HTMLElement {
           {
             columnId: 'action-button',
             value: i18nString(UIStrings.add),
+            // clang-format off
             renderer: value => html`
-              <${Buttons.Button.Button.litTagName}
-                id="add-mapping-button"
-                .data=${{
-              variant: Buttons.Button.Variant.ICON,
-              size: Buttons.Button.Size.SMALL,
-              title: value,
-              iconName: 'plus',
-              disabled: !this.#editGridDevelopmentOrigin || !this.#editGridProductionOrigin,
-              jslogContext: 'add-origin-mapping',
-            } as Buttons.Button.ButtonData}
-                @click=${() => this.#addOriginMapping()}
-              ></${Buttons.Button.Button.litTagName}>
+              <div style="display: flex; align-items: center; justify-content: center;">
+                <${Buttons.Button.Button.litTagName}
+                  id="add-mapping-button"
+                  .data=${{
+                    variant: Buttons.Button.Variant.ICON,
+                    size: Buttons.Button.Size.SMALL,
+                    title: value,
+                    iconName: 'plus',
+                    disabled: !this.#editGridDevelopmentOrigin || !this.#editGridProductionOrigin,
+                    jslogContext: 'add-origin-mapping',
+                  } as Buttons.Button.ButtonData}
+                  @click=${() => this.#addOriginMapping()}
+                ></${Buttons.Button.Button.litTagName}>
+              </div>
             `,
+            // clang-format on
           },
         ],
       });
@@ -599,7 +605,7 @@ export class FieldSettingsDialog extends HTMLElement {
                 @change=${this.#onUrlOverrideChange}
                 class="devtools-text-input"
                 .disabled=${!this.#urlOverrideEnabled}
-                placeholder=${i18nString(UIStrings.url)}
+                placeholder=${this.#urlOverrideEnabled ? i18nString(UIStrings.url) : undefined}
               />
               ${
                 this.#urlOverrideWarning

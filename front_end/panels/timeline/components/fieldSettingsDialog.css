@@ -13,7 +13,7 @@
 }
 
 devtools-dialog {
-  --override-transparent: rgb(0 0 0 / 50%);
+  --override-transparent: color-mix(in sRGB, var(--color-background) 80%, transparent);
 }
 
 .title {

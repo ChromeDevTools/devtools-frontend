@@ -30,16 +30,16 @@ const UIStrings = {
    * @description Message shown to the user if the DevTools locale is not
    * supported.
    */
-  wrongLocale: 'To use this feature, update your Language preference in DevTools Settings to English.',
+  wrongLocale: 'To use this feature, update your Language preference in DevTools Settings to English',
   /**
    * @description Message shown to the user if the age check is not successful.
    */
-  ageRestricted: 'This feature is only available to users who are 18 years of age or older.',
+  ageRestricted: 'This feature is only available to users who are 18 years of age or older',
   /**
    * @description Message shown to the user if the user's region is not
    * supported.
    */
-  geoRestricted: 'This feature is unavailable in your region.',
+  geoRestricted: 'This feature is unavailable in your region',
   /**
    * @description Message shown to the user if the enterprise policy does
    * not allow this feature.

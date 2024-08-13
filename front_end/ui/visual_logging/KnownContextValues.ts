@@ -1183,6 +1183,7 @@ export const knownContextValues = new Set([
   'freestyler-enabled',
   'freestyler.accordion',
   'freestyler.clear',
+  'freestyler.dogfood-info',
   'freestyler.element-panel-context',
   'freestyler.feedback',
   'freestyler.style-tab-context',

@@ -8,6 +8,7 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import provideFeedbackStyles from './provideFeedback.css.js';
 
@@ -190,6 +191,7 @@ export class ProvideFeedback extends HTMLElement {
           placeholder=${i18nString(
            UIStringsTemp.provideFeedbackPlaceholder,
           )}
+          jslog=${VisualLogging.textField('feedback').track({ keydown: 'Enter' })}
         >
         <span class="feedback-disclaimer">${
           i18nString(UIStringsTemp.disclaimer)

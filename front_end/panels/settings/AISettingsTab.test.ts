@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import * as Switch from '../../ui/components/switch/switch.js';
 
 import * as Settings from './settings.js';
 
@@ -14,7 +15,7 @@ describeWithEnvironment('AISettingsTab', () => {
   }
 
   async function renderAISettings(): Promise<{
-    checkboxes: HTMLElement[],
+    switches: Element[],
     details: Element[],
     dropdownButtons: Element[],
   }> {
@@ -26,13 +27,13 @@ describeWithEnvironment('AISettingsTab', () => {
     await view.render();
     assert.isNotNull(view.shadowRoot);
 
-    const checkboxes = Array.from(view.shadowRoot.querySelectorAll('input'));
-    assert.strictEqual(checkboxes.length, 2);
+    const switches = Array.from(view.shadowRoot.querySelectorAll('devtools-switch'));
+    assert.strictEqual(switches.length, 2);
     const details = Array.from(view.shadowRoot.querySelectorAll('.whole-row'));
     assert.strictEqual(details.length, 2);
     const dropdownButtons = Array.from(view.shadowRoot.querySelectorAll('.dropdown devtools-button'));
     assert.strictEqual(dropdownButtons.length, 2);
-    return {checkboxes, details, dropdownButtons};
+    return {switches, details, dropdownButtons};
   }
 
   it('renders', async () => {
@@ -53,11 +54,11 @@ describeWithEnvironment('AISettingsTab', () => {
   });
 
   it('can turn feature on, which automatically expands it', async () => {
-    const {checkboxes, details} = await renderAISettings();
+    const {switches, details} = await renderAISettings();
     assert.isFalse(Common.Settings.moduleSetting('console-insights-enabled').get());
     assert.isFalse(isExpanded(details[0]));
 
-    checkboxes[0].click();
+    switches[0].dispatchEvent(new Switch.Switch.SwitchChangeEvent(true));
     assert.isTrue(Common.Settings.moduleSetting('console-insights-enabled').get());
     assert.isTrue(isExpanded(details[0]));
   });
@@ -77,12 +78,12 @@ describeWithEnvironment('AISettingsTab', () => {
   });
 
   it('can turn feature off without collapsing it', async () => {
-    const {checkboxes, details, dropdownButtons} = await renderAISettings();
+    const {switches, details, dropdownButtons} = await renderAISettings();
     (dropdownButtons[1] as HTMLElement).click();
     assert.isTrue(Common.Settings.moduleSetting('freestyler-enabled').get());
     assert.isTrue(isExpanded(details[1]));
 
-    checkboxes[1].click();
+    (switches[1].parentElement as HTMLElement).click();
     assert.isFalse(Common.Settings.moduleSetting('freestyler-enabled').get());
     assert.isTrue(isExpanded(details[1]));
   });

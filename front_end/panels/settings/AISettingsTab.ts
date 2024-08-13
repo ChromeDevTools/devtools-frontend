@@ -8,6 +8,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import * as Switch from '../../ui/components/switch/switch.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -169,7 +170,12 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     void this.render();
   }
 
-  #onConsoleInsightsToggled(): void {
+  #toggleConsoleInsightsSetting(ev: Event): void {
+    // If the switch is being clicked, there is both a click- and a
+    // change-event. Aborting on click avoids running this method twice.
+    if (ev.target instanceof Switch.Switch.Switch && ev.type !== Switch.Switch.SwitchChangeEvent.eventName) {
+      return;
+    }
     if (!this.#consoleInsightsSetting) {
       return;
     }
@@ -188,7 +194,12 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     void this.render();
   }
 
-  #onFreestylerToggled(): void {
+  #toggleFreestylerSetting(ev: Event): void {
+    // If the switch is being clicked, there is both a click- and a
+    // change-event. Aborting on click avoids running this method twice.
+    if (ev.target instanceof Switch.Switch.Switch && ev.type !== Switch.Switch.SwitchChangeEvent.eventName) {
+      return;
+    }
     if (!this.#freestylerSetting) {
       return;
     }
@@ -296,14 +307,12 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
         </div>
       </div>
       <div class="divider"></div>
-      <div class="toggle-container centered" @click=${this.#onConsoleInsightsToggled.bind(this)}>
-        <input
-          type="checkbox"
+      <div class="toggle-container centered" @click=${this.#toggleConsoleInsightsSetting.bind(this)}>
+        <${Switch.Switch.Switch.litTagName}
           .checked=${this.#consoleInsightsSetting?.get()}
-          jslog=${VisualLogging.toggle(this.#consoleInsightsSetting?.name).track({
-            change: true,
-          })}
-        />
+          .jslogContext=${this.#consoleInsightsSetting?.name}
+          @switchchange=${this.#toggleConsoleInsightsSetting.bind(this)}
+        ></${Switch.Switch.Switch.litTagName}>
       </div>
       <div class=${LitHtml.Directives.classMap(detailsClasses)}>
         <div class="overflow-hidden">
@@ -384,14 +393,12 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
         </div>
       </div>
       <div class="divider"></div>
-      <div class="toggle-container centered" @click=${this.#onFreestylerToggled.bind(this)}>
-        <input
-          type="checkbox"
+      <div class="toggle-container centered" @click=${this.#toggleFreestylerSetting.bind(this)}>
+        <${Switch.Switch.Switch.litTagName}
           .checked=${this.#freestylerSetting?.get()}
-          jslog=${VisualLogging.toggle(this.#freestylerSetting?.name).track({
-            change: true,
-          })}
-        />
+          .jslogContext=${this.#freestylerSetting?.name}
+          @switchchange=${this.#toggleFreestylerSetting.bind(this)}
+        ></${Switch.Switch.Switch.litTagName}>
       </div>
       <div class=${LitHtml.Directives.classMap(detailsClasses)}>
         <div class="overflow-hidden">

@@ -561,6 +561,7 @@ export const knownContextValues = new Set([
   'console-history-autocomplete-false',
   'console-insights',
   'console-insights-enabled',
+  'console-insights-setting',
   'console-insights.accordion',
   'console-message',
   'console-pins',

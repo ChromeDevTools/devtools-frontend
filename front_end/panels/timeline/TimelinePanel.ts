@@ -1091,21 +1091,25 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
   }
 
-  async showHistory(): Promise<void> {
+  async showHistoryDropdown(): Promise<void> {
     const recordingData = await this.#historyManager.showHistoryDropDown();
-    this.#saveModificationsForActiveTrace();
     if (recordingData) {
-      this.#changeView({
-        mode: 'VIEWING_TRACE',
-        traceIndex: recordingData.traceParseDataIndex,
-      });
+      if (recordingData.type === 'LANDING_PAGE') {
+        this.#changeView({mode: 'LANDING_PAGE'});
+      } else {
+        this.#changeView({
+          mode: 'VIEWING_TRACE',
+          traceIndex: recordingData.traceParseDataIndex,
+        });
+      }
     }
   }
 
   navigateHistory(direction: number): boolean {
-    this.#saveModificationsForActiveTrace();
     const recordingData = this.#historyManager.navigate(direction);
-    if (recordingData) {
+    // When navigating programatically, you cannot navigate to the landing page
+    // view, so we can discount that possibility here.
+    if (recordingData && recordingData.type === 'TRACE_INDEX') {
       this.#changeView({
         mode: 'VIEWING_TRACE',
         traceIndex: recordingData.traceParseDataIndex,
@@ -1376,7 +1380,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   private async startRecording(): Promise<void> {
-    this.#saveModificationsForActiveTrace();
     console.assert(!this.statusPane, 'Status pane is already opened.');
     this.setState(State.StartPending);
     this.showRecordingStarted();
@@ -1838,6 +1841,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.#historyManager.addRecording({
         data: {
           traceParseDataIndex: traceIndex,
+          type: 'TRACE_INDEX',
         },
         filmStripForPreview: TraceEngine.Extras.FilmStrip.fromTraceData(traceData),
         traceParsedData: traceData,
@@ -2304,7 +2308,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
         panel.jumpToFrame(1);
         return true;
       case 'timeline.show-history':
-        void panel.showHistory();
+        void panel.showHistoryDropdown();
         return true;
       case 'timeline.previous-recording':
         panel.navigateHistory(1);

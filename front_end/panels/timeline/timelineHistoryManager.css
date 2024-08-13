@@ -40,8 +40,8 @@
 
 .text-details > span {
   flex: 1 0;
-  padding-left: 8px;
-  padding-right: 8px;
+  padding-left: var(--sys-size-5);
+  padding-right: var(--sys-size-5);
 }
 
 .text-details .name {
@@ -64,4 +64,11 @@
   margin: auto;
   max-width: 100%;
   max-height: 100%;
+}
+
+.landing-page-item {
+  font: var(--sys-typescale-body4-regular);
+  display: flex;
+  align-items: center;
+  gap: var(--sys-size-5);
 }

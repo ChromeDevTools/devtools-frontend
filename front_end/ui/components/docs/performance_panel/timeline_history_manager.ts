@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Root from '../../../../core/root/root.js';
 import * as TraceEngine from '../../../../models/trace/trace.js';
 import * as Timeline from '../../../../panels/timeline/timeline.js';
 import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
@@ -11,6 +12,8 @@ import * as ComponentSetup from '../../helpers/helpers.js';
 
 await FrontendHelpers.initializeGlobalVars();
 await ComponentSetup.ComponentServerSetup.setup();
+
+Root.Runtime.experiments.setEnabled(Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS, true);
 
 UI.ActionRegistration.registerActionExtension({
   actionId: 'timeline.show-history',
@@ -29,6 +32,7 @@ TraceLoader.TraceLoader.initTraceBoundsManager(traceParsedData1);
 new Timeline.TimelineHistoryManager.TimelineHistoryManager().addRecording({
   data: {
     traceParseDataIndex: 0,
+    type: 'TRACE_INDEX',
   },
   filmStripForPreview: TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData1),
   traceParsedData: traceParsedData1,
@@ -45,6 +49,7 @@ if (!container) {
 new Timeline.TimelineHistoryManager.TimelineHistoryManager().addRecording({
   data: {
     traceParseDataIndex: 1,
+    type: 'TRACE_INDEX',
   },
   filmStripForPreview: TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData2),
   traceParsedData: traceParsedData2,

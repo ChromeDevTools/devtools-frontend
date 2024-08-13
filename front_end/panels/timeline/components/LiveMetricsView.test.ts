@@ -152,12 +152,6 @@ describeWithMockConnection('LiveMetricsView', () => {
     });
 
     const dummyStorage = new Common.Settings.SettingsStorage({});
-    Common.Settings.registerSettingExtension({
-      category: Common.Settings.SettingCategory.MOBILE,
-      settingName: 'emulation.show-device-outline',
-      settingType: Common.Settings.SettingType.BOOLEAN,
-      defaultValue: false,
-    });
     Common.Settings.Settings.instance({
       forceNew: true,
       syncedStorage: dummyStorage,
@@ -392,7 +386,11 @@ describeWithMockConnection('LiveMetricsView', () => {
       assert.match(deviceRec!.innerText, /desktop/);
 
       const fieldMessage = getFieldMessage(view);
-      assert.strictEqual(fieldMessage!.innerText, 'Collection period: Jan 1, 2024 - Jan 29, 2024');
+      // We can't match the exact string because we format the dates based on
+      // locale, so the exact format depends based on where the SWE or bots who
+      // run these tests are!
+      // We expect it to say something like Jan 1 - Jan 29 2024.
+      assert.match(fieldMessage!.innerText, /Jan.+2024/);
 
       const dataDescriptions = getDataDescriptions(view);
       assert.match(dataDescriptions.innerText, /local metrics/);

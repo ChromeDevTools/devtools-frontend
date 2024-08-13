@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Root from '../../core/root/root.js';
 import {
   describeWithEnvironment,
   registerNoopActions,
@@ -20,6 +21,107 @@ describeWithEnvironment('TimelineHistoryManager', function() {
 
   afterEach(() => {
     UI.ActionRegistry.ActionRegistry.reset();
+    Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS);
+  });
+
+  it('shows the dropdown including a landing page link if the observations experiment is enabled', async function() {
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS);
+    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    historyManager.addRecording(
+        {
+          data: {
+            traceParseDataIndex: 1,
+            type: 'TRACE_INDEX',
+          },
+          filmStripForPreview: null,
+          traceParsedData: traceData,
+          startTime: null,
+        },
+    );
+
+    const showPromise = historyManager.showHistoryDropDown();
+    const glassPane = document.querySelector('div[data-devtools-glass-pane]');
+    const dropdown =
+        glassPane?.shadowRoot?.querySelector('.widget')?.shadowRoot?.querySelector<HTMLElement>('.drop-down');
+    assert.isOk(dropdown);
+
+    const menuItemText = Array.from(dropdown.querySelectorAll<HTMLDivElement>('[role="menuitem"]'), elem => {
+      return elem.innerText.replaceAll('\n', '');
+    });
+    assert.deepEqual(menuItemText, ['Local metrics', 'web.dev5.39 s']);
+
+    // Cancel the dropdown, which also resolves the show() promise, meaning we
+    // don't leak it into other tests.
+    historyManager.cancelIfShowing();
+    await showPromise;
+  });
+
+  it('does not show if observations experiment is disabled + the user has not imported 2 traces', async function() {
+    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    historyManager.addRecording(
+        {
+          data: {
+            traceParseDataIndex: 1,
+            type: 'TRACE_INDEX',
+          },
+          filmStripForPreview: null,
+          traceParsedData: traceData,
+          startTime: null,
+        },
+    );
+
+    const promise = historyManager.showHistoryDropDown();
+    const glassPane = document.querySelector('div[data-devtools-glass-pane]');
+    assert.isNull(glassPane);  // check that no DOM for the dropdown got created
+    // check the result of calling showHistoryDropDown which should be `null` if it didn't show
+    const result = await promise;
+    assert.isNull(result);
+  });
+
+  it('does not show the landing page link if the observations experiment is disabled', async function() {
+    const {traceData: traceData1} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    historyManager.addRecording(
+        {
+          data: {
+            traceParseDataIndex: 1,
+            type: 'TRACE_INDEX',
+          },
+          filmStripForPreview: null,
+          traceParsedData: traceData1,
+          startTime: null,
+        },
+    );
+    const {traceData: traceData2} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
+    historyManager.addRecording(
+        {
+          data: {
+            traceParseDataIndex: 2,
+            type: 'TRACE_INDEX',
+          },
+          filmStripForPreview: null,
+          traceParsedData: traceData2,
+          startTime: null,
+        },
+    );
+
+    const showPromise = historyManager.showHistoryDropDown();
+    const glassPane = document.querySelector('div[data-devtools-glass-pane]');
+    const dropdown =
+        glassPane?.shadowRoot?.querySelector('.widget')?.shadowRoot?.querySelector<HTMLElement>('.drop-down');
+    assert.isOk(dropdown);
+
+    const menuItemText = Array.from(dropdown.querySelectorAll<HTMLDivElement>('[role="menuitem"]'), elem => {
+      return elem.innerText.replaceAll('\n', '');
+    });
+    assert.deepEqual(menuItemText, [
+      'localhost3.16 s',
+      'web.dev5.39 s',
+    ]);
+
+    // Cancel the dropdown, which also resolves the show() promise, meaning we
+    // don't leak it into other tests.
+    historyManager.cancelIfShowing();
+    await showPromise;
   });
 
   it('can select from multiple parsed data objects', async function() {
@@ -29,6 +131,7 @@ describeWithEnvironment('TimelineHistoryManager', function() {
         {
           data: {
             traceParseDataIndex: 1,
+            type: 'TRACE_INDEX',
           },
           filmStripForPreview: null,
           traceParsedData: trace1Data,
@@ -40,6 +143,7 @@ describeWithEnvironment('TimelineHistoryManager', function() {
     historyManager.addRecording({
       data: {
         traceParseDataIndex: 2,
+        type: 'TRACE_INDEX',
       },
       filmStripForPreview: null,
       traceParsedData: trace2Data,

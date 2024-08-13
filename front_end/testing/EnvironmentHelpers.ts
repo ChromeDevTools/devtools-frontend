@@ -291,6 +291,9 @@ export async function initializeGlobalVars({reset = true} = {}) {
         Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
         Common.Settings.SettingCategory.CONSOLE, 'freestyler-enabled', false, Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.MOBILE, 'emulation.show-device-outline', false,
+        Common.Settings.SettingType.BOOLEAN),
   ];
 
   Common.Settings.registerSettingsForTest(settings, reset);

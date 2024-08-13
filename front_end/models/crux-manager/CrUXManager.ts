@@ -145,6 +145,10 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     return this.#configSetting;
   }
 
+  isEnabled(): boolean {
+    return this.#configSetting.get().enabled;
+  }
+
   async getFieldDataForPage(pageUrl: string): Promise<PageResult> {
     const pageResult: PageResult = {
       'origin-ALL': null,

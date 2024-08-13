@@ -110,6 +110,14 @@ describeWithMockConnection('CrUXManager', () => {
     });
   });
 
+  it('isEnabled() returns if the user has consented)', async () => {
+    const manager = CrUXManager.CrUXManager.instance({forceNew: true});
+    manager.getConfigSetting().set({enabled: true, override: ''});
+    assert.isTrue(manager.isEnabled());
+    manager.getConfigSetting().set({enabled: false, override: ''});
+    assert.isFalse(manager.isEnabled());
+  });
+
   describe('getFieldDataForPage', () => {
     it('should request data for all scopes', async () => {
       mockFetch.callsFake(async () => new Response(JSON.stringify(mockResponse()), {

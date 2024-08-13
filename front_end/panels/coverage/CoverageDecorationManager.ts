@@ -130,10 +130,9 @@ export class CoverageDecorationManager {
   }
 
   private async updateTextForProvider(contentProvider: TextUtils.ContentProvider.ContentProvider): Promise<void> {
-    const contentData = await contentProvider.requestContentData();
-    const text =
-        TextUtils.ContentData.ContentData.isError(contentData) ? new TextUtils.Text.Text('') : contentData.textObj;
-    this.textByProvider.set(contentProvider, text);
+    const contentData =
+        TextUtils.ContentData.ContentData.contentDataOrEmpty(await contentProvider.requestContentData());
+    this.textByProvider.set(contentProvider, contentData.textObj);
   }
 
   private async rawLocationsForSourceLocation(

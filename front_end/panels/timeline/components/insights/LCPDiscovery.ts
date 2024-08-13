@@ -25,6 +25,7 @@ const UIStrings = {
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/LCPDiscovery.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 interface LCPImageDiscoveryData {
   shouldIncreasePriorityHint: boolean;
@@ -121,8 +122,38 @@ export class LCPDiscovery extends BaseInsight {
   }
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    // TODO: create overlays
-    return [];
+    const imageResults = getImageData(this.data.insights, this.data.navigationId);
+    if (!imageResults || !imageResults.discoveryDelay) {
+      return [];
+    }
+
+    const delay = TraceEngine.Helpers.Timing.traceWindowFromMicroSeconds(
+        TraceEngine.Types.Timing.MicroSeconds(imageResults.resource.ts - imageResults.discoveryDelay),
+        imageResults.resource.ts,
+    );
+
+    const delayMs = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(delay.range);
+
+    return [
+      {
+        type: 'ENTRY_OUTLINE',
+        entry: imageResults.resource,
+        outlineReason: 'ERROR',
+      },
+      {
+        type: 'CANDY_STRIPED_TIME_RANGE',
+        bounds: delay,
+        entry: imageResults.resource,
+      },
+      {
+        type: 'TIMESPAN_BREAKDOWN',
+        sections: [{
+          bounds: delay,
+          label: i18nString(UIStrings.lcpLoadDelay, {PH1: i18n.TimeUtilities.preciseMillisToString(delayMs, 2)}),
+        }],
+        entry: imageResults.resource,
+      },
+    ];
   }
 
   #renderDiscovery(imageData: LCPImageDiscoveryData): LitHtml.TemplateResult {

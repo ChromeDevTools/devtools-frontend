@@ -29,8 +29,17 @@ function stackTraceForEvent(event: Types.TraceEvents.TraceEventData): Types.Trac
   if (event.args?.data?.stackTrace) {
     return event.args.data.stackTrace;
   }
+  if (event.args?.stackTrace) {
+    return event.args.stackTrace;
+  }
   if (Types.TraceEvents.isTraceEventUpdateLayoutTree(event)) {
     return event.args.beginData?.stackTrace || null;
+  }
+  if (Types.Extensions.isSyntheticExtensionEntry(event)) {
+    return stackTraceForEvent(event.rawSourceEvent);
+  }
+  if (Types.TraceEvents.isSyntheticUserTiming(event)) {
+    return stackTraceForEvent(event.rawSourceEvent);
   }
   return null;
 }
@@ -388,17 +397,32 @@ export function getZeroIndexedStackTraceForEvent(event: Types.TraceEvents.TraceE
     return null;
   }
   return stack.map(callFrame => {
-    const normalizedCallFrame = {...callFrame};
     switch (event.name) {
       case Types.TraceEvents.KnownEventName.ScheduleStyleRecalculation:
       case Types.TraceEvents.KnownEventName.InvalidateLayout:
       case Types.TraceEvents.KnownEventName.UpdateLayoutTree: {
-        normalizedCallFrame.lineNumber = callFrame.lineNumber && callFrame.lineNumber - 1;
-        normalizedCallFrame.columnNumber = callFrame.columnNumber && callFrame.columnNumber - 1;
+        return makeZeroBasedCallFrame(callFrame);
+      }
+      default: {
+        if (Types.TraceEvents.isTraceEventUserTiming(event) || Types.Extensions.isSyntheticExtensionEntry(event)) {
+          return makeZeroBasedCallFrame(callFrame);
+        }
       }
     }
-    return normalizedCallFrame;
+    return callFrame;
   });
+}
+
+/**
+ * Given a 1-based call frame creates a 0-based one.
+ */
+export function makeZeroBasedCallFrame(callFrame: Types.TraceEvents.TraceEventCallFrame):
+    Types.TraceEvents.TraceEventCallFrame {
+  const normalizedCallFrame = {...callFrame};
+
+  normalizedCallFrame.lineNumber = callFrame.lineNumber && callFrame.lineNumber - 1;
+  normalizedCallFrame.columnNumber = callFrame.columnNumber && callFrame.columnNumber - 1;
+  return normalizedCallFrame;
 }
 
 /**

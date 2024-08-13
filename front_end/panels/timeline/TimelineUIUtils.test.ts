@@ -538,7 +538,6 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
 
     it('renders invalidations correctly', async function() {
-      // const {traceData} = await TraceLoader.allModels(this, 'style-invalidation-change-attribute.json.gz');
       const {traceData} = await TraceLoader.traceEngine(this, 'style-invalidation-change-attribute.json.gz');
       TraceLoader.initTraceBoundsManager(traceData);
 
@@ -782,6 +781,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
               value: 'This is a child task',
             },
             {title: 'Tip', value: 'Do something about it'},
+            {'title': undefined, 'value': 'appendACorgi @ localhost:3000/static/js/bundle.js:274:19'},
           ],
       );
     });
@@ -808,6 +808,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
               title: 'Description',
               value: 'This marks the start of a task',
             },
+            {'title': undefined, 'value': 'mockChangeDetection @ localhost:3000/static/js/bundle.js:295:17'},
           ],
       );
     });
@@ -915,7 +916,85 @@ describeWithMockConnection('TimelineUIUtils', function() {
           ['(anonymous) @ web.dev/js/app.js?v=1423cda3:1:183'],
       );
     });
+    it('renders the stack trace of extension entries properly', async function() {
+      Common.Linkifier.registerLinkifier({
+        contextTypes() {
+          return [Timeline.CLSLinkifier.CLSRect];
+        },
+        async loadLinkifier() {
+          return Timeline.CLSLinkifier.Linkifier.instance();
+        },
+      });
 
+      const {traceData} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
+      TraceLoader.initTraceBoundsManager(traceData);
+      const [extensionMarker] = traceData.ExtensionTraceData.extensionMarkers.values();
+      const [extensionTrackData] = traceData.ExtensionTraceData.extensionTrackData.values();
+      const [[extensionTrackEntry]] = Object.values(extensionTrackData.entriesByTrack);
+
+      const markerDetails = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          traceData,
+          extensionMarker,
+          new Components.Linkifier.Linkifier(),
+          false,
+      );
+      const markerStackTraceData = getStackTraceForDetailsElement(markerDetails);
+      assert.deepEqual(
+          markerStackTraceData,
+          ['mockChangeDetection @ localhost:3000/static/js/bundle.js:295:17'],
+      );
+
+      const trackEntryDetails = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          traceData,
+          extensionTrackEntry,
+          new Components.Linkifier.Linkifier(),
+          false,
+      );
+      const trackEntryStackTraceData = getStackTraceForDetailsElement(trackEntryDetails);
+      assert.deepEqual(
+          trackEntryStackTraceData,
+          ['appendACorgi @ localhost:3000/static/js/bundle.js:274:19'],
+      );
+    });
+    it('renders the stack trace of user timings properly', async function() {
+      Common.Linkifier.registerLinkifier({
+        contextTypes() {
+          return [Timeline.CLSLinkifier.CLSRect];
+        },
+        async loadLinkifier() {
+          return Timeline.CLSLinkifier.Linkifier.instance();
+        },
+      });
+
+      const {traceData} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
+      TraceLoader.initTraceBoundsManager(traceData);
+      const [performanceMark] = traceData.UserTimings.performanceMarks.values();
+      const [performanceMeasure] = traceData.UserTimings.performanceMeasures.values();
+
+      const markDetails = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          traceData,
+          performanceMark,
+          new Components.Linkifier.Linkifier(),
+          false,
+      );
+      const markStackTraceData = getStackTraceForDetailsElement(markDetails);
+      assert.deepEqual(
+          markStackTraceData,
+          ['addTimingMark @ chromedevtools.github.io/performance-stories/user-timings/app.js:2:1'],
+      );
+
+      const measureDetails = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          traceData,
+          performanceMeasure,
+          new Components.Linkifier.Linkifier(),
+          false,
+      );
+      const measureStackTraceData = getStackTraceForDetailsElement(measureDetails);
+      assert.deepEqual(
+          measureStackTraceData,
+          ['addTimingMeasure @ chromedevtools.github.io/performance-stories/user-timings/app.js:2:1'],
+      );
+    });
     it('renders the warning for a trace event in its details', async function() {
       const {traceData} = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');
 

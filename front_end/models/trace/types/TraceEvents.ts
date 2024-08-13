@@ -87,6 +87,7 @@ export interface TraceEventData {
 
 export interface TraceEventArgs {
   data?: TraceEventArgsData;
+  stackTrace?: TraceEventCallFrame[];
 }
 
 export interface TraceEventArgsData {
@@ -1175,6 +1176,7 @@ export type TraceEventPairableUserTiming = TraceEventUserTiming&TraceEventPairab
 export interface TraceEventPerformanceMeasureBegin extends TraceEventPairableUserTiming {
   args: TraceEventArgs&{
     detail?: string,
+    stackTrace?: TraceEventCallFrame[],
   };
   ph: Phase.ASYNC_NESTABLE_START;
 }
@@ -1186,6 +1188,7 @@ export interface TraceEventPerformanceMark extends TraceEventUserTiming {
   args: TraceEventArgs&{
     data?: TraceEventArgsData & {
       detail?: string,
+      stackTrace?: TraceEventCallFrame[],
     },
   };
   ph: Phase.INSTANT|Phase.MARK|Phase.ASYNC_NESTABLE_INSTANT;
@@ -2075,14 +2078,18 @@ export function isSyntheticConsoleTiming(traceEventData: TraceEventData): traceE
   return 'beginEvent' in data && 'endEvent' in data;
 }
 
+export function isTraceEventUserTiming(traceEventData: TraceEventData): traceEventData is TraceEventUserTiming {
+  return traceEventData.cat === 'blink.user_timing';
+}
+
 export function isTraceEventPerformanceMeasure(traceEventData: TraceEventData):
     traceEventData is TraceEventPerformanceMeasure {
-  return traceEventData.cat === 'blink.user_timing' && isTraceEventAsyncPhase(traceEventData);
+  return isTraceEventUserTiming(traceEventData) && isTraceEventAsyncPhase(traceEventData);
 }
 
 export function isTraceEventPerformanceMark(traceEventData: TraceEventData):
     traceEventData is TraceEventPerformanceMark {
-  return traceEventData.cat === 'blink.user_timing' &&
+  return isTraceEventUserTiming(traceEventData) &&
       (traceEventData.ph === Phase.MARK || traceEventData.ph === Phase.INSTANT);
 }
 

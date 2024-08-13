@@ -127,7 +127,7 @@ describe('The Performance panel landing page', () => {
 
       const [lcpValueElem, clsValueElem, inpValueElem] = await waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
       const interactions = await $$<HTMLElement>(INTERACTION_SELECTOR);
-      assert.lengthOf(interactions, 2);
+      assert.lengthOf(interactions, 0);
 
       const lcpValue = await lcpValueElem.evaluate(el => el.textContent) || '';
       assert.match(lcpValue, /[0-9\.]+ (s|ms)/);
@@ -137,11 +137,6 @@ describe('The Performance panel landing page', () => {
 
       const inpValue = await inpValueElem.evaluate(el => el.textContent) || '';
       assert.match(inpValue, /[0-9\.]+ (s|ms)/);
-
-      for (const interaction of interactions) {
-        const interactionText = await interaction.evaluate(el => el.innerText) || '';
-        assert.match(interactionText, /pointer\n[\d.]+ (s|ms)/);
-      }
     } finally {
       await targetSession.detach();
     }

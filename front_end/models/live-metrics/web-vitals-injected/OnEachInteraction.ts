@@ -58,12 +58,18 @@ export function onEachInteraction(callback: (interaction: InteractionWithAttribu
 
   eventObserver.observe({
     type: 'first-input',
-    buffered: true,
+    buffered: false,
   });
 
   eventObserver.observe({
     type: 'event',
     durationThreshold: 0,
-    buffered: true,
+    // Interaction events can only be stored to the buffer if their duration is >=104ms.
+    // https://www.w3.org/TR/event-timing/#sec-events-exposed
+    //
+    // This means we can only collect a subset of interactions that happen before this observer is started.
+    // To avoid confusion, we only collect interactions that after this observer has started.
+    // Note: This DOES NOT affect the collection for the INP metric and so INP will still be restored from the buffer.
+    buffered: false,
   });
 }

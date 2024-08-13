@@ -89,6 +89,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "BinaryResourceViewFactory.test.ts",
     "ResourceSourceFrame.test.ts",
     "SourceFrame.test.ts",
   ]

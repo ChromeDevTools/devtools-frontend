@@ -4,7 +4,7 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as UI from '../../legacy.js';
 
 import {FontView} from './FontView.js';
@@ -36,35 +36,30 @@ export class PreviewFactory {
         return new FontView(mimeType, provider);
     }
 
-    const deferredContent = await provider.requestContent();
-    if (deferredContent.content === null) {
-      return new UI.EmptyWidget.EmptyWidget(deferredContent.error);
+    const contentData = await provider.requestContentData();
+    if (TextUtils.ContentData.ContentData.isError(contentData)) {
+      return new UI.EmptyWidget.EmptyWidget(contentData.error);
     }
-    if (!deferredContent.content) {
+    if (!contentData.isTextContent) {
+      return null;
+    }
+
+    if (!contentData.text) {
       return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.nothingToPreview));
     }
 
-    let content: string = deferredContent.content;
-    if (deferredContent.isEncoded) {
-      content = window.atob(content);
-    }
-
-    const parsedXML = XMLView.parseXML(content, mimeType);
+    const parsedXML = XMLView.parseXML(contentData.text, contentData.mimeType);
     if (parsedXML) {
       return XMLView.createSearchableView(parsedXML);
     }
 
-    const jsonView = await JSONView.createView(content);
+    const jsonView = await JSONView.createView(contentData.text);
     if (jsonView) {
       return jsonView;
     }
 
-    if (resourceType.isTextType()) {
-      const highlighterType =
-          mimeType.replace(/;.*/, '') /* remove charset */ || provider.contentType().canonicalMimeType();
-      return ResourceSourceFrame.createSearchableView(provider, highlighterType);
-    }
-
-    return null;
+    const highlighterType =
+        mimeType.replace(/;.*/, '') /* remove charset */ || provider.contentType().canonicalMimeType();
+    return ResourceSourceFrame.createSearchableView(provider, highlighterType);
   }
 }

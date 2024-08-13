@@ -172,7 +172,7 @@ export class UISourceCodeFrame extends
       this.unloadUISourceCode();
       this.uiSourceCodeInternal = uiSourceCode;
       if (uiSourceCode.workingCopy() !== this.textEditor.state.doc.toString()) {
-        await this.setDeferredContent(Promise.resolve(uiSourceCode.workingCopyContent()));
+        await this.setContentDataOrError(Promise.resolve(uiSourceCode.workingCopyContentData()));
       } else {
         this.reloadPlugins();
       }
@@ -317,12 +317,12 @@ export class UISourceCodeFrame extends
     if (this.muteSourceCodeEvents) {
       return;
     }
-    this.maybeSetContent(this.uiSourceCodeInternal.workingCopyContent());
+    this.maybeSetContent(this.uiSourceCodeInternal.workingCopyContentData());
   }
 
   private onWorkingCopyCommitted(): void {
     if (!this.muteSourceCodeEvents) {
-      this.maybeSetContent(this.uiSourceCode().workingCopyContent());
+      this.maybeSetContent(this.uiSourceCode().workingCopyContentData());
     }
     this.contentCommitted();
     this.updateStyle();
@@ -384,9 +384,9 @@ export class UISourceCodeFrame extends
     this.setEditable(this.canEditSourceInternal());
   }
 
-  private maybeSetContent(content: TextUtils.ContentProvider.DeferredContent): void {
-    if (this.textEditor.state.doc.toString() !== content.content) {
-      void this.setDeferredContent(Promise.resolve(content));
+  private maybeSetContent(content: TextUtils.ContentData.ContentData): void {
+    if (this.textEditor.state.doc.toString() !== content.text) {
+      void this.setContentDataOrError(Promise.resolve(content));
     }
   }
 

@@ -68,7 +68,7 @@ export class ResourceSourceFrame extends SourceFrameImpl {
       void resource.requestStreamingContent().then(streamingContent => {
         if (!TextUtils.StreamingContentData.isError(streamingContent)) {
           streamingContent.addEventListener(TextUtils.StreamingContentData.Events.ChunkAdded, () => {
-            void this.setDeferredContent(Promise.resolve(streamingContent.content().asDeferedContent()));
+            void this.setContentDataOrError(Promise.resolve(streamingContent.content()));
           });
         }
       });

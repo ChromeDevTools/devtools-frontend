@@ -96,7 +96,7 @@ export class ImageView extends UI.View.SimpleView {
   private readonly mimeTypeLabel: UI.Toolbar.ToolbarText;
   private readonly container: HTMLElement;
   private imagePreviewElement: HTMLImageElement;
-  private cachedContent?: TextUtils.ContentProvider.DeferredContent;
+  private cachedContent?: TextUtils.ContentData.ContentData;
   constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider) {
     super(i18nString(UIStrings.image));
     this.registerRequiredCSS(imageViewStyles);
@@ -155,21 +155,19 @@ export class ImageView extends UI.View.SimpleView {
   }
 
   private async updateContentIfNeeded(): Promise<void> {
-    const content = await this.contentProvider.requestContent();
-    if (this.cachedContent?.content === content.content) {
+    const content = await this.contentProvider.requestContentData();
+    if (TextUtils.ContentData.ContentData.isError(content) || this.cachedContent?.contentEqualTo(content)) {
       return;
     }
 
     this.cachedContent = content;
-    const imageSrc =
-        TextUtils.ContentProvider.contentAsDataURL(content.content, this.mimeType, content.isEncoded) || this.url;
+    const imageSrc = content.asDataUrl() ?? this.url;
     const loadPromise = new Promise(x => {
       this.imagePreviewElement.onload = x;
     });
     this.imagePreviewElement.src = imageSrc;
     this.imagePreviewElement.alt = i18nString(UIStrings.imageFromS, {PH1: this.url});
-    const size = content.content && !content.isEncoded ? content.content.length :
-                                                         Platform.StringUtilities.base64ToSize(content.content);
+    const size = content.isTextContent ? content.text.length : Platform.StringUtilities.base64ToSize(content.base64);
     this.sizeLabel.setText(Platform.NumberUtilities.bytesToString(size));
     await loadPromise;
     this.dimensionsLabel.setText(i18nString(
@@ -212,12 +210,7 @@ export class ImageView extends UI.View.SimpleView {
   }
 
   private async saveImage(): Promise<void> {
-    if (!this.cachedContent || !this.cachedContent.content) {
-      return;
-    }
-    const imageDataURL = TextUtils.ContentProvider.contentAsDataURL(
-        this.cachedContent.content, this.mimeType, this.cachedContent.isEncoded, '', false);
-
+    const imageDataURL = this.cachedContent?.asDataUrl();
     if (!imageDataURL) {
       return;
     }

@@ -20,6 +20,7 @@ devtools_module("platform") {
     "MimeType.ts",
     "NumberUtilities.ts",
     "PromiseUtilities.ts",
+    "ServerTiming.ts",
     "StringUtilities.ts",
     "Timing.ts",
     "TypedArrayUtilities.ts",

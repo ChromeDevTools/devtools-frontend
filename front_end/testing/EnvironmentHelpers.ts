@@ -499,16 +499,19 @@ export function expectConsoleLogs(expectedLogs: {warn?: string[], log?: string[]
 export function getGetHostConfigStub(config: Root.Runtime.HostConfig): sinon.SinonStub {
   const settings = Common.Settings.Settings.instance();
   return sinon.stub(settings, 'getHostConfig').returns({
+    aidaAvailability: {
+      disallowLogging: false,
+      ...config.aidaAvailability,
+    },
     devToolsConsoleInsights: {
       enabled: false,
-      aidaModelId: '',
-      aidaTemperature: 0.2,
-      disallowLogging: false,
+      modelId: '',
+      temperature: 0.2,
       ...config.devToolsConsoleInsights,
     } as Root.Runtime.HostConfigConsoleInsights,
     devToolsFreestylerDogfood: {
-      aidaModelId: '',
-      aidaTemperature: 0,
+      modelId: '',
+      temperature: 0,
       enabled: false,
       ...config.devToolsFreestylerDogfood,
     } as Root.Runtime.HostConfigFreestylerDogfood,

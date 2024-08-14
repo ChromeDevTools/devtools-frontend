@@ -164,8 +164,8 @@ export class FreestylerAgent {
       chat_history: opts.chatHistory,
       client: Host.AidaClient.CLIENT_NAME,
       options: {
-        temperature: config.devToolsFreestylerDogfood?.aidaTemperature ?? 0,
-        model_id: config.devToolsFreestylerDogfood?.aidaModelId ?? undefined,
+        temperature: config.devToolsFreestylerDogfood?.temperature ?? 0,
+        model_id: config.devToolsFreestylerDogfood?.modelId ?? undefined,
       },
       metadata: {
         // TODO: disable logging based on query params.

@@ -128,9 +128,8 @@ describe('SettingRegistration', () => {
       localStorage: dummyStorage,
       config: {
         devToolsConsoleInsights: {
-          aidaModelId: 'mockModel',
-          aidaTemperature: 0.2,
-          optIn: false,
+          modelId: 'mockModel',
+          temperature: 0.2,
           enabled: true,
         },
       } as Root.Runtime.HostConfig,

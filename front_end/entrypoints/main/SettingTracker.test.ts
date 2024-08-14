@@ -27,23 +27,6 @@ describeWithEnvironment('SettingTracker', () => {
         false);
   });
 
-  it('sets console-insights-enabled to false if feature is opt-in', async () => {
-    const dummyStorage = new Common.Settings.SettingsStorage({});
-    Common.Settings.Settings.instance({
-      forceNew: true,
-      syncedStorage: dummyStorage,
-      globalStorage: dummyStorage,
-      localStorage: dummyStorage,
-      config: {'devToolsConsoleInsights': {'enabled': true, 'optIn': true}} as Root.Runtime.HostConfig,
-    });
-    Common.Settings.moduleSetting('console-insights-enabled').set(true);
-    const toggledSetting = Common.Settings.Settings.instance().createLocalSetting('console-insights-toggled', false);
-    toggledSetting.set(false);
-    settingTracker = new Main.SettingTracker.SettingTracker();
-    assert.strictEqual(Common.Settings.moduleSetting('console-insights-enabled').get(), false);
-    assert.strictEqual(toggledSetting.get(), false);
-  });
-
   it('sets console-insights-enabled to true if feature is opt-out', async () => {
     const dummyStorage = new Common.Settings.SettingsStorage({});
     Common.Settings.Settings.instance({

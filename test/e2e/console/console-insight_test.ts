@@ -16,13 +16,15 @@ describe('ConsoleInsight', function() {
   const EXPLAIN_LABEL = 'Understand this error';
   const EXPLAIN_ACTION_ID = 'explain.console-message.context.error';
 
-  async function setupMocks(devToolsConsoleInsights: Partial<Root.Runtime.HostConfigConsoleInsights>) {
+  async function setupMocks(
+      aidaAvailability: Partial<Root.Runtime.AidaAvailability>,
+      devToolsConsoleInsights: Partial<Root.Runtime.HostConfigConsoleInsights>) {
     const {frontend} = getBrowserAndPages();
     await frontend.bringToFront();
     await frontend.evaluateOnNewDocument(
         `globalThis.hostConfigForTesting = {...globalThis.hostConfigForTesting, devToolsConsoleInsights: ${
-            JSON.stringify(devToolsConsoleInsights)}
-    };`);
+            JSON.stringify(devToolsConsoleInsights)}, aidaAvailability: ${JSON.stringify(aidaAvailability)}
+  };`);
     await frontend.reload({
       waitUntil: 'networkidle0',
     });
@@ -30,7 +32,7 @@ describe('ConsoleInsight', function() {
 
   it('shows an insight for a console message via the context menu', async () => {
     const {target} = getBrowserAndPages();
-    await setupMocks({enabled: true});
+    await setupMocks({}, {enabled: true});
     await click(CONSOLE_TAB_SELECTOR);
     await target.evaluate(() => {
       console.error(new Error('Unexpected error'));
@@ -41,7 +43,7 @@ describe('ConsoleInsight', function() {
 
   it('shows an insight for a console message via the hover button', async () => {
     const {target} = getBrowserAndPages();
-    await setupMocks({enabled: true});
+    await setupMocks({}, {enabled: true});
     await click(CONSOLE_TAB_SELECTOR);
     await target.evaluate(() => {
       console.error(new Error('Unexpected error'));
@@ -55,7 +57,7 @@ describe('ConsoleInsight', function() {
 
   it('does not show context menu if AIDA is not available', async () => {
     const {target} = getBrowserAndPages();
-    await setupMocks({enabled: false});
+    await setupMocks({enabled: false}, {enabled: true});
     await click(CONSOLE_TAB_SELECTOR);
     await target.evaluate(() => {
       console.error(new Error('Unexpected error'));
@@ -74,7 +76,7 @@ describe('ConsoleInsight', function() {
   it('does not show the hover button if locale is not supported', async () => {
     const {target} = getBrowserAndPages();
     await setDevToolsSettings({language: 'zh'});
-    await setupMocks({enabled: true});
+    await setupMocks({}, {enabled: true});
     await click(CONSOLE_TAB_SELECTOR);
     await target.evaluate(() => {
       console.error(new Error('Unexpected error'));
@@ -85,7 +87,7 @@ describe('ConsoleInsight', function() {
 
   it('does not show the hover button if age check is not passing', async () => {
     const {target} = getBrowserAndPages();
-    await setupMocks({enabled: true, blockedByAge: true});
+    await setupMocks({blockedByAge: true}, {enabled: true});
     await click(CONSOLE_TAB_SELECTOR);
     await target.evaluate(() => {
       console.error(new Error('Unexpected error'));
@@ -96,18 +98,7 @@ describe('ConsoleInsight', function() {
 
   it('does not show the hover button if policy does not allow it', async () => {
     const {target} = getBrowserAndPages();
-    await setupMocks({enabled: true, blockedByEnterprisePolicy: true});
-    await click(CONSOLE_TAB_SELECTOR);
-    await target.evaluate(() => {
-      console.error(new Error('Unexpected error'));
-    });
-    await waitFor('.console-message', undefined, undefined, 'pierce');
-    await waitForNone('.hover-button', undefined, undefined, 'pierce');
-  });
-
-  it('does not show the hover button if the feature is not rolled out', async () => {
-    const {target} = getBrowserAndPages();
-    await setupMocks({enabled: true, blockedByRollout: true});
+    await setupMocks({blockedByEnterprisePolicy: true}, {enabled: true});
     await click(CONSOLE_TAB_SELECTOR);
     await target.evaluate(() => {
       console.error(new Error('Unexpected error'));
@@ -118,18 +109,7 @@ describe('ConsoleInsight', function() {
 
   it('does not show the hover button if it is restriced by geography', async () => {
     const {target} = getBrowserAndPages();
-    await setupMocks({enabled: true, blockedByGeo: true});
-    await click(CONSOLE_TAB_SELECTOR);
-    await target.evaluate(() => {
-      console.error(new Error('Unexpected error'));
-    });
-    await waitFor('.console-message', undefined, undefined, 'pierce');
-    await waitForNone('.hover-button', undefined, undefined, 'pierce');
-  });
-
-  it('does not show the hover button if disabled by default', async () => {
-    const {target} = getBrowserAndPages();
-    await setupMocks({enabled: true, optIn: true});
+    await setupMocks({blockedByGeo: true}, {enabled: true});
     await click(CONSOLE_TAB_SELECTOR);
     await target.evaluate(() => {
       console.error(new Error('Unexpected error'));

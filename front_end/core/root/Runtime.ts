@@ -304,24 +304,29 @@ export const enum ExperimentName {
   TIMELINE_SERVER_TIMINGS = 'timeline-server-timings',
 }
 
-export interface HostConfigConsoleInsights {
-  aidaModelId: string;
-  aidaTemperature: number;
+export interface AidaAvailability {
+  enabled: boolean;
   blockedByAge: boolean;
   blockedByEnterprisePolicy: boolean;
   blockedByGeo: boolean;
-  blockedByRollout: boolean;
   disallowLogging: boolean;
+}
+
+export interface HostConfigConsoleInsights {
+  modelId: string;
+  temperature: number;
   enabled: boolean;
-  optIn: boolean;
 }
 
 export interface HostConfigFreestylerDogfood {
-  aidaModelId: string;
-  aidaTemperature: number;
-  blockedByAge: boolean;
-  blockedByEnterprisePolicy: boolean;
-  blockedByGeo: boolean;
+  modelId: string;
+  temperature: number;
+  enabled: boolean;
+}
+
+export interface HostConfigExplainThisResourceDogfood {
+  modelId: string;
+  temperature: number;
   enabled: boolean;
 }
 
@@ -338,8 +343,10 @@ export interface HostConfigVeLogging {
 // window being of different versions, and consequently potentially having
 // differently shaped `HostConfig`s.
 export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
+  aidaAvailability: AidaAvailability,
   devToolsConsoleInsights: HostConfigConsoleInsights,
   devToolsFreestylerDogfood: HostConfigFreestylerDogfood,
+  devToolsExplainThisResourceDogfood: HostConfigExplainThisResourceDogfood,
   devToolsVeLogging: HostConfigVeLogging,
   /**
    * OffTheRecord here indicates that the user's profile is either incognito,

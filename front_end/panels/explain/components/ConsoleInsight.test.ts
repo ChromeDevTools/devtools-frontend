@@ -202,9 +202,11 @@ describeWithEnvironment('ConsoleInsight', () => {
 
     it('has no thumbs up/down buttons if logging is disabled', async () => {
       const stub = getGetHostConfigStub({
+        aidaAvailability: {
+          disallowLogging: true,
+        },
         devToolsConsoleInsights: {
           enabled: true,
-          disallowLogging: true,
         },
       });
       const component = await renderInsight();

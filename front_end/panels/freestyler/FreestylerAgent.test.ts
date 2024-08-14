@@ -16,7 +16,7 @@ describeWithEnvironment('FreestylerAgent', () => {
   function mockHostConfig(modelId?: string) {
     getGetHostConfigStub({
       devToolsFreestylerDogfood: {
-        aidaModelId: modelId,
+        modelId: modelId,
       },
     });
   }

@@ -134,10 +134,10 @@ export class AidaClient {
     let temperature = NaN;
     let modelId = '';
     if (config.devToolsConsoleInsights?.enabled) {
-      temperature = config.devToolsConsoleInsights.aidaTemperature || 0;
-      modelId = config.devToolsConsoleInsights.aidaModelId || '';
+      temperature = config.devToolsConsoleInsights.temperature || 0;
+      modelId = config.devToolsConsoleInsights.modelId || '';
     }
-    const disallowLogging = config.devToolsConsoleInsights?.disallowLogging ?? true;
+    const disallowLogging = config.aidaAvailability?.disallowLogging ?? true;
 
     if (!isNaN(temperature)) {
       request.options ??= {};

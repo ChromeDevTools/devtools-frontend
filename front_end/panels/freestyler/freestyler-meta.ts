@@ -69,15 +69,15 @@ function isLocaleRestricted(): boolean {
 }
 
 function isAgeRestricted(config?: Root.Runtime.HostConfig): boolean {
-  return config?.devToolsFreestylerDogfood?.blockedByAge === true;
+  return config?.aidaAvailability?.blockedByAge === true;
 }
 
 function isGeoRestricted(config?: Root.Runtime.HostConfig): boolean {
-  return config?.devToolsFreestylerDogfood?.blockedByGeo === true;
+  return config?.aidaAvailability?.blockedByGeo === true;
 }
 
 function isPolicyRestricted(config?: Root.Runtime.HostConfig): boolean {
-  return config?.devToolsFreestylerDogfood?.blockedByEnterprisePolicy === true;
+  return config?.aidaAvailability?.blockedByEnterprisePolicy === true;
 }
 
 let loadedFreestylerModule: (typeof Freestyler|undefined);
@@ -89,7 +89,7 @@ async function loadFreestylerModule(): Promise<typeof Freestyler> {
 }
 
 function isFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
-  return config?.devToolsFreestylerDogfood?.enabled === true;
+  return (config?.aidaAvailability?.enabled && config?.devToolsFreestylerDogfood?.enabled) === true;
 }
 
 UI.ViewManager.registerViewExtension({

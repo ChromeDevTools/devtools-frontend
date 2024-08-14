@@ -641,7 +641,85 @@ const InspectorFrontendHostImpl = class {
    * @param {function(Object<string, Object<string, string|boolean>>):void} callback
    */
   getHostConfig(callback) {
-    DevToolsAPI.sendMessageToEmbedder('getHostConfig', [], /** @type {function(?Object)} */ (callback));
+    DevToolsAPI.sendMessageToEmbedder('getHostConfig', [], hostConfig => {
+      const majorVersion = getRemoteMajorVersion();
+      if (majorVersion && majorVersion < 129 && hostConfig?.aidaAvailability) {
+        return callback(this.hostConfigNewToOld(hostConfig));
+      }
+      // TODO(crbug.com/348136212): Remove as soon as Chromium sends the new shape.
+      if (hostConfig && !hostConfig.aidaAvailability && hostConfig.devToolsConsoleInsights) {
+        return callback(this.hostConfigOldToNew(hostConfig));
+      }
+      return callback(hostConfig);
+    });
+  }
+
+  // TODO(crbug.com/348136212): Remove as soon as Chromium sends the new shape.
+  /**
+   * @param {Object<string, Object<string, string|boolean>>} oldConfig
+   */
+  hostConfigOldToNew(oldConfig) {
+    const aidaAvailability = {
+      // Not a perfect match, but good enough temporarily.
+      enabled: oldConfig.devToolsConsoleInsights?.enabled ?? false,
+      blockedByAge: oldConfig.devToolsConsoleInsights?.blockedByAge ?? true,
+      blockedByEnterprisePolicy: oldConfig.devToolsConsoleInsights?.blockedByEnterprisePolicy ?? true,
+      blockedByGeo: oldConfig.devToolsConsoleInsights?.blockedByGeo ?? true,
+      disallowLogging: oldConfig.devToolsConsoleInsights?.disallowLogging ?? true,
+    };
+    const devToolsConsoleInsights = {
+      enabled: oldConfig.devToolsConsoleInsights?.enabled ?? false,
+      modelId: oldConfig.devToolsConsoleInsights?.aidaModelId ?? '',
+      temperature: oldConfig.devToolsConsoleInsights?.aidaTemperature ?? 0,
+    };
+    const devToolsFreestylerDogfood = {
+      enabled: oldConfig.devToolsFreestylerDogfood?.enabled ?? false,
+      modelId: oldConfig.devToolsFreestylerDogfood?.aidaModelId ?? '',
+      temperature: oldConfig.devToolsFreestylerDogfood?.aidaTemperature ?? 0,
+    };
+    const devToolsExplainThisResourceDogfood = {
+      enabled: oldConfig.devToolsExplainThisResourceDogfood?.enabled ?? false,
+      modelId: oldConfig.devToolsExplainThisResourceDogfood?.aidaModelId ?? '',
+      temperature: oldConfig.devToolsExplainThisResourceDogfood?.aidaTemperature ?? 0,
+    };
+    return {
+      ...oldConfig,
+      aidaAvailability,
+      devToolsConsoleInsights,
+      devToolsExplainThisResourceDogfood,
+      devToolsFreestylerDogfood,
+    };
+  }
+
+  /**
+   * @param {Object<string, Object<string, string|boolean>>} newConfig
+   */
+  hostConfigNewToOld(newConfig) {
+    const devToolsConsoleInsights = {
+      enabled: (newConfig.devToolsConsoleInsights?.enabled && newConfig.aidaAvailability?.enabled) ?? false,
+      aidaModelId: newConfig.devToolsConsoleInsights?.modelId ?? '',
+      aidaTemperature: newConfig.devToolsConsoleInsights?.temperature ?? 0,
+      blockedByAge: newConfig.aidaAvailability?.blockedByAge ?? true,
+      blockedByEnterprisePolicy: newConfig.aidaAvailability?.blockedByEnterprisePolicy ?? true,
+      blockedByGeo: newConfig.aidaAvailability?.blockedByGeo ?? true,
+      blockedByRollout: false,
+      disallowLogging: newConfig.aidaAvailability?.disallowLogging ?? true,
+      optIn: false,
+    };
+    const devToolsFreestylerDogfood = {
+      enabled: (newConfig.devToolsFreestylerDogfood?.enabled && newConfig.aidaAvailability?.enabled) ?? false,
+      aidaModelId: newConfig.devToolsFreestylerDogfood?.modelId ?? '',
+      aidaTemperature: newConfig.devToolsFreestylerDogfood?.temperature ?? 0,
+      blockedByAge: newConfig.aidaAvailability?.blockedByAge ?? true,
+      blockedByEnterprisePolicy: newConfig.aidaAvailability?.blockedByEnterprisePolicy ?? true,
+      blockedByGeo: newConfig.aidaAvailability?.blockedByGeo ?? true,
+    };
+    return {
+      devToolsConsoleInsights,
+      devToolsFreestylerDogfood,
+      devToolsVeLogging: newConfig.devToolsVeLogging,
+      isOffTheRecord: newConfig.isOffTheRecord,
+    };
   }
 
   /**

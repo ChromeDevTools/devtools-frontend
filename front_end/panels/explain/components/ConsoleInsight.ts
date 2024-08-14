@@ -384,7 +384,7 @@ export class ConsoleInsight extends HTMLElement {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRatedNegative);
     }
     const disallowLogging =
-        Common.Settings.Settings.instance().getHostConfig().devToolsConsoleInsights?.disallowLogging ?? true;
+        Common.Settings.Settings.instance().getHostConfig().aidaAvailability?.disallowLogging ?? true;
     void this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: this.#state.metadata.rpcGlobalId,
       disable_user_content_logging: disallowLogging,
@@ -663,7 +663,7 @@ export class ConsoleInsight extends HTMLElement {
   #renderMain(): LitHtml.TemplateResult {
     const jslog = `${VisualLogging.section(this.#state.type).track({resize: true})}`;
     const disallowLogging =
-        Common.Settings.Settings.instance().getHostConfig().devToolsConsoleInsights?.disallowLogging ?? true;
+        Common.Settings.Settings.instance().getHostConfig().aidaAvailability?.disallowLogging ?? true;
     // clang-format off
     switch (this.#state.type) {
       case State.LOADING:
@@ -761,7 +761,7 @@ export class ConsoleInsight extends HTMLElement {
 
   #renderFooter(): LitHtml.LitTemplate {
     const showThumbsUpDownButtons =
-        !(Common.Settings.Settings.instance().getHostConfig().devToolsConsoleInsights?.disallowLogging ?? true);
+        !(Common.Settings.Settings.instance().getHostConfig().aidaAvailability?.disallowLogging ?? true);
     // clang-format off
     const disclaimer = LitHtml.html`<span>
               This feature may display inaccurate or offensive information that doesn't represent Google's views.

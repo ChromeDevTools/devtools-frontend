@@ -664,7 +664,7 @@ export class ProfilesSidebarTreeElement extends UI.TreeOutline.TreeElement {
         .createChild('span', 'title-container')
         .createChild('span', 'title')
         .textContent = i18nString(UIStrings.profiles);
-    this.setLeadingIcons([IconButton.Icon.create('document')]);
+    this.setLeadingIcons([IconButton.Icon.create('tune')]);
   }
 }
 

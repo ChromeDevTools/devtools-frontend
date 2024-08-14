@@ -249,6 +249,7 @@ devtools_svg_sources = [
   "triangle-left.svg",
   "triangle-right.svg",
   "triangle-up.svg",
+  "tune.svg",
   "undo.svg",
   "warning-filled.svg",
   "warning.svg",

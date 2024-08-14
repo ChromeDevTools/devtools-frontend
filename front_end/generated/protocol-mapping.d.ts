@@ -959,12 +959,26 @@ export namespace ProtocolMapping {
       returnType: Protocol.Extensions.LoadUnpackedResponse;
     };
     /**
-     * Gets data from extension storage in the given `area`. If `keys` is
+     * Gets data from extension storage in the given `storageArea`. If `keys` is
      * specified, these are used to filter the result.
      */
     'Extensions.getStorageItems': {
       paramsType: [Protocol.Extensions.GetStorageItemsRequest];
       returnType: Protocol.Extensions.GetStorageItemsResponse;
+    };
+    /**
+     * Removes `keys` from extension storage in the given `storageArea`.
+     */
+    'Extensions.removeStorageItems': {
+      paramsType: [Protocol.Extensions.RemoveStorageItemsRequest];
+      returnType: void;
+    };
+    /**
+     * Clears extension storage in the given `storageArea`.
+     */
+    'Extensions.clearStorageItems': {
+      paramsType: [Protocol.Extensions.ClearStorageItemsRequest];
+      returnType: void;
     };
     /**
      * Trigger autofill on a form identified by the fieldId.

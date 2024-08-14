@@ -3341,9 +3341,9 @@ export const generatedProperties = [
  {
   "keywords": [
    "none",
-   "start",
-   "end",
-   "both"
+   "trim-start",
+   "trim-end",
+   "trim-both"
   ],
   "name": "text-box-trim"
  },
@@ -5594,9 +5594,9 @@ export const generatedPropertyValues = {
  "text-box-trim": {
   "values": [
    "none",
-   "start",
-   "end",
-   "both"
+   "trim-start",
+   "trim-end",
+   "trim-both"
   ]
  },
  "text-combine-upright": {

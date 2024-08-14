@@ -1483,6 +1483,32 @@ export namespace Extensions {
   export interface GetStorageItemsResponse extends ProtocolResponseWithError {
     data: any;
   }
+
+  export interface RemoveStorageItemsRequest {
+    /**
+     * ID of extension.
+     */
+    id: string;
+    /**
+     * StorageArea to remove data from.
+     */
+    storageArea: StorageArea;
+    /**
+     * Keys to remove.
+     */
+    keys: string[];
+  }
+
+  export interface ClearStorageItemsRequest {
+    /**
+     * ID of extension.
+     */
+    id: string;
+    /**
+     * StorageArea to remove data from.
+     */
+    storageArea: StorageArea;
+  }
 }
 
 /**

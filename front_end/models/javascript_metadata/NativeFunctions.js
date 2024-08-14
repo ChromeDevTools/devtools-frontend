@@ -6499,7 +6499,7 @@ export const NativeFunctions = [
     signatures: [["type","?eventInitDict"]]
   },
   {
-    name: "on",
+    name: "when",
     signatures: [["type","?options"]]
   },
   {

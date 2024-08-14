@@ -2213,7 +2213,7 @@
                 },
                 {
                     "name": "getStorageItems",
-                    "description": "Gets data from extension storage in the given `area`. If `keys` is\nspecified, these are used to filter the result.",
+                    "description": "Gets data from extension storage in the given `storageArea`. If `keys` is\nspecified, these are used to filter the result.",
                     "parameters": [
                         {
                             "name": "id",
@@ -2239,6 +2239,46 @@
                         {
                             "name": "data",
                             "type": "object"
+                        }
+                    ]
+                },
+                {
+                    "name": "removeStorageItems",
+                    "description": "Removes `keys` from extension storage in the given `storageArea`.",
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "description": "ID of extension.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "storageArea",
+                            "description": "StorageArea to remove data from.",
+                            "$ref": "StorageArea"
+                        },
+                        {
+                            "name": "keys",
+                            "description": "Keys to remove.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "clearStorageItems",
+                    "description": "Clears extension storage in the given `storageArea`.",
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "description": "ID of extension.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "storageArea",
+                            "description": "StorageArea to remove data from.",
+                            "$ref": "StorageArea"
                         }
                     ]
                 }

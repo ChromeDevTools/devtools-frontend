@@ -337,7 +337,7 @@ interface SyntheticArgsData {
 }
 
 export interface SyntheticNetworkRequest extends TraceEventComplete, SyntheticBasedEvent<Phase.COMPLETE> {
-  rawSourceEvent: TraceEventData;
+  rawSourceEvent: TraceEventResourceSendRequest;
   args: TraceEventArgs&{
     data: TraceEventArgsData & {
       syntheticData: SyntheticArgsData,
@@ -378,6 +378,7 @@ export interface SyntheticNetworkRequest extends TraceEventComplete, SyntheticBa
       initiator?: Initiator,
       requestMethod?: string,
       timing?: TraceEventResourceReceiveResponseTimingData,
+      syntheticServerTimings?: SyntheticServerTiming[],
     },
   };
   cat: 'loading';
@@ -1491,6 +1492,25 @@ export interface SyntheticProfileCall extends TraceEventData {
 }
 
 /**
+ * A synthetic event created from the Server-Timing header of network
+ * request. In order to create these synthetic events, the corresponding
+ * metric (timing) in the header must contain a "start" param, which
+ * corresponds to the timestamp of the metric in the server. The
+ * ServerTimingsHandler implements a heuristic to estimate the offset
+ * between the client clock and the server clock so that the server
+ * timestamp can be translated to the tracing clock.
+ */
+export interface SyntheticServerTiming<T extends Phase = Phase.COMPLETE> extends SyntheticBasedEvent<T> {
+  rawSourceEvent: TraceEventResourceSendRequest;
+  cat: 'devtools.server-timing';
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      desc?: string, origin: string,
+    },
+  };
+}
+
+/**
  * A JS Sample reflects a single sample from the V8 CPU Profile
  */
 export interface SyntheticJSSample extends TraceEventData {
@@ -2526,6 +2546,10 @@ export interface TraceEventFunctionCall extends TraceEventComplete {
 }
 export function isTraceEventFunctionCall(event: TraceEventData): event is TraceEventFunctionCall {
   return event.name === KnownEventName.FunctionCall;
+}
+
+export function isSyntheticServerTiming(event: TraceEventData): event is SyntheticServerTiming {
+  return event.cat === 'devtools.server-timing';
 }
 
 /**

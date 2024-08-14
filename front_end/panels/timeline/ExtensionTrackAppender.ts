@@ -101,9 +101,6 @@ export class ExtensionTrackAppender implements TrackAppender {
   }
 
   titleForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): string {
-    if (!TraceEngine.Types.Extensions.isSyntheticExtensionEntry(event)) {
-      return ThemeSupport.ThemeSupport.instance().getComputedValue('--app-color-rendering');
-    }
     return event.name;
   }
 

@@ -9,6 +9,8 @@ copy_to_gen("performance") {
     "crux-none.rawresponse",
     "crux-valid.rawresponse",
     "fake-website.html",
+    "frame-metrics/frame.html",
+    "frame-metrics/index.html",
     "selectorStats/page-with-style-perf-test.html",
     "selectorStats/page-with-style.css",
     "selectorStats/page-with-style.html",

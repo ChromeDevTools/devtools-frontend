@@ -8,7 +8,7 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import * as Spec from './web-vitals-injected/spec/spec.js';
 
-const LIVE_METRICS_WORLD_NAME = 'live_metrics_world';
+const LIVE_METRICS_WORLD_NAME = 'DevTools Performance Metrics';
 
 let liveMetricsInstance: LiveMetrics;
 
@@ -188,9 +188,44 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     });
   }
 
+  #getFrameForExecutionContextId(executionContextId: Protocol.Runtime.ExecutionContextId):
+      SDK.ResourceTreeModel.ResourceTreeFrame|null {
+    if (!this.#target) {
+      return null;
+    }
+
+    const runtimeModel = this.#target.model(SDK.RuntimeModel.RuntimeModel);
+    const resourceTreeModel = this.#target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    if (!runtimeModel || !resourceTreeModel) {
+      return null;
+    }
+
+    const executionContext = runtimeModel.executionContext(executionContextId);
+    if (!executionContext) {
+      return null;
+    }
+
+    const frameId = executionContext.frameId;
+    if (!frameId) {
+      return null;
+    }
+
+    const frame = resourceTreeModel.frameForId(frameId);
+    if (!frame) {
+      return null;
+    }
+
+    return frame;
+  }
+
   async #onBindingCalled(event: {data: Protocol.Runtime.BindingCalledEvent}): Promise<void> {
     const {data} = event;
     if (data.name !== Spec.EVENT_BINDING_NAME) {
+      return;
+    }
+
+    const frame = this.#getFrameForExecutionContextId(data.executionContextId);
+    if (!frame?.isMainFrame()) {
       return;
     }
 
@@ -252,14 +287,14 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
     const source = await InjectedScript.get();
 
+    this.#target = target;
+
     const {identifier} = await target.pageAgent().invoke_addScriptToEvaluateOnNewDocument({
       source,
       worldName: LIVE_METRICS_WORLD_NAME,
       runImmediately: true,
     });
     this.#scriptIdentifier = identifier;
-
-    this.#target = target;
   }
 
   async #disable(): Promise<void> {

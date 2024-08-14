@@ -201,6 +201,62 @@ describe('The Performance panel landing page', () => {
     }
   });
 
+  it('ignores metrics from iframes', async () => {
+    const {target, frontend} = await getBrowserAndPages();
+
+    await target.bringToFront();
+
+    const targetSession = await target.createCDPSession();
+
+    try {
+      const framePromise = new Promise<puppeteer.Frame>(resolve => {
+        target.once('frameattached', resolve);
+      });
+
+      let executionContexts: puppeteer.Protocol.Runtime.ExecutionContextDescription[] = [];
+      targetSession.on('Runtime.executionContextCreated', event => {
+        executionContexts.push(event.context);
+      });
+      targetSession.on('Runtime.executionContextsCleared', () => {
+        executionContexts = [];
+      });
+
+      await targetSession.send('Runtime.enable');
+
+      const waitForLCP = await installLCPListener(targetSession);
+      await goToResource('performance/frame-metrics/index.html');
+      await waitForLCP();
+
+      const frame = await framePromise;
+
+      // Interactions from an iframe should be ignored
+      const h1El = await frame.waitForSelector('h1');
+      await h1El!.click();
+      await h1El!.click();
+      await frame.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+      await frame.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+
+      // This should be the only interaction that shows up
+      await target.click('h1');
+      await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+      await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+
+      await frontend.bringToFront();
+
+      await waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
+      const interactions = await $$<HTMLElement>(INTERACTION_SELECTOR);
+      assert.lengthOf(interactions, 1);
+
+      // b/40884049
+      // Extra execution contexts can be created sometimes when dealing with iframes.
+      // We try to avoid that if possible.
+      const liveMetricContexts = executionContexts.filter(e => e.name === 'DevTools Performance Metrics');
+      assert.lengthOf(liveMetricContexts, 2);
+    } finally {
+      await targetSession.detach();
+    }
+  });
+
   it('gets field data automatically', async () => {
     await setCruxRawResponse('performance/crux-none.rawresponse');
     await goToResource('performance/fake-website.html');

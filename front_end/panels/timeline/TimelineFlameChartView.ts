@@ -73,8 +73,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private readonly detailsView: TimelineDetailsView;
   private readonly onMainAddEntryLabelAnnotation: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   private readonly onNetworkAddEntryLabelAnnotation: (event: Common.EventTarget.EventTargetEvent<number>) => void;
-  private readonly onMainEntriesLinkAnnotationChange: (event: Common.EventTarget.EventTargetEvent<number>) => void;
-  private readonly onNetworkEntriesLinkAnnotationChange: (event: Common.EventTarget.EventTargetEvent<number>) => void;
+  private readonly onMainEntriesLinkAnnotationChange:
+      (event: Common.EventTarget.EventTargetEvent<{entryFromIndex: number, entryToIndex?: number}>) => void;
+  private readonly onNetworkEntriesLinkAnnotationChange:
+      (event: Common.EventTarget.EventTargetEvent<{entryFromIndex: number, entryToIndex?: number}>) => void;
   private readonly onMainEntrySelected: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   private readonly onNetworkEntrySelected: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   readonly #boundRefreshAfterIgnoreList: () => void;
@@ -694,23 +696,44 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   private onEntriesLinkAnnotationChange(
       dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider,
-      event: Common.EventTarget.EventTargetEvent<number>): void {
-    const selection = dataProvider.createSelection(event.data);
+      event: Common.EventTarget.EventTargetEvent<{entryFromIndex: number, entryToIndex?: number}>): void {
+    const fromSelectionObject = this.#selectionIfTraceEvent(event.data.entryFromIndex, dataProvider);
+    const toSelectionObject =
+        (event.data.entryToIndex) ? this.#selectionIfTraceEvent(event.data.entryToIndex, dataProvider) : null;
+
+    if (fromSelectionObject) {
+      this.setSelection(dataProvider.createSelection(event.data.entryFromIndex));
+
+      if (this.#linkSelectionAnnotation) {
+        // Only the entry that the link points to can be updated.
+        if (toSelectionObject) {
+          this.#linkSelectionAnnotation.entryTo = toSelectionObject;
+        } else {
+          delete this.#linkSelectionAnnotation['entryTo'];
+        }
+
+        ModificationsManager.activeManager()?.updateAnnotation(this.#linkSelectionAnnotation);
+      } else {
+        this.#linkSelectionAnnotation = {
+          type: 'ENTRIES_LINK',
+          entryFrom: fromSelectionObject,
+          ...(toSelectionObject !== null && {entryTo: toSelectionObject}),
+        };
+        ModificationsManager.activeManager()?.createAnnotation(this.#linkSelectionAnnotation);
+      }
+    }
+  }
+
+  #selectionIfTraceEvent(
+      index: number, dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider):
+      TraceEngine.Types.TraceEvents.TraceEventData|TraceEngine.Types.TraceEvents.SyntheticNetworkRequest|null {
+    const selection = dataProvider.createSelection(index);
     if (selection &&
         (TimelineSelection.isTraceEventSelection(selection.object) ||
          TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object))) {
-      this.setSelection(selection);
-      // TODO: Pass an indicator for a second entry selection and update accordingly
-      if (!this.#linkSelectionAnnotation) {
-        this.#linkSelectionAnnotation = {
-          type: 'ENTRIES_LINK',
-          entryFrom: selection.object,
-        };
-        ModificationsManager.activeManager()?.createAnnotation(this.#linkSelectionAnnotation);
-      } else {
-        ModificationsManager.activeManager()?.updateAnnotation(this.#linkSelectionAnnotation);
-      }
+      return selection.object;
     }
+    return null;
   }
 
   private onEntrySelected(

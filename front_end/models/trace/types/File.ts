@@ -97,6 +97,10 @@ export function isEntryLabelAnnotation(annotation: Annotation): annotation is En
   return annotation.type === 'ENTRY_LABEL';
 }
 
+export function isEntriesLinkAnnotation(annotation: Annotation): annotation is EntriesLinkAnnotation {
+  return annotation.type === 'ENTRIES_LINK';
+}
+
 // Serializable keys are created for trace events to be able to save
 // references to timeline events in a trace file. These keys enable
 // user modifications that can be saved. See go/cpq:event-data-json for

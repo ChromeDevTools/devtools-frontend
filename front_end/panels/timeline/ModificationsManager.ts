@@ -13,7 +13,7 @@ import * as Overlays from './overlays/overlays.js';
 const modificationsManagerByTraceIndex: ModificationsManager[] = [];
 let activeManager: ModificationsManager|null;
 
-export type UpdateAction = 'Remove'|'Add'|'UpdateLabel'|'UpdateTimeRange';
+export type UpdateAction = 'Remove'|'Add'|'UpdateLabel'|'UpdateTimeRange'|'UpdateLinkToEntry';
 
 // Event dispatched after an annotation was added, removed or updated.
 // The event argument is the Overlay that needs to be created,removed
@@ -171,6 +171,13 @@ export class ModificationsManager extends EventTarget {
       overlay.label = updatedAnnotation.label;
       overlay.bounds = updatedAnnotation.bounds;
       this.dispatchEvent(new AnnotationModifiedEvent(overlay, 'UpdateTimeRange'));
+
+    } else if (
+        overlay && Overlays.Overlays.isEntriesLink(overlay) &&
+        TraceEngine.Types.File.isEntriesLinkAnnotation(updatedAnnotation)) {
+      overlay.entryTo = updatedAnnotation.entryTo;
+      this.dispatchEvent(new AnnotationModifiedEvent(overlay, 'UpdateLinkToEntry'));
+
     } else {
       console.error('Annotation could not be updated');
     }

@@ -326,6 +326,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #searchResultEntryIndex: number;
   #searchResultHighlightElements: HTMLElement[] = [];
   #inTrackConfigEditMode: boolean = false;
+  // The index of an entry that a link annotation is being created form.
+  #currEntriesLinkFromSelectionIndex: number|null = null;
 
   // Stored because we cache this value to save extra lookups and layoffs.
   #canvasBoundingClientRect: DOMRect|null = null;
@@ -496,6 +498,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.highlightedEntryIndex = entryIndex;
     this.updateElementPosition(this.highlightElement, this.highlightedEntryIndex);
     this.dispatchEventToListeners(Events.EntryHovered, entryIndex);
+    if (this.#currEntriesLinkFromSelectionIndex) {
+      this.dispatchEventToListeners(
+          Events.EntriesLinkAnnotationChanged,
+          {entryFromIndex: this.#currEntriesLinkFromSelectionIndex, entryToIndex: this.highlightedEntryIndex});
+    }
   }
 
   highlightAllEntries(entries: number[]): void {
@@ -529,6 +536,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.highlightedEntryIndex = -1;
     this.updateElementPosition(this.highlightElement, this.highlightedEntryIndex);
     this.dispatchEventToListeners(Events.EntryHovered, -1);
+    if (this.#currEntriesLinkFromSelectionIndex) {
+      this.dispatchEventToListeners(
+          Events.EntriesLinkAnnotationChanged, {entryFromIndex: this.#currEntriesLinkFromSelectionIndex});
+    }
   }
 
   private createCandyStripePattern(): CanvasPattern {
@@ -1336,7 +1347,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       labelEntryAnnotationOption.setShortcut('Cmd + Click');
 
       const linkEntriesAnnotationOption = annotationSection.appendItem(i18nString(UIStrings.linkEntries), () => {
-        this.dispatchEventToListeners(Events.EntriesLinkAnnotationChanged, this.selectedEntryIndex);
+        // Set the entry that the current link selection starts from. Remove this value when selection is finished.
+        this.#currEntriesLinkFromSelectionIndex = this.selectedEntryIndex;
+        this.dispatchEventToListeners(Events.EntriesLinkAnnotationChanged, {entryFromIndex: this.selectedEntryIndex});
       });
       // TODO: Change the 'add link between entries' shortcut depending on the OS
       linkEntriesAnnotationOption.setShortcut('Cmd + Click');
@@ -4004,7 +4017,10 @@ export const enum Events {
 
 export type EventTypes = {
   [Events.EntryLabelAnnotationAdded]: number,
-  [Events.EntriesLinkAnnotationChanged]: number,
+  [Events.EntriesLinkAnnotationChanged]: {
+    entryFromIndex: number,
+    entryToIndex?: number,
+  },
   [Events.CanvasFocused]: number|void,
   [Events.EntryInvoked]: number,
   [Events.EntrySelected]: number,

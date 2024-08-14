@@ -15,6 +15,9 @@ export class EntriesLinkOverlay extends HTMLElement {
   #coordinateTo: {x: number, y: number};
   #connectorLineContainer: SVGAElement|null = null;
   #connector: SVGLineElement|null = null;
+  // Value indicating if `coordinateTo` is pointing to an entry or an empty space.
+  // It is used to check if the arrow needs to follow a mouse or is snap to an entry.
+  entryToExists: boolean = false;
 
   constructor(initialEntryCoordinate: {x: number, y: number}) {
     super();

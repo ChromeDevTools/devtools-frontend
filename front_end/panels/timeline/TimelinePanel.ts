@@ -1601,6 +1601,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.flameChart.updateExistingOverlay(overlay, {
           bounds: overlay.bounds,
         });
+      } else if (action === 'UpdateLinkToEntry' && Overlays.Overlays.isEntriesLink(overlay)) {
+        this.flameChart.updateExistingOverlay(overlay, {
+          entryTo: overlay.entryTo,
+        });
       }
       this.#sideBar.setAnnotations(currentManager.getAnnotations());
     });

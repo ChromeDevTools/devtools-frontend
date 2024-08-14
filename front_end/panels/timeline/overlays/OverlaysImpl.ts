@@ -90,6 +90,10 @@ export function isTimeRangeLabel(annotation: TimelineOverlay): annotation is Tim
   return annotation.type === 'TIME_RANGE';
 }
 
+export function isEntriesLink(annotation: TimelineOverlay): annotation is EntriesLink {
+  return annotation.type === 'ENTRIES_LINK';
+}
+
 /**
  * Used to highlight with a red-candy stripe a time range. It takes an entry
  * because this entry is the row that will be used to place the candy stripe,
@@ -207,6 +211,11 @@ export class Overlays extends EventTarget {
    * based on the new position of the timeline.
    */
   #overlaysToElements: Map<TimelineOverlay, HTMLElement|null> = new Map();
+
+  // When the Entries Link Annotation is created, the arrow needs to follow the mouse.
+  // Update the mouse coordinates while it is being created.
+  #lastMouseOffsetX: number|null = null;
+  #lastMouseOffsetY: number|null = null;
 
   #dimensions: ActiveDimensions = {
     trace: {
@@ -989,11 +998,16 @@ export class Overlays extends EventTarget {
         // TODO: Remove the mousemove event when the connecting entry is selected
         this.#flameChartsContainer.addEventListener('mousemove', event => {
           const mouseEvent = (event as MouseEvent);
-          const lastMouseOffsetX = mouseEvent.offsetX;
-          const lastMouseOffsetY = mouseEvent.offsetY;
+          this.#lastMouseOffsetX = mouseEvent.offsetX;
+          this.#lastMouseOffsetY = mouseEvent.offsetY;
           // TODO: Check if the mouse is over network track and do not add the network height if it is
           const networkHeight = this.#dimensions.charts.network?.heightPixels ?? 0;
-          component.coordinateTo = {x: lastMouseOffsetX, y: lastMouseOffsetY + networkHeight};
+
+          // Only follow the mouse if the link does not yet have the entry that link leads to
+          // and the mouse is not hovering over any entry. If it is, the arrow is snapped to that entry.
+          if (!component.entryToExists) {
+            component.coordinateTo = {x: this.#lastMouseOffsetX, y: this.#lastMouseOffsetY + networkHeight};
+          }
         });
 
         return div;
@@ -1049,8 +1063,24 @@ export class Overlays extends EventTarget {
       }
       case 'ENTRY_OUTLINE':
         break;
-      case 'ENTRIES_LINK':
+      case 'ENTRIES_LINK': {
+        const component = element.querySelector('devtools-entries-link-overlay');
+        if (component) {
+          // If entryTo exists, pass the coordinates of the entry that the arrow snaps to.
+          // If it does not, pass the mouse coordinates so the arrow follows the mouse instead.
+          if (overlay.entryTo) {
+            component.entryToExists = true;
+            const entryEndX = this.xPixelForEventStartOnChart(overlay.entryTo) ?? 0;
+            const halfEntryHeight = (this.pixelHeightForEventOnChart(overlay.entryTo) ?? 0) / 2;
+            const entryMiddleY = (this.yPixelForEventOnChart(overlay.entryTo) ?? 0) + halfEntryHeight;
+            component.coordinateTo = {x: entryEndX, y: entryMiddleY};
+          } else if (this.#lastMouseOffsetX && this.#lastMouseOffsetY) {
+            component.entryToExists = false;
+            component.coordinateTo = {x: this.#lastMouseOffsetX, y: this.#lastMouseOffsetY};
+          }
+        }
         break;
+      }
       case 'ENTRY_LABEL': {
         // TODO: update if the label changes
         // Nothing to do here.

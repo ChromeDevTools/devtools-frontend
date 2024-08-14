@@ -113,6 +113,35 @@ describeWithEnvironment('TimingTrackAppender', function() {
     });
   });
 
+  it('orders page load metrics that have the same timestamp', async function() {
+    entryData = [];
+    flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
+    entryTypeByLevel = [];
+    // animation.json.gz has FP, FCP and LCP at the same timestamp, and we want
+    // to make sure visually the markers are ordered [FP][FCP][LCP].
+    const {traceData} = await TraceLoader.traceEngine(this, 'animation.json.gz');
+    timingsTrackAppender = initTrackAppender(flameChartData, traceData, entryData, entryTypeByLevel);
+    timingsTrackAppender.appendTrackAtLevel(0);
+    const {allMarkerEvents} = traceData.PageLoadMetrics;
+
+    const firstPaint = allMarkerEvents.find(TraceModel.Types.TraceEvents.isTraceEventFirstPaint);
+    const fcp = allMarkerEvents.find(TraceModel.Types.TraceEvents.isTraceEventFirstContentfulPaint);
+    const lcp = allMarkerEvents.find(TraceModel.Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate);
+
+    assert.isOk(firstPaint);
+    assert.isOk(fcp);
+    assert.isOk(lcp);
+
+    // Prevent against the trace changing by ensuring all these events have the same timestamp.
+    assert.isTrue(firstPaint.ts === fcp.ts && fcp.ts === lcp.ts);
+
+    const indexes = [firstPaint, fcp, lcp].map(entry => entryData.indexOf(entry));
+    // Because of how we order page markers, we expect the indexes to be in
+    // this order which represents the visual order they are represented.
+    // (0, 1, 2) are this traces navigation start, DCL and Load event.
+    assert.deepEqual(indexes, [3, 4, 5]);
+  });
+
   describe('colorForEvent and titleForEvent', () => {
     it('returns the correct color and title for page load markers', () => {
       const traceMarkers = traceData.PageLoadMetrics.allMarkerEvents;

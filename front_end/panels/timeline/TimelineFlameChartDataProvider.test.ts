@@ -27,7 +27,12 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
         ...traceData.UserTimings.timestampEvents,
         ...traceData.UserTimings.performanceMarks,
         ...traceData.UserTimings.performanceMeasures,
-        ...traceData.PageLoadMetrics.allMarkerEvents,
+        ...traceData.PageLoadMetrics.allMarkerEvents.toSorted((m1, m2) => {
+          // These get sorted based on the metric so we have to replicate
+          // that for this assertion.
+          return Timeline.TimingsTrackAppender.SORT_ORDER_PAGE_LOAD_MARKERS[m1.name] -
+              Timeline.TimingsTrackAppender.SORT_ORDER_PAGE_LOAD_MARKERS[m2.name];
+        }),
       ].sort((a, b) => a.ts - b.ts);
       assert.deepEqual(groupTreeEvents, allTimingEvents);
     });

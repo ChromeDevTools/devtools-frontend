@@ -431,7 +431,6 @@ export const forcePseudoState = async (pseudoState: string) => {
                                                                veImpression('Toggle: focus-within'),
                                                                veImpression('Toggle: hover'),
                                                                veImpression('Toggle: target'),
-                                                               veImpression('Toggle: visited'),
                                                              ])]),
     veChange(`Panel: elements > Pane: styles > Pane: element-states > Toggle: ${
         pseudoState === 'Emulate a focused page' ? 'emulate-page-focus' : pseudoState.substr(1)}`),

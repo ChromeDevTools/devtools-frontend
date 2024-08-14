@@ -140,7 +140,7 @@ export class NetworkThrottlingSelector extends HTMLElement {
         .showConnector=${false}
         .jslogContext=${'network-conditions'}
         .buttonTitle=${i18nString(UIStrings.network, {PH1: selectionTitle})}
-        aria-label=${i18nString(UIStrings.networkThrottling, {PH1: selectionTitle})}
+        title=${i18nString(UIStrings.networkThrottling, {PH1: selectionTitle})}
       >
         ${this.#groups.map(group => {
           return html`

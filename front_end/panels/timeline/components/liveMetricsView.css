@@ -33,6 +33,8 @@
 
 .live-metrics {
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .next-steps {
@@ -58,7 +60,7 @@
 .metric-cards {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   width: 100%;
 }
 
@@ -206,13 +208,19 @@
 
 .interactions-section {
   margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  min-height: min-content;
 }
 
 .interactions-list {
   padding: 0;
   margin: 0;
   overflow: auto;
-  max-height: 300px;
+  flex: 1 1 300px;
+  max-height: max-content;
 }
 
 .interaction {
@@ -261,7 +269,7 @@
 
 .bucket-summaries.histogram {
   display: grid;
-  grid-template-columns: minmax(min-content, auto) minmax(20px, auto) max-content;
+  grid-template-columns: minmax(min-content, auto) minmax(20px, 50px) max-content;
   grid-auto-rows: 1fr;
   column-gap: 8px;
   justify-items: flex-end;
@@ -292,10 +300,6 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-}
-
-.record-action devtools-button {
-  overflow: hidden;
 }
 
 .shortcut-label {

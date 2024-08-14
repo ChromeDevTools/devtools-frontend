@@ -226,4 +226,20 @@ describe('LayoutShiftsHandler', function() {
     assert.strictEqual(layoutShifts.sessionMaxScore, globalCLS);
     assert.strictEqual(layoutShifts.clsWindowID, clusterWithCLS);
   });
+
+  it('calculates worst shift correctly for clusters', async function() {
+    await processTrace(this, 'cls-cluster-max-timeout.json.gz');
+
+    const clusters = TraceModel.Handlers.ModelHandlers.LayoutShifts.data().clusters;
+    assert.isNotEmpty(clusters);
+
+    for (const cluster of clusters) {
+      // Get the max shift score from the list of layout shifts.
+      const maxShiftScore = Math.max(...cluster.events.map(s => s.args.data?.cumulative_score ?? 0));
+      const gotShift = cluster.worstShiftEvent as TraceModel.Types.TraceEvents.SyntheticLayoutShift;
+      assert.isNotNull(gotShift);
+      // Make sure the worstShiftEvent's data matches the maxShiftScore.
+      assert.strictEqual(gotShift.args.data?.cumulative_score ?? 0, maxShiftScore);
+    }
+  });
 });

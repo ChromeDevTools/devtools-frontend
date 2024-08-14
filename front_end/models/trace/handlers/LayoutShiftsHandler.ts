@@ -306,6 +306,8 @@ async function buildLayoutShiftsClusters(): Promise<void> {
           bad: null,
         },
         navigationId,
+        // This is calculated below.
+        worstShiftEvent: null,
       });
 
       firstShiftTime = clusterStartTime;
@@ -369,6 +371,10 @@ async function buildLayoutShiftsClusters(): Promise<void> {
       const clusterEnd = Math.min(clusterEndByMaxDuration, clusterEndByMaxGap, traceBounds.max, nextNavigationTime);
       updateTraceWindowMax(cluster.clusterWindow, Types.Timing.MicroSeconds(clusterEnd));
     }
+
+    let largestScore: number = 0;
+    let worstShiftEvent: Types.TraceEvents.TraceEventData|null = null;
+
     for (const shift of cluster.events) {
       weightedScore += shift.args.data ? shift.args.data.weighted_score_delta : 0;
       windowID = shift.parsedData.sessionWindowData.id;
@@ -417,7 +423,17 @@ async function buildLayoutShiftsClusters(): Promise<void> {
       } else {
         updateTraceWindowMax(cluster.scoreWindows.good, cluster.clusterWindow.max);
       }
+
+      // Find the worst layout shift of the cluster.
+      const cumulativeScore = shift.args.data?.cumulative_score;
+      if (cumulativeScore !== undefined && cumulativeScore > largestScore) {
+        largestScore = cumulativeScore;
+        worstShiftEvent = shift;
+      }
     }
+    // Update the cluster's worst layout shift.
+    cluster.worstShiftEvent = worstShiftEvent;
+
     if (weightedScore > sessionMaxScore) {
       clsWindowID = windowID;
       sessionMaxScore = weightedScore;
@@ -476,6 +492,7 @@ export interface LayoutShiftCluster {
   };
   // The last navigation that happened before this cluster.
   navigationId?: string;
+  worstShiftEvent: Types.TraceEvents.TraceEventData|null;
 }
 
 // Based on https://web.dev/cls/

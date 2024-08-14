@@ -301,6 +301,7 @@ export const enum ExperimentName {
   TIMELINE_OBSERVATIONS = 'timeline-observations',
   TIMELINE_ENHANCED_TRACES = 'timeline-enhanced-traces',
   GEN_AI_SETTINGS_PANEL = 'gen-ai-settings-panel',
+  TIMELINE_SERVER_TIMINGS = 'timeline-server-timings',
 }
 
 export interface HostConfigConsoleInsights {

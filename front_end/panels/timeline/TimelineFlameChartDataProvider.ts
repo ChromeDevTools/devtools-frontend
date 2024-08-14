@@ -381,12 +381,14 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
           return 4;
         case 'Thread':
           return 5;
-        case 'GPU':
+        case 'ServerTimings':
           return 6;
-        case 'Thread_AuctionWorklet':
+        case 'GPU':
           return 7;
-        default:
+        case 'Thread_AuctionWorklet':
           return 8;
+        default:
+          return 9;
       }
     };
 

@@ -16,6 +16,7 @@ ts_library("unittests") {
     "InteractionsTrackAppender.test.ts",
     "LayoutShiftsTrackAppender.test.ts",
     "NetworkTrackAppender.test.ts",
+    "ServerTimingsTrackAppender.test.ts",
     "ThreadAppender.test.ts",
     "TimingsTrackAppender.test.ts",
   ]

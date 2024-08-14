@@ -2668,6 +2668,7 @@ export const knownContextValues = new Set([
   'timeline-overview',
   'timeline-rpp-sidebar',
   'timeline-scope',
+  'timeline-server-timings',
   'timeline-settings-pane',
   'timeline-settings-toggle',
   'timeline-show-all-events',

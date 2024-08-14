@@ -424,6 +424,10 @@ export class MainImpl {
         Root.Runtime.ExperimentName.GEN_AI_SETTINGS_PANEL,
         'Dedicated panel for generative AI settings',
     );
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.TIMELINE_SERVER_TIMINGS,
+        'Performance panel: enable server timings in the timeline',
+    );
 
     Root.Runtime.experiments.enableExperimentsByDefault([
       'css-type-component-length-deprecate',

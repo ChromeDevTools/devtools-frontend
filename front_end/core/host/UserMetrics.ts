@@ -1035,9 +1035,10 @@ export enum DevtoolsExperiments {
   'timeline-rpp-sidebar' = 95,
   'timeline-observations' = 96,
   'gen-ai-settings-panel' = 97,
+  'timeline-server-timings' = 98,
 
   // Increment this when new experiments are added.
-  'MaxValue' = 98,
+  'MaxValue' = 99,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

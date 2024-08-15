@@ -266,7 +266,11 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   }
 
   async #getScopedData(normalizedUrl: URL, pageScope: PageScope, deviceScope: DeviceScope): Promise<CrUXResponse|null> {
-    const {origin, href: url} = normalizedUrl;
+    const {origin, href: url, hostname} = normalizedUrl;
+
+    if (hostname === 'localhost') {
+      return null;
+    }
 
     const cache = pageScope === 'origin' ? this.#originCache : this.#urlCache;
     const cacheKey = pageScope === 'origin' ? `${origin}-${deviceScope}` : `${url}-${deviceScope}`;

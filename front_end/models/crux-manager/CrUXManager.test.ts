@@ -283,6 +283,16 @@ describeWithMockConnection('CrUXManager', () => {
 
       assert.strictEqual(mockFetch.callCount, 6);
     });
+
+    it('should exit early for localhost', async () => {
+      mockFetch.callsFake(async () => new Response(JSON.stringify(mockResponse()), {
+                            status: 200,
+                          }));
+
+      await cruxManager.getFieldDataForPage('https://localhost:8080/');
+
+      assert.strictEqual(mockFetch.callCount, 0);
+    });
   });
 
   describe('getFieldDataForCurrentPage', () => {

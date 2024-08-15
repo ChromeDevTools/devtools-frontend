@@ -701,6 +701,8 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   #recordReloadAction: UI.ActionRegistration.Action;
 
   #tooltipContainerEl?: Element;
+  #interactionsListEl?: HTMLElement;
+  #interactionsListScrolling = false;
 
   constructor() {
     super();
@@ -715,8 +717,36 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     this.#lcpValue = event.data.lcp;
     this.#clsValue = event.data.cls;
     this.#inpValue = event.data.inp;
-    this.#interactions = event.data.interactions;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+
+    const hasNewInteraction = this.#interactions.length < event.data.interactions.length;
+    this.#interactions = [...event.data.interactions];
+
+    const renderPromise = ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+
+    const listEl = this.#interactionsListEl;
+    if (!hasNewInteraction || !listEl) {
+      return;
+    }
+
+    const isAtBottom = Math.abs(listEl.scrollHeight - listEl.clientHeight - listEl.scrollTop) <= 1;
+
+    // We shouldn't scroll to the bottom if the list wasn't already at the bottom.
+    // However, if a new item appears while the animation for a previous item is still going,
+    // then we should "finish" the scroll by sending another scroll command even if the scroll position
+    // the element hasn't scrolled all the way to the bottom yet.
+    if (!isAtBottom && !this.#interactionsListScrolling) {
+      return;
+    }
+
+    void renderPromise.then(() => {
+      requestAnimationFrame(() => {
+        this.#interactionsListScrolling = true;
+        listEl.addEventListener('scrollend', () => {
+          this.#interactionsListScrolling = false;
+        }, {once: true});
+        listEl.scrollTo({top: listEl.scrollHeight, behavior: 'smooth'});
+      });
+    });
   }
 
   #onFieldDataChanged(event: {data: CrUXManager.PageResult|undefined}): void {
@@ -1202,7 +1232,11 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
             ${this.#interactions.length > 0 ? html`
               <section class="interactions-section" aria-labelledby="interactions-section-title">
                 <h2 id="interactions-section-title" class="section-title">${i18nString(UIStrings.interactions)}</h2>
-                <ol class="interactions-list">
+                <ol class="interactions-list"
+                  on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
+                    this.#interactionsListEl = node as HTMLElement;
+                  })}
+                >
                   ${this.#interactions.map(interaction => html`
                     <li class="interaction">
                       <span class="interaction-type">${interaction.interactionType}</span>

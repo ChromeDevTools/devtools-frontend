@@ -767,9 +767,21 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
     const executionContexts = runtimeModel ? runtimeModel.executionContexts() : [];
     for (const context of executionContexts) {
-      if (context.name && context.origin && projectOrigin.startsWith(context.origin)) {
-        return context.name;
+      if (!context.origin || !projectOrigin.startsWith(context.origin)) {
+        continue;
       }
+
+      if (!context.name) {
+        if (context.isDefault) {
+          // The default context can have any empty string as its name, but if the project origin matches the default
+          // context then we shouldn't use the name from any other contexts we find.
+          break;
+        } else {
+          continue;
+        }
+      }
+
+      return context.name;
     }
 
     if (!projectOrigin) {

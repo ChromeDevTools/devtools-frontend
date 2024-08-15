@@ -20,6 +20,8 @@ function nextId(prefix) {
   return (prefix || '') + ++id;
 }
 
+const defaultContentScriptDomain = 'chrome-extension://ahfhijdlegdabablpippeagghigmibma';
+
 SDKTestRunner.PageMock = class {
   constructor(url) {
     this.url = url;
@@ -95,6 +97,13 @@ SDKTestRunner.PageMock = class {
 
   evalScript(url, content, isContentScript) {
     const id = nextId();
+
+    // If the input is a filename but not a complete URL just add it to the default
+    // content script domain.
+    if (isContentScript && url.match(/.*\.js$/) && !url.match(/^[a-z\-]+:\/\//)) {
+      url = defaultContentScriptDomain + '/' + url;
+    }
+
     content += '\n//# sourceURL=' + url;
     this.scriptContents.set(id, content);
     let context = this.executionContexts.find(context => context.auxData.isDefault !== isContentScript);
@@ -169,7 +178,7 @@ SDKTestRunner.PageMock = class {
 
       auxData: {isDefault: !isContentScript, frameId: frame.id},
 
-      origin: frame.securityOrigin,
+      origin: isContentScript ? defaultContentScriptDomain : frame.securityOrigin,
       name: isContentScript ? 'content-script-context' : ''
     };
   }

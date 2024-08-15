@@ -760,6 +760,7 @@ export const knownContextValues = new Set([
   'custom-header-for-test',
   'custom-item',
   'custom-network-conditions',
+  'custom-network-throttling-item',
   'custom-property',
   'custom-user-agent',
   'custom-user-agent-metadata',

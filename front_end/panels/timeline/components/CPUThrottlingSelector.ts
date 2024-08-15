@@ -7,6 +7,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 
 const {html} = LitHtml;
@@ -86,10 +87,12 @@ export class CPUThrottlingSelector extends HTMLElement {
           >
           ${MobileThrottling.ThrottlingPresets.ThrottlingPresets.cpuThrottlingPresets.map(rate => {
             const title = rate === 1 ? i18nString(UIStrings.noThrottling) : i18nString(UIStrings.dSlowdown, {PH1: rate});
+            const jslogContext = rate === 1 ? 'cpu-no-throttling' : `cpu-throttled-${rate}`;
             return LitHtml.html`
               <${Menus.Menu.MenuItem.litTagName}
                 .value=${rate}
                 .selected=${this.#currentRate === rate}
+                jslog=${VisualLogging.item(jslogContext).track({click: true})}
               >
                 ${title}
               </${Menus.Menu.MenuItem.litTagName}>

@@ -161,11 +161,12 @@ export class ThrottlingManager {
           const title = typeof conditions.title === 'function' ? conditions.title() : conditions.title;
           const option = new Option(title, title);
           UI.ARIAUtils.setLabel(option, i18nString(UIStrings.sS, {PH1: group.title, PH2: title}));
-          option.setAttribute(
-              'jslog',
-              `${VisualLogging.item(Platform.StringUtilities.toKebabCase(conditions.i18nTitleKey || title)).track({
-                click: true,
-              })}`);
+          const jslogContext = i === groups.length - 1 ?
+              'custom-network-throttling-item' :
+              Platform.StringUtilities.toKebabCase(conditions.i18nTitleKey || title);
+          option.setAttribute('jslog', `${VisualLogging.item(jslogContext).track({
+                                click: true,
+                              })}`);
           groupElement.appendChild(option);
           options.push(conditions);
         }

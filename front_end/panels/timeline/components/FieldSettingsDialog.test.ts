@@ -12,8 +12,8 @@ import * as Components from './components.js';
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const OPEN_BUTTON_SELECTOR = 'devtools-button';
-const ENABLE_BUTTON_SELECTOR = 'devtools-button[jslogcontext="field-data-enable"]';
-const DISABLE_BUTTON_SELECTOR = 'devtools-button[jslogcontext="field-data-disable"]';
+const ENABLE_BUTTON_SELECTOR = 'devtools-button[data-field-data-enable]';
+const DISABLE_BUTTON_SELECTOR = 'devtools-button[data-field-data-disable]';
 const OVERRIDE_CHECKBOX_SELECTOR = 'input[type="checkbox"]';
 const OVERRIDE_TEXT_SELECTOR = 'input[type="text"]';
 

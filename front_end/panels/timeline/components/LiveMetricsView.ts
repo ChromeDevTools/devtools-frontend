@@ -15,6 +15,7 @@ import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wra
 import * as Menus from '../../../ui/components/menus/menus.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 
 import {CPUThrottlingSelector} from './CPUThrottlingSelector.js';
@@ -260,7 +261,7 @@ function rateMetric(value: number, thresholds: MetricThresholds): MetricRating {
 }
 
 function renderMetricValue(
-    value: number|undefined, thresholds: MetricThresholds, format: (value: number) => string,
+    jslogContext: string, value: number|undefined, thresholds: MetricThresholds, format: (value: number) => string,
     options?: {dim?: boolean}): HTMLElement {
   const metricValueEl = document.createElement('span');
   metricValueEl.classList.add('metric-value');
@@ -273,6 +274,10 @@ function renderMetricValue(
   metricValueEl.textContent = format(value);
   const rating = rateMetric(value, thresholds);
   metricValueEl.classList.add(rating);
+  // Ensure we log impressions of each section. We purposefully add this here
+  // because if we don't have field data (dealt with in the undefined branch
+  // above), we do not want to log an impression on it.
+  metricValueEl.setAttribute('jslog', `${VisualLogging.section(jslogContext)}`);
   if (options?.dim) {
     metricValueEl.classList.add('dim');
   }
@@ -486,7 +491,8 @@ export class MetricCard extends HTMLElement {
     const compare = this.#getCompareRating();
     const rating = rateMetric(localValue, this.#getThresholds());
 
-    const valueEl = renderMetricValue(localValue, this.#getThresholds(), this.#getFormatFn(), {dim: true});
+    const valueEl = renderMetricValue(
+        this.#getMetricValueLogContext(true), localValue, this.#getThresholds(), this.#getFormatFn(), {dim: true});
 
     // clang-format off
     return html`
@@ -498,6 +504,10 @@ export class MetricCard extends HTMLElement {
       </div>
     `;
     // clang-format on
+  }
+
+  #getMetricValueLogContext(isLocal: boolean): string {
+    return `timeline.landing.${isLocal ? 'local' : 'field'}-${this.#data.metric.toLowerCase()}`;
   }
 
   #renderDetailedCompareString(): LitHtml.LitTemplate {
@@ -516,8 +526,10 @@ export class MetricCard extends HTMLElement {
     const fieldValue = this.#getFieldValue();
     const fieldRating = fieldValue !== undefined ? rateMetric(fieldValue, this.#getThresholds()) : undefined;
 
-    const localValueEl = renderMetricValue(localValue, this.#getThresholds(), this.#getFormatFn(), {dim: true});
-    const fieldValueEl = renderMetricValue(fieldValue, this.#getThresholds(), this.#getFormatFn(), {dim: true});
+    const localValueEl = renderMetricValue(
+        this.#getMetricValueLogContext(true), localValue, this.#getThresholds(), this.#getFormatFn(), {dim: true});
+    const fieldValueEl = renderMetricValue(
+        this.#getMetricValueLogContext(false), fieldValue, this.#getThresholds(), this.#getFormatFn(), {dim: true});
 
     // clang-format off
     return html`
@@ -634,12 +646,16 @@ export class MetricCard extends HTMLElement {
           aria-describedby="tooltip"
         >
           <div class="card-value-block">
-            <div class="card-value" id="local-value">${renderMetricValue(this.#getLocalValue(), this.#getThresholds(), this.#getFormatFn())}</div>
+            <div class="card-value" id="local-value">${renderMetricValue(
+              this.#getMetricValueLogContext(true),
+              this.#getLocalValue(), this.#getThresholds(), this.#getFormatFn())}</div>
             ${fieldEnabled ? html`<div class="card-metric-label">${i18nString(UIStrings.localValue)}</div>` : nothing}
           </div>
           ${fieldEnabled ? html`
             <div class="card-value-block">
-              <div class="card-value" id="field-value">${renderMetricValue(this.#getFieldValue(), this.#getThresholds(), this.#getFormatFn())}</div>
+              <div class="card-value" id="field-value">${renderMetricValue(
+                this.#getMetricValueLogContext(false),
+                this.#getFieldValue(), this.#getThresholds(), this.#getFormatFn())}</div>
               <div class="card-value-label">${i18nString(UIStrings.field75thPercentile)}</div>
             </div>
           `: nothing}
@@ -1193,7 +1209,9 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
                       <span class="interaction-node">${
                         interaction.node && until(Common.Linkifier.Linkifier.linkify(interaction.node))}</span>
                       <span class="interaction-duration">
-                        ${renderMetricValue(interaction.duration, INP_THRESHOLDS, v => i18n.TimeUtilities.millisToString(v), {dim: true})}
+                        ${renderMetricValue(
+                          'timeline.landing.interaction-event-timing',
+                          interaction.duration, INP_THRESHOLDS, v => i18n.TimeUtilities.millisToString(v), {dim: true})}
                       </span>
                     </li>
                   `)}

@@ -252,8 +252,8 @@ export class FieldSettingsDialog extends HTMLElement {
           .data=${{
             variant: Buttons.Button.Variant.OUTLINED,
             title: i18nString(UIStrings.configure),
-            jslogContext: 'field-data-configure',
           } as Buttons.Button.ButtonData}
+        jslog=${VisualLogging.action('timeline.field-data.configure').track({click: true})}
         >${i18nString(UIStrings.configure)}</${Buttons.Button.Button.litTagName}>
       `;
       // clang-format on
@@ -267,7 +267,8 @@ export class FieldSettingsDialog extends HTMLElement {
           variant: Buttons.Button.Variant.PRIMARY,
           title: i18nString(UIStrings.setUp),
         } as Buttons.Button.ButtonData}
-        jslogContext=${'field-data-setup'}
+        jslog=${VisualLogging.action('timeline.field-data.setup').track({click: true})}
+        data-field-data-setup
       >${i18nString(UIStrings.setUp)}</${Buttons.Button.Button.litTagName}>
     `;
     // clang-format on
@@ -284,7 +285,8 @@ export class FieldSettingsDialog extends HTMLElement {
           variant: Buttons.Button.Variant.PRIMARY,
           title: i18nString(UIStrings.ok),
         } as Buttons.Button.ButtonData}
-        jslogContext=${'field-data-enable'}
+        jslog=${VisualLogging.action('timeline.field-data.enable').track({click: true})}
+        data-field-data-enable
       >${i18nString(UIStrings.ok)}</${Buttons.Button.Button.litTagName}>
     `;
     // clang-format on
@@ -302,7 +304,8 @@ export class FieldSettingsDialog extends HTMLElement {
           variant: Buttons.Button.Variant.OUTLINED,
           title: label,
         } as Buttons.Button.ButtonData}
-        jslogContext=${'field-data-disable'}
+        jslog=${VisualLogging.action('timeline.field-data.disable').track({click: true})}
+        data-field-data-disable
       >${label}</${Buttons.Button.Button.litTagName}>
     `;
     // clang-format on
@@ -572,7 +575,7 @@ export class FieldSettingsDialog extends HTMLElement {
         .showConnector=${true}
         .position=${Dialogs.Dialog.DialogVerticalPosition.AUTO}
         .horizontalAlignment=${Dialogs.Dialog.DialogHorizontalAlignment.CENTER}
-        .jslogContext=${'field-data-settings'}
+        .jslogContext=${VisualLogging.dialog('timeline.field-data.settings')}
         on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
           this.#dialog = node as Dialogs.Dialog.Dialog;
         })}

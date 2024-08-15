@@ -1005,6 +1005,9 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     const buttonTitle = this.#fieldPageScope === 'url' ? urlLabel : originLabel;
     const accessibleTitle = i18nString(UIStrings.showFieldDataForPage, {PH1: buttonTitle});
 
+    // If there is no data at all we should force users to switch pages or reconfigure CrUX.
+    const shouldDisable = !this.#cruxPageResult?.['url-ALL'] && !this.#cruxPageResult?.['origin-ALL'];
+
     return html`
       <${Menus.SelectMenu.SelectMenu.litTagName}
         id="page-scope-select"
@@ -1016,6 +1019,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         .showSelectedItem=${true}
         .showConnector=${false}
         .buttonTitle=${buttonTitle}
+        .disabled=${shouldDisable}
         title=${accessibleTitle}
       >
         <${Menus.Menu.MenuItem.litTagName}

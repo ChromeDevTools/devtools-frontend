@@ -10,6 +10,7 @@ devtools_module("live-metrics") {
 
   deps = [
     "../../core/common:bundle",
+    "../../core/host:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "./web-vitals-injected:web-vitals-injected",

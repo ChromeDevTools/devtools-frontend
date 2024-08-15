@@ -434,6 +434,7 @@ export class MainImpl {
       Root.Runtime.ExperimentName.OUTERMOST_TARGET_SELECTOR,
       Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL,
       Root.Runtime.ExperimentName.AUTOFILL_VIEW,
+      Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS,
       ...(Root.Runtime.Runtime.queryParam('isChromeForTesting') ? ['protocol-monitor'] : []),
     ]);
 

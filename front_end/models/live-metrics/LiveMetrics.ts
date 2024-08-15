@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -262,6 +263,13 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   }
 
   async #enable(target: SDK.Target.Target): Promise<void> {
+    if (Host.InspectorFrontendHost.isUnderTest()) {
+      // Enabling this impacts a lot of layout tests; we will work on fixing
+      // them but for now it is easier to not run this page in layout tests.
+      // b/360064852
+      return;
+    }
+
     if (this.#target) {
       return;
     }

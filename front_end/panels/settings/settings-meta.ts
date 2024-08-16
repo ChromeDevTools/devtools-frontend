@@ -101,6 +101,9 @@ UI.ViewManager.registerViewExtension({
   },
   iconName: 'spark',
   settings: ['console-insights-enabled'],
+  condition: config => {
+    return (config?.devToolsConsoleInsights?.enabled || config?.devToolsFreestylerDogfood?.enabled) ?? false;
+  },
 });
 
 UI.ViewManager.registerViewExtension({

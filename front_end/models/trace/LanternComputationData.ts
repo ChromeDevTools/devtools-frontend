@@ -10,17 +10,15 @@ import type * as Types from './types/types.js';
 
 type NetworkRequest = Lantern.Types.NetworkRequest<Types.TraceEvents.SyntheticNetworkRequest>;
 
-function createProcessedNavigation(traceEngineData: Handlers.Types.TraceParseData):
-    Lantern.Types.Simulation.ProcessedNavigation {
-  const Meta = traceEngineData.Meta;
-  const frameId = Meta.mainFrameId;
+function createProcessedNavigation(
+    traceEngineData: Handlers.Types.TraceParseData, frameId: string,
+    navigationId: string): Lantern.Types.Simulation.ProcessedNavigation {
   const scoresByNav = traceEngineData.PageLoadMetrics.metricScoresByFrameId.get(frameId);
   if (!scoresByNav) {
-    throw new Lantern.Core.LanternError('missing metric scores for main frame');
+    throw new Lantern.Core.LanternError('missing metric scores for frame');
   }
 
-  const lastNavigationId = Meta.mainFrameNavigations.at(-1)?.args.data?.navigationId;
-  const scores = lastNavigationId && scoresByNav.get(lastNavigationId);
+  const scores = scoresByNav.get(navigationId);
   if (!scores) {
     throw new Lantern.Core.LanternError('missing metric scores for specified navigation');
   }
@@ -274,14 +272,17 @@ function linkInitiators(lanternRequests: NetworkRequest[]): void {
 }
 
 function createNetworkRequests(
-    trace: Lantern.Types.Trace, traceEngineData: Handlers.Types.TraceParseData): NetworkRequest[] {
+    trace: Lantern.Types.Trace, traceEngineData: Handlers.Types.TraceParseData, startTime = 0,
+    endTime = Number.POSITIVE_INFINITY): NetworkRequest[] {
   const workerThreads = findWorkerThreads(trace);
 
   const lanternRequests: NetworkRequest[] = [];
   for (const request of traceEngineData.NetworkRequests.byTime) {
-    const lanternRequest = createLanternRequest(traceEngineData, workerThreads, request);
-    if (lanternRequest) {
-      lanternRequests.push(lanternRequest);
+    if (request.ts >= startTime && request.ts < endTime) {
+      const lanternRequest = createLanternRequest(traceEngineData, workerThreads, request);
+      if (lanternRequest) {
+        lanternRequests.push(lanternRequest);
+      }
     }
   }
 

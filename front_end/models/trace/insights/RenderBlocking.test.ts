@@ -65,6 +65,16 @@ describe('RenderBlockingRequests', function() {
         'a result is not contained by the nav bounds');
   });
 
+  it('considers navigations separately', async () => {
+    const {data, insights} = await processTrace(this, 'multiple-navigations-render-blocking.json.gz');
+    assert.strictEqual(insights.size, 2);
+    const navigations = Array.from(data.Meta.navigationsByNavigationId.values());
+    const insightOne = getInsight(insights, navigations[0].args.data?.navigationId || '');
+    const insightTwo = getInsight(insights, navigations[1].args.data?.navigationId || '');
+    assert.deepStrictEqual(insightOne.renderBlockingRequests.map(r => r.args.data.requestId), ['99116.2']);
+    assert.deepStrictEqual(insightTwo.renderBlockingRequests.map(r => r.args.data.requestId), ['99116.5']);
+  });
+
   it('considers only the frame specified by the context', async () => {
     const {data, insights} = await processTrace(this, 'render-blocking-in-iframe.json.gz');
     assert.strictEqual(insights.size, 1);

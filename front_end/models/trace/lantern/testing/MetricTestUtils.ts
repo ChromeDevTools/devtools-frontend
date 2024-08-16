@@ -36,11 +36,17 @@ async function getComputationDataFromFixture({trace, settings, url}: {
   const traceEngineData = await runTraceEngine(trace);
   const requests = TraceModel.LanternComputationData.createNetworkRequests(trace, traceEngineData);
   const networkAnalysis = Lantern.Core.NetworkAnalyzer.analyze(requests);
+  const frameId = traceEngineData.Meta.mainFrameId;
+  const navigationId = traceEngineData.Meta.mainFrameNavigations[0].args.data?.navigationId;
+  if (!navigationId) {
+    throw new Error('no navigation id found');
+  }
 
   return {
     simulator: Lantern.Simulation.Simulator.createSimulator({...settings, networkAnalysis}),
     graph: TraceModel.LanternComputationData.createGraph(requests, trace, traceEngineData, url),
-    processedNavigation: TraceModel.LanternComputationData.createProcessedNavigation(traceEngineData),
+    processedNavigation:
+        TraceModel.LanternComputationData.createProcessedNavigation(traceEngineData, frameId, navigationId),
   };
 }
 

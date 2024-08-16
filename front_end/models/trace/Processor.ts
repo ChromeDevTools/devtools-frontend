@@ -255,8 +255,8 @@ export class TraceProcessor extends EventTarget {
   }
 
   #createLanternContext(
-      traceParsedData: Handlers.Types.TraceParseData,
-      traceEvents: readonly Types.TraceEvents.TraceEventData[]): Insights.Types.LanternContext|undefined {
+      traceParsedData: Handlers.Types.TraceParseData, traceEvents: readonly Types.TraceEvents.TraceEventData[],
+      frameId: string, navigationId: string): Insights.Types.LanternContext|undefined {
     // Check for required handlers.
     if (!traceParsedData.NetworkRequests || !traceParsedData.Workers || !traceParsedData.PageLoadMetrics) {
       return;
@@ -265,15 +265,26 @@ export class TraceProcessor extends EventTarget {
       throw new Lantern.Core.LanternError('No network requests found in trace');
     }
 
+    const navStarts = traceParsedData.Meta.navigationsByFrameId.get(frameId);
+    const navStartIndex = navStarts?.findIndex(n => n.args.data?.navigationId === navigationId);
+    if (!navStarts || navStartIndex === undefined || navStartIndex === -1) {
+      throw new Lantern.Core.LanternError('Could not find navigation start');
+    }
+
+    const startTime = navStarts[navStartIndex].ts;
+    const endTime = navStartIndex + 1 < navStarts.length ? navStarts[navStartIndex + 1].ts : Number.POSITIVE_INFINITY;
+    const boundedTraceEvents = traceEvents.filter(e => e.ts >= startTime && e.ts < endTime);
+
     // Lantern.Types.TraceEvent and Types.TraceEvents.TraceEventData represent the same
     // object - a trace event - but one is more flexible than the other. It should be safe to cast between them.
     const trace: Lantern.Types.Trace = {
-      traceEvents: traceEvents as unknown as Lantern.Types.TraceEvent[],
+      traceEvents: boundedTraceEvents as unknown as Lantern.Types.TraceEvent[],
     };
 
-    const requests = LanternComputationData.createNetworkRequests(trace, traceParsedData);
+    const requests = LanternComputationData.createNetworkRequests(trace, traceParsedData, startTime, endTime);
     const graph = LanternComputationData.createGraph(requests, trace, traceParsedData);
-    const processedNavigation = LanternComputationData.createProcessedNavigation(traceParsedData);
+    const processedNavigation =
+        LanternComputationData.createProcessedNavigation(traceParsedData, frameId, navigationId);
 
     const networkAnalysis = Lantern.Core.NetworkAnalyzer.analyze(requests);
     const simulator: Lantern.Simulation.Simulator<Types.TraceEvents.SyntheticNetworkRequest> =
@@ -306,43 +317,44 @@ export class TraceProcessor extends EventTarget {
 
     const enabledInsightRunners = TraceProcessor.getEnabledInsightRunners(traceParsedData);
 
-    // The lantern sub-context is optional on NavigationInsightContext, so not setting it is OK.
-    // This is also a hedge against an error inside Lantern resulting in breaking the entire performance panel.
-    // Additionally, many trace fixtures are too old to be processed by Lantern.
-    // TODO(crbug.com/313905799): should be created and scoped per-navigation.
-    let lantern;
-    try {
-      lantern = this.#createLanternContext(traceParsedData, traceEvents);
-    } catch (e) {
-      // Don't allow an error in constructing the Lantern graphs to break the rest of the trace processor.
-      // Log unexpected errors, but suppress anything that occurs from a trace being too old.
-      // Otherwise tests using old fixtures become way too noisy.
-      const expectedErrors = [
-        'mainDocumentRequest not found',
-        'missing metric scores for main frame',
-        'missing metric: FCP',
-        'missing metric: LCP',
-        'No network requests found in trace',
-        'Trace is too old',
-      ];
-      if (!(e instanceof Lantern.Core.LanternError)) {
-        // If this wasn't a managed LanternError, the stack trace is likely needed for debugging.
-        console.error(e);
-      } else if (!expectedErrors.some(err => e.message === err)) {
-        // To reduce noise from tests, only print errors that are not expected to occur because a trace is
-        // too old (for which there is no single check).
-        console.error(e.message);
-      }
-    }
-
     for (const nav of traceParsedData.Meta.mainFrameNavigations) {
-      if (!nav.args.frame || !nav.args.data?.navigationId) {
+      const frameId = nav.args.frame;
+      const navigationId = nav.args.data?.navigationId;
+      if (!frameId || !navigationId) {
         continue;
       }
 
+      // The lantern sub-context is optional on NavigationInsightContext, so not setting it is OK.
+      // This is also a hedge against an error inside Lantern resulting in breaking the entire performance panel.
+      // Additionally, many trace fixtures are too old to be processed by Lantern.
+      let lantern;
+      try {
+        lantern = this.#createLanternContext(traceParsedData, traceEvents, frameId, navigationId);
+      } catch (e) {
+        // Don't allow an error in constructing the Lantern graphs to break the rest of the trace processor.
+        // Log unexpected errors, but suppress anything that occurs from a trace being too old.
+        // Otherwise tests using old fixtures become way too noisy.
+        const expectedErrors = [
+          'mainDocumentRequest not found',
+          'missing metric scores for main frame',
+          'missing metric: FCP',
+          'missing metric: LCP',
+          'No network requests found in trace',
+          'Trace is too old',
+        ];
+        if (!(e instanceof Lantern.Core.LanternError)) {
+          // If this wasn't a managed LanternError, the stack trace is likely needed for debugging.
+          console.error(e);
+        } else if (!expectedErrors.some(err => e.message === err)) {
+          // To reduce noise from tests, only print errors that are not expected to occur because a trace is
+          // too old (for which there is no single check).
+          console.error(e.message);
+        }
+      }
+
       const context: Insights.Types.NavigationInsightContext = {
-        frameId: nav.args.frame,
-        navigationId: nav.args.data.navigationId,
+        frameId,
+        navigationId,
         lantern,
       };
 

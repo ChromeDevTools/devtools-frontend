@@ -22,6 +22,19 @@ const UIStrings = {
    * @example {401ms} PH1
    */
   lcpLoadDelay: 'LCP image loaded {PH1} after earliest start point.',
+  /**
+   * @description Text to tell the user that a fetchpriority property value of "high" is applied to the LCP request.
+   */
+  fetchPriorityApplied: 'fetchpriority=high applied',
+  /**
+   * @description Text to tell the user that the LCP request is discoverable in the initial document.
+   */
+  requestDiscoverable: 'Request is discoverable in initial document',
+  /**
+   * @description Text to tell the user that the LCP request does not have the lazy load property applied.
+   */
+  lazyLoadNotApplied: 'lazy load not applied',
+
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/LCPDiscovery.ts', UIStrings);
@@ -171,15 +184,15 @@ export class LCPDiscovery extends BaseInsight {
             <ul class="insight-results discovery-icon-results">
               <li class="insight-entry">
                 ${this.#adviceIcon(imageData.shouldIncreasePriorityHint)}
-                <span>fetchpriority=high applied</span>
+                <span>${i18nString(UIStrings.fetchPriorityApplied)}</span>
               </li>
               <li class="insight-entry">
                 ${this.#adviceIcon(imageData.shouldPreloadImage)}
-                <span>Request is discoverable in initial document</span>
+                <span>${i18nString(UIStrings.requestDiscoverable)}</span>
               </li>
               <li class="insight-entry">
                 ${this.#adviceIcon(imageData.shouldRemoveLazyLoading)}
-                <span>lazyload not applied</span>
+                <span>${i18nString(UIStrings.lazyLoadNotApplied)}</span>
               </li>
             </ul>
           </div>

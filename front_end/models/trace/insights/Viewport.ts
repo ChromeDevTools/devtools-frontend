@@ -10,9 +10,15 @@ export function deps(): ['Meta', 'UserInteractions'] {
   return ['Meta', 'UserInteractions'];
 }
 
-export function generateInsight(traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext):
-    InsightResult<{mobileOptimized: boolean | null}> {
-  const events = traceParsedData.UserInteractions.beginCommitCompositorFrameEvents.filter(event => {
+export type ViewportInsightResult = InsightResult<{
+  mobileOptimized: boolean | null,
+  nodeId?: number,
+  content?: string,
+}>;
+
+export function generateInsight(
+    traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext): ViewportInsightResult {
+  const compositorEvents = traceParsedData.UserInteractions.beginCommitCompositorFrameEvents.filter(event => {
     if (event.args.frame !== context.frameId) {
       return false;
     }
@@ -26,7 +32,7 @@ export function generateInsight(traceParsedData: RequiredData<typeof deps>, cont
     return true;
   });
 
-  if (!events.length) {
+  if (!compositorEvents.length) {
     // Trace doesn't have the data we need.
     return {
       mobileOptimized: null,
@@ -34,16 +40,37 @@ export function generateInsight(traceParsedData: RequiredData<typeof deps>, cont
     };
   }
 
+  const viewportEvent = traceParsedData.UserInteractions.parseMetaViewportEvents.find(event => {
+    if (event.args.data.frame !== context.frameId) {
+      return false;
+    }
+
+    const navigation =
+        Helpers.Trace.getNavigationForTraceEvent(event, context.frameId, traceParsedData.Meta.navigationsByFrameId);
+    if (navigation?.args.data?.navigationId !== context.navigationId) {
+      return false;
+    }
+
+    return true;
+  });
+
+  const content = viewportEvent?.args.data.content;
+  const nodeId = viewportEvent?.args.data.node_id;
+
   // Returns true only if all events are mobile optimized.
-  for (const event of events) {
+  for (const event of compositorEvents) {
     if (!event.args.is_mobile_optimized) {
       return {
         mobileOptimized: false,
+        content,
+        nodeId,
       };
     }
   }
 
   return {
     mobileOptimized: true,
+    content,
+    nodeId,
   };
 }

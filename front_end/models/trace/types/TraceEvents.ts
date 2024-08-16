@@ -1112,6 +1112,21 @@ export function isTraceEventBeginCommitCompositorFrame(event: TraceEventData):
   return event.name === KnownEventName.BeginCommitCompositorFrame;
 }
 
+export interface TraceEventParseMetaViewport extends TraceEventInstant {
+  name: KnownEventName.ParseMetaViewport;
+  args: TraceEventArgs&{
+    data: {
+      frame: string,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      node_id: number,
+      content: string,
+    },
+  };
+}
+export function isTraceEventParseMetaViewport(event: TraceEventData): event is TraceEventParseMetaViewport {
+  return event.name === KnownEventName.ParseMetaViewport;
+}
+
 export interface TraceEventScheduleStyleRecalculation extends TraceEventInstant {
   name: KnownEventName.ScheduleStyleRecalculation;
   args: TraceEventArgs&{
@@ -2671,6 +2686,7 @@ export const enum KnownEventName {
   StyleInvalidatorInvalidationTracking = 'StyleInvalidatorInvalidationTracking',
   SelectorStats = 'SelectorStats',
   BeginCommitCompositorFrame = 'BeginCommitCompositorFrame',
+  ParseMetaViewport = 'ParseMetaViewport',
 
   /* Paint */
   ScrollLayer = 'ScrollLayer',

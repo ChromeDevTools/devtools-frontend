@@ -19,6 +19,7 @@ import {HandlerState, type TraceEventHandlerName} from './types.js';
 const allEvents: Types.TraceEvents.TraceEventEventTiming[] = [];
 
 const beginCommitCompositorFrameEvents: Types.TraceEvents.TraceEventBeginCommitCompositorFrame[] = [];
+const parseMetaViewportEvents: Types.TraceEvents.TraceEventParseMetaViewport[] = [];
 
 export const LONG_INTERACTION_THRESHOLD = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(200));
 
@@ -30,6 +31,8 @@ export interface UserInteractionsData {
   allEvents: readonly Types.TraceEvents.TraceEventEventTiming[];
   /** All the BeginCommitCompositorFrame events we found in the trace */
   beginCommitCompositorFrameEvents: readonly Types.TraceEvents.TraceEventBeginCommitCompositorFrame[];
+  /** All the ParseMetaViewport events we found in the trace */
+  parseMetaViewportEvents: readonly Types.TraceEvents.TraceEventParseMetaViewport[];
   /** All the interaction events we found in the trace that had an
    * interactionId and a duration > 0
    **/
@@ -66,6 +69,7 @@ let handlerState = HandlerState.UNINITIALIZED;
 export function reset(): void {
   allEvents.length = 0;
   beginCommitCompositorFrameEvents.length = 0;
+  parseMetaViewportEvents.length = 0;
   interactionEvents.length = 0;
   eventTimingStartEventsForInteractions.length = 0;
   eventTimingEndEventsById.clear();
@@ -81,6 +85,11 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
 
   if (Types.TraceEvents.isTraceEventBeginCommitCompositorFrame(event)) {
     beginCommitCompositorFrameEvents.push(event);
+    return;
+  }
+
+  if (Types.TraceEvents.isTraceEventParseMetaViewport(event)) {
+    parseMetaViewportEvents.push(event);
     return;
   }
 
@@ -352,6 +361,7 @@ export function data(): UserInteractionsData {
   return {
     allEvents,
     beginCommitCompositorFrameEvents,
+    parseMetaViewportEvents,
     interactionEvents,
     interactionEventsWithNoNesting,
     longestInteractionEvent,

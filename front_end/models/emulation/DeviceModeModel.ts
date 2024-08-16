@@ -380,7 +380,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return !this.#heightSetting.get();
   }
 
-  private isMobile(): boolean {
+  isMobile(): boolean {
     switch (this.#typeInternal) {
       case Type.Device:
         return this.#deviceInternal ? this.#deviceInternal.mobile() : false;

@@ -1053,7 +1053,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
   #getAutoDeviceScope(): CrUXManager.DeviceScope {
     const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
-    if (emulationModel.device()?.mobile()) {
+    if (emulationModel.isMobile()) {
       if (this.#cruxPageResult?.[`${this.#fieldPageScope}-PHONE`]) {
         return 'PHONE';
       }

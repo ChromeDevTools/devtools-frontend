@@ -1268,6 +1268,23 @@ const extraPropertyValues = new Map<string, Set<string>>([
       'break-spaces',  // equal to: `break-spaces wrap`, Chrome 76, crbug.com/767634#c28
     ]),
   ],
+  // https://drafts.csswg.org/css-inline-3/#text-box-edge
+  // Now we're going to allow the following rule:
+  // auto | [ text | cap | ex ] [ text | alphabetic ]?
+  // ideographic and ideographic-ink are not implemented yet.
+  // We don't add values like `cap text` because that is equivalent to `text`.
+  [
+    'text-box-edge',
+    new Set([
+      'auto',
+      'text',
+      'cap',
+      'ex',
+      'text alphabetic',
+      'cap alphabetic',
+      'ex alphabetic',
+    ]),
+  ],
 ]);
 
 // Weight of CSS properties based on their usage from https://www.chromestatus.com/metrics/css/popularity

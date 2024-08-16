@@ -758,6 +758,16 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
     dataProvider.buildFlowForInitiator(entryIndex);
     this.delegate.select(dataProvider.createSelection(entryIndex));
+
+    // If there is a link annotation in the process of being created when an empty
+    // space in the Flamechart is clicked, delete the link being created.
+    if (this.#linkSelectionAnnotation && entryIndex === -1) {
+      ModificationsManager.activeManager()?.removeAnnotation(this.#linkSelectionAnnotation);
+    }
+    // Regardless of if the link in progress was deleted or the clicked entry is the final selection,
+    // set the link selection in progress to null so a new one is created if the an event to create
+    // of update the current link is dispatched.
+    this.#linkSelectionAnnotation = null;
   }
 
   resizeToPreferredHeights(): void {

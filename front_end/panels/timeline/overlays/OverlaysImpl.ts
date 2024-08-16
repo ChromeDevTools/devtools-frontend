@@ -216,6 +216,13 @@ export class Overlays extends EventTarget {
   // Update the mouse coordinates while it is being created.
   #lastMouseOffsetX: number|null = null;
   #lastMouseOffsetY: number|null = null;
+  // `entriesLinkInProgress` is the entries link Overlay that has not yet been fully created
+  // and only has the entry that the link starts from set.
+  // We save it as a separate variable because when the second entry of the link is not chosen yet,
+  // the arrow follows the mouse. To achieve that, update the coordinates of `entriesLinkInProgress`
+  // on mousemove. There can only be one link in the process on being created so the mousemove
+  // only needs to update `entriesLinkInProgress` link overlay.
+  #entriesLinkInProgress: EntriesLink|null;
 
   #dimensions: ActiveDimensions = {
     trace: {
@@ -256,6 +263,32 @@ export class Overlays extends EventTarget {
     this.#overlaysContainer = init.container;
     this.#flameChartsContainer = init.flameChartsContainer;
     this.#charts = init.charts;
+    this.#entriesLinkInProgress = null;
+    this.#flameChartsContainer.addEventListener(
+        'mousemove', this.#updateMouseCoordinatesProgressEntriesLink.bind(this));
+  }
+
+  // Mousemove event listener to get mouse coordinates and update them for the entries link that is being created.
+  //
+  // The 'mousemove' event is attached to `flameChartsContainer` instead of `overlaysContainer`
+  // because `overlaysContainer` doesn't have events to enable the interaction with the
+  // Flamecharts beneath it.
+  #updateMouseCoordinatesProgressEntriesLink(event: Event): void {
+    const mouseEvent = (event as MouseEvent);
+    this.#lastMouseOffsetX = mouseEvent.offsetX;
+    this.#lastMouseOffsetY = mouseEvent.offsetY;
+
+    if (!this.#entriesLinkInProgress || this.#entriesLinkInProgress.entryTo) {
+      return;
+    }
+    // TODO: Check if the mouse is over network track and do not add the network height if it is
+    const networkHeight = this.#dimensions.charts.network?.heightPixels ?? 0;
+    const linkElement = this.#overlaysToElements.get(this.#entriesLinkInProgress);
+    if (linkElement) {
+      const component = linkElement.querySelector('devtools-entries-link-overlay') as
+          Components.EntriesLinkOverlay.EntriesLinkOverlay;
+      component.coordinateTo = {x: mouseEvent.offsetX, y: mouseEvent.offsetY + networkHeight};
+    }
   }
 
   /**
@@ -988,28 +1021,6 @@ export class Overlays extends EventTarget {
 
         const component = new Components.EntriesLinkOverlay.EntriesLinkOverlay({x: entryEndX, y: entryMiddleY});
         div.appendChild(component);
-
-        // Add an event listener to track mousemove and draw the arrow after
-        // the mouse before the entry the arrow will connect to is selected.
-        //
-        // The 'mousemove' event is attached to `flameChartsContainer` instead of `overlaysContainer`
-        // because `overlaysContainer` doesn't have events to enable the interaction with the
-        // Flamecharts beneath it.
-        // TODO: Remove the mousemove event when the connecting entry is selected
-        this.#flameChartsContainer.addEventListener('mousemove', event => {
-          const mouseEvent = (event as MouseEvent);
-          this.#lastMouseOffsetX = mouseEvent.offsetX;
-          this.#lastMouseOffsetY = mouseEvent.offsetY;
-          // TODO: Check if the mouse is over network track and do not add the network height if it is
-          const networkHeight = this.#dimensions.charts.network?.heightPixels ?? 0;
-
-          // Only follow the mouse if the link does not yet have the entry that link leads to
-          // and the mouse is not hovering over any entry. If it is, the arrow is snapped to that entry.
-          if (!component.entryToExists) {
-            component.coordinateTo = {x: this.#lastMouseOffsetX, y: this.#lastMouseOffsetY + networkHeight};
-          }
-        });
-
         return div;
       }
       case 'ENTRY_OUTLINE': {
@@ -1069,14 +1080,13 @@ export class Overlays extends EventTarget {
           // If entryTo exists, pass the coordinates of the entry that the arrow snaps to.
           // If it does not, pass the mouse coordinates so the arrow follows the mouse instead.
           if (overlay.entryTo) {
-            component.entryToExists = true;
             const entryEndX = this.xPixelForEventStartOnChart(overlay.entryTo) ?? 0;
             const halfEntryHeight = (this.pixelHeightForEventOnChart(overlay.entryTo) ?? 0) / 2;
             const entryMiddleY = (this.yPixelForEventOnChart(overlay.entryTo) ?? 0) + halfEntryHeight;
             component.coordinateTo = {x: entryEndX, y: entryMiddleY};
           } else if (this.#lastMouseOffsetX && this.#lastMouseOffsetY) {
-            component.entryToExists = false;
-            component.coordinateTo = {x: this.#lastMouseOffsetX, y: this.#lastMouseOffsetY};
+            // The second coordinate for in progress link gets updated on mousemove
+            this.#entriesLinkInProgress = overlay;
           }
         }
         break;

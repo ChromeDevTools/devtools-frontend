@@ -876,7 +876,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * 2. Inside a track header -> Select and Expand/Collapse a track
    * 3. Inside a track -> Select a track
    * 3.1 shift + click -> Select the time range of clicked event
-   * 3.2 click -> update highlight (handle in other functions)
+   * 3.2 cmd or ctrl + click -> Create entry label annotation on the clicked entry
+   * 3.3 click -> update highlight (handle in other functions)
    */
   private onClick(event: Event): void {
     const mouseEvent = (event as MouseEvent);
@@ -927,6 +928,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           } else {
             this.chartViewport.onClick(mouseEvent);
             this.dispatchEventToListeners(Events.EntryInvoked, this.highlightedEntryIndex);
+            // If the link annotation is in the process of being created and there is a click on the flamechart,
+            // finish the creation of the link and set the link start entry to null.
+            this.#currEntriesLinkFromSelectionIndex = null;
           }
           return;
         }

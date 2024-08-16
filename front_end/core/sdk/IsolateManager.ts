@@ -205,11 +205,6 @@ export class Isolate {
   usedHeapSizeGrowRate(): number {
     return this.#memoryTrend.fitSlope();
   }
-
-  isMainThread(): boolean {
-    const model = this.runtimeModel();
-    return model ? model.target().id() === 'main' : false;
-  }
 }
 
 export class MemoryTrend {

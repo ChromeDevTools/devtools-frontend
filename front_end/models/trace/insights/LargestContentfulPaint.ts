@@ -7,13 +7,13 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {findLCPRequest} from './Common.js';
-import {InsightWarning, type LCPInsightResult, type NavigationInsightContext, type RequiredData} from './types.js';
+import {type InsightResult, InsightWarning, type NavigationInsightContext, type RequiredData} from './types.js';
 
 export function deps(): ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'] {
   return ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'];
 }
 
-export interface LCPPhases {
+interface LCPPhases {
   /**
    * The time between when the user initiates loading the page until when
    * the browser receives the first byte of the html response.
@@ -34,6 +34,17 @@ export interface LCPPhases {
    */
   renderDelay: Types.Timing.MilliSeconds;
 }
+
+export type LCPInsightResult = InsightResult<{
+  lcpMs?: Types.Timing.MilliSeconds,
+  lcpTs?: Types.Timing.MilliSeconds,
+  phases?: LCPPhases,
+  shouldRemoveLazyLoading?: boolean,
+  shouldIncreasePriorityHint?: boolean,
+  shouldPreloadImage?: boolean,
+  lcpResource?: Types.TraceEvents.SyntheticNetworkRequest,
+  earliestDiscoveryTimeTs?: Types.Timing.MicroSeconds,
+}>;
 
 function breakdownPhases(
     nav: Types.TraceEvents.TraceEventNavigationStart, mainRequest: Types.TraceEvents.SyntheticNetworkRequest,

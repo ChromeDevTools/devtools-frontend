@@ -12,6 +12,11 @@ import {
   type RequiredData,
 } from './types.js';
 
+export type CLSInsightResult = InsightResult<{
+  animationFailures?: readonly NoncompositedAnimationFailure[],
+  shifts?: Map<Types.TraceEvents.TraceEventLayoutShift, LayoutShiftRootCausesData>,
+}>;
+
 export function deps(): ['Meta', 'Animations', 'LayoutShifts', 'NetworkRequests'] {
   return ['Meta', 'Animations', 'LayoutShifts', 'NetworkRequests'];
 }
@@ -254,10 +259,7 @@ function getFontRootCauses(
 }
 
 export function generateInsight(
-    traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext): InsightResult<{
-  animationFailures?: readonly NoncompositedAnimationFailure[],
-  shifts?: Map<Types.TraceEvents.TraceEventLayoutShift, LayoutShiftRootCausesData>,
-}> {
+    traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext): CLSInsightResult {
   const isWithinSameNavigation = ((event: Types.TraceEvents.TraceEventData): boolean => {
     const nav =
         Helpers.Trace.getNavigationForTraceEvent(event, context.frameId, traceParsedData.Meta.navigationsByFrameId);

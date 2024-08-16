@@ -10,12 +10,13 @@ export function deps(): ['UserInteractions'] {
   return ['UserInteractions'];
 }
 
-type Result = InsightResult<{
+export type INPInsightResult = InsightResult<{
   longestInteractionEvent?: SyntheticInteractionPair,
   highPercentileInteractionEvent?: SyntheticInteractionPair,
 }>;
 
-export function generateInsight(traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext): Result {
+export function generateInsight(
+    traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext): INPInsightResult {
   const interactionEvents = traceParsedData.UserInteractions.interactionEvents.filter(event => {
     return event.args.data.navigationId === context.navigationId;
   });

@@ -111,7 +111,7 @@ export class LCPPhases extends BaseInsight {
       return [];
     }
 
-    const lcpInsight: TraceEngine.Insights.Types.LCPInsightResult|Error = insightsByNavigation.LargestContentfulPaint;
+    const lcpInsight = insightsByNavigation.LargestContentfulPaint;
     if (lcpInsight instanceof Error) {
       return [];
     }

@@ -11,13 +11,7 @@ import * as SidebarInsight from './SidebarInsight.js';
 import {InsightsCategories} from './types.js';
 
 export function getCLSInsight(insights: TraceEngine.Insights.Types.TraceInsightData|null, navigationId: string|null):
-    TraceEngine.Insights.Types.InsightResult<{
-      animationFailures?: readonly TraceEngine.Insights.InsightRunners.CumulativeLayoutShift
-                           .NoncompositedAnimationFailure[],
-      shifts?:
-                Map<TraceEngine.Types.TraceEvents.TraceEventLayoutShift,
-                    TraceEngine.Insights.InsightRunners.CumulativeLayoutShift.LayoutShiftRootCausesData>,
-    }>|null {
+    TraceEngine.Insights.Types.InsightResults['CumulativeLayoutShift']|null {
   if (!insights || !navigationId) {
     return null;
   }

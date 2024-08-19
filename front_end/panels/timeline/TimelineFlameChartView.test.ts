@@ -378,9 +378,15 @@ describeWithEnvironment('TimelineFlameChartView', function() {
         // Highlight the node to make the Context Menu dispatch on this node
         flameChartView.getMainFlameChart().highlightEntry(nodeId);
 
-        // The mouse event passed to the Context Menu is used to indicate where the menu should appear. Since we don't
-        // need it to actually appear for this test, pass an empty event.
-        flameChartView.getMainFlameChart().onContextMenu(new MouseEvent(''));
+        const eventCoordinates = flameChartView.getMainFlameChart().entryIndexToCoordinates(nodeId);
+        if (!eventCoordinates) {
+          throw new Error('Coordinates were not found');
+        }
+
+        // The mouse event passed to the Context Menu is used to indicate where the menu should appear. So just simply
+        // use the pixels of top left corner of the event.
+        flameChartView.getMainFlameChart().onContextMenu(
+            new MouseEvent('contextmenu', {clientX: eventCoordinates.x, clientY: eventCoordinates.y}));
       }
 
       function generateContextMenuForNode(node: TraceEngine.Types.TraceEvents.TraceEventData): void {

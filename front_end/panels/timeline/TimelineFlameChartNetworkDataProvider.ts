@@ -125,7 +125,8 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     return this.#lastSelection.timelineSelection;
   }
 
-  customizedContextMenu(event: MouseEvent, eventIndex: number): UI.ContextMenu.ContextMenu|undefined {
+  customizedContextMenu(event: MouseEvent, eventIndex: number, _groupIndex: number): UI.ContextMenu.ContextMenu
+      |undefined {
     const networkRequest = this.eventByIndex(eventIndex);
     if (!networkRequest || !TraceEngine.Types.TraceEvents.isSyntheticNetworkRequestEvent(networkRequest)) {
       return;

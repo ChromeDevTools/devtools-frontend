@@ -614,6 +614,9 @@ export const generatedProperties = [
    "mask-repeat",
    "mask-size",
    "mask-type",
+   "masonry-template-tracks",
+   "masonry-track-end",
+   "masonry-track-start",
    "math-depth",
    "math-shift",
    "math-style",
@@ -781,6 +784,7 @@ export const generatedProperties = [
    "text-align-last",
    "text-anchor",
    "text-autospace",
+   "text-box",
    "text-box-edge",
    "text-box-trim",
    "text-combine-upright",
@@ -2867,6 +2871,21 @@ export const generatedProperties = [
   "name": "mask-type"
  },
  {
+  "name": "masonry-template-tracks"
+ },
+ {
+  "keywords": [
+   "auto"
+  ],
+  "name": "masonry-track-end"
+ },
+ {
+  "keywords": [
+   "auto"
+  ],
+  "name": "masonry-track-start"
+ },
+ {
   "inherited": true,
   "name": "math-depth"
  },
@@ -3881,6 +3900,13 @@ export const generatedProperties = [
    "no-autospace"
   ],
   "name": "text-autospace"
+ },
+ {
+  "longhands": [
+   "text-box-trim",
+   "text-box-edge"
+  ],
+  "name": "text-box"
  },
  {
   "inherited": true,
@@ -5600,6 +5626,16 @@ export const generatedPropertyValues = {
   "values": [
    "luminance",
    "alpha"
+  ]
+ },
+ "masonry-track-end": {
+  "values": [
+   "auto"
+  ]
+ },
+ "masonry-track-start": {
+  "values": [
+   "auto"
   ]
  },
  "math-shift": {

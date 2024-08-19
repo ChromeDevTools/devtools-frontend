@@ -28,6 +28,9 @@
 """
 DevTools presubmit script
 
+See http://goo.gle/devtools-testing-guide#Presubmit-checks for more how to
+run presubmit checks in DevTools.
+
 See http://dev.chromium.org/developers/how-tos/depottools/presubmit-scripts
 for more details about the presubmit API built into gcl.
 """

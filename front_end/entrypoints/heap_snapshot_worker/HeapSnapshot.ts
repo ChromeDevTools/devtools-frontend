@@ -764,9 +764,6 @@ export abstract class HeapSnapshot {
   #allocationProfile!: AllocationProfile;
   nodeDetachednessAndClassIndexOffset!: number;
   #locationMap!: Map<number, HeapSnapshotModel.HeapSnapshotModel.Location>;
-  lazyStringCache!: {
-    [x: string]: string,
-  };
   #ignoredNodesInRetainersView: Set<number>;
   #ignoredEdgesInRetainersView: Set<number>;
   #nodeDistancesForRetainersView: Int32Array|undefined;
@@ -1052,12 +1049,9 @@ export abstract class HeapSnapshot {
       return matchedStringIndexes;
     }
 
-    const stringFilter = (searchConfig.isRegex || !searchConfig.caseSensitive) ? filterRegexp : filterString;
+    const useRegExp = searchConfig.isRegex || !searchConfig.caseSensitive;
+    const stringFilter = useRegExp ? filterRegexp : filterString;
     const stringIndexes = this.strings.reduce(stringFilter, new Set());
-
-    if (!stringIndexes.size) {
-      return [];
-    }
 
     const filter = this.createFilter(nodeFilter);
     const nodeIds = [];
@@ -1073,8 +1067,20 @@ export abstract class HeapSnapshot {
       if (filter && !filter(node)) {
         continue;
       }
-      if (stringIndexes.has(nodes.getValue(nodeIndex + nodeNameOffset))) {
-        nodeIds.push(nodes.getValue(nodeIndex + nodeIdOffset));
+      const name = node.name();
+      if (name === node.rawName()) {
+        // If the string displayed to the user matches the raw name from the
+        // snapshot, then we can use the Set computed above. This avoids
+        // repeated work when multiple nodes have the same name.
+        if (stringIndexes.has(nodes.getValue(nodeIndex + nodeNameOffset))) {
+          nodeIds.push(nodes.getValue(nodeIndex + nodeIdOffset));
+        }
+      } else {
+        // If the node is displaying a customized name, then we must perform the
+        // full string search within that name here.
+        if (useRegExp ? regexp.test(name) : (name.indexOf(query) !== -1)) {
+          nodeIds.push(nodes.getValue(nodeIndex + nodeIdOffset));
+        }
       }
     }
     return nodeIds;
@@ -2786,7 +2792,6 @@ export class JSHeapSnapshot extends HeapSnapshot {
     pageObject:
         number,  // The idea is to track separately the objects owned by the page and the objects owned by debugger.
   };
-  override lazyStringCache: {};
   private flags!: Uint32Array;
   #statistics?: HeapSnapshotModel.HeapSnapshotModel.Statistics;
   constructor(profile: Profile, progress: HeapSnapshotProgress) {
@@ -2798,7 +2803,6 @@ export class JSHeapSnapshot extends HeapSnapshot {
       pageObject:
           4,  // The idea is to track separately the objects owned by the page and the objects owned by debugger.
     };
-    this.lazyStringCache = {};
     this.initialize();
   }
 
@@ -3224,19 +3228,11 @@ export class JSHeapSnapshotNode extends HeapSnapshotNode {
 
   override name(): string {
     const snapshot = this.snapshot;
-    const getOrCreateName = (create: () => string): string => {
-      let string: string|undefined = snapshot.lazyStringCache[this.nodeIndex];
-      if (string === undefined) {
-        string = create();
-        snapshot.lazyStringCache[this.nodeIndex] = string;
-      }
-      return string;
-    };
     if (this.rawType() === snapshot.nodeConsStringType) {
-      return getOrCreateName(() => this.consStringName());
+      return this.consStringName();
     }
     if (this.rawType() === snapshot.nodeObjectType && this.rawName() === 'Object') {
-      return getOrCreateName(() => this.#plainObjectName());
+      return this.#plainObjectName();
     }
     return this.rawName();
   }

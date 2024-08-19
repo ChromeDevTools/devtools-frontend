@@ -6,8 +6,11 @@
 <h1>Memory Panel (Heap profiler) Test</h1>
 <script>
   var frame = document.createElement('iframe');
+  // Use concatenation to create the string to search for, so that this test can
+  // also verify that searching works on concatenated strings.
   frame.src = 'data:text/html,<script>class Retainer{}; var aUniqueName = new Retainer();'+
-                    'aUniqueName.prop=\'searchable string\';<' +
+                    'aUniqueName.prop=\'               searchable \';' +
+                    'aUniqueName.prop+=\'string                   \';<' +
                     '/script>';
   document.body.appendChild(frame);
   frame.addEventListener("load", function() {

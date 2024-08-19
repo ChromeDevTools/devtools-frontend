@@ -179,11 +179,7 @@ describe('The Memory Panel', function() {
     await takeHeapSnapshot();
     await waitForNonEmptyHeapSnapshotData();
     await setSearchFilter('searchable string');
-    await waitForSearchResultNumber(6);
-    // The string object is formatted with double quotes, and the same string
-    // within the iframe's src attribute is formatted with single quotes, so
-    // this should reliably find the string object.
-    await findSearchResult('"searchable string"');
+    await waitForSearchResultNumber(1);
     // The following line checks two things: That the property 'aUniqueName'
     // in the iframe is retaining the Retainer class object, and that the
     // iframe window is not detached.

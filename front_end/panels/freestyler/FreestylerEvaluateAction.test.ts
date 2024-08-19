@@ -13,6 +13,7 @@ describe('FreestylerEvaluateAction', () => {
     function executeWithResult(mockResult: SDK.RuntimeModel.EvaluationResult): Promise<string> {
       const executionContextStub = sinon.createStubInstance(SDK.RuntimeModel.ExecutionContext);
       executionContextStub.evaluate.resolves(mockResult);
+      executionContextStub.runtimeModel = sinon.createStubInstance(SDK.RuntimeModel.RuntimeModel);
       return Freestyler.FreestylerEvaluateAction.execute('', executionContextStub, {throwOnSideEffect: false});
     }
 

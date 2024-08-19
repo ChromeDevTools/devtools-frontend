@@ -85,23 +85,27 @@ export class FreestylerEvaluateAction {
         },
         /* userGesture */ false, /* awaitPromise */ true);
 
-    if (!response) {
-      throw new Error('Response is not found');
-    }
-
-    if ('error' in response) {
-      throw new ExecutionError(response.error);
-    }
-
-    if (response.exceptionDetails) {
-      const exceptionDescription = response.exceptionDetails.exception?.description;
-      if (exceptionDescription?.startsWith('EvalError: Possible side-effect in debug-evaluate')) {
-        throw new SideEffectError(exceptionDescription);
+    try {
+      if (!response) {
+        throw new Error('Response is not found');
       }
 
-      throw new ExecutionError(exceptionDescription || 'JS exception');
-    }
+      if ('error' in response) {
+        throw new ExecutionError(response.error);
+      }
 
-    return stringifyRemoteObject(response.object);
+      if (response.exceptionDetails) {
+        const exceptionDescription = response.exceptionDetails.exception?.description;
+        if (exceptionDescription?.startsWith('EvalError: Possible side-effect in debug-evaluate')) {
+          throw new SideEffectError(exceptionDescription);
+        }
+
+        throw new ExecutionError(exceptionDescription || 'JS exception');
+      }
+
+      return stringifyRemoteObject(response.object);
+    } finally {
+      executionContext.runtimeModel.releaseEvaluationResult(response);
+    }
   }
 }

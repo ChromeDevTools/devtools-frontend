@@ -393,7 +393,7 @@ export class HeapSnapshotNode implements HeapSnapshotItem {
   }
 
   rawName(): string {
-    throw new Error('Not implemented');
+    return this.snapshot.strings[this.nameInternal()];
   }
 
   isRoot(): boolean {
@@ -421,7 +421,7 @@ export class HeapSnapshotNode implements HeapSnapshotItem {
   }
 
   name(): string {
-    return this.snapshot.strings[this.nameInternal()];
+    return this.rawName();
   }
 
   retainedSize(): number {
@@ -744,6 +744,7 @@ export abstract class HeapSnapshot {
   edgeShortcutType!: number;
   edgeWeakType!: number;
   edgeInvisibleType!: number;
+  edgePropertyType!: number;
   #locationIndexOffset!: number;
   #locationScriptIdOffset!: number;
   #locationLineOffset!: number;
@@ -837,6 +838,7 @@ export abstract class HeapSnapshot {
     this.edgeShortcutType = this.edgeTypes.indexOf('shortcut');
     this.edgeWeakType = this.edgeTypes.indexOf('weak');
     this.edgeInvisibleType = this.edgeTypes.indexOf('invisible');
+    this.edgePropertyType = this.edgeTypes.indexOf('property');
 
     const locationFields = meta.location_fields || [];
 
@@ -3160,7 +3162,7 @@ export class JSHeapSnapshot extends HeapSnapshot {
         sizeCode += nodeSize;
       } else if (nodeType === nodeConsStringType || nodeType === nodeSlicedStringType || node.type() === 'string') {
         sizeStrings += nodeSize;
-      } else if (node.name() === 'Array') {
+      } else if (node.rawName() === 'Array') {
         sizeJSArrays += this.calculateArraySize(node);
       }
     }
@@ -3220,19 +3222,21 @@ export class JSHeapSnapshotNode extends HeapSnapshotNode {
     return Boolean(flags & snapshot.nodeFlags.canBeQueried);
   }
 
-  override rawName(): string {
-    return super.name();
-  }
-
   override name(): string {
     const snapshot = this.snapshot;
-    if (this.rawType() === snapshot.nodeConsStringType) {
-      let string: string = snapshot.lazyStringCache[this.nodeIndex];
-      if (typeof string === 'undefined') {
-        string = this.consStringName();
+    const getOrCreateName = (create: () => string): string => {
+      let string: string|undefined = snapshot.lazyStringCache[this.nodeIndex];
+      if (string === undefined) {
+        string = create();
         snapshot.lazyStringCache[this.nodeIndex] = string;
       }
       return string;
+    };
+    if (this.rawType() === snapshot.nodeConsStringType) {
+      return getOrCreateName(() => this.consStringName());
+    }
+    if (this.rawType() === snapshot.nodeObjectType && this.rawName() === 'Object') {
+      return getOrCreateName(() => this.#plainObjectName());
     }
     return this.rawName();
   }
@@ -3285,6 +3289,76 @@ export class JSHeapSnapshotNode extends HeapSnapshotNode {
     return name;
   }
 
+  // Creates a name for plain JS objects, which looks something like
+  // '{propName, otherProp, thirdProp, ..., secondToLastProp, lastProp}'.
+  // A variable number of property names is included, depending on the length
+  // of the property names, so that the result fits nicely in a reasonably
+  // sized DevTools window.
+  #plainObjectName(): string {
+    const snapshot = this.snapshot;
+    const {edgeFieldsCount, edgePropertyType} = snapshot;
+    const edge = snapshot.createEdge(0);
+    let categoryNameStart = '{';
+    let categoryNameEnd = '}';
+    let edgeIndexFromStart = this.edgeIndexesStart();
+    let edgeIndexFromEnd = this.edgeIndexesEnd() - edgeFieldsCount;
+    let nextFromEnd = false;
+    while (edgeIndexFromStart <= edgeIndexFromEnd) {
+      edge.edgeIndex = nextFromEnd ? edgeIndexFromEnd : edgeIndexFromStart;
+
+      // Skip non-property edges and the special __proto__ property.
+      if (edge.rawType() !== edgePropertyType || edge.name() === '__proto__') {
+        if (nextFromEnd) {
+          edgeIndexFromEnd -= edgeFieldsCount;
+        } else {
+          edgeIndexFromStart += edgeFieldsCount;
+        }
+        continue;
+      }
+
+      const formatted = JSHeapSnapshotNode.formatPropertyName(edge.name());
+
+      // Always include at least one property, regardless of its length. Beyond that point,
+      // only include more properties if the name isn't too long.
+      if (categoryNameStart.length > 1 && categoryNameStart.length + categoryNameEnd.length + formatted.length > 100) {
+        break;
+      }
+
+      if (nextFromEnd) {
+        edgeIndexFromEnd -= edgeFieldsCount;
+        if (categoryNameEnd.length > 1) {
+          categoryNameEnd = ', ' + categoryNameEnd;
+        }
+        categoryNameEnd = formatted + categoryNameEnd;
+      } else {
+        edgeIndexFromStart += edgeFieldsCount;
+        if (categoryNameStart.length > 1) {
+          categoryNameStart += ', ';
+        }
+        categoryNameStart += formatted;
+      }
+      nextFromEnd = !nextFromEnd;
+    }
+    if (edgeIndexFromStart <= edgeIndexFromEnd) {
+      categoryNameStart += ', ...';
+    }
+    if (categoryNameEnd.length > 1) {
+      categoryNameStart += ', ';
+    }
+    return categoryNameStart + categoryNameEnd;
+  }
+
+  static formatPropertyName(name: string): string {
+    // We don't need a strict test for whether a property name follows the
+    // rules for being a JS identifier, but property names containing commas,
+    // quotation marks, or braces could cause confusion, so we'll escape those.
+    if (/[,'"{}]/.test(name)) {
+      name = JSON.stringify({[name]: 0});
+      name = name.substring(1, name.length - 3);
+    }
+    return name;
+  }
+
   override id(): number {
     const snapshot = this.snapshot;
     return snapshot.nodes.getValue(this.nodeIndex + snapshot.nodeIdOffset);
@@ -3307,7 +3381,7 @@ export class JSHeapSnapshotNode extends HeapSnapshotNode {
   }
 
   override isDocumentDOMTreesRoot(): boolean {
-    return this.isSynthetic() && this.name() === '(Document DOM trees)';
+    return this.isSynthetic() && this.rawName() === '(Document DOM trees)';
   }
 
   override serialize(): HeapSnapshotModel.HeapSnapshotModel.Node {

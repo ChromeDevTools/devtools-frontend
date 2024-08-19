@@ -494,17 +494,24 @@ describe('The Memory Panel', function() {
     await setSearchFilter('searchable_string');
     await waitForSearchResultNumber(2);
     await findSearchResult('"searchable_string"');
-    await waitForRetainerChain(['Object', 'KeyType', 'Window']);
+    await waitForRetainerChain(['{y}', 'KeyType', 'Window']);
     await clickOnContextMenuForRetainer('KeyType', 'Ignore this retainer');
-    await waitForRetainerChain(['Object', 'Object', 'Window']);
+    await waitForRetainerChain(['{y}', '{x}', 'Window']);
     await clickOnContextMenuForRetainer('x', 'Ignore this retainer');
-    await waitForRetainerChain(['Object', '(internal array)[]', 'WeakMap', 'Window']);
+    await waitForRetainerChain(['{y}', '(internal array)[]', 'WeakMap', 'Window']);
     await clickOnContextMenuForRetainer('(internal array)[]', 'Ignore this retainer');
-    await waitForRetainerChain(['Object', 'Object', 'Object', 'Object', 'Object', 'Window']);
+    await waitForRetainerChain([
+      '{y}',
+      '{d}',
+      `{${'#'.repeat(130)}, ...}`,
+      '{b, irrelevantProperty, <symbol also irrelevant>, "}"}',
+      '{a, extraProp0, extraProp1, extraProp2, extraProp3, ..., extraProp6, extraProp7, extraProp8, extraProp9}',
+      'Window',
+    ]);
     await clickOnContextMenuForRetainer('b', 'Ignore this retainer');
     await waitForRetainerChain(['(Internalized strings)', '(GC roots)']);
     await restoreIgnoredRetainers();
-    await waitForRetainerChain(['Object', 'KeyType', 'Window']);
+    await waitForRetainerChain(['{y}', 'KeyType', 'Window']);
   });
 
   it('Can filter the summary view', async () => {

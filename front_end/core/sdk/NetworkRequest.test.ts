@@ -286,11 +286,13 @@ describeWithMockConnection('NetworkRequest', () => {
       cookiePartitionKeyOpaque: undefined,
       exemptedResponseCookies: undefined,
     });
-    assert.isTrue(addBlockedCookieSpy.calledOnceWith(
-        cookie, [{
-          attribute: null,
-          uiString: 'Setting this cookie was blocked due to third-party cookie phaseout. Learn more in the Issues tab.',
-        }]));
+    assert.isTrue(addBlockedCookieSpy.calledOnceWith(cookie, [
+      {
+        attribute: null,
+        uiString:
+            'Setting this cookie was blocked either because of Chrome flags or browser configuration. Learn more in the Issues panel.',
+      },
+    ]));
     assert.deepStrictEqual(await cookieModel.getCookiesForDomain(''), [cookie]);
 
     request.addExtraResponseInfo({

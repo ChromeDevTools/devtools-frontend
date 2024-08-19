@@ -312,7 +312,7 @@ const UIStrings = {
    *@description Tooltip to explain why the request has warning icon
    */
   thirdPartyPhaseout:
-      'Cookies for this request are blocked due to third-party cookie phaseout. Learn more in the Issues tab.',
+      'Cookies for this request are blocked either because of Chrome flags or browser configuration. Learn more in the Issues panel.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

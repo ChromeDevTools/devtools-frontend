@@ -40,19 +40,21 @@ const UIStrings = {
   /**
    * @description Label for a link for third-party cookie Issues.
    */
-  thirdPartyPhaseoutExplained: 'Prepare for phasing out third-party cookies',
+  thirdPartyPhaseoutExplained: 'Changes to Chrome\'s treatment of third-party cookies',
   /**
    * @description Label for a link for cross-site redirect Issues.
    */
   fileCrosSiteRedirectBug: 'File a bug',
   /**
-   * @description text to show in Console panel when a third-party cookie will be blocked in Chrome.
+   * @description text to show in Console panel when a third-party cookie accessed.
    */
-  consoleTpcdWarningMessage: 'Third-party cookie will be blocked in future Chrome versions as part of Privacy Sandbox.',
+  consoleTpcdWarningMessage:
+      'Chrome is moving towards a new experience that lets people make an informed choice with respect to third-party cookies.',
   /**
    * @description text to show in Console panel when a third-party cookie is blocked in Chrome.
    */
-  consoleTpcdErrorMessage: 'Third-party cookie is blocked in Chrome as part of Privacy Sandbox.',
+  consoleTpcdErrorMessage:
+      'Third-party cookie is blocked in Chrome either because of Chrome flags or browser configuration.',
 
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CookieIssue.ts', UIStrings);
@@ -502,7 +504,7 @@ const excludeBlockedWithinRelatedWebsiteSet: LazyMarkdownIssueDescription = {
 const cookieWarnThirdPartyPhaseoutSet: LazyMarkdownIssueDescription = {
   file: 'cookieWarnThirdPartyPhaseoutSet.md',
   links: [{
-    link: 'https://goo.gle/3pcd-dev-issue',
+    link: 'https://goo.gle/3pc-dev-issue',
     linkTitle: i18nLazyString(UIStrings.thirdPartyPhaseoutExplained),
   }],
 };
@@ -510,7 +512,7 @@ const cookieWarnThirdPartyPhaseoutSet: LazyMarkdownIssueDescription = {
 const cookieWarnThirdPartyPhaseoutRead: LazyMarkdownIssueDescription = {
   file: 'cookieWarnThirdPartyPhaseoutRead.md',
   links: [{
-    link: 'https://goo.gle/3pcd-dev-issue',
+    link: 'https://goo.gle/3pc-dev-issue',
     linkTitle: i18nLazyString(UIStrings.thirdPartyPhaseoutExplained),
   }],
 };
@@ -518,7 +520,7 @@ const cookieWarnThirdPartyPhaseoutRead: LazyMarkdownIssueDescription = {
 const cookieExcludeThirdPartyPhaseoutSet: LazyMarkdownIssueDescription = {
   file: 'cookieExcludeThirdPartyPhaseoutSet.md',
   links: [{
-    link: 'https://goo.gle/3pcd-dev-issue',
+    link: 'https://goo.gle/report-3pc-dev-issue',
     linkTitle: i18nLazyString(UIStrings.thirdPartyPhaseoutExplained),
   }],
 };
@@ -526,7 +528,7 @@ const cookieExcludeThirdPartyPhaseoutSet: LazyMarkdownIssueDescription = {
 const cookieExcludeThirdPartyPhaseoutRead: LazyMarkdownIssueDescription = {
   file: 'cookieExcludeThirdPartyPhaseoutRead.md',
   links: [{
-    link: 'https://goo.gle/3pcd-dev-issue',
+    link: 'https://goo.gle/report-3pc-dev-issue',
     linkTitle: i18nLazyString(UIStrings.thirdPartyPhaseoutExplained),
   }],
 };

@@ -1,5 +1,7 @@
 # Chromium DevTools docs
 
+[goo.gle/chromium-devtools](http://goo.gle/chromium-devtools)
+
 This directory contains [Chrome DevTools] project
 documentation in [Gitiles-flavored Markdown]. It is automatically
 [rendered by Gitiles].

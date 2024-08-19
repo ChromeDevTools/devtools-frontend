@@ -2,13 +2,40 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 
 import * as Security from './security.js';
+
+describeWithLocale('SecurityPanelSidebarTree', () => {
+  const {SecurityPanelSidebarTree, SecurityPanelSidebarTreeElement} = Security.SecurityPanel;
+
+  describe('updateOrigin', () => {
+    it('correctly updates the URL scheme highlighting', () => {
+      const origin = 'https://foo.bar' as Platform.DevToolsPath.UrlString;
+      const mainViewElement = new SecurityPanelSidebarTreeElement({
+        onSelect: () => undefined,
+        getIconForSecurityState: () => new IconButton.Icon.Icon(),
+        getTitleForSecurityState: () => document.createElement('span'),
+        className: 'main-view-element',
+      });
+      const tree = new SecurityPanelSidebarTree(mainViewElement, () => {});
+      tree.addOrigin(origin, Protocol.Security.SecurityState.Unknown);
+      assert.notExists(tree.contentElement.querySelector('.highlighted-url > .url-scheme-secure'));
+      assert.exists(tree.contentElement.querySelector('.highlighted-url > .url-scheme-unknown'));
+
+      tree.updateOrigin(origin, Protocol.Security.SecurityState.Secure);
+
+      assert.exists(tree.contentElement.querySelector('.highlighted-url > .url-scheme-secure'));
+      assert.notExists(tree.contentElement.querySelector('.highlighted-url > .url-scheme-unknown'));
+    });
+  });
+});
 
 describeWithMockConnection('SecurityPanel', () => {
   let target: SDK.Target.Target;

@@ -8,5 +8,5 @@
 * [Design Documents](https://drive.google.com/drive/folders/1JbUthATfybvMQR3yAHC4J0P7n6oftYNq)
 * [Contact](https://www.chromium.org/teams/devtools/)
 * [Bugs](https://www.chromium.org/for-testers/bug-reporting-guidelines/)
-* [Markdown Style Guide](/docs/styleguide/markdown/markdown.md)
+* [Style Guides](/docs/styleguide/README.md)
 * [Search](https://source.chromium.org/chromium/devtools/devtools-frontend/+/main:docs/)

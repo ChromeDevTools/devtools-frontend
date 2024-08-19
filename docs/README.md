@@ -37,6 +37,7 @@ below.**
 *   [UMA metrics in DevTools](uma_metrics.md)
     *   [How to add UMA metrics in DevTools frontend](add_uma_metrics.md)
 *   [How to add experiments in DevTools frontend](add_experiments.md)
+*   [Style Guides](./styleguide/README.md)
 
 ### Architectural Documentation
 

@@ -155,7 +155,7 @@ def run_eslint(options):
     subprocess.check_call([
         node_path(options),
         os.path.join(options.devtools_dir, 'scripts', 'test',
-                     'run_lint_check_js.mjs')
+                     'run_lint_check.js')
     ] + generated_source_files,
                           cwd=options.devtools_dir)
 

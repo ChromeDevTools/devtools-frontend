@@ -119,7 +119,7 @@ We use a set of [ESLint](https://eslint.org) rules to perform automated checks, 
 
 You can use
 ```
-npm run check-lint
+npm run lint
 ```
 to execute all lint checks.
 

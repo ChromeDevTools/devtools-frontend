@@ -280,8 +280,7 @@ def _CheckDevToolsRunBuildTests(input_api, output_api):
 def _CheckDevToolsStyleJS(input_api, output_api):
     results = [output_api.PresubmitNotifyResult('JS style check:')]
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                       'scripts', 'test',
-                                       'run_lint_check_js.mjs')
+                                       'scripts', 'test', 'run_lint_check.js')
 
     front_end_directory = input_api.os_path.join(
         input_api.PresubmitLocalPath(), 'front_end')
@@ -311,10 +310,7 @@ def _CheckDevToolsStyleJS(input_api, output_api):
         input_api.os_path.join(front_end_directory, '.eslintrc.js'),
         input_api.os_path.join(component_docs_directory, '.eslintrc.js'),
         input_api.os_path.join(test_directory, '.eslintrc.js'),
-        input_api.os_path.join(scripts_directory, 'test',
-                               'run_lint_check_js.py'),
-        input_api.os_path.join(scripts_directory, 'test',
-                               'run_lint_check_js.mjs'),
+        input_api.os_path.join(scripts_directory, 'test', 'run_lint_check.js'),
         input_api.os_path.join(scripts_directory, '.eslintrc.js'),
         input_api.os_path.join(scripts_directory, 'eslint_rules'),
     ]
@@ -341,8 +337,7 @@ def _CheckDevToolsStyleJS(input_api, output_api):
 def _CheckDevToolsStyleCSS(input_api, output_api):
     results = [output_api.PresubmitNotifyResult('CSS style check:')]
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                       'scripts', 'test',
-                                       'run_lint_check_css.js')
+                                       'scripts', 'test', 'run_lint_check.js')
 
     front_end_directory = input_api.os_path.join(
         input_api.PresubmitLocalPath(), 'front_end')
@@ -362,8 +357,7 @@ def _CheckDevToolsStyleCSS(input_api, output_api):
                                '.stylelintrc.json'),
         input_api.os_path.join(input_api.PresubmitLocalPath(),
                                '.stylelintignore'),
-        input_api.os_path.join(scripts_directory, 'test',
-                               'run_lint_check_css.js'),
+        input_api.os_path.join(scripts_directory, 'test', 'run_lint_check.js'),
     ]
 
     lint_config_files = _getAffectedFiles(input_api, stylelint_related_files,

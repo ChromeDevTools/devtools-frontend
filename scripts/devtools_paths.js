@@ -27,10 +27,10 @@ const os = require('os');
  * the scripts directory, at which point we've found this file and can use it
  * for all subsequent logic.
  *
- * e.g. the user executes a script: scripts/test/run_lint_check_css.js
+ * e.g. the user executes a script: scripts/test/run_lint_check.js
  *
  * process.argv[1] =
- * /full/path/devtools-frontend/src/scripts/test/run_lint_check_css.js
+ * /full/path/devtools-frontend/src/scripts/test/run_lint_check.js
  */
 const PATH_TO_EXECUTED_FILE = process.argv[1];
 

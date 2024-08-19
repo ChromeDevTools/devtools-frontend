@@ -3,7 +3,7 @@
 The [`lib/` folder](./lib/) contains a set of [ESLint](https://eslint.org) rules
 specific to Chromium DevTools. These rules are executed as part of the
 ```
-npm run check-lint
+npm run lint
 ```
 command and implicitly via the [Presubmit checks](../../test/README.md#Presubmit-checks).
 

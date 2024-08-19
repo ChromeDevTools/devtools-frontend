@@ -56,6 +56,10 @@ export interface WaitForTargetOptions {
      * @defaultValue `30_000`
      */
     timeout?: number;
+    /**
+     * A signal object that allows you to cancel a waitFor call.
+     */
+    signal?: AbortSignal;
 }
 /**
  * All the events a {@link Browser | browser instance} may emit.

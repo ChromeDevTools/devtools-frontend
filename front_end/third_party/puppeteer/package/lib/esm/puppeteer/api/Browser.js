@@ -5,7 +5,7 @@
  */
 import { firstValueFrom, from, merge, raceWith, } from '../../third_party/rxjs/rxjs.js';
 import { EventEmitter } from '../common/EventEmitter.js';
-import { debugError, fromEmitterEvent, filterAsync, timeout, } from '../common/util.js';
+import { debugError, fromEmitterEvent, filterAsync, timeout, fromAbortSignal, } from '../common/util.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
 /**
  * @internal
@@ -95,8 +95,8 @@ export class Browser extends EventEmitter {
      * ```
      */
     async waitForTarget(predicate, options = {}) {
-        const { timeout: ms = 30000 } = options;
-        return await firstValueFrom(merge(fromEmitterEvent(this, "targetcreated" /* BrowserEvent.TargetCreated */), fromEmitterEvent(this, "targetchanged" /* BrowserEvent.TargetChanged */), from(this.targets())).pipe(filterAsync(predicate), raceWith(timeout(ms))));
+        const { timeout: ms = 30000, signal } = options;
+        return await firstValueFrom(merge(fromEmitterEvent(this, "targetcreated" /* BrowserEvent.TargetCreated */), fromEmitterEvent(this, "targetchanged" /* BrowserEvent.TargetChanged */), from(this.targets())).pipe(filterAsync(predicate), raceWith(fromAbortSignal(signal), timeout(ms))));
     }
     /**
      * Gets a list of all open {@link Page | pages} inside this {@link Browser}.

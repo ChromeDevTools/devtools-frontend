@@ -1,6 +1,7 @@
 /// <reference types="node" />
 
 import type { ChildProcess } from 'child_process';
+import type { ParseSelector } from 'typed-query-selector/parser.js';
 import { PassThrough } from 'stream';
 import { Protocol } from 'devtools-protocol';
 import type { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
@@ -138,8 +139,6 @@ export declare type AwaitablePredicate<T> = (value: T) => Awaitable<boolean>;
  * @public
  */
 export declare type AwaitedLocator<T> = T extends Locator<infer S> ? S : never;
-
-declare type BeginSubclassSelectorTokens = ['.', '#', '[', ':'];
 
 /* Excluded from this release type: Binding */
 
@@ -865,6 +864,7 @@ export declare interface ChromeHeadlessShellSettings {
      *
      * @remarks
      * This must include the protocol and may even need a path prefix.
+     * This must **not** include a trailing slash similar to the default.
      *
      * @defaultValue https://storage.googleapis.com/chrome-for-testing-public
      */
@@ -910,6 +910,7 @@ export declare interface ChromeSettings {
      *
      * @remarks
      * This must include the protocol and may even need a path prefix.
+     * This must **not** include a trailing slash similar to the default.
      *
      * @defaultValue https://storage.googleapis.com/chrome-for-testing-public
      */
@@ -944,8 +945,6 @@ export declare interface ClickOptions extends MouseClickOptions {
 
 /* Excluded from this release type: ClientProvider */
 
-declare type CombinatorTokens = [' ', '>', '+', '~', '|', '|'];
-
 /**
  * @public
  */
@@ -972,8 +971,6 @@ export declare interface CommonEventEmitter<Events extends Record<EventType, unk
 /* Excluded from this release type: ComplexPSelectorList */
 
 /* Excluded from this release type: CompoundPSelector */
-
-declare type CompoundSelectorsOfComplexSelector<ComplexSelector extends string> = SplitWithDelemiters<ComplexSelector, CombinatorTokens> extends infer IntermediateTokens ? IntermediateTokens extends readonly string[] ? Drop<IntermediateTokens, ''> : never : never;
 
 /**
  * Defines options to configure Puppeteer's behavior during installation and
@@ -1249,8 +1246,10 @@ export declare interface Cookie {
      */
     sourceScheme?: CookieSourceScheme;
     /**
-     * Cookie partition key. The site of the top-level URL the browser was visiting at the
-     * start of the request to the endpoint that set the cookie. Supported only in Chrome.
+     * Cookie partition key. In Chrome, it is the top-level site the
+     * partitioned cookie is available in. In Firefox, it matches the
+     * source origin
+     * (https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey).
      */
     partitionKey?: string;
     /**
@@ -1315,9 +1314,10 @@ export declare interface CookieParam {
      */
     sourceScheme?: CookieSourceScheme;
     /**
-     * Cookie partition key. The site of the top-level URL the browser was visiting at the
-     * start of the request to the endpoint that set the cookie. If not set, the cookie will
-     * be set as not partitioned.
+     * Cookie partition key. In Chrome, it matches the top-level site the
+     * partitioned cookie is available in. In Firefox, it matches the
+     * source origin
+     * (https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey).
      */
     partitionKey?: string;
 }
@@ -1600,6 +1600,13 @@ export declare interface DeleteCookiesRequest {
      * If specified, deletes only cookies with the exact path.
      */
     path?: string;
+    /**
+     * If specified, deletes cookies in the given partition key. In
+     * Chrome, partitionKey matches the top-level site the partitioned
+     * cookie is available in. In Firefox, it matches the source origin
+     * (https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey).
+     */
+    partitionKey?: string;
 }
 
 /**
@@ -1735,8 +1742,6 @@ export declare abstract class Dialog {
 /* Excluded from this release type: Disposed */
 
 /* Excluded from this release type: disposeSymbol */
-
-declare type Drop<Arr extends readonly unknown[], Remove, Acc extends unknown[] = []> = Arr extends [infer Head, ...infer Tail] ? Head extends Remove ? Drop<Tail, Remove> : Drop<Tail, Remove, [...Acc, Head]> : Acc;
 
 /**
  * @public
@@ -2449,6 +2454,7 @@ export declare interface FirefoxSettings {
      *
      * @remarks
      * This must include the protocol and may even need a path prefix.
+     * This must **not** include a trailing slash similar to the default.
      *
      * @defaultValue https://archive.mozilla.org/pub/firefox/releases
      */
@@ -2469,11 +2475,6 @@ export declare interface FirefoxSettings {
 }
 
 /* Excluded from this release type: FirefoxTargetManager */
-
-declare type FlatmapSplitWithDelemiters<Inputs extends readonly string[], Delemiters extends readonly string[], Acc extends string[] = []> = Inputs extends [infer FirstInput, ...infer RestInputs] ? FirstInput extends string ? RestInputs extends readonly string[] ? FlatmapSplitWithDelemiters<RestInputs, Delemiters, [
-...Acc,
-...SplitWithDelemiters<FirstInput, Delemiters>
-]> : Acc : Acc : Acc;
 
 /**
  * @public
@@ -3982,11 +3983,6 @@ export declare type KeyPressOptions = KeyDownOptions & KeyboardTypeOptions;
  */
 export declare const KnownDevices: Readonly<Record<"Blackberry PlayBook" | "Blackberry PlayBook landscape" | "BlackBerry Z30" | "BlackBerry Z30 landscape" | "Galaxy Note 3" | "Galaxy Note 3 landscape" | "Galaxy Note II" | "Galaxy Note II landscape" | "Galaxy S III" | "Galaxy S III landscape" | "Galaxy S5" | "Galaxy S5 landscape" | "Galaxy S8" | "Galaxy S8 landscape" | "Galaxy S9+" | "Galaxy S9+ landscape" | "Galaxy Tab S4" | "Galaxy Tab S4 landscape" | "iPad" | "iPad landscape" | "iPad (gen 6)" | "iPad (gen 6) landscape" | "iPad (gen 7)" | "iPad (gen 7) landscape" | "iPad Mini" | "iPad Mini landscape" | "iPad Pro" | "iPad Pro landscape" | "iPad Pro 11" | "iPad Pro 11 landscape" | "iPhone 4" | "iPhone 4 landscape" | "iPhone 5" | "iPhone 5 landscape" | "iPhone 6" | "iPhone 6 landscape" | "iPhone 6 Plus" | "iPhone 6 Plus landscape" | "iPhone 7" | "iPhone 7 landscape" | "iPhone 7 Plus" | "iPhone 7 Plus landscape" | "iPhone 8" | "iPhone 8 landscape" | "iPhone 8 Plus" | "iPhone 8 Plus landscape" | "iPhone SE" | "iPhone SE landscape" | "iPhone X" | "iPhone X landscape" | "iPhone XR" | "iPhone XR landscape" | "iPhone 11" | "iPhone 11 landscape" | "iPhone 11 Pro" | "iPhone 11 Pro landscape" | "iPhone 11 Pro Max" | "iPhone 11 Pro Max landscape" | "iPhone 12" | "iPhone 12 landscape" | "iPhone 12 Pro" | "iPhone 12 Pro landscape" | "iPhone 12 Pro Max" | "iPhone 12 Pro Max landscape" | "iPhone 12 Mini" | "iPhone 12 Mini landscape" | "iPhone 13" | "iPhone 13 landscape" | "iPhone 13 Pro" | "iPhone 13 Pro landscape" | "iPhone 13 Pro Max" | "iPhone 13 Pro Max landscape" | "iPhone 13 Mini" | "iPhone 13 Mini landscape" | "iPhone 14" | "iPhone 14 landscape" | "iPhone 14 Plus" | "iPhone 14 Plus landscape" | "iPhone 14 Pro" | "iPhone 14 Pro landscape" | "iPhone 14 Pro Max" | "iPhone 14 Pro Max landscape" | "iPhone 15" | "iPhone 15 landscape" | "iPhone 15 Plus" | "iPhone 15 Plus landscape" | "iPhone 15 Pro" | "iPhone 15 Pro landscape" | "iPhone 15 Pro Max" | "iPhone 15 Pro Max landscape" | "JioPhone 2" | "JioPhone 2 landscape" | "Kindle Fire HDX" | "Kindle Fire HDX landscape" | "LG Optimus L70" | "LG Optimus L70 landscape" | "Microsoft Lumia 550" | "Microsoft Lumia 950" | "Microsoft Lumia 950 landscape" | "Nexus 10" | "Nexus 10 landscape" | "Nexus 4" | "Nexus 4 landscape" | "Nexus 5" | "Nexus 5 landscape" | "Nexus 5X" | "Nexus 5X landscape" | "Nexus 6" | "Nexus 6 landscape" | "Nexus 6P" | "Nexus 6P landscape" | "Nexus 7" | "Nexus 7 landscape" | "Nokia Lumia 520" | "Nokia Lumia 520 landscape" | "Nokia N9" | "Nokia N9 landscape" | "Pixel 2" | "Pixel 2 landscape" | "Pixel 2 XL" | "Pixel 2 XL landscape" | "Pixel 3" | "Pixel 3 landscape" | "Pixel 4" | "Pixel 4 landscape" | "Pixel 4a (5G)" | "Pixel 4a (5G) landscape" | "Pixel 5" | "Pixel 5 landscape" | "Moto G4" | "Moto G4 landscape", Device>>;
 
-declare type Last<Arr extends NonEmptyReadonlyArray<unknown>> = Arr extends [
-infer Head,
-...infer Tail
-] ? Tail extends NonEmptyReadonlyArray<unknown> ? Last<Tail> : Head : never;
-
 /**
  * @public
  */
@@ -4054,7 +4050,9 @@ export declare interface LaunchOptions {
      */
     env?: Record<string, string | undefined>;
     /**
-     * Connect to a browser over a pipe instead of a WebSocket.
+     * Connect to a browser over a pipe instead of a WebSocket. Only supported
+     * with Chrome.
+     *
      * @defaultValue `false`
      */
     pipe?: boolean;
@@ -4579,11 +4577,9 @@ export declare interface NewDocumentScriptEvaluation {
 /**
  * @public
  */
-export declare type NodeFor<ComplexSelector extends string> = TypeSelectorOfComplexSelector<ComplexSelector> extends infer TypeSelector ? TypeSelector extends keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap ? ElementFor<TypeSelector> : Element : never;
+export declare type NodeFor<ComplexSelector extends string> = ParseSelector<ComplexSelector>;
 
 /* Excluded from this release type: NodeLocator */
-
-declare type NonEmptyReadonlyArray<T> = [T, ...(readonly T[])];
 
 /**
  * @public
@@ -7447,10 +7443,6 @@ export declare interface SnapshotOptions {
 
 /* Excluded from this release type: SOURCE_URL_REGEX */
 
-declare type Split<Input extends string, Delimiter extends string, Acc extends string[] = []> = Input extends `${infer Prefix}${Delimiter}${infer Suffix}` ? Split<Suffix, Delimiter, [...Acc, Prefix]> : [...Acc, Input];
-
-declare type SplitWithDelemiters<Input extends string, Delemiters extends readonly string[]> = Delemiters extends [infer FirstDelemiter, ...infer RestDelemiters] ? FirstDelemiter extends string ? RestDelemiters extends readonly string[] ? FlatmapSplitWithDelemiters<Split<Input, FirstDelemiter>, RestDelemiters> : never : never : [Input];
-
 /* Excluded from this release type: STATUS_TEXTS */
 
 /**
@@ -7669,10 +7661,6 @@ export declare interface TracingOptions {
 
 /* Excluded from this release type: transposeIterableHandle */
 
-declare type TypeSelectorOfComplexSelector<ComplexSelector extends string> = CompoundSelectorsOfComplexSelector<ComplexSelector> extends infer CompoundSelectors ? CompoundSelectors extends NonEmptyReadonlyArray<string> ? Last<CompoundSelectors> extends infer LastCompoundSelector ? LastCompoundSelector extends string ? TypeSelectorOfCompoundSelector<LastCompoundSelector> : never : never : unknown : never;
-
-declare type TypeSelectorOfCompoundSelector<CompoundSelector extends string> = SplitWithDelemiters<CompoundSelector, BeginSubclassSelectorTokens> extends infer CompoundSelectorTokens ? CompoundSelectorTokens extends [infer TypeSelector, ...any[]] ? TypeSelector extends '' ? unknown : TypeSelector : never : never;
-
 /* Excluded from this release type: unitToPixels */
 
 /**
@@ -7839,6 +7827,10 @@ export declare interface WaitForTargetOptions {
      * @defaultValue `30_000`
      */
     timeout?: number;
+    /**
+     * A signal object that allows you to cancel a waitFor call.
+     */
+    signal?: AbortSignal;
 }
 
 /* Excluded from this release type: WaitTask */

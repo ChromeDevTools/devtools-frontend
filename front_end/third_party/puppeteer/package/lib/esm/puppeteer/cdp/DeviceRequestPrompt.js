@@ -106,6 +106,11 @@ export class DeviceRequestPrompt {
             message: `Waiting for \`DeviceRequestPromptDevice\` failed: ${timeout}ms exceeded`,
             timeout,
         });
+        if (options.signal) {
+            options.signal.addEventListener('abort', () => {
+                deferred.reject(options.signal?.reason);
+            }, { once: true });
+        }
         const handle = { filter, promise: deferred };
         this.#waitForDevicePromises.add(handle);
         try {
@@ -176,6 +181,11 @@ export class DeviceRequestPromptManager {
             message: `Waiting for \`DeviceRequestPrompt\` failed: ${timeout}ms exceeded`,
             timeout,
         });
+        if (options.signal) {
+            options.signal.addEventListener('abort', () => {
+                deferred.reject(options.signal?.reason);
+            }, { once: true });
+        }
         this.#deviceRequestPrompDeferreds.add(deferred);
         try {
             const [result] = await Promise.all([

@@ -406,6 +406,17 @@ export class CdpPage extends Page {
       message: `Waiting for \`FileChooser\` failed: ${timeout}ms exceeded`,
       timeout,
     });
+
+    if (options.signal) {
+      options.signal.addEventListener(
+        'abort',
+        () => {
+          deferred.reject(options.signal?.reason);
+        },
+        {once: true}
+      );
+    }
+
     this.#fileChooserDeferreds.add(deferred);
     let enablePromise: Promise<void> | undefined;
     if (needsEnable) {
@@ -593,11 +604,29 @@ export class CdpPage extends Page {
   ): Promise<void> {
     const pageURL = this.url();
     for (const cookie of cookies) {
-      const item = Object.assign({}, cookie);
+      const item = {
+        ...cookie,
+        // TODO: a breaking change neeeded to change the partition key
+        // type in Puppeteer.
+        partitionKey: cookie.partitionKey
+          ? {topLevelSite: cookie.partitionKey, hasCrossSiteAncestor: false}
+          : undefined,
+      };
       if (!cookie.url && pageURL.startsWith('http')) {
         item.url = pageURL;
       }
       await this.#primaryTargetClient.send('Network.deleteCookies', item);
+      if (pageURL.startsWith('http') && !item.partitionKey) {
+        const url = new URL(pageURL);
+        // Delete also cookies from the page's partition.
+        await this.#primaryTargetClient.send('Network.deleteCookies', {
+          ...item,
+          partitionKey: {
+            topLevelSite: url.origin.replace(`:${url.port}`, ''),
+            hasCrossSiteAncestor: false,
+          },
+        });
+      }
     }
   }
 

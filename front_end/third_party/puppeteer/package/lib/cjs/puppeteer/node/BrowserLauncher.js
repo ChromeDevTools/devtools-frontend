@@ -88,6 +88,11 @@ class BrowserLauncher {
                 `and it will be eventually removed. ` +
                 `Use WebDriver BiDi instead (see https://pptr.dev/webdriver-bidi#get-started).`);
         }
+        if (this.#browser === 'firefox' &&
+            protocol === 'webDriverBiDi' &&
+            usePipe) {
+            throw new Error('Pipe connections are not supported wtih Firefox and WebDriver BiDi');
+        }
         const browserProcess = (0, browsers_1.launch)({
             executablePath: launchArgs.executablePath,
             args: launchArgs.args,

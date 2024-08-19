@@ -132,14 +132,20 @@ class FirefoxLauncher extends BrowserLauncher_js_1.BrowserLauncher {
         }
         else {
             try {
-                // When an existing user profile has been used remove the user
-                // preferences file and restore possibly backuped preferences.
-                await (0, promises_1.unlink)(path_1.default.join(userDataDir, 'user.js'));
-                const prefsBackupPath = path_1.default.join(userDataDir, 'prefs.js.puppeteer');
-                if (fs_1.default.existsSync(prefsBackupPath)) {
-                    const prefsPath = path_1.default.join(userDataDir, 'prefs.js');
-                    await (0, promises_1.unlink)(prefsPath);
-                    await (0, promises_1.rename)(prefsBackupPath, prefsPath);
+                const backupSuffix = '.puppeteer';
+                const backupFiles = ['prefs.js', 'user.js'];
+                const results = await Promise.allSettled(backupFiles.map(async (file) => {
+                    const prefsBackupPath = path_1.default.join(userDataDir, file + backupSuffix);
+                    if (fs_1.default.existsSync(prefsBackupPath)) {
+                        const prefsPath = path_1.default.join(userDataDir, file);
+                        await (0, promises_1.unlink)(prefsPath);
+                        await (0, promises_1.rename)(prefsBackupPath, prefsPath);
+                    }
+                }));
+                for (const result of results) {
+                    if (result.status === 'rejected') {
+                        throw result.reason;
+                    }
                 }
             }
             catch (error) {

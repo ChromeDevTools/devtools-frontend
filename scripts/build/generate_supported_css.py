@@ -73,7 +73,8 @@ def properties_from_file(file_name):
             continue
         # affected_by_all defaults to True if missing
         if "affected_by_all" not in entry or entry["affected_by_all"]:
-            affected_by_all.add(entry['name'])
+            if not 'longhands' in entry:
+                affected_by_all.add(entry['name'])
         properties.append(_keep_only_required_keys(entry))
         property_names[entry["name"]] = entry
         if "keywords" in entry:

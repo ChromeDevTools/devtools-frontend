@@ -225,7 +225,7 @@ export const NativeFunctions = [
   {
     name: "create",
     signatures: [["?options"]],
-    receivers: ["CredentialsContainer","AIRewriterFactory","AIWriterFactory"]
+    receivers: ["CredentialsContainer","AIAssistantFactory","AIRewriterFactory","AIWriterFactory"]
   },
   {
     name: "defineProperty",

@@ -287,7 +287,7 @@ export class Overlays extends EventTarget {
     if (linkElement) {
       const component = linkElement.querySelector('devtools-entries-link-overlay') as
           Components.EntriesLinkOverlay.EntriesLinkOverlay;
-      component.coordinateTo = {x: mouseEvent.offsetX, y: mouseEvent.offsetY + networkHeight};
+      component.toEntryCoordinateAndDimentions = {x: mouseEvent.offsetX, y: mouseEvent.offsetY + networkHeight};
     }
   }
 
@@ -745,15 +745,16 @@ export class Overlays extends EventTarget {
   }
 
   #positionEntriesLinkOverlay(overlay: EntriesLink, element: HTMLElement): void {
-    // The entry arrow starts from the end on the X axis and middle of the Y axis
-    const entryEndX = this.xPixelForEventEndOnChart(overlay.entryFrom) ?? 0;
-    const halfEntryHeight = (this.pixelHeightForEventOnChart(overlay.entryFrom) ?? 0) / 2;
-    const entryMiddleY = (this.yPixelForEventOnChart(overlay.entryFrom) ?? 0) + halfEntryHeight;
-
     const component = element.querySelector('devtools-entries-link-overlay');
-
     if (component) {
-      component.coordinateFrom = {x: entryEndX, y: entryMiddleY};
+      const entryStartX = this.xPixelForEventStartOnChart(overlay.entryFrom) ?? 0;
+      const entryEndX = this.xPixelForEventEndOnChart(overlay.entryFrom) ?? 0;
+      const entryStartY = this.yPixelForEventOnChart(overlay.entryFrom) ?? 0;
+      const entryLength = entryEndX - entryStartX;
+      const entryHeight = this.pixelHeightForEventOnChart(overlay.entryFrom) ?? 0;
+
+      component.fromEntryCoordinateAndDimentions =
+          {x: entryStartX, y: entryStartY, length: entryLength, height: entryHeight};
     }
   }
 
@@ -1014,12 +1015,14 @@ export class Overlays extends EventTarget {
         return div;
       }
       case 'ENTRIES_LINK': {
-        // The entry arrow starts from the end on the X axis and middle of the Y axis
         const entryEndX = this.xPixelForEventEndOnChart(overlay.entryFrom) ?? 0;
-        const halfEntryHeight = (this.pixelHeightForEventOnChart(overlay.entryFrom) ?? 0) / 2;
-        const entryMiddleY = (this.yPixelForEventOnChart(overlay.entryFrom) ?? 0) + halfEntryHeight;
+        const entryStartX = this.xPixelForEventEndOnChart(overlay.entryFrom) ?? 0;
+        const entryStartY = (this.yPixelForEventOnChart(overlay.entryFrom) ?? 0);
+        const entryWidth = entryEndX - entryStartX;
+        const entryHeight = this.pixelHeightForEventOnChart(overlay.entryFrom) ?? 0;
 
-        const component = new Components.EntriesLinkOverlay.EntriesLinkOverlay({x: entryEndX, y: entryMiddleY});
+        const component = new Components.EntriesLinkOverlay.EntriesLinkOverlay(
+            {x: entryEndX, y: entryStartY, width: entryWidth, height: entryHeight});
         div.appendChild(component);
         return div;
       }
@@ -1077,13 +1080,20 @@ export class Overlays extends EventTarget {
       case 'ENTRIES_LINK': {
         const component = element.querySelector('devtools-entries-link-overlay');
         if (component) {
-          // If entryTo exists, pass the coordinates of the entry that the arrow snaps to.
+          // If entryTo exists, pass the coordinates and dimentions of the entry that the arrow snaps to.
           // If it does not, pass the mouse coordinates so the arrow follows the mouse instead.
           if (overlay.entryTo) {
-            const entryEndX = this.xPixelForEventStartOnChart(overlay.entryTo) ?? 0;
-            const halfEntryHeight = (this.pixelHeightForEventOnChart(overlay.entryTo) ?? 0) / 2;
-            const entryMiddleY = (this.yPixelForEventOnChart(overlay.entryTo) ?? 0) + halfEntryHeight;
-            component.coordinateTo = {x: entryEndX, y: entryMiddleY};
+            const entryStartX = this.xPixelForEventStartOnChart(overlay.entryTo) ?? 0;
+            const entryEndX = this.xPixelForEventEndOnChart(overlay.entryTo) ?? 0;
+            const entryWidth = entryEndX - entryStartX;
+            const entryHeight = this.pixelHeightForEventOnChart(overlay.entryTo) ?? 0;
+            component.toEntryCoordinateAndDimentions = {
+              x: entryStartX ?? 0,
+              y: this.yPixelForEventOnChart(overlay.entryTo) ?? 0,
+              length: entryWidth,
+              height: entryHeight,
+            };
+
           } else if (this.#lastMouseOffsetX && this.#lastMouseOffsetY) {
             // The second coordinate for in progress link gets updated on mousemove
             this.#entriesLinkInProgress = overlay;

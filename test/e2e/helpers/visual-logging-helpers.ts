@@ -141,6 +141,17 @@ export function veImpressionForDrawerToolbar(options?: {
   ]);
 }
 
+// Prints all VE events that haven't been matched by expectVeEvents calls
+// Useful for writing new assertions.
+export async function dumpVeEvents(label: string) {
+  const {frontend} = getBrowserAndPages();
+  const events =
+      // @ts-ignore
+      await frontend.evaluate(async () => (await globalThis.getUnmatchedVeEvents()) as unknown as string[]);
+  // eslint-disable-next-line no-console
+  console.log(label + '\n', events);
+}
+
 // Verifies that VE events contains all the expected events in given order.
 // Unexpected VE events are ignored.
 export async function expectVeEvents(expectedEvents: TestLogEntry[], root?: string) {

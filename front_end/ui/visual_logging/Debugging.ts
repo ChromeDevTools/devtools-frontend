@@ -7,7 +7,6 @@ import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
 import {type Loggable} from './Loggable.js';
 import {type LoggingConfig, VisualElements} from './LoggingConfig.js';
-import {pendingWorkComplete} from './LoggingDriver.js';
 import {getLoggingState, type LoggingState} from './LoggingState.js';
 
 let veDebuggingEnabled = false;
@@ -573,12 +572,6 @@ export function processStartLoggingForDebugging(): void {
   }
 }
 
-async function getVeDebugEventsLog(): Promise<(IntuitiveLogEntry | AdHocAnalysisLogEntry | TestLogEntry)[]> {
-  await pendingWorkComplete();
-  lastImpressionLogEntry = null;
-  return veDebugEventsLog;
-}
-
 // Compares the 'actual' log entry against the 'expected'.
 // For impressions events to match, all expected impressions need to be present
 // in the actual event. Unexected impressions in the actual event are ignored.
@@ -640,6 +633,8 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]): Promise<vo
   return promise;
 }
 
+let numMatchedEvents = 0;
+
 function checkPendingEventExpectation(): void {
   if (!pendingEventExpectation) {
     return;
@@ -659,12 +654,22 @@ function checkPendingEventExpectation(): void {
       }
     }
   }
+  numMatchedEvents = veDebugEventsLog.length - actualEvents.length + pendingEventExpectation.expectedEvents.length;
   pendingEventExpectation.success();
   pendingEventExpectation = null;
 }
 
+function getUnmatchedVeEvents(): string {
+  console.error(numMatchedEvents);
+  return (veDebugEventsLog.slice(numMatchedEvents) as TestLogEntry[])
+      .map(e => 'interaction' in e ? e.interaction : formatImpressions(e.impressions))
+      .join('\n');
+}
+
 // @ts-ignore
 globalThis.setVeDebugLoggingEnabled = setVeDebugLoggingEnabled;
+// @ts-ignore
+globalThis.getUnmatchedVeEvents = getUnmatchedVeEvents;
 // @ts-ignore
 globalThis.veDebugEventsLog = veDebugEventsLog;
 // @ts-ignore
@@ -673,7 +678,5 @@ globalThis.findVeDebugImpression = findVeDebugImpression;
 globalThis.exportAdHocAnalysisLogForSql = exportAdHocAnalysisLogForSql;
 // @ts-ignore
 globalThis.buildStateFlow = buildStateFlow;
-// @ts-ignore
-globalThis.getVeDebugEventsLog = getVeDebugEventsLog;
 // @ts-ignore
 globalThis.expectVeEvents = expectVeEvents;

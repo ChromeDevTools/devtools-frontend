@@ -378,7 +378,7 @@ async function requestHandler(request, response) {
     }
 
     let encoding = 'utf8';
-    if (fullPath.endsWith('.js')) {
+    if (fullPath.endsWith('.js') || fullPath.endsWith('.mjs')) {
       response.setHeader('Content-Type', 'text/javascript; charset=utf-8');
     } else if (fullPath.endsWith('.css')) {
       response.setHeader('Content-Type', 'text/css; charset=utf-8');

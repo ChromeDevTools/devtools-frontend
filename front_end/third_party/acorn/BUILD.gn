@@ -38,7 +38,10 @@ devtools_entrypoint("bundle") {
     ":estree",
   ]
 
-  visibility = [ "../../entrypoints/formatter_worker/*" ]
+  visibility = [
+    "../../entrypoints/formatter_worker/*",
+    "../../ui/legacy/components/object_ui/*",
+  ]
 
   visibility += devtools_third_party_visibility
 }

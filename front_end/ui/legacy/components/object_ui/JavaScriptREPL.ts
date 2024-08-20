@@ -6,6 +6,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Formatter from '../../../../models/formatter/formatter.js';
 import * as SourceMapScopes from '../../../../models/source_map_scopes/source_map_scopes.js';
+import * as Acorn from '../../../../third_party/acorn/acorn.js';
 import * as UI from '../../legacy.js';
 
 import {RemoteObjectPreviewFormatter} from './RemoteObjectPreviewFormatter.js';
@@ -27,7 +28,9 @@ export class JavaScriptREPL {
       }
     }
 
-    const parse = (async () => 0).constructor;
+    const parse = (expression: string): void => void Acorn.parse(
+        expression,
+        {ecmaVersion: 2022, allowAwaitOutsideFunction: true, ranges: false, allowReturnOutsideFunction: true});
     try {
       // Check if the body can be interpreted as an expression.
       parse('return {' + body + '};');

@@ -182,7 +182,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(binding.network);
     if (target && target.type() === SDK.Target.Type.Node) {
       const newContent = uiSourceCode.workingCopy();
-      void other.requestContent().then(() => {
+      void other.requestContentData().then(() => {
         const nodeJSContent = PersistenceImpl.rewrapNodeJSContent(other, other.workingCopy(), newContent);
         setWorkingCopy.call(this, () => nodeJSContent);
       });

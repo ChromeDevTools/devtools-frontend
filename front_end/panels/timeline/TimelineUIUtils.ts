@@ -506,6 +506,10 @@ const UIStrings = {
    * @example {Setting Name} PH1
    */
   sSelectorStatsInfo: 'Select "{PH1}" to collect detailed CSS selector matching statistics.',
+  /**
+   * @description Label for a description text of a metric.
+   */
+  description: 'Description',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1186,6 +1190,10 @@ export class TimelineUIUtils {
       for (const [key, value] of event.args.properties || []) {
         contentHelper.appendTextRow(key, value);
       }
+    }
+
+    if (TraceEngine.Types.TraceEvents.isSyntheticServerTiming(event) && event.args.data.desc) {
+      contentHelper.appendTextRow(i18nString(UIStrings.description), event.args.data.desc);
     }
 
     const isFreshRecording = Boolean(traceParseData && Tracker.instance().recordingIsFresh(traceParseData));

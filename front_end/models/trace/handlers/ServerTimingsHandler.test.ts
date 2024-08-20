@@ -16,14 +16,14 @@ describe('ServerTimingsHandler', () => {
         dur: TraceEngine.Types.Timing.MicroSeconds(1004293.2819999987),
         name: 'Topleveltask1',
         ts: TraceEngine.Types.Timing.MicroSeconds(80542636965.7475),
-        desc: undefined,
+        desc: 'Description of top level task 1',
         origin: 'https://node-server-tan.vercel.app',
       },
       {
         dur: TraceEngine.Types.Timing.MicroSeconds(904293.2819999987),
         name: 'Secondleveltask1',
         ts: TraceEngine.Types.Timing.MicroSeconds(80542686965.7475),
-        desc: 'a description',
+        desc: 'Description of second level task 1',
         origin: 'https://node-server-tan.vercel.app',
       },
       {

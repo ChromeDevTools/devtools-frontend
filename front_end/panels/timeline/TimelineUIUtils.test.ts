@@ -1110,6 +1110,26 @@ describeWithMockConnection('TimelineUIUtils', function() {
           expectedPieChartData,
       );
     });
+
+    it('renders details for synthetic server timings', async function() {
+      const {traceData} = await TraceLoader.traceEngine(this, 'server-timings.json.gz');
+      const serverTimings = traceData.ServerTimings.serverTimings;
+      const serverTiming = serverTimings[0];
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          traceData,
+          serverTiming,
+          new Components.Linkifier.Linkifier(),
+          false,
+      );
+      const rowData = getRowDataForDetailsElement(details);
+      assert.deepEqual(rowData, [
+        {
+          title: 'Description',
+          value: 'Description of top level task 1',
+        },
+      ]);
+    });
+
   });
 
   it('can generate details for a frame', async function() {

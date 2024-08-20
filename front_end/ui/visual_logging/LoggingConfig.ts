@@ -115,6 +115,18 @@ function resolveVe(ve: string): number {
   return VisualElements[ve as VisualElementName] ?? 0;
 }
 
+const reportedUnknownVeContext: Set<string> = new Set();
+
+function checkContextValue(context: string|number|undefined): void {
+  if (typeof context !== 'string' || !context.length || knownContextValues.has(context) ||
+      reportedUnknownVeContext.has(context)) {
+    return;
+  }
+  const stack = (new Error().stack || '').split('\n').slice(3).join('\n');
+  console.error(`Unknown VE context: ${context}${stack}`);
+  reportedUnknownVeContext.add(context);
+}
+
 export function parseJsLog(jslog: string): LoggingConfig {
   const components = jslog.replace(/ /g, '').split(';');
   const getComponent = (name: string): string|undefined =>
@@ -126,9 +138,7 @@ export function parseJsLog(jslog: string): LoggingConfig {
   const config: LoggingConfig = {ve};
   const context = getComponent('context:');
   if (context && context.trim().length) {
-    if (!knownContextValues.has(context)) {
-      console.error('Unknown VE context:', context);
-    }
+    checkContextValue(context);
     config.context = context;
   }
 
@@ -190,18 +200,14 @@ export function makeConfigStringBuilder(veName: VisualElementName, context?: str
   const components: string[] = [veName];
   if (typeof context === 'string' && context.trim().length) {
     components.push(`context: ${context}`);
-    if (!knownContextValues.has(context)) {
-      console.error('Unknown VE context:', context);
-    }
+    checkContextValue(context);
   }
   return {
     context: function(value: string|number|undefined): ConfigStringBuilder {
       if (typeof value === 'number' || typeof value === 'string' && value.length) {
         components.push(`context: ${value}`);
       }
-      if (typeof value === 'string' && value.length && !knownContextValues.has(value)) {
-        console.error('Unknown VE context:', value);
-      }
+      checkContextValue(context);
       return this;
     },
     parent: function(value: string): ConfigStringBuilder {

@@ -166,12 +166,6 @@ module.exports = {
         'rulesdir/use_private_class_members': 'error',
       }
     },
-    {
-      'files': ['ui/visual_logging/KnownContextValues.ts'],
-      'rules': {
-        'rulesdir/jslog_context_list': 'off',
-      }
-    },
     // TODO(crbug/1402569): Remove once LitElement is fully adopted.
     {
       'files': ['panels/recorder/**/*.ts', 'panels/protocol_monitor/**/*.ts', 'ui/components/suggestion_input/*.ts'],

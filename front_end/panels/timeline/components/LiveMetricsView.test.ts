@@ -642,6 +642,25 @@ describeWithMockConnection('LiveMetricsView', () => {
             'Your local LCP 5.00 s is poor, and is significantly worse than your users’ experience.');
       });
 
+      it('should always be similar if local and field are rated "good"', async () => {
+        mockFieldData['url-ALL'] = createMockFieldData();
+        mockFieldData['url-ALL'].record.metrics.largest_contentful_paint!.percentiles!.p75 = 2490;
+
+        const view = new Components.LiveMetricsView.LiveMetricsView();
+        renderElementIntoDOM(view);
+
+        LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
+          lcp: {value: 10},
+          interactions: [],
+        });
+
+        await coordinator.done();
+
+        const compareText = getCompareText(view, 'lcp');
+        assert.strictEqual(
+            compareText!.innerText, 'Your local LCP 10 ms is good, and is similar to your users’ experience.');
+      });
+
       it('should show generic summary if field is missing', async () => {
         const view = new Components.LiveMetricsView.LiveMetricsView();
         renderElementIntoDOM(view);

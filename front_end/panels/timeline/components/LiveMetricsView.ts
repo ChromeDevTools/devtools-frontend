@@ -406,6 +406,17 @@ export class MetricCard extends HTMLElement {
     });
   }
 
+  #getCompareThreshold(): number {
+    switch (this.#data.metric) {
+      case 'LCP':
+        return 1000;
+      case 'CLS':
+        return 0.1;
+      case 'INP':
+        return 200;
+    }
+  }
+
   #getTitle(): string {
     switch (this.#data.metric) {
       case 'LCP':
@@ -472,11 +483,21 @@ export class MetricCard extends HTMLElement {
       return;
     }
 
-    const threshold = this.#getThresholds()[0];
-    if (localValue - fieldValue > threshold) {
+    const thresholds = this.#getThresholds();
+    const localRating = rateMetric(localValue, thresholds);
+    const fieldRating = rateMetric(fieldValue, thresholds);
+
+    // It's not worth highlighting a significant difference when both #s
+    // are rated "good"
+    if (localRating === 'good' && fieldRating === 'good') {
+      return 'similar';
+    }
+
+    const compareThreshold = this.#getCompareThreshold();
+    if (localValue - fieldValue > compareThreshold) {
       return 'worse';
     }
-    if (fieldValue - localValue > threshold) {
+    if (fieldValue - localValue > compareThreshold) {
       return 'better';
     }
 

@@ -114,14 +114,24 @@ in the main Chromium documentation to learn more about the presubmit API built i
 
 ## Lint checks
 
-We use a set of [ESLint](https://eslint.org) rules to perform automated checks, which are also run as part of the
-[presubmit checks](#Presubmit-checks).
+We use a set of [ESLint](https://eslint.org) and [Stylelint](https://stylelint.io) rules to perform automated checks,
+which are also run as part of the [presubmit checks](#Presubmit-checks).
 
 You can use
 ```
 npm run lint
 ```
-to execute all lint checks.
+to execute all lint checks, or
+```
+npm run lint -- '**/*.ts'
+npm run lint -- '**/*.css'
+```
+to execute only the lint checks for TypeScript or CSS files respectively. By default this will fix all issues
+that can be automatically corrected; you can pass `--no-fix` to disable this behavior.
+
+The configuration for Stylelint can be found in [`.stylelintrc.json`](../.stylelintrc.json) in the root directory,
+whereas ESLint is configured via a toplevel [`.eslintrc.js`](../.eslintrc.js) and various more specific `.eslintrc.js`
+files that override settings for various subdirectories.
 
 The custom ESLint rules live in the [`scripts/eslint_rules` directory](../scripts/eslint_rules/) and are used
 to implement checks for DevTools specifics.

@@ -277,8 +277,8 @@ def _CheckDevToolsRunBuildTests(input_api, output_api):
     return results
 
 
-def _CheckDevToolsStyleJS(input_api, output_api):
-    results = [output_api.PresubmitNotifyResult('JS style check:')]
+def _CheckDevToolsLint(input_api, output_api):
+    results = [output_api.PresubmitNotifyResult('Lint Check:')]
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                        'scripts', 'test', 'run_lint_check.js')
 
@@ -295,13 +295,17 @@ def _CheckDevToolsStyleJS(input_api, output_api):
                                                'scripts')
 
     default_linted_directories = [
-        front_end_directory, test_directory, scripts_directory,
-        inspector_overlay_directory
+        front_end_directory,
+        test_directory,
+        scripts_directory,
+        inspector_overlay_directory,
     ]
 
-    eslint_related_files = [
+    lint_related_files = [
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
                                'eslint'),
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
+                               'stylelint'),
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
                                '@typescript-eslint'),
         input_api.os_path.join(input_api.PresubmitLocalPath(), '.eslintrc.js'),
@@ -310,17 +314,21 @@ def _CheckDevToolsStyleJS(input_api, output_api):
         input_api.os_path.join(front_end_directory, '.eslintrc.js'),
         input_api.os_path.join(component_docs_directory, '.eslintrc.js'),
         input_api.os_path.join(test_directory, '.eslintrc.js'),
-        input_api.os_path.join(scripts_directory, 'test', 'run_lint_check.js'),
         input_api.os_path.join(scripts_directory, '.eslintrc.js'),
         input_api.os_path.join(scripts_directory, 'eslint_rules'),
+        input_api.os_path.join(input_api.PresubmitLocalPath(),
+                               '.stylelintrc.json'),
+        input_api.os_path.join(input_api.PresubmitLocalPath(),
+                               '.stylelintignore'),
+        input_api.os_path.join(scripts_directory, 'test', 'run_lint_check.js'),
     ]
 
-    lint_config_files = _getAffectedFiles(input_api, eslint_related_files, [],
+    lint_config_files = _getAffectedFiles(input_api, lint_related_files, [],
                                           ['.js', '.py', '.eslintignore'])
 
     should_bail_out, files_to_lint = _getFilesToLint(
         input_api, output_api, lint_config_files, default_linted_directories,
-        ['.js', '.ts'], results)
+        ['.css', '.js', '.ts'], results)
     if should_bail_out:
         return results
 
@@ -332,54 +340,6 @@ def _CheckDevToolsStyleJS(input_api, output_api):
     results.extend(
         _checkWithNodeScript(input_api, output_api, lint_path, files_to_lint))
     return results
-
-
-def _CheckDevToolsStyleCSS(input_api, output_api):
-    results = [output_api.PresubmitNotifyResult('CSS style check:')]
-    lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                       'scripts', 'test', 'run_lint_check.js')
-
-    front_end_directory = input_api.os_path.join(
-        input_api.PresubmitLocalPath(), 'front_end')
-    inspector_overlay_directory = input_api.os_path.join(
-        input_api.PresubmitLocalPath(), 'inspector_overlay')
-    default_linted_directories = [
-        front_end_directory, inspector_overlay_directory
-    ]
-
-    scripts_directory = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                               'scripts')
-
-    stylelint_related_files = [
-        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
-                               'stylelint'),
-        input_api.os_path.join(input_api.PresubmitLocalPath(),
-                               '.stylelintrc.json'),
-        input_api.os_path.join(input_api.PresubmitLocalPath(),
-                               '.stylelintignore'),
-        input_api.os_path.join(scripts_directory, 'test', 'run_lint_check.js'),
-    ]
-
-    lint_config_files = _getAffectedFiles(input_api, stylelint_related_files,
-                                          [], [])
-
-    css_should_bail_out, css_files_to_lint = _getFilesToLint(
-        input_api, output_api, lint_config_files, default_linted_directories,
-        ['.css'], results)
-
-    # If there are more than 50 files to check, don't bother and check
-    # everything, so as to not run into command line length limits on Windows.
-    if not css_should_bail_out:
-        if len(css_files_to_lint) < 50:
-            script_args = ["--files"] + css_files_to_lint
-        else:
-            script_args = []  # The defaults check all CSS files.
-        results.extend(
-            _checkWithNodeScript(input_api, output_api, lint_path,
-                                 script_args))
-
-    return results
-
 
 def _CheckDevToolsNonJSFileLicenseHeaders(input_api, output_api):
     results = [
@@ -615,12 +575,18 @@ def _CannedChecks(canned_checks):
 def _CommonChecks(canned_checks):
     local_checks = [
         _WithArgs(canned_checks.CheckAuthorizedAuthor,
-                  bot_allowlist=[AUTOROLL_ACCOUNT]), _CheckExperimentTelemetry,
-        _CheckGeneratedFiles, _CheckDevToolsStyleJS, _CheckDevToolsStyleCSS,
-        _CheckDevToolsRunESLintTests, _CheckDevToolsRunBuildTests,
-        _CheckDevToolsNonJSFileLicenseHeaders, _CheckFormat,
-        _CheckESBuildVersion, _CheckEnumeratedHistograms,
-        _CheckObsoleteScreenshotGoldens, _CheckNodeModules
+                  bot_allowlist=[AUTOROLL_ACCOUNT]),
+        _CheckExperimentTelemetry,
+        _CheckGeneratedFiles,
+        _CheckDevToolsLint,
+        _CheckDevToolsRunESLintTests,
+        _CheckDevToolsRunBuildTests,
+        _CheckDevToolsNonJSFileLicenseHeaders,
+        _CheckFormat,
+        _CheckESBuildVersion,
+        _CheckEnumeratedHistograms,
+        _CheckObsoleteScreenshotGoldens,
+        _CheckNodeModules,
     ]
     # Run the canned checks from `depot_tools` after the custom DevTools checks.
     # The canned checks for example check that lines have line endings. The

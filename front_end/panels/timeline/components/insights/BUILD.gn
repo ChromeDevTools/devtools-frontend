@@ -20,7 +20,9 @@ devtools_module("insights") {
     "Helpers.ts",
     "LCPDiscovery.ts",
     "LCPPhases.ts",
+    "NodeLink.ts",
     "SidebarInsight.ts",
+    "Viewport.ts",
     "types.ts",
   ]
 

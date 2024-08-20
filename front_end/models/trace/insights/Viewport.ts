@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Helpers from '../helpers/helpers.js';
+import type * as Types from '../types/types.js';
 
 import {type InsightResult, InsightWarning, type NavigationInsightContext, type RequiredData} from './types.js';
 
@@ -12,8 +13,7 @@ export function deps(): ['Meta', 'UserInteractions'] {
 
 export type ViewportInsightResult = InsightResult<{
   mobileOptimized: boolean | null,
-  nodeId?: number,
-  content?: string,
+  viewportEvent?: Types.TraceEvents.TraceEventParseMetaViewport,
 }>;
 
 export function generateInsight(
@@ -54,23 +54,18 @@ export function generateInsight(
     return true;
   });
 
-  const content = viewportEvent?.args.data.content;
-  const nodeId = viewportEvent?.args.data.node_id;
-
   // Returns true only if all events are mobile optimized.
   for (const event of compositorEvents) {
     if (!event.args.is_mobile_optimized) {
       return {
         mobileOptimized: false,
-        content,
-        nodeId,
+        viewportEvent,
       };
     }
   }
 
   return {
     mobileOptimized: true,
-    content,
-    nodeId,
+    viewportEvent,
   };
 }

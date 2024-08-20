@@ -176,6 +176,14 @@ export class SidebarSingleNavigation extends HTMLElement {
         .activeInsight=${this.#data.activeInsight}
         .activeCategory=${this.#data.activeCategory}
       </${Insights.CLSCulprits.CLSCulprits}>
+    </div>
+    <div>
+      <${Insights.Viewport.Viewport.litTagName}
+        .insights=${insights}
+        .navigationId=${navigationId}
+        .activeInsight=${this.#data.activeInsight}
+        .activeCategory=${this.#data.activeCategory}
+      </${Insights.Viewport.Viewport}>
     </div>`;
     // clang-format on
   }

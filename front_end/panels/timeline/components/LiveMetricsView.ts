@@ -13,6 +13,7 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
+import * as Settings from '../../../ui/components/settings/settings.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -158,15 +159,20 @@ const UIStrings = {
    * @description Text block recommendation instructing the user to enable a throttling preset to best match real user network data.
    * @example {Slow 4G} PH1
    */
-  tryUsingThrottling: 'Try using {PH1} network throttling to approximate the network latency measured by real users.',
+  tryUsingThrottling:
+      'Try using {PH1} network throttling to approximate real-user network latencies measured on this page by the Chrome UX Report.',
   /**
    * @description Text block recommendation instructing the user to emulate a mobile device to match most real users.
    */
-  mostUsersMobile: 'A majority of users are on mobile. Try emulating a mobile device that matches real users.',
+  mostUsersMobile: 'A majority of users are on mobile. Try simulating a mobile device that matches real users.',
   /**
    * @description Text block recommendation instructing the user to emulate different desktop window sizes to match most real users.
    */
-  mostUsersDesktop: 'A majority of users are on desktop. Try emulating a desktop window size that matches real users.',
+  mostUsersDesktop: 'A majority of users are on desktop. Try simulating a desktop window size that matches real users.',
+  /**
+   * @description Text block that becomes a link to documentation about how to simulate different mobile and desktop devices.
+   */
+  learnMoreDevices: 'Learn more about simulating different devices.',
   /**
    * @description Text label for a link to the Largest Contentful Paint (LCP) related DOM node.
    */
@@ -966,10 +972,19 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     // clang-format off
     return html`
       <h3 class="card-title">${i18nString(UIStrings.recordingSettings)}</h3>
-      ${deviceRec ? html`<div id="device-recommendation" class="setting-recommendation">${deviceRec}</div>` : nothing}
+      ${deviceRec ? html`
+        <div id="device-recommendation" class="setting-recommendation">
+          ${deviceRec}
+          <x-link href="https://developer.chrome.com/docs/devtools/device-mode">${i18nString(UIStrings.learnMoreDevices)}</x-link>
+        </div>
+      ` : nothing}
       ${networkRecEl ? html`<div id="network-recommendation" class="setting-recommendation">${networkRecEl}</div>` : nothing}
       <${CPUThrottlingSelector.litTagName} class="live-metrics-option"></${CPUThrottlingSelector.litTagName}>
       <${NetworkThrottlingSelector.litTagName} class="live-metrics-option"></${NetworkThrottlingSelector.litTagName}>
+      <${Settings.SettingCheckbox.SettingCheckbox.litTagName} class="live-metrics-option" .data=${{
+        setting: Common.Settings.Settings.instance().moduleSetting('cache-disabled'),
+      } as Settings.SettingCheckbox.SettingCheckboxData}>
+      </${Settings.SettingCheckbox.SettingCheckbox.litTagName}>
     `;
     // clang-format on
   }

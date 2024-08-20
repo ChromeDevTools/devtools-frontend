@@ -33,6 +33,14 @@ export async function navigateToMemoryTab() {
   await waitFor(PROFILE_TREE_SIDEBAR);
 }
 
+export async function takeDetachedElementsProfile() {
+  const radioButton = await $('//label[text()="Detached elements"]', undefined, 'xpath');
+  await clickElement(radioButton);
+  await click('devtools-button[aria-label="Obtain detached elements"]');
+  await waitForNone('.heap-snapshot-sidebar-tree-item.wait');
+  await waitFor('.heap-snapshot-sidebar-tree-item.selected');
+}
+
 export async function takeAllocationProfile() {
   const radioButton = await $('//label[text()="Allocation sampling"]', undefined, 'xpath');
   await clickElement(radioButton);

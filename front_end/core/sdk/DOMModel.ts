@@ -1573,6 +1573,10 @@ export class DOMModel extends SDKModel<EventTypes> {
     return this.agent.invoke_getTopLayerElements().then(({nodeIds}) => nodeIds);
   }
 
+  getDetachedDOMNodes(): Promise<Protocol.DOM.DetachedElementInfo[]|null> {
+    return this.agent.invoke_getDetachedDomNodes().then(({detachedNodes}) => detachedNodes);
+  }
+
   getElementByRelation(nodeId: Protocol.DOM.NodeId, relation: Protocol.DOM.GetElementByRelationRequestRelation):
       Promise<Protocol.DOM.NodeId|null> {
     return this.agent.invoke_getElementByRelation({nodeId, relation}).then(({nodeId}) => nodeId);

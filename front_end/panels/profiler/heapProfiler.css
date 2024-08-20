@@ -226,3 +226,7 @@
     color: ButtonText;
   }
 }
+
+.detached-elements-view {
+  overflow: auto;
+}

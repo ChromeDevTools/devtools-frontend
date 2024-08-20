@@ -1529,6 +1529,8 @@ grd_files_debug_sources = [
   "front_end/panels/performance_monitor/performanceMonitor.css.js",
   "front_end/panels/profiler/BottomUpProfileDataGrid.js",
   "front_end/panels/profiler/ChildrenProvider.js",
+  "front_end/panels/profiler/HeapDetachedElementsDataGrid.js",
+  "front_end/panels/profiler/HeapDetachedElementsView.js",
   "front_end/panels/profiler/HeapProfileView.js",
   "front_end/panels/profiler/HeapProfilerPanel.js",
   "front_end/panels/profiler/HeapSnapshotDataGrids.js",

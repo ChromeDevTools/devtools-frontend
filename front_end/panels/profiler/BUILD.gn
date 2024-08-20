@@ -22,6 +22,8 @@ devtools_module("profiler") {
   sources = [
     "BottomUpProfileDataGrid.ts",
     "ChildrenProvider.ts",
+    "HeapDetachedElementsDataGrid.ts",
+    "HeapDetachedElementsView.ts",
     "HeapProfileView.ts",
     "HeapProfilerPanel.ts",
     "HeapSnapshotDataGrids.ts",
@@ -53,6 +55,7 @@ devtools_module("profiler") {
     "../../models/cpu_profile:bundle",
     "../../models/heap_snapshot_model:bundle",
     "../../models/workspace:bundle",
+    "../../panels/elements:bundle",
     "../../panels/settings:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",

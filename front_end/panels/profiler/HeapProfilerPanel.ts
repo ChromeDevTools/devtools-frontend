@@ -25,8 +25,12 @@ export class HeapProfilerPanel extends ProfilesPanel implements UI.ContextMenu.P
                                                                 UI.ActionRegistration.ActionDelegate {
   constructor() {
     const registry = instance;
-    const profileTypes =
-        [registry.heapSnapshotProfileType, registry.trackingHeapSnapshotProfileType, registry.samplingHeapProfileType];
+    const profileTypes = [
+      registry.heapSnapshotProfileType,
+      registry.trackingHeapSnapshotProfileType,
+      registry.samplingHeapProfileType,
+      registry.detachedElementProfileType,
+    ];
     super('heap-profiler', profileTypes as ProfileType[], 'profiler.heap-toggle-recording');
   }
 

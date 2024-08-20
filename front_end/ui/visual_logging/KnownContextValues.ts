@@ -836,6 +836,8 @@ export const knownContextValues = new Set([
   'desktop',
   'desktop-touch',
   'destination',
+  'detached-node',
+  'detached-node-count',
   'details',
   'details-general',
   'details-response-headers',

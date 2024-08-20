@@ -42,6 +42,7 @@ import {
   setSearchFilter,
   takeAllocationProfile,
   takeAllocationTimelineProfile,
+  takeDetachedElementsProfile,
   takeHeapSnapshot,
   waitForNonEmptyHeapSnapshotData,
   waitForRetainerChain,
@@ -93,33 +94,32 @@ describe('The Memory Panel', function() {
     ]);
   });
 
-  it(
-      'Correctly retains the path for event listeners', async () => {
-        await goToResource('memory/event-listeners.html');
-        await step('taking a heap snapshot', async () => {
-          await navigateToMemoryTab();
-          await takeHeapSnapshot();
-          await waitForNonEmptyHeapSnapshotData();
-        });
-        await step('searching for the event listener', async () => {
-          await setSearchFilter('myEventListener');
-          await waitForSearchResultNumber(4);
-        });
+  it('Correctly retains the path for event listeners', async () => {
+    await goToResource('memory/event-listeners.html');
+    await step('taking a heap snapshot', async () => {
+      await navigateToMemoryTab();
+      await takeHeapSnapshot();
+      await waitForNonEmptyHeapSnapshotData();
+    });
+    await step('searching for the event listener', async () => {
+      await setSearchFilter('myEventListener');
+      await waitForSearchResultNumber(4);
+    });
 
-        await step('selecting the search result that we need', async () => {
-          await findSearchResult('myEventListener()');
-        });
+    await step('selecting the search result that we need', async () => {
+      await findSearchResult('myEventListener()');
+    });
 
-        await step('waiting for retainer chain', async () => {
-          await waitForRetainerChain([
-            'V8EventListener',
-            'EventListener',
-            'InternalNode',
-            'InternalNode',
-            '<body>',
-          ]);
-        });
-      });
+    await step('waiting for retainer chain', async () => {
+      await waitForRetainerChain([
+        'V8EventListener',
+        'EventListener',
+        'InternalNode',
+        'InternalNode',
+        '<body>',
+      ]);
+    });
+  });
 
   it('Puts all ActiveDOMObjects with pending activities into one group', async () => {
     const {frontend} = getBrowserAndPages();
@@ -289,6 +289,13 @@ describe('The Memory Panel', function() {
     const searchResultElement = await waitFor('.selected.data-grid-data-grid-node span.object-value-null');
     searchResultElement!.hover();
     await waitFor('.widget .object-popover-footer');
+  });
+
+  it('shows the list of a detached node', async () => {
+    await goToResource('memory/detached-node.html');
+    await navigateToMemoryTab();
+    void takeDetachedElementsProfile();
+    await waitFor('.detached-elements-view');
   });
 
   it('shows the flamechart for an allocation sample', async () => {

@@ -1,4 +1,4 @@
-import { getReadableAsBuffer, getReadableFromProtocolStream, } from '../common/util.js';
+import { getReadableAsTypedArray, getReadableFromProtocolStream, } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { isErrorLike } from '../util/ErrorLike.js';
@@ -90,8 +90,8 @@ export class Tracing {
             try {
                 assert(event.stream, 'Missing "stream"');
                 const readable = await getReadableFromProtocolStream(this.#client, event.stream);
-                const buffer = await getReadableAsBuffer(readable, this.#path);
-                contentDeferred.resolve(buffer ?? undefined);
+                const typedArray = await getReadableAsTypedArray(readable, this.#path);
+                contentDeferred.resolve(typedArray ?? undefined);
             }
             catch (error) {
                 if (isErrorLike(error)) {

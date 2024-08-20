@@ -24,8 +24,4 @@ __exportStar(require("./cdp/cdp.js"), exports);
 __exportStar(require("./common/common.js"), exports);
 __exportStar(require("./revisions.js"), exports);
 __exportStar(require("./util/util.js"), exports);
-/**
- * @deprecated Use the query handler API defined on {@link Puppeteer}
- */
-__exportStar(require("./common/CustomQueryHandler.js"), exports);
 //# sourceMappingURL=index-browser.js.map

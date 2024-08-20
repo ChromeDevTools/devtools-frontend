@@ -83,6 +83,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
 import { ElementHandle } from '../api/ElementHandle.js';
+import { environment } from '../environment.js';
 import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
 import { throwIfDisposed } from '../util/decorators.js';
 import { BidiJSHandle } from './JSHandle.js';
@@ -165,17 +166,7 @@ let BidiElementHandle = (() => {
         }
         async uploadFile(...files) {
             // Locate all files and confirm that they exist.
-            // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-            let path;
-            try {
-                path = await import('path');
-            }
-            catch (error) {
-                if (error instanceof TypeError) {
-                    throw new Error(`JSHandle#uploadFile can only be used in Node-like environments.`);
-                }
-                throw error;
-            }
+            const path = environment.value.path;
             files = files.map(file => {
                 if (path.win32.isAbsolute(file) || path.posix.isAbsolute(file)) {
                     return file;

@@ -351,7 +351,7 @@ export abstract class ElementHandle<
    *
    * @param selector -
    * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-   * to query page for.
+   * to query the page for.
    * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
    * can be passed as-is and a
    * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -385,7 +385,7 @@ export abstract class ElementHandle<
    *
    * @param selector -
    * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-   * to query page for.
+   * to query the page for.
    * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
    * can be passed as-is and a
    * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -460,7 +460,7 @@ export abstract class ElementHandle<
    *
    * @param selector -
    * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-   * to query page for.
+   * to query the page for.
    * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
    * can be passed as-is and a
    * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -529,7 +529,7 @@ export abstract class ElementHandle<
    *
    * @param selector -
    * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-   * to query page for.
+   * to query the page for.
    * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
    * can be passed as-is and a
    * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -1354,13 +1354,13 @@ export abstract class ElementHandle<
   async screenshot(
     options: Readonly<ScreenshotOptions> & {encoding: 'base64'}
   ): Promise<string>;
-  async screenshot(options?: Readonly<ScreenshotOptions>): Promise<Buffer>;
+  async screenshot(options?: Readonly<ScreenshotOptions>): Promise<Uint8Array>;
   @throwIfDisposed()
   @ElementHandle.bindIsolatedHandle
   async screenshot(
     this: ElementHandle<Element>,
     options: Readonly<ElementScreenshotOptions> = {}
-  ): Promise<string | Buffer> {
+  ): Promise<string | Uint8Array> {
     const {scrollIntoView = true, clip} = options;
 
     const page = this.frame.page();

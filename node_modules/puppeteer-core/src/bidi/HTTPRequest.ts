@@ -18,6 +18,7 @@ import {
 } from '../api/HTTPRequest.js';
 import {PageEvent} from '../api/Page.js';
 import {UnsupportedOperation} from '../common/Errors.js';
+import {stringToBase64} from '../util/encoding.js';
 
 import type {Request} from './core/Request.js';
 import type {BidiFrame} from './Frame.js';
@@ -221,7 +222,7 @@ export class BidiHTTPRequest extends HTTPRequest {
         body: overrides.postData
           ? {
               type: 'base64',
-              value: btoa(overrides.postData),
+              value: stringToBase64(overrides.postData),
             }
           : undefined,
         headers: headers.length > 0 ? headers : undefined,
@@ -322,6 +323,10 @@ export class BidiHTTPRequest extends HTTPRequest {
       });
     }
   };
+
+  timing(): Bidi.Network.FetchTimingInfo {
+    return this.#request.timing();
+  }
 }
 
 function getBidiHeaders(rawHeaders?: Record<string, unknown>) {

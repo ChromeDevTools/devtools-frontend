@@ -56,7 +56,7 @@ import { TargetCloseError } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { FileChooser } from '../common/FileChooser.js';
 import { NetworkManagerEvent } from '../common/NetworkManagerEvents.js';
-import { debugError, evaluationString, getReadableAsBuffer, getReadableFromProtocolStream, parsePDFOptions, timeout, validateDialogType, } from '../common/util.js';
+import { debugError, evaluationString, getReadableAsTypedArray, getReadableFromProtocolStream, parsePDFOptions, timeout, validateDialogType, } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { AsyncDisposableStack } from '../util/disposable.js';
@@ -799,9 +799,9 @@ export class CdpPage extends Page {
     async pdf(options = {}) {
         const { path = undefined } = options;
         const readable = await this.createPDFStream(options);
-        const buffer = await getReadableAsBuffer(readable, path);
-        assert(buffer, 'Could not create buffer');
-        return buffer;
+        const typedArray = await getReadableAsTypedArray(readable, path);
+        assert(typedArray, 'Could not create typed array');
+        return typedArray;
     }
     async close(options = { runBeforeUnload: undefined }) {
         const env_3 = { stack: [], error: void 0, hasError: false };

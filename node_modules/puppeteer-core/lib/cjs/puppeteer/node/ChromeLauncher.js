@@ -15,12 +15,12 @@ const path_1 = __importDefault(require("path"));
 const browsers_1 = require("@puppeteer/browsers");
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
-const ProductLauncher_js_1 = require("./ProductLauncher.js");
+const BrowserLauncher_js_1 = require("./BrowserLauncher.js");
 const fs_js_1 = require("./util/fs.js");
 /**
  * @internal
  */
-class ChromeLauncher extends ProductLauncher_js_1.ProductLauncher {
+class ChromeLauncher extends BrowserLauncher_js_1.BrowserLauncher {
     constructor(puppeteer) {
         super(puppeteer, 'chrome');
     }

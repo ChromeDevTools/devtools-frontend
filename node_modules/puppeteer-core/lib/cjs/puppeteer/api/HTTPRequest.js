@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleError = exports.STATUS_TEXTS = exports.headersArray = exports.InterceptResolutionAction = exports.HTTPRequest = exports.DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = void 0;
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
+const encoding_js_1 = require("../util/encoding.js");
 /**
  * The default cooperative request interception resolution priority
  *
@@ -147,7 +148,7 @@ class HTTPRequest {
         await this.interception.handlers.reduce((promiseChain, interceptAction) => {
             return promiseChain.then(interceptAction);
         }, Promise.resolve());
-        this.interception.handlers = []; // TODO: verify this is correct top let gc run
+        this.interception.handlers = [];
         const { action } = this.interceptResolutionState();
         switch (action) {
             case 'abort':
@@ -321,13 +322,9 @@ class HTTPRequest {
         const byteBody = (0, util_js_1.isString)(body)
             ? new TextEncoder().encode(body)
             : body;
-        const bytes = [];
-        for (const byte of byteBody) {
-            bytes.push(String.fromCharCode(byte));
-        }
         return {
             contentLength: byteBody.byteLength,
-            base64: btoa(bytes.join('')),
+            base64: (0, encoding_js_1.typedArrayToBase64)(byteBody),
         };
     }
 }

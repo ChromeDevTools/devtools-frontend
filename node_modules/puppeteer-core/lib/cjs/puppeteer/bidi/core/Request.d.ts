@@ -44,5 +44,6 @@ export declare class Request extends EventEmitter<{
     continueWithAuth(parameters: Bidi.Network.ContinueWithAuthCredentials | Bidi.Network.ContinueWithAuthNoCredentials): Promise<void>;
     private dispose;
     [disposeSymbol](): void;
+    timing(): Bidi.Network.FetchTimingInfo;
 }
 //# sourceMappingURL=Request.d.ts.map

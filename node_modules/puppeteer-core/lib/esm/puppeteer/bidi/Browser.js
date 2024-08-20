@@ -85,8 +85,11 @@ let BidiBrowser = (() => {
         ];
         static async create(opts) {
             const session = await Session.from(opts.connection, {
+                firstMatch: opts.capabilities?.firstMatch,
                 alwaysMatch: {
-                    acceptInsecureCerts: opts.ignoreHTTPSErrors,
+                    ...opts.capabilities?.alwaysMatch,
+                    // Capabilities that come from Puppeteer's API take precedence.
+                    acceptInsecureCerts: opts.acceptInsecureCerts,
                     unhandledPromptBehavior: {
                         default: "ignore" /* Bidi.Session.UserPromptHandlerType.Ignore */,
                     },

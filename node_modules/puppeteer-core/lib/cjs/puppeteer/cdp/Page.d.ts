@@ -3,7 +3,6 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-/// <reference types="node" />
 import type { Protocol } from 'devtools-protocol';
 import type { Browser } from '../api/Browser.js';
 import type { BrowserContext } from '../api/BrowserContext.js';
@@ -91,7 +90,7 @@ export declare class CdpPage extends Page {
     setCacheEnabled(enabled?: boolean): Promise<void>;
     _screenshot(options: Readonly<ScreenshotOptions>): Promise<string>;
     createPDFStream(options?: PDFOptions): Promise<ReadableStream<Uint8Array>>;
-    pdf(options?: PDFOptions): Promise<Buffer>;
+    pdf(options?: PDFOptions): Promise<Uint8Array>;
     close(options?: {
         runBeforeUnload?: boolean;
     }): Promise<void>;

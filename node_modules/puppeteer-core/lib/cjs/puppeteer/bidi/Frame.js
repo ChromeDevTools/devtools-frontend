@@ -290,9 +290,6 @@ let BidiFrame = (() => {
             }
             return parent;
         }
-        isOOPFrame() {
-            throw new Errors_js_1.UnsupportedOperation();
-        }
         url() {
             return this.browsingContext.url;
         }
@@ -346,7 +343,7 @@ let BidiFrame = (() => {
             ]);
         }
         async waitForNavigation(options = {}) {
-            const { timeout: ms = this.timeoutSettings.navigationTimeout() } = options;
+            const { timeout: ms = this.timeoutSettings.navigationTimeout(), signal } = options;
             const frames = this.childFrames().map(frame => {
                 return frame.#detached$();
             });
@@ -393,7 +390,7 @@ let BidiFrame = (() => {
                 const lastRequest = request.lastRedirect ?? request;
                 const httpRequest = HTTPRequest_js_1.requests.get(lastRequest);
                 return httpRequest.response();
-            }), (0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), this.#detached$().pipe((0, rxjs_js_1.map)(() => {
+            }), (0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, util_js_1.fromAbortSignal)(signal), this.#detached$().pipe((0, rxjs_js_1.map)(() => {
                 throw new Errors_js_1.TargetCloseError('Frame detached.');
             })))));
         }

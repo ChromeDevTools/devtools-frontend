@@ -802,9 +802,9 @@ class CdpPage extends Page_js_1.Page {
     async pdf(options = {}) {
         const { path = undefined } = options;
         const readable = await this.createPDFStream(options);
-        const buffer = await (0, util_js_1.getReadableAsBuffer)(readable, path);
-        (0, assert_js_1.assert)(buffer, 'Could not create buffer');
-        return buffer;
+        const typedArray = await (0, util_js_1.getReadableAsTypedArray)(readable, path);
+        (0, assert_js_1.assert)(typedArray, 'Could not create typed array');
+        return typedArray;
     }
     async close(options = { runBeforeUnload: undefined }) {
         const env_3 = { stack: [], error: void 0, hasError: false };

@@ -14,9 +14,9 @@ import { DevToolsTarget, InitializationStatus, OtherTarget, PageTarget, WorkerTa
  */
 export class CdpBrowser extends BrowserBase {
     protocol = 'cdp';
-    static async _create(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
+    static async _create(product, connection, contextIds, acceptInsecureCerts, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
         const browser = new CdpBrowser(product, connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets);
-        if (ignoreHTTPSErrors) {
+        if (acceptInsecureCerts) {
             await connection.send('Security.setIgnoreCertificateErrors', {
                 ignore: true,
             });

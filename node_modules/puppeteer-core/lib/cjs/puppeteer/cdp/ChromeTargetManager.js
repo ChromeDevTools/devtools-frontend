@@ -75,14 +75,14 @@ class ChromeTargetManager extends EventEmitter_js_1.EventEmitter {
         }
         for (const [targetId, targetInfo,] of this.#discoveredTargetsByTargetId.entries()) {
             const targetForFilter = new Target_js_1.CdpTarget(targetInfo, undefined, undefined, this, undefined);
-            // Targets from extensions and the browser that will not be
-            // auto-attached. Therefore, we should not add them to
-            // #targetsIdsForInit.
-            const skipTarget = targetInfo.type === 'browser' ||
-                targetInfo.url.startsWith('chrome-extension://');
+            // Only wait for pages and frames (except those from extensions)
+            // to auto-attach.
+            const isPageOrFrame = targetInfo.type === 'page' || targetInfo.type === 'iframe';
+            const isExtension = targetInfo.url.startsWith('chrome-extension://');
             if ((!this.#targetFilterCallback ||
                 this.#targetFilterCallback(targetForFilter)) &&
-                !skipTarget) {
+                isPageOrFrame &&
+                !isExtension) {
                 this.#targetsIdsForInit.add(targetId);
             }
         }

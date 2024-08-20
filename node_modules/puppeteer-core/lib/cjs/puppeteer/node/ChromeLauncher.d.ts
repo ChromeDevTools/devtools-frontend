@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { Browser } from '../api/Browser.js';
+import { BrowserLauncher, type ResolvedLaunchArgs } from './BrowserLauncher.js';
 import type { BrowserLaunchArgumentOptions, ChromeReleaseChannel, PuppeteerNodeLaunchOptions } from './LaunchOptions.js';
-import { ProductLauncher, type ResolvedLaunchArgs } from './ProductLauncher.js';
 import type { PuppeteerNode } from './PuppeteerNode.js';
 /**
  * @internal
  */
-export declare class ChromeLauncher extends ProductLauncher {
+export declare class ChromeLauncher extends BrowserLauncher {
     constructor(puppeteer: PuppeteerNode);
     launch(options?: PuppeteerNodeLaunchOptions): Promise<Browser>;
     /**

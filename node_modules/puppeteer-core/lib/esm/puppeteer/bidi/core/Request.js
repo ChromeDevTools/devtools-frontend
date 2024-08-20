@@ -114,6 +114,7 @@ let Request = (() => {
                     return;
                 }
                 this.#response = event.response;
+                this.#event.request.timings = event.request.timings;
                 this.emit('success', this.#response);
                 // In case this is a redirect.
                 if (this.#response.status >= 300 && this.#response.status < 400) {
@@ -225,6 +226,9 @@ let Request = (() => {
         [(_dispose_decorators = [inertIfDisposed], disposeSymbol)]() {
             this.#disposables.dispose();
             super[disposeSymbol]();
+        }
+        timing() {
+            return this.#event.request.timings;
         }
     };
 })();

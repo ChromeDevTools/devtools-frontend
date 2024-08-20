@@ -85,7 +85,8 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 import { EventEmitter } from '../common/EventEmitter.js';
 import { getQueryHandlerAndSelector } from '../common/GetQueryHandler.js';
 import { transposeIterableHandle } from '../common/HandleIterator.js';
-import { importFSPromises, withSourcePuppeteerURLIfNone, } from '../common/util.js';
+import { withSourcePuppeteerURLIfNone } from '../common/util.js';
+import { environment } from '../environment.js';
 import { assert } from '../util/assert.js';
 import { throwIfDisposed } from '../util/decorators.js';
 import { FunctionLocator, NodeLocator, } from './locators/locators.js';
@@ -350,7 +351,7 @@ let Frame = (() => {
          *
          * @param selector -
          * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-         * to query page for.
+         * to query the page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
          * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -377,7 +378,7 @@ let Frame = (() => {
          *
          * @param selector -
          * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-         * to query page for.
+         * to query the page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
          * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -414,7 +415,7 @@ let Frame = (() => {
          *
          * @param selector -
          * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-         * to query page for.
+         * to query the page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
          * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -454,7 +455,7 @@ let Frame = (() => {
          *
          * @param selector -
          * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-         * to query page for.
+         * to query the page for.
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
          * can be passed as-is and a
          * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
@@ -634,8 +635,7 @@ let Frame = (() => {
                 throw new Error('Exactly one of `url`, `path`, or `content` must be specified.');
             }
             if (path) {
-                const fs = await importFSPromises();
-                content = await fs.readFile(path, 'utf8');
+                content = await environment.value.fs.promises.readFile(path, 'utf8');
                 content += `//# sourceURL=${path.replace(/\n/g, '')}`;
             }
             type = type ?? 'text/javascript';
@@ -674,8 +674,7 @@ let Frame = (() => {
                 throw new Error('Exactly one of `url`, `path`, or `content` must be specified.');
             }
             if (path) {
-                const fs = await importFSPromises();
-                content = await fs.readFile(path, 'utf8');
+                content = await environment.value.fs.promises.readFile(path, 'utf8');
                 content += '/*# sourceURL=' + path.replace(/\n/g, '') + '*/';
                 options.content = content;
             }

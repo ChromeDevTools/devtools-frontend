@@ -7,7 +7,7 @@ export * from './ChromeLauncher.js';
 export * from './FirefoxLauncher.js';
 export * from './LaunchOptions.js';
 export * from './PipeTransport.js';
-export * from './ProductLauncher.js';
+export * from './BrowserLauncher.js';
 export * from './PuppeteerNode.js';
 export * from './ScreenRecorder.js';
 //# sourceMappingURL=node.d.ts.map

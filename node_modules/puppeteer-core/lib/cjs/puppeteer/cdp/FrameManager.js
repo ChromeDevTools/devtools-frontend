@@ -318,10 +318,12 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
     #onFrameAttached(session, frameId, parentFrameId) {
         let frame = this.frame(frameId);
         if (frame) {
-            if (session && frame.isOOPFrame()) {
-                // If an OOP iframes becomes a normal iframe again
-                // it is first attached to the parent page before
-                // the target is removed.
+            if (session && frame.client !== this.#client) {
+                // TODO: check this condition. It might not be correct for
+                // nested frames.
+                // If an OOP iframes becomes a normal iframe
+                // again it is first attached to the parent page before the
+                // target is removed.
                 frame.updateClient(session);
             }
             return;

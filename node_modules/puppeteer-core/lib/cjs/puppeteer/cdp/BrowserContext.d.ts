@@ -18,7 +18,6 @@ export declare class CdpBrowserContext extends BrowserContext {
     get id(): string | undefined;
     targets(): CdpTarget[];
     pages(): Promise<Page[]>;
-    isIncognito(): boolean;
     overridePermissions(origin: string, permissions: Permission[]): Promise<void>;
     clearPermissionOverrides(): Promise<void>;
     newPage(): Promise<Page>;

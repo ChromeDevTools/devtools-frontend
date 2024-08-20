@@ -17,9 +17,9 @@ const Target_js_1 = require("./Target.js");
  */
 class CdpBrowser extends Browser_js_1.Browser {
     protocol = 'cdp';
-    static async _create(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
+    static async _create(product, connection, contextIds, acceptInsecureCerts, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
         const browser = new CdpBrowser(product, connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets);
-        if (ignoreHTTPSErrors) {
+        if (acceptInsecureCerts) {
             await connection.send('Security.setIgnoreCertificateErrors', {
                 ignore: true,
             });

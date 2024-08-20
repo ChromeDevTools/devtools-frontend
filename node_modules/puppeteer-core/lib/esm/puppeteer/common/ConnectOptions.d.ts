@@ -3,6 +3,7 @@
  * Copyright 2020 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import type { Session } from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import type { IsPageTargetCallback, TargetFilterCallback } from '../api/Browser.js';
 import type { ConnectionTransport } from './ConnectionTransport.js';
 import type { Viewport } from './Viewport.js';
@@ -10,6 +11,16 @@ import type { Viewport } from './Viewport.js';
  * @public
  */
 export type ProtocolType = 'cdp' | 'webDriverBiDi';
+export type SupportedWebDriverCapability = Exclude<Session.CapabilityRequest, 'unhandledPromptBehavior' | 'acceptInsecureCerts'>;
+/**
+ * WebDriver BiDi capabilities that are not set by Puppeteer itself.
+ *
+ * @public
+ */
+export interface SupportedWebDriverCapabilities {
+    firstMatch?: SupportedWebDriverCapability[];
+    alwaysMatch?: SupportedWebDriverCapability;
+}
 /**
  * Generic browser options that can be passed when launching any browser or when
  * connecting to an existing browser instance.
@@ -20,7 +31,7 @@ export interface BrowserConnectOptions {
      * Whether to ignore HTTPS errors during navigation.
      * @defaultValue `false`
      */
-    ignoreHTTPSErrors?: boolean;
+    acceptInsecureCerts?: boolean;
     /**
      * Sets the viewport for each page.
      *
@@ -41,7 +52,14 @@ export interface BrowserConnectOptions {
      */
     _isPageTarget?: IsPageTargetCallback;
     /**
-     * @defaultValue 'cdp'
+     * @defaultValue Determined at run time:
+     *
+     * - Launching Chrome - 'cdp'.
+     *
+     * - Launching Firefox - 'webDriverBiDi'.
+     *
+     * - Connecting to a browser - 'cdp'.
+     *
      * @public
      */
     protocol?: ProtocolType;
@@ -65,5 +83,12 @@ export interface ConnectOptions extends BrowserConnectOptions {
      * Only works in the Node.js environment.
      */
     headers?: Record<string, string>;
+    /**
+     * WebDriver BiDi capabilities passed to BiDi `session.new`.
+     *
+     * @remarks
+     * Only works for `protocol="webDriverBiDi"` and {@link Puppeteer.connect}.
+     */
+    capabilities?: SupportedWebDriverCapabilities;
 }
 //# sourceMappingURL=ConnectOptions.d.ts.map

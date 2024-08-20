@@ -4,34 +4,13 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.filterAsync = exports.fromAbortSignal = exports.fromEmitterEvent = exports.unitToPixels = exports.parsePDFOptions = exports.NETWORK_IDLE_TIME = exports.getSourceUrlComment = exports.SOURCE_URL_REGEX = exports.UTILITY_WORLD_NAME = exports.timeout = exports.validateDialogType = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFSPromises = exports.evaluationString = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.DEFAULT_VIEWPORT = exports.debugError = void 0;
+exports.filterAsync = exports.fromAbortSignal = exports.fromEmitterEvent = exports.unitToPixels = exports.parsePDFOptions = exports.NETWORK_IDLE_TIME = exports.getSourceUrlComment = exports.SOURCE_URL_REGEX = exports.UTILITY_WORLD_NAME = exports.timeout = exports.validateDialogType = exports.getReadableFromProtocolStream = exports.getReadableAsTypedArray = exports.evaluationString = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.DEFAULT_VIEWPORT = exports.debugError = void 0;
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
+const environment_js_1 = require("../environment.js");
 const version_js_1 = require("../generated/version.js");
 const assert_js_1 = require("../util/assert.js");
+const encoding_js_1 = require("../util/encoding.js");
 const Debug_js_1 = require("./Debug.js");
 const Errors_js_1 = require("./Errors.js");
 const PDFOptions_js_1 = require("./PDFOptions.js");
@@ -172,34 +151,11 @@ exports.evaluationString = evaluationString;
 /**
  * @internal
  */
-let fs = null;
-/**
- * @internal
- */
-async function importFSPromises() {
-    if (!fs) {
-        try {
-            fs = await Promise.resolve().then(() => __importStar(require('fs/promises')));
-        }
-        catch (error) {
-            if (error instanceof TypeError) {
-                throw new Error('Cannot write to a path outside of a Node-like environment.');
-            }
-            throw error;
-        }
-    }
-    return fs;
-}
-exports.importFSPromises = importFSPromises;
-/**
- * @internal
- */
-async function getReadableAsBuffer(readable, path) {
+async function getReadableAsTypedArray(readable, path) {
     const buffers = [];
     const reader = readable.getReader();
     if (path) {
-        const fs = await importFSPromises();
-        const fileHandle = await fs.open(path, 'w+');
+        const fileHandle = await environment_js_1.environment.value.fs.promises.open(path, 'w+');
         try {
             while (true) {
                 const { done, value } = await reader.read();
@@ -224,14 +180,18 @@ async function getReadableAsBuffer(readable, path) {
         }
     }
     try {
-        return Buffer.concat(buffers);
+        const concat = (0, encoding_js_1.mergeUint8Arrays)(buffers);
+        if (concat.length === 0) {
+            return null;
+        }
+        return concat;
     }
     catch (error) {
         (0, exports.debugError)(error);
         return null;
     }
 }
-exports.getReadableAsBuffer = getReadableAsBuffer;
+exports.getReadableAsTypedArray = getReadableAsTypedArray;
 /**
  * @internal
  */

@@ -142,9 +142,6 @@ let CdpFrame = (() => {
         page() {
             return this._frameManager.page();
         }
-        isOOPFrame() {
-            return this.#client !== this._frameManager.client;
-        }
         async goto(url, options = {}) {
             const { referer = this._frameManager.networkManager.extraHTTPHeaders()['referer'], referrerPolicy = this._frameManager.networkManager.extraHTTPHeaders()['referer-policy'], waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
             let ensureNewDocumentNavigation = false;
@@ -195,8 +192,8 @@ let CdpFrame = (() => {
             }
         }
         async waitForNavigation(options = {}) {
-            const { waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
-            const watcher = new LifecycleWatcher_js_1.LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout);
+            const { waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), signal, } = options;
+            const watcher = new LifecycleWatcher_js_1.LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout, signal);
             const error = await Deferred_js_1.Deferred.race([
                 watcher.terminationPromise(),
                 ...(options.ignoreSameDocumentNavigation
@@ -252,16 +249,13 @@ let CdpFrame = (() => {
             return this._frameManager._frameTree.childFrames(this._id);
         }
         #deviceRequestPromptManager() {
-            const rootFrame = this.page().mainFrame();
-            if (this.isOOPFrame() || rootFrame === null) {
-                return this._frameManager._deviceRequestPromptManager(this.#client);
-            }
-            else {
-                return rootFrame._frameManager._deviceRequestPromptManager(this.#client);
-            }
+            return this._frameManager._deviceRequestPromptManager(this.#client);
         }
         async addPreloadScript(preloadScript) {
-            if (!this.isOOPFrame() && this !== this._frameManager.mainFrame()) {
+            // TODO: this might be not correct and we might be adding a preload
+            // script multiple times to the nested frames.
+            if (this.#client === this._frameManager.client &&
+                this !== this._frameManager.mainFrame()) {
                 return;
             }
             if (preloadScript.getIdForFrame(this)) {

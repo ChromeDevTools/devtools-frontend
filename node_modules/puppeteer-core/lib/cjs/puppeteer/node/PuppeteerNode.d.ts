@@ -6,14 +6,14 @@
 import type { Browser } from '../api/Browser.js';
 import type { Configuration } from '../common/Configuration.js';
 import type { ConnectOptions, BrowserConnectOptions } from '../common/ConnectOptions.js';
-import type { Product } from '../common/Product.js';
 import { type CommonPuppeteerSettings, Puppeteer } from '../common/Puppeteer.js';
+import type { SupportedBrowser } from '../common/SupportedBrowser.js';
 import type { BrowserLaunchArgumentOptions, ChromeReleaseChannel, LaunchOptions } from './LaunchOptions.js';
 /**
  * @public
  */
 export interface PuppeteerLaunchOptions extends LaunchOptions, BrowserLaunchArgumentOptions, BrowserConnectOptions {
-    product?: Product;
+    browser?: SupportedBrowser;
     extraPrefsFirefox?: Record<string, unknown>;
 }
 /**
@@ -118,7 +118,7 @@ export declare class PuppeteerNode extends Puppeteer {
     /**
      * @internal
      */
-    get browserRevision(): string;
+    get browserVersion(): string;
     /**
      * The default download path for puppeteer. For puppeteer-core, this
      * code should never be called as it is never defined.
@@ -129,18 +129,18 @@ export declare class PuppeteerNode extends Puppeteer {
     /**
      * The name of the browser that was last launched.
      */
-    get lastLaunchedProduct(): Product;
+    get lastLaunchedBrowser(): SupportedBrowser;
     /**
      * The name of the browser that will be launched by default. For
      * `puppeteer`, this is influenced by your configuration. Otherwise, it's
      * `chrome`.
      */
-    get defaultProduct(): Product;
+    get defaultBrowser(): SupportedBrowser;
     /**
      * @deprecated Do not use as this field as it does not take into account
      * multiple browsers of different types. Use
-     * {@link PuppeteerNode.defaultProduct | defaultProduct} or
-     * {@link PuppeteerNode.lastLaunchedProduct | lastLaunchedProduct}.
+     * {@link PuppeteerNode.defaultBrowser | defaultBrowser} or
+     * {@link PuppeteerNode.lastLaunchedBrowser | lastLaunchedBrowser}.
      *
      * @returns The name of the browser that is under automation.
      */

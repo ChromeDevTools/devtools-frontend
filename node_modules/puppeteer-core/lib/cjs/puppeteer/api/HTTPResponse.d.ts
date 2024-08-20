@@ -72,7 +72,11 @@ export declare abstract class HTTPResponse {
      * failed to detect the correct encoding, the buffer might
      * be encoded incorrectly. See https://github.com/puppeteer/puppeteer/issues/6478.
      */
-    abstract buffer(): Promise<Buffer>;
+    abstract content(): Promise<Uint8Array>;
+    /**
+     * {@inheritDoc HTTPResponse.content}
+     */
+    buffer(): Promise<Buffer>;
     /**
      * Promise which resolves to a text (utf8) representation of response body.
      */

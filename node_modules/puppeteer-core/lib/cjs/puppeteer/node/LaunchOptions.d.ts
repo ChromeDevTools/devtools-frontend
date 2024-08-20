@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { BrowserConnectOptions } from '../common/ConnectOptions.js';
-import type { Product } from '../common/Product.js';
+import type { SupportedBrowser } from '../common/SupportedBrowser.js';
 /**
  * Launcher options that only apply to Chrome.
  *
@@ -115,7 +115,7 @@ export interface LaunchOptions {
      * Which browser to launch.
      * @defaultValue `chrome`
      */
-    product?: Product;
+    browser?: SupportedBrowser;
     /**
      * {@link https://searchfox.org/mozilla-release/source/modules/libpref/init/all.js | Additional preferences } that can be passed when launching with Firefox.
      */

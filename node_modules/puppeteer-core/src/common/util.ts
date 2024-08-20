@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type FS from 'fs/promises';
-
 import type {OperatorFunction} from '../../third_party/rxjs/rxjs.js';
 import {
   filter,
@@ -18,8 +16,10 @@ import {
   timer,
 } from '../../third_party/rxjs/rxjs.js';
 import type {CDPSession} from '../api/CDPSession.js';
+import {environment} from '../environment.js';
 import {packageVersion} from '../generated/version.js';
 import {assert} from '../util/assert.js';
+import {mergeUint8Arrays} from '../util/encoding.js';
 
 import {debug} from './Debug.js';
 import {TimeoutError} from './Errors.js';
@@ -193,38 +193,14 @@ export function evaluationString(
 /**
  * @internal
  */
-let fs: typeof FS | null = null;
-/**
- * @internal
- */
-export async function importFSPromises(): Promise<typeof FS> {
-  if (!fs) {
-    try {
-      fs = await import('fs/promises');
-    } catch (error) {
-      if (error instanceof TypeError) {
-        throw new Error(
-          'Cannot write to a path outside of a Node-like environment.'
-        );
-      }
-      throw error;
-    }
-  }
-  return fs;
-}
-
-/**
- * @internal
- */
-export async function getReadableAsBuffer(
+export async function getReadableAsTypedArray(
   readable: ReadableStream<Uint8Array>,
   path?: string
-): Promise<Buffer | null> {
+): Promise<Uint8Array | null> {
   const buffers: Uint8Array[] = [];
   const reader = readable.getReader();
   if (path) {
-    const fs = await importFSPromises();
-    const fileHandle = await fs.open(path, 'w+');
+    const fileHandle = await environment.value.fs.promises.open(path, 'w+');
     try {
       while (true) {
         const {done, value} = await reader.read();
@@ -247,7 +223,11 @@ export async function getReadableAsBuffer(
     }
   }
   try {
-    return Buffer.concat(buffers);
+    const concat = mergeUint8Arrays(buffers);
+    if (concat.length === 0) {
+      return null;
+    }
+    return concat;
   } catch (error) {
     debugError(error);
     return null;

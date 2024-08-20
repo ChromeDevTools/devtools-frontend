@@ -36,7 +36,12 @@ import {
 import {TargetCloseError, UnsupportedOperation} from '../common/Errors.js';
 import type {TimeoutSettings} from '../common/TimeoutSettings.js';
 import type {Awaitable} from '../common/types.js';
-import {debugError, fromEmitterEvent, timeout} from '../common/util.js';
+import {
+  debugError,
+  fromAbortSignal,
+  fromEmitterEvent,
+  timeout,
+} from '../common/util.js';
 import {isErrorLike} from '../util/ErrorLike.js';
 
 import {BidiCdpSession} from './CDPSession.js';
@@ -255,10 +260,6 @@ export class BidiFrame extends Frame {
     return parent;
   }
 
-  override isOOPFrame(): never {
-    throw new UnsupportedOperation();
-  }
-
   override url(): string {
     return this.browsingContext.url;
   }
@@ -344,7 +345,8 @@ export class BidiFrame extends Frame {
   override async waitForNavigation(
     options: WaitForOptions = {}
   ): Promise<BidiHTTPResponse | null> {
-    const {timeout: ms = this.timeoutSettings.navigationTimeout()} = options;
+    const {timeout: ms = this.timeoutSettings.navigationTimeout(), signal} =
+      options;
 
     const frames = this.childFrames().map(frame => {
       return frame.#detached$();
@@ -416,6 +418,7 @@ export class BidiFrame extends Frame {
         }),
         raceWith(
           timeout(ms),
+          fromAbortSignal(signal),
           this.#detached$().pipe(
             map(() => {
               throw new TargetCloseError('Frame detached.');

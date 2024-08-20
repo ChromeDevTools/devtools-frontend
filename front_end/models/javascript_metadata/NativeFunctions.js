@@ -8400,6 +8400,10 @@ export const NativeFunctions = [
     signatures: [["lang"]]
   },
   {
+    name: "installOnDeviceSpeechRecognition",
+    signatures: [["lang"]]
+  },
+  {
     name: "SpeechSynthesisErrorEvent",
     signatures: [["type","eventInitDict"]]
   },

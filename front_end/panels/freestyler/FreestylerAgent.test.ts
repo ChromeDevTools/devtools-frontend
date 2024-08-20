@@ -27,6 +27,7 @@ describeWithEnvironment('FreestylerAgent', () => {
           FreestylerAgent.parseResponse(`THOUGHT: ${payload}`),
           {
             action: undefined,
+            title: undefined,
             thought: payload,
             answer: undefined,
           },
@@ -35,6 +36,7 @@ describeWithEnvironment('FreestylerAgent', () => {
           FreestylerAgent.parseResponse(`   THOUGHT: ${payload}`),
           {
             action: undefined,
+            title: undefined,
             thought: payload,
             answer: undefined,
           },
@@ -43,6 +45,7 @@ describeWithEnvironment('FreestylerAgent', () => {
           FreestylerAgent.parseResponse(`Something\n   THOUGHT: ${payload}`),
           {
             action: undefined,
+            title: undefined,
             thought: payload,
             answer: undefined,
           },
@@ -54,6 +57,7 @@ describeWithEnvironment('FreestylerAgent', () => {
           FreestylerAgent.parseResponse(`ANSWER: ${payload}`),
           {
             action: undefined,
+            title: undefined,
             thought: undefined,
             answer: payload,
           },
@@ -62,6 +66,7 @@ describeWithEnvironment('FreestylerAgent', () => {
           FreestylerAgent.parseResponse(`   ANSWER: ${payload}`),
           {
             action: undefined,
+            title: undefined,
             thought: undefined,
             answer: payload,
           },
@@ -70,6 +75,7 @@ describeWithEnvironment('FreestylerAgent', () => {
           FreestylerAgent.parseResponse(`Something\n   ANSWER: ${payload}`),
           {
             action: undefined,
+            title: undefined,
             thought: undefined,
             answer: payload,
           },
@@ -83,6 +89,7 @@ c`;
           FreestylerAgent.parseResponse(`ANSWER: ${payload}`),
           {
             action: undefined,
+            title: undefined,
             thought: undefined,
             answer: payload,
           },
@@ -91,6 +98,7 @@ c`;
           FreestylerAgent.parseResponse(`   ANSWER: ${payload}`),
           {
             action: undefined,
+            title: undefined,
             thought: undefined,
             answer: payload,
           },
@@ -99,6 +107,7 @@ c`;
           FreestylerAgent.parseResponse(`Something\n   ANSWER: ${payload}`),
           {
             action: undefined,
+            title: undefined,
             thought: undefined,
             answer: payload,
           },
@@ -107,6 +116,7 @@ c`;
           FreestylerAgent.parseResponse(`ANSWER: ${payload}\nTHOUGHT: thought`),
           {
             action: undefined,
+            title: undefined,
             thought: 'thought',
             answer: payload,
           },
@@ -117,6 +127,7 @@ c`;
               ),
           {
             action: undefined,
+            title: undefined,
             thought: undefined,
             answer: payload,
           },
@@ -127,6 +138,7 @@ c`;
               ),
           {
             action: 'action',
+            title: undefined,
             thought: undefined,
             answer: payload,
           },
@@ -140,6 +152,7 @@ c`;
           FreestylerAgent.parseResponse(`ACTION\n${payload}\nSTOP`),
           {
             action: payload,
+            title: undefined,
             thought: undefined,
             answer: undefined,
           },
@@ -148,6 +161,7 @@ c`;
           FreestylerAgent.parseResponse(`ACTION\n${payload}`),
           {
             action: payload,
+            title: undefined,
             thought: undefined,
             answer: undefined,
           },
@@ -156,7 +170,21 @@ c`;
           FreestylerAgent.parseResponse(`ACTION\n\n${payload}\n\nSTOP`),
           {
             action: payload,
+            title: undefined,
             thought: undefined,
+            answer: undefined,
+          },
+      );
+    });
+    it('parses a thought and title', async () => {
+      const payload = 'some response';
+      const title = 'this is the title';
+      assert.deepStrictEqual(
+          FreestylerAgent.parseResponse(`THOUGHT: ${payload}\nTITLE: ${title}`),
+          {
+            action: undefined,
+            thought: payload,
+            title: title,
             answer: undefined,
           },
       );
@@ -172,6 +200,7 @@ c`;
               ),
           {
             action: payload,
+            title: undefined,
             thought: undefined,
             answer: undefined,
           },
@@ -188,6 +217,7 @@ c`;
               ),
           {
             action: payload,
+            title: undefined,
             thought: undefined,
             answer: undefined,
           },
@@ -205,6 +235,7 @@ c`;
               ),
           {
             action: actionPayload,
+            title: undefined,
             thought: thoughtPayload,
             answer: undefined,
           },
@@ -218,6 +249,7 @@ c`;
               ),
           {
             action: undefined,
+            title: undefined,
             thought: undefined,
             answer: 'This is also an answer',
           },
@@ -766,6 +798,7 @@ ANSWER: this is the answer`,
         {
           step: Freestyler.Step.THOUGHT,
           text: 'I am thinking.',
+          title: undefined,
           rpcId: undefined,
         },
         {

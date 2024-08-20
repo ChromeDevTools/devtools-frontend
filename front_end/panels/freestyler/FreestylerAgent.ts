@@ -14,9 +14,10 @@ const preamble = `You are a CSS debugging assistant integrated into Chrome DevTo
 The user selected a DOM element in the browser's DevTools and sends a CSS-related
 query about the selected DOM element. You are going to answer to the query in these steps:
 * THOUGHT
+* TITLE
 * ACTION
 * ANSWER
-Use THOUGHT to explain why you take the ACTION.
+Use THOUGHT to explain why you take the ACTION. Use TITLE to provide a short summary of the thought.
 Use ACTION to evaluate JavaScript code on the page to gather all the data needed to answer the query and put it inside the data variable - then return STOP.
 You have access to a special $0 variable referencing the current element in the scope of the JavaScript code.
 OBSERVATION will be the result of running the JS code on the page.
@@ -40,6 +41,7 @@ Example session:
 
 QUERY: Why is this element centered in its container?
 THOUGHT: Let's check the layout properties of the container.
+TITLE: Checking layout properties
 ACTION
 /* COLLECT_INFORMATION_HERE */
 const data = {
@@ -67,8 +69,15 @@ export enum Step {
 }
 
 export interface CommonStepData {
-  step: Step.THOUGHT|Step.ANSWER|Step.ERROR;
+  step: Step.ANSWER|Step.ERROR;
   text: string;
+  rpcId?: number;
+}
+
+export interface ThoughtStepData {
+  step: Step.THOUGHT;
+  text: string;
+  title?: string;
   rpcId?: number;
 }
 
@@ -83,7 +92,7 @@ export interface QueryStepData {
   step: Step.QUERYING;
 }
 
-export type StepData = CommonStepData|ActionStepData;
+export type StepData = CommonStepData|ActionStepData|ThoughtStepData;
 
 async function executeJsCode(code: string, {throwOnSideEffect}: {throwOnSideEffect: boolean}): Promise<string> {
   const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
@@ -180,9 +189,10 @@ export class FreestylerAgent {
     return request;
   }
 
-  static parseResponse(response: string): {thought?: string, action?: string, answer?: string} {
+  static parseResponse(response: string): {thought?: string, title?: string, action?: string, answer?: string} {
     const lines = response.split('\n');
     let thought: string|undefined;
+    let title: string|undefined;
     let action: string|undefined;
     let answer: string|undefined;
     let i = 0;
@@ -191,6 +201,9 @@ export class FreestylerAgent {
       if (trimmed.startsWith('THOUGHT:') && !thought) {
         // TODO: multiline thoughts.
         thought = trimmed.substring('THOUGHT:'.length).trim();
+        i++;
+      } else if (trimmed.startsWith('TITLE:')) {
+        title = trimmed.substring('TITLE:'.length).trim();
         i++;
       } else if (trimmed.startsWith('ACTION') && !action) {
         const actionLines = [];
@@ -230,7 +243,7 @@ export class FreestylerAgent {
     if (!answer && !thought && !action) {
       answer = response;
     }
-    return {thought, action, answer};
+    return {thought, title, action, answer};
   }
 
   #aidaClient: Host.AidaClient.AidaClient;
@@ -375,14 +388,14 @@ export class FreestylerAgent {
         },
       ]);
 
-      const {thought, action, answer} = FreestylerAgent.parseResponse(response);
+      const {thought, title, action, answer} = FreestylerAgent.parseResponse(response);
       // Sometimes the answer will follow an action and a thought. In
       // that case, we only use the action and the thought (if present)
       // since the answer is not based on the observation resulted from
       // the action.
       if (action) {
         if (thought) {
-          yield {step: Step.THOUGHT, text: thought, rpcId};
+          yield {step: Step.THOUGHT, text: thought, title, rpcId};
         }
         debugLog(`Action to execute: ${action}`);
         const observation = await this.#generateObservation(action, {throwOnSideEffect: !options.isFixQuery});

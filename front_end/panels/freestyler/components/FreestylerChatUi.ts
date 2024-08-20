@@ -13,7 +13,13 @@ import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
-import {type ActionStepData, type CommonStepData, Step, type StepData} from '../FreestylerAgent.js';
+import {
+  type ActionStepData,
+  type CommonStepData,
+  Step,
+  type StepData,
+  type ThoughtStepData,
+} from '../FreestylerAgent.js';
 
 import freestylerChatUiStyles from './freestylerChatUi.css.js';
 import {ProvideFeedback, type ProvideFeedbackProps} from './ProvideFeedback.js';
@@ -159,7 +165,7 @@ export interface UserChatMessage {
 export interface ModelChatMessage {
   entity: ChatMessageEntity.MODEL;
   suggestingFix: boolean;
-  steps: Array<ActionStepData|CommonStepData>;
+  steps: Array<ActionStepData|CommonStepData|ThoughtStepData>;
   rpcId?: number;
 }
 
@@ -328,6 +334,11 @@ export class FreestylerChatUi extends HTMLElement {
 
     if (step.step === Step.ERROR) {
       return LitHtml.html`<p class="error-step">${this.#renderTextAsMarkdown(step.text)}</p>`;
+    }
+
+    if (step.step === Step.THOUGHT) {
+      const maybeTextWithTitle = step.title ? `**${step.title}**\n\n${step.text}` : step.text;
+      return LitHtml.html`<p>${this.#renderTextAsMarkdown(maybeTextWithTitle)}</p>`;
     }
 
     return LitHtml.html`<p>${this.#renderTextAsMarkdown(step.text)}</p>`;

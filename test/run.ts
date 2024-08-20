@@ -142,7 +142,7 @@ class KarmaTests extends Tests {
           'python3',
           [
             path.join(SOURCE_ROOT, 'scripts', 'deps', 'set_lpac_acls.py'),
-            options['chrome-binary'] ?? defaultChromePath(),
+            path.dirname(options['chrome-binary'] ?? defaultChromePath()),
           ],
           {encoding: 'utf-8', stdio: 'inherit'});
       if (result.error || (result.status ?? 1) !== 0) {

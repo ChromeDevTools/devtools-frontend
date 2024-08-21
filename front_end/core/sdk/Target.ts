@@ -71,7 +71,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
             Capability.IO | Capability.Media | Capability.Emulation | Capability.EventBreakpoints;
         break;
       case Type.Worklet:
-        this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.EventBreakpoints;
+        this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.EventBreakpoints | Capability.Network;
         break;
       case Type.Node:
         this.#capabilitiesMask = Capability.JS;

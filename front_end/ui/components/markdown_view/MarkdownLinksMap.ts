@@ -56,7 +56,10 @@ export const markdownLinks = new Map<string, string>([
 ]);
 
 export const getMarkdownLink = (key: string): string => {
-  if (/^https:\/\/www.chromestatus.com\/feature\/\d+$/.test(key)) {
+  if (/^https:\/\/www\.chromestatus\.com\/feature\/\d+$/.test(key)) {
+    return key;
+  }
+  if (/^https:\/\/developer\.chrome\.com\/blog\//.test(key)) {
     return key;
   }
   const link = markdownLinks.get(key);

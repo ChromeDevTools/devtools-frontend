@@ -7,7 +7,7 @@ import type * as TraceEngine from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsight, md, shouldRenderForCategory} from './Helpers.js';
 import {NodeLink, type NodeLinkData} from './NodeLink.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {InsightsCategories} from './types.js';
@@ -17,7 +17,7 @@ const UIStrings = {
    * @description Text to tell the user how a viewport meta element can improve performance.
    */
   description: 'A viewport meta element not only optimizes your app for mobile screen sizes, ' +
-      'but also prevents a 300 millisecond delay to user input.',
+      'but also [prevents a 300 millisecond delay to user input](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/).',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Viewport.ts', UIStrings);
@@ -65,10 +65,7 @@ export class Viewport extends BaseInsight {
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
                 <div slot="insight-description" class="insight-description">
-                    <span>${i18nString(UIStrings.description)}</span>
-                    <div>
-                      <x-link class="link" href="https://developer.chrome.com/blog/300ms-tap-delay-gone-away/">Learn more here.</x-link>
-                    </div>
+                  ${md(i18nString(UIStrings.description))}
                 </div>
                 <div slot="insight-content" class="insight-content">
                   ${backendNodeId !== undefined ? LitHtml.html`<${NodeLink.litTagName}

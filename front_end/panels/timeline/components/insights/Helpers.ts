@@ -1,8 +1,12 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 import type * as TraceEngine from '../../../../models/trace/trace.js';
+import * as Marked from '../../../../third_party/marked/marked.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
+import * as MarkdownView from '../../../../ui/components/markdown_view/markdown_view.js';
+import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import sidebarInsightStyles from './sidebarInsight.css.js';
@@ -107,4 +111,16 @@ export abstract class BaseInsight extends HTMLElement {
       insightNavigationId: this.data.navigationId,
     });
   }
+}
+
+/**
+ * Returns a rendered MarkdownView component.
+ *
+ * This should not be used for markdown that is not guaranteed to be valid.
+ */
+export function md(markdown: string): LitHtml.TemplateResult {
+  const tokens = Marked.Marked.lexer(markdown);
+  return LitHtml.html`<${MarkdownView.MarkdownView.MarkdownView.litTagName}
+    .data=${{tokens} as MarkdownView.MarkdownView.MarkdownViewData}>
+  </${MarkdownView.MarkdownView.MarkdownView.litTagName}>`;
 }

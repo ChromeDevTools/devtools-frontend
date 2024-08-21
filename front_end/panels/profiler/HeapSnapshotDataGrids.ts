@@ -357,7 +357,7 @@ export class HeapSnapshotSortableDataGrid extends
     for (let i = 0, l = children.length; i < l; ++i) {
       const child = (children[i] as HeapSnapshotGridNode);
       this.appendChildAfterSorting(child);
-      if (child.expanded) {
+      if (child.populated) {
         void child.sort();
       }
     }

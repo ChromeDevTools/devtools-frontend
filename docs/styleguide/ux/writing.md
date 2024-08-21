@@ -13,9 +13,9 @@ requirements for good UX writing.
 *   Give the right info at the right time and place
 *   Don't write more than 1 sentence but if you do, break up text into sections, lists, tooltips, and <u>Learn more</u> links
 *   Be friendly but not ridiculous
-    *   DO: `This API lets you collect data about what your users like.`
-    *   DON'T: `Dude! This API is totally awesome!`
-    *   DON'T: `This API may enable the acquisition of information pertaining to user preferences.`
+    *   ✔️ `This API lets you collect data about what your users like.`
+    *   ❌ `Dude! This API is totally awesome!`
+    *   ❌ `This API may enable the acquisition of information pertaining to user preferences.`
 
 ### Patterns
 
@@ -23,41 +23,41 @@ requirements for good UX writing.
     [F pattern](https://m3.material.io/foundations/content-design/style-guide/ux-writing-best-practices#3a833840-43db-4f6e-8133-c4665c17d176)
 *   One sentence, one idea
 *   "To get what you want, do this"
-    *   DO: `To save changes, drop a folder here`
-    *   DON'T: `Drop in a folder to add to Workspace (what's a Workspace?)`
+    *   ✔️ `To save changes, drop a folder here`
+    *   ❌ `Drop in a folder to add to Workspace (what's a Workspace?)`
 * "Do this to recover"
-    *   DO: `Shorten filename to 64 characters or less`
-    *   DON'T: `Invalid filename`
+    *   ✔️ `Shorten filename to 64 characters or less`
+    *   ❌ `Invalid filename`
 
 ### Mechanics
 
 *   Say “you”
 *   [Look up](https://translate.google.com) short synonyms
-    *   DO: `Keep, more, stop, get, send, add, fit, …`
-    *   DON'T: `Preserve, additional, prevent, receive, submit, create, …`
+    *   ✔️ `Keep, more, stop, get, send, add, fit, …`
+    *   ❌ `Preserve, additional, prevent, receive, submit, create, …`
 *   Cut, cut, cut
-    *   DON'T: `Please, sorry, very, strongly, seamless, awesome, there is, there are, fast, quick, …`
+    *   ❌ `Please, sorry, very, strongly, seamless, awesome, there is, there are, fast, quick, …`
 *   Use active voice
-    *   DO: `DevTools loaded source maps`
-    *   DON'T: `Source maps were loaded by DevTools`
+    *   ✔️ `DevTools loaded source maps`
+    *   ❌ `Source maps were loaded by DevTools`
 *   Use [contractions](https://developers.google.com/style/contractions) but avoid [Latin abbreviations](https://m3.material.io/foundations/content-design/style-guide/ux-writing-best-practices#98d02949-1933-49df-b136-f7b72620b950)
-    *   DO: `Can’t, don’t, isn’t, for example, that is, and more`
-    *   DON'T: `Cannot, do not, is not, e.g., i.e., etc.`
+    *   ✔️ `Can’t, don’t, isn’t, for example, that is, and more`
+    *   ❌ `Cannot, do not, is not, e.g., i.e., etc.`
 *   Use simple and common terms
-    *   DO: `Website, page, extension, function`
-    *   DON'T: `Debug target, debuggee, content script, call frame`
+    *   ✔️ `Website, page, extension, function`
+    *   ❌ `Debug target, debuggee, content script, call frame`
 
 ### Cosmetics
 
 *   Use sentence-case, not Title-Case (see [Capitalization guidelines](#capitalization-guidelines) below).
-    *   DO: `Periodic background sync`
-    *   DON'T: `Periodic Background Sync`
+    *   ✔️ `Periodic background sync`
+    *   ❌ `Periodic Background Sync`
 *   Punctuate consistently
     *   Use serial comma: A, B, and C
     *   Skip periods in case of a single sentence
 *   Don't spell out numbers
-    *   DO: `1, 2, 3, …`
-    *   DON'T: `One, two, three, …`
+    *   ✔️ `1, 2, 3, …`
+    *   ❌ `One, two, three, …`
 *   Use just 2 types of links: <u>Learn more</u> and the
     [GM3 `Help` icon](https://fonts.corp.google.com/icons?selected=Google+Symbols:help).
 
@@ -69,8 +69,8 @@ requirements for good UX writing.
 Capitalize [product names](https://developers.google.com/style/product-names#capitalize),
 web API names, but not [feature names](https://developers.google.com/style/product-names#feature-names).
 
-*   DO: `Chrome DevTools (product) lets you debug Background Fetch API (web API) by logging background fetch (feature) events.`
-*   DON'T: `Chrome devtools lets you debug background fetch API by logging Background Fetch events.`
+*   ✔️ `Chrome DevTools (product) lets you debug Background Fetch API (web API) by logging background fetch (feature) events.`
+*   ❌ `Chrome devtools lets you debug background fetch API by logging Background Fetch events.`
 
 ### Use sentence case
 

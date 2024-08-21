@@ -31,7 +31,6 @@ below.**
 *   [Release Management](release_management.md)
 *   [Dependencies](dependencies.md)
 *   [Localization](l10n.md)
-*   [V8 debugger support checklist for new language features](https://goo.gle/v8-checklist)
 *   [Chrome DevTools Protocol](devtools-protocol.md)
 *   [Visual logging in DevTools](visual_logging.md)
 *   [UMA metrics in DevTools](uma_metrics.md)
@@ -48,6 +47,12 @@ below.**
 
 *   [Chromium Docs](https://chromium.googlesource.com/chromium/src/+/master/docs/README.md)
 *   [V8 Documention](https://v8.dev/docs)
+
+### Checklists
+
+*   [DevTools support checklist for Blink Intents](./checklist/README.md)
+*   [DevTools support checklist for JavaScript features](./checklist/javascript.md)
+*   [DevTools support checklist for WebAssembly features](./checklist/webassembly.md)
 
 ### Useful Commands
 

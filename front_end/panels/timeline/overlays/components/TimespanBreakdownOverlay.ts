@@ -13,7 +13,8 @@ import styles from './timespanBreakdownOverlay.css.js';
  */
 export type EntryBreakdown = {
   bounds: TraceEngine.Types.Timing.TraceWindowMicroSeconds,
-  label: string,
+  label: string|LitHtml.LitTemplate,
+  showDuration: boolean,
 };
 
 export class TimespanBreakdownOverlay extends HTMLElement {
@@ -151,13 +152,18 @@ export class TimespanBreakdownOverlay extends HTMLElement {
 
   renderSection(section: EntryBreakdown): LitHtml.TemplateResult {
     const sectionRange = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(section.bounds.range);
+    // clang-format off
     return LitHtml.html`
       <div class="timespan-breakdown-overlay-section">
         <div class="timespan-breakdown-overlay-label">
-          <span class="duration-text">${i18n.TimeUtilities.preciseMillisToString(sectionRange, 2)}</span>
+        ${section.showDuration ?
+          LitHtml.html`
+            <span class="duration-text">${i18n.TimeUtilities.preciseMillisToString(sectionRange, 2)}</span>
+          ` : LitHtml.nothing}
           ${section.label}
         </div>
       </div>`;
+    // clang-format on
   }
 
   #render(): void {

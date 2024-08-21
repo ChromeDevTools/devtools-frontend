@@ -141,8 +141,8 @@ export class LCPPhases extends BaseInsight {
           renderBegin,
       );
       sections.push(
-          {bounds: ttfb, label: i18nString(UIStrings.timeToFirstByte)},
-          {bounds: renderDelay, label: i18nString(UIStrings.elementRenderDelay)});
+          {bounds: ttfb, label: i18nString(UIStrings.timeToFirstByte), showDuration: true},
+          {bounds: renderDelay, label: i18nString(UIStrings.elementRenderDelay), showDuration: true});
     } else if (phases?.loadDelay && phases?.loadTime) {
       const renderBegin: TraceEngine.Types.Timing.MicroSeconds = TraceEngine.Types.Timing.MicroSeconds(
           lcpMicroseconds - TraceEngine.Helpers.Timing.millisecondsToMicroseconds(phases.renderDelay));
@@ -173,10 +173,10 @@ export class LCPPhases extends BaseInsight {
       );
 
       sections.push(
-          {bounds: ttfb, label: i18nString(UIStrings.timeToFirstByte)},
-          {bounds: loadDelay, label: i18nString(UIStrings.resourceLoadDelay)},
-          {bounds: loadTime, label: i18nString(UIStrings.resourceLoadDuration)},
-          {bounds: renderDelay, label: i18nString(UIStrings.elementRenderDelay)},
+          {bounds: ttfb, label: i18nString(UIStrings.timeToFirstByte), showDuration: true},
+          {bounds: loadDelay, label: i18nString(UIStrings.resourceLoadDelay), showDuration: true},
+          {bounds: loadTime, label: i18nString(UIStrings.resourceLoadDuration), showDuration: true},
+          {bounds: renderDelay, label: i18nString(UIStrings.elementRenderDelay), showDuration: true},
       );
     }
     return [{

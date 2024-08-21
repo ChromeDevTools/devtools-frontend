@@ -742,12 +742,6 @@ export class Overlays extends EventTarget {
         const top = bottom - height;
         element.style.top = `${top}px`;
         element.style.fontStyle = 'italic';
-
-        const label = elementSections[0].querySelector('.timespan-breakdown-overlay-label');
-        const msDetails = label?.querySelector('span');
-        if (msDetails) {
-          label?.removeChild(msDetails);
-        }
       }
     }
   }

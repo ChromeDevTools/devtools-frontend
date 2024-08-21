@@ -145,7 +145,7 @@ export class LCPDiscovery extends BaseInsight {
         imageResults.resource.ts,
     );
 
-    const delayMs = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(delay.range);
+    const label = LitHtml.html`<div class="discovery-delay"> ${this.#renderDiscoveryDelay(delay.range)}</div>`;
 
     return [
       {
@@ -162,7 +162,8 @@ export class LCPDiscovery extends BaseInsight {
         type: 'TIMESPAN_BREAKDOWN',
         sections: [{
           bounds: delay,
-          label: i18nString(UIStrings.lcpLoadDelay, {PH1: i18n.TimeUtilities.preciseMillisToString(delayMs, 2)}),
+          label,
+          showDuration: false,
         }],
         entry: imageResults.resource,
       },
@@ -180,7 +181,7 @@ export class LCPDiscovery extends BaseInsight {
           @insighttoggleclick=${this.onSidebarClick}
         >
           <div slot="insight-description" class="insight-description">
-          ${imageData.discoveryDelay ? LitHtml.html`<p class="discovery-delay">${this.#renderDiscoveryDelay(imageData.discoveryDelay)}</p>` : LitHtml.nothing}
+          ${imageData.discoveryDelay ? LitHtml.html`<div class="discovery-delay">${this.#renderDiscoveryDelay(imageData.discoveryDelay)}</div>` : LitHtml.nothing}
             <ul class="insight-results discovery-icon-results">
               <li class="insight-entry">
                 ${this.#adviceIcon(imageData.shouldIncreasePriorityHint)}

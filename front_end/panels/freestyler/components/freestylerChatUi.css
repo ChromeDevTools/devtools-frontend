@@ -131,6 +131,21 @@
     justify-content: space-between;
     align-items: flex-end;
   }
+
+  .thought {
+    summary {
+      line-height: var(--sys-size-9);
+    }
+
+    devtools-icon {
+      vertical-align: bottom;
+      color: var(--sys-color-green-bright);
+    }
+
+    devtools-icon.loading {
+      color: var(--sys-color-blue-bright);
+    }
+  }
 }
 
 .input-header {

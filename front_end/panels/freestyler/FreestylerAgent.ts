@@ -72,12 +72,14 @@ export enum Step {
 
 export interface CommonStepData {
   step: Step.ANSWER|Step.ERROR;
+  id: string;
   text: string;
   rpcId?: number;
 }
 
 export interface ThoughtStepData {
   step: Step.THOUGHT;
+  id: string;
   text: string;
   title?: string;
   rpcId?: number;
@@ -85,6 +87,7 @@ export interface ThoughtStepData {
 
 export interface ActionStepData {
   step: Step.ACTION;
+  id: string;
   code: string;
   output: string;
   rpcId?: number;
@@ -92,9 +95,10 @@ export interface ActionStepData {
 
 export interface QueryStepData {
   step: Step.QUERYING;
+  id: string;
 }
 
-export type StepData = CommonStepData|ActionStepData|ThoughtStepData;
+export type StepData = CommonStepData|ActionStepData|ThoughtStepData|QueryStepData;
 
 // TODO: this should use the current execution context pased on the
 // node.
@@ -342,8 +346,17 @@ export class FreestylerAgent {
     options.signal?.addEventListener('abort', () => {
       this.#chatHistory.delete(currentRunId);
     });
+
+    // We need the first id for queueing to match
+    // the one of the first response
+    let id: string = `${currentRunId}-${0}`;
+    yield {
+      step: Step.QUERYING,
+      id,
+    };
+
     for (let i = 0; i < MAX_STEPS; i++) {
-      yield {step: Step.QUERYING};
+      id = `${currentRunId}-${i}`;
 
       const request = FreestylerAgent.buildRequest({
         input: query,
@@ -365,7 +378,7 @@ export class FreestylerAgent {
           break;
         }
 
-        yield {step: Step.ERROR, text: genericErrorMessage, rpcId};
+        yield {step: Step.ERROR, id, text: genericErrorMessage, rpcId};
         break;
       }
 
@@ -398,7 +411,14 @@ export class FreestylerAgent {
       // the action.
       if (action) {
         if (thought) {
-          yield {step: Step.THOUGHT, text: thought, title, rpcId};
+          yield {
+            step: Step.THOUGHT,
+            id,
+            text: thought,
+            title,
+            rpcId,
+          };
+          id = `${currentRunId}-${i}-action`;
         }
         debugLog(`Action to execute: ${action}`);
         const scope = this.#createExtensionScope(this.#changes);
@@ -406,21 +426,29 @@ export class FreestylerAgent {
         try {
           const observation = await this.#generateObservation(action, {throwOnSideEffect: !options.isFixQuery});
           debugLog(`Action result: ${observation}`);
-          yield {step: Step.ACTION, code: action, output: observation, rpcId};
+          yield {
+            step: Step.ACTION,
+            code: action,
+            id,
+            output: observation,
+            rpcId,
+          };
+
           query = `OBSERVATION: ${observation}`;
         } finally {
           await scope.uninstall();
         }
       } else if (answer) {
-        yield {step: Step.ANSWER, text: answer, rpcId};
+        yield {step: Step.ANSWER, id, text: answer, rpcId};
         break;
       } else {
-        yield {step: Step.ERROR, text: genericErrorMessage, rpcId};
+        yield {step: Step.ERROR, id, text: genericErrorMessage, rpcId};
         break;
       }
 
       if (i === MAX_STEPS - 1) {
-        yield {step: Step.ERROR, text: 'Max steps reached, please try again.'};
+        yield {step: Step.ERROR, id, text: 'Max steps reached, please try again.'};
+        break;
       }
     }
     if (isDebugMode()) {

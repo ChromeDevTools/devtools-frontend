@@ -726,7 +726,10 @@ export class ToolbarCombobox extends ToolbarItem<ToolbarButton.EventTypes> {
       return;
     }
     if (!this.textElement) {
-      this.textElement = this.element.createChild('div', 'toolbar-text hidden');
+      this.textElement = document.createElement('div');
+      this.textElement.classList.add('toolbar-text', 'hidden');
+      const dropDownArrow = this.element.querySelector('.toolbar-dropdown-arrow');
+      this.element.insertBefore(this.textElement, dropDownArrow);
     }
     this.textElement.textContent = text;
     this.textElement.classList.toggle('hidden', !text);

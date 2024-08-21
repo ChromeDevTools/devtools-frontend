@@ -565,8 +565,8 @@ export class CSSModel extends SDKModel<EventTypes> {
     }
   }
 
-  async requestViaInspectorStylesheet(node: DOMNode): Promise<CSSStyleSheetHeader|null> {
-    const frameId = node.frameId() ||
+  async requestViaInspectorStylesheet(maybeFrameId?: Protocol.Page.FrameId|null): Promise<CSSStyleSheetHeader|null> {
+    const frameId = maybeFrameId ||
         (this.#resourceTreeModel && this.#resourceTreeModel.mainFrame ? this.#resourceTreeModel.mainFrame.id : null);
     const headers = [...this.#styleSheetIdToHeader.values()];
     const styleSheetHeader = headers.find(header => header.frameId === frameId && header.isViaInspector());

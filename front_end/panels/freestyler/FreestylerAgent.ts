@@ -8,6 +8,8 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import {ChangeManager} from './ChangeManager.js';
+import {ExtensionScope, FREESTYLER_WORLD_NAME} from './ExtensionScope.js';
 import {ExecutionError, FreestylerEvaluateAction, SideEffectError} from './FreestylerEvaluateAction.js';
 
 const preamble = `You are a CSS debugging assistant integrated into Chrome DevTools.
@@ -27,7 +29,7 @@ Please answer only if you are sure about the answer. Otherwise, explain why you'
 When answering, remember to consider CSS concepts such as the CSS cascade, explicit and implicit stacking contexts and various CSS layout types.
 When answering, always consider MULTIPLE possible solutions.
 
-If you need to set inline styles on an HTML element, always call the \`async setInlineStyles(el: Element, styles: object)\` function.
+If you need to set styles on an HTML element, always call the \`async setElementStyles(el: Element, styles: object)\` function.
 
 Example:
 ACTION
@@ -94,6 +96,8 @@ export interface QueryStepData {
 
 export type StepData = CommonStepData|ActionStepData|ThoughtStepData;
 
+// TODO: this should use the current execution context pased on the
+// node.
 async function executeJsCode(code: string, {throwOnSideEffect}: {throwOnSideEffect: boolean}): Promise<string> {
   const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
   if (!target) {
@@ -109,7 +113,7 @@ async function executeJsCode(code: string, {throwOnSideEffect}: {throwOnSideEffe
 
   // This returns previously created world if it exists for the frame.
   const {executionContextId} = await pageAgent.invoke_createIsolatedWorld(
-      {frameId: resourceTreeModel.mainFrame.id, worldName: 'devtools_freestyler'});
+      {frameId: resourceTreeModel.mainFrame.id, worldName: FREESTYLER_WORLD_NAME});
   const executionContext = runtimeModel?.executionContext(executionContextId);
   if (!executionContext) {
     throw new Error('Execution context is not found for executing code');
@@ -126,12 +130,6 @@ async function executeJsCode(code: string, {throwOnSideEffect}: {throwOnSideEffe
   }
 }
 
-const functions = `async function setInlineStyles(el, styles) {
-  for (const key of Object.keys(styles)) {
-    el.style[key] = styles[key];
-  }
-}`;
-
 type HistoryChunk = {
   text: string,
   entity: Host.AidaClient.Entity,
@@ -140,13 +138,19 @@ type HistoryChunk = {
 const MAX_STEPS = 10;
 const MAX_OBSERVATION_BYTE_LENGTH = 25_000;
 
-interface AgentOptions {
-  aidaClient: Host.AidaClient.AidaClient;
-  serverSideLoggingEnabled?: boolean;
-  execJs?: typeof executeJsCode;
-  internalExecJs?: typeof executeJsCode;
-  confirmSideEffect: (action: string) => Promise<boolean>;
-}
+type CreateExtensionScopeFunction = (changes: ChangeManager) => {
+  install(): Promise<void>, uninstall(): Promise<void>,
+};
+
+type AgentOptions = {
+  aidaClient: Host.AidaClient.AidaClient,
+  confirmSideEffect: (action: string) => Promise<boolean>,
+  changeManager?: ChangeManager,
+  serverSideLoggingEnabled?: boolean,
+  createExtensionScope?: CreateExtensionScopeFunction,
+  execJs?: typeof executeJsCode,
+  internalExecJs?: typeof executeJsCode,
+};
 
 interface AidaRequestOptions {
   input: string;
@@ -252,20 +256,20 @@ export class FreestylerAgent {
 
   #confirmSideEffect: (action: string) => Promise<boolean>;
   #execJs: typeof executeJsCode;
-  #internalExecJs: typeof executeJsCode;
 
   readonly #sessionId = crypto.randomUUID();
+  #changes: ChangeManager;
+  #createExtensionScope: CreateExtensionScopeFunction;
 
   constructor(opts: AgentOptions) {
     this.#aidaClient = opts.aidaClient;
+    this.#changes = opts.changeManager || new ChangeManager();
     this.#execJs = opts.execJs ?? executeJsCode;
-    this.#internalExecJs = opts.internalExecJs ?? executeJsCode;
+    this.#createExtensionScope = opts.createExtensionScope ?? ((changes: ChangeManager) => {
+                                   return new ExtensionScope(changes);
+                                 });
     this.#confirmSideEffect = opts.confirmSideEffect;
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
-  }
-
-  async #setupContext(): Promise<void> {
-    await this.#internalExecJs?.(functions, {throwOnSideEffect: false});
   }
 
   get #getHistoryEntry(): Array<HistoryChunk> {
@@ -330,7 +334,6 @@ export class FreestylerAgent {
   async *
       run(query: string, options: {signal?: AbortSignal, isFixQuery: boolean} = {isFixQuery: false}):
           AsyncGenerator<StepData|QueryStepData, void, void> {
-    await this.#setupContext();
     const genericErrorMessage = 'Sorry, I could not help you with this query.';
     const structuredLog = [];
     query = `QUERY: ${query}`;
@@ -398,10 +401,16 @@ export class FreestylerAgent {
           yield {step: Step.THOUGHT, text: thought, title, rpcId};
         }
         debugLog(`Action to execute: ${action}`);
-        const observation = await this.#generateObservation(action, {throwOnSideEffect: !options.isFixQuery});
-        debugLog(`Action result: ${observation}`);
-        yield {step: Step.ACTION, code: action, output: observation, rpcId};
-        query = `OBSERVATION: ${observation}`;
+        const scope = this.#createExtensionScope(this.#changes);
+        await scope.install();
+        try {
+          const observation = await this.#generateObservation(action, {throwOnSideEffect: !options.isFixQuery});
+          debugLog(`Action result: ${observation}`);
+          yield {step: Step.ACTION, code: action, output: observation, rpcId};
+          query = `OBSERVATION: ${observation}`;
+        } finally {
+          await scope.uninstall();
+        }
       } else if (answer) {
         yield {step: Step.ANSWER, text: answer, rpcId};
         break;

@@ -18,6 +18,8 @@ generate_css("css_files") {
 
 devtools_module("freestyler") {
   sources = [
+    "ChangeManager.ts",
+    "ExtensionScope.ts",
     "FreestylerAgent.ts",
     "FreestylerEvaluateAction.ts",
     "FreestylerPanel.ts",
@@ -64,6 +66,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "ChangeManager.test.ts",
     "FreestylerAgent.test.ts",
     "FreestylerEvaluateAction.test.ts",
     "FreestylerPanel.test.ts",

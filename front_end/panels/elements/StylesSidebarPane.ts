@@ -1226,7 +1226,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }
     this.setUserOperation(true);
 
-    const styleSheetHeader = await cssModel.requestViaInspectorStylesheet((node as SDK.DOMModel.DOMNode));
+    const styleSheetHeader = await cssModel.requestViaInspectorStylesheet(node.frameId());
 
     this.setUserOperation(false);
     await this.createNewRuleInStyleSheet(styleSheetHeader);

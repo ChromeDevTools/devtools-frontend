@@ -26,6 +26,7 @@ node_ts_library("tests") {
     "elements",
     "emulation",
     "extensions",
+    "freestyler",
     "host",
     "inline_editor",
     "issues",

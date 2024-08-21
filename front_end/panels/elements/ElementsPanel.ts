@@ -402,7 +402,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       }
 
       const cssModel = node.domModel().cssModel();
-      const styleSheetHeader = await cssModel.requestViaInspectorStylesheet(node);
+      const styleSheetHeader = await cssModel.requestViaInspectorStylesheet(node.frameId());
       if (!styleSheetHeader) {
         return;
       }

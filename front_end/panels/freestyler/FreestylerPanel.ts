@@ -9,6 +9,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
+import {ChangeManager} from './ChangeManager.js';
 import {
   ChatMessageEntity,
   DOGFOOD_INFO,
@@ -99,6 +100,8 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #serverSideLoggingEnabled = isFreestylerServerSideLoggingEnabled();
   #consentViewAcceptedSetting =
       Common.Settings.Settings.instance().createLocalSetting('freestyler-dogfood-consent-onboarding-finished', false);
+  #changeManager = new ChangeManager();
+
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability}: {
     aidaClient: Host.AidaClient.AidaClient,
     aidaAvailability: Host.AidaClient.AidaAccessPreconditions,
@@ -149,6 +152,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #createAgent(): FreestylerAgent {
     return new FreestylerAgent({
       aidaClient: this.#aidaClient,
+      changeManager: this.#changeManager,
       serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
       confirmSideEffect: this.showConfirmSideEffectUi.bind(this),
     });

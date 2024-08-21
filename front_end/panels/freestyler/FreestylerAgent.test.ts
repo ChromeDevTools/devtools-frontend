@@ -20,6 +20,17 @@ describeWithEnvironment('FreestylerAgent', () => {
       },
     });
   }
+
+  function createExtensionScope() {
+    return {
+      async install() {
+
+      },
+      async uninstall() {
+
+      },
+    };
+  }
   describe('parseResponse', () => {
     it('parses a thought', async () => {
       const payload = 'some response';
@@ -426,6 +437,7 @@ c`;
         const confirmSideEffect = sinon.mock().resolves(false);
         const agent = new FreestylerAgent({
           aidaClient: mockAidaClient(generateActionAndAnswer),
+          createExtensionScope,
           confirmSideEffect,
           execJs,
           internalExecJs: sinon.mock(),
@@ -462,6 +474,7 @@ c`;
         const confirmSideEffect = sinon.mock().resolves(true);
         const agent = new FreestylerAgent({
           aidaClient: mockAidaClient(generateActionAndAnswer),
+          createExtensionScope,
           confirmSideEffect,
           execJs,
           internalExecJs: sinon.mock(),
@@ -497,6 +510,7 @@ c`;
         const confirmSideEffect = sinon.mock().resolves(false);
         const agent = new FreestylerAgent({
           aidaClient: mockAidaClient(generateActionAndAnswer),
+          createExtensionScope,
           confirmSideEffect,
           execJs,
           internalExecJs: sinon.mock(),
@@ -534,6 +548,7 @@ c`;
         const confirmSideEffect = sinon.mock();
         const agent = new FreestylerAgent({
           aidaClient: mockAidaClient(generateActionAndAnswer),
+          createExtensionScope,
           confirmSideEffect,
           execJs,
           internalExecJs: sinon.mock(),
@@ -570,6 +585,7 @@ c`;
         const confirmSideEffect = sinon.mock().resolves(false);
         const agent = new FreestylerAgent({
           aidaClient: mockAidaClient(generateActionAndAnswer),
+          createExtensionScope,
           confirmSideEffect,
           execJs,
           internalExecJs: sinon.mock(),
@@ -786,6 +802,7 @@ ANSWER: this is the answer`,
       execJs.onCall(0).returns('hello');
       const agent = new FreestylerAgent({
         aidaClient: mockAidaClient(generateNothing),
+        createExtensionScope,
         confirmSideEffect: () => Promise.resolve(true),
         execJs,
         internalExecJs: sinon.mock(),
@@ -839,6 +856,7 @@ ANSWER: this is the answer`,
       const execJs = sinon.spy(async () => 'undefined');
       const agent = new FreestylerAgent({
         aidaClient: mockAidaClient(generateMultipleTimes),
+        createExtensionScope,
         confirmSideEffect: () => Promise.resolve(true),
         execJs,
         internalExecJs: sinon.mock(),
@@ -902,6 +920,7 @@ ANSWER: this is the answer`,
       const execJs = sinon.spy();
       const agent = new FreestylerAgent({
         aidaClient: mockAidaClient(generateMultipleTimes),
+        createExtensionScope,
         confirmSideEffect: () => Promise.resolve(true),
         execJs,
         internalExecJs: sinon.mock(),

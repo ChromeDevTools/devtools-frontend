@@ -393,6 +393,10 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   getSyncInformation(callback: (arg0: SyncInformation) => void): void {
+    if ('getSyncInformationForTesting' in globalThis) {
+      // @ts-ignore for testing
+      return callback(globalThis.getSyncInformationForTesting());
+    }
     callback({
       isSyncActive: false,
       arePreferencesSynced: false,

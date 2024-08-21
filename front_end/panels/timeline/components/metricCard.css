@@ -1,0 +1,118 @@
+/*
+ * Copyright 2024 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.metric-card {
+  border-radius: var(--sys-shape-corner-small);
+  padding: 14px 16px;
+  background-color: var(--sys-color-surface3);
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: var(--sys-typescale-headline5-size);
+  line-height: var(--sys-typescale-headline5-line-height);
+  font-weight: var(--ref-typeface-weight-medium);
+  margin: 0;
+  margin-bottom: 6px;
+}
+
+.metric-values-section {
+  position: relative;
+  display: flex;
+  column-gap: 8px;
+  margin-bottom: 8px;
+}
+
+.metric-source-block {
+  flex: 1;
+}
+
+.metric-source-value {
+  font-size: 32px;
+  line-height: 36px;
+  font-weight: var(--ref-typeface-weight-regular);
+}
+
+.metric-source-label {
+  font-weight: var(--ref-typeface-weight-medium);
+}
+
+.good-bg {
+  background-color: var(--app-color-performance-good);
+}
+
+.needs-improvement-bg {
+  background-color: var(--app-color-performance-ok);
+}
+
+.poor-bg {
+  background-color: var(--app-color-performance-bad);
+}
+
+.divider {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--sys-color-divider);
+  margin: 2px 0;
+  box-sizing: border-box;
+}
+
+.compare-text {
+  margin-top: 8px;
+}
+
+.detailed-compare-text {
+  margin-bottom: 8px;
+}
+
+.bucket-summaries {
+  margin-top: 8px;
+  overflow-x: auto;
+}
+
+.bucket-summaries.histogram {
+  display: grid;
+  grid-template-columns: minmax(min-content, auto) minmax(20px, 50px) max-content;
+  grid-auto-rows: 1fr;
+  column-gap: 8px;
+  justify-items: flex-end;
+  align-items: center;
+}
+
+.bucket-label {
+  justify-self: start;
+  font-weight: var(--ref-typeface-weight-medium);
+}
+
+.bucket-range {
+  color: var(--sys-color-token-subtle);
+}
+
+.histogram-bar {
+  height: 6px;
+}
+
+.histogram-percent {
+  color: var(--sys-color-token-subtle);
+  font-weight: var(--ref-typeface-weight-medium);
+}
+
+.tooltip {
+  display: none;
+  width: min(var(--tooltip-container-width, 350px), 350px);
+  max-width: max-content;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  box-sizing: border-box;
+  padding: var(--sys-size-5) var(--sys-size-6);
+  border-radius: var(--sys-shape-corner-small);
+  background-color: var(--sys-color-cdt-base-container);
+  box-shadow: var(--drop-shadow-depth-3);
+}

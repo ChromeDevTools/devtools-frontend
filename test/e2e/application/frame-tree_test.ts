@@ -238,7 +238,7 @@ describe('The Application Tab', () => {
     const fieldValuesTextContent = await waitForFunction(async () => {
       const fieldValues = await getTrimmedTextContent('.report-field-value');
       // Make sure the length is equivalent to the expected value below
-      if (fieldValues.length === 3) {
+      if (fieldValues.length === 3 && fieldValues.every(field => field.trim() !== '')) {
         return fieldValues;
       }
       return undefined;
@@ -261,7 +261,7 @@ describe('The Application Tab', () => {
     const fieldValuesTextContent = await waitForFunction(async () => {
       const fieldValues = await getTrimmedTextContent('.report-field-value');
       // Make sure the length is equivalent to the expected value below
-      if (fieldValues.length === 3) {
+      if (fieldValues.length === 3 && fieldValues.every(field => field.trim() !== '')) {
         return fieldValues;
       }
       return undefined;

@@ -63,22 +63,25 @@ STOP
     });
   }
 
-  it('modifes the inline styles using the extension functions', async () => {
-    // TODO: extract helpers.
-    const {target, frontend} = getBrowserAndPages();
-    await setupMocks({}, {enabled: true});
-    await goToResource('../resources/recorder/recorder.html');
+  async function inspectNode(selector: string): Promise<void> {
+    const {frontend} = getBrowserAndPages();
     await click(CONSOLE_TAB_SELECTOR);
-
     await frontend.locator('aria/Console prompt').click();
-    await frontend.keyboard.type('inspect(document.querySelector(\'body\'))');
+    await frontend.keyboard.type(`inspect(document.querySelector(${JSON.stringify(selector)}))`);
     await frontend.keyboard.press('Enter');
+  }
 
+  async function openFreestyler(): Promise<void> {
+    const {frontend} = getBrowserAndPages();
     await frontend.locator('aria/Customize and control DevTools').click();
     await frontend.locator('aria/More tools').click();
     await frontend.locator('aria/AI assistant').click();
+    // Accept consent.
     await frontend.locator('aria/Accept').click();
+  }
 
+  async function enableDebugModeForFreestyler(): Promise<void> {
+    const {frontend} = getBrowserAndPages();
     await frontend.waitForFunction(() => {
       return 'setDebugFreestylerEnabled' in window;
     });
@@ -86,12 +89,18 @@ STOP
       // @ts-ignore
       setDebugFreestylerEnabled(true);
     });
+  }
 
-    await frontend.locator('aria/Ask a question about the selected element').click();
+  async function typeQuery(query: string): Promise<void> {
+    const inputSelector = 'aria/Ask a question about the selected element';
+    const {frontend} = getBrowserAndPages();
+    await frontend.locator(inputSelector).click();
 
-    await frontend.locator('aria/Ask a question about the selected element')
-        .fill('Change the background color for this element to blue');
+    await frontend.locator(inputSelector).fill(query);
+  }
 
+  async function submitAndWaitTillDone(): Promise<void> {
+    const {frontend} = getBrowserAndPages();
     const done = frontend.evaluate(() => {
       return new Promise(resolve => {
         window.addEventListener('freestylerdone', resolve, {
@@ -99,22 +108,29 @@ STOP
         });
       });
     });
-
     await frontend.keyboard.press('Enter');
-
     const abort = new AbortController();
-
     async function autoAcceptEvals(signal: AbortSignal) {
       while (!signal.aborted) {
         await frontend.locator('aria/Execute').click({signal});
       }
     }
-
     autoAcceptEvals(abort.signal).catch(() => {});
     await done;
-
     abort.abort();
+  }
 
+  it('modifes the inline styles using the extension functions', async () => {
+    await setupMocks({}, {enabled: true});
+    await goToResource('../resources/recorder/recorder.html');
+
+    await inspectNode('body');
+    await openFreestyler();
+    await enableDebugModeForFreestyler();
+    await typeQuery('Change the background color for this element to blue');
+    await submitAndWaitTillDone();
+
+    const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.waitForFunction(() => {
       // @ts-ignore page context.

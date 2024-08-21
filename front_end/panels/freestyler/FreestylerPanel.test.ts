@@ -18,6 +18,10 @@ function getTestAidaClient() {
   };
 }
 
+function getTestSyncInfo(): Host.InspectorFrontendHostAPI.SyncInformation {
+  return {isSyncActive: true};
+}
+
 describeWithEnvironment('FreestylerPanel', () => {
   const mockView = sinon.stub();
 
@@ -33,6 +37,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       new Freestyler.FreestylerPanel(mockView, {
         aidaClient: getTestAidaClient(),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+        syncInfo: getTestSyncInfo(),
       });
 
       sinon.assert.calledWith(mockView, sinon.match({state: Freestyler.State.CONSENT_VIEW}));
@@ -45,6 +50,8 @@ describeWithEnvironment('FreestylerPanel', () => {
       new Freestyler.FreestylerPanel(mockView, {
         aidaClient: getTestAidaClient(),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+
+        syncInfo: getTestSyncInfo(),
       });
 
       const callArgs = mockView.getCall(0).args[0];
@@ -61,6 +68,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       new Freestyler.FreestylerPanel(mockView, {
         aidaClient: getTestAidaClient(),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+        syncInfo: getTestSyncInfo(),
       });
 
       sinon.assert.calledWith(mockView, sinon.match({state: Freestyler.State.CHAT_VIEW}));
@@ -76,6 +84,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       const panel = new Freestyler.FreestylerPanel(mockView, {
         aidaClient: getTestAidaClient(),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+        syncInfo: getTestSyncInfo(),
       });
 
       void panel.showConfirmSideEffectUi('code');
@@ -89,6 +98,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       const panel = new Freestyler.FreestylerPanel(mockView, {
         aidaClient: getTestAidaClient(),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+        syncInfo: getTestSyncInfo(),
       });
 
       void panel.showConfirmSideEffectUi('code').then(result => {
@@ -120,6 +130,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       new Freestyler.FreestylerPanel(mockView, {
         aidaClient,
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+        syncInfo: getTestSyncInfo(),
       });
       const callArgs = mockView.getCall(0).args[0];
       mockView.reset();
@@ -137,6 +148,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       new Freestyler.FreestylerPanel(mockView, {
         aidaClient,
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+        syncInfo: getTestSyncInfo(),
       });
       const callArgs = mockView.getCall(0).args[0];
       mockView.reset();
@@ -159,6 +171,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       new Freestyler.FreestylerPanel(mockView, {
         aidaClient,
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+        syncInfo: getTestSyncInfo(),
       });
       const callArgs = mockView.getCall(0).args[0];
       mockView.reset();
@@ -182,6 +195,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       new Freestyler.FreestylerPanel(mockView, {
         aidaClient,
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+        syncInfo: getTestSyncInfo(),
       });
       const callArgs = mockView.getCall(0).args[0];
       mockView.reset();

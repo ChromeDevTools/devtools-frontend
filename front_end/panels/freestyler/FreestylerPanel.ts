@@ -102,9 +102,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
       Common.Settings.Settings.instance().createLocalSetting('freestyler-dogfood-consent-onboarding-finished', false);
   #changeManager = new ChangeManager();
 
-  constructor(private view: View = defaultView, {aidaClient, aidaAvailability}: {
+  constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {
     aidaClient: Host.AidaClient.AidaClient,
     aidaAvailability: Host.AidaClient.AidaAccessPreconditions,
+    syncInfo: Host.InspectorFrontendHostAPI.SyncInformation,
   }) {
     super(FreestylerPanel.panelName);
 
@@ -132,6 +133,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
         void this.#startConversation(FIX_THIS_ISSUE_PROMPT, true);
       },
       canShowFeedbackForm: this.#serverSideLoggingEnabled,
+      userInfo: {
+        accountImage: syncInfo.accountImage,
+        accountEmail: syncInfo.accountEmail,
+      },
     };
     this.#toggleSearchElementAction.addEventListener(UI.ActionRegistration.Events.Toggled, ev => {
       this.#viewProps.inspectElementToggled = ev.data;
@@ -165,7 +170,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
     if (!freestylerPanelInstance || forceNew) {
       const aidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
       const aidaClient = new Host.AidaClient.AidaClient();
-      freestylerPanelInstance = new FreestylerPanel(defaultView, {aidaClient, aidaAvailability});
+      const syncInfo = await new Promise<Host.InspectorFrontendHostAPI.SyncInformation>(
+          resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(
+              syncInfo => resolve(syncInfo)));
+      freestylerPanelInstance = new FreestylerPanel(defaultView, {aidaClient, aidaAvailability, syncInfo});
     }
 
     return freestylerPanelInstance;

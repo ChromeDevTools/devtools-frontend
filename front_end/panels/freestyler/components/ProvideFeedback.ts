@@ -166,7 +166,7 @@ export class ProvideFeedback extends HTMLElement {
   #renderFeedbackForm(): LitHtml.LitTemplate {
     // clang-format off
     return LitHtml.html`
-      <form class="feedback" @submit=${this.#handleSubmit}>
+      <form class="feedback-form" @submit=${this.#handleSubmit}>
         <div class="feedback-header">
           <h4 class="feedback-title">${i18nString(
               UIStringsTemp.whyThisRating,
@@ -219,8 +219,10 @@ export class ProvideFeedback extends HTMLElement {
     // clang-format off
     LitHtml.render(
       LitHtml.html`
-        <div class="rate-buttons">
-          ${this.#renderButtons()}
+        <div class="feedback">
+          <div class="rate-buttons">
+            ${this.#renderButtons()}
+          </div>
           ${this.#isShowingFeedbackForm
             ? this.#renderFeedbackForm()
             : LitHtml.nothing

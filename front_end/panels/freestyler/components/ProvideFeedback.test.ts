@@ -12,7 +12,7 @@ describe('ProvideFeedback', () => {
     const button = component.shadowRoot!.querySelector('.rate-buttons devtools-button')! as HTMLElement;
     button.click();
 
-    assert(component.shadowRoot!.querySelector('.feedback'));
+    assert(component.shadowRoot!.querySelector('.feedback-form'));
   });
   it('should not show the feedback form when canShowFeedbackForm is false', async () => {
     const component = new Freestyler.ProvideFeedback({onFeedbackSubmit: sinon.stub(), canShowFeedbackForm: false});
@@ -21,6 +21,6 @@ describe('ProvideFeedback', () => {
     const button = component.shadowRoot!.querySelector('.rate-buttons devtools-button')! as HTMLElement;
     button.click();
 
-    assert.notExists(component.shadowRoot!.querySelector('.feedback'));
+    assert.notExists(component.shadowRoot!.querySelector('.feedback-form'));
   });
 });

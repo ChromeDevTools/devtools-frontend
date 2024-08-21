@@ -31,7 +31,7 @@
   display: flex;
   flex-direction: column;
   padding: var(--sys-size-8) var(--sys-size-4) 0 var(--sys-size-4);
-  max-width: 720px;
+  max-width: var(--sys-size-36);
   width: 100%;
   margin: 0 auto;
 }
@@ -73,46 +73,49 @@
   margin-bottom: var(--sys-size-4);
 }
 
-.messages-container {
-  margin: var(--sys-size-6) auto 0 auto;
-  max-width: 720px;
-  padding: 0 var(--sys-size-4);
-}
-
 .messages-scroll-container {
   overflow: overlay;
   flex-grow: 1;
 }
 
+.messages-container {
+  margin: var(--sys-size-6) auto 0 auto;
+  max-width: var(--sys-size-36);
+  padding: 0 var(--sys-size-4);
+}
+
 .chat-message {
   user-select: text;
   cursor: initial;
-  width: fit-content;
-  padding: 8px var(--sys-size-8);
+  width: 100%;
+  padding: var(--sys-size-7) var(--sys-size-8);
   font-size: 12px;
-  border-radius: var(--sys-size-6);
   word-break: break-word;
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 
-  &:not(:first-of-type) {
-    margin-top: var(--sys-size-6);
+  :not(:first-child) {
+    margin-top: var(--sys-size-5);
   }
 
   &.query {
-    max-width: 320px;
-    color: var(--sys-color-on-surface);
-    background: var(--sys-color-surface2);
-    margin-left: auto;
-  }
+    .account-info {
+      display: flex;
+      align-items: center;
+      gap: var(--sys-size-4);
+      padding-bottom: var(--sys-size-5);
 
-  &.answer {
-    max-width: 440px;
-    color: var(--sys-color-on-surface);
-    background: var(--sys-color-surface2);
-  }
+      .account-email {
+        font-weight: bold;
+      }
+    }
 
-  & .chat-loading {
-    margin: 4px 0;
-    padding: 4px 0;
+    img {
+      border: 0;
+      border-radius: var(--sys-shape-corner-full);
+      display: block;
+      height: 32px;
+      width: 32px;
+    }
   }
 
   & .actions {

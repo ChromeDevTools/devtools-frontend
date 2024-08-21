@@ -193,6 +193,7 @@ export interface Props {
   // If there is a `confirmSideEffectDialog`, we show the
   // confirmation dialog for executing that specific code.
   confirmSideEffectDialog?: ConfirmSideEffectDialog;
+  userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountEmail'>;
 }
 
 // The model returns multiline code blocks in an erroneous way with the language being in new line.
@@ -386,8 +387,22 @@ export class FreestylerChatUi extends HTMLElement {
 
   #renderChatMessage = (message: ChatMessage, {isLast}: {isLast: boolean}): LitHtml.TemplateResult => {
     if (message.entity === ChatMessageEntity.USER) {
-      return LitHtml.html`<div class="chat-message query" jslog=${VisualLogging.section('question')}>${
-          message.text}</div>`;
+      // clang-format off
+      return LitHtml.html`<div
+        class="chat-message query"
+        jslog=${VisualLogging.section('question')}
+      >
+        <div class="account-info">
+          <img src="data:image/png;base64, ${this.#props.userInfo.accountImage}" alt="Account avatar" />
+          <div class="account-email">
+            <span>${this.#props.userInfo.accountEmail}</span>
+          </div>
+        </div>
+        <span>${
+          message.text
+        }</span>
+      </div>`;
+      // clang-format on
     }
 
     const shouldShowFixThisIssueButton = !this.#props.isLoading && isLast && message.suggestingFix;
@@ -493,7 +508,9 @@ export class FreestylerChatUi extends HTMLElement {
       <div class="messages-scroll-container">
         <div class="messages-container">
           ${this.#props.messages.map((message, _, array) =>
-            this.#renderChatMessage(message, {isLast: array.at(-1) === message}),
+            this.#renderChatMessage(message, {
+              isLast: array.at(-1) === message,
+            }),
           )}
         </div>
       </div>

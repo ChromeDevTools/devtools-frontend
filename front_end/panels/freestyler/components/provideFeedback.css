@@ -8,7 +8,13 @@
   box-sizing: border-box;
 }
 
-.feedback {
+.rate-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--sys-size-2);
+}
+
+.feedback-form {
   display: flex;
   flex-direction: column;
   gap: var(--sys-size-4);
@@ -30,11 +36,10 @@
 }
 
 .vertical-separator {
-  height: 20px;
+  height: 16px;
   width: 1px;
   vertical-align: top;
   margin: 0 var(--sys-size-2);
-  background: var(--color-background-inverted);
-  opacity: 10%;
+  background: var(--sys-color-divider);
   display: inline-block;
 }

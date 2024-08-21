@@ -50,6 +50,7 @@ below.**
 
 ### Checklists
 
+*   [DevTools UI feature checklist](./checklist/ui.md)
 *   [DevTools support checklist for Blink Intents](./checklist/README.md)
 *   [DevTools support checklist for JavaScript features](./checklist/javascript.md)
 *   [DevTools support checklist for WebAssembly features](./checklist/webassembly.md)

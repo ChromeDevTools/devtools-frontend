@@ -19,6 +19,11 @@ basic functionality (checkout [this document](https://goo.gle/devtools-wasm-chec
 WebAssembly debugger features). Items on the list may not apply to every language feature,
 depending on its nature.
 
+*** note
+**IMPORTANT:** Please take a look at the [DevTools UI feature checklist](./ui.md) prior
+to changing or extending the DevTools user interface (UI).
+***
+
 [TOC]
 
 ## Console printing

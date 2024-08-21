@@ -14,6 +14,11 @@ also required for a launch. This includes debugging capabilities specific to the
 This document is the WebAssembly counterpart to the [Chromium DevTools support checklist for JavaScript language
 features](https://goo.gle/v8-checklist), which is specifically about JavaScript language features,
 
+*** note
+**IMPORTANT:** Please take a look at the [DevTools UI feature checklist](./ui.md) prior
+to changing or extending the DevTools user interface (UI).
+***
+
 [TOC]
 
 ## Breakpoints and stepping

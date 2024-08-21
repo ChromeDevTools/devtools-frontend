@@ -19,6 +19,11 @@ _"how would a web developer making use of your new WPF test and debug their code
 
 This document captures examples of different kinds of WPFs, the tooling support they require, and how this can be achieved.
 
+*** note
+**IMPORTANT:** Please take a look at the [DevTools UI feature checklist](./ui.md) prior
+to changing or extending the DevTools user interface (UI).
+***
+
 [TOC]
 
 ## JavaScript (ECMAScript) language features

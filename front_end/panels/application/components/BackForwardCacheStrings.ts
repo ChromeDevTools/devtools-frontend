@@ -371,6 +371,11 @@ const UIStrings = {
    */
   injectedStyleSheet:
       'Pages that a `StyleSheet` is injected into by extensions are not currently eligible for back/forward cache.',
+  // TODO(tluk): Please provide meaningful description.
+  /**
+   * @description Description text for not restored reason ContentDiscarded.
+   */
+  contentDiscarded: 'Undefined',
   /**
    * @description Description text for not restored reason ContentSecurityHandler.
    */
@@ -642,6 +647,7 @@ export const NotRestoredReasonDescription = {
   'InjectedJavascript': {name: i18nLazyString(UIStrings.injectedJavascript)},
   'InjectedStyleSheet': {name: i18nLazyString(UIStrings.injectedStyleSheet)},
   'Dummy': {name: i18nLazyString(UIStrings.internalError)},
+  'ContentDiscarded': {name: i18nLazyString(UIStrings.contentDiscarded)},
   'ContentSecurityHandler': {name: i18nLazyString(UIStrings.contentSecurityHandler)},
   'ContentWebAuthenticationAPI': {name: i18nLazyString(UIStrings.contentWebAuthenticationAPI)},
   'ContentFileChooser': {name: i18nLazyString(UIStrings.contentFileChooser)},

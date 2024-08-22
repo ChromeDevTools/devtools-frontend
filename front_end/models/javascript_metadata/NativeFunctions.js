@@ -2164,7 +2164,7 @@ export const NativeFunctions = [
   },
   {
     name: "parseFromString",
-    signatures: [["string","type"],["str","type","?options"]]
+    signatures: [["string","type"],["str","type"]]
   },
   {
     name: "matrixTransform",
@@ -4029,7 +4029,7 @@ export const NativeFunctions = [
   },
   {
     name: "deriveBits",
-    signatures: [["algorithm","baseKey","length"]]
+    signatures: [["algorithm","baseKey","?length"]]
   },
   {
     name: "deriveKey",
@@ -8426,6 +8426,10 @@ export const NativeFunctions = [
   {
     name: "VirtualKeyboardGeometryChangeEvent",
     signatures: [["type"]]
+  },
+  {
+    name: "install",
+    signatures: [["manifest_id","?install_url"]]
   },
   {
     name: "AnalyserNode",

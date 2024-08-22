@@ -1706,10 +1706,17 @@ export abstract class HeapSnapshot {
     }
     dominators[rootPostOrderedIndex] = rootPostOrderedIndex;
 
-    // The affected array is used to mark entries which dominators
-    // have to be recalculated because of changes in their retainers.
+    // The affected array is used to mark entries which dominators have to be
+    // recalculated because of changes in their retainers. This is just a
+    // heuristic to guide the fixpoint algorithm below so that it can visit
+    // nodes that are more likely to need modification; see crbug.com/361372448
+    // for an example where visiting only affected nodes is insufficient.
     const affected = Platform.TypedArrayUtilities.createBitVector(nodesCount);
     let nodeOrdinal;
+
+    // Time wasters are nodes with lots of predecessors which didn't change the
+    // last time we visited them. We'll avoid marking such nodes as affected.
+    const timeWasters = Platform.TypedArrayUtilities.createBitVector(nodesCount);
 
     {  // Mark the root direct children as affected.
       nodeOrdinal = this.rootNodeIndexInternal / nodeFieldCount;
@@ -1724,10 +1731,20 @@ export abstract class HeapSnapshot {
     }
 
     let changed = true;
-    while (changed) {
+    let shouldVisitEveryNode = false;
+    while (changed || !shouldVisitEveryNode) {
+      // The original Cooper-Harvey-Kennedy algorithm visits every node on every traversal,
+      // but that is far too expensive for the graph shapes encountered in heap snapshots.
+      // Instead, we use the `affected` bitvector to guide iteration most of the time, and
+      // only do a full traversal if the previous bitvector-based traversal found nothing
+      // to change. The order in which nodes are visited doesn't matter for correctness.
+      shouldVisitEveryNode = !changed;
+      function getPrevious(postOrderIndex: number): number {
+        return shouldVisitEveryNode ? postOrderIndex - 1 : affected.previous(postOrderIndex);
+      }
       changed = false;
-      for (let postOrderIndex = affected.previous(rootPostOrderedIndex); postOrderIndex >= 0;
-           postOrderIndex = affected.previous(postOrderIndex)) {
+      for (let postOrderIndex = getPrevious(rootPostOrderedIndex); postOrderIndex >= 0;
+           postOrderIndex = getPrevious(postOrderIndex)) {
         affected.clearBit(postOrderIndex);
         // If dominator of the entry has already been set to root,
         // then it can't propagate any further.
@@ -1739,6 +1756,7 @@ export abstract class HeapSnapshot {
         let newDominatorIndex: number = noEntry;
         const beginRetainerIndex = firstRetainerIndex[nodeOrdinal];
         const endRetainerIndex = firstRetainerIndex[nodeOrdinal + 1];
+        const edgeCount = endRetainerIndex - beginRetainerIndex;
         let orphanNode = true;
         for (let retainerIndex = beginRetainerIndex; retainerIndex < endRetainerIndex; ++retainerIndex) {
           const retainerEdgeIndex = retainingEdges[retainerIndex];
@@ -1780,6 +1798,7 @@ export abstract class HeapSnapshot {
           newDominatorIndex = rootPostOrderedIndex;
         }
         if (newDominatorIndex !== noEntry && dominators[postOrderIndex] !== newDominatorIndex) {
+          timeWasters.clearBit(postOrderIndex);  // It's not a waste of time if we changed something.
           dominators[postOrderIndex] = newDominatorIndex;
           changed = true;
           nodeOrdinal = postOrderIndex2NodeOrdinal[postOrderIndex];
@@ -1788,8 +1807,14 @@ export abstract class HeapSnapshot {
           for (let toNodeFieldIndex = beginEdgeToNodeFieldIndex; toNodeFieldIndex < endEdgeToNodeFieldIndex;
                toNodeFieldIndex += edgeFieldsCount) {
             const childNodeOrdinal = containmentEdges.getValue(toNodeFieldIndex) / nodeFieldCount;
-            affected.setBit(nodeOrdinal2PostOrderIndex[childNodeOrdinal]);
+            const childPostOrderIndex = nodeOrdinal2PostOrderIndex[childNodeOrdinal];
+            // Mark the child node as affected, unless it's unlikely to be beneficial.
+            if (childPostOrderIndex !== postOrderIndex && !timeWasters.getBit(childPostOrderIndex)) {
+              affected.setBit(childPostOrderIndex);
+            }
           }
+        } else if (edgeCount > 1000) {
+          timeWasters.setBit(postOrderIndex);
         }
       }
     }

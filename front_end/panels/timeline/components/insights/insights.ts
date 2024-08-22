@@ -7,6 +7,7 @@ import * as Helpers from './Helpers.js';
 import * as LCPDiscovery from './LCPDiscovery.js';
 import * as LCPPhases from './LCPPhases.js';
 import * as NodeLink from './NodeLink.js';
+import * as RenderBlocking from './RenderBlocking.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import * as Types from './types.js';
 import * as Viewport from './Viewport.js';
@@ -17,6 +18,7 @@ export {
   LCPDiscovery,
   LCPPhases,
   NodeLink,
+  RenderBlocking,
   SidebarInsight,
   Types,
   Viewport,

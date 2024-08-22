@@ -211,7 +211,7 @@ devtools-icon[name="file-script"] {
   }
 }
 
-.group-checkbox {
+input.group-checkbox {
   margin: 0;
   display: none;
 }

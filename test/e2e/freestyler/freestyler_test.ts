@@ -8,13 +8,24 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR} from '../helpers/console-helpers.js';
 
 describe('Freestyler', function() {
+  let preloadScriptId: string;
+
+  afterEach(async () => {
+    if (!preloadScriptId) {
+      return;
+    }
+    const {frontend} = getBrowserAndPages();
+    await frontend.removeScriptToEvaluateOnNewDocument(preloadScriptId);
+  });
+
   // TODO: make mocks more re-usable.
   async function setupMocks(
       aidaAvailability: Partial<Root.Runtime.AidaAvailability>,
       devToolsFreestylerDogfood: Partial<Root.Runtime.HostConfigFreestylerDogfood>) {
     const {frontend} = getBrowserAndPages();
     await frontend.bringToFront();
-    await frontend.evaluateOnNewDocument(
+    // TODO: come up with less invasive way to mock host configs.
+    const {identifier} = await frontend.evaluateOnNewDocument(
         `globalThis.hostConfigForTesting = {...globalThis.hostConfigForTesting, devToolsFreestylerDogfood: ${
             JSON.stringify(devToolsFreestylerDogfood)}, aidaAvailability: ${JSON.stringify(aidaAvailability)}
   };
@@ -27,6 +38,8 @@ describe('Freestyler', function() {
     };
   };
   `);
+
+    preloadScriptId = identifier;
     await frontend.reload({
       waitUntil: 'networkidle0',
     });

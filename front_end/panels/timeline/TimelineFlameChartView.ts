@@ -437,6 +437,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     return this.mainDataProvider;
   }
 
+  getNetworkDataProvider(): TimelineFlameChartNetworkDataProvider {
+    return this.networkDataProvider;
+  }
+
   refreshMainFlameChart(): void {
     this.mainFlameChart.update();
   }

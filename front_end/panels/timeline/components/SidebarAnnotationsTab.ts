@@ -16,10 +16,17 @@ export class SidebarAnnotationsTab extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
   #annotations: TraceEngine.Types.File.Annotation[] = [];
+  // A map with annotated entries and the colours that are used to display them in the FlameChart.
+  // We need this map to display the entries in the sidebar with the same colours.
+  #annotationEntryToColorMap: Map<TraceEngine.Types.TraceEvents.TraceEventData, string> = new Map();
 
   set annotations(annotations: TraceEngine.Types.File.Annotation[]) {
     this.#annotations = annotations;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  set annotationEntryToColorMap(annotationEntryToColorMap: Map<TraceEngine.Types.TraceEvents.TraceEventData, string>) {
+    this.#annotationEntryToColorMap = annotationEntryToColorMap;
   }
 
   connectedCallback(): void {
@@ -39,34 +46,68 @@ export class SidebarAnnotationsTab extends HTMLElement {
    * All identifiers have a different colour background.
    */
   #renderAnnotationIdentifier(annotation: TraceEngine.Types.File.Annotation): LitHtml.LitTemplate {
-    if (TraceEngine.Types.File.isEntryLabelAnnotation(annotation)) {
-      const entryName = TraceEngine.Types.TraceEvents.isProfileCall(annotation.entry) ?
-          annotation.entry.callFrame.functionName :
-          annotation.entry.name;
+    switch (annotation.type) {
+      case 'ENTRY_LABEL': {
+        const entryName = TraceEngine.Types.TraceEvents.isProfileCall(annotation.entry) ?
+            annotation.entry.callFrame.functionName :
+            annotation.entry.name;
+        const color = this.#annotationEntryToColorMap.get(annotation.entry);
 
-      return LitHtml.html`
-            <span class="entry-name entry-label">
-              ${entryName}
+        return LitHtml.html`
+              <span class="annotation-identifier" style="background-color: ${color}">
+                ${entryName}
+              </span>
+        `;
+      }
+      case 'TIME_RANGE': {
+        const minTraceBoundsMilli =
+            TraceBounds.TraceBounds.BoundsManager.instance().state()?.milli.entireTraceBounds.min ?? 0;
+
+        const timeRangeStartInMs = Math.round(
+            TraceEngine.Helpers.Timing.microSecondsToMilliseconds(annotation.bounds.min) - minTraceBoundsMilli);
+        const timeRangeEndInMs = Math.round(
+            TraceEngine.Helpers.Timing.microSecondsToMilliseconds(annotation.bounds.max) - minTraceBoundsMilli);
+
+        return LitHtml.html`
+              <span class="annotation-identifier time-range">
+                ${timeRangeStartInMs} - ${timeRangeEndInMs} ms
+              </span>
+        `;
+      }
+      case 'ENTRIES_LINK': {
+        const entryFromName = TraceEngine.Types.TraceEvents.isProfileCall(annotation.entryFrom) ?
+            annotation.entryFrom.callFrame.functionName :
+            annotation.entryFrom.name;
+
+        const entryToName = (!annotation.entryTo) ? '' :
+            TraceEngine.Types.TraceEvents.isProfileCall(annotation.entryTo) ?
+                                                    annotation.entryTo.callFrame.functionName :
+                                                    annotation.entryTo.name;
+
+        const fromColor = this.#annotationEntryToColorMap.get(annotation.entryFrom);
+        const toColor = (annotation.entryTo) ? this.#annotationEntryToColorMap.get(annotation.entryTo) : '';
+
+        // clang-format off
+        return LitHtml.html`
+          <div class="entries-link">
+            <span class="annotation-identifier"  style="background-color: ${fromColor}">
+              ${entryFromName}
             </span>
+            <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
+              iconName: 'arrow-forward',
+              color: 'var(--icon-default)',
+              width: '18px',
+              height: '18px',
+            } as IconButton.Icon.IconData}>
+            </${IconButton.Icon.Icon.litTagName}>
+            ${(entryToName !== '' ?
+              LitHtml.html`<span class="annotation-identifier" style="background-color: ${toColor}" >${entryToName}</span>`
+            : '')}
+          </div>
       `;
+        // clang-format on
+      }
     }
-    if (TraceEngine.Types.File.isTimeRangeAnnotation(annotation)) {
-      const minTraceBoundsMilli =
-          TraceBounds.TraceBounds.BoundsManager.instance().state()?.milli.entireTraceBounds.min ?? 0;
-
-      const timeRangeStartInMs = Math.round(
-          TraceEngine.Helpers.Timing.microSecondsToMilliseconds(annotation.bounds.min) - minTraceBoundsMilli);
-      const timeRangeEndInMs = Math.round(
-          TraceEngine.Helpers.Timing.microSecondsToMilliseconds(annotation.bounds.max) - minTraceBoundsMilli);
-
-      return LitHtml.html`
-            <span class="entry-name time-range">
-              ${timeRangeStartInMs} - ${timeRangeEndInMs} ms
-            </span>
-      `;
-    }
-
-    return LitHtml.html``;
   }
 
   #render(): void {

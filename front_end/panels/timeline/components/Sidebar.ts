@@ -68,8 +68,10 @@ export class SidebarWidget extends UI.Widget.VBox {
     // available to us.
   }
 
-  setAnnotations(updatedAnnotations: TraceEngine.Types.File.Annotation[]): void {
-    this.#annotationsView.setAnnotations(updatedAnnotations);
+  setAnnotations(
+      updatedAnnotations: TraceEngine.Types.File.Annotation[],
+      annotationEntryToColorMap: Map<TraceEngine.Types.TraceEvents.TraceEventData, string>): void {
+    this.#annotationsView.setAnnotations(updatedAnnotations, annotationEntryToColorMap);
   }
 
   setTraceParsedData(traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null): void {
@@ -116,7 +118,10 @@ class AnnotationsView extends UI.Widget.VBox {
     this.element.appendChild(this.#component);
   }
 
-  setAnnotations(annotations: TraceEngine.Types.File.Annotation[]): void {
+  setAnnotations(
+      annotations: TraceEngine.Types.File.Annotation[],
+      annotationEntryToColorMap: Map<TraceEngine.Types.TraceEvents.TraceEventData, string>): void {
+    this.#component.annotationEntryToColorMap = annotationEntryToColorMap;
     this.#component.annotations = annotations;
   }
 }

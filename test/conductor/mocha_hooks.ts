@@ -15,6 +15,7 @@ import {
   postFileTeardown,
   preFileSetup,
   resetPages,
+  setupPages,
   unregisterAllServiceWorkers,
   watchForHang,
 } from './hooks.js';
@@ -102,8 +103,7 @@ export const mochaHooks = {
     // Sets the timeout higher for this hook only.
     this.timeout(20000);
     const currentTest = this.currentTest?.fullTitle();
-    await watchForHang(currentTest, resetPages);
-    await watchForHang(currentTest, unregisterAllServiceWorkers);
+    await watchForHang(currentTest, setupPages);
 
     // Pause when running interactively in debug mode. This is mututally
     // exclusive with parallel mode.
@@ -128,7 +128,11 @@ export const mochaHooks = {
       });
     }
   },
-  afterEach: async function(this: Mocha.Suite) {
+  afterEach: async function(this: Mocha.Context) {
+    this.timeout(20000);
+    const currentTest = this.currentTest?.fullTitle();
+    await watchForHang(currentTest, resetPages);
+    await watchForHang(currentTest, unregisterAllServiceWorkers);
     if (!SHOULD_GATHER_COVERAGE_INFORMATION) {
       return;
     }

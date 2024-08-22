@@ -190,15 +190,18 @@ export async function unregisterAllServiceWorkers() {
   });
 }
 
+export async function setupPages(currentTest: string|undefined) {
+  const {frontend} = getBrowserAndPages();
+  await watchForHang(currentTest, () => throttleCPUIfRequired(frontend));
+  await watchForHang(currentTest, () => delayPromisesIfRequired(frontend));
+}
+
 export async function resetPages(currentTest: string|undefined) {
   const {frontend, target} = getBrowserAndPages();
 
   await watchForHang(currentTest, () => target.bringToFront());
   await watchForHang(currentTest, () => targetTab.reset());
-
   await watchForHang(currentTest, () => frontend.bringToFront());
-  await watchForHang(currentTest, () => throttleCPUIfRequired(frontend));
-  await watchForHang(currentTest, () => delayPromisesIfRequired(frontend));
 
   if (TestConfig.serverType === 'hosted-mode') {
     await watchForHang(currentTest, () => frontendTab.reset());

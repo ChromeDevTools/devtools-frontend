@@ -147,6 +147,10 @@ const UIStrings = {
    */
   learnMoreDevices: 'Learn more about simulating different devices.',
   /**
+   * @description Text label for a checkbox that controls if the network cache is disabled.
+   */
+  disableNetworkCache: 'Disable network cache',
+  /**
    * @description Text label for a link to the Largest Contentful Paint (LCP) related DOM node.
    */
   lcpElement: 'LCP Element',
@@ -482,6 +486,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       <${NetworkThrottlingSelector.litTagName} class="live-metrics-option"></${NetworkThrottlingSelector.litTagName}>
       <${Settings.SettingCheckbox.SettingCheckbox.litTagName} class="live-metrics-option" .data=${{
         setting: Common.Settings.Settings.instance().moduleSetting('cache-disabled'),
+        textOverride: i18nString(UIStrings.disableNetworkCache),
       } as Settings.SettingCheckbox.SettingCheckboxData}>
       </${Settings.SettingCheckbox.SettingCheckbox.litTagName}>
     `;

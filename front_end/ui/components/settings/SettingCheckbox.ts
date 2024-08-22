@@ -13,6 +13,7 @@ import {SettingDeprecationWarning} from './SettingDeprecationWarning.js';
 
 export interface SettingCheckboxData {
   setting: Common.Settings.Setting<boolean>;
+  textOverride?: string;
 }
 
 /**
@@ -24,6 +25,7 @@ export class SettingCheckbox extends HTMLElement {
 
   #setting?: Common.Settings.Setting<boolean>;
   #changeListenerDescriptor?: Common.EventTarget.EventDescriptor;
+  #textOverride?: string;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, settingCheckboxStyles];
@@ -35,6 +37,7 @@ export class SettingCheckbox extends HTMLElement {
     }
 
     this.#setting = data.setting;
+    this.#textOverride = data.textOverride;
 
     this.#changeListenerDescriptor = this.#setting.addChangeListener(() => {
       this.#render();
@@ -75,7 +78,7 @@ export class SettingCheckbox extends HTMLElement {
             jslog=${VisualLogging.toggle().track({click: true}).context(this.#setting.name)}
             aria-label=${this.#setting.title()}
           />
-          ${this.#setting.title()}${reason}${icon}
+          ${this.#textOverride || this.#setting.title()}${reason}${icon}
         </label>
       </p>`,
         this.#shadow, {host: this});

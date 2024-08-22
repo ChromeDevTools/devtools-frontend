@@ -769,6 +769,7 @@ export abstract class HeapSnapshot {
   #nodeDistancesForRetainersView: Int32Array|undefined;
   #edgeNamesThatAreNotWeakMaps: Platform.TypedArrayUtilities.BitVector;
   detachednessAndClassIndexArray?: Uint32Array;
+  #essentialEdges?: Platform.TypedArrayUtilities.BitVector;
 
   constructor(profile: Profile, progress: HeapSnapshotProgress) {
     this.nodes = profile.nodes;
@@ -1510,11 +1511,8 @@ export abstract class HeapSnapshot {
     return match.groups as {duplicatedPart: string, tableId: string};
   }
 
-  /**
-   * The function checks is the edge should be considered during building
-   * postorder iterator and dominator tree.
-   */
-  private isEssentialEdge(nodeIndex: number, edgeIndex: number): boolean {
+  private computeIsEssentialEdge(
+      nodeIndex: number, edgeIndex: number, userObjectsMapAndFlag: {map: Uint32Array, flag: number}|null): boolean {
     const edgeType = this.containmentEdges.getValue(edgeIndex + this.edgeTypeOffset);
 
     // Values in WeakMaps are retained by the key and table together. Removing
@@ -1527,13 +1525,65 @@ export abstract class HeapSnapshot {
       const match = this.tryParseWeakMapEdgeName(edgeNameIndex);
       if (match) {
         const nodeId = this.nodes.getValue(nodeIndex + this.nodeIdOffset);
-        return nodeId !== parseInt(match.tableId, 10);
+        if (nodeId === parseInt(match.tableId, 10)) {
+          return false;
+        }
       }
     }
 
-    // Shortcuts at the root node have special meaning of marking user global objects.
-    return edgeType !== this.edgeWeakType &&
-        (edgeType !== this.edgeShortcutType || nodeIndex === this.rootNodeIndexInternal);
+    // Weak edges never retain anything.
+    if (edgeType === this.edgeWeakType) {
+      return false;
+    }
+
+    if (nodeIndex !== this.rootNodeIndex) {
+      // Shortcuts at the root node have special meaning of marking user global objects.
+      if (edgeType === this.edgeShortcutType) {
+        return false;
+      }
+
+      const flags = userObjectsMapAndFlag ? userObjectsMapAndFlag.map : null;
+      const userObjectFlag = userObjectsMapAndFlag ? userObjectsMapAndFlag.flag : 0;
+      const nodeOrdinal = nodeIndex / this.nodeFieldCount;
+      const childNodeIndex = this.containmentEdges.getValue(edgeIndex + this.edgeToNodeOffset);
+      const childNodeOrdinal = childNodeIndex / this.nodeFieldCount;
+      const nodeFlag = !flags || (flags[nodeOrdinal] & userObjectFlag);
+      const childNodeFlag = !flags || (flags[childNodeOrdinal] & userObjectFlag);
+      // We are skipping the edges from non-page-owned nodes to page-owned nodes.
+      // Otherwise the dominators for the objects that also were retained by debugger would be affected.
+      if (childNodeFlag && !nodeFlag) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * The function checks whether the edge should be considered during building
+   * postorder iterator and dominator tree.
+   */
+  private isEssentialEdge(edgeIndex: number): boolean {
+    let essentialEdges = this.#essentialEdges;
+
+    if (!essentialEdges) {
+      essentialEdges = this.#essentialEdges = Platform.TypedArrayUtilities.createBitVector(this.#edgeCount);
+      const {nodes, nodeFieldCount, edgeFieldsCount} = this;
+      const userObjectsMapAndFlag = this.userObjectsMapAndFlag();
+      const endNodeIndex = nodes.length;
+      const node = this.createNode(0);
+      for (let nodeIndex = 0; nodeIndex < endNodeIndex; nodeIndex += nodeFieldCount) {
+        node.nodeIndex = nodeIndex;
+        const edgeIndexesEnd = node.edgeIndexesEnd();
+        for (let edgeIndex = node.edgeIndexesStart(); edgeIndex < edgeIndexesEnd; edgeIndex += edgeFieldsCount) {
+          if (this.computeIsEssentialEdge(nodeIndex, edgeIndex, userObjectsMapAndFlag)) {
+            essentialEdges.setBit(edgeIndex / edgeFieldsCount);
+          }
+        }
+      }
+    }
+
+    return essentialEdges.getBit(edgeIndex / this.edgeFieldsCount);
   }
 
   private buildPostOrderIndex(): {postOrderIndex2NodeOrdinal: Uint32Array, nodeOrdinal2PostOrderIndex: Uint32Array} {
@@ -1545,10 +1595,6 @@ export abstract class HeapSnapshot {
     const edgeToNodeOffset = this.edgeToNodeOffset;
     const firstEdgeIndexes = this.firstEdgeIndexes;
     const containmentEdges = this.containmentEdges;
-
-    const mapAndFlag = this.userObjectsMapAndFlag();
-    const flags = mapAndFlag ? mapAndFlag.map : null;
-    const flag = mapAndFlag ? mapAndFlag.flag : 0;
 
     const stackNodes = new Uint32Array(nodeCount);
     const stackCurrentEdge = new Uint32Array(nodeCount);
@@ -1572,19 +1618,12 @@ export abstract class HeapSnapshot {
 
         if (edgeIndex < edgesEnd) {
           stackCurrentEdge[stackTop] += edgeFieldsCount;
-          if (!this.isEssentialEdge(nodeOrdinal * nodeFieldCount, edgeIndex)) {
+          if (!this.isEssentialEdge(edgeIndex)) {
             continue;
           }
           const childNodeIndex = containmentEdges.getValue(edgeIndex + edgeToNodeOffset);
           const childNodeOrdinal = childNodeIndex / nodeFieldCount;
           if (visited[childNodeOrdinal]) {
-            continue;
-          }
-          const nodeFlag = !flags || (flags[nodeOrdinal] & flag);
-          const childNodeFlag = !flags || (flags[childNodeOrdinal] & flag);
-          // We are skipping the edges from non-page-owned nodes to page-owned nodes.
-          // Otherwise the dominators for the objects that also were retained by debugger would be affected.
-          if (nodeOrdinal !== rootNodeOrdinal && childNodeFlag && !nodeFlag) {
             continue;
           }
           ++stackTop;
@@ -1661,17 +1700,12 @@ export abstract class HeapSnapshot {
   }
 
   private hasOnlyWeakRetainers(nodeOrdinal: number): boolean {
-    const edgeTypeOffset = this.edgeTypeOffset;
-    const edgeWeakType = this.edgeWeakType;
-    const edgeShortcutType = this.edgeShortcutType;
-    const containmentEdges = this.containmentEdges;
     const retainingEdges = this.retainingEdges;
     const beginRetainerIndex = this.firstRetainerIndex[nodeOrdinal];
     const endRetainerIndex = this.firstRetainerIndex[nodeOrdinal + 1];
     for (let retainerIndex = beginRetainerIndex; retainerIndex < endRetainerIndex; ++retainerIndex) {
       const retainerEdgeIndex = retainingEdges[retainerIndex];
-      const retainerEdgeType = containmentEdges.getValue(retainerEdgeIndex + edgeTypeOffset);
-      if (retainerEdgeType !== edgeWeakType && retainerEdgeType !== edgeShortcutType) {
+      if (this.isEssentialEdge(retainerEdgeIndex)) {
         return false;
       }
     }
@@ -1691,11 +1725,6 @@ export abstract class HeapSnapshot {
     const edgeToNodeOffset = this.edgeToNodeOffset;
     const firstEdgeIndexes = this.firstEdgeIndexes;
     const containmentEdges = this.containmentEdges;
-    const rootNodeIndex = this.rootNodeIndexInternal;
-
-    const mapAndFlag = this.userObjectsMapAndFlag();
-    const flags = mapAndFlag ? mapAndFlag.map : null;
-    const flag = mapAndFlag ? mapAndFlag.flag : 0;
 
     const nodesCount = postOrderIndex2NodeOrdinal.length;
     const rootPostOrderedIndex = nodesCount - 1;
@@ -1722,7 +1751,7 @@ export abstract class HeapSnapshot {
       nodeOrdinal = this.rootNodeIndexInternal / nodeFieldCount;
       const endEdgeIndex = firstEdgeIndexes[nodeOrdinal + 1];
       for (let edgeIndex = firstEdgeIndexes[nodeOrdinal]; edgeIndex < endEdgeIndex; edgeIndex += edgeFieldsCount) {
-        if (!this.isEssentialEdge(this.rootNodeIndexInternal, edgeIndex)) {
+        if (!this.isEssentialEdge(edgeIndex)) {
           continue;
         }
         const childNodeOrdinal = containmentEdges.getValue(edgeIndex + edgeToNodeOffset) / nodeFieldCount;
@@ -1752,7 +1781,6 @@ export abstract class HeapSnapshot {
           continue;
         }
         nodeOrdinal = postOrderIndex2NodeOrdinal[postOrderIndex];
-        const nodeFlag = !flags || (flags[nodeOrdinal] & flag);
         let newDominatorIndex: number = noEntry;
         const beginRetainerIndex = firstRetainerIndex[nodeOrdinal];
         const endRetainerIndex = firstRetainerIndex[nodeOrdinal + 1];
@@ -1761,17 +1789,11 @@ export abstract class HeapSnapshot {
         for (let retainerIndex = beginRetainerIndex; retainerIndex < endRetainerIndex; ++retainerIndex) {
           const retainerEdgeIndex = retainingEdges[retainerIndex];
           const retainerNodeIndex = retainingNodes[retainerIndex];
-          if (!this.isEssentialEdge(retainerNodeIndex, retainerEdgeIndex)) {
+          if (!this.isEssentialEdge(retainerEdgeIndex)) {
             continue;
           }
           orphanNode = false;
           const retainerNodeOrdinal = retainerNodeIndex / nodeFieldCount;
-          const retainerNodeFlag = !flags || (flags[retainerNodeOrdinal] & flag);
-          // We are skipping the edges from non-page-owned nodes to page-owned nodes.
-          // Otherwise the dominators for the objects that also were retained by debugger would be affected.
-          if (retainerNodeIndex !== rootNodeIndex && nodeFlag && !retainerNodeFlag) {
-            continue;
-          }
           let retainerPostOrderIndex: number = nodeOrdinal2PostOrderIndex[retainerNodeOrdinal];
           if (dominators[retainerPostOrderIndex] !== noEntry) {
             if (newDominatorIndex === noEntry) {

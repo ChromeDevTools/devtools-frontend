@@ -61,8 +61,9 @@ describe('ModificationsManager', () => {
 
   it('creates annotations and generates correct json for annotations', async function() {
     const traceParsedData = (await TraceLoader.traceEngine(null, 'web-dev-with-commit.json.gz')).traceData;
-    // Get any entry to create a label with.
+    // Get any entres to create a label and a link with.
     const entry = traceParsedData.Renderer.allTraceEntries[0];
+    const entry2 = traceParsedData.Renderer.allTraceEntries[1];
 
     const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
     assert.isOk(modificationsManager);
@@ -71,6 +72,12 @@ describe('ModificationsManager', () => {
       type: 'ENTRY_LABEL',
       entry,
       label: 'entry label',
+    });
+
+    modificationsManager.createAnnotation({
+      type: 'ENTRIES_LINK',
+      entryFrom: entry,
+      entryTo: entry2,
     });
 
     modificationsManager.createAnnotation({
@@ -91,12 +98,49 @@ describe('ModificationsManager', () => {
       }],
       labelledTimeRanges: [{
         bounds: {
-          min: 0,
-          max: 10,
-          range: 10,
+          min: TraceEngine.Types.Timing.MicroSeconds(0),
+          max: TraceEngine.Types.Timing.MicroSeconds(10),
+          range: TraceEngine.Types.Timing.MicroSeconds(10),
         },
         label: 'range label',
       }],
+      linksBetweenEntries: [{
+        entryFrom: 'r-38',
+        entryTo: 'r-39',
+      }],
     });
   });
+
+  it('does not add the annotation link between entries into the json saved into metadata if `entryTo` does not exist',
+     async function() {
+       const traceParsedData = (await TraceLoader.traceEngine(null, 'web-dev-with-commit.json.gz')).traceData;
+       // Get any entry to create links with.
+       const entry = traceParsedData.Renderer.allTraceEntries[0];
+       const entry2 = traceParsedData.Renderer.allTraceEntries[1];
+
+       const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
+       assert.isOk(modificationsManager);
+
+       modificationsManager.createAnnotation({
+         type: 'ENTRIES_LINK',
+         entryFrom: entry,
+         entryTo: entry2,
+       });
+
+       modificationsManager.createAnnotation({
+         type: 'ENTRIES_LINK',
+         entryFrom: entry2,
+       });
+
+       // Make sure only the link with both 'to' and 'from' entries in in the generated JSON
+       const modifications = modificationsManager.toJSON().annotations;
+       assert.deepEqual(modifications, {
+         entryLabels: [],
+         labelledTimeRanges: [],
+         linksBetweenEntries: [{
+           entryFrom: 'r-38',
+           entryTo: 'r-39',
+         }],
+       });
+     });
 });

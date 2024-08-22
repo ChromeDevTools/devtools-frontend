@@ -35,6 +35,7 @@ export const enum EventKeyType {
 export interface SerializedAnnotations {
   entryLabels: EntryLabelAnnotationSerialized[];
   labelledTimeRanges: TimeRangeAnnotationSerialized[];
+  linksBetweenEntries: EntriesLinkAnnotationSerialized[];
 }
 
 /**
@@ -78,6 +79,14 @@ export interface EntryLabelAnnotationSerialized {
 export interface TimeRangeAnnotationSerialized {
   bounds: TraceWindowMicroSeconds;
   label: string;
+}
+
+/**
+ * Represents an object that is saved in the file when a user creates a link between entries in the timeline.
+ */
+export interface EntriesLinkAnnotationSerialized {
+  entryFrom: TraceEventSerializableKey;
+  entryTo: TraceEventSerializableKey;
 }
 
 /**

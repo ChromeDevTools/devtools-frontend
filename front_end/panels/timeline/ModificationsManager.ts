@@ -241,6 +241,7 @@ export class ModificationsManager extends EventTarget {
     const annotations = this.getAnnotations();
     const entryLabelsSerialized: TraceEngine.Types.File.EntryLabelAnnotationSerialized[] = [];
     const labelledTimeRangesSerialized: TraceEngine.Types.File.TimeRangeAnnotationSerialized[] = [];
+    const linksBetweenEntriesSerialized: TraceEngine.Types.File.EntriesLinkAnnotationSerialized[] = [];
 
     for (let i = 0; i < annotations.length; i++) {
       const currAnnotation = annotations[i];
@@ -257,12 +258,25 @@ export class ModificationsManager extends EventTarget {
           bounds: currAnnotation.bounds,
           label: currAnnotation.label,
         });
+      } else if (TraceEngine.Types.File.isEntriesLinkAnnotation(currAnnotation)) {
+        // Only save the links between entries that are fully created and have the entry that it is pointing to set
+        if (currAnnotation.entryTo) {
+          const serializedFromEvent = this.#eventsSerializer.keyForEvent(currAnnotation.entryFrom);
+          const serializedToEvent = this.#eventsSerializer.keyForEvent(currAnnotation.entryTo);
+          if (serializedFromEvent && serializedToEvent) {
+            linksBetweenEntriesSerialized.push({
+              entryFrom: serializedFromEvent,
+              entryTo: serializedToEvent,
+            });
+          }
+        }
       }
     }
 
     return {
       entryLabels: entryLabelsSerialized,
       labelledTimeRanges: labelledTimeRangesSerialized,
+      linksBetweenEntries: linksBetweenEntriesSerialized,
     };
   }
 
@@ -293,6 +307,15 @@ export class ModificationsManager extends EventTarget {
         type: 'TIME_RANGE',
         bounds: timeRange.bounds,
         label: timeRange.label,
+      });
+    });
+
+    const linksBetweenEntries = modifications.annotations.linksBetweenEntries ?? [];
+    linksBetweenEntries.forEach(linkBetweenEntries => {
+      this.createAnnotation({
+        type: 'ENTRIES_LINK',
+        entryFrom: this.#eventsSerializer.eventForKey(linkBetweenEntries.entryFrom, this.#traceParsedData),
+        entryTo: this.#eventsSerializer.eventForKey(linkBetweenEntries.entryTo, this.#traceParsedData),
       });
     });
   }

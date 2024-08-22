@@ -143,6 +143,10 @@ describeWithEnvironment('TraceModel', function() {
           label: 'range label',
         },
       ],
+      linksBetweenEntries: [{
+        entryFrom: 'r-10',
+        entryTo: 'r-11',
+      }],
     } as TraceModel.Types.File.Modifications['annotations'];
 
     const modifications = {

@@ -23,15 +23,13 @@ below.**
 
 ### General Development
 
-*   [Get the Code](get_the_code.md)
+*   [Get the Code](./get_the_code.md)
+*   [Contribution Guide](./contributing/README.md)
 *   [UX Style Guide](./styleguide/ux/README.md)
 *   [Testing Guide](../test/README.md)
-*   [Contributing Changes](contributing_changes.md)
-*   [Chrome DevTools Design Review Guidelines](design_guidelines.md)
 *   [Release Management](release_management.md)
 *   [Dependencies](dependencies.md)
 *   [Localization](l10n.md)
-*   [Chrome DevTools Protocol](devtools-protocol.md)
 *   [Visual logging in DevTools](visual_logging.md)
 *   [UMA metrics in DevTools](uma_metrics.md)
     *   [How to add UMA metrics in DevTools frontend](add_uma_metrics.md)
@@ -41,11 +39,12 @@ below.**
 ### Architectural Documentation
 
 *   [Architecture of DevTools](architecture_of_devtools.md)
+*   [Chrome DevTools Protocol (CDP)](devtools-protocol.md)
 *   [Resource management in DevTools](resource_management.md)
 
 ### Chromium
 
-*   [Chromium Docs](https://chromium.googlesource.com/chromium/src/+/master/docs/README.md)
+*   [Chromium Docs](https://chromium.googlesource.com/chromium/src/+/main/docs/README.md)
 *   [V8 Documention](https://v8.dev/docs)
 
 ### Checklists

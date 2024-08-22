@@ -22,7 +22,6 @@ maintain a DevTools front-end checkout, as well as design guidelines, and archit
 - [awesome-chrome-devtools](https://github.com/paulirish/awesome-chrome-devtools): recommended tools and resources
 - Contributing to DevTools: [bit.ly/devtools-contribution-guide](https://goo.gle/devtools-contribution-guide)
 - Contributing To Chrome DevTools Protocol: [docs.google.com](https://goo.gle/devtools-contribution-guide-cdp)
-- DevTools Design Review Guidelines: [design_guidelines.md](docs/design_guidelines.md)
 
 ### Source mirrors
 

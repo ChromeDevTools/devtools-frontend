@@ -314,6 +314,8 @@ function _processPlaceholderCustomFormattedIcu(icu) {
   icu.message = '';
   let idx = 0;
 
+  const rawNameCache = new Map();
+
   while (parts.length) {
     // Seperate out the match into parts.
     const [preambleText, rawName, format, formatType] = parts.splice(0, 4);
@@ -332,8 +334,22 @@ function _processPlaceholderCustomFormattedIcu(icu) {
       throw Error(`Unsupported custom-formatted ICU type var "${formatType}" in message "${icu.message}"`);
     }
 
+    let index;
+    const previousRawName = rawNameCache.get(rawName);
+    if (previousRawName) {
+      const [prevFormat, prevFormatType, prevIndex] = previousRawName;
+      if (prevFormat !== format || prevFormatType !== formatType) {
+        throw new Error(`must use same format and formatType for a given name. Invalid for: ${rawName}`);
+      }
+
+      index = prevIndex;
+    } else {
+      index = idx++;
+      rawNameCache.set(rawName, [format, formatType, index]);
+    }
+
     // Append ICU replacements if there are any.
-    const placeholderName = `CUSTOM_ICU_${idx++}`;
+    const placeholderName = `CUSTOM_ICU_${index}`;
     icu.message += `$${placeholderName}$`;
     let example;
 
@@ -414,7 +430,7 @@ function _processPlaceholderDirectIcu(icu, examples) {
       throw Error(`Example '${key}' provided, but has not corresponding ICU replacement in message "${icu.message}"`);
     }
     const eName = `ICU_${idx++}`;
-    tempMessage = tempMessage.replace(`{${key}}`, `$${eName}$`);
+    tempMessage = tempMessage.replaceAll(`{${key}}`, `$${eName}$`);
 
     icu.placeholders[eName] = {
       content: `{${key}}`,

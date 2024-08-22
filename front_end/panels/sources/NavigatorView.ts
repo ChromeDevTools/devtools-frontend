@@ -766,22 +766,30 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   private computeProjectDisplayName(target: SDK.Target.Target, projectOrigin: string): string {
     const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
     const executionContexts = runtimeModel ? runtimeModel.executionContexts() : [];
+
+    let matchingContextName: string|null = null;
+
     for (const context of executionContexts) {
       if (!context.origin || !projectOrigin.startsWith(context.origin)) {
         continue;
       }
 
-      if (!context.name) {
-        if (context.isDefault) {
-          // The default context can have any empty string as its name, but if the project origin matches the default
-          // context then we shouldn't use the name from any other contexts we find.
-          break;
-        } else {
-          continue;
-        }
+      // If the project origin matches the default context origin then we should break out and use the
+      // project origin for the display name.
+      if (context.isDefault) {
+        matchingContextName = null;
+        break;
       }
 
-      return context.name;
+      if (!context.name) {
+        continue;
+      }
+
+      matchingContextName = context.name;
+    }
+
+    if (matchingContextName) {
+      return matchingContextName;
     }
 
     if (!projectOrigin) {

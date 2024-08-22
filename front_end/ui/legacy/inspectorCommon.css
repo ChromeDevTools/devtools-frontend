@@ -305,8 +305,6 @@ input {
         width: 15px;
         border-radius: 5px;
         position: absolute;
-        top: 0;
-        left: 0;
         border: 2px solid var(--sys-color-state-focus-ring);
       }
     }

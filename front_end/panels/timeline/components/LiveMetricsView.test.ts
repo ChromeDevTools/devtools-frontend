@@ -17,31 +17,9 @@ import * as Components from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-function getLocalMetricValue(view: Element, metric: string): HTMLElement {
-  const card = view.shadowRoot!.querySelector(`#${metric} devtools-metric-card`);
-  return card!.shadowRoot!.querySelector('#local-value .metric-value') as HTMLElement;
-}
-
 function getFieldMetricValue(view: Element, metric: string): HTMLElement|null {
   const card = view.shadowRoot!.querySelector(`#${metric} devtools-metric-card`);
   return card!.shadowRoot!.querySelector('#field-value .metric-value');
-}
-
-function getFieldHistogramPercents(view: Element, metric: string): string[] {
-  const card = view.shadowRoot!.querySelector(`#${metric} devtools-metric-card`);
-  const histogram = card!.shadowRoot!.querySelector('.bucket-summaries') as HTMLElement;
-  const percents = Array.from(histogram.querySelectorAll('.histogram-percent')) as HTMLElement[];
-  return percents.map(p => p.textContent || '');
-}
-
-function getCompareText(view: Element, metric: string): HTMLElement|null {
-  const card = view.shadowRoot!.querySelector(`#${metric} devtools-metric-card`);
-  return card!.shadowRoot!.querySelector('.compare-text');
-}
-
-function getDetailedCompareText(view: Element, metric: string): HTMLElement|null {
-  const card = view.shadowRoot!.querySelector(`#${metric} devtools-metric-card`);
-  return card!.shadowRoot!.querySelector('.detailed-compare-text');
 }
 
 function getThrottlingRecommendation(view: Element): HTMLElement|null {
@@ -174,52 +152,6 @@ describeWithMockConnection('LiveMetricsView', () => {
     UI.ActionRegistration.maybeRemoveActionExtension('timeline.record-reload');
   });
 
-  it('should show LCP value', async () => {
-    const view = new Components.LiveMetricsView.LiveMetricsView();
-    renderElementIntoDOM(view);
-    LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
-      lcp: {value: 100},
-      interactions: [],
-    });
-    await coordinator.done();
-    const metricValueEl = getLocalMetricValue(view, 'lcp');
-    assert.strictEqual(metricValueEl.className, 'metric-value good');
-    assert.strictEqual(metricValueEl.innerText, '100 ms');
-  });
-
-  it('should show CLS value', async () => {
-    const view = new Components.LiveMetricsView.LiveMetricsView();
-    renderElementIntoDOM(view);
-    LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
-      cls: {value: 0.14294789234},
-      interactions: [],
-    });
-    await coordinator.done();
-    const metricValueEl = getLocalMetricValue(view, 'cls');
-    assert.strictEqual(metricValueEl.className, 'metric-value needs-improvement');
-    assert.strictEqual(metricValueEl.innerText, '0.14');
-  });
-
-  it('should show INP value', async () => {
-    const view = new Components.LiveMetricsView.LiveMetricsView();
-    renderElementIntoDOM(view);
-    LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(
-        LiveMetrics.Events.Status, {inp: {value: 2000}, interactions: []});
-    await coordinator.done();
-    const metricValueEl = getLocalMetricValue(view, 'inp');
-    assert.strictEqual(metricValueEl.className, 'metric-value poor');
-    assert.strictEqual(metricValueEl.innerText, '2.00 s');
-  });
-
-  it('should show empty metric', async () => {
-    const view = new Components.LiveMetricsView.LiveMetricsView();
-    renderElementIntoDOM(view);
-    await coordinator.done();
-    const metricValueEl = getLocalMetricValue(view, 'inp');
-    assert.strictEqual(metricValueEl.className.trim(), 'metric-value waiting');
-    assert.strictEqual(metricValueEl.innerText, '-');
-  });
-
   it('should show interactions', async () => {
     const view = new Components.LiveMetricsView.LiveMetricsView();
     renderElementIntoDOM(view);
@@ -310,24 +242,6 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       await coordinator.done();
 
-      const lcpPercents = getFieldHistogramPercents(view, 'lcp');
-      assert.lengthOf(lcpPercents, 0);
-
-      const clsPercents = getFieldHistogramPercents(view, 'cls');
-      assert.lengthOf(clsPercents, 0);
-
-      const inpPercents = getFieldHistogramPercents(view, 'inp');
-      assert.lengthOf(inpPercents, 0);
-
-      const lcpFieldEl = getFieldMetricValue(view, 'lcp');
-      assert.isNull(lcpFieldEl);
-
-      const clsFieldEl = getFieldMetricValue(view, 'cls');
-      assert.isNull(clsFieldEl);
-
-      const inpFieldEl = getFieldMetricValue(view, 'inp');
-      assert.isNull(inpFieldEl);
-
       const throttlingRec = getThrottlingRecommendation(view);
       assert.isNull(throttlingRec);
 
@@ -360,24 +274,6 @@ describeWithMockConnection('LiveMetricsView', () => {
           } as SDK.ResourceTreeModel.ResourceTreeFrame);
 
       await coordinator.done();
-
-      const lcpPercents = getFieldHistogramPercents(view, 'lcp');
-      assert.deepStrictEqual(lcpPercents, ['50%', '30%', '20%']);
-
-      const clsPercents = getFieldHistogramPercents(view, 'cls');
-      assert.deepStrictEqual(clsPercents, ['0%', '20%', '80%']);
-
-      const inpPercents = getFieldHistogramPercents(view, 'inp');
-      assert.deepStrictEqual(inpPercents, ['-', '-', '-']);
-
-      const lcpFieldEl = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl!.textContent, '1.00 s');
-
-      const clsFieldEl = getFieldMetricValue(view, 'cls');
-      assert.strictEqual(clsFieldEl!.textContent, '0.25');
-
-      const inpFieldEl = getFieldMetricValue(view, 'inp');
-      assert.strictEqual(inpFieldEl!.textContent, '-');
 
       const throttlingRec = getThrottlingRecommendation(view);
       assert.match(throttlingRec!.innerText, /Slow 4G/);
@@ -413,24 +309,6 @@ describeWithMockConnection('LiveMetricsView', () => {
           } as SDK.ResourceTreeModel.ResourceTreeFrame);
 
       await coordinator.done();
-
-      const lcpPercents = getFieldHistogramPercents(view, 'lcp');
-      assert.deepStrictEqual(lcpPercents, ['-', '-', '-']);
-
-      const clsPercents = getFieldHistogramPercents(view, 'cls');
-      assert.deepStrictEqual(clsPercents, ['-', '-', '-']);
-
-      const inpPercents = getFieldHistogramPercents(view, 'inp');
-      assert.deepStrictEqual(inpPercents, ['-', '-', '-']);
-
-      const lcpFieldEl = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl!.textContent, '-');
-
-      const clsFieldEl = getFieldMetricValue(view, 'cls');
-      assert.strictEqual(clsFieldEl!.textContent, '-');
-
-      const inpFieldEl = getFieldMetricValue(view, 'inp');
-      assert.strictEqual(inpFieldEl!.textContent, '-');
 
       const throttlingRec = getThrottlingRecommendation(view);
       assert.isNull(throttlingRec);
@@ -582,181 +460,6 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       const lcpFieldEl2 = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl2!.textContent, '2.00 s');
-    });
-
-    describe('local/field comparison', () => {
-      it('should show message when values are similar', async () => {
-        mockFieldData['url-ALL'] = createMockFieldData();
-
-        const view = new Components.LiveMetricsView.LiveMetricsView();
-        renderElementIntoDOM(view);
-
-        LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
-          lcp: {value: 100},
-          interactions: [],
-        });
-
-        await coordinator.done();
-
-        const compareText = getCompareText(view, 'lcp');
-        assert.strictEqual(
-            compareText!.innerText, 'Your local LCP 100 ms is good, and is similar to your users’ experience.');
-      });
-
-      it('should show message when local is better', async () => {
-        mockFieldData['url-ALL'] = createMockFieldData();
-        mockFieldData['url-ALL'].record.metrics.largest_contentful_paint!.percentiles!.p75 = 5000;
-
-        const view = new Components.LiveMetricsView.LiveMetricsView();
-        renderElementIntoDOM(view);
-
-        LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
-          lcp: {value: 100},
-          interactions: [],
-        });
-
-        await coordinator.done();
-
-        const compareText = getCompareText(view, 'lcp');
-        assert.strictEqual(
-            compareText!.innerText,
-            'Your local LCP 100 ms is good, and is significantly better than your users’ experience.');
-      });
-
-      it('should show message when local is worse', async () => {
-        mockFieldData['url-ALL'] = createMockFieldData();
-
-        const view = new Components.LiveMetricsView.LiveMetricsView();
-        renderElementIntoDOM(view);
-
-        LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
-          lcp: {value: 5000},
-          interactions: [],
-        });
-
-        await coordinator.done();
-
-        const compareText = getCompareText(view, 'lcp');
-        assert.strictEqual(
-            compareText!.innerText,
-            'Your local LCP 5.00 s is poor, and is significantly worse than your users’ experience.');
-      });
-
-      it('should always be similar if local and field are rated "good"', async () => {
-        mockFieldData['url-ALL'] = createMockFieldData();
-        mockFieldData['url-ALL'].record.metrics.largest_contentful_paint!.percentiles!.p75 = 2490;
-
-        const view = new Components.LiveMetricsView.LiveMetricsView();
-        renderElementIntoDOM(view);
-
-        LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
-          lcp: {value: 10},
-          interactions: [],
-        });
-
-        await coordinator.done();
-
-        const compareText = getCompareText(view, 'lcp');
-        assert.strictEqual(
-            compareText!.innerText, 'Your local LCP 10 ms is good, and is similar to your users’ experience.');
-      });
-
-      it('should show generic summary if field is missing', async () => {
-        const view = new Components.LiveMetricsView.LiveMetricsView();
-        renderElementIntoDOM(view);
-
-        LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
-          lcp: {value: 3000},
-          interactions: [],
-        });
-
-        await coordinator.done();
-
-        const compareText = getCompareText(view, 'lcp');
-        assert.strictEqual(compareText!.innerText, 'Your local LCP 3.00 s needs improvement.');
-      });
-
-      it('should suggest interaction if local INP is missing', async () => {
-        mockFieldData['url-ALL'] = createMockFieldData();
-
-        const view = new Components.LiveMetricsView.LiveMetricsView();
-        renderElementIntoDOM(view);
-
-        await coordinator.done();
-
-        const compareText = getCompareText(view, 'inp');
-        assert.strictEqual(compareText!.innerText, 'Interact with the page to measure INP.');
-      });
-    });
-
-    describe('detailed local/field comparison', () => {
-      it('should show message when values are rated the same', async () => {
-        mockFieldData['url-ALL'] = createMockFieldData();
-
-        const view = new Components.LiveMetricsView.LiveMetricsView();
-        renderElementIntoDOM(view);
-
-        LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
-          lcp: {value: 100},
-          interactions: [],
-        });
-
-        await coordinator.done();
-
-        const compareText = getDetailedCompareText(view, 'lcp');
-        assert.strictEqual(
-            compareText!.innerText,
-            'Your local LCP 100 ms is good and is rated the same as 50% of real-user LCP experiences. Additionally, the field data 75th percentile LCP 1.00 s is good.',
-        );
-      });
-
-      it('should show message when values are rated differently', async () => {
-        mockFieldData['url-ALL'] = createMockFieldData();
-        mockFieldData['url-ALL'].record.metrics.largest_contentful_paint!.percentiles!.p75 = 5000;
-
-        const view = new Components.LiveMetricsView.LiveMetricsView();
-        renderElementIntoDOM(view);
-
-        LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
-          lcp: {value: 100},
-          interactions: [],
-        });
-
-        await coordinator.done();
-
-        const compareText = getDetailedCompareText(view, 'lcp');
-        assert.strictEqual(
-            compareText!.innerText,
-            'Your local LCP 100 ms is good and is rated the same as 50% of real-user LCP experiences. However, the field data 75th percentile LCP 5.00 s is poor.',
-        );
-      });
-
-      it('should show generic summary if field is missing', async () => {
-        const view = new Components.LiveMetricsView.LiveMetricsView();
-        renderElementIntoDOM(view);
-
-        LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
-          lcp: {value: 3000},
-          interactions: [],
-        });
-
-        await coordinator.done();
-
-        const compareText = getDetailedCompareText(view, 'lcp');
-        assert.strictEqual(compareText!.innerText, 'Your local LCP 3.00 s needs improvement.');
-      });
-
-      it('should suggest interaction if local INP is missing', async () => {
-        mockFieldData['url-ALL'] = createMockFieldData();
-
-        const view = new Components.LiveMetricsView.LiveMetricsView();
-        renderElementIntoDOM(view);
-
-        await coordinator.done();
-
-        const compareText = getDetailedCompareText(view, 'inp');
-        assert.strictEqual(compareText!.innerText, 'Interact with the page to measure INP.');
-      });
     });
 
     describe('network throttling recommendation', () => {

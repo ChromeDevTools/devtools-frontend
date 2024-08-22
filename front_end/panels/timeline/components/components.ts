@@ -9,6 +9,7 @@ import * as DetailsView from './DetailsView.js';
 import * as FieldSettingsDialog from './FieldSettingsDialog.js';
 import * as InteractionBreakdown from './InteractionBreakdown.js';
 import * as LiveMetricsView from './LiveMetricsView.js';
+import * as MetricCard from './MetricCard.js';
 import * as NetworkRequestDetails from './NetworkRequestDetails.js';
 import * as NetworkRequestTooltip from './NetworkRequestTooltip.js';
 import * as NetworkThrottlingSelector from './NetworkThrottlingSelector.js';
@@ -24,6 +25,7 @@ export {
   FieldSettingsDialog,
   InteractionBreakdown,
   LiveMetricsView,
+  MetricCard,
   NetworkRequestDetails,
   NetworkRequestTooltip,
   NetworkThrottlingSelector,

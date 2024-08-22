@@ -96,6 +96,7 @@ ts_library("unittests") {
     "InteractionBreakdown.test.ts",
     "Invalidations.test.ts",
     "LiveMetricsView.test.ts",
+    "MetricCard.test.ts",
     "NetworkRequestDetails.test.ts",
     "NetworkThrottlingSelector.test.ts",
     "SidebarAnnotationsTab.test.ts",

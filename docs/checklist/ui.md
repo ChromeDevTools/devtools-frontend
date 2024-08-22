@@ -1,6 +1,6 @@
 # Chromium DevTools UI feature checklist
 
-[go/chrome-devtools/ui-checklist](http://go/chrome-devtools/ui-checklist)
+[goo.gle/devtools-ui-checklist](https://goo.gle/devtools-ui-checklist)
 
 Chrome DevTools is used by most web developers nowadays. In user interviews and
 informal conversations web developers voice the opinion that Chrome DevTools is

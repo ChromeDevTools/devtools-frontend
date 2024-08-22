@@ -248,32 +248,32 @@ export class Overlays extends EventTarget {
    */
   #overlaysContainer: HTMLElement;
 
-  /**
-   * The parent HTMLElement of both Flamecharts.
-   * This container is used to get the mouse position over the Flamecharts.
-   */
-  #flameChartsContainer: HTMLElement;
-
   constructor(init: {
     container: HTMLElement,
-    flameChartsContainer: HTMLElement,
+    flameChartsContainers: {
+      main: HTMLElement,
+      network: HTMLElement,
+    },
     charts: TimelineCharts,
   }) {
     super();
     this.#overlaysContainer = init.container;
-    this.#flameChartsContainer = init.flameChartsContainer;
     this.#charts = init.charts;
     this.#entriesLinkInProgress = null;
-    this.#flameChartsContainer.addEventListener(
-        'mousemove', this.#updateMouseCoordinatesProgressEntriesLink.bind(this));
+
+    // HTMLElements of both Flamecharts. They are used to get the mouse position over the Flamecharts.
+    init.flameChartsContainers.main.addEventListener(
+        'mousemove', event => this.#updateMouseCoordinatesProgressEntriesLink.bind(this)(event, 'main'));
+    init.flameChartsContainers.network.addEventListener(
+        'mousemove', event => this.#updateMouseCoordinatesProgressEntriesLink.bind(this)(event, 'network'));
   }
 
   // Mousemove event listener to get mouse coordinates and update them for the entries link that is being created.
   //
-  // The 'mousemove' event is attached to `flameChartsContainer` instead of `overlaysContainer`
+  // The 'mousemove' event is attached to `flameChartsContainers` instead of `overlaysContainer`
   // because `overlaysContainer` doesn't have events to enable the interaction with the
   // Flamecharts beneath it.
-  #updateMouseCoordinatesProgressEntriesLink(event: Event): void {
+  #updateMouseCoordinatesProgressEntriesLink(event: Event, chart: EntryChartLocation): void {
     const mouseEvent = (event as MouseEvent);
     this.#lastMouseOffsetX = mouseEvent.offsetX;
     this.#lastMouseOffsetY = mouseEvent.offsetY;
@@ -281,13 +281,21 @@ export class Overlays extends EventTarget {
     if (!this.#entriesLinkInProgress || this.#entriesLinkInProgress.entryTo) {
       return;
     }
-    // TODO: Check if the mouse is over network track and do not add the network height if it is
+
+    // The Overlays layer coordinates cover both Network and Main Charts, while the mousemove
+    // coordinates are received from the charts individually and start from 0 for each chart.
+    //
+    // To make it work on the overlays, we need to know which chart the entry belongs to and,
+    // if it is on the main chart, add the height of the Network chart to get correct Entry
+    // coordinates on the Overlays layer.
     const networkHeight = this.#dimensions.charts.network?.heightPixels ?? 0;
-    const linkElement = this.#overlaysToElements.get(this.#entriesLinkInProgress);
-    if (linkElement) {
-      const component = linkElement.querySelector('devtools-entries-link-overlay') as
+    const linkInProgressElement = this.#overlaysToElements.get(this.#entriesLinkInProgress);
+
+    if (linkInProgressElement) {
+      const component = linkInProgressElement.querySelector('devtools-entries-link-overlay') as
           Components.EntriesLinkOverlay.EntriesLinkOverlay;
-      component.toEntryCoordinateAndDimentions = {x: mouseEvent.offsetX, y: mouseEvent.offsetY + networkHeight};
+      const yCoordinate = mouseEvent.offsetY + ((chart === 'main') ? networkHeight : 0);
+      component.toEntryCoordinateAndDimentions = {x: mouseEvent.offsetX, y: yCoordinate};
     }
   }
 

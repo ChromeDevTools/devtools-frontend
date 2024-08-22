@@ -73,10 +73,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private readonly detailsView: TimelineDetailsView;
   private readonly onMainAddEntryLabelAnnotation: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   private readonly onNetworkAddEntryLabelAnnotation: (event: Common.EventTarget.EventTargetEvent<number>) => void;
-  private readonly onMainEntriesLinkAnnotationChange:
-      (event: Common.EventTarget.EventTargetEvent<{entryFromIndex: number, entryToIndex?: number}>) => void;
-  private readonly onNetworkEntriesLinkAnnotationChange:
-      (event: Common.EventTarget.EventTargetEvent<{entryFromIndex: number, entryToIndex?: number}>) => void;
+  private readonly onMainEntriesLinkAnnotationCreated:
+      (event: Common.EventTarget.EventTargetEvent<{entryFromIndex: number}>) => void;
+  private readonly onNetworkEntriesLinkAnnotationCreated:
+      (event: Common.EventTarget.EventTargetEvent<{entryFromIndex: number}>) => void;
   private readonly onMainEntrySelected: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   private readonly onNetworkEntrySelected: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   readonly #boundRefreshAfterIgnoreList: () => void;
@@ -193,7 +193,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
     this.#overlays = new Overlays.Overlays.Overlays({
       container: this.#overlaysContainer,
-      flameChartsContainer: flameChartsContainer.element,
+      flameChartsContainers: {
+        main: this.mainFlameChart.element,
+        network: this.networkFlameChart.element,
+      },
       charts: {
         mainChart: this.mainFlameChart,
         mainProvider: this.mainDataProvider,
@@ -246,8 +249,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
     this.onMainAddEntryLabelAnnotation = this.onAddEntryLabelAnnotation.bind(this, this.mainDataProvider);
     this.onNetworkAddEntryLabelAnnotation = this.onAddEntryLabelAnnotation.bind(this, this.networkDataProvider);
-    this.onMainEntriesLinkAnnotationChange = this.onEntriesLinkAnnotationChange.bind(this, this.mainDataProvider);
-    this.onNetworkEntriesLinkAnnotationChange = this.onEntriesLinkAnnotationChange.bind(this, this.networkDataProvider);
+    this.onMainEntriesLinkAnnotationCreated = this.onEntriesLinkAnnotationCreate.bind(this, this.mainDataProvider);
+    this.onNetworkEntriesLinkAnnotationCreated =
+        this.onEntriesLinkAnnotationCreate.bind(this, this.networkDataProvider);
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS)) {
       this.mainFlameChart.addEventListener(
           PerfUI.FlameChart.Events.EntryLabelAnnotationAdded, this.onMainAddEntryLabelAnnotation, this);
@@ -255,9 +259,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
           PerfUI.FlameChart.Events.EntryLabelAnnotationAdded, this.onNetworkAddEntryLabelAnnotation, this);
 
       this.mainFlameChart.addEventListener(
-          PerfUI.FlameChart.Events.EntriesLinkAnnotationChanged, this.onMainEntriesLinkAnnotationChange, this);
+          PerfUI.FlameChart.Events.EntriesLinkAnnotationCreated, this.onMainEntriesLinkAnnotationCreated, this);
       this.networkFlameChart.addEventListener(
-          PerfUI.FlameChart.Events.EntriesLinkAnnotationChanged, this.onNetworkEntriesLinkAnnotationChange, this);
+          PerfUI.FlameChart.Events.EntriesLinkAnnotationCreated, this.onNetworkEntriesLinkAnnotationCreated, this);
     }
     this.onMainEntrySelected = this.onEntrySelected.bind(this, this.mainDataProvider);
     this.onNetworkEntrySelected = this.onEntrySelected.bind(this, this.networkDataProvider);
@@ -265,7 +269,14 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this.onMainEntrySelected, this);
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this.onNetworkEntrySelected, this);
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this.onNetworkEntrySelected, this);
-    this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryHovered, this.onEntryHovered, this);
+    this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryHovered, event => {
+      this.onEntryHovered(event);
+      this.updateLinkSelectionAnnotation(this.mainDataProvider, event);
+    }, this);
+    this.networkFlameChart.addEventListener(
+        PerfUI.FlameChart.Events.EntryHovered, this.updateLinkSelectionAnnotation.bind(this, this.networkDataProvider),
+        this);
+
     this.element.addEventListener('keydown', this.#keydownHandler.bind(this));
     this.#boundRefreshAfterIgnoreList = this.#refreshAfterIgnoreList.bind(this);
     this.#selectedEvents = null;
@@ -581,6 +592,24 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
   }
 
+  // If an entry is hovered over and a creation of link annotation is in progress, update that annotation with a hovered entry.
+  private updateLinkSelectionAnnotation(
+      dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider,
+      commonEvent: Common.EventTarget.EventTargetEvent<number>): void {
+    if (!this.#linkSelectionAnnotation) {
+      return;
+    }
+    const entryIndex = commonEvent.data;
+    const toSelectionObject = this.#selectionIfTraceEvent(entryIndex, dataProvider);
+
+    if (toSelectionObject) {
+      this.#linkSelectionAnnotation.entryTo = toSelectionObject;
+    } else {
+      delete this.#linkSelectionAnnotation['entryTo'];
+    }
+    ModificationsManager.activeManager()?.updateAnnotation(this.#linkSelectionAnnotation);
+  }
+
   private onEntryHovered(commonEvent: Common.EventTarget.EventTargetEvent<number>): void {
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     const entryIndex = commonEvent.data;
@@ -718,33 +747,18 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
   }
 
-  private onEntriesLinkAnnotationChange(
+  private onEntriesLinkAnnotationCreate(
       dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider,
-      event: Common.EventTarget.EventTargetEvent<{entryFromIndex: number, entryToIndex?: number}>): void {
-    const fromSelectionObject = this.#selectionIfTraceEvent(event.data.entryFromIndex, dataProvider);
-    const toSelectionObject =
-        (event.data.entryToIndex) ? this.#selectionIfTraceEvent(event.data.entryToIndex, dataProvider) : null;
+      event: Common.EventTarget.EventTargetEvent<{entryFromIndex: number}>): void {
+    const fromSelectionObject =
+        (event.data.entryFromIndex) ? this.#selectionIfTraceEvent(event.data.entryFromIndex, dataProvider) : null;
 
     if (fromSelectionObject) {
-      this.setSelectionAndReveal(dataProvider.createSelection(event.data.entryFromIndex));
-
-      if (this.#linkSelectionAnnotation) {
-        // Only the entry that the link points to can be updated.
-        if (toSelectionObject) {
-          this.#linkSelectionAnnotation.entryTo = toSelectionObject;
-        } else {
-          delete this.#linkSelectionAnnotation['entryTo'];
-        }
-
-        ModificationsManager.activeManager()?.updateAnnotation(this.#linkSelectionAnnotation);
-      } else {
         this.#linkSelectionAnnotation = {
           type: 'ENTRIES_LINK',
           entryFrom: fromSelectionObject,
-          ...(toSelectionObject !== null && {entryTo: toSelectionObject}),
         };
         ModificationsManager.activeManager()?.createAnnotation(this.#linkSelectionAnnotation);
-      }
     }
   }
 

@@ -297,8 +297,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #searchResultEntryIndex: number;
   #searchResultHighlightElements: HTMLElement[] = [];
   #inTrackConfigEditMode: boolean = false;
-  // The index of an entry that a link annotation is being created form.
-  #currEntriesLinkFromSelectionIndex: number|null = null;
 
   // Stored because we cache this value to save extra lookups and layoffs.
   #canvasBoundingClientRect: DOMRect|null = null;
@@ -469,11 +467,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.highlightedEntryIndex = entryIndex;
     this.updateElementPosition(this.highlightElement, this.highlightedEntryIndex);
     this.dispatchEventToListeners(Events.EntryHovered, entryIndex);
-    if (this.#currEntriesLinkFromSelectionIndex) {
-      this.dispatchEventToListeners(
-          Events.EntriesLinkAnnotationChanged,
-          {entryFromIndex: this.#currEntriesLinkFromSelectionIndex, entryToIndex: this.highlightedEntryIndex});
-    }
   }
 
   highlightAllEntries(entries: number[]): void {
@@ -507,10 +500,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.highlightedEntryIndex = -1;
     this.updateElementPosition(this.highlightElement, this.highlightedEntryIndex);
     this.dispatchEventToListeners(Events.EntryHovered, -1);
-    if (this.#currEntriesLinkFromSelectionIndex) {
-      this.dispatchEventToListeners(
-          Events.EntriesLinkAnnotationChanged, {entryFromIndex: this.#currEntriesLinkFromSelectionIndex});
-    }
   }
 
   private createCandyStripePattern(): CanvasPattern {
@@ -899,9 +888,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           } else {
             this.chartViewport.onClick(mouseEvent);
             this.dispatchEventToListeners(Events.EntryInvoked, this.highlightedEntryIndex);
-            // If the link annotation is in the process of being created and there is a click on the flamechart,
-            // finish the creation of the link and set the link start entry to null.
-            this.#currEntriesLinkFromSelectionIndex = null;
           }
           return;
         }
@@ -1249,10 +1235,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           labelEntryAnnotationOption.setShortcut('Cmd + Click');
 
           const linkEntriesAnnotationOption = annotationSection.appendItem(i18nString(UIStrings.linkEntries), () => {
-            // Set the entry that the current link selection starts from. Remove this value when selection is finished.
-            this.#currEntriesLinkFromSelectionIndex = this.selectedEntryIndex;
             this.dispatchEventToListeners(
-                Events.EntriesLinkAnnotationChanged, {entryFromIndex: this.selectedEntryIndex});
+                Events.EntriesLinkAnnotationCreated, {entryFromIndex: this.selectedEntryIndex});
           });
           // TODO: Change the 'add link between entries' shortcut depending on the OS
           linkEntriesAnnotationOption.setShortcut('Cmd + Click');
@@ -3860,8 +3844,8 @@ export const enum Events {
   EntryInvoked = 'EntryInvoked',
   // Emmited when entry label annotation is added through a shotcut or a context menu.
   EntryLabelAnnotationAdded = 'EntryLabelAnnotationAdded',
-  // Emmited when entries link annotation is added or changed through a shotcut or a context menu.
-  EntriesLinkAnnotationChanged = 'EntriesLinkAnnotationChanged',
+  // Emmited when entries link annotation is added through a shotcut or a context menu.
+  EntriesLinkAnnotationCreated = 'EntriesLinkAnnotationCreated',
   /**
    * Emitted when an event is selected via keyboard navigation using the arrow
    * keys.
@@ -3887,9 +3871,8 @@ export const enum Events {
 
 export type EventTypes = {
   [Events.EntryLabelAnnotationAdded]: number,
-  [Events.EntriesLinkAnnotationChanged]: {
+  [Events.EntriesLinkAnnotationCreated]: {
     entryFromIndex: number,
-    entryToIndex?: number,
   },
   [Events.CanvasFocused]: number|void,
   [Events.EntryInvoked]: number,

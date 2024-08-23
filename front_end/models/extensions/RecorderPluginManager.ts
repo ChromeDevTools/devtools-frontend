@@ -29,12 +29,12 @@ export class RecorderPluginManager extends Common.ObjectWrapper.ObjectWrapper<Ev
 
   addPlugin(plugin: RecorderExtensionEndpoint): void {
     this.#plugins.add(plugin);
-    this.dispatchEventToListeners(Events.PluginAdded, plugin);
+    this.dispatchEventToListeners(Events.PLUGIN_ADDED, plugin);
   }
 
   removePlugin(plugin: RecorderExtensionEndpoint): void {
     this.#plugins.delete(plugin);
-    this.dispatchEventToListeners(Events.PluginRemoved, plugin);
+    this.dispatchEventToListeners(Events.PLUGIN_REMOVED, plugin);
   }
 
   plugins(): RecorderExtensionEndpoint[] {
@@ -43,7 +43,7 @@ export class RecorderPluginManager extends Common.ObjectWrapper.ObjectWrapper<Ev
 
   registerView(descriptor: ViewDescriptor): void {
     this.#views.set(descriptor.id, descriptor);
-    this.dispatchEventToListeners(Events.ViewRegistered, descriptor);
+    this.dispatchEventToListeners(Events.VIEW_REGISTERED, descriptor);
   }
 
   views(): ViewDescriptor[] {
@@ -59,20 +59,20 @@ export class RecorderPluginManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     if (!descriptor) {
       throw new Error(`View with id ${id} is not found.`);
     }
-    this.dispatchEventToListeners(Events.ShowViewRequested, descriptor);
+    this.dispatchEventToListeners(Events.SHOW_VIEW_REQUESTED, descriptor);
   }
 }
 
 export const enum Events {
-  PluginAdded = 'pluginAdded',
-  PluginRemoved = 'pluginRemoved',
-  ViewRegistered = 'viewRegistered',
-  ShowViewRequested = 'showViewRequested',
+  PLUGIN_ADDED = 'pluginAdded',
+  PLUGIN_REMOVED = 'pluginRemoved',
+  VIEW_REGISTERED = 'viewRegistered',
+  SHOW_VIEW_REQUESTED = 'showViewRequested',
 }
 
 export type EventTypes = {
-  [Events.PluginAdded]: RecorderExtensionEndpoint,
-  [Events.PluginRemoved]: RecorderExtensionEndpoint,
-  [Events.ViewRegistered]: ViewDescriptor,
-  [Events.ShowViewRequested]: ViewDescriptor,
+  [Events.PLUGIN_ADDED]: RecorderExtensionEndpoint,
+  [Events.PLUGIN_REMOVED]: RecorderExtensionEndpoint,
+  [Events.VIEW_REGISTERED]: ViewDescriptor,
+  [Events.SHOW_VIEW_REQUESTED]: ViewDescriptor,
 };

@@ -48,15 +48,15 @@ export class HeavyAdIssue extends Issue {
   }
 
   getCategory(): IssueCategory {
-    return IssueCategory.HeavyAd;
+    return IssueCategory.HEAVY_AD;
   }
 
   getKind(): IssueKind {
     switch (this.#issueDetails.resolution) {
       case Protocol.Audits.HeavyAdResolutionStatus.HeavyAdBlocked:
-        return IssueKind.PageError;
+        return IssueKind.PAGE_ERROR;
       case Protocol.Audits.HeavyAdResolutionStatus.HeavyAdWarning:
-        return IssueKind.BreakingChange;
+        return IssueKind.BREAKING_CHANGE;
     }
   }
 

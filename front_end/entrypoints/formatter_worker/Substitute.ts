@@ -78,7 +78,7 @@ function computeSubstitution(expression: string, nameMap: Map<string, string|nul
     }
     // If there is a capturing binder, rename the bound variable.
     for (const binder of binders) {
-      if (binder.definitionKind === DefinitionKind.Fixed) {
+      if (binder.definitionKind === DefinitionKind.FIXED) {
         // If the identifier is bound to a fixed name, such as 'this',
         // then refuse to do the substitution.
         throw new Error(`Cannot avoid capture of '${rename}'`);

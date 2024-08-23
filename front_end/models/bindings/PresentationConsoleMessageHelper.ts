@@ -107,8 +107,8 @@ export class PresentationConsoleMessageManager {
       return;
     }
     const level = consoleMessage.level === Protocol.Log.LogEntryLevel.Error ?
-        Workspace.UISourceCode.Message.Level.Error :
-        Workspace.UISourceCode.Message.Level.Warning;
+        Workspace.UISourceCode.Message.Level.ERROR :
+        Workspace.UISourceCode.Message.Level.WARNING;
     this.#sourceFrameMessageManager.addMessage(
         new Workspace.UISourceCode.Message(level, consoleMessage.messageText), consoleMessage, runtimeModel.target());
   }

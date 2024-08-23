@@ -187,7 +187,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     assert.strictEqual(manager.views().length, 1);
 
     const plugin = manager.plugins()[0];
-    const onceShowRequested = manager.once(Extensions.RecorderPluginManager.Events.ShowViewRequested);
+    const onceShowRequested = manager.once(Extensions.RecorderPluginManager.Events.SHOW_VIEW_REQUESTED);
     await plugin.replay({
       name: 'test',
       steps: [],
@@ -215,7 +215,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     assert.strictEqual(manager.views().length, 1);
 
     const events: object[] = [];
-    manager.addEventListener(Extensions.RecorderPluginManager.Events.ShowViewRequested, event => {
+    manager.addEventListener(Extensions.RecorderPluginManager.Events.SHOW_VIEW_REQUESTED, event => {
       events.push(event);
     });
     view?.show();
@@ -249,7 +249,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     const manager = Extensions.RecorderPluginManager.RecorderPluginManager.instance();
 
     const plugin = manager.plugins()[0];
-    const onceShowRequested = manager.once(Extensions.RecorderPluginManager.Events.ShowViewRequested);
+    const onceShowRequested = manager.once(Extensions.RecorderPluginManager.Events.SHOW_VIEW_REQUESTED);
     await plugin.replay({
       name: 'test',
       steps: [],

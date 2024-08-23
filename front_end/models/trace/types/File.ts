@@ -17,14 +17,14 @@ export interface Breadcrumb {
 }
 
 export const enum DataOrigin {
-  CPUProfile = 'CPUProfile',
-  TraceEvents = 'TraceEvents',
+  CPU_PROFILE = 'CPUProfile',
+  TRACE_EVENTS = 'TraceEvents',
 }
 
 export const enum EventKeyType {
-  RawEvent = 'r',
-  SyntheticEvent = 's',
-  ProfileCall = 'p',
+  RAW_EVENT = 'r',
+  SYNTHETIC_EVENT = 's',
+  PROFILE_CALL = 'p',
 }
 
 /**
@@ -114,24 +114,24 @@ export function isEntriesLinkAnnotation(annotation: Annotation): annotation is E
 // references to timeline events in a trace file. These keys enable
 // user modifications that can be saved. See go/cpq:event-data-json for
 // more details on the key format.
-export type RawEventKey = `${EventKeyType.RawEvent}-${number}`;
-export type SyntheticEventKey = `${EventKeyType.SyntheticEvent}-${number}`;
-export type ProfileCallKey = `${EventKeyType.ProfileCall}-${ProcessID}-${ThreadID}-${SampleIndex}-${Protocol.integer}`;
+export type RawEventKey = `${EventKeyType.RAW_EVENT}-${number}`;
+export type SyntheticEventKey = `${EventKeyType.SYNTHETIC_EVENT}-${number}`;
+export type ProfileCallKey = `${EventKeyType.PROFILE_CALL}-${ProcessID}-${ThreadID}-${SampleIndex}-${Protocol.integer}`;
 export type TraceEventSerializableKey = RawEventKey|ProfileCallKey|SyntheticEventKey;
 
 // Serializable keys values objects contain data that maps the keys to original Trace Events
 export type RawEventKeyValues = {
-  type: EventKeyType.RawEvent,
+  type: EventKeyType.RAW_EVENT,
   rawIndex: number,
 };
 
 export type SyntheticEventKeyValues = {
-  type: EventKeyType.SyntheticEvent,
+  type: EventKeyType.SYNTHETIC_EVENT,
   rawIndex: number,
 };
 
 export type ProfileCallKeyValues = {
-  type: EventKeyType.ProfileCall,
+  type: EventKeyType.PROFILE_CALL,
   processID: ProcessID,
   threadID: ThreadID,
   sampleIndex: SampleIndex,
@@ -174,7 +174,7 @@ export function traceEventKeyToValues(key: TraceEventSerializableKey): TraceEven
   const type = parts[0];
 
   switch (type) {
-    case EventKeyType.ProfileCall:
+    case EventKeyType.PROFILE_CALL:
       if (parts.length !== 5 ||
           !(parts.every((part, i) => i === 0 || typeof part === 'number' || !isNaN(parseInt(part, 10))))) {
         throw new Error(`Invalid ProfileCallKey: ${key}`);
@@ -186,7 +186,7 @@ export function traceEventKeyToValues(key: TraceEventSerializableKey): TraceEven
         sampleIndex: parseInt(parts[3], 10),
         protocol: parseInt(parts[4], 10),
       } as ProfileCallKeyValues;
-    case EventKeyType.RawEvent:
+    case EventKeyType.RAW_EVENT:
       if (parts.length !== 2 || !(typeof parts[1] === 'number' || !isNaN(parseInt(parts[1], 10)))) {
         throw new Error(`Invalid RawEvent Key: ${key}`);
       }
@@ -194,7 +194,7 @@ export function traceEventKeyToValues(key: TraceEventSerializableKey): TraceEven
         type: parts[0],
         rawIndex: parseInt(parts[1], 10),
       } as RawEventKeyValues;
-    case EventKeyType.SyntheticEvent:
+    case EventKeyType.SYNTHETIC_EVENT:
       if (parts.length !== 2 || !(typeof parts[1] === 'number' || !isNaN(parseInt(parts[1], 10)))) {
         throw new Error(`Invalid SyntheticEvent Key: ${key}`);
       }

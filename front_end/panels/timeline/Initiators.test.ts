@@ -83,8 +83,8 @@ describe('Initiators', () => {
     assert.lengthOf(initiatorsData, 2);
     for (const initiatorData of initiatorsData) {
       // Ensure each initiatorData object has TimerInstall>TimerFire event to initiator.
-      assert.strictEqual(initiatorData.event.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerFire);
-      assert.strictEqual(initiatorData.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall);
+      assert.strictEqual(initiatorData.event.name, TraceEngine.Types.TraceEvents.KnownEventName.TIMER_FIRE);
+      assert.strictEqual(initiatorData.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TIMER_INSTALL);
     }
   });
 
@@ -93,7 +93,7 @@ describe('Initiators', () => {
 
     // Find any of the InstallTimer calls; they initiate other events.
     const timerInstall = traceData.Renderer.allTraceEntries.find(entry => {
-      return entry.name === TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall;
+      return entry.name === TraceEngine.Types.TraceEvents.KnownEventName.TIMER_INSTALL;
     });
     assert.exists(timerInstall);
 
@@ -106,8 +106,8 @@ describe('Initiators', () => {
     assert.lengthOf(initatorsData, 1);
     for (const initatorData of initatorsData) {
       // Ensure each initiatorData object has TimerInstall>TimerFire event to initiator.
-      assert.strictEqual(initatorData.event.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerFire);
-      assert.strictEqual(initatorData.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall);
+      assert.strictEqual(initatorData.event.name, TraceEngine.Types.TraceEvents.KnownEventName.TIMER_FIRE);
+      assert.strictEqual(initatorData.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TIMER_INSTALL);
     }
   });
 
@@ -117,7 +117,7 @@ describe('Initiators', () => {
 
        // Find any of the InstallTimer calls; they initiate other events.
        const timerInstall = traceData.Renderer.allTraceEntries.find(entry => {
-         return entry.name === TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall;
+         return entry.name === TraceEngine.Types.TraceEvents.KnownEventName.TIMER_INSTALL;
        });
        assert.exists(timerInstall);
        // Get the parent of InstallTimer to add to the expandable events array.
@@ -134,7 +134,7 @@ describe('Initiators', () => {
        assert.lengthOf(initiatorsData, 1);
        // Ensure each initiatorData object has TimerInstall>TimerFire event to initiator.
        for (const initiatorData of initiatorsData) {
-         assert.strictEqual(initiatorData.event.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerFire);
+         assert.strictEqual(initiatorData.event.name, TraceEngine.Types.TraceEvents.KnownEventName.TIMER_FIRE);
          assert.strictEqual(initiatorData.initiator, timerInstallParent.entry);
          // Ensure the expandable entry is marked as hidden
          assert.strictEqual(initiatorData.isInitiatorHidden, true);
@@ -165,8 +165,8 @@ describe('Initiators', () => {
 
        for (const initiatorData of initiatorsData) {
          // Ensure each initiatorData object has TimerInstall>TimerFire event to initiator.
-         assert.strictEqual(initiatorData.event.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerFire);
-         assert.strictEqual(initiatorData.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall);
+         assert.strictEqual(initiatorData.event.name, TraceEngine.Types.TraceEvents.KnownEventName.TIMER_FIRE);
+         assert.strictEqual(initiatorData.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TIMER_INSTALL);
          const parentEvent = traceData.Renderer.entryToNode.get(initiatorData.event)?.parent?.entry;
          if (parentEvent) {
            timerFireParents.push(parentEvent);
@@ -183,7 +183,7 @@ describe('Initiators', () => {
          const initiatorData = initiatorsData[i];
          // Ensure each initiatorData object has TimerInstall>TimerFire event to initiator.
          assert.strictEqual(initiatorData.event, timerFireParents[i]);
-         assert.strictEqual(initiatorData.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall);
+         assert.strictEqual(initiatorData.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TIMER_INSTALL);
          // Ensure the expandable entry is marked as hidden
          assert.strictEqual(initiatorData.isEntryHidden, true);
        }

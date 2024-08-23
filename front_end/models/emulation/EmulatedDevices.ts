@@ -59,7 +59,7 @@ export class EmulatedDevice {
     this.vertical = {width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null};
     this.horizontal = {width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null};
     this.deviceScaleFactor = 1;
-    this.capabilities = [Capability.Touch, Capability.Mobile];
+    this.capabilities = [Capability.TOUCH, Capability.MOBILE];
     this.userAgent = '';
     this.userAgentMetadata = null;
     this.modes = [];
@@ -468,11 +468,11 @@ export class EmulatedDevice {
   }
 
   touch(): boolean {
-    return this.capabilities.indexOf(Capability.Touch) !== -1;
+    return this.capabilities.indexOf(Capability.TOUCH) !== -1;
   }
 
   mobile(): boolean {
-    return this.capabilities.indexOf(Capability.Mobile) !== -1;
+    return this.capabilities.indexOf(Capability.MOBILE) !== -1;
   }
 }
 
@@ -482,22 +482,26 @@ export const HorizontalSpanned = 'horizontal-spanned';
 export const VerticalSpanned = 'vertical-spanned';
 
 enum Type {
+  /* eslint-disable @typescript-eslint/naming-convention -- Indexed access. */
   Phone = 'phone',
   Tablet = 'tablet',
   Notebook = 'notebook',
   Desktop = 'desktop',
   Unknown = 'unknown',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export const enum Capability {
-  Touch = 'touch',
-  Mobile = 'mobile',
+  TOUCH = 'touch',
+  MOBILE = 'mobile',
 }
 
 enum Show {
+  /* eslint-disable @typescript-eslint/naming-convention -- Indexed access. */
   Always = 'Always',
   Default = 'Default',
   Never = 'Never',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 let emulatedDevicesListInstance: EmulatedDevicesList;
@@ -589,7 +593,7 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<Even
     this.#customInternal.forEach(device => json.push(device.toJSON()));
 
     this.#customSetting.set(json);
-    this.dispatchEventToListeners(Events.CustomDevicesUpdated);
+    this.dispatchEventToListeners(Events.CUSTOM_DEVICES_UPDATED);
   }
 
   saveStandardDevices(): void {
@@ -597,7 +601,7 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<Even
     this.#standardInternal.forEach(device => json.push(device.toJSON()));
 
     this.#standardSetting.set(json);
-    this.dispatchEventToListeners(Events.StandardDevicesUpdated);
+    this.dispatchEventToListeners(Events.STANDARD_DEVICES_UPDATED);
   }
 
   private copyShowValues(from: Set<EmulatedDevice>, to: Set<EmulatedDevice>): void {
@@ -616,13 +620,13 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<Even
 }
 
 export const enum Events {
-  CustomDevicesUpdated = 'CustomDevicesUpdated',
-  StandardDevicesUpdated = 'StandardDevicesUpdated',
+  CUSTOM_DEVICES_UPDATED = 'CustomDevicesUpdated',
+  STANDARD_DEVICES_UPDATED = 'StandardDevicesUpdated',
 }
 
 export type EventTypes = {
-  [Events.CustomDevicesUpdated]: void,
-  [Events.StandardDevicesUpdated]: void,
+  [Events.CUSTOM_DEVICES_UPDATED]: void,
+  [Events.STANDARD_DEVICES_UPDATED]: void,
 };
 
 export interface Mode {

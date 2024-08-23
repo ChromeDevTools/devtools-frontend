@@ -54,7 +54,7 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.#autofillModel = data.autofillModel;
     this.#processAddressFormFilledData(data.event);
     if (this.#address) {
-      this.dispatchEventToListeners(Events.AddressFormFilled, {
+      this.dispatchEventToListeners(Events.ADDRESS_FORM_FILLED, {
         address: this.#address,
         filledFields: this.#filledFields,
         matches: this.#matches,
@@ -116,7 +116,7 @@ export interface Match {
 }
 
 export const enum Events {
-  AddressFormFilled = 'AddressFormFilled',
+  ADDRESS_FORM_FILLED = 'AddressFormFilled',
 }
 
 export interface AddressFormFilledEvent {
@@ -127,5 +127,5 @@ export interface AddressFormFilledEvent {
 }
 
 export type EventTypes = {
-  [Events.AddressFormFilled]: AddressFormFilledEvent,
+  [Events.ADDRESS_FORM_FILLED]: AddressFormFilledEvent,
 };

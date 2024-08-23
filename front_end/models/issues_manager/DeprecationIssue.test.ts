@@ -57,7 +57,7 @@ describeWithLocale('DeprecationIssue', () => {
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     for (const issue of issues) {
       mockManager.dispatchEventToListeners(
-          IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue});
+          IssuesManager.IssuesManager.Events.ISSUE_ADDED, {issuesModel: mockModel, issue});
     }
     const aggregatedIssues = Array.from(aggregator.aggregatedIssues());
     assert.strictEqual(aggregatedIssues.length, 1);
@@ -73,7 +73,7 @@ describeWithLocale('DeprecationIssue', () => {
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     for (const issue of issues) {
       mockManager.dispatchEventToListeners(
-          IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue});
+          IssuesManager.IssuesManager.Events.ISSUE_ADDED, {issuesModel: mockModel, issue});
     }
     const aggregatedIssues = Array.from(aggregator.aggregatedIssues());
     assert.strictEqual(aggregatedIssues.length, 2);

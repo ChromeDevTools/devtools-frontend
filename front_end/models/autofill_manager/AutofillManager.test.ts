@@ -35,7 +35,8 @@ describeWithMockConnection('AutofillManager', () => {
         outEvent: AutofillManager.AutofillManager.AddressFormFilledEvent) => {
       const dispatchedAutofillEvents: AutofillManager.AutofillManager.AddressFormFilledEvent[] = [];
       autofillManager.addEventListener(
-          AutofillManager.AutofillManager.Events.AddressFormFilled, event => dispatchedAutofillEvents.push(event.data));
+          AutofillManager.AutofillManager.Events.ADDRESS_FORM_FILLED,
+          event => dispatchedAutofillEvents.push(event.data));
       model.dispatchEventToListeners(
           SDK.AutofillModel.Events.ADDRESS_FORM_FILLED, {autofillModel: model, event: inEvent});
       await new Promise(resolve => setTimeout(resolve, 0));

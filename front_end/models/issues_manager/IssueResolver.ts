@@ -37,7 +37,7 @@ export class IssueResolver extends Common.ResolverBase.ResolverBase<Protocol.Aud
       return;
     }
     this.#issuesListener =
-        this.#issuesManager.addEventListener(IssueManagerEvents.IssueAdded, this.#onIssueAdded, this);
+        this.#issuesManager.addEventListener(IssueManagerEvents.ISSUE_ADDED, this.#onIssueAdded, this);
   }
 
   protected override stopListening(): void {

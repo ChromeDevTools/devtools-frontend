@@ -9,10 +9,10 @@ describe('RecorderPluginManager', () => {
     const manager = Extensions.RecorderPluginManager.RecorderPluginManager.instance();
     const events: Array<{event: string, plugin: Extensions.RecorderExtensionEndpoint.RecorderExtensionEndpoint}> = [];
     manager.addEventListener(
-        Extensions.RecorderPluginManager.Events.PluginAdded,
+        Extensions.RecorderPluginManager.Events.PLUGIN_ADDED,
         event => events.push({event: 'pluginAdded', plugin: event.data}));
     manager.addEventListener(
-        Extensions.RecorderPluginManager.Events.PluginRemoved,
+        Extensions.RecorderPluginManager.Events.PLUGIN_REMOVED,
         event => events.push({event: 'pluginRemoved', plugin: event.data}));
     const plugin = new Extensions.RecorderExtensionEndpoint.RecorderExtensionEndpoint(
         'test', new MessageChannel().port1, ['export'], 'application/javascript');

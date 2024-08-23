@@ -21,7 +21,7 @@ async function addMessage(
   const message = new SDK.ConsoleModel.ConsoleMessage(
       target.model(SDK.RuntimeModel.RuntimeModel), Common.Console.FrontendMessageSource.ConsoleAPI,
       Protocol.Log.LogEntryLevel.Error, 'test message', details);
-  const level = Workspace.UISourceCode.Message.Level.Error;
+  const level = Workspace.UISourceCode.Message.Level.ERROR;
   await helper.addMessage(new Workspace.UISourceCode.Message(level, message.messageText), message);
   return message;
 }

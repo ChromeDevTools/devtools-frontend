@@ -545,12 +545,14 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
 }
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   WorkingCopyChanged = 'WorkingCopyChanged',
   WorkingCopyCommitted = 'WorkingCopyCommitted',
   TitleChanged = 'TitleChanged',
   MessageAdded = 'MessageAdded',
   MessageRemoved = 'MessageRemoved',
   DecorationChanged = 'DecorationChanged',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export interface WorkingCopyCommitedEvent {
@@ -706,9 +708,9 @@ export class Message {
 
 export namespace Message {
   export const enum Level {
-    Error = 'Error',
-    Issue = 'Issue',
-    Warning = 'Warning',
+    ERROR = 'Error',
+    ISSUE = 'Issue',
+    WARNING = 'Warning',
   }
 }
 

@@ -38,12 +38,12 @@ type TimelineMarkerEntry =
  * will render [FCP][DCL][LCP] everytime.
  */
 export const SORT_ORDER_PAGE_LOAD_MARKERS: Readonly<Record<string, number>> = {
-  [TraceEngine.Types.TraceEvents.KnownEventName.NavigationStart]: 0,
-  [TraceEngine.Types.TraceEvents.KnownEventName.MarkLoad]: 1,
-  [TraceEngine.Types.TraceEvents.KnownEventName.MarkFCP]: 2,
-  [TraceEngine.Types.TraceEvents.KnownEventName.MarkFirstPaint]: 2,
-  [TraceEngine.Types.TraceEvents.KnownEventName.MarkDOMContent]: 3,
-  [TraceEngine.Types.TraceEvents.KnownEventName.MarkLCPCandidate]: 4,
+  [TraceEngine.Types.TraceEvents.KnownEventName.NAVIGATION_START]: 0,
+  [TraceEngine.Types.TraceEvents.KnownEventName.MARK_LOAD]: 1,
+  [TraceEngine.Types.TraceEvents.KnownEventName.MARK_FCP]: 2,
+  [TraceEngine.Types.TraceEvents.KnownEventName.MARK_FIRST_PAINT]: 2,
+  [TraceEngine.Types.TraceEvents.KnownEventName.MARK_DOM_CONTENT]: 3,
+  [TraceEngine.Types.TraceEvents.KnownEventName.MARK_LCP_CANDIDATE]: 4,
 };
 
 export class TimingsTrackAppender implements TrackAppender {

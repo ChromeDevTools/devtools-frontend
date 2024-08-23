@@ -38,7 +38,7 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
   #corsIssues = new Set<IssuesManager.CorsIssue.CorsIssue>();
   #cspIssues = new Set<IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>();
   #deprecationIssues = new Set<IssuesManager.DeprecationIssue.DeprecationIssue>();
-  #issueKind = IssuesManager.Issue.IssueKind.Improvement;
+  #issueKind = IssuesManager.Issue.IssueKind.IMPROVEMENT;
   #lowContrastIssues = new Set<IssuesManager.LowTextContrastIssue.LowTextContrastIssue>();
   #cookieDeprecationMetadataIssues =
       new Set<IssuesManager.CookieDeprecationMetadataIssue.CookieDeprecationMetadataIssue>();
@@ -151,7 +151,7 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     if (this.#representative) {
       return this.#representative.getCategory();
     }
-    return IssuesManager.Issue.IssueCategory.Other;
+    return IssuesManager.Issue.IssueCategory.OTHER;
   }
 
   getAggregatedIssuesCount(): number {
@@ -259,9 +259,9 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   readonly #hiddenAggregatedIssuesByKey = new Map<AggregationKey, AggregatedIssue>();
   constructor(private readonly issuesManager: IssuesManager.IssuesManager.IssuesManager) {
     super();
-    this.issuesManager.addEventListener(IssuesManager.IssuesManager.Events.IssueAdded, this.#onIssueAdded, this);
+    this.issuesManager.addEventListener(IssuesManager.IssuesManager.Events.ISSUE_ADDED, this.#onIssueAdded, this);
     this.issuesManager.addEventListener(
-        IssuesManager.IssuesManager.Events.FullUpdateRequired, this.#onFullUpdateRequired, this);
+        IssuesManager.IssuesManager.Events.FULL_UPDATE_REQUIRED, this.#onFullUpdateRequired, this);
     for (const issue of this.issuesManager.issues()) {
       this.#aggregateIssue(issue);
     }

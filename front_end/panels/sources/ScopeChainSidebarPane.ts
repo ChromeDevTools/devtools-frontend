@@ -113,7 +113,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
 
       this.#scopeChainModel = new SourceMapScopes.ScopeChainModel.ScopeChainModel(callFrame);
       this.#scopeChainModel.addEventListener(
-          SourceMapScopes.ScopeChainModel.Events.ScopeChainUpdated, event => this.buildScopeTreeOutline(event.data),
+          SourceMapScopes.ScopeChainModel.Events.SCOPE_CHAIN_UPDATED, event => this.buildScopeTreeOutline(event.data),
           this);
     } else {
       this.infoElement.textContent = i18nString(UIStrings.notPaused);

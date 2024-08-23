@@ -580,7 +580,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     this.issueToolbarThrottle = new Common.Throttler.Throttler(100);
     issuesManager.addEventListener(
-        IssuesManager.IssuesManager.Events.IssuesCountUpdated, this.#onIssuesCountUpdateBound);
+        IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED, this.#onIssuesCountUpdateBound);
   }
 
   static appendSettingsCheckboxToToolbar(
@@ -721,7 +721,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     if (this.#isDetached) {
       const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
       issuesManager.addEventListener(
-          IssuesManager.IssuesManager.Events.IssuesCountUpdated, this.#onIssuesCountUpdateBound);
+          IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED, this.#onIssuesCountUpdateBound);
     }
     this.#isDetached = false;
     this.updateIssuesToolbarItem();
@@ -789,7 +789,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.#isDetached = true;
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     issuesManager.removeEventListener(
-        IssuesManager.IssuesManager.Events.IssuesCountUpdated, this.#onIssuesCountUpdateBound);
+        IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED, this.#onIssuesCountUpdateBound);
   }
 
   private updateIssuesToolbarItem(): void {

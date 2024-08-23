@@ -156,7 +156,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       Common.EventTarget.removeEventListeners(this.eventDescriptors);
       await this.updateActiveProject();
     }
-    this.dispatchEventToListeners(Events.LocalOverridesProjectUpdated, this.enabled);
+    this.dispatchEventToListeners(Events.LOCAL_OVERRIDES_PROJECT_UPDATED, this.enabled);
   }
 
   private async uiSourceCodeRenamedListener(
@@ -321,7 +321,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       const mutex = this.#getOrCreateMutex(binding.network);
       await mutex.run(this.#innerUnbind.bind(this, binding));
     } else if (headerBinding) {
-      this.dispatchEventToListeners(Events.RequestsForHeaderOverridesFileChanged, uiSourceCode);
+      this.dispatchEventToListeners(Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED, uiSourceCode);
     }
   }
 
@@ -430,7 +430,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     if (!this.enabledSetting.get()) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentContextMenuActivateDisabled);
       this.enabledSetting.set(true);
-      await this.once(Events.LocalOverridesProjectUpdated);
+      await this.once(Events.LOCAL_OVERRIDES_PROJECT_UPDATED);
     }
 
     // Save new file
@@ -784,7 +784,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
 
   #dispatchRequestsForHeaderOverridesFileChanged(): Promise<void> {
     for (const headersFileUiSourceCode of this.#headerOverridesForEventDispatch) {
-      this.dispatchEventToListeners(Events.RequestsForHeaderOverridesFileChanged, headersFileUiSourceCode);
+      this.dispatchEventToListeners(Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED, headersFileUiSourceCode);
     }
     this.#headerOverridesForEventDispatch.clear();
     return Promise.resolve();
@@ -830,7 +830,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     }
 
     await this.updateActiveProject();
-    this.dispatchEventToListeners(Events.ProjectChanged, this.projectInternal);
+    this.dispatchEventToListeners(Events.PROJECT_CHANGED, this.projectInternal);
   }
 
   private async onProjectAdded(project: Workspace.Workspace.Project): Promise<void> {
@@ -990,15 +990,15 @@ const RESERVED_FILENAMES = new Set<string>([
 export const HEADERS_FILENAME = '.headers';
 
 export const enum Events {
-  ProjectChanged = 'ProjectChanged',
-  RequestsForHeaderOverridesFileChanged = 'RequestsForHeaderOverridesFileChanged',
-  LocalOverridesProjectUpdated = 'LocalOverridesProjectUpdated',
+  PROJECT_CHANGED = 'ProjectChanged',
+  REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED = 'RequestsForHeaderOverridesFileChanged',
+  LOCAL_OVERRIDES_PROJECT_UPDATED = 'LocalOverridesProjectUpdated',
 }
 
 export type EventTypes = {
-  [Events.ProjectChanged]: Workspace.Workspace.Project|null,
-  [Events.RequestsForHeaderOverridesFileChanged]: Workspace.UISourceCode.UISourceCode,
-  [Events.LocalOverridesProjectUpdated]: boolean,
+  [Events.PROJECT_CHANGED]: Workspace.Workspace.Project|null,
+  [Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED]: Workspace.UISourceCode.UISourceCode,
+  [Events.LOCAL_OVERRIDES_PROJECT_UPDATED]: boolean,
 };
 
 export interface HeaderOverride {

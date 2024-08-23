@@ -89,7 +89,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
          const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
 
          const fakeFunctionCall: TraceEngine.Types.TraceEvents.TraceEventFunctionCall = {
-           name: TraceEngine.Types.TraceEvents.KnownEventName.FunctionCall,
+           name: TraceEngine.Types.TraceEvents.KnownEventName.FUNCTION_CALL,
            ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
            cat: 'devtools-timeline',
            dur: TraceEngine.Types.Timing.MicroSeconds(100),
@@ -122,7 +122,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
          // it into buildDetailsNodeForTraceEvent
          const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
          const fakeFunctionCall: TraceEngine.Types.TraceEvents.TraceEventFunctionCall = {
-           name: TraceEngine.Types.TraceEvents.KnownEventName.FunctionCall,
+           name: TraceEngine.Types.TraceEvents.KnownEventName.FUNCTION_CALL,
            ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
            cat: 'devtools-timeline',
            dur: TraceEngine.Types.Timing.MicroSeconds(100),
@@ -422,7 +422,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
     it('treats the v8.parseOnBackgroundWaiting as scripting even though it would usually be idle', function() {
       const event = makeCompleteEvent(
-          TraceEngine.Types.TraceEvents.KnownEventName.StreamingCompileScriptWaiting,
+          TraceEngine.Types.TraceEvents.KnownEventName.STREAMING_COMPILE_SCRIPT_WAITING,
           1,
           1,
           'v8,devtools.timeline,disabled-by-default-v8.compile',
@@ -901,8 +901,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
       TraceLoader.initTraceBoundsManager(traceData);
       const [process] = traceData.Renderer.processes.values();
       const [thread] = process.threads.values();
-      const stylesRecalc =
-          thread.entries.filter(entry => entry.name === TraceEngine.Types.TraceEvents.KnownEventName.UpdateLayoutTree);
+      const stylesRecalc = thread.entries.filter(
+          entry => entry.name === TraceEngine.Types.TraceEvents.KnownEventName.UPDATE_LAYOUT_TREE);
 
       const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
           traceData,

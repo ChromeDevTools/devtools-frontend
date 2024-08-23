@@ -281,13 +281,13 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     this.#shadow.adoptedStyleSheets = [liveMetricsViewStyles, metricValueStyles];
 
     const liveMetrics = LiveMetrics.LiveMetrics.instance();
-    liveMetrics.addEventListener(LiveMetrics.Events.Status, this.#onMetricStatus, this);
+    liveMetrics.addEventListener(LiveMetrics.Events.STATUS, this.#onMetricStatus, this);
 
     const cruxManager = CrUXManager.CrUXManager.instance();
-    cruxManager.addEventListener(CrUXManager.Events.FieldDataChanged, this.#onFieldDataChanged, this);
+    cruxManager.addEventListener(CrUXManager.Events.FIELD_DATA_CHANGED, this.#onFieldDataChanged, this);
 
     const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
-    emulationModel.addEventListener(EmulationModel.DeviceModeModel.Events.Updated, this.#onEmulationChanged, this);
+    emulationModel.addEventListener(EmulationModel.DeviceModeModel.Events.UPDATED, this.#onEmulationChanged, this);
 
     if (cruxManager.getConfigSetting().get().enabled) {
       void this.#refreshFieldDataForCurrentPage();
@@ -301,13 +301,13 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   disconnectedCallback(): void {
-    LiveMetrics.LiveMetrics.instance().removeEventListener(LiveMetrics.Events.Status, this.#onMetricStatus, this);
+    LiveMetrics.LiveMetrics.instance().removeEventListener(LiveMetrics.Events.STATUS, this.#onMetricStatus, this);
 
     const cruxManager = CrUXManager.CrUXManager.instance();
-    cruxManager.removeEventListener(CrUXManager.Events.FieldDataChanged, this.#onFieldDataChanged, this);
+    cruxManager.removeEventListener(CrUXManager.Events.FIELD_DATA_CHANGED, this.#onFieldDataChanged, this);
 
     const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
-    emulationModel.removeEventListener(EmulationModel.DeviceModeModel.Events.Updated, this.#onEmulationChanged, this);
+    emulationModel.removeEventListener(EmulationModel.DeviceModeModel.Events.UPDATED, this.#onEmulationChanged, this);
   }
 
   #renderLcpCard(): LitHtml.LitTemplate {

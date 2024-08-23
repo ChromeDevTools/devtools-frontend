@@ -677,9 +677,9 @@ export interface LiveObjects {
  * DOM node link state.
  */
 const enum DOMLinkState {
-  Unknown = 0,
-  Attached = 1,
-  Detached = 2,
+  UNKNOWN = 0,
+  ATTACHED = 1,
+  DETACHED = 2,
 }
 const BITMASK_FOR_DOM_LINK_STATE = 3;
 
@@ -1164,7 +1164,7 @@ export abstract class HeapSnapshot {
       case 'objectsRetainedByDetachedDomNodes':
         // Traverse the graph, avoiding detached nodes.
         traverse((node: HeapSnapshotNode, edge: HeapSnapshotEdge) => {
-          return edge.node().detachedness() !== DOMLinkState.Detached;
+          return edge.node().detachedness() !== DOMLinkState.DETACHED;
         });
         markUnreachableNodes();
         return (node: HeapSnapshotNode) => !getBit(node);
@@ -2092,9 +2092,9 @@ export abstract class HeapSnapshot {
       node.nodeIndex = nodeIndex;
       node.setDetachedness(newState);
 
-      if (newState === DOMLinkState.Attached) {
+      if (newState === DOMLinkState.ATTACHED) {
         attached.push(nodeOrdinal);
-      } else if (newState === DOMLinkState.Detached) {
+      } else if (newState === DOMLinkState.DETACHED) {
         // Detached state: Rewire node name.
         addDetachedPrefixToNodeName(snapshot, nodeIndex);
         detached.push(nodeOrdinal);
@@ -2118,7 +2118,7 @@ export abstract class HeapSnapshot {
       node.nodeIndex = nodeOrdinal * this.nodeFieldCount;
       const state = node.detachedness();
       // Bail out for objects that have no known state. For all other objects set that state.
-      if (state === DOMLinkState.Unknown) {
+      if (state === DOMLinkState.UNKNOWN) {
         continue;
       }
       processNode(this, nodeOrdinal, state);
@@ -2126,7 +2126,7 @@ export abstract class HeapSnapshot {
     // 2. If the parent is attached, then the child is also attached.
     while (attached.length !== 0) {
       const nodeOrdinal = (attached.pop() as number);
-      propagateState(this, nodeOrdinal, DOMLinkState.Attached);
+      propagateState(this, nodeOrdinal, DOMLinkState.ATTACHED);
     }
     // 3. If the parent is not attached, then the child inherits the parent's state.
     while (detached.length !== 0) {
@@ -2134,10 +2134,10 @@ export abstract class HeapSnapshot {
       node.nodeIndex = nodeOrdinal * this.nodeFieldCount;
       const nodeState = node.detachedness();
       // Ignore if the node has been found through propagating forward attached state.
-      if (nodeState === DOMLinkState.Attached) {
+      if (nodeState === DOMLinkState.ATTACHED) {
         continue;
       }
-      propagateState(this, nodeOrdinal, DOMLinkState.Detached);
+      propagateState(this, nodeOrdinal, DOMLinkState.DETACHED);
     }
 
     console.timeEnd('propagateDOMState');

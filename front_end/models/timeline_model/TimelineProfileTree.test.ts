@@ -350,7 +350,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
       const modelFilters = [
         Timeline.TimelineUIUtils.TimelineUIUtils.visibleEventsFilter(),
         new TimelineModel.TimelineModelFilter.ExclusiveNameFilter([
-          TraceEngine.Types.TraceEvents.KnownEventName.RunTask,
+          TraceEngine.Types.TraceEvents.KnownEventName.RUN_TASK,
         ]),
       ];
       const root = new TimelineModel.TimelineProfileTree.BottomUpRootNode(

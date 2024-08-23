@@ -48,7 +48,7 @@ describeWithMockConnection('ScopeChainModel', () => {
 
     const scopeChainModel = new SourceMapScopes.ScopeChainModel.ScopeChainModel(fakeFrame);
     const listenerStub = sinon.stub();
-    scopeChainModel.addEventListener(SourceMapScopes.ScopeChainModel.Events.ScopeChainUpdated, listenerStub);
+    scopeChainModel.addEventListener(SourceMapScopes.ScopeChainModel.Events.SCOPE_CHAIN_UPDATED, listenerStub);
 
     await clock.tickAsync(10);
 
@@ -71,7 +71,7 @@ describeWithMockConnection('ScopeChainModel', () => {
 
     const scopeChainModel = new SourceMapScopes.ScopeChainModel.ScopeChainModel(fakeFrame);
     const listenerStub = sinon.stub();
-    scopeChainModel.addEventListener(SourceMapScopes.ScopeChainModel.Events.ScopeChainUpdated, listenerStub);
+    scopeChainModel.addEventListener(SourceMapScopes.ScopeChainModel.Events.SCOPE_CHAIN_UPDATED, listenerStub);
 
     await clock.tickAsync(10);
 

@@ -81,7 +81,7 @@ export interface Project {
   uiSourceCodes(): Iterable<UISourceCode>;
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
+/* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
 export enum projectTypes {
   Debugger = 'debugger',
   Formatter = 'formatter',
@@ -90,6 +90,7 @@ export enum projectTypes {
   ContentScripts = 'contentscripts',
   Service = 'service',
 }
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export abstract class ProjectStore implements Project {
   private readonly workspaceInternal: WorkspaceImpl;
@@ -322,6 +323,7 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes
 }
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   UISourceCodeAdded = 'UISourceCodeAdded',
   UISourceCodeRemoved = 'UISourceCodeRemoved',
   UISourceCodeRenamed = 'UISourceCodeRenamed',
@@ -330,6 +332,7 @@ export enum Events {
   WorkingCopyCommittedByUser = 'WorkingCopyCommittedByUser',
   ProjectAdded = 'ProjectAdded',
   ProjectRemoved = 'ProjectRemoved',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export interface UISourceCodeRenamedEvent {

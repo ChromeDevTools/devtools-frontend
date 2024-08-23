@@ -74,7 +74,7 @@ export class Scope {
       this.variables.set(name, {definitionKind, uses: [use]});
       return;
     }
-    if (variable.definitionKind === DefinitionKind.None) {
+    if (variable.definitionKind === DefinitionKind.NONE) {
       variable.definitionKind = definitionKind;
     }
     variable.uses.push(use);
@@ -85,7 +85,7 @@ export class Scope {
     let scope: Scope|null = this;
     while (scope !== null) {
       const defUse = scope.variables.get(name);
-      if (defUse && defUse.definitionKind !== DefinitionKind.None) {
+      if (defUse && defUse.definitionKind !== DefinitionKind.NONE) {
         result.push(defUse);
       }
       scope = scope.parent;
@@ -100,13 +100,13 @@ export class Scope {
       return;
     }
     variable.uses.push(...defUses.uses);
-    if (defUses.definitionKind === DefinitionKind.Var) {
-      console.assert(variable.definitionKind !== DefinitionKind.Let);
-      if (variable.definitionKind === DefinitionKind.None) {
+    if (defUses.definitionKind === DefinitionKind.VAR) {
+      console.assert(variable.definitionKind !== DefinitionKind.LET);
+      if (variable.definitionKind === DefinitionKind.NONE) {
         variable.definitionKind = defUses.definitionKind;
       }
     } else {
-      console.assert(defUses.definitionKind === DefinitionKind.None);
+      console.assert(defUses.definitionKind === DefinitionKind.NONE);
     }
   }
 
@@ -120,8 +120,8 @@ export class Scope {
     // if the parent is not a function).
     const keysToRemove = [];
     for (const [name, defUse] of this.variables.entries()) {
-      if (defUse.definitionKind === DefinitionKind.None ||
-          (defUse.definitionKind === DefinitionKind.Var && !isFunctionScope)) {
+      if (defUse.definitionKind === DefinitionKind.NONE ||
+          (defUse.definitionKind === DefinitionKind.VAR && !isFunctionScope)) {
         this.parent.#mergeChildDefUses(name, defUse);
         keysToRemove.push(name);
       }
@@ -171,7 +171,7 @@ export class ScopeVariableAnalysis {
         break;
       case 'ArrowFunctionExpression': {
         this.#pushScope(node.start, node.end);
-        node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.Var, false));
+        node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.VAR, false));
         if (node.body.type === 'BlockStatement') {
           // Include the body of the arrow function in the same scope as the arguments.
           node.body.body.forEach(this.#processNode.bind(this));
@@ -198,13 +198,13 @@ export class ScopeVariableAnalysis {
         node.arguments.forEach(this.#processNode.bind(this));
         break;
       case 'VariableDeclaration': {
-        const definitionKind = node.kind === 'var' ? DefinitionKind.Var : DefinitionKind.Let;
+        const definitionKind = node.kind === 'var' ? DefinitionKind.VAR : DefinitionKind.LET;
         node.declarations.forEach(this.#processVariableDeclarator.bind(this, definitionKind));
         break;
       }
       case 'CatchClause':
         this.#pushScope(node.start, node.end);
-        this.#processNodeAsDefinition(DefinitionKind.Let, false, node.param);
+        this.#processNodeAsDefinition(DefinitionKind.LET, false, node.param);
         this.#processNode(node.body);
         this.#popScope(false);
         break;
@@ -212,7 +212,7 @@ export class ScopeVariableAnalysis {
         node.body.forEach(this.#processNode.bind(this));
         break;
       case 'ClassDeclaration':
-        this.#processNodeAsDefinition(DefinitionKind.Let, false, node.id);
+        this.#processNodeAsDefinition(DefinitionKind.LET, false, node.id);
         this.#processNode(node.superClass ?? null);
         this.#processNode(node.body);
         break;
@@ -250,20 +250,20 @@ export class ScopeVariableAnalysis {
         this.#popScope(false);
         break;
       case 'FunctionDeclaration':
-        this.#processNodeAsDefinition(DefinitionKind.Var, false, node.id);
+        this.#processNodeAsDefinition(DefinitionKind.VAR, false, node.id);
         this.#pushScope(node.id?.end ?? node.start, node.end);
-        this.#addVariable('this', node.start, DefinitionKind.Fixed);
-        this.#addVariable('arguments', node.start, DefinitionKind.Fixed);
-        node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.Let, false));
+        this.#addVariable('this', node.start, DefinitionKind.FIXED);
+        this.#addVariable('arguments', node.start, DefinitionKind.FIXED);
+        node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.LET, false));
         // Process the body of the block statement directly to avoid creating new scope.
         node.body.body.forEach(this.#processNode.bind(this));
         this.#popScope(true);
         break;
       case 'FunctionExpression':
         this.#pushScope(node.id?.end ?? node.start, node.end);
-        this.#addVariable('this', node.start, DefinitionKind.Fixed);
-        this.#addVariable('arguments', node.start, DefinitionKind.Fixed);
-        node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.Let, false));
+        this.#addVariable('this', node.start, DefinitionKind.FIXED);
+        this.#addVariable('arguments', node.start, DefinitionKind.FIXED);
+        node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.LET, false));
         // Process the body of the block statement directly to avoid creating new scope.
         node.body.body.forEach(this.#processNode.bind(this));
         this.#popScope(true);
@@ -316,7 +316,7 @@ export class ScopeVariableAnalysis {
           console.assert(node.value.type === 'Identifier');
           console.assert(node.key.type === 'Identifier');
           console.assert((node.value as Acorn.ESTree.Identifier).name === (node.key as Acorn.ESTree.Identifier).name);
-          this.#addVariable((node.value as Acorn.ESTree.Identifier).name, node.value.start, DefinitionKind.None, true);
+          this.#addVariable((node.value as Acorn.ESTree.Identifier).name, node.value.start, DefinitionKind.NONE, true);
         } else {
           if (node.computed) {
             this.#processNode(node.key);
@@ -325,7 +325,7 @@ export class ScopeVariableAnalysis {
         }
         break;
       case 'RestElement':
-        this.#processNodeAsDefinition(DefinitionKind.Let, false, node.argument);
+        this.#processNodeAsDefinition(DefinitionKind.LET, false, node.argument);
         break;
       case 'ReturnStatement':
         this.#processNode(node.argument ?? null);
@@ -409,7 +409,7 @@ export class ScopeVariableAnalysis {
   getFreeVariables(): Map<string, Use[]> {
     const result = new Map<string, Use[]>();
     for (const [name, defUse] of this.#rootScope.variables) {
-      if (defUse.definitionKind !== DefinitionKind.None) {
+      if (defUse.definitionKind !== DefinitionKind.NONE) {
         // Skip bound variables.
         continue;
       }
@@ -436,14 +436,14 @@ export class ScopeVariableAnalysis {
   }
 
   #addVariable(
-      name: string, offset: number, definitionKind: DefinitionKind = DefinitionKind.None,
+      name: string, offset: number, definitionKind: DefinitionKind = DefinitionKind.NONE,
       isShorthandAssignmentProperty: boolean = false): void {
     this.#allNames.add(name);
     this.#currentScope.addVariable(name, offset, definitionKind, isShorthandAssignmentProperty);
   }
 
   #processNodeAsDefinition(
-      definitionKind: DefinitionKind.Let|DefinitionKind.Var, isShorthandAssignmentProperty: boolean,
+      definitionKind: DefinitionKind.LET|DefinitionKind.VAR, isShorthandAssignmentProperty: boolean,
       node: Acorn.ESTree.Pattern|Acorn.ESTree.AssignmentProperty|null): void {
     if (node === null) {
       return;
@@ -481,7 +481,7 @@ export class ScopeVariableAnalysis {
   }
 
   #processVariableDeclarator(
-      definitionKind: DefinitionKind.Let|DefinitionKind.Var, decl: Acorn.ESTree.VariableDeclarator): void {
+      definitionKind: DefinitionKind.LET|DefinitionKind.VAR, decl: Acorn.ESTree.VariableDeclarator): void {
     this.#processNodeAsDefinition(definitionKind, false, decl.id);
     this.#processNode(decl.init ?? null);
   }

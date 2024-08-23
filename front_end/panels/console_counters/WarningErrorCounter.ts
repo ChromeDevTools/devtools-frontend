@@ -85,7 +85,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.MessageUpdated, this.update, this);
 
-    issuesManager.addEventListener(IssuesManager.IssuesManager.Events.IssuesCountUpdated, this.update, this);
+    issuesManager.addEventListener(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED, this.update, this);
 
     this.update();
   }

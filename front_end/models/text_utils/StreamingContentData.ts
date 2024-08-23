@@ -61,7 +61,7 @@ export class StreamingContentData extends Common.ObjectWrapper.ObjectWrapper<Eve
     }
 
     this.#chunks.push(chunk);
-    this.dispatchEventToListeners(Events.ChunkAdded, {content: this, chunk});
+    this.dispatchEventToListeners(Events.CHUNK_ADDED, {content: this, chunk});
   }
 
   /** @returns An immutable ContentData with all the bytes received so far */
@@ -96,9 +96,9 @@ export const asContentDataOrError = function(contentDataOrError: StreamingConten
 };
 
 export const enum Events {
-  ChunkAdded = 'ChunkAdded',
+  CHUNK_ADDED = 'ChunkAdded',
 }
 
 export type EventTypes = {
-  [Events.ChunkAdded]: {content: StreamingContentData, chunk: string},
+  [Events.CHUNK_ADDED]: {content: StreamingContentData, chunk: string},
 };

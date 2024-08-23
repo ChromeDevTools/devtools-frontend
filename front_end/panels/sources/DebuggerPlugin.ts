@@ -1422,9 +1422,9 @@ export class DebuggerPlugin extends Plugin {
     this.scriptFileForDebuggerModel.delete(debuggerModel);
     if (oldScriptFile) {
       oldScriptFile.removeEventListener(
-          Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DidMergeToVM, this.didMergeToVM, this);
+          Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DID_MERGE_TO_VM, this.didMergeToVM, this);
       oldScriptFile.removeEventListener(
-          Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DidDivergeFromVM, this.didDivergeFromVM, this);
+          Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DID_DIVERGE_FROM_VM, this.didDivergeFromVM, this);
       if (this.muted && !this.uiSourceCode.isDirty() && this.consistentScripts()) {
         this.setMuted(false);
       }
@@ -1434,9 +1434,9 @@ export class DebuggerPlugin extends Plugin {
     }
     this.scriptFileForDebuggerModel.set(debuggerModel, newScriptFile);
     newScriptFile.addEventListener(
-        Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DidMergeToVM, this.didMergeToVM, this);
+        Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DID_MERGE_TO_VM, this.didMergeToVM, this);
     newScriptFile.addEventListener(
-        Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DidDivergeFromVM, this.didDivergeFromVM, this);
+        Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DID_DIVERGE_FROM_VM, this.didDivergeFromVM, this);
     newScriptFile.checkMapping();
 
     void newScriptFile.missingSymbolFiles().then(resources => {
@@ -1719,9 +1719,9 @@ export class DebuggerPlugin extends Plugin {
     }
     for (const script of this.scriptFileForDebuggerModel.values()) {
       script.removeEventListener(
-          Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DidMergeToVM, this.didMergeToVM, this);
+          Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DID_MERGE_TO_VM, this.didMergeToVM, this);
       script.removeEventListener(
-          Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DidDivergeFromVM, this.didDivergeFromVM, this);
+          Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DID_DIVERGE_FROM_VM, this.didDivergeFromVM, this);
     }
     this.scriptFileForDebuggerModel.clear();
 

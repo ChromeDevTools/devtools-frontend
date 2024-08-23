@@ -28,7 +28,7 @@ export class BounceTrackingIssue extends Issue {
   }
 
   getCategory(): IssueCategory {
-    return IssueCategory.Other;
+    return IssueCategory.OTHER;
   }
 
   getDescription(): MarkdownIssueDescription {
@@ -48,7 +48,7 @@ export class BounceTrackingIssue extends Issue {
   }
 
   getKind(): IssueKind {
-    return IssueKind.BreakingChange;
+    return IssueKind.BREAKING_CHANGE;
   }
 
   primaryKey(): string {

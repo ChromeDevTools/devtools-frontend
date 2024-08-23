@@ -178,12 +178,12 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
           BlockedReasonDetails.get((this.#request.blockedReason() as Protocol.Network.BlockedReason));
       if (headerWithIssues) {
         if (IssuesManager.RelatedIssue.hasIssueOfCategory(
-                this.#request, IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy)) {
+                this.#request, IssuesManager.Issue.IssueCategory.CROSS_ORIGIN_EMBEDDER_POLICY)) {
           const followLink = (): void => {
             Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.LEARN_MORE_LINK_COEP);
             if (this.#request) {
               void IssuesManager.RelatedIssue.reveal(
-                  this.#request, IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy);
+                  this.#request, IssuesManager.Issue.IssueCategory.CROSS_ORIGIN_EMBEDDER_POLICY);
             }
           };
           if (headerWithIssues.blockedDetails) {

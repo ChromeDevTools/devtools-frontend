@@ -66,7 +66,7 @@ export class GenericIssue extends Issue {
   }
 
   getCategory(): IssueCategory {
-    return IssueCategory.Generic;
+    return IssueCategory.GENERIC;
   }
 
   primaryKey(): string {
@@ -88,7 +88,7 @@ export class GenericIssue extends Issue {
   }
 
   getKind(): IssueKind {
-    return issueTypes.get(this.#issueDetails.errorType) || IssueKind.Improvement;
+    return issueTypes.get(this.#issueDetails.errorType) || IssueKind.IMPROVEMENT;
   }
 
   static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
@@ -222,18 +222,18 @@ const issueDescriptions: Map<Protocol.Audits.GenericIssueErrorType, LazyMarkdown
 ]);
 
 const issueTypes: Map<Protocol.Audits.GenericIssueErrorType, IssueKind> = new Map([
-  [Protocol.Audits.GenericIssueErrorType.FormLabelForNameError, IssueKind.PageError],
-  [Protocol.Audits.GenericIssueErrorType.FormInputWithNoLabelError, IssueKind.Improvement],
-  [Protocol.Audits.GenericIssueErrorType.FormAutocompleteAttributeEmptyError, IssueKind.PageError],
-  [Protocol.Audits.GenericIssueErrorType.FormDuplicateIdForInputError, IssueKind.PageError],
-  [Protocol.Audits.GenericIssueErrorType.FormAriaLabelledByToNonExistingId, IssueKind.Improvement],
-  [Protocol.Audits.GenericIssueErrorType.FormEmptyIdAndNameAttributesForInputError, IssueKind.Improvement],
+  [Protocol.Audits.GenericIssueErrorType.FormLabelForNameError, IssueKind.PAGE_ERROR],
+  [Protocol.Audits.GenericIssueErrorType.FormInputWithNoLabelError, IssueKind.IMPROVEMENT],
+  [Protocol.Audits.GenericIssueErrorType.FormAutocompleteAttributeEmptyError, IssueKind.PAGE_ERROR],
+  [Protocol.Audits.GenericIssueErrorType.FormDuplicateIdForInputError, IssueKind.PAGE_ERROR],
+  [Protocol.Audits.GenericIssueErrorType.FormAriaLabelledByToNonExistingId, IssueKind.IMPROVEMENT],
+  [Protocol.Audits.GenericIssueErrorType.FormEmptyIdAndNameAttributesForInputError, IssueKind.IMPROVEMENT],
   [
     Protocol.Audits.GenericIssueErrorType.FormInputAssignedAutocompleteValueToIdOrNameAttributeError,
-    IssueKind.Improvement,
+    IssueKind.IMPROVEMENT,
   ],
-  [Protocol.Audits.GenericIssueErrorType.FormLabelForMatchesNonExistingIdError, IssueKind.PageError],
-  [Protocol.Audits.GenericIssueErrorType.FormLabelHasNeitherForNorNestedInput, IssueKind.Improvement],
-  [Protocol.Audits.GenericIssueErrorType.FormInputHasWrongButWellIntendedAutocompleteValueError, IssueKind.Improvement],
+  [Protocol.Audits.GenericIssueErrorType.FormLabelForMatchesNonExistingIdError, IssueKind.PAGE_ERROR],
+  [Protocol.Audits.GenericIssueErrorType.FormLabelHasNeitherForNorNestedInput, IssueKind.IMPROVEMENT],
+  [Protocol.Audits.GenericIssueErrorType.FormInputHasWrongButWellIntendedAutocompleteValueError, IssueKind.IMPROVEMENT],
 
 ]);

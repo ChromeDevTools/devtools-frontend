@@ -603,10 +603,12 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
 const consoleMessageToRequest = new WeakMap<SDK.ConsoleModel.ConsoleMessage, SDK.NetworkRequest.NetworkRequest>();
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   Reset = 'Reset',
   RequestAdded = 'RequestAdded',
   RequestUpdated = 'RequestUpdated',
   RequestRemoved = 'RequestRemoved',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export interface ResetEvent {

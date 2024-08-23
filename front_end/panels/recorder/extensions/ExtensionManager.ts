@@ -33,9 +33,9 @@ export class ExtensionManager extends Common.ObjectWrapper.ObjectWrapper<EventTy
 
   attach(): void {
     const pluginManager = Extensions.RecorderPluginManager.RecorderPluginManager.instance();
-    pluginManager.addEventListener(Extensions.RecorderPluginManager.Events.PluginAdded, this.#handlePlugin);
-    pluginManager.addEventListener(Extensions.RecorderPluginManager.Events.PluginRemoved, this.#handlePlugin);
-    pluginManager.addEventListener(Extensions.RecorderPluginManager.Events.ViewRegistered, this.#handleView);
+    pluginManager.addEventListener(Extensions.RecorderPluginManager.Events.PLUGIN_ADDED, this.#handlePlugin);
+    pluginManager.addEventListener(Extensions.RecorderPluginManager.Events.PLUGIN_REMOVED, this.#handlePlugin);
+    pluginManager.addEventListener(Extensions.RecorderPluginManager.Events.VIEW_REGISTERED, this.#handleView);
     for (const descriptor of pluginManager.views()) {
       this.#handleView({data: descriptor});
     }
@@ -43,9 +43,9 @@ export class ExtensionManager extends Common.ObjectWrapper.ObjectWrapper<EventTy
 
   detach(): void {
     const pluginManager = Extensions.RecorderPluginManager.RecorderPluginManager.instance();
-    pluginManager.removeEventListener(Extensions.RecorderPluginManager.Events.PluginAdded, this.#handlePlugin);
-    pluginManager.removeEventListener(Extensions.RecorderPluginManager.Events.PluginRemoved, this.#handlePlugin);
-    pluginManager.removeEventListener(Extensions.RecorderPluginManager.Events.ViewRegistered, this.#handleView);
+    pluginManager.removeEventListener(Extensions.RecorderPluginManager.Events.PLUGIN_ADDED, this.#handlePlugin);
+    pluginManager.removeEventListener(Extensions.RecorderPluginManager.Events.PLUGIN_REMOVED, this.#handlePlugin);
+    pluginManager.removeEventListener(Extensions.RecorderPluginManager.Events.VIEW_REGISTERED, this.#handleView);
     this.#views.clear();
   }
 

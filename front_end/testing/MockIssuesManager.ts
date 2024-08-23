@@ -12,9 +12,9 @@ import {type StubIssue} from './StubIssue.js';
 export class MockIssuesManager extends Common.ObjectWrapper.ObjectWrapper<IssuesManager.IssuesManager.EventTypes> {
   private mockIssues: IssuesManager.Issue.Issue[];
   private issueCounts = new Map<IssuesManager.Issue.IssueKind, number>([
-    [IssuesManager.Issue.IssueKind.Improvement, 0],
-    [IssuesManager.Issue.IssueKind.BreakingChange, 1],
-    [IssuesManager.Issue.IssueKind.PageError, 2],
+    [IssuesManager.Issue.IssueKind.IMPROVEMENT, 0],
+    [IssuesManager.Issue.IssueKind.BREAKING_CHANGE, 1],
+    [IssuesManager.Issue.IssueKind.PAGE_ERROR, 2],
   ]);
 
   // An empty model to pass along for the IssuesManager.Events.IssueAdded event.
@@ -53,12 +53,12 @@ export class MockIssuesManager extends Common.ObjectWrapper.ObjectWrapper<Issues
     for (const [key, value] of this.issueCounts) {
       this.issueCounts.set(key, value + 1);
     }
-    this.dispatchEventToListeners(IssuesManager.IssuesManager.Events.IssuesCountUpdated);
+    this.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED);
   }
 
   addIssue(mockIssue: StubIssue) {
     this.mockIssues.push(mockIssue as IssuesManager.Issue.Issue);
     this.dispatchEventToListeners(
-        IssuesManager.IssuesManager.Events.IssueAdded, {issue: mockIssue, issuesModel: this.mockModel});
+        IssuesManager.IssuesManager.Events.ISSUE_ADDED, {issue: mockIssue, issuesModel: this.mockModel});
   }
 }

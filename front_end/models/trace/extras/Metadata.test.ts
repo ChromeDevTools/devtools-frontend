@@ -25,7 +25,7 @@ describeWithEnvironment('Trace Metadata', () => {
       startTime: undefined,
       cpuThrottling: 2,
       networkThrottling: 'Slow 3G',
-      dataOrigin: TraceEngine.Types.File.DataOrigin.TraceEvents,
+      dataOrigin: TraceEngine.Types.File.DataOrigin.TRACE_EVENTS,
       hardwareConcurrency: 1,
     });
   });
@@ -48,7 +48,7 @@ describeWithEnvironment('Trace Metadata', () => {
       startTime: undefined,
       cpuThrottling: 2,
       networkThrottling: 'Slow 3G',
-      dataOrigin: TraceEngine.Types.File.DataOrigin.TraceEvents,
+      dataOrigin: TraceEngine.Types.File.DataOrigin.TRACE_EVENTS,
       hardwareConcurrency: 1,
     });
   });
@@ -71,7 +71,7 @@ describeWithEnvironment('Trace Metadata', () => {
       startTime: undefined,
       cpuThrottling: 2,
       networkThrottling: 'Slow 3G',
-      dataOrigin: TraceEngine.Types.File.DataOrigin.TraceEvents,
+      dataOrigin: TraceEngine.Types.File.DataOrigin.TRACE_EVENTS,
       hardwareConcurrency: undefined,
     });
     assert.strictEqual(getHardwareConcurrencyStub.callCount, 0);

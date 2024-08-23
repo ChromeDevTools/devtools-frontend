@@ -153,7 +153,7 @@ describeWithMockConnection('LayoutShift root causes', () => {
       ].sort((a, b) => a.ts - b.ts);
 
       for (const e of layoutInvalidationEvents) {
-        e.name = TraceEngine.Types.TraceEvents.KnownEventName.LayoutInvalidationTracking;
+        e.name = TraceEngine.Types.TraceEvents.KnownEventName.LAYOUT_INVALIDATION_TRACKING;
       }
 
       // Map from fake BackendNodeId to fake Protocol.DOM.Node used by the handler to

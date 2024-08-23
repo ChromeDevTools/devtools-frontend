@@ -247,7 +247,7 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     // This does 2 things:
     // - Tells listeners to clear old data so it isn't shown during a URL transition
     // - Tells listeners to clear old data when field data is disabled.
-    this.dispatchEventToListeners(Events.FieldDataChanged, undefined);
+    this.dispatchEventToListeners(Events.FIELD_DATA_CHANGED, undefined);
 
     if (!this.#configSetting.get().enabled) {
       return;
@@ -255,7 +255,7 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
     const pageResult = await this.getFieldDataForCurrentPage();
 
-    this.dispatchEventToListeners(Events.FieldDataChanged, pageResult);
+    this.dispatchEventToListeners(Events.FIELD_DATA_CHANGED, pageResult);
   }
 
   #normalizeUrl(inputUrl: string): URL {
@@ -328,9 +328,9 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 }
 
 export const enum Events {
-  FieldDataChanged = 'field-data-changed',
+  FIELD_DATA_CHANGED = 'field-data-changed',
 }
 
 type EventTypes = {
-  [Events.FieldDataChanged]: PageResult|undefined,
+  [Events.FIELD_DATA_CHANGED]: PageResult|undefined,
 };

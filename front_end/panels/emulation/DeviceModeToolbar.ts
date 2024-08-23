@@ -293,9 +293,9 @@ export class DeviceModeToolbar {
 
     this.emulatedDevicesList = EmulationModel.EmulatedDevices.EmulatedDevicesList.instance();
     this.emulatedDevicesList.addEventListener(
-        EmulationModel.EmulatedDevices.Events.CustomDevicesUpdated, this.deviceListChanged, this);
+        EmulationModel.EmulatedDevices.Events.CUSTOM_DEVICES_UPDATED, this.deviceListChanged, this);
     this.emulatedDevicesList.addEventListener(
-        EmulationModel.EmulatedDevices.Events.StandardDevicesUpdated, this.deviceListChanged, this);
+        EmulationModel.EmulatedDevices.Events.STANDARD_DEVICES_UPDATED, this.deviceListChanged, this);
 
     this.persistenceSetting = Common.Settings.Settings.instance().createSetting(
         'emulation.device-mode-value', {device: '', orientation: '', mode: ''});
@@ -471,8 +471,8 @@ export class DeviceModeToolbar {
 
   private appendDeviceScaleMenuItems(contextMenu: UI.ContextMenu.ContextMenu): void {
     const deviceScaleFactorSetting = this.model.deviceScaleFactorSetting();
-    const defaultValue = this.model.uaSetting().get() === EmulationModel.DeviceModeModel.UA.Mobile ||
-            this.model.uaSetting().get() === EmulationModel.DeviceModeModel.UA.MobileNoTouch ?
+    const defaultValue = this.model.uaSetting().get() === EmulationModel.DeviceModeModel.UA.MOBILE ||
+            this.model.uaSetting().get() === EmulationModel.DeviceModeModel.UA.MOBILE_NO_TOUCH ?
         EmulationModel.DeviceModeModel.defaultMobileScaleFactor :
         window.devicePixelRatio;
     appendDeviceScaleFactorItem(
@@ -491,10 +491,10 @@ export class DeviceModeToolbar {
 
   private appendUserAgentMenuItems(contextMenu: UI.ContextMenu.ContextMenu): void {
     const uaSetting = this.model.uaSetting();
-    appendUAItem(EmulationModel.DeviceModeModel.UA.Mobile, EmulationModel.DeviceModeModel.UA.Mobile);
-    appendUAItem(EmulationModel.DeviceModeModel.UA.MobileNoTouch, EmulationModel.DeviceModeModel.UA.MobileNoTouch);
-    appendUAItem(EmulationModel.DeviceModeModel.UA.Desktop, EmulationModel.DeviceModeModel.UA.Desktop);
-    appendUAItem(EmulationModel.DeviceModeModel.UA.DesktopTouch, EmulationModel.DeviceModeModel.UA.DesktopTouch);
+    appendUAItem(EmulationModel.DeviceModeModel.UA.MOBILE, EmulationModel.DeviceModeModel.UA.MOBILE);
+    appendUAItem(EmulationModel.DeviceModeModel.UA.MOBILE_NO_TOUCH, EmulationModel.DeviceModeModel.UA.MOBILE_NO_TOUCH);
+    appendUAItem(EmulationModel.DeviceModeModel.UA.DESKTOP, EmulationModel.DeviceModeModel.UA.DESKTOP);
+    appendUAItem(EmulationModel.DeviceModeModel.UA.DESKTOP_TOUCH, EmulationModel.DeviceModeModel.UA.DESKTOP_TOUCH);
 
     function appendUAItem(title: string, value: EmulationModel.DeviceModeModel.UA): void {
       contextMenu.defaultSection().appendCheckboxItem(

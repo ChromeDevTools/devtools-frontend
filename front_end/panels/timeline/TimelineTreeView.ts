@@ -207,7 +207,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     this.linkifier = new Components.Linkifier.Linkifier();
 
     this.taskFilter = new TimelineModel.TimelineModelFilter.ExclusiveNameFilter([
-      TraceEngine.Types.TraceEvents.KnownEventName.RunTask,
+      TraceEngine.Types.TraceEvents.KnownEventName.RUN_TASK,
     ]);
     this.textFilterInternal = new TimelineRegExp();
 

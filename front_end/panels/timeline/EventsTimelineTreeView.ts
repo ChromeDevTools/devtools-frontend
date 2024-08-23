@@ -80,7 +80,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
 
   private findNodeWithEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): TimelineModel.TimelineProfileTree.Node
       |null {
-    if (event.name === TraceEngine.Types.TraceEvents.KnownEventName.RunTask) {
+    if (event.name === TraceEngine.Types.TraceEvents.KnownEventName.RUN_TASK) {
       // No node is ever created for the top level RunTask event, so
       // bail out preemptively
       return null;

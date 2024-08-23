@@ -157,7 +157,7 @@ freeVariables:
   for (const variable of scope.variables) {
     // Skip the fixed-kind variable (i.e., 'this' or 'arguments') if we only found their "definition"
     // without any uses.
-    if (variable.kind === Formatter.FormatterWorkerPool.DefinitionKind.Fixed && variable.offsets.length <= 1) {
+    if (variable.kind === Formatter.FormatterWorkerPool.DefinitionKind.FIXED && variable.offsets.length <= 1) {
       continue;
     }
 
@@ -194,11 +194,11 @@ freeVariables:
 const identifierAndPunctuationRegExp = /^\s*([A-Za-z_$][A-Za-z_$0-9]*)\s*([.;,=]?)\s*$/;
 
 const enum Punctuation {
-  None = 'none',
-  Comma = 'comma',
-  Dot = 'dot',
-  Semicolon = 'semicolon',
-  Equals = 'equals',
+  NONE = 'none',
+  COMMA = 'comma',
+  DOT = 'dot',
+  SEMICOLON = 'semicolon',
+  EQUALS = 'equals',
 }
 
 const resolveDebuggerScope = async(scope: SDK.DebuggerModel.ScopeChainEntry):
@@ -335,7 +335,7 @@ const resolveScope = async(script: SDK.Script.Script, scopeChain: Formatter.Form
           return sourceName;
         }
         // Let us also allow semicolons into commas since that it is a common transformation.
-        if (compiledPunctuation === Punctuation.Comma && sourcePunctuation === Punctuation.Semicolon) {
+        if (compiledPunctuation === Punctuation.COMMA && sourcePunctuation === Punctuation.SEMICOLON) {
           return sourceName;
         }
 
@@ -351,19 +351,19 @@ const resolveScope = async(script: SDK.Script.Script, scopeChain: Formatter.Form
           let punctuation: Punctuation|null = null;
           switch (match[2]) {
             case '.':
-              punctuation = Punctuation.Dot;
+              punctuation = Punctuation.DOT;
               break;
             case ',':
-              punctuation = Punctuation.Comma;
+              punctuation = Punctuation.COMMA;
               break;
             case ';':
-              punctuation = Punctuation.Semicolon;
+              punctuation = Punctuation.SEMICOLON;
               break;
             case '=':
-              punctuation = Punctuation.Equals;
+              punctuation = Punctuation.EQUALS;
               break;
             case '':
-              punctuation = Punctuation.None;
+              punctuation = Punctuation.NONE;
               break;
             default:
               console.error(`Name token parsing error: unexpected token "${match[2]}"`);

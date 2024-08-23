@@ -1049,7 +1049,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     const traceStart = Platform.DateUtilities.toISO8601Compact(new Date());
     let fileName: Platform.DevToolsPath.RawPathString;
-    if (metadata?.dataOrigin === TraceEngine.Types.File.DataOrigin.CPUProfile) {
+    if (metadata?.dataOrigin === TraceEngine.Types.File.DataOrigin.CPU_PROFILE) {
       fileName = `CPU-${traceStart}.cpuprofile` as Platform.DevToolsPath.RawPathString;
     } else if (metadata && metadata.enhancedTraceVersion) {
       fileName = `EnhancedTraces-${traceStart}.json` as Platform.DevToolsPath.RawPathString;
@@ -1060,7 +1060,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     try {
       // TODO(crbug.com/1456818): Extract this logic and add more tests.
       let traceAsString;
-      if (metadata?.dataOrigin === TraceEngine.Types.File.DataOrigin.CPUProfile) {
+      if (metadata?.dataOrigin === TraceEngine.Types.File.DataOrigin.CPU_PROFILE) {
         const profileEvent = traceEvents.find(e => e.name === 'CpuProfile');
         if (!profileEvent || !profileEvent.args?.data) {
           return;
@@ -1164,7 +1164,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     const traceParsedData = this.#traceEngineModel.traceParsedData(this.#viewMode.traceIndex);
     const isCpuProfile = this.#traceEngineModel.metadata(this.#viewMode.traceIndex)?.dataOrigin ===
-        TraceEngine.Types.File.DataOrigin.CPUProfile;
+        TraceEngine.Types.File.DataOrigin.CPU_PROFILE;
     if (!traceParsedData) {
       return;
     }
@@ -1577,7 +1577,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     );
 
     const isCpuProfile =
-        this.#traceEngineModel.metadata(traceIndex)?.dataOrigin === TraceEngine.Types.File.DataOrigin.CPUProfile;
+        this.#traceEngineModel.metadata(traceIndex)?.dataOrigin === TraceEngine.Types.File.DataOrigin.CPU_PROFILE;
     this.flameChart.setModel(traceParsedData, isCpuProfile);
     this.flameChart.resizeToPreferredHeights();
     // Reset the visual selection as we've just swapped to a new trace.

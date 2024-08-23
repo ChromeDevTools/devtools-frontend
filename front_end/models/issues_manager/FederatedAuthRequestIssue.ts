@@ -41,7 +41,7 @@ export class FederatedAuthRequestIssue extends Issue {
   }
 
   getCategory(): IssueCategory {
-    return IssueCategory.Other;
+    return IssueCategory.OTHER;
   }
 
   details(): Protocol.Audits.FederatedAuthRequestIssueDetails {
@@ -61,7 +61,7 @@ export class FederatedAuthRequestIssue extends Issue {
   }
 
   getKind(): IssueKind {
-    return IssueKind.PageError;
+    return IssueKind.PAGE_ERROR;
   }
 
   static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):

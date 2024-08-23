@@ -119,7 +119,7 @@ export class ElementsTreeOutline extends
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL)) {
       this.#issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
       this.#issuesManager.addEventListener(
-          IssuesManager.IssuesManager.Events.IssueAdded, this.#onIssueEventReceived, this);
+          IssuesManager.IssuesManager.Events.ISSUE_ADDED, this.#onIssueEventReceived, this);
       for (const issue of this.#issuesManager.issues()) {
         if (issue instanceof IssuesManager.GenericIssue.GenericIssue) {
           this.#onIssueAdded(issue);

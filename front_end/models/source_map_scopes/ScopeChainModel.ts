@@ -47,7 +47,7 @@ export class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   async #update(): Promise<void> {
     const scopeChain = await resolveScopeChain(this.#callFrame);
-    this.dispatchEventToListeners(Events.ScopeChainUpdated, new ScopeChain(scopeChain));
+    this.dispatchEventToListeners(Events.SCOPE_CHAIN_UPDATED, new ScopeChain(scopeChain));
   }
 
   #debugInfoAttached(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
@@ -65,11 +65,11 @@ export class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 }
 
 export const enum Events {
-  ScopeChainUpdated = 'ScopeChainUpdated',
+  SCOPE_CHAIN_UPDATED = 'ScopeChainUpdated',
 }
 
 export type EventTypes = {
-  [Events.ScopeChainUpdated]: ScopeChain,
+  [Events.SCOPE_CHAIN_UPDATED]: ScopeChain,
 };
 
 /**

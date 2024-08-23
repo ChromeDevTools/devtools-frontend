@@ -379,8 +379,10 @@ export const NodeSuffix = '\n});';
 export const NodeShebang = '#!/usr/bin/env node';
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   BindingCreated = 'BindingCreated',
   BindingRemoved = 'BindingRemoved',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export type EventTypes = {

@@ -227,7 +227,7 @@ export class FileOutputStream implements Common.StringOutputStream.OutputStream 
         await Workspace.FileManager.FileManager.instance().save(this.#fileName, '', true, false /* isBase64 */);
     if (saveResponse) {
       Workspace.FileManager.FileManager.instance().addEventListener(
-          Workspace.FileManager.Events.AppendedToURL, this.onAppendDone, this);
+          Workspace.FileManager.Events.APPENDED_TO_URL, this.onAppendDone, this);
     }
     return Boolean(saveResponse);
   }
@@ -245,7 +245,7 @@ export class FileOutputStream implements Common.StringOutputStream.OutputStream 
       return;
     }
     Workspace.FileManager.FileManager.instance().removeEventListener(
-        Workspace.FileManager.Events.AppendedToURL, this.onAppendDone, this);
+        Workspace.FileManager.Events.APPENDED_TO_URL, this.onAppendDone, this);
     Workspace.FileManager.FileManager.instance().close(this.#fileName);
   }
 
@@ -264,7 +264,7 @@ export class FileOutputStream implements Common.StringOutputStream.OutputStream 
       return;
     }
     Workspace.FileManager.FileManager.instance().removeEventListener(
-        Workspace.FileManager.Events.AppendedToURL, this.onAppendDone, this);
+        Workspace.FileManager.Events.APPENDED_TO_URL, this.onAppendDone, this);
     Workspace.FileManager.FileManager.instance().close(this.#fileName);
   }
 }

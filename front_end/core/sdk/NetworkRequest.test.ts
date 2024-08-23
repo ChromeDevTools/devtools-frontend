@@ -504,7 +504,7 @@ describeWithMockConnection('requestStreamingContent', () => {
     const maybeStreamingContent = await networkManager.requestForId('1')!.requestStreamingContent();
     assert.isFalse(TextUtils.StreamingContentData.isError(maybeStreamingContent));
     const streamingContent = maybeStreamingContent as TextUtils.StreamingContentData.StreamingContentData;
-    const eventPromise = streamingContent.once(TextUtils.StreamingContentData.Events.ChunkAdded);
+    const eventPromise = streamingContent.once(TextUtils.StreamingContentData.Events.CHUNK_ADDED);
 
     networkManager.dispatcher.dataReceived({
       requestId: '1' as Protocol.Network.RequestId,

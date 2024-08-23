@@ -122,7 +122,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       }
     }
 
-    this.dispatchEventToListeners(Events.Status, {
+    this.dispatchEventToListeners(Events.STATUS, {
       lcp: this.#lcpValue,
       cls: this.#clsValue,
       inp: this.#inpValue,
@@ -181,7 +181,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
         break;
       }
     }
-    this.dispatchEventToListeners(Events.Status, {
+    this.dispatchEventToListeners(Events.STATUS, {
       lcp: this.#lcpValue,
       cls: this.#clsValue,
       inp: this.#inpValue,
@@ -335,7 +335,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 }
 
 export const enum Events {
-  Status = 'status',
+  STATUS = 'status',
 }
 
 export type MetricValue = Pick<Spec.MetricChangeEvent, 'value'>;
@@ -359,5 +359,5 @@ export interface StatusEvent {
 }
 
 type EventTypes = {
-  [Events.Status]: StatusEvent,
+  [Events.STATUS]: StatusEvent,
 };

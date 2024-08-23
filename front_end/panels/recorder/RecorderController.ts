@@ -422,7 +422,7 @@ export class RecorderController extends LitElement {
       return;
     }
     const pluginManager = PublicExtensions.RecorderPluginManager.RecorderPluginManager.instance();
-    const promise = pluginManager.once(PublicExtensions.RecorderPluginManager.Events.ShowViewRequested);
+    const promise = pluginManager.once(PublicExtensions.RecorderPluginManager.Events.SHOW_VIEW_REQUESTED);
     extension.replay(this.currentRecording.flow);
     const descriptor = await promise;
     this.viewDescriptor = descriptor;

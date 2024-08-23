@@ -43,9 +43,9 @@ describeWithLocale('FederatedAuthUserInfoRequestIssue', () => {
       assert.lengthOf(federatedAuthUserInfoRequestIssues, 1);
       const federatedAuthUserInfoRequestIssue = federatedAuthUserInfoRequestIssues[0];
 
-      assert.strictEqual(federatedAuthUserInfoRequestIssue.getCategory(), IssuesManager.Issue.IssueCategory.Other);
+      assert.strictEqual(federatedAuthUserInfoRequestIssue.getCategory(), IssuesManager.Issue.IssueCategory.OTHER);
       assert.deepStrictEqual(federatedAuthUserInfoRequestIssue.details(), issueDetails);
-      assert.strictEqual(federatedAuthUserInfoRequestIssue.getKind(), IssuesManager.Issue.IssueKind.PageError);
+      assert.strictEqual(federatedAuthUserInfoRequestIssue.getKind(), IssuesManager.Issue.IssueKind.PAGE_ERROR);
       assert.isNotNull(federatedAuthUserInfoRequestIssue.getDescription());
     }
   });

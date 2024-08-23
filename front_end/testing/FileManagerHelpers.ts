@@ -14,7 +14,7 @@ export function stubFileManager(): StubbedFileManager {
   const fileManager = Workspace.FileManager.FileManager.instance() as StubbedFileManager;
   sinon.stub(fileManager, 'save').callsFake(async (file, _2, _3) => ({fileSystemPath: file}));
   sinon.stub(fileManager, 'append').callsFake(file => {
-    fileManager.dispatchEventToListeners(Workspace.FileManager.Events.AppendedToURL, file);
+    fileManager.dispatchEventToListeners(Workspace.FileManager.Events.APPENDED_TO_URL, file);
   });
   sinon.stub(fileManager, 'close');
 

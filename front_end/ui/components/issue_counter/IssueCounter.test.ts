@@ -199,9 +199,9 @@ describeWithLocale('IssueCounter', () => {
     it('renders correctly with only improvement issues', () => {
       const issuesManager = new MockIssuesManager([]);
       issuesManager.setNumberOfIssues(new Map([
-        [IssuesManager.Issue.IssueKind.Improvement, 3],
-        [IssuesManager.Issue.IssueKind.BreakingChange, 0],
-        [IssuesManager.Issue.IssueKind.PageError, 0],
+        [IssuesManager.Issue.IssueKind.IMPROVEMENT, 3],
+        [IssuesManager.Issue.IssueKind.BREAKING_CHANGE, 0],
+        [IssuesManager.Issue.IssueKind.PAGE_ERROR, 0],
       ]));
       const {shadowRoot} = renderIssueCounter({
         issuesManager: issuesManager as unknown as IssuesManager.IssuesManager.IssuesManager,

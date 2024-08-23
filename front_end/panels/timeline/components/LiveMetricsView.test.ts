@@ -155,7 +155,7 @@ describeWithMockConnection('LiveMetricsView', () => {
   it('should show interactions', async () => {
     const view = new Components.LiveMetricsView.LiveMetricsView();
     renderElementIntoDOM(view);
-    LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.Status, {
+    LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.STATUS, {
       interactions: [
         {duration: 500, interactionType: 'pointer'},
         {duration: 30, interactionType: 'keyboard'},

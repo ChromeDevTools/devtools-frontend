@@ -9,56 +9,56 @@ import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import {type MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
 export const enum IssueCode {
-  PermissionPolicyDisabled = 'AttributionReportingIssue::PermissionPolicyDisabled',
-  UntrustworthyReportingOrigin = 'AttributionReportingIssue::UntrustworthyReportingOrigin',
-  InsecureContext = 'AttributionReportingIssue::InsecureContext',
-  InvalidRegisterSourceHeader = 'AttributionReportingIssue::InvalidRegisterSourceHeader',
-  InvalidRegisterTriggerHeader = 'AttributionReportingIssue::InvalidRegisterTriggerHeader',
-  SourceAndTriggerHeaders = 'AttributionReportingIssue::SourceAndTriggerHeaders',
-  SourceIgnored = 'AttributionReportingIssue::SourceIgnored',
-  TriggerIgnored = 'AttributionReportingIssue::TriggerIgnored',
-  OsSourceIgnored = 'AttributionReportingIssue::OsSourceIgnored',
-  OsTriggerIgnored = 'AttributionReportingIssue::OsTriggerIgnored',
-  InvalidRegisterOsSourceHeader = 'AttributionReportingIssue::InvalidRegisterOsSourceHeader',
-  InvalidRegisterOsTriggerHeader = 'AttributionReportingIssue::InvalidRegisterOsTriggerHeader',
-  WebAndOsHeaders = 'AttributionReportingIssue::WebAndOsHeaders',
-  NavigationRegistrationWithoutTransientUserActivation =
+  PERMISSION_POLICY_DISABLED = 'AttributionReportingIssue::PermissionPolicyDisabled',
+  UNTRUSTWORTHY_REPORTING_ORIGIN = 'AttributionReportingIssue::UntrustworthyReportingOrigin',
+  INSECURE_CONTEXT = 'AttributionReportingIssue::InsecureContext',
+  INVALID_REGISTER_SOURCE_HEADER = 'AttributionReportingIssue::InvalidRegisterSourceHeader',
+  INVALID_REGISTER_TRIGGER_HEADER = 'AttributionReportingIssue::InvalidRegisterTriggerHeader',
+  SOURCE_AND_TRIGGER_HEADERS = 'AttributionReportingIssue::SourceAndTriggerHeaders',
+  SOURCE_IGNORED = 'AttributionReportingIssue::SourceIgnored',
+  TRIGGER_IGNORED = 'AttributionReportingIssue::TriggerIgnored',
+  OS_SOURCE_IGNORED = 'AttributionReportingIssue::OsSourceIgnored',
+  OS_TRIGGER_IGNORED = 'AttributionReportingIssue::OsTriggerIgnored',
+  INVALID_REGISTER_OS_SOURCE_HEADER = 'AttributionReportingIssue::InvalidRegisterOsSourceHeader',
+  INVALID_REGISTER_OS_TRIGGER_HEADER = 'AttributionReportingIssue::InvalidRegisterOsTriggerHeader',
+  WEB_AND_OS_HEADERS = 'AttributionReportingIssue::WebAndOsHeaders',
+  NAVIGATION_REGISTRATION_WITHOUT_TRANSIENT_USER_ACTIVATION =
       'AttributionReportingIssue::NavigationRegistrationWithoutTransientUserActivation',
-  Unknown = 'AttributionReportingIssue::Unknown',
+  UNKNOWN = 'AttributionReportingIssue::Unknown',
 }
 
 function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails): IssueCode {
   switch (details.violationType) {
     case Protocol.Audits.AttributionReportingIssueType.PermissionPolicyDisabled:
-      return IssueCode.PermissionPolicyDisabled;
+      return IssueCode.PERMISSION_POLICY_DISABLED;
     case Protocol.Audits.AttributionReportingIssueType.UntrustworthyReportingOrigin:
-      return IssueCode.UntrustworthyReportingOrigin;
+      return IssueCode.UNTRUSTWORTHY_REPORTING_ORIGIN;
     case Protocol.Audits.AttributionReportingIssueType.InsecureContext:
-      return IssueCode.InsecureContext;
+      return IssueCode.INSECURE_CONTEXT;
     case Protocol.Audits.AttributionReportingIssueType.InvalidHeader:
-      return IssueCode.InvalidRegisterSourceHeader;
+      return IssueCode.INVALID_REGISTER_SOURCE_HEADER;
     case Protocol.Audits.AttributionReportingIssueType.InvalidRegisterTriggerHeader:
-      return IssueCode.InvalidRegisterTriggerHeader;
+      return IssueCode.INVALID_REGISTER_TRIGGER_HEADER;
     case Protocol.Audits.AttributionReportingIssueType.SourceAndTriggerHeaders:
-      return IssueCode.SourceAndTriggerHeaders;
+      return IssueCode.SOURCE_AND_TRIGGER_HEADERS;
     case Protocol.Audits.AttributionReportingIssueType.SourceIgnored:
-      return IssueCode.SourceIgnored;
+      return IssueCode.SOURCE_IGNORED;
     case Protocol.Audits.AttributionReportingIssueType.TriggerIgnored:
-      return IssueCode.TriggerIgnored;
+      return IssueCode.TRIGGER_IGNORED;
     case Protocol.Audits.AttributionReportingIssueType.OsSourceIgnored:
-      return IssueCode.OsSourceIgnored;
+      return IssueCode.OS_SOURCE_IGNORED;
     case Protocol.Audits.AttributionReportingIssueType.OsTriggerIgnored:
-      return IssueCode.OsTriggerIgnored;
+      return IssueCode.OS_TRIGGER_IGNORED;
     case Protocol.Audits.AttributionReportingIssueType.InvalidRegisterOsSourceHeader:
-      return IssueCode.InvalidRegisterOsSourceHeader;
+      return IssueCode.INVALID_REGISTER_OS_SOURCE_HEADER;
     case Protocol.Audits.AttributionReportingIssueType.InvalidRegisterOsTriggerHeader:
-      return IssueCode.InvalidRegisterOsTriggerHeader;
+      return IssueCode.INVALID_REGISTER_OS_TRIGGER_HEADER;
     case Protocol.Audits.AttributionReportingIssueType.WebAndOsHeaders:
-      return IssueCode.WebAndOsHeaders;
+      return IssueCode.WEB_AND_OS_HEADERS;
     case Protocol.Audits.AttributionReportingIssueType.NavigationRegistrationWithoutTransientUserActivation:
-      return IssueCode.NavigationRegistrationWithoutTransientUserActivation;
+      return IssueCode.NAVIGATION_REGISTRATION_WITHOUT_TRANSIENT_USER_ACTIVATION;
     default:
-      return IssueCode.Unknown;
+      return IssueCode.UNKNOWN;
   }
 }
 
@@ -77,7 +77,7 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
   }
 
   getCategory(): IssueCategory {
-    return IssueCategory.AttributionReporting;
+    return IssueCategory.ATTRIBUTION_REPORTING;
   }
 
   getHeaderValidatorLink(name: string): {link: string, linkTitle: string} {
@@ -96,77 +96,77 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
 
   getDescription(): MarkdownIssueDescription|null {
     switch (this.code()) {
-      case IssueCode.PermissionPolicyDisabled:
+      case IssueCode.PERMISSION_POLICY_DISABLED:
         return {
           file: 'arPermissionPolicyDisabled.md',
           links: [],
         };
-      case IssueCode.UntrustworthyReportingOrigin:
+      case IssueCode.UNTRUSTWORTHY_REPORTING_ORIGIN:
         return {
           file: 'arUntrustworthyReportingOrigin.md',
           links: [],
         };
-      case IssueCode.InsecureContext:
+      case IssueCode.INSECURE_CONTEXT:
         return {
           file: 'arInsecureContext.md',
           links: [],
         };
-      case IssueCode.InvalidRegisterSourceHeader:
+      case IssueCode.INVALID_REGISTER_SOURCE_HEADER:
         return {
           file: 'arInvalidRegisterSourceHeader.md',
           links: [this.getHeaderValidatorLink('source')],
         };
-      case IssueCode.InvalidRegisterTriggerHeader:
+      case IssueCode.INVALID_REGISTER_TRIGGER_HEADER:
         return {
           file: 'arInvalidRegisterTriggerHeader.md',
           links: [this.getHeaderValidatorLink('trigger')],
         };
-      case IssueCode.InvalidRegisterOsSourceHeader:
+      case IssueCode.INVALID_REGISTER_OS_SOURCE_HEADER:
         return {
           file: 'arInvalidRegisterOsSourceHeader.md',
           links: [this.getHeaderValidatorLink('os-source')],
         };
-      case IssueCode.InvalidRegisterOsTriggerHeader:
+      case IssueCode.INVALID_REGISTER_OS_TRIGGER_HEADER:
         return {
           file: 'arInvalidRegisterOsTriggerHeader.md',
           links: [this.getHeaderValidatorLink('os-trigger')],
         };
-      case IssueCode.SourceAndTriggerHeaders:
+      case IssueCode.SOURCE_AND_TRIGGER_HEADERS:
         return {
           file: 'arSourceAndTriggerHeaders.md',
           links: [],
         };
-      case IssueCode.WebAndOsHeaders:
+      case IssueCode.WEB_AND_OS_HEADERS:
         return {
           file: 'arWebAndOsHeaders.md',
           links: [],
         };
-      case IssueCode.SourceIgnored:
+      case IssueCode.SOURCE_IGNORED:
         return {
           file: 'arSourceIgnored.md',
           links: [structuredHeaderLink],
         };
-      case IssueCode.TriggerIgnored:
+      case IssueCode.TRIGGER_IGNORED:
         return {
           file: 'arTriggerIgnored.md',
           links: [structuredHeaderLink],
         };
-      case IssueCode.OsSourceIgnored:
+      case IssueCode.OS_SOURCE_IGNORED:
         return {
           file: 'arOsSourceIgnored.md',
           links: [structuredHeaderLink],
         };
-      case IssueCode.OsTriggerIgnored:
+      case IssueCode.OS_TRIGGER_IGNORED:
         return {
           file: 'arOsTriggerIgnored.md',
           links: [structuredHeaderLink],
         };
-      case IssueCode.NavigationRegistrationWithoutTransientUserActivation:
+      case IssueCode.NAVIGATION_REGISTRATION_WITHOUT_TRANSIENT_USER_ACTIVATION:
         return {
           file: 'arNavigationRegistrationWithoutTransientUserActivation.md',
           links: [],
         };
-      case IssueCode.Unknown:
+      case IssueCode.UNKNOWN:
         return null;
     }
   }
@@ -177,22 +177,22 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
 
   getKind(): IssueKind {
     switch (this.code()) {
-      case IssueCode.PermissionPolicyDisabled:
-      case IssueCode.UntrustworthyReportingOrigin:
-      case IssueCode.InsecureContext:
-      case IssueCode.InvalidRegisterSourceHeader:
-      case IssueCode.InvalidRegisterTriggerHeader:
-      case IssueCode.InvalidRegisterOsSourceHeader:
-      case IssueCode.InvalidRegisterOsTriggerHeader:
-      case IssueCode.SourceAndTriggerHeaders:
-      case IssueCode.WebAndOsHeaders:
-      case IssueCode.SourceIgnored:
-      case IssueCode.TriggerIgnored:
-      case IssueCode.OsSourceIgnored:
-      case IssueCode.OsTriggerIgnored:
-      case IssueCode.NavigationRegistrationWithoutTransientUserActivation:
-      case IssueCode.Unknown:
-        return IssueKind.PageError;
+      case IssueCode.PERMISSION_POLICY_DISABLED:
+      case IssueCode.UNTRUSTWORTHY_REPORTING_ORIGIN:
+      case IssueCode.INSECURE_CONTEXT:
+      case IssueCode.INVALID_REGISTER_SOURCE_HEADER:
+      case IssueCode.INVALID_REGISTER_TRIGGER_HEADER:
+      case IssueCode.INVALID_REGISTER_OS_SOURCE_HEADER:
+      case IssueCode.INVALID_REGISTER_OS_TRIGGER_HEADER:
+      case IssueCode.SOURCE_AND_TRIGGER_HEADERS:
+      case IssueCode.WEB_AND_OS_HEADERS:
+      case IssueCode.SOURCE_IGNORED:
+      case IssueCode.TRIGGER_IGNORED:
+      case IssueCode.OS_SOURCE_IGNORED:
+      case IssueCode.OS_TRIGGER_IGNORED:
+      case IssueCode.NAVIGATION_REGISTRATION_WITHOUT_TRANSIENT_USER_ACTIVATION:
+      case IssueCode.UNKNOWN:
+        return IssueKind.PAGE_ERROR;
     }
   }
 

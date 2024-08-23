@@ -234,17 +234,17 @@ describeWithMockConnection('ConsoleView', () => {
     consoleView.markAsRoot();
     const spy = sinon.spy(consoleView, 'issuesCountUpdatedForTest');
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
-    issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.IssuesCountUpdated);
+    issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED);
     assert.isTrue(spy.calledOnce);
 
     // Pauses updating the issue counter
     consoleView.onDetach();
-    issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.IssuesCountUpdated);
+    issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED);
     assert.isTrue(spy.calledOnce);
 
     // Continues updating the issue counter
     consoleView.show(document.body);
-    issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.IssuesCountUpdated);
+    issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED);
     assert.isTrue(spy.calledTwice);
   });
 });

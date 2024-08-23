@@ -12,14 +12,14 @@ export class EventsSerializer {
   keyForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): TraceEngine.Types.File.TraceEventSerializableKey
       |null {
     if (TraceEngine.Types.TraceEvents.isProfileCall(event)) {
-      return `${TraceEngine.Types.File.EventKeyType.ProfileCall}-${event.pid}-${event.tid}-${
+      return `${TraceEngine.Types.File.EventKeyType.PROFILE_CALL}-${event.pid}-${event.tid}-${
           TraceEngine.Types.TraceEvents.SampleIndex(event.sampleIndex)}-${event.nodeId}`;
     }
     const rawEvents = TraceEngine.Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager().getRawTraceEvents();
     const key: TraceEngine.Types.File.SyntheticEventKey|TraceEngine.Types.File.RawEventKey =
         TraceEngine.Types.TraceEvents.isSyntheticBasedEvent(event) ?
-        `${TraceEngine.Types.File.EventKeyType.SyntheticEvent}-${rawEvents.indexOf(event.rawSourceEvent)}` :
-        `${TraceEngine.Types.File.EventKeyType.RawEvent}-${rawEvents.indexOf(event)}`;
+        `${TraceEngine.Types.File.EventKeyType.SYNTHETIC_EVENT}-${rawEvents.indexOf(event.rawSourceEvent)}` :
+        `${TraceEngine.Types.File.EventKeyType.RAW_EVENT}-${rawEvents.indexOf(event)}`;
     if (key.length < 3) {
       return null;
     }
@@ -55,15 +55,15 @@ export class EventsSerializer {
 
   static isProfileCallKey(key: TraceEngine.Types.File.TraceEventSerializableKeyValues):
       key is TraceEngine.Types.File.ProfileCallKeyValues {
-    return key.type === TraceEngine.Types.File.EventKeyType.ProfileCall;
+    return key.type === TraceEngine.Types.File.EventKeyType.PROFILE_CALL;
   }
   static isRawEventKey(key: TraceEngine.Types.File.TraceEventSerializableKeyValues):
       key is TraceEngine.Types.File.RawEventKeyValues {
-    return key.type === TraceEngine.Types.File.EventKeyType.RawEvent;
+    return key.type === TraceEngine.Types.File.EventKeyType.RAW_EVENT;
   }
   static isSyntheticEventKey(key: TraceEngine.Types.File.TraceEventSerializableKeyValues):
       key is TraceEngine.Types.File.SyntheticEventKeyValues {
-    return key.type === TraceEngine.Types.File.EventKeyType.SyntheticEvent;
+    return key.type === TraceEngine.Types.File.EventKeyType.SYNTHETIC_EVENT;
   }
 
   #getModifiedProfileCallByKeyValues(

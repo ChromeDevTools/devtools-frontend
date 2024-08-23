@@ -122,27 +122,27 @@ class IssueCategoryView extends UI.TreeOutline.TreeElement {
 
   getCategoryName(): string {
     switch (this.#category) {
-      case IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy:
+      case IssuesManager.Issue.IssueCategory.CROSS_ORIGIN_EMBEDDER_POLICY:
         return i18nString(UIStrings.crossOriginEmbedderPolicy);
-      case IssuesManager.Issue.IssueCategory.MixedContent:
+      case IssuesManager.Issue.IssueCategory.MIXED_CONTENT:
         return i18nString(UIStrings.mixedContent);
-      case IssuesManager.Issue.IssueCategory.Cookie:
+      case IssuesManager.Issue.IssueCategory.COOKIE:
         return i18nString(UIStrings.samesiteCookie);
-      case IssuesManager.Issue.IssueCategory.HeavyAd:
+      case IssuesManager.Issue.IssueCategory.HEAVY_AD:
         return i18nString(UIStrings.heavyAds);
-      case IssuesManager.Issue.IssueCategory.ContentSecurityPolicy:
+      case IssuesManager.Issue.IssueCategory.CONTENT_SECURITY_POLICY:
         return i18nString(UIStrings.contentSecurityPolicy);
-      case IssuesManager.Issue.IssueCategory.LowTextContrast:
+      case IssuesManager.Issue.IssueCategory.LOW_TEXT_CONTRAST:
         return i18nString(UIStrings.lowTextContrast);
-      case IssuesManager.Issue.IssueCategory.Cors:
+      case IssuesManager.Issue.IssueCategory.CORS:
         return i18nString(UIStrings.cors);
-      case IssuesManager.Issue.IssueCategory.AttributionReporting:
+      case IssuesManager.Issue.IssueCategory.ATTRIBUTION_REPORTING:
         return i18nString(UIStrings.attributionReporting);
-      case IssuesManager.Issue.IssueCategory.QuirksMode:
+      case IssuesManager.Issue.IssueCategory.QUIRKS_MODE:
         return i18nString(UIStrings.quirksMode);
-      case IssuesManager.Issue.IssueCategory.Generic:
+      case IssuesManager.Issue.IssueCategory.GENERIC:
         return i18nString(UIStrings.generic);
-      case IssuesManager.Issue.IssueCategory.Other:
+      case IssuesManager.Issue.IssueCategory.OTHER:
         return i18nString(UIStrings.other);
     }
   }
@@ -214,7 +214,7 @@ export class IssuesPane extends UI.Widget.VBox {
     this.#hiddenIssuesRow.hidden = this.#issuesManager.numberOfHiddenIssues() === 0;
     this.#onFullUpdate();
     this.#issuesManager.addEventListener(
-        IssuesManager.IssuesManager.Events.IssuesCountUpdated, this.#updateCounts, this);
+        IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED, this.#updateCounts, this);
   }
 
   override elementsToRestoreScrollPositionsFor(): Element[] {

@@ -241,7 +241,7 @@ export class HTMLModel {
   #tagEndOffset?: number|null;
 
   constructor(text: string) {
-    this.#state = ParseState.Initial;
+    this.#state = ParseState.INITIAL;
     this.#documentInternal = new FormatterElement('document');
     this.#documentInternal.openTag = new Tag('document', 0, 0, new Map(), true, false);
     this.#documentInternal.closeTag = new Tag('document', text.length, text.length, new Map(), false, false);
@@ -379,39 +379,39 @@ export class HTMLModel {
     const value = token.value;
     const type = token.type;
     switch (this.#state) {
-      case ParseState.Initial:
+      case ParseState.INITIAL:
         if (hasTokenInSet(type, 'bracket') && (value === '<' || value === '</')) {
           this.#onStartTag(token);
-          this.#state = ParseState.Tag;
+          this.#state = ParseState.TAG;
         }
         return;
-      case ParseState.Tag:
+      case ParseState.TAG:
         if (hasTokenInSet(type, 'tag') && !hasTokenInSet(type, 'bracket')) {
           this.#tagName = value.trim().toLowerCase();
         } else if (hasTokenInSet(type, 'attribute')) {
           this.#attributeName = value.trim().toLowerCase();
           this.#attributes.set(this.#attributeName, '');
-          this.#state = ParseState.AttributeName;
+          this.#state = ParseState.ATTRIBUTE_NAME;
         } else if (hasTokenInSet(type, 'bracket') && (value === '>' || value === '/>')) {
           this.#onEndTag(token);
-          this.#state = ParseState.Initial;
+          this.#state = ParseState.INITIAL;
         }
         return;
-      case ParseState.AttributeName:
+      case ParseState.ATTRIBUTE_NAME:
         if (!type.size && value === '=') {
-          this.#state = ParseState.AttributeValue;
+          this.#state = ParseState.ATTRIBUTE_VALUE;
         } else if (hasTokenInSet(type, 'bracket') && (value === '>' || value === '/>')) {
           this.#onEndTag(token);
-          this.#state = ParseState.Initial;
+          this.#state = ParseState.INITIAL;
         }
         return;
-      case ParseState.AttributeValue:
+      case ParseState.ATTRIBUTE_VALUE:
         if (hasTokenInSet(type, 'string')) {
           this.#attributes.set(this.#attributeName, value);
-          this.#state = ParseState.Tag;
+          this.#state = ParseState.TAG;
         } else if (hasTokenInSet(type, 'bracket') && (value === '>' || value === '/>')) {
           this.#onEndTag(token);
-          this.#state = ParseState.Initial;
+          this.#state = ParseState.INITIAL;
         }
         return;
     }
@@ -546,10 +546,10 @@ const AutoClosingTags = new Map([
 ]);
 
 const enum ParseState {
-  Initial = 'Initial',
-  Tag = 'Tag',
-  AttributeName = 'AttributeName',
-  AttributeValue = 'AttributeValue',
+  INITIAL = 'Initial',
+  TAG = 'Tag',
+  ATTRIBUTE_NAME = 'AttributeName',
+  ATTRIBUTE_VALUE = 'AttributeValue',
 }
 
 class Token {

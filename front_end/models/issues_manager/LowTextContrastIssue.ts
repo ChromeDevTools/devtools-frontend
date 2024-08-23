@@ -33,7 +33,7 @@ export class LowTextContrastIssue extends Issue {
   }
 
   getCategory(): IssueCategory {
-    return IssueCategory.LowTextContrast;
+    return IssueCategory.LOW_TEXT_CONTRAST;
   }
 
   details(): Protocol.Audits.LowTextContrastIssueDetails {
@@ -53,7 +53,7 @@ export class LowTextContrastIssue extends Issue {
   }
 
   getKind(): IssueKind {
-    return IssueKind.Improvement;
+    return IssueKind.IMPROVEMENT;
   }
 
   static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):

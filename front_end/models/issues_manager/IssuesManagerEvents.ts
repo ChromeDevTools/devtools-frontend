@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 export const enum Events {
-  IssuesCountUpdated = 'IssuesCountUpdated',
-  IssueAdded = 'IssueAdded',
-  FullUpdateRequired = 'FullUpdateRequired',
+  ISSUES_COUNT_UPDATED = 'IssuesCountUpdated',
+  ISSUE_ADDED = 'IssueAdded',
+  FULL_UPDATE_REQUIRED = 'FullUpdateRequired',
 }

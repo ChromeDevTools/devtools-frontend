@@ -251,7 +251,7 @@ export class LayoutShiftRootCauses {
 
     const eventTriggersLayout = ({name}: {name: string}): boolean => {
       const knownName = name as Types.TraceEvents.KnownEventName;
-      return knownName === Types.TraceEvents.KnownEventName.Layout;
+      return knownName === Types.TraceEvents.KnownEventName.LAYOUT;
     };
     const layoutEvents = modelData.Renderer.allTraceEntries.filter(eventTriggersLayout);
     for (const layout of layoutEvents) {

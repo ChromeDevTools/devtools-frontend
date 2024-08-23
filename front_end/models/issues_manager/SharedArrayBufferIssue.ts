@@ -29,7 +29,7 @@ export class SharedArrayBufferIssue extends Issue {
   }
 
   getCategory(): IssueCategory {
-    return IssueCategory.Other;
+    return IssueCategory.OTHER;
   }
 
   details(): Protocol.Audits.SharedArrayBufferIssueDetails {
@@ -52,9 +52,9 @@ export class SharedArrayBufferIssue extends Issue {
 
   getKind(): IssueKind {
     if (this.#issueDetails.isWarning) {
-      return IssueKind.BreakingChange;
+      return IssueKind.BREAKING_CHANGE;
     }
-    return IssueKind.PageError;
+    return IssueKind.PAGE_ERROR;
   }
 
   static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):

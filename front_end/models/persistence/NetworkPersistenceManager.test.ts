@@ -668,7 +668,7 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
 
     const eventURLs: string[] = [];
     networkPersistenceManager.addEventListener(
-        Persistence.NetworkPersistenceManager.Events.RequestsForHeaderOverridesFileChanged, event => {
+        Persistence.NetworkPersistenceManager.Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED, event => {
           eventURLs.push(event.data.url());
         });
 

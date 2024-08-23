@@ -397,7 +397,7 @@ describeWithMockConnection('CrUXManager', () => {
 
     beforeEach(() => {
       eventBodies = [];
-      cruxManager.addEventListener(CrUXManager.Events.FieldDataChanged, event => {
+      cruxManager.addEventListener(CrUXManager.Events.FIELD_DATA_CHANGED, event => {
         eventBodies.push(event.data);
       });
       getFieldDataMock = sinon.stub(cruxManager, 'getFieldDataForCurrentPage');

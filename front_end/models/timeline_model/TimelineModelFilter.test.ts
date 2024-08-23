@@ -15,7 +15,7 @@ describe('TimelineModelFilter', () => {
 
       const visibleFilter = new TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter([
         // Set an random record type to be visible - the exact type is not important for the test.
-        TraceEngine.Types.TraceEvents.KnownEventName.UserTiming,
+        TraceEngine.Types.TraceEvents.KnownEventName.USER_TIMING,
       ]);
 
       assert.isTrue(visibleFilter.accept(userTimingEvent));
@@ -28,7 +28,7 @@ describe('TimelineModelFilter', () => {
         assert.isOk(consoleTimingEvent);
         assert.strictEqual(
             TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(consoleTimingEvent),
-            TraceEngine.Types.TraceEvents.KnownEventName.ConsoleTime);
+            TraceEngine.Types.TraceEvents.KnownEventName.CONSOLE_TIME);
       });
 
       it('returns UserTiming if the event has the blink.user_timing category', async function() {
@@ -37,7 +37,7 @@ describe('TimelineModelFilter', () => {
         assert.isOk(userTimingEvent);
         assert.strictEqual(
             TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(userTimingEvent),
-            TraceEngine.Types.TraceEvents.KnownEventName.UserTiming);
+            TraceEngine.Types.TraceEvents.KnownEventName.USER_TIMING);
       });
 
       it('returns the event name if the event is any other category', async function() {
@@ -46,7 +46,7 @@ describe('TimelineModelFilter', () => {
         assert.isOk(layoutShiftEvent);
         assert.strictEqual(
             TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(layoutShiftEvent),
-            TraceEngine.Types.TraceEvents.KnownEventName.LayoutShift);
+            TraceEngine.Types.TraceEvents.KnownEventName.LAYOUT_SHIFT);
       });
     });
   });
@@ -58,7 +58,7 @@ describe('TimelineModelFilter', () => {
       assert.isOk(userTimingEvent);
 
       const invisibleFilter = new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([
-        TraceEngine.Types.TraceEvents.KnownEventName.UserTiming,
+        TraceEngine.Types.TraceEvents.KnownEventName.USER_TIMING,
 
       ]);
       assert.isFalse(invisibleFilter.accept(userTimingEvent));
@@ -70,7 +70,7 @@ describe('TimelineModelFilter', () => {
       assert.isOk(layoutShiftEvent);
 
       const invisibleFilter = new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([
-        TraceEngine.Types.TraceEvents.KnownEventName.UserTiming,
+        TraceEngine.Types.TraceEvents.KnownEventName.USER_TIMING,
 
       ]);
       assert.isTrue(invisibleFilter.accept(layoutShiftEvent));
@@ -84,7 +84,7 @@ describe('TimelineModelFilter', () => {
       assert.isOk(userTimingEvent);
 
       const filter = new TimelineModel.TimelineModelFilter.ExclusiveNameFilter([
-        TraceEngine.Types.TraceEvents.KnownEventName.LayoutShift,
+        TraceEngine.Types.TraceEvents.KnownEventName.LAYOUT_SHIFT,
       ]);
       assert.isTrue(filter.accept(userTimingEvent));
     });
@@ -95,7 +95,7 @@ describe('TimelineModelFilter', () => {
       assert.isOk(layoutShiftEvent);
 
       const filter = new TimelineModel.TimelineModelFilter.ExclusiveNameFilter([
-        TraceEngine.Types.TraceEvents.KnownEventName.LayoutShift,
+        TraceEngine.Types.TraceEvents.KnownEventName.LAYOUT_SHIFT,
       ]);
       assert.isFalse(filter.accept(layoutShiftEvent));
     });

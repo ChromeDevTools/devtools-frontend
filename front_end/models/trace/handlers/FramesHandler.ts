@@ -102,7 +102,7 @@ function isFrameEvent(event: Types.TraceEvents.TraceEventData): event is FrameEv
 
 function entryIsTopLevel(entry: Types.TraceEvents.TraceEventData): boolean {
   const devtoolsTimelineCategory = 'disabled-by-default-devtools.timeline';
-  return entry.name === Types.TraceEvents.KnownEventName.RunTask && entry.cat.includes(devtoolsTimelineCategory);
+  return entry.name === Types.TraceEvents.KnownEventName.RUN_TASK && entry.cat.includes(devtoolsTimelineCategory);
 }
 
 export class TimelineFrameModel {
@@ -383,10 +383,10 @@ export class TimelineFrameModel {
 }
 
 const MAIN_FRAME_MARKERS = new Set<Types.TraceEvents.KnownEventName>([
-  Types.TraceEvents.KnownEventName.ScheduleStyleRecalculation,
-  Types.TraceEvents.KnownEventName.InvalidateLayout,
-  Types.TraceEvents.KnownEventName.BeginMainThreadFrame,
-  Types.TraceEvents.KnownEventName.ScrollLayer,
+  Types.TraceEvents.KnownEventName.SCHEDULE_STYLE_RECALCULATION,
+  Types.TraceEvents.KnownEventName.INVALIDATE_LAYOUT,
+  Types.TraceEvents.KnownEventName.BEGIN_MAIN_THREAD_FRAME,
+  Types.TraceEvents.KnownEventName.SCROLL_LAYER,
 ]);
 
 export interface FrameLayerTreeData {

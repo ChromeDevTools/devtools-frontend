@@ -30,7 +30,7 @@ describeWithMockConnection('IssuesManager', () => {
 
     const dispatchedIssues: IssuesManager.Issue.Issue[] = [];
     issuesManager.addEventListener(
-        IssuesManager.IssuesManager.Events.IssueAdded, event => dispatchedIssues.push(event.data.issue));
+        IssuesManager.IssuesManager.Events.ISSUE_ADDED, event => dispatchedIssues.push(event.data.issue));
 
     model.dispatchEventToListeners(
         SDK.IssuesModel.Events.ISSUE_ADDED, {issuesModel: model, inspectorIssue: mkInspectorCspIssue('url1')});
@@ -55,7 +55,7 @@ describeWithMockConnection('IssuesManager', () => {
 
     const dispatchedIssues: IssuesManager.Issue.Issue[] = [];
     issuesManager.addEventListener(
-        IssuesManager.IssuesManager.Events.IssueAdded, event => dispatchedIssues.push(event.data.issue));
+        IssuesManager.IssuesManager.Events.ISSUE_ADDED, event => dispatchedIssues.push(event.data.issue));
 
     model.dispatchEventToListeners(
         SDK.IssuesModel.Events.ISSUE_ADDED, {issuesModel: model, inspectorIssue: mkInspectorCspIssue('url1')});
@@ -114,7 +114,7 @@ describeWithMockConnection('IssuesManager', () => {
 
     const firedIssueAddedEventCodes: string[] = [];
     issuesManager.addEventListener(
-        IssuesManager.IssuesManager.Events.IssueAdded,
+        IssuesManager.IssuesManager.Events.ISSUE_ADDED,
         event => firedIssueAddedEventCodes.push(event.data.issue.code()));
 
     for (const issue of issues) {
@@ -132,9 +132,9 @@ describeWithMockConnection('IssuesManager', () => {
   });
 
   it('reports issue counts by kind', () => {
-    const issue1 = new StubIssue('StubIssue1', ['id1'], [], IssuesManager.Issue.IssueKind.Improvement);
-    const issue2 = new StubIssue('StubIssue1', ['id2'], [], IssuesManager.Issue.IssueKind.Improvement);
-    const issue3 = new StubIssue('StubIssue1', ['id3'], [], IssuesManager.Issue.IssueKind.BreakingChange);
+    const issue1 = new StubIssue('StubIssue1', ['id1'], [], IssuesManager.Issue.IssueKind.IMPROVEMENT);
+    const issue2 = new StubIssue('StubIssue1', ['id2'], [], IssuesManager.Issue.IssueKind.IMPROVEMENT);
+    const issue3 = new StubIssue('StubIssue1', ['id3'], [], IssuesManager.Issue.IssueKind.BREAKING_CHANGE);
 
     const issuesManager = new IssuesManager.IssuesManager.IssuesManager();
 
@@ -143,9 +143,9 @@ describeWithMockConnection('IssuesManager', () => {
     issuesManager.addIssue(model, issue3);
 
     assert.deepStrictEqual(issuesManager.numberOfIssues(), 3);
-    assert.deepStrictEqual(issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.Improvement), 2);
-    assert.deepStrictEqual(issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.BreakingChange), 1);
-    assert.deepStrictEqual(issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.PageError), 0);
+    assert.deepStrictEqual(issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.IMPROVEMENT), 2);
+    assert.deepStrictEqual(issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.BREAKING_CHANGE), 1);
+    assert.deepStrictEqual(issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.PAGE_ERROR), 0);
   });
 
   describe('instance', () => {
@@ -171,7 +171,7 @@ describeWithMockConnection('IssuesManager', () => {
         new IssuesManager.IssuesManager.IssuesManager(showThirdPartyIssuesSetting, hideIssueByCodeSetting);
 
     const hiddenIssues: string[] = [];
-    issuesManager.addEventListener(IssuesManager.IssuesManager.Events.IssueAdded, event => {
+    issuesManager.addEventListener(IssuesManager.IssuesManager.Events.ISSUE_ADDED, event => {
       if (event.data.issue.isHidden()) {
         hiddenIssues.push(event.data.issue.code());
       }
@@ -182,8 +182,8 @@ describeWithMockConnection('IssuesManager', () => {
     // These settings have been updated by clicking on "hide issue" and cause the updateHiddenIssues
     // method to be called. These issues are being added to the IssuesManager after this has happened.
     hideIssueByCodeSetting.set({
-      'HiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.Hidden,
-      'HiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.Hidden,
+      'HiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.HIDDEN,
+      'HiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.HIDDEN,
     });
 
     for (const issue of issues) {
@@ -207,7 +207,7 @@ describeWithMockConnection('IssuesManager', () => {
         new IssuesManager.IssuesManager.IssuesManager(showThirdPartyIssuesSetting, hideIssueByCodeSetting);
 
     let hiddenIssues: string[] = [];
-    issuesManager.addEventListener(IssuesManager.IssuesManager.Events.FullUpdateRequired, () => {
+    issuesManager.addEventListener(IssuesManager.IssuesManager.Events.FULL_UPDATE_REQUIRED, () => {
       hiddenIssues = [];
       for (const issue of issuesManager.issues()) {
         if (issue.isHidden()) {
@@ -220,13 +220,13 @@ describeWithMockConnection('IssuesManager', () => {
     }
     // Setting is updated by clicking on "hide issue".
     hideIssueByCodeSetting.set({
-      'HiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.Hidden,
+      'HiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.HIDDEN,
     });
     assert.deepStrictEqual(hiddenIssues, ['HiddenStubIssue1']);
 
     hideIssueByCodeSetting.set({
-      'HiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.Hidden,
-      'HiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.Hidden,
+      'HiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.HIDDEN,
+      'HiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.HIDDEN,
     });
     assert.deepStrictEqual(hiddenIssues, ['HiddenStubIssue1', 'HiddenStubIssue2']);
   });
@@ -247,13 +247,13 @@ describeWithMockConnection('IssuesManager', () => {
       issuesManager.addIssue(model, issue);
     }
     hideIssueByCodeSetting.set({
-      'HiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.Hidden,
-      'HiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.Hidden,
-      'UnhiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.Hidden,
-      'UnhiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.Hidden,
+      'HiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.HIDDEN,
+      'HiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.HIDDEN,
+      'UnhiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.HIDDEN,
+      'UnhiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.HIDDEN,
     });
     let unhiddenIssues: string[] = [];
-    issuesManager.addEventListener(IssuesManager.IssuesManager.Events.FullUpdateRequired, () => {
+    issuesManager.addEventListener(IssuesManager.IssuesManager.Events.FULL_UPDATE_REQUIRED, () => {
       unhiddenIssues = [];
       for (const issue of issuesManager.issues()) {
         if (!issue.isHidden()) {
@@ -264,18 +264,18 @@ describeWithMockConnection('IssuesManager', () => {
 
     // Setting updated by clicking on "unhide issue"
     hideIssueByCodeSetting.set({
-      'HiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.Hidden,
-      'HiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.Hidden,
-      'UnhiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.Unhidden,
-      'UnhiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.Hidden,
+      'HiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.HIDDEN,
+      'HiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.HIDDEN,
+      'UnhiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.UNHIDDEN,
+      'UnhiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.HIDDEN,
     });
     assert.deepStrictEqual(unhiddenIssues, ['UnhiddenStubIssue1']);
 
     hideIssueByCodeSetting.set({
-      'HiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.Hidden,
-      'HiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.Hidden,
-      'UnhiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.Unhidden,
-      'UnhiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.Unhidden,
+      'HiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.HIDDEN,
+      'HiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.HIDDEN,
+      'UnhiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.UNHIDDEN,
+      'UnhiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.UNHIDDEN,
     });
     assert.deepStrictEqual(unhiddenIssues, ['UnhiddenStubIssue1', 'UnhiddenStubIssue2']);
   });
@@ -296,13 +296,13 @@ describeWithMockConnection('IssuesManager', () => {
       issuesManager.addIssue(model, issue);
     }
     hideIssueByCodeSetting.set({
-      'HiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.Hidden,
-      'HiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.Hidden,
-      'UnhiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.Hidden,
-      'UnhiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.Hidden,
+      'HiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.HIDDEN,
+      'HiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.HIDDEN,
+      'UnhiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.HIDDEN,
+      'UnhiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.HIDDEN,
     });
     let unhiddenIssues: string[] = [];
-    issuesManager.addEventListener(IssuesManager.IssuesManager.Events.FullUpdateRequired, () => {
+    issuesManager.addEventListener(IssuesManager.IssuesManager.Events.FULL_UPDATE_REQUIRED, () => {
       unhiddenIssues = [];
       for (const issue of issuesManager.issues()) {
         if (!issue.isHidden()) {
@@ -318,7 +318,7 @@ describeWithMockConnection('IssuesManager', () => {
   it('send update event on scope change', async () => {
     const issuesManager = new IssuesManager.IssuesManager.IssuesManager();
 
-    const updateRequired = issuesManager.once(IssuesManager.IssuesManager.Events.FullUpdateRequired);
+    const updateRequired = issuesManager.once(IssuesManager.IssuesManager.Events.FULL_UPDATE_REQUIRED);
     const anotherTarget = createTarget();
     SDK.TargetManager.TargetManager.instance().setScopeTarget(anotherTarget);
     await updateRequired;

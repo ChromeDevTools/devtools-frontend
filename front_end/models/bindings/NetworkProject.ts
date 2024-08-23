@@ -58,8 +58,8 @@ export class NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper<Ev
 }
 
 export const enum Events {
-  FrameAttributionAdded = 'FrameAttributionAdded',
-  FrameAttributionRemoved = 'FrameAttributionRemoved',
+  FRAME_ATTRIBUTION_ADDED = 'FrameAttributionAdded',
+  FRAME_ATTRIBUTION_REMOVED = 'FrameAttributionRemoved',
 }
 
 export interface FrameAttributionEvent {
@@ -68,8 +68,8 @@ export interface FrameAttributionEvent {
 }
 
 export type EventTypes = {
-  [Events.FrameAttributionAdded]: FrameAttributionEvent,
-  [Events.FrameAttributionRemoved]: FrameAttributionEvent,
+  [Events.FRAME_ATTRIBUTION_ADDED]: FrameAttributionEvent,
+  [Events.FRAME_ATTRIBUTION_REMOVED]: FrameAttributionEvent,
 };
 
 export class NetworkProject {
@@ -134,7 +134,7 @@ export class NetworkProject {
     }
 
     const data = {uiSourceCode: uiSourceCode, frame: frame};
-    NetworkProjectManager.instance().dispatchEventToListeners(Events.FrameAttributionAdded, data);
+    NetworkProjectManager.instance().dispatchEventToListeners(Events.FRAME_ATTRIBUTION_ADDED, data);
   }
 
   static removeFrameAttribution(uiSourceCode: Workspace.UISourceCode.UISourceCode, frameId: Protocol.Page.FrameId):
@@ -154,7 +154,7 @@ export class NetworkProject {
     }
     frameAttribution.delete(frameId);
     const data = {uiSourceCode: uiSourceCode, frame: attributionInfo.frame};
-    NetworkProjectManager.instance().dispatchEventToListeners(Events.FrameAttributionRemoved, data);
+    NetworkProjectManager.instance().dispatchEventToListeners(Events.FRAME_ATTRIBUTION_REMOVED, data);
   }
 
   static targetForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Target.Target|null {

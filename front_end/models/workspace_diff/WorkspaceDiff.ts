@@ -47,12 +47,12 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventT
 
   subscribeToDiffChange(uiSourceCode: Workspace.UISourceCode.UISourceCode, callback: () => void, thisObj?: Object):
       void {
-    this.uiSourceCodeDiff(uiSourceCode).addEventListener(UISourceCodeDiffEvents.DiffChanged, callback, thisObj);
+    this.uiSourceCodeDiff(uiSourceCode).addEventListener(UISourceCodeDiffEvents.DIFF_CHANGED, callback, thisObj);
   }
 
   unsubscribeFromDiffChange(uiSourceCode: Workspace.UISourceCode.UISourceCode, callback: () => void, thisObj?: Object):
       void {
-    this.uiSourceCodeDiff(uiSourceCode).removeEventListener(UISourceCodeDiffEvents.DiffChanged, callback, thisObj);
+    this.uiSourceCodeDiff(uiSourceCode).removeEventListener(UISourceCodeDiffEvents.DIFF_CHANGED, callback, thisObj);
   }
 
   modifiedUISourceCodes(): Workspace.UISourceCode.UISourceCode[] {
@@ -107,7 +107,7 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventT
   private markAsUnmodified(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     this.uiSourceCodeProcessedForTest();
     if (this.modifiedUISourceCodesInternal.delete(uiSourceCode)) {
-      this.dispatchEventToListeners(Events.ModifiedStatusChanged, {uiSourceCode, isModified: false});
+      this.dispatchEventToListeners(Events.MODIFIED_STATUS_CHANGED, {uiSourceCode, isModified: false});
     }
   }
 
@@ -117,7 +117,7 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventT
       return;
     }
     this.modifiedUISourceCodesInternal.add(uiSourceCode);
-    this.dispatchEventToListeners(Events.ModifiedStatusChanged, {uiSourceCode, isModified: true});
+    this.dispatchEventToListeners(Events.MODIFIED_STATUS_CHANGED, {uiSourceCode, isModified: true});
   }
 
   private uiSourceCodeProcessedForTest(): void {
@@ -177,7 +177,7 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventT
 }
 
 export const enum Events {
-  ModifiedStatusChanged = 'ModifiedStatusChanged',
+  MODIFIED_STATUS_CHANGED = 'ModifiedStatusChanged',
 }
 
 export interface ModifiedStatusChangedEvent {
@@ -186,7 +186,7 @@ export interface ModifiedStatusChangedEvent {
 }
 
 export type EventTypes = {
-  [Events.ModifiedStatusChanged]: ModifiedStatusChangedEvent,
+  [Events.MODIFIED_STATUS_CHANGED]: ModifiedStatusChangedEvent,
 };
 
 export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper<UISourceCodeDiffEventTypes> {
@@ -219,7 +219,7 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper<UISourc
       if (this.dispose) {
         return;
       }
-      this.dispatchEventToListeners(UISourceCodeDiffEvents.DiffChanged);
+      this.dispatchEventToListeners(UISourceCodeDiffEvents.DIFF_CHANGED);
       this.pendingChanges = null;
     }
   }
@@ -299,11 +299,11 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper<UISourc
 }
 
 export const enum UISourceCodeDiffEvents {
-  DiffChanged = 'DiffChanged',
+  DIFF_CHANGED = 'DiffChanged',
 }
 
 export type UISourceCodeDiffEventTypes = {
-  [UISourceCodeDiffEvents.DiffChanged]: void,
+  [UISourceCodeDiffEvents.DIFF_CHANGED]: void,
 };
 
 let workspaceDiffImplInstance: WorkspaceDiffImpl|null = null;

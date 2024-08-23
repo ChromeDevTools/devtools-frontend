@@ -23,82 +23,82 @@ const str_ = i18n.i18n.registerUIStrings('models/issues_manager/SharedDictionary
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export const enum IssueCode {
-  UseErrorCrossOriginNoCorsRequest = 'SharedDictionaryIssue::UseErrorCrossOriginNoCorsRequest',
-  UseErrorDictionaryLoadFailure = 'SharedDictionaryIssue::UseErrorDictionaryLoadFailure',
-  UseErrorMatchingDictionaryNotUsed = 'SharedDictionaryIssue::UseErrorMatchingDictionaryNotUsed',
-  UseErrorUnexpectedContentDictionaryHeader = 'SharedDictionaryIssue::UseErrorUnexpectedContentDictionaryHeader',
-  WriteErrorCossOriginNoCorsRequest = 'SharedDictionaryIssue::WriteErrorCossOriginNoCorsRequest',
-  WriteErrorDisallowedBySettings = 'SharedDictionaryIssue::WriteErrorDisallowedBySettings',
-  WriteErrorExpiredResponse = 'SharedDictionaryIssue::WriteErrorExpiredResponse',
-  WriteErrorFeatureDisabled = 'SharedDictionaryIssue::WriteErrorFeatureDisabled',
-  WriteErrorInsufficientResources = 'SharedDictionaryIssue::WriteErrorInsufficientResources',
-  WriteErrorInvalidMatchField = 'SharedDictionaryIssue::WriteErrorInvalidMatchField',
-  WriteErrorInvalidStructuredHeader = 'SharedDictionaryIssue::WriteErrorInvalidStructuredHeader',
-  WriteErrorNavigationRequest = 'SharedDictionaryIssue::WriteErrorNavigationRequest',
-  WriteErrorNoMatchField = 'SharedDictionaryIssue::WriteErrorNoMatchField',
-  WriteErrorNonListMatchDestField = 'SharedDictionaryIssue::WriteErrorNonListMatchDestField',
-  WriteErrorNonSecureContext = 'SharedDictionaryIssue::WriteErrorNonSecureContext',
-  WriteErrorNonStringIdField = 'SharedDictionaryIssue::WriteErrorNonStringIdField',
-  WriteErrorNonStringInMatchDestList = 'SharedDictionaryIssue::WriteErrorNonStringInMatchDestList',
-  WriteErrorNonStringMatchField = 'SharedDictionaryIssue::WriteErrorNonStringMatchField',
-  WriteErrorNonTokenTypeField = 'SharedDictionaryIssue::WriteErrorNonTokenTypeField',
-  WriteErrorRequestAborted = 'SharedDictionaryIssue::WriteErrorRequestAborted',
-  WriteErrorShuttingDown = 'SharedDictionaryIssue::WriteErrorShuttingDown',
-  WriteErrorTooLongIdField = 'SharedDictionaryIssue::WriteErrorTooLongIdField',
-  WriteErrorUnsupportedType = 'SharedDictionaryIssue::WriteErrorUnsupportedType',
-  Unknown = 'SharedDictionaryIssue::WriteErrorUnknown',
+  USE_ERROR_CROSS_ORIGIN_NO_CORS_REQUEST = 'SharedDictionaryIssue::UseErrorCrossOriginNoCorsRequest',
+  USE_ERROR_DICTIONARY_LOAD_FAILURE = 'SharedDictionaryIssue::UseErrorDictionaryLoadFailure',
+  USE_ERROR_MATCHING_DICTIONARY_NOT_USED = 'SharedDictionaryIssue::UseErrorMatchingDictionaryNotUsed',
+  USE_ERROR_UNEXPECTED_CONTENT_DICTIONARY_HEADER = 'SharedDictionaryIssue::UseErrorUnexpectedContentDictionaryHeader',
+  WRITE_ERROR_CROSS_ORIGIN_NO_CORS_REQUEST = 'SharedDictionaryIssue::WriteErrorCossOriginNoCorsRequest',
+  WRITE_ERROR_DISALLOWED_BY_SETTINGS = 'SharedDictionaryIssue::WriteErrorDisallowedBySettings',
+  WRITE_ERROR_EXPIRED_RESPONSE = 'SharedDictionaryIssue::WriteErrorExpiredResponse',
+  WRITE_ERROR_FEATURE_DISABLED = 'SharedDictionaryIssue::WriteErrorFeatureDisabled',
+  WRITE_ERROR_INSUFFICIENT_RESOURCES = 'SharedDictionaryIssue::WriteErrorInsufficientResources',
+  WRITE_ERROR_INVALID_MATCH_FIELD = 'SharedDictionaryIssue::WriteErrorInvalidMatchField',
+  WRITE_ERROR_INVALID_STRUCTURED_HEADER = 'SharedDictionaryIssue::WriteErrorInvalidStructuredHeader',
+  WRITE_ERROR_NAVIGATION_REQUEST = 'SharedDictionaryIssue::WriteErrorNavigationRequest',
+  WRITE_ERROR_NO_MATCH_FIELD = 'SharedDictionaryIssue::WriteErrorNoMatchField',
+  WRITE_ERROR_NON_LIST_MATCH_DEST_FIELD = 'SharedDictionaryIssue::WriteErrorNonListMatchDestField',
+  WRITE_ERROR_NON_SECURE_CONTEXT = 'SharedDictionaryIssue::WriteErrorNonSecureContext',
+  WRITE_ERROR_NON_STRING_ID_FIELD = 'SharedDictionaryIssue::WriteErrorNonStringIdField',
+  WRITE_ERROR_NON_STRING_IN_MATCH_DEST_LIST = 'SharedDictionaryIssue::WriteErrorNonStringInMatchDestList',
+  WRITE_ERROR_NON_STRING_MATCH_FIELD = 'SharedDictionaryIssue::WriteErrorNonStringMatchField',
+  WRITE_ERROR_NON_TOKEN_TYPE_FIELD = 'SharedDictionaryIssue::WriteErrorNonTokenTypeField',
+  WRITE_ERROR_REQUEST_ABORTED = 'SharedDictionaryIssue::WriteErrorRequestAborted',
+  WRITE_ERROR_SHUTTING_DOWN = 'SharedDictionaryIssue::WriteErrorShuttingDown',
+  WRITE_ERROR_TOO_LONG_ID_FIELD = 'SharedDictionaryIssue::WriteErrorTooLongIdField',
+  WRITE_ERROR_UNSUPPORTED_TYPE = 'SharedDictionaryIssue::WriteErrorUnsupportedType',
+  UNKNOWN = 'SharedDictionaryIssue::WriteErrorUnknown',
 }
 
 function getIssueCode(details: Protocol.Audits.SharedDictionaryIssueDetails): IssueCode {
   switch (details.sharedDictionaryError) {
     case Protocol.Audits.SharedDictionaryError.UseErrorCrossOriginNoCorsRequest:
-      return IssueCode.UseErrorCrossOriginNoCorsRequest;
+      return IssueCode.USE_ERROR_CROSS_ORIGIN_NO_CORS_REQUEST;
     case Protocol.Audits.SharedDictionaryError.UseErrorDictionaryLoadFailure:
-      return IssueCode.UseErrorDictionaryLoadFailure;
+      return IssueCode.USE_ERROR_DICTIONARY_LOAD_FAILURE;
     case Protocol.Audits.SharedDictionaryError.UseErrorMatchingDictionaryNotUsed:
-      return IssueCode.UseErrorMatchingDictionaryNotUsed;
+      return IssueCode.USE_ERROR_MATCHING_DICTIONARY_NOT_USED;
     case Protocol.Audits.SharedDictionaryError.UseErrorUnexpectedContentDictionaryHeader:
-      return IssueCode.UseErrorUnexpectedContentDictionaryHeader;
+      return IssueCode.USE_ERROR_UNEXPECTED_CONTENT_DICTIONARY_HEADER;
     case Protocol.Audits.SharedDictionaryError.WriteErrorCossOriginNoCorsRequest:
-      return IssueCode.WriteErrorCossOriginNoCorsRequest;
+      return IssueCode.WRITE_ERROR_CROSS_ORIGIN_NO_CORS_REQUEST;
     case Protocol.Audits.SharedDictionaryError.WriteErrorDisallowedBySettings:
-      return IssueCode.WriteErrorDisallowedBySettings;
+      return IssueCode.WRITE_ERROR_DISALLOWED_BY_SETTINGS;
     case Protocol.Audits.SharedDictionaryError.WriteErrorExpiredResponse:
-      return IssueCode.WriteErrorExpiredResponse;
+      return IssueCode.WRITE_ERROR_EXPIRED_RESPONSE;
     case Protocol.Audits.SharedDictionaryError.WriteErrorFeatureDisabled:
-      return IssueCode.WriteErrorFeatureDisabled;
+      return IssueCode.WRITE_ERROR_FEATURE_DISABLED;
     case Protocol.Audits.SharedDictionaryError.WriteErrorInsufficientResources:
-      return IssueCode.WriteErrorInsufficientResources;
+      return IssueCode.WRITE_ERROR_INSUFFICIENT_RESOURCES;
     case Protocol.Audits.SharedDictionaryError.WriteErrorInvalidMatchField:
-      return IssueCode.WriteErrorInvalidMatchField;
+      return IssueCode.WRITE_ERROR_INVALID_MATCH_FIELD;
     case Protocol.Audits.SharedDictionaryError.WriteErrorInvalidStructuredHeader:
-      return IssueCode.WriteErrorInvalidStructuredHeader;
+      return IssueCode.WRITE_ERROR_INVALID_STRUCTURED_HEADER;
     case Protocol.Audits.SharedDictionaryError.WriteErrorNavigationRequest:
-      return IssueCode.WriteErrorNavigationRequest;
+      return IssueCode.WRITE_ERROR_NAVIGATION_REQUEST;
     case Protocol.Audits.SharedDictionaryError.WriteErrorNoMatchField:
-      return IssueCode.WriteErrorNoMatchField;
+      return IssueCode.WRITE_ERROR_NO_MATCH_FIELD;
     case Protocol.Audits.SharedDictionaryError.WriteErrorNonListMatchDestField:
-      return IssueCode.WriteErrorNonListMatchDestField;
+      return IssueCode.WRITE_ERROR_NON_LIST_MATCH_DEST_FIELD;
     case Protocol.Audits.SharedDictionaryError.WriteErrorNonSecureContext:
-      return IssueCode.WriteErrorNonSecureContext;
+      return IssueCode.WRITE_ERROR_NON_SECURE_CONTEXT;
     case Protocol.Audits.SharedDictionaryError.WriteErrorNonStringIdField:
-      return IssueCode.WriteErrorNonStringIdField;
+      return IssueCode.WRITE_ERROR_NON_STRING_ID_FIELD;
     case Protocol.Audits.SharedDictionaryError.WriteErrorNonStringInMatchDestList:
-      return IssueCode.WriteErrorNonStringInMatchDestList;
+      return IssueCode.WRITE_ERROR_NON_STRING_IN_MATCH_DEST_LIST;
     case Protocol.Audits.SharedDictionaryError.WriteErrorNonStringMatchField:
-      return IssueCode.WriteErrorNonStringMatchField;
+      return IssueCode.WRITE_ERROR_NON_STRING_MATCH_FIELD;
     case Protocol.Audits.SharedDictionaryError.WriteErrorNonTokenTypeField:
-      return IssueCode.WriteErrorNonTokenTypeField;
+      return IssueCode.WRITE_ERROR_NON_TOKEN_TYPE_FIELD;
     case Protocol.Audits.SharedDictionaryError.WriteErrorRequestAborted:
-      return IssueCode.WriteErrorRequestAborted;
+      return IssueCode.WRITE_ERROR_REQUEST_ABORTED;
     case Protocol.Audits.SharedDictionaryError.WriteErrorShuttingDown:
-      return IssueCode.WriteErrorShuttingDown;
+      return IssueCode.WRITE_ERROR_SHUTTING_DOWN;
     case Protocol.Audits.SharedDictionaryError.WriteErrorTooLongIdField:
-      return IssueCode.WriteErrorTooLongIdField;
+      return IssueCode.WRITE_ERROR_TOO_LONG_ID_FIELD;
     case Protocol.Audits.SharedDictionaryError.WriteErrorUnsupportedType:
-      return IssueCode.WriteErrorUnsupportedType;
+      return IssueCode.WRITE_ERROR_UNSUPPORTED_TYPE;
     default:
-      return IssueCode.Unknown;
+      return IssueCode.UNKNOWN;
   }
 }
 
@@ -126,7 +126,7 @@ export class SharedDictionaryIssue extends Issue {
   }
 
   getCategory(): IssueCategory {
-    return IssueCategory.Other;
+    return IssueCategory.OTHER;
   }
 
   details(): Protocol.Audits.SharedDictionaryIssueDetails {
@@ -146,7 +146,7 @@ export class SharedDictionaryIssue extends Issue {
   }
 
   getKind(): IssueKind {
-    return IssueKind.PageError;
+    return IssueKind.PAGE_ERROR;
   }
 
   static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):

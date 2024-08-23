@@ -64,7 +64,7 @@ export class CrossOriginEmbedderPolicyIssue extends Issue {
   }
 
   getCategory(): IssueCategory {
-    return IssueCategory.CrossOriginEmbedderPolicy;
+    return IssueCategory.CROSS_ORIGIN_EMBEDDER_POLICY;
   }
 
   getDescription(): MarkdownIssueDescription|null {
@@ -76,7 +76,7 @@ export class CrossOriginEmbedderPolicyIssue extends Issue {
   }
 
   getKind(): IssueKind {
-    return IssueKind.PageError;
+    return IssueKind.PAGE_ERROR;
   }
 }
 

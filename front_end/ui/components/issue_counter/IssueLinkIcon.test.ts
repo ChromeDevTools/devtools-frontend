@@ -85,7 +85,7 @@ describeWithLocale('IssueLinkIcon', () => {
   const issueId = 'issue1' as Protocol.Audits.IssueId;
   const mockIssue = {
     getKind() {
-      return IssuesManager.Issue.IssueKind.PageError;
+      return IssuesManager.Issue.IssueKind.PAGE_ERROR;
     },
     getIssueId() {
       return issueId;
@@ -162,7 +162,7 @@ describeWithLocale('IssueLinkIcon', () => {
 
       const mockIssue2 = {
         getKind() {
-          return IssuesManager.Issue.IssueKind.BreakingChange;
+          return IssuesManager.Issue.IssueKind.BREAKING_CHANGE;
         },
       };
 

@@ -10,7 +10,7 @@ export async function forNewRecording(isCpuProfile: boolean, recordStartTime?: n
     if (isCpuProfile) {
       // For CPU profile, only specify data origin
       return {
-        dataOrigin: Types.File.DataOrigin.CPUProfile,
+        dataOrigin: Types.File.DataOrigin.CPU_PROFILE,
       };
     }
     const cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
@@ -46,7 +46,7 @@ export async function forNewRecording(isCpuProfile: boolean, recordStartTime?: n
       cpuThrottling,
       networkThrottling: networkTitle,
       hardwareConcurrency,
-      dataOrigin: Types.File.DataOrigin.TraceEvents,
+      dataOrigin: Types.File.DataOrigin.TRACE_EVENTS,
     };
   } catch {
     // If anything went wrong, it does not really matter. The impact is that we

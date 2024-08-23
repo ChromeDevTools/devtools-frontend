@@ -347,11 +347,13 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
 }
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   FileSystemAdded = 'FileSystemAdded',
   FileSystemRemoved = 'FileSystemRemoved',
   FileSystemFilesChanged = 'FileSystemFilesChanged',
   ExcludedFolderAdded = 'ExcludedFolderAdded',
   ExcludedFolderRemoved = 'ExcludedFolderRemoved',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export type EventTypes = {

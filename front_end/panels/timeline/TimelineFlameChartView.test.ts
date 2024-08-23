@@ -777,4 +777,95 @@ describeWithEnvironment('TimelineFlameChartView', function() {
          });
     });
   });
+
+  describe('Link between entries annotation in progress', function() {
+    let flameChartView: Timeline.TimelineFlameChartView.TimelineFlameChartView;
+    let traceData: TraceEngine.Handlers.Types.TraceParseData;
+
+    this.beforeEach(async () => {
+      ({traceData} = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz'));
+      const mockViewDelegate = new MockViewDelegate();
+
+      flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+      flameChartView.setModel(traceData);
+      Timeline.ModificationsManager.ModificationsManager.activeManager();
+    });
+
+    it('Creates a `link between entries Annotation in progress` tracking object', async function() {
+      // Make sure the link annotation in the progress of creation does not exist
+      assert.isNull(flameChartView.getLinkSelectionAnnotation());
+
+      // Start creating a link between entries from an entry with ID 204
+      flameChartView.onEntriesLinkAnnotationCreate(flameChartView.getMainDataProvider(), 204);
+
+      // Make sure the link is started and only has 'from' entry set
+      assert.isNotNull(flameChartView.getLinkSelectionAnnotation());
+      assert.isNotNull(flameChartView.getLinkSelectionAnnotation()?.entryFrom);
+      assert.isUndefined(flameChartView.getLinkSelectionAnnotation()?.entryTo);
+
+      // Make sure the annotation exists in the ModificationsManager
+      const annotations = Timeline.ModificationsManager.ModificationsManager.activeManager()?.getAnnotations();
+      assert.exists(annotations);
+      assert.strictEqual(annotations?.length, 1);
+      assert.strictEqual(annotations[0].type, 'ENTRIES_LINK');
+    });
+
+    it('Sets the link between entries annotation in progress to null when the second entry is selected',
+       async function() {
+         // Make sure the link annotation in the progress of creation does not exist
+         assert.isNull(flameChartView.getLinkSelectionAnnotation());
+
+         // Start creating a link between entries from an entry with ID 204
+         flameChartView.onEntriesLinkAnnotationCreate(flameChartView.getMainDataProvider(), 204);
+         const entryFrom = flameChartView.getMainDataProvider().eventByIndex(204);
+
+         // Hover on another entry to complete the link
+         flameChartView.updateLinkSelectionAnnotation(flameChartView.getMainDataProvider(), 245);
+         const entryTo = flameChartView.getMainDataProvider().eventByIndex(245);
+         // Make sure the entry 'to' is set
+         assert.exists(flameChartView.getLinkSelectionAnnotation()?.entryTo);
+
+         // Select the other entry to complete the link and set the one in progress to null
+         flameChartView.handleToEntryOfLinkBetweenEntriesSelection(245);
+         // Make sure the link annotation in progress is set to null
+         assert.isNull(flameChartView.getLinkSelectionAnnotation());
+
+         // Make sure the annotation exists in the ModificationsManager
+         const annotations = Timeline.ModificationsManager.ModificationsManager.activeManager()?.getAnnotations();
+         assert.exists(annotations);
+         assert.strictEqual(annotations?.length, 1);
+         assert.strictEqual(annotations[0].type, 'ENTRIES_LINK');
+         const entriesLink = annotations[0] as TraceEngine.Types.File.EntriesLinkAnnotation;
+
+         assert.strictEqual(entriesLink.entryFrom, entryFrom);
+         assert.strictEqual(entriesLink.entryTo, entryTo);
+       });
+
+    it('Reverses entries in the link if `to` entry timestamp is earlier than `from` entry timestamo', async function() {
+      // Make sure the link annotation in the progress of creation does not exist
+      assert.isNull(flameChartView.getLinkSelectionAnnotation());
+
+      // Start creating a link between entries from an entry with ID 245
+      flameChartView.onEntriesLinkAnnotationCreate(flameChartView.getMainDataProvider(), 245);
+      const entryFrom = flameChartView.getMainDataProvider().eventByIndex(245);
+
+      // Hover on another entry that starts before the entry that the link is being created from
+      flameChartView.updateLinkSelectionAnnotation(flameChartView.getMainDataProvider(), 204);
+      const entryTo = flameChartView.getMainDataProvider().eventByIndex(204);
+
+      // Select the other entry to complete the link and set the one in progress to null
+      flameChartView.handleToEntryOfLinkBetweenEntriesSelection(204);
+
+      // Make sure the annotation exists in the ModificationsManager
+      const annotations = Timeline.ModificationsManager.ModificationsManager.activeManager()?.getAnnotations();
+      assert.exists(annotations);
+      assert.strictEqual(annotations?.length, 1);
+      assert.strictEqual(annotations[0].type, 'ENTRIES_LINK');
+      const entriesLink = annotations[0] as TraceEngine.Types.File.EntriesLinkAnnotation;
+
+      // Make 'entryFrom' has an earlier timestamp and the entries `to` and `from` got switched up
+      assert.strictEqual(entriesLink.entryFrom, entryTo);
+      assert.strictEqual(entriesLink.entryTo, entryFrom);
+    });
+  });
 });

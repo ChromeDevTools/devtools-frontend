@@ -175,6 +175,7 @@ export class ModificationsManager extends EventTarget {
     } else if (
         overlay && Overlays.Overlays.isEntriesLink(overlay) &&
         TraceEngine.Types.File.isEntriesLinkAnnotation(updatedAnnotation)) {
+      overlay.entryFrom = updatedAnnotation.entryFrom;
       overlay.entryTo = updatedAnnotation.entryTo;
       this.dispatchEvent(new AnnotationModifiedEvent(overlay, 'UpdateLinkToEntry'));
 

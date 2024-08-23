@@ -62,7 +62,7 @@ export async function readQuickOpenResults(): Promise<string[]> {
 
 export const openFileWithQuickOpen = async (sourceFile: string, filePosition = 0) => {
   await waitForSourceFiles(
-      SourceFileEvents.SourceFileLoaded,
+      SourceFileEvents.SOURCE_FILE_LOADED,
       files => files.some(f => f.endsWith(sourceFile)),
       async () => {
         await openFileQuickOpen();

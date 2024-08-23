@@ -3,10 +3,10 @@
 // found in the LICENSE file.
 
 export enum DiffBehaviors {
-  Update = 'update',
-  Throw = 'throw',
-  NoThrow = 'no-throw',
-  NoUpdate = 'no-update',
+  UPDATE = 'update',
+  THROW = 'throw',
+  NO_THROW = 'no-throw',
+  NO_UPDATE = 'no-update',
 }
 
 export function asArray(value: undefined|string|string[]) {
@@ -25,7 +25,7 @@ function validateDiffBehaviors(args: undefined|string|string[]) {
     if (Object.values(DiffBehaviors).includes(arg as DiffBehaviors)) {
       continue;
     }
-    if (!arg.startsWith(`${DiffBehaviors.Update}=`)) {
+    if (!arg.startsWith(`${DiffBehaviors.UPDATE}=`)) {
       failed.push(arg);
     }
   }

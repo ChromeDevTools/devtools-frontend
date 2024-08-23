@@ -174,7 +174,7 @@ export async function openOverridesSubPane() {
 
 export async function openFileInEditor(sourceFile: string) {
   await waitForSourceFiles(
-      SourceFileEvents.SourceFileLoaded, files => files.some(f => f.endsWith(sourceFile)),
+      SourceFileEvents.SOURCE_FILE_LOADED, files => files.some(f => f.endsWith(sourceFile)),
       // Open a particular file in the editor
       () => doubleClickSourceTreeItem(`[aria-label="${sourceFile}, file"]`));
 }
@@ -453,8 +453,8 @@ declare global {
 }
 
 export const enum SourceFileEvents {
-  SourceFileLoaded = 'source-file-loaded',
-  AddedToSourceTree = 'source-tree-file-added',
+  SOURCE_FILE_LOADED = 'source-file-loaded',
+  ADDED_TO_SOURCE_TREE = 'source-tree-file-added',
 }
 
 let nextEventHandlerId = 0;
@@ -502,7 +502,7 @@ export async function waitForSourceFiles<T>(
 
 export async function captureAddedSourceFiles(count: number, action: () => Promise<void>): Promise<string[]> {
   let capturedFileNames!: string[];
-  await waitForSourceFiles(SourceFileEvents.AddedToSourceTree, files => {
+  await waitForSourceFiles(SourceFileEvents.ADDED_TO_SOURCE_TREE, files => {
     capturedFileNames = files;
     return files.length >= count;
   }, action);
@@ -511,7 +511,7 @@ export async function captureAddedSourceFiles(count: number, action: () => Promi
 
 export async function reloadPageAndWaitForSourceFile(target: puppeteer.Page, sourceFile: string) {
   await waitForSourceFiles(
-      SourceFileEvents.SourceFileLoaded, files => files.some(f => f.endsWith(sourceFile)), () => target.reload());
+      SourceFileEvents.SOURCE_FILE_LOADED, files => files.some(f => f.endsWith(sourceFile)), () => target.reload());
 }
 
 export function isEqualOrAbbreviation(abbreviated: string, full: string): boolean {

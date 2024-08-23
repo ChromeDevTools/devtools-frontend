@@ -18,7 +18,7 @@ import {getResourcesPath} from '../../shared/helper.js';
 describe('The Extension API', () => {
   it('can open wasm resources with offset', async () => {
     await waitForSourceFiles(
-        SourceFileEvents.AddedToSourceTree, files => files.some(f => f.endsWith('scopes.wasm')),
+        SourceFileEvents.ADDED_TO_SOURCE_TREE, files => files.some(f => f.endsWith('scopes.wasm')),
         () => openFileInSourcesPanel('wasm/scopes.html'));
     const extension = await loadExtension('TestExtension');
     const resource = `${getResourcesPath()}/sources/wasm/scopes.wasm`;
@@ -63,7 +63,7 @@ describe('The Extension API', () => {
   it('can open page resources with column numbers', async () => {
     const resource = `${getResourcesPath()}/sources/wasm/scopes.html`;
     await waitForSourceFiles(
-        SourceFileEvents.AddedToSourceTree, files => files.some(f => f.endsWith('scopes.wasm')),
+        SourceFileEvents.ADDED_TO_SOURCE_TREE, files => files.some(f => f.endsWith('scopes.wasm')),
         () => openFileInSourcesPanel('wasm/scopes.html'));
 
     const extension = await loadExtension('TestExtension');

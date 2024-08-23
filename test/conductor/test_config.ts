@@ -12,8 +12,8 @@ const yargs = require('yargs');
 const options = commandLineArgs(yargs(yargs.argv['_'])).argv;
 
 export const enum ServerType {
-  HostedMode = 'hosted-mode',
-  ComponentDocs = 'component-docs',
+  HOSTED_MODE = 'hosted-mode',
+  COMPONENT_DOCS = 'component-docs',
 }
 
 interface Config {
@@ -37,14 +37,14 @@ function sliceArrayFromElement(array: string[], element: string) {
 const diffBehaviors = asArray(options['on-diff']);
 // --diff=throw is the default, so set the option to true if there is either no --diff=no-throw or if it is overriden
 // by a later --diff=throw
-const onDiffThrow = !diffBehaviors.includes(DiffBehaviors.NoThrow) ||
-    sliceArrayFromElement(diffBehaviors, DiffBehaviors.NoThrow).includes(DiffBehaviors.Throw);
+const onDiffThrow = !diffBehaviors.includes(DiffBehaviors.NO_THROW) ||
+    sliceArrayFromElement(diffBehaviors, DiffBehaviors.NO_THROW).includes(DiffBehaviors.THROW);
 // --diff=no-update overrules any previous --diff=update or --diff=update=X.
 const onDiffUpdate =
-    sliceArrayFromElement(diffBehaviors, DiffBehaviors.NoUpdate).filter(v => v.startsWith(DiffBehaviors.Update));
+    sliceArrayFromElement(diffBehaviors, DiffBehaviors.NO_UPDATE).filter(v => v.startsWith(DiffBehaviors.UPDATE));
 // --diff=update overrules any previous --diff=update=X. Subsequent --diff=update=X overrule any previous --diff=update.
 const diffUpdateFilters =
-    sliceArrayFromElement(onDiffUpdate, DiffBehaviors.Update).map(v => v.substr(v.indexOf('=') + 1));
+    sliceArrayFromElement(onDiffUpdate, DiffBehaviors.UPDATE).map(v => v.substr(v.indexOf('=') + 1));
 
 const onDiffUpdateAll = onDiffUpdate.length > 0 && diffUpdateFilters.length === 0;
 const onDiffUpdateSelected = onDiffUpdate.length > 0 ? diffUpdateFilters : false;
@@ -78,7 +78,7 @@ export const TestConfig: Config = {
   tests: getTestsFromOptions(),
   artifactsDir: options['artifacts-dir'] || SOURCE_ROOT,
   chromeBinary: options['chrome-binary'] ?? defaultChromePath(),
-  serverType: ServerType.HostedMode,
+  serverType: ServerType.HOSTED_MODE,
   debug: options['debug'],
   coverage: options['coverage'],
   repetitions: options['repeat'],

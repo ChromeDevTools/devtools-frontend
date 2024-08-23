@@ -178,7 +178,7 @@ describe('Multi-Workers', function() {
     it(`shows exactly one breakpoint ${withOrWithout}`, async () => {
       const {frontend} = getBrowserAndPages();
       await waitForSourceFiles(
-          SourceFileEvents.SourceFileLoaded, files => files.some(f => f.endsWith('multi-workers.js')), async () => {
+          SourceFileEvents.SOURCE_FILE_LOADED, files => files.some(f => f.endsWith('multi-workers.js')), async () => {
             // Have the target load the page.
             await goToResource(targetPage);
 
@@ -202,7 +202,7 @@ describe('Multi-Workers', function() {
           beforeEach(async () => {
             const {frontend} = getBrowserAndPages();
             await waitForSourceFiles(
-                SourceFileEvents.SourceFileLoaded, files => files.some(f => f.endsWith('multi-workers.js')),
+                SourceFileEvents.SOURCE_FILE_LOADED, files => files.some(f => f.endsWith('multi-workers.js')),
                 async () => {
                   // Have the target load the page.
                   await goToResource(targetPage);
@@ -277,7 +277,7 @@ describe('Multi-Workers', function() {
         await enableExperiment('instrumentation-breakpoints');
         const {frontend} = getBrowserAndPages();
         await waitForSourceFiles(
-            SourceFileEvents.SourceFileLoaded, files => files.some(f => f.endsWith('multi-workers.js')), async () => {
+            SourceFileEvents.SOURCE_FILE_LOADED, files => files.some(f => f.endsWith('multi-workers.js')), async () => {
               // Have the target load the page.
               await goToResource(targetPage);
 

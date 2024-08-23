@@ -87,34 +87,41 @@
 .chat-message {
   user-select: text;
   cursor: initial;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sys-size-5);
   width: 100%;
   padding: var(--sys-size-7) var(--sys-size-8);
   font-size: 12px;
   word-break: break-word;
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 
-  :not(:first-child) {
+  &:not(:first-child) {
     margin-top: var(--sys-size-5);
   }
 
-  &.query {
-    .account-info {
-      display: flex;
-      align-items: center;
-      gap: var(--sys-size-4);
-      padding-bottom: var(--sys-size-5);
+  &:last-child {
+    border-bottom: 0;
+  }
 
-      .account-email {
-        font-weight: bold;
-      }
+  .message-info {
+    display: flex;
+    align-items: center;
+    height: var(--sys-size-11);
+    gap: var(--sys-size-4);
+
+    .message-name {
+      font-weight: bold;
     }
+  }
 
+  &.query {
     img {
       border: 0;
       border-radius: var(--sys-shape-corner-full);
       display: block;
-      height: 32px;
-      width: 32px;
+      height: var(--sys-size-9);
+      width: var(--sys-size-9);
     }
   }
 

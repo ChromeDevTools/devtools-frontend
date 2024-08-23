@@ -181,6 +181,42 @@ describeWithMockConnection('LiveMetricsView', () => {
     assert.strictEqual(durationEl2.className, 'metric-value good dim');
   });
 
+  it('should show help icon for interaction that is longer than INP', async () => {
+    const view = new Components.LiveMetricsView.LiveMetricsView();
+    renderElementIntoDOM(view);
+    LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.STATUS, {
+      inp: {value: 50},
+      interactions: [
+        {duration: 50, interactionType: 'keyboard'},
+        {duration: 500, interactionType: 'pointer'},
+      ],
+    });
+    await coordinator.done();
+
+    const interactionsEls = getInteractions(view);
+    assert.lengthOf(interactionsEls, 2);
+
+    const typeEl1 = interactionsEls[0].querySelector<HTMLElement>('.interaction-type');
+    assert.strictEqual(typeEl1!.textContent, 'keyboard');
+
+    const durationEl1 = interactionsEls[0].querySelector<HTMLElement>('.interaction-duration .metric-value');
+    assert.strictEqual(durationEl1!.textContent, '50 ms');
+    assert.strictEqual(durationEl1!.className, 'metric-value good dim');
+
+    const helpEl1 = interactionsEls[0].querySelector('.interaction-info');
+    assert.isNull(helpEl1);
+
+    const typeEl2 = interactionsEls[1].querySelector<HTMLElement>('.interaction-type');
+    assert.strictEqual(typeEl2!.textContent, 'pointer');
+
+    const helpEl2 = interactionsEls[1].querySelector<HTMLElement>('.interaction-info');
+    assert.match(helpEl2!.title, /98th percentile/);
+
+    const durationEl2 = interactionsEls[1].querySelector<HTMLElement>('.interaction-duration .metric-value');
+    assert.strictEqual(durationEl2!.textContent, '500 ms');
+    assert.strictEqual(durationEl2!.className, 'metric-value needs-improvement dim');
+  });
+
   it('record action button should work', async () => {
     const view = new Components.LiveMetricsView.LiveMetricsView();
     renderElementIntoDOM(view);

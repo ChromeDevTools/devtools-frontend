@@ -144,7 +144,6 @@
   padding: 7px 0;
   border: none;
   border-bottom: 1px solid var(--sys-color-divider);
-  gap: 32px;
 }
 
 .interaction:first-child {
@@ -155,11 +154,20 @@
   font-weight: var(--ref-typeface-weight-medium);
   width: 60px;
   flex-shrink: 0;
+  margin-right: 32px;
 }
 
 .interaction-node {
   overflow: hidden;
   flex-grow: 1;
+  margin-right: 32px;
+}
+
+.interaction-info {
+  width: var(--sys-typescale-body4-line-height);
+  height: var(--sys-typescale-body4-line-height);
+  cursor: help;
+  margin-right: 6px;
 }
 
 .interaction-duration {

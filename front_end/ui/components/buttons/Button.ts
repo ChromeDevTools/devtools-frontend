@@ -44,6 +44,7 @@ interface ButtonState {
   iconUrl?: string;
   variant: Variant;
   size?: Size;
+  reducedFocusRing?: boolean;
   disabled: boolean;
   toggled?: boolean;
   toggleOnClick?: boolean;
@@ -69,6 +70,7 @@ interface CommonButtonData {
   toggleType?: ToggleType;
   toggleOnClick?: boolean;
   size?: Size;
+  reducedFocusRing?: boolean;
   disabled?: boolean;
   toggled?: boolean;
   checked?: boolean;
@@ -189,6 +191,11 @@ export class Button extends HTMLElement {
 
   set size(size: Size) {
     this.#props.size = size;
+    this.#render();
+  }
+
+  set reducedFocusRing(reducedFocusRing: boolean) {
+    this.#props.reducedFocusRing = reducedFocusRing;
     this.#render();
   }
 
@@ -340,6 +347,7 @@ export class Button extends HTMLElement {
       'only-icon': hasIcon && isEmpty,
       micro: this.#props.size === Size.MICRO,
       small: Boolean(this.#props.size === Size.SMALL),
+      'reduced-focus-ring': Boolean(this.#props.reducedFocusRing),
       active: this.#props.active,
     };
     const spinnerClasses = {

@@ -574,6 +574,7 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
       this.button.data = {variant: Buttons.Button.Variant.ICON, iconName: glyphOrAdorner};
     } else {
       this.button.variant = Buttons.Button.Variant.TEXT;
+      this.button.reducedFocusRing = true;
       if (glyphOrAdorner) {
         this.button.iconName = glyphOrAdorner;
       }
@@ -622,6 +623,10 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
 
   setSize(size: Buttons.Button.Size): void {
     this.button.size = size;
+  }
+
+  setReducedFocusRing(): void {
+    this.button.reducedFocusRing = true;
   }
 
   setText(text: string): void {

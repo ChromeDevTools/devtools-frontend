@@ -1325,24 +1325,24 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         const swatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
         assert.exists(swatch);
         assert.strictEqual(swatch?.textContent, lightDark);
-        const activeColor = colorScheme === SDK.CSSModel.ColorScheme.Light ? lightText : darkText;
+        const activeColor = colorScheme === SDK.CSSModel.ColorScheme.LIGHT ? lightText : darkText;
         assert.strictEqual(
             swatch.getColor()?.getAuthoredText(), mockVariableMap[variableName(activeColor)] ?? activeColor);
         const [light, dark] = swatch.querySelectorAll('devtools-color-swatch');
         assert.exists(light);
         assert.exists(dark);
-        const active = colorScheme === SDK.CSSModel.ColorScheme.Light ? light : dark;
-        const inactive = colorScheme === SDK.CSSModel.ColorScheme.Light ? dark : light;
+        const active = colorScheme === SDK.CSSModel.ColorScheme.LIGHT ? light : dark;
+        const inactive = colorScheme === SDK.CSSModel.ColorScheme.LIGHT ? dark : light;
         assert.strictEqual(inactive.parentElement?.style.textDecoration, 'line-through');
         assert.strictEqual(active.parentElement?.style.textDecoration, '');
       }
 
-      await check(SDK.CSSModel.ColorScheme.Light, 'red', 'blue');
-      await check(SDK.CSSModel.ColorScheme.Dark, 'red', 'blue');
-      await check(SDK.CSSModel.ColorScheme.Light, 'red', 'var(--blue)');
-      await check(SDK.CSSModel.ColorScheme.Dark, 'red', 'var(--blue)');
-      await check(SDK.CSSModel.ColorScheme.Light, 'var(--blue)', 'red');
-      await check(SDK.CSSModel.ColorScheme.Dark, 'var(--blue)', 'red');
+      await check(SDK.CSSModel.ColorScheme.LIGHT, 'red', 'blue');
+      await check(SDK.CSSModel.ColorScheme.DARK, 'red', 'blue');
+      await check(SDK.CSSModel.ColorScheme.LIGHT, 'red', 'var(--blue)');
+      await check(SDK.CSSModel.ColorScheme.DARK, 'red', 'var(--blue)');
+      await check(SDK.CSSModel.ColorScheme.LIGHT, 'var(--blue)', 'red');
+      await check(SDK.CSSModel.ColorScheme.DARK, 'var(--blue)', 'red');
     });
 
     it('renders light-dark correctly if the color scheme cannot be resolved', async () => {
@@ -1403,7 +1403,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     it('connects inner and outer swatches', async () => {
       const colorSchemeSpy =
           sinon.spy(Elements.StylePropertyTreeElement.LightDarkColorRenderer.prototype, 'applyColorScheme');
-      for (const colorScheme of [SDK.CSSModel.ColorScheme.Light, SDK.CSSModel.ColorScheme.Dark]) {
+      for (const colorScheme of [SDK.CSSModel.ColorScheme.LIGHT, SDK.CSSModel.ColorScheme.DARK]) {
         const lightDark = 'light-dark(red, blue)';
         const stylePropertyTreeElement = getTreeElement('color', lightDark);
         stylePropertyTreeElement.setComputedStyles(new Map([['color-scheme', colorScheme]]));
@@ -1420,7 +1420,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         lightSwatch.setColor(newLightColor);
         darkSwatch.setColor(newDarkColor);
 
-        if (colorScheme === SDK.CSSModel.ColorScheme.Dark) {
+        if (colorScheme === SDK.CSSModel.ColorScheme.DARK) {
           assert.strictEqual(outerSwatch.getColor(), newDarkColor);
         } else {
           assert.strictEqual(outerSwatch.getColor(), newLightColor);

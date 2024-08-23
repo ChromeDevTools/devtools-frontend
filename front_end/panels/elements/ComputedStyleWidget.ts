@@ -463,7 +463,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       if (data.tag === 'property') {
         const trace = propertyTraces.get(data.propertyName);
         const activeProperty = trace?.find(
-            property => matchedStyles.propertyState(property) === SDK.CSSMatchedStyles.PropertyState.Active);
+            property => matchedStyles.propertyState(property) === SDK.CSSMatchedStyles.PropertyState.ACTIVE);
         const propertyElement = createPropertyElement(
             domNode, data.propertyName, data.propertyValue, propertyTraces.has(data.propertyName), data.inherited,
             activeProperty, event => {
@@ -475,7 +475,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       }
       if (data.tag === 'traceElement') {
         const isPropertyOverloaded =
-            matchedStyles.propertyState(data.property) === SDK.CSSMatchedStyles.PropertyState.Overloaded;
+            matchedStyles.propertyState(data.property) === SDK.CSSMatchedStyles.PropertyState.OVERLOADED;
         const traceElement =
             createTraceElement(domNode, data.property, isPropertyOverloaded, matchedStyles, this.linkifier);
         traceElement.addEventListener(

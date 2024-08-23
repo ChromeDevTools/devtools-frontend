@@ -101,9 +101,9 @@ describeWithMockConnection('ConsoleMessage', () => {
   it('logs a message on main frame navigation', async () => {
     Common.Settings.Settings.instance().moduleSetting('preserve-console-log').set(true);
     const consoleLog = sinon.spy(Common.Console.Console.instance(), 'log');
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-    const mainFrameTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
-    const subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameTarget});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
+    const mainFrameTarget = createTarget({type: SDK.Target.Type.FRAME, parentTarget: tabTarget});
+    const subframeTarget = createTarget({type: SDK.Target.Type.FRAME, parentTarget: mainFrameTarget});
     await getInitializedResourceTreeModel(subframeTarget);
     navigate(getMainFrame(subframeTarget));
     assert.isTrue(consoleLog.notCalled);
@@ -117,9 +117,9 @@ describeWithMockConnection('ConsoleMessage', () => {
   it('logs a message on main frame navigation via bfcache', async () => {
     Common.Settings.Settings.instance().moduleSetting('preserve-console-log').set(true);
     const consoleLog = sinon.spy(Common.Console.Console.instance(), 'log');
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-    const mainFrameTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
-    const subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameTarget});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
+    const mainFrameTarget = createTarget({type: SDK.Target.Type.FRAME, parentTarget: tabTarget});
+    const subframeTarget = createTarget({type: SDK.Target.Type.FRAME, parentTarget: mainFrameTarget});
     await getInitializedResourceTreeModel(subframeTarget);
     navigate(getMainFrame(subframeTarget), {}, Protocol.Page.NavigationType.BackForwardCacheRestore);
     assert.isTrue(consoleLog.notCalled);
@@ -132,7 +132,7 @@ describeWithMockConnection('ConsoleMessage', () => {
   });
 
   it('discards duplicate console messages with identical timestamps', async () => {
-    const target = createTarget({type: SDK.Target.Type.Frame});
+    const target = createTarget({type: SDK.Target.Type.FRAME});
     const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
     assert.exists(runtimeModel);
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
@@ -164,9 +164,9 @@ describeWithMockConnection('ConsoleMessage', () => {
 
   it('clears when main frame global object cleared', async () => {
     Common.Settings.Settings.instance().moduleSetting('preserve-console-log').set(false);
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-    const mainFrameTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
-    const subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameTarget});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
+    const mainFrameTarget = createTarget({type: SDK.Target.Type.FRAME, parentTarget: tabTarget});
+    const subframeTarget = createTarget({type: SDK.Target.Type.FRAME, parentTarget: mainFrameTarget});
     const clearGlobalObjectOnTarget = (target: SDK.Target.Target) => {
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       assert.exists(resourceTreeModel);

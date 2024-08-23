@@ -586,7 +586,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
             void this.updateManifest(true);
           }),
       this.serviceWorkerManager.addEventListener(
-          SDK.ServiceWorkerManager.Events.RegistrationUpdated,
+          SDK.ServiceWorkerManager.Events.REGISTRATION_UPDATED,
           () => {
             void this.updateManifest(false);
           }),
@@ -618,7 +618,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
 
     void this.throttler.schedule(
         () => this.renderManifest(url, data, errors, installabilityErrors, appId),
-        immediately ? Common.Throttler.Scheduling.AsSoonAsPossible : Common.Throttler.Scheduling.Default);
+        immediately ? Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE : Common.Throttler.Scheduling.DEFAULT);
   }
 
   private async renderManifest(
@@ -1260,10 +1260,9 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     });
 
     const osSelectElement = (wcoOsCheckbox.createChild('select', 'chrome-select') as HTMLSelectElement);
-    osSelectElement.appendChild(
-        UI.UIUtils.createOption('Windows', SDK.OverlayModel.EmulatedOSType.WindowsOS, 'windows'));
-    osSelectElement.appendChild(UI.UIUtils.createOption('macOS', SDK.OverlayModel.EmulatedOSType.MacOS, 'macos'));
-    osSelectElement.appendChild(UI.UIUtils.createOption('Linux', SDK.OverlayModel.EmulatedOSType.LinuxOS, 'linux'));
+    osSelectElement.appendChild(UI.UIUtils.createOption('Windows', SDK.OverlayModel.EmulatedOSType.WINDOWS, 'windows'));
+    osSelectElement.appendChild(UI.UIUtils.createOption('macOS', SDK.OverlayModel.EmulatedOSType.MAC, 'macos'));
+    osSelectElement.appendChild(UI.UIUtils.createOption('Linux', SDK.OverlayModel.EmulatedOSType.LINUX, 'linux'));
     osSelectElement.selectedIndex = 0;
 
     if (this.overlayModel) {

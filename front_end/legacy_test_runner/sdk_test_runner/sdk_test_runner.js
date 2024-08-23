@@ -25,7 +25,7 @@ const defaultContentScriptDomain = 'chrome-extension://ahfhijdlegdabablpippeaggh
 SDKTestRunner.PageMock = class {
   constructor(url) {
     this.url = url;
-    this.type = SDK.Target.Type.Frame;
+    this.type = SDK.Target.Type.FRAME;
     this.enabledDomains = new Set();
     this.children = new Map();
 
@@ -228,7 +228,7 @@ SDKTestRunner.PageMock = class {
     const domain = methodName.split('.')[0];
 
     if (domain === 'Page') {
-      return this.type === SDK.Target.Type.Frame;
+      return this.type === SDK.Target.Type.FRAME;
     }
 
     return true;

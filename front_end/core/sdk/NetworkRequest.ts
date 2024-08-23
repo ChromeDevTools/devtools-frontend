@@ -517,7 +517,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   setRemoteAddress(ip: string, port: number): void {
     this.#remoteAddressInternal = ip + ':' + port;
-    this.dispatchEventToListeners(Events.RemoteAddressChanged, this);
+    this.dispatchEventToListeners(Events.REMOTE_ADDRESS_CHANGED, this);
   }
 
   remoteAddress(): string {
@@ -629,7 +629,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
         this.#responseReceivedTimeInternal = x;
       }
     }
-    this.dispatchEventToListeners(Events.TimingChanged, this);
+    this.dispatchEventToListeners(Events.TIMING_CHANGED, this);
   }
 
   get duration(): number {
@@ -678,7 +678,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#finishedInternal = x;
 
     if (x) {
-      this.dispatchEventToListeners(Events.FinishedLoading, this);
+      this.dispatchEventToListeners(Events.FINISHED_LOADING, this);
     }
   }
 
@@ -814,12 +814,12 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     }
 
     this.#timingInternal = timingInfo;
-    this.dispatchEventToListeners(Events.TimingChanged, this);
+    this.dispatchEventToListeners(Events.TIMING_CHANGED, this);
   }
 
   private setConnectTimingFromExtraInfo(connectTiming: Protocol.Network.ConnectTiming): void {
     this.#startTimeInternal = connectTiming.requestTime;
-    this.dispatchEventToListeners(Events.TimingChanged, this);
+    this.dispatchEventToListeners(Events.TIMING_CHANGED, this);
   }
 
   get mimeType(): string {
@@ -964,7 +964,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   setRequestHeaders(headers: NameValue[]): void {
     this.#requestHeadersInternal = headers;
 
-    this.dispatchEventToListeners(Events.RequestHeadersChanged);
+    this.dispatchEventToListeners(Events.REQUEST_HEADERS_CHANGED);
   }
 
   requestHeadersText(): string|undefined {
@@ -974,7 +974,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   setRequestHeadersText(text: string): void {
     this.#requestHeadersTextInternal = text;
 
-    this.dispatchEventToListeners(Events.RequestHeadersChanged);
+    this.dispatchEventToListeners(Events.REQUEST_HEADERS_CHANGED);
   }
 
   requestHeaderValue(headerName: string): string|undefined {
@@ -1030,7 +1030,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#responseCookiesInternal = undefined;
     this.#responseHeaderValues = {};
 
-    this.dispatchEventToListeners(Events.ResponseHeadersChanged);
+    this.dispatchEventToListeners(Events.RESPONSE_HEADERS_CHANGED);
   }
 
   get earlyHintsHeaders(): NameValue[] {
@@ -1065,7 +1065,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   set responseHeadersText(x: string) {
     this.#responseHeadersTextInternal = x;
 
-    this.dispatchEventToListeners(Events.ResponseHeadersChanged);
+    this.dispatchEventToListeners(Events.RESPONSE_HEADERS_CHANGED);
   }
 
   get sortedResponseHeaders(): NameValue[] {
@@ -1531,7 +1531,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   addFrame(frame: WebSocketFrame): void {
     this.#framesInternal.push(frame);
-    this.dispatchEventToListeners(Events.WebsocketFrameAdded, frame);
+    this.dispatchEventToListeners(Events.WEBSOCKET_FRAME_ADDED, frame);
   }
 
   eventSourceMessages(): readonly EventSourceMessage[] {
@@ -1739,7 +1739,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   setTrustTokenOperationDoneEvent(doneEvent: Protocol.Network.TrustTokenOperationDoneEvent): void {
     this.#trustTokenOperationDoneEventInternal = doneEvent;
 
-    this.dispatchEventToListeners(Events.TrustTokenResultAdded);
+    this.dispatchEventToListeners(Events.TRUST_TOKEN_RESULT_ADDED);
   }
 
   trustTokenOperationDoneEvent(): Protocol.Network.TrustTokenOperationDoneEvent|undefined {
@@ -1797,41 +1797,43 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 }
 
 export enum Events {
-  FinishedLoading = 'FinishedLoading',
-  TimingChanged = 'TimingChanged',
-  RemoteAddressChanged = 'RemoteAddressChanged',
-  RequestHeadersChanged = 'RequestHeadersChanged',
-  ResponseHeadersChanged = 'ResponseHeadersChanged',
-  WebsocketFrameAdded = 'WebsocketFrameAdded',
-  EventSourceMessageAdded = 'EventSourceMessageAdded',
-  TrustTokenResultAdded = 'TrustTokenResultAdded',
+  FINISHED_LOADING = 'FinishedLoading',
+  TIMING_CHANGED = 'TimingChanged',
+  REMOTE_ADDRESS_CHANGED = 'RemoteAddressChanged',
+  REQUEST_HEADERS_CHANGED = 'RequestHeadersChanged',
+  RESPONSE_HEADERS_CHANGED = 'ResponseHeadersChanged',
+  WEBSOCKET_FRAME_ADDED = 'WebsocketFrameAdded',
+  EVENT_SOURCE_MESSAGE_ADDED = 'EventSourceMessageAdded',
+  TRUST_TOKEN_RESULT_ADDED = 'TrustTokenResultAdded',
 }
 
 export type EventTypes = {
-  [Events.FinishedLoading]: NetworkRequest,
-  [Events.TimingChanged]: NetworkRequest,
-  [Events.RemoteAddressChanged]: NetworkRequest,
-  [Events.RequestHeadersChanged]: void,
-  [Events.ResponseHeadersChanged]: void,
-  [Events.WebsocketFrameAdded]: WebSocketFrame,
-  [Events.EventSourceMessageAdded]: EventSourceMessage,
-  [Events.TrustTokenResultAdded]: void,
+  [Events.FINISHED_LOADING]: NetworkRequest,
+  [Events.TIMING_CHANGED]: NetworkRequest,
+  [Events.REMOTE_ADDRESS_CHANGED]: NetworkRequest,
+  [Events.REQUEST_HEADERS_CHANGED]: void,
+  [Events.RESPONSE_HEADERS_CHANGED]: void,
+  [Events.WEBSOCKET_FRAME_ADDED]: WebSocketFrame,
+  [Events.EVENT_SOURCE_MESSAGE_ADDED]: EventSourceMessage,
+  [Events.TRUST_TOKEN_RESULT_ADDED]: void,
 };
 
 export const enum InitiatorType {
-  Other = 'other',
-  Parser = 'parser',
-  Redirect = 'redirect',
-  Script = 'script',
-  Preload = 'preload',
-  SignedExchange = 'signedExchange',
-  Preflight = 'preflight',
+  OTHER = 'other',
+  PARSER = 'parser',
+  REDIRECT = 'redirect',
+  SCRIPT = 'script',
+  PRELOAD = 'preload',
+  SIGNED_EXCHANGE = 'signedExchange',
+  PREFLIGHT = 'preflight',
 }
 
 export enum WebSocketFrameType {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   Send = 'send',
   Receive = 'receive',
   Error = 'error',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export const cookieExemptionReasonToUiString = function(exemptionReason: Protocol.Network.CookieExemptionReason):
@@ -1946,11 +1948,11 @@ export const cookieBlockedReasonToAttribute = function(blockedReason: Protocol.N
     null {
       switch (blockedReason) {
         case Protocol.Network.CookieBlockedReason.SecureOnly:
-          return Attribute.Secure;
+          return Attribute.SECURE;
         case Protocol.Network.CookieBlockedReason.NotOnPath:
-          return Attribute.Path;
+          return Attribute.PATH;
         case Protocol.Network.CookieBlockedReason.DomainMismatch:
-          return Attribute.Domain;
+          return Attribute.DOMAIN;
         case Protocol.Network.CookieBlockedReason.SameSiteStrict:
         case Protocol.Network.CookieBlockedReason.SameSiteLax:
         case Protocol.Network.CookieBlockedReason.SameSiteUnspecifiedTreatedAsLax:
@@ -1958,7 +1960,7 @@ export const cookieBlockedReasonToAttribute = function(blockedReason: Protocol.N
         case Protocol.Network.CookieBlockedReason.SchemefulSameSiteStrict:
         case Protocol.Network.CookieBlockedReason.SchemefulSameSiteLax:
         case Protocol.Network.CookieBlockedReason.SchemefulSameSiteUnspecifiedTreatedAsLax:
-          return Attribute.SameSite;
+          return Attribute.SAME_SITE;
         case Protocol.Network.CookieBlockedReason.SamePartyFromCrossPartyContext:
         case Protocol.Network.CookieBlockedReason.NameValuePairExceedsMaxSize:
         case Protocol.Network.CookieBlockedReason.UserPreferences:
@@ -1974,7 +1976,7 @@ export const setCookieBlockedReasonToAttribute = function(blockedReason: Protoco
       switch (blockedReason) {
         case Protocol.Network.SetCookieBlockedReason.SecureOnly:
         case Protocol.Network.SetCookieBlockedReason.OverwriteSecure:
-          return Attribute.Secure;
+          return Attribute.SECURE;
         case Protocol.Network.SetCookieBlockedReason.SameSiteStrict:
         case Protocol.Network.SetCookieBlockedReason.SameSiteLax:
         case Protocol.Network.SetCookieBlockedReason.SameSiteUnspecifiedTreatedAsLax:
@@ -1982,11 +1984,11 @@ export const setCookieBlockedReasonToAttribute = function(blockedReason: Protoco
         case Protocol.Network.SetCookieBlockedReason.SchemefulSameSiteStrict:
         case Protocol.Network.SetCookieBlockedReason.SchemefulSameSiteLax:
         case Protocol.Network.SetCookieBlockedReason.SchemefulSameSiteUnspecifiedTreatedAsLax:
-          return Attribute.SameSite;
+          return Attribute.SAME_SITE;
         case Protocol.Network.SetCookieBlockedReason.InvalidDomain:
-          return Attribute.Domain;
+          return Attribute.DOMAIN;
         case Protocol.Network.SetCookieBlockedReason.InvalidPrefix:
-          return Attribute.Name;
+          return Attribute.NAME;
         case Protocol.Network.SetCookieBlockedReason.SamePartyConflictsWithOtherAttributes:
         case Protocol.Network.SetCookieBlockedReason.SamePartyFromCrossPartyContext:
         case Protocol.Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize:

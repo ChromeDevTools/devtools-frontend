@@ -48,7 +48,7 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.defaultIndentation),
   settingName: 'text-editor-indent',
   settingType: Common.Settings.SettingType.ENUM,

@@ -258,7 +258,7 @@ function createCSSTooltip(active: ActiveTooltip): CodeMirror.Tooltip {
         spectrum.addEventListener(ColorPicker.Spectrum.Events.SizeChanged, () => view.requestMeasure());
         spectrum.setColor(active.color);
         widget = spectrum;
-        Host.userMetrics.colorPickerOpenedFrom(Host.UserMetrics.ColorPickerOpenedFrom.SourcesPanel);
+        Host.userMetrics.colorPickerOpenedFrom(Host.UserMetrics.ColorPickerOpenedFrom.SOURCES_PANEL);
       } else {
         const spectrum = new InlineEditor.BezierEditor.BezierEditor(active.curve);
         widget = spectrum;

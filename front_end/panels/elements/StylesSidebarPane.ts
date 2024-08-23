@@ -300,8 +300,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     const showDocumentationSetting =
         Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover');
     showDocumentationSetting.addChangeListener(event => {
-      const metricType = Boolean(event.data) ? Host.UserMetrics.CSSPropertyDocumentation.ToggledOn :
-                                               Host.UserMetrics.CSSPropertyDocumentation.ToggledOff;
+      const metricType = Boolean(event.data) ? Host.UserMetrics.CSSPropertyDocumentation.TOGGLED_ON :
+                                               Host.UserMetrics.CSSPropertyDocumentation.TOGGLED_OFF;
       Host.userMetrics.cssPropertyDocumentation(metricType);
     });
 
@@ -349,7 +349,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
             show: async (popover: UI.GlassPane.GlassPane) => {
               const popupElement = new ElementsComponents.CSSPropertyDocsView.CSSPropertyDocsView(cssProperty);
               popover.contentElement.appendChild(popupElement);
-              Host.userMetrics.cssPropertyDocumentation(Host.UserMetrics.CSSPropertyDocumentation.Shown);
+              Host.userMetrics.cssPropertyDocumentation(Host.UserMetrics.CSSPropertyDocumentation.SHOWN);
               return true;
             },
           };
@@ -1587,7 +1587,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     copyAllChangesButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, async () => {
       const allChanges = await this.getFormattedChanges();
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allChanges);
-      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.AllChangesViaStylesPane);
+      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.ALL_CHANGES_VIA_STYLES_TAB);
       if (timeout) {
         clearTimeout(timeout);
         timeout = undefined;

@@ -60,12 +60,12 @@ export class InspectorMainImpl implements Common.Runnable.Runnable {
     let firstCall = true;
     await SDK.Connections.initMainConnection(async () => {
       const type = Root.Runtime.Runtime.queryParam('v8only') ?
-          SDK.Target.Type.Node :
-          (Root.Runtime.Runtime.queryParam('targetType') === 'tab' ? SDK.Target.Type.Tab : SDK.Target.Type.Frame);
+          SDK.Target.Type.NODE :
+          (Root.Runtime.Runtime.queryParam('targetType') === 'tab' ? SDK.Target.Type.TAB : SDK.Target.Type.FRAME);
       // TODO(crbug.com/1348385): support waiting for debugger with tab target.
       const waitForDebuggerInPage =
-          type === SDK.Target.Type.Frame && Root.Runtime.Runtime.queryParam('panel') === 'sources';
-      const name = type === SDK.Target.Type.Frame ? i18nString(UIStrings.main) : i18nString(UIStrings.tab);
+          type === SDK.Target.Type.FRAME && Root.Runtime.Runtime.queryParam('panel') === 'sources';
+      const name = type === SDK.Target.Type.FRAME ? i18nString(UIStrings.main) : i18nString(UIStrings.tab);
       const target = SDK.TargetManager.TargetManager.instance().createTarget(
           'main', name, type, null, undefined, waitForDebuggerInPage);
 
@@ -103,7 +103,7 @@ export class InspectorMainImpl implements Common.Runnable.Runnable {
         }
       }
 
-      if (type !== SDK.Target.Type.Tab) {
+      if (type !== SDK.Target.Type.TAB) {
         void target.runtimeAgent().invoke_runIfWaitingForDebugger();
       }
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
@@ -161,7 +161,7 @@ export class NodeIndicator implements UI.Toolbar.Provider {
     this.#button = new UI.Toolbar.ToolbarItem(element);
     this.#button.setTitle(i18nString(UIStrings.openDedicatedTools));
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.AvailableTargetsChanged, event => this.#update(event.data));
+        SDK.TargetManager.Events.AVAILABLE_TARGETS_CHANGED, event => this.#update(event.data));
     this.#button.setVisible(false);
     this.#update([]);
   }
@@ -226,7 +226,7 @@ export class BackendSettingsSync implements SDK.TargetManager.Observer {
   }
 
   #updateTarget(target: SDK.Target.Target): void {
-    if (target.type() !== SDK.Target.Type.Frame || target.parentTarget()?.type() === SDK.Target.Type.Frame) {
+    if (target.type() !== SDK.Target.Type.FRAME || target.parentTarget()?.type() === SDK.Target.Type.FRAME) {
       return;
     }
     void target.pageAgent().invoke_setAdBlockingEnabled({enabled: this.#adBlockEnabledSetting.get()});

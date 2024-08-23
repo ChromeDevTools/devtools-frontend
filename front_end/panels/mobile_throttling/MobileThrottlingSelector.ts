@@ -45,9 +45,9 @@ export class MobileThrottlingSelector {
     this.populateCallback = populateCallback;
     this.selectCallback = selectCallback;
     SDK.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener(
-        SDK.CPUThrottlingManager.Events.RateChanged, this.conditionsChanged, this);
+        SDK.CPUThrottlingManager.Events.RATE_CHANGED, this.conditionsChanged, this);
     SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
-        SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this.conditionsChanged, this);
+        SDK.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED, this.conditionsChanged, this);
     this.options = this.populateOptions();
     this.conditionsChanged();
   }

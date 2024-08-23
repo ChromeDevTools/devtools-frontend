@@ -194,7 +194,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
       throw new Error('StorageKeyManager instance is missing');
     }
     this.storageKeyManager.addEventListener(
-        SDK.StorageKeyManager.Events.MainStorageKeyChanged, () => this.onStorageKeyChanged());
+        SDK.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED, () => this.onStorageKeyChanged());
 
     this.recordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('background-service.toggle-recording');
 

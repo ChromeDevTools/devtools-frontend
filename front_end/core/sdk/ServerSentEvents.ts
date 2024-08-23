@@ -74,6 +74,6 @@ export class ServerSentEvents {
 
   #recordMessageAndDispatchEvent(message: EventSourceMessage): void {
     this.#eventSourceMessages.push(message);
-    this.#request.dispatchEventToListeners(Events.EventSourceMessageAdded, message);
+    this.#request.dispatchEventToListeners(Events.EVENT_SOURCE_MESSAGE_ADDED, message);
   }
 }

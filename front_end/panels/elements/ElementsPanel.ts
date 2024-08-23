@@ -288,7 +288,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.cssStyleTrackerByCSSModel = new Map();
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.DOMModel.DOMModel, this, {scoped: true});
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.NameChanged, event => this.targetNameChanged(event.data));
+        SDK.TargetManager.Events.NAME_CHANGED, event => this.targetNameChanged(event.data));
     Common.Settings.Settings.instance()
         .moduleSetting('show-ua-shadow-dom')
         .addChangeListener(this.showUAShadowDOMChanged.bind(this));
@@ -1155,7 +1155,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     cssPropertyTracker.start();
     this.cssStyleTrackerByCSSModel.set(cssModel, cssPropertyTracker);
     cssPropertyTracker.addEventListener(
-        SDK.CSSModel.CSSPropertyTrackerEvents.TrackedCSSPropertiesUpdated, this.trackedCSSPropertiesUpdated, this);
+        SDK.CSSModel.CSSPropertyTrackerEvents.TRACKED_CSS_PROPERTIES_UPDATED, this.trackedCSSPropertiesUpdated, this);
   }
 
   private removeStyleTracking(cssModel: SDK.CSSModel.CSSModel): void {
@@ -1167,7 +1167,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     cssPropertyTracker.stop();
     this.cssStyleTrackerByCSSModel.delete(cssModel);
     cssPropertyTracker.removeEventListener(
-        SDK.CSSModel.CSSPropertyTrackerEvents.TrackedCSSPropertiesUpdated, this.trackedCSSPropertiesUpdated, this);
+        SDK.CSSModel.CSSPropertyTrackerEvents.TRACKED_CSS_PROPERTIES_UPDATED, this.trackedCSSPropertiesUpdated, this);
   }
 
   private trackedCSSPropertiesUpdated({data: domNodes}:

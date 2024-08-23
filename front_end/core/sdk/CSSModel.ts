@@ -57,8 +57,8 @@ import {SourceMapManager} from './SourceMapManager.js';
 import {Capability, type Target} from './Target.js';
 
 export const enum ColorScheme {
-  Light = 'light',
-  Dark = 'dark',
+  LIGHT = 'light',
+  DARK = 'dark',
 }
 
 export class CSSModel extends SDKModel<EventTypes> {
@@ -125,7 +125,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       const colorSchemeResponse = await this.domModel()?.target().runtimeAgent().invoke_evaluate(
           {expression: 'window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches'});
       if (colorSchemeResponse && !colorSchemeResponse.exceptionDetails && !colorSchemeResponse.getError()) {
-        this.#colorScheme = colorSchemeResponse.result.value ? ColorScheme.Dark : ColorScheme.Light;
+        this.#colorScheme = colorSchemeResponse.result.value ? ColorScheme.DARK : ColorScheme.LIGHT;
       }
     }
     return this.#colorScheme;
@@ -768,7 +768,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     if (event.data.frame.backForwardCacheDetails.restoredFromCache) {
       await this.suspendModel();
       await this.resumeModel();
-    } else if (event.data.type !== PrimaryPageChangeType.Activation) {
+    } else if (event.data.type !== PrimaryPageChangeType.ACTIVATION) {
       this.resetStyleSheets();
       this.resetFontFaces();
     }
@@ -864,7 +864,7 @@ export class CSSModel extends SDKModel<EventTypes> {
 
       if (this.#cssPropertyTracker) {
         this.#cssPropertyTracker.dispatchEventToListeners(
-            CSSPropertyTrackerEvents.TrackedCSSPropertiesUpdated,
+            CSSPropertyTrackerEvents.TRACKED_CSS_PROPERTIES_UPDATED,
             result.nodeIds.map(nodeId => this.#domModel.nodeForId(nodeId)));
       }
     }
@@ -886,6 +886,7 @@ export class CSSModel extends SDKModel<EventTypes> {
 }
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   FontsUpdated = 'FontsUpdated',
   MediaQueryResultChanged = 'MediaQueryResultChanged',
   ModelWasEnabled = 'ModelWasEnabled',
@@ -893,6 +894,7 @@ export enum Events {
   StyleSheetAdded = 'StyleSheetAdded',
   StyleSheetChanged = 'StyleSheetChanged',
   StyleSheetRemoved = 'StyleSheetRemoved',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export interface StyleSheetChangedEvent {
@@ -1046,11 +1048,11 @@ export class CSSPropertyTracker extends Common.ObjectWrapper.ObjectWrapper<CSSPr
 const StylePollingInterval = 1000;  // throttling interval for style polling, in milliseconds
 
 export const enum CSSPropertyTrackerEvents {
-  TrackedCSSPropertiesUpdated = 'TrackedCSSPropertiesUpdated',
+  TRACKED_CSS_PROPERTIES_UPDATED = 'TrackedCSSPropertiesUpdated',
 }
 
 export type CSSPropertyTrackerEventTypes = {
-  [CSSPropertyTrackerEvents.TrackedCSSPropertiesUpdated]: (DOMNode|null)[],
+  [CSSPropertyTrackerEvents.TRACKED_CSS_PROPERTIES_UPDATED]: (DOMNode|null)[],
 };
 
 SDKModel.register(CSSModel, {capabilities: Capability.DOM, autostart: true});

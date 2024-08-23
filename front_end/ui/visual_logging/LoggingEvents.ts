@@ -71,7 +71,7 @@ export const logHover = (throttler: Common.Throttler.Throttler) => async (event:
   void throttler.schedule(async () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordHover(hoverEvent);
     processEventForDebugging('Hover', loggingState);
-  }, Common.Throttler.Scheduling.Delayed);
+  }, Common.Throttler.Scheduling.DELAYED);
 };
 
 export const logDrag = (throttler: Common.Throttler.Throttler) => async (event: Event) => {
@@ -81,7 +81,7 @@ export const logDrag = (throttler: Common.Throttler.Throttler) => async (event: 
   void throttler.schedule(async () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordDrag(dragEvent);
     processEventForDebugging('Drag', loggingState);
-  }, Common.Throttler.Scheduling.Delayed);
+  }, Common.Throttler.Scheduling.DELAYED);
 };
 
 export async function logChange(loggable: Loggable): Promise<void> {

@@ -93,24 +93,24 @@ class PreloadingUIUtils {
   static detailedStatus({status}: SDK.PreloadingModel.PreloadingAttempt): string {
     // See content/public/browser/preloading.h PreloadingAttemptOutcome.
     switch (status) {
-      case SDK.PreloadingModel.PreloadingStatus.NotTriggered:
+      case SDK.PreloadingModel.PreloadingStatus.NOT_TRIGGERED:
         return i18nString(UIStrings.detailedStatusNotTriggered);
-      case SDK.PreloadingModel.PreloadingStatus.Pending:
+      case SDK.PreloadingModel.PreloadingStatus.PENDING:
         return i18nString(UIStrings.detailedStatusPending);
-      case SDK.PreloadingModel.PreloadingStatus.Running:
+      case SDK.PreloadingModel.PreloadingStatus.RUNNING:
         return i18nString(UIStrings.detailedStatusRunning);
-      case SDK.PreloadingModel.PreloadingStatus.Ready:
+      case SDK.PreloadingModel.PreloadingStatus.READY:
         return i18nString(UIStrings.detailedStatusReady);
-      case SDK.PreloadingModel.PreloadingStatus.Success:
+      case SDK.PreloadingModel.PreloadingStatus.SUCCESS:
         return i18nString(UIStrings.detailedStatusSuccess);
-      case SDK.PreloadingModel.PreloadingStatus.Failure:
+      case SDK.PreloadingModel.PreloadingStatus.FAILURE:
         return i18nString(UIStrings.detailedStatusFailure);
       // NotSupported is used to handle unreachable case. For example,
       // there is no code path for
       // PreloadingTriggeringOutcome::kTriggeredButPending in prefetch,
       // which is mapped to NotSupported. So, we regard it as an
       // internal error.
-      case SDK.PreloadingModel.PreloadingStatus.NotSupported:
+      case SDK.PreloadingModel.PreloadingStatus.NOT_SUPPORTED:
         return i18n.i18n.lockedString('Internal error');
     }
   }

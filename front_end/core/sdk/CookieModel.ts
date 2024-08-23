@@ -70,7 +70,7 @@ export class CookieModel extends SDKModel<EventTypes> {
     const updated = this.#isUpdated(newCookies);
     this.#cookies = newCookies;
     if (updated) {
-      this.dispatchEventToListeners(Events.CookieListUpdated);
+      this.dispatchEventToListeners(Events.COOKIE_LIST_UPDATED);
     }
   }
 
@@ -225,7 +225,7 @@ export class CookieModel extends SDKModel<EventTypes> {
   }
 }
 
-SDKModel.register(CookieModel, {capabilities: Capability.Network, autostart: false});
+SDKModel.register(CookieModel, {capabilities: Capability.NETWORK, autostart: false});
 export interface BlockedReason {
   uiString: string;
   attribute: Attribute|null;
@@ -235,9 +235,9 @@ export interface ExemptionReason {
 }
 
 export const enum Events {
-  CookieListUpdated = 'CookieListUpdated',
+  COOKIE_LIST_UPDATED = 'CookieListUpdated',
 }
 
 export type EventTypes = {
-  [Events.CookieListUpdated]: void,
+  [Events.COOKIE_LIST_UPDATED]: void,
 };

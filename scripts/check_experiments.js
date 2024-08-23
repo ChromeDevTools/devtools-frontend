@@ -15,8 +15,6 @@ const parseOptions = {
   range: true,
 };
 
-const USER_METRICS_ENUM_ENDPOINT = 'MaxValue';
-
 /**
  * Determines if a node is a class declaration.
  * If className is provided, node must also match class name.
@@ -172,7 +170,7 @@ function getUserMetricExperimentList(userMetricsFile) {
   const userMetricsAST = espree.parse(userMetricsFile, {ecmaVersion: 11, sourceType: 'module', range: true});
   for (const node of userMetricsAST.body) {
     if (isExperimentEnumDeclaration(node)) {
-      return node.declaration.members.map(member => member.id.value);
+      return node.declaration.members.filter(member => member.id.type === 'Literal').map(member => member.id.value);
     }
   }
   return null;
@@ -202,8 +200,7 @@ function compareExperimentLists(mainImplList, userMetricsList) {
 
   // Ensure both lists match
   const missingTelemetry = mainImplList.filter(experiment => !userMetricsList.includes(experiment));
-  const staleTelemetry = userMetricsList.filter(
-      experiment => !mainImplList.includes(experiment) && experiment !== USER_METRICS_ENUM_ENDPOINT);
+  const staleTelemetry = userMetricsList.filter(experiment => !mainImplList.includes(experiment));
   if (missingTelemetry.length) {
     console.log('Devtools Experiments have been added without corresponding histogram update!');
     console.log(missingTelemetry.join('\n'));

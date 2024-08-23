@@ -198,7 +198,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
         this.#onPrimaryPageChanged, this);
     SDK.FrameManager.FrameManager.instance().addEventListener(
-        SDK.FrameManager.Events.FrameAddedToTarget, this.#onFrameAddedToTarget, this);
+        SDK.FrameManager.Events.FRAME_ADDED_TO_TARGET, this.#onFrameAddedToTarget, this);
 
     // issueFilter uses the 'show-third-party-issues' setting. Clients of IssuesManager need
     // a full update when the setting changes to get an up-to-date issues list.
@@ -256,7 +256,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
         keptIssues.set(key, issue);
         // Keep issues for prerendered target alive in case of prerender-activation.
       } else if (
-          (type === SDK.ResourceTreeModel.PrimaryPageChangeType.Activation) &&
+          (type === SDK.ResourceTreeModel.PrimaryPageChangeType.ACTIVATION) &&
           (frame.resourceTreeModel().target() === issue.model()?.target())) {
         keptIssues.set(key, issue);
         // Keep BounceTrackingIssues alive for non-user-initiated navigations.
@@ -288,7 +288,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   modelAdded(issuesModel: SDK.IssuesModel.IssuesModel): void {
-    const listener = issuesModel.addEventListener(SDK.IssuesModel.Events.IssueAdded, this.#onIssueAddedEvent, this);
+    const listener = issuesModel.addEventListener(SDK.IssuesModel.Events.ISSUE_ADDED, this.#onIssueAddedEvent, this);
     this.#eventListeners.set(issuesModel, listener);
   }
 

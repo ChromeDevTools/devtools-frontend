@@ -160,14 +160,14 @@ export class AutofillModel extends SDKModel<EventTypes> implements ProtocolProxy
   }
 
   addressFormFilled(addressFormFilledEvent: Protocol.Autofill.AddressFormFilledEvent): void {
-    this.dispatchEventToListeners(Events.AddressFormFilled, {autofillModel: this, event: addressFormFilledEvent});
+    this.dispatchEventToListeners(Events.ADDRESS_FORM_FILLED, {autofillModel: this, event: addressFormFilledEvent});
   }
 }
 
 SDKModel.register(AutofillModel, {capabilities: Capability.DOM, autostart: true});
 
 export const enum Events {
-  AddressFormFilled = 'AddressFormFilled',
+  ADDRESS_FORM_FILLED = 'AddressFormFilled',
 }
 
 export interface AddressFormFilledEvent {
@@ -176,5 +176,5 @@ export interface AddressFormFilledEvent {
 }
 
 export type EventTypes = {
-  [Events.AddressFormFilled]: AddressFormFilledEvent,
+  [Events.ADDRESS_FORM_FILLED]: AddressFormFilledEvent,
 };

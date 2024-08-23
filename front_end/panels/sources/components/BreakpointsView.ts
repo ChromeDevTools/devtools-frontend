@@ -201,7 +201,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
 
   static targetSupportsIndependentPauseOnExceptionToggles(): boolean {
     const hasNodeTargets =
-        SDK.TargetManager.TargetManager.instance().targets().some(target => target.type() === SDK.Target.Type.Node);
+        SDK.TargetManager.TargetManager.instance().targets().some(target => target.type() === SDK.Target.Type.NODE);
     return !hasNodeTargets;
   }
 

@@ -181,7 +181,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper<EventTy
     this.#started = true;
 
     this.#networkManager.addEventListener(
-        SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this.#appendCurrentNetworkStep, this);
+        SDK.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED, this.#appendCurrentNetworkStep, this);
 
     await this.#appendInitialSteps();
 
@@ -201,7 +201,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper<EventTy
     await Promise.all([...this.#targets.values()].map(this.#tearDownTarget));
 
     this.#networkManager.removeEventListener(
-        SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this.#appendCurrentNetworkStep, this);
+        SDK.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED, this.#appendCurrentNetworkStep, this);
   }
 
   async #appendInitialSteps(): Promise<void> {
@@ -517,7 +517,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper<EventTy
   }
 
   #setUpTarget = async(target: SDK.Target.Target): Promise<void> => {
-    if (target.type() !== SDK.Target.Type.Frame) {
+    if (target.type() !== SDK.Target.Type.FRAME) {
       return;
     }
     this.#targets.set(target.id(), target);
@@ -533,11 +533,11 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper<EventTy
     Platform.assertNotNullOrUndefined(childTargetManager);
     this.#childTargetEventDescriptors.set(target, [
       childTargetManager.addEventListener(
-          SDK.ChildTargetManager.Events.TargetCreated, this.#receiveTargetCreated.bind(this, target)),
+          SDK.ChildTargetManager.Events.TARGET_CREATED, this.#receiveTargetCreated.bind(this, target)),
       childTargetManager.addEventListener(
-          SDK.ChildTargetManager.Events.TargetDestroyed, this.#receiveTargetClosed.bind(this, target)),
+          SDK.ChildTargetManager.Events.TARGET_DESTROYED, this.#receiveTargetClosed.bind(this, target)),
       childTargetManager.addEventListener(
-          SDK.ChildTargetManager.Events.TargetInfoChanged, this.#receiveTargetInfoChanged.bind(this, target)),
+          SDK.ChildTargetManager.Events.TARGET_INFO_CHANGED, this.#receiveTargetInfoChanged.bind(this, target)),
     ]);
 
     await Promise.all(childTargetManager.childTargets().map(this.#setUpTarget));

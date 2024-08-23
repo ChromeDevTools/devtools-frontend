@@ -129,13 +129,13 @@ describe('Settings instance', () => {
       settingName: 'static-synced-setting',
       settingType: Common.Settings.SettingType.BOOLEAN,
       defaultValue: false,
-      storageType: Common.Settings.SettingStorageType.Synced,
+      storageType: Common.Settings.SettingStorageType.SYNCED,
     });
     const settings = Common.Settings.Settings.instance(
         {forceNew: true, syncedStorage, globalStorage: dummyStorage, localStorage: dummyStorage});
 
     const dynamicSetting: Common.Settings.Setting<string> =
-        settings.createSetting('dynamic-synced-setting', 'default val', Common.Settings.SettingStorageType.Synced);
+        settings.createSetting('dynamic-synced-setting', 'default val', Common.Settings.SettingStorageType.SYNCED);
     dynamicSetting.set('foo value');
     const staticSetting: Common.Settings.Setting<boolean> = settings.moduleSetting('static-synced-setting');
     staticSetting.set(true);
@@ -157,13 +157,13 @@ describe('Settings instance', () => {
       settingName: 'static-global-setting',
       settingType: Common.Settings.SettingType.BOOLEAN,
       defaultValue: false,
-      storageType: Common.Settings.SettingStorageType.Global,
+      storageType: Common.Settings.SettingStorageType.GLOBAL,
     });
 
     const settings = Common.Settings.Settings.instance(
         {forceNew: true, syncedStorage: storage, globalStorage: storage, localStorage: storage});
-    settings.createSetting('dynamic-local-setting', 42, Common.Settings.SettingStorageType.Local);
-    settings.createSetting('dynamic-synced-setting', 'foo', Common.Settings.SettingStorageType.Synced);
+    settings.createSetting('dynamic-local-setting', 42, Common.Settings.SettingStorageType.LOCAL);
+    settings.createSetting('dynamic-synced-setting', 'foo', Common.Settings.SettingStorageType.SYNCED);
 
     assert.isTrue(registeredSettings.has('__prefix__.static-global-setting'));
     assert.isTrue(registeredSettings.has('__prefix__.dynamic-local-setting'));
@@ -183,7 +183,7 @@ describe('Settings instance', () => {
            localStorage: settingsStorage,
          });
          const testSetting: Common.Settings.Setting<string> =
-             settings.createSetting('test', 'default val', Common.Settings.SettingStorageType.Global);
+             settings.createSetting('test', 'default val', Common.Settings.SettingStorageType.GLOBAL);
          const changes: string[] = [];
          testSetting.addChangeListener((event: Common.EventTarget.EventTargetEvent<string>) => {
            changes.push(event.data);

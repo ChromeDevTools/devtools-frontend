@@ -279,13 +279,13 @@ function converterIdToFlowMetric(
   switch (converterId) {
     case Models.ConverterIds.ConverterIds.Puppeteer:
     case Models.ConverterIds.ConverterIds.PuppeteerFirefox:
-      return Host.UserMetrics.RecordingCopiedToClipboard.CopiedRecordingWithPuppeteer;
+      return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_RECORDING_WITH_PUPPETEER;
     case Models.ConverterIds.ConverterIds.JSON:
-      return Host.UserMetrics.RecordingCopiedToClipboard.CopiedRecordingWithJSON;
+      return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_RECORDING_WITH_JSON;
     case Models.ConverterIds.ConverterIds.Replay:
-      return Host.UserMetrics.RecordingCopiedToClipboard.CopiedRecordingWithReplay;
+      return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_RECORDING_WITH_REPLAY;
     default:
-      return Host.UserMetrics.RecordingCopiedToClipboard.CopiedRecordingWithExtension;
+      return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_RECORDING_WITH_EXTENSION;
   }
 }
 
@@ -295,13 +295,13 @@ function converterIdToStepMetric(
   switch (converterId) {
     case Models.ConverterIds.ConverterIds.Puppeteer:
     case Models.ConverterIds.ConverterIds.PuppeteerFirefox:
-      return Host.UserMetrics.RecordingCopiedToClipboard.CopiedStepWithPuppeteer;
+      return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_STEP_WITH_PUPPETEER;
     case Models.ConverterIds.ConverterIds.JSON:
-      return Host.UserMetrics.RecordingCopiedToClipboard.CopiedStepWithJSON;
+      return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_STEP_WITH_JSON;
     case Models.ConverterIds.ConverterIds.Replay:
-      return Host.UserMetrics.RecordingCopiedToClipboard.CopiedStepWithReplay;
+      return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_STEP_WITH_REPLAY;
     default:
-      return Host.UserMetrics.RecordingCopiedToClipboard.CopiedStepWithExtension;
+      return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_STEP_WITH_EXTENSION;
   }
 }
 
@@ -987,8 +987,8 @@ export class RecordingView extends HTMLElement {
   showCodeToggle = (): void => {
     this.#showCodeView = !this.#showCodeView;
     Host.userMetrics.recordingCodeToggled(
-        this.#showCodeView ? Host.UserMetrics.RecordingCodeToggled.CodeShown :
-                             Host.UserMetrics.RecordingCodeToggled.CodeHidden,
+        this.#showCodeView ? Host.UserMetrics.RecordingCodeToggled.CODE_SHOWN :
+                             Host.UserMetrics.RecordingCodeToggled.CODE_HIDDEN,
     );
     void this.#convertToCode();
   };

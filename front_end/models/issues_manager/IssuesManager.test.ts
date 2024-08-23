@@ -33,9 +33,9 @@ describeWithMockConnection('IssuesManager', () => {
         IssuesManager.IssuesManager.Events.IssueAdded, event => dispatchedIssues.push(event.data.issue));
 
     model.dispatchEventToListeners(
-        SDK.IssuesModel.Events.IssueAdded, {issuesModel: model, inspectorIssue: mkInspectorCspIssue('url1')});
+        SDK.IssuesModel.Events.ISSUE_ADDED, {issuesModel: model, inspectorIssue: mkInspectorCspIssue('url1')});
     model.dispatchEventToListeners(
-        SDK.IssuesModel.Events.IssueAdded, {issuesModel: model, inspectorIssue: mkInspectorCspIssue('url2')});
+        SDK.IssuesModel.Events.ISSUE_ADDED, {issuesModel: model, inspectorIssue: mkInspectorCspIssue('url2')});
 
     const expected = ['ContentSecurityPolicyIssue::kURLViolation', 'ContentSecurityPolicyIssue::kURLViolation'];
     assert.deepStrictEqual(dispatchedIssues.map(i => i.code()), expected);
@@ -58,12 +58,12 @@ describeWithMockConnection('IssuesManager', () => {
         IssuesManager.IssuesManager.Events.IssueAdded, event => dispatchedIssues.push(event.data.issue));
 
     model.dispatchEventToListeners(
-        SDK.IssuesModel.Events.IssueAdded, {issuesModel: model, inspectorIssue: mkInspectorCspIssue('url1')});
+        SDK.IssuesModel.Events.ISSUE_ADDED, {issuesModel: model, inspectorIssue: mkInspectorCspIssue('url1')});
     const prerenderTarget = createTarget({subtype: 'prerender'});
     const prerenderModel = prerenderTarget.model(SDK.IssuesModel.IssuesModel);
     assert.exists(prerenderModel);
     prerenderModel.dispatchEventToListeners(
-        SDK.IssuesModel.Events.IssueAdded, {issuesModel: prerenderModel, inspectorIssue: mkInspectorCspIssue('url2')});
+        SDK.IssuesModel.Events.ISSUE_ADDED, {issuesModel: prerenderModel, inspectorIssue: mkInspectorCspIssue('url2')});
 
     const expected = ['url1'];
     assert.deepStrictEqual(dispatchedIssues.map(getBlockedUrl), expected);
@@ -91,7 +91,7 @@ describeWithMockConnection('IssuesManager', () => {
     const issuesManager = new IssuesManager.IssuesManager.IssuesManager();
 
     model.dispatchEventToListeners(
-        SDK.IssuesModel.Events.IssueAdded, {issuesModel: model, inspectorIssue: mkInspectorCspIssue('url1')});
+        SDK.IssuesModel.Events.ISSUE_ADDED, {issuesModel: model, inspectorIssue: mkInspectorCspIssue('url1')});
     assert.strictEqual(issuesManager.numberOfIssues(), 1);
 
     navigate(getMainFrame(primary ? target : createTarget({subtype: 'prerender'})));
@@ -335,7 +335,7 @@ describeWithMockConnection('IssuesManager', () => {
       },
     };
 
-    model.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: model, inspectorIssue: issue});
+    model.dispatchEventToListeners(SDK.IssuesModel.Events.ISSUE_ADDED, {issuesModel: model, inspectorIssue: issue});
     assert.strictEqual(issuesManager.numberOfIssues(), 1);
 
     dispatchEvent(target, 'Network.requestWillBeSent', {

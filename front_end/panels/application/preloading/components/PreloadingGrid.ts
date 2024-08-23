@@ -122,7 +122,7 @@ export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableCompone
 
   #buildReportRows(): DataGrid.DataGridUtils.Row[] {
     function statusRenderer(statusString: string, status: SDK.PreloadingModel.PreloadingStatus): LitHtml.LitTemplate {
-      if (status !== SDK.PreloadingModel.PreloadingStatus.Failure) {
+      if (status !== SDK.PreloadingModel.PreloadingStatus.FAILURE) {
         return LitHtml.html`<div>${statusString}</div>`;
       }
 

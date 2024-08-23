@@ -242,7 +242,7 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.hideNetworkMessages),
   settingName: 'hide-network-messages',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -261,7 +261,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.selectedContextOnly),
   settingName: 'selected-context-filter-enabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -280,7 +280,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.logXmlhttprequests),
   settingName: 'monitoring-xhr-enabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -289,7 +289,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.timestamps),
   settingName: 'console-timestamps-enabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -326,7 +326,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.autocompleteOnEnter),
   settingName: 'console-autocomplete-on-enter',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -345,7 +345,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.groupSimilarMessagesInConsole),
   settingName: 'console-group-similar',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -382,7 +382,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.eagerEvaluation),
   settingName: 'console-eager-eval',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -401,7 +401,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.evaluateTriggersUserActivation),
   settingName: 'console-user-activation-eval',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -420,7 +420,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.expandConsoleTraceMessagesByDefault),
   settingName: 'console-trace-expand',
   settingType: Common.Settings.SettingType.BOOLEAN,

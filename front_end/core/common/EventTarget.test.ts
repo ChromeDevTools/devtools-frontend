@@ -9,52 +9,52 @@
 import * as Common from './common.js';
 
 const enum Events {
-  VoidEvent = 'VoidEvent',
-  NumberEvent = 'NumberEvent',
-  KeyValueEvent = 'KeyValueEvent',
-  BooleanEvent = 'BooleanEvent',
-  UnionEvent = 'UnionEvent',
+  VOID_EVENT = 'VoidEvent',
+  NUMBER_EVENT = 'NumberEvent',
+  KEY_VALUE_EVENT = 'KeyValueEvent',
+  BOOLEAN_EVENT = 'BooleanEvent',
+  UNION_EVENT = 'UnionEvent',
 }
 
 type TestEvents = {
-  [Events.VoidEvent]: void,
-  [Events.NumberEvent]: number,
-  [Events.KeyValueEvent]: {key: string, value: number},
-  [Events.BooleanEvent]: boolean,
-  [Events.UnionEvent]: string|null,
+  [Events.VOID_EVENT]: void,
+  [Events.NUMBER_EVENT]: number,
+  [Events.KEY_VALUE_EVENT]: {key: string, value: number},
+  [Events.BOOLEAN_EVENT]: boolean,
+  [Events.UNION_EVENT]: string|null,
 };
 
 class TypedEventEmitter extends Common.ObjectWrapper.ObjectWrapper<TestEvents> {
   testValidArgumentTypes() {
-    this.dispatchEventToListeners(Events.VoidEvent);
-    this.dispatchEventToListeners(Events.NumberEvent, 5.0);
-    this.dispatchEventToListeners(Events.KeyValueEvent, {key: 'key', value: 42});
-    this.dispatchEventToListeners(Events.BooleanEvent, true);
-    this.dispatchEventToListeners(Events.UnionEvent, 'foo');
-    this.dispatchEventToListeners(Events.UnionEvent, null);
+    this.dispatchEventToListeners(Events.VOID_EVENT);
+    this.dispatchEventToListeners(Events.NUMBER_EVENT, 5.0);
+    this.dispatchEventToListeners(Events.KEY_VALUE_EVENT, {key: 'key', value: 42});
+    this.dispatchEventToListeners(Events.BOOLEAN_EVENT, true);
+    this.dispatchEventToListeners(Events.UNION_EVENT, 'foo');
+    this.dispatchEventToListeners(Events.UNION_EVENT, null);
   }
 
   testInvalidArgumentTypes() {
     // @ts-expect-error undefined instead of no argument provided
-    this.dispatchEventToListeners(Events.VoidEvent, undefined);
+    this.dispatchEventToListeners(Events.VOID_EVENT, undefined);
 
     // @ts-expect-error string instead of undefined provided
-    this.dispatchEventToListeners(Events.VoidEvent, 'void');
+    this.dispatchEventToListeners(Events.VOID_EVENT, 'void');
 
     // @ts-expect-error string instead of number provided
-    this.dispatchEventToListeners(Events.NumberEvent, 'expected number');
+    this.dispatchEventToListeners(Events.NUMBER_EVENT, 'expected number');
 
     // @ts-expect-error argument missing
-    this.dispatchEventToListeners(Events.NumberEvent);
+    this.dispatchEventToListeners(Events.NUMBER_EVENT);
 
     // @ts-expect-error wrong object type provided as payload
-    this.dispatchEventToListeners(Events.KeyValueEvent, {key: 'key', foo: 'foo'});
+    this.dispatchEventToListeners(Events.KEY_VALUE_EVENT, {key: 'key', foo: 'foo'});
 
     // @ts-expect-error unknown event type used
     this.dispatchEventToListeners('fake', {key: 'key', foo: 'foo'});
 
     // @ts-expect-error wrong payload not part of the union
-    this.dispatchEventToListeners(Events.UnionEvent, 25);
+    this.dispatchEventToListeners(Events.UNION_EVENT, 25);
   }
 
   testStringAndSymbolDisallowed() {
@@ -69,25 +69,25 @@ class TypedEventEmitter extends Common.ObjectWrapper.ObjectWrapper<TestEvents> {
 class VoidTypedEventEmitter extends Common.ObjectWrapper.ObjectWrapper<void> {
   testInvalidArgumentTypes() {
     // @ts-expect-error undefined instead of no argument provided
-    this.dispatchEventToListeners(Events.VoidEvent, undefined);
+    this.dispatchEventToListeners(Events.VOID_EVENT, undefined);
 
     // @ts-expect-error string instead of undefined provided
-    this.dispatchEventToListeners(Events.VoidEvent, 'void');
+    this.dispatchEventToListeners(Events.VOID_EVENT, 'void');
 
     // @ts-expect-error string instead of number provided
-    this.dispatchEventToListeners(Events.NumberEvent, 'expected number');
+    this.dispatchEventToListeners(Events.NUMBER_EVENT, 'expected number');
 
     // @ts-expect-error argument missing
-    this.dispatchEventToListeners(Events.NumberEvent);
+    this.dispatchEventToListeners(Events.NUMBER_EVENT);
 
     // @ts-expect-error wrong object type provided as payload
-    this.dispatchEventToListeners(Events.KeyValueEvent, {key: 'key', foo: 'foo'});
+    this.dispatchEventToListeners(Events.KEY_VALUE_EVENT, {key: 'key', foo: 'foo'});
 
     // @ts-expect-error unknown event type used
     this.dispatchEventToListeners('fake', {key: 'key', foo: 'foo'});
 
     // @ts-expect-error wrong payload not part of the union
-    this.dispatchEventToListeners(Events.UnionEvent, 25);
+    this.dispatchEventToListeners(Events.UNION_EVENT, 25);
   }
 
   testStringAndSymbolDisallowed() {
@@ -106,8 +106,8 @@ class UntypedEventEmitter extends Common.ObjectWrapper.ObjectWrapper<any> {
   testDispatch() {
     this.dispatchEventToListeners('foo');
     this.dispatchEventToListeners(Symbol('number payload'), 25);
-    this.dispatchEventToListeners(Events.VoidEvent);
-    this.dispatchEventToListeners(Events.UnionEvent, 'foo');
+    this.dispatchEventToListeners(Events.VOID_EVENT);
+    this.dispatchEventToListeners(Events.UNION_EVENT, 'foo');
   }
 }
 
@@ -118,25 +118,25 @@ function genericListener<T>(): (arg: Common.EventTarget.EventTargetEvent<T>) => 
 const typedEmitter = new TypedEventEmitter();
 
 (function testValidListeners() {
-  typedEmitter.addEventListener(Events.VoidEvent, genericListener<void>());
-  typedEmitter.addEventListener(Events.NumberEvent, genericListener<number>());
-  typedEmitter.addEventListener(Events.KeyValueEvent, genericListener<{key: string, value: number}>());
-  typedEmitter.addEventListener(Events.BooleanEvent, genericListener<boolean>());
-  typedEmitter.addEventListener(Events.UnionEvent, genericListener<string|null>());
+  typedEmitter.addEventListener(Events.VOID_EVENT, genericListener<void>());
+  typedEmitter.addEventListener(Events.NUMBER_EVENT, genericListener<number>());
+  typedEmitter.addEventListener(Events.KEY_VALUE_EVENT, genericListener<{key: string, value: number}>());
+  typedEmitter.addEventListener(Events.BOOLEAN_EVENT, genericListener<boolean>());
+  typedEmitter.addEventListener(Events.UNION_EVENT, genericListener<string|null>());
 })();
 
 (function testInvalidListenerArguments() {
   // @ts-expect-error
-  typedEmitter.addEventListener(Events.VoidEvent, genericListener<number>());
+  typedEmitter.addEventListener(Events.VOID_EVENT, genericListener<number>());
 
   // @ts-expect-error
-  typedEmitter.addEventListener(Events.NumberEvent, genericListener<void>());
+  typedEmitter.addEventListener(Events.NUMBER_EVENT, genericListener<void>());
 
   // @ts-expect-error
-  typedEmitter.addEventListener(Events.KeyValueEvent, genericListener<{foo: string}>());
+  typedEmitter.addEventListener(Events.KEY_VALUE_EVENT, genericListener<{foo: string}>());
 
   // @ts-expect-error
-  typedEmitter.addEventListener(Events.UnionEvent, genericListener<string>());
+  typedEmitter.addEventListener(Events.UNION_EVENT, genericListener<string>());
 })();
 
 (function testInvalidListenerType() {
@@ -149,9 +149,9 @@ const typedEmitter = new TypedEventEmitter();
 
 (function testUnionTypeOnDispatch() {
   // @ts-expect-error
-  typedEmitter.dispatchEventToListeners<Events.VoidEvent|Events.NumberEvent>(Events.NumberEvent, 5);
+  typedEmitter.dispatchEventToListeners<Events.VOID_EVENT|Events.NUMBER_EVENT>(Events.NUMBER_EVENT, 5);
 
-  const event: Events = Math.random() < 0.5 ? Events.NumberEvent : Events.BooleanEvent;
+  const event: Events = Math.random() < 0.5 ? Events.NUMBER_EVENT : Events.BOOLEAN_EVENT;
   // @ts-expect-error
   typedEmitter.dispatchEventToListeners(event, true);
 })();
@@ -161,5 +161,5 @@ const untypedEmitter = new UntypedEventEmitter();
 (function testUntypedListeners() {
   untypedEmitter.addEventListener('foo', genericListener());
   untypedEmitter.addEventListener(Symbol('foo'), genericListener());
-  untypedEmitter.addEventListener(Events.VoidEvent, genericListener());
+  untypedEmitter.addEventListener(Events.VOID_EVENT, genericListener());
 })();

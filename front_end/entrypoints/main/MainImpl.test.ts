@@ -19,7 +19,7 @@ describeWithMockConnection('MainMenuItem', () => {
       shortcutTitleForAction: () => {},
       shortcutsForAction: () => [],
     } as unknown as UI.ShortcutRegistry.ShortcutRegistry);
-    const tabTaget = createTarget({type: SDK.Target.Type.Tab});
+    const tabTaget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTaget, subtype: 'prerender'});
     createTarget({parentTarget: tabTaget});
 

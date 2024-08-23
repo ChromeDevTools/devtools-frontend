@@ -140,9 +140,9 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     this.target().registerDOMStorageDispatcher(new DOMStorageDispatcher(this));
     if (this.storageKeyManagerInternal) {
       this.storageKeyManagerInternal.addEventListener(
-          SDK.StorageKeyManager.Events.StorageKeyAdded, this.storageKeyAdded, this);
+          SDK.StorageKeyManager.Events.STORAGE_KEY_ADDED, this.storageKeyAdded, this);
       this.storageKeyManagerInternal.addEventListener(
-          SDK.StorageKeyManager.Events.StorageKeyRemoved, this.storageKeyRemoved, this);
+          SDK.StorageKeyManager.Events.STORAGE_KEY_REMOVED, this.storageKeyRemoved, this);
 
       for (const storageKey of this.storageKeyManagerInternal.storageKeys()) {
         this.addStorageKey(storageKey);

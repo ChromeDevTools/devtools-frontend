@@ -16,7 +16,7 @@ describeWithMockConnection('ReportingApiView', () => {
   const ENDPOINTS_2 = [{url: 'url2', groupName: 'group1'}, {url: 'url3', groupName: 'group2'}];
 
   it('updates endpoints grid when they change', () => {
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     const frameTarget = createTarget({parentTarget: tabTarget});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     const networkManager = frameTarget.model(SDK.NetworkManager.NetworkManager);

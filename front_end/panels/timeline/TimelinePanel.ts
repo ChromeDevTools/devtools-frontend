@@ -437,10 +437,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         Common.Settings.Settings.instance().createSetting('timeline-disable-js-sampling', false);
     this.disableCaptureJSProfileSetting.setTitle(i18nString(UIStrings.disableJavascriptSamples));
     this.captureLayersAndPicturesSetting = Common.Settings.Settings.instance().createSetting(
-        'timeline-capture-layers-and-pictures', false, Common.Settings.SettingStorageType.Session);
+        'timeline-capture-layers-and-pictures', false, Common.Settings.SettingStorageType.SESSION);
     this.captureLayersAndPicturesSetting.setTitle(i18nString(UIStrings.enableAdvancedPaint));
     this.captureSelectorStatsSetting = Common.Settings.Settings.instance().createSetting(
-        'timeline-capture-selector-stats', false, Common.Settings.SettingStorageType.Session);
+        'timeline-capture-selector-stats', false, Common.Settings.SettingStorageType.SESSION);
     this.captureSelectorStatsSetting.setTitle(i18nString(UIStrings.enableSelectorStats));
 
     this.showScreenshotsSetting =
@@ -523,7 +523,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.updateTimelineControls();
 
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.SuspendStateChanged, this.onSuspendStateChanged, this);
+        SDK.TargetManager.Events.SUSPEND_STATE_CHANGED, this.onSuspendStateChanged, this);
     const profilerModels = SDK.TargetManager.TargetManager.instance().models(SDK.CPUProfilerModel.CPUProfilerModel);
     for (const model of profilerModels) {
       for (const message of model.registeredConsoleProfileMessages) {
@@ -535,7 +535,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         {
           modelAdded: (model: SDK.CPUProfilerModel.CPUProfilerModel) => {
             model.addEventListener(
-                SDK.CPUProfilerModel.Events.ConsoleProfileFinished, event => this.consoleProfileFinished(event.data));
+                SDK.CPUProfilerModel.Events.CONSOLE_PROFILE_FINISHED, event => this.consoleProfileFinished(event.data));
           },
           modelRemoved: (_model: SDK.CPUProfilerModel.CPUProfilerModel) => {
 
@@ -929,12 +929,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.showSettingsPaneSetting, 'gear', i18nString(UIStrings.captureSettings), 'gear-filled',
         'timeline-settings-toggle');
     SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
-        SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this.updateShowSettingsToolbarButton,
+        SDK.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED, this.updateShowSettingsToolbarButton,
         this);
     SDK.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener(
-        SDK.CPUThrottlingManager.Events.RateChanged, this.updateShowSettingsToolbarButton, this);
+        SDK.CPUThrottlingManager.Events.RATE_CHANGED, this.updateShowSettingsToolbarButton, this);
     SDK.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener(
-        SDK.CPUThrottlingManager.Events.HardwareConcurrencyChanged, this.updateShowSettingsToolbarButton, this);
+        SDK.CPUThrottlingManager.Events.HARDWARE_CONCURRENCY_CHANGED, this.updateShowSettingsToolbarButton, this);
     this.disableCaptureJSProfileSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
     this.captureLayersAndPicturesSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
     this.captureSelectorStatsSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
@@ -1306,7 +1306,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         // Multiple targets problem might happen when you inspect multiple node servers on different port at same time,
         // or when you let DevTools listen to both locolhost:9229 & 127.0.0.1:9229.
         const firstNodeTarget =
-            SDK.TargetManager.TargetManager.instance().targets().find(target => target.type() === SDK.Target.Type.Node);
+            SDK.TargetManager.TargetManager.instance().targets().find(target => target.type() === SDK.Target.Type.NODE);
         if (!firstNodeTarget) {
           throw new Error('Could not load any Node target.');
         }

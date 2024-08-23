@@ -170,10 +170,10 @@ export class EventListenersView extends UI.Widget.VBox {
         const objectListenerElement = listenerElement as ObjectEventListenerBar;
         const listenerOrigin = objectListenerElement.eventListener().origin();
         let hidden = false;
-        if (listenerOrigin === SDK.DOMDebuggerModel.EventListener.Origin.FrameworkUser && !showFramework) {
+        if (listenerOrigin === SDK.DOMDebuggerModel.EventListener.Origin.FRAMEWORK_USER && !showFramework) {
           hidden = true;
         }
-        if (listenerOrigin === SDK.DOMDebuggerModel.EventListener.Origin.Framework && showFramework) {
+        if (listenerOrigin === SDK.DOMDebuggerModel.EventListener.Origin.FRAMEWORK && showFramework) {
           hidden = true;
         }
         if (!showPassive && objectListenerElement.eventListener().passive()) {

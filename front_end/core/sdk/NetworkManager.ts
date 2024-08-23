@@ -198,7 +198,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
       return {error: i18nString(UIStrings.noContentForWebSocket)};
     }
     if (!request.finished) {
-      await request.once(NetworkRequestEvents.FinishedLoading);
+      await request.once(NetworkRequestEvents.FINISHED_LOADING);
     }
     if (request.isRedirect()) {
       return {error: i18nString(UIStrings.noContentForRedirect)};
@@ -352,6 +352,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
 }
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   RequestStarted = 'RequestStarted',
   RequestUpdated = 'RequestUpdated',
   RequestFinished = 'RequestFinished',
@@ -363,6 +364,7 @@ export enum Events {
   ReportingApiReportAdded = 'ReportingApiReportAdded',
   ReportingApiReportUpdated = 'ReportingApiReportUpdated',
   ReportingApiEndpointsChangedForOrigin = 'ReportingApiEndpointsChangedForOrigin',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export interface RequestStartedEvent {
@@ -510,7 +512,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     this.#requestIdToTrustTokenEvent = new Map();
 
     MultitargetNetworkManager.instance().addEventListener(
-        MultitargetNetworkManager.Events.RequestIntercepted, this.#markAsIntercepted.bind(this));
+        MultitargetNetworkManager.Events.REQUEST_INTERCEPTED, this.#markAsIntercepted.bind(this));
   }
 
   #markAsIntercepted(event: Common.EventTarget.EventTargetEvent<string>): void {
@@ -1419,7 +1421,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     for (const agent of this.#networkAgents) {
       this.updateNetworkConditions(agent);
     }
-    this.dispatchEventToListeners(MultitargetNetworkManager.Events.ConditionsChanged);
+    this.dispatchEventToListeners(MultitargetNetworkManager.Events.CONDITIONS_CHANGED);
   }
 
   networkConditions(): Conditions {
@@ -1479,7 +1481,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     }
 
     if (uaChanged) {
-      this.dispatchEventToListeners(MultitargetNetworkManager.Events.UserAgentChanged);
+      this.dispatchEventToListeners(MultitargetNetworkManager.Events.USER_AGENT_CHANGED);
     }
   }
 
@@ -1497,13 +1499,13 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   setCustomAcceptedEncodingsOverride(acceptedEncodings: Protocol.Network.ContentEncoding[]): void {
     this.#customAcceptedEncodings = acceptedEncodings;
     this.updateAcceptedEncodingsOverride();
-    this.dispatchEventToListeners(MultitargetNetworkManager.Events.AcceptedEncodingsChanged);
+    this.dispatchEventToListeners(MultitargetNetworkManager.Events.ACCEPTED_ENCODINGS_CHANGED);
   }
 
   clearCustomAcceptedEncodingsOverride(): void {
     this.#customAcceptedEncodings = null;
     this.updateAcceptedEncodingsOverride();
-    this.dispatchEventToListeners(MultitargetNetworkManager.Events.AcceptedEncodingsChanged);
+    this.dispatchEventToListeners(MultitargetNetworkManager.Events.ACCEPTED_ENCODINGS_CHANGED);
   }
 
   isAcceptedEncodingOverrideSet(): boolean {
@@ -1537,7 +1539,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   setBlockedPatterns(patterns: BlockedPattern[]): void {
     this.#blockedPatternsSetting.set(patterns);
     this.updateBlockedPatterns();
-    this.dispatchEventToListeners(MultitargetNetworkManager.Events.BlockedPatternsChanged);
+    this.dispatchEventToListeners(MultitargetNetworkManager.Events.BLOCKED_PATTERNS_CHANGED);
   }
 
   setBlockingEnabled(enabled: boolean): void {
@@ -1546,7 +1548,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     }
     this.#blockingEnabledSetting.set(enabled);
     this.updateBlockedPatterns();
-    this.dispatchEventToListeners(MultitargetNetworkManager.Events.BlockedPatternsChanged);
+    this.dispatchEventToListeners(MultitargetNetworkManager.Events.BLOCKED_PATTERNS_CHANGED);
   }
 
   private updateBlockedPatterns(): void {
@@ -1599,7 +1601,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     for (const agent of this.#fetchAgents) {
       promises.push(agent.invoke_enable({patterns: this.#urlsForRequestInterceptor.valuesArray()}));
     }
-    this.dispatchEventToListeners(MultitargetNetworkManager.Events.InterceptorsChanged);
+    this.dispatchEventToListeners(MultitargetNetworkManager.Events.INTERCEPTORS_CHANGED);
     await Promise.all(promises);
   }
 
@@ -1608,7 +1610,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
       await requestInterceptor(interceptedRequest);
       if (interceptedRequest.hasResponded() && interceptedRequest.networkRequest) {
         this.dispatchEventToListeners(
-            MultitargetNetworkManager.Events.RequestIntercepted, interceptedRequest.networkRequest.requestId());
+            MultitargetNetworkManager.Events.REQUEST_INTERCEPTED, interceptedRequest.networkRequest.requestId());
         return;
       }
     }
@@ -1671,23 +1673,23 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
 
 export namespace MultitargetNetworkManager {
   export const enum Events {
-    BlockedPatternsChanged = 'BlockedPatternsChanged',
-    ConditionsChanged = 'ConditionsChanged',
-    UserAgentChanged = 'UserAgentChanged',
-    InterceptorsChanged = 'InterceptorsChanged',
-    AcceptedEncodingsChanged = 'AcceptedEncodingsChanged',
-    RequestIntercepted = 'RequestIntercepted',
-    RequestFulfilled = 'RequestFulfilled',
+    BLOCKED_PATTERNS_CHANGED = 'BlockedPatternsChanged',
+    CONDITIONS_CHANGED = 'ConditionsChanged',
+    USER_AGENT_CHANGED = 'UserAgentChanged',
+    INTERCEPTORS_CHANGED = 'InterceptorsChanged',
+    ACCEPTED_ENCODINGS_CHANGED = 'AcceptedEncodingsChanged',
+    REQUEST_INTERCEPTED = 'RequestIntercepted',
+    REQUEST_FULFILLED = 'RequestFulfilled',
   }
 
   export type EventTypes = {
-    [Events.BlockedPatternsChanged]: void,
-    [Events.ConditionsChanged]: void,
-    [Events.UserAgentChanged]: void,
-    [Events.InterceptorsChanged]: void,
-    [Events.AcceptedEncodingsChanged]: void,
-    [Events.RequestIntercepted]: string,
-    [Events.RequestFulfilled]: Platform.DevToolsPath.UrlString,
+    [Events.BLOCKED_PATTERNS_CHANGED]: void,
+    [Events.CONDITIONS_CHANGED]: void,
+    [Events.USER_AGENT_CHANGED]: void,
+    [Events.INTERCEPTORS_CHANGED]: void,
+    [Events.ACCEPTED_ENCODINGS_CHANGED]: void,
+    [Events.REQUEST_INTERCEPTED]: string,
+    [Events.REQUEST_FULFILLED]: Platform.DevToolsPath.UrlString,
   };
 }
 
@@ -1805,7 +1807,7 @@ export class InterceptedRequest {
 
     void this.#fetchAgent.invoke_fulfillRequest({requestId: this.requestId, responseCode, body, responseHeaders});
     MultitargetNetworkManager.instance().dispatchEventToListeners(
-        MultitargetNetworkManager.Events.RequestFulfilled, this.request.url as Platform.DevToolsPath.UrlString);
+        MultitargetNetworkManager.Events.REQUEST_FULFILLED, this.request.url as Platform.DevToolsPath.UrlString);
   }
 
   continueRequestWithoutChange(): void {
@@ -1954,7 +1956,7 @@ class ExtraInfoBuilder {
   }
 }
 
-SDKModel.register(NetworkManager, {capabilities: Capability.Network, autostart: true});
+SDKModel.register(NetworkManager, {capabilities: Capability.NETWORK, autostart: true});
 
 export class ConditionsSerializer implements Serializer<Conditions, Conditions> {
   stringify(value: unknown): string {

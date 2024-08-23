@@ -44,7 +44,7 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
 
   it('uses main frame to get certificate', () => {
     SDK.ChildTargetManager.ChildTargetManager.install();
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     const mainFrameTarget = createTarget({parentTarget: tabTarget});
     const prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     const subframeTarget = createTarget({parentTarget: mainFrameTarget, subtype: ''});
@@ -154,7 +154,7 @@ describe('NetworkDispatcher', () => {
 
       // ResponseReceived does overwrite response headers if request is marked as intercepted.
       SDK.NetworkManager.MultitargetNetworkManager.instance().dispatchEventToListeners(
-          SDK.NetworkManager.MultitargetNetworkManager.Events.RequestIntercepted, 'mockId');
+          SDK.NetworkManager.MultitargetNetworkManager.Events.REQUEST_INTERCEPTED, 'mockId');
       networkDispatcher.responseReceived(mockResponseReceivedEventWithHeaders({'test-header': 'third'}));
       assert.deepEqual(
           networkDispatcher.requestForId('mockId')?.responseHeaders, [{name: 'test-header', value: 'third'}]);
@@ -346,7 +346,7 @@ describeWithMockConnection('InterceptedRequest', () => {
 
     const fulfilledRequest = new Promise(resolve => {
       multitargetNetworkManager.addEventListener(
-          SDK.NetworkManager.MultitargetNetworkManager.Events.RequestFulfilled, resolve);
+          SDK.NetworkManager.MultitargetNetworkManager.Events.REQUEST_FULFILLED, resolve);
     });
     const networkRequest = SDK.NetworkRequest.NetworkRequest.create(
         requestId as unknown as Protocol.Network.RequestId, request.url as Platform.DevToolsPath.UrlString,

@@ -246,7 +246,7 @@ export class VariableRenderer implements MatchRenderer<SDK.CSSPropertyParser.Var
   #handleVarDefinitionActivate(variable: string|SDK.CSSProperty.CSSProperty|
                                SDK.CSSMatchedStyles.CSSRegisteredProperty): void {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
-    Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.VarLink);
+    Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.VAR_LINK);
     if (variable instanceof SDK.CSSProperty.CSSProperty) {
       this.#pane.revealProperty(variable);
     } else if (variable instanceof SDK.CSSMatchedStyles.CSSRegisteredProperty) {
@@ -372,7 +372,7 @@ export class ColorRenderer implements MatchRenderer<ColorMatch> {
     };
 
     swatch.addEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, () => {
-      Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Color);
+      Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.COLOR);
     });
     swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, onColorChanged);
 
@@ -468,8 +468,8 @@ export class LightDarkColorRenderer implements MatchRenderer<LightDarkColorMatch
   // If the element has color-scheme set to both light and dark, we check the prefers-color-scheme media query.
   async #activeColor(match: LightDarkColorMatch): Promise<CodeMirror.SyntaxNode[]|undefined> {
     const activeColorSchemes = this.#treeElement.getComputedStyle('color-scheme')?.split(' ') ?? [];
-    const hasLight = activeColorSchemes.includes(SDK.CSSModel.ColorScheme.Light);
-    const hasDark = activeColorSchemes.includes(SDK.CSSModel.ColorScheme.Dark);
+    const hasLight = activeColorSchemes.includes(SDK.CSSModel.ColorScheme.LIGHT);
+    const hasDark = activeColorSchemes.includes(SDK.CSSModel.ColorScheme.DARK);
 
     if (!hasDark && !hasLight) {
       return match.light;
@@ -482,9 +482,9 @@ export class LightDarkColorRenderer implements MatchRenderer<LightDarkColorMatch
     }
 
     switch (await this.#treeElement.parentPane().cssModel()?.colorScheme()) {
-      case SDK.CSSModel.ColorScheme.Dark:
+      case SDK.CSSModel.ColorScheme.DARK:
         return match.dark;
-      case SDK.CSSModel.ColorScheme.Light:
+      case SDK.CSSModel.ColorScheme.LIGHT:
         return match.light;
       default:
         return undefined;
@@ -605,7 +605,7 @@ export class AngleRenderer implements MatchRenderer<AngleMatch> {
       if (data.open) {
         this.#treeElement.parentPane().hideAllPopovers();
         this.#treeElement.parentPane().activeCSSAngle = cssAngle;
-        Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Angle);
+        Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.ANGLE);
       }
 
       section.element.classList.toggle('has-open-popover', data.open);
@@ -646,7 +646,7 @@ export class LinkableNameRenderer implements MatchRenderer<LinkableNameMatch> {
       case LinkableNameProperties.AnimationName:
         return {
           jslogContext: 'css-animation-name',
-          metric: Host.UserMetrics.SwatchType.AnimationNameLink,
+          metric: Host.UserMetrics.SwatchType.ANIMATION_NAME_LINK,
           ruleBlock: '@keyframes',
           isDefined: Boolean(this.#treeElement.matchedStyles().keyframes().find(kf => kf.name().text === match.text)),
         };
@@ -661,7 +661,7 @@ export class LinkableNameRenderer implements MatchRenderer<LinkableNameMatch> {
       case LinkableNameProperties.PositionTryFallbacks:
         return {
           jslogContext: 'css-position-try',
-          metric: Host.UserMetrics.SwatchType.PositionTryLink,
+          metric: Host.UserMetrics.SwatchType.POSITION_TRY_LINK,
           ruleBlock: '@position-try',
           isDefined:
               Boolean(this.#treeElement.matchedStyles().positionTryRules().find(pt => pt.name().text === match.text)),
@@ -708,7 +708,7 @@ export class BezierRenderer implements MatchRenderer<BezierMatch> {
     const swatchPopoverHelper = this.#treeElement.parentPane().swatchPopoverHelper();
     const swatch = InlineEditor.Swatches.BezierSwatch.create();
     swatch.iconElement().addEventListener('click', () => {
-      Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.AnimationTiming);
+      Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.ANIMATION_TIMING);
     });
     swatch.setBezierText(match.text);
     new BezierPopoverIcon({treeElement: this.#treeElement, swatchPopoverHelper, swatch});
@@ -994,7 +994,7 @@ export class ShadowRenderer implements MatchRenderer<ShadowMatch> {
       const swatch = new InlineEditor.Swatches.CSSShadowSwatch(model);
       swatch.setAttribute('jslog', `${VisualLogging.showStyleEditor('css-shadow').track({click: true})}`);
       swatch.iconElement().addEventListener('click', () => {
-        Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Shadow);
+        Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.SHADOW);
       });
       model.renderContents(swatch);
       const popoverHelper = new ShadowSwatchPopoverHelper(
@@ -1470,7 +1470,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       let overloaded = false;
 
       inherited = this.#parentSection.isPropertyInherited(name);
-      overloaded = this.matchedStylesInternal.propertyState(property) === SDK.CSSMatchedStyles.PropertyState.Overloaded;
+      overloaded = this.matchedStylesInternal.propertyState(property) === SDK.CSSMatchedStyles.PropertyState.OVERLOADED;
 
       const leadingProperty = leadingProperties.find(property => property.name === name && property.activeInStyle());
       if (leadingProperty) {
@@ -1677,7 +1677,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         this.#parentSection.nextEditorTriggerButtonIdx++;
         button.addEventListener('click', () => {
           Host.userMetrics.swatchActivated(
-              isFlex ? Host.UserMetrics.SwatchType.Flex : Host.UserMetrics.SwatchType.Grid);
+              isFlex ? Host.UserMetrics.SwatchType.FLEX : Host.UserMetrics.SwatchType.GRID);
         });
         this.listItemElement.appendChild(button);
         const helper = this.parentPaneInternal.swatchPopoverHelper();
@@ -1735,7 +1735,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       copyIcon.addEventListener('click', () => {
         const propertyText = `${this.property.name}: ${this.property.value};`;
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(propertyText);
-        Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.DeclarationViaChangedLine);
+        Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.DECLARATION_VIA_CHANGED_LINE);
       });
       this.listItemElement.append(copyIcon);
       this.listItemElement.insertBefore(enabledCheckboxElement, this.listItemElement.firstChild);
@@ -1870,23 +1870,23 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     contextMenu.headerSection().appendItem(i18nString(UIStrings.copyDeclaration), () => {
       const propertyText = `${this.property.name}: ${this.property.value};`;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(propertyText);
-      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.DeclarationViaContextMenu);
+      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.DECLARATION_VIA_CONTEXT_MENU);
     }, {jslogContext: 'copy-declaration'});
 
     contextMenu.headerSection().appendItem(i18nString(UIStrings.copyProperty), () => {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.property.name);
-      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.PropertyViaContextMenu);
+      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.PROPERTY_VIA_CONTEXT_MENU);
     }, {jslogContext: 'copy-property'});
 
     contextMenu.headerSection().appendItem(i18nString(UIStrings.copyValue), () => {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.property.value);
-      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.ValueViaContextMenu);
+      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.VALUE_VIA_CONTEXT_MENU);
     }, {jslogContext: 'copy-value'});
 
     contextMenu.headerSection().appendItem(i18nString(UIStrings.copyRule), () => {
       const ruleText = StylesSidebarPane.formatLeadingProperties(this.#parentSection).ruleText;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(ruleText);
-      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.RuleViaContextMenu);
+      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.RULE_VIA_CONTEXT_MENU);
     }, {jslogContext: 'copy-rule'});
 
     contextMenu.headerSection().appendItem(
@@ -1896,7 +1896,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyAllDeclarations), () => {
       const allDeclarationText = StylesSidebarPane.formatLeadingProperties(this.#parentSection).allDeclarationText;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allDeclarationText);
-      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.AllDeclarationsViaContextMenu);
+      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.ALL_DECLARATIONS_VIA_CONTEXT_MENU);
     }, {jslogContext: 'copy-all-declarations'});
 
     contextMenu.clipboardSection().appendItem(
@@ -1907,7 +1907,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.copyAllCSSChanges), async () => {
       const allChanges = await this.parentPane().getFormattedChanges();
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allChanges);
-      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.AllChangesViaStylesPane);
+      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.ALL_CHANGES_VIA_STYLES_TAB);
     }, {jslogContext: 'copy-all-css-changes'});
 
     contextMenu.footerSection().appendItem(i18nString(UIStrings.viewComputedValue), () => {
@@ -1940,7 +1940,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private copyCssDeclarationAsJs(): void {
     const cssDeclarationValue = getCssDeclarationAsJavascriptProperty(this.property);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(cssDeclarationValue);
-    Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.DeclarationAsJSViaContextMenu);
+    Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.DECLARATION_AS_JS_VIA_CONTEXT_MENU);
   }
 
   private copyAllCssDeclarationAsJs(): void {
@@ -1948,7 +1948,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const cssDeclarationsAsJsProperties =
         leadingProperties.filter(property => !property.disabled).map(getCssDeclarationAsJavascriptProperty);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(cssDeclarationsAsJsProperties.join(',\n'));
-    Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.AllDeclarationsAsJSViaContextMenu);
+    Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.ALL_DECLARATINS_AS_JS_VIA_CONTEXT_MENU);
   }
 
   private navigateToSource(element: Element, omitFocus?: boolean): void {

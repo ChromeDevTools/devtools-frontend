@@ -231,7 +231,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
         Persistence.NetworkPersistenceManager.Events.RequestsForHeaderOverridesFileChanged,
         this.#onRequestsForHeaderOverridesFileChanged, this);
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.NameChanged, this.targetNameChanged, this);
+        SDK.TargetManager.Events.NAME_CHANGED, this.targetNameChanged, this);
 
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
     this.resetWorkspace(Workspace.Workspace.WorkspaceImpl.instance());
@@ -743,7 +743,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     let targetNode = rootOrDeployed.child('target:' + target.id());
     if (!targetNode) {
       targetNode = new NavigatorGroupTreeNode(
-          this, project, 'target:' + target.id(), target.type() === SDK.Target.Type.Frame ? Types.Frame : Types.Worker,
+          this, project, 'target:' + target.id(), target.type() === SDK.Target.Type.FRAME ? Types.Frame : Types.Worker,
           target.name());
       rootOrDeployed.appendChild(targetNode);
     }

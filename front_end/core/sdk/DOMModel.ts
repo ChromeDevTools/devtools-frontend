@@ -1032,9 +1032,11 @@ export class DOMNode {
 
 export namespace DOMNode {
   export enum ShadowRootTypes {
+    /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
     UserAgent = 'user-agent',
     Open = 'open',
     Closed = 'closed',
+    /* eslint-enable @typescript-eslint/naming-convention */
   }
 }
 
@@ -1636,6 +1638,7 @@ export class DOMModel extends SDKModel<EventTypes> {
 }
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   AttrModified = 'AttrModified',
   AttrRemoved = 'AttrRemoved',
   CharacterDataModified = 'CharacterDataModified',
@@ -1647,6 +1650,7 @@ export enum Events {
   DistributedNodesChanged = 'DistributedNodesChanged',
   MarkersChanged = 'MarkersChanged',
   TopLayerElementsChanged = 'TopLayerElementsChanged',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export type EventTypes = {

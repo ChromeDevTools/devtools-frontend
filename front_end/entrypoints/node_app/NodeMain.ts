@@ -40,7 +40,7 @@ export class NodeMainImpl implements Common.Runnable.Runnable {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSFromFrontend);
     void SDK.Connections.initMainConnection(async () => {
       const target = SDK.TargetManager.TargetManager.instance().createTarget(
-          'main', i18nString(UIStrings.main), SDK.Target.Type.Browser, null);
+          'main', i18nString(UIStrings.main), SDK.Target.Type.BROWSER, null);
       target.setInspectedURL('Node.js' as Platform.DevToolsPath.UrlString);
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
   }
@@ -107,7 +107,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel<void> implemen
     const connection = new NodeConnection(this.#targetAgent, sessionId);
     this.#childConnections.set(sessionId, connection);
     const target = this.#targetManager.createTarget(
-        targetInfo.targetId, name, SDK.Target.Type.Node, this.#parentTarget, undefined, undefined, connection);
+        targetInfo.targetId, name, SDK.Target.Type.NODE, this.#parentTarget, undefined, undefined, connection);
     this.#childTargets.set(sessionId, target);
     void target.runtimeAgent().invoke_runIfWaitingForDebugger();
   }
@@ -167,4 +167,4 @@ export class NodeConnection implements ProtocolClient.InspectorBackend.Connectio
   }
 }
 
-SDK.SDKModel.SDKModel.register(NodeChildTargetManager, {capabilities: SDK.Target.Capability.Target, autostart: true});
+SDK.SDKModel.SDKModel.register(NodeChildTargetManager, {capabilities: SDK.Target.Capability.TARGET, autostart: true});

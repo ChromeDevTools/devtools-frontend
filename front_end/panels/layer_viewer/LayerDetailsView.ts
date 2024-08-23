@@ -379,12 +379,12 @@ export type EventTypes = {
 };
 
 export const slowScrollRectNames = new Map([
-  [SDK.LayerTreeBase.Layer.ScrollRectType.NonFastScrollable, i18nLazyString(UIStrings.nonFastScrollable)],
-  [SDK.LayerTreeBase.Layer.ScrollRectType.TouchEventHandler, i18nLazyString(UIStrings.touchEventHandler)],
-  [SDK.LayerTreeBase.Layer.ScrollRectType.WheelEventHandler, i18nLazyString(UIStrings.wheelEventHandler)],
-  [SDK.LayerTreeBase.Layer.ScrollRectType.RepaintsOnScroll, i18nLazyString(UIStrings.repaintsOnScroll)],
+  [SDK.LayerTreeBase.Layer.ScrollRectType.NON_FAST_SCROLLABLE, i18nLazyString(UIStrings.nonFastScrollable)],
+  [SDK.LayerTreeBase.Layer.ScrollRectType.TOUCH_EVENT_HANDLER, i18nLazyString(UIStrings.touchEventHandler)],
+  [SDK.LayerTreeBase.Layer.ScrollRectType.WHEEL_EVENT_HANDLER, i18nLazyString(UIStrings.wheelEventHandler)],
+  [SDK.LayerTreeBase.Layer.ScrollRectType.REPAINTS_ON_SCROLL, i18nLazyString(UIStrings.repaintsOnScroll)],
   [
-    SDK.LayerTreeBase.Layer.ScrollRectType.MainThreadScrollingReason,
+    SDK.LayerTreeBase.Layer.ScrollRectType.MAIN_THREAD_SCROLL_REASON,
     i18nLazyString(UIStrings.mainThreadScrollingReason),
   ],
 ]);

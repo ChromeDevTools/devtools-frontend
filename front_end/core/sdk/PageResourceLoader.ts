@@ -148,12 +148,12 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     // already been preloaded. In such cases, we therefore don't just discard all pageResources, but
     // instead make sure to keep the pageResources for the prerendered target.
     for (const [key, pageResource] of this.#pageResources.entries()) {
-      if ((type === PrimaryPageChangeType.Activation) && mainFrameTarget === pageResource.initiator.target) {
+      if ((type === PrimaryPageChangeType.ACTIVATION) && mainFrameTarget === pageResource.initiator.target) {
         keptResources.set(key, pageResource);
       }
     }
     this.#pageResources = keptResources;
-    this.dispatchEventToListeners(Events.Update);
+    this.dispatchEventToListeners(Events.UPDATE);
   }
 
   getResourcesLoaded(): Map<string, PageResource> {
@@ -245,7 +245,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
   resourceLoadedThroughExtension(pageResource: PageResource): void {
     const key = PageResourceLoader.makeExtensionKey(pageResource.url, pageResource.initiator);
     this.#pageResources.set(key, pageResource);
-    this.dispatchEventToListeners(Events.Update);
+    this.dispatchEventToListeners(Events.UPDATE);
   }
 
   async loadResource(url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator): Promise<{
@@ -257,7 +257,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     const key = PageResourceLoader.makeKey(url, initiator);
     const pageResource: PageResource = {success: null, size: null, errorMessage: undefined, url, initiator};
     this.#pageResources.set(key, pageResource);
-    this.dispatchEventToListeners(Events.Update);
+    this.dispatchEventToListeners(Events.UPDATE);
     try {
       await this.acquireLoadSlot(initiator.target);
       const resultPromise = this.dispatchLoad(url, initiator);
@@ -279,7 +279,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       throw e;
     } finally {
       this.releaseLoadSlot(initiator.target);
-      this.dispatchEventToListeners(Events.Update);
+      this.dispatchEventToListeners(Events.UPDATE);
     }
   }
 
@@ -303,32 +303,35 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     if (eligibleForLoadFromTarget) {
       try {
         if (initiator.target) {
-          Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageViaTarget);
+          Host.userMetrics.developerResourceLoaded(
+              Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET);
           const result = await this.loadFromTarget(initiator.target, initiator.frameId, url);
           return result;
         }
         const frame = FrameManager.instance().getFrame(initiator.frameId);
         if (frame) {
-          Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageViaFrame);
+          Host.userMetrics.developerResourceLoaded(
+              Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_FRAME);
           const result = await this.loadFromTarget(frame.resourceTreeModel().target(), initiator.frameId, url);
           return result;
         }
       } catch (e) {
         if (e instanceof Error) {
-          Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageFailure);
+          Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FAILURE);
           failureReason = e.message;
         }
       }
-      Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageFallback);
+      Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FALLBACK);
     } else {
-      const code = getLoadThroughTargetSetting().get() ? Host.UserMetrics.DeveloperResourceLoaded.FallbackPerProtocol :
-                                                         Host.UserMetrics.DeveloperResourceLoaded.FallbackPerOverride;
+      const code = getLoadThroughTargetSetting().get() ?
+          Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_PROTOCOL :
+          Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_OVERRIDE;
       Host.userMetrics.developerResourceLoaded(code);
     }
 
     const result = await MultitargetNetworkManager.instance().loadResource(url);
     if (eligibleForLoadFromTarget && !result.success) {
-      Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.FallbackFailure);
+      Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_FAILURE);
     }
     if (failureReason) {
       // In case we have a success, add a note about why the load through the target failed.
@@ -341,24 +344,24 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
   private getDeveloperResourceScheme(parsedURL: Common.ParsedURL.ParsedURL|
                                      null): Host.UserMetrics.DeveloperResourceScheme {
     if (!parsedURL || parsedURL.scheme === '') {
-      return Host.UserMetrics.DeveloperResourceScheme.SchemeUnknown;
+      return Host.UserMetrics.DeveloperResourceScheme.UKNOWN;
     }
     const isLocalhost = parsedURL.host === 'localhost' || parsedURL.host.endsWith('.localhost');
     switch (parsedURL.scheme) {
       case 'file':
-        return Host.UserMetrics.DeveloperResourceScheme.SchemeFile;
+        return Host.UserMetrics.DeveloperResourceScheme.FILE;
       case 'data':
-        return Host.UserMetrics.DeveloperResourceScheme.SchemeData;
+        return Host.UserMetrics.DeveloperResourceScheme.DATA;
       case 'blob':
-        return Host.UserMetrics.DeveloperResourceScheme.SchemeBlob;
+        return Host.UserMetrics.DeveloperResourceScheme.BLOB;
       case 'http':
-        return isLocalhost ? Host.UserMetrics.DeveloperResourceScheme.SchemeHttpLocalhost :
-                             Host.UserMetrics.DeveloperResourceScheme.SchemeHttp;
+        return isLocalhost ? Host.UserMetrics.DeveloperResourceScheme.HTTP_LOCALHOST :
+                             Host.UserMetrics.DeveloperResourceScheme.HTTP;
       case 'https':
-        return isLocalhost ? Host.UserMetrics.DeveloperResourceScheme.SchemeHttpsLocalhost :
-                             Host.UserMetrics.DeveloperResourceScheme.SchemeHttps;
+        return isLocalhost ? Host.UserMetrics.DeveloperResourceScheme.HTTPS_LOCALHOST :
+                             Host.UserMetrics.DeveloperResourceScheme.HTTPS;
     }
-    return Host.UserMetrics.DeveloperResourceScheme.SchemeOther;
+    return Host.UserMetrics.DeveloperResourceScheme.OTHER;
   }
 
   private async loadFromTarget(
@@ -405,9 +408,9 @@ export function getLoadThroughTargetSetting(): Common.Settings.Setting<boolean> 
 }
 
 export const enum Events {
-  Update = 'Update',
+  UPDATE = 'Update',
 }
 
 export type EventTypes = {
-  [Events.Update]: void,
+  [Events.UPDATE]: void,
 };

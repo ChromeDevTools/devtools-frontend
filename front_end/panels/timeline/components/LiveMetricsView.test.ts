@@ -214,7 +214,7 @@ describeWithMockConnection('LiveMetricsView', () => {
     let mockFieldData: CrUXManager.PageResult;
 
     beforeEach(async () => {
-      const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+      const tabTarget = createTarget({type: SDK.Target.Type.TAB});
       target = createTarget({parentTarget: tabTarget});
 
       mockFieldData = {

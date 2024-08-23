@@ -25,7 +25,7 @@ describeWithMockConnection('AppManifestView', () => {
   let view: Application.AppManifestView.AppManifestView;
   beforeEach(() => {
     stubNoopSettings();
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
     emptyView = new UI.EmptyWidget.EmptyWidget('');

@@ -95,10 +95,10 @@ const items: SelectButtonItem[] = [
 ];
 
 const replaySpeedToMetricSpeedMap = {
-  [PlayRecordingSpeed.Normal]: Host.UserMetrics.RecordingReplaySpeed.Normal,
-  [PlayRecordingSpeed.Slow]: Host.UserMetrics.RecordingReplaySpeed.Slow,
-  [PlayRecordingSpeed.VerySlow]: Host.UserMetrics.RecordingReplaySpeed.VerySlow,
-  [PlayRecordingSpeed.ExtremelySlow]: Host.UserMetrics.RecordingReplaySpeed.ExtremelySlow,
+  [PlayRecordingSpeed.Normal]: Host.UserMetrics.RecordingReplaySpeed.NORMAL,
+  [PlayRecordingSpeed.Slow]: Host.UserMetrics.RecordingReplaySpeed.SLOW,
+  [PlayRecordingSpeed.VerySlow]: Host.UserMetrics.RecordingReplaySpeed.VERY_SLOW,
+  [PlayRecordingSpeed.ExtremelySlow]: Host.UserMetrics.RecordingReplaySpeed.EXTREMELY_SLOW,
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings(

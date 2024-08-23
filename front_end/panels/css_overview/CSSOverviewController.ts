@@ -16,7 +16,7 @@ export class OverviewController extends Common.ObjectWrapper.ObjectWrapper<Event
 
     this.currentUrl = SDK.TargetManager.TargetManager.instance().inspectedURL();
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.InspectedURLChanged, this.#checkUrlAndResetIfChanged, this);
+        SDK.TargetManager.Events.INSPECTED_URL_CHANGED, this.#checkUrlAndResetIfChanged, this);
   }
 
   #checkUrlAndResetIfChanged(): void {

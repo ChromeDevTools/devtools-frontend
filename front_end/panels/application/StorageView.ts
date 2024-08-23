@@ -300,7 +300,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
         target.model(SDK.StorageKeyManager.StorageKeyManager) as SDK.StorageKeyManager.StorageKeyManager;
     this.updateStorageKey(storageKeyManager.mainStorageKey());
     storageKeyManager.addEventListener(
-        SDK.StorageKeyManager.Events.MainStorageKeyChanged, this.storageKeyChanged, this);
+        SDK.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED, this.storageKeyChanged, this);
   }
 
   targetRemoved(target: SDK.Target.Target): void {
@@ -314,7 +314,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     const storageKeyManager =
         target.model(SDK.StorageKeyManager.StorageKeyManager) as SDK.StorageKeyManager.StorageKeyManager;
     storageKeyManager.removeEventListener(
-        SDK.StorageKeyManager.Events.MainStorageKeyChanged, this.storageKeyChanged, this);
+        SDK.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED, this.storageKeyChanged, this);
   }
 
   private originChanged(

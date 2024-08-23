@@ -46,9 +46,9 @@ export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.S
     this.#toolbarItem.element.classList.add('toolbar-has-dropdown');
     const targetManager = SDK.TargetManager.TargetManager.instance();
     targetManager.addModelListener(
-        SDK.ChildTargetManager.ChildTargetManager, SDK.ChildTargetManager.Events.TargetInfoChanged,
+        SDK.ChildTargetManager.ChildTargetManager, SDK.ChildTargetManager.Events.TARGET_INFO_CHANGED,
         this.#onTargetInfoChanged, this);
-    targetManager.addEventListener(SDK.TargetManager.Events.NameChanged, this.#onInspectedURLChanged, this);
+    targetManager.addEventListener(SDK.TargetManager.Events.NAME_CHANGED, this.#onInspectedURLChanged, this);
     targetManager.observeTargets(this);
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, this.#targetChanged, this);

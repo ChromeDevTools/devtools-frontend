@@ -21,12 +21,12 @@ export class PerformanceMetricsModel extends SDKModel<void> {
     this.#agent = target.performanceAgent();
 
     this.#metricModes = new Map([
-      ['TaskDuration', MetricMode.CumulativeTime],
-      ['ScriptDuration', MetricMode.CumulativeTime],
-      ['LayoutDuration', MetricMode.CumulativeTime],
-      ['RecalcStyleDuration', MetricMode.CumulativeTime],
-      ['LayoutCount', MetricMode.CumulativeCount],
-      ['RecalcStyleCount', MetricMode.CumulativeCount],
+      ['TaskDuration', MetricMode.CUMULATIVE_TIME],
+      ['ScriptDuration', MetricMode.CUMULATIVE_TIME],
+      ['LayoutDuration', MetricMode.CUMULATIVE_TIME],
+      ['RecalcStyleDuration', MetricMode.CUMULATIVE_TIME],
+      ['LayoutCount', MetricMode.CUMULATIVE_COUNT],
+      ['RecalcStyleCount', MetricMode.CUMULATIVE_COUNT],
     ]);
 
     this.#metricData = new Map();
@@ -55,7 +55,7 @@ export class PerformanceMetricsModel extends SDKModel<void> {
       }
       let value;
       switch (this.#metricModes.get(metric.name)) {
-        case MetricMode.CumulativeTime:
+        case MetricMode.CUMULATIVE_TIME:
           value = (data.lastTimestamp && data.lastValue) ?
               Platform.NumberUtilities.clamp(
                   (metric.value - data.lastValue) * 1000 / (timestamp - data.lastTimestamp), 0, 1) :
@@ -63,7 +63,7 @@ export class PerformanceMetricsModel extends SDKModel<void> {
           data.lastValue = metric.value;
           data.lastTimestamp = timestamp;
           break;
-        case MetricMode.CumulativeCount:
+        case MetricMode.CUMULATIVE_COUNT:
           value = (data.lastTimestamp && data.lastValue) ?
               Math.max(0, (metric.value - data.lastValue) * 1000 / (timestamp - data.lastTimestamp)) :
               0;
@@ -81,8 +81,8 @@ export class PerformanceMetricsModel extends SDKModel<void> {
 }
 
 const enum MetricMode {
-  CumulativeTime = 'CumulativeTime',
-  CumulativeCount = 'CumulativeCount',
+  CUMULATIVE_TIME = 'CumulativeTime',
+  CUMULATIVE_COUNT = 'CumulativeCount',
 }
 
 SDKModel.register(PerformanceMetricsModel, {capabilities: Capability.DOM, autostart: false});

@@ -395,7 +395,7 @@ export class HARInitiator extends HARBase {
    */
   constructor(data: any) {
     super(data);
-    this.type = (HARBase.optionalString(data['type']) ?? SDK.NetworkRequest.InitiatorType.Other) as
+    this.type = (HARBase.optionalString(data['type']) ?? SDK.NetworkRequest.InitiatorType.OTHER) as
         Protocol.Network.InitiatorType;
     this.url = HARBase.optionalString(data['url']);
     this.lineNumber = HARBase.optionalNumber(data['lineNumber']);

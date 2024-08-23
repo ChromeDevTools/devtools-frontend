@@ -14,7 +14,7 @@ describeWithMockConnection('ServiceWorkersView', () => {
   let view: Application.ServiceWorkersView.ServiceWorkersView;
 
   beforeEach(() => {
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
   });
@@ -34,7 +34,7 @@ describeWithMockConnection('ServiceWorkersView', () => {
     const ORIGIN = 'example.com';
     sinon.stub(securityOriginManager, 'securityOrigins').returns([ORIGIN]);
     const SCOPE_URL = 'SCOPE_URL';
-    serviceWorkersManager.dispatchEventToListeners(SDK.ServiceWorkerManager.Events.RegistrationUpdated, {
+    serviceWorkersManager.dispatchEventToListeners(SDK.ServiceWorkerManager.Events.REGISTRATION_UPDATED, {
       scopeURL: SCOPE_URL,
       securityOrigin: ORIGIN,
       versionsByMode: () => new Map(),
@@ -100,7 +100,7 @@ describeWithMockConnection('ServiceWorkersView', () => {
       };
       registration.updateVersion(versionPayload);
       serviceWorkersManager?.dispatchEventToListeners(
-          SDK.ServiceWorkerManager.Events.RegistrationUpdated, registration);
+          SDK.ServiceWorkerManager.Events.REGISTRATION_UPDATED, registration);
       assert.isTrue(hasRouterField());
     });
 
@@ -120,7 +120,7 @@ describeWithMockConnection('ServiceWorkersView', () => {
       };
       registration.updateVersion(versionPayload);
       serviceWorkersManager?.dispatchEventToListeners(
-          SDK.ServiceWorkerManager.Events.RegistrationUpdated, registration);
+          SDK.ServiceWorkerManager.Events.REGISTRATION_UPDATED, registration);
       assert.isFalse(hasRouterField());
 
       // Update the version with the empty router rules.
@@ -131,7 +131,7 @@ describeWithMockConnection('ServiceWorkersView', () => {
       }));
       registration.updateVersion(versionPayload);
       serviceWorkersManager?.dispatchEventToListeners(
-          SDK.ServiceWorkerManager.Events.RegistrationUpdated, registration);
+          SDK.ServiceWorkerManager.Events.REGISTRATION_UPDATED, registration);
       assert.isFalse(hasRouterField());
     });
 
@@ -155,7 +155,7 @@ describeWithMockConnection('ServiceWorkersView', () => {
         versionId++;
         registration.updateVersion(Object.assign({}, versionPayload, {versionId: versionId.toString(), status}));
         serviceWorkersManager?.dispatchEventToListeners(
-            SDK.ServiceWorkerManager.Events.RegistrationUpdated, registration);
+            SDK.ServiceWorkerManager.Events.REGISTRATION_UPDATED, registration);
       };
 
       updateAndDispatchEvent(Protocol.ServiceWorker.ServiceWorkerVersionStatus.New);

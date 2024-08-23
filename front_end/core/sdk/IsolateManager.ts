@@ -139,11 +139,11 @@ export interface Observer {
 }
 
 export const enum Events {
-  MemoryChanged = 'MemoryChanged',
+  MEMORY_CHANGED = 'MemoryChanged',
 }
 
 export type EventTypes = {
-  [Events.MemoryChanged]: Isolate,
+  [Events.MEMORY_CHANGED]: Isolate,
 };
 
 export const MemoryTrendWindowMs = 120e3;
@@ -188,7 +188,7 @@ export class Isolate {
     }
     this.#usedHeapSizeInternal = usage.usedSize;
     this.#memoryTrend.add(this.#usedHeapSizeInternal);
-    IsolateManager.instance().dispatchEventToListeners(Events.MemoryChanged, this);
+    IsolateManager.instance().dispatchEventToListeners(Events.MEMORY_CHANGED, this);
   }
 
   samplesCount(): number {

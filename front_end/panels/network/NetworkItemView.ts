@@ -250,11 +250,11 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
   override wasShown(): void {
     super.wasShown();
     this.requestInternal.addEventListener(
-        SDK.NetworkRequest.Events.RequestHeadersChanged, this.requestHeadersChanged, this);
+        SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestHeadersChanged, this);
     this.requestInternal.addEventListener(
-        SDK.NetworkRequest.Events.ResponseHeadersChanged, this.maybeAppendCookiesPanel, this);
+        SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.maybeAppendCookiesPanel, this);
     this.requestInternal.addEventListener(
-        SDK.NetworkRequest.Events.TrustTokenResultAdded, this.maybeShowErrorIconInTrustTokenTabHeader, this);
+        SDK.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.maybeShowErrorIconInTrustTokenTabHeader, this);
     this.maybeAppendCookiesPanel();
     this.maybeShowErrorIconInTrustTokenTabHeader();
 
@@ -270,11 +270,11 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
 
   override willHide(): void {
     this.requestInternal.removeEventListener(
-        SDK.NetworkRequest.Events.RequestHeadersChanged, this.requestHeadersChanged, this);
+        SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestHeadersChanged, this);
     this.requestInternal.removeEventListener(
-        SDK.NetworkRequest.Events.ResponseHeadersChanged, this.maybeAppendCookiesPanel, this);
+        SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.maybeAppendCookiesPanel, this);
     this.requestInternal.removeEventListener(
-        SDK.NetworkRequest.Events.TrustTokenResultAdded, this.maybeShowErrorIconInTrustTokenTabHeader, this);
+        SDK.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.maybeShowErrorIconInTrustTokenTabHeader, this);
   }
 
   private async requestHeadersChanged(): Promise<void> {

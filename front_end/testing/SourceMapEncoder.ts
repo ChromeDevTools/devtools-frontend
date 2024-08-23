@@ -234,13 +234,13 @@ export class GeneratedRangeBuilder {
 
     let flags = 0;
     if (options?.definition) {
-      flags |= SDK.SourceMapScopes.EncodedGeneratedRangeFlag.HasDefinition;
+      flags |= SDK.SourceMapScopes.EncodedGeneratedRangeFlag.HAS_DEFINITION;
     }
     if (options?.callsite) {
-      flags |= SDK.SourceMapScopes.EncodedGeneratedRangeFlag.HasCallsite;
+      flags |= SDK.SourceMapScopes.EncodedGeneratedRangeFlag.HAS_CALLSITE;
     }
     if (options?.isScope) {
-      flags |= SDK.SourceMapScopes.EncodedGeneratedRangeFlag.IsScope;
+      flags |= SDK.SourceMapScopes.EncodedGeneratedRangeFlag.IS_SCOPE;
     }
     this.#encodedRange += encodeVlq(flags);
 

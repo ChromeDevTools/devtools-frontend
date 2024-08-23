@@ -18,20 +18,20 @@ describeWithMockConnection('Target', () => {
   let subframeTarget: SDK.Target.Target;
 
   beforeEach(() => {
-    tabTarget = createTarget({type: SDK.Target.Type.Tab});
-    mainFrameTargetUnderTab = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
-    subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameTargetUnderTab});
+    tabTarget = createTarget({type: SDK.Target.Type.TAB});
+    mainFrameTargetUnderTab = createTarget({type: SDK.Target.Type.FRAME, parentTarget: tabTarget});
+    subframeTarget = createTarget({type: SDK.Target.Type.FRAME, parentTarget: mainFrameTargetUnderTab});
   });
 
   it('has capabilities based on the type', () => {
-    assert.isTrue(tabTarget.hasAllCapabilities(SDK.Target.Capability.Target | SDK.Target.Capability.Tracing));
+    assert.isTrue(tabTarget.hasAllCapabilities(SDK.Target.Capability.TARGET | SDK.Target.Capability.TRACING));
     assert.isFalse(tabTarget.hasAllCapabilities(SDK.Target.Capability.DOM));
 
     assert.isTrue(mainFrameTargetUnderTab.hasAllCapabilities(
-        SDK.Target.Capability.Target | SDK.Target.Capability.DOM | SDK.Target.Capability.DeviceEmulation));
+        SDK.Target.Capability.TARGET | SDK.Target.Capability.DOM | SDK.Target.Capability.DEVICE_EMULATION));
 
-    assert.isTrue(subframeTarget.hasAllCapabilities(SDK.Target.Capability.Target | SDK.Target.Capability.DOM));
-    assert.isFalse(subframeTarget.hasAllCapabilities(SDK.Target.Capability.DeviceEmulation));
+    assert.isTrue(subframeTarget.hasAllCapabilities(SDK.Target.Capability.TARGET | SDK.Target.Capability.DOM));
+    assert.isFalse(subframeTarget.hasAllCapabilities(SDK.Target.Capability.DEVICE_EMULATION));
   });
 
   it('notifies about inspected URL change', () => {
@@ -51,9 +51,9 @@ describeWithMockConnection('Target', () => {
     assert.strictEqual(
         createTarget({type: SDK.Target.Type.Worker, parentTarget: subframeTarget}).outermostTarget(),
         mainFrameTargetUnderTab);
-    const nodeTarget = createTarget({type: SDK.Target.Type.Node});
+    const nodeTarget = createTarget({type: SDK.Target.Type.NODE});
     assert.strictEqual(nodeTarget.outermostTarget(), nodeTarget);
-    const browserTarget = createTarget({type: SDK.Target.Type.Browser});
+    const browserTarget = createTarget({type: SDK.Target.Type.BROWSER});
     assert.isNull(browserTarget.outermostTarget());
     const serviceWorkerTarget = createTarget({type: SDK.Target.Type.ServiceWorker, parentTarget: browserTarget});
     assert.strictEqual(serviceWorkerTarget.outermostTarget(), serviceWorkerTarget);

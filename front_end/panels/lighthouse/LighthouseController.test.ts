@@ -16,7 +16,7 @@ describeWithMockConnection('LighthouseController', () => {
   beforeEach(async () => {
     stubNoopSettings();
     Lighthouse = await import('./lighthouse.js');
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
   });
@@ -28,7 +28,7 @@ describeWithMockConnection('LighthouseController', () => {
     assert.exists(serviceWorkerManager);
     const pageAuditabilityChange = controller.once(Lighthouse.LighthouseController.Events.PageAuditabilityChanged);
     serviceWorkerManager.dispatchEventToListeners(
-        SDK.ServiceWorkerManager.Events.RegistrationUpdated, {} as SDK.ServiceWorkerManager.ServiceWorkerRegistration);
+        SDK.ServiceWorkerManager.Events.REGISTRATION_UPDATED, {} as SDK.ServiceWorkerManager.ServiceWorkerRegistration);
     await pageAuditabilityChange;
   });
 });

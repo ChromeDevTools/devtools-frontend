@@ -18,11 +18,11 @@ module.exports = {
       CallExpression(node) {
         if (node?.callee?.object?.name === 'InspectorFrontendHostInstance' &&
             node.callee.property.name === 'recordEnumeratedHistogram') {
-          if (node?.arguments[2]?.property?.name !== 'MaxValue') {
+          if (node?.arguments[2]?.property?.name !== 'MAX_VALUE') {
             context.report({
               node: node,
               message:
-                  'When calling \'recordEnumeratedHistogram\' the third argument should be of the form \'SomeEnum.MaxValue\'.'
+                  'When calling \'recordEnumeratedHistogram\' the third argument should be of the form \'SomeEnum.MAX_VALUE\'.'
             });
           }
         }

@@ -131,7 +131,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
 
   static reloadAllPages(bypassCache?: boolean, scriptToEvaluateOnLoad?: string): void {
     for (const resourceTreeModel of TargetManager.instance().models(ResourceTreeModel)) {
-      if (resourceTreeModel.target().parentTarget()?.type() !== Type.Frame) {
+      if (resourceTreeModel.target().parentTarget()?.type() !== Type.FRAME) {
         resourceTreeModel.reloadPage(bypassCache, scriptToEvaluateOnLoad);
       }
     }
@@ -238,7 +238,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     this.dispatchEventToListeners(Events.FrameNavigated, frame);
 
     if (frame.isPrimaryFrame()) {
-      this.primaryPageChanged(frame, PrimaryPageChangeType.Navigation);
+      this.primaryPageChanged(frame, PrimaryPageChangeType.NAVIGATION);
     }
 
     // Fill frame with retained resources (the ones loaded using new loader).
@@ -617,6 +617,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
 }
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   FrameAdded = 'FrameAdded',
   FrameNavigated = 'FrameNavigated',
   FrameDetached = 'FrameDetached',
@@ -635,6 +636,7 @@ export enum Events {
   InterstitialHidden = 'InterstitialHidden',
   BackForwardCacheDetailsUpdated = 'BackForwardCacheDetailsUpdated',
   JavaScriptDialogOpening = 'JavaScriptDialogOpening',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export type EventTypes = {
@@ -847,7 +849,7 @@ export class ResourceTreeFrame {
       return null;
     }
     const parentTarget = this.#model.target().parentTarget();
-    if (parentTarget?.type() !== Type.Frame) {
+    if (parentTarget?.type() !== Type.FRAME) {
       return null;
     }
     const parentModel = parentTarget.model(ResourceTreeModel);
@@ -886,7 +888,7 @@ export class ResourceTreeFrame {
    * https://chromium.googlesource.com/chromium/src/+/HEAD/docs/frame_trees.md
    */
   isOutermostFrame(): boolean {
-    return this.#model.target().parentTarget()?.type() !== Type.Frame && !this.#sameTargetParentFrameInternal &&
+    return this.#model.target().parentTarget()?.type() !== Type.FRAME && !this.#sameTargetParentFrameInternal &&
         !this.crossTargetParentFrameId;
   }
 
@@ -1022,7 +1024,7 @@ export class ResourceTreeFrame {
     }
 
     // Fenced frames.
-    if (parentTarget?.type() === Type.Frame) {
+    if (parentTarget?.type() === Type.FRAME) {
       const domModel = parentTarget.model(DOMModel);
       if (domModel) {
         return highlightFrameOwner(domModel);
@@ -1188,6 +1190,6 @@ export interface StorageKeyData {
 }
 
 export const enum PrimaryPageChangeType {
-  Navigation = 'Navigation',
-  Activation = 'Activation',
+  NAVIGATION = 'Navigation',
+  ACTIVATION = 'Activation',
 }

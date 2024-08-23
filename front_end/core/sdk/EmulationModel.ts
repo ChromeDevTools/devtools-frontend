@@ -35,7 +35,7 @@ export class EmulationModel extends SDKModel<void> {
     this.#cssModel = target.model(CSSModel);
     this.#overlayModelInternal = target.model(OverlayModel);
     if (this.#overlayModelInternal) {
-      this.#overlayModelInternal.addEventListener(Events.InspectModeWillBeToggled, () => {
+      this.#overlayModelInternal.addEventListener(Events.INSPECT_MODE_WILL_BE_TOGGLED, () => {
         void this.updateTouch();
       }, this);
     }
@@ -194,7 +194,7 @@ export class EmulationModel extends SDKModel<void> {
   }
 
   supportsDeviceEmulation(): boolean {
-    return this.target().hasAllCapabilities(Capability.DeviceEmulation);
+    return this.target().hasAllCapabilities(Capability.DEVICE_EMULATION);
   }
 
   async resetPageScaleFactor(): Promise<void> {
@@ -598,4 +598,4 @@ export class DeviceOrientation {
   }
 }
 
-SDKModel.register(EmulationModel, {capabilities: Capability.Emulation, autostart: true});
+SDKModel.register(EmulationModel, {capabilities: Capability.EMULATION, autostart: true});

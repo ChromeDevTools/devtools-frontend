@@ -29,7 +29,7 @@ describeWithMockConnection('ResourceUtils', () => {
   let target: SDK.Target.Target;
 
   beforeEach(() => {
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
     target.setInspectedURL(INSPECTED_URL);

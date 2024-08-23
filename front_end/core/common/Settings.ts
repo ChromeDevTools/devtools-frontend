@@ -191,7 +191,7 @@ export class Settings {
   }
 
   createLocalSetting<T>(key: string, defaultValue: T): Setting<T> {
-    return this.createSetting(key, defaultValue, SettingStorageType.Local);
+    return this.createSetting(key, defaultValue, SettingStorageType.LOCAL);
   }
 
   createRegExpSetting(key: string, defaultValue: string, regexFlags?: string, storageType?: SettingStorageType):
@@ -212,13 +212,13 @@ export class Settings {
 
   private storageFromType(storageType?: SettingStorageType): SettingsStorage {
     switch (storageType) {
-      case SettingStorageType.Local:
+      case SettingStorageType.LOCAL:
         return this.localStorage;
-      case SettingStorageType.Session:
+      case SettingStorageType.SESSION:
         return this.#sessionStorage;
-      case SettingStorageType.Global:
+      case SettingStorageType.GLOBAL:
         return this.globalStorage;
-      case SettingStorageType.Synced:
+      case SettingStorageType.SYNCED:
         return this.syncedStorage;
     }
     return this.globalStorage;
@@ -638,11 +638,11 @@ export class VersionController {
   constructor() {
     // If no version setting is found, we initialize with the current version and don't do anything.
     this.#globalVersionSetting = Settings.instance().createSetting(
-        VersionController.GLOBAL_VERSION_SETTING_NAME, VersionController.CURRENT_VERSION, SettingStorageType.Global);
+        VersionController.GLOBAL_VERSION_SETTING_NAME, VersionController.CURRENT_VERSION, SettingStorageType.GLOBAL);
     this.#syncedVersionSetting = Settings.instance().createSetting(
-        VersionController.SYNCED_VERSION_SETTING_NAME, VersionController.CURRENT_VERSION, SettingStorageType.Synced);
+        VersionController.SYNCED_VERSION_SETTING_NAME, VersionController.CURRENT_VERSION, SettingStorageType.SYNCED);
     this.#localVersionSetting = Settings.instance().createSetting(
-        VersionController.LOCAL_VERSION_SETTING_NAME, VersionController.CURRENT_VERSION, SettingStorageType.Local);
+        VersionController.LOCAL_VERSION_SETTING_NAME, VersionController.CURRENT_VERSION, SettingStorageType.LOCAL);
   }
 
   /**
@@ -1327,13 +1327,13 @@ export const enum SettingStorageType {
    * Synced storage persists settings with the active Chrome profile but also
    * syncs the settings across devices via Chrome Sync.
    */
-  Synced = 'Synced',
+  SYNCED = 'Synced',
   /** Global storage persists settings with the active Chrome profile */
-  Global = 'Global',
+  GLOBAL = 'Global',
   /** Uses Window.localStorage */
-  Local = 'Local',
+  LOCAL = 'Local',
   /** Session storage dies when DevTools window closes */
-  Session = 'Session',
+  SESSION = 'Session',
 }
 
 export function moduleSetting(settingName: string): Setting<unknown> {

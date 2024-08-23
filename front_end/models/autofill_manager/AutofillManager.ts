@@ -22,7 +22,7 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private constructor() {
     super();
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.AutofillModel.AutofillModel, SDK.AutofillModel.Events.AddressFormFilled, this.#addressFormFilled, this,
+        SDK.AutofillModel.AutofillModel, SDK.AutofillModel.Events.ADDRESS_FORM_FILLED, this.#addressFormFilled, this,
         {scoped: true});
     this.#autoOpenViewSetting =
         Common.Settings.Settings.instance().createSetting('auto-open-autofill-view-on-event', true);
@@ -42,9 +42,8 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
   }
 
-  async #addressFormFilled(
-      {data}: Common.EventTarget
-          .EventTargetEvent<SDK.AutofillModel.EventTypes[SDK.AutofillModel.Events.AddressFormFilled]>): Promise<void> {
+  async #addressFormFilled({data}: Common.EventTarget.EventTargetEvent<
+                           SDK.AutofillModel.EventTypes[SDK.AutofillModel.Events.ADDRESS_FORM_FILLED]>): Promise<void> {
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.AUTOFILL_VIEW) &&
         this.#autoOpenViewSetting.get()) {
       await UI.ViewManager.ViewManager.instance().showView('autofill-view');

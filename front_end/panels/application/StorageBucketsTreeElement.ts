@@ -41,13 +41,13 @@ export class StorageBucketsTreeParentElement extends ExpandableApplicationPanelT
 
   initialize(): void {
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.StorageBucketsModel.StorageBucketsModel, SDK.StorageBucketsModel.Events.BucketAdded, this.bucketAdded,
+        SDK.StorageBucketsModel.StorageBucketsModel, SDK.StorageBucketsModel.Events.BUCKET_ADDED, this.bucketAdded,
         this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.StorageBucketsModel.StorageBucketsModel, SDK.StorageBucketsModel.Events.BucketRemoved, this.bucketRemoved,
+        SDK.StorageBucketsModel.StorageBucketsModel, SDK.StorageBucketsModel.Events.BUCKET_REMOVED, this.bucketRemoved,
         this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.StorageBucketsModel.StorageBucketsModel, SDK.StorageBucketsModel.Events.BucketChanged, this.bucketChanged,
+        SDK.StorageBucketsModel.StorageBucketsModel, SDK.StorageBucketsModel.Events.BUCKET_CHANGED, this.bucketChanged,
         this);
 
     for (const bucketsModel of SDK.TargetManager.TargetManager.instance().models(

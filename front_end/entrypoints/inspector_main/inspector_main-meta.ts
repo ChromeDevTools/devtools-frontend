@@ -212,7 +212,7 @@ Common.Settings.registerSettingExtension({
   title: i18nLazyString(UIStrings.forceAdBlocking),
   settingName: 'network.ad-blocking-enabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
-  storageType: Common.Settings.SettingStorageType.Session,
+  storageType: Common.Settings.SettingStorageType.SESSION,
   defaultValue: false,
   options: [
     {
@@ -228,7 +228,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.GLOBAL,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.autoOpenDevTools),
   settingName: 'auto-attach-to-created-pages',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -248,7 +248,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.disablePaused),
   settingName: 'disable-paused-state-overlay',
   settingType: Common.Settings.SettingType.BOOLEAN,

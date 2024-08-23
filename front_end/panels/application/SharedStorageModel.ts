@@ -242,7 +242,7 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel<EventTypes> implem
   }
 }
 
-SDK.SDKModel.SDKModel.register(SharedStorageModel, {capabilities: SDK.Target.Capability.Storage, autostart: false});
+SDK.SDKModel.SDKModel.register(SharedStorageModel, {capabilities: SDK.Target.Capability.STORAGE, autostart: false});
 
 export const enum Events {
   SharedStorageAccess = 'SharedStorageAccess',

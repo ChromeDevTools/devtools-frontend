@@ -90,20 +90,20 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
 
     SDK.IsolateManager.IsolateManager.instance().observeIsolates(this);
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.NameChanged, this.targetChanged, this);
+        SDK.TargetManager.Events.NAME_CHANGED, this.targetChanged, this);
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.InspectedURLChanged, this.targetChanged, this);
+        SDK.TargetManager.Events.INSPECTED_URL_CHANGED, this.targetChanged, this);
   }
 
   override wasShown(): void {
     super.wasShown();
     SDK.IsolateManager.IsolateManager.instance().addEventListener(
-        SDK.IsolateManager.Events.MemoryChanged, this.heapStatsChanged, this);
+        SDK.IsolateManager.Events.MEMORY_CHANGED, this.heapStatsChanged, this);
   }
 
   override willHide(): void {
     SDK.IsolateManager.IsolateManager.instance().removeEventListener(
-        SDK.IsolateManager.Events.MemoryChanged, this.heapStatsChanged, this);
+        SDK.IsolateManager.Events.MEMORY_CHANGED, this.heapStatsChanged, this);
   }
 
   isolateAdded(isolate: SDK.IsolateManager.Isolate): void {

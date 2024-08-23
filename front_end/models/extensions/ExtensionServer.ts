@@ -244,7 +244,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     // Set up by this.initExtensions in the constructor.
     SDK.TargetManager.TargetManager.instance().removeEventListener(
-        SDK.TargetManager.Events.InspectedURLChanged, this.inspectedURLChanged, this);
+        SDK.TargetManager.Events.INSPECTED_URL_CHANGED, this.inspectedURLChanged, this);
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
         Host.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
@@ -1108,7 +1108,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.registerResourceContentCommittedHandler(this.notifyUISourceCodeContentCommitted);
 
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.InspectedURLChanged, this.inspectedURLChanged, this);
+        SDK.TargetManager.Events.INSPECTED_URL_CHANGED, this.inspectedURLChanged, this);
   }
 
   private notifyResourceAdded(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {

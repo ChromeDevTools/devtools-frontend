@@ -11,35 +11,35 @@ import {Capability, type Target} from './Target.js';
 import {type SDKModelObserver, TargetManager} from './TargetManager.js';
 
 export const enum InstrumentationNames {
-  BeforeBidderWorkletBiddingStart = 'beforeBidderWorkletBiddingStart',
-  BeforeBidderWorkletReportingStart = 'beforeBidderWorkletReportingStart',
-  BeforeSellerWorkletScoringStart = 'beforeSellerWorkletScoringStart',
-  BeforeSellerWorkletReportingStart = 'beforeSellerWorkletReportingStart',
-  SetTimeout = 'setTimeout',
-  ClearTimeout = 'clearTimeout',
-  SetTimeoutCallback = 'setTimeout.callback',
-  SetInterval = 'setInterval',
-  ClearInterval = 'clearInterval',
-  SetIntervalCallback = 'setInterval.callback',
-  ScriptFirstStatement = 'scriptFirstStatement',
-  ScriptBlockedByCSP = 'scriptBlockedByCSP',
-  SharedStorageWorkletScriptFirstStatement = 'sharedStorageWorkletScriptFirstStatement',
-  RequestAnimationFrame = 'requestAnimationFrame',
-  CancelAnimationFrame = 'cancelAnimationFrame',
-  RequestAnimationFrameCallback = 'requestAnimationFrame.callback',
-  WebGLErrorFired = 'webglErrorFired',
-  WebGLWarningFired = 'webglWarningFired',
-  ElementSetInnerHTML = 'Element.setInnerHTML',
-  CanvasContextCreated = 'canvasContextCreated',
-  GeolocationGetCurrentPosition = 'Geolocation.getCurrentPosition',
-  GeolocationWatchPosition = 'Geolocation.watchPosition',
-  NotificationRequestPermission = 'Notification.requestPermission',
-  DOMWindowClose = 'DOMWindow.close',
-  DocumentWrite = 'Document.write',
-  AudioContextCreated = 'audioContextCreated',
-  AudioContextClosed = 'audioContextClosed',
-  AudioContextResumed = 'audioContextResumed',
-  AudioContextSuspended = 'audioContextSuspended',
+  BEFORE_BIDDER_WORKLET_BIDDING_START = 'beforeBidderWorkletBiddingStart',
+  BEFORE_BIDDER_WORKLET_REPORTING_START = 'beforeBidderWorkletReportingStart',
+  BEFORE_SELLER_WORKLET_SCORING_START = 'beforeSellerWorkletScoringStart',
+  BEFORE_SELLER_WORKLET_REPORTING_START = 'beforeSellerWorkletReportingStart',
+  SET_TIMEOUT = 'setTimeout',
+  CLEAR_TIMEOUT = 'clearTimeout',
+  SET_TIMEOUT_CALLBACK = 'setTimeout.callback',
+  SET_INTERVAL = 'setInterval',
+  CLEAR_INTERVAL = 'clearInterval',
+  SET_INTERVAL_CALLBACK = 'setInterval.callback',
+  SCRIPT_FIRST_STATEMENT = 'scriptFirstStatement',
+  SCRIPT_BLOCKED_BY_CSP = 'scriptBlockedByCSP',
+  SHARED_STORAGE_WORKLET_SCRIPT_FIRST_STATEMENT = 'sharedStorageWorkletScriptFirstStatement',
+  REQUEST_ANIMATION_FRAME = 'requestAnimationFrame',
+  CANCEL_ANIMATION_FRAME = 'cancelAnimationFrame',
+  REQUEST_ANIMATION_FRAME_CALLBACK = 'requestAnimationFrame.callback',
+  WEBGL_ERROR_FIRED = 'webglErrorFired',
+  WEBGL_WARNING_FIRED = 'webglWarningFired',
+  ELEMENT_SET_INNER_HTML = 'Element.setInnerHTML',
+  CANVAS_CONTEXT_CREATED = 'canvasContextCreated',
+  GEOLOCATION_GET_CURRENT_POSITION = 'Geolocation.getCurrentPosition',
+  GEOLOCATION_WATCH_POSITION = 'Geolocation.watchPosition',
+  NOTIFCATION_REQUEST_PERMISSION = 'Notification.requestPermission',
+  DOM_WINDOW_CLOSE = 'DOMWindow.close',
+  DOCUMENT_WRITE = 'Document.write',
+  AUDIO_CONTEXT_CREATED = 'audioContextCreated',
+  AUDIO_CONTEXT_CLOSED = 'audioContextClosed',
+  AUDIO_CONTEXT_RESUMED = 'audioContextResumed',
+  AUDIO_CONTEXT_SUSPENDED = 'audioContextSuspended',
 }
 
 export class EventBreakpointsModel extends SDKModel<void> {
@@ -82,56 +82,56 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
   readonly #eventListenerBreakpointsInternal: EventListenerBreakpoint[] = [];
 
   constructor() {
-    this.createInstrumentationBreakpoints(Category.AuctionWorklet, [
-      InstrumentationNames.BeforeBidderWorkletBiddingStart,
-      InstrumentationNames.BeforeBidderWorkletReportingStart,
-      InstrumentationNames.BeforeSellerWorkletScoringStart,
-      InstrumentationNames.BeforeSellerWorkletReportingStart,
+    this.createInstrumentationBreakpoints(Category.AUCTION_WORKLET, [
+      InstrumentationNames.BEFORE_BIDDER_WORKLET_BIDDING_START,
+      InstrumentationNames.BEFORE_BIDDER_WORKLET_REPORTING_START,
+      InstrumentationNames.BEFORE_SELLER_WORKLET_SCORING_START,
+      InstrumentationNames.BEFORE_SELLER_WORKLET_REPORTING_START,
     ]);
-    this.createInstrumentationBreakpoints(Category.Animation, [
-      InstrumentationNames.RequestAnimationFrame,
-      InstrumentationNames.CancelAnimationFrame,
-      InstrumentationNames.RequestAnimationFrameCallback,
+    this.createInstrumentationBreakpoints(Category.ANIMATION, [
+      InstrumentationNames.REQUEST_ANIMATION_FRAME,
+      InstrumentationNames.CANCEL_ANIMATION_FRAME,
+      InstrumentationNames.REQUEST_ANIMATION_FRAME_CALLBACK,
     ]);
-    this.createInstrumentationBreakpoints(Category.Canvas, [
-      InstrumentationNames.CanvasContextCreated,
-      InstrumentationNames.WebGLErrorFired,
-      InstrumentationNames.WebGLWarningFired,
+    this.createInstrumentationBreakpoints(Category.CANVAS, [
+      InstrumentationNames.CANVAS_CONTEXT_CREATED,
+      InstrumentationNames.WEBGL_ERROR_FIRED,
+      InstrumentationNames.WEBGL_WARNING_FIRED,
     ]);
-    this.createInstrumentationBreakpoints(Category.Geolocation, [
-      InstrumentationNames.GeolocationGetCurrentPosition,
-      InstrumentationNames.GeolocationWatchPosition,
+    this.createInstrumentationBreakpoints(Category.GEOLOCATION, [
+      InstrumentationNames.GEOLOCATION_GET_CURRENT_POSITION,
+      InstrumentationNames.GEOLOCATION_WATCH_POSITION,
     ]);
-    this.createInstrumentationBreakpoints(Category.Notification, [
-      InstrumentationNames.NotificationRequestPermission,
+    this.createInstrumentationBreakpoints(Category.NOTIFICATION, [
+      InstrumentationNames.NOTIFCATION_REQUEST_PERMISSION,
     ]);
-    this.createInstrumentationBreakpoints(Category.Parse, [
-      InstrumentationNames.ElementSetInnerHTML,
-      InstrumentationNames.DocumentWrite,
+    this.createInstrumentationBreakpoints(Category.PARSE, [
+      InstrumentationNames.ELEMENT_SET_INNER_HTML,
+      InstrumentationNames.DOCUMENT_WRITE,
     ]);
-    this.createInstrumentationBreakpoints(Category.Script, [
-      InstrumentationNames.ScriptFirstStatement,
-      InstrumentationNames.ScriptBlockedByCSP,
+    this.createInstrumentationBreakpoints(Category.SCRIPT, [
+      InstrumentationNames.SCRIPT_FIRST_STATEMENT,
+      InstrumentationNames.SCRIPT_BLOCKED_BY_CSP,
     ]);
-    this.createInstrumentationBreakpoints(Category.SharedStorageWorklet, [
-      InstrumentationNames.SharedStorageWorkletScriptFirstStatement,
+    this.createInstrumentationBreakpoints(Category.SHARED_STORAGE_WORKLET, [
+      InstrumentationNames.SHARED_STORAGE_WORKLET_SCRIPT_FIRST_STATEMENT,
     ]);
-    this.createInstrumentationBreakpoints(Category.Timer, [
-      InstrumentationNames.SetTimeout,
-      InstrumentationNames.ClearTimeout,
-      InstrumentationNames.SetTimeoutCallback,
-      InstrumentationNames.SetInterval,
-      InstrumentationNames.ClearInterval,
-      InstrumentationNames.SetIntervalCallback,
+    this.createInstrumentationBreakpoints(Category.TIMER, [
+      InstrumentationNames.SET_TIMEOUT,
+      InstrumentationNames.CLEAR_TIMEOUT,
+      InstrumentationNames.SET_TIMEOUT_CALLBACK,
+      InstrumentationNames.SET_INTERVAL,
+      InstrumentationNames.CLEAR_INTERVAL,
+      InstrumentationNames.SET_INTERVAL_CALLBACK,
     ]);
-    this.createInstrumentationBreakpoints(Category.Window, [
-      InstrumentationNames.DOMWindowClose,
+    this.createInstrumentationBreakpoints(Category.WINDOW, [
+      InstrumentationNames.DOM_WINDOW_CLOSE,
     ]);
-    this.createInstrumentationBreakpoints(Category.WebAudio, [
-      InstrumentationNames.AudioContextCreated,
-      InstrumentationNames.AudioContextClosed,
-      InstrumentationNames.AudioContextResumed,
-      InstrumentationNames.AudioContextSuspended,
+    this.createInstrumentationBreakpoints(Category.WEB_AUDIO, [
+      InstrumentationNames.AUDIO_CONTEXT_CREATED,
+      InstrumentationNames.AUDIO_CONTEXT_CLOSED,
+      InstrumentationNames.AUDIO_CONTEXT_RESUMED,
+      InstrumentationNames.AUDIO_CONTEXT_SUSPENDED,
     ]);
 
     TargetManager.instance().observeModels(EventBreakpointsModel, this);
@@ -179,4 +179,4 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
   }
 }
 
-SDKModel.register(EventBreakpointsModel, {capabilities: Capability.EventBreakpoints, autostart: false});
+SDKModel.register(EventBreakpointsModel, {capabilities: Capability.EVENT_BREAKPOINTS, autostart: false});

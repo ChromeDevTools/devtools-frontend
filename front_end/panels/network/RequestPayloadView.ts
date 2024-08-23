@@ -149,7 +149,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
 
   override wasShown(): void {
     this.registerCSSFiles([requestPayloadViewStyles]);
-    this.request.addEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this.refreshFormData, this);
+    this.request.addEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.refreshFormData, this);
 
     this.refreshQueryString();
     void this.refreshFormData();
@@ -157,7 +157,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
   }
 
   override willHide(): void {
-    this.request.removeEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this.refreshFormData, this);
+    this.request.removeEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.refreshFormData, this);
   }
 
   private addEntryContextMenuHandler(treeElement: UI.TreeOutline.TreeElement, value: string): void {

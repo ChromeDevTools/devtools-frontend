@@ -40,9 +40,9 @@ export class IsolateSelector extends UI.Toolbar.ToolbarItem implements SDK.Isola
 
     SDK.IsolateManager.IsolateManager.instance().observeIsolates(this);
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.NameChanged, this.targetChanged, this);
+        SDK.TargetManager.Events.NAME_CHANGED, this.targetChanged, this);
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.InspectedURLChanged, this.targetChanged, this);
+        SDK.TargetManager.Events.INSPECTED_URL_CHANGED, this.targetChanged, this);
   }
 
   #updateIsolateItem(isolate: SDK.IsolateManager.Isolate, itemForIsolate: Menus.Menu.MenuItem): void {

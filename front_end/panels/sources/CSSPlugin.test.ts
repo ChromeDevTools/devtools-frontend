@@ -39,7 +39,7 @@ describeWithMockConnection('CSSPlugin', () => {
       shortcutsForAction: () => [],
       getShortcutListener: () => {},
     } as unknown as UI.ShortcutRegistry.ShortcutRegistry);
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     createTarget({parentTarget: tabTarget});
   });

@@ -171,14 +171,14 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
 
   override wasShown(): void {
     this.model.addEventListener(
-        SDK.ServiceWorkerCacheModel.Events.CacheStorageContentUpdated, this.cacheContentUpdated, this);
+        SDK.ServiceWorkerCacheModel.Events.CACHE_STORAGE_CONTENT_UPDATED, this.cacheContentUpdated, this);
     this.registerCSSFiles([serviceWorkerCacheViewsStyles]);
     void this.updateData(true);
   }
 
   override willHide(): void {
     this.model.removeEventListener(
-        SDK.ServiceWorkerCacheModel.Events.CacheStorageContentUpdated, this.cacheContentUpdated, this);
+        SDK.ServiceWorkerCacheModel.Events.CACHE_STORAGE_CONTENT_UPDATED, this.cacheContentUpdated, this);
   }
 
   private showPreview(preview: UI.Widget.Widget|null): void {
@@ -383,7 +383,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
       return;
     }
     void this.refreshThrottler.schedule(
-        () => Promise.resolve(this.updateData(true)), Common.Throttler.Scheduling.AsSoonAsPossible);
+        () => Promise.resolve(this.updateData(true)), Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE);
   }
 
   private async previewCachedResponse(request: SDK.NetworkRequest.NetworkRequest): Promise<void> {

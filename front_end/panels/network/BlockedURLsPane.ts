@@ -72,7 +72,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
 
     this.manager = SDK.NetworkManager.MultitargetNetworkManager.instance();
     this.manager.addEventListener(
-        SDK.NetworkManager.MultitargetNetworkManager.Events.BlockedPatternsChanged, this.update, this);
+        SDK.NetworkManager.MultitargetNetworkManager.Events.BLOCKED_PATTERNS_CHANGED, this.update, this);
 
     this.toolbar = new UI.Toolbar.Toolbar('', this.contentElement);
     this.enabledCheckbox = new UI.Toolbar.ToolbarCheckbox(

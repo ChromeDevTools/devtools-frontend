@@ -666,9 +666,9 @@ describe('Color', () => {
       // Legacy colors all get the same code because they all do the same conversions. Use a value of `1` here to make
       // the color nickname match `red`.
       HEX = 1,
-      ShortHEX = 1,
+      SHORT_HEX = 1,
       HEXA = 1,
-      ShortHEXA = 1,
+      SHORT_HEXA = 1,
       RGB = 1,
       RGBA = 1,
       HSL = 1,

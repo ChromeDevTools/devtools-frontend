@@ -179,8 +179,8 @@ describe('NetworkRequest', () => {
         'documentURL' as Platform.DevToolsPath.UrlString, null, null, null);
 
     const cookie = new SDK.Cookie.Cookie('name', 'value');
-    cookie.addAttribute(SDK.Cookie.Attribute.SameSite, 'None');
-    cookie.addAttribute(SDK.Cookie.Attribute.Secure, true);
+    cookie.addAttribute(SDK.Cookie.Attribute.SAME_SITE, 'None');
+    cookie.addAttribute(SDK.Cookie.Attribute.SECURE, true);
     cookie.setCookieLine('name=value; Path=/; SameSite=None; Secure;');
     request.addExtraResponseInfo({
       responseHeaders: [{name: 'Set-Cookie', value: cookie.getCookieLine() as string}],
@@ -340,7 +340,7 @@ describeWithMockConnection('ServerSentEvents', () => {
 
     const networkEvents: SDK.NetworkRequest.EventSourceMessage[] = [];
     networkManager.requestForId('1')!.addEventListener(
-        SDK.NetworkRequest.Events.EventSourceMessageAdded, ({data}) => networkEvents.push(data));
+        SDK.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, ({data}) => networkEvents.push(data));
 
     networkManager.dispatcher.eventSourceMessageReceived({
       requestId: '1' as Protocol.Network.RequestId,
@@ -386,12 +386,13 @@ describeWithMockConnection('ServerSentEvents', () => {
 
     const networkEvents: SDK.NetworkRequest.EventSourceMessage[] = [];
     const {promise: twoEventsReceivedPromise, resolve} = Platform.PromiseUtilities.promiseWithResolvers<void>();
-    networkManager.requestForId('1')!.addEventListener(SDK.NetworkRequest.Events.EventSourceMessageAdded, ({data}) => {
-      networkEvents.push(data);
-      if (networkEvents.length === 2) {
-        resolve();
-      }
-    });
+    networkManager.requestForId('1')!.addEventListener(
+        SDK.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, ({data}) => {
+          networkEvents.push(data);
+          if (networkEvents.length === 2) {
+            resolve();
+          }
+        });
 
     const message = `
 id: fooId

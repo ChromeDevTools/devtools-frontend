@@ -86,7 +86,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
       runtimeModel.addEventListener(
           SDK.RuntimeModel.Events.ExecutionContextDestroyed, this.executionContextDestroyed, this),
       runtimeModel.target().targetManager().addEventListener(
-          SDK.TargetManager.Events.InspectedURLChanged, this.inspectedURLChanged, this),
+          SDK.TargetManager.Events.INSPECTED_URL_CHANGED, this.inspectedURLChanged, this),
     ];
   }
 
@@ -381,7 +381,7 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
       // TODO(crbug.com/1334484): Instead of to the console, report these errors in an "info bar" at the bottom
       //                          of the text editor, similar to e.g. source mapping errors.
       Common.Console.Console.instance().addMessage(
-          i18nString(UIStrings.liveEditFailed, {PH1: getErrorText(status)}), Common.Console.MessageLevel.Warning);
+          i18nString(UIStrings.liveEditFailed, {PH1: getErrorText(status)}), Common.Console.MessageLevel.WARNING);
       return;
     }
     const messageText = i18nString(UIStrings.liveEditCompileFailed, {PH1: exceptionDetails.text});

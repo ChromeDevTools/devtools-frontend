@@ -144,7 +144,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
   }
 
   treeUpdated({data}: Common.EventTarget
-                  .EventTargetEvent<SDK.AccessibilityModel.EventTypes[SDK.AccessibilityModel.Events.TreeUpdated]>):
+                  .EventTargetEvent<SDK.AccessibilityModel.EventTypes[SDK.AccessibilityModel.Events.TREE_UPDATED]>):
       void {
     if (!data.root) {
       void this.renderTree();
@@ -162,10 +162,10 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
   }
 
   modelAdded(model: SDK.AccessibilityModel.AccessibilityModel): void {
-    model.addEventListener(SDK.AccessibilityModel.Events.TreeUpdated, this.treeUpdated, this);
+    model.addEventListener(SDK.AccessibilityModel.Events.TREE_UPDATED, this.treeUpdated, this);
   }
 
   modelRemoved(model: SDK.AccessibilityModel.AccessibilityModel): void {
-    model.removeEventListener(SDK.AccessibilityModel.Events.TreeUpdated, this.treeUpdated, this);
+    model.removeEventListener(SDK.AccessibilityModel.Events.TREE_UPDATED, this.treeUpdated, this);
   }
 }

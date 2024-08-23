@@ -35,7 +35,7 @@ describe('NetworkLog', () => {
       };
       const info = initiatorInfoForRequest(request, existingInfo);
       assert.deepEqual(info, {
-        type: SDK.NetworkRequest.InitiatorType.Other,
+        type: SDK.NetworkRequest.InitiatorType.OTHER,
         url: Platform.DevToolsPath.EmptyUrlString,
         lineNumber: undefined,
         columnNumber: undefined,
@@ -57,7 +57,7 @@ describe('NetworkLog', () => {
       } as unknown as SDK.NetworkRequest.NetworkRequest;
       const info = initiatorInfoForRequest(request);
       assert.deepEqual(info, {
-        type: SDK.NetworkRequest.InitiatorType.Other,
+        type: SDK.NetworkRequest.InitiatorType.OTHER,
         url: Platform.DevToolsPath.EmptyUrlString,
         lineNumber: undefined,
         columnNumber: undefined,
@@ -82,7 +82,7 @@ describe('NetworkLog', () => {
       } as unknown as SDK.NetworkRequest.NetworkRequest;
       const info = initiatorInfoForRequest(request);
       assert.deepEqual(info, {
-        type: SDK.NetworkRequest.InitiatorType.Redirect,
+        type: SDK.NetworkRequest.InitiatorType.REDIRECT,
         url: url('http://localhost:3000/example.js'),
         lineNumber: undefined,
         columnNumber: undefined,
@@ -108,7 +108,7 @@ describe('NetworkLog', () => {
       } as unknown as SDK.NetworkRequest.NetworkRequest;
       const info = initiatorInfoForRequest(request);
       assert.deepEqual(info, {
-        type: SDK.NetworkRequest.InitiatorType.Parser,
+        type: SDK.NetworkRequest.InitiatorType.PARSER,
         url: url('http://localhost:3000/example.js'),
         lineNumber: 5,
         columnNumber: 6,
@@ -141,7 +141,7 @@ describe('NetworkLog', () => {
       } as unknown as SDK.NetworkRequest.NetworkRequest;
       const info = initiatorInfoForRequest(request);
       assert.deepEqual(info, {
-        type: SDK.NetworkRequest.InitiatorType.Script,
+        type: SDK.NetworkRequest.InitiatorType.SCRIPT,
         url: url('http://localhost:3000/example.js'),
         lineNumber: 5,
         columnNumber: 6,
@@ -185,7 +185,7 @@ describe('NetworkLog', () => {
       } as unknown as SDK.NetworkRequest.NetworkRequest;
       const info = initiatorInfoForRequest(request);
       assert.deepEqual(info, {
-        type: SDK.NetworkRequest.InitiatorType.Script,
+        type: SDK.NetworkRequest.InitiatorType.SCRIPT,
         url: url('http://localhost:3000/example.js'),
         lineNumber: 5,
         columnNumber: 6,
@@ -209,7 +209,7 @@ describe('NetworkLog', () => {
       } as unknown as SDK.NetworkRequest.NetworkRequest;
       const info = initiatorInfoForRequest(request);
       assert.deepEqual(info, {
-        type: SDK.NetworkRequest.InitiatorType.Script,
+        type: SDK.NetworkRequest.InitiatorType.SCRIPT,
         url: url('http://localhost:3000/example.js'),
         lineNumber: undefined,
         columnNumber: undefined,
@@ -232,7 +232,7 @@ describe('NetworkLog', () => {
       } as unknown as SDK.NetworkRequest.NetworkRequest;
       const info = initiatorInfoForRequest(request);
       assert.deepEqual(info, {
-        type: SDK.NetworkRequest.InitiatorType.Preload,
+        type: SDK.NetworkRequest.InitiatorType.PRELOAD,
         url: Platform.DevToolsPath.EmptyUrlString,
         lineNumber: undefined,
         columnNumber: undefined,
@@ -259,7 +259,7 @@ describe('NetworkLog', () => {
       } as unknown as SDK.NetworkRequest.NetworkRequest;
       const info = initiatorInfoForRequest(request);
       assert.deepEqual(info, {
-        type: SDK.NetworkRequest.InitiatorType.Preflight,
+        type: SDK.NetworkRequest.InitiatorType.PREFLIGHT,
         url: Platform.DevToolsPath.EmptyUrlString,
         lineNumber: undefined,
         columnNumber: undefined,
@@ -283,7 +283,7 @@ describe('NetworkLog', () => {
       } as unknown as SDK.NetworkRequest.NetworkRequest;
       const info = initiatorInfoForRequest(request);
       assert.deepEqual(info, {
-        type: SDK.NetworkRequest.InitiatorType.SignedExchange,
+        type: SDK.NetworkRequest.InitiatorType.SIGNED_EXCHANGE,
         url: url('http://localhost:3000/example.js'),
         lineNumber: undefined,
         columnNumber: undefined,
@@ -298,7 +298,7 @@ describe('NetworkLog', () => {
 describeWithMockConnection('NetworkLog', () => {
   it('clears on main frame navigation', () => {
     const networkLog = Logs.NetworkLog.NetworkLog.instance();
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     const mainFrameTarget = createTarget({parentTarget: tabTarget});
     const mainFrame = getMainFrame(mainFrameTarget);
     const subframe = getMainFrame(createTarget({parentTarget: mainFrameTarget}));

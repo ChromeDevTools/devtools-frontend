@@ -6,6 +6,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import type * as Root from '../root/root.js';
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Accessed from web_tests */
   AppendedToURL = 'appendedToURL',
   CanceledSaveURL = 'canceledSaveURL',
   ColorThemeChanged = 'colorThemeChanged',
@@ -34,6 +35,7 @@ export enum Events {
   SetInspectedTabId = 'setInspectedTabId',
   SetUseSoftMenu = 'setUseSoftMenu',
   ShowPanel = 'showPanel',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export const EventDescriptors = [
@@ -433,6 +435,7 @@ export interface SyncInformation {
  * @readonly
  */
 export const enum EnumeratedHistogram {
+  /* eslint-disable @typescript-eslint/naming-convention -- Shadows a legacy enum */
   ActionTaken = 'DevTools.ActionTaken',
   PanelShown = 'DevTools.PanelShown',
   PanelShownInLocation = 'DevTools.PanelShownInLocation',
@@ -480,4 +483,5 @@ export const enum EnumeratedHistogram {
   ResourceTypeFilterItemSelected = 'DevTools.ResourceTypeFilterItemSelected',
   NetworkPanelMoreFiltersNumberOfSelectedChanged = 'DevTools.NetworkPanelMoreFiltersNumberOfSelectedChanged',
   NetworkPanelMoreFiltersItemSelected = 'DevTools.NetworkPanelMoreFiltersItemSelected',
+  /* eslint-disable @typescript-eslint/naming-convention -- Shadows a legacy enum */
 }

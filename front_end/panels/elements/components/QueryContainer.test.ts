@@ -117,8 +117,8 @@ describe('QueryContainer', () => {
     component.shadowRoot!.querySelector('a')?.dispatchEvent(new Event('mouseenter'));
 
     component.updateContainerQueriedSizeDetails({
-      physicalAxis: SDK.CSSContainerQuery.PhysicalAxis.None,
-      queryAxis: SDK.CSSContainerQuery.QueryAxis.None,
+      physicalAxis: SDK.CSSContainerQuery.PhysicalAxis.NONE,
+      queryAxis: SDK.CSSContainerQuery.QueryAxis.NONE,
       width: '500px',
       height: '300px',
     });
@@ -126,23 +126,23 @@ describe('QueryContainer', () => {
     assert.strictEqual(nonExistentDetailsElement, null, 'query details without any axis should not be rendered');
 
     component.updateContainerQueriedSizeDetails({
-      physicalAxis: SDK.CSSContainerQuery.PhysicalAxis.Horizontal,
-      queryAxis: SDK.CSSContainerQuery.QueryAxis.Inline,
+      physicalAxis: SDK.CSSContainerQuery.PhysicalAxis.HORIZONTAL,
+      queryAxis: SDK.CSSContainerQuery.QueryAxis.INLINE,
       width: '500px',
     });
     const detailsElement = component.shadowRoot!.querySelector<HTMLElement>('.queried-size-details');
     assert.strictEqual(detailsElement?.innerText, '(inline-size) 500px', 'queried size details are not correct');
 
     component.updateContainerQueriedSizeDetails({
-      physicalAxis: SDK.CSSContainerQuery.PhysicalAxis.Horizontal,
-      queryAxis: SDK.CSSContainerQuery.QueryAxis.Block,
+      physicalAxis: SDK.CSSContainerQuery.PhysicalAxis.HORIZONTAL,
+      queryAxis: SDK.CSSContainerQuery.QueryAxis.BLOCK,
       width: '200px',
     });
     assert.strictEqual(detailsElement?.innerText, '(block-size) 200px', 'queried size details are not correct');
 
     component.updateContainerQueriedSizeDetails({
-      physicalAxis: SDK.CSSContainerQuery.PhysicalAxis.Both,
-      queryAxis: SDK.CSSContainerQuery.QueryAxis.Both,
+      physicalAxis: SDK.CSSContainerQuery.PhysicalAxis.BOTH,
+      queryAxis: SDK.CSSContainerQuery.QueryAxis.BOTH,
       width: '500px',
       height: '300px',
     });

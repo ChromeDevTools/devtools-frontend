@@ -199,16 +199,16 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     //
     // This code does not handle the case SpecRules designate these preloads rather than prerenderer automatically downgrade prerendering.
     // TODO(https://crbug.com/1410709): Improve this logic once automatic downgrade implemented.
-    if (prerender?.status === SDK.PreloadingModel.PreloadingStatus.Failure &&
-        prefetch?.status === SDK.PreloadingModel.PreloadingStatus.Success) {
+    if (prerender?.status === SDK.PreloadingModel.PreloadingStatus.FAILURE &&
+        prefetch?.status === SDK.PreloadingModel.PreloadingStatus.SUCCESS) {
       kind = UsedKind.DowngradedPrerenderToPrefetchAndUsed;
-    } else if (prefetch?.status === SDK.PreloadingModel.PreloadingStatus.Success) {
+    } else if (prefetch?.status === SDK.PreloadingModel.PreloadingStatus.SUCCESS) {
       kind = UsedKind.PrefetchUsed;
-    } else if (prerender?.status === SDK.PreloadingModel.PreloadingStatus.Success) {
+    } else if (prerender?.status === SDK.PreloadingModel.PreloadingStatus.SUCCESS) {
       kind = UsedKind.PrerenderUsed;
-    } else if (prefetch?.status === SDK.PreloadingModel.PreloadingStatus.Failure) {
+    } else if (prefetch?.status === SDK.PreloadingModel.PreloadingStatus.FAILURE) {
       kind = UsedKind.PrefetchFailed;
-    } else if (prerender?.status === SDK.PreloadingModel.PreloadingStatus.Failure) {
+    } else if (prerender?.status === SDK.PreloadingModel.PreloadingStatus.FAILURE) {
       kind = UsedKind.PrerenderFailed;
     } else {
       kind = UsedKind.NoPreloads;
@@ -362,11 +362,11 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
       acc.set(attempt.status, (acc.get(attempt.status) ?? 0) + 1);
       return acc;
     }, new Map());
-    const notTriggeredCount = count.get(SDK.PreloadingModel.PreloadingStatus.NotTriggered) ?? 0;
-    const readyCount = count.get(SDK.PreloadingModel.PreloadingStatus.Ready) ?? 0;
-    const failureCount = count.get(SDK.PreloadingModel.PreloadingStatus.Failure) ?? 0;
-    const inProgressCount = (count.get(SDK.PreloadingModel.PreloadingStatus.Pending) ?? 0) +
-        (count.get(SDK.PreloadingModel.PreloadingStatus.Running) ?? 0);
+    const notTriggeredCount = count.get(SDK.PreloadingModel.PreloadingStatus.NOT_TRIGGERED) ?? 0;
+    const readyCount = count.get(SDK.PreloadingModel.PreloadingStatus.READY) ?? 0;
+    const failureCount = count.get(SDK.PreloadingModel.PreloadingStatus.FAILURE) ?? 0;
+    const inProgressCount = (count.get(SDK.PreloadingModel.PreloadingStatus.PENDING) ?? 0) +
+        (count.get(SDK.PreloadingModel.PreloadingStatus.RUNNING) ?? 0);
     const badges = [];
     if (this.#data.currentAttempts.length === 0) {
       badges.push(this.#badgeNeutral(i18nString(UIStrings.badgeNoSpeculativeLoads)));

@@ -120,5 +120,5 @@ export function activate(target: SDK.Target.Target): void {
   sinon.stub(frame, 'isPrimaryFrame').returns(true);
   resourceTreeModel.dispatchEventToListeners(
       SDK.ResourceTreeModel.Events.PrimaryPageChanged,
-      {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Activation});
+      {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.ACTIVATION});
 }

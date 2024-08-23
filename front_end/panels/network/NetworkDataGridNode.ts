@@ -1434,7 +1434,7 @@ export class NetworkRequestNode extends NetworkNode {
       cell.appendChild(document.createTextNode(i18nString(UIStrings.push)));
     }
     switch (initiator.type) {
-      case SDK.NetworkRequest.InitiatorType.Parser: {
+      case SDK.NetworkRequest.InitiatorType.PARSER: {
         const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(initiator.url);
         const displayName = uiSourceCode?.displayName();
         const text = displayName !== undefined && initiator.lineNumber !== undefined ?
@@ -1450,7 +1450,7 @@ export class NetworkRequestNode extends NetworkNode {
         break;
       }
 
-      case SDK.NetworkRequest.InitiatorType.Redirect: {
+      case SDK.NetworkRequest.InitiatorType.REDIRECT: {
         UI.Tooltip.Tooltip.install(cell, initiator.url);
         const redirectSource = (request.redirectSource() as SDK.NetworkRequest.NetworkRequest);
         console.assert(redirectSource !== null);
@@ -1466,7 +1466,7 @@ export class NetworkRequestNode extends NetworkNode {
         break;
       }
 
-      case SDK.NetworkRequest.InitiatorType.Script: {
+      case SDK.NetworkRequest.InitiatorType.SCRIPT: {
         const target = SDK.NetworkManager.NetworkManager.forRequest(request)?.target() || null;
         const linkifier = this.parentView().linkifier();
         if (initiator.stack) {
@@ -1483,20 +1483,20 @@ export class NetworkRequestNode extends NetworkNode {
         break;
       }
 
-      case SDK.NetworkRequest.InitiatorType.Preload: {
+      case SDK.NetworkRequest.InitiatorType.PRELOAD: {
         UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.preload));
         cell.classList.add('network-dim-cell');
         cell.appendChild(document.createTextNode(i18nString(UIStrings.preload)));
         break;
       }
 
-      case SDK.NetworkRequest.InitiatorType.SignedExchange: {
+      case SDK.NetworkRequest.InitiatorType.SIGNED_EXCHANGE: {
         cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(initiator.url));
         this.appendSubtitle(cell, i18nString(UIStrings.signedexchange));
         break;
       }
 
-      case SDK.NetworkRequest.InitiatorType.Preflight: {
+      case SDK.NetworkRequest.InitiatorType.PREFLIGHT: {
         cell.appendChild(document.createTextNode(i18nString(UIStrings.preflight)));
         if (initiator.initiatorRequest) {
           const icon = IconButton.Icon.create('arrow-up-down-circle');

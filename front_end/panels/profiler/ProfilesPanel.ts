@@ -167,7 +167,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     this.createFileSelectorElement();
 
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.SuspendStateChanged, this.onSuspendStateChanged, this);
+        SDK.TargetManager.Events.SUSPEND_STATE_CHANGED, this.onSuspendStateChanged, this);
     UI.Context.Context.instance().addFlavorChangeListener(
         SDK.CPUProfilerModel.CPUProfilerModel, this.updateProfileTypeSpecificUI, this);
     UI.Context.Context.instance().addFlavorChangeListener(

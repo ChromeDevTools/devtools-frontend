@@ -20,7 +20,7 @@ describeWithEnvironment('SourceFrame', () => {
 
   beforeEach(() => {
     setting = Common.Settings.Settings.instance().createSetting(
-        'disable-self-xss-warning', false, Common.Settings.SettingStorageType.Synced);
+        'disable-self-xss-warning', false, Common.Settings.SettingStorageType.SYNCED);
     setting.set(false);
   });
 

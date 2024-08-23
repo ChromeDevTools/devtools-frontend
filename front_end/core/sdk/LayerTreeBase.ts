@@ -38,11 +38,11 @@ export interface Layer {
 
 export namespace Layer {
   export const enum ScrollRectType {
-    NonFastScrollable = 'NonFastScrollable',
-    TouchEventHandler = 'TouchEventHandler',
-    WheelEventHandler = 'WheelEventHandler',
-    RepaintsOnScroll = 'RepaintsOnScroll',
-    MainThreadScrollingReason = 'MainThreadScrollingReason',
+    NON_FAST_SCROLLABLE = 'NonFastScrollable',
+    TOUCH_EVENT_HANDLER = 'TouchEventHandler',
+    WHEEL_EVENT_HANDLER = 'WheelEventHandler',
+    REPAINTS_ON_SCROLL = 'RepaintsOnScroll',
+    MAIN_THREAD_SCROLL_REASON = 'MainThreadScrollingReason',
   }
 }
 

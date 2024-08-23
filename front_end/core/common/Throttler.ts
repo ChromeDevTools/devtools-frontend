@@ -63,15 +63,15 @@ export class Throttler {
     this.#process = null;
   }
 
-  schedule(process: () => (Promise<unknown>), scheduling = Scheduling.Default): Promise<void> {
+  schedule(process: () => (Promise<unknown>), scheduling = Scheduling.DEFAULT): Promise<void> {
     // Deliberately skip previous #process.
     this.#process = process;
 
     // Run the first scheduled task instantly.
     const hasScheduledTasks = Boolean(this.#processTimeout) || this.#isRunningProcess;
     const okToFire = this.getTime() - this.#lastCompleteTime > this.#timeout;
-    const asSoonAsPossible = scheduling === Scheduling.AsSoonAsPossible ||
-        (scheduling === Scheduling.Default && !hasScheduledTasks && okToFire);
+    const asSoonAsPossible = scheduling === Scheduling.AS_SOON_AS_POSSIBLE ||
+        (scheduling === Scheduling.DEFAULT && !hasScheduledTasks && okToFire);
 
     const forceTimerUpdate = asSoonAsPossible && !this.#asSoonAsPossible;
     this.#asSoonAsPossible = this.#asSoonAsPossible || asSoonAsPossible;
@@ -113,10 +113,10 @@ export const enum Scheduling {
   // If the throttler has run another task recently (i.e. time since the last run is less then the
   // throttling delay), schedule the task to be run after the throttling delay. Otherwise scheule
   // the task after the next tick.
-  Default = 'Default',
+  DEFAULT = 'Default',
   // Schedule the task to run at the next tick, even if the throttler has run another task recently.
-  AsSoonAsPossible = 'AsSoonAsPossible',
+  AS_SOON_AS_POSSIBLE = 'AsSoonAsPossible',
   // Schedule the task to run after the throttling delay, even if the throttler has not run any
   // task recently.
-  Delayed = 'Delayed',
+  DELAYED = 'Delayed',
 }

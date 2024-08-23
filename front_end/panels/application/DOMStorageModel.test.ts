@@ -35,11 +35,11 @@ describeWithMockConnection('DOMStorageModel', () => {
     assert.exists(manager);
 
     assert.isEmpty(domStorageModel.storages());
-    manager.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
+    manager.dispatchEventToListeners(SDK.StorageKeyManager.Events.STORAGE_KEY_ADDED, testKey);
     assert.exists(domStorageModel.storageForId(testId));
 
     assert.exists(domStorageModel.storageForId(testId));
-    manager.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyRemoved, testKey);
+    manager.dispatchEventToListeners(SDK.StorageKeyManager.Events.STORAGE_KEY_REMOVED, testKey);
     assert.isUndefined(domStorageModel.storageForId(testId));
   });
 });

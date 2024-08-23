@@ -118,7 +118,7 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     const hostConfig = Common.Settings.Settings.instance().getHostConfig();
     const useSessionStorage = !hostConfig || hostConfig.isOffTheRecord === true;
     const storageTypeForConsent =
-        useSessionStorage ? Common.Settings.SettingStorageType.Session : Common.Settings.SettingStorageType.Global;
+        useSessionStorage ? Common.Settings.SettingStorageType.SESSION : Common.Settings.SettingStorageType.GLOBAL;
 
     this.#configSetting = Common.Settings.Settings.instance().createSetting<ConfigSetting>(
         'field-data', {enabled: false, override: '', originMappings: []}, storageTypeForConsent);
@@ -224,10 +224,10 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
           const newInspectedURL = event.data.inspectedURL();
           if (newInspectedURL) {
             resolve(newInspectedURL);
-            targetManager.removeEventListener(SDK.TargetManager.Events.InspectedURLChanged, handler);
+            targetManager.removeEventListener(SDK.TargetManager.Events.INSPECTED_URL_CHANGED, handler);
           }
         }
-        targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, handler);
+        targetManager.addEventListener(SDK.TargetManager.Events.INSPECTED_URL_CHANGED, handler);
       });
     }
     return inspectedURL;

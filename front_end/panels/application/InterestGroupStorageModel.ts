@@ -98,7 +98,7 @@ export class InterestGroupStorageModel extends SDK.SDKModel.SDKModel<EventTypes>
 }
 
 SDK.SDKModel.SDKModel.register(
-    InterestGroupStorageModel, {capabilities: SDK.Target.Capability.Storage, autostart: false});
+    InterestGroupStorageModel, {capabilities: SDK.Target.Capability.STORAGE, autostart: false});
 
 export const enum Events {
   InterestGroupAccess = 'InterestGroupAccess',

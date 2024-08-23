@@ -180,7 +180,7 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
         if (IssuesManager.RelatedIssue.hasIssueOfCategory(
                 this.#request, IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy)) {
           const followLink = (): void => {
-            Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.LearnMoreLinkCOEP);
+            Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.LEARN_MORE_LINK_COEP);
             if (this.#request) {
               void IssuesManager.RelatedIssue.reveal(
                   this.#request, IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy);

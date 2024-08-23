@@ -184,4 +184,4 @@ export class ScreenCaptureModel extends SDKModel<void> implements ProtocolProxyA
   }
 }
 
-SDKModel.register(ScreenCaptureModel, {capabilities: Capability.ScreenCapture, autostart: false});
+SDKModel.register(ScreenCaptureModel, {capabilities: Capability.SCREEN_CAPTURE, autostart: false});

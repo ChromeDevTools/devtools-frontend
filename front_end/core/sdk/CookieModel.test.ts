@@ -109,7 +109,7 @@ describeWithMockConnection('CookieModel', () => {
     const model = target.model(SDK.CookieModel.CookieModel)!;
 
     const eventListener = sinon.stub();
-    model.addEventListener(SDK.CookieModel.Events.CookieListUpdated, eventListener);
+    model.addEventListener(SDK.CookieModel.Events.COOKIE_LIST_UPDATED, eventListener);
 
     assert.isEmpty(await model.getCookiesForDomain(`https://${MAIN_FRAME_RESOURCE_DOMAIN}`));
 
@@ -140,7 +140,7 @@ describeWithMockConnection('CookieModel', () => {
     const model = target.model(SDK.CookieModel.CookieModel)!;
 
     const eventListener = sinon.stub();
-    model.addEventListener(SDK.CookieModel.Events.CookieListUpdated, eventListener);
+    model.addEventListener(SDK.CookieModel.Events.COOKIE_LIST_UPDATED, eventListener);
 
     createResource(mainFrame, `https://${DOMAIN}/main_resource` as Platform.DevToolsPath.UrlString, 'text/html', '');
     dispatchLoadingFinished();
@@ -173,7 +173,7 @@ describeWithMockConnection('CookieModel', () => {
 
     cookie.value = 'new value';
 
-    model.addEventListener(SDK.CookieModel.Events.CookieListUpdated, () => {});
+    model.addEventListener(SDK.CookieModel.Events.COOKIE_LIST_UPDATED, () => {});
 
     [readCookie] = await model.getCookiesForDomain(`https://${DOMAIN}`);
     assert.strictEqual(readCookie.value(), 'value');

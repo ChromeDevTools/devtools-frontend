@@ -15,7 +15,7 @@ describeWithMockConnection('CSSOverviewPanel', () => {
   let target: SDK.Target.Target;
 
   beforeEach(async () => {
-    const tabTaget = createTarget({type: SDK.Target.Type.Tab});
+    const tabTaget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTaget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTaget});
   });

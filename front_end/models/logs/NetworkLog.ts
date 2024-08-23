@@ -208,7 +208,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
       request: undefined,
     };
 
-    let type = SDK.NetworkRequest.InitiatorType.Other;
+    let type = SDK.NetworkRequest.InitiatorType.OTHER;
     let url = Platform.DevToolsPath.EmptyUrlString;
     let lineNumber: number|undefined = undefined;
     let columnNumber: number|undefined = undefined;
@@ -219,11 +219,11 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
 
     const redirectSource = request.redirectSource();
     if (redirectSource) {
-      type = SDK.NetworkRequest.InitiatorType.Redirect;
+      type = SDK.NetworkRequest.InitiatorType.REDIRECT;
       url = redirectSource.url();
     } else if (initiator) {
       if (initiator.type === Protocol.Network.InitiatorType.Parser) {
-        type = SDK.NetworkRequest.InitiatorType.Parser;
+        type = SDK.NetworkRequest.InitiatorType.PARSER;
         url = initiator.url ? initiator.url as Platform.DevToolsPath.UrlString : url;
         lineNumber = initiator.lineNumber;
         columnNumber = initiator.columnNumber;
@@ -234,7 +234,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
             stack = stack.parent;
             continue;
           }
-          type = SDK.NetworkRequest.InitiatorType.Script;
+          type = SDK.NetworkRequest.InitiatorType.SCRIPT;
           url = (topFrame.url || i18nString(UIStrings.anonymous) as string) as Platform.DevToolsPath.UrlString;
           lineNumber = topFrame.lineNumber;
           columnNumber = topFrame.columnNumber;
@@ -242,7 +242,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
           break;
         }
         if (!initiator.stack && initiator.url) {
-          type = SDK.NetworkRequest.InitiatorType.Script;
+          type = SDK.NetworkRequest.InitiatorType.SCRIPT;
           url = initiator.url as Platform.DevToolsPath.UrlString;
           lineNumber = initiator.lineNumber;
         }
@@ -250,12 +250,12 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
           initiatorStack = initiator.stack;
         }
       } else if (initiator.type === Protocol.Network.InitiatorType.Preload) {
-        type = SDK.NetworkRequest.InitiatorType.Preload;
+        type = SDK.NetworkRequest.InitiatorType.PRELOAD;
       } else if (initiator.type === Protocol.Network.InitiatorType.Preflight) {
-        type = SDK.NetworkRequest.InitiatorType.Preflight;
+        type = SDK.NetworkRequest.InitiatorType.PREFLIGHT;
         initiatorRequest = request.preflightInitiatorRequest();
       } else if (initiator.type === Protocol.Network.InitiatorType.SignedExchange) {
-        type = SDK.NetworkRequest.InitiatorType.SignedExchange;
+        type = SDK.NetworkRequest.InitiatorType.SIGNED_EXCHANGE;
         url = initiator.url as Platform.DevToolsPath.UrlString || Platform.DevToolsPath.EmptyUrlString;
       }
     }
@@ -336,7 +336,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
           {frame: SDK.ResourceTreeModel.ResourceTreeFrame, type: SDK.ResourceTreeModel.PrimaryPageChangeType}>): void {
     const mainFrame = event.data.frame;
     const manager = mainFrame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
-    if (!manager || mainFrame.resourceTreeModel().target().parentTarget()?.type() === SDK.Target.Type.Frame) {
+    if (!manager || mainFrame.resourceTreeModel().target().parentTarget()?.type() === SDK.Target.Type.FRAME) {
       return;
     }
 
@@ -365,7 +365,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     let currentPageLoad: SDK.PageLoad.PageLoad|null = null;
     const requestsToAdd = [];
     for (const request of oldManagerRequests) {
-      if (event.data.type !== SDK.ResourceTreeModel.PrimaryPageChangeType.Activation &&
+      if (event.data.type !== SDK.ResourceTreeModel.PrimaryPageChangeType.ACTIVATION &&
           request.loaderId !== mainFrame.loaderId) {
         continue;
       }

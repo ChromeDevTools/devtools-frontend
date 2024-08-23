@@ -40,7 +40,7 @@ export class NetworkThrottlingSelector {
     this.customNetworkConditionsSetting = customNetworkConditionsSetting;
     this.customNetworkConditionsSetting.addChangeListener(this.populateOptions, this);
     SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
-        SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, () => {
+        SDK.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED, () => {
           this.networkConditionsChanged();
         }, this);
     this.populateOptions();

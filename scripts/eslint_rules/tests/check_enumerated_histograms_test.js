@@ -12,12 +12,12 @@ const ruleTester = new (require('eslint').RuleTester)({
 ruleTester.run('check_enumerated_histograms', rule, {
   valid: [
     {
-      code: 'InspectorFrontendHostInstance.recordEnumeratedHistogram(\'someparam\', 1, foo.MaxValue);',
+      code: 'InspectorFrontendHostInstance.recordEnumeratedHistogram(\'someparam\', 1, foo.MAX_VALUE);',
       filename: 'front_end/components/test.ts',
     },
     {
       code:
-          'InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.IssueCreated, issueCreated, IssueCreated.MaxValue);',
+          'InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.IssueCreated, issueCreated, IssueCreated.MAX_VALUE);',
       filename: 'front_end/components/test.ts'
     }
   ],
@@ -26,7 +26,7 @@ ruleTester.run('check_enumerated_histograms', rule, {
     filename: 'front_end/components/test.ts',
     errors: [{
       message:
-          'When calling \'recordEnumeratedHistogram\' the third argument should be of the form \'SomeEnum.MaxValue\'.'
+          'When calling \'recordEnumeratedHistogram\' the third argument should be of the form \'SomeEnum.MAX_VALUE\'.'
     }],
   }]
 });

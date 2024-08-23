@@ -9,50 +9,50 @@ const {getPhysicalAxisFromQueryAxis, getQueryAxis, PhysicalAxis, QueryAxis} = SD
 describe('CSSContainerQuery', () => {
   describe('getQueryAxis', () => {
     it('gets the query axis of no containment correctly', () => {
-      assert.strictEqual(getQueryAxis(''), QueryAxis.None);
-      assert.strictEqual(getQueryAxis('style layout'), QueryAxis.None);
+      assert.strictEqual(getQueryAxis(''), QueryAxis.NONE);
+      assert.strictEqual(getQueryAxis('style layout'), QueryAxis.NONE);
     });
 
     it('gets the query axis of an inline container query correctly', () => {
-      assert.strictEqual(getQueryAxis('inline-size layout style'), QueryAxis.Inline);
-      assert.strictEqual(getQueryAxis('layout inline-size style inline-size'), QueryAxis.Inline);
+      assert.strictEqual(getQueryAxis('inline-size layout style'), QueryAxis.INLINE);
+      assert.strictEqual(getQueryAxis('layout inline-size style inline-size'), QueryAxis.INLINE);
     });
 
     it('gets the query axis of a block container query correctly', () => {
-      assert.strictEqual(getQueryAxis('block-size layout style'), QueryAxis.Block);
-      assert.strictEqual(getQueryAxis('layout block-size style block-size'), QueryAxis.Block);
+      assert.strictEqual(getQueryAxis('block-size layout style'), QueryAxis.BLOCK);
+      assert.strictEqual(getQueryAxis('layout block-size style block-size'), QueryAxis.BLOCK);
     });
 
     it('gets the query axis of inline-block container query correctly', () => {
-      assert.strictEqual(getQueryAxis('inline-size layout style block-size'), QueryAxis.Both);
-      assert.strictEqual(getQueryAxis('layout size style'), QueryAxis.Both);
-      assert.strictEqual(getQueryAxis('size'), QueryAxis.Both);
+      assert.strictEqual(getQueryAxis('inline-size layout style block-size'), QueryAxis.BOTH);
+      assert.strictEqual(getQueryAxis('layout size style'), QueryAxis.BOTH);
+      assert.strictEqual(getQueryAxis('size'), QueryAxis.BOTH);
     });
   });
 
   describe('getPhysicalAxisFromQueryAxis', () => {
     it('gets the physical axis of no containment correctly', () => {
-      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.None, 'horizontal-tb'), PhysicalAxis.None);
-      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.None, 'vertical-lr'), PhysicalAxis.None);
-      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.None, 'vertical-rl'), PhysicalAxis.None);
+      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.NONE, 'horizontal-tb'), PhysicalAxis.NONE);
+      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.NONE, 'vertical-lr'), PhysicalAxis.NONE);
+      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.NONE, 'vertical-rl'), PhysicalAxis.NONE);
     });
 
     it('gets the physical axis of horizontal containment correctly', () => {
-      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.Inline, 'horizontal-tb'), PhysicalAxis.Horizontal);
-      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.Block, 'vertical-lr'), PhysicalAxis.Horizontal);
-      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.Block, 'vertical-rl'), PhysicalAxis.Horizontal);
+      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.INLINE, 'horizontal-tb'), PhysicalAxis.HORIZONTAL);
+      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.BLOCK, 'vertical-lr'), PhysicalAxis.HORIZONTAL);
+      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.BLOCK, 'vertical-rl'), PhysicalAxis.HORIZONTAL);
     });
 
     it('gets the physical axis of vertical containment correctly', () => {
-      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.Block, 'horizontal-tb'), PhysicalAxis.Vertical);
-      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.Inline, 'vertical-lr'), PhysicalAxis.Vertical);
-      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.Inline, 'vertical-rl'), PhysicalAxis.Vertical);
+      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.BLOCK, 'horizontal-tb'), PhysicalAxis.VERTICAL);
+      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.INLINE, 'vertical-lr'), PhysicalAxis.VERTICAL);
+      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.INLINE, 'vertical-rl'), PhysicalAxis.VERTICAL);
     });
 
     it('gets the physical axis both-axes containment correctly', () => {
-      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.Both, 'horizontal-tb'), PhysicalAxis.Both);
-      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.Both, 'vertical-lr'), PhysicalAxis.Both);
-      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.Both, 'vertical-rl'), PhysicalAxis.Both);
+      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.BOTH, 'horizontal-tb'), PhysicalAxis.BOTH);
+      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.BOTH, 'vertical-lr'), PhysicalAxis.BOTH);
+      assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.BOTH, 'vertical-rl'), PhysicalAxis.BOTH);
     });
   });
 });

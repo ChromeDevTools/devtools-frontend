@@ -48,17 +48,17 @@ describeWithMockConnection('ChildTargetManager', () => {
     const childTargetManager = new SDK.ChildTargetManager.ChildTargetManager(target);
     assert.strictEqual(childTargetManager.childTargets().length, 0);
     for (const [protocolType, sdkType] of [
-             ['iframe', SDK.Target.Type.Frame],
-             ['webview', SDK.Target.Type.Frame],
-             ['page', SDK.Target.Type.Frame],
-             ['background_page', SDK.Target.Type.Frame],
-             ['app', SDK.Target.Type.Frame],
-             ['popup_page', SDK.Target.Type.Frame],
+             ['iframe', SDK.Target.Type.FRAME],
+             ['webview', SDK.Target.Type.FRAME],
+             ['page', SDK.Target.Type.FRAME],
+             ['background_page', SDK.Target.Type.FRAME],
+             ['app', SDK.Target.Type.FRAME],
+             ['popup_page', SDK.Target.Type.FRAME],
              ['worker', SDK.Target.Type.Worker],
-             ['shared_worker', SDK.Target.Type.SharedWorker],
+             ['shared_worker', SDK.Target.Type.SHARED_WORKER],
              ['service_worker', SDK.Target.Type.ServiceWorker],
-             ['auction_worklet', SDK.Target.Type.AuctionWorklet],
-             ['browser', SDK.Target.Type.Browser],
+             ['auction_worklet', SDK.Target.Type.AUCTION_WORKLET],
+             ['browser', SDK.Target.Type.BROWSER],
     ]) {
       await childTargetManager.attachedToTarget({
         sessionId: createSessionId(),
@@ -80,7 +80,7 @@ describeWithMockConnection('ChildTargetManager', () => {
       waitingForDebugger: false,
     });
     let [subtarget] = childTargetManager.childTargets().slice(-1);
-    assert.strictEqual(subtarget.type(), SDK.Target.Type.Frame);
+    assert.strictEqual(subtarget.type(), SDK.Target.Type.FRAME);
 
     await childTargetManager.attachedToTarget({
       sessionId: createSessionId(),
@@ -101,7 +101,7 @@ describeWithMockConnection('ChildTargetManager', () => {
       waitingForDebugger: false,
     });
     const [subtarget] = childTargetManager.childTargets().slice(-1);
-    assert.strictEqual(subtarget.type(), SDK.Target.Type.Frame);
+    assert.strictEqual(subtarget.type(), SDK.Target.Type.FRAME);
   });
 
   it('sets subtarget to frame for chrome://file-manager/ if type is other', async () => {
@@ -114,7 +114,7 @@ describeWithMockConnection('ChildTargetManager', () => {
       waitingForDebugger: false,
     });
     const [subtarget] = childTargetManager.childTargets().slice(-1);
-    assert.strictEqual(subtarget.type(), SDK.Target.Type.Frame);
+    assert.strictEqual(subtarget.type(), SDK.Target.Type.FRAME);
   });
 
   it('sets subtarget to frame for sidebar URLs if type is other', async () => {
@@ -127,7 +127,7 @@ describeWithMockConnection('ChildTargetManager', () => {
       waitingForDebugger: false,
     });
     let [subtarget] = childTargetManager.childTargets().slice(-1);
-    assert.strictEqual(subtarget.type(), SDK.Target.Type.Frame);
+    assert.strictEqual(subtarget.type(), SDK.Target.Type.FRAME);
 
     await childTargetManager.attachedToTarget({
       sessionId: createSessionId(),
@@ -135,7 +135,7 @@ describeWithMockConnection('ChildTargetManager', () => {
       waitingForDebugger: false,
     });
     [subtarget] = childTargetManager.childTargets().slice(-1);
-    assert.strictEqual(subtarget.type(), SDK.Target.Type.Frame);
+    assert.strictEqual(subtarget.type(), SDK.Target.Type.FRAME);
   });
 
   it('sets worker target name to the target title', async () => {

@@ -116,7 +116,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
       this.draw();
     });
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.SuspendStateChanged, this.suspendStateChanged, this);
+        SDK.TargetManager.Events.SUSPEND_STATE_CHANGED, this.suspendStateChanged, this);
     void this.model.enable();
     this.suspendStateChanged();
   }
@@ -126,7 +126,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
       return;
     }
     SDK.TargetManager.TargetManager.instance().removeEventListener(
-        SDK.TargetManager.Events.SuspendStateChanged, this.suspendStateChanged, this);
+        SDK.TargetManager.Events.SUSPEND_STATE_CHANGED, this.suspendStateChanged, this);
     this.stopPolling();
     void this.model.disable();
   }

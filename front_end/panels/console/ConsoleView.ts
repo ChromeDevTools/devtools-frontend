@@ -420,7 +420,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     const issuesToolbarItem = new UI.Toolbar.ToolbarItem(this.issueCounter);
     this.issueCounter.data = {
       clickHandler: () => {
-        Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.StatusBarIssuesCounter);
+        Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.STATUS_BAR_ISSUES_COUNTER);
         void UI.ViewManager.ViewManager.instance().showView('issues-pane');
       },
       issuesManager: IssuesManager.IssuesManager.IssuesManager.instance(),
@@ -437,7 +437,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.consoleHistoryAutocompleteSetting =
         Common.Settings.Settings.instance().moduleSetting('console-history-autocomplete');
     this.selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting(
-        'disable-self-xss-warning', false, Common.Settings.SettingStorageType.Synced);
+        'disable-self-xss-warning', false, Common.Settings.SettingStorageType.SYNCED);
 
     const settingsPane = new UI.Widget.HBox();
     settingsPane.show(this.contentsElement);
@@ -676,7 +676,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
   private registerWithMessageSink(): void {
     Common.Console.Console.instance().messages().forEach(this.addSinkMessage, this);
-    Common.Console.Console.instance().addEventListener(Common.Console.Events.MessageAdded, ({data: message}) => {
+    Common.Console.Console.instance().addEventListener(Common.Console.Events.MESSAGE_ADDED, ({data: message}) => {
       this.addSinkMessage(message);
     }, this);
   }
@@ -684,13 +684,13 @@ export class ConsoleView extends UI.Widget.VBox implements
   private addSinkMessage(message: Common.Console.Message): void {
     let level: Protocol.Log.LogEntryLevel = Protocol.Log.LogEntryLevel.Verbose;
     switch (message.level) {
-      case Common.Console.MessageLevel.Info:
+      case Common.Console.MessageLevel.INFO:
         level = Protocol.Log.LogEntryLevel.Info;
         break;
-      case Common.Console.MessageLevel.Error:
+      case Common.Console.MessageLevel.ERROR:
         level = Protocol.Log.LogEntryLevel.Error;
         break;
-      case Common.Console.MessageLevel.Warning:
+      case Common.Console.MessageLevel.WARNING:
         level = Protocol.Log.LogEntryLevel.Warning;
         break;
     }

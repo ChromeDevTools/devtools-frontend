@@ -194,11 +194,11 @@ describeWithMockConnection('LayoutPane', () => {
   };
 
   it('updates UI on in scope grid overlay update event',
-     updatesUiOnEvent(SDK.OverlayModel.Events.PersistentGridOverlayStateChanged, true));
+     updatesUiOnEvent(SDK.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED, true));
   it('does not update UI on out of scope grid overlay update event',
-     updatesUiOnEvent(SDK.OverlayModel.Events.PersistentGridOverlayStateChanged, false));
+     updatesUiOnEvent(SDK.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED, false));
   it('updates UI on in scope flex overlay update event',
-     updatesUiOnEvent(SDK.OverlayModel.Events.PersistentFlexContainerOverlayStateChanged, true));
+     updatesUiOnEvent(SDK.OverlayModel.Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED, true));
   it('does not update UI on out of scope flex overlay update event',
-     updatesUiOnEvent(SDK.OverlayModel.Events.PersistentFlexContainerOverlayStateChanged, false));
+     updatesUiOnEvent(SDK.OverlayModel.Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED, false));
 });

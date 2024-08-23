@@ -492,7 +492,7 @@ export class CoverageView extends UI.Widget.VBox {
       this.listView.detach();
       this.bfcacheReloadPromptPage.show(this.coverageResultsElement);
     }
-    if (event.data.type === SDK.ResourceTreeModel.PrimaryPageChangeType.Activation) {
+    if (event.data.type === SDK.ResourceTreeModel.PrimaryPageChangeType.ACTIVATION) {
       this.listView.detach();
       this.activationReloadPromptPage.show(this.coverageResultsElement);
     }

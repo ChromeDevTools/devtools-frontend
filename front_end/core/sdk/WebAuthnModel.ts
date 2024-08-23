@@ -9,13 +9,13 @@ import {SDKModel} from './SDKModel.js';
 import {Capability, type Target} from './Target.js';
 
 export const enum Events {
-  CredentialAdded = 'CredentialAdded',
-  CredentialAsserted = 'CredentialAsserted',
+  CREDENTIAL_ADDED = 'CredentialAdded',
+  CREDENTIAL_ASSERTED = 'CredentialAsserted',
 }
 
 export type EventTypes = {
-  [Events.CredentialAdded]: Protocol.WebAuthn.CredentialAddedEvent,
-  [Events.CredentialAsserted]: Protocol.WebAuthn.CredentialAssertedEvent,
+  [Events.CREDENTIAL_ADDED]: Protocol.WebAuthn.CredentialAddedEvent,
+  [Events.CREDENTIAL_ASSERTED]: Protocol.WebAuthn.CredentialAssertedEvent,
 };
 
 export class WebAuthnModel extends SDKModel<EventTypes> {
@@ -58,11 +58,11 @@ export class WebAuthnModel extends SDKModel<EventTypes> {
   }
 
   credentialAdded(params: Protocol.WebAuthn.CredentialAddedEvent): void {
-    this.dispatchEventToListeners(Events.CredentialAdded, params);
+    this.dispatchEventToListeners(Events.CREDENTIAL_ADDED, params);
   }
 
   credentialAsserted(params: Protocol.WebAuthn.CredentialAssertedEvent): void {
-    this.dispatchEventToListeners(Events.CredentialAsserted, params);
+    this.dispatchEventToListeners(Events.CREDENTIAL_ASSERTED, params);
   }
 }
 
@@ -81,4 +81,4 @@ class WebAuthnDispatcher implements ProtocolProxyApi.WebAuthnDispatcher {
   }
 }
 
-SDKModel.register(WebAuthnModel, {capabilities: Capability.WebAuthn, autostart: false});
+SDKModel.register(WebAuthnModel, {capabilities: Capability.WEB_AUTHN, autostart: false});

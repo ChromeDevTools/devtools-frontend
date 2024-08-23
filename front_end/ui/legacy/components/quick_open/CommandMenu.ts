@@ -168,7 +168,7 @@ export class CommandMenu {
 
     const executeHandler = (): Promise<void> => {
       if (id === 'issues-pane') {
-        Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.CommandMenu);
+        Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.COMMAND_MENU);
       }
       return UI.ViewManager.ViewManager.instance().showView(id, /* userGesture */ true);
     };

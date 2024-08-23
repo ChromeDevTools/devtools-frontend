@@ -30,7 +30,8 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
     this.#clientData = new Map();
     this.#sourceMaps = new Map();
 
-    TargetManager.instance().addEventListener(TargetManagerEvents.InspectedURLChanged, this.inspectedURLChanged, this);
+    TargetManager.instance().addEventListener(
+        TargetManagerEvents.INSPECTED_URL_CHANGED, this.inspectedURLChanged, this);
   }
 
   setEnabled(isEnabled: boolean): void {
@@ -52,7 +53,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
   }
 
   private static getBaseUrl(target: Target|null): Platform.DevToolsPath.UrlString {
-    while (target && target.type() !== Type.Frame) {
+    while (target && target.type() !== Type.FRAME) {
       target = target.parentTarget();
     }
     return target?.inspectedURL() ?? Platform.DevToolsPath.EmptyUrlString;
@@ -196,7 +197,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
 
   dispose(): void {
     TargetManager.instance().removeEventListener(
-        TargetManagerEvents.InspectedURLChanged, this.inspectedURLChanged, this);
+        TargetManagerEvents.INSPECTED_URL_CHANGED, this.inspectedURLChanged, this);
   }
 }
 
@@ -220,10 +221,12 @@ type ClientData = {
 };
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   SourceMapWillAttach = 'SourceMapWillAttach',
   SourceMapFailedToAttach = 'SourceMapFailedToAttach',
   SourceMapAttached = 'SourceMapAttached',
   SourceMapDetached = 'SourceMapDetached',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export type EventTypes<T extends FrameAssociated> = {

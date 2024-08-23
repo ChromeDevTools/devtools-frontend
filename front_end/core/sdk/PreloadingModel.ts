@@ -169,15 +169,15 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     const {frame, type} = event.data;
 
     // Model of prerendered page's target will hands over. Do nothing for the initiator page.
-    if (this.lastPrimaryPageModel === null && type === PrimaryPageChangeType.Activation) {
+    if (this.lastPrimaryPageModel === null && type === PrimaryPageChangeType.ACTIVATION) {
       return;
     }
 
-    if (this.lastPrimaryPageModel !== null && type !== PrimaryPageChangeType.Activation) {
+    if (this.lastPrimaryPageModel !== null && type !== PrimaryPageChangeType.ACTIVATION) {
       return;
     }
 
-    if (this.lastPrimaryPageModel !== null && type === PrimaryPageChangeType.Activation) {
+    if (this.lastPrimaryPageModel !== null && type === PrimaryPageChangeType.ACTIVATION) {
       // Hand over from the model of the last primary page.
       this.loaderIds = this.lastPrimaryPageModel.loaderIds;
       for (const [loaderId, prev] of this.lastPrimaryPageModel.documents.entries()) {
@@ -203,7 +203,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
       }
     }
 
-    this.dispatchEventToListeners(Events.ModelUpdated);
+    this.dispatchEventToListeners(Events.MODEL_UPDATED);
   }
 
   onRuleSetUpdated(event: Protocol.Preload.RuleSetUpdatedEvent): void {
@@ -219,7 +219,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
 
     this.ensureDocumentPreloadingData(loaderId);
     this.documents.get(loaderId)?.ruleSets.upsert(ruleSet);
-    this.dispatchEventToListeners(Events.ModelUpdated);
+    this.dispatchEventToListeners(Events.MODEL_UPDATED);
   }
 
   onRuleSetRemoved(event: Protocol.Preload.RuleSetRemovedEvent): void {
@@ -228,7 +228,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     for (const document of this.documents.values()) {
       document.ruleSets.delete(id);
     }
-    this.dispatchEventToListeners(Events.ModelUpdated);
+    this.dispatchEventToListeners(Events.MODEL_UPDATED);
   }
 
   onPreloadingAttemptSourcesUpdated(event: Protocol.Preload.PreloadingAttemptSourcesUpdatedEvent): void {
@@ -243,7 +243,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     document.sources.update(event.preloadingAttemptSources);
     document.preloadingAttempts.maybeRegisterNotTriggered(document.sources);
     document.preloadingAttempts.cleanUpRemovedAttempts(document.sources);
-    this.dispatchEventToListeners(Events.ModelUpdated);
+    this.dispatchEventToListeners(Events.MODEL_UPDATED);
   }
 
   onPrefetchStatusUpdated(event: Protocol.Preload.PrefetchStatusUpdatedEvent): void {
@@ -263,7 +263,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
       requestId: event.requestId,
     };
     this.documents.get(loaderId)?.preloadingAttempts.upsert(attempt);
-    this.dispatchEventToListeners(Events.ModelUpdated);
+    this.dispatchEventToListeners(Events.MODEL_UPDATED);
   }
 
   onPrerenderStatusUpdated(event: Protocol.Preload.PrerenderStatusUpdatedEvent): void {
@@ -278,24 +278,24 @@ export class PreloadingModel extends SDKModel<EventTypes> {
       mismatchedHeaders: event.mismatchedHeaders || null,
     };
     this.documents.get(loaderId)?.preloadingAttempts.upsert(attempt);
-    this.dispatchEventToListeners(Events.ModelUpdated);
+    this.dispatchEventToListeners(Events.MODEL_UPDATED);
   }
 
   onPreloadEnabledStateUpdated(event: Protocol.Preload.PreloadEnabledStateUpdatedEvent): void {
-    this.dispatchEventToListeners(Events.WarningsUpdated, event);
+    this.dispatchEventToListeners(Events.WARNINGS_UPDATED, event);
   }
 }
 
 SDKModel.register(PreloadingModel, {capabilities: Capability.DOM, autostart: false});
 
 export const enum Events {
-  ModelUpdated = 'ModelUpdated',
-  WarningsUpdated = 'WarningsUpdated',
+  MODEL_UPDATED = 'ModelUpdated',
+  WARNINGS_UPDATED = 'WarningsUpdated',
 }
 
 export type EventTypes = {
-  [Events.ModelUpdated]: void,
-  [Events.WarningsUpdated]: Protocol.Preload.PreloadEnabledStateUpdatedEvent,
+  [Events.MODEL_UPDATED]: void,
+  [Events.WARNINGS_UPDATED]: Protocol.Preload.PreloadEnabledStateUpdatedEvent,
 };
 
 class PreloadDispatcher implements ProtocolProxyApi.PreloadDispatcher {
@@ -394,29 +394,29 @@ class RuleSetRegistry {
 //
 // TODO(https://crbug.com/1384419): Add NotEligible.
 export const enum PreloadingStatus {
-  NotTriggered = 'NotTriggered',
-  Pending = 'Pending',
-  Running = 'Running',
-  Ready = 'Ready',
-  Success = 'Success',
-  Failure = 'Failure',
-  NotSupported = 'NotSupported',
+  NOT_TRIGGERED = 'NotTriggered',
+  PENDING = 'Pending',
+  RUNNING = 'Running',
+  READY = 'Ready',
+  SUCCESS = 'Success',
+  FAILURE = 'Failure',
+  NOT_SUPPORTED = 'NotSupported',
 }
 
 function convertPreloadingStatus(status: Protocol.Preload.PreloadingStatus): PreloadingStatus {
   switch (status) {
     case Protocol.Preload.PreloadingStatus.Pending:
-      return PreloadingStatus.Pending;
+      return PreloadingStatus.PENDING;
     case Protocol.Preload.PreloadingStatus.Running:
-      return PreloadingStatus.Running;
+      return PreloadingStatus.RUNNING;
     case Protocol.Preload.PreloadingStatus.Ready:
-      return PreloadingStatus.Ready;
+      return PreloadingStatus.READY;
     case Protocol.Preload.PreloadingStatus.Success:
-      return PreloadingStatus.Success;
+      return PreloadingStatus.SUCCESS;
     case Protocol.Preload.PreloadingStatus.Failure:
-      return PreloadingStatus.Failure;
+      return PreloadingStatus.FAILURE;
     case Protocol.Preload.PreloadingStatus.NotSupported:
-      return PreloadingStatus.NotSupported;
+      return PreloadingStatus.NOT_SUPPORTED;
   }
 
   throw new Error('unreachable');
@@ -560,7 +560,7 @@ class PreloadingAttemptRegistry {
           attempt = {
             action: Protocol.Preload.SpeculationAction.Prefetch,
             key,
-            status: PreloadingStatus.NotTriggered,
+            status: PreloadingStatus.NOT_TRIGGERED,
             prefetchStatus: null,
             // Fill invalid request id.
             requestId: '' as Protocol.Network.RequestId,
@@ -570,7 +570,7 @@ class PreloadingAttemptRegistry {
           attempt = {
             action: Protocol.Preload.SpeculationAction.Prerender,
             key,
-            status: PreloadingStatus.NotTriggered,
+            status: PreloadingStatus.NOT_TRIGGERED,
             prerenderStatus: null,
             disallowedMojoInterface: null,
             mismatchedHeaders: null,

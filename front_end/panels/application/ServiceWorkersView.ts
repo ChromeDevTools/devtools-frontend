@@ -301,9 +301,9 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
 
     this.eventListeners.set(serviceWorkerManager, [
       this.manager.addEventListener(
-          SDK.ServiceWorkerManager.Events.RegistrationUpdated, this.registrationUpdated, this),
+          SDK.ServiceWorkerManager.Events.REGISTRATION_UPDATED, this.registrationUpdated, this),
       this.manager.addEventListener(
-          SDK.ServiceWorkerManager.Events.RegistrationDeleted, this.registrationDeleted, this),
+          SDK.ServiceWorkerManager.Events.REGISTRATION_DELETED, this.registrationDeleted, this),
       this.securityOriginManager.addEventListener(
           SDK.SecurityOriginManager.Events.SecurityOriginAdded, this.updateSectionVisibility, this),
       this.securityOriginManager.addEventListener(
@@ -327,10 +327,10 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
 
     let timestamp: number|undefined = 0;
 
-    const active = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Active);
-    const installing = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Installing);
-    const waiting = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Waiting);
-    const redundant = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Redundant);
+    const active = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.ACTIVE);
+    const installing = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.INSTALLING);
+    const waiting = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.WAITING);
+    const redundant = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.REDUNDANT);
 
     if (active) {
       timestamp = active.scriptResponseTime;
@@ -666,10 +666,10 @@ export class Section {
     const title = this.registration.isDeleted ? i18nString(UIStrings.sDeleted, {PH1: scopeURL}) : scopeURL;
     this.section.setTitle(title);
 
-    const active = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Active);
-    const waiting = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Waiting);
-    const installing = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Installing);
-    const redundant = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Redundant);
+    const active = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.ACTIVE);
+    const waiting = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.WAITING);
+    const installing = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.INSTALLING);
+    const redundant = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.REDUNDANT);
 
     this.statusField.removeChildren();
     const versionsStack = this.statusField.createChild('div', 'service-worker-version-stack');
@@ -765,7 +765,7 @@ export class Section {
 
   private maybeCreateRouterField(): void {
     const versions = this.registration.versionsByMode();
-    const active = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Active);
+    const active = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.ACTIVE);
     const title = i18nString(UIStrings.routers);
     if (active && active.routerRules && active.routerRules.length > 0) {
       // If there is at least one registered rule in the active version, append the router filed.

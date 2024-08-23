@@ -114,10 +114,10 @@ export class ServiceWorkerUpdateCycleView {
 
     const versions = this.registration.versionsByMode();
     const modes = [
-      SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Active,
-      SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Waiting,
-      SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Installing,
-      SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Redundant,
+      SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.ACTIVE,
+      SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.WAITING,
+      SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.INSTALLING,
+      SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.REDUNDANT,
     ];
 
     for (const mode of modes) {

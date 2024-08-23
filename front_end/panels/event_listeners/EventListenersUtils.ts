@@ -142,7 +142,7 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
         }
         return new SDK.DOMDebuggerModel.EventListener(
             domDebuggerModel as SDK.DOMDebuggerModel.DOMDebuggerModel, object, type, useCapture, passive, once, handler,
-            originalHandler, location, removeFunctionObject, SDK.DOMDebuggerModel.EventListener.Origin.FrameworkUser);
+            originalHandler, location, removeFunctionObject, SDK.DOMDebuggerModel.EventListener.Origin.FRAMEWORK_USER);
       }
     }
   }

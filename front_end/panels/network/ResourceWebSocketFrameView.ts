@@ -275,11 +275,11 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
   override wasShown(): void {
     this.refresh();
     this.registerCSSFiles([webSocketFrameViewStyles]);
-    this.request.addEventListener(SDK.NetworkRequest.Events.WebsocketFrameAdded, this.frameAdded, this);
+    this.request.addEventListener(SDK.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.frameAdded, this);
   }
 
   override willHide(): void {
-    this.request.removeEventListener(SDK.NetworkRequest.Events.WebsocketFrameAdded, this.frameAdded, this);
+    this.request.removeEventListener(SDK.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.frameAdded, this);
   }
 
   private frameAdded(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.WebSocketFrame>): void {

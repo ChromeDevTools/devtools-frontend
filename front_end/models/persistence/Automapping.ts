@@ -240,7 +240,7 @@ export class Automapping {
       const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(status.network);
       let isValid = false;
       const fileContent = fileSystemContent.content;
-      if (target && target.type() === SDK.Target.Type.Node) {
+      if (target && target.type() === SDK.Target.Type.NODE) {
         if (networkContent.content) {
           const rewrappedNetworkContent =
               PersistenceImpl.rewrapNodeJSContent(status.fileSystem, fileContent, networkContent.content);

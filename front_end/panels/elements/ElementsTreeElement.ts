@@ -2036,7 +2036,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         if (style.parentRule && style.parentRule.isUserAgent()) {
           continue;
         }
-        if (cascade.propertyState(property) !== SDK.CSSMatchedStyles.PropertyState.Active) {
+        if (cascade.propertyState(property) !== SDK.CSSMatchedStyles.PropertyState.ACTIVE) {
           continue;
         }
         lines.push(`${indent}${property.name}: ${property.value};`);
@@ -2228,7 +2228,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const containerType = styles.get('container-type');
     const contain = styles.get('contain');
     const isContainer =
-        SDK.CSSContainerQuery.getQueryAxis(`${containerType} ${contain}`) !== SDK.CSSContainerQuery.QueryAxis.None;
+        SDK.CSSContainerQuery.getQueryAxis(`${containerType} ${contain}`) !== SDK.CSSContainerQuery.QueryAxis.NONE;
 
     if (isGrid) {
       this.pushGridAdorner(this.tagTypeContext, isSubgrid);
@@ -2276,7 +2276,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     });
 
     node.domModel().overlayModel().addEventListener(
-        SDK.OverlayModel.Events.PersistentGridOverlayStateChanged, event => {
+        SDK.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED, event => {
           const {nodeId: eventNodeId, enabled} = event.data;
           if (eventNodeId !== nodeId) {
             return;
@@ -2318,7 +2318,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     });
 
     node.domModel().overlayModel().addEventListener(
-        SDK.OverlayModel.Events.PersistentScrollSnapOverlayStateChanged, event => {
+        SDK.OverlayModel.Events.PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED, event => {
           const {nodeId: eventNodeId, enabled} = event.data;
           if (eventNodeId !== nodeId) {
             return;
@@ -2361,7 +2361,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     });
 
     node.domModel().overlayModel().addEventListener(
-        SDK.OverlayModel.Events.PersistentFlexContainerOverlayStateChanged, event => {
+        SDK.OverlayModel.Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED, event => {
           const {nodeId: eventNodeId, enabled} = event.data;
           if (eventNodeId !== nodeId) {
             return;
@@ -2405,7 +2405,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     });
 
     node.domModel().overlayModel().addEventListener(
-        SDK.OverlayModel.Events.PersistentContainerQueryOverlayStateChanged, event => {
+        SDK.OverlayModel.Events.PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED, event => {
           const {nodeId: eventNodeId, enabled} = event.data;
           if (eventNodeId !== nodeId) {
             return;

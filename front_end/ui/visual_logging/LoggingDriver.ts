@@ -200,7 +200,8 @@ async function process(): Promise<void> {
       if (trackHover) {
         element.addEventListener('mouseover', logHover(hoverLogThrottler), {capture: true});
         element.addEventListener(
-            'mouseout', () => hoverLogThrottler.schedule(cancelLogging, Common.Throttler.Scheduling.AsSoonAsPossible),
+            'mouseout',
+            () => hoverLogThrottler.schedule(cancelLogging, Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE),
             {capture: true});
       }
       const trackDrag = loggingState.config.track?.drag;
@@ -327,7 +328,7 @@ function maybeCancelDrag(event: Event): void {
       Math.abs(event.screenY - dragStartY) >= DRAG_REPORT_THRESHOLD) {
     return;
   }
-  void dragLogThrottler.schedule(cancelLogging, Common.Throttler.Scheduling.AsSoonAsPossible);
+  void dragLogThrottler.schedule(cancelLogging, Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE);
 }
 
 function isAncestorOf(state1: LoggingState|null, state2: LoggingState|null): boolean {
@@ -383,6 +384,6 @@ async function onResizeOrIntersection(entries: ResizeObserverEntry[]|Intersectio
         }
       }
       pendingResize.clear();
-    }, Common.Throttler.Scheduling.Delayed);
+    }, Common.Throttler.Scheduling.DELAYED);
   }
 }

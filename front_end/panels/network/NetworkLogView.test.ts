@@ -57,7 +57,7 @@ describeWithMockConnection('NetworkLogView', () => {
       shortcutsForAction: () => [],
     } as unknown as UI.ShortcutRegistry.ShortcutRegistry);
     networkLog = Logs.NetworkLog.NetworkLog.instance();
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
   });

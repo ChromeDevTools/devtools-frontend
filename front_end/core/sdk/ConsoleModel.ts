@@ -136,13 +136,13 @@ export class ConsoleModel extends SDKModel<EventTypes> {
     const cpuProfilerModel = target.model(CPUProfilerModel);
     if (cpuProfilerModel) {
       eventListeners.push(cpuProfilerModel.addEventListener(
-          CPUProfilerModelEvents.ConsoleProfileStarted, this.consoleProfileStarted.bind(this, cpuProfilerModel)));
+          CPUProfilerModelEvents.CONSOLE_PROFILE_STARTED, this.consoleProfileStarted.bind(this, cpuProfilerModel)));
       eventListeners.push(cpuProfilerModel.addEventListener(
-          CPUProfilerModelEvents.ConsoleProfileFinished, this.consoleProfileFinished.bind(this, cpuProfilerModel)));
+          CPUProfilerModelEvents.CONSOLE_PROFILE_FINISHED, this.consoleProfileFinished.bind(this, cpuProfilerModel)));
     }
 
     const resourceTreeModel = target.model(ResourceTreeModel);
-    if (resourceTreeModel && target.parentTarget()?.type() !== Type.Frame) {
+    if (resourceTreeModel && target.parentTarget()?.type() !== Type.FRAME) {
       eventListeners.push(resourceTreeModel.addEventListener(
           ResourceTreeModelEvents.PrimaryPageChanged, this.primaryPageChanged, this));
     }
@@ -155,7 +155,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
           RuntimeModelEvents.ExceptionRevoked, this.exceptionRevoked.bind(this, runtimeModel)));
       eventListeners.push(runtimeModel.addEventListener(
           RuntimeModelEvents.ConsoleAPICalled, this.consoleAPICalled.bind(this, runtimeModel)));
-      if (target.parentTarget()?.type() !== Type.Frame) {
+      if (target.parentTarget()?.type() !== Type.FRAME) {
         eventListeners.push(runtimeModel.debuggerModel().addEventListener(
             DebuggerModelEvents.GlobalObjectCleared, this.clearIfNecessary, this));
       }
@@ -507,10 +507,12 @@ export class ConsoleModel extends SDKModel<EventTypes> {
 }
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   ConsoleCleared = 'ConsoleCleared',
   MessageAdded = 'MessageAdded',
   MessageUpdated = 'MessageUpdated',
   CommandEvaluated = 'CommandEvaluated',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export interface CommandEvaluatedEvent {
@@ -840,5 +842,5 @@ export const MessageSourceDisplayName = new Map<MessageSource, string>(([
   [Protocol.Log.LogEntrySource.Intervention, 'intervention'],
   [Protocol.Log.LogEntrySource.Recommendation, 'recommendation'],
   [Protocol.Log.LogEntrySource.Other, 'other'],
-  [Common.Console.FrontendMessageSource.IssuePanel, 'issue-panel'],
+  [Common.Console.FrontendMessageSource.ISSUE_PANEL, 'issue-panel'],
 ]));

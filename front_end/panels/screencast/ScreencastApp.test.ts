@@ -13,7 +13,7 @@ describeWithMockConnection('ScreencastApp', () => {
   it('can start casting', async () => {
     const screencastApp = new Screencast.ScreencastApp.ScreencastApp();
     screencastApp.presentUI(document);
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     const target = createTarget({parentTarget: tabTarget});
     const screenCaptureModel = target.model(SDK.ScreenCaptureModel.ScreenCaptureModel);

@@ -662,7 +662,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   }
 }
 
-SDK.SDKModel.SDKModel.register(CoverageModel, {capabilities: SDK.Target.Capability.None, autostart: false});
+SDK.SDKModel.SDKModel.register(CoverageModel, {capabilities: SDK.Target.Capability.NONE, autostart: false});
 
 export interface EntryForExport {
   url: Platform.DevToolsPath.UrlString;

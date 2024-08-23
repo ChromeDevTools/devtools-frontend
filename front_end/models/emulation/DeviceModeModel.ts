@@ -165,7 +165,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.#deviceOutlineSettingInternal.addChangeListener(this.deviceOutlineSettingChanged, this);
 
     this.#toolbarControlsEnabledSettingInternal = Common.Settings.Settings.instance().createSetting(
-        'emulation.toolbar-controls-enabled', true, Common.Settings.SettingStorageType.Session);
+        'emulation.toolbar-controls-enabled', true, Common.Settings.SettingStorageType.SESSION);
 
     this.#typeInternal = Type.None;
     this.#deviceInternal = null;

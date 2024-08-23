@@ -20,7 +20,7 @@ describeWithMockConnection('LighthouseProtocolService', () => {
 
   beforeEach(async () => {
     Lighthouse = await import('./lighthouse.js');
-    rootTarget = createTarget({type: SDK.Target.Type.Tab});
+    rootTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: rootTarget, subtype: 'prerender'});
     primaryTarget = createTarget({parentTarget: rootTarget});
 

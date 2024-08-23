@@ -51,12 +51,12 @@ export class CPUThrottlingSelector extends HTMLElement {
 
   connectedCallback(): void {
     SDK.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener(
-        SDK.CPUThrottlingManager.Events.RateChanged, this.#onRateChange, this);
+        SDK.CPUThrottlingManager.Events.RATE_CHANGED, this.#onRateChange, this);
   }
 
   disconnectedCallback(): void {
     SDK.CPUThrottlingManager.CPUThrottlingManager.instance().removeEventListener(
-        SDK.CPUThrottlingManager.Events.RateChanged, this.#onRateChange, this);
+        SDK.CPUThrottlingManager.Events.RATE_CHANGED, this.#onRateChange, this);
   }
 
   #onRateChange(event: {data: SDK.CPUThrottlingManager.EventTypes['RateChanged']}): void {

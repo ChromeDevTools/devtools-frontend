@@ -125,7 +125,7 @@ describeWithMockConnection('ConsoleViewMessage', () => {
       const target = createTarget();
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, Common.Console.FrontendMessageSource.SelfXss, Protocol.Log.LogEntryLevel.Warning,
+          runtimeModel, Common.Console.FrontendMessageSource.SELF_XSS, Protocol.Log.LogEntryLevel.Warning,
           'Don’t paste code...');
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const messageElement = message.toMessageElement();  // Trigger rendering.

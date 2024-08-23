@@ -53,7 +53,7 @@ describeWithMockConnection('CrUXManager', () => {
   let mockConsoleError: sinon.SinonStub;
 
   beforeEach(async () => {
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     target = createTarget({parentTarget: tabTarget});
     resourceTreeModel =
         target.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel;

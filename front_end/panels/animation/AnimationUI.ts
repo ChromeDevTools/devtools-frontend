@@ -441,13 +441,14 @@ export class AnimationUI {
     }
 
     Host.userMetrics.animationPointDragged(
-        this.#mouseEventType === Events.AnimationDrag    ? Host.UserMetrics.AnimationPointDragType.AnimationDrag :
-            this.#mouseEventType === Events.KeyframeMove ? Host.UserMetrics.AnimationPointDragType.KeyframeMove :
+        this.#mouseEventType === Events.AnimationDrag ? Host.UserMetrics.AnimationPointDragType.ANIMATION_DRAG :
+            this.#mouseEventType === Events.KeyframeMove ?
+                                                        Host.UserMetrics.AnimationPointDragType.KEYFRAME_MOVE :
             this.#mouseEventType === Events.StartEndpointMove ?
-                                                           Host.UserMetrics.AnimationPointDragType.StartEndpointMove :
+                                                        Host.UserMetrics.AnimationPointDragType.START_ENDPOINT_MOVE :
             this.#mouseEventType === Events.FinishEndpointMove ?
-                                                           Host.UserMetrics.AnimationPointDragType.FinishEndpointMove :
-                                                           Host.UserMetrics.AnimationPointDragType.Other);
+                                                        Host.UserMetrics.AnimationPointDragType.FINISH_ENDPOINT_MOVE :
+                                                        Host.UserMetrics.AnimationPointDragType.OTHER);
 
     this.#movementInMs = 0;
     this.redraw();

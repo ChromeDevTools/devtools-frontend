@@ -37,7 +37,7 @@ describeWithMockConnection('ElementsTreeElementHighlighter', () => {
     const treeOutlineSetHoverEffect = sinon.spy(treeOutline, 'setHoverEffect');
     const treeElementReveal = sinon.spy(treeElement, 'reveal');
 
-    model.dispatchEventToListeners(SDK.OverlayModel.Events.HighlightNodeRequested, node);
+    model.dispatchEventToListeners(SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED, node);
     assert.strictEqual(throttlerSchedule.calledOnce, inScope);
     if (inScope) {
       throttlerSchedule.firstCall.firstArg();

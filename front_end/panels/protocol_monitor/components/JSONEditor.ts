@@ -176,7 +176,7 @@ export class JSONEditor extends LitElement {
     this.#hintPopoverHelper.setHasPadding(true);
     const targetManager = SDK.TargetManager.TargetManager.instance();
     targetManager.addEventListener(
-        SDK.TargetManager.Events.AvailableTargetsChanged, this.#handleAvailableTargetsChanged, this);
+        SDK.TargetManager.Events.AVAILABLE_TARGETS_CHANGED, this.#handleAvailableTargetsChanged, this);
     this.#handleAvailableTargetsChanged();
   }
 
@@ -186,7 +186,7 @@ export class JSONEditor extends LitElement {
     this.#hintPopoverHelper?.dispose();
     const targetManager = SDK.TargetManager.TargetManager.instance();
     targetManager.removeEventListener(
-        SDK.TargetManager.Events.AvailableTargetsChanged, this.#handleAvailableTargetsChanged, this);
+        SDK.TargetManager.Events.AVAILABLE_TARGETS_CHANGED, this.#handleAvailableTargetsChanged, this);
   }
 
   #handleAvailableTargetsChanged(): void {

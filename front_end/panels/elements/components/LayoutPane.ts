@@ -196,17 +196,17 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
 
   modelAdded(domModel: SDK.DOMModel.DOMModel): void {
     const overlayModel = domModel.overlayModel();
-    overlayModel.addEventListener(SDK.OverlayModel.Events.PersistentGridOverlayStateChanged, this.render, this);
+    overlayModel.addEventListener(SDK.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED, this.render, this);
     overlayModel.addEventListener(
-        SDK.OverlayModel.Events.PersistentFlexContainerOverlayStateChanged, this.render, this);
+        SDK.OverlayModel.Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED, this.render, this);
     this.#domModels.push(domModel);
   }
 
   modelRemoved(domModel: SDK.DOMModel.DOMModel): void {
     const overlayModel = domModel.overlayModel();
-    overlayModel.removeEventListener(SDK.OverlayModel.Events.PersistentGridOverlayStateChanged, this.render, this);
+    overlayModel.removeEventListener(SDK.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED, this.render, this);
     overlayModel.removeEventListener(
-        SDK.OverlayModel.Events.PersistentFlexContainerOverlayStateChanged, this.render, this);
+        SDK.OverlayModel.Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED, this.render, this);
     this.#domModels = this.#domModels.filter(model => model !== domModel);
   }
 

@@ -42,7 +42,7 @@ describeWithMockConnection('SecurityPanel', () => {
   let prerenderTarget: SDK.Target.Target;
 
   beforeEach(() => {
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
   });

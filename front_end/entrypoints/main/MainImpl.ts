@@ -502,7 +502,7 @@ export class MainImpl {
     SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
     SDK.DOMDebuggerModel.DOMDebuggerManager.instance({forceNew: true});
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.SuspendStateChanged, this.#onSuspendStateChanged.bind(this));
+        SDK.TargetManager.Events.SUSPEND_STATE_CHANGED, this.#onSuspendStateChanged.bind(this));
 
     Workspace.FileManager.FileManager.instance({forceNew: true});
     Workspace.Workspace.WorkspaceImpl.instance();
@@ -675,7 +675,7 @@ export class MainImpl {
   }
 
   #registerMessageSinkListener(): void {
-    Common.Console.Console.instance().addEventListener(Common.Console.Events.MessageAdded, messageAdded);
+    Common.Console.Console.instance().addEventListener(Common.Console.Events.MESSAGE_ADDED, messageAdded);
 
     function messageAdded({data: message}: Common.EventTarget.EventTargetEvent<Common.Console.Message>): void {
       if (message.show) {
@@ -913,7 +913,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
 
     if (UI.DockController.DockController.instance().dockSide() === UI.DockController.DockState.UNDOCKED) {
       const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-      if (mainTarget && mainTarget.type() === SDK.Target.Type.Frame) {
+      if (mainTarget && mainTarget.type() === SDK.Target.Type.FRAME) {
         contextMenu.defaultSection().appendAction('inspector-main.focus-debuggee', i18nString(UIStrings.focusDebuggee));
       }
     }
@@ -941,7 +941,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
 
       if (id === 'issues-pane') {
         moreTools.defaultSection().appendItem(title, () => {
-          Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.HamburgerMenu);
+          Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.HAMBURGER_MENU);
           void UI.ViewManager.ViewManager.instance().showView('issues-pane', /* userGesture */ true);
         }, {jslogContext: id});
         continue;

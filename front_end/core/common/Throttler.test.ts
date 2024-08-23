@@ -40,7 +40,7 @@ describe('Throttler class', () => {
 
     throttler = new Throttler(TIMEOUT);
     await ensureHasRecentRun();
-    void throttler.schedule(process, Scheduling.AsSoonAsPossible);
+    void throttler.schedule(process, Scheduling.AS_SOON_AS_POSSIBLE);
 
     assert.isFalse(process.called);
     await clock.tickAsync(0);
@@ -53,8 +53,8 @@ describe('Throttler class', () => {
 
     throttler = new Throttler(TIMEOUT);
     await ensureHasRecentRun();
-    const promiseTest = throttler.schedule(process1, Scheduling.AsSoonAsPossible);
-    void throttler.schedule(process2, Scheduling.AsSoonAsPossible);
+    const promiseTest = throttler.schedule(process1, Scheduling.AS_SOON_AS_POSSIBLE);
+    void throttler.schedule(process2, Scheduling.AS_SOON_AS_POSSIBLE);
 
     assert.isFalse(process1.called);
     assert.isFalse(process2.called);
@@ -96,7 +96,7 @@ describe('Throttler class', () => {
     const process = sinon.spy();
 
     const throttler = new Throttler(10);
-    void throttler.schedule(process, Scheduling.Delayed);
+    void throttler.schedule(process, Scheduling.DELAYED);
 
     assert.isFalse(process.called);
     await clock.tickAsync(0);
@@ -121,7 +121,7 @@ describe('Throttler class', () => {
       return process2Promise;
     };
 
-    void throttler.schedule(process1, Scheduling.AsSoonAsPossible);
+    void throttler.schedule(process1, Scheduling.AS_SOON_AS_POSSIBLE);
 
     await clock.tickAsync(0);
     assert.isTrue(spy1.called);

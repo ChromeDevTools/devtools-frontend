@@ -23,7 +23,7 @@ export class TargetDetachedDialog extends SDK.SDKModel.SDKModel<void> implements
     target.registerInspectorDispatcher(this);
     void target.inspectorAgent().invoke_enable();
     // Hide all dialogs if a new top-level target is created.
-    if (target.parentTarget()?.type() === SDK.Target.Type.Browser && TargetDetachedDialog.hideCrashedDialog) {
+    if (target.parentTarget()?.type() === SDK.Target.Type.BROWSER && TargetDetachedDialog.hideCrashedDialog) {
       TargetDetachedDialog.hideCrashedDialog.call(null);
       TargetDetachedDialog.hideCrashedDialog = null;
     }
@@ -47,7 +47,7 @@ export class TargetDetachedDialog extends SDK.SDKModel.SDKModel<void> implements
     }
     // Ignore child targets altogether.
     const parentTarget = this.target().parentTarget();
-    if (parentTarget && parentTarget.type() !== SDK.Target.Type.Browser) {
+    if (parentTarget && parentTarget.type() !== SDK.Target.Type.BROWSER) {
       return;
     }
     const dialog = new UI.Dialog.Dialog('target-crashed');
@@ -79,4 +79,4 @@ export class TargetDetachedDialog extends SDK.SDKModel.SDKModel<void> implements
   }
 }
 
-SDK.SDKModel.SDKModel.register(TargetDetachedDialog, {capabilities: SDK.Target.Capability.Inspector, autostart: true});
+SDK.SDKModel.SDKModel.register(TargetDetachedDialog, {capabilities: SDK.Target.Capability.INSPECTOR, autostart: true});

@@ -53,7 +53,7 @@ describeWithMockConnection('ConsoleView', () => {
   }
 
   it('can save to file', async () => {
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     const target = createTarget({parentTarget: tabTarget});
 
@@ -186,7 +186,7 @@ describeWithMockConnection('ConsoleView', () => {
       SDK.ConsoleModel.ConsoleModel.requestClearMessages();
 
       const selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting(
-          'disable-self-xss-warning', false, Common.Settings.SettingStorageType.Synced);
+          'disable-self-xss-warning', false, Common.Settings.SettingStorageType.SYNCED);
 
       for (let i = 0; i < 5; i++) {
         assert.isFalse(selfXssWarningDisabledSetting.get());

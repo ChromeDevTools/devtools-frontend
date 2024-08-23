@@ -105,16 +105,16 @@ export class QueryContainer extends HTMLElement {
   }
 
   #renderQueriedSizeDetails(): LitHtml.LitTemplate {
-    if (!this.#queriedSizeDetails || this.#queriedSizeDetails.queryAxis === QueryAxis.None) {
+    if (!this.#queriedSizeDetails || this.#queriedSizeDetails.queryAxis === QueryAxis.NONE) {
       return LitHtml.nothing;
     }
 
-    const areBothAxesQueried = this.#queriedSizeDetails.queryAxis === QueryAxis.Both;
+    const areBothAxesQueried = this.#queriedSizeDetails.queryAxis === QueryAxis.BOTH;
 
     const axisIconClasses = LitHtml.Directives.classMap({
       'axis-icon': true,
       'hidden': areBothAxesQueried,
-      'vertical': this.#queriedSizeDetails.physicalAxis === PhysicalAxis.Vertical,
+      'vertical': this.#queriedSizeDetails.physicalAxis === PhysicalAxis.VERTICAL,
     });
 
     // Disabled until https://crbug.com/1079231 is fixed.

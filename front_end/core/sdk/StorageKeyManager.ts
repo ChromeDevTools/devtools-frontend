@@ -23,13 +23,13 @@ export class StorageKeyManager extends SDKModel<EventTypes> {
 
     for (const storageKey of oldStorageKeys) {
       if (!this.#storageKeysInternal.has(storageKey)) {
-        this.dispatchEventToListeners(Events.StorageKeyRemoved, storageKey);
+        this.dispatchEventToListeners(Events.STORAGE_KEY_REMOVED, storageKey);
       }
     }
 
     for (const storageKey of this.#storageKeysInternal) {
       if (!oldStorageKeys.has(storageKey)) {
-        this.dispatchEventToListeners(Events.StorageKeyAdded, storageKey);
+        this.dispatchEventToListeners(Events.STORAGE_KEY_ADDED, storageKey);
       }
     }
   }
@@ -44,7 +44,7 @@ export class StorageKeyManager extends SDKModel<EventTypes> {
 
   setMainStorageKey(storageKey: string): void {
     this.#mainStorageKeyInternal = storageKey;
-    this.dispatchEventToListeners(Events.MainStorageKeyChanged, {
+    this.dispatchEventToListeners(Events.MAIN_STORAGE_KEY_CHANGED, {
       mainStorageKey: this.#mainStorageKeyInternal,
     });
   }
@@ -78,9 +78,9 @@ export interface StorageKey {
 }
 
 export const enum Events {
-  StorageKeyAdded = 'StorageKeyAdded',
-  StorageKeyRemoved = 'StorageKeyRemoved',
-  MainStorageKeyChanged = 'MainStorageKeyChanged',
+  STORAGE_KEY_ADDED = 'StorageKeyAdded',
+  STORAGE_KEY_REMOVED = 'StorageKeyRemoved',
+  MAIN_STORAGE_KEY_CHANGED = 'MainStorageKeyChanged',
 }
 
 export interface MainStorageKeyChangedEvent {
@@ -88,10 +88,10 @@ export interface MainStorageKeyChangedEvent {
 }
 
 export type EventTypes = {
-  [Events.StorageKeyAdded]: string,
-  [Events.StorageKeyRemoved]: string,
-  [Events.MainStorageKeyChanged]: MainStorageKeyChangedEvent,
+  [Events.STORAGE_KEY_ADDED]: string,
+  [Events.STORAGE_KEY_REMOVED]: string,
+  [Events.MAIN_STORAGE_KEY_CHANGED]: MainStorageKeyChangedEvent,
 };
 
 // TODO(jarhar): this is the one of the two usages of Capability.None. Do something about it!
-SDKModel.register(StorageKeyManager, {capabilities: Capability.None, autostart: false});
+SDKModel.register(StorageKeyManager, {capabilities: Capability.NONE, autostart: false});

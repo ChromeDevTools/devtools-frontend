@@ -697,9 +697,9 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     dataGrid.asWidget().show(section);
     if (this.#model) {
       this.#model.addEventListener(
-          SDK.WebAuthnModel.Events.CredentialAdded, this.#addCredential.bind(this, authenticatorId));
+          SDK.WebAuthnModel.Events.CREDENTIAL_ADDED, this.#addCredential.bind(this, authenticatorId));
       this.#model.addEventListener(
-          SDK.WebAuthnModel.Events.CredentialAsserted, this.#updateCredential.bind(this, authenticatorId));
+          SDK.WebAuthnModel.Events.CREDENTIAL_ASSERTED, this.#updateCredential.bind(this, authenticatorId));
     }
 
     return section;

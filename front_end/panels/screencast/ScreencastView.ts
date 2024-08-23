@@ -197,7 +197,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
         this.focusNavigationBar.bind(this);
 
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.SuspendStateChanged, this.onSuspendStateChange, this);
+        SDK.TargetManager.Events.SUSPEND_STATE_CHANGED, this.onSuspendStateChange, this);
     this.updateGlasspane();
   }
 

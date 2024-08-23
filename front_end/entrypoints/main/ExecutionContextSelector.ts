@@ -113,7 +113,7 @@ export class ExecutionContextSelector implements SDK.TargetManager.SDKModelObser
     if (!executionContext.isDefault || !executionContext.frameId) {
       return false;
     }
-    if (executionContext.target().parentTarget()?.type() === SDK.Target.Type.Frame) {
+    if (executionContext.target().parentTarget()?.type() === SDK.Target.Type.FRAME) {
       return false;
     }
     const resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel.ResourceTreeModel);

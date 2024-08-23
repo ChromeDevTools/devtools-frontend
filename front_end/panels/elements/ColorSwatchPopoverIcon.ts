@@ -217,7 +217,7 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<C
     }
 
     UI.Context.Context.instance().setFlavor(ColorSwatchPopoverIcon, this);
-    Host.userMetrics.colorPickerOpenedFrom(Host.UserMetrics.ColorPickerOpenedFrom.StylesPane);
+    Host.userMetrics.colorPickerOpenedFrom(Host.UserMetrics.ColorPickerOpenedFrom.STYLES_TAB);
   }
 
   private spectrumResized(): void {

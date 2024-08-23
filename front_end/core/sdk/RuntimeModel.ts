@@ -437,6 +437,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
 }
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   BindingCalled = 'BindingCalled',
   ExecutionContextCreated = 'ExecutionContextCreated',
   ExecutionContextDestroyed = 'ExecutionContextDestroyed',
@@ -446,6 +447,7 @@ export enum Events {
   ExceptionRevoked = 'ExceptionRevoked',
   ConsoleAPICalled = 'ConsoleAPICalled',
   QueryObjectRequested = 'QueryObjectRequested',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export interface ConsoleAPICall {
@@ -550,16 +552,16 @@ export class ExecutionContext {
 
   static comparator(a: ExecutionContext, b: ExecutionContext): number {
     function targetWeight(target: Target): number {
-      if (target.parentTarget()?.type() !== Type.Frame) {
+      if (target.parentTarget()?.type() !== Type.FRAME) {
         return 5;
       }
-      if (target.type() === Type.Frame) {
+      if (target.type() === Type.FRAME) {
         return 4;
       }
       if (target.type() === Type.ServiceWorker) {
         return 3;
       }
-      if (target.type() === Type.Worker || target.type() === Type.SharedWorker) {
+      if (target.type() === Type.Worker || target.type() === Type.SHARED_WORKER) {
         return 2;
       }
       return 1;

@@ -30,13 +30,13 @@ describeWithMockConnection('InspectElementModeController', () => {
 
   function onModeToggle(target: SDK.Target.Target) {
     const model = target.model(SDK.OverlayModel.OverlayModel);
-    return model!.once(SDK.OverlayModel.Events.InspectModeWillBeToggled);
+    return model!.once(SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED);
   }
 
   function failOnModeToggle(target: SDK.Target.Target) {
     const model = target.model(SDK.OverlayModel.OverlayModel);
     model!.addEventListener(
-        SDK.OverlayModel.Events.InspectModeWillBeToggled,
+        SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED,
         () => assert.fail('Unexected mode toggle on out of scope target'));
   }
 
@@ -44,7 +44,7 @@ describeWithMockConnection('InspectElementModeController', () => {
     setMockResourceTree(false);
     stubNoopSettings();
     registerNoopActions(['elements.toggle-element-search']);
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     inScopeTarget = createTarget({parentTarget: tabTarget});
     inScopeSubTarget = createTarget({parentTarget: inScopeTarget});
     outOfScopeTarget = createTarget({parentTarget: tabTarget});
@@ -76,13 +76,13 @@ describeWithMockConnection('InspectElementModeController', () => {
           assert.isTrue(expectToggle);
         })));
     outOfScopeTarget.model(SDK.OverlayModel.OverlayModel)
-        ?.dispatchEventToListeners(SDK.OverlayModel.Events.ExitedInspectMode);
+        ?.dispatchEventToListeners(SDK.OverlayModel.Events.EXITED_INSPECT_MODE);
 
     await new Promise<void>(resolve => queueMicrotask(resolve));
 
     expectToggle = true;
     inScopeTarget.model(SDK.OverlayModel.OverlayModel)
-        ?.dispatchEventToListeners(SDK.OverlayModel.Events.ExitedInspectMode);
+        ?.dispatchEventToListeners(SDK.OverlayModel.Events.EXITED_INSPECT_MODE);
     await modeToggles;
   });
 });

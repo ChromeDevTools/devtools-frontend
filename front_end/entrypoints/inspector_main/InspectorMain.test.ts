@@ -21,7 +21,7 @@ import * as InspectorMain from './inspector_main.js';
 
 describeWithMockConnection('FocusDebuggeeActionDelegate', () => {
   it('uses main frame', async () => {
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     const frameTarget = createTarget({parentTarget: tabTarget});
     const delegate = new InspectorMain.InspectorMain.FocusDebuggeeActionDelegate();
@@ -39,7 +39,7 @@ describeWithMockConnection('InspectorMainImpl', () => {
     const runPromise = inspectorMain.run();
     const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
     SDK.TargetManager.TargetManager.instance().createTarget(
-        'someTargetID' as Protocol.Target.TargetID, 'someName', SDK.Target.Type.Frame, rootTarget, undefined);
+        'someTargetID' as Protocol.Target.TargetID, 'someName', SDK.Target.Type.FRAME, rootTarget, undefined);
     await runPromise;
   };
 
@@ -63,7 +63,7 @@ describeWithMockConnection('InspectorMainImpl', () => {
     assert.isFalse(finished);
     const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
     SDK.TargetManager.TargetManager.instance().createTarget(
-        'someTargetID' as Protocol.Target.TargetID, 'someName', SDK.Target.Type.Frame, rootTarget, undefined);
+        'someTargetID' as Protocol.Target.TargetID, 'someName', SDK.Target.Type.FRAME, rootTarget, undefined);
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.isTrue(finished);
   });
@@ -74,7 +74,7 @@ describeWithMockConnection('InspectorMainImpl', () => {
     assert.notExists(SDK.TargetManager.TargetManager.instance().rootTarget());
     await inspectorMain.run();
 
-    assert.strictEqual(SDK.TargetManager.TargetManager.instance().rootTarget()?.type(), SDK.Target.Type.Node);
+    assert.strictEqual(SDK.TargetManager.TargetManager.instance().rootTarget()?.type(), SDK.Target.Type.NODE);
     Root.Runtime.Runtime.setQueryParamForTesting('v8only', '');
   });
 
@@ -83,7 +83,7 @@ describeWithMockConnection('InspectorMainImpl', () => {
     assert.notExists(SDK.TargetManager.TargetManager.instance().rootTarget());
     await runForTabTarget();
 
-    assert.strictEqual(SDK.TargetManager.TargetManager.instance().rootTarget()?.type(), SDK.Target.Type.Tab);
+    assert.strictEqual(SDK.TargetManager.TargetManager.instance().rootTarget()?.type(), SDK.Target.Type.TAB);
     Root.Runtime.Runtime.setQueryParamForTesting('targetType', '');
   });
 
@@ -92,7 +92,7 @@ describeWithMockConnection('InspectorMainImpl', () => {
     assert.notExists(SDK.TargetManager.TargetManager.instance().rootTarget());
     await inspectorMain.run();
 
-    assert.strictEqual(SDK.TargetManager.TargetManager.instance().rootTarget()?.type(), SDK.Target.Type.Frame);
+    assert.strictEqual(SDK.TargetManager.TargetManager.instance().rootTarget()?.type(), SDK.Target.Type.FRAME);
   });
 
   it('creates main target waiting for debugger if the main target is frame and panel is sources', async () => {

@@ -122,32 +122,33 @@ export class HeapProfilerModel extends SDKModel<EventTypes> {
   }
 
   heapStatsUpdate(samples: number[]): void {
-    this.dispatchEventToListeners(Events.HeapStatsUpdate, samples);
+    this.dispatchEventToListeners(Events.HEAP_STATS_UPDATED, samples);
   }
 
   lastSeenObjectId(lastSeenObjectId: number, timestamp: number): void {
-    this.dispatchEventToListeners(Events.LastSeenObjectId, {lastSeenObjectId: lastSeenObjectId, timestamp: timestamp});
+    this.dispatchEventToListeners(
+        Events.LAST_SEEN_OBJECT_ID, {lastSeenObjectId: lastSeenObjectId, timestamp: timestamp});
   }
 
   addHeapSnapshotChunk(chunk: string): void {
-    this.dispatchEventToListeners(Events.AddHeapSnapshotChunk, chunk);
+    this.dispatchEventToListeners(Events.ADD_HEAP_SNAPSHOT_CHUNK, chunk);
   }
 
   reportHeapSnapshotProgress(done: number, total: number, finished?: boolean): void {
-    this.dispatchEventToListeners(Events.ReportHeapSnapshotProgress, {done: done, total: total, finished: finished});
+    this.dispatchEventToListeners(Events.REPORT_HEAP_SNAPSHOT_PROGRESS, {done: done, total: total, finished: finished});
   }
 
   resetProfiles(): void {
-    this.dispatchEventToListeners(Events.ResetProfiles, this);
+    this.dispatchEventToListeners(Events.RESET_PROFILES, this);
   }
 }
 
 export const enum Events {
-  HeapStatsUpdate = 'HeapStatsUpdate',
-  LastSeenObjectId = 'LastSeenObjectId',
-  AddHeapSnapshotChunk = 'AddHeapSnapshotChunk',
-  ReportHeapSnapshotProgress = 'ReportHeapSnapshotProgress',
-  ResetProfiles = 'ResetProfiles',
+  HEAP_STATS_UPDATED = 'HeapStatsUpdate',
+  LAST_SEEN_OBJECT_ID = 'LastSeenObjectId',
+  ADD_HEAP_SNAPSHOT_CHUNK = 'AddHeapSnapshotChunk',
+  REPORT_HEAP_SNAPSHOT_PROGRESS = 'ReportHeapSnapshotProgress',
+  RESET_PROFILES = 'ResetProfiles',
 }
 
 /**
@@ -169,11 +170,11 @@ export interface HeapSnapshotProgress {
 }
 
 export type EventTypes = {
-  [Events.HeapStatsUpdate]: HeapStatsUpdateSamples,
-  [Events.LastSeenObjectId]: LastSeenObjectId,
-  [Events.AddHeapSnapshotChunk]: string,
-  [Events.ReportHeapSnapshotProgress]: HeapSnapshotProgress,
-  [Events.ResetProfiles]: HeapProfilerModel,
+  [Events.HEAP_STATS_UPDATED]: HeapStatsUpdateSamples,
+  [Events.LAST_SEEN_OBJECT_ID]: LastSeenObjectId,
+  [Events.ADD_HEAP_SNAPSHOT_CHUNK]: string,
+  [Events.REPORT_HEAP_SNAPSHOT_PROGRESS]: HeapSnapshotProgress,
+  [Events.RESET_PROFILES]: HeapProfilerModel,
 };
 
 export interface NativeProfilerCallFrame {

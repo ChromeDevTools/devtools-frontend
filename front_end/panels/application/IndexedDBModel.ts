@@ -151,9 +151,9 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
     void this.indexedDBAgent.invoke_enable();
     if (this.storageBucketModel) {
       this.storageBucketModel.addEventListener(
-          SDK.StorageBucketsModel.Events.BucketAdded, this.storageBucketAdded, this);
+          SDK.StorageBucketsModel.Events.BUCKET_ADDED, this.storageBucketAdded, this);
       this.storageBucketModel.addEventListener(
-          SDK.StorageBucketsModel.Events.BucketRemoved, this.storageBucketRemoved, this);
+          SDK.StorageBucketsModel.Events.BUCKET_REMOVED, this.storageBucketRemoved, this);
       for (const {bucket} of this.storageBucketModel.getBuckets()) {
         this.addStorageBucket(bucket);
       }
@@ -475,7 +475,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
   }
 }
 
-SDK.SDKModel.SDKModel.register(IndexedDBModel, {capabilities: SDK.Target.Capability.Storage, autostart: false});
+SDK.SDKModel.SDKModel.register(IndexedDBModel, {capabilities: SDK.Target.Capability.STORAGE, autostart: false});
 
 export enum Events {
   DatabaseAdded = 'DatabaseAdded',

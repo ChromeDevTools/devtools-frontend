@@ -1485,7 +1485,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.searchInAnonymousAndContent),
   settingName: 'search-in-anonymous-and-content-scripts',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -1504,7 +1504,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.automaticallyRevealFilesIn),
   settingName: 'auto-reveal-in-navigator',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -1523,7 +1523,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.javaScriptSourceMaps),
   settingName: 'js-source-maps-enabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -1542,7 +1542,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.tabMovesFocus),
   settingName: 'text-editor-tab-moves-focus',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -1561,7 +1561,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.detectIndentation),
   settingName: 'text-editor-auto-detect-indent',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -1580,7 +1580,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.autocompletion),
   settingName: 'text-editor-autocompletion',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -1599,7 +1599,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.bracketClosing),
   settingName: 'text-editor-bracket-closing',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -1636,7 +1636,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.codeFolding),
   settingName: 'text-editor-code-folding',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -1655,7 +1655,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.showWhitespaceCharacters),
   settingName: 'show-whitespaces-in-editor',
   settingType: Common.Settings.SettingType.ENUM,
@@ -1681,7 +1681,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.displayVariableValuesInlineWhile),
   settingName: 'inline-variable-values',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -1700,7 +1700,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.enableAutoFocusOnDebuggerPaused),
   settingName: 'auto-focus-on-debugger-paused-enabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -1719,7 +1719,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.automaticallyPrettyPrintMinifiedSources),
   settingName: 'auto-pretty-print-minified',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -1738,7 +1738,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.cssSourceMaps),
   settingName: 'css-source-maps-enabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -1757,7 +1757,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.Synced,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.allowScrollingPastEndOfFile),
   settingName: 'allow-scroll-past-eof',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -1776,7 +1776,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.Local,
+  storageType: Common.Settings.SettingStorageType.LOCAL,
   title: i18nLazyString(UIStrings.wasmAutoStepping),
   settingName: 'wasm-auto-stepping',
   settingType: Common.Settings.SettingType.BOOLEAN,

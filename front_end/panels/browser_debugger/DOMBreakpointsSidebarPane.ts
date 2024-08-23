@@ -150,13 +150,13 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
     this.#emptyElement.tabIndex = -1;
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DOMDebuggerModel.DOMDebuggerModel, SDK.DOMDebuggerModel.Events.DOMBreakpointAdded, this.breakpointAdded,
+        SDK.DOMDebuggerModel.DOMDebuggerModel, SDK.DOMDebuggerModel.Events.DOM_BREAKPOINT_ADDED, this.breakpointAdded,
         this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DOMDebuggerModel.DOMDebuggerModel, SDK.DOMDebuggerModel.Events.DOMBreakpointToggled, this.breakpointToggled,
-        this);
+        SDK.DOMDebuggerModel.DOMDebuggerModel, SDK.DOMDebuggerModel.Events.DOM_BREAKPOINT_TOGGLED,
+        this.breakpointToggled, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DOMDebuggerModel.DOMDebuggerModel, SDK.DOMDebuggerModel.Events.DOMBreakpointsRemoved,
+        SDK.DOMDebuggerModel.DOMDebuggerModel, SDK.DOMDebuggerModel.Events.DOM_BREAKPOINTS_REMOVED,
         this.breakpointsRemoved, this);
 
     for (const domDebuggerModel of SDK.TargetManager.TargetManager.instance().models(

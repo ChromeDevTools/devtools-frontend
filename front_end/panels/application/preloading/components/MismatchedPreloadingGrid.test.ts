@@ -69,7 +69,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', () => {
       rows: [{
         url: 'https://example.com/prefetched.html',
         action: Protocol.Preload.SpeculationAction.Prefetch,
-        status: SDK.PreloadingModel.PreloadingStatus.Failure,
+        status: SDK.PreloadingModel.PreloadingStatus.FAILURE,
       }],
     };
 
@@ -91,7 +91,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', () => {
       rows: [{
         url: 'https://example.com/prefetched.html?q=2',
         action: Protocol.Preload.SpeculationAction.Prefetch,
-        status: SDK.PreloadingModel.PreloadingStatus.Ready,
+        status: SDK.PreloadingModel.PreloadingStatus.READY,
       }],
     };
 
@@ -119,7 +119,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', () => {
       rows: [{
         url: 'https://example.com/prefetched.html',
         action: Protocol.Preload.SpeculationAction.Prefetch,
-        status: SDK.PreloadingModel.PreloadingStatus.Ready,
+        status: SDK.PreloadingModel.PreloadingStatus.READY,
       }],
     };
 
@@ -146,7 +146,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', () => {
       rows: [{
         url: 'https://example.com/prefetched.html?q=1',
         action: Protocol.Preload.SpeculationAction.Prefetch,
-        status: SDK.PreloadingModel.PreloadingStatus.Ready,
+        status: SDK.PreloadingModel.PreloadingStatus.READY,
       }],
     };
 
@@ -173,7 +173,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', () => {
       rows: [{
         url: 'https://example.com/prerendered.html?x=1',
         action: Protocol.Preload.SpeculationAction.Prerender,
-        status: SDK.PreloadingModel.PreloadingStatus.Ready,
+        status: SDK.PreloadingModel.PreloadingStatus.READY,
       }],
     };
 

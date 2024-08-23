@@ -104,7 +104,7 @@ export class SelectorPicker implements SDK.TargetManager.Observer {
 
   readonly #targetMutexes = new Map<SDK.Target.Target, Common.Mutex.Mutex>();
   targetAdded(target: SDK.Target.Target): void {
-    if (target.type() !== SDK.Target.Type.Frame) {
+    if (target.type() !== SDK.Target.Type.FRAME) {
       return;
     }
     let mutex = this.#targetMutexes.get(target);

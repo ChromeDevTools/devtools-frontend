@@ -21,7 +21,7 @@ describeWithMockConnection('StorageView', () => {
   let storageKeyManager: SDK.StorageKeyManager.StorageKeyManager|null;
 
   beforeEach(() => {
-    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
     domStorageModel = target.model(Resources.DOMStorageModel.DOMStorageModel);
@@ -35,7 +35,7 @@ describeWithMockConnection('StorageView', () => {
     assert.exists(domStorageModel);
     assert.isEmpty(domStorageModel.storages());
     assert.exists(storageKeyManager);
-    storageKeyManager.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
+    storageKeyManager.dispatchEventToListeners(SDK.StorageKeyManager.Events.STORAGE_KEY_ADDED, testKey);
     assert.exists(domStorageModel.storageForId(testId));
 
     const dispatcherSpy = sinon.spy(domStorageModel, 'dispatchEventToListeners');
@@ -56,7 +56,7 @@ describeWithMockConnection('StorageView', () => {
     const view = new Resources.StorageView.StorageView();
 
     storageKeyManager.dispatchEventToListeners(
-        SDK.StorageKeyManager.Events.MainStorageKeyChanged, {mainStorageKey: testKey});
+        SDK.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED, {mainStorageKey: testKey});
     const subtitle =
         view.element.shadowRoot?.querySelector('div.flex-auto')?.shadowRoot?.querySelector('div.report-subtitle');
     assert.strictEqual(subtitle?.textContent, testKey);
@@ -139,7 +139,7 @@ describeWithMockConnection('StorageView', () => {
     sinon.stub(target.cacheStorageAgent(), 'invoke_requestCacheNames').resolves({caches, getError: () => undefined});
     cacheStorageModel.enable();
     const cacheAddedPromise = new Promise<void>(resolve => {
-      cacheStorageModel.addEventListener(SDK.ServiceWorkerCacheModel.Events.CacheAdded, () => {
+      cacheStorageModel.addEventListener(SDK.ServiceWorkerCacheModel.Events.CACHE_ADDED, () => {
         resolve();
       });
     });

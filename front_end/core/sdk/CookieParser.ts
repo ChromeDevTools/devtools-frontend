@@ -68,31 +68,31 @@ export class CookieParser {
 
     switch (header.toLowerCase()) {
       case 'domain':
-        return Attribute.Domain;
+        return Attribute.DOMAIN;
       case 'expires':
-        return Attribute.Expires;
+        return Attribute.EXPIRES;
       case 'max-age':
-        return Attribute.MaxAge;
+        return Attribute.MAX_AGE;
       case 'httponly':
-        return Attribute.HttpOnly;
+        return Attribute.HTTP_ONLY;
       case 'name':
-        return Attribute.Name;
+        return Attribute.NAME;
       case 'path':
-        return Attribute.Path;
+        return Attribute.PATH;
       case 'samesite':
-        return Attribute.SameSite;
+        return Attribute.SAME_SITE;
       case 'secure':
-        return Attribute.Secure;
+        return Attribute.SECURE;
       case 'value':
-        return Attribute.Value;
+        return Attribute.VALUE;
       case 'priority':
-        return Attribute.Priority;
+        return Attribute.PRIORITY;
       case 'sourceport':
-        return Attribute.SourcePort;
+        return Attribute.SOURCE_PORT;
       case 'sourcescheme':
-        return Attribute.SourceScheme;
+        return Attribute.SOURCE_SCHEME;
       case 'partitioned':
-        return Attribute.Partitioned;
+        return Attribute.PARTITIONED;
       default:
         console.error('Failed getting cookie attribute: ' + header);
         return null;
@@ -111,7 +111,7 @@ export class CookieParser {
       if (this.#lastCookie) {
         this.#lastCookie.addAttribute(this.getCookieAttribute(kv.key), kv.value);
       } else {
-        this.addCookie(kv, Type.Response);
+        this.addCookie(kv, Type.RESPONSE);
       }
       if (this.advanceAndCheckCookieDelimiter()) {
         this.flushCookie();
@@ -193,7 +193,7 @@ export class CookieParser {
     this.#lastCookie = typeof keyValue.value === 'string' ? new Cookie(keyValue.key, keyValue.value, type) :
                                                             new Cookie('', keyValue.key, type);
     if (this.#domain) {
-      this.#lastCookie.addAttribute(Attribute.Domain, this.#domain);
+      this.#lastCookie.addAttribute(Attribute.DOMAIN, this.#domain);
     }
     this.#lastCookiePosition = keyValue.position;
     this.#cookiesInternal.push(this.#lastCookie);

@@ -25,7 +25,7 @@ let UI: typeof UIModule;
 let uniqueTargetId = 0;
 
 export function createTarget(
-    {id, name, type = SDK.Target.Type.Frame, parentTarget, subtype, url = 'http://example.com'}: {
+    {id, name, type = SDK.Target.Type.FRAME, parentTarget, subtype, url = 'http://example.com'}: {
       id?: Protocol.Target.TargetID,
       name?: string,
       type?: SDK.Target.Type,

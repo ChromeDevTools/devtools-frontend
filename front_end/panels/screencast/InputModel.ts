@@ -105,6 +105,6 @@ export class InputModel extends SDK.SDKModel.SDKModel<void> {
 }
 
 SDK.SDKModel.SDKModel.register(InputModel, {
-  capabilities: SDK.Target.Capability.Input,
+  capabilities: SDK.Target.Capability.INPUT,
   autostart: false,
 });

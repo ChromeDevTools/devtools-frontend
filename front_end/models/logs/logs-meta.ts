@@ -73,5 +73,5 @@ Common.Settings.registerSettingExtension({
   settingName: 'network-log.record-log',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common.Settings.SettingStorageType.Session,
+  storageType: Common.Settings.SettingStorageType.SESSION,
 });

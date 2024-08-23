@@ -4,7 +4,7 @@
 
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import {activate, getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
 import type * as Platform from '../platform/platform.js';
 
@@ -104,6 +104,19 @@ describeWithMockConnection('CSSModel', () => {
       styleSheetIds =
           cssModel.getStyleSheetIdsForURL('http://example.com/styles.css' as Platform.DevToolsPath.UrlString);
       assert.deepEqual(styleSheetIds, ['stylesheet']);
+    });
+  });
+
+  describe('getStyleSheetText', () => {
+    it('should return null when the backend sends an error', async () => {
+      setMockConnectionResponseHandler('CSS.getStyleSheetText', () => ({
+                                                                  getError: () => 'Some custom error',
+                                                                }));
+
+      const target = createTarget();
+      const cssModel = target.model(SDK.CSSModel.CSSModel)!;
+
+      assert.isNull(await cssModel.getStyleSheetText('id' as Protocol.CSS.StyleSheetId));
     });
   });
 });

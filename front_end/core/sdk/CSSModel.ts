@@ -748,12 +748,12 @@ export class CSSModel extends SDKModel<EventTypes> {
   }
 
   async getStyleSheetText(styleSheetId: Protocol.CSS.StyleSheetId): Promise<string|null> {
-    try {
-      const {text} = await this.agent.invoke_getStyleSheetText({styleSheetId});
-      return text && CSSModel.trimSourceURL(text);
-    } catch (e) {
+    const response = await this.agent.invoke_getStyleSheetText({styleSheetId});
+    if (response.getError()) {
       return null;
     }
+    const {text} = response;
+    return text && CSSModel.trimSourceURL(text);
   }
 
   private async onPrimaryPageChanged(

@@ -68,7 +68,7 @@
   }
 
   .discovery-time-ms {
-    font-weight: var(--ref-typeface-weight-medium);
+    font-weight: var(--ref-typeface-weight-bold);
   }
 
   &.labelHidden {

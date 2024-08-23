@@ -36,8 +36,20 @@ export class RenderBlockingRequests extends BaseInsight {
   override userVisibleTitle: string = 'Render-blocking requests';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    // TODO: create overlays.
-    return [];
+    const renderBlockingResults = getRenderBlockingInsight(this.data.insights, this.data.navigationId);
+    if (!renderBlockingResults) {
+      return [];
+    }
+
+    const entryOutlineOverlays: Array<Overlays.Overlays.EntryOutline> =
+        renderBlockingResults.renderBlockingRequests.map(req => {
+          return {
+            type: 'ENTRY_OUTLINE',
+            entry: req,
+            outlineReason: 'ERROR',
+          };
+        });
+    return entryOutlineOverlays;
   }
 
   #renderRenderBlocking(insightResult: TraceEngine.Insights.Types.InsightResults['RenderBlocking']):

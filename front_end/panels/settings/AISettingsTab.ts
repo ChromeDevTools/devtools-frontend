@@ -115,7 +115,7 @@ const UIStrings = {
    *@description Explainer for which data is being sent by the Freestyler feature
    */
   freestylerSendsData:
-      'Any DOM or CSS content on the inspected page may be sent to Google to generate explanations. This data may be seen by human reviewers to improve this feature.',
+      'Any data the inspected page can access via Web APIs may be sent to Google to generate explanations. This data may be seen by human reviewers to improve this feature.',
   /**
    *@description Label for a link to the terms of service
    */

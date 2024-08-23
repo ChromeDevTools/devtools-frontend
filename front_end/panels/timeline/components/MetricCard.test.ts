@@ -251,7 +251,7 @@ describeWithMockConnection('MetricCard', () => {
 
       const compareText = getCompareText(view);
       assert.strictEqual(
-          compareText!.innerText, 'Your local LCP 100 ms is good, and is similar to your users’ experience.');
+          compareText!.innerText, 'Your local LCP value of 100 ms is good, and is similar to your users’ experience.');
     });
 
     it('should show message when local is better', async () => {
@@ -269,7 +269,7 @@ describeWithMockConnection('MetricCard', () => {
       const compareText = getCompareText(view);
       assert.strictEqual(
           compareText!.innerText,
-          'Your local LCP 100 ms is good, but is significantly better than your users’ experience.');
+          'Your local LCP value of 100 ms is good, but is significantly better than your users’ experience.');
     });
 
     it('should show message when local is worse', async () => {
@@ -287,7 +287,7 @@ describeWithMockConnection('MetricCard', () => {
       const compareText = getCompareText(view);
       assert.strictEqual(
           compareText!.innerText,
-          'Your local LCP 5.00 s is poor, but is significantly worse than your users’ experience.');
+          'Your local LCP value of 5.00 s is poor, but is significantly worse than your users’ experience.');
     });
 
     it('should always be similar if local and field are rated "good"', async () => {
@@ -304,7 +304,7 @@ describeWithMockConnection('MetricCard', () => {
 
       const compareText = getCompareText(view);
       assert.strictEqual(
-          compareText!.innerText, 'Your local LCP 10 ms is good, and is similar to your users’ experience.');
+          compareText!.innerText, 'Your local LCP value of 10 ms is good, and is similar to your users’ experience.');
     });
 
     it('should show generic summary if field is missing', async () => {
@@ -318,7 +318,7 @@ describeWithMockConnection('MetricCard', () => {
       await coordinator.done();
 
       const compareText = getCompareText(view);
-      assert.strictEqual(compareText!.innerText, 'Your local LCP 3.00 s needs improvement.');
+      assert.strictEqual(compareText!.innerText, 'Your local LCP value of 3.00 s needs improvement.');
     });
 
     it('should suggest interaction if local INP is missing', async () => {
@@ -351,7 +351,7 @@ describeWithMockConnection('MetricCard', () => {
       const compareText = getDetailedCompareText(view);
       assert.strictEqual(
           compareText!.innerText,
-          'Your local LCP 100 ms is good and is rated the same as 50% of real-user LCP experiences. Additionally, the field data 75th percentile LCP 1.00 s is good.',
+          'Your local LCP value of 100 ms is good and is rated the same as 50% of real-user LCP experiences. Additionally, the field data 75th percentile LCP value of 1.00 s is good.',
       );
     });
 
@@ -370,7 +370,7 @@ describeWithMockConnection('MetricCard', () => {
       const compareText = getDetailedCompareText(view);
       assert.strictEqual(
           compareText!.innerText,
-          'Your local LCP 100 ms is good and is rated the same as 50% of real-user LCP experiences. However, the field data 75th percentile LCP 5.00 s is poor.',
+          'Your local LCP value of 100 ms is good and is rated the same as 50% of real-user LCP experiences. However, the field data 75th percentile LCP value of 5.00 s is poor.',
       );
     });
 
@@ -385,7 +385,7 @@ describeWithMockConnection('MetricCard', () => {
       await coordinator.done();
 
       const compareText = getDetailedCompareText(view);
-      assert.strictEqual(compareText!.innerText, 'Your local LCP 3.00 s needs improvement.');
+      assert.strictEqual(compareText!.innerText, 'Your local LCP value of 3.00 s needs improvement.');
     });
 
     it('should suggest interaction if local INP is missing', async () => {

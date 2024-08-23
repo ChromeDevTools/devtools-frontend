@@ -45,7 +45,7 @@ for (const [rating, ratingText] of Object.entries(ratings)) {
    * @example {LCP} PH1
    * @example {500 ms} PH2
    */
-  ${tag}: 'Your local {PH1} {PH2} ${ratingText}, ${transition} is ${compareText} your users’ experience.',`);
+  ${tag}: 'Your local {PH1} value of {PH2} ${ratingText}, ${transition} is ${compareText} your users’ experience.',`);
   }
   const tag = camelize(rating) + 'Summarized';
   console.log(`  /**
@@ -53,7 +53,7 @@ for (const [rating, ratingText] of Object.entries(ratings)) {
    * @example {LCP} PH1
    * @example {500 ms} PH2
    */
-  ${tag}: 'Your local {PH1} {PH2} ${ratingText}.',`);
+  ${tag}: 'Your local {PH1} value of {PH2} ${ratingText}.',`);
 }
 for (const [localRating, localRatingText] of Object.entries(ratings)) {
   for (const [fieldRating, fieldRatingText] of Object.entries(ratings)) {
@@ -66,8 +66,9 @@ for (const [localRating, localRatingText] of Object.entries(ratings)) {
    * @example {400 ms} PH3
    * @example {40%} PH4
    */
-  ${tag}: 'Your local {PH1} {PH2} ${localRatingText} and is rated the same as {PH4} of real-user {PH1} experiences. ${
-        transition}, the field data 75th percentile {PH1} {PH3} ${fieldRatingText}.',`);
+  ${tag}: 'Your local {PH1} value of {PH2} ${
+        localRatingText} and is rated the same as {PH4} of real-user {PH1} experiences. ${
+        transition}, the field data 75th percentile {PH1} value of {PH3} ${fieldRatingText}.',`);
   }
 }
 console.log(`};

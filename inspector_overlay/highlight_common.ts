@@ -55,9 +55,9 @@ export interface BoxStyle {
 }
 
 export const enum LinePattern {
-  Solid = 'solid',
-  Dotted = 'dotted',
-  Dashed = 'dashed',
+  SOLID = 'solid',
+  DOTTED = 'dotted',
+  DASHED = 'dashed',
 }
 
 export function drawPathWithLineStyle(
@@ -66,10 +66,10 @@ export function drawPathWithLineStyle(
     context.save();
     context.translate(0.5, 0.5);
     context.lineWidth = lineWidth;
-    if (lineStyle.pattern === LinePattern.Dashed) {
+    if (lineStyle.pattern === LinePattern.DASHED) {
       context.setLineDash([3, 3]);
     }
-    if (lineStyle.pattern === LinePattern.Dotted) {
+    if (lineStyle.pattern === LinePattern.DOTTED) {
       context.setLineDash([2, 2]);
     }
     context.strokeStyle = lineStyle.color;
@@ -312,10 +312,10 @@ export function drawPath(
     context.fill(path);
   }
   if (outlineColor) {
-    if (outlinePattern === LinePattern.Dashed) {
+    if (outlinePattern === LinePattern.DASHED) {
       context.setLineDash([3, 3]);
     }
-    if (outlinePattern === LinePattern.Dotted) {
+    if (outlinePattern === LinePattern.DOTTED) {
       context.setLineDash([2, 2]);
     }
     context.lineWidth = 2;

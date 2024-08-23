@@ -269,7 +269,7 @@ describeWithMockConnection('MetricCard', () => {
       const compareText = getCompareText(view);
       assert.strictEqual(
           compareText!.innerText,
-          'Your local LCP 100 ms is good, and is significantly better than your users’ experience.');
+          'Your local LCP 100 ms is good, but is significantly better than your users’ experience.');
     });
 
     it('should show message when local is worse', async () => {
@@ -287,7 +287,7 @@ describeWithMockConnection('MetricCard', () => {
       const compareText = getCompareText(view);
       assert.strictEqual(
           compareText!.innerText,
-          'Your local LCP 5.00 s is poor, and is significantly worse than your users’ experience.');
+          'Your local LCP 5.00 s is poor, but is significantly worse than your users’ experience.');
     });
 
     it('should always be similar if local and field are rated "good"', async () => {

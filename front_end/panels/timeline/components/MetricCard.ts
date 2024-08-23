@@ -9,7 +9,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import metricCardStyles from './metricCard.css.js';
-import {renderCompareText, renderDetailedCompareText} from './MetricCompareStrings.js';
+import {type CompareRating, renderCompareText, renderDetailedCompareText} from './MetricCompareStrings.js';
 import metricValueStyles from './metricValueStyles.css.js';
 import {
   CLS_THRESHOLDS,
@@ -275,7 +275,7 @@ export class MetricCard extends HTMLElement {
     return fieldValue;
   }
 
-  #getCompareRating(): 'better'|'worse'|'similar'|undefined {
+  #getCompareRating(): CompareRating|undefined {
     const localValue = this.#getLocalValue();
     const fieldValue = this.#getFieldValue();
     if (localValue === undefined || fieldValue === undefined) {
@@ -323,9 +323,11 @@ export class MetricCard extends HTMLElement {
     // clang-format off
     return html`
       <div class="compare-text">
-        ${renderCompareText(rating, compare, {
-          PH1: this.#data.metric,
-          PH2: valueEl,
+        ${renderCompareText({
+          metric: this.#data.metric,
+          rating,
+          compare,
+          localValue: valueEl,
         })}
       </div>
     `;
@@ -359,11 +361,13 @@ export class MetricCard extends HTMLElement {
 
     // clang-format off
     return html`
-      <div class="detailed-compare-text">${renderDetailedCompareText(localRating, fieldRating, {
-        PH1: this.#data.metric,
-        PH2: localValueEl,
-        PH3: fieldValueEl,
-        PH4: this.#getPercentLabelForRating(localRating),
+      <div class="detailed-compare-text">${renderDetailedCompareText({
+        metric: this.#data.metric,
+        localRating,
+        fieldRating,
+        localValue: localValueEl,
+        fieldValue: fieldValueEl,
+        percent: this.#getPercentLabelForRating(localRating),
       })}</div>
     `;
     // clang-format on

@@ -135,8 +135,7 @@ describe('The Network Request view', () => {
     await waitForElementWithTextContent('uuid-in-package:020111b3-437a-4c5c-ae07-adb6bbffb720', networkView);
   });
 
-  // failing test blocking the roll
-  it.skip('[crbug.com/1518454]: prevents requests on the preview tab.', async () => {
+  it('prevents requests on the preview tab.', async () => {
     await navigateToNetworkTab('embedded_requests.html');
 
     // For the issue to manifest it's mandatory to load the stylesheet by absolute URL. A relative URL would be treated
@@ -176,8 +175,7 @@ describe('The Network Request view', () => {
     await waitForFunction(async () => await styleSrcError.caught);
   });
 
-  // failing test blocking the roll
-  it.skip('[crbug.com/1518454]: permits inline styles on the preview tab.', async () => {
+  it('permits inline styles on the preview tab.', async () => {
     await navigateToNetworkTab('embedded_requests.html');
     const contents = '<head><style>p { color: red; }</style></head><body><p>Content</p></body>';
     const {target} = getBrowserAndPages();

@@ -81,8 +81,7 @@ describeWithMockConnection('LayoutShift root causes', () => {
         shift.name = 'LayoutShift';
       }
 
-      const clusters =
-          [{events: shifts}] as unknown as TraceEngine.Handlers.ModelHandlers.LayoutShifts.LayoutShiftCluster[];
+      const clusters = [{events: shifts}] as unknown as TraceEngine.Types.TraceEvents.SyntheticLayoutShiftCluster[];
 
       // PrePaint events to which each layout shift belongs.
       prePaintEvents = [{ts: 5, dur: 30}, {ts: 45, dur: 30}, {ts: 85, dur: 10}] as unknown as
@@ -421,8 +420,7 @@ describeWithMockConnection('LayoutShift root causes', () => {
           shift.name = 'LayoutShift';
         }
 
-        const clusters =
-            [{events: shifts}] as unknown as TraceEngine.Handlers.ModelHandlers.LayoutShifts.LayoutShiftCluster[];
+        const clusters = [{events: shifts}] as unknown as TraceEngine.Types.TraceEvents.SyntheticLayoutShiftCluster[];
         modelMut.LayoutShifts.clusters = clusters;
 
         assert.doesNotThrow(async () => {

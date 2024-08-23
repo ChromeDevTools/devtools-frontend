@@ -37,7 +37,7 @@ import {HandlerState, type TraceEventHandlerName} from './types.js';
 // navigation-to-unload CLS score.
 
 interface LayoutShifts {
-  clusters: readonly LayoutShiftCluster[];
+  clusters: readonly Types.TraceEvents.SyntheticLayoutShiftCluster[];
   sessionMaxScore: number;
   // The session window which contains the SessionMaxScore
   clsWindowID: number;
@@ -89,7 +89,7 @@ let sessionMaxScore = 0;
 
 let clsWindowID = -1;
 
-const clusters: LayoutShiftCluster[] = [];
+const clusters: Types.TraceEvents.SyntheticLayoutShiftCluster[] = [];
 
 // Represents a point in time in which a  LS score change
 // was recorded.
@@ -297,17 +297,14 @@ async function buildLayoutShiftsClusters(): Promise<void> {
           currentShiftNavigation === null ? undefined : navigations[currentShiftNavigation].args.data?.navigationId;
 
       clusters.push({
+        name: 'LayoutShiftCluster',
         events: [],
         clusterWindow: traceWindowFromTime(clusterStartTime),
         clusterCumulativeScore: 0,
         scoreWindows: {
           good: traceWindowFromTime(clusterStartTime),
-          needsImprovement: null,
-          bad: null,
         },
         navigationId,
-        // This is calculated below.
-        worstShiftEvent: null,
       });
 
       firstShiftTime = clusterStartTime;
@@ -433,7 +430,15 @@ async function buildLayoutShiftsClusters(): Promise<void> {
       }
     }
     // Update the cluster's worst layout shift.
-    cluster.worstShiftEvent = worstShiftEvent;
+    if (worstShiftEvent) {
+      cluster.worstShiftEvent = worstShiftEvent;
+    }
+
+    // layout shifts are already sorted by time ascending.
+    // Capture the time range of the cluster.
+    cluster.ts = cluster.events[0].ts;
+    const lastShiftTimings = Helpers.Timing.eventTimingsMicroSeconds(cluster.events[cluster.events.length - 1]);
+    cluster.dur = Types.Timing.MicroSeconds(lastShiftTimings.endTime - cluster.events[0].ts);
 
     if (weightedScore > sessionMaxScore) {
       clsWindowID = windowID;
@@ -477,23 +482,6 @@ export function scoreClassificationForLayoutShift(score: number): ScoreClassific
   }
 
   return state;
-}
-
-export interface LayoutShiftCluster {
-  clusterWindow: Types.Timing.TraceWindowMicroSeconds;
-  clusterCumulativeScore: number;
-  events: Types.TraceEvents.SyntheticLayoutShift[];
-  // For convenience we split apart the cluster into good, NI, and bad windows.
-  // Since a cluster may remain in the good window, we mark NI and bad as being
-  // possibly null.
-  scoreWindows: {
-    good: Types.Timing.TraceWindowMicroSeconds,
-    needsImprovement: Types.Timing.TraceWindowMicroSeconds|null,
-    bad: Types.Timing.TraceWindowMicroSeconds|null,
-  };
-  // The last navigation that happened before this cluster.
-  navigationId?: string;
-  worstShiftEvent: Types.TraceEvents.TraceEventData|null;
 }
 
 // Based on https://web.dev/cls/

@@ -242,4 +242,26 @@ describe('LayoutShiftsHandler', function() {
       assert.strictEqual(gotShift.args.data?.score ?? 0, maxShiftScore);
     }
   });
+
+  it('correctly calculates the duration and start time of the clusters', async function() {
+    await processTrace(this, 'cls-cluster-max-timeout.json.gz');
+
+    const clusters = TraceModel.Handlers.ModelHandlers.LayoutShifts.data().clusters;
+    assert.isNotEmpty(clusters);
+
+    for (const cluster of clusters) {
+      // Earliest and latest layout shifts should match.
+      const earliestLayoutShiftTs = Math.min(...cluster.events.map(s => s.ts));
+      assert.strictEqual(cluster.events[0].ts, earliestLayoutShiftTs);
+      const latestLayoutShiftTs = Math.max(...cluster.events.map(s => s.ts));
+      assert.strictEqual(cluster.events[cluster.events.length - 1].ts, latestLayoutShiftTs);
+      // earliest layout shift ts should be the cluster's ts.
+      assert.strictEqual(cluster.ts, earliestLayoutShiftTs);
+
+      const lastShiftTimings =
+          TraceModel.Helpers.Timing.eventTimingsMicroSeconds(cluster.events[cluster.events.length - 1]);
+      const dur = TraceModel.Types.Timing.MicroSeconds(lastShiftTimings.endTime - earliestLayoutShiftTs);
+      assert.strictEqual(cluster.dur || 0, dur);
+    }
+  });
 });

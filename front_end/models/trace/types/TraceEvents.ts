@@ -5,7 +5,7 @@
 /* eslint-disable no-unused-private-class-members */
 import type * as Protocol from '../../../generated/protocol.js';
 
-import {type MicroSeconds, type MilliSeconds, type Seconds} from './Timing.js';
+import {type MicroSeconds, type MilliSeconds, type Seconds, type TraceWindowMicroSeconds} from './Timing.js';
 
 // Trace Events.
 export const enum Phase {
@@ -887,6 +887,33 @@ export interface SyntheticLayoutShift extends TraceEventLayoutShift, SyntheticBa
     },
   };
   parsedData: LayoutShiftParsedData;
+}
+
+/**
+ * This is a synthetic Layout shift cluster. Not based on a raw event as there's no concept
+ * of this as a trace event.
+ */
+export interface SyntheticLayoutShiftCluster {
+  name: 'LayoutShiftCluster';
+  clusterWindow: TraceWindowMicroSeconds;
+  clusterCumulativeScore: number;
+  events: SyntheticLayoutShift[];
+  // For convenience we split apart the cluster into good, NI, and bad windows.
+  // Since a cluster may remain in the good window, we mark NI and bad as being
+  // possibly null.
+  scoreWindows: {
+    good: TraceWindowMicroSeconds,
+    needsImprovement?: TraceWindowMicroSeconds,
+    bad?: TraceWindowMicroSeconds,
+  };
+  // The last navigation that happened before this cluster.
+  navigationId?: string;
+  worstShiftEvent?: TraceEventData;
+  // This is the start of the cluster: the start of the first layout shift of the cluster.
+  ts?: MicroSeconds;
+  // The duration of the cluster. This should include up until the end of the last
+  // layout shift in this cluster.
+  dur?: MicroSeconds;
 }
 
 export type FetchPriorityHint = 'low'|'high'|'auto';

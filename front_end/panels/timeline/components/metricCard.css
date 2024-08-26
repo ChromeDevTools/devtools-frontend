@@ -70,6 +70,15 @@
 }
 
 .environment-recs {
+  margin: 12px 0;
+}
+
+.environment-recs > summary {
+  font-weight: var(--ref-typeface-weight-medium);
+  margin-bottom: 4px;
+}
+
+.environment-recs-list {
   margin: 0;
   padding-left: 20px;
 }

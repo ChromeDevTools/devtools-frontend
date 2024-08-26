@@ -88,7 +88,7 @@ const UIStrings = {
   /**
    * @description Text block recommending a site developer look at their test environment followed by bullet points that highlight specific things about the test environment. "local" refers to the testing setup of the developer as opposed to the conditions experienced by real users.
    */
-  considerTesting: 'Consider your local test conditions:',
+  considerTesting: 'Consider your local test conditions',
   /**
    * @description Text block explaining how network conditions can slow down the page load. "network throttling" refers to artificially slowing down the network to simulate slower network conditions.
    */
@@ -419,10 +419,10 @@ export class MetricCard extends HTMLElement {
     }
 
     return html`
-      <div class="environment-recs-intro">${i18nString(UIStrings.considerTesting)}</div>
-      <ul class="environment-recs">
-        ${recs.map(rec => html`<li>${rec}</li>`)}
-      </ul>
+      <details class="environment-recs">
+        <summary>${i18nString(UIStrings.considerTesting)}</summary>
+        <ul class="environment-recs-list">${recs.map(rec => html`<li>${rec}</li>`)}</ul>
+      </details>
     `;
   }
 

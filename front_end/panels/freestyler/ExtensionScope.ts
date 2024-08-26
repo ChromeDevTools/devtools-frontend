@@ -178,7 +178,9 @@ const functions = `async function setElementStyles(el, styles) {
       }
       parts.push('.' + cls);
     }
-    selector = parts.join('');
+    if (parts.length) {
+      selector = parts.join('');
+    }
   }
 
   el.classList.add('${AI_ASSISTANT_CSS_CLASS_NAME}');

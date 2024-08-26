@@ -1369,7 +1369,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     const icon = new IconButton.Icon.Icon();
     icon.data = {
       iconName: 'lightbulb-spark',
-      color: 'var(--sys-color-primary)',
+      color: 'var(--sys-color-on-surface-subtle)',
       width: '16px',
       height: '16px',
     };
@@ -1381,9 +1381,16 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const action = UI.ActionRegistry.ActionRegistry.instance().getAction(EXPLAIN_HOVER_ACTION_ID);
       void action.execute();
     };
-    const text = document.createElement('span');
+    const label = document.createElement('div');
+    label.classList.add('button-label');
+    const text = document.createElement('div');
     text.innerText = this.getExplainLabel();
-    button.append(text);
+    label.append(text);
+    const badge = document.createElement('div');
+    badge.classList.add('badge');
+    badge.innerText = i18n.i18n.lockedString('AI');
+    label.append(badge);
+    button.append(label);
     button.classList.add('hover-button');
     button.ariaLabel = this.getExplainLabel();
     button.tabIndex = 0;

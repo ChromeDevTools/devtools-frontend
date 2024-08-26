@@ -484,8 +484,8 @@ devtools-console-insight {
   /* todo: extract to global styles and make it work with dark mode. */
   box-shadow: 0 1px 3px 1px rgb(0 0 0 / 15%), 0 1px 2px 0 rgb(0 0 0 / 30%); /* stylelint-disable-line plugin/use_theme_colors */
   box-sizing: border-box;
-  color: var(--sys-color-primary);
-  font-family: var(--default-font-family);
+  color: var(--sys-color-on-surface);
+  font: var(--sys-typescale-body4-medium);
   height: var(--width);
   justify-content: center;
   margin: 0;
@@ -494,26 +494,22 @@ devtools-console-insight {
   min-height: var(--width);
   min-width: var(--width);
   overflow: hidden;
-  padding: 4px 3px 4px 5px;
+  padding: var(--sys-size-3) var(--sys-size-4);
   position: absolute;
   right: 6px;
   display: none;
   width: var(--width);
 }
 
-.hover-button span {
-  display: none;
-  white-space: nowrap;
-  padding-right: 3px;
-}
-
 .hover-button:focus,
 .hover-button:hover {
-  border-radius: 100px;
+  border-radius: 4px;
   max-width: 200px;
-  transition: max-width var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized);
+  transition:
+    max-width var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized),
+    border-radius 50ms linear;
   width: fit-content;
-  gap: 3px;
+  gap: var(--sys-size-3);
 }
 
 .hover-button:focus-visible {
@@ -530,9 +526,26 @@ devtools-console-insight {
   width: 16px;
 }
 
-.hover-button:focus span,
-.hover-button:hover span {
+.button-label {
   display: block;
+  overflow: hidden;
+  white-space: nowrap;
+
+  & div {
+    display: inline-block;
+    vertical-align: -1px;
+  }
+}
+
+.button-label .badge {
+  background: linear-gradient(135deg, var(--sys-color-gradient-primary), var(--sys-color-gradient-tertiary));
+  border-radius: var(--sys-size-3);
+  font-size: 9px;
+  font-weight: var(--ref-typeface-weight-bold);
+  line-height: 9px;
+  padding: var(--sys-size-3);
+  margin-left: var(--sys-size-4);
+  vertical-align: 0;
 }
 
 /* It does not look like the linter works with CSS nesting correctly. */
@@ -542,7 +555,7 @@ devtools-console-insight {
   &:focus,
   &.console-selected {
     .hover-button {
-      display: block;
+      display: flex;
 
       &:focus,
       &:hover {

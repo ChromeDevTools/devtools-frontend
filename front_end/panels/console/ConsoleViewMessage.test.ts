@@ -101,7 +101,7 @@ describeWithMockConnection('ConsoleViewMessage', () => {
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const messageElement = message.toMessageElement();  // Trigger rendering.
       const button = messageElement.querySelector('[aria-label=\'Understand this error\']');
-      assert.strictEqual(button?.textContent, 'Understand this error');
+      assert.strictEqual(button?.textContent, 'Understand this errorAI');
     });
 
     it('does not show a hover button if the console message text is empty', () => {

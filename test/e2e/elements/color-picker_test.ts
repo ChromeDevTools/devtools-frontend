@@ -8,9 +8,7 @@ import {
   assertNotNullOrUndefined,
   click,
   clickElement,
-  prepareWaitForEvent,
   waitFor,
-  waitForEvent,
   waitForFunction,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
@@ -33,9 +31,10 @@ describe('ColorPicker', () => {
     const overlay = await $('.spectrum-overlay');
     assertNotNullOrUndefined(overlay);
 
-    await prepareWaitForEvent(overlay, 'transitionend');
     await clickElement(palette);
-    await waitForEvent(overlay, 'transitionend');
+    await waitForFunction(
+        async () => (await waitFor('.spectrum-overlay'))
+                        .evaluate(e => e.computedStyleMap().get('visibility')?.toString() === 'hidden'));
 
     await click('.spectrum-palette-switcher');
     await waitForFunction(() => panel.isIntersectingViewport({threshold: 1}));

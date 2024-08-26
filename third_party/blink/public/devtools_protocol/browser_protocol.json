@@ -2776,6 +2776,7 @@
                         "videoCapturePanTiltZoom",
                         "wakeLockScreen",
                         "wakeLockSystem",
+                        "webAppInstallation",
                         "windowManagement"
                     ]
                 },
@@ -17172,6 +17173,7 @@
                         "usb",
                         "usb-unrestricted",
                         "vertical-scroll",
+                        "web-app-installation",
                         "web-printing",
                         "web-share",
                         "window-management",

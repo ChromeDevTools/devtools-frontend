@@ -3733,7 +3733,7 @@ export const NativeFunctions = [
   {
     name: "prompt",
     signatures: [["input"]],
-    receivers: ["AITextSession"]
+    receivers: ["AIAssistant","AITextSession"]
   },
   {
     name: "watchAvailability",
@@ -7227,6 +7227,10 @@ export const NativeFunctions = [
     signatures: [["feature"]]
   },
   {
+    name: "promptStreaming",
+    signatures: [["input"]]
+  },
+  {
     name: "rewrite",
     signatures: [["input","?options"]]
   },
@@ -7240,10 +7244,6 @@ export const NativeFunctions = [
   },
   {
     name: "summarizeStreaming",
-    signatures: [["input"]]
-  },
-  {
-    name: "promptStreaming",
     signatures: [["input"]]
   },
   {

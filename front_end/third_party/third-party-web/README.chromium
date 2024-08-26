@@ -1,0 +1,12 @@
+Name: third-party-web
+Short Name: third-party-web
+URL: https://github.com/patrickhulce/third-party-web
+Version: 0.24.5
+Revision: 82f19004382b7b41b2cb41d8a81cb982a6ffe622
+License: MIT
+License File: LICENSE
+Security Critical: no
+Shipped: yes
+
+Description:
+Data on third party entities and their impact on the web.

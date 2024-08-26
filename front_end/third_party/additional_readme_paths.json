@@ -15,6 +15,7 @@
   "puppeteer/third_party/parsel",
   "puppeteer/third_party/rxjs",
   "puppeteer-replay",
+  "third-party-web",
   "wasmparser",
   "web-vitals"
 ]

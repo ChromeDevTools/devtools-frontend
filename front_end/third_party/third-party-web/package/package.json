@@ -1,0 +1,45 @@
+{
+  "name": "third-party-web",
+  "version": "0.24.5",
+  "description": "Categorized data on third party entities on the web.",
+  "main": "./lib/index.js",
+  "scripts": {
+    "build:www": "cd www/ && npm install && npm run build",
+    "build": "node bin/convert-entities-db.js && node bin/generate-canonical-domain-csv.js && node bin/build-entity-json-files.js && node bin/generate-sql.js && generate-export-aliases",
+    "lint:fix": "prettier --print-width=100 --write '**/*.js'",
+    "start": "mkdir -p .tmp && node bin/merge-origins-with-entities.js && node bin/create-markdown.js",
+    "start:update-ha-data": "node ./bin/automated-update.js",
+    "test": "yarn build && yarn test:unit",
+    "test:unit": "jest 'lib/*'",
+    "semantic-release": "semantic-release"
+  },
+  "keywords": [
+    "third-party",
+    "third-parties"
+  ],
+  "author": "Patrick Hulce <patrick.hulce@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/patrickhulce/third-party-web.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@google-cloud/bigquery": "^5.10.0",
+    "chart.js": "^2.9.4",
+    "chartjs-node-canvas": "^3.2.0",
+    "colors": "^1.4.0",
+    "generate-export-aliases": "^1.1.0",
+    "jest": "^24.9.0",
+    "lodash": "^4.17.15",
+    "prettier": "^1.18.2",
+    "prompts": "^2.4.2",
+    "semantic-release": "^19.0.2"
+  },
+  "config": {
+    "exportAliases": {
+      "nostats-subset": "./lib/subsets/nostats.js",
+      "httparchive-nostats-subset": "./lib/subsets/httparchive-nostats.js",
+      "httparchive-subset": "./lib/subsets/httparchive.js"
+    }
+  }
+}

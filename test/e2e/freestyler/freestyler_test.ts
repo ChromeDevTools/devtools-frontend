@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Root from '../../../front_end/core/root/root.js';
+import {expectError} from '../../conductor/events.js';
 import {click, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR} from '../helpers/console-helpers.js';
@@ -11,6 +12,10 @@ describe('Freestyler', function() {
   let preloadScriptId: string;
 
   afterEach(async () => {
+    // The tests end but DevTools might be still doing things resulting
+    // in an error caused by the test runner closing or navigating the
+    // target page.
+    expectError('Inspected target navigated or closed');
     if (!preloadScriptId) {
       return;
     }

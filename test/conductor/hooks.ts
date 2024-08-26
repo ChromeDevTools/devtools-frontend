@@ -102,8 +102,10 @@ function launchChrome() {
   ];
 
   const disabledFeatures = [
-    'DeferRendererTasksAfterInput',  // crbug.com/361078921
-    'PMProcessPriorityPolicy',       // crbug.com/361252079
+    'DeferRendererTasksAfterInput',           // crbug.com/361078921
+    'PMProcessPriorityPolicy',                // crbug.com/361252079
+    'RenderDocument',                         // crbug.com/361519377
+    'QueueNavigationsWhileWaitingForCommit',  // crbug.com/361519377
   ];
   const launchArgs = [
     '--remote-allow-origins=*',

@@ -910,7 +910,8 @@ class PuppeteerStringifyExtension extends StringifyExtension {
             out.appendLine(`const timeout = ${step.timeout};`);
         }
         this.#appendContext(out, step);
-        if (step.assertedEvents) {
+        const waitForEvents = step.assertedEvents && step.type !== exports.StepType.Navigate;
+        if (waitForEvents) {
             out.appendLine('const promises = [];');
             out.appendLine('const startWaitingForEvents = () => {').startBlock();
             for (const event of step.assertedEvents) {
@@ -926,7 +927,7 @@ class PuppeteerStringifyExtension extends StringifyExtension {
             out.endBlock().appendLine('}');
         }
         this.#appendStepType(out, step);
-        if (step.assertedEvents) {
+        if (waitForEvents) {
             out.appendLine('await Promise.all(promises);');
         }
         out.endBlock().appendLine('}');
@@ -1081,9 +1082,6 @@ class PuppeteerStringifyExtension extends StringifyExtension {
         }
     }
     #appendNavigationStep(out, step) {
-        if (step.assertedEvents?.length) {
-            out.appendLine(`startWaitingForEvents();`);
-        }
         out.appendLine(`await targetPage.goto(${formatJSONAsJS(step.url, out.getIndent())});`);
     }
     #appendWaitExpressionStep(out, step) {

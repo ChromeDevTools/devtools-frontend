@@ -21,13 +21,13 @@ const messages: Freestyler.ChatMessage[] = [
   {
     entity: Freestyler.ChatMessageEntity.MODEL,
     suggestingFix: true,
-    steps: new Map([
+    steps: new Map<string, Freestyler.StepData>([
       [
         '0',
         {
           'step': Freestyler.Step.THOUGHT,
           'id': '0',
-          'text':
+          'thought':
               'I need to check the element\'s `white-space` and `overflow-wrap` properties to understand its line wrapping behavior.',
         },
       ],

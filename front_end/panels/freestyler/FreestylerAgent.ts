@@ -80,7 +80,7 @@ export interface CommonStepData {
 export interface ThoughtStepData {
   step: Step.THOUGHT;
   id: string;
-  text: string;
+  thought: string;
   title?: string;
   rpcId?: number;
 }
@@ -90,6 +90,11 @@ export interface ActionStepData {
   id: string;
   code: string;
   output: string;
+  // These are coming from the Step.Though
+  // if present
+  thought?: string;
+  title?: string;
+  // Identifier
   rpcId?: number;
 }
 
@@ -414,11 +419,10 @@ export class FreestylerAgent {
           yield {
             step: Step.THOUGHT,
             id,
-            text: thought,
+            thought,
             title,
             rpcId,
           };
-          id = `${currentRunId}-${i}-action`;
         }
         debugLog(`Action to execute: ${action}`);
         const scope = this.#createExtensionScope(this.#changes);
@@ -431,6 +435,8 @@ export class FreestylerAgent {
             code: action,
             id,
             output: observation,
+            thought,
+            title,
             rpcId,
           };
 

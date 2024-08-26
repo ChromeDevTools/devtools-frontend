@@ -138,6 +138,10 @@ const UIStringsTemp = {
    *@description The fallback text when we can't find the user full name
    */
   you: 'You',
+  /**
+   *@description The fallback text when a step has no title yet
+   */
+  performingAction: 'Performing action',
 };
 // const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);
 // const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -157,6 +161,7 @@ function getInputPlaceholderString(aidaAvailability: Host.AidaClient.AidaAccessP
   }
 }
 
+type CollapsableSteps = QueryStepData|ThoughtStepData|ActionStepData;
 interface ConfirmSideEffectDialog {
   code: string;
   onAnswer: (result: boolean) => void;
@@ -174,7 +179,7 @@ export interface UserChatMessage {
 export interface ModelChatMessage {
   entity: ChatMessageEntity.MODEL;
   suggestingFix: boolean;
-  steps: Map<string, ActionStepData|CommonStepData|ThoughtStepData|QueryStepData>;
+  steps: Map<string, CommonStepData|ActionStepData|ThoughtStepData|QueryStepData>;
   rpcId?: number;
 }
 
@@ -325,15 +330,32 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format on
   }
 
-  #renderStepDetails(step: ActionStepData|CommonStepData|ThoughtStepData|QueryStepData): LitHtml.LitTemplate {
+  #renderTitle(step: CollapsableSteps): LitHtml.LitTemplate {
     switch (step.step) {
-      case Step.THOUGHT: {
-        const maybeTextWithTitle = step.title ? `**${step.title}**\n\n${step.text}` : step.text;
-        return LitHtml.html`<p>${this.#renderTextAsMarkdown(maybeTextWithTitle)}</p>`;
+      case Step.QUERYING:
+        return LitHtml.html`<span>Loading...</span>`;
+      case Step.THOUGHT:
+      case Step.ACTION: {
+        const actionTitle = step.title ?? i18nString(UIStringsTemp.performingAction);
+        return LitHtml.html`<span>${actionTitle}</span>`;
       }
-      case Step.ACTION:
+    }
+  }
+
+  #renderStepDetails(step: CollapsableSteps): LitHtml.LitTemplate {
+    switch (step.step) {
+      case Step.QUERYING:
+        return LitHtml.nothing;
+      case Step.THOUGHT: {
+        return LitHtml.html`<div><p>${this.#renderTextAsMarkdown(step.thought)}</p><div>`;
+      }
+      case Step.ACTION: {
+        const thought =
+            step.thought ? LitHtml.html`<p>${this.#renderTextAsMarkdown(step.thought)}</p>` : LitHtml.nothing;
         // clang-format off
-        return LitHtml.html`<div class="action-result">
+        return LitHtml.html`<div>
+          ${thought}
+          <div class="action-result">
               <${MarkdownView.CodeBlock.CodeBlock.litTagName}
                 .code=${step.code.trim()}
                 .codeLang=${'js'}
@@ -341,12 +363,11 @@ export class FreestylerChatUi extends HTMLElement {
                 .displayNotice=${true}
               ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
               <div class="js-code-output">${step.output}</div>
-            </div>`;
+          </div>
+        </div>`;
         // clang-format on
+      }
     }
-
-    // TODO: remove this when adding types
-    return LitHtml.nothing;
   }
 
   #renderStep(step: StepData, options: {showLoading: boolean}): LitHtml.LitTemplate {
@@ -371,7 +392,7 @@ export class FreestylerChatUi extends HTMLElement {
                 class=${iconClasses}
                 .name=${iconName}
               ></${IconButton.Icon.Icon.litTagName}>
-              ${step.step.toUpperCase()}
+              ${this.#renderTitle(step)}
             </summary>
             ${this.#renderStepDetails(step)}
           </details>

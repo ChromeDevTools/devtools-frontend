@@ -12,6 +12,7 @@ import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import {ChangeManager} from './ChangeManager.js';
 import {
   ChatMessageEntity,
+  type CollapsibleStep,
   DOGFOOD_INFO,
   FreestylerChatUi,
   type ModelChatMessage,
@@ -271,7 +272,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     const systemMessage: ModelChatMessage = {
       entity: ChatMessageEntity.MODEL,
       suggestingFix: false,
-      steps: new Map(),
+      steps: [],
     };
     this.#viewProps.messages.push(systemMessage);
     this.doUpdate();
@@ -283,39 +284,41 @@ export class FreestylerPanel extends UI.Panel.Panel {
       systemMessage.rpcId = undefined;
       systemMessage.suggestingFix = false;
       systemMessage.error = i18nString(UIStringsTemp.stoppedResponse);
+      this.#viewProps.isLoading = false;
     });
+
+    let step: CollapsibleStep = {isLoading: true};
+
     for await (const data of this.#agent.run(text, {signal, isFixQuery})) {
       switch (data.type) {
         case ResponseType.QUERYING: {
-          systemMessage.steps.set(data.id, {
-            id: data.id,
-            isLoading: true,
-          });
-          break;
-        }
-        case ResponseType.THOUGHT: {
-          systemMessage.steps.set(data.id, {
-            id: data.id,
-            isLoading: false,
-            thought: data.thought,
-            title: data.title,
-          });
-          break;
-        }
-        case ResponseType.ACTION: {
-          const thoughtStep = systemMessage.steps.get(data.id);
-          systemMessage.steps.set(data.id, {
-            id: data.id,
-            isLoading: false,
-            thought: thoughtStep?.thought,
-            title: thoughtStep?.title,
-            code: data.code,
-            output: data.output,
-          });
+          step = {isLoading: true};
+          if (!systemMessage.steps.length) {
+            systemMessage.steps.push(step);
+          }
 
           break;
         }
+        case ResponseType.THOUGHT: {
+          step.isLoading = false;
+          step.thought = data.thought;
+          step.title = data.title;
+          if (systemMessage.steps.at(-1) !== step) {
+            systemMessage.steps.push(step);
+          }
+          break;
+        }
+        case ResponseType.ACTION: {
+          step.isLoading = false;
+          step.code = data.code;
+          step.output = data.output;
+          if (systemMessage.steps.at(-1) !== step) {
+            systemMessage.steps.push(step);
+          }
+          break;
+        }
         case ResponseType.ANSWER: {
+          step.isLoading = false;
           systemMessage.suggestingFix = suggestingFix;
           systemMessage.answer = data.text;
           systemMessage.rpcId = data.rpcId;
@@ -324,6 +327,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
         }
 
         case ResponseType.ERROR: {
+          step.isLoading = false;
           systemMessage.error = data.error;
           this.#viewProps.isLoading = false;
         }

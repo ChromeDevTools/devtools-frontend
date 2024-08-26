@@ -72,21 +72,18 @@ export enum ResponseType {
 
 export interface AnswerResponse {
   type: ResponseType.ANSWER;
-  id: string;
   text: string;
   rpcId?: number;
 }
 
 export interface ErrorResponse {
   type: ResponseType.ERROR;
-  id: string;
   error: string;
   rpcId?: number;
 }
 
 export interface ThoughtResponse {
   type: ResponseType.THOUGHT;
-  id: string;
   thought: string;
   title?: string;
   rpcId?: number;
@@ -94,7 +91,6 @@ export interface ThoughtResponse {
 
 export interface ActionResponse {
   type: ResponseType.ACTION;
-  id: string;
   code: string;
   output: string;
   rpcId?: number;
@@ -102,7 +98,6 @@ export interface ActionResponse {
 
 export interface QueryResponse {
   type: ResponseType.QUERYING;
-  id: string;
 }
 
 export type ResponseData = AnswerResponse|ErrorResponse|ActionResponse|ThoughtResponse|QueryResponse;
@@ -354,16 +349,10 @@ export class FreestylerAgent {
       this.#chatHistory.delete(currentRunId);
     });
 
-    // We need the first id for queueing to match
-    // the one of the first response
-    let id: string = `${currentRunId}-${0}`;
-    yield {
-      type: ResponseType.QUERYING,
-      id,
-    };
-
     for (let i = 0; i < MAX_STEPS; i++) {
-      id = `${currentRunId}-${i}`;
+      yield {
+        type: ResponseType.QUERYING,
+      };
 
       const request = FreestylerAgent.buildRequest({
         input: query,
@@ -387,7 +376,6 @@ export class FreestylerAgent {
 
         yield {
           type: ResponseType.ERROR,
-          id,
           error: genericErrorMessage,
           rpcId,
         };
@@ -425,7 +413,6 @@ export class FreestylerAgent {
         if (thought) {
           yield {
             type: ResponseType.THOUGHT,
-            id,
             thought,
             title,
             rpcId,
@@ -440,7 +427,6 @@ export class FreestylerAgent {
           yield {
             type: ResponseType.ACTION,
             code: action,
-            id,
             output: observation,
             rpcId,
           };
@@ -452,7 +438,6 @@ export class FreestylerAgent {
       } else if (answer) {
         yield {
           type: ResponseType.ANSWER,
-          id,
           text: answer,
           rpcId,
         };
@@ -460,7 +445,6 @@ export class FreestylerAgent {
       } else {
         yield {
           type: ResponseType.ERROR,
-          id,
           error: genericErrorMessage,
           rpcId,
         };
@@ -470,7 +454,6 @@ export class FreestylerAgent {
       if (i === MAX_STEPS - 1) {
         yield {
           type: ResponseType.ERROR,
-          id,
           error: 'Max steps reached, please try again.',
         };
         break;

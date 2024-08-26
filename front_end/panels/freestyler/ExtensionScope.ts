@@ -167,10 +167,25 @@ freestyler.respond = (callbackId) => {
 }`;
 
 const functions = `async function setElementStyles(el, styles) {
+  let selector = el.tagName.toLowerCase();
+  if (el.id) {
+    selector = '#' + el.id;
+  } else if (el.classList.length) {
+    const parts = [];
+    for (const cls of el.classList) {
+      if (cls === '${AI_ASSISTANT_CSS_CLASS_NAME}') {
+        continue;
+      }
+      parts.push('.' + cls);
+    }
+    selector = parts.join('');
+  }
+
   el.classList.add('${AI_ASSISTANT_CSS_CLASS_NAME}');
+
   await freestyler({
     method: 'setElementStyles',
-    selector: el.tagName.toLowerCase(),
+    selector: selector,
     styles: styles
   });
 }`;

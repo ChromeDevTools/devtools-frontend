@@ -85,6 +85,46 @@ const UIStrings = {
    * @description Label for a tooltip that provides more details.
    */
   viewCardDetails: 'View card details',
+  /**
+   * @description Text block recommending a site developer look at their test environment followed by bullet points that highlight specific things about the test environment. "local" refers to the testing setup of the developer as opposed to the conditions experienced by real users.
+   */
+  considerTesting: 'Consider your local test conditions:',
+  /**
+   * @description Text block explaining how network conditions can slow down the page load. "network throttling" refers to artificially slowing down the network to simulate slower network conditions.
+   */
+  recThrottlingLCP:
+      'Real users may experience longer page loads due to slower network conditions. Increasing network throttling will simulate slower network conditions.',
+  /**
+   * @description Text block explaining how CPU speed affects how long it takes the page to render after an interaction. "CPU throttling" refers to artificially slowing down the CPU to simulate slower devices.
+   */
+  recThrottlingINP:
+      'Real users may experience longer interactions due to slower CPU speeds. Increasing CPU throttling will simulate a slower device.',
+  /**
+   * @description Text block explaining how screen size can affect what content is rendered and therefore affects the LCP performance metric. "viewport" and "screen size" are synonymous in this case. "LCP element" refers to the page element that was the largest content on the page.
+   */
+  recViewportLCP: 'Screen size can influence what the LCP element is. Ensure you are testing common viewport sizes.',
+  /**
+   * @description Text block explaining viewport size can affect layout shifts. "viewport" and "screen size" are synonymous in this case. "layout shifts" refer to page instability where content moving around can create a jarring experience.
+   */
+  recViewportCLS: 'Screen size can influence what layout shifts happen. Ensure you are testing common viewport sizes.',
+  /**
+   * @description Text block explaining how a user interacts with the page can cause different amounts of layout shifts. "layout shifts" refer to page instability where content moving around can create a jarring experience.
+   */
+  recJourneyCLS:
+      'How a user interacts with the page can influence layout shifts. Ensure you are testing common interactions like scrolling the page.',
+  /**
+   * @description Text block explaining how a user interacts with the page can affect interaction delays. "interaction delay" refers to the delay between an interaction and the page rendering new content.
+   */
+  recJourneyINP:
+      'How a user interacts with the page influences interaction delays. Ensure you are testing common interactions.',
+  /**
+   * @description Text block explaining how dynamic content can affect LCP. "LCP" is a performance metric measuring when the largest content was rendered on the page. "LCP element" refers to the page element that was the largest content on the page.
+   */
+  recDynamicContentLCP: 'The LCP element can vary between page loads if content is dynamic.',
+  /**
+   * @description Text block explaining how dynamic content can affect layout shifts. "layout shifts" refer to page instability where content moving around can create a jarring experience.
+   */
+  recDynamicContentCLS: 'Dynamic content can influence what layout shifts happen.',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/MetricCard.ts', UIStrings);
@@ -275,6 +315,9 @@ export class MetricCard extends HTMLElement {
     return fieldValue;
   }
 
+  /**
+   * Returns if the local value is better/worse/similar compared to field.
+   */
   #getCompareRating(): CompareRating|undefined {
     const localValue = this.#getLocalValue();
     const fieldValue = this.#getFieldValue();
@@ -332,6 +375,55 @@ export class MetricCard extends HTMLElement {
       </div>
     `;
     // clang-format on
+  }
+
+  #renderEnvironmentRecommendations(): LitHtml.LitTemplate {
+    const compare = this.#getCompareRating();
+    if (!compare || compare === 'similar') {
+      return LitHtml.nothing;
+    }
+
+    const recs: string[] = [];
+    const metric = this.#data.metric;
+
+    // Recommend using throttling
+    if (metric === 'LCP' && compare === 'better') {
+      recs.push(i18nString(UIStrings.recThrottlingLCP));
+    } else if (metric === 'INP' && compare === 'better') {
+      recs.push(i18nString(UIStrings.recThrottlingINP));
+    }
+
+    // Recommend trying new viewport sizes
+    if (metric === 'LCP') {
+      recs.push(i18nString(UIStrings.recViewportLCP));
+    } else if (metric === 'CLS') {
+      recs.push(i18nString(UIStrings.recViewportCLS));
+    }
+
+    // Recommend trying new user journeys
+    if (metric === 'CLS') {
+      recs.push(i18nString(UIStrings.recJourneyCLS));
+    } else if (metric === 'INP') {
+      recs.push(i18nString(UIStrings.recJourneyINP));
+    }
+
+    // Recommend accounting for dynamic content
+    if (metric === 'LCP') {
+      recs.push(i18nString(UIStrings.recDynamicContentLCP));
+    } else if (metric === 'CLS') {
+      recs.push(i18nString(UIStrings.recDynamicContentCLS));
+    }
+
+    if (!recs.length) {
+      return LitHtml.nothing;
+    }
+
+    return html`
+      <div class="environment-recs-intro">${i18nString(UIStrings.considerTesting)}</div>
+      <ul class="environment-recs">
+        ${recs.map(rec => html`<li>${rec}</li>`)}
+      </ul>
+    `;
   }
 
   #getMetricValueLogContext(isLocal: boolean): string {
@@ -505,6 +597,7 @@ export class MetricCard extends HTMLElement {
         </div>
         ${fieldEnabled ? html`<hr class="divider">` : nothing}
         ${this.#renderCompareString()}
+        ${this.#renderEnvironmentRecommendations()}
         <slot name="extra-info"><slot>
       </div>
     `;

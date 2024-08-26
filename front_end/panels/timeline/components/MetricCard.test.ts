@@ -13,31 +13,36 @@ import * as Components from './components.js';
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 function getLocalMetricValue(view: Element): HTMLElement {
-  return view!.shadowRoot!.querySelector('#local-value .metric-value') as HTMLElement;
+  return view.shadowRoot!.querySelector('#local-value .metric-value') as HTMLElement;
 }
 
 function getFieldMetricValue(view: Element): HTMLElement|null {
-  return view!.shadowRoot!.querySelector('#field-value .metric-value');
+  return view.shadowRoot!.querySelector('#field-value .metric-value');
 }
 
 function getFieldHistogramPercents(view: Element): string[] {
-  const histogram = view!.shadowRoot!.querySelector('.bucket-summaries') as HTMLElement;
+  const histogram = view.shadowRoot!.querySelector('.bucket-summaries') as HTMLElement;
   const percents = Array.from(histogram.querySelectorAll('.histogram-percent')) as HTMLElement[];
   return percents.map(p => p.textContent || '');
 }
 
 function getFieldHistogramLabels(view: Element): string[] {
-  const histogram = view!.shadowRoot!.querySelector('.bucket-summaries') as HTMLElement;
+  const histogram = view.shadowRoot!.querySelector('.bucket-summaries') as HTMLElement;
   const percents = Array.from(histogram.querySelectorAll('.bucket-label')) as HTMLElement[];
   return percents.map(p => p.textContent || '');
 }
 
 function getCompareText(view: Element): HTMLElement|null {
-  return view!.shadowRoot!.querySelector('.compare-text');
+  return view.shadowRoot!.querySelector('.compare-text');
 }
 
 function getDetailedCompareText(view: Element): HTMLElement|null {
-  return view!.shadowRoot!.querySelector('.detailed-compare-text');
+  return view.shadowRoot!.querySelector('.detailed-compare-text');
+}
+
+function getEnvironmentRecs(view: Element): string[] {
+  const recs = Array.from(view.shadowRoot!.querySelectorAll('.environment-recs li'));
+  return recs.map(rec => rec.textContent!);
 }
 
 function createMockHistogram() {
@@ -399,6 +404,134 @@ describeWithMockConnection('MetricCard', () => {
 
       const compareText = getDetailedCompareText(view);
       assert.strictEqual(compareText!.innerText, 'Interact with the page to measure INP.');
+    });
+  });
+
+  describe('environment recommendations', () => {
+    it('should show nothing if field is missing', async () => {
+      const view = new Components.MetricCard.MetricCard();
+      view.data = {
+        metric: 'LCP',
+        localValue: 5000,
+      };
+
+      renderElementIntoDOM(view);
+      await coordinator.done();
+
+      const recs = getEnvironmentRecs(view);
+      assert.lengthOf(recs, 0);
+    });
+
+    it('should show nothing if local/field are similar', async () => {
+      const view = new Components.MetricCard.MetricCard();
+      view.data = {
+        metric: 'LCP',
+        localValue: 5000,
+        fieldValue: 5500,
+        histogram: createMockHistogram(),
+      };
+
+      renderElementIntoDOM(view);
+      await coordinator.done();
+
+      const recs = getEnvironmentRecs(view);
+      assert.lengthOf(recs, 0);
+    });
+
+    it('should show LCP recs', async () => {
+      const view = new Components.MetricCard.MetricCard();
+      view.data = {
+        metric: 'LCP',
+        localValue: 50,
+        fieldValue: 5500,
+        histogram: createMockHistogram(),
+      };
+
+      renderElementIntoDOM(view);
+      await coordinator.done();
+
+      const recs = getEnvironmentRecs(view);
+      assert.deepStrictEqual(recs, [
+        'Real users may experience longer page loads due to slower network conditions. Increasing network throttling will simulate slower network conditions.',
+        'Screen size can influence what the LCP element is. Ensure you are testing common viewport sizes.',
+        'The LCP element can vary between page loads if content is dynamic.',
+      ]);
+    });
+
+    it('should hide LCP throttling rec if local is bigger', async () => {
+      const view = new Components.MetricCard.MetricCard();
+      view.data = {
+        metric: 'LCP',
+        localValue: 5000,
+        fieldValue: 50,
+        histogram: createMockHistogram(),
+      };
+
+      renderElementIntoDOM(view);
+      await coordinator.done();
+
+      const recs = getEnvironmentRecs(view);
+      assert.deepStrictEqual(recs, [
+        'Screen size can influence what the LCP element is. Ensure you are testing common viewport sizes.',
+        'The LCP element can vary between page loads if content is dynamic.',
+      ]);
+    });
+
+    it('should show CLS recs', async () => {
+      const view = new Components.MetricCard.MetricCard();
+      view.data = {
+        metric: 'CLS',
+        localValue: 0,
+        fieldValue: 0.2,
+        histogram: createMockHistogram(),
+      };
+
+      renderElementIntoDOM(view);
+      await coordinator.done();
+
+      const recs = getEnvironmentRecs(view);
+      assert.deepStrictEqual(recs, [
+        'Screen size can influence what layout shifts happen. Ensure you are testing common viewport sizes.',
+        'How a user interacts with the page can influence layout shifts. Ensure you are testing common interactions like scrolling the page.',
+        'Dynamic content can influence what layout shifts happen.',
+      ]);
+    });
+
+    it('should show INP recs', async () => {
+      const view = new Components.MetricCard.MetricCard();
+      view.data = {
+        metric: 'INP',
+        localValue: 100,
+        fieldValue: 500,
+        histogram: createMockHistogram(),
+      };
+
+      renderElementIntoDOM(view);
+      await coordinator.done();
+
+      const recs = getEnvironmentRecs(view);
+      assert.deepStrictEqual(recs, [
+        'Real users may experience longer interactions due to slower CPU speeds. Increasing CPU throttling will simulate a slower device.',
+        'How a user interacts with the page influences interaction delays. Ensure you are testing common interactions.',
+      ]);
+    });
+
+    it('should hide INP throttling rec if local is bigger', async () => {
+      const view = new Components.MetricCard.MetricCard();
+      view.data = {
+        metric: 'INP',
+        localValue: 500,
+        fieldValue: 100,
+        histogram: createMockHistogram(),
+      };
+
+      renderElementIntoDOM(view);
+      await coordinator.done();
+
+      const recs = getEnvironmentRecs(view);
+      assert.deepStrictEqual(recs, [
+        'How a user interacts with the page influences interaction delays. Ensure you are testing common interactions.',
+      ]);
     });
   });
 });

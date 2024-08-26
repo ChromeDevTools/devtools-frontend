@@ -65,6 +65,15 @@
   margin-top: 8px;
 }
 
+.environment-recs-intro {
+  margin-top: 8px;
+}
+
+.environment-recs {
+  margin: 0;
+  padding-left: 20px;
+}
+
 .detailed-compare-text {
   margin-bottom: 8px;
 }

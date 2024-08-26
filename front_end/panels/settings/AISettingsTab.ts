@@ -296,6 +296,8 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
         <${Switch.Switch.Switch.litTagName}
           .checked=${this.#consoleInsightsSetting?.get()}
           .jslogContext=${this.#consoleInsightsSetting?.name}
+          .disabled=${this.#consoleInsightsSetting?.disabled()}
+          title=${this.#consoleInsightsSetting?.disabledReason()}
           @switchchange=${this.#toggleConsoleInsightsSetting.bind(this)}
         ></${Switch.Switch.Switch.litTagName}>
       </div>
@@ -382,6 +384,8 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
         <${Switch.Switch.Switch.litTagName}
           .checked=${this.#freestylerSetting?.get()}
           .jslogContext=${this.#freestylerSetting?.name}
+          .disabled=${this.#freestylerSetting?.disabled()}
+          title=${this.#freestylerSetting?.disabledReason()}
           @switchchange=${this.#toggleFreestylerSetting.bind(this)}
         ></${Switch.Switch.Switch.litTagName}>
       </div>

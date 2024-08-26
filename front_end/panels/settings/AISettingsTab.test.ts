@@ -15,9 +15,9 @@ describeWithEnvironment('AISettingsTab', () => {
   }
 
   async function renderAISettings(): Promise<{
-    switches: Element[],
+    switches: Switch.Switch.Switch[],
     details: Element[],
-    dropdownButtons: Element[],
+    dropdownButtons: HTMLElement[],
   }> {
     Common.Settings.moduleSetting('console-insights-enabled').set(false);
     Common.Settings.moduleSetting('freestyler-enabled').set(true);
@@ -27,11 +27,11 @@ describeWithEnvironment('AISettingsTab', () => {
     await view.render();
     assert.isNotNull(view.shadowRoot);
 
-    const switches = Array.from(view.shadowRoot.querySelectorAll('devtools-switch'));
+    const switches = Array.from(view.shadowRoot.querySelectorAll('devtools-switch')) as Switch.Switch.Switch[];
     assert.strictEqual(switches.length, 2);
     const details = Array.from(view.shadowRoot.querySelectorAll('.whole-row'));
     assert.strictEqual(details.length, 2);
-    const dropdownButtons = Array.from(view.shadowRoot.querySelectorAll('.dropdown devtools-button'));
+    const dropdownButtons = Array.from(view.shadowRoot.querySelectorAll('.dropdown devtools-button')) as HTMLElement[];
     assert.strictEqual(dropdownButtons.length, 2);
     return {switches, details, dropdownButtons};
   }
@@ -68,23 +68,47 @@ describeWithEnvironment('AISettingsTab', () => {
     assert.isFalse(isExpanded(details[0]));
     assert.isFalse(Common.Settings.moduleSetting('console-insights-enabled').get());
 
-    (dropdownButtons[0] as HTMLElement).click();
+    dropdownButtons[0].click();
     assert.isTrue(isExpanded(details[0]));
     assert.isFalse(Common.Settings.moduleSetting('console-insights-enabled').get());
 
-    (dropdownButtons[0] as HTMLElement).click();
+    dropdownButtons[0].click();
     assert.isFalse(isExpanded(details[0]));
     assert.isFalse(Common.Settings.moduleSetting('console-insights-enabled').get());
   });
 
   it('can turn feature off without collapsing it', async () => {
     const {switches, details, dropdownButtons} = await renderAISettings();
-    (dropdownButtons[1] as HTMLElement).click();
+    dropdownButtons[1].click();
     assert.isTrue(Common.Settings.moduleSetting('freestyler-enabled').get());
     assert.isTrue(isExpanded(details[1]));
 
     (switches[1].parentElement as HTMLElement).click();
     assert.isFalse(Common.Settings.moduleSetting('freestyler-enabled').get());
     assert.isTrue(isExpanded(details[1]));
+  });
+
+  it('renders disabled switch component with reason', async () => {
+    Common.Settings.moduleSetting('console-insights-enabled').setRegistration({
+      settingName: 'console-insights-enabled',
+      settingType: Common.Settings.SettingType.BOOLEAN,
+      defaultValue: false,
+      disabledCondition: () => {
+        return {disabled: true, reason: 'reason 1'};
+      },
+    });
+    Common.Settings.moduleSetting('freestyler-enabled').setRegistration({
+      settingName: 'freestyler-enabled',
+      settingType: Common.Settings.SettingType.BOOLEAN,
+      defaultValue: true,
+      disabledCondition: () => {
+        return {disabled: true, reason: 'reason 2'};
+      },
+    });
+    const {switches} = await renderAISettings();
+    assert.isTrue(switches[0].disabled);
+    assert.strictEqual(switches[0].title, 'reason 1');
+    assert.isTrue(switches[1].disabled);
+    assert.strictEqual(switches[1].title, 'reason 2');
   });
 });

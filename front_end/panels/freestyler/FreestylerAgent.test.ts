@@ -518,7 +518,7 @@ c`;
 
         const steps = await Array.fromAsync(agent.run('test'));
 
-        const actionStep = steps.find(step => step.step === Freestyler.Step.ACTION);
+        const actionStep = steps.find(step => step.type === Freestyler.ResponseType.ACTION);
         sinon.assert.calledOnce(confirmSideEffect);
         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
         assert.strictEqual((actionStep as any).output, 'Error: EvalError: Possible side-effect in debug-evaluate');
@@ -593,7 +593,7 @@ c`;
 
         const result = await Array.fromAsync(agent.run('test'));
         const actionSteps = result.filter(step => {
-          return step.step === Freestyler.Step.ACTION;
+          return step.type === Freestyler.ResponseType.ACTION;
         });
         assert(actionSteps.length === 1, 'Found non or multiple action steps');
         const actionStep = actionSteps.at(0)!;
@@ -620,11 +620,11 @@ c`;
       const steps = await Array.fromAsync(agent.run('test'));
       assert.deepStrictEqual(steps, [
         {
-          step: Freestyler.Step.QUERYING,
+          type: Freestyler.ResponseType.QUERYING,
           id: '1-0',
         },
         {
-          step: Freestyler.Step.ANSWER,
+          type: Freestyler.ResponseType.ANSWER,
           id: '1-0',
           text: 'this is the answer',
           rpcId: undefined,
@@ -663,11 +663,11 @@ c`;
       const steps = await Array.fromAsync(agent.run('test'));
       assert.deepStrictEqual(steps, [
         {
-          step: Freestyler.Step.QUERYING,
+          type: Freestyler.ResponseType.QUERYING,
           id: '1-0',
         },
         {
-          step: Freestyler.Step.ANSWER,
+          type: Freestyler.ResponseType.ANSWER,
           id: '1-0',
           text: 'this is the answer',
           rpcId: 123,
@@ -699,14 +699,14 @@ c`;
       const steps = await Array.fromAsync(agent.run('test'));
       assert.deepStrictEqual(steps, [
         {
-          step: Freestyler.Step.QUERYING,
+          type: Freestyler.ResponseType.QUERYING,
           id: '1-0',
         },
         {
           rpcId: undefined,
           id: '1-0',
-          step: Freestyler.Step.ERROR,
-          text: 'Sorry, I could not help you with this query.',
+          type: Freestyler.ResponseType.ERROR,
+          error: 'Sorry, I could not help you with this query.',
         },
       ]);
     });
@@ -735,11 +735,11 @@ c`;
       const steps = await Array.fromAsync(agent.run('test'));
       assert.deepStrictEqual(steps, [
         {
-          step: Freestyler.Step.QUERYING,
+          type: Freestyler.ResponseType.QUERYING,
           id: '1-0',
         },
         {
-          step: Freestyler.Step.ANSWER,
+          type: Freestyler.ResponseType.ANSWER,
           id: '1-0',
           text: 'this is the answer',
           rpcId: 123,
@@ -765,13 +765,13 @@ c`;
       const steps = await Array.fromAsync(agent.run('test'));
       assert.deepStrictEqual(steps, [
         {
-          step: Freestyler.Step.QUERYING,
+          type: Freestyler.ResponseType.QUERYING,
           id: '1-0',
         },
         {
-          step: Freestyler.Step.ERROR,
+          type: Freestyler.ResponseType.ERROR,
           id: '1-0',
-          text: 'Sorry, I could not help you with this query.',
+          error: 'Sorry, I could not help you with this query.',
           rpcId: undefined,
         },
       ]);
@@ -823,27 +823,25 @@ ANSWER: this is the answer`,
       const steps = await Array.fromAsync(agent.run('test'));
       assert.deepStrictEqual(steps, [
         {
-          step: Freestyler.Step.QUERYING,
+          type: Freestyler.ResponseType.QUERYING,
           id: '1-0',
         },
         {
-          step: Freestyler.Step.THOUGHT,
+          type: Freestyler.ResponseType.THOUGHT,
           id: '1-0',
           thought: 'I am thinking.',
           title: undefined,
           rpcId: undefined,
         },
         {
-          step: Freestyler.Step.ACTION,
+          type: Freestyler.ResponseType.ACTION,
           id: '1-0',
           code: 'console.log(\'hello\');',
           output: 'hello',
-          thought: 'I am thinking.',
-          title: undefined,
           rpcId: undefined,
         },
         {
-          step: Freestyler.Step.ANSWER,
+          type: Freestyler.ResponseType.ANSWER,
           id: '1-1',
           text: 'this is the actual answer',
           rpcId: undefined,

@@ -62,7 +62,7 @@ The example session ends here.`;
 
 export const FIX_THIS_ISSUE_PROMPT = 'Fix this issue using JavaScript code execution';
 
-export enum Step {
+export enum ResponseType {
   THOUGHT = 'thought',
   ACTION = 'action',
   ANSWER = 'answer',
@@ -70,40 +70,42 @@ export enum Step {
   QUERYING = 'querying',
 }
 
-export interface CommonStepData {
-  step: Step.ANSWER|Step.ERROR;
+export interface AnswerResponse {
+  type: ResponseType.ANSWER;
   id: string;
   text: string;
   rpcId?: number;
 }
 
-export interface ThoughtStepData {
-  step: Step.THOUGHT;
+export interface ErrorResponse {
+  type: ResponseType.ERROR;
+  id: string;
+  error: string;
+  rpcId?: number;
+}
+
+export interface ThoughtResponse {
+  type: ResponseType.THOUGHT;
   id: string;
   thought: string;
   title?: string;
   rpcId?: number;
 }
 
-export interface ActionStepData {
-  step: Step.ACTION;
+export interface ActionResponse {
+  type: ResponseType.ACTION;
   id: string;
   code: string;
   output: string;
-  // These are coming from the Step.Though
-  // if present
-  thought?: string;
-  title?: string;
-  // Identifier
   rpcId?: number;
 }
 
-export interface QueryStepData {
-  step: Step.QUERYING;
+export interface QueryResponse {
+  type: ResponseType.QUERYING;
   id: string;
 }
 
-export type StepData = CommonStepData|ActionStepData|ThoughtStepData|QueryStepData;
+export type ResponseData = AnswerResponse|ErrorResponse|ActionResponse|ThoughtResponse|QueryResponse;
 
 // TODO: this should use the current execution context pased on the
 // node.
@@ -342,7 +344,7 @@ export class FreestylerAgent {
   #runId = 0;
   async *
       run(query: string, options: {signal?: AbortSignal, isFixQuery: boolean} = {isFixQuery: false}):
-          AsyncGenerator<StepData|QueryStepData, void, void> {
+          AsyncGenerator<ResponseData, void, void> {
     const genericErrorMessage = 'Sorry, I could not help you with this query.';
     const structuredLog = [];
     query = `QUERY: ${query}`;
@@ -356,7 +358,7 @@ export class FreestylerAgent {
     // the one of the first response
     let id: string = `${currentRunId}-${0}`;
     yield {
-      step: Step.QUERYING,
+      type: ResponseType.QUERYING,
       id,
     };
 
@@ -383,7 +385,12 @@ export class FreestylerAgent {
           break;
         }
 
-        yield {step: Step.ERROR, id, text: genericErrorMessage, rpcId};
+        yield {
+          type: ResponseType.ERROR,
+          id,
+          error: genericErrorMessage,
+          rpcId,
+        };
         break;
       }
 
@@ -417,7 +424,7 @@ export class FreestylerAgent {
       if (action) {
         if (thought) {
           yield {
-            step: Step.THOUGHT,
+            type: ResponseType.THOUGHT,
             id,
             thought,
             title,
@@ -431,12 +438,10 @@ export class FreestylerAgent {
           const observation = await this.#generateObservation(action, {throwOnSideEffect: !options.isFixQuery});
           debugLog(`Action result: ${observation}`);
           yield {
-            step: Step.ACTION,
+            type: ResponseType.ACTION,
             code: action,
             id,
             output: observation,
-            thought,
-            title,
             rpcId,
           };
 
@@ -445,15 +450,29 @@ export class FreestylerAgent {
           await scope.uninstall();
         }
       } else if (answer) {
-        yield {step: Step.ANSWER, id, text: answer, rpcId};
+        yield {
+          type: ResponseType.ANSWER,
+          id,
+          text: answer,
+          rpcId,
+        };
         break;
       } else {
-        yield {step: Step.ERROR, id, text: genericErrorMessage, rpcId};
+        yield {
+          type: ResponseType.ERROR,
+          id,
+          error: genericErrorMessage,
+          rpcId,
+        };
         break;
       }
 
       if (i === MAX_STEPS - 1) {
-        yield {step: Step.ERROR, id, text: 'Max steps reached, please try again.'};
+        yield {
+          type: ResponseType.ERROR,
+          id,
+          error: 'Max steps reached, please try again.',
+        };
         break;
       }
     }

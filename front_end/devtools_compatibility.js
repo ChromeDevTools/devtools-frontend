@@ -646,49 +646,8 @@ const InspectorFrontendHostImpl = class {
       if (majorVersion && majorVersion < 129 && hostConfig?.aidaAvailability) {
         return callback(this.hostConfigNewToOld(hostConfig));
       }
-      // TODO(crbug.com/348136212): Remove as soon as Chromium sends the new shape.
-      if (hostConfig && !hostConfig.aidaAvailability && hostConfig.devToolsConsoleInsights) {
-        return callback(this.hostConfigOldToNew(hostConfig));
-      }
       return callback(hostConfig);
     });
-  }
-
-  // TODO(crbug.com/348136212): Remove as soon as Chromium sends the new shape.
-  /**
-   * @param {Object<string, Object<string, string|boolean>>} oldConfig
-   */
-  hostConfigOldToNew(oldConfig) {
-    const aidaAvailability = {
-      // Not a perfect match, but good enough temporarily.
-      enabled: oldConfig.devToolsConsoleInsights?.enabled ?? false,
-      blockedByAge: oldConfig.devToolsConsoleInsights?.blockedByAge ?? true,
-      blockedByEnterprisePolicy: oldConfig.devToolsConsoleInsights?.blockedByEnterprisePolicy ?? true,
-      blockedByGeo: oldConfig.devToolsConsoleInsights?.blockedByGeo ?? true,
-      disallowLogging: oldConfig.devToolsConsoleInsights?.disallowLogging ?? true,
-    };
-    const devToolsConsoleInsights = {
-      enabled: oldConfig.devToolsConsoleInsights?.enabled ?? false,
-      modelId: oldConfig.devToolsConsoleInsights?.aidaModelId ?? '',
-      temperature: oldConfig.devToolsConsoleInsights?.aidaTemperature ?? 0,
-    };
-    const devToolsFreestylerDogfood = {
-      enabled: oldConfig.devToolsFreestylerDogfood?.enabled ?? false,
-      modelId: oldConfig.devToolsFreestylerDogfood?.aidaModelId ?? '',
-      temperature: oldConfig.devToolsFreestylerDogfood?.aidaTemperature ?? 0,
-    };
-    const devToolsExplainThisResourceDogfood = {
-      enabled: oldConfig.devToolsExplainThisResourceDogfood?.enabled ?? false,
-      modelId: oldConfig.devToolsExplainThisResourceDogfood?.aidaModelId ?? '',
-      temperature: oldConfig.devToolsExplainThisResourceDogfood?.aidaTemperature ?? 0,
-    };
-    return {
-      ...oldConfig,
-      aidaAvailability,
-      devToolsConsoleInsights,
-      devToolsExplainThisResourceDogfood,
-      devToolsFreestylerDogfood,
-    };
   }
 
   /**

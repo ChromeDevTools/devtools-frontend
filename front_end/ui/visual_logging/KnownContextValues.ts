@@ -2703,6 +2703,8 @@ export const knownContextValues = new Set([
   'text-underline-offset',
   'text-underline-position',
   'text-wrap',
+  'text-wrap-mode',
+  'text-wrap-style',
   'th',
   'third',
   'third-property',

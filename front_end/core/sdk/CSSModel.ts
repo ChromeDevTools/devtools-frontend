@@ -578,15 +578,19 @@ export class CSSModel extends SDKModel<EventTypes> {
     }
 
     try {
-      const {styleSheetId} = await this.agent.invoke_createStyleSheet({frameId});
-      if (!styleSheetId) {
-        return null;
-      }
-      return this.#styleSheetIdToHeader.get(styleSheetId) || null;
+      return await this.createInspectorStylesheet(frameId);
     } catch (e) {
       console.error(e);
       return null;
     }
+  }
+
+  async createInspectorStylesheet(frameId: Protocol.Page.FrameId): Promise<CSSStyleSheetHeader|null> {
+    const result = await this.agent.invoke_createStyleSheet({frameId});
+    if (result.getError()) {
+      throw new Error(result.getError());
+    }
+    return this.#styleSheetIdToHeader.get(result.styleSheetId) || null;
   }
 
   mediaQueryResultChanged(): void {
@@ -878,6 +882,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     this.disableCSSPropertyTracker();
     super.dispose();
     this.#sourceMapManager.dispose();
+    this.dispatchEventToListeners(Events.ModelDisposed, this);
   }
 
   getAgent(): ProtocolProxyApi.CSSApi {
@@ -890,6 +895,7 @@ export enum Events {
   FontsUpdated = 'FontsUpdated',
   MediaQueryResultChanged = 'MediaQueryResultChanged',
   ModelWasEnabled = 'ModelWasEnabled',
+  ModelDisposed = 'ModelDisposed',
   PseudoStateForced = 'PseudoStateForced',
   StyleSheetAdded = 'StyleSheetAdded',
   StyleSheetChanged = 'StyleSheetChanged',
@@ -912,6 +918,7 @@ export type EventTypes = {
   [Events.FontsUpdated]: void,
   [Events.MediaQueryResultChanged]: void,
   [Events.ModelWasEnabled]: void,
+  [Events.ModelDisposed]: CSSModel,
   [Events.PseudoStateForced]: PseudoStateForcedEvent,
   [Events.StyleSheetAdded]: CSSStyleSheetHeader,
   [Events.StyleSheetChanged]: StyleSheetChangedEvent,

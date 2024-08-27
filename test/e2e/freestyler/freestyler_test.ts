@@ -61,6 +61,7 @@ describe('Freestyler', function() {
 TITLE: changing the property
 ACTION
 await setElementStyles($0, { 'background-color': 'blue' });
+await setElementStyles($0.parentElement, { 'background-color': 'green' });
 STOP
 ` :
                   'ANSWER: changed styles',
@@ -142,7 +143,7 @@ STOP
     await setupMocks({}, {enabled: true});
     await goToResource('../resources/recorder/recorder.html');
 
-    await inspectNode('body');
+    await inspectNode('div');
     await openFreestyler();
     await enableDebugModeForFreestyler();
     await typeQuery('Change the background color for this element to blue');
@@ -152,7 +153,9 @@ STOP
     await target.bringToFront();
     await target.waitForFunction(() => {
       // @ts-ignore page context.
-      return window.getComputedStyle(document.querySelector('body')).backgroundColor === 'rgb(0, 0, 255)';
+      return window.getComputedStyle(document.querySelector('div')).backgroundColor === 'rgb(0, 0, 255)' &&
+          // @ts-ignore page context.
+          window.getComputedStyle(document.querySelector('body')).backgroundColor === 'rgb(0, 128, 0)';
     });
   });
 });

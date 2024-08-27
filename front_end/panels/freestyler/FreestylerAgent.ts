@@ -276,6 +276,13 @@ export class FreestylerAgent {
                                  });
     this.#confirmSideEffect = opts.confirmSideEffect;
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+        this.onPrimaryPageChanged, this);
+  }
+
+  onPrimaryPageChanged(): void {
+    void this.#changes.clear();
   }
 
   get #getHistoryEntry(): Array<HistoryChunk> {

@@ -2,58 +2,118 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
+
 import * as Freestyler from './freestyler.js';
 
 describe('ChangeManager', () => {
-  it('can register a change', () => {
-    const changeManager = new Freestyler.ChangeManager();
-    changeManager.addChange({
-      selector: 'div',
-      styles: 'color: blue;',
+  const styleSheetId = '1' as Protocol.CSS.StyleSheetId;
+  const frameId = '1' as Protocol.Page.FrameId;
+
+  function createModel() {
+    const cssModel = sinon.createStubInstance(SDK.CSSModel.CSSModel, {
+      // @ts-expect-error stub types
+      createInspectorStylesheet: sinon.stub().callsFake(() => {
+        return new SDK.CSSStyleSheetHeader.CSSStyleSheetHeader(cssModel, {
+          styleSheetId,
+          frameId,
+          sourceURL: '',
+          origin: 'inspector' as Protocol.CSS.StyleSheetOrigin,
+          title: 'style.css',
+          disabled: false,
+          isInline: false,
+          isMutable: false,
+          isConstructed: false,
+          startLine: 0,
+          startColumn: 0,
+          length: 10,
+          endLine: 1,
+          endColumn: 8,
+        });
+      }),
     });
-    assert.strictEqual(changeManager.buildStyleSheet(), `.ai-assistant-change {
-  div& {
-    color: blue;
+
+    return cssModel;
   }
-}`);
-  });
-  it('can register multiple changes with different selectors', () => {
+
+  it('can register a change', async () => {
     const changeManager = new Freestyler.ChangeManager();
-    changeManager.addChange({
+    const cssModel = createModel();
+    await changeManager.addChange(cssModel, frameId, {
       selector: 'div',
       styles: 'color: blue;',
     });
-    changeManager.addChange({
+    assert(cssModel.setStyleSheetText.calledOnce);
+    assert.deepStrictEqual(cssModel.setStyleSheetText.args, [
+      [styleSheetId, '.ai-assistant-change {\n  div& {\n    color: blue;\n  }\n}', true],
+    ]);
+  });
+
+  it('can register multiple changes with different selectors', async () => {
+    const changeManager = new Freestyler.ChangeManager();
+    const cssModel = createModel();
+    await changeManager.addChange(cssModel, frameId, {
+      selector: 'div',
+      styles: 'color: blue;',
+    });
+    await changeManager.addChange(cssModel, frameId, {
+      selector: 'div',
+      styles: 'color: blue;',
+    });
+    assert(cssModel.setStyleSheetText.calledTwice);
+    assert.deepStrictEqual(cssModel.setStyleSheetText.args, [
+      [styleSheetId, '.ai-assistant-change {\n  div& {\n    color: blue;\n  }\n}', true],
+      [
+        styleSheetId,
+        '.ai-assistant-change {\n  div& {\n    color: blue;\n  }\n  div& {\n    color: blue;\n  }\n}',
+        true,
+      ],
+    ]);
+  });
+
+  it('can register multiple changes with the same selector', async () => {
+    const changeManager = new Freestyler.ChangeManager();
+    const cssModel = createModel();
+    await changeManager.addChange(cssModel, frameId, {
+      selector: 'div',
+      styles: 'color: blue;',
+    });
+    await changeManager.addChange(cssModel, frameId, {
+      selector: 'div',
+      styles: 'color: green;',
+    });
+    assert(cssModel.setStyleSheetText.calledTwice);
+    assert.deepStrictEqual(cssModel.setStyleSheetText.args, [
+      [styleSheetId, '.ai-assistant-change {\n  div& {\n    color: blue;\n  }\n}', true],
+      [
+        styleSheetId,
+        '.ai-assistant-change {\n  div& {\n    color: blue;\n  }\n  div& {\n    color: green;\n  }\n}',
+        true,
+      ],
+    ]);
+  });
+
+  it('can clear changes', async () => {
+    const changeManager = new Freestyler.ChangeManager();
+    const cssModel = createModel();
+    await changeManager.addChange(cssModel, frameId, {
+      selector: 'div',
+      styles: 'color: blue;',
+    });
+    assert(cssModel.setStyleSheetText.calledOnce);
+    assert.deepStrictEqual(cssModel.setStyleSheetText.args, [
+      [styleSheetId, '.ai-assistant-change {\n  div& {\n    color: blue;\n  }\n}', true],
+    ]);
+    await changeManager.clear();
+    await changeManager.addChange(cssModel, frameId, {
       selector: 'body',
       styles: 'color: green;',
     });
-    assert.strictEqual(changeManager.buildStyleSheet(), `.ai-assistant-change {
-  div& {
-    color: blue;
-  }
-  body& {
-    color: green;
-  }
-}`);
-  });
-
-  it('can register multiple changes with the same selector', () => {
-    const changeManager = new Freestyler.ChangeManager();
-    changeManager.addChange({
-      selector: 'div',
-      styles: 'color: blue;',
-    });
-    changeManager.addChange({
-      selector: 'div',
-      styles: 'color: green;',
-    });
-    assert.strictEqual(changeManager.buildStyleSheet(), `.ai-assistant-change {
-  div& {
-    color: blue;
-  }
-  div& {
-    color: green;
-  }
-}`);
+    assert(cssModel.setStyleSheetText.calledTwice);
+    assert.deepStrictEqual(cssModel.setStyleSheetText.args, [
+      [styleSheetId, '.ai-assistant-change {\n  div& {\n    color: blue;\n  }\n}', true],  // before clear().
+      [styleSheetId, '.ai-assistant-change {\n  body& {\n    color: green;\n  }\n}', true],
+    ]);
   });
 });

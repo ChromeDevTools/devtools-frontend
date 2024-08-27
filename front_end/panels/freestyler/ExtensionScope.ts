@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -22,6 +23,8 @@ export class ExtensionScope {
   #changeManager: ChangeManager;
   #frameId: Protocol.Page.FrameId;
   #target: SDK.Target.Target;
+
+  readonly #bindingMutex = new Common.Mutex.Mutex();
 
   constructor(changes: ChangeManager) {
     this.#changeManager = changes;
@@ -113,30 +116,27 @@ export class ExtensionScope {
     if (data.name !== FREESTYLER_BINDING_NAME) {
       return;
     }
-    const target = this.#target;
-    const id = data.payload;
-    const {object} = await this.#simpleEval(executionContext, `freestyler.getArgs(${id})`);
-    const arg = JSON.parse(object.value);
-    const selector = arg.selector;
-    const styles = Platform.StringUtilities.toKebabCaseKeys(arg.styles);
+    await this.#bindingMutex.run(async () => {
+      const target = this.#target;
+      const id = data.payload;
+      const {object} = await this.#simpleEval(executionContext, `freestyler.getArgs(${id})`);
+      const arg = JSON.parse(object.value);
+      const selector = arg.selector;
+      const styles = Platform.StringUtilities.toKebabCaseKeys(arg.styles);
 
-    const lines = Object.entries(styles).map(([key, value]) => `${key}: ${value};`);
+      const lines = Object.entries(styles).map(([key, value]) => `${key}: ${value};`);
 
-    this.#changeManager.addChange({
-      selector,
-      styles: lines.join('\n'),
+      const cssModel = target.model(SDK.CSSModel.CSSModel);
+      if (!cssModel) {
+        throw new Error('CSSModel is not found');
+      }
+      await this.#changeManager.addChange(cssModel, this.#frameId, {
+        selector,
+        styles: lines.join('\n'),
+      });
+
+      await this.#simpleEval(executionContext, `freestyler.respond(${id})`);
     });
-    const cssModel = target.model(SDK.CSSModel.CSSModel);
-    if (!cssModel) {
-      throw new Error('CSSModel is not found');
-    }
-    const styleSheetHeader = await cssModel.requestViaInspectorStylesheet(this.#frameId);
-    if (!styleSheetHeader) {
-      throw new Error('inspector-stylesheet is not found');
-    }
-    await cssModel.setStyleSheetText(styleSheetHeader.id, this.#changeManager.buildStyleSheet(), true);
-
-    await this.#simpleEval(executionContext, `freestyler.respond(${id})`);
   }
 }
 

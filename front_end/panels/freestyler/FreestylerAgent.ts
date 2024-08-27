@@ -155,7 +155,6 @@ type AgentOptions = {
   serverSideLoggingEnabled?: boolean,
   createExtensionScope?: CreateExtensionScopeFunction,
   execJs?: typeof executeJsCode,
-  internalExecJs?: typeof executeJsCode,
 };
 
 interface AidaRequestOptions {

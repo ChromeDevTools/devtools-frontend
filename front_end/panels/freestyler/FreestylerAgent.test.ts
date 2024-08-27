@@ -440,7 +440,7 @@ c`;
           createExtensionScope,
           confirmSideEffect,
           execJs,
-          internalExecJs: sinon.mock(),
+
         });
 
         await Array.fromAsync(agent.run('test'));
@@ -477,7 +477,7 @@ c`;
           createExtensionScope,
           confirmSideEffect,
           execJs,
-          internalExecJs: sinon.mock(),
+
         });
         await Array.fromAsync(agent.run('test'));
 
@@ -513,7 +513,7 @@ c`;
           createExtensionScope,
           confirmSideEffect,
           execJs,
-          internalExecJs: sinon.mock(),
+
         });
 
         const steps = await Array.fromAsync(agent.run('test'));
@@ -551,7 +551,7 @@ c`;
           createExtensionScope,
           confirmSideEffect,
           execJs,
-          internalExecJs: sinon.mock(),
+
         });
 
         await Array.fromAsync(agent.run(Freestyler.FIX_THIS_ISSUE_PROMPT, {isFixQuery: true}));
@@ -588,7 +588,7 @@ c`;
           createExtensionScope,
           confirmSideEffect,
           execJs,
-          internalExecJs: sinon.mock(),
+
         });
 
         const result = await Array.fromAsync(agent.run('test'));
@@ -614,7 +614,7 @@ c`;
         aidaClient: mockAidaClient(generateAnswer),
         confirmSideEffect: () => Promise.resolve(true),
         execJs,
-        internalExecJs: sinon.mock(),
+
       });
 
       const steps = await Array.fromAsync(agent.run('test'));
@@ -655,7 +655,7 @@ c`;
         aidaClient: mockAidaClient(generateAnswer),
         confirmSideEffect: () => Promise.resolve(true),
         execJs: sinon.spy(),
-        internalExecJs: sinon.mock(),
+
       });
 
       const steps = await Array.fromAsync(agent.run('test'));
@@ -689,7 +689,7 @@ c`;
         aidaClient: mockAidaClient(generateAnswer),
         confirmSideEffect: () => Promise.resolve(true),
         execJs: sinon.spy(),
-        internalExecJs: sinon.mock(),
+
       });
 
       const steps = await Array.fromAsync(agent.run('test'));
@@ -723,7 +723,7 @@ c`;
         aidaClient: mockAidaClient(generateAnswer),
         confirmSideEffect: () => Promise.resolve(true),
         execJs: sinon.spy(),
-        internalExecJs: sinon.mock(),
+
       });
 
       const steps = await Array.fromAsync(agent.run('test'));
@@ -752,7 +752,7 @@ c`;
         aidaClient: mockAidaClient(generateNothing),
         confirmSideEffect: () => Promise.resolve(true),
         execJs,
-        internalExecJs: sinon.mock(),
+
       });
       const steps = await Array.fromAsync(agent.run('test'));
       assert.deepStrictEqual(steps, [
@@ -808,7 +808,7 @@ ANSWER: this is the answer`,
         createExtensionScope,
         confirmSideEffect: () => Promise.resolve(true),
         execJs,
-        internalExecJs: sinon.mock(),
+
       });
       const steps = await Array.fromAsync(agent.run('test'));
       assert.deepStrictEqual(steps, [
@@ -862,7 +862,7 @@ ANSWER: this is the answer`,
         createExtensionScope,
         confirmSideEffect: () => Promise.resolve(true),
         execJs,
-        internalExecJs: sinon.mock(),
+
       });
 
       await Array.fromAsync(agent.run('test'));
@@ -926,7 +926,7 @@ ANSWER: this is the answer`,
         createExtensionScope,
         confirmSideEffect: () => Promise.resolve(true),
         execJs,
-        internalExecJs: sinon.mock(),
+
       });
 
       const controller = new AbortController();

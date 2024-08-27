@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | stylesSidebar": {
     "message": "نوار کناری سبک‌ها"
   },
+  "core/common/Revealer.ts | timelinePanel": {
+    "message": "پانل عملکرد"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "آرایش‌دهنده"
   },
@@ -837,7 +840,7 @@
     "message": "حاشیه‌های لایه"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | layoutShiftRegions": {
-    "message": "منطقه‌های تغییر طرح‌بندی"
+    "message": "منطقه‌های تغییر چیدمان"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | paintFlashing": {
     "message": "چشمک زدن نقاشی"
@@ -1142,11 +1145,11 @@
   "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
     "message": "‫:--customstatename منسوخ شده است. لطفاً به‌جای آن، از نحو :state(customstatename) استفاده کنید."
   },
+  "generated/Deprecation.ts | CSSInsetAreaProperty": {
+    "message": "خصوصیت inset-area منسوخ شده است. لطفاً به‌جای آن، از خصوصیت position-area استفاده کنید."
+  },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "برای غیرفعال کردن «یکپارچه‌سازی تبدیل» پیش‌فرض، به‌جای انتخاب‌گر -internal-media-controls-overlay-cast-button باید از مشخصه disableRemotePlayback استفاده شود."
-  },
-  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
-    "message": "مقادیر ظاهری CSS  inner-spin-button، media-slider، media-sliderthumb، media-volume-slider، media-volume-sliderthumb، push-button، searchfield-cancel-button، slider-horizontal، sliderthumb-horizontal، sliderthumb-vertical، square-button استاندارد نشده‌اند و حذف خواهند شد."
   },
   "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
     "message": "مقدار ظاهری CSS slider-vertical استاندارد نشده است و برداشته خواهد شد."
@@ -1785,7 +1788,7 @@
     "message": "{PH1} در نیای {PH2} است: "
   },
   "panels/accessibility/AccessibilityStrings.ts | aHumanreadableVersionOfTheValue": {
-    "message": "نسخه‌ای خوانا برای انسان از مقدار ابزارک گستره (هرگاه لازم باشد)."
+    "message": "نسخه‌ای خوانا برای انسان از مقدار ابزاره گستره (هرگاه لازم باشد)."
   },
   "panels/accessibility/AccessibilityStrings.ts | activeDescendant": {
     "message": "نواده فعال"
@@ -1830,7 +1833,7 @@
     "message": "عنصر یا عنصرهایی که باید به‌عنوان نسلی از این عنصر درنظر گرفته شوند، باوجود اینکه نسلی در DOM نباشند."
   },
   "panels/accessibility/AccessibilityStrings.ts | elementOrElementsWhoseContentOr": {
-    "message": "عنصر یا عناصری که محتوا یا حضور آن‌ها را این ابزارک کنترل می‌کند."
+    "message": "عنصر یا عناصری که محتوا یا حضور آن‌ها را این ابزاره کنترل می‌کند."
   },
   "panels/accessibility/AccessibilityStrings.ts | elementToWhichTheUserMayChooseTo": {
     "message": "عنصری که کاربر می‌تواند بعداز این مورد، به‌جای عنصر بعدی در ترتیب DOM، به آن پیمایش کند."
@@ -1845,10 +1848,10 @@
     "message": "متمرکز"
   },
   "panels/accessibility/AccessibilityStrings.ts | forARangeWidgetTheMaximumAllowed": {
-    "message": "حداکثر مقدار مجاز برای ابزارک گستره."
+    "message": "حداکثر مقدار مجاز برای ابزاره گستره."
   },
   "panels/accessibility/AccessibilityStrings.ts | forARangeWidgetTheMinimumAllowed": {
-    "message": "حداقل مقدار مجاز برای ابزارک گستره."
+    "message": "حداقل مقدار مجاز برای ابزاره گستره."
   },
   "panels/accessibility/AccessibilityStrings.ts | fromAttribute": {
     "message": "از مشخصه"
@@ -1929,7 +1932,7 @@
     "message": "مقدار ضمنی."
   },
   "panels/accessibility/AccessibilityStrings.ts | indicatesThePurposeOfThisElement": {
-    "message": "هدف این عنصر را نشان می‌دهد؛ مثلاً سبک خاص واسط کاربری یک ابزارک، یا نقش ساختاری در یک سند."
+    "message": "هدف این عنصر را نشان می‌دهد؛ مثلاً سبک خاص واسط کاربری یک ابزاره، یا نقش ساختاری در یک سند."
   },
   "panels/accessibility/AccessibilityStrings.ts | invalidUserEntry": {
     "message": "درونداد کاربر نامعتبر است"
@@ -2052,7 +2055,7 @@
     "message": "مقدار مربوط به مشخصه عنوان."
   },
   "panels/accessibility/AccessibilityStrings.ts | whetherAUserMaySelectMoreThanOne": {
-    "message": "آیا ممکن است کاربر بیش‌از یک گزینه را از این ابزارک انتخاب کند یا نه."
+    "message": "آیا ممکن است کاربر بیش‌از یک گزینه را از این ابزاره انتخاب کند یا نه."
   },
   "panels/accessibility/AccessibilityStrings.ts | whetherAndWhatPriorityOfLive": {
     "message": "آیا ممکن است اولویت به‌روزرسانی‌های پویا برای این عنصر موردانتظار باشد و چه اولویتی."
@@ -3171,7 +3174,7 @@
     "message": "صفحه‌هایی که از File System Access API استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "صفحه‌هایی که از «توزیع‌کننده دستگاه رسانه» استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+    "message": "صفحه‌هایی که از «توزیع‌کننده دستگاه رسانه‌ای» استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
     "message": "هنگام خروج، پخش‌کننده رسانه درحال اجرا بود."
@@ -4532,6 +4535,9 @@
   "panels/autofill/AutofillView.ts | sendFeedback": {
     "message": "ارسال بازخورد"
   },
+  "panels/autofill/AutofillView.ts | showTestAddressesInAutofillMenu": {
+    "message": "نشانی‌های آزمایشی در منو تکمیل خودکار نشان داده شود"
+  },
   "panels/autofill/AutofillView.ts | toStartDebugging": {
     "message": "برای شروع اشکال‌زدایی تکمیل خودکار، ازطریق منو تکمیل خودکار Chrome فرم نشانی را تکمیل کنید."
   },
@@ -5591,6 +5597,9 @@
   "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
     "message": "تمرکز روی صفحه باقی می‌ماند. معمولاً برای اشکال‌زدایی عناصر ناپدیدشونده استفاده می‌شود."
   },
+  "panels/elements/ElementStatePaneWidget.ts | forceElementSpecificStates": {
+    "message": "اجباری کردن وضعیت خاص عنصر"
+  },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "اعمال اجباری وضعیت عنصر"
   },
@@ -5868,7 +5877,7 @@
     "message": "برگه سبک نگارش تزریق‌شده"
   },
   "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
-    "message": "درج قانون سبک در زیر"
+    "message": "قانون سبک را در زیر درج کنید"
   },
   "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
     "message": "{PH1}[سبک مشخصه‌ها]"
@@ -6105,7 +6114,7 @@
     "message": "مشخصات"
   },
   "panels/elements/elements-meta.ts | redo": {
-    "message": "انجام مجدد"
+    "message": "ازنو انجام دادن"
   },
   "panels/elements/elements-meta.ts | refreshEventListeners": {
     "message": "بازآوری کردن شنوندگان رویداد"
@@ -6423,7 +6432,7 @@
     "message": "به‌روزرسانی تنظیمات"
   },
   "panels/explain/explain-meta.ts | ageRestricted": {
-    "message": "این ویژگی فقط برای کاربران ۱۸ سال به بالا دردسترس است."
+    "message": "این ویژگی فقط برای کاربران دارای ۱۸ سال یا بیشتر دردسترس است"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "درک پیام‌های کنسول با هوش مصنوعی"
@@ -6438,16 +6447,13 @@
     "message": "درک این هشدار"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "این ویژگی در منطقه شما دردسترس نیست."
+    "message": "این ویژگی در منطقه شما دردسترس نیست"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
     "message": "سازمان شما این ویژگی را خاموش کرده است. برای اطلاعات بیشتر با سرپرستان تماس بگیرید."
   },
-  "panels/explain/explain-meta.ts | rolloutRestricted": {
-    "message": "این ویژگی اکنون درحال عرضه است. با ما همراه باشید."
-  },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "برای استفاده از این ویژگی، اولویت زبان خود را در «تنظیمات DevTools» به انگلیسی تغییر دهید."
+    "message": "برای استفاده از این ویژگی، اولویت «زبان» را در «تنظیمات» DevTools به انگلیسی تغییر دهید"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "منبع مسدود"
@@ -7611,7 +7617,7 @@
     "message": "آفلاین"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
-    "message": "بازنشاندن به مقدار پیش‌فرض"
+    "message": "بازنشانی به مقدار پیش‌فرض"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | sS": {
     "message": "{PH1}: {PH2}"
@@ -9596,6 +9602,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "درحال محاسبه پرچم‌های گره…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingObjectNames": {
+    "message": "درحال محاسبه کردن نام اهداف…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingRetainedSizes": {
     "message": "درحال محاسبه اندازه‌های حفظ‌شده…"
   },
@@ -10871,6 +10880,78 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "کاربر آزاد، قفل صفحه باز است"
   },
+  "panels/settings/AISettingsTab.ts | adminSettings": {
+    "message": "ویژگی‌های دردسترس کاربران تحت‌مدیریت ممکن است بسته به تنظیمات سرپرست آن‌ها متفاوت باشد"
+  },
+  "panels/settings/AISettingsTab.ts | boostYourProductivity": {
+    "message": "بهره‌وری‌تان را با هوش مصنوعی Chrome تقویت کنید"
+  },
+  "panels/settings/AISettingsTab.ts | chromeAi": {
+    "message": "هوش مصنوعی Chrome"
+  },
+  "panels/settings/AISettingsTab.ts | collapse": {
+    "message": "جمع کردن"
+  },
+  "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
+    "message": "پیام کنسول، ردیابی پشته‌ای منسوب، کد منبع مربوطه، و سرصفحه‌های شبکه منسوب برای تولید توضیحات به Google ارسال می‌شوند. ممکن است افراد بازبین این داده‌ها را ببینند تا این ویژگی را بهبود دهند."
+  },
+  "panels/settings/AISettingsTab.ts | expand": {
+    "message": "ازهم بازکردن"
+  },
+  "panels/settings/AISettingsTab.ts | experimentalFeatures": {
+    "message": "این ویژگی‌ها در مرحله آزمایش هستند و ممکن است تغییر کنند"
+  },
+  "panels/settings/AISettingsTab.ts | explainConsole": {
+    "message": "توضیحاتی درباره هشدارها و خطاهای کنسول دریافت می‌کنید"
+  },
+  "panels/settings/AISettingsTab.ts | explainStyling": {
+    "message": "توضیحات و اطلاعات زمینه‌ای بیشتری برای رفتارهای سبک‌بندی دریافت می‌کنید"
+  },
+  "panels/settings/AISettingsTab.ts | freestylerSendsData": {
+    "message": "هرگونه محتوای DOM یا CSS در صفحه بازرسی‌شده ممکن است برای تولید توضیحات به Google ارسال شود. ممکن است افراد بازبین این داده‌ها را ببینند تا این ویژگی را بهبود دهند."
+  },
+  "panels/settings/AISettingsTab.ts | generatedSnippets": {
+    "message": "از تکه‌کدهای تولیدشده بااحتیاط استفاده کنید"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
+    "message": "به شما کمک می‌کند هشدارها و خطاهای کنسول را متوجه شوید و آن‌ها را برطرف کنید"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
+    "message": "به شما کمک می‌کند مشکلات سبک‌بندی را متوجه شوید و آن‌ها را برطرف کنید"
+  },
+  "panels/settings/AISettingsTab.ts | learnMore": {
+    "message": "بیشتر بدانید"
+  },
+  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "یک یا چند تنظیم تغییر کرده است که برای اعمال شدن به بار کردن مجدد نیاز دارد."
+  },
+  "panels/settings/AISettingsTab.ts | privacyNotice": {
+    "message": "اعلان حریم خصوصی"
+  },
+  "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
+    "message": "پیشنهادها و نمونه کدهایی برای برطرف کردن مشکلات سبک‌بندی دریافت می‌کنید"
+  },
+  "panels/settings/AISettingsTab.ts | receiveSuggestions": {
+    "message": "پیشنهادها و نمونه کدهایی برای رسیدگی به این مشکلات دریافت می‌کنید"
+  },
+  "panels/settings/AISettingsTab.ts | retainData": {
+    "message": "داده‌های استفاده به‌گونه‌ای ذخیره می‌شود که Google نتواند ارائه‌دهنده آن را تشخیص دهد و درنتیجه، دیگر نمی‌تواند درخواست‌های حذف را اجرا کند و داده‌ها به‌مدت حداکثر ۱۸ ماه نگه داشته خواهند شد"
+  },
+  "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
+    "message": "درصورت استفاده از این ویژگی‌ها، داده‌های مربوط به ویژگی به Google ارسال می‌شود. لطفاً اطلاعات بیشتر درباره ویژگی را در بخش زیر ببینید."
+  },
+  "panels/settings/AISettingsTab.ts | termsOfService": {
+    "message": "شرایط خدمات Google"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
+    "message": "استفاده از این ویژگی تابع «{PH1}» و «{PH2}» است"
+  },
+  "panels/settings/AISettingsTab.ts | thingsToConsider": {
+    "message": "مواردی که باید درنظر داشت"
+  },
+  "panels/settings/AISettingsTab.ts | whenOn": {
+    "message": "وقتی روشن است"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "افزودن الگوی نام فایل"
   },
@@ -11156,6 +11237,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "نمایش دستگاه‌ها"
   },
+  "panels/settings/settings-meta.ts | chromeAI": {
+    "message": "هوش مصنوعی Chrome"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "اسناد"
   },
@@ -11173,6 +11257,9 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "میان‌برها"
+  },
+  "panels/settings/settings-meta.ts | showChromeAI": {
+    "message": "نشان دادن هوش مصنوعی Chrome"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "نمایش آزمایش‌ها"
@@ -12212,6 +12299,9 @@
   "panels/timeline/CountersGraph.ts | listeners": {
     "message": "شنونده‌ها"
   },
+  "panels/timeline/CountersGraph.ts | noEventsFound": {
+    "message": "داده‌ای برای استفاده از حافظه در رویدادهای انتخابی پیدا نشد."
+  },
   "panels/timeline/CountersGraph.ts | nodes": {
     "message": "گره‌ها"
   },
@@ -12387,7 +12477,7 @@
     "message": "طرح‌بندی"
   },
   "panels/timeline/EventUICategory.ts | layoutShift": {
-    "message": "تغییر طرح‌بندی"
+    "message": "تغییر چیدمان"
   },
   "panels/timeline/EventUICategory.ts | loading": {
     "message": "درحال بار کردن"
@@ -12588,7 +12678,7 @@
     "message": "نمونه JavaScript VM (ماشین مجازی جاوا اسکریپت) را انتخاب کنید"
   },
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
-    "message": "تغییرات طرح‌بندی"
+    "message": "تغییرات چیدمان"
   },
   "panels/timeline/NetworkTrackAppender.ts | network": {
     "message": "شبکه"
@@ -12601,6 +12691,12 @@
   },
   "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpenedWithUrl": {
     "message": "‫WebSocket باز شد: {PH1}"
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
+    "message": "زمان‌بندی‌های سرور — {PH1}"
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
+    "message": "این دسته هدف زمان‌بندی‌هایی دارد که از سرصفحه‌های پاسخ شبکه «زمان‌بندی سرور» گرفته شده است. زمان‌های شروع آن‌ها صرفاً تخمینی است و شاید صحیح نباشد."
   },
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(ناشناس)"
@@ -12728,6 +12824,12 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "جلسه کنونی: {PH1}. {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalAndFieldMetrics": {
+    "message": "سنجه‌های محلی و فیلد"
+  },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalMetrics": {
+    "message": "سنجه‌های محلی"
+  },
   "panels/timeline/TimelineHistoryManager.ts | moments": {
     "message": "لحظه‌ها"
   },
@@ -12842,6 +12944,9 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "رفع مشکل"
   },
+  "panels/timeline/TimelinePanel.ts | hideSidebar": {
+    "message": "پنهان کردن نوار کناری تکی"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "راه‌اندازی تحلیل‌گر…"
   },
@@ -12886,6 +12991,15 @@
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "نمایش خط زمان حافظه"
+  },
+  "panels/timeline/TimelinePanel.ts | showSidebar": {
+    "message": "نشان دادن نوار کناری"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarHidden": {
+    "message": "نوار کناری عملکرد پنهان شده است"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarShown": {
+    "message": "نوار کناری عملکرد نشان داده می‌شود"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} ثانیه"
@@ -13143,7 +13257,7 @@
     "message": "‫{PH1} در {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
-    "message": "ابطال‌ها"
+    "message": "نامعتبرسازی‌ها (مجموع {PH1})"
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "به‌دلیل درنگ فراخوانی شده است"
@@ -13373,6 +13487,12 @@
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "سیستم"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
+    "message": "واحد پردازش مرکزی: {PH1}"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
+    "message": "محدود کردن «واحد پردازش مرکزی»: {PH1}"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
     "message": "‫{PH1}× کاهش سرعت"
   },
@@ -13409,8 +13529,14 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "پروتکل WebSocket"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | add": {
+    "message": "افزودن"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "پیشرفته"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
+    "message": "«‫{PH1}» قبلاً به مبدأ تولید تخصیص داده شده است."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "لغو کردن"
@@ -13421,17 +13547,35 @@
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "واکشی داده‌های فیلد پیکربندی"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
+    "message": "حذف کردن"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
+    "message": "مبدأ توسعه"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
+    "message": "مبدأ توسعه: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "‫Chrome UX Report فاقد داده کافی سرعت از دنیای واقعی برای این صفحه است."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "داده‌های انبوهشی فیلد را از Chrome UX Report واکشی کنید تا به شما کمک کند سنجش‌های محلی را با آنچه کاربران واقعی در این سایت تجربه می‌کنند زمینه‌سازی کنید."
+    "message": "داده‌های فیلد تجمیع‌شده را از {PH1} واکشی کنید تا به شما کمک کند سنجش‌های محلی را با آنچه کاربران واقعی در این سایت تجربه می‌کنند زمینه‌سازی کنید."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
+    "message": "«‫{PH1}» مبدأ یا نشانی وب معتبری نیست."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
+    "message": "با تنظیم کردن مبدأ توسعه، داده‌های فیلد مربوطه را به‌طور خودکار برای مبدأ تولید آن دریافت کنید."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | new": {
+    "message": "جدید"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | ok": {
     "message": "تأیید"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "فقط داده‌های فیلد مربوط به نشانی وب زیر واکشی شود"
+    "message": "داده‌های فیلد مربوط به نشانی وب زیر همیشه نشان داده شود"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "انصراف دادن"
@@ -13439,11 +13583,17 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "شفاف‌سازی حریم خصوصی"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
+    "message": "مبدأ تولید"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
+    "message": "مبدأ تولید: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "راه‌اندازی"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | urlOverride": {
-    "message": "ملغی کردن نشانی وب"
+  "panels/timeline/components/FieldSettingsDialog.ts | url": {
+    "message": "نشانی وب"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "وقتی DevTools باز است، نشانی‌های وبی که از آن‌ها بازدید می‌کنید به Google ارسال خواهد شد تا داده‌های فیلد پرس‌وجو شود. این درخواست‌ها با «حساب Google» شما مرتبط نیستند."
@@ -13463,44 +13613,29 @@
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "خودکار ({PH1})"
   },
-  "panels/timeline/components/LiveMetricsView.ts | betweenRange": {
-    "message": "(‫{PH1} تا {PH2})"
+  "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
+    "message": "بازه زمان جمع‌آوری:"
   },
-  "panels/timeline/components/LiveMetricsView.ts | clsTitle": {
-    "message": "تغییر چیدمان تجمعی (CLS)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
-    "message": "محدود کردن CPU:"
+  "panels/timeline/components/LiveMetricsView.ts | dateRange": {
+    "message": "‫{PH1} - {PH2}"
   },
   "panels/timeline/components/LiveMetricsView.ts | desktop": {
     "message": "رایانه"
   },
-  "panels/timeline/components/LiveMetricsView.ts | deviceType": {
-    "message": "نوع دستگاه:"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | field75thPercentile": {
-    "message": "هفتادوپنجمین صدک فیلد"
+  "panels/timeline/components/LiveMetricsView.ts | device": {
+    "message": "دستگاه: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "داده فیلد"
   },
-  "panels/timeline/components/LiveMetricsView.ts | good": {
-    "message": "خوب"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | gtRange": {
-    "message": "(>{PH1})"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | inpTitle": {
-    "message": "تأخیر در تعامل‌ها (INP)"
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
+    "message": "داده‌های فیلد"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "تعاملات"
   },
-  "panels/timeline/components/LiveMetricsView.ts | lcpTitle": {
-    "message": "بزرگ‌ترین نقاشی دارای محتوا (LCP)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | leqRange": {
-    "message": "(≤{PH1})"
+  "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
+    "message": "عنصر LCP"
   },
   "panels/timeline/components/LiveMetricsView.ts | loadingOption": {
     "message": "{PH1} - درحال بار کردن…"
@@ -13508,20 +13643,23 @@
   "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
     "message": "سنجه‌های محلی و فیلد"
   },
-  "panels/timeline/components/LiveMetricsView.ts | localValue": {
-    "message": "محلی"
+  "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
+    "message": "سنجه‌های محلی"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localMetricsLink": {
+    "message": "سنجه‌های محلی"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "تلفن همراه"
   },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
+    "message": "اکثر کاربران از رایانه استفاده می‌کنند. اندازه پنجره رایانه‌ای شبیه‌سازی کنید که با اندازه پنجره کاربران واقعی مطابقت داشته باشد."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
+    "message": "اکثر کاربران از تلفن همراه استفاده می‌کنند. دستگاه همراهی را شبیه‌سازی کنید که با دستگاه کاربران واقعی مطابقت داشته باشد."
+  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} - داده‌ای وجود ندارد"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | needsImprovement": {
-    "message": "به بهبود نیاز دارد"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
-    "message": "محدود کردن شبکه:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "مراحل بعدی"
@@ -13530,22 +13668,28 @@
     "message": "مبدأ"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
-    "message": "مبدأ ({PH1})"
+    "message": "مبدأ: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "‫{PH1}٪"
+  "panels/timeline/components/LiveMetricsView.ts | recordingSettings": {
+    "message": "تنظیمات ضبط"
   },
-  "panels/timeline/components/LiveMetricsView.ts | poor": {
-    "message": "ضعیف"
+  "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
+    "message": "ببینید سنجه‌های محلی شما در مقایسه با داده‌های کاربر واقعی در {PH1} چه عملکردی دارد."
   },
-  "panels/timeline/components/LiveMetricsView.ts | relatedNode": {
-    "message": "گره مرتبط"
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
+    "message": "نشان دادن داده‌های فیلد مربوط به نوع دستگاه: {PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
+    "message": "نشان دادن داده‌های فیلد {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "رایانه لوحی"
   },
-  "panels/timeline/components/LiveMetricsView.ts | throttling": {
-    "message": "محدود کردن"
+  "panels/timeline/components/LiveMetricsView.ts | theFieldMetricsAre": {
+    "message": "‫{PH1} را کاربران واقعی بااستفاده از تعداد زیادی اتصال شبکه‌ای و دستگاه‌های مختلف اندازه‌گیری کرده‌اند."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
+    "message": "{PH1} از صفحه فعلی و بااستفاده از اتصال شبکه‌ای و دستگاه شما ثبت شده است."
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "برای تخمین زدن تأخیر شبکه اندازه‌گیری‌شده توسط کاربران واقعی، محدود کردن شبکه را غیرفعال کنید."
@@ -13557,10 +13701,70 @@
     "message": "نشانی وب"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOptionWithKey": {
-    "message": "نشانی وب ({PH1})"
+    "message": "نشانی وب: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | urlOrOrigin": {
-    "message": "نشانی وب/ مبدأ:"
+  "panels/timeline/components/MetricCompareStrings.ts | goodBetterCompare": {
+    "message": "‫{PH1}‏ {PH2} محلی شما خوب است و به‌طور قابل‌توجهی بهتر از تجربه کاربرانتان است."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
+    "message": "‫{PH1}‏ {PH2} محلی شما خوب است و رده‌بندی آن با رده‌بندی ‎{PH4} از تجربه‌های {PH1} کاربران واقعی یکسان است. به‌علاوه، صدک ۷۵ داده‌های فیلد {PH1}‏ {PH3} خوب است."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
+    "message": "‫{PH1}‏ {PH2} محلی شما خوب است و رده‌بندی آن با رده‌بندی ‎{PH4} از تجربه‌های {PH1} کاربران واقعی یکسان است. بااین‌حال، صدک ۷۵ داده‌های فیلد {PH1}‏ {PH3} باید بهبود یابد."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
+    "message": "‫{PH1}‏ {PH2} محلی شما خوب است و رده‌بندی آن با رده‌بندی ‎{PH4} از تجربه‌های {PH1} کاربران واقعی یکسان است. بااین‌حال، صدک ۷۵ داده‌های فیلد {PH1}‏ {PH3} ضعیف است."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
+    "message": "‫{PH1}‏ {PH2} محلی شما خوب است و مشابه تجربه کاربرانتان است."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSummarized": {
+    "message": "‫{PH1}‏ {PH2} محلی شما خوب است."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodWorseCompare": {
+    "message": "‫{PH1}‏ {PH2} محلی شما خوب است و به‌طور قابل‌توجهی بدتر از تجربه کاربرانتان است."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementBetterCompare": {
+    "message": "‫{PH1}‏ {PH2} محلی شما باید بهبود یابد و به‌طور قابل‌توجهی بهتر از تجربه کاربرانتان است."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
+    "message": "‫{PH1}‏ {PH2} محلی شما باید بهبود یابد و رده‌بندی آن با رده‌بندی ‎{PH4} از تجربه‌های {PH1} کاربران واقعی یکسان است. بااین‌حال، صدک ۷۵ داده‌های فیلد {PH1}‏ {PH3} خوب است."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
+    "message": "‫{PH1}‏ {PH2} محلی شما باید بهبود یابد و رده‌بندی آن با رده‌بندی ‎{PH4} از تجربه‌های {PH1} کاربران واقعی یکسان است. به‌علاوه، صدک ۷۵ داده‌های فیلد {PH1}‏ {PH3} باید بهبود یابد."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
+    "message": "‫{PH1}‏ {PH2} محلی شما باید بهبود یابد و رده‌بندی آن با رده‌بندی ‎{PH4} از تجربه‌های {PH1} کاربران واقعی یکسان است. بااین‌حال، صدک ۷۵ داده‌های فیلد {PH1}‏ {PH3} ضعیف است."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
+    "message": "‫{PH1}‏ {PH2} محلی شما باید بهبود یابد و مشابه تجربه کاربرانتان است."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSummarized": {
+    "message": "‫{PH1}‏ {PH2} محلی شما باید بهبود یابد."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementWorseCompare": {
+    "message": "‫{PH1}‏ {PH2} محلی شما باید بهبود یابد و به‌طور قابل‌توجهی بدتر از تجربه کاربرانتان است."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorBetterCompare": {
+    "message": "‫{PH1}‏ {PH2} محلی شما ضعیف است و به‌طور قابل‌توجهی بهتر از تجربه کاربرانتان است."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
+    "message": "‫{PH1}‏ {PH2} محلی شما ضعیف است و رده‌بندی آن با رده‌بندی ‎{PH4} از تجربه‌های {PH1} کاربران واقعی یکسان است. بااین‌حال، صدک ۷۵ داده‌های فیلد {PH1}‏ {PH3} خوب است."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
+    "message": "‫{PH1}‏ {PH2} محلی شما ضعیف است و رده‌بندی آن با رده‌بندی ‎{PH4} از تجربه‌های {PH1} کاربران واقعی یکسان است. بااین‌حال، صدک ۷۵ داده‌های فیلد {PH1}‏ {PH3} باید بهبود یابد."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
+    "message": "‫{PH1}‏ {PH2} محلی شما ضعیف است و رده‌بندی آن با رده‌بندی ‎{PH4} از تجربه‌های {PH1} کاربران واقعی یکسان است. به‌علاوه، صدک ۷۵ داده‌های فیلد {PH1}‏ {PH3} ضعیف است."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
+    "message": "‫{PH1}‏ {PH2} محلی شما ضعیف است و مشابه تجربه کاربرانتان است."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSummarized": {
+    "message": "‫{PH1}‏ {PH2} محلی شما ضعیف است."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorWorseCompare": {
+    "message": "‫{PH1}‏ {PH2} محلی شما ضعیف است و به‌طور قابل‌توجهی بدتر از تجربه کاربرانتان است."
   },
   "panels/timeline/components/NetworkRequestDetails.ts | FromCache": {
     "message": " (از حافظه پنهان)"
@@ -13652,8 +13856,26 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
     "message": "غیرفعال"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | network": {
+    "message": "شبکه: {PH1}"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | networkThrottling": {
+    "message": "محدود کردن شبکه: {PH1}"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "پیش‌تنظیم‌ها"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "اولویت واکشی = «بالا» اعمال شد"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "بارگیری کُند اعمال نشد"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "تصویر LCP‏ {PH1} بعداز اولین نقطه شروع بار شد."
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "درخواست در سند اولیه قابل‌شناسایی است"
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "تأخیر در پرداز زدن عنصر"
@@ -13661,8 +13883,8 @@
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "تأخیر در بار کردن منبع"
   },
-  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadTime": {
-    "message": "مدت زمان بار کردن منبع"
+  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDuration": {
+    "message": "مدت زمان بار شدن منبع"
   },
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
     "message": "مدت زمان تا اولین بایت"
@@ -14681,9 +14903,6 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "نماگرفت برای {PH1} - برای مشاهده درخواست‌های قبلی انتخاب کنید."
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
-    "message": "افزودن دستورگان به فهرست استثناها"
-  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "پیکربندی مسیرها…"
   },
@@ -14693,23 +14912,11 @@
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "نمودار شعله‌ای"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideChildren": {
-    "message": "پنهان کردن فرزندان"
+  "ui/legacy/components/perf_ui/FlameChart.ts | labelEntry": {
+    "message": "ورودی برچسب"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideFunction": {
-    "message": "پنهان کردن عملکرد"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
-    "message": "پنهان کردن فرزندان تکراری"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
-    "message": "حذف دستورگان از فهرست استثناها"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
-    "message": "بازنشانی فرزندان"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
-    "message": "بازنشانی ردپا"
+  "ui/legacy/components/perf_ui/FlameChart.ts | linkEntries": {
+    "message": "پیوند دادن ورودی‌ها"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sCollapsed": {
     "message": "{PH1} جمع شد"

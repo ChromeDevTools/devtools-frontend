@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | stylesSidebar": {
     "message": "ပုံစံများ ဆိုက်ဘား"
   },
+  "core/common/Revealer.ts | timelinePanel": {
+    "message": "စွမ်းဆောင်ရည်အကန့်"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "အချက်အလက်ပေးစနစ်"
   },
@@ -837,7 +840,7 @@
     "message": "အလွှာအနားသတ်များ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | layoutShiftRegions": {
-    "message": "အပြင်အဆင် ပြောင်းထားသော နယ်ပယ်များ"
+    "message": "အပြင်အဆင် ပြောင်းထားသော ဒေသများ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | paintFlashing": {
     "message": "ဆေးခြယ်၍ မှိတ်တုတ်မှိတ်တုတ်ပြရန်"
@@ -1142,11 +1145,11 @@
   "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
     "message": ":--customstatename ကို ရပ်ဆိုင်းထားသည်။ ၎င်းအစား :state(customstatename) ဝါကျဖွဲ့ထုံးကို သုံးပါ။"
   },
+  "generated/Deprecation.ts | CSSInsetAreaProperty": {
+    "message": "inset-area Property ကို ရပ်ဆိုင်းထားသည်။ position-area Property ကိုအစားထိုးသုံးပါ။"
+  },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "မူရင်း ‘ကာစ်’ ပေါင်းစည်းမှုကို ပိတ်ရန်အတွက် -internal-media-controls-overlay-cast-button ရွေးချယ်စနစ်ကို အသုံးပြုမည့်အစား disableRemotePlayback ရည်ညွှန်းချက်ကို အသုံးပြုသင့်သည်။"
-  },
-  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
-    "message": "CSS အသွင်အပြင်တန်ဖိုးများဖြစ်သည့်  inner-spin-button၊ media-slider၊ media-sliderthumb၊ media-volume-slider၊ media-volume-sliderthumb၊ push-button၊ searchfield-cancel-button၊ slider-horizontal၊ sliderthumb-horizontal၊ sliderthumb-vertical၊ square-button တို့သည် သတ်မှတ်စံနှုန်းနှင့် မကိုက်ညီ၍ ဖယ်ရှားပါမည်။"
   },
   "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
     "message": "CSS အသွင်အပြင်တန်ဖိုး slider-vertical သည် သတ်မှတ်စံနှုန်းနှင့် မကိုက်ညီ၍ ဖယ်ရှားပါမည်။"
@@ -4532,6 +4535,9 @@
   "panels/autofill/AutofillView.ts | sendFeedback": {
     "message": "အကြံပြုချက် ပို့ရန်"
   },
+  "panels/autofill/AutofillView.ts | showTestAddressesInAutofillMenu": {
+    "message": "အော်တိုဖြည့်မီနူးရှိ စမ်းသပ်လိပ်စာများကို ပြပါ"
+  },
   "panels/autofill/AutofillView.ts | toStartDebugging": {
     "message": "အော်တိုဖြည့်ကို စတင်အမှားရှာပြင်ရန်အတွက် လိပ်စာဖောင်ဖြည့်ရန် Chrome ၏ အော်တိုဖြည့်မီနူးကို အသုံးပြုပါ။"
   },
@@ -5591,6 +5597,9 @@
   "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
     "message": "စာမျက်နှာကို ဆက်လက်၍ ပြသသည်။ အပိုင်းများ ပျောက်ဆုံးမှုဆိုင်ရာ အမှားရှာပြင်ခြင်းအတွက် အသုံးများသည်။"
   },
+  "panels/elements/ElementStatePaneWidget.ts | forceElementSpecificStates": {
+    "message": "သက်ဆိုင်ရာအပိုင်း၏ အခြေအနေကို မဖြစ်မနေသတ်မှတ်ရန်"
+  },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "အစိတ်အပိုင်းကို အခြေအနေ မဖြစ်မနေသတ်မှတ်ခြင်း"
   },
@@ -6423,7 +6432,7 @@
     "message": "ဆက်တင်များ အပ်ဒိတ်လုပ်ရန်"
   },
   "panels/explain/explain-meta.ts | ageRestricted": {
-    "message": "၁၈ နှစ်နှင့်အထက် အသုံးပြုသူများသာ ဤဝန်ဆောင်မှုကို ရနိုင်သည်။"
+    "message": "၁၈ နှစ်နှင့်အထက် အသုံးပြုသူများသာ ဤတူးလ်ကို ရနိုင်သည်"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "AI သုံး၍ ကွန်ဆိုးလ်မက်ဆေ့ဂျ်များကို နားလည်အောင်လုပ်ခြင်း"
@@ -6438,16 +6447,13 @@
     "message": "ဤသတိပေးချက်ကို နားလည်အောင်လုပ်ပါ"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "ဤဝန်ဆောင်မှုကို သင့်ဒေသတွင် မရနိုင်ပါ။"
+    "message": "ဤတူးလ်ကို သင့်ဒေသတွင် မရနိုင်ပါ"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
     "message": "သင့်အဖွဲ့အစည်းသည် ဤဝန်ဆောင်မှုကို ပိတ်ထားသည်။ နောက်ထပ်အချက်အလက်အတွက် သင်၏စီမံခန့်ခွဲသူထံ ဆက်သွယ်ပါ။"
   },
-  "panels/explain/explain-meta.ts | rolloutRestricted": {
-    "message": "ဤဝန်ဆောင်မှုကို လောလောဆယ် စတင်ထုတ်ဝေနေသည်။ ဆက်လက်စောင့်မျှော်ပါ။"
-  },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "ဤဝန်ဆောင်မှု အသုံးပြုရန် DevTools ဆက်တင်များတွင် သင့်ဘာသာစကားသတ်မှတ်ချက်ကို အင်္ဂလိပ်သို့ အပ်ဒိတ်လုပ်ပါ။"
+    "message": "ဤတူးလ်အသုံးပြုရန် DevTools ဆက်တင်များတွင် သင့်ဘာသာစကားသတ်မှတ်ချက်ကို အင်္ဂလိပ်သို့ ပြောင်းပါ"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "ပိတ်ထားသော ရင်းမြစ်"
@@ -9596,6 +9602,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "နုတ်အလံများ တွက်ချက်နေသည်…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingObjectNames": {
+    "message": "ပစ္စည်းအမည်များ တွက်ချက်နေသည်…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingRetainedSizes": {
     "message": "ထိန်းသိမ်းထားသော အရွယ်အစားများကို တွက်ချက်နေသည်…"
   },
@@ -10871,6 +10880,78 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "အသုံးပြုသူ မလှုပ်ရှားပါ၊ ဖန်သားပြင် ပွင့်နေသည်"
   },
+  "panels/settings/AISettingsTab.ts | adminSettings": {
+    "message": "စီမံခန့်ခွဲခွင့်ရှိသော အသုံးပြုသူများအတွက် ရနိုင်သည့် တူးလ်များသည် ၎င်းတို့၏ စီမံခန့်ခွဲသူ၏ ဆက်တင်များပေါ်မူတည်၍ ကွဲပြားနိုင်သည်"
+  },
+  "panels/settings/AISettingsTab.ts | boostYourProductivity": {
+    "message": "Chrome AI ဖြင့် သင့်ထုတ်လုပ်စွမ်းအားကို မြှင့်တင်လိုက်ပါ"
+  },
+  "panels/settings/AISettingsTab.ts | chromeAi": {
+    "message": "Chrome AI"
+  },
+  "panels/settings/AISettingsTab.ts | collapse": {
+    "message": "လျှော့ပြပါ"
+  },
+  "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
+    "message": "ကွန်ဆိုးလ်မက်ဆေ့ဂျ်၊ သက်ဆိုင်သော သုံးနည်းမှတ်တမ်း၊ ဆက်စပ်ရင်းမြစ်ကုဒ်၊ သက်ဆိုင်သော ကွန်ရက်ခေါင်းစဉ်တို့ကို ရှင်းပြချက်များ ထုတ်လုပ်ရန် Google သို့ပို့သည်။ ဤတူးလ် ပိုကောင်းစေရန်အတွက် ဤဒေတာကို ပြန်စစ်သည့် ပုဂ္ဂိုလ်များက မြင်နိုင်သည်။"
+  },
+  "panels/settings/AISettingsTab.ts | expand": {
+    "message": "ပိုပြပါ"
+  },
+  "panels/settings/AISettingsTab.ts | experimentalFeatures": {
+    "message": "ဤတူးလ်များသည် စမ်းသပ်မှုဖြစ်ပြီး ပြောင်းလဲနိုင်သည်"
+  },
+  "panels/settings/AISettingsTab.ts | explainConsole": {
+    "message": "ကွန်ဆိုးလ် သတိပေးချက်နှင့် အမှားများအတွက် ရှင်းပြချက်များ ရယူနိုင်သည်"
+  },
+  "panels/settings/AISettingsTab.ts | explainStyling": {
+    "message": "ရှင်းပြချက်များနှင့် ပုံစံဆိုင်ရာ အပြုအမူများအတွက် ထပ်ဆောင်းအကြောင်းအရာတို့ကို ရယူနိုင်သည်"
+  },
+  "panels/settings/AISettingsTab.ts | freestylerSendsData": {
+    "message": "စစ်ဆေးထားသော စာမျက်နှာရှိ DOM (သို့) CSS အကြောင်းအရာတိုင်းကို ရှင်းပြချက်များ ထုတ်လုပ်ရန် Google သို့ ပို့နိုင်သည်။ ဤတူးလ် ပိုကောင်းစေရန်အတွက် ဤဒေတာကို ပြန်စစ်သည့် ပုဂ္ဂိုလ်များက မြင်နိုင်သည်။"
+  },
+  "panels/settings/AISettingsTab.ts | generatedSnippets": {
+    "message": "ထုတ်လုပ်ထားသော ကုဒ်အတိုအထွာများကို သတိဖြင့်သုံးပါ"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
+    "message": "ကွန်ဆိုးလ် သတိပေးချက်နှင့် အမှားများကို နားလည်စေရန်၊ ပြင်ဆင်နိုင်ရန် အထောက်အကူပြုသည်"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
+    "message": "ပုံစံဆိုင်ရာ ပြဿနာများကို နားလည်စေရန်နှင့် ပြင်ဆင်ရာတွင် အထောက်အကူပြုသည်"
+  },
+  "panels/settings/AISettingsTab.ts | learnMore": {
+    "message": "ပိုမိုလေ့လာရန်"
+  },
+  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "သက်ရောက်မှုရှိရန်အတွက် ပြန်လည်စတင်ရန် လိုအပ်သော ဆက်တင်တစ်ခုနှင့် အထက်ကို ပြောင်းထားသည်။"
+  },
+  "panels/settings/AISettingsTab.ts | privacyNotice": {
+    "message": "ကိုယ်ရေးအချက်အလက်လုံခြုံမှုဆိုင်ရာ သတိပေးချက်"
+  },
+  "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
+    "message": "ပုံစံဆိုင်ရာ ပြဿနာများအတွက် အကြံပြုချက်နှင့် ကုဒ်နမူနာများ ရယူနိုင်သည်"
+  },
+  "panels/settings/AISettingsTab.ts | receiveSuggestions": {
+    "message": "ဤပြဿနာများကို ဖြေရှင်းရန် အကြံပြုချက်နှင့် ကုဒ်နမူနာများ ရယူနိုင်သည်"
+  },
+  "panels/settings/AISettingsTab.ts | retainData": {
+    "message": "သုံးစွဲမှုဒေတာကို မည်သူမည်ဝါ ပေးပို့ကြောင်း Google က မသိနိုင်သည့်နေရာတွင် သိမ်းပါမည်။ ၎င်းအား ဖျက်ပစ်ရန် တောင်းဆိုချက်များကို လုပ်ဆောင်ပေးနိုင်မည်မဟုတ်တော့ဘဲ ၁၈ လအထိ ထိန်းသိမ်းထားပါမည်"
+  },
+  "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
+    "message": "ဤတူးလ်များသုံးခြင်းဖြင့် တူးလ်နှင့် သက်ဆိုင်သောဒေတာကို Google သို့ ပို့သည်။ နောက်ထပ် တူးလ်နှင့်သက်ဆိုင်သော အချက်အလက်ကို အောက်တွင်ကြည့်ပါ။"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfService": {
+    "message": "Google ဝန်ဆောင်မှုစည်းမျဉ်းများ"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
+    "message": "{PH1} နှင့် {PH2} တို့အရ ဤတူးလ်ကို အသုံးပြုရမည်"
+  },
+  "panels/settings/AISettingsTab.ts | thingsToConsider": {
+    "message": "စဉ်းစားရန် အချက်များ"
+  },
+  "panels/settings/AISettingsTab.ts | whenOn": {
+    "message": "ဖွင့်ထားပါက"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "ဖိုင်အမည်ပုံစံ ထည့်ရန်"
   },
@@ -11156,6 +11237,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "စက်ပစ္စည်းများ ပြရန်"
   },
+  "panels/settings/settings-meta.ts | chromeAI": {
+    "message": "Chrome AI"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "မှတ်တမ်းတင်ခြင်း"
   },
@@ -11173,6 +11257,9 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "ဖြတ်လမ်းလင့်ခ်များ"
+  },
+  "panels/settings/settings-meta.ts | showChromeAI": {
+    "message": "Chrome AI ကိုပြပါ"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "စမ်းသပ်မှုများကို ပြရန်"
@@ -12212,6 +12299,9 @@
   "panels/timeline/CountersGraph.ts | listeners": {
     "message": "နားထောင်ခြင်းစနစ်များ"
   },
+  "panels/timeline/CountersGraph.ts | noEventsFound": {
+    "message": "ရွေးထားသည့် ဖြစ်စဉ်များအတွင်း မှတ်ဉာဏ်သုံးစွဲမှုဒေတာ မတွေ့ပါ။"
+  },
   "panels/timeline/CountersGraph.ts | nodes": {
     "message": "နုတ်များ"
   },
@@ -12387,7 +12477,7 @@
     "message": "အပြင်အဆင်"
   },
   "panels/timeline/EventUICategory.ts | layoutShift": {
-    "message": "အပြင်အဆင်ပြောင်းလဲခြင်း"
+    "message": "အပြင်အဆင်ပြောင်းလဲမှု"
   },
   "panels/timeline/EventUICategory.ts | loading": {
     "message": "ဖွင့်နေသည်"
@@ -12602,6 +12692,12 @@
   "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpenedWithUrl": {
     "message": "WebSocket ဖွင့်ထားသည်- {PH1}"
   },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
+    "message": "ဆာဗာ တုံ့ပြန်ချိန်များ — {PH1}"
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
+    "message": "ဤဇယားတွင် ‘ဆာဗာတုံ့ပြန်ချိန်’ ဆိုင်ရာ ကွန်ရက်တုံ့ပြန်မှုခေါင်းစဉ်များမှ ယူထားသော တုံ့ပြန်မှုများ ပါဝင်သည်။ ၎င်းတို့၏ သက်ဆိုင်ရာ စတင်ချိန်များကို ခန့်မှန်းထားခြင်းဖြစ်ပြီး တိကျမှန်ကန်နိုင်မည် မဟုတ်ပါ။"
+  },
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(အမည်မသိ)"
   },
@@ -12728,6 +12824,12 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "လက်ရှိ စက်ရှင်- {PH1}။ {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalAndFieldMetrics": {
+    "message": "သင့်ဆာဗာ မက်ထရစ်နှင့် လက်တွေ့အသုံးပြုနိုင်မှု မက်ထရစ်များ"
+  },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalMetrics": {
+    "message": "သင့်ဆာဗာ မက်ထရစ်များ"
+  },
   "panels/timeline/TimelineHistoryManager.ts | moments": {
     "message": "အခိုက်အတန့်များ"
   },
@@ -12842,6 +12944,9 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "ပြုပြင်ရန်"
   },
+  "panels/timeline/TimelinePanel.ts | hideSidebar": {
+    "message": "တစ်ခုတည်းရှိသော ဆိုက်ဘားကို ဖျောက်ရန်"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "စိစစ်ရေးစနစ် စတင်နေသည်…"
   },
@@ -12886,6 +12991,15 @@
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "မှတ်ဉာဏ်အချိန်မှတ်တမ်း ပြရန်"
+  },
+  "panels/timeline/TimelinePanel.ts | showSidebar": {
+    "message": "ဆိုက်ဘားပြပါ"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarHidden": {
+    "message": "စွမ်းဆောင်ရည် ဆိုက်ဘား ဖျောက်ထားသည်"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarShown": {
+    "message": "စွမ်းဆောင်ရည် ဆိုက်ဘား ပြထားသည်"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} စက္ကန့်"
@@ -13143,7 +13257,7 @@
     "message": "{PH2} တွင် {PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
-    "message": "ပျက်ပြယ်စေခြင်းများ"
+    "message": "မမှန်ကန်မှုများ (စုစုပေါင်း {PH1} ခု)"
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "အချိန်ကုန်သွားသည့်အတွက် ရုပ်သိမ်းလိုက်သည်"
@@ -13373,6 +13487,12 @@
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "စနစ်"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
+    "message": "CPU- {PH1}"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
+    "message": "CPU မြန်နှုန်းထိန်းချုပ်ခြင်း- {PH1}"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
     "message": "{PH1} ဆ အရှိန်လျှော့ချခြင်း"
   },
@@ -13409,8 +13529,14 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket ပရိုတိုကော"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | add": {
+    "message": "ထည့်ရန်"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "အဆင့်မြင့်"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
+    "message": "\"{PH1}\" ကို ထုတ်လုပ်မှု ဇာစ်မြစ်တွင် နေရာချထားပြီးဖြစ်သည်။"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "မလုပ်တော့"
@@ -13421,17 +13547,35 @@
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "အကွက်ဒေတာ ရယူရန် စီစဉ်သတ်မှတ်ပါ"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
+    "message": "ဖျက်ရန်"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
+    "message": "ရေးဆွဲမှု ဇာစ်မြစ်"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
+    "message": "ရေးဆွဲမှု ဇာစ်မြစ်- {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome UX Report တွင် ဤစာမျက်နှာအတွက် လုံလောက်သော လက်တွေ့အမြန်နှုန်းဒေတာ မရှိပါ။"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "ဝဘ်ဆိုက်တွင် အမှန်တကယ်အသုံးပြုသူ တွေ့ကြုံရသည့် ဒေသဆိုင်ရာ တိုင်းတာမှုများကို သင့်အား ဆက်စပ်ဖော်ပြရာတွင် ကူညီရန်အတွက် Chrome UX Report မှ ပေါင်းစည်းထားသည့် အကွက်ဒေတာကို ရယူနိုင်သည်။"
+    "message": "ဝဘ်ဆိုက်တွင် အမှန်တကယ်အသုံးပြုသူ စောင့်ဆိုင်းရသည့် ဆာဗာ၏ တိုင်းတာမှုများကို ဆက်စပ်ဖော်ပြရာတွင် အထောက်အကူပြုရန်အတွက် ပေါင်းစည်းထားသည့် အမှန်တကယ်သုံးသော ဒေတာကို {PH1} ထံမှ ရယူနိုင်သည်။"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
+    "message": "\"{PH1}\" သည် မှန်ကန်သောဇာစ်မြစ် (သို့) URL မဟုတ်ပါ။"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
+    "message": "ရေးဆွဲမှု ဇာစ်မြစ်ကို သတ်မှတ်ခြင်းဖြင့် ၎င်း၏ ထုတ်လုပ်မှု ဇာစ်မြစ်အတွက် သက်ဆိုင်သော အမှန်တကယ်သုံးသော ဒေတာကို အလိုအလျောက်ရရှိနိုင်သည်။"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | new": {
+    "message": "အသစ်"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | ok": {
     "message": "OK"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "အောက်ပါ URL အတွက် အကွက် ဒေတာကိုသာ ရယူရန်"
+    "message": "အောက်ပါ URL အတွက် အမှန်တကယ်သုံးသော ဒေတာကို အမြဲပြပါ"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "ထွက်ရန်"
@@ -13439,11 +13583,17 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "ကိုယ်ရေးအချက်အလက်လုံခြုံမှုဆိုင်ရာ ထုတ်ဖော်ကြေညာချက်"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
+    "message": "ထုတ်လုပ်မှု ဇာစ်မြစ်"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
+    "message": "ထုတ်လုပ်မှု ဇာစ်မြစ်- {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "စနစ်ထည့်သွင်းရန်"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | urlOverride": {
-    "message": "URL အစားထိုးခြင်း"
+  "panels/timeline/components/FieldSettingsDialog.ts | url": {
+    "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "ဆောဖ့်ဝဲတူးလ်များ ဖွင့်ထားသောအခါ အကွက်ဒေတာကို မေးမြန်းရန်အတွက် သင်ဝင်ကြည့်သည့် URL များကို Google သို့ ပို့ပါမည်။ ဤတောင်းဆိုချက်များကို သင့် Google အကောင့်သို့ ချိတ်ဆက်မထားပါ။"
@@ -13463,65 +13613,53 @@
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "အလိုအလျောက် ({PH1})"
   },
-  "panels/timeline/components/LiveMetricsView.ts | betweenRange": {
-    "message": "({PH1}-{PH2})"
+  "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
+    "message": "စုစည်းမှု ကာလ-"
   },
-  "panels/timeline/components/LiveMetricsView.ts | clsTitle": {
-    "message": "စုစုပေါင်း အပြင်အဆင် ပြောင်းလဲခြင်းများ (CLS)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
-    "message": "CPU မြန်နှုန်းထိန်းချုပ်ခြင်း-"
+  "panels/timeline/components/LiveMetricsView.ts | dateRange": {
+    "message": "{PH1} - {PH2}"
   },
   "panels/timeline/components/LiveMetricsView.ts | desktop": {
     "message": "ဒက်စ်တော့"
   },
-  "panels/timeline/components/LiveMetricsView.ts | deviceType": {
-    "message": "စက်ပစ္စည်း အမျိုးအစား-"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | field75thPercentile": {
-    "message": "အကွက် ၇၅ ရာလီကိန်း"
+  "panels/timeline/components/LiveMetricsView.ts | device": {
+    "message": "စက်- {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "အကွက်ဒေတာ"
   },
-  "panels/timeline/components/LiveMetricsView.ts | good": {
-    "message": "ကောင်း"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | gtRange": {
-    "message": "(>{PH1})"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | inpTitle": {
-    "message": "နောက်ထပ် ဆေးခြယ်ခြင်းသို့ ပြန်လှန်တုံ့ပြန်မှု (INP)"
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
+    "message": "အမှန်တကယ်သုံးသော ဒေတာ"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "ပြန်လှန်တုံ့ပြန်မှုများ"
   },
-  "panels/timeline/components/LiveMetricsView.ts | lcpTitle": {
-    "message": "အကြီးဆုံး အကြောင်းအရာအပြည့်အစုံ ဆေးခြယ်ခြင်း (LCP)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | leqRange": {
-    "message": "(≤{PH1})"
+  "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
+    "message": "LCP အပိုင်း"
   },
   "panels/timeline/components/LiveMetricsView.ts | loadingOption": {
     "message": "{PH1} - ဖွင့်နေသည်…"
   },
   "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
-    "message": "စက်တွင်းနှင့် အကွက် မက်ထရစ်"
+    "message": "သင့်ဆာဗာ မက်ထရစ်နှင့် လက်တွေ့အသုံးပြုနိုင်မှု မက်ထရစ်များ"
   },
-  "panels/timeline/components/LiveMetricsView.ts | localValue": {
-    "message": "စက်တွင်း"
+  "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
+    "message": "သင့်ဆာဗာ မက်ထရစ်များ"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localMetricsLink": {
+    "message": "သင့်ဆာဗာ မက်ထရစ်များ"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "မိုဘိုင်း"
   },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
+    "message": "အသုံးပြုသူ အများစုသည် ဒက်စ်တော့ဖြင့်သုံးသည်။ အမှန်တကယ်အသုံးပြုသူများနှင့် ကိုက်ညီသော ဒက်စ်တော့ ဝင်းဒိုးအရွယ်အစားကို ပုံတူထုတ်လုပ်ကြည့်ပါ။"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
+    "message": "အသုံးပြုသူ အများစုသည် မိုဘိုင်းဖုန်းဖြင့်သုံးသည်။ အမှန်တကယ်အသုံးပြုသူနှင့် ကိုက်ညီသော မိုဘိုင်းစက်ကိရိယာကို ပုံတူထုတ်လုပ်ကြည့်ပါ။"
+  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} - ဒေတာမရှိပါ"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | needsImprovement": {
-    "message": "မွမ်းမံမှု လိုအပ်သည်"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
-    "message": "ကွန်ရက် မြန်နှုန်းထိန်းချုပ်ခြင်း-"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "နောက်အဆင့်များ"
@@ -13530,22 +13668,28 @@
     "message": "မူရင်း"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
-    "message": "မူရင်း ({PH1})"
+    "message": "ဇာစ်မြစ်- {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "{PH1}%"
+  "panels/timeline/components/LiveMetricsView.ts | recordingSettings": {
+    "message": "မှတ်တမ်းတင်ခြင်းဆိုင်ရာ ဆက်တင်များ"
   },
-  "panels/timeline/components/LiveMetricsView.ts | poor": {
-    "message": "ညံ့"
+  "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
+    "message": "{PH1} ရှိ လက်တွေ့အသုံးပြုသူဆိုင်ရာ ဒေတာနှင့် နှိုင်းယှဉ်၍ သင့်ဆာဗာရှိ မက်ထရစ်များကိုကြည့်ပါ။"
   },
-  "panels/timeline/components/LiveMetricsView.ts | relatedNode": {
-    "message": "ဆက်စပ်သောနုတ်"
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
+    "message": "စက်အမျိုးအစားအတွက် အမှန်တကယ်သုံးသော ဒေတာကို ပြပါ- {PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
+    "message": "{PH1} အတွက် အမှန်တကယ်သုံးသော ဒေတာကို ပြပါ"
   },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "တက်ဘလက်"
   },
-  "panels/timeline/components/LiveMetricsView.ts | throttling": {
-    "message": "မြန်နှုန်းထိန်းချုပ်ခြင်း"
+  "panels/timeline/components/LiveMetricsView.ts | theFieldMetricsAre": {
+    "message": "{PH1} ကို ကွန်ရက်ချိတ်ဆက်မှု၊ စက်ကိရိယာအများအပြားတို့ကိုသုံး၍ အမှန်တကယ်အသုံးပြုသူတို့ဖြင့် တိုင်းတာသည်။"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
+    "message": "{PH1} ကို သင့်ကွန်ရက်ချိတ်ဆက်မှုနှင့် စက်ပစ္စည်းတို့သုံး၍ လက်ရှိစာမျက်နှာမှ ထုတ်ယူသည်။"
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "အမှန်တကယ်အသုံးပြုသူများဖြင့် တိုင်းတာသည့် ကွန်ရက်တုံ့ပြန်ချိန်ကို ခန့်မှန်းရန် ကွန်ရက်မြန်နှုန်းထိန်းချုပ်မှုကို ပိတ်ကြည့်ပါ။"
@@ -13557,10 +13701,70 @@
     "message": "URL"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOptionWithKey": {
-    "message": "URL ({PH1})"
+    "message": "URL- {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | urlOrOrigin": {
-    "message": "URL/ဇာစ်မြစ်-"
+  "panels/timeline/components/MetricCompareStrings.ts | goodBetterCompare": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် ကောင်းမွန်ပြီး အသုံးပြုသူများ၏ စောင့်ဆိုင်းချိန်ထက် သိသာထင်ရှားစွာ မြန်ဆန်လျက်ရှိသည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် ကောင်းမွန်ပြီး အမှန်တကယ်အသုံးပြုသူ {PH1} ၏ စောင့်ဆိုင်းချိန်၏ {PH4} နှင့် တူညီကြောင်း အဆင့်သတ်မှတ်နိုင်သည်။ ထို့အပြင် အမှန်တကယ်သုံးသော ဒေတာအရ အသုံးပြုသူ ၇၅ ရာခိုင်နှုန်းအတွက် {PH1} {PH3} သည် ကောင်းမွန်သည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် ကောင်းမွန်ပြီး အမှန်တကယ်အသုံးပြုသူ {PH1} ၏ စောင့်ဆိုင်းချိန်၏ {PH4} နှင့် တူညီကြောင်း အဆင့်သတ်မှတ်နိုင်သည်။ သို့သော် အမှန်တကယ်သုံးသော ဒေတာအရ အသုံးပြုသူ ၇၅ ရာခိုင်နှုန်းအတွက် {PH1} {PH3} သည် မွမ်းမံမှု လိုအပ်သည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် ကောင်းမွန်ပြီး အမှန်တကယ်အသုံးပြုသူ {PH1} ၏ စောင့်ဆိုင်းချိန်၏ {PH4} နှင့် တူညီကြောင်း အဆင့်သတ်မှတ်နိုင်သည်။ သို့သော် အမှန်တကယ်သုံးသော ဒေတာအရ အသုံးပြုသူ ၇၅ ရာခိုင်နှုန်းအတွက် {PH1} {PH3} သည် နှေးကွေးသည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် ကောင်းမွန်ပြီး အသုံးပြုသူ၏ စောင့်ဆိုင်းချိန်နှင့် ဆင်တူသည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSummarized": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် ကောင်းမွန်သည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodWorseCompare": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် ကောင်းမွန်ပြီး အသုံးပြုသူများ၏ စောင့်ဆိုင်းချိန်ထက် သိသာထင်ရှားစွာ နှောင့်နှေးလျက်ရှိသည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementBetterCompare": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် မွမ်းမံမှု လိုအပ်ပြီး အသုံးပြုသူများ၏ စောင့်ဆိုင်းချိန်ထက် သိသာထင်ရှားစွာ မြန်ဆန်လျက်ရှိသည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် မွမ်းမံမှု လိုအပ်ပြီး အမှန်တကယ်အသုံးပြုသူ {PH1} ၏ စောင့်ဆိုင်းချိန်၏ {PH4} နှင့် တူညီကြောင်း အဆင့်သတ်မှတ်နိုင်သည်။ သို့သော် အမှန်တကယ်သုံးသော ဒေတာအရ အသုံးပြုသူ ၇၅ ရာခိုင်နှုန်းအတွက် {PH1} {PH3} သည် ကောင်းမွန်သည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် မွမ်းမံမှု လိုအပ်ပြီး အမှန်တကယ်အသုံးပြုသူ {PH1} ၏ စောင့်ဆိုင်းချိန်၏ {PH4} နှင့် တူညီကြောင်း အဆင့်သတ်မှတ်နိုင်သည်။ ထို့ပြင် အမှန်တကယ်သုံးသော ဒေတာအရ အသုံးပြုသူ ၇၅ ရာခိုင်နှုန်းအတွက် {PH1} {PH3} သည် မွမ်းမံမှု လိုအပ်သည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် မွမ်းမံမှု လိုအပ်ပြီး အမှန်တကယ်အသုံးပြုသူ {PH1} ၏ စောင့်ဆိုင်းချိန်၏ {PH4} နှင့် တူညီကြောင်း အဆင့်သတ်မှတ်နိုင်သည်။ သို့သော် အမှန်တကယ်သုံးသော ဒေတာအရ အသုံးပြုသူ ၇၅ ရာခိုင်နှုန်းအတွက် {PH1} {PH3} သည် နှေးကွေးသည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် မွမ်းမံမှု လိုအပ်ပြီး ၎င်းသည် အသုံးပြုသူများ၏ စောင့်ဆိုင်းချိန်နှင့် ဆင်တူသည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSummarized": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် မွမ်းမံမှု လိုအပ်သည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementWorseCompare": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် မွမ်းမံမှု လိုအပ်ပြီး အသုံးပြုသူများ၏ စောင့်ဆိုင်းချိန်ထက် သိသာထင်ရှားစွာ နှောင့်နှေးလျက်ရှိသည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorBetterCompare": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် နှေးကွေးပြီး အသုံးပြုသူများ၏ စောင့်ဆိုင်းချိန်ထက် သိသာထင်ရှားစွာ မြန်ဆန်လျက်ရှိသည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် နှေးကွေးနေပြီး အမှန်တကယ်အသုံးပြုသူ {PH1} ၏ စောင့်ဆိုင်းချိန်၏ {PH4} နှင့် တူညီကြောင်း အဆင့်သတ်မှတ်နိုင်သည်။ သို့သော် အမှန်တကယ်သုံးသော ဒေတာအရ အသုံးပြုသူ ၇၅ ရာခိုင်နှုန်းအတွက် {PH1} {PH3} သည် ကောင်းမွန်သည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် နှေးကွေးနေပြီး အမှန်တကယ်အသုံးပြုသူ {PH1} ၏ စောင့်ဆိုင်းချိန်၏ {PH4} နှင့် တူညီကြောင်း အဆင့်သတ်မှတ်နိုင်သည်။ သို့သော် အမှန်တကယ်သုံးသော ဒေတာအရ အသုံးပြုသူ ၇၅ ရာခိုင်နှုန်းအတွက် {PH1} {PH3} သည် မွမ်းမံမှု လိုအပ်သည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် နှေးကွေးနေပြီး အမှန်တကယ်အသုံးပြုသူ {PH1} ၏ စောင့်ဆိုင်းချိန်၏ {PH4} နှင့် တူညီကြောင်း အဆင့်သတ်မှတ်နိုင်သည်။ ထို့အပြင် အမှန်တကယ်သုံးသော ဒေတာအရ အသုံးပြုသူ ၇၅ ရာခိုင်နှုန်းအတွက် {PH1} {PH3} သည် နှေးကွေးသည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် နှေးကွေးပြီး အသုံးပြုသူ၏ စောင့်ဆိုင်းချိန်နှင့် ဆင်တူသည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSummarized": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် နှေးကွေးသည်။"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorWorseCompare": {
+    "message": "သင့်ဆာဗာ၏ {PH1} {PH2} သည် နှေးကွေးပြီး အသုံးပြုသူများ၏ စောင့်ဆိုင်းချိန်ထက် သိသာထင်ရှားစွာ နှောင့်နှေးလျက်ရှိသည်။"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | FromCache": {
     "message": " (ကက်ရှ်မှ)"
@@ -13652,8 +13856,26 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
     "message": "ပိတ်ထားသည်"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | network": {
+    "message": "ကွန်ရက်- {PH1}"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | networkThrottling": {
+    "message": "ကွန်ရက် မြန်နှုန်းထိန်းချုပ်ခြင်း- {PH1}"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "အသင့်သုံးများ"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "fetchpriority=high သုံးထားသည်"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "နေရာကွက်၍ ဖွင့်ခြင်းကို သုံးမထားပါ"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "အစောဆုံး စတင်သည့်အချိန်မှ {PH1} ကြာပြီးနောက် LCP ပုံ ပွင့်သည်။"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "တောင်းဆိုချက်ကို မှတ်တမ်း၏ အစပိုင်းတွင် ရှာဖွေတွေ့နိုင်သည်"
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "အစိတ်အပိုင်းပုံဖော်ခြင်း နှောင့်နှေးမှု"
@@ -13661,8 +13883,8 @@
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "ရင်းမြစ်ဖွင့်ခြင်း နှောင့်နှေးမှု"
   },
-  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadTime": {
-    "message": "ရင်းမြစ်ဖွင့်ချိန်"
+  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDuration": {
+    "message": "ရင်းမြစ်ဖွင့်သည့် ကြာချိန်"
   },
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
     "message": "ပထမဆုံးဘိုက် အသုံးပြုချိန်"
@@ -14681,9 +14903,6 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1} အတွက် ဖန်သားပြင်ဓာတ်ပုံ - ယခင် တောင်းဆိုချက်များကို ကြည့်ရန် ရွေးပါ။"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
-    "message": "Script ကို လျစ်လျူရှုရန်စာရင်းတွင် ထည့်ရန်"
-  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "ခြေရာခံခြင်းများ စီစဉ်သတ်မှတ်ရန်…"
   },
@@ -14693,23 +14912,11 @@
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "Flame Chart"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideChildren": {
-    "message": "အခွဲများ ဖျောက်ရန်"
+  "ui/legacy/components/perf_ui/FlameChart.ts | labelEntry": {
+    "message": "အညွှန်း ထည့်သွင်းမှု"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideFunction": {
-    "message": "လုပ်ဆောင်ချက် ဖျောက်ရန်"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
-    "message": "ထပ်နေသည့် အခွဲများကို ဖျောက်ရန်"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
-    "message": "Script ကို လျစ်လျူရှုရန်စာရင်းမှ ဖယ်ရှားရန်"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
-    "message": "အခွဲများကို ပြင်ဆင်သတ်မှတ်ရန်"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
-    "message": "လုပ်ဆောင်ချက်မှတ်တမ်း ပြင်ဆင်သတ်မှတ်ရန်"
+  "ui/legacy/components/perf_ui/FlameChart.ts | linkEntries": {
+    "message": "လင့်ခ် ထည့်သွင်းမှုများ"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sCollapsed": {
     "message": "{PH1} လျှော့ပြထားသည်"

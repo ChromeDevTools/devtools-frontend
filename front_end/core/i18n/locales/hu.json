@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | stylesSidebar": {
     "message": "stílusok oldalsáv"
   },
+  "core/common/Revealer.ts | timelinePanel": {
+    "message": "Teljesítménypanel"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Adorner"
   },
@@ -753,7 +756,7 @@
     "message": "A következőhöz tartozó DevTools megnyitása: Node.js"
   },
   "entrypoints/inspector_main/InspectorMain.ts | tab": {
-    "message": "Lap"
+    "message": "Tab"
   },
   "entrypoints/inspector_main/OutermostTargetSelector.ts | targetNotSelected": {
     "message": "Oldal: Nincs kiválasztva"
@@ -1142,11 +1145,11 @@
   "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
     "message": "A(z) :--customstatename szintaxist megszüntettük. Használja helyette a(z) :state(customstatename) szintaxist."
   },
+  "generated/Deprecation.ts | CSSInsetAreaProperty": {
+    "message": "A(z) inset-area-tulajdonság elavult. Használja helyette a(z) position-area tulajdonságot."
+  },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Az -internal-media-controls-overlay-cast-button választó helyett a disableRemotePlayback attribútumot kell használni az alapértelmezett Cast-integráció letiltásához."
-  },
-  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
-    "message": "A nem szabványosított inner-spin-button, media-slider, media-sliderthumb, media-volume-slider, media-volume-sliderthumb, push-button, searchfield-cancel-button, slider-horizontal, sliderthumb-horizontal, sliderthumb-vertical és square-button CSS-megjelenítési értékeket el fogjuk távolítani."
   },
   "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
     "message": "A(z) slider-vertical CSS-megjelenítési érték nem szabványosított, ezért el fogjuk távolítani."
@@ -4532,6 +4535,9 @@
   "panels/autofill/AutofillView.ts | sendFeedback": {
     "message": "Visszajelzés küldése"
   },
+  "panels/autofill/AutofillView.ts | showTestAddressesInAutofillMenu": {
+    "message": "Tesztcímek megjelenítése az automatikus kitöltési menüben"
+  },
   "panels/autofill/AutofillView.ts | toStartDebugging": {
     "message": "Az automatikus kitöltéssel kapcsolatos hibaelhárítás megkezdéséhez használja a Chrome Automatikus kitöltés menüjét a címhez tartozó űrlap kitöltéséhez."
   },
@@ -5591,6 +5597,9 @@
   "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
     "message": "Az oldal fókuszban tartása. Gyakran használják az eltűnő elemekkel kapcsolatos hibaelhárításhoz."
   },
+  "panels/elements/ElementStatePaneWidget.ts | forceElementSpecificStates": {
+    "message": "Adott elemállapot kényszerítése"
+  },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Elemállapot kényszerítése"
   },
@@ -6438,13 +6447,10 @@
     "message": "A figyelmeztetés értelmezése"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "Ez a funkció nem áll rendelkezésre az Ön régiójában."
+    "message": "Ez a funkció nem áll rendelkezésre az Ön régiójában"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
     "message": "A szervezete kikapcsolta ezt a funkciót. További információért forduljon a rendszergazdához."
-  },
-  "panels/explain/explain-meta.ts | rolloutRestricted": {
-    "message": "Ez a funkció jelenleg bevezetés alatt áll. Figyelje a híreket."
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "A funkció használatához módosítsa angolra a DevTools beállításaiban található nyelvi beállításokat."
@@ -8130,25 +8136,25 @@
     "message": "Összes másolása mint PowerShell"
   },
   "panels/network/NetworkLogView.ts | copyAllListedAsCurl": {
-    "message": "Összes következőként felsorolt másolása: cURL"
+    "message": "Az összes felsorolt másolása a következő formátumban: cURL"
   },
   "panels/network/NetworkLogView.ts | copyAllListedAsCurlBash": {
-    "message": "Összes következőként felsorolt másolása: cURL (bash)"
+    "message": "Az összes felsorolt másolása a következő formátumban: cURL (bash)"
   },
   "panels/network/NetworkLogView.ts | copyAllListedAsCurlCmd": {
-    "message": "Összes következőként felsorolt másolása: cURL (cmd)"
+    "message": "Az összes felsorolt másolása a következő formátumban: cURL (cmd)"
   },
   "panels/network/NetworkLogView.ts | copyAllListedAsFetch": {
-    "message": "Összes következőként felsorolt másolása: fetch"
+    "message": "Az összes felsorolt másolása a következő formátumban: fetch"
   },
   "panels/network/NetworkLogView.ts | copyAllListedAsHar": {
-    "message": "Összes következőként felsorolt másolása: HAR"
+    "message": "Az összes felsorolt másolása a következő formátumban: HAR"
   },
   "panels/network/NetworkLogView.ts | copyAllListedAsNodejsFetch": {
-    "message": "Összes következőként felsorolt másolása: fetch (Node.js)"
+    "message": "Az összes felsorolt másolása a következő formátumban: fetch (Node.js)"
   },
   "panels/network/NetworkLogView.ts | copyAllListedAsPowershell": {
-    "message": "Összes következőként felsorolt másolása: PowerShell"
+    "message": "Az összes felsorolt másolása a következő formátumban: PowerShell"
   },
   "panels/network/NetworkLogView.ts | copyAllListedURLs": {
     "message": "Az összes felsorolt URL másolása"
@@ -9596,6 +9602,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "Csomópontjelölők számítása…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingObjectNames": {
+    "message": "Objektumnevek kiszámítása…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingRetainedSizes": {
     "message": "Fenntartott méretek kiszámítása…"
   },
@@ -10871,6 +10880,78 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Tétlen felhasználó, feloldott képernyő"
   },
+  "panels/settings/AISettingsTab.ts | adminSettings": {
+    "message": "A felügyelt felhasználók számára rendelkezésre álló funkciók a rendszergazda beállításaitól függően eltérők lehetnek."
+  },
+  "panels/settings/AISettingsTab.ts | boostYourProductivity": {
+    "message": "Hatékonyságnövelés a Chrome AI segítségével"
+  },
+  "panels/settings/AISettingsTab.ts | chromeAi": {
+    "message": "Chrome AI"
+  },
+  "panels/settings/AISettingsTab.ts | collapse": {
+    "message": "összecsukás"
+  },
+  "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
+    "message": "A konzolüzenetet, a kapcsolódó veremkivonatot, a kapcsolódó forráskódot és a kapcsolódó hálózati fejléceket a rendszer elküldi a Google-nak magyarázatok létrehozása céljából. A funkció továbbfejlesztése érdekében előfordulhat, hogy felülvizsgálatot végző emberek is átnézik ezeket az adatokat."
+  },
+  "panels/settings/AISettingsTab.ts | expand": {
+    "message": "kibontás"
+  },
+  "panels/settings/AISettingsTab.ts | experimentalFeatures": {
+    "message": "Ezek kísérleti funkciók, és nem véglegesek"
+  },
+  "panels/settings/AISettingsTab.ts | explainConsole": {
+    "message": "Magyarázatokat kaphat a konzollal kapcsolatos figyelmeztetésekhez és hibákhoz"
+  },
+  "panels/settings/AISettingsTab.ts | explainStyling": {
+    "message": "Magyarázatokat és további kontextust kaphat a formázási viselkedésekhez"
+  },
+  "panels/settings/AISettingsTab.ts | freestylerSendsData": {
+    "message": "Előfordulhat, hogy a vizsgált oldalon található összes DOM- vagy CSS-tartalmat a rendszer elküldi a Google-nak magyarázatok létrehozása céljából. A funkció továbbfejlesztése érdekében előfordulhat, hogy felülvizsgálatot végző emberek is átnézik ezeket az adatokat."
+  },
+  "panels/settings/AISettingsTab.ts | generatedSnippets": {
+    "message": "Körültekintően használja a létrehozott kódrészleteket"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
+    "message": "Segít megérteni és kijavítani a konzollal kapcsolatos figyelmeztetéseket és hibákat"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
+    "message": "Segít megérteni és kijavítani a stílussal kapcsolatos problémákat"
+  },
+  "panels/settings/AISettingsTab.ts | learnMore": {
+    "message": "További információ"
+  },
+  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "Egy vagy több beállítás megváltozott, amelynek életbe lépéséhez újratöltés szükséges."
+  },
+  "panels/settings/AISettingsTab.ts | privacyNotice": {
+    "message": "Adatvédelmi közlemény"
+  },
+  "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
+    "message": "Javaslatokat és kódmintákat kaphat a stílusproblémák megoldásához"
+  },
+  "panels/settings/AISettingsTab.ts | receiveSuggestions": {
+    "message": "Javaslatokat és kódmintákat kaphat a problémák megoldásához"
+  },
+  "panels/settings/AISettingsTab.ts | retainData": {
+    "message": "A használati adatokat olyan módon tároljuk, hogy a Google nem tudja megállapítani, ki adta meg őket, így pedig már nem tud törlési kérelmeket teljesíteni. Az adatokat legfeljebb 18 hónapig őrizzük meg."
+  },
+  "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
+    "message": "A funkciók használatakor a rendszer elküldi a funkció szempontjából releváns adatokat a Google-nak. A funkcióval kapcsolatos további információt alább találja."
+  },
+  "panels/settings/AISettingsTab.ts | termsOfService": {
+    "message": "Google Általános Szerződési Feltételek"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
+    "message": "A funkció használatára a következők vonatkoznak: {PH1} és {PH2}"
+  },
+  "panels/settings/AISettingsTab.ts | thingsToConsider": {
+    "message": "Megfontolandó szempontok"
+  },
+  "panels/settings/AISettingsTab.ts | whenOn": {
+    "message": "Amikor be van kapcsolva"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Fájlnévminta hozzáadása"
   },
@@ -11156,6 +11237,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "Eszközök megjelenítése"
   },
+  "panels/settings/settings-meta.ts | chromeAI": {
+    "message": "Chrome AI"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Dokumentáció"
   },
@@ -11173,6 +11257,9 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "Parancsikonok"
+  },
+  "panels/settings/settings-meta.ts | showChromeAI": {
+    "message": "A Chrome AI megjelenítése"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "Kísérletek megjelenítése"
@@ -12212,6 +12299,9 @@
   "panels/timeline/CountersGraph.ts | listeners": {
     "message": "Figyelők"
   },
+  "panels/timeline/CountersGraph.ts | noEventsFound": {
+    "message": "A kiválasztott eseményekben nem találhatók memóriahasználati adatok."
+  },
   "panels/timeline/CountersGraph.ts | nodes": {
     "message": "Csomópontok"
   },
@@ -12602,6 +12692,12 @@
   "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpenedWithUrl": {
     "message": "WebSocket megnyitva: {PH1}"
   },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
+    "message": "Szerveridőzítések – {PH1}"
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
+    "message": "Ez a sáv a Server-Timing hálózati válaszfejlécekből származó időzítéseket tartalmazza. A hozzájuk tartozó kezdési időpontok csak becsült értékek, és nem feltétlenül pontosak."
+  },
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(névtelen)"
   },
@@ -12728,6 +12824,12 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "Jelenlegi munkamenet: {PH1} {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalAndFieldMetrics": {
+    "message": "Helyi és mezőmutatók"
+  },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalMetrics": {
+    "message": "Helyi mutatók"
+  },
   "panels/timeline/TimelineHistoryManager.ts | moments": {
     "message": "pillanatok"
   },
@@ -12842,6 +12944,9 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Javítás"
   },
+  "panels/timeline/TimelinePanel.ts | hideSidebar": {
+    "message": "Egyedüli oldalsáv elrejtése"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Teljesítményelemző eszköz inicializálása…"
   },
@@ -12886,6 +12991,15 @@
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "Memória-idővonal megjelenítése"
+  },
+  "panels/timeline/TimelinePanel.ts | showSidebar": {
+    "message": "Oldalsáv megjelenítése"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarHidden": {
+    "message": "Teljesítmény oldalsávja elrejtve"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarShown": {
+    "message": "Teljesítmény oldalsávja megjelenítve"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} mp"
@@ -13143,7 +13257,7 @@
     "message": "{PH1} itt: {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
-    "message": "Érvénytelenítések"
+    "message": "Érvénytelenítések (összesen {PH1})"
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Időtúllépés aktiválta"
@@ -13373,6 +13487,12 @@
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "Rendszer"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
+    "message": "CPU: {PH1}"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
+    "message": "CPU-korlátozás: {PH1}"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
     "message": "Lassulás: {PH1}×"
   },
@@ -13409,8 +13529,14 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket-protokoll"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | add": {
+    "message": "Hozzáadás"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Speciális"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
+    "message": "A(z) „{PH1}” már társítva van éles verzió eredetéhez."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "Mégse"
@@ -13421,17 +13547,35 @@
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "Mezőadatok lekérésének konfigurálása"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
+    "message": "Törlés"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
+    "message": "Fejlesztési eredet"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
+    "message": "Fejlesztési forrás: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "A Chrome UX Report nem rendelkezik elegendő valós sebességadattal erre az oldalra vonatkozóan."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "A Chrome UX Reportból lekérheti az összesített mezőadatokat, így a helyi méréseket a webhelyen a valódi felhasználók által tapasztalt élménnyel is kontextusba helyezheti."
+    "message": "Lekérheti az összesített mezőadatokat innen: {PH1}, így a helyi méréseket a webhelyen a valódi felhasználók által tapasztalt élménnyel is kontextusba helyezheti."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
+    "message": "A(z) „{PH1}” nem érvényes forrás vagy URL."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
+    "message": "Beállíthat egy fejlesztési eredetet, hogy automatikusan megkapja a releváns mezőadatokat a hozzá tartozó éles verzió eredetéhez."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | new": {
+    "message": "Új"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | ok": {
     "message": "OK"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Csak az alábbi URL mezőadatainak lekérése"
+    "message": "Mindig mutassa az alábbi URL mezőadatait"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Leiratkozás"
@@ -13439,11 +13583,17 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "Személyes adatok nyilvánosságra hozatala"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
+    "message": "Éles verzió eredete"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
+    "message": "Éles verzió eredete: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "Beállítás"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | urlOverride": {
-    "message": "URL-felülbírálás"
+  "panels/timeline/components/FieldSettingsDialog.ts | url": {
+    "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "Ha a DevTools meg van nyitva, a böngésző elküldi a felkeresett URL-eket a Google-nak a mezőadatok lekérdezése céljából. Ezek a kérelmek nincsenek összekapcsolva az Ön Google-fiókjával."
@@ -13463,44 +13613,29 @@
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "Automatikus ({PH1})"
   },
-  "panels/timeline/components/LiveMetricsView.ts | betweenRange": {
-    "message": "({PH1} – {PH2})"
+  "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
+    "message": "Adatgyűjtési időszak:"
   },
-  "panels/timeline/components/LiveMetricsView.ts | clsTitle": {
-    "message": "Cumulative Layout Shift (CLS)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
-    "message": "CPU-korlátozás:"
+  "panels/timeline/components/LiveMetricsView.ts | dateRange": {
+    "message": "{PH1} – {PH2}"
   },
   "panels/timeline/components/LiveMetricsView.ts | desktop": {
     "message": "Asztali számítógép"
   },
-  "panels/timeline/components/LiveMetricsView.ts | deviceType": {
-    "message": "Eszköztípus:"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | field75thPercentile": {
-    "message": "Mező 75. percentilise"
+  "panels/timeline/components/LiveMetricsView.ts | device": {
+    "message": "Eszköz: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "Mezőadatok"
   },
-  "panels/timeline/components/LiveMetricsView.ts | good": {
-    "message": "Jó"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | gtRange": {
-    "message": "(>{PH1})"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | inpTitle": {
-    "message": "Interaction to Next Paint (INP)"
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
+    "message": "mezőadatok"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "Interakciók"
   },
-  "panels/timeline/components/LiveMetricsView.ts | lcpTitle": {
-    "message": "Largest Contentful Paint (LCP)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | leqRange": {
-    "message": "(≤{PH1})"
+  "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
+    "message": "LCP-elem"
   },
   "panels/timeline/components/LiveMetricsView.ts | loadingOption": {
     "message": "{PH1} – Betöltés…"
@@ -13508,20 +13643,23 @@
   "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
     "message": "Helyi és mezőmutatók"
   },
-  "panels/timeline/components/LiveMetricsView.ts | localValue": {
-    "message": "Helyi"
+  "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
+    "message": "Helyi mutatók"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localMetricsLink": {
+    "message": "helyi mutatók"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "Mobil"
   },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
+    "message": "A felhasználók többsége számítógépet használ. Próbáljon olyan asztali ablakméretet emulálni, amely megfelel a valódi felhasználói igényeknek."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
+    "message": "A felhasználók többsége mobileszközt használ. Próbálkozzon a valódi felhasználóknak megfelelő mobileszköz emulálásával."
+  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} – Nincs adat"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | needsImprovement": {
-    "message": "Fejlesztésre szorul"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
-    "message": "Sávszélesség-korlátozás:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "További lépések"
@@ -13530,22 +13668,28 @@
     "message": "Eredet"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
-    "message": "Eredet ({PH1})"
+    "message": "Eredet: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "{PH1}%"
+  "panels/timeline/components/LiveMetricsView.ts | recordingSettings": {
+    "message": "Felvételi beállítások"
   },
-  "panels/timeline/components/LiveMetricsView.ts | poor": {
-    "message": "Rossz"
+  "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
+    "message": "A(z) {PH1} alkalmazásban összevetheti egymással a helyi mutatókat és a valódi felhasználói adatokat."
   },
-  "panels/timeline/components/LiveMetricsView.ts | relatedNode": {
-    "message": "Kapcsolódó csomópont"
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
+    "message": "Eszköztípushoz tartozó mezőadatok megjelenítése: {PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
+    "message": "{PH1} mezőadatainak megjelenítése"
   },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "Táblagép"
   },
-  "panels/timeline/components/LiveMetricsView.ts | throttling": {
-    "message": "Korlátozás"
+  "panels/timeline/components/LiveMetricsView.ts | theFieldMetricsAre": {
+    "message": "A(z) {PH1} mérését valódi felhasználók végzik számos különböző hálózati kapcsolat és eszköz használatával"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
+    "message": "A(z) {PH1} az aktuális oldalról lett rögzítve a hálózati kapcsolat és az eszköz használatával."
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "Próbálkozzon a sávszélesség-korlátozás kikapcsolásával, hogy megközelíthesse a valós felhasználók által mért hálózati késleltetést."
@@ -13557,10 +13701,70 @@
     "message": "URL"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOptionWithKey": {
-    "message": "URL ({PH1})"
+    "message": "URL: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | urlOrOrigin": {
-    "message": "URL/eredet:"
+  "panels/timeline/components/MetricCompareStrings.ts | goodBetterCompare": {
+    "message": "A helyi {PH1} {PH2} jó, és jelentősen jobb, mint a felhasználói élménye."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
+    "message": "A helyi {PH1} értéke ({PH2}) jó, az értékelése pedig megegyezik a(z) {PH4}-os valódi felhasználói {PH1} élménnyel. A mezőadatok 75. percentilise {PH1} ({PH3}) mindazonáltal jó."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
+    "message": "A helyi {PH1} értéke ({PH2}) jó, az értékelése pedig megegyezik a(z) {PH4}-os valódi felhasználói {PH1} élménnyel. A mezőadatok 75. percentilise {PH1} ({PH3}) viszont javításra szorul."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
+    "message": "A helyi {PH1} értéke ({PH2}) jó, az értékelése pedig megegyezik a(z) {PH4}-os valódi felhasználói {PH1} élménnyel. A mezőadatok 75. percentilise {PH1} ({PH3}) azonban gyenge."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
+    "message": "A helyi {PH1} értéke ({PH2}) jó, és hasonló a felhasználói élményéhez."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSummarized": {
+    "message": "A helyi {PH1} értéke ({PH2}) jó."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodWorseCompare": {
+    "message": "A helyi {PH1} értéke ({PH2}) jó, és jelentősen rosszabb, mint a felhasználói élménye."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementBetterCompare": {
+    "message": "A helyi {PH1} {PH2} értéken javítani kell, és jelentősen jobb, mint a felhasználói élménye."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
+    "message": "A helyi {PH1} értéke ({PH2}) javításra szorul, az értékelése pedig megegyezik a(z) {PH4}-os valós felhasználói {PH1} élménnyel. A mezőadatok 75. percentilise {PH1} ({PH3}) azonban jó."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
+    "message": "A helyi {PH1} értéke ({PH2}) javításra szorul, az értékelése pedig megegyezik a(z) {PH4}-os valós felhasználói {PH1} élménnyel. Ezenkívül a mezőadatok 75. percentilise {PH1} ({PH3}) javításra szorul."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
+    "message": "A helyi {PH1} értéke ({PH2}) javításra szorul, az értékelése pedig megegyezik a(z) {PH4}-os valós felhasználói {PH1} élménnyel. A mezőadatok 75. percentilise {PH1} ({PH3}) azonban gyenge."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
+    "message": "A helyi {PH1} értéke ({PH2}) javításra szorul, és hasonló a felhasználói élményéhez."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSummarized": {
+    "message": "A helyi {PH1} értéke ({PH2}) fejlesztésre szorul."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementWorseCompare": {
+    "message": "A helyi {PH1} értékén ({PH2}) javítani kell, és jelentősen rosszabb, mint a felhasználói élménye."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorBetterCompare": {
+    "message": "A helyi {PH1} értéke ({PH2}) gyenge, és jelentősen jobb, mint a felhasználói élménye."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
+    "message": "A helyi {PH1} értéke ({PH2}) gyenge, az értékelése pedig megegyezik a(z) {PH4}-os valódi felhasználói {PH1} élménnyel. A mezőadatok 75. percentilise {PH1} ({PH3}) azonban jó."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
+    "message": "A helyi {PH1} értéke ({PH2}) gyenge, az értékelése pedig megegyezik a(z) {PH4}-os valódi felhasználói {PH1} élménnyel. A mezőadatok 75. percentilise {PH1} ({PH3}) viszont javításra szorul."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
+    "message": "A helyi {PH1} értéke ({PH2}) gyenge, az értékelése pedig megegyezik a(z) {PH4}-os valódi felhasználói {PH1} élménnyel. Ezenkívül a mezőadatok 75. percentilise {PH1} ({PH3}) gyenge."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
+    "message": "A helyi {PH1} értéke ({PH2}) gyenge, és hasonló a felhasználói élményéhez."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSummarized": {
+    "message": "A helyi {PH1} értéke ({PH2}) gyenge."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorWorseCompare": {
+    "message": "A helyi {PH1} értéke ({PH2}) gyenge, és jelentősen rosszabb a felhasználói élménynél."
   },
   "panels/timeline/components/NetworkRequestDetails.ts | FromCache": {
     "message": " (a gyorsítótárból)"
@@ -13652,8 +13856,26 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
     "message": "Kikapcsolva"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | network": {
+    "message": "Hálózat: {PH1}"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | networkThrottling": {
+    "message": "Sávszélesség-korlátozás: {PH1}"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "Előre beállított értékek"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "fetchpriority=high alkalmazva"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "késleltetett betöltés nincs alkalmazva"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "Az LCP-kép a legkorábbi kezdőpont után {PH1} elteltével töltődött be."
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "A kérelem a kezdeti dokumentumban található"
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "Elem renderelési késése"
@@ -13661,7 +13883,7 @@
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "Erőforrás betöltésének késése"
   },
-  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadTime": {
+  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDuration": {
     "message": "Erőforrás betöltési ideje"
   },
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
@@ -14681,9 +14903,6 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Képernyőkép ({PH1}) – válassza ki a megelőző kérések megjelenítéséhez."
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
-    "message": "Szkript hozzáadása a mellőzési listához"
-  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Csatornák konfigurálása…"
   },
@@ -14693,23 +14912,11 @@
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "Nyomonkövetési diagram"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideChildren": {
-    "message": "Alárendelt elemek elrejtése"
+  "ui/legacy/components/perf_ui/FlameChart.ts | labelEntry": {
+    "message": "Címkebejegyzés"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideFunction": {
-    "message": "Függvény elrejtése"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
-    "message": "Ismétlődő alárendelt elemek elrejtése"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
-    "message": "Szkript eltávolítása a mellőzési listáról"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
-    "message": "Gyermekek visszaállítása"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
-    "message": "Trace visszaállítása"
+  "ui/legacy/components/perf_ui/FlameChart.ts | linkEntries": {
+    "message": "Bejegyzések összekapcsolása"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sCollapsed": {
     "message": "{PH1} összecsukva"

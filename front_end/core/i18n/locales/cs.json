@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | stylesSidebar": {
     "message": "postranní panel stylů"
   },
+  "core/common/Revealer.ts | timelinePanel": {
+    "message": "Panel výkonu"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Ozdůbka"
   },
@@ -753,7 +756,7 @@
     "message": "Otevřete nástroje DevTools pro Node.js"
   },
   "entrypoints/inspector_main/InspectorMain.ts | tab": {
-    "message": "Tabulátor"
+    "message": "Karta"
   },
   "entrypoints/inspector_main/OutermostTargetSelector.ts | targetNotSelected": {
     "message": "Stránka: Není vybráno"
@@ -1142,11 +1145,11 @@
   "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
     "message": "Syntaxe :--customstatename je zastaralá. Použijte místo ní syntaxi :state(customstatename)."
   },
+  "generated/Deprecation.ts | CSSInsetAreaProperty": {
+    "message": "Vlastnost inset-area je zastaralá. Použijte místo ní vlastnost position-area."
+  },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Namísto selektoru -internal-media-controls-overlay-cast-button byste k vypnutí výchozí integrace funkce Cast měli použít atribut disableRemotePlayback."
-  },
-  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
-    "message": "Hodnoty vzhledu CSS inner-spin-button, media-slider, media-sliderthumb, media-volume-slider, media-volume-sliderthumb, push-button, searchfield-cancel-button, slider-horizontal, sliderthumb-horizontal, sliderthumb-verticala square-button nejsou standardizovány a budou odstraněny."
   },
   "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
     "message": "Hodnota vzhledu CSS slider-vertical není standardizovaná a bude odstraněna."
@@ -4532,6 +4535,9 @@
   "panels/autofill/AutofillView.ts | sendFeedback": {
     "message": "Odeslat zpětnou vazbu"
   },
+  "panels/autofill/AutofillView.ts | showTestAddressesInAutofillMenu": {
+    "message": "Zobrazovat v nabídce automatického vyplňování testovací adresy"
+  },
   "panels/autofill/AutofillView.ts | toStartDebugging": {
     "message": "Pokud chcete začít ladit automatické vyplňování, použijte nabídku automatického vyplňování prohlížeče Chrome k vyplnění formuláře pro adresu."
   },
@@ -5591,6 +5597,9 @@
   "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
     "message": "Udržovat stránku vybranou. Běžně se používá k ladění mizejících prvků."
   },
+  "panels/elements/ElementStatePaneWidget.ts | forceElementSpecificStates": {
+    "message": "Vynutit konkrétní stav prvku"
+  },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Vynutit stav prvku"
   },
@@ -6423,7 +6432,7 @@
     "message": "Aktualizovat nastavení"
   },
   "panels/explain/explain-meta.ts | ageRestricted": {
-    "message": "Tato funkce je dostupná pouze uživatelům starším 18 let."
+    "message": "Tato funkce je dostupná pouze uživatelům starším 18 let"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "Nechte si zprávy v konzoli vysvětlit od AI"
@@ -6438,16 +6447,13 @@
     "message": "Nechte si toto upozornění vysvětlit"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "Tato funkce není ve vaší oblasti dostupná."
+    "message": "Tato funkce není ve vaší oblasti dostupná"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
     "message": "Vaše organizace tuto funkci vypnula. Další informace získáte od svých administrátorů."
   },
-  "panels/explain/explain-meta.ts | rolloutRestricted": {
-    "message": "Tato funkci se současné době postupně vydává. Sledujte novinky."
-  },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "Pokud chcete tuto funkci používat, aktualizujte v nastavení Nástrojů pro vývojáře jazyk na angličtinu."
+    "message": "Pokud chcete tuto funkci používat, aktualizujte v nastavení Nástrojů pro vývojáře jazyk na angličtinu"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blokovaný zdroj"
@@ -9596,6 +9602,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "Vypočítávají se příznaky uzlů…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingObjectNames": {
+    "message": "Přiřazování názvů objektům…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingRetainedSizes": {
     "message": "Výpočet uchovaných velikostí…"
   },
@@ -10871,6 +10880,78 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Uživatel aktivní, obrazovka uzamčena"
   },
+  "panels/settings/AISettingsTab.ts | adminSettings": {
+    "message": "Funkce dostupné pro spravované uživatele se mohou lišit v závislosti na nastavení od administrátora"
+  },
+  "panels/settings/AISettingsTab.ts | boostYourProductivity": {
+    "message": "Zvyšte svou produktivitu pomocí Chrome AI"
+  },
+  "panels/settings/AISettingsTab.ts | chromeAi": {
+    "message": "Chrome AI"
+  },
+  "panels/settings/AISettingsTab.ts | collapse": {
+    "message": "sbalit"
+  },
+  "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
+    "message": "Zpráva z konzole, související trasování zásobníku, související zdrojový kód a související síťová záhlaví se odesílají do Googlu, aby vygeneroval vysvětlení. Tato data mohou vidět kontroloři, kteří tuto funkci pomáhají zlepšovat."
+  },
+  "panels/settings/AISettingsTab.ts | expand": {
+    "message": "rozbalit"
+  },
+  "panels/settings/AISettingsTab.ts | experimentalFeatures": {
+    "message": "Tyto funkce jsou experimentální a mohou se změnit"
+  },
+  "panels/settings/AISettingsTab.ts | explainConsole": {
+    "message": "Získejte vysvětlení k varováním a chybám v konzole"
+  },
+  "panels/settings/AISettingsTab.ts | explainStyling": {
+    "message": "Získejte vysvětlení a další kontext k chování stylů"
+  },
+  "panels/settings/AISettingsTab.ts | freestylerSendsData": {
+    "message": "Veškerý obsah DOM nebo CSS na kontrolované stránce může být odeslán společnosti Google k vygenerování vysvětlení. Tato data mohou vidět kontroloři, kteří tuto funkci pomáhají zlepšovat."
+  },
+  "panels/settings/AISettingsTab.ts | generatedSnippets": {
+    "message": "Vygenerované fragmenty kódu používejte opatrně"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
+    "message": "Pomáhá porozumět varováním a chybám v konzole a vyřešit je"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
+    "message": "Pomůže vám porozumět problémům se styly a vyřešit je"
+  },
+  "panels/settings/AISettingsTab.ts | learnMore": {
+    "message": "Další informace"
+  },
+  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "Změnilo se jedno nebo více nastavení, což vyžaduje opětovné načtení, aby se změny projevily."
+  },
+  "panels/settings/AISettingsTab.ts | privacyNotice": {
+    "message": "upozornění ve věci ochrany soukromí"
+  },
+  "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
+    "message": "Získejte návrhy a ukázky kódu k řešení problémů se styly"
+  },
+  "panels/settings/AISettingsTab.ts | receiveSuggestions": {
+    "message": "Získejte návrhy a ukázky kódu k řešení těchto problémů"
+  },
+  "panels/settings/AISettingsTab.ts | retainData": {
+    "message": "Údaje o využití budou uloženy tak, že Google nebude moct zjistit, kdo je poskytl. Nebude možné vyhovět žádostem o vymazání a údaje zůstanou uchovány až 18 měsíců."
+  },
+  "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
+    "message": "Při použití těchto funkcí se do Googlu odešlou data relevantní pro danou funkci. Další informace o konkrétních funkcích najdete níže."
+  },
+  "panels/settings/AISettingsTab.ts | termsOfService": {
+    "message": "smluvní podmínky společnosti Google"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
+    "message": "Na použití této funkce se vztahují {PH1} a {PH2}"
+  },
+  "panels/settings/AISettingsTab.ts | thingsToConsider": {
+    "message": "Co je třeba zvážit"
+  },
+  "panels/settings/AISettingsTab.ts | whenOn": {
+    "message": "Když je tato funkce zapnutá"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Přidat vzor názvu souboru"
   },
@@ -11156,6 +11237,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "Zobrazit zařízení"
   },
+  "panels/settings/settings-meta.ts | chromeAI": {
+    "message": "Chrome AI"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Dokumentace"
   },
@@ -11173,6 +11257,9 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "Zkratky"
+  },
+  "panels/settings/settings-meta.ts | showChromeAI": {
+    "message": "Zobrazit Chrome AI"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "Zobrazit experimenty"
@@ -12212,6 +12299,9 @@
   "panels/timeline/CountersGraph.ts | listeners": {
     "message": "Posluchači"
   },
+  "panels/timeline/CountersGraph.ts | noEventsFound": {
+    "message": "U vybraných událostí nebyla nalezena žádná data o využití paměti."
+  },
   "panels/timeline/CountersGraph.ts | nodes": {
     "message": "Uzly"
   },
@@ -12602,6 +12692,12 @@
   "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpenedWithUrl": {
     "message": "Otevřen WebSocket: {PH1}"
   },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
+    "message": "Časování serveru – {PH1}"
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
+    "message": "Tato stopa obsahuje časování převzaté ze záhlaví Server-Timing síťových odpovědí. Příslušné časy zahájení jsou pouze odhady a nemusí být přesné."
+  },
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(anonymní)"
   },
@@ -12728,6 +12824,12 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "Aktuální relace: {PH1} {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalAndFieldMetrics": {
+    "message": "Místní metriky a metriky z terénu"
+  },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalMetrics": {
+    "message": "Místní metriky"
+  },
   "panels/timeline/TimelineHistoryManager.ts | moments": {
     "message": "momenty"
   },
@@ -12842,6 +12944,9 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Opravit"
   },
+  "panels/timeline/TimelinePanel.ts | hideSidebar": {
+    "message": "Skrýt postranní panel sole​"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Inicializace profileru…"
   },
@@ -12886,6 +12991,15 @@
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "Zobrazit časovou osu paměti"
+  },
+  "panels/timeline/TimelinePanel.ts | showSidebar": {
+    "message": "Zobrazit postranní panel"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarHidden": {
+    "message": "Postranní panel výkonu je skrytý"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarShown": {
+    "message": "Postranní panel výkonu je zobrazen"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} s"
@@ -13143,7 +13257,7 @@
     "message": "{PH1}, {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
-    "message": "Zneplatnění"
+    "message": "Zneplatnění (celkem {PH1})"
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Vyvoláno vypršením časového limitu"
@@ -13373,6 +13487,12 @@
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "Systém"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
+    "message": "CPU: {PH1}"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
+    "message": "Omezení procesoru: {PH1}"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
     "message": "{PH1}× zpomalení"
   },
@@ -13409,8 +13529,14 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Protokol WebSocket"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | add": {
+    "message": "Přidat"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Pokročilé"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
+    "message": "Zdroj {PH1} je už namapován jako produkční."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "Zrušit"
@@ -13421,17 +13547,35 @@
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "Konfigurace načítání dat z terénu"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
+    "message": "Smazat"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
+    "message": "Zdroj pro vývoj"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
+    "message": "Zdroj pro vývoj: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Přehled uživatelských dojmů pro Chrome nemá pro tuto stránku k dispozici dostatek dat o rychlosti v reálném světě."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Načtení agregovaných terénních dat z Přehledu uživatelských dojmů pro Chrome vám pomůže uvést místní měření do kontextu s tím, co na webu zažívají skuteční uživatelé."
+    "message": "Získejte agregovaná data z terénu z přehledu {PH1}, která vám pomůžou uvést místní měření do kontextu s tím, co na webu zažívají skuteční uživatelé."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
+    "message": "„{PH1}“ není platný zdroj ani adresa URL."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
+    "message": "Nastavte zdroj pro vývoj, abyste automaticky získali relevantní terénní data pro produkční zdroj."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | new": {
+    "message": "Nové"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | ok": {
     "message": "OK"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Data z terénu načíst pouze pro níže uvedenou adresu URL"
+    "message": "Vždy zobrazovat data z terénu pro níže uvedenou adresu URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Odhlásit se"
@@ -13439,11 +13583,17 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "Prohlášení o ochraně soukromí"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
+    "message": "Produkční zdroj"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
+    "message": "Produkční zdroj: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "Nastavit"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | urlOverride": {
-    "message": "Přepsání adresy URL"
+  "panels/timeline/components/FieldSettingsDialog.ts | url": {
+    "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "Když jsou otevřené nástroje DevTools, odesílají se navštívené adresy URL do Googlu k získání dat z terénu. Tyto požadavky nejsou spojeny s vaším účtem Google."
@@ -13463,44 +13613,29 @@
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "Automaticky ({PH1})"
   },
-  "panels/timeline/components/LiveMetricsView.ts | betweenRange": {
-    "message": "({PH1}–{PH2})"
+  "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
+    "message": "Doba shromažďování:"
   },
-  "panels/timeline/components/LiveMetricsView.ts | clsTitle": {
-    "message": "Kumulativní změna rozvržení (CLS)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
-    "message": "Omezení procesoru:"
+  "panels/timeline/components/LiveMetricsView.ts | dateRange": {
+    "message": "{PH1} – {PH2}"
   },
   "panels/timeline/components/LiveMetricsView.ts | desktop": {
     "message": "Počítač"
   },
-  "panels/timeline/components/LiveMetricsView.ts | deviceType": {
-    "message": "Typ zařízení:"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | field75thPercentile": {
-    "message": "75. percentil dat z terénu"
+  "panels/timeline/components/LiveMetricsView.ts | device": {
+    "message": "Zařízení: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "Data z terénu"
   },
-  "panels/timeline/components/LiveMetricsView.ts | good": {
-    "message": "Dobré"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | gtRange": {
-    "message": "(>{PH1})"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | inpTitle": {
-    "message": "Doba od interakce k dalšímu vykreslení (INP)"
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
+    "message": "Data z terénu"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "Interakce"
   },
-  "panels/timeline/components/LiveMetricsView.ts | lcpTitle": {
-    "message": "Vykreslení největšího obsahu (LCP)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | leqRange": {
-    "message": "(≤{PH1})"
+  "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
+    "message": "Prvek spojený s LCP"
   },
   "panels/timeline/components/LiveMetricsView.ts | loadingOption": {
     "message": "{PH1} – načítání…"
@@ -13508,20 +13643,23 @@
   "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
     "message": "Místní metriky a metriky z terénu"
   },
-  "panels/timeline/components/LiveMetricsView.ts | localValue": {
-    "message": "Místní"
+  "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
+    "message": "Místní metriky"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localMetricsLink": {
+    "message": "Místní metriky"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "Mobil"
   },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
+    "message": "Většina uživatelů používá počítač. Zkuste emulovat velikost okna na počítači, která odpovídá skutečným uživatelům."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
+    "message": "Většina uživatelů používá mobilní zařízení. Zkuste emulovat mobilní zařízení, které odpovídá skutečným uživatelům."
+  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} – žádná data"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | needsImprovement": {
-    "message": "Vyžaduje vylepšení"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
-    "message": "Omezení sítě:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "Další kroky"
@@ -13530,22 +13668,28 @@
     "message": "Původ"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
-    "message": "Původ ({PH1})"
+    "message": "Zdroj: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "{PH1} %"
+  "panels/timeline/components/LiveMetricsView.ts | recordingSettings": {
+    "message": "Nastavení nahrávání"
   },
-  "panels/timeline/components/LiveMetricsView.ts | poor": {
-    "message": "Slabé"
+  "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
+    "message": "Podívejte se na porovnání vašich místních metrik s daty od skutečných uživatelů v přehledu {PH1}."
   },
-  "panels/timeline/components/LiveMetricsView.ts | relatedNode": {
-    "message": "Souvisejí uzel"
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
+    "message": "Zobrazit data z terénu pro typ zařízení: {PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
+    "message": "Zobrazit terénní data pro {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "Tablet"
   },
-  "panels/timeline/components/LiveMetricsView.ts | throttling": {
-    "message": "Omezení"
+  "panels/timeline/components/LiveMetricsView.ts | theFieldMetricsAre": {
+    "message": "{PH1} pochází od skutečných uživatelů, kteří používají mnoho různých připojení k síti a zařízení."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
+    "message": "{PH1} jsou získány z aktuální stránky s použitím vašeho připojení k síti a zařízení."
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "Zkuste vypnout omezení sítě, abyste se přiblížili latenci naměřené u skutečných uživatelů."
@@ -13557,10 +13701,70 @@
     "message": "URL"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOptionWithKey": {
-    "message": "URL ({PH1})"
+    "message": "URL: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | urlOrOrigin": {
-    "message": "URL/původ:"
+  "panels/timeline/components/MetricCompareStrings.ts | goodBetterCompare": {
+    "message": "Místní metrika {PH1} {PH2} je dobrá a je výrazně lepší než u uživatelů."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
+    "message": "Místní metrika {PH1} {PH2} je dobrá a odpovídá metrice {PH1} u {PH4} uživatelů. Dobrý je i 75. percentil metriky {PH1} podle dat z terénu ({PH3})."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
+    "message": "Místní metrika {PH1} {PH2} je dobrá a odpovídá metrice {PH1} u {PH4} uživatelů. 75. percentil metriky {PH1} podle dat z terénu ({PH3}) však vyžaduje vylepšení."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
+    "message": "Místní metrika {PH1} {PH2} je dobrá a odpovídá metrice {PH1} u {PH4} uživatelů. 75. percentil metriky {PH1} podle dat z terénu ({PH3}) je však špatný."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
+    "message": "Místní metrika {PH1} {PH2} je dobrá a je podobná jako u uživatelů."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSummarized": {
+    "message": "Místní metrika {PH1} {PH2} je dobrá."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodWorseCompare": {
+    "message": "Místní metrika {PH1} {PH2} je dobrá a je výrazně horší než u uživatelů."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementBetterCompare": {
+    "message": "Místní metrika {PH1} {PH2} vyžaduje vylepšení a je výrazně lepší než u uživatelů."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
+    "message": "Místní metrika {PH1} {PH2} vyžaduje vylepšení a má stejné hodnocení jako metrika {PH1} u {PH4} skutečných uživatelů. 75. percentil metriky {PH1} podle dat z terénu ({PH3}) je však dobrý."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
+    "message": "Místní metrika {PH1} {PH2} vyžaduje vylepšení a má stejné hodnocení jako metrika {PH1} u {PH4} skutečných uživatelů. Navíc vyžaduje zlepšení i 75. percentil metriky {PH1} podle dat z terénu ({PH3})."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
+    "message": "Místní metrika {PH1} {PH2} vyžaduje vylepšení a má stejné hodnocení jako metrika {PH1} u {PH4} skutečných uživatelů. 75. percentil metriky {PH1} podle dat z terénu ({PH3}) je však špatný."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
+    "message": "Místní metrika {PH1} {PH2} vyžaduje vylepšení a je podobná jako u uživatelů."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSummarized": {
+    "message": "Místní {PH1} {PH2} vyžaduje vylepšení."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementWorseCompare": {
+    "message": "Místní metrika {PH1} {PH2} vyžaduje vylepšení a je výrazně horší než u uživatelů."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorBetterCompare": {
+    "message": "Místní metrika {PH1} {PH2} je špatná a je výrazně lepší než u uživatelů."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
+    "message": "Místní metrika {PH1} {PH2} je špatná a odpovídá metrice {PH1} u {PH4} uživatelů. 75. percentil metriky {PH1} podle dat z terénu ({PH3}) je však dobrý."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
+    "message": "Místní metrika {PH1} {PH2} je špatná a odpovídá metrice {PH1} u {PH4} uživatelů. 75. percentil metriky {PH1} podle dat z terénu ({PH3}) však vyžaduje vylepšení."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
+    "message": "Místní metrika {PH1} {PH2} je špatná a odpovídá metrice {PH1} u {PH4} uživatelů. Navíc je špatný i 75. percentil metriky {PH1} podle dat z terénu ({PH3})."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
+    "message": "Místní metrika {PH1} {PH2} je špatná a je podobná jako u uživatelů."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSummarized": {
+    "message": "Místní metrika {PH1} {PH2} je špatná."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorWorseCompare": {
+    "message": "Místní metrika {PH1} {PH2} je špatná a je výrazně horší než u uživatelů."
   },
   "panels/timeline/components/NetworkRequestDetails.ts | FromCache": {
     "message": " (z mezipaměti)"
@@ -13652,8 +13856,26 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
     "message": "Vypnuto"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | network": {
+    "message": "Síť: {PH1}"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | networkThrottling": {
+    "message": "Omezení sítě: {PH1}"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "Předvolby"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "Použit atribut fetchpriority=high"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "není použito líné načítání"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "Obrázek spojený s LCP se načetl {PH1} po prvním počátečním bodu."
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "Požadavek lze zjistit v původním dokumentu"
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "Zpoždění vykreslení prvku"
@@ -13661,7 +13883,7 @@
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "Zpoždění načtení zdroje"
   },
-  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadTime": {
+  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDuration": {
     "message": "Doba načítání zdroje"
   },
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
@@ -14681,9 +14903,6 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Snímky obrazovky za {PH1} – výběrem zobrazíte předchozí požadavky."
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
-    "message": "Přidat skript do seznamu ignorovaných"
-  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Konfigurovat kanály…"
   },
@@ -14693,23 +14912,11 @@
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "Graf flame"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideChildren": {
-    "message": "Skrýt podřízené položky"
+  "ui/legacy/components/perf_ui/FlameChart.ts | labelEntry": {
+    "message": "Označit položku"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideFunction": {
-    "message": "Skrýt funkci"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
-    "message": "Skrýt opakující se podřízené položky"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
-    "message": "Odstranit skript ze seznamu ignorovaných"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
-    "message": "Resetovat podřízené položky"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
-    "message": "Resetovat trasování"
+  "ui/legacy/components/perf_ui/FlameChart.ts | linkEntries": {
+    "message": "Propojit položky"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sCollapsed": {
     "message": "{PH1} – sbaleno"

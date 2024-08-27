@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | stylesSidebar": {
     "message": "боковая панель \"Стили\""
   },
+  "core/common/Revealer.ts | timelinePanel": {
+    "message": "Панель \"Производительность\""
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Декоративный элемент"
   },
@@ -1142,11 +1145,11 @@
   "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
     "message": ":--customstatename больше не поддерживается. Используйте синтаксис :state(customstatename)."
   },
+  "generated/Deprecation.ts | CSSInsetAreaProperty": {
+    "message": "Свойство inset-area больше не поддерживается. Используйте вместо него свойство position-area."
+  },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Чтобы отключить интеграцию Google Cast по умолчанию, вместо селектора -internal-media-controls-overlay-cast-button используйте атрибут disableRemotePlayback."
-  },
-  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
-    "message": "Значения CSS inner-spin-button, media-slider, media-sliderthumb, media-volume-slider, media-volume-sliderthumb, push-button, searchfield-cancel-button, slider-horizontal, sliderthumb-horizontal, sliderthumb-vertical, square-button не стандартизированы и будут удалены."
   },
   "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
     "message": "Значение CSS slider-vertical не стандартизировано и будет удалено."
@@ -4532,6 +4535,9 @@
   "panels/autofill/AutofillView.ts | sendFeedback": {
     "message": "Отправить отзыв"
   },
+  "panels/autofill/AutofillView.ts | showTestAddressesInAutofillMenu": {
+    "message": "Показывать тестовые адреса в меню автозаполнения"
+  },
   "panels/autofill/AutofillView.ts | toStartDebugging": {
     "message": "Чтобы запустить отладку автозаполнения, добавьте данные в форму для адреса с помощью меню автозаполнения Chrome."
   },
@@ -5591,6 +5597,9 @@
   "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
     "message": "Не менять фокус на странице. Часто используется при отладке исчезающих элементов."
   },
+  "panels/elements/ElementStatePaneWidget.ts | forceElementSpecificStates": {
+    "message": "Установить определенное состояние элемента"
+  },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Установить состояние элемента"
   },
@@ -6442,9 +6451,6 @@
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
     "message": "Эта функция отключена для вашей организации. За дополнительной информацией обратитесь к администратору."
-  },
-  "panels/explain/explain-meta.ts | rolloutRestricted": {
-    "message": "Эта функция ещё не выпущена полностью. Следите за новостями!"
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "Чтобы использовать эту функцию, в настройках инструментов разработчика измените язык на английский."
@@ -9596,6 +9602,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "Расчет экспериментальных параметров узла…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingObjectNames": {
+    "message": "Вычисление имен объектов…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingRetainedSizes": {
     "message": "Подсчет полных размеров…"
   },
@@ -10871,6 +10880,78 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Пользователь бездействует, экран разблокирован"
   },
+  "panels/settings/AISettingsTab.ts | adminSettings": {
+    "message": "Функции, доступные пользователям с управляемым аккаунтом, могут различаться в зависимости от настроек, заданных их администратором."
+  },
+  "panels/settings/AISettingsTab.ts | boostYourProductivity": {
+    "message": "Успевайте больше с Chrome AI"
+  },
+  "panels/settings/AISettingsTab.ts | chromeAi": {
+    "message": "Chrome AI"
+  },
+  "panels/settings/AISettingsTab.ts | collapse": {
+    "message": "Свернуть"
+  },
+  "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
+    "message": "Сообщение консоли и связанные с ним трассировка стека, исходный код и сетевые заголовки отправляются в Google для генерации интерпретаций. Наши специалисты могут просматривать такие данные, чтобы улучшать эту функцию."
+  },
+  "panels/settings/AISettingsTab.ts | expand": {
+    "message": "Развернуть"
+  },
+  "panels/settings/AISettingsTab.ts | experimentalFeatures": {
+    "message": "Это экспериментальные функции. Они могут быть изменены."
+  },
+  "panels/settings/AISettingsTab.ts | explainConsole": {
+    "message": "Получайте интерпретации для предупреждений и ошибок из консоли."
+  },
+  "panels/settings/AISettingsTab.ts | explainStyling": {
+    "message": "Получайте интерпретации и дополнительный контекст для поведения стилей."
+  },
+  "panels/settings/AISettingsTab.ts | freestylerSendsData": {
+    "message": "Любой контент DOM или CSS с проверяемой страницы может быть отправлен в Google для генерации интерпретаций. Наши специалисты могут просматривать такие данные, чтобы улучшать эту функцию."
+  },
+  "panels/settings/AISettingsTab.ts | generatedSnippets": {
+    "message": "Используйте сгенерированные фрагменты кода с осторожностью"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
+    "message": "Эта функция поможет вам понять консольные предупреждения и ошибки, а также устранить проблемы."
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
+    "message": "Эта функция поможет вам исправить проблемы со стилем."
+  },
+  "panels/settings/AISettingsTab.ts | learnMore": {
+    "message": "Подробнее"
+  },
+  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "Чтобы изменения настроек вступили в силу, перезапустите инструменты разработчика."
+  },
+  "panels/settings/AISettingsTab.ts | privacyNotice": {
+    "message": "Примечание о конфиденциальности"
+  },
+  "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
+    "message": "Получайте подсказки и примеры кода, которые помогут исправить проблемы со стилем."
+  },
+  "panels/settings/AISettingsTab.ts | receiveSuggestions": {
+    "message": "Получайте подсказки и примеры кода, которые помогут исправить эти проблемы."
+  },
+  "panels/settings/AISettingsTab.ts | retainData": {
+    "message": "Данные об использовании будут храниться не более 18 месяцев. Google не может идентифицировать пользователей, которые предоставили их, и выполнять запросы на удаление."
+  },
+  "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
+    "message": "При использовании этой функции относящиеся к ней данные отправляются в Google. Подробная информация об этом представлена ниже."
+  },
+  "panels/settings/AISettingsTab.ts | termsOfService": {
+    "message": "Условия использования Google"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
+    "message": "Использование этой функции регулируется следующими положениями: {PH1} и {PH2}."
+  },
+  "panels/settings/AISettingsTab.ts | thingsToConsider": {
+    "message": "Важная информация"
+  },
+  "panels/settings/AISettingsTab.ts | whenOn": {
+    "message": "Если функция включена"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Добавить шаблон для названия файла"
   },
@@ -11156,6 +11237,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "Показать устройства"
   },
+  "panels/settings/settings-meta.ts | chromeAI": {
+    "message": "Chrome AI"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Документация"
   },
@@ -11173,6 +11257,9 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "Сочетания клавиш"
+  },
+  "panels/settings/settings-meta.ts | showChromeAI": {
+    "message": "Показать настройки Chrome AI"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "Показать эксперименты"
@@ -12212,6 +12299,9 @@
   "panels/timeline/CountersGraph.ts | listeners": {
     "message": "Прослушиватели"
   },
+  "panels/timeline/CountersGraph.ts | noEventsFound": {
+    "message": "В выбранных событиях не найдены данные об использовании памяти."
+  },
   "panels/timeline/CountersGraph.ts | nodes": {
     "message": "Узлы"
   },
@@ -12602,6 +12692,12 @@
   "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpenedWithUrl": {
     "message": "Соединение WebSocket установлено: {PH1}"
   },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
+    "message": "Серверный таймер запроса \"{PH1}\""
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
+    "message": "Здесь показаны временные метки, полученные из заголовков сетевых ответов Server-Timing. Время начала для каждой из них может быть неточным."
+  },
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(анонимная)"
   },
@@ -12728,6 +12824,12 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "Текущий сеанс: {PH1}. {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalAndFieldMetrics": {
+    "message": "Локальные и наблюдаемые показатели"
+  },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalMetrics": {
+    "message": "Локальные показатели"
+  },
   "panels/timeline/TimelineHistoryManager.ts | moments": {
     "message": "моменты"
   },
@@ -12842,6 +12944,9 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Исправить"
   },
+  "panels/timeline/TimelinePanel.ts | hideSidebar": {
+    "message": "Скрыть отдельную боковую панель"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Запуск профилировщика…"
   },
@@ -12886,6 +12991,15 @@
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "Показать хронологию памяти"
+  },
+  "panels/timeline/TimelinePanel.ts | showSidebar": {
+    "message": "Показать боковую панель"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarHidden": {
+    "message": "Боковая панель производительности скрыта"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarShown": {
+    "message": "Боковая панель производительности показана"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} сек."
@@ -13143,7 +13257,7 @@
     "message": "{PH1} в файле \"{PH2}\""
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
-    "message": "Аннулирования"
+    "message": "Аннулирования, всего: {PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Вызвано временем ожидания"
@@ -13373,6 +13487,12 @@
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "Система"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
+    "message": "ЦП: {PH1}"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
+    "message": "Ограничение производительности ЦП: {PH1}"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
     "message": "Замедление ×{PH1}"
   },
@@ -13409,8 +13529,14 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Протокол WebSocket"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | add": {
+    "message": "Добавить"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Дополнительные настройки"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
+    "message": "Источник \"{PH1}\" уже используется для рабочей среды."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "Отмена"
@@ -13421,17 +13547,35 @@
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "Настроить извлечение данных полей"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
+    "message": "Удалить"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
+    "message": "Источник для среды разработки"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
+    "message": "Источник для среды разработки: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "В Chrome UX Report недостаточно данных о фактической скорости загрузки этой страницы."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Извлеките агрегированные данные из Chrome UX Report, чтобы узнать, как локальные измерения соотносятся с опытом реальных пользователей на сайте."
+    "message": "Извлеките агрегированные данные из {PH1}, чтобы сравнить локальные значения показателей с полученными от пользователей сайта."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
+    "message": "Недопустимый источник или URL: \"{PH1}\"."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
+    "message": "Чтобы автоматически получать нужные данные наблюдений из рабочей среды, установите источник для среды разработки."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | new": {
+    "message": "Новая строка"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | ok": {
     "message": "ОК"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Извлечь данные полей только для указанного ниже URL"
+    "message": "Всегда показывать данные наблюдений для указанных ниже URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Отключить"
@@ -13439,11 +13583,17 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "Информация о конфиденциальности"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
+    "message": "Источник для рабочей среды"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
+    "message": "Источник для рабочей среды: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "Настроить"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | urlOverride": {
-    "message": "Переопределение URL"
+  "panels/timeline/components/FieldSettingsDialog.ts | url": {
+    "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "Когда инструменты разработчика открыты, URL страниц, которые вы посещаете, будут отправляться в Google для запроса данных паролей. Запросы не привязаны к аккаунту Google."
@@ -13463,65 +13613,53 @@
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "Автоматически ({PH1})"
   },
-  "panels/timeline/components/LiveMetricsView.ts | betweenRange": {
-    "message": "({PH1}–{PH2})"
+  "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
+    "message": "Период, за который собраны данные:"
   },
-  "panels/timeline/components/LiveMetricsView.ts | clsTitle": {
-    "message": "Cumulative Layout Shift (CLS)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
-    "message": "Ограничение производительности ЦП:"
+  "panels/timeline/components/LiveMetricsView.ts | dateRange": {
+    "message": "{PH1} – {PH2}"
   },
   "panels/timeline/components/LiveMetricsView.ts | desktop": {
     "message": "Компьютер"
   },
-  "panels/timeline/components/LiveMetricsView.ts | deviceType": {
-    "message": "Тип устройства:"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | field75thPercentile": {
-    "message": "75-ый процентиль в наблюдаемых данных"
+  "panels/timeline/components/LiveMetricsView.ts | device": {
+    "message": "Тип устройства: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "Данные наблюдений"
   },
-  "panels/timeline/components/LiveMetricsView.ts | good": {
-    "message": "Хорошо"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | gtRange": {
-    "message": "(>{PH1})"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | inpTitle": {
-    "message": "Interaction to Next Paint (INP)"
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
+    "message": "данные наблюдений"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "Взаимодействия"
   },
-  "panels/timeline/components/LiveMetricsView.ts | lcpTitle": {
-    "message": "Largest Contentful Paint (LCP)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | leqRange": {
-    "message": "(≤{PH1})"
+  "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
+    "message": "Элемент LCP"
   },
   "panels/timeline/components/LiveMetricsView.ts | loadingOption": {
     "message": "{PH1}: идет загрузка"
   },
   "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
-    "message": "Местные показатели и показатели в наблюдаемых данных"
+    "message": "Локальные и наблюдаемые показатели"
   },
-  "panels/timeline/components/LiveMetricsView.ts | localValue": {
-    "message": "Местный показатель"
+  "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
+    "message": "Локальные показатели"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localMetricsLink": {
+    "message": "локальные показатели"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "Мобильное устройство"
   },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
+    "message": "Большинство посетителей пользуется ПК. Попробуйте эмулировать окно такого же размера."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
+    "message": "Большинство посетителей пользуется мобильными устройствами. Попробуйте эмулировать такое устройство."
+  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1}: нет данных"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | needsImprovement": {
-    "message": "Требуется доработка"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
-    "message": "Ограничение пропускной способности сети:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "Дальнейшие действия"
@@ -13530,22 +13668,28 @@
     "message": "Источник"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
-    "message": "Источник ({PH1})"
+    "message": "Источник: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "{PH1} %"
+  "panels/timeline/components/LiveMetricsView.ts | recordingSettings": {
+    "message": "Настройки записи"
   },
-  "panels/timeline/components/LiveMetricsView.ts | poor": {
-    "message": "Низкий"
+  "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
+    "message": "Сравните в {PH1} локальные показатели и данные, полученные от пользователей."
   },
-  "panels/timeline/components/LiveMetricsView.ts | relatedNode": {
-    "message": "Связанный узел"
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
+    "message": "Показывать данные наблюдений для устройств следующего типа: {PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
+    "message": "Показать данные наблюдений ({PH1})"
   },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "Планшет"
   },
-  "panels/timeline/components/LiveMetricsView.ts | throttling": {
-    "message": "Ограничение производительности"
+  "panels/timeline/components/LiveMetricsView.ts | theFieldMetricsAre": {
+    "message": "Эти {PH1} получены от пользователей на основе информации о различных устройствах и сетевых подключениях."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
+    "message": "Эти {PH1} получены от текущей страницы на основе информации о вашем устройстве и сетевом подключении."
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "Чтобы получить приблизительное значение задержки, с которой сталкиваются пользователи, отключите ограничение пропускной способности сети."
@@ -13557,10 +13701,70 @@
     "message": "URL"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOptionWithKey": {
-    "message": "URL ({PH1})"
+    "message": "URL: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | urlOrOrigin": {
-    "message": "URL/источник:"
+  "panels/timeline/components/MetricCompareStrings.ts | goodBetterCompare": {
+    "message": "Локальное значение показателя {PH1} достаточно низкое ({PH2}), и оно значительно меньше, чем у пользователей."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
+    "message": "Локальное значение показателя {PH1} достаточно низкое ({PH2}), как и {PH1} у {PH4} пользователей. Значение 75-го процентиля {PH1} в наблюдаемых данных тоже достаточно низкое ({PH3})."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
+    "message": "Локальное значение показателя {PH1} достаточно низкое ({PH2}), как и {PH1} у {PH4} пользователей. При этом значение 75-го процентиля {PH1} в наблюдаемых данных нуждается в улучшении ({PH3})."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
+    "message": "Локальное значение показателя {PH1} достаточно низкое ({PH2}), как и {PH1} у {PH4} пользователей. При этом значение 75-го процентиля {PH1} в наблюдаемых данных слишком высокое ({PH3})."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
+    "message": "Локальное значение показателя {PH1} достаточно низкое ({PH2}), как и у пользователей."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSummarized": {
+    "message": "Локальное значение показателя {PH1} достаточно низкое ({PH2})."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodWorseCompare": {
+    "message": "Локальное значение показателя {PH1} достаточно низкое ({PH2}), но оно значительно больше, чем у пользователей."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementBetterCompare": {
+    "message": "Локальное значение показателя {PH1} нуждается в улучшении ({PH2}), но оно значительно меньше, чем у пользователей."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
+    "message": "Локальное значение показателя {PH1} нуждается в улучшении ({PH2}), как и {PH1} у {PH4} пользователей. При этом значение 75-го процентиля {PH1} в наблюдаемых данных достаточно низкое ({PH3})."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
+    "message": "Локальное значение показателя {PH1} нуждается в улучшении ({PH2}), как и {PH1} у {PH4} пользователей. Значение 75-го процентиля {PH1} в наблюдаемых данных тоже нуждается в улучшении ({PH3})."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
+    "message": "Локальное значение показателя {PH1} нуждается в улучшении ({PH2}), как и {PH1} у {PH4} пользователей. При этом значение 75-го процентиля {PH1} в наблюдаемых данных слишком высокое ({PH3})."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
+    "message": "Локальное значение показателя {PH1} нуждается в улучшении ({PH2}), как и у пользователей."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSummarized": {
+    "message": "Локальное значение показателя {PH1} нуждается в улучшении ({PH2})."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementWorseCompare": {
+    "message": "Локальное значение показателя {PH1} нуждается в улучшении ({PH2}), и оно значительно больше, чем у пользователей."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorBetterCompare": {
+    "message": "Локальное значение показателя {PH1} слишком высокое ({PH2}), но оно значительно меньше, чем у пользователей."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
+    "message": "Локальное значение показателя {PH1} слишком высокое ({PH2}), как и {PH1} у {PH4} пользователей. При этом значение 75-го процентиля {PH1} в наблюдаемых данных достаточно низкое ({PH3})."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
+    "message": "Локальное значение показателя {PH1} слишком высокое ({PH2}), как и {PH1} у {PH4} пользователей. При этом значение 75-го процентиля {PH1} в наблюдаемых данных нуждается в улучшении ({PH3})."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
+    "message": "Локальное значение показателя {PH1} слишком высокое ({PH2}), как и {PH1} у {PH4} пользователей. Значение 75-го процентиля {PH1} в наблюдаемых данных тоже слишком высокое ({PH3})."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
+    "message": "Локальное значение показателя {PH1} слишком высокое ({PH2}), как и у пользователей."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSummarized": {
+    "message": "Локальное значение показателя {PH1} слишком высокое ({PH2})."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorWorseCompare": {
+    "message": "Локальное значение показателя {PH1} слишком высокое ({PH2}), и оно больше, чем у пользователей."
   },
   "panels/timeline/components/NetworkRequestDetails.ts | FromCache": {
     "message": " (из кеша)"
@@ -13652,8 +13856,26 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
     "message": "Отключенные"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | network": {
+    "message": "Ограничение пропускной способности сети: {PH1}"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | networkThrottling": {
+    "message": "Ограничение пропускной способности сети: {PH1}"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "Шаблоны"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "Свойству fetchpriority присвоено значение \"high\""
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "Не удалось применить отложенную загрузку."
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "Время загрузки самого крупного изображения: {PH1}."
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "Запрос можно найти в исходном документе"
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "Задержка отрисовки элемента"
@@ -13661,8 +13883,8 @@
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "Задержка загрузки ресурса"
   },
-  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadTime": {
-    "message": "Время загрузки ресурса"
+  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDuration": {
+    "message": "Продолжительность загрузки ресурса"
   },
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
     "message": "Time to First Byte"
@@ -14681,9 +14903,6 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Скриншот для {PH1}: выберите, чтобы посмотреть предыдущие запросы."
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
-    "message": "Добавить скрипт в список игнорирования"
-  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Настроить дорожки…"
   },
@@ -14693,23 +14912,11 @@
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "Флейм-граф"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideChildren": {
-    "message": "Скрыть дочерние элементы"
+  "ui/legacy/components/perf_ui/FlameChart.ts | labelEntry": {
+    "message": "Добавить ярлык"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideFunction": {
-    "message": "Скрыть функцию"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
-    "message": "Скрыть повторяющиеся дочерние элементы"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
-    "message": "Удалить скрипт из списка игнорирования"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
-    "message": "Сбросить дочерние элементы"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
-    "message": "Сбросить трассировку"
+  "ui/legacy/components/perf_ui/FlameChart.ts | linkEntries": {
+    "message": "Связать данные"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sCollapsed": {
     "message": "Группа \"{PH1}\" свернута"

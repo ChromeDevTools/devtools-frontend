@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | stylesSidebar": {
     "message": "shiriti anësor i stileve"
   },
+  "core/common/Revealer.ts | timelinePanel": {
+    "message": "Paneli i performancës"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Zbukurues"
   },
@@ -1142,11 +1145,11 @@
   "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
     "message": ":--customstatename është zhvlerësuar. Përdor më mirë sintaksën :state(customstatename)."
   },
+  "generated/Deprecation.ts | CSSInsetAreaProperty": {
+    "message": "Karakteristika inset-area është zhvlerësuar. Përdor karakteristikën position-area më mirë."
+  },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Duhet të përdoret atributi disableRemotePlayback për të çaktivizuar integrimin e parazgjedhur të Cast në vend të përdorimit të përzgjedhësit -internal-media-controls-overlay-cast-button."
-  },
-  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
-    "message": "Vlerat e paraqitjes së CSS inner-spin-button, media-slider, media-sliderthumb, media-volume-slider, media-volume-sliderthumb, push-button, searchfield-cancel-button, slider-horizontal, sliderthumb-horizontal, sliderthumb-vertical, square-button nuk janë të standardizuara dhe do të hiqen."
   },
   "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
     "message": "Vlera e paraqitjes së CSS slider-vertical nuk është e standardizuar dhe do të hiqet."
@@ -4532,6 +4535,9 @@
   "panels/autofill/AutofillView.ts | sendFeedback": {
     "message": "Dërgo komente"
   },
+  "panels/autofill/AutofillView.ts | showTestAddressesInAutofillMenu": {
+    "message": "Shfaq adresat e testimit në menynë e plotësimit automatik"
+  },
   "panels/autofill/AutofillView.ts | toStartDebugging": {
     "message": "Për të nisur korrigjimin për plotësimin automatik, përdor menynë e plotësimit automatik të Chrome për të plotësuar një formular adrese."
   },
@@ -5591,6 +5597,9 @@
   "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
     "message": "Mbaje faqen në fokus. Përdoret zakonisht për korrigjimin e elementeve që zhduken."
   },
+  "panels/elements/ElementStatePaneWidget.ts | forceElementSpecificStates": {
+    "message": "Detyro gjendjen specifike të elementit"
+  },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Detyro gjendjen e elementit"
   },
@@ -6423,7 +6432,7 @@
     "message": "Përditëso cilësimet"
   },
   "panels/explain/explain-meta.ts | ageRestricted": {
-    "message": "Kjo veçori ofrohet vetëm për përdoruesit që janë 18 vjeç e lart."
+    "message": "Kjo veçori ofrohet vetëm për përdoruesit që janë 18 vjeç e lart"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "Kupto mesazhet e konsolës me inteligjencën artificiale"
@@ -6438,16 +6447,13 @@
     "message": "Kupto këtë paralajmërim"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "Kjo veçori nuk ofrohet në rajonin tënd."
+    "message": "Kjo veçori nuk ofrohet në rajonin tënd"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
     "message": "Organizata jote e ka çaktivizuar këtë veçori. Kontakto me administratorët për më shumë informacione."
   },
-  "panels/explain/explain-meta.ts | rolloutRestricted": {
-    "message": "Kjo veçori po prezantohet aktualisht. Na ndiq."
-  },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "Për të përdorur këtë veçori, përditëso preferencën e gjuhës te cilësimet e DevTools në anglisht."
+    "message": "Për të përdorur këtë veçori, përditëso preferencën e gjuhës te cilësimet e DevTools në anglisht"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Burimi i bllokuar"
@@ -9596,6 +9602,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "Po llogarit flamurët e nyjave…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingObjectNames": {
+    "message": "Emrat e objekteve po llogariten…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingRetainedSizes": {
     "message": "Po llogarit madhësitë e mbajtura…"
   },
@@ -10871,6 +10880,78 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Përdoruesi pezull, ekrani i shkyçur"
   },
+  "panels/settings/AISettingsTab.ts | adminSettings": {
+    "message": "Veçoritë e disponueshme për përdoruesit e menaxhuar mund të ndryshojnë në varësi të cilësimeve të administratorit"
+  },
+  "panels/settings/AISettingsTab.ts | boostYourProductivity": {
+    "message": "Rrit produktivitetin me IA-në e Chrome"
+  },
+  "panels/settings/AISettingsTab.ts | chromeAi": {
+    "message": "IA-ja e Chrome"
+  },
+  "panels/settings/AISettingsTab.ts | collapse": {
+    "message": "palos"
+  },
+  "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
+    "message": "Mesazhi i konsolës, gjurmimi i lidhur i stivës, kodi përkatës i burimit dhe titujt e lidhur të rrjetit dërgohen te Google për të gjeneruar shpjegimet. Këto të dhëna mund të shikohen nga shqyrtues njerëzorë për të përmirësuar këtë veçori."
+  },
+  "panels/settings/AISettingsTab.ts | expand": {
+    "message": "zgjero"
+  },
+  "panels/settings/AISettingsTab.ts | experimentalFeatures": {
+    "message": "Këto veçori janë eksperimentale dhe mund të ndryshojnë"
+  },
+  "panels/settings/AISettingsTab.ts | explainConsole": {
+    "message": "Merr shpjegime për paralajmërimet dhe gabimet e konsolës"
+  },
+  "panels/settings/AISettingsTab.ts | explainStyling": {
+    "message": "Merr shpjegime dhe kontekst shtesë për sjelljet e stilit"
+  },
+  "panels/settings/AISettingsTab.ts | freestylerSendsData": {
+    "message": "Çdo përmbajtje DOM ose CSS në faqen e inspektuar mund të dërgohet te Google për të gjeneruar shpjegime. Këto të dhëna mund të shikohen nga shqyrtues njerëzorë për të përmirësuar këtë veçori."
+  },
+  "panels/settings/AISettingsTab.ts | generatedSnippets": {
+    "message": "Përdor fragmentet e gjeneruara të kodit me kujdes"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
+    "message": "Të ndihmon të kuptosh dhe të rregullosh paralajmërimet dhe gabimet e konsolës"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
+    "message": "Të ndihmon të kuptosh dhe të rregullosh problemet e stilit"
+  },
+  "panels/settings/AISettingsTab.ts | learnMore": {
+    "message": "Mëso më shumë"
+  },
+  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "Një ose më shumë cilësime kanë ndryshuar, gjë që kërkon ringarkim për t'u zbatuar."
+  },
+  "panels/settings/AISettingsTab.ts | privacyNotice": {
+    "message": "Njoftimi i privatësisë"
+  },
+  "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
+    "message": "Merr sugjerime dhe kampionë kodesh për të rregulluar problemet e stilit"
+  },
+  "panels/settings/AISettingsTab.ts | receiveSuggestions": {
+    "message": "Merr sugjerime dhe kampionë kodesh për të trajtuar këto probleme"
+  },
+  "panels/settings/AISettingsTab.ts | retainData": {
+    "message": "Të dhënat e përdorimit do të ruhen në një mënyrë të tillë që Google nuk mund të përcaktojë se kush i ka dhënë dhe nuk mund të plotësojë më kërkesat për fshirje dhe do të ruhen për deri në 18 muaj"
+  },
+  "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
+    "message": "Përdorimi i këtyre veçorive dërgon te Google të dhëna në lidhje me këtë veçori. Gjej më shumë informacione specifike për veçorinë më poshtë."
+  },
+  "panels/settings/AISettingsTab.ts | termsOfService": {
+    "message": "\"Kushtet e shërbimit\" të Google"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
+    "message": "Përdorimi i kësaj veçorie është objekt i \"{PH1}\" dhe \"{PH2}\""
+  },
+  "panels/settings/AISettingsTab.ts | thingsToConsider": {
+    "message": "Gjëra për t'u pasur parasysh"
+  },
+  "panels/settings/AISettingsTab.ts | whenOn": {
+    "message": "Kur është aktive"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Shto motiv të emrit të skedarit"
   },
@@ -11156,6 +11237,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "Shfaq pajisjet"
   },
+  "panels/settings/settings-meta.ts | chromeAI": {
+    "message": "IA-ja e Chrome"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Dokumentacioni"
   },
@@ -11173,6 +11257,9 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "Shkurtoret"
+  },
+  "panels/settings/settings-meta.ts | showChromeAI": {
+    "message": "Shfaq IA-në e Chrome"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "Shfaq eksperimentet"
@@ -12212,6 +12299,9 @@
   "panels/timeline/CountersGraph.ts | listeners": {
     "message": "Dëgjues"
   },
+  "panels/timeline/CountersGraph.ts | noEventsFound": {
+    "message": "Nuk janë gjetur të dhëna të përdorimit të memories në ngjarjet e zgjedhura."
+  },
   "panels/timeline/CountersGraph.ts | nodes": {
     "message": "Nyjat"
   },
@@ -12602,6 +12692,12 @@
   "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpenedWithUrl": {
     "message": "WebSocket i hapur: {PH1}"
   },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
+    "message": "Kohët e serverit - {PH1}"
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
+    "message": "Ky kanal përfshin kohë të marra nga kokat e përgjigjeve të rrjetit të kohëve të serverit. Kohët përkatëse të fillimit janë vetëm përllogaritje dhe mund të mos jenë të sakta."
+  },
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(anonim)"
   },
@@ -12728,6 +12824,12 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "Sesioni aktual: {PH1}. {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalAndFieldMetrics": {
+    "message": "Metrikat lokale dhe të fushës"
+  },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalMetrics": {
+    "message": "Metrikat lokale"
+  },
   "panels/timeline/TimelineHistoryManager.ts | moments": {
     "message": "momente"
   },
@@ -12842,6 +12944,9 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Më rregullo"
   },
+  "panels/timeline/TimelinePanel.ts | hideSidebar": {
+    "message": "Fshih shiritin anësor"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Po nis profilizuesi…"
   },
@@ -12886,6 +12991,15 @@
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "Shfaq kronologjinë e memories"
+  },
+  "panels/timeline/TimelinePanel.ts | showSidebar": {
+    "message": "Shfaq shiritin anësor"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarHidden": {
+    "message": "Shiriti anësor i performancës është i fshehur"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarShown": {
+    "message": "Shiriti anësor i performancës është shfaqur"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} sek."
@@ -13143,7 +13257,7 @@
     "message": "{PH1} në {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
-    "message": "Zhvlerësimet"
+    "message": "Zhvlerësimet ({PH1} në total)"
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Thirrur me skadim afati"
@@ -13373,6 +13487,12 @@
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "Sistemi"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
+    "message": "CPU: {PH1}"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
+    "message": "Kufizimi i CPU-së: {PH1}"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
     "message": "{PH1}× ngadalësim"
   },
@@ -13409,8 +13529,14 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Protokolli WebSocket"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | add": {
+    "message": "Shto"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Të përparuara"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
+    "message": "\"{PH1}\" është lidhur tashmë me një origjinë prodhimi."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "Anulo"
@@ -13421,17 +13547,35 @@
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "Konfiguro marrjen e të dhënave të fushës"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
+    "message": "Fshi"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
+    "message": "Origjina e zhvillimit"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
+    "message": "Origjina e zhvillimit: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome UX Report nuk ka të dhëna të mjaftueshme të shpejtësisë në botën reale për këtë faqe."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Merr të dhënat e përmbledhura të fushës nga Chrome UX Report për të të ndihmuar të kontekstualizosh matjet lokale me përvojën e përdoruesve të vërtetë në sajt."
+    "message": "Merr të dhënat e përmbledhura të fushës nga {PH1} për të të ndihmuar të kontekstualizosh matjet lokale me përvojën e përdoruesve të vërtetë në sajt."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
+    "message": "\"{PH1}\" nuk është një origjinë ose URL e vlefshme."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
+    "message": "Cakto një origjinë zhvillimi për të marrë automatikisht të dhënat përkatëse të fushës për origjinën e prodhimit."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | new": {
+    "message": "I ri"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | ok": {
     "message": "Në rregull"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Merr vetëm të dhënat e fushës për URL-në e mëposhtme"
+    "message": "Shfaq gjithmonë të dhënat e fushës për URL-në e mëposhtme"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Tërhiqu"
@@ -13439,11 +13583,17 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "Zbulimit të informacioneve të privatësisë"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
+    "message": "Origjina e prodhimit"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
+    "message": "Origjina e prodhimit: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "Konfiguro"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | urlOverride": {
-    "message": "Anulimi i URL-së"
+  "panels/timeline/components/FieldSettingsDialog.ts | url": {
+    "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "Kur DevTools është i hapur, URL-të që ti viziton do të dërgohen te Google për të kërkuar të dhënat e fushës. Këto kërkesa nuk janë të lidhura me \"Llogarinë tënde të Google\"."
@@ -13463,44 +13613,29 @@
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "Automatike ({PH1})"
   },
-  "panels/timeline/components/LiveMetricsView.ts | betweenRange": {
-    "message": "({PH1}-{PH2})"
+  "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
+    "message": "Periudha e mbledhjes:"
   },
-  "panels/timeline/components/LiveMetricsView.ts | clsTitle": {
-    "message": "Zhvendosja akumulative e strukturës (CLS)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
-    "message": "Kufizimi i CPU-së:"
+  "panels/timeline/components/LiveMetricsView.ts | dateRange": {
+    "message": "{PH1} - {PH2}"
   },
   "panels/timeline/components/LiveMetricsView.ts | desktop": {
     "message": "Desktop"
   },
-  "panels/timeline/components/LiveMetricsView.ts | deviceType": {
-    "message": "Lloji i pajisjes:"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | field75thPercentile": {
-    "message": "Percentilja e 75-të e fushës"
+  "panels/timeline/components/LiveMetricsView.ts | device": {
+    "message": "Pajisja: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "Të dhënat e fushës"
   },
-  "panels/timeline/components/LiveMetricsView.ts | good": {
-    "message": "I mirë"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | gtRange": {
-    "message": "(>{PH1})"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | inpTitle": {
-    "message": "Ndërveprimi me paraqitjen tjetër (INP)"
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
+    "message": "të dhënat e fushës"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "Ndërveprimet"
   },
-  "panels/timeline/components/LiveMetricsView.ts | lcpTitle": {
-    "message": "Paraqitja më e madhe me përmbajtje (LCP)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | leqRange": {
-    "message": "(≤{PH1})"
+  "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
+    "message": "Elementi i LCP-së"
   },
   "panels/timeline/components/LiveMetricsView.ts | loadingOption": {
     "message": "{PH1} - Po ngarkohet…"
@@ -13508,20 +13643,23 @@
   "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
     "message": "Metrikat lokale dhe të fushës"
   },
-  "panels/timeline/components/LiveMetricsView.ts | localValue": {
-    "message": "Lokal"
+  "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
+    "message": "Metrikat lokale"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localMetricsLink": {
+    "message": "Metrikat lokale"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "Celular"
   },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
+    "message": "Një pjesë e madhe e përdoruesve është në desktop. Provo të imitosh një madhësi të dritares së desktopit që përputhet me përdoruesit realë."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
+    "message": "Një pjesë e madhe e përdoruesve është në celular. Provo të imitosh një pajisje celulare që përputhet me përdoruesit realë."
+  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} - Nuk ka të dhëna"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | needsImprovement": {
-    "message": "Ka nevojë për përmirësim"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
-    "message": "Kufizimi i rrjetit:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "Hapat e radhës"
@@ -13530,22 +13668,28 @@
     "message": "Origjina"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
-    "message": "Origjina ({PH1})"
+    "message": "Origjina: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "{PH1}%"
+  "panels/timeline/components/LiveMetricsView.ts | recordingSettings": {
+    "message": "Cilësimet e regjistrimit"
   },
-  "panels/timeline/components/LiveMetricsView.ts | poor": {
-    "message": "I dobët"
+  "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
+    "message": "Shiko se si krahasohen metrikat e tua lokale me të dhënat e përdoruesve realë në {PH1}."
   },
-  "panels/timeline/components/LiveMetricsView.ts | relatedNode": {
-    "message": "Nyjë e ngjashme"
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
+    "message": "Shfaq të dhënat praktike për llojin e pajisjes: {PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
+    "message": "Shfaq të dhënat e fushës për {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "Tablet"
   },
-  "panels/timeline/components/LiveMetricsView.ts | throttling": {
-    "message": "Kufizimi"
+  "panels/timeline/components/LiveMetricsView.ts | theFieldMetricsAre": {
+    "message": "{PH1} maten nga përdoruesit realë duke përdorur shumë lidhje rrjeti dhe pajisje të ndryshme."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
+    "message": "{PH1} regjistrohen nga faqja aktuale duke përdorur lidhjen e rrjetit dhe pajisjen tënde."
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "Provo të çaktivizosh kufizimin e rrjetit  për t'iu përafruar vonesës së rrjetit të matur nga përdoruesit realë."
@@ -13557,10 +13701,70 @@
     "message": "URL"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOptionWithKey": {
-    "message": "URL ({PH1})"
+    "message": "URL: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | urlOrOrigin": {
-    "message": "URL-ja/origjina:"
+  "panels/timeline/components/MetricCompareStrings.ts | goodBetterCompare": {
+    "message": "Metrika lokale {PH1} me {PH2} është e mirë dhe është mjaft më e mirë se përvoja e përdoruesve."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
+    "message": "Metrika lokale {PH1} me {PH2} është e mirë dhe vlerësohet si {PH4} e përvojave të përdoruesve realë të {PH1}. Përveç kësaj, {PH1} me {PH3} në percentilen e 75-të me të dhënat e fushës është e mirë."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
+    "message": "Metrika lokale {PH1} me {PH2} është e mirë dhe vlerësohet si {PH4} e përvojave të përdoruesve realë të {PH1}. Sidoqoftë, {PH1} me {PH3} në percentilen e 75-të nga të dhënat e fushës ka nevojë për përmirësim."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
+    "message": "Metrika lokale {PH1} me {PH2} është e mirë dhe vlerësohet si {PH4} e përvojave të përdoruesve realë të {PH1}. Sidoqoftë, {PH1} me {PH3} në percentilen e 75-të me të dhënat e fushës është e dobët."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
+    "message": "Metrika lokale {PH1} me {PH2} është e mirë dhe është e ngjashme me përvojën e përdoruesve."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSummarized": {
+    "message": "Metrika lokale {PH1} me {PH2} është e mirë."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodWorseCompare": {
+    "message": "Metrika lokale {PH1} me {PH2} është e mirë dhe është mjaft më e ulët se përvoja e përdoruesit."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementBetterCompare": {
+    "message": "Metrika lokale {PH1} me {PH2} ka nevojë për përmirësim dhe është ndjeshëm më e mirë se përvoja e përdoruesve."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
+    "message": "Metrika lokale {PH1} me {PH2} ka nevojë për përmirësim dhe vlerësohet si {PH4} e përvojave të përdoruesve të vërtetë të {PH1}. Sidoqoftë, {PH1} me {PH3} në percentilen e 75-të nga të dhënat e fushës është e mirë."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
+    "message": "Metrika lokale {PH1} me {PH2} ka nevojë për përmirësim dhe vlerësohet si {PH4} e përvojave të përdoruesve të vërtetë të {PH1}. Përveç kësaj, të dhënat e fushës në percentilen e 75-të me {PH1} {PH3} kanë nevojë për përmirësim."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
+    "message": "Metrika lokale {PH1} me {PH2} ka nevojë për përmirësim dhe vlerësohet si {PH4} e përvojave të përdoruesve të vërtetë të {PH1}. Sidoqoftë, {PH1} me {PH3} në percentilen e 75-të me të dhënat e fushës është e dobët."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
+    "message": "Metrika lokale {PH1} me {PH2} ka nevojë për përmirësim dhe është e ngjashme me përvojën e përdoruesve."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSummarized": {
+    "message": "Metrikat e tua lokale me {PH1} {PH2} kanë nevojë për përmirësim."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementWorseCompare": {
+    "message": "Metrika lokale {PH1} me {PH2} ka nevojë për përmirësim dhe është mjaft më e ulët se përvoja e përdoruesve."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorBetterCompare": {
+    "message": "Metrika lokale {PH1} me {PH2} është e dobët dhe është mjaft më e mirë se përvoja e përdoruesve."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
+    "message": "Metrika lokale {PH1} me {PH2} është e dobët dhe vlerësohet si {PH4} e përvojave të përdoruesve realë të {PH1}. Sidoqoftë, {PH1} me {PH3} në percentilen e 75-të nga të dhënat e fushës është e mirë."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
+    "message": "Metrika lokale {PH1} me {PH2} është e dobët dhe vlerësohet si {PH4} e përvojave të përdoruesve realë të {PH1}. Sidoqoftë, {PH1} me {PH3} në percentilen e 75-të nga të dhënat e fushës ka nevojë për përmirësim."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
+    "message": "Metrika lokale {PH1} me {PH2} është e dobët dhe vlerësohet si {PH4} e përvojave të përdoruesve realë të {PH1}. Përveç kësaj, {PH1} me {PH3} në percentilen e 75-të nga të dhënat e fushës është e dobët."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
+    "message": "Metrika lokale {PH1} me {PH2} është e dobët dhe është e ngjashme me përvojën e përdoruesve."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSummarized": {
+    "message": "Metrika lokale {PH1} me {PH2} është e dobët."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorWorseCompare": {
+    "message": "Metrika lokale {PH1} me {PH2} është e dobët dhe është mjaft më e ulët se përvoja e përdoruesve."
   },
   "panels/timeline/components/NetworkRequestDetails.ts | FromCache": {
     "message": " (nga memoria specifike)"
@@ -13652,8 +13856,26 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
     "message": "Çaktivizuar"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | network": {
+    "message": "Rrjeti: {PH1}"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | networkThrottling": {
+    "message": "Përshpejtimi i rrjetit: {PH1}"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "Paravendosjet"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "fetchpriority=zbatuar në nivel të lartë"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "Ngarkimi i kursyer nuk është zbatuar"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "Imazhi i LCP-së u ngarkua {PH1} pas pikës më të hershme të nisjes."
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "Kërkesa mund të zbulohet në dokumentin origjinal"
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "Vonesa e paraqitjes së elementit"
@@ -13661,8 +13883,8 @@
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "Vonesa e ngarkimit të burimit"
   },
-  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadTime": {
-    "message": "Koha e ngarkimit të burimit"
+  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDuration": {
+    "message": "Kohëzgjatja e ngarkimit të burimit"
   },
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
     "message": "Koha për në bajtin e parë"
@@ -14681,9 +14903,6 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Pamja e ekranit për {PH1} - zgjidh për të parë kërkesat pararendëse."
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
-    "message": "Shto skriptin në listën e shpërfilljeve"
-  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Konfiguro gjurmët…"
   },
@@ -14693,23 +14912,11 @@
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "Grafiku i flakëve"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideChildren": {
-    "message": "Fshih artikujt dytësorë"
+  "ui/legacy/components/perf_ui/FlameChart.ts | labelEntry": {
+    "message": "Hyrja e etiketës"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideFunction": {
-    "message": "Fshihe funksionin"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
-    "message": "Fshih artikujt dytësorë të përsëritur"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
-    "message": "Hiq skriptin nga lista e shpërfilljeve"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
-    "message": "Rivendos elementet dytësore"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
-    "message": "Rivendos gjurmimin"
+  "ui/legacy/components/perf_ui/FlameChart.ts | linkEntries": {
+    "message": "Lidh hyrjet"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sCollapsed": {
     "message": "{PH1} u palos"

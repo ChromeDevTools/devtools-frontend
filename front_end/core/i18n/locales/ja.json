@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | stylesSidebar": {
     "message": "スタイル サイドバー"
   },
+  "core/common/Revealer.ts | timelinePanel": {
+    "message": "[パフォーマンス] パネル"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Adorner"
   },
@@ -1142,11 +1145,11 @@
   "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
     "message": ":--customstatename が非推奨となりました。代わりに :state(customstatename) 構文を使用してください。"
   },
+  "generated/Deprecation.ts | CSSInsetAreaProperty": {
+    "message": "inset-area プロパティは非推奨となっています。代わりに position-area プロパティを使用してください。"
+  },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "デフォルトの Cast の統合を無効にするには、-internal-media-controls-overlay-cast-button セレクタではなく disableRemotePlayback 属性を使用する必要があります。"
-  },
-  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
-    "message": "CSS の appearance 値 inner-spin-button、media-slider、media-sliderthumb、media-volume-slider、media-volume-sliderthumb、push-button、searchfield-cancel-button、slider-horizontal、sliderthumb-horizontal、sliderthumb-vertical、square-button は標準化されておらず、削除される予定です。"
   },
   "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
     "message": "CSS の appearance 値 slider-vertical は標準化されておらず、削除される予定です。"
@@ -4532,6 +4535,9 @@
   "panels/autofill/AutofillView.ts | sendFeedback": {
     "message": "フィードバックを送信"
   },
+  "panels/autofill/AutofillView.ts | showTestAddressesInAutofillMenu": {
+    "message": "自動入力メニューにテスト住所を表示する"
+  },
   "panels/autofill/AutofillView.ts | toStartDebugging": {
     "message": "自動入力のデバッグを開始するには、Chrome の自動入力メニューを使用して住所フォームに入力します。"
   },
@@ -5591,6 +5597,9 @@
   "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
     "message": "ページにフォーカスしたままにします。消失要素のデバッグに主に使用されます。"
   },
+  "panels/elements/ElementStatePaneWidget.ts | forceElementSpecificStates": {
+    "message": "特定の要素の状態を強制"
+  },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "要素の状態を強制"
   },
@@ -6423,7 +6432,7 @@
     "message": "設定を更新"
   },
   "panels/explain/explain-meta.ts | ageRestricted": {
-    "message": "この機能は 18 歳以上のユーザーのみが利用できます。"
+    "message": "この機能は 18 歳以上のユーザーにのみご利用いただけます"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "AI を使用してコンソール メッセージを分析"
@@ -6438,16 +6447,13 @@
     "message": "この警告を分析"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "この機能はお住まいの地域ではご利用いただけません。"
+    "message": "この機能はお住まいの地域ではご利用いただけません"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
     "message": "この機能は組織によってオフにされています。詳しくは管理者にお問い合わせください。"
   },
-  "panels/explain/explain-meta.ts | rolloutRestricted": {
-    "message": "この機能は現在ロールアウト中です。今後の最新情報にご注目ください。"
-  },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "この機能を使用するには、DevTools の [設定] で言語設定を英語に更新してください。"
+    "message": "この機能を使用するには、DevTools の [設定] で言語設定を英語に更新してください"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "ブロックしたリソース"
@@ -9596,6 +9602,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "ノードフラグを計算しています…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingObjectNames": {
+    "message": "オブジェクト名を計算しています…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingRetainedSizes": {
     "message": "保持されるサイズを計算しています…"
   },
@@ -10871,6 +10880,78 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "ユーザー アイドル状態、画面ロック解除"
   },
+  "panels/settings/AISettingsTab.ts | adminSettings": {
+    "message": "管理対象ユーザーが使用できる機能は、管理者の設定によって異なる場合があります"
+  },
+  "panels/settings/AISettingsTab.ts | boostYourProductivity": {
+    "message": "Chrome AI で生産性を向上"
+  },
+  "panels/settings/AISettingsTab.ts | chromeAi": {
+    "message": "Chrome AI"
+  },
+  "panels/settings/AISettingsTab.ts | collapse": {
+    "message": "折りたたむ"
+  },
+  "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
+    "message": "コンソール メッセージ、関連するスタック トレース、関連するソースコード、関連するネットワーク ヘッダーは、Google に送信され、説明の生成に使用されます。このデータは、該当の機能の改善のために人間のレビュアーによって確認される場合があります。"
+  },
+  "panels/settings/AISettingsTab.ts | expand": {
+    "message": "開く"
+  },
+  "panels/settings/AISettingsTab.ts | experimentalFeatures": {
+    "message": "これらの機能は試験運用版であり、変更される可能性があります"
+  },
+  "panels/settings/AISettingsTab.ts | explainConsole": {
+    "message": "コンソールの警告とエラーに関する説明を取得できます"
+  },
+  "panels/settings/AISettingsTab.ts | explainStyling": {
+    "message": "スタイル設定の動作についての説明と追加情報を取得できます"
+  },
+  "panels/settings/AISettingsTab.ts | freestylerSendsData": {
+    "message": "検査したページの DOM または CSS コンテンツは、Google に送信されて説明の生成に使用されることがあります。このデータは、該当の機能の改善のために人間のレビュアーによって確認される場合があります。"
+  },
+  "panels/settings/AISettingsTab.ts | generatedSnippets": {
+    "message": "生成されたコード スニペットは慎重に使用してください"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
+    "message": "コンソールの警告とエラーを理解し修正する助けとなります"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
+    "message": "スタイルに関する問題を把握して修正する助けとなります"
+  },
+  "panels/settings/AISettingsTab.ts | learnMore": {
+    "message": "詳細"
+  },
+  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "1 つ以上の設定が変更されました。変更を有効にするには再読み込みが必要です。"
+  },
+  "panels/settings/AISettingsTab.ts | privacyNotice": {
+    "message": "プライバシーに関するお知らせ"
+  },
+  "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
+    "message": "スタイルに関する問題を解決するための提案とコードサンプルを受け取ることができます"
+  },
+  "panels/settings/AISettingsTab.ts | receiveSuggestions": {
+    "message": "これらの問題に対処するための提案とコードサンプルを受け取ることができます"
+  },
+  "panels/settings/AISettingsTab.ts | retainData": {
+    "message": "使用状況データは、Google がその提供者を判別できない（したがって削除のリクエストに対応できない）方法で保存され、最大 18 か月間保持されます"
+  },
+  "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
+    "message": "これらの機能を使用すると、その機能に関連するデータが Google に送信されます。機能固有の情報については以下をご覧ください。"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfService": {
+    "message": "Google 利用規約"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
+    "message": "この機能の使用には、{PH1}と{PH2}が適用されます"
+  },
+  "panels/settings/AISettingsTab.ts | thingsToConsider": {
+    "message": "留意事項"
+  },
+  "panels/settings/AISettingsTab.ts | whenOn": {
+    "message": "オンにした場合"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "ファイル名パターンを追加"
   },
@@ -11156,6 +11237,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "デバイスを表示"
   },
+  "panels/settings/settings-meta.ts | chromeAI": {
+    "message": "Chrome AI"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "ドキュメント"
   },
@@ -11173,6 +11257,9 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "ショートカット"
+  },
+  "panels/settings/settings-meta.ts | showChromeAI": {
+    "message": "Chrome AI を表示"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "テストを表示"
@@ -12212,6 +12299,9 @@
   "panels/timeline/CountersGraph.ts | listeners": {
     "message": "リスナー"
   },
+  "panels/timeline/CountersGraph.ts | noEventsFound": {
+    "message": "選択したイベント内にメモリ使用量に関するデータがありません。"
+  },
   "panels/timeline/CountersGraph.ts | nodes": {
     "message": "ノード数"
   },
@@ -12602,6 +12692,12 @@
   "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpenedWithUrl": {
     "message": "WebSocket を開始: {PH1}"
   },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
+    "message": "サーバーのタイミング - {PH1}"
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
+    "message": "このトラックには、Server-Timing ネットワーク レスポンス ヘッダーから取得したタイミング情報が含まれています。それぞれの開始時間は推定値であり、正確でない可能性があります。"
+  },
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "（匿名）"
   },
@@ -12728,6 +12824,12 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "現在のセッション: {PH1}。{PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalAndFieldMetrics": {
+    "message": "ローカルとフィールドの指標"
+  },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalMetrics": {
+    "message": "ローカルの指標"
+  },
   "panels/timeline/TimelineHistoryManager.ts | moments": {
     "message": "モーメント"
   },
@@ -12842,6 +12944,9 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "修正"
   },
+  "panels/timeline/TimelinePanel.ts | hideSidebar": {
+    "message": "サイドバーを非表示にします"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "プロファイラを初期化しています…"
   },
@@ -12886,6 +12991,15 @@
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "メモリ タイムラインを表示"
+  },
+  "panels/timeline/TimelinePanel.ts | showSidebar": {
+    "message": "サイドバーを表示します"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarHidden": {
+    "message": "パフォーマンス サイドバーが非表示"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarShown": {
+    "message": "パフォーマンス サイドバーが表示されました"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1}秒"
@@ -13143,7 +13257,7 @@
     "message": "{PH1}（{PH2}）"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
-    "message": "無効化"
+    "message": "無効化（合計 {PH1} 件）"
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "タイムアウトで呼び出し"
@@ -13373,6 +13487,12 @@
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "システム"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
+    "message": "CPU: {PH1}"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
+    "message": "CPU スロットリング: {PH1}"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
     "message": "{PH1} 倍減速"
   },
@@ -13409,8 +13529,14 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket プロトコル"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | add": {
+    "message": "追加"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "詳細設定"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
+    "message": "「{PH1}」はすでに本番環境オリジンにマッピングされています。"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "キャンセル"
@@ -13421,17 +13547,35 @@
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "フィールド データの取得の設定"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
+    "message": "削除"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
+    "message": "開発環境オリジン"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
+    "message": "開発環境オリジン: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome UX レポートには、このページの実際の速度データが十分にありません。"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "集計されたフィールド データを Chrome UX レポートから取得し、サイトの実際のユーザー エクスペリエンスに基づいてローカルの測定を解釈できます。"
+    "message": "集計されたフィールド データを {PH1} から取得し、ローカルの測定値がサイトの実際のユーザー エクスペリエンスに対してどの程度のものかを確認できるようにします。"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
+    "message": "「{PH1}」は有効なオリジンまたは URL ではありません。"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
+    "message": "開発環境オリジンを設定すると、本番環境オリジン用に関連フィールド データが自動的に取得されます。"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | new": {
+    "message": "新規"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | ok": {
     "message": "OK"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "以下の URL のフィールド データのみ取得する"
+    "message": "以下の URL のフィールド データを常に表示する"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "無効にする"
@@ -13439,11 +13583,17 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "プライバシーに関する情報の開示"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
+    "message": "本番環境オリジン"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
+    "message": "本番環境オリジン: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "設定"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | urlOverride": {
-    "message": "URL オーバーライド"
+  "panels/timeline/components/FieldSettingsDialog.ts | url": {
+    "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "DevTools を開くと、アクセスした URL が Google に送信され、フィールド データがクエリされます。これらのリクエストは Google アカウントには関連付けられません。"
@@ -13463,44 +13613,29 @@
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "自動（{PH1}）"
   },
-  "panels/timeline/components/LiveMetricsView.ts | betweenRange": {
-    "message": "（{PH1}～{PH2}）"
+  "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
+    "message": "収集期間:"
   },
-  "panels/timeline/components/LiveMetricsView.ts | clsTitle": {
-    "message": "Cumulative Layout Shift（CLS）"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
-    "message": "CPU スロットリング:"
+  "panels/timeline/components/LiveMetricsView.ts | dateRange": {
+    "message": "{PH1}～{PH2}"
   },
   "panels/timeline/components/LiveMetricsView.ts | desktop": {
     "message": "パソコン"
   },
-  "panels/timeline/components/LiveMetricsView.ts | deviceType": {
-    "message": "デバイスの種類:"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | field75thPercentile": {
-    "message": "フィールドの 75 パーセンタイル"
+  "panels/timeline/components/LiveMetricsView.ts | device": {
+    "message": "デバイス: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "フィールド データ"
   },
-  "panels/timeline/components/LiveMetricsView.ts | good": {
-    "message": "良好"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | gtRange": {
-    "message": "（>{PH1}）"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | inpTitle": {
-    "message": "Interaction to Next Paint（INP）"
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
+    "message": "フィールド データ"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "操作"
   },
-  "panels/timeline/components/LiveMetricsView.ts | lcpTitle": {
-    "message": "Largest Contentful Paint（LCP）"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | leqRange": {
-    "message": "（≤{PH1}）"
+  "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
+    "message": "LCP 要素"
   },
   "panels/timeline/components/LiveMetricsView.ts | loadingOption": {
     "message": "{PH1} - 読み込んでいます…"
@@ -13508,20 +13643,23 @@
   "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
     "message": "ローカルとフィールドの指標"
   },
-  "panels/timeline/components/LiveMetricsView.ts | localValue": {
-    "message": "ローカル"
+  "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
+    "message": "ローカルの指標"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localMetricsLink": {
+    "message": "ローカルの指標"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "モバイル"
   },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
+    "message": "ユーザーの大多数はパソコンを使用しています。実際のユーザーと一致するパソコンのウィンドウ サイズをエミュレートしてみてください。"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
+    "message": "ユーザーの大多数はモバイルを使用しています。実際のユーザーと一致するモバイル デバイスをエミュレートしてみてください。"
+  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} - データがありません"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | needsImprovement": {
-    "message": "改善が必要"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
-    "message": "ネットワーク スロットリング:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "次のステップ"
@@ -13530,22 +13668,28 @@
     "message": "オリジン"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
-    "message": "オリジン（{PH1}）"
+    "message": "オリジン: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "{PH1}%"
+  "panels/timeline/components/LiveMetricsView.ts | recordingSettings": {
+    "message": "録画の設定"
   },
-  "panels/timeline/components/LiveMetricsView.ts | poor": {
-    "message": "低"
+  "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
+    "message": "{PH1} で、ローカルの指標と実際のユーザーデータを比較できます。"
   },
-  "panels/timeline/components/LiveMetricsView.ts | relatedNode": {
-    "message": "関連ノード"
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
+    "message": "デバイスタイプ「{PH1}」のフィールド データを表示"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
+    "message": "{PH1} のフィールド データを表示"
   },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "タブレット"
   },
-  "panels/timeline/components/LiveMetricsView.ts | throttling": {
-    "message": "スロットリング"
+  "panels/timeline/components/LiveMetricsView.ts | theFieldMetricsAre": {
+    "message": "{PH1}は、さまざまなネットワーク接続とデバイスを使用する実際のユーザーにより測定されます。"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
+    "message": "{PH1} は、現在のネットワーク接続とデバイスを使用して現在のページから取得されます。"
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "ネットワーク スロットリングを無効にして、実際のユーザーが測定したネットワーク レイテンシを概算してみてください。"
@@ -13557,10 +13701,70 @@
     "message": "URL"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOptionWithKey": {
-    "message": "URL（{PH1}）"
+    "message": "URL: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | urlOrOrigin": {
-    "message": "URL / オリジン:"
+  "panels/timeline/components/MetricCompareStrings.ts | goodBetterCompare": {
+    "message": "ローカルの {PH1} {PH2} は「良好」で、サイトユーザーのエクスペリエンスを大幅に上回っています。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
+    "message": "ローカルの {PH1} {PH2} は「良好」で、実際のユーザーの {PH1} エクスペリエンスの {PH4} と同じであると評価されます。加えて、フィールド データの 75 パーセンタイルの {PH1} {PH3} は「良好」です。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
+    "message": "ローカルの {PH1} {PH2} は「良好」で、実際のユーザーの {PH1} エクスペリエンスの {PH4} と同じであると評価されます。ただし、フィールド データの 75 パーセンタイルの {PH1} {PH3} は「改善が必要」です。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
+    "message": "ローカルの {PH1} {PH2} は「良好」で、実際のユーザーの {PH1} エクスペリエンスの {PH4} と同じであると評価されます。ただし、フィールド データの 75 パーセンタイルの {PH1} {PH3} は「不良」です。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
+    "message": "ローカルの {PH1} {PH2} は「良好」で、サイトユーザーのエクスペリエンスと同程度です。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSummarized": {
+    "message": "ローカルの {PH1} {PH2} は「良好」です。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodWorseCompare": {
+    "message": "ローカルの {PH1} {PH2} は「良好」で、サイトユーザーのエクスペリエンスを大幅に下回っています。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementBetterCompare": {
+    "message": "ローカルの {PH1} {PH2} は「改善が必要」で、サイトユーザーのエクスペリエンスを大幅に上回っています。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
+    "message": "ローカルの {PH1} {PH2} は「改善が必要」で、実際のユーザーの {PH1} エクスペリエンスの {PH4} と同じであると評価されます。ただし、フィールド データの 75 パーセンタイルの {PH1} {PH3} は「良好」です。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
+    "message": "ローカルの {PH1} {PH2} は「改善が必要」で、実際のユーザーの {PH1} エクスペリエンスの {PH4} と同じであると評価されます。加えて、フィールド データの 75 パーセンタイルの {PH1} {PH3} は「改善が必要」です。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
+    "message": "ローカルの {PH1} {PH2} は「改善が必要」で、実際のユーザーの {PH1} エクスペリエンスの {PH4} と同じであると評価されます。ただし、フィールド データの 75 パーセンタイルの {PH1} {PH3} は「不良」です。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
+    "message": "ローカルの {PH1} {PH2} は「改善が必要」で、サイトユーザーのエクスペリエンスと同程度です。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSummarized": {
+    "message": "ローカルの {PH1} {PH2} は「改善が必要」です。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementWorseCompare": {
+    "message": "ローカルの {PH1} {PH2} は「改善が必要」で、サイトユーザーのエクスペリエンスを大幅に下回っています。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorBetterCompare": {
+    "message": "ローカルの {PH1} {PH2} は「不良」で、サイトユーザーのエクスペリエンスを大幅に上回っています。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
+    "message": "ローカルの {PH1} {PH2} は「不良」で、実際のユーザーの {PH1} エクスペリエンスの {PH4} と同じであると評価されます。ただし、フィールド データの 75 パーセンタイルの {PH1} {PH3} は「良好」です。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
+    "message": "ローカルの {PH1} {PH2} は「不良」で、実際のユーザーの {PH1} エクスペリエンスの {PH4} と同じであると評価されます。ただし、フィールド データの 75 パーセンタイルの {PH1} {PH3} は「改善が必要」です。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
+    "message": "ローカルの {PH1} {PH2} は「不良」で、実際のユーザーの {PH1} エクスペリエンスの {PH4} と同じであると評価されます。加えて、フィールド データの 75 パーセンタイルの {PH1} {PH3} は「不良」です。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
+    "message": "ローカルの {PH1} {PH2} は「不良」で、サイトユーザーのエクスペリエンスと同程度です。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSummarized": {
+    "message": "ローカルの {PH1} {PH2} は「不良」です。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorWorseCompare": {
+    "message": "ローカルの {PH1} {PH2} は「不良」で、サイトユーザーのエクスペリエンスを大幅に下回っています。"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | FromCache": {
     "message": " （キャッシュから）"
@@ -13652,8 +13856,26 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
     "message": "無効"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | network": {
+    "message": "ネットワーク: {PH1}"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | networkThrottling": {
+    "message": "ネットワーク スロットリング: {PH1}"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "プリセット"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "「fetchpriority=high」が適用されました"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "遅延読み込みが適用されていません"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "LCP のイメージは、最も早い開始点から {PH1} 後に読み込まれました。"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "リクエストは最初のドキュメントで検出可能です"
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "要素のレンダリングの遅延"
@@ -13661,7 +13883,7 @@
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "リソース読み込みの遅延"
   },
-  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadTime": {
+  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDuration": {
     "message": "リソースの読み込み時間"
   },
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
@@ -14681,9 +14903,6 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1} のスクリーンショット - 前のリクエストを表示するには選択します。"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
-    "message": "無視リストにスクリプトを追加"
-  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "トラックを設定…"
   },
@@ -14693,23 +14912,11 @@
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "フレーム チャート"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideChildren": {
-    "message": "子を非表示"
+  "ui/legacy/components/perf_ui/FlameChart.ts | labelEntry": {
+    "message": "エントリにラベルを付ける"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideFunction": {
-    "message": "関数を非表示"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
-    "message": "繰り返しの子を非表示"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
-    "message": "無視リストからスクリプトを削除"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
-    "message": "子をリセットする"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
-    "message": "トレースをリセット"
+  "ui/legacy/components/perf_ui/FlameChart.ts | linkEntries": {
+    "message": "エントリをリンクする"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sCollapsed": {
     "message": "{PH1} が折りたたまれています"

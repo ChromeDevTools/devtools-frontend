@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | stylesSidebar": {
     "message": "üslublar üzrə kənar panel"
   },
+  "core/common/Revealer.ts | timelinePanel": {
+    "message": "Performans paneli"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Adorner"
   },
@@ -837,7 +840,7 @@
     "message": "Təbəqə sərhədləri"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | layoutShiftRegions": {
-    "message": "Düzən Dəyişimi Regionları"
+    "message": "Düzən dəyişimi regionları"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | paintFlashing": {
     "message": "Rəngin vurğulanması"
@@ -1142,11 +1145,11 @@
   "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
     "message": ":--customstatename köhnəlib. :state(customstatename) sintaksisindən istifadə edin."
   },
+  "generated/Deprecation.ts | CSSInsetAreaProperty": {
+    "message": "inset-area xüsusiyyəti köhnəlib. Əvəzində position-area xüsusiyyətini istifadə edin."
+  },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Defolt Yayım inteqrasiyasını deaktiv etmək üçün-internal-media-controls-overlay-cast-button seçicisindən istifadə etmək əvəzinə disableRemotePlayback atributu istifadə edilməlidir."
-  },
-  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
-    "message": "CSS görünüş dəyərləri  inner-spin-button, media-slider, media-sliderthumb, media-volume-slider, media-volume-sliderthumb, push-button, searchfield-cancel-button, slider-horizontal, sliderthumb-horizontal, sliderthumb-vertical, square-button standart deyil və silinəcək."
   },
   "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
     "message": "CSS görünüş dəyəri (slider-vertical) standart deyil və silinəcək."
@@ -4532,6 +4535,9 @@
   "panels/autofill/AutofillView.ts | sendFeedback": {
     "message": "Rəy göndərin"
   },
+  "panels/autofill/AutofillView.ts | showTestAddressesInAutofillMenu": {
+    "message": "Test ünvanlarını avtomatik doldurma menyusunda göstərin"
+  },
   "panels/autofill/AutofillView.ts | toStartDebugging": {
     "message": "Avtomatik doldurmanı sazlamağa başlamaq üçün Chrome-un avtodoldurma menyusundan istifadə edərək ünvan formasını doldurun."
   },
@@ -5591,6 +5597,9 @@
   "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
     "message": "Səhifəni fokusda saxlayın. Əsasən, yoxa çıxan elementlərin sazlanması üçün istifadə edilir."
   },
+  "panels/elements/ElementStatePaneWidget.ts | forceElementSpecificStates": {
+    "message": "Xüsusi element vəziyyətini məcburi tətbiq edin"
+  },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Element vəziyyətini məcburi tətbiq edin"
   },
@@ -5868,7 +5877,7 @@
     "message": "daxil edilmiş üslub vərəqi"
   },
   "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
-    "message": "Aşağıda Üslub Qaydası daxil edin"
+    "message": "Aşağıda üslub qaydası daxil edin"
   },
   "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
     "message": "{PH1}[Atributların Üslubu]"
@@ -6423,7 +6432,7 @@
     "message": "Ayarları yeniləyin"
   },
   "panels/explain/explain-meta.ts | ageRestricted": {
-    "message": "Bu funksiya yalnız 18 yaşı tamam olmuş istifadəçilər üçün əlçatandır."
+    "message": "Bu funksiya yalnız 18 yaşı tamam olmuş istifadəçilər üçün əlçatandır"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "Konsol mesajlarını süni intellektin köməyi ilə anlamaq"
@@ -6438,16 +6447,13 @@
     "message": "Bu xəbərdarlıq haqqında məlumat"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "Bu funksiya regionunuzda əlçatan deyil."
+    "message": "Bu funksiya regionunuzda əlçatan deyil"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
     "message": "Təşkilat bu funksiyanı söndürdü. Ətraflı məlumat üçün administratorlar ilə əlaqə saxlayın."
   },
-  "panels/explain/explain-meta.ts | rolloutRestricted": {
-    "message": "Bu funksiya hazırda istifadəyə verilir. İzləmədə qalın."
-  },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "Bu xüsusiyyəti istifadə etmək üçün DevTools Ayarlarında Dil seçiminizi ingilis dili olaraq yeniləyin."
+    "message": "Bu xüsusiyyəti istifadə etmək üçün DevTools Ayarlarında Dil seçiminizi ingilis dili olaraq yeniləyin"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Bloklanan Resurs"
@@ -9596,6 +9602,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "Qovşaq bayraqları hesablanır…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingObjectNames": {
+    "message": "Obyekt adları hesablanır…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingRetainedSizes": {
     "message": "Saxlanılan ölçülər hesablanır…"
   },
@@ -10871,6 +10880,78 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "İstifadəçi fəaliyyətsizdir, ekran kilidi açıqdır"
   },
+  "panels/settings/AISettingsTab.ts | adminSettings": {
+    "message": "İdarə olunan istifadəçilər üçün əlçatan funksiyalar onların administrator ayarlarından asılı olaraq dəyişə bilər"
+  },
+  "panels/settings/AISettingsTab.ts | boostYourProductivity": {
+    "message": "Chrome AI ilə məhsuldarlığı artırın"
+  },
+  "panels/settings/AISettingsTab.ts | chromeAi": {
+    "message": "Chrome AI"
+  },
+  "panels/settings/AISettingsTab.ts | collapse": {
+    "message": "yığcamlaşdırın"
+  },
+  "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
+    "message": "Konsol mesajı, əlaqədar xəta izi, əlaqədar mənbə kodu və əlaqədar şəbəkə başlıqları izahatlar yaratmaq üçün Google-a göndərilir. Bu funksiyanı təkmilləşdirmək üçün bu dataya insan redaktorlar baxa bilərlər."
+  },
+  "panels/settings/AISettingsTab.ts | expand": {
+    "message": "genişləndirin"
+  },
+  "panels/settings/AISettingsTab.ts | experimentalFeatures": {
+    "message": "Bu funksiyalar eksperimentaldır və dəyişə bilər"
+  },
+  "panels/settings/AISettingsTab.ts | explainConsole": {
+    "message": "Konsol xəbərdarlıqları və xətaları üçün izahatlar alın"
+  },
+  "panels/settings/AISettingsTab.ts | explainStyling": {
+    "message": "Üslub davranışları üçün izahatlar və əlavə kontekst əldə edin"
+  },
+  "panels/settings/AISettingsTab.ts | freestylerSendsData": {
+    "message": "Yoxlanılan səhifədəki hər hansı DOM və ya CSS kontenti izahatlar yaratmaq üçün Google-a göndərilə bilər. Bu funksiyanı təkmilləşdirmək üçün bu dataya insan redaktorlar baxa bilərlər."
+  },
+  "panels/settings/AISettingsTab.ts | generatedSnippets": {
+    "message": "Yaradılmış kod fraqmentlərini ehtiyatla istifadə edin"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
+    "message": "Konsol xəbərdarlıq və xətalarını anlamağa və düzəltməyə kömək edir"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
+    "message": "Üslub problemlərini anlamağa və həll etməyə kömək edir"
+  },
+  "panels/settings/AISettingsTab.ts | learnMore": {
+    "message": "Ətraflı məlumat"
+  },
+  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "Yenidən yükləmənin qüvvəyə minməsini tələb edən bir və ya daha çox ayar dəyişdirilib."
+  },
+  "panels/settings/AISettingsTab.ts | privacyNotice": {
+    "message": "Məxfilik Bildirişi"
+  },
+  "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
+    "message": "Üslub problemlərini həll etmək üçün təkliflər və kod nümunələri alın"
+  },
+  "panels/settings/AISettingsTab.ts | receiveSuggestions": {
+    "message": "Bu problemləri həll etmək üçün təkliflər və kod nümunələri qəbul edin"
+  },
+  "panels/settings/AISettingsTab.ts | retainData": {
+    "message": "İstifadə datası Google-un kimin təmin etdiyini bilməyəcəyi və heç bir silinmə sorğusunu yerinə yetirə bilməyəcəyi şəkildə 18 aya qədər saxlanılacaq"
+  },
+  "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
+    "message": "Bu funksiyalardan istifadə funksiyaya aid olan datanı Google-a göndərir. Aşağıda daha çox funksiyaya aid məlumat tapa bilərsiniz."
+  },
+  "panels/settings/AISettingsTab.ts | termsOfService": {
+    "message": "Google Xidmət Şərtləri"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
+    "message": "Bu funksiyadan istifadə {PH1} və {PH2} bölmələrinə tabedir"
+  },
+  "panels/settings/AISettingsTab.ts | thingsToConsider": {
+    "message": "Nəzərə alınmalı amillər"
+  },
+  "panels/settings/AISettingsTab.ts | whenOn": {
+    "message": "Aktiv olduqda"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Fayl adı şablonu əlavə edin"
   },
@@ -11156,6 +11237,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "Cihazları göstərin"
   },
+  "panels/settings/settings-meta.ts | chromeAI": {
+    "message": "Chrome AI"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Sənədlər"
   },
@@ -11173,6 +11257,9 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "Qısayollar"
+  },
+  "panels/settings/settings-meta.ts | showChromeAI": {
+    "message": "Chrome AI-ı göstərin"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "Ekspermentləri göstərin"
@@ -12212,6 +12299,9 @@
   "panels/timeline/CountersGraph.ts | listeners": {
     "message": "Dinləyicilər"
   },
+  "panels/timeline/CountersGraph.ts | noEventsFound": {
+    "message": "Seçilmiş tədbirlərdə yaddaş istifadə datası tapılmadı."
+  },
   "panels/timeline/CountersGraph.ts | nodes": {
     "message": "Qovşaqlar"
   },
@@ -12387,7 +12477,7 @@
     "message": "Düzən"
   },
   "panels/timeline/EventUICategory.ts | layoutShift": {
-    "message": "Düzənin Dəyişilməsi"
+    "message": "Düzənin dəyişilməsi"
   },
   "panels/timeline/EventUICategory.ts | loading": {
     "message": "Yüklənir"
@@ -12602,6 +12692,12 @@
   "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpenedWithUrl": {
     "message": "WebSocket açıldı: {PH1}"
   },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
+    "message": "Server zamanlamaları — {PH1}"
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
+    "message": "Bu trek Server-Timing şəbəkə cavabı başlıqlarından götürülmüş vaxtları əhatə edir. Onların müvafiq başlama vaxtları yalnız təxminidir və dəqiq olmaya bilər."
+  },
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(anonim)"
   },
@@ -12728,6 +12824,12 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "Cari Sessiya: {PH1} {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalAndFieldMetrics": {
+    "message": "Lokal və sahə göstəriciləri"
+  },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalMetrics": {
+    "message": "Lokal göstəricilər"
+  },
   "panels/timeline/TimelineHistoryManager.ts | moments": {
     "message": "anlar"
   },
@@ -12842,6 +12944,9 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Düzəldin"
   },
+  "panels/timeline/TimelinePanel.ts | hideSidebar": {
+    "message": "Tək kənar paneli gizlədin"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Profayler başladılır…"
   },
@@ -12886,6 +12991,15 @@
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "Yaddaş taymlaynını göstərin"
+  },
+  "panels/timeline/TimelinePanel.ts | showSidebar": {
+    "message": "Kənar paneli göstərin"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarHidden": {
+    "message": "Performans kənar paneli gizlədilib"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarShown": {
+    "message": "Performans kənar paneli göstərilir"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} san"
@@ -13143,7 +13257,7 @@
     "message": "{PH1}, {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
-    "message": "Etibarsızlıqlar"
+    "message": "Etibarsızlıqlar (cəmi {PH1})"
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Vaxt limitinə əsasən çağırıldı"
@@ -13373,6 +13487,12 @@
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "Sistem"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
+    "message": "CPU: {PH1}"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
+    "message": "CPU məhdudiyyəti: {PH1}"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
     "message": "{PH1}× yavaşlama"
   },
@@ -13409,8 +13529,14 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket Protokolu"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | add": {
+    "message": "Əlavə edin"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Təkmil"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
+    "message": "\"{PH1}\" artıq istehsal mənbəyinə təyin edilib."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "Ləğv edin"
@@ -13421,17 +13547,35 @@
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "Sahə datasının əldə edilməsini konfiqurasiya edin"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
+    "message": "Silin"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
+    "message": "Hazırlama mənbəyi"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
+    "message": "Hazırlama mənbəyi: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome UX Hesabatında bu səhifə üçün kifayət qədər real sürət datası yoxdur."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Lokal ölçmələri real istifadəçilərin saytda gördükləri ilə kontekstuallaşdırmağa kömək etmək üçün Chrome UX Hesabatından ümumi sahə datasını əldə edin."
+    "message": "Lokal ölçmələri real istifadəçilərin saytda gördükləri ilə kontekstuallaşdırmağa kömək etmək üçün {PH1} mənbəyindən ümumi sahə datasını əldə edin."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
+    "message": "\"{PH1}\" düzgün mənbə və ya URL deyil."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
+    "message": "İstehsal mənbəyi üzrə müvafiq sahə datasını avtomatik əldə etmək üçün hazırlama mənbəyi təyin edin."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | new": {
+    "message": "Yeni"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | ok": {
     "message": "Ok"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Yalnız aşağıdakı URL üçün sahə datasını əldə edin"
+    "message": "Aşağıdakı URL üçün sahə datası həmişə göstərilsin"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "İmtina edin"
@@ -13439,11 +13583,17 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "Məxfilik açıqlaması"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
+    "message": "İstehsal mənbəyi"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
+    "message": "İstehsal mənbəyi: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "Ayarlayın"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | urlOverride": {
-    "message": "URL əvəzləmə"
+  "panels/timeline/components/FieldSettingsDialog.ts | url": {
+    "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "DevTools açıq olduqda daxil olduğunuz URL-lər sahə datası üzrə sorğu vermək üçün Google-a göndəriləcək. Bu sorğular Google hesabınız ilə bağlı deyil."
@@ -13463,44 +13613,29 @@
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "Avtomatik ({PH1})"
   },
-  "panels/timeline/components/LiveMetricsView.ts | betweenRange": {
-    "message": "({PH1}-{PH2})"
+  "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
+    "message": "Toplama müddəti:"
   },
-  "panels/timeline/components/LiveMetricsView.ts | clsTitle": {
-    "message": "Məcmu Düzən Dəyişikliyi (CLS)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
-    "message": "CPU məhdudiyyəti:"
+  "panels/timeline/components/LiveMetricsView.ts | dateRange": {
+    "message": "{PH1} - {PH2}"
   },
   "panels/timeline/components/LiveMetricsView.ts | desktop": {
     "message": "Masaüstü"
   },
-  "panels/timeline/components/LiveMetricsView.ts | deviceType": {
-    "message": "Cihaz növü:"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | field75thPercentile": {
-    "message": "75-ci sahə faizi"
+  "panels/timeline/components/LiveMetricsView.ts | device": {
+    "message": "Cihaz: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "Sahə datası"
   },
-  "panels/timeline/components/LiveMetricsView.ts | good": {
-    "message": "Yaxşı"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | gtRange": {
-    "message": "(>{PH1})"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | inpTitle": {
-    "message": "Növbəti Boyamaya Reaksiya (INP)"
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
+    "message": "sahə datası"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "Qarşılıqlı əlaqələr"
   },
-  "panels/timeline/components/LiveMetricsView.ts | lcpTitle": {
-    "message": "Ən böyük kontentli rəsm (LCP)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | leqRange": {
-    "message": "(≤{PH1})"
+  "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
+    "message": "LCP elementi"
   },
   "panels/timeline/components/LiveMetricsView.ts | loadingOption": {
     "message": "{PH1} - Yüklənir…"
@@ -13508,20 +13643,23 @@
   "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
     "message": "Lokal və sahə göstəriciləri"
   },
-  "panels/timeline/components/LiveMetricsView.ts | localValue": {
-    "message": "Lokal"
+  "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
+    "message": "Lokal göstəricilər"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localMetricsLink": {
+    "message": "lokal göstəricilər"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "Mobil"
   },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
+    "message": "İstifadəçilərin əksəriyyəti masaüstü cihaz istifadə edir. Real istifadəçilərə uyğun gələn masaüstü pəncərə ölçüsünü təqlid edin."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
+    "message": "İstifadəçilərin əksəriyyəti mobil cihaz istifadə edir. Real istifadəçilərə uyğun gələn mobil cihazı təqlid edin."
+  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} - Data yoxdur"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | needsImprovement": {
-    "message": "Təkmilləşdirmə tələb edilir"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
-    "message": "Şəbəkə məhdudiyyəti:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "Növbəti addımlar"
@@ -13530,22 +13668,28 @@
     "message": "Mənşə"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
-    "message": "Mənşə ({PH1})"
+    "message": "Mənbə: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "{PH1}%"
+  "panels/timeline/components/LiveMetricsView.ts | recordingSettings": {
+    "message": "Səsyazma ayarları"
   },
-  "panels/timeline/components/LiveMetricsView.ts | poor": {
-    "message": "Pis"
+  "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
+    "message": "{PH1} bölməsində lokal göstəricilərin real istifadəçi datası ilə necə müqayisə edildiyinə baxın."
   },
-  "panels/timeline/components/LiveMetricsView.ts | relatedNode": {
-    "message": "Əlaqədar düyün"
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
+    "message": "Cihaz növü üçün sahə datasını göstərin: {PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
+    "message": "{PH1} üçün sahə datasını göstərin"
   },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "Planşet"
   },
-  "panels/timeline/components/LiveMetricsView.ts | throttling": {
-    "message": "Məhdudiyyət"
+  "panels/timeline/components/LiveMetricsView.ts | theFieldMetricsAre": {
+    "message": "{PH1} bir çox müxtəlif şəbəkə bağlantısı və cihaz istifadə edən real istifadəçilər tərəfindən ölçülür."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
+    "message": "{PH1} şəbəkə bağlantınız və cihazınızdan istifadə edərək cari səhifədən əldə edilir."
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "Real istifadəçilər tərəfindən ölçülən şəbəkə gecikməsini təxmin etmək üçün şəbəkə məhdudiyyətini söndürməyə çalışın."
@@ -13557,10 +13701,70 @@
     "message": "URL"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOptionWithKey": {
-    "message": "URL ({PH1})"
+    "message": "URL: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | urlOrOrigin": {
-    "message": "URL/Mənşə:"
+  "panels/timeline/components/MetricCompareStrings.ts | goodBetterCompare": {
+    "message": "Lokal {PH1} {PH2} yaxşıdır və istifadəçi təcrübənizdən xeyli yaxşıdır."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
+    "message": "Lokal {PH1} {PH2} yaxşıdır və real istifadəçi {PH1} təcrübələrinin {PH4}-i ilə eynidir. Bundan əlavə, sahə datası üzrə 75 faiz {PH1} {PH3} yaxşı hesab olunur."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
+    "message": "Lokal {PH1} {PH2} yaxşıdır və real istifadəçi {PH1} təcrübələrinin {PH4}-i ilə eynidir. Lakin sahə datası üzrə 75 faiz {PH1} {PH3} təkmilləşmə tələb edir."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
+    "message": "Lokal {PH1} {PH2} yaxşıdır və real istifadəçi {PH1} təcrübələrinin {PH4}-i ilə eynidir. Lakin sahə datası üzrə 75 faiz {PH1} {PH3} zəifdir."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
+    "message": "Lokal {PH1} {PH2} yaxşıdır və istifadəçi təcrübəsi ilə bənzərdir."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSummarized": {
+    "message": "Lokal {PH1} {PH2} yaxşıdır."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodWorseCompare": {
+    "message": "Lokal {PH1} {PH2} yaxşıdır və istifadəçi təcrübənizdən xeyli pisdir."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementBetterCompare": {
+    "message": "Lokal {PH1} {PH2} təkmilləşmə tələb edir və istifadəçi təcrübənizdən xeyli yaxşıdır."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
+    "message": "Lokal {PH1} {PH2} təkmilləşmə tələb edir və real istifadəçi {PH1} təcrübələrinin {PH4}-i ilə eyni qiymətləndirilir. Lakin sahə datası üzrə 75 faiz {PH1} {PH3} yaxşıdır."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
+    "message": "Lokal {PH1} {PH2} təkmilləşmə tələb edir və real istifadəçi {PH1} təcrübələrinin {PH4}-i ilə eyni qiymətləndirilir. Bundan əlavə, sahə datası üzrə 75 faiz {PH1} {PH3} təkmilləşmə tələb edir."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
+    "message": "Lokal {PH1} {PH2} təkmilləşmə tələb edir və real istifadəçi {PH1} təcrübələrinin {PH4}-i ilə eyni qiymətləndirilir. Lakin sahə datası üzrə 75 faiz {PH1} {PH3} zəifdir."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
+    "message": "Lokal {PH1} {PH2} təkmilləşmə tələb edir və istifadəçi təcrübəsi ilə bənzərdir."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSummarized": {
+    "message": "Lokal {PH1} {PH2} təkmilləşmə tələb edir."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementWorseCompare": {
+    "message": "Lokal {PH1} {PH2} təkmilləşmə tələb edir və istifadəçi təcrübənizdən xeyli pisdir."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorBetterCompare": {
+    "message": "Lokal {PH1} {PH2} zəifdir və istifadəçi təcrübənizdən xeyli yaxşıdır."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
+    "message": "Lokal {PH1} {PH2} zəifdir və real istifadəçi {PH1} təcrübələrinin {PH4}-i ilə eynidir. Lakin sahə datası üzrə 75 faiz {PH1} {PH3} yaxşıdır."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
+    "message": "Lokal {PH1} {PH2} zəifdir və real istifadəçi {PH1} təcrübələrinin {PH4}-i ilə eynidir. Lakin sahə datası üzrə 75 faiz {PH1} {PH3} təkmilləşmə tələb edir."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
+    "message": "Lokal {PH1} {PH2} zəifdir və real istifadəçi {PH1} təcrübələrinin {PH4}-i ilə eynidir. Bundan əlavə, sahə datası üzrə 75 faiz {PH1} {PH3} zəif hesab olunur."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
+    "message": "Lokal {PH1} {PH2} zəifdir və istifadəçi təcrübəsi ilə bənzərdir."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSummarized": {
+    "message": "Lokal {PH1} {PH2} zəifdir."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorWorseCompare": {
+    "message": "Lokal {PH1} {PH2} zəifdir və istifadəçi təcrübənizdən xeyli pisdir."
   },
   "panels/timeline/components/NetworkRequestDetails.ts | FromCache": {
     "message": " (keşdən)"
@@ -13652,8 +13856,26 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
     "message": "Deaktiv"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | network": {
+    "message": "Şəbəkə: {PH1}"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | networkThrottling": {
+    "message": "Şəbəkə məhdudiyyəti: {PH1}"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "Hazır ayarlar"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "fetchpriority=high tətbiq edildi"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "gec yüklənmə tətbiq edilmədi"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "LCP şəkli ən erkən başlanğıc nöqtəsindən {PH1} sonra yükləndi."
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "Sorğu ilkin sənəddə aşkar edilə biləndir"
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "Element vizualizasiyasının gecikməsi"
@@ -13661,8 +13883,8 @@
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "Resurs yükləmənin ləngiməsi"
   },
-  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadTime": {
-    "message": "Resurs yükləmə vaxtı"
+  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDuration": {
+    "message": "Resurs yükləmə müddəti"
   },
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
     "message": "İlk bayta çatma vaxt"
@@ -14681,9 +14903,6 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1} üçün skrinşot - əvvəlki sorğulara baxmaq üçün seçin."
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
-    "message": "Nəzərə almama siyahısına skript əlavə edin"
-  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Trekləri konfiqurasiya edin…"
   },
@@ -14693,23 +14912,11 @@
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "Detallı Diaqram"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideChildren": {
-    "message": "Törəmələri gizlədin"
+  "ui/legacy/components/perf_ui/FlameChart.ts | labelEntry": {
+    "message": "Etiket daxiletməsi"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideFunction": {
-    "message": "Funksiyanı gizlədin"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
-    "message": "Təkrarlanan törəmələri gizlədin"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
-    "message": "Skripti nəzərə almama siyahısından çıxarın"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
-    "message": "Törəmələri sıfırlayın"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
-    "message": "Fəaliyyət izini sıfırlayın"
+  "ui/legacy/components/perf_ui/FlameChart.ts | linkEntries": {
+    "message": "Daxiletmələri əlaqələndirin"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sCollapsed": {
     "message": "{PH1} yığcamlaşdırıldı"

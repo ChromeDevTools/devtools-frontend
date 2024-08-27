@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | stylesSidebar": {
     "message": "bočný panel so štýlmi"
   },
+  "core/common/Revealer.ts | timelinePanel": {
+    "message": "Performance panel"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Adorner"
   },
@@ -753,7 +756,7 @@
     "message": "Otvorte vyhradené nástroje pre vývojárov pre Node.js"
   },
   "entrypoints/inspector_main/InspectorMain.ts | tab": {
-    "message": "Karta"
+    "message": "Tab"
   },
   "entrypoints/inspector_main/OutermostTargetSelector.ts | targetNotSelected": {
     "message": "Stránka: nevybraná"
@@ -837,7 +840,7 @@
     "message": "Okraje vrstvy"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | layoutShiftRegions": {
-    "message": "Oblasti presunu rozloženia"
+    "message": "Layout shift regions"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | paintFlashing": {
     "message": "Označenie oblastí opätovného vykreslenia"
@@ -1142,11 +1145,11 @@
   "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
     "message": "Podpora syntaxe :--customstatename bola ukončená. Použite namiesto nej syntax :state(customstatename)."
   },
+  "generated/Deprecation.ts | CSSInsetAreaProperty": {
+    "message": "The inset-area property is deprecated. Please use the position-area property instead."
+  },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Ak chcete zakázať predvolenú integráciu prenosu, použite namiesto selektora -internal-media-controls-overlay-cast-button atribút disableRemotePlayback."
-  },
-  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
-    "message": "Hodnoty vzhľadu šablón kaskádových štýlov  inner-spin-button, media-slider, media-sliderthumb, media-volume-slider, media-volume-sliderthumb, push-button, searchfield-cancel-button, slider-horizontal, sliderthumb-horizontal, sliderthumb-vertical, square-button nie sú štandardizované a budú odstránené."
   },
   "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
     "message": "Hodnota vzhľadu šablón kaskádových štýlov slider-vertical nie je štandardizovaná a bude odstránená."
@@ -4532,6 +4535,9 @@
   "panels/autofill/AutofillView.ts | sendFeedback": {
     "message": "Odoslať spätnú väzbu"
   },
+  "panels/autofill/AutofillView.ts | showTestAddressesInAutofillMenu": {
+    "message": "Show test addresses in autofill menu"
+  },
   "panels/autofill/AutofillView.ts | toStartDebugging": {
     "message": "Ak chcete spustiť ladenie automatického dopĺňania, vyplňte formulár s adresou pomocou ponuky automatického dopĺňania v Chrome."
   },
@@ -5591,6 +5597,9 @@
   "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
     "message": "Majte stránku naďalej označenú. Bežne sa používa na ladenie miznúcich prvkov."
   },
+  "panels/elements/ElementStatePaneWidget.ts | forceElementSpecificStates": {
+    "message": "Force specific element state"
+  },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Vynútenie stavu prvku"
   },
@@ -5868,7 +5877,7 @@
     "message": "vložená šablóna so štýlmi"
   },
   "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
-    "message": "Vložiť pravidlo pre štýl nižšie"
+    "message": "Insert style rule below"
   },
   "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
     "message": "{PH1}[štýl atribútov]"
@@ -6423,7 +6432,7 @@
     "message": "Aktualizovať nastavenia"
   },
   "panels/explain/explain-meta.ts | ageRestricted": {
-    "message": "Táto funkcia je k dispozícii len pre používateľov od 18 rokov."
+    "message": "This feature is only available to users who are 18 years of age or older"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "Vysvetlenie správ v konzole pomocou umelej inteligencie"
@@ -6438,16 +6447,13 @@
     "message": "Vysvetlenie tohto upozornenia"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "Táto funkcia nie je vo vašom regióne k dispozícii."
+    "message": "This feature is unavailable in your region"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
     "message": "Vaša organizácia túto funkciu vypla. Viac sa dozviete od svojho správcu."
   },
-  "panels/explain/explain-meta.ts | rolloutRestricted": {
-    "message": "Táto funkcia je momentálne uvádzaná na trh. Zostaňte s nami."
-  },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "Ak chcete používať túto funkciu, aktualizujte predvoľbu jazyka v nastaveniach nástrojov pre vývojárov na angličtinu."
+    "message": "To use this feature, update your Language preference in DevTools Settings to English"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blokovaný zdroj"
@@ -9596,6 +9602,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "Počítajú sa experimentálne funkcie uzlov…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingObjectNames": {
+    "message": "Calculating object names…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingRetainedSizes": {
     "message": "Vypočítavajú sa uchované veľkosti…"
   },
@@ -10023,7 +10032,7 @@
     "message": "Sieť"
   },
   "panels/recorder/components/RecordingView.ts | performancePanel": {
-    "message": "Panel výkonu"
+    "message": "Performance panel"
   },
   "panels/recorder/components/RecordingView.ts | recording": {
     "message": "Zaznamenáva sa…"
@@ -10871,6 +10880,78 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Používateľ je nečinný, obrazovka bola odomknutá"
   },
+  "panels/settings/AISettingsTab.ts | adminSettings": {
+    "message": "Features available to managed users may vary depending upon their administrator’s settings"
+  },
+  "panels/settings/AISettingsTab.ts | boostYourProductivity": {
+    "message": "Boost your productivity with Chrome AI"
+  },
+  "panels/settings/AISettingsTab.ts | chromeAi": {
+    "message": "Chrome AI"
+  },
+  "panels/settings/AISettingsTab.ts | collapse": {
+    "message": "collapse"
+  },
+  "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
+    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data may be seen by human reviewers to improve this feature."
+  },
+  "panels/settings/AISettingsTab.ts | expand": {
+    "message": "expand"
+  },
+  "panels/settings/AISettingsTab.ts | experimentalFeatures": {
+    "message": "These features are experimental and may change"
+  },
+  "panels/settings/AISettingsTab.ts | explainConsole": {
+    "message": "Get explanations for console warnings and errors"
+  },
+  "panels/settings/AISettingsTab.ts | explainStyling": {
+    "message": "Get explanations and additional context for styling behaviors"
+  },
+  "panels/settings/AISettingsTab.ts | freestylerSendsData": {
+    "message": "Any DOM or CSS content on the inspected page may be sent to Google to generate explanations. This data may be seen by human reviewers to improve this feature."
+  },
+  "panels/settings/AISettingsTab.ts | generatedSnippets": {
+    "message": "Use generated code snippets with caution"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
+    "message": "Helps you understand and fix console warnings and errors"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
+    "message": "Helps you understand and fix styling issues"
+  },
+  "panels/settings/AISettingsTab.ts | learnMore": {
+    "message": "Ďalšie informácie"
+  },
+  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "Zmenilo sa minimálne jedno nastavenie a uplatnenie zmeny vyžaduje opätovné načítanie."
+  },
+  "panels/settings/AISettingsTab.ts | privacyNotice": {
+    "message": "Privacy Notice"
+  },
+  "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
+    "message": "Receive suggestions and code samples for fixing styling issues"
+  },
+  "panels/settings/AISettingsTab.ts | receiveSuggestions": {
+    "message": "Receive suggestions and code samples to address these issues"
+  },
+  "panels/settings/AISettingsTab.ts | retainData": {
+    "message": "Usage data will be stored in a way where Google cannot tell who provided it and can no longer fulfill any deletion requests and will be retained for up to 18 months"
+  },
+  "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
+    "message": "Using these features sends data relevant for the feature to Google. Please find more feature-specific information below."
+  },
+  "panels/settings/AISettingsTab.ts | termsOfService": {
+    "message": "Google Terms of Service"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
+    "message": "Use of this feature is subject to the {PH1} and {PH2}"
+  },
+  "panels/settings/AISettingsTab.ts | thingsToConsider": {
+    "message": "Things to consider"
+  },
+  "panels/settings/AISettingsTab.ts | whenOn": {
+    "message": "When on"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Pridať vzor názvu súboru"
   },
@@ -11156,6 +11237,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "Zobraziť zariadenia"
   },
+  "panels/settings/settings-meta.ts | chromeAI": {
+    "message": "Chrome AI"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Dokumentácia"
   },
@@ -11173,6 +11257,9 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "Skratky"
+  },
+  "panels/settings/settings-meta.ts | showChromeAI": {
+    "message": "Show Chrome AI"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "Zobraziť experimenty"
@@ -12212,6 +12299,9 @@
   "panels/timeline/CountersGraph.ts | listeners": {
     "message": "Prijímače"
   },
+  "panels/timeline/CountersGraph.ts | noEventsFound": {
+    "message": "No memory usage data found within selected events."
+  },
   "panels/timeline/CountersGraph.ts | nodes": {
     "message": "Uzly"
   },
@@ -12387,7 +12477,7 @@
     "message": "Rozloženie"
   },
   "panels/timeline/EventUICategory.ts | layoutShift": {
-    "message": "Posun rozloženia"
+    "message": "Layout shift"
   },
   "panels/timeline/EventUICategory.ts | loading": {
     "message": "Načítavanie"
@@ -12588,7 +12678,7 @@
     "message": "Vybrať inštanciu virtuálneho počítača s JavaScriptom"
   },
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
-    "message": "Zmeny rozloženia"
+    "message": "Layout shifts"
   },
   "panels/timeline/NetworkTrackAppender.ts | network": {
     "message": "Sieť"
@@ -12601,6 +12691,12 @@
   },
   "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpenedWithUrl": {
     "message": "Protokol WebSocket je otvorený: {PH1}"
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
+    "message": "Server Timings — {PH1}"
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
+    "message": "This track contains timings taken from Server-Timing network response headers. Their respective start times are only estimated and may not be accurate."
   },
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(anonymné)"
@@ -12728,6 +12824,12 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "Aktuálna relácia: {PH1}. {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalAndFieldMetrics": {
+    "message": "Local and field metrics"
+  },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalMetrics": {
+    "message": "Local metrics"
+  },
   "panels/timeline/TimelineHistoryManager.ts | moments": {
     "message": "okamihy"
   },
@@ -12842,6 +12944,9 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Opraviť"
   },
+  "panels/timeline/TimelinePanel.ts | hideSidebar": {
+    "message": "Hide sole sidebar"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Inicializuje sa profilovač…"
   },
@@ -12886,6 +12991,15 @@
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "Zobraziť časovú os pamäte"
+  },
+  "panels/timeline/TimelinePanel.ts | showSidebar": {
+    "message": "Show sidebar"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarHidden": {
+    "message": "Performance sidebar hidden"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarShown": {
+    "message": "Performance sidebar shown"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} s"
@@ -13143,7 +13257,7 @@
     "message": "{PH1} v súbore {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
-    "message": "Zrušenia platnosti"
+    "message": "Invalidations ({PH1} total)"
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Spustené časovým limitom"
@@ -13373,6 +13487,12 @@
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "Systém"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
+    "message": "CPU: {PH1}"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
+    "message": "CPU throttling: {PH1}"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
     "message": "{PH1}× spomalenie"
   },
@@ -13409,8 +13529,14 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Protokol WebSocket"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | add": {
+    "message": "Add"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Rozšírené"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
+    "message": "\"{PH1}\" is already mapped to a production origin."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "Zrušiť"
@@ -13421,17 +13547,35 @@
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "Konfigurácia načítania údajov polí"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
+    "message": "Delete"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
+    "message": "Development origin"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
+    "message": "Development origin: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Metriky Chrome UX Report nemajú dostatok skutočných údajov o rýchlosti tejto stránky."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Načítajte súhrnné údaje polí z metrík Chrome UX Report, aby ste mohli uviesť do kontextu miestne merania s tým, čo používatelia skutočne vidia na danom webe."
+    "message": "Fetch aggregated field data from the {PH1} to help you contextualize local measurements with what real users experience on the site."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
+    "message": "\"{PH1}\" is not a valid origin or URL."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
+    "message": "Set a development origin to automatically get relevant field data for its production origin."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | new": {
+    "message": "New"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | ok": {
     "message": "OK"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Načítať iba údaje poľa pre webovú adresu nižšie"
+    "message": "Always show field data for the below URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Odhlásiť sa"
@@ -13439,11 +13583,17 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "Informácie o ochrane súkromia"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
+    "message": "Production origin"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
+    "message": "Production origin: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "Nastaviť"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | urlOverride": {
-    "message": "Prepísanie webovej adresy"
+  "panels/timeline/components/FieldSettingsDialog.ts | url": {
+    "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "Keď sú nástroje pre vývojárov otvorené, webové adresy, ktoré navštívite, budú odosielané Googlu na účely načítania údajov polí. Tieto žiadosti nie sú spojené s vaším účtom Google."
@@ -13463,65 +13613,53 @@
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "Automaticky ({PH1})"
   },
-  "panels/timeline/components/LiveMetricsView.ts | betweenRange": {
-    "message": "({PH1} – {PH2})"
+  "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
+    "message": "Collection period:"
   },
-  "panels/timeline/components/LiveMetricsView.ts | clsTitle": {
-    "message": "Súhrn posunov rozloženia stránky"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
-    "message": "Obmedzenie toku dát procesora:"
+  "panels/timeline/components/LiveMetricsView.ts | dateRange": {
+    "message": "{PH1} - {PH2}"
   },
   "panels/timeline/components/LiveMetricsView.ts | desktop": {
     "message": "Počítač"
   },
-  "panels/timeline/components/LiveMetricsView.ts | deviceType": {
-    "message": "Typ zariadenia:"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | field75thPercentile": {
-    "message": "75. percentil poľa"
+  "panels/timeline/components/LiveMetricsView.ts | device": {
+    "message": "Device: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "Údaje poľa"
   },
-  "panels/timeline/components/LiveMetricsView.ts | good": {
-    "message": "Dobré"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | gtRange": {
-    "message": "(>{PH1})"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | inpTitle": {
-    "message": "Oneskorenie vykreslenia po interakcii"
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
+    "message": "field data"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "Interakcie"
   },
-  "panels/timeline/components/LiveMetricsView.ts | lcpTitle": {
-    "message": "Vykreslenie najväčšieho prvku"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | leqRange": {
-    "message": "(≤{PH1})"
+  "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
+    "message": "LCP Element"
   },
   "panels/timeline/components/LiveMetricsView.ts | loadingOption": {
     "message": "{PH1} – načítava sa…"
   },
   "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
-    "message": "Miestne metriky a metriky polí"
+    "message": "Local and field metrics"
   },
-  "panels/timeline/components/LiveMetricsView.ts | localValue": {
-    "message": "Miestne"
+  "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
+    "message": "Local metrics"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localMetricsLink": {
+    "message": "local metrics"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "Mobil"
   },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
+    "message": "A majority of users are on desktop. Try emulating a desktop window size that matches real users."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
+    "message": "A majority of users are on mobile. Try emulating a mobile device that matches real users."
+  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} –žiadne údaje"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | needsImprovement": {
-    "message": "Vyžaduje zlepšenie"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
-    "message": "Obmedzovanie rýchlosti:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "Ďalší postup"
@@ -13530,22 +13668,28 @@
     "message": "Zdroj"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
-    "message": "Zdroj ({PH1})"
+    "message": "Origin: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "{PH1} %"
+  "panels/timeline/components/LiveMetricsView.ts | recordingSettings": {
+    "message": "Recording settings"
   },
-  "panels/timeline/components/LiveMetricsView.ts | poor": {
-    "message": "Slabé"
+  "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
+    "message": "See how your local metrics compare to real user data in the {PH1}."
   },
-  "panels/timeline/components/LiveMetricsView.ts | relatedNode": {
-    "message": "Súvisiaci uzol"
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
+    "message": "Show field data for device type: {PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
+    "message": "Show field data for {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "Tablet"
   },
-  "panels/timeline/components/LiveMetricsView.ts | throttling": {
-    "message": "Obmedzenie toku dát"
+  "panels/timeline/components/LiveMetricsView.ts | theFieldMetricsAre": {
+    "message": "The {PH1} is measured by real users using many different network connections and devices."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
+    "message": "The {PH1} are captured from the current page using your network connection and device."
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "Skúste deaktivovať obmedzovanie rýchlosti, aby ste približne určili latenciu siete meranú skutočnými používateľmi."
@@ -13557,10 +13701,70 @@
     "message": "Webová adresa"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOptionWithKey": {
-    "message": "Webová adresa ({PH1})"
+    "message": "URL: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | urlOrOrigin": {
-    "message": "Webová adresa / zdroj:"
+  "panels/timeline/components/MetricCompareStrings.ts | goodBetterCompare": {
+    "message": "Your local {PH1} {PH2} is good, and is significantly better than your users’ experience."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
+    "message": "Your local {PH1} {PH2} is good and is rated the same as {PH4} of real-user {PH1} experiences. Additionally, the field data 75th percentile {PH1} {PH3} is good."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
+    "message": "Your local {PH1} {PH2} is good and is rated the same as {PH4} of real-user {PH1} experiences. However, the field data 75th percentile {PH1} {PH3} needs improvement."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
+    "message": "Your local {PH1} {PH2} is good and is rated the same as {PH4} of real-user {PH1} experiences. However, the field data 75th percentile {PH1} {PH3} is poor."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
+    "message": "Your local {PH1} {PH2} is good, and is similar to your users’ experience."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSummarized": {
+    "message": "Your local {PH1} {PH2} is good."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodWorseCompare": {
+    "message": "Your local {PH1} {PH2} is good, and is significantly worse than your users’ experience."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementBetterCompare": {
+    "message": "Your local {PH1} {PH2} needs improvement, and is significantly better than your users’ experience."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
+    "message": "Your local {PH1} {PH2} needs improvement and is rated the same as {PH4} of real-user {PH1} experiences. However, the field data 75th percentile {PH1} {PH3} is good."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
+    "message": "Your local {PH1} {PH2} needs improvement and is rated the same as {PH4} of real-user {PH1} experiences. Additionally, the field data 75th percentile {PH1} {PH3} needs improvement."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
+    "message": "Your local {PH1} {PH2} needs improvement and is rated the same as {PH4} of real-user {PH1} experiences. However, the field data 75th percentile {PH1} {PH3} is poor."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
+    "message": "Your local {PH1} {PH2} needs improvement, and is similar to your users’ experience."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSummarized": {
+    "message": "Your local {PH1} {PH2} needs improvement."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementWorseCompare": {
+    "message": "Your local {PH1} {PH2} needs improvement, and is significantly worse than your users’ experience."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorBetterCompare": {
+    "message": "Your local {PH1} {PH2} is poor, and is significantly better than your users’ experience."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
+    "message": "Your local {PH1} {PH2} is poor and is rated the same as {PH4} of real-user {PH1} experiences. However, the field data 75th percentile {PH1} {PH3} is good."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
+    "message": "Your local {PH1} {PH2} is poor and is rated the same as {PH4} of real-user {PH1} experiences. However, the field data 75th percentile {PH1} {PH3} needs improvement."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
+    "message": "Your local {PH1} {PH2} is poor and is rated the same as {PH4} of real-user {PH1} experiences. Additionally, the field data 75th percentile {PH1} {PH3} is poor."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
+    "message": "Your local {PH1} {PH2} is poor, and is similar to your users’ experience."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSummarized": {
+    "message": "Your local {PH1} {PH2} is poor."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorWorseCompare": {
+    "message": "Your local {PH1} {PH2} is poor, and is significantly worse than your users’ experience."
   },
   "panels/timeline/components/NetworkRequestDetails.ts | FromCache": {
     "message": " (z vyrovnávacej pamäte)"
@@ -13652,8 +13856,26 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
     "message": "Vypnuté"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | network": {
+    "message": "Network: {PH1}"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | networkThrottling": {
+    "message": "Network throttling: {PH1}"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "Predvoľby"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "fetchpriority=high applied"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "lazy load not applied"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "LCP image loaded {PH1} after earliest start point."
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "Request is discoverable in initial document"
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "Oneskorenie vykreslenia prvku"
@@ -13661,8 +13883,8 @@
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "Oneskorenie načítania zdroja"
   },
-  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadTime": {
-    "message": "Čas načítania zdroja"
+  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDuration": {
+    "message": "Resource load duration"
   },
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
     "message": "Oneskorenie prvého bajtu"
@@ -14681,9 +14903,6 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Snímka obrazovky pre {PH1} – výberom zobrazíte predchádzajúce žiadosti."
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
-    "message": "Pridať skript do zoznamu ignorovaných"
-  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Konfigurovať kanály…"
   },
@@ -14693,23 +14912,11 @@
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "Plameňový graf"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideChildren": {
-    "message": "Skryť podradené položky"
+  "ui/legacy/components/perf_ui/FlameChart.ts | labelEntry": {
+    "message": "Label entry"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideFunction": {
-    "message": "Skryť funkciu"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
-    "message": "Skryť opakujúce sa podradené položky"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
-    "message": "Odstrániť skript zo zoznamu ignorovaných"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
-    "message": "Reset podradených položiek"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
-    "message": "Resetovať stopu"
+  "ui/legacy/components/perf_ui/FlameChart.ts | linkEntries": {
+    "message": "Link entries"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sCollapsed": {
     "message": "Zbalené: {PH1}"

@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | stylesSidebar": {
     "message": "stiler for sidefelt"
   },
+  "core/common/Revealer.ts | timelinePanel": {
+    "message": "Ytelsespanel"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Utsmykking"
   },
@@ -837,7 +840,7 @@
     "message": "Kantlinjer for lag"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | layoutShiftRegions": {
-    "message": "Skiftregioner for layout"
+    "message": "Regioner for utseendeforskyvning"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | paintFlashing": {
     "message": "Opptegningsblinking"
@@ -1142,11 +1145,11 @@
   "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
     "message": ":--customstatename er avviklet. Bruk :state(customstatename)-syntaksen i stedet."
   },
+  "generated/Deprecation.ts | CSSInsetAreaProperty": {
+    "message": "inset-area-egenskapen er avviklet. Bruk heller position-area-egenskapen."
+  },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "For å slå av Cast-integreringen som brukes som standard, bruk disableRemotePlayback-attributtet i stedet for -internal-media-controls-overlay-cast-button-velgeren."
-  },
-  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
-    "message": "CSS-utseendeverdiene inner-spin-button, media-slider, media-sliderthumb, media-volume-slider, media-volume-sliderthumb, push-button, searchfield-cancel-button, slider-horizontal, sliderthumb-horizontal, sliderthumb-vertical og square-button er ikke standardiserte og blir fjernet."
   },
   "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
     "message": "CSS-utseendeverdien slider-vertical er ikke standardisert og blir fjernet."
@@ -4532,6 +4535,9 @@
   "panels/autofill/AutofillView.ts | sendFeedback": {
     "message": "Send tilbakemelding"
   },
+  "panels/autofill/AutofillView.ts | showTestAddressesInAutofillMenu": {
+    "message": "Vis testadresser i autofyllmenyen"
+  },
   "panels/autofill/AutofillView.ts | toStartDebugging": {
     "message": "For å begynne å feilsøke autofyll, bruk autofyllmenyen i Chrome til å fylle ut et adresseskjema."
   },
@@ -5591,6 +5597,9 @@
   "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
     "message": "Hold siden fokusert. Brukes vanligvis for feilsøking av elementer som forsvinner."
   },
+  "panels/elements/ElementStatePaneWidget.ts | forceElementSpecificStates": {
+    "message": "Tving en bestemt elementtilstand"
+  },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Tving elementtilstand"
   },
@@ -6423,7 +6432,7 @@
     "message": "Oppdater innstillingene"
   },
   "panels/explain/explain-meta.ts | ageRestricted": {
-    "message": "Denne funksjonen er bare tilgjengelig for brukere som er 18 år eller eldre."
+    "message": "Denne funksjonen er bare tilgjengelig for brukere som er 18 år eller eldre"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "Forstå konsollmeldinger med AI"
@@ -6438,16 +6447,13 @@
     "message": "Forstå denne advarselen"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "Denne funksjonen er ikke tilgjengelig i regionen din."
+    "message": "Denne funksjonen er ikke tilgjengelig i regionen din"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
     "message": "Organisasjonen din har slått av denne funksjonen. Kontakt administratorene dine for å få mer informasjon."
   },
-  "panels/explain/explain-meta.ts | rolloutRestricted": {
-    "message": "Denne funksjonen er under lansering. Følg med."
-  },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "For å bruke denne funksjonen må du oppdatere språkinnstillingen i Utviklerverktøy-innstillingene til engelsk."
+    "message": "For å bruke denne funksjonen må du endre språkinnstillingen i Utviklerverktøy-innstillingene til engelsk"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blokkert ressurs"
@@ -9596,6 +9602,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "Beregner nodeflagg …"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingObjectNames": {
+    "message": "Beregner objektnavn …"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingRetainedSizes": {
     "message": "Beregner bevarte størrelser …"
   },
@@ -10871,6 +10880,78 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Bruker inaktiv, skjerm opplåst"
   },
+  "panels/settings/AISettingsTab.ts | adminSettings": {
+    "message": "Funksjonene som er tilgjengelige for administrerte brukere, kan variere etter innstillingene til administratoren"
+  },
+  "panels/settings/AISettingsTab.ts | boostYourProductivity": {
+    "message": "Øk produktiviteten med AI-løsninger i Chrome"
+  },
+  "panels/settings/AISettingsTab.ts | chromeAi": {
+    "message": "AI i Chrome"
+  },
+  "panels/settings/AISettingsTab.ts | collapse": {
+    "message": "skjul"
+  },
+  "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
+    "message": "Konsollmeldingen, det tilknyttede stabelsporet, den relaterte kildekoden og de tilknyttede nettverkshodene sendes til Google for å generere forklaringer. Disse dataene kan bli sett av menneskelige evaluerere som jobber med å gjøre denne funksjonen bedre."
+  },
+  "panels/settings/AISettingsTab.ts | expand": {
+    "message": "vis"
+  },
+  "panels/settings/AISettingsTab.ts | experimentalFeatures": {
+    "message": "Disse funksjonene er på forsøksstadiet og kan endres"
+  },
+  "panels/settings/AISettingsTab.ts | explainConsole": {
+    "message": "Få forklaringer på advarsler og feil i konsollen"
+  },
+  "panels/settings/AISettingsTab.ts | explainStyling": {
+    "message": "Få forklaringer og mer kontekst for virkemåten til stiler"
+  },
+  "panels/settings/AISettingsTab.ts | freestylerSendsData": {
+    "message": "DOM- eller CSS-innhold på den inspiserte siden kan sendes til Google for generering av forklaringer. Disse dataene kan bli sett av menneskelige evaluerere som jobber med å gjøre denne funksjonen bedre."
+  },
+  "panels/settings/AISettingsTab.ts | generatedSnippets": {
+    "message": "Vær forsiktig når du bruker genererte kodebiter"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
+    "message": "Hjelper deg med å forstå og løse konsolladvarsler og -feil"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
+    "message": "Hjelper deg med å forstå og løse stilproblemer"
+  },
+  "panels/settings/AISettingsTab.ts | learnMore": {
+    "message": "Finn ut mer"
+  },
+  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "En eller flere innstillinger er endret, men trer ikke i kraft før Utviklerverktøy startes på nytt."
+  },
+  "panels/settings/AISettingsTab.ts | privacyNotice": {
+    "message": "Merknad om personvern"
+  },
+  "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
+    "message": "Motta forslag og kodeeksempler for å løse stilproblemer"
+  },
+  "panels/settings/AISettingsTab.ts | receiveSuggestions": {
+    "message": "Få forslag og kodeeksempler for å løse disse problemene"
+  },
+  "panels/settings/AISettingsTab.ts | retainData": {
+    "message": "Bruksdata lagres på en slik måte at Google ikke kan se hvem som har sendt dem inn. Google kan derfor ikke slette data på forespørsel, og dataene beholdes i opptil 18 måneder"
+  },
+  "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
+    "message": "Når du bruker disse funksjonene, sendes data som er relevante for funksjonen, til Google. Du finner mer funksjonsspesifikk informasjon nedenfor."
+  },
+  "panels/settings/AISettingsTab.ts | termsOfService": {
+    "message": "Googles vilkår for bruk"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
+    "message": "Bruk av denne funksjonen er underlagt {PH1} og {PH2}"
+  },
+  "panels/settings/AISettingsTab.ts | thingsToConsider": {
+    "message": "Ting å tenke på"
+  },
+  "panels/settings/AISettingsTab.ts | whenOn": {
+    "message": "Når funksjonen er på"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Legg til filnavnmønster"
   },
@@ -11156,6 +11237,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "Vis enheter"
   },
+  "panels/settings/settings-meta.ts | chromeAI": {
+    "message": "AI i Chrome"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Dokumentasjon"
   },
@@ -11173,6 +11257,9 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "Hurtigtaster"
+  },
+  "panels/settings/settings-meta.ts | showChromeAI": {
+    "message": "Vis AI i Chrome"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "Vis eksperimenter"
@@ -12212,6 +12299,9 @@
   "panels/timeline/CountersGraph.ts | listeners": {
     "message": "Lyttere"
   },
+  "panels/timeline/CountersGraph.ts | noEventsFound": {
+    "message": "Fant ingen data om minnebruk i de valgte hendelsene."
+  },
   "panels/timeline/CountersGraph.ts | nodes": {
     "message": "Noder"
   },
@@ -12602,6 +12692,12 @@
   "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpenedWithUrl": {
     "message": "WebSocket er åpnet: {PH1}"
   },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
+    "message": "Tjenertid – {PH1}"
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
+    "message": "Dette sporet inneholder tidsregistreringer fra «Server-Timing»-nettverkssvarhodene. De respektive starttidene er bare anslag og kan være unøyaktige."
+  },
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(anonym)"
   },
@@ -12728,6 +12824,12 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "Nåværende økt: {PH1}. {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalAndFieldMetrics": {
+    "message": "Verdier lokalt og fra felten"
+  },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalMetrics": {
+    "message": "Lokale verdier"
+  },
   "panels/timeline/TimelineHistoryManager.ts | moments": {
     "message": "øyeblikk"
   },
@@ -12842,6 +12944,9 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Fiks meg"
   },
+  "panels/timeline/TimelinePanel.ts | hideSidebar": {
+    "message": "Skjul det eneste sidefeltet"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Initialiserer profiler …"
   },
@@ -12886,6 +12991,15 @@
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "Vis tidslinje for minne"
+  },
+  "panels/timeline/TimelinePanel.ts | showSidebar": {
+    "message": "Vis sidefelt"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarHidden": {
+    "message": "Sidefeltet for ytelse er skjult"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarShown": {
+    "message": "Sidefeltet for ytelse vises"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} sek."
@@ -13143,7 +13257,7 @@
     "message": "{PH1} i {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
-    "message": "Ugyldigheter"
+    "message": "Ugyldiggjøringer (totalt {PH1})"
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Påkalt av tidsavbrudd"
@@ -13373,6 +13487,12 @@
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "System"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
+    "message": "Prosessor: {PH1}"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
+    "message": "Prosessorstruping: {PH1}"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
     "message": "{PH1} × forsinkelse"
   },
@@ -13409,8 +13529,14 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket-protokoll"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | add": {
+    "message": "Legg til"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Avansert"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
+    "message": "«{PH1}» er allerede tilordnet et produksjonsopphav."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "Avbryt"
@@ -13421,17 +13547,35 @@
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "Konfigurer henting av feltdata"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
+    "message": "Slett"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
+    "message": "Utviklingsopphav"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
+    "message": "Utviklingsopphav: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Brukeropplevelsesrapporten for Chrome har ikke nok virkelige hastighetsdata for denne siden."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Hent inn samlede feltdata fra brukeropplevelsesrapporten for Chrome for å sette lokale målinger i sammenheng med ekte brukeres opplevelser på nettstedet."
+    "message": "Hent samlede feltdata fra {PH1} for å sette lokale målinger i sammenheng med virkelige brukeres opplevelser på nettstedet."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
+    "message": "«{PH1}» er ikke et gyldig opphav eller en gyldig nettadresse."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
+    "message": "Angi et utviklingsopphav for å få relevante feltdata for produksjonsopphavet automatisk."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | new": {
+    "message": "Ny"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | ok": {
     "message": "OK"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Hent bare feltdata for nettadressen nedenfor"
+    "message": "Vis alltid feltdata for nettadressen nedenfor"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Velg bort"
@@ -13439,11 +13583,17 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "Personvernerklæring"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
+    "message": "Produksjonsopphav"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
+    "message": "Produksjonsopphav: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "Konfigurer"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | urlOverride": {
-    "message": "Overstyring av nettadresse"
+  "panels/timeline/components/FieldSettingsDialog.ts | url": {
+    "message": "Nettadresse"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "Når utviklerverktøyet er åpent, blir nettadressene du besøker, sendt til Google for søk i feltdata. Disse forespørslene knyttes ikke til Google-kontoen din."
@@ -13463,65 +13613,53 @@
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "Automatisk ({PH1})"
   },
-  "panels/timeline/components/LiveMetricsView.ts | betweenRange": {
-    "message": "({PH1}–{PH2})"
+  "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
+    "message": "Innsamlingsperiode:"
   },
-  "panels/timeline/components/LiveMetricsView.ts | clsTitle": {
-    "message": "Akkumulert utseendeforskyvning (CLS)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
-    "message": "Prosessorstruping:"
+  "panels/timeline/components/LiveMetricsView.ts | dateRange": {
+    "message": "{PH1} – {PH2}"
   },
   "panels/timeline/components/LiveMetricsView.ts | desktop": {
     "message": "Datamaskin"
   },
-  "panels/timeline/components/LiveMetricsView.ts | deviceType": {
-    "message": "Enhetstype:"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | field75thPercentile": {
-    "message": "75. persentil for felten"
+  "panels/timeline/components/LiveMetricsView.ts | device": {
+    "message": "Enhet: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "Feltdata"
   },
-  "panels/timeline/components/LiveMetricsView.ts | good": {
-    "message": "God"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | gtRange": {
-    "message": "(> {PH1})"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | inpTitle": {
-    "message": "Tid fra interaksjon til neste opptegning (INP)"
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
+    "message": "feltdata"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "Interaksjoner"
   },
-  "panels/timeline/components/LiveMetricsView.ts | lcpTitle": {
-    "message": "Største innholdsrike opptegning (LCP)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | leqRange": {
-    "message": "(≤ {PH1})"
+  "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
+    "message": "Element med største innholdsrike opptegning (LCP)"
   },
   "panels/timeline/components/LiveMetricsView.ts | loadingOption": {
     "message": "{PH1} – lastes inn …"
   },
   "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
-    "message": "Målinger for lokalt miljø og felten"
+    "message": "Verdier lokalt og fra felten"
   },
-  "panels/timeline/components/LiveMetricsView.ts | localValue": {
-    "message": "Lokalt"
+  "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
+    "message": "Lokale verdier"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localMetricsLink": {
+    "message": "lokale verdier"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "Mobil"
   },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
+    "message": "De fleste brukerne bruker datamaskin. Prøv å etterligne en vindusstørrelse for datamaskiner for å gjenspeile virkelige brukere."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
+    "message": "De fleste brukerne bruker mobil. Prøv å emulere en mobilenhet som samsvarer med virkelige brukere."
+  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} – ingen data"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | needsImprovement": {
-    "message": "Trenger forbedring"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
-    "message": "Struping av nettverkshastighet:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "Fremgangsmåten videre"
@@ -13530,22 +13668,28 @@
     "message": "Opphav"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
-    "message": "Opphav ({PH1})"
+    "message": "Opphav: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "{PH1} %"
+  "panels/timeline/components/LiveMetricsView.ts | recordingSettings": {
+    "message": "Opptaksinnstillinger"
   },
-  "panels/timeline/components/LiveMetricsView.ts | poor": {
-    "message": "Dårlig"
+  "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
+    "message": "Se hvordan de lokale verdiene dine sammenlignes med data fra virkelige brukere, i {PH1}."
   },
-  "panels/timeline/components/LiveMetricsView.ts | relatedNode": {
-    "message": "Relatert node"
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
+    "message": "Vis feltdata for enhetstypen {PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
+    "message": "Vis feltdata for {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "Nettbrett"
   },
-  "panels/timeline/components/LiveMetricsView.ts | throttling": {
-    "message": "Struping"
+  "panels/timeline/components/LiveMetricsView.ts | theFieldMetricsAre": {
+    "message": "{PH1} måles av virkelige brukere med mange forskjellige nettverkstilkoblinger og enheter."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
+    "message": "{PH1} blir samlet inn fra den gjeldende siden via nettverkstilkoblingen og enheten din."
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "Prøv å deaktivere struping av nettverkshastighet for å beregne den omtrentlige nettverksforsinkelsen som måles av reelle brukere."
@@ -13557,10 +13701,70 @@
     "message": "Nettadresse"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOptionWithKey": {
-    "message": "Nettadresse ({PH1})"
+    "message": "Nettadresse: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | urlOrOrigin": {
-    "message": "Nettadresse/opphav:"
+  "panels/timeline/components/MetricCompareStrings.ts | goodBetterCompare": {
+    "message": "Den lokale {PH1}-verdien på {PH2} er god. Den er betydelig bedre enn opplevelsen som brukerne dine har."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
+    "message": "Den lokale {PH1}-verdien på {PH2} er god. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. I tillegg er feltdataene i 75. persentil av {PH1}, {PH3}, gode."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
+    "message": "Den lokale {PH1}-verdien på {PH2} er god. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. Feltdataene i 75. persentil av {PH1}, {PH3}, må imidlertid forbedres."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
+    "message": "Den lokale {PH1}-verdien på {PH2} er god. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. Feltdataene i 75. persentil av {PH1}, {PH3}, er imidlertid dårlige."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
+    "message": "Den lokale {PH1}-verdien på {PH2} er god. Den ligner på opplevelsen som brukerne dine har."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSummarized": {
+    "message": "Den lokale {PH1}-verdien på {PH2} er god."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodWorseCompare": {
+    "message": "Den lokale {PH1}-verdien på {PH2} er god. Den er betydelig dårligere enn opplevelsen som brukerne dine har."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementBetterCompare": {
+    "message": "Den lokale {PH1}-verdien på {PH2} må forbedres. Den er betydelig bedre enn opplevelsen som brukerne dine har."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
+    "message": "Den lokale {PH1}-verdien på {PH2} må forbedres. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. Feltdataene i 75. persentil av {PH1}, {PH3}, er imidlertid gode."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
+    "message": "Den lokale {PH1}-verdien på {PH2} må forbedres. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. I tillegg må feltdataene i 75. persentil av {PH1}, {PH3}, forbedres."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
+    "message": "Den lokale {PH1}-verdien på {PH2} må forbedres. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. Feltdataene i 75. persentil av {PH1}, {PH3}, er imidlertid dårlige."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
+    "message": "Den lokale {PH1}-verdien på {PH2} må forbedres. Den ligner på opplevelsen som brukerne dine har."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSummarized": {
+    "message": "Den lokale {PH1}-verdien på {PH2} må forbedres."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementWorseCompare": {
+    "message": "Den lokale {PH1}-verdien på {PH2} må forbedres. Den er betydelig dårligere enn opplevelsen som brukerne dine har."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorBetterCompare": {
+    "message": "Den lokale {PH1}-verdien på {PH2} er dårlig. Den er betydelig bedre enn opplevelsen som brukerne dine har."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
+    "message": "Den lokale {PH1}-verdien på {PH2} er dårlig. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. Feltdataene i 75. persentil av {PH1}, {PH3}, er imidlertid gode."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
+    "message": "Den lokale {PH1}-verdien på {PH2} er dårlig. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. Feltdataene i 75. persentil av {PH1}, {PH3}, må imidlertid forbedres."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
+    "message": "Den lokale {PH1}-verdien på {PH2} er dårlig. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. I tillegg er feltdataene i 75. persentil av {PH1}, {PH3}, dårlige."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
+    "message": "Den lokale {PH1}-verdien på {PH2} er dårlig. Den ligner på opplevelsen som brukerne dine har."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSummarized": {
+    "message": "Den lokale {PH1}-verdien på {PH2} er dårlig."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorWorseCompare": {
+    "message": "Den lokale {PH1}-verdien på {PH2} er dårlig. Den er betydelig dårligere enn opplevelsen som brukerne dine har."
   },
   "panels/timeline/components/NetworkRequestDetails.ts | FromCache": {
     "message": " (fra buffer)"
@@ -13652,8 +13856,26 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
     "message": "Deaktivert"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | network": {
+    "message": "Nettverk: {PH1}"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | networkThrottling": {
+    "message": "Struping av nettverkshastighet: {PH1}"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "Forhåndsinnstillinger"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "fetchpriority=high er tatt i bruk"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "utsatt innlasting er ikke brukt"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "Bildet med største innholdsrike opptegning (LCP) ble lastet inn {PH1} etter det tidligste startpunktet."
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "Forespørselen er synlig i det opprinnelige dokumentet"
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "Forsinkelse for gjengivelse av element"
@@ -13661,8 +13883,8 @@
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "Forsinkelse ved innlasting av ressurser"
   },
-  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadTime": {
-    "message": "Innlastingstid for ressurs"
+  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDuration": {
+    "message": "Varighet av ressursinnlasting"
   },
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
     "message": "Tid til første byte"
@@ -14681,9 +14903,6 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Skjermbilde for {PH1} – velg for å vise foregående forespørsler."
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
-    "message": "Legg til skript på ignoreringslisten"
-  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Konfigurer spor…"
   },
@@ -14693,23 +14912,11 @@
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "Flammediagram"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideChildren": {
-    "message": "Skjul underordnede elementer"
+  "ui/legacy/components/perf_ui/FlameChart.ts | labelEntry": {
+    "message": "Sett etikett på oppføringen"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideFunction": {
-    "message": "Skjul funksjonen"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
-    "message": "Skjul gjentatte underordnede elementer"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
-    "message": "Fjern skript fra ignoreringslisten"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
-    "message": "Tilbakestill underordnede elementer"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
-    "message": "Tilbakestill sporing"
+  "ui/legacy/components/perf_ui/FlameChart.ts | linkEntries": {
+    "message": "Tilknytt oppføringer"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sCollapsed": {
     "message": "{PH1} er skjult"

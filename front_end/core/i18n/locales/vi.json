@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | stylesSidebar": {
     "message": "thanh bên kiểu"
   },
+  "core/common/Revealer.ts | timelinePanel": {
+    "message": "Bảng điều khiển Hiệu suất"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Adorner"
   },
@@ -837,7 +840,7 @@
     "message": "Đường viền lớp"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | layoutShiftRegions": {
-    "message": "Khu vực thay đổi bố cục"
+    "message": "Khu vực có thay đổi về bố cục"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | paintFlashing": {
     "message": "Khung vẽ nhấp nháy"
@@ -1142,11 +1145,11 @@
   "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
     "message": ":--customstatename không được dùng nữa. Thay vào đó, vui lòng sử dụng cú pháp :state(customstatename)."
   },
+  "generated/Deprecation.ts | CSSInsetAreaProperty": {
+    "message": "Thuộc tính inset-area không được dùng nữa. Vui lòng sử dụng thuộc tính position-area."
+  },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Nền sử dụng thuộc tính disableRemotePlaybacknhằm tắt chế độ tích hợp Truyền mặc định thay vì sử dụng bộ chọn -internal-media-controls-overlay-cast-button."
-  },
-  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
-    "message": "Các giá trị của giao diện CSS inner-spin-button, media-slider, media-sliderthumb, media-volume-slider, media-volume-sliderthumb, push-button, searchfield-cancel-button, slider-horizontal, sliderthumb-horizontal, sliderthumb-vertical, square-button không được chuẩn hoá và sẽ bị xoá."
   },
   "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
     "message": "Giá trị của giao diện CSS slider-vertical không được chuẩn hoá và sẽ bị xoá."
@@ -4532,6 +4535,9 @@
   "panels/autofill/AutofillView.ts | sendFeedback": {
     "message": "Gửi ý kiến phản hồi"
   },
+  "panels/autofill/AutofillView.ts | showTestAddressesInAutofillMenu": {
+    "message": "Hiện địa chỉ thử nghiệm trong trình đơn tự động điền"
+  },
   "panels/autofill/AutofillView.ts | toStartDebugging": {
     "message": "Để bắt đầu gỡ lỗi cho tính năng tự động điền, hãy dùng trình đơn tự động điền của Chrome để điền vào biểu mẫu địa chỉ."
   },
@@ -5591,6 +5597,9 @@
   "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
     "message": "Luôn đặt tiêu điểm vào trang. Thường dùng để gỡ lỗi các phần tử biến mất."
   },
+  "panels/elements/ElementStatePaneWidget.ts | forceElementSpecificStates": {
+    "message": "Buộc thực thi trạng thái cụ thể của thành phần"
+  },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Buộc có trạng thái phần tử"
   },
@@ -6423,7 +6432,7 @@
     "message": "Cập nhật chế độ Cài đặt"
   },
   "panels/explain/explain-meta.ts | ageRestricted": {
-    "message": "Tính năng này chỉ dành cho người dùng từ 18 tuổi trở lên."
+    "message": "Tính năng này chỉ dành cho người dùng từ 18 tuổi trở lên"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "Tìm hiểu về thông báo trên bảng điều khiển bằng AI"
@@ -6438,16 +6447,13 @@
     "message": "Tìm hiểu về cảnh báo này"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "Tính năng này chưa hoạt động ở khu vực của bạn."
+    "message": "Tính năng này chưa hoạt động ở khu vực của bạn"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
     "message": "Tổ chức của bạn đã tắt tính năng này. Hãy liên hệ với quản trị viên để biết thêm thông tin."
   },
-  "panels/explain/explain-meta.ts | rolloutRestricted": {
-    "message": "Tính năng này đang trong quá trình ra mắt. Hãy chú ý theo dõi."
-  },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "Để sử dụng tính năng này, trong phần Cài đặt của Công cụ cho nhà phát triển, hãy cập nhật lựa chọn ưu tiên Ngôn ngữ thành tiếng Anh."
+    "message": "Để sử dụng tính năng này, trong phần Cài đặt của Công cụ cho nhà phát triển, hãy cập nhật lựa chọn ưu tiên về ngôn ngữ thành tiếng Anh"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Tài nguyên bị chặn"
@@ -9596,6 +9602,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "Đang tính toán cờ của nút…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingObjectNames": {
+    "message": "Đang sắp đặt tên đối tượng…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingRetainedSizes": {
     "message": "Đang tính toán kích thước giữ lại..."
   },
@@ -10023,7 +10032,7 @@
     "message": "Mạng"
   },
   "panels/recorder/components/RecordingView.ts | performancePanel": {
-    "message": "Bảng điều khiển hiệu suất"
+    "message": "Bảng điều khiển Hiệu suất"
   },
   "panels/recorder/components/RecordingView.ts | recording": {
     "message": "Đang ghi…"
@@ -10871,6 +10880,78 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Người dùng ở trạng thái rảnh, màn hình đang mở khóa"
   },
+  "panels/settings/AISettingsTab.ts | adminSettings": {
+    "message": "Các tính năng dành cho người dùng được quản lý có thể khác nhau tuỳ thuộc vào chế độ cài đặt của quản trị viên tương ứng"
+  },
+  "panels/settings/AISettingsTab.ts | boostYourProductivity": {
+    "message": "Tăng năng suất bằng AI của Chrome"
+  },
+  "panels/settings/AISettingsTab.ts | chromeAi": {
+    "message": "AI của Chrome"
+  },
+  "panels/settings/AISettingsTab.ts | collapse": {
+    "message": "thu gọn"
+  },
+  "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
+    "message": "Thông báo trên bảng điều khiển, dấu vết ngăn xếp liên quan, mã nguồn liên quan và tiêu đề mạng liên quan sẽ được gửi đến Google để đưa ra nội dung giải thích. Nhân viên đánh giá có thể xem xét dữ liệu này để cải thiện tính năng."
+  },
+  "panels/settings/AISettingsTab.ts | expand": {
+    "message": "mở rộng"
+  },
+  "panels/settings/AISettingsTab.ts | experimentalFeatures": {
+    "message": "Đây là những tính năng thử nghiệm và có thể thay đổi"
+  },
+  "panels/settings/AISettingsTab.ts | explainConsole": {
+    "message": "Nhận nội dung giải thích về lỗi và cảnh báo trên bảng điều khiển"
+  },
+  "panels/settings/AISettingsTab.ts | explainStyling": {
+    "message": "Nhận nội dung giải thích và bối cảnh bổ sung cho các hành vi định kiểu"
+  },
+  "panels/settings/AISettingsTab.ts | freestylerSendsData": {
+    "message": "Mọi nội dung của DOM hoặc CSS trên trang được kiểm tra có thể được gửi đến Google để đưa ra nội dung giải thích. Nhân viên đánh giá có thể xem xét dữ liệu này để cải thiện tính năng."
+  },
+  "panels/settings/AISettingsTab.ts | generatedSnippets": {
+    "message": "Hãy thận trọng khi sử dụng các đoạn mã được tạo"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
+    "message": "Giúp bạn hiểu rõ và khắc phục các cảnh báo cũng như lỗi trên bảng điều khiển"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
+    "message": "Giúp bạn hiểu và khắc phục các vấn đề khi định kiểu"
+  },
+  "panels/settings/AISettingsTab.ts | learnMore": {
+    "message": "Tìm hiểu thêm"
+  },
+  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "Một hoặc nhiều chế độ cài đặt đã thay đổi nên cần tải lại để các thay đổi này có hiệu lực."
+  },
+  "panels/settings/AISettingsTab.ts | privacyNotice": {
+    "message": "Thông báo về quyền riêng tư"
+  },
+  "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
+    "message": "Nhận đề xuất và mã mẫu giúp khắc phục sự cố khi định kiểu"
+  },
+  "panels/settings/AISettingsTab.ts | receiveSuggestions": {
+    "message": "Nhận đề xuất và mã mẫu giúp giải quyết các vấn đề này"
+  },
+  "panels/settings/AISettingsTab.ts | retainData": {
+    "message": "Dữ liệu sử dụng sẽ được lưu trữ sao cho Google không biết được ai là người cung cấp dữ liệu và không thể thực hiện yêu cầu xoá nào nữa. Dữ liệu này sẽ được lưu giữ trong tối đa 18 tháng"
+  },
+  "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
+    "message": "Khi bạn sử dụng các tính năng này, dữ liệu liên quan đến tính năng sẽ được gửi đến Google. Vui lòng xem thêm thông tin cụ thể theo từng tính năng ở bên dưới."
+  },
+  "panels/settings/AISettingsTab.ts | termsOfService": {
+    "message": "Điều khoản dịch vụ của Google"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
+    "message": "Khi sử dụng tính năng này, bạn phải tuân thủ {PH1} và {PH2}"
+  },
+  "panels/settings/AISettingsTab.ts | thingsToConsider": {
+    "message": "Những yếu tố cần xem xét"
+  },
+  "panels/settings/AISettingsTab.ts | whenOn": {
+    "message": "Khi bật"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Thêm mẫu tên tệp"
   },
@@ -11156,6 +11237,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "Hiển thị các thiết bị"
   },
+  "panels/settings/settings-meta.ts | chromeAI": {
+    "message": "AI của Chrome"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Tài liệu"
   },
@@ -11173,6 +11257,9 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "Phím tắt"
+  },
+  "panels/settings/settings-meta.ts | showChromeAI": {
+    "message": "Hiện chế độ cài đặt AI của Chrome"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "Hiển thị thẻ Thử nghiệm"
@@ -12212,6 +12299,9 @@
   "panels/timeline/CountersGraph.ts | listeners": {
     "message": "Trình xử lý"
   },
+  "panels/timeline/CountersGraph.ts | noEventsFound": {
+    "message": "Không tìm thấy dữ liệu về mức sử dụng bộ nhớ trong các sự kiện đã chọn."
+  },
   "panels/timeline/CountersGraph.ts | nodes": {
     "message": "Nút"
   },
@@ -12602,6 +12692,12 @@
   "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpenedWithUrl": {
     "message": "Đã mở WebSocket: {PH1}"
   },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
+    "message": "Thông tin về thời gian diễn ra hoạt động trên máy chủ – {PH1}"
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
+    "message": "Kênh này chứa thông tin về thời gian được lấy từ các tiêu đề phản hồi của mạng Server-Timing. Thời gian bắt đầu tương ứng chỉ là ước tính và có thể không chính xác."
+  },
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(ẩn danh)"
   },
@@ -12728,6 +12824,12 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "Phiên hiện tại: {PH1}. {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalAndFieldMetrics": {
+    "message": "Chỉ số cục bộ và chỉ số thực địa"
+  },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalMetrics": {
+    "message": "Chỉ số cục bộ"
+  },
   "panels/timeline/TimelineHistoryManager.ts | moments": {
     "message": "khoảnh khắc"
   },
@@ -12842,6 +12944,9 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Khắc phục giúp tôi"
   },
+  "panels/timeline/TimelinePanel.ts | hideSidebar": {
+    "message": "Ẩn thanh bên duy nhất"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Đang khởi động trình phân tích tài nguyên…"
   },
@@ -12886,6 +12991,15 @@
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "Hiển thị tiến trình bộ nhớ"
+  },
+  "panels/timeline/TimelinePanel.ts | showSidebar": {
+    "message": "Hiện thanh bên"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarHidden": {
+    "message": "Thanh bên Hiệu suất đang bị ẩn"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarShown": {
+    "message": "Thanh bên Hiệu suất đang hiện"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} giây"
@@ -13143,7 +13257,7 @@
     "message": "{PH2} tại {PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
-    "message": "Vô hiệu hóa"
+    "message": "Trường hợp không hợp lệ (tổng cộng {PH1})"
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Do hàm thời gian chờ gọi"
@@ -13373,6 +13487,12 @@
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "Hệ thống"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
+    "message": "CPU: {PH1}"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
+    "message": "Điều tiết CPU: {PH1}"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
     "message": "Giảm tốc độ {PH1} lần"
   },
@@ -13409,8 +13529,14 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Giao thức của WebSocket"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | add": {
+    "message": "Thêm"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Nâng cao"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
+    "message": "\"{PH1}\" đã liên kết với một nguồn gốc trong môi trường phát hành công khai."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "Huỷ"
@@ -13421,17 +13547,35 @@
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "Định cấu hình tính năng tìm nạp dữ liệu trường"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
+    "message": "Xoá"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
+    "message": "Nguồn gốc trong môi trường phát triển"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
+    "message": "Nguồn gốc trong môi trường phát triển: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Báo cáo trải nghiệm người dùng trên Chrome không có đủ dữ liệu tốc độ thực tế cho trang này."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Tìm nạp dữ liệu trường tổng hợp từ Báo cáo trải nghiệm người dùng trên Chrome để giúp bạn cung cấp bối cảnh cho các phép đo cục bộ dựa trên trải nghiệm thực tế của người dùng trên trang web."
+    "message": "Tìm nạp dữ liệu thực địa tổng hợp từ {PH1} để giúp bạn tìm hiểu bối cảnh của các kết quả đo lường cục bộ kết hợp với trải nghiệm của người dùng thực tế trên trang web."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
+    "message": "\"{PH1}\" không phải là một nguồn gốc hoặc URL hợp lệ."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
+    "message": "Đặt một nguồn gốc trong môi trường phát triển để tự động nhận dữ liệu thực địa có liên quan cho nguồn gốc trong môi trường phát hành công khai tương ứng."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | new": {
+    "message": "Mới"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | ok": {
     "message": "Ok"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Chỉ tìm nạp dữ liệu trường cho URL bên dưới"
+    "message": "Luôn hiện dữ liệu thực địa cho URL bên dưới"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Chọn không tham gia"
@@ -13439,11 +13583,17 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "Công bố chính sách quyền riêng tư"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
+    "message": "Nguồn gốc trong môi trường phát hành công khai"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
+    "message": "Nguồn gốc trong môi trường phát hành công khai: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "Thiết lập"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | urlOverride": {
-    "message": "Ghi đè URL"
+  "panels/timeline/components/FieldSettingsDialog.ts | url": {
+    "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "Khi Công cụ cho nhà phát triển đang mở, các URL bạn truy cập sẽ được gửi cho Google để truy vấn dữ liệu trường. Các yêu cầu này không liên kết với Tài khoản Google của bạn."
@@ -13463,65 +13613,53 @@
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "Tự động ({PH1})"
   },
-  "panels/timeline/components/LiveMetricsView.ts | betweenRange": {
-    "message": "({PH1} – {PH2})"
+  "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
+    "message": "Khoảng thời gian thu thập:"
   },
-  "panels/timeline/components/LiveMetricsView.ts | clsTitle": {
-    "message": "Mức thay đổi bố cục tích luỹ (CLS)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
-    "message": "Điều tiết CPU:"
+  "panels/timeline/components/LiveMetricsView.ts | dateRange": {
+    "message": "{PH1} – {PH2}"
   },
   "panels/timeline/components/LiveMetricsView.ts | desktop": {
     "message": "Máy tính"
   },
-  "panels/timeline/components/LiveMetricsView.ts | deviceType": {
-    "message": "Loại thiết bị:"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | field75thPercentile": {
-    "message": "Bách phân vị 75 của trường"
+  "panels/timeline/components/LiveMetricsView.ts | device": {
+    "message": "Thiết bị: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "Dữ liệu trường"
   },
-  "panels/timeline/components/LiveMetricsView.ts | good": {
-    "message": "Tốt"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | gtRange": {
-    "message": "(>{PH1})"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | inpTitle": {
-    "message": "Lượt tương tác đến nội dung hiển thị tiếp theo (INP)"
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
+    "message": "dữ liệu thực địa"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "Tương tác"
   },
-  "panels/timeline/components/LiveMetricsView.ts | lcpTitle": {
-    "message": "Nội dung lớn nhất hiển thị (LCP)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | leqRange": {
-    "message": "(≤{PH1})"
+  "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
+    "message": "Thành phần LCP"
   },
   "panels/timeline/components/LiveMetricsView.ts | loadingOption": {
     "message": "{PH1} – Đang tải…"
   },
   "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
-    "message": "Môi trường cục bộ và chỉ số trường"
+    "message": "Chỉ số cục bộ và chỉ số thực địa"
   },
-  "panels/timeline/components/LiveMetricsView.ts | localValue": {
-    "message": "Cục bộ"
+  "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
+    "message": "Chỉ số cục bộ"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localMetricsLink": {
+    "message": "chỉ số cục bộ"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "Thiết bị di động"
   },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
+    "message": "Đa số người dùng sử dụng máy tính. Hãy thử mô phỏng kích thước của một cửa sổ máy tính phù hợp với người dùng thực tế."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
+    "message": "Đa số người dùng sử dụng thiết bị di động. Hãy thử mô phỏng một thiết bị di động phù hợp với người dùng thực tế."
+  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} – Không có dữ liệu"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | needsImprovement": {
-    "message": "Cần cải thiện"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
-    "message": "Hạn chế băng thông mạng:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "Các bước tiếp theo"
@@ -13530,22 +13668,28 @@
     "message": "Nguồn gốc"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
-    "message": "Nguồn gốc ({PH1})"
+    "message": "Nguồn gốc: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "{PH1}%"
+  "panels/timeline/components/LiveMetricsView.ts | recordingSettings": {
+    "message": "Chế độ cài đặt ghi"
   },
-  "panels/timeline/components/LiveMetricsView.ts | poor": {
-    "message": "Kém"
+  "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
+    "message": "Xem kết quả so sánh giữa các chỉ số cục bộ với dữ liệu người dùng thực tế trong {PH1}."
   },
-  "panels/timeline/components/LiveMetricsView.ts | relatedNode": {
-    "message": "Nút liên quan"
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
+    "message": "Hiện dữ liệu thực địa cho loại thiết bị: {PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
+    "message": "Hiện dữ liệu thực địa cho {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "Máy tính bảng"
   },
-  "panels/timeline/components/LiveMetricsView.ts | throttling": {
-    "message": "Điều tiết"
+  "panels/timeline/components/LiveMetricsView.ts | theFieldMetricsAre": {
+    "message": "{PH1} do người dùng thực tế đo lường bằng nhiều kết nối mạng và thiết bị."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
+    "message": "{PH1} được thu thập từ trang hiện tại bằng kết nối mạng và thiết bị của bạn."
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "Hãy thử tắt tính năng hạn chế băng thông mạng để ước chừng độ trễ mạng được đo bởi người dùng thực."
@@ -13557,10 +13701,70 @@
     "message": "URL"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOptionWithKey": {
-    "message": "URL ({PH1})"
+    "message": "URL: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | urlOrOrigin": {
-    "message": "URL/Nguồn gốc:"
+  "panels/timeline/components/MetricCompareStrings.ts | goodBetterCompare": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn nằm ở mức tốt và tốt hơn đáng kể so với trải nghiệm của người dùng."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn nằm ở mức tốt và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Ngoài ra, {PH3} của {PH1} tại nhóm 75 phần trăm của dữ liệu thực địa cũng nằm ở mức tốt."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn nằm ở mức tốt và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Tuy nhiên, {PH3} của {PH1} tại nhóm 75 phần trăm của dữ liệu thực địa cần được cải thiện."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn nằm ở mức tốt và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Tuy nhiên, {PH3} của {PH1} tại nhóm 75 phần trăm của dữ liệu thực địa chưa tốt."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn nằm ở mức tốt và tương tự với trải nghiệm của người dùng."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSummarized": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn nằm ở mức tốt."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodWorseCompare": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn nằm ở mức tốt nhưng kém hơn đáng kể so với trải nghiệm của người dùng."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementBetterCompare": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn tốt hơn đáng kể so với trải nghiệm của người dùng nhưng vẫn cần cải thiện."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn cần được cải thiện và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Tuy nhiên, {PH3} của {PH1} tại nhóm 75 phần trăm của dữ liệu thực địa nằm ở mức tốt."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn cần được cải thiện và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Ngoài ra, {PH3} của {PH1} tại nhóm 75 phần trăm của dữ liệu thực địa cũng cần được cải thiện."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn cần được cải thiện và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Tuy nhiên, {PH3} của {PH1} tại nhóm 75 phần trăm của dữ liệu thực địa chưa tốt."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn cần được cải thiện và tương tự với trải nghiệm của người dùng."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSummarized": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn cần được cải thiện."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementWorseCompare": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn cần được cải thiện và kém hơn đáng kể so với trải nghiệm của người dùng."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorBetterCompare": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn chưa tốt nhưng tốt hơn đáng kể so với trải nghiệm của người dùng."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn chưa tốt và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Tuy nhiên, {PH3} của {PH1} tại nhóm 75 phần trăm của dữ liệu thực địa nằm ở mức tốt."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn chưa tốt và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Tuy nhiên, {PH3} của {PH1} tại nhóm 75 phần trăm của dữ liệu thực địa cần được cải thiện."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn chưa tốt và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Ngoài ra, {PH3} của {PH1} tại nhóm 75 phần trăm của dữ liệu thực địa chưa tốt."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn chưa tốt và tương tự với trải nghiệm của người dùng."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSummarized": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn chưa tốt."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorWorseCompare": {
+    "message": "{PH2} cục bộ trên {PH1} của bạn chưa tốt và kém hơn đáng kể so với trải nghiệm của người dùng."
   },
   "panels/timeline/components/NetworkRequestDetails.ts | FromCache": {
     "message": " (trong bộ nhớ đệm)"
@@ -13652,8 +13856,26 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
     "message": "Đã tắt"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | network": {
+    "message": "Mạng: {PH1}"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | networkThrottling": {
+    "message": "Hạn chế băng thông mạng: {PH1}"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "Chế độ đặt sẵn"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "Đã áp dụng giá trị \"high\" của thuộc tính fetchpriority"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "chưa áp dụng phương thức tải từng phần"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "Hình ảnh LCP được tải sau {PH1} kể từ thời điểm bắt đầu sớm nhất."
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "Có thể tìm thấy yêu cầu trong tài liệu ban đầu"
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "Độ trễ hiển thị phần tử"
@@ -13661,8 +13883,8 @@
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "Độ trễ khi tải tài nguyên"
   },
-  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadTime": {
-    "message": "Thời gian tải tài nguyên"
+  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDuration": {
+    "message": "Thời lượng tải tài nguyên"
   },
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
     "message": "Thời gian cho byte đầu tiên"
@@ -14681,9 +14903,6 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Ảnh chụp màn hình của {PH1} – chọn để xem các yêu cầu trước đó."
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
-    "message": "Thêm tập lệnh vào danh sách bỏ qua"
-  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Định cấu hình các kênh…"
   },
@@ -14693,23 +14912,11 @@
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "Biểu đồ hình ngọn lửa"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideChildren": {
-    "message": "Ẩn các phần tử con"
+  "ui/legacy/components/perf_ui/FlameChart.ts | labelEntry": {
+    "message": "Gắn nhãn cho mục"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideFunction": {
-    "message": "Ẩn hàm"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
-    "message": "Ẩn các phần tử con lặp lại"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
-    "message": "Loại bỏ tập lệnh khỏi danh sách bỏ qua"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
-    "message": "Đặt lại con"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
-    "message": "Đặt lại dấu vết"
+  "ui/legacy/components/perf_ui/FlameChart.ts | linkEntries": {
+    "message": "Liên kết các mục"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sCollapsed": {
     "message": "Đã thu gọn {PH1}"

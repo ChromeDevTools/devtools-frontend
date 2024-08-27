@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | stylesSidebar": {
     "message": "ແຖບດ້ານຂ້າງຮູບແບບ"
   },
+  "core/common/Revealer.ts | timelinePanel": {
+    "message": "ແຜງປະສິດທິພາບ"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Adorner"
   },
@@ -837,7 +840,7 @@
     "message": "ຂອບໂຄງຮ່າງ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | layoutShiftRegions": {
-    "message": "ຂອບເຂດທີ່ມີການປ່ຽນໂຄງຮ່າງ"
+    "message": "ບໍລິເວນທີ່ມີການປ່ຽນໂຄງຮ່າງ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | paintFlashing": {
     "message": "ການກະພິບການສະແດງຜົນ"
@@ -1142,11 +1145,11 @@
   "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
     "message": "ເຊົາສະໜັບສະໜຸນ :--customstatename ແລ້ວ. ກະລຸນາໃຊ້ໄວຍາກອນ :state(customstatename) ແທນ."
   },
+  "generated/Deprecation.ts | CSSInsetAreaProperty": {
+    "message": "ເຊົານຳໃຊ້ຄຸນສົມບັດ inset-area ແລ້ວ. ກະລຸນາໃຊ້ຄຸນສົມບັດ position-area ແທນ."
+  },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "ຄວນໃຊ້ຄຸນສົມບັດ disableRemotePlayback ເພື່ອປິດການນຳໃຊ້ການເຊື່ອມໂຍງການສົ່ງສັນຍານແທນການໃຊ້ຕົວເລືອກ -internal-media-controls-overlay-cast-button."
-  },
-  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
-    "message": "ຄ່າລັກສະນະ CSS  inner-spin-button, media-slider, media-sliderthumb, media-volume-slider, media-volume-sliderthumb, push-button, searchfield-cancel-button, slider-horizontal, sliderthumb-horizontal, sliderthumb-vertical, square-button ບໍ່ເປັນມາດຕະຖານ ແລະ ຈະຖືກລຶບອອກ."
   },
   "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
     "message": "ຄ່າລັກສະນະ CSS slider-vertical ບໍ່ເປັນມາດຕະຖານ ແລະ ຈະຖືກລຶບອອກ."
@@ -4532,6 +4535,9 @@
   "panels/autofill/AutofillView.ts | sendFeedback": {
     "message": "ສົ່ງຄຳຕິຊົມ"
   },
+  "panels/autofill/AutofillView.ts | showTestAddressesInAutofillMenu": {
+    "message": "ສະແດງທີ່ຢູ່ທົດສອບໃນເມນູການຕື່ມຂໍ້ມູນອັດຕະໂນມັດ"
+  },
   "panels/autofill/AutofillView.ts | toStartDebugging": {
     "message": "ເພື່ອເລີ່ມດີບັກການຕື່ມຂໍ້ມູນອັດຕະໂນມັດ, ໃຫ້ໃຊ້ເມນູການຕື່ມຂໍ້ມູນອັດຕະໂນມັດຂອງ Chrome ເພື່ອຕື່ມແບບຟອມທີ່ຢູ່."
   },
@@ -5591,6 +5597,9 @@
   "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
     "message": "ໂຟກັສໜ້າໄວ້. ໃຊ້ທົ່ວໄປສໍາລັບການດີບັກ​ອົງປະກອບທີ່ຫາຍໄປ."
   },
+  "panels/elements/ElementStatePaneWidget.ts | forceElementSpecificStates": {
+    "message": "ບັງຄັບໃຊ້ສະຖານະສະເພາະຂອງອົງປະກອບ"
+  },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "ບັງຄັບສະຖານະອົງປະກອບ"
   },
@@ -5868,7 +5877,7 @@
     "message": "ຊີດຮູບແບບທີ່ແຊກໃສ່"
   },
   "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
-    "message": "ແຊກກົດລະບຽບຮູບແບບທາງລຸ່ມ"
+    "message": "ແຊກກົດລະບຽບຂອງຮູບແບບທາງລຸ່ມ"
   },
   "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
     "message": "{PH1}[ຮູບແບບຄຸນສົມບັດ]"
@@ -6423,7 +6432,7 @@
     "message": "ອັບເດດການຕັ້ງຄ່າ"
   },
   "panels/explain/explain-meta.ts | ageRestricted": {
-    "message": "ຄຸນສົມບັດນີ້ມີໃຫ້ບໍລິການກັບຜູ້ໃຊ້ທີ່ມີອາຍຸ 18 ປີຂຶ້ນໄປເທົ່ານັ້ນ."
+    "message": "ຄຸນສົມບັດນີ້ມີໃຫ້ບໍລິການກັບຜູ້ໃຊ້ທີ່ມີອາຍຸ 18 ປີຂຶ້ນໄປເທົ່ານັ້ນ"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "ສ້າງຄວາມເຂົ້າໃຈກ່ຽວກັບຂໍ້ຄວາມໃນຄອນໂຊດ້ວຍ AI"
@@ -6438,16 +6447,13 @@
     "message": "ສ້າງຄວາມເຂົ້າໃຈກ່ຽວກັບຄຳເຕືອນນີ້"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "ຄຸນສົມບັດນີ້ບໍ່ພ້ອມໃຫ້ບໍລິການໃນພາກພື້ນຂອງທ່ານ."
+    "message": "ຄຸນສົມບັດນີ້ບໍ່ພ້ອມໃຫ້ບໍລິການໃນພາກພື້ນຂອງທ່ານ"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
     "message": "ອົງກອນຂອງທ່ານປິດຄຸນສົມບັດນີ້. ກະລຸນາຕິດຕໍ່ຜູ້ເບິ່ງແຍງລະບົບຂອງທ່ານສຳລັບຂໍ້ມູນເພີ່ມເຕີມ."
   },
-  "panels/explain/explain-meta.ts | rolloutRestricted": {
-    "message": "ພວກເຮົາກຳລັງເປີດຕົວຄຸນສົມບັດນີ້. ກະລຸນາລໍຖ້າ."
-  },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "ເພື່ອໃຊ້ຄຸນສົມບັດນີ້, ໃຫ້ອັບເດດການຕັ້ງຄ່າພາສາຂອງທ່ານໃນການຕັ້ງຄ່າ DevTools ເປັນພາສາອັງກິດ."
+    "message": "ເພື່ອໃຊ້ຄຸນສົມບັດນີ້, ໃຫ້ອັບເດດການຕັ້ງຄ່າພາສາຂອງທ່ານໃນການຕັ້ງຄ່າ DevTools ເປັນພາສາອັງກິດ"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "ຊັບພະຍາກອນທີ່ຖືກບລັອກໄວ້"
@@ -9596,6 +9602,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "ກຳລັງຄິດໄລ່ການປັກທຸງໂນດ…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingObjectNames": {
+    "message": "ກຳລັງຄິດໄລ່ຊື່ອອບເຈັກ…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingRetainedSizes": {
     "message": "ກຳລັງຄິດໄລ່ຂະໜາດທີ່ເກັບຮັກສາໄວ້…"
   },
@@ -10871,6 +10880,78 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "ຜູ້ໃຊ້ບໍ່ເຄື່ອນໄຫວ, ປົດລັອກໜ້າຈໍແລ້ວ"
   },
+  "panels/settings/AISettingsTab.ts | adminSettings": {
+    "message": "ຄຸນສົມບັດທີ່ພ້ອມໃຫ້ບໍລິການກັບຜູ້ໃຊ້ທີ່ມີການຈັດການອາດແຕກຕ່າງກັນໄປໂດຍຂຶ້ນຢູ່ກັບການຕັ້ງຄ່າຂອງຜູ້ເບິ່ງແຍງລະບົບຂອງເຂົາເຈົ້າ"
+  },
+  "panels/settings/AISettingsTab.ts | boostYourProductivity": {
+    "message": "ເພີ່ມຜະລິດຕະພາບຂອງທ່ານດ້ວຍ Chrome AI"
+  },
+  "panels/settings/AISettingsTab.ts | chromeAi": {
+    "message": "Chrome AI"
+  },
+  "panels/settings/AISettingsTab.ts | collapse": {
+    "message": "ຫຍໍ້ລົງ"
+  },
+  "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
+    "message": "ລະບົບຈະສົ່ງຂໍ້ຄວາມໃນຄອນໂຊ, ການຕິດຕາມແບບຊ້ອນກັນທີ່ກ່ຽວຂ້ອງ, ຊອດໂຄດທີ່ກ່ຽວຂ້ອງ ແລະ ສ່ວນຫົວຂອງເຄືອຂ່າຍທີ່ກ່ຽວຂ້ອງໄປຫາ Google ເພື່ອສ້າງຄຳອະທິບາຍ. ທີມງານກວດສອບອາດເຫັນຂໍ້ມູນນີ້ເພື່ອນຳໃຊ້ໃນການປັບປຸງຄຸນສົມບັດນີ້."
+  },
+  "panels/settings/AISettingsTab.ts | expand": {
+    "message": "ຂະຫຍາຍ"
+  },
+  "panels/settings/AISettingsTab.ts | experimentalFeatures": {
+    "message": "ຄຸນສົມບັດເຫຼົ່ານີ້ເປັນເວີຊັນທົດລອງ ແລະ ອາດມີການປ່ຽນແປງ"
+  },
+  "panels/settings/AISettingsTab.ts | explainConsole": {
+    "message": "ຮັບຄຳອະທິບາຍກ່ຽວກັບຄຳເຕືອນ ແລະ ຂໍ້ຜິດພາດຂອງຄອນໂຊ"
+  },
+  "panels/settings/AISettingsTab.ts | explainStyling": {
+    "message": "ຮັບຄຳອະທິບາຍ ແລະ ບໍລິບົດເພີ່ມເຕີມກ່ຽວກັບລັກສະນະການເຮັດວຽກຂອງການຈັດຮູບແບບ"
+  },
+  "panels/settings/AISettingsTab.ts | freestylerSendsData": {
+    "message": "ລະບົບອາດສົ່ງເນື້ອຫາ DOM ຫຼື CSS ໃດກໍຕາມໃນໜ້າທີ່ກວດສອບໄປຫາ Google ເພື່ອສ້າງຄຳອະທິບາຍ. ທີມງານກວດສອບອາດເຫັນຂໍ້ມູນນີ້ເພື່ອນຳໃຊ້ໃນການປັບປຸງຄຸນສົມບັດນີ້."
+  },
+  "panels/settings/AISettingsTab.ts | generatedSnippets": {
+    "message": "ໃຊ້ຂໍ້ມູນຫຍໍ້ຂອງລະຫັດທີ່ສ້າງຂຶ້ນດ້ວຍຄວາມລະມັດລະວັງ"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
+    "message": "ຊ່ວຍໃຫ້ທ່ານເຂົ້າໃຈ ແລະ ແກ້ໄຂຄຳເຕືອນ ແລະ ຂໍ້ຜິດພາດຂອງຄອນໂຊ"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
+    "message": "ຊ່ວຍໃຫ້ທ່ານເຂົ້າໃຈ ແລະ ແກ້ໄຂບັນຫາກ່ຽວກັບການຈັດຮູບແບບ"
+  },
+  "panels/settings/AISettingsTab.ts | learnMore": {
+    "message": "ສຶກສາເພີ່ມເຕີມ"
+  },
+  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "ການຕັ້ງຄ່າໜຶ່ງ ຫຼື ຫຼາຍລາຍການໄດ້ປ່ຽນແປງເຊິ່ງຈຳເປັນຕ້ອງໂຫຼດຄືນໃໝ່ເພື່ອໃຫ້ມີຜົນນຳໃຊ້."
+  },
+  "panels/settings/AISettingsTab.ts | privacyNotice": {
+    "message": "ປະກາດຄວາມເປັນສ່ວນຕົວ"
+  },
+  "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
+    "message": "ຮັບຄຳແນະນຳ ແລະ ຕົວຢ່າງລະຫັດເພື່ອແກ້ໄຂບັນຫາການຈັດຮູບແບບ"
+  },
+  "panels/settings/AISettingsTab.ts | receiveSuggestions": {
+    "message": "ຮັບຄຳແນະນຳ ແລະ ຕົວຢ່າງລະຫັດເພື່ອແກ້ໄຂບັນຫາເຫຼົ່ານີ້"
+  },
+  "panels/settings/AISettingsTab.ts | retainData": {
+    "message": "ລະບົບຈະຈັດເກັບຂໍ້ມູນການນຳໃຊ້ໃນລັກສະນະທີ່ Google ບໍ່ສາມາດລະບຸໄດ້ວ່າຂໍ້ມູນນັ້ນມາຈາກໃຜ ແລະ ບໍ່ສາມາດດຳເນີນການຕາມຄຳຮ້ອງຂໍການລຶບອອກໃດກໍຕາມໄດ້ອີກ ພ້ອມທັງຈະເກັບຮັກສາຂໍ້ມູນໄວ້ເປັນເວລາ 18 ເດືອນ"
+  },
+  "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
+    "message": "ການໃຊ້ຄຸນສົມບັດເຫຼົ່ານີ້ຈະສົ່ງຂໍ້ມູນທີ່ກ່ຽວກັບຄຸນສົມບັດດັ່ງກ່າວໄປຫາ Google. ກະລຸນາເບິ່ງຂໍ້ມູນເພີ່ມເຕີມທີ່ສະເພາະກ່ຽວກັບຄຸນສົມບັດລຸ່ມນີ້."
+  },
+  "panels/settings/AISettingsTab.ts | termsOfService": {
+    "message": "ຂໍ້ກຳນົດບໍລິການຂອງ Google"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
+    "message": "ການໃຊ້ຄຸນສົມບັດນີ້ຕ້ອງເປັນໄປຕາມ {PH1} ແລະ {PH2}"
+  },
+  "panels/settings/AISettingsTab.ts | thingsToConsider": {
+    "message": "ສິ່ງທີ່ຕ້ອງພິຈາລະນາ"
+  },
+  "panels/settings/AISettingsTab.ts | whenOn": {
+    "message": "ເມື່ອເປີດໃຊ້"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "ເພີ່ມຮູບແບບຊື່ໄຟລ໌"
   },
@@ -11156,6 +11237,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "ສະແດງອຸປະກອນ"
   },
+  "panels/settings/settings-meta.ts | chromeAI": {
+    "message": "Chrome AI"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "ເອກະສານ"
   },
@@ -11173,6 +11257,9 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "ທາງລັດ"
+  },
+  "panels/settings/settings-meta.ts | showChromeAI": {
+    "message": "ສະແດງ Chrome AI"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "ສະແດງການທົດສອບ"
@@ -12212,6 +12299,9 @@
   "panels/timeline/CountersGraph.ts | listeners": {
     "message": "ຕົວຟັງ"
   },
+  "panels/timeline/CountersGraph.ts | noEventsFound": {
+    "message": "ບໍ່ພົບຂໍ້ມູນການນຳໃຊ້ໜ່ວຍຄວາມຈຳພາຍໃນເຫດການທີ່ເລືອກ."
+  },
   "panels/timeline/CountersGraph.ts | nodes": {
     "message": "ໂນດ"
   },
@@ -12602,6 +12692,12 @@
   "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpenedWithUrl": {
     "message": "ເປີດ WebSocket ແລ້ວ: {PH1}"
   },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
+    "message": "ເວລາຂອງເຊີບເວີ — {PH1}"
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
+    "message": "ແທຣັກນີ້ມີການຈັບເວລາເຊິ່ງມາຈາກສ່ວນຫົວການຕອບກັບຂອງເຄືອຂ່າຍເວລາຂອງເຊີບເວີ. ເວລາເລີ່ມຕົ້ນເປັນພຽງຄ່າປະເມີນ ແລະ ອາດບໍ່ຖືກຕ້ອງ."
+  },
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(ບໍ່ລະບຸຕົວຕົນ)"
   },
@@ -12728,6 +12824,12 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "ເຊດຊັນປັດຈຸບັນ: {PH1}. {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalAndFieldMetrics": {
+    "message": "ການວັດແທກໃນເຄື່ອງ ແລະ ຈາກຂໍ້ມູນພາກສະໜາມ"
+  },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalMetrics": {
+    "message": "ການວັດແທກໃນເຄື່ອງ"
+  },
   "panels/timeline/TimelineHistoryManager.ts | moments": {
     "message": "ຊ່ວງເວລາ"
   },
@@ -12842,6 +12944,9 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "ແກ້ໄຂຂ້ອຍ"
   },
+  "panels/timeline/TimelinePanel.ts | hideSidebar": {
+    "message": "ເຊື່ອງແຖບດ້ານຂ້າງດຽວທີ່ມີຢູ່"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "ກຳລັງເລີ່ມຕົ້ນສ້າງໂປຣໄຟລ໌…"
   },
@@ -12886,6 +12991,15 @@
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "ສະແດງທາມລາຍໜ່ວຍຄວາມຈຳ"
+  },
+  "panels/timeline/TimelinePanel.ts | showSidebar": {
+    "message": "ສະແດງແຖບດ້ານຂ້າງ"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarHidden": {
+    "message": "ແຖບດ້ານຂ້າງໃນແຜງປະສິດທິພາບເຊື່ອງຢູ່"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarShown": {
+    "message": "ແຖບດ້ານຂ້າງໃນແຜງປະສິດທິພາບສະແດງຢູ່"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} ວິ"
@@ -13143,7 +13257,7 @@
     "message": "{PH1} ເວລາ {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
-    "message": "ການລະບຸວ່າບໍ່ຖືກຕ້ອງ"
+    "message": "ການລະບຸວ່າບໍ່ຖືກຕ້ອງ (ທັງໝົດ {PH1} ລາຍການ)"
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "ເອີ້ນໃຊ້ໂດຍໄລຍະໝົດເວລາ"
@@ -13373,6 +13487,12 @@
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "ລະບົບ"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
+    "message": "CPU: {PH1}"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
+    "message": "ການຄວບຄຸມ CPU: {PH1}"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
     "message": "ເຮັດວຽກຊ້າລົງ {PH1} ເທົ່າ"
   },
@@ -13409,8 +13529,14 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "ໂປຣໂຕຄໍ WebSocket"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | add": {
+    "message": "ເພີ່ມ"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "ຂັ້ນສູງ"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
+    "message": "ມີການຈັບຄູ່ \"{PH1}\" ກັບຕົ້ນທາງຂອງການນຳໃຊ້ແທ້ຢູ່ແລ້ວ."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "ຍົກເລີກ"
@@ -13421,17 +13547,35 @@
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "ຕັ້ງຄ່າການດຶງຂໍ້ມູນພາກສະໜາມ"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
+    "message": "ລຶບ"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
+    "message": "ຕົ້ນທາງການພັດທະນາ"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
+    "message": "ຕົ້ນທາງການພັດທະນາ: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "ລາຍງານ Chrome UX ບໍ່ມີຂໍ້ມູນຄວາມໄວຕາມຄວາມເປັນຈິງທີ່ພຽງພໍສຳລັບໜ້ານີ້."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "ດຶງຂໍ້ມູນພາກສະໜາມທີ່ຮວບຮວມຈາກລາຍງານ Chrome UX ເພື່ອຊ່ວຍທ່ານປັບການວັດແທກຜົນໃນພື້ນທີ່ໃຫ້ສອດຄ່ອງກັບບໍລິບົດປະສົບການຜູ້ໃຊ້ແທ້ໃນເວັບໄຊ."
+    "message": "ດຶງຂໍ້ມູນພາກສະໜາມທີ່ຮວບຮວມຈາກ {PH1} ເພື່ອຊ່ວຍທ່ານປັບການວັດແທກຜົນໃນເຄື່ອງໃຫ້ສອດຄ່ອງກັບບໍລິບົດປະສົບການຜູ້ໃຊ້ແທ້ໃນເວັບໄຊ."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
+    "message": "\"{PH1}\" ບໍ່ແມ່ນຕົ້ນທາງ ຫຼື URL ທີ່ຖືກຕ້ອງ."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
+    "message": "ຕັ້ງຄ່າຕົ້ນທາງການພັດທະນາເພື່ອຮັບຂໍ້ມູນພາກສະໜາມທີ່ກ່ຽວຂ້ອງສຳລັບຕົ້ນທາງຂອງການນຳໃຊ້ແທ້ໂດຍອັດຕະໂນມັດ."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | new": {
+    "message": "ໃໝ່"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | ok": {
     "message": "ຕົກລົງ"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "ດຶງສະເພາະຂໍ້ມູນພາກສະໜາມສຳລັບ URL ລຸ່ມນີ້"
+    "message": "ສະແດງຂໍ້ມູນພາກສະໜາມສຳລັບ URL ລຸ່ມນີ້ສະເໝີ"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "ຖອນຕົວ"
@@ -13439,11 +13583,17 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "ການເປີດເຜີຍຄວາມເປັນສ່ວນຕົວ"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
+    "message": "ຕົ້ນທາງຂອງການນຳໃຊ້ແທ້"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
+    "message": "ຕົ້ນທາງຂອງການນຳໃຊ້ແທ້: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "ຕັ້ງຄ່າ"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | urlOverride": {
-    "message": "ການຍົກເລີກ URL"
+  "panels/timeline/components/FieldSettingsDialog.ts | url": {
+    "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "ເມື່ອເປີດ DevTools, ລະບົບຈະສົ່ງ URL ທີ່ທ່ານເຂົ້າເບິ່ງໄປຫາ Google ເພື່ອຊອກຫາຂໍ້ມູນພາກສະໜາມ. ຄຳຮ້ອງຂໍເຫຼົ່ານີ້ບໍ່ໄດ້ເຊື່ອມໂຍງກັບບັນຊີ Google ຂອງທ່ານ."
@@ -13463,65 +13613,53 @@
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "ອັດຕະໂນມັດ ({PH1})"
   },
-  "panels/timeline/components/LiveMetricsView.ts | betweenRange": {
-    "message": "({PH1}-{PH2})"
+  "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
+    "message": "ໄລຍະເວລາການຮວບຮວມ:"
   },
-  "panels/timeline/components/LiveMetricsView.ts | clsTitle": {
-    "message": "ການປ່ຽນແປງໂຄງຮ່າງສະສົມ (CLS)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
-    "message": "ການຄວບຄຸມ CPU:"
+  "panels/timeline/components/LiveMetricsView.ts | dateRange": {
+    "message": "{PH1} - {PH2}"
   },
   "panels/timeline/components/LiveMetricsView.ts | desktop": {
     "message": "ເດັສທັອບ"
   },
-  "panels/timeline/components/LiveMetricsView.ts | deviceType": {
-    "message": "ປະເພດອຸປະກອນ:"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | field75thPercentile": {
-    "message": "ສະໜາມ Percentile ທີ 75"
+  "panels/timeline/components/LiveMetricsView.ts | device": {
+    "message": "ອຸປະກອນ: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "ຂໍ້ມູນສະໜາມ"
   },
-  "panels/timeline/components/LiveMetricsView.ts | good": {
-    "message": "ດີ"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | gtRange": {
-    "message": "(>{PH1})"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | inpTitle": {
-    "message": "ການໂຕ້ຕອບຕໍ່ກັບສີຕໍ່ໄປ (INP)"
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
+    "message": "ຂໍ້ມູນພາກສະໜາມ"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "ການໂຕ້ຕອບ"
   },
-  "panels/timeline/components/LiveMetricsView.ts | lcpTitle": {
-    "message": "ການສະແດງຜົນເນື້ອຫາທີ່ໃຫຍ່ທີ່ສຸດ (LCP)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | leqRange": {
-    "message": "(≤{PH1})"
+  "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
+    "message": "ອົງປະກອບ LCP"
   },
   "panels/timeline/components/LiveMetricsView.ts | loadingOption": {
     "message": "{PH1} - ກຳລັງໂຫຼດ…"
   },
   "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
-    "message": "ການວັດແທກລະດັບທ້ອງຖິ່ນ ແລະ ພາກສະໜາມ"
+    "message": "ການວັດແທກໃນເຄື່ອງ ແລະ ຈາກຂໍ້ມູນພາກສະໜາມ"
   },
-  "panels/timeline/components/LiveMetricsView.ts | localValue": {
-    "message": "ທ້ອງຖິ່ນ"
+  "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
+    "message": "ການວັດແທກໃນເຄື່ອງ"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localMetricsLink": {
+    "message": "ການວັດແທກໃນເຄື່ອງ"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "ໂທລະສັບມືຖື"
   },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
+    "message": "ຜູ້ໃຊ້ສ່ວນໃຫຍ່ໃຊ້ຢູ່ເດັສທັອບ. ລອງຈຳລອງຂະໜາດໜ້າຈໍຂອງເດັສທັອບທີ່ຄ້າຍກັບປະສົບການຂອງຜູ້ໃຊ້ແທ້."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
+    "message": "ຜູ້ໃຊ້ສ່ວນໃຫຍ່ໃຊ້ຢູ່ໂທລະສັບມືຖື. ລອງຈຳລອງອຸປະກອນມືຖືທີ່ຄ້າຍກັບປະສົບການຂອງຜູ້ໃຊ້ແທ້."
+  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} - ບໍ່ມີຂໍ້ມູນ"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | needsImprovement": {
-    "message": "ຕ້ອງມີການປັບປຸງ"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
-    "message": "ການຄວບຄຸມເຄືອຂ່າຍ:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "ຂັ້ນຕອນຕໍ່ໄປ"
@@ -13530,22 +13668,28 @@
     "message": "ຕົ້ນສະບັບ"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
-    "message": "ຕົ້ນທາງ ({PH1})"
+    "message": "ຕົ້ນທາງ: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "{PH1}%"
+  "panels/timeline/components/LiveMetricsView.ts | recordingSettings": {
+    "message": "ການຕັ້ງຄ່າການບັນທຶກ"
   },
-  "panels/timeline/components/LiveMetricsView.ts | poor": {
-    "message": "ບໍ່ດີ"
+  "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
+    "message": "ເບິ່ງປະສິດທິພາບການວັດແທກໃນເຄື່ອງຂອງທ່ານປຽບທຽບກັບຂໍ້ມູນຜູ້ໃຊ້ແທ້ໃນ {PH1}."
   },
-  "panels/timeline/components/LiveMetricsView.ts | relatedNode": {
-    "message": "ໂໜດທີ່ກ່ຽວຂ້ອງ"
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
+    "message": "ສະແດງຂໍ້ມູນພາກສະໜາມສຳລັບປະເພດອຸປະກອນ: {PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
+    "message": "ສະແດງຂໍ້ມູນພາກສະໜາມສຳລັບ {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "ແທັບເລັດ"
   },
-  "panels/timeline/components/LiveMetricsView.ts | throttling": {
-    "message": "ການຄວບຄຸມ"
+  "panels/timeline/components/LiveMetricsView.ts | theFieldMetricsAre": {
+    "message": "{PH1} ຖືກວັດແທກໂດຍຜູ້ໃຊ້ແທ້ໂດຍໃຊ້ການເຊື່ອມຕໍ່ເຄືອຂ່າຍ ແລະ ອຸປະກອນຕ່າງໆ."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
+    "message": "ລະບົບຈະບັນທຶກ {PH1} ຈາກໜ້າເວັບປັດຈຸບັນໂດຍໃຊ້ການເຊື່ອມຕໍ່ເຄືອຂ່າຍ ແລະ ອຸປະກອນຂອງທ່ານ."
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "ລອງປິດການນຳໃຊ້ການຄວບຄຸມລະບົບເຄືອຂ່າຍເພື່ອປະເມີນຄ່າການຕອບສະໜອງຂອງເຄືອຂ່າຍທີ່ວັດແທກໂດຍຜູ້ໃຊ້ແທ້."
@@ -13557,10 +13701,70 @@
     "message": "URL"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOptionWithKey": {
-    "message": "URL ({PH1})"
+    "message": "URL: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | urlOrOrigin": {
-    "message": "URL/ຕົ້ນທາງ:"
+  "panels/timeline/components/MetricCompareStrings.ts | goodBetterCompare": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຖືວ່າໄວ ແລະ ໄວກວ່າຫຼາຍເມື່ອທຽບກັບປະສົບການຜູ້ໃຊ້ຂອງທ່ານ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຖືວ່າໄວ ແລະ ຢູ່ໃນລະດັບດຽວກັນກັບປະສົບການໃນການນຳໃຊ້ {PH1} ຂອງຜູ້ໃຊ້ແທ້ {PH4}. ນອກຈາກນີ້, ຂໍ້ມູນພາກສະໜາມ 75% ຂອງຜູ້ໃຊ້ {PH1} ໃຊ້ເວລາ {PH3} ເຊິ່ງຖືວ່າຢູ່ໃນເກນທີ່ໄວ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຖືວ່າໄວ ແລະ ຢູ່ໃນລະດັບດຽວກັນກັບປະສົບການໃນການນຳໃຊ້ {PH1} ຂອງຜູ້ໃຊ້ແທ້ {PH4}. ແນວໃດກໍຕາມ, ຂໍ້ມູນພາກສະໜາມພົບວ່າ 75% ຂອງຜູ້ໃຊ້ {PH1} ໃຊ້ເວລາ {PH3} ເຊິ່ງຖືວ່າຕ້ອງໄດ້ຮັບການປັບປຸງ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຖືວ່າໄວ ແລະ ຢູ່ໃນລະດັບດຽວກັນກັບປະສົບການໃນການນຳໃຊ້ {PH1} ຂອງຜູ້ໃຊ້ແທ້ {PH4}. ແນວໃດກໍຕາມ, ຂໍ້ມູນພາກສະໜາມພົບວ່າ 75% ຂອງຜູ້ໃຊ້ {PH1} ໃຊ້ເວລາ {PH3} ເຊິ່ງຖືວ່າຢູ່ໃນເກນທີ່ຊ້າ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຖືວ່າໄວ ແລະ ຢູ່ໃນລະດັບທີ່ໃກ້ຄຽງກັບປະສົບການຜູ້ໃຊ້ຂອງທ່ານ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSummarized": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຖືວ່າໄວ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodWorseCompare": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຖືວ່າໄວ ແຕ່ຊ້າກວ່າຫຼາຍເມື່ອທຽບກັບປະສົບການຜູ້ໃຊ້ຂອງທ່ານ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementBetterCompare": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຕ້ອງໄດ້ຮັບການປັບປຸງ ແຕ່ຖືວ່າໄວຫຼາຍເມື່ອທຽບກັບປະສົບການຜູ້ໃຊ້ຂອງທ່ານ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຕ້ອງໄດ້ຮັບການປັບປຸງ ແລະ ຢູ່ໃນລະດັບດຽວກັນກັບປະສົບການໃນການນຳໃຊ້ {PH4} ຂອງຜູ້ໃຊ້ແທ້ {PH1}. ແນວໃດກໍຕາມ, ຂໍ້ມູນພາກສະໜາມພົບວ່າ 75% ຂອງຜູ້ໃຊ້ {PH1} ໃຊ້ເວລາ {PH3} ເຊິ່ງຖືວ່າຢູ່ໃນເກນທີ່ໄວ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຕ້ອງໄດ້ຮັບການປັບປຸງ ແລະ ຢູ່ໃນລະດັບດຽວກັນກັບປະສົບການໃນການນຳໃຊ້ {PH4} ຂອງຜູ້ໃຊ້ແທ້ {PH1}. ນອກຈາກນີ້, ຂໍ້ມູນພາກສະໜາມພົບວ່າ 75% ຂອງຜູ້ໃຊ້ {PH1} ໃຊ້ເວລາ {PH3} ເຊິ່ງຖືວ່າຕ້ອງໄດ້ຮັບການປັບປຸງ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຕ້ອງໄດ້ຮັບການປັບປຸງ ແລະ ຢູ່ໃນລະດັບດຽວກັນກັບປະສົບການໃນການນຳໃຊ້ {PH4} ຂອງຜູ້ໃຊ້ແທ້ {PH1}. ແນວໃດກໍຕາມ, ຂໍ້ມູນພາກສະໜາມພົບວ່າ 75% ຂອງຜູ້ໃຊ້ {PH1} ໃຊ້ເວລາ {PH3} ເຊິ່ງຖືວ່າຢູ່ໃນເກນທີ່ຊ້າ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຕ້ອງໄດ້ຮັບການປັບປຸງ ແລະ ຢູ່ໃນລະດັບທີ່ໃກ້ຄຽງກັບປະສົບການຜູ້ໃຊ້ຂອງທ່ານ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSummarized": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຕ້ອງໄດ້ຮັບການປັບປຸງ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementWorseCompare": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຕ້ອງໄດ້ຮັບການປັບປຸງ ແລະ ຖືວ່າຊ້າຫຼາຍເມື່ອທຽບກັບປະສົບການຜູ້ໃຊ້ຂອງທ່ານ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorBetterCompare": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຖືວ່າຊ້າ ແຕ່ໄວກວ່າຫຼາຍເມື່ອທຽບກັບປະສົບການຜູ້ໃຊ້ຂອງທ່ານ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຖືວ່າຊ້າ ແລະ ຢູ່ໃນລະດັບດຽວກັນກັບປະສົບການໃນການນຳໃຊ້ {PH1} ຂອງຜູ້ໃຊ້ແທ້ {PH4}. ແນວໃດກໍຕາມ, ຂໍ້ມູນພາກສະໜາມພົບວ່າ 75% ຂອງຜູ້ໃຊ້ {PH1} ໃຊ້ເວລາ {PH3} ເຊິ່ງຖືວ່າຢູ່ໃນເກນທີ່ໄວ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຖືວ່າຊ້າ ແລະ ຢູ່ໃນລະດັບດຽວກັນກັບປະສົບການໃນການນຳໃຊ້ {PH1} ຂອງຜູ້ໃຊ້ແທ້ {PH4}. ແນວໃດກໍຕາມ, ຂໍ້ມູນພາກສະໜາມພົບວ່າ 75% ຂອງຜູ້ໃຊ້ {PH1} ໃຊ້ເວລາ {PH3} ເຊິ່ງຖືວ່າຕ້ອງໄດ້ຮັບການປັບປຸງ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຖືວ່າຊ້າ ແລະ ຢູ່ໃນລະດັບດຽວກັນກັບປະສົບການໃນການນຳໃຊ້ {PH1} ຂອງຜູ້ໃຊ້ແທ້ {PH4}. ນອກຈາກນີ້, ຂໍ້ມູນພາກສະໜາມ 75% ຂອງຜູ້ໃຊ້ {PH1} ໃຊ້ເວລາ {PH3} ເຊິ່ງຖືວ່າຢູ່ໃນເກນທີ່ຊ້າ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຖືວ່າຊ້າ ແລະ ຢູ່ໃນລະດັບທີ່ໃກ້ຄຽງກັບປະສົບການຜູ້ໃຊ້ຂອງທ່ານ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSummarized": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຖືວ່າຊ້າ."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorWorseCompare": {
+    "message": "{PH1} ທີ່ໃຊ້ເວລາ {PH2} ໃນເຄື່ອງຂອງທ່ານນັ້ນຖືວ່າຊ້າ ແລະ ຊ້າກວ່າຫຼາຍເມື່ອທຽບກັບປະສົບການຜູ້ໃຊ້ຂອງທ່ານ."
   },
   "panels/timeline/components/NetworkRequestDetails.ts | FromCache": {
     "message": " (ຈາກແຄສ)"
@@ -13652,8 +13856,26 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
     "message": "ປິດການນຳໃຊ້ແລ້ວ"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | network": {
+    "message": "ເຄືອຂ່າຍ: {PH1}"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | networkThrottling": {
+    "message": "ການຄວບຄຸມເຄືອຂ່າຍ: {PH1}"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "ຄ່າທີ່ຕັ້ງລ່ວງໜ້າ"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "ໃຊ້ລຳດັບຄວາມສຳຄັນໃນການດຶງຂໍ້ມູນ=ສູງຢູ່"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "ບໍ່ໄດ້ໃຊ້ການໂຫຼດແບບ lazy loading"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "ຮູບ LCP ໃຊ້ເວລາໂຫຼດ {PH1} ຫຼັງຈາກຈຸດເລີ່ມຕົ້ນທຳອິດສຸດ."
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "ຄຳຮ້ອງຂໍສາມາດຄົ້ນພົບໄດ້ໃນເອກະສານເລີ່ມຕົ້ນ"
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "ຄວາມຫຼ້າຊ້າໃນການສະແດງພາບອົງປະກອບ"
@@ -13661,8 +13883,8 @@
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "ຄວາມຫຼ້າຊ້າຂອງການໂຫຼດຊັບພະຍາກອນ"
   },
-  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadTime": {
-    "message": "ເວລາທີ່ໃຊ້ໃນການໂຫຼດຊັບພະຍາກອນ"
+  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDuration": {
+    "message": "ໄລຍະເວລາໃນການໂຫຼດຊັບພະຍາກອນ"
   },
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
     "message": "ເວລາທີ່ໄດ້ຮັບຂໍ້ມູນໄບຕ໌ທຳອິດ"
@@ -14681,9 +14903,6 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "ຮູບໜ້າຈໍສຳລັບ {PH1} - ເລືອກເພື່ອເບິ່ງຄຳຂໍກ່ອນໜ້າ."
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
-    "message": "ເພີ່ມສະຄຣິບໃສ່ລາຍການຍົກເວັ້ນ"
-  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "ຕັ້ງຄ່າແທຣັກ…"
   },
@@ -14693,23 +14912,11 @@
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "ແຜນພາບ Flame Chart"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideChildren": {
-    "message": "ເຊື່ອງລາຍການຍ່ອຍ"
+  "ui/legacy/components/perf_ui/FlameChart.ts | labelEntry": {
+    "message": "ຕິດປ້າຍກຳກັບລາຍການ"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideFunction": {
-    "message": "ເຊື່ອງຟັງຊັນ"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
-    "message": "ເຊື່ອງລາຍການຍ່ອຍທີ່ຊ້ຳ"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
-    "message": "ລຶບສະຄຣິບອອກຈາກລາຍການຍົກເວັ້ນ"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
-    "message": "ຣີເຊັດເດັກນ້ອຍ"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
-    "message": "ຣີເຊັດການຕິດຕາມ"
+  "ui/legacy/components/perf_ui/FlameChart.ts | linkEntries": {
+    "message": "ລິ້ງລາຍການ"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sCollapsed": {
     "message": "ຫຍໍ້ {PH1} ລົງແລ້ວ"

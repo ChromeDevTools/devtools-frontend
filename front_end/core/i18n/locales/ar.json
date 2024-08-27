@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | stylesSidebar": {
     "message": "الشريط الجانبي للأنماط"
   },
+  "core/common/Revealer.ts | timelinePanel": {
+    "message": "لوحة الأداء"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "أداة التنسيق"
   },
@@ -837,7 +840,7 @@
     "message": "حدود الطبقات"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | layoutShiftRegions": {
-    "message": "مناطق التغيّر في التصميم"
+    "message": "مناطق متغيّرات التصميم"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | paintFlashing": {
     "message": "تمييز أجزاء صفحة الويب المطلوب عرضها"
@@ -1142,11 +1145,11 @@
   "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
     "message": "تم إيقاف :--customstatename نهائيًا. يُرجى استخدام بنية :state(customstatename) بدلاً منها."
   },
+  "generated/Deprecation.ts | CSSInsetAreaProperty": {
+    "message": "تم إيقاف سمة inset-area نهائيًا. يُرجى استخدام سمة position-area بدلاً منها."
+  },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "يجب استخدام السمة disableRemotePlayback لإيقاف الدمج التلقائي لتقنية Google Cast بدلاً من استخدام أداة الاختيار -internal-media-controls-overlay-cast-button."
-  },
-  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
-    "message": "قيَم مظهر خدمة مقارنة الأسعار  inner-spin-button وmedia-slider وmedia-sliderthumb وmedia-volume-slider وmedia-volume-sliderthumb وpush-button وsearchfield-cancel-button وslider-horizontal وsliderthumb-horizontal وsliderthumb-vertical، وsquare-button غير موحدة وستتم إزالتها."
   },
   "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
     "message": "لم يتم توحيد قيمة ظهور خدمة مقارنة الأسعار slider-vertical وستتم إزالتها."
@@ -4532,6 +4535,9 @@
   "panels/autofill/AutofillView.ts | sendFeedback": {
     "message": "إرسال ملاحظات"
   },
+  "panels/autofill/AutofillView.ts | showTestAddressesInAutofillMenu": {
+    "message": "عرض العناوين التجريبية في قائمة الملء التلقائي"
+  },
   "panels/autofill/AutofillView.ts | toStartDebugging": {
     "message": "لبدء تصحيح أخطاء الملء التلقائي، استخدِم قائمة الملء التلقائي في Chrome لملء نموذج عنوان."
   },
@@ -5591,6 +5597,9 @@
   "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
     "message": "يمكِّنك هذا الإعداد من مواصلة التركيز على الصفحة. ويُستخدم عادةً لتصحيح الأخطاء المتعلّقة باختفاء العناصر."
   },
+  "panels/elements/ElementStatePaneWidget.ts | forceElementSpecificStates": {
+    "message": "فرض حالة العنصر المحدّد"
+  },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "فرض حالة على العنصر"
   },
@@ -5868,7 +5877,7 @@
     "message": "ورقة الأنماط التي تم إدخالها"
   },
   "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
-    "message": "أدخِل قاعدة الأنماط أدناه."
+    "message": "إدراج قاعدة الأنماط أدناه"
   },
   "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
     "message": "{PH1}[نمط السمات]"
@@ -6423,7 +6432,7 @@
     "message": "تعديل الإعدادات"
   },
   "panels/explain/explain-meta.ts | ageRestricted": {
-    "message": "لا تتوفّر هذه الميزة إلّا للمستخدمين الذين يبلغ عمرهم 18 عامًا أو أكثر."
+    "message": "لا تتوفّر هذه الميزة إلّا للمستخدمِين الذين يبلغ عمرهم 18 عامًا أو أكثر"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "فهم الرسائل في وحدة التحكّم باستخدام الذكاء الاصطناعي (AI)"
@@ -6438,16 +6447,13 @@
     "message": "فهم هذا التحذير"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "هذه الميزة غير متوفّرة في منطقتك."
+    "message": "هذه الميزة غير متوفّرة في منطقتك"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
     "message": "أوقفت مؤسستك هذه الميزة. يمكنك التواصل مع المشرفين لمعرفة مزيد من المعلومات."
   },
-  "panels/explain/explain-meta.ts | rolloutRestricted": {
-    "message": "يتم طرح هذه الميزة حاليًا. يُرجى متابعة أخبارنا باستمرار."
-  },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "لاستخدام هذه الميزة، يجب تغيير اللغة المفضّلة إلى اللغة الإنجليزية من خلال إعدادات \"أدوات مطوّري البرامج\"."
+    "message": "لاستخدام هذه الميزة، يجب تغيير اللغة المفضّلة إلى اللغة الإنجليزية من خلال إعدادات \"أدوات مطوّري البرامج\""
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "الموارد المحظورة"
@@ -9596,6 +9602,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "جارٍ احتساب عمليات الإبلاغ عن العُقد…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingObjectNames": {
+    "message": "جارٍ احتساب أسماء العناصر…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingRetainedSizes": {
     "message": "جارٍ احتساب الأحجام المحتفَظ بها…"
   },
@@ -10871,6 +10880,78 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "محاكاة مستخدم غير نشِط لفترة قصيرة، مع فتح قفل الشاشة"
   },
+  "panels/settings/AISettingsTab.ts | adminSettings": {
+    "message": "قد تختلف الميزات المتاحة للحسابات المُدارة حسب إعدادات المشرف"
+  },
+  "panels/settings/AISettingsTab.ts | boostYourProductivity": {
+    "message": "حسِّن إنتاجيتك باستخدام الذكاء الاصطناعي في Chrome"
+  },
+  "panels/settings/AISettingsTab.ts | chromeAi": {
+    "message": "الذكاء الاصطناعي في Chrome"
+  },
+  "panels/settings/AISettingsTab.ts | collapse": {
+    "message": "تصغير"
+  },
+  "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
+    "message": "للحصول على تفسيرات، نرسل إلى Google كل من رسالة وحدة التحكّم وما يرتبط بها من عمليات تتبُّع تسلسل استدعاء الدوال البرمجية ورمز المصدر المرتبط بها ورؤوس الشبكة المرتبطة بها. قد يطّلع على هذه البيانات فريق من المراجعين لتحسين هذه الميزة."
+  },
+  "panels/settings/AISettingsTab.ts | expand": {
+    "message": "توسيع"
+  },
+  "panels/settings/AISettingsTab.ts | experimentalFeatures": {
+    "message": "هذه الميزات تجريبية وقد تتغير"
+  },
+  "panels/settings/AISettingsTab.ts | explainConsole": {
+    "message": "يمكنك الحصول على تفسيرات للتحذيرات والأخطاء في وحدة التحكّم"
+  },
+  "panels/settings/AISettingsTab.ts | explainStyling": {
+    "message": "يمكنك الحصول على تفسيرات وسياق إضافي لأي تغييرات في التصميم"
+  },
+  "panels/settings/AISettingsTab.ts | freestylerSendsData": {
+    "message": "للحصول على تفسيرات، قد نرسل إلى Google أي محتوى بتنسيق DOM أو CSS في الصفحة التي تم فحصها. قد يطّلع على هذه البيانات فريق من المراجعين لتحسين هذه الميزة."
+  },
+  "panels/settings/AISettingsTab.ts | generatedSnippets": {
+    "message": "يجب استخدام مقتطفات الرموز التي تم إنشاؤها بحذر"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
+    "message": "تساعدك هذه الميزة في فهم ومعالجة التحذيرات والأخطاء في وحدة التحكّم"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
+    "message": "تساعدك هذه الميزة في فهم مشاكل التصميم وحلّها"
+  },
+  "panels/settings/AISettingsTab.ts | learnMore": {
+    "message": "مزيد من المعلومات"
+  },
+  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "تم تغيير إعداد أو أكثر، ما يتطلّب إعادة التحميل لتصبح هذه الإعدادات سارية المفعول."
+  },
+  "panels/settings/AISettingsTab.ts | privacyNotice": {
+    "message": "إشعار الخصوصية"
+  },
+  "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
+    "message": "يمكنك تلقّي اقتراحات وعينات من التعليمات البرمجية لحلّ مشاكل التصميم"
+  },
+  "panels/settings/AISettingsTab.ts | receiveSuggestions": {
+    "message": "يمكنك تلقّي اقتراحات وعينات من التعليمات البرمجية لمعالجة هذه المشاكل"
+  },
+  "panels/settings/AISettingsTab.ts | retainData": {
+    "message": "سيتم تخزين بيانات الاستخدام بطريقة تمنع Google من معرفة الشخص الذي قدّمها، ولا يمكن بعد ذلك الاستجابة لأي طلبات بحذفها، وسيتم الاحتفاظ بها لمدة تصل إلى 18 شهرًا"
+  },
+  "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
+    "message": "يؤدي استخدام هذه الميزات إلى إرسال بيانات ذات صلة بها إلى Google. يُرجى الاطّلاع على مزيد من المعلومات عنها أدناه."
+  },
+  "panels/settings/AISettingsTab.ts | termsOfService": {
+    "message": "بنود خدمة Google"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
+    "message": "يخضع استخدام هذه الميزة لكل من \"{PH1}\" و\"{PH2}\""
+  },
+  "panels/settings/AISettingsTab.ts | thingsToConsider": {
+    "message": "ملاحظات مهمّة"
+  },
+  "panels/settings/AISettingsTab.ts | whenOn": {
+    "message": "عندما تكون الميزة مفعَّلة"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "إضافة نمط اسم ملف"
   },
@@ -11156,6 +11237,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "عرض الأجهزة"
   },
+  "panels/settings/settings-meta.ts | chromeAI": {
+    "message": "الذكاء الاصطناعي في Chrome"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "الوثائق"
   },
@@ -11173,6 +11257,9 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "الاختصارات"
+  },
+  "panels/settings/settings-meta.ts | showChromeAI": {
+    "message": "عرض إعدادات الذكاء الاصطناعي في Chrome"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "عرض الميزات التجريبية"
@@ -12212,6 +12299,9 @@
   "panels/timeline/CountersGraph.ts | listeners": {
     "message": "أدوات معالجة الأحداث"
   },
+  "panels/timeline/CountersGraph.ts | noEventsFound": {
+    "message": "لم يتم العثور على أي بيانات عن استخدام الذاكرة ضِمن الأحداث المحدّدة."
+  },
   "panels/timeline/CountersGraph.ts | nodes": {
     "message": "العُقد"
   },
@@ -12602,6 +12692,12 @@
   "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpenedWithUrl": {
     "message": "تم فتح اتصال WebSocket: {PH1}"
   },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
+    "message": "توقيتات أنشطة الخادم — {PH1}"
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
+    "message": "يعرض هذا القسم توقيتات أنشطة الخادم التي تم الحصول عليها من عناوين الاستجابة الخاصة بالشبكة. جدير بالذكر أنّ أوقات البدء المُدرَجة هي تقديرية فقط وقد لا تكون دقيقة."
+  },
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(مجهولة)"
   },
@@ -12728,6 +12824,12 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "الجلسة الحالية: {PH1} {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalAndFieldMetrics": {
+    "message": "المقاييس على نظامك المحلي ومقاييس تجارب المستخدمِين الحقيقيين"
+  },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalMetrics": {
+    "message": "المقاييس على نظامك المحلي"
+  },
   "panels/timeline/TimelineHistoryManager.ts | moments": {
     "message": "لقطات"
   },
@@ -12842,6 +12944,9 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "حلّ المشكلة"
   },
+  "panels/timeline/TimelinePanel.ts | hideSidebar": {
+    "message": "إخفاء الشريط الجانبي الوحيد"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "جارٍ إعداد المحلّل…"
   },
@@ -12886,6 +12991,15 @@
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "عرض المخطّط الزمني للذاكرة"
+  },
+  "panels/timeline/TimelinePanel.ts | showSidebar": {
+    "message": "إظهار الشريط الجانبي"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarHidden": {
+    "message": "الشريط الجانبي للأداء مخفي"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarShown": {
+    "message": "تم إظهار الشريط الجانبي للأداء"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} ثانية"
@@ -13143,7 +13257,7 @@
     "message": "‫\"{PH1}\" في \"{PH2}\""
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
-    "message": "عمليات إلغاء الصلاحية"
+    "message": "عمليات إبطال الصلاحية ({PH1} في المجمل)"
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "تم الاستدعاء من خلال المهلة المحدّدة."
@@ -13373,6 +13487,12 @@
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "النظام"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
+    "message": "وحدة المعالجة المركزية (CPU):‏ {PH1}"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
+    "message": "تقييد وحدة المعالجة المركزية (CPU): {PH1}"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
     "message": "الإبطاء بمعدّل ×{PH1}"
   },
@@ -13409,8 +13529,14 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "بروتوكول WebSocket"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | add": {
+    "message": "إضافة"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "الإعدادات المتقدّمة"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
+    "message": "سبق أن تم ربط \"{PH1}\" بمصدر للإصدار العلني."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "إلغاء"
@@ -13421,17 +13547,35 @@
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "ضبط عملية استرجاع بيانات الحقول"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
+    "message": "حذف"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
+    "message": "مصدر التطوير"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
+    "message": "مصدر التطوير: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "لا يتضمّن \"تقرير تجربة المستخدم على Chrome\" بيانات كافية عن السرعة الفعلية لهذه الصفحة."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "يمكنك استرجاع بيانات الحقول المجمَّعة من \"تقرير تجربة المستخدم على Chrome\" للمساعدة في ربط القياسات المحلية بسياق ما يواجهه المستخدمون على الموقع الإلكتروني."
+    "message": "يمكنك استرجاع البيانات المجمّعة من \"{PH1}\" بشأن تجارب المستخدمِين الحقيقيين، للمساعدة في ربط ما يواجهونه على الموقع الإلكتروني بالقياسات على نظامك المحلي."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
+    "message": "‫\"{PH1}\" ليس مصدرًا أو عنوان URL صالحًا."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
+    "message": "يمكنك ربط مصدر التطوير بمصدر الموقع الإلكتروني العلني للحصول تلقائيًا على بيانات تجارب المستخدمِين الحقيقيين ذات الصلة."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | new": {
+    "message": "جديد"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | ok": {
     "message": "حسنًا"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "استرجاع بيانات الحقول فقط لعنوان URL أدناه"
+    "message": "عرض بيانات تجارب المستخدمِين الحقيقيين دائمًا بشأن عنوان URL أدناه"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "إيقاف"
@@ -13439,11 +13583,17 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "إفصاح الخصوصية"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
+    "message": "مصدر الموقع الإلكتروني العلني"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
+    "message": "مصدر الموقع الإلكتروني العلني: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "إعداد"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | urlOverride": {
-    "message": "تجاوز عناوين URL"
+  "panels/timeline/components/FieldSettingsDialog.ts | url": {
+    "message": "عنوان URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "عند فتح \"أدوات مطوّري البرامج\"، سيتم إرسال عناوين URL التي تزورها إلى Google لطلب بيانات الحقول. وتكون هذه الطلبات غير مرتبطة بحسابك على Google."
@@ -13463,65 +13613,53 @@
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "تلقائي ({PH1})"
   },
-  "panels/timeline/components/LiveMetricsView.ts | betweenRange": {
-    "message": "‫({PH1}-{PH2})"
+  "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
+    "message": "فترة جمع البيانات:"
   },
-  "panels/timeline/components/LiveMetricsView.ts | clsTitle": {
-    "message": "متغيّرات التصميم التراكمية (CLS)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
-    "message": "تقييد وحدة المعالجة المركزية (CPU):"
+  "panels/timeline/components/LiveMetricsView.ts | dateRange": {
+    "message": "‫‎{PH1} ‏- ‎{PH2}"
   },
   "panels/timeline/components/LiveMetricsView.ts | desktop": {
     "message": "كمبيوتر مكتبي"
   },
-  "panels/timeline/components/LiveMetricsView.ts | deviceType": {
-    "message": "نوع الجهاز:"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | field75thPercentile": {
-    "message": "الشريحة المئوية الـ 75 من بيانات تجارب المستخدمِين الحقيقيين"
+  "panels/timeline/components/LiveMetricsView.ts | device": {
+    "message": "الجهاز: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "بيانات تجارب المستخدمِين الحقيقيين"
   },
-  "panels/timeline/components/LiveMetricsView.ts | good": {
-    "message": "جيد"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | gtRange": {
-    "message": "‫(>{PH1})"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | inpTitle": {
-    "message": "مدى استجابة الصفحة لتفاعلات المستخدم (INP)"
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
+    "message": "بيانات تجارب المستخدمِين الحقيقيين"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "التفاعلات"
   },
-  "panels/timeline/components/LiveMetricsView.ts | lcpTitle": {
-    "message": "سرعة عرض أكبر محتوى مرئي (LCP)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | leqRange": {
-    "message": "‫(≤{PH1})"
+  "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
+    "message": "العنصر الخاص بمقياس \"سرعة عرض أكبر محتوى مرئي\" (LCP)"
   },
   "panels/timeline/components/LiveMetricsView.ts | loadingOption": {
     "message": "‫{PH1}: جارٍ التحميل…"
   },
   "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
-    "message": "المقاييس المحلية ومقاييس تجارب المستخدمِين الحقيقيين"
+    "message": "المقاييس على نظامك المحلي ومقاييس تجارب المستخدمِين الحقيقيين"
   },
-  "panels/timeline/components/LiveMetricsView.ts | localValue": {
-    "message": "قيمة محلية"
+  "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
+    "message": "المقاييس على نظامك المحلي"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localMetricsLink": {
+    "message": "المقاييس على نظامك المحلي"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "جهاز جوّال"
   },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
+    "message": "يُفضل معظم المستخدمين استخدام أجهزة الكمبيوتر المكتبية. جرِّب محاكاة حجم النوافذ على هذه الأجهزة بما يتوافق مع المستخدمِين الحقيقيين."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
+    "message": "يُفضّل معظم المستخدمين استخدام الأجهزة الجوّالة. جرِّب محاكاة جهاز جوّال يلبي احتياجات المستخدمِين الحقيقيين."
+  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "‫{PH1}: ما مِن بيانات"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | needsImprovement": {
-    "message": "بحاجة إلى تحسين"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
-    "message": "ضبط الحدّ الأقصى المسموح لعرض نطاق الشبكة:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "الخطوات التالية"
@@ -13530,22 +13668,28 @@
     "message": "المصدر"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
-    "message": "المصدر ({PH1})"
+    "message": "المصدر: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "%{PH1}"
+  "panels/timeline/components/LiveMetricsView.ts | recordingSettings": {
+    "message": "إعدادات التسجيل"
   },
-  "panels/timeline/components/LiveMetricsView.ts | poor": {
-    "message": "غير جيد"
+  "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
+    "message": "انتقِل إلى \"{PH1}\" للاطّلاع على مقارنة بين المقاييس على نظامك المحلي وبيانات المستخدمِين الحقيقيين."
   },
-  "panels/timeline/components/LiveMetricsView.ts | relatedNode": {
-    "message": "العقدة ذات الصلة"
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
+    "message": "عرض بيانات تجارب المستخدمِين الحقيقيين بشأن أنواع الأجهزة التالية: {PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
+    "message": "عرض بيانات تجارب المستخدمِين الحقيقيين بشأن {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "جهاز لوحي"
   },
-  "panels/timeline/components/LiveMetricsView.ts | throttling": {
-    "message": "التقييد"
+  "panels/timeline/components/LiveMetricsView.ts | theFieldMetricsAre": {
+    "message": "يتم قياس {PH1} من قِبل مستخدمِين حقيقيين يستخدمون العديد من اتصالات الشبكة والأجهزة المختلفة."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
+    "message": "يتم جمع بيانات {PH1} من الصفحة الحالية باستخدام جهازك واتصالك بالشبكة."
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "جرِّب إيقاف الإعداد \"ضبط الحد الأقصى المسموح لعرض نطاق الشبكة\" لتقدير وقت استجابة الشبكة الذي يقيسه المستخدمون الحقيقيون."
@@ -13557,10 +13701,70 @@
     "message": "عنوان URL"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOptionWithKey": {
-    "message": "عنوان URL ({PH1})"
+    "message": "عنوان URL: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | urlOrOrigin": {
-    "message": "عنوان URL/المصدر:"
+  "panels/timeline/components/MetricCompareStrings.ts | goodBetterCompare": {
+    "message": "قيمة \"{PH1}\" جيدة ({PH2}) على نظامك المحلي، وهي أفضل بكثير من تجارب المستخدمِين."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
+    "message": "قيمة \"{PH1}\" جيدة ({PH2}) على نظامك المحلي، وهي مطابقة للقيمة المرصودة في {PH4}‎ من تجارب المستخدمِين الحقيقيين على \"{PH1}\". بالإضافة إلى ذلك، فإنّ القيمة {PH3}، التي تمثل الشريحة المئوية الـ 75 لبيانات تجارب المستخدمِين الحقيقيين على \"{PH1}\"، جيدة أيضًا."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
+    "message": "قيمة \"{PH1}\" جيدة ({PH2}) على نظامك المحلي، وهي مطابقة للقيمة المرصودة في {PH4}‎ من تجارب المستخدمِين الحقيقيين على \"{PH1}\". أمّا بالنسبة إلى القيمة {PH3}، التي تمثل الشريحة المئوية الـ 75 لبيانات تجارب المستخدمِين الحقيقيين على \"{PH1}\"، فهي بحاجة للتحسين."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
+    "message": "قيمة \"{PH1}\" جيدة ({PH2}) على نظامك المحلي، وهي مطابقة للقيمة المرصودة في {PH4}‎ من تجارب المستخدمِين الحقيقيين على \"{PH1}\". أمّا بالنسبة إلى القيمة {PH3}، التي تمثل الشريحة المئوية الـ 75 لبيانات تجارب المستخدمِين الحقيقيين على \"{PH1}\"، فهي ضعيفة."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
+    "message": "قيمة \"{PH1}\" جيدة ({PH2}) على نظامك المحلي، وهي مماثلة لتجارب المستخدمِين."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSummarized": {
+    "message": "قيمة \"{PH1}\" جيدة ({PH2}) على نظامك المحلي."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodWorseCompare": {
+    "message": "قيمة \"{PH1}\" جيدة ({PH2}) على نظامك المحلي، وهي أسوأ بكثير من تجارب المستخدمِين."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementBetterCompare": {
+    "message": "قيمة \"{PH1}\" ‏({PH2}) بحاجة إلى تحسين، وهي أفضل بكثير من تجارب المستخدمِين."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
+    "message": "قيمة \"{PH1}\" ‏({PH2})  على نظامك المحلي بحاجة إلى تحسين، وهي مطابقة للقيمة المرصودة في {PH4}‎ من تجارب المستخدمِين الحقيقيين على \"{PH1}\". أمّا بالنسبة إلى القيمة {PH3}، التي تمثل الشريحة المئوية الـ 75 لبيانات تجارب المستخدمِين الحقيقيين على \"{PH1}\"، فهي جيدة."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
+    "message": "قيمة \"{PH1}\" ‏({PH2}) على نظامك المحلي بحاجة إلى تحسين، وهي مطابقة للقيمة المرصودة في {PH4}‎ من تجارب المستخدمِين الحقيقيين على \"{PH1}\". بالإضافة إلى ذلك، فإنّ القيمة {PH3}، التي تمثل الشريحة المئوية الـ 75 لبيانات تجارب المستخدمِين الحقيقيين على \"{PH1}\"، بحاجة إلى تحسين أيضًا."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
+    "message": "قيمة \"{PH1}\" ‏({PH2})  على نظامك المحلي بحاجة إلى تحسين، وهي مطابقة للقيمة المرصودة في {PH4}‎ من تجارب المستخدمِين الحقيقيين على \"{PH1}\". أمّا بالنسبة إلى القيمة {PH3}، التي تمثل الشريحة المئوية الـ 75 لبيانات تجارب المستخدمِين الحقيقيين على \"{PH1}\"، فهي ضعيفة."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
+    "message": "قيمة \"{PH1}\" ‏({PH2}) على نظامك المحلي بحاجة إلى تحسين، وهي مماثلة لتجارب المستخدمِين."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSummarized": {
+    "message": "قيمة \"{PH1}\" ‏({PH2}) على نظامك المحلي بحاجة إلى تحسين."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementWorseCompare": {
+    "message": "قيمة \"{PH1}\" ‏({PH2}) على نظامك المحلي بحاجة إلى تحسين، وهي أسوأ بكثير من تجارب المستخدمِين."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorBetterCompare": {
+    "message": "قيمة \"{PH1}\" ضعيفة ({PH2}) على نظامك المحلي، وهي أفضل بكثير من تجارب المستخدمِين."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
+    "message": "قيمة \"{PH1}\" ضعيفة ({PH2}) على نظامك المحلي، وهي مطابقة للقيمة المرصودة في {PH4}‎ من تجارب المستخدمِين الحقيقيين على \"{PH1}\". أمّا بالنسبة إلى القيمة {PH3}، التي تمثل الشريحة المئوية الـ 75 لبيانات تجارب المستخدمِين الحقيقيين على \"{PH1}\"، فهي جيدة."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
+    "message": "قيمة \"{PH1}\" ضعيفة ({PH2}) على نظامك المحلي، وهي مطابقة للقيمة المرصودة في {PH4}‎ من تجارب المستخدمِين الحقيقيين على \"{PH1}\". أمّا بالنسبة إلى القيمة {PH3}، التي تمثل الشريحة المئوية الـ 75 لبيانات تجارب المستخدمِين الحقيقيين على \"{PH1}\"، فهي بحاجة للتحسين."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
+    "message": "قيمة \"{PH1}\" ضعيفة ({PH2}) على نظامك المحلي، وهي مطابقة للقيمة المرصودة في {PH4}‎ من تجارب المستخدمِين الحقيقيين على \"{PH1}\". بالإضافة إلى ذلك، فإنّ القيمة {PH3}، التي تمثل الشريحة المئوية الـ 75 لبيانات تجارب المستخدمِين الحقيقيين على \"{PH1}\"، ضعيفة أيضًا."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
+    "message": "قيمة \"{PH1}\" ضعيفة ({PH2}) على نظامك المحلي، وهي مماثلة لتجارب المستخدمِين."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSummarized": {
+    "message": "قيمة \"{PH1}\" ضعيفة ({PH2}) على نظامك المحلي."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorWorseCompare": {
+    "message": "قيمة \"{PH1}\" ضعيفة ({PH2}) على نظامك المحلي، وهي أسوأ بكثير من تجارب المستخدمِين."
   },
   "panels/timeline/components/NetworkRequestDetails.ts | FromCache": {
     "message": " (من ذاكرة التخزين المؤقت)"
@@ -13652,8 +13856,26 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
     "message": "غير مفعَّل"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | network": {
+    "message": "الشبكة: {PH1}"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | networkThrottling": {
+    "message": "ضبط الحد الأقصى المسموح لعرض نطاق الشبكة: {PH1}"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "الإعدادات المسبقة"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "تم تطبيق السمة fetchpriority=high"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "لم يتم تطبيق طريقة \"التحميل الكسول\""
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "تم تحميل الصورة الخاصة بمقياس \"سرعة عرض أكبر محتوى مرئي\" (LCP) بعد {PH1} من نقطة البداية الأقدم."
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "الطلب قابل للاكتشاف في المستند الأوّلي"
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "التأخير في عرض العنصر"
@@ -13661,8 +13883,8 @@
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "تأخير تحميل الموارد"
   },
-  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadTime": {
-    "message": "مدة تحميل الموارد"
+  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDuration": {
+    "message": "مدة تحميل المورد"
   },
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
     "message": "مدة تحميل أول بايت"
@@ -14681,9 +14903,6 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "لقطة شاشة لمدة {PH1}، اختَر لعرض الطلبات السابقة."
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
-    "message": "إضافة النص البرمجي إلى قائمة التجاهل"
-  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "ضبط إعدادات قنوات الإصدار…"
   },
@@ -14693,23 +14912,11 @@
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "رسم بياني مفصَّل لأداء الرموز"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideChildren": {
-    "message": "إخفاء العناصر الثانوية"
+  "ui/legacy/components/perf_ui/FlameChart.ts | labelEntry": {
+    "message": "إضافة تصنيف للإدخال"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideFunction": {
-    "message": "إخفاء دالة"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
-    "message": "إخفاء العناصر الثانوية المتكررة"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
-    "message": "إزالة النص البرمجي من قائمة التجاهل"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
-    "message": "إعادة ضبط العنصر الثانوي"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
-    "message": "إعادة ضبط عملية التتبّع"
+  "ui/legacy/components/perf_ui/FlameChart.ts | linkEntries": {
+    "message": "ربط الإدخالات"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sCollapsed": {
     "message": "تم تصغير {PH1}."

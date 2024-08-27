@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | stylesSidebar": {
     "message": "樣式側欄"
   },
+  "core/common/Revealer.ts | timelinePanel": {
+    "message": "效能面板"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Adorner"
   },
@@ -1142,11 +1145,11 @@
   "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
     "message": ":--customstatename 已淘汰，請改用 :state(customstatename) 語法。"
   },
+  "generated/Deprecation.ts | CSSInsetAreaProperty": {
+    "message": "inset-area 屬性已淘汰，請改用 position-area 屬性。"
+  },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "應使用 disableRemotePlayback 屬性 (而非 -internal-media-controls-overlay-cast-button 選取器) 停用預設的 Cast 整合功能。"
-  },
-  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
-    "message": "CSS 外觀值 inner-spin-button、media-slider、media-sliderthumb、media-volume-slider、media-volume-sliderthumb、push-button、searchfield-cancel-button、slider-horizontal、sliderthumb-horizontal、sliderthumb-vertical、square-button 並未標準化，因此系統會移除這些值。"
   },
   "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
     "message": "CSS 外觀值 slider-vertical 並未標準化，因此系統會移除這個值。"
@@ -4532,6 +4535,9 @@
   "panels/autofill/AutofillView.ts | sendFeedback": {
     "message": "提供意見回饋"
   },
+  "panels/autofill/AutofillView.ts | showTestAddressesInAutofillMenu": {
+    "message": "在自動填入選單中顯示測試位址"
+  },
   "panels/autofill/AutofillView.ts | toStartDebugging": {
     "message": "如要開始對自動填入功能進行偵錯，請透過 Chrome 的自動填入選單填寫地址表單。"
   },
@@ -5591,6 +5597,9 @@
   "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
     "message": "讓網頁維持聚焦的狀態。通常用於偵錯消失元素。"
   },
+  "panels/elements/ElementStatePaneWidget.ts | forceElementSpecificStates": {
+    "message": "強制套用特定元素狀態"
+  },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "強制使用元素狀態"
   },
@@ -6423,7 +6432,7 @@
     "message": "更新設定"
   },
   "panels/explain/explain-meta.ts | ageRestricted": {
-    "message": "這項功能僅適用於年滿 18 歲的使用者。"
+    "message": "這項功能僅適用於年滿 18 歲的使用者"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "運用 AI 瞭解控制台訊息"
@@ -6438,16 +6447,13 @@
     "message": "瞭解這則警告"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "你所在的區域不支援這項功能。"
+    "message": "你所在的區域不支援這項功能"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
     "message": "貴機構已關閉這項功能。如要瞭解詳情，請與系統管理員聯絡。"
   },
-  "panels/explain/explain-meta.ts | rolloutRestricted": {
-    "message": "這項功能目前正逐步推出，敬請拭目以待！"
-  },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "如要使用這項功能，請前往開發人員工具設定，將語言偏好設定更新為英文。"
+    "message": "如要使用這項功能，請前往開發人員工具設定，將語言偏好設定更新為英文"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "已封鎖資源"
@@ -9596,6 +9602,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "正在計算節點旗標…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingObjectNames": {
+    "message": "正在計算物件名稱…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingRetainedSizes": {
     "message": "正在計算保留大小…"
   },
@@ -10871,6 +10880,78 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "使用者閒置中，螢幕已解鎖"
   },
+  "panels/settings/AISettingsTab.ts | adminSettings": {
+    "message": "受管理使用者可用的功能，可能會因系統管理員的設定而異"
+  },
+  "panels/settings/AISettingsTab.ts | boostYourProductivity": {
+    "message": "運用 Chrome AI 提升工作效率"
+  },
+  "panels/settings/AISettingsTab.ts | chromeAi": {
+    "message": "Chrome AI"
+  },
+  "panels/settings/AISettingsTab.ts | collapse": {
+    "message": "收合"
+  },
+  "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
+    "message": "系統會將控制台訊息、相關的堆疊追蹤、原始碼和網路標頭傳送給 Google，用於產生說明。這些資料也可能由人工審查員查看，以改善這項功能。"
+  },
+  "panels/settings/AISettingsTab.ts | expand": {
+    "message": "展開"
+  },
+  "panels/settings/AISettingsTab.ts | experimentalFeatures": {
+    "message": "這些功能仍處於實驗階段，可能還會變動"
+  },
+  "panels/settings/AISettingsTab.ts | explainConsole": {
+    "message": "取得控制台警告和錯誤的說明"
+  },
+  "panels/settings/AISettingsTab.ts | explainStyling": {
+    "message": "取得樣式行為的說明和其他背景資訊"
+  },
+  "panels/settings/AISettingsTab.ts | freestylerSendsData": {
+    "message": "系統可能會將要檢查的網頁上所有 DOM 或 CSS 內容傳送給 Google，用於產生說明。這些資料也可能由人工審查員查看，以改善這項功能。"
+  },
+  "panels/settings/AISettingsTab.ts | generatedSnippets": {
+    "message": "謹慎使用系統產生的程式碼片段"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
+    "message": "協助您瞭解及修正控制台警告和錯誤"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
+    "message": "協助您瞭解及修正樣式問題"
+  },
+  "panels/settings/AISettingsTab.ts | learnMore": {
+    "message": "瞭解詳情"
+  },
+  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "一或多項設定已變更，需要重新載入才能生效。"
+  },
+  "panels/settings/AISettingsTab.ts | privacyNotice": {
+    "message": "隱私權聲明"
+  },
+  "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
+    "message": "接收建議和程式碼範例，修正樣式問題"
+  },
+  "panels/settings/AISettingsTab.ts | receiveSuggestions": {
+    "message": "接收建議和程式碼範例，解決這些問題"
+  },
+  "panels/settings/AISettingsTab.ts | retainData": {
+    "message": "系統會以 Google 無法辨識資料提供者身分的方式儲存使用資料，也無法執行任何刪除要求。這些資料最多會保留 18 個月"
+  },
+  "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
+    "message": "使用這些功能時，系統會將功能相關資料傳送給 Google。請查看下方更多的功能相關資訊。"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfService": {
+    "message": "Google 服務條款"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
+    "message": "使用這項功能時必須遵守《{PH1}》和《{PH2}》"
+  },
+  "panels/settings/AISettingsTab.ts | thingsToConsider": {
+    "message": "注意事項"
+  },
+  "panels/settings/AISettingsTab.ts | whenOn": {
+    "message": "開啟時"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "新增檔案名稱格式"
   },
@@ -11156,6 +11237,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "顯示裝置"
   },
+  "panels/settings/settings-meta.ts | chromeAI": {
+    "message": "Chrome AI"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "說明文件"
   },
@@ -11173,6 +11257,9 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "捷徑"
+  },
+  "panels/settings/settings-meta.ts | showChromeAI": {
+    "message": "顯示 Chrome AI"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "顯示實驗"
@@ -12212,6 +12299,9 @@
   "panels/timeline/CountersGraph.ts | listeners": {
     "message": "事件監聽器"
   },
+  "panels/timeline/CountersGraph.ts | noEventsFound": {
+    "message": "在所選事件中找不到任何記憶體用量資料。"
+  },
   "panels/timeline/CountersGraph.ts | nodes": {
     "message": "節點數"
   },
@@ -12602,6 +12692,12 @@
   "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpenedWithUrl": {
     "message": "WebSocket 已開啟：{PH1}"
   },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
+    "message": "伺服器計時 — {PH1}"
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
+    "message": "這個追蹤項目含有從 Server-Timing 網路回應標頭取得的時間資料。其各自的開始時間僅為預估值，可能不準確。"
+  },
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(匿名)"
   },
@@ -12728,6 +12824,12 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "目前的工作階段：{PH1}。{PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalAndFieldMetrics": {
+    "message": "本機和實際環境指標"
+  },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalMetrics": {
+    "message": "本機指標"
+  },
   "panels/timeline/TimelineHistoryManager.ts | moments": {
     "message": "分鐘"
   },
@@ -12842,6 +12944,9 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "修正"
   },
+  "panels/timeline/TimelinePanel.ts | hideSidebar": {
+    "message": "隱藏唯一的側欄"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "正在初始化分析器…"
   },
@@ -12886,6 +12991,15 @@
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "顯示記憶體時間軸"
+  },
+  "panels/timeline/TimelinePanel.ts | showSidebar": {
+    "message": "顯示側欄"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarHidden": {
+    "message": "已隱藏效能側欄"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarShown": {
+    "message": "已顯示效能側欄"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} 秒"
@@ -13143,7 +13257,7 @@
     "message": "{PH2} 的「{PH1}」"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
-    "message": "無效判定"
+    "message": "無效判定 (共 {PH1} 項)"
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "依逾時長度叫用"
@@ -13373,6 +13487,12 @@
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "系統"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
+    "message": "CPU：{PH1}"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
+    "message": "CPU 節流：{PH1}"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
     "message": "速度降低 {PH1} 倍"
   },
@@ -13409,8 +13529,14 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket 通訊協定"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | add": {
+    "message": "新增"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "進階"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
+    "message": "「{PH1}」已對應至實際環境來源。"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "取消"
@@ -13421,17 +13547,35 @@
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "設定欄位資料擷取"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
+    "message": "刪除"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
+    "message": "開發環境來源"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
+    "message": "開發環境來源：{PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "在 Chrome 使用者體驗報告中，這個網頁的實際速度資料不足。"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "從 Chrome 使用者體驗報告擷取而來的匯總欄位資料，協助你根據該網站的實際使用者體驗分析本機測量指標。"
+    "message": "從 {PH1}擷取而來的匯總實際資料，協助你根據該網站的實際使用者體驗分析本機測量指標。"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
+    "message": "「{PH1}」不是有效的來源或網址。"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
+    "message": "設定開發環境來源，即可自動取得其實際環境來源的相關實際資料。"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | new": {
+    "message": "新增"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | ok": {
     "message": "確定"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "只擷取以下網址的欄位資料"
+    "message": "一律顯示以下網址的實際資料"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "退出"
@@ -13439,11 +13583,17 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "隱私揭露"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
+    "message": "實際環境來源"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
+    "message": "實際環境來源：{PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "設定"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | urlOverride": {
-    "message": "網址覆寫"
+  "panels/timeline/components/FieldSettingsDialog.ts | url": {
+    "message": "網址"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "開發人員工具開啟時，你造訪的網址會傳送給 Google，用於查詢欄位資料。這些要求不會連結到你的 Google 帳戶。"
@@ -13463,44 +13613,29 @@
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "自動 ({PH1})"
   },
-  "panels/timeline/components/LiveMetricsView.ts | betweenRange": {
-    "message": "({PH1} - {PH2})"
+  "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
+    "message": "資料收集期間："
   },
-  "panels/timeline/components/LiveMetricsView.ts | clsTitle": {
-    "message": "Cumulative Layout Shift (CLS)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
-    "message": "CPU 節流："
+  "panels/timeline/components/LiveMetricsView.ts | dateRange": {
+    "message": "{PH1} - {PH2}"
   },
   "panels/timeline/components/LiveMetricsView.ts | desktop": {
     "message": "電腦"
   },
-  "panels/timeline/components/LiveMetricsView.ts | deviceType": {
-    "message": "裝置類型："
-  },
-  "panels/timeline/components/LiveMetricsView.ts | field75thPercentile": {
-    "message": "實際資料的第 75 個百分位數"
+  "panels/timeline/components/LiveMetricsView.ts | device": {
+    "message": "裝置：{PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "實際資料"
   },
-  "panels/timeline/components/LiveMetricsView.ts | good": {
-    "message": "良好"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | gtRange": {
-    "message": "(>{PH1})"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | inpTitle": {
-    "message": "Interaction to Next Paint (INP)"
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
+    "message": "實際資料"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "互動"
   },
-  "panels/timeline/components/LiveMetricsView.ts | lcpTitle": {
-    "message": "Largest Contentful Paint (LCP)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | leqRange": {
-    "message": "(≤{PH1})"
+  "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
+    "message": "LCP 元素"
   },
   "panels/timeline/components/LiveMetricsView.ts | loadingOption": {
     "message": "{PH1} - 載入中…"
@@ -13508,20 +13643,23 @@
   "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
     "message": "本機和實際環境指標"
   },
-  "panels/timeline/components/LiveMetricsView.ts | localValue": {
-    "message": "本機"
+  "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
+    "message": "本機指標"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localMetricsLink": {
+    "message": "本機指標"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "行動裝置"
   },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
+    "message": "大多數使用者都是透過電腦造訪。請嘗試根據實際使用者的情況模擬電腦視窗大小。"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
+    "message": "大多數使用者都是透過行動裝置造訪。請嘗試根據實際使用者的情況模擬行動裝置。"
+  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} - 沒有資料"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | needsImprovement": {
-    "message": "需要改善"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
-    "message": "網路節流："
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "後續步驟"
@@ -13530,22 +13668,28 @@
     "message": "來源"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
-    "message": "來源 ({PH1})"
+    "message": "來源：{PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "{PH1}%"
+  "panels/timeline/components/LiveMetricsView.ts | recordingSettings": {
+    "message": "錄影設定"
   },
-  "panels/timeline/components/LiveMetricsView.ts | poor": {
-    "message": "差"
+  "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
+    "message": "查看本機指標與 {PH1}中的實際使用者資料相比有何差異。"
   },
-  "panels/timeline/components/LiveMetricsView.ts | relatedNode": {
-    "message": "相關節點"
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
+    "message": "顯示以下裝置類型的實際資料：{PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
+    "message": "顯示以下位置的實際資料：{PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "平板電腦"
   },
-  "panels/timeline/components/LiveMetricsView.ts | throttling": {
-    "message": "節流"
+  "panels/timeline/components/LiveMetricsView.ts | theFieldMetricsAre": {
+    "message": "{PH1}是根據使用許多不同網路連線和裝置的實際使用者測量而得。"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
+    "message": "系統會使用你的網路連線和裝置，從目前的網頁擷取{PH1}。"
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "建議你停用網路節流功能，才能趨近實際使用者測得的網路延遲時間。"
@@ -13557,10 +13701,70 @@
     "message": "網址"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOptionWithKey": {
-    "message": "網址 ({PH1})"
+    "message": "網址：{PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | urlOrOrigin": {
-    "message": "網址/來源："
+  "panels/timeline/components/MetricCompareStrings.ts | goodBetterCompare": {
+    "message": "你的本機 {PH1} {PH2} 表現良好，明顯優於使用者體驗。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
+    "message": "你的本機 {PH1} {PH2} 表現良好，與 {PH4} 的實際使用者 {PH1} 體驗評分相同。此外，實際資料的第 75 個百分位數 {PH1} {PH3} 表現良好。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
+    "message": "你的本機 {PH1} {PH2} 表現良好，與 {PH4} 的實際使用者 {PH1} 體驗評分相同。不過，實際資料的第 75 個百分位數 {PH1} {PH3} 需要改善。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
+    "message": "你的本機 {PH1} {PH2} 表現良好，與 {PH4} 的實際使用者 {PH1} 體驗評分相同。不過，實際資料的第 75 個百分位數 {PH1} {PH3} 表現不佳。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
+    "message": "你的本機 {PH1} {PH2} 表現良好，與使用者的體驗相近。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSummarized": {
+    "message": "你的本機 {PH1} {PH2} 表現良好。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodWorseCompare": {
+    "message": "你的本機 {PH1} {PH2} 品質良好，但比使用者體驗差得多。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementBetterCompare": {
+    "message": "你的本機 {PH1} {PH2} 需要改善，但已明顯優於使用者體驗。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
+    "message": "你的本機 {PH1} {PH2} 需要改善，與 {PH4} 的實際使用者 {PH1} 體驗評分相同。不過，實際資料的第 75 個百分位數 {PH1} {PH3} 表現良好。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
+    "message": "你的本機 {PH1} {PH2} 需要改善，與 {PH4} 的實際使用者 {PH1} 體驗評分相同。此外，實際資料的第 75 個百分位數 {PH1} {PH3} 需要改善。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
+    "message": "你的本機 {PH1} {PH2} 需要改善，與 {PH4} 的實際使用者 {PH1} 體驗評分相同。不過，實際資料的第 75 個百分位數 {PH1} {PH3} 表現不佳。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
+    "message": "你的本機 {PH1} {PH2} 需要改善，與使用者的體驗相近。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSummarized": {
+    "message": "你的本機 {PH1} {PH2} 需要改善。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementWorseCompare": {
+    "message": "你的本機 {PH1} {PH2} 需要改善，比使用者體驗差得多。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorBetterCompare": {
+    "message": "你的本機 {PH1} {PH2} 表現不佳，但已明顯優於使用者體驗。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
+    "message": "你的本機 {PH1} {PH2} 表現不佳，與 {PH4} 的實際使用者 {PH1} 體驗評分相同。不過，實際資料的第 75 個百分位數 {PH1} {PH3} 表現良好。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
+    "message": "你的本機 {PH1} {PH2} 表現不佳，與 {PH4} 的實際使用者 {PH1} 體驗評分相同。不過，實際資料的第 75 個百分位數 {PH1} {PH3} 需要改善。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
+    "message": "你的本機 {PH1} {PH2} 表現不佳，與 {PH4} 的實際使用者 {PH1} 體驗評分相同。此外，實際資料的第 75 個百分位數 {PH1} {PH3} 表現不佳。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
+    "message": "你的本機 {PH1} {PH2} 表現不佳，與使用者的體驗相近。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSummarized": {
+    "message": "你的本機 {PH1} {PH2} 表現不佳。"
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorWorseCompare": {
+    "message": "你的本機 {PH1} {PH2} 品質不佳，比使用者體驗差得多。"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | FromCache": {
     "message": " (來自快取)"
@@ -13652,8 +13856,26 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
     "message": "已停用"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | network": {
+    "message": "網路：{PH1}"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | networkThrottling": {
+    "message": "網路節流：{PH1}"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "預設"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "已套用 fetchpriority=high"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "未套用延遲載入"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "LCP 圖片載入時間比最早開始的時間點晚 {PH1}。"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "你可以在初始文件中找到要求"
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "元素轉譯延遲"
@@ -13661,8 +13883,8 @@
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "資源載入延遲"
   },
-  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadTime": {
-    "message": "資源載入時間"
+  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDuration": {
+    "message": "資源載入時長"
   },
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
     "message": "Time to First Byte"
@@ -14681,9 +14903,6 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1} 的螢幕截圖，選取截圖即可查看先前的要求。"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
-    "message": "將指令碼新增至忽略清單"
-  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "設定追蹤項目…"
   },
@@ -14693,23 +14912,11 @@
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "火焰圖"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideChildren": {
-    "message": "隱藏子項"
+  "ui/legacy/components/perf_ui/FlameChart.ts | labelEntry": {
+    "message": "標籤項目"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideFunction": {
-    "message": "隱藏函式"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
-    "message": "隱藏重複子項"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
-    "message": "從忽略清單中移除指令碼"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
-    "message": "重設子項"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
-    "message": "重設追蹤"
+  "ui/legacy/components/perf_ui/FlameChart.ts | linkEntries": {
+    "message": "連結項目"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sCollapsed": {
     "message": "已收合{PH1}"

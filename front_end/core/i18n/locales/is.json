@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | stylesSidebar": {
     "message": "hliðarstika stíla"
   },
+  "core/common/Revealer.ts | timelinePanel": {
+    "message": "Afkastasvæði"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Breytilegur flokkur"
   },
@@ -1142,11 +1145,11 @@
   "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
     "message": ":--customstatename er úrelt. Notaðu :state(customstatename) málskipunina í staðinn."
   },
+  "generated/Deprecation.ts | CSSInsetAreaProperty": {
+    "message": "Eiginleikinn inset-area er úreltur. Notaðu eiginleikann position-area í staðinn."
+  },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "The disableRemotePlayback attribute should be used in order to disable the default Cast integration instead of using -internal-media-controls-overlay-cast-button selector."
-  },
-  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
-    "message": "Birtingargildi CSS  inner-spin-button, media-slider, media-sliderthumb, media-volume-slider, media-volume-sliderthumb, push-button, searchfield-cancel-button, slider-horizontal, sliderthumb-horizontal, sliderthumb-vertical, square-button eru ekki stöðluð og verða fjarlægð."
   },
   "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
     "message": "Birtingargildi CSS slider-vertical er ekki staðlað og verður fjarlægt."
@@ -4532,6 +4535,9 @@
   "panels/autofill/AutofillView.ts | sendFeedback": {
     "message": "Senda ábendingu"
   },
+  "panels/autofill/AutofillView.ts | showTestAddressesInAutofillMenu": {
+    "message": "Sýna prufuheimilisföng í valmynd sjálfvirkrar útfyllingar"
+  },
   "panels/autofill/AutofillView.ts | toStartDebugging": {
     "message": "Notaðu valmynd sjálfvirkrar útfyllingar Chrome til að fylla út vistfangseyðublað til að geta hafið villuleit í sjálfvirkri útfyllingu."
   },
@@ -5591,6 +5597,9 @@
   "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
     "message": "Halda síðu í fókus. Oft notað til að villuleita þætti sem hverfa."
   },
+  "panels/elements/ElementStatePaneWidget.ts | forceElementSpecificStates": {
+    "message": "Þvinga fram tiltekna stöðu einingar"
+  },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Þvinga fram stöðu einingar"
   },
@@ -6423,7 +6432,7 @@
     "message": "Uppfæra stillingar"
   },
   "panels/explain/explain-meta.ts | ageRestricted": {
-    "message": "Þessi eiginleiki er eingöngu í boði fyrir 18 ára notendur eða eldri."
+    "message": "Þessi eiginleiki er eingöngu í boði fyrir 18 ára notendur eða eldri"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "Kynntu þér stjórnborðsskilaboð með gervigreind"
@@ -6438,16 +6447,13 @@
     "message": "Kynntu þér þessa viðvörun"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "Þessi eiginleiki er ekki í boði á þínu svæði."
+    "message": "Þessi eiginleiki er ekki í boði á þínu svæði"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
     "message": "Fyrirtækið þitt slökkti á þessum eiginleika. Hafðu samband við kerfisstjóra þína til að fá frekari upplýsingar."
   },
-  "panels/explain/explain-meta.ts | rolloutRestricted": {
-    "message": "Verið er að gefa út þennan eiginleika. Fylgstu með."
-  },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "Stilltu kjörtungumálið þitt í stillingum DevTools á ensku til að nota þennan eiginleika."
+    "message": "Stilltu kjörtungumál þitt í stillingum DevTools á ensku til að nota þennan eiginleika"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Útilokað tilfang"
@@ -9596,6 +9602,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "Reiknar nóðuflögg…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingObjectNames": {
+    "message": "Reiknar út heiti hluta …"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingRetainedSizes": {
     "message": "Varðveislustærðir reiknaðar…"
   },
@@ -10871,6 +10880,78 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Notandi óvirkur, skjár ólæstur"
   },
+  "panels/settings/AISettingsTab.ts | adminSettings": {
+    "message": "Eiginleikar sem eru aðgengilegir stýrðum notendum geta verið mismunandi eftir stillingum kerfisstjóra"
+  },
+  "panels/settings/AISettingsTab.ts | boostYourProductivity": {
+    "message": "Auktu afköstin með gervigreind Chrome"
+  },
+  "panels/settings/AISettingsTab.ts | chromeAi": {
+    "message": "Gervigreind Chrome"
+  },
+  "panels/settings/AISettingsTab.ts | collapse": {
+    "message": "draga saman"
+  },
+  "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
+    "message": "Skilaboðin á stjórnborði, tengd staflaröð, tengdur upprunakóði og tengdir netkerfishausar eru sendir til Google til að búa til útskýringar. Mannlegir yfirlesarar geta séð þessi gögn til að bæta þennan eiginleika."
+  },
+  "panels/settings/AISettingsTab.ts | expand": {
+    "message": "stækka"
+  },
+  "panels/settings/AISettingsTab.ts | experimentalFeatures": {
+    "message": "Þessir eiginleikar eru á tilraunastigi og geta breyst"
+  },
+  "panels/settings/AISettingsTab.ts | explainConsole": {
+    "message": "Fá útskýringar fyrir stjórnborðsviðvaranir og -villur"
+  },
+  "panels/settings/AISettingsTab.ts | explainStyling": {
+    "message": "Fáðu útskýringar og frekara samhengi fyrir stílfærsluvirkni"
+  },
+  "panels/settings/AISettingsTab.ts | freestylerSendsData": {
+    "message": "Allt innihald DOM eða CSS á síðunni sem var könnuð kann að vera sent til Google til að búa til útskýringar. Mannlegir yfirlesarar geta séð þessi gögn til að bæta þennan eiginleika."
+  },
+  "panels/settings/AISettingsTab.ts | generatedSnippets": {
+    "message": "Sýndu aðgát við notkun tilbúinna kóðabúta"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
+    "message": "Hjálpar þér að skilja og laga stjórnborðsviðvaranir og -villur"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
+    "message": "Hjálpar þér að skilja og laga stílfærsluvandamál"
+  },
+  "panels/settings/AISettingsTab.ts | learnMore": {
+    "message": "Nánar"
+  },
+  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "Endurhlaða þarf til að breytingar á einni eða fleiri stillingum taki gildi."
+  },
+  "panels/settings/AISettingsTab.ts | privacyNotice": {
+    "message": "Upplýsingar um persónuvernd"
+  },
+  "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
+    "message": "Fá tillögur og sýnishorn kóða til að lagfæra stílfærsluvandamál"
+  },
+  "panels/settings/AISettingsTab.ts | receiveSuggestions": {
+    "message": "Fá tillögur og sýnishorn kóða til að takast á við þessi vandamál"
+  },
+  "panels/settings/AISettingsTab.ts | retainData": {
+    "message": "Notkunargögn verða geymd á þann hátt að Google geti ekki sagt til um hvaðan þau komu og getur ekki lengur uppfyllt kröfur um eyðingu og þau verða varðveitt í allt að 18 mánuði"
+  },
+  "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
+    "message": "Notkun á þessum eiginleikum sendir gögn sem hafa vægi fyrir eiginleikann til Google. Nánari upplýsingar um tiltekinn eiginleika eru hér fyrir neðan."
+  },
+  "panels/settings/AISettingsTab.ts | termsOfService": {
+    "message": "Þjónustuskilmálar Google"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
+    "message": "Notkun á þessum eiginleika er háð {PH1} og {PH2}"
+  },
+  "panels/settings/AISettingsTab.ts | thingsToConsider": {
+    "message": "Atriði til að hafa í huga"
+  },
+  "panels/settings/AISettingsTab.ts | whenOn": {
+    "message": "Þegar kveikt er á eiginleikanum"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Bæta við mynstri fyrir skráarheiti"
   },
@@ -11156,6 +11237,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "Sýna tæki"
   },
+  "panels/settings/settings-meta.ts | chromeAI": {
+    "message": "Gervigreind Chrome"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Upplýsingaefni"
   },
@@ -11173,6 +11257,9 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "Flýtilyklar"
+  },
+  "panels/settings/settings-meta.ts | showChromeAI": {
+    "message": "Sýna gervigreind Chrome"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "Sýna tilraunir"
@@ -12212,6 +12299,9 @@
   "panels/timeline/CountersGraph.ts | listeners": {
     "message": "Hlustendur"
   },
+  "panels/timeline/CountersGraph.ts | noEventsFound": {
+    "message": "Engin minnisnotkunargögn fundust í völdum viðburðum."
+  },
   "panels/timeline/CountersGraph.ts | nodes": {
     "message": "Nóður"
   },
@@ -12602,6 +12692,12 @@
   "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpenedWithUrl": {
     "message": "WebSocket opnað: {PH1}"
   },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
+    "message": "Tímastillingar þjóns — {PH1}"
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
+    "message": "Þessi hljóðrás inniheldur tímasetningar teknar úr svarhausum netkerfis Server-Timing. Viðkomandi upphafstímar eru aðeins áætlaðir og mögulega ónákvæmnir."
+  },
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(nafnlaus)"
   },
@@ -12728,6 +12824,12 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "Núverandi lota: {PH1}. {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalAndFieldMetrics": {
+    "message": "Staðbundin mæligildi og mæligildi fyrir reitinn"
+  },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalMetrics": {
+    "message": "Staðbundin mæligildi"
+  },
   "panels/timeline/TimelineHistoryManager.ts | moments": {
     "message": "augnablik"
   },
@@ -12842,6 +12944,9 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Laga mig"
   },
+  "panels/timeline/TimelinePanel.ts | hideSidebar": {
+    "message": "Fela eingöngu hliðarstiku"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Ræsir vöktunarþjónustu…"
   },
@@ -12886,6 +12991,15 @@
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "Sýna tímalínu minnis"
+  },
+  "panels/timeline/TimelinePanel.ts | showSidebar": {
+    "message": "Sýna hliðarstiku"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarHidden": {
+    "message": "Afkastahliðarstika falin"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarShown": {
+    "message": "Afkastahliðarstika sýnd"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} sek."
@@ -13143,7 +13257,7 @@
     "message": "{PH1} kl. {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
-    "message": "Ógildingar"
+    "message": "Ógildingar ({PH1} alls)"
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Kallað fram af tímamörkum"
@@ -13373,6 +13487,12 @@
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "Kerfi"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
+    "message": "Örgjörvi: {PH1}"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
+    "message": "Örgjörvatakmörkun: {PH1}"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
     "message": "{PH1}× hæging"
   },
@@ -13409,8 +13529,14 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Samskiptaregla WebSocket"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | add": {
+    "message": "Bæta við"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Ítarlegar"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
+    "message": "„{PH1}“ er þegar varpað til uppruna framleiðslu."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "Hætta við"
@@ -13421,17 +13547,35 @@
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "Stillingar fyrir niðurhal á gögnum úr reitum"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
+    "message": "Eyða"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
+    "message": "Uppruni þróunar"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
+    "message": "Uppruni þróunar: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Skýrsla Chrome um upplifun notenda inniheldur ekki fullnægjandi upplýsingar um raunverulegan hraða þessarar síðu."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Sæktu samantekin gögn úr reitum úr skýrslu Chrome um upplifun notenda til að auðvelda þér að setja staðbundnar mælingar í samhengi við raunverulega upplifun notenda á vefsvæðinu."
+    "message": "Sæktu samantekin gögn úr reitum úr {PH1} til að auðvelda þér að setja staðbundnar mælingar í samhengi við raunverulega upplifun notenda á vefsvæðinu."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
+    "message": "„{PH1}“ er ekki gildur uppruni eða vefslóð."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
+    "message": "Stilla uppruna þróunar til fá sjálfvirkt viðeigandi gögn úr reit fyrir uppruna framleiðslu."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | new": {
+    "message": "Nýtt"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | ok": {
     "message": "Í lagi"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Aðeins sækja gögn úr reitum af neðangreindri vefslóð"
+    "message": "Alltaf sýna gögn úr reitum af neðangreindri vefslóð"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Afþakka"
@@ -13439,11 +13583,17 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "Yfirlýsing um persónuvernd"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
+    "message": "Uppruni framleiðslu"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
+    "message": "Uppruni framleiðslu: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "Setja upp"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | urlOverride": {
-    "message": "Hnekking vefslóðar"
+  "panels/timeline/components/FieldSettingsDialog.ts | url": {
+    "message": "Vefslóð"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "Þegar DevTools er opið verða vefslóðir sem þú heimsækir sendar til Google til að spyrjast fyrir um gögn úr reitum. Þessar beiðnir eru ekki tengdar við Google-reikninginn þinn."
@@ -13463,44 +13613,29 @@
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "Sjálfvirkt ({PH1})"
   },
-  "panels/timeline/components/LiveMetricsView.ts | betweenRange": {
-    "message": "({PH1}–{PH2})"
+  "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
+    "message": "Söfnunartímabil:"
   },
-  "panels/timeline/components/LiveMetricsView.ts | clsTitle": {
-    "message": "Hliðrun við birtingu (CLS)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
-    "message": "Örgjörvatakmörkun:"
+  "panels/timeline/components/LiveMetricsView.ts | dateRange": {
+    "message": "{PH1} – {PH2}"
   },
   "panels/timeline/components/LiveMetricsView.ts | desktop": {
     "message": "Tölva"
   },
-  "panels/timeline/components/LiveMetricsView.ts | deviceType": {
-    "message": "Tegund tækis:"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | field75thPercentile": {
-    "message": "75. hundraðsmark reits"
+  "panels/timeline/components/LiveMetricsView.ts | device": {
+    "message": "Tæki: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "Gögn í reit"
   },
-  "panels/timeline/components/LiveMetricsView.ts | good": {
-    "message": "Góð"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | gtRange": {
-    "message": "(>{PH1})"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | inpTitle": {
-    "message": "Gagnvirkni að næstu málun (INP)"
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
+    "message": "gögn úr reitum"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "Samskipti"
   },
-  "panels/timeline/components/LiveMetricsView.ts | lcpTitle": {
-    "message": "Birting stærsta efnis (LCP)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | leqRange": {
-    "message": "(≤{PH1})"
+  "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
+    "message": "LCP-eining"
   },
   "panels/timeline/components/LiveMetricsView.ts | loadingOption": {
     "message": "{PH1} – Hleður…"
@@ -13508,20 +13643,23 @@
   "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
     "message": "Staðbundin mæligildi og mæligildi fyrir reitinn"
   },
-  "panels/timeline/components/LiveMetricsView.ts | localValue": {
-    "message": "Staðbundið"
+  "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
+    "message": "Staðbundin mæligildi"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localMetricsLink": {
+    "message": "staðbundin mæligildi"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "Snjalltæki"
   },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
+    "message": "Meirihluti notenda notar tölvur. Reyndu að líkja eftir stærð á skjáborðsglugga sem samsvarar þeim sem raunverulegir notendur nota."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
+    "message": "Meirihluti notenda notar snjalltæki. Reyndu að líkja eftir snjalltækjum sem samsvarar þeim sem raunverulegir notendur nota."
+  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} – Engin gögn"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | needsImprovement": {
-    "message": "Þarfnast endurbóta"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
-    "message": "Bandvíddartakmörkun:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "Næstu skref"
@@ -13530,22 +13668,28 @@
     "message": "Uppruni"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
-    "message": "Uppruni ({PH1})"
+    "message": "Uppruni: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "{PH1}%"
+  "panels/timeline/components/LiveMetricsView.ts | recordingSettings": {
+    "message": "Upptökustillingar"
   },
-  "panels/timeline/components/LiveMetricsView.ts | poor": {
-    "message": "Slæm"
+  "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
+    "message": "Skoða staðbundin mæligildi í samanburði við raunveruleg notendagögn í {PH1}."
   },
-  "panels/timeline/components/LiveMetricsView.ts | relatedNode": {
-    "message": "Tengdur hnútur"
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
+    "message": "Sýna gögn úr reitum fyrir gerð tækis: {PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
+    "message": "Sýna gögn úr reitum fyrir {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "Spjaldtölva"
   },
-  "panels/timeline/components/LiveMetricsView.ts | throttling": {
-    "message": "Bandvíddartakmörkun"
+  "panels/timeline/components/LiveMetricsView.ts | theFieldMetricsAre": {
+    "message": "{PH1} eru mæld af raunverulegum notendum sem nota margar ólíkar nettengingar og tæki."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
+    "message": "{PH1} er tekin af núverandi síðu með því að nota þína nettengingu og tæki."
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "Prófaðu að slökkva á bandvíddartakmörkun nets til að reikna út áætlaðan biðtíma nets sem raunverulegir notendur hafa mælt."
@@ -13557,10 +13701,70 @@
     "message": "Vefslóð"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOptionWithKey": {
-    "message": "Vefslóð ({PH1})"
+    "message": "Vefslóð: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | urlOrOrigin": {
-    "message": "Vefslóð/uppruni:"
+  "panels/timeline/components/MetricCompareStrings.ts | goodBetterCompare": {
+    "message": "Staðbundið {PH1} {PH2} er gott og er umtalsvert betra en upplifun notenda þinna."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
+    "message": "Staðbundið {PH1} {PH2} er gott og með sömu einkunn og {PH4} af upplifun raunverulegra notenda {PH1}. Að auki eru gögn úr reitum 75. hundraðshlutamarka {PH1} {PH3} góð."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
+    "message": "Staðbundið {PH1} {PH2} er gott og með sömu einkunn og {PH4} af upplifun raunverulegra notenda {PH1}. Hins vegar þarf að bæta gögn úr reitum 75. hundraðshlutamarka {PH1} {PH3}."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
+    "message": "Staðbundið {PH1} {PH2} er gott og með sömu einkunn og {PH4} af upplifun raunverulegra notenda {PH1}. Hins vegar eru gögn úr reitum 75. hundraðshlutamarka {PH1} {PH3} slæm."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
+    "message": "Staðbundið {PH1} {PH2} er gott og svipar til upplifunar notenda þinna."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSummarized": {
+    "message": "Staðbundið {PH1} {PH2} er gott."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodWorseCompare": {
+    "message": "Staðbundið {PH1} {PH2} er gott og er umtalsvert verra en upplifun notenda þinna."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementBetterCompare": {
+    "message": "Staðbundið {PH1} {PH2} þarfnast bætingar og er umtalsvert betra en upplifun notenda þinna."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
+    "message": "Staðbundið {PH1} {PH2} þarfnast bætingar og er með sömu einkunn og {PH4} af upplifun raunverulegra notenda {PH1}. Hins vegar eru gögn úr reitum 75. hundraðshlutamarka {PH1} {PH3} góð."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
+    "message": "Staðbundið {PH1} {PH2} þarfnast bætingar og er með sömu einkunn og {PH4} af upplifun raunverulegra notenda {PH1}. Að auki þarf að bæta gögn úr reitum 75. hundraðshlutamarka {PH1} {PH3}."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
+    "message": "Staðbundið {PH1} {PH2} þarfnast bætingar og er með sömu einkunn og {PH4} af upplifun raunverulegra notenda {PH1}. Hins vegar eru gögn úr reitum 75. hundraðshlutamarka {PH1} {PH3} slæm."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
+    "message": "Staðbundið {PH1} {PH2} þarfnast bætingar og svipar til upplifunar notenda þinna."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSummarized": {
+    "message": "Staðbundið {PH1} {PH2} þarfnast bætingar."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementWorseCompare": {
+    "message": "Staðbundið {PH1} {PH2} þarfnast bætingar og er umtalsvert verra en upplifun notenda þinna."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorBetterCompare": {
+    "message": "Staðbundið {PH1} {PH2} er lélegt og er umtalsvert betra en upplifun notenda þinna."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
+    "message": "Staðbundið {PH1} {PH2} er lélegt og með sömu einkunn og {PH4} af upplifun raunverulegra notenda {PH1}. Hins vegar eru gögn úr reitum 75. hundraðshlutamarka {PH1} {PH3} góð."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
+    "message": "Staðbundið {PH1} {PH2} er lélegt og með sömu einkunn og {PH4} af upplifun raunverulegra notenda {PH1}. Hins vegar þarf að bæta gögn úr reitum 75. hundraðshlutamarka {PH1} {PH3}."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
+    "message": "Staðbundið {PH1} {PH2} er lélegt og með sömu einkunn og {PH4} af upplifun raunverulegra notenda {PH1}. Að auki eru gögn úr reitum 75. hundraðshlutamarka {PH1} {PH3} slæm."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
+    "message": "Staðbundið {PH1} {PH2} er lélegt og svipar til upplifunar notenda þinna."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSummarized": {
+    "message": "Staðbundið {PH1} {PH2} er lélegt."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorWorseCompare": {
+    "message": "Staðbundið {PH1} {PH2} er lélegt og er umtalsvert verra en upplifun notenda þinna."
   },
   "panels/timeline/components/NetworkRequestDetails.ts | FromCache": {
     "message": " (úr skyndiminni)"
@@ -13652,8 +13856,26 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
     "message": "Slökkt"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | network": {
+    "message": "Netkerfi: {PH1}"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | networkThrottling": {
+    "message": "Netkerfistakmörkun: {PH1}"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "Forstillingar"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "fetchpriority = hátt"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "tafinni hleðslu var ekki beitt"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "LCP-mynd hlaðið {PH1} eftir fyrsta upphafsstað."
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "Beiðni er sýnileg í upphaflega skjalinu"
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "Töf á hleðslu einingar"
@@ -13661,8 +13883,8 @@
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "Töf á hleðslu gagna"
   },
-  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadTime": {
-    "message": "Hleðslutími gagna"
+  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDuration": {
+    "message": "Hleðslulengd gagna"
   },
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
     "message": "Tími fram að fyrsta bæti"
@@ -14681,9 +14903,6 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Skjámynd fyrir {PH1} – veldu til að skoða fyrri beiðnir."
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
-    "message": "Setja skriftu á hunsunarlista"
-  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Stilla brautir…"
   },
@@ -14693,23 +14912,11 @@
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "Logarit"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideChildren": {
-    "message": "Fela undirfærslur"
+  "ui/legacy/components/perf_ui/FlameChart.ts | labelEntry": {
+    "message": "Innsláttur merkis"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideFunction": {
-    "message": "Fela virkni"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
-    "message": "Fela endurteknar undirfærslur"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
-    "message": "Fjarlægja skriftu af hunsunarlista"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
-    "message": "Endurstilla börn"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
-    "message": "Endurstilla rakningu"
+  "ui/legacy/components/perf_ui/FlameChart.ts | linkEntries": {
+    "message": "Tenglafærslur"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sCollapsed": {
     "message": "{PH1} minnkað"

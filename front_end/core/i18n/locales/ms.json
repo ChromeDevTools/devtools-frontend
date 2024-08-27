@@ -107,6 +107,9 @@
   "core/common/Revealer.ts | stylesSidebar": {
     "message": "bar sisi gaya"
   },
+  "core/common/Revealer.ts | timelinePanel": {
+    "message": "Panel prestasi"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Penghias"
   },
@@ -837,7 +840,7 @@
     "message": "Sempadan lapisan"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | layoutShiftRegions": {
-    "message": "Kawasan Peralihan Reka Letak"
+    "message": "Kawasan peralihan reka letak"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | paintFlashing": {
     "message": "Pemancaran cat"
@@ -1142,11 +1145,11 @@
   "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
     "message": ":--customstatename telah ditamatkan. Sila gunakan sintaks :state(customstatename)."
   },
+  "generated/Deprecation.ts | CSSInsetAreaProperty": {
+    "message": "Sifat inset-area telah ditamatkan. Sila gunakan sifat position-area."
+  },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Atribut disableRemotePlayback harus digunakan untuk melumpuhkan penyepaduan Kas lalai dan bukannya menggunakan pemilih -internal-media-controls-overlay-cast-button."
-  },
-  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
-    "message": "Nilai penampilan CSS  inner-spin-button, media-slider, media-sliderthumb, media-volume-slider, media-volume-sliderthumb, push-button, searchfield-cancel-button, slider-horizontal, sliderthumb-horizontal, sliderthumb-vertical, square-button tidak distandardkan dan akan dialih keluar."
   },
   "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
     "message": "Nilai penampilan CSS slider-vertical tidak distandardkan dan akan dialih keluar."
@@ -4532,6 +4535,9 @@
   "panels/autofill/AutofillView.ts | sendFeedback": {
     "message": "Hantar maklum balas"
   },
+  "panels/autofill/AutofillView.ts | showTestAddressesInAutofillMenu": {
+    "message": "Paparkan alamat ujian dalam menu autoisi"
+  },
   "panels/autofill/AutofillView.ts | toStartDebugging": {
     "message": "Untuk memulakan penyahpepijatan autolengkap, gunakan menu autolengkap Chrome untuk mengisikan borang alamat."
   },
@@ -5591,6 +5597,9 @@
   "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
     "message": "Mengekalkan halaman yang difokuskan. Biasanya digunakan untuk penyahpepijatan elemen yang hilang."
   },
+  "panels/elements/ElementStatePaneWidget.ts | forceElementSpecificStates": {
+    "message": "Paksa keadaan unsur tertentu"
+  },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Paksa keadaan unsur"
   },
@@ -5868,7 +5877,7 @@
     "message": "helaian gaya yang disuntik"
   },
   "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
-    "message": "Masukkan Peraturan Gaya di Bawah"
+    "message": "Masukkan peraturan gaya di bawah"
   },
   "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
     "message": "{PH1}[Gaya Atribut]"
@@ -6423,7 +6432,7 @@
     "message": "Kemas Kinikan Tetapan"
   },
   "panels/explain/explain-meta.ts | ageRestricted": {
-    "message": "Ciri ini hanya tersedia kepada pengguna yang berumur sekurang-kurangnya 18 tahun."
+    "message": "Ciri ini hanya tersedia kepada pengguna yang berumur sekurang-kurangnya 18 tahun"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "Fahami mesej konsol dengan AI"
@@ -6438,16 +6447,13 @@
     "message": "Fahami amaran ini"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "Ciri ini tersedia di rantau anda."
+    "message": "Ciri ini tidak tersedia di rantau anda"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
     "message": "Organisasi anda mematikan ciri ini. Hubungi pentadbir anda untuk mendapatkan maklumat lanjut."
   },
-  "panels/explain/explain-meta.ts | rolloutRestricted": {
-    "message": "Ciri ini sedang dilancarkan secara berperingkat. Nantikan detik itu."
-  },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "Untuk menggunakan ciri ini, kemas kinikan pilihan Bahasa anda dalam Tetapan Alatan Pembangun kepada bahasa Inggeris."
+    "message": "Untuk menggunakan ciri ini, kemas kinikan pilihan Bahasa anda dalam Tetapan Alatan Pembangun kepada bahasa Inggeris"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Sumber yang Disekat"
@@ -9596,6 +9602,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "Mengira bendera nod…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingObjectNames": {
+    "message": "Mengira nama objek…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingRetainedSizes": {
     "message": "Mengira saiz yang dikekalkan…"
   },
@@ -10871,6 +10880,78 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Pengguna melahu, skrin dibuka kunci"
   },
+  "panels/settings/AISettingsTab.ts | adminSettings": {
+    "message": "Ciri yang tersedia untuk pengguna terurus mungkin berbeza-beza bergantung pada tetapan pentadbir mereka"
+  },
+  "panels/settings/AISettingsTab.ts | boostYourProductivity": {
+    "message": "Tingkatkan produktiviti anda dengan Chrome AI"
+  },
+  "panels/settings/AISettingsTab.ts | chromeAi": {
+    "message": "Chrome AI"
+  },
+  "panels/settings/AISettingsTab.ts | collapse": {
+    "message": "kuncupkan"
+  },
+  "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
+    "message": "Mesej konsol, surih tindanan yang berkaitan, kod asalan yang berkaitan dan pengepala rangkaian yang berkaitan telah dihantar kepada Google untuk menjana penjelasan. Data ini mungkin akan dilihat oleh jurusemak untuk meningkatkan ciri ini."
+  },
+  "panels/settings/AISettingsTab.ts | expand": {
+    "message": "kembangkan"
+  },
+  "panels/settings/AISettingsTab.ts | experimentalFeatures": {
+    "message": "Ciri ini merupakan percubaan dan mungkin berubah"
+  },
+  "panels/settings/AISettingsTab.ts | explainConsole": {
+    "message": "Dapatkan penjelasan untuk amaran dan ralat konsol"
+  },
+  "panels/settings/AISettingsTab.ts | explainStyling": {
+    "message": "Dapatkan penjelasan dan konteks tambahan untuk gelagat penggayaan"
+  },
+  "panels/settings/AISettingsTab.ts | freestylerSendsData": {
+    "message": "Mana-mana kandungan DOM atau CSS pada halaman yang diperiksa mungkin akan dihantar kepada Google untuk menjana penjelasan. Data ini mungkin akan dilihat oleh jurusemak untuk meningkatkan ciri ini."
+  },
+  "panels/settings/AISettingsTab.ts | generatedSnippets": {
+    "message": "Gunakan coretan kod yang dijana dengan berhati-hati"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
+    "message": "Membantu anda memahami dan membetulkan amaran dan ralat konsol"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
+    "message": "Membantu anda memahami dan menyelesaikan masalah penggayaan"
+  },
+  "panels/settings/AISettingsTab.ts | learnMore": {
+    "message": "Ketahui lebih lanjut"
+  },
+  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "Satu atau beberapa tetapan telah berubah. Pemuatan semula diperlukan untuk menerapkan perubahan."
+  },
+  "panels/settings/AISettingsTab.ts | privacyNotice": {
+    "message": "Notis Privasi"
+  },
+  "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
+    "message": "Terima cadangan dan sampel kod untuk menyelesaikan masalah penggayaan"
+  },
+  "panels/settings/AISettingsTab.ts | receiveSuggestions": {
+    "message": "Terima cadangan dan sampel kod untuk menyelesaikan masalah ini"
+  },
+  "panels/settings/AISettingsTab.ts | retainData": {
+    "message": "Data penggunaan akan disimpan dengan cara yang menyebabkan Google tidak dapat mengetahui penyedia data tersebut dan tidak dapat memenuhi lagi sebarang permintaan pemadaman dan akan dikekalkan hingga 18 bulan"
+  },
+  "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
+    "message": "Penggunaan ciri ini akan menghantar data yang berkaitan untuk ciri ini kepada Google. Sila dapatkan lebih banyak maklumat khusus ciri di bawah."
+  },
+  "panels/settings/AISettingsTab.ts | termsOfService": {
+    "message": "Syarat Perkhidmatan Google"
+  },
+  "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
+    "message": "Penggunaan ciri ini tertakluk pada {PH1} dan {PH2}"
+  },
+  "panels/settings/AISettingsTab.ts | thingsToConsider": {
+    "message": "Perkara yang perlu dipertimbangkan"
+  },
+  "panels/settings/AISettingsTab.ts | whenOn": {
+    "message": "Apabila dihidupkan"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Tambah corak nama fail"
   },
@@ -11156,6 +11237,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "Paparkan Peranti"
   },
+  "panels/settings/settings-meta.ts | chromeAI": {
+    "message": "Chrome AI"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Dokumentasi"
   },
@@ -11173,6 +11257,9 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "Pintasan"
+  },
+  "panels/settings/settings-meta.ts | showChromeAI": {
+    "message": "Paparkan Chrome AI"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "Paparkan Percubaan"
@@ -12212,6 +12299,9 @@
   "panels/timeline/CountersGraph.ts | listeners": {
     "message": "Pendengar"
   },
+  "panels/timeline/CountersGraph.ts | noEventsFound": {
+    "message": "Tiada memori data penggunaan ditemukan dalam peristiwa yang dipilih."
+  },
   "panels/timeline/CountersGraph.ts | nodes": {
     "message": "Nod"
   },
@@ -12387,7 +12477,7 @@
     "message": "Reka letak"
   },
   "panels/timeline/EventUICategory.ts | layoutShift": {
-    "message": "Peralihan Reka Letak"
+    "message": "Peralihan reka letak"
   },
   "panels/timeline/EventUICategory.ts | loading": {
     "message": "Memuatkan"
@@ -12588,7 +12678,7 @@
     "message": "Pilih tika VM JavaScript"
   },
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
-    "message": "Peralihan Reka Letak"
+    "message": "Peralihan reka letak"
   },
   "panels/timeline/NetworkTrackAppender.ts | network": {
     "message": "Rangkaian"
@@ -12601,6 +12691,12 @@
   },
   "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpenedWithUrl": {
     "message": "WebSocket dibuka: {PH1}"
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
+    "message": "Pemasaan Pelayan — {PH1}"
+  },
+  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
+    "message": "Jejak ini mengandungi pemasaan yang diambil daripada pengepala respons rangkaian Pemasaan Pelayan. Masa mula setiap pemasaan ini hanyalah anggaran dan mungkin tidak tepat."
   },
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(awanama)"
@@ -12728,6 +12824,12 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "Sesi Semasa: {PH1}. {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalAndFieldMetrics": {
+    "message": "Metrik setempat dan medan"
+  },
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalMetrics": {
+    "message": "Metrik setempat"
+  },
   "panels/timeline/TimelineHistoryManager.ts | moments": {
     "message": "detik"
   },
@@ -12842,6 +12944,9 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Betulkan saya"
   },
+  "panels/timeline/TimelinePanel.ts | hideSidebar": {
+    "message": "Sembunyikan bar sisi"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Mengasalkan pemprofil…"
   },
@@ -12886,6 +12991,15 @@
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "Paparkan garis masa memori"
+  },
+  "panels/timeline/TimelinePanel.ts | showSidebar": {
+    "message": "Paparkan bar sisi"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarHidden": {
+    "message": "Bar sisi prestasi disembunyikan"
+  },
+  "panels/timeline/TimelinePanel.ts | sidebarShown": {
+    "message": "Bar sisi prestasi dipaparkan"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} saat"
@@ -13143,7 +13257,7 @@
     "message": "{PH1} pada {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
-    "message": "Pentaksahan"
+    "message": "Pentaksahan ({PH1} keseluruhannya)"
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Diseru oleh Tamat Masa"
@@ -13373,6 +13487,12 @@
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "Sistem"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
+    "message": "CPU: {PH1}"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
+    "message": "Pendikitan CPU: {PH1}"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
     "message": "{PH1}× pemerlahanan"
   },
@@ -13409,8 +13529,14 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Protokol WebSocket"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | add": {
+    "message": "Tambah"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Lanjutan"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
+    "message": "\"{PH1}\" telah dipetakan kepada asalan pengeluaran."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "Batal"
@@ -13421,17 +13547,35 @@
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "Konfigurasikan pengambilan data medan"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
+    "message": "Padam"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
+    "message": "Asalan pembangunan"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
+    "message": "Asalan pembangunan: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Laporan UX Chrome tidak mengandungi data kelajuan dunia nyata yang mencukupi untuk halaman ini."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Ambil data medan teragregat daripada Laporan UX Chrome untuk membantu anda mengkontekskan ukuran tempatan dengan pengalaman pengguna sebenar pada halaman."
+    "message": "Ambil data medan teragregat daripada {PH1} untuk membantu anda mengkontekskan ukuran tempatan dengan pengalaman pengguna sebenar pada laman."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
+    "message": "\"{PH1}\" bukan asalan atau URL yang sah."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
+    "message": "Sediakan asalan pembangunan untuk mendapatkan data medan yang berkaitan untuk asalan pengeluaran data secara automatik."
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | new": {
+    "message": "Baharu"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | ok": {
     "message": "Ok"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Hanya ambil data medan untuk URL di bawah"
+    "message": "Sentiasa paparkan data medan untuk URL di bawah"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Tarik diri"
@@ -13439,11 +13583,17 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "Pendedahan privasi"
   },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
+    "message": "Asalan pengeluaran"
+  },
+  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
+    "message": "Asalan pengeluaran: {PH1}"
+  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "Sediakan"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | urlOverride": {
-    "message": "Penggantian URL"
+  "panels/timeline/components/FieldSettingsDialog.ts | url": {
+    "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "Apabila Alatan Pembangun dibuka, URL yang anda lawati akan dihantar kepada Google untuk menanyakan data medan. Permintaan ini tidak terikat kepada Google Account anda."
@@ -13463,65 +13613,53 @@
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "Auto ({PH1})"
   },
-  "panels/timeline/components/LiveMetricsView.ts | betweenRange": {
-    "message": "({PH1}-{PH2})"
+  "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
+    "message": "Tempoh pengumpulan:"
   },
-  "panels/timeline/components/LiveMetricsView.ts | clsTitle": {
-    "message": "Peralihan Reka Letak Terkumpul (CLS)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
-    "message": "Pendikitan CPU:"
+  "panels/timeline/components/LiveMetricsView.ts | dateRange": {
+    "message": "{PH1} - {PH2}"
   },
   "panels/timeline/components/LiveMetricsView.ts | desktop": {
     "message": "Desktop"
   },
-  "panels/timeline/components/LiveMetricsView.ts | deviceType": {
-    "message": "Jenis peranti:"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | field75thPercentile": {
-    "message": "Medan Persentil ke-75"
+  "panels/timeline/components/LiveMetricsView.ts | device": {
+    "message": "Peranti: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "Data medan"
   },
-  "panels/timeline/components/LiveMetricsView.ts | good": {
-    "message": "Baik"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | gtRange": {
-    "message": "(>{PH1})"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | inpTitle": {
-    "message": "Interaksi dengan Cat Seterusnya (INP)"
+  "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
+    "message": "data medan"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "Interaksi"
   },
-  "panels/timeline/components/LiveMetricsView.ts | lcpTitle": {
-    "message": "Cat Kandungan Terbesar (LCP)"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | leqRange": {
-    "message": "(≤{PH1})"
+  "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
+    "message": "Unsur LCP"
   },
   "panels/timeline/components/LiveMetricsView.ts | loadingOption": {
     "message": "{PH1} - Memuatkan…"
   },
   "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
-    "message": "Metrik Setempat dan Medan"
+    "message": "Metrik setempat dan medan"
   },
-  "panels/timeline/components/LiveMetricsView.ts | localValue": {
-    "message": "Setempat"
+  "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
+    "message": "Metrik setempat"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localMetricsLink": {
+    "message": "metrik setempat"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "Mudah Alih"
   },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
+    "message": "Kebanyakan pengguna menggunakan desktop. Cuba emulasikan saiz tetingkap desktop yang sepadan dengan pengalaman pengguna sebenar."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
+    "message": "Kebanyakan pengguna menggunakan mudah alih. Cuba emulasikan peranti mudah alih yang sepadan dengan pengalaman pengguna sebenar."
+  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} - Tiada data"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | needsImprovement": {
-    "message": "Memerlukan peningkatan"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
-    "message": "Pendikitan rangkaian:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "Langkah seterusnya"
@@ -13530,22 +13668,28 @@
     "message": "Asalan"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
-    "message": "Asalan ({PH1})"
+    "message": "Asalan: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "{PH1}%"
+  "panels/timeline/components/LiveMetricsView.ts | recordingSettings": {
+    "message": "Tetapan rakaman"
   },
-  "panels/timeline/components/LiveMetricsView.ts | poor": {
-    "message": "Lemah"
+  "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
+    "message": "Lihat prestasi metrik setempat anda berbanding dengan data pengguna dalam {PH1}."
   },
-  "panels/timeline/components/LiveMetricsView.ts | relatedNode": {
-    "message": "Nod berkaitan"
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
+    "message": "Paparkan data medan untuk jenis peranti: {PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
+    "message": "Paparkan data medan untuk {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "Tablet"
   },
-  "panels/timeline/components/LiveMetricsView.ts | throttling": {
-    "message": "Pendikitan"
+  "panels/timeline/components/LiveMetricsView.ts | theFieldMetricsAre": {
+    "message": "{PH1} diukur oleh pengguna sebenar menggunakan pelbagai sambungan rangkaian dan peranti berbeza."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
+    "message": "{PH1} ditangkap daripada halaman semasa menggunakan sambungan rangkaian dan peranti anda."
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "Cuba lumpuhkan pendikitan rangkaian untuk menganggarkan kependaman rangkaian yang diukur oleh pengguna sebenar."
@@ -13557,10 +13701,70 @@
     "message": "URL"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOptionWithKey": {
-    "message": "URL ({PH1})"
+    "message": "URL: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | urlOrOrigin": {
-    "message": "URL/Asalan:"
+  "panels/timeline/components/MetricCompareStrings.ts | goodBetterCompare": {
+    "message": "Metrik {PH1} {PH2} setempat anda adalah baik dan jauh lebih baik daripada pengalaman pengguna anda."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
+    "message": "Metrik {PH1} {PH2} setempat anda adalah baik dan diberi rating yang sama seperti {PH4} pengalaman pengguna sebenar {PH1}. Selain itu, data medan persentil ke-75 {PH1} {PH3} adalah baik."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
+    "message": "Metrik {PH1} {PH2} setempat anda adalah baik dan diberi rating yang sama seperti {PH4} pengalaman pengguna sebenar {PH1}. Walau bagaimanapun, data medan persentil ke-75 {PH1} {PH3} memerlukan peningkatan."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
+    "message": "Metrik {PH1} {PH2} setempat anda adalah baik dan diberi rating yang sama seperti {PH4} pengalaman pengguna sebenar {PH1}. Walau bagaimanapun, data medan persentil ke-75 {PH1} {PH3} adalah kurang baik."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
+    "message": "Metrik {PH1} {PH2} setempat anda adalah baik dan serupa dengan pengalaman pengguna anda."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodSummarized": {
+    "message": "Metrik {PH1} {PH2} setempat anda adalah baik."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | goodWorseCompare": {
+    "message": "Metrik {PH1} {PH2} setempat anda adalah baik dan jauh lebih teruk daripada pengalaman pengguna anda."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementBetterCompare": {
+    "message": "Metrik {PH1} {PH2} setempat anda memerlukan peningkatan dan jauh lebih baik daripada pengalaman pengguna anda."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
+    "message": "Metrik {PH1} {PH2} setempat anda memerlukan peningkatan dan diberi rating yang sama seperti {PH4} pengalaman pengguna sebenar {PH1}. Walau bagaimanapun, data medan persentil ke-75 {PH1} {PH3} adalah baik."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
+    "message": "Metrik {PH1} {PH2} setempat anda memerlukan peningkatan dan diberi rating yang sama seperti {PH4} pengalaman pengguna sebenar {PH1}. Selain itu, medan persentil ke-75 {PH1} {PH3} memerlukan peningkatan."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
+    "message": "Metrik {PH1} {PH2} setempat anda memerlukan peningkatan dan diberi rating yang sama seperti {PH4} pengalaman pengguna sebenar {PH1}. Walau bagaimanapun, data medan persentil ke-75 {PH1} {PH3} adalah kurang baik."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
+    "message": "Metrik {PH1} {PH2} setempat anda memerlukan peningkatan dan serupa dengan pengalaman pengguna anda."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSummarized": {
+    "message": "Metrik {PH1} {PH2} setempat anda memerlukan peningkatan."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | needsImprovementWorseCompare": {
+    "message": "Metrik {PH1} {PH2} setempat anda memerlukan peningkatan dan jauh lebih teruk daripada pengalaman pengguna anda."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorBetterCompare": {
+    "message": "Metrik {PH1} {PH2} setempat anda adalah kurang baik dan jauh lebih baik daripada pengalaman pengguna anda."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
+    "message": "Metrik {PH1} {PH2} setempat anda adalah kurang baik dan diberi rating yang sama seperti {PH4} pengalaman pengguna sebenar {PH1}. Walau bagaimanapun, data medan persentil ke-75 {PH1} {PH3} adalah baik."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
+    "message": "Metrik {PH1} {PH2} setempat anda adalah kurang baik dan diberi rating yang sama seperti {PH4} pengalaman pengguna sebenar {PH1}. Walau bagaimanapun, data medan persentil ke-75 {PH1} {PH3} memerlukan peningkatan."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
+    "message": "Metrik {PH1} {PH2} setempat anda adalah kurang baik dan diberi rating yang sama seperti {PH4} pengalaman pengguna sebenar {PH1}. Selain itu, data medan persentil ke-75 {PH1} {PH3} adalah kurang baik."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
+    "message": "Metrik {PH1} {PH2} setempat anda adalah kurang baik dan serupa dengan pengalaman pengguna anda."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorSummarized": {
+    "message": "Metrik {PH1} {PH2} setempat anda adalah kurang baik."
+  },
+  "panels/timeline/components/MetricCompareStrings.ts | poorWorseCompare": {
+    "message": "Metrik {PH1} {PH2} setempat anda adalah kurang baik dan jauh lebih teruk daripada pengalaman pengguna anda."
   },
   "panels/timeline/components/NetworkRequestDetails.ts | FromCache": {
     "message": " (daripada cache)"
@@ -13652,8 +13856,26 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
     "message": "Dilumpuhkan"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | network": {
+    "message": "Rangkaian: {PH1}"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | networkThrottling": {
+    "message": "Pendikitan rangkaian: {PH1}"
+  },
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "Pratetapan"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "fetchpriority=high digunakan"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "pemuatan tak segerak tidak digunakan"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "Imej LCP dimuatkan {PH1} selepas titik mula paling awal."
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "Permintaan boleh ditemukan dalam dokumen awal"
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "Lengah pemaparan elemen"
@@ -13661,8 +13883,8 @@
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "Lengah pemuatan sumber"
   },
-  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadTime": {
-    "message": "Masa memuatkan sumber"
+  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDuration": {
+    "message": "Tempoh pemuatan asalan"
   },
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
     "message": "Masa untuk bait pertama"
@@ -14681,9 +14903,6 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Tangkapan skrin untuk {PH1} - pilih untuk melihat permintaan sebelumnya."
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | addScriptToIgnoreList": {
-    "message": "Tambahkan skrip pada senarai abaikan"
-  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Konfigurasikan jejak…"
   },
@@ -14693,23 +14912,11 @@
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "Carta Nyala"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideChildren": {
-    "message": "Sembunyikan anak"
+  "ui/legacy/components/perf_ui/FlameChart.ts | labelEntry": {
+    "message": "Labelkan entri"
   },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideFunction": {
-    "message": "Sembunyikan fungsi"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
-    "message": "Sembunyikan anak yang berulang"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | removeScriptFromIgnoreList": {
-    "message": "Alih keluar skrip daripada senarai abaikan"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
-    "message": "Tetapkan semula anak"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
-    "message": "Tetapkan semula surih"
+  "ui/legacy/components/perf_ui/FlameChart.ts | linkEntries": {
+    "message": "Pautkan entri"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sCollapsed": {
     "message": "{PH1} diruntuhkan"

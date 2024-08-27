@@ -23,6 +23,9 @@ async function stringifyObjectOnThePage(this: unknown): Promise<string> {
   if (typeof obj === 'function') {
     return obj.toString();
   }
+  if (obj instanceof Error) {
+    return obj.toString();
+  }
   return JSON.stringify(obj, function replacer(this: unknown, key: string, value: unknown) {
     if (typeof value === 'object' && value !== null) {
       if (seenBefore.has(value)) {
@@ -86,8 +89,23 @@ export class FreestylerEvaluateAction {
         }
         throw new ExecutionError(exceptionDescription || 'JS exception');
       }
-
-      return await response.object.callFunctionJSON(stringifyObjectOnThePage, undefined, /* awaitPromise = */ true);
+      const objectId = response.object.objectId;
+      const result = await response.object.runtimeModel().agent.invoke_callFunctionOn({
+        objectId,
+        functionDeclaration: stringifyObjectOnThePage.toString(),
+        arguments: [],
+        silent: true,
+        returnByValue: true,
+        awaitPromise: true,
+      });
+      const error = result.getError();
+      if (error) {
+        return error;
+      }
+      if (result.exceptionDetails?.exception?.description) {
+        return result.exceptionDetails.exception?.description;
+      }
+      return result.result.value || '';
     } finally {
       executionContext.runtimeModel.releaseEvaluationResult(response);
     }

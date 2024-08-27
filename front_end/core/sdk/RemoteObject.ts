@@ -276,8 +276,8 @@ export class RemoteObject {
   }
 
   callFunctionJSON<T, U>(
-      _functionDeclaration: (this: U, ...args: any[]) => T, _args: Protocol.Runtime.CallArgument[]|undefined,
-      _awaitPromise = false): Promise<T> {
+      _functionDeclaration: (this: U, ...args: any[]) => T,
+      _args: Protocol.Runtime.CallArgument[]|undefined): Promise<T> {
     throw 'Not implemented';
   }
 
@@ -584,15 +584,14 @@ export class RemoteObjectImpl extends RemoteObject {
   }
 
   override async callFunctionJSON<T, U>(
-      functionDeclaration: (this: U, ...args: any[]) => T, args: Protocol.Runtime.CallArgument[]|undefined,
-      awaitPromise = false): Promise<T> {
+      functionDeclaration: (this: U, ...args: any[]) => T,
+      args: Protocol.Runtime.CallArgument[]|undefined): Promise<T> {
     const response = await this.#runtimeAgent.invoke_callFunctionOn({
       objectId: this.#objectIdInternal,
       functionDeclaration: functionDeclaration.toString(),
       arguments: args,
       silent: true,
       returnByValue: true,
-      awaitPromise,
     });
 
     return response.getError() || response.exceptionDetails ? null : response.result.value;

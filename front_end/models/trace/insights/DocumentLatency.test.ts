@@ -71,4 +71,38 @@ describe('DocumentLatency', function() {
     assert.strictEqual(insight.serverResponseTime, 1043);
     assert.deepEqual(insight.metricSavings, {FCP: 943, LCP: 943});
   });
+
+  it('reports no compression savings for compressed text', async () => {
+    const {data, insights} = await processTrace(this, 'lantern/paul/trace.json.gz');
+    const insight = getInsight(insights, data.Meta.navigationsByNavigationId.keys().next().value);
+    assert.strictEqual(insight.uncompressedResponseBytes, 0);
+    assert.deepEqual(insight.metricSavings, {FCP: 0, LCP: 0});
+  });
+
+  it('reports compression savings for uncompressed text', async function() {
+    const traceEvents = [...await TraceLoader.rawEvents(this, 'lantern/paul/trace.json.gz')];
+    const processor = TraceModel.Processor.TraceProcessor.createWithAllHandlers();
+
+    const mainRequestEventIndex = traceEvents.findIndex(e => e.name === 'ResourceReceiveResponse');
+    const mainRequestEvent = structuredClone(traceEvents[mainRequestEventIndex]);
+    assert(Types.TraceEvents.isTraceEventResourceReceiveResponse(mainRequestEvent));
+    assert.strictEqual(mainRequestEvent.args.data.requestId, '1000C0FDC0A75327167272FC7438E999');
+    // Delete content-encoding header.
+    mainRequestEvent.args.data.headers = mainRequestEvent.args.data.headers?.filter(h => h.name !== 'content-encoding');
+    traceEvents[mainRequestEventIndex] = mainRequestEvent;
+
+    await processor.parse(traceEvents);
+    const data = processor.traceParsedData;
+    if (!data) {
+      throw new Error('missing traceParsedData');
+    }
+
+    const context = {
+      frameId: data.Meta.mainFrameId,
+      navigationId: data.Meta.navigationsByNavigationId.keys().next().value,
+    };
+    const insight = TraceModel.Insights.InsightRunners.DocumentLatency.generateInsight(data, context);
+    assert.strictEqual(insight.uncompressedResponseBytes, 39799);
+    assert.deepEqual(insight.metricSavings, {FCP: 0, LCP: 0});
+  });
 });

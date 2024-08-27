@@ -343,7 +343,12 @@ export interface SyntheticNetworkRequest extends TraceEventComplete, SyntheticBa
       syntheticData: SyntheticArgsData,
       // All fields below are from TraceEventsForNetworkRequest,
       // Required fields
+      /** Size of the resource after decompression (if applicable). */
       decodedBodyLength: number,
+      /**
+       * Size of the resource over the network. Includes size of headers and
+       * anything else in the HTTP response packet.
+       */
       encodedDataLength: number,
       frame: string,
       fromServiceWorker: boolean,

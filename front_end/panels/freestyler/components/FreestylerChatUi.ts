@@ -202,7 +202,7 @@ export interface Props {
   state: State;
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
   messages: ChatMessage[];
-  selectedNode: SDK.DOMModel.DOMNode|null;
+  selectedElement: SDK.DOMModel.DOMNode|null;
   isLoading: boolean;
   canShowFeedbackForm: boolean;
   // If there is a `confirmSideEffectDialog`, we show the
@@ -523,7 +523,7 @@ export class FreestylerChatUi extends HTMLElement {
     };
 
     // clang-format off
-    return this.#props.selectedNode
+    return this.#props.selectedElement
       ? LitHtml.html`
         <${Buttons.Button.Button.litTagName}
           .data=${{
@@ -533,7 +533,7 @@ export class FreestylerChatUi extends HTMLElement {
           @click=${this.#props.onInspectElementClick}
         ></${Buttons.Button.Button.litTagName}>
         ${LitHtml.Directives.until(
-          Common.Linkifier.Linkifier.linkify(this.#props.selectedNode),
+          Common.Linkifier.Linkifier.linkify(this.#props.selectedElement),
         )}`
       : LitHtml.html`
         <${Buttons.Button.Button.litTagName}
@@ -596,7 +596,7 @@ export class FreestylerChatUi extends HTMLElement {
     // TODO(ergunsh): Show a better UI for the states where Aida client is not available.
     const isAidaAvailable = this.#props.aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
     const isInputDisabled =
-        !Boolean(this.#props.selectedNode) || !isAidaAvailable || Boolean(this.#props.confirmSideEffectDialog);
+        !Boolean(this.#props.selectedElement) || !isAidaAvailable || Boolean(this.#props.confirmSideEffectDialog);
     // clang-format off
     return LitHtml.html`
       <div class="chat-ui">

@@ -92,7 +92,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   static panelName = 'freestyler';
 
   #toggleSearchElementAction: UI.ActionRegistration.Action;
-  #selectedNode: SDK.DOMModel.DOMNode|null;
+  #selectedElement: SDK.DOMModel.DOMNode|null;
   #contentContainer: HTMLElement;
   #aidaClient: Host.AidaClient.AidaClient;
   #agent: FreestylerAgent;
@@ -116,14 +116,14 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#aidaClient = aidaClient;
     this.#contentContainer = this.contentElement.createChild('div', 'freestyler-chat-ui-container');
 
-    this.#selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+    this.#selectedElement = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     this.#viewProps = {
       state: this.#consentViewAcceptedSetting.get() ? FreestylerChatUiState.CHAT_VIEW :
                                                       FreestylerChatUiState.CONSENT_VIEW,
       aidaAvailability,
       messages: [],
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
-      selectedNode: this.#selectedNode,
+      selectedElement: this.#selectedElement,
       isLoading: false,
       onTextSubmit: this.#startConversation.bind(this),
       onInspectElementClick: this.#handleSelectElementClick.bind(this),
@@ -144,11 +144,11 @@ export class FreestylerPanel extends UI.Panel.Panel {
     });
     this.#agent = this.#createAgent();
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, ev => {
-      if (this.#viewProps.selectedNode === ev.data) {
+      if (this.#viewProps.selectedElement === ev.data) {
         return;
       }
 
-      this.#viewProps.selectedNode = ev.data.nodeType() === Node.ELEMENT_NODE ? ev.data : null;
+      this.#viewProps.selectedElement = Boolean(ev.data) && ev.data.nodeType() === Node.ELEMENT_NODE ? ev.data : null;
       this.doUpdate();
     });
     this.doUpdate();

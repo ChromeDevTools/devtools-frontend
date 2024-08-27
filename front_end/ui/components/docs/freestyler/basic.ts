@@ -50,7 +50,7 @@ const component = new Freestyler.FreestylerChatUi({
   state: Freestyler.State.CHAT_VIEW,
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
   messages,
-  selectedNode: {} as unknown as SDK.DOMModel.DOMNode,
+  selectedElement: {} as unknown as SDK.DOMModel.DOMNode,
   isLoading: false,
   canShowFeedbackForm: false,
   userInfo: {},

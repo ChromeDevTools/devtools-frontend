@@ -748,16 +748,105 @@ export class Overlays extends EventTarget {
 
   #positionEntriesLinkOverlay(overlay: EntriesLink, element: HTMLElement): void {
     const component = element.querySelector('devtools-entries-link-overlay');
+
     if (component) {
-      const entryStartX = this.xPixelForEventStartOnChart(overlay.entryFrom) ?? 0;
-      const entryEndX = this.xPixelForEventEndOnChart(overlay.entryFrom) ?? 0;
-      const entryStartY = this.yPixelForEventOnChart(overlay.entryFrom) ?? 0;
-      const entryLength = entryEndX - entryStartX;
-      const entryHeight = this.pixelHeightForEventOnChart(overlay.entryFrom) ?? 0;
+      const fromEntryStartX = this.xPixelForEventStartOnChart(overlay.entryFrom) ?? 0;
+      const fromEntryEndX = this.xPixelForEventEndOnChart(overlay.entryFrom) ?? 0;
+      const fromEntryLength = fromEntryEndX - fromEntryStartX;
+      const fromEntryHeight = this.pixelHeightForEventOnChart(overlay.entryFrom) ?? 0;
+
+      const entryFromVisibility = this.entryIsVisibleOnChart(overlay.entryFrom);
+      const entryToVisibility = overlay.entryTo ? this.entryIsVisibleOnChart(overlay.entryTo) : false;
+
+      // If the 'from' entry is visible, set the entry Y as an arrow start coordinate. Ff not, get the canvas edge coordinate to for the arrow to start from.
+      const yPixelForFromArrow = (entryFromVisibility ? this.yPixelForEventOnChart(overlay.entryFrom) :
+                                                        this.#yCoordinateForNotVisibleEntry(overlay.entryFrom)) ??
+          0;
+
+      component.entriesVisibility = {
+        fromEntryVisibility: entryFromVisibility,
+        toEntryVisibility: entryToVisibility,
+      };
 
       component.fromEntryCoordinateAndDimentions =
-          {x: entryStartX, y: entryStartY, length: entryLength, height: entryHeight};
+          {x: fromEntryStartX, y: yPixelForFromArrow, length: fromEntryLength, height: fromEntryHeight};
+
+      // If entryTo exists, pass the coordinates and dimentions of the entry that the arrow snaps to.
+      // If it does not, the event tracking mouse coordinates updates 'to coordinates' so the arrow follows the mouse instead.
+      if (overlay.entryTo) {
+        const toEntryStartX = this.xPixelForEventStartOnChart(overlay.entryTo) ?? 0;
+        const toEntryEndX = this.xPixelForEventEndOnChart(overlay.entryTo) ?? 0;
+        const toEntryWidth = toEntryEndX - toEntryStartX;
+        const toEntryHeight = this.pixelHeightForEventOnChart(overlay.entryTo) ?? 0;
+
+        // If the 'to' entry is visible, set the entry Y as an arrow coordinate to point ot. Ff not, get the canvas edge coordate to point the arrow to.
+        const yPixelForToArrow =
+            ((this.entryIsVisibleOnChart(overlay.entryTo)) ? this.yPixelForEventOnChart(overlay.entryTo) :
+                                                             this.#yCoordinateForNotVisibleEntry(overlay.entryTo)) ??
+            0;
+        component.toEntryCoordinateAndDimentions = {
+          x: toEntryStartX ?? 0,
+          y: yPixelForToArrow,
+          length: toEntryWidth,
+          height: toEntryHeight,
+        };
+
+      } else if (this.#lastMouseOffsetX && this.#lastMouseOffsetY) {
+        // The second coordinate for in progress link gets updated on mousemove
+        this.#entriesLinkInProgress = overlay;
+      }
     }
+  }
+
+  /**
+   *  Return Y coordinate for an arrow connecting 2 entries to attach to if the entry is not visible.
+   *  For example, if the entry is scrolled up from the visible area , return the y index of the edge of the track:
+   *  --
+   * |  | - entry off the visible chart
+   *  --
+   *
+   * --Y---------------  -- Y is the returned coordinate that the arrow should point to
+   *
+   * flamechart data     -- visible flamechart data between the 2 lines
+   * ------------------
+   *
+   * On the contrary, if the entry is scrolled off the bottom, get the coordinate of the top of the visible canvas.
+   */
+  #yCoordinateForNotVisibleEntry(entry: OverlayEntry): number {
+    const chartName = this.#chartForOverlayEntry(entry);
+
+    const y = this.yPixelForEventOnChart(entry);
+    if (y === null) {
+      return 0;
+    }
+
+    if (chartName === 'main') {
+      if (!this.#dimensions.charts.main?.heightPixels) {
+        // Shouldn't happen, but if the main chart has no height, nothing on it is visible.
+        return 0;
+      }
+
+      const yWithoutNetwork = y - this.networkChartOffsetHeight();
+      // Check if the y position is less than 0. If it, the entry is off the top of the track canvas.
+      // In that case, return the height of network track, which is also the top of main track.
+      if (yWithoutNetwork < 0) {
+        return this.networkChartOffsetHeight();
+      }
+    }
+
+    if (chartName === 'network') {
+      if (!this.#dimensions.charts.network) {
+        return 0;
+      }
+
+      // The event is off the bottom of the network chart. In this case return the bottom of the network chart.
+      if (y > this.#dimensions.charts.network.heightPixels ?? 0) {
+        return this.#dimensions.charts.network.heightPixels;
+      }
+    }
+
+    // In other cases, return the y of the entry
+    return y;
   }
 
   #positionTimeRangeOverlay(overlay: TimeRangeLabel, element: HTMLElement): void {
@@ -1080,27 +1169,7 @@ export class Overlays extends EventTarget {
       case 'ENTRY_OUTLINE':
         break;
       case 'ENTRIES_LINK': {
-        const component = element.querySelector('devtools-entries-link-overlay');
-        if (component) {
-          // If entryTo exists, pass the coordinates and dimentions of the entry that the arrow snaps to.
-          // If it does not, pass the mouse coordinates so the arrow follows the mouse instead.
-          if (overlay.entryTo) {
-            const entryStartX = this.xPixelForEventStartOnChart(overlay.entryTo) ?? 0;
-            const entryEndX = this.xPixelForEventEndOnChart(overlay.entryTo) ?? 0;
-            const entryWidth = entryEndX - entryStartX;
-            const entryHeight = this.pixelHeightForEventOnChart(overlay.entryTo) ?? 0;
-            component.toEntryCoordinateAndDimentions = {
-              x: entryStartX ?? 0,
-              y: this.yPixelForEventOnChart(overlay.entryTo) ?? 0,
-              length: entryWidth,
-              height: entryHeight,
-            };
-
-          } else if (this.#lastMouseOffsetX && this.#lastMouseOffsetY) {
-            // The second coordinate for in progress link gets updated on mousemove
-            this.#entriesLinkInProgress = overlay;
-          }
-        }
+        // Nothing to do here.
         break;
       }
       case 'ENTRY_LABEL': {
@@ -1279,7 +1348,7 @@ export class Overlays extends EventTarget {
    * This means if the event is in the main flame chart and below the network,
    * we add the height of the network chart to the Y value to position it
    * correctly.
-   * This can return null if any data waas missing, or if the event is not
+   * This can return null if any data was missing, or if the event is not
    * visible (if the level it's on is hidden because the track is collapsed,
    * for example)
    */

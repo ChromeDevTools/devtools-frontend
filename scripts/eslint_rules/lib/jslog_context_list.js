@@ -50,7 +50,7 @@ module.exports = {
 
     const checkPropertyValue = (propertyName, node) => {
       for (const property of node?.properties || []) {
-        if (property.key?.name === propertyName) {
+        if (property.key?.name === propertyName || property.key?.value === propertyName) {
           checkValue(property.value?.value, node);
         }
       }
@@ -71,10 +71,23 @@ module.exports = {
             checkValue(node.arguments[0]?.value, node);
           }
         }
-
       },
       ObjectExpression(node) {
         checkPropertyValue('jslogContext', node);
+      },
+      VariableDeclarator(node) {
+        if (node.id.type === 'Identifier' && node.id.name === 'generatedProperties') {
+          for (const element of node.init?.elements || []) {
+            checkPropertyValue('name', element);
+          }
+        }
+        if (node.id.type === 'Identifier' && node.id.name === 'generatedAliasesFor') {
+          for (const outerElement of node.init?.arguments?.[0]?.elements || []) {
+            for (const innerElement of outerElement.elements || []) {
+              checkValue(innerElement.value, innerElement);
+            }
+          }
+        }
       },
       'Program:exit'() {
         if (process.env.ESLINT_FAIL_ON_UNKNOWN_JSLOG_CONTEXT_VALUE) {

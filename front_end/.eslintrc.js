@@ -175,6 +175,12 @@ module.exports = {
         // TODO(crbug/1402569): Reenable once https://github.com/microsoft/TypeScript/issues/48885 is closed.
         'rulesdir/use_private_class_members': 'off',
       }
+    },
+    {
+      'files': ['generated/SupportedCSSProperties.js'],
+      'rules': {
+        'rulesdir/jslog_context_list': 'error',
+      }
     }
   ]
 };

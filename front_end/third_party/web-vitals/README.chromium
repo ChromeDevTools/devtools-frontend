@@ -6,6 +6,7 @@ License: Apache
 License File: package/LICENSE
 Revision: d6880fdaf669735716eaf3c163baf3f2c10fefaa
 Security Critical: no
+Shipped: yes
 
 Description:
 Essential metrics for a healthy site.

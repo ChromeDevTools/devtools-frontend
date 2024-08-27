@@ -155,6 +155,7 @@ const freestylerBinding = `globalThis.freestyler = (args) => {
   });
   ${FREESTYLER_BINDING_NAME}(String(freestyler.id));
   freestyler.id++;
+  return p;
 }
 freestyler.id = 1;
 freestyler.callbacks = new Map();

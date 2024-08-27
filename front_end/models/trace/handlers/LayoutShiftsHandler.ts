@@ -333,6 +333,7 @@ async function buildLayoutShiftsClusters(): Promise<void> {
                           data: {
                             ...event.args.data,
                             rawEvent: event,
+                            navigationId: currentCluster.navigationId ?? undefined,
                           },
                         },
                         parsedData: {
@@ -425,9 +426,9 @@ async function buildLayoutShiftsClusters(): Promise<void> {
       }
 
       // Find the worst layout shift of the cluster.
-      const cumulativeScore = shift.args.data?.cumulative_score;
-      if (cumulativeScore !== undefined && cumulativeScore > largestScore) {
-        largestScore = cumulativeScore;
+      const score = shift.args.data?.score;
+      if (score !== undefined && score > largestScore) {
+        largestScore = score;
         worstShiftEvent = shift;
       }
     }

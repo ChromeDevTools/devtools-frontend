@@ -847,6 +847,7 @@ type LayoutShiftData = TraceEventArgsData&{
   region_rects: TraceRect[],
   score: number,
   weighted_score_delta: number,
+  navigationId?: string,
   /* eslint-enable @typescript-eslint/naming-convention */
 };
 // These keys come from the trace data, so we have to use underscores.

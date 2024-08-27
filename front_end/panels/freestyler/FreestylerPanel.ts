@@ -148,7 +148,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
         return;
       }
 
-      this.#viewProps.selectedNode = ev.data;
+      this.#viewProps.selectedNode = ev.data.nodeType() === Node.ELEMENT_NODE ? ev.data : null;
       this.doUpdate();
     });
     this.doUpdate();

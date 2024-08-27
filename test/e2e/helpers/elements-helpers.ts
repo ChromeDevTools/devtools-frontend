@@ -281,7 +281,7 @@ export const clickTreeElementWithPartialText = async (text: string) => {
     return true;
   }
 
-  throw false;
+  return false;
 };
 
 export const clickNthChildOfSelectedElementNode = async (childIndex: number) => {

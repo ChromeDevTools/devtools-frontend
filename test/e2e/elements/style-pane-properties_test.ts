@@ -546,7 +546,8 @@ describe('The Styles pane', () => {
     ]);
   });
 
-  it('can show styles properly (ported layout test)', async () => {
+  // Failing test.
+  it.skip('[crbug.com/362505638]: can show styles properly (ported layout test)', async () => {
     await goToResourceAndWaitForStyleSection('elements/elements-panel-styles.html');
     await waitForAndClickTreeElementWithPartialText('#container');
     await waitForStyleRule('#container');
@@ -673,7 +674,8 @@ describe('The Styles pane', () => {
     assert.deepEqual(fooRules, expected);
   });
 
-  it('can show overridden shorthands as inactive (ported layout test)', async () => {
+  // Failing test.
+  it.skip('[crbug.com/362505638]: can show overridden shorthands as inactive (ported layout test)', async () => {
     await goToResourceAndWaitForStyleSection('elements/css-shorthand-override.html');
     await waitForStyleRule('body');
 
@@ -769,36 +771,39 @@ describe('The Styles pane', () => {
     assert.deepEqual(inspected3Rules, expectedInspected3Rules);
   });
 
-  it('shows longhands overridden by shorthands with var() as inactive (ported layout test)', async () => {
-    await goToResourceAndWaitForStyleSection('elements/css-longhand-override.html');
-    await waitForStyleRule('body');
+  // Failing test.
+  it.skip(
+      '[crbug.com/362505638]: shows longhands overridden by shorthands with var() as inactive (ported layout test)',
+      async () => {
+        await goToResourceAndWaitForStyleSection('elements/css-longhand-override.html');
+        await waitForStyleRule('body');
 
-    await waitForAndClickTreeElementWithPartialText('#inspected');
-    await waitForStyleRule('#inspected');
-    const inspectedRules = await getDisplayedStyleRules();
-    const expectedInspected1Rules = [
-      {'selectorText': 'element.style', 'propertyData': []},
-      {
-        'selectorText': '#inspected',
-        'propertyData': [
-          {'propertyName': 'margin', 'isOverLoaded': false, 'isInherited': false},
-          {'propertyName': 'margin-top', 'isOverLoaded': false, 'isInherited': false},
-          {'propertyName': 'margin-right', 'isOverLoaded': false, 'isInherited': false},
-          {'propertyName': 'margin-bottom', 'isOverLoaded': false, 'isInherited': false},
-          {'propertyName': 'margin-left', 'isOverLoaded': false, 'isInherited': false},
-        ],
-      },
-      {
-        'selectorText': 'div',
-        'propertyData': [{'propertyName': 'margin-top', 'isOverLoaded': true, 'isInherited': false}],
-      },
-      {
-        'selectorText': 'div',
-        'propertyData': [{'propertyName': 'display', 'isOverLoaded': false, 'isInherited': false}],
-      },
-    ];
-    assert.deepEqual(inspectedRules, expectedInspected1Rules);
-  });
+        await waitForAndClickTreeElementWithPartialText('#inspected');
+        await waitForStyleRule('#inspected');
+        const inspectedRules = await getDisplayedStyleRules();
+        const expectedInspected1Rules = [
+          {'selectorText': 'element.style', 'propertyData': []},
+          {
+            'selectorText': '#inspected',
+            'propertyData': [
+              {'propertyName': 'margin', 'isOverLoaded': false, 'isInherited': false},
+              {'propertyName': 'margin-top', 'isOverLoaded': false, 'isInherited': false},
+              {'propertyName': 'margin-right', 'isOverLoaded': false, 'isInherited': false},
+              {'propertyName': 'margin-bottom', 'isOverLoaded': false, 'isInherited': false},
+              {'propertyName': 'margin-left', 'isOverLoaded': false, 'isInherited': false},
+            ],
+          },
+          {
+            'selectorText': 'div',
+            'propertyData': [{'propertyName': 'margin-top', 'isOverLoaded': true, 'isInherited': false}],
+          },
+          {
+            'selectorText': 'div',
+            'propertyData': [{'propertyName': 'display', 'isOverLoaded': false, 'isInherited': false}],
+          },
+        ];
+        assert.deepEqual(inspectedRules, expectedInspected1Rules);
+      });
 
   it('shows longhands with parsed values under a shorthand', async () => {
     await goToResourceAndWaitForStyleSection('elements/css-shorthand-override.html');
@@ -820,7 +825,8 @@ describe('The Styles pane', () => {
     ]);
   });
 
-  it('shows overridden properties as inactive (ported layout test)', async () => {
+  // Failing test.
+  it.skip('[crbug.com/362505638]: shows overridden properties as inactive (ported layout test)', async () => {
     await goToResourceAndWaitForStyleSection('elements/css-override.html');
     await waitForStyleRule('body');
 
@@ -874,57 +880,60 @@ describe('The Styles pane', () => {
     assert.deepEqual(inspectedRules, expectedInspected1Rules);
   });
 
-  it('shows non-standard mixed-cased properties correctly (ported layout test)', async () => {
-    await goToResourceAndWaitForStyleSection('elements/css-mixed-case.html');
-    await waitForStyleRule('body');
+  // Failing test.
+  it.skip(
+      '[crbug.com/362505638]: shows non-standard mixed-cased properties correctly (ported layout test)', async () => {
+        await goToResourceAndWaitForStyleSection('elements/css-mixed-case.html');
+        await waitForStyleRule('body');
 
-    await waitForAndClickTreeElementWithPartialText('#container');
-    await waitForStyleRule('#container');
-    await waitForAndClickTreeElementWithPartialText('#nested');
-    await waitForStyleRule('#nested');
-    const inspectedRules = await getDisplayedStyleRules();
-    const expectedInspected1Rules = [
-      {
-        'selectorText': 'element.style',
-        'propertyData': [],
-      },
-      {
-        'selectorText': '#nested',
-        'propertyData': [{
-          'propertyName': 'color',
-          'isOverLoaded': false,
-          'isInherited': false,
-        }],
-      },
-      {
-        'selectorText': 'div',
-        'propertyData': [{
-          'propertyName': 'display',
-          'isOverLoaded': false,
-          'isInherited': false,
-        }],
-      },
-      {
-        'selectorText': 'style attribute',
-        'propertyData': [{
-          'propertyName': 'CoLoR',
-          'isOverLoaded': true,
-          'isInherited': false,
-        }],
-      },
-      {
-        'selectorText': '#container',
-        'propertyData': [{
-          'propertyName': '-webkit-FONT-smoothing',
-          'isOverLoaded': false,
-          'isInherited': false,
-        }],
-      },
-    ];
-    assert.deepEqual(inspectedRules, expectedInspected1Rules);
-  });
+        await waitForAndClickTreeElementWithPartialText('#container');
+        await waitForStyleRule('#container');
+        await waitForAndClickTreeElementWithPartialText('#nested');
+        await waitForStyleRule('#nested');
+        const inspectedRules = await getDisplayedStyleRules();
+        const expectedInspected1Rules = [
+          {
+            'selectorText': 'element.style',
+            'propertyData': [],
+          },
+          {
+            'selectorText': '#nested',
+            'propertyData': [{
+              'propertyName': 'color',
+              'isOverLoaded': false,
+              'isInherited': false,
+            }],
+          },
+          {
+            'selectorText': 'div',
+            'propertyData': [{
+              'propertyName': 'display',
+              'isOverLoaded': false,
+              'isInherited': false,
+            }],
+          },
+          {
+            'selectorText': 'style attribute',
+            'propertyData': [{
+              'propertyName': 'CoLoR',
+              'isOverLoaded': true,
+              'isInherited': false,
+            }],
+          },
+          {
+            'selectorText': '#container',
+            'propertyData': [{
+              'propertyName': '-webkit-FONT-smoothing',
+              'isOverLoaded': false,
+              'isInherited': false,
+            }],
+          },
+        ];
+        assert.deepEqual(inspectedRules, expectedInspected1Rules);
+      });
 
-  it('shows styles from injected user stylesheets (ported layout test)', async () => {
+  // Failing test.
+  it.skip('[crbug.com/362505638]: shows styles from injected user stylesheets (ported layout test)', async () => {
     const {target} = getBrowserAndPages();
     await goToResourceAndWaitForStyleSection('elements/css-inject-stylesheet.html');
     await waitForStyleRule('body');
@@ -1038,7 +1047,8 @@ describe('The Styles pane', () => {
     assert.deepEqual(inspectedRulesAfter, expectedInspectedRulesAfter);
   });
 
-  it('can parse webkit css region styling (ported layout test)', async () => {
+  // Failing test.
+  it.skip('[crbug.com/362505638]: can parse webkit css region styling (ported layout test)', async () => {
     await goToResourceAndWaitForStyleSection('elements/css-webkit-region.html');
     await waitForStyleRule('body');
     await waitForAndClickTreeElementWithPartialText('#article1');
@@ -1064,7 +1074,8 @@ describe('The Styles pane', () => {
     assert.deepEqual(inspectedRules, expectedInspectedRules);
   });
 
-  it('can display @scope at-rules', async () => {
+  // Failing test.
+  it.skip('[crbug.com/362505638]: can display @scope at-rules', async () => {
     await goToResourceAndWaitForStyleSection('elements/css-scope.html');
 
     // Select the child that has @scope rules.

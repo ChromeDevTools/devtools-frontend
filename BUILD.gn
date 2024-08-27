@@ -8,8 +8,8 @@ import("./front_end/emulated_devices/optimized/optimized_images.gni")
 import("./scripts/build/ninja/copy.gni")
 import("./scripts/build/ninja/node.gni")
 import("./scripts/build/ninja/vars.gni")
+import("./scripts/build/typescript/typescript.gni")
 import("./third_party/blink/public/public_features.gni")
-import("./third_party/typescript/typescript.gni")
 
 #-------------------------------------------------------------------------------
 

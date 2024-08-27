@@ -6,7 +6,7 @@ import("../scripts/build/ninja/copy.gni")
 import("../scripts/build/ninja/devtools_entrypoint.gni")
 import("../scripts/build/ninja/node.gni")
 import("../scripts/build/ninja/vars.gni")
-import("../third_party/typescript/typescript.gni")
+import("../scripts/build/typescript/typescript.gni")
 
 group("front_end") {
   public_deps = [

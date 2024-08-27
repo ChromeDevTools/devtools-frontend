@@ -5,7 +5,7 @@
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
-import("../../../../third_party/typescript/typescript.gni")
+import("../../../../scripts/build/typescript/typescript.gni")
 
 generate_css("css_files") {
   sources = [

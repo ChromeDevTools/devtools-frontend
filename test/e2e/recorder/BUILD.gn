@@ -2,7 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../../third_party/typescript/typescript.gni")
+import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("recorder") {
   sources = [
@@ -14,8 +14,8 @@ node_ts_library("recorder") {
   ]
 
   deps = [
+    "../../../front_end/panels/recorder:bundle",
     "../../../test/e2e/helpers",
     "../../../test/shared",
-    "../../../front_end/panels/recorder:bundle",
   ]
 }

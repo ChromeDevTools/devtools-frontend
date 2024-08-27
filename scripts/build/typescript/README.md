@@ -5,7 +5,7 @@ To integrate [gn] with [TypeScript], this directory contains a `ts_library` acti
 To use the action, import the [`typescript.gni`] file:
 
 ```python
-import("../../third_party/typescript/typescript.gni")
+import("../../scripts/build/typescript/typescript.gni")
 ```
 
 After importing, you can now use the `ts_library` action to define a GN task that compiles with `tsc`:

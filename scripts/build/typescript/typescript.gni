@@ -1,10 +1,14 @@
+# Copyright 2024 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
 # Copyright 2019 The Chromium Authors.  All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
 import("//build/toolchain/rbe.gni")
 import("//build/toolchain/siso.gni")
-import("../../scripts/build/ninja/vars.gni")
+import("../ninja/vars.gni")
 
 declare_args() {
   # Set to true to enable remote compilation of TypeScript using reclient.
@@ -46,7 +50,7 @@ assert(!devtools_skip_typecheck || !is_official_build,
 #
 template("ts_library") {
   action(target_name) {
-    script = devtools_location_prepend + "third_party/typescript/ts_library.py"
+    script = devtools_location_prepend + "scripts/build/typescript/ts_library.py"
 
     forward_variables_from(invoker,
                            [

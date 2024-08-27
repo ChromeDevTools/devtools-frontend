@@ -12,7 +12,7 @@ To add an example for your component:
 
 ```
 import("../../../scripts/build/ninja/copy.gni")
-import("../../../third_party/typescript/typescript.gni")
+import("../../../scripts/build/typescript/typescript.gni")
 
 ts_library("ts") {
   sources = [

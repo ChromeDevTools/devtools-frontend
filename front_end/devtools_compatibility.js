@@ -701,6 +701,8 @@ const InspectorFrontendHostImpl = class {
       aidaTemperature: newConfig.devToolsConsoleInsights?.temperature ?? 0,
       blockedByAge: newConfig.aidaAvailability?.blockedByAge ?? true,
       blockedByEnterprisePolicy: newConfig.aidaAvailability?.blockedByEnterprisePolicy ?? true,
+      blockedByFeatureFlag:
+          (newConfig.devToolsConsoleInsights?.enabled && newConfig.aidaAvailability?.enabled) ?? false,
       blockedByGeo: newConfig.aidaAvailability?.blockedByGeo ?? true,
       blockedByRollout: false,
       disallowLogging: newConfig.aidaAvailability?.disallowLogging ?? true,

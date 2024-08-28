@@ -45,7 +45,7 @@ const UIStrings = {
    */
   url: 'URL',
   /**
-   * @description Warning message explaining that the Chrome UX Report could not find enough real world speed data for the page.
+   * @description Warning message explaining that the Chrome UX Report could not find enough real world speed data for the page. "Chrome UX Report" is a product name and should not be translated.
    */
   doesNotHaveSufficientData: 'The Chrome UX Report does not have sufficient real-world speed data for this page.',
   /**
@@ -563,8 +563,8 @@ export class FieldSettingsDialog extends HTMLElement {
   }
 
   #render = (): void => {
-    // "Chrome UX Report" is intentionally left untranslated because it is a product name.
-    const linkEl = UI.XLink.XLink.create('https://developer.chrome.com/docs/crux', 'Chrome UX Report');
+    const linkEl =
+        UI.XLink.XLink.create('https://developer.chrome.com/docs/crux', i18n.i18n.lockedString('Chrome UX Report'));
     const descriptionEl = i18n.i18n.getFormatLocalizedString(str_, UIStrings.fetchAggregated, {PH1: linkEl});
 
     // clang-format off

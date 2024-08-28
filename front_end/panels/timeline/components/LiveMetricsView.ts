@@ -151,7 +151,7 @@ const UIStrings = {
    */
   disableNetworkCache: 'Disable network cache',
   /**
-   * @description Text label for a link to the Largest Contentful Paint (LCP) related DOM node.
+   * @description Text label for a link to the Largest Contentful Paint (LCP) related page element. This element represents the largest content on the page. "LCP" should not be translated.
    */
   lcpElement: 'LCP Element',
   /**
@@ -696,8 +696,8 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       return this.#renderCollectionPeriod();
     }
 
-    // "Chrome UX Report" is intentionally left untranslated because it is a product name.
-    const linkEl = UI.XLink.XLink.create('https://developer.chrome.com/docs/crux', 'Chrome UX Report');
+    const linkEl =
+        UI.XLink.XLink.create('https://developer.chrome.com/docs/crux', i18n.i18n.lockedString('Chrome UX Report'));
     const messageEl = i18n.i18n.getFormatLocalizedString(str_, UIStrings.seeHowYourLocalMetricsCompare, {PH1: linkEl});
 
     return html`

@@ -25,18 +25,6 @@ const {html, nothing} = LitHtml;
 
 const UIStrings = {
   /**
-   * @description Title of a report section for the largest contentful paint metric.
-   */
-  lcpTitle: 'Largest Contentful Paint (LCP)',
-  /**
-   * @description Title of a report section for the cumulative layout shift metric.
-   */
-  clsTitle: 'Cumulative Layout Shift (CLS)',
-  /**
-   * @description Title of a report section for the interaction to next paint metric.
-   */
-  inpTitle: 'Interaction to Next Paint (INP)',
-  /**
    * @description Label for a metric value that was measured in the local environment.
    */
   localValue: 'Local',
@@ -259,11 +247,11 @@ export class MetricCard extends HTMLElement {
   #getTitle(): string {
     switch (this.#data.metric) {
       case 'LCP':
-        return i18nString(UIStrings.lcpTitle);
+        return i18n.i18n.lockedString('Largest Contentful Paint (LCP)');
       case 'CLS':
-        return i18nString(UIStrings.clsTitle);
+        return i18n.i18n.lockedString('Cumulative Layout Shift (CLS)');
       case 'INP':
-        return i18nString(UIStrings.inpTitle);
+        return i18n.i18n.lockedString('Interaction to Next Paint (INP)');
     }
   }
 
@@ -367,7 +355,7 @@ export class MetricCard extends HTMLElement {
     return html`
       <div class="compare-text">
         ${renderCompareText({
-          metric: this.#data.metric,
+          metric: i18n.i18n.lockedString(this.#data.metric),
           rating,
           compare,
           localValue: valueEl,
@@ -454,7 +442,7 @@ export class MetricCard extends HTMLElement {
     // clang-format off
     return html`
       <div class="detailed-compare-text">${renderDetailedCompareText({
-        metric: this.#data.metric,
+        metric: i18n.i18n.lockedString(this.#data.metric),
         localRating,
         fieldRating,
         localValue: localValueEl,

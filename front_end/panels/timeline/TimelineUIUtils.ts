@@ -2493,8 +2493,10 @@ export class TimelineUIUtils {
       case recordTypes.Coherent_Advance:
       case recordTypes.Coherent_ExecuteTimers:
       case recordTypes.Coherent_Paint:
-      case recordTypes.Coherent_WaitPendingFrame:
-      case recordTypes.Coherent_MatchElements: {
+      case recordTypes.Coherent_WaitPendingLayout:
+      case recordTypes.Coherent_WaitPendingStyle:
+      case recordTypes.Coherent_MatchElements:
+      case recordTypes.Coherent_StylingFinalizer: {
         const frameId = event.args['frameId'];
         if (frameId !== -1) {
           contentHelper.appendTextRow(UIStrings.frameId, frameId);

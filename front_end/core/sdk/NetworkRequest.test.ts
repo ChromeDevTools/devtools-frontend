@@ -10,7 +10,7 @@ import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
-import * as Platform from '../platform/platform.js';
+import type * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
@@ -385,7 +385,7 @@ describeWithMockConnection('ServerSentEvents', () => {
     } as Protocol.Network.ResponseReceivedEvent);
 
     const networkEvents: SDK.NetworkRequest.EventSourceMessage[] = [];
-    const {promise: twoEventsReceivedPromise, resolve} = Platform.PromiseUtilities.promiseWithResolvers<void>();
+    const {promise: twoEventsReceivedPromise, resolve} = Promise.withResolvers<void>();
     networkManager.requestForId('1')!.addEventListener(
         SDK.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, ({data}) => {
           networkEvents.push(data);

@@ -767,7 +767,6 @@ grd_files_debug_sources = [
   "front_end/core/platform/MapUtilities.js",
   "front_end/core/platform/MimeType.js",
   "front_end/core/platform/NumberUtilities.js",
-  "front_end/core/platform/PromiseUtilities.js",
   "front_end/core/platform/ServerTiming.js",
   "front_end/core/platform/StringUtilities.js",
   "front_end/core/platform/Timing.js",

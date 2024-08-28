@@ -183,6 +183,22 @@ function cancelTrackingActivity(id: string) {
   }
 }
 
+type UntrackedPromiseMethod = 'prototype'|typeof Symbol.species;
+
+/**
+ * Extracted into separate object which will make TypeScript
+ * check fail if new properties are added.
+ */
+const BasePromise: Omit<PromiseConstructor, UntrackedPromiseMethod> = {
+  all: Promise.all,
+  allSettled: Promise.allSettled,
+  any: Promise.any,
+  race: Promise.race,
+  reject: Promise.reject,
+  resolve: Promise.resolve,
+  withResolvers: Promise.withResolvers,
+};
+
 // We can't subclass native Promise here as this will cause all derived promises
 // (e.g. those returned by `then`) to also be subclass instances. This results
 // in a new asyncActivity entry on each iteration of checkForPendingActivity
@@ -222,14 +238,8 @@ const TrackingPromise: PromiseConstructor = Object.assign(
       asyncActivity.push(activity);
       return promise;
     },
-    {
-      all: Promise.all,
-      allSettled: Promise.allSettled,
-      any: Promise.any,
-      race: Promise.race,
-      reject: Promise.reject,
-      resolve: Promise.resolve,
-    } as PromiseConstructor);
+    BasePromise as PromiseConstructor,
+);
 
 function getStack(error: Error): string {
   return (error.stack ?? 'No stack').split('\n').slice(2).join('\n');

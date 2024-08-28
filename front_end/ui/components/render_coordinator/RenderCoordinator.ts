@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../../../core/platform/platform.js';
-
 /**
  * Components don't orchestrate their DOM updates in a wider context
  * (i.e. the host frame's document), which leads to interleaved reading
@@ -30,7 +28,7 @@ class WorkItem<T> {
   #handler: CoordinatorCallback<T>;
 
   constructor(label: string, initialHandler: CoordinatorCallback<T>) {
-    const {promise, resolve, reject} = Platform.PromiseUtilities.promiseWithResolvers<void>();
+    const {promise, resolve, reject} = Promise.withResolvers<void>();
     this.promise = promise.then(() => this.#handler());
     this.trigger = resolve;
     this.cancel = reject;

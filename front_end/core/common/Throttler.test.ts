@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../platform/platform.js';
-
 import * as Common from './common.js';
 
 const {Throttler, Scheduling} = Common.Throttler;
@@ -108,8 +106,8 @@ describe('Throttler class', () => {
   it('runs only one process at a time', async () => {
     throttler = new Throttler(50);
 
-    const {promise: process1Promise, resolve: process1Resolve} = Platform.PromiseUtilities.promiseWithResolvers<void>();
-    const {promise: process2Promise, resolve: process2Resolve} = Platform.PromiseUtilities.promiseWithResolvers<void>();
+    const {promise: process1Promise, resolve: process1Resolve} = Promise.withResolvers<void>();
+    const {promise: process2Promise, resolve: process2Resolve} = Promise.withResolvers<void>();
     const spy1 = sinon.spy();
     const spy2 = sinon.spy();
     const process1 = () => {

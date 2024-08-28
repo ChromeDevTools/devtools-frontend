@@ -19,7 +19,6 @@ devtools_module("platform") {
     "MapUtilities.ts",
     "MimeType.ts",
     "NumberUtilities.ts",
-    "PromiseUtilities.ts",
     "ServerTiming.ts",
     "StringUtilities.ts",
     "Timing.ts",

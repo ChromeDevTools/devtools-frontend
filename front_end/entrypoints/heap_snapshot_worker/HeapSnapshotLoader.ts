@@ -153,7 +153,7 @@ export class HeapSnapshotLoader {
       return Promise.resolve(this.#buffer.shift() as string);
     }
 
-    const {promise, resolve} = Platform.PromiseUtilities.promiseWithResolvers<string>();
+    const {promise, resolve} = Promise.withResolvers<string>();
     this.#dataCallback = resolve;
     return promise;
   }

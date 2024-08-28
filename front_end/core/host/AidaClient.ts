@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as Platform from '../platform/platform.js';
 
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 import {type AidaClientResult, type SyncInformation} from './InspectorFrontendHostAPI.js';
@@ -178,11 +177,11 @@ export class AidaClient {
       throw new Error('doAidaConversation is not available');
     }
     const stream = (() => {
-      let {promise, resolve, reject} = Platform.PromiseUtilities.promiseWithResolvers<string|null>();
+      let {promise, resolve, reject} = Promise.withResolvers<string|null>();
       return {
         write: async(data: string): Promise<void> => {
           resolve(data);
-          ({promise, resolve, reject} = Platform.PromiseUtilities.promiseWithResolvers<string|null>());
+          ({promise, resolve, reject} = Promise.withResolvers<string|null>());
         },
         close: async(): Promise<void> => {
           resolve(null);
@@ -275,7 +274,7 @@ export class AidaClient {
   }
 
   registerClientEvent(clientEvent: AidaDoConversationClientEvent): Promise<AidaClientResult> {
-    const {promise, resolve} = Platform.PromiseUtilities.promiseWithResolvers<AidaClientResult>();
+    const {promise, resolve} = Promise.withResolvers<AidaClientResult>();
     InspectorFrontendHostInstance.registerAidaClientEvent(
         JSON.stringify({
           client: CLIENT_NAME,

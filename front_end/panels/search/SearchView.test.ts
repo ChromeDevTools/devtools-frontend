@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import {dispatchKeyDownEvent} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
@@ -23,7 +22,7 @@ class FakeSearchScope implements Search.SearchScope.SearchScope {
   readonly #resolvePerformSearchCalledPromise: (args: PerformSearchArgs) => void;
 
   constructor() {
-    const {promise, resolve} = Platform.PromiseUtilities.promiseWithResolvers<PerformSearchArgs>();
+    const {promise, resolve} = Promise.withResolvers<PerformSearchArgs>();
     this.performSearchCalledPromise = promise;
     this.#resolvePerformSearchCalledPromise = resolve;
   }

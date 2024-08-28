@@ -113,7 +113,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   }
 
   override getMetadata(path: Platform.DevToolsPath.EncodedPathString): Promise<Metadata|null> {
-    const {promise, resolve} = Platform.PromiseUtilities.promiseWithResolvers<Metadata|null>();
+    const {promise, resolve} = Promise.withResolvers<Metadata|null>();
     this.domFileSystem.root.getFile(
         Common.ParsedURL.ParsedURL.encodedPathToRawPathString(path), undefined, fileEntryLoaded, errorHandler);
     return promise;
@@ -216,8 +216,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     });
   }
 
-  override async createFile(path: Platform.DevToolsPath.EncodedPathString, name: Platform.DevToolsPath.RawPathString|null):
-      Promise<Platform.DevToolsPath.EncodedPathString|null> {
+  override async createFile(
+      path: Platform.DevToolsPath.EncodedPathString,
+      name: Platform.DevToolsPath.RawPathString|null): Promise<Platform.DevToolsPath.EncodedPathString|null> {
     const dirEntry = await this.createFoldersIfNotExist(Common.ParsedURL.ParsedURL.encodedPathToRawPathString(path));
     if (!dirEntry) {
       return null;
@@ -254,7 +255,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   }
 
   override deleteFile(path: Platform.DevToolsPath.EncodedPathString): Promise<boolean> {
-    const {promise, resolve} = Platform.PromiseUtilities.promiseWithResolvers<boolean>();
+    const {promise, resolve} = Promise.withResolvers<boolean>();
     this.domFileSystem.root.getFile(
         Common.ParsedURL.ParsedURL.encodedPathToRawPathString(path), undefined, fileEntryLoaded.bind(this),
         errorHandler.bind(this));
@@ -279,7 +280,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   }
 
   override deleteDirectoryRecursively(path: Platform.DevToolsPath.EncodedPathString): Promise<boolean> {
-    const {promise, resolve} = Platform.PromiseUtilities.promiseWithResolvers<boolean>();
+    const {promise, resolve} = Promise.withResolvers<boolean>();
     this.domFileSystem.root.getDirectory(
         Common.ParsedURL.ParsedURL.encodedPathToRawPathString(path), undefined, dirEntryLoaded.bind(this),
         errorHandler.bind(this));

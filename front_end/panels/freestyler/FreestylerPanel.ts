@@ -4,7 +4,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
@@ -189,7 +188,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   }
 
   async showConfirmSideEffectUi(action: string): Promise<boolean> {
-    const sideEffectConfirmationPromiseWithResolvers = Platform.PromiseUtilities.promiseWithResolvers<boolean>();
+    const sideEffectConfirmationPromiseWithResolvers = Promise.withResolvers<boolean>();
     this.#viewProps.confirmSideEffectDialog = {
       code: action,
       onAnswer: (answer: boolean) => sideEffectConfirmationPromiseWithResolvers.resolve(answer),

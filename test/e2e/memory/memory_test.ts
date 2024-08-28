@@ -29,6 +29,7 @@ import {
   expandFocusedRow,
   findSearchResult,
   focusTableRow,
+  getAddedCountFromComparisonRow,
   getCategoryRow,
   getCountFromCategoryRow,
   getDataGridRows,
@@ -543,5 +544,29 @@ describe('The Memory Panel', function() {
     assert.strictEqual(3, await getCountFromCategoryRow('Detached <div>'));
     await setSearchFilter('Detached <div data-x="p" data-y="q">');
     await waitForSearchResultNumber(1);
+  });
+
+  it('Groups plain JS objects by interface', async () => {
+    await goToResource('memory/diff.html');
+    await navigateToMemoryTab();
+    await takeHeapSnapshot();
+    await waitForNonEmptyHeapSnapshotData();
+    await setClassFilter('{a, b, c, d, ');
+    // Objects should be grouped by interface if there are at least two matching instances.
+    assert.strictEqual(2, await getCountFromCategoryRow('{a, b, c, d, p, q, r}'));
+    assert.isTrue(!(await getCategoryRow('{a, b, c, d, e}', /* wait:*/ false)));
+    const {frontend, target} = await getBrowserAndPages();
+    await target.bringToFront();
+    await target.click('button#update');
+    await frontend.bringToFront();
+    await takeHeapSnapshot('Snapshot 2');
+    await waitForNonEmptyHeapSnapshotData();
+    await changeViewViaDropdown('Comparison');
+    await setClassFilter('{a, b, c, d, ');
+    // When comparing, the old snapshot is categorized according to the new one's interfaces,
+    // so the comparison should report only one new object of the following type, not two.
+    assert.strictEqual(1, await getAddedCountFromComparisonRow('{a, b, c, d, e}'));
+    // Only one of these objects remains, so it's no longer a category.
+    assert.isTrue(!(await getCategoryRow('{a, b, c, d, p, q, r}', /* wait:*/ false)));
   });
 });

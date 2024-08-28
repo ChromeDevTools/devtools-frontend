@@ -393,7 +393,7 @@ export class HeapSnapshotNode implements HeapSnapshotItem {
   }
 
   rawName(): string {
-    return this.snapshot.strings[this.nameInternal()];
+    return this.snapshot.strings[this.rawNameIndex()];
   }
 
   isRoot(): boolean {
@@ -461,7 +461,7 @@ export class HeapSnapshotNode implements HeapSnapshotItem {
         this.id(), this.name(), this.distance(), this.nodeIndex, this.retainedSize(), this.selfSize(), this.type());
   }
 
-  private nameInternal(): number {
+  rawNameIndex(): number {
     const snapshot = this.snapshot;
     return snapshot.nodes.getValue(this.nodeIndex + snapshot.nodeNameOffset);
   }
@@ -638,6 +638,14 @@ export class HeapSnapshotProgress {
   }
 }
 
+// An "interface" to be used when classifying plain JS objects in the snapshot.
+// An object matches the interface if it contains every listed property (even
+// if it also contains extra properties).
+interface InterfaceDefinition {
+  name: string;
+  properties: string[];
+}
+
 export class HeapSnapshotProblemReport {
   readonly #errors: string[];
   constructor(title: string) {
@@ -686,6 +694,23 @@ const BITMASK_FOR_DOM_LINK_STATE = 3;
 // The class index is stored in the upper 30 bits of the detachedness field.
 const SHIFT_FOR_CLASS_INDEX = 2;
 
+// The maximum number of results produced by inferInterfaceDefinitions.
+const MAX_INTERFACE_COUNT = 1000;
+
+// After this many properties, inferInterfaceDefinitions can stop adding more
+// properties to an interface definition if the name is getting too long.
+const MIN_INTERFACE_PROPERTY_COUNT = 1;
+
+// The maximum length of an interface name produced by inferInterfaceDefinitions.
+// This limit can be exceeded if the first MIN_INTERFACE_PROPERTY_COUNT property
+// names are long.
+const MAX_INTERFACE_NAME_LENGTH = 120;
+
+// Each interface definition produced by inferInterfaceDefinitions will match at
+// least this many objects. There's no point in defining interfaces which match
+// only a single object.
+const MIN_OBJECT_COUNT_PER_INTERFACE = 2;
+
 export abstract class HeapSnapshot {
   nodes: Platform.TypedArrayUtilities.BigUint32Array;
   containmentEdges: Platform.TypedArrayUtilities.BigUint32Array;
@@ -702,8 +727,11 @@ export abstract class HeapSnapshot {
       [x: string]: HeapSnapshotModel.HeapSnapshotModel.Diff,
     },
   };
-  #aggregatesForDiffInternal!: {
-    [x: string]: HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff,
+  #aggregatesForDiffInternal?: {
+    interfaceDefinitions: string,
+    aggregates: {
+      [x: string]: HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff,
+    },
   };
   #aggregates: {
     [x: string]: {
@@ -770,6 +798,8 @@ export abstract class HeapSnapshot {
   #edgeNamesThatAreNotWeakMaps: Platform.TypedArrayUtilities.BitVector;
   detachednessAndClassIndexArray?: Uint32Array;
   #essentialEdges?: Platform.TypedArrayUtilities.BitVector;
+  #interfaceNames: Map<string, number>;
+  #interfaceDefinitions?: InterfaceDefinition[];
 
   constructor(profile: Profile, progress: HeapSnapshotProgress) {
     this.nodes = profile.nodes;
@@ -796,6 +826,7 @@ export abstract class HeapSnapshot {
     this.#ignoredNodesInRetainersView = new Set();
     this.#ignoredEdgesInRetainersView = new Set();
     this.#edgeNamesThatAreNotWeakMaps = Platform.TypedArrayUtilities.createBitVector(this.strings.length);
+    this.#interfaceNames = new Map();
   }
 
   initialize(): void {
@@ -881,6 +912,7 @@ export abstract class HeapSnapshot {
     this.buildDominatedNodes();
     this.#progress.updateStatus('Calculating object names…');
     this.calculateObjectNames();
+    this.applyInterfaceDefinitions(this.inferInterfaceDefinitions());
     this.#progress.updateStatus('Calculating statistics…');
     this.calculateStatistics();
     this.#progress.updateStatus('Calculating samples…');
@@ -1251,13 +1283,17 @@ export abstract class HeapSnapshot {
     return this.#allocationProfile.serializeAllocationStack(allocationNodeId);
   }
 
-  aggregatesForDiff(): {[x: string]: HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff} {
-    if (this.#aggregatesForDiffInternal) {
-      return this.#aggregatesForDiffInternal;
+  aggregatesForDiff(interfaceDefinitions: string): {[x: string]: HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff} {
+    if (this.#aggregatesForDiffInternal?.interfaceDefinitions === interfaceDefinitions) {
+      return this.#aggregatesForDiffInternal.aggregates;
     }
 
+    // Temporarily apply the interface definitions from the other snapshot.
+    const originalInterfaceDefinitions = this.#interfaceDefinitions;
+    this.applyInterfaceDefinitions(JSON.parse(interfaceDefinitions) as InterfaceDefinition[]);
     const aggregatesByClassName = this.getAggregatesByClassName(true, 'allObjects');
-    this.#aggregatesForDiffInternal = {};
+    this.applyInterfaceDefinitions(originalInterfaceDefinitions ?? []);
+    const result: {[x: string]: HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff} = {};
 
     const node = this.createNode();
     for (const className in aggregatesByClassName) {
@@ -1271,9 +1307,11 @@ export abstract class HeapSnapshot {
         selfSizes[i] = node.selfSize();
       }
 
-      this.#aggregatesForDiffInternal[className] = {indexes: indexes, ids: ids, selfSizes: selfSizes};
+      result[className] = {indexes: indexes, ids: ids, selfSizes: selfSizes};
     }
-    return this.#aggregatesForDiffInternal;
+
+    this.#aggregatesForDiffInternal = {interfaceDefinitions, aggregates: result};
+    return result;
   }
 
   isUserRoot(_node: HeapSnapshotNode): boolean {
@@ -2000,6 +2038,222 @@ export abstract class HeapSnapshot {
     for (let i = 0; i < nodeCount; ++i) {
       node.setClassIndex(getNodeClassIndex(node));
       node.nodeIndex = node.nextNodeIndex();
+    }
+  }
+
+  interfaceDefinitions(): string {
+    return JSON.stringify(this.#interfaceDefinitions ?? []);
+  }
+
+  private isPlainJSObject(node: HeapSnapshotNode): boolean {
+    return node.rawType() === this.nodeObjectType && node.rawName() === 'Object';
+  }
+
+  private inferInterfaceDefinitions(): InterfaceDefinition[] {
+    const {edgePropertyType} = this;
+
+    // First, produce a set of candidate definitions by iterating the properties
+    // on every plain JS Object in the snapshot.
+    interface InterfaceDefinitionCandidate extends InterfaceDefinition {
+      // How many objects start with these properties in this order.
+      count: number;
+    }
+    // A map from interface names to their definitions.
+    const candidates = new Map<string, InterfaceDefinitionCandidate>();
+    for (let it = this.allNodes(); it.hasNext(); it.next()) {
+      const node = it.item();
+      if (!this.isPlainJSObject(node)) {
+        continue;
+      }
+      let interfaceName = '{';
+      const properties: string[] = [];
+      for (let edgeIt = node.edges(); edgeIt.hasNext(); edgeIt.next()) {
+        const edge = edgeIt.item();
+        const edgeName = edge.name();
+        if (edge.rawType() !== edgePropertyType || edgeName === '__proto__') {
+          continue;
+        }
+        const formattedEdgeName = JSHeapSnapshotNode.formatPropertyName(edgeName);
+        if (interfaceName.length > MIN_INTERFACE_PROPERTY_COUNT &&
+            interfaceName.length + formattedEdgeName.length > MAX_INTERFACE_NAME_LENGTH) {
+          break;  // The interface name is getting too long.
+        }
+        if (interfaceName.length !== 1) {
+          interfaceName += ', ';
+        }
+        interfaceName += formattedEdgeName;
+        properties.push(edgeName);
+      }
+      // The empty interface is not a very meaningful, and can be sort of misleading
+      // since someone might incorrectly interpret it as objects with no properties.
+      if (properties.length === 0) {
+        continue;
+      }
+      interfaceName += '}';
+      const candidate = candidates.get(interfaceName);
+      if (candidate) {
+        ++candidate.count;
+      } else {
+        candidates.set(interfaceName, {name: interfaceName, properties, count: 1});
+      }
+    }
+
+    // Next, sort the candidates and select the most popular ones. It's possible that
+    // some candidates represent the same properties in different orders, but that's
+    // okay: by sorting here, we ensure that the most popular ordering appears first
+    // in the result list, and the rules for applying interface definitions will prefer
+    // the first matching definition if multiple matches contain the same properties.
+    const sortedCandidates = Array.from(candidates.values());
+    sortedCandidates.sort((a, b) => b.count - a.count);
+    const result: InterfaceDefinition[] = [];
+    const maxResultSize = Math.min(sortedCandidates.length, MAX_INTERFACE_COUNT);
+    for (let i = 0; i < maxResultSize; ++i) {
+      const candidate = sortedCandidates[i];
+      if (candidate.count < MIN_OBJECT_COUNT_PER_INTERFACE) {
+        break;
+      }
+      result.push(candidate);
+    }
+
+    return result;
+  }
+
+  private applyInterfaceDefinitions(definitions: InterfaceDefinition[]): void {
+    const {edgePropertyType} = this;
+    this.#interfaceDefinitions = definitions;
+
+    // Any computed aggregate data will be wrong after recategorization, so clear it.
+    this.#aggregates = {};
+    this.#aggregatesSortedFlags = {};
+
+    // Information about a named interface.
+    interface MatchInfo {
+      name: string;
+      // The number of properties listed in the interface definition.
+      propertyCount: number;
+      // The position of the interface definition in the list of definitions.
+      index: number;
+    }
+
+    function selectBetterMatch(a: MatchInfo, b: MatchInfo|null): MatchInfo {
+      if (!b || a.propertyCount > b.propertyCount) {
+        return a;
+      }
+      if (b.propertyCount > a.propertyCount) {
+        return b;
+      }
+      return a.index <= b.index ? a : b;
+    }
+
+    // A node in the tree which allows us to search for interfaces matching an object.
+    // Each edge in this tree represents adding a property, starting from an empty
+    // object. Properties must be iterated in sorted order.
+    interface PropertyTreeNode {
+      // All possible successors from this node. Keys are property names.
+      next: Map<string, PropertyTreeNode>;
+      // If this node corresponds to a named interface, then matchInfo contains that name.
+      matchInfo: MatchInfo|null;
+      // The maximum of all keys in `next`. This helps determine when no further transitions
+      // are possible from this node.
+      greatestNext: string|null;
+    }
+
+    // The root node of the tree.
+    const propertyTree: PropertyTreeNode = {
+      next: new Map(),
+      matchInfo: null,
+      greatestNext: null,
+    };
+
+    // Build up the property tree.
+    for (let interfaceIndex = 0; interfaceIndex < definitions.length; ++interfaceIndex) {
+      const definition = definitions[interfaceIndex];
+      const properties = definition.properties.toSorted();
+      let currentNode = propertyTree;
+      for (const property of properties) {
+        const nextMap = currentNode.next;
+        let nextNode = nextMap.get(property);
+        if (!nextNode) {
+          nextNode = {
+            next: new Map(),
+            matchInfo: null,
+            greatestNext: null,
+          };
+          nextMap.set(property, nextNode);
+          if (currentNode.greatestNext === null || currentNode.greatestNext < property) {
+            currentNode.greatestNext = property;
+          }
+        }
+        currentNode = nextNode;
+      }
+      // Only set matchInfo on this node if it wasn't already set, to ensure that
+      // interfaces defined earlier in the list have priority.
+      if (!currentNode.matchInfo) {
+        currentNode.matchInfo = {
+          name: definition.name,
+          propertyCount: properties.length,
+          index: interfaceIndex,
+        };
+      }
+    }
+
+    // The fallback match for objects which don't match any defined interface.
+    const initialMatch: MatchInfo = {
+      name: 'Object',
+      propertyCount: 0,
+      index: Infinity,
+    };
+
+    // Iterate all nodes and check whether they match a named interface, using
+    // the tree constructed above. Then update the class name for each node.
+    for (let it = this.allNodes(); it.hasNext(); it.next()) {
+      const node = it.item();
+      if (!this.isPlainJSObject(node)) {
+        continue;
+      }
+
+      // Collect and sort the properties of this object.
+      const properties: string[] = [];
+      for (let edgeIt = node.edges(); edgeIt.hasNext(); edgeIt.next()) {
+        const edge = edgeIt.item();
+        if (edge.rawType() === edgePropertyType) {
+          properties.push(edge.name());
+        }
+      }
+      properties.sort();
+
+      // We may explore multiple possible paths through the tree, so this set tracks
+      // all states that match with the properties iterated thus far.
+      const states = new Set<PropertyTreeNode>();
+      states.add(propertyTree);
+
+      // This variable represents the best match found thus far. We start by checking
+      // whether there is an interface definition for the empty object.
+      let match = selectBetterMatch(initialMatch, propertyTree.matchInfo);
+
+      // Traverse the tree to find any matches.
+      for (const property of properties) {
+        // Iterate only the states that already exist, not the ones added during the loop below.
+        for (const currentState of Array.from(states.keys())) {
+          if (currentState.greatestNext === null || property >= currentState.greatestNext) {
+            // No further transitions are possible from this state.
+            states.delete(currentState);
+          }
+          const nextState = currentState.next.get(property);
+          if (nextState) {
+            states.add(nextState);
+            match = selectBetterMatch(match, nextState.matchInfo);
+          }
+        }
+      }
+
+      // Update the node's class name accordingly.
+      let classIndex = match === initialMatch ? node.rawNameIndex() : this.#interfaceNames.get(match.name);
+      if (classIndex === undefined) {
+        classIndex = this.addString(match.name);
+        this.#interfaceNames.set(match.name, classIndex);
+      }
+      node.setClassIndex(classIndex);
     }
   }
 

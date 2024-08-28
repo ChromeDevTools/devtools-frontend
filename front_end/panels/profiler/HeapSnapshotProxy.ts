@@ -291,16 +291,20 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     return this.callMethodPromise('search', searchConfig, filter);
   }
 
+  interfaceDefinitions(): Promise<string> {
+    return this.callMethodPromise('interfaceDefinitions');
+  }
+
   aggregatesWithFilter(filter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter): Promise<{
     [x: string]: HeapSnapshotModel.HeapSnapshotModel.Aggregate,
   }> {
     return this.callMethodPromise('aggregatesWithFilter', filter);
   }
 
-  aggregatesForDiff(): Promise<{
+  aggregatesForDiff(interfaceDefinitions: string): Promise<{
     [x: string]: HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff,
   }> {
-    return this.callMethodPromise('aggregatesForDiff');
+    return this.callMethodPromise('aggregatesForDiff', interfaceDefinitions);
   }
 
   calculateSnapshotDiff(baseSnapshotId: string, baseSnapshotAggregates: {

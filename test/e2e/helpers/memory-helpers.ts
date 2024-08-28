@@ -66,10 +66,14 @@ export async function takeAllocationTimelineProfile({recordStacks}: {recordStack
   await waitFor('.heap-snapshot-sidebar-tree-item.selected');
 }
 
-export async function takeHeapSnapshot() {
+export async function takeHeapSnapshot(name: string = 'Snapshot 1') {
   await click(NEW_HEAP_SNAPSHOT_BUTTON);
   await waitForNone('.heap-snapshot-sidebar-tree-item.wait');
-  await waitFor('.heap-snapshot-sidebar-tree-item.selected');
+  await waitForFunction(async () => {
+    const selected = await waitFor('.heap-snapshot-sidebar-tree-item.selected');
+    const title = await waitFor('span.title', selected);
+    return (await title.evaluate(e => e.textContent)) === name ? title : undefined;
+  });
 }
 
 export async function waitForHeapSnapshotData() {
@@ -305,14 +309,18 @@ export async function expandFocusedRow() {
   await waitFor('.selected.data-grid-data-grid-node.expanded');
 }
 
+function parseNumberWithSpaces(number: string): number {
+  return parseInt(number.replaceAll('\xa0', ''), 10);
+}
+
 async function getSizesFromRow(row: puppeteer.ElementHandle<Element>) {
   const numericData = await $$('.numeric-column>.profile-multiple-values>span', row);
   assert.strictEqual(numericData.length, 4);
-  function readNumber(e: Element) {
-    return parseInt((e.textContent as string).replaceAll('\xa0', ''), 10);
+  function readNumber(e: Element): string {
+    return e.textContent as string;
   }
-  const shallowSize = await numericData[0].evaluate(readNumber);
-  const retainedSize = await numericData[2].evaluate(readNumber);
+  const shallowSize = parseNumberWithSpaces(await numericData[0].evaluate(readNumber));
+  const retainedSize = parseNumberWithSpaces(await numericData[2].evaluate(readNumber));
   assert.isTrue(retainedSize >= shallowSize);
   return {shallowSize, retainedSize};
 }
@@ -342,6 +350,13 @@ export async function getCountFromCategoryRow(text: string) {
   const row = await getCategoryRow(text);
   const countSpan = await waitFor('.objects-count', row);
   return await countSpan.evaluate(e => parseInt((e.textContent ?? '').substring(1), 10));
+}
+
+export async function getAddedCountFromComparisonRow(text: string) {
+  const row = await getCategoryRow(text);
+  const addedCountCell = await waitFor('.addedCount-column', row);
+  const countText = await addedCountCell.evaluate(e => e.textContent ?? '');
+  return parseNumberWithSpaces(countText);
 }
 
 export async function clickOnContextMenuForRetainer(retainerName: string, menuItem: string) {

@@ -1,0 +1,15 @@
+<!--
+  Copyright 2024 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<h1>Memory Panel (Heap profiler) Test</h1>
+<button id="update">Click here after first snapshot</button>
+<script>
+  var a = {a: 2, b: 3, c: 4, d: 5, e: 6};
+  var b = {a: '', b: true, c: false, d: null, p: 5, q: 6, r: 7};
+  var c = {a: 1, b: 2, c: 7, d: 8, p: 0, q: 0, r: 0};
+  document.getElementById('update').addEventListener('click', function () {
+    b = {a: 0, b: 1, c: 2, d: 3, e: 4};
+  });
+</script>

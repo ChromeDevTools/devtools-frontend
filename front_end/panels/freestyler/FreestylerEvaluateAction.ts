@@ -3,30 +3,15 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 
 export class ExecutionError extends Error {}
 export class SideEffectError extends Error {}
 
 /* istanbul ignore next */
-async function stringifyObjectOnThePage(this: unknown): Promise<string> {
+function stringifyObjectOnThePage(this: unknown): string {
   const seenBefore = new WeakMap();
-  const obj = await this;
-  if (obj === undefined) {
-    return 'undefined';
-  }
-  if (typeof obj === 'bigint') {
-    return `${obj}n`;
-  }
-  if (typeof obj === 'symbol') {
-    return obj.toString();
-  }
-  if (typeof obj === 'function') {
-    return obj.toString();
-  }
-  if (obj instanceof Error) {
-    return obj.toString();
-  }
-  return JSON.stringify(obj, function replacer(this: unknown, key: string, value: unknown) {
+  return JSON.stringify(this, function replacer(this: unknown, key: string, value: unknown) {
     if (typeof value === 'object' && value !== null) {
       if (seenBefore.has(value)) {
         return '(cycle)';
@@ -52,6 +37,33 @@ async function stringifyObjectOnThePage(this: unknown): Promise<string> {
 
     return value;
   });
+}
+
+async function stringifyRemoteObject(object: SDK.RemoteObject.RemoteObject): Promise<string> {
+  switch (object.type) {
+    case Protocol.Runtime.RemoteObjectType.String:
+      return `'${object.value}'`;
+    case Protocol.Runtime.RemoteObjectType.Bigint:
+      return `${object.value}n`;
+    case Protocol.Runtime.RemoteObjectType.Boolean:
+    case Protocol.Runtime.RemoteObjectType.Number:
+      return `${object.value}`;
+    case Protocol.Runtime.RemoteObjectType.Undefined:
+      return 'undefined';
+    case Protocol.Runtime.RemoteObjectType.Symbol:
+    case Protocol.Runtime.RemoteObjectType.Function:
+      return `${object.description}`;
+    case Protocol.Runtime.RemoteObjectType.Object: {
+      const res = await object.callFunction(stringifyObjectOnThePage);
+      if (!res.object || res.object.type !== Protocol.Runtime.RemoteObjectType.String) {
+        throw new Error('Could not stringify the object' + object);
+      }
+
+      return res.object.value;
+    }
+    default:
+      throw new Error('Unknown type to stringify ' + object.type);
+  }
 }
 
 export interface Options {
@@ -89,23 +101,8 @@ export class FreestylerEvaluateAction {
         }
         throw new ExecutionError(exceptionDescription || 'JS exception');
       }
-      const objectId = response.object.objectId;
-      const result = await response.object.runtimeModel().agent.invoke_callFunctionOn({
-        objectId,
-        functionDeclaration: stringifyObjectOnThePage.toString(),
-        arguments: [],
-        silent: true,
-        returnByValue: true,
-        awaitPromise: true,
-      });
-      const error = result.getError();
-      if (error) {
-        return error;
-      }
-      if (result.exceptionDetails?.exception?.description) {
-        return result.exceptionDetails.exception?.description;
-      }
-      return result.result.value || '';
+
+      return stringifyRemoteObject(response.object);
     } finally {
       executionContext.runtimeModel.releaseEvaluationResult(response);
     }

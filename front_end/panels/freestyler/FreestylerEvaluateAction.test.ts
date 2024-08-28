@@ -86,20 +86,18 @@ describe('FreestylerEvaluateAction', () => {
     }
 
     async function executeForTest(code: string) {
-      const actionExpression = `(async ($0, $1, getEventListeners) => {
-        ${code}
-      })($0, $1, getEventListeners)`;
+      const actionExpression = `const scope = {$0, $1, getEventListeners}; with (scope) {${code}}`;
       return Freestyler.FreestylerEvaluateAction.execute(
           actionExpression, await executionContextForTest(), {throwOnSideEffect: false});
     }
 
     it('should serialize primitive values correctly', async () => {
-      assert.strictEqual(await executeForTest('return "string"'), '"string"');
-      assert.strictEqual(await executeForTest('return 999n'), '999n');
-      assert.strictEqual(await executeForTest('return true'), 'true');
-      assert.strictEqual(await executeForTest('return undefined'), 'undefined');
-      assert.strictEqual(await executeForTest('return 42'), '42');
-      assert.strictEqual(await executeForTest('return Symbol("sym")'), 'Symbol(sym)');
+      assert.strictEqual(await executeForTest('"string"'), '\'string\'');
+      assert.strictEqual(await executeForTest('999n'), '999n');
+      assert.strictEqual(await executeForTest('true'), 'true');
+      assert.strictEqual(await executeForTest('undefined'), 'undefined');
+      assert.strictEqual(await executeForTest('42'), '42');
+      assert.strictEqual(await executeForTest('Symbol("sym")'), 'Symbol(sym)');
     });
 
     describe('HTMLElement', () => {
@@ -107,7 +105,7 @@ describe('FreestylerEvaluateAction', () => {
         const serializedElement = await executeForTest(`{
           const el = document.createElement('div');
 
-          return el;
+          el;
         }`);
         assert.strictEqual(serializedElement, '"<div></div>"');
       });
@@ -118,7 +116,7 @@ describe('FreestylerEvaluateAction', () => {
           el.classList.add('section');
           el.classList.add('section-main');
 
-          return el;
+          el;
         }`);
         assert.strictEqual(serializedElement, '"<div class=\\"section section-main\\"></div>"');
       });
@@ -128,7 +126,7 @@ describe('FreestylerEvaluateAction', () => {
           const el = document.createElement('div');
           el.id = 'promotion-section';
 
-          return el;
+          el;
         }`);
         assert.strictEqual(serializedElement, '"<div id=\\"promotion-section\\"></div>"');
       });
@@ -138,7 +136,7 @@ describe('FreestylerEvaluateAction', () => {
           el.id = 'promotion-section';
           el.classList.add('section');
 
-          return el;
+          el;
         }`);
         assert.strictEqual(serializedElement, '"<div id=\\"promotion-section\\" class=\\"section\\"></div>"');
       });
@@ -148,25 +146,25 @@ describe('FreestylerEvaluateAction', () => {
           const p = document.createElement('p');
           el.appendChild(p);
 
-          return el;
+          el;
         }`);
         assert.strictEqual(serializedElement, '"<div>...</div>"');
       });
     });
 
     it('should serialize arrays correctly', async () => {
-      assert.strictEqual(await executeForTest('return []'), '[]');
-      assert.strictEqual(await executeForTest('return [1]'), '[1]');
-      assert.strictEqual(await executeForTest('return [1, 2]'), '[1,2]');
-      assert.strictEqual(await executeForTest('return [{key: 1}]'), '[{"key":1}]');
+      assert.strictEqual(await executeForTest('[]'), '[]');
+      assert.strictEqual(await executeForTest('[1]'), '[1]');
+      assert.strictEqual(await executeForTest('[1, 2]'), '[1,2]');
+      assert.strictEqual(await executeForTest('[{key: 1}]'), '[{"key":1}]');
     });
 
     it('should serialize objects correctly', async () => {
-      assert.strictEqual(await executeForTest('const object = {key: "str"}; return object;'), '{"key":"str"}');
+      assert.strictEqual(await executeForTest('const object = {key: "str"}; object;'), '{"key":"str"}');
       assert.strictEqual(
-          await executeForTest('const object = {key: "str", secondKey: "str2"}; return object;'),
+          await executeForTest('const object = {key: "str", secondKey: "str2"}; object;'),
           '{"key":"str","secondKey":"str2"}');
-      assert.strictEqual(await executeForTest('const object = {key: 1}; return object;'), '{"key":1}');
+      assert.strictEqual(await executeForTest('const object = {key: 1}; object;'), '{"key":1}');
     });
 
     it('should not continue serializing cycles', async () => {
@@ -174,13 +172,13 @@ describe('FreestylerEvaluateAction', () => {
           await executeForTest(`{
         const obj = { a: 1 };
         obj.itself = obj;
-        return obj;
+        obj;
       }`),
           '{"a":1,"itself":"(cycle)"}');
     });
 
     it('should not include number keys for CSSStyleDeclaration', async () => {
-      const result = await executeForTest('return getComputedStyle(document.body)');
+      const result = await executeForTest('getComputedStyle(document.body)');
       const parsedResult = JSON.parse(result);
       assert.isUndefined(parsedResult[0]);
     });

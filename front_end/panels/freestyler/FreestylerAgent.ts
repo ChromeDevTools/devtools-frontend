@@ -313,10 +313,8 @@ export class FreestylerAgent {
         confirmExecJs?: (this: FreestylerAgent, action: string) => Promise<boolean>,
         execJsDeniedMesssage?: string,
       }): Promise<string> {
-    const actionExpression = `(async ($0, $1, getEventListeners) => {
-{${action}; return ((typeof data !== "undefined") ? data : undefined);}
-})($0, $1, getEventListeners)`;
-
+    const actionExpression = `const scope = {$0, $1, getEventListeners}; with (scope) {${
+        action};((typeof data !== "undefined") ? data : undefined)}`;
     try {
       const runConfirmed = await (confirm?.call(this, action) ?? Promise.resolve(true));
       if (!runConfirmed) {

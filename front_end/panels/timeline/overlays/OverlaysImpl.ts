@@ -560,11 +560,10 @@ export class Overlays extends EventTarget {
   #positionOverlay(overlay: TimelineOverlay, element: HTMLElement): void {
     switch (overlay.type) {
       case 'ENTRY_SELECTED': {
-        if (this.entryIsVisibleOnChart(overlay.entry)) {
-          element.style.visibility = 'visible';
+        const isVisible = this.entryIsVisibleOnChart(overlay.entry);
+        this.#setOverlayElementVisibility(element, isVisible);
+        if (isVisible) {
           this.#positionEntryBorderOutlineType(overlay, element);
-        } else {
-          element.style.visibility = 'hidden';
         }
         break;
       }
@@ -574,10 +573,10 @@ export class Overlays extends EventTarget {
         // do not show the outline, but only show the selected outline.
         const outlinedEntryIsSelected = Boolean(selectedOverlay && selectedOverlay.entry === overlay.entry);
         if (!outlinedEntryIsSelected && this.entryIsVisibleOnChart(overlay.entry)) {
-          element.style.visibility = 'visible';
+          this.#setOverlayElementVisibility(element, true);
           this.#positionEntryBorderOutlineType(overlay, element);
         } else {
-          element.style.visibility = 'hidden';
+          this.#setOverlayElementVisibility(element, false);
         }
         break;
       }
@@ -591,18 +590,14 @@ export class Overlays extends EventTarget {
         break;
       }
       case 'ENTRY_LABEL': {
-        if (this.entryIsVisibleOnChart(overlay.entry)) {
-          element.style.visibility = 'visible';
+        const entryVisible = this.entryIsVisibleOnChart(overlay.entry);
+        this.#setOverlayElementVisibility(element, entryVisible);
+        if (entryVisible) {
           const entryLabelParams = this.#positionEntryLabelOverlay(overlay, element);
           const component = element.querySelector('devtools-entry-label-overlay');
           if (component && entryLabelParams) {
             component.entryLabelParams = entryLabelParams;
-          } else {
-            element.style.visibility = 'hidden';
-            console.error('Cannot calculate entry width and height values required to draw a label overlay.');
           }
-        } else {
-          element.style.visibility = 'hidden';
         }
         break;
       }
@@ -619,15 +614,14 @@ export class Overlays extends EventTarget {
         // TODO: Have the timespan squeeze instead.
         if (overlay.entry) {
           const {visibleWindow} = this.#dimensions.trace;
-          if (visibleWindow && this.#entryIsVerticallyVisibleOnChart(overlay.entry) &&
-              TraceEngine.Helpers.Timing.boundsIncludeTimeRange({
-                bounds: visibleWindow,
-                timeRange: overlay.sections[0].bounds,
-              })) {
-            element.style.visibility = 'visible';
-          } else {
-            element.style.visibility = 'hidden';
-          }
+          const isVisible = Boolean(
+              visibleWindow && this.#entryIsVerticallyVisibleOnChart(overlay.entry) &&
+                  TraceEngine.Helpers.Timing.boundsIncludeTimeRange({
+                    bounds: visibleWindow,
+                    timeRange: overlay.sections[0].bounds,
+                  }),
+          );
+          this.#setOverlayElementVisibility(element, isVisible);
         }
         break;
       }
@@ -636,11 +630,11 @@ export class Overlays extends EventTarget {
         const {visibleWindow} = this.#dimensions.trace;
         // Only update the position if the timestamp of this marker is within
         // the visible bounds.
-        if (visibleWindow && TraceEngine.Helpers.Timing.timestampIsInBounds(visibleWindow, overlay.timestamp)) {
-          element.style.visibility = 'visible';
+        const isVisible =
+            Boolean(visibleWindow && TraceEngine.Helpers.Timing.timestampIsInBounds(visibleWindow, overlay.timestamp));
+        this.#setOverlayElementVisibility(element, isVisible);
+        if (isVisible) {
           this.#positionTimestampMarker(overlay, element);
-        } else {
-          element.style.visibility = 'hidden';
         }
         break;
       }
@@ -649,16 +643,16 @@ export class Overlays extends EventTarget {
         const {visibleWindow} = this.#dimensions.trace;
         // If the bounds of this overlay are not within the visible bounds, we
         // can skip updating its position and just hide it.
-        if (visibleWindow && this.#entryIsVerticallyVisibleOnChart(overlay.entry) &&
+
+        const isVisible = Boolean(
+            visibleWindow && this.#entryIsVerticallyVisibleOnChart(overlay.entry) &&
             TraceEngine.Helpers.Timing.boundsIncludeTimeRange({
               bounds: visibleWindow,
               timeRange: overlay.bounds,
-            })) {
-          element.style.visibility = 'visible';
+            }));
+        this.#setOverlayElementVisibility(element, isVisible);
+        if (isVisible) {
           this.#positionCandyStripedTimeRange(overlay, element);
-
-        } else {
-          element.style.visibility = 'hidden';
         }
         break;
       }
@@ -1435,5 +1429,14 @@ export class Overlays extends EventTarget {
     }
 
     return this.#dimensions.charts.network.heightPixels + NETWORK_RESIZE_ELEM_HEIGHT_PX;
+  }
+
+  /**
+   * Hides or shows an element. We used to use visibility rather than display,
+   * but a child of an element with visibility: hidden may still be visible if
+   * its own `display` property is set.
+   */
+  #setOverlayElementVisibility(element: HTMLElement, isVisible: boolean): void {
+    element.style.display = isVisible ? 'block' : 'none';
   }
 }

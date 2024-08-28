@@ -325,7 +325,7 @@ describeWithEnvironment('Overlays', () => {
       overlays.update();
 
       const outlineVisible =
-          container.querySelector<HTMLElement>('.overlay-type-ENTRY_OUTLINE')?.style.visibility === 'visible';
+          container.querySelector<HTMLElement>('.overlay-type-ENTRY_OUTLINE')?.style.display === 'block';
       assert.isTrue(outlineVisible, 'The ENTRY_OUTLINE should be visible');
 
       // Now make a selected entry too
@@ -335,7 +335,7 @@ describeWithEnvironment('Overlays', () => {
       });
       overlays.update();
       const outlineNowHidden =
-          container.querySelector<HTMLElement>('.overlay-type-ENTRY_OUTLINE')?.style.visibility === 'hidden';
+          container.querySelector<HTMLElement>('.overlay-type-ENTRY_OUTLINE')?.style.display === 'none';
       assert.isTrue(outlineNowHidden, 'The ENTRY_OUTLINE should be hidden');
     });
 

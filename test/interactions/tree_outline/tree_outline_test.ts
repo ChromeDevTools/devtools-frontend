@@ -6,7 +6,6 @@ import {assert} from 'chai';
 
 import {type ElementHandle} from 'puppeteer-core';
 import {$, $$, click, waitFor, waitForFunction} from '../../shared/helper.js';
-import {it} from '../../shared/mocha-extensions.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../helpers/shared.js';
 
 async function getTreeOutline(root?: ElementHandle) {

@@ -8,7 +8,7 @@ import {
   goTo,
   waitForFunction,
 } from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   clearTimeWindow,
   getAllRequestNames,

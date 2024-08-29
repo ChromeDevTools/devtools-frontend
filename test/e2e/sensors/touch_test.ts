@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {waitFor} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('Sensors panel', () => {

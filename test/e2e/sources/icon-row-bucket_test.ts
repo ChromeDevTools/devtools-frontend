@@ -16,7 +16,7 @@ import {
   waitForNone,
   waitForWithTries,
 } from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {navigateToIssuesTab} from '../helpers/issues-helpers.js';
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
 

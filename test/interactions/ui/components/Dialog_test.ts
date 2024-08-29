@@ -5,7 +5,6 @@
 import type * as Dialogs from '../../../../front_end/ui/components/dialogs/dialogs.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../../test/interactions/helpers/shared.js';
 import {getBrowserAndPages, waitFor} from '../../../../test/shared/helper.js';
-import {describe, itScreenshot} from '../../../../test/shared/mocha-extensions.js';
 import {
   assertElementScreenshotUnchanged,
   waitForDialogAnimationEnd,

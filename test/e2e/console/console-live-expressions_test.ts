@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {click, getBrowserAndPages, typeText, waitFor, waitForNone} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {CONSOLE_CREATE_LIVE_EXPRESSION_SELECTOR, CONSOLE_TAB_SELECTOR} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {

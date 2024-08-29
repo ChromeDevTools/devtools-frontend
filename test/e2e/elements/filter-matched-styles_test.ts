@@ -6,7 +6,6 @@
 import {assert} from 'chai';
 
 import {goToHtml, waitForAria, waitForMany} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
 
 describe('Filtering in the styles tab', () => {
   beforeEach(async () => {

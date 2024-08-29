@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assertNotNullOrUndefined, getResourcesPath, goToResource, matchStringArray} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   assertIssueTitle,
   expandIssue,

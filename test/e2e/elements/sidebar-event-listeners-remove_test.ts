@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {click, waitFor} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   getDisplayedEventListenerNames,
   getFirstNodeForEventListener,

@@ -8,7 +8,7 @@ import type * as puppeteer from 'puppeteer-core';
 import type * as Root from '../../../front_end/core/root/root.js';
 import type * as Console from '../../../front_end/panels/console/console.js';
 import {click, getBrowserAndPages, hover, setDevToolsSettings, waitFor, waitForNone} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {clickOnContextMenu, CONSOLE_TAB_SELECTOR} from '../helpers/console-helpers.js';
 
 describe('ConsoleInsight', function() {

@@ -9,7 +9,7 @@ node_ts_library("shared") {
     "async-scope.ts",
     "debug-check.ts",
     "helper.ts",
-    "mocha-extensions.ts",
+    "mocha-interface.ts",
     "mocha-resultsdb-reporter.ts",
     "screenshot-error.ts",
     "screenshots.ts",

@@ -7,7 +7,7 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
 import {hasClass, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {navigateToPerformanceTab, openCaptureSettings} from '../helpers/performance-helpers.js';
 
 async function waitForChangedConcurrency(lastConcurrency: number|undefined) {

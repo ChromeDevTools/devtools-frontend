@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {$textContent, click, waitForAria, waitForFunction} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {waitForSoftContextMenu} from '../helpers/context-menu-helpers.js';
 import {shiftClickColorSwatch} from '../helpers/elements-helpers.js';
 import {openFileInEditor, openFileInSourcesPanel} from '../helpers/sources-helpers.js';

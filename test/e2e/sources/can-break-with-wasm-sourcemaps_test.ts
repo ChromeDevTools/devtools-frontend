@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {getBrowserAndPages, step, waitFor, waitForFunction} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   addBreakpointForLine,
   checkBreakpointDidNotActivate,

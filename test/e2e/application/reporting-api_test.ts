@@ -12,7 +12,7 @@ import {
   goToResource,
   waitFor,
 } from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {navigateToApplicationTab} from '../helpers/application-helpers.js';
 import {getDataGrid, getDataGridRows, getInnerTextOfDataGridCells} from '../helpers/datagrid-helpers.js';
 

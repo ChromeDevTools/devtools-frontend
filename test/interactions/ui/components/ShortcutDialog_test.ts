@@ -4,7 +4,6 @@
 
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../../test/interactions/helpers/shared.js';
 import {waitFor} from '../../../../test/shared/helper.js';
-import {describe, itScreenshot} from '../../../../test/shared/mocha-extensions.js';
 import {
   assertElementScreenshotUnchanged,
   waitForDialogAnimationEnd,

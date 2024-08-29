@@ -9,7 +9,7 @@ import {
   goToResource,
   waitForFunction,
 } from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   getStructuredConsoleMessages,
   navigateToConsoleTab,

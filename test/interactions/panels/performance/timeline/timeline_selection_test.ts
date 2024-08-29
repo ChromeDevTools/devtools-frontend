@@ -7,7 +7,6 @@ import {assert} from 'chai';
 import type * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import type * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import {getBrowserAndPages, waitFor, waitForMany} from '../../../../shared/helper.js';
-import {describe, it} from '../../../../shared/mocha-extensions.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
 
 describe('FlameChart', function() {

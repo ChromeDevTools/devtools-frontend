@@ -20,7 +20,7 @@ import {
   waitForFunction,
   waitForNoElementsWithTextContent,
 } from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   changeAllocationSampleViewViaDropdown,
   changeViewViaDropdown,

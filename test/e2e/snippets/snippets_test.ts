@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {getBrowserAndPages, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {maybeGetCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {getAvailableSnippets, openCommandMenu, showSnippetsAutocompletion} from '../helpers/quick_open-helpers.js';
 import {

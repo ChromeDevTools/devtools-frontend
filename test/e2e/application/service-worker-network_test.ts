@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import {unregisterAllServiceWorkers} from '../../conductor/hooks.js';
 import {click, getBrowserAndPages, step} from '../../shared/helper.js';
-import {beforeEach, describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   navigateToApplicationTab,
   navigateToServiceWorkers,

@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {assertNotNullOrUndefined, getBrowserAndPages, goToResource} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,

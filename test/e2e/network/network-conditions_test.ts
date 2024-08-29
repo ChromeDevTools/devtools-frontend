@@ -13,7 +13,7 @@ import {
   waitFor,
   waitForAria,
 } from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {navigateToNetworkTab} from '../helpers/network-helpers.js';
 
 interface Navigator {

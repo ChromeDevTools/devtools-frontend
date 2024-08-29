@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {click, getBrowserAndPages, step, waitFor} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   clickOnContextMenu,
   CONSOLE_TAB_SELECTOR,

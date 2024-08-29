@@ -65,7 +65,7 @@ export class ScreenshotError extends Error {
    * Creates a ScreenshotError an unexpected error occurs. Screenshots are
    * were taken for both the target and the frontend.
    */
-  static fromBase64Images(error: unknown, targetScreenshot?: string, frontendScreenshot?: string) {
+  static fromBase64Images(error: Error, targetScreenshot?: string, frontendScreenshot?: string) {
     if (!targetScreenshot || !frontendScreenshot) {
       console.error('No artifacts to save.');
       return error;

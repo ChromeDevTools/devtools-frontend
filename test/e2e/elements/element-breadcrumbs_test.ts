@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {clickElement, goToResource, waitForElementWithTextContent} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   assertSelectedElementsNodeTextIncludes,
   expandSelectedNodeRecursively,

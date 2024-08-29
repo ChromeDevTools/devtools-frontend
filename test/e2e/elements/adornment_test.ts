@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {click, getBrowserAndPages, goToResource} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   editCSSProperty,
   expandSelectedNodeRecursively,

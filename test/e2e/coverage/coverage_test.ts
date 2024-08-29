@@ -10,7 +10,7 @@ import {
   goToResource,
   waitForElementWithTextContent,
 } from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   clearCoverageContent,
   getCoverageData,

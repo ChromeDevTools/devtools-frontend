@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
 import {waitFor} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   getDisplayedEventListenerNames,
   getEventListenerProperties,

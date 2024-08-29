@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {click, getBrowserAndPages, getTestServerPort, waitFor} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {getTrimmedTextContent, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
 const MANIFEST_SELECTOR = '[aria-label="Manifest"]';

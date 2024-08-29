@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {click, pressKey, typeText, waitFor} from '../../shared/helper.js';
-import {it} from '../../shared/mocha-extensions.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../helpers/shared.js';
 
 import {type ElementHandle} from 'puppeteer-core';

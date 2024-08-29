@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describe, it} from '../../shared/mocha-extensions.js';
 import {reloadDevTools} from '../helpers/cross-tool-helper.js';
 import {
   closeSecurityTab,

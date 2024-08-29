@@ -26,6 +26,24 @@ declare global {
   }
 }
 
+declare global {
+  /*
+  * For tests containing screenshots.
+  */
+  let itScreenshot: {
+    (title: string, fn: Mocha.AsyncFunc): void,
+
+    skip: (title: string, fn: Mocha.AsyncFunc) => void,
+
+    skipOnPlatforms: (platforms: Array<Platform>, title: string, fn: Mocha.AsyncFunc) => void,
+  };
+  namespace Mocha {
+    export interface TestFunction {
+      skipOnPlatforms: (platforms: Array<Platform>, title: string, fn: Mocha.AsyncFunc) => void;
+    }
+  }
+}
+
 export type Platform = 'mac'|'win32'|'linux';
 export let platform: Platform;
 switch (os.platform()) {
@@ -339,16 +357,13 @@ export const waitForNoElementsWithTextContent =
                              }, asyncScope), `Waiting for no elements with textContent '${textContent}'`);
     };
 
-export const TIMEOUT_ERROR_MESSAGE = 'Test timed out';
-
 export const waitForFunction =
     async<T>(fn: () => Promise<T|undefined>, asyncScope = new AsyncScope(), description?: string) => {
   const innerFunction = async () => {
     while (true) {
-      if (asyncScope.isCanceled()) {
-        throw new Error(TIMEOUT_ERROR_MESSAGE);
-      }
+      AsyncScope.abortSignal?.throwIfAborted();
       const result = await fn();
+      AsyncScope.abortSignal?.throwIfAborted();
       if (result) {
         return result;
       }

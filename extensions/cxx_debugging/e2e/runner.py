@@ -369,6 +369,10 @@ class Init(RunnerCommand):
                           'extensions/cxx_debugging/e2e/MochaRootHooks.js'),
                 'source-map-support/register'
             ],
+            'ui':
+            repo_path(options.build_root,
+                      get_artifact_dir('devtools-frontend'),
+                      'gen/test/shared/mocha-interface.js'),
             'spec': [
                 repo_path(
                     options.build_root,

@@ -4,16 +4,8 @@
 
 export class AsyncScope {
   static scopes: Set<AsyncScope> = new Set();
+  static abortSignal: AbortSignal;
   private asyncStack: Array<{description?: string, frames: string[]}> = [];
-  private canceled: boolean = false;
-
-  setCanceled(): void {
-    this.canceled = true;
-  }
-
-  isCanceled(): boolean {
-    return this.canceled;
-  }
 
   get descriptions(): string[] {
     return this.asyncStack.map(({description}) => description).filter(d => d) as string[];

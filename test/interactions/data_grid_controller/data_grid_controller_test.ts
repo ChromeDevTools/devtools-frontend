@@ -11,7 +11,6 @@ import {
 } from '../../e2e/helpers/context-menu-helpers.js';
 import {getDataGrid, getDataGridController, getInnerTextOfDataGridCells} from '../../e2e/helpers/datagrid-helpers.js';
 import {$, $$, click, waitFor, waitForFunction} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../helpers/shared.js';
 
 async function activateContextMenuOnColumnHeader(headerText: string) {

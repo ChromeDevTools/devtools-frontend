@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {click, enableExperiment, waitFor, waitForMany} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {expandSelectedNodeRecursively, goToResourceAndWaitForStyleSection} from '../helpers/elements-helpers.js';
 
 /**

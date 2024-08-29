@@ -11,7 +11,7 @@ import {
   waitFor,
   waitForFunction,
 } from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {getColorSwatch, goToResourceAndWaitForStyleSection} from '../helpers/elements-helpers.js';
 
 describe('ColorPicker', () => {

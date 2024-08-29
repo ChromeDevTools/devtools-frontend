@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from '../../shared/mocha-extensions.js';
 
 import {getChangesList, openChangesPanelAndNavigateTo, waitForNewChanges} from '../helpers/changes-helpers.js';
 import {editCSSProperty} from '../helpers/elements-helpers.js';

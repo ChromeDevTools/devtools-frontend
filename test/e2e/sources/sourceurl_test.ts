@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {getTestServerPort} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
 
 import {expandFileTree, openFileInSourcesPanel, type NestedFileSelector} from '../helpers/sources-helpers.js';
 

@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 
-import {describe, it} from '../../shared/mocha-extensions.js';
 import {loadExtension} from '../helpers/extension-helpers.js';
 import {getTextFilterContent, waitForNetworkTab} from '../helpers/network-helpers.js';
 

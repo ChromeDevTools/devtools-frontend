@@ -13,7 +13,7 @@ import {
   step,
   waitFor,
 } from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('Idle Emulation on Sensors panel', () => {

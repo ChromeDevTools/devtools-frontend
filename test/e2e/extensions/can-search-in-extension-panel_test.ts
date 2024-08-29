@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
 import {click, getBrowserAndPages, getResourcesPath, platform, waitFor, waitForFunction} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {loadExtension} from '../helpers/extension-helpers.js';
 
 declare global {

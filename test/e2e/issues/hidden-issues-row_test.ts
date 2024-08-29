@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {assertNotNullOrUndefined, goToResource, waitFor} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   getHiddenIssuesRow,
   getHiddenIssuesRowBody,

@@ -16,7 +16,7 @@ import {
   waitForAria,
   waitForNone,
 } from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {waitForDomNodeToBeVisible} from '../helpers/elements-helpers.js';
 import {
   clickZoomDropDown,

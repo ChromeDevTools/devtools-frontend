@@ -12,7 +12,7 @@ import {
   waitFor,
   waitForFunction,
 } from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {assertMatchesJSONSnapshot} from '../../shared/snapshots.js';
 import {
   clearStorageItems,

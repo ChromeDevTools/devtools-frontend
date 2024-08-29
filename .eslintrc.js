@@ -197,6 +197,11 @@ module.exports = {
       'rulesdir/inline_type_imports': 'error',
     }
   }, {
+    'files': "test/shared/mocha-interface.ts",
+    'rules': {
+      'rulesdir/es_modules_import': 'off',
+    }
+  }, {
     'files': ['*.test.ts', 'test/**/*.ts', '**/testing/*.ts'],
     'rules': {
       // errors on it('test') with no body

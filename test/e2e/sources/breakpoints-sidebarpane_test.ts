@@ -6,7 +6,6 @@ import {assert} from 'chai';
 
 import type * as puppeteer from 'puppeteer-core';
 
-import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   addBreakpointForLine,
   getLineNumberElement,

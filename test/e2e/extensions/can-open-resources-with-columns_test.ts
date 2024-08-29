@@ -12,7 +12,7 @@ import {
   SourceFileEvents,
   openFileInSourcesPanel,
 } from '../helpers/sources-helpers.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {getResourcesPath} from '../../shared/helper.js';
 
 describe('The Extension API', () => {

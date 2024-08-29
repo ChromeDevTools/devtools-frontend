@@ -5,7 +5,6 @@
 import type * as puppeteer from 'puppeteer-core';
 
 import {waitFor, waitForFunction} from '../../../../shared/helper.js';
-import {describe, itScreenshot} from '../../../../shared/mocha-extensions.js';
 import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
 

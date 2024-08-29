@@ -16,7 +16,6 @@ import {
   waitForFunction,
   waitForNone,
 } from '../../../../test/shared/helper.js';
-import {describe, it, itScreenshot} from '../../../../test/shared/mocha-extensions.js';
 import {
   assertElementScreenshotUnchanged,
   waitForDialogAnimationEnd,

@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {$$, step, waitFor} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {openSourceCodeEditorForFile} from '../helpers/sources-helpers.js';
 
 describe('Sources Tab', function() {

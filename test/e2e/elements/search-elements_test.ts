@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {getBrowserAndPages, goToResource, pressKey, timeout, waitFor, waitForNone} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   assertSearchResultMatchesText,
   SEARCH_BOX_SELECTOR,

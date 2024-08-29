@@ -9,7 +9,7 @@ import {
   getTestServerPort,
   goToResource,
 } from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   getCurrentConsoleMessages,
   Level,

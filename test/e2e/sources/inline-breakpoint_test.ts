@@ -9,7 +9,7 @@ import {
   waitFor,
   waitForFunction,
 } from '../../shared/helper.js';
-import {beforeEach, describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   addBreakpointForLine,
   disableInlineBreakpointForLine,

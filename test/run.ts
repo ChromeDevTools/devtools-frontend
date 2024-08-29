@@ -128,6 +128,8 @@ class MochaTests extends Tests {
           path.join(SOURCE_ROOT, 'node_modules', 'mocha', 'bin', 'mocha'),
           '--config',
           path.join(this.suite.buildPath, 'mocharc.js'),
+          '-u',
+          path.join(this.suite.buildPath, '..', 'shared', 'mocha-interface.js'),
         ],
         /* positionalTestArgs= */ false,  // Mocha interprets positional arguments as test files itself. Work around
                                           // that by passing the tests as dashed args instead.

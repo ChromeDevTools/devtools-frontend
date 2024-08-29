@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {$, click, getBrowserAndPages, goToResource, typeText, waitForFunction} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, STACK_PREVIEW_CONTAINER} from '../helpers/console-helpers.js';
 import {openSettingsTab} from '../helpers/settings-helpers.js';
 

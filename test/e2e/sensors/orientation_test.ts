@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import {type ElementHandle} from 'puppeteer-core';
 
 import {tabForward, waitFor, waitForNone} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   getInputFieldValue,
   getOrientationInputs,

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {goToResource, waitFor, waitForElementWithTextContent, waitForNone} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {findSubMenuEntryItem} from '../helpers/context-menu-helpers.js';
 import {
   expandSelectedNodeRecursively,

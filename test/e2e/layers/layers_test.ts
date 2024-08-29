@@ -13,7 +13,7 @@ import {
   waitFor,
   waitForFunction,
 } from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {getCurrentUrl} from '../helpers/layers-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 

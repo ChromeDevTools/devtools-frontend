@@ -15,7 +15,6 @@ import {
   waitForScrollTopOfDataGrid,
 } from '../../e2e/helpers/datagrid-helpers.js';
 import {$, $$, click, getBrowserAndPages, waitFor, waitForFunction} from '../../shared/helper.js';
-import {it} from '../../shared/mocha-extensions.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../helpers/shared.js';
 
 import {type ElementHandle} from 'puppeteer-core';

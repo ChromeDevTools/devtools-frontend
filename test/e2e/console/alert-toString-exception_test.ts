@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {
   getBrowserAndPages,
 } from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {getConsoleMessages, navigateToConsoleTab} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {click, closeAllCloseableTabs, goToResource, timeout, waitFor} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {navigateToConsoleTab, waitForConsoleInfoMessageAndClickOnLink} from '../helpers/console-helpers.js';
 import {
   clickOnContextMenuItemFromTab,

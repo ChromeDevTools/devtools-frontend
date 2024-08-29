@@ -11,10 +11,6 @@ import {
   preloadForCodeCoverage,
 } from '../../../../../test/interactions/helpers/shared.js';
 import {getBrowserAndPages} from '../../../../../test/shared/helper.js';
-import {
-  describe,
-  it,
-} from '../../../../../test/shared/mocha-extensions.js';
 import {assertMatchesJSONSnapshot} from '../../../../../test/shared/snapshots.js';
 
 describe('Injected', () => {

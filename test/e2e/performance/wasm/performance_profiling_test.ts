@@ -15,7 +15,7 @@ import {
   waitForElementWithTextContent,
   waitForFunction,
 } from '../../../shared/helper.js';
-import {describe, it} from '../../../shared/mocha-extensions.js';
+
 import {
   BOTTOM_UP_SELECTOR,
   CALL_TREE_SELECTOR,

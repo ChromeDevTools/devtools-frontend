@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {goToResource} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {expandIssue, navigateToIssuesTab, revealViolatingSourcesLines} from '../helpers/issues-helpers.js';
 import {waitForHighlightedLine} from '../helpers/sources-helpers.js';
 

@@ -17,7 +17,7 @@ import {
   waitFor,
   waitForFunction,
 } from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   addBreakpointForLine,
   BREAKPOINT_ITEM_SELECTOR,

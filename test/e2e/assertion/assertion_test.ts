@@ -6,7 +6,6 @@ import {assert} from 'chai';
 
 import {expectedErrors} from '../../conductor/events.js';
 import {getBrowserAndPages, goToResource, step} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
 
 describe('Assertions', function() {
   it('console.assert', async () => {

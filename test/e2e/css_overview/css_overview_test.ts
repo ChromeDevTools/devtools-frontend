@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {$$, click, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {navigateToCssOverviewTab, startCaptureCSSOverview} from '../helpers/css-overview-helpers.js';
 
 const CONTRAST_BUTTON_SELECTOR = '[data-type="contrast"]';

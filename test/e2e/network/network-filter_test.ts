@@ -18,7 +18,7 @@ import {
   waitForMany,
   waitForNone,
 } from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {
   reloadDevTools,
 } from '../helpers/cross-tool-helper.js';

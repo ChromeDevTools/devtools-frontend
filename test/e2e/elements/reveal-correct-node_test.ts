@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {click, goToResource, step, waitFor, waitForFunction} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {
   expandSelectedNodeRecursively,

@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {click, getBrowserAndPages, hover, waitFor} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {addBreakpointForLine, openSourceCodeEditorForFile, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
 const LAST_ELEMENT_SELECTOR = '.cm-executionLine > span:last-child';

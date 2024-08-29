@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {$, $$, click, getBrowserAndPages, goToResource, step, waitFor, waitForFunction} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {checkIfTabExistsInDrawer, DRAWER_PANEL_SELECTOR} from '../helpers/cross-tool-helper.js';
 import {
   addBreakpointForLine,

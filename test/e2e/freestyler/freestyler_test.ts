@@ -5,7 +5,6 @@
 import type * as Root from '../../../front_end/core/root/root.js';
 import {expectError} from '../../conductor/events.js';
 import {click, getBrowserAndPages, goToResource} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR} from '../helpers/console-helpers.js';
 
 describe('Freestyler', function() {

@@ -16,7 +16,7 @@ import {
   waitForFunction,
   waitForNone,
 } from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {setIgnoreListPattern, toggleIgnoreListing} from '../helpers/settings-helpers.js';
 import {
   addBreakpointForLine,

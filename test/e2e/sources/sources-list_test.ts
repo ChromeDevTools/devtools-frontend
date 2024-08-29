@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+
 import {navigateToElementsTab} from '../helpers/elements-helpers.js';
 import {
   captureAddedSourceFiles,

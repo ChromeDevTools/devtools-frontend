@@ -75,7 +75,7 @@ function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc) {
         const msg = `Pending async operations during timeout:\n${stacks.join('\n\n')}`;
         err.cause = new Error(msg);
       }
-      rejecter(createScreenshotError(err));
+      rejecter(await createScreenshotError(err));
     }, actualTimeout) : 0;
     promise
         .then(
@@ -85,7 +85,7 @@ function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc) {
               if (abortController.signal.aborted) {
                 return;
               }
-              rejecter(createScreenshotError(err));
+              rejecter(await createScreenshotError(err));
             })
         .finally(() => {
           clearTimeout(t);

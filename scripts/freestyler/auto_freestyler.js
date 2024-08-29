@@ -236,9 +236,14 @@ async function main() {
   for (let i = 0; i < exampleUrls.length; i++) {
     const exampleUrl = exampleUrls[i];
     console.log(`\n\x1b[33m[Info]: Running example ${exampleUrl} [${i + 1}/${exampleUrls.length}] \x1b[0m`);
-    const {results, metadata: singleMetadata} = await runExample({url: exampleUrl});
-    allExampleResults.push(...results);
-    metadata.push(singleMetadata);
+    try {
+      const {results, metadata: singleMetadata} = await runExample({url: exampleUrl});
+      allExampleResults.push(...results);
+      metadata.push(singleMetadata);
+    } catch (err) {
+      console.error(err);
+      console.error(`[Error]: There was an error running ${exampleUrl}, skipping it`);
+    }
   }
 
   await browser.disconnect();

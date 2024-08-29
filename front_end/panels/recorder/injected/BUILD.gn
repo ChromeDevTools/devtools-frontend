@@ -81,7 +81,7 @@ node_action("bundled_library") {
   ]
 
   if (is_debug) {
-    args += [ "--environment DEBUG_INJECTED" ]
+    args += [ "--environment=DEBUG_INJECTED" ]
   }
 
   outputs = [ _output_file_location ]

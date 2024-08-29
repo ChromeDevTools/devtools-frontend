@@ -50,9 +50,10 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   private defaultSidebarHeight: number;
   private readonly constraintsInDip: boolean;
   private resizeStartSizeDIP: number;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private setting: Common.Settings.Setting<any>|null;
+  private setting: Common.Settings.Setting<{
+    vertical?: SettingForOrientation,
+    horizontal?: SettingForOrientation,
+  }>|null;
   private totalSizeCSS: number;
   private totalSizeOtherDimensionCSS: number;
   private mainWidgetInternal: Widget|null;
@@ -759,7 +760,8 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
   private settingForOrientation(): SettingForOrientation|null {
     const state = this.setting ? this.setting.get() : {};
-    return this.isVerticalInternal ? state.vertical : state.horizontal;
+    const orientationState = this.isVerticalInternal ? state.vertical : state.horizontal;
+    return orientationState ?? null;
   }
 
   private preferredSidebarSizeDIP(): number {
@@ -808,7 +810,8 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       return;
     }
     const state = this.setting.get();
-    const orientationState = (this.isVerticalInternal ? state.vertical : state.horizontal) || {};
+    const orientationState =
+        (this.isVerticalInternal ? state.vertical : state.horizontal) || {} as SettingForOrientation;
 
     orientationState.size = this.savedSidebarSizeDIP;
     if (this.shouldSaveShowMode) {

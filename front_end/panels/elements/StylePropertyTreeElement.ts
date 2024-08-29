@@ -1653,6 +1653,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.listItemElement.createChild('span', 'styles-name-value-separator').textContent = separator;
       if (this.expandElement) {
         this.listItemElement.appendChild(this.expandElement);
+        this.updateExpandElement();
       }
       this.listItemElement.appendChild(this.valueElement);
       const semicolon = this.listItemElement.createChild('span', 'styles-semicolon');

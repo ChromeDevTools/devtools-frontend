@@ -356,7 +356,7 @@ export class FreestylerChatUi extends HTMLElement {
                              LitHtml.nothing;
 
     // clang-format off
-    return LitHtml.html`<div>
+    return LitHtml.html`<div class="step-details">
       ${thought}
       ${sideEffects}
       ${code}
@@ -376,21 +376,23 @@ export class FreestylerChatUi extends HTMLElement {
 
     const iconClasses = LitHtml.Directives.classMap({
       'loading': isLoading,
+      'paused': Boolean(step.sideEffect),
     });
 
     // clang-format off
-    return LitHtml.html`<details class="thought" open>
-      <summary>
-        <${IconButton.Icon.Icon.litTagName}
-          class=${iconClasses}
-          .name=${iconName}
-        ></${IconButton.Icon.Icon.litTagName}>
+    return LitHtml.html`
+      <details class="step" open>
+        <summary>
+          <${IconButton.Icon.Icon.litTagName}
+            class=${iconClasses}
+            .name=${iconName}
+          ></${IconButton.Icon.Icon.litTagName}>
           ${this.#renderTitle(step)}
-      </summary>
-      ${this.#renderStepDetails(step, {
-        isLast: options.isLast,
-      })}
-    </details>`;
+        </summary>
+        ${this.#renderStepDetails(step, {
+          isLast: options.isLast,
+        })}
+      </details>`;
     // clang-format on
   }
 
@@ -438,13 +440,18 @@ export class FreestylerChatUi extends HTMLElement {
     if (message.entity === ChatMessageEntity.USER) {
       // TODO(b/359768313):
       const name = i18nString(UIStringsTemp.you);
+      const image = this.#props.userInfo.accountImage ?
+          LitHtml.html`<img src="data:image/png;base64, ${this.#props.userInfo.accountImage}" alt="Account avatar" />` :
+          LitHtml.html`<${IconButton.Icon.Icon.litTagName}
+            .name=${'profile'}
+          ></${IconButton.Icon.Icon.litTagName}>`;
       // clang-format off
       return LitHtml.html`<div
         class="chat-message query"
         jslog=${VisualLogging.section('question')}
       >
         <div class="message-info">
-          <img src="data:image/png;base64, ${this.#props.userInfo.accountImage}" alt="Account avatar" />
+          ${image}
           <div class="message-name">
             <span>${name}</span>
           </div>
@@ -467,21 +474,19 @@ export class FreestylerChatUi extends HTMLElement {
             <span>${i18nString(UIStringsTemp.cssAssistant)}</span>
           </div>
         </div>
-        <div>
-          ${LitHtml.Directives.repeat(
-            message.steps,
-            (_, index) => index,
-            step => {
-             return this.#renderStep(step, {
-                isLast: [...message.steps.values()].at(-1) === step && isLast,
-              });
-            },
-          )}
-        </div>
+        ${LitHtml.Directives.repeat(
+          message.steps,
+          (_, index) => index,
+          step => {
+            return this.#renderStep(step, {
+              isLast: [...message.steps.values()].at(-1) === step && isLast,
+            });
+          },
+        )}
         ${
-            message.answer !== undefined
-              ? LitHtml.html`<p class="answer-step">${this.#renderTextAsMarkdown(message.answer)}</p>`
-              : LitHtml.nothing
+          message.answer !== undefined
+            ? LitHtml.html`<p class="answer-step">${this.#renderTextAsMarkdown(message.answer)}</p>`
+            : LitHtml.nothing
         }
         <div class="actions">
           ${

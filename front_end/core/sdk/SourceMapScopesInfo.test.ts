@@ -26,7 +26,8 @@ describe('SourceMapScopesInfo', () => {
                                   .end(0, 5)
                                   .build();
 
-      const info = SourceMapScopesInfo.parseFromMap({names, originalScopes, generatedRanges});
+      const info = SourceMapScopesInfo.parseFromMap(
+          sinon.createStubInstance(SDK.SourceMap.SourceMap), {names, originalScopes, generatedRanges});
 
       assert.deepEqual(info.findInlinedFunctions(0, 3), [{name: 'foo', callsite: undefined}]);
     });
@@ -57,7 +58,8 @@ describe('SourceMapScopesInfo', () => {
               .end(0, 10)
               .build();
 
-      const info = SourceMapScopesInfo.parseFromMap({names, originalScopes, generatedRanges});
+      const info = SourceMapScopesInfo.parseFromMap(
+          sinon.createStubInstance(SDK.SourceMap.SourceMap), {names, originalScopes, generatedRanges});
 
       assert.deepEqual(info.findInlinedFunctions(0, 4), [{name: 'foo', callsite: undefined}]);
       assert.deepEqual(info.findInlinedFunctions(0, 7), [

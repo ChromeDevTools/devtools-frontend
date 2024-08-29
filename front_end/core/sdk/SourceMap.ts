@@ -645,7 +645,7 @@ export class SourceMap {
 
   #parseScopes(map: SourceMapV3Object): void {
     if (map.originalScopes && map.generatedRanges) {
-      this.#scopesInfo = SourceMapScopesInfo.parseFromMap(map);
+      this.#scopesInfo = SourceMapScopesInfo.parseFromMap(this, map);
     }
   }
 

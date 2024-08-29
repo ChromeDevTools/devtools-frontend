@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {type SourceMapV3Object} from './SourceMap.js';
+import {type SourceMap, type SourceMapV3Object} from './SourceMap.js';
 import {
   decodeGeneratedRanges,
   decodeOriginalScopes,
@@ -13,23 +13,27 @@ import {
 
 export class SourceMapScopesInfo {
   /* eslint-disable-next-line no-unused-private-class-members */
+  readonly #sourceMap: SourceMap;
+  /* eslint-disable-next-line no-unused-private-class-members */
   readonly #originalScopes: OriginalScope[];
   readonly #generatedRanges: GeneratedRange[];
 
-  constructor(originalScopes: OriginalScope[], generatedRanges: GeneratedRange[]) {
+  constructor(sourceMap: SourceMap, originalScopes: OriginalScope[], generatedRanges: GeneratedRange[]) {
+    this.#sourceMap = sourceMap;
     this.#originalScopes = originalScopes;
     this.#generatedRanges = generatedRanges;
   }
 
-  static parseFromMap(sourceMap: Pick<SourceMapV3Object, 'names'|'originalScopes'|'generatedRanges'>):
-      SourceMapScopesInfo {
-    if (!sourceMap.originalScopes || !sourceMap.generatedRanges) {
+  static parseFromMap(
+      sourceMap: SourceMap,
+      sourceMapJson: Pick<SourceMapV3Object, 'names'|'originalScopes'|'generatedRanges'>): SourceMapScopesInfo {
+    if (!sourceMapJson.originalScopes || !sourceMapJson.generatedRanges) {
       throw new Error('Cant create SourceMapScopesInfo without encoded scopes');
     }
-    const scopeTrees = decodeOriginalScopes(sourceMap.originalScopes, sourceMap.names ?? []);
+    const scopeTrees = decodeOriginalScopes(sourceMapJson.originalScopes, sourceMapJson.names ?? []);
     const originalScopes = scopeTrees.map(tree => tree.root);
-    const generatedRanges = decodeGeneratedRanges(sourceMap.generatedRanges, scopeTrees, sourceMap.names ?? []);
-    return new SourceMapScopesInfo(originalScopes, generatedRanges);
+    const generatedRanges = decodeGeneratedRanges(sourceMapJson.generatedRanges, scopeTrees, sourceMapJson.names ?? []);
+    return new SourceMapScopesInfo(sourceMap, originalScopes, generatedRanges);
   }
 
   /**

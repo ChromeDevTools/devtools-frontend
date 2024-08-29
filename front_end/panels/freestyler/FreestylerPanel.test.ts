@@ -75,43 +75,6 @@ describeWithEnvironment('FreestylerPanel', () => {
     });
   });
 
-  describe('showConfirmSideEffectUi', () => {
-    beforeEach(() => {
-      Common.Settings.settingForTest('freestyler-dogfood-consent-onboarding-finished').set(true);
-    });
-
-    it('should render the view with confirmSideEffectDialog prop', async () => {
-      const panel = new Freestyler.FreestylerPanel(mockView, {
-        aidaClient: getTestAidaClient(),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
-
-      void panel.showConfirmSideEffectUi('code');
-
-      const lastArg = mockView.lastCall.args[0];
-      assert.exists(lastArg.confirmSideEffectDialog);
-      assert.strictEqual(lastArg.confirmSideEffectDialog.code, 'code');
-    });
-
-    it('should resolve with the result of the onAnswer call', done => {
-      const panel = new Freestyler.FreestylerPanel(mockView, {
-        aidaClient: getTestAidaClient(),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
-
-      void panel.showConfirmSideEffectUi('code').then(result => {
-        assert.isTrue(result);
-        done();
-      });
-
-      const lastArg = mockView.lastCall.args[0];
-      assert.exists(lastArg.confirmSideEffectDialog);
-      lastArg.confirmSideEffectDialog.onAnswer(true);
-    });
-  });
-
   describe('on rate click', () => {
     beforeEach(() => {
       Common.Settings.settingForTest('freestyler-dogfood-consent-onboarding-finished').set(true);

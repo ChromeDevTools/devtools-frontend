@@ -159,6 +159,7 @@ export interface CollapsibleStep {
   title?: string;
   code?: string;
   output?: string;
+  sideEffect?: ConfirmSideEffectDialog;
 }
 
 interface ConfirmSideEffectDialog {
@@ -205,9 +206,6 @@ export interface Props {
   selectedElement: SDK.DOMModel.DOMNode|null;
   isLoading: boolean;
   canShowFeedbackForm: boolean;
-  // If there is a `confirmSideEffectDialog`, we show the
-  // confirmation dialog for executing that specific code.
-  confirmSideEffectDialog?: ConfirmSideEffectDialog;
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'>;
 }
 
@@ -341,9 +339,8 @@ export class FreestylerChatUi extends HTMLElement {
   }
 
   #renderStepDetails(step: CollapsibleStep, options: {isLast: boolean}): LitHtml.LitTemplate {
-    const sideEffects = options.isLast && this.#props.confirmSideEffectDialog ?
-        this.#renderSideEffectConfirmationUi(this.#props.confirmSideEffectDialog) :
-        LitHtml.nothing;
+    const sideEffects =
+        options.isLast && step.sideEffect ? this.#renderSideEffectConfirmationUi(step.sideEffect) : LitHtml.nothing;
     const thought = step.thought ? LitHtml.html`<p>${this.#renderTextAsMarkdown(step.thought)}</p>` : LitHtml.nothing;
     const code = step.code ? LitHtml.html`
           <div class="action-result">
@@ -368,9 +365,9 @@ export class FreestylerChatUi extends HTMLElement {
   }
 
   #renderStep(step: CollapsibleStep, options: {isLast: boolean}): LitHtml.LitTemplate {
-    const isLoading = this.#props.isLoading && options.isLast && !this.#props.confirmSideEffectDialog;
+    const isLoading = this.#props.isLoading && options.isLast && !step.sideEffect;
     let iconName: string = 'checkmark';
-    if (options.isLast && this.#props.confirmSideEffectDialog) {
+    if (options.isLast && step.sideEffect) {
       iconName = 'pause';
     } else if (isLoading) {
       // TODO: Use correct loading image
@@ -595,8 +592,13 @@ export class FreestylerChatUi extends HTMLElement {
   #renderChatUi = (): LitHtml.TemplateResult => {
     // TODO(ergunsh): Show a better UI for the states where Aida client is not available.
     const isAidaAvailable = this.#props.aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
-    const isInputDisabled =
-        !Boolean(this.#props.selectedElement) || !isAidaAvailable || Boolean(this.#props.confirmSideEffectDialog);
+    const showsSideEffects = this.#props.messages.some(message => {
+      return message.entity === ChatMessageEntity.MODEL && message.steps.some(step => {
+        return Boolean(step.sideEffect);
+      });
+    });
+    const isInputDisabled = !Boolean(this.#props.selectedElement) || !isAidaAvailable || showsSideEffects;
+
     // clang-format off
     return LitHtml.html`
       <div class="chat-ui">

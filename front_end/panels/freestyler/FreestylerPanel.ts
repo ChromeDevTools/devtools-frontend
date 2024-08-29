@@ -158,7 +158,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
       aidaClient: this.#aidaClient,
       changeManager: this.#changeManager,
       serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
-      confirmSideEffect: this.showConfirmSideEffectUi.bind(this),
     });
   }
 
@@ -185,21 +184,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
   doUpdate(): void {
     this.view(this.#viewProps, this.#viewOutput, this.#contentContainer);
-  }
-
-  async showConfirmSideEffectUi(action: string): Promise<boolean> {
-    const sideEffectConfirmationPromiseWithResolvers = Promise.withResolvers<boolean>();
-    this.#viewProps.confirmSideEffectDialog = {
-      code: action,
-      onAnswer: (answer: boolean) => sideEffectConfirmationPromiseWithResolvers.resolve(answer),
-    };
-    this.doUpdate();
-
-    const result = await sideEffectConfirmationPromiseWithResolvers.promise;
-    this.#viewProps.confirmSideEffectDialog = undefined;
-    this.doUpdate();
-
-    return result;
   }
 
   #handleSelectElementClick(): void {
@@ -245,7 +229,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #clearMessages(): void {
     this.#viewProps.messages = [];
     this.#viewProps.isLoading = false;
-    this.#viewProps.confirmSideEffectDialog = undefined;
     this.#agent = this.#createAgent();
     this.#cancel();
     this.doUpdate();
@@ -289,6 +272,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     let step: CollapsibleStep = {isLoading: true};
 
     for await (const data of this.#agent.run(text, {signal, isFixQuery})) {
+      step.sideEffect = undefined;
       switch (data.type) {
         case ResponseType.QUERYING: {
           step = {isLoading: true};
@@ -302,6 +286,17 @@ export class FreestylerPanel extends UI.Panel.Panel {
           step.isLoading = false;
           step.thought = data.thought;
           step.title = data.title;
+          if (systemMessage.steps.at(-1) !== step) {
+            systemMessage.steps.push(step);
+          }
+          break;
+        }
+        case ResponseType.SIDE_EFFECT: {
+          step.isLoading = false;
+          step.sideEffect = {
+            code: data.code,
+            onAnswer: data.confirm,
+          };
           if (systemMessage.steps.at(-1) !== step) {
             systemMessage.steps.push(step);
           }

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
 import * as Root from '../../../core/root/root.js';
 import type * as TraceEngine from '../../../models/trace/trace.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -50,7 +51,22 @@ export class SidebarWidget extends UI.Widget.VBox {
   #insightsView = new InsightsView();
   #annotationsView = new AnnotationsView();
 
+  /**
+   * Track if the user has opened the sidebar before. We do this so that the
+   * very first time they record/import a trace after the sidebar ships, we can
+   * automatically pop it open to aid discovery. But, after that, the sidebar
+   * visibility will be persisted based on if the user opens or closes it - the
+   * SplitWidget tracks its state in its own setting.
+   */
+  #userHasOpenedSidebarOnce =
+      Common.Settings.Settings.instance().createSetting<boolean>('timeline-user-has-opened-siderbar-once', false);
+
+  userHasOpenedSidebarOnce(): boolean {
+    return this.#userHasOpenedSidebarOnce.get();
+  }
+
   override wasShown(): void {
+    this.#userHasOpenedSidebarOnce.set(true);
     this.#tabbedPane.show(this.element);
     if (!this.#tabbedPane.hasTab(SidebarTabs.INSIGHTS) &&
         Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS)) {

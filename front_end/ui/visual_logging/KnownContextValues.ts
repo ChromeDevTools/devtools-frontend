@@ -2954,6 +2954,7 @@ export const knownContextValues = new Set([
   'timeline-status',
   'timeline-tree-current-thread',
   'timeline-tree-group-by',
+  'timeline-user-has-opened-siderbar-once',
   'timeline-v8-runtime-call-stats',
   'timeline.',
   'timeline.animations',

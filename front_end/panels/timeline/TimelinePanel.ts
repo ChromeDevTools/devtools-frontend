@@ -342,9 +342,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    * and the main UI which shows the timeline
    */
   readonly #splitWidget = new UI.SplitWidget.SplitWidget(
-      true,       // isVertical
-      false,      // secondIsSidebar
-      undefined,  // settingName (we don't want to persist this state to a setting)
+      true,                            // isVertical
+      false,                           // secondIsSidebar
+      'timeline-panel-sidebar-state',  // settingName (to persist the open/closed state for the user)
       DEFAULT_SIDEBAR_WIDTH_PX,
   );
   private readonly statusPaneContainer: HTMLElement;
@@ -390,6 +390,19 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   );
 
   #sideBar = new TimelineComponents.Sidebar.SidebarWidget();
+  /**
+   * Rather than auto-pop the sidebar every time the user records a trace,
+   * which could get annoying, we instead persist the state of the sidebar
+   * visibility to a setting so it's restored across sessions.
+   * However, sometimes we have to automatically hide the sidebar, like when a
+   * trace recording is happening, or the user is on the landing page. In those
+   * times, we toggle this flag to true. Then, when we enter the VIEWING_TRACE
+   * mode, we check this flag and pop the sidebar open if it's set to true.
+   * Longer term a better fix here would be to divide the 3 UI screens
+   * (status pane, landing page, trace view) into distinct components /
+   * widgets, to avoid this complexity.
+   */
+  #restoreSidebarVisibilityOnTraceLoad: boolean = false;
 
   constructor() {
     super('timeline');
@@ -493,8 +506,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.searchableViewInternal.hideWidget();
 
     this.#splitWidget.setMainWidget(this.timelinePane);
-    this.#splitWidget.show(this.element);
     this.#splitWidget.setSidebarWidget(this.#sideBar);
+    this.#splitWidget.enableShowModeSaving();
+    this.#splitWidget.show(this.element);
 
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightDeactivated.eventName, () => {
       this.#setActiveInsight(null);
@@ -587,11 +601,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.registerCSSFiles([timelinePanelStyles]);
     // Record the performance tool load time.
     Host.userMetrics.panelLoaded('timeline', 'DevTools.Launch.Timeline');
-
-    // The sidebar state is by-default persisted across reloads; we do not want
-    // that as if you come back to the panel you see the landing page, and the
-    // sidebar is empty in that state.
-    this.#splitWidget.hideSidebar();
   }
 
   override willHide(): void {
@@ -715,8 +724,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.#removeStatusPane();
         this.#hideLandingPage();
         this.#setModelForActiveTrace();
+        this.#showSidebarIfRequired();
         return;
       }
+
       case 'STATUS_PANE_OVERLAY': {
         // We don't manage the StatusPane UI here; it is done in the
         // recordingStarted/recordingProgress callbacks, but we do make sure we
@@ -725,7 +736,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
         // We also hide the sidebar - else if the user is viewing a trace and
         // then load/record another, the sidebar remains visible.
-        this.#splitWidget.hideSidebar();
+        this.#hideSidebar();
         return;
       }
       default:
@@ -1676,16 +1687,24 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.#sideBar.setInsights(traceInsightsData);
     }
 
-    // Automatically show the sidebar when a trace is loaded if we have data.
-    // Or hide it when we do not have data (which likely means we are back on the landing page)
-    const hasInsights = traceInsightsData !== null && traceInsightsData.size > 0;
-    const hasAnnotations = (currModificationManager?.getAnnotations().length ?? 0) > 0;
-    const shouldOpenSidebar = this.#panelSidebarEnabled() && (hasInsights || hasAnnotations);
-    if (shouldOpenSidebar) {
+    this.#showSidebarIfRequired();
+  }
+
+  /**
+   * We automatically show the sidebar in only 2 scenarios:
+   * 1. The user has never seen it before, so we show it once to aid discovery
+   * 2. The user had it open, and we hid it (for example, during recording), so now we need to bring it back.
+   * We also check that the experiments are enabled, else we reveal an entirely empty sidebar.
+   */
+  #showSidebarIfRequired(): void {
+    const needToRestore = this.#restoreSidebarVisibilityOnTraceLoad;
+    const userHasSeenSidebar = this.#sideBar.userHasOpenedSidebarOnce();
+    const experimentsEnabled = this.#panelSidebarEnabled();
+
+    if (experimentsEnabled && (!userHasSeenSidebar || needToRestore)) {
       this.#splitWidget.showBoth();
-    } else {
-      this.#splitWidget.hideSidebar();
     }
+    this.#restoreSidebarVisibilityOnTraceLoad = false;
   }
 
   // Build a map mapping annotated entries to the colours that are used to display them in the FlameChart.
@@ -1757,10 +1776,20 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
   }
 
+  /**
+   * Hide the sidebar, but persist the user's state, because when they import a
+   * trace we want to revert the sidebar back to what it was.
+   */
+  #hideSidebar(): void {
+    if (this.#splitWidget.sidebarIsShowing()) {
+      this.#restoreSidebarVisibilityOnTraceLoad = true;
+      this.#splitWidget.hideSidebar();
+    }
+  }
   #showLandingPage(): void {
     this.updateSettingsPaneVisibility();
     this.#removeSidebarIconFromToolbar();
-    this.#splitWidget.hideSidebar();
+    this.#hideSidebar();
 
     if (this.landingPage) {
       this.landingPage.show(this.statusPaneContainer);

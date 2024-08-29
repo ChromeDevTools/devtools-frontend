@@ -256,6 +256,10 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     return this.showModeInternal;
   }
 
+  sidebarIsShowing(): boolean {
+    return this.showModeInternal !== ShowMode.OnlyMain;
+  }
+
   setSecondIsSidebar(secondIsSidebar: boolean): void {
     if (secondIsSidebar === this.secondIsSidebar) {
       return;

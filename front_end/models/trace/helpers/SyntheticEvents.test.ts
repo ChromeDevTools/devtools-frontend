@@ -21,25 +21,19 @@ describe('SyntheticEvents', function() {
       assert.doesNotThrow(TraceModel.Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager);
     });
 
-    it('always returns the manager for the most recent trace and re-uses managers for the same set of input events',
-       async function() {
-         // Exact traces do not matter, as long as they are different
-         const trace1 = await TraceLoader.fixtureContents(this, 'basic.json.gz');
-         const trace2 = await TraceLoader.fixtureContents(this, 'basic-stack.json.gz');
+    it('activates the latest trace manager but can then activate an alternative manager', async function() {
+      // Exact traces do not matter, as long as they are different
+      const events1 = await TraceLoader.rawEvents(this, 'basic.json.gz');
+      const events2 = await TraceLoader.rawEvents(this, 'basic-stack.json.gz');
 
-         const events1 = Array.isArray(trace1) ? trace1 : trace1.traceEvents;
-         const events2 = Array.isArray(trace2) ? trace2 : trace2.traceEvents;
+      const manager1 = TraceModel.Helpers.SyntheticEvents.SyntheticEventsManager.createAndActivate(events1);
+      const manager2 = TraceModel.Helpers.SyntheticEvents.SyntheticEventsManager.createAndActivate(events2);
 
-         const manager1 = TraceModel.Helpers.SyntheticEvents.SyntheticEventsManager.initAndActivate(events1);
-         const manager2 = TraceModel.Helpers.SyntheticEvents.SyntheticEventsManager.initAndActivate(events2);
-
-         // Manager2 is active as it was the last one to be initialized
-         assert.strictEqual(TraceModel.Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager(), manager2);
-         // Now re-init with events1 (should use the existing manager from the cache)
-         TraceModel.Helpers.SyntheticEvents.SyntheticEventsManager.initAndActivate(events1);
-         // Now manager1 is active
-         assert.strictEqual(TraceModel.Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager(), manager1);
-       });
+      // Manager2 is active as it was the last one to be initialized
+      assert.strictEqual(TraceModel.Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager(), manager2);
+      TraceModel.Helpers.SyntheticEvents.SyntheticEventsManager.activate(manager1);
+      assert.strictEqual(TraceModel.Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager(), manager1);
+    });
   });
 
   describe('SyntheticBasedEvent registration', () => {

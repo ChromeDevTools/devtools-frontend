@@ -26,6 +26,7 @@ beforeEach(() => {
   for (const handler of Object.values(TraceEngine.Handlers.ModelHandlers)) {
     handler.reset();
   }
+  TraceEngine.Helpers.SyntheticEvents.SyntheticEventsManager.reset();
   Timeline.SourceMapsResolver.SourceMapsResolver.clearResolvedNodeNames();
 
   // Don't retain host binding listeners across tests. Set this up before initializing ThemeSupport as

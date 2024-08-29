@@ -89,15 +89,12 @@ export class TraceLoader {
 
   /**
    * Load an array of raw events from the trace file.
-   * Will default to typing those events using the types from TraceEngine, but
-   * can be overriden by passing the legacy EventPayload type as the generic.
    **/
   static async rawEvents(context: Mocha.Context|Mocha.Suite|null, name: string):
       Promise<readonly TraceEngine.Types.TraceEvents.TraceEventData[]> {
     const contents = await TraceLoader.fixtureContents(context, name);
 
     const events = 'traceEvents' in contents ? contents.traceEvents : contents;
-    TraceEngine.Helpers.SyntheticEvents.SyntheticEventsManager.initAndActivate(events);
     return events;
   }
 
@@ -145,24 +142,20 @@ export class TraceLoader {
     const configCacheKey = TraceEngine.Types.Configuration.configToCacheKey(config);
 
     const fromCache = traceEngineCache.get(name)?.get(configCacheKey);
+
+    // If we have results from the cache, we use those to ensure we keep the
+    // tests speedy and don't re-parse trace files over and over again.
     if (fromCache) {
+      const syntheticEventsManager = fromCache.model.syntheticTraceEventsManager(0);
+      if (!syntheticEventsManager) {
+        throw new Error('Cached trace engine result did not have a synthetic events manager instance');
+      }
+      TraceEngine.Helpers.SyntheticEvents.SyntheticEventsManager.activate(syntheticEventsManager);
       TraceLoader.initTraceBoundsManager(fromCache.traceData);
       Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(fromCache.model, 0);
-
-      // This init step is usually done in model.parse(), but as we loaded from
-      // the cache here, we manually run it.
-      // The SyntheticEventsManager caches instances based on the rawEvents()
-      // array, so we can safely do this even if we have already created an
-      // instance for this trace before - the old one will be re-used, rather
-      // than creating a new one.
-      const rawEvents = fromCache.model.rawTraceEvents();
-      if (rawEvents) {
-        TraceEngine.Helpers.SyntheticEvents.SyntheticEventsManager.initAndActivate(
-            rawEvents,
-        );
-      }
       return {traceData: fromCache.traceData, insights: fromCache.insights};
     }
+
     const fileContents = await TraceLoader.fixtureContents(context, name);
     const traceEngineData =
         await TraceLoader.executeTraceEngineOnFileContents(fileContents, /* emulate fresh recording */ false, config);

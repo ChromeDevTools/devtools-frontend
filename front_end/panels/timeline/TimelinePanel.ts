@@ -1566,8 +1566,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     const {traceIndex} = this.#viewMode;
     const traceParsedData = this.#traceEngineModel.traceParsedData(traceIndex);
+    const syntheticEventsManager = this.#traceEngineModel.syntheticTraceEventsManager(traceIndex);
 
-    if (!traceParsedData) {
+    if (!traceParsedData || !syntheticEventsManager) {
       // This should not happen, because you can only get into the
       // VIEWING_TRACE viewMode if you have a valid trace index from the
       // TraceEngine. If it does, let's bail back to the landing page.
@@ -1576,6 +1577,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       return;
     }
 
+    TraceEngine.Helpers.SyntheticEvents.SyntheticEventsManager.activate(syntheticEventsManager);
     // Clear the line level profile that could exist from the previous trace.
     PerfUI.LineLevelProfile.Performance.instance().reset();
 

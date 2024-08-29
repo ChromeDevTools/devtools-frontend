@@ -42,7 +42,7 @@ describe('ScreenshotsHandler', function() {
         {...baseEvent, ts: TraceModel.Types.Timing.MicroSeconds(100)},
         {...baseEvent, ts: TraceModel.Types.Timing.MicroSeconds(200)},
       ];
-      TraceModel.Helpers.SyntheticEvents.SyntheticEventsManager.initAndActivate(baseEvents);
+      TraceModel.Helpers.SyntheticEvents.SyntheticEventsManager.createAndActivate(baseEvents);
 
       for (const event of baseEvents) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);

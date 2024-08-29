@@ -13,9 +13,6 @@
     {
       "path": "../e2e/tsconfig.json"
     },
-    {
-      "path": "../../tsconfig.json"
-    }
   ],
   "extends": "../../config/typescript/tsconfig.base.json"
 }

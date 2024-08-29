@@ -42,6 +42,33 @@ export function timeStampForEventAdjustedByClosestNavigation(
   return Types.Timing.MicroSeconds(eventTimeStamp);
 }
 
+// Expands the trace window by a provided percentage or, if it the expanded window is smaller than 1 millisecond, expands it to 1 millisecond.
+// If the expanded window is outside of the max trace window, cut the overflowing bound to the max trace window bound.
+export function expandWindowByPercentOrToOneMillisecond(
+    annotationWindow: Types.Timing.TraceWindowMicroSeconds, maxTraceWindow: Types.Timing.TraceWindowMicroSeconds,
+    percentage: number): Types.Timing.TraceWindowMicroSeconds {
+  // Expand min and max of the window by half of the provided percentage. That way, in total, the window will be expanded by the provided percentage.
+  let newMin = annotationWindow.min - annotationWindow.range * (percentage / 100) / 2;
+  let newMax = annotationWindow.max + annotationWindow.range * (percentage / 100) / 2;
+
+  if (newMax - newMin < 1_000) {
+    const rangeMiddle = (annotationWindow.min + annotationWindow.max) / 2;
+    newMin = rangeMiddle - 500;
+    newMax = rangeMiddle + 500;
+  }
+
+  newMin = Math.max(newMin, maxTraceWindow.min);
+  newMax = Math.min(newMax, maxTraceWindow.max);
+
+  const expandedWindow: Types.Timing.TraceWindowMicroSeconds = {
+    min: Types.Timing.MicroSeconds(newMin),
+    max: Types.Timing.MicroSeconds(newMax),
+    range: Types.Timing.MicroSeconds(newMax - newMin),
+  };
+
+  return expandedWindow;
+}
+
 export interface EventTimingsData<
   ValueType extends Types.Timing.MicroSeconds|Types.Timing.MilliSeconds|Types.Timing.Seconds,
 > {

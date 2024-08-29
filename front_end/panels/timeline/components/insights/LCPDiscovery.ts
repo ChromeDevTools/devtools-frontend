@@ -182,7 +182,7 @@ export class LCPDiscovery extends BaseInsight {
         >
           <div slot="insight-description" class="insight-description">
           ${imageData.discoveryDelay ? LitHtml.html`<div class="discovery-delay">${this.#renderDiscoveryDelay(imageData.discoveryDelay)}</div>` : LitHtml.nothing}
-            <ul class="insight-results discovery-icon-results">
+            <ul class="insight-results insight-icon-results">
               <li class="insight-entry">
                 ${this.#adviceIcon(imageData.shouldIncreasePriorityHint)}
                 <span>${i18nString(UIStrings.fetchPriorityApplied)}</span>

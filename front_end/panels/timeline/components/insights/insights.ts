@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as CLSCulprits from './CLSCulprits.js';
+import * as DocumentLatency from './DocumentLatency.js';
 import * as Helpers from './Helpers.js';
 import * as LCPDiscovery from './LCPDiscovery.js';
 import * as LCPPhases from './LCPPhases.js';
@@ -14,6 +15,7 @@ import * as Viewport from './Viewport.js';
 
 export {
   CLSCulprits,
+  DocumentLatency,
   Helpers,
   LCPDiscovery,
   LCPPhases,

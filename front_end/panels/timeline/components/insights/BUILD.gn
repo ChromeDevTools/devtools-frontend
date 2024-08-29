@@ -17,6 +17,7 @@ generate_css("css_files") {
 devtools_module("insights") {
   sources = [
     "CLSCulprits.ts",
+    "DocumentLatency.ts",
     "Helpers.ts",
     "LCPDiscovery.ts",
     "LCPPhases.ts",

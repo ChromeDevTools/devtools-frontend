@@ -290,7 +290,7 @@ Otherwise, the entry label overlay object only gets repositioned.
             @keydown=${this.#handleLabelInputKeyDown}
             @paste=${this.#handleLabelInputPaste}
             @keyup=${this.#handleLabelInputKeyUp}
-            contenteditable=${this.#isLabelEditable}>
+            contenteditable=${this.#isLabelEditable ? 'plaintext-only' : false}>
           </span>
           <svg class="connectorContainer">
             <line/>

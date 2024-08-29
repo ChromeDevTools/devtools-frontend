@@ -6,6 +6,7 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
+import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -759,15 +760,31 @@ export class ConsoleInsight extends HTMLElement {
     // clang-format on
   }
 
+  #renderDisclaimer(): LitHtml.LitTemplate {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.GEN_AI_SETTINGS_PANEL)) {
+      // clang-format off
+      return LitHtml.html`<span>
+        Chrome AI may generate inaccurate info that does not represent Google's views. Data sent to Google may be seen by human reviewers to improve this feature.
+        <button class="link" role="link" @click=${() => UI.ViewManager.ViewManager.instance().showView('chrome-ai')}
+          jslog=${VisualLogging.action('open-ai-settings').track({click: true})}
+        >Open settings</button>
+        or
+        <x-link href=${LEARNMORE_URL} class="link" jslog=${VisualLogging.link('learn-more').track({click: true})}>learn more</x-link>
+      </span>`;
+    }
+    return LitHtml.html`<span>
+      This feature may display inaccurate or offensive information that doesn't represent Google's views.
+      <x-link href=${LEARNMORE_URL} class="link" jslog=${
+        VisualLogging.link('learn-more').track({click: true})}>${i18nString(UIStrings.learnMore)}</x-link>
+    </span>`;
+    // clang-format on
+  }
+
   #renderFooter(): LitHtml.LitTemplate {
     const showThumbsUpDownButtons =
         !(Common.Settings.Settings.instance().getHostConfig().aidaAvailability?.disallowLogging ?? true);
+    const disclaimer = this.#renderDisclaimer();
     // clang-format off
-    const disclaimer = LitHtml.html`<span>
-              This feature may display inaccurate or offensive information that doesn't represent Google's views.
-              <x-link href=${LEARNMORE_URL} class="link" jslog=${
-        VisualLogging.link('learn-more').track({click: true})}>${i18nString(UIStrings.learnMore)}</x-link>
-            </span>`;
     switch (this.#state.type) {
       case State.LOADING:
         return LitHtml.nothing;

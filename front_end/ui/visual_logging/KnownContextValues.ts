@@ -2075,6 +2075,7 @@ export const knownContextValues = new Set([
   'only-show-cookies-with-issues',
   'only-show-third-party',
   'opacity',
+  'open-ai-settings',
   'open-folder',
   'open-in-containing-folder',
   'open-in-new-tab',

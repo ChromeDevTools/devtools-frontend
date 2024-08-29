@@ -100,7 +100,8 @@ UI.ViewManager.registerViewExtension({
   order: 10,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   hasToolbar: false,
-  condition: config => isFeatureAvailable(config) && Common.Settings.Settings.instance().moduleSetting(setting).get(),
+  condition: config => isFeatureAvailable(config) && !isPolicyRestricted(config) &&
+      Common.Settings.Settings.instance().moduleSetting(setting).get(),
   async loadView() {
     const Freestyler = await loadFreestylerModule();
     return Freestyler.FreestylerPanel.instance();
@@ -145,7 +146,7 @@ UI.ActionRegistration.registerActionExtension({
     const Freestyler = await loadFreestylerModule();
     return new Freestyler.ActionDelegate();
   },
-  condition: isFeatureAvailable,
+  condition: config => isFeatureAvailable(config) && !isPolicyRestricted(config),
 });
 
 UI.ActionRegistration.registerActionExtension({
@@ -161,5 +162,5 @@ UI.ActionRegistration.registerActionExtension({
     const Freestyler = await loadFreestylerModule();
     return new Freestyler.ActionDelegate();
   },
-  condition: isFeatureAvailable,
+  condition: config => isFeatureAvailable(config) && !isPolicyRestricted(config),
 });

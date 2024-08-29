@@ -111,6 +111,15 @@ async function main() {
       };
     }
 
+    // Close any non about:blank pages. There should be only one
+    // about:blank page and DevTools should be closed manually for it.
+    for (const page of await browser.pages()) {
+      if (page.url() === 'about:blank') {
+        continue;
+      }
+      await page.close();
+    }
+
     const page = await browser.newPage();
 
     await page.goto(url);

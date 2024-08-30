@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import type * as Root from '../../../front_end/core/root/root.js';
 import {expectError} from '../../conductor/events.js';
 import {click, getBrowserAndPages, goToResource} from '../../shared/helper.js';
@@ -22,10 +24,9 @@ describe('Freestyler', function() {
     await frontend.removeScriptToEvaluateOnNewDocument(preloadScriptId);
   });
 
-  // TODO: make mocks more re-usable.
   async function setupMocks(
       aidaAvailability: Partial<Root.Runtime.AidaAvailability>,
-      devToolsFreestylerDogfood: Partial<Root.Runtime.HostConfigFreestylerDogfood>) {
+      devToolsFreestylerDogfood: Partial<Root.Runtime.HostConfigFreestylerDogfood>, messages: string[]) {
     const {frontend} = getBrowserAndPages();
     await frontend.bringToFront();
     // TODO: come up with less invasive way to mock host configs.
@@ -48,22 +49,14 @@ describe('Freestyler', function() {
       waitUntil: 'networkidle0',
     });
 
-    await frontend.evaluate(() => {
-      let call = 1;
+    await frontend.evaluate(messages => {
+      let call = 0;
       // @ts-ignore devtools context.
       globalThis.InspectorFrontendHost.doAidaConversation = async (request, streamId, cb) => {
         const response = JSON.stringify([
           {
             textChunk: {
-              text: call === 1 ?
-                  `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
-TITLE: changing the property
-ACTION
-await setElementStyles($0, { 'background-color': 'blue' });
-await setElementStyles($0.parentElement, { 'background-color': 'green' });
-STOP
-` :
-                  'ANSWER: changed styles',
+              text: messages[call],
             },
             metadata: {},
           },
@@ -78,7 +71,7 @@ STOP
         }
         cb({statusCode: 200});
       };
-    });
+    }, messages);
   }
 
   async function inspectNode(selector: string): Promise<void> {
@@ -117,7 +110,13 @@ STOP
     await frontend.locator(inputSelector).fill(query);
   }
 
-  async function submitAndWaitTillDone(): Promise<void> {
+  interface Log {
+    request: {
+      input: string,
+    };
+  }
+
+  async function submitAndWaitTillDone(): Promise<Array<Log>> {
     const {frontend} = getBrowserAndPages();
     const done = frontend.evaluate(() => {
       return new Promise(resolve => {
@@ -136,17 +135,46 @@ STOP
     autoAcceptEvals(abort.signal).catch(() => {});
     await done;
     abort.abort();
+    return JSON.parse(await frontend.evaluate((): string => {
+      return localStorage.getItem('freestylerStructuredLog') as string;
+    })) as Array<Log>;
   }
 
-  it('modifes the inline styles using the extension functions', async () => {
-    await setupMocks({}, {enabled: true});
+  async function runWithMessages(query: string, messages: string[]): Promise<Array<Log>> {
+    await setupMocks({}, {enabled: true}, messages);
     await goToResource('../resources/recorder/recorder.html');
 
     await inspectNode('div');
     await openFreestyler();
     await enableDebugModeForFreestyler();
-    await typeQuery('Change the background color for this element to blue');
-    await submitAndWaitTillDone();
+    await typeQuery(query);
+    return await submitAndWaitTillDone();
+  }
+
+  it('gets data about elements', async () => {
+    const result = await runWithMessages('Change the background color for this element to blue', [
+      `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
+TITLE: changing the property
+ACTION
+const data = {
+  color: window.getComputedStyle($0).color
+}
+STOP`,
+      'ANSWER: changed styles',
+    ]);
+    assert.deepStrictEqual(result.at(-1)!.request.input, 'OBSERVATION: {"color":"rgb(0, 0, 0)"}');
+  });
+
+  it('modifes the inline styles using the extension functions', async () => {
+    await runWithMessages('Change the background color for this element to blue', [
+      `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
+TITLE: changing the property
+ACTION
+await setElementStyles($0, { 'background-color': 'blue' });
+await setElementStyles($0.parentElement, { 'background-color': 'green' });
+STOP`,
+      'ANSWER: changed styles',
+    ]);
 
     const {target} = getBrowserAndPages();
     await target.bringToFront();

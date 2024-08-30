@@ -126,6 +126,8 @@ function launchChrome() {
     executablePath: TestConfig.chromeBinary,
     dumpio: !headless || Boolean(process.env['LUCI_CONTEXT']),
     slowMo: envSlowMo,
+    // CDP commands in e2e should not generally take more than 5 sec.
+    protocolTimeout: 5_000,
   };
 
   // Always set the default viewport because setting only the window size for

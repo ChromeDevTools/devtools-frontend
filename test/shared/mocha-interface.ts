@@ -163,24 +163,32 @@ function devtoolsTestInterface(suite: Mocha.Suite) {
           }
           return ` (#${iteration})`;
         }
-        const it = function(title: string, fn?: Mocha.AsyncFunc) {
+        function createTest(title: string, fn?: Mocha.AsyncFunc) {
           const suite = suites[0];
+          const test = new Mocha.Test(title, suite.isPending() || !fn ? undefined : makeInstrumentedTestFunction(fn));
+          test.file = file;
+          suite.addTest(test);
+          return test;
+        }
+        // Regular mocha it returns the test instance.
+        // It is not possible with TestConfig.repetitions.
+        const it = function(title: string, fn?: Mocha.AsyncFunc) {
           for (let i = 0; i < TestConfig.repetitions; i++) {
             const iterationTitle = title + iterationSuffix(i);
-            const test =
-                new Mocha.Test(iterationTitle, suite.isPending() || !fn ? undefined : makeInstrumentedTestFunction(fn));
-            test.file = file;
-            suite.addTest(test);
+            createTest(iterationTitle, fn);
           }
         };
         // @ts-expect-error Custom interface.
         context.it = it;
         it.skip = function(title: string, _fn: Mocha.AsyncFunc) {
           // no fn to skip.
-          return context.it(title);
+          return createTest(title);
         };
         it.only = function(title: string, fn: Mocha.AsyncFunc) {
-          return common.test.only(mocha, context.it(title, fn));
+          for (let i = 0; i < TestConfig.repetitions; i++) {
+            const iterationTitle = title + iterationSuffix(i);
+            common.test.only(mocha, createTest(iterationTitle, fn));
+          }
         };
         it.skipOnPlatforms = function(platforms: Array<Platform>, title: string, fn: Mocha.AsyncFunc) {
           const shouldSkip = platforms.includes(platform);

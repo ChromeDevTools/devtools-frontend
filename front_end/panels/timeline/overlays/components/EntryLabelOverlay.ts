@@ -214,9 +214,6 @@ Otherwise, the entry label overlay object only gets repositioned.
 
     this.#labelBox.innerText = initialLabel;
     // PART 1: draw the label box
-    // Set label height to the entry height
-    this.#labelBox.style.height = `${EntryLabelOverlay.LABEL_HEIGHT}px`;
-    this.#labelBox.style.padding = `${EntryLabelOverlay.LABEL_PADDING}px`;
     this.#labelBox.style.transform = `translateX(-${EntryLabelOverlay.LABEL_AND_CONNECTOR_SHIFT_LENGTH}px)`;
 
     // If the label is not empty, it was loaded from the trace file.

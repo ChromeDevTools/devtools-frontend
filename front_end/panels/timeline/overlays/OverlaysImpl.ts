@@ -1163,12 +1163,9 @@ export class Overlays extends EventTarget {
       case 'ENTRY_OUTLINE':
         break;
       case 'ENTRIES_LINK': {
-        // Nothing to do here.
         break;
       }
       case 'ENTRY_LABEL': {
-        // TODO: update if the label changes
-        // Nothing to do here.
         break;
       }
       case 'TIMESPAN_BREAKDOWN': {

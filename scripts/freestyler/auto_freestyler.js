@@ -169,7 +169,7 @@ async function main() {
 
     console.info('    [Info]: Locating AI assistant tab');
     await devtoolsPage.locator(':scope >>> #tab-elements').click();
-    await devtoolsPage.locator('aria/Customise and control DevTools').click();
+    await devtoolsPage.locator('aria/Customize and control DevTools').click();
     await devtoolsPage.locator('aria/More tools').click();
     await devtoolsPage.locator('aria/AI assistant').click();
 

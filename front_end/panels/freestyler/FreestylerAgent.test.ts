@@ -41,6 +41,7 @@ describeWithEnvironment('FreestylerAgent', () => {
             title: undefined,
             thought: payload,
             answer: undefined,
+            fixable: false,
           },
       );
       assert.deepStrictEqual(
@@ -50,6 +51,7 @@ describeWithEnvironment('FreestylerAgent', () => {
             title: undefined,
             thought: payload,
             answer: undefined,
+            fixable: false,
           },
       );
       assert.deepStrictEqual(
@@ -59,6 +61,7 @@ describeWithEnvironment('FreestylerAgent', () => {
             title: undefined,
             thought: payload,
             answer: undefined,
+            fixable: false,
           },
       );
     });
@@ -71,6 +74,7 @@ describeWithEnvironment('FreestylerAgent', () => {
             title: undefined,
             thought: undefined,
             answer: payload,
+            fixable: false,
           },
       );
       assert.deepStrictEqual(
@@ -80,6 +84,7 @@ describeWithEnvironment('FreestylerAgent', () => {
             title: undefined,
             thought: undefined,
             answer: payload,
+            fixable: false,
           },
       );
       assert.deepStrictEqual(
@@ -89,6 +94,7 @@ describeWithEnvironment('FreestylerAgent', () => {
             title: undefined,
             thought: undefined,
             answer: payload,
+            fixable: false,
           },
       );
     });
@@ -103,6 +109,7 @@ c`;
             title: undefined,
             thought: undefined,
             answer: payload,
+            fixable: false,
           },
       );
       assert.deepStrictEqual(
@@ -112,6 +119,7 @@ c`;
             title: undefined,
             thought: undefined,
             answer: payload,
+            fixable: false,
           },
       );
       assert.deepStrictEqual(
@@ -121,6 +129,7 @@ c`;
             title: undefined,
             thought: undefined,
             answer: payload,
+            fixable: false,
           },
       );
       assert.deepStrictEqual(
@@ -130,6 +139,7 @@ c`;
             title: undefined,
             thought: 'thought',
             answer: payload,
+            fixable: false,
           },
       );
       assert.deepStrictEqual(
@@ -141,6 +151,7 @@ c`;
             title: undefined,
             thought: undefined,
             answer: payload,
+            fixable: false,
           },
       );
       assert.deepStrictEqual(
@@ -152,6 +163,7 @@ c`;
             title: undefined,
             thought: undefined,
             answer: payload,
+            fixable: false,
           },
       );
     });
@@ -166,6 +178,7 @@ c`;
             title: undefined,
             thought: undefined,
             answer: undefined,
+            fixable: false,
           },
       );
       assert.deepStrictEqual(
@@ -175,6 +188,7 @@ c`;
             title: undefined,
             thought: undefined,
             answer: undefined,
+            fixable: false,
           },
       );
       assert.deepStrictEqual(
@@ -184,6 +198,7 @@ c`;
             title: undefined,
             thought: undefined,
             answer: undefined,
+            fixable: false,
           },
       );
     });
@@ -197,6 +212,7 @@ c`;
             thought: payload,
             title: title,
             answer: undefined,
+            fixable: false,
           },
       );
     });
@@ -214,6 +230,7 @@ c`;
             title: undefined,
             thought: undefined,
             answer: undefined,
+            fixable: false,
           },
       );
     });
@@ -231,6 +248,7 @@ c`;
             title: undefined,
             thought: undefined,
             answer: undefined,
+            fixable: false,
           },
       );
     });
@@ -249,6 +267,7 @@ c`;
             title: undefined,
             thought: thoughtPayload,
             answer: undefined,
+            fixable: false,
           },
       );
     });
@@ -263,6 +282,7 @@ c`;
             title: undefined,
             thought: undefined,
             answer: 'This is also an answer',
+            fixable: false,
           },
       );
     });
@@ -623,6 +643,7 @@ c`;
           type: Freestyler.ResponseType.ANSWER,
           text: 'this is the answer',
           rpcId: undefined,
+          fixable: false,
         },
       ]);
       sinon.assert.notCalled(execJs);
@@ -663,6 +684,7 @@ c`;
           type: Freestyler.ResponseType.ANSWER,
           text: 'this is the answer',
           rpcId: 123,
+          fixable: false,
         },
       ]);
     });
@@ -729,6 +751,7 @@ c`;
           type: Freestyler.ResponseType.ANSWER,
           text: 'this is the answer',
           rpcId: 123,
+          fixable: false,
         },
       ]);
     });
@@ -826,6 +849,7 @@ ANSWER: this is the answer`,
           type: Freestyler.ResponseType.ANSWER,
           text: 'this is the actual answer',
           rpcId: undefined,
+          fixable: false,
         },
       ]);
       sinon.assert.calledOnce(execJs);

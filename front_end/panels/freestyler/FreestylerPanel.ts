@@ -248,9 +248,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
       text,
     });
     this.#viewProps.isLoading = true;
-    // TODO: We should only show "Fix this issue" button when the answer suggests fix or fixes.
-    // We shouldn't show this when the answer is complete like a confirmation without any suggestion.
-    const suggestingFix = !isFixQuery;
     const systemMessage: ModelChatMessage = {
       entity: ChatMessageEntity.MODEL,
       suggestingFix: false,
@@ -313,7 +310,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
         }
         case ResponseType.ANSWER: {
           step.isLoading = false;
-          systemMessage.suggestingFix = suggestingFix;
+          systemMessage.suggestingFix = data.fixable;
           systemMessage.answer = data.text;
           systemMessage.rpcId = data.rpcId;
           this.#viewProps.isLoading = false;

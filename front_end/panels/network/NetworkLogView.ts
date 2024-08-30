@@ -82,10 +82,6 @@ const UIStrings = {
    */
   invertsFilter: 'Inverts the search filter',
   /**
-   *@description Text for everything
-   */
-  allStrings: 'All',
-  /**
    *@description Text in Network Log View of the Network panel
    */
   hideDataUrls: 'Hide data URLs',
@@ -105,26 +101,6 @@ const UIStrings = {
    *@description Aria accessible name in Network Log View of the Network panel
    */
   requestTypesToInclude: 'Request types to include',
-  /**
-   * @description Tooltip for the `Request types` dropdown in the Network Panel
-   */
-  requestTypesTooltip: 'Filter requests by type',
-  /**
-   * @description Label for the dropdown in the Network Panel
-   */
-  requestTypes: 'Request types',
-  /**
-   * @description Dynamic label for the `Request types` dropdown in the Network panel
-   * @example {Doc} PH1
-   * @example {CSS} PH2
-   */
-  twoTypesSelected: '{PH1}, {PH2}',
-  /**
-   * @description: Dynamic label for the `Request types` dropdown in the Network panel
-   * @example {Doc} PH1
-   * @example {CSS} PH2
-   */
-  overTwoTypesSelected: '{PH1}, {PH2}...',
   /**
    *@description Label for a checkbox in the Network panel. When checked, only requests with
    *             blocked response cookies are shown.
@@ -459,11 +435,6 @@ const UIStrings = {
    * @description Text for the Show only/Hide requests dropdown button of the filterbar
    */
   moreFilters: 'More filters',
-  /**
-   * @description Text for the Request types dropdown button tooltip
-   * @example {Media, Images} PH1
-   */
-  showOnly: 'Show only {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkLogView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -514,7 +485,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private readonly onlyBlockedRequestsUI: UI.FilterBar.CheckboxFilterUI|undefined;
   private readonly onlyThirdPartyFilterUI: UI.FilterBar.CheckboxFilterUI|undefined;
   private readonly hideChromeExtensionsUI: UI.FilterBar.CheckboxFilterUI|undefined;
-  private readonly resourceCategoryFilterUI: DropDownTypesUI|UI.FilterBar.NamedBitSetFilterUI;
+  private readonly resourceCategoryFilterUI: UI.FilterBar.NamedBitSetFilterUI;
   private readonly filterParser: TextUtils.TextUtils.FilterParser;
   private readonly suggestionBuilder: UI.FilterSuggestionBuilder.FilterSuggestionBuilder;
   private dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<NetworkNode>;
@@ -609,18 +580,16 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
                                                                    }));
 
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN)) {
-      this.resourceCategoryFilterUI = new DropDownTypesUI(filterItems, this.networkResourceTypeFiltersSetting);
-      this.resourceCategoryFilterUI.addEventListener(
-          UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged, this);
+      this.moreFiltersDropDownUI = new MoreFiltersDropDownUI();
+      this.moreFiltersDropDownUI.addEventListener(UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged, this);
+      filterBar.addFilter(this.moreFiltersDropDownUI);
+
+      this.resourceCategoryFilterUI =
+          new UI.FilterBar.NamedBitSetFilterUI(filterItems, this.networkResourceTypeFiltersSetting);
       UI.ARIAUtils.setLabel(this.resourceCategoryFilterUI.element(), i18nString(UIStrings.requestTypesToInclude));
       this.resourceCategoryFilterUI.addEventListener(
           UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged.bind(this), this);
       filterBar.addFilter(this.resourceCategoryFilterUI);
-      filterBar.addDivider();
-
-      this.moreFiltersDropDownUI = new MoreFiltersDropDownUI();
-      this.moreFiltersDropDownUI.addEventListener(UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged, this);
-      filterBar.addFilter(this.moreFiltersDropDownUI);
     } else {
       this.dataURLFilterUI = new UI.FilterBar.CheckboxFilterUI(
           'hide-data-url', i18nString(UIStrings.hideDataUrls), true, this.networkHideDataURLSetting, 'hide-data-urls');
@@ -2643,217 +2612,6 @@ export const overrideFilter = {
 };
 
 export type Filter = (request: SDK.NetworkRequest.NetworkRequest) => boolean;
-
-export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.FilterBar.FilterUIEventTypes> implements
-    UI.FilterBar.FilterUI {
-  private readonly filterElement: HTMLDivElement;
-  private readonly dropDownButton: UI.Toolbar.ToolbarCombobox;
-  private displayedTypes: Set<string>;
-  private readonly setting: Common.Settings.Setting<{[key: string]: boolean}>;
-  private readonly items: UI.FilterBar.Item[];
-  private contextMenu?: UI.ContextMenu.ContextMenu;
-  private selectedTypesCount: HTMLElement;
-  private typesCountAdorner: Adorners.Adorner.Adorner;
-  private hasChanged = false;
-
-  constructor(items: UI.FilterBar.Item[], setting: Common.Settings.Setting<{[key: string]: boolean}>) {
-    super();
-    this.items = items;
-
-    this.filterElement = document.createElement('div');
-    this.filterElement.setAttribute('jslog', `${VisualLogging.dropDown('request-types').track({click: true})}`);
-
-    this.typesCountAdorner = new Adorners.Adorner.Adorner();
-    this.selectedTypesCount = document.createElement('span');
-    this.typesCountAdorner.data = {
-      name: 'countWrapper',
-      content: this.selectedTypesCount,
-    };
-    this.typesCountAdorner.classList.add('active-filters-count');
-
-    this.dropDownButton = new UI.Toolbar.ToolbarCombobox(i18nString(UIStrings.requestTypesTooltip));
-    this.dropDownButton.setAdorner(this.typesCountAdorner);
-    this.dropDownButton.setText(i18nString(UIStrings.requestTypes));
-    this.filterElement.appendChild(this.dropDownButton.element);
-    this.dropDownButton.element.classList.add('dropdown-filterbar');
-
-    this.dropDownButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.showContextMenu.bind(this));
-    UI.ARIAUtils.markAsMenuButton(this.dropDownButton.element);
-
-    this.displayedTypes = new Set();
-
-    this.setting = setting;
-    setting.addChangeListener(this.settingChanged.bind(this));
-    this.setting.addChangeListener(this.filterChanged.bind(this));
-    this.settingChanged();
-  }
-
-  discard(): void {
-    this.contextMenu?.discard();
-  }
-
-  emitUMA(): void {
-    if (this.hasChanged) {
-      Host.userMetrics.resourceTypeFilterNumberOfSelectedChanged(this.displayedTypes.size);
-      for (const displayedType of this.displayedTypes) {
-        Host.userMetrics.resourceTypeFilterItemSelected(displayedType);
-      }
-    }
-  }
-
-  showContextMenu(event: Common.EventTarget.EventTargetEvent<Event>): void {
-    const mouseEvent = event.data;
-    this.hasChanged = false;
-    this.contextMenu = new UI.ContextMenu.ContextMenu(mouseEvent, {
-      useSoftMenu: true,
-      keepOpen: true,
-      x: this.dropDownButton.element.getBoundingClientRect().left,
-      y: this.dropDownButton.element.getBoundingClientRect().top +
-          (this.dropDownButton.element as HTMLElement).offsetHeight,
-      onSoftMenuClosed: this.emitUMA.bind(this),
-    });
-
-    this.addRequestType(this.contextMenu, DropDownTypesUI.ALL_TYPES, i18nString(UIStrings.allStrings));
-    this.contextMenu.defaultSection().appendSeparator();
-
-    for (const item of this.items) {
-      this.addRequestType(this.contextMenu, item.name, item.name);
-    }
-
-    this.update();
-    void this.contextMenu.show();
-  }
-
-  private addRequestType(contextMenu: UI.ContextMenu.ContextMenu, name: string, label: string): void {
-    const jslogContext = name.toLowerCase().replace(/\s/g, '-');
-    contextMenu.defaultSection().appendCheckboxItem(label, () => {
-      this.setting.get()[name] = !this.setting.get()[name];
-      this.toggleTypeFilter(name);
-    }, {checked: this.setting.get()[name], jslogContext});
-  }
-
-  private toggleTypeFilter(typeName: string): void {
-    if (typeName !== DropDownTypesUI.ALL_TYPES) {
-      this.displayedTypes.delete(DropDownTypesUI.ALL_TYPES);
-    } else {
-      this.displayedTypes = new Set();
-    }
-
-    if (this.displayedTypes.has(typeName)) {
-      this.displayedTypes.delete(typeName);
-    } else {
-      this.displayedTypes.add(typeName);
-    }
-
-    if (this.displayedTypes.size === 0) {
-      this.displayedTypes.add(DropDownTypesUI.ALL_TYPES);
-    }
-
-    // Settings do not support `Sets` so convert it back to the Map-like object.
-    const updatedSetting = {} as {[key: string]: boolean};
-    for (const type of this.displayedTypes) {
-      updatedSetting[type] = true;
-    }
-
-    this.setting.set(updatedSetting);
-
-    // For the feature of keeping the dropdown open while choosing its options:
-    // this code provides the dinamic changes of the checkboxes' state in this dropdown
-    const menuItems = this.contextMenu?.getItems() || [];
-    for (const i of menuItems) {
-      if (i.label) {
-        this.contextMenu?.setChecked(i, this.displayedTypes.has(i.label));
-      }
-    }
-    this.contextMenu?.setChecked(menuItems[0], this.displayedTypes.has('all'));
-  }
-
-  private filterChanged(): void {
-    this.dispatchEventToListeners(UI.FilterBar.FilterUIEvents.FilterChanged);
-  }
-
-  private settingChanged(): void {
-    this.hasChanged = true;
-    this.displayedTypes = new Set();
-
-    for (const s in this.setting.get()) {
-      this.displayedTypes.add(s);
-    }
-    this.update();
-  }
-
-  private update(): void {
-    if (this.displayedTypes.size === 0 || this.displayedTypes.has(DropDownTypesUI.ALL_TYPES)) {
-      this.displayedTypes = new Set();
-      this.displayedTypes.add(DropDownTypesUI.ALL_TYPES);
-    }
-    this.updateSelectedTypesCount();
-    this.updateLabel();
-    this.updateTooltip();
-  }
-
-  updateSelectedTypesCount(): void {
-    if (!this.displayedTypes.has(DropDownTypesUI.ALL_TYPES)) {
-      this.selectedTypesCount.textContent = this.displayedTypes.size.toString();
-      this.typesCountAdorner.classList.remove('hidden');
-    } else {
-      this.typesCountAdorner.classList.add('hidden');
-    }
-  }
-
-  updateLabel(): void {
-    if (this.displayedTypes.has(DropDownTypesUI.ALL_TYPES)) {
-      this.dropDownButton.setText(i18nString(UIStrings.requestTypes));
-      return;
-    }
-
-    let newLabel;
-    if (this.displayedTypes.size === 1) {
-      const type = this.displayedTypes.values().next().value;
-      newLabel = Common.ResourceType.ResourceCategory.categoryByTitle(type)?.shortTitle() || '';
-    } else {
-      // show up to two last selected types
-      const twoLastSelected = [...this.displayedTypes].slice(-2).reverse();
-      const shortNames =
-          twoLastSelected.map(type => Common.ResourceType.ResourceCategory.categoryByTitle(type)?.shortTitle() || '');
-      const valuesToDisplay = {PH1: shortNames[0], PH2: shortNames[1]};
-      newLabel = this.displayedTypes.size === 2 ? i18nString(UIStrings.twoTypesSelected, valuesToDisplay) :
-                                                  i18nString(UIStrings.overTwoTypesSelected, valuesToDisplay);
-    }
-    this.dropDownButton.setText(newLabel);
-  }
-
-  updateTooltip(): void {
-    let tooltipText = i18nString(UIStrings.requestTypesTooltip);
-    if (!this.displayedTypes.has(DropDownTypesUI.ALL_TYPES)) {
-      // reverse the order to match the button label
-      const selectedTypes = [...this.displayedTypes].reverse();
-      const localized =
-          selectedTypes.map(type => Common.ResourceType.ResourceCategory.categoryByTitle(type)?.title() || '')
-              .join(', ');
-      tooltipText = i18nString(UIStrings.showOnly, {PH1: localized});
-    }
-    this.dropDownButton.setTitle(tooltipText);
-  }
-
-  isActive(): boolean {
-    return !this.displayedTypes.has(DropDownTypesUI.ALL_TYPES);
-  }
-
-  element(): HTMLDivElement {
-    return this.filterElement;
-  }
-
-  reset(): void {
-    this.toggleTypeFilter(DropDownTypesUI.ALL_TYPES);
-  }
-
-  accept(typeName: string): boolean {
-    return this.displayedTypes.has(DropDownTypesUI.ALL_TYPES) || this.displayedTypes.has(typeName);
-  }
-
-  static readonly ALL_TYPES = 'all';
-}
 
 export class MoreFiltersDropDownUI extends
     Common.ObjectWrapper.ObjectWrapper<UI.FilterBar.FilterUIEventTypes> implements UI.FilterBar.FilterUI {

@@ -151,6 +151,7 @@ export class NetworkTrackAppender implements TrackAppender {
           TraceEngine.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(event)) {
         addDecorationToEvent(this.#flameChartData, i, {
           type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE,
+          customStartTime: event.args.data.syntheticData.sendStartTime,
           customEndTime: event.args.data.syntheticData.finishTime,
         });
       }

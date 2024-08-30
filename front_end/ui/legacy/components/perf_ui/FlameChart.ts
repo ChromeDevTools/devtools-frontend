@@ -2068,22 +2068,33 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
             break;
           }
           case FlameChartDecorationType.WARNING_TRIANGLE: {
+            let endTimePixels = barX + barWidth;
             if (typeof decoration.customEndTime !== 'undefined') {
-              // The user can pass a customEndTime to tell us where the event's box ends and therefore where we should draw the triangle. So therefore we calculate the width by taking the end time off the start time.
+              // The user can pass a customEndTime to tell us where the event's box ends and therefore where we should
+              // draw the triangle. So therefore we calculate the width by taking the end time off the start time.
               const endTimeMilli = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(decoration.customEndTime);
-              const endTimePixels = this.timeToPositionClipped(endTimeMilli);
+              endTimePixels = this.timeToPositionClipped(endTimeMilli);
               barWidth = endTimePixels - barX;
             }
-            const triangleSize = 8;
+            const triangleHeight = 8;
+            let triangleWidth = 8;
+            if (typeof decoration.customStartTime !== 'undefined') {
+              // The user can pass a customStartTime to tell us where the event's box start and therefore where we
+              // should draw the triangle. So therefore we calculate the width by taking the end time off the start
+              // time.
+              const startTimeMilli = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(decoration.customStartTime);
+              const startTimePixels = this.timeToPositionClipped(startTimeMilli);
+              triangleWidth = Math.min(endTimePixels - startTimePixels, 8);
+            }
             context.save();
             context.beginPath();
             context.rect(barX, barY, barWidth, barHeight);
             context.clip();
             context.beginPath();
             context.fillStyle = 'red';
-            context.moveTo(barX + barWidth - triangleSize, barY);
+            context.moveTo(barX + barWidth - triangleWidth, barY);
             context.lineTo(barX + barWidth, barY);
-            context.lineTo(barX + barWidth, barY + triangleSize);
+            context.lineTo(barX + barWidth, barY + triangleHeight);
             context.fill();
             context.restore();
             break;
@@ -3665,6 +3676,7 @@ export type FlameChartDecoration = {
   endAtTime?: TraceEngine.Types.Timing.MicroSeconds,
 }|{
   type: FlameChartDecorationType.WARNING_TRIANGLE,
+  customStartTime?: TraceEngine.Types.Timing.MicroSeconds,
   customEndTime?: TraceEngine.Types.Timing.MicroSeconds,
 }|{
   type: FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW,

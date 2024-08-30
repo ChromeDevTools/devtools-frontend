@@ -45,6 +45,9 @@ export const enum SidebarTabs {
 }
 export const DEFAULT_SIDEBAR_TAB = SidebarTabs.INSIGHTS;
 
+export const DEFAULT_SIDEBAR_WIDTH_PX = 240;
+const MIN_SIDEBAR_WIDTH_PX = 170;
+
 export class SidebarWidget extends UI.Widget.VBox {
   #tabbedPane = new UI.TabbedPane.TabbedPane();
 
@@ -63,6 +66,11 @@ export class SidebarWidget extends UI.Widget.VBox {
 
   userHasOpenedSidebarOnce(): boolean {
     return this.#userHasOpenedSidebarOnce.get();
+  }
+
+  constructor() {
+    super();
+    this.setMinimumSize(MIN_SIDEBAR_WIDTH_PX, 0);
   }
 
   override wasShown(): void {

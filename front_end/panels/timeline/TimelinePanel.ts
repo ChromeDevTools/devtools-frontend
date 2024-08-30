@@ -289,8 +289,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let timelinePanelInstance: TimelinePanel;
 let isNode: boolean;
 
-const DEFAULT_SIDEBAR_WIDTH_PX = 240;
-
 /**
  * Represents the states that the timeline panel can be in.
  * If you need to change the panel's view, use the {@see #changeView} method.
@@ -345,7 +343,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       true,                            // isVertical
       false,                           // secondIsSidebar
       'timeline-panel-sidebar-state',  // settingName (to persist the open/closed state for the user)
-      DEFAULT_SIDEBAR_WIDTH_PX,
+      TimelineComponents.Sidebar.DEFAULT_SIDEBAR_WIDTH_PX,
   );
   private readonly statusPaneContainer: HTMLElement;
   private readonly flameChart: TimelineFlameChartView;

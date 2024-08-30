@@ -84,7 +84,8 @@ const API = {
     const parser = new DOMParser();
     const document = parser.parseFromString(datasetNamesHtml, 'text/html');
     const links = document.querySelectorAll('a');
-    return [...links].filter(link => link.textContent.endsWith('.json')).map(link => ({title: link.textContent}));
+    const reverseLinks = [...links].reverse();
+    return reverseLinks.filter(link => link.textContent.endsWith('.json')).map(link => ({title: link.textContent}));
   },
   getExamplesMap: async ({title}) => {
     if (examplesMapCache[title]) {

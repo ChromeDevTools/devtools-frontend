@@ -41,10 +41,11 @@ const yargsObject = yargs
                           type: 'array',
                           demandOption: true,
                         })
+                        .option('label', {string: true, default: 'out'})
                         .argv;
 
 const OUTPUT_DIR = path.resolve(__dirname, 'data');
-const {exampleUrls} = yargsObject;
+const {exampleUrls, label} = yargsObject;
 
 async function main() {
   const browser = await puppeteer.connect({
@@ -254,7 +255,7 @@ async function main() {
   };
 
   const dateSuffix = new Date().toISOString().slice(0, 19);
-  const outputPath = path.resolve(OUTPUT_DIR, `out-${dateSuffix}.json`);
+  const outputPath = path.resolve(OUTPUT_DIR, `${label}-${dateSuffix}.json`);
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR);
   }

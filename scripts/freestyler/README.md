@@ -27,6 +27,11 @@ node scripts/freestyler/auto_freestyler.js --example-urls <example-url-1> <examp
 
 At the end of these steps, the examples in the urls `<example-url-1>` and `<example-url-2>` should be run and the results must be saved to the `data/` folder.
 
+Tip: You can add a `--label <label>` argument to the run to label the dataset. For example:
+```
+node scripts/freestyler/auto_freestyler.js --label title-change --example-urls <example-url-1> <example-url-2>
+```
+
 ## Evaluating the results
 **Steps**
 1. Serve the `scripts/freestyler` folder by using a simple file server. For example:

@@ -1223,28 +1223,27 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       // |highlightedEntryIndex| might be correct, but to make the code easier
       // to maintain, let's use |selectedEntryIndex|.
       this.contextMenu = this.dataProvider.customizedContextMenu(event, this.selectedEntryIndex, groupIndex);
-
-      if (this.contextMenu) {
-        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS)) {
-          const annotationSection = this.contextMenu.section('annotations');
-
-          const labelEntryAnnotationOption = annotationSection.appendItem(i18nString(UIStrings.labelEntry), () => {
-            this.dispatchEventToListeners(Events.EntryLabelAnnotationAdded, this.selectedEntryIndex);
-          });
-          // TODO: Change the 'add label to entry' shortcut depending on the OS
-          labelEntryAnnotationOption.setShortcut('Cmd + Click');
-
-          const linkEntriesAnnotationOption = annotationSection.appendItem(i18nString(UIStrings.linkEntries), () => {
-            this.dispatchEventToListeners(
-                Events.EntriesLinkAnnotationCreated, {entryFromIndex: this.selectedEntryIndex});
-          });
-          // TODO: Change the 'add link between entries' shortcut depending on the OS
-          linkEntriesAnnotationOption.setShortcut('Cmd + Click');
-        }
-
-        void this.contextMenu.show();
+      if (!this.contextMenu) {
         return;
       }
+
+      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS)) {
+        const annotationSection = this.contextMenu.section('annotations');
+
+        const labelEntryAnnotationOption = annotationSection.appendItem(i18nString(UIStrings.labelEntry), () => {
+          this.dispatchEventToListeners(Events.EntryLabelAnnotationAdded, this.selectedEntryIndex);
+        });
+
+        const prefix = Host.Platform.isMac() ? 'Cmd' : 'Ctrl';
+        labelEntryAnnotationOption.setShortcut(`${prefix} + Click`);
+
+        const linkEntriesAnnotationOption = annotationSection.appendItem(i18nString(UIStrings.linkEntries), () => {
+          this.dispatchEventToListeners(Events.EntriesLinkAnnotationCreated, {entryFromIndex: this.selectedEntryIndex});
+        });
+        linkEntriesAnnotationOption.setShortcut(`${prefix} + Click`);
+      }
+
+      void this.contextMenu.show();
     }
   }
 

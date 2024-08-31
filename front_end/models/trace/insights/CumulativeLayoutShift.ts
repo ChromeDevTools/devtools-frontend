@@ -15,6 +15,7 @@ import {
 export type CLSInsightResult = InsightResult<{
   animationFailures?: readonly NoncompositedAnimationFailure[],
   shifts?: Map<Types.TraceEvents.TraceEventLayoutShift, LayoutShiftRootCausesData>,
+        clusters: Types.TraceEvents.SyntheticLayoutShiftCluster[],
 }>;
 
 export function deps(): ['Meta', 'Animations', 'LayoutShifts', 'NetworkRequests'] {
@@ -273,11 +274,11 @@ export function generateInsight(
       traceParsedData.LayoutShifts.renderFrameImplCreateChildFrameEvents.filter(isWithinSameNavigation);
   const networkRequests = traceParsedData.NetworkRequests.byTime.filter(isWithinSameNavigation);
 
-  const layoutShifts = traceParsedData.LayoutShifts.clusters.flatMap(
-      cluster =>
-          // Use one of the events in the cluster to determine if within the same navigation.
-      isWithinSameNavigation(cluster.events[0]) ? cluster.events : [],
-  );
+  // Sort by cumulative score, since for insights we interpret these for their "bad" scores.
+  const clusters = traceParsedData.LayoutShifts.clustersByNavigationId.get(context.navigationId)
+                       ?.sort((a, b) => b.clusterCumulativeScore - a.clusterCumulativeScore) ??
+      [];
+  const layoutShifts = clusters.flatMap(cluster => cluster.events);
   const prePaintEvents = traceParsedData.LayoutShifts.prePaintEvents.filter(isWithinSameNavigation);
 
   // Get root causes.
@@ -294,5 +295,6 @@ export function generateInsight(
   return {
     animationFailures,
     shifts: rootCausesByShift,
+    clusters,
   };
 }

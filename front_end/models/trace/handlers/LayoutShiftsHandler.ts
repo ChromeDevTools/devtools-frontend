@@ -38,6 +38,7 @@ import {HandlerState, type TraceEventHandlerName} from './types.js';
 
 interface LayoutShifts {
   clusters: readonly Types.TraceEvents.SyntheticLayoutShiftCluster[];
+  clustersByNavigationId: Map<string, Types.TraceEvents.SyntheticLayoutShiftCluster[]>;
   sessionMaxScore: number;
   // The session window which contains the SessionMaxScore
   clsWindowID: number;
@@ -90,6 +91,7 @@ let sessionMaxScore = 0;
 let clsWindowID = -1;
 
 const clusters: Types.TraceEvents.SyntheticLayoutShiftCluster[] = [];
+const clustersByNavigationId = new Map<string, Types.TraceEvents.SyntheticLayoutShiftCluster[]>();
 
 // Represents a point in time in which a  LS score change
 // was recorded.
@@ -124,6 +126,7 @@ export function reset(): void {
   sessionMaxScore = 0;
   scoreRecords.length = 0;
   clsWindowID = -1;
+  clustersByNavigationId.clear();
 }
 
 export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
@@ -444,6 +447,13 @@ async function buildLayoutShiftsClusters(): Promise<void> {
       clsWindowID = windowID;
       sessionMaxScore = weightedScore;
     }
+
+    if (cluster.navigationId) {
+      const clustersForId = Platform.MapUtilities.getWithDefault(clustersByNavigationId, cluster.navigationId, () => {
+        return [];
+      });
+      clustersForId.push(cluster);
+    }
   }
 }
 
@@ -464,6 +474,7 @@ export function data(): LayoutShifts {
     scoreRecords,
     // TODO(crbug/41484172): change the type so no need to clone
     backendNodeIds: [...backendNodeIds],
+    clustersByNavigationId: new Map(clustersByNavigationId),
   };
 }
 

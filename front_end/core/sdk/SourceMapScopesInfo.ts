@@ -89,7 +89,7 @@ export class SourceMapScopesInfo {
   }
 }
 
-function contains(range: GeneratedRange, line: number, column: number): boolean {
+export function contains(range: Pick<GeneratedRange, 'start'|'end'>, line: number, column: number): boolean {
   if (range.start.line > line || (range.start.line === line && range.start.column > column)) {
     return false;
   }

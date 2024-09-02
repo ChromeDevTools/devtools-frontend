@@ -165,6 +165,7 @@ ts_library("unittests") {
     "ServiceWorkerManager.test.ts",
     "SourceMap.test.ts",
     "SourceMapManager.test.ts",
+    "SourceMapScopeChainEntry.test.ts",
     "SourceMapScopes.test.ts",
     "SourceMapScopesInfo.test.ts",
     "StorageBucketsModel.test.ts",

@@ -6,8 +6,9 @@ import * as Protocol from '../../generated/protocol.js';
 import * as i18n from '../i18n/i18n.js';
 
 import {type CallFrame, type LocationRange, type ScopeChainEntry} from './DebuggerModel.js';
-import {LocalJSONObject, type RemoteObject, RemoteObjectProperty} from './RemoteObject.js';
+import {type GetPropertiesResult, type RemoteObject, RemoteObjectImpl, RemoteObjectProperty} from './RemoteObject.js';
 import {type GeneratedRange, type OriginalScope} from './SourceMapScopes.js';
+import {contains} from './SourceMapScopesInfo.js';
 
 const UIStrings = {
   /**
@@ -37,7 +38,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class SourceMapScopeChainEntry implements ScopeChainEntry {
   readonly #callFrame: CallFrame;
   readonly #scope: OriginalScope;
-  /* eslint-disable-next-line no-unused-private-class-members */
   readonly #range?: GeneratedRange;
   readonly #isInnerMostFunction: boolean;
   readonly #returnValue?: RemoteObject;
@@ -102,9 +102,7 @@ export class SourceMapScopeChainEntry implements ScopeChainEntry {
   }
 
   object(): RemoteObject {
-    // TODO(crbug.com/40277685): Return a remote object that uses 'evaluateOnCallFrame' with
-    //                           binding expressions to resolve this scope's variables.
-    return new LocalJSONObject({});
+    return new SourceMapScopeRemoteObject(this.#callFrame, this.#scope, this.#range);
   }
 
   description(): string {
@@ -113,5 +111,79 @@ export class SourceMapScopeChainEntry implements ScopeChainEntry {
 
   icon(): string|undefined {
     return undefined;
+  }
+}
+
+class SourceMapScopeRemoteObject extends RemoteObjectImpl {
+  readonly #callFrame: CallFrame;
+  readonly #scope: OriginalScope;
+  readonly #range?: GeneratedRange;
+
+  constructor(callFrame: CallFrame, scope: OriginalScope, range: GeneratedRange|undefined) {
+    super(
+        callFrame.debuggerModel.runtimeModel(), /* objectId */ undefined, 'object', /* sub type */ undefined,
+        /* value */ null);
+    this.#callFrame = callFrame;
+    this.#scope = scope;
+    this.#range = range;
+  }
+
+  override async doGetProperties(_ownProperties: boolean, accessorPropertiesOnly: boolean, generatePreview: boolean):
+      Promise<GetPropertiesResult> {
+    if (accessorPropertiesOnly) {
+      return {properties: [], internalProperties: []};
+    }
+
+    const properties: RemoteObjectProperty[] = [];
+    for (const [index, variable] of this.#scope.variables.entries()) {
+      const expression = this.#findExpression(index);
+      if (expression === null) {
+        properties.push(SourceMapScopeRemoteObject.#unavailableProperty(variable));
+        continue;
+      }
+
+      // TODO(crbug.com/40277685): Once we can evaluate expressions in scopes other than the innermost one,
+      //         we need to find the find the CDP scope that matches `this.#range` and evaluate in that.
+      const result = await this.#callFrame.evaluate({expression, generatePreview});
+      if ('error' in result || result.exceptionDetails) {
+        // TODO(crbug.com/40277685): Make these errors user-visible to aid tooling developers.
+        //         E.g. show the error on hover or expose it in the developer resources panel.
+        properties.push(SourceMapScopeRemoteObject.#unavailableProperty(variable));
+      } else {
+        properties.push(new RemoteObjectProperty(
+            variable, result.object, /* enumerable */ false, /* writable */ false, /* isOwn */ true,
+            /* wasThrown */ false));
+      }
+    }
+
+    return {properties, internalProperties: []};
+  }
+
+  /** @returns null if the variable is unavailable at the current paused location */
+  #findExpression(index: number): string|null {
+    if (!this.#range) {
+      return null;
+    }
+
+    const expressionOrSubRanges = this.#range.values[index];
+    if (typeof expressionOrSubRanges === 'string') {
+      return expressionOrSubRanges;
+    }
+    if (expressionOrSubRanges === undefined) {
+      return null;
+    }
+
+    const pausedPosition = this.#callFrame.location();
+    for (const range of expressionOrSubRanges) {
+      if (contains({start: range.from, end: range.to}, pausedPosition.lineNumber, pausedPosition.columnNumber)) {
+        return range.value ?? null;
+      }
+    }
+    return null;
+  }
+
+  static #unavailableProperty(name: string): RemoteObjectProperty {
+    return new RemoteObjectProperty(
+        name, null, /* enumerable */ false, /* writeable */ false, /* isOwn */ true, /* wasThrown */ false);
   }
 }

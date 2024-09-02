@@ -14,46 +14,46 @@
   --sys-elevation-level4: 0 6px 10px 4px rgb(0 0 0 / 15%), 0 2px 3px 0 rgb(0 0 0 / 30%);
   --sys-elevation-level5: 0 8px 12px 6px rgb(0 0 0 / 15%), 0 4px 4px 0 rgb(0 0 0 / 30%);
   --sys-size-1: 1px;
-  --sys-size-2: 0.125rem;
-  --sys-size-3: 0.25rem;
-  --sys-size-4: 0.375rem;
-  --sys-size-5: 0.5rem;
-  --sys-size-6: 0.75rem;
-  --sys-size-7: 0.875rem;
-  --sys-size-8: 1rem;
-  --sys-size-9: 1.25rem;
-  --sys-size-10: 1.375rem;
-  --sys-size-11: 1.5rem;
-  --sys-size-12: 1.75rem;
-  --sys-size-13: 2rem;
-  --sys-size-14: 2.5rem;
-  --sys-size-15: 2.75rem;
-  --sys-size-16: 3rem;
-  --sys-size-17: 3.5rem;
-  --sys-size-18: 4rem;
-  --sys-size-19: 6rem;
-  --sys-size-20: 7rem;
-  --sys-size-21: 8rem;
-  --sys-size-22: 9rem;
-  --sys-size-23: 10rem;
-  --sys-size-24: 11rem;
-  --sys-size-25: 12rem;
-  --sys-size-26: 13rem;
-  --sys-size-27: 14rem;
-  --sys-size-28: 15rem;
-  --sys-size-29: 16rem;
-  --sys-size-30: 18rem;
-  --sys-size-31: 20rem;
-  --sys-size-32: 24rem;
-  --sys-size-33: 28rem;
-  --sys-size-34: 32rem;
-  --sys-size-35: 36rem;
-  --sys-size-36: 42rem;
-  --sys-size-37: 48rem;
-  --sys-size-38: 56rem;
-  --sys-size-39: 64rem;
-  --sys-size-40: 72rem;
-  --sys-size-41: 80rem;
+  --sys-size-2: 0.125rem;     /* 2px */
+  --sys-size-3: 0.25rem;      /* 4px */
+  --sys-size-4: 0.375rem;     /* 6px */
+  --sys-size-5: 0.5rem;       /* 8px */
+  --sys-size-6: 0.75rem;      /* 12px */
+  --sys-size-7: 0.875rem;     /* 14px */
+  --sys-size-8: 1rem;         /* 16px */
+  --sys-size-9: 1.25rem;      /* 20px */
+  --sys-size-10: 1.375rem;    /* 22px */
+  --sys-size-11: 1.5rem;      /* 24px */
+  --sys-size-12: 1.75rem;     /* 28px */
+  --sys-size-13: 2rem;        /* 32px */
+  --sys-size-14: 2.5rem;      /* 40px */
+  --sys-size-15: 2.75rem;     /* 44px */
+  --sys-size-16: 3rem;        /* 48px */
+  --sys-size-17: 3.5rem;      /* 56px */
+  --sys-size-18: 4rem;        /* 64px */
+  --sys-size-19: 6rem;        /* 80px */
+  --sys-size-20: 7rem;        /* 112px */
+  --sys-size-21: 8rem;        /* 128px */
+  --sys-size-22: 9rem;        /* 144px */
+  --sys-size-23: 10rem;       /* 160px */
+  --sys-size-24: 11rem;       /* 176px */
+  --sys-size-25: 12rem;       /* 192px */
+  --sys-size-26: 13rem;       /* 208px */
+  --sys-size-27: 14rem;       /* 224px */
+  --sys-size-28: 15rem;       /* 240px */
+  --sys-size-29: 16rem;       /* 256px */
+  --sys-size-30: 18rem;       /* 288px */
+  --sys-size-31: 20rem;       /* 320px */
+  --sys-size-32: 24rem;       /* 384px */
+  --sys-size-33: 28rem;       /* 448px */
+  --sys-size-34: 32rem;       /* 512px */
+  --sys-size-35: 36rem;       /* 576px */
+  --sys-size-36: 42rem;       /* 672px */
+  --sys-size-37: 48rem;       /* 768px */
+  --sys-size-38: 56rem;       /* 896px */
+  --sys-size-39: 64rem;       /* 1024px */
+  --sys-size-40: 72rem;       /* 1152px */
+  --sys-size-41: 80rem;       /* 1280px */
   --sys-shape-corner-extra-small: 4px;
   --sys-shape-corner-small: 8px;
   --sys-shape-corner-medium-small: 12px;

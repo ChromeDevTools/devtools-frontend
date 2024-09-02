@@ -368,7 +368,7 @@ async function renderMainPage() {
       renderExampleSelector(exampleSelectorContainer, {
         onChange: selectedExampleIndex => {
           viewState.selectedExampleIndex = selectedExampleIndex;
-          handleExampleChange();
+          viewState.handleExampleChange();
         }
       });
     });

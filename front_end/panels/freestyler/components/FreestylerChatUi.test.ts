@@ -71,8 +71,8 @@ css
                 isLoading: false,
                 title: 'Updating element styles',
                 thought: 'Updating element styles',
+                code: '$0.style.background = "blue";',
                 sideEffect: {
-                  code: '$0.style.background = "blue";',
                   onAnswer: () => {},
                 },
               },

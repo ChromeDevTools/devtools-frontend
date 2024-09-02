@@ -130,7 +130,7 @@ STOP
     const abort = new AbortController();
     async function autoAcceptEvals(signal: AbortSignal) {
       while (!signal.aborted) {
-        await frontend.locator('aria/Execute').click({signal});
+        await frontend.locator('aria/Continue').click({signal});
       }
     }
     autoAcceptEvals(abort.signal).catch(() => {});

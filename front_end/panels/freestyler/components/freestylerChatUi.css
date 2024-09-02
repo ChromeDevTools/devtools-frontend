@@ -209,11 +209,6 @@
 }
 
 .side-effect-confirmation {
-  background: var(--color-background);
-  padding: 24px;
-  border-radius: var(--sys-size-6);
-  margin-bottom: 8px;
-
   p {
     margin: 0;
     margin-bottom: 12px;
@@ -222,11 +217,8 @@
 }
 
 .side-effect-buttons-container {
-  margin-top: 8px;
-
-  devtools-button {
-    margin-top: 4px;
-  }
+  display: flex;
+  gap: var(--sys-size-4);
 }
 
 .consent-view {

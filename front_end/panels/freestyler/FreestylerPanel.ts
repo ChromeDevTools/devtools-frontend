@@ -290,8 +290,8 @@ export class FreestylerPanel extends UI.Panel.Panel {
         }
         case ResponseType.SIDE_EFFECT: {
           step.isLoading = false;
+          step.code = data.code;
           step.sideEffect = {
-            code: data.code,
             onAnswer: data.confirm,
           };
           if (systemMessage.steps.at(-1) !== step) {

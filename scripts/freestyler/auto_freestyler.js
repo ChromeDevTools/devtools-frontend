@@ -60,6 +60,10 @@ class Logger {
     }
   }
 
+  formatError(err) {
+    return `${err.stack}${err.cause ? `\n${err.cause.stack}` : ''}`;
+  }
+
   head(text) {
     this.log('head', -1, `${text}\n`);
   }
@@ -224,6 +228,7 @@ class Example {
     await devtoolsPage.locator('aria/Customize and control DevTools').click();
     await devtoolsPage.locator('aria/More tools').click();
     await devtoolsPage.locator('aria/AI assistant').click();
+    this.log('[Info]: Opened AI assistant tab');
 
     this.#page = page;
     this.#devtoolsPage = devtoolsPage;
@@ -236,10 +241,9 @@ class Example {
     try {
       await this.#prepare();
       this.#ready = true;
-      this.log('Ready.');
     } catch (err) {
       this.#ready = false;
-      this.error(`Preparation failed.\n${err.stack}`);
+      this.error(`Preparation failed.\n${logger.formatError(err)}`);
     }
   }
 
@@ -328,7 +332,7 @@ async function runInParallel(examples) {
       allExampleResults.push(...results);
       metadata.push(singleMetadata);
     } catch (err) {
-      example.error(`There is an error, skipping it.\n${err.stack}`);
+      example.error(`There is an error, skipping it.\n${logger.formatError(err)}`);
     }
   }));
 
@@ -350,7 +354,7 @@ async function runSequentially(examples) {
       allExampleResults.push(...results);
       metadata.push(singleMetadata);
     } catch (err) {
-      example.error(`There is an error, skipping it.\n${err.stack}`);
+      example.error(`There is an error, skipping it.\n${logger.formatError(err)}`);
     }
   }
 

@@ -363,12 +363,12 @@ function setFreestylerServerSideLoggingEnabled(enabled: boolean): void {
   if (enabled) {
     localStorage.setItem('freestyler_enableServerSideLogging', 'true');
   } else {
-    localStorage.removeItem('freestyler_enableServerSideLogging');
+    localStorage.setItem('freestyler_enableServerSideLogging', 'false');
   }
 }
 
 function isFreestylerServerSideLoggingEnabled(): boolean {
-  return localStorage.getItem('freestyler_enableServerSideLogging') === 'true';
+  return localStorage.getItem('freestyler_enableServerSideLogging') !== 'false';
 }
 
 // @ts-ignore

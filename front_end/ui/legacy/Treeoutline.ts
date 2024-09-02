@@ -387,12 +387,17 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   }
 }
 
+export const enum TreeVariant {
+  NAVIGATION_TREE = 'NavigationTree',
+  OTHER = 'Other',
+}
+
 export class TreeOutlineInShadow extends TreeOutline {
   override element: HTMLElement;
   shadowRoot: ShadowRoot;
   private readonly disclosureElement: Element;
   override renderSelection: boolean;
-  constructor() {
+  constructor(variant: TreeVariant = TreeVariant.OTHER) {
     super();
     this.contentElement.classList.add('tree-outline');
     this.element = document.createElement('div');
@@ -401,6 +406,10 @@ export class TreeOutlineInShadow extends TreeOutline {
     this.disclosureElement = this.shadowRoot.createChild('div', 'tree-outline-disclosure');
     this.disclosureElement.appendChild(this.contentElement);
     this.renderSelection = true;
+
+    if (variant === TreeVariant.NAVIGATION_TREE) {
+      this.contentElement.classList.add('tree-variant-navigation');
+    }
   }
 
   registerRequiredCSS(cssFile: {cssContent: string}): void {

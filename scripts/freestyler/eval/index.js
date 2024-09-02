@@ -361,7 +361,7 @@ async function renderMainPage() {
   const exampleContainer = document.createElement('div');
   container.appendChild(exampleContainer);
 
-  const handleExampleChange = () => {
+  viewState.handleExampleChange = () => {
     document.startViewTransition(() => {
       renderExample(exampleContainer, {onEvaluationChange: () => renderResultsTable()});
       renderExampleDescription();
@@ -380,26 +380,29 @@ async function renderMainPage() {
   renderExampleSelector(exampleSelectorContainer, {
     onChange: selectedExampleIndex => {
       viewState.selectedExampleIndex = selectedExampleIndex;
-      handleExampleChange();
+      viewState.handleExampleChange();
     }
   });
 
-  window.addEventListener('keydown', ev => {
-    if (ev.code !== 'ArrowRight' && ev.code !== 'ArrowLeft') {
-      return;
-    }
+  if (!viewState.addedEventListener) {
+    viewState.addedEventListener = true;
+    window.addEventListener('keydown', ev => {
+      if (ev.code !== 'ArrowRight' && ev.code !== 'ArrowLeft') {
+        return;
+      }
 
-    ev.preventDefault();
-    const exampleIdsLength = Object.keys(viewState.examplesMap).length;
-    const previousIndex = viewState.selectedExampleIndex;
-    viewState.selectedExampleIndex = ev.code === 'ArrowRight' ?
-        Math.min(viewState.selectedExampleIndex + 1, exampleIdsLength - 1) :
-        Math.max(viewState.selectedExampleIndex - 1, 0);
-    if (previousIndex !== viewState.selectedExampleIndex) {
-      document.scrollingElement.scrollTop = 0;
-      handleExampleChange();
-    }
-  }, {capture: true});
+      ev.preventDefault();
+      const exampleIdsLength = Object.keys(viewState.examplesMap).length;
+      const previousIndex = viewState.selectedExampleIndex;
+      viewState.selectedExampleIndex = ev.code === 'ArrowRight' ?
+          Math.min(viewState.selectedExampleIndex + 1, exampleIdsLength - 1) :
+          Math.max(viewState.selectedExampleIndex - 1, 0);
+      if (previousIndex !== viewState.selectedExampleIndex) {
+        document.scrollingElement.scrollTop = 0;
+        viewState.handleExampleChange();
+      }
+    }, {capture: true});
+  }
 }
 
 async function initMainPage() {

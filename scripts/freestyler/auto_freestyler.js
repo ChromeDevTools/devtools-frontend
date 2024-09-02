@@ -31,6 +31,10 @@ const yargsObject = yargs
     string: true,
     default: 'run'
   })
+  .option('include-follow-up', {
+    boolean: true,
+    default: false,
+  })
   .argv;
 /* clang-format on */
 
@@ -160,9 +164,14 @@ class Example {
     });
     // Only get the first comment for now.
     const {comment, el} = comments[0];
+    const queries = [comment.question];
+    if (yargsObject.includeFollowUp) {
+      queries.push(DEFAULT_FOLLOW_UP_QUERY);
+    }
+
     return {
       selector: el,
-      queries: [comment.question, DEFAULT_FOLLOW_UP_QUERY],
+      queries,
       explanation: comment.answer,
     };
   }

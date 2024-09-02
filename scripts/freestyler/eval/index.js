@@ -93,6 +93,7 @@ const API = {
     }
 
     const {examples, metadata} = await (await fetch(`${FREESTYLER_SERVER_URL}/data/${title}`)).json();
+    examples.sort((ex1, ex2) => ex1.exampleId > ex2.exampleId ? 1 : ex1.exampleId < ex2.exampleId ? -1 : 0);
     const examplesMap = {};
     for (const example of examples) {
       const exampleId = example.exampleId;

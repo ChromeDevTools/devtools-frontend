@@ -52,18 +52,24 @@ function findInitiatorDataPredecessors(
   const initiatorsData: InitiatorData[] = [];
 
   let currentEvent: TraceEngine.Types.TraceEvents.TraceEventData|null = selectedEvent;
+  const visited = new Set<TraceEngine.Types.TraceEvents.TraceEventData>();
+  visited.add(currentEvent);
 
   // Build event initiator data up to the selected one
   while (currentEvent) {
     const currentInitiator = eventToInitiator.get(currentEvent);
 
     if (currentInitiator) {
+      if (visited.has(currentInitiator)) {
+        break;
+      }
       // Store the current initiator data, and then set the initiator to
       // be the current event, so we work back through the
       // trace and find the initiator of the initiator, and so
       // on...
       initiatorsData.push({event: currentEvent, initiator: currentInitiator});
       currentEvent = currentInitiator;
+      visited.add(currentEvent);
       continue;
     }
 

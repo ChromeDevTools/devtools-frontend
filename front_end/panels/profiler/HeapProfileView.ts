@@ -28,11 +28,11 @@ const UIStrings = {
   /**
    *@description Name of column header that reports the size (in terms of bytes) used for a particular part of the heap, excluding the size of the children nodes of this part of the heap
    */
-  selfSizeBytes: 'Self Size (bytes)',
+  selfSizeBytes: 'Self size (bytes)',
   /**
    *@description Name of column header that reports the total size (in terms of bytes) used for a particular part of the heap
    */
-  totalSizeBytes: 'Total Size (bytes)',
+  totalSizeBytes: 'Total size (bytes)',
   /**
    *@description Button text to stop profiling the heap
    */
@@ -62,19 +62,10 @@ const UIStrings = {
    */
   samplingProfiles: 'Sampling profiles',
   /**
-   *@description Description (part 1) in Heap Profile View of a profiler tool
+   *@description Description in Heap Profile View of a profiler tool
    */
-  recordMemoryAllocations: 'Record memory allocations using sampling method.',
-  /**
-   *@description Description (part 2) in Heap Profile View of a profiler tool
-   */
-  thisProfileTypeHasMinimal:
-      'This profile type has minimal performance overhead and can be used for long running operations.',
-  /**
-   *@description Description (part 3) in Heap Profile View of a profiler tool
-   */
-  itProvidesGoodApproximation:
-      'It provides good approximation of allocations broken down by `JavaScript` execution stack.',
+  recordMemoryAllocations:
+      'Approximate memory allocations by sampling long operations with minimal overhead and get a breakdown by JavaScript execution stack',
   /**
    *@description Name of a profile
    *@example {2} PH1
@@ -367,11 +358,7 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
 
   override get description(): string {
     // TODO(l10n): Do not concatenate localized strings.
-    const formattedDescription = [
-      i18nString(UIStrings.recordMemoryAllocations),
-      i18nString(UIStrings.thisProfileTypeHasMinimal),
-      i18nString(UIStrings.itProvidesGoodApproximation),
-    ];
+    const formattedDescription = [i18nString(UIStrings.recordMemoryAllocations)];
     return formattedDescription.join('\n');
   }
 

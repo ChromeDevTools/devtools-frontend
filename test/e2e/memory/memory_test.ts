@@ -529,7 +529,7 @@ describe('The Memory Panel', function() {
     await setFilterDropdown('Objects retained by detached DOM nodes');
     await getCategoryRow('ObjectRetainedByDetachedDom');
     assert.isTrue(!(await getCategoryRow('ObjectRetainedByBothDetachedDomAndConsole', false)));
-    await setFilterDropdown('Objects retained by the DevTools console');
+    await setFilterDropdown('Objects retained by DevTools Console');
     await getCategoryRow('ObjectRetainedByConsole');
     assert.isTrue(!(await getCategoryRow('ObjectRetainedByBothDetachedDomAndConsole', false)));
   });

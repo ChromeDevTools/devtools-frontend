@@ -158,7 +158,7 @@ const UIStrings = {
    *@description An option which will filter the heap snapshot to show only
    * objects kept alive by the DevTools console
    */
-  objectsRetainedByConsole: 'Objects retained by the DevTools console',
+  objectsRetainedByConsole: 'Objects retained by DevTools Console',
   /**
    *@description Text for the summary view
    */
@@ -194,14 +194,13 @@ const UIStrings = {
   /**
    *@description Text in Heap Snapshot View of a profiler tool
    */
-  heapSnapshotProfilesShowMemory:
-      'Heap snapshot profiles show memory distribution among your page\'s JavaScript objects and related DOM nodes.',
+  heapSnapshotProfilesShowMemory: 'See the memory distribution of JavaScript objects and related DOM nodes',
   /**
    *@description Label for a checkbox in the heap snapshot view of the profiler tool. The "heap snapshot" contains the
    * current state of JavaScript memory. With this checkbox enabled, the snapshot also includes internal data that is
    * specific to Chrome (hence implementation-specific).
    */
-  exposeInternals: 'Expose internals (includes additional implementation-specific details)',
+  exposeInternals: 'Internals with implementation details',
   /**
    *@description Progress update that the profiler is capturing a snapshot of the heap
    */
@@ -219,7 +218,7 @@ const UIStrings = {
   /**
    *@description Text in Heap Snapshot View of a profiler tool
    */
-  allocationInstrumentationOn: 'Allocation instrumentation on timeline',
+  allocationInstrumentationOn: 'Allocations on timeline',
   /**
    *@description Text in Heap Snapshot View of a profiler tool
    */
@@ -234,7 +233,7 @@ const UIStrings = {
    * This option turns on recording of a stack trace at each allocation.
    * The recording itself is a somewhat expensive operation, so turning this option on, the website's performance may be affected negatively (e.g. everything becomes slower).
    */
-  recordAllocationStacksExtra: 'Record stack traces of allocations (extra performance overhead)',
+  recordAllocationStacksExtra: 'Allocation stack traces (more overhead)',
   /**
    *@description Text in CPUProfile View of a profiler tool
    */
@@ -247,7 +246,7 @@ const UIStrings = {
    *@description Description for the 'Allocation timeline' tool in the Memory panel.
    */
   AllocationTimelinesShowInstrumented:
-      'Allocation timelines show instrumented JavaScript memory allocations over time. Once profile is recorded you can select a time interval to see objects that were allocated within it and still alive by the end of recording. Use this profile type to isolate memory leaks.',
+      'Record memory allocations over time and isolate memory leaks by selecting intervals with allocations that are still alive',
   /**
    *@description Text when something is loading
    */
@@ -265,7 +264,7 @@ const UIStrings = {
    *@description Text of a DOM element in Heap Snapshot View of a profiler tool
    */
   stackWasNotRecordedForThisObject:
-      'Stack was not recorded for this object because it had been allocated before this profile recording started.',
+      'Stack wasn\'t recorded for this object because it had been allocated before this profile recording started.',
   /**
    *@description Text in Heap Snapshot View of a profiler tool.
    * This text is on a button to undo all previous "Ignore this retainer" actions.

@@ -54,10 +54,10 @@ export async function takeAllocationProfile() {
 export async function takeAllocationTimelineProfile({recordStacks}: {recordStacks: boolean} = {
   recordStacks: false,
 }) {
-  const radioButton = await $('//label[text()="Allocation instrumentation on timeline"]', undefined, 'xpath');
+  const radioButton = await $('//label[text()="Allocations on timeline"]', undefined, 'xpath');
   await clickElement(radioButton);
   if (recordStacks) {
-    await click('[title="Record stack traces of allocations (extra performance overhead)"]');
+    await click('[title="Allocation stack traces (more overhead)"]');
   }
   await click('devtools-button[aria-label="Start recording heap profile"]');
   await new Promise(r => setTimeout(r, 200));
@@ -378,7 +378,6 @@ export async function setFilterDropdown(filter: string) {
 }
 
 export async function checkExposeInternals() {
-  const element =
-      await waitForElementWithTextContent('Expose internals (includes additional implementation-specific details)');
+  const element = await waitForElementWithTextContent('Internals with implementation details');
   await clickElement(element);
 }

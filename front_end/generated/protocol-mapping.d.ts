@@ -356,6 +356,11 @@ export namespace ProtocolMapping {
      */
     'Page.frameDetached': [Protocol.Page.FrameDetachedEvent];
     /**
+     * Fired before frame subtree is detached. Emitted before any frame of the
+     * subtree is actually detached.
+     */
+    'Page.frameSubtreeWillBeDetached': [Protocol.Page.FrameSubtreeWillBeDetachedEvent];
+    /**
      * Fired once navigation of the frame has completed. Frame is now associated with the new loader.
      */
     'Page.frameNavigated': [Protocol.Page.FrameNavigatedEvent];
@@ -2640,10 +2645,24 @@ export namespace ProtocolMapping {
       paramsType: [];
       returnType: void;
     };
+    /**
+     * Retruns current DOM object counters.
+     */
     'Memory.getDOMCounters': {
       paramsType: [];
       returnType: Protocol.Memory.GetDOMCountersResponse;
     };
+    /**
+     * Retruns DOM object counters after preparing renderer for leak detection.
+     */
+    'Memory.getDOMCountersForLeakDetection': {
+      paramsType: [];
+      returnType: Protocol.Memory.GetDOMCountersForLeakDetectionResponse;
+    };
+    /**
+     * Prepares for leak detection by terminating workers, stopping spellcheckers,
+     * dropping non-essential internal caches, running garbage collections, etc.
+     */
     'Memory.prepareForLeakDetection': {
       paramsType: [];
       returnType: void;

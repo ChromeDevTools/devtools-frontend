@@ -157,7 +157,7 @@ describeWithEnvironment('UsedPreloadingView', () => {
             url: 'https://example.com/prefetched.html' as Platform.DevToolsPath.UrlString,
           },
           status: SDK.PreloadingModel.PreloadingStatus.FAILURE,
-          prefetchStatus: Protocol.Preload.PrefetchStatus.PrefetchFailedPerPageLimitExceeded,
+          prefetchStatus: Protocol.Preload.PrefetchStatus.PrefetchFailedIneligibleRedirect,
           requestId: 'requestId:1' as Protocol.Network.RequestId,
           ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
           nodeIds: [1] as Protocol.DOM.BackendNodeId[],
@@ -197,8 +197,7 @@ describeWithEnvironment('UsedPreloadingView', () => {
         'The initiating page attempted to prefetch this page\'s URL, but the prefetch failed, so a full navigation was performed instead.');
     assert.include(headers[1]?.textContent, 'Failure reason');
     assert.include(
-        sections[1]?.textContent,
-        'The prefetch was not performed because the initiating page already has too many prefetches ongoing.');
+        sections[1]?.textContent, 'The prefetch was redirected, but the redirect URL is not eligible for prefetch.');
 
     assert.include(headers[2]?.textContent, 'Speculations initiated by this page');
     const badges = sections[2]?.querySelectorAll('.status-badge span') || [];

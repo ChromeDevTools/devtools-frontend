@@ -289,7 +289,8 @@
         "bottom",
 
         // anchor-size()
-        "size",
+        "width",
+        "height",
       ]
     },
 
@@ -3327,7 +3328,7 @@
       default_value: "Length()",
       typedom_types: ["Keyword", "Length", "Percentage"],
       converter: "ConvertLengthSizing",
-      anchor_mode: "size",
+      anchor_mode: "height",
       logical_property_group: {
         name: "size",
         resolver: "vertical",
@@ -3854,7 +3855,7 @@
       field_template: "<length>",
       default_value: "Length::None()",
       converter: "ConvertLengthMaxSizing",
-      anchor_mode: "size",
+      anchor_mode: "height",
       keywords: ["none"],
       typedom_types: ["Keyword", "Length", "Percentage"],
       logical_property_group: {
@@ -3875,7 +3876,7 @@
       field_template: "<length>",
       default_value: "Length::None()",
       converter: "ConvertLengthMaxSizing",
-      anchor_mode: "size",
+      anchor_mode: "width",
       keywords: ["none"],
       typedom_types: ["Keyword", "Length", "Percentage"],
       logical_property_group: {
@@ -3896,7 +3897,7 @@
       field_template: "<length>",
       default_value: "Length()",
       converter: "ConvertLengthSizing",
-      anchor_mode: "size",
+      anchor_mode: "height",
       typedom_types: ["Length", "Percentage"],
       logical_property_group: {
         name: "min-size",
@@ -3916,7 +3917,7 @@
       field_template: "<length>",
       default_value: "Length()",
       converter: "ConvertLengthSizing",
-      anchor_mode: "size",
+      anchor_mode: "width",
       typedom_types: ["Length", "Percentage"],
       logical_property_group: {
         name: "min-size",
@@ -6760,7 +6761,7 @@
     {
       name: "white-space",
       longhands: [
-        "white-space-collapse", "text-wrap"
+        "white-space-collapse", "text-wrap-mode"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       valid_for_page_context: true,
@@ -6783,14 +6784,34 @@
     },
     {
       name: "text-wrap",
+      longhands: [
+        "text-wrap-mode", "text-wrap-style"
+      ],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      valid_for_page_context: true,
+    },
+    {
+      name: "text-wrap-mode",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       inherited: true,
-      field_template: "primitive",
-      field_size: 2,  // Ensure this is in sync with `kTextWrapBits`.
-      keywords: ["wrap", "nowrap", "balance", "pretty"],
-      type_name: "TextWrap",
-      default_value: "TextWrap::kWrap",
-      include_paths: ["third_party/blink/renderer/core/css/white_space.h"],
+      field_template: "keyword",
+      type_name: "TextWrapMode",
+      keywords: ["wrap", "nowrap"],
+      default_value: "wrap",
+      typedom_types: ["Keyword"],
+      valid_for_cue: true,
+      valid_for_marker: true,
+      valid_for_page_context: true,
+      invalidate: ["layout"],
+    },
+    {
+      name: "text-wrap-style",
+      property_methods: ["CSSValueFromComputedStyleInternal"],
+      inherited: true,
+      field_template: "keyword",
+      type_name: "TextWrapStyle",
+      keywords: ["auto", "balance", "pretty", "stable"],
+      default_value: "auto",
       typedom_types: ["Keyword"],
       valid_for_cue: true,
       valid_for_marker: true,
@@ -6821,7 +6842,7 @@
       default_value: "Length()",
       typedom_types: ["Keyword", "Length", "Percentage"],
       converter: "ConvertLengthSizing",
-      anchor_mode: "size",
+      anchor_mode: "width",
       logical_property_group: {
         name: "size",
         resolver: "horizontal",
@@ -8100,6 +8121,12 @@
       name: "marker",
       longhands: ["marker-start", "marker-mid", "marker-end"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+    },
+    {
+      name: "masonry-track",
+      longhands: ["masonry-track-start", "masonry-track-end"],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSMasonryLayout",
     },
     {
       name: "offset",

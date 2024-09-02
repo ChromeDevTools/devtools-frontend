@@ -125,6 +125,7 @@ with open(GENERATED_LOCATION, "w+") as f:
     )
     f.write('// found in the LICENSE file.\n')
     f.write('\n')
+    f.write('/* eslint-disable quotes */\n')
     f.write("export const generatedProperties = %s;\n" %
             json.dumps(properties, sort_keys=True, indent=1))
     # sort keys to ensure entries are generated in a deterministic way to avoid inconsistencies across different OS
@@ -132,3 +133,4 @@ with open(GENERATED_LOCATION, "w+") as f:
             json.dumps(property_values, sort_keys=True, indent=1))
     f.write("export const generatedAliasesFor = new Map(%s);\n" %
             json.dumps(aliases_for, sort_keys=True, indent=1))
+    f.write('// clang-format on\n')

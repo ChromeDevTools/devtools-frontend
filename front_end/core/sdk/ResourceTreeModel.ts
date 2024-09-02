@@ -1113,6 +1113,9 @@ export class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
     this.#resourceTreeModel.frameDetached(frameId, reason === Protocol.Page.FrameDetachedEventReason.Swap);
   }
 
+  frameSubtreeWillBeDetached(_params: Protocol.Page.FrameSubtreeWillBeDetachedEvent): void {
+  }
+
   frameStartedLoading({}: Protocol.Page.FrameStartedLoadingEvent): void {
   }
 

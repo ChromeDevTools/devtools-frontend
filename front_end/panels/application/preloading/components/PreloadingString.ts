@@ -32,11 +32,6 @@ const UIStrings = {
    */
   PrefetchFailedNon2XX: 'The prefetch failed because of a non-2xx HTTP response status code.',
   /**
-   *@description  Description text for Prefetch status PrefetchFailedPerPageLimitExceeded.
-   */
-  PrefetchFailedPerPageLimitExceeded:
-      'The prefetch was not performed because the initiating page already has too many prefetches ongoing.',
-  /**
    *@description  Description text for Prefetch status PrefetchIneligibleRetryAfter.
    */
   PrefetchIneligibleRetryAfter:
@@ -415,7 +410,6 @@ export const PrefetchReasonDescription: {[key: string]: {name: () => Platform.UI
   'PrefetchFailedMIMENotSupported': {name: i18nLazyString(UIStrings.PrefetchFailedMIMENotSupported)},
   'PrefetchFailedNetError': {name: i18nLazyString(UIStrings.PrefetchFailedNetError)},
   'PrefetchFailedNon2XX': {name: i18nLazyString(UIStrings.PrefetchFailedNon2XX)},
-  'PrefetchFailedPerPageLimitExceeded': {name: i18nLazyString(UIStrings.PrefetchFailedPerPageLimitExceeded)},
   'PrefetchIneligibleRetryAfter': {name: i18nLazyString(UIStrings.PrefetchIneligibleRetryAfter)},
   'PrefetchIsPrivacyDecoy': {name: i18nLazyString(UIStrings.PrefetchIsPrivacyDecoy)},
   'PrefetchIsStale': {name: i18nLazyString(UIStrings.PrefetchIsStale)},
@@ -474,8 +468,6 @@ export function prefetchFailureReason({prefetchStatus}: SDK.PreloadingModel.Pref
       return PrefetchReasonDescription['PrefetchFailedNetError'].name();
     case Protocol.Preload.PrefetchStatus.PrefetchFailedNon2XX:
       return PrefetchReasonDescription['PrefetchFailedNon2XX'].name();
-    case Protocol.Preload.PrefetchStatus.PrefetchFailedPerPageLimitExceeded:
-      return PrefetchReasonDescription['PrefetchFailedPerPageLimitExceeded'].name();
     case Protocol.Preload.PrefetchStatus.PrefetchIneligibleRetryAfter:
       return PrefetchReasonDescription['PrefetchIneligibleRetryAfter'].name();
     case Protocol.Preload.PrefetchStatus.PrefetchEvictedForNewerPrefetch:

@@ -1872,6 +1872,7 @@ export const knownContextValues = new Set([
   'mask-size',
   'mask-type',
   'masonry-template-tracks',
+  'masonry-track',
   'masonry-track-end',
   'masonry-track-start',
   'match-case',

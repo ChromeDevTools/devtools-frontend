@@ -743,6 +743,7 @@ experimental domain Audits
       NoRegisterTriggerHeader
       NoRegisterOsSourceHeader
       NoRegisterOsTriggerHeader
+      NavigationRegistrationUniqueScopeAlreadySet
 
   type SharedDictionaryError extends string
     enum
@@ -5523,12 +5524,21 @@ experimental domain Memory
       moderate
       critical
 
+  # Retruns current DOM object counters.
   command getDOMCounters
     returns
       integer documents
       integer nodes
       integer jsEventListeners
 
+  # Retruns DOM object counters after preparing renderer for leak detection.
+  command getDOMCountersForLeakDetection
+    returns
+      # DOM object counters.
+      array of DOMCounter counters
+
+  # Prepares for leak detection by terminating workers, stopping spellcheckers,
+  # dropping non-essential internal caches, running garbage collections, etc.
   command prepareForLeakDetection
 
   # Simulate OomIntervention by purging V8 memory.
@@ -5603,6 +5613,15 @@ experimental domain Memory
       string baseAddress
       # Size of the module in bytes.
       number size
+
+  # DOM object counter data.
+  type DOMCounter extends object
+    properties
+      # Object name. Note: object names should be presumed volatile and clients should not expect
+      # the returned names to be consistent across runs.
+      string name
+      # Object count.
+      integer count
 
 # Network domain allows tracking network activities of the page. It exposes information about http,
 # file, data and other requests and responses, their headers, bodies, timing, etc.
@@ -6341,6 +6360,8 @@ domain Network
       TPCDMetadata
       # The cookie should have been blocked by 3PCD but is exempted by Deprecation Trial mitigation.
       TPCDDeprecationTrial
+      # The cookie should have been blocked by 3PCD but is exempted by Top-level Deprecation Trial mitigation.
+      TopLevelTPCDDeprecationTrial
       # The cookie should have been blocked by 3PCD but is exempted by heuristics mitigation.
       TPCDHeuristics
       # The cookie should have been blocked by 3PCD but is exempted by Enterprise Policy.
@@ -9199,6 +9220,13 @@ domain Page
         # A new frame target will be created (see Target.attachedToTarget).
         swap
 
+  # Fired before frame subtree is detached. Emitted before any frame of the
+  # subtree is actually detached.
+  experimental event frameSubtreeWillBeDetached
+    parameters
+      # Id of the frame that is the root of the subtree that will be detached.
+      FrameId frameId
+
   # The type of a frameNavigated event.
   experimental type NavigationType extends string
     enum
@@ -10640,6 +10668,14 @@ experimental domain Storage
       array of AttributionReportingAggregatableDebugReportingData debugData
       optional string aggregationCoordinatorOrigin
 
+  experimental type AttributionScopesData extends object
+    properties
+      array of string values
+      # number instead of integer because not all uint32 can be represented by
+      # int
+      number limit
+      number maxEventStates
+
   experimental type AttributionReportingSourceRegistration extends object
     properties
       Network.TimeSinceEpoch time
@@ -10660,6 +10696,7 @@ experimental domain Storage
       AttributionReportingTriggerDataMatching triggerDataMatching
       SignedInt64AsBase10 destinationLimitPriority
       AttributionReportingAggregatableDebugReportingConfig aggregatableDebugReportingConfig
+      optional AttributionScopesData scopesData
 
   experimental type AttributionReportingSourceRegistrationResult extends string
     enum
@@ -10675,7 +10712,9 @@ experimental domain Storage
       destinationBothLimitsReached
       reportingOriginsPerSiteLimitReached
       exceedsMaxChannelCapacity
+      exceedsMaxScopesChannelCapacity
       exceedsMaxTriggerStateCardinality
+      exceedsMaxEventStatesLimit
       destinationPerDayReportingLimitReached
 
   experimental event attributionReportingSourceRegistered
@@ -10734,6 +10773,7 @@ experimental domain Storage
       AttributionReportingSourceRegistrationTimeConfig sourceRegistrationTimeConfig
       optional string triggerContextId
       AttributionReportingAggregatableDebugReportingConfig aggregatableDebugReportingConfig
+      array of string scopes
 
   experimental type AttributionReportingEventLevelResult extends string
     enum
@@ -12385,7 +12425,6 @@ experimental domain Preload
       PrefetchFailedMIMENotSupported
       PrefetchFailedNetError
       PrefetchFailedNon2XX
-      PrefetchFailedPerPageLimitExceeded
       PrefetchEvictedAfterCandidateRemoved
       PrefetchEvictedForNewerPrefetch
       PrefetchHeldback

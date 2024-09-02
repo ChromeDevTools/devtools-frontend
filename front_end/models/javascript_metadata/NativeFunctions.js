@@ -225,7 +225,7 @@ export const NativeFunctions = [
   {
     name: "create",
     signatures: [["?options"]],
-    receivers: ["CredentialsContainer","AIAssistantFactory","AIRewriterFactory","AIWriterFactory"]
+    receivers: ["CredentialsContainer","AIRewriterFactory","AISummarizerFactory","AIWriterFactory"]
   },
   {
     name: "defineProperty",
@@ -796,7 +796,13 @@ export const NativeFunctions = [
   },
   {
     name: "reduce",
-    signatures: [["callbackfn","?initialValue"]]
+    signatures: [["callbackfn","?initialValue"]],
+    receivers: ["ReadonlyArray","Array","Int8Array","Uint8Array","Uint8ClampedArray","Int16Array","Uint16Array","Int32Array","Uint32Array","Float32Array","Float64Array","BigInt64Array","BigUint64Array"]
+  },
+  {
+    name: "reduce",
+    signatures: [["reducer","?initialValue","?options"]],
+    receivers: ["Observable"]
   },
   {
     name: "reduceRight",
@@ -829,7 +835,13 @@ export const NativeFunctions = [
   },
   {
     name: "catch",
-    signatures: [["?onrejected"]]
+    signatures: [["?onrejected"]],
+    receivers: ["Promise"]
+  },
+  {
+    name: "catch",
+    signatures: [["callback"]],
+    receivers: ["Observable"]
   },
   {
     name: "isView",
@@ -3733,7 +3745,7 @@ export const NativeFunctions = [
   {
     name: "prompt",
     signatures: [["input"]],
-    receivers: ["AIAssistant","AITextSession"]
+    receivers: ["AITextSession"]
   },
   {
     name: "watchAvailability",
@@ -4064,6 +4076,11 @@ export const NativeFunctions = [
     name: "sign",
     signatures: [["x"]],
     receivers: ["Math"]
+  },
+  {
+    name: "sign",
+    signatures: [["x","?options"]],
+    receivers: ["MLGraphBuilder"]
   },
   {
     name: "unwrapKey",
@@ -7227,10 +7244,6 @@ export const NativeFunctions = [
     signatures: [["feature"]]
   },
   {
-    name: "promptStreaming",
-    signatures: [["input"]]
-  },
-  {
     name: "rewrite",
     signatures: [["input","?options"]]
   },
@@ -7239,11 +7252,7 @@ export const NativeFunctions = [
     signatures: [["input","?options"]]
   },
   {
-    name: "summarize",
-    signatures: [["input"]]
-  },
-  {
-    name: "summarizeStreaming",
+    name: "promptStreaming",
     signatures: [["input"]]
   },
   {
@@ -7438,10 +7447,6 @@ export const NativeFunctions = [
     signatures: [["type","init"]]
   },
   {
-    name: "report",
-    signatures: [["options"]]
-  },
-  {
     name: "FederatedCredential",
     signatures: [["data"]]
   },
@@ -7467,6 +7472,18 @@ export const NativeFunctions = [
   },
   {
     name: "parseRequestOptionsFromJSON",
+    signatures: [["options"]]
+  },
+  {
+    name: "signalUnknownCredential",
+    signatures: [["options"]]
+  },
+  {
+    name: "signalAllAcceptedCredentials",
+    signatures: [["options"]]
+  },
+  {
+    name: "signalCurrentUserDetails",
     signatures: [["options"]]
   },
   {
@@ -7862,6 +7879,10 @@ export const NativeFunctions = [
     signatures: [["input","indices","?options"]]
   },
   {
+    name: "gatherElements",
+    signatures: [["input","indices","?options"]]
+  },
+  {
     name: "gelu",
     signatures: [["input","?options"]]
   },
@@ -8000,6 +8021,10 @@ export const NativeFunctions = [
   {
     name: "softsign",
     signatures: [["input","?options"]]
+  },
+  {
+    name: "tile",
+    signatures: [["input","repetitions","?options"]]
   },
   {
     name: "transpose",

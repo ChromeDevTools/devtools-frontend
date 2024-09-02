@@ -867,7 +867,7 @@ ANSWER: this is the answer`,
         }
         count++;
         yield {
-          explanation: `THOUGHT: thought ${count}\nACTION\nconsole.log('test')\nSTOP\n`,
+          explanation: `THOUGHT: thought ${count}\nTITLE:test\nACTION\nconsole.log('test')\nSTOP\n`,
           metadata: {},
         };
       }
@@ -889,7 +889,7 @@ ANSWER: this is the answer`,
         },
         {
           entity: 2,
-          text: 'THOUGHT: thought 1\nACTION\nconsole.log(\'test\')\nSTOP\n',
+          text: 'THOUGHT: thought 1\nTITLE: test\nACTION\nconsole.log(\'test\')\nSTOP',
         },
         {
           entity: 1,
@@ -897,7 +897,7 @@ ANSWER: this is the answer`,
         },
         {
           entity: 2,
-          text: 'THOUGHT: thought 2\nACTION\nconsole.log(\'test\')\nSTOP\n',
+          text: 'THOUGHT: thought 2\nTITLE: test\nACTION\nconsole.log(\'test\')\nSTOP',
         },
         {
           entity: 1,
@@ -905,7 +905,7 @@ ANSWER: this is the answer`,
         },
         {
           entity: 2,
-          text: 'THOUGHT: thought 3\nACTION\nconsole.log(\'test\')\nSTOP\n',
+          text: 'THOUGHT: thought 3\nTITLE: test\nACTION\nconsole.log(\'test\')\nSTOP',
         },
         {
           entity: 1,

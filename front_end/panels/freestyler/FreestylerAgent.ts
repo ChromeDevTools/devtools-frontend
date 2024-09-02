@@ -429,19 +429,21 @@ export class FreestylerAgent {
         request: structuredClone(request),
         response: response,
       });
-      const currentRunEntries = this.#chatHistory.get(currentRunId) ?? [];
-      this.#chatHistory.set(currentRunId, [
-        ...currentRunEntries,
-        {
-          text: query,
-          entity: Host.AidaClient.Entity.USER,
-        },
-        {
-          text: response,
-          entity: Host.AidaClient.Entity.SYSTEM,
-        },
-      ]);
 
+      const addToHistory = (text: string): void => {
+        this.#chatHistory.set(currentRunId, [
+          ...currentRunEntries,
+          {
+            text: query,
+            entity: Host.AidaClient.Entity.USER,
+          },
+          {
+            text,
+            entity: Host.AidaClient.Entity.SYSTEM,
+          },
+        ]);
+      };
+      const currentRunEntries = this.#chatHistory.get(currentRunId) ?? [];
       const {thought, title, action, answer, fixable} = FreestylerAgent.parseResponse(response);
       // Sometimes the answer will follow an action and a thought. In
       // that case, we only use the action and the thought (if present)
@@ -449,19 +451,28 @@ export class FreestylerAgent {
       // the action.
       if (action) {
         if (thought) {
+          addToHistory(`THOUGHT: ${thought}
+TITLE: ${title}
+ACTION
+${action}
+STOP`);
           yield {
             type: ResponseType.THOUGHT,
             thought,
             title,
             rpcId,
           };
+        } else {
+          addToHistory(`ACTION
+${action}
+STOP`);
         }
         debugLog(`Action to execute: ${action}`);
         const scope = this.#createExtensionScope(this.#changes);
         await scope.install();
         try {
           let result = await this.#generateObservation(action, {throwOnSideEffect: !options.isFixQuery});
-          debugLog(`Action result: ${result}`);
+          debugLog(`Action result: ${JSON.stringify(result)}`);
           if (result.sideEffect) {
             const sideEffectConfirmationPromiseWithResolvers = this.#confirmSideEffect<boolean>();
             if (isDebugMode()) {
@@ -494,6 +505,7 @@ export class FreestylerAgent {
           await scope.uninstall();
         }
       } else if (answer) {
+        addToHistory(`ANSWER: ${answer}`);
         yield {
           type: ResponseType.ANSWER,
           text: answer,
@@ -502,6 +514,7 @@ export class FreestylerAgent {
         };
         break;
       } else {
+        addToHistory(response);
         yield {
           type: ResponseType.ERROR,
           error: genericErrorMessage,

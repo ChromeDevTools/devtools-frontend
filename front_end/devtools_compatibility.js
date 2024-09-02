@@ -436,7 +436,6 @@ const EnumeratedHistogram = {
   RecordingReplayStarted: 'DevTools.RecordingReplayStarted',
   RecordingToggled: 'DevTools.RecordingToggled',
   SidebarPaneShown: 'DevTools.SidebarPaneShown',
-  SourcesSidebarTabShown: 'DevTools.Sources.SidebarTabShown',
   SourcesPanelFileDebugged: 'DevTools.SourcesPanelFileDebugged',
   SourcesPanelFileOpened: 'DevTools.SourcesPanelFileOpened',
   NetworkPanelResponsePreviewOpened: 'DevTools.NetworkPanelResponsePreviewOpened',

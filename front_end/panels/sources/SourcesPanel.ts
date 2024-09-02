@@ -253,10 +253,6 @@ export class SourcesPanel extends UI.Panel.Panel implements
         'dots-vertical');
     navigatorMenuButton.setTitle(i18nString(UIStrings.moreOptions));
     tabbedPane.rightToolbar().appendToolbarItem(navigatorMenuButton);
-    tabbedPane.addEventListener(
-        UI.TabbedPane.Events.TabSelected,
-        ({data: {tabId}}: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>) =>
-            Host.userMetrics.sourcesSidebarTabShown(tabId));
 
     if (UI.ViewManager.ViewManager.instance().hasViewsForLocation('run-view-sidebar')) {
       const navigatorSplitWidget =

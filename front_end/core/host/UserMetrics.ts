@@ -61,12 +61,6 @@ export class UserMetrics {
     );
   }
 
-  sourcesSidebarTabShown(sidebarPaneName: string): void {
-    const code = SourcesSidebarTabCodes[sidebarPaneName as keyof typeof SourcesSidebarTabCodes] || 0;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.SourcesSidebarTabShown, code, SourcesSidebarTabCodes.MAX_VALUE);
-  }
-
   settingsPanelShown(settingsViewId: string): void {
     this.panelShown('settings-' + settingsViewId);
   }
@@ -797,18 +791,6 @@ export enum ElementsSidebarTabCodes {
   'accessibility.view' = 7,
   /* eslint-enable @typescript-eslint/naming-convention */
   MAX_VALUE = 8,
-}
-
-export enum SourcesSidebarTabCodes {
-  /* eslint-disable @typescript-eslint/naming-convention */
-  'OtherSidebarPane' = 0,
-  'navigator-network' = 1,
-  'navigator-files' = 2,
-  'navigator-overrides' = 3,
-  'navigator-content-scripts' = 4,
-  'navigator-snippets' = 5,
-  /* eslint-enable @typescript-eslint/naming-convention */
-  MAX_VALUE = 6,
 }
 
 export enum MediaTypes {

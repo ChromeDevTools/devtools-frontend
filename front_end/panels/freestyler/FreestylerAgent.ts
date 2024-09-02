@@ -464,6 +464,10 @@ export class FreestylerAgent {
           debugLog(`Action result: ${result}`);
           if (result.sideEffect) {
             const sideEffectConfirmationPromiseWithResolvers = this.#confirmSideEffect<boolean>();
+            if (isDebugMode()) {
+              window.dispatchEvent(new CustomEvent(
+                  'freestylersideeffect', {detail: {confirm: sideEffectConfirmationPromiseWithResolvers.resolve}}));
+            }
 
             yield {
               type: ResponseType.SIDE_EFFECT,

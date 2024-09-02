@@ -262,10 +262,10 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     };
     const tabindex = this.#isConsoleInsightsSettingExpanded ? '0' : '-1';
     const tosLink = UI.XLink.XLink.create(
-        'http://policies.google.com/terms', i18nString(UIStrings.termsOfService), undefined, undefined,
+        'https://policies.google.com/terms', i18nString(UIStrings.termsOfService), undefined, undefined,
         'terms-of-service', tabindex);
     const privacyNoticeLink = UI.XLink.XLink.create(
-        'http://policies.google.com/privacy', i18nString(UIStrings.privacyNotice), undefined, undefined,
+        'https://policies.google.com/privacy', i18nString(UIStrings.privacyNotice), undefined, undefined,
         'privacy-notice', tabindex);
 
     // Disabled until https://crbug.com/1079231 is fixed.
@@ -317,7 +317,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
             `)}
             ${this.#renderSettingItem('warning', LitHtml.html`
               <x-link
-                href="http://support.google.com/legal/answer/13505487"
+                href="https://support.google.com/legal/answer/13505487"
                 class="link"
                 tabindex=${tabindex}
                 jslog=${VisualLogging.link('code-snippets-explainer.console-insights').track({
@@ -327,7 +327,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
             `)}
             <div class="expansion-grid-whole-row">
               <x-link
-                href="http://goo.gle/devtools-console-messages-ai"
+                href="https://goo.gle/devtools-console-messages-ai"
                 class="link"
                 tabindex=${tabindex}
                 jslog=${VisualLogging.link('learn-more.console-insights').track({
@@ -350,10 +350,10 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     const tabindex = this.#isFreestylerSettingExpanded ? '0' : '-1';
 
     const tosLink = UI.XLink.XLink.create(
-        'http://policies.google.com/terms', i18nString(UIStrings.termsOfService), undefined, undefined,
+        'https://policies.google.com/terms', i18nString(UIStrings.termsOfService), undefined, undefined,
         'terms-of-service', tabindex);
     const privacyNoticeLink = UI.XLink.XLink.create(
-        'http://policies.google.com/privacy', i18nString(UIStrings.privacyNotice), undefined, undefined,
+        'https://policies.google.com/privacy', i18nString(UIStrings.privacyNotice), undefined, undefined,
         'privacy-notice', tabindex);
 
     // Disabled until https://crbug.com/1079231 is fixed.
@@ -405,7 +405,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
             `)}
             ${this.#renderSettingItem('warning', LitHtml.html`
               <x-link
-                href="http://support.google.com/legal/answer/13505487"
+                href="https://support.google.com/legal/answer/13505487"
                 class="link"
                 tabindex=${tabindex}
                 jslog=${VisualLogging.link('code-snippets-explainer.freestyler').track({

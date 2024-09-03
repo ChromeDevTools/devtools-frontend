@@ -1,7 +1,7 @@
 Name: C++ expression evaluator for debuggers (in particular, LLDB)
 Short Name: lldb-eval
 URL: https://github.com/google/lldb-eval
-Version: 0
+Version: N/A
 Date: 2023-06-21
 Revision: e87123a7e639bf1d86f24c37079570fb7fa00b72
 License: Apache 2.0

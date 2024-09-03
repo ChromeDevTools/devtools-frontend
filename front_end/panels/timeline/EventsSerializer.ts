@@ -15,6 +15,11 @@ export class EventsSerializer {
       return `${TraceEngine.Types.File.EventKeyType.PROFILE_CALL}-${event.pid}-${event.tid}-${
           TraceEngine.Types.TraceEvents.SampleIndex(event.sampleIndex)}-${event.nodeId}`;
     }
+
+    if (TraceEngine.Types.TraceEvents.isLegacyTimelineFrame(event)) {
+      return `${TraceEngine.Types.File.EventKeyType.LEGACY_TIMELINE_FRAME}-${event.index}`;
+    }
+
     const rawEvents = TraceEngine.Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager().getRawTraceEvents();
     const key: TraceEngine.Types.File.SyntheticEventKey|TraceEngine.Types.File.RawEventKey =
         TraceEngine.Types.TraceEvents.isSyntheticBasedEvent(event) ?
@@ -33,6 +38,14 @@ export class EventsSerializer {
 
     if (EventsSerializer.isProfileCallKey(eventValues)) {
       return this.#getModifiedProfileCallByKeyValues(eventValues, traceParsedData);
+    }
+
+    if (EventsSerializer.isLegacyTimelineFrameKey(eventValues)) {
+      const event = traceParsedData.Frames.frames.at(eventValues.rawIndex);
+      if (!event) {
+        throw new Error(`Could not find frame with index ${eventValues.rawIndex}`);
+      }
+      return event;
     }
 
     if (EventsSerializer.isSyntheticEventKey(eventValues)) {
@@ -57,6 +70,11 @@ export class EventsSerializer {
       key is TraceEngine.Types.File.ProfileCallKeyValues {
     return key.type === TraceEngine.Types.File.EventKeyType.PROFILE_CALL;
   }
+  static isLegacyTimelineFrameKey(key: TraceEngine.Types.File.TraceEventSerializableKeyValues):
+      key is TraceEngine.Types.File.LegacyTimelineFrameKeyValues {
+    return key.type === TraceEngine.Types.File.EventKeyType.LEGACY_TIMELINE_FRAME;
+  }
+
   static isRawEventKey(key: TraceEngine.Types.File.TraceEventSerializableKeyValues):
       key is TraceEngine.Types.File.RawEventKeyValues {
     return key.type === TraceEngine.Types.File.EventKeyType.RAW_EVENT;

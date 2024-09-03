@@ -114,7 +114,7 @@ export class TimelineFrameModel {
   #lastFrame: TimelineFrame|null = null;
   #mainFrameCommitted = false;
   #mainFrameRequested = false;
-  #lastLayerTree: FrameLayerTreeData|null = null;
+  #lastLayerTree: Types.TraceEvents.LegacyFrameLayerTreeData|null = null;
   #framePendingActivation: PendingFrame|null = null;
   #framePendingCommit: PendingFrame|null = null;
   #lastBeginFrame: number|null = null;
@@ -244,7 +244,7 @@ export class TimelineFrameModel {
     this.#mainFrameCommitted = true;
   }
 
-  #handleLayerTreeSnapshot(layerTree: FrameLayerTreeData): void {
+  #handleLayerTreeSnapshot(layerTree: Types.TraceEvents.LegacyFrameLayerTreeData): void {
     this.#lastLayerTree = layerTree;
   }
 
@@ -274,7 +274,8 @@ export class TimelineFrameModel {
       console.assert(
           false, `Inconsistent frame time for frame ${this.#frames.length} (${frame.startTime} - ${frame.endTime})`);
     }
-    this.#frames.push(frame);
+    const newFramesLength = this.#frames.push(frame);
+    frame.setIndex(newFramesLength - 1);
     if (typeof frame.mainFrameId === 'number') {
       this.#frameById[frame.mainFrameId] = frame;
     }
@@ -389,12 +390,19 @@ const MAIN_FRAME_MARKERS = new Set<Types.TraceEvents.KnownEventName>([
   Types.TraceEvents.KnownEventName.SCROLL_LAYER,
 ]);
 
-export interface FrameLayerTreeData {
-  entry: Types.TraceEvents.TraceEventLayerTreeHostImplSnapshot;
-  paints: LayerPaintEvent[];
-}
+export class TimelineFrame implements Types.TraceEvents.LegacyTimelineFrame {
+  // These fields exist to satisfy the base TraceEventData type which all
+  // "trace events" must implement. They aren't used, but doing this means we
+  // can pass `TimelineFrame` instances into places that expect
+  // Types.TraceEvents.TraceEventData.
+  cat = 'devtools.legacy_frame';
+  name = 'frame';
+  ph = Types.TraceEvents.Phase.COMPLETE;
+  ts: Types.Timing.MicroSeconds;
+  pid = Types.TraceEvents.ProcessID(-1);
+  tid = Types.TraceEvents.ThreadID(-1);
 
-export class TimelineFrame {
+  index: number = -1;
   startTime: Types.Timing.MicroSeconds;
   startTimeOffset: Types.Timing.MicroSeconds;
   endTime: Types.Timing.MicroSeconds;
@@ -402,7 +410,7 @@ export class TimelineFrame {
   idle: boolean;
   dropped: boolean;
   isPartial: boolean;
-  layerTree: FrameLayerTreeData|null;
+  layerTree: Types.TraceEvents.LegacyFrameLayerTreeData|null;
   paints: LayerPaintEvent[];
   mainFrameId: number|undefined;
   readonly seqId: number;
@@ -410,6 +418,7 @@ export class TimelineFrame {
   constructor(seqId: number, startTime: Types.Timing.MicroSeconds, startTimeOffset: Types.Timing.MicroSeconds) {
     this.seqId = seqId;
     this.startTime = startTime;
+    this.ts = startTime;
     this.startTimeOffset = startTimeOffset;
     this.endTime = this.startTime;
     this.duration = Types.Timing.MicroSeconds(0);
@@ -421,21 +430,20 @@ export class TimelineFrame {
     this.mainFrameId = undefined;
   }
 
+  setIndex(i: number): void {
+    this.index = i;
+  }
   setEndTime(endTime: Types.Timing.MicroSeconds): void {
     this.endTime = endTime;
     this.duration = Types.Timing.MicroSeconds(this.endTime - this.startTime);
   }
 
-  setLayerTree(layerTree: FrameLayerTreeData|null): void {
+  setLayerTree(layerTree: Types.TraceEvents.LegacyFrameLayerTreeData|null): void {
     this.layerTree = layerTree;
   }
 }
 
-export interface LayerPaintEventPicture {
-  rect: Array<number>;
-  serializedPicture: string;
-}
-export class LayerPaintEvent {
+export class LayerPaintEvent implements Types.TraceEvents.LegacyLayerPaintEvent {
   readonly #event: Types.TraceEvents.TraceEventPaint;
   #snapshot: Types.TraceEvents.TraceEventDisplayItemListSnapshot;
 
@@ -452,7 +460,7 @@ export class LayerPaintEvent {
     return this.#event;
   }
 
-  picture(): LayerPaintEventPicture|null {
+  picture(): Types.TraceEvents.LegacyLayerPaintEventPicture|null {
     const rect = this.#snapshot.args.snapshot.params?.layer_rect;
     const pictureData = this.#snapshot.args.snapshot.skp64;
     return rect && pictureData ? {rect: rect, serializedPicture: pictureData} : null;

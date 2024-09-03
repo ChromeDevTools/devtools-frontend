@@ -33,7 +33,10 @@ devtools_entrypoint("bundle") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "TraceEvents.test.ts" ]
+  sources = [
+    "File.test.ts",
+    "TraceEvents.test.ts",
+  ]
 
   deps = [
     "../../../core/platform:bundle",

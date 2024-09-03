@@ -18,7 +18,9 @@ export class SidebarAnnotationsTab extends HTMLElement {
   #annotations: TraceEngine.Types.File.Annotation[] = [];
   // A map with annotated entries and the colours that are used to display them in the FlameChart.
   // We need this map to display the entries in the sidebar with the same colours.
-  #annotationEntryToColorMap: Map<TraceEngine.Types.TraceEvents.TraceEventData, string> = new Map();
+  #annotationEntryToColorMap:
+      Map<TraceEngine.Types.TraceEvents.TraceEventData|TraceEngine.Types.TraceEvents.LegacyTimelineFrame, string> =
+          new Map();
 
   set annotations(annotations: TraceEngine.Types.File.Annotation[]) {
     this.#annotations = annotations;
@@ -32,6 +34,18 @@ export class SidebarAnnotationsTab extends HTMLElement {
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [sidebarAnnotationsTabStyles];
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  #entryNameForLabel(annotation: TraceEngine.Types.File.EntryLabelAnnotation): string {
+    if (TraceEngine.Types.TraceEvents.isLegacyTimelineFrame(annotation.entry)) {
+      return 'Frame';
+    }
+
+    if (TraceEngine.Types.TraceEvents.isProfileCall(annotation.entry)) {
+      return annotation.entry.callFrame.functionName;
+    }
+
+    return annotation.entry.name;
   }
 
   /**
@@ -48,9 +62,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
   #renderAnnotationIdentifier(annotation: TraceEngine.Types.File.Annotation): LitHtml.LitTemplate {
     switch (annotation.type) {
       case 'ENTRY_LABEL': {
-        const entryName = TraceEngine.Types.TraceEvents.isProfileCall(annotation.entry) ?
-            annotation.entry.callFrame.functionName :
-            annotation.entry.name;
+        const entryName = this.#entryNameForLabel(annotation);
         const color = this.#annotationEntryToColorMap.get(annotation.entry);
 
         return LitHtml.html`

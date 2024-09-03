@@ -2828,3 +2828,51 @@ export const Categories = {
   UserTiming: 'blink.user_timing',
   Loading: 'loading',
 } as const;
+
+/**
+ * The frames implementation in handlers/FramesHandler is considered "legacy"
+ * in that it is based on the old TimelineModel implementation rather than
+ * following the pattern of the other handlers. This will change in time as we
+ * migrate the frames track to use AnimationFrame events, but for now we
+ * maintain it because the effort required to migrate was large.
+ * Consequently, the types we use through the codebase to refer to these frames
+ * usually use ModelHandlers.FramesHandler.TimelineFrame, but in
+ * trace/types/*.ts we cannot refer to types defined in the Handlers. To avoid a
+ * circular dependency, we define these interfaces here which are implemented by
+ * the classes in FramesHandler.ts, but they can also be used to refer to
+ * instances of frames in trace/types/*.ts which is unable to import from
+ * handlers.
+ */
+export interface LegacyTimelineFrame extends TraceEventData {
+  startTime: MicroSeconds;
+  startTimeOffset: MicroSeconds;
+  endTime: MicroSeconds;
+  duration: MicroSeconds;
+  dropped: boolean;
+  isPartial: boolean;
+  layerTree: LegacyFrameLayerTreeData|null;
+  paints: LegacyLayerPaintEvent[];
+  mainFrameId: number|undefined;
+  readonly seqId: number;
+  index: number;
+}
+
+export function isLegacyTimelineFrame(data: TraceEventData): data is LegacyTimelineFrame {
+  return 'mainFrameId' in data && typeof data.mainFrameId === 'number';
+}
+
+export interface LegacyFrameLayerTreeData {
+  entry: TraceEventLayerTreeHostImplSnapshot;
+  paints: LegacyLayerPaintEvent[];
+}
+
+export interface LegacyLayerPaintEvent {
+  layerId(): number;
+  event(): TraceEventPaint;
+  picture(): LegacyLayerPaintEventPicture|null;
+}
+
+export interface LegacyLayerPaintEventPicture {
+  rect: Array<number>;
+  serializedPicture: string;
+}

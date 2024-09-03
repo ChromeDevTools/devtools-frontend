@@ -77,4 +77,15 @@ describeWithEnvironment('TraceEvent types', function() {
     const syntheticLayoutShift = traceData.LayoutShifts.clusters[0].events[0];
     assert.isTrue(TraceEngine.Types.TraceEvents.isSyntheticLayoutShift(syntheticLayoutShift));
   });
+
+  it('is able to identify that an event is a legacy timeline frame', async function() {
+    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const frame = traceData.Frames.frames.at(0);
+    assert.isOk(frame);
+    assert.isTrue(TraceEngine.Types.TraceEvents.isLegacyTimelineFrame(frame));
+
+    const networkEvent = traceData.NetworkRequests.byTime.at(0);
+    assert.isOk(networkEvent);
+    assert.isFalse(TraceEngine.Types.TraceEvents.isLegacyTimelineFrame(networkEvent));
+  });
 });

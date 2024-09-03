@@ -36,7 +36,7 @@ export type EntryChartLocation = 'main'|'network';
  * codebase.)
  */
 export type OverlayEntry =
-    TraceEngine.Types.TraceEvents.TraceEventData|TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame;
+    TraceEngine.Types.TraceEvents.TraceEventData|TraceEngine.Types.TraceEvents.LegacyTimelineFrame;
 
 /**
  * Represents when a user has selected an entry in the timeline
@@ -306,7 +306,7 @@ export class Overlays extends EventTarget {
    */
   timingsForOverlayEntry(entry: OverlayEntry):
       TraceEngine.Helpers.Timing.EventTimingsData<TraceEngine.Types.Timing.MicroSeconds> {
-    if (entry instanceof TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame) {
+    if (TraceEngine.Types.TraceEvents.isLegacyTimelineFrame(entry)) {
       return {
         startTime: entry.startTime,
         endTime: entry.endTime,
@@ -325,7 +325,7 @@ export class Overlays extends EventTarget {
   }
 
   #chartForOverlayEntry(entry: OverlayEntry): EntryChartLocation {
-    if (entry instanceof TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame) {
+    if (TraceEngine.Types.TraceEvents.isLegacyTimelineFrame(entry)) {
       return 'main';
     }
     if (TraceEngine.Types.TraceEvents.isNetworkTrackEntry(entry)) {

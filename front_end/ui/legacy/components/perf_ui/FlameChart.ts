@@ -3813,7 +3813,7 @@ export interface FlameChartDataProvider {
       |TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame|null;
 
   indexForEvent?(event: TraceEngine.Types.TraceEvents.TraceEventData|
-                 TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame): number|null;
+                 TraceEngine.Types.TraceEvents.LegacyTimelineFrame): number|null;
 
   buildFlowForInitiator?(index: number): unknown;
 

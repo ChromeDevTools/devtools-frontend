@@ -53,4 +53,19 @@ describe('EventsSerializer', () => {
     assert.strictEqual(resolvedSyntheticEntry, syntheticEvent);
     assert.strictEqual(resolvedProfileCall, profileCall);
   });
+
+  it('correctly maps to and from legacy timeline frames', async function() {
+    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const eventsSerializer = new Timeline.EventsSerializer.EventsSerializer();
+
+    const frame = traceData.Frames.frames.at(0);
+    assert.isOk(frame);
+
+    const frameKey = eventsSerializer.keyForEvent(frame);
+    assert.isOk(frameKey);
+    assert.strictEqual(frameKey, 'l-0');
+
+    const resolvedFrame = eventsSerializer.eventForKey(frameKey, traceData);
+    assert.strictEqual(resolvedFrame, frame);
+  });
 });

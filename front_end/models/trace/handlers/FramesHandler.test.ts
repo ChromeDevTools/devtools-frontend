@@ -56,6 +56,20 @@ describeWithMockConnection('FramesHandler', () => {
     assert.isTrue(parsedFrames[2].dropped);
   });
 
+  it('assigns each frame an index', async function() {
+    const rawEvents = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
+    await processTrace(rawEvents);
+
+    const parsedFrames = TraceEngine.Handlers.ModelHandlers.Frames.data().frames;
+    assert.lengthOf(parsedFrames, 18);
+
+    parsedFrames.forEach((frame, arrayIndex) => {
+      // Seems silly, but this means we know the frame's index without having
+      // to look it up in the trace data.
+      assert.strictEqual(frame.index, arrayIndex);
+    });
+  });
+
   it('can create LayerPaintEvents from Paint and snapshot events', async function() {
     // Advanced instrumentation trace file is large: allow the bots more time
     // to process it.

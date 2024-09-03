@@ -355,7 +355,7 @@ describeWithMockConnection('MetricCard', () => {
 
       const compareText = getDetailedCompareText(view);
       assert.strictEqual(
-          compareText!.innerText,
+          compareText!.textContent,
           'Your local LCP value of 100 ms is good and is rated the same as 50% of real-user LCP experiences. Additionally, the field data 75th percentile LCP value of 1.00 s is good.',
       );
     });
@@ -374,7 +374,7 @@ describeWithMockConnection('MetricCard', () => {
 
       const compareText = getDetailedCompareText(view);
       assert.strictEqual(
-          compareText!.innerText,
+          compareText!.textContent,
           'Your local LCP value of 100 ms is good and is rated the same as 50% of real-user LCP experiences. However, the field data 75th percentile LCP value of 5.00 s is poor.',
       );
     });
@@ -390,7 +390,7 @@ describeWithMockConnection('MetricCard', () => {
       await coordinator.done();
 
       const compareText = getDetailedCompareText(view);
-      assert.strictEqual(compareText!.innerText, 'Your local LCP value of 3.00 s needs improvement.');
+      assert.strictEqual(compareText!.textContent, 'Your local LCP value of 3.00 s needs improvement.');
     });
 
     it('should suggest interaction if local INP is missing', async () => {
@@ -403,7 +403,7 @@ describeWithMockConnection('MetricCard', () => {
       await coordinator.done();
 
       const compareText = getDetailedCompareText(view);
-      assert.strictEqual(compareText!.innerText, 'Interact with the page to measure INP.');
+      assert.strictEqual(compareText!.textContent, 'Interact with the page to measure INP.');
     });
   });
 

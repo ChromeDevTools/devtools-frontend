@@ -69,4 +69,73 @@ describe('SourceMapScopesInfo', () => {
       ]);
     });
   });
+
+  describe('hasVariablesAndBindings', () => {
+    it('returns false for scope info without variables or bindings', () => {
+      const names: string[] = [];
+      const originalScopes = [new OriginalScopeBuilder(names)
+                                  .start(0, 0, 'global')
+                                  .start(10, 0, 'function', 'foo')
+                                  .end(20, 0)
+                                  .end(30, 0)
+                                  .build()];
+
+      const generatedRanges = new GeneratedRangeBuilder(names)
+                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
+                                  .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 1}, isScope: true})
+                                  .end(0, 20)
+                                  .end(0, 30)
+                                  .build();
+
+      const info = SourceMapScopesInfo.parseFromMap(
+          sinon.createStubInstance(SDK.SourceMap.SourceMap), {names, originalScopes, generatedRanges});
+
+      assert.isFalse(info.hasVariablesAndBindings());
+    });
+
+    it('returns false for scope info with variables but no bindings', () => {
+      const names: string[] = [];
+      const originalScopes = [new OriginalScopeBuilder(names)
+                                  .start(0, 0, 'global')
+                                  .start(10, 0, 'function', 'foo', ['variable1', 'variable2'])
+                                  .end(20, 0)
+                                  .end(30, 0)
+                                  .build()];
+
+      const generatedRanges = new GeneratedRangeBuilder(names)
+                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
+                                  .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 1}, isScope: true})
+                                  .end(0, 20)
+                                  .end(0, 30)
+                                  .build();
+
+      const info = SourceMapScopesInfo.parseFromMap(
+          sinon.createStubInstance(SDK.SourceMap.SourceMap), {names, originalScopes, generatedRanges});
+
+      assert.isFalse(info.hasVariablesAndBindings());
+    });
+
+    it('returns true for scope info with variables and bindings', () => {
+      const names: string[] = [];
+      const originalScopes = [new OriginalScopeBuilder(names)
+                                  .start(0, 0, 'global')
+                                  .start(10, 0, 'function', 'foo', ['variable1', 'variable2'])
+                                  .end(20, 0)
+                                  .end(30, 0)
+                                  .build()];
+
+      const generatedRanges =
+          new GeneratedRangeBuilder(names)
+              .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
+              .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 1}, isScope: true, bindings: ['a', 'b']})
+              .end(0, 20)
+              .end(0, 30)
+              .build();
+
+      const info = SourceMapScopesInfo.parseFromMap(
+          sinon.createStubInstance(SDK.SourceMap.SourceMap), {names, originalScopes, generatedRanges});
+
+      assert.isTrue(info.hasVariablesAndBindings());
+    });
+  });
 });

@@ -14,9 +14,10 @@ import {
 export class SourceMapScopesInfo {
   /* eslint-disable-next-line no-unused-private-class-members */
   readonly #sourceMap: SourceMap;
-  /* eslint-disable-next-line no-unused-private-class-members */
   readonly #originalScopes: OriginalScope[];
   readonly #generatedRanges: GeneratedRange[];
+
+  #cachedVariablesAndBindingsPresent: boolean|null = null;
 
   constructor(sourceMap: SourceMap, originalScopes: OriginalScope[], generatedRanges: GeneratedRange[]) {
     this.#sourceMap = sourceMap;
@@ -86,6 +87,40 @@ export class SourceMapScopesInfo {
     })(this.#generatedRanges);
 
     return result;
+  }
+
+  /**
+   * @returns true if we have enough info (i.e. variable and binding expressions) to build
+   * a scope view.
+   */
+  hasVariablesAndBindings(): boolean {
+    if (this.#cachedVariablesAndBindingsPresent === null) {
+      this.#cachedVariablesAndBindingsPresent = this.#areVariablesAndBindingsPresent();
+    }
+    return this.#cachedVariablesAndBindingsPresent;
+  }
+
+  #areVariablesAndBindingsPresent(): boolean {
+    // We check whether any original scope has a non-empty list of variables, and
+    // generated ranges with a non-empty binding list.
+
+    function walkTree(nodes: OriginalScope[]|GeneratedRange[]): boolean {
+      for (const node of nodes) {
+        if ('variables' in node && node.variables.length > 0) {
+          return true;
+        }
+
+        if ('values' in node && node.values.some(v => v !== undefined)) {
+          return true;
+        }
+
+        if (walkTree(node.children)) {
+          return true;
+        }
+      }
+      return false;
+    }
+    return walkTree(this.#originalScopes) && walkTree(this.#generatedRanges);
   }
 }
 

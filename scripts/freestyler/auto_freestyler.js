@@ -119,7 +119,7 @@ class Example {
       }
       return {
         answer: answer.join('\n'),
-        question: question.join('\n'),
+        question: question.join(' '),
       };
     }
 

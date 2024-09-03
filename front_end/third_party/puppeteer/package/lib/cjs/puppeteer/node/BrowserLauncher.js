@@ -276,9 +276,10 @@ class BrowserLauncher {
             }
             return browsers_1.Browser.CHROME;
         }
+        const browserType = puppeteerBrowserToInstalledBrowser(this.browser, headless);
         executablePath = (0, browsers_1.computeExecutablePath)({
             cacheDir: this.puppeteer.defaultDownloadPath,
-            browser: puppeteerBrowserToInstalledBrowser(this.browser, headless),
+            browser: browserType,
             buildId: this.puppeteer.browserVersion,
         });
         if (!(0, fs_1.existsSync)(executablePath)) {
@@ -289,7 +290,7 @@ class BrowserLauncher {
             switch (this.browser) {
                 case 'chrome':
                     throw new Error(`Could not find Chrome (ver. ${this.puppeteer.browserVersion}). This can occur if either\n` +
-                        ' 1. you did not perform an installation before running the script (e.g. `npx puppeteer browsers install chrome`) or\n' +
+                        ' 1. you did not perform an installation before running the script (e.g. `npx puppeteer browsers install ${browserType}`) or\n' +
                         ` 2. your cache path is incorrectly configured (which is: ${this.puppeteer.configuration.cacheDirectory}).\n` +
                         'For (2), check out our guide on configuring puppeteer at https://pptr.dev/guides/configuration.');
                 case 'firefox':

@@ -35,6 +35,7 @@ async function takeScreenshots(): Promise<{target?: string, frontend?: string}> 
 }
 
 async function createScreenshotError(error: Error): Promise<Error> {
+  console.error('Taking screenshots for the error', error);
   if (!TestConfig.debug) {
     const {target, frontend} = await takeScreenshots();
     return ScreenshotError.fromBase64Images(error, target, frontend);

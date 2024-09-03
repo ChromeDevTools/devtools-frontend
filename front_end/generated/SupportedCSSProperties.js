@@ -6896,4 +6896,3 @@ export const generatedAliasesFor = new Map([
   "overflow-wrap"
  ]
 ]);
-// clang-format on

@@ -133,4 +133,3 @@ with open(GENERATED_LOCATION, "w+") as f:
             json.dumps(property_values, sort_keys=True, indent=1))
     f.write("export const generatedAliasesFor = new Map(%s);\n" %
             json.dumps(aliases_for, sort_keys=True, indent=1))
-    f.write('// clang-format on\n')

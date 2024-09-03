@@ -61,8 +61,9 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
     super(true);
     this.setMinimumSize(125, 0);
 
-    this.tree = new UI.TreeOutline.TreeOutlineInShadow();
+    this.tree = new UI.TreeOutline.TreeOutlineInShadow(UI.TreeOutline.TreeVariant.NAVIGATION_TREE);
     this.tree.addEventListener(UI.TreeOutline.Events.ElementSelected, this.selectionChanged.bind(this));
+    this.tree.hideOverflow();
 
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('sidebar').track({resize: true})}`);
     this.contentElement.appendChild(this.tree.element);

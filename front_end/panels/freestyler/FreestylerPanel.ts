@@ -11,12 +11,12 @@ import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import {ChangeManager} from './ChangeManager.js';
 import {
   ChatMessageEntity,
-  type CollapsibleStep,
   DOGFOOD_INFO,
   FreestylerChatUi,
   type ModelChatMessage,
   type Props as FreestylerChatUiProps,
   State as FreestylerChatUiState,
+  type Step,
 } from './components/FreestylerChatUi.js';
 import {FIX_THIS_ISSUE_PROMPT, FreestylerAgent, ResponseType} from './FreestylerAgent.js';
 import freestylerPanelStyles from './freestylerPanel.css.js';
@@ -266,7 +266,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       this.#viewProps.isLoading = false;
     });
 
-    let step: CollapsibleStep = {isLoading: true};
+    let step: Step = {isLoading: true};
 
     for await (const data of this.#agent.run(text, {signal, isFixQuery})) {
       step.sideEffect = undefined;

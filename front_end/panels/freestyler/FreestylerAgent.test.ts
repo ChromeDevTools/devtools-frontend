@@ -540,9 +540,9 @@ c`;
 
         });
         promise.resolve(false);
-        const steps = await Array.fromAsync(agent.run('test'));
+        const responses = await Array.fromAsync(agent.run('test'));
 
-        const actionStep = steps.find(step => step.type === Freestyler.ResponseType.ACTION)!;
+        const actionStep = responses.find(response => response.type === Freestyler.ResponseType.ACTION)!;
 
         assert.strictEqual(actionStep.output, 'Error: EvalError: Possible side-effect in debug-evaluate');
         assert.strictEqual(execJs.getCalls().length, 1);
@@ -634,8 +634,8 @@ c`;
 
       });
 
-      const steps = await Array.fromAsync(agent.run('test'));
-      assert.deepStrictEqual(steps, [
+      const responses = await Array.fromAsync(agent.run('test'));
+      assert.deepStrictEqual(responses, [
         {
           type: Freestyler.ResponseType.QUERYING,
         },
@@ -675,8 +675,8 @@ c`;
 
       });
 
-      const steps = await Array.fromAsync(agent.run('test'));
-      assert.deepStrictEqual(steps, [
+      const responses = await Array.fromAsync(agent.run('test'));
+      assert.deepStrictEqual(responses, [
         {
           type: Freestyler.ResponseType.QUERYING,
         },
@@ -709,8 +709,8 @@ c`;
 
       });
 
-      const steps = await Array.fromAsync(agent.run('test'));
-      assert.deepStrictEqual(steps, [
+      const responses = await Array.fromAsync(agent.run('test'));
+      assert.deepStrictEqual(responses, [
         {
           type: Freestyler.ResponseType.QUERYING,
         },
@@ -742,8 +742,8 @@ c`;
 
       });
 
-      const steps = await Array.fromAsync(agent.run('test'));
-      assert.deepStrictEqual(steps, [
+      const responses = await Array.fromAsync(agent.run('test'));
+      assert.deepStrictEqual(responses, [
         {
           type: Freestyler.ResponseType.QUERYING,
         },
@@ -770,8 +770,8 @@ c`;
         execJs,
 
       });
-      const steps = await Array.fromAsync(agent.run('test'));
-      assert.deepStrictEqual(steps, [
+      const responses = await Array.fromAsync(agent.run('test'));
+      assert.deepStrictEqual(responses, [
         {
           type: Freestyler.ResponseType.QUERYING,
         },
@@ -825,8 +825,8 @@ ANSWER: this is the answer`,
         execJs,
 
       });
-      const steps = await Array.fromAsync(agent.run('test'));
-      assert.deepStrictEqual(steps, [
+      const responses = await Array.fromAsync(agent.run('test'));
+      assert.deepStrictEqual(responses, [
         {
           type: Freestyler.ResponseType.QUERYING,
         },

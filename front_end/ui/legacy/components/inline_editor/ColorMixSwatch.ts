@@ -10,11 +10,11 @@ import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import colorMixSwatchStyles from './colorMixSwatch.css.js';
 
 export const enum Events {
-  ColorChanged = 'colorChanged',
+  COLOR_CHANGED = 'colorChanged',
 }
 
 export interface EventTypes {
-  [Events.ColorChanged]: {text: string};
+  [Events.COLOR_CHANGED]: {text: string};
 }
 
 export class ColorMixSwatch extends Common.ObjectWrapper.eventMixin<EventTypes, typeof HTMLElement>(HTMLElement) {
@@ -50,7 +50,7 @@ export class ColorMixSwatch extends Common.ObjectWrapper.eventMixin<EventTypes, 
       this.colorMixText = this.colorMixText.replace(this.firstColorText, text);
     }
     this.firstColorText = text;
-    this.dispatchEventToListeners(Events.ColorChanged, {text: this.colorMixText});
+    this.dispatchEventToListeners(Events.COLOR_CHANGED, {text: this.colorMixText});
     this.#render();
   }
 
@@ -62,13 +62,13 @@ export class ColorMixSwatch extends Common.ObjectWrapper.eventMixin<EventTypes, 
       this.colorMixText = Platform.StringUtilities.replaceLast(this.colorMixText, this.secondColorText, text);
     }
     this.secondColorText = text;
-    this.dispatchEventToListeners(Events.ColorChanged, {text: this.colorMixText});
+    this.dispatchEventToListeners(Events.COLOR_CHANGED, {text: this.colorMixText});
     this.#render();
   }
 
   setColorMixText(text: string): void {
     this.colorMixText = text;
-    this.dispatchEventToListeners(Events.ColorChanged, {text: this.colorMixText});
+    this.dispatchEventToListeners(Events.COLOR_CHANGED, {text: this.colorMixText});
     this.#render();
   }
 

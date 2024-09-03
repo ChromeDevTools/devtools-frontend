@@ -45,10 +45,10 @@ interface Row {
 }
 
 export const enum RowType {
-  Deletion = 'deletion',
-  Addition = 'addition',
-  Equal = 'equal',
-  Spacer = 'spacer',
+  DELETION = 'deletion',
+  ADDITION = 'addition',
+  EQUAL = 'equal',
+  SPACER = 'spacer',
 }
 
 export function buildDiffRows(diff: Diff.Diff.DiffArray): {
@@ -74,7 +74,7 @@ export function buildDiffRows(diff: Diff.Diff.DiffArray): {
         break;
       case Diff.Diff.Operation.Insert:
         for (const line of token[1]) {
-          rows.push(createRow(line, RowType.Addition));
+          rows.push(createRow(line, RowType.ADDITION));
         }
         currentLines.push(...token[1]);
         break;
@@ -86,7 +86,7 @@ export function buildDiffRows(diff: Diff.Diff.DiffArray): {
           currentLines.push(...diff[i][1]);
         } else {
           for (const line of token[1]) {
-            rows.push(createRow(line, RowType.Deletion));
+            rows.push(createRow(line, RowType.DELETION));
           }
         }
         break;
@@ -99,11 +99,11 @@ export function buildDiffRows(diff: Diff.Diff.DiffArray): {
     const equalRows = [];
     if (!atStart) {
       for (let i = 0; i < paddingLines && i < lines.length; i++) {
-        equalRows.push(createRow(lines[i], RowType.Equal));
+        equalRows.push(createRow(lines[i], RowType.EQUAL));
       }
       if (lines.length > paddingLines * 2 + 1 && !atEnd) {
         equalRows.push(createRow(
-            i18nString(UIStrings.SkippingDMatchingLines, {PH1: (lines.length - paddingLines * 2)}), RowType.Spacer));
+            i18nString(UIStrings.SkippingDMatchingLines, {PH1: (lines.length - paddingLines * 2)}), RowType.SPACER));
       }
     }
     if (!atEnd) {
@@ -118,7 +118,7 @@ export function buildDiffRows(diff: Diff.Diff.DiffArray): {
       }
 
       for (let i = start; i < lines.length; i++) {
-        equalRows.push(createRow(lines[i], RowType.Equal));
+        equalRows.push(createRow(lines[i], RowType.EQUAL));
       }
     }
     return equalRows;
@@ -126,8 +126,8 @@ export function buildDiffRows(diff: Diff.Diff.DiffArray): {
 
   function createModifyRows(before: string, after: string): Row[] {
     const internalDiff = Diff.Diff.DiffWrapper.charDiff(before, after, true /* cleanup diff */);
-    const deletionRows = [createRow('', RowType.Deletion)];
-    const insertionRows = [createRow('', RowType.Addition)];
+    const deletionRows = [createRow('', RowType.DELETION)];
+    const insertionRows = [createRow('', RowType.ADDITION)];
 
     for (const token of internalDiff) {
       const text = token[1];
@@ -136,10 +136,10 @@ export function buildDiffRows(diff: Diff.Diff.DiffArray): {
       const lines = text.split('\n');
       for (let i = 0; i < lines.length; i++) {
         if (i > 0 && type !== Diff.Diff.Operation.Insert) {
-          deletionRows.push(createRow('', RowType.Deletion));
+          deletionRows.push(createRow('', RowType.DELETION));
         }
         if (i > 0 && type !== Diff.Diff.Operation.Delete) {
-          insertionRows.push(createRow('', RowType.Addition));
+          insertionRows.push(createRow('', RowType.ADDITION));
         }
         if (!lines[i]) {
           continue;
@@ -156,13 +156,13 @@ export function buildDiffRows(diff: Diff.Diff.DiffArray): {
   }
 
   function createRow(text: string, type: RowType): Row {
-    if (type === RowType.Addition) {
+    if (type === RowType.ADDITION) {
       currentLineNumber++;
     }
-    if (type === RowType.Deletion) {
+    if (type === RowType.DELETION) {
       originalLineNumber++;
     }
-    if (type === RowType.Equal) {
+    if (type === RowType.EQUAL) {
       originalLineNumber++;
       currentLineNumber++;
     }
@@ -198,14 +198,14 @@ class DiffRenderer {
 
   #renderRow(row: Row): LitHtml.TemplateResult {
     const baseNumber =
-        row.type === RowType.Equal || row.type === RowType.Deletion ? String(row.originalLineNumber) : '';
-    const curNumber = row.type === RowType.Equal || row.type === RowType.Addition ? String(row.currentLineNumber) : '';
+        row.type === RowType.EQUAL || row.type === RowType.DELETION ? String(row.originalLineNumber) : '';
+    const curNumber = row.type === RowType.EQUAL || row.type === RowType.ADDITION ? String(row.currentLineNumber) : '';
     let marker = '', markerClass = 'diff-line-marker', screenReaderText = null;
-    if (row.type === RowType.Addition) {
+    if (row.type === RowType.ADDITION) {
       marker = '+';
       markerClass += ' diff-line-addition';
       screenReaderText = LitHtml.html`<span class="diff-hidden-text">${i18nString(UIStrings.additions)}</span>`;
-    } else if (row.type === RowType.Deletion) {
+    } else if (row.type === RowType.DELETION) {
       marker = '-';
       markerClass += ' diff-line-deletion';
       screenReaderText = LitHtml.html`<span class="diff-hidden-text">${i18nString(UIStrings.deletions)}</span>`;
@@ -220,10 +220,10 @@ class DiffRenderer {
   }
 
   #renderRowContent(row: Row): LitHtml.TemplateResult[] {
-    if (row.type === RowType.Spacer) {
+    if (row.type === RowType.SPACER) {
       return row.tokens.map(tok => LitHtml.html`${tok.text}`);
     }
-    const [doc, startPos] = row.type === RowType.Deletion ?
+    const [doc, startPos] = row.type === RowType.DELETION ?
         [this.originalHighlighter, this.originalMap.get(row.originalLineNumber) as number] :
         [this.currentHighlighter, this.currentMap.get(row.currentLineNumber) as number];
     const content: LitHtml.TemplateResult[] = [];

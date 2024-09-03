@@ -88,7 +88,7 @@ export class InplaceFormatterEditorAction implements EditorAction {
     this.sourcesView.addEventListener(Events.EditorClosed, this.editorClosed.bind(this));
 
     this.button = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.format), 'brackets');
-    this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.formatSourceInPlace, this);
+    this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.formatSourceInPlace, this);
     this.updateButton(sourcesView.currentUISourceCode());
 
     return this.button;

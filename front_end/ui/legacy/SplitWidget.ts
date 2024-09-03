@@ -96,9 +96,9 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
     this.resizerWidget = new SimpleResizerWidget();
     this.resizerWidget.setEnabled(true);
-    this.resizerWidget.addEventListener(ResizerWidgetEvents.ResizeStart, this.onResizeStart, this);
-    this.resizerWidget.addEventListener(ResizerWidgetEvents.ResizeUpdatePosition, this.onResizeUpdate, this);
-    this.resizerWidget.addEventListener(ResizerWidgetEvents.ResizeEnd, this.onResizeEnd, this);
+    this.resizerWidget.addEventListener(ResizerWidgetEvents.RESIZE_START, this.onResizeStart, this);
+    this.resizerWidget.addEventListener(ResizerWidgetEvents.RESIZE_UPDATE_POSITION, this.onResizeUpdate, this);
+    this.resizerWidget.addEventListener(ResizerWidgetEvents.RESIZE_END, this.onResizeEnd, this);
 
     this.defaultSidebarWidth = defaultSidebarWidth || 200;
     this.defaultSidebarHeight = defaultSidebarHeight || this.defaultSidebarWidth;
@@ -130,7 +130,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.setSecondIsSidebar(secondIsSidebar);
 
     this.innerSetVertical(isVertical);
-    this.showModeInternal = ShowMode.Both;
+    this.showModeInternal = ShowMode.BOTH;
     this.savedShowMode = this.showModeInternal;
 
     // Should be called after isVertical has the right value.
@@ -194,7 +194,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.mainWidgetInternal = widget;
     if (widget) {
       widget.element.slot = 'insertion-point-main';
-      if (this.showModeInternal === ShowMode.OnlyMain || this.showModeInternal === ShowMode.Both) {
+      if (this.showModeInternal === ShowMode.ONLY_MAIN || this.showModeInternal === ShowMode.BOTH) {
         widget.show(this.element);
       }
     }
@@ -212,7 +212,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.sidebarWidgetInternal = widget;
     if (widget) {
       widget.element.slot = 'insertion-point-sidebar';
-      if (this.showModeInternal === ShowMode.OnlySidebar || this.showModeInternal === ShowMode.Both) {
+      if (this.showModeInternal === ShowMode.ONLY_SIDEBAR || this.showModeInternal === ShowMode.BOTH) {
         widget.show(this.element);
       }
     }
@@ -258,7 +258,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   sidebarIsShowing(): boolean {
-    return this.showModeInternal !== ShowMode.OnlyMain;
+    return this.showModeInternal !== ShowMode.ONLY_MAIN;
   }
 
   setSecondIsSidebar(secondIsSidebar: boolean): void {
@@ -285,7 +285,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   sidebarSide(): string|null {
-    if (this.showModeInternal !== ShowMode.Both) {
+    if (this.showModeInternal !== ShowMode.BOTH) {
       return null;
     }
     return this.isVerticalInternal ? (this.secondIsSidebar ? 'right' : 'left') :
@@ -299,13 +299,13 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   hideMain(animate?: boolean): void {
     this.showOnly(
         this.sidebarWidgetInternal, this.mainWidgetInternal, this.sidebarElementInternal, this.mainElement, animate);
-    this.updateShowMode(ShowMode.OnlySidebar);
+    this.updateShowMode(ShowMode.ONLY_SIDEBAR);
   }
 
   hideSidebar(animate?: boolean): void {
     this.showOnly(
         this.mainWidgetInternal, this.sidebarWidgetInternal, this.mainElement, this.sidebarElementInternal, animate);
-    this.updateShowMode(ShowMode.OnlyMain);
+    this.updateShowMode(ShowMode.ONLY_MAIN);
   }
 
   setSidebarMinimized(minimized: boolean): void {
@@ -382,7 +382,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   showBoth(animate?: boolean): void {
-    if (this.showModeInternal === ShowMode.Both) {
+    if (this.showModeInternal === ShowMode.BOTH) {
       animate = false;
     }
 
@@ -406,7 +406,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.setSecondIsSidebar(this.secondIsSidebar);
 
     this.sidebarSizeDIP = -1;
-    this.updateShowMode(ShowMode.Both);
+    this.updateShowMode(ShowMode.BOTH);
     this.updateLayout(animate);
   }
 
@@ -452,12 +452,12 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.showModeInternal = showMode;
     this.saveShowModeToSettings();
     this.updateShowHideSidebarButton();
-    this.dispatchEventToListeners(Events.ShowModeChanged, showMode);
+    this.dispatchEventToListeners(Events.SHOW_MODE_CHANGED, showMode);
     this.invalidateConstraints();
   }
 
   private innerSetSidebarSizeDIP(sizeDIP: number, animate: boolean, userAction?: boolean): void {
-    if (this.showModeInternal !== ShowMode.Both || !this.isShowing()) {
+    if (this.showModeInternal !== ShowMode.BOTH || !this.isShowing()) {
       return;
     }
 
@@ -522,7 +522,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     } else {
       // No need to recalculate this.sidebarSizeDIP and this.totalSizeDIP again.
       this.doResize();
-      this.dispatchEventToListeners(Events.SidebarSizeChanged, this.sidebarSize());
+      this.dispatchEventToListeners(Events.SIDEBAR_SIZE_CHANGED, this.sidebarSize());
     }
   }
 
@@ -577,7 +577,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
         if (this.mainWidgetInternal) {
           this.mainWidgetInternal.doResize();
         }
-        this.dispatchEventToListeners(Events.SidebarSizeChanged, this.sidebarSize());
+        this.dispatchEventToListeners(Events.SIDEBAR_SIZE_CHANGED, this.sidebarSize());
         return;
       }
       this.animationFrameHandle = this.contentElement.window().requestAnimationFrame(boundAnimationFrame);
@@ -670,11 +670,11 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
   override wasShown(): void {
     this.forceUpdateLayout();
-    ZoomManager.instance().addEventListener(ZoomManagerEvents.ZoomChanged, this.onZoomChanged, this);
+    ZoomManager.instance().addEventListener(ZoomManagerEvents.ZOOM_CHANGED, this.onZoomChanged, this);
   }
 
   override willHide(): void {
-    ZoomManager.instance().removeEventListener(ZoomManagerEvents.ZoomChanged, this.onZoomChanged, this);
+    ZoomManager.instance().removeEventListener(ZoomManagerEvents.ZOOM_CHANGED, this.onZoomChanged, this);
   }
 
   override onResize(): void {
@@ -686,10 +686,10 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   override calculateConstraints(): Constraints {
-    if (this.showModeInternal === ShowMode.OnlyMain) {
+    if (this.showModeInternal === ShowMode.ONLY_MAIN) {
       return this.mainWidgetInternal ? this.mainWidgetInternal.constraints() : new Constraints();
     }
-    if (this.showModeInternal === ShowMode.OnlySidebar) {
+    if (this.showModeInternal === ShowMode.ONLY_SIDEBAR) {
       return this.sidebarWidgetInternal ? this.sidebarWidgetInternal.constraints() : new Constraints();
     }
 
@@ -788,13 +788,13 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.showModeInternal = this.savedShowMode;
 
     switch (this.savedShowMode) {
-      case ShowMode.Both:
+      case ShowMode.BOTH:
         this.showBoth();
         break;
-      case ShowMode.OnlyMain:
+      case ShowMode.ONLY_MAIN:
         this.hideSidebar();
         break;
-      case ShowMode.OnlySidebar:
+      case ShowMode.ONLY_SIDEBAR:
         this.hideMain();
         break;
     }
@@ -845,7 +845,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.shownSidebarString = shownString;
     this.hiddenSidebarString = hiddenString;
     this.showHideSidebarButton = new ToolbarButton('', 'right-panel-open');
-    this.showHideSidebarButton.addEventListener(ToolbarButton.Events.Click, buttonClicked, this);
+    this.showHideSidebarButton.addEventListener(ToolbarButton.Events.CLICK, buttonClicked, this);
     if (jslogContext) {
       this.showHideSidebarButton.element.setAttribute(
           'jslog', `${VisualLogging.toggleSubpane().track({click: true}).context(jslogContext)}`);
@@ -863,7 +863,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
    * @returns true if this call makes the sidebar visible, and false otherwise.
    */
   toggleSidebar(): boolean {
-    if (this.showModeInternal !== ShowMode.Both) {
+    if (this.showModeInternal !== ShowMode.BOTH) {
       this.showBoth(true);
       ARIAUtils.alert(this.shownSidebarString);
       return true;
@@ -877,7 +877,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     if (!this.showHideSidebarButton) {
       return;
     }
-    const sidebarHidden = this.showModeInternal === ShowMode.OnlyMain;
+    const sidebarHidden = this.showModeInternal === ShowMode.ONLY_MAIN;
     let glyph = '';
     if (sidebarHidden) {
       glyph = this.isVertical() ? (this.isSidebarSecond() ? 'right-panel-open' : 'left-panel-open') :
@@ -892,19 +892,19 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 }
 
 export const enum ShowMode {
-  Both = 'Both',
-  OnlyMain = 'OnlyMain',
-  OnlySidebar = 'OnlySidebar',
+  BOTH = 'Both',
+  ONLY_MAIN = 'OnlyMain',
+  ONLY_SIDEBAR = 'OnlySidebar',
 }
 
 export const enum Events {
-  SidebarSizeChanged = 'SidebarSizeChanged',
-  ShowModeChanged = 'ShowModeChanged',
+  SIDEBAR_SIZE_CHANGED = 'SidebarSizeChanged',
+  SHOW_MODE_CHANGED = 'ShowModeChanged',
 }
 
 export type EventTypes = {
-  [Events.SidebarSizeChanged]: number,
-  [Events.ShowModeChanged]: string,
+  [Events.SIDEBAR_SIZE_CHANGED]: number,
+  [Events.SHOW_MODE_CHANGED]: string,
 };
 
 const MinPadding = 20;

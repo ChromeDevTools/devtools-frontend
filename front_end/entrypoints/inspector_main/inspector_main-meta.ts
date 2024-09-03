@@ -151,15 +151,15 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.reloadPage),
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+R',
     },
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'F5',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+R',
     },
   ],
@@ -175,23 +175,23 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.hardReloadPage),
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Shift+Ctrl+R',
     },
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Shift+F5',
     },
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+F5',
     },
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+Shift+F5',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Shift+Meta+R',
     },
   ],

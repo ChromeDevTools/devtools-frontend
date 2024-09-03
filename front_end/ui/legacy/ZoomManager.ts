@@ -56,13 +56,13 @@ export class ZoomManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     const oldZoomFactor = this.zoomFactorInternal;
     this.zoomFactorInternal = this.frontendHost.zoomFactor();
     if (oldZoomFactor !== this.zoomFactorInternal) {
-      this.dispatchEventToListeners(Events.ZoomChanged, {from: oldZoomFactor, to: this.zoomFactorInternal});
+      this.dispatchEventToListeners(Events.ZOOM_CHANGED, {from: oldZoomFactor, to: this.zoomFactorInternal});
     }
   }
 }
 
 export const enum Events {
-  ZoomChanged = 'ZoomChanged',
+  ZOOM_CHANGED = 'ZoomChanged',
 }
 
 export interface ZoomChangedEvent {
@@ -71,5 +71,5 @@ export interface ZoomChangedEvent {
 }
 
 export type EventTypes = {
-  [Events.ZoomChanged]: ZoomChangedEvent,
+  [Events.ZOOM_CHANGED]: ZoomChangedEvent,
 };

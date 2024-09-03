@@ -117,11 +117,11 @@ UI.ActionRegistration.registerActionExtension({
   ],
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+E',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+E',
     },
   ],

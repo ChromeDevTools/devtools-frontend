@@ -409,7 +409,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       font-size: 12px;
       transform: scale(1.25);
       color: transparent;
-      background: linear-gradient(90deg, rgb(255 0 0 / 100%) 0%, rgb(255 154 0 / 100%) 10%, rgb(208 222 33 / 100%) 20%, rgb(79 220 74 / 100%) 30%, rgb(63 218 216 / 100%) 40%, rgb(47 201 226 / 100%) 50%, rgb(28 127 238 / 100%) 60%, rgb(95 21 242 / 100%) 70%, rgb(186 12 248 / 100%) 80%, rgb(251 7 217 / 100%) 90%, rgb(255 0 0 / 100%) 100%);
+      background: linear-gradient(90deg,CLICK255 0 0 / 100%) 0%, rgb(255 154 0 / 100%) 10%, rgb(208 222 33 / 100%) 20%, rgb(79 220 74 / 100%) 30%, rgb(63 218 216 / 100%) 40%, rgb(47 201 226 / 100%) 50%, rgb(28 127 238 / 100%) 60%, rgb(95 21 242 / 100%) 70%, rgb(186 12 248 / 100%) 80%, rgb(251 7 217 / 100%) 90%, rgb(255 0 0 / 100%) 100%);
       -webkit-background-clip: text;
       ">💫</div>`;
     const adorner = new Adorners.Adorner.Adorner();
@@ -420,7 +420,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     };
     this.brickBreakerToolbarButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.fixMe), adorner);
     this.brickBreakerToolbarButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, () => this.#onBrickBreakerEasterEggClick());
+        UI.Toolbar.ToolbarButton.Events.CLICK, () => this.#onBrickBreakerEasterEggClick());
     const config = TraceEngine.Types.Configuration.defaults();
     config.showAllEvents = Root.Runtime.experiments.isEnabled('timeline-show-all-events');
     config.includeRuntimeCallStats = Root.Runtime.experiments.isEnabled('timeline-v8-runtime-call-stats');
@@ -493,7 +493,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.#onChartPlayableStateChangeBound = this.#onChartPlayableStateChange.bind(this);
 
     this.flameChart.getMainFlameChart().addEventListener(
-        PerfUI.FlameChart.Events.ChartPlayableStateChange, this.#onChartPlayableStateChangeBound, this);
+        PerfUI.FlameChart.Events.CHART_PLAYABLE_STATE_CHANGED, this.#onChartPlayableStateChangeBound, this);
 
     this.searchableViewInternal = new UI.SearchableView.SearchableView(this.flameChart, null);
     this.searchableViewInternal.setMinimumSize(0, 100);
@@ -854,19 +854,19 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction));
     this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.recordReloadAction));
     this.clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'clear', undefined, 'timeline.clear');
-    this.clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this.onClearButton());
+    this.clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => this.onClearButton());
     this.panelToolbar.appendToolbarItem(this.clearButton);
 
-    // Load / Save
+    // Load / SaveCLICK
     this.loadButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.loadProfile), 'import', undefined, 'timeline.load-from-file');
-    this.loadButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+    this.loadButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceImported);
       this.selectFileToLoad();
     });
     this.saveButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.saveProfile), 'download', undefined, 'timeline.save-to-file');
-    this.saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
+    this.saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, _event => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
       void this.saveToFile();
     });

@@ -238,7 +238,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         const outerColorMix = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
         assert.exists(outerColorMix);
         const handler = sinon.fake();
-        outerColorMix.addEventListener(InlineEditor.ColorMixSwatch.Events.ColorChanged, handler);
+        outerColorMix.addEventListener(InlineEditor.ColorMixSwatch.Events.COLOR_CHANGED, handler);
         const innerColorMix = outerColorMix.querySelector('devtools-color-mix-swatch');
         assert.exists(innerColorMix);
         assert.strictEqual(outerColorMix.getText(), 'color-mix(in srgb, color-mix(in oklch, red, green), blue)');
@@ -729,7 +729,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
       const angleSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-angle');
       assert.exists(angleSwatch);
-      angleSwatch.updateAngle({value: 130, unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg});
+      angleSwatch.updateAngle({value: 130, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG});
       assert.strictEqual(colorSwatch.getColor()?.asString(Common.Color.Format.HSL), 'hsl(130deg 50% 25%)');
       assert.isTrue(eventHandler.calledOnce);
       assert.strictEqual(eventHandler.args[0][0].data.color, colorSwatch.getColor());

@@ -115,7 +115,7 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
 
   private onchange(): void {
     this.updateUI();
-    this.dispatchEventToListeners(Events.BezierChanged, this.model.asCSSText());
+    this.dispatchEventToListeners(Events.BEZIER_CHANGED, this.model.asCSSText());
   }
 
   private updateUI(): void {
@@ -228,11 +228,11 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
 }
 
 export const enum Events {
-  BezierChanged = 'BezierChanged',
+  BEZIER_CHANGED = 'BezierChanged',
 }
 
 export type EventTypes = {
-  [Events.BezierChanged]: string,
+  [Events.BEZIER_CHANGED]: string,
 };
 
 export const Presets = [

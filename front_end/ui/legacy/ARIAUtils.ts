@@ -254,14 +254,14 @@ export function setLevel(element: Element, level: number): void {
 }
 
 export const enum AutocompleteInteractionModel {
-  Inline = 'inline',
-  List = 'list',
-  Both = 'both',
-  None = 'none',
+  INLINE = 'inline',
+  LIST = 'list',
+  BOTH = 'both',
+  NONE = 'none',
 }
 
 export function setAutocomplete(
-    element: Element, interactionModel: AutocompleteInteractionModel = AutocompleteInteractionModel.None): void {
+    element: Element, interactionModel: AutocompleteInteractionModel = AutocompleteInteractionModel.NONE): void {
   element.setAttribute('aria-autocomplete', interactionModel);
 }
 
@@ -270,17 +270,17 @@ export function clearAutocomplete(element: Element): void {
 }
 
 export const enum PopupRole {
-  False = 'false',      // (default) Indicates the element does not have a popup.
-  True = 'true',        // Indicates the popup is a menu.
-  Menu = 'menu',        // Indicates the popup is a menu.
-  ListBox = 'listbox',  // Indicates the popup is a listbox.
-  Tree = 'tree',        // Indicates the popup is a tree.
-  Grid = 'grid',        // Indicates the popup is a grid.
-  Dialog = 'dialog',    // Indicates the popup is a dialog.
+  FALSE = 'false',       // (default) Indicates the element does not have a popup.
+  TRUE = 'true',         // Indicates the popup is a menu.
+  MENU = 'menu',         // Indicates the popup is a menu.
+  LIST_BOX = 'listbox',  // Indicates the popup is a listbox.
+  TREE = 'tree',         // Indicates the popup is a tree.
+  GRID = 'grid',         // Indicates the popup is a grid.
+  DIALOG = 'dialog',     // Indicates the popup is a dialog.
 }
 
-export function setHasPopup(element: Element, value: PopupRole = PopupRole.False): void {
-  if (value !== PopupRole.False) {
+export function setHasPopup(element: Element, value: PopupRole = PopupRole.FALSE): void {
+  if (value !== PopupRole.FALSE) {
     element.setAttribute('aria-haspopup', value);
   } else {
     element.removeAttribute('aria-haspopup');

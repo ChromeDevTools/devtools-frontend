@@ -302,7 +302,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
         'color-eye-dropper');
     this.colorPickerButton.setToggled(true);
     this.colorPickerButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, this.toggleColorPicker.bind(this, undefined));
+        UI.Toolbar.ToolbarButton.Events.CLICK, this.toggleColorPicker.bind(this, undefined));
     toolbar.appendToolbarItem(this.colorPickerButton);
     this.colorPickerButton.element.setAttribute('jslog', `${VisualLogging.colorEyeDropper().track({click: true})}`);
 
@@ -434,7 +434,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.addColorToolbar = new UI.Toolbar.Toolbar('add-color-toolbar');
     const addColorButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addToPalette), 'plus', undefined, 'add-color');
-    addColorButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.onAddColorMousedown.bind(this));
+    addColorButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.onAddColorMousedown.bind(this));
     addColorButton.element.addEventListener('keydown', this.onAddColorKeydown.bind(this));
     this.addColorToolbar.appendToolbarItem(addColorButton);
 
@@ -594,7 +594,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     title.textContent = i18nString(UIStrings.colorPalettes);
     const toolbar = new UI.Toolbar.Toolbar('', this.palettePanel);
     this.closeButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.returnToColorPicker), 'cross');
-    this.closeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.togglePalettePanel.bind(this, false));
+    this.closeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.togglePalettePanel.bind(this, false));
     this.closeButton.element.addEventListener('keydown', this.onCloseBtnKeydown.bind(this));
     this.closeButton.element.setAttribute('jslog', `${VisualLogging.close().track({click: true})}`);
     toolbar.appendToolbarItem(this.closeButton);
@@ -950,7 +950,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       }
     }
     this.element.style.height = (paletteTop + paletteMargin + (paletteColorHeight + paletteMargin) * rowsNeeded) + 'px';
-    this.dispatchEventToListeners(Events.SizeChanged);
+    this.dispatchEventToListeners(Events.SIZE_CHANGED);
   }
 
   private paletteColorSelected(colorText: string, colorName: string|undefined, matchUserFormat: boolean): void {
@@ -1137,7 +1137,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       this.updateInput();
     }
     if (changeSource !== ChangeSource.Model) {
-      this.dispatchEventToListeners(Events.ColorChanged, this.colorString());
+      this.dispatchEventToListeners(Events.COLOR_CHANGED, this.colorString());
     }
   }
 
@@ -1352,7 +1352,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
 
     if (this.contrastDetails && this.contrastDetailsBackgroundColorPickedToggledBound) {
       this.contrastDetails.addEventListener(
-          ContrastDetailsEvents.BackgroundColorPickerWillBeToggled,
+          ContrastDetailsEvents.BACKGROUND_COLOR_PICKER_WILL_BE_TOGGLED,
           this.contrastDetailsBackgroundColorPickedToggledBound);
     }
   }
@@ -1361,7 +1361,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     void this.toggleColorPicker(false);
     if (this.contrastDetails && this.contrastDetailsBackgroundColorPickedToggledBound) {
       this.contrastDetails.removeEventListener(
-          ContrastDetailsEvents.BackgroundColorPickerWillBeToggled,
+          ContrastDetailsEvents.BACKGROUND_COLOR_PICKER_WILL_BE_TOGGLED,
           this.contrastDetailsBackgroundColorPickedToggledBound);
     }
   }
@@ -1431,13 +1431,13 @@ export const ChangeSource = {
 };
 
 export const enum Events {
-  ColorChanged = 'ColorChanged',
-  SizeChanged = 'SizeChanged',
+  COLOR_CHANGED = 'ColorChanged',
+  SIZE_CHANGED = 'SizeChanged',
 }
 
 export type EventTypes = {
-  [Events.ColorChanged]: string,
-  [Events.SizeChanged]: void,
+  [Events.COLOR_CHANGED]: string,
+  [Events.SIZE_CHANGED]: void,
 };
 
 const COLOR_CHIP_SIZE = 24;

@@ -159,8 +159,8 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     }
     this.elementInternal.classList.add('text-prompt');
     ARIAUtils.markAsTextBox(this.elementInternal);
-    ARIAUtils.setAutocomplete(this.elementInternal, ARIAUtils.AutocompleteInteractionModel.Both);
-    ARIAUtils.setHasPopup(this.elementInternal, ARIAUtils.PopupRole.ListBox);
+    ARIAUtils.setAutocomplete(this.elementInternal, ARIAUtils.AutocompleteInteractionModel.BOTH);
+    ARIAUtils.setHasPopup(this.elementInternal, ARIAUtils.PopupRole.LIST_BOX);
     this.elementInternal.setAttribute('contenteditable', 'plaintext-only');
     this.element().addEventListener('keydown', this.boundOnKeyDown, false);
     this.elementInternal.addEventListener('input', this.boundOnInput, false);
@@ -198,7 +198,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     this.element().removeAttribute('contenteditable');
     this.element().removeAttribute('role');
     ARIAUtils.clearAutocomplete(this.element());
-    ARIAUtils.setHasPopup(this.element(), ARIAUtils.PopupRole.False);
+    ARIAUtils.setHasPopup(this.element(), ARIAUtils.PopupRole.FALSE);
   }
 
   textWithCurrentSuggestion(): string {
@@ -440,7 +440,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     }
     this.refreshGhostText();
     this.previousText = text;
-    this.dispatchEventToListeners(Events.TextChanged);
+    this.dispatchEventToListeners(Events.TEXT_CHANGED);
     this.changed = true;
 
     this.autoCompleteSoon();
@@ -472,7 +472,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     this.refreshGhostText();
 
     if (beforeText !== this.textWithCurrentSuggestion()) {
-      this.dispatchEventToListeners(Events.TextChanged);
+      this.dispatchEventToListeners(Events.TEXT_CHANGED);
       this.changed = true;
     }
   }
@@ -620,7 +620,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     this.currentSuggestion = suggestion;
     this.refreshGhostText();
     if (isIntermediateSuggestion) {
-      this.dispatchEventToListeners(Events.TextChanged);
+      this.dispatchEventToListeners(Events.TEXT_CHANGED);
       this.changed = true;
     }
   }
@@ -643,7 +643,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     this.updateLeftParenthesesIndices();
 
     this.clearAutocomplete();
-    this.dispatchEventToListeners(Events.TextChanged);
+    this.dispatchEventToListeners(Events.TEXT_CHANGED);
     this.changed = true;
 
     return true;
@@ -805,9 +805,9 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
 const DefaultAutocompletionTimeout = 250;
 
 export const enum Events {
-  TextChanged = 'TextChanged',
+  TEXT_CHANGED = 'TextChanged',
 }
 
 export type EventTypes = {
-  [Events.TextChanged]: void,
+  [Events.TEXT_CHANGED]: void,
 };

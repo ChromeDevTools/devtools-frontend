@@ -106,7 +106,7 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTyp
   addFilter(filter: FilterUI): void {
     this.filters.push(filter);
     this.element.appendChild(filter.element());
-    filter.addEventListener(FilterUIEvents.FilterChanged, this.filterChanged, this);
+    filter.addEventListener(FilterUIEvents.FILTER_CHANGED, this.filterChanged, this);
     this.updateFilterButton();
   }
 
@@ -127,7 +127,7 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTyp
 
   private filterChanged(): void {
     this.updateFilterButton();
-    this.dispatchEventToListeners(FilterBarEvents.Changed);
+    this.dispatchEventToListeners(FilterBarEvents.CHANGED);
   }
 
   override wasShown(): void {
@@ -188,11 +188,11 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTyp
 }
 
 export const enum FilterBarEvents {
-  Changed = 'Changed',
+  CHANGED = 'Changed',
 }
 
 export type FilterBarEventTypes = {
-  [FilterBarEvents.Changed]: void,
+  [FilterBarEvents.CHANGED]: void,
 };
 
 export interface FilterUI extends Common.EventTarget.EventTarget<FilterUIEventTypes> {
@@ -201,11 +201,11 @@ export interface FilterUI extends Common.EventTarget.EventTarget<FilterUIEventTy
 }
 
 export const enum FilterUIEvents {
-  FilterChanged = 'FilterChanged',
+  FILTER_CHANGED = 'FilterChanged',
 }
 
 export type FilterUIEventTypes = {
-  [FilterUIEvents.FilterChanged]: void,
+  [FilterUIEvents.FILTER_CHANGED]: void,
 };
 
 export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEventTypes> implements FilterUI {
@@ -220,7 +220,7 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEve
     filterToolbar.element.style.borderBottom = 'none';
     this.#filter = new ToolbarFilter(undefined, 1, 1, UIStrings.egSmalldUrlacomb, this.completions.bind(this));
     filterToolbar.appendToolbarItem(this.#filter);
-    this.#filter.addEventListener(ToolbarInput.Event.TextChanged, () => this.valueChanged());
+    this.#filter.addEventListener(ToolbarInput.Event.TEXT_CHANGED, () => this.valueChanged());
     this.suggestionProvider = null;
   }
 
@@ -259,7 +259,7 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEve
   }
 
   private valueChanged(): void {
-    this.dispatchEventToListeners(FilterUIEvents.FilterChanged);
+    this.dispatchEventToListeners(FilterUIEvents.FILTER_CHANGED);
   }
 
   clear(): void {
@@ -344,7 +344,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
       element.classList.toggle('selected', active);
       ARIAUtils.setSelected(element, active);
     }
-    this.dispatchEventToListeners(FilterUIEvents.FilterChanged);
+    this.dispatchEventToListeners(FilterUIEvents.FILTER_CHANGED);
   }
 
   private addBit(name: string, label: string, title?: string): void {
@@ -496,7 +496,7 @@ export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterU
   }
 
   private fireUpdated(): void {
-    this.dispatchEventToListeners(FilterUIEvents.FilterChanged);
+    this.dispatchEventToListeners(FilterUIEvents.FILTER_CHANGED);
   }
 }
 

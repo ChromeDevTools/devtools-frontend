@@ -41,7 +41,7 @@ export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.S
     this.#toolbarItem = new UI.Toolbar.ToolbarItem(this.#dropDown.element);
     this.#toolbarItem.setTitle(i18nString(UIStrings.targetNotSelected));
     this.listItems.addEventListener(
-        UI.ListModel.Events.ItemsReplaced, () => this.#toolbarItem.setEnabled(Boolean(this.listItems.length)));
+        UI.ListModel.Events.ITEMS_REPLACED, () => this.#toolbarItem.setEnabled(Boolean(this.listItems.length)));
 
     this.#toolbarItem.element.classList.add('toolbar-has-dropdown');
     const targetManager = SDK.TargetManager.TargetManager.instance();

@@ -53,7 +53,7 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
 
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.CSSModel.CSSModel, this);
     UI.ZoomManager.ZoomManager.instance().addEventListener(
-        UI.ZoomManager.Events.ZoomChanged, this.renderMediaQueries.bind(this), this);
+        UI.ZoomManager.Events.ZOOM_CHANGED, this.renderMediaQueries.bind(this), this);
   }
 
   modelAdded(cssModel: SDK.CSSModel.CSSModel): void {

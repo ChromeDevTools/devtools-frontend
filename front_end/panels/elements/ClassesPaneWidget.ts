@@ -60,7 +60,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
 
     const proxyElement = (this.prompt.attach(this.input) as HTMLElement);
     this.prompt.setPlaceholder(i18nString(UIStrings.addNewClass));
-    this.prompt.addEventListener(UI.TextPrompt.Events.TextChanged, this.onTextChanged, this);
+    this.prompt.addEventListener(UI.TextPrompt.Events.TEXT_CHANGED, this.onTextChanged, this);
     proxyElement.addEventListener('keydown', this.onKeyDown.bind(this), false);
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
@@ -271,7 +271,7 @@ export class ButtonProvider implements UI.Toolbar.Provider {
     this.button.element.style.setProperty('--dot-toggle-left', '18px');
     this.button.element.setAttribute(
         'jslog', `${VisualLogging.toggleSubpane('elements-classes').track({click: true})}`);
-    this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clicked, this);
+    this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.clicked, this);
     this.view = new ClassesPaneWidget();
   }
 

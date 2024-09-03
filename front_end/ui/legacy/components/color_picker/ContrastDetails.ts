@@ -140,7 +140,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     const expandToolbar = new UI.Toolbar.Toolbar('expand', contrastValueRowContents);
     this.expandButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showMore), 'chevron-down');
-    this.expandButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.expandButtonClicked.bind(this));
+    this.expandButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.expandButtonClicked.bind(this));
     UI.ARIAUtils.setExpanded(this.expandButton.element, false);
     expandToolbar.appendToolbarItem(this.expandButton);
 
@@ -167,13 +167,13 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.bgColorPickerButton = new UI.Toolbar.ToolbarToggle(
         i18nString(UIStrings.toggleBackgroundColorPicker), 'color-picker', 'color-picker-filled');
     this.bgColorPickerButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, this.toggleBackgroundColorPickerInternal.bind(this, undefined, true));
+        UI.Toolbar.ToolbarButton.Events.CLICK, this.toggleBackgroundColorPickerInternal.bind(this, undefined, true));
     pickerToolbar.appendToolbarItem(this.bgColorPickerButton);
     this.bgColorPickedBound = this.bgColorPicked.bind(this);
 
     this.bgColorSwatch = new Swatch(bgColorContainer);
 
-    this.contrastInfo.addEventListener(ContrastInfoEvents.ContrastInfoUpdated, this.update.bind(this));
+    this.contrastInfo.addEventListener(ContrastInfoEvents.CONTRAST_INFO_UPDATED, this.update.bind(this));
   }
 
   private showNoContrastInfoAvailableMessage(): void {
@@ -444,7 +444,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     if (shouldTriggerEvent) {
-      this.dispatchEventToListeners(Events.BackgroundColorPickerWillBeToggled, enabled);
+      this.dispatchEventToListeners(Events.BACKGROUND_COLOR_PICKER_WILL_BE_TOGGLED, enabled);
     }
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setEyeDropperActive(enabled);
@@ -469,11 +469,11 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 }
 
 export const enum Events {
-  BackgroundColorPickerWillBeToggled = 'BackgroundColorPickerWillBeToggled',
+  BACKGROUND_COLOR_PICKER_WILL_BE_TOGGLED = 'BackgroundColorPickerWillBeToggled',
 }
 
 export type EventTypes = {
-  [Events.BackgroundColorPickerWillBeToggled]: boolean,
+  [Events.BACKGROUND_COLOR_PICKER_WILL_BE_TOGGLED]: boolean,
 };
 
 export class Swatch {

@@ -60,13 +60,13 @@ function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () =>
 
   const clearButton =
       new UI.Toolbar.ToolbarButton(i18nString(UIStringsTemp.clearMessages), 'clear', undefined, 'freestyler.clear');
-  clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, onClearClick);
+  clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, onClearClick);
   leftToolbar.appendToolbarItem(clearButton);
 
   rightToolbar.appendSeparator();
   const helpButton =
       new UI.Toolbar.ToolbarButton(i18nString(UIStringsTemp.sendFeedback), 'help', undefined, 'freestyler.feedback');
-  helpButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+  helpButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(DOGFOOD_INFO);
   });
   rightToolbar.appendToolbarItem(helpButton);
@@ -137,7 +137,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
         accountImage: syncInfo.accountImage,
       },
     };
-    this.#toggleSearchElementAction.addEventListener(UI.ActionRegistration.Events.Toggled, ev => {
+    this.#toggleSearchElementAction.addEventListener(UI.ActionRegistration.Events.TOGGLED, ev => {
       this.#viewProps.inspectElementToggled = ev.data;
       this.doUpdate();
     });

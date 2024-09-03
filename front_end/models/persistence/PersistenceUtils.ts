@@ -90,7 +90,7 @@ export class LinkDecorator extends Common.ObjectWrapper.ObjectWrapper<Components
 
   private bindingChanged(event: Common.EventTarget.EventTargetEvent<PersistenceBinding>): void {
     const binding = event.data;
-    this.dispatchEventToListeners(Components.Linkifier.LinkDecorator.Events.LinkIconChanged, binding.network);
+    this.dispatchEventToListeners(Components.Linkifier.LinkDecorator.Events.LINK_ICON_CHANGED, binding.network);
   }
 
   linkIcon(uiSourceCode: Workspace.UISourceCode.UISourceCode): IconButton.Icon.Icon|null {

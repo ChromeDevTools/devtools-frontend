@@ -142,7 +142,7 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     }
 
     this.enabledInternal = enabled;
-    this.dispatchEventToListeners(Events.Enabled, enabled);
+    this.dispatchEventToListeners(Events.ENABLED, enabled);
   }
 
   enabled(): boolean {
@@ -193,7 +193,7 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     }
 
     this.toggledInternal = toggled;
-    this.dispatchEventToListeners(Events.Toggled, toggled);
+    this.dispatchEventToListeners(Events.TOGGLED, toggled);
   }
 
   options(): undefined|Array<ExtensionOption> {
@@ -283,21 +283,21 @@ export function maybeRemoveActionExtension(actionId: string): boolean {
 }
 
 export const enum Platforms {
-  All = 'All platforms',
-  Mac = 'mac',
-  WindowsLinux = 'windows,linux',
-  Android = 'Android',
-  Windows = 'windows',
+  ALL = 'All platforms',
+  MAC = 'mac',
+  WINDOWS_LINUX = 'windows,linux',
+  ANDROID = 'Android',
+  WINDOWS = 'windows',
 }
 
 export const enum Events {
-  Enabled = 'Enabled',
-  Toggled = 'Toggled',
+  ENABLED = 'Enabled',
+  TOGGLED = 'Toggled',
 }
 
 export type EventTypes = {
-  [Events.Enabled]: boolean,
-  [Events.Toggled]: boolean,
+  [Events.ENABLED]: boolean,
+  [Events.TOGGLED]: boolean,
 };
 
 export const enum ActionCategory {

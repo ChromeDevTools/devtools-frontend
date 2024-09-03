@@ -77,7 +77,7 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
 
     this.textFilterRegExp = null;
     this.filterInput = new UI.Toolbar.ToolbarFilter(i18nString(UIStrings.filterByText), 1);
-    this.filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.onFilterChanged, this);
+    this.filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.onFilterChanged, this);
     toolbar.appendToolbarItem(this.filterInput);
 
     const loadThroughTarget = SDK.PageResourceLoader.getLoadThroughTargetSetting();

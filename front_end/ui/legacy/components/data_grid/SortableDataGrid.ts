@@ -6,7 +6,7 @@
 
 import * as Platform from '../../../../core/platform/platform.js';
 
-import {Events, type ColumnDescriptor, type DataGridData, type Parameters} from './DataGrid.js';
+import {type ColumnDescriptor, type DataGridData, Events, type Parameters} from './DataGrid.js';
 import {ViewportDataGrid, ViewportDataGridNode} from './ViewportDataGrid.js';
 
 export class SortableDataGrid<T> extends ViewportDataGrid<SortableDataGridNode<T>> {
@@ -79,7 +79,7 @@ export class SortableDataGrid<T> extends ViewportDataGrid<SortableDataGridNode<T
       rootNode.appendChild(nodes[i]);
     }
 
-    dataGrid.addEventListener(Events.SortingChanged, sortDataGrid);
+    dataGrid.addEventListener(Events.SORTING_CHANGED, sortDataGrid);
 
     function sortDataGrid(): void {
       const nodes = dataGrid.rootNode().children;

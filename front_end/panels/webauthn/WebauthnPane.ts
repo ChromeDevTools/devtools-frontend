@@ -203,7 +203,7 @@ class WebauthnDataGrid extends Common.ObjectWrapper.eventMixin<EventTypes, typeo
 class EmptyDataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
   override createCells(element: Element): void {
     element.removeChildren();
-    const td = (this.createTDWithClass(DataGrid.DataGrid.Align.Center) as HTMLTableCellElement);
+    const td = (this.createTDWithClass(DataGrid.DataGrid.Align.CENTER) as HTMLTableCellElement);
     if (this.dataGrid) {
       td.colSpan = this.dataGrid.visibleColumnsArray.length;
     }
@@ -347,7 +347,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
       {
         id: 'isResidentCredential',
         title: i18nString(UIStrings.isResident),
-        dataType: DataGrid.DataGrid.DataType.Boolean,
+        dataType: DataGrid.DataGrid.DataType.BOOLEAN,
         weight: 10,
       },
       {
@@ -669,10 +669,10 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     this.#updateActiveLabelTitle(activeLabel, nameField.value);
 
     editName.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click,
+        UI.Toolbar.ToolbarButton.Events.CLICK,
         () => this.#handleEditNameButton(titleElement, nameField, editName, saveName));
     saveName.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click,
+        UI.Toolbar.ToolbarButton.Events.CLICK,
         () => this.#handleSaveNameButton(titleElement, nameField, editName, saveName, activeLabel));
 
     nameField.addEventListener(

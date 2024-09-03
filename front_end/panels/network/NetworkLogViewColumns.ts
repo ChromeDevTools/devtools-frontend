@@ -287,7 +287,7 @@ export class NetworkLogViewColumns {
     this.dataGridScroller = (this.dataGridInternal.scrollContainer as HTMLDivElement);
 
     this.updateColumns();
-    this.dataGridInternal.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortHandler, this);
+    this.dataGridInternal.addEventListener(DataGrid.DataGrid.Events.SORTING_CHANGED, this.sortHandler, this);
     this.dataGridInternal.setHeaderContextMenuCallback(this.innerHeaderContextMenu.bind(this));
 
     this.activeWaterfallSortId = WaterfallSortIds.StartTime;
@@ -317,12 +317,12 @@ export class NetworkLogViewColumns {
     this.waterfallScrollerContent =
         (this.waterfallScroller.createChild('div', 'network-waterfall-v-scroll-content') as HTMLDivElement);
 
-    this.dataGridInternal.addEventListener(DataGrid.DataGrid.Events.PaddingChanged, () => {
+    this.dataGridInternal.addEventListener(DataGrid.DataGrid.Events.PADDING_CHANGED, () => {
       this.waterfallScrollerWidthIsStale = true;
       this.syncScrollers();
     });
     this.dataGridInternal.addEventListener(
-        DataGrid.ViewportDataGrid.Events.ViewportCalculated, this.redrawWaterfallColumn.bind(this));
+        DataGrid.ViewportDataGrid.Events.VIEWPORT_CALCULATED, this.redrawWaterfallColumn.bind(this));
 
     this.createWaterfallHeader();
     this.waterfallColumn.contentElement.classList.add('network-waterfall-view');
@@ -739,7 +739,7 @@ export class NetworkLogViewColumns {
         this.removeCustomHeader.bind(this));
     const dialog = new UI.Dialog.Dialog('manage-custom-headers');
     manageCustomHeaders.show(dialog.contentElement);
-    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
+    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
     dialog.show(this.networkLogView.element);
   }
 
@@ -829,8 +829,8 @@ export class NetworkLogViewColumns {
     return {
       box: anchor.boxInWindow(),
       show: async (popover: UI.GlassPane.GlassPane) => {
-        this.popupLinkifier.addEventListener(Components.Linkifier.Events.LiveLocationUpdated, () => {
-          popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
+        this.popupLinkifier.addEventListener(Components.Linkifier.Events.LIVE_LOCATION_UPDATED, () => {
+          popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
         });
         const content = RequestInitiatorView.createStackTracePreview(
             (request as SDK.NetworkRequest.NetworkRequest), this.popupLinkifier, false);
@@ -959,7 +959,7 @@ const DEFAULT_COLUMNS = [
     id: 'remote-address',
     title: i18nLazyString(UIStrings.remoteAddress),
     weight: 10,
-    align: DataGrid.DataGrid.Align.Right,
+    align: DataGrid.DataGrid.Align.RIGHT,
     sortingFunction: NetworkRequestNode.RemoteAddressComparator,
   },
   {
@@ -992,13 +992,13 @@ const DEFAULT_COLUMNS = [
   {
     id: 'cookies',
     title: i18nLazyString(UIStrings.cookies),
-    align: DataGrid.DataGrid.Align.Right,
+    align: DataGrid.DataGrid.Align.RIGHT,
     sortingFunction: NetworkRequestNode.RequestCookiesCountComparator,
   },
   {
     id: 'set-cookies',
     title: i18nLazyString(UIStrings.setCookies),
-    align: DataGrid.DataGrid.Align.Right,
+    align: DataGrid.DataGrid.Align.RIGHT,
     sortingFunction: NetworkRequestNode.ResponseCookiesCountComparator,
   },
   {
@@ -1006,7 +1006,7 @@ const DEFAULT_COLUMNS = [
     title: i18nLazyString(UIStrings.size),
     visible: true,
     subtitle: i18nLazyString(UIStrings.content),
-    align: DataGrid.DataGrid.Align.Right,
+    align: DataGrid.DataGrid.Align.RIGHT,
     sortingFunction: NetworkRequestNode.SizeComparator,
   },
   {
@@ -1014,7 +1014,7 @@ const DEFAULT_COLUMNS = [
     title: i18nLazyString(UIStrings.time),
     visible: true,
     subtitle: i18nLazyString(UIStrings.latency),
-    align: DataGrid.DataGrid.Align.Right,
+    align: DataGrid.DataGrid.Align.RIGHT,
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, 'duration'),
   },
   {id: 'priority', title: i18nLazyString(UIStrings.priority), sortingFunction: NetworkRequestNode.PriorityComparator},
@@ -1045,7 +1045,7 @@ const DEFAULT_COLUMNS = [
     id: 'content-length',
     isResponseHeader: true,
     title: i18n.i18n.lockedLazyString('Content-Length'),
-    align: DataGrid.DataGrid.Align.Right,
+    align: DataGrid.DataGrid.Align.RIGHT,
     sortingFunction: NetworkRequestNode.ResponseHeaderNumberComparator.bind(null, 'content-length'),
   },
   {

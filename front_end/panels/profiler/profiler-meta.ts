@@ -157,11 +157,11 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+E',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+E',
     },
   ],
@@ -195,11 +195,11 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.loadProfile),
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+O',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+O',
     },
   ],
@@ -219,11 +219,11 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.saveProfile),
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+S',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+S',
     },
   ],

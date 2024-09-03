@@ -48,7 +48,7 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
     // Clear overview.
     const clearResultsButton = new UI.Toolbar.ToolbarButton(
         i18nString(UIStrings.clearOverview), 'clear', undefined, 'css-overview.clear-overview');
-    clearResultsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.#reset, this);
+    clearResultsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.#reset, this);
 
     // Toolbar.
     const toolbarElement = this.containerElement.createChild('div', 'overview-toolbar');

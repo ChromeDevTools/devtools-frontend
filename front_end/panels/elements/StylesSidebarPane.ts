@@ -265,7 +265,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
     this.swatchPopoverHelperInternal = new InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper();
     this.swatchPopoverHelperInternal.addEventListener(
-        InlineEditor.SwatchPopoverHelper.Events.WillShowPopover, this.hideAllPopovers, this);
+        InlineEditor.SwatchPopoverHelper.Events.WILL_SHOW_POPOVER, this.hideAllPopovers, this);
     this.linkifier = new Components.Linkifier.Linkifier(MAX_LINK_LENGTH, /* useLinkDecorator */ true);
     this.decorator = new StylePropertyHighlighter(this);
     this.lastRevealedProperty = null;
@@ -1413,7 +1413,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     const {diff, formattedCurrentMapping} = diffResponse;
     const {rows} = DiffView.DiffView.buildDiffRows(diff);
     for (const row of rows) {
-      if (row.type === DiffView.DiffView.RowType.Addition) {
+      if (row.type === DiffView.DiffView.RowType.ADDITION) {
         changedLines.add(row.currentLineNumber);
       }
     }
@@ -1447,7 +1447,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     const hbox = container.createChild('div', 'hbox styles-sidebar-pane-toolbar');
     const toolbar = new UI.Toolbar.Toolbar('styles-pane-toolbar', hbox);
     const filterInput = new UI.Toolbar.ToolbarFilter(undefined, 1, 1, undefined, undefined, false);
-    filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.onFilterChanged, this);
+    filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.onFilterChanged, this);
     toolbar.appendToolbarItem(filterInput);
     void toolbar.appendItemsAtLocation('styles-sidebarpane-toolbar');
     this.toolbar = toolbar;
@@ -1584,7 +1584,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     // TODO(1296947): implement a dedicated component to share between all copy buttons
     copyAllChangesButton.element.setAttribute('data-content', i18nString(UIStrings.copiedToClipboard));
     let timeout: number|undefined;
-    copyAllChangesButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, async () => {
+    copyAllChangesButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, async () => {
       const allChanges = await this.getFormattedChanges();
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allChanges);
       Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.ALL_CHANGES_VIA_STYLES_TAB);

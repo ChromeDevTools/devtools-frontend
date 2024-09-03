@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Timeline from '../timeline/timeline.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import type * as Timeline from '../timeline/timeline.js';
 
 const UIStrings = {
   /**
@@ -79,11 +79,11 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+H',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+Y',
     },
   ],
@@ -115,11 +115,11 @@ UI.ActionRegistration.registerActionExtension({
   ],
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+E',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+E',
     },
   ],
@@ -139,11 +139,11 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+Shift+E',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+Shift+E',
     },
   ],

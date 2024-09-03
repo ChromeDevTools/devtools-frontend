@@ -66,12 +66,12 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
     if (!disableRotate) {
       const panModeButton = new UI.Toolbar.ToolbarToggle(
           i18nString(UIStrings.panModeX), '3d-pan', undefined, 'layers.3d-pan', /* toggleOnClick */ false);
-      panModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.setMode.bind(this, Modes.Pan));
+      panModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.setMode.bind(this, Modes.Pan));
       this.modeButtons[Modes.Pan] = panModeButton;
       this.controlPanelToolbar.appendToolbarItem(panModeButton);
       const rotateModeButton = new UI.Toolbar.ToolbarToggle(
           i18nString(UIStrings.rotateModeV), '3d-rotate', undefined, 'layers.3d-rotate', /* toggleOnClick */ false);
-      rotateModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.setMode.bind(this, Modes.Rotate));
+      rotateModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.setMode.bind(this, Modes.Rotate));
       this.modeButtons[Modes.Rotate] = rotateModeButton;
       this.controlPanelToolbar.appendToolbarItem(rotateModeButton);
     }
@@ -79,7 +79,7 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
 
     const resetButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.resetTransform), '3d-center', undefined, 'layers.3d-center');
-    resetButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.resetAndNotify.bind(this, undefined));
+    resetButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.resetAndNotify.bind(this, undefined));
     this.controlPanelToolbar.appendToolbarItem(resetButton);
 
     this.reset();

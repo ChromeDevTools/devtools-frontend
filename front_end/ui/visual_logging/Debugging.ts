@@ -85,13 +85,13 @@ export function processEventForDebugging(
   }
 
   switch (format) {
-    case DebugLoggingFormat.Intuitive:
+    case DebugLoggingFormat.INTUITIVE:
       processEventForIntuitiveDebugging(event, state, extraInfo);
       break;
-    case DebugLoggingFormat.Test:
+    case DebugLoggingFormat.TEST:
       processEventForTestDebugging(event, state, extraInfo);
       break;
-    case DebugLoggingFormat.AdHocAnalysis:
+    case DebugLoggingFormat.AD_HOC_ANALYSIS:
       processEventForAdHocAnalysisDebugging(event, state, extraInfo);
       break;
   }
@@ -184,13 +184,13 @@ type TestLogEntry = {
 export function processImpressionsForDebugging(states: LoggingState[]): void {
   const format = localStorage.getItem('veDebugLoggingEnabled');
   switch (format) {
-    case DebugLoggingFormat.Intuitive:
+    case DebugLoggingFormat.INTUITIVE:
       processImpressionsForIntuitiveDebugLog(states);
       break;
-    case DebugLoggingFormat.Test:
+    case DebugLoggingFormat.TEST:
       processImpressionsForTestDebugLog(states);
       break;
-    case DebugLoggingFormat.AdHocAnalysis:
+    case DebugLoggingFormat.AD_HOC_ANALYSIS:
       processImpressionsForAdHocAnalysisDebugLog(states);
       break;
     default:
@@ -330,19 +330,19 @@ function maybeLogDebugEvent(entry: IntuitiveLogEntry|AdHocAnalysisLogEntry|TestL
     return;
   }
   veDebugEventsLog.push(entry);
-  if (format === DebugLoggingFormat.Intuitive) {
+  if (format === DebugLoggingFormat.INTUITIVE) {
     // eslint-disable-next-line no-console
     console.info('VE Debug:', entry);
   }
 }
 
-export enum DebugLoggingFormat {
-  Intuitive = 'Intuitive',
-  Test = 'Test',
-  AdHocAnalysis = 'AdHocAnalysis',
+export const enum DebugLoggingFormat {
+  INTUITIVE = 'Intuitive',
+  TEST = 'Test',
+  AD_HOC_ANALYSIS = 'AdHocAnalysis',
 }
 
-export function setVeDebugLoggingEnabled(enabled: boolean, format = DebugLoggingFormat.Intuitive): void {
+export function setVeDebugLoggingEnabled(enabled: boolean, format = DebugLoggingFormat.INTUITIVE): void {
   if (enabled) {
     localStorage.setItem('veDebugLoggingEnabled', format);
   } else {
@@ -566,7 +566,7 @@ let sessionStartTime: number = Date.now();
 
 export function processStartLoggingForDebugging(): void {
   sessionStartTime = Date.now();
-  if (localStorage.getItem('veDebugLoggingEnabled') === DebugLoggingFormat.Intuitive) {
+  if (localStorage.getItem('veDebugLoggingEnabled') === DebugLoggingFormat.INTUITIVE) {
     maybeLogDebugEvent({event: 'SessionStart'});
   }
 }

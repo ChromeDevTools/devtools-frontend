@@ -283,7 +283,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     const topToolbar = new UI.Toolbar.Toolbar('animation-timeline-toolbar', toolbarContainer);
     this.#clearButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear', undefined, 'animations.clear');
-    this.#clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+    this.#clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimationGroupsCleared);
       this.reset();
     });
@@ -292,7 +292,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
 
     this.#pauseButton =
         new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.pauseAll), 'pause', 'resume', 'animations.pause-resume-all');
-    this.#pauseButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+    this.#pauseButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
       this.togglePauseAll();
     });
     topToolbar.appendToolbarItem(this.#pauseButton);
@@ -335,7 +335,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
         i18nString(UIStrings.replayTimeline), 'replay', undefined, 'animations.play-replay-pause-animation-group');
     this.#controlButton.element.classList.add('toolbar-state-on');
     this.#controlState = ControlState.Replay;
-    this.#controlButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.controlButtonToggle.bind(this));
+    this.#controlButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.controlButtonToggle.bind(this));
     toolbar.appendToolbarItem(this.#controlButton);
 
     this.#gridHeader = container.createChild('div', 'animation-grid-header');

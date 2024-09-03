@@ -47,9 +47,9 @@ function toIconGroup({iconName, color, width, height}: IconButton.Icon.IconWithN
 }
 
 export const enum DisplayMode {
-  OmitEmpty = 'OmitEmpty',
-  ShowAlways = 'ShowAlways',
-  OnlyMostImportant = 'OnlyMostImportant',
+  OMIT_EMPTY = 'OmitEmpty',
+  SHOW_ALWAYS = 'ShowAlways',
+  ONLY_MOST_IMPORTANT = 'OnlyMostImportant',
 }
 
 export interface IssueCounterData {
@@ -89,7 +89,7 @@ export class IssueCounter extends HTMLElement {
   #leadingText: string = '';
   #throttler: undefined|Common.Throttler.Throttler;
   #counts: [number, number, number] = [0, 0, 0];
-  #displayMode: DisplayMode = DisplayMode.OmitEmpty;
+  #displayMode: DisplayMode = DisplayMode.OMIT_EMPTY;
   #issuesManager: IssuesManager.IssuesManager.IssuesManager|undefined = undefined;
   #accessibleName: string|undefined = undefined;
   #throttlerTimeout: number|undefined;
@@ -111,7 +111,7 @@ export class IssueCounter extends HTMLElement {
     this.#clickHandler = data.clickHandler;
     this.#leadingText = data.leadingText ?? '';
     this.#tooltipCallback = data.tooltipCallback;
-    this.#displayMode = data.displayMode ?? DisplayMode.OmitEmpty;
+    this.#displayMode = data.displayMode ?? DisplayMode.OMIT_EMPTY;
     this.#accessibleName = data.accessibleName;
     this.#throttlerTimeout = data.throttlerTimeout;
     this.#compact = Boolean(data.compact);
@@ -161,11 +161,11 @@ export class IssueCounter extends HTMLElement {
 
     const countToString = (kind: IssuesManager.Issue.IssueKind, count: number): string|undefined => {
       switch (this.#displayMode) {
-        case DisplayMode.OmitEmpty:
+        case DisplayMode.OMIT_EMPTY:
           return count > 0 ? `${count}` : undefined;
-        case DisplayMode.ShowAlways:
+        case DisplayMode.SHOW_ALWAYS:
           return `${count}`;
-        case DisplayMode.OnlyMostImportant:
+        case DisplayMode.ONLY_MOST_IMPORTANT:
           return kind === mostImportant ? `${count}` : undefined;
       }
     };

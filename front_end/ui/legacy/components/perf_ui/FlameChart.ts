@@ -359,7 +359,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
 
     this.canvas.addEventListener('focus', () => {
-      this.dispatchEventToListeners(Events.CanvasFocused);
+      this.dispatchEventToListeners(Events.CANVAS_FOCUSED);
     }, false);
 
     UI.UIUtils.installDragHandle(
@@ -466,7 +466,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     this.highlightedEntryIndex = entryIndex;
     this.updateElementPosition(this.highlightElement, this.highlightedEntryIndex);
-    this.dispatchEventToListeners(Events.EntryHovered, entryIndex);
+    this.dispatchEventToListeners(Events.ENTRY_HOVERED, entryIndex);
   }
 
   highlightAllEntries(entries: number[]): void {
@@ -499,7 +499,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     this.highlightedEntryIndex = -1;
     this.updateElementPosition(this.highlightElement, this.highlightedEntryIndex);
-    this.dispatchEventToListeners(Events.EntryHovered, -1);
+    this.dispatchEventToListeners(Events.ENTRY_HOVERED, -1);
   }
 
   private createCandyStripePattern(): CanvasPattern {
@@ -629,7 +629,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     const timeMilliSeconds = TraceEngine.Types.Timing.MilliSeconds(this.chartViewport.pixelToTime(mouseEvent.offsetX));
 
-    this.dispatchEventToListeners(Events.MouseMove, {
+    this.dispatchEventToListeners(Events.MOUSE_MOVE, {
       mouseEvent,
       timeInMicroSeconds: TraceEngine.Helpers.Timing.millisecondsToMicroseconds(timeMilliSeconds),
     });
@@ -884,10 +884,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
             const end = start + timelineData.entryTotalTimes[this.highlightedEntryIndex];
             this.chartViewport.setRangeSelection(start, end);
           } else if (isMetaOrControl && this.highlightedEntryIndex !== -1 && timelineData) {
-            this.dispatchEventToListeners(Events.EntryLabelAnnotationAdded, this.highlightedEntryIndex);
+            this.dispatchEventToListeners(Events.ENTRY_LABEL_ANNOTATION_ADDED, this.highlightedEntryIndex);
           } else {
             this.chartViewport.onClick(mouseEvent);
-            this.dispatchEventToListeners(Events.EntryInvoked, this.highlightedEntryIndex);
+            this.dispatchEventToListeners(Events.ENTRY_INVOKED, this.highlightedEntryIndex);
           }
           return;
         }
@@ -1204,7 +1204,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       // Update the selected index to match the highlighted index, which
       // represents the entry under the cursor where the user has right clicked
       // to trigger a context menu.
-      this.dispatchEventToListeners(Events.EntryInvoked, this.highlightedEntryIndex);
+      this.dispatchEventToListeners(Events.ENTRY_INVOKED, this.highlightedEntryIndex);
       this.setSelectedEntry(this.highlightedEntryIndex);
       // Update the selected group as well.
       this.#selectGroup(groupIndex);
@@ -1231,14 +1231,15 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         const annotationSection = this.contextMenu.section('annotations');
 
         const labelEntryAnnotationOption = annotationSection.appendItem(i18nString(UIStrings.labelEntry), () => {
-          this.dispatchEventToListeners(Events.EntryLabelAnnotationAdded, this.selectedEntryIndex);
+          this.dispatchEventToListeners(Events.ENTRY_LABEL_ANNOTATION_ADDED, this.selectedEntryIndex);
         });
 
         const prefix = Host.Platform.isMac() ? 'Cmd' : 'Ctrl';
         labelEntryAnnotationOption.setShortcut(`${prefix} + Click`);
 
         const linkEntriesAnnotationOption = annotationSection.appendItem(i18nString(UIStrings.linkEntries), () => {
-          this.dispatchEventToListeners(Events.EntriesLinkAnnotationCreated, {entryFromIndex: this.selectedEntryIndex});
+          this.dispatchEventToListeners(
+              Events.ENTRIES_LINK_ANNOTATION_CREATED, {entryFromIndex: this.selectedEntryIndex});
         });
         linkEntriesAnnotationOption.setShortcut(`${prefix} + Click`);
       }
@@ -1498,7 +1499,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       indexOnLevel += keyboardEvent.keyCode === keys.Left.code ? -1 : 1;
       event.consume(true);
       if (indexOnLevel >= 0 && indexOnLevel < levelIndexes.length) {
-        this.dispatchEventToListeners(Events.EntrySelected, levelIndexes[indexOnLevel]);
+        this.dispatchEventToListeners(Events.ENTRY_SELECTED, levelIndexes[indexOnLevel]);
       }
       return true;
     }
@@ -1530,12 +1531,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         }
       }
       keyboardEvent.consume(true);
-      this.dispatchEventToListeners(Events.EntrySelected, levelIndexes[indexOnLevel]);
+      this.dispatchEventToListeners(Events.ENTRY_SELECTED, levelIndexes[indexOnLevel]);
       return true;
     }
     if (event.key === 'Enter') {
       event.consume(true);
-      this.dispatchEventToListeners(Events.EntryInvoked, this.selectedEntryIndex);
+      this.dispatchEventToListeners(Events.ENTRY_INVOKED, this.selectedEntryIndex);
       return true;
     }
     return false;
@@ -1873,7 +1874,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     this.resetCanvas();
 
-    this.dispatchEventToListeners(Events.LatestDrawDimensions, {
+    this.dispatchEventToListeners(Events.LATEST_DRAW_DIMENSIONS, {
       chart: {
         widthPixels: this.offsetWidth,
         heightPixels: this.offsetHeight,
@@ -1931,7 +1932,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       }
       this.#drawGenericEvents(context, timelineData, color, indexes);
     }
-    this.dispatchEventToListeners(Events.ChartPlayableStateChange, wideEntryExists);
+    this.dispatchEventToListeners(Events.CHART_PLAYABLE_STATE_CHANGED, wideEntryExists);
 
     this.drawMarkers(context, timelineData, markerIndices);
 
@@ -3842,7 +3843,7 @@ export const enum Events {
   /**
    * Emitted when the <canvas> element of the FlameChart is focused by the user.
    **/
-  CanvasFocused = 'CanvasFocused',
+  CANVAS_FOCUSED = 'CanvasFocused',
   /**
    * Emitted when an event is selected by either mouse click, or hitting
    * <enter> on the keyboard - e.g. the same actions that would invoke a
@@ -3852,11 +3853,11 @@ export const enum Events {
    * been selected, or -1 if no entry is selected (e.g the user has clicked
    * away from any events)
    */
-  EntryInvoked = 'EntryInvoked',
+  ENTRY_INVOKED = 'EntryInvoked',
   // Emmited when entry label annotation is added through a shotcut or a context menu.
-  EntryLabelAnnotationAdded = 'EntryLabelAnnotationAdded',
+  ENTRY_LABEL_ANNOTATION_ADDED = 'EntryLabelAnnotationAdded',
   // Emmited when entries link annotation is added through a shotcut or a context menu.
-  EntriesLinkAnnotationCreated = 'EntriesLinkAnnotationCreated',
+  ENTRIES_LINK_ANNOTATION_CREATED = 'EntriesLinkAnnotationCreated',
   /**
    * Emitted when an event is selected via keyboard navigation using the arrow
    * keys.
@@ -3864,7 +3865,7 @@ export const enum Events {
    * Will be emitted with a number which is the index of the entry that has
    * been selected, or -1 if no entry is selected.
    */
-  EntrySelected = 'EntrySelected',
+  ENTRY_SELECTED = 'EntrySelected',
   /**
    * Emitted when an event is hovered over with the mouse.
    *
@@ -3872,25 +3873,25 @@ export const enum Events {
    * been hovered on, or -1 if no entry is selected (the user has moved their
    * mouse off the event)
    */
-  EntryHovered = 'EntryHovered',
-  ChartPlayableStateChange = 'ChartPlayableStateChange',
+  ENTRY_HOVERED = 'EntryHovered',
+  CHART_PLAYABLE_STATE_CHANGED = 'ChartPlayableStateChange',
 
-  LatestDrawDimensions = 'LatestDrawDimensions',
+  LATEST_DRAW_DIMENSIONS = 'LatestDrawDimensions',
 
-  MouseMove = 'MouseMove',
+  MOUSE_MOVE = 'MouseMove',
 }
 
 export type EventTypes = {
-  [Events.EntryLabelAnnotationAdded]: number,
-  [Events.EntriesLinkAnnotationCreated]: {
+  [Events.ENTRY_LABEL_ANNOTATION_ADDED]: number,
+  [Events.ENTRIES_LINK_ANNOTATION_CREATED]: {
     entryFromIndex: number,
   },
-  [Events.CanvasFocused]: number|void,
-  [Events.EntryInvoked]: number,
-  [Events.EntrySelected]: number,
-  [Events.EntryHovered]: number,
-  [Events.ChartPlayableStateChange]: boolean,
-  [Events.LatestDrawDimensions]: {
+  [Events.CANVAS_FOCUSED]: number|void,
+  [Events.ENTRY_INVOKED]: number,
+  [Events.ENTRY_SELECTED]: number,
+  [Events.ENTRY_HOVERED]: number,
+  [Events.CHART_PLAYABLE_STATE_CHANGED]: boolean,
+  [Events.LATEST_DRAW_DIMENSIONS]: {
     chart: {
       widthPixels: number,
       heightPixels: number,
@@ -3899,7 +3900,7 @@ export type EventTypes = {
     },
     traceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds,
   },
-  [Events.MouseMove]: {
+  [Events.MOUSE_MOVE]: {
     mouseEvent: MouseEvent,
     timeInMicroSeconds: TraceEngine.Types.Timing.MicroSeconds,
   },

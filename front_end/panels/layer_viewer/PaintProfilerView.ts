@@ -31,14 +31,12 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import type * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import paintProfilerStyles from './paintProfiler.css.js';
-
-import type * as Protocol from '../../generated/protocol.js';
-
-import type * as SDK from '../../core/sdk/sdk.js';
-import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
@@ -114,7 +112,8 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     this.canvas = this.canvasContainer.createChild('canvas', 'fill') as HTMLCanvasElement;
     this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D;
     this.selectionWindowInternal = new PerfUI.OverviewGrid.Window(this.canvasContainer);
-    this.selectionWindowInternal.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this.onWindowChanged, this);
+    this.selectionWindowInternal.addEventListener(
+        PerfUI.OverviewGrid.Events.WINDOW_CHANGED, this.onWindowChanged, this);
 
     this.innerBarWidth = 4 * window.devicePixelRatio;
     this.minBarHeight = window.devicePixelRatio;
@@ -524,8 +523,7 @@ export class LogTreeElement extends UI.TreeOutline.TreeElement {
     let keyCount = 0;
     for (const key in param) {
       const paramKey = param[key];
-      if (++keyCount > 4 || paramKey === 'object' ||
-          (paramKey=== 'string' && paramKey.length > 100)) {
+      if (++keyCount > 4 || paramKey === 'object' || (paramKey === 'string' && paramKey.length > 100)) {
         return name;
       }
       if (str) {

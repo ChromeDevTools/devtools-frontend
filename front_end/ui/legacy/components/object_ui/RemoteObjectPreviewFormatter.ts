@@ -37,14 +37,14 @@ export class RemoteObjectPreviewFormatter {
 
     function sortValue(property: Protocol.Runtime.PropertyPreview): number {
       // TODO(einbinder) expose whether preview properties are actually internal.
-      if (property.name === InternalName.PromiseState) {
+      if (property.name === InternalName.PROMISE_STATE) {
         return 1;
       }
-      if (property.name === InternalName.PromiseResult) {
+      if (property.name === InternalName.PROMISE_RESULT) {
         return 2;
       }
-      if (property.name === InternalName.GeneratorState || property.name === InternalName.PrimitiveValue ||
-          property.name === InternalName.WeakRefTarget) {
+      if (property.name === InternalName.GENERATOR_STATE || property.name === InternalName.PRIMITIVE_VALUE ||
+          property.name === InternalName.WEAK_REF_TARGET) {
         return 3;
       }
       if (property.type !== Protocol.Runtime.PropertyPreviewType.Function && !property.name.startsWith('#')) {
@@ -125,21 +125,21 @@ export class RemoteObjectPreviewFormatter {
       const property = properties[i];
       const name = property.name;
       // Internal properties are given special formatting, e.g. Promises `<rejected>: 123`.
-      if (preview.subtype === Protocol.Runtime.ObjectPreviewSubtype.Promise && name === InternalName.PromiseState) {
+      if (preview.subtype === Protocol.Runtime.ObjectPreviewSubtype.Promise && name === InternalName.PROMISE_STATE) {
         parentElement.appendChild(this.renderDisplayName('<' + property.value + '>'));
         const nextProperty = i + 1 < properties.length ? properties[i + 1] : null;
-        if (nextProperty && nextProperty.name === InternalName.PromiseResult) {
+        if (nextProperty && nextProperty.name === InternalName.PROMISE_RESULT) {
           if (property.value !== 'pending') {
             UI.UIUtils.createTextChild(parentElement, ': ');
             parentElement.appendChild(this.renderPropertyPreviewOrAccessor([nextProperty]));
           }
           i++;
         }
-      } else if (preview.subtype === 'generator' && name === InternalName.GeneratorState) {
+      } else if (preview.subtype === 'generator' && name === InternalName.GENERATOR_STATE) {
         parentElement.appendChild(this.renderDisplayName('<' + property.value + '>'));
-      } else if (name === InternalName.PrimitiveValue) {
+      } else if (name === InternalName.PRIMITIVE_VALUE) {
         parentElement.appendChild(this.renderPropertyPreviewOrAccessor([property]));
-      } else if (name === InternalName.WeakRefTarget) {
+      } else if (name === InternalName.WEAK_REF_TARGET) {
         if (property.type === Protocol.Runtime.PropertyPreviewType.Undefined) {
           parentElement.appendChild(this.renderDisplayName('<cleared>'));
         } else {
@@ -309,11 +309,11 @@ export class RemoteObjectPreviewFormatter {
 }
 
 const enum InternalName {
-  GeneratorState = '[[GeneratorState]]',
-  PrimitiveValue = '[[PrimitiveValue]]',
-  PromiseState = '[[PromiseState]]',
-  PromiseResult = '[[PromiseResult]]',
-  WeakRefTarget = '[[WeakRefTarget]]',
+  GENERATOR_STATE = '[[GeneratorState]]',
+  PRIMITIVE_VALUE = '[[PrimitiveValue]]',
+  PROMISE_STATE = '[[PromiseState]]',
+  PROMISE_RESULT = '[[PromiseResult]]',
+  WEAK_REF_TARGET = '[[WeakRefTarget]]',
 }
 
 export const createSpansForNodeTitle = function(container: Element, nodeTitle: string): void {

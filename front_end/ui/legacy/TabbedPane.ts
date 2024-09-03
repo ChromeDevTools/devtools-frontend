@@ -134,7 +134,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.triggerDropDownTimeout = null;
     this.dropDownButton = this.createDropDownButton();
     this.currentDevicePixelRatio = window.devicePixelRatio;
-    ZoomManager.instance().addEventListener(ZoomManagerEvents.ZoomChanged, this.zoomChanged, this);
+    ZoomManager.instance().addEventListener(ZoomManagerEvents.ZOOM_CHANGED, this.zoomChanged, this);
     this.makeTabSlider();
   }
 
@@ -972,10 +972,12 @@ export interface EventData {
 }
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   TabInvoked = 'TabInvoked',
   TabSelected = 'TabSelected',
   TabClosed = 'TabClosed',
   TabOrderChanged = 'TabOrderChanged',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export type EventTypes = {

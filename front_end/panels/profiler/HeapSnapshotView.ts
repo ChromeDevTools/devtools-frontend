@@ -351,21 +351,21 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     const heapProfilerModel = profile.heapProfilerModel();
     this.containmentDataGrid = new HeapSnapshotContainmentDataGrid(
         heapProfilerModel, this, /* displayName */ i18nString(UIStrings.containment));
-    this.containmentDataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this.selectionChanged, this);
+    this.containmentDataGrid.addEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.selectionChanged, this);
     this.containmentWidget = this.containmentDataGrid.asWidget();
     this.containmentWidget.setMinimumSize(50, 25);
 
     this.statisticsView = new HeapSnapshotStatisticsView();
 
     this.constructorsDataGrid = new HeapSnapshotConstructorsDataGrid(heapProfilerModel, this);
-    this.constructorsDataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this.selectionChanged, this);
+    this.constructorsDataGrid.addEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.selectionChanged, this);
     this.constructorsWidget = this.constructorsDataGrid.asWidget();
     this.constructorsWidget.setMinimumSize(50, 25);
     this.constructorsWidget.element.setAttribute(
         'jslog', `${VisualLogging.pane('heap-snapshot.constructors-view').track({resize: true})}`);
 
     this.diffDataGrid = new HeapSnapshotDiffDataGrid(heapProfilerModel, this);
-    this.diffDataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this.selectionChanged, this);
+    this.diffDataGrid.addEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.selectionChanged, this);
     this.diffWidget = this.diffDataGrid.asWidget();
     this.diffWidget.setMinimumSize(50, 25);
 
@@ -374,7 +374,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     if (isHeapTimeline && hasAllocationStacks) {
       this.allocationDataGrid = new AllocationDataGrid(heapProfilerModel, this);
       this.allocationDataGrid.addEventListener(
-          DataGrid.DataGrid.Events.SelectedNode, this.onSelectAllocationNode, this);
+          DataGrid.DataGrid.Events.SELECTED_NODE, this.onSelectAllocationNode, this);
       this.allocationWidget = this.allocationDataGrid.asWidget();
       this.allocationWidget.setMinimumSize(50, 25);
 
@@ -416,7 +416,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     this.splitWidget.hideDefaultResizer();
     this.splitWidget.installResizer(splitWidgetResizer);
 
-    this.retainmentDataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this.inspectedObjectChanged, this);
+    this.retainmentDataGrid.addEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.inspectedObjectChanged, this);
     this.retainmentDataGrid.reset();
 
     this.perspectives = [];
@@ -457,7 +457,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     this.resetRetainersButton =
         new UI.Toolbar.ToolbarButton(restoreIgnoredRetainers, 'clear-list', restoreIgnoredRetainers);
     this.resetRetainersButton.setVisible(false);
-    this.resetRetainersButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, async () => {
+    this.resetRetainersButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, async () => {
       // The reset retainers button acts upon whichever snapshot is currently shown in the Retainers pane.
       await this.retainmentDataGrid.snapshot?.unignoreAllNodesInRetainersView();
       await this.retainmentDataGrid.dataSourceChanged();

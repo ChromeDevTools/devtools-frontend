@@ -6,7 +6,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Coordinator from '../../../components/render_coordinator/render_coordinator.js';
 
-import {DataGridImpl, DataGridNode, type DataGridData, type Parameters} from './DataGrid.js';
+import {type DataGridData, DataGridImpl, DataGridNode, type Parameters} from './DataGrid.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -215,7 +215,7 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
       this.updateWidths();
     }
     this.visibleNodes = visibleNodes;
-    this.dispatchEventToListeners(Events.ViewportCalculated);
+    this.dispatchEventToListeners(Events.VIEWPORT_CALCULATED);
   }
 
   revealViewportNode(node: ViewportDataGridNode<T>): void {
@@ -242,11 +242,11 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
 }
 
 export const enum Events {
-  ViewportCalculated = 'ViewportCalculated',
+  VIEWPORT_CALCULATED = 'ViewportCalculated',
 }
 
 export type EventTypes = {
-  [Events.ViewportCalculated]: void,
+  [Events.VIEWPORT_CALCULATED]: void,
 };
 
 export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T>> {

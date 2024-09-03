@@ -108,7 +108,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
   static setLinkDecorator(linkDecorator: LinkDecorator): void {
     console.assert(!decorator, 'Cannot re-register link decorator.');
     decorator = linkDecorator;
-    linkDecorator.addEventListener(LinkDecorator.Events.LinkIconChanged, onLinkIconChanged);
+    linkDecorator.addEventListener(LinkDecorator.Events.LINK_ICON_CHANGED, onLinkIconChanged);
     for (const linkifier of instances) {
       linkifier.updateAllAnchorDecorations();
     }
@@ -281,7 +281,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
 
     const updateDelegate = async(liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> => {
       await this.updateAnchor(link, linkDisplayOptions, liveLocation);
-      this.dispatchEventToListeners(Events.LiveLocationUpdated, liveLocation);
+      this.dispatchEventToListeners(Events.LIVE_LOCATION_UPDATED, liveLocation);
     };
     void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
         .createLiveLocation(rawLocation, updateDelegate.bind(this), pool)
@@ -380,7 +380,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
 
     const updateDelegate = async(liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> => {
       await this.updateAnchor(link, linkDisplayOptions, liveLocation);
-      this.dispatchEventToListeners(Events.LiveLocationUpdated, liveLocation);
+      this.dispatchEventToListeners(Events.LIVE_LOCATION_UPDATED, liveLocation);
     };
     void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
         .createStackTraceTopFrameLiveLocation(
@@ -411,7 +411,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
 
     const updateDelegate = async(liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> => {
       await this.updateAnchor(link, linkDisplayOptions, liveLocation);
-      this.dispatchEventToListeners(Events.LiveLocationUpdated, liveLocation);
+      this.dispatchEventToListeners(Events.LIVE_LOCATION_UPDATED, liveLocation);
     };
     void Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance()
         .createLiveLocation(rawLocation, updateDelegate.bind(this), pool)
@@ -837,11 +837,11 @@ export interface LinkDecorator extends Common.EventTarget.EventTarget<LinkDecora
 
 export namespace LinkDecorator {
   export const enum Events {
-    LinkIconChanged = 'LinkIconChanged',
+    LINK_ICON_CHANGED = 'LinkIconChanged',
   }
 
   export type EventTypes = {
-    [Events.LinkIconChanged]: Workspace.UISourceCode.UISourceCode,
+    [Events.LINK_ICON_CHANGED]: Workspace.UISourceCode.UISourceCode,
   };
 }
 
@@ -1058,9 +1058,9 @@ interface LinkDisplayOptions {
 export type LinkHandler = (arg0: TextUtils.ContentProvider.ContentProvider, arg1: number) => void;
 
 export const enum Events {
-  LiveLocationUpdated = 'liveLocationUpdated',
+  LIVE_LOCATION_UPDATED = 'liveLocationUpdated',
 }
 
 export type EventTypes = {
-  [Events.LiveLocationUpdated]: Bindings.LiveLocation.LiveLocation,
+  [Events.LIVE_LOCATION_UPDATED]: Bindings.LiveLocation.LiveLocation,
 };

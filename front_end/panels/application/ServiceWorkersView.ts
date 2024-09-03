@@ -283,7 +283,7 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
         }
       }
     };
-    document.body.addEventListener(UI.InspectorView.Events.DrawerChange, drawerChangeHandler);
+    document.body.addEventListener(UI.InspectorView.Events.DRAWER_CHANGE, drawerChangeHandler);
   }
 
   modelAdded(serviceWorkerManager: SDK.ServiceWorkerManager.ServiceWorkerManager): void {

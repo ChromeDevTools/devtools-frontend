@@ -236,7 +236,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.resizers = [];
     this.columnWidthsInitialized = false;
     this.cornerWidth = CornerWidth;
-    this.resizeMethod = ResizeMethod.Nearest;
+    this.resizeMethod = ResizeMethod.NEAREST;
 
     this.headerContextMenuCallback = null;
     this.rowContextMenuCallback = null;
@@ -275,7 +275,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (parentElement) {
       gridNode = this.elementToDataGridNode.get(parentElement);
     }
-    if (column.dataType === DataType.Boolean) {
+    if (column.dataType === DataType.BOOLEAN) {
       DataGridImpl.setElementBoolean(element, Boolean(value), gridNode);
     } else if (value !== null) {
       DataGridImpl.setElementText(element, value, Boolean(column.longText), gridNode);
@@ -511,7 +511,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.topFillerRow.style.height = topPx;
     this.bottomFillerRow.style.height = bottomPx;
     if (!isConstructorTime) {
-      this.dispatchEventToListeners(Events.PaddingChanged);
+      this.dispatchEventToListeners(Events.PADDING_CHANGED);
     }
   }
 
@@ -566,7 +566,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       element.textContent = elementLongText;
     }
     const column = this.visibleColumnsArray[cellIndex];
-    if (column.dataType === DataType.Boolean) {
+    if (column.dataType === DataType.BOOLEAN) {
       const checkboxLabel = UI.UIUtils.CheckboxLabel.create(undefined, (node.data[column.id] as boolean));
       UI.ARIAUtils.setLabel(checkboxLabel, column.title || '');
 
@@ -1189,7 +1189,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         }
         this.startEditing(selectedNodeElement.children[this.nextEditableColumn(-1)]);
       } else {
-        this.dispatchEventToListeners(Events.OpenedNode, this.selectedNode);
+        this.dispatchEventToListeners(Events.OPENED_NODE, this.selectedNode);
       }
     }
 
@@ -1283,7 +1283,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     cell.classList.add(sortOrder);
 
-    this.dispatchEventToListeners(Events.SortingChanged);
+    this.dispatchEventToListeners(Events.SORTING_CHANGED);
   }
 
   markColumnAsSortedBy(columnId: string, sortOrder: Order): void {
@@ -1318,7 +1318,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       }
     } else {
       gridNode.select();
-      this.dispatchEventToListeners(Events.OpenedNode, gridNode);
+      this.dispatchEventToListeners(Events.OPENED_NODE, gridNode);
     }
   }
 
@@ -1489,9 +1489,9 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     // Differences for other resize methods
-    if (this.resizeMethod === ResizeMethod.Last) {
+    if (this.resizeMethod === ResizeMethod.LAST) {
       rightCellIndex = this.resizers.length;
-    } else if (this.resizeMethod === ResizeMethod.First) {
+    } else if (this.resizeMethod === ResizeMethod.FIRST) {
       leftEdgeOfPreviousColumn += this.getPreferredWidth(leftCellIndex) - this.getPreferredWidth(0);
       leftCellIndex = 0;
     }
@@ -1591,43 +1591,45 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 export const CornerWidth = 14;
 
 export const enum Events {
-  SelectedNode = 'SelectedNode',
-  DeselectedNode = 'DeselectedNode',
-  OpenedNode = 'OpenedNode',
-  SortingChanged = 'SortingChanged',
-  PaddingChanged = 'PaddingChanged',
+  SELECTED_NODE = 'SelectedNode',
+  DESELECTED_NODE = 'DeselectedNode',
+  OPENED_NODE = 'OpenedNode',
+  SORTING_CHANGED = 'SortingChanged',
+  PADDING_CHANGED = 'PaddingChanged',
 }
 
 export type EventTypes<T> = {
-  [Events.SelectedNode]: DataGridNode<T>,
-  [Events.DeselectedNode]: void,
-  [Events.OpenedNode]: DataGridNode<T>,
-  [Events.SortingChanged]: void,
-  [Events.PaddingChanged]: void,
+  [Events.SELECTED_NODE]: DataGridNode<T>,
+  [Events.DESELECTED_NODE]: void,
+  [Events.OPENED_NODE]: DataGridNode<T>,
+  [Events.SORTING_CHANGED]: void,
+  [Events.PADDING_CHANGED]: void,
 };
 
 export enum Order {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   Ascending = 'sort-ascending',
   Descending = 'sort-descending',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export const enum Align {
-  Center = 'center',
-  Right = 'right',
+  CENTER = 'center',
+  RIGHT = 'right',
 }
 
 export const enum DataType {
-  String = 'String',
-  Boolean = 'Boolean',
+  STRING = 'String',
+  BOOLEAN = 'Boolean',
 }
 
 export const ColumnResizePadding = 34;
 export const CenterResizerOverBorderAdjustment = 3;
 
 export const enum ResizeMethod {
-  Nearest = 'nearest',
-  First = 'first',
-  Last = 'last',
+  NEAREST = 'nearest',
+  FIRST = 'first',
+  LAST = 'last',
 }
 
 export type DataGridData = {
@@ -1754,7 +1756,7 @@ export class DataGridNode<T> {
       const cell = element.appendChild(this.createCell(column.id));
       // Add each visibile cell to the node's accessible text by gathering 'Column Title: content'
 
-      if (column.dataType === DataType.Boolean && this.data[column.id] === true) {
+      if (column.dataType === DataType.BOOLEAN && this.data[column.id] === true) {
         this.setCellAccessibleName(i18nString(UIStrings.checked), cell, column.id);
       }
 
@@ -2252,7 +2254,7 @@ export class DataGridNode<T> {
     }
 
     if (!supressSelectedEvent) {
-      this.dataGrid.dispatchEventToListeners(Events.SelectedNode, this);
+      this.dataGrid.dispatchEventToListeners(Events.SELECTED_NODE, this);
     }
   }
 
@@ -2278,7 +2280,7 @@ export class DataGridNode<T> {
     }
 
     if (!supressDeselectedEvent) {
-      this.dataGrid.dispatchEventToListeners(Events.DeselectedNode);
+      this.dataGrid.dispatchEventToListeners(Events.DESELECTED_NODE);
     }
   }
 

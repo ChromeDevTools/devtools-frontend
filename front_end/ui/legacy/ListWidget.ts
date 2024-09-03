@@ -179,11 +179,11 @@ export class ListWidget<T> extends VBox {
     const toolbar = new Toolbar('', buttons);
 
     const editButton = new ToolbarButton(i18nString(UIStrings.editString), 'edit', undefined, 'edit-item');
-    editButton.addEventListener(ToolbarButton.Events.Click, onEditClicked.bind(this));
+    editButton.addEventListener(ToolbarButton.Events.CLICK, onEditClicked.bind(this));
     toolbar.appendToolbarItem(editButton);
 
     const removeButton = new ToolbarButton(i18nString(UIStrings.removeString), 'bin', undefined, 'remove-item');
-    removeButton.addEventListener(ToolbarButton.Events.Click, onRemoveClicked.bind(this));
+    removeButton.addEventListener(ToolbarButton.Events.CLICK, onRemoveClicked.bind(this));
     toolbar.appendToolbarItem(removeButton);
 
     return controls;

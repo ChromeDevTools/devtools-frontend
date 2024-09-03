@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import * as LitHtml from '../../../lit-html/lit-html.js';
-import cssAngleSwatchStyles from './cssAngleSwatch.css.js';
 
-import {AngleUnit, get2DTranslationsForAngle, type Angle} from './CSSAngleUtils.js';
+import cssAngleSwatchStyles from './cssAngleSwatch.css.js';
+import {type Angle, AngleUnit, get2DTranslationsForAngle} from './CSSAngleUtils.js';
 
 const {render, html} = LitHtml;
 const styleMap = LitHtml.Directives.styleMap;
@@ -22,7 +22,7 @@ export class CSSAngleSwatch extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private angle: Angle = {
     value: 0,
-    unit: AngleUnit.Rad,
+    unit: AngleUnit.RAD,
   };
 
   connectedCallback(): void {

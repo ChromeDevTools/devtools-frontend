@@ -357,11 +357,11 @@ UI.ActionRegistration.registerActionExtension({
   bindings: [
     {
       shortcut: 'Ctrl+Alt+C',
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
     },
     {
       shortcut: 'Meta+Alt+C',
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
     },
   ],
 });
@@ -380,11 +380,11 @@ UI.ActionRegistration.registerActionExtension({
   bindings: [
     {
       shortcut: 'Ctrl+Z',
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
     },
     {
       shortcut: 'Meta+Z',
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
     },
   ],
 });
@@ -403,11 +403,11 @@ UI.ActionRegistration.registerActionExtension({
   bindings: [
     {
       shortcut: 'Ctrl+Y',
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
     },
     {
       shortcut: 'Meta+Shift+Z',
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
     },
   ],
 });
@@ -436,11 +436,11 @@ UI.ActionRegistration.registerActionExtension({
   bindings: [
     {
       shortcut: 'Ctrl+Shift+C',
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
     },
     {
       shortcut: 'Meta+Shift+C',
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
     },
   ],
 });

@@ -104,7 +104,7 @@ export function buildStackTraceRows(
 
   if (updateCallback) {
     const throttler = new Common.Throttler.Throttler(100);
-    linkifier.addEventListener(LinkifierEvents.LiveLocationUpdated, () => {
+    linkifier.addEventListener(LinkifierEvents.LIVE_LOCATION_UPDATED, () => {
       void throttler.schedule(async () => updateHiddenRows(updateCallback, stackTraceRows));
     });
   }

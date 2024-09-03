@@ -54,7 +54,7 @@ export class CoveragePlugin extends Plugin {
     this.infoInToolbar = new UI.Toolbar.ToolbarButton(
         i18nString(UIStrings.clickToShowCoveragePanel), undefined, undefined, 'debugger.show-coverage');
     this.infoInToolbar.setSecondary();
-    this.infoInToolbar.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+    this.infoInToolbar.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
       void UI.ViewManager.ViewManager.instance().showView('coverage');
     });
 
@@ -131,7 +131,8 @@ export class CoveragePlugin extends Plugin {
     }
   }
 
-  override decorationChanged(type: SourceFrame.SourceFrame.DecoratorType, editor: TextEditor.TextEditor.TextEditor): void {
+  override decorationChanged(type: SourceFrame.SourceFrame.DecoratorType, editor: TextEditor.TextEditor.TextEditor):
+      void {
     if (type === SourceFrame.SourceFrame.DecoratorType.COVERAGE) {
       this.startDecoUpdate(editor);
     }
@@ -139,25 +140,25 @@ export class CoveragePlugin extends Plugin {
 
   private startDecoUpdate(editor: TextEditor.TextEditor.TextEditor): void {
     const manager = this.getCoverageManager();
-    void (manager ? manager.usageByLine(this.uiSourceCode, this.#editorLines(editor)) : Promise.resolve([
-    ])).then(usageByLine => {
-      const enabled = Boolean(editor.state.field(coverageState, false));
-      if (!usageByLine.length) {
-        if (enabled) {
-          editor.dispatch({effects: coverageCompartment.reconfigure([])});
-        }
-      } else if (!enabled) {
-        editor.dispatch({
-          effects: coverageCompartment.reconfigure([
-            coverageState.init(state => markersFromCoverageData(usageByLine, state)),
-            coverageGutter(this.uiSourceCode.url()),
-            theme,
-          ]),
+    void (manager ? manager.usageByLine(this.uiSourceCode, this.#editorLines(editor)) : Promise.resolve([]))
+        .then(usageByLine => {
+          const enabled = Boolean(editor.state.field(coverageState, false));
+          if (!usageByLine.length) {
+            if (enabled) {
+              editor.dispatch({effects: coverageCompartment.reconfigure([])});
+            }
+          } else if (!enabled) {
+            editor.dispatch({
+              effects: coverageCompartment.reconfigure([
+                coverageState.init(state => markersFromCoverageData(usageByLine, state)),
+                coverageGutter(this.uiSourceCode.url()),
+                theme,
+              ]),
+            });
+          } else {
+            editor.dispatch({effects: setCoverageState.of(usageByLine)});
+          }
         });
-      } else {
-        editor.dispatch({effects: setCoverageState.of(usageByLine)});
-      }
-    });
   }
 
   /**

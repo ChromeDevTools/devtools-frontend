@@ -59,11 +59,11 @@ export class PanelUtils {
     let recordedOriginalSelector, recordedCurrentSelector;
     let hasOpenDeclarationBlock = false;
     for (const {currentLineNumber, originalLineNumber, type} of rows) {
-      if (type !== DiffView.DiffView.RowType.Deletion && type !== DiffView.DiffView.RowType.Addition) {
+      if (type !== DiffView.DiffView.RowType.DELETION && type !== DiffView.DiffView.RowType.ADDITION) {
         continue;
       }
 
-      const isDeletion = type === DiffView.DiffView.RowType.Deletion;
+      const isDeletion = type === DiffView.DiffView.RowType.DELETION;
       const lines = isDeletion ? originalLines : currentLines;
       // Diff line arrays starts at 0, but line numbers start at 1.
       const lineIndex = isDeletion ? originalLineNumber - 1 : currentLineNumber - 1;

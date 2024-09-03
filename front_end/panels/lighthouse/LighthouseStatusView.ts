@@ -221,7 +221,7 @@ export class StatusView {
     UI.ARIAUtils.markAsStatus(this.statusText);
 
     this.dialog.setDefaultFocusedElement(cancelButton);
-    this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);
+    this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
     this.dialog.setMaxContentSize(new UI.Geometry.Size(500, 400));
   }
 

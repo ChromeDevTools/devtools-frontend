@@ -172,7 +172,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
       item: UI.ActionRegistration.Action,
       editedShortcuts: Map<UI.KeyboardShortcut.KeyboardShortcut, UI.KeyboardShortcut.Descriptor[]|null>): void {
     for (const [originalShortcut, newDescriptors] of editedShortcuts) {
-      if (originalShortcut.type !== UI.KeyboardShortcut.Type.UnsetShortcut) {
+      if (originalShortcut.type !== UI.KeyboardShortcut.Type.UNSET_SHORTCUT) {
         UI.ShortcutRegistry.ShortcutRegistry.instance().removeShortcut(originalShortcut);
         if (!newDescriptors) {
           Host.userMetrics.actionTaken(Host.UserMetrics.Action.ShortcutRemoved);
@@ -181,8 +181,8 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
       if (newDescriptors) {
         UI.ShortcutRegistry.ShortcutRegistry.instance().registerUserShortcut(
             originalShortcut.changeKeys(newDescriptors as UI.KeyboardShortcut.Descriptor[])
-                .changeType(UI.KeyboardShortcut.Type.UserShortcut));
-        if (originalShortcut.type === UI.KeyboardShortcut.Type.UnsetShortcut) {
+                .changeType(UI.KeyboardShortcut.Type.USER_SHORTCUT));
+        if (originalShortcut.type === UI.KeyboardShortcut.Type.UNSET_SHORTCUT) {
           Host.userMetrics.actionTaken(Host.UserMetrics.Action.UserShortcutAdded);
         } else {
           Host.userMetrics.actionTaken(Host.UserMetrics.Action.ShortcutModified);
@@ -407,7 +407,7 @@ export class ShortcutListItem {
 
   private addShortcut(): void {
     const shortcut =
-        new UI.KeyboardShortcut.KeyboardShortcut([], this.item.id(), UI.KeyboardShortcut.Type.UnsetShortcut);
+        new UI.KeyboardShortcut.KeyboardShortcut([], this.item.id(), UI.KeyboardShortcut.Type.UNSET_SHORTCUT);
     this.shortcuts.push(shortcut);
     this.update();
     const shortcutInput = this.shortcutInputs.get(shortcut) as HTMLElement;
@@ -421,7 +421,7 @@ export class ShortcutListItem {
       return;
     }
     let icon: IconButton.Icon.Icon;
-    if (shortcut.type !== UI.KeyboardShortcut.Type.UnsetShortcut && !shortcut.isDefault()) {
+    if (shortcut.type !== UI.KeyboardShortcut.Type.UNSET_SHORTCUT && !shortcut.isDefault()) {
       icon = IconButton.Icon.create('keyboard-pen', 'keybinds-modified');
       UI.ARIAUtils.setLabel(icon, i18nString(UIStrings.shortcutModified));
       this.element.appendChild(icon);
@@ -549,10 +549,10 @@ export class ShortcutListItem {
   private resetShortcutsToDefaults(): void {
     this.editedShortcuts.clear();
     for (const shortcut of this.shortcuts) {
-      if (shortcut.type === UI.KeyboardShortcut.Type.UnsetShortcut) {
+      if (shortcut.type === UI.KeyboardShortcut.Type.UNSET_SHORTCUT) {
         const index = this.shortcuts.indexOf(shortcut);
         this.shortcuts.splice(index, 1);
-      } else if (shortcut.type === UI.KeyboardShortcut.Type.UserShortcut) {
+      } else if (shortcut.type === UI.KeyboardShortcut.Type.USER_SHORTCUT) {
         this.editedShortcuts.set(shortcut, null);
       }
     }

@@ -54,7 +54,7 @@ export interface CSSAngleData {
 
 const DefaultAngle = {
   value: 0,
-  unit: AngleUnit.Rad,
+  unit: AngleUnit.RAD,
 };
 
 export class CSSAngle extends HTMLElement {

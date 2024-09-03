@@ -285,18 +285,18 @@ export class IDBDataView extends UI.View.SimpleView {
     this.element.setAttribute('jslog', `${VisualLogging.pane('indexed-db-data-view')}`);
 
     this.refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'refresh');
-    this.refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.refreshButtonClicked, this);
+    this.refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.refreshButtonClicked, this);
     this.refreshButton.element.setAttribute('jslog', `${VisualLogging.action('refresh').track({click: true})}`);
 
     this.deleteSelectedButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteSelected), 'bin');
-    this.deleteSelectedButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
+    this.deleteSelectedButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, _event => {
       void this.deleteButtonClicked(null);
     });
     this.deleteSelectedButton.element.setAttribute(
         'jslog', `${VisualLogging.action('delete-selected').track({click: true})}`);
 
     this.clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearObjectStore), 'clear');
-    this.clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+    this.clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
       void this.clearButtonClicked();
     }, this);
     this.clearButton.element.setAttribute('jslog', `${VisualLogging.action('clear-all').track({click: true})}`);
@@ -373,7 +373,7 @@ export class IDBDataView extends UI.View.SimpleView {
       editCallback: undefined,
     });
     dataGrid.setStriped(true);
-    dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, () => {
+    dataGrid.addEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, () => {
       this.updateToolbarEnablement();
       this.updateSelectionColor();
     }, this);
@@ -428,17 +428,17 @@ export class IDBDataView extends UI.View.SimpleView {
 
     this.pageBackButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showPreviousPage), 'triangle-left', undefined, 'prev-page');
-    this.pageBackButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.pageBackButtonClicked, this);
+    this.pageBackButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.pageBackButtonClicked, this);
     editorToolbar.appendToolbarItem(this.pageBackButton);
 
     this.pageForwardButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showNextPage), 'triangle-right', undefined, 'next-page');
     this.pageForwardButton.setEnabled(false);
-    this.pageForwardButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.pageForwardButtonClicked, this);
+    this.pageForwardButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.pageForwardButtonClicked, this);
     editorToolbar.appendToolbarItem(this.pageForwardButton);
 
     this.keyInput = new UI.Toolbar.ToolbarFilter(i18nString(UIStrings.filterByKey), 0.5);
-    this.keyInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.updateData.bind(this, false));
+    this.keyInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.updateData.bind(this, false));
     editorToolbar.appendToolbarItem(this.keyInput);
     editorToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator());
 

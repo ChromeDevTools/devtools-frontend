@@ -239,14 +239,14 @@ export class BackgroundServiceView extends UI.Widget.VBox {
 
     const clearButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'clear', undefined, 'background-service.clear');
-    clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this.clearEvents());
+    clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => this.clearEvents());
     this.toolbar.appendToolbarItem(clearButton);
 
     this.toolbar.appendSeparator();
 
     this.saveButton = new UI.Toolbar.ToolbarButton(
         i18nString(UIStrings.saveEvents), 'download', undefined, 'background-service.save-events');
-    this.saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
+    this.saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, _event => {
       void this.saveToFile();
     });
     this.saveButton.setEnabled(false);
@@ -376,7 +376,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     dataGrid.setStriped(true);
 
     dataGrid.addEventListener(
-        DataGrid.DataGrid.Events.SelectedNode, event => this.showPreview((event.data as EventDataNode)));
+        DataGrid.DataGrid.Events.SELECTED_NODE, event => this.showPreview((event.data as EventDataNode)));
 
     return dataGrid;
   }

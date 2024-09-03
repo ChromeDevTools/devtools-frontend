@@ -214,7 +214,7 @@ UI.ActionRegistration.registerActionExtension({
     },
     {
       shortcut: 'Meta+K',
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
     },
   ],
 });

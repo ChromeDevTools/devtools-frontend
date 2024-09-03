@@ -256,7 +256,7 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
     }
     this.model.setInset(insetClicked);
     this.updateButtons();
-    this.dispatchEventToListeners(Events.ShadowChanged, this.model);
+    this.dispatchEventToListeners(Events.SHADOW_CHANGED, this.model);
   }
 
   private handleValueModification(event: Event): void {
@@ -307,7 +307,7 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
       this.model.setSpreadRadius(length);
       this.spreadSlider.value = length.amount.toString();
     }
-    this.dispatchEventToListeners(Events.ShadowChanged, this.model);
+    this.dispatchEventToListeners(Events.SHADOW_CHANGED, this.model);
   }
 
   private onTextBlur(): void {
@@ -345,7 +345,7 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
       this.spreadSlider.value = length.amount.toString();
     }
     this.changedElement = null;
-    this.dispatchEventToListeners(Events.ShadowChanged, this.model);
+    this.dispatchEventToListeners(Events.SHADOW_CHANGED, this.model);
   }
 
   private onSliderInput(event: Event): void {
@@ -360,7 +360,7 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
       this.spreadInput.value = this.model.spreadRadius().asCSSText();
       this.spreadInput.classList.remove('invalid');
     }
-    this.dispatchEventToListeners(Events.ShadowChanged, this.model);
+    this.dispatchEventToListeners(Events.SHADOW_CHANGED, this.model);
   }
 
   private dragStart(event: MouseEvent): boolean {
@@ -402,7 +402,7 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.xInput.classList.remove('invalid');
     this.yInput.classList.remove('invalid');
     this.updateCanvas(true);
-    this.dispatchEventToListeners(Events.ShadowChanged, this.model);
+    this.dispatchEventToListeners(Events.SHADOW_CHANGED, this.model);
   }
 
   private onCanvasBlur(): void {
@@ -449,7 +449,7 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
       this.yInput.classList.remove('invalid');
     }
     this.updateCanvas(true);
-    this.dispatchEventToListeners(Events.ShadowChanged, this.model);
+    this.dispatchEventToListeners(Events.SHADOW_CHANGED, this.model);
   }
 
   private constrainPoint(point: UI.Geometry.Point, max: number): UI.Geometry.Point {
@@ -488,9 +488,9 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
 }
 
 export const enum Events {
-  ShadowChanged = 'ShadowChanged',
+  SHADOW_CHANGED = 'ShadowChanged',
 }
 
 export type EventTypes = {
-  [Events.ShadowChanged]: CSSShadowModel,
+  [Events.SHADOW_CHANGED]: CSSShadowModel,
 };

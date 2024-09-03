@@ -507,7 +507,7 @@ export class ColorMixRenderer implements MatchRenderer<ColorMixMatch> {
               InlineEditor.ColorSwatch.ColorChangedEvent.eventName,
               ev => onChange(ev.data.color.getAuthoredText() ?? ev.data.color.asString()));
         } else {
-          node.addEventListener(InlineEditor.ColorMixSwatch.Events.ColorChanged, ev => onChange(ev.data.text));
+          node.addEventListener(InlineEditor.ColorMixSwatch.Events.COLOR_CHANGED, ev => onChange(ev.data.text));
         }
         const color = node.getText();
         if (color) {
@@ -2080,7 +2080,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.prompt = new CSSPropertyPrompt(this, context.isEditingName, Array.from(this.#gridNames ?? []));
     this.prompt.setAutocompletionTimeout(0);
 
-    this.prompt.addEventListener(UI.TextPrompt.Events.TextChanged, () => {
+    this.prompt.addEventListener(UI.TextPrompt.Events.TEXT_CHANGED, () => {
       void this.applyFreeFlowStyleTextEdit(context);
     });
 

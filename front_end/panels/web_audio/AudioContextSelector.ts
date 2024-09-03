@@ -44,7 +44,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper<Eve
     this.toolbarItemInternal = new UI.Toolbar.ToolbarItem(this.dropDown.element);
     this.toolbarItemInternal.setEnabled(false);
     this.toolbarItemInternal.setTitle(i18nString(UIStrings.audioContextS, {PH1: this.placeholderText}));
-    this.items.addEventListener(UI.ListModel.Events.ItemsReplaced, this.onListItemReplaced, this);
+    this.items.addEventListener(UI.ListModel.Events.ITEMS_REPLACED, this.onListItemReplaced, this);
     this.toolbarItemInternal.element.classList.add('toolbar-has-dropdown');
 
     this.selectedContextInternal = null;

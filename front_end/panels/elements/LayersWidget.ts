@@ -135,7 +135,7 @@ export class ButtonProvider implements UI.Toolbar.Provider {
   private constructor() {
     this.button = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleCSSLayers), 'layers', 'layers-filled');
     this.button.setVisible(false);
-    this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clicked, this);
+    this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.clicked, this);
     this.button.element.classList.add('monospace');
     this.button.element.setAttribute('jslog', `${VisualLogging.toggleSubpane('css-layers').track({click: true})}`);
   }

@@ -69,12 +69,12 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
     this.mainToolbar = new UI.Toolbar.Toolbar('');
 
     this.clearAllButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear');
-    this.clearAllButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clearMessages, this);
+    this.clearAllButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.clearMessages, this);
     this.mainToolbar.appendToolbarItem(this.clearAllButton);
 
     const placeholder = i18nString(UIStrings.filterByRegex);
     this.filterTextInput = new UI.Toolbar.ToolbarFilter(placeholder, 0.4);
-    this.filterTextInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.updateFilterSetting, this);
+    this.filterTextInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.updateFilterSetting, this);
     const filter = this.messageFilterSetting.get();
     this.filterRegex = null;
     this.setFilter(filter);
@@ -104,7 +104,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
     this.dataGrid.setRowContextMenuCallback(this.onRowContextMenu.bind(this));
     this.dataGrid.markColumnAsSortedBy('time', DataGrid.DataGrid.Order.Ascending);
     this.sortItems();
-    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortItems, this);
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SORTING_CHANGED, this.sortItems, this);
 
     this.dataGrid.setName('event-source-messages-view');
     this.dataGrid.asWidget().show(this.element);

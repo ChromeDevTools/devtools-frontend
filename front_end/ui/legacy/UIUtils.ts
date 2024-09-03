@@ -174,7 +174,7 @@ class DragHandler {
     this.glassPaneInUse = true;
     if (!DragHandler.glassPaneUsageCount++) {
       DragHandler.glassPane = new GlassPane();
-      DragHandler.glassPane.setPointerEventsBehavior(PointerEventsBehavior.BlockedByGlassPane);
+      DragHandler.glassPane.setPointerEventsBehavior(PointerEventsBehavior.BLOCKED_BY_GLASS_PANE);
       if (DragHandler.documentForMouseOut) {
         DragHandler.glassPane.show(DragHandler.documentForMouseOut);
       }
@@ -1579,7 +1579,7 @@ export const MaxLengthForDisplayedURLs = 150;
 export class MessageDialog {
   static async show(message: string, where?: Element|Document, jslogContext?: string): Promise<void> {
     const dialog = new Dialog(jslogContext);
-    dialog.setSizeBehavior(SizeBehavior.MeasureContent);
+    dialog.setSizeBehavior(SizeBehavior.MEASURE_CONTENT);
     dialog.setDimmed(true);
     const shadowRoot = createShadowRootWithCoreStyles(
         dialog.contentElement, {cssFile: confirmDialogStyles, delegatesFocus: undefined});
@@ -1603,7 +1603,7 @@ export class MessageDialog {
 export class ConfirmDialog {
   static async show(message: string, where?: Element|Document, options?: ConfirmDialogOptions): Promise<boolean> {
     const dialog = new Dialog(options?.jslogContext);
-    dialog.setSizeBehavior(SizeBehavior.MeasureContent);
+    dialog.setSizeBehavior(SizeBehavior.MEASURE_CONTENT);
     dialog.setDimmed(true);
     ARIAUtils.setLabel(dialog.contentElement, message);
     const shadowRoot = createShadowRootWithCoreStyles(

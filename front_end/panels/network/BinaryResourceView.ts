@@ -5,12 +5,11 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-
-import binaryResourceViewStyles from './binaryResourceView.css.js';
-
 import type * as Platform from '../../core/platform/platform.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
+import binaryResourceViewStyles from './binaryResourceView.css.js';
 
 const UIStrings = {
   /**
@@ -104,7 +103,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
     this.toolbar.appendToolbarItem(this.binaryViewTypeCombobox);
 
     const copyButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.copyToClipboard), 'copy');
-    copyButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
+    copyButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, _event => {
       void this.copySelectedViewToClipboard();
     }, this);
     this.toolbar.appendToolbarItem(copyButton);

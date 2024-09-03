@@ -332,7 +332,7 @@ describeWithMockConnection('Linkifier', () => {
     it('fires the LiveLocationUpdate event for each LiveLocation update', async () => {
       const {target, linkifier, backend} = setUpEnvironment();
       const eventCallback = sinon.stub();
-      linkifier.addEventListener(Components.Linkifier.Events.LiveLocationUpdated, eventCallback);
+      linkifier.addEventListener(Components.Linkifier.Events.LIVE_LOCATION_UPDATED, eventCallback);
       const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
       const lineNumber = 1;
       const url = 'https://www.google.com/script.js' as Platform.DevToolsPath.UrlString;

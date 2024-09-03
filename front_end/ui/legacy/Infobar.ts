@@ -127,7 +127,7 @@ export class Infobar {
     ARIAUtils.setDescription(this.closeButton, i18nString(UIStrings.close));
     self.onInvokeElement(this.closeButton, this.dispose.bind(this));
 
-    if (type !== Type.Issue) {
+    if (type !== Type.ISSUE) {
       this.contentElement.tabIndex = 0;
     }
     ARIAUtils.setLabel(this.contentElement, text);
@@ -250,8 +250,8 @@ export interface InfobarAction {
 }
 
 export const enum Type {
-  Warning = 'warning',
-  Info = 'info',
-  Issue = 'issue',
-  Error = 'error',
+  WARNING = 'warning',
+  INFO = 'info',
+  ISSUE = 'issue',
+  ERROR = 'error',
 }

@@ -61,11 +61,11 @@ export class TimelineMiniMap extends
     icon.setAttribute('name', 'left-panel-open');
     icon.setAttribute('jslog', `${VisualLogging.action('timeline.sidebar-open').track({click: true})}`);
     icon.addEventListener('click', () => {
-      this.dispatchEventToListeners(PerfUI.TimelineOverviewPane.Events.OpenSidebarButtonClicked, {});
+      this.dispatchEventToListeners(PerfUI.TimelineOverviewPane.Events.OPEN_SIDEBAR_BUTTON_CLICKED, {});
     });
     this.#overviewComponent.show(this.element);
 
-    this.#overviewComponent.addEventListener(PerfUI.TimelineOverviewPane.Events.OverviewPaneWindowChanged, event => {
+    this.#overviewComponent.addEventListener(PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_WINDOW_CHANGED, event => {
       this.#onOverviewPanelWindowChanged(event);
     });
     this.#activateBreadcrumbs();
@@ -114,9 +114,10 @@ export class TimelineMiniMap extends
   #activateBreadcrumbs(): void {
     this.breadcrumbsActivated = true;
     this.element.prepend(this.#breadcrumbsUI);
-    this.#overviewComponent.addEventListener(PerfUI.TimelineOverviewPane.Events.OverviewPaneBreadcrumbAdded, event => {
-      this.addBreadcrumb(event.data);
-    });
+    this.#overviewComponent.addEventListener(
+        PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_BREADCRUMB_ADDED, event => {
+          this.addBreadcrumb(event.data);
+        });
 
     this.#breadcrumbsUI.addEventListener(TimelineComponents.BreadcrumbsUI.BreadcrumbRemovedEvent.eventName, event => {
       const breadcrumb = (event as TimelineComponents.BreadcrumbsUI.BreadcrumbRemovedEvent).breadcrumb;

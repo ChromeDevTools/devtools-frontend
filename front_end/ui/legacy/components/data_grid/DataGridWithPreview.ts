@@ -90,13 +90,13 @@ export class DataGridWithPreview {
       deleteCallback: this.#deleteCallback.bind(this),
       refreshCallback: this.#callbacks.refreshItems,
     });
-    this.#dataGrid.addEventListener(Events.SelectedNode, event => {
+    this.#dataGrid.addEventListener(Events.SELECTED_NODE, event => {
       void this.#previewEntry(event.data);
     });
-    this.#dataGrid.addEventListener(Events.DeselectedNode, () => {
+    this.#dataGrid.addEventListener(Events.DESELECTED_NODE, () => {
       void this.#previewEntry(null);
     });
-    this.#dataGrid.addEventListener(Events.SortingChanged, this.#callbacks.refreshItems, this);
+    this.#dataGrid.addEventListener(Events.SORTING_CHANGED, this.#callbacks.refreshItems, this);
     this.#dataGrid.setStriped(true);
     this.#dataGrid.setName(`${id}-datagrid-with-preview`);
 

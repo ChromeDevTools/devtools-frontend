@@ -79,12 +79,12 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     UI.ARIAUtils.markAsButton(element);
     const imageElement = (element.createChild('div', 'thumbnail').createChild('img') as HTMLImageElement);
     imageElement.alt = i18nString(UIStrings.screenshot);
-    element.addEventListener('mousedown', this.onMouseEvent.bind(this, Events.FrameSelected, time), false);
-    element.addEventListener('mouseenter', this.onMouseEvent.bind(this, Events.FrameEnter, time), false);
-    element.addEventListener('mouseout', this.onMouseEvent.bind(this, Events.FrameExit, time), false);
+    element.addEventListener('mousedown', this.onMouseEvent.bind(this, Events.FRAME_SELECTED, time), false);
+    element.addEventListener('mouseenter', this.onMouseEvent.bind(this, Events.FRAME_ENTER, time), false);
+    element.addEventListener('mouseout', this.onMouseEvent.bind(this, Events.FRAME_EXIT, time), false);
     element.addEventListener('dblclick', this.onDoubleClick.bind(this, frame), false);
-    element.addEventListener('focusin', this.onMouseEvent.bind(this, Events.FrameEnter, time), false);
-    element.addEventListener('focusout', this.onMouseEvent.bind(this, Events.FrameExit, time), false);
+    element.addEventListener('focusin', this.onMouseEvent.bind(this, Events.FRAME_ENTER, time), false);
+    element.addEventListener('focusout', this.onMouseEvent.bind(this, Events.FRAME_EXIT, time), false);
 
     FilmStripView.setImageData(imageElement, frame.screenshotEvent.args.dataUri);
     return element;
@@ -128,15 +128,15 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
 }
 
 export const enum Events {
-  FrameSelected = 'FrameSelected',
-  FrameEnter = 'FrameEnter',
-  FrameExit = 'FrameExit',
+  FRAME_SELECTED = 'FrameSelected',
+  FRAME_ENTER = 'FrameEnter',
+  FRAME_EXIT = 'FrameExit',
 }
 
 export type EventTypes = {
-  [Events.FrameSelected]: number,
-  [Events.FrameEnter]: number,
-  [Events.FrameExit]: number,
+  [Events.FRAME_SELECTED]: number,
+  [Events.FRAME_ENTER]: number,
+  [Events.FRAME_EXIT]: number,
 };
 
 interface DialogTraceEngineData {
@@ -212,7 +212,7 @@ export class Dialog {
       this.dialog.setDefaultFocusedElement(this.widget);
       this.dialog.show();
     }
-    this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
+    this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
   }
 
   private keyDown(event: Event): void {

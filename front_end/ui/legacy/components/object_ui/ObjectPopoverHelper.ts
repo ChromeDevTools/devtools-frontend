@@ -101,7 +101,7 @@ export class ObjectPopoverHelper {
       }
       popoverContentElement.dataset.stableNameForTest = 'object-popover-content';
       popover.setMaxContentSize(new UI.Geometry.Size(300, 250));
-      popover.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactSize);
+      popover.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_SIZE);
       popover.contentElement.appendChild(popoverContentElement);
       return new ObjectPopoverHelper(linkifier, resultHighlightedAsDOM);
     }

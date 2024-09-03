@@ -23,7 +23,7 @@ export class AdvancedApp implements Common.App.App {
 
   constructor() {
     UI.DockController.DockController.instance().addEventListener(
-        UI.DockController.Events.BeforeDockSideChanged, this.openToolboxWindow, this);
+        UI.DockController.Events.BEFORE_DOCK_SIDE_CHANGED, this.openToolboxWindow, this);
   }
 
   /**
@@ -52,11 +52,11 @@ export class AdvancedApp implements Common.App.App {
         DeviceModeWrapper.instance({inspectedPagePlaceholder: this.inspectedPagePlaceholder, forceNew: false});
 
     UI.DockController.DockController.instance().addEventListener(
-        UI.DockController.Events.BeforeDockSideChanged, this.onBeforeDockSideChange, this);
+        UI.DockController.Events.BEFORE_DOCK_SIDE_CHANGED, this.onBeforeDockSideChange, this);
     UI.DockController.DockController.instance().addEventListener(
-        UI.DockController.Events.DockSideChanged, this.onDockSideChange, this);
+        UI.DockController.Events.DOCK_SIDE_CHANGED, this.onDockSideChange, this);
     UI.DockController.DockController.instance().addEventListener(
-        UI.DockController.Events.AfterDockSideChanged, this.onAfterDockSideChange, this);
+        UI.DockController.Events.AFTER_DOCK_SIDE_CHANGED, this.onAfterDockSideChange, this);
     this.onDockSideChange();
 
     console.timeStamp('AdvancedApp.attachToBody');

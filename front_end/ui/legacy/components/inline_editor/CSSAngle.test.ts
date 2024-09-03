@@ -158,44 +158,44 @@ describe('CSSAngle', () => {
     it('parses CSS properties with angles correctly', () => {
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.parseText('rotate(45deg)'),
-          {value: 45, unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg});
+          {value: 45, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG});
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.parseText('rotate(calc(45deg))'),
-          {value: 45, unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg});
+          {value: 45, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG});
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.parseText('skew(20deg)'),
-          {value: 20, unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg});
+          {value: 20, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG});
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.parseText('rotateX(20deg)'),
-          {value: 20, unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg});
+          {value: 20, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG});
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.parseText('rotateY(20deg)'),
-          {value: 20, unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg});
+          {value: 20, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG});
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.parseText('rotateZ(20deg)'),
-          {value: 20, unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg});
+          {value: 20, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG});
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.parseText('rotate3d(1, 1, 1, 20deg)'),
-          {value: 20, unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg});
+          {value: 20, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG});
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.parseText('linear-gradient(10.5grad, black, white)'),
-          {value: 10.5, unit: InlineEditor.CSSAngleUtils.AngleUnit.Grad});
+          {value: 10.5, unit: InlineEditor.CSSAngleUtils.AngleUnit.GRAD});
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.parseText(
               'conic-gradient(black 25%, white 10deg 50%, black 20deg 75%, white 30deg)'),
-          {value: 10, unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg});
+          {value: 10, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG});
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.parseText('rotate3d(2, -1, -1, -0.2rad);'),
-          {value: -0.2, unit: InlineEditor.CSSAngleUtils.AngleUnit.Rad});
+          {value: -0.2, unit: InlineEditor.CSSAngleUtils.AngleUnit.RAD});
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.parseText('hue-rotate(1.5turn)'),
-          {value: 1.5, unit: InlineEditor.CSSAngleUtils.AngleUnit.Turn});
+          {value: 1.5, unit: InlineEditor.CSSAngleUtils.AngleUnit.TURN});
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.parseText('oblique 25deg'),
-          {value: 25, unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg});
+          {value: 25, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG});
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.parseText('ray(20.8deg closest-side)'),
-          {value: 20.8, unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg});
+          {value: 20.8, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG});
       assert.deepEqual(InlineEditor.CSSAngleUtils.parseText('rotate(12345)'), null);
       assert.deepEqual(InlineEditor.CSSAngleUtils.parseText(''), null);
       // TODO(changhaohan): crbug.com/1138628 handle unitless 0 case
@@ -204,24 +204,24 @@ describe('CSSAngle', () => {
 
     it('converts angles in degree to other units correctly', () => {
       assert.deepEqual(
-          InlineEditor.CSSAngleUtils.getAngleFromRadians(Math.PI / 4, InlineEditor.CSSAngleUtils.AngleUnit.Grad), {
+          InlineEditor.CSSAngleUtils.getAngleFromRadians(Math.PI / 4, InlineEditor.CSSAngleUtils.AngleUnit.GRAD), {
             value: 50,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Grad,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.GRAD,
           });
       assert.deepEqual(
-          InlineEditor.CSSAngleUtils.getAngleFromRadians(Math.PI / 4, InlineEditor.CSSAngleUtils.AngleUnit.Rad), {
+          InlineEditor.CSSAngleUtils.getAngleFromRadians(Math.PI / 4, InlineEditor.CSSAngleUtils.AngleUnit.RAD), {
             value: Math.PI / 4,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Rad,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.RAD,
           });
       assert.deepEqual(
-          InlineEditor.CSSAngleUtils.getAngleFromRadians(Math.PI / 4, InlineEditor.CSSAngleUtils.AngleUnit.Turn), {
+          InlineEditor.CSSAngleUtils.getAngleFromRadians(Math.PI / 4, InlineEditor.CSSAngleUtils.AngleUnit.TURN), {
             value: 0.125,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Turn,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.TURN,
           });
       assert.deepEqual(
-          InlineEditor.CSSAngleUtils.getAngleFromRadians(Math.PI / 4, InlineEditor.CSSAngleUtils.AngleUnit.Deg), {
+          InlineEditor.CSSAngleUtils.getAngleFromRadians(Math.PI / 4, InlineEditor.CSSAngleUtils.AngleUnit.DEG), {
             value: 45,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG,
           });
     });
 
@@ -229,25 +229,25 @@ describe('CSSAngle', () => {
       assert.strictEqual(
           InlineEditor.CSSAngleUtils.getRadiansFromAngle({
             value: 50,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Grad,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.GRAD,
           }),
           0.7853981633974483);
       assert.strictEqual(
           InlineEditor.CSSAngleUtils.getRadiansFromAngle({
             value: 45,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG,
           }),
           0.7853981633974483);
       assert.strictEqual(
           InlineEditor.CSSAngleUtils.getRadiansFromAngle({
             value: 0.125,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Turn,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.TURN,
           }),
           0.7853981633974483);
       assert.strictEqual(
           InlineEditor.CSSAngleUtils.getRadiansFromAngle({
             value: 1,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Rad,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.RAD,
           }),
           1);
     });
@@ -257,7 +257,7 @@ describe('CSSAngle', () => {
           InlineEditor.CSSAngleUtils.get2DTranslationsForAngle(
               {
                 value: 45,
-                unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg,
+                unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG,
               },
               1),
           {
@@ -270,72 +270,72 @@ describe('CSSAngle', () => {
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.roundAngleByUnit({
             value: 45.723,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG,
           }),
           {
             value: 46,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG,
           });
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.roundAngleByUnit({
             value: 45.723,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Grad,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.GRAD,
           }),
           {
             value: 46,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Grad,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.GRAD,
           });
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.roundAngleByUnit({
             value: 45.723,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Rad,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.RAD,
           }),
           {
             value: 45.723,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Rad,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.RAD,
           });
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.roundAngleByUnit({
             value: 45.723275,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Rad,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.RAD,
           }),
           {
             value: 45.7233,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Rad,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.RAD,
           });
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.roundAngleByUnit({
             value: 45.723275,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Turn,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.TURN,
           }),
           {
             value: 45.72,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Turn,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.TURN,
           });
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.roundAngleByUnit({
             value: 45.8,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Turn,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.TURN,
           }),
           {
             value: 45.8,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Turn,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.TURN,
           });
     });
 
     it('cycles angle units correctly', () => {
       assert.strictEqual(
-          InlineEditor.CSSAngleUtils.getNextUnit(InlineEditor.CSSAngleUtils.AngleUnit.Deg),
-          InlineEditor.CSSAngleUtils.AngleUnit.Grad);
+          InlineEditor.CSSAngleUtils.getNextUnit(InlineEditor.CSSAngleUtils.AngleUnit.DEG),
+          InlineEditor.CSSAngleUtils.AngleUnit.GRAD);
       assert.strictEqual(
-          InlineEditor.CSSAngleUtils.getNextUnit(InlineEditor.CSSAngleUtils.AngleUnit.Grad),
-          InlineEditor.CSSAngleUtils.AngleUnit.Rad);
+          InlineEditor.CSSAngleUtils.getNextUnit(InlineEditor.CSSAngleUtils.AngleUnit.GRAD),
+          InlineEditor.CSSAngleUtils.AngleUnit.RAD);
       assert.strictEqual(
-          InlineEditor.CSSAngleUtils.getNextUnit(InlineEditor.CSSAngleUtils.AngleUnit.Rad),
-          InlineEditor.CSSAngleUtils.AngleUnit.Turn);
+          InlineEditor.CSSAngleUtils.getNextUnit(InlineEditor.CSSAngleUtils.AngleUnit.RAD),
+          InlineEditor.CSSAngleUtils.AngleUnit.TURN);
       assert.strictEqual(
-          InlineEditor.CSSAngleUtils.getNextUnit(InlineEditor.CSSAngleUtils.AngleUnit.Turn),
-          InlineEditor.CSSAngleUtils.AngleUnit.Deg);
+          InlineEditor.CSSAngleUtils.getNextUnit(InlineEditor.CSSAngleUtils.AngleUnit.TURN),
+          InlineEditor.CSSAngleUtils.AngleUnit.DEG);
     });
 
     it('converts angle units correctly', () => {
@@ -343,43 +343,43 @@ describe('CSSAngle', () => {
           InlineEditor.CSSAngleUtils.convertAngleUnit(
               {
                 value: 45,
-                unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg,
+                unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG,
               },
-              InlineEditor.CSSAngleUtils.AngleUnit.Grad),
+              InlineEditor.CSSAngleUtils.AngleUnit.GRAD),
           {
             value: 50,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Grad,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.GRAD,
           });
 
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.convertAngleUnit(
               {
                 value: Math.PI / 180,
-                unit: InlineEditor.CSSAngleUtils.AngleUnit.Rad,
+                unit: InlineEditor.CSSAngleUtils.AngleUnit.RAD,
               },
-              InlineEditor.CSSAngleUtils.AngleUnit.Deg),
+              InlineEditor.CSSAngleUtils.AngleUnit.DEG),
           {
             value: 1,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG,
           });
 
       assert.deepEqual(
           InlineEditor.CSSAngleUtils.convertAngleUnit(
               {
                 value: 1,
-                unit: InlineEditor.CSSAngleUtils.AngleUnit.Turn,
+                unit: InlineEditor.CSSAngleUtils.AngleUnit.TURN,
               },
-              InlineEditor.CSSAngleUtils.AngleUnit.Deg),
+              InlineEditor.CSSAngleUtils.AngleUnit.DEG),
           {
             value: 360,
-            unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg,
+            unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG,
           });
     });
 
     it('gets new angles from events correctly', () => {
       const originalAngle = {
         value: 45,
-        unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg,
+        unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG,
       };
 
       const arrowDown = new KeyboardEvent('keydown', {key: 'ArrowDown'});

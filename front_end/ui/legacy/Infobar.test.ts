@@ -43,14 +43,14 @@ describe('Infobar', () => {
   };
 
   it('shows details message containing a string', () => {
-    const component = new UI.Infobar.Infobar(UI.Infobar.Type.Warning, 'This is a warning');
+    const component = new UI.Infobar.Infobar(UI.Infobar.Type.WARNING, 'This is a warning');
     const messageText = 'This is a more detailed warning';
     component.createDetailsRowMessage(messageText);
     checkDetailsMessage(component, messageText);
   });
 
   it('shows details message containing HTML element(s)', () => {
-    const component = new UI.Infobar.Infobar(UI.Infobar.Type.Warning, 'This is a warning');
+    const component = new UI.Infobar.Infobar(UI.Infobar.Type.WARNING, 'This is a warning');
     const linkText = 'example-link';
     const link = UI.XLink.XLink.create('https://www.example.com', linkText);
     component.createDetailsRowMessage(link);

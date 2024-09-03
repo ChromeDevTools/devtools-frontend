@@ -59,13 +59,13 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
           'jslog', `${VisualLogging.dialog(jslogContext).track({resize: true, keydown: 'Escape'})}`);
     }
     this.widget().setDefaultFocusedElement(this.contentElement);
-    this.setPointerEventsBehavior(PointerEventsBehavior.BlockedByGlassPane);
+    this.setPointerEventsBehavior(PointerEventsBehavior.BLOCKED_BY_GLASS_PANE);
     this.setOutsideClickCallback(event => {
       this.hide();
       event.consume(true);
     });
     ARIAUtils.markAsModalDialog(this.contentElement);
-    this.tabIndexBehavior = OutsideTabIndexBehavior.DisableAllOutsideTabIndex;
+    this.tabIndexBehavior = OutsideTabIndexBehavior.DISABLE_ALL_OUTSIDE_TAB_INDEX;
     this.tabIndexMap = new Map();
     this.focusRestorer = null;
     this.closeOnEscape = true;
@@ -106,7 +106,7 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
       this.targetDocument.removeEventListener('keydown', this.targetDocumentKeyDownHandler, true);
     }
     this.restoreTabIndexOnElements();
-    this.dispatchEventToListeners(Events.Hidden);
+    this.dispatchEventToListeners(Events.HIDDEN);
     Dialog.instance = null;
   }
 
@@ -129,12 +129,12 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
   }
 
   private disableTabIndexOnElements(document: Document): void {
-    if (this.tabIndexBehavior === OutsideTabIndexBehavior.PreserveTabIndex) {
+    if (this.tabIndexBehavior === OutsideTabIndexBehavior.PRESERVE_TAB_INDEX) {
       return;
     }
 
     let exclusionSet: Set<HTMLElement>|(Set<HTMLElement>| null) = (null as Set<HTMLElement>| null);
-    if (this.tabIndexBehavior === OutsideTabIndexBehavior.PreserveMainViewTabIndex) {
+    if (this.tabIndexBehavior === OutsideTabIndexBehavior.PRESERVE_MAIN_VIEW_TAB_INDEX) {
       exclusionSet = this.getMainWidgetTabIndexElements(InspectorView.instance().ownerSplit());
     }
 
@@ -215,15 +215,15 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
 }
 
 export const enum Events {
-  Hidden = 'hidden',
+  HIDDEN = 'hidden',
 }
 
 export type EventTypes = {
-  [Events.Hidden]: void,
+  [Events.HIDDEN]: void,
 };
 
 export const enum OutsideTabIndexBehavior {
-  DisableAllOutsideTabIndex = 'DisableAllTabIndex',
-  PreserveMainViewTabIndex = 'PreserveMainViewTabIndex',
-  PreserveTabIndex = 'PreserveTabIndex',
+  DISABLE_ALL_OUTSIDE_TAB_INDEX = 'DisableAllTabIndex',
+  PRESERVE_MAIN_VIEW_TAB_INDEX = 'PreserveMainViewTabIndex',
+  PRESERVE_TAB_INDEX = 'PreserveTabIndex',
 }

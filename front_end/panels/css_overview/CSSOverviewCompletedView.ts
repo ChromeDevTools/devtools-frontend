@@ -985,7 +985,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
     this.#elementGrid.element.addEventListener('mouseover', this.#onMouseOver.bind(this));
     this.#elementGrid.setStriped(true);
     this.#elementGrid.addEventListener(
-        DataGrid.DataGrid.Events.SortingChanged, this.#sortMediaQueryDataGrid.bind(this));
+        DataGrid.DataGrid.Events.SORTING_CHANGED, this.#sortMediaQueryDataGrid.bind(this));
 
     this.#elementGrid.asWidget().show(this.element);
   }

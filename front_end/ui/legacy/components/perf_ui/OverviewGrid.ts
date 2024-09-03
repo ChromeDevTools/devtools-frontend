@@ -514,9 +514,9 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     this.windowRight = windowRight;
     this.updateCurtains();
     if (this.calculator) {
-      this.dispatchEventToListeners(Events.WindowChangedWithPosition, this.calculateWindowPosition());
+      this.dispatchEventToListeners(Events.WINDOW_CHANGED_WITH_POSITION, this.calculateWindowPosition());
     }
-    this.dispatchEventToListeners(Events.WindowChanged);
+    this.dispatchEventToListeners(Events.WINDOW_CHANGED);
     this.#changeBreadcrumbButtonVisibility(windowLeft, windowRight);
   }
 
@@ -534,7 +534,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   }
 
   #createBreadcrumb(): void {
-    this.dispatchEventToListeners(Events.BreadcrumbAdded, this.calculateWindowPosition());
+    this.dispatchEventToListeners(Events.BREADCRUMB_ADDED, this.calculateWindowPosition());
   }
 
   private updateCurtains(): void {
@@ -669,9 +669,9 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
 }
 
 export const enum Events {
-  WindowChanged = 'WindowChanged',
-  WindowChangedWithPosition = 'WindowChangedWithPosition',
-  BreadcrumbAdded = 'BreadcrumbAdded',
+  WINDOW_CHANGED = 'WindowChanged',
+  WINDOW_CHANGED_WITH_POSITION = 'WindowChangedWithPosition',
+  BREADCRUMB_ADDED = 'BreadcrumbAdded',
 }
 
 export interface WindowChangedWithPositionEvent {
@@ -680,9 +680,9 @@ export interface WindowChangedWithPositionEvent {
 }
 
 export type EventTypes = {
-  [Events.WindowChanged]: void,
-  [Events.BreadcrumbAdded]: WindowChangedWithPositionEvent,
-  [Events.WindowChangedWithPosition]: WindowChangedWithPositionEvent,
+  [Events.WINDOW_CHANGED]: void,
+  [Events.BREADCRUMB_ADDED]: WindowChangedWithPositionEvent,
+  [Events.WINDOW_CHANGED_WITH_POSITION]: WindowChangedWithPositionEvent,
 };
 
 export class WindowSelector {

@@ -111,12 +111,12 @@ export class SoftContextMenu {
 
     this.glassPane = new GlassPane();
     this.glassPane.setPointerEventsBehavior(
-        this.parentMenu ? PointerEventsBehavior.PierceGlassPane : PointerEventsBehavior.BlockedByGlassPane);
+        this.parentMenu ? PointerEventsBehavior.PIERCE_GLASS_PANE : PointerEventsBehavior.BLOCKED_BY_GLASS_PANE);
     this.glassPane.registerRequiredCSS(softContextMenuStyles);
     this.glassPane.setContentAnchorBox(anchorBox);
-    this.glassPane.setSizeBehavior(SizeBehavior.MeasureContent);
-    this.glassPane.setMarginBehavior(MarginBehavior.NoMargin);
-    this.glassPane.setAnchorBehavior(this.parentMenu ? AnchorBehavior.PreferRight : AnchorBehavior.PreferBottom);
+    this.glassPane.setSizeBehavior(SizeBehavior.MEASURE_CONTENT);
+    this.glassPane.setMarginBehavior(MarginBehavior.NO_MARGIN);
+    this.glassPane.setAnchorBehavior(this.parentMenu ? AnchorBehavior.PREFER_RIGHT : AnchorBehavior.PREFER_BOTTOM);
 
     this.contextMenuElement = this.glassPane.contentElement.createChild('div', 'soft-context-menu');
     this.contextMenuElement.setAttribute('jslog', `${VisualLogging.menu().track({resize: true}).parent('mapped').track({

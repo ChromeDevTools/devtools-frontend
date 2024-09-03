@@ -69,8 +69,8 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     this.cursorArea.addEventListener('mouseleave', this.hideCursor.bind(this), true);
 
     this.overviewGrid.setResizeEnabled(false);
-    this.overviewGrid.addEventListener(OverviewGridEvents.WindowChangedWithPosition, this.onWindowChanged, this);
-    this.overviewGrid.addEventListener(OverviewGridEvents.BreadcrumbAdded, this.onBreadcrumbAdded, this);
+    this.overviewGrid.addEventListener(OverviewGridEvents.WINDOW_CHANGED_WITH_POSITION, this.onWindowChanged, this);
+    this.overviewGrid.addEventListener(OverviewGridEvents.BREADCRUMB_ADDED, this.onBreadcrumbAdded, this);
     this.overviewGrid.setClickHandler(this.onClick.bind(this));
     this.overviewControls = [];
     this.markers = new Map();
@@ -237,7 +237,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
   }
 
   private onBreadcrumbAdded(): void {
-    this.dispatchEventToListeners(Events.OverviewPaneBreadcrumbAdded, {
+    this.dispatchEventToListeners(Events.OVERVIEW_PANE_BREADCRUMB_ADDED, {
       startTime: TraceEngine.Types.Timing.MilliSeconds(this.windowStartTime),
       endTime: TraceEngine.Types.Timing.MilliSeconds(this.windowEndTime),
     });
@@ -262,7 +262,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
       endTime: TraceEngine.Types.Timing.MilliSeconds(this.windowEndTime),
     };
 
-    this.dispatchEventToListeners(Events.OverviewPaneWindowChanged, windowTimes);
+    this.dispatchEventToListeners(Events.OVERVIEW_PANE_WINDOW_CHANGED, windowTimes);
   }
 
   setWindowTimes(startTime: number, endTime: number): void {
@@ -272,7 +272,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     this.windowStartTime = startTime;
     this.windowEndTime = endTime;
     this.updateWindow();
-    this.dispatchEventToListeners(Events.OverviewPaneWindowChanged, {
+    this.dispatchEventToListeners(Events.OVERVIEW_PANE_WINDOW_CHANGED, {
       startTime: TraceEngine.Types.Timing.MilliSeconds(startTime),
       endTime: TraceEngine.Types.Timing.MilliSeconds(endTime),
     });
@@ -294,9 +294,9 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
 }
 
 export const enum Events {
-  OverviewPaneWindowChanged = 'OverviewPaneWindowChanged',
-  OverviewPaneBreadcrumbAdded = 'OverviewPaneBreadcrumbAdded',
-  OpenSidebarButtonClicked = 'OpenSidebarButtonClicked',
+  OVERVIEW_PANE_WINDOW_CHANGED = 'OverviewPaneWindowChanged',
+  OVERVIEW_PANE_BREADCRUMB_ADDED = 'OverviewPaneBreadcrumbAdded',
+  OPEN_SIDEBAR_BUTTON_CLICKED = 'OpenSidebarButtonClicked',
 }
 
 export interface OverviewPaneWindowChangedEvent {
@@ -312,9 +312,9 @@ export interface OverviewPaneBreadcrumbAddedEvent {
 export interface OpenSidebarButtonClicked {}
 
 export type EventTypes = {
-  [Events.OverviewPaneWindowChanged]: OverviewPaneWindowChangedEvent,
-  [Events.OverviewPaneBreadcrumbAdded]: OverviewPaneBreadcrumbAddedEvent,
-  [Events.OpenSidebarButtonClicked]: OpenSidebarButtonClicked,
+  [Events.OVERVIEW_PANE_WINDOW_CHANGED]: OverviewPaneWindowChangedEvent,
+  [Events.OVERVIEW_PANE_BREADCRUMB_ADDED]: OverviewPaneBreadcrumbAddedEvent,
+  [Events.OPEN_SIDEBAR_BUTTON_CLICKED]: OpenSidebarButtonClicked,
 };
 
 export interface TimelineOverview {
@@ -403,9 +403,9 @@ export class OverviewInfo {
   constructor(anchor: Element) {
     this.anchorElement = anchor;
     this.glassPane = new UI.GlassPane.GlassPane();
-    this.glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.PierceContents);
-    this.glassPane.setMarginBehavior(UI.GlassPane.MarginBehavior.Arrow);
-    this.glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
+    this.glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.PIERCE_CONTENTS);
+    this.glassPane.setMarginBehavior(UI.GlassPane.MarginBehavior.ARROW);
+    this.glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
     this.visible = false;
     this.element = UI.UIUtils
                        .createShadowRootWithCoreStyles(this.glassPane.contentElement, {

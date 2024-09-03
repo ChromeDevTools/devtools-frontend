@@ -624,7 +624,7 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+\\',
     },
     {
@@ -640,7 +640,7 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+\\',
     },
   ],
@@ -668,11 +668,11 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+\'',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+\'',
     },
   ],
@@ -699,11 +699,11 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+;',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+;',
     },
   ],
@@ -752,11 +752,11 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Shift+Ctrl+;',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Shift+Meta+;',
     },
   ],
@@ -776,11 +776,11 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+Enter',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+Enter',
     },
   ],
@@ -811,11 +811,11 @@ UI.ActionRegistration.registerActionExtension({
   ],
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+F8',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+F8',
     },
   ],
@@ -834,11 +834,11 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+Shift+A',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+Shift+A',
     },
   ],
@@ -857,11 +857,11 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+Shift+E',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+Shift+E',
     },
   ],
@@ -891,11 +891,11 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.rename),
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'F2',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Enter',
     },
   ],
@@ -969,7 +969,7 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.Windows,
+      platform: UI.ActionRegistration.Platforms.WINDOWS,
       shortcut: 'Ctrl+F4',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.VS_CODE,
@@ -991,7 +991,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+PageDown',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
@@ -999,7 +999,7 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+PageDown',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
@@ -1022,7 +1022,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+PageUp',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
@@ -1030,7 +1030,7 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+PageUp',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
@@ -1075,7 +1075,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+Shift+o',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
@@ -1083,7 +1083,7 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+Shift+o',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
@@ -1091,14 +1091,14 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+T',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.VS_CODE,
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+T',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.VS_CODE,
@@ -1119,14 +1119,14 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.toggleBreakpoint),
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+b',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+b',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
@@ -1147,11 +1147,11 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.toggleBreakpointEnabled),
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+Shift+b',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+Shift+b',
     },
   ],
@@ -1163,11 +1163,11 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.toggleBreakpointInputWindow),
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+Alt+b',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+Alt+b',
     },
   ],
@@ -1186,7 +1186,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+s',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
@@ -1194,7 +1194,7 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+s',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
@@ -1217,22 +1217,22 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+Shift+s',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+Alt+s',
     },
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+K S',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.VS_CODE,
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+Alt+S',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.VS_CODE,
@@ -1310,14 +1310,14 @@ UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.SOURCES,
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+Alt+F',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+Shift+F',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
@@ -1325,21 +1325,21 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+Shift+J',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.VS_CODE,
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+Shift+F',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.VS_CODE,
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+Shift+J',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.VS_CODE,
@@ -1418,28 +1418,28 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+Shift+y',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+Shift+y',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+b',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.VS_CODE,
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Meta+b',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.VS_CODE,
@@ -1461,11 +1461,11 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+Shift+h',
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+Shift+h',
     },
   ],

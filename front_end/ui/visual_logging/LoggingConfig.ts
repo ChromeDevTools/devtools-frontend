@@ -32,6 +32,7 @@ export function getLoggingConfig(element: Element): LoggingConfig {
 }
 
 export enum VisualElements {
+  /* eslint-disable @typescript-eslint/naming-convention -- Indexed access. */
   TreeItem = 1,
   Close = 2,
   Counter = 3,
@@ -107,6 +108,7 @@ export enum VisualElements {
   ResponsivePresets = 73,
   DeviceModeRuler = 74,
   MediaInspectorView = 75,
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export type VisualElementName = keyof typeof VisualElements;

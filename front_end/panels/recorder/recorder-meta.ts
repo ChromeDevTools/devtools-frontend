@@ -111,9 +111,9 @@ UI.ActionRegistration.registerActionExtension({
   bindings: [
     {
       shortcut: 'Ctrl+E',
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
     },
-    {shortcut: 'Meta+E', platform: UI.ActionRegistration.Platforms.Mac},
+    {shortcut: 'Meta+E', platform: UI.ActionRegistration.Platforms.MAC},
   ],
 });
 
@@ -134,9 +134,9 @@ UI.ActionRegistration.registerActionExtension({
   bindings: [
     {
       shortcut: 'Ctrl+Enter',
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
     },
-    {shortcut: 'Meta+Enter', platform: UI.ActionRegistration.Platforms.Mac},
+    {shortcut: 'Meta+Enter', platform: UI.ActionRegistration.Platforms.MAC},
   ],
 });
 
@@ -157,8 +157,8 @@ UI.ActionRegistration.registerActionExtension({
   bindings: [
     {
       shortcut: 'Ctrl+B',
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
     },
-    {shortcut: 'Meta+B', platform: UI.ActionRegistration.Platforms.Mac},
+    {shortcut: 'Meta+B', platform: UI.ActionRegistration.Platforms.MAC},
   ],
 });

@@ -99,7 +99,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     this.itemElementsContainer.addEventListener('mousemove', this.onMouseMove.bind(this), false);
     UI.ARIAUtils.markAsListBox(this.itemElementsContainer);
     UI.ARIAUtils.setControls(this.inputBoxElement, this.itemElementsContainer);
-    UI.ARIAUtils.setAutocomplete(this.inputBoxElement, UI.ARIAUtils.AutocompleteInteractionModel.List);
+    UI.ARIAUtils.setAutocomplete(this.inputBoxElement, UI.ARIAUtils.AutocompleteInteractionModel.LIST);
 
     this.notFoundElement = this.bottomElementsContainer.createChild('div', 'not-found-text');
     this.notFoundElement.classList.add('hidden');
@@ -173,13 +173,13 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     this.dialog = new UI.Dialog.Dialog('quick-open');
     UI.ARIAUtils.setLabel(this.dialog.contentElement, dialogTitle);
     this.dialog.setMaxContentSize(new UI.Geometry.Size(504, 340));
-    this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);
+    this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
     this.dialog.setContentPosition(null, 22);
     this.dialog.contentElement.style.setProperty('border-radius', '4px');
     this.show(this.dialog.contentElement);
     UI.ARIAUtils.setExpanded(this.contentElement, true);
-    void this.dialog.once(UI.Dialog.Events.Hidden).then(() => {
-      this.dispatchEventToListeners(Events.Hidden);
+    void this.dialog.once(UI.Dialog.Events.HIDDEN).then(() => {
+      this.dispatchEventToListeners(Events.HIDDEN);
     });
     // @ts-ignore
     this.dialog.show();
@@ -585,11 +585,11 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
 }
 
 export const enum Events {
-  Hidden = 'hidden',
+  HIDDEN = 'hidden',
 }
 
 export type EventTypes = {
-  [Events.Hidden]: void,
+  [Events.HIDDEN]: void,
 };
 
 export class Provider {

@@ -867,10 +867,10 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
     const longResumeButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.resumeWithAllPausesBlockedForMs), 'play');
-    longResumeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.longResume, this);
+    longResumeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.longResume, this);
     const terminateExecutionButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.terminateCurrentJavascriptCall), 'stop');
-    terminateExecutionButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.terminateExecution, this);
+    terminateExecutionButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.terminateExecution, this);
     const pauseActionButton = UI.Toolbar.Toolbar.createLongPressActionButton(
         this.togglePauseAction, [terminateExecutionButton, longResumeButton], []);
     pauseActionButton.toggleOnClick(false);

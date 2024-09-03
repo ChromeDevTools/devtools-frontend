@@ -559,13 +559,13 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.activeGroupLookup = null;
 
     this.textFilterUI = new UI.FilterBar.TextFilterUI();
-    this.textFilterUI.addEventListener(UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged, this);
+    this.textFilterUI.addEventListener(UI.FilterBar.FilterUIEvents.FILTER_CHANGED, this.filterChanged, this);
     filterBar.addFilter(this.textFilterUI);
 
     this.invertFilterUI = new UI.FilterBar.CheckboxFilterUI(
         'invert-filter', i18nString(UIStrings.invertFilter), true, this.networkInvertFilterSetting, 'invert-filter');
     this.invertFilterUI.addEventListener(
-        UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged.bind(this), this);
+        UI.FilterBar.FilterUIEvents.FILTER_CHANGED, this.filterChanged.bind(this), this);
     UI.Tooltip.Tooltip.install(this.invertFilterUI.element(), i18nString(UIStrings.invertsFilter));
     filterBar.addFilter(this.invertFilterUI);
     filterBar.addDivider();
@@ -581,20 +581,20 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN)) {
       this.moreFiltersDropDownUI = new MoreFiltersDropDownUI();
-      this.moreFiltersDropDownUI.addEventListener(UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged, this);
+      this.moreFiltersDropDownUI.addEventListener(UI.FilterBar.FilterUIEvents.FILTER_CHANGED, this.filterChanged, this);
       filterBar.addFilter(this.moreFiltersDropDownUI);
 
       this.resourceCategoryFilterUI =
           new UI.FilterBar.NamedBitSetFilterUI(filterItems, this.networkResourceTypeFiltersSetting);
       UI.ARIAUtils.setLabel(this.resourceCategoryFilterUI.element(), i18nString(UIStrings.requestTypesToInclude));
       this.resourceCategoryFilterUI.addEventListener(
-          UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged.bind(this), this);
+          UI.FilterBar.FilterUIEvents.FILTER_CHANGED, this.filterChanged.bind(this), this);
       filterBar.addFilter(this.resourceCategoryFilterUI);
     } else {
       this.dataURLFilterUI = new UI.FilterBar.CheckboxFilterUI(
           'hide-data-url', i18nString(UIStrings.hideDataUrls), true, this.networkHideDataURLSetting, 'hide-data-urls');
       this.dataURLFilterUI.addEventListener(
-          UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged.bind(this), this);
+          UI.FilterBar.FilterUIEvents.FILTER_CHANGED, this.filterChanged.bind(this), this);
       UI.Tooltip.Tooltip.install(this.dataURLFilterUI.element(), i18nString(UIStrings.hidesDataAndBlobUrls));
       filterBar.addFilter(this.dataURLFilterUI);
 
@@ -602,7 +602,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
           'chrome-extension', i18nString(UIStrings.chromeExtensions), true, this.networkHideChromeExtensions,
           'hide-extension-urls');
       this.hideChromeExtensionsUI.addEventListener(
-          UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged.bind(this), this);
+          UI.FilterBar.FilterUIEvents.FILTER_CHANGED, this.filterChanged.bind(this), this);
       UI.Tooltip.Tooltip.install(this.hideChromeExtensionsUI.element(), i18nString(UIStrings.hideChromeExtension));
       filterBar.addFilter(this.hideChromeExtensionsUI);
 
@@ -610,14 +610,14 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
           new UI.FilterBar.NamedBitSetFilterUI(filterItems, this.networkResourceTypeFiltersSetting);
       UI.ARIAUtils.setLabel(this.resourceCategoryFilterUI.element(), i18nString(UIStrings.requestTypesToInclude));
       this.resourceCategoryFilterUI.addEventListener(
-          UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged.bind(this), this);
+          UI.FilterBar.FilterUIEvents.FILTER_CHANGED, this.filterChanged.bind(this), this);
       filterBar.addFilter(this.resourceCategoryFilterUI);
 
       this.onlyBlockedResponseCookiesFilterUI = new UI.FilterBar.CheckboxFilterUI(
           'only-show-blocked-cookies', i18nString(UIStrings.hasBlockedCookies), true,
           this.networkShowBlockedCookiesOnlySetting, 'only-show-blocked-cookies');
       this.onlyBlockedResponseCookiesFilterUI.addEventListener(
-          UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged.bind(this), this);
+          UI.FilterBar.FilterUIEvents.FILTER_CHANGED, this.filterChanged.bind(this), this);
       UI.Tooltip.Tooltip.install(
           this.onlyBlockedResponseCookiesFilterUI.element(), i18nString(UIStrings.onlyShowRequestsWithBlockedCookies));
       filterBar.addFilter(this.onlyBlockedResponseCookiesFilterUI);
@@ -626,7 +626,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
           'only-show-blocked-requests', i18nString(UIStrings.blockedRequests), true,
           this.networkOnlyBlockedRequestsSetting, 'only-show-blocked-requests');
       this.onlyBlockedRequestsUI.addEventListener(
-          UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged.bind(this), this);
+          UI.FilterBar.FilterUIEvents.FILTER_CHANGED, this.filterChanged.bind(this), this);
       UI.Tooltip.Tooltip.install(this.onlyBlockedRequestsUI.element(), i18nString(UIStrings.onlyShowBlockedRequests));
       filterBar.addFilter(this.onlyBlockedRequestsUI);
 
@@ -634,7 +634,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
           'only-show-third-party', i18nString(UIStrings.thirdParty), true, this.networkOnlyThirdPartySetting,
           'only-show-third-party');
       this.onlyThirdPartyFilterUI.addEventListener(
-          UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged.bind(this), this);
+          UI.FilterBar.FilterUIEvents.FILTER_CHANGED, this.filterChanged.bind(this), this);
       UI.Tooltip.Tooltip.install(
           this.onlyThirdPartyFilterUI.element(), i18nString(UIStrings.onlyShowThirdPartyRequests));
       filterBar.addFilter(this.onlyThirdPartyFilterUI);
@@ -649,7 +649,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.setupDataGrid();
     this.columnsInternal.sortByCurrentColumn();
     filterBar.filterButton().addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, this.dataGrid.scheduleUpdate.bind(this.dataGrid, true /* isFromUser */));
+        UI.Toolbar.ToolbarButton.Events.CLICK, this.dataGrid.scheduleUpdate.bind(this.dataGrid, true /* isFromUser */));
 
     this.summaryToolbarInternal = new UI.Toolbar.Toolbar('network-summary-bar', this.element);
     this.summaryToolbarInternal.element.setAttribute('role', 'status');
@@ -1131,7 +1131,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     });
     this.dataGrid.setStickToBottom(true);
     this.dataGrid.setName('network-log');
-    this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
+    this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.LAST);
     this.dataGrid.element.classList.add('network-log-grid');
     this.dataGrid.element.addEventListener('mousedown', this.dataGridMouseDown.bind(this), true);
     this.dataGrid.element.addEventListener('mousemove', this.dataGridMouseMove.bind(this), true);
@@ -2659,7 +2659,7 @@ export class MoreFiltersDropDownUI extends
     this.filterElement.appendChild(this.dropDownButton.element);
     this.dropDownButton.element.classList.add('dropdown-filterbar');
     this.dropDownButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, this.showMoreFiltersContextMenu.bind(this));
+        UI.Toolbar.ToolbarButton.Events.CLICK, this.showMoreFiltersContextMenu.bind(this));
     UI.ARIAUtils.markAsMenuButton(this.dropDownButton.element);
     this.updateTooltip();
   }
@@ -2676,7 +2676,7 @@ export class MoreFiltersDropDownUI extends
 
   #onSettingChanged(): void {
     this.hasChanged = true;
-    this.dispatchEventToListeners(UI.FilterBar.FilterUIEvents.FilterChanged);
+    this.dispatchEventToListeners(UI.FilterBar.FilterUIEvents.FILTER_CHANGED);
   }
 
   showMoreFiltersContextMenu(event: Common.EventTarget.EventTargetEvent<Event>): void {

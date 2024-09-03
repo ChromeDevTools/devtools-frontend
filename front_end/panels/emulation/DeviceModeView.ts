@@ -117,7 +117,7 @@ export class DeviceModeView extends UI.Widget.VBox {
     this.leftRuler = new Ruler(false, this.model.setHeightAndScaleToFit.bind(this.model));
     this.leftRuler.element.classList.add('device-mode-ruler-left');
     this.createUI();
-    UI.ZoomManager.ZoomManager.instance().addEventListener(UI.ZoomManager.Events.ZoomChanged, this.zoomChanged, this);
+    UI.ZoomManager.ZoomManager.instance().addEventListener(UI.ZoomManager.Events.ZOOM_CHANGED, this.zoomChanged, this);
   }
 
   private createUI(): void {
@@ -206,10 +206,10 @@ export class DeviceModeView extends UI.Widget.VBox {
       cursor = 'nesw-resize';
     }
     resizer.setCursor(cursor);
-    resizer.addEventListener(UI.ResizerWidget.Events.ResizeStart, this.onResizeStart, this);
+    resizer.addEventListener(UI.ResizerWidget.Events.RESIZE_START, this.onResizeStart, this);
     resizer.addEventListener(
-        UI.ResizerWidget.Events.ResizeUpdateXY, this.onResizeUpdate.bind(this, widthFactor, heightFactor));
-    resizer.addEventListener(UI.ResizerWidget.Events.ResizeEnd, this.onResizeEnd, this);
+        UI.ResizerWidget.Events.RESIZE_UPDATE_XY, this.onResizeUpdate.bind(this, widthFactor, heightFactor));
+    resizer.addEventListener(UI.ResizerWidget.Events.RESIZE_END, this.onResizeEnd, this);
     return resizer;
   }
 

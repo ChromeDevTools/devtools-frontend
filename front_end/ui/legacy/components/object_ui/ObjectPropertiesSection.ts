@@ -669,8 +669,8 @@ export class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutl
 }
 
 export const enum ObjectPropertiesMode {
-  All = 0,                         // All properties, including prototype properties
-  OwnAndInternalAndInherited = 1,  // Own, internal, and inherited properties
+  ALL = 0,                             // All properties, including prototype properties
+  OWN_AND_INTERNAL_AND_INHERITED = 1,  // Own, internal, and inherited properties
 }
 
 export class RootElement extends UI.TreeOutline.TreeElement {
@@ -683,7 +683,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
   override toggleOnClick: boolean;
   constructor(
       object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string|null,
-      propertiesMode: ObjectPropertiesMode = ObjectPropertiesMode.OwnAndInternalAndInherited,
+      propertiesMode: ObjectPropertiesMode = ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
       extraProperties: SDK.RemoteObject.RemoteObjectProperty[] = [],
       targetObject: SDK.RemoteObject.RemoteObject = object) {
     const contentElement = document.createElement('slot');
@@ -786,7 +786,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   static async populate(
       treeElement: UI.TreeOutline.TreeElement, value: SDK.RemoteObject.RemoteObject, skipProto: boolean,
       skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string|null,
-      propertiesMode: ObjectPropertiesMode = ObjectPropertiesMode.OwnAndInternalAndInherited,
+      propertiesMode: ObjectPropertiesMode = ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
       extraProperties?: SDK.RemoteObject.RemoteObjectProperty[],
       targetValue?: SDK.RemoteObject.RemoteObject): Promise<void> {
     if (value.arrayLength() > ARRAY_LOAD_THRESHOLD) {
@@ -797,10 +797,10 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     let properties, internalProperties = null;
     switch (propertiesMode) {
-      case ObjectPropertiesMode.All:
+      case ObjectPropertiesMode.ALL:
         ({properties} = await value.getAllProperties(false /* accessorPropertiesOnly */, true /* generatePreview */));
         break;
-      case ObjectPropertiesMode.OwnAndInternalAndInherited:
+      case ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED:
         ({properties, internalProperties} =
              await SDK.RemoteObject.RemoteObject.loadFromObjectPerProto(value, true /* generatePreview */));
         break;

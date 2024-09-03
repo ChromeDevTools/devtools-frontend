@@ -55,11 +55,13 @@ import {
 const nodeToParentTreeElementMap = new WeakMap<Node, TreeElement>();
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   ElementAttached = 'ElementAttached',
   ElementsDetached = 'ElementsDetached',
   ElementExpanded = 'ElementExpanded',
   ElementCollapsed = 'ElementCollapsed',
   ElementSelected = 'ElementSelected',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export type EventTypes = {

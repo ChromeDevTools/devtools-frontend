@@ -38,12 +38,12 @@ export interface SurveyLinkData {
 }
 
 const enum State {
-  Checking = 'Checking',  // (begin state) -> ShowLink | DontShowLink
-  ShowLink = 'ShowLink',  // -> Sending
-  Sending = 'Sending',    // -> SurveyShown | Failed
-  SurveyShown = 'SurveyShown',
-  Failed = 'Failed',
-  DontShowLink = 'DontShowLink',
+  CHECKING = 'Checking',   // (begin state) -> SHOW_LINK | DONT_SHOW_LINK
+  SHOW_LINK = 'ShowLink',  // -> SENDING
+  SENDING = 'Sending',     // -> SURVEY_SHOWN | FAILED
+  SURVEY_SHOWN = 'SurveyShown',
+  FAILED = 'Failed',
+  DONT_SHOW_LINK = 'DontShowLink',
 }
 
 // A link to a survey. The link is rendered aysnchronously because we need to first check if
@@ -56,7 +56,7 @@ export class SurveyLink extends HTMLElement {
   #promptText = Common.UIString.LocalizedEmptyString;
   #canShowSurvey: (trigger: string, callback: CanShowSurveyCallback) => void = () => {};
   #showSurvey: (trigger: string, callback: ShowSurveyCallback) => void = () => {};
-  #state: State = State.Checking;
+  #state: State = State.CHECKING;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [surveyLinkStyles];
@@ -73,52 +73,52 @@ export class SurveyLink extends HTMLElement {
   }
 
   #checkSurvey(): void {
-    this.#state = State.Checking;
+    this.#state = State.CHECKING;
     this.#canShowSurvey(this.#trigger, ({canShowSurvey}) => {
       if (!canShowSurvey) {
-        this.#state = State.DontShowLink;
+        this.#state = State.DONT_SHOW_LINK;
       } else {
-        this.#state = State.ShowLink;
+        this.#state = State.SHOW_LINK;
       }
       this.#render();
     });
   }
 
   #sendSurvey(): void {
-    this.#state = State.Sending;
+    this.#state = State.SENDING;
     this.#render();
     this.#showSurvey(this.#trigger, ({surveyShown}) => {
       if (!surveyShown) {
-        this.#state = State.Failed;
+        this.#state = State.FAILED;
       } else {
-        this.#state = State.SurveyShown;
+        this.#state = State.SURVEY_SHOWN;
       }
       this.#render();
     });
   }
 
   #render(): void {
-    if (this.#state === State.Checking || this.#state === State.DontShowLink) {
+    if (this.#state === State.CHECKING || this.#state === State.DONT_SHOW_LINK) {
       return;
     }
 
     let linkText = this.#promptText;
-    if (this.#state === State.Sending) {
+    if (this.#state === State.SENDING) {
       linkText = i18nString(UIStrings.openingSurvey);
-    } else if (this.#state === State.SurveyShown) {
+    } else if (this.#state === State.SURVEY_SHOWN) {
       linkText = i18nString(UIStrings.thankYouForYourFeedback);
-    } else if (this.#state === State.Failed) {
+    } else if (this.#state === State.FAILED) {
       linkText = i18nString(UIStrings.anErrorOccurredWithTheSurvey);
     }
 
     let linkState = '';
-    if (this.#state === State.Sending) {
+    if (this.#state === State.SENDING) {
       linkState = 'pending-link';
-    } else if (this.#state === State.Failed || this.#state === State.SurveyShown) {
+    } else if (this.#state === State.FAILED || this.#state === State.SURVEY_SHOWN) {
       linkState = 'disabled-link';
     }
 
-    const ariaDisabled = this.#state !== State.ShowLink;
+    const ariaDisabled = this.#state !== State.SHOW_LINK;
 
     // clang-format off
     // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html

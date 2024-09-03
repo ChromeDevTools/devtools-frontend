@@ -194,7 +194,7 @@ export class HeapSnapshotSortableDataGrid extends
     this.nameFilter = null;
     this.nodeFilterInternal = new HeapSnapshotModel.HeapSnapshotModel.NodeFilter();
     this.addEventListener(HeapSnapshotSortableDataGridEvents.SortingComplete, this.sortingComplete, this);
-    this.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortingChanged, this);
+    this.addEventListener(DataGrid.DataGrid.Events.SORTING_CHANGED, this.sortingChanged, this);
     this.setRowContextMenuCallback(this.populateContextMenu.bind(this));
   }
 
@@ -239,7 +239,7 @@ export class HeapSnapshotSortableDataGrid extends
 
   override wasShown(): void {
     if (this.nameFilter) {
-      this.nameFilter.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.onNameFilterChanged, this);
+      this.nameFilter.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.onNameFilterChanged, this);
       this.updateVisibleNodes(true);
     }
     if (this.populatedAndSorted) {
@@ -255,7 +255,7 @@ export class HeapSnapshotSortableDataGrid extends
 
   override willHide(): void {
     if (this.nameFilter) {
-      this.nameFilter.removeEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.onNameFilterChanged, this);
+      this.nameFilter.removeEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.onNameFilterChanged, this);
     }
   }
 

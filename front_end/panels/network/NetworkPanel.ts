@@ -221,7 +221,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
 
     this.filterBar = new UI.FilterBar.FilterBar('network-panel', true);
     this.filterBar.show(panel.contentElement);
-    this.filterBar.addEventListener(UI.FilterBar.FilterBarEvents.Changed, this.handleFilterChanged.bind(this));
+    this.filterBar.addEventListener(UI.FilterBar.FilterBarEvents.CHANGED, this.handleFilterChanged.bind(this));
 
     this.settingsPane = new UI.Widget.HBox();
     this.settingsPane.element.classList.add('network-settings-pane');
@@ -236,7 +236,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
     // Create top overview component.
     this.overviewPane = new PerfUI.TimelineOverviewPane.TimelineOverviewPane('network');
     this.overviewPane.addEventListener(
-        PerfUI.TimelineOverviewPane.Events.OverviewPaneWindowChanged, this.onWindowChanged.bind(this));
+        PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_WINDOW_CHANGED, this.onWindowChanged.bind(this));
     this.overviewPane.element.id = 'network-overview-panel';
     this.networkOverview = new NetworkOverview();
     this.overviewPane.setOverviewControls([this.networkOverview]);
@@ -271,7 +271,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
       void VisualLogging.logKeyDown(event.currentTarget, event, 'hide-sidebar');
     });
     const closeSidebar = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.close), 'cross');
-    closeSidebar.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => splitWidget.hideSidebar());
+    closeSidebar.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => splitWidget.hideSidebar());
     closeSidebar.element.setAttribute('jslog', `${VisualLogging.close().track({click: true})}`);
     tabbedPane.rightToolbar().appendToolbarItem(closeSidebar);
     splitWidget.setSidebarWidget(tabbedPane);
@@ -393,7 +393,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
   private setupToolbarButtons(splitWidget: UI.SplitWidget.SplitWidget): void {
     const searchToggle = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.search), 'search', undefined, 'search');
     function updateSidebarToggle(): void {
-      const isSidebarShowing = splitWidget.showMode() !== UI.SplitWidget.ShowMode.OnlyMain;
+      const isSidebarShowing = splitWidget.showMode() !== UI.SplitWidget.ShowMode.ONLY_MAIN;
       searchToggle.setToggled(isSidebarShowing);
       if (!isSidebarShowing) {
         (searchToggle.element as HTMLElement).focus();
@@ -405,8 +405,8 @@ export class NetworkPanel extends UI.Panel.Panel implements
 
     this.panelToolbar.appendToolbarItem(this.filterBar.filterButton());
     updateSidebarToggle();
-    splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, updateSidebarToggle);
-    searchToggle.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+    splitWidget.addEventListener(UI.SplitWidget.Events.SHOW_MODE_CHANGED, updateSidebarToggle);
+    searchToggle.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
       void this.searchToggleClick();
     });
     this.panelToolbar.appendToolbarItem(searchToggle);
@@ -425,7 +425,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
 
     const networkConditionsButton = new UI.Toolbar.ToolbarButton(
         i18nString(UIStrings.moreNetworkConditions), 'network-settings', undefined, 'network-conditions');
-    networkConditionsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+    networkConditionsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
       void UI.ViewManager.ViewManager.instance().showView('network.config');
     }, this);
     this.panelToolbar.appendToolbarItem(networkConditionsButton);
@@ -458,11 +458,11 @@ export class NetworkPanel extends UI.Panel.Panel implements
     const importHarButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.importHarFile), 'import', undefined, 'import-har');
     importHarButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, () => this.fileSelectorElement.click(), this);
+        UI.Toolbar.ToolbarButton.Events.CLICK, () => this.fileSelectorElement.click(), this);
     this.panelToolbar.appendToolbarItem(importHarButton);
     const exportHarButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.exportHar), 'download', undefined, 'export-har');
-    exportHarButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
+    exportHarButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, _event => {
       void this.networkLogView.exportAll();
     }, this);
     this.panelToolbar.appendToolbarItem(exportHarButton);
@@ -563,9 +563,9 @@ export class NetworkPanel extends UI.Panel.Panel implements
       this.filmStripView.element.setAttribute('jslog', `${VisualLogging.section('film-strip')}`);
       this.filmStripRecorder = new FilmStripRecorder(this.networkLogView.timeCalculator(), this.filmStripView);
       this.filmStripView.show(this.filmStripPlaceholderElement);
-      this.filmStripView.addEventListener(PerfUI.FilmStripView.Events.FrameSelected, this.onFilmFrameSelected, this);
-      this.filmStripView.addEventListener(PerfUI.FilmStripView.Events.FrameEnter, this.onFilmFrameEnter, this);
-      this.filmStripView.addEventListener(PerfUI.FilmStripView.Events.FrameExit, this.onFilmFrameExit, this);
+      this.filmStripView.addEventListener(PerfUI.FilmStripView.Events.FRAME_SELECTED, this.onFilmFrameSelected, this);
+      this.filmStripView.addEventListener(PerfUI.FilmStripView.Events.FRAME_ENTER, this.onFilmFrameEnter, this);
+      this.filmStripView.addEventListener(PerfUI.FilmStripView.Events.FRAME_EXIT, this.onFilmFrameExit, this);
       this.resetFilmStripView();
     }
 
@@ -655,7 +655,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
   }
 
   private showRequestPanel(shownTab?: NetworkForward.UIRequestLocation.UIRequestTabs, takeFocus?: boolean): void {
-    if (this.splitWidget.showMode() === UI.SplitWidget.ShowMode.Both && !shownTab && !takeFocus) {
+    if (this.splitWidget.showMode() === UI.SplitWidget.ShowMode.BOTH && !shownTab && !takeFocus) {
       // If panel is already shown, and we are not forcing a specific tab, return.
       return;
     }
@@ -676,7 +676,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
   }
 
   private updateNetworkItemView(): void {
-    if (this.splitWidget.showMode() === UI.SplitWidget.ShowMode.Both) {
+    if (this.splitWidget.showMode() === UI.SplitWidget.ShowMode.BOTH) {
       this.clearNetworkItemView();
       this.createNetworkItemView();
       this.updateUI();

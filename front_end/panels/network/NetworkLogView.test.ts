@@ -561,7 +561,7 @@ describeWithMockConnection('NetworkLogView', () => {
     let networkColumnWidget = columns.dataGrid().asWidget().parentWidget();
     assert.instanceOf(networkColumnWidget, UI.SplitWidget.SplitWidget);
     assert.strictEqual(
-        (networkColumnWidget as UI.SplitWidget.SplitWidget).showMode(), UI.SplitWidget.ShowMode.OnlyMain);
+        (networkColumnWidget as UI.SplitWidget.SplitWidget).showMode(), UI.SplitWidget.ShowMode.ONLY_MAIN);
 
     columnSettings.set({
       'waterfall': {visible: true, title: 'waterfall'},
@@ -571,7 +571,7 @@ describeWithMockConnection('NetworkLogView', () => {
     columns.switchViewMode(true);
     networkColumnWidget = columns.dataGrid().asWidget().parentWidget();
     assert.instanceOf(networkColumnWidget, UI.SplitWidget.SplitWidget);
-    assert.strictEqual((networkColumnWidget as UI.SplitWidget.SplitWidget).showMode(), UI.SplitWidget.ShowMode.Both);
+    assert.strictEqual((networkColumnWidget as UI.SplitWidget.SplitWidget).showMode(), UI.SplitWidget.ShowMode.BOTH);
   });
 
   function createOverrideRequests() {

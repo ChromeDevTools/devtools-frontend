@@ -63,7 +63,7 @@ describe('ListModel', () => {
     const model = new UI.ListModel.ListModel([0, 1, 2]);
     let eventData!: {index: number, removed: number[], inserted: number, keepSelectedIndex?: boolean|undefined};
     model.addEventListener(
-        UI.ListModel.Events.ItemsReplaced, (event: {data: UI.ListModel.ItemsReplacedEvent<number>}) => {
+        UI.ListModel.Events.ITEMS_REPLACED, (event: {data: UI.ListModel.ItemsReplacedEvent<number>}) => {
           eventData = event.data;
         });
     model.replaceRange(0, 1, [5, 6, 7]);

@@ -6,7 +6,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as Root from '../../../../core/root/root.js';
 import * as UI from '../../legacy.js';
 
-import {Events, type ContrastInfo} from './ContrastInfo.js';
+import {type ContrastInfo, Events} from './ContrastInfo.js';
 
 export class ContrastOverlay {
   private contrastInfo: ContrastInfo;
@@ -43,7 +43,7 @@ export class ContrastOverlay {
     this.contrastRatioLinesThrottler = new Common.Throttler.Throttler(0);
     this.drawContrastRatioLinesBound = this.drawContrastRatioLines.bind(this);
 
-    this.contrastInfo.addEventListener(Events.ContrastInfoUpdated, this.update.bind(this));
+    this.contrastInfo.addEventListener(Events.CONTRAST_INFO_UPDATED, this.update.bind(this));
   }
 
   private update(): void {

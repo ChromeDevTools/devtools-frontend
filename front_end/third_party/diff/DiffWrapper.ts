@@ -94,10 +94,12 @@ export const DiffWrapper = {
 };
 
 export enum Operation {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   Equal = 0,
   Insert = 1,
   Delete = -1,
   Edit = 2,
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export type DiffArray = {0: Operation, 1: string[]}[];

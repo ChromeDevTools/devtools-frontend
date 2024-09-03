@@ -225,11 +225,11 @@ UI.ActionRegistration.registerActionExtension({
   bindings: [
     {
       shortcut: 'Ctrl+E',
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
     },
     {
       shortcut: 'Meta+E',
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
     },
   ],
 });
@@ -252,7 +252,7 @@ UI.ActionRegistration.registerActionExtension({
     },
     {
       shortcut: 'Meta+K',
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
     },
   ],
 });
@@ -288,7 +288,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+F',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
@@ -296,7 +296,7 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+F',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,

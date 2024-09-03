@@ -396,7 +396,7 @@ export class ButtonProvider implements UI.Toolbar.Provider {
   private view: ElementStatePaneWidget;
   private constructor() {
     this.button = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleElementState), 'hover');
-    this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clicked, this);
+    this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.clicked, this);
     this.button.element.classList.add('element-state');
     this.button.element.setAttribute('jslog', `${VisualLogging.toggleSubpane('element-states').track({click: true})}`);
     this.button.element.style.setProperty('--dot-toggle-top', '12px');

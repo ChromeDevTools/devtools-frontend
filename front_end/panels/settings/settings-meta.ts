@@ -166,14 +166,14 @@ UI.ActionRegistration.registerActionExtension({
       shortcut: 'Shift+?',
     },
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+,',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.VS_CODE,
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+,',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.VS_CODE,
@@ -202,14 +202,14 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+K Ctrl+S',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.VS_CODE,
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+K Meta+S',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.VS_CODE,

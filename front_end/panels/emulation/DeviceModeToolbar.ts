@@ -373,12 +373,12 @@ export class DeviceModeToolbar {
   private fillModeToolbar(toolbar: UI.Toolbar.Toolbar): void {
     toolbar.appendToolbarItem(this.wrapToolbarItem(this.createEmptyToolbarElement()));
     this.modeButton = new UI.Toolbar.ToolbarButton('', 'screen-rotation', undefined, 'screen-rotation');
-    this.modeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.modeMenuClicked, this);
+    this.modeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.modeMenuClicked, this);
     toolbar.appendToolbarItem(this.modeButton);
 
     // Show dual screen toolbar.
     this.spanButton = new UI.Toolbar.ToolbarButton('', 'device-fold', undefined, 'device-fold');
-    this.spanButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.spanClicked, this);
+    this.spanButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.spanClicked, this);
     toolbar.appendToolbarItem(this.spanButton);
 
     // Show posture toolbar menu for foldable devices.
@@ -401,7 +401,7 @@ export class DeviceModeToolbar {
     this.experimentalButton = new UI.Toolbar.ToolbarToggle(title, 'experiment-check');
     this.experimentalButton.setToggled(this.model.webPlatformExperimentalFeaturesEnabled());
     this.experimentalButton.setEnabled(true);
-    this.experimentalButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.experimentalClicked, this);
+    this.experimentalButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.experimentalClicked, this);
 
     toolbar.appendToolbarItem(this.experimentalButton);
   }

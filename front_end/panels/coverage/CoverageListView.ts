@@ -155,7 +155,7 @@ export class CoverageListView extends UI.Widget.VBox {
         width: '60px',
         fixedWidth: true,
         sortable: true,
-        align: DataGrid.DataGrid.Align.Right,
+        align: DataGrid.DataGrid.Align.RIGHT,
         weight: 1,
       },
       {
@@ -164,7 +164,7 @@ export class CoverageListView extends UI.Widget.VBox {
         width: '100px',
         fixedWidth: true,
         sortable: true,
-        align: DataGrid.DataGrid.Align.Right,
+        align: DataGrid.DataGrid.Align.RIGHT,
         sort: DataGrid.DataGrid.Order.Descending,
         weight: 1,
       },
@@ -184,11 +184,11 @@ export class CoverageListView extends UI.Widget.VBox {
       refreshCallback: undefined,
       deleteCallback: undefined,
     });
-    this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
+    this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.LAST);
     this.dataGrid.setStriped(true);
     this.dataGrid.element.classList.add('flex-auto');
-    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.OpenedNode, this.onOpenedNode, this);
-    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortingChanged, this);
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.OPENED_NODE, this.onOpenedNode, this);
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SORTING_CHANGED, this.sortingChanged, this);
 
     const dataGridWidget = this.dataGrid.asWidget();
     dataGridWidget.show(this.contentElement);

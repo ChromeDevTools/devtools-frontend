@@ -39,7 +39,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+Shift+P',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
@@ -47,7 +47,7 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+Shift+P',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
@@ -74,7 +74,7 @@ UI.ActionRegistration.registerActionExtension({
   order: 100,
   bindings: [
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+P',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
@@ -82,7 +82,7 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.Mac,
+      platform: UI.ActionRegistration.Platforms.MAC,
       shortcut: 'Meta+O',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
@@ -90,7 +90,7 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+P',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
@@ -98,7 +98,7 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
     {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WINDOWS_LINUX,
       shortcut: 'Ctrl+O',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,

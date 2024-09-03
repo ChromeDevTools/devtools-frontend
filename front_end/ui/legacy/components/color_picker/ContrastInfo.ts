@@ -54,7 +54,7 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     this.fgColor = fgColor;
     this.colorFormatInternal = colorFormat;
     this.updateContrastRatio();
-    this.dispatchEventToListeners(Events.ContrastInfoUpdated);
+    this.dispatchEventToListeners(Events.CONTRAST_INFO_UPDATED);
   }
 
   colorFormat(): Common.Color.Format|undefined {
@@ -79,7 +79,7 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
 
   setBgColor(bgColor: Common.Color.Legacy): void {
     this.setBgColorInternal(bgColor);
-    this.dispatchEventToListeners(Events.ContrastInfoUpdated);
+    this.dispatchEventToListeners(Events.CONTRAST_INFO_UPDATED);
   }
 
   private setBgColorInternal(bgColor: Common.Color.Legacy): void {
@@ -126,11 +126,11 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
 }
 
 export const enum Events {
-  ContrastInfoUpdated = 'ContrastInfoUpdated',
+  CONTRAST_INFO_UPDATED = 'ContrastInfoUpdated',
 }
 
 export type EventTypes = {
-  [Events.ContrastInfoUpdated]: void,
+  [Events.CONTRAST_INFO_UPDATED]: void,
 };
 
 export interface ContrastInfoType {

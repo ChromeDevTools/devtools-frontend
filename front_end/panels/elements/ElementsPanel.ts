@@ -228,7 +228,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     this.splitWidget = new UI.SplitWidget.SplitWidget(true, true, 'elements-panel-split-view-state', 325, 325);
     this.splitWidget.addEventListener(
-        UI.SplitWidget.Events.SidebarSizeChanged, this.updateTreeOutlineVisibleWidth.bind(this));
+        UI.SplitWidget.Events.SIDEBAR_SIZE_CHANGED, this.updateTreeOutlineVisibleWidth.bind(this));
     this.splitWidget.show(this.element);
 
     this.searchableViewInternal = new UI.SearchableView.SearchableView(this, null);
@@ -1020,7 +1020,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     stylesSplitWidget.setMainWidget(matchedStylePanesWrapper);
     stylesSplitWidget.hideSidebar();
     stylesSplitWidget.enableShowModeSaving();
-    stylesSplitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, () => {
+    stylesSplitWidget.addEventListener(UI.SplitWidget.Events.SHOW_MODE_CHANGED, () => {
       showMetricsWidgetInStylesPane();
     });
     this.stylesWidget.addEventListener(StylesSidebarPaneEvents.InitialUpdateCompleted, () => {
@@ -1036,7 +1036,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     };
 
     const showMetricsWidgetInStylesPane = (): void => {
-      const showMergedComputedPane = stylesSplitWidget.showMode() === UI.SplitWidget.ShowMode.Both;
+      const showMergedComputedPane = stylesSplitWidget.showMode() === UI.SplitWidget.ShowMode.BOTH;
       if (showMergedComputedPane) {
         showMetricsWidgetInComputedPane();
       } else {

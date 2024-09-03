@@ -239,7 +239,7 @@ export class StylePropertiesSection {
     if (rule) {
       const newRuleButton = new UI.Toolbar.ToolbarButton(
           i18nString(UIStrings.insertStyleRuleBelow), 'plus', undefined, 'elements.new-style-rule');
-      newRuleButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.onNewRuleClick, this);
+      newRuleButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.onNewRuleClick, this);
       newRuleButton.setSize(Buttons.Button.Size.SMALL);
       newRuleButton.element.tabIndex = -1;
       if (!this.newStyleRuleToolbar) {
@@ -255,7 +255,7 @@ export class StylePropertiesSection {
       this.fontEditorSectionManager = new FontEditorSectionManager(this.parentPane.swatchPopoverHelper(), this);
       this.fontEditorButton =
           new UI.Toolbar.ToolbarButton('Font Editor', 'custom-typography', undefined, 'font-editor');
-      this.fontEditorButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+      this.fontEditorButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
         this.onFontEditorButtonClicked();
       }, this);
       this.fontEditorButton.element.addEventListener('keydown', event => {

@@ -15,7 +15,7 @@ export class InspectedPagePlaceholder extends Common.ObjectWrapper.eventMixin<Ev
   constructor() {
     super(true);
     this.registerRequiredCSS(inspectedPagePlaceholderStyles);
-    UI.ZoomManager.ZoomManager.instance().addEventListener(UI.ZoomManager.Events.ZoomChanged, this.onResize, this);
+    UI.ZoomManager.ZoomManager.instance().addEventListener(UI.ZoomManager.Events.ZOOM_CHANGED, this.onResize, this);
     this.restoreMinimumSize();
   }
 

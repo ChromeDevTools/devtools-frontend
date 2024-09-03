@@ -49,7 +49,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
     this.toolbarItem = new UI.Toolbar.ToolbarItemWithCompactLayout(countersWrapper);
     this.toolbarItem.setVisible(false);
     this.toolbarItem.addEventListener(
-        UI.Toolbar.ToolbarItemWithCompactLayoutEvents.CompactLayoutUpdated, this.onSetCompactLayout, this);
+        UI.Toolbar.ToolbarItemWithCompactLayoutEvents.COMPACT_LAYOUT_UPDATED, this.onSetCompactLayout, this);
 
     this.consoleCounter = new IconButton.IconButton.IconButton();
     this.consoleCounter.setAttribute('jslog', `${VisualLogging.counter('console').track({click: true})}`);
@@ -73,7 +73,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
         void UI.ViewManager.ViewManager.instance().showView('issues-pane');
       },
       issuesManager,
-      displayMode: IssueCounter.IssueCounter.DisplayMode.OnlyMostImportant,
+      displayMode: IssueCounter.IssueCounter.DisplayMode.ONLY_MOST_IMPORTANT,
     };
 
     this.throttler = new Common.Throttler.Throttler(100);

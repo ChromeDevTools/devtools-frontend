@@ -341,10 +341,10 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.splitWidget.show(this.element);
     this.splitWidget.hideSidebar();
     this.splitWidget.enableShowModeSaving();
-    this.isSidebarOpen = this.splitWidget.showMode() === UI.SplitWidget.ShowMode.Both;
+    this.isSidebarOpen = this.splitWidget.showMode() === UI.SplitWidget.ShowMode.BOTH;
     this.filter.setLevelMenuOverridden(this.isSidebarOpen);
-    this.splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, event => {
-      this.isSidebarOpen = event.data === UI.SplitWidget.ShowMode.Both;
+    this.splitWidget.addEventListener(UI.SplitWidget.Events.SHOW_MODE_CHANGED, event => {
+      this.isSidebarOpen = event.data === UI.SplitWidget.ShowMode.BOTH;
 
       if (this.isSidebarOpen) {
         if (!this.userHasOpenedSidebarAtLeastOnce) {
@@ -425,7 +425,7 @@ export class ConsoleView extends UI.Widget.VBox implements
       },
       issuesManager: IssuesManager.IssuesManager.IssuesManager.instance(),
       accessibleName: i18nString(UIStrings.issueToolbarTooltipGeneral),
-      displayMode: IssueCounter.IssueCounter.DisplayMode.OmitEmpty,
+      displayMode: IssueCounter.IssueCounter.DisplayMode.OMIT_EMPTY,
     };
     toolbar.appendToolbarItem(issuesToolbarItem);
     toolbar.appendSeparator();
@@ -524,7 +524,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     const throttler = new Common.Throttler.Throttler(100);
     const refilterMessages = (): Promise<void> => throttler.schedule(async () => this.onFilterChanged());
     this.linkifier = new Components.Linkifier.Linkifier(MaxLengthForLinks);
-    this.linkifier.addEventListener(Components.Linkifier.Events.LiveLocationUpdated, refilterMessages);
+    this.linkifier.addEventListener(Components.Linkifier.Events.LIVE_LOCATION_UPDATED, refilterMessages);
 
     this.consoleMessages = [];
     this.consoleGroupStarts = [];
@@ -1647,7 +1647,7 @@ export class ConsoleViewFilter {
     if (this.textFilterSetting.get()) {
       this.textFilterUI.setValue(this.textFilterSetting.get());
     }
-    this.textFilterUI.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, () => {
+    this.textFilterUI.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, () => {
       this.textFilterSetting.set(this.textFilterUI.value());
       this.onFilterChanged();
     });

@@ -261,7 +261,7 @@ export class IssuesPane extends UI.Widget.VBox {
             IssuesManager.IssuesManager.IssuesManager.instance(), false);
         issueCounter.title = issueEnumeration;
       },
-      displayMode: IssueCounter.IssueCounter.DisplayMode.ShowAlways,
+      displayMode: IssueCounter.IssueCounter.DisplayMode.SHOW_ALWAYS,
       issuesManager: IssuesManager.IssuesManager.IssuesManager.instance(),
     };
     issueCounter.id = 'console-issues-counter';

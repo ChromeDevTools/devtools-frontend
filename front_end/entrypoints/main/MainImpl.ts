@@ -163,7 +163,7 @@ export class MainImpl {
     const veLogging = Common.Settings.Settings.instance().getHostConfig()?.devToolsVeLogging;
     if (veLogging?.enabled) {
       if (veLogging?.testing) {
-        VisualLogging.setVeDebugLoggingEnabled(true, VisualLogging.DebugLoggingFormat.Test);
+        VisualLogging.setVeDebugLoggingEnabled(true, VisualLogging.DebugLoggingFormat.TEST);
         const options = {
           processingThrottler: new Common.Throttler.Throttler(0),
           keyboardLogThrottler: new Common.Throttler.Throttler(10),
@@ -853,18 +853,18 @@ export class MainMenuItem implements UI.Toolbar.Provider {
           i18nString(UIStrings.dockToRight), 'dock-right', undefined, 'current-dock-state-right');
       const left = new UI.Toolbar.ToolbarToggle(
           i18nString(UIStrings.dockToLeft), 'dock-left', undefined, 'current-dock-state-left');
-      undock.addEventListener(UI.Toolbar.ToolbarButton.Events.MouseDown, event => event.data.consume());
-      bottom.addEventListener(UI.Toolbar.ToolbarButton.Events.MouseDown, event => event.data.consume());
-      right.addEventListener(UI.Toolbar.ToolbarButton.Events.MouseDown, event => event.data.consume());
-      left.addEventListener(UI.Toolbar.ToolbarButton.Events.MouseDown, event => event.data.consume());
+      undock.addEventListener(UI.Toolbar.ToolbarButton.Events.MOUSE_DOWN, event => event.data.consume());
+      bottom.addEventListener(UI.Toolbar.ToolbarButton.Events.MOUSE_DOWN, event => event.data.consume());
+      right.addEventListener(UI.Toolbar.ToolbarButton.Events.MOUSE_DOWN, event => event.data.consume());
+      left.addEventListener(UI.Toolbar.ToolbarButton.Events.MOUSE_DOWN, event => event.data.consume());
       undock.addEventListener(
-          UI.Toolbar.ToolbarButton.Events.Click, setDockSide.bind(null, UI.DockController.DockState.UNDOCKED));
+          UI.Toolbar.ToolbarButton.Events.CLICK, setDockSide.bind(null, UI.DockController.DockState.UNDOCKED));
       bottom.addEventListener(
-          UI.Toolbar.ToolbarButton.Events.Click, setDockSide.bind(null, UI.DockController.DockState.BOTTOM));
+          UI.Toolbar.ToolbarButton.Events.CLICK, setDockSide.bind(null, UI.DockController.DockState.BOTTOM));
       right.addEventListener(
-          UI.Toolbar.ToolbarButton.Events.Click, setDockSide.bind(null, UI.DockController.DockState.RIGHT));
+          UI.Toolbar.ToolbarButton.Events.CLICK, setDockSide.bind(null, UI.DockController.DockState.RIGHT));
       left.addEventListener(
-          UI.Toolbar.ToolbarButton.Events.Click, setDockSide.bind(null, UI.DockController.DockState.LEFT));
+          UI.Toolbar.ToolbarButton.Events.CLICK, setDockSide.bind(null, UI.DockController.DockState.LEFT));
       undock.setToggled(
           UI.DockController.DockController.instance().dockSide() === UI.DockController.DockState.UNDOCKED);
       bottom.setToggled(UI.DockController.DockController.instance().dockSide() === UI.DockController.DockState.BOTTOM);
@@ -901,9 +901,11 @@ export class MainMenuItem implements UI.Toolbar.Provider {
     const button = (this.#itemInternal.element as HTMLButtonElement);
 
     function setDockSide(side: UI.DockController.DockState): void {
-      void UI.DockController.DockController.instance().once(UI.DockController.Events.AfterDockSideChanged).then(() => {
-        button.focus();
-      });
+      void UI.DockController.DockController.instance()
+          .once(UI.DockController.Events.AFTER_DOCK_SIDE_CHANGED)
+          .then(() => {
+            button.focus();
+          });
       UI.DockController.DockController.instance().setDockSide(side);
       contextMenu.discard();
     }

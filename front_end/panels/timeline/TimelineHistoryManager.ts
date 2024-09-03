@@ -499,10 +499,10 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
 
   constructor(availableTraceDataIndexes: number[]) {
     this.glassPane = new UI.GlassPane.GlassPane();
-    this.glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
+    this.glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
     this.glassPane.setOutsideClickCallback(() => this.close(null));
-    this.glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.BlockedByGlassPane);
-    this.glassPane.setAnchorBehavior(UI.GlassPane.AnchorBehavior.PreferBottom);
+    this.glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.BLOCKED_BY_GLASS_PANE);
+    this.glassPane.setAnchorBehavior(UI.GlassPane.AnchorBehavior.PREFER_BOTTOM);
     this.glassPane.element.addEventListener('blur', () => this.close(null));
 
     const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(this.glassPane.contentElement, {
@@ -662,7 +662,7 @@ export class ToolbarButton extends UI.Toolbar.ToolbarItem {
     this.contentElement = this.element.createChild('span', 'content');
     this.element.addEventListener('click', () => void action.execute(), false);
     this.setEnabled(action.enabled());
-    action.addEventListener(UI.ActionRegistration.Events.Enabled, event => this.setEnabled(event.data));
+    action.addEventListener(UI.ActionRegistration.Events.ENABLED, event => this.setEnabled(event.data));
     this.setTitle(action.title());
   }
 

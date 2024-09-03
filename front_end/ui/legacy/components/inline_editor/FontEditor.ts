@@ -355,7 +355,7 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteS, {PH1: label}), 'bin', undefined, 'delete');
     deleteToolbar.appendToolbarItem(deleteButton);
     const fontSelectorObject = {label: selectLabel, input: selectInput, deleteButton, index};
-    deleteButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+    deleteButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
       this.deleteFontSelector(fontSelectorObject.index);
     });
     deleteButton.element.addEventListener('keydown', (event: KeyboardEvent) => {
@@ -397,11 +397,11 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   private updatePropertyValue(propertyName: string, value: string): void {
-    this.dispatchEventToListeners(Events.FontChanged, {propertyName, value});
+    this.dispatchEventToListeners(Events.FONT_CHANGED, {propertyName, value});
   }
 
   private resizePopout(): void {
-    this.dispatchEventToListeners(Events.FontEditorResized);
+    this.dispatchEventToListeners(Events.FONT_EDITOR_RESIZED);
   }
 }
 
@@ -434,8 +434,8 @@ namespace FontEditor {
 }
 
 export const enum Events {
-  FontChanged = 'FontChanged',
-  FontEditorResized = 'FontEditorResized',
+  FONT_CHANGED = 'FontChanged',
+  FONT_EDITOR_RESIZED = 'FontEditorResized',
 }
 
 export interface FontChangedEvent {
@@ -444,8 +444,8 @@ export interface FontChangedEvent {
 }
 
 export type EventTypes = {
-  [Events.FontChanged]: FontChangedEvent,
-  [Events.FontEditorResized]: void,
+  [Events.FONT_CHANGED]: FontChangedEvent,
+  [Events.FONT_EDITOR_RESIZED]: void,
 };
 
 class FontPropertyInputs {

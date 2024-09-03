@@ -8,10 +8,10 @@ import * as UI from '../../legacy.js';
 export const CSSAngleRegex = /(?<value>[+-]?\d*\.?\d+)(?<unit>deg|grad|rad|turn)/;
 
 export const enum AngleUnit {
-  Deg = 'deg',
-  Grad = 'grad',
-  Rad = 'rad',
-  Turn = 'turn',
+  DEG = 'deg',
+  GRAD = 'grad',
+  RAD = 'rad',
+  TURN = 'turn',
 }
 
 export interface Angle {
@@ -34,13 +34,13 @@ export const parseText = (text: string): Angle|null => {
 export const getAngleFromRadians = (rad: number, targetUnit: AngleUnit): Angle => {
   let value = rad;
   switch (targetUnit) {
-    case AngleUnit.Grad:
+    case AngleUnit.GRAD:
       value = UI.Geometry.radiansToGradians(rad);
       break;
-    case AngleUnit.Deg:
+    case AngleUnit.DEG:
       value = UI.Geometry.radiansToDegrees(rad);
       break;
-    case AngleUnit.Turn:
+    case AngleUnit.TURN:
       value = UI.Geometry.radiansToTurns(rad);
       break;
   }
@@ -53,11 +53,11 @@ export const getAngleFromRadians = (rad: number, targetUnit: AngleUnit): Angle =
 
 export const getRadiansFromAngle = (angle: Angle): number => {
   switch (angle.unit) {
-    case AngleUnit.Deg:
+    case AngleUnit.DEG:
       return UI.Geometry.degreesToRadians(angle.value);
-    case AngleUnit.Grad:
+    case AngleUnit.GRAD:
       return UI.Geometry.gradiansToRadians(angle.value);
-    case AngleUnit.Turn:
+    case AngleUnit.TURN:
       return UI.Geometry.turnsToRadians(angle.value);
   }
 
@@ -76,16 +76,16 @@ export const roundAngleByUnit = (angle: Angle): Angle => {
   let roundedValue = angle.value;
 
   switch (angle.unit) {
-    case AngleUnit.Deg:
-    case AngleUnit.Grad:
+    case AngleUnit.DEG:
+    case AngleUnit.GRAD:
       // Round to nearest whole unit.
       roundedValue = Math.round(angle.value);
       break;
-    case AngleUnit.Rad:
+    case AngleUnit.RAD:
       // Allow up to 4 decimals.
       roundedValue = Math.round(angle.value * 10000) / 10000;
       break;
-    case AngleUnit.Turn:
+    case AngleUnit.TURN:
       // Allow up to 2 decimals.
       roundedValue = Math.round(angle.value * 100) / 100;
       break;
@@ -101,14 +101,14 @@ export const roundAngleByUnit = (angle: Angle): Angle => {
 
 export const getNextUnit = (currentUnit: AngleUnit): AngleUnit => {
   switch (currentUnit) {
-    case AngleUnit.Deg:
-      return AngleUnit.Grad;
-    case AngleUnit.Grad:
-      return AngleUnit.Rad;
-    case AngleUnit.Rad:
-      return AngleUnit.Turn;
+    case AngleUnit.DEG:
+      return AngleUnit.GRAD;
+    case AngleUnit.GRAD:
+      return AngleUnit.RAD;
+    case AngleUnit.RAD:
+      return AngleUnit.TURN;
     default:
-      return AngleUnit.Deg;
+      return AngleUnit.DEG;
   }
 };
 

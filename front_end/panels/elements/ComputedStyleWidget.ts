@@ -260,7 +260,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     const hbox = this.contentElement.createChild('div', 'hbox styles-sidebar-pane-toolbar');
     const toolbar = new UI.Toolbar.Toolbar('styles-pane-toolbar', hbox);
     const filterInput = new UI.Toolbar.ToolbarFilter(undefined, 1, 1, undefined, undefined, false);
-    filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.onFilterChanged, this);
+    filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.onFilterChanged, this);
     toolbar.appendToolbarItem(filterInput);
     this.input = filterInput;
     this.filterRegex = null;

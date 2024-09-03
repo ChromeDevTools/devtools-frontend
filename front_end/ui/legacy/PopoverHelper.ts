@@ -37,8 +37,8 @@ export class PopoverHelper {
   static createPopover = (jslogContext?: string): GlassPane => {
     const popover = new GlassPane(`${VisualLogging.popover(jslogContext).parent('mapped')}`);
     popover.registerRequiredCSS(popoverStyles);
-    popover.setSizeBehavior(SizeBehavior.MeasureContent);
-    popover.setMarginBehavior(MarginBehavior.Arrow);
+    popover.setSizeBehavior(SizeBehavior.MEASURE_CONTENT);
+    popover.setMarginBehavior(MarginBehavior.ARROW);
     return popover;
   };
   private disableOnClick: boolean;

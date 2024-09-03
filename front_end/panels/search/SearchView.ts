@@ -222,8 +222,8 @@ export class SearchView extends UI.Widget.VBox {
     const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'clear', undefined, 'search.clear');
     toolbar.appendToolbarItem(refreshButton);
     toolbar.appendToolbarItem(clearButton);
-    refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this.onAction());
-    clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+    refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => this.onAction());
+    clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
       this.resetSearch();
       this.onSearchInputClear();
     });

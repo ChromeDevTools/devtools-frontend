@@ -61,10 +61,10 @@ export class SoftDropDown<T> implements ListDelegate<T> {
     ARIAUtils.setExpanded(this.element, false);
 
     this.glassPane = new GlassPane();
-    this.glassPane.setMarginBehavior(MarginBehavior.NoMargin);
-    this.glassPane.setAnchorBehavior(AnchorBehavior.PreferBottom);
+    this.glassPane.setMarginBehavior(MarginBehavior.NO_MARGIN);
+    this.glassPane.setAnchorBehavior(AnchorBehavior.PREFER_BOTTOM);
     this.glassPane.setOutsideClickCallback(this.hide.bind(this));
-    this.glassPane.setPointerEventsBehavior(PointerEventsBehavior.BlockedByGlassPane);
+    this.glassPane.setPointerEventsBehavior(PointerEventsBehavior.BLOCKED_BY_GLASS_PANE);
     this.list = new ListControl(model, this, ListMode.EqualHeightItems);
     this.list.element.classList.add('item-list');
     this.rowHeight = 36;
@@ -106,7 +106,7 @@ export class SoftDropDown<T> implements ListDelegate<T> {
       }
       this.hide(event);
     }, false);
-    model.addEventListener(ListModelEvents.ItemsReplaced, this.itemsReplaced, this);
+    model.addEventListener(ListModelEvents.ITEMS_REPLACED, this.itemsReplaced, this);
   }
 
   private show(event: Event): void {

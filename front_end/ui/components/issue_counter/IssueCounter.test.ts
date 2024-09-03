@@ -109,7 +109,7 @@ describeWithLocale('IssueCounter', () => {
         assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-filled']);
       }
 
-      component.data = {...component.data, displayMode: IssueCounter.IssueCounter.DisplayMode.OnlyMostImportant};
+      component.data = {...component.data, displayMode: IssueCounter.IssueCounter.DisplayMode.ONLY_MOST_IMPORTANT};
 
       {
         const icons = extractIconGroups(shadowRoot);
@@ -141,7 +141,7 @@ describeWithLocale('IssueCounter', () => {
       const issuesManager = new MockIssuesManager([]);
       const {shadowRoot} = renderIssueCounter({
         issuesManager: issuesManager as unknown as IssuesManager.IssuesManager.IssuesManager,
-        displayMode: IssueCounter.IssueCounter.DisplayMode.ShowAlways,
+        displayMode: IssueCounter.IssueCounter.DisplayMode.SHOW_ALWAYS,
         throttlerTimeout: 0,
       });
 
@@ -156,7 +156,7 @@ describeWithLocale('IssueCounter', () => {
       const issuesManager = new MockIssuesManager([]);
       const {shadowRoot} = renderIssueCounter({
         issuesManager: issuesManager as unknown as IssuesManager.IssuesManager.IssuesManager,
-        displayMode: IssueCounter.IssueCounter.DisplayMode.ShowAlways,
+        displayMode: IssueCounter.IssueCounter.DisplayMode.SHOW_ALWAYS,
         throttlerTimeout: 0,
       });
 

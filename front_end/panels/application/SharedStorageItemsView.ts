@@ -129,10 +129,10 @@ export class SharedStorageItemsView extends StorageItemsView {
       deleteCallback: this.#deleteCallback.bind(this),
       refreshCallback: this.refreshItems.bind(this),
     });
-    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, event => {
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, event => {
       void this.#previewEntry(event.data);
     });
-    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.DeselectedNode, () => {
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.DESELECTED_NODE, () => {
       void this.#previewEntry(null);
     });
     this.dataGrid.setStriped(true);

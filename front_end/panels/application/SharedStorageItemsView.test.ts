@@ -621,7 +621,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     // Adding a filter to the text box will cause `getMetadata()`, and `getEntries()` to be called.
     itemsListener.resetRefreshed();
     const refreshedPromise2 = itemsListener.waitForItemsRefreshed();
-    view.filterItem.dispatchEventToListeners(UI.Toolbar.ToolbarInput.Event.TextChanged, 'b');
+    view.filterItem.dispatchEventToListeners(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, 'b');
     await raf();
     await refreshedPromise2;
 
@@ -651,7 +651,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     // Changing the filter in the text box will cause `getMetadata()`, and `getEntries()` to be called.
     itemsListener.resetRefreshed();
     const refreshedPromise3 = itemsListener.waitForItemsRefreshed();
-    view.filterItem.dispatchEventToListeners(UI.Toolbar.ToolbarInput.Event.TextChanged, '');
+    view.filterItem.dispatchEventToListeners(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, '');
     await raf();
     await refreshedPromise3;
 

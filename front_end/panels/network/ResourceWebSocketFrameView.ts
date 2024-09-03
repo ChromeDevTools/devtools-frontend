@@ -176,7 +176,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
         id: 'length',
         title: i18nString(UIStrings.length),
         sortable: false,
-        align: DataGrid.DataGrid.Align.Right,
+        align: DataGrid.DataGrid.Align.RIGHT,
         weight: 5,
       },
       {id: 'time', title: i18nString(UIStrings.time), sortable: true, weight: 7},
@@ -198,18 +198,18 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
               arg1: DataGrid.SortableDataGrid.SortableDataGridNode<ResourceWebSocketFrameNode>) => number);
     this.dataGrid.sortNodes(this.timeComparator, false);
     this.dataGrid.markColumnAsSortedBy('time', DataGrid.DataGrid.Order.Ascending);
-    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortItems, this);
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SORTING_CHANGED, this.sortItems, this);
 
     this.dataGrid.setName('resource-web-socket-frame-view');
-    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, event => {
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, event => {
       void this.onFrameSelected(event);
     }, this);
-    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.DeselectedNode, this.onFrameDeselected, this);
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.DESELECTED_NODE, this.onFrameDeselected, this);
 
     this.mainToolbar = new UI.Toolbar.Toolbar('');
 
     this.clearAllButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear');
-    this.clearAllButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clearFrames, this);
+    this.clearAllButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.clearFrames, this);
     this.mainToolbar.appendToolbarItem(this.clearAllButton);
 
     this.filterTypeCombobox =
@@ -223,7 +223,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
 
     const placeholder = i18nString(UIStrings.filterUsingRegex);
     this.filterTextInput = new UI.Toolbar.ToolbarFilter(placeholder, 0.4);
-    this.filterTextInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.updateFilterSetting, this);
+    this.filterTextInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.updateFilterSetting, this);
     const filter = this.messageFilterSetting.get();
     if (filter) {
       this.filterTextInput.setValue(filter);

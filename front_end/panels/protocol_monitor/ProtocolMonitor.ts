@@ -194,7 +194,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
     this.contentElement.classList.add('protocol-monitor');
     const recordButton = new UI.Toolbar.ToolbarToggle(
         i18nString(UIStrings.record), 'record-start', 'record-stop', 'protocol-monitor.toggle-recording');
-    recordButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+    recordButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
       this.setRecording(recordButton.isToggled());
     });
     recordButton.enableToggleWithRedColor();
@@ -203,7 +203,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
 
     const clearButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear', undefined, 'protocol-monitor.clear-all');
-    clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+    clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
       this.dataGridIntegrator.update({...this.dataGridIntegrator.data(), rows: []});
       this.infoWidget.render(null);
     });
@@ -211,7 +211,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
 
     const saveButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.save), 'download', undefined, 'protocol-monitor.save');
-    saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+    saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
       void this.saveAsFile();
     });
     topToolbar.appendToolbarItem(saveButton);
@@ -307,7 +307,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
                 const parameters = this.infoWidget.request;
                 const targetId = this.infoWidget.targetId;
                 const command = String(methodColumn.value);
-                if (splitWidget.showMode() === UI.SplitWidget.ShowMode.OnlyMain) {
+                if (splitWidget.showMode() === UI.SplitWidget.ShowMode.ONLY_MAIN) {
                   splitWidget.toggleSidebar();
                 }
                 this.dispatchEventToListeners(Events.CommandChange, {command, parameters, targetId});
@@ -372,7 +372,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
 
     this.textFilterUI = new UI.Toolbar.ToolbarFilter(
         undefined, 1, .2, '', this.suggestionBuilder.completions.bind(this.suggestionBuilder), true);
-    this.textFilterUI.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, event => {
+    this.textFilterUI.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, event => {
       const query = event.data as string;
       const filters = this.filterParser.parse(query);
       this.dataGridIntegrator.update({...this.dataGridIntegrator.data(), filters});
@@ -409,7 +409,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
       }
     };
 
-    splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, (event => {
+    splitWidget.addEventListener(UI.SplitWidget.Events.SHOW_MODE_CHANGED, (event => {
                                    if (event.data === 'OnlyMain') {
                                      populateToolbarInput();
 
@@ -442,7 +442,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
         false,
         'command-input',
     );
-    input.addEventListener(UI.Toolbar.ToolbarInput.Event.EnterPressed, () => {
+    input.addEventListener(UI.Toolbar.ToolbarInput.Event.ENTER_PRESSED, () => {
       this.#commandAutocompleteSuggestionProvider.addEntry(input.value());
       const {command, parameters} = parseCommandInput(input.value());
       this.onCommandSend(command, parameters, this.#selectedTargetId);

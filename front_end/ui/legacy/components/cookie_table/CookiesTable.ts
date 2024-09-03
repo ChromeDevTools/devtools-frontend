@@ -184,25 +184,25 @@ export class CookiesTable extends UI.Widget.VBox {
         id: SDK.Cookie.Attribute.SIZE,
         title: i18nString(UIStrings.size),
         sortable: true,
-        align: DataGrid.DataGrid.Align.Right,
+        align: DataGrid.DataGrid.Align.RIGHT,
         weight: 7,
       },
       {
         id: SDK.Cookie.Attribute.HTTP_ONLY,
         title: 'HttpOnly',
         sortable: true,
-        align: DataGrid.DataGrid.Align.Center,
+        align: DataGrid.DataGrid.Align.CENTER,
         weight: 7,
-        dataType: DataGrid.DataGrid.DataType.Boolean,
+        dataType: DataGrid.DataGrid.DataType.BOOLEAN,
         editable,
       },
       {
         id: SDK.Cookie.Attribute.SECURE,
         title: 'Secure',
         sortable: true,
-        align: DataGrid.DataGrid.Align.Center,
+        align: DataGrid.DataGrid.Align.CENTER,
         weight: 7,
-        dataType: DataGrid.DataGrid.DataType.Boolean,
+        dataType: DataGrid.DataGrid.DataType.BOOLEAN,
         editable,
       },
       {
@@ -223,9 +223,9 @@ export class CookiesTable extends UI.Widget.VBox {
         id: SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR,
         title: 'Cross Site',
         sortable: true,
-        align: DataGrid.DataGrid.Align.Center,
+        align: DataGrid.DataGrid.Align.CENTER,
         weight: 7,
-        dataType: DataGrid.DataGrid.DataType.Boolean,
+        dataType: DataGrid.DataGrid.DataType.BOOLEAN,
         editable,
       },
       {
@@ -243,7 +243,7 @@ export class CookiesTable extends UI.Widget.VBox {
           id: SDK.Cookie.Attribute.SOURCE_SCHEME,
           title: 'SourceScheme',
           sortable: true,
-          align: DataGrid.DataGrid.Align.Center,
+          align: DataGrid.DataGrid.Align.CENTER,
           weight: 7,
           editable: editable,
         },
@@ -251,7 +251,7 @@ export class CookiesTable extends UI.Widget.VBox {
           id: SDK.Cookie.Attribute.SOURCE_PORT,
           title: 'SourcePort',
           sortable: true,
-          align: DataGrid.DataGrid.Align.Center,
+          align: DataGrid.DataGrid.Align.CENTER,
           weight: 7,
           editable: editable,
         },
@@ -278,14 +278,14 @@ export class CookiesTable extends UI.Widget.VBox {
     }
     this.dataGrid.setStriped(true);
     this.dataGrid.setName('cookies-table');
-    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.rebuildTable, this);
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SORTING_CHANGED, this.rebuildTable, this);
     this.dataGrid.setRowContextMenuCallback(this.populateContextMenu.bind(this));
     if (renderInline) {
       this.dataGrid.renderInline();
     }
 
     if (selectedCallback) {
-      this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, selectedCallback, this);
+      this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, selectedCallback, this);
     }
 
     this.lastEditedColumnId = null;

@@ -7,6 +7,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Extensions from '../../models/extensions/extensions.js';
+import * as LiveMetrics from '../../models/live-metrics/live-metrics.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 
@@ -131,6 +132,8 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
       categoriesArray.push(disabledByDefault('devtools.v8-source-rundown-sources'));
     }
 
+    await LiveMetrics.LiveMetrics.instance().disable();
+
     this.#recordingStartTime = Date.now();
     const response = await this.startRecordingWithCategories(categoriesArray.join(','));
     if (response.getError()) {
@@ -148,6 +151,8 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
     this.client.loadingStarted();
     await this.waitForTracingToStop(true);
     await this.allSourcesFinished();
+
+    await LiveMetrics.LiveMetrics.instance().enable();
   }
 
   private async waitForTracingToStop(awaitTracingCompleteCallback: boolean): Promise<void> {

@@ -37,9 +37,11 @@ describe('Viewport', function() {
   it('detects mobile unoptimized viewport', async () => {
     const {data} = await processTrace(this, 'lcp-images.json.gz');
 
+    const [navigationId, navigation] = data.Meta.navigationsByNavigationId.entries().next().value;
     const context = {
       frameId: data.Meta.mainFrameId,
-      navigationId: data.Meta.navigationsByNavigationId.keys().next().value,
+      navigationId,
+      navigation,
     };
 
     const events =

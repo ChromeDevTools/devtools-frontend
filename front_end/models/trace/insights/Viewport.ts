@@ -25,11 +25,7 @@ export function generateInsight(
 
     const navigation =
         Helpers.Trace.getNavigationForTraceEvent(event, context.frameId, traceParsedData.Meta.navigationsByFrameId);
-    if (navigation?.args.data?.navigationId !== context.navigationId) {
-      return false;
-    }
-
-    return true;
+    return navigation === context.navigation;
   });
 
   if (!compositorEvents.length) {
@@ -47,11 +43,7 @@ export function generateInsight(
 
     const navigation =
         Helpers.Trace.getNavigationForTraceEvent(event, context.frameId, traceParsedData.Meta.navigationsByFrameId);
-    if (navigation?.args.data?.navigationId !== context.navigationId) {
-      return false;
-    }
-
-    return true;
+    return navigation === context.navigation;
   });
 
   // Returns true only if all events are mobile optimized.

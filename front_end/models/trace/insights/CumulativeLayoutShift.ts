@@ -264,7 +264,7 @@ export function generateInsight(
   const isWithinSameNavigation = ((event: Types.TraceEvents.TraceEventData): boolean => {
     const nav =
         Helpers.Trace.getNavigationForTraceEvent(event, context.frameId, traceParsedData.Meta.navigationsByFrameId);
-    return nav?.args.data?.navigationId === context.navigationId;
+    return nav === context.navigation;
   });
 
   const compositeAnimationEvents = traceParsedData.Animations.animations.filter(isWithinSameNavigation);

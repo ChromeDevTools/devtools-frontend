@@ -317,9 +317,9 @@ export class TraceProcessor extends EventTarget {
 
     const enabledInsightRunners = TraceProcessor.getEnabledInsightRunners(traceParsedData);
 
-    for (const nav of traceParsedData.Meta.mainFrameNavigations) {
-      const frameId = nav.args.frame;
-      const navigationId = nav.args.data?.navigationId;
+    for (const navigation of traceParsedData.Meta.mainFrameNavigations) {
+      const frameId = navigation.args.frame;
+      const navigationId = navigation.args.data?.navigationId;
       if (!frameId || !navigationId) {
         continue;
       }
@@ -354,6 +354,7 @@ export class TraceProcessor extends EventTarget {
 
       const context: Insights.Types.NavigationInsightContext = {
         frameId,
+        navigation,
         navigationId,
         lantern,
       };

@@ -86,11 +86,6 @@ export function generateInsight(
     traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext): LCPInsightResult {
   const networkRequests = traceParsedData.NetworkRequests;
 
-  const nav = traceParsedData.Meta.navigationsByNavigationId.get(context.navigationId);
-  if (!nav) {
-    throw new Error('no trace navigation');
-  }
-
   const frameMetrics = traceParsedData.PageLoadMetrics.metricScoresByFrameId.get(context.frameId);
   if (!frameMetrics) {
     throw new Error('no frame metrics');
@@ -120,7 +115,7 @@ export function generateInsight(
     return {
       lcpMs: lcpMs,
       lcpTs: lcpTs,
-      phases: breakdownPhases(nav, mainReq, lcpMs, lcpResource),
+      phases: breakdownPhases(context.navigation, mainReq, lcpMs, lcpResource),
     };
   }
 
@@ -137,7 +132,7 @@ export function generateInsight(
   return {
     lcpMs: lcpMs,
     lcpTs: lcpTs,
-    phases: breakdownPhases(nav, mainReq, lcpMs, lcpResource),
+    phases: breakdownPhases(context.navigation, mainReq, lcpMs, lcpResource),
     shouldRemoveLazyLoading: imageLoadingAttr === 'lazy',
     shouldIncreasePriorityHint: imageFetchPriorityHint !== 'high',
     shouldPreloadImage: !imagePreloaded,

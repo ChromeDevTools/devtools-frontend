@@ -13,6 +13,7 @@ import type * as InsightsRunners from './InsightRunners.js';
  */
 export interface NavigationInsightContext {
   frameId: string;
+  navigation: Types.TraceEvents.TraceEventNavigationStart;
   navigationId: string;
   lantern?: LanternContext;
 }

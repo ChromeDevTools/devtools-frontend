@@ -63,9 +63,11 @@ describe('DocumentLatency', function() {
       throw new Error('missing traceParsedData');
     }
 
+    const [navigationId, navigation] = data.Meta.navigationsByNavigationId.entries().next().value;
     const context = {
       frameId: data.Meta.mainFrameId,
-      navigationId: data.Meta.navigationsByNavigationId.keys().next().value,
+      navigation,
+      navigationId,
     };
     const insight = TraceModel.Insights.InsightRunners.DocumentLatency.generateInsight(data, context);
     assert.strictEqual(insight.serverResponseTime, 1043);
@@ -97,9 +99,11 @@ describe('DocumentLatency', function() {
       throw new Error('missing traceParsedData');
     }
 
+    const [navigationId, navigation] = data.Meta.navigationsByNavigationId.entries().next().value;
     const context = {
       frameId: data.Meta.mainFrameId,
-      navigationId: data.Meta.navigationsByNavigationId.keys().next().value,
+      navigation,
+      navigationId,
     };
     const insight = TraceModel.Insights.InsightRunners.DocumentLatency.generateInsight(data, context);
     assert.strictEqual(insight.uncompressedResponseBytes, 39799);

@@ -83,11 +83,6 @@ function estimateSavingsWithGraphs(deferredIds: Set<string>, lanternContext: Lan
 }
 
 function hasImageLCP(traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext): boolean {
-  const nav = traceParsedData.Meta.navigationsByNavigationId.get(context.navigationId);
-  if (!nav) {
-    throw new Error('no trace navigation');
-  }
-
   const frameMetrics = traceParsedData.PageLoadMetrics.metricScoresByFrameId.get(context.frameId);
   if (!frameMetrics) {
     throw new Error('no frame metrics');
@@ -196,11 +191,9 @@ export function generateInsight(
 
     const navigation =
         Helpers.Trace.getNavigationForTraceEvent(req, context.frameId, traceParsedData.Meta.navigationsByFrameId);
-    if (navigation?.args.data?.navigationId !== context.navigationId) {
-      continue;
+    if (navigation === context.navigation) {
+      renderBlockingRequests.push(req);
     }
-
-    renderBlockingRequests.push(req);
   }
 
   const savings = computeSavings(traceParsedData, context, renderBlockingRequests);

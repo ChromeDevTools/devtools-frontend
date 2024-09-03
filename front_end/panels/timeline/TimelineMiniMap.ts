@@ -119,9 +119,10 @@ export class TimelineMiniMap extends
           this.addBreadcrumb(event.data);
         });
 
-    this.#breadcrumbsUI.addEventListener(TimelineComponents.BreadcrumbsUI.BreadcrumbRemovedEvent.eventName, event => {
-      const breadcrumb = (event as TimelineComponents.BreadcrumbsUI.BreadcrumbRemovedEvent).breadcrumb;
-      this.#removeBreadcrumb(breadcrumb);
+    this.#breadcrumbsUI.addEventListener(TimelineComponents.BreadcrumbsUI.BreadcrumbActivatedEvent.eventName, event => {
+      const {breadcrumb, childBreadcrumbsRemoved} =
+          (event as TimelineComponents.BreadcrumbsUI.BreadcrumbActivatedEvent);
+      this.#activateBreadcrumb(breadcrumb, childBreadcrumbsRemoved);
     });
     this.#overviewComponent.enableCreateBreadcrumbsButton();
   }
@@ -146,31 +147,37 @@ export class TimelineMiniMap extends
 
     if (this.breadcrumbs === null) {
       this.breadcrumbs = ModificationsManager.activeManager()?.getTimelineBreadcrumbs() ?? null;
-    } else {
-      this.breadcrumbs.add(newVisibleTraceWindow);
-    }
 
+      if (!this.breadcrumbs) {
+        console.warn('ModificationsManager has not been created, therefore Breadcrumbs can not be added');
+        return;
+      }
+
+      this.#breadcrumbsUI.data = {
+        initialBreadcrumb: this.breadcrumbs.initialBreadcrumb,
+        activeBreadcrumb: this.breadcrumbs.activeBreadcrumb,
+      };
+    } else {
+      const addedBreadcrumb = this.breadcrumbs.add(newVisibleTraceWindow);
+
+      this.#breadcrumbsUI.data = {
+        initialBreadcrumb: this.breadcrumbs.initialBreadcrumb,
+        activeBreadcrumb: addedBreadcrumb,
+      };
+    }
+  }
+
+  #activateBreadcrumb(breadcrumb: TraceEngine.Types.File.Breadcrumb, removeChildBreadcrumbs?: boolean): void {
     if (!this.breadcrumbs) {
-      console.warn('ModificationsManager has not been created, therefore Breadcrumbs can not be added');
       return;
     }
 
+    this.breadcrumbs.setActiveBreadcrumb(breadcrumb, removeChildBreadcrumbs);
+    // Only the initial breadcrumb is passed in because breadcrumbs are stored in a linked list and breadcrumbsUI component iterates through them
     this.#breadcrumbsUI.data = {
-      breadcrumb: this.breadcrumbs.initialBreadcrumb,
+      initialBreadcrumb: this.breadcrumbs.initialBreadcrumb,
+      activeBreadcrumb: breadcrumb,
     };
-  }
-
-  #removeBreadcrumb(breadcrumb: TraceEngine.Types.File.Breadcrumb): void {
-    // Note this is slightly confusing: when the user clicks on a breadcrumb,
-    // we do not remove it, but we do remove all of its children, and make it
-    // the new active breadcrumb.
-    if (this.breadcrumbs) {
-      this.breadcrumbs.setLastBreadcrumb(breadcrumb);
-      // Only the initial breadcrumb is passed in because breadcrumbs are stored in a linked list and breadcrumbsUI component iterates through them
-      this.#breadcrumbsUI.data = {
-        breadcrumb: this.breadcrumbs.initialBreadcrumb,
-      };
-    }
   }
 
   override wasShown(): void {

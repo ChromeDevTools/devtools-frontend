@@ -26,6 +26,14 @@ describeWithEnvironment('BreadcrumbsUI', () => {
     });
   }
 
+  function queryActiveBreadcrumb(component: HTMLElement): (string)[] {
+    assert.isNotNull(component.shadowRoot);
+    const breadcrumbsRanges = component.shadowRoot.querySelectorAll<HTMLElement>('.active-breadcrumb');
+    return Array.from(breadcrumbsRanges).map(row => {
+      return row.textContent?.trim() || '';
+    });
+  }
+
   it('renders one breadcrumb', async () => {
     const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
     const component = new BreadcrumbsUI();
@@ -42,7 +50,7 @@ describeWithEnvironment('BreadcrumbsUI', () => {
       child: null,
     };
 
-    component.data = {breadcrumb};
+    component.data = {initialBreadcrumb: breadcrumb, activeBreadcrumb: breadcrumb};
 
     await coordinator.done();
 
@@ -79,7 +87,7 @@ describeWithEnvironment('BreadcrumbsUI', () => {
       child: breadcrumb2,
     };
 
-    component.data = {breadcrumb};
+    component.data = {initialBreadcrumb: breadcrumb, activeBreadcrumb: breadcrumb2};
 
     await coordinator.done();
 
@@ -87,5 +95,9 @@ describeWithEnvironment('BreadcrumbsUI', () => {
 
     assert.deepStrictEqual(breadcrumbsRanges.length, 2);
     assert.deepStrictEqual(breadcrumbsRanges, ['Full range (9.00 ms)', '7.00 ms']);
+
+    // There should always be one active breadcrumb
+    const activeRange = queryActiveBreadcrumb(component);
+    assert.deepStrictEqual(activeRange.length, 1);
   });
 });

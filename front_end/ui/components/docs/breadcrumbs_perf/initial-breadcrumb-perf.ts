@@ -20,5 +20,6 @@ const breadcrumb: TraceEngine.Types.File.Breadcrumb = {
 };
 
 breadcrumbsUI.data = {
-  breadcrumb: breadcrumb,
+  initialBreadcrumb: breadcrumb,
+  activeBreadcrumb: breadcrumb,
 };

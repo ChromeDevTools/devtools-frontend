@@ -193,6 +193,10 @@ const UIStrings = {
    */
   interactionExcluded:
       'INP is calculated using the 98th percentile of interaction delays, so some interaction delays may be larger than the INP value.',
+  /**
+   * @description Tooltip for a button that will remove everything from a log that lists user interactions that happened on the page.
+   */
+  clearInteractionsLog: 'Clear interactions log',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LiveMetricsView.ts', UIStrings);
@@ -729,6 +733,10 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     `;
   }
 
+  #clearInteractionsLog(): void {
+    LiveMetrics.LiveMetrics.instance().clearInteractions();
+  }
+
   #renderInteractionsSection(): LitHtml.LitTemplate {
     if (!this.#interactions.length) {
       return LitHtml.nothing;
@@ -737,7 +745,18 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     // clang-format off
     return html`
       <section class="interactions-section" aria-labelledby="interactions-section-title">
-        <h2 id="interactions-section-title" class="section-title">${i18nString(UIStrings.interactions)}</h2>
+        <h2 id="interactions-section-title" class="section-title">
+          ${i18nString(UIStrings.interactions)}
+          <${Buttons.Button.Button.litTagName}
+            class="interactions-clear"
+            title=${i18nString(UIStrings.clearInteractionsLog)}
+            @click=${this.#clearInteractionsLog}
+            .data=${{
+              variant: Buttons.Button.Variant.ICON,
+              size: Buttons.Button.Size.REGULAR,
+              iconName: 'clear',
+            } as Buttons.Button.ButtonData}></${Buttons.Button.Button.litTagName}>
+        </h2>
         <ol class="interactions-list"
           on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
             this.#interactionsListEl = node as HTMLElement;

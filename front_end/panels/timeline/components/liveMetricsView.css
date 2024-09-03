@@ -130,6 +130,11 @@
   min-height: min-content;
 }
 
+.interactions-clear {
+  margin-left: 4px;
+  vertical-align: sub;
+}
+
 .interactions-list {
   padding: 0;
   margin: 0;

@@ -31,8 +31,12 @@ function getDeviceRecommendation(view: Element): HTMLElement|null {
 }
 
 function getInteractions(view: Element): HTMLElement[] {
-  const interactionsListEl = view.shadowRoot?.querySelector('.interactions-list') as HTMLElement;
-  return Array.from(interactionsListEl.querySelectorAll('.interaction')) as HTMLElement[];
+  const interactionsListEl = view.shadowRoot!.querySelector('.interactions-list');
+  return Array.from(interactionsListEl?.querySelectorAll('.interaction') || []) as HTMLElement[];
+}
+
+function getClearInteractionsButton(view: Element): HTMLElementTagNameMap['devtools-button']|null {
+  return view.shadowRoot!.querySelector('.interactions-clear') as HTMLElementTagNameMap['devtools-button'] | null;
 }
 
 function selectDeviceOption(view: Element, deviceOption: string): void {
@@ -215,6 +219,34 @@ describeWithMockConnection('LiveMetricsView', () => {
     const durationEl2 = interactionsEls[1].querySelector<HTMLElement>('.interaction-duration .metric-value');
     assert.strictEqual(durationEl2!.textContent, '500 ms');
     assert.strictEqual(durationEl2!.className, 'metric-value needs-improvement dim');
+  });
+
+  it('clear interactions log button should work', async () => {
+    const view = new Components.LiveMetricsView.LiveMetricsView();
+    renderElementIntoDOM(view);
+    await coordinator.done();
+
+    assert.isNull(getClearInteractionsButton(view));
+    assert.lengthOf(getInteractions(view), 0);
+
+    LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.STATUS, {
+      inp: {value: 50},
+      interactions: [
+        {duration: 50, interactionType: 'keyboard'},
+        {duration: 500, interactionType: 'pointer'},
+      ],
+    });
+    await coordinator.done();
+
+    assert.lengthOf(getInteractions(view), 2);
+
+    const interactionsButton = getClearInteractionsButton(view);
+    interactionsButton!.click();
+
+    await coordinator.done();
+
+    assert.isNull(getClearInteractionsButton(view));
+    assert.lengthOf(getInteractions(view), 0);
   });
 
   it('record action button should work', async () => {

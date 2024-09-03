@@ -273,6 +273,16 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     await Promise.all(killPromises);
   }
 
+  clearInteractions(): void {
+    this.#interactions = [];
+    this.dispatchEventToListeners(Events.STATUS, {
+      lcp: this.#lcpValue,
+      cls: this.#clsValue,
+      inp: this.#inpValue,
+      interactions: this.#interactions,
+    });
+  }
+
   async targetAdded(target: SDK.Target.Target): Promise<void> {
     if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;

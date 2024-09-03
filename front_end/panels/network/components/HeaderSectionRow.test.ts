@@ -121,10 +121,10 @@ describeWithEnvironment('HeaderSectionRow', () => {
     assert.strictEqual(
         getCleanTextContentFromElements(component.shadowRoot, '.call-to-action')[0],
         'To use this resource from a different origin, the server needs to specify a cross-origin ' +
-            'resource policy in the response headers:Cross-Origin-Resource-Policy: same-siteChoose ' +
-            'this option if the resource and the document are served from the same site.' +
-            'Cross-Origin-Resource-Policy: cross-originOnly choose this option if an arbitrary website ' +
-            'including this resource does not impose a security risk.Learn more',
+            'resource policy in the response headers: Cross-Origin-Resource-Policy: same-site Choose ' +
+            'this option if the resource and the document are served from the same site. ' +
+            'Cross-Origin-Resource-Policy: cross-origin Only choose this option if an arbitrary website ' +
+            'including this resource does not impose a security risk. Learn more',
     );
   });
 
@@ -150,7 +150,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
 
     assert.strictEqual(
         getCleanTextContentFromElements(component.shadowRoot, '.header-value code')[0],
-        'message ClientVariations {// Active Google-visible variation IDs on this client. These are reported for analysis, but do not directly affect any server-side behavior.repeated int32 variation_id = [3300118, 3300132, 3330195];\n}',
+        'message ClientVariations { // Active Google-visible variation IDs on this client. These are reported for analysis, but do not directly affect any server-side behavior. repeated int32 variation_id = [3300118, 3300132, 3330195];\n}',
     );
   });
 

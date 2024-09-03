@@ -102,8 +102,8 @@ describeWithLocale('StackTrace', () => {
     });
 
     assert.deepEqual(stackTraceText, [
-      'function1\xA0@\xA0www.example.com/script1.js',
-      'function2\xA0@\xA0www.example.com/script2.js',
+      'function1 \xA0@\xA0www.example.com/script1.js',
+      'function2 \xA0@\xA0www.example.com/script2.js',
     ]);
   });
 
@@ -159,7 +159,7 @@ describeWithLocale('StackTrace', () => {
     });
 
     assert.deepEqual(stackTraceText, [
-      'function1\xA0@\xA0www.example.com/script.js',
+      'function1 \xA0@\xA0www.example.com/script.js',
       'Show 1 more frame',
     ]);
 
@@ -179,8 +179,8 @@ describeWithLocale('StackTrace', () => {
     });
 
     assert.deepEqual(openedStackTraceText, [
-      'function1\xA0@\xA0www.example.com/script.js',
-      'function2\xA0@\xA0www.example.com/hidden.js',
+      'function1 \xA0@\xA0www.example.com/script.js',
+      'function2 \xA0@\xA0www.example.com/hidden.js',
       'Show less',
     ]);
 
@@ -199,7 +199,7 @@ describeWithLocale('StackTrace', () => {
     });
 
     assert.deepEqual(stackTraceText, [
-      'function1\xA0@\xA0www.example.com/script.js',
+      'function1 \xA0@\xA0www.example.com/script.js',
       'Show 1 more frame',
     ]);
   });

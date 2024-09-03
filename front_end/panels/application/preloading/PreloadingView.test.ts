@@ -776,7 +776,7 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
     assert.deepEqual(zip2(keys, values), [
       ['URL', 'https://example.com/prerendered.html'],
-      ['Action', 'PrerenderInspect'],
+      ['Action', 'Prerender Inspect'],
       ['Status', 'Speculative load is running.'],
     ]);
 
@@ -847,7 +847,7 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
     assert.deepEqual(zip2(keys, values), [
       ['URL', 'https://example.com/prerendered.html'],
-      ['Action', 'PrerenderInspect'],
+      ['Action', 'Prerender Inspect'],
       ['Status', 'Speculative load finished and the result is ready for the next navigation.'],
     ]);
 
@@ -926,7 +926,7 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
     assert.deepEqual(zip2(keys, values), [
       ['URL', 'https://example.com/prerendered.html'],
-      ['Action', 'PrerenderInspect'],
+      ['Action', 'Prerender Inspect'],
       ['Status', 'Speculative load failed.'],
       [
         'Failure reason',

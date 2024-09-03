@@ -207,10 +207,10 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assert.strictEqual(
         getCleanTextContentFromElements(row.shadowRoot, '.call-to-action')[0],
         'To use this resource from a different origin, the server needs to specify a cross-origin ' +
-            'resource policy in the response headers:Cross-Origin-Resource-Policy: same-siteChoose ' +
-            'this option if the resource and the document are served from the same site.' +
-            'Cross-Origin-Resource-Policy: cross-originOnly choose this option if an arbitrary website ' +
-            'including this resource does not impose a security risk.Learn more',
+            'resource policy in the response headers: Cross-Origin-Resource-Policy: same-site Choose ' +
+            'this option if the resource and the document are served from the same site. ' +
+            'Cross-Origin-Resource-Policy: cross-origin Only choose this option if an arbitrary website ' +
+            'including this resource does not impose a security risk. Learn more',
     );
   });
 
@@ -1364,6 +1364,6 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assert.isNotNull(rows[0].shadowRoot);
     checkRow(rows[0].shadowRoot, 'abc:', 'def', false);
     assert.isNotNull(rows[1].shadowRoot);
-    checkRow(rows[1].shadowRoot, 'not-setcross-origin-embedder-policy:', '', false);
+    checkRow(rows[1].shadowRoot, 'not-set cross-origin-embedder-policy:', '', false);
   });
 });

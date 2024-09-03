@@ -714,12 +714,11 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   #renderDataDescriptions(): LitHtml.LitTemplate {
     const fieldEnabled = CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled;
 
-    const localLink = UI.XLink.XLink.create(
-        'https://web.dev/articles/lab-and-field-data-differences#lab_data', i18nString(UIStrings.localMetricsLink));
+    const localLink =
+        UI.XLink.XLink.create('https://goo.gle/perf-local-metrics', i18nString(UIStrings.localMetricsLink));
     const localEl = i18n.i18n.getFormatLocalizedString(str_, UIStrings.theLocalMetricsAre, {PH1: localLink});
 
-    const fieldLink = UI.XLink.XLink.create(
-        'https://web.dev/articles/lab-and-field-data-differences#field_data', i18nString(UIStrings.fieldDataLink));
+    const fieldLink = UI.XLink.XLink.create('https://goo.gle/perf-field-data', i18nString(UIStrings.fieldDataLink));
     const fieldEl = i18n.i18n.getFormatLocalizedString(str_, UIStrings.theFieldMetricsAre, {PH1: fieldLink});
 
     return html`

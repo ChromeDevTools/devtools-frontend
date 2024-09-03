@@ -207,6 +207,10 @@ const UIStrings = {
    /**
     *@description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
     */
+  exemptionReasonTopLevelTPCDDeprecationTrial: 'This cookie is allowed by top-level third-party cookie deprecation trial. Learn more: goo.gle/ps-dt.',
+   /**
+    *@description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
+    */
    exemptionReasonTPCDHeuristics: 'This cookie is allowed by third-party cookie heuristics. Learn more: goo.gle/hbe',
    /**
     *@description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
@@ -1843,6 +1847,8 @@ export const cookieExemptionReasonToUiString = function(exemptionReason: Protoco
           return i18nString(UIStrings.exemptionReasonUserSetting);
         case Protocol.Network.CookieExemptionReason.TPCDMetadata:
           return i18nString(UIStrings.exemptionReasonTPCDMetadata);
+        case Protocol.Network.CookieExemptionReason.TopLevelTPCDDeprecationTrial:
+          return i18nString(UIStrings.exemptionReasonTopLevelTPCDDeprecationTrial);
         case Protocol.Network.CookieExemptionReason.TPCDDeprecationTrial:
           return i18nString(UIStrings.exemptionReasonTPCDDeprecationTrial);
         case Protocol.Network.CookieExemptionReason.TPCDHeuristics:

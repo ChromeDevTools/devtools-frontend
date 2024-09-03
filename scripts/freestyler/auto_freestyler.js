@@ -124,53 +124,46 @@ class Example {
     }
 
     let comments = await page.evaluate(() => {
-      const walker = document.createTreeWalker(
-          document.documentElement,
-          NodeFilter.SHOW_COMMENT,
-      );
-      const results = [];
-      const getSelector = el => {
-        if (!el) {
-          return undefined;
+      function collectComments(root) {
+        const walker = document.createTreeWalker(
+            root,
+            NodeFilter.SHOW_COMMENT,
+        );
+        const results = [];
+        while (walker.nextNode()) {
+          const comment = walker.currentNode;
+          results.push({
+            comment: comment.textContent.trim(),
+            commentElement: comment,
+            targetElement: comment.nextElementSibling,
+          });
         }
-        if (!(el instanceof Element)) {
-          return undefined;
-        }
-        if (el.id) {
-          return `#${el.id}`;
-        }
-        if (el.classList) {
-          const classes = [];
-          for (const cls of el.classList) {
-            classes.push(`.${cls}`);
-          }
-          if (classes.length) {
-            return classes.join('');
-          }
-        }
-        return el.tagName.toLowerCase();
-      };
-      while (walker.nextNode()) {
-        const comment = walker.currentNode;
-        results.push({
-          comment: comment.textContent.trim(),
-          el: getSelector(comment.nextElementSibling),
-        });
+        return results;
       }
-      return results;
+      const elementWalker = document.createTreeWalker(
+          document.documentElement,
+          NodeFilter.SHOW_ELEMENT,
+      );
+      const results = [...collectComments(document.documentElement)];
+      while (elementWalker.nextNode()) {
+        const el = elementWalker.currentNode;
+        if ('shadowRoot' in el && el.shadowRoot) {
+          results.push(...collectComments(el.shadowRoot));
+        }
+      }
+      globalThis.__commentElements = results;
+      return results.map(result => result.comment);
     });
-    comments = comments.map(comment => {
-      return {...comment, comment: splitComment(comment.comment)};
-    });
+    comments = comments.map(comment => splitComment(comment));
     // Only get the first comment for now.
-    const {comment, el} = comments[0];
+    const comment = comments[0];
     const queries = [comment.question];
     if (yargsObject.includeFollowUp) {
       queries.push(DEFAULT_FOLLOW_UP_QUERY);
     }
 
     return {
-      selector: el,
+      idx: 0,
       queries,
       explanation: comment.answer,
     };
@@ -196,13 +189,12 @@ class Example {
     });
     acquiredDevToolsTargets.set(devtoolsTarget, true);
 
-    const {selector, queries, explanation} = await this.#generateMetadata(page);
+    const {idx, queries, explanation} = await this.#generateMetadata(page);
     this.log('[Info]: Running...');
     // Strip comments to prevent LLM from seeing it.
     await page.evaluate(() => {
-      const walker = document.createTreeWalker(document.documentElement, NodeFilter.SHOW_COMMENT);
-      while (walker.nextNode()) {
-        walker.currentNode.remove();
+      for (const {commentElement} of globalThis.__commentElements) {
+        commentElement.remove();
       }
     });
 
@@ -229,7 +221,7 @@ class Example {
     this.log('[Info]: Locating console');
     await devtoolsPage.locator(':scope >>> #tab-console').click();
     await devtoolsPage.locator('aria/Console prompt').click();
-    await devtoolsPage.keyboard.type(`inspect(document.querySelector('${selector}'))`);
+    await devtoolsPage.keyboard.type(`inspect(globalThis.__commentElements[${idx}].targetElement)`);
     await devtoolsPage.keyboard.press('Enter');
 
     this.log('[Info]: Locating AI assistant tab');

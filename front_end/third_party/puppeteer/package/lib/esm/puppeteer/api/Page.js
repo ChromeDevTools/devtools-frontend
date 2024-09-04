@@ -972,7 +972,14 @@ let Page = (() => {
             try {
                 const _guard = __addDisposableResource(env_2, await this.browserContext().startScreenshot(), false);
                 await this.bringToFront();
-                const options = structuredClone(userOptions);
+                const options = {
+                    ...userOptions,
+                    clip: userOptions.clip
+                        ? {
+                            ...userOptions.clip,
+                        }
+                        : undefined,
+                };
                 if (options.type === undefined && options.path !== undefined) {
                     const filePath = options.path;
                     // Note we cannot use Node.js here due to browser compatibility.

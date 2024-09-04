@@ -635,6 +635,7 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
     }
     this.button.textContent = text;
     this.button.variant = Buttons.Button.Variant.TEXT;
+    this.button.reducedFocusRing = true;
     this.text = text;
   }
 

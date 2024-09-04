@@ -304,6 +304,37 @@ describeWithEnvironment('Timing helpers', () => {
   });
 
   describe('timestampIsInBounds', () => {
+    const {eventIsInBounds} = TraceModel.Helpers.Timing;
+    const {MicroSeconds} = TraceModel.Types.Timing;
+
+    const bounds: TraceModel.Types.Timing.TraceWindowMicroSeconds = {
+      min: MicroSeconds(100),
+      max: MicroSeconds(200),
+      range: MicroSeconds(100),
+    };
+
+    const makeEvent = (ts: number, dur: number) => ({
+                                                     ts: TraceModel.Types.Timing.MicroSeconds(ts),
+                                                     dur: TraceModel.Types.Timing.MicroSeconds(dur),
+                                                   }) as unknown as TraceModel.Types.TraceEvents.TraceEventData;
+
+    // Left boundary
+    assert.isTrue(eventIsInBounds(makeEvent(101, 1), bounds));
+    assert.isTrue(eventIsInBounds(makeEvent(100, 1), bounds));
+    assert.isTrue(eventIsInBounds(makeEvent(99, 1), bounds));
+    assert.isTrue(eventIsInBounds(makeEvent(150, 500), bounds));
+    assert.isFalse(eventIsInBounds(makeEvent(98, 1), bounds));
+    assert.isFalse(eventIsInBounds(makeEvent(0, 1), bounds));
+    assert.isFalse(eventIsInBounds(makeEvent(0, 0), bounds));
+
+    // Right boundary
+    assert.isTrue(eventIsInBounds(makeEvent(199, 1), bounds));
+    assert.isTrue(eventIsInBounds(makeEvent(200, 1), bounds));
+    assert.isFalse(eventIsInBounds(makeEvent(201, 1), bounds));
+    assert.isFalse(eventIsInBounds(makeEvent(300, 50), bounds));
+  });
+
+  describe('timestampIsInBounds', () => {
     const {timestampIsInBounds} = TraceModel.Helpers.Timing;
     const {MicroSeconds} = TraceModel.Types.Timing;
     it('is true if the value is in the bounds and false otherwise', async () => {

@@ -4,6 +4,8 @@
 
 import * as Types from '../types/types.js';
 
+import {eventIsInBounds} from './Timing.js';
+
 let nodeIdCount = 0;
 export const makeTraceEntryNodeId = (): TraceEntryNodeId => (++nodeIdCount) as TraceEntryNodeId;
 
@@ -245,7 +247,7 @@ function walkTreeByNode(
 
   if (typeof minDuration !== 'undefined') {
     const duration = Types.Timing.MicroSeconds(
-        rootNode.entry.ts + Types.Timing.MicroSeconds(rootNode.entry.dur || 0),
+        rootNode.entry.ts + Types.Timing.MicroSeconds(rootNode.entry.dur ?? 0),
     );
     if (duration < minDuration) {
       return;
@@ -265,25 +267,7 @@ function walkTreeByNode(
  * have to partially intersect it.
  */
 function treeNodeIsInWindow(node: TraceEntryNode, traceWindow: Types.Timing.TraceWindowMicroSeconds): boolean {
-  const startTime = node.entry.ts;
-  const endTime = node.entry.ts + (node.entry.dur || 0);
-
-  // Min ======= startTime ========= Max => node is within window
-  if (startTime >= traceWindow.min && startTime < traceWindow.max) {
-    return true;
-  }
-
-  // Min ======= endTime ========= Max => node is within window
-  if (endTime > traceWindow.min && endTime <= traceWindow.max) {
-    return true;
-  }
-
-  // startTime ==== Min ======== Max === endTime => node spans greater than the window so is in it.
-  if (startTime <= traceWindow.min && endTime >= traceWindow.max) {
-    return true;
-  }
-
-  return false;
+  return eventIsInBounds(node.entry, traceWindow);
 }
 
 /**
@@ -309,13 +293,13 @@ export function canBuildTreesFromEvents(events: readonly Types.TraceEvents.Trace
   const stack: Types.TraceEvents.TraceEventData[] = [];
   for (const event of events) {
     const startTime = event.ts;
-    const endTime = event.ts + (event.dur || 0);
+    const endTime = event.ts + (event.dur ?? 0);
     let parent = stack.at(-1);
     if (parent === undefined) {
       stack.push(event);
       continue;
     }
-    let parentEndTime = parent.ts + (parent.dur || 0);
+    let parentEndTime = parent.ts + (parent.dur ?? 0);
     // Discard events that are not parents for this event. The parent
     // is one whose end time is after this event start time.
     while (stack.length && startTime >= parentEndTime) {
@@ -325,7 +309,7 @@ export function canBuildTreesFromEvents(events: readonly Types.TraceEvents.Trace
       if (parent === undefined) {
         break;
       }
-      parentEndTime = parent.ts + (parent.dur || 0);
+      parentEndTime = parent.ts + (parent.dur ?? 0);
     }
     if (stack.length && endTime > parentEndTime) {
       // If such an event exists but its end time is before this

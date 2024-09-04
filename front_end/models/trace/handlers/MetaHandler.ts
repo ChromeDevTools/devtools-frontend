@@ -168,7 +168,7 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   // often extends the bounds of the trace unhelpfully.
   if (event.ts !== 0 && !event.name.endsWith('::UMA') && eventPhasesOfInterestForTraceBounds.has(event.ph)) {
     traceBounds.min = Types.Timing.MicroSeconds(Math.min(event.ts, traceBounds.min));
-    const eventDuration = event.dur || Types.Timing.MicroSeconds(0);
+    const eventDuration = event.dur ?? Types.Timing.MicroSeconds(0);
     traceBounds.max = Types.Timing.MicroSeconds(Math.max(event.ts + eventDuration, traceBounds.max));
   }
 

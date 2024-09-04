@@ -168,11 +168,11 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
     const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     dataProvider.setModel(traceData);
-    const bounds = TraceEngine.Helpers.Timing.traceWindowMilliSeconds(traceData.Meta.traceBounds);
-    dataProvider.setWindowTimes(bounds.min, bounds.max);
+    const boundsMs = TraceEngine.Helpers.Timing.traceWindowMilliSeconds(traceData.Meta.traceBounds);
+    dataProvider.setWindowTimes(boundsMs.min, boundsMs.max);
 
     const filter = new Timeline.TimelineFilters.TimelineRegExp(/app\.js/i);
-    const results = dataProvider.search(bounds.min, bounds.max, filter);
+    const results = dataProvider.search(traceData.Meta.traceBounds, filter);
     assert.lengthOf(results, 1);
     assert.deepEqual(results[0], {index: 8, startTimeMilli: 122411056.533, provider: 'network'});
   });

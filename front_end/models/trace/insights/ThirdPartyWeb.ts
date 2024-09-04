@@ -126,7 +126,7 @@ function getSelfTimeByUrl(
         }
 
         for (const event of thread.entries) {
-          if (!Helpers.Timing.timestampIsInBounds(bounds, event.ts)) {
+          if (!Helpers.Timing.eventIsInBounds(event, bounds)) {
             continue;
           }
 

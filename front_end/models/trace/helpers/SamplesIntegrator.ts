@@ -220,7 +220,7 @@ export class SamplesIntegrator {
     // Because the event has ended, any frames that happened after
     // this event are terminated. Frames that are ancestors to this
     // event are extended to cover its ending.
-    const endTime = Types.Timing.MicroSeconds(event.ts + (event.dur || 0));
+    const endTime = Types.Timing.MicroSeconds(event.ts + (event.dur ?? 0));
     this.#truncateJSStack(this.#lockedJsStackDepth.pop() || 0, endTime);
   }
 

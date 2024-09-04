@@ -192,9 +192,9 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     dataProvider.setModel(traceData);
 
-    const bounds = TraceEngine.Helpers.Timing.traceWindowMilliSeconds(traceData.Meta.traceBounds);
+    const bounds = traceData.Meta.traceBounds;
     const filter = new Timeline.TimelineFilters.TimelineRegExp(/Evaluate Script/);
-    const results = dataProvider.search(bounds.min, bounds.max, filter);
+    const results = dataProvider.search(bounds, filter);
     assert.lengthOf(results, 12);
     assert.deepEqual(results[0], {index: 154, startTimeMilli: 122411041.395, provider: 'main'});
   });

@@ -3821,7 +3821,7 @@ export interface FlameChartDataProvider {
       (event: MouseEvent, eventIndex: number, groupIndex: number): UI.ContextMenu.ContextMenu|undefined;
 
   search?
-      (startTime: TraceEngine.Types.Timing.MilliSeconds, endTime: TraceEngine.Types.Timing.MilliSeconds,
+      (visibleWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds,
        filter: TimelineModel.TimelineModelFilter.TimelineModelFilter): DataProviderSearchResult[];
 
   // The following three functions are used for the flame chart entry customization.

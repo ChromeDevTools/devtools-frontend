@@ -474,8 +474,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
    * indexes
    */
   search(
-      startTime: TraceEngine.Types.Timing.MilliSeconds,
-      endTime: TraceEngine.Types.Timing.MilliSeconds,
+      visibleWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds,
       filter: TimelineModel.TimelineModelFilter.TimelineModelFilter,
       ): PerfUI.FlameChart.DataProviderSearchResult[] {
     const results: PerfUI.FlameChart.DataProviderSearchResult[] = [];
@@ -484,16 +483,14 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
       if (!entry) {
         continue;
       }
-      const entryStartTime = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(entry).startTime;
-      const entryEndTime = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(entry).endTime;
-      if (entryStartTime > endTime) {
+
+      if (!TraceEngine.Helpers.Timing.eventIsInBounds(entry, visibleWindow)) {
         continue;
       }
-      if (entryEndTime < startTime) {
-        continue;
-      }
+
       if (filter.accept(entry, this.#traceParseData ?? undefined)) {
-        results.push({startTimeMilli: entryStartTime, index: i, provider: 'network'});
+        const startTimeMilli = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(entry.ts);
+        results.push({startTimeMilli, index: i, provider: 'network'});
       }
     }
     return results;

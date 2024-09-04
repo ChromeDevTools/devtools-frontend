@@ -560,7 +560,7 @@ export function forEachEvent(
     events: Types.TraceEvents.TraceEventData[],
     config: ForEachEventConfig,
     ): void {
-  const globalStartTime = config.startTime || Types.Timing.MicroSeconds(0);
+  const globalStartTime = config.startTime ?? Types.Timing.MicroSeconds(0);
   const globalEndTime = config.endTime || Types.Timing.MicroSeconds(Infinity);
   const ignoreAsyncEvents = config.ignoreAsyncEvents === false ? false : true;
 

@@ -593,7 +593,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   search(
-      startTime: TraceEngine.Types.Timing.MilliSeconds, endTime: TraceEngine.Types.Timing.MilliSeconds,
+      visibleWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds,
       filter: TimelineModel.TimelineModelFilter.TimelineModelFilter): PerfUI.FlameChart.DataProviderSearchResult[] {
     const results: PerfUI.FlameChart.DataProviderSearchResult[] = [];
     this.timelineData();
@@ -612,18 +612,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         // Screenshots are represented as trace events, but you can't search for them, so skip.
         continue;
       }
-
-      const entryStartTime = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(entry).startTime;
-      const entryEndTime = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(entry).endTime;
-
-      if (entryStartTime > endTime) {
-        continue;
-      }
-      if ((entryEndTime || entryStartTime) < startTime) {
+      if (!TraceEngine.Helpers.Timing.eventIsInBounds(entry, visibleWindow)) {
         continue;
       }
       if (filter.accept(entry, this.traceEngineData || undefined)) {
-        results.push({index: i, startTimeMilli: entryStartTime, provider: 'main'});
+        const startTimeMilli = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(entry.ts);
+        results.push({index: i, startTimeMilli, provider: 'main'});
       }
     }
     return results;

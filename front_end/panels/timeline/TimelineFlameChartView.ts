@@ -933,7 +933,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       return;
     }
     const regExpFilter = new TimelineRegExp(this.searchRegex);
-    const visibleWindow = traceBoundsState.milli.timelineTraceWindow;
+    const visibleWindow = traceBoundsState.micro.timelineTraceWindow;
 
     /**
      * Get the matches for the user's search result. We search both providers
@@ -941,8 +941,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
      * provider they came from. We do this so that when the user highlights a
      * search result we know which flame chart to talk to to highlight it.
      */
-    const mainMatches = this.mainDataProvider.search(visibleWindow.min, visibleWindow.max, regExpFilter);
-    const networkMatches = this.networkDataProvider.search(visibleWindow.min, visibleWindow.max, regExpFilter);
+    const mainMatches = this.mainDataProvider.search(visibleWindow, regExpFilter);
+    const networkMatches = this.networkDataProvider.search(visibleWindow, regExpFilter);
 
     // Merge both result sets into one, sorted by start time. This means as the
     // user navigates back/forwards they will do so in time order and not do

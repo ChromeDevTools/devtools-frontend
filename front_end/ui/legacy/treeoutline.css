@@ -168,6 +168,10 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
 }
 
 /* Navigation tree variant */
+.tree-outline.tree-variant-navigation {
+  padding: var(--sys-size-3) 0 var(--sys-size-3) var(--sys-size-3);
+}
+
 /* It does not look like the linter works with CSS nesting correctly. */
 /* stylelint-disable no-descending-specificity */
 .tree-outline.tree-variant-navigation li,

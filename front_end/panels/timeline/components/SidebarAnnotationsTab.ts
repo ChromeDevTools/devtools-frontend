@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
+import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as TraceEngine from '../../../models/trace/trace.js';
 import * as TraceBounds from '../../../services/trace_bounds/trace_bounds.js';
@@ -12,6 +14,40 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import {RemoveAnnotation} from './Sidebar.js';
 import sidebarAnnotationsTabStyles from './sidebarAnnotationsTab.css.js';
+
+const diagramImageUrl = new URL('../../../Images/performance-panel-diagram.svg', import.meta.url).toString();
+const entryLabelImageUrl = new URL('../../../Images/performance-panel-entry-label.svg', import.meta.url).toString();
+const timeRangeImageUrl = new URL('../../../Images/performance-panel-time-range.svg', import.meta.url).toString();
+
+const UIStrings = {
+  /**
+   * @description Title for entry label.
+   */
+  entryLabel: 'Entry label',
+  /**
+   * @description Text for how to create an entry label.
+   */
+  entryLabelDescription: 'Double click on an entry to create  an entry label.',
+  /**
+   * @description  Title for diagram.
+   */
+  diagram: 'Diagram',
+  /**
+   * @description Text for how to create a diagram between entries.
+   */
+  diagramDescription: 'Double click on an entry to create a diagram.',
+  /**
+   * @description  Title for time range.
+   */
+  timeRange: 'Time range',
+  /**
+   * @description Text for how to create a time range selection and add note.
+   */
+  timeRangeDescription: 'Shift and drag on the canvas to create a time range.',
+};
+
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarAnnotationsTab.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SidebarAnnotationsTab extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-performance-sidebar-annotations`;
@@ -187,34 +223,67 @@ export class SidebarAnnotationsTab extends HTMLElement {
     }
   }
 
+  #renderTutorialCard(): LitHtml.TemplateResult {
+    return LitHtml.html`
+      <div class="annotation-tutorial-container">
+        Try the new annotation feature:
+        <div class="tutorial-card">
+          <div class="tutorial-image"> <img src=${entryLabelImageUrl}></img></div>
+          <div class="tutorial-title">${i18nString(UIStrings.entryLabel)}</div>
+          <div class="tutorial-description">${i18nString(UIStrings.entryLabelDescription)}</div>
+          <div class="tutorial-shortcut">${Host.Platform.isMac() ? 'Cmd' : 'Ctrl'} + Click</div>
+        </div>
+        <div class="tutorial-card">
+          <div class="tutorial-image"> <img src=${diagramImageUrl}></img></div>
+          <div class="tutorial-title">${i18nString(UIStrings.diagram)}</div>
+          <div class="tutorial-description">${i18nString(UIStrings.diagramDescription)}</div>
+          <div class="tutorial-shortcut">
+            <div class="keybinds-shortcut">
+              <span class="keybinds-key">${Host.Platform.isMac() ? 'Cmd' : 'Ctrl'} + Click</span>
+            </div>
+          </div>
+        </div>
+        <div class="tutorial-card">
+          <div class="tutorial-image"> <img src=${timeRangeImageUrl}></img></div>
+          <div class="tutorial-title">${i18nString(UIStrings.timeRange)}</div>
+          <div class="tutorial-description">${i18nString(UIStrings.timeRangeDescription)}</div>
+        </div>
+      </div>
+    `;
+  }
+
   #render(): void {
     // clang-format off
-      LitHtml.render(
-        LitHtml.html`
-          <span class="annotations">
-            ${this.#annotations.map(annotation =>
-              LitHtml.html`
-                <div class="annotation-container" @click=${() => this.#zoomIntoAnnotation(annotation)}>
-                  <div class="annotation">
-                    ${this.#renderAnnotationIdentifier(annotation)}
-                    <span class="label">
-                      ${(annotation.type === 'ENTRY_LABEL' || annotation.type === 'TIME_RANGE') ? annotation.label : ''}
-                    </span>
-                  </div>
-                  <${IconButton.Icon.Icon.litTagName} class="bin-icon" .data=${{
-                          iconName: 'bin',
-                          color: 'var(--icon-default)',
-                          width: '20px',
-                          height: '20px',
-                        } as IconButton.Icon.IconData} @click=${(event: Event) => {
-                         // Stop propagation to not zoom into the annotation when the delete button is clicked
-                         event.stopPropagation();
-                          this.dispatchEvent(new RemoveAnnotation(annotation));
-                  }}>
-                </div>`,
-           )}
-          </span>`,
-      this.#shadow, {host: this});
+    LitHtml.render(
+      LitHtml.html`
+        <span class="annotations">
+          ${this.#annotations.length === 0 ?
+            this.#renderTutorialCard() :
+            LitHtml.html`
+              ${this.#annotations.map(annotation =>
+                LitHtml.html`
+                  <div class="annotation-container" @click=${() => this.#zoomIntoAnnotation(annotation)}>
+                    <div class="annotation">
+                      ${this.#renderAnnotationIdentifier(annotation)}
+                      <span class="label">
+                        ${(annotation.type === 'ENTRY_LABEL' || annotation.type === 'TIME_RANGE') ? annotation.label : ''}
+                      </span>
+                    </div>
+                    <${IconButton.Icon.Icon.litTagName} class="bin-icon" .data=${{
+                            iconName: 'bin',
+                            color: 'var(--icon-default)',
+                            width: '20px',
+                            height: '20px',
+                          } as IconButton.Icon.IconData} @click=${(event: Event) => {
+                            // Stop propagation to not zoom into the annotation when the delete button is clicked
+                            event.stopPropagation();
+                            this.dispatchEvent(new RemoveAnnotation(annotation));
+                    }}>
+                  </div>`,
+              )}
+        </span>`
+      }`,
+    this.#shadow, {host: this});
     // clang-format on
   }
 }

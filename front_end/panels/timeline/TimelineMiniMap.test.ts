@@ -82,7 +82,6 @@ describeWithEnvironment('TimelineMiniMap', function() {
         showScreenshots: true,
       },
     });
-    minimap.addInitialBreadcrumb();
 
     await raf();
 
@@ -104,7 +103,6 @@ describeWithEnvironment('TimelineMiniMap', function() {
         showScreenshots: true,
       },
     });
-    minimap.addInitialBreadcrumb();
     const entireTraceBounds = traceData.Meta.traceBounds;
     const newBounds = {
       ...entireTraceBounds,

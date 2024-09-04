@@ -1629,11 +1629,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.#sideBar.setAnnotations(annotations, annotationEntryToColorMap);
     });
 
-    // Create breadcrumbs.
-    if (this.#minimapComponent.breadcrumbsActivated) {
-      this.#minimapComponent.addInitialBreadcrumb();
-    }
-
     // To calculate the activity we might want to zoom in, we use the top-most main-thread track
     const topMostMainThreadAppender =
         this.flameChart.getMainDataProvider().compatibilityTracksAppenderInstance().threadAppenders().at(0);

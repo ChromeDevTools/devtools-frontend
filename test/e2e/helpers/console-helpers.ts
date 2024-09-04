@@ -132,8 +132,8 @@ export async function getCurrentConsoleMessages(withAnchor = false, level = Leve
   }
 
   // Ensure all messages are populated.
-  await asyncScope.exec(() => frontend.waitForFunction((CONSOLE_FIRST_MESSAGES_SELECTOR: string) => {
-    const messages = document.querySelectorAll(CONSOLE_FIRST_MESSAGES_SELECTOR);
+  await asyncScope.exec(() => frontend.waitForFunction((selector: string) => {
+    const messages = document.querySelectorAll(selector);
     if (messages.length === 0) {
       return false;
     }
@@ -196,20 +196,19 @@ export async function getStructuredConsoleMessages() {
   await waitFor(CONSOLE_MESSAGES_SELECTOR, undefined, asyncScope);
 
   // Ensure all messages are populated.
-  await asyncScope.exec(() => frontend.waitForFunction((CONSOLE_FIRST_MESSAGES_SELECTOR: string) => {
-    return Array.from(document.querySelectorAll(CONSOLE_FIRST_MESSAGES_SELECTOR))
-        .every(message => message.childNodes.length > 0);
+  await asyncScope.exec(() => frontend.waitForFunction((selector: string) => {
+    return Array.from(document.querySelectorAll(selector)).every(message => message.childNodes.length > 0);
   }, {timeout: 0}, CONSOLE_ALL_MESSAGES_SELECTOR));
   await expectVeEvents([veImpressionForConsoleMessage()], await veRoot());
 
-  return frontend.evaluate((CONSOLE_MESSAGE_WRAPPER_SELECTOR, STACK_PREVIEW_CONTAINER) => {
-    return Array.from(document.querySelectorAll(CONSOLE_MESSAGE_WRAPPER_SELECTOR)).map(wrapper => {
+  return frontend.evaluate((selector, container) => {
+    return Array.from(document.querySelectorAll(selector)).map(wrapper => {
       const message = wrapper.querySelector('.console-message-text')?.textContent;
       const source = wrapper.querySelector('.devtools-link')?.textContent;
       const consoleMessage = wrapper.querySelector('.console-message');
       const repeatCount = wrapper.querySelector('.console-message-repeat-count');
       const stackPreviewRoot = wrapper.querySelector('.hidden > span');
-      const stackPreview = stackPreviewRoot?.shadowRoot?.querySelector(STACK_PREVIEW_CONTAINER) ?? null;
+      const stackPreview = stackPreviewRoot?.shadowRoot?.querySelector(container) ?? null;
       return {
         message,
         messageClasses: consoleMessage?.className,

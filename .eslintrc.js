@@ -202,6 +202,80 @@ module.exports = {
       'rulesdir/es_modules_import': 'off',
     }
   }, {
+    'files' : ['*.ts'],
+    'rules' : {
+      '@typescript-eslint/naming-convention' :
+      [
+        'error', {
+          'selector' : ['function', 'accessor', 'method', 'property', 'parameterProperty'],
+          'format' : ['camelCase'],
+        },
+        {
+          'selector': 'variable',
+          'filter': {
+            // Ignore localization variables.
+            'regex': '^(UIStrings|str_)$',
+            'match': false
+          },
+          'format': ['camelCase'],
+        },
+        {
+          // We are using camelCase, PascalCase and UPPER_CASE for top-level constants, allow the for now.
+          'selector': 'variable',
+          'modifiers': ['const'],
+          'filter': {
+            // Ignore localization variables.
+            'regex': '^(UIStrings|str_)$',
+            'match': false
+          },
+          'format': ['camelCase', 'UPPER_CASE', 'PascalCase'],
+        },
+        {
+          'selector' : 'classProperty',
+          'modifiers' : ['static', 'readonly'],
+          'format' : ['UPPER_CASE', 'camelCase'],
+        },
+        {
+          'selector' : 'enumMember',
+          'format' : ['UPPER_CASE'],
+        },
+        {
+          'selector' : ['typeLike'],
+          'format' : ['PascalCase'],
+        },
+        {
+          'selector' : 'parameter',
+          'format' : ['camelCase'],
+          'leadingUnderscore' : 'allow',
+        },
+        {
+          // Public methods are currently in transition and may still have leading underscores.
+          'selector': 'method',
+          'modifiers': ['public'],
+          'format': ['camelCase'],
+          'leadingUnderscore': 'allow',
+        },
+        {
+          'selector': 'property',
+          'modifiers': ['public'],
+          'format': ['camelCase'],
+          'leadingUnderscore': 'allow',
+        },
+        {
+          // Object literals may be constructed as arguments to external libraries which follow different styles.
+          'selector': ['objectLiteralMethod', 'objectLiteralProperty'],
+          'modifiers': ['public'],
+          'format': null,
+        },
+        {
+          // Ignore type properties that require quotes
+          'selector' : 'typeProperty',
+          'format' : null,
+          'modifiers' : ['requiresQuotes']
+        }
+      ]
+    }
+  }, {
     'files': ['*.test.ts', 'test/**/*.ts', '**/testing/*.ts'],
     'rules': {
       // errors on it('test') with no body
@@ -220,48 +294,6 @@ module.exports = {
       'rulesdir/compare_arrays_with_assert_deepequal' : 'error',
       'rulesdir/ban_screenshot_test_outside_perf_panel' : 'error',
       'rulesdir/trace_engine_test_timeouts' : 'error',
-      '@typescript-eslint/naming-convention' :
-                                              [
-                                                'error',
-                                                {
-                                                  'selector' :
-                                                            [
-                                                              'function', 'accessor', 'method', 'property',
-                                                              'parameterProperty'
-                                                            ],
-                                                  'format' : ['camelCase'],
-                                                },
-                                                {
-                                                  // Allow PascalCase as well as it is used for dynamic module imports.
-                                                  'selector' : 'variable',
-                                                  'format' : ['camelCase', 'PascalCase', 'UPPER_CASE'],
-                                                },
-                                                {
-                                                  'selector' : 'classProperty',
-                                                  'modifiers' : ['static', 'readonly'],
-                                                  'format' : ['UPPER_CASE'],
-                                                },
-                                                {
-                                                  'selector' : 'enumMember',
-                                                  'format' : ['UPPER_CASE'],
-                                                },
-                                                {
-                                                  'selector' : ['typeLike'],
-                                                  'format' : ['PascalCase'],
-                                                },
-                                                {
-                                                  // Also allow UPPER_CASE so argument function to evaluate can take constants as arguments without renaming.
-                                                  'selector' : 'parameter',
-                                                  'format' : ['camelCase', 'UPPER_CASE'],
-                                                  'leadingUnderscore' : 'allow',
-                                                },
-                                                {
-                                                  // Object literals may be constructed as arguments to external libraries which follow different styles.
-                                                  'selector' : ['objectLiteralMethod', 'objectLiteralProperty'],
-                                                  'modifiers' : ['public'],
-                                                  'format' : null,
-                                                },
-                                              ],
       '@typescript-eslint/no-non-null-assertion' : 'off',
     },
     'settings': {

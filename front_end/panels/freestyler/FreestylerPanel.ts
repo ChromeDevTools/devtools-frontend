@@ -368,6 +368,10 @@ function setFreestylerServerSideLoggingEnabled(enabled: boolean): void {
 }
 
 function isFreestylerServerSideLoggingEnabled(): boolean {
+  const config = Common.Settings.Settings.instance().getHostConfig();
+  if (config.aidaAvailability?.disallowLogging) {
+    return false;
+  }
   return localStorage.getItem('freestyler_enableServerSideLogging') !== 'false';
 }
 

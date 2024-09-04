@@ -42,33 +42,38 @@ describe('ChangeManager', () => {
     const cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
       selector: 'div',
-      styles: 'color: blue;',
+      className: 'ai-assistant-change-1',
+      styles: {
+        color: 'blue',
+      },
     });
     assert(cssModel.setStyleSheetText.calledOnce);
     assert.deepStrictEqual(cssModel.setStyleSheetText.args, [
-      [styleSheetId, '.ai-assistant-change {\n  div& {\n    color: blue;\n  }\n}', true],
+      [styleSheetId, '.ai-assistant-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
     ]);
   });
 
-  it('can register multiple changes with different selectors', async () => {
+  it('can merge multiple changes with same className', async () => {
     const changeManager = new Freestyler.ChangeManager();
     const cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
       selector: 'div',
-      styles: 'color: blue;',
+      className: 'ai-assistant-change-1',
+      styles: {
+        color: 'blue',
+      },
     });
     await changeManager.addChange(cssModel, frameId, {
-      selector: 'div',
-      styles: 'color: blue;',
+      selector: 'span',
+      className: 'ai-assistant-change-1',
+      styles: {
+        color: 'green',
+      },
     });
     assert(cssModel.setStyleSheetText.calledTwice);
     assert.deepStrictEqual(cssModel.setStyleSheetText.args, [
-      [styleSheetId, '.ai-assistant-change {\n  div& {\n    color: blue;\n  }\n}', true],
-      [
-        styleSheetId,
-        '.ai-assistant-change {\n  div& {\n    color: blue;\n  }\n  div& {\n    color: blue;\n  }\n}',
-        true,
-      ],
+      [styleSheetId, '.ai-assistant-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
+      [styleSheetId, '.ai-assistant-change-1 {\n  div& {\n    color: green;\n  }\n}', true],
     ]);
   });
 
@@ -77,20 +82,22 @@ describe('ChangeManager', () => {
     const cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
       selector: 'div',
-      styles: 'color: blue;',
+      className: 'ai-assistant-change-1',
+      styles: {
+        color: 'blue',
+      },
     });
     await changeManager.addChange(cssModel, frameId, {
       selector: 'div',
-      styles: 'color: green;',
+      className: 'ai-assistant-change-1',
+      styles: {
+        color: 'green',
+      },
     });
     assert(cssModel.setStyleSheetText.calledTwice);
     assert.deepStrictEqual(cssModel.setStyleSheetText.args, [
-      [styleSheetId, '.ai-assistant-change {\n  div& {\n    color: blue;\n  }\n}', true],
-      [
-        styleSheetId,
-        '.ai-assistant-change {\n  div& {\n    color: blue;\n  }\n  div& {\n    color: green;\n  }\n}',
-        true,
-      ],
+      [styleSheetId, '.ai-assistant-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
+      [styleSheetId, '.ai-assistant-change-1 {\n  div& {\n    color: green;\n  }\n}', true],
     ]);
   });
 
@@ -99,21 +106,27 @@ describe('ChangeManager', () => {
     const cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
       selector: 'div',
-      styles: 'color: blue;',
+      className: 'ai-assistant-change-1',
+      styles: {
+        color: 'blue',
+      },
     });
     assert(cssModel.setStyleSheetText.calledOnce);
     assert.deepStrictEqual(cssModel.setStyleSheetText.args, [
-      [styleSheetId, '.ai-assistant-change {\n  div& {\n    color: blue;\n  }\n}', true],
+      [styleSheetId, '.ai-assistant-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
     ]);
     await changeManager.clear();
     await changeManager.addChange(cssModel, frameId, {
       selector: 'body',
-      styles: 'color: green;',
+      className: 'ai-assistant-change-1',
+      styles: {
+        color: 'green',
+      },
     });
     assert(cssModel.setStyleSheetText.calledTwice);
     assert.deepStrictEqual(cssModel.setStyleSheetText.args, [
-      [styleSheetId, '.ai-assistant-change {\n  div& {\n    color: blue;\n  }\n}', true],  // before clear().
-      [styleSheetId, '.ai-assistant-change {\n  body& {\n    color: green;\n  }\n}', true],
+      [styleSheetId, '.ai-assistant-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],  // before clear().
+      [styleSheetId, '.ai-assistant-change-1 {\n  body& {\n    color: green;\n  }\n}', true],
     ]);
   });
 });

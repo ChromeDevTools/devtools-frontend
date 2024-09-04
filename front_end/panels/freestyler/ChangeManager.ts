@@ -3,12 +3,14 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 export type Change = {
   selector: string,
-  styles: string,
+  className: string,
+  styles: Record<string, string>,
 };
 
 export const AI_ASSISTANT_CSS_CLASS_NAME = 'ai-assistant-change';
@@ -78,21 +80,30 @@ export class ChangeManager {
   async addChange(cssModel: SDK.CSSModel.CSSModel, frameId: Protocol.Page.FrameId, change: Change): Promise<void> {
     const stylesheetId = await this.#getStylesheet(cssModel, frameId);
     const changes = this.#stylesheetChanges.get(stylesheetId) || [];
-    changes.push(change);
+    const existingChange = changes.find(c => c.className === change.className);
+    if (existingChange) {
+      Object.assign(existingChange.styles, change.styles);
+    } else {
+      changes.push(change);
+    }
     await cssModel.setStyleSheetText(stylesheetId, this.buildChanges(changes), true);
     this.#stylesheetChanges.set(stylesheetId, changes);
   }
 
   buildChanges(changes: Array<Change>): string {
-    return `.${AI_ASSISTANT_CSS_CLASS_NAME} {
-${
-        changes
-            .map(change => {
-              return `  ${change.selector}& {
-    ${change.styles}
-  }`;
-            })
-            .join('\n')}
+    function formatStyles(styles: Record<string, string>): string {
+      const kebabStyles = Platform.StringUtilities.toKebabCaseKeys(styles);
+      const lines = Object.entries(kebabStyles).map(([key, value]) => `${key}: ${value};`);
+      return lines.join('\n');
+    }
+    return changes
+        .map(change => {
+          return `.${change.className} {
+  ${change.selector}& {
+    ${formatStyles(change.styles)}
+  }
 }`;
+        })
+        .join('\n');
   }
 }
